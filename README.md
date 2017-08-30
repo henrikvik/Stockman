@@ -1,9 +1,7 @@
 # DV1544-Stort-Spel
 
-Stora Spel project
+Stora Spel projekt
 av Grupp 4
-
-# DOCS
 
 # First Pitch
 
