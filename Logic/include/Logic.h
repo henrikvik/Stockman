@@ -6,9 +6,7 @@
 #define LOGIC_API __declspec(dllimport)   
 #endif  
 
-#include "Renderer.h"
-
-namespace Graphics
+namespace Logic
 {
-	static LOGIC_API Renderer;
+	
 }
