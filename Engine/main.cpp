@@ -1,9 +1,11 @@
 #include <Graphics.h>
 #include <Windows.h>
+#include <crtdbg.h>
 
-int main()
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
-	Renderer();
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	system("pause");
 	return 0;
 }
