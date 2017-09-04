@@ -147,10 +147,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="include\Graphics.h" />
     <ClInclude Include="include\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
