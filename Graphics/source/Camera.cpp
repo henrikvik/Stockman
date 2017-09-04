@@ -1,11 +1,28 @@
 #include "Camera.h"
+using namespace DirectX::SimpleMath;
+using namespace Graphics;
 
-Camera::Camera()
+Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, float fieldOfView)
 {
+	this->mFieldOfView = fieldOfView;
+	this->mDrawDistance = drawDistance;
+
+	this->mProjection = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, float(width)/height, 0.1f, drawDistance);
+
+	D3D11_BUFFER_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.ByteWidth = sizeof(Matrix) * 2;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	desc.Usage = D3D11_USAGE_DYNAMIC;
+
+	device->CreateBuffer(&desc, NULL, &this->mVPBuffer);
 }
 
 Camera::~Camera()
 {
+	this->mVPBuffer->Release();
 }
 
 void Camera::setPos(DirectX::SimpleMath::Vector3 pos)

@@ -41,8 +41,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 Engine::Engine(HINSTANCE hInstance, int width, int height)
 {
-	this->height = height;
-	this->width = width;
+	this->mHeight = height;
+	this->mWidth = width;
 	this->hInstance = hInstance;
 	this->initializeWindow();
 }
@@ -82,8 +82,8 @@ void Engine::initializeWindow()
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
-		this->width,
-		this->height,
+		this->mWidth,
+		this->mHeight,
 		0,
 		0,
 		this->hInstance,
@@ -113,8 +113,8 @@ HRESULT Engine::createSwapChain()
 	desc.OutputWindow = this->window;
 	desc.SampleDesc.Count = 1;
 	desc.Windowed = true;
-	desc.BufferDesc.Height = this->height;
-	desc.BufferDesc.Width = this->width;
+	desc.BufferDesc.Height = this->mHeight;
+	desc.BufferDesc.Width = this->mWidth;
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -168,8 +168,9 @@ HRESULT Engine::createSwapChain()
 int Engine::run()
 {
 	MSG msg = { 0 };
-
 	this->createSwapChain();
+
+	Graphics::Camera camTest(mDevice, mWidth, mHeight);
 
 	while (WM_QUIT != msg.message)
 	{

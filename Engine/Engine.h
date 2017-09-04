@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <Camera.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 
@@ -18,8 +19,8 @@ public:
 
 private:
 	HWND window;
-	int width;
-	int height;
+	int mWidth;
+	int mHeight;
 	HINSTANCE hInstance;
 
 	ID3D11Device* mDevice;
