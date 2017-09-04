@@ -25,6 +25,7 @@ VSOutput VS(VSInput input, uint id : SV_InstanceID)
     VSOutput output;
 
     output.pos = float4(input.pos, 1);
+    output.material = 0;
 
 	return output;
 }
