@@ -24,6 +24,7 @@ private:
 
 	ID3D11Device* mDevice;
 	ID3D11DeviceContext* mContext;
+	ID3D11Debug* mDebugDevice;
 	IDXGISwapChain* mSwapChain;
 	ID3D11RenderTargetView* mBackBufferRTV;
 

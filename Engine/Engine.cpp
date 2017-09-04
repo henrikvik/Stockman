@@ -49,6 +49,14 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 
 Engine::~Engine()
 {
+	this->mDevice->Release();
+	this->mContext->Release();
+	this->mSwapChain->Release();
+	this->mBackBufferRTV->Release();
+
+	//Enable this to get additional information about live objects
+	//this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	this->mDebugDevice->Release();
 }
 
 void Engine::initializeWindow()
@@ -139,6 +147,14 @@ HRESULT Engine::createSwapChain()
 			return hr;
 		}
 		backBuffer->Release();
+
+
+		//Creates a debug device to check for memory leaks etc
+		HRESULT hr = this->mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast <void **>(&mDebugDevice)); 
+		if (FAILED(hr))
+		{
+			MessageBox(0, "debug device creation failed", "error", MB_OK);
+		}
 
 	}
 	else
