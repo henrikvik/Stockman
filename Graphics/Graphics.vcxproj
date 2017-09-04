@@ -148,8 +148,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Graphics.h" />
     <ClInclude Include="include\Renderer.h" />
+    <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
   </ItemGroup>
   <ItemGroup>

@@ -27,6 +27,12 @@
     <ClInclude Include="include\ThrowIfFailed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Renderer.cpp">
