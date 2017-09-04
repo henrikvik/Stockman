@@ -1,11 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <d3d11.h>
-#include <d3dcompiler.h>
-
-#pragma comment (lib, "d3d11.lib")
-#pragma comment (lib, "d3dcompiler.lib")
+#include <Camera.h>
 
 
 class Engine
@@ -18,8 +14,8 @@ public:
 
 private:
 	HWND window;
-	int width;
-	int height;
+	int mWidth;
+	int mHeight;
 	HINSTANCE hInstance;
 
 	ID3D11Device* mDevice;
