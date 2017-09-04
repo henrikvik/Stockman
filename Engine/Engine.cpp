@@ -165,13 +165,38 @@ HRESULT Engine::createSwapChain()
 	return hr;
 }
 
+long long Engine::timer()
+{
+	static LARGE_INTEGER frequency;
+	static BOOL highResCounter = QueryPerformanceFrequency(&frequency);
+	if (highResCounter)
+	{
+		LARGE_INTEGER now;
+		QueryPerformanceCounter(&now);
+		//returns time in ms
+		return(1000LL * now.QuadPart) / frequency.QuadPart;
+	}
+	else
+	{
+		return GetTickCount();
+	}
+}
+
 int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
 
+	long long start = this->timer();
+	long long prev = start;
+	long long currentTime = 0;
+	long long deltaTime = 0; 
+
 	while (WM_QUIT != msg.message)
 	{
+		currentTime = this->timer();
+		deltaTime = currentTime - prev;
+
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);

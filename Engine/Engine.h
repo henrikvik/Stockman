@@ -26,4 +26,5 @@ private:
 
 	void initializeWindow();
 	HRESULT createSwapChain();
+	long long timer();
 };
