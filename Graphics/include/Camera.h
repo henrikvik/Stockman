@@ -1,8 +1,8 @@
 #pragma once
 
+#define _USE_MATH_DEFINES
 #include <math.h>
 
-#define _USE_MATH_DEFINES
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
