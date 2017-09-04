@@ -28,6 +28,9 @@ namespace Graphics {
 		DirectX::SimpleMath::Vector3 getForward() const;
 		DirectX::SimpleMath::Vector3 getUp() const;
 		DirectX::SimpleMath::Vector3 getRight() const;
+		ID3D11Buffer* getBuffer();
+
+		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
 
 	private:
 		DirectX::SimpleMath::Vector3 mPos;

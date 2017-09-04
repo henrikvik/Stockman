@@ -170,8 +170,6 @@ int Engine::run()
 	MSG msg = { 0 };
 	this->createSwapChain();
 
-	Graphics::Camera camTest(mDevice, mWidth, mHeight);
-
 	while (WM_QUIT != msg.message)
 	{
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -182,7 +180,7 @@ int Engine::run()
 		}
 		else
 		{
-		//	system("pause");
+	
 		}
 	}
 	return 0;
