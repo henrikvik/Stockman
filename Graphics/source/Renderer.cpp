@@ -2,9 +2,12 @@
 #include <stdio.h>
 #include "ThrowIfFailed.h"
 
-Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext)
+using namespace Graphics;
+
+Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer)
     : device(device)
     , deviceContext(deviceContext)
+    , backBuffer(backBuffer)
 {
     createGBuffer();
 }
@@ -28,9 +31,8 @@ void Renderer::render(Camera * camera)
     //deviceContext->PSSetConstantBuffers(0, 3, nullptr);
     //deviceContext->OMSetRenderTargets(3, (ID3D11RenderTargetView * const *)&gbuffer, gbuffer.depth);
     
-    deviceContext->VSSetConstantBuffers(0, 1, nullptr);
-
-    
+    ID3D11Buffer *cameraBuffer[] = { camera->getBuffer() };
+    deviceContext->VSSetConstantBuffers(0, 1, cameraBuffer);    
     cull();
     draw();
 }
@@ -94,5 +96,13 @@ void Renderer::draw()
         //getVertexBuffer(pair.first);
         //deviceContext->DrawInstanced()
     }
+}
+
+void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
+{
+    deviceContext->PSSetShaderResources(0, 1, &texture);
+    UINT stride = sizeof(DirectX::SimpleMath::Vector2), offset = 0;
+    deviceContext->IASetVertexBuffers(0, 1, &FSQuad, &stride, &offset);
+    
 }
 
