@@ -12,5 +12,5 @@
 
 namespace Graphics
 {
-	
+    static GRAPHICS_API Renderer;
 }
