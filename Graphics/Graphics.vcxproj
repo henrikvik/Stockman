@@ -150,6 +150,7 @@
     <ClInclude Include="include\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\ThrowIfFailed.h" />
     <ClCompile Include="source\Renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
