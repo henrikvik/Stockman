@@ -93,9 +93,67 @@ void Engine::initializeWindow()
 
 }
 
+HRESULT Engine::createSwapChain()
+{
+	
+	DXGI_SWAP_CHAIN_DESC desc;
+	ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
+
+	desc.BufferCount = 1;
+	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	desc.OutputWindow = this->window;
+	desc.SampleDesc.Count = 1;
+	desc.Windowed = true;
+	desc.BufferDesc.Height = this->height;
+	desc.BufferDesc.Width = this->width;
+
+	HRESULT hr = D3D11CreateDeviceAndSwapChain(
+		NULL,
+		D3D_DRIVER_TYPE_HARDWARE,
+		NULL,
+		D3D11_CREATE_DEVICE_DEBUG,
+		NULL,
+		NULL,
+		D3D11_SDK_VERSION,
+		&desc,
+		&mSwapChain,
+		&this->mDevice,
+		NULL,
+		&this->mContext);
+
+	if (SUCCEEDED(hr))
+	{
+		ID3D11Texture2D* backBuffer = nullptr;
+		hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
+		if (FAILED(hr))
+		{
+			MessageBox(0, "swap chain getBuffer failed", "error", MB_OK);
+			return hr;
+		}
+
+		hr = mDevice->CreateRenderTargetView(backBuffer, NULL, &mBackBufferRTV);
+		if (FAILED(hr))
+		{
+			MessageBox(0, "RTV creation failed", "error", MB_OK);
+			return hr;
+		}
+		backBuffer->Release();
+
+	}
+	else
+	{
+		MessageBox(0, "remove debug flag", "error", MB_OK);
+	}
+
+	return hr;
+}
+
 int Engine::run()
 {
 	MSG msg = { 0 };
+
+	this->createSwapChain();
 
 	while (WM_QUIT != msg.message)
 	{
