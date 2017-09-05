@@ -13,6 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{b9c731df-54ff-4b0b-bb09-fa57a2ffe765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player">
+      <UniqueIdentifier>{b41dc805-dd77-43c3-9e59-0998d69cc816}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AI">
+      <UniqueIdentifier>{f587d62d-ff1c-4a93-9b2f-05fb0e57bdcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Projectile">
+      <UniqueIdentifier>{884b49e5-09b8-4cf9-b256-465b71470e70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Misc">
+      <UniqueIdentifier>{b869eb4a-6341-4f95-bf9f-466b37a5094d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player\Weapon">
+      <UniqueIdentifier>{25554a59-2c79-4165-aa48-7c4409508f9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player\Skill">
+      <UniqueIdentifier>{28b00a22-5b90-4df3-9101-de1e9fde1e77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Logic.h">
