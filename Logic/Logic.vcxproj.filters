@@ -34,14 +34,50 @@
     <Filter Include="Source Files\Player\Skill">
       <UniqueIdentifier>{28b00a22-5b90-4df3-9101-de1e9fde1e77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Entity">
+      <UniqueIdentifier>{d828f26d-d7bc-4be2-bac8-38dc9aefabde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AI">
+      <UniqueIdentifier>{b68fcf78-6b09-4efe-b7d3-68b7347a2997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Misc">
+      <UniqueIdentifier>{34bce9c0-e044-4a26-937c-f1ea1caa60e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Projectile">
+      <UniqueIdentifier>{a2f049d7-acbb-464a-934c-a9b25de0d46c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Player">
+      <UniqueIdentifier>{b2b000dd-b040-426d-9292-4f253e9b3a8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Player\Weapon">
+      <UniqueIdentifier>{681e0de0-1726-4fe1-920d-f145a2dd01a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Player\Skill">
+      <UniqueIdentifier>{6cb42620-bff4-47fb-8226-3cb09d58fa12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Logic.h">
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Source.cpp">
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
