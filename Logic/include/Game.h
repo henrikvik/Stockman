@@ -11,6 +11,8 @@ namespace Logic
 		Game* operator=(const Game& other) = delete;
 		~Game();
 
+		void update();
+
 	private:
 
 	};

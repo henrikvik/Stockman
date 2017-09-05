@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <Camera.h>
-
+#include <Game.h>
 
 class Engine
 {
@@ -13,6 +13,7 @@ public:
 	int run();
 
 private:
+	Logic::Game game;
 	HWND window;
 	int mWidth;
 	int mHeight;
