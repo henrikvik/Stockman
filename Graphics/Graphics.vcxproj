@@ -95,7 +95,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
@@ -107,7 +107,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
@@ -151,10 +151,12 @@
     <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Graphics.h" />
     <ClInclude Include="include\Renderer.h" />
+    <ClInclude Include="include\ShaderHandler.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\ShaderHandler.cpp" />
     <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
   </ItemGroup>
