@@ -105,6 +105,39 @@ Graphics::Renderer::~Renderer()
 	
 }
 
+void Graphics::Renderer::createLightGrid()
+{
+	// TODO: create CS shader
+	D3DCompileFromFile("", nullptr, nullptr, "CS", "cs_5_0", 0, 0, nullptr, nullptr);
+
+	{
+		D3D11_BUFFER_DESC desc = { 0 };
+		desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
+		desc.ByteWidth = (sizeof(float) * 4) * 3600;
+
+		ThrowIfFailed(device->CreateBuffer(&desc, nullptr, &gridFrustrums));
+	}
+
+	{
+		D3D11_UNORDERED_ACCESS_VIEW_DESC desc;
+		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+		desc.Buffer.FirstElement = 0;
+		desc.Buffer.Flags = 0;
+		desc.Buffer.NumElements = 3600;
+
+		ThrowIfFailed(device->CreateUnorderedAccessView(gridFrustrums, &desc, &gridFrustrumsUAV));
+	}
+
+	deviceContext->CSSetShader(gridFrustumGenerationCS, nullptr, 0);
+	deviceContext->CSSetUnorderedAccessViews(0, 1, &gridFrustrumsUAV, 0);
+	deviceContext->Dispatch(5, 3, 1);
+
+	gridFrustrumsUAV->Release();
+
+	// release generation shader
+}
+
 void Renderer::render(Camera * camera)
 {
     /*
@@ -124,6 +157,7 @@ void Renderer::render(Camera * camera)
     //deviceContext->PSSetConstantBuffers(0, 3, nullptr);
     //deviceContext->OMSetRenderTargets(3, (ID3D11RenderTargetView * const *)&gbuffer, gbuffer.depth);
     
+
     ID3D11Buffer *cameraBuffer[] = { camera->getBuffer() };
     deviceContext->VSSetConstantBuffers(0, 1, cameraBuffer);    
     cull();
