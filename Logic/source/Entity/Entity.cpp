@@ -9,7 +9,7 @@ Entity::Entity()
 
 Entity::~Entity() { }
 
-void Entity::collision()
+void Entity::collision(const Entity& other)
 {
-
+	onCollision(other);
 }

@@ -15,8 +15,8 @@ namespace Logic
 
 		virtual void clear() = 0;
 		virtual void update() = 0;
-		void collision();
-		virtual void onCollision() = 0;
+		void collision(const Entity& other);
+		virtual void onCollision(const Entity& other) = 0;
 
 	private:
 

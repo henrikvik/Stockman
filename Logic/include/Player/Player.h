@@ -10,6 +10,11 @@ namespace Logic
 	public:
 		Player();
 		~Player();
+
+		void clear();
+		void update();
+		void onCollision(const Entity& other);
+
 	};
 
 }
