@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <Camera.h>
+#include <Renderer.h>
 
 
 class Engine
@@ -17,6 +18,8 @@ private:
 	int mWidth;
 	int mHeight;
 	HINSTANCE hInstance;
+	
+	Graphics::Renderer* renderer;
 
 	ID3D11Device* mDevice;
 	ID3D11DeviceContext* mContext;
