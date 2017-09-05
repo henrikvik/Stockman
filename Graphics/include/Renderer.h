@@ -7,6 +7,8 @@
 #include "Camera.h"
 #include "Structs.h"
 #include "Constants.h"
+#include "ShaderHandler.h"
+#include "WICTextureLoader.h"
 
 namespace Graphics
 {
@@ -14,12 +16,21 @@ namespace Graphics
     {
     public:
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer);
+		virtual ~Renderer();
         void render(Camera * camera);
         void qeueuRender(RenderInfo * renderInfo);
+		//TODO: RELESASEA ALLA SAKER
     private:
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
+		ShaderHandler shaderHandler;
+
+		//temp
+		ID3D11ShaderResourceView* view;
+		ID3D11Buffer * FSQuad2;
+
+		int shaders[2];
 
         std::vector<RenderInfo*> renderQueue;
         typedef  std::unordered_map<int, std::vector<InstanceData>> InstanceQueue_t;
