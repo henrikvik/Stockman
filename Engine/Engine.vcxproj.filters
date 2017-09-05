@@ -29,5 +29,6 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FullscreenQuad.hlsl" />
+    <FxCompile Include="Deffered.hlsl" />
   </ItemGroup>
 </Project>

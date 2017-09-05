@@ -10,6 +10,29 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
     , deviceContext(deviceContext)
     , backBuffer(backBuffer)
 {
+	TestQuad defferedTest[] =
+	{
+		DirectX::SimpleMath::Vector3(-1, -1, 0),
+		DirectX::SimpleMath::Vector2(0, 1),
+		DirectX::SimpleMath::Vector3(0, 0, -1),
+		1,
+
+		DirectX::SimpleMath::Vector3(-1, 1, 0),
+		DirectX::SimpleMath::Vector2(0, 0),
+		DirectX::SimpleMath::Vector3(0, 0, -1),
+		1,
+
+		DirectX::SimpleMath::Vector3(1, -1, 0),
+		DirectX::SimpleMath::Vector2(1, 1),
+		DirectX::SimpleMath::Vector3(0, 0, -1),
+		1,
+
+		DirectX::SimpleMath::Vector3(1, 1, 0),
+		DirectX::SimpleMath::Vector2(1, 0),
+		DirectX::SimpleMath::Vector3(0, 0, -1),
+		1
+	};
+
     createGBuffer();
 
 	D3D11_INPUT_ELEMENT_DESC desc[] =
@@ -19,6 +42,17 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 
 	shaders[0] = shaderHandler.createVertexShader(device, L"FullscreenQuad.hlsl", "VS", desc, ARRAYSIZE(desc));
 	shaders[1] = shaderHandler.createPixelhader(device, L"FullscreenQuad.hlsl", "PS");
+
+	D3D11_INPUT_ELEMENT_DESC descDeffered[] =
+	{
+		{ "POS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "MATERIAL", 0, DXGI_FORMAT_R32_UINT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	defferedShaders[0] = shaderHandler.createVertexShader(device, L"Deffered.hlsl", "VS", descDeffered, ARRAYSIZE(descDeffered));
+	defferedShaders[1] = shaderHandler.createPixelhader(device, L"Deffered.hlsl", "PS");
 
 	D3D11_VIEWPORT viewPort;
 	viewPort.Height = 720;
@@ -40,6 +74,13 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &FSQuad2));
 	ThrowIfFailed( DirectX::CreateWICTextureFromFile(device, L"cat.jpg", nullptr, &view));
 
+
+	bufferDesc.ByteWidth = sizeof(defferedTest);
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	data.pSysMem = defferedTest;
+
+	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
 }
 
 Graphics::Renderer::~Renderer()
@@ -55,11 +96,12 @@ Graphics::Renderer::~Renderer()
 	if (gbuffer.depthView)
 		gbuffer.depthView->Release();
 	gbuffer.diffuseSpec->Release();
-	//gbuffer.diffuseSpecView->Release();
+	gbuffer.diffuseSpecView->Release();
 	gbuffer.normalMat->Release();
-	//gbuffer.normalMatView->Release();
+	gbuffer.normalMatView->Release();
 	gbuffer.position->Release();
-	//gbuffer.positionView->Release();
+	gbuffer.positionView->Release();
+	defferedTestBuffer->Release();
 	
 }
 
@@ -88,8 +130,8 @@ void Renderer::render(Camera * camera)
     //draw();
 	
 	//temp
-	
-	this->drawToBackbuffer(view);
+	this->drawDeffered();
+	this->drawToBackbuffer(gbuffer.positionView);
 }
 
 void Renderer::qeueuRender(RenderInfo * renderInfo)
@@ -117,7 +159,9 @@ void Renderer::createGBuffer()
     ThrowIfFailed(device->CreateRenderTargetView(diffuseSpecTexture, nullptr, &gbuffer.diffuseSpec));
     ThrowIfFailed(device->CreateRenderTargetView(normalMatTexture, nullptr, &gbuffer.normalMat));
     ThrowIfFailed(device->CreateRenderTargetView(positionTexture, nullptr, &gbuffer.position));
-
+	ThrowIfFailed(device->CreateShaderResourceView(diffuseSpecTexture, nullptr, &gbuffer.diffuseSpecView));
+	ThrowIfFailed(device->CreateShaderResourceView(normalMatTexture, nullptr, &gbuffer.normalMatView));
+	ThrowIfFailed(device->CreateShaderResourceView(positionTexture, nullptr, &gbuffer.positionView));
 
 	diffuseSpecTexture->Release();
 	normalMatTexture->Release();
@@ -162,6 +206,36 @@ void Renderer::draw()
     }
 }
 
+void Renderer::drawDeffered()
+{
+	
+	ID3D11RenderTargetView * RTVS[] = 
+	{
+		gbuffer.diffuseSpec,
+		gbuffer.normalMat,
+		gbuffer.position
+	};
+
+	deviceContext->OMSetRenderTargets(3, RTVS, nullptr);
+	shaderHandler.setShaders(defferedShaders[0], NO_SHADER, defferedShaders[1], deviceContext);
+
+	//textur här typ
+
+	UINT stride = 36, offset = 0;
+	deviceContext->IASetVertexBuffers(0, 1, &defferedTestBuffer, &stride, &offset);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	deviceContext->Draw(4, 0);
+
+	ID3D11RenderTargetView * RTVNULLS[] =
+	{
+		NULL,
+		NULL,
+		NULL
+	};
+	deviceContext->OMSetRenderTargets(3, RTVNULLS, NULL);
+}
+
 void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 {
     deviceContext->PSSetShaderResources(0, 1, &texture);
@@ -174,5 +248,9 @@ void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 	shaderHandler.setShaders(shaders[0], NO_SHADER, shaders[1], deviceContext);
 
 	deviceContext->Draw(4, 0);
+
+
+	ID3D11ShaderResourceView * SRVNULL = nullptr;
+	deviceContext->PSSetShaderResources(0, 1, &SRVNULL);
 }
 

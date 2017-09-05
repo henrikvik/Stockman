@@ -12,6 +12,9 @@
 
 namespace Graphics
 {
+
+	
+
     class Renderer
     {
     public:
@@ -21,6 +24,17 @@ namespace Graphics
         void qeueuRender(RenderInfo * renderInfo);
 		//TODO: RELESASEA ALLA SAKER
     private:
+		//MYCKET TEMP
+		struct TestQuad
+		{
+			DirectX::SimpleMath::Vector3 pos;
+			DirectX::SimpleMath::Vector2 uv;
+			DirectX::SimpleMath::Vector3 normal;
+			int mat;
+		};
+
+		
+
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
@@ -29,8 +43,10 @@ namespace Graphics
 		//temp
 		ID3D11ShaderResourceView* view;
 		ID3D11Buffer * FSQuad2;
+		ID3D11Buffer * defferedTestBuffer;
 
 		int shaders[2];
+		int defferedShaders[2];
 
         std::vector<RenderInfo*> renderQueue;
         typedef  std::unordered_map<int, std::vector<InstanceData>> InstanceQueue_t;
@@ -42,6 +58,7 @@ namespace Graphics
         void createGBuffer();
         void cull();
         void draw();
+		void drawDeffered();
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
     };
