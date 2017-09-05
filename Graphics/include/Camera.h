@@ -45,6 +45,11 @@ namespace Graphics {
 		DirectX::SimpleMath::Matrix mView;
 		DirectX::SimpleMath::Matrix mProjection;
 
+		struct ShaderValues {
+			DirectX::SimpleMath::Matrix mVP;
+			DirectX::SimpleMath::Matrix mInvP;
+		} values;
+
 		ID3D11Buffer* mVPBuffer;
 
 	};

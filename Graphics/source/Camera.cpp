@@ -8,16 +8,23 @@ Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, 
 	this->mDrawDistance = drawDistance;
 
 	this->mProjection = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, float(width)/height, 0.1f, drawDistance);
+	values.mVP = this->mProjection * this->mView;
+	values.mInvP = this->mProjection.Invert();
 
 	D3D11_BUFFER_DESC desc;
 	ZeroMemory(&desc, sizeof(desc));
 
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.ByteWidth = sizeof(Matrix);
+	desc.ByteWidth = sizeof(ShaderValues);
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	desc.Usage = D3D11_USAGE_DYNAMIC;
 
-	device->CreateBuffer(&desc, NULL, &this->mVPBuffer);
+	D3D11_SUBRESOURCE_DATA data;
+	ZeroMemory(&data, sizeof(data));
+	data.pSysMem = &values;
+
+
+	device->CreateBuffer(&desc, &data, &this->mVPBuffer);
 }
 
 Camera::~Camera()
@@ -78,14 +85,15 @@ void Graphics::Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleM
 	{
 		this->mView = newView;
 
-		Matrix vP = this->mProjection * this->mView;
+		values.mVP = this->mProjection * this->mView;
+		values.mInvP = this->mProjection.Invert();
 
 		D3D11_MAPPED_SUBRESOURCE data;
 		ZeroMemory(&data, sizeof(data));
 
 		context->Map(this->mVPBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 
-		memcpy(data.pData, &vP, sizeof(Matrix));
+		memcpy(data.pData, &values, sizeof(ShaderValues));
 
 		context->Unmap(this->mVPBuffer, 0);
 	}

@@ -5,7 +5,7 @@
 
 using namespace Graphics;
 
-Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer)
+Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
     : device(device)
     , deviceContext(deviceContext)
     , backBuffer(backBuffer)
@@ -32,6 +32,8 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 		DirectX::SimpleMath::Vector3(0, 0, -1),
 		1
 	};
+
+	createLightGrid(camera);
 
     createGBuffer();
 
@@ -81,6 +83,7 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 	data.pSysMem = defferedTest;
 
 	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
+
 }
 
 Graphics::Renderer::~Renderer()
@@ -105,22 +108,25 @@ Graphics::Renderer::~Renderer()
 	
 }
 
-void Graphics::Renderer::createLightGrid()
+void Graphics::Renderer::createLightGrid(Camera *camera)
 {
 	// TODO: create CS shader
-	D3DCompileFromFile("", nullptr, nullptr, "CS", "cs_5_0", 0, 0, nullptr, nullptr);
+	gridFrustumGenerationCS = shaderHandler.createComputeShader(device, L"LightGridGeneration.hlsl", "CS");
 
 	{
 		D3D11_BUFFER_DESC desc = { 0 };
-		desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
-		desc.ByteWidth = (sizeof(float) * 4) * 3600;
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+		desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		desc.ByteWidth = (sizeof(float) * 4 * 4) * 3600;
+		desc.StructureByteStride = 64;
 
 		ThrowIfFailed(device->CreateBuffer(&desc, nullptr, &gridFrustrums));
 	}
 
 	{
 		D3D11_UNORDERED_ACCESS_VIEW_DESC desc;
-		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		ZeroMemory(&desc, sizeof(desc));
+		desc.Format = DXGI_FORMAT_UNKNOWN;
 		desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 		desc.Buffer.FirstElement = 0;
 		desc.Buffer.Flags = 0;
@@ -129,11 +135,13 @@ void Graphics::Renderer::createLightGrid()
 		ThrowIfFailed(device->CreateUnorderedAccessView(gridFrustrums, &desc, &gridFrustrumsUAV));
 	}
 
-	deviceContext->CSSetShader(gridFrustumGenerationCS, nullptr, 0);
+	shaderHandler.setComputeShader(gridFrustumGenerationCS, deviceContext);
+	auto camera_buffer = camera->getBuffer();
+	deviceContext->CSSetConstantBuffers(0, 1, &camera_buffer);
 	deviceContext->CSSetUnorderedAccessViews(0, 1, &gridFrustrumsUAV, 0);
 	deviceContext->Dispatch(5, 3, 1);
 
-	gridFrustrumsUAV->Release();
+	//gridFrustrumsUAV->Release();
 
 	// release generation shader
 }

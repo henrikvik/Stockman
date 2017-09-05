@@ -2,16 +2,13 @@
 #define WIDTH 1280
 #define HEIGHT 720
 
-cbuffer DispatchParams : register(b4)
-{
-	// Number of groups dispatched. (This parameter is not available as an HLSL system value!)
-	uint3   numThreadGroups;
-	// Total number of threads dispatched. (Also not available as an HLSL system value!)
-	uint3   numThreads;
-}
+// Hardcoded since we're a 720p *exclusive* title
+static const uint3 numThreadGroups = uint3(5, 3, 1);
+static const uint3 numThreads = uint3(80, 45, 1);
 
-cbuffer ScreenToViewParams : register(b3)
+cbuffer Camera : register(b0)
 {
+	float4x4 ViewProjection;
 	float4x4 InvProjection;
 }
 
@@ -23,7 +20,7 @@ struct Plane {
 };
 
 // A frustrum defined by 4 planes
-struct Frustrum {
+struct Frustum {
 	Plane planes[4];
 };
 
@@ -35,7 +32,7 @@ Plane ComputePlane(float3 p0, float3 p1, float3 p2)
 	float3 v0 = p1 - p0;
 	float3 v1 = p2 - p0;
 	
-	plane.N = normalize(cross(v0, v2));
+	plane.N = normalize(cross(v0, v1));
 	plane.d = dot(plane.N, p0);
 	
 	return plane;
@@ -45,7 +42,7 @@ Plane ComputePlane(float3 p0, float3 p1, float3 p2)
 float4 ClipToView(float4 clip)
 {
 	// View space position
-	float4 view = mul(InverseProjection, clip);
+	float4 view = mul(InvProjection, clip);
 	// Perspective projection
 	view = view / view.w;
 
@@ -106,19 +103,18 @@ void CS(CSInput input)
 	Frustum frustum;
 
 	// left plane
-	frustum.planes[0] = ComputePlane(eyePos, viewSpace[2], viewSpace[0]);
+	frustum.planes[0] = ComputePlane(eye, viewSpace[2], viewSpace[0]);
 	// right plane
-	frustum.planes[1] = ComputePlane(eyePos, viewSpace[1], viewSpace[3]);
+	frustum.planes[1] = ComputePlane(eye, viewSpace[1], viewSpace[3]);
 	// top plane
-	frustum.planes[2] = ComputePlane(eyePos, viewSpace[0], viewSpace[1]);
+	frustum.planes[2] = ComputePlane(eye, viewSpace[0], viewSpace[1]);
 	// bottom plane
-	frustum.planes[3] = ComputePlane(eyePos, viewSpace[3], viewSpace[2]);
-
+	frustum.planes[3] = ComputePlane(eye, viewSpace[3], viewSpace[2]);
 
 	// Store the computed frustum in global memory (if our thread ID is in bounds of the grid).
-	if (input.dispatchThreadID.x < numThreads.x && input.dispatchThreadID.y < numThreads.y)
-	{
+	//if (input.dispatchThreadID.x < numThreads.x && input.dispatchThreadID.y < numThreads.y)
+	//{
 		uint index = input.dispatchThreadID.x + (input.dispatchThreadID.y * numThreads.x);
 		FrustrumOutput[index] = frustum;
-	}
+	//}
 }

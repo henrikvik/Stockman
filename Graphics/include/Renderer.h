@@ -12,13 +12,10 @@
 
 namespace Graphics
 {
-
-	
-
     class Renderer
     {
     public:
-        Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer);
+        Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
 		virtual ~Renderer();
         void render(Camera * camera);
         void qeueuRender(RenderInfo * renderInfo);
@@ -33,7 +30,10 @@ namespace Graphics
 			int mat;
 		};
 
-		
+		void createLightGrid(Camera *camera);
+		ID3D11Buffer *gridFrustrums;
+		ID3D11UnorderedAccessView *gridFrustrumsUAV;
+		int gridFrustumGenerationCS;
 
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
