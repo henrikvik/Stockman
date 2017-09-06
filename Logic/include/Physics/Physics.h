@@ -11,6 +11,9 @@
 
  */
 
+// #include "btBulletCollisionCommon.h"
+// #include "btBulletDynamicsCommon.h"
+
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 
@@ -20,6 +23,7 @@
 
 namespace Logic
 {
+
 	class Physics : public btDiscreteDynamicsWorld
 	{
 	public:

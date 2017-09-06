@@ -99,11 +99,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -111,6 +115,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
@@ -125,6 +130,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -141,6 +147,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -174,6 +181,17 @@
     <Text Include="source\Player\Skill\gitinclude.txt" />
     <Text Include="source\Player\Weapon\gitinclude.txt" />
     <Text Include="source\Projectile\gitinclude.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\Bullet3Collision\Bullet3Collision.vcxproj">
+      <Project>{ced1eef6-5cf9-3b24-b52c-c0f0ac9ea646}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\Bullet3Dynamics\Bullet3Dynamics.vcxproj">
+      <Project>{4f3cbdaa-40a6-3d93-aebc-11e11302289c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\LinearMath\LinearMath.vcxproj">
+      <Project>{87c7a4ea-cae6-3c84-9785-abc44c822e9c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

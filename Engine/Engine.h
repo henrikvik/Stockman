@@ -13,7 +13,7 @@ public:
 	int run();
 
 private:
-//	Logic::Game game;
+	Logic::Game game;
 	HWND window;
 	int mWidth;
 	int mHeight;
