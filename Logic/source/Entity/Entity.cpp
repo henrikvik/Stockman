@@ -4,7 +4,6 @@ using namespace Logic;
 
 Entity::Entity()
 {
-
 }
 
 Entity::~Entity() { }

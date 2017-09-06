@@ -182,10 +182,24 @@ long long Engine::timer()
 	}
 }
 
+bool Engine::initializeGame()
+{
+	bool result;
+
+	// Trying to start game
+	result = game.init();
+
+	return result;
+}
+
+
 int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
+	
+	if (!this->initializeGame())
+		return 0;
 
 	long long start = this->timer();
 	long long prev = start;
@@ -205,7 +219,7 @@ int Engine::run()
 		}
 		else
 		{
-	
+			game.update(float(deltaTime));
 		}
 	}
 	return 0;

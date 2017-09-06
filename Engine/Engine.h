@@ -25,6 +25,7 @@ private:
 	IDXGISwapChain* mSwapChain;
 	ID3D11RenderTargetView* mBackBufferRTV;
 
+	bool initializeGame();
 	void initializeWindow();
 	HRESULT createSwapChain();
 	long long timer();

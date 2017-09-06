@@ -1,6 +1,8 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include <d3d11.h>
+
 namespace Logic
 {
 	class Object
@@ -12,7 +14,7 @@ namespace Logic
 		~Object();
 
 	private:
-
+		
 	};
 }
 

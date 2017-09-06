@@ -113,7 +113,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
     </Link>
@@ -164,6 +164,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
