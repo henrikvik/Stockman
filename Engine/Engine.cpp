@@ -187,9 +187,10 @@ bool Engine::initializeGame()
 	bool result;
 
 	// Trying to start game
-	result = game.init();
+//	result = game.init();
 
-	return result;
+//	return result;
+	return true;
 }
 
 
@@ -219,7 +220,7 @@ int Engine::run()
 		}
 		else
 		{
-			game.update(float(deltaTime));
+	//		game.update(float(deltaTime));
 		}
 	}
 	return 0;
