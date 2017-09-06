@@ -57,15 +57,15 @@ cbuffer DispatchParams : register(b1)
 	uint4   numThreads;
 }
 
+// TODO: change
 struct Light {
 	float3 position;
 	float range;
 };
 
+// A plane defined by a normal and distance from origin
 struct Plane {
-	// Plane normal
 	float3 N;
-	// Distance from origin
 	float d;
 };
 
@@ -151,14 +151,12 @@ struct CSInput {
 	uint  groupIndex        : SV_GroupIndex;
 };
 
-
 // Depth texture from z-prepass
 Texture2D DepthTexture : register(t0);
 
-
-
 // All the frustums generated at the start
 StructuredBuffer<Frustum> Frustums : register(t1);
+// List of all lights to perform culling on
 StructuredBuffer<Light>   Lights : register(t2);
 
 RWStructuredBuffer<uint> OpaqueLightIndexCounter : register(u0);
@@ -173,8 +171,10 @@ RWTexture2D<uint2>       TransparentLightGrid : register(u5);
 // heatmap)
 RWTexture2D<float4> DebugTexture : register(u6);
 
+// Debug gradient whose color indicates frequency of tile lights
 Texture2D DebugGradient : register(t4);
 
+// Linear Clamp
 SamplerState DebugSampler : register(s0);
 
 groupshared uint MinDepth;
@@ -227,9 +227,12 @@ void CS(CSInput input)
 
 	GroupMemoryBarrierWithGroupSync();
 
+
 	InterlockedMin(MinDepth, atomicDepth);
 	InterlockedMax(MaxDepth, atomicDepth);
 
+	// need to wait for all threads to avoid data races, as next code section
+	// requires the max/min value of the entire group
 	GroupMemoryBarrierWithGroupSync();
 
 	float minDepth = asfloat(MinDepth);
@@ -242,6 +245,8 @@ void CS(CSInput input)
 	// TODO: LH/RH?
 	Plane minPlane = { float3(0, 0, 1), minDepthVS };
 
+	// loop through all lights and test if inside/intersecting with our group
+	// frustum, and add to light list if so
 	for (uint i = input.groupIndex; i < NUM_LIGHTS; i += BLOCK_SIZE * BLOCK_SIZE) {
 		Light light = Lights[i];
 
@@ -255,6 +260,8 @@ void CS(CSInput input)
 		}
 	}
 
+	// next code section transfers light list information to light grid, so we
+	// need to wait again for work to complete in the entire group
 	GroupMemoryBarrierWithGroupSync();
 
 
@@ -273,6 +280,8 @@ void CS(CSInput input)
 		);
 	}
 
+	// next section transfers our groupshared data to the global UAV, so all our
+	// work needs to finish before continuing
 	GroupMemoryBarrierWithGroupSync();
 
 
@@ -284,7 +293,7 @@ void CS(CSInput input)
 		TransparentLightIndexList[TransparentLightIndexOffset + i] = TransparentLightList[i];
 	}
 
-	// debug texture
+	// update heatmap debug texture
 	if (input.groupThreadID.x == 0 || input.groupThreadID.y == 0) {
 		DebugTexture[coord] = float4(0, 0, 0, 0.9f);
 	} else if (input.groupThreadID.x == 1 || input.groupThreadID.y == 1) {

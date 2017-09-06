@@ -376,11 +376,14 @@ void Graphics::Renderer::cullLightGrid(Camera * camera)
 		gridDebugUAV
 	};
 	deviceContext->CSSetUnorderedAccessViews(0, 7, UAVs, nullptr);
+	
 	deviceContext->Dispatch(
 		ceil(gridParams.numThreadGroups[0] / 16.f),
 		ceil(gridParams.numThreadGroups[1] / 16.f),
 		1
 	);
+
+	deviceContext->CSSetShader(nullptr, nullptr, 0);
 }
 
 void Renderer::render(Camera * camera)
