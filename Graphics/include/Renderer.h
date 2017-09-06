@@ -9,6 +9,7 @@
 #include "Constants.h"
 #include "ShaderHandler.h"
 #include "WICTextureLoader.h"
+#include "CommonStates.h"
 
 namespace Graphics
 {
@@ -30,10 +31,41 @@ namespace Graphics
 			int mat;
 		};
 
+		DirectX::CommonStates *states;
+
 		void createLightGrid(Camera *camera);
+		void cullLightGrid(Camera *camera);
+
+		DispatchParams gridParams;
+		ID3D11Buffer *gridParamsBuffer;
 		ID3D11Buffer *gridFrustrums;
+
+		ID3D11UnorderedAccessView *gridDebugUAV;
+		ID3D11ShaderResourceView *gridDebugSRV;
+
+		ID3D11UnorderedAccessView *gridResetIndexCounterUAV;
+		ID3D11ShaderResourceView *gridResetIndexCounterSRV;
+
+		ID3D11UnorderedAccessView *gridOpaqueIndexCounterUAV;
+		ID3D11ShaderResourceView *gridOpaqueIndexCounterSRV;
+		ID3D11UnorderedAccessView *gridTransparentIndexCounterUAV;
+		ID3D11ShaderResourceView *gridTransparentIndexCounterSRV;
+
+		ID3D11UnorderedAccessView *gridOpaqueIndexListUAV;
+		ID3D11ShaderResourceView *gridOpaqueIndexListSRV;
+		ID3D11UnorderedAccessView *gridTransparentIndexListUAV;
+		ID3D11ShaderResourceView *gridTransparentIndexListSRV;
+
+		ID3D11UnorderedAccessView *gridOpaqueLightGridUAV;
+		ID3D11ShaderResourceView *gridOpaqueLightGridSRV;
+		ID3D11UnorderedAccessView *gridTransparentLightGridUAV;
+		ID3D11ShaderResourceView *gridTransparentLightGridSRV;
+
 		ID3D11UnorderedAccessView *gridFrustrumsUAV;
+		ID3D11ShaderResourceView *gridFrustrumsSRV;
+		ID3D11ShaderResourceView *gradientSRV;
 		int gridFrustumGenerationCS;
+		int gridCullingCS;
 
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;

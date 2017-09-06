@@ -1,3 +1,17 @@
+/*
+ *	Author: fkaa
+ *
+ *  TL;DR: Compute shader used to generate all the frustums for each "bin" used
+ *         in the Forward+ light culling/sorting pass. Only executed once at
+ *         start.
+ *
+ *
+ *  TODO:
+ *    - move common forward+ structs and definitions into shared file
+ *    - move hardcoded "numThreads" etc. into buffer, harder to mess up
+ */
+
+
 #define BLOCK_SIZE 16
 #define WIDTH 1280
 #define HEIGHT 720
@@ -112,9 +126,9 @@ void CS(CSInput input)
 	frustum.planes[3] = ComputePlane(eye, viewSpace[3], viewSpace[2]);
 
 	// Store the computed frustum in global memory (if our thread ID is in bounds of the grid).
-	//if (input.dispatchThreadID.x < numThreads.x && input.dispatchThreadID.y < numThreads.y)
-	//{
+	if (input.dispatchThreadID.x < numThreads.x && input.dispatchThreadID.y < numThreads.y)
+	{
 		uint index = input.dispatchThreadID.x + (input.dispatchThreadID.y * numThreads.x);
 		FrustrumOutput[index] = frustum;
-	//}
+	}
 }

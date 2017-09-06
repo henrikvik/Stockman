@@ -31,5 +31,6 @@
     <FxCompile Include="FullscreenQuad.hlsl" />
     <FxCompile Include="Deffered.hlsl" />
     <FxCompile Include="LightGridGeneration.hlsl" />
+    <FxCompile Include="LightGridCulling.hlsl" />
   </ItemGroup>
 </Project>

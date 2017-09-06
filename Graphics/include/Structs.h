@@ -1,6 +1,9 @@
 #include <d3d11.h>
 #include <SimpleMath.h>
 
+#define AVG_TILE_LIGHTS 200
+#define BLOCK_SIZE 16
+
 namespace Graphics
 {
     struct RenderInfo
@@ -30,4 +33,17 @@ namespace Graphics
     {
         DirectX::SimpleMath::Matrix translation;
     };
+
+	struct Plane {
+		DirectX::SimpleMath::Vector4 pd;
+	};
+
+	struct Frustum {
+		Plane planes[4];
+	};
+
+	struct DispatchParams {
+		int32_t numThreadGroups[4];
+		int32_t numThreads[4];
+	};
 };
