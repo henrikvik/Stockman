@@ -99,14 +99,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,7 +115,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
@@ -130,7 +130,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -147,7 +147,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
