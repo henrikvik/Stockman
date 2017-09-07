@@ -2,10 +2,8 @@
 #define PROJECTILEMANAGER_H
 
 #include "Projectile.h"
+#include "ProjectileStruct.h"
 #include <vector>
-
-// Temp
-struct ProjectileData;
 
 namespace Logic
 {

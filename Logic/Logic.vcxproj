@@ -162,6 +162,7 @@
     <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
     <ClInclude Include="include\Projectile\ProjectileManager.h" />
     <ClInclude Include="include\Projectile\Projectile.h" />
+    <ClInclude Include="include\Projectile\ProjectileStruct.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Enemy.cpp" />
