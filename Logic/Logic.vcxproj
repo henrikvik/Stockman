@@ -162,8 +162,10 @@
     <ClInclude Include="include\Projectile\ProjectileManager.h" />
     <ClInclude Include="include\Projectile\Projectile.h" />
     <ClInclude Include="include\Projectile\ProjectileStruct.h" />
+    <ClInclude Include="Map.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="source\Projectile\Projectile.cpp" />
     <ClCompile Include="source\Projectile\ProjectileManager.cpp" />
     <ClCompile Include="source\AI\EntityManager.cpp" />
