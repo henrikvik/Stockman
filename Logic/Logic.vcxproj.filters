@@ -81,6 +81,12 @@
     <ClInclude Include="include\Player\ActionManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Player\Skill\Skill.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Player\Skill\SkillManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Game.cpp">
@@ -101,13 +107,14 @@
     <ClCompile Include="source\Player\Weapon\WeaponManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\Player\Skill\Skill.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="source\Player\Skill\gitinclude.txt" />
     <Text Include="source\Projectile\gitinclude.txt" />
     <Text Include="source\Misc\gitinclude.txt" />
     <Text Include="source\AI\gitinclude.txt" />
-    <Text Include="include\Player\Skill\gitinclude.txt" />
     <Text Include="include\Misc\gitinclude.txt" />
     <Text Include="include\AI\gitinclude.txt" />
   </ItemGroup>

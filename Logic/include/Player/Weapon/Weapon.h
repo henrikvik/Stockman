@@ -6,13 +6,13 @@ namespace Logic
 class Weapon
 {
 private:
-	int weaponID;
-	int ammoCap;
-	int ammo;
-	int magSize;
-	float damage;
-	float attackRate;
-	float freeze;
+	int m_weaponID;
+	int m_ammoCap;
+	int m_ammo;
+	int m_magSize;
+	float m_damage;
+	float m_attackRate;
+	float m_freeze;
 	/*ProjectileData projectileData;
 	Animation animation;*/
 public:
