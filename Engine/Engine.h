@@ -32,6 +32,7 @@ private:
 	std::unique_ptr<DirectX::Keyboard> mKeyboard;
 	bool isFullscreen;
 
+	bool initializeGame();
 	void initializeWindow();
 	HRESULT createSwapChain();
 	long long timer();

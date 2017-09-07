@@ -3,6 +3,7 @@
 
 #include "Object.h"
 
+
 namespace Logic
 {
 	class Entity : public Object

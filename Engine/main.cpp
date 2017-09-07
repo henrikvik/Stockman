@@ -10,7 +10,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
     Logic::Game gameTest();
 
-
 	Engine engine(hInstance, 1280, 720);
 	return engine.run();
 }

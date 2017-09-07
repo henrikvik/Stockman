@@ -1,6 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <stdio.h>
+
+#include "Physics\Physics.h"
+
 namespace Logic
 {
 	class Game
@@ -11,10 +15,14 @@ namespace Logic
 		Game* operator=(const Game& other) = delete;
 		~Game();
 
-		void update();
+		bool init();
+		void clear();
+
+		void update(float deltaTime);
+	//	void draw(RenderMachine& renderMachine);
 
 	private:
-
+		Physics* physics;
 	};
 }
 

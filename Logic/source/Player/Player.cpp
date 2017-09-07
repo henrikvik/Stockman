@@ -10,14 +10,14 @@ Player::~Player()
 {
 }
 
-void Logic::Player::clear()
+void Player::clear()
 {
 }
 
-void Logic::Player::update()
+void Player::update()
 {
 }
 
-void Logic::Player::onCollision(const Entity& other)
+void Player::onCollision(const Entity& other)
 {
 }
