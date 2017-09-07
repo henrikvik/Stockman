@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\Enemy.h" />
     <ClInclude Include="include\AI\EntityManager.h" />
     <ClInclude Include="include\Misc\Card.h" />
     <ClInclude Include="include\Misc\CardManager.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Enemy.cpp" />
     <ClCompile Include="source\AI\EntityManager.cpp" />
     <ClCompile Include="source\Misc\Card.cpp" />
     <ClCompile Include="source\Misc\CardManager.cpp" />

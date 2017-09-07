@@ -3,7 +3,6 @@
 
 #pragma region Comment
 /*
-
 	CLASS: EntityManager (Bad name TODO: change)
 	AUTHOR: Lukas Westling
 
@@ -11,7 +10,6 @@
 	with the help of WaveManager.
 
 	It also handles triggers and how it spawns. (WaveManager?)
-
 */
 #pragma endregion ClassDesc
 
