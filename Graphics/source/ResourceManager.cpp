@@ -1,4 +1,4 @@
-#include "..\include\ResourceManager.h"
+#include "ResourceManager.h"
 
 ResourceManager::ResourceManager(ID3D11Device * device)
 {
