@@ -3,13 +3,13 @@
 
 namespace Logic
 {
-class Skill
-{
-private:
-	float m_cooldown;
-	float m_duration;
-public:
-	void update();
-};
+	class Skill
+	{
+	private:
+		float m_cooldown;
+		float m_duration;
+	public:
+		void update();
+	};
 }
 #endif

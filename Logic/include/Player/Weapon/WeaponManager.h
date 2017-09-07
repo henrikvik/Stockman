@@ -5,13 +5,13 @@
 
 namespace Logic
 {
-class WeaponManager
-{
-private:
-	std::vector<std::pair<Weapon, Weapon>> m_weapons;
-public:
-	void usewWaponPrimary();
-	void useWeaponSecondary();
-};
+	class WeaponManager
+	{
+	private:
+		std::vector<std::pair<Weapon, Weapon>> m_weapons;
+	public:
+		void usewWaponPrimary();
+		void useWeaponSecondary();
+	};
 }
 #endif
