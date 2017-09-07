@@ -161,6 +161,7 @@
     <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
     <ClInclude Include="include\Projectile\ProjectileManager.h" />
     <ClInclude Include="include\Projectile\Projectile.h" />
+    <ClInclude Include="include\Misc\Structs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Projectile\Projectile.cpp" />
