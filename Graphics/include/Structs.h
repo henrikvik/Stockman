@@ -10,6 +10,17 @@ namespace Graphics
         int materialId;
         DirectX::SimpleMath::Matrix translation;
     };
+	struct GUIInfo
+	{
+		int HP;
+		int ammo1;
+		int ammo2;
+		float CD;
+		UINT score;
+		int combo;
+		int wave;
+		int enemies;
+	};
 
     // Diffuse and Specular     [Dr][Dg][Db][S]
     // Normal and Material Id   [Nx][Ny][Nz][M]

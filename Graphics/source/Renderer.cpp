@@ -43,6 +43,10 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 	shaders[0] = shaderHandler.createVertexShader(device, L"FullscreenQuad.hlsl", "VS", desc, ARRAYSIZE(desc));
 	shaders[1] = shaderHandler.createPixelhader(device, L"FullscreenQuad.hlsl", "PS");
 
+	//GUI
+	shaders[2] = shaderHandler.createVertexShader(device, L"GUISHader.hlsl", "VS", desc, ARRAYSIZE(desc));
+	shaders[3] = shaderHandler.createPixelhader(device, L"GUISHader.hlsl", "PS");
+
 	D3D11_INPUT_ELEMENT_DESC descDeffered[] =
 	{
 		{ "POS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -73,6 +77,7 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 
 	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &FSQuad2));
 	ThrowIfFailed( DirectX::CreateWICTextureFromFile(device, L"cat.jpg", nullptr, &view));
+	ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, L"GUI.png", nullptr, &GUI));
 
 
 	bufferDesc.ByteWidth = sizeof(defferedTest);
@@ -81,6 +86,7 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 	data.pSysMem = defferedTest;
 
 	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
+	createBlendState();
 }
 
 Graphics::Renderer::~Renderer()
@@ -102,6 +108,8 @@ Graphics::Renderer::~Renderer()
 	gbuffer.position->Release();
 	gbuffer.positionView->Release();
 	defferedTestBuffer->Release();
+	GUI->Release();
+	transparencyBlendState->Release();
 	
 }
 
@@ -236,6 +244,45 @@ void Renderer::drawDeffered()
 	deviceContext->OMSetRenderTargets(3, RTVNULLS, NULL);
 }
 
+void Graphics::Renderer::drawGUI()
+{
+	deviceContext->PSSetShaderResources(0, 1, &GUI);
+	UINT stride = sizeof(DirectX::SimpleMath::Vector2), offset = 0;
+	deviceContext->IASetVertexBuffers(0, 1, &FSQuad2, &stride, &offset);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	UINT sampleMask = 0xffffffff;
+	deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+	deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
+	
+
+	shaderHandler.setShaders(shaders[2], NO_SHADER, shaders[3], deviceContext);
+
+	deviceContext->Draw(4, 0);
+
+
+	ID3D11ShaderResourceView * SRVNULL = nullptr;
+	deviceContext->PSSetShaderResources(0, 1, &SRVNULL);
+
+}
+
+void Graphics::Renderer::createBlendState()
+{
+	D3D11_BLEND_DESC BlendState;
+	ZeroMemory(&BlendState, sizeof(D3D11_BLEND_DESC));
+	BlendState.RenderTarget[0].BlendEnable = TRUE;
+	BlendState.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	BlendState.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	BlendState.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	BlendState.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_INV_DEST_ALPHA;
+	BlendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	BlendState.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	BlendState.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+	
+	ThrowIfFailed(this->device->CreateBlendState(&BlendState, &transparencyBlendState));
+}
+
 void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 {
     deviceContext->PSSetShaderResources(0, 1, &texture);
@@ -248,6 +295,7 @@ void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 	shaderHandler.setShaders(shaders[0], NO_SHADER, shaders[1], deviceContext);
 
 	deviceContext->Draw(4, 0);
+	drawGUI();
 
 
 	ID3D11ShaderResourceView * SRVNULL = nullptr;
