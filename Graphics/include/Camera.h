@@ -46,6 +46,7 @@ namespace Graphics {
 		DirectX::SimpleMath::Matrix mProjection;
 
 		ID3D11Buffer* mVPBuffer;
+		ID3D11Buffer* mInvProjBuffer;
 
 	};
 }

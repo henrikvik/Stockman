@@ -49,6 +49,8 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 
 Engine::~Engine()
 {
+	delete this->renderer;
+
 	this->mDevice->Release();
 	this->mContext->Release();
 	this->mSwapChain->Release();
@@ -186,6 +188,8 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
+	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV);
+	Graphics::Camera cam(mDevice, mWidth, mHeight);
 
 	long long start = this->timer();
 	long long prev = start;
@@ -205,7 +209,8 @@ int Engine::run()
 		}
 		else
 		{
-	
+			renderer->render(&cam);
+			mSwapChain->Present(0, 0);
 		}
 	}
 	return 0;
