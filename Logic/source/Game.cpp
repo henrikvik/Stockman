@@ -35,5 +35,5 @@ void Game::clear()
 void Game::update(float deltaTime)
 {
 	// Updating physics
-//	physics->update(deltaTime);
+	physics->update(deltaTime);
 }
