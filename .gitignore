@@ -260,3 +260,6 @@ paket-files/
 __pycache__/
 *.pyc
 *.filters
+*.pyc
+/Engine/packages.config
+/Graphics/packages.config
