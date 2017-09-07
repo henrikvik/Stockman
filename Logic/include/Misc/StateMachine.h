@@ -1,6 +1,8 @@
 #ifndef STATEMACHINE_H
 #define STATEMACHINE_H
 
+#include "Misc\Enums.h"
+
 namespace Logic
 {
 	class StateMachine
@@ -9,19 +11,11 @@ namespace Logic
 		StateMachine();
 		~StateMachine();
 
-		enum State
-		{
-			stateGame,
-			stateLoading,
-			stateMenuMain,
-			stateMenuSettings
-		};
-
-		void setState(State state);
-		State getState();
+		void setState(GameState state);
+		GameState getState();
 
 	private:
-		State m_currentState;
+		GameState m_currentState;
 	};
 }
 
