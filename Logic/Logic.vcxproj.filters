@@ -72,6 +72,12 @@
     <ClInclude Include="include\Player\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Misc\CardManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Misc\Card.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Game.cpp">
@@ -84,6 +90,12 @@
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
     <ClCompile Include="source\Player\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Misc\CardManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Misc\Card.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

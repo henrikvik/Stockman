@@ -146,6 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Misc\Card.h" />
+    <ClInclude Include="include\Misc\CardManager.h" />
     <ClInclude Include="include\Entity\Entity.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Logic.h" />
@@ -153,6 +155,8 @@
     <ClInclude Include="include\Player\Player.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Misc\Card.cpp" />
+    <ClCompile Include="source\Misc\CardManager.cpp" />
     <ClCompile Include="source\Player\Player.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
     <ClCompile Include="source\Game.cpp" />
