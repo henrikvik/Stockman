@@ -72,6 +72,15 @@
     <ClInclude Include="include\Player\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Player\Weapon\Weapon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Player\Weapon\WeaponManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Player\ActionManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="include\Misc\CardManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -92,6 +101,12 @@
     <ClCompile Include="source\Player\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\Player\Weapon\Weapon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Player\Weapon\WeaponManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="source\Misc\CardManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -101,11 +116,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="source\Player\Skill\gitinclude.txt" />
-    <Text Include="source\Player\Weapon\gitinclude.txt" />
     <Text Include="source\Projectile\gitinclude.txt" />
     <Text Include="source\Misc\gitinclude.txt" />
     <Text Include="source\AI\gitinclude.txt" />
-    <Text Include="include\Player\Weapon\gitinclude.txt" />
     <Text Include="include\Player\Skill\gitinclude.txt" />
     <Text Include="include\Misc\gitinclude.txt" />
     <Text Include="include\AI\gitinclude.txt" />
