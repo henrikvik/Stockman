@@ -1,6 +1,13 @@
 #ifndef SKILLMANAGER_H
 #define SKILLMANAGER_H
+#pragma region ClassDesc
+		/*
+			CLASS: SkillManager
+			AUTHOR:
 
+			DESCRIPTION:
+		*/
+#pragma endregion
 #include "Skill.h"
 #include <vector>
 

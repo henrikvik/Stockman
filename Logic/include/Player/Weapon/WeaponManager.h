@@ -1,5 +1,13 @@
 #ifndef WEAPONMANAGER_H
 #define WEAPONMANAGER_H
+#pragma region ClassDesc
+		/*
+			CLASS: WeaponManager
+			AUTHOR:
+
+			DESCRIPTION:
+		*/
+#pragma endregion
 #include <vector>
 #include "Weapon.h"
 

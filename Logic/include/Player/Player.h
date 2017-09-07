@@ -1,5 +1,13 @@
 #ifndef PLAYER_H
 #define PLAYER_H
+#pragma region ClassDesc
+		/*
+			CLASS: WeaponManager
+			AUTHOR:
+
+			DESCRIPTION:
+		*/
+#pragma endregion
 
 #include "Entity\Entity.h"
 #include "ActionManager.h"
