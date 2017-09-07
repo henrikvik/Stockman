@@ -1,6 +1,20 @@
 #ifndef STATEMACHINE_H
 #define STATEMACHINE_H
 
+#pragma region Comment
+
+/*
+	Class: StateMachine
+	Author: Emanuel Bjurman
+
+	Description:
+	Handles different game and menu states.
+
+*/
+
+#pragma endregion Description of class
+
+
 #include "Misc\Enums.h"
 
 namespace Logic
@@ -11,11 +25,11 @@ namespace Logic
 		StateMachine();
 		~StateMachine();
 
-		void setState(GameState state);
-		GameState getState();
+		void setState(GameState state);		//< Set current state
+		GameState getState();				//< Returns current state
 
 	private:
-		GameState m_currentState;
+		GameState m_currentState;			//< Current state
 	};
 }
 
