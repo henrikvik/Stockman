@@ -151,11 +151,13 @@
     <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Graphics.h" />
     <ClInclude Include="include\Renderer.h" />
+    <ClInclude Include="include\ResourceManager.h" />
     <ClInclude Include="include\ShaderHandler.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\ResourceManager.cpp" />
     <ClCompile Include="source\ShaderHandler.cpp" />
     <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
