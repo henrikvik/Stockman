@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\Enemy.h" />
     <ClInclude Include="include\AI\EntityManager.h" />
     <ClInclude Include="include\Misc\Card.h" />
     <ClInclude Include="include\Misc\CardManager.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Map.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Enemy.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="source\Projectile\Projectile.cpp" />
     <ClCompile Include="source\Projectile\ProjectileManager.cpp" />
