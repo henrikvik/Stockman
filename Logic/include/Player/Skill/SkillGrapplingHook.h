@@ -5,7 +5,7 @@
 			CLASS: SkillGrapplingHook
 			AUTHOR:
 
-			DESCRIPTION:
+			DESCRIPTION: TODO
 		*/
 #pragma endregion
 #include "Skill.h"

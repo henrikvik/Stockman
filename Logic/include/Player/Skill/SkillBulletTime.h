@@ -5,7 +5,7 @@
 			CLASS: SkillBulletTime
 			AUTHOR:
 
-			DESCRIPTION:
+			DESCRIPTION: TODO
 		*/
 #pragma endregion
 

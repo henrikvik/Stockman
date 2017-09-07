@@ -5,7 +5,7 @@
 			CLASS: Skill
 			AUTHOR:
 
-			DESCRIPTION:
+			DESCRIPTION: This class defines a skill of the system
 		*/
 #pragma endregion
 

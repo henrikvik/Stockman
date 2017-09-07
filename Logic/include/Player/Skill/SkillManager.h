@@ -5,7 +5,7 @@
 			CLASS: SkillManager
 			AUTHOR:
 
-			DESCRIPTION:
+			DESCRIPTION: This class is made to manage the skills of the system.
 		*/
 #pragma endregion
 #include "Skill.h"

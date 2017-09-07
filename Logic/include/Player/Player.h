@@ -5,7 +5,7 @@
 			CLASS: WeaponManager
 			AUTHOR:
 
-			DESCRIPTION:
+			DESCRIPTION: TODO
 		*/
 #pragma endregion
 

@@ -5,7 +5,7 @@
 			CLASS: Weapon
 			AUTHOR:
 
-			DESCRIPTION:
+			DESCRIPTION: This class defines a weapon of the system
 		*/
 #pragma endregion
 namespace Logic

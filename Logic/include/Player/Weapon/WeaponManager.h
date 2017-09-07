@@ -5,7 +5,7 @@
 			CLASS: WeaponManager
 			AUTHOR:
 
-			DESCRIPTION:
+			DESCRIPTION: This class is made to manage the weapons of the system.
 		*/
 #pragma endregion
 #include <vector>

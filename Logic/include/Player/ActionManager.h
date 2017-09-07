@@ -5,7 +5,7 @@
 			CLASS: ActionManager
 			AUTHOR:
 
-			DESCRIPTION:
+			DESCRIPTION: This class is made to manage the weapons and skills by calling the weapons and skills respective managers.
 		*/
 #pragma endregion
 
