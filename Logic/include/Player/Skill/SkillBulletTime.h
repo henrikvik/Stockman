@@ -1,5 +1,13 @@
 #ifndef SKILLBULLETTIME_H
 #define SKILLBULLETTIME_H
+#pragma region ClassDesc
+		/*
+			CLASS: SkillBulletTime
+			AUTHOR:
+
+			DESCRIPTION:
+		*/
+#pragma endregion
 
 #include "Skill.h"
 namespace Logic

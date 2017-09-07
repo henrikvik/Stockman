@@ -1,5 +1,13 @@
 #ifndef SKILL_H
 #define SKILL_H
+#pragma region ClassDesc
+		/*
+			CLASS: Skill
+			AUTHOR:
+
+			DESCRIPTION:
+		*/
+#pragma endregion
 
 namespace Logic
 {

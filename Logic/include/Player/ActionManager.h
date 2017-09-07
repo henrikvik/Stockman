@@ -1,5 +1,13 @@
 #ifndef ACTIONMANAGER_H
 #define ACTIONMANAGER_H
+#pragma region ClassDesc
+		/*
+			CLASS: ActionManager
+			AUTHOR:
+
+			DESCRIPTION:
+		*/
+#pragma endregion
 
 #include "Skill/SkillManager.h"
 #include "Weapon/WeaponManager.h"

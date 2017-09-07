@@ -1,6 +1,13 @@
 #ifndef SKILLGRAPPLINGHOOK_H
 #define SKILLGRAPPLINGHOOK_H
+#pragma region ClassDesc
+		/*
+			CLASS: SkillGrapplingHook
+			AUTHOR:
 
+			DESCRIPTION:
+		*/
+#pragma endregion
 #include "Skill.h"
 namespace Logic
 {

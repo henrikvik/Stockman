@@ -149,6 +149,8 @@
     <ClInclude Include="include\Misc\HighScoreManager.h" />
     <ClInclude Include="include\AI\Enemy.h" />
     <ClInclude Include="include\AI\EntityManager.h" />
+    <ClInclude Include="include\AI\Trigger.h" />
+    <ClInclude Include="include\AI\TriggerManager.h" />
     <ClInclude Include="include\Misc\Card.h" />
     <ClInclude Include="include\Misc\CardManager.h" />
     <ClInclude Include="include\Entity\Entity.h" />
@@ -172,12 +174,21 @@
     <ClInclude Include="include\Projectile\Projectile.h" />
     <ClInclude Include="include\Projectile\ProjectileStruct.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="include\AI\WaveManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Misc\HighScoreManager.cpp" />
     <ClCompile Include="source\AI\Enemy.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="source\AI\Trigger.cpp" />
+    <ClCompile Include="source\AI\TriggerManager.cpp" />
     <ClCompile Include="source\Misc\MenuMachine.cpp" />
+    <ClCompile Include="source\Player\ActionManager.cpp" />
+    <ClCompile Include="source\Player\Skill\Skill.cpp" />
+    <ClCompile Include="source\Player\Skill\SkillBulletTime.cpp" />
+    <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />
+    <ClCompile Include="source\Player\Skill\SkillManager.cpp" />
+    <ClCompile Include="source\Player\Skill\SkillShieldCharge.cpp" />
     <ClCompile Include="source\Projectile\Projectile.cpp" />
     <ClCompile Include="source\Projectile\ProjectileManager.cpp" />
     <ClCompile Include="source\AI\EntityManager.cpp" />
@@ -185,26 +196,16 @@
     <ClCompile Include="source\Misc\CardManager.cpp" />
     <ClCompile Include="source\Misc\RenderRegister.cpp" />
     <ClCompile Include="source\Misc\StateMachine.cpp" />
-    <ClCompile Include="source\Player\ActionManager.cpp" />
     <ClCompile Include="source\Player\Player.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
     <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="source\Entity\Object.cpp" />
-    <ClCompile Include="source\Player\Skill\Skill.cpp" />
-    <ClCompile Include="source\Player\Skill\SkillBulletTime.cpp" />
-    <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />
-    <ClCompile Include="source\Player\Skill\SkillManager.cpp" />
-    <ClCompile Include="source\Player\Skill\SkillShieldCharge.cpp" />
     <ClCompile Include="source\Player\Weapon\Weapon.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponManager.cpp" />
+    <ClCompile Include="source\AI\WaveManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />
-    <Text Include="include\AI\gitinclude.txt" />
-    <Text Include="include\Misc\gitinclude.txt" />
-    <Text Include="source\AI\gitinclude.txt" />
-    <Text Include="source\Misc\gitinclude.txt" />
-    <Text Include="source\Projectile\gitinclude.txt" />
     <Text Include="source\Player\Skill\gitinclude.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

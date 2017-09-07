@@ -20,7 +20,8 @@
 
 namespace Logic 
 {
-	class Enemy : public Entity {
+	class Enemy : public Entity 
+	{
 		private:
 			float m_health, m_baseDamage; 
 			int m_enemyType;
