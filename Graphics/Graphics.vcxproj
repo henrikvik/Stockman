@@ -72,26 +72,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(ProjectDir)libs\DirectXTK\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include</IncludePath>
-    <LibraryPath>$(ProjectDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(ProjectDir)libs\DirectXTK\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include</IncludePath>
-    <LibraryPath>$(ProjectDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(ProjectDir)libs\DirectXTK\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include</IncludePath>
-    <LibraryPath>$(ProjectDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(ProjectDir)libs\DirectXTK\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include</IncludePath>
-    <LibraryPath>$(ProjectDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -166,13 +166,4 @@
     <ClCompile Include="source\Renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.targets" Condition="Exists('..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.targets')" />
-  </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.targets'))" />
-  </Target>
 </Project>
