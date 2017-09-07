@@ -22,5 +22,5 @@ void StatusManager::removeStatus(int statusID)
 
 }
 
-std::vector<Effect> StatusManager::getEffects() { return m_effects; }
-std::vector<Upgrade> StatusManager::getUpgrades() { return m_upgrades; }
+std::vector<Effect*> StatusManager::getEffects() { return m_effects; }
+std::vector<Upgrade*> StatusManager::getUpgrades() { return m_upgrades; }

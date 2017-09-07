@@ -29,12 +29,12 @@ namespace Logic
 		void addStatus(int statusID);
 		void removeStatus(int statusID);
 
-		std::vector<Effect> getEffects();
-		std::vector<Upgrade> getUpgrades();
+		std::vector<Effect*> getEffects();
+		std::vector<Upgrade*> getUpgrades();
 
 	private:
-		std::vector<Effect> m_effects;
-		std::vector<Upgrade> m_upgrades;
+		std::vector<Effect*> m_effects;
+		std::vector<Upgrade*> m_upgrades;
 	};
 }
 

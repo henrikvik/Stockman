@@ -174,9 +174,8 @@
     <ClInclude Include="include\Projectile\ProjectileManager.h" />
     <ClInclude Include="include\Projectile\Projectile.h" />
     <ClInclude Include="include\Projectile\ProjectileStruct.h" />
-    <ClInclude Include="Map.h" />
     <ClInclude Include="include\AI\WaveManager.h" />
-    <ClInclude Include="include\Entity\Map.h" />
+    <ClInclude Include="include\Map.h" />
     <ClInclude Include="include\Entity\Upgrade.h" />
     <ClInclude Include="include\Entity\StatusManager.h" />
   </ItemGroup>
@@ -184,7 +183,7 @@
     <ClCompile Include="source\Misc\HighScoreManager.cpp" />
     <ClCompile Include="source\Entity\Effect.cpp" />
     <ClCompile Include="source\AI\Enemy.cpp" />
-    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="source\Map.cpp" />
     <ClCompile Include="source\AI\Trigger.cpp" />
     <ClCompile Include="source\AI\TriggerManager.cpp" />
     <ClCompile Include="source\Misc\MenuMachine.cpp" />
