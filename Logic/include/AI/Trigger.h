@@ -3,6 +3,17 @@
 
 #include <Entity\Entity.h>
 
+#pragma region ClassDesc
+	/*
+		CLASS: Trigger (Bad name TODO: change)
+		AUTHOR: Lukas Westling
+
+		This class is a Trigger, with its attributes.
+		(Not activated flag, that is in the TriggerManager
+		due to cachelines)
+	*/
+#pragma endregion
+
 namespace Logic
 {
 	class Trigger : public Entity

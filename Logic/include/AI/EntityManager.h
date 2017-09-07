@@ -1,17 +1,17 @@
 #ifndef ENTITY_MANAGER_H
 #define ENTITY_MANAGER_H
 
-#pragma region Comment
-/*
-	CLASS: EntityManager (Bad name TODO: change)
-	AUTHOR: Lukas Westling
+#pragma region ClassDesc
+	/*
+		CLASS: EntityManager (Bad name TODO: change)
+		AUTHOR: Lukas Westling
 
-	This class handles Enemies and how it spawns
-	with the help of WaveManager.
+		This class handles Enemies and how it spawns
+		with the help of WaveManager.
 
-	It also handles triggers and how it spawns. (WaveManager?)
-*/
-#pragma endregion ClassDesc
+		It also handles triggers and how it spawns. (WaveManager?)
+	*/
+#pragma endregion
 
 namespace Logic 
 {
