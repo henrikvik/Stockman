@@ -4,6 +4,8 @@
 #include <Camera.h>
 #include <Renderer.h>
 #include <Game.h>
+#include "Keyboard.h"
+
 
 class Engine
 {
@@ -27,6 +29,8 @@ private:
 	ID3D11Debug* mDebugDevice;
 	IDXGISwapChain* mSwapChain;
 	ID3D11RenderTargetView* mBackBufferRTV;
+	std::unique_ptr<DirectX::Keyboard> mKeyboard;
+	bool isFullscreen;
 
 	void initializeWindow();
 	HRESULT createSwapChain();

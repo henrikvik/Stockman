@@ -84,6 +84,8 @@ Graphics::Renderer::~Renderer()
 	gbuffer.position->Release();
 	gbuffer.positionView->Release();
 	defferedTestBuffer->Release();
+
+
 	
 }
 
@@ -201,6 +203,7 @@ void Renderer::drawDeffered()
 	deviceContext->OMSetRenderTargets(3, RTVS, nullptr);
 	
 	resourceManager.setShaders(VertexShaderID::VERTEX_DEFFERED, PixelShaderID::PIXEL_DEFFERED, deviceContext);
+	resourceManager.setSampler(SamplerID::pointSampler, deviceContext);
 	//textur här typ
 
 	UINT stride = 36, offset = 0;
@@ -228,6 +231,7 @@ void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 	deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
     
 	resourceManager.setShaders(VertexShaderID::VERTEX_QUAD, PixelShaderID::PIXEL_QUAD, deviceContext);
+	resourceManager.setSampler(SamplerID::pointSampler, deviceContext);
 
 	deviceContext->Draw(4, 0);
 
