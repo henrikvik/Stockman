@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="HighScoreManager.h" />
     <ClInclude Include="include\AI\Enemy.h" />
     <ClInclude Include="include\AI\EntityManager.h" />
     <ClInclude Include="include\Misc\Card.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Map.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="HighScoreManager.cpp" />
     <ClCompile Include="source\AI\Enemy.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="source\Misc\MenuMachine.cpp" />
