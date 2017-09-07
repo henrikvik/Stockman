@@ -1,4 +1,4 @@
-#include "HighScoreManager.h"
+#include "Misc\HighScoreManager.h"
 
 using namespace Logic;
 
