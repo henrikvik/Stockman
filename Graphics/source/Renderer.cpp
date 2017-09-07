@@ -256,6 +256,13 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 		desc.ByteWidth = sz * NUM_LIGHTS;
 		desc.StructureByteStride = sz;
 
+		Light lights[NUM_LIGHTS];
+		ZeroMemory(lights, sizeof(lights));
+
+		D3D11_SUBRESOURCE_DATA data;
+		ZeroMemory(&data, sizeof(data));
+		data.pSysMem = lights;
+
 		ThrowIfFailed(device->CreateBuffer(&desc, nullptr, &gridLights));
 	}
 
@@ -404,9 +411,11 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 	#pragma endregion
 
 	#pragma region Debug heatmap
-	ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, L"heatmap.png", nullptr, &gradientSRV));
 
 	ID3D11Texture2D *texture;
+
+	ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, L"heatmap.png", nullptr, &gradientSRV));
+
 	{
 		D3D11_TEXTURE2D_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));

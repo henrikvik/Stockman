@@ -174,7 +174,7 @@ RWTexture2D<uint2>       TransparentLightGrid : register(u5);
 RWTexture2D<float4> DebugTexture : register(u6);
 
 // Debug gradient whose color indicates frequency of tile lights
-Texture2D DebugGradient : register(t4);
+Texture2D DebugGradient : register(t3);
 
 // Linear Clamp
 SamplerState DebugSampler : register(s0);
@@ -251,6 +251,8 @@ void CS(CSInput input)
 	// frustum, and add to light list if so
 	for (uint i = input.groupIndex; i < NUM_LIGHTS; i += BLOCK_SIZE * BLOCK_SIZE) {
 		Light light = Lights[i];
+
+		if (light.range == 0) break;
 
 		Sphere pointLight = { light.position.xyz, light.range };
 		if (SphereInsideFrustum(pointLight, GroupFrustum, nearClipVS, maxDepthVS)) {
