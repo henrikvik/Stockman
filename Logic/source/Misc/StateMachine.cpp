@@ -11,12 +11,12 @@ StateMachine::~StateMachine()
 {
 }
 
-void StateMachine::setState(State state)
+void StateMachine::setState(GameState state)
 {
 	m_currentState = state;
 }
 
-StateMachine::State StateMachine::getState()
+GameState StateMachine::getState()
 {
 	return m_currentState;
 }
