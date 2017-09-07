@@ -18,11 +18,26 @@ Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, 
 	desc.Usage = D3D11_USAGE_DYNAMIC;
 
 	device->CreateBuffer(&desc, NULL, &this->mVPBuffer);
+
+	ZeroMemory(&desc, sizeof(desc));
+
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.ByteWidth = sizeof(Matrix);
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	desc.Usage = D3D11_USAGE_DYNAMIC;
+
+	Matrix inv = mProjection.Invert();
+
+	D3D11_SUBRESOURCE_DATA data = {0};
+	data.pSysMem = &inv;
+
+	device->CreateBuffer(&desc, &data, &this->mInvProjBuffer);
 }
 
 Camera::~Camera()
 {
 	this->mVPBuffer->Release();
+	this->mInvProjBuffer->Release();
 }
 
 void Camera::setPos(DirectX::SimpleMath::Vector3 pos)
@@ -52,17 +67,17 @@ DirectX::SimpleMath::Vector3 Camera::getPos() const
 
 DirectX::SimpleMath::Vector3 Camera::getForward() const
 {
-	return this->mForward;
+	return this->mView.Forward();
 }
 
 DirectX::SimpleMath::Vector3 Camera::getUp() const
 {
-	return this->mUp;
+	return this->mView.Up();
 }
 
 DirectX::SimpleMath::Vector3 Camera::getRight() const
 {
-	return this->mRight;
+	return this->mView.Right();
 }
 
 ID3D11Buffer* Graphics::Camera::getBuffer()
@@ -77,6 +92,7 @@ void Graphics::Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleM
 	if (newView != this->mView)
 	{
 		this->mView = newView;
+		this->mPos = pos;
 
 		Matrix vP = this->mProjection * this->mView;
 
