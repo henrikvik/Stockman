@@ -9,3 +9,8 @@ Object::Object()
 Object::~Object()
 {
 }
+
+Graphics::RenderInfo* Logic::Object::getRenderInfo()
+{
+	return &m_renderInfo;
+}
