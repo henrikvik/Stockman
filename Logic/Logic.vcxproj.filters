@@ -72,6 +72,9 @@
     <ClInclude Include="include\Player\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="include\AI\EntityManager.h">
+=======
     <ClInclude Include="include\Player\Weapon\Weapon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -79,6 +82,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Player\ActionManager.h">
+>>>>>>> 98bea63279670e23c4c689bd3876564708fe2eea
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Player\Skill\Skill.h">
@@ -101,10 +105,14 @@
     <ClCompile Include="source\Player\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
+    <ClCompile Include="source\AI\EntityManager.cpp">
+=======
     <ClCompile Include="source\Player\Weapon\Weapon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Player\Weapon\WeaponManager.cpp">
+>>>>>>> 98bea63279670e23c4c689bd3876564708fe2eea
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Player\Skill\Skill.cpp">

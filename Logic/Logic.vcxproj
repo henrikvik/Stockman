@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\EntityManager.h" />
     <ClInclude Include="include\Entity\Entity.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Logic.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\EntityManager.cpp" />
     <ClCompile Include="source\Player\Player.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
     <ClCompile Include="source\Game.cpp" />
