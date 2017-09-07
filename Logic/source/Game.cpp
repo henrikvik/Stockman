@@ -21,7 +21,6 @@ bool Game::init()
 	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver;	// Default constraint solver
 	physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = physics->init();
-	if (!result) return false;
 
 	return result;
 }
@@ -36,9 +35,5 @@ void Game::clear()
 void Game::update(float deltaTime)
 {
 	// Updating physics
-	physics->update(deltaTime);
-
-#ifdef _DEBUG
-	printf("Test.");
-#endif
+//	physics->update(deltaTime);
 }
