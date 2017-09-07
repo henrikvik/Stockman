@@ -2,13 +2,13 @@
 #include <Windows.h>
 #include <vector>
 #include <d3d11.h>
-#include <SimpleMath.h>
 #include <unordered_map>
 #include "Camera.h"
 #include "Structs.h"
 #include "Constants.h"
 #include "WICTextureLoader.h"
 #include "ResourceManager.h"
+#include <SimpleMath.h>
 
 namespace Graphics
 {
