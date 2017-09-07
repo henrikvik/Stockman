@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Entity\Effect.h" />
     <ClInclude Include="include\AI\Enemy.h" />
     <ClInclude Include="include\AI\EntityManager.h" />
     <ClInclude Include="include\Misc\Card.h" />
@@ -163,9 +164,12 @@
     <ClInclude Include="include\Projectile\ProjectileManager.h" />
     <ClInclude Include="include\Projectile\Projectile.h" />
     <ClInclude Include="include\Projectile\ProjectileStruct.h" />
-    <ClInclude Include="Map.h" />
+    <ClInclude Include="include\Entity\Map.h" />
+    <ClInclude Include="include\Entity\Upgrade.h" />
+    <ClInclude Include="include\Entity\StatusManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Entity\Effect.cpp" />
     <ClCompile Include="source\AI\Enemy.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="source\Projectile\Projectile.cpp" />
@@ -181,6 +185,8 @@
     <ClCompile Include="source\Entity\Object.cpp" />
     <ClCompile Include="source\Player\Weapon\Weapon.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponManager.cpp" />
+    <ClCompile Include="source\Entity\Upgrade.cpp" />
+    <ClCompile Include="source\Entity\StatusManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />
