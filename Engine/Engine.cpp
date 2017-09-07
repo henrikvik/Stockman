@@ -12,7 +12,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-		//DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
+		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
+		
 		break;
 
 	case WM_ACTIVATEAPP:
@@ -45,10 +46,15 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mWidth = width;
 	this->hInstance = hInstance;
 	this->initializeWindow();
+
+	this->isFullscreen = false;
+	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 }
 
 Engine::~Engine()
 {
+	delete this->renderer;
+
 	this->mDevice->Release();
 	this->mContext->Release();
 	this->mSwapChain->Release();
@@ -186,6 +192,8 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
+	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV);
+	Graphics::Camera cam(mDevice, mWidth, mHeight);
 
 	long long start = this->timer();
 	long long prev = start;
@@ -201,11 +209,24 @@ int Engine::run()
 		{
 			TranslateMessage(&msg);
 
+
+
 			DispatchMessage(&msg);
 		}
 		else
 		{
-	
+			//To enable/disable fullscreen
+			auto ks = this->mKeyboard->GetState();
+			if (ks.F11)
+			{
+
+				mSwapChain->SetFullscreenState(!isFullscreen, NULL);
+				this->isFullscreen = !isFullscreen;
+
+			}
+
+			renderer->render(&cam);
+			mSwapChain->Present(0, 0);
 		}
 	}
 	return 0;

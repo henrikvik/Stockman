@@ -20,15 +20,11 @@ void EntityManager::spawnWave() {
 }
 
 int EntityManager::getEnemiesAlive() const {
-
+    return 0;
 }
 
 void EntityManager::clear() {
 
-}
-
-void EntityManager::spawnWave() {
-	
 }
 
 void EntityManager::setCurrentWave(int currentWave) {

@@ -18,5 +18,5 @@ void Trigger::setCooldown(float cooldown) {
 }
 
 float Trigger::getCooldown() const {
-
+    return 0.0f;
 }

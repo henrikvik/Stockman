@@ -1,10 +1,12 @@
 // VERTEX SHADER
 
-cbuffer Camera : register(b0) {
+cbuffer Camera : register(b0) 
+{
     float4x4 WVP;
 };
 
-struct VSInput {
+struct VSInput 
+{
     // Vertex data
     float3 pos : POS;
     float2 uv : UV;
@@ -15,7 +17,8 @@ struct VSInput {
     float4x4 translation : TRANSLATION;
 };
 
-struct VSOutput {
+struct VSOutput 
+{
     float4 pos : SV_POSITION;
     nointerpolation uint material : MATERIAL;
 };
@@ -33,7 +36,8 @@ VSOutput VS(VSInput input, uint id : SV_InstanceID)
 
 // PIXEL SHADER
 
-struct PSOutput {
+struct PSOutput 
+{
     float4 albedoSpecular : SV_Target0;
     float4 normalMat : SV_Target1;
     float4 position : SV_Target2;
@@ -45,6 +49,7 @@ PSOutput PS(VSOutput input)
 
     output.normalMat.w = input.material;
     output.albedoSpecular = float4(1, 0, 0, 0);
+    output.position = input.pos;
 
     return output;
 }
