@@ -16,8 +16,8 @@ void CardManager::clear()
 
 void CardManager::init() 
 {
-	for (int i = 0; i < 10; i++)
-		cards.push_back(Card());
+	/*for (int i = 0; i < 10; i++)
+		cards.push_back(Card());*/
 }
 
 void CardManager::restart()
