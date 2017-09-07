@@ -1,0 +1,4 @@
+#ifndef ACTIONMANAGER_H
+#define ACTIONMANAGER_H
+
+#endif
