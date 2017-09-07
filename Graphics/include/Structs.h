@@ -34,6 +34,16 @@ namespace Graphics
         DirectX::SimpleMath::Matrix translation;
     };
 
+	// TODO: Change
+#define NUM_LIGHTS 8
+
+	struct Light {
+		DirectX::SimpleMath::Vector3 position;
+		float range;
+		DirectX::SimpleMath::Vector3 color;
+		float intensity;
+	};
+
 	struct Plane {
 		DirectX::SimpleMath::Vector4 pd;
 	};

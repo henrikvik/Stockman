@@ -32,5 +32,6 @@
     <FxCompile Include="Deffered.hlsl" />
     <FxCompile Include="LightGridGeneration.hlsl" />
     <FxCompile Include="LightGridCulling.hlsl" />
+    <FxCompile Include="Forward.hlsl" />
   </ItemGroup>
 </Project>

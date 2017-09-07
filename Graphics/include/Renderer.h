@@ -40,6 +40,18 @@ namespace Graphics
 		ID3D11Buffer *gridParamsBuffer;
 		ID3D11Buffer *gridFrustrums;
 
+		// TEMP {
+
+		ID3D11DepthStencilView *depthDSV;
+		ID3D11ShaderResourceView *depthSRV;
+		ID3D11Buffer *planeBuffer;
+		int planeVS;
+		int planePS;
+
+		void drawForward(Camera *camera);
+
+		// TEMP }
+
 		ID3D11UnorderedAccessView *gridDebugUAV;
 		ID3D11ShaderResourceView *gridDebugSRV;
 
@@ -60,6 +72,10 @@ namespace Graphics
 		ID3D11ShaderResourceView *gridOpaqueLightGridSRV;
 		ID3D11UnorderedAccessView *gridTransparentLightGridUAV;
 		ID3D11ShaderResourceView *gridTransparentLightGridSRV;
+		
+		ID3D11Buffer *gridLights;
+		ID3D11UnorderedAccessView *gridLightsUAV;
+		ID3D11ShaderResourceView *gridLightsSRV;
 
 		ID3D11UnorderedAccessView *gridFrustrumsUAV;
 		ID3D11ShaderResourceView *gridFrustrumsSRV;

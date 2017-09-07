@@ -13,19 +13,19 @@
  *      b1: dispatch params
  *    Textures:
  *      t0: depth texture (Texture2D)
- *      t1: frustums (StructuredBuffer)
- *      t2: lights (StructuredBuffer)
+ *      t1: frustums      (StructuredBuffer)
+ *      t2: lights        (StructuredBuffer)
  *      t3: debug heatmap (Texture2D)
  *    Samplers:
- *      s0: debug sampler
+ *      s0: debug sampler (SamplerState, Linear Clamp)
  *    UAVs:
- *      u0: opaque light index counter (RWStructuredBuffer<uint>)
+ *      u0: opaque light index counter      (RWStructuredBuffer<uint>)
  *      u1: transparent light index counter (RWStructuredBuffer<uint>)
- *      u2: opaque light index list (RWStructuredBuffer<uint>)
- *      u3: transparent light index list (RWStructuredBuffer<uint>)
- *      u4: opaque light grid (RWTexture2D<uint2>)
- *      u5: transparent light grid (RWTexture2D<uint2>)
- *      u6: debug texture (RWTexture2D<float4>)
+ *      u2: opaque light index list         (RWStructuredBuffer<uint>)
+ *      u3: transparent light index list    (RWStructuredBuffer<uint>)
+ *      u4: opaque light grid               (RWTexture2D<uint2>)
+ *      u5: transparent light grid          (RWTexture2D<uint2>)
+ *      u6: debug texture                   (RWTexture2D<float4>)
  *
  *
  *  TODO:
@@ -61,6 +61,8 @@ cbuffer DispatchParams : register(b1)
 struct Light {
 	float3 position;
 	float range;
+	float3 color;
+	float intensity;
 };
 
 // A plane defined by a normal and distance from origin

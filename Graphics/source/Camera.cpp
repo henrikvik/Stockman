@@ -7,7 +7,8 @@ Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, 
 	this->mFieldOfView = fieldOfView;
 	this->mDrawDistance = drawDistance;
 
-	this->mProjection = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, float(width)/height, 0.1f, drawDistance);
+	this->mProjection = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, (float)width/(float)height, 0.1f, drawDistance);
+
 	values.mVP = this->mProjection * this->mView;
 	values.mInvP = this->mProjection.Invert();
 
@@ -79,13 +80,13 @@ ID3D11Buffer* Graphics::Camera::getBuffer()
 
 void Graphics::Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context)
 {
-	Matrix newView = DirectX::XMMatrixLookToLH(pos, forward, Vector3(0, 1, 0));
+	Matrix newView = DirectX::XMMatrixLookAtLH(pos, forward, Vector3(0, 1, 0));
 
-	if (newView != this->mView)
+	//if (newView != this->mView)
 	{
 		this->mView = newView;
 
-		values.mVP = this->mProjection * this->mView;
+		values.mVP = this->mView * this->mProjection;
 		values.mInvP = this->mProjection.Invert();
 
 		D3D11_MAPPED_SUBRESOURCE data;

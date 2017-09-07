@@ -111,6 +111,68 @@ Graphics::Renderer::~Renderer()
 void Graphics::Renderer::createLightGrid(Camera *camera)
 {
 	// TODO: organize better
+#pragma region Temporary geometry setup
+	DirectX::SimpleMath::Vector3 plane[] = {
+		{ -10, 0, -10 },
+		{ -10, 0,  10 },
+		{  10, 0,  10 },
+
+		{ -10, 0, -10 },
+		{  10, 0,  10 },
+		{  10, 0, -10 },
+	};
+
+	{
+		D3D11_BUFFER_DESC desc;
+		ZeroMemory(&desc, sizeof(desc));
+		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		desc.ByteWidth = sizeof(plane);
+
+		D3D11_SUBRESOURCE_DATA data;
+		ZeroMemory(&data, sizeof(data));
+		data.pSysMem = plane;
+
+		ThrowIfFailed(device->CreateBuffer(&desc, &data, &planeBuffer));
+	}
+
+	{
+		D3D11_INPUT_ELEMENT_DESC desc[] = {
+			{ "POS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+		planeVS = shaderHandler.createVertexShader(device, L"Forward.hlsl", "VS", desc, 1);
+		planePS = shaderHandler.createPixelhader(device, L"Forward.hlsl", "PS");
+	}
+
+	{
+		ID3D11Texture2D* texture;
+		D3D11_TEXTURE2D_DESC desc;
+		ZeroMemory(&desc, sizeof(desc));
+		desc.Width = 1280;
+		desc.Height = 720;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_R32_TYPELESS;
+		desc.SampleDesc.Count = 1;
+		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+
+		ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
+
+		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
+		ZeroMemory(&descDSV, sizeof(descDSV));
+		descDSV.Format = DXGI_FORMAT_D32_FLOAT;
+		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC descSRV;
+		ZeroMemory(&descSRV, sizeof(descSRV));
+		descSRV.Format = DXGI_FORMAT_R32_FLOAT;
+		descSRV.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		descSRV.Texture2D.MipLevels = 1;
+
+		ThrowIfFailed(device->CreateDepthStencilView(texture, &descDSV, &depthDSV));
+		ThrowIfFailed(device->CreateShaderResourceView(texture, &descSRV, &depthSRV));
+	}
+
+#pragma endregion
 
 #pragma region Grid params buffer
 	gridParams.numThreadGroups[0] = ceil(1280 / (float)BLOCK_SIZE);
@@ -179,10 +241,48 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 	deviceContext->CSSetConstantBuffers(0, 1, &camera_buffer);
 	deviceContext->CSSetUnorderedAccessViews(0, 1, &gridFrustrumsUAV, 0);
 	deviceContext->Dispatch(5, 3, 1);
+	ID3D11UnorderedAccessView *reset = nullptr;
+	deviceContext->CSSetUnorderedAccessViews(0, 1, &reset, 0);
 
 #pragma endregion
 
-	gridCullingCS = shaderHandler.createComputeShader(device, L"LightGridCulling", "CS");
+#pragma region Create Lights
+	{
+		auto sz = sizeof(Light);
+		D3D11_BUFFER_DESC desc;
+		ZeroMemory(&desc, sizeof(desc));
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+		desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		desc.ByteWidth = sz * NUM_LIGHTS;
+		desc.StructureByteStride = sz;
+
+		ThrowIfFailed(device->CreateBuffer(&desc, nullptr, &gridLights));
+	}
+
+	{
+		D3D11_UNORDERED_ACCESS_VIEW_DESC desc;
+		ZeroMemory(&desc, sizeof(desc));
+		desc.Format = DXGI_FORMAT_UNKNOWN;
+		desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+		desc.Buffer.FirstElement = 0;
+		desc.Buffer.Flags = 0;
+		desc.Buffer.NumElements = NUM_LIGHTS;
+
+		ThrowIfFailed(device->CreateUnorderedAccessView(gridLights, &desc, &gridLightsUAV));
+	}
+
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+		ZeroMemory(&desc, sizeof(desc));
+		desc.Format = DXGI_FORMAT_UNKNOWN;
+		desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+		desc.BufferEx.NumElements = NUM_LIGHTS;
+
+		ThrowIfFailed(device->CreateShaderResourceView(gridLights, &desc, &gridLightsSRV));
+	}
+#pragma endregion
+
+	gridCullingCS = shaderHandler.createComputeShader(device, L"LightGridCulling.hlsl", "CS");
 
 	#pragma region Grid Index Counter UAVs
 	{
@@ -211,19 +311,20 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
 		srvDesc.Buffer.NumElements = 1;
 
-		auto pairs = {
-			std::make_pair(gridResetIndexCounterUAV, gridResetIndexCounterSRV),
-			std::make_pair(gridOpaqueIndexCounterUAV, gridOpaqueIndexCounterSRV),
-			std::make_pair(gridTransparentIndexCounterUAV, gridTransparentIndexCounterSRV)
-		};
+		ID3D11Buffer *buffer;
 
-		for (auto p : pairs) {
-			ID3D11Buffer *buffer;
+		ThrowIfFailed(device->CreateBuffer(&desc, &data, &buffer));
+		ThrowIfFailed(device->CreateUnorderedAccessView(buffer, &uavDesc, &gridResetIndexCounterUAV));
+		ThrowIfFailed(device->CreateShaderResourceView(buffer, &srvDesc, &gridResetIndexCounterSRV));
 
-			ThrowIfFailed(device->CreateBuffer(&desc, &data, &buffer));
-			ThrowIfFailed(device->CreateUnorderedAccessView(buffer, &uavDesc, &p.first));
-			ThrowIfFailed(device->CreateShaderResourceView(buffer, &srvDesc, &p.second));
-		}
+		ThrowIfFailed(device->CreateBuffer(&desc, &data, &buffer));
+		ThrowIfFailed(device->CreateUnorderedAccessView(buffer, &uavDesc, &gridOpaqueIndexCounterUAV));
+		ThrowIfFailed(device->CreateShaderResourceView(buffer, &srvDesc, &gridOpaqueIndexCounterSRV));
+
+		ThrowIfFailed(device->CreateBuffer(&desc, &data, &buffer));
+		ThrowIfFailed(device->CreateUnorderedAccessView(buffer, &uavDesc, &gridTransparentIndexCounterUAV));
+		ThrowIfFailed(device->CreateShaderResourceView(buffer, &srvDesc, &gridTransparentIndexCounterSRV));
+
 	}
 	#pragma endregion
 
@@ -250,18 +351,17 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
 		srvDesc.Buffer.NumElements = count;
 
-		auto pairs = {
-			std::make_pair(gridOpaqueIndexListUAV, gridOpaqueIndexListSRV),
-			std::make_pair(gridTransparentIndexListUAV, gridTransparentIndexListSRV)
-		};
 
-		for (auto p : pairs) {
-			ID3D11Buffer *buffer;
+		ID3D11Buffer *buffer;
 
-			ThrowIfFailed(device->CreateBuffer(&desc, nullptr, &buffer));
-			ThrowIfFailed(device->CreateUnorderedAccessView(buffer, &uavDesc, &p.first));
-			ThrowIfFailed(device->CreateShaderResourceView(buffer, &srvDesc, &p.second));
-		}
+		ThrowIfFailed(device->CreateBuffer(&desc, nullptr, &buffer));
+		ThrowIfFailed(device->CreateUnorderedAccessView(buffer, &uavDesc, &gridOpaqueIndexListUAV));
+		ThrowIfFailed(device->CreateShaderResourceView(buffer, &srvDesc, &gridOpaqueIndexListSRV));
+
+		ThrowIfFailed(device->CreateBuffer(&desc, nullptr, &buffer));
+		ThrowIfFailed(device->CreateUnorderedAccessView(buffer, &uavDesc, &gridTransparentIndexListUAV));
+		ThrowIfFailed(device->CreateShaderResourceView(buffer, &srvDesc, &gridTransparentIndexListSRV));
+
 	}
 	#pragma endregion
 
@@ -288,18 +388,17 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MipLevels = 1;
 
-		auto pairs = {
-			std::make_pair(gridOpaqueLightGridUAV, gridOpaqueLightGridSRV),
-			std::make_pair(gridTransparentLightGridUAV, gridTransparentLightGridSRV),
-		};
 
-		for (auto p : pairs) {
-			ID3D11Texture2D *texture;
+		ID3D11Texture2D *texture;
 
-			ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
-			ThrowIfFailed(device->CreateUnorderedAccessView(texture, &uavDesc, &p.first));
-			ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &p.second));
-		}
+		ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
+		ThrowIfFailed(device->CreateUnorderedAccessView(texture, &uavDesc, &gridOpaqueLightGridUAV));
+		ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &gridOpaqueLightGridSRV));
+
+		ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
+		ThrowIfFailed(device->CreateUnorderedAccessView(texture, &uavDesc, &gridTransparentLightGridUAV));
+		ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &gridTransparentLightGridSRV));
+
 	}
 
 	#pragma endregion
@@ -318,7 +417,7 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 		desc.SampleDesc.Count = 1;
 		desc.ArraySize = 1;
 
-		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 
 		ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
@@ -327,7 +426,7 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 	{
 		D3D11_UNORDERED_ACCESS_VIEW_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
-		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 		desc.Texture2D.MipSlice = 0;
 
@@ -337,7 +436,7 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 	{
 		D3D11_SHADER_RESOURCE_VIEW_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
-		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		desc.Texture2D.MipLevels = 1;
 
@@ -357,12 +456,12 @@ void Graphics::Renderer::cullLightGrid(Camera * camera)
 	deviceContext->CSSetConstantBuffers(0, 2, bufs);
 
 	ID3D11ShaderResourceView *SRVs[] = {
-		// depth,
+		depthSRV,
 		gridFrustrumsSRV,
-		// lights,
+		gridLightsSRV,
 		gradientSRV
 	};
-	deviceContext->CSSetShaderResources(0, 1, &gradientSRV);
+	deviceContext->CSSetShaderResources(0, 4, SRVs);
 	auto sampler = states->LinearClamp();
 	deviceContext->CSSetSamplers(0, 1, &sampler);
 	
@@ -378,12 +477,39 @@ void Graphics::Renderer::cullLightGrid(Camera * camera)
 	deviceContext->CSSetUnorderedAccessViews(0, 7, UAVs, nullptr);
 	
 	deviceContext->Dispatch(
-		ceil(gridParams.numThreadGroups[0] / 16.f),
-		ceil(gridParams.numThreadGroups[1] / 16.f),
+		gridParams.numThreadGroups[0],
+		gridParams.numThreadGroups[1],
 		1
 	);
 
+	ZeroMemory(UAVs, sizeof(UAVs));
+	ZeroMemory(SRVs, sizeof(SRVs));
+	deviceContext->CSSetShaderResources(0, 4, SRVs);
+	deviceContext->CSSetUnorderedAccessViews(0, 7, UAVs, nullptr);
 	deviceContext->CSSetShader(nullptr, nullptr, 0);
+}
+
+float f;
+
+void Graphics::Renderer::drawForward(Camera *camera)
+{
+	f += 0.001;
+	camera->update({ sin(f) * 30, 10, cos(f) * 10 }, { 0, 0, 0 }, deviceContext);
+
+	shaderHandler.setShaders(planeVS, -1, -1, deviceContext);
+
+	UINT stride = sizeof(float) * 3;
+	UINT offset = 0;
+	deviceContext->IASetVertexBuffers(0, 1, &planeBuffer, &stride, &offset);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	auto buf = camera->getBuffer();
+	deviceContext->VSSetConstantBuffers(0, 1, &buf);
+	deviceContext->OMSetRenderTargets(0, nullptr, depthDSV);
+	deviceContext->Draw(6, 0);
+
+	deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+
+	cullLightGrid(camera);
 }
 
 void Renderer::render(Camera * camera)
@@ -409,9 +535,10 @@ void Renderer::render(Camera * camera)
     ID3D11Buffer *cameraBuffer[] = { camera->getBuffer() };
     deviceContext->VSSetConstantBuffers(0, 1, cameraBuffer);    
     cull();
-	cullLightGrid(camera);
     //draw();
-	
+
+	drawForward(camera);
+
 	//temp
 	this->drawDeffered();
 	this->drawToBackbuffer(gridDebugSRV);
