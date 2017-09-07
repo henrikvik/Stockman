@@ -72,7 +72,17 @@
     <ClInclude Include="include\Player\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="include\AI\EntityManager.h">
+=======
+    <ClInclude Include="include\Player\Weapon\Weapon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Player\Weapon\WeaponManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Player\ActionManager.h">
+>>>>>>> 98bea63279670e23c4c689bd3876564708fe2eea
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -89,17 +99,22 @@
     <ClCompile Include="source\Player\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="source\AI\EntityManager.cpp">
+=======
+    <ClCompile Include="source\Player\Weapon\Weapon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Player\Weapon\WeaponManager.cpp">
+>>>>>>> 98bea63279670e23c4c689bd3876564708fe2eea
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="source\Player\Skill\gitinclude.txt" />
-    <Text Include="source\Player\Weapon\gitinclude.txt" />
     <Text Include="source\Projectile\gitinclude.txt" />
     <Text Include="source\Misc\gitinclude.txt" />
     <Text Include="source\AI\gitinclude.txt" />
-    <Text Include="include\Player\Weapon\gitinclude.txt" />
     <Text Include="include\Player\Skill\gitinclude.txt" />
     <Text Include="include\Misc\gitinclude.txt" />
     <Text Include="include\AI\gitinclude.txt" />
