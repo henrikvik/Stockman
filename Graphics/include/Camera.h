@@ -10,7 +10,7 @@
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
 
-#include "SimpleMath.h"
+#include <SimpleMath.h>
 
 namespace Graphics {
 	class Camera
@@ -46,6 +46,7 @@ namespace Graphics {
 		DirectX::SimpleMath::Matrix mProjection;
 
 		ID3D11Buffer* mVPBuffer;
+		ID3D11Buffer* mInvProjBuffer;
 
 	};
 }

@@ -28,6 +28,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="FullscreenQuad.hlsl" />
+    <FxCompile Include="Deffered.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
 </Project>

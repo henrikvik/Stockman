@@ -2,7 +2,10 @@
 
 #include <Windows.h>
 #include <Camera.h>
+#include <Renderer.h>
 #include <Game.h>
+#include "Keyboard.h"
+
 
 class Engine
 {
@@ -18,12 +21,16 @@ private:
 	int mWidth;
 	int mHeight;
 	HINSTANCE hInstance;
+	
+	Graphics::Renderer* renderer;
 
 	ID3D11Device* mDevice;
 	ID3D11DeviceContext* mContext;
 	ID3D11Debug* mDebugDevice;
 	IDXGISwapChain* mSwapChain;
 	ID3D11RenderTargetView* mBackBufferRTV;
+	std::unique_ptr<DirectX::Keyboard> mKeyboard;
+	bool isFullscreen;
 
 	bool initializeGame();
 	void initializeWindow();
