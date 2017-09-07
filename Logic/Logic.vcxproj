@@ -157,8 +157,12 @@
     <ClInclude Include="include\Player\Player.h" />
     <ClInclude Include="include\Player\Weapon\Weapon.h" />
     <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
+    <ClInclude Include="include\Projectile\ProjectileManager.h" />
+    <ClInclude Include="include\Projectile\Projectile.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Projectile\Projectile.cpp" />
+    <ClCompile Include="source\Projectile\ProjectileManager.cpp" />
     <ClCompile Include="source\AI\EntityManager.cpp" />
     <ClCompile Include="source\Misc\Card.cpp" />
     <ClCompile Include="source\Misc\CardManager.cpp" />
@@ -170,13 +174,9 @@
     <ClCompile Include="source\Player\Weapon\WeaponManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="include\AI\gitinclude.txt" />
-    <Text Include="include\Misc\gitinclude.txt" />
     <Text Include="include\Player\Skill\gitinclude.txt" />
     <Text Include="source\AI\gitinclude.txt" />
-    <Text Include="source\Misc\gitinclude.txt" />
     <Text Include="source\Player\Skill\gitinclude.txt" />
-    <Text Include="source\Projectile\gitinclude.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
