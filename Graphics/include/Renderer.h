@@ -45,6 +45,7 @@ namespace Graphics
 		ID3D11ShaderResourceView* view;
 		ID3D11Buffer * FSQuad2;
 		ID3D11Buffer * defferedTestBuffer;
+		ID3D11Buffer * instanceBuffer;
 
 
         std::vector<RenderInfo*> renderQueue;
@@ -52,13 +53,12 @@ namespace Graphics
         InstanceQueue_t instanceQueue;
         GBuffer gbuffer;
 
-        ID3D11Buffer *instanceBuffer;
-
         void createGBuffer();
         void cull();
         void draw();
 		void drawDeffered();
 		void createDepthStencil();
+		void createCubeInstances();
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
