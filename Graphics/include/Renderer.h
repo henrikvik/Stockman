@@ -25,7 +25,7 @@ namespace Graphics
 
     private:
 		//MYCKET TEMP
-		struct TestQuad
+		struct TestCube
 		{
 			DirectX::SimpleMath::Vector3 pos;
 			DirectX::SimpleMath::Vector2 uv;
@@ -38,6 +38,8 @@ namespace Graphics
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
+		ID3D11DepthStencilView * dSV;
+		ID3D11DepthStencilState * dSS;
 
 		//temp
 		ID3D11ShaderResourceView* view;
@@ -56,6 +58,8 @@ namespace Graphics
         void cull();
         void draw();
 		void drawDeffered();
+		void createDepthStencil();
+		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
     };
