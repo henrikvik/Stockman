@@ -1,5 +1,6 @@
 #ifndef WEAPON_H
 #define WEAPON_H
+
 #pragma region ClassDesc
 		/*
 			CLASS: Weapon
@@ -8,6 +9,7 @@
 			DESCRIPTION: This class defines a weapon of the system
 		*/
 #pragma endregion
+
 namespace Logic
 {
 	class Weapon

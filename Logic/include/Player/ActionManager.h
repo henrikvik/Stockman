@@ -16,11 +16,28 @@ namespace Logic
 {
 	class ActionManager
 	{
+	public:
+		ActionManager();
+		ActionManager(const ActionManager& other) = delete;
+		ActionManager* operator=(const ActionManager& other) = delete;
+		~ActionManager();
+
+		void init();
+
+		void update(float deltaTime);
+
+		// Weapon
+		void switchToPrimary();
+		void switchToSecondary();
+		void useWeapon();
+
+		// Skill
+		void switchSkill();
+		void useSkill();
+
 	private:
 		SkillManager m_skillManager;
 		WeaponManager m_weaponManager;
-	public:
-		void update();
 	};
 }
 
