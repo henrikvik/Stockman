@@ -228,19 +228,23 @@ int Engine::run()
 		else
 		{
 			//To enable/disable fullscreen
-			auto ks = this->mKeyboard->GetState();
+			DirectX::Keyboard::State ks = this->mKeyboard->GetState();
 			if (ks.F11)
 			{
 
 				mSwapChain->SetFullscreenState(!isFullscreen, NULL);
 				this->isFullscreen = !isFullscreen;
-
 			}
+
+			game.update(float(deltaTime));
 
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
-			game.update(float(deltaTime));
 		}
 	}
+
+	// Delete game content
+	game.clear();
+
 	return 0;
 }
