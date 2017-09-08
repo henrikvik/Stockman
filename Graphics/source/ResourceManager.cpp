@@ -1,7 +1,10 @@
-#include "ResourceManager.h"
+#include <Resources/ResourceManager.h>
 
 ResourceManager::ResourceManager(ID3D11Device * device)
 {
+	meshManager = new MeshManager;
+	brfImporterHandler = new BRFImportHandler;
+
 	D3D11_INPUT_ELEMENT_DESC desc[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
@@ -27,10 +30,22 @@ ResourceManager::ResourceManager(ID3D11Device * device)
 
 ResourceManager::~ResourceManager()
 {
+	delete meshManager;
+	delete brfImporterHandler;
+
 	for (int i = 0; i < NROFSAMPLERS; i++)
 	{
 		this->sampleStates[i]->Release();
 	}
+}
+
+
+void ResourceManager::initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext)
+{
+	//meshManager->initialize(gDevice, gDeviceContext);
+
+	brfImporterHandler->loadFile("Models/BearTrap.brf", true, true, true, false);
+
 }
 
 void ResourceManager::setShaders(VertexShaderID vertexID, GeometryShaderID geometryID, PixelShaderID pixelID, ID3D11DeviceContext* context)
@@ -71,4 +86,11 @@ void ResourceManager::createSamplerState(ID3D11Device * device)
 	desc.MaxAnisotropy = 1;
 
 	device->CreateSamplerState(&desc, &this->sampleStates[SamplerID::pointSampler]);
+}
+
+
+void ResourceManager::release()
+{
+	this->brfImporterHandler->release();
+	this->meshManager->release();
 }

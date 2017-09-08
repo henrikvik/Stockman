@@ -182,7 +182,7 @@
     <ClCompile Include="include\Resources\MaterialManager.cpp" />
     <ClCompile Include="include\Resources\Mesh.cpp" />
     <ClCompile Include="include\Resources\MeshManager.cpp" />
-    <ClCompile Include="source\ResourceManager2.cpp" />
+    <ClCompile Include="source\ResourceManager.cpp" />
     <ClCompile Include="source\ShaderHandler.cpp" />
     <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
