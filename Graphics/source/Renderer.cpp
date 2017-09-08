@@ -378,6 +378,11 @@ void Graphics::Renderer::createDepthStencil()
 	texture->Release();
 }
 
+void Graphics::Renderer::createCubeInstances()
+{
+	D3D11_BUFFER_DESC desc;
+}
+
 void Renderer::draw()
 {
 	// Sort instance id from all meshes

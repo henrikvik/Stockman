@@ -12,6 +12,8 @@ struct VSInput
     float2 uv : UV;
     float3 normal : NORMAL;
     uint material : MATERIAL;
+
+    float3 offset : OFFSET;
 };
 
 struct VSOutput
