@@ -102,7 +102,6 @@ void Engine::initializeWindow()
 	}
 
 
-
 	ShowWindow(this->window, SW_SHOWDEFAULT);
 	UpdateWindow(this->window);
 
