@@ -14,7 +14,7 @@ void Player::clear()
 {
 }
 
-void Player::update()
+void Player::updateSpecific(float deltaTime)
 {
 }
 

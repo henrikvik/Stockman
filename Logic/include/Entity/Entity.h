@@ -15,7 +15,8 @@ namespace Logic
 		~Entity();
 
 		virtual void clear() = 0;
-		virtual void update() = 0;
+		void update(float deltaTime);
+		virtual void updateSpecific(float deltatTime) = 0;
 		void collision(const Entity& other);
 		virtual void onCollision(const Entity& other) = 0;
 

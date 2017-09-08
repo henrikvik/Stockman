@@ -4,13 +4,16 @@ using namespace Logic;
 
 Game::Game()
 {
-	physics = nullptr;
+	m_physics = nullptr;
+	//m_player = nullptr;
 }
 
 Game::~Game() { }
 
 bool Game::init()
 {
+	//m_player = new Player();
+
 	bool result;
 
 	// Initializing Bullet physics
@@ -18,8 +21,8 @@ bool Game::init()
 	btCollisionDispatcher* dispatcher = new	btCollisionDispatcher(collisionConfiguration);				// The default collision dispatcher
 	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								// Detecting aabb-overlapping object pairs
 	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver;	// Default constraint solver
-	physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
-	result = physics->init();
+	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
+	result = m_physics->init();
 
 	return result;
 }
@@ -27,12 +30,16 @@ bool Game::init()
 void Game::clear()
 {
 	// Deleting physics
-	physics->clear();
-	delete physics;
+	m_physics->clear();
+	delete m_physics;
+	//delete m_player;
 }
 
 void Game::update(float deltaTime, DirectX::Keyboard::State* mKeyboard)
 {
 	// Updating physics
-	physics->update(deltaTime);
+	m_physics->update(deltaTime);
+
+	// Updating player
+	//m_player->update(deltaTime);
 }
