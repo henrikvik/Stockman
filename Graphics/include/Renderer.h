@@ -7,7 +7,7 @@
 #include "Structs.h"
 #include "Constants.h"
 #include "WICTextureLoader.h"
-#include "ResourceManager.h"
+#include <Resources\ResourceManager.h>
 #include <SimpleMath.h>
 
 namespace Graphics
