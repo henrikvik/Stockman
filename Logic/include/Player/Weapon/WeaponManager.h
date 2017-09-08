@@ -25,13 +25,12 @@ namespace Logic
 		WeaponManager* operator=(const WeaponManager& other) = delete;
 		~WeaponManager();
 
-		// Creates every weapon 
 		void init();
+		void clear();
 
 		void switchWeapon(int weaponID);
-
-		void useSecondary();
 		void usePrimary();
+		void useSecondary();
 
 	private:
 

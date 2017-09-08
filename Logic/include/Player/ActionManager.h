@@ -23,6 +23,7 @@ namespace Logic
 		~ActionManager();
 
 		void init();
+		void clear();
 
 		void update(float deltaTime);
 

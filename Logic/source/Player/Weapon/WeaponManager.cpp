@@ -12,6 +12,12 @@ void WeaponManager::init()
 	makeWeaponLoadout();
 }
 
+void WeaponManager::clear()
+{
+	m_weaponsLoadouts.clear();
+	m_allWeapons.clear();
+}
+
 void WeaponManager::initializeWeapons()
 {
 	// Adding all weapons
@@ -42,12 +48,12 @@ void WeaponManager::switchWeapon(int index)
 	m_currentWeapon = m_weaponsLoadouts[index];
 }
 
-void WeaponManager::useSecondary()
-{
-	m_currentWeapon.second->use();
-}
-
 void WeaponManager::usePrimary()
 {
 	m_currentWeapon.first->use();
+}
+
+void WeaponManager::useSecondary()
+{
+	m_currentWeapon.second->use();
 }

@@ -29,6 +29,7 @@ namespace Logic
 		ProjectileData m_projectileData;
 	//	Animation m_animation;
 	public:
+		Weapon();
 		Weapon(int weaponID, int ammoCap, int magSize, float damage, float attackRate, float freeze);
 
 		void use();
