@@ -15,12 +15,6 @@ bool Game::init()
 	bool result;
 
 
-	// TESTING REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE 
-	EntityManager entity;
-	entity.spawnWave();
-	while (true)
-		entity.update(5.f);
-	// TESTING REMOVE REMOVE REMOVE RMEOVE REOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVE
 
 	// Initializing Bullet physics
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();	// Configuration
@@ -29,6 +23,14 @@ bool Game::init()
 	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver;	// Default constraint solver
 	physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = physics->init();
+
+	// TESTING REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE 
+	EntityManager entity;
+	entity.spawnWave();
+	while (true)
+		entity.update(5.f);
+	// TESTING REMOVE REMOVE REMOVE RMEOVE REOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVE
+
 
 	return result;
 }
