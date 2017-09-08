@@ -50,7 +50,7 @@ namespace Logic
 		bool init(DirectX::Keyboard* mKeyboard);
 		void clear();
 		void updateSpecific(float deltaTime);
-		void onCollision(const Entity& other);
+		void onCollision(Entity& other);
 	};
 
 }
