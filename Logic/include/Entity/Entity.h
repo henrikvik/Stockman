@@ -12,10 +12,10 @@ namespace Logic
 		Entity();
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
-		~Entity();
+		virtual ~Entity();
 
 		virtual void clear() = 0;
-		virtual void update() = 0;
+		virtual void update(float deltaTime) = 0;
 		void collision(const Entity& other);
 		virtual void onCollision(const Entity& other) = 0;
 

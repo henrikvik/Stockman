@@ -4,6 +4,8 @@ using namespace Logic;
 #define ENEMY_START_COUNT 64
 #define TEST_NAME "helloWave.xml"
 
+#include <AI/EnemyTest.h>
+
 EntityManager::EntityManager()
 {
 	m_currentWave = 0;
@@ -40,7 +42,7 @@ void EntityManager::spawnWave()
 
 	for (int i = 0; i < enemies.size(); i++) 
 	{
-		// m_enemies.push_back(new Enemy()); TODO
+		m_enemies.push_back(new EnemyTest());
 		m_enemiesDeadBool.push_back(false);
 	}
 }

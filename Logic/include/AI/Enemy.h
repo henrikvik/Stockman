@@ -30,7 +30,7 @@ namespace Logic
 			Enemy(float health, float baseDamage, int enemyType, int animationId);
 			virtual ~Enemy();
 
-			void update(float deltaTime);
+			virtual void update(float deltaTime);
 			virtual void updateSpec(float deltaTime) = 0;
 	};
 }

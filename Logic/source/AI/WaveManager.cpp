@@ -13,7 +13,9 @@ WaveManager::~WaveManager()
 
 std::vector<int> Logic::WaveManager::getEnemies(int waveId)
 {
-	return std::vector<int>();
+	std::vector<int> enemies;
+	enemies.resize(10000);
+	return enemies;
 }
 
 void Logic::WaveManager::setName(std::string name)
