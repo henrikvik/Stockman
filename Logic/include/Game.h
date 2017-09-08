@@ -6,6 +6,9 @@
 #include "Player\Player.h"
 #include "Physics\Physics.h"
 
+#include <Windows.h>
+#include "Keyboard.h"
+
 namespace Logic
 {
 	class Game
@@ -19,7 +22,7 @@ namespace Logic
 		bool init();
 		void clear();
 
-		void update(float deltaTime);
+		void update(float deltaTime, DirectX::Keyboard::State* mKeyboard);
 	//	void draw(RenderMachine& renderMachine);
 
 	private:

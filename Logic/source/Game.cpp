@@ -1,6 +1,5 @@
 #include "Game.h"
 
-
 using namespace Logic;
 
 Game::Game()
@@ -36,7 +35,7 @@ void Game::clear()
 	//delete m_player;
 }
 
-void Game::update(float deltaTime)
+void Game::update(float deltaTime, DirectX::Keyboard::State* mKeyboard)
 {
 	// Updating physics
 	m_physics->update(deltaTime);
