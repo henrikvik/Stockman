@@ -29,6 +29,8 @@ VSOutput VS(VSInput input, uint id : SV_InstanceID)
 
     output.pos = float4(input.pos, 1);
     output.pos = mul(VP, output.pos);
+    output.uv = input.uv;
+    output.normal = input.normal;
 
     output.wPos = float4(input.pos, 1);
     output.material = 0;
@@ -46,13 +48,17 @@ struct PSOutput
     float4 position : SV_Target2;
 };
 
+Texture2D textureeee : register(t0);
+SamplerState sState;
+
 PSOutput PS(VSOutput input)
 {
     PSOutput output;
 
-    output.normalMat.g = 1;
+    output.normalMat.xyz = input.normal.xyz;
     output.normalMat.w = input.material;
-    output.albedoSpecular = float4(1, 0, 0, 0);
+    output.albedoSpecular.xyz = textureeee.Sample(sState, input.uv).xyz;
+    output.albedoSpecular.w = 10;
     output.position = input.wPos;
 
     return output;
