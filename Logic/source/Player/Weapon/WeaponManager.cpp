@@ -2,10 +2,34 @@
 
 using namespace Logic;
 
-void WeaponManager::usewWaponPrimary()
+WeaponManager::WeaponManager()
 {
+
 }
 
-void WeaponManager::useWeaponSecondary()
+WeaponManager::~WeaponManager() { }
+
+void WeaponManager::init()
 {
+
+}
+
+void WeaponManager::makeWeaponLoadout()
+{
+
+}
+
+void WeaponManager::switchToPrimary()
+{
+
+}
+
+void WeaponManager::switchToSecondary()
+{
+
+}
+
+void WeaponManager::useCurrentWeapon()
+{
+
 }
