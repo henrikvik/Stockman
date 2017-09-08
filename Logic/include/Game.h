@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 
+#include "Player\Player.h"
 #include "Physics\Physics.h"
 
 namespace Logic
@@ -22,7 +23,8 @@ namespace Logic
 	//	void draw(RenderMachine& renderMachine);
 
 	private:
-		Physics* physics;
+		Physics* m_physics;
+		//Player* m_player;
 	};
 }
 

@@ -23,7 +23,7 @@ namespace Logic
 		~Player();
 
 		void clear();
-		void update();
+		void updateSpecific(float deltaTime);
 		void onCollision(const Entity& other);
 
 	};
