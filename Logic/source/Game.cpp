@@ -2,6 +2,7 @@
 
 #include <AI/EntityManager.h>
 #include <thread>
+
 using namespace Logic;
 
 Game::Game()

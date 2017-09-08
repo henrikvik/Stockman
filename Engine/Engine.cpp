@@ -122,6 +122,7 @@ HRESULT Engine::createSwapChain()
 	desc.Windowed = true;
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
+	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -228,19 +229,22 @@ int Engine::run()
 		else
 		{
 			//To enable/disable fullscreen
-			auto ks = this->mKeyboard->GetState();
+			DirectX::Keyboard::State ks = this->mKeyboard->GetState();
 			if (ks.F11)
 			{
-
 				mSwapChain->SetFullscreenState(!isFullscreen, NULL);
 				this->isFullscreen = !isFullscreen;
-
 			}
+
+			game.update(float(deltaTime));
 
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
-			game.update(float(deltaTime));
 		}
 	}
+
+	// Delete game content
+	game.clear();
+
 	return 0;
 }
