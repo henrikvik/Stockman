@@ -9,6 +9,7 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
     : device(device)
     , deviceContext(deviceContext)
     , backBuffer(backBuffer)
+	, resourceManager(device)
 {
 	TestQuad defferedTest[] =
 	{
@@ -34,25 +35,6 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 	};
 
     createGBuffer();
-
-	D3D11_INPUT_ELEMENT_DESC desc[] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}	
-	};
-
-	shaders[0] = shaderHandler.createVertexShader(device, L"FullscreenQuad.hlsl", "VS", desc, ARRAYSIZE(desc));
-	shaders[1] = shaderHandler.createPixelhader(device, L"FullscreenQuad.hlsl", "PS");
-
-	D3D11_INPUT_ELEMENT_DESC descDeffered[] =
-	{
-		{ "POS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "MATERIAL", 0, DXGI_FORMAT_R32_UINT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-
-	defferedShaders[0] = shaderHandler.createVertexShader(device, L"Deffered.hlsl", "VS", descDeffered, ARRAYSIZE(descDeffered));
-	defferedShaders[1] = shaderHandler.createPixelhader(device, L"Deffered.hlsl", "PS");
 
 	D3D11_VIEWPORT viewPort;
 	viewPort.Height = 720;
@@ -102,6 +84,8 @@ Graphics::Renderer::~Renderer()
 	gbuffer.position->Release();
 	gbuffer.positionView->Release();
 	defferedTestBuffer->Release();
+
+
 	
 }
 
@@ -217,8 +201,9 @@ void Renderer::drawDeffered()
 	};
 
 	deviceContext->OMSetRenderTargets(3, RTVS, nullptr);
-	shaderHandler.setShaders(defferedShaders[0], NO_SHADER, defferedShaders[1], deviceContext);
-
+	
+	resourceManager.setShaders(VertexShaderID::VERTEX_DEFFERED, PixelShaderID::PIXEL_DEFFERED, deviceContext);
+	resourceManager.setSampler(SamplerID::pointSampler, deviceContext);
 	//textur här typ
 
 	UINT stride = 36, offset = 0;
@@ -245,7 +230,8 @@ void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 
 	deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
     
-	shaderHandler.setShaders(shaders[0], NO_SHADER, shaders[1], deviceContext);
+	resourceManager.setShaders(VertexShaderID::VERTEX_QUAD, PixelShaderID::PIXEL_QUAD, deviceContext);
+	resourceManager.setSampler(SamplerID::pointSampler, deviceContext);
 
 	deviceContext->Draw(4, 0);
 

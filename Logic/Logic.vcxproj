@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -72,22 +72,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include</IncludePath>
+    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\Bullet2.86\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include</IncludePath>
+    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\Bullet2.86\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include</IncludePath>
+    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\Bullet2.86\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include</IncludePath>
+    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\Bullet2.86\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -95,11 +99,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -107,11 +115,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -121,6 +133,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -128,6 +141,9 @@
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -137,6 +153,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -144,12 +161,91 @@
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Misc\HighScoreManager.h" />
+    <ClInclude Include="include\Entity\Effect.h" />
+    <ClInclude Include="include\AI\Enemy.h" />
+    <ClInclude Include="include\AI\EntityManager.h" />
+    <ClInclude Include="include\AI\Trigger.h" />
+    <ClInclude Include="include\AI\TriggerManager.h" />
+    <ClInclude Include="include\Misc\Card.h" />
+    <ClInclude Include="include\Misc\CardManager.h" />
+    <ClInclude Include="include\Entity\Entity.h" />
+    <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Logic.h" />
+    <ClInclude Include="include\Entity\Object.h" />
+    <ClInclude Include="include\Misc\Enums.h" />
+    <ClInclude Include="include\Misc\MenuMachine.h" />
+    <ClInclude Include="include\Misc\RenderRegister.h" />
+    <ClInclude Include="include\Misc\StateMachine.h" />
+    <ClInclude Include="include\Physics\Physics.h" />
+    <ClInclude Include="include\Player\ActionManager.h" />
+    <ClInclude Include="include\Player\Player.h" />
+    <ClInclude Include="include\Player\Skill\Skill.h" />
+    <ClInclude Include="include\Player\Skill\SkillBulletTime.h" />
+    <ClInclude Include="include\Player\Skill\SkillGrapplingHook.h" />
+    <ClInclude Include="include\Player\Skill\SkillManager.h" />
+    <ClInclude Include="include\Player\Skill\SkillShieldCharge.h" />
+    <ClInclude Include="include\Player\Weapon\Weapon.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
+    <ClInclude Include="include\Projectile\ProjectileManager.h" />
+    <ClInclude Include="include\Projectile\Projectile.h" />
+    <ClInclude Include="include\Projectile\ProjectileStruct.h" />
+    <ClInclude Include="include\AI\WaveManager.h" />
+    <ClInclude Include="include\Map.h" />
+    <ClInclude Include="include\Entity\Upgrade.h" />
+    <ClInclude Include="include\Entity\StatusManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Source.cpp" />
+    <ClCompile Include="source\Misc\HighScoreManager.cpp" />
+    <ClCompile Include="source\Entity\Effect.cpp" />
+    <ClCompile Include="source\AI\Enemy.cpp" />
+    <ClCompile Include="source\Map.cpp" />
+    <ClCompile Include="source\AI\Trigger.cpp" />
+    <ClCompile Include="source\AI\TriggerManager.cpp" />
+    <ClCompile Include="source\Misc\MenuMachine.cpp" />
+    <ClCompile Include="source\Player\ActionManager.cpp" />
+    <ClCompile Include="source\Player\Skill\Skill.cpp" />
+    <ClCompile Include="source\Player\Skill\SkillBulletTime.cpp" />
+    <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />
+    <ClCompile Include="source\Player\Skill\SkillManager.cpp" />
+    <ClCompile Include="source\Player\Skill\SkillShieldCharge.cpp" />
+    <ClCompile Include="source\Projectile\Projectile.cpp" />
+    <ClCompile Include="source\Projectile\ProjectileManager.cpp" />
+    <ClCompile Include="source\AI\EntityManager.cpp" />
+    <ClCompile Include="source\Misc\Card.cpp" />
+    <ClCompile Include="source\Misc\CardManager.cpp" />
+    <ClCompile Include="source\Misc\RenderRegister.cpp" />
+    <ClCompile Include="source\Misc\StateMachine.cpp" />
+    <ClCompile Include="source\Physics\Physics.cpp" />
+    <ClCompile Include="source\Player\Player.cpp" />
+    <ClCompile Include="source\Entity\Entity.cpp" />
+    <ClCompile Include="source\Game.cpp" />
+    <ClCompile Include="source\Entity\Object.cpp" />
+    <ClCompile Include="source\Player\Weapon\Weapon.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponManager.cpp" />
+    <ClCompile Include="source\Entity\Upgrade.cpp" />
+    <ClCompile Include="source\Entity\StatusManager.cpp" />
+    <ClCompile Include="source\AI\WaveManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="include\Player\Skill\gitinclude.txt" />
+    <Text Include="source\Player\Skill\gitinclude.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\Bullet3Collision\Bullet3Collision.vcxproj">
+      <Project>{ced1eef6-5cf9-3b24-b52c-c0f0ac9ea646}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\Bullet3Dynamics\Bullet3Dynamics.vcxproj">
+      <Project>{4f3cbdaa-40a6-3d93-aebc-11e11302289c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\LinearMath\LinearMath.vcxproj">
+      <Project>{87c7a4ea-cae6-3c84-9785-abc44c822e9c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

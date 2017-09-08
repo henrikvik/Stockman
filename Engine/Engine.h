@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include <Camera.h>
 #include <Renderer.h>
+#include <Game.h>
+#include "Keyboard.h"
 
 
 class Engine
@@ -14,6 +16,7 @@ public:
 	int run();
 
 private:
+	Logic::Game game;
 	HWND window;
 	int mWidth;
 	int mHeight;
@@ -26,7 +29,10 @@ private:
 	ID3D11Debug* mDebugDevice;
 	IDXGISwapChain* mSwapChain;
 	ID3D11RenderTargetView* mBackBufferRTV;
+	std::unique_ptr<DirectX::Keyboard> mKeyboard;
+	bool isFullscreen;
 
+	bool initializeGame();
 	void initializeWindow();
 	HRESULT createSwapChain();
 	long long timer();

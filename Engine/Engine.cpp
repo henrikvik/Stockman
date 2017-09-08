@@ -12,7 +12,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-		//DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
+		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
+		
 		break;
 
 	case WM_ACTIVATEAPP:
@@ -45,6 +46,10 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mWidth = width;
 	this->hInstance = hInstance;
 	this->initializeWindow();
+	this->initializeGame();
+
+	this->isFullscreen = false;
+	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 }
 
 Engine::~Engine()
@@ -117,6 +122,7 @@ HRESULT Engine::createSwapChain()
 	desc.Windowed = true;
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
+	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -184,6 +190,17 @@ long long Engine::timer()
 	}
 }
 
+bool Engine::initializeGame()
+{
+	bool result;
+
+	// Trying to start game
+	result = game.init();
+
+	return result;
+}
+
+
 int Engine::run()
 {
 	MSG msg = { 0 };
@@ -205,13 +222,29 @@ int Engine::run()
 		{
 			TranslateMessage(&msg);
 
+
+
 			DispatchMessage(&msg);
 		}
 		else
 		{
+			//To enable/disable fullscreen
+			DirectX::Keyboard::State ks = this->mKeyboard->GetState();
+			if (ks.F11)
+			{
+				mSwapChain->SetFullscreenState(!isFullscreen, NULL);
+				this->isFullscreen = !isFullscreen;
+			}
+
+			game.update(float(deltaTime));
+
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
 		}
 	}
+
+	// Delete game content
+	game.clear();
+
 	return 0;
 }
