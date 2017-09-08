@@ -31,7 +31,7 @@ namespace Logic
 			virtual ~Enemy();
 
 			virtual void update(float deltaTime);
-			virtual void deadUpdate(float deltaTime) = 0;
+			virtual void updateDead(float deltaTime) = 0;
 			virtual void updateSpec(float deltaTime) = 0;
 
 			void damage(float damage);

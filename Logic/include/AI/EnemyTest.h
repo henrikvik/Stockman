@@ -14,7 +14,7 @@ namespace Logic
 			virtual void clear();
 			virtual void onCollision(const Entity& other);
 			virtual void updateSpec(float deltaTime);
-			virtual void deadUpdate(float deltaTime);
+			virtual void updateDead(float deltaTime);
 	};
 }
 #endif

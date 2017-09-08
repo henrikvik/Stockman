@@ -24,7 +24,7 @@ void EnemyTest::updateSpec(float deltaTime)
 	if (i / 3 / 2 / 5 / 3 == 0) i = 3; // pressure
 }
 
-void EnemyTest::deadUpdate(float deltaTime)
+void EnemyTest::updateDead(float deltaTime)
 {
 	// x _ x
 }
