@@ -44,7 +44,12 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 	shaders[1] = shaderHandler.createPixelhader(device, L"FullscreenQuad.hlsl", "PS");
 
 	//GUI
-	shaders[2] = shaderHandler.createVertexShader(device, L"GUISHader.hlsl", "VS", desc, ARRAYSIZE(desc));
+	D3D11_INPUT_ELEMENT_DESC GUIdesc[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+	shaders[2] = shaderHandler.createVertexShader(device, L"GUISHader.hlsl", "VS", GUIdesc, ARRAYSIZE(GUIdesc));
 	shaders[3] = shaderHandler.createPixelhader(device, L"GUISHader.hlsl", "PS");
 
 	D3D11_INPUT_ELEMENT_DESC descDeffered[] =
@@ -87,6 +92,7 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 
 	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
 	createBlendState();
+	createGUIBuffers();
 }
 
 Graphics::Renderer::~Renderer()
@@ -110,6 +116,7 @@ Graphics::Renderer::~Renderer()
 	defferedTestBuffer->Release();
 	GUI->Release();
 	transparencyBlendState->Release();
+	GUIvb->Release();
 	
 }
 
@@ -247,9 +254,10 @@ void Renderer::drawDeffered()
 void Graphics::Renderer::drawGUI()
 {
 	deviceContext->PSSetShaderResources(0, 1, &GUI);
-	UINT stride = sizeof(DirectX::SimpleMath::Vector2), offset = 0;
-	deviceContext->IASetVertexBuffers(0, 1, &FSQuad2, &stride, &offset);
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	deviceContext->PSSetShaderResources(1, 1, &view);
+	UINT stride = 12, offset = 0;
+	deviceContext->IASetVertexBuffers(0, 1, &GUIvb, &stride, &offset);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	UINT sampleMask = 0xffffffff;
@@ -259,7 +267,7 @@ void Graphics::Renderer::drawGUI()
 
 	shaderHandler.setShaders(shaders[2], NO_SHADER, shaders[3], deviceContext);
 
-	deviceContext->Draw(4, 0);
+	deviceContext->Draw(12, 0);
 
 
 	ID3D11ShaderResourceView * SRVNULL = nullptr;
@@ -281,6 +289,58 @@ void Graphics::Renderer::createBlendState()
 	BlendState.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 	
 	ThrowIfFailed(this->device->CreateBlendState(&BlendState, &transparencyBlendState));
+}
+
+void Graphics::Renderer::createGUIBuffers()
+{
+	struct GUI
+	{
+		DirectX::SimpleMath::Vector2 verts;
+		UINT element;
+	};
+
+	GUI GUIquad[12];
+	GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.1f, -0.1f };
+	GUIquad[1].verts = DirectX::SimpleMath::Vector2{ -0.1f, 0.1f };
+	GUIquad[2].verts = DirectX::SimpleMath::Vector2{ 0.1f, -0.1f };
+	GUIquad[3].verts = DirectX::SimpleMath::Vector2{ 0.1f, 0.1f };
+	GUIquad[4].verts = GUIquad[2].verts;
+	GUIquad[5].verts = GUIquad[1].verts;
+
+	GUIquad[0].element = 0;
+	GUIquad[1].element = 0;
+	GUIquad[2].element = 0;
+	GUIquad[3].element = 0;
+	GUIquad[4].element = 0;
+	GUIquad[5].element = 0;
+
+
+	GUIquad[6].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
+	GUIquad[7].verts = DirectX::SimpleMath::Vector2{ -1.0f, -0.8f };
+	GUIquad[8].verts = DirectX::SimpleMath::Vector2{ -0.7f, -1.0f };
+	GUIquad[9].verts = DirectX::SimpleMath::Vector2{ -0.7f, -0.8f };
+	GUIquad[10].verts = GUIquad[8].verts;
+	GUIquad[11].verts = GUIquad[7].verts;
+
+	GUIquad[6].element = 1;
+	GUIquad[7].element = 1;
+	GUIquad[8].element = 1;
+	GUIquad[9].element = 1;
+	GUIquad[10].element = 1;
+	GUIquad[11].element = 1;
+
+	D3D11_BUFFER_DESC desc;
+	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
+
+	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	desc.ByteWidth = sizeof(GUIquad);
+
+	D3D11_SUBRESOURCE_DATA data;
+	ZeroMemory(&data, sizeof(D3D11_SUBRESOURCE_DATA));
+	data.pSysMem = GUIquad;
+
+
+	ThrowIfFailed(device->CreateBuffer(&desc, &data, &GUIvb));
 }
 
 void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)

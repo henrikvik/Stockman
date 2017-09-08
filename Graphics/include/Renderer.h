@@ -33,9 +33,7 @@ namespace Graphics
 			int mat;
 		};
 
-		DirectX::SimpleMath::Vector2 crosshairQuad[4] = {};
-
-		DirectX::SimpleMath::Vector2 playerInfoQuad[4] = {};
+		
 		
 
         ID3D11Device * device;
@@ -49,6 +47,7 @@ namespace Graphics
 		ID3D11ShaderResourceView* GUI;
 		ID3D11Buffer * FSQuad2;
 		ID3D11Buffer * defferedTestBuffer;
+		ID3D11Buffer *GUIvb;
 
 		int shaders[4];
 		int defferedShaders[2];
@@ -66,6 +65,7 @@ namespace Graphics
 		void drawDeffered();
 		void drawGUI();
 		void createBlendState();
+		void createGUIBuffers();
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
     };
