@@ -11,30 +11,202 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
     , backBuffer(backBuffer)
 	, resourceManager(device)
 {
-	TestQuad defferedTest[] =
+	using namespace DirectX::SimpleMath;
+
+	TestCube defferedTest[] =
 	{
-		DirectX::SimpleMath::Vector3(-1, -1, 0),
-		DirectX::SimpleMath::Vector2(0, 1),
-		DirectX::SimpleMath::Vector3(0, 0, -1),
+		//FORWARD
+		Vector3(-1, -1, -1),
+		Vector2(0, 0),
+		Vector3(0, 0, -1),
 		1,
 
-		DirectX::SimpleMath::Vector3(-1, 1, 0),
-		DirectX::SimpleMath::Vector2(0, 0),
-		DirectX::SimpleMath::Vector3(0, 0, -1),
+		Vector3(-1, 1, -1),
+		Vector2(0, 1),
+		Vector3(0, 0, -1),
 		1,
 
-		DirectX::SimpleMath::Vector3(1, -1, 0),
-		DirectX::SimpleMath::Vector2(1, 1),
-		DirectX::SimpleMath::Vector3(0, 0, -1),
+		Vector3(1, -1, -1),
+		Vector2(1, 0),
+		Vector3(0, 0, -1),
 		1,
 
-		DirectX::SimpleMath::Vector3(1, 1, 0),
-		DirectX::SimpleMath::Vector2(1, 0),
-		DirectX::SimpleMath::Vector3(0, 0, -1),
+		Vector3(1, -1, -1),
+		Vector2(1, 0),
+		Vector3(0, 0, -1),
+		1,
+
+		Vector3(-1, 1, -1),
+		Vector2(0, 1),
+		Vector3(0, 0, -1),
+		1,
+		
+		Vector3(1, 1, -1),
+		Vector2(1, 1),
+		Vector3(0, 0, -1),
+		1,
+		
+
+		////// TOP
+		Vector3(-1, 1, -1),
+		Vector2(0, 0),
+		Vector3(0, 1, 0),
+		1,
+
+		Vector3(-1, 1, 1),
+		Vector2(0, 1),
+		Vector3(0, 1, 0),
+		1,
+
+		Vector3(1, 1, -1),
+		Vector2(1, 0),
+		Vector3(0, 1, 0),
+		1,
+
+		Vector3(1, 1, -1),
+		Vector2(1, 0),
+		Vector3(0, 1, 0),
+		1,
+
+		Vector3(-1, 1, 1),
+		Vector2(0, 1),
+		Vector3(0, 1, 0),
+		1,
+
+		Vector3(1, 1, 1),
+		Vector2(1, 1),
+		Vector3(0, 1, 0),
+		1,
+		/////// LEFT
+
+		Vector3(-1, -1, 1),
+		Vector2(0, 1),
+		Vector3(-1, 0, 0),
+		1,
+
+		Vector3(-1, 1, 1),
+		Vector2(1, 1),
+		Vector3(-1, 0, 0),
+		1,
+
+		Vector3(-1, -1, -1),
+		Vector2(0, 0),
+		Vector3(-1, 0, 0),
+		1,
+
+		Vector3(-1, -1, -1),
+		Vector2(0, 0),
+		Vector3(-1, 0, 0),
+		1,
+
+		Vector3(-1, 1, 1),
+		Vector2(1, 1),
+		Vector3(-1, 0, 0),
+		1,
+
+		Vector3(-1, 1, -1),
+		Vector2(1, 0),
+		Vector3(-1, 0, 0),
+		1,
+
+		/////RIGHT
+
+		Vector3(1, 1, 1),
+		Vector2(1, 1),
+		Vector3(1, 0, 0),
+		1,
+
+		Vector3(1, -1, 1),
+		Vector2(0, 1),
+		Vector3(1, 0, 0),
+		1,
+
+		Vector3(1, -1, -1),
+		Vector2(0, 0),
+		Vector3(1, 0, 0),
+		1,
+
+		Vector3(1, 1, 1),
+		Vector2(1, 1),
+		Vector3(1, 0, 0),
+		1,
+		
+		Vector3(1, -1, -1),
+		Vector2(0, 0),
+		Vector3(1, 0, 0),
+		1,
+
+		Vector3(1, 1, -1),
+		Vector2(1, 0),
+		Vector3(1, 0, 0),
+		1,
+			//////BACK
+
+		
+		Vector3(-1, 1, 1),
+		Vector2(0, 1),
+		Vector3(0, 0, 1),
+		1,
+
+		Vector3(-1, -1, 1),
+		Vector2(0, 0),
+		Vector3(0, 0, 1),
+		1,
+
+		Vector3(1, -1, 1),
+		Vector2(1, 0),
+		Vector3(0, 0, 1),
+		1,
+
+		Vector3(-1, 1, 1),
+		Vector2(0, 1),
+		Vector3(0, 0, 1),
+		1,
+
+		Vector3(1, -1, 1),
+		Vector2(1, 0),
+		Vector3(0, 0, 1),
+		1,
+
+		Vector3(1, 1, 1),
+		Vector2(1, 1),
+		Vector3(0, 0, 1),
+		1,
+
+		//////BOTTOM
+		Vector3(-1, -1, 1),
+		Vector2(0, 1),
+		Vector3(0, -1, 0),
+		1,
+
+		Vector3(-1, -1, -1),
+		Vector2(0, 0),
+		Vector3(0, -1, 0),
+		1,
+
+		Vector3(1, -1, -1),
+		Vector2(1, 0),
+		Vector3(0, -1, 0),
+		1,
+
+		Vector3(-1, -1, 1),
+		Vector2(0, 1),
+		Vector3(0, -1, 0),
+		1,
+
+		Vector3(1, -1, -1),
+		Vector2(1, 0),
+		Vector3(0, -1, 0),
+		1,
+
+		Vector3(1, -1, 1),
+		Vector2(1, 1),
+		Vector3(0, -1, 0),
 		1
 	};
 
     createGBuffer();
+	createDepthStencil();
 
 	D3D11_VIEWPORT viewPort;
 	viewPort.Height = 720;
@@ -85,6 +257,9 @@ Graphics::Renderer::~Renderer()
 	gbuffer.positionView->Release();
 	defferedTestBuffer->Release();
 
+	dSS->Release();
+	dSV->Release();
+
 
 	
 }
@@ -108,8 +283,8 @@ void Renderer::render(Camera * camera)
     //deviceContext->PSSetConstantBuffers(0, 3, nullptr);
     //deviceContext->OMSetRenderTargets(3, (ID3D11RenderTargetView * const *)&gbuffer, gbuffer.depth);
     
-    ID3D11Buffer *cameraBuffer[] = { camera->getBuffer() };
-    deviceContext->VSSetConstantBuffers(0, 1, cameraBuffer);    
+    ID3D11Buffer *cameraBuffer = camera->getBuffer();
+    deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);    
     cull();
     //draw();
 	
@@ -164,53 +339,98 @@ void Renderer::cull()
     renderQueue.clear();
 }
 
+void Graphics::Renderer::createDepthStencil()
+{
+	D3D11_TEXTURE2D_DESC descTex;
+	ZeroMemory(&descTex, sizeof(descTex));
+	descTex.ArraySize = descTex.MipLevels = 1;
+	descTex.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	descTex.Format = DXGI_FORMAT_D32_FLOAT;
+	descTex.Height = 720;
+	descTex.Width = 1280;
+	descTex.SampleDesc.Count = 1;
+
+	ID3D11Texture2D* texture;
+
+	this->device->CreateTexture2D(&descTex, NULL, &texture);
+
+
+	D3D11_DEPTH_STENCIL_DESC descSten;
+	ZeroMemory(&descSten, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	descSten.DepthEnable = true;
+	descSten.DepthFunc = D3D11_COMPARISON_LESS;
+	descSten.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	descSten.StencilEnable = false;
+
+	this->device->CreateDepthStencilState(&descSten, &this->dSS);
+
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC descStenV;
+	ZeroMemory(&descStenV, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
+	descStenV.Format = DXGI_FORMAT_D32_FLOAT;
+	descStenV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+
+	this->device->CreateDepthStencilView(texture, &descStenV, &this->dSV);
+
+
+	this->deviceContext->OMSetDepthStencilState(this->dSS, 0);
+
+	texture->Release();
+}
+
 void Renderer::draw()
 {
-    // Sort instance id from all meshes
-    D3D11_MAPPED_SUBRESOURCE data = { 0 };
+	// Sort instance id from all meshes
+	D3D11_MAPPED_SUBRESOURCE data = { 0 };
 
 	//TODO: DEN DÄR SAKEN BEHÖVEER NOG INITIERAS FÖRST (instanceBuffer)
-    deviceContext->Map(instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	deviceContext->Map(instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 
-    DWORD offset = 0;
-    for (InstanceQueue_t::value_type & pair : instanceQueue)
-    {
-        memcpy((void*)((DWORD)data.pData + offset), &pair.second.begin(), sizeof(pair.second));
-        offset += sizeof(pair.second);
-    }
-    
-    deviceContext->Unmap(instanceBuffer, 0);
+	DWORD offset = 0;
+	for (InstanceQueue_t::value_type & pair : instanceQueue)
+	{
+		memcpy((void*)((DWORD)data.pData + offset), &pair.second.begin(), sizeof(pair.second));
+		offset += sizeof(pair.second);
+	}
+
+	deviceContext->Unmap(instanceBuffer, 0);
 
 
-    // draw all instanced meshes
-    for (InstanceQueue_t::value_type & pair : instanceQueue)
-    {
-        //getVertexBuffer(pair.first);
-        //deviceContext->DrawInstanced()
-    }
+	// draw all instanced meshes
+	for (InstanceQueue_t::value_type & pair : instanceQueue)
+	{
+		//getVertexBuffer(pair.first);
+		//deviceContext->DrawInstanced()
+	}
 }
 
 void Renderer::drawDeffered()
 {
-	
-	ID3D11RenderTargetView * RTVS[] = 
+
+	ID3D11RenderTargetView * RTVS[] =
 	{
 		gbuffer.diffuseSpec,
 		gbuffer.normalMat,
 		gbuffer.position
 	};
+	float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	deviceContext->ClearRenderTargetView(gbuffer.diffuseSpec, clearColor);
+	deviceContext->ClearRenderTargetView(gbuffer.normalMat, clearColor);
+	deviceContext->ClearRenderTargetView(gbuffer.position, clearColor);
+	deviceContext->ClearDepthStencilView(dSV, D3D11_CLEAR_DEPTH, 1, 0);
 
-	deviceContext->OMSetRenderTargets(3, RTVS, nullptr);
-	
+	deviceContext->OMSetRenderTargets(3, RTVS, dSV);
+	deviceContext->PSSetShaderResources(0, 1, &this->view);
+
 	resourceManager.setShaders(VertexShaderID::VERTEX_DEFFERED, PixelShaderID::PIXEL_DEFFERED, deviceContext);
 	resourceManager.setSampler(SamplerID::pointSampler, deviceContext);
 	//textur här typ
 
 	UINT stride = 36, offset = 0;
 	deviceContext->IASetVertexBuffers(0, 1, &defferedTestBuffer, &stride, &offset);
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	deviceContext->Draw(4, 0);
+	deviceContext->Draw(36, 0);
 
 	ID3D11RenderTargetView * RTVNULLS[] =
 	{
@@ -223,7 +443,18 @@ void Renderer::drawDeffered()
 
 void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 {
-    deviceContext->PSSetShaderResources(0, 1, &texture);
+	float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+
+	ID3D11ShaderResourceView * SRVS[] =
+	{
+		gbuffer.diffuseSpecView,
+		gbuffer.normalMatView,
+		gbuffer.positionView
+	};
+
+	deviceContext->PSSetShaderResources(0, 3, SRVS);
+
     UINT stride = sizeof(DirectX::SimpleMath::Vector2), offset = 0;
     deviceContext->IASetVertexBuffers(0, 1, &FSQuad2, &stride, &offset);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -235,8 +466,12 @@ void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 
 	deviceContext->Draw(4, 0);
 
-
-	ID3D11ShaderResourceView * SRVNULL = nullptr;
-	deviceContext->PSSetShaderResources(0, 1, &SRVNULL);
+	ID3D11ShaderResourceView * SRVNULLS[] =
+	{
+		NULL,
+		NULL,
+		NULL
+	};
+	deviceContext->PSSetShaderResources(0, 3, SRVNULLS);
 }
 

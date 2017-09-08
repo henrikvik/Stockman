@@ -21,11 +21,13 @@ VSOut VS(VSIn vsin)
     return vsout;
 }
 
-Texture2D textureeee : register(t0);
+Texture2D albedoSpec : register(t0);
+Texture2D normalMat : register(t1);
+Texture2D pos : register(t2);
 SamplerState sState;
 
 float4 PS(VSOut psin) : SV_Target0
 {
     //return float4(0.2, 1, 1, 1);
-    return float4(textureeee.Sample(sState, psin.uv).xyz, 1);
+    return float4(albedoSpec.Sample(sState, psin.uv).xyz, 1);
 };
