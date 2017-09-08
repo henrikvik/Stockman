@@ -19,7 +19,7 @@ namespace Logic
 		Game* operator=(const Game& other) = delete;
 		~Game();
 
-		bool init(DirectX::Keyboard* mKeyboard);
+		bool init();
 		void clear();
 
 		void update(float deltaTime);

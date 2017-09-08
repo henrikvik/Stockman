@@ -235,7 +235,7 @@ int Engine::run()
 				this->isFullscreen = !isFullscreen;
 			}
 
-			game.update(float(deltaTime), &ks);
+			game.update(float(deltaTime));
 
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
