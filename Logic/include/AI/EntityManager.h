@@ -22,12 +22,13 @@ namespace Logic
 	class EntityManager
 	{
 	private:
-		std::vector<bool> m_enemiesDeadBool; // For performence
-		std::vector<Enemy*> m_enemies;
+		std::vector<Enemy*> m_enemies, m_bossEnemies, m_deadEnemies;
+		std::vector<double> time;
 
 		WaveManager m_waveManager;
 		int m_currentWave;
 
+		void reserveData(); // reserve space in vectors
 	public:
 		EntityManager();
 		EntityManager(EntityManager const &entityManager) = delete;
