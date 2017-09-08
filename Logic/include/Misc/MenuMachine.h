@@ -16,6 +16,7 @@
 
 
 #include <vector>
+#include <map>
 #include "Misc\Enums.h"
 #include "Entity\Object.h"
 
@@ -26,12 +27,11 @@ namespace Logic
 	private:
 		struct MenuState
 		{
-			std::string m_state;				//< Name of the menu state
 			std::vector<Object> m_buttons;		//< List of buttons on current menu
 			std::string m_menuTexture;			//< file path for the menu background
 		};
 
-		std::vector<MenuState> m_menuStates;
+		std::map<GameState, MenuState*> m_menuStates;
 
 		MenuState* currentActive;
 	public:
