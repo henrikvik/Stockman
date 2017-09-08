@@ -9,7 +9,7 @@
 	AUTHOR: Lukas Westling
 
 	This class handles the Enemy and
-	its flags is in EntityManager
+	its flags is handled by EntityManager
 
 	But wait? Why cant i check if an enemy is dead???
 	That is because that is very slow and waste of cachelines!
