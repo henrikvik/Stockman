@@ -122,6 +122,7 @@ HRESULT Engine::createSwapChain()
 	desc.Windowed = true;
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
+	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -231,7 +232,6 @@ int Engine::run()
 			DirectX::Keyboard::State ks = this->mKeyboard->GetState();
 			if (ks.F11)
 			{
-
 				mSwapChain->SetFullscreenState(!isFullscreen, NULL);
 				this->isFullscreen = !isFullscreen;
 			}
