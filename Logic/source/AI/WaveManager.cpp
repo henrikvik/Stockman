@@ -11,6 +11,11 @@ WaveManager::~WaveManager()
 {
 }
 
+std::vector<int> Logic::WaveManager::getEnemies(int waveId)
+{
+	return std::vector<int>();
+}
+
 void Logic::WaveManager::setName(std::string name)
 {
 	m_waveFileName = name;
