@@ -21,7 +21,7 @@ bool Game::init()
 	entity.spawnWave();
 	while (true) {
 		entity.update(5.f);
-		std::this_thread::sleep_for(std::chrono::seconds(2));
+		std::this_thread::sleep_for(std::chrono::milliseconds(400));
 	}
 	// TESTING REMOVE REMOVE REMOVE RMEOVE REOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVE
 

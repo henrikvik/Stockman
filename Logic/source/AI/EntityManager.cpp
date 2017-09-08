@@ -56,7 +56,7 @@ void EntityManager::update(float deltaTime)
 
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-	time.push_back(elapsed_secs);
+	printf("t: %f\n", elapsed_secs);
 }
 
 void EntityManager::spawnWave() 
@@ -67,6 +67,7 @@ void EntityManager::spawnWave()
 	for (int i = 0; i < enemies.size(); i++) 
 	{
 		m_enemies.push_back(new EnemyTest());
+		m_deadEnemies.push_back(new EnemyTest());
 	}
 }
 
