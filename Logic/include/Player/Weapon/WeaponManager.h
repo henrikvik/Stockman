@@ -30,10 +30,8 @@ namespace Logic
 
 		void switchWeapon(int weaponID);
 
-		void switchToPrimary();
-		void switchToSecondary();
-
-		void useCurrentWeapon();
+		void useSecondary();
+		void usePrimary();
 
 	private:
 
@@ -41,9 +39,8 @@ namespace Logic
 		void makeWeaponLoadout();
 
 		std::vector<Weapon> m_allWeapons;
-		std::vector<std::pair<Weapon*, Weapon*>*> m_weaponsLoadouts;
+		std::vector<std::pair<Weapon*, Weapon*>> m_weaponsLoadouts;
 		std::pair<Weapon*, Weapon*> m_currentWeapon;
-		Weapon* m_currentWeaponMode;
 	};
 }
 #endif
