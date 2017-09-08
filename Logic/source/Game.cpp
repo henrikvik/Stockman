@@ -1,6 +1,6 @@
 #include "Game.h"
 
-
+#include <AI/EntityManager.h>
 using namespace Logic;
 
 Game::Game()
@@ -13,6 +13,14 @@ Game::~Game() { }
 bool Game::init()
 {
 	bool result;
+
+
+	// TESTING REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE 
+	EntityManager entity;
+	entity.spawnWave();
+	while (true)
+		entity.update(5.f);
+	// TESTING REMOVE REMOVE REMOVE RMEOVE REOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVE
 
 	// Initializing Bullet physics
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();	// Configuration
