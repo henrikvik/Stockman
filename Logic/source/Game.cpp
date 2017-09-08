@@ -10,7 +10,7 @@ Game::Game()
 
 Game::~Game() { }
 
-bool Game::init()
+bool Game::init(DirectX::Keyboard* mKeyboard)
 {
 	m_player = new Player();
 
@@ -32,10 +32,13 @@ void Game::clear()
 	// Deleting physics
 	m_physics->clear();
 	delete m_physics;
+
+	// Deleting player
+	m_player->clear();
 	delete m_player;
 }
 
-void Game::update(float deltaTime, DirectX::Keyboard::State* mKeyboard)
+void Game::update(float deltaTime)
 {
 	// Updating physics
 	m_physics->update(deltaTime);
