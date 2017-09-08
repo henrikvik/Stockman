@@ -32,7 +32,7 @@ void Player::clear()
 {
 }
 
-void Player::onCollision(const Entity& other)
+void Player::onCollision(Entity& other)
 {
 }
 
