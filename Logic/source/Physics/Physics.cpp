@@ -50,5 +50,5 @@ void Physics::update(float deltaTime)
 	btTransform trans;
 	this->getNumCollisionObjects();
 
-	printf("%d", this->getNumCollisionObjects());
+//	printf("%d", this->getNumCollisionObjects());
 }
