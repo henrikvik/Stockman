@@ -13,6 +13,7 @@ Game::~Game() { }
 bool Game::init()
 {
 	m_player = new Player();
+	m_player->init();
 
 	bool result;
 

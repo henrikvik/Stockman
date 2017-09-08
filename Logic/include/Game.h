@@ -7,7 +7,8 @@
 #include "Physics\Physics.h"
 
 #include <Windows.h>
-#include "Keyboard.h"
+#include <Keyboard.h>
+#include <Mouse.h>
 
 namespace Logic
 {
