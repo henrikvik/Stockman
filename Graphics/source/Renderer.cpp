@@ -15,192 +15,193 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 
 	TestCube defferedTest[] =
 	{
+		//FORWARD
 		Vector3(-1, -1, -1),
-		Vector2(0, 1),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(-1, 1, -1),
 		Vector2(0, 0),
 		Vector3(0, 0, -1),
 		1,
 
-		Vector3(1, -1, -1),
-		Vector2(1, 1),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, -1, -1),
-		Vector2(1, 1),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(-1, 1, -1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
-		1,
-		
-		Vector3(1, 1, -1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
-		1,
-		
-
-		//////
 		Vector3(-1, 1, -1),
 		Vector2(0, 1),
 		Vector3(0, 0, -1),
 		1,
 
-		Vector3(-1, 1, 1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, 1, -1),
-		Vector2(1, 1),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, 1, -1),
-		Vector2(1, 1),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(-1, 1, 1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, 1, 1),
-		Vector2(1, 0),
-		Vector3(0, 0, -1),
-		1,
-		///////
-
-		Vector3(-1, -1, 1),
+		Vector3(1, -1, -1),
 		Vector2(1, 0),
 		Vector3(0, 0, -1),
 		1,
 
-		Vector3(-1, 1, 1),
-		Vector2(1, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(-1, -1, -1),
-		Vector2(1, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(-1, -1, -1),
-		Vector2(1, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(-1, 1, 1),
+		Vector3(1, -1, -1),
 		Vector2(1, 0),
 		Vector3(0, 0, -1),
 		1,
 
 		Vector3(-1, 1, -1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		/////
-
-		Vector3(1, 1, 1),
-		Vector2(1, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, -1, 1),
-		Vector2(1, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, -1, -1),
-		Vector2(1, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, 1, 1),
-		Vector2(1, 0),
+		Vector2(0, 1),
 		Vector3(0, 0, -1),
 		1,
 		
-		Vector3(1, -1, -1),
-		Vector2(1, 0),
+		Vector3(1, 1, -1),
+		Vector2(1, 1),
 		Vector3(0, 0, -1),
+		1,
+		
+
+		////// TOP
+		Vector3(-1, 1, -1),
+		Vector2(0, 0),
+		Vector3(0, 1, 0),
+		1,
+
+		Vector3(-1, 1, 1),
+		Vector2(0, 1),
+		Vector3(0, 1, 0),
 		1,
 
 		Vector3(1, 1, -1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
+		Vector2(1, 0),
+		Vector3(0, 1, 0),
 		1,
-			//////
 
-		
+		Vector3(1, 1, -1),
+		Vector2(1, 0),
+		Vector3(0, 1, 0),
+		1,
+
 		Vector3(-1, 1, 1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(-1, -1, 1),
 		Vector2(0, 1),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, -1, 1),
-		Vector2(1, 1),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(-1, 1, 1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, -1, 1),
-		Vector2(1, 1),
-		Vector3(0, 0, -1),
+		Vector3(0, 1, 0),
 		1,
 
 		Vector3(1, 1, 1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
+		Vector2(1, 1),
+		Vector3(0, 1, 0),
+		1,
+		/////// LEFT
+
+		Vector3(-1, -1, 1),
+		Vector2(0, 1),
+		Vector3(-1, 0, 0),
 		1,
 
-		//////
-		Vector3(-1, -1, 1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
+		Vector3(-1, 1, 1),
+		Vector2(1, 1),
+		Vector3(-1, 0, 0),
 		1,
 
 		Vector3(-1, -1, -1),
+		Vector2(0, 0),
+		Vector3(-1, 0, 0),
+		1,
+
+		Vector3(-1, -1, -1),
+		Vector2(0, 0),
+		Vector3(-1, 0, 0),
+		1,
+
+		Vector3(-1, 1, 1),
+		Vector2(1, 1),
+		Vector3(-1, 0, 0),
+		1,
+
+		Vector3(-1, 1, -1),
+		Vector2(1, 0),
+		Vector3(-1, 0, 0),
+		1,
+
+		/////RIGHT
+
+		Vector3(1, 1, 1),
+		Vector2(1, 1),
+		Vector3(1, 0, 0),
+		1,
+
+		Vector3(1, -1, 1),
 		Vector2(0, 1),
-		Vector3(0, 0, -1),
+		Vector3(1, 0, 0),
 		1,
 
 		Vector3(1, -1, -1),
+		Vector2(0, 0),
+		Vector3(1, 0, 0),
+		1,
+
+		Vector3(1, 1, 1),
 		Vector2(1, 1),
-		Vector3(0, 0, -1),
+		Vector3(1, 0, 0),
+		1,
+		
+		Vector3(1, -1, -1),
+		Vector2(0, 0),
+		Vector3(1, 0, 0),
+		1,
+
+		Vector3(1, 1, -1),
+		Vector2(1, 0),
+		Vector3(1, 0, 0),
+		1,
+			//////BACK
+
+		
+		Vector3(-1, 1, 1),
+		Vector2(0, 1),
+		Vector3(0, 0, 1),
 		1,
 
 		Vector3(-1, -1, 1),
 		Vector2(0, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, -1, -1),
-		Vector2(1, 1),
-		Vector3(0, 0, -1),
+		Vector3(0, 0, 1),
 		1,
 
 		Vector3(1, -1, 1),
 		Vector2(1, 0),
-		Vector3(0, 0, -1),
+		Vector3(0, 0, 1),
+		1,
+
+		Vector3(-1, 1, 1),
+		Vector2(0, 1),
+		Vector3(0, 0, 1),
+		1,
+
+		Vector3(1, -1, 1),
+		Vector2(1, 0),
+		Vector3(0, 0, 1),
+		1,
+
+		Vector3(1, 1, 1),
+		Vector2(1, 1),
+		Vector3(0, 0, 1),
+		1,
+
+		//////BOTTOM
+		Vector3(-1, -1, 1),
+		Vector2(0, 1),
+		Vector3(0, -1, 0),
+		1,
+
+		Vector3(-1, -1, -1),
+		Vector2(0, 0),
+		Vector3(0, -1, 0),
+		1,
+
+		Vector3(1, -1, -1),
+		Vector2(1, 0),
+		Vector3(0, -1, 0),
+		1,
+
+		Vector3(-1, -1, 1),
+		Vector2(0, 1),
+		Vector3(0, -1, 0),
+		1,
+
+		Vector3(1, -1, -1),
+		Vector2(1, 0),
+		Vector3(0, -1, 0),
+		1,
+
+		Vector3(1, -1, 1),
+		Vector2(1, 1),
+		Vector3(0, -1, 0),
 		1
 	};
 
@@ -419,6 +420,7 @@ void Renderer::drawDeffered()
 	deviceContext->ClearDepthStencilView(dSV, D3D11_CLEAR_DEPTH, 1, 0);
 
 	deviceContext->OMSetRenderTargets(3, RTVS, dSV);
+	deviceContext->PSSetShaderResources(0, 1, &this->view);
 
 	resourceManager.setShaders(VertexShaderID::VERTEX_DEFFERED, PixelShaderID::PIXEL_DEFFERED, deviceContext);
 	resourceManager.setSampler(SamplerID::pointSampler, deviceContext);
@@ -444,7 +446,15 @@ void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 	float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	deviceContext->ClearRenderTargetView(backBuffer, clearColor);
 
-    deviceContext->PSSetShaderResources(0, 1, &texture);
+	ID3D11ShaderResourceView * SRVS[] =
+	{
+		gbuffer.diffuseSpecView,
+		gbuffer.normalMatView,
+		gbuffer.positionView
+	};
+
+	deviceContext->PSSetShaderResources(0, 3, SRVS);
+
     UINT stride = sizeof(DirectX::SimpleMath::Vector2), offset = 0;
     deviceContext->IASetVertexBuffers(0, 1, &FSQuad2, &stride, &offset);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -456,8 +466,12 @@ void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 
 	deviceContext->Draw(4, 0);
 
-
-	ID3D11ShaderResourceView * SRVNULL = nullptr;
-	deviceContext->PSSetShaderResources(0, 1, &SRVNULL);
+	ID3D11ShaderResourceView * SRVNULLS[] =
+	{
+		NULL,
+		NULL,
+		NULL
+	};
+	deviceContext->PSSetShaderResources(0, 3, SRVNULLS);
 }
 
