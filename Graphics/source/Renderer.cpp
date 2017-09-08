@@ -226,7 +226,7 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 	data.pSysMem = FSQuadVerts;
 
 	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &FSQuad2));
-	ThrowIfFailed( DirectX::CreateWICTextureFromFile(device, L"cat.jpg", nullptr, &view));
+	ThrowIfFailed( DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("cat.jpg"), nullptr, &view));
 
 
 	bufferDesc.ByteWidth = sizeof(defferedTest);
