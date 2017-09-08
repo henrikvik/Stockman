@@ -10,7 +10,8 @@
 #pragma endregion
 
 #include <Windows.h>
-#include "Keyboard.h"
+#include <Keyboard.h>
+#include <Mouse.h>
 
 #include "Entity\Entity.h"
 #include "ActionManager.h"
@@ -21,7 +22,6 @@ namespace Logic
 	{
 	private:
 		ActionManager m_actionManager;
-		DirectX::Keyboard* m_keyboard;
 
 		// Keys
 		DirectX::Keyboard::Keys m_keyoveLeft;
@@ -35,8 +35,6 @@ namespace Logic
 		DirectX::Keyboard::Keys m_switchWeaponSecondary;
 		DirectX::Keyboard::Keys m_switchWeaponMelee;
 		DirectX::Keyboard::Keys m_useSkill;
-		DirectX::Keyboard::Keys m_firePrimary;
-		DirectX::Keyboard::Keys m_fireSecondary;
 
 		// Movement
 		void move(float deltaTime, DirectX::Keyboard::State* ks);
@@ -47,7 +45,7 @@ namespace Logic
 		Player();
 		~Player();
 
-		bool init(DirectX::Keyboard* mKeyboard);
+		bool init();
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(const Entity& other);

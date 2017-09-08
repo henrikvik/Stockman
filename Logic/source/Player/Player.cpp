@@ -10,9 +10,8 @@ Player::~Player()
 {
 }
 
-bool Logic::Player::init(DirectX::Keyboard* mKeyboard)
+bool Logic::Player::init()
 {
-	m_keyboard = mKeyboard;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -38,7 +37,8 @@ void Player::onCollision(const Entity& other)
 
 void Player::updateSpecific(float deltaTime)
 {
-	DirectX::Keyboard::State ks = m_keyboard->GetState();
+	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
+	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
 	move(deltaTime, &ks);
 	jump(deltaTime);
@@ -60,11 +60,11 @@ void Player::updateSpecific(float deltaTime)
 		// m_actionManager.useSkill();
 		false;
 
-	if (ks.IsKeyDown(m_firePrimary))
+	if ((ms.leftButton))
 		// m_actionManager.firePrimary();
 		false;
 
-	if (ks.IsKeyDown(m_fireSecondary))
+	if (ms.rightButton)
 		// m_actionManager.fireSecondary();
 		false;
 
