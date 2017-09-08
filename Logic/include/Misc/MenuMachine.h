@@ -23,16 +23,26 @@ namespace Logic
 {
 	class MenuMachine
 	{
+	private:
+		struct MenuState
+		{
+			std::string m_state;				//< Name of the menu state
+			std::vector<Object> m_buttons;		//< List of buttons on current menu
+			std::string m_menuTexture;			//< file path for the menu background
+		};
+
+		std::vector<MenuState> m_menuStates;
+
+		MenuState* currentActive;
 	public:
 		MenuMachine();
 		~MenuMachine();
 
 		void showMenu(GameState state);		//< Creates a menu layout
 		void removeMenu();					//< Removes current menu layout
-	private:
-		std::vector<Object> m_buttons;		//< List of buttons on current menu
-
 		void readMenuLayoutFromFile();		//< Load menu layout from file
+	
+
 	};
 }
 
