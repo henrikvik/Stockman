@@ -1,4 +1,4 @@
-#include "..\..\include\BRFImportHandler.h"
+#include <BRFImportHandler.h>
 
 BRFImportHandler::BRFImportHandler()
 {

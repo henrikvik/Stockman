@@ -1,5 +1,5 @@
 #pragma once
-#include <Includes.h>
+
 #include <Datatypes.h>
 #include <Engine\Constants.h>
 
@@ -9,8 +9,7 @@ public:
 	unsigned int	animationCount = 0;
 
 	Mesh(bool hasSkeleton, unsigned int skeletonID, unsigned int materialID);
-	Mesh();
-	Mesh(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);
+
 	~Mesh();
 
 	void Initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);

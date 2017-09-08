@@ -1,8 +1,9 @@
 #pragma once
-
-#include <Includes.h>
+#include <vector>
 #include <Datatypes.h>
 #include <Resources/Mesh.h>
+
+using namespace std;
 
 class MeshManager
 {

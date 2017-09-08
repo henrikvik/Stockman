@@ -1,5 +1,5 @@
 #pragma once
-#include <Includes.h>
+#include <vector>
 #include <Datatypes.h>
 
 class MaterialManager
@@ -12,6 +12,6 @@ public:
 
 
 private:
-	vector<Material>* materials;
+	std::vector<Material>* materials;
 };
 

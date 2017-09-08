@@ -162,17 +162,27 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\BRFImportHandler.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Constants.h" />
+    <ClInclude Include="include\Datatypes.h" />
     <ClInclude Include="include\Graphics.h" />
     <ClInclude Include="include\Renderer.h" />
-    <ClInclude Include="include\ResourceManager.h" />
+    <ClInclude Include="include\Resources\Importerstructs.h" />
+    <ClInclude Include="include\Resources\MaterialManager.h" />
+    <ClInclude Include="include\Resources\Mesh.h" />
+    <ClInclude Include="include\Resources\MeshManager.h" />
+    <ClInclude Include="include\Resources\ResourceManager.h" />
     <ClInclude Include="include\ShaderHandler.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\ResourceManager.cpp" />
+    <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
+    <ClCompile Include="include\Resources\MaterialManager.cpp" />
+    <ClCompile Include="include\Resources\Mesh.cpp" />
+    <ClCompile Include="include\Resources\MeshManager.cpp" />
+    <ClCompile Include="source\ResourceManager2.cpp" />
     <ClCompile Include="source\ShaderHandler.cpp" />
     <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\Renderer.cpp" />

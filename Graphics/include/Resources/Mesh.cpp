@@ -9,10 +9,6 @@ Mesh::Mesh(bool hasSkeleton, unsigned int skeletonID, unsigned int materialID)
 	this->materialID = materialID;
 }
 
-Mesh::Mesh()
-{
-}
-
 Mesh::~Mesh()
 {
 	if (vertices != nullptr)
