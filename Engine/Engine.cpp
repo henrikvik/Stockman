@@ -46,6 +46,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mWidth = width;
 	this->hInstance = hInstance;
 	this->initializeWindow();
+	this->initializeGame();
 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
@@ -189,6 +190,17 @@ long long Engine::timer()
 	}
 }
 
+bool Engine::initializeGame()
+{
+	bool result;
+
+	// Trying to start game
+	result = game.init();
+
+	return result;
+}
+
+
 int Engine::run()
 {
 	MSG msg = { 0 };
@@ -226,6 +238,7 @@ int Engine::run()
 			
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
+			game.update(float(deltaTime));
 		}
 	}
 	return 0;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -99,11 +99,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -111,11 +115,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -125,6 +133,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -132,6 +141,9 @@
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -141,6 +153,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -148,6 +161,9 @@
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Misc\HighScoreManager.h" />
@@ -166,6 +182,7 @@
     <ClInclude Include="include\Misc\MenuMachine.h" />
     <ClInclude Include="include\Misc\RenderRegister.h" />
     <ClInclude Include="include\Misc\StateMachine.h" />
+    <ClInclude Include="include\Physics\Physics.h" />
     <ClInclude Include="include\Player\ActionManager.h" />
     <ClInclude Include="include\Player\Player.h" />
     <ClInclude Include="include\Player\Skill\Skill.h" />
@@ -204,6 +221,7 @@
     <ClCompile Include="source\Misc\CardManager.cpp" />
     <ClCompile Include="source\Misc\RenderRegister.cpp" />
     <ClCompile Include="source\Misc\StateMachine.cpp" />
+    <ClCompile Include="source\Physics\Physics.cpp" />
     <ClCompile Include="source\Player\Player.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
     <ClCompile Include="source\Game.cpp" />
@@ -217,6 +235,17 @@
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />
     <Text Include="source\Player\Skill\gitinclude.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\Bullet3Collision\Bullet3Collision.vcxproj">
+      <Project>{ced1eef6-5cf9-3b24-b52c-c0f0ac9ea646}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\Bullet3Dynamics\Bullet3Dynamics.vcxproj">
+      <Project>{4f3cbdaa-40a6-3d93-aebc-11e11302289c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\LinearMath\LinearMath.vcxproj">
+      <Project>{87c7a4ea-cae6-3c84-9785-abc44c822e9c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
