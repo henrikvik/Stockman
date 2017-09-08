@@ -23,3 +23,8 @@ void EnemyTest::updateSpec(float deltaTime)
 	int i = 5000 * 7000;
 	if (i / 3 / 2 / 5 / 3 == 0) i = 3; // pressure
 }
+
+void EnemyTest::deadUpdate(float deltaTime)
+{
+	// x _ x
+}

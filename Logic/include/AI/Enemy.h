@@ -23,15 +23,23 @@ namespace Logic
 	class Enemy : public Entity 
 	{
 		private:
-			float m_health, m_baseDamage; 
+			float m_health, m_maxHealth, m_baseDamage; 
 			int m_enemyType;
 			// Animation m_animation;
 		public:	
-			Enemy(float health, float baseDamage, int enemyType, int animationId);
+			Enemy(float maxHealth, float baseDamage, int enemyType, int animationId);
 			virtual ~Enemy();
 
 			virtual void update(float deltaTime);
+			virtual void deadUpdate(float deltaTime) = 0;
 			virtual void updateSpec(float deltaTime) = 0;
+
+			void damage(float damage);
+
+			float getHealth() const;
+			float getMaxHealth() const;
+			float getBaseDamage() const;
+			int getEnemyType() const;
 	};
 }
 

@@ -16,3 +16,28 @@ Enemy::~Enemy() {
 void Enemy::update(float deltaTime) {
 	updateSpec(deltaTime);
 }
+
+void Enemy::damage(float damage)
+{
+	m_health -= damage;
+}
+
+float Enemy::getHealth() const
+{
+	return m_health;
+}
+
+float Enemy::getMaxHealth() const
+{
+	return m_maxHealth;
+}
+
+float Enemy::getBaseDamage() const
+{
+	return m_baseDamage;
+}
+
+int Enemy::getEnemyType() const
+{
+	return m_enemyType;
+}
