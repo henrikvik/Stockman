@@ -5,14 +5,14 @@ using namespace Logic;
 Game::Game()
 {
 	m_physics = nullptr;
-	//m_player = nullptr;
+	m_player = nullptr;
 }
 
 Game::~Game() { }
 
 bool Game::init()
 {
-	//m_player = new Player();
+	m_player = new Player();
 
 	bool result;
 
@@ -32,7 +32,7 @@ void Game::clear()
 	// Deleting physics
 	m_physics->clear();
 	delete m_physics;
-	//delete m_player;
+	delete m_player;
 }
 
 void Game::update(float deltaTime, DirectX::Keyboard::State* mKeyboard)
@@ -41,5 +41,5 @@ void Game::update(float deltaTime, DirectX::Keyboard::State* mKeyboard)
 	m_physics->update(deltaTime);
 
 	// Updating player
-	//m_player->update(deltaTime);
+	m_player->update(deltaTime);
 }
