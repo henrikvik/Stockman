@@ -1,4 +1,5 @@
 #include <Resources/ResourceManager.h>
+#include <Engine\Constants.h>
 
 ResourceManager::ResourceManager(ID3D11Device * device)
 {

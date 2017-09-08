@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include <stdio.h>
 #include "ThrowIfFailed.h"
+#include <Engine\Constants.h>
 
 
 using namespace Graphics;
