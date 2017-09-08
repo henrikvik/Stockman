@@ -1,12 +1,14 @@
 struct VSIn
 {
     float2 pos : POSITION;
+    uint elm : ELEMENT;
 };
 
 struct VSOut
 {
     float4 pos : SV_POSITION;
     float2 uv : UV;
+    uint elm : ELEMENT;
 };
 
 VSOut VS(VSIn vsin)
@@ -18,14 +20,26 @@ VSOut VS(VSIn vsin)
     vsout.uv = vsin.pos;
     vsout.uv = vsout.uv * 0.5 + 0.5;
     vsout.uv.y = 1 - vsout.uv.y;
+
+    vsout.elm = vsin.elm;
     return vsout;
 }
 
-Texture2D textureeee : register(t0);
+Texture2D crosshair : register(t0);
+Texture2D HP : register(t1);
 SamplerState sState;
 
 float4 PS(VSOut psin) : SV_Target0
 {
     //return float4(0.2, 1, 1, 1);
-    return float4(textureeee.Sample(sState, psin.uv).xyzw);
+    //return float4(crosshair.Sample(sState, psin.uv).xyzw);
+
+    if(psin.elm == 0)
+    {
+        return float4(1.0f, 0.0f, 0.0f, 1.0f);
+
+    }else
+    {
+        return float4(0.0f, 1.0f, 0.0f, 1.0f);
+    }
 };
