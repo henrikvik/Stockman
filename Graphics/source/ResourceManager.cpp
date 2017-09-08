@@ -10,8 +10,8 @@ ResourceManager::ResourceManager(ID3D11Device * device)
 		{ "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	shaderHandler.createVertexShader(device, L"FullscreenQuad.hlsl", "VS", desc, ARRAYSIZE(desc));
-	shaderHandler.createPixelhader(device, L"FullscreenQuad.hlsl", "PS");
+	shaderHandler.createVertexShader(device, SHADER_PATH("FullscreenQuad.hlsl"), "VS", desc, ARRAYSIZE(desc));
+	shaderHandler.createPixelhader(device, SHADER_PATH("FullscreenQuad.hlsl"), "PS");
 
 	D3D11_INPUT_ELEMENT_DESC descDeffered[] =
 	{
@@ -22,8 +22,8 @@ ResourceManager::ResourceManager(ID3D11Device * device)
 		{ "OFFSET", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
 	};
 
-	shaderHandler.createVertexShader(device, L"Deffered.hlsl", "VS", descDeffered, ARRAYSIZE(descDeffered));
-	shaderHandler.createPixelhader(device, L"Deffered.hlsl", "PS");
+	shaderHandler.createVertexShader(device, SHADER_PATH("Deffered.hlsl"), "VS", descDeffered, ARRAYSIZE(descDeffered));
+	shaderHandler.createPixelhader(device, SHADER_PATH("Deffered.hlsl"), "PS");
 
 	createSamplerState(device);
 }

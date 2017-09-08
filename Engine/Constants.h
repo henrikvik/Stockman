@@ -1,7 +1,7 @@
 #pragma once
 
-#define WIN_WIDTH 1920
-#define WID_HEIGHT 1080
+#define WIN_WIDTH 1280
+#define WIN_HEIGHT 720
 
 #define SHADOW_WIDTH
 #define SHADOW_HEIGHT
@@ -17,6 +17,8 @@
 #define FPS_CAP		60
 
 #define D3D_DEBUG_INFO
-#define TEXTURE_PATH "textures/"
-#define MODEL_PATH   "models/"
+
+#define TEXTURE_PATH(path) L"Resources/Textures/" path
+#define MODEL_PATH(path)   L"Resources/Models/" path
+#define SHADER_PATH(path) L"Resources/Shaders/" path
 
