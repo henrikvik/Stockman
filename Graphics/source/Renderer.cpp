@@ -175,19 +175,23 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 #pragma endregion
 
 #pragma region Grid params buffer
-	gridParams.numThreadGroups[0] = ceil(1280 / (float)BLOCK_SIZE);
-	gridParams.numThreadGroups[1] = ceil(720 / (float)BLOCK_SIZE);
-	gridParams.numThreadGroups[2] = 1;
 
-	gridParams.numThreads[0] = gridParams.numThreadGroups[0] * BLOCK_SIZE;
-	gridParams.numThreads[1] = gridParams.numThreadGroups[1] * BLOCK_SIZE;
+
+	gridParams.numThreads[0] = ceil(1280 / (float)BLOCK_SIZE);
+	gridParams.numThreads[1] = ceil(720 / (float)BLOCK_SIZE);
 	gridParams.numThreads[2] = 1;
 
+	gridParams.numThreadGroups[0] = ceil(gridParams.numThreads[0] / (float)BLOCK_SIZE);
+	gridParams.numThreadGroups[1] = ceil(gridParams.numThreads[1] / (float)BLOCK_SIZE);
+	gridParams.numThreadGroups[2] = 1;
 	{
 		D3D11_BUFFER_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
 		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		desc.ByteWidth = sizeof(DispatchParams);
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		desc.Usage = D3D11_USAGE_DYNAMIC;
+
 
 		D3D11_SUBRESOURCE_DATA data = { 0 };
 		ZeroMemory(&data, sizeof(data));
@@ -200,13 +204,14 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 #pragma region Generate grid frustums
 	gridFrustumGenerationCS = shaderHandler.createComputeShader(device, L"LightGridGeneration.hlsl", "CS");
 
+	auto gridCount = gridParams.numThreads[0] * gridParams.numThreads[1];
 	{
 		auto sz = sizeof(Frustum);
 		D3D11_BUFFER_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
 		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 		desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-		desc.ByteWidth = sz * 3600;
+		desc.ByteWidth = sz * gridCount;
 		desc.StructureByteStride = sz;
 
 		ThrowIfFailed(device->CreateBuffer(&desc, nullptr, &gridFrustrums));
@@ -219,7 +224,7 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 		desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 		desc.Buffer.FirstElement = 0;
 		desc.Buffer.Flags = 0;
-		desc.Buffer.NumElements = 3600;
+		desc.Buffer.NumElements = gridCount;
 
 		ThrowIfFailed(device->CreateUnorderedAccessView(gridFrustrums, &desc, &gridFrustrumsUAV));
 	}
@@ -228,8 +233,8 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 		D3D11_SHADER_RESOURCE_VIEW_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
 		desc.Format = DXGI_FORMAT_UNKNOWN;
-		desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-		desc.BufferEx.NumElements = 3600;
+		desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+		desc.Buffer.NumElements = gridCount;
 
 		ThrowIfFailed(device->CreateShaderResourceView(gridFrustrums, &desc, &gridFrustrumsSRV));
 	}
@@ -237,12 +242,31 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 
 
 	shaderHandler.setComputeShader(gridFrustumGenerationCS, deviceContext);
-	auto camera_buffer = camera->getBuffer();
-	deviceContext->CSSetConstantBuffers(0, 1, &camera_buffer);
+	ID3D11Buffer *buffers[] = {
+		camera->getBuffer(),
+		gridParamsBuffer,
+	};
+	deviceContext->CSSetConstantBuffers(0, 2, buffers);
 	deviceContext->CSSetUnorderedAccessViews(0, 1, &gridFrustrumsUAV, 0);
-	deviceContext->Dispatch(5, 3, 1);
+
+	deviceContext->Dispatch(gridParams.numThreadGroups[0], gridParams.numThreadGroups[1], 1);
 	ID3D11UnorderedAccessView *reset = nullptr;
 	deviceContext->CSSetUnorderedAccessViews(0, 1, &reset, 0);
+
+
+	gridParams.numThreadGroups[0] = ceil(1280 / (float)BLOCK_SIZE);
+	gridParams.numThreadGroups[1] = ceil(720 / (float)BLOCK_SIZE);
+	gridParams.numThreadGroups[2] = 1;
+
+	gridParams.numThreads[0] = gridParams.numThreadGroups[0] * BLOCK_SIZE;
+	gridParams.numThreads[1] = gridParams.numThreadGroups[1] * BLOCK_SIZE;
+	gridParams.numThreads[2] = 1;
+
+
+	D3D11_MAPPED_SUBRESOURCE mapped_data;
+	deviceContext->Map(gridParamsBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_data);
+	CopyMemory(mapped_data.pData, &gridParams, sizeof(DispatchParams));
+	deviceContext->Unmap(gridParamsBuffer, 0);
 
 #pragma endregion
 
@@ -258,12 +282,22 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 
 		Light lights[NUM_LIGHTS];
 		ZeroMemory(lights, sizeof(lights));
+		lights[0].color = DirectX::SimpleMath::Vector3(1, 1, 1);
+		lights[0].position = DirectX::SimpleMath::Vector3(1, 1, 1);
+		lights[0].range = 4.f;
+		lights[1].color = DirectX::SimpleMath::Vector3(1, 1, 1);
+		lights[1].position = DirectX::SimpleMath::Vector3(4, 1, 3);
+		lights[1].range = 4.f;
+		lights[2].color = DirectX::SimpleMath::Vector3(1, 1, 1);
+		lights[2].position = DirectX::SimpleMath::Vector3(6, 1, 3);
+		lights[2].range = 2.f;
+
 
 		D3D11_SUBRESOURCE_DATA data;
 		ZeroMemory(&data, sizeof(data));
 		data.pSysMem = lights;
 
-		ThrowIfFailed(device->CreateBuffer(&desc, nullptr, &gridLights));
+		ThrowIfFailed(device->CreateBuffer(&desc, &data, &gridLights));
 	}
 
 	{
@@ -320,17 +354,17 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 
 		ID3D11Buffer *buffer;
 
-		ThrowIfFailed(device->CreateBuffer(&desc, &data, &buffer));
-		ThrowIfFailed(device->CreateUnorderedAccessView(buffer, &uavDesc, &gridResetIndexCounterUAV));
-		ThrowIfFailed(device->CreateShaderResourceView(buffer, &srvDesc, &gridResetIndexCounterSRV));
+		ThrowIfFailed(device->CreateBuffer(&desc, &data, &gridResetIndexCounterBuffer));
+		ThrowIfFailed(device->CreateUnorderedAccessView(gridResetIndexCounterBuffer, &uavDesc, &gridResetIndexCounterUAV));
+		ThrowIfFailed(device->CreateShaderResourceView(gridResetIndexCounterBuffer, &srvDesc, &gridResetIndexCounterSRV));
 
-		ThrowIfFailed(device->CreateBuffer(&desc, &data, &buffer));
-		ThrowIfFailed(device->CreateUnorderedAccessView(buffer, &uavDesc, &gridOpaqueIndexCounterUAV));
-		ThrowIfFailed(device->CreateShaderResourceView(buffer, &srvDesc, &gridOpaqueIndexCounterSRV));
+		ThrowIfFailed(device->CreateBuffer(&desc, &data, &gridOpaqueIndexCounterBuffer));
+		ThrowIfFailed(device->CreateUnorderedAccessView(gridOpaqueIndexCounterBuffer, &uavDesc, &gridOpaqueIndexCounterUAV));
+		ThrowIfFailed(device->CreateShaderResourceView(gridOpaqueIndexCounterBuffer, &srvDesc, &gridOpaqueIndexCounterSRV));
 
-		ThrowIfFailed(device->CreateBuffer(&desc, &data, &buffer));
-		ThrowIfFailed(device->CreateUnorderedAccessView(buffer, &uavDesc, &gridTransparentIndexCounterUAV));
-		ThrowIfFailed(device->CreateShaderResourceView(buffer, &srvDesc, &gridTransparentIndexCounterSRV));
+		ThrowIfFailed(device->CreateBuffer(&desc, &data, &gridTransparentIndexCounterBuffer));
+		ThrowIfFailed(device->CreateUnorderedAccessView(gridTransparentIndexCounterBuffer, &uavDesc, &gridTransparentIndexCounterUAV));
+		ThrowIfFailed(device->CreateShaderResourceView(gridTransparentIndexCounterBuffer, &srvDesc, &gridTransparentIndexCounterSRV));
 
 	}
 	#pragma endregion
@@ -381,6 +415,7 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 		desc.Width = gridParams.numThreadGroups[0];
 		desc.Height = gridParams.numThreadGroups[1];
 		desc.SampleDesc.Count = 1;
+		desc.MipLevels = 1;
 		desc.ArraySize = 1;
 
 		D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
@@ -456,6 +491,9 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 
 void Graphics::Renderer::cullLightGrid(Camera * camera)
 {
+	deviceContext->CopyResource(gridOpaqueIndexCounterBuffer, gridResetIndexCounterBuffer);
+	deviceContext->CopyResource(gridTransparentIndexCounterBuffer, gridResetIndexCounterBuffer);
+
 	shaderHandler.setComputeShader(gridCullingCS, deviceContext);
 
 	ID3D11Buffer *bufs[] = {
@@ -502,6 +540,9 @@ float f;
 
 void Graphics::Renderer::drawForward(Camera *camera)
 {
+	FLOAT col[4] = { 0, 0, 0, 1 };
+	deviceContext->ClearRenderTargetView(backBuffer, col);
+
 	f += 0.001;
 	camera->update({ sin(f) * 30, 10, cos(f) * 10 }, { 0, 0, 0 }, deviceContext);
 
@@ -519,6 +560,21 @@ void Graphics::Renderer::drawForward(Camera *camera)
 	deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
 	cullLightGrid(camera);
+
+	shaderHandler.setShaders(planeVS, -1, planePS, deviceContext);
+
+
+	ID3D11ShaderResourceView *SRVs[] = {
+		gridOpaqueIndexListSRV,
+		gridOpaqueLightGridSRV,
+		gridLightsSRV
+	};
+	deviceContext->PSSetShaderResources(0, 3, SRVs);
+	deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
+	deviceContext->Draw(6, 0);
+
+	ZeroMemory(SRVs, sizeof(SRVs));
+	deviceContext->PSSetShaderResources(0, 3, SRVs);
 }
 
 void Renderer::render(Camera * camera)
@@ -549,8 +605,8 @@ void Renderer::render(Camera * camera)
 	drawForward(camera);
 
 	//temp
-	this->drawDeffered();
-	this->drawToBackbuffer(gridDebugSRV);
+	//this->drawDeffered();
+	//this->drawToBackbuffer(gridDebugSRV);
 }
 
 void Renderer::qeueuRender(RenderInfo * renderInfo)
@@ -627,7 +683,6 @@ void Renderer::draw()
 
 void Renderer::drawDeffered()
 {
-	
 	ID3D11RenderTargetView * RTVS[] = 
 	{
 		gbuffer.diffuseSpec,

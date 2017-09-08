@@ -55,11 +55,15 @@ namespace Graphics
 		ID3D11UnorderedAccessView *gridDebugUAV;
 		ID3D11ShaderResourceView *gridDebugSRV;
 
+		ID3D11Buffer *gridResetIndexCounterBuffer;
 		ID3D11UnorderedAccessView *gridResetIndexCounterUAV;
 		ID3D11ShaderResourceView *gridResetIndexCounterSRV;
 
+		ID3D11Buffer *gridOpaqueIndexCounterBuffer;
 		ID3D11UnorderedAccessView *gridOpaqueIndexCounterUAV;
 		ID3D11ShaderResourceView *gridOpaqueIndexCounterSRV;
+
+		ID3D11Buffer *gridTransparentIndexCounterBuffer;
 		ID3D11UnorderedAccessView *gridTransparentIndexCounterUAV;
 		ID3D11ShaderResourceView *gridTransparentIndexCounterSRV;
 

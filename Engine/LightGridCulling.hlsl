@@ -30,7 +30,6 @@
  *
  *  TODO:
  *    - move common forward+ structs and definitions into shared file
- *    - move hardcoded "numThreads" etc. into buffer, harder to mess up
  *    - add option to disable debug texture parts to save memory in release
  */
 
@@ -212,7 +211,7 @@ void TransparentAppendLight(uint lightIndex) {
 void CS(CSInput input)
 {
 	int2 coord = input.dispatchThreadID.xy;
-	float depth = DepthTexture.Load(int3(coord, 0));
+	float depth = DepthTexture.Load(int3(coord, 0)).r;
 
 	uint atomicDepth = asuint(depth);
 	
@@ -240,19 +239,19 @@ void CS(CSInput input)
 	float minDepth = asfloat(MinDepth);
 	float maxDepth = asfloat(MaxDepth);
 
-	float minDepthVS = ClipToView(float4(0, 0, minDepth, 1));
-	float maxDepthVS = ClipToView(float4(0, 0, maxDepth, 1));
-	float nearClipVS = ClipToView(float4(0, 0, 0,        1));
+	float minDepthVS = ClipToView(float4(0, 0, minDepth, 1)).z;
+	float maxDepthVS = ClipToView(float4(0, 0, maxDepth, 1)).z;
+	float nearClipVS = ClipToView(float4(0, 0, 0,        1)).z;
 
 	// TODO: LH/RH?
-	Plane minPlane = { float3(0, 0, 1), minDepthVS };
+	Plane minPlane = { float3(0, 0, -1), -minDepthVS };
 
 	// loop through all lights and test if inside/intersecting with our group
 	// frustum, and add to light list if so
 	for (uint i = input.groupIndex; i < NUM_LIGHTS; i += BLOCK_SIZE * BLOCK_SIZE) {
 		Light light = Lights[i];
 
-		if (light.range == 0) break;
+		if (light.range == 0) continue;
 
 		Sphere pointLight = { light.position.xyz, light.range };
 		if (SphereInsideFrustum(pointLight, GroupFrustum, nearClipVS, maxDepthVS)) {
@@ -303,7 +302,7 @@ void CS(CSInput input)
 	} else if (input.groupThreadID.x == 1 || input.groupThreadID.y == 1) {
 		DebugTexture[coord] = float4(1, 1, 1, 0.5f);
 	} else if (OpaqueLightCount > 0) {
-		float norm = OpaqueLightCount / 50.0f;
+		float norm = OpaqueLightCount / 10.f;
 		float4 col = DebugGradient.SampleLevel(DebugSampler, float2(norm, 0), 0);
 		
 		DebugTexture[coord] = col;

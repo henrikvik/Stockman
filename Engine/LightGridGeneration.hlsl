@@ -8,7 +8,6 @@
  *
  *  TODO:
  *    - move common forward+ structs and definitions into shared file
- *    - move hardcoded "numThreads" etc. into buffer, harder to mess up
  */
 
 
@@ -16,14 +15,21 @@
 #define WIDTH 1280
 #define HEIGHT 720
 
-// Hardcoded since we're a 720p *exclusive* title
-static const uint3 numThreadGroups = uint3(5, 3, 1);
-static const uint3 numThreads = uint3(80, 45, 1);
-
 cbuffer Camera : register(b0)
 {
 	float4x4 ViewProjection;
 	float4x4 InvProjection;
+}
+
+cbuffer DispatchParams : register(b1)
+{
+	// Number of groups dispatched. (This parameter is not available as an HLSL system value!)
+	uint4   numThreadGroups;
+
+	// Total number of threads dispatched. (Also not available as an HLSL system value!)
+	// Note: This value may be less than the actual number of threads executed 
+	// if the screen size is not evenly divisible by the block size.
+	uint4   numThreads;
 }
 
 struct Plane {
