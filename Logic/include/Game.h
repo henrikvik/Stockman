@@ -19,15 +19,15 @@ namespace Logic
 		Game* operator=(const Game& other) = delete;
 		~Game();
 
-		bool init();
+		bool init(DirectX::Keyboard* mKeyboard);
 		void clear();
 
-		void update(float deltaTime, DirectX::Keyboard::State* mKeyboard);
+		void update(float deltaTime);
 	//	void draw(RenderMachine& renderMachine);
 
 	private:
 		Physics* m_physics;
-		//Player* m_player;
+		Player* m_player;
 	};
 }
 

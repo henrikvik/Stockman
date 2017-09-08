@@ -2,7 +2,8 @@
 #define ENTITY_H
 
 #include "Object.h"
-
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
 
 namespace Logic
 {
