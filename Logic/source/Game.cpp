@@ -31,7 +31,7 @@ void Game::clear()
 	delete physics;
 }
 
-void Game::update(float deltaTime)
+void Game::update(float deltaTime, DirectX::Keyboard::State* mKeyboard)
 {
 	// Updating physics
 	physics->update(deltaTime);

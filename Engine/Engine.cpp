@@ -236,11 +236,12 @@ int Engine::run()
 				this->isFullscreen = !isFullscreen;
 			}
 
-			game.update(float(deltaTime));
+			game.update(float(deltaTime), &ks);
 
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
 		}
+		
 	}
 
 	// Delete game content

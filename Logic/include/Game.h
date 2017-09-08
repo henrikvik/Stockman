@@ -4,7 +4,9 @@
 #include <stdio.h>
 
 #include "Physics\Physics.h"
-// #include "Keyboard.h"
+
+#include <Windows.h>
+#include "Keyboard.h"
 
 namespace Logic
 {
@@ -19,7 +21,7 @@ namespace Logic
 		bool init();
 		void clear();
 
-		void update(float deltaTime);
+		void update(float deltaTime, DirectX::Keyboard::State* mKeyboard);
 	//	void draw(RenderMachine& renderMachine);
 
 	private:
