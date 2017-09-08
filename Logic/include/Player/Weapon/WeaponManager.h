@@ -27,7 +27,8 @@ namespace Logic
 
 		// Creates every weapon 
 		void init();
-		void makeWeaponLoadout();
+
+		void switchWeapon(int weaponID);
 
 		void switchToPrimary();
 		void switchToSecondary();
@@ -35,8 +36,14 @@ namespace Logic
 		void useCurrentWeapon();
 
 	private:
-		std::vector<Weapon> m_AllWeapons;
-		std::vector<std::pair<Weapon, Weapon>> m_weapons;
+
+		void initializeWeapons();
+		void makeWeaponLoadout();
+
+		std::vector<Weapon> m_allWeapons;
+		std::vector<std::pair<Weapon*, Weapon*>*> m_weaponsLoadouts;
+		std::pair<Weapon*, Weapon*> m_currentWeapon;
+		Weapon* m_currentWeaponMode;
 	};
 }
 #endif
