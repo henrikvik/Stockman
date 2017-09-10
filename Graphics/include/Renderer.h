@@ -40,13 +40,7 @@ namespace Graphics
 		void createLightGrid(Camera *camera);
 		void cullLightGrid(Camera *camera);
 
-		DispatchParams gridParams;
-		ID3D11Buffer *gridParamsBuffer;
-		ID3D11Buffer *gridFrustrums;
-
 		// TEMP {
-
-		std::array<Light, NUM_LIGHTS> lights;
 
 		ID3D11DepthStencilView *depthDSV;
 		ID3D11ShaderResourceView *depthSRV;
@@ -57,41 +51,6 @@ namespace Graphics
 		void drawForward(Camera *camera);
 
 		// TEMP }
-
-		ID3D11UnorderedAccessView *gridDebugUAV;
-		ID3D11ShaderResourceView *gridDebugSRV;
-
-		ID3D11Buffer *gridResetIndexCounterBuffer;
-		ID3D11UnorderedAccessView *gridResetIndexCounterUAV;
-		ID3D11ShaderResourceView *gridResetIndexCounterSRV;
-
-		ID3D11Buffer *gridOpaqueIndexCounterBuffer;
-		ID3D11UnorderedAccessView *gridOpaqueIndexCounterUAV;
-		ID3D11ShaderResourceView *gridOpaqueIndexCounterSRV;
-
-		ID3D11Buffer *gridTransparentIndexCounterBuffer;
-		ID3D11UnorderedAccessView *gridTransparentIndexCounterUAV;
-		ID3D11ShaderResourceView *gridTransparentIndexCounterSRV;
-
-		ID3D11UnorderedAccessView *gridOpaqueIndexListUAV;
-		ID3D11ShaderResourceView *gridOpaqueIndexListSRV;
-		ID3D11UnorderedAccessView *gridTransparentIndexListUAV;
-		ID3D11ShaderResourceView *gridTransparentIndexListSRV;
-
-		ID3D11UnorderedAccessView *gridOpaqueLightGridUAV;
-		ID3D11ShaderResourceView *gridOpaqueLightGridSRV;
-		ID3D11UnorderedAccessView *gridTransparentLightGridUAV;
-		ID3D11ShaderResourceView *gridTransparentLightGridSRV;
-		
-		ID3D11Buffer *gridLights;
-		ID3D11UnorderedAccessView *gridLightsUAV;
-		ID3D11ShaderResourceView *gridLightsSRV;
-
-		ID3D11UnorderedAccessView *gridFrustrumsUAV;
-		ID3D11ShaderResourceView *gridFrustrumsSRV;
-		ID3D11ShaderResourceView *gradientSRV;
-		int gridFrustumGenerationCS;
-		int gridCullingCS;
 
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;

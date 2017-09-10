@@ -162,11 +162,11 @@ StructuredBuffer<Frustum> Frustums : register(t1);
 // List of all lights to perform culling on
 StructuredBuffer<Light>   Lights : register(t2);
 
-RWStructuredBuffer<uint> OpaqueLightIndexCounter : register(u0);
+globallycoherent RWStructuredBuffer<uint> OpaqueLightIndexCounter : register(u0);
 RWStructuredBuffer<uint> OpaqueLightIndexList : register(u2);
 RWTexture2D<uint2>       OpaqueLightGrid : register(u4);
 
-RWStructuredBuffer<uint> TransparentLightIndexCounter : register(u1);
+globallycoherent RWStructuredBuffer<uint> TransparentLightIndexCounter : register(u1);
 RWStructuredBuffer<uint> TransparentLightIndexList : register(u3);
 RWTexture2D<uint2>       TransparentLightGrid : register(u5);
 
@@ -228,8 +228,9 @@ void CS(CSInput input)
 		GroupFrustum = Frustums[input.groupID.x + (input.groupID.y * numThreadGroups.x)];
 	}
 
-	GroupMemoryBarrierWithGroupSync();
 
+
+	GroupMemoryBarrierWithGroupSync();
 
 	InterlockedMin(MinDepth, atomicDepth);
 	InterlockedMax(MaxDepth, atomicDepth);
@@ -240,6 +241,9 @@ void CS(CSInput input)
 
 	float minDepth = asfloat(MinDepth);
 	float maxDepth = asfloat(MaxDepth);
+
+	//DebugTexture[coord] = float4(minDepth, maxDepth, 0., 1.0);
+
 
 	float minDepthVS = ClipToView(float4(0, 0, minDepth, 1)).z;
 	float maxDepthVS = ClipToView(float4(0, 0, maxDepth, 1)).z;
@@ -253,11 +257,10 @@ void CS(CSInput input)
 	for (uint i = input.groupIndex; i < NUM_LIGHTS; i += BLOCK_SIZE * BLOCK_SIZE) {
 		Light light = Lights[i];
 
-		if (light.range == 0) continue;
+		//if (light.range == 0) continue;
 
 		Sphere pointLight = { light.positionVS.xyz, light.range };
 		if (SphereInsideFrustum(pointLight, GroupFrustum, nearClipVS, maxDepthVS)) {
-			DebugTexture[coord] = float4(1, 0, 0, 1);
 
 			TransparentAppendLight(i);
 

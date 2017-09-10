@@ -495,50 +495,6 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 void Graphics::Renderer::cullLightGrid(Camera * camera)
 {
 
-
-	deviceContext->CopyResource(gridOpaqueIndexCounterBuffer, gridResetIndexCounterBuffer);
-	deviceContext->CopyResource(gridTransparentIndexCounterBuffer, gridResetIndexCounterBuffer);
-
-	shaderHandler.setComputeShader(gridCullingCS, deviceContext);
-
-	ID3D11Buffer *bufs[] = {
-		camera->getBuffer(),
-		gridParamsBuffer
-	};
-	deviceContext->CSSetConstantBuffers(0, 2, bufs);
-
-	ID3D11ShaderResourceView *SRVs[] = {
-		depthSRV,
-		gridFrustrumsSRV,
-		gridLightsSRV,
-		gradientSRV
-	};
-	deviceContext->CSSetShaderResources(0, 4, SRVs);
-	auto sampler = states->LinearClamp();
-	deviceContext->CSSetSamplers(0, 1, &sampler);
-	
-	ID3D11UnorderedAccessView *UAVs[] = {
-		gridOpaqueIndexCounterUAV,
-		gridTransparentIndexCounterUAV,
-		gridOpaqueIndexListUAV,
-		gridTransparentIndexListUAV,
-		gridOpaqueLightGridUAV,
-		gridTransparentLightGridUAV,
-		gridDebugUAV
-	};
-	deviceContext->CSSetUnorderedAccessViews(0, 7, UAVs, nullptr);
-	
-	deviceContext->Dispatch(
-		gridParams.numThreadGroups[0],
-		gridParams.numThreadGroups[1],
-		1
-	);
-
-	ZeroMemory(UAVs, sizeof(UAVs));
-	ZeroMemory(SRVs, sizeof(SRVs));
-	deviceContext->CSSetShaderResources(0, 4, SRVs);
-	deviceContext->CSSetUnorderedAccessViews(0, 7, UAVs, nullptr);
-	deviceContext->CSSetShader(nullptr, nullptr, 0);
 }
 
 float f;
@@ -576,12 +532,13 @@ void Graphics::Renderer::drawForward(Camera *camera)
 		);
 		ptr[i].color *= i*2*3;
 		ptr[i].positionWS = ptr[i].color;
-		ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x;
+		ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x*2;
 		ptr[i].positionWS.y = 0.1f;
-		ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z;
+		ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z*2;
 
 		ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
 		ptr[i].range = ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
+		ptr[i].intensity = 1.f;
 	}
 
 	lights->unmap(deviceContext);
@@ -635,7 +592,6 @@ void Renderer::render(Camera * camera)
 
 	//temp
 	//this->drawDeffered();
-	//this->drawToBackbuffer(gridDebugSRV);
 	this->drawToBackbuffer(grid.getDebugSRV());
 }
 

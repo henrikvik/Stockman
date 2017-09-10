@@ -123,7 +123,7 @@ public:
 	void cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ShaderHandler *shaders);
 
 	StructuredBuffer<uint32_t> *getOpaqueIndexCounter() const {	return m_OpaqueIndexCounter; }
-	StructuredBuffer<uint32_t> *getTransparentIndexCounter() const { return m_OpaqueIndexCounter; }
+	StructuredBuffer<uint32_t> *getTransparentIndexCounter() const { return m_TransparentIndexCounter; }
 
 	StructuredBuffer<uint32_t> *getOpaqueIndexList() const { return m_OpaqueIndexList; }
 	StructuredBuffer<uint32_t> *getTransparentIndexList() const { return m_TransparentIndexList; }
@@ -133,6 +133,7 @@ public:
 
 	// TEMP:
 	ID3D11ShaderResourceView *getOpaqueLightGridSRV() const { return m_OpaqueLightGridSRV; }
+	ID3D11ShaderResourceView *getTransparentLightGridSRV() const { return m_TransparentLightGridSRV; }
 	ID3D11ShaderResourceView *getDebugSRV() const { return m_DebugSRV; }
 private:
 	void generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ShaderHandler *shaders);
