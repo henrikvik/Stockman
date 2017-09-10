@@ -133,6 +133,7 @@ public:
 
 	// TEMP:
 	ID3D11ShaderResourceView *getOpaqueLightGridSRV() const { return m_OpaqueLightGridSRV; }
+	ID3D11ShaderResourceView *getDebugSRV() const { return m_DebugSRV; }
 private:
 	void generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ShaderHandler *shaders);
 

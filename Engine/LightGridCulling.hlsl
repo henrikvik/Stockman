@@ -257,6 +257,8 @@ void CS(CSInput input)
 
 		Sphere pointLight = { light.positionVS.xyz, light.range };
 		if (SphereInsideFrustum(pointLight, GroupFrustum, nearClipVS, maxDepthVS)) {
+			DebugTexture[coord] = float4(1, 0, 0, 1);
+
 			TransparentAppendLight(i);
 
 			if (!SphereInsidePlane(pointLight, minPlane)) {
@@ -299,7 +301,7 @@ void CS(CSInput input)
 	}
 
 	// update heatmap debug texture
-	if (input.groupThreadID.x == 0 || input.groupThreadID.y == 0) {
+	/*if (input.groupThreadID.x == 0 || input.groupThreadID.y == 0) {
 		DebugTexture[coord] = float4(0, 0, 0, 0.9f);
 	} else if (input.groupThreadID.x == 1 || input.groupThreadID.y == 1) {
 		DebugTexture[coord] = float4(1, 1, 1, 0.5f);
@@ -309,6 +311,6 @@ void CS(CSInput input)
 		
 		DebugTexture[coord] = col;
 	} else {
-		DebugTexture[coord] = float4(0, 0, 0, 1);
-	}
+		//DebugTexture[coord] = float4(0, 0, 0, 1);
+	}*/
 }

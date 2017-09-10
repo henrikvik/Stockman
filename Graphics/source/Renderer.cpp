@@ -636,6 +636,7 @@ void Renderer::render(Camera * camera)
 	//temp
 	//this->drawDeffered();
 	//this->drawToBackbuffer(gridDebugSRV);
+	this->drawToBackbuffer(grid.getDebugSRV());
 }
 
 void Renderer::qeueuRender(RenderInfo * renderInfo)
@@ -741,6 +742,8 @@ void Renderer::drawDeffered()
 
 void Graphics::Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
 {
+	auto sampler = states->LinearClamp();
+	deviceContext->PSSetSamplers(0, 1, &sampler);
     deviceContext->PSSetShaderResources(0, 1, &texture);
     UINT stride = sizeof(DirectX::SimpleMath::Vector2), offset = 0;
     deviceContext->IASetVertexBuffers(0, 1, &FSQuad2, &stride, &offset);
