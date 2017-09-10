@@ -10,6 +10,8 @@
 #include "ShaderHandler.h"
 #include "WICTextureLoader.h"
 #include "CommonStates.h"
+#include <array>
+#include "LightGrid.h"
 
 namespace Graphics
 {
@@ -33,6 +35,8 @@ namespace Graphics
 
 		DirectX::CommonStates *states;
 
+		LightGrid grid;
+
 		void createLightGrid(Camera *camera);
 		void cullLightGrid(Camera *camera);
 
@@ -41,6 +45,8 @@ namespace Graphics
 		ID3D11Buffer *gridFrustrums;
 
 		// TEMP {
+
+		std::array<Light, NUM_LIGHTS> lights;
 
 		ID3D11DepthStencilView *depthDSV;
 		ID3D11ShaderResourceView *depthSRV;

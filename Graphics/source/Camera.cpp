@@ -7,10 +7,12 @@ Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, 
 	this->mFieldOfView = fieldOfView;
 	this->mDrawDistance = drawDistance;
 
-	this->mProjection = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, (float)width/(float)height, 0.1f, drawDistance);
+	this->mProjection = DirectX::XMMatrixPerspectiveFovRH(45.f, (float)width/(float)height, 0.1f, 1000.f);
 
 	values.mVP = this->mProjection * this->mView;
 	values.mInvP = this->mProjection.Invert();
+
+	auto m = mProjection * values.mInvP;
 
 	D3D11_BUFFER_DESC desc;
 	ZeroMemory(&desc, sizeof(desc));
@@ -73,6 +75,11 @@ DirectX::SimpleMath::Vector3 Camera::getRight() const
 	return this->mRight;
 }
 
+DirectX::SimpleMath::Matrix Graphics::Camera::getView() const
+{
+	return mView;
+}
+
 ID3D11Buffer* Graphics::Camera::getBuffer()
 {
 	return this->mVPBuffer;
@@ -80,12 +87,13 @@ ID3D11Buffer* Graphics::Camera::getBuffer()
 
 void Graphics::Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context)
 {
-	Matrix newView = DirectX::XMMatrixLookAtLH(pos, forward, Vector3(0, 1, 0));
+	Matrix newView = DirectX::XMMatrixLookAtRH(pos, forward, Vector3(0, 1, 0));
 
 	//if (newView != this->mView)
 	{
 		this->mView = newView;
 
+		values.mV = mView;
 		values.mVP = this->mView * this->mProjection;
 		values.mInvP = this->mProjection.Invert();
 

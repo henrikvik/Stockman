@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.props" Condition="Exists('..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.props')" />
   <ItemGroup Label="ProjectConfigurations">
@@ -150,12 +150,14 @@
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Graphics.h" />
+    <ClInclude Include="include\LightGrid.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\ShaderHandler.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\LightGrid.cpp" />
     <ClCompile Include="source\ShaderHandler.cpp" />
     <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\Renderer.cpp" />

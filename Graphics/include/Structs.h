@@ -1,3 +1,5 @@
+#pragma once
+
 #include <d3d11.h>
 #include <SimpleMath.h>
 
@@ -38,22 +40,10 @@ namespace Graphics
 #define NUM_LIGHTS 8
 
 	struct Light {
-		DirectX::SimpleMath::Vector3 position;
+		DirectX::SimpleMath::Vector4 positionVS;
+		DirectX::SimpleMath::Vector3 positionWS;
 		float range;
 		DirectX::SimpleMath::Vector3 color;
 		float intensity;
-	};
-
-	struct Plane {
-		DirectX::SimpleMath::Vector4 pd;
-	};
-
-	struct Frustum {
-		Plane planes[4];
-	};
-
-	struct DispatchParams {
-		int32_t numThreadGroups[4];
-		int32_t numThreads[4];
 	};
 };

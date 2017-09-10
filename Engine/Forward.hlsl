@@ -14,7 +14,8 @@ cbuffer Camera : register(b0)
 
 // TODO: change
 struct Light {
-	float3 position;
+	float4 positionVS;
+	float3 positionWS;
 	float range;
 	float3 color;
 	float intensity;
@@ -61,11 +62,11 @@ PSOutput PS(VSOutput input) {
 		Light light = Lights[idx];
 
 
-		float3 L = light.position - input.worldPos.xyz;
+		float3 L = light.positionWS - input.worldPos.xyz;
 		float distance = length(L);
 		L = L / distance;
 		float d = 1.0f - smoothstep(light.range * 0.75f, light.range, distance);
-		color += float3(0.4, 0, 0) * d;
+		color += light.color * d;
 	}
 
 	output.color = float4(color, 1);

@@ -43,6 +43,7 @@ cbuffer Camera : register(b0)
 {
 	float4x4 ViewProjection;
 	float4x4 InvProjection;
+	float4x4 View;
 }
 
 cbuffer DispatchParams : register(b1)
@@ -58,7 +59,8 @@ cbuffer DispatchParams : register(b1)
 
 // TODO: change
 struct Light {
-	float3 position;
+	float4 positionVS;
+	float3 positionWS;
 	float range;
 	float3 color;
 	float intensity;
@@ -253,7 +255,7 @@ void CS(CSInput input)
 
 		if (light.range == 0) continue;
 
-		Sphere pointLight = { light.position.xyz, light.range };
+		Sphere pointLight = { light.positionVS.xyz, light.range };
 		if (SphereInsideFrustum(pointLight, GroupFrustum, nearClipVS, maxDepthVS)) {
 			TransparentAppendLight(i);
 

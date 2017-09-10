@@ -32,6 +32,7 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 		1
 	};
 
+	grid.initialize(camera, device, deviceContext, &shaderHandler);
 	createLightGrid(camera);
 
     createGBuffer();
@@ -113,13 +114,13 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 	// TODO: organize better
 #pragma region Temporary geometry setup
 	DirectX::SimpleMath::Vector3 plane[] = {
-		{ -10, 0, -10 },
+		{  10, 0,  10 },
 		{ -10, 0,  10 },
-		{  10, 0,  10 },
-
 		{ -10, 0, -10 },
-		{  10, 0,  10 },
+
 		{  10, 0, -10 },
+		{  10, 0,  10 },
+		{ -10, 0, -10 },
 	};
 
 	{
@@ -173,7 +174,7 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 	}
 
 #pragma endregion
-
+/*
 #pragma region Grid params buffer
 
 
@@ -282,15 +283,15 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 
 		Light lights[NUM_LIGHTS];
 		ZeroMemory(lights, sizeof(lights));
-		lights[0].color = DirectX::SimpleMath::Vector3(1, 1, 1);
+		lights[0].color = DirectX::SimpleMath::Vector3(1, 0, 0);
 		lights[0].position = DirectX::SimpleMath::Vector3(1, 1, 1);
 		lights[0].range = 4.f;
-		lights[1].color = DirectX::SimpleMath::Vector3(1, 1, 1);
+		lights[1].color = DirectX::SimpleMath::Vector3(0, 1, 0);
 		lights[1].position = DirectX::SimpleMath::Vector3(4, 1, 3);
 		lights[1].range = 4.f;
-		lights[2].color = DirectX::SimpleMath::Vector3(1, 1, 1);
-		lights[2].position = DirectX::SimpleMath::Vector3(6, 1, 3);
-		lights[2].range = 2.f;
+		lights[2].color = DirectX::SimpleMath::Vector3(0, 0, 1);
+		lights[2].position = DirectX::SimpleMath::Vector3(1, 1, 4);
+		lights[2].range = 3.f;
 
 
 		D3D11_SUBRESOURCE_DATA data;
@@ -487,10 +488,14 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 		ThrowIfFailed(device->CreateShaderResourceView(texture, &desc, &gridDebugSRV));
 	}
 	#pragma endregion
+
+	*/
 }
 
 void Graphics::Renderer::cullLightGrid(Camera * camera)
 {
+
+
 	deviceContext->CopyResource(gridOpaqueIndexCounterBuffer, gridResetIndexCounterBuffer);
 	deviceContext->CopyResource(gridTransparentIndexCounterBuffer, gridResetIndexCounterBuffer);
 
@@ -543,7 +548,7 @@ void Graphics::Renderer::drawForward(Camera *camera)
 	FLOAT col[4] = { 0, 0, 0, 1 };
 	deviceContext->ClearRenderTargetView(backBuffer, col);
 
-	f += 0.001;
+	f += 0.0001;
 	camera->update({ sin(f) * 30, 10, cos(f) * 10 }, { 0, 0, 0 }, deviceContext);
 
 	shaderHandler.setShaders(planeVS, -1, -1, deviceContext);
@@ -559,15 +564,39 @@ void Graphics::Renderer::drawForward(Camera *camera)
 
 	deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
-	cullLightGrid(camera);
+	auto lights = grid.getLights();
+
+	Light *ptr = lights->map(deviceContext);
+
+	for (int i = 0; i < NUM_LIGHTS; i++) {
+		ptr[i].color = DirectX::SimpleMath::Vector3(
+			((unsigned char)(1+i * 53 * i + 4)) / 255.f,
+			((unsigned char)(1 + i * 23 + 4)) / 255.f,
+			((unsigned char)(1 + i * 455 + 4)) / 255.f
+		);
+		ptr[i].color *= i*2*3;
+		ptr[i].positionWS = ptr[i].color;
+		ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x;
+		ptr[i].positionWS.y = 0.1f;
+		ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z;
+
+		ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
+		ptr[i].range = ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
+	}
+
+	lights->unmap(deviceContext);
+
+	grid.cull(camera, states, depthSRV, device, deviceContext, &shaderHandler);
+
+	//cullLightGrid(camera);
 
 	shaderHandler.setShaders(planeVS, -1, planePS, deviceContext);
 
 
 	ID3D11ShaderResourceView *SRVs[] = {
-		gridOpaqueIndexListSRV,
-		gridOpaqueLightGridSRV,
-		gridLightsSRV
+		grid.getOpaqueIndexList()->getSRV(),
+		grid.getOpaqueLightGridSRV(),
+		grid.getLights()->getSRV()
 	};
 	deviceContext->PSSetShaderResources(0, 3, SRVs);
 	deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
