@@ -6,6 +6,7 @@
 
 namespace Graphics
 {
+<<<<<<< HEAD
 	struct RenderInfo
 	{
 		bool render;
@@ -27,6 +28,25 @@ namespace Graphics
 		ID3D11ShaderResourceView * normalMatView;
 		ID3D11ShaderResourceView * positionView;
 		ID3D11ShaderResourceView * depthView;
+=======
+    struct RenderInfo
+    {
+        bool render;
+        int meshId;
+        int materialId;
+        DirectX::SimpleMath::Matrix translation;
+    };
+	struct GUIInfo
+	{
+		int HP;
+		int ammo1;
+		int ammo2;
+		float CD;
+		UINT score;
+		int combo;
+		int wave;
+		int enemies;
+>>>>>>> development
 	};
 
 	struct InstanceData

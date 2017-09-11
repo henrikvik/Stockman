@@ -240,6 +240,8 @@ int Engine::run()
 
 			game.update(float(deltaTime));
 
+			
+			cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
 		}
