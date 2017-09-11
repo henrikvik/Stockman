@@ -104,7 +104,6 @@ void Engine::initializeWindow()
 	}
 
 
-
 	ShowWindow(this->window, SW_SHOWDEFAULT);
 	UpdateWindow(this->window);
 
@@ -219,6 +218,7 @@ int Engine::run()
 	{
 		currentTime = this->timer();
 		deltaTime = currentTime - prev;
+		prev = currentTime;
 
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{

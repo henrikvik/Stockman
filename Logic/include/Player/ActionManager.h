@@ -28,8 +28,7 @@ namespace Logic
 		void update(float deltaTime);
 
 		// Weapon
-		void switchToPrimary();
-		void switchToSecondary();
+		void switchWeapon();
 		void useWeapon();
 
 		// Skill
