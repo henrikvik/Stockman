@@ -53,10 +53,10 @@ namespace Logic
 		Player();
 		~Player();
 
-		bool init();
+		bool init(Physics* physics, RigidBodyDesc rigidBodyDesc);
 		void clear();
 		void updateSpecific(float deltaTime);
-		void onCollision(const Entity& other);
+		void onCollision(Entity& other);
 
 		void saveToFile();
 		void readFromFile();

@@ -45,5 +45,5 @@ void Physics::clear()
 
 void Physics::update(float deltaTime)
 {
-	this->stepSimulation(PHYSICS_TIME_STEP, PHYSICS_MAX_SUB_STEPS);
+	this->stepSimulation(deltaTime);
 }

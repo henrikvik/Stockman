@@ -10,8 +10,9 @@ Player::~Player()
 {
 }
 
-bool Logic::Player::init()
+bool Player::init(Physics* physics, RigidBodyDesc rigidBodyDesc)
 {
+	Entity::init(physics, rigidBodyDesc);
 	m_weaponManager.init();
 	m_skillManager.init();
 
@@ -33,7 +34,7 @@ void Player::clear()
 {
 }
 
-void Player::onCollision(const Entity& other)
+void Player::onCollision(Entity& other)
 {
 }
 
