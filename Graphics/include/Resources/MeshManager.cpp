@@ -15,17 +15,18 @@ void MeshManager::initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDevi
 {
 	this->gDevice = gDevice;
 	this->gDeviceContext = gDeviceContext;
-}
+	
+ }
 
 void MeshManager::release()
 {
-	for (size_t i = 0; i < gameMeshes->size(); i++)
+	for (size_t i = 0; i < gameMeshes.size(); i++)
 	{
-		gameMeshes->at(i).Release();
+		gameMeshes.at(i).Release();
 	}
-	for (size_t i = 0; i < sceneMeshes->size(); i++)
+	for (size_t i = 0; i < sceneMeshes.size(); i++)
 	{
-		sceneMeshes->at(i).Release();
+		sceneMeshes.at(i).Release();
 	}
 }
 
@@ -43,17 +44,17 @@ void MeshManager::addMesh(bool hasSkeleton, unsigned int skeletonID, int materia
 		newIndices[i] = indices[i];
 	}
 	Mesh newMesh = Mesh(hasSkeleton, skeletonID, materialID);
-	newMesh.Initialize(this->gDevice, this->gDeviceContext);
+	newMesh.initialize(this->gDevice, this->gDeviceContext);
 	newMesh.CreateVertexBuffer(newVertices, vertexCount, isScene);
 	newMesh.CreateIndexBuffer(newIndices, indexCount, isScene);
 	if (isScene == true)
-		this->sceneMeshes->push_back(newMesh);
+		this->sceneMeshes.push_back(newMesh);
 	else
 	{
-		this->gameMeshes->push_back(newMesh);
+		this->gameMeshes.push_back(newMesh);
 		delete[] newVertices;
 		delete[] newIndices;
-	}
 
+	}
 
 }

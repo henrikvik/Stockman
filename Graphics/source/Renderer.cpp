@@ -6,11 +6,11 @@
 
 using namespace Graphics;
 
-Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer)
+Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer)
   
 {
-	this->device = device;
-	this->deviceContext = deviceContext;
+	this->device = gDevice;
+	this->deviceContext = gDeviceContext;
 	this->backBuffer = backBuffer;
 
 	using namespace DirectX::SimpleMath;
@@ -238,11 +238,8 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 	data.pSysMem = defferedTest;
 
 	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
-}
 
-void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
-{
-	resourceManager.initialize(gDevice, gDeviceContext);
+	initialize(gDevice, gDeviceContext);
 }
 
 Graphics::Renderer::~Renderer()
@@ -267,6 +264,11 @@ Graphics::Renderer::~Renderer()
 
 	dSS->Release();
 	dSV->Release();
+}
+
+void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
+{
+	resourceManager.initialize(gDevice, gDeviceContext);
 }
 
 void Renderer::render(Camera * camera)

@@ -20,5 +20,7 @@
 
 #define TEXTURE_PATH(path) L"Resources/Textures/" path
 #define MODEL_PATH(path)   L"Resources/Models/" path
+#define MODEL_PATH_STR(path)   "Resources/Models/" path
 #define SHADER_PATH(path) L"Resources/Shaders/" path
+
 

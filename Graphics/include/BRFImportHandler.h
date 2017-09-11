@@ -18,13 +18,13 @@ public:
 
 	void loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene);
 
-	void initialize(MeshManager* meshManager/*, MaterialManager* materialManager*/);
+	void initialize(MeshManager & meshManager/*, MaterialManager* materialManager*/);
 	void release();
 
 private:
 	unsigned int materialID;
 
 	BRFImporterLib::FileData* currentFile;
-	MeshManager* meshManager;
+	MeshManager * meshManager;
 	
 };
