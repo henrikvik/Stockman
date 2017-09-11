@@ -40,6 +40,10 @@ void Game::clear()
 	// Deleting player
 	m_player->clear();
 	delete m_player;
+
+	// Deleting hitbox
+	m_plane->clear();
+	delete m_plane;
 }
 
 void Game::update(float deltaTime)
@@ -51,6 +55,6 @@ void Game::update(float deltaTime)
 	m_player->update(deltaTime);
 
 	// Debugging for testing if physics is working:
-//	m_player->consoleWritePosition();
-//	m_plane->consoleWritePosition();
+	m_player->consoleWritePosition();
+	m_plane->consoleWritePosition();
 }
