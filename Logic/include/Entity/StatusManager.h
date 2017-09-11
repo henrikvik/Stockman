@@ -12,6 +12,7 @@
 #pragma endregion Description of class
 
 #include <vector>
+
 #include "Effect.h"
 #include "Upgrade.h"
 
@@ -20,9 +21,9 @@ namespace Logic
 	class StatusManager
 	{
 	public:
-		/* STANDARDS EFFECTS */
-		static Effect onFire, freeze;
-		/* BASELINE EFFECTS */
+		enum EFFECT_LIST {
+			ON_FIRE, FREEZE
+		};
 
 		StatusManager();
 		StatusManager(const StatusManager& other) = delete;
@@ -31,13 +32,19 @@ namespace Logic
 
 		void clear();
 		void addStatus(int statusID);
-		void removeStatus(int statusID);
+		void removeOneStatus(int statusID);
+		void removeAllStatus(int statusID);
 
-		std::vector<Effect*> getEffects();
+		std::vector<std::pair<int, Effect*>> getEffects();
 		std::vector<Upgrade*> getUpgrades();
 
 	private:
-		std::vector<Effect*> m_effects;
+		/* BASELINE EFFECTS */
+		static Effect s_onFire, s_freeze;
+		static Effect *s_effects[2]; // same size as nr of effects (above)
+
+		// int = id
+		std::vector<std::pair<int, Effect*>> m_effects;
 		std::vector<Upgrade*> m_upgrades;
 	};
 }

@@ -4,14 +4,13 @@ using namespace Logic;
 
 Effect::Effect(Standards const &standards)
 {
+	m_stack = 0;
 	m_standards = new Standards(standards);
 }
 
-Effect::Effect()
-{
-}
+Effect::Effect(Effect const &other) {
+	m_stack = 0;
 
-Effect* Effect::operator=(const Effect& other) {
 	if (m_standards) delete m_standards;
 	if (m_modifiers) delete m_modifiers;
 	if (m_specifics) delete m_specifics;
@@ -19,6 +18,10 @@ Effect* Effect::operator=(const Effect& other) {
 	setStandards(*other.getStandards());
 	setModifiers(*other.getModifiers());
 	setSpecifics(*other.getSpecifics());
+}
+
+Effect::Effect()
+{
 }
 
 Effect::~Effect() {
@@ -58,4 +61,18 @@ void Effect::setSpecifics(Specifics const &specifics)
 {
 	if (m_specifics) delete m_specifics;
 	m_specifics = new Specifics(specifics);
+}
+
+int Effect::getStack() const
+{
+	return m_stack;
+}
+
+void Effect::setStack(int stack)
+{
+	m_stack = stack;
+}
+
+void Effect::pop() {
+	--m_stack;
 }
