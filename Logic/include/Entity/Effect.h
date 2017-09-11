@@ -14,7 +14,7 @@
 
 namespace Logic
 {
-	typedef enum EFFECT_FLAG {
+	enum EFFECT_FLAG {
 		EFFECT_KILL					= 0x1,
 		EFFECT_ON_FIRE				= 0x2,
 		EFFECT_IS_FROZEN			= 0x4, 
@@ -51,7 +51,7 @@ namespace Logic
 		Effect();
 		Effect(Standards const &standards);
 		Effect(const Effect& other);
-		Effect* operator=(const Effect& other) = delete;
+		Effect* operator=(const Effect& other);
 		~Effect();
 
 		Standards* getStandards() const;

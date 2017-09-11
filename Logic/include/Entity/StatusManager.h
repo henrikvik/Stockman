@@ -31,23 +31,32 @@ namespace Logic
 		~StatusManager();
 
 		void clear();
-		void addStatus(int statusID);
+		void update(float deltaTime);
+
+		void addStatus(int statusID, int nrOfStacks, bool resetDuration);
 		void removeOneStatus(int statusID);
 		void removeAllStatus(int statusID);
 
-		std::vector<std::pair<int, Effect*>> getEffects();
 		std::vector<Upgrade*> getUpgrades();
-
 	private:
 		/* BASELINE EFFECTS */
-		static Effect s_onFire, s_freeze;
-		static Effect *s_effects[2]; // same size as nr of effects (above)
+		static const int NR_OF_EFFECTS = 2;
+		static Effect s_effects[NR_OF_EFFECTS];
+
+		struct EffectStack {
+			int stack;
+			float duration;
+		};
+
+		std::vector<EffectStack> m_effectStacks; // fast loop speed bad lookup, but worth it? :<
+		std::vector<int> m_effectStacksIds; // mike acton approved (i hop)
+
+		void removeEffect(int index);
 
 		// int = id
-		std::vector<std::pair<int, Effect*>> m_effects;
 		std::vector<Upgrade*> m_upgrades;
 	};
 }
 
 
-#endif // !STATUSMANAGER_H
+#endif

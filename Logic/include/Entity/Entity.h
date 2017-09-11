@@ -2,6 +2,8 @@
 #define ENTITY_H
 
 #include "Object.h"
+#include "StatusManager.h"
+
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
@@ -22,7 +24,7 @@ namespace Logic
 		virtual void onCollision(const Entity& other) = 0;
 
 	private:
-
+		StatusManager manager;
 	};
 }
 

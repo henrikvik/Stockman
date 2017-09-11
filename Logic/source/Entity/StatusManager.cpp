@@ -1,72 +1,109 @@
 #include "../Entity/StatusManager.h"
 
 using namespace Logic;
+
+Effect StatusManager::s_effects[StatusManager::NR_OF_EFFECTS];
  
 StatusManager::StatusManager() { 
-#ifndef buffsCreated
-#define buffsCreated /* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
-	Effect::Standards standards;
-	Effect::Modifiers modifiers;
-	Effect::Specifics spec;
+	#ifndef buffsCreated
+	#define buffsCreated /* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
+		Effect creating;
 
-	standards.flags = EFFECT_ON_FIRE | EFFECT_MODIFY_MOVEMENTSPEED;
-	standards.duration = 3.f;
+		Effect::Standards standards;
+		Effect::Modifiers modifiers;
+		Effect::Specifics spec;
 
-	s_onFire.setStandards(standards);
+		standards.flags = EFFECT_ON_FIRE | EFFECT_MODIFY_MOVEMENTSPEED;
+		standards.duration = 3.f;
 
-	standards.flags = EFFECT_MODIFY_DMG_GIVEN;
-	standards.duration = 0.f;
+		creating.setStandards(standards);
+		s_effects[ON_FIRE] = creating; // ON FIRE
 
-	s_freeze.setStandards(standards);
+		standards.flags = EFFECT_MODIFY_DMG_GIVEN;
+		standards.duration = 0.f;
 
-	s_effects[ON_FIRE] = &s_onFire;
-	s_effects[FREEZE] = &s_freeze;
-#endif // !buffsCreated
+		creating.setStandards(standards);
+		s_effects[FREEZE] = creating; // FREEZE
+	#endif // !buffsCreated
 }
 
 StatusManager::~StatusManager() { }
 
 void StatusManager::clear()
 {
-	m_effects.clear();
 	m_upgrades.clear();
+	m_effectStacks.clear();
+	m_effectStacksIds.clear();
 }
 
-void StatusManager::addStatus(int statusID)
+void StatusManager::removeEffect(int index)
 {
-	m_effects.push_back(std::pair<int, Effect*>(
-		statusID, new Effect(*s_effects[statusID])));
+	std::swap(m_effectStacks[index], m_effectStacks[m_effectStacks.size()]);
+	std::swap(m_effectStacksIds[index], m_effectStacksIds[m_effectStacksIds.size()]);
+
+	m_effectStacks.pop_back();
+	m_effectStacksIds.pop_back();
+}
+
+void StatusManager::update(float deltaTime)
+{
+	for (int i = 0; i < NR_OF_EFFECTS; ++i) 
+	{
+		// do stuff
+		if (m_effectStacks[i].duration -= deltaTime <= 0)
+		{
+			removeEffect(i);
+		}
+	}
+}
+
+void StatusManager::addStatus(int statusID, int nrOfStacks, bool resetDuration)
+{
+	bool found = false;
+	for (size_t i = 0; i < m_effectStacksIds.size() && !found; ++i) 
+	{
+		if (m_effectStacksIds[i] == statusID) 
+		{
+			found = true;
+
+			m_effectStacks[i].stack += nrOfStacks;
+			if (resetDuration) m_effectStacks[i].duration = s_effects[statusID].getStandards()->duration;
+		}
+	}
+
+	if (!found) 
+	{
+		m_effectStacks.push_back({ nrOfStacks, s_effects[statusID].getStandards()->duration });
+	}
 }
 
 void StatusManager::removeOneStatus(int statusID)
 {
-	for (int i = 0; i < m_effects.size(); i++)
+	bool found = false;
+	for (size_t i = 0; i < m_effectStacksIds.size() && !found; ++i)
 	{
-		if (m_effects[i].first == statusID) 
+		if (m_effectStacksIds[i] == statusID)
 		{
-			delete m_effects[i].second;
-			std::swap(m_effects[i], m_effects[m_effects.size()]);
-			m_effects.pop_back();
+			if (m_effectStacks[i].stack-- <= 0) // no more stacks, then remove the effect
+			{
+				removeEffect(i);
+			}
+			found = true;
 		}
 	}
 }
 
 void StatusManager::removeAllStatus(int statusID)
 {
-	for (int i = 0; i < m_effects.size(); i++)
+	bool found = false;
+	for (size_t i = 0; i < m_effectStacksIds.size() && !found; ++i)
 	{
-		if (m_effects[i].first == statusID)
+		if (m_effectStacksIds[i] == statusID)
 		{
-			m_effects[i].second->pop();
-			if (m_effects[i].second->getStack() <= 0)
-			{
-				delete m_effects[i].second;
-				std::swap(m_effects[i], m_effects[m_effects.size()]);
-				m_effects.pop_back();
-			}
+			removeEffect(i);
+			found = true;
 		}
 	}
 }
 
-std::vector<std::pair<int, Effect*>> StatusManager::getEffects() { return m_effects; }
 std::vector<Upgrade*> StatusManager::getUpgrades() { return m_upgrades; }

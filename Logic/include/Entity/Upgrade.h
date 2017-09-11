@@ -15,7 +15,7 @@
 
 namespace Logic
 {
-	typedef enum UPGRADE_FLAG {
+	enum UPGRADE_FLAG {
 		UPGRADE_IS_WEAPON			= 0x1,
 		UPGRADE_INCREASE_DMG		= 0x2,
 		UPGRADE_INCREASE_CD			= 0x4,

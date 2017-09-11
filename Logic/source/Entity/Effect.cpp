@@ -2,26 +2,35 @@
 
 using namespace Logic;
 
+Effect::Effect()
+{
+}
+
 Effect::Effect(Standards const &standards)
 {
-	m_stack = 0;
 	m_standards = new Standards(standards);
 }
 
 Effect::Effect(Effect const &other) {
-	m_stack = 0;
-
 	if (m_standards) delete m_standards;
 	if (m_modifiers) delete m_modifiers;
 	if (m_specifics) delete m_specifics;
 
-	setStandards(*other.getStandards());
-	setModifiers(*other.getModifiers());
-	setSpecifics(*other.getSpecifics());
+	if (other.getStandards()) setStandards(*other.getStandards());
+	if (other.getModifiers()) setModifiers(*other.getModifiers());
+	if (other.getSpecifics()) setSpecifics(*other.getSpecifics());
 }
 
-Effect::Effect()
-{
+Effect* Effect::operator=(Effect const &other) {
+	if (m_standards) delete m_standards;
+	if (m_modifiers) delete m_modifiers;
+	if (m_specifics) delete m_specifics;
+
+	if (other.getStandards()) setStandards(*other.getStandards());
+	if (other.getModifiers()) setModifiers(*other.getModifiers());
+	if (other.getSpecifics()) setSpecifics(*other.getSpecifics());
+
+	return this;
 }
 
 Effect::~Effect() {
