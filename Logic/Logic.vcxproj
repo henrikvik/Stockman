@@ -238,17 +238,6 @@
     <Text Include="include\Player\Skill\gitinclude.txt" />
     <Text Include="source\Player\Skill\gitinclude.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\Bullet3Collision\Bullet3Collision.vcxproj">
-      <Project>{ced1eef6-5cf9-3b24-b52c-c0f0ac9ea646}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\Bullet3Dynamics\Bullet3Dynamics.vcxproj">
-      <Project>{4f3cbdaa-40a6-3d93-aebc-11e11302289c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Downloads\BulletPhysics\Build\src\LinearMath\LinearMath.vcxproj">
-      <Project>{87c7a4ea-cae6-3c84-9785-abc44c822e9c}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
