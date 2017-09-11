@@ -46,4 +46,5 @@ void Game::update(float deltaTime)
 
 	// Updating player
 	m_player->update(deltaTime);
+	m_player->consoleWritePosition();
 }

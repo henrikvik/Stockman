@@ -13,18 +13,23 @@ namespace Logic
 			this->mass				= mass;
 			this->position			= position;
 			this->boxDimensions		= boxDimensions;
+
+			this->velocity			= { 0, 0, 0 };
+			this->rotation			= { 0, 0, 0 };
+			this->restitution		= 0.5f;
+			this->friction			= 0.5f;
+			this->radius			= 0.f;
 		} 
 
 		Shape		shape;			// Type of shape
-		btScalar	mass;			// Weight
-		btVector3	position;		// Starting position
-		btVector3	velocity;		// Starting velocity
+		btScalar	mass;			
+		btVector3	position;		
+		btVector3	velocity;		
+		btVector3	rotation;		
+		btScalar	restitution;	// Bounciness
+		btScalar	friction;		
 
-		btScalar	yaw;			
-		btScalar	pitch;
-		btScalar	roll;
-
-		// Must pick one of these
+		// Must pick one of these if specific shape
 		btVector3	boxDimensions;	// Rectangle
 		float		radius;			// Sphere
 	};

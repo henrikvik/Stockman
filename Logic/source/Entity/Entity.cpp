@@ -15,7 +15,10 @@ bool Entity::init(Physics* physics, RigidBodyDesc rigidBodyDesc)
 		return false;
 
 	// Setting rotation & position
-	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(rigidBodyDesc.yaw, rigidBodyDesc.pitch, rigidBodyDesc.roll), rigidBodyDesc.position));
+	btQuaternion rotation;
+	rotation.setEulerZYX(rigidBodyDesc.rotation.getZ(), rigidBodyDesc.rotation.getY(), rigidBodyDesc.rotation.getX());
+
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, rigidBodyDesc.position));
 
 	// Creating the specific shape
 	btCollisionShape* shape;
@@ -27,7 +30,7 @@ bool Entity::init(Physics* physics, RigidBodyDesc rigidBodyDesc)
 	case ShapeRectangle:
 		shape = new btBoxShape(rigidBodyDesc.boxDimensions);
 		break;
-	default:
+	default: // Function will return false, must be a selected shape
 		shape = nullptr;
 		return false;
 		break;
@@ -35,6 +38,10 @@ bool Entity::init(Physics* physics, RigidBodyDesc rigidBodyDesc)
 
 	// Creating the actual body
 	m_rigidBody = new btRigidBody(rigidBodyDesc.mass, motionState, shape);
+	
+	// Specifics
+	m_rigidBody->setRestitution(rigidBodyDesc.restitution);	// Bounciness, 0:1 = Loses velocity with each bounce, < 1 = Gains velocity with each bounce
+	m_rigidBody->setFriction(rigidBodyDesc.friction);		// Friction, If set at zero, no spinning will happen
 
 	// Connecting the bulletphysics world with ours
 	m_rigidBody->setUserPointer(this);
