@@ -1,14 +1,19 @@
 #ifndef HITBOX_H
 #define HITBOX_H
 
-#include "WHY DO YOU NOT FIND ANYTHING"
+#include "Entity.h"
 
-class Hitbox
+namespace Logic
 {
-public:
-	Hitbox();
-	~Hitbox();
-};
+	class Hitbox : public Entity
+	{
+	public:
+		Hitbox();
+		~Hitbox();
+
+		bool init(Physics* physics, BodyDesc bodyDesc);
+	};
+}
 
 
 #endif // !HITBOX_H

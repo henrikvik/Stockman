@@ -1,12 +1,12 @@
-#include "Hitbox.h"
+#include "../Entity/Hitbox.h"
 
+using namespace Logic;
 
+Hitbox::Hitbox() { }
 
-Hitbox::Hitbox()
+Hitbox::~Hitbox() { }
+
+bool Hitbox::init(Physics* physics, BodyDesc bodyDesc)
 {
-}
-
-
-Hitbox::~Hitbox()
-{
+	this->createBody(physics, bodyDesc);
 }
