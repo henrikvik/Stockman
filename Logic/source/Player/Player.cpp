@@ -10,9 +10,9 @@ Player::~Player()
 {
 }
 
-bool Player::init(Physics* physics, RigidBodyDesc rigidBodyDesc)
+bool Player::init(Physics* physics, BodyDesc bodyDesc)
 {
-	Entity::init(physics, rigidBodyDesc);
+	Entity::init(physics, bodyDesc);
 	m_weaponManager.init();
 	m_skillManager.init();
 

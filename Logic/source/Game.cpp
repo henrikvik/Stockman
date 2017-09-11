@@ -23,7 +23,10 @@ bool Game::init()
 	result = m_physics->init();
 
 	m_player = new Player();
-	m_player->init(m_physics, RigidBodyDesc(ShapeRectangle, 1, { 0, 0, 0 }, { 1, 1, 1 } ));
+	m_player->init(m_physics, BodyDesc(1, { 0, 1000, 0 }, { 1, 1, 1 }));
+
+	m_plane = new Hitbox();
+	m_plane->init(m_physics, BodyDesc(100, { 0, 0, 0 }, 1, { 0, 1, 0 }));
 
 	return result;
 }
@@ -37,6 +40,10 @@ void Game::clear()
 	// Deleting player
 	m_player->clear();
 	delete m_player;
+
+	// Deleting hitbox
+	m_plane->clear();
+	delete m_plane;
 }
 
 void Game::update(float deltaTime)
@@ -46,5 +53,8 @@ void Game::update(float deltaTime)
 
 	// Updating player
 	m_player->update(deltaTime);
-//	m_player->consoleWritePosition();
+
+	// Debugging for testing if physics is working:
+	printf("Player:		");  m_player->consoleWritePosition();
+	printf("Plane:		"); m_plane->consoleWritePosition();
 }

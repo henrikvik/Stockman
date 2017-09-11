@@ -17,7 +17,8 @@ namespace Logic
 		Entity* operator=(const Entity& other) = delete;
 		~Entity();
 
-		bool init(Physics* physics, RigidBodyDesc rigidBodyDesc);
+		bool init(Physics* physics, BodyDesc bodyDesc);
+		virtual void createBody(Physics* physics, BodyDesc bodyDesc);
 
 		virtual void clear() = 0;
 		void update(float deltaTime);
@@ -31,7 +32,8 @@ namespace Logic
 		void consoleWritePosition();
 
 	private:
-		btRigidBody* m_rigidBody;
+		btRigidBody* m_body;
+	//	Hitbox* m_head; for headshot, put it here to remember
 	};
 }
 

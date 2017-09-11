@@ -5,6 +5,7 @@
 
 #include "Player\Player.h"
 #include "Physics\Physics.h"
+#include "Entity\Hitbox.h"
 
 #include <Windows.h>
 #include <Keyboard.h>
@@ -29,6 +30,7 @@ namespace Logic
 	private:
 		Physics* m_physics;
 		Player* m_player;
+		Hitbox* m_plane;
 	};
 }
 
