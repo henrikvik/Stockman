@@ -29,6 +29,7 @@ namespace Logic
 	private:
 		Physics* m_physics;
 		Player* m_player;
+		Player* m_plane;
 	};
 }
 
