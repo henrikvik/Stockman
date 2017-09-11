@@ -3,7 +3,6 @@
 #include <Windows.h>
 #include <crtdbg.h>
 #include <Game.h>
-#include "Constants.h"
 
 int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
@@ -11,6 +10,6 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCm
 
     Logic::Game gameTest();
 
-	Engine engine(hInstance, WIN_WIDTH, WIN_HEIGHT);
+	Engine engine(hInstance, 1280, 720);
 	return engine.run();
 }

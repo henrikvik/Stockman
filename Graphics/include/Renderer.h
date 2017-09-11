@@ -7,7 +7,7 @@
 #include "Structs.h"
 #include "Constants.h"
 #include "WICTextureLoader.h"
-#include <Resources\ResourceManager.h>
+#include "ResourceManager.h"
 #include <SimpleMath.h>
 
 namespace Graphics
@@ -25,7 +25,7 @@ namespace Graphics
 
     private:
 		//MYCKET TEMP
-		struct TestCube
+		struct TestQuad
 		{
 			DirectX::SimpleMath::Vector3 pos;
 			DirectX::SimpleMath::Vector2 uv;
@@ -38,14 +38,11 @@ namespace Graphics
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
-		ID3D11DepthStencilView * dSV;
-		ID3D11DepthStencilState * dSS;
 
 		//temp
 		ID3D11ShaderResourceView* view;
 		ID3D11Buffer * FSQuad2;
 		ID3D11Buffer * defferedTestBuffer;
-		ID3D11Buffer * instanceBuffer;
 
 
         std::vector<RenderInfo*> renderQueue;
@@ -53,13 +50,12 @@ namespace Graphics
         InstanceQueue_t instanceQueue;
         GBuffer gbuffer;
 
+        ID3D11Buffer *instanceBuffer;
+
         void createGBuffer();
         void cull();
         void draw();
 		void drawDeffered();
-		void createDepthStencil();
-		void createCubeInstances();
-		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
     };

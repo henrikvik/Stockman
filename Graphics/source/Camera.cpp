@@ -87,7 +87,6 @@ ID3D11Buffer* Graphics::Camera::getBuffer()
 
 void Graphics::Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context)
 {
-	forward.Normalize();
 	Matrix newView = DirectX::XMMatrixLookToLH(pos, forward, Vector3(0, 1, 0));
 
 	if (newView != this->mView)
@@ -95,7 +94,7 @@ void Graphics::Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleM
 		this->mView = newView;
 		this->mPos = pos;
 
-		Matrix vP = this->mView * this->mProjection;
+		Matrix vP = this->mProjection * this->mView;
 
 		D3D11_MAPPED_SUBRESOURCE data;
 		ZeroMemory(&data, sizeof(data));
