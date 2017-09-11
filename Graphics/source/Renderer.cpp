@@ -7,12 +7,11 @@
 using namespace Graphics;
 
 Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer)
-    : device(device)
-    , deviceContext(deviceContext)
-    , backBuffer(backBuffer)
-	, resourceManager(device, deviceContext)
+  
 {
-
+	this->device = device;
+	this->deviceContext = deviceContext;
+	this->backBuffer = backBuffer;
 
 	using namespace DirectX::SimpleMath;
 
@@ -243,8 +242,9 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 
 void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
 {
-	resourceManager->initialize()
+	resourceManager.initialize(gDevice, gDeviceContext);
 }
+
 Graphics::Renderer::~Renderer()
 {
 	view->Release();
