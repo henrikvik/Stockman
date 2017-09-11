@@ -181,8 +181,5 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Engine.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="cat.jpg" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
