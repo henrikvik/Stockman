@@ -1,4 +1,5 @@
 #include "../Entity/StatusManager.h"
+#include <stdio.h>
 
 using namespace Logic;
 
@@ -50,6 +51,7 @@ void StatusManager::update(float deltaTime)
 	for (int i = 0; i < NR_OF_EFFECTS; ++i) 
 	{
 		// do stuff
+		printf("Dur: %f", m_effectStacks[i].duration);
 		if (m_effectStacks[i].duration -= deltaTime <= 0)
 		{
 			removeEffect(i);
