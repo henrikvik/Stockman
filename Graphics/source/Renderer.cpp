@@ -431,7 +431,7 @@ void Renderer::draw()
 	// draw all instanced meshes
 	for (InstanceQueue_t::value_type & pair : instanceQueue)
 	{
-		//getVertexBuffer(pair.first);
+		//resourceManager->getVertexBuffer(pair.first);
 		//deviceContext->DrawInstanced()
 	}
 }
