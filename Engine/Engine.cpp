@@ -50,6 +50,8 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
+	this->mMouse = std::make_unique<DirectX::Mouse>();
+
 }
 
 Engine::~Engine()
@@ -100,7 +102,6 @@ void Engine::initializeWindow()
 	{
 		MessageBox(this->window, "window creation failed", "Error", MB_OK);
 	}
-
 
 
 	ShowWindow(this->window, SW_SHOWDEFAULT);
@@ -243,6 +244,7 @@ int Engine::run()
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
 		}
+		
 	}
 
 	// Delete game content

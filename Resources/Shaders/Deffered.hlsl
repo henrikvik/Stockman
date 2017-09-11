@@ -30,6 +30,7 @@ VSOutput VS(VSInput input, uint id : SV_InstanceID)
     VSOutput output;
 
     output.pos = float4(input.pos, 1);
+    output.pos.xyz += input.offset.xyz;
     output.pos = mul(VP, output.pos);
     output.uv = input.uv;
     output.normal = input.normal;

@@ -5,7 +5,7 @@
 
 /*
 	Class: RenderRegister
-	Author: Emanuel Bjurman
+	Author:
 
 	Description:
 	This class handles info about all Objects that are being rendered for the current frame.

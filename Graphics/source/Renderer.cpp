@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include <stdio.h>
 #include "ThrowIfFailed.h"
+#include <Engine\Constants.h>
 
 
 using namespace Graphics;
@@ -208,6 +209,7 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 	};
 
     createGBuffer();
+	createCubeInstances();
 	createDepthStencil();
 
 	D3D11_VIEWPORT viewPort;
@@ -386,6 +388,26 @@ void Graphics::Renderer::createDepthStencil()
 void Graphics::Renderer::createCubeInstances()
 {
 	D3D11_BUFFER_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+
+	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	desc.ByteWidth = 12 * 3;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	desc.Usage = D3D11_USAGE_DYNAMIC;
+
+	DirectX::SimpleMath::Vector3 offsets[] =
+	{
+		DirectX::SimpleMath::Vector3(0, 0, 0),
+		DirectX::SimpleMath::Vector3(3, 4, 0),
+		DirectX::SimpleMath::Vector3(-3, 0, 5)
+	};
+
+	D3D11_SUBRESOURCE_DATA data;
+	ZeroMemory(&data, sizeof(D3D11_SUBRESOURCE_DATA));
+	data.pSysMem = offsets;
+
+	ThrowIfFailed(device->CreateBuffer(&desc, &data, &instanceBuffer));
+
 }
 
 void Renderer::draw()
@@ -437,10 +459,12 @@ void Renderer::drawDeffered()
 	//textur här typ
 
 	UINT stride = 36, offset = 0;
+	UINT instanceStride = 12;
 	deviceContext->IASetVertexBuffers(0, 1, &defferedTestBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(1, 1, &instanceBuffer, &instanceStride, &offset);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	deviceContext->Draw(36, 0);
+	deviceContext->DrawInstanced(36, 3, 0, 0);
 
 	ID3D11RenderTargetView * RTVNULLS[] =
 	{

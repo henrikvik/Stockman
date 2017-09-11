@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <Graphics\include\Structs.h>
+#include "..\..\..\Graphics\include\Structs.h"
 
 namespace Logic
 {

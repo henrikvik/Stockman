@@ -1,4 +1,5 @@
 #include <Resources/ResourceManager.h>
+#include <Engine\Constants.h>
 
 ResourceManager::ResourceManager()
 {
