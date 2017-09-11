@@ -25,6 +25,8 @@ bool Game::init()
 	m_player = new Player();
 	m_player->init(m_physics, RigidBodyDesc(ShapeRectangle, 1, { 0, 0, 0 }, { 1, 1, 1 } ));
 
+	m_menu = new MenuMachine();
+	m_menu->initialize();
 	return result;
 }
 
@@ -37,6 +39,9 @@ void Game::clear()
 	// Deleting player
 	m_player->clear();
 	delete m_player;
+
+	m_menu->clear();
+	delete m_menu;
 }
 
 void Game::update(float deltaTime)

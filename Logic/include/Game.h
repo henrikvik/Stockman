@@ -5,7 +5,7 @@
 
 #include "Player\Player.h"
 #include "Physics\Physics.h"
-#include "Misc\MenuMachine.h"
+#include "Misc\GUI\MenuMachine.h"
 #include <Windows.h>
 #include <Keyboard.h>
 #include <Mouse.h>
@@ -29,6 +29,7 @@ namespace Logic
 	private:
 		Physics* m_physics;
 		Player* m_player;
+		MenuMachine* m_menu;
 	};
 }
 
