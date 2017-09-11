@@ -104,14 +104,14 @@ void Logic::Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	if (ks->IsKeyDown(m_moveLeft))
 	{
 		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
-		rigidBody->setLinearVelocity(-dir * deltaTime * m_moveSpeed);
+		rigidBody->setLinearVelocity(dir * deltaTime * m_moveSpeed);
 	}
 		
 	// Move Right
 	if (ks->IsKeyDown(m_moveRight))
 	{
 		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
-		rigidBody->setLinearVelocity(dir * deltaTime * m_moveSpeed);
+		rigidBody->setLinearVelocity(-dir * deltaTime * m_moveSpeed);
 	}
 
 	// Move Forward

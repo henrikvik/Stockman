@@ -74,7 +74,7 @@ void Entity::collision(Entity& other)
 
 btRigidBody* Logic::Entity::getRigidbody()
 {
-	return m_rigidBody;
+	return m_body;
 }
 
 // JUST FOR TESTING, REMOVE
