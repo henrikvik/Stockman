@@ -27,10 +27,13 @@ namespace Logic
 
 		void init();
 		void clear();
+		void update(float deltaTime);
 
 		void switchWeapon(int weaponID);
 		void usePrimary();
 		void useSecondary();
+
+		bool isSwitching();
 
 	private:
 
@@ -40,6 +43,10 @@ namespace Logic
 		std::vector<Weapon> m_allWeapons;
 		std::vector<std::pair<Weapon*, Weapon*>> m_weaponsLoadouts;
 		std::pair<Weapon*, Weapon*> m_currentWeapon;
+
+		// Timers
+		float m_swapWeaponTimer;
+		float m_swapWeaponTimerMax;
 	};
 }
 #endif

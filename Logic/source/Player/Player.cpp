@@ -12,6 +12,8 @@ Player::~Player()
 
 bool Logic::Player::init()
 {
+	m_weaponManager.init();
+	m_skillManager.init();
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -45,27 +47,43 @@ void Logic::Player::readFromFile()
 
 void Player::updateSpecific(float deltaTime)
 {
+	// Update Managers
+	m_weaponManager.update(deltaTime);
+	m_skillManager.update();
+
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
-	
+	HWND hwnd = FindWindow(NULL, "Stort spel");
 
+	RECT rect;
+	GetWindowRect(hwnd, &rect);
+
+	printf("bot: %d	left: %d	right: %d	top: %d\n", rect.bottom, rect.left, rect.right, rect.top);
+
+	// Movement
+	mouseMovement(deltaTime, &ms);
 	move(deltaTime, &ks);
 	jump(deltaTime);
 	crouch(deltaTime);
-	mouseMovement(deltaTime, &ms);
 
-	if (ks.IsKeyDown(m_switchWeaponOne))
-		m_weaponManager.switchWeapon(0);
+	// Weapon swap
+	if (!m_weaponManager.isSwitching())
+	{
+		if (ks.IsKeyDown(m_switchWeaponOne))
+			m_weaponManager.switchWeapon(0);
 
-	if (ks.IsKeyDown(m_switchWeaponTwo))
-		m_weaponManager.switchWeapon(1);
+		if (ks.IsKeyDown(m_switchWeaponTwo))
+			m_weaponManager.switchWeapon(1);
 
-	if (ks.IsKeyDown(m_switchWeaponThree))
-		m_weaponManager.switchWeapon(2);
+		if (ks.IsKeyDown(m_switchWeaponThree))
+			m_weaponManager.switchWeapon(2);
+	}
 
+	// Skill
 	if (ks.IsKeyDown(m_useSkill))
 		m_skillManager.useSkill();
 
+	// Primary and secondary attack
 	if ((ms.leftButton))
 		m_weaponManager.usePrimary();
 

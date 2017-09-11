@@ -26,8 +26,12 @@ namespace Logic
 		WeaponManager m_weaponManager;
 		SkillManager m_skillManager;
 
+		// Stats
+		btVector3 m_lookAt;
+		float m_moveSpeed;
+
 		// Keys
-		DirectX::Keyboard::Keys m_keyoveLeft;
+		DirectX::Keyboard::Keys m_keyLeft;
 		DirectX::Keyboard::Keys m_moveRight;
 		DirectX::Keyboard::Keys m_moveLeft;
 		DirectX::Keyboard::Keys m_moveForward;
