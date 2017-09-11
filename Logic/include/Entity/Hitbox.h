@@ -12,6 +12,11 @@ namespace Logic
 		~Hitbox();
 
 		bool init(Physics* physics, BodyDesc bodyDesc);
+		void clear();
+
+		void updateSpecific(float deltatTime);
+		void onCollision(Entity& other);
+
 	};
 }
 
