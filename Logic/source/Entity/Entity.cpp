@@ -10,6 +10,7 @@ Entity::~Entity() { }
 
 void Logic::Entity::update(float deltaTime)
 {
+	m_statusManager.update(deltaTime);
 	updateSpecific(deltaTime);
 }
 

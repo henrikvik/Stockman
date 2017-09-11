@@ -24,7 +24,7 @@ namespace Logic
 		virtual void onCollision(const Entity& other) = 0;
 
 	private:
-		StatusManager manager;
+		StatusManager m_statusManager;
 	};
 }
 

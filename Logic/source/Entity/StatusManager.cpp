@@ -1,4 +1,4 @@
-#include "../Entity/StatusManager.h"
+#include <Entity\StatusManager.h>
 #include <stdio.h>
 
 using namespace Logic;
@@ -26,6 +26,8 @@ StatusManager::StatusManager() {
 		creating.setStandards(standards);
 		s_effects[FREEZE] = creating; // FREEZE
 	#endif // !buffsCreated
+
+	addStatus(0, 5, true);
 }
 
 StatusManager::~StatusManager() { }
@@ -39,8 +41,8 @@ void StatusManager::clear()
 
 void StatusManager::removeEffect(int index)
 {
-	std::swap(m_effectStacks[index], m_effectStacks[m_effectStacks.size()]);
-	std::swap(m_effectStacksIds[index], m_effectStacksIds[m_effectStacksIds.size()]);
+	std::swap(m_effectStacks[index], m_effectStacks[m_effectStacks.size() - 1]);
+	std::swap(m_effectStacksIds[index], m_effectStacksIds[m_effectStacksIds.size() - 1]);
 
 	m_effectStacks.pop_back();
 	m_effectStacksIds.pop_back();
@@ -48,11 +50,12 @@ void StatusManager::removeEffect(int index)
 
 void StatusManager::update(float deltaTime)
 {
-	for (int i = 0; i < NR_OF_EFFECTS; ++i) 
+	if (deltaTime > 1) deltaTime = 1; //TEST
+	for (size_t i = 0; i < m_effectStacks.size(); ++i)
 	{
 		// do stuff
 		printf("Dur: %f", m_effectStacks[i].duration);
-		if (m_effectStacks[i].duration -= deltaTime <= 0)
+		if ((m_effectStacks[i].duration -= deltaTime) <= 0)
 		{
 			removeEffect(i);
 		}
@@ -76,6 +79,7 @@ void StatusManager::addStatus(int statusID, int nrOfStacks, bool resetDuration)
 	if (!found) 
 	{
 		m_effectStacks.push_back({ nrOfStacks, s_effects[statusID].getStandards()->duration });
+		m_effectStacksIds.push_back(statusID);
 	}
 }
 
