@@ -4,11 +4,11 @@
 #pragma region Comment
 
 /*
-	Class: MenuMachine
-	Author:
+Class: MenuMachine
+Author: Emanuel Bjurman
 
-	Description:
-	This class creates menus and handles switching between different menu layouts.
+Description:
+This class creates menus and handles switching between different menu layouts.
 
 */
 
@@ -27,7 +27,7 @@ namespace Logic
 	private:
 		struct MenuState
 		{
-			std::vector<Object> m_buttons;		//< List of buttons on current menu
+			std::vector<Object*> m_buttons;		//< List of buttons on current menu
 			std::string m_menuTexture;			//< file path for the menu background
 		};
 
@@ -41,7 +41,8 @@ namespace Logic
 		void showMenu(GameState state);		//< Creates a menu layout
 		void removeMenu();					//< Removes current menu layout
 		void readMenuLayoutFromFile();		//< Load menu layout from file
-	
+		MenuState* getMenuState();
+
 
 	};
 }
