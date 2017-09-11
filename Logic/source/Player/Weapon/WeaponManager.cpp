@@ -12,7 +12,7 @@ void WeaponManager::init()
 	makeWeaponLoadout();
 
 	// Timers
-	m_swapWeaponTimerMax = 3000000.f;
+	m_swapWeaponTimerMax = 1000.f;
 	m_swapWeaponTimer = 0.f;
 }
 

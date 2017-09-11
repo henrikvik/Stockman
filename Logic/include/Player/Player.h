@@ -27,7 +27,8 @@ namespace Logic
 		SkillManager m_skillManager;
 
 		// Stats
-		btVector3 m_lookAt;
+		float m_mouseSens;
+		DirectX::SimpleMath::Vector3 m_lookAt;
 		float m_moveSpeed;
 
 		// Keys
@@ -48,6 +49,8 @@ namespace Logic
 		void jump(float deltaTime);
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
+
+		DirectX::SimpleMath::Vector2 getWindowMidPoint();
 
 	public:
 		Player();

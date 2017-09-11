@@ -25,6 +25,8 @@ namespace Logic
 		void collision(Entity& other);
 		virtual void onCollision(Entity& other) = 0;
 
+		btRigidBody* getRigidbody();
+
 		// JUST FOR TESTING, REMOVE
 		void consoleWritePosition();
 

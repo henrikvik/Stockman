@@ -65,6 +65,11 @@ void Entity::collision(Entity& other)
 	onCollision(other);
 }
 
+btRigidBody* Logic::Entity::getRigidbody()
+{
+	return m_rigidBody;
+}
+
 // JUST FOR TESTING, REMOVE
 void Entity::consoleWritePosition()
 {

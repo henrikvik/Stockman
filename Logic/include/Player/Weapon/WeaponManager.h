@@ -14,8 +14,6 @@
 
 namespace Logic
 {
-	
-
 	class WeaponManager
 	{
 
