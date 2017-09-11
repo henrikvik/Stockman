@@ -30,27 +30,42 @@ namespace Logic
 	class Effect
 	{
 	public:
+		struct Standards {
+			long long flags;
+			float	duration;		//< Duration of this effect (0 is instant like +hp or something)
+		};
+
+		struct Modifiers {
+			float	m_modifyDmgGiven;
+			float	m_modifyDmgTaken;
+			float	m_modifyHP;
+			float	m_modifyFirerate;
+			float	m_modifyMovementSpeed;
+		};
+
+		struct Specifics {
+			float	m_isFreezing;	//< The amount of freezed (0 : 1)
+			float	m_isBulletTime;	//< Multiplier of the current bulletTime (for example, this effect will adjust every entity except player during the bullet time skill)
+		};
+
 		Effect();
+		Effect(Standards const &standards);
 		Effect(const Effect& other) = delete;
-		Effect* operator=(const Effect& other) = delete;
+		Effect* operator=(const Effect& other);
 		~Effect();
 
+		Standards* getStandards() const;
+		Modifiers* getModifiers() const;
+		Specifics* getSpecifics() const;
+
+		void setStandards(Standards const &standards);
+		void setModifiers(Modifiers const &modifiers);
+		void setSpecifics(Specifics const &specifics);
 		// Add get & sets here when you're not lazy
-
 	private:
-		long long flags;
-		float	duration;		//< Duration of this effect
-
-		// Modifiers
-		float	m_modifyDmgGiven;
-		float	m_modifyDmgTaken;
-		float	m_modifyHP;
-		float	m_modifyFirerate;
-		float	m_modifyMovementSpeed;
-
-		// Specific 
-		float	m_isFreezing;	//< The amount of freezed (0 : 1)
-		float	m_isBulletTime;	//< Multiplier of the current bulletTime (for example, this effect will adjust every entity except player during the bullet time skill)
+		Standards *m_standards;
+		Modifiers *m_modifiers;
+		Specifics *m_specifics;
 	};
 }
 

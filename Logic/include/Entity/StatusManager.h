@@ -4,7 +4,7 @@
 #pragma region Comment
 
 /*
-	Author: Fredholm
+	Author: Fredholm / Lukas
 
 	This class keeps track on upgrades for both weapons and skills
 */
@@ -20,6 +20,10 @@ namespace Logic
 	class StatusManager
 	{
 	public:
+		/* STANDARDS EFFECTS */
+		static Effect onFire, freeze;
+		/* BASELINE EFFECTS */
+
 		StatusManager();
 		StatusManager(const StatusManager& other) = delete;
 		StatusManager* operator=(const StatusManager& other) = delete;
