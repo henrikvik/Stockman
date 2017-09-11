@@ -51,7 +51,7 @@ void EntityManager::update(float deltaTime)
 
 	for (int i = 0; i < m_deadEnemies.size(); i++)
 	{
-		m_deadEnemies[i]->update(deltaTime);
+		m_deadEnemies[i]->updateDead(deltaTime);
 	}
 
 	clock_t end = clock();

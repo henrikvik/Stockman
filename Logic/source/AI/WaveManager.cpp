@@ -6,7 +6,6 @@ WaveManager::WaveManager(std::string waveFileName)
 	m_waveFileName = waveFileName;
 }
 
-
 WaveManager::~WaveManager()
 {
 }
