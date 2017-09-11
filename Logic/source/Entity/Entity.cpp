@@ -4,21 +4,48 @@ using namespace Logic;
 
 Entity::Entity()
 {
-
+	m_rigidBody = nullptr;
 }
 
 Entity::~Entity() { }
 
-void Entity::createRigidBody(Physics* physics)
+bool Entity::init(Physics* physics, RigidBodyDesc rigidBodyDesc)
 {
-	/* TEMP CREATION OF A FALLING SPHERE */
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
-	btCollisionShape* sphere = new btSphereShape(1);
-	btScalar mass = 5;
+	if (physics == nullptr)
+		return false;
 
-	m_rigidBody = new btRigidBody(mass, groundMotionState, sphere);
+	// Setting rotation & position
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(rigidBodyDesc.yaw, rigidBodyDesc.pitch, rigidBodyDesc.roll), rigidBodyDesc.position));
 
-	physics->addRigidBody(m_rigidBody);
+	// Creating the specific shape
+	btCollisionShape* shape;
+	switch (rigidBodyDesc.shape)
+	{
+	case ShapeSphere:
+		shape = new btSphereShape(rigidBodyDesc.radius);
+		break;
+	case ShapeRectangle:
+		shape = new btBoxShape(rigidBodyDesc.boxDimensions);
+		break;
+	default:
+		shape = nullptr;
+		return false;
+		break;
+	}
+
+	// Creating the actual body
+	m_rigidBody = new btRigidBody(rigidBodyDesc.mass, motionState, shape);
+
+	// Connecting the bulletphysics world with ours
+	m_rigidBody->setUserPointer(this);
+
+	// Adding starting velocity
+	m_rigidBody->applyForce(rigidBodyDesc.velocity, rigidBodyDesc.position);
+
+	// Adding body to the world
+	physics->addRigidBody(m_rigidBody); 
+
+	return true;
 }
 
 void Entity::update(float deltaTime)
@@ -29,4 +56,13 @@ void Entity::update(float deltaTime)
 void Entity::collision(Entity& other)
 {
 	onCollision(other);
+}
+
+// JUST FOR TESTING, REMOVE
+void Entity::consoleWritePosition()
+{
+	btTransform trans;
+	m_rigidBody->getMotionState()->getWorldTransform(trans);
+
+	printf("%f\n", trans.getOrigin().getY());
 }

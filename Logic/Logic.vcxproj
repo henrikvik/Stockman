@@ -184,6 +184,7 @@
     <ClInclude Include="include\Misc\RenderRegister.h" />
     <ClInclude Include="include\Misc\StateMachine.h" />
     <ClInclude Include="include\Physics\Physics.h" />
+    <ClInclude Include="include\Physics\RigidBodyDesc.h" />
     <ClInclude Include="include\Player\ActionManager.h" />
     <ClInclude Include="include\Player\Player.h" />
     <ClInclude Include="include\Player\Skill\Skill.h" />

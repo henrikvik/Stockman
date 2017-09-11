@@ -3,9 +3,9 @@
 
 #include "Object.h"
 #include "../Physics/Physics.h"
+#include "../Physics/RigidBodyDesc.h"
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
-#include "Keyboard.h"
 
 namespace Logic
 {
@@ -17,13 +17,16 @@ namespace Logic
 		Entity* operator=(const Entity& other) = delete;
 		~Entity();
 
-		void createRigidBody(Physics* physics);
+		bool init(Physics* physics, RigidBodyDesc rigidBodyDesc);
 
 		virtual void clear() = 0;
 		void update(float deltaTime);
 		virtual void updateSpecific(float deltatTime) = 0;
 		void collision(Entity& other);
 		virtual void onCollision(Entity& other) = 0;
+
+		// JUST FOR TESTING, REMOVE
+		void consoleWritePosition();
 
 	private:
 		btRigidBody* m_rigidBody;

@@ -45,10 +45,5 @@ void Physics::clear()
 
 void Physics::update(float deltaTime)
 {
-	this->stepSimulation(PHYSICS_TIME_STEP, PHYSICS_MAX_SUB_STEPS);
-
-	btTransform trans;
-	this->getNumCollisionObjects();
-
-//	printf("%d", this->getNumCollisionObjects());
+	this->stepSimulation(deltaTime);
 }

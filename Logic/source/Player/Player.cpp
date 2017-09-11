@@ -10,8 +10,9 @@ Player::~Player()
 {
 }
 
-bool Logic::Player::init()
+bool Player::init(Physics* physics, RigidBodyDesc rigidBodyDesc)
 {
+	Entity::init(physics, rigidBodyDesc);
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;

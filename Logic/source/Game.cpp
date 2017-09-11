@@ -12,9 +12,6 @@ Game::~Game() { }
 
 bool Game::init()
 {
-	m_player = new Player();
-	m_player->init();
-
 	bool result;
 
 	// Initializing Bullet physics
@@ -24,6 +21,9 @@ bool Game::init()
 	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver;	// Default constraint solver
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
+
+	m_player = new Player();
+	m_player->init(m_physics, RigidBodyDesc(ShapeRectangle, 1, { 0, 0, 0 }, { 1, 1, 1 } ));
 
 	return result;
 }
