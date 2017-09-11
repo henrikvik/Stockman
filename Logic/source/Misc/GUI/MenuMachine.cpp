@@ -11,10 +11,6 @@ MenuMachine::~MenuMachine()
 {
 	for (const auto& a : m_menuStates)
 	{
-		for (int i = 0; i < a.second->m_buttons.size(); i++)
-		{
-			delete a.second->m_buttons[i];
-		}
 		delete a.second;
 	}
 }
@@ -22,7 +18,7 @@ MenuMachine::~MenuMachine()
 void Logic::MenuMachine::initialize()
 {
 	MenuState* test = new MenuState();
-	test->m_buttons.push_back(new Object());
+	test->initialize();
 	m_menuStates[gameStateMenuMain] = test;
 	//accquire menue state
 	//accquires position
@@ -47,7 +43,7 @@ void Logic::MenuMachine::showMenu(GameState state)
 	}
 }
 
-MenuMachine::MenuState* Logic::MenuMachine::getMenuState()
+MenuState* Logic::MenuMachine::currentMenu()
 {
 	return currentActive;
 }
