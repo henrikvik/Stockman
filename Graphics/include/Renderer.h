@@ -2,13 +2,13 @@
 #include <Windows.h>
 #include <vector>
 #include <d3d11.h>
-#include <SimpleMath.h>
 #include <unordered_map>
 #include "Camera.h"
 #include "Structs.h"
 #include "Constants.h"
-#include "ShaderHandler.h"
 #include "WICTextureLoader.h"
+#include <Resources\ResourceManager.h>
+#include <SimpleMath.h>
 
 namespace Graphics
 {
@@ -22,10 +22,10 @@ namespace Graphics
 		virtual ~Renderer();
         void render(Camera * camera);
         void qeueuRender(RenderInfo * renderInfo);
-		//TODO: RELESASEA ALLA SAKER
+
     private:
 		//MYCKET TEMP
-		struct TestQuad
+		struct TestCube
 		{
 			DirectX::SimpleMath::Vector3 pos;
 			DirectX::SimpleMath::Vector2 uv;
@@ -33,39 +33,33 @@ namespace Graphics
 			int mat;
 		};
 
-		
-		
+		ResourceManager resourceManager;
 
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
-		ShaderHandler shaderHandler;
-		ID3D11BlendState *transparencyBlendState;
+		ID3D11DepthStencilView * dSV;
+		ID3D11DepthStencilState * dSS;
 
 		//temp
 		ID3D11ShaderResourceView* view;
-		ID3D11ShaderResourceView* GUI;
 		ID3D11Buffer * FSQuad2;
 		ID3D11Buffer * defferedTestBuffer;
-		ID3D11Buffer *GUIvb;
+		ID3D11Buffer * instanceBuffer;
 
-		int shaders[4];
-		int defferedShaders[2];
 
         std::vector<RenderInfo*> renderQueue;
         typedef  std::unordered_map<int, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;
         GBuffer gbuffer;
 
-        ID3D11Buffer *instanceBuffer;
-
         void createGBuffer();
         void cull();
         void draw();
 		void drawDeffered();
-		void drawGUI();
-		void createBlendState();
-		void createGUIBuffers();
+		void createDepthStencil();
+		void createCubeInstances();
+		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
     };
