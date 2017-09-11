@@ -100,33 +100,37 @@ void Logic::Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 {
 	btRigidBody* rigidBody = getRigidbody();
 
+	btVector3 linearVel = btVector3(0, 0, 0);
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
 		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
-		rigidBody->setLinearVelocity(dir * deltaTime * m_moveSpeed);
+		linearVel += dir;
 	}
-		
+
 	// Move Right
 	if (ks->IsKeyDown(m_moveRight))
 	{
 		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
-		rigidBody->setLinearVelocity(-dir * deltaTime * m_moveSpeed);
+		linearVel += -dir;
 	}
 
 	// Move Forward
 	if (ks->IsKeyDown(m_moveForward))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z);
-		rigidBody->setLinearVelocity(dir * deltaTime * m_moveSpeed);
+		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).normalize();
+		linearVel += dir;
 	}
 
 	// Move Back
 	if (ks->IsKeyDown(m_moveBack))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z);
-		rigidBody->setLinearVelocity(-dir * deltaTime * m_moveSpeed);
+		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).normalize();
+		linearVel += -dir;
 	}
+
+	rigidBody->applyCentralForce(linearVel * deltaTime * m_moveSpeed);
+
 }
 
 void Logic::Player::jump(float deltaTime)
