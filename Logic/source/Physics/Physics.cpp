@@ -45,5 +45,7 @@ void Physics::clear()
 
 void Physics::update(float deltaTime)
 {
-	this->stepSimulation(deltaTime);
+	this->stepSimulation(deltaTime); // bulletphysics doesn't support a not constant framrate, calling this will make the game not g8
+//	this->stepSimulation(1 / 60.f);
+
 }

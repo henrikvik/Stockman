@@ -18,8 +18,8 @@ namespace Logic
 			this->mass			= mass;
 			this->position		= position;
 			this->rotation		= { 0, 0, 0 };
-			this->restitution	= 0.5f;
-			this->friction		= 0.5f;
+			this->restitution	= 0.0f;
+			this->friction		= 1.0f;
 			this->velocity		= { 0, 0, 0 };
 
 			// Box Specifics
@@ -33,8 +33,8 @@ namespace Logic
 			this->mass			= mass;
 			this->position		= position;
 			this->rotation		= { 0, 0, 0 };
-			this->restitution	= 0.5f;
-			this->friction		= 0.5f;
+			this->restitution	= 0.0f;
+			this->friction		= 1.0f;
 			this->velocity		= { 0, 0, 0 };
 
 			// Plane Specifics
@@ -49,8 +49,8 @@ namespace Logic
 			this->mass			= mass;
 			this->position		= position;
 			this->rotation		= { 0, 0, 0 };
-			this->restitution	= 0.5f;
-			this->friction		= 0.5f;
+			this->restitution	= 0.0f;
+			this->friction		= 1.0f;
 			this->velocity		= { 0, 0, 0 };
 
 			// Sphere Specifics
@@ -61,9 +61,9 @@ namespace Logic
 		btScalar			mass;
 		btVector3			position;
 		btVector3			rotation;
-		btScalar			restitution;	// Bounciness
-		btScalar			friction;
-		btVector3			velocity;
+		btScalar			restitution;	// 0 - brick, 1 - rubberball
+		btScalar			friction;		// 0 - ice, 1 - rock
+		btVector3			velocity;		
 		
 		btVector3			normal;
 		btScalar			scalar;
