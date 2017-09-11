@@ -64,7 +64,7 @@ void Player::updateSpecific(float deltaTime)
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
 	// Movement
-	if(ks.IsKeyDown(DirectX::Keyboard::A))
+	if(ks.IsKeyDown(DirectX::Keyboard::X))
 		mouseMovement(deltaTime, &ms);
 	move(deltaTime, &ks);
 	jump(deltaTime);
