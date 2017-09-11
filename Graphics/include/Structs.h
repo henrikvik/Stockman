@@ -6,10 +6,15 @@
 
 namespace Graphics
 {
+    enum ModelID {
+        CUBE
+    };
+
+
 	struct RenderInfo
 	{
 		bool render;
-		int meshId;
+        ModelID meshId;
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
 	};
