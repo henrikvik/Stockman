@@ -31,6 +31,7 @@ namespace Logic
 
 	private:
 		btRigidBody* m_body;
+	//	Hitbox* m_head; for headshot, put it here to remember
 	};
 }
 
