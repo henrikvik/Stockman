@@ -50,8 +50,9 @@ namespace Logic
 
 		Effect();
 		Effect(Standards const &standards);
-		Effect(const Effect& other);
-		Effect* operator=(const Effect& other);
+		Effect(Effect const &other);
+
+		Effect* operator=(Effect const &other);
 		~Effect();
 
 		Standards* getStandards() const;
@@ -61,16 +62,10 @@ namespace Logic
 		void setStandards(Standards const &standards);
 		void setModifiers(Modifiers const &modifiers);
 		void setSpecifics(Specifics const &specifics);
-
-		int getStack() const;
-		void setStack(int stack);
-		void pop();
 	private:
 		Standards *m_standards;
 		Modifiers *m_modifiers;
 		Specifics *m_specifics;
-
-		int m_stack;
 	};
 }
 

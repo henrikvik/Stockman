@@ -6,8 +6,9 @@ using namespace Logic;
 Effect StatusManager::s_effects[StatusManager::NR_OF_EFFECTS];
  
 StatusManager::StatusManager() { 
-	#ifndef buffsCreated
-	#define buffsCreated /* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
+	#ifndef BUFFS_CREATED
+	#define BUFFS_CREATED
+	/* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
 		Effect creating;
 
 		Effect::Standards standards;

@@ -2,16 +2,21 @@
 
 using namespace Logic;
 
-Effect::Effect()
-{
+Effect::Effect() {
+	m_standards = nullptr;
+	m_modifiers = nullptr;
+	m_specifics = nullptr;
 }
 
 Effect::Effect(Standards const &standards)
 {
 	m_standards = new Standards(standards);
+	m_modifiers = nullptr;
+	m_specifics = nullptr;
 }
 
-Effect::Effect(Effect const &other) {
+Effect::Effect(Effect const &other) 
+{
 	if (m_standards) delete m_standards;
 	if (m_modifiers) delete m_modifiers;
 	if (m_specifics) delete m_specifics;
@@ -21,7 +26,8 @@ Effect::Effect(Effect const &other) {
 	if (other.getSpecifics()) setSpecifics(*other.getSpecifics());
 }
 
-Effect* Effect::operator=(Effect const &other) {
+Effect* Effect::operator=(Effect const &other) 
+{
 	if (m_standards) delete m_standards;
 	if (m_modifiers) delete m_modifiers;
 	if (m_specifics) delete m_specifics;
@@ -33,7 +39,8 @@ Effect* Effect::operator=(Effect const &other) {
 	return this;
 }
 
-Effect::~Effect() {
+Effect::~Effect() 
+{
 	if (m_standards) delete m_standards;
 	if (m_modifiers) delete m_modifiers;
 	if (m_specifics) delete m_specifics;
@@ -54,13 +61,13 @@ Effect::Specifics* Effect::getSpecifics() const
 	return m_specifics;
 }
 
-void Effect::setStandards(Standards const & standards)
+void Effect::setStandards(Standards const &standards)
 {
 	if (m_standards) delete m_standards;
 	m_standards = new Standards(standards);
 }
 
-void Effect::setModifiers(Modifiers const & modifiers)
+void Effect::setModifiers(Modifiers const &modifiers)
 {
 	if (m_modifiers) delete m_modifiers;
 	m_modifiers = new Modifiers(modifiers);
@@ -70,18 +77,4 @@ void Effect::setSpecifics(Specifics const &specifics)
 {
 	if (m_specifics) delete m_specifics;
 	m_specifics = new Specifics(specifics);
-}
-
-int Effect::getStack() const
-{
-	return m_stack;
-}
-
-void Effect::setStack(int stack)
-{
-	m_stack = stack;
-}
-
-void Effect::pop() {
-	--m_stack;
 }
