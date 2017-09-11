@@ -26,8 +26,13 @@ namespace Logic
 		WeaponManager m_weaponManager;
 		SkillManager m_skillManager;
 
+		// Stats
+		float m_mouseSens;
+		DirectX::SimpleMath::Vector3 m_lookAt;
+		float m_moveSpeed;
+
 		// Keys
-		DirectX::Keyboard::Keys m_keyoveLeft;
+		DirectX::Keyboard::Keys m_keyLeft;
 		DirectX::Keyboard::Keys m_moveRight;
 		DirectX::Keyboard::Keys m_moveLeft;
 		DirectX::Keyboard::Keys m_moveForward;
@@ -45,11 +50,13 @@ namespace Logic
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
+		DirectX::SimpleMath::Vector2 getWindowMidPoint();
+
 	public:
 		Player();
 		~Player();
 
-		bool init(Physics* physics, RigidBodyDesc rigidBodyDesc);
+		bool init(Physics* physics, BodyDesc bodyDesc);
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);

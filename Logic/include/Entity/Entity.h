@@ -17,7 +17,8 @@ namespace Logic
 		Entity* operator=(const Entity& other) = delete;
 		~Entity();
 
-		bool init(Physics* physics, RigidBodyDesc rigidBodyDesc);
+		bool init(Physics* physics, BodyDesc bodyDesc);
+		virtual void createBody(Physics* physics, BodyDesc bodyDesc);
 
 		virtual void clear() = 0;
 		void update(float deltaTime);
@@ -25,11 +26,14 @@ namespace Logic
 		void collision(Entity& other);
 		virtual void onCollision(Entity& other) = 0;
 
+		btRigidBody* getRigidbody();
+
 		// JUST FOR TESTING, REMOVE
 		void consoleWritePosition();
 
 	private:
-		btRigidBody* m_rigidBody;
+		btRigidBody* m_body;
+	//	Hitbox* m_head; for headshot, put it here to remember
 	};
 }
 

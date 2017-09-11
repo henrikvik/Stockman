@@ -10,9 +10,17 @@ Player::~Player()
 {
 }
 
-bool Player::init(Physics* physics, RigidBodyDesc rigidBodyDesc)
+bool Player::init(Physics* physics, BodyDesc bodyDesc)
 {
-	Entity::init(physics, rigidBodyDesc);
+	Entity::init(physics, bodyDesc);
+	m_weaponManager.init();
+	m_skillManager.init();
+
+	// Default mouse sensetivity, lookAt
+	m_mouseSens = 1.f;
+	m_lookAt = DirectX::SimpleMath::Vector3(0, 0, 1);
+
+	m_moveSpeed = 1.f;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -46,27 +54,40 @@ void Logic::Player::readFromFile()
 
 void Player::updateSpecific(float deltaTime)
 {
+
+	// Update Managers
+	m_weaponManager.update(deltaTime);
+	m_skillManager.update();
+
+	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
-	
 
+	// Movement
+	if(ks.IsKeyDown(DirectX::Keyboard::X))
+		mouseMovement(deltaTime, &ms);
 	move(deltaTime, &ks);
 	jump(deltaTime);
 	crouch(deltaTime);
-	mouseMovement(deltaTime, &ms);
 
-	if (ks.IsKeyDown(m_switchWeaponOne))
-		m_weaponManager.switchWeapon(0);
+	// Weapon swap
+	if (!m_weaponManager.isSwitching())
+	{
+		if (ks.IsKeyDown(m_switchWeaponOne))
+			m_weaponManager.switchWeapon(0);
 
-	if (ks.IsKeyDown(m_switchWeaponTwo))
-		m_weaponManager.switchWeapon(1);
+		if (ks.IsKeyDown(m_switchWeaponTwo))
+			m_weaponManager.switchWeapon(1);
 
-	if (ks.IsKeyDown(m_switchWeaponThree))
-		m_weaponManager.switchWeapon(2);
+		if (ks.IsKeyDown(m_switchWeaponThree))
+			m_weaponManager.switchWeapon(2);
+	}
 
+	// Skill
 	if (ks.IsKeyDown(m_useSkill))
 		m_skillManager.useSkill();
 
+	// Primary and secondary attack
 	if ((ms.leftButton))
 		m_weaponManager.usePrimary();
 
@@ -77,21 +98,35 @@ void Player::updateSpecific(float deltaTime)
 
 void Logic::Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 {
+	btRigidBody* rigidBody = getRigidbody();
+
+	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
-		// move player left
-		false;
-
+	{
+		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
+		rigidBody->setLinearVelocity(dir * deltaTime * m_moveSpeed);
+	}
+		
+	// Move Right
 	if (ks->IsKeyDown(m_moveRight))
-		// move player right
-		false;
+	{
+		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
+		rigidBody->setLinearVelocity(-dir * deltaTime * m_moveSpeed);
+	}
 
+	// Move Forward
 	if (ks->IsKeyDown(m_moveForward))
-		// move player forward
-		false;
+	{
+		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z);
+		rigidBody->setLinearVelocity(dir * deltaTime * m_moveSpeed);
+	}
 
+	// Move Back
 	if (ks->IsKeyDown(m_moveBack))
-		// move player back
-		false;
+	{
+		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z);
+		rigidBody->setLinearVelocity(-dir * deltaTime * m_moveSpeed);
+	}
 }
 
 void Logic::Player::jump(float deltaTime)
@@ -106,5 +141,40 @@ void Logic::Player::crouch(float deltaTime)
 
 void Logic::Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
+	DirectX::SimpleMath::Vector2 midPoint = getWindowMidPoint();
 
+	float camYaw = deltaTime * m_mouseSens * (ms->x - midPoint.x);
+	float camPitch = deltaTime * m_mouseSens * (ms->y - midPoint.y);
+
+	// Pitch lock and yaw correction
+	if (camPitch > 89)
+		camPitch = 89;
+	if (camPitch < -89)
+		camPitch = -89;
+	if (camYaw < 0.f)
+		camYaw += 360.f;
+	if (camYaw > 360.f)
+		camYaw -= 360.f;
+
+	// Reset cursor to mid point of window
+	SetCursorPos(midPoint.x, midPoint.y);
+
+	// Create lookAt
+	m_lookAt.x = cos(DirectX::XMConvertToRadians(camPitch)) * cos(DirectX::XMConvertToRadians(camYaw));
+	m_lookAt.y = -sin(DirectX::XMConvertToRadians(camPitch));
+	m_lookAt.z = cos(DirectX::XMConvertToRadians(camPitch)) * sin(DirectX::XMConvertToRadians(camYaw));
+
+	m_lookAt.Normalize();
+
+	printf("x: %f  y: %f  z: %f\n", m_lookAt.x, m_lookAt.y, m_lookAt.z);
+}
+
+DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
+{
+	HWND hwnd = FindWindow(NULL, "Stort spel");
+
+	RECT rect;
+	GetWindowRect(hwnd, &rect);
+
+	return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
 }
