@@ -22,13 +22,8 @@ void ActionManager::clear()
 	m_weaponManager.clear();
 }
 
-void ActionManager::switchToPrimary()
+void ActionManager::switchWeapon()
 {
-}
-
-void ActionManager::switchToSecondary()
-{
-
 }
 
 void ActionManager::useWeapon()

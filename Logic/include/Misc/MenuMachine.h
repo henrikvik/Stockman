@@ -5,7 +5,7 @@
 
 /*
 	Class: MenuMachine
-	Author: Emanuel Bjurman
+	Author:
 
 	Description:
 	This class creates menus and handles switching between different menu layouts.

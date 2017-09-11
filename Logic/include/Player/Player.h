@@ -14,14 +14,17 @@
 #include <Mouse.h>
 
 #include "Entity\Entity.h"
-#include "ActionManager.h"
+#include "Weapon\WeaponManager.h"
+#include "Skill\SkillManager.h"
 
 namespace Logic
 {
 	class Player : public Entity
 	{
 	private:
-		ActionManager m_actionManager;
+		//ActionManager m_actionManager;
+		WeaponManager m_weaponManager;
+		SkillManager m_skillManager;
 
 		// Keys
 		DirectX::Keyboard::Keys m_keyoveLeft;
@@ -31,15 +34,16 @@ namespace Logic
 		DirectX::Keyboard::Keys m_moveBack;
 		DirectX::Keyboard::Keys m_jump;
 		DirectX::Keyboard::Keys m_crouch;
-		DirectX::Keyboard::Keys m_switchWeaponPrimary;
-		DirectX::Keyboard::Keys m_switchWeaponSecondary;
-		DirectX::Keyboard::Keys m_switchWeaponMelee;
+		DirectX::Keyboard::Keys m_switchWeaponOne;
+		DirectX::Keyboard::Keys m_switchWeaponTwo;
+		DirectX::Keyboard::Keys m_switchWeaponThree;
 		DirectX::Keyboard::Keys m_useSkill;
 
 		// Movement
 		void move(float deltaTime, DirectX::Keyboard::State* ks);
 		void jump(float deltaTime);
 		void crouch(float deltaTime);
+		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
 	public:
 		Player();
@@ -49,6 +53,9 @@ namespace Logic
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(const Entity& other);
+
+		void saveToFile();
+		void readFromFile();
 	};
 
 }

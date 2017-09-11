@@ -19,9 +19,9 @@ bool Logic::Player::init()
 	m_moveForward = DirectX::Keyboard::Keys::W;
 	m_moveBack = DirectX::Keyboard::Keys::S;
 	m_jump = DirectX::Keyboard::Keys::Space;
-	m_switchWeaponPrimary = DirectX::Keyboard::Keys::D1;
-	m_switchWeaponSecondary = DirectX::Keyboard::Keys::D2;
-	m_switchWeaponMelee = DirectX::Keyboard::Keys::D3;
+	m_switchWeaponOne = DirectX::Keyboard::Keys::D1;
+	m_switchWeaponTwo = DirectX::Keyboard::Keys::D2;
+	m_switchWeaponThree = DirectX::Keyboard::Keys::D3;
 	m_useSkill = DirectX::Keyboard::Keys::E;
 
 	return true;
@@ -35,38 +35,42 @@ void Player::onCollision(const Entity& other)
 {
 }
 
+void Logic::Player::saveToFile()
+{
+}
+
+void Logic::Player::readFromFile()
+{
+}
+
 void Player::updateSpecific(float deltaTime)
 {
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
+	
 
 	move(deltaTime, &ks);
 	jump(deltaTime);
 	crouch(deltaTime);
+	mouseMovement(deltaTime, &ms);
 
-	if (ks.IsKeyDown(m_switchWeaponPrimary))
-		// m_actionManager.switchWeapon(primary);
-		false;
+	if (ks.IsKeyDown(m_switchWeaponOne))
+		m_weaponManager.switchWeapon(0);
 
-	if (ks.IsKeyDown(m_switchWeaponSecondary))
-		// m_actionManager.switchWeapon(secondary);
-		false;
+	if (ks.IsKeyDown(m_switchWeaponTwo))
+		m_weaponManager.switchWeapon(1);
 
-	if (ks.IsKeyDown(m_switchWeaponMelee))
-		// m_actionManager.switchWeapon(melee);
-		false;
+	if (ks.IsKeyDown(m_switchWeaponThree))
+		m_weaponManager.switchWeapon(2);
 
 	if (ks.IsKeyDown(m_useSkill))
-		// m_actionManager.useSkill();
-		false;
+		m_skillManager.useSkill();
 
 	if ((ms.leftButton))
-		// m_actionManager.firePrimary();
-		false;
+		m_weaponManager.usePrimary();
 
 	if (ms.rightButton)
-		// m_actionManager.fireSecondary();
-		false;
+		m_weaponManager.useSecondary();
 
 }
 
@@ -97,4 +101,9 @@ void Logic::Player::jump(float deltaTime)
 void Logic::Player::crouch(float deltaTime)
 {
 	// crouch
+}
+
+void Logic::Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
+{
+
 }
