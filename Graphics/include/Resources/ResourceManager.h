@@ -3,6 +3,7 @@
 #include "Resources/Mesh.h"
 #include <Resources/MeshManager.h>
 #include <BRFImportHandler.h>
+#include <Resources\MaterialManager.h>
 
 
 #define NROFSAMPLERS 1
@@ -36,7 +37,7 @@ class ResourceManager
 public:
 	
 	
-	ResourceManager(ID3D11Device * device);
+	ResourceManager();
 	~ResourceManager();
 
 	void initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);
@@ -48,6 +49,8 @@ public:
 
 	void setSampler(SamplerID id, ID3D11DeviceContext* context);
 	
+	void initShaders(ID3D11Device *gdevice);
+	
 private:
 	void createSamplerState(ID3D11Device* device);
 
@@ -55,7 +58,8 @@ private:
 
 	ID3D11SamplerState* sampleStates[NROFSAMPLERS];
 
-	MeshManager* meshManager = nullptr;
-	BRFImportHandler* brfImporterHandler = nullptr;
+	MeshManager meshManager;
+	BRFImportHandler brfImporterHandler;
+	MaterialManager materialManager;
 
 };

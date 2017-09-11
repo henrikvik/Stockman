@@ -9,8 +9,10 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
     : device(device)
     , deviceContext(deviceContext)
     , backBuffer(backBuffer)
-	, resourceManager(device)
+	, resourceManager(device, deviceContext)
 {
+
+
 	using namespace DirectX::SimpleMath;
 
 	TestCube defferedTest[] =
@@ -237,6 +239,10 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
 }
 
+void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
+{
+	resourceManager->initialize()
+}
 Graphics::Renderer::~Renderer()
 {
 	view->Release();
@@ -259,9 +265,6 @@ Graphics::Renderer::~Renderer()
 
 	dSS->Release();
 	dSV->Release();
-
-
-	
 }
 
 void Renderer::render(Camera * camera)
@@ -293,10 +296,12 @@ void Renderer::render(Camera * camera)
 	this->drawToBackbuffer(gbuffer.positionView);
 }
 
-void Renderer::qeueuRender(RenderInfo * renderInfo)
+void Renderer::queueRender(RenderInfo * renderInfo)
 {
     renderQueue.push_back(renderInfo);
 }
+
+
 
 void Renderer::createGBuffer()
 {
