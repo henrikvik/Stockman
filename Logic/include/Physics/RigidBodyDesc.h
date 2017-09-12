@@ -4,7 +4,7 @@ namespace Logic
 {
 	enum Shape 
 	{
-		ShapeBox, 
+		ShapeBox,			
 		ShapeSphere,
 		ShapeStaticPlane
 	};
@@ -12,6 +12,7 @@ namespace Logic
 	struct BodyDesc
 	{
 		// Simple Box Description
+		// - Dynamic body, intractable
 		BodyDesc(btScalar mass, btVector3 position, btVector3 boxDimensions)
 		{
 			this->shape			= ShapeBox;
@@ -27,10 +28,11 @@ namespace Logic
 		}
 
 		// Static Plane Description
-		BodyDesc(btScalar mass, btVector3 position, btScalar scalar, btVector3 normal)
+		// - Static body, non-intractable
+		BodyDesc(btVector3 position, btScalar scalar, btVector3 normal)
 		{
 			this->shape			= ShapeStaticPlane;
-			this->mass			= mass;
+			this->mass			= 0.f;				// static objects needs to be mass = 0.f
 			this->position		= position;
 			this->rotation		= { 0, 0, 0 };
 			this->restitution	= 0.0f;
@@ -43,6 +45,7 @@ namespace Logic
 		}
 
 		// Sphere Description
+		// - Dynamic body, intractable
 		BodyDesc(btScalar mass, btVector3 position, btScalar radius)
 		{
 			this->shape			= ShapeSphere;

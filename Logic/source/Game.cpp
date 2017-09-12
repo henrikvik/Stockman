@@ -26,7 +26,7 @@ bool Game::init()
 	m_player->init(m_physics, BodyDesc(1, { 0, 1000, 0 }, { 1, 1, 1 }));
 
 	m_plane = new Hitbox();
-	m_plane->init(m_physics, BodyDesc(100, { 0, 0, 0 }, 1, { 0, 1, 0 }));
+	m_plane->init(m_physics, BodyDesc({ 0, 0, 0 }, 1, { 0, 1, 0 }));
 
 	return result;
 }
@@ -55,6 +55,6 @@ void Game::update(float deltaTime)
 	m_player->update(deltaTime);
 
 	// Debugging for testing if physics is working:
-	printf("Player:		");  m_player->consoleWritePosition();
-	printf("Plane:		"); m_plane->consoleWritePosition();
+	printf("Player:		");		m_player->consoleWritePosition();
+	printf("Plane:		");		m_plane->consoleWritePosition();
 }
