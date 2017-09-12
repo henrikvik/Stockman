@@ -181,5 +181,8 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Engine.h" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\Vertex.hlsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
