@@ -17,10 +17,6 @@ Effect::Effect(Standards const &standards)
 
 Effect::Effect(Effect const &other) 
 {
-	if (m_standards) delete m_standards;
-	if (m_modifiers) delete m_modifiers;
-	if (m_specifics) delete m_specifics;
-
 	if (other.getStandards()) setStandards(*other.getStandards());
 	if (other.getModifiers()) setModifiers(*other.getModifiers());
 	if (other.getSpecifics()) setSpecifics(*other.getSpecifics());
@@ -28,10 +24,6 @@ Effect::Effect(Effect const &other)
 
 Effect* Effect::operator=(Effect const &other) 
 {
-	if (m_standards) delete m_standards;
-	if (m_modifiers) delete m_modifiers;
-	if (m_specifics) delete m_specifics;
-
 	if (other.getStandards()) setStandards(*other.getStandards());
 	if (other.getModifiers()) setModifiers(*other.getModifiers());
 	if (other.getSpecifics()) setSpecifics(*other.getSpecifics());

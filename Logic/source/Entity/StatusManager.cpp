@@ -16,7 +16,7 @@ StatusManager::StatusManager() {
 		Effect::Specifics spec;
 
 		standards.flags = EFFECT_ON_FIRE | EFFECT_MODIFY_MOVEMENTSPEED;
-		standards.duration = 3.f;
+		standards.duration = 300.f;
 
 		creating.setStandards(standards);
 		s_effects[ON_FIRE] = creating; // ON FIRE
@@ -55,7 +55,7 @@ void StatusManager::update(float deltaTime)
 	for (size_t i = 0; i < m_effectStacks.size(); ++i)
 	{
 		// do stuff
-		printf("Dur: %f", m_effectStacks[i].duration);
+		printf("Dur: %f, DT: %f\n", m_effectStacks[i].duration, deltaTime);
 		if ((m_effectStacks[i].duration -= deltaTime) <= 0)
 		{
 			removeEffect(i);

@@ -166,7 +166,7 @@ void Logic::Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 
 	m_lookAt.Normalize();
 
-	printf("x: %f  y: %f  z: %f\n", m_lookAt.x, m_lookAt.y, m_lookAt.z);
+	// printf("x: %f  y: %f  z: %f\n", m_lookAt.x, m_lookAt.y, m_lookAt.z);
 }
 
 DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
