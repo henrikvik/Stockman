@@ -67,12 +67,12 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 },
-		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 },
-		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 },
-		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 },
-		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 },
-		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 }
+		{ 1, 20, 20, 8, 8, 1, 1, 1, 1, 3000 },
+		{ 1, 20, 20, 8, 8, 2, 1, 1, 1, 3000 },
+		{ 1, 20, 20, 8, 8, 1, 1, 1, 1, 3000 },
+		{ 1, 20, 20, 8, 8, 3, 1, 1, 1, 3000 },
+		{ 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000 },
+		{ 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000 }
 	};
 }
 
@@ -109,7 +109,7 @@ void WeaponManager::usePrimary()
 		if (m_currentWeapon.first->getMagAmmo() > 0)
 		{
 			m_currentWeapon.first->use();
-			m_currentWeapon.first->removeMagAmmo();
+			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.first->getAmmoConsumption());
 			printf("fire prim\n");
 			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
 		}
@@ -128,7 +128,7 @@ void WeaponManager::useSecondary()
 		if (m_currentWeapon.first->getMagAmmo() > 0)
 		{
 			m_currentWeapon.second->use();
-			m_currentWeapon.first->removeMagAmmo();
+			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.second->getAmmoConsumption());
 			printf("fire sec\n");
 			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
 		}

@@ -178,7 +178,7 @@ void Logic::Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 
 	// Create lookAt
 	m_lookAt.x = cos(DirectX::XMConvertToRadians(camPitch)) * cos(DirectX::XMConvertToRadians(camYaw));
-	m_lookAt.y = -sin(DirectX::XMConvertToRadians(camPitch));
+	m_lookAt.y = sin(DirectX::XMConvertToRadians(camPitch));
 	m_lookAt.z = cos(DirectX::XMConvertToRadians(camPitch)) * sin(DirectX::XMConvertToRadians(camYaw));
 
 	m_lookAt.Normalize();

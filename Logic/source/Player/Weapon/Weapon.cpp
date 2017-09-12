@@ -4,28 +4,30 @@ using namespace Logic;
 
 Weapon::Weapon()
 {
-	m_weaponID		= -1;
-	m_ammoCap		= -1;
-	m_ammo			= -1;
-	m_magSize		= -1;
-	m_magAmmo		= -1;
-	m_damage		= -1;
-	m_attackRate	= -1;
-	m_freeze		= -1;
-	m_reloadTime	= -1;
+	m_weaponID			= -1;
+	m_ammoCap			= -1;
+	m_ammo				= -1;
+	m_magSize			= -1;
+	m_magAmmo			= -1;
+	m_ammoConsumption	= -1;
+	m_damage			= -1;
+	m_attackRate		= -1;
+	m_freeze			= -1;
+	m_reloadTime		= -1;
 }
 
-Weapon::Weapon(int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, float damage, float attackRate, float freeze, float reloadTime)
+Weapon::Weapon(int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime)
 {
-	m_weaponID		= weaponID;
-	m_ammoCap		= ammoCap;
-	m_ammo			= ammo;
-	m_magSize		= magSize;
-	m_magAmmo		= magAmmo;
-	m_damage		= damage;
-	m_attackRate	= attackRate;
-	m_freeze		= freeze;
-	m_reloadTime	= reloadTime;
+	m_weaponID			= weaponID;
+	m_ammoCap			= ammoCap;
+	m_ammo				= ammo;
+	m_magSize			= magSize;
+	m_magAmmo			= magAmmo;
+	m_ammoConsumption	= ammoConsumption;
+	m_damage			= damage;
+	m_attackRate		= attackRate;
+	m_freeze			= freeze;
+	m_reloadTime		= reloadTime;
 }
 
 void Weapon::use()
@@ -54,7 +56,15 @@ int Logic::Weapon::getMagAmmo() { return m_magAmmo; }
 
 void Logic::Weapon::removeMagAmmo() { m_magAmmo--; }
 
-void Logic::Weapon::removeMagAmmo(int ammo) { m_magAmmo -= ammo; }
+void Logic::Weapon::removeMagAmmo(int ammo) 
+{ 
+	if (ammo > m_magAmmo)
+		m_magAmmo = 0;
+	else
+		m_magAmmo -= ammo; 
+}
+
+int Logic::Weapon::getAmmoConsumption() { return m_ammoConsumption; }
 
 void Logic::Weapon::fillMag()
 {
