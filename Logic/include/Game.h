@@ -3,8 +3,14 @@
 
 #include <stdio.h>
 
+#include "Player\Player.h"
 #include "Physics\Physics.h"
-// #include "Keyboard.h"
+#include "Entity\Hitbox.h"
+#include "Misc\RenderRegister.h"
+
+#include <Windows.h>
+#include <Keyboard.h>
+#include <Mouse.h>
 
 namespace Logic
 {
@@ -20,10 +26,15 @@ namespace Logic
 		void clear();
 
 		void update(float deltaTime);
-	//	void draw(RenderMachine& renderMachine);
+		void render();
+
+		std::queue<Graphics::RenderInfo*>* getRenderQueue();
 
 	private:
-		Physics* physics;
+		RenderRegister m_register;
+		Physics* m_physics;
+		Player* m_player;
+		Hitbox* m_plane;
 	};
 }
 

@@ -1,5 +1,19 @@
 #include "Player/Skill/SkillManager.h"
 
-void Logic::SkillManager::update()
+using namespace Logic;
+
+void SkillManager::init()
+{
+}
+
+void SkillManager::switchSkill()
+{
+}
+
+void SkillManager::useSkill()
+{
+}
+
+void SkillManager::update()
 {
 }

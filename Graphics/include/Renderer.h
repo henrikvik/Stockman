@@ -21,7 +21,7 @@ namespace Graphics
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer);
 		virtual ~Renderer();
         void render(Camera * camera);
-        void qeueuRender(RenderInfo * renderInfo);
+        void queueRender(RenderInfo * renderInfo);
 
     private:
 		//MYCKET TEMP
