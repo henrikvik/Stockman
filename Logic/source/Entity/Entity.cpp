@@ -69,9 +69,7 @@ void Entity::update(float deltaTime)
 }
 
 void Entity::collision(Entity& other)
-=======
-void Entity::collision(const Entity& other)
->>>>>>> logic
 {
 	onCollision(other);
+}
 }
