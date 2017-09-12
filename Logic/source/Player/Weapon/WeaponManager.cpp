@@ -48,9 +48,9 @@ void WeaponManager::makeWeaponLoadout()
 	// Adding current weapon pair
 	m_weaponsLoadouts =
 	{ 
-		{ &m_allWeapons[0], &m_allWeapons[1] },
-		{ &m_allWeapons[2], &m_allWeapons[3] },
-		{ &m_allWeapons[4], &m_allWeapons[5] }
+		{ std::make_pair<Weapon*, Weapon*>(&m_allWeapons[0], &m_allWeapons[1]) },
+		{ std::make_pair<Weapon*, Weapon*>(&m_allWeapons[2], &m_allWeapons[3]) },
+		{ std::make_pair<Weapon*, Weapon*>(&m_allWeapons[4], &m_allWeapons[5]) }
 	};
 }
 

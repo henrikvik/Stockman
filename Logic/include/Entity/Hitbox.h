@@ -11,6 +11,7 @@ namespace Logic
 		Hitbox();
 		~Hitbox();
 
+		bool init(Physics* physics, BodyDesc bodyDesc);
 		void clear();
 
 		void updateSpecific(float deltatTime);

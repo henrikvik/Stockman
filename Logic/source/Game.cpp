@@ -6,13 +6,9 @@ Game::Game()
 {
 	m_physics = nullptr;
 	m_player = nullptr;
-	m_map = nullptr;
 }
 
-Game::~Game() 
-{	
-	clear();
-}
+Game::~Game() { }
 
 bool Game::init()
 {
@@ -30,18 +26,26 @@ bool Game::init()
 	m_player = new Player();
 	m_player->init(m_physics, BodyDesc(1, { 0, 100, 0 }, { 1, 1, 1 }));
 
-	// Making the map
-	m_map = new Map();
-	m_map->init(m_physics);
+	// Making an infite plane on origin
+	m_plane = new Hitbox();
+	m_plane->init(m_physics, BodyDesc({ 0, 0, 0 }, 1, { 0, 1, 0 }));
 
 	return result;
 }
 
 void Game::clear()
 {
+	// Deleting physics
+	m_physics->clear();
 	delete m_physics;
+
+	// Deleting player
+	m_player->clear();
 	delete m_player;
-	delete m_map;
+
+	// Deleting hitbox
+	m_plane->clear();
+	delete m_plane;
 }
 
 void Game::update(float deltaTime)
@@ -54,6 +58,7 @@ void Game::update(float deltaTime)
 
 	// Debugging for testing if physics is working:
 	// printf("Player:		");  m_player->consoleWritePosition();
+	// printf("Plane:		"); m_plane->consoleWritePosition();
 }
 
 void Game::render()
@@ -63,9 +68,6 @@ void Game::render()
 
 	// Drawing player
 	m_player->render(m_register);
-
-	// Drawing map
-	m_map->render(m_register);
 }
 
 std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
