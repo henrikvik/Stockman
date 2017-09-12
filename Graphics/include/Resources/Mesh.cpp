@@ -74,18 +74,22 @@ void Mesh::CreateVertexBuffer(Vertex * vertices, unsigned int amount, bool isSce
 
 void Mesh::CreateIndexBuffer(UINT * indices, unsigned int amount, bool isScene)
 {
-	if (isScene == true)
+	//if (isScene == true)
+	//{
+	//	this->sceneIndex = indices;
+	//	this->indexCount = (UINT)amount;
+	//	this->isScene = isScene;
+	//}
+	//else
 	{
-		this->sceneIndex = indices;
-		this->indexCount = (UINT)amount;
-		this->isScene = isScene;
-	}
-	else
-	{
-		if (this->indexBuffer != nullptr)
+		/*if (this->indexBuffer != nullptr)
 		{
 			SAFE_RELEASE(indexBuffer);
-		}
+		}*/
+
+        this->sceneIndex = indices;
+        this->indexCount = (UINT)amount;
+        this->isScene = isScene;
 
 		D3D11_BUFFER_DESC ibd;
 

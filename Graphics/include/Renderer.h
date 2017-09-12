@@ -25,37 +25,26 @@ namespace Graphics
 		void initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);
 
     private:
-		//MYCKET TEMP
-		struct TestCube
-		{
-			DirectX::SimpleMath::Vector3 pos;
-			DirectX::SimpleMath::Vector2 uv;
-			DirectX::SimpleMath::Vector3 normal;
-			int mat;
-		};
+        typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
 
-        Shader simpleForward;
-
-		ResourceManager resourceManager;
-
+        // Lånade Pekare
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
-		ID3D11DepthStencilView * dSV;
-		ID3D11DepthStencilState * dSS;
 
-		//temp
-		ID3D11ShaderResourceView * view;
-		ID3D11Buffer * FSQuad2;
-		ID3D11Buffer * defferedTestBuffer;
-		ID3D11Buffer * instanceBuffer;
+        // Egna Pekare
+        ID3D11DepthStencilView * dSV;
+        ID3D11DepthStencilState * dSS;
+        ID3D11Buffer * instanceBuffer;
 
-
-        std::vector<RenderInfo*> renderQueue;
-        typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
-        InstanceQueue_t instanceQueue;
         GBuffer gbuffer;
 
+        Shader simpleForward;
+        ResourceManager resourceManager;
+        D3D11_VIEWPORT viewPort;
+
+        std::vector<RenderInfo*> renderQueue;
+        InstanceQueue_t instanceQueue;
 
         void createGBuffer();
         void createDepthStencil();
@@ -64,9 +53,7 @@ namespace Graphics
 
         void cull();
         void draw();
-		void drawDeffered();
-
-		
+        void drawDeffered();
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
     };

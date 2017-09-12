@@ -7,7 +7,7 @@ BRFImportHandler::BRFImportHandler()
 
 BRFImportHandler::~BRFImportHandler()
 {
-
+    release();
 }
 
 void BRFImportHandler::loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene)

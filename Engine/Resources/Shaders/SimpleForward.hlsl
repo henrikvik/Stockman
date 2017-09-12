@@ -6,19 +6,26 @@ cbuffer Camera : register(b0)
 };
 
 
-struct VertexInstance : Vertex
+struct InstancedVertex
 {
-    float4x4 translation : TRANSLATION;
+    float3 position : POSITION;
+    float3 normal : NORMAL;
+    float2 uv : UV;
+    float2 biTangent : BITANGENT;
+    float2 tangent : TANGENT;
+
+    // INSTANCE DATA
+    float4x4 world : WORLD;
 };
 
 
-
-float4 VS(Vertex input) : SV_POSITION
+float4 VS(InstancedVertex input) : SV_POSITION
 {
-    return mul(input.translation * VP, float4(input.position, 1));
+    return mul(input.world * VP, float4(input.position, 1));
 }
 
-float4 PS(float4 ndcPos) : SV_Target0
+float4 PS(float4 ndcPos : SV_POSITION) : SV_Target
 {
-    return float4(1, 0, 0, 1);
+    float3 output = float3(1, 0, 0);
+    return float4(output, 1);
 }

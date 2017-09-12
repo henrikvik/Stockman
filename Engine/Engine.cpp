@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include <Graphics\include\Structs.h>
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -80,6 +81,9 @@ void Engine::initializeWindow()
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.lpszClassName = "Basic test";
 
+
+   
+
 	if (!RegisterClass(&wc))
 	{
 		MessageBox(this->window, "registerClass failed", "Error", MB_OK);
@@ -124,6 +128,8 @@ HRESULT Engine::createSwapChain()
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+  
+  
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -156,7 +162,6 @@ HRESULT Engine::createSwapChain()
 			return hr;
 		}
 		backBuffer->Release();
-
 
 		//Creates a debug device to check for memory leaks etc
 		HRESULT hr = this->mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast <void **>(&mDebugDevice)); 
@@ -242,6 +247,20 @@ int Engine::run()
 
 			
 			cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
+
+
+
+            //////////////TEMP/////////////////
+            static Graphics::RenderInfo staticCube = {
+                true, //bool render;
+                Graphics::ModelID::CUBE, //ModelID meshId;
+                0, //int materialId;
+                DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+            };
+            renderer->queueRender(&staticCube);
+            ///////////////////////////////////
+
+
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
 		}

@@ -182,7 +182,9 @@
     <ClInclude Include="Engine.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\Vertex.hlsl" />
+    <None Include="Resources\Shaders\Vertex.hlsl">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
