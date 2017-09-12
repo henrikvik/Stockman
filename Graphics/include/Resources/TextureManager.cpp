@@ -1,5 +1,7 @@
 #include <Resources\TextureManager.h> 
 
+using namespace DirectX;
+
 TextureManager::TextureManager()
 {
 }
