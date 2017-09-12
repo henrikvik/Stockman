@@ -73,5 +73,4 @@ void Game::render()
 std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
 {
 	return m_register.getRenderInfo();
->>>>>>> logic
 }
