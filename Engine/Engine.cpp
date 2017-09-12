@@ -247,8 +247,5 @@ int Engine::run()
 		
 	}
 
-	// Delete game content
-	game.clear();
-
 	return 0;
 }

@@ -32,6 +32,7 @@ namespace Logic
 		~MenuMachine();
 		void initialize();					//< Load menu layout from file
 		void clear();						//< Clears current menu layout
+		void update();
 
 		void showMenu(GameState state);		//< Creates a menu layout
 		MenuState* currentMenu();

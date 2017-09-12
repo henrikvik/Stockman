@@ -8,7 +8,10 @@ Game::Game()
 	m_player = nullptr;
 }
 
-Game::~Game() { }
+Game::~Game() 
+{ 
+	clear();
+}
 
 bool Game::init()
 {
@@ -27,6 +30,7 @@ bool Game::init()
 
 	m_menu = new MenuMachine();
 	m_menu->initialize();
+	m_menu->showMenu(gameStateMenuMain);
 	return result;
 }
 
@@ -52,4 +56,6 @@ void Game::update(float deltaTime)
 	// Updating player
 	m_player->update(deltaTime);
 //	m_player->consoleWritePosition();
+
+	m_menu->update();
 }

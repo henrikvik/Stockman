@@ -30,6 +30,7 @@ namespace Logic
 		MenuState();
 		~MenuState();
 		void initialize();
+		void update();
 	};
 }
 

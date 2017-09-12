@@ -31,6 +31,11 @@ void Logic::MenuMachine::clear()
 	currentActive = nullptr;
 }
 
+void Logic::MenuMachine::update()
+{
+	currentActive->update();
+}
+
 void Logic::MenuMachine::showMenu(GameState state)
 {
 	if (m_menuStates.find(state) != m_menuStates.end())
