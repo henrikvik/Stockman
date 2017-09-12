@@ -118,7 +118,7 @@ void Renderer::render(Camera * camera)
 	this->drawToBackbuffer(gbuffer.positionView);
 }
 
-void Renderer::qeueuRender(RenderInfo * renderInfo)
+void Renderer::queueRender(RenderInfo * renderInfo)
 {
     renderQueue.push_back(renderInfo);
 }
@@ -181,13 +181,18 @@ void Renderer::draw()
     
     deviceContext->Unmap(instanceBuffer, 0);
 
-
     // draw all instanced meshes
     for (InstanceQueue_t::value_type & pair : instanceQueue)
     {
         //getVertexBuffer(pair.first);
         //deviceContext->DrawInstanced()
     }
+	// draw all instanced meshes
+	for (InstanceQueue_t::value_type & pair : instanceQueue)
+	{
+		//resourceManager->getVertexBuffer(pair.first);
+		//deviceContext->DrawInstanced()
+	}
 }
 
 void Renderer::drawDeffered()
