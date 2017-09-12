@@ -24,9 +24,9 @@ void Map::initProps()
 
 void Map::initHitboxes(Physics* physics)
 {
-//	Hitbox* h = new Hitbox();
-//	h->init(physics, BodyDesc(0, { 0, 0, 0 }, { 0, 1, 0 }));
-//	m_hitboxes.push_back(h);
+	Hitbox* h = new Hitbox();
+	h->init(physics, BodyDesc(0, { 0, 0, 0 }, { 0, 1, 0 }));
+	m_hitboxes.push_back(h);
 }
 
 void Map::clear()

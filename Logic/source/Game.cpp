@@ -53,7 +53,7 @@ void Game::update(float deltaTime)
 	m_player->update(deltaTime);
 
 	// Debugging for testing if physics is working:
-//	printf("Player:		");		m_player->consoleWritePosition();
+	printf("Player:		");		m_player->consoleWritePosition();
 }
 
 void Game::render()
@@ -65,7 +65,7 @@ void Game::render()
 	m_player->render(m_register);
 
 	// Drawing map
-//	m_map->render(m_register);
+	m_map->render(m_register);
 }
 
 std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
