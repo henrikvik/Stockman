@@ -45,6 +45,7 @@ namespace Logic
 
 		std::vector<Weapon> m_allWeapons;
 		std::vector<std::pair<Weapon*, Weapon*>> m_weaponsLoadouts;
+		std::vector<int> ammoList;
 		std::pair<Weapon*, Weapon*> m_currentWeapon;
 
 		// Timers

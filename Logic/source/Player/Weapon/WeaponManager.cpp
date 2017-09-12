@@ -10,6 +10,7 @@ void WeaponManager::init()
 {
 	initializeWeapons();
 	makeWeaponLoadout();
+	m_currentWeapon = m_weaponsLoadouts[0];
 
 	// Timers
 	m_swapWeaponTimerMax = 1000.f;
@@ -41,9 +42,11 @@ void Logic::WeaponManager::update(float deltaTime)
 	}
 	if (m_reloadState == ReloadingWeapon::reloadingWeaponDone)
 	{
-		// ADD AMMO
+		m_currentWeapon.first->fillMag();
 		m_reloadState = ReloadingWeapon::reloadingWeaponIdle;
 		printf("adding ammo\n");
+		printf("ammo: %d\n", m_currentWeapon.first->getAmmo());
+		printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
 	}
 
 	// Attack
@@ -64,12 +67,12 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ 1, 1, 1, 1, 1, 1 },
-		{ 1, 1, 1, 1, 1, 1 },
-		{ 1, 1, 1, 1, 1, 1 },
-		{ 1, 1, 1, 1, 1, 1 },
-		{ 1, 1, 1, 1, 1, 1 },
-		{ 1, 1, 1, 1, 1, 1 }
+		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 },
+		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 },
+		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 },
+		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 },
+		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 },
+		{ 1, 20, 20, 8, 8, 1, 1, 1, 3000 }
 	};
 }
 
@@ -103,10 +106,18 @@ void WeaponManager::usePrimary()
 {
 	if(m_attackTimer <= 0.f)
 	{
-		m_currentWeapon.first->use();
+		if (m_currentWeapon.first->getMagAmmo() > 0)
+		{
+			m_currentWeapon.first->use();
+			m_currentWeapon.first->removeMagAmmo();
+			printf("fire prim\n");
+			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
+		}
+		else
+			printf("out of ammo\n");
+
 		//m_attackTimer = m_currentWeapon.first->firerate
 		m_attackTimer = 1000.f;
-		printf("fire prim\n");
 	}
 }
 
@@ -114,19 +125,26 @@ void WeaponManager::useSecondary()
 {
 	if (m_attackTimer <= 0.f)
 	{
-		m_currentWeapon.second->use();
+		if (m_currentWeapon.first->getMagAmmo() > 0)
+		{
+			m_currentWeapon.second->use();
+			m_currentWeapon.first->removeMagAmmo();
+			printf("fire sec\n");
+			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
+		}
+		else
+			printf("out of ammo\n");
+
 		//m_attackTimer = m_currentWeapon.second->firerate
 		m_attackTimer = 1000.f;
-		printf("fire sec\n");
 	}
 }
 
 void Logic::WeaponManager::reloadWeapon()
 {
-	if (m_reloadTimer <= 0.f /* && !!CHECK AMMO!! */)
+	if (m_reloadTimer <= 0.f && m_currentWeapon.first->getAmmo() > 0 && m_currentWeapon.first->getMagAmmo() < m_currentWeapon.first->getMagSize())
 	{
-		// Reload weapon
-		m_reloadTimer = 3000.f; // Replace with weapon reload
+		m_reloadTimer = 3000.f; // Replace with weapon reload speed
 		m_reloadState = ReloadingWeapon::reloadingWeaponActive;
 		printf("reloading weapon\n");
 	}
