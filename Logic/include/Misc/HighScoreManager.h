@@ -5,7 +5,7 @@
 
 /*
 	Class: HighScoreManager
-	Author:
+	Author: Emanuel Bjurman
 
 	Description:
 	This class handles high scores.

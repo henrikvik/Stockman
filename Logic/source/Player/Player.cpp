@@ -10,50 +10,17 @@ Player::~Player()
 {
 }
 
-bool Player::init(Physics* physics, BodyDesc bodyDesc)
-{
-	Entity::init(physics, bodyDesc);
-	m_weaponManager.init();
-	m_skillManager.init();
-
-	// Default mouse sensetivity, lookAt
-	m_mouseSens = 1.f;
-	m_lookAt = DirectX::SimpleMath::Vector3(0, 0, 1);
-
-	m_moveSpeed = 1.f;
-
-	// Default controlls
-	m_moveLeft = DirectX::Keyboard::Keys::A;
-	m_moveRight = DirectX::Keyboard::Keys::D;
-	m_moveForward = DirectX::Keyboard::Keys::W;
-	m_moveBack = DirectX::Keyboard::Keys::S;
-	m_jump = DirectX::Keyboard::Keys::Space;
-	m_switchWeaponOne = DirectX::Keyboard::Keys::D1;
-	m_switchWeaponTwo = DirectX::Keyboard::Keys::D2;
-	m_switchWeaponThree = DirectX::Keyboard::Keys::D3;
-	m_useSkill = DirectX::Keyboard::Keys::E;
-
-	return true;
-}
-
 void Player::clear()
 {
 }
 
-void Player::onCollision(Entity& other)
+void Player::update()
 {
 }
 
-void Logic::Player::saveToFile()
+void Player::onCollision(const Entity& other)
 {
-}
-
-void Logic::Player::readFromFile()
-{
-}
-
-void Player::updateSpecific(float deltaTime)
-{
+<<<<<<< HEAD
 
 	// Update Managers
 	m_weaponManager.update(deltaTime);
@@ -177,4 +144,6 @@ DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
 	GetWindowRect(hwnd, &rect);
 
 	return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
+=======
+>>>>>>> logic
 }
