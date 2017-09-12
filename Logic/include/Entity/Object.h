@@ -2,7 +2,6 @@
 #define OBJECT_H
 
 #include <Graphics\include\Structs.h>
-#include <Misc\RenderRegister.h>
 
 namespace Logic
 {
@@ -14,8 +13,7 @@ namespace Logic
 		Object* operator=(const Object& other) = delete;
 		~Object();
 
-		virtual void render(RenderRegister& rRegister);
-
+		Graphics::RenderInfo* getRenderInfo();
 	private:
 		Graphics::RenderInfo m_renderInfo;
 	};

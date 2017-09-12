@@ -2,10 +2,7 @@
 #define ENTITY_H
 
 #include "Object.h"
-#include "../Physics/Physics.h"
-#include "../Physics/RigidBodyDesc.h"
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
+
 
 namespace Logic
 {
@@ -17,23 +14,13 @@ namespace Logic
 		Entity* operator=(const Entity& other) = delete;
 		~Entity();
 
-		bool init(Physics* physics, BodyDesc bodyDesc);
-		virtual void createBody(Physics* physics, BodyDesc bodyDesc);
-
 		virtual void clear() = 0;
-		void update(float deltaTime);
-		virtual void updateSpecific(float deltatTime) = 0;
-		void collision(Entity& other);
-		virtual void onCollision(Entity& other) = 0;
-
-		btRigidBody* getRigidbody();
-
-		// JUST FOR TESTING, REMOVE
-		void consoleWritePosition();
+		virtual void update() = 0;
+		void collision(const Entity& other);
+		virtual void onCollision(const Entity& other) = 0;
 
 	private:
-		btRigidBody* m_body;
-	//	Hitbox* m_head; for headshot, put it here to remember
+
 	};
 }
 

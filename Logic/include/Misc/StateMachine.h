@@ -5,7 +5,7 @@
 
 /*
 	Class: StateMachine
-	Author:
+	Author: Emanuel Bjurman
 
 	Description:
 	Handles different game and menu states.

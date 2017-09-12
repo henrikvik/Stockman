@@ -4,7 +4,7 @@
 #pragma region Comment
 
 /*
-	Author:
+	Author: Emanuel Bjurman
 
 	This header contains different Enums
 
@@ -21,13 +21,6 @@ namespace Logic
 		gameStateLoading,
 		gameStateMenuMain,
 		gameStateMenuSettings
-	};
-
-	enum PlayerState
-	{
-		playerStateStanding,
-		playerStateCrouching,
-		playerStateInAir
 	};
 }
 

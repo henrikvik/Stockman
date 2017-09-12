@@ -50,8 +50,6 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
-	this->mMouse = std::make_unique<DirectX::Mouse>();
-
 }
 
 Engine::~Engine()
@@ -102,6 +100,7 @@ void Engine::initializeWindow()
 	{
 		MessageBox(this->window, "window creation failed", "Error", MB_OK);
 	}
+
 
 
 	ShowWindow(this->window, SW_SHOWDEFAULT);
@@ -218,7 +217,6 @@ int Engine::run()
 	{
 		currentTime = this->timer();
 		deltaTime = currentTime - prev;
-		prev = currentTime;
 
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
@@ -239,21 +237,12 @@ int Engine::run()
 			}
 
 			game.update(float(deltaTime));
-			game.render();
 
-			/* Instead of putting this here, make renderer->qeueuRender take the parameter of an actual queue instead of a single renderInfo. */
-			std::queue<Graphics::RenderInfo*>* renderQueue = game.getRenderQueue();
-			for (size_t i = 0; i < renderQueue->size(); i++)
-			{
-//				renderer->qeueuRender((*renderQueue).front);
-				renderQueue->pop();
-			}
 			
 			cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
 		}
-		
 	}
 
 	// Delete game content

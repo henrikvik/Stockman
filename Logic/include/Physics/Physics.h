@@ -11,6 +11,8 @@
 #include "btBulletDynamicsCommon.h"
 
 #define PHYSICS_GRAVITY 9.82
+#define PHYSICS_TIME_STEP 1.f / 60.f
+#define PHYSICS_MAX_SUB_STEPS 10
 
 namespace Logic
 {
