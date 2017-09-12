@@ -10,6 +10,11 @@ namespace Graphics
         CUBE
     };
 
+    struct Model
+    {
+        size_t vertexCount;
+        ID3D11Buffer * vertexBuffer;
+    };
 
 	struct RenderInfo
 	{

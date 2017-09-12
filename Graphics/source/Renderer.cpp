@@ -10,233 +10,250 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
     : device(device)
     , deviceContext(deviceContext)
     , backBuffer(backBuffer)
-	, resourceManager(device)
+    , resourceManager(device)
 {
-	using namespace DirectX::SimpleMath;
-
-	TestCube defferedTest[] =
-	{
-		//FORWARD
-		Vector3(-1, -1, -1),
-		Vector2(0, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(-1, 1, -1),
-		Vector2(0, 1),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, -1, -1),
-		Vector2(1, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(1, -1, -1),
-		Vector2(1, 0),
-		Vector3(0, 0, -1),
-		1,
-
-		Vector3(-1, 1, -1),
-		Vector2(0, 1),
-		Vector3(0, 0, -1),
-		1,
-		
-		Vector3(1, 1, -1),
-		Vector2(1, 1),
-		Vector3(0, 0, -1),
-		1,
-		
-
-		////// TOP
-		Vector3(-1, 1, -1),
-		Vector2(0, 0),
-		Vector3(0, 1, 0),
-		1,
-
-		Vector3(-1, 1, 1),
-		Vector2(0, 1),
-		Vector3(0, 1, 0),
-		1,
-
-		Vector3(1, 1, -1),
-		Vector2(1, 0),
-		Vector3(0, 1, 0),
-		1,
-
-		Vector3(1, 1, -1),
-		Vector2(1, 0),
-		Vector3(0, 1, 0),
-		1,
-
-		Vector3(-1, 1, 1),
-		Vector2(0, 1),
-		Vector3(0, 1, 0),
-		1,
-
-		Vector3(1, 1, 1),
-		Vector2(1, 1),
-		Vector3(0, 1, 0),
-		1,
-		/////// LEFT
-
-		Vector3(-1, -1, 1),
-		Vector2(0, 1),
-		Vector3(-1, 0, 0),
-		1,
-
-		Vector3(-1, 1, 1),
-		Vector2(1, 1),
-		Vector3(-1, 0, 0),
-		1,
-
-		Vector3(-1, -1, -1),
-		Vector2(0, 0),
-		Vector3(-1, 0, 0),
-		1,
-
-		Vector3(-1, -1, -1),
-		Vector2(0, 0),
-		Vector3(-1, 0, 0),
-		1,
-
-		Vector3(-1, 1, 1),
-		Vector2(1, 1),
-		Vector3(-1, 0, 0),
-		1,
-
-		Vector3(-1, 1, -1),
-		Vector2(1, 0),
-		Vector3(-1, 0, 0),
-		1,
-
-		/////RIGHT
-
-		Vector3(1, 1, 1),
-		Vector2(1, 1),
-		Vector3(1, 0, 0),
-		1,
-
-		Vector3(1, -1, 1),
-		Vector2(0, 1),
-		Vector3(1, 0, 0),
-		1,
-
-		Vector3(1, -1, -1),
-		Vector2(0, 0),
-		Vector3(1, 0, 0),
-		1,
-
-		Vector3(1, 1, 1),
-		Vector2(1, 1),
-		Vector3(1, 0, 0),
-		1,
-		
-		Vector3(1, -1, -1),
-		Vector2(0, 0),
-		Vector3(1, 0, 0),
-		1,
-
-		Vector3(1, 1, -1),
-		Vector2(1, 0),
-		Vector3(1, 0, 0),
-		1,
-			//////BACK
-
-		
-		Vector3(-1, 1, 1),
-		Vector2(0, 1),
-		Vector3(0, 0, 1),
-		1,
-
-		Vector3(-1, -1, 1),
-		Vector2(0, 0),
-		Vector3(0, 0, 1),
-		1,
-
-		Vector3(1, -1, 1),
-		Vector2(1, 0),
-		Vector3(0, 0, 1),
-		1,
-
-		Vector3(-1, 1, 1),
-		Vector2(0, 1),
-		Vector3(0, 0, 1),
-		1,
-
-		Vector3(1, -1, 1),
-		Vector2(1, 0),
-		Vector3(0, 0, 1),
-		1,
-
-		Vector3(1, 1, 1),
-		Vector2(1, 1),
-		Vector3(0, 0, 1),
-		1,
-
-		//////BOTTOM
-		Vector3(-1, -1, 1),
-		Vector2(0, 1),
-		Vector3(0, -1, 0),
-		1,
-
-		Vector3(-1, -1, -1),
-		Vector2(0, 0),
-		Vector3(0, -1, 0),
-		1,
-
-		Vector3(1, -1, -1),
-		Vector2(1, 0),
-		Vector3(0, -1, 0),
-		1,
-
-		Vector3(-1, -1, 1),
-		Vector2(0, 1),
-		Vector3(0, -1, 0),
-		1,
-
-		Vector3(1, -1, -1),
-		Vector2(1, 0),
-		Vector3(0, -1, 0),
-		1,
-
-		Vector3(1, -1, 1),
-		Vector2(1, 1),
-		Vector3(0, -1, 0),
-		1
-	};
 
     createGBuffer();
-	createCubeInstances();
-	createDepthStencil();
-
-	D3D11_VIEWPORT viewPort;
-	viewPort.Height = 720;
-	viewPort.Width = 1280;
-	viewPort.MaxDepth = 1.f;
-	viewPort.MinDepth = 0.f;
-	viewPort.TopLeftX = 0;
-	viewPort.TopLeftY = 0;
-
-	deviceContext->RSSetViewports(1, &viewPort);
-
-	D3D11_BUFFER_DESC bufferDesc = { 0 };
-	bufferDesc.ByteWidth = sizeof(FSQuadVerts);
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-	D3D11_SUBRESOURCE_DATA data = { 0 };
-	data.pSysMem = FSQuadVerts;
-
-	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &FSQuad2));
-	ThrowIfFailed( DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("cat.jpg"), nullptr, &view));
+    createDepthStencil();
 
 
-	bufferDesc.ByteWidth = sizeof(defferedTest);
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-	data.pSysMem = defferedTest;
 
-	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
+    #pragma region TEST CUBE
+
+
+    {
+        using namespace DirectX::SimpleMath;
+
+        TestCube defferedTest[] =
+        {
+            //FORWARD
+            Vector3(-1, -1, -1),
+            Vector2(0, 0),
+            Vector3(0, 0, -1),
+            1,
+
+            Vector3(-1, 1, -1),
+            Vector2(0, 1),
+            Vector3(0, 0, -1),
+            1,
+
+            Vector3(1, -1, -1),
+            Vector2(1, 0),
+            Vector3(0, 0, -1),
+            1,
+
+            Vector3(1, -1, -1),
+            Vector2(1, 0),
+            Vector3(0, 0, -1),
+            1,
+
+            Vector3(-1, 1, -1),
+            Vector2(0, 1),
+            Vector3(0, 0, -1),
+            1,
+
+            Vector3(1, 1, -1),
+            Vector2(1, 1),
+            Vector3(0, 0, -1),
+            1,
+
+
+            ////// TOP
+            Vector3(-1, 1, -1),
+            Vector2(0, 0),
+            Vector3(0, 1, 0),
+            1,
+
+            Vector3(-1, 1, 1),
+            Vector2(0, 1),
+            Vector3(0, 1, 0),
+            1,
+
+            Vector3(1, 1, -1),
+            Vector2(1, 0),
+            Vector3(0, 1, 0),
+            1,
+
+            Vector3(1, 1, -1),
+            Vector2(1, 0),
+            Vector3(0, 1, 0),
+            1,
+
+            Vector3(-1, 1, 1),
+            Vector2(0, 1),
+            Vector3(0, 1, 0),
+            1,
+
+            Vector3(1, 1, 1),
+            Vector2(1, 1),
+            Vector3(0, 1, 0),
+            1,
+            /////// LEFT
+
+            Vector3(-1, -1, 1),
+            Vector2(0, 1),
+            Vector3(-1, 0, 0),
+            1,
+
+            Vector3(-1, 1, 1),
+            Vector2(1, 1),
+            Vector3(-1, 0, 0),
+            1,
+
+            Vector3(-1, -1, -1),
+            Vector2(0, 0),
+            Vector3(-1, 0, 0),
+            1,
+
+            Vector3(-1, -1, -1),
+            Vector2(0, 0),
+            Vector3(-1, 0, 0),
+            1,
+
+            Vector3(-1, 1, 1),
+            Vector2(1, 1),
+            Vector3(-1, 0, 0),
+            1,
+
+            Vector3(-1, 1, -1),
+            Vector2(1, 0),
+            Vector3(-1, 0, 0),
+            1,
+
+            /////RIGHT
+
+            Vector3(1, 1, 1),
+            Vector2(1, 1),
+            Vector3(1, 0, 0),
+            1,
+
+            Vector3(1, -1, 1),
+            Vector2(0, 1),
+            Vector3(1, 0, 0),
+            1,
+
+            Vector3(1, -1, -1),
+            Vector2(0, 0),
+            Vector3(1, 0, 0),
+            1,
+
+            Vector3(1, 1, 1),
+            Vector2(1, 1),
+            Vector3(1, 0, 0),
+            1,
+
+            Vector3(1, -1, -1),
+            Vector2(0, 0),
+            Vector3(1, 0, 0),
+            1,
+
+            Vector3(1, 1, -1),
+            Vector2(1, 0),
+            Vector3(1, 0, 0),
+            1,
+            //////BACK
+
+
+        Vector3(-1, 1, 1),
+        Vector2(0, 1),
+        Vector3(0, 0, 1),
+        1,
+
+        Vector3(-1, -1, 1),
+        Vector2(0, 0),
+        Vector3(0, 0, 1),
+        1,
+
+        Vector3(1, -1, 1),
+        Vector2(1, 0),
+        Vector3(0, 0, 1),
+        1,
+
+        Vector3(-1, 1, 1),
+        Vector2(0, 1),
+        Vector3(0, 0, 1),
+        1,
+
+        Vector3(1, -1, 1),
+        Vector2(1, 0),
+        Vector3(0, 0, 1),
+        1,
+
+        Vector3(1, 1, 1),
+        Vector2(1, 1),
+        Vector3(0, 0, 1),
+        1,
+
+        //////BOTTOM
+        Vector3(-1, -1, 1),
+        Vector2(0, 1),
+        Vector3(0, -1, 0),
+        1,
+
+        Vector3(-1, -1, -1),
+        Vector2(0, 0),
+        Vector3(0, -1, 0),
+        1,
+
+        Vector3(1, -1, -1),
+        Vector2(1, 0),
+        Vector3(0, -1, 0),
+        1,
+
+        Vector3(-1, -1, 1),
+        Vector2(0, 1),
+        Vector3(0, -1, 0),
+        1,
+
+        Vector3(1, -1, -1),
+        Vector2(1, 0),
+        Vector3(0, -1, 0),
+        1,
+
+        Vector3(1, -1, 1),
+        Vector2(1, 1),
+        Vector3(0, -1, 0),
+        1
+        };
+
+
+        createCubeInstances();
+
+
+
+
+
+        D3D11_VIEWPORT viewPort;
+        viewPort.Height = 720;
+        viewPort.Width = 1280;
+        viewPort.MaxDepth = 1.f;
+        viewPort.MinDepth = 0.f;
+        viewPort.TopLeftX = 0;
+        viewPort.TopLeftY = 0;
+
+        deviceContext->RSSetViewports(1, &viewPort);
+
+        D3D11_BUFFER_DESC bufferDesc = { 0 };
+        bufferDesc.ByteWidth = sizeof(FSQuadVerts);
+        bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+        D3D11_SUBRESOURCE_DATA data = { 0 };
+        data.pSysMem = FSQuadVerts;
+
+        ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &FSQuad2));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("cat.jpg"), nullptr, &view));
+
+
+        bufferDesc.ByteWidth = sizeof(defferedTest);
+        bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+        data.pSysMem = defferedTest;
+
+        ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
+    }
+    #pragma endregion
+
 }
 
 Graphics::Renderer::~Renderer()
@@ -297,6 +314,8 @@ void Renderer::render(Camera * camera)
 
 void Renderer::queueRender(RenderInfo * renderInfo)
 {
+    if (renderQueue.size() > INSTANCE_CAP) throw "Renderer Exceeded Instance Cap.";
+
     renderQueue.push_back(renderInfo);
 }
 
@@ -331,6 +350,7 @@ void Renderer::createGBuffer()
 
 void Renderer::cull()
 {
+    instanceQueue.clear();
     for (RenderInfo * info : renderQueue)
     {
         if (info->render)
@@ -405,6 +425,13 @@ void Graphics::Renderer::createCubeInstances()
 
 }
 
+void Graphics::Renderer::createInstanceBuffer()
+{
+    D3D11_BUFFER_DESC instanceDesc = { 0 };
+    instanceDesc.ByteWidth = sizeof(InstanceData) * INSTANCE_CAP;
+    instanceDesc.Usage = D3D11_USAGE_DYNAMIC;
+}
+
 void Renderer::draw()
 {
 	// Sort instance id from all meshes
@@ -423,11 +450,22 @@ void Renderer::draw()
 	deviceContext->Unmap(instanceBuffer, 0);
 
 
+
 	// draw all instanced meshes
+    DWORD readOffset = 0;
+
+    ID3D11Buffer * buffers[2] = { nullptr, instanceBuffer };
+    UINT strides[2] = { sizeof(Vertex), sizeof(InstanceData) };
+    UINT offsets[2] = { 0, 0 };
+
 	for (InstanceQueue_t::value_type & pair : instanceQueue)
 	{
-		//resourceManager->getVertexBuffer(pair.first);
-		//deviceContext->DrawInstanced()
+        Model model = { 0 }; // resourceManager->getModel(pair.first);
+
+        buffers[0] = model.vertexBuffer;
+        deviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+        deviceContext->DrawInstanced(model.vertexCount, pair.second.size(), 0, readOffset);
+        readOffset += sizeof(pair.second);
 	}
 }
 

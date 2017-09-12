@@ -15,6 +15,7 @@
 #define WIREFRAME   false
 #define VSYNC		1 //1 == ON, 0 = OFF
 #define FPS_CAP		60
+#define INSTANCE_CAP 300
 
 #define D3D_DEBUG_INFO
 

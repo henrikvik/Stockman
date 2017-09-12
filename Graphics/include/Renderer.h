@@ -42,14 +42,14 @@ namespace Graphics
 		ID3D11DepthStencilState * dSS;
 
 		//temp
-		ID3D11ShaderResourceView* view;
+		ID3D11ShaderResourceView * view;
 		ID3D11Buffer * FSQuad2;
 		ID3D11Buffer * defferedTestBuffer;
 		ID3D11Buffer * instanceBuffer;
 
 
         std::vector<RenderInfo*> renderQueue;
-        typedef  std::unordered_map<int, std::vector<InstanceData>> InstanceQueue_t;
+        typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;
         GBuffer gbuffer;
 
@@ -59,6 +59,7 @@ namespace Graphics
 		void drawDeffered();
 		void createDepthStencil();
 		void createCubeInstances();
+        void createInstanceBuffer();
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
