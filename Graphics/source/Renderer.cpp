@@ -6,24 +6,14 @@
 
 using namespace Graphics;
 
-Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer)
-    : device(device)
-    , deviceContext(deviceContext)
-    , backBuffer(backBuffer)
-    , resourceManager(device)
+Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer)
+  
 {
+	this->device = gDevice;
+	this->deviceContext = gDeviceContext;
+	this->backBuffer = backBuffer;
 
-    createGBuffer();
-    createDepthStencil();
-
-
-
-
-    #pragma region TEST CUBE
-
-
-    {
-        using namespace DirectX::SimpleMath;
+	using namespace DirectX::SimpleMath;
 
         TestCube defferedTest[] =
         {
@@ -250,9 +240,10 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 
         data.pSysMem = defferedTest;
 
-        ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
-    }
-    #pragma endregion
+	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
+
+	initialize(gDevice, gDeviceContext);
+}
 
 }
 
@@ -278,9 +269,11 @@ Graphics::Renderer::~Renderer()
 
 	dSS->Release();
 	dSV->Release();
+}
 
-
-	
+void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
+{
+	resourceManager.initialize(gDevice, gDeviceContext);
 }
 
 void Renderer::render(Camera * camera)
@@ -318,6 +311,8 @@ void Renderer::queueRender(RenderInfo * renderInfo)
 
     renderQueue.push_back(renderInfo);
 }
+
+
 
 void Renderer::createGBuffer()
 {

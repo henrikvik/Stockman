@@ -22,6 +22,7 @@ namespace Graphics
 		virtual ~Renderer();
         void render(Camera * camera);
         void queueRender(RenderInfo * renderInfo);
+		void initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);
 
     private:
 		//MYCKET TEMP

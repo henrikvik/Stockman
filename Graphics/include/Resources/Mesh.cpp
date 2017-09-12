@@ -9,13 +9,18 @@ Mesh::Mesh(bool hasSkeleton, unsigned int skeletonID, unsigned int materialID)
 	this->materialID = materialID;
 }
 
+
+Mesh::Mesh()
+{
+}
+
 Mesh::~Mesh()
 {
 	if (vertices != nullptr)
 		delete[] vertices;
 }
 
-void Mesh::Initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext)
+void Mesh::initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext)
 {
 	this->gDevice = gDevice;
 	this->gDeviceContext = gDeviceContext;
