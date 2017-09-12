@@ -2,7 +2,6 @@
 #define ENTITY_H
 
 #include "Object.h"
-<<<<<<< HEAD
 #include "StatusManager.h"
 
 #include "../Physics/Physics.h"
@@ -10,9 +9,6 @@
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
-=======
-
->>>>>>> logic
 
 namespace Logic
 {
@@ -24,8 +20,10 @@ namespace Logic
 		Entity* operator=(const Entity& other) = delete;
 		~Entity();
 
+		bool init(Physics* physics, BodyDesc bodyDesc);
+		virtual void createBody(Physics* physics, BodyDesc bodyDesc);
+
 		virtual void clear() = 0;
-<<<<<<< HEAD
 		void update(float deltaTime);
 		virtual void updateSpecific(float deltatTime) = 0;
 		void collision(Entity& other);
@@ -40,14 +38,6 @@ namespace Logic
 		StatusManager m_statusManager;
 		btRigidBody* m_body;
 	//	Hitbox* m_head; for headshot, put it here to remember
-=======
-		virtual void update() = 0;
-		void collision(const Entity& other);
-		virtual void onCollision(const Entity& other) = 0;
-
-	private:
-
->>>>>>> logic
 	};
 }
 

@@ -107,7 +107,6 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <SubSystem>Windows</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -142,7 +141,6 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Console</SubSystem>
-      <SubSystem>Windows</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -162,7 +160,6 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Console</SubSystem>
-      <SubSystem>Windows</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -184,7 +181,6 @@
     <ClInclude Include="Engine.h" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <FxCompile Include="FullscreenQuad.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS</EntryPointName>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
