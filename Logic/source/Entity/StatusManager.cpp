@@ -4,6 +4,7 @@
 using namespace Logic;
 
 Effect StatusManager::s_effects[StatusManager::NR_OF_EFFECTS];
+Upgrade StatusManager::s_upgrades[StatusManager::NR_OF_EFFECTS];
  
 StatusManager::StatusManager() 
 { 
@@ -28,6 +29,25 @@ StatusManager::StatusManager()
 		creating.setStandards(standards);
 		s_effects[FREEZE] = creating; // FREEZE
 	#endif // !buffsCreated
+
+	#ifndef UPGRADES_CREATED
+	#define UPGRADES_CREATED
+										  /* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
+			Upgrade upgrade;
+			Upgrade::FlatUpgrades flat;
+			memset(&flat, 0, sizeof(flat));
+
+			upgrade.init(Upgrade::UPGRADE_IS_WEAPON | Upgrade::UPGRADE_IS_BOUNCING,
+						 0, flat);
+			s_upgrades[BOUNCE] = upgrade;
+			memset(&flat, 0, sizeof(flat));
+
+			flat.increaseAmmoCap = 10;
+			upgrade.init(Upgrade::UPGRADE_IS_WEAPON | Upgrade::UPGRADE_INCREASE_AMMOCAP,
+						0, flat);
+			s_upgrades[P10_AMMO] = upgrade; // FREEZE
+			memset(&flat, 0, sizeof(flat));
+	#endif // !UPGRADES_CREATED
 
 	addStatus(0, 5, true);
 }
@@ -63,22 +83,27 @@ void StatusManager::update(float deltaTime)
 	}
 }
 
+void StatusManager::addUpgrade(UPGRADE_ID id) 
+{
+	m_upgrades.push_back(Upgrade(s_upgrades[id]));
+}
+
 void StatusManager::addStatus(int statusID, int nrOfStacks, bool resetDuration)
 {
 	bool found = false;
-	for (size_t i = 0; i < m_effectStacksIds.size() && !found; ++i) 
+	for (size_t i = 0; i < m_effectStacksIds.size() && !found; ++i)
 	{
-		if (m_effectStacksIds[i] == statusID) 
+		if (m_effectStacksIds[i] == statusID)
 		{
 			found = true;
 
 			m_effectStacks[i].stack += nrOfStacks;
-			if (resetDuration) m_effectStacks[i].duration = 
+			if (resetDuration) m_effectStacks[i].duration =
 				s_effects[statusID].getStandards()->duration;
 		}
 	}
 
-	if (!found) 
+	if (!found)
 	{
 		m_effectStacks.push_back({ nrOfStacks,
 								s_effects[statusID].getStandards()->duration });
@@ -115,4 +140,4 @@ void StatusManager::removeAllStatus(int statusID)
 	}
 }
 
-std::vector<Upgrade*> StatusManager::getUpgrades() { return m_upgrades; }
+std::vector<Upgrade>* StatusManager::getUpgrades() { return &m_upgrades; }

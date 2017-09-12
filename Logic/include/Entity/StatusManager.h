@@ -21,8 +21,12 @@ namespace Logic
 	class StatusManager
 	{
 	public:
-		enum EFFECT_LIST {
+		enum EFFECT_ID {
 			ON_FIRE, FREEZE
+		};
+
+		enum UPGRADE_ID {
+			BOUNCE, P10_AMMO
 		};
 
 		StatusManager();
@@ -35,7 +39,9 @@ namespace Logic
 		void removeOneStatus(int statusID);
 		void removeAllStatus(int statusID);
 
-		std::vector<Upgrade*> getUpgrades();
+		void addUpgrade(UPGRADE_ID id);
+
+		std::vector<Upgrade>* getUpgrades();
 	private:
 		/* BASELINE EFFECTS */
 		struct EffectStack {
@@ -43,15 +49,16 @@ namespace Logic
 			float duration;
 		};
 
-		static const int NR_OF_EFFECTS = 2;
+		static const int NR_OF_EFFECTS = 2, NR_OF_UPGRADES = 2;
 		static Effect s_effects[NR_OF_EFFECTS];
+		static Upgrade s_upgrades[NR_OF_UPGRADES];
 
 		std::vector<EffectStack> m_effectStacks; // fast loop speed bad lookup, but worth it? :<
 		std::vector<int> m_effectStacksIds; // mike acton approved (i hop)
 
 		void removeEffect(int index);
 
-		std::vector<Upgrade*> m_upgrades; //todo change
+		std::vector<Upgrade> m_upgrades;
 	};
 }
 

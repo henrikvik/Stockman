@@ -36,16 +36,16 @@ namespace Logic
 		};
 
 		struct Modifiers {
-			float	m_modifyDmgGiven;
-			float	m_modifyDmgTaken;
-			float	m_modifyHP;
-			float	m_modifyFirerate;
-			float	m_modifyMovementSpeed;
+			float	modifyDmgGiven;
+			float	modifyDmgTaken;
+			float	modifyHP;
+			float	modifyFirerate;
+			float	modifyMovementSpeed;
 		};
 
 		struct Specifics {
-			float	m_isFreezing;	//< The amount of freezed (0 : 1)
-			float	m_isBulletTime;	//< Multiplier of the current bulletTime (for example, this effect will adjust every entity except player during the bullet time skill)
+			float	isFreezing;	//< The amount of freezed (0 : 1)
+			float	isBulletTime;	//< Multiplier of the current bulletTime (for example, this effect will adjust every entity except player during the bullet time skill)
 		};
 
 		Effect();
