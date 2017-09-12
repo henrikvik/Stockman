@@ -1,4 +1,6 @@
 #include "..\..\..\include\Misc\GUI\Button.h"
+#include <iostream>
+
 Logic::Button::Button()
 {
 }
@@ -13,17 +15,21 @@ void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::Simple
 	m_texCoordStart = texCoordStart;
 	m_texCoordEnd = texCoordEnd;
 	m_texture = texture;
+	pressed = false;
 }
 
 void Logic::Button::update(DirectX::Mouse::State Mouse)
 {
 	if (rek.Contains(Mouse.x, Mouse.y))
 	{
-		if (Mouse.leftButton)
+		if (Mouse.leftButton && !pressed)
 		{
-			int* i = new int;
-			delete i;
-			delete i;
+			std::cout << "Left Trigger";
+			pressed = true;
+		}
+		else if (!Mouse.leftButton && pressed)
+		{
+			pressed = false;
 		}
 		else
 		{

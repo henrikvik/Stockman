@@ -15,7 +15,6 @@ This class creates buttons.
 #include <d3d11.h>
 #include <SimpleMath.h>
 #include "Mouse.h"
-
 namespace Logic
 {
 	class Button
@@ -25,6 +24,7 @@ namespace Logic
 		DirectX::SimpleMath::Vector2 m_texCoordStart;
 		DirectX::SimpleMath::Vector2 m_texCoordEnd;
 		std::string m_texture;
+		bool pressed;
 	public:
 		Button();
 		~Button();
