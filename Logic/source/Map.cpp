@@ -34,7 +34,7 @@ void Map::clear()
 	for (size_t i = 0; i < m_props.size(); i++)
 		delete m_props[i];
 
-	for (size_t i = 0; i < m_props.size(); i++)
+	for (size_t i = 0; i < m_hitboxes.size(); i++)
 		delete m_hitboxes[i];
 
 	m_props.clear();

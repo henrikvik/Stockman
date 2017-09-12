@@ -14,7 +14,7 @@ Entity::~Entity()
 
 void Entity::init(Physics* physics, BodyDesc bodyDesc)
 {
-	createBody(physics, bodyDesc);
+//	createBody(physics, bodyDesc);
 }
 
 void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
@@ -78,6 +78,6 @@ btRigidBody* Entity::getRigidbody()
 // JUST FOR TESTING, REMOVE
 void Entity::consoleWritePosition()
 {
-	btTransform trans = m_body->getWorldTransform();
-	printf("Position = { %f, %f, %f }\n", trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
+//	btTransform trans = m_body->getWorldTransform();
+//	printf("Position = { %f, %f, %f }\n", trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
 }
