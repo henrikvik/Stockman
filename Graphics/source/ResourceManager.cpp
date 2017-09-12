@@ -30,12 +30,6 @@ namespace Graphics
 		initShaders(gDevice);
 
 	}
-
-	ModelInfo ResourceManager::getModelInfo(ModelID modelID)
-	{
-
-	}
-
 	void ResourceManager::initShaders(ID3D11Device * gDevice)
 	{
 
