@@ -20,7 +20,7 @@ namespace Logic
 			this->position		= position;
 			this->rotation		= { 0, 0, 0 };
 			this->restitution	= 0.0f;
-			this->friction		= 1.0f;
+			this->friction		= 0.05f;
 			this->velocity		= { 0, 0, 0 };
 
 			// Box Specifics
@@ -36,8 +36,7 @@ namespace Logic
 			this->position		= position;
 			this->rotation		= { 0, 0, 0 };
 			this->restitution	= 0.0f;
-			this->friction		= 1.0f;
-			this->velocity		= { 0, 0, 0 };
+			this->friction		= 0.25f;
 
 			// Plane Specifics
 			this->scalar		= scalar;
@@ -53,7 +52,7 @@ namespace Logic
 			this->position		= position;
 			this->rotation		= { 0, 0, 0 };
 			this->restitution	= 0.0f;
-			this->friction		= 1.0f;
+			this->friction		= 0.25f;
 			this->velocity		= { 0, 0, 0 };
 
 			// Sphere Specifics
