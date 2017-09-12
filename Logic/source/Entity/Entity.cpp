@@ -72,7 +72,7 @@ void Entity::collision(Entity& other)
 	onCollision(other);
 }
 
-btRigidBody* Logic::Entity::getRigidbody()
+btRigidBody* Entity::getRigidbody()
 {
 	return m_body;
 }
@@ -80,8 +80,6 @@ btRigidBody* Logic::Entity::getRigidbody()
 // JUST FOR TESTING, REMOVE
 void Entity::consoleWritePosition()
 {
-	btTransform trans;
-	m_body->getMotionState()->getWorldTransform(trans);
-
+	btTransform trans = m_body->getWorldTransform();
 	printf("Position = { %f, %f, %f }\n", trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
 }

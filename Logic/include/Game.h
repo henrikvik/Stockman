@@ -6,6 +6,7 @@
 #include "Player\Player.h"
 #include "Physics\Physics.h"
 #include "Entity\Hitbox.h"
+#include "Misc\RenderRegister.h"
 
 #include <Windows.h>
 #include <Keyboard.h>
@@ -25,9 +26,12 @@ namespace Logic
 		void clear();
 
 		void update(float deltaTime);
-	//	void draw(RenderMachine& renderMachine);
+		void render();
+
+		std::queue<Graphics::RenderInfo*>* getRenderQueue();
 
 	private:
+		RenderRegister m_register;
 		Physics* m_physics;
 		Player* m_player;
 		Hitbox* m_plane;
