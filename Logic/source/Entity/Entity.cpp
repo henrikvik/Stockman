@@ -1,4 +1,4 @@
-#include "Entity/Entity.h"
+#include <Entity/Entity.h>
 
 using namespace Logic;
 
@@ -62,8 +62,11 @@ void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
 	physics->addRigidBody(m_body);
 }
 
+void Logic::Entity::clear() { }
+
 void Entity::update(float deltaTime)
 {
+	m_statusManager.update(deltaTime);
 	updateSpecific(deltaTime);
 }
 
@@ -72,7 +75,7 @@ void Entity::collision(Entity& other)
 	onCollision(other);
 }
 
-btRigidBody* Logic::Entity::getRigidbody()
+btRigidBody* Entity::getRigidbody()
 {
 	return m_body;
 }

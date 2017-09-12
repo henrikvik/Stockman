@@ -9,7 +9,7 @@
 	AUTHOR: Lukas Westling
 
 	This class handles the Enemy and
-	its flags is in EntityManager
+	its flags is handled by EntityManager
 
 	But wait? Why cant i check if an enemy is dead???
 	That is because that is very slow and waste of cachelines!
@@ -23,15 +23,23 @@ namespace Logic
 	class Enemy : public Entity 
 	{
 		private:
-			float m_health, m_baseDamage; 
+			float m_health, m_maxHealth, m_baseDamage; 
 			int m_enemyType;
 			// Animation m_animation;
 		public:	
-			Enemy(float health, float baseDamage, int enemyType, int animationId);
+			Enemy(float maxHealth, float baseDamage, int enemyType, int animationId);
 			virtual ~Enemy();
 
-			void update(float deltaTime);
-			virtual void updateSpec(float deltaTime) = 0;
+			virtual void update(float deltaTime);
+			virtual void updateDead(float deltaTime) = 0;
+			virtual void updateSpecific(float deltaTime) = 0;
+
+			void damage(float damage);
+
+			float getHealth() const;
+			float getMaxHealth() const;
+			float getBaseDamage() const;
+			int getEnemyType() const;
 	};
 }
 

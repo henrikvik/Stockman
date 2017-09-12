@@ -4,7 +4,7 @@
 #pragma region Comment
 
 /*
-	Author: Fredholm
+	Author: Fredholm / Lukas
 
 	This class keeps track on upgrades for both weapons and skills
 */
@@ -12,6 +12,7 @@
 #pragma endregion Description of class
 
 #include <vector>
+
 #include "Effect.h"
 #include "Upgrade.h"
 
@@ -20,23 +21,47 @@ namespace Logic
 	class StatusManager
 	{
 	public:
+		enum EFFECT_ID {
+			ON_FIRE, FREEZE
+		};
+
+		enum UPGRADE_ID {
+			BOUNCE, P10_AMMO
+		};
+
 		StatusManager();
-		StatusManager(const StatusManager& other) = delete;
-		StatusManager* operator=(const StatusManager& other) = delete;
 		~StatusManager();
 
 		void clear();
-		void addStatus(int statusID);
-		void removeStatus(int statusID);
+		void update(float deltaTime);
 
-		std::vector<Effect*> getEffects();
-		std::vector<Upgrade*> getUpgrades();
+		void addStatus(int statusID, int nrOfStacks, bool resetDuration);
+		void removeOneStatus(int statusID);
+		void removeAllStatus(int statusID);
 
+		void addUpgrade(UPGRADE_ID id);
+
+		std::vector<Upgrade>* getUpgrades();
 	private:
-		std::vector<Effect*> m_effects;
-		std::vector<Upgrade*> m_upgrades;
+		/* BASELINE EFFECTS */
+		struct EffectStack {
+			int stack;
+			float duration;
+		};
+
+		static const int NR_OF_EFFECTS = 2, NR_OF_UPGRADES = 2;
+		static Effect s_effects[NR_OF_EFFECTS];
+		static Upgrade s_upgrades[NR_OF_UPGRADES];
+
+		// m_effectStacksIds[i] = id of the effect at m_effectsStacks[i]
+		std::vector<EffectStack> m_effectStacks; // fast loop speed bad lookup, but worth it? :<
+		std::vector<int> m_effectStacksIds; // mike acton approved (i hop)
+
+		void removeEffect(int index);
+
+		std::vector<Upgrade> m_upgrades;
 	};
 }
 
 
-#endif // !STATUSMANAGER_H
+#endif

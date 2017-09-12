@@ -239,7 +239,15 @@ int Engine::run()
 			}
 
 			game.update(float(deltaTime));
+			game.render();
 
+			/* Instead of putting this here, make renderer->qeueuRender take the parameter of an actual queue instead of a single renderInfo. */
+			std::queue<Graphics::RenderInfo*>* renderQueue = game.getRenderQueue();
+			for (size_t i = 0; i < renderQueue->size(); i++)
+			{
+//				renderer->qeueuRender((*renderQueue).front);
+				renderQueue->pop();
+			}
 			
 			cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
 			renderer->render(&cam);
@@ -247,9 +255,6 @@ int Engine::run()
 		}
 		
 	}
-
-	// Delete game content
-	game.clear();
 
 	return 0;
 }

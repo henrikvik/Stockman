@@ -11,7 +11,10 @@ Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overl
 	this->collisionConfiguration = collisionConfiguration;
 }
 
-Physics::~Physics() { }
+Physics::~Physics() 
+{
+	clear();
+}
 
 bool Physics::init()
 {
@@ -28,11 +31,13 @@ void Physics::clear()
 	{
 		btCollisionObject* obj = this->getCollisionObjectArray()[i];
 		btRigidBody* body = btRigidBody::upcast(obj);
+		btCollisionShape* shape = obj->getCollisionShape();
 		if (body && body->getMotionState())
 		{
 			delete body->getMotionState();
 		}
 		this->removeCollisionObject(obj);
+		delete shape;
 		delete obj;
 	}
 

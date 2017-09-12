@@ -57,7 +57,7 @@ namespace Logic
 		Player();
 		~Player();
 
-		bool init(Physics* physics, BodyDesc bodyDesc);
+		void init(Physics* physics, BodyDesc bodyDesc);
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);

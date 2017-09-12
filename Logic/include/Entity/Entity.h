@@ -2,8 +2,11 @@
 #define ENTITY_H
 
 #include "Object.h"
+#include "StatusManager.h"
+
 #include "../Physics/Physics.h"
 #include "../Physics/RigidBodyDesc.h"
+
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
@@ -15,14 +18,14 @@ namespace Logic
 		Entity();
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
-		~Entity();
+		virtual ~Entity();
 
 		bool init(Physics* physics, BodyDesc bodyDesc);
 		virtual void createBody(Physics* physics, BodyDesc bodyDesc);
 
-		virtual void clear() = 0;
+		virtual void clear();
 		void update(float deltaTime);
-		virtual void updateSpecific(float deltatTime) = 0;
+		virtual void updateSpecific(float deltaTime) = 0;
 		void collision(Entity& other);
 		virtual void onCollision(Entity& other) = 0;
 
@@ -32,6 +35,7 @@ namespace Logic
 		DirectX::SimpleMath::Vector3 getPosition();
 
 	private:
+		StatusManager m_statusManager;
 		btRigidBody* m_body;
 	//	Hitbox* m_head; for headshot, put it here to remember
 

@@ -8,11 +8,13 @@ Player::Player()
 
 Player::~Player()
 {
+	clear();
 }
 
-bool Player::init(Physics* physics, BodyDesc bodyDesc)
+void Player::init(Physics* physics, BodyDesc bodyDesc)
 {
 	Entity::init(physics, bodyDesc);
+
 	m_weaponManager.init();
 	m_skillManager.init();
 
@@ -33,23 +35,23 @@ bool Player::init(Physics* physics, BodyDesc bodyDesc)
 	m_switchWeaponThree = DirectX::Keyboard::Keys::D3;
 	m_reloadWeapon = DirectX::Keyboard::Keys::R;
 	m_useSkill = DirectX::Keyboard::Keys::E;
-
-	return true;
 }
 
 void Player::clear()
 {
+	m_weaponManager.clear();
+//	m_skillManager.clear();
 }
 
 void Player::onCollision(Entity& other)
 {
 }
 
-void Logic::Player::saveToFile()
+void Player::saveToFile()
 {
 }
 
-void Logic::Player::readFromFile()
+void Player::readFromFile()
 {
 }
 
@@ -108,7 +110,7 @@ void Player::updateSpecific(float deltaTime)
 	
 }
 
-void Logic::Player::move(float deltaTime, DirectX::Keyboard::State* ks)
+void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 {
 	btRigidBody* rigidBody = getRigidbody();
 
@@ -146,17 +148,17 @@ void Logic::Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 
 }
 
-void Logic::Player::jump(float deltaTime)
+void Player::jump(float deltaTime)
 {
 	// jump
 }
 
-void Logic::Player::crouch(float deltaTime)
+void Player::crouch(float deltaTime)
 {
 	// crouch
 }
 
-void Logic::Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
+void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
 	DirectX::SimpleMath::Vector2 midPoint = getWindowMidPoint();
 
