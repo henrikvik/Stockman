@@ -2,8 +2,11 @@
 #define ENTITY_H
 
 #include "Object.h"
+#include "StatusManager.h"
+
 #include "../Physics/Physics.h"
 #include "../Physics/RigidBodyDesc.h"
+
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
@@ -27,13 +30,14 @@ namespace Logic
 		virtual void updateSpecific(float deltatTime) = 0;
 		void collision(Entity& other);
 		virtual void onCollision(Entity& other) = 0;
-
+	public:
 		btRigidBody* getRigidbody();
 
 		// JUST FOR TESTING, REMOVE
 		void consoleWritePosition();
 
 	private:
+		StatusManager m_statusManager;
 		btRigidBody* m_body;
 	//	Hitbox* m_head; for headshot, put it here to remember
 	};

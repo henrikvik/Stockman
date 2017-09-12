@@ -1,4 +1,4 @@
-#include "Entity/Entity.h"
+#include <Entity/Entity.h>
 
 using namespace Logic;
 
@@ -62,6 +62,7 @@ void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
 
 void Entity::update(float deltaTime)
 {
+	m_statusManager.update(deltaTime);
 	updateSpecific(deltaTime);
 }
 

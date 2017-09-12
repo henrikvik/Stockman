@@ -53,7 +53,7 @@ void Game::update(float deltaTime)
 	m_player->update(deltaTime);
 
 	// Debugging for testing if physics is working:
-	printf("Player:		");		m_player->consoleWritePosition();
+	// printf("Player:		");		m_player->consoleWritePosition();
 }
 
 void Game::render()
