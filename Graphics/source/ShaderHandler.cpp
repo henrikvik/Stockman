@@ -1,5 +1,9 @@
 #include "ShaderHandler.h"
 #include <comdef.h>
+#include <ThrowIfFailed.h>
+#include <Engine/Constants.h>
+
+using namespace Graphics;
 
 ShaderHandler::ShaderHandler()
 {
@@ -154,3 +158,4 @@ void ShaderHandler::setShaders(int vs, int gs, int ps, ID3D11DeviceContext* cont
 	context->GSSetShader(gs == NO_SHADER ? nullptr : geometryShaders[gs], nullptr, 0);
 	context->PSSetShader(ps == NO_SHADER ? nullptr : pixelShaders[ps], nullptr, 0);
 }
+
