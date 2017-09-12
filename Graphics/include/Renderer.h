@@ -9,11 +9,11 @@
 #include "WICTextureLoader.h"
 #include <Resources\ResourceManager.h>
 #include <SimpleMath.h>
+#include <Resources\Shader.h>
 
 namespace Graphics
 {
 
-	
 
     class Renderer
     {
@@ -33,6 +33,8 @@ namespace Graphics
 			DirectX::SimpleMath::Vector3 normal;
 			int mat;
 		};
+
+        Shader simpleForward;
 
 		ResourceManager resourceManager;
 
@@ -54,13 +56,16 @@ namespace Graphics
         InstanceQueue_t instanceQueue;
         GBuffer gbuffer;
 
+
         void createGBuffer();
+        void createDepthStencil();
+        void createCubeInstances();
+        void createInstanceBuffer();
+
         void cull();
         void draw();
 		void drawDeffered();
-		void createDepthStencil();
-		void createCubeInstances();
-        void createInstanceBuffer();
+
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);

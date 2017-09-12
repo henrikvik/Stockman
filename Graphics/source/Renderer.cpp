@@ -7,11 +7,15 @@
 using namespace Graphics;
 
 Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer)
-  
+    : simpleForward(gDevice, SHADER_PATH("SimpleForward.hlsl"), VERTEX_DESC)
 {
 	this->device = gDevice;
 	this->deviceContext = gDeviceContext;
 	this->backBuffer = backBuffer;
+
+    createGBuffer();
+    createDepthStencil();
+    createInstanceBuffer();
 
 	using namespace DirectX::SimpleMath;
 
@@ -245,7 +249,6 @@ Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext,
 	initialize(gDevice, gDeviceContext);
 }
 
-}
 
 Graphics::Renderer::~Renderer()
 {
@@ -278,31 +281,17 @@ void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceCon
 
 void Renderer::render(Camera * camera)
 {
-    /*
-    //setCamera(sun);
-    //setShader(shadow);
-    //setRenderTarget(shadowMap);
-    //for (RenderInfo info : renderQueue)
-    //{
-    //  draw(info);
-    //}
+    cull();
 
-    setCamera(camera);
-    setShader(deffered);
-    
-*/
-
-    //deviceContext->PSSetConstantBuffers(0, 3, nullptr);
-    //deviceContext->OMSetRenderTargets(3, (ID3D11RenderTargetView * const *)&gbuffer, gbuffer.depth);
-    
     ID3D11Buffer *cameraBuffer = camera->getBuffer();
     deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);    
-    cull();
-    //draw();
+    deviceContext->OMSetRenderTargets(1, &backBuffer, gbuffer.depth);
+
+    draw();
 	
-	//temp
-	this->drawDeffered();
-	this->drawToBackbuffer(gbuffer.positionView);
+	////temp
+	//this->drawDeffered();
+	//this->drawToBackbuffer(gbuffer.positionView);
 }
 
 void Renderer::queueRender(RenderInfo * renderInfo)
@@ -444,8 +433,6 @@ void Renderer::draw()
 
 	deviceContext->Unmap(instanceBuffer, 0);
 
-
-
 	// draw all instanced meshes
     DWORD readOffset = 0;
 
@@ -455,13 +442,15 @@ void Renderer::draw()
 
 	for (InstanceQueue_t::value_type & pair : instanceQueue)
 	{
-        Model model = { 0 }; // resourceManager->getModel(pair.first);
+        ModelInfo model = resourceManager.getModelInfo(pair.first);
 
         buffers[0] = model.vertexBuffer;
         deviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
-        deviceContext->DrawInstanced(model.vertexCount, pair.second.size(), 0, readOffset);
+        deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+        deviceContext->DrawIndexedInstanced(model.indexCount, pair.second.size(), 0, 0, readOffset);
         readOffset += sizeof(pair.second);
 	}
+
 }
 
 void Renderer::drawDeffered()
