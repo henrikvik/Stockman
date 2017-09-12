@@ -6,13 +6,6 @@ Hitbox::Hitbox() { }
 
 Hitbox::~Hitbox() { }
 
-bool Hitbox::init(Physics* physics, BodyDesc bodyDesc)
-{
-	this->createBody(physics, bodyDesc);
-
-	return true;
-}
-
 void Hitbox::clear() { }
 
 void Hitbox::updateSpecific(float deltatTime) { }

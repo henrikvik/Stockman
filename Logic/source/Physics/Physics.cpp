@@ -11,7 +11,10 @@ Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overl
 	this->collisionConfiguration = collisionConfiguration;
 }
 
-Physics::~Physics() { }
+Physics::~Physics() 
+{
+	clear();
+}
 
 bool Physics::init()
 {
