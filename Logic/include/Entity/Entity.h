@@ -20,8 +20,10 @@ namespace Logic
 		Entity* operator=(const Entity& other) = delete;
 		~Entity();
 
-		bool init(Physics* physics, BodyDesc bodyDesc);
-		virtual void createBody(Physics* physics, BodyDesc bodyDesc);
+		virtual void init(Physics* physics, BodyDesc bodyDesc);
+
+		// There's a memory leak in here somewhere, or in Physics.h! Fix ASAP
+		void createBody(Physics* physics, BodyDesc bodyDesc);
 
 		virtual void clear() = 0;
 		void update(float deltaTime);

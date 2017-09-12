@@ -7,16 +7,14 @@ Entity::Entity()
 	m_body = nullptr;
 }
 
-Entity::~Entity() { }
-
-bool Entity::init(Physics* physics, BodyDesc bodyDesc)
+Entity::~Entity() 
 {
-	if (physics == nullptr)
-		return false;
+	// Gets removed by Physics
+}
 
+void Entity::init(Physics* physics, BodyDesc bodyDesc)
+{
 	createBody(physics, bodyDesc);
-
-	return true;
 }
 
 void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
@@ -50,7 +48,7 @@ void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
 
 	// Specifics
 	m_body->setRestitution(bodyDesc.restitution);	// Bounciness, 0:1 = Loses velocity with each bounce, < 1 = Gains velocity with each bounce
-	m_body->setFriction(bodyDesc.friction);		// Friction, If set at zero, no spinning will happen
+	m_body->setFriction(bodyDesc.friction);			// Friction, If set at zero, no spinning will happen
 
 	// Connecting the bulletphysics world with the logic side
 	m_body->setUserPointer(this);
@@ -59,7 +57,7 @@ void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
 	m_body->applyForce(bodyDesc.velocity, bodyDesc.position);
 
 	// Adding body to the world
-	physics->addRigidBody(m_body);
+	physics->addRigidBody(m_body); 
 }
 
 void Entity::update(float deltaTime)
@@ -81,6 +79,6 @@ btRigidBody* Entity::getRigidbody()
 // JUST FOR TESTING, REMOVE
 void Entity::consoleWritePosition()
 {
-	btTransform trans = m_body->getWorldTransform();
-	printf("Position = { %f, %f, %f }\n", trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
+//	btTransform trans = m_body->getWorldTransform();
+//	printf("Position = { %f, %f, %f }\n", trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
 }

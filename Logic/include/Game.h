@@ -3,11 +3,14 @@
 
 #include <stdio.h>
 
-#include "Player\Player.h"
-#include "Physics\Physics.h"
-#include "Entity\Hitbox.h"
-#include "Misc\RenderRegister.h"
+// Logic Includes
+#include <Player\Player.h>
+#include <Physics\Physics.h>
+#include <Entity\Hitbox.h>
+#include <Misc\RenderRegister.h>
+#include <Map.h>
 
+// DirectX Includes
 #include <Windows.h>
 #include <Keyboard.h>
 #include <Mouse.h>
@@ -31,10 +34,10 @@ namespace Logic
 		std::queue<Graphics::RenderInfo*>* getRenderQueue();
 
 	private:
-		RenderRegister m_register;
-		Physics* m_physics;
-		Player* m_player;
-		Hitbox* m_plane;
+		RenderRegister		m_register;
+		Physics*			m_physics;
+		Player*				m_player;
+		Map*				m_map;
 	};
 }
 
