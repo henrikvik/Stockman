@@ -85,3 +85,9 @@ void Entity::consoleWritePosition()
 
 	printf("Position = { %f, %f, %f }\n", trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
 }
+
+DirectX::SimpleMath::Vector3 Logic::Entity::getPosition()
+{
+	btTransform trans = m_body->getWorldTransform();
+	return DirectX::SimpleMath::Vector3(trans.getOrigin());
+}

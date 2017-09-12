@@ -129,6 +129,7 @@ void Logic::Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 		linearVel += -dir;
 	}
 
+	// Apply final force
 	rigidBody->applyCentralForce(linearVel * deltaTime * m_moveSpeed);
 
 }

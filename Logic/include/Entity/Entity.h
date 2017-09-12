@@ -26,14 +26,17 @@ namespace Logic
 		void collision(Entity& other);
 		virtual void onCollision(Entity& other) = 0;
 
-		btRigidBody* getRigidbody();
-
 		// JUST FOR TESTING, REMOVE
 		void consoleWritePosition();
+
+		DirectX::SimpleMath::Vector3 getPosition();
 
 	private:
 		btRigidBody* m_body;
 	//	Hitbox* m_head; for headshot, put it here to remember
+
+	protected:
+		btRigidBody* getRigidbody();
 	};
 }
 
