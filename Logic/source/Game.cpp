@@ -60,3 +60,17 @@ void Game::update(float deltaTime)
 	printf("Player:		");		m_player->consoleWritePosition();
 	printf("Plane:		");		m_plane->consoleWritePosition();
 }
+
+void Game::render()
+{
+	// Clearing previous frame
+	m_register.clear();
+
+	// Drawing player
+	m_player->render(m_register);
+}
+
+std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
+{
+	return m_register.getRenderInfo();
+}
