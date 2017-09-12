@@ -13,8 +13,8 @@ namespace Graphics
 	struct ModelInfo
 	{
 		size_t indexCount;
-		ID3D11Buffer * vertexBuffer;
-		ID3D11Buffer * indexBuffer;
+        ID3D11Buffer * indexBuffer;
+        ID3D11Buffer * vertexBuffer;
 	};
 
 
