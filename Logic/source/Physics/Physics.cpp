@@ -31,11 +31,13 @@ void Physics::clear()
 	{
 		btCollisionObject* obj = this->getCollisionObjectArray()[i];
 		btRigidBody* body = btRigidBody::upcast(obj);
+		btCollisionShape* shape = obj->getCollisionShape();
 		if (body && body->getMotionState())
 		{
 			delete body->getMotionState();
 		}
 		this->removeCollisionObject(obj);
+		delete shape;
 		delete obj;
 	}
 

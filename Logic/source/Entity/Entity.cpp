@@ -14,7 +14,7 @@ Entity::~Entity()
 
 void Entity::init(Physics* physics, BodyDesc bodyDesc)
 {
-//	createBody(physics, bodyDesc);
+	createBody(physics, bodyDesc);
 }
 
 void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
