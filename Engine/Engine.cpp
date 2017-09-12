@@ -236,8 +236,12 @@ int Engine::run()
 				this->isFullscreen = !isFullscreen;
 			}
 
+<<<<<<< HEAD
 			game.update(deltaTime / 1000.f);
 			game.render();
+=======
+			game.update(float(deltaTime));
+>>>>>>> logic
 
 			
 			cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
