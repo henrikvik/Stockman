@@ -80,6 +80,14 @@ void Engine::initializeWindow()
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.lpszClassName = "Basic test";
 
+	ID3D11RasterizerState * g_pRasterState;
+
+	D3D11_RASTERIZER_DESC rasterizerState;
+	//rasterizerState.FillMode = D3D11_FILL_SOLID;
+	rasterizerState.CullMode = D3D11_CULL_NONE;
+	
+	mDevice->CreateRasterizerState(&rasterizerState, &g_pRasterState);
+
 	if (!RegisterClass(&wc))
 	{
 		MessageBox(this->window, "registerClass failed", "Error", MB_OK);
@@ -124,6 +132,9 @@ HRESULT Engine::createSwapChain()
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+	
+
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,

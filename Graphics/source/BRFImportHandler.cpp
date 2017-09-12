@@ -7,7 +7,7 @@ BRFImportHandler::BRFImportHandler()
 
 BRFImportHandler::~BRFImportHandler()
 {
-
+	delete this->currentFile;
 }
 
 void BRFImportHandler::loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene)
@@ -152,9 +152,4 @@ void BRFImportHandler::initialize(MeshManager & meshManager, MaterialManager & m
 	this->currentFile = newd BRFImporterLib::FileData;
 	this->meshManager = &meshManager;
 	this->materialManager = &materialManager;
-}
-
-void BRFImportHandler::release()
-{
-	delete this->currentFile;
 }

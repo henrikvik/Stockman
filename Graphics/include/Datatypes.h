@@ -159,6 +159,71 @@ struct Vertex
 
 };
 
+struct FrameData
+{
+	FrameData() { ZeroMemory(this, sizeof(this)); };
+	FrameData(unsigned int ID, float time)
+	{
+		this->frameID = ID;
+		this->time = time;
+	}
+	unsigned int frameID;
+	DirectX::XMFLOAT3 padID;
+	float time;
+	DirectX::XMFLOAT3 padTime;
+};
+
+struct AnimVert
+{
+	Float3 position;
+	Float3 normal;
+	Float2 uv;
+	Float2 biTangent;
+	Float2 tangent;
+
+	Float4 weights;
+	UINT4 jointID;
+
+	AnimVert(Float3 pos, Float3 normal, Float2 uv, Float2 tangent, Float2 biTangent, Float4 weights, UINT4 jointID)
+	{
+		this->position.x = pos.x;
+		this->position.y = pos.y;
+		this->position.z = pos.z;
+
+		this->normal.x = normal.x;
+		this->normal.y = normal.y;
+		this->normal.z = normal.z;
+
+		this->uv.x = uv.x;
+		this->uv.y = uv.y;
+
+		this->biTangent.x = biTangent.x;
+		this->biTangent.y = biTangent.y;
+
+		this->tangent.x = tangent.x;
+		this->tangent.y = tangent.y;
+
+		this->weights.x = weights.x;
+		this->weights.y = weights.y;
+		this->weights.z = weights.z;
+		this->weights.w = weights.w;
+
+		this->jointID.x = jointID.x;
+		this->jointID.y = jointID.y;
+		this->jointID.z = jointID.z;
+		this->jointID.w = jointID.w;
+	}
+	AnimVert() {};
+
+};
+
+struct AnimationInfo
+{
+	unsigned int numberOfFrames = 0; // the amount of meshes
+	float		  animationTime = 0;
+	std::vector<std::vector<AnimVert>> meshesPerFrame; //a 2d array of all the shapes belonging to the animation
+	std::vector<FrameData> frames;
+};
 
 struct Material
 {
