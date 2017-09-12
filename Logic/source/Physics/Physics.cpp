@@ -11,7 +11,10 @@ Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overl
 	this->collisionConfiguration = collisionConfiguration;
 }
 
-Physics::~Physics() { }
+Physics::~Physics() 
+{
+	clear();
+}
 
 bool Physics::init()
 {
@@ -28,11 +31,13 @@ void Physics::clear()
 	{
 		btCollisionObject* obj = this->getCollisionObjectArray()[i];
 		btRigidBody* body = btRigidBody::upcast(obj);
+		btCollisionShape* shape = obj->getCollisionShape();
 		if (body && body->getMotionState())
 		{
 			delete body->getMotionState();
 		}
 		this->removeCollisionObject(obj);
+		delete shape;
 		delete obj;
 	}
 
@@ -45,5 +50,7 @@ void Physics::clear()
 
 void Physics::update(float deltaTime)
 {
-	this->stepSimulation(PHYSICS_TIME_STEP, PHYSICS_MAX_SUB_STEPS);
+	this->stepSimulation(deltaTime); // bulletphysics doesn't support a not constant framrate, calling this will make the game not g8
+//	this->stepSimulation(1 / 60.f);
+
 }

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.props" Condition="Exists('..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -166,6 +167,12 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Entity\Hitbox.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="include\AI\EnemyTest.h" />
     <ClInclude Include="include\Misc\HighScoreManager.h" />
     <ClInclude Include="include\Entity\Effect.h" />
@@ -175,7 +182,12 @@
     <ClInclude Include="include\AI\TriggerManager.h" />
     <ClInclude Include="include\Misc\Card.h" />
     <ClInclude Include="include\Misc\CardManager.h" />
-    <ClInclude Include="include\Entity\Entity.h" />
+    <ClInclude Include="include\Entity\Entity.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Logic.h" />
     <ClInclude Include="include\Entity\Object.h" />
@@ -184,6 +196,7 @@
     <ClInclude Include="include\Misc\RenderRegister.h" />
     <ClInclude Include="include\Misc\StateMachine.h" />
     <ClInclude Include="include\Physics\Physics.h" />
+    <ClInclude Include="include\Physics\RigidBodyDesc.h" />
     <ClInclude Include="include\Player\ActionManager.h" />
     <ClInclude Include="include\Player\Player.h" />
     <ClInclude Include="include\Player\Skill\Skill.h" />
@@ -203,6 +216,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\EnemyTest.cpp" />
+    <ClCompile Include="source\Entity\Hitbox.cpp" />
     <ClCompile Include="source\Misc\HighScoreManager.cpp" />
     <ClCompile Include="source\Entity\Effect.cpp" />
     <ClCompile Include="source\AI\Enemy.cpp" />
@@ -240,5 +254,13 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.targets" Condition="Exists('..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.props'))" />
+    <Error Condition="!Exists('..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_desktop_2015.2017.6.21.1\build\native\directxtk_desktop_2015.targets'))" />
+  </Target>
 </Project>

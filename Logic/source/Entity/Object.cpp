@@ -2,9 +2,15 @@
 
 using namespace Logic;
 
-Object::Object()
+Object::Object() 
 {
+	m_renderInfo.render = true;
 }
 
-Object::~Object()
-{}
+Object::~Object() { }
+
+void Object::render(RenderRegister& rRegister)
+{
+	if (m_renderInfo.render)
+		rRegister.addRenderInfo(&m_renderInfo);
+}

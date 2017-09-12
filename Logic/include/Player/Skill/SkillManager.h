@@ -8,6 +8,7 @@
 			DESCRIPTION: This class is made to manage the skills of the system.
 		*/
 #pragma endregion
+
 #include "Skill.h"
 #include <vector>
 
@@ -18,6 +19,11 @@ namespace Logic
 	private:
 		std::vector<Skill> m_skills;
 	public:
+		void init();
+
+		void switchSkill();
+		void useSkill();
+
 		void update();
 	};
 }
