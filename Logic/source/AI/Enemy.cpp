@@ -14,7 +14,7 @@ Enemy::~Enemy() {
 }
 
 void Enemy::update(float deltaTime) {
-	updateSpec(deltaTime);
+	updateSpecific(deltaTime);
 }
 
 void Enemy::damage(float damage)

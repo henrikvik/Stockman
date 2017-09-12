@@ -56,7 +56,7 @@ void EntityManager::update(float deltaTime)
 
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-	printf("t: %f\n", elapsed_secs);
+//	printf("t: %f\n", elapsed_secs);
 }
 
 void EntityManager::spawnWave() 

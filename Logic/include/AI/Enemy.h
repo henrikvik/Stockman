@@ -32,7 +32,7 @@ namespace Logic
 
 			virtual void update(float deltaTime);
 			virtual void updateDead(float deltaTime) = 0;
-			virtual void updateSpec(float deltaTime) = 0;
+			virtual void updateSpecific(float deltaTime) = 0;
 
 			void damage(float damage);
 

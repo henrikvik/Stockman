@@ -62,6 +62,8 @@ void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
 	physics->addRigidBody(m_body);
 }
 
+void Logic::Entity::clear() { }
+
 void Entity::update(float deltaTime)
 {
 	m_statusManager.update(deltaTime);

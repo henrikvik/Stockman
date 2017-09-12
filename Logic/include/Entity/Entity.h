@@ -23,9 +23,9 @@ namespace Logic
 		bool init(Physics* physics, BodyDesc bodyDesc);
 		virtual void createBody(Physics* physics, BodyDesc bodyDesc);
 
-		virtual void clear() = 0;
+		virtual void clear();
 		void update(float deltaTime);
-		virtual void updateSpecific(float deltatTime) = 0;
+		virtual void updateSpecific(float deltaTime) = 0;
 		void collision(Entity& other);
 		virtual void onCollision(Entity& other) = 0;
 	public:

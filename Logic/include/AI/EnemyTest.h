@@ -13,9 +13,9 @@ namespace Logic
 			virtual ~EnemyTest();
 
 			virtual void clear();
-			virtual void onCollision(const Entity& other);
-			virtual void onCollision(const Player& other);
-			virtual void updateSpec(float deltaTime);
+			virtual void onCollision(Entity& other);
+			virtual void onCollision(Player& other);
+			virtual void updateSpecific(float deltaTime);
 			virtual void updateDead(float deltaTime);
 	};
 }

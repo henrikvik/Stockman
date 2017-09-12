@@ -14,16 +14,16 @@ void EnemyTest::clear()
 {
 }
 
-void EnemyTest::onCollision(const Entity &other)
+void EnemyTest::onCollision(Entity &other)
 {
 }
 
-void EnemyTest::onCollision(const Player& other) 
+void EnemyTest::onCollision(Player& other) 
 {
 	
 }
 
-void EnemyTest::updateSpec(float deltaTime) 
+void EnemyTest::updateSpecific(float deltaTime)
 {
 	
 }

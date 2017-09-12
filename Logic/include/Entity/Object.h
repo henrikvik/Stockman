@@ -12,11 +12,12 @@ namespace Logic
 		Object();
 		Object(const Object& other) = delete;
 		Object* operator=(const Object& other) = delete;
-		~Object();
+		virtual ~Object();
 
 		virtual void render(RenderRegister& rRegister);
 
 	private:
+		Graphics::RenderInfo m_renderInfo;
 	};
 }
 
