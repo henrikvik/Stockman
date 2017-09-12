@@ -31,6 +31,7 @@ namespace Logic
 		~MenuState();
 		void initialize();
 		void update();
+		static void buttonClick();
 	};
 }
 

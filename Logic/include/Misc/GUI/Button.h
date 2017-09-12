@@ -15,20 +15,23 @@ This class creates buttons.
 #include <d3d11.h>
 #include <SimpleMath.h>
 #include "Mouse.h"
+#include <functional>
+
 namespace Logic
 {
 	class Button
 	{
 	private:
-		DirectX::SimpleMath::Rectangle rek;
+		DirectX::SimpleMath::Rectangle m_rek;
 		DirectX::SimpleMath::Vector2 m_texCoordStart;
 		DirectX::SimpleMath::Vector2 m_texCoordEnd;
 		std::string m_texture;
 		bool pressed;
+		std::function<void(void)> m_CallBack;
 	public:
 		Button();
 		~Button();
-		void initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float height, float width, std::string texture);
+		void initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float height, float width, std::string texture, std::function<void(void)> callBack);
 		void update(DirectX::Mouse::State Mouse);
 	};
 }

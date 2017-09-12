@@ -1,5 +1,7 @@
 #include "..\..\..\include\Misc\GUI\MenuState.h"
 
+#include <iostream>
+
 Logic::MenuState::MenuState()
 {
 }
@@ -21,7 +23,7 @@ void Logic::MenuState::initialize()
 	float width = 200.0f;
 	std::string texture = "Bla";
 	m_buttons.push_back(new Button());
-	m_buttons.at(0)->initialize(pos, texCoordStart, texCoordEnd, height, width, texture);
+	m_buttons.at(0)->initialize(pos, texCoordStart, texCoordEnd, height, width, texture, buttonClick);
 }
 
 void Logic::MenuState::update()
@@ -31,4 +33,9 @@ void Logic::MenuState::update()
 	{
 		m_buttons.at(i)->update(Mouse);
 	}
+}
+
+void Logic::MenuState::buttonClick()
+{
+	std::cout << " Left Trigger";
 }
