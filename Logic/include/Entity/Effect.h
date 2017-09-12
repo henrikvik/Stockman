@@ -14,22 +14,22 @@
 
 namespace Logic
 {
-	enum EFFECT_FLAG {
-		EFFECT_KILL					= 0x1,
-		EFFECT_ON_FIRE				= 0x2,
-		EFFECT_IS_FROZEN			= 0x4, 
-		EFFECT_MODIFY_DMG_GIVEN		= 0x8,
-		EFFECT_MODIFY_DMG_TAKEN		= 0x20,
-		EFFECT_MODIFY_HP			= 0x40,
-		EFFECT_MODIFY_FIRERATE		= 0x80,
-		EFFECT_MODIFY_MOVEMENTSPEED	= 0x100,
-		EFFECT_MODIFY_FREEZING		= 0x200,
-		EFFECT_MODIFY_BULLET_TIME	= 0x400,
-	};
-
 	class Effect
 	{
 	public:
+		enum EFFECT_FLAG {
+			EFFECT_KILL					= 0x1,
+			EFFECT_ON_FIRE				= 0x2,
+			EFFECT_IS_FROZEN			= 0x4, 
+			EFFECT_MODIFY_DMG_GIVEN		= 0x8,
+			EFFECT_MODIFY_DMG_TAKEN		= 0x20,
+			EFFECT_MODIFY_HP			= 0x40,
+			EFFECT_MODIFY_FIRERATE		= 0x80,
+			EFFECT_MODIFY_MOVEMENTSPEED	= 0x100,
+			EFFECT_MODIFY_FREEZING		= 0x200,
+			EFFECT_MODIFY_BULLET_TIME	= 0x400,
+		};
+
 		struct Standards {
 			long long flags;
 			float	duration;		//< Duration of this effect (0 is instant like +hp or something)

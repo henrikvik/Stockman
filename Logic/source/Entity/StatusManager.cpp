@@ -5,7 +5,8 @@ using namespace Logic;
 
 Effect StatusManager::s_effects[StatusManager::NR_OF_EFFECTS];
  
-StatusManager::StatusManager() { 
+StatusManager::StatusManager() 
+{ 
 	#ifndef BUFFS_CREATED
 	#define BUFFS_CREATED
 	/* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
@@ -15,13 +16,13 @@ StatusManager::StatusManager() {
 		Effect::Modifiers modifiers;
 		Effect::Specifics spec;
 
-		standards.flags = EFFECT_ON_FIRE | EFFECT_MODIFY_MOVEMENTSPEED;
+		standards.flags = Effect::EFFECT_ON_FIRE | Effect::EFFECT_MODIFY_MOVEMENTSPEED;
 		standards.duration = 300.f;
 
 		creating.setStandards(standards);
 		s_effects[ON_FIRE] = creating; // ON FIRE
 
-		standards.flags = EFFECT_MODIFY_DMG_GIVEN;
+		standards.flags = Effect::EFFECT_MODIFY_DMG_GIVEN;
 		standards.duration = 0.f;
 
 		creating.setStandards(standards);
@@ -51,7 +52,6 @@ void StatusManager::removeEffect(int index)
 
 void StatusManager::update(float deltaTime)
 {
-	if (deltaTime > 1) deltaTime = 1; //TEST
 	for (size_t i = 0; i < m_effectStacks.size(); ++i)
 	{
 		// do stuff
@@ -73,13 +73,15 @@ void StatusManager::addStatus(int statusID, int nrOfStacks, bool resetDuration)
 			found = true;
 
 			m_effectStacks[i].stack += nrOfStacks;
-			if (resetDuration) m_effectStacks[i].duration = s_effects[statusID].getStandards()->duration;
+			if (resetDuration) m_effectStacks[i].duration = 
+				s_effects[statusID].getStandards()->duration;
 		}
 	}
 
 	if (!found) 
 	{
-		m_effectStacks.push_back({ nrOfStacks, s_effects[statusID].getStandards()->duration });
+		m_effectStacks.push_back({ nrOfStacks,
+								s_effects[statusID].getStandards()->duration });
 		m_effectStacksIds.push_back(statusID);
 	}
 }
