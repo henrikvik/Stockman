@@ -56,7 +56,7 @@ namespace Graphics
 
 		void initShaders(ID3D11Device *gdevice);
 
-		ModelInfo getModelInfo(ModelID modelID)
+        ModelInfo getModelInfo(ModelID modelID);
 
 
 	private:

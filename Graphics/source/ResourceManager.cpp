@@ -25,7 +25,7 @@ namespace Graphics
 		//std::wstring ws(); \
 		//string str(ws.begin(), ws.end());  \
 
-		brfImporterHandler.loadFile(MODEL_PATH_STR("kub.brf"), true, false, false, false);
+        brfImporterHandler.loadFile(MODEL_PATH_STR("kub.brf"), true, false, false, false);
 
 		initShaders(gDevice);
 
@@ -33,7 +33,15 @@ namespace Graphics
 
 	ModelInfo ResourceManager::getModelInfo(ModelID modelID)
 	{
+        Mesh & mesh = meshManager.GetMeshes()->at(modelID);
 
+        ModelInfo info = {
+            mesh.GetIndexCount(),
+            mesh.getIndexBuffer(),
+            mesh.getVertexBuffer()
+        };
+
+        return info;
 	}
 
 	void ResourceManager::initShaders(ID3D11Device * gDevice)
