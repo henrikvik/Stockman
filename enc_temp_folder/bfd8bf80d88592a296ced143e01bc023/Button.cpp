@@ -25,9 +25,5 @@ void Logic::Button::update(DirectX::Mouse::State Mouse)
 			delete i;
 			delete i;
 		}
-		else
-		{
-
-		}
 	}
 }
