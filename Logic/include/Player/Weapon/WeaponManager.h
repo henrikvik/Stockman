@@ -10,7 +10,9 @@
 #pragma endregion
 
 #include <vector>
-#include "Weapon.h"
+#include <Player\Weapon\Weapon.h>
+#include <Misc\Enums.h>
+
 
 namespace Logic
 {
@@ -30,8 +32,11 @@ namespace Logic
 		void switchWeapon(int weaponID);
 		void usePrimary();
 		void useSecondary();
+		void reloadWeapon();
 
 		bool isSwitching();
+		bool isAttacking();
+		bool isReloading();
 
 	private:
 
@@ -45,6 +50,10 @@ namespace Logic
 		// Timers
 		float m_swapWeaponTimer;
 		float m_swapWeaponTimerMax;
+		float m_attackTimer;
+
+		float m_reloadTimer;
+		ReloadingWeapon m_reloadState;
 	};
 }
 #endif

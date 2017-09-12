@@ -29,6 +29,13 @@ namespace Logic
 		playerStateCrouching,
 		playerStateInAir
 	};
+
+	enum ReloadingWeapon
+	{
+		reloadingWeaponIdle,
+		reloadingWeaponActive,
+		reloadingWeaponDone
+	};
 }
 
 #endif // !ENUMS_H

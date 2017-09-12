@@ -42,6 +42,7 @@ namespace Logic
 		DirectX::Keyboard::Keys m_switchWeaponOne;
 		DirectX::Keyboard::Keys m_switchWeaponTwo;
 		DirectX::Keyboard::Keys m_switchWeaponThree;
+		DirectX::Keyboard::Keys m_reloadWeapon;
 		DirectX::Keyboard::Keys m_useSkill;
 
 		// Movement

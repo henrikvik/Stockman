@@ -31,6 +31,7 @@ bool Player::init(Physics* physics, BodyDesc bodyDesc)
 	m_switchWeaponOne = DirectX::Keyboard::Keys::D1;
 	m_switchWeaponTwo = DirectX::Keyboard::Keys::D2;
 	m_switchWeaponThree = DirectX::Keyboard::Keys::D3;
+	m_reloadWeapon = DirectX::Keyboard::Keys::R;
 	m_useSkill = DirectX::Keyboard::Keys::E;
 
 	return true;
@@ -83,17 +84,28 @@ void Player::updateSpecific(float deltaTime)
 			m_weaponManager.switchWeapon(2);
 	}
 
-	// Skill
-	if (ks.IsKeyDown(m_useSkill))
-		m_skillManager.useSkill();
+	// Check if reloading
+	if (!m_weaponManager.isReloading())
+	{
+		// Skill
+		if (ks.IsKeyDown(m_useSkill))
+			m_skillManager.useSkill();
 
-	// Primary and secondary attack
-	if ((ms.leftButton))
-		m_weaponManager.usePrimary();
+		// Primary and secondary attack
+		if (!m_weaponManager.isAttacking())
+		{
+			if ((ms.leftButton))
+				m_weaponManager.usePrimary();
 
-	if (ms.rightButton)
-		m_weaponManager.useSecondary();
+			if (ms.rightButton)
+				m_weaponManager.useSecondary();
+		}
 
+		// Reload
+		if (ks.IsKeyDown(m_reloadWeapon))
+			m_weaponManager.reloadWeapon();
+	}
+	
 }
 
 void Logic::Player::move(float deltaTime, DirectX::Keyboard::State* ks)
