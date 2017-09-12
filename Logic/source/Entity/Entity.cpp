@@ -73,7 +73,7 @@ void Entity::collision(Entity& other)
 	onCollision(other);
 }
 
-btRigidBody* Logic::Entity::getRigidbody()
+btRigidBody* Entity::getRigidbody()
 {
 	return m_body;
 }
