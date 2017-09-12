@@ -7,6 +7,7 @@
 #include <SkeletonData.h>
 
 #include <Resources/MeshManager.h>
+#include <Resources/MaterialManager.h>
 #include <Datatypes.h>
 #include <Resources\Mesh.h>
 
@@ -18,7 +19,7 @@ public:
 
 	void loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene);
 
-	void initialize(MeshManager & meshManager/*, MaterialManager* materialManager*/);
+	void initialize(MeshManager & meshManager, MaterialManager & materialManager);
 	void release();
 
 private:
@@ -26,5 +27,6 @@ private:
 
 	BRFImporterLib::FileData* currentFile;
 	MeshManager * meshManager;
+	MaterialManager* materialManager;
 	
 };

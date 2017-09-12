@@ -15,7 +15,7 @@ MaterialManager::~MaterialManager()
 	delete textureManager;
 }
 
-void MaterialManager::initialize(ID3D11Device * gDevice)
+void MaterialManager::initialize(ID3D11Device * gDevice, ID3D11DeviceContext* gDeviceContext)
 {
 	textureManager->initilize(gDevice);
 }

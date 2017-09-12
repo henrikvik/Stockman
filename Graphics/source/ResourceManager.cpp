@@ -19,13 +19,11 @@ namespace Graphics
 	void ResourceManager::initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext)
 	{
 		meshManager.initialize(gDevice, gDeviceContext);
-		brfImporterHandler.initialize(meshManager);
+		materialManager.initialize(gDevice, gDeviceContext);
+		brfImporterHandler.initialize(meshManager, materialManager);
 
-
-		//std::wstring ws(); \
-		//string str(ws.begin(), ws.end());  \
-
-		brfImporterHandler.loadFile(MODEL_PATH_STR("kub.brf"), true, false, false, false);
+		brfImporterHandler.loadFile(MODEL_PATH_STR("kub.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(MODEL_PATH_STR("kub2.brf"), true, true, false, false);
 
 		initShaders(gDevice);
 
