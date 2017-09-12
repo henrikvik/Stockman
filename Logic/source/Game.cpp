@@ -22,11 +22,13 @@ bool Game::init()
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
 
+	// Making a player class with a body at 100 above origin
 	m_player = new Player();
-	m_player->init(m_physics, BodyDesc(1, { 0, 1000, 0 }, { 1, 1, 1 }));
+	m_player->init(m_physics, BodyDesc(1, { 0, 100, 0 }, { 1, 1, 1 }));
 
+	// Making an infite plane on origin
 	m_plane = new Hitbox();
-	m_plane->init(m_physics, BodyDesc(100, { 0, 0, 0 }, 1, { 0, 1, 0 }));
+	m_plane->init(m_physics, BodyDesc({ 0, 0, 0 }, 1, { 0, 1, 0 }));
 
 	return result;
 }
