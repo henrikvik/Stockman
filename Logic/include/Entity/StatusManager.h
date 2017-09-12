@@ -53,6 +53,7 @@ namespace Logic
 		static Effect s_effects[NR_OF_EFFECTS];
 		static Upgrade s_upgrades[NR_OF_UPGRADES];
 
+		// m_effectStacksIds[i] = id of the effect at m_effectsStacks[i]
 		std::vector<EffectStack> m_effectStacks; // fast loop speed bad lookup, but worth it? :<
 		std::vector<int> m_effectStacksIds; // mike acton approved (i hop)
 
