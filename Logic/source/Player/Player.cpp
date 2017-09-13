@@ -47,6 +47,11 @@ void Player::onCollision(Entity& other)
 {
 }
 
+DirectX::SimpleMath::Vector3 Logic::Player::getLookAt()
+{
+	return m_lookAt;
+}
+
 void Player::saveToFile()
 {
 }
@@ -162,30 +167,43 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
 	DirectX::SimpleMath::Vector2 midPoint = getWindowMidPoint();
 
-	float camYaw = deltaTime * m_mouseSens * (ms->x - midPoint.x);
-	float camPitch = deltaTime * m_mouseSens * (ms->y - midPoint.y);
+	POINT cursorPos;
+	GetCursorPos(&cursorPos);
+
+	static float yaw;
+	static float pitch;
+
+	if (deltaTime < 0.1f) // TEMP, fix for EXTREMELY low delta time
+		deltaTime = 0.1f;
+
+	yaw -= deltaTime * m_mouseSens * (cursorPos.x - midPoint.x);
+	pitch -= deltaTime * m_mouseSens * (cursorPos.y - midPoint.y);
+
+	//printf("x: %f  y: %f\n", cursorPos.x - midPoint.x, cursorPos.y - midPoint.y);
+	//printf("x: %f  y: %f\n", yaw, pitch);
+	//printf("msx: %d	msy: %d\n", cursorPos.x, cursorPos.y);
 
 	// Pitch lock and yaw correction
-	if (camPitch > 89)
-		camPitch = 89;
-	if (camPitch < -89)
-		camPitch = -89;
-	if (camYaw < 0.f)
-		camYaw += 360.f;
-	if (camYaw > 360.f)
-		camYaw -= 360.f;
+	if (pitch > 89)
+		pitch = 89;
+	if (pitch < -89)
+		pitch = -89;
+	if (yaw < 0.f)
+		yaw += 360.f;
+	if (yaw > 360.f)
+		yaw -= 360.f;
 
 	// Reset cursor to mid point of window
 	SetCursorPos(midPoint.x, midPoint.y);
 
 	// Create lookAt
-	m_lookAt.x = cos(DirectX::XMConvertToRadians(camPitch)) * cos(DirectX::XMConvertToRadians(camYaw));
-	m_lookAt.y = sin(DirectX::XMConvertToRadians(camPitch));
-	m_lookAt.z = cos(DirectX::XMConvertToRadians(camPitch)) * sin(DirectX::XMConvertToRadians(camYaw));
+	m_lookAt.x = cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw));
+	m_lookAt.y = sin(DirectX::XMConvertToRadians(pitch));
+	m_lookAt.z = cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw));
 
 	m_lookAt.Normalize();
 
-	printf("x: %f  y: %f  z: %f\n", m_lookAt.x, m_lookAt.y, m_lookAt.z);
+	//printf("x: %f  y: %f  z: %f\n", m_lookAt.x, m_lookAt.y, m_lookAt.z);
 }
 
 DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
