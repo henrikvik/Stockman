@@ -12,13 +12,10 @@
 
 namespace Graphics
 {
-
-	
-
     class Renderer
     {
     public:
-        Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer);
+        Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
 		virtual ~Renderer();
         void render(Camera * camera);
         void queueRender(RenderInfo * renderInfo);

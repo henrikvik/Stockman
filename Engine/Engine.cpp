@@ -206,8 +206,9 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
-	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV);
 	Graphics::Camera cam(mDevice, mWidth, mHeight);
+
+	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
 
 	long long start = this->timer();
 	long long prev = start;
