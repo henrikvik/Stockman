@@ -65,7 +65,7 @@ PSOutput PS(VSOutput input) {
 		float3 L = light.positionWS - input.worldPos.xyz;
 		float distance = length(L);
 		L = L / distance;
-		float d = 1.0f - smoothstep(light.range * 0.75f, light.range, distance);
+		float d = 1.0f - smoothstep(light.range * 0.5f, light.range, distance);
 		color += light.color * saturate(d);
 	}
 

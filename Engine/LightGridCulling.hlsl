@@ -257,7 +257,7 @@ void CS(CSInput input)
 	for (uint i = input.groupIndex; i < NUM_LIGHTS; i += BLOCK_SIZE * BLOCK_SIZE) {
 		Light light = Lights[i];
 
-		//if (light.range == 0) continue;
+		if (light.range == 0) continue;
 
 		Sphere pointLight = { light.positionVS.xyz, light.range };
 		if (SphereInsideFrustum(pointLight, GroupFrustum, nearClipVS, maxDepthVS)) {
@@ -304,7 +304,7 @@ void CS(CSInput input)
 	}
 
 	// update heatmap debug texture
-	/*if (input.groupThreadID.x == 0 || input.groupThreadID.y == 0) {
+	if (input.groupThreadID.x == 0 || input.groupThreadID.y == 0) {
 		DebugTexture[coord] = float4(0, 0, 0, 0.9f);
 	} else if (input.groupThreadID.x == 1 || input.groupThreadID.y == 1) {
 		DebugTexture[coord] = float4(1, 1, 1, 0.5f);
@@ -314,6 +314,6 @@ void CS(CSInput input)
 		
 		DebugTexture[coord] = col;
 	} else {
-		//DebugTexture[coord] = float4(0, 0, 0, 1);
-	}*/
+		DebugTexture[coord] = float4(0, 0, 0, 1);
+	}
 }

@@ -146,26 +146,23 @@ void Graphics::Renderer::createLightGrid(Camera *camera)
 
 	{
 		ID3D11Texture2D* texture;
-		D3D11_TEXTURE2D_DESC desc;
-		ZeroMemory(&desc, sizeof(desc));
+		D3D11_TEXTURE2D_DESC desc = {};
 		desc.Width = 1280;
 		desc.Height = 720;
 		desc.MipLevels = 1;
 		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_R32_TYPELESS;
+		desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 		desc.SampleDesc.Count = 1;
 		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 
 		ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
 
-		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
-		ZeroMemory(&descDSV, sizeof(descDSV));
-		descDSV.Format = DXGI_FORMAT_D32_FLOAT;
+		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
+		descDSV.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
-		D3D11_SHADER_RESOURCE_VIEW_DESC descSRV;
-		ZeroMemory(&descSRV, sizeof(descSRV));
-		descSRV.Format = DXGI_FORMAT_R32_FLOAT;
+		D3D11_SHADER_RESOURCE_VIEW_DESC descSRV = {};
+		descSRV.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 		descSRV.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		descSRV.Texture2D.MipLevels = 1;
 
@@ -503,8 +500,9 @@ void Graphics::Renderer::drawForward(Camera *camera)
 {
 	FLOAT col[4] = { 0, 0, 0, 1 };
 	deviceContext->ClearRenderTargetView(backBuffer, col);
+	deviceContext->ClearDepthStencilView(depthDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
 
-	f += 0.0001;
+	f += 0.00001;
 	camera->update({ sin(f) * 30, 10, cos(f) * 10 }, { 0, 0, 0 }, deviceContext);
 
 	shaderHandler.setShaders(planeVS, -1, -1, deviceContext);
@@ -530,11 +528,10 @@ void Graphics::Renderer::drawForward(Camera *camera)
 			((unsigned char)(1 + i * 23 + 4)) / 255.f,
 			((unsigned char)(1 + i * 455 + 4)) / 255.f
 		);
-		ptr[i].color *= i*2*3;
-		ptr[i].positionWS = ptr[i].color;
-		ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x*2;
+		ptr[i].positionWS = ptr[i].color * 2 * 3;
+		ptr[i].positionWS.x = sin(f*0.01) * ptr[i].positionWS.x*2;
 		ptr[i].positionWS.y = 0.1f;
-		ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z*2;
+		ptr[i].positionWS.z = cos(f*0.01) * ptr[i].positionWS.z*2;
 
 		ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
 		ptr[i].range = ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
@@ -592,7 +589,7 @@ void Renderer::render(Camera * camera)
 
 	//temp
 	//this->drawDeffered();
-	this->drawToBackbuffer(grid.getDebugSRV());
+	//this->drawToBackbuffer(grid.getDebugSRV());
 }
 
 void Renderer::qeueuRender(RenderInfo * renderInfo)
