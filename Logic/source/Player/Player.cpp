@@ -145,7 +145,6 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 
 	// Apply final force
 	rigidBody->applyCentralForce(linearVel * deltaTime * m_moveSpeed);
-
 }
 
 void Player::jump(float deltaTime)

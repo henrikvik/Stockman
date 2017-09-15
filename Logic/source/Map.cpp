@@ -25,7 +25,7 @@ void Map::initProps()
 void Map::initHitboxes(Physics* physics)
 {
 	Hitbox* infinite = new Hitbox();
-	infinite->init(physics, BodyDesc(0, { 0, 0, 0 }, { 0, 1, 0 }));
+	infinite->init(physics, BodyDesc(0, { 0, 1, 0 }));
 	m_hitboxes.push_back(infinite);
 }
 
