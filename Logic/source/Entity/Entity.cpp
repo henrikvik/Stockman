@@ -7,7 +7,11 @@ Entity::Entity()
 	m_body = nullptr;
 }
 
-Entity::~Entity() { }
+Entity::~Entity() 
+{
+	// ALL physics is getting cleared by the Physics class, 
+	//  including everything created with BulletPhysics in this class 
+}
 
 bool Entity::init(Physics* physics, BodyDesc bodyDesc)
 {
