@@ -3,6 +3,7 @@
 
 #include <Graphics\include\Structs.h>
 #include <Misc\RenderRegister.h>
+#include <SimpleMath.h>
 
 namespace Logic
 {
@@ -14,6 +15,7 @@ namespace Logic
 		Object* operator=(const Object& other) = delete;
 		virtual ~Object();
 
+        void setTranslationMatrix(DirectX::SimpleMath::Matrix translation);
 		virtual void render(RenderRegister& rRegister);
 
 	private:

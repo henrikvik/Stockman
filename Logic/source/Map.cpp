@@ -25,6 +25,8 @@ void Map::initProps()
 void Map::initHitboxes(Physics* physics)
 {
 	Entity* infinite = physics->addBody(Plane({ 0, 1, 0 }), 0, false);
+    infinite->setTranslationMatrix(DirectX::SimpleMath::Matrix::CreateScale(1000, 0.1, 1000));
+
 	m_hitboxes.push_back(infinite);
 }
 

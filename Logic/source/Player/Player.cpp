@@ -19,8 +19,8 @@ void Player::init()
 	m_skillManager.init();
 
 	// Default mouse sensetivity, lookAt
-	m_camYaw = 0;
-	m_camPitch = 45;
+	m_camYaw = 90;
+	m_camPitch = 5;
 
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);

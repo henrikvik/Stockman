@@ -9,6 +9,11 @@ Object::Object()
 
 Object::~Object() { }
 
+void Logic::Object::setTranslationMatrix(DirectX::SimpleMath::Matrix translation)
+{
+    m_renderInfo.translation = translation;
+}
+
 void Object::render(RenderRegister& rRegister)
 {
 	if (m_renderInfo.render)
