@@ -74,7 +74,7 @@ void Physics::update(float deltaTime)
 	}
 }
 
-Player* Logic::Physics::addPlayer(iCube& cube, float mass)
+Player* Logic::Physics::addPlayer(Cube& cube, float mass)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -103,7 +103,7 @@ Player* Logic::Physics::addPlayer(iCube& cube, float mass)
 	return player;
 }
 
-Entity* Logic::Physics::addBody(iCube& cube, float mass, bool isSensor)
+Entity* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -137,7 +137,7 @@ Entity* Logic::Physics::addBody(iCube& cube, float mass, bool isSensor)
 	return entity;
 }
 
-Entity * Logic::Physics::addBody(iPlane& plane, float mass, bool isSensor)
+Entity * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -164,7 +164,7 @@ Entity * Logic::Physics::addBody(iPlane& plane, float mass, bool isSensor)
 	return entity;
 }
 
-Entity * Logic::Physics::addBody(iSphere& sphere, float mass, bool isSensor)
+Entity * Logic::Physics::addBody(Sphere& sphere, float mass, bool isSensor)
 {
 	return nullptr;
 }

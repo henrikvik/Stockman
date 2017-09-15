@@ -27,10 +27,10 @@ namespace Logic
 		bool init();
 		void update(float deltaTime);
 
-		Player* addPlayer(iCube& cube, float mass);
-		Entity* addBody(iCube& cube, float mass, bool isSensor);
-		Entity* addBody(iPlane& plane, float mass, bool isSensor);
-		Entity* addBody(iSphere& sphere, float mass, bool isSensor);
+		Player* addPlayer(Cube& cube, float mass);
+		Entity* addBody(Cube& cube, float mass, bool isSensor);
+		Entity* addBody(Plane& plane, float mass, bool isSensor);
+		Entity* addBody(Sphere& sphere, float mass, bool isSensor);
 
 	private:
 		btCollisionDispatcher* dispatcher;
