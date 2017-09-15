@@ -251,7 +251,14 @@ int Engine::run()
 
 			game.update(float(deltaTime));
 			game.render();
-            
+          
+            while (!game.getRenderQueue()->empty())
+            {
+                renderer->queueRender(game.getRenderQueue()->front());
+                game.getRenderQueue()->pop();
+            }
+
+
             cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
 
 			
@@ -266,19 +273,6 @@ int Engine::run()
                 Graphics::ModelID::CUBE, //ModelID meshId;
                 0, //int materialId;
                 DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-            };
-
-            static Graphics::RenderInfo staticCube2 = {
-                true, //bool render;
-                Graphics::ModelID::CUBE, //ModelID meshId;
-                0, //int materialId;
-                [](){
-                    DirectX::SimpleMath::Matrix m;
-                    m = DirectX::SimpleMath::Matrix::CreateRotationY(35) * m;
-                    m = DirectX::SimpleMath::Matrix::CreateRotationX(35) * m;
-                    m.Translation({ 2, 0, 0 });
-                    return m;
-                }() // DirectX::SimpleMath::Matrix translation;
             };
 
             staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
