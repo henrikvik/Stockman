@@ -28,7 +28,7 @@ namespace Logic
 
 		// Stats
 		float m_mouseSens;
-		DirectX::SimpleMath::Vector3 m_lookAt;
+		DirectX::SimpleMath::Vector3 m_forward;
 		float m_moveSpeed;
 
 		// Keys
@@ -64,6 +64,8 @@ namespace Logic
 
 		void saveToFile();
 		void readFromFile();
+
+		DirectX::SimpleMath::Vector3 getForward();
 	};
 
 }

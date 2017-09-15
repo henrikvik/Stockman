@@ -31,6 +31,9 @@ namespace Logic
 		void render();
 
 		std::queue<Graphics::RenderInfo*>* getRenderQueue();
+	
+		DirectX::SimpleMath::Vector3 getPlayerForward();
+		DirectX::SimpleMath::Vector3 getPlayerPosition();
 
 	private:
 		RenderRegister		m_register;

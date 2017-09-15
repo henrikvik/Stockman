@@ -84,3 +84,13 @@ std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
 {
 	return m_register.getRenderInfo();
 }
+
+DirectX::SimpleMath::Vector3 Game::getPlayerForward()
+{
+	return m_player->getForward();
+}
+
+DirectX::SimpleMath::Vector3 Game::getPlayerPosition()
+{
+	return m_player->getPosition();
+}

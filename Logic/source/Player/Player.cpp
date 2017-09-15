@@ -20,7 +20,7 @@ void Player::init()
 
 	// Default mouse sensetivity, lookAt
 	m_mouseSens = 1.f;
-	m_lookAt = DirectX::SimpleMath::Vector3(0, 0, 1);
+	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 
 	m_moveSpeed = 1.f;
 
@@ -118,28 +118,28 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
+		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
 		linearVel += dir;
 	}
 
 	// Move Right
 	if (ks->IsKeyDown(m_moveRight))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
+		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
 		linearVel += -dir;
 	}
 
 	// Move Forward
 	if (ks->IsKeyDown(m_moveForward))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).normalize();
+		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
 		linearVel += dir;
 	}
 
 	// Move Back
 	if (ks->IsKeyDown(m_moveBack))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).normalize();
+		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
 		linearVel += -dir;
 	}
 
@@ -177,14 +177,14 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 	// Reset cursor to mid point of window
 	SetCursorPos(midPoint.x, midPoint.y);
 
-	// Create lookAt
-	m_lookAt.x = cos(DirectX::XMConvertToRadians(camPitch)) * cos(DirectX::XMConvertToRadians(camYaw));
-	m_lookAt.y = sin(DirectX::XMConvertToRadians(camPitch));
-	m_lookAt.z = cos(DirectX::XMConvertToRadians(camPitch)) * sin(DirectX::XMConvertToRadians(camYaw));
+	// Create forward
+	m_forward.x = cos(DirectX::XMConvertToRadians(camPitch)) * cos(DirectX::XMConvertToRadians(camYaw));
+	m_forward.y = sin(DirectX::XMConvertToRadians(camPitch));
+	m_forward.z = cos(DirectX::XMConvertToRadians(camPitch)) * sin(DirectX::XMConvertToRadians(camYaw));
 
-	m_lookAt.Normalize();
+	m_forward.Normalize();
 
-	printf("x: %f  y: %f  z: %f\n", m_lookAt.x, m_lookAt.y, m_lookAt.z);
+	printf("x: %f  y: %f  z: %f\n", m_forward.x, m_forward.y, m_forward.z);
 }
 
 DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
@@ -195,4 +195,9 @@ DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
 	GetWindowRect(hwnd, &rect);
 
 	return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
+}
+
+DirectX::SimpleMath::Vector3 Player::getForward()
+{
+	return m_forward;
 }
