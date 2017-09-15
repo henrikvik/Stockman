@@ -1,14 +1,15 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 
-/* 
- - Add rigid bodies into the world: 
-  1. Make a btRigidBody object, add mass and stuff like that
-  2. Call physics->addRigidBody(ptr to rigidbody)
- */
+/*
+- Add rigid bodies into the world:
+1. Make a btRigidBody object, add mass and stuff like that
+2. Call physics->addRigidBody(ptr to rigidbody)
+*/
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
+#include <Entity\Entity.h>
 
 #define PHYSICS_GRAVITY 9.82
 

@@ -3,7 +3,7 @@
 using namespace Logic;
 
 Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overlappingPairCache, btSequentialImpulseConstraintSolver* constraintSolver, btDefaultCollisionConfiguration* collisionConfiguration)
- : btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration)
+	: btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration)
 {
 	this->dispatcher = dispatcher;
 	this->overlappingPairCache = overlappingPairCache;
@@ -11,7 +11,7 @@ Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overl
 	this->collisionConfiguration = collisionConfiguration;
 }
 
-Physics::~Physics() 
+Physics::~Physics()
 {
 	clear();
 }
@@ -51,5 +51,25 @@ void Physics::clear()
 void Physics::update(float deltaTime)
 {
 	this->stepSimulation(deltaTime * 0.001f); // bulletphysics doesn't support a not constant framrate, calling this will make the game not g8
-//	this->stepSimulation(1 / 60.f);
+											  //	this->stepSimulation(1 / 60.f);
+	int numManifolds = dispatcher->getNumManifolds();
+	for (int i = 0; i < numManifolds; i++)
+	{
+		btPersistentManifold* contactManifold = dispatcher->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = (btCollisionObject*)(contactManifold->getBody0());
+		btCollisionObject* obB = (btCollisionObject*)(contactManifold->getBody1());
+
+		int numContacts = contactManifold->getNumContacts();
+		if (numContacts > 0)
+		{
+			Entity* pbodyA = (Entity*)obA->getUserPointer();
+			Entity* pbodyB = (Entity*)obB->getUserPointer();
+
+			if (pbodyA && pbodyB)
+			{
+				pbodyA->collision(*pbodyB);
+				pbodyB->collision(*pbodyA);
+			}
+		}
+	}
 }
