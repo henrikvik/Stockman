@@ -35,7 +35,7 @@ ResourceManager::ResourceManager(ID3D11Device * device)
 	};
 
 	shaderHandler.createVertexShader(device, SHADER_PATH("GUIShader.hlsl"), "VS", GUIdesc, ARRAYSIZE(GUIdesc));
-	shaderHandler.createPixelhader(device, SHADER_PATH("GUISHADER.hlsl"), "VS");
+	shaderHandler.createPixelhader(device, SHADER_PATH("GUIShader.hlsl"), "VS");
 
 	createSamplerState(device);
 }
