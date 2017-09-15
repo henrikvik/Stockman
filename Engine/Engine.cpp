@@ -213,17 +213,21 @@ int Engine::run()
 	this->createSwapChain();
 	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV);
 	Graphics::Camera cam(mDevice, mWidth, mHeight);
+    cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	long long start = this->timer();
 	long long prev = start;
 	long long currentTime = 0;
 	long long deltaTime = 0; 
+    long long totalTime = 0;
+
 
 	while (WM_QUIT != msg.message)
 	{
 		currentTime = this->timer();
 		deltaTime = currentTime - prev;
 		prev = currentTime;
+        totalTime += deltaTime;
 
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
@@ -246,7 +250,8 @@ int Engine::run()
 			game.update(float(deltaTime));
 
 			
-			cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
+			//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
+            //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
 
 
 
@@ -257,6 +262,24 @@ int Engine::run()
                 0, //int materialId;
                 DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
             };
+
+            static Graphics::RenderInfo staticCube2 = {
+                true, //bool render;
+                Graphics::ModelID::CUBE, //ModelID meshId;
+                0, //int materialId;
+                [](){
+                    DirectX::SimpleMath::Matrix m;
+                    m = DirectX::SimpleMath::Matrix::CreateRotationY(35) * m;
+                    m = DirectX::SimpleMath::Matrix::CreateRotationX(35) * m;
+                    m.Translation({ 2, 0, 0 });
+                    return m;
+                }() // DirectX::SimpleMath::Matrix translation;
+            };
+
+            staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
+            staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
+            staticCube.translation.Translation({ 1 + sinf(totalTime * 0.001f),0,0 });
+
             renderer->queueRender(&staticCube);
             ///////////////////////////////////
 
