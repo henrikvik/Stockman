@@ -138,7 +138,7 @@ void StatusManager::removeAllStatus(int statusID)
 	}
 }
 
-std::vector <std::pair<int, Effect>>
+std::vector <std::pair<int, Effect*>>
 	StatusManager::getActiveEffects() 
 {
 	// this is per frame allocation, kind of bad,
@@ -148,14 +148,14 @@ std::vector <std::pair<int, Effect>>
 	// For better ways to do this in the future see
 	// mike acton ty
 	int size = m_effectStacks.size();
-	std::vector<std::pair<int, Effect>> actives;
-	actives.reserve(size);
+	std::vector<std::pair<int, Effect*>> actives;
+	actives.resize(size);
 
 	size_t i = 0; // OPTIMIZE!
 	for (i = 0; i < size; ++i)
 		actives[i].first = m_effectStacks[i].stack;
 	for (i = 0; i < size; ++i)
-		actives[i].second = s_effects[m_effectStacksIds[i]];
+		actives[i].second = &s_effects[m_effectStacksIds[i]];
 
 	return actives;
 }
