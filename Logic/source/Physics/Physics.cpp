@@ -39,7 +39,7 @@ void Physics::clear()
 		this->removeCollisionObject(obj);
 		delete shape;
 		delete obj;
-	}
+	} // 666 THE NUMBER OF THE BEAST
 
 	// Deleting members
 	delete constraintSolver;

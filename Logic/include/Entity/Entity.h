@@ -20,6 +20,8 @@ namespace Logic
 		void update(float deltaTime);
 		virtual void updateSpecific(float deltaTime) { }
 		void collision(Entity& other);
+		virtual void affect(int stacks, Effect const &effect,
+							float deltaTime);
 		virtual void onCollision(Entity& other) { }
 
 		// JUST FOR TESTING, REMOVE

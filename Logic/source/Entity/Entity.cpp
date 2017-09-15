@@ -17,6 +17,8 @@ void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
+	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
+		affect(effectPair.first, *effectPair.second, deltaTime);
 	m_statusManager.update(deltaTime);
 	updateSpecific(deltaTime);
 }
@@ -25,6 +27,8 @@ void Entity::collision(Entity& other)
 {
 	onCollision(other);
 }
+
+void Entity::affect(int stacks, Effect const &effect, float dt) {}
 
 btRigidBody* Entity::getRigidbody()
 {
