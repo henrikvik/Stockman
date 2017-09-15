@@ -17,7 +17,7 @@
 #include "Weapon\WeaponManager.h"
 #include "Skill\SkillManager.h"
 
-#define PLAYER_MOUSE_SENSETIVITY		1.f
+#define PLAYER_MOUSE_SENSETIVITY		0.1f
 #define PLAYER_MOVEMENT_SPEED			10000.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
