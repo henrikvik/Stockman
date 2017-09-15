@@ -4,6 +4,7 @@
 #include <d3d11.h>
 #include <SimpleMath.h>
 
+
 namespace Graphics
 {
 	struct RenderInfo
@@ -32,6 +33,20 @@ namespace Graphics
 	struct InstanceData
 	{
 		DirectX::SimpleMath::Matrix translation;
+	};
+
+	struct MenuInfo
+	{
+		std::vector<ButtonInfo*> m_buttons;		//< List of buttons on current menu
+		std::string m_menuTexture;			//< file path for the menu background ska bytas till enums
+	};
+	struct ButtonInfo
+	{
+		DirectX::SimpleMath::Rectangle m_rek;
+		DirectX::SimpleMath::Vector2 m_texCoordStart;
+		DirectX::SimpleMath::Vector2 m_texCoordEnd;
+		std::string m_texture;
+		bool pressed;
 	};
 };
 
