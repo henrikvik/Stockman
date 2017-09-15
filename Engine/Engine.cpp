@@ -251,6 +251,8 @@ int Engine::run()
 
 			game.update(float(deltaTime));
 			game.render();
+            
+            cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
 
 			
 			//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
