@@ -32,9 +32,13 @@ namespace Logic
 		SkillManager m_skillManager;
 
 		// Stats
-		float m_mouseSens;
 		DirectX::SimpleMath::Vector3 m_forward;
 		float m_moveSpeed;
+
+		// Mouse
+		float m_mouseSens;
+		float m_camYaw;
+		float m_camPitch;
 
 		// Keys
 		DirectX::Keyboard::Keys m_keyLeft;

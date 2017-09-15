@@ -19,6 +19,9 @@ void Player::init()
 	m_skillManager.init();
 
 	// Default mouse sensetivity, lookAt
+	m_camYaw = 0;
+	m_camPitch = 45;
+
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveSpeed = PLAYER_MOVEMENT_SPEED;
@@ -56,7 +59,6 @@ void Player::readFromFile()
 
 void Player::updateSpecific(float deltaTime)
 {
-
 	// Update Managers
 	m_weaponManager.update(deltaTime);
 	m_skillManager.update();
@@ -106,7 +108,6 @@ void Player::updateSpecific(float deltaTime)
 		if (ks.IsKeyDown(m_reloadWeapon))
 			m_weaponManager.reloadWeapon();
 	}
-	
 }
 
 void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
@@ -169,30 +170,31 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
 	DirectX::SimpleMath::Vector2 midPoint = getWindowMidPoint();
 
-	float camYaw = deltaTime * m_mouseSens * (ms->x - midPoint.x);
-	float camPitch = deltaTime * m_mouseSens * (ms->y - midPoint.y);
+	m_camYaw	-= deltaTime * m_mouseSens * (ms->x - midPoint.x + 108);
+	m_camPitch	-= deltaTime * m_mouseSens * (ms->y - midPoint.y + 181);
 
-	// Pitch lock and yaw correction
-	if (camPitch > 89)
-		camPitch = 89;
-	if (camPitch < -89)
-		camPitch = -89;
-	if (camYaw < 0.f)
-		camYaw += 360.f;
-	if (camYaw > 360.f)
-		camYaw -= 360.f;
+	// DirectX calculates position on the full resolution,
+	//  while getWindowMidPoint gets the current window's middle point!!!!!
+
+	 // Pitch lock and yaw correction
+	if (m_camPitch > 89)
+		m_camPitch = 89;
+	if (m_camPitch < -89)
+		m_camPitch = -89;
+	if (m_camYaw < 0.f)
+		m_camYaw += 360.f;
+	if (m_camYaw > 360.f)
+		m_camYaw -= 360.f;
 
 	// Reset cursor to mid point of window
 	SetCursorPos(midPoint.x, midPoint.y);
 
 	// Create forward
-	m_forward.x = cos(DirectX::XMConvertToRadians(camPitch)) * cos(DirectX::XMConvertToRadians(camYaw));
-	m_forward.y = sin(DirectX::XMConvertToRadians(camPitch));
-	m_forward.z = cos(DirectX::XMConvertToRadians(camPitch)) * sin(DirectX::XMConvertToRadians(camYaw));
+	m_forward.x = cos(DirectX::XMConvertToRadians(m_camPitch)) * cos(DirectX::XMConvertToRadians(m_camYaw));
+	m_forward.y = sin(DirectX::XMConvertToRadians(m_camPitch));
+	m_forward.z = cos(DirectX::XMConvertToRadians(m_camPitch)) * sin(DirectX::XMConvertToRadians(m_camYaw));
 
 	m_forward.Normalize();
-
-	printf("x: %f  y: %f  z: %f\n", m_forward.x, m_forward.y, m_forward.z);
 }
 
 DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
