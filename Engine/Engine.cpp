@@ -238,7 +238,7 @@ int Engine::run()
 				this->isFullscreen = !isFullscreen;
 			}
 
-			game.update(deltaTime / 1000.f);
+			game.update(float(deltaTime));
 			game.render();
 
 			/* Instead of putting this here, make renderer->qeueuRender take the parameter of an actual queue instead of a single renderInfo. */
@@ -250,7 +250,6 @@ int Engine::run()
 			}
 			
 			cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
-
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
 		}

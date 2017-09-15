@@ -9,17 +9,8 @@ namespace Graphics
     enum ModelID {
         CUBE
     };
-	struct GUIInfo
-	{
-		int HP;
-		int ammo1;
-		int ammo2;
-		float CD;
-		UINT score;
-		int combo;
-		int wave;
-		int enemies;
-	};
+
+
 	struct RenderInfo
 	{
 		bool render;
