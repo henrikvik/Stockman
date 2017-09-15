@@ -9,7 +9,8 @@
 enum VertexShaderID
 {
 	VERTEX_QUAD = 0,
-	VERTEX_DEFFERED = 1
+	VERTEX_DEFFERED = 1,
+	VERTEX_GUI = 2
 };
 
 enum GeometryShaderID
@@ -19,7 +20,8 @@ enum GeometryShaderID
 enum PixelShaderID
 {
 	PIXEL_QUAD = 0,
-	PIXEL_DEFFERED = 1
+	PIXEL_DEFFERED = 1,
+	PIXEL_GUI = 2
 };
 
 enum ComputeShaderID

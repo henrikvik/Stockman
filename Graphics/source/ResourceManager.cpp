@@ -23,8 +23,19 @@ ResourceManager::ResourceManager(ID3D11Device * device)
 		{ "OFFSET", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
 	};
 
+
 	shaderHandler.createVertexShader(device, SHADER_PATH("Deffered.hlsl"), "VS", descDeffered, ARRAYSIZE(descDeffered));
 	shaderHandler.createPixelhader(device, SHADER_PATH("Deffered.hlsl"), "PS");
+
+
+	D3D11_INPUT_ELEMENT_DESC GUIdesc[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	shaderHandler.createVertexShader(device, SHADER_PATH("GUIShader.hlsl"), "VS", GUIdesc, ARRAYSIZE(GUIdesc));
+	shaderHandler.createPixelhader(device, SHADER_PATH("GUISHADER.hlsl"), "VS");
 
 	createSamplerState(device);
 }
