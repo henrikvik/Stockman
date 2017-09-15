@@ -11,10 +11,10 @@ namespace Logic
 		ShapeTypeCylinder
 	};
 
-	class iShape
+	class Shape
 	{
 	public:
-		iShape(btVector3 position, btVector3 rotation)
+		Shape(btVector3 position, btVector3 rotation)
 		{
 			m_shape = ShapeTypePoint;
 			m_position = position;
@@ -35,11 +35,11 @@ namespace Logic
 
 	/* *
 		Creates a 3D cube */
-	class iCube : public iShape
+	class Cube : public Shape
 	{
 	public:
-		iCube(btVector3 position, btVector3 rotation, btVector3 dimensions)
-		: iShape(position, rotation) {
+		Cube(btVector3 position, btVector3 rotation, btVector3 dimensions)
+		: Shape(position, rotation) {
 			m_dimensions = dimensions;
 			m_shape = ShapeTypeCube;
 		}
@@ -53,11 +53,11 @@ namespace Logic
 
 	/* *  
 		Creates a 2D plane which is always infinite */
-	class iPlane : public iShape
+	class Plane : public Shape
 	{
 	public:
-		iPlane(btVector3 normal)
-			: iShape({ 0, 0, 0 }, { 0, 0, 0 }) {
+		Plane(btVector3 normal)
+			: Shape({ 0, 0, 0 }, { 0, 0, 0 }) {
 			m_shape = ShapeTypePlane;
 			m_normal = normal;
 		}
@@ -71,11 +71,11 @@ namespace Logic
 
 	/* *
 		Creates a 3D sphere */
-	class iSphere : public iShape
+	class Sphere : public Shape
 	{
 	public:
-		iSphere(btVector3 position, btVector3 rotation, float radius)
-			: iShape(position, rotation) {
+		Sphere(btVector3 position, btVector3 rotation, float radius)
+			: Shape(position, rotation) {
 			m_radius = radius;
 			m_shape = ShapeTypeSphere;
 		}

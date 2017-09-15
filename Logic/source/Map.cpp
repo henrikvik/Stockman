@@ -24,7 +24,7 @@ void Map::initProps()
 
 void Map::initHitboxes(Physics* physics)
 {
-	Entity* infinite = physics->addBody(iPlane({ 0, 1, 0 }), 0, false);
+	Entity* infinite = physics->addBody(Plane({ 0, 1, 0 }), 0, false);
 	m_hitboxes.push_back(infinite);
 }
 
