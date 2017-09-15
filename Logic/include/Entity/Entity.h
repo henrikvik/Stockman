@@ -32,15 +32,19 @@ namespace Logic
 		// JUST FOR TESTING, REMOVE
 		void consoleWritePosition();
 
-		DirectX::SimpleMath::Vector3 getPosition();
+		DirectX::SimpleMath::Vector3 getPosition() const;
+		DirectX::SimpleMath::Quaternion getRotation() const;
+		DirectX::SimpleMath::Vector3 getScale() const;
+		DirectX::SimpleMath::Matrix getTransformMatrix() const;
+
+	protected:
+		btRigidBody* getRigidbody();
 
 	private:
 		StatusManager m_statusManager;
 		btRigidBody* m_body;
+		btTransform* m_transform;
 	//	Hitbox* m_head; for headshot, put it here to remember
-
-	protected:
-		btRigidBody* getRigidbody();
 	};
 }
 

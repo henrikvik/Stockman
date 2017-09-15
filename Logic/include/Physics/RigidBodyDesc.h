@@ -19,8 +19,8 @@ namespace Logic
 			this->mass			= mass;
 			this->position		= position;
 			this->rotation		= { 0, 0, 0 };
-			this->restitution	= 0.0f;
-			this->friction		= 0.05f;
+			this->restitution	= 0.05f;
+			this->friction		= 0.1f;
 			this->velocity		= { 0, 0, 0 };
 
 			// Box Specifics
@@ -29,14 +29,14 @@ namespace Logic
 
 		// Static Plane Description
 		// - Static body, non-intractable
-		BodyDesc(btVector3 position, btScalar scalar, btVector3 normal)
+		BodyDesc(btScalar scalar, btVector3 normal)
 		{
 			this->shape			= ShapeStaticPlane;
-			this->mass			= 0.f;				// static objects needs to be mass = 0.f
-			this->position		= position;
+			this->mass			= 0.f;				
+			this->position		= { 0, 0, 0 };
 			this->rotation		= { 0, 0, 0 };
-			this->restitution	= 0.0f;
-			this->friction		= 0.25f;
+			this->restitution	= 0.05f;
+			this->friction		= 0.1f;
 
 			// Plane Specifics
 			this->scalar		= scalar;
@@ -60,7 +60,7 @@ namespace Logic
 		}
 
 		Shape				shape;
-		btScalar			mass;
+		btScalar			mass;			// static objects needs to be mass = 0.f
 		btVector3			position;
 		btVector3			rotation;
 		btScalar			restitution;	// 0 - brick, 1 - rubberball
