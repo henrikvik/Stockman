@@ -45,7 +45,7 @@ float4 PS(FragmentInfo fragment) : SV_Target
     float3 lightPos = float3(0, 0, -10);
 
     float diffuseFactor = saturate(dot(fragment.normal, normalize(lightPos - fragment.worldPos)));
+    float ambient = 0.1;
 
-
-    return float4(output * diffuseFactor, 1);
+    return float4(output * (diffuseFactor + ambient), 1);
 }
