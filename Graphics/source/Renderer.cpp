@@ -4,6 +4,7 @@
 #include <Engine\Constants.h>
 
 
+
 using namespace Graphics;
 
 Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer)
@@ -236,7 +237,13 @@ Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, I
 
 	data.pSysMem = defferedTest;
 
+
 	ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
+
+
+    this->spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext);
+
+
 }
 
 Graphics::Renderer::~Renderer()
@@ -295,11 +302,15 @@ void Renderer::render(Camera * camera)
 	this->drawToBackbuffer(gbuffer.positionView);
 }
 
-void Graphics::Renderer::renderMenu(MenuInfo info)
+void Graphics::Renderer::renderMenu(MenuInfo * info)
 {
-
-
-
+    this->spriteBatch->Begin();
+    for (size_t i = 0; i < info->m_buttons.size(); i++)
+    {
+        /*this->spriteBatch->Draw(info->m_buttons.at(i)->m_texture, info->m_buttons.at(i)->m_rek);*/
+    }
+    this->spriteBatch->End();
+   
 }
 
 

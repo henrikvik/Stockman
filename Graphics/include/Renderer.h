@@ -9,6 +9,8 @@
 #include "WICTextureLoader.h"
 #include <Resources\ResourceManager.h>
 #include <SimpleMath.h>
+#include <DirectXMath.h>
+#include <SpriteBatch.h>
 
 namespace Graphics
 {
@@ -21,7 +23,7 @@ namespace Graphics
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer);
 		virtual ~Renderer();
         void render(Camera * camera);
-		void renderMenu(MenuInfo info);
+		void renderMenu(MenuInfo * info);
         void qeueuRender(RenderInfo * renderInfo);
 
     private:
@@ -47,6 +49,10 @@ namespace Graphics
 		ID3D11Buffer * FSQuad2;
 		ID3D11Buffer * defferedTestBuffer;
 		ID3D11Buffer * instanceBuffer;
+
+
+        std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
+        
 
 
         std::vector<RenderInfo*> renderQueue;
