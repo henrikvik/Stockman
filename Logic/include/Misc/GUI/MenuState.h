@@ -29,9 +29,8 @@ namespace Logic
 	public:
 		MenuState();
 		~MenuState();
-		void initialize();
+		void initialize(std::function<void(void)> callBack);
 		void update();
-		static void buttonClick();
 	};
 }
 

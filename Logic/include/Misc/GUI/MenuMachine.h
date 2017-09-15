@@ -38,6 +38,11 @@ namespace Logic
 		MenuState* currentMenu();
 
 
+		void buttonClick0();
+		void buttonClick1();
+
+
+
 	};
 }
 

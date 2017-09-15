@@ -44,6 +44,7 @@ void Game::clear()
 	m_player->clear();
 	delete m_player;
 
+	// Deleting menu
 	m_menu->clear();
 	delete m_menu;
 }

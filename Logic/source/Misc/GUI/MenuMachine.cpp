@@ -1,5 +1,5 @@
 #include "Misc\GUI\MenuMachine.h"
-
+#include <iostream>
 using namespace Logic;
 
 MenuMachine::MenuMachine()
@@ -17,9 +17,14 @@ MenuMachine::~MenuMachine()
 
 void Logic::MenuMachine::initialize()
 {
+	MenuMachine m;
 	MenuState* test = new MenuState();
-	test->initialize();
+	test->initialize(std::bind(&MenuMachine::buttonClick0, this));
 	m_menuStates[gameStateMenuMain] = test;
+
+	MenuState* test1 = new MenuState();
+	test1->initialize(std::bind(&MenuMachine::buttonClick1, this));
+	m_menuStates[gameStateMenuSettings] = test1;
 	//accquire menue state
 	//accquires position
 	//accquires its width and height
@@ -53,4 +58,15 @@ MenuState* Logic::MenuMachine::currentMenu()
 	return currentActive;
 }
 
+void Logic::MenuMachine::buttonClick0()
+{
+	showMenu(gameStateMenuSettings);
+	std::cout << "Left Trigger: Switched To Menu State 1";
+}
+
+void Logic::MenuMachine::buttonClick1()
+{
+	showMenu(gameStateMenuMain);
+	std::cout << "Left Trigger: Switched To Menu State 0";
+}
 
