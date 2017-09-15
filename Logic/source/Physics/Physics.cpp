@@ -95,7 +95,7 @@ Player* Logic::Physics::addPlayer(Cube& cube, float mass)
 
 	// Specifics
 	body->setRestitution(0.0f);		
-	body->setFriction(1.0f);	
+	body->setFriction(5.0f);	
 	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
@@ -126,8 +126,8 @@ Entity* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
 	body->setUserPointer(entity);
 
 	// Specifics
-	body->setRestitution(0.15f);
-	body->setFriction(10.0f);
+	body->setRestitution(0.0f);
+	body->setFriction(1.0f);
 	body->setSleepingThresholds(0, 0);
 
 	// Deactivates sleeping
@@ -157,7 +157,7 @@ Entity * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
 
 	// Specifics
 	body->setRestitution(0.0f);
-	body->setFriction(10.0f);
+	body->setFriction(1.0f);
 	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
