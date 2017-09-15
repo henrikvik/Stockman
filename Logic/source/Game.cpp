@@ -39,7 +39,7 @@ bool Game::init()
 	result = m_physics->init();
 
 	// Making a player class with a body at 25 units above origin
-	m_player = m_physics->addPlayer(iCube({ 0, 25, 0 }, { 0, 0, 0 }, { 1, 1, 1 }), 1);
+	m_player = m_physics->addPlayer(Cube({ 0, 25, 0 }, { 0, 0, 0 }, { 1, 1, 1 }), 1);
 	m_player->init();
 
 	// Making the map
