@@ -249,6 +249,9 @@ int Engine::run()
 				this->isFullscreen = !isFullscreen;
 			}
 
+			if (ks.Escape)
+				exit(0);
+
 			game.update(float(deltaTime));
 			game.render();
           
