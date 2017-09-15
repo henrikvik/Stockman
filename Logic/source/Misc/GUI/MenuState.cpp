@@ -25,11 +25,10 @@ void Logic::MenuState::initialize(std::function<void(void)> callBack)
 	m_buttons.at(0)->initialize(pos, texCoordStart, texCoordEnd, height, width, texture, callBack);
 }
 
-void Logic::MenuState::update()
+void Logic::MenuState::updateOnPress(int posX, int posY)
 {
-	auto Mouse = DirectX::Mouse::Get().GetState();
 	for (int i = 0; i < m_buttons.size(); i++)
 	{
-		m_buttons.at(i)->update(Mouse);
+		m_buttons.at(i)->updateOnPress(posX, posY);
 	}
 }

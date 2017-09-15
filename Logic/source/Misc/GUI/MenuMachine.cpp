@@ -4,6 +4,7 @@ using namespace Logic;
 
 MenuMachine::MenuMachine()
 {
+	pressed = false;
 }
 
 
@@ -38,7 +39,18 @@ void Logic::MenuMachine::clear()
 
 void Logic::MenuMachine::update()
 {
-	currentActive->update();
+	auto Mouse = DirectX::Mouse::Get().GetState();
+
+	if (Mouse.leftButton && !pressed)
+	{
+		pressed = true;
+		currentActive->updateOnPress(Mouse.x, Mouse.y);
+	}
+	else if (!Mouse.leftButton && pressed)
+	{
+		pressed = false;
+
+	}
 }
 
 void Logic::MenuMachine::showMenu(GameState state)
@@ -66,7 +78,7 @@ void Logic::MenuMachine::buttonClick0()
 
 void Logic::MenuMachine::buttonClick1()
 {
+	pressed = true;
 	showMenu(gameStateMenuMain);
 	std::cout << "Left Trigger: Switched To Menu State 0";
 }
-

@@ -14,26 +14,13 @@ void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::Simple
 	m_texCoordStart = texCoordStart;
 	m_texCoordEnd = texCoordEnd;
 	m_texture = texture;
-	pressed = false;
 	m_CallBack = callBack;
 }
 
-void Logic::Button::update(DirectX::Mouse::State Mouse)
+void Logic::Button::updateOnPress(int posX, int posY)
 {
-	if (m_rek.Contains(Mouse.x, Mouse.y))
+	if (m_rek.Contains(posX, posY))
 	{
-		if (Mouse.leftButton && !pressed)
-		{
-			m_CallBack();
-			pressed = true;
-		}
-		else if (!Mouse.leftButton && pressed)
-		{
-			pressed = false;
-		}
-		else
-		{
-
-		}
+		m_CallBack();
 	}
 }

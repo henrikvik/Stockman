@@ -26,13 +26,12 @@ namespace Logic
 		DirectX::SimpleMath::Vector2 m_texCoordStart;
 		DirectX::SimpleMath::Vector2 m_texCoordEnd;
 		std::string m_texture;
-		bool pressed;
 		std::function<void(void)> m_CallBack;
 	public:
 		Button();
 		~Button();
 		void initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float height, float width, std::string texture, std::function<void(void)> callBack);
-		void update(DirectX::Mouse::State Mouse);
+		void updateOnPress(int posX, int posY);
 	};
 }
 #endif

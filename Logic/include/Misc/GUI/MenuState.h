@@ -30,7 +30,7 @@ namespace Logic
 		MenuState();
 		~MenuState();
 		void initialize(std::function<void(void)> callBack);
-		void update();
+		void updateOnPress(int posX, int posY);
 	};
 }
 

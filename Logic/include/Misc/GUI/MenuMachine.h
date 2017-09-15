@@ -25,7 +25,7 @@ namespace Logic
 	{
 	private:
 		std::map<GameState, MenuState*> m_menuStates;
-
+		bool pressed;
 		MenuState* currentActive;
 	public:
 		MenuMachine();
