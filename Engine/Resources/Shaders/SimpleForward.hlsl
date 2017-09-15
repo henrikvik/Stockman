@@ -42,7 +42,7 @@ FragmentInfo VS(InstancedVertex vertex)
 float4 PS(FragmentInfo fragment) : SV_Target
 {
     float3 output = float3(1, 0, 0);
-    float3 lightPos = float3(0, 0, -10);
+    float3 lightPos = float3(0, 10, -10);
 
     float diffuseFactor = saturate(dot(fragment.normal, normalize(lightPos - fragment.worldPos)));
     float ambient = 0.1;

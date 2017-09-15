@@ -45,6 +45,8 @@ bool Game::init()
 	m_map = new Map();
 	m_map->init(m_physics);
 
+    TEST_CUBE = m_physics->addBody(Cube({ 0, 10 , 0 }, { 0, 0 , 0 }, { 0.5, 0.5 , 0.5 }), 25.f, false);
+    
 	return result;
 }
 
@@ -63,6 +65,9 @@ void Game::update(float deltaTime)
 	// Updating player
 	m_player->update(deltaTime);
 
+    TEST_CUBE->update(deltaTime);
+
+
 	// Debugging for testing if physics is working:
 	// printf("Player:		");		m_player->consoleWritePosition();
 }
@@ -71,12 +76,13 @@ void Game::render()
 {
 	// Clearing previous frame
 	m_register.clear();
-
 	// Drawing player
 	m_player->render(m_register);
 
 	// Drawing map
 	m_map->render(m_register);
+    TEST_CUBE->render(m_register);
+
 }
 
 std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()

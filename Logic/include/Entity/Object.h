@@ -15,7 +15,7 @@ namespace Logic
 		Object* operator=(const Object& other) = delete;
 		virtual ~Object();
 
-        void setTranslationMatrix(DirectX::SimpleMath::Matrix translation);
+        void setWorldMatrix(DirectX::SimpleMath::Matrix translation);
 		virtual void render(RenderRegister& rRegister);
 
 	private:

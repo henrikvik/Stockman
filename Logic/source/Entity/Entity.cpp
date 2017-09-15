@@ -21,6 +21,8 @@ void Entity::update(float deltaTime)
 		affect(effectPair.first, *effectPair.second, deltaTime);
 	m_statusManager.update(deltaTime);
 	updateSpecific(deltaTime);
+
+    setWorldMatrix(getTransformMatrix());
 }
 
 void Entity::collision(Entity& other)

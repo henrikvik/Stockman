@@ -9,7 +9,7 @@ Object::Object()
 
 Object::~Object() { }
 
-void Logic::Object::setTranslationMatrix(DirectX::SimpleMath::Matrix translation)
+void Logic::Object::setWorldMatrix(DirectX::SimpleMath::Matrix translation)
 {
     m_renderInfo.translation = translation;
 }

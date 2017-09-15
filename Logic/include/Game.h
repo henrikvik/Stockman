@@ -40,6 +40,9 @@ namespace Logic
 		Physics*			m_physics;
 		Player*				m_player;
 		Map*				m_map;
+
+
+        Entity* TEST_CUBE;
 	};
 }
 
