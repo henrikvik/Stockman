@@ -1,7 +1,8 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "..\..\..\Graphics\include\Structs.h"
+#include <Graphics\include\Structs.h>
+#include <Misc\RenderRegister.h>
 
 namespace Logic
 {
@@ -11,9 +12,10 @@ namespace Logic
 		Object();
 		Object(const Object& other) = delete;
 		Object* operator=(const Object& other) = delete;
-		~Object();
+		virtual ~Object();
 
-		Graphics::RenderInfo* getRenderInfo();
+		virtual void render(RenderRegister& rRegister);
+
 	private:
 		Graphics::RenderInfo m_renderInfo;
 	};

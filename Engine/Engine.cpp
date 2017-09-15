@@ -30,7 +30,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
 	case WM_MOUSEHOVER:
-		//DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
+		DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
 		break;
 
 	default:
@@ -107,6 +107,8 @@ void Engine::initializeWindow()
 		MessageBox(this->window, "window creation failed", "Error", MB_OK);
 	}
 
+	SetWindowPos(GetConsoleWindow(), 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	SetWindowPos(this->window, 0, 100, 150, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 	ShowWindow(this->window, SW_SHOWDEFAULT);
 	UpdateWindow(this->window);
@@ -248,6 +250,7 @@ int Engine::run()
 			}
 
 			game.update(float(deltaTime));
+			game.render();
 
 			
 			//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
@@ -289,9 +292,6 @@ int Engine::run()
 		}
 		
 	}
-
-	// Delete game content
-	game.clear();
 
 	return 0;
 }

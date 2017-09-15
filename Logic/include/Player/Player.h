@@ -17,6 +17,11 @@
 #include "Weapon\WeaponManager.h"
 #include "Skill\SkillManager.h"
 
+#define PLAYER_MOUSE_SENSETIVITY		1.f
+#define PLAYER_MOVEMENT_SPEED			10000.f
+#define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
+#define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
+
 namespace Logic
 {
 	class Player : public Entity
@@ -28,7 +33,7 @@ namespace Logic
 
 		// Stats
 		float m_mouseSens;
-		DirectX::SimpleMath::Vector3 m_lookAt;
+		DirectX::SimpleMath::Vector3 m_forward;
 		float m_moveSpeed;
 
 		// Keys
@@ -42,6 +47,7 @@ namespace Logic
 		DirectX::Keyboard::Keys m_switchWeaponOne;
 		DirectX::Keyboard::Keys m_switchWeaponTwo;
 		DirectX::Keyboard::Keys m_switchWeaponThree;
+		DirectX::Keyboard::Keys m_reloadWeapon;
 		DirectX::Keyboard::Keys m_useSkill;
 
 		// Movement
@@ -53,16 +59,18 @@ namespace Logic
 		DirectX::SimpleMath::Vector2 getWindowMidPoint();
 
 	public:
-		Player();
+		Player(btRigidBody* body);
 		~Player();
 
-		bool init(Physics* physics, BodyDesc bodyDesc);
+		void init();
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);
 
 		void saveToFile();
 		void readFromFile();
+
+		DirectX::SimpleMath::Vector3 getForward();
 	};
 
 }

@@ -117,6 +117,14 @@ namespace Graphics
         ID3D11DepthStencilState * dSS;
         ID3D11Buffer * instanceBuffer;
 
+		ID3D11BlendState *transparencyBlendState;
+
+		//temp
+		ID3D11ShaderResourceView* view;
+		ID3D11Buffer * FSQuad2;
+		ID3D11Buffer * defferedTestBuffer;
+		ID3D11Buffer * instanceBuffer;
+		ID3D11Buffer *GUIvb;
         GBuffer gbuffer;
 
         Shader simpleForward;
@@ -134,6 +142,13 @@ namespace Graphics
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
+		void drawDeffered();
+		void createDepthStencil();
+		void createCubeInstances();
+		void drawGUI();
+		void createBlendState();
+		void createGUIBuffers();
+		
 
         ///// SUPER TEMP
         TempCube cube;

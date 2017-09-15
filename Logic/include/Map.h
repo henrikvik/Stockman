@@ -2,7 +2,8 @@
 #define MAP_H
 
 #include <vector>
-#include "Entity/Entity.h"
+#include <Entity\Object.h>
+#include <Physics\Physics.h>
 
 namespace Logic
 {
@@ -14,15 +15,20 @@ namespace Logic
 		Map* operator=(const Map& other) = delete;
 		~Map();
 
+		void init(Physics* physics);
 		void clear();
-		void addProp();
+		void render(RenderRegister& renderRegister);
 
 		std::vector<Object*>* getProps();
-	//	std::vector<Hitbox*>* getHitboxes();
+		std::vector<Entity*>* getHitboxes();
 
 	private:
-		std::vector<Object*> props;
-	//	std::vector<Hitbox*> hitboxes;
+		std::vector<Object*> m_props;
+		std::vector<Entity*> m_hitboxes;
+		bool m_drawHitboxes;	// debugging purposes
+
+		void initProps();
+		void initHitboxes(Physics* physics);
 	};
 }
 

@@ -2,6 +2,7 @@
 #define WAVE_MANAGER_H
 
 #include <string>
+#include <vector>
 
 #pragma region ClassDesc
 	/*
@@ -21,8 +22,10 @@ namespace Logic
 		private:
 			std::string m_waveFileName;
 		public:
-			WaveManager(std::string waveFileName);
+			WaveManager(std::string waveFileName = "");
 			~WaveManager();
+
+			std::vector<int> getEnemies(int waveId);
 
 			void setName(std::string name);
 			std::string getWaveFileName() const;
