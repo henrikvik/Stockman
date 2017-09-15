@@ -64,6 +64,7 @@ void Player::updateSpecific(float deltaTime)
 	m_skillManager.update();
 
 	// Get Mouse and Keyboard states for this frame
+	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
@@ -170,8 +171,8 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
 	DirectX::SimpleMath::Vector2 midPoint = getWindowMidPoint();
 
-	m_camYaw	-= deltaTime * m_mouseSens * (ms->x - midPoint.x + 108);
-	m_camPitch	-= deltaTime * m_mouseSens * (ms->y - midPoint.y + 181);
+	m_camYaw	-= m_mouseSens * (ms->x);
+	m_camPitch	-= m_mouseSens * (ms->y);
 
 	// DirectX calculates position on the full resolution,
 	//  while getWindowMidPoint gets the current window's middle point!!!!!
@@ -187,7 +188,7 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 		m_camYaw -= 360.f;
 
 	// Reset cursor to mid point of window
-	SetCursorPos(midPoint.x, midPoint.y);
+//	SetCursorPos(midPoint.x, midPoint.y);
 
 	// Create forward
 	m_forward.x = cos(DirectX::XMConvertToRadians(m_camPitch)) * cos(DirectX::XMConvertToRadians(m_camYaw));
