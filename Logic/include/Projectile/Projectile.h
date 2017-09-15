@@ -8,8 +8,8 @@ namespace Logic
 	class Projectile : public Entity
 	{
 	public:
-		Projectile();
-		Projectile(float damage, float speed, float gravityModifer);
+		Projectile(btRigidBody* body);
+		Projectile(btRigidBody* body, float damage, float speed, float gravityModifer);
 		Projectile(const Projectile& other) = delete;
 		Projectile* operator=(const Projectile& other) = delete;
 		~Projectile();

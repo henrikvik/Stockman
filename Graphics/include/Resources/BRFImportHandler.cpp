@@ -7,7 +7,7 @@ BRFImportHandler::BRFImportHandler()
 
 BRFImportHandler::~BRFImportHandler()
 {
-
+    release();
 }
 
 void BRFImportHandler::loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene)
@@ -77,19 +77,25 @@ void BRFImportHandler::loadFile(string fileName, bool mesh, bool material, bool 
 		}
 		tempIndices.shrink_to_fit();
 
-	}
-#pragma endregion
-#pragma region
 
-	vector<importedMaterial> importedMaterials;
-	vector<Mesh>* meshes = meshManager->GetMeshes();
+		meshManager->addMesh(false, 0, 0, tempVertexCount, tempIndexCount, tempVertices, tempIndices, isScene);
+		
+
+	}
+
+#pragma endregion
+
+
+
+	//vector<importedMaterial> importedMaterials;
+	//vector<Mesh>* meshes = meshManager.GetMeshes();
 
 }
 
-void BRFImportHandler::initialize(MeshManager * meshManager)
+void BRFImportHandler::initialize(MeshManager & meshManager)
 {
-	this->currentFile = new BRFImporterLib::FileData;
-	this->meshManager = meshManager;
+	this->currentFile = newd BRFImporterLib::FileData;
+	this->meshManager = &meshManager;
 }
 
 void BRFImportHandler::release()

@@ -18,7 +18,7 @@ StatusManager::StatusManager()
 		Effect::Specifics spec;
 
 		standards.flags = Effect::EFFECT_ON_FIRE | Effect::EFFECT_MODIFY_MOVEMENTSPEED;
-		standards.duration = 300.f;
+		standards.duration = 3000.f;
 
 		creating.setStandards(standards);
 		s_effects[ON_FIRE] = creating; // ON FIRE
@@ -32,7 +32,7 @@ StatusManager::StatusManager()
 
 	#ifndef UPGRADES_CREATED
 	#define UPGRADES_CREATED
-										  /* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
+	/* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
 			Upgrade upgrade;
 			Upgrade::FlatUpgrades flat;
 			memset(&flat, 0, sizeof(flat));
@@ -74,8 +74,6 @@ void StatusManager::update(float deltaTime)
 {
 	for (size_t i = 0; i < m_effectStacks.size(); ++i)
 	{
-		// do stuff
-		printf("Dur: %f, DT: %f\n", m_effectStacks[i].duration, deltaTime);
 		if ((m_effectStacks[i].duration -= deltaTime) <= 0)
 		{
 			removeEffect(i);
@@ -138,6 +136,28 @@ void StatusManager::removeAllStatus(int statusID)
 			found = true;
 		}
 	}
+}
+
+std::vector <std::pair<int, Effect*>>
+	StatusManager::getActiveEffects() 
+{
+	// this is per frame allocation, kind of bad,
+	// should be changed but this is just to test
+	// the effects.
+
+	// For better ways to do this in the future see
+	// mike acton ty
+	int size = m_effectStacks.size();
+	std::vector<std::pair<int, Effect*>> actives;
+	actives.resize(size);
+
+	size_t i = 0; // OPTIMIZE!
+	for (i = 0; i < size; ++i)
+		actives[i].first = m_effectStacks[i].stack;
+	for (i = 0; i < size; ++i)
+		actives[i].second = &s_effects[m_effectStacksIds[i]];
+
+	return actives;
 }
 
 std::vector<Upgrade>* StatusManager::getUpgrades() { return &m_upgrades; }
