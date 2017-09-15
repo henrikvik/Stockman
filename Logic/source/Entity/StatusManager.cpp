@@ -18,7 +18,7 @@ StatusManager::StatusManager()
 		Effect::Specifics spec;
 
 		standards.flags = Effect::EFFECT_ON_FIRE | Effect::EFFECT_MODIFY_MOVEMENTSPEED;
-		standards.duration = 300.f;
+		standards.duration = 3000.f;
 
 		creating.setStandards(standards);
 		s_effects[ON_FIRE] = creating; // ON FIRE
@@ -32,7 +32,7 @@ StatusManager::StatusManager()
 
 	#ifndef UPGRADES_CREATED
 	#define UPGRADES_CREATED
-										  /* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
+	/* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
 			Upgrade upgrade;
 			Upgrade::FlatUpgrades flat;
 			memset(&flat, 0, sizeof(flat));
@@ -138,6 +138,16 @@ void StatusManager::removeAllStatus(int statusID)
 			found = true;
 		}
 	}
+}
+
+
+Effect* StatusManager::getEffect(EFFECT_ID id) const {
+	return &s_effects[id];
+}
+
+std::vector<StatusManager::EffectStack>* 
+	StatusManager::getEffectStacks() {
+	return &m_effectStacks;
 }
 
 std::vector<Upgrade>* StatusManager::getUpgrades() { return &m_upgrades; }

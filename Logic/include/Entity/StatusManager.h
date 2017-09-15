@@ -21,6 +21,12 @@ namespace Logic
 	class StatusManager
 	{
 	public:
+		/* BASELINE EFFECTS */
+		struct EffectStack {
+			int stack;
+			float duration;
+		};
+
 		enum EFFECT_ID {
 			ON_FIRE, FREEZE
 		};
@@ -35,20 +41,16 @@ namespace Logic
 		void clear();
 		void update(float deltaTime);
 
-		void addStatus(int statusID, int nrOfStacks, bool resetDuration);
+		void addStatus(int statusID, int nrOfStacks, bool resetDuration = false);
 		void removeOneStatus(int statusID);
 		void removeAllStatus(int statusID);
 
 		void addUpgrade(UPGRADE_ID id);
 
+		Effect* getEffect(EFFECT_ID id) const;
+		std::vector<EffectStack>* getEffectStacks();
 		std::vector<Upgrade>* getUpgrades();
 	private:
-		/* BASELINE EFFECTS */
-		struct EffectStack {
-			int stack;
-			float duration;
-		};
-
 		static const int NR_OF_EFFECTS = 2, NR_OF_UPGRADES = 2;
 		static Effect s_effects[NR_OF_EFFECTS];
 		static Upgrade s_upgrades[NR_OF_UPGRADES];
