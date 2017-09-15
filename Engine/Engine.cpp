@@ -52,7 +52,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
-
+	this->mMouse->SetWindow(window);
 }
 
 Engine::~Engine()
