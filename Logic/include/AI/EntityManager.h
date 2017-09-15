@@ -1,6 +1,10 @@
 #ifndef ENTITY_MANAGER_H
 #define ENTITY_MANAGER_H
 
+#include <vector>
+#include <AI/Enemy.h>
+#include <AI/WaveManager.h>
+
 #pragma region ClassDesc
 	/*
 		CLASS: EntityManager (Bad name TODO: change)
@@ -18,9 +22,16 @@ namespace Logic
 	class EntityManager
 	{
 	private:
+		std::vector<Enemy*> m_enemies, m_bossEnemies, m_deadEnemies;
+		std::vector<double> time;
+
+		WaveManager m_waveManager;
 		int m_currentWave;
+
+		void reserveData(); // reserve space in vectors
 	public:
 		EntityManager();
+		EntityManager(EntityManager const &entityManager) = delete;
 		~EntityManager();
 
 		void update(float deltaTime);
@@ -32,6 +43,8 @@ namespace Logic
 
 		int getEnemiesAlive() const;
 		int getCurrentWave() const;
+
+		EntityManager* operator=(EntityManager const &entityManager) = delete;
 	};
 }
 

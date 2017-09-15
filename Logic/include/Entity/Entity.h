@@ -18,27 +18,32 @@ namespace Logic
 		Entity();
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
-		~Entity();
+		virtual ~Entity();
 
-		virtual void init(Physics* physics, BodyDesc bodyDesc);
+		bool init(Physics* physics, BodyDesc bodyDesc);
+		virtual void createBody(Physics* physics, BodyDesc bodyDesc);
 
-		// There's a memory leak in here somewhere, or in Physics.h! Fix ASAP
-		void createBody(Physics* physics, BodyDesc bodyDesc);
-
-		virtual void clear() = 0;
+		virtual void clear();
 		void update(float deltaTime);
-		virtual void updateSpecific(float deltatTime) = 0;
+		virtual void updateSpecific(float deltaTime) = 0;
 		void collision(Entity& other);
 		virtual void onCollision(Entity& other) = 0;
-	public:
-		btRigidBody* getRigidbody();
 
 		// JUST FOR TESTING, REMOVE
 		void consoleWritePosition();
 
+		DirectX::SimpleMath::Vector3 getPosition() const;
+		DirectX::SimpleMath::Quaternion getRotation() const;
+		DirectX::SimpleMath::Vector3 getScale() const;
+		DirectX::SimpleMath::Matrix getTransformMatrix() const;
+
+	protected:
+		btRigidBody* getRigidbody();
+
 	private:
 		StatusManager m_statusManager;
 		btRigidBody* m_body;
+		btTransform* m_transform;
 	//	Hitbox* m_head; for headshot, put it here to remember
 	};
 }

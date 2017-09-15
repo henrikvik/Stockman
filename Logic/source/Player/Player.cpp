@@ -33,6 +33,7 @@ void Player::init(Physics* physics, BodyDesc bodyDesc)
 	m_switchWeaponOne = DirectX::Keyboard::Keys::D1;
 	m_switchWeaponTwo = DirectX::Keyboard::Keys::D2;
 	m_switchWeaponThree = DirectX::Keyboard::Keys::D3;
+	m_reloadWeapon = DirectX::Keyboard::Keys::R;
 	m_useSkill = DirectX::Keyboard::Keys::E;
 }
 
@@ -85,50 +86,65 @@ void Player::updateSpecific(float deltaTime)
 			m_weaponManager.switchWeapon(2);
 	}
 
-	// Skill
-	if (ks.IsKeyDown(m_useSkill))
-		m_skillManager.useSkill();
+	// Check if reloading
+	if (!m_weaponManager.isReloading())
+	{
+		// Skill
+		if (ks.IsKeyDown(m_useSkill))
+			m_skillManager.useSkill();
 
-	// Primary and secondary attack
-	if ((ms.leftButton))
-		m_weaponManager.usePrimary();
+		// Primary and secondary attack
+		if (!m_weaponManager.isAttacking())
+		{
+			if ((ms.leftButton))
+				m_weaponManager.usePrimary();
 
-	if (ms.rightButton)
-		m_weaponManager.useSecondary();
+			if (ms.rightButton)
+				m_weaponManager.useSecondary();
+		}
 
+		// Reload
+		if (ks.IsKeyDown(m_reloadWeapon))
+			m_weaponManager.reloadWeapon();
+	}
+	
 }
 
 void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 {
 	btRigidBody* rigidBody = getRigidbody();
 
+	btVector3 linearVel = btVector3(0, 0, 0);
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
 		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
-		rigidBody->setLinearVelocity(dir * deltaTime * m_moveSpeed);
+		linearVel += dir;
 	}
-		
+
 	// Move Right
 	if (ks->IsKeyDown(m_moveRight))
 	{
 		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
-		rigidBody->setLinearVelocity(-dir * deltaTime * m_moveSpeed);
+		linearVel += -dir;
 	}
 
 	// Move Forward
 	if (ks->IsKeyDown(m_moveForward))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z);
-		rigidBody->setLinearVelocity(dir * deltaTime * m_moveSpeed);
+		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).normalize();
+		linearVel += dir;
 	}
 
 	// Move Back
 	if (ks->IsKeyDown(m_moveBack))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z);
-		rigidBody->setLinearVelocity(-dir * deltaTime * m_moveSpeed);
+		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).normalize();
+		linearVel += -dir;
 	}
+
+	// Apply final force
+	rigidBody->applyCentralForce(linearVel * deltaTime * m_moveSpeed);
 }
 
 void Player::jump(float deltaTime)
@@ -163,12 +179,12 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 
 	// Create lookAt
 	m_lookAt.x = cos(DirectX::XMConvertToRadians(camPitch)) * cos(DirectX::XMConvertToRadians(camYaw));
-	m_lookAt.y = -sin(DirectX::XMConvertToRadians(camPitch));
+	m_lookAt.y = sin(DirectX::XMConvertToRadians(camPitch));
 	m_lookAt.z = cos(DirectX::XMConvertToRadians(camPitch)) * sin(DirectX::XMConvertToRadians(camYaw));
 
 	m_lookAt.Normalize();
 
-	// printf("x: %f  y: %f  z: %f\n", m_lookAt.x, m_lookAt.y, m_lookAt.z);
+	printf("x: %f  y: %f  z: %f\n", m_lookAt.x, m_lookAt.y, m_lookAt.z);
 }
 
 DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
