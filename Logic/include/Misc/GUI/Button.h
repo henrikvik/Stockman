@@ -16,16 +16,18 @@ This class creates buttons.
 #include <SimpleMath.h>
 #include "Mouse.h"
 #include <functional>
+#include <Graphics\include\Structs.h>
 
 namespace Logic
 {
 	class Button
 	{
 	private:
-		DirectX::SimpleMath::Rectangle m_rek;
+		/*DirectX::SimpleMath::Rectangle m_rek;
 		DirectX::SimpleMath::Vector2 m_texCoordStart;
 		DirectX::SimpleMath::Vector2 m_texCoordEnd;
-		std::string m_texture;
+		std::string m_texture;*/
+		Graphics::ButtonInfo buttonInfo;
 		std::function<void(void)> m_CallBack;
 	public:
 		Button();

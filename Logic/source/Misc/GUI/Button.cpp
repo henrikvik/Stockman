@@ -10,16 +10,16 @@ Logic::Button::~Button()
 
 void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float height, float width, std::string texture, std::function<void(void)> callBack)
 {
-	m_rek = DirectX::SimpleMath::Rectangle(pos.x, pos.y, width, height);
-	m_texCoordStart = texCoordStart;
-	m_texCoordEnd = texCoordEnd;
-	m_texture = texture;
+	buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(pos.x, pos.y, width, height);
+	buttonInfo.m_texCoordStart = texCoordStart;
+	buttonInfo.m_texCoordEnd = texCoordEnd;
+	buttonInfo.m_texture = texture;
 	m_CallBack = callBack;
 }
 
 void Logic::Button::updateOnPress(int posX, int posY)
 {
-	if (m_rek.Contains(posX, posY))
+	if (buttonInfo.m_rek.Contains(posX, posY))
 	{
 		m_CallBack();
 	}

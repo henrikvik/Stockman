@@ -24,8 +24,8 @@ namespace Logic
 	class MenuState
 	{
 	private:
+		Graphics::MenuInfo m_menu;
 		std::vector<Button*> m_buttons;		//< List of buttons on current menu
-		std::string m_menuTexture;			//< file path for the menu background ska bytas till enum
 	public:
 		MenuState();
 		~MenuState();
