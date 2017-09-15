@@ -31,6 +31,7 @@ namespace Logic
 			virtual ~Enemy();
 
 			void update(float deltaTime);
+			virtual void affect(int stacks, Effect const &effect);
 			virtual void updateSpec(float deltaTime) = 0;
 	};
 }

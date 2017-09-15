@@ -64,6 +64,8 @@ void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
 
 void Entity::update(float deltaTime)
 {
+	for (auto &effectPair : m_statusManager.getActiveEffects())
+		affect(effectPair.first, effectPair.second);
 	m_statusManager.update(deltaTime);
 	updateSpecific(deltaTime);
 }
@@ -72,6 +74,8 @@ void Entity::collision(Entity& other)
 {
 	onCollision(other);
 }
+
+void Entity::affect(int stacks, Effect const &effect) {}
 
 btRigidBody* Entity::getRigidbody()
 {

@@ -27,6 +27,7 @@ namespace Logic
 		void update(float deltaTime);
 		virtual void updateSpecific(float deltatTime) = 0;
 		void collision(Entity& other);
+		virtual void affect(int stacks, Effect const &effect);
 		virtual void onCollision(Entity& other) = 0;
 	public:
 		btRigidBody* getRigidbody();

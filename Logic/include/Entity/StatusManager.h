@@ -47,8 +47,8 @@ namespace Logic
 
 		void addUpgrade(UPGRADE_ID id);
 
-		Effect* getEffect(EFFECT_ID id) const;
-		std::vector<EffectStack>* getEffectStacks();
+		// nr of stacks and the effect itself
+		std::vector<std::pair<int, Effect>> getActiveEffects();
 		std::vector<Upgrade>* getUpgrades();
 	private:
 		static const int NR_OF_EFFECTS = 2, NR_OF_UPGRADES = 2;

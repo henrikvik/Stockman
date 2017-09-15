@@ -74,8 +74,6 @@ void StatusManager::update(float deltaTime)
 {
 	for (size_t i = 0; i < m_effectStacks.size(); ++i)
 	{
-		// do stuff
-		printf("Dur: %f, DT: %f\n", m_effectStacks[i].duration, deltaTime);
 		if ((m_effectStacks[i].duration -= deltaTime) <= 0)
 		{
 			removeEffect(i);
@@ -140,14 +138,26 @@ void StatusManager::removeAllStatus(int statusID)
 	}
 }
 
+std::vector <std::pair<int, Effect>>
+	StatusManager::getActiveEffects() 
+{
+	// this is per frame allocation, kind of bad,
+	// should be changed but this is just to test
+	// the effects.
 
-Effect* StatusManager::getEffect(EFFECT_ID id) const {
-	return &s_effects[id];
-}
+	// For better ways to do this in the future see
+	// mike acton ty
+	int size = m_effectStacks.size();
+	std::vector<std::pair<int, Effect>> actives;
+	actives.reserve(size);
 
-std::vector<StatusManager::EffectStack>* 
-	StatusManager::getEffectStacks() {
-	return &m_effectStacks;
+	size_t i = 0; // OPTIMIZE!
+	for (i = 0; i < size; ++i)
+		actives[i].first = m_effectStacks[i].stack;
+	for (i = 0; i < size; ++i)
+		actives[i].second = s_effects[m_effectStacksIds[i]];
+
+	return actives;
 }
 
 std::vector<Upgrade>* StatusManager::getUpgrades() { return &m_upgrades; }
