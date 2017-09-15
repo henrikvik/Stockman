@@ -38,9 +38,9 @@ bool Game::init()
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
 
-	// Making a player class with a body at 100 above origin
-	m_player = new Player();
-	m_player->init(m_physics, BodyDesc(1, { 0, 25, 0 }, { 1, 1, 1 }));
+	// Making a player class with a body at 25 units above origin
+	m_player = m_physics->addPlayer(iCube({ 0, 25, 0 }, { 0, 0, 0 }, { 1, 1, 1 }), 1);
+	m_player->init();
 
 	// Making the map
 	m_map = new Map();

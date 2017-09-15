@@ -73,3 +73,98 @@ void Physics::update(float deltaTime)
 		}
 	}
 }
+
+Player* Logic::Physics::addPlayer(iCube& cube, float mass)
+{
+	// Setting Motions state with position & rotation
+	btQuaternion rotation;
+	rotation.setEulerZYX(cube.getRot().getZ(), cube.getRot().getY(), cube.getRot().getX());
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, cube.getPos()));
+
+	// Creating the specific shape
+	btCollisionShape* shape = new btBoxShape(cube.getDimensions());
+	btVector3 localInertia(0, 0, 0);
+	shape->calculateLocalInertia(mass, localInertia);
+
+	// Creating the actual body
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
+	btRigidBody* body = new btRigidBody(constructionInfo);
+	Player* player = new Player(body);
+	body->setUserPointer(player);
+
+	// Specifics
+	body->setRestitution(0.0f);		
+	body->setFriction(0.1f);	
+	body->setSleepingThresholds(0, 0);
+
+	// Adding body to the world
+	this->addRigidBody(body);
+
+	return player;
+}
+
+Entity* Logic::Physics::addBody(iCube& cube, float mass, bool isSensor)
+{
+	// Setting Motions state with position & rotation
+	btQuaternion rotation;
+	rotation.setEulerZYX(cube.getRot().getZ(), cube.getRot().getY(), cube.getRot().getX());
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, cube.getPos()));
+
+	// Creating the specific shape
+	btCollisionShape* shape = new btBoxShape(cube.getDimensions());
+
+	// Calculating the Inertia
+	btVector3 localInertia(0, 0, 0);
+	if (mass != 0.f)
+		shape->calculateLocalInertia(mass, localInertia);
+
+	// Creating the actual body
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, localInertia);
+	btRigidBody* body = new btRigidBody(constructionInfo);
+	Entity* entity = new Entity(body);
+	body->setUserPointer(entity);
+
+	// Specifics
+//	body->setRestitution(bodyDesc.restitution);		// Bounciness, 0:1 = Loses velocity with each bounce, < 1 = Gains velocity with each bounce
+//	body->setFriction(bodyDesc.friction);			// Friction, If set at zero, no spinning will happen
+
+	// Deactivates sleeping
+	body->setSleepingThresholds(0, 0);
+
+	// Adding body to the world
+	this->addRigidBody(body);
+
+	return entity;
+}
+
+Entity * Logic::Physics::addBody(iPlane& plane, float mass, bool isSensor)
+{
+	// Setting Motions state with position & rotation
+	btQuaternion rotation;
+	rotation.setEulerZYX(plane.getRot().getZ(), plane.getRot().getY(), plane.getRot().getX());
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, plane.getPos()));
+
+	// Creating the specific shape
+	btCollisionShape* shape = new btStaticPlaneShape(plane.getNormal(), 1);
+
+	// Creating the actual body
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
+	btRigidBody* body = new btRigidBody(constructionInfo);
+	Entity* entity = new Player(body);
+	body->setUserPointer(entity);
+
+	// Specifics
+	body->setRestitution(0.0f);
+	body->setFriction(0.1f);
+	body->setSleepingThresholds(0, 0);
+
+	// Adding body to the world
+	this->addRigidBody(body);
+
+	return entity;
+}
+
+Entity * Logic::Physics::addBody(iSphere& sphere, float mass, bool isSensor)
+{
+	return nullptr;
+}

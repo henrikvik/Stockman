@@ -2,74 +2,18 @@
 
 using namespace Logic;
 
-Entity::Entity()
+Entity::Entity(btRigidBody* body)
 {
-	m_body = nullptr;
-	m_transform = nullptr;
+	m_body = body;
+	m_transform = &m_body->getWorldTransform();
 }
 
 Entity::~Entity() 
 {
 	// ALL physics is getting cleared by the Physics class, 
-	//  including everything created with BulletPhysics in this class 
 }
 
-bool Entity::init(Physics* physics, BodyDesc bodyDesc)
-{
-	if (physics == nullptr)
-		return false;
-
-	createBody(physics, bodyDesc);
-
-	return true;
-}
-
-void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
-{
-	// Setting rotation & position
-	btQuaternion rotation;
-	rotation.setEulerZYX(bodyDesc.rotation.getZ(), bodyDesc.rotation.getY(), bodyDesc.rotation.getX());
-
-	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, bodyDesc.position));
-
-	// Creating the specific shape
-	btCollisionShape* shape;
-	switch (bodyDesc.shape)
-	{
-	case ShapeBox:			shape = new btBoxShape(bodyDesc.boxDimensions);
-		break;
-	case ShapeSphere:		shape = new btSphereShape(bodyDesc.radius);
-		break;
-	case ShapeStaticPlane:	shape = new btStaticPlaneShape(bodyDesc.normal, bodyDesc.scalar);
-		break;
-	default: shape = nullptr;
-		break;
-	}
-
-	// Creating the actual body
-	m_body = new btRigidBody(bodyDesc.mass, motionState, shape);
-
-	// Specifics
-	m_body->setRestitution(bodyDesc.restitution);	// Bounciness, 0:1 = Loses velocity with each bounce, < 1 = Gains velocity with each bounce
-	m_body->setFriction(bodyDesc.friction);			// Friction, If set at zero, no spinning will happen
-
-	// Connecting the bulletphysics world with the logic side
-	m_body->setUserPointer(this);
-
-	// Adding starting velocity
-	m_body->applyForce(bodyDesc.velocity, bodyDesc.position);
-
-	// Deactivates sleeping
-	m_body->setSleepingThresholds(0, 0);
-
-	// Adding body to the world
-	physics->addRigidBody(m_body);
-
-	// Saving the transform as a pointer for easy & optimized access 
-	m_transform = &m_body->getWorldTransform();
-}
-
-void Logic::Entity::clear() { }
+void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {

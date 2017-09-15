@@ -54,10 +54,10 @@ namespace Logic
 		DirectX::SimpleMath::Vector2 getWindowMidPoint();
 
 	public:
-		Player();
+		Player(btRigidBody* body);
 		~Player();
 
-		void init(Physics* physics, BodyDesc bodyDesc);
+		void init();
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);

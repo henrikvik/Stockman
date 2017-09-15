@@ -21,7 +21,7 @@ namespace Logic
 		private:
 			float m_cooldown;
 		public:
-			Trigger(float cooldown);
+			Trigger(btRigidBody* body, float cooldown);
 			virtual ~Trigger();
 
 			void update(float deltaTime);

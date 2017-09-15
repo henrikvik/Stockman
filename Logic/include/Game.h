@@ -6,7 +6,6 @@
 // Logic Includes
 #include <Player\Player.h>
 #include <Physics\Physics.h>
-#include <Entity\Hitbox.h>
 #include <Misc\RenderRegister.h>
 #include <Map.h>
 

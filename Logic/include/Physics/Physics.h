@@ -7,15 +7,16 @@
 2. Call physics->addRigidBody(ptr to rigidbody)
 */
 
+#include <Entity\Entity.h>
+#include <Player\Player.h>
+#include <Physics\Primitives.h>
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
-#include <Entity\Entity.h>
 
 #define PHYSICS_GRAVITY 9.82
 
 namespace Logic
 {
-
 	class Physics : public btDiscreteDynamicsWorld
 	{
 	public:
@@ -25,6 +26,11 @@ namespace Logic
 		void clear();
 		bool init();
 		void update(float deltaTime);
+
+		Player* addPlayer(iCube& cube, float mass);
+		Entity* addBody(iCube& cube, float mass, bool isSensor);
+		Entity* addBody(iPlane& plane, float mass, bool isSensor);
+		Entity* addBody(iSphere& sphere, float mass, bool isSensor);
 
 	private:
 		btCollisionDispatcher* dispatcher;

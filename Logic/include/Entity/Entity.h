@@ -3,31 +3,24 @@
 
 #include "Object.h"
 #include "StatusManager.h"
-
-#include "../Physics/Physics.h"
-#include "../Physics/RigidBodyDesc.h"
-
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 namespace Logic
 {
 	class Entity : public Object
 	{
 	public:
-		Entity();
+		Entity(btRigidBody* body);
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
 		virtual ~Entity();
 
-		bool init(Physics* physics, BodyDesc bodyDesc);
-		virtual void createBody(Physics* physics, BodyDesc bodyDesc);
-
 		virtual void clear();
 		void update(float deltaTime);
-		virtual void updateSpecific(float deltaTime) = 0;
+		virtual void updateSpecific(float deltaTime) { }
 		void collision(Entity& other);
-		virtual void onCollision(Entity& other) = 0;
+		virtual void onCollision(Entity& other) { }
 
 		// JUST FOR TESTING, REMOVE
 		void consoleWritePosition();

@@ -2,8 +2,10 @@
 
 using namespace Logic;
 
-Player::Player()
+Player::Player(btRigidBody* body)
+: Entity(body)
 {
+
 }
 
 Player::~Player()
@@ -11,10 +13,8 @@ Player::~Player()
 	clear();
 }
 
-void Player::init(Physics* physics, BodyDesc bodyDesc)
+void Player::init()
 {
-	Entity::init(physics, bodyDesc);
-
 	m_weaponManager.init();
 	m_skillManager.init();
 
