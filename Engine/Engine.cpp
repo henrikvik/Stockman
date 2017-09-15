@@ -251,7 +251,7 @@ int Engine::run()
 				renderQueue->pop();
 			}
 			
-			cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
+			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
 		}
