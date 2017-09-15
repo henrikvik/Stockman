@@ -19,10 +19,9 @@ void Player::init()
 	m_skillManager.init();
 
 	// Default mouse sensetivity, lookAt
-	m_mouseSens = 1.f;
+	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
-
-	m_moveSpeed = 1.f;
+	m_moveSpeed = PLAYER_MOVEMENT_SPEED;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -145,6 +144,15 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 
 	// Apply final force
 	rigidBody->applyCentralForce(linearVel * deltaTime * m_moveSpeed);
+
+	// Setting movement caps
+	btVector3 lv = rigidBody->getLinearVelocity();
+	float x = lv.getX(), y = lv.getY(), z = lv.getZ();
+	float hcap = PLAYER_MOVEMENT_HORIZONTAL_CAP;
+	float vcap = PLAYER_MOVEMENT_VERTICAL_CAP;
+	if (x > hcap || x < -hcap) rigidBody->setLinearVelocity(btVector3((x > 0) ? hcap : -hcap, y, z));
+	if (y > vcap || y < -vcap) rigidBody->setLinearVelocity(btVector3(x, (y > 0) ? vcap : -vcap, z));
+	if (z > hcap || z < -hcap) rigidBody->setLinearVelocity(btVector3(x, y, (z > 0) ? hcap : -hcap));
 }
 
 void Player::jump(float deltaTime)

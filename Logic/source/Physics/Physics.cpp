@@ -39,7 +39,7 @@ void Physics::clear()
 		this->removeCollisionObject(obj);
 		delete shape;
 		delete obj;
-	} // 666 THE NUMBER OF THE BEAST
+	} 
 
 	// Deleting members
 	delete constraintSolver;
@@ -51,7 +51,8 @@ void Physics::clear()
 void Physics::update(float deltaTime)
 {
 	this->stepSimulation(deltaTime * 0.001f); // bulletphysics doesn't support a not constant framrate, calling this will make the game not g8
-											  //	this->stepSimulation(1 / 60.f);
+	//	this->stepSimulation(1 / 60.f);
+	
 	int numManifolds = dispatcher->getNumManifolds();
 	for (int i = 0; i < numManifolds; i++)
 	{
@@ -94,7 +95,7 @@ Player* Logic::Physics::addPlayer(Cube& cube, float mass)
 
 	// Specifics
 	body->setRestitution(0.0f);		
-	body->setFriction(0.1f);	
+	body->setFriction(1.0f);	
 	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
@@ -125,8 +126,9 @@ Entity* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
 	body->setUserPointer(entity);
 
 	// Specifics
-//	body->setRestitution(bodyDesc.restitution);		// Bounciness, 0:1 = Loses velocity with each bounce, < 1 = Gains velocity with each bounce
-//	body->setFriction(bodyDesc.friction);			// Friction, If set at zero, no spinning will happen
+	body->setRestitution(0.15f);
+	body->setFriction(10.0f);
+	body->setSleepingThresholds(0, 0);
 
 	// Deactivates sleeping
 	body->setSleepingThresholds(0, 0);
@@ -155,7 +157,7 @@ Entity * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
 
 	// Specifics
 	body->setRestitution(0.0f);
-	body->setFriction(0.1f);
+	body->setFriction(10.0f);
 	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
