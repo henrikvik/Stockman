@@ -24,3 +24,8 @@ void Logic::Button::updateOnPress(int posX, int posY)
 		m_CallBack();
 	}
 }
+
+Graphics::ButtonInfo Logic::Button::getButtonInfo() const
+{
+	return this->buttonInfo;
+}

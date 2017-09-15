@@ -23,6 +23,8 @@ void Logic::MenuState::initialize(std::function<void(void)> callBack)
 	std::string texture = "Bla";
 	m_buttons.push_back(new Button());
 	m_buttons.at(0)->initialize(pos, texCoordStart, texCoordEnd, height, width, texture, callBack);
+
+	m_menu.m_buttons.push_back(&m_buttons.at(0)->getButtonInfo());
 }
 
 void Logic::MenuState::updateOnPress(int posX, int posY)

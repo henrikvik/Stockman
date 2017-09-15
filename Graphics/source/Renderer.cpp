@@ -295,6 +295,14 @@ void Renderer::render(Camera * camera)
 	this->drawToBackbuffer(gbuffer.positionView);
 }
 
+void Graphics::Renderer::renderMenu(MenuInfo info)
+{
+
+
+
+}
+
+
 void Renderer::qeueuRender(RenderInfo * renderInfo)
 {
     renderQueue.push_back(renderInfo);
