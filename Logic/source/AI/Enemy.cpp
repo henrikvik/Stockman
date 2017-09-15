@@ -17,9 +17,11 @@ void Enemy::update(float deltaTime) {
 	updateSpec(deltaTime);
 }
 
-void Enemy::affect(int stacks, Effect const &effect) {
+void Enemy::affect(int stacks, Effect const &effect, float deltaTime) {
 	long long flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_KILL)
 		m_health = 0;
+	if (flags & Effect::EFFECT_ON_FIRE)
+		m_health -= 1 * deltaTime; //test
 }
