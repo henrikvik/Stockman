@@ -106,6 +106,13 @@ namespace Graphics
 
     private:
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
+        std::vector<RenderInfo*> renderQueue;
+        InstanceQueue_t instanceQueue;
+        GBuffer gbuffer;
+
+        Shader simpleForward;
+        ResourceManager resourceManager;
+        D3D11_VIEWPORT viewPort;
 
         // Lånade Pekare
         ID3D11Device * device;
@@ -113,45 +120,23 @@ namespace Graphics
         ID3D11RenderTargetView * backBuffer;
 
         // Egna Pekare
-        ID3D11DepthStencilView * dSV;
-        ID3D11DepthStencilState * dSS;
-        ID3D11Buffer * instanceBuffer;
+        ID3D11Buffer * instanceBuffer;		
 
-		ID3D11BlendState *transparencyBlendState;
-
-		//temp
-		ID3D11ShaderResourceView* view;
-		ID3D11Buffer * FSQuad2;
-		ID3D11Buffer * defferedTestBuffer;
-		ID3D11Buffer * instanceBuffer;
-		ID3D11Buffer *GUIvb;
-        GBuffer gbuffer;
-
-        Shader simpleForward;
-        ResourceManager resourceManager;
-        D3D11_VIEWPORT viewPort;
-
-        std::vector<RenderInfo*> renderQueue;
-        InstanceQueue_t instanceQueue;
+        ///// SUPER TEMP
+        TempCube cube;
+        ID3D11Buffer *GUIvb;
+        ID3D11BlendState *transparencyBlendState;
 
         void createGBuffer();
         void createInstanceBuffer();
 
         void cull();
         void draw();
+        void drawGUI();
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
-		void drawDeffered();
-		void createDepthStencil();
-		void createCubeInstances();
-		void drawGUI();
-		void createBlendState();
-		void createGUIBuffers();
-		
-
-        ///// SUPER TEMP
-        TempCube cube;
+        void createBlendState();
+        void createGUIBuffers();
     };
-
 };
