@@ -65,6 +65,7 @@ int FileLoader::loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, st
 		return -1; // see .h for error stuff
 
 	std::string temp;
+	inf.seekg(1); // first symbol should always be { so that is why. That can be skipped. Better solution would be to find it and use the index, but unnecessary for the moment
 	while (getline(inf, temp, START))
 	{
 		loadedStructs.push_back(LoadedStruct());
