@@ -35,14 +35,14 @@ int FileLoader::parseString(LoadedStruct &loaded, std::string const &str)
 	// optimize, but shouldnt be a problem with load on startup and small files
 	while (getline(stringStreamBlock, line, LINE_END))
 	{
-		index = line.find(STRING) + 1;
-		name = line.substr(index, line.find(STRING, index) - index);
+		index = line.find(STRING) + 1; // find beginning of name
+		name = line.substr(index, line.find(STRING, index) - index); // extract name
 
-		index = line.find(LINE_ASSIGN);
-		index = line.find_first_not_of(" \t\r\n", index + 1);
-		data = line.substr(index);
+		index = line.find(LINE_ASSIGN); // find line assignment ':'
+		index = line.find_first_not_of(" \t\r\n", index + 1); // find the data
+		data = line.substr(index); // substract data
 
-		switch (data[data.size() - 1])
+		switch (data[data.size() - 1]) // save data
 		{
 			case STRING:
 				loaded.strings[name] = data.substr(1, data.size() - 1);
@@ -66,11 +66,14 @@ int FileLoader::loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, st
 
 	std::string temp;
 	inf.seekg(1); // first symbol should always be { so that is why. That can be skipped. Better solution would be to find it and use the index, but unnecessary for the moment
+	for (int i = 0; i < fileOffset; i++) getline(inf, temp, START); // go through offset
+
 	while (getline(inf, temp, START))
 	{
 		loadedStructs.push_back(LoadedStruct());
 		if (parseString(loadedStructs[loadedStructs.size() - 1], temp) == -1)
 			return -2;
+		for (int i = 0; i < filePadding; i++) getline(inf, temp, START); // go through offset
 	}
 
 	return 0;
