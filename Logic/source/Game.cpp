@@ -20,7 +20,8 @@ Game::~Game()
 bool Game::init()
 {
 	bool result;
-	int i = FileLoader::singleton().loadStructFromFile(nullptr, 0, "Text.txt");
+	std::vector<FileLoader::LoadedStruct> loaded;
+	int i = FileLoader::singleton().loadStructsFromFile(loaded, "Text");
 	// TESTING REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE 
 /*	EntityManager entity;
 	entity.spawnWave();
