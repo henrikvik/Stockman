@@ -16,6 +16,11 @@
 namespace Logic {
 	class FileLoader
 	{
+	public:
+		static FileLoader& singleton() {
+			static FileLoader ins;
+			return ins;
+		} // might be better to not be singleton but felt simpler at the time
 	private:
 		static FileLoader* instance;
 	public:
@@ -24,9 +29,7 @@ namespace Logic {
 
 		/* @returns: 0 on success, -1 on failure to find file, -2 on failure to read file
 		not exceptions due to various reasons. */
-		int loadStructFromFile(struct structs[], int size, std::string const &fileName, int offset = 0, int fileOffset = 0);
-
-		static FileLoader& singleton(); // might be better to not be singleton but felt simpler at the time
+		int loadStructFromFile(void *structs, int size, std::string const &fileName, int offset = 0, int fileOffset = 0);
 	};
 }
 

@@ -16,11 +16,11 @@ Game::~Game()
 {	
 	clear();
 }
-
+#include <Misc\FileLoader.h>
 bool Game::init()
 {
 	bool result;
-
+	int i = FileLoader::singleton().loadStructFromFile(nullptr, 0, "Text.txt");
 	// TESTING REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE 
 /*	EntityManager entity;
 	entity.spawnWave();
