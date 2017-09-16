@@ -249,6 +249,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />
+    <Text Include="resources\data\Text.txt" />
     <Text Include="source\Player\Skill\gitinclude.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
