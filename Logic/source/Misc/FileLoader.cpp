@@ -77,5 +77,40 @@ int FileLoader::loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, st
 		for (int i = 0; i < filePadding; ++i) getline(inf, temp, START); // go through padding
 	}
 
+	inf.close();
+
+	return 0;
+}
+
+int FileLoader::saveStructsToFile(std::vector<LoadedStruct> &loadedStructs, std::string const &fileName) {
+	std::ofstream outFile(FILE_PATH + fileName + FILE_EXT);
+	outFile.clear();
+
+	if (!outFile.is_open())
+		return -1;
+
+	for (auto const &aStruct : loadedStructs) { // simple loop through everything and print it to file
+		outFile << START << "\n";
+
+		for (auto const &iterating : aStruct.strings) {
+			outFile << "\t" << STRING << iterating.first << STRING << LINE_ASSIGN
+				<< " " << STRING << iterating.second << STRING << LINE_END << "\n";
+		}
+
+		for (auto const &iterating : aStruct.ints) {
+			outFile << "\t" << STRING << iterating.first << STRING << LINE_ASSIGN
+				<< " " << iterating.second << LINE_END << "\n";
+		}
+
+		for (auto const &iterating : aStruct.floats) {
+			outFile << "\t" << STRING << iterating.first << STRING << LINE_ASSIGN
+				<< " " << iterating.second << FLOAT << LINE_END << "\n";
+		}
+
+		outFile << END << "\n";
+	}
+
+	outFile.close();
+
 	return 0;
 }

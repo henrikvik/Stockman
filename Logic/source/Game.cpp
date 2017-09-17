@@ -16,10 +16,11 @@ Game::~Game()
 {	
 	clear();
 }
-#include <Misc\FileLoader.h>
+
 bool Game::init()
 {
 	bool result;
+
 	// TESTING REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE 
 /*	EntityManager entity;
 	entity.spawnWave();
