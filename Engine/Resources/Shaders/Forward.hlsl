@@ -23,13 +23,14 @@ struct Light {
 
 struct VSInput
 {
-	// Vertex data
-	float3 pos : POS;
-	float2 uv : UV;
+	float3 position : POSITION;
 	float3 normal : NORMAL;
-	uint material : MATERIAL;
+	float2 uv : UV;
+	float2 biTangent : BITANGENT;
+	float2 tangent : TANGENT;
 
-	float3 offset : OFFSET;
+	// INSTANCE DATA
+	float4x4 world : WORLD;
 };
 
 struct VSOutput {
@@ -41,13 +42,9 @@ struct VSOutput {
 
 VSOutput VS(VSInput input) {
 	VSOutput output;
-	
-	output.pos = float4(input.pos, 1);
-	output.pos.xyz += input.offset.xyz;
-	output.pos = mul(ViewProjection, output.pos);
-	
-	output.worldPos = float4(input.pos, 1.0);
-	output.worldPos.xyz += input.offset.xyz;
+
+	output.worldPos = mul(input.world, float4(input.position, 1));
+	output.pos = mul(ViewProjection, output.worldPos);
 
 	output.uv = input.uv;
 	output.normal = input.normal;
@@ -73,8 +70,12 @@ PSOutput PS(VSOutput input) {
 	uint2 tile = uint2(floor(input.pos.xy / BLOCK_SIZE));
 	uint offset = LightGrid[tile].x;
 	uint count = LightGrid[tile].y;
+	
+	// temp
+	float3 lightPos = float3(0, 5, 10);
+	float diffuseFactor = saturate(dot(input.normal, normalize(lightPos - input.worldPos)));
+	float3 diffuse = diffuseFactor * float3(0.67, 0.67, 0.67);// Texture.Sample(Sampler, input.uv).xyz;
 
-	float3 diffuse = Texture.Sample(Sampler, input.uv).xyz;
 	float3 color = float3(0.5, 0.5, 0.5);
 	for (uint i = 0; i < count; i++) {
 		uint idx = LightIndexList[offset + i];

@@ -66,8 +66,8 @@ void EntityManager::spawnWave()
 
 	for (int i = 0; i < enemies.size(); i++) 
 	{
-		m_enemies.push_back(new EnemyTest());
-		m_deadEnemies.push_back(new EnemyTest());
+		m_enemies.push_back(new EnemyTest(nullptr));
+		m_deadEnemies.push_back(new EnemyTest(nullptr));
 	}
 }
 

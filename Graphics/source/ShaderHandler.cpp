@@ -1,5 +1,9 @@
 #include "ShaderHandler.h"
 #include <comdef.h>
+#include <ThrowIfFailed.h>
+#include <Engine/Constants.h>
+
+using namespace Graphics;
 
 ShaderHandler::ShaderHandler()
 {

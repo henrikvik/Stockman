@@ -24,14 +24,15 @@ public:
 		bool isScene
 	);
 
-	vector<Mesh>* GetMeshes() { return this->gameMeshes; }
+	vector<Mesh>* GetMeshes() { return &this->gameMeshes; }
 
 private:
 	ID3D11Device *gDevice = nullptr;
 	ID3D11DeviceContext *gDeviceContext = nullptr;
 
-	vector<Mesh>* gameMeshes = nullptr;
-	vector<Mesh>* sceneMeshes = nullptr;
+	vector<Mesh> gameMeshes;
+	vector<Mesh> sceneMeshes;
+	Mesh mesh;
 
 
 };

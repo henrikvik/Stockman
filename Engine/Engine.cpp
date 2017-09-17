@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include <Graphics\include\Structs.h>
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -51,7 +52,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
-
+	this->mMouse->SetWindow(window);
 }
 
 Engine::~Engine()
@@ -80,6 +81,9 @@ void Engine::initializeWindow()
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.lpszClassName = "Basic test";
 
+
+   
+
 	if (!RegisterClass(&wc))
 	{
 		MessageBox(this->window, "registerClass failed", "Error", MB_OK);
@@ -106,6 +110,8 @@ void Engine::initializeWindow()
 		MessageBox(this->window, "window creation failed", "Error", MB_OK);
 	}
 
+	SetWindowPos(GetConsoleWindow(), 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	SetWindowPos(this->window, 0, 100, 150, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 	ShowWindow(this->window, SW_SHOWDEFAULT);
 	UpdateWindow(this->window);
@@ -127,6 +133,8 @@ HRESULT Engine::createSwapChain()
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+  
+  
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -159,7 +167,6 @@ HRESULT Engine::createSwapChain()
 			return hr;
 		}
 		backBuffer->Release();
-
 
 		//Creates a debug device to check for memory leaks etc
 		HRESULT hr = this->mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast <void **>(&mDebugDevice)); 
@@ -210,6 +217,7 @@ int Engine::run()
 	MSG msg = { 0 };
 	this->createSwapChain();
 	Graphics::Camera cam(mDevice, mWidth, mHeight);
+    cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
 
@@ -217,12 +225,15 @@ int Engine::run()
 	long long prev = start;
 	long long currentTime = 0;
 	long long deltaTime = 0; 
+    long long totalTime = 0;
+
 
 	while (WM_QUIT != msg.message)
 	{
 		currentTime = this->timer();
 		deltaTime = currentTime - prev;
 		prev = currentTime;
+        totalTime += deltaTime;
 
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
@@ -242,18 +253,44 @@ int Engine::run()
 				this->isFullscreen = !isFullscreen;
 			}
 
+			if (ks.Escape)
+				exit(0);
+
 			game.update(float(deltaTime));
 			game.render();
+          
+            while (!game.getRenderQueue()->empty())
+            {
+                renderer->queueRender(game.getRenderQueue()->front());
+                game.getRenderQueue()->pop();
+            }
 
-			/* Instead of putting this here, make renderer->qeueuRender take the parameter of an actual queue instead of a single renderInfo. */
-			std::queue<Graphics::RenderInfo*>* renderQueue = game.getRenderQueue();
-			for (size_t i = 0; i < renderQueue->size(); i++)
-			{
-//				renderer->qeueuRender((*renderQueue).front);
-				renderQueue->pop();
-			}
+
+            cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+
 			
-			cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
+			//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
+            //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
+
+
+
+            //////////////TEMP/////////////////
+            static Graphics::RenderInfo staticCube = {
+                true, //bool render;
+                Graphics::ModelID::CUBE, //ModelID meshId;
+                0, //int materialId;
+                DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+            };
+
+            //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
+            //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
+			//staticCube.translation *= DirectX::SimpleMath::Matrix::CreateTranslation({ 1 + sinf(totalTime * 0.00001f),2 + cosf(totalTime * 0.00001f),0 });
+			staticCube.translation *= DirectX::SimpleMath::Matrix::CreateFromAxisAngle({ 0.1f, 0.5f, 1.f }, totalTime*0.000001f);
+
+            renderer->queueRender(&staticCube);
+            ///////////////////////////////////
+
+
 			renderer->render(&cam);
 			mSwapChain->Present(0, 0);
 		}

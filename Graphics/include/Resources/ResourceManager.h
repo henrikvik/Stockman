@@ -3,45 +3,49 @@
 #include "Resources/Mesh.h"
 #include <Resources/MeshManager.h>
 #include <BRFImportHandler.h>
+#include <Resources\MaterialManager.h>
+#include <Structs.h>
 
 
 #define NROFSAMPLERS 1
-enum VertexShaderID
-{
-	VERTEX_QUAD = 0,
-	VERTEX_DEFFERED = 1,
-	VERTEX_FORWARD_PLUS
-};
 
-enum GeometryShaderID
+namespace Graphics
 {
-};
 
-enum PixelShaderID
-{
-	PIXEL_QUAD = 0,
-	PIXEL_DEFFERED = 1,
-	PIXEL_FORWARD_PLUS
-};
+	enum VertexShaderID
+	{
+		VERTEX_QUAD = 0,
+		VERTEX_FORWARD_PLUS
+	};
 
-enum ComputeShaderID
-{
-	COMPUTE_FRUSTUMS = 0,
-	COMPUTE_CULL_GRIDS
-};
+	enum GeometryShaderID
+	{
+	};
 
-enum SamplerID
-{
-	pointSampler = 0
-};
+	enum PixelShaderID
+	{
+		PIXEL_QUAD = 0,
+		PIXEL_FORWARD_PLUS
+	};
 
-class ResourceManager
-{
-public:
-	
-	
-	ResourceManager(ID3D11Device * device);
-	~ResourceManager();
+	enum ComputeShaderID
+	{
+		COMPUTE_FRUSTUMS = 0,
+		COMPUTE_CULL_GRIDS
+	};
+
+	enum SamplerID
+	{
+		pointSampler = 0
+	};
+
+	class ResourceManager
+	{
+	public:
+
+
+		ResourceManager();
+		~ResourceManager();
 
 	void initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);
 	void release();
@@ -50,16 +54,24 @@ public:
 	void setShaders(VertexShaderID vertexID, PixelShaderID pixelID, ID3D11DeviceContext* context);
 	void setComputeShader(ComputeShaderID id, ID3D11DeviceContext * context);
 
-	void setSampler(SamplerID id, ID3D11DeviceContext* context);
-	
-private:
-	void createSamplerState(ID3D11Device* device);
+		void setSampler(SamplerID id, ID3D11DeviceContext* context);
 
-	ShaderHandler shaderHandler;
+		void initShaders(ID3D11Device *gdevice);
 
-	ID3D11SamplerState* sampleStates[NROFSAMPLERS];
+        ModelInfo getModelInfo(ModelID modelID);
 
-	MeshManager* meshManager = nullptr;
-	BRFImportHandler* brfImporterHandler = nullptr;
 
-};
+	private:
+
+		void createSamplerState(ID3D11Device* device);
+
+		ShaderHandler shaderHandler;
+
+		ID3D11SamplerState* sampleStates[NROFSAMPLERS];
+
+		MeshManager meshManager;
+		BRFImportHandler brfImporterHandler;
+		MaterialManager materialManager;
+
+	};
+}

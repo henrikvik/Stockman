@@ -1,7 +1,9 @@
 #include <AI\Enemy.h>
 using namespace Logic;
 
-Enemy::Enemy(float health, float baseDamage, int enemyType, int animationId) {
+Enemy::Enemy(btRigidBody* body, float health, float baseDamage, int enemyType, int animationId)
+: Entity(body)
+{
 	m_health = health;
 	m_baseDamage = baseDamage;
 	m_enemyType = enemyType;

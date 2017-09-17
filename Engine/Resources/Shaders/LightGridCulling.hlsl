@@ -234,10 +234,11 @@ void CS(CSInput input)
 
 
 	GroupMemoryBarrierWithGroupSync();
-
-	InterlockedMin(MinDepth, atomicDepth);
-	InterlockedMax(MaxDepth, atomicDepth);
-
+	
+	if (depth != 1.f) {
+		InterlockedMin(MinDepth, atomicDepth);
+		InterlockedMax(MaxDepth, atomicDepth);
+	}
 	// need to wait for all threads to avoid data races, as next code section
 	// requires the max/min value of the entire group
 	GroupMemoryBarrierWithGroupSync();

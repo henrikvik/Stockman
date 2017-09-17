@@ -6,7 +6,6 @@
 // Logic Includes
 #include <Player\Player.h>
 #include <Physics\Physics.h>
-#include <Entity\Hitbox.h>
 #include <Misc\RenderRegister.h>
 #include <Map.h>
 
@@ -32,12 +31,18 @@ namespace Logic
 		void render();
 
 		std::queue<Graphics::RenderInfo*>* getRenderQueue();
+	
+		DirectX::SimpleMath::Vector3 getPlayerForward();
+		DirectX::SimpleMath::Vector3 getPlayerPosition();
 
 	private:
 		RenderRegister		m_register;
 		Physics*			m_physics;
 		Player*				m_player;
 		Map*				m_map;
+
+
+        Entity* TEST_CUBE;
 	};
 }
 

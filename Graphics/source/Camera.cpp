@@ -10,6 +10,7 @@ Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, 
 	this->mProjection = DirectX::XMMatrixPerspectiveFovRH(fieldOfView, float(width) / height, 0.1f, drawDistance);
 
 	values.mVP = this->mProjection * this->mView;
+	values.mV = this->mView;
 	values.mInvP = this->mProjection.Invert();
 
 	D3D11_BUFFER_DESC desc = {};

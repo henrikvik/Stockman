@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <Entity\Object.h>
-#include <Entity\Hitbox.h>
 #include <Physics\Physics.h>
 
 namespace Logic
@@ -21,11 +20,11 @@ namespace Logic
 		void render(RenderRegister& renderRegister);
 
 		std::vector<Object*>* getProps();
-		std::vector<Hitbox*>* getHitboxes();
+		std::vector<Entity*>* getHitboxes();
 
 	private:
 		std::vector<Object*> m_props;
-		std::vector<Hitbox*> m_hitboxes;
+		std::vector<Entity*> m_hitboxes;
 		bool m_drawHitboxes;	// debugging purposes
 
 		void initProps();
