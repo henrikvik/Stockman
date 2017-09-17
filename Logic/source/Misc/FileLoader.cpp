@@ -11,6 +11,7 @@
 #define FLOAT 'f'
 #define START '{'
 #define END '}'
+#define SPACE " \t\r\n"
 
 #define FILE_PATH "Resources/Data/"
 #define FILE_EXT ".lw"
@@ -39,7 +40,7 @@ int FileLoader::parseString(LoadedStruct &loaded, std::string const &str)
 		name = line.substr(index, line.find(STRING, index) - index); // extract name
 
 		index = line.find(LINE_ASSIGN); // find line assignment ':'
-		index = line.find_first_not_of(" \t\r\n", index + 1); // find the data
+		index = line.find_first_not_of(SPACE, index + 1); // find the data
 		data = line.substr(index); // substract data
 
 		switch (data[data.size() - 1]) // save data
@@ -73,7 +74,7 @@ int FileLoader::loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, st
 		loadedStructs.push_back(LoadedStruct());
 		if (parseString(loadedStructs[loadedStructs.size() - 1], temp) == -1)
 			return -2;
-		for (int i = 0; i < filePadding; i++) getline(inf, temp, START); // go through offset
+		for (int i = 0; i < filePadding; ++i) getline(inf, temp, START); // go through padding
 	}
 
 	return 0;
