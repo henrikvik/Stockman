@@ -29,5 +29,5 @@ SamplerState sState;
 float4 PS(VSOut psin) : SV_Target0
 {
     //return float4(0.2, 1, 1, 1);
-    return float4(albedoSpec.Sample(sState, psin.uv).xyz, 1);
+    return float4(albedoSpec.Sample(sState, psin.uv).xyz, 1.f);
 };

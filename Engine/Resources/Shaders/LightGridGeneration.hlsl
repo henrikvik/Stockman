@@ -45,15 +45,12 @@ struct Frustum {
 };
 
 // Compute a plane from 3 points
-Plane ComputePlane(float3 p0, float3 p1, float3 p2)
+Plane ComputePlane(float3 p1, float3 p2)
 {
 	Plane plane;
-
-	float3 v0 = p1 - p0;
-	float3 v1 = p2 - p0;
 	
-	plane.N = normalize(cross(v0, v1));
-	plane.d = dot(plane.N, p0);
+	plane.N = normalize(cross(p1, p2));
+	plane.d = 0;
 	
 	return plane;
 }
@@ -104,13 +101,13 @@ void CS(CSInput input)
 	float4 corners[4];
 
 	// top left
-	corners[0] = float4(input.dispatchThreadID.xy * BLOCK_SIZE, -1.0f, 1.0f);
+	corners[0] = float4(input.dispatchThreadID.xy * BLOCK_SIZE, 1.0f, 1.0f);
 	// top right
-	corners[1] = float4(float2(input.dispatchThreadID.x + 1, input.dispatchThreadID.y) * BLOCK_SIZE, -1.0f, 1.0f);
+	corners[1] = float4(float2(input.dispatchThreadID.x + 1, input.dispatchThreadID.y) * BLOCK_SIZE, 1.0f, 1.0f);
 	// bottom left
-	corners[2] = float4(float2(input.dispatchThreadID.x, input.dispatchThreadID.y + 1) * BLOCK_SIZE, -1.0f, 1.0f);
+	corners[2] = float4(float2(input.dispatchThreadID.x, input.dispatchThreadID.y + 1) * BLOCK_SIZE, 1.0f, 1.0f);
 	// bottom right
-	corners[3] = float4(float2(input.dispatchThreadID.x + 1, input.dispatchThreadID.y + 1) * BLOCK_SIZE, -1.0f, 1.0f);
+	corners[3] = float4(float2(input.dispatchThreadID.x + 1, input.dispatchThreadID.y + 1) * BLOCK_SIZE, 1.0f, 1.0f);
 
 	float3 viewSpace[4];
 	// now convert the screen space points to view space
@@ -122,14 +119,15 @@ void CS(CSInput input)
 	// build frustrum
 	Frustum frustum;
 
-	// left plane
-	frustum.planes[0] = ComputePlane(eye, viewSpace[2], viewSpace[0]);
-	// right plane
-	frustum.planes[1] = ComputePlane(eye, viewSpace[1], viewSpace[3]);
-	// top plane
-	frustum.planes[2] = ComputePlane(eye, viewSpace[0], viewSpace[1]);
-	// bottom plane
-	frustum.planes[3] = ComputePlane(eye, viewSpace[3], viewSpace[2]);
+
+		frustum.planes[0] = ComputePlane(viewSpace[2], viewSpace[0]);
+		// right plane
+		frustum.planes[1] = ComputePlane(viewSpace[1], viewSpace[3]);
+		// top plane
+		frustum.planes[2] = ComputePlane(viewSpace[0], viewSpace[1]);
+		// bottom plane
+		frustum.planes[3] = ComputePlane(viewSpace[3], viewSpace[2]);
+
 
 	// Store the computed frustum in global memory (if our thread ID is in bounds of the grid).
 	if (input.dispatchThreadID.x < numThreads.x && input.dispatchThreadID.y < numThreads.y)

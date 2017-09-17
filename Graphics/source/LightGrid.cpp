@@ -1,5 +1,6 @@
 #include "LightGrid.h"
 #include "WICTextureLoader.h"
+#include "Engine\Constants.h"
 
 namespace Graphics {
 
@@ -9,12 +10,34 @@ LightGrid::LightGrid()
 
 LightGrid::~LightGrid()
 {
+	delete m_ResetIndexCounter;
+	delete m_OpaqueIndexCounter;
+	delete m_TransparentIndexCounter;
+	delete m_OpaqueIndexList;
+	delete m_TransparentIndexList;
+	delete m_Frustums;
+	delete m_Lights;
+
+	SAFE_RELEASE(m_ParamsBuffer);
+
+	SAFE_RELEASE(m_DebugUAV);
+	SAFE_RELEASE(m_DebugSRV);
+
+	SAFE_RELEASE(m_OpaqueLightGridUAV);
+	SAFE_RELEASE(m_OpaqueLightGridSRV);
+
+	SAFE_RELEASE(m_TransparentLightGridUAV);
+	SAFE_RELEASE(m_TransparentLightGridSRV);
+
+	SAFE_RELEASE(gradientSRV);
 }
 
-void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ShaderHandler *shaders)
+void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
 {
-	generateFrustums(camera, device, cxt, shaders);
-	m_CullingCS = shaders->createComputeShader(device, L"LightGridCulling.hlsl", "CS");
+	generateFrustumsCPU(camera, device);
+	//
+	
+	//generateFrustums(camera, device, cxt, shaders);
 
 	Light lights[NUM_LIGHTS] = {};
 	lights[0].color = DirectX::SimpleMath::Vector3(1, 0, 0);
@@ -67,11 +90,12 @@ void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceCon
 		ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
 		ThrowIfFailed(device->CreateUnorderedAccessView(texture, &uavDesc, &m_OpaqueLightGridUAV));
 		ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc,  &m_OpaqueLightGridSRV));
+		SAFE_RELEASE(texture);
 
 		ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
 		ThrowIfFailed(device->CreateUnorderedAccessView(texture, &uavDesc, &m_TransparentLightGridUAV));
 		ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc,  &m_TransparentLightGridSRV));
-
+		SAFE_RELEASE(texture);
 	}
 
 #pragma endregion
@@ -80,7 +104,7 @@ void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceCon
 
 	ID3D11Texture2D *texture;
 
-	ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, L"heatmap.png", nullptr, &gradientSRV));
+	ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("heatmap.png"), nullptr, &gradientSRV));
 
 	{
 		D3D11_TEXTURE2D_DESC desc = {};
@@ -111,11 +135,14 @@ void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceCon
 
 		ThrowIfFailed(device->CreateShaderResourceView(texture, &desc, &m_DebugSRV));
 	}
+
+	SAFE_RELEASE(texture);
 #pragma endregion
 }
 
-void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ShaderHandler *shaders)
+void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
 {
+	//generateFrustums(camera, device, cxt, shaders);
 	m_ResetIndexCounter->CopyTo(cxt, m_OpaqueIndexCounter);
 	m_ResetIndexCounter->CopyTo(cxt, m_TransparentIndexCounter);
 
@@ -140,7 +167,8 @@ void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11Shader
 		m_DebugUAV
 	};
 
-	shaders->setComputeShader(m_CullingCS, cxt);
+	shaders->setShaders((VertexShaderID)-1, (PixelShaderID)-1, cxt);
+	shaders->setComputeShader(COMPUTE_CULL_GRIDS, cxt);
 
 	cxt->CSSetSamplers(0, 1, &sampler);
 	cxt->CSSetConstantBuffers(0, 2, bufs);
@@ -160,10 +188,111 @@ void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11Shader
 	cxt->CSSetShader(nullptr, nullptr, 0);
 }
 
-void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ShaderHandler *shaders)
+inline Plane computePlane(DirectX::SimpleMath::Vector3 a, DirectX::SimpleMath::Vector3 b)
 {
-	m_FrustumGenerationCS = shaders->createComputeShader(device, L"LightGridGeneration.hlsl", "CS");
+	Plane plane;
 
+	auto v = a.Cross(b);
+	v.Normalize();
+
+	plane.pd = DirectX::SimpleMath::Vector4(v);
+	plane.pd.w = 0;
+
+	return plane;
+}
+
+void LightGrid::generateFrustumsCPU(Camera * camera, ID3D11Device * device)
+{
+	using namespace DirectX::SimpleMath;
+
+	m_Params.numThreads[0] = ceil(1280 / (float)BLOCK_SIZE);
+	m_Params.numThreads[1] = ceil(720 / (float)BLOCK_SIZE);
+	m_Params.numThreads[2] = 1;
+
+	m_Params.numThreadGroups[0] = ceil(m_Params.numThreads[0] / (float)BLOCK_SIZE);
+	m_Params.numThreadGroups[1] = ceil(m_Params.numThreads[1] / (float)BLOCK_SIZE);
+	m_Params.numThreadGroups[2] = 1;
+
+
+
+	auto count = m_Params.numThreads[0] * m_Params.numThreads[1];
+	auto frustums = new Frustum[count];
+
+	auto invProj = camera->getProj().Invert();
+
+	// thread groups
+	for (auto groupY = 0; groupY < m_Params.numThreadGroups[1]; groupY++) {
+		for (auto groupX = 0; groupX < m_Params.numThreadGroups[0]; groupX++) {
+
+			// group threads
+			for (auto threadY = 0; threadY < BLOCK_SIZE; threadY++) {
+				for (auto threadX = 0; threadX < BLOCK_SIZE; threadX++) {
+
+					auto threadIdX = (groupX * BLOCK_SIZE + threadX);
+					auto threadIdY = (groupY * BLOCK_SIZE + threadY);
+
+					Vector4 corners[] = {
+						Vector4( threadIdX      * BLOCK_SIZE,  threadIdY      * BLOCK_SIZE, 1.f, 1.f),
+						Vector4((threadIdX + 1) * BLOCK_SIZE,  threadIdY      * BLOCK_SIZE, 1.f, 1.f),
+						Vector4( threadIdX      * BLOCK_SIZE, (threadIdY + 1) * BLOCK_SIZE, 1.f, 1.f),
+						Vector4((threadIdX + 1) * BLOCK_SIZE, (threadIdY + 1) * BLOCK_SIZE, 1.f, 1.f)
+					};
+
+					Vector3 points[4];
+					for (auto i = 0; i < 4; i++) {
+						auto vec = corners[i];
+						auto coord = Vector2(vec.x, vec.y) / Vector2(1280, 720);
+						auto clip = Vector4(coord.x * 2.f - 1.f, (1.f - coord.y) * 2.f - 1.f, vec.z, vec.w);
+						auto view = Vector4(DirectX::XMVector4Transform(clip, invProj));
+						view = view / view.w;
+
+						points[i] = Vector3(view);
+					}
+
+					Frustum frustum;
+					frustum.planes[0] = computePlane(points[2], points[0]);
+					frustum.planes[1] = computePlane(points[1], points[3]);
+					frustum.planes[2] = computePlane(points[0], points[1]);
+					frustum.planes[3] = computePlane(points[3], points[2]);
+
+					if (threadIdX < m_Params.numThreads[0] && threadIdY < m_Params.numThreads[1]) {
+						auto idx = threadIdX + (threadIdY * m_Params.numThreads[0]);
+						frustums[idx] = frustum;
+					}
+				}
+			}
+		}
+	}
+
+	m_Frustums = new StructuredBuffer<Frustum>(device, CpuAccess::None, count, frustums);
+	delete[] frustums;
+
+
+	m_Params.numThreadGroups[0] = ceil(1280 / (float)BLOCK_SIZE);
+	m_Params.numThreadGroups[1] = ceil(720 / (float)BLOCK_SIZE);
+	m_Params.numThreadGroups[2] = 1;
+
+	m_Params.numThreads[0] = m_Params.numThreadGroups[0] * BLOCK_SIZE;
+	m_Params.numThreads[1] = m_Params.numThreadGroups[1] * BLOCK_SIZE;
+	m_Params.numThreads[2] = 1;
+
+	// Grid params
+	{
+		D3D11_BUFFER_DESC desc = {};
+		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		desc.ByteWidth = sizeof(DispatchParams);
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		desc.Usage = D3D11_USAGE_DYNAMIC;
+
+		D3D11_SUBRESOURCE_DATA data = {};
+		data.pSysMem = &m_Params;
+
+		ThrowIfFailed(device->CreateBuffer(&desc, &data, &m_ParamsBuffer));
+	}
+}
+
+void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
+{
 	m_Params.numThreads[0] = ceil(1280 / (float)BLOCK_SIZE);
 	m_Params.numThreads[1] = ceil(720 / (float)BLOCK_SIZE);
 	m_Params.numThreads[2] = 1;
@@ -191,7 +320,7 @@ void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11Dev
 	auto count = m_Params.numThreads[0] * m_Params.numThreads[1];
 	m_Frustums = new StructuredBuffer<Frustum>(device, CpuAccess::None, count);
 
-	shaders->setComputeShader(m_FrustumGenerationCS, cxt);
+	shaders->setComputeShader(COMPUTE_FRUSTUMS, cxt);
 	ID3D11Buffer *buffers[] = {
 		camera->getBuffer(),
 		m_ParamsBuffer,

@@ -85,14 +85,17 @@ void Engine::initializeWindow()
 		MessageBox(this->window, "registerClass failed", "Error", MB_OK);
 	}
 
+	RECT rc = { 0, 0, mWidth, mHeight };
+	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+
 	this->window = CreateWindow(
 		"Basic test",
 		"Stort spel",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
-		this->mWidth,
-		this->mHeight,
+		rc.right - rc.left,
+		rc.bottom - rc.top,
 		0,
 		0,
 		this->hInstance,

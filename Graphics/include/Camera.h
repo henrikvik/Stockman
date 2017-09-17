@@ -29,6 +29,7 @@ namespace Graphics {
 		DirectX::SimpleMath::Vector3 getUp() const;
 		DirectX::SimpleMath::Vector3 getRight() const;
 		DirectX::SimpleMath::Matrix getView() const;
+		DirectX::SimpleMath::Matrix getProj() const;
 		ID3D11Buffer* getBuffer();
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
@@ -53,7 +54,6 @@ namespace Graphics {
 		} values;
 
 		ID3D11Buffer* mVPBuffer;
-		ID3D11Buffer* mInvProjBuffer;
 
 	};
 }

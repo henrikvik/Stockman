@@ -21,21 +21,36 @@ struct Light {
 	float intensity;
 };
 
-
-struct VSInput {
+struct VSInput
+{
+	// Vertex data
 	float3 pos : POS;
+	float2 uv : UV;
+	float3 normal : NORMAL;
+	uint material : MATERIAL;
+
+	float3 offset : OFFSET;
 };
 
 struct VSOutput {
 	float4 pos : SV_POSITION;
 	float4 worldPos : POS;
+	float3 normal : NORMAL;
+	float2 uv : UV;
 };
 
 VSOutput VS(VSInput input) {
 	VSOutput output;
-
-	output.pos = mul(ViewProjection, float4(input.pos, 1.0));
+	
+	output.pos = float4(input.pos, 1);
+	output.pos.xyz += input.offset.xyz;
+	output.pos = mul(ViewProjection, output.pos);
+	
 	output.worldPos = float4(input.pos, 1.0);
+	output.worldPos.xyz += input.offset.xyz;
+
+	output.uv = input.uv;
+	output.normal = input.normal;
 
 	return output;
 }
@@ -43,6 +58,9 @@ VSOutput VS(VSInput input) {
 StructuredBuffer<uint> LightIndexList : register(t0);
 Texture2D<uint2> LightGrid : register(t1);
 StructuredBuffer<Light> Lights : register(t2);
+
+Texture2D Texture : register(t3);
+SamplerState Sampler : register(s0);
 
 struct PSOutput {
 	float4 color : SV_Target;
@@ -56,6 +74,7 @@ PSOutput PS(VSOutput input) {
 	uint offset = LightGrid[tile].x;
 	uint count = LightGrid[tile].y;
 
+	float3 diffuse = Texture.Sample(Sampler, input.uv).xyz;
 	float3 color = float3(0.5, 0.5, 0.5);
 	for (uint i = 0; i < count; i++) {
 		uint idx = LightIndexList[offset + i];
@@ -69,7 +88,7 @@ PSOutput PS(VSOutput input) {
 		color += light.color * saturate(d);
 	}
 
-	output.color = float4(color, 1);
+	output.color = float4(diffuse * color, 1);
 
 	return output;
 }

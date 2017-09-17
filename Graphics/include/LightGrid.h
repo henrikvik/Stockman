@@ -7,6 +7,7 @@
 #include "ThrowIfFailed.h"
 #include "ShaderHandler.h"
 #include "Structs.h"
+#include "Resources\ResourceManager.h"
 
 #define BLOCK_SIZE 16
 
@@ -85,9 +86,9 @@ public:
 		}
 	}
 	~StructuredBuffer() {
-		if (m_Buffer) m_Buffer->Release();
-		if (m_UAV)    m_UAV->Release();
-		if (m_SRV)    m_SRV->Release();
+		SAFE_RELEASE(m_Buffer);
+		SAFE_RELEASE(m_UAV);
+		SAFE_RELEASE(m_SRV);
 	}
 
 	ID3D11Buffer *getBuffer() const { return m_Buffer; }
@@ -119,8 +120,8 @@ public:
 	LightGrid();
 	virtual ~LightGrid();
 
-	void initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ShaderHandler *shaders);
-	void cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ShaderHandler *shaders);
+	void initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
+	void cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
 
 	StructuredBuffer<uint32_t> *getOpaqueIndexCounter() const {	return m_OpaqueIndexCounter; }
 	StructuredBuffer<uint32_t> *getTransparentIndexCounter() const { return m_TransparentIndexCounter; }
@@ -136,11 +137,11 @@ public:
 	ID3D11ShaderResourceView *getTransparentLightGridSRV() const { return m_TransparentLightGridSRV; }
 	ID3D11ShaderResourceView *getDebugSRV() const { return m_DebugSRV; }
 private:
-	void generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ShaderHandler *shaders);
+	void generateFrustumsCPU(Camera *camera, ID3D11Device *device);
+	void generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
 
 	DispatchParams m_Params;
 	ID3D11Buffer  *m_ParamsBuffer;
-	ID3D11Buffer  *m_Frustrums;
 
 	int m_FrustumGenerationCS;
 	int m_CullingCS;
@@ -155,38 +156,13 @@ private:
 	StructuredBuffer<Frustum>  *m_Frustums;
 	StructuredBuffer<Light>    *m_Lights;
 
-
 	ID3D11UnorderedAccessView *m_DebugUAV;
 	ID3D11ShaderResourceView  *m_DebugSRV;
-
-	ID3D11Buffer              *m_ResetIndexCounterBuffer;
-	ID3D11UnorderedAccessView *m_ResetIndexCounterUAV;
-	ID3D11ShaderResourceView  *m_ResetIndexCounterSRV;
-
-	ID3D11Buffer              *m_OpaqueIndexCounterBuffer;
-	ID3D11UnorderedAccessView *m_OpaqueIndexCounterUAV;
-	ID3D11ShaderResourceView  *m_OpaqueIndexCounterSRV;
-
-	ID3D11Buffer              *m_TransparentIndexCounterBuffer;
-	ID3D11UnorderedAccessView *m_TransparentIndexCounterUAV;
-	ID3D11ShaderResourceView  *m_TransparentIndexCounterSRV;
-
-	ID3D11UnorderedAccessView *m_OpaqueIndexListUAV;
-	ID3D11ShaderResourceView  *m_OpaqueIndexListSRV;
-	ID3D11UnorderedAccessView *m_TransparentIndexListUAV;
-	ID3D11ShaderResourceView  *m_TransparentIndexListSRV;
 
 	ID3D11UnorderedAccessView *m_OpaqueLightGridUAV;
 	ID3D11ShaderResourceView  *m_OpaqueLightGridSRV;
 	ID3D11UnorderedAccessView *m_TransparentLightGridUAV;
 	ID3D11ShaderResourceView  *m_TransparentLightGridSRV;
-
-	ID3D11Buffer              *mm_Lights;
-	ID3D11UnorderedAccessView *m_LightsUAV;
-	ID3D11ShaderResourceView  *m_LightsSRV;
-
-	ID3D11UnorderedAccessView *m_FrustrumsUAV;
-	ID3D11ShaderResourceView  *m_FrustrumsSRV;
 
 	ID3D11ShaderResourceView  *gradientSRV;
 };

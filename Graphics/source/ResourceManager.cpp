@@ -26,6 +26,14 @@ ResourceManager::ResourceManager(ID3D11Device * device)
 	shaderHandler.createVertexShader(device, SHADER_PATH("Deffered.hlsl"), "VS", descDeffered, ARRAYSIZE(descDeffered));
 	shaderHandler.createPixelhader(device, SHADER_PATH("Deffered.hlsl"), "PS");
 
+	shaderHandler.createVertexShader(device, SHADER_PATH("Forward.hlsl"), "VS", descDeffered, ARRAYSIZE(descDeffered));
+	shaderHandler.createPixelhader(device, SHADER_PATH("Forward.hlsl"), "PS");
+
+
+	shaderHandler.createComputeShader(device, SHADER_PATH("LightGridGeneration.hlsl"), "CS");
+	shaderHandler.createComputeShader(device, SHADER_PATH("LightGridCulling.hlsl"), "CS");
+
+
 	createSamplerState(device);
 }
 
@@ -60,9 +68,9 @@ void ResourceManager::setShaders(VertexShaderID vertexID, PixelShaderID pixelID,
 }
 
 //TODO: EVERYTHING
-void ResourceManager::setComputeShader(ComputeShaderID id)
+void ResourceManager::setComputeShader(ComputeShaderID id, ID3D11DeviceContext * context)
 {
-
+	this->shaderHandler.setComputeShader(id, context);
 }
 
 void ResourceManager::setSampler(SamplerID id, ID3D11DeviceContext * context)

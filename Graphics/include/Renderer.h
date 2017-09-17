@@ -9,6 +9,7 @@
 #include "WICTextureLoader.h"
 #include <Resources\ResourceManager.h>
 #include <SimpleMath.h>
+#include "LightGrid.h"
 
 namespace Graphics
 {
@@ -30,12 +31,17 @@ namespace Graphics
 			int mat;
 		};
 
+		LightGrid grid;
+		DirectX::CommonStates *states;
+
 		ResourceManager resourceManager;
 
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 		ID3D11DepthStencilView * dSV;
+		ID3D11ShaderResourceView* depthSRV;
+
 		ID3D11DepthStencilState * dSS;
 
 		//temp
@@ -53,6 +59,7 @@ namespace Graphics
         void createGBuffer();
         void cull();
         void draw();
+		void drawForward(Camera *camera);
 		void drawDeffered();
 		void createDepthStencil();
 		void createCubeInstances();

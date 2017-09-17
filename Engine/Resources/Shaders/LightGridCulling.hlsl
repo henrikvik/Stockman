@@ -48,12 +48,7 @@ cbuffer Camera : register(b0)
 
 cbuffer DispatchParams : register(b1)
 {
-	// Number of groups dispatched. (This parameter is not available as an HLSL system value!)
 	uint4   numThreadGroups;
-
-	// Total number of threads dispatched. (Also not available as an HLSL system value!)
-	// Note: This value may be less than the actual number of threads executed 
-	// if the screen size is not evenly divisible by the block size.
 	uint4   numThreads;
 }
 
@@ -83,20 +78,31 @@ struct Sphere {
 	float  radius;
 };
 
+struct CSInput {
+	// 3D index of the thread group in the dispatch
+	uint3 groupID           : SV_GroupID;
+	// 3D index of local thread ID in a thread group
+	uint3 groupThreadID     : SV_GroupThreadID;
+	// 3D index of global thread ID in the dispatch
+	uint3 dispatchThreadID  : SV_DispatchThreadID;
+	// Flattened local index of the thread within a thread group
+	uint  groupIndex        : SV_GroupIndex;
+};
+
 bool SphereInsidePlane(Sphere sphere, Plane plane) {
-	return dot(plane.N, sphere.center) - plane.d < -sphere.radius;
+	return dot(plane.N, sphere.center) < -sphere.radius;
 }
 
 bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zNear, float zFar) {
 	bool result = true;
-
+	
 	if (sphere.center.z - sphere.radius > zNear ||
 		sphere.center.z + sphere.radius < zFar)
 	{
 		result = false;
 	}
 
-	[unroll]
+	//[unroll]
 	for (int i = 0; i < 4 && result; i++) {
 		if (SphereInsidePlane(sphere, frustum.planes[i])) {
 			result = false;
@@ -104,20 +110,6 @@ bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zNear, float zFar
 	}
 
 	return result;
-}
-
-// Compute a plane from 3 points
-Plane ComputePlane(float3 p0, float3 p1, float3 p2)
-{
-	Plane plane;
-
-	float3 v0 = p1 - p0;
-	float3 v1 = p2 - p0;
-
-	plane.N = normalize(cross(v0, v1));
-	plane.d = dot(plane.N, p0);
-
-	return plane;
 }
 
 // Convert from clip-space to view-space
@@ -143,16 +135,6 @@ float4 ScreenToView(float4 screen)
 	return ClipToView(clip);
 }
 
-struct CSInput {
-	// 3D index of the thread group in the dispatch
-	uint3 groupID           : SV_GroupID;
-	// 3D index of local thread ID in a thread group
-	uint3 groupThreadID     : SV_GroupThreadID;
-	// 3D index of global thread ID in the dispatch
-	uint3 dispatchThreadID  : SV_DispatchThreadID;
-	// Flattened local index of the thread within a thread group
-	uint  groupIndex        : SV_GroupIndex;
-};
 
 // Depth texture from z-prepass
 Texture2D DepthTexture : register(t0);
@@ -193,6 +175,27 @@ groupshared uint TransparentLightCount;
 groupshared uint TransparentLightIndexOffset;
 groupshared uint TransparentLightList[1024];
 
+float4 GetDebugColor(CSInput input, uint count, uint max)
+{
+	int2 coord = input.dispatchThreadID.xy;
+
+	if (input.groupThreadID.x == 0 || input.groupThreadID.y == 0) {
+		return float4(0, 0, 0, 0.9f);
+	}
+	else if (input.groupThreadID.x == 1 || input.groupThreadID.y == 1) {
+		return float4(1, 1, 1, 0.5f);
+	}
+	else if (count > 0) {
+		float norm = (float)count / (float)max;
+		float4 col = DebugGradient.SampleLevel(DebugSampler, float2(norm, 0), 0);
+
+		return col;
+	}
+	else {
+		return float4(0, 0, 0, 1);
+	}
+}
+
 void OpaqueAppendLight(uint lightIndex) {
 	uint index;
 	InterlockedAdd(OpaqueLightCount, 1, index);
@@ -216,7 +219,7 @@ void CS(CSInput input)
 	float depth = DepthTexture.Load(int3(coord, 0)).r;
 
 	uint atomicDepth = asuint(depth);
-	
+
 	// initialize groupshared values on thread #0 and sync
 	if (input.groupIndex == 0) {
 		MinDepth = 0xffffffff;
@@ -242,12 +245,12 @@ void CS(CSInput input)
 	float minDepth = asfloat(MinDepth);
 	float maxDepth = asfloat(MaxDepth);
 
-	//DebugTexture[coord] = float4(minDepth, maxDepth, 0., 1.0);
 
 
-	float minDepthVS = ClipToView(float4(0, 0, minDepth, 1)).z;
-	float maxDepthVS = ClipToView(float4(0, 0, maxDepth, 1)).z;
-	float nearClipVS = ClipToView(float4(0, 0, 0,        1)).z;
+	float minDepthVS = ScreenToView(float4(0, 0, minDepth, 1)).z;
+	float maxDepthVS = ScreenToView(float4(0, 0, maxDepth, 1)).z;
+	float nearClipVS = ScreenToView(float4(0, 0, 0, 1)).z;
+	//DebugTexture[coord] = float4(minDepthVS/10.0, maxDepthVS / 10.0, 0., 1.0);
 
 	// TODO: LH/RH?
 	Plane minPlane = { float3(0, 0, -1), -minDepthVS };
@@ -259,7 +262,7 @@ void CS(CSInput input)
 
 		if (light.range == 0) continue;
 
-		Sphere pointLight = { light.positionVS.xyz, light.range };
+		Sphere pointLight = { mul(View, float4(light.positionWS, 1.0)).xyz, light.range };
 		if (SphereInsideFrustum(pointLight, GroupFrustum, nearClipVS, maxDepthVS)) {
 
 			TransparentAppendLight(i);
@@ -281,13 +284,13 @@ void CS(CSInput input)
 		OpaqueLightGrid[input.groupID.xy] = uint2(
 			OpaqueLightIndexOffset,
 			OpaqueLightCount
-		);
+			);
 
 		InterlockedAdd(TransparentLightIndexCounter[0], TransparentLightCount, TransparentLightIndexOffset);
 		TransparentLightGrid[input.groupID.xy] = uint2(
 			TransparentLightIndexOffset,
 			TransparentLightCount
-		);
+			);
 	}
 
 	// next section transfers our groupshared data to the global UAV, so all our
@@ -303,17 +306,5 @@ void CS(CSInput input)
 		TransparentLightIndexList[TransparentLightIndexOffset + i] = TransparentLightList[i];
 	}
 
-	// update heatmap debug texture
-	if (input.groupThreadID.x == 0 || input.groupThreadID.y == 0) {
-		DebugTexture[coord] = float4(0, 0, 0, 0.9f);
-	} else if (input.groupThreadID.x == 1 || input.groupThreadID.y == 1) {
-		DebugTexture[coord] = float4(1, 1, 1, 0.5f);
-	} else if (OpaqueLightCount > 0) {
-		float norm = OpaqueLightCount / 10.f;
-		float4 col = DebugGradient.SampleLevel(DebugSampler, float2(norm, 0), 0);
-		
-		DebugTexture[coord] = col;
-	} else {
-		DebugTexture[coord] = float4(0, 0, 0, 1);
-	}
+	DebugTexture[coord] = GetDebugColor(input, OpaqueLightCount, NUM_LIGHTS);
 }
