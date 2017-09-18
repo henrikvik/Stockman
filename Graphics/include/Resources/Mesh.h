@@ -19,15 +19,11 @@ public:
 	unsigned int GetVertexCount() { return this->vertCount; };
 	UINT GetIndexCount() { return this->indexCount; };
 
-
-
 	int GetMaterialID() { return this->materialID; }
 	void SetMaterialID(int id) { this->materialID = id; }
 
 	unsigned int GetVertCount() { return this->vertCount; };
-
 	bool GetIsScene() { return this->isScene; };
-	
 	Vertex* GetVertices() { return this->sceneVerts; };
 	UINT* GetIndices() { return this->sceneIndex; };
 

@@ -7,7 +7,7 @@ BRFImportHandler::BRFImportHandler()
 
 BRFImportHandler::~BRFImportHandler()
 {
-    release();
+	delete this->currentFile;
 }
 
 void BRFImportHandler::loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene)
@@ -85,20 +85,71 @@ void BRFImportHandler::loadFile(string fileName, bool mesh, bool material, bool 
 
 #pragma endregion
 
+#pragma region ImportMaterials
+	vector<importedMaterial> importedMaterials;
+	vector<Mesh>* meshes = meshManager->GetMeshes();
+	unsigned int materialSize = currentFile->fetch->Main()->materialAmount;
 
+	for (unsigned int i = 0; i < materialSize; i++)
+	{
+		importedMaterial tempMaterial;
+		tempMaterial.materialName = (std::string)currentFile->fetch->Material(i)->matName;
 
-	//vector<importedMaterial> importedMaterials;
-	//vector<Mesh>* meshes = meshManager.GetMeshes();
+		tempMaterial.diffuseValue = {
+			(float)currentFile->fetch->Material(i)->diffuseVal[0],
+			(float)currentFile->fetch->Material(i)->diffuseVal[1],
+			(float)currentFile->fetch->Material(i)->diffuseVal[1]
+		};
 
+		tempMaterial.specularValue = {
+			(float)currentFile->fetch->Material(i)->specularVal[0],
+			(float)currentFile->fetch->Material(i)->specularVal[1],
+			(float)currentFile->fetch->Material(i)->specularVal[2]
+		};
+
+		tempMaterial.diffuseTex = (std::string)currentFile->fetch->Material(i)->diffMap;
+		tempMaterial.specularTex = (std::string)currentFile->fetch->Material(i)->specMap;
+		tempMaterial.normalTex = (std::string)currentFile->fetch->Material(i)->normalMap;
+		tempMaterial.glowTex = (std::string)currentFile->fetch->Material(i)->glowMap;
+
+		unsigned int tempMaterialID = currentFile->fetch->Material(i)->Id;
+		tempMaterial.materialID = materialID;
+		if (materialManager->compareImportMaterials(&tempMaterial))
+		{
+			unsigned int materialOffset = materialSize;
+			for (unsigned int a = 0; a < meshes->size() - materialSize; a++)
+			{
+				unsigned int importMaterialID = meshes->at(a).GetMaterialID();
+				if (materialManager->compareMaterials(&tempMaterial, importMaterialID))
+				{
+					tempMaterial.materialID = importMaterialID;
+					meshes->at(meshes->size() - materialOffset).SetMaterialID(importMaterialID);
+					materialOffset;
+				}
+			}
+		}
+		else
+		{
+			for (size_t j = meshes->size() - meshSize; j < meshes->size(); j++)
+			{
+				unsigned int importMaterialID = meshes->at(j).GetMaterialID();
+				if (importMaterialID == tempMaterialID)
+				{
+					meshes->at(j).SetMaterialID(tempMaterial.materialID);
+				}
+			}
+			materialID++;
+		}
+		importedMaterials.push_back(tempMaterial);
+	}
+	importedMaterials.shrink_to_fit();
+	materialManager->addMaterials(&importedMaterials);
+#pragma endregion
 }
 
-void BRFImportHandler::initialize(MeshManager & meshManager)
+void BRFImportHandler::initialize(MeshManager & meshManager, MaterialManager & materialManager)
 {
 	this->currentFile = newd BRFImporterLib::FileData;
 	this->meshManager = &meshManager;
-}
-
-void BRFImportHandler::release()
-{
-	delete this->currentFile;
+	this->materialManager = &materialManager;
 }
