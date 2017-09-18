@@ -76,6 +76,9 @@ void Game::update(float deltaTime)
 		// Updating player
 		m_player->update(deltaTime);
 
+		// Updating Entities
+		m_entityManager.update(deltaTime);
+		
 		// Updating map objects
 		m_map->update(deltaTime);
 	}
@@ -94,6 +97,9 @@ void Game::render(Graphics::Renderer& renderer)
 
 		// Drawing map
 		m_map->render(renderer);
+
+		// Drawing Entities (enemies / triggers)
+		m_entityManager.render(renderer);
 	}
 }
 
