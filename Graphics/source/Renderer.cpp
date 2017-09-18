@@ -8,8 +8,11 @@ namespace Graphics
 {
 
 
-	Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-		: simpleForward(gDevice, SHADER_PATH("SimpleForward.hlsl"), VERTEX_INSTANCE_DESC)
+    Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
+        : simpleForward(gDevice, SHADER_PATH("SimpleForward.hlsl"), VERTEX_INSTANCE_DESC)
+        , forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_INSTANCE_DESC)
+        , fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
+        , lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
 		, cube(gDevice)
 	{
 		this->device = gDevice;
@@ -51,6 +54,7 @@ namespace Graphics
 	void Renderer::render(Camera * camera)
 	{
 		cull();
+        writeInstanceData();
 
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
@@ -59,37 +63,11 @@ namespace Graphics
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
 		deviceContext->ClearDepthStencilView(dSV, D3D11_CLEAR_DEPTH, 1.f, 0);
 
-		/*deviceContext->ClearDepthStencilView(gbuffer.depth, D3D11_CLEAR_DEPTH, 1, 0);
-		deviceContext->OMSetRenderTargets(1, &backBuffer, gbuffer.depth);
-
-		deviceContext->RSSetViewports(1, &viewPort);
-
-		static ID3D11RasterizerState * rsState = [&]() {
-			D3D11_RASTERIZER_DESC desc = {};
-			desc.FillMode = D3D11_FILL_SOLID;
-			desc.CullMode = D3D11_CULL_BACK;
-			desc.FrontCounterClockwise = false;
-
-			ID3D11RasterizerState * rsState;
-			ThrowIfFailed(device->CreateRasterizerState(&desc, &rsState));
-
-			return rsState;
-		}();
-
-		deviceContext->RSSetState(rsState);
-
-		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		simpleForward.setShader(deviceContext);
-		draw();
-
-
-		drawForward(camera);*/
 
 		deviceContext->RSSetViewports(1, &viewPort);
 		deviceContext->RSSetState(states->CullClockwise());
 
-		resourceManager.setShaders(VERTEX_FORWARD_PLUS, (PixelShaderID)-1, deviceContext);
+        forwardPlus.setShader(deviceContext, Shader::VS);
 		deviceContext->OMSetRenderTargets(0, nullptr, dSV);
 		
 		draw();
@@ -121,7 +99,7 @@ namespace Graphics
 
 		grid.cull(camera, states, depthSRV, device, deviceContext, &resourceManager);
 
-		resourceManager.setShaders(VERTEX_FORWARD_PLUS, PIXEL_FORWARD_PLUS, deviceContext);
+	    forwardPlus.setShader(deviceContext);
 
 		ID3D11ShaderResourceView *SRVs[] = {
 			grid.getOpaqueIndexList()->getSRV(),
@@ -235,6 +213,24 @@ namespace Graphics
         renderQueue.clear();
     }
 
+    void Renderer::writeInstanceData()
+    {
+        D3D11_MAPPED_SUBRESOURCE instanceMap = { 0 };
+
+        deviceContext->Map(instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &instanceMap);
+
+        char* dest = (char*)instanceMap.pData;
+        for (InstanceQueue_t::value_type & pair : instanceQueue)
+        {
+            void * data = pair.second.data();
+            size_t size = pair.second.size() * sizeof(InstanceData);
+            memcpy(dest, data, size);
+            dest += size;
+        }
+
+        deviceContext->Unmap(instanceBuffer, 0);
+    }
+
 	// TEMP
 	void Renderer::createDepthStencil()
 	{
@@ -282,22 +278,6 @@ namespace Graphics
 
 	void Renderer::draw()
 	{
-		// Sort instance id from all meshes
-		D3D11_MAPPED_SUBRESOURCE instanceMap = { 0 };
-
-        deviceContext->Map(instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &instanceMap);
-
-        char* dest = (char*)instanceMap.pData;
-        for (InstanceQueue_t::value_type & pair : instanceQueue)
-        {
-            void * data = pair.second.data();
-            size_t size = pair.second.size() * sizeof(InstanceData);
-            memcpy(dest, data, size);
-            dest += size;
-        }
-
-        deviceContext->Unmap(instanceBuffer, 0);
-
         // draw all instanced meshes
         UINT readOffset = 0;
         UINT offsets[2] = { 0, 0 };
@@ -349,8 +329,10 @@ namespace Graphics
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 
-        resourceManager.setShaders(VertexShaderID::VERTEX_QUAD, PixelShaderID::PIXEL_QUAD, deviceContext);
-        resourceManager.setSampler(SamplerID::pointSampler, deviceContext);
+        fullscreenQuad.setShader(deviceContext);
+
+        static ID3D11SamplerState * pointClamp = states->PointClamp();
+        deviceContext->PSSetSamplers(0, 1, &pointClamp);
 
         deviceContext->Draw(4, 0);
 

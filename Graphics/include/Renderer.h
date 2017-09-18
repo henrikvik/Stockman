@@ -114,7 +114,12 @@ namespace Graphics
 		LightGrid grid;
 		DirectX::CommonStates *states;
 
+        Shader fullscreenQuad;
         Shader simpleForward;
+        Shader forwardPlus;
+        ComputeShader lightGridCull;
+        //ComputeShader lightGridGen; 
+
         ResourceManager resourceManager;
         D3D11_VIEWPORT viewPort;
 
@@ -139,6 +144,7 @@ namespace Graphics
         void createInstanceBuffer();
 
         void cull();
+        void writeInstanceData();
         void draw();
         void drawGUI();
 		void createDepthStencil();

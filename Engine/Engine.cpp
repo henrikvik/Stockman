@@ -53,10 +53,12 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
 	this->mMouse->SetWindow(window);
+
 }
 
 Engine::~Engine()
 {
+
 	delete this->renderer;
 
 	this->mDevice->Release();
@@ -65,8 +67,8 @@ Engine::~Engine()
 	this->mBackBufferRTV->Release();
 
 	//Enable this to get additional information about live objects
-	//this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-	this->mDebugDevice->Release();
+    //this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+    this->mDebugDevice->Release();
 }
 
 void Engine::initializeWindow()
