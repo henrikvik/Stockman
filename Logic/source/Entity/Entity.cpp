@@ -5,6 +5,7 @@ using namespace Logic;
 Entity::Entity(btRigidBody* body)
 {
 	m_body = body;
+	m_body->setUserPointer(this);
 	m_transform = &m_body->getWorldTransform();
 }
 

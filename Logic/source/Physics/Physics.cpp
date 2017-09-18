@@ -75,7 +75,7 @@ void Physics::update(float deltaTime)
 	}
 }
 
-Player* Logic::Physics::addPlayer(Cube& cube, float mass)
+btRigidBody* Logic::Physics::addPlayer(Cube& cube, float mass)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -90,8 +90,6 @@ Player* Logic::Physics::addPlayer(Cube& cube, float mass)
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
-	Player* player = new Player(body);
-	body->setUserPointer(player);
 
 	// Specifics
 	body->setRestitution(0.0f);		
@@ -101,10 +99,10 @@ Player* Logic::Physics::addPlayer(Cube& cube, float mass)
 	// Adding body to the world
 	this->addRigidBody(body);
 
-	return player;
+	return body;
 }
 
-Entity* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
+btRigidBody* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -122,8 +120,6 @@ Entity* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, localInertia);
 	btRigidBody* body = new btRigidBody(constructionInfo);
-	Entity* entity = new Entity(body);
-	body->setUserPointer(entity);
 
 	// Specifics
 	body->setRestitution(0.0f);
@@ -136,10 +132,10 @@ Entity* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
 	// Adding body to the world
 	this->addRigidBody(body);
 
-	return entity;
+	return body;
 }
 
-Entity * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
+btRigidBody * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -152,8 +148,6 @@ Entity * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
-	Entity* entity = new Player(body);
-	body->setUserPointer(entity);
 
 	// Specifics
 	body->setRestitution(0.0f);
@@ -163,10 +157,10 @@ Entity * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
 	// Adding body to the world
 	this->addRigidBody(body);
 
-	return entity;
+	return body;
 }
 
-Entity * Logic::Physics::addBody(Sphere& sphere, float mass, bool isSensor)
+btRigidBody * Logic::Physics::addBody(Sphere& sphere, float mass, bool isSensor)
 {
 	return nullptr;
 }
