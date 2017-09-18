@@ -114,7 +114,7 @@ btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
 	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, plane.getPos()));
 
 	// Creating the specific shape
-	btCollisionShape* shape = new btStaticPlaneShape(plane.getNormal(), 1);
+	btCollisionShape* shape = new btStaticPlaneShape(plane.getNormal(), 0.1f);
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
