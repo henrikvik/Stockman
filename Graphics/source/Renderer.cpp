@@ -63,6 +63,7 @@ namespace Graphics
 
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
+		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 
 		static float clearColor[4] = { 0,0,0,1 };
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
@@ -90,13 +91,13 @@ namespace Graphics
 				((unsigned char)(11 + i * 455 + 4)) / 255.f
 			);
 			ptr[i].positionWS = (ptr[i].color * 2 - DirectX::SimpleMath::Vector3(1.f)) * 2;
-			ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 2;
-			ptr[i].positionWS.y = 0.1f;
-			ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 2;
+			ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 8;
+			ptr[i].positionWS.y = 1.f;
+			ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 8;
 
 			//ptr[i].positionWS = DirectX::SimpleMath::Vector3(0.f, 1.f, 1.f - 1 / 8.f - i / 4.f);
 			ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
-			ptr[i].range = i / 4.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
+			ptr[i].range = i / 1.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
 			ptr[i].intensity = 1.f;
 		}
 		lights->unmap(deviceContext);
@@ -292,7 +293,7 @@ namespace Graphics
 
         for (InstanceQueue_t::value_type & pair : instanceQueue)
         {
-#if true
+#if false
             ModelInfo model = resourceManager.getModelInfo(pair.first);
 
             buffers[0] = model.vertexBuffer;
