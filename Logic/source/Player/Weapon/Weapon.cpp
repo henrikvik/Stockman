@@ -16,7 +16,7 @@ Weapon::Weapon()
 	m_reloadTime		= -1;
 }
 
-Weapon::Weapon(int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime)
+Weapon::Weapon(int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime, ProjectileData projectileData)
 {
 	m_weaponID			= weaponID;
 	m_ammoCap			= ammoCap;
@@ -28,11 +28,13 @@ Weapon::Weapon(int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, in
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
+	m_projectileData	= projectileData;
 }
 
 void Weapon::use()
 {
 	// use weapon
+
 }
 
 void Weapon::update()
@@ -65,6 +67,16 @@ void Logic::Weapon::removeMagAmmo(int ammo)
 }
 
 int Logic::Weapon::getAmmoConsumption() { return m_ammoConsumption; }
+
+float Logic::Weapon::getAttackTimer()
+{
+	return (60.f / m_attackRate) * 1000;
+}
+
+ProjectileData * Logic::Weapon::getProjectileData()
+{
+	return &m_projectileData;
+}
 
 void Logic::Weapon::fillMag()
 {

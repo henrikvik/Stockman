@@ -19,6 +19,15 @@ Projectile::Projectile(btRigidBody* body, float damage, float speed, float gravi
 	m_gravityModifier = gravityModifer;
 }
 
+Logic::Projectile::Projectile(btRigidBody * body, ProjectileData pData, btVector3 forward)
+: Entity(body)
+{
+	m_damage = pData.damage;
+	m_speed = pData.speed;
+	m_gravityModifier = pData.gravityModifier;
+	body->setLinearVelocity(forward * m_speed);
+}
+
 Projectile::~Projectile() { }
 
 void Projectile::onUpdate(float deltaTime)

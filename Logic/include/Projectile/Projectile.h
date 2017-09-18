@@ -2,6 +2,7 @@
 #define PROJECTILE_H
 
 #include "../Entity/Entity.h"
+#include "ProjectileStruct.h"
 
 namespace Logic
 {
@@ -10,6 +11,7 @@ namespace Logic
 	public:
 		Projectile(btRigidBody* body);
 		Projectile(btRigidBody* body, float damage, float speed, float gravityModifer);
+		Projectile(btRigidBody* body, ProjectileData pData, btVector3 forward);
 		Projectile(const Projectile& other) = delete;
 		Projectile* operator=(const Projectile& other) = delete;
 		~Projectile();

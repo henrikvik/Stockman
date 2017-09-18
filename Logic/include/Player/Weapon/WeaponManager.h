@@ -12,6 +12,8 @@
 #include <vector>
 #include <Player\Weapon\Weapon.h>
 #include <Misc\Enums.h>
+#include <Projectile\ProjectileStruct.h>
+#include <Graphics\include\Structs.h>
 
 
 namespace Logic
@@ -38,6 +40,9 @@ namespace Logic
 		bool isAttacking();
 		bool isReloading();
 
+		std::vector<ProjectileData*>* getProjectileList();
+		void clearProjectileList();
+
 	private:
 
 		void initializeWeapons();
@@ -45,8 +50,9 @@ namespace Logic
 
 		std::vector<Weapon> m_allWeapons;
 		std::vector<std::pair<Weapon*, Weapon*>> m_weaponsLoadouts;
-		std::vector<int> ammoList;
+		//std::vector<int> ammoList;
 		std::pair<Weapon*, Weapon*> m_currentWeapon;
+		std::vector<ProjectileData*> m_projToFire;						// List of all player projectiles to be created this frame
 
 		// Timers
 		float m_swapWeaponTimer;

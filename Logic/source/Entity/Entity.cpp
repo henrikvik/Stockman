@@ -6,6 +6,14 @@ Entity::Entity(btRigidBody* body)
 {
 	m_body = body;
 	m_transform = &m_body->getWorldTransform();
+	m_addProjectile = nullptr;
+}
+
+Entity::Entity(btRigidBody* body, std::function<void(ProjectileData* pData, btVector3 forward)> addProjectilePtr)
+{
+	m_body = body;
+	m_transform = &m_body->getWorldTransform();
+	m_addProjectile = addProjectilePtr;
 }
 
 Entity::~Entity() 
@@ -41,6 +49,12 @@ btRigidBody* Entity::getRigidbody()
 void Entity::consoleWritePosition()
 {
 	printf("Position = { %f, %f, %f }\n", m_transform->getOrigin().getX(), m_transform->getOrigin().getY(), m_transform->getOrigin().getZ());
+}
+
+void Logic::Entity::spawnProjectile(ProjectileData* pData, btVector3 forward)
+{
+	if(m_addProjectile)
+		m_addProjectile(pData, forward);
 }
 
 DirectX::SimpleMath::Vector3 Entity::getPosition() const

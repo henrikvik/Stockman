@@ -67,12 +67,12 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ 1, 20, 20, 8, 8, 1, 1, 1, 1, 3000 },
-		{ 1, 20, 20, 8, 8, 2, 1, 1, 1, 3000 },
-		{ 1, 20, 20, 8, 8, 1, 1, 1, 1, 3000 },
-		{ 1, 20, 20, 8, 8, 3, 1, 1, 1, 3000 },
-		{ 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000 },
-		{ 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000 }
+		{ 1, 60, 60, 30, 30, 1, 1, 450, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) },
+		{ 1, 20, 20, 8, 8, 2, 1, 40, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) },
+		{ 1, 20, 20, 8, 8, 1, 1, 1, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) },
+		{ 1, 20, 20, 8, 8, 3, 1, 1, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) },
+		{ 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) },
+		{ 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) }
 	};
 }
 
@@ -108,7 +108,9 @@ void WeaponManager::usePrimary()
 	{
 		if (m_currentWeapon.first->getMagAmmo() > 0)
 		{
-			m_currentWeapon.first->use();
+			// TEMP
+			m_projToFire.push_back(m_currentWeapon.first->getProjectileData());
+
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.first->getAmmoConsumption());
 			printf("fire prim\n");
 			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
@@ -116,8 +118,8 @@ void WeaponManager::usePrimary()
 		else
 			printf("out of ammo\n");
 
-		//m_attackTimer = m_currentWeapon.first->firerate
-		m_attackTimer = 1000.f;
+		m_attackTimer = m_currentWeapon.first->getAttackTimer();
+		//m_attackTimer = 1000.f;
 	}
 }
 
@@ -135,8 +137,8 @@ void WeaponManager::useSecondary()
 		else
 			printf("out of ammo\n");
 
-		//m_attackTimer = m_currentWeapon.second->firerate
-		m_attackTimer = 1000.f;
+		m_attackTimer = m_currentWeapon.second->getAttackTimer();
+		//m_attackTimer = 1000.f;
 	}
 }
 
@@ -163,4 +165,14 @@ bool Logic::WeaponManager::isAttacking()
 bool Logic::WeaponManager::isReloading()
 {
 	return m_reloadState != ReloadingWeapon::reloadingWeaponIdle;
+}
+
+std::vector<ProjectileData*>* Logic::WeaponManager::getProjectileList()
+{
+	return &m_projToFire;
+}
+
+void Logic::WeaponManager::clearProjectileList()
+{
+	m_projToFire.clear();
 }

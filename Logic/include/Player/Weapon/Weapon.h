@@ -26,14 +26,14 @@ namespace Logic
 		int m_magAmmo;
 		int m_ammoConsumption;
 		float m_damage;
-		float m_attackRate;
+		float m_attackRate;		// Attacks per minute
 		float m_freeze;
 		float m_reloadTime;
 		ProjectileData m_projectileData;
 	//	Animation m_animation;
 	public:
 		Weapon();
-		Weapon(int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime);
+		Weapon(int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime, ProjectileData projectileData);
 
 		void use();
 
@@ -49,6 +49,8 @@ namespace Logic
 		void removeMagAmmo();
 		void removeMagAmmo(int ammo);
 		int getAmmoConsumption();
+		float getAttackTimer();
+		ProjectileData* getProjectileData();
 
 		void fillMag();
 	};

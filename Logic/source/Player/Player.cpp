@@ -207,6 +207,13 @@ DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
 	return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
 }
 
+void Logic::Player::makeProjectiles()
+{
+	std::vector<ProjectileData*>* projList = m_weaponManager.getProjectileList();
+	for (ProjectileData* pData : *projList)
+		spawnProjectile(pData, btVector3(m_forward.x, m_forward.y, m_forward.z));
+}
+
 DirectX::SimpleMath::Vector3 Player::getForward()
 {
 	return m_forward;
