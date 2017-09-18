@@ -96,6 +96,8 @@ namespace Graphics
 
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
+		f += 0.001f;
+
 		auto lights = grid.getLights();
 
 		Light *ptr = lights->map(deviceContext);

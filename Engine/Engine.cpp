@@ -275,7 +275,7 @@ int Engine::run()
 
 
             //////////////TEMP/////////////////
-            static Graphics::RenderInfo staticCube = {
+            Graphics::RenderInfo staticCube = {
                 true, //bool render;
                 Graphics::ModelID::CUBE, //ModelID meshId;
                 0, //int materialId;
@@ -285,7 +285,7 @@ int Engine::run()
             //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
             //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
 			//staticCube.translation *= DirectX::SimpleMath::Matrix::CreateTranslation({ 1 + sinf(totalTime * 0.00001f),2 + cosf(totalTime * 0.00001f),0 });
-			staticCube.translation *= DirectX::SimpleMath::Matrix::CreateFromAxisAngle({ 0.1f, 0.5f, 1.f }, totalTime*0.000001f);
+			staticCube.translation *= DirectX::SimpleMath::Matrix::CreateFromAxisAngle({ 0.1f, 0.5f, 1.f }, totalTime*0.001f);
 
             renderer->queueRender(&staticCube);
             ///////////////////////////////////

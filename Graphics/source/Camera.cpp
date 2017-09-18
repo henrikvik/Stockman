@@ -91,10 +91,10 @@ void Graphics::Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleM
 {
 	forward.Normalize();
 	auto &m = DirectX::Mouse::Get();
-	pos.x = cosf(m.GetState().x*0.01f)*M_PI;
-	pos.y = cosf(m.GetState().y*0.025f)*M_PI;
-	pos.z = sinf(m.GetState().x*0.01f)*M_PI;
-	Matrix newView = DirectX::XMMatrixLookToRH(pos, -pos, Vector3(0, 1, 0));
+	//pos.x = cosf(m.GetState().x*0.01f)*M_PI;
+	//pos.y = cosf(m.GetState().y*0.025f)*M_PI;
+	//pos.z = sinf(m.GetState().x*0.01f)*M_PI;
+	Matrix newView = DirectX::XMMatrixLookToRH(pos, forward, Vector3(0, 1, 0));
 
 	//if (newView != this->mView)
 	{
