@@ -13,7 +13,6 @@ StatusManager::StatusManager()
 { 
 	#ifndef BUFFS_CREATED
 	#define BUFFS_CREATED
-	/* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
 		std::vector<FileLoader::LoadedStruct> loadedEffects;
 		FileLoader::singleton().loadStructsFromFile(loadedEffects, FILE_NAME);
 		Effect::Standards standards;
@@ -21,9 +20,10 @@ StatusManager::StatusManager()
 		Effect::Specifics spec;
 		int id = 0;
 
+		Effect creating;
 		for (auto const &fileStruct : loadedEffects)
 		{
-			Effect creating;
+			memset(&creating, 0, sizeof(creating));
 
 			standards.flags = fileStruct.ints.at("flags");
 			standards.duration = fileStruct.floats.at("duration");
