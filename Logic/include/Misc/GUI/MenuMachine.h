@@ -16,8 +16,8 @@ This class creates menus and handles switching between different menu layouts.
 
 
 #include <map>
-#include "Misc\Enums.h"
-#include "MenuState.h"
+#include <Misc\Enums.h>
+#include <Misc\GUI\MenuState.h>
 
 namespace Logic
 {
@@ -26,20 +26,23 @@ namespace Logic
 	private:
 		std::map<GameState, MenuState*> m_menuStates;
 		bool pressed;
-		MenuState* currentActive;
+		MenuState* currentActiveMenu;
+		GameState currentActiveState;
 	public:
 		MenuMachine();
 		~MenuMachine();
-		void initialize();					//< Load menu layout from file
+		void initialize(GameState state);					//< Load menu layout from file
 		void clear();						//< Clears current menu layout
 		void update();
 
 		void showMenu(GameState state);		//< Creates a menu layout
-		MenuState* currentMenu();
+		GameState currentState();
 
 
 		void buttonClick0();
 		void buttonClick1();
+
+		void buttonClick2();
 
 
 

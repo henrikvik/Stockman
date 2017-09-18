@@ -21,6 +21,7 @@ bool Game::init()
 {
 	bool result;
 
+
 	// TESTING REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE 
 /*	EntityManager entity;
 	entity.spawnWave();
@@ -43,8 +44,7 @@ bool Game::init()
 	m_player->init();
 
 	m_menu = new MenuMachine();
-	m_menu->initialize();
-	m_menu->showMenu(gameStateMenuMain);
+	m_menu->initialize(gameStateMenuMain);
 	// Making the map
 	m_map = new Map();
 	m_map->init(m_physics);
@@ -67,29 +67,40 @@ void Game::clear()
 
 void Game::update(float deltaTime)
 {
-	// Updating physics
-	m_physics->update(deltaTime);
+	if (m_menu->currentState() != gameStateGame)
+	{
+		m_menu->update();
+	}
+	else
+	{
+		// Updating physics
+		m_physics->update(deltaTime);
 
-	// Updating player
-	m_player->update(deltaTime);
-//	m_player->consoleWritePosition();
+		// Updating player
+		m_player->update(deltaTime);
 
-	m_menu->update();
-
-	// Updating map objects
-	m_map->update(deltaTime);
+		// Updating map objects
+		m_map->update(deltaTime);
+	}
 }
 
 void Game::render()
 {
-	// Clearing previous frame
-	m_register.clear();
-	
-	// Drawing player
-	m_player->render(m_register);
+	if (m_menu->currentState() != gameStateGame)
+	{
 
-	// Drawing map
-	m_map->render(m_register);
+	}
+	else
+	{
+		// Clearing previous frame
+		m_register.clear();
+
+		// Drawing player
+		m_player->render(m_register);
+
+		// Drawing map
+		m_map->render(m_register);
+	}
 }
 
 std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
