@@ -33,6 +33,7 @@
   <ItemGroup>
     <None Include="Resources\Shaders\Vertex.hlsl" />
     <None Include="Resources\Data\Effects.lw" />
+    <None Include="Resources\Data\Menu.lw" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\data\Text.lw" />

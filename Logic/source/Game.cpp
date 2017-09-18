@@ -37,7 +37,7 @@ bool Game::init()
 	result = m_physics->init();
 
 	// Initializing Player
-	m_player = newd Player(m_physics->addPlayer(Cube({ 0, 5, -15 }, { 0, 0, 90 }, { 1, 1, 1 }), 100));
+	m_player = new Player(m_physics->addPlayer(Cube({ 0, 5, -15 }, { 0, 0, 90 }, { 1, 1, 1 }), 100));
 	m_player->init();
 
 	m_menu = newd MenuMachine();

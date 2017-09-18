@@ -1,5 +1,4 @@
 #include "..\..\..\include\Misc\GUI\MenuState.h"
-#include <Engine\Constants.h>
 
 
 Logic::MenuState::MenuState()
@@ -14,18 +13,15 @@ Logic::MenuState::~MenuState()
 	}
 }
 
-void Logic::MenuState::initialize(std::function<void(void)> callBack)
+void Logic::MenuState::initialize(std::vector<ButtonStruct> buttonStruct, std::string background)
 {
-	DirectX::SimpleMath::Vector2 pos(200.0f, 200.0f);
-	DirectX::SimpleMath::Vector2 texCoordStart(1.0f, 1.0f);
-	DirectX::SimpleMath::Vector2 texCoordEnd(0.0f, 0.0f);
-	float height = 200.0f;
-	float width = 200.0f;
-	std::string texture = "Bla";
+	/*DirectX::SimpleMath::Vector2 pos(xPos, yPos);
+	DirectX::SimpleMath::Vector2 texCoordStart(xTexStart, yTexStart);
+	DirectX::SimpleMath::Vector2 texCoordEnd(xTexEnd, yTexEnd);
 	m_buttons.push_back(newd Button());
-	m_buttons.at(0)->initialize(pos, texCoordStart, texCoordEnd, height, width, texture, callBack);
+	m_buttons.at(m_buttons.size() - 1)->initialize(pos, texCoordStart, texCoordEnd, height, width, texture, callBack);
 
-	m_menu.m_buttons.push_back(&m_buttons.at(0)->getButtonInfo());
+	m_menu.m_buttons.push_back(&m_buttons.at(0)->getButtonInfo());*/
 }
 
 void Logic::MenuState::updateOnPress(int posX, int posY)

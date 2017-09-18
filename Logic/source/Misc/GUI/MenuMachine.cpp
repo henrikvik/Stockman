@@ -1,6 +1,6 @@
-#include "Misc\GUI\MenuMachine.h"
+#include <Misc\GUI\MenuMachine.h>
 #include <iostream>
-#include <Engine\Constants.h>
+#include <Misc\FileLoader.h>
 using namespace Logic;
 
 MenuMachine::MenuMachine()
@@ -22,8 +22,57 @@ MenuMachine::~MenuMachine()
 
 void Logic::MenuMachine::initialize(GameState state)
 {
-	MenuMachine m;
-	MenuState* test = newd MenuState();
+	struct Menu
+	{
+		int theState;
+		std::string background;
+		std::vector<MenuState::ButtonStruct> buttons;
+	};
+
+	std::vector<FileLoader::LoadedStruct> menuFile;
+	FileLoader::singleton().loadStructsFromFile(menuFile, "Menu");
+	std::vector<Menu> menuGather;
+	std::map<std::string, MenuState::ButtonStruct> allButtons;
+	for (auto const& struc : menuFile)
+	{
+		if (struc.strings.find("buttonName") != struc.strings.end())
+		{
+			allButtons[struc.strings.at("buttonName")] = MenuState::ButtonStruct({
+				struc.floats.at("xPos"),
+				struc.floats.at("yPos"),
+				struc.floats.at("xTexStart"),
+				struc.floats.at("yTexStart"),
+				struc.floats.at("xTexEnd"),
+				struc.floats.at("yTexEnd"),
+				struc.floats.at("height"),
+				struc.floats.at("width"),
+				struc.strings.at("texture"),
+				struc.strings.at("function")
+			});
+		}
+		else if (struc.ints.find("State") != struc.ints.end())
+		{
+			std::vector<MenuState::ButtonStruct> tempButton;
+			for (int i = 0; i < struc.ints.at("buttonAmmount"); i++)
+			{
+				tempButton.push_back(allButtons.at(struc.strings.at("button" + std::to_string(i + 1))));
+			}
+			menuGather.push_back({
+				struc.ints.at("State"),
+				struc.strings.at("Background"),
+				tempButton
+			});
+		}
+	}
+
+	
+	for (auto const& menus : menuGather)
+	{
+		m_menuStates[GameState(menus.theState)] = newd MenuState();
+		m_menuStates.at(GameState(menus.theState))->initialize(menus.buttons, menus.background);
+
+	}
+	/*MenuState* test = newd MenuState();
 	test->initialize(std::bind(&MenuMachine::buttonClick0, this));
 	m_menuStates[gameStateMenuMain] = test;
 
@@ -33,7 +82,7 @@ void Logic::MenuMachine::initialize(GameState state)
 
 	MenuState* test2 = newd MenuState();
 	test2->initialize(std::bind(&MenuMachine::buttonClick2, this));
-	m_menuStates[gameStateGame] = test2;
+	m_menuStates[gameStateGame] = test2;*/
 
 	showMenu(state);
 
