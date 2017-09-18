@@ -89,16 +89,12 @@ void Game::render(Graphics::Renderer& renderer)
 	}
 	else
 	{
-		// Clearing previous frame
-		m_register.clear();
-
 		// Drawing player
-		m_player->render(m_register);
-	// Drawing player
-	m_player->render(renderer);
+		m_player->render(renderer);
 
-	// Drawing map
-	m_map->render(renderer);
+		// Drawing map
+		m_map->render(renderer);
+	}
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()
