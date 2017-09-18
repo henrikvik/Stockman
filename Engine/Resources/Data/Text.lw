@@ -1,0 +1,10 @@
+{   // file has to begin with like this
+	"x": 50;
+	"y": 30;
+	"hello": "yes";
+}
+{
+	"x": 50f; // use f to use a float
+	"y": 30.5f;
+	"hello": "no";
+}

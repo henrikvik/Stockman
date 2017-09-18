@@ -7,6 +7,8 @@
 #include <Player\Player.h>
 #include <Physics\Physics.h>
 #include <Map.h>
+#include <Misc\GUI\MenuMachine.h>
+
 
 // DirectX Includes
 #include <Windows.h>
@@ -41,6 +43,7 @@ namespace Logic
 		Physics*			m_physics;
 		Player*				m_player;
 		Map*				m_map;
+		MenuMachine*		m_menu;
 	};
 }
 

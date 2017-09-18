@@ -30,7 +30,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
 	case WM_MOUSEHOVER:
-		DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
+	DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
 		break;
 
 	default:
