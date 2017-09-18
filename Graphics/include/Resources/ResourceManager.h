@@ -15,7 +15,7 @@ namespace Graphics
 	enum VertexShaderID
 	{
 		VERTEX_QUAD = 0,
-		VERTEX_DEFFERED = 1
+		VERTEX_FORWARD_PLUS
 	};
 
 	enum GeometryShaderID
@@ -25,11 +25,13 @@ namespace Graphics
 	enum PixelShaderID
 	{
 		PIXEL_QUAD = 0,
-		PIXEL_DEFFERED = 1
+		PIXEL_FORWARD_PLUS
 	};
 
 	enum ComputeShaderID
 	{
+		COMPUTE_FRUSTUMS = 0,
+		COMPUTE_CULL_GRIDS
 	};
 
 	enum SamplerID
@@ -45,12 +47,12 @@ namespace Graphics
 		ResourceManager();
 		~ResourceManager();
 
-		void initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);
-		void release();
-
-		void setShaders(VertexShaderID vertexID, GeometryShaderID geometryID, PixelShaderID pixelID, ID3D11DeviceContext* context);
-		void setShaders(VertexShaderID vertexID, PixelShaderID pixelID, ID3D11DeviceContext* context);
-		void setComputeShader(ComputeShaderID id);
+	void initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);
+	void release();
+	
+	void setShaders(VertexShaderID vertexID, GeometryShaderID geometryID, PixelShaderID pixelID, ID3D11DeviceContext* context);
+	void setShaders(VertexShaderID vertexID, PixelShaderID pixelID, ID3D11DeviceContext* context);
+	void setComputeShader(ComputeShaderID id, ID3D11DeviceContext * context);
 
 		void setSampler(SamplerID id, ID3D11DeviceContext* context);
 

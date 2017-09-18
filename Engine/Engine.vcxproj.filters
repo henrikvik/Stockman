@@ -36,4 +36,7 @@
   <ItemGroup>
     <Text Include="Resources\data\Text.lw" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\LightGridCulling.hlsl" />
+  </ItemGroup>
 </Project>

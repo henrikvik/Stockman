@@ -5,6 +5,9 @@
 #include <SimpleMath.h>
 #include <Engine/Constants.h>
 
+#define AVG_TILE_LIGHTS 200
+#define BLOCK_SIZE 16
+
 namespace Graphics
 {
     enum ModelID {
@@ -54,10 +57,20 @@ namespace Graphics
         }
 	};
 
-	struct InstanceData
-	{
-		DirectX::SimpleMath::Matrix translation;
+    struct InstanceData
+    {
+        DirectX::SimpleMath::Matrix translation;
+    };
+
+	// TODO: Change
+#define NUM_LIGHTS 8
+
+	struct Light {
+		DirectX::SimpleMath::Vector4 positionVS;
+		DirectX::SimpleMath::Vector3 positionWS;
+		float range;
+		DirectX::SimpleMath::Vector3 color;
+		float intensity;
 	};
 };
-
 #endif // !STRUCTS_H

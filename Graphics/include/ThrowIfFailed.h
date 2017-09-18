@@ -1,3 +1,5 @@
+#pragma once
+
 #include <exception>
 #include <Windows.h>
 #include <stdio.h>
