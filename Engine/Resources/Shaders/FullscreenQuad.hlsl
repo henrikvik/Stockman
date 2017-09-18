@@ -1,6 +1,5 @@
 struct VSIn
 {
-    float2 pos : POSITION;
 	uint vertexId : SV_VertexID;
 };
 
@@ -13,8 +12,7 @@ struct VSOut
 VSOut VS(VSIn vsin)
 {
     VSOut vsout;
-
-	// EXTREM TEMP (?)
+    
 	if (vsin.vertexId == 0) {
 		vsout.pos = float4(-1, 3, 0, 1.0);
 		vsout.uv = float2(0, -1);
