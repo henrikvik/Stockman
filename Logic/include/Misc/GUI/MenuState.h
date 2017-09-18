@@ -39,7 +39,7 @@ namespace Logic
 			float height;
 			float width;
 			std::string texture;
-			std::string m_CallBackfunction;
+			std::string m_CallBackfunction; //must change to a function aqquiering
 		};
 
 		MenuState();
