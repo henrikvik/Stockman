@@ -65,8 +65,10 @@ void Game::update(float deltaTime)
 	// Updating player
 	m_player->update(deltaTime);
 
-    TEST_CUBE->update(deltaTime);
+	// Updating map objects
+	m_map->update(deltaTime);
 
+    TEST_CUBE->update(deltaTime);
 
 	// Debugging for testing if physics is working:
 	// printf("Player:		");		m_player->consoleWritePosition();
@@ -76,12 +78,14 @@ void Game::render()
 {
 	// Clearing previous frame
 	m_register.clear();
+	
 	// Drawing player
 	m_player->render(m_register);
 
 	// Drawing map
 	m_map->render(m_register);
-    TEST_CUBE->render(m_register);
+   
+//	TEST_CUBE->render(m_register);
 
 }
 

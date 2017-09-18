@@ -19,10 +19,15 @@ void Entity::update(float deltaTime)
 {
 	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
 		affect(effectPair.first, *effectPair.second, deltaTime);
+	
+	// Updating every at
 	m_statusManager.update(deltaTime);
+
+	// Updating specific
 	updateSpecific(deltaTime);
 
-    setWorldMatrix(getTransformMatrix());
+	// Get the new transformation from bulletphysics
+	setWorldMatrix(getTransformMatrix());
 }
 
 void Entity::collision(Entity& other)
@@ -35,12 +40,6 @@ void Entity::affect(int stacks, Effect const &effect, float dt) {}
 btRigidBody* Entity::getRigidbody()
 {
 	return m_body;
-}
-
-// JUST FOR TESTING, REMOVE
-void Entity::consoleWritePosition()
-{
-	printf("Position = { %f, %f, %f }\n", m_transform->getOrigin().getX(), m_transform->getOrigin().getY(), m_transform->getOrigin().getZ());
 }
 
 DirectX::SimpleMath::Vector3 Entity::getPosition() const
