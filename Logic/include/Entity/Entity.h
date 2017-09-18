@@ -8,8 +8,6 @@
 #include <btBulletDynamicsCommon.h>
 #include <functional>
 
-//typedef void(*FuncAddProjectile)(ProjectileData& pData, btVector3 forward);
-
 namespace Logic
 {
 	class Entity : public Object

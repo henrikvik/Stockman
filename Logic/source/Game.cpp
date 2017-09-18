@@ -1,8 +1,5 @@
 #include "Game.h"
 
-#include <AI/EntityManager.h>
-#include <thread>
-
 using namespace Logic;
 
 Game::Game()
@@ -13,22 +10,13 @@ Game::Game()
 }
 
 Game::~Game() 
-{	
+{ 
 	clear();
 }
 
 bool Game::init()
 {
 	bool result;
-
-	// TESTING REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE 
-/*	EntityManager entity;
-	entity.spawnWave();
-	while (true) {
-		entity.update(5.f);
-		std::this_thread::sleep_for(std::chrono::milliseconds(400));
-	} */
-	// TESTING REMOVE REMOVE REMOVE RMEOVE REOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVE
 
 	// Initializing Bullet physics
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();	// Configuration
@@ -38,15 +26,18 @@ bool Game::init()
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
 
-	m_player = m_physics->addPlayer(Cube({ 0, 5, -15 }, { 0, 0, 90 }, { 1, 1, 1 }), 100);
+	// Initializing Player
+	m_player = new Player(m_physics->createBody(Sphere({ 5, -15, 0 }, { 0, 0, 0 }, 1.f), 75.f, false));
 	m_player->init();
 
-	// Making the map
+	// Initializing Menu's
+	m_menu = new MenuMachine();
+	m_menu->initialize(gameStateGame); //change here to accses menu tests
+									   
+	// Initializing the map
 	m_map = new Map();
 	m_map->init(m_physics);
 
-    TEST_CUBE = m_physics->addBody(Cube({ 0, 10 , 0 }, { 0, 0 , 0 }, { 0.5, 0.5 , 0.5 }), 25.f, false);
-    
 	return result;
 }
 
@@ -54,40 +45,44 @@ void Game::clear()
 {
 	delete m_physics;
 	delete m_player;
+	m_menu->clear();
+	delete m_menu;
 	delete m_map;
 }
 
 void Game::update(float deltaTime)
 {
-	// Updating physics
-	m_physics->update(deltaTime);
+	if (m_menu->currentState() != gameStateGame)
+	{
+		m_menu->update();
+	}
+	else
+	{
+		m_physics->update(deltaTime);
+		m_player->update(deltaTime);
 
-	// Updating player
-	m_player->update(deltaTime);
-
-    TEST_CUBE->update(deltaTime);
-
-
-	// Debugging for testing if physics is working:
-	// printf("Player:		");		m_player->consoleWritePosition();
+		// Updating Entities
+		m_entityManager.update(deltaTime);
+		
+		// Updating map objects
+		m_map->update(deltaTime);
+	}
 }
 
-void Game::render()
+void Game::render(Graphics::Renderer& renderer)
 {
-	// Clearing previous frame
-	m_register.clear();
-	// Drawing player
-	m_player->render(m_register);
+	if (m_menu->currentState() != gameStateGame)
+	{
 
-	// Drawing map
-	m_map->render(m_register);
-    TEST_CUBE->render(m_register);
+	}
+	else
+	{
+		m_player->render(renderer);
+		m_map->render(renderer);
 
-}
-
-std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
-{
-	return m_register.getRenderInfo();
+		// Drawing Entities (enemies / triggers)
+		m_entityManager.render(renderer);
+	}
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

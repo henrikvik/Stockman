@@ -5,6 +5,7 @@ using namespace Logic;
 Entity::Entity(btRigidBody* body)
 {
 	m_body = body;
+	m_body->setUserPointer(this);
 	m_transform = &m_body->getWorldTransform();
 	m_addProjectile = nullptr;
 }
@@ -27,10 +28,15 @@ void Entity::update(float deltaTime)
 {
 	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
 		affect(effectPair.first, *effectPair.second, deltaTime);
+	
+	// Updating every at
 	m_statusManager.update(deltaTime);
+
+	// Updating specific
 	updateSpecific(deltaTime);
 
-    setWorldMatrix(getTransformMatrix());
+	// Get the new transformation from bulletphysics
+	setWorldTranslation(getTransformMatrix());
 }
 
 void Entity::collision(Entity& other)
@@ -72,7 +78,7 @@ DirectX::SimpleMath::Vector3 Entity::getScale() const
 	return DirectX::SimpleMath::Vector3(m_body->getCollisionShape()->getLocalScaling());
 }
 
-DirectX::SimpleMath::Matrix Logic::Entity::getTransformMatrix() const
+DirectX::SimpleMath::Matrix Entity::getTransformMatrix() const
 {
 	// Making memory for a matrix
 	float* m = new float[4 * 16];

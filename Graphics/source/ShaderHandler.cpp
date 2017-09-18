@@ -150,6 +150,43 @@ int ShaderHandler::createPixelhader(ID3D11Device* device, wchar_t* name, char* e
 	return returnVal;
 }
 
+int ShaderHandler::createComputeShader(ID3D11Device * device, wchar_t * name, char * entrypoint)
+{
+	ID3DBlob* blob = nullptr;
+	HRESULT hr;
+	int returnVal = -1;
+	//REMOVE DEBUG WHEN DONE
+	hr = D3DCompileFromFile(
+		name, nullptr, nullptr, entrypoint, "cs_5_0",
+#ifdef DEBUG
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+#else
+		NULL,
+#endif
+		0, &blob, nullptr);
+
+	if (SUCCEEDED(hr))
+	{
+		ID3D11ComputeShader* pixelShader;
+		hr = device->CreateComputeShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader);
+
+		if (SUCCEEDED(hr))
+		{
+			this->computeShaders.push_back(pixelShader);
+			blob->Release();
+
+
+			returnVal = this->computeShaders.size() - 1;
+		}
+
+	}
+
+	if (blob)
+		blob->Release();
+
+	return returnVal;
+}
+
 void ShaderHandler::setShaders(int vs, int gs, int ps, ID3D11DeviceContext* context)
 {
 	context->VSSetShader(vs == NO_SHADER ? nullptr : vertexShaders[vs], nullptr, 0);
@@ -159,3 +196,8 @@ void ShaderHandler::setShaders(int vs, int gs, int ps, ID3D11DeviceContext* cont
 	context->PSSetShader(ps == NO_SHADER ? nullptr : pixelShaders[ps], nullptr, 0);
 }
 
+void ShaderHandler::setComputeShader(int cs, ID3D11DeviceContext * context)
+{
+	context->CSSetShader(cs == NO_SHADER ? nullptr : computeShaders[cs], nullptr, 0);
+
+}

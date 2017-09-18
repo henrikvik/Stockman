@@ -20,6 +20,7 @@ bool Physics::init()
 {
 	// World gravity
 	this->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
+	this->setLatencyMotionStateInterpolation(true);
 
 	return true;
 }
@@ -75,36 +76,7 @@ void Physics::update(float deltaTime)
 	}
 }
 
-Player* Logic::Physics::addPlayer(Cube& cube, float mass)
-{
-	// Setting Motions state with position & rotation
-	btQuaternion rotation;
-	rotation.setEulerZYX(cube.getRot().getZ(), cube.getRot().getY(), cube.getRot().getX());
-	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, cube.getPos()));
-
-	// Creating the specific shape
-	btCollisionShape* shape = new btBoxShape(cube.getDimensions());
-	btVector3 localInertia(0, 0, 0);
-	shape->calculateLocalInertia(mass, localInertia);
-
-	// Creating the actual body
-	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = new btRigidBody(constructionInfo);
-	Player* player = new Player(body);
-	body->setUserPointer(player);
-
-	// Specifics
-	body->setRestitution(0.0f);		
-	body->setFriction(1.0f);	
-	body->setSleepingThresholds(0, 0);
-
-	// Adding body to the world
-	this->addRigidBody(body);
-
-	return player;
-}
-
-Entity* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
+btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -122,24 +94,19 @@ Entity* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, localInertia);
 	btRigidBody* body = new btRigidBody(constructionInfo);
-	Entity* entity = new Entity(body);
-	body->setUserPointer(entity);
 
 	// Specifics
-	body->setRestitution(0.15f);
-	body->setFriction(10.0f);
-	body->setSleepingThresholds(0, 0);
-
-	// Deactivates sleeping
+	body->setRestitution(0.0f);
+	body->setFriction(1.0f);
 	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
 	this->addRigidBody(body);
 
-	return entity;
+	return body;
 }
 
-Entity * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
+btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -147,26 +114,45 @@ Entity * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
 	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, plane.getPos()));
 
 	// Creating the specific shape
-	btCollisionShape* shape = new btStaticPlaneShape(plane.getNormal(), 1);
+	btCollisionShape* shape = new btStaticPlaneShape(plane.getNormal(), 0.1f);
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
-	Entity* entity = new Player(body);
-	body->setUserPointer(entity);
 
 	// Specifics
 	body->setRestitution(0.0f);
-	body->setFriction(10.0f);
+	body->setFriction(1.0f);
 	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
 	this->addRigidBody(body);
 
-	return entity;
+	return body;
 }
 
-Entity * Logic::Physics::addBody(Sphere& sphere, float mass, bool isSensor)
+btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 {
-	return nullptr;
+	// Setting Motions state with position & rotation
+	btQuaternion rotation;
+	rotation.setEulerZYX(sphere.getRot().getZ(), sphere.getRot().getY(), sphere.getRot().getX());
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, sphere.getPos()));
+
+	// Creating the specific shape
+	btCollisionShape* shape = new btSphereShape(sphere.getRadius());
+
+	// Creating the actual body
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
+	btRigidBody* body = new btRigidBody(constructionInfo);
+
+	// Specifics
+	body->setRestitution(0.0f);
+	body->setFriction(0.f);
+	body->setSleepingThresholds(0, 0);	
+	body->setDamping(0.9f, 0.9f);
+
+	// Adding body to the world
+	this->addRigidBody(body);
+
+	return body;
 }

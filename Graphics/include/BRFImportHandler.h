@@ -1,14 +1,14 @@
 #pragma once
 
-#include <FileData.h>
-#include <Fetch.h>
-#include <MeshData.h>
-#include <MaterialData.h>
-#include <SkeletonData.h>
+#include "../../libs/BRFImporter/include/FileData.h"
+#include "../../libs/BRFImporter/include/Fetch.h"
+#include "../../libs/BRFImporter/include/MeshData.h"
+#include "../../libs/BRFImporter/include/MaterialData.h"
+#include "../../libs/BRFImporter/include/SkeletonData.h"
 
-#include <Resources/MeshManager.h>
-#include <Datatypes.h>
-#include <Resources\Mesh.h>
+#include "Resources/MeshManager.h"
+#include "Datatypes.h"
+#include "Resources\Mesh.h"
 
 class BRFImportHandler
 {

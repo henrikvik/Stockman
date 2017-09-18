@@ -119,14 +119,14 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	if (ks->IsKeyDown(m_moveLeft))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
-		linearVel += dir;
+		linearVel += -dir;
 	}
 
 	// Move Right
 	if (ks->IsKeyDown(m_moveRight))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
-		linearVel += -dir;
+		linearVel += dir;
 	}
 
 	// Move Forward
@@ -144,7 +144,7 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	}
 
 	// Apply final force
-	rigidBody->applyCentralForce(linearVel * deltaTime * m_moveSpeed);
+	rigidBody->setLinearVelocity(rigidBody->getLinearVelocity() + linearVel * deltaTime * m_moveSpeed);
 
 	// Setting movement caps
 	btVector3 lv = rigidBody->getLinearVelocity();
@@ -170,7 +170,7 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
 	DirectX::SimpleMath::Vector2 midPoint = getWindowMidPoint();
 
-	m_camYaw	-= m_mouseSens * (ms->x);
+	m_camYaw	+= m_mouseSens * (ms->x);
 	m_camPitch	-= m_mouseSens * (ms->y);
 
 	// DirectX calculates position on the full resolution,

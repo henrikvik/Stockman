@@ -9,13 +9,13 @@ Object::Object()
 
 Object::~Object() { }
 
-void Logic::Object::setWorldMatrix(DirectX::SimpleMath::Matrix translation)
+void Object::setWorldTranslation(DirectX::SimpleMath::Matrix translation)
 {
-    m_renderInfo.translation = translation;
+	m_renderInfo.translation = translation;
 }
 
-void Object::render(RenderRegister& rRegister)
+void Object::render(Graphics::Renderer& renderer)
 {
 	if (m_renderInfo.render)
-		rRegister.addRenderInfo(&m_renderInfo);
+		renderer.queueRender(&m_renderInfo);
 }

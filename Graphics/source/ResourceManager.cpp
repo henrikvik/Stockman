@@ -55,33 +55,27 @@ namespace Graphics
         shaderHandler.createVertexShader(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), "VS", desc, ARRAYSIZE(desc));
         shaderHandler.createPixelhader(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), "PS");
 
-        D3D11_INPUT_ELEMENT_DESC descDeffered[] =
-        {
-            { "POS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "MATERIAL", 0, DXGI_FORMAT_R32_UINT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "OFFSET", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
-        };
+		D3D11_INPUT_ELEMENT_DESC descDeffered[] = VERTEX_INSTANCE_DESC;
+
+		shaderHandler.createVertexShader(gDevice, SHADER_PATH("Forward.hlsl"), "VS", descDeffered, ARRAYSIZE(descDeffered));
+		shaderHandler.createPixelhader(gDevice, SHADER_PATH("Forward.hlsl"), "PS");
 
 
-        shaderHandler.createVertexShader(gDevice, SHADER_PATH("Deffered.hlsl"), "VS", descDeffered, ARRAYSIZE(descDeffered));
-        shaderHandler.createPixelhader(gDevice, SHADER_PATH("Deffered.hlsl"), "PS");
+		shaderHandler.createComputeShader(gDevice, SHADER_PATH("LightGridGeneration.hlsl"), "CS");
+		shaderHandler.createComputeShader(gDevice, SHADER_PATH("LightGridCulling.hlsl"), "CS");
 
 
-        D3D11_INPUT_ELEMENT_DESC GUIdesc[] =
-        {
-            { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-        };
+		createSamplerState(gDevice);
 
-        shaderHandler.createVertexShader(gDevice, SHADER_PATH("GUIShader.hlsl"), "VS", GUIdesc, ARRAYSIZE(GUIdesc));
-        shaderHandler.createPixelhader(gDevice, SHADER_PATH("GUISHADER.hlsl"), "VS");
+		D3D11_INPUT_ELEMENT_DESC GUIdesc[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
 
-        createSamplerState(gDevice);
-    }
-
-
+		shaderHandler.createVertexShader(gDevice, SHADER_PATH("GUIShader.hlsl"), "VS", GUIdesc, ARRAYSIZE(GUIdesc));
+		shaderHandler.createPixelhader(gDevice, SHADER_PATH("GUISHADER.hlsl"), "VS");
+	}
 
     void ResourceManager::setShaders(VertexShaderID vertexID, GeometryShaderID geometryID, PixelShaderID pixelID, ID3D11DeviceContext* context)
     {
@@ -93,11 +87,11 @@ namespace Graphics
         this->shaderHandler.setShaders(vertexID, NO_SHADER, pixelID, context);
     }
 
-    //TODO: EVERYTHING
-    void ResourceManager::setComputeShader(ComputeShaderID id)
-    {
-
-    }
+	//TODO: EVERYTHING
+	void ResourceManager::setComputeShader(ComputeShaderID id, ID3D11DeviceContext * context)
+	{
+		this->shaderHandler.setComputeShader(id, context);
+	}
 
     void ResourceManager::setSampler(SamplerID id, ID3D11DeviceContext * context)
     {

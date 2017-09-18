@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -171,6 +171,7 @@
     <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Datatypes.h" />
     <ClInclude Include="include\Graphics.h" />
+    <ClInclude Include="include\LightGrid.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Resources\Importerstructs.h" />
     <ClInclude Include="include\Resources\MaterialManager.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="include\Resources\MaterialManager.cpp" />
     <ClCompile Include="include\Resources\Mesh.cpp" />
     <ClCompile Include="include\Resources\MeshManager.cpp" />
+    <ClCompile Include="source\LightGrid.cpp" />
     <ClCompile Include="include\Resources\Shader.cpp" />
     <ClCompile Include="source\ResourceManager.cpp" />
     <ClCompile Include="source\ShaderHandler.cpp" />
