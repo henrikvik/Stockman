@@ -51,6 +51,7 @@ namespace Graphics {
 			DirectX::SimpleMath::Matrix mVP;
 			DirectX::SimpleMath::Matrix mInvP;
 			DirectX::SimpleMath::Matrix mV;
+			DirectX::SimpleMath::Vector4 camPos;
 		} values;
 
 		ID3D11Buffer* mVPBuffer;

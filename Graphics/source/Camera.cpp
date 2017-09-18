@@ -104,6 +104,7 @@ void Graphics::Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleM
 		values.mVP = this->mView * this->mProjection;
 		values.mInvP = this->mProjection.Invert();
 		values.mV = this->mView;
+		values.camPos = Vector4(pos.x, pos.y, pos.z, 1);
 
 		D3D11_MAPPED_SUBRESOURCE data;
 		ZeroMemory(&data, sizeof(data));
