@@ -27,6 +27,11 @@ void Entity::update(float deltaTime)
 	// Updating specific
 	updateSpecific(deltaTime);
 
+	updateGraphics();
+}
+
+void Logic::Entity::updateGraphics()
+{
 	// Get the new transformation from bulletphysics
 	setWorldTranslation(getTransformMatrix());
 }

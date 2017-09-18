@@ -2,9 +2,12 @@
 #define ENTITY_MANAGER_H
 
 #include <vector>
+
 #include <AI/Enemy.h>
 #include <AI/WaveManager.h>
+
 #include <Graphics\include\Renderer.h>
+#include <Physics\Physics.h>
 
 #pragma region ClassDesc
 	/*
@@ -38,7 +41,7 @@ namespace Logic
 		void update(float deltaTime);
 		void clear();
 
-		void spawnWave();
+		void spawnWave(Physics &physics);
 
 		void setCurrentWave(int currentWave);
 		void render(Graphics::Renderer &renderer);

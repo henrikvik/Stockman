@@ -30,5 +30,6 @@ void EnemyTest::updateSpecific(float deltaTime)
 
 void EnemyTest::updateDead(float deltaTime)
 {
+	Entity::updateGraphics();
 	// x _ x
 }

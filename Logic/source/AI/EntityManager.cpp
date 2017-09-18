@@ -39,17 +39,17 @@ void EntityManager::update(float deltaTime)
 {
 	clock_t begin = clock();
 
-	for (int i = 0; i < m_enemies.size(); i++)
+	for (int i = 0; i < m_enemies.size(); ++i)
 	{
 		m_enemies[i]->update(deltaTime);
 	}
 
-	for (int i = 0; i < m_bossEnemies.size(); i++)
+	for (int i = 0; i < m_bossEnemies.size(); ++i)
 	{
 		m_bossEnemies[i]->update(deltaTime);
 	}
 
-	for (int i = 0; i < m_deadEnemies.size(); i++)
+	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
 		m_deadEnemies[i]->updateDead(deltaTime);
 	}
@@ -59,15 +59,15 @@ void EntityManager::update(float deltaTime)
 //	printf("t: %f\n", elapsed_secs);
 }
 
-void EntityManager::spawnWave() 
+void EntityManager::spawnWave(Physics &physics) 
 {
 	std::vector<int> enemies = m_waveManager.getEnemies(m_currentWave++);
 	m_enemies.reserve(enemies.size() + m_enemies.size());
 
 	for (int i = 0; i < enemies.size(); i++) 
 	{
-		m_enemies.push_back(new EnemyTest(nullptr));
-		m_deadEnemies.push_back(new EnemyTest(nullptr));
+		m_enemies.push_back(new EnemyTest(physics.addBody(Cube({ 0, 5, 0 }, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 100, false)));
+		m_deadEnemies.push_back(new EnemyTest(physics.addBody(Cube({ 0, 1, 0}, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 500, false)));
 	}
 }
 
@@ -92,7 +92,20 @@ void EntityManager::setCurrentWave(int currentWave)
 
 void EntityManager::render(Graphics::Renderer &renderer)
 {
+	for (int i = 0; i < m_enemies.size(); ++i)
+	{
+		m_enemies[i]->render(renderer);
+	}
 
+	for (int i = 0; i < m_bossEnemies.size(); ++i)
+	{
+		m_bossEnemies[i]->render(renderer);
+	}
+
+	for (int i = 0; i < m_deadEnemies.size(); ++i)
+	{
+		m_deadEnemies[i]->render(renderer);
+	}
 }
 
 int EntityManager::getCurrentWave() const 

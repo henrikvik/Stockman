@@ -36,6 +36,9 @@ bool Game::init()
 	m_map = new Map();
 	m_map->init(m_physics);
 
+	// TEST REMOVE
+	m_entityManager.spawnWave(*m_physics);
+
 	return result;
 }
 

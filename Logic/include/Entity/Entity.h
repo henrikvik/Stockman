@@ -18,6 +18,7 @@ namespace Logic
 
 		virtual void clear();
 		void update(float deltaTime);
+		void updateGraphics();
 		virtual void updateSpecific(float deltaTime) { }
 		void collision(Entity& other);
 		virtual void affect(int stacks, Effect const &effect,

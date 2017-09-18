@@ -16,6 +16,7 @@ Enemy::~Enemy() {
 }
 
 void Enemy::update(float deltaTime) {
+	Entity::update(deltaTime);
 	updateSpecific(deltaTime);
 }
 
