@@ -1,5 +1,5 @@
 #include "Shader.h"
-#include <ThrowIfFailed.h>
+#include "../ThrowIfFailed.h"
 #include <d3dcompiler.h>
 #include <iostream>
 #include <Windows.h>

@@ -1,4 +1,4 @@
-#include "../../include/Resources/Mesh.h"
+#include "Mesh.h"
 
 
 

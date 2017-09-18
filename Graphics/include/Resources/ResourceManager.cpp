@@ -1,4 +1,4 @@
-#include <Resources/ResourceManager.h>
+#include "ResourceManager.h"
 #include <Engine\Constants.h>
 
 namespace Graphics
@@ -16,18 +16,16 @@ namespace Graphics
         }
     }
 
-    void ResourceManager::initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext)
-    {
-        meshManager.initialize(gDevice, gDeviceContext);
-        brfImporterHandler.initialize(meshManager);
+	void ResourceManager::initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext)
+	{
+		meshManager.initialize(gDevice, gDeviceContext);
+		materialManager.initialize(gDevice, gDeviceContext);
+		brfImporterHandler.initialize(meshManager, materialManager);
 
+		brfImporterHandler.loadFile(MODEL_PATH_STR("kub.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(MODEL_PATH_STR("kub2.brf"), true, true, false, false);
 
-        //std::wstring ws(); \
-		//string str(ws.begin(), ws.end());  \
-
-        brfImporterHandler.loadFile(MODEL_PATH_STR("kub.brf"), true, false, false, false);
-
-        initShaders(gDevice);
+		initShaders(gDevice);
 
     }
 
@@ -120,7 +118,6 @@ namespace Graphics
 
     void ResourceManager::release()
     {
-        brfImporterHandler.release();
         meshManager.release();
     }
 }

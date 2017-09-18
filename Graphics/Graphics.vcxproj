@@ -18,6 +18,41 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
+    <ClCompile Include="include\Resources\MaterialManager.cpp" />
+    <ClCompile Include="include\Resources\Mesh.cpp" />
+    <ClCompile Include="include\Resources\MeshManager.cpp" />
+    <ClCompile Include="include\Resources\ResourceManager.cpp" />
+    <ClCompile Include="include\Resources\Shader.cpp" />
+    <ClCompile Include="include\Resources\Skeleton.cpp" />
+    <ClCompile Include="include\Resources\SkeletonManager.cpp" />
+    <ClCompile Include="include\Resources\TextureManager.cpp" />
+    <ClCompile Include="source\Camera.cpp" />
+    <ClCompile Include="source\LightGrid.cpp" />
+    <ClCompile Include="source\Renderer.cpp" />
+    <ClCompile Include="source\ShaderHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\Datatypes.h" />
+    <ClInclude Include="include\Graphics.h" />
+    <ClInclude Include="include\LightGrid.h" />
+    <ClInclude Include="include\Renderer.h" />
+    <ClInclude Include="include\Resources\BRFImportHandler.h" />
+    <ClInclude Include="include\Resources\Importerstructs.h" />
+    <ClInclude Include="include\Resources\MaterialManager.h" />
+    <ClInclude Include="include\Resources\Mesh.h" />
+    <ClInclude Include="include\Resources\MeshManager.h" />
+    <ClInclude Include="include\Resources\ResourceManager.h" />
+    <ClInclude Include="include\Resources\Shader.h" />
+    <ClInclude Include="include\Resources\Skeleton.h" />
+    <ClInclude Include="include\Resources\SkeletonManager.h" />
+    <ClInclude Include="include\Resources\TextureManager.h" />
+    <ClInclude Include="include\ShaderHandler.h" />
+    <ClInclude Include="include\Structs.h" />
+    <ClInclude Include="include\ThrowIfFailed.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{152B1F8B-2036-4BB0-A4F4-47CE682BA87A}</ProjectGuid>
@@ -72,25 +107,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -165,35 +200,5 @@
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="include\BRFImportHandler.h" />
-    <ClInclude Include="include\Camera.h" />
-    <ClInclude Include="include\Constants.h" />
-    <ClInclude Include="include\Datatypes.h" />
-    <ClInclude Include="include\Graphics.h" />
-    <ClInclude Include="include\LightGrid.h" />
-    <ClInclude Include="include\Renderer.h" />
-    <ClInclude Include="include\Resources\Importerstructs.h" />
-    <ClInclude Include="include\Resources\MaterialManager.h" />
-    <ClInclude Include="include\Resources\Mesh.h" />
-    <ClInclude Include="include\Resources\MeshManager.h" />
-    <ClInclude Include="include\Resources\ResourceManager.h" />
-    <ClInclude Include="include\ShaderHandler.h" />
-    <ClInclude Include="include\Structs.h" />
-    <ClInclude Include="include\ThrowIfFailed.h" />
-    <ClInclude Include="include\Resources\Shader.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
-    <ClCompile Include="include\Resources\MaterialManager.cpp" />
-    <ClCompile Include="include\Resources\Mesh.cpp" />
-    <ClCompile Include="include\Resources\MeshManager.cpp" />
-    <ClCompile Include="source\LightGrid.cpp" />
-    <ClCompile Include="include\Resources\Shader.cpp" />
-    <ClCompile Include="source\ResourceManager.cpp" />
-    <ClCompile Include="source\ShaderHandler.cpp" />
-    <ClCompile Include="source\Camera.cpp" />
-    <ClCompile Include="source\Renderer.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

@@ -1,4 +1,4 @@
-#include "LightGrid.h"
+#include <Graphics\include\LightGrid.h>
 #include "WICTextureLoader.h"
 #include "Engine\Constants.h"
 
