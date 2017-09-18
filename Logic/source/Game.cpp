@@ -1,8 +1,5 @@
 #include "Game.h"
 
-#include <AI/EntityManager.h>
-#include <thread>
-
 using namespace Logic;
 
 Game::Game()
@@ -13,13 +10,14 @@ Game::Game()
 }
 
 Game::~Game() 
-{	
+{ 
 	clear();
 }
 
 bool Game::init()
 {
 	bool result;
+
 
 	// TESTING REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE 
 /*	EntityManager entity;
@@ -42,6 +40,8 @@ bool Game::init()
 	m_player = new Player(m_physics->addPlayer(Cube({ 0, 5, -15 }, { 0, 0, 90 }, { 1, 1, 1 }), 100));
 	m_player->init();
 
+	m_menu = new MenuMachine();
+	m_menu->initialize(gameStateGame); //change here to accses menu tests
 	// Making the map
 	m_map = new Map();
 	m_map->init(m_physics);
@@ -53,36 +53,48 @@ void Game::clear()
 {
 	delete m_physics;
 	delete m_player;
+
+	// Deleting menu
+	m_menu->clear();
+	delete m_menu;
+
+	// Deleting map
 	delete m_map;
 }
 
 void Game::update(float deltaTime)
 {
-	// Updating physics
-	m_physics->update(deltaTime);
+	if (m_menu->currentState() != gameStateGame)
+	{
+		m_menu->update();
+	}
+	else
+	{
+		// Updating physics
+		m_physics->update(deltaTime);
 
-	// Updating player
-	m_player->update(deltaTime);
+		// Updating player
+		m_player->update(deltaTime);
 
-	// Updating map objects
-	m_map->update(deltaTime);
+		// Updating map objects
+		m_map->update(deltaTime);
+	}
 }
 
-void Game::render()
+void Game::render(Graphics::Renderer& renderer)
 {
-	// Clearing previous frame
-	m_register.clear();
-	
-	// Drawing player
-	m_player->render(m_register);
+	if (m_menu->currentState() != gameStateGame)
+	{
 
-	// Drawing map
-	m_map->render(m_register);
-}
+	}
+	else
+	{
+		// Drawing player
+		m_player->render(renderer);
 
-std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
-{
-	return m_register.getRenderInfo();
+		// Drawing map
+		m_map->render(renderer);
+	}
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

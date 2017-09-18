@@ -1,16 +1,15 @@
 #pragma once
+#include "Resources\ResourceManager.h"
 #include <Windows.h>
 #include <vector>
 #include <d3d11.h>
 #include <unordered_map>
 #include "Camera.h"
-#include "Structs.h"
 #include "Constants.h"
-#include "WICTextureLoader.h"
-#include <Resources\ResourceManager.h>
+#include <WICTextureLoader.h>
 #include <SimpleMath.h>
-#include <Resources\Shader.h>
-#include <Datatypes.h>
+#include "Resources\Shader.h"
+#include "Datatypes.h"
 #include "LightGrid.h"
 
 namespace Graphics
@@ -114,7 +113,12 @@ namespace Graphics
 		LightGrid grid;
 		DirectX::CommonStates *states;
 
+        Shader fullscreenQuad;
         Shader simpleForward;
+        Shader forwardPlus;
+        ComputeShader lightGridCull;
+        //ComputeShader lightGridGen; 
+
         ResourceManager resourceManager;
         D3D11_VIEWPORT viewPort;
 
@@ -139,6 +143,7 @@ namespace Graphics
         void createInstanceBuffer();
 
         void cull();
+        void writeInstanceData();
         void draw();
         void drawGUI();
 		void createDepthStencil();
