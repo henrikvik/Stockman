@@ -1,16 +1,16 @@
 #pragma once
+#include "Resources\ResourceManager.h"
 #include <Windows.h>
 #include <vector>
 #include <d3d11.h>
 #include <unordered_map>
 #include "Camera.h"
 #include "Structs.h"
-#include "Constants.h"
 #include "WICTextureLoader.h"
-#include <Resources\ResourceManager.h>
+#include "Resources\ResourceManager.h"
 #include <SimpleMath.h>
-#include <Resources\Shader.h>
-#include <Datatypes.h>
+#include "Resources\Shader.h"
+#include "Datatypes.h"
 #include "LightGrid.h"
 
 namespace Graphics

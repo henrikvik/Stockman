@@ -31,7 +31,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\Vertex.hlsl" />
+    <None Include="Resources\Shaders\Vertex.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\data\Text.lw" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\LightGridCulling.hlsl" />

@@ -28,7 +28,7 @@ void Entity::update(float deltaTime)
 	updateSpecific(deltaTime);
 
 	// Get the new transformation from bulletphysics
-	setWorldMatrix(getTransformMatrix());
+	setWorldTranslation(getTransformMatrix());
 }
 
 void Entity::collision(Entity& other)

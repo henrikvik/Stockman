@@ -1,5 +1,4 @@
-#include "..\..\include\Resources\MeshManager.h"
-
+#include "MeshManager.h"
 
 
 MeshManager::MeshManager()
@@ -15,8 +14,8 @@ void MeshManager::initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDevi
 {
 	this->gDevice = gDevice;
 	this->gDeviceContext = gDeviceContext;
-	
- }
+
+}
 
 void MeshManager::release()
 {
