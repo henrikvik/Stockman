@@ -7,6 +7,7 @@ Game::Game()
 	m_physics = nullptr;
 	m_player = nullptr;
 	m_map = nullptr;
+	m_projectileManager = nullptr;
 }
 
 Game::~Game() 
@@ -25,6 +26,9 @@ bool Game::init()
 	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver;	// Default constraint solver
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
+
+	// Initializing Projectile Manager
+	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
 	m_player = new Player(m_physics->createBody(Sphere({ 5, -15, 0 }, { 0, 0, 0 }, 1.f), 75.f, false));
@@ -48,6 +52,8 @@ void Game::clear()
 	m_menu->clear();
 	delete m_menu;
 	delete m_map;
+	m_projectileManager->clear();
+	delete m_projectileManager;
 }
 
 void Game::update(float deltaTime)

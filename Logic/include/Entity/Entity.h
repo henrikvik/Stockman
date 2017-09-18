@@ -3,7 +3,6 @@
 
 #include "Object.h"
 #include "StatusManager.h"
-#include <Projectile\ProjectileStruct.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 #include <functional>
@@ -14,7 +13,6 @@ namespace Logic
 	{
 	public:
 		Entity(btRigidBody* body);
-		Entity(btRigidBody* body, std::function<void(ProjectileData* pData, btVector3 forward)> addProjectilePtr);
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
 		virtual ~Entity();
@@ -30,8 +28,6 @@ namespace Logic
 		// JUST FOR TESTING, REMOVE
 		void consoleWritePosition();
 
-		void spawnProjectile(ProjectileData* pData, btVector3 forward);
-
 		DirectX::SimpleMath::Vector3 getPosition() const;
 		DirectX::SimpleMath::Quaternion getRotation() const;
 		DirectX::SimpleMath::Vector3 getScale() const;
@@ -45,9 +41,6 @@ namespace Logic
 		btRigidBody* m_body;
 		btTransform* m_transform;
 	//	Hitbox* m_head; for headshot, put it here to remember
-
-		//FuncAddProjectile m_addProjectile;				// Func ptr to ProjectileManager::addProjectile
-		std::function<void(ProjectileData* pData, btVector3 forward)> m_addProjectile;
 	};
 }
 

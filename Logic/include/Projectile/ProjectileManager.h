@@ -17,7 +17,7 @@ namespace Logic
 		~ProjectileManager();
 
 		void clear();
-		void addProjectile(ProjectileData& pData, btVector3 forward);
+		static void addProjectile(ProjectileData& pData, btVector3 forward);
 		void removeProjectile();
 
 		std::vector<Projectile*>* getProjectiles();
