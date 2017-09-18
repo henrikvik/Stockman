@@ -1,4 +1,5 @@
 #include "..\..\..\include\Misc\GUI\MenuState.h"
+#include <Engine\Constants.h>
 
 
 Logic::MenuState::MenuState()
@@ -21,7 +22,7 @@ void Logic::MenuState::initialize(std::function<void(void)> callBack)
 	float height = 200.0f;
 	float width = 200.0f;
 	std::string texture = "Bla";
-	m_buttons.push_back(new Button());
+	m_buttons.push_back(newd Button());
 	m_buttons.at(0)->initialize(pos, texCoordStart, texCoordEnd, height, width, texture, callBack);
 
 	m_menu.m_buttons.push_back(&m_buttons.at(0)->getButtonInfo());

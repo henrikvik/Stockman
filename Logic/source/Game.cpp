@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include <Engine\Constants.h>
 #include <AI/EntityManager.h>
 #include <thread>
 
@@ -35,18 +35,18 @@ bool Game::init()
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();	// Configuration
 	btCollisionDispatcher* dispatcher = new	btCollisionDispatcher(collisionConfiguration);				// The default collision dispatcher
 	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								// Detecting aabb-overlapping object pairs
-	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver;	// Default constraint solver
+	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver();	// Default constraint solver
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
 
 	// Initializing Player
-	m_player = new Player(m_physics->addPlayer(Cube({ 0, 5, -15 }, { 0, 0, 90 }, { 1, 1, 1 }), 100));
+	m_player = newd Player(m_physics->addPlayer(Cube({ 0, 5, -15 }, { 0, 0, 90 }, { 1, 1, 1 }), 100));
 	m_player->init();
 
-	m_menu = new MenuMachine();
+	m_menu = newd MenuMachine();
 	m_menu->initialize(gameStateMenuMain);
 	// Making the map
-	m_map = new Map();
+	m_map = newd Map();
 	m_map->init(m_physics);
 
 	return result;

@@ -1,5 +1,6 @@
 #include "Misc\GUI\MenuMachine.h"
 #include <iostream>
+#include <Engine\Constants.h>
 using namespace Logic;
 
 MenuMachine::MenuMachine()
@@ -22,15 +23,15 @@ MenuMachine::~MenuMachine()
 void Logic::MenuMachine::initialize(GameState state)
 {
 	MenuMachine m;
-	MenuState* test = new MenuState();
+	MenuState* test = newd MenuState();
 	test->initialize(std::bind(&MenuMachine::buttonClick0, this));
 	m_menuStates[gameStateMenuMain] = test;
 
-	MenuState* test1 = new MenuState();
+	MenuState* test1 = newd MenuState();
 	test1->initialize(std::bind(&MenuMachine::buttonClick1, this));
 	m_menuStates[gameStateMenuSettings] = test1;
 
-	MenuState* test2 = new MenuState();
+	MenuState* test2 = newd MenuState();
 	test2->initialize(std::bind(&MenuMachine::buttonClick2, this));
 	m_menuStates[gameStateGame] = test2;
 
