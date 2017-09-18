@@ -40,6 +40,11 @@ namespace Graphics
         SAFE_RELEASE(instanceBuffer);
         gbuffer.Release();
 		delete states;
+		SAFE_RELEASE(GUIvb);
+		SAFE_RELEASE(transparencyBlendState);
+		SAFE_RELEASE(dSS);
+		SAFE_RELEASE(dSV);
+		SAFE_RELEASE(depthSRV);
 
     }
 
