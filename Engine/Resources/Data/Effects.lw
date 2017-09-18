@@ -2,7 +2,10 @@
 	"flags": 2; // 0x2
 	"duration": 3000f;
 	"modifiers": 0;
-	"specifics": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0.1f;
+	"sFreezing": 0.1f;
 }
 { // FREEZE
 	"flags": 4; // 0x4

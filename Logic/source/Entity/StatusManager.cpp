@@ -31,14 +31,23 @@ StatusManager::StatusManager()
 			if (fileStruct.ints.at("modifiers"))
 			{
 				memset(&modifiers, 0, sizeof(modifiers));
-				// todo
+
+				modifiers.modifyDmgGiven =		fileStruct.floats.at("mDmgGiven");
+				modifiers.modifyDmgTaken =		fileStruct.floats.at("mDmgTaken");
+				modifiers.modifyFirerate =		fileStruct.floats.at("mFirerate");
+				modifiers.modifyHP =			fileStruct.floats.at("mHP");
+				modifiers.modifyMovementSpeed = fileStruct.floats.at("mMovementSpeed");
+
 				creating.setModifiers(modifiers);
 			}
 
 			if (fileStruct.ints.at("specifics"))
 			{
 				memset(&spec, 0, sizeof(spec));
-				// todo
+			
+				spec.isBulletTime = fileStruct.floats.at("sBulletTime");
+				spec.isFreezing =	fileStruct.floats.at("sFreezing");
+
 				creating.setSpecifics(spec);
 			}
 
