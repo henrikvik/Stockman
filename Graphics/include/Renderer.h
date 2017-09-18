@@ -1,4 +1,5 @@
 #pragma once
+#include "Resources\ResourceManager.h"
 #include <Windows.h>
 #include <vector>
 #include <d3d11.h>

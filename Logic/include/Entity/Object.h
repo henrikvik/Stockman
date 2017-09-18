@@ -1,8 +1,8 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include <Graphics\include\Renderer.h>
 #include <Graphics\include\Structs.h>
-#include <Misc\RenderRegister.h>
 #include <SimpleMath.h>
 
 namespace Logic
@@ -15,8 +15,8 @@ namespace Logic
 		Object* operator=(const Object& other) = delete;
 		virtual ~Object();
 
-        void setWorldMatrix(DirectX::SimpleMath::Matrix translation);
-		virtual void render(RenderRegister& rRegister);
+		void setWorldTranslation(DirectX::SimpleMath::Matrix translation);
+		virtual void render(Graphics::Renderer& renderer);
 
 	private:
 		Graphics::RenderInfo m_renderInfo;

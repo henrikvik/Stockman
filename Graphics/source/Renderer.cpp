@@ -40,6 +40,11 @@ namespace Graphics
         SAFE_RELEASE(instanceBuffer);
         gbuffer.Release();
 		delete states;
+		SAFE_RELEASE(GUIvb);
+		SAFE_RELEASE(transparencyBlendState);
+		SAFE_RELEASE(dSS);
+		SAFE_RELEASE(dSV);
+		SAFE_RELEASE(depthSRV);
 
     }
 
@@ -65,7 +70,6 @@ namespace Graphics
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
-		//deviceContext->RSSetState(states->CullClockwise());
 
         forwardPlus.setShader(deviceContext, Shader::VS);
 		deviceContext->OMSetRenderTargets(0, nullptr, dSV);
@@ -128,7 +132,29 @@ namespace Graphics
 		{
 			this->drawToBackbuffer(grid.getDebugSRV());
 		}
+		/*D3D11_BUFFER_DESC bufferDesc = { 0 };
+		bufferDesc.ByteWidth = sizeof(FSQuadVerts);
+		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+		D3D11_SUBRESOURCE_DATA data = { 0 };
+		data.pSysMem = FSQuadVerts;
+
+		ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &FSQuad2));
+		ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("cat.jpg"), nullptr, &view));
+
+
+		bufferDesc.ByteWidth = sizeof(defferedTest);
+		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+		data.pSysMem = defferedTest;
+
+
+		ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
+
+
+		this->spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext);*/
 	}
+
 
     void Renderer::queueRender(RenderInfo * renderInfo)
     {
@@ -139,6 +165,16 @@ namespace Graphics
     }
 
 
+	//void Graphics::Renderer::renderMenu(MenuInfo * info)
+	//{
+	//	this->spriteBatch->Begin();
+	//	for (size_t i = 0; i < info->m_buttons.size(); i++)
+	//	{
+	//		/*this->spriteBatch->Draw(info->m_buttons.at(i)->m_texture, info->m_buttons.at(i)->m_rek);*/
+	//	}
+	//	this->spriteBatch->End();
+ //  
+	//}
 
     void Renderer::createGBuffer()
     {

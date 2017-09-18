@@ -6,13 +6,19 @@
 // Logic Includes
 #include <Player\Player.h>
 #include <Physics\Physics.h>
-#include <Misc\RenderRegister.h>
 #include <Map.h>
+#include <Misc\GUI\MenuMachine.h>
+
 
 // DirectX Includes
 #include <Windows.h>
 #include <Keyboard.h>
 #include <Mouse.h>
+
+// Graphics Includes
+#include <Graphics\include\Renderer.h>
+#include <AI/EntityManager.h>
+#include <thread>
 
 namespace Logic
 {
@@ -28,21 +34,16 @@ namespace Logic
 		void clear();
 
 		void update(float deltaTime);
-		void render();
+		void render(Graphics::Renderer& renderer);
 
-		std::queue<Graphics::RenderInfo*>* getRenderQueue();
-	
 		DirectX::SimpleMath::Vector3 getPlayerForward();
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
 
 	private:
-		RenderRegister		m_register;
 		Physics*			m_physics;
 		Player*				m_player;
 		Map*				m_map;
-
-
-        Entity* TEST_CUBE;
+		MenuMachine*		m_menu;
 	};
 }
 
