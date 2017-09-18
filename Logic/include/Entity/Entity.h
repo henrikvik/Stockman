@@ -2,34 +2,41 @@
 #define ENTITY_H
 
 #include "Object.h"
-#include "../Physics/Physics.h"
-#include "../Physics/RigidBodyDesc.h"
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
+#include "StatusManager.h"
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 namespace Logic
 {
 	class Entity : public Object
 	{
 	public:
-		Entity();
+		Entity(btRigidBody* body);
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
-		~Entity();
+		virtual ~Entity();
 
-		bool init(Physics* physics, RigidBodyDesc rigidBodyDesc);
-
-		virtual void clear() = 0;
+		virtual void clear();
 		void update(float deltaTime);
-		virtual void updateSpecific(float deltatTime) = 0;
+		virtual void updateSpecific(float deltaTime) { }
 		void collision(Entity& other);
-		virtual void onCollision(Entity& other) = 0;
+		virtual void affect(int stacks, Effect const &effect,
+							float deltaTime);
+		virtual void onCollision(Entity& other) { }
 
-		// JUST FOR TESTING, REMOVE
-		void consoleWritePosition();
+		DirectX::SimpleMath::Vector3 getPosition() const;
+		DirectX::SimpleMath::Quaternion getRotation() const;
+		DirectX::SimpleMath::Vector3 getScale() const;
+		DirectX::SimpleMath::Matrix getTransformMatrix() const;
+
+	protected:
+		btRigidBody* getRigidbody();
 
 	private:
-		btRigidBody* m_rigidBody;
+		StatusManager m_statusManager;
+		btRigidBody* m_body;
+		btTransform* m_transform;
+	//	Hitbox* m_head; for headshot, put it here to remember
 	};
 }
 

@@ -10,9 +10,10 @@ public:
 
 	Mesh(bool hasSkeleton, unsigned int skeletonID, unsigned int materialID);
 
+	Mesh();
 	~Mesh();
 
-	void Initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);
+	void initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);
 	void Release();
 
 	unsigned int GetVertexCount() { return this->vertCount; };
@@ -34,6 +35,9 @@ public:
 	void CreateVertexBuffer(Vertex* vertices, unsigned int amount, bool isScene);
 
 	void CreateIndexBuffer(UINT* indices, unsigned int amount, bool isScene);
+
+    ID3D11Buffer* getVertexBuffer() { return vertexBuffer; };
+    ID3D11Buffer* getIndexBuffer()  { return indexBuffer;  };
 	
 private:
 	bool	        hasSkeleton = false;

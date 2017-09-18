@@ -17,6 +17,11 @@
 #include "Weapon\WeaponManager.h"
 #include "Skill\SkillManager.h"
 
+#define PLAYER_MOUSE_SENSETIVITY		0.1f
+#define PLAYER_MOVEMENT_SPEED			10000.f
+#define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
+#define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
+
 namespace Logic
 {
 	class Player : public Entity
@@ -26,8 +31,17 @@ namespace Logic
 		WeaponManager m_weaponManager;
 		SkillManager m_skillManager;
 
+		// Stats
+		DirectX::SimpleMath::Vector3 m_forward;
+		float m_moveSpeed;
+
+		// Mouse
+		float m_mouseSens;
+		float m_camYaw;
+		float m_camPitch;
+
 		// Keys
-		DirectX::Keyboard::Keys m_keyoveLeft;
+		DirectX::Keyboard::Keys m_keyLeft;
 		DirectX::Keyboard::Keys m_moveRight;
 		DirectX::Keyboard::Keys m_moveLeft;
 		DirectX::Keyboard::Keys m_moveForward;
@@ -37,6 +51,7 @@ namespace Logic
 		DirectX::Keyboard::Keys m_switchWeaponOne;
 		DirectX::Keyboard::Keys m_switchWeaponTwo;
 		DirectX::Keyboard::Keys m_switchWeaponThree;
+		DirectX::Keyboard::Keys m_reloadWeapon;
 		DirectX::Keyboard::Keys m_useSkill;
 
 		// Movement
@@ -45,17 +60,21 @@ namespace Logic
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
+		DirectX::SimpleMath::Vector2 getWindowMidPoint();
+
 	public:
-		Player();
+		Player(btRigidBody* body);
 		~Player();
 
-		bool init(Physics* physics, RigidBodyDesc rigidBodyDesc);
+		void init();
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);
 
 		void saveToFile();
 		void readFromFile();
+
+		DirectX::SimpleMath::Vector3 getForward();
 	};
 
 }

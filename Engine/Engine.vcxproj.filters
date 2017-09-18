@@ -31,8 +31,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="cat.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
+    <FxCompile Include="Resources\Shaders\Vertex.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\LightGridCulling.hlsl" />
   </ItemGroup>
 </Project>

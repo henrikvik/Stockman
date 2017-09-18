@@ -1,63 +1,34 @@
-#include "Entity/Entity.h"
+#include <Entity/Entity.h>
 
 using namespace Logic;
 
-Entity::Entity()
+Entity::Entity(btRigidBody* body)
 {
-	m_rigidBody = nullptr;
+	m_body = body;
+	m_body->setUserPointer(this);
+	m_transform = &m_body->getWorldTransform();
 }
 
-Entity::~Entity() { }
-
-bool Entity::init(Physics* physics, RigidBodyDesc rigidBodyDesc)
+Entity::~Entity() 
 {
-	if (physics == nullptr)
-		return false;
-
-	// Setting rotation & position
-	btQuaternion rotation;
-	rotation.setEulerZYX(rigidBodyDesc.rotation.getZ(), rigidBodyDesc.rotation.getY(), rigidBodyDesc.rotation.getX());
-
-	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, rigidBodyDesc.position));
-
-	// Creating the specific shape
-	btCollisionShape* shape;
-	switch (rigidBodyDesc.shape)
-	{
-	case ShapeSphere:
-		shape = new btSphereShape(rigidBodyDesc.radius);
-		break;
-	case ShapeRectangle:
-		shape = new btBoxShape(rigidBodyDesc.boxDimensions);
-		break;
-	default: // Function will return false, must be a selected shape
-		shape = nullptr;
-		return false;
-		break;
-	}
-
-	// Creating the actual body
-	m_rigidBody = new btRigidBody(rigidBodyDesc.mass, motionState, shape);
-	
-	// Specifics
-	m_rigidBody->setRestitution(rigidBodyDesc.restitution);	// Bounciness, 0:1 = Loses velocity with each bounce, < 1 = Gains velocity with each bounce
-	m_rigidBody->setFriction(rigidBodyDesc.friction);		// Friction, If set at zero, no spinning will happen
-
-	// Connecting the bulletphysics world with ours
-	m_rigidBody->setUserPointer(this);
-
-	// Adding starting velocity
-	m_rigidBody->applyForce(rigidBodyDesc.velocity, rigidBodyDesc.position);
-
-	// Adding body to the world
-	physics->addRigidBody(m_rigidBody); 
-
-	return true;
+	// ALL physics is getting cleared by the Physics class, 
 }
+
+void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
+	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
+		affect(effectPair.first, *effectPair.second, deltaTime);
+	
+	// Updating every at
+	m_statusManager.update(deltaTime);
+
+	// Updating specific
 	updateSpecific(deltaTime);
+
+	// Get the new transformation from bulletphysics
+	setWorldMatrix(getTransformMatrix());
 }
 
 void Entity::collision(Entity& other)
@@ -65,11 +36,41 @@ void Entity::collision(Entity& other)
 	onCollision(other);
 }
 
-// JUST FOR TESTING, REMOVE
-void Entity::consoleWritePosition()
-{
-	btTransform trans;
-	m_rigidBody->getMotionState()->getWorldTransform(trans);
+void Entity::affect(int stacks, Effect const &effect, float dt) {}
 
-	printf("%f\n", trans.getOrigin().getY());
+btRigidBody* Entity::getRigidbody()
+{
+	return m_body;
+}
+
+DirectX::SimpleMath::Vector3 Entity::getPosition() const
+{
+	return DirectX::SimpleMath::Vector3(m_transform->getOrigin());
+}
+
+DirectX::SimpleMath::Quaternion Entity::getRotation() const
+{
+	return DirectX::SimpleMath::Quaternion(m_transform->getRotation());
+}
+
+DirectX::SimpleMath::Vector3 Entity::getScale() const
+{
+	return DirectX::SimpleMath::Vector3(m_body->getCollisionShape()->getLocalScaling());
+}
+
+DirectX::SimpleMath::Matrix Entity::getTransformMatrix() const
+{
+	// Making memory for a matrix
+	float* m = new float[4 * 16];
+
+	// Getting this entity's matrix
+	m_transform->getOpenGLMatrix((btScalar*)(m));
+
+	// Translating to DirectX Math and assigning the variables
+	DirectX::SimpleMath::Matrix transformMatrix(m);
+
+	// Deleting the old created variables from memory
+	delete m;
+
+	return transformMatrix;
 }

@@ -1,11 +1,15 @@
 #include "Game.h"
 
+#include <AI/EntityManager.h>
+#include <thread>
+
 using namespace Logic;
 
 Game::Game()
 {
 	m_physics = nullptr;
 	m_player = nullptr;
+	m_map = nullptr;
 }
 
 Game::~Game() 
@@ -17,6 +21,15 @@ bool Game::init()
 {
 	bool result;
 
+	// TESTING REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE 
+/*	EntityManager entity;
+	entity.spawnWave();
+	while (true) {
+		entity.update(5.f);
+		std::this_thread::sleep_for(std::chrono::milliseconds(400));
+	} */
+	// TESTING REMOVE REMOVE REMOVE RMEOVE REOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVEREOMVE
+
 	// Initializing Bullet physics
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();	// Configuration
 	btCollisionDispatcher* dispatcher = new	btCollisionDispatcher(collisionConfiguration);				// The default collision dispatcher
@@ -25,28 +38,31 @@ bool Game::init()
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
 
-	m_player = new Player();
-	m_player->init(m_physics, RigidBodyDesc(ShapeRectangle, 1, { 0, 0, 0 }, { 1, 1, 1 } ));
+	// Initializing Player
+	m_player = new Player(m_physics->addPlayer(Cube({ 0, 5, -15 }, { 0, 0, 90 }, { 1, 1, 1 }), 100));
+	m_player->init();
 
 	m_menu = new MenuMachine();
 	m_menu->initialize();
 	m_menu->showMenu(gameStateMenuMain);
+	// Making the map
+	m_map = new Map();
+	m_map->init(m_physics);
+
 	return result;
 }
 
 void Game::clear()
 {
-	// Deleting physics
-	m_physics->clear();
 	delete m_physics;
-
-	// Deleting player
-	m_player->clear();
 	delete m_player;
 
 	// Deleting menu
 	m_menu->clear();
 	delete m_menu;
+
+	// Deleting map
+	delete m_map;
 }
 
 void Game::update(float deltaTime)
@@ -59,4 +75,34 @@ void Game::update(float deltaTime)
 //	m_player->consoleWritePosition();
 
 	m_menu->update();
+
+	// Updating map objects
+	m_map->update(deltaTime);
+}
+
+void Game::render()
+{
+	// Clearing previous frame
+	m_register.clear();
+	
+	// Drawing player
+	m_player->render(m_register);
+
+	// Drawing map
+	m_map->render(m_register);
+}
+
+std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
+{
+	return m_register.getRenderInfo();
+}
+
+DirectX::SimpleMath::Vector3 Game::getPlayerForward()
+{
+	return m_player->getForward();
+}
+
+DirectX::SimpleMath::Vector3 Game::getPlayerPosition()
+{
+	return m_player->getPosition();
 }

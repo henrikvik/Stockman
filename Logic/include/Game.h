@@ -3,10 +3,14 @@
 
 #include <stdio.h>
 
-#include "Player\Player.h"
-#include "Physics\Physics.h"
+// Logic Includes
+#include <Player\Player.h>
+#include <Physics\Physics.h>
+#include <Misc\RenderRegister.h>
+#include <Map.h>
 #include "Misc\GUI\MenuMachine.h"
 
+// DirectX Includes
 #include <Windows.h>
 #include <Keyboard.h>
 #include <Mouse.h>
@@ -25,12 +29,22 @@ namespace Logic
 		void clear();
 
 		void update(float deltaTime);
-	//	void draw(RenderMachine& renderMachine);
+		void render();
+
+		std::queue<Graphics::RenderInfo*>* getRenderQueue();
+	
+		DirectX::SimpleMath::Vector3 getPlayerForward();
+		DirectX::SimpleMath::Vector3 getPlayerPosition();
 
 	private:
-		Physics* m_physics;
-		Player* m_player;
-		MenuMachine* m_menu;
+		RenderRegister		m_register;
+		Physics*			m_physics;
+		Player*				m_player;
+		Map*				m_map;
+		MenuMachine*		m_menu;
+
+        Entity* TEST_CUBE;
+		
 	};
 }
 

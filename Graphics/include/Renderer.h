@@ -9,66 +9,144 @@
 #include "WICTextureLoader.h"
 #include <Resources\ResourceManager.h>
 #include <SimpleMath.h>
-#include <DirectXMath.h>
-#include <SpriteBatch.h>
+#include <Resources\Shader.h>
+#include <Datatypes.h>
+#include "LightGrid.h"
 
 namespace Graphics
 {
 
-	
+    struct  TempCube
+    {
+        ID3D11Buffer * vertexBuffer;
+        TempCube(ID3D11Device * device)
+        {
+            Vertex vertices[] =
+            {
+                // FRONT
+                {{-1, -1, -1},{ 0,  0, -1},{ 0, 0},{ 0,0},{ 0,0}},
+                {{-1,  1, -1},{ 0,  0, -1},{ 0, 1},{ 0,0},{ 0,0}},
+                {{ 1, -1, -1},{ 0,  0, -1},{ 1, 0},{ 0,0},{ 0,0}},
+
+                {{ 1, -1, -1},{ 0,  0, -1},{ 1, 0},{ 0,0},{ 0,0}},
+                {{-1,  1, -1},{ 0,  0, -1},{ 0, 1},{ 0,0},{ 0,0}},
+                {{ 1,  1, -1},{ 0,  0, -1},{ 1, 1},{ 0,0},{ 0,0}},
+
+                // TOP
+                {{-1,  1, -1},{ 0,  1,  0},{ 0, 0},{ 0,0},{ 0,0}},
+                {{-1,  1,  1},{ 0,  1,  0},{ 0, 1},{ 0,0},{ 0,0}},
+                {{ 1,  1, -1},{ 0,  1,  0},{ 1, 0},{ 0,0},{ 0,0}},
+
+                {{ 1,  1, -1},{ 0,  1,  0},{ 1, 0},{ 0,0},{ 0,0}},
+                {{-1,  1,  1},{ 0,  1,  0},{ 0, 1},{ 0,0},{ 0,0}},
+                {{ 1,  1,  1},{ 0,  1,  0},{ 1, 1},{ 0,0},{ 0,0}},
+
+                // LEFT
+                {{-1, -1,  1},{-1,  0,  0},{ 0, 1},{ 0,0},{ 0,0}},
+                {{-1,  1,  1},{-1,  0,  0},{ 1, 1},{ 0,0},{ 0,0}},
+                {{-1, -1, -1},{-1,  0,  0},{ 0, 0},{ 0,0},{ 0,0}},
+
+                {{-1, -1, -1},{-1,  0,  0},{ 0, 0},{ 0,0},{ 0,0}},
+                {{-1,  1,  1},{-1,  0,  0},{ 1, 1},{ 0,0},{ 0,0}},
+                {{-1,  1, -1},{-1,  0,  0},{ 1, 0},{ 0,0},{ 0,0}},
+
+                // RIGHT
+                {{ 1,  1,  1},{ 1,  0,  0},{ 1, 1},{ 0,0},{ 0,0}},
+                {{ 1, -1,  1},{ 1,  0,  0},{ 0, 1},{ 0,0},{ 0,0}},
+                {{ 1, -1, -1},{ 1,  0,  0},{ 0, 0},{ 0,0},{ 0,0}},
+
+                {{ 1,  1,  1},{ 1,  0,  0},{ 1, 1},{ 0,0},{ 0,0}},
+                {{ 1, -1, -1},{ 1,  0,  0},{ 0, 0},{ 0,0},{ 0,0}},
+                {{ 1,  1, -1},{ 1,  0,  0},{ 1, 0},{ 0,0},{ 0,0}},
+
+                // BACK
+                {{-1,  1,  1},{ 0,  0,  1},{ 0, 1},{ 0,0},{ 0,0}},
+                {{-1, -1,  1},{ 0,  0,  1},{ 0, 0},{ 0,0},{ 0,0}},
+                {{ 1, -1,  1},{ 0,  0,  1},{ 1, 0},{ 0,0},{ 0,0}},
+
+                {{-1,  1,  1},{ 0,  0,  1},{ 0, 1},{ 0,0},{ 0,0}},
+                {{ 1, -1,  1},{ 0,  0,  1},{ 1, 0},{ 0,0},{ 0,0}},
+                {{ 1,  1,  1},{ 0,  0,  1},{ 1, 1},{ 0,0},{ 0,0}},
+
+                // BOTTOM
+                {{-1, -1,  1},{ 0, -1,  0},{ 0, 1},{ 0,0},{ 0,0}},
+                {{-1, -1, -1},{ 0, -1,  0},{ 0, 0},{ 0,0},{ 0,0}},
+                {{ 1, -1, -1},{ 0, -1,  0},{ 1, 0},{ 0,0},{ 0,0}},
+
+                {{-1, -1,  1},{ 0, -1,  0},{ 0, 1},{ 0,0},{ 0,0}},
+                {{ 1, -1, -1},{ 0, -1,  0},{ 1, 0},{ 0,0},{ 0,0}},
+                {{ 1, -1,  1},{ 0, -1,  0},{ 1, 1},{ 0,0},{ 0,0}}
+            };
+
+            D3D11_SUBRESOURCE_DATA subData = {};
+            subData.pSysMem = vertices;
+
+            D3D11_BUFFER_DESC desc = { 0 };
+            desc.ByteWidth = sizeof(vertices);
+            desc.Usage = D3D11_USAGE_IMMUTABLE;
+            desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+            device->CreateBuffer(&desc, &subData, &vertexBuffer);
+        }
+
+        ~TempCube() 
+        { 
+            vertexBuffer->Release(); 
+        }
+    };
+
 
     class Renderer
     {
     public:
-        Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer);
+        Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
 		virtual ~Renderer();
         void render(Camera * camera);
-		void renderMenu(MenuInfo * info);
-        void qeueuRender(RenderInfo * renderInfo);
+        void queueRender(RenderInfo * renderInfo);
+        void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
 
     private:
-		//MYCKET TEMP
-		struct TestCube
-		{
-			DirectX::SimpleMath::Vector3 pos;
-			DirectX::SimpleMath::Vector2 uv;
-			DirectX::SimpleMath::Vector3 normal;
-			int mat;
-		};
+        typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
+        std::vector<RenderInfo*> renderQueue;
+        InstanceQueue_t instanceQueue;
+        GBuffer gbuffer;
 
-		ResourceManager resourceManager;
+		LightGrid grid;
+		DirectX::CommonStates *states;
 
+        Shader simpleForward;
+        ResourceManager resourceManager;
+        D3D11_VIEWPORT viewPort;
+
+        // Lånade Pekare
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 		ID3D11DepthStencilView * dSV;
+		ID3D11ShaderResourceView* depthSRV;
+
 		ID3D11DepthStencilState * dSS;
 
-		//temp
-		ID3D11ShaderResourceView* view;
-		ID3D11Buffer * FSQuad2;
-		ID3D11Buffer * defferedTestBuffer;
-		ID3D11Buffer * instanceBuffer;
+        // Egna Pekare
+        ID3D11Buffer * instanceBuffer;		
 
-
-        std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
-        
-
-
-        std::vector<RenderInfo*> renderQueue;
-        typedef  std::unordered_map<int, std::vector<InstanceData>> InstanceQueue_t;
-        InstanceQueue_t instanceQueue;
-        GBuffer gbuffer;
+        ///// SUPER TEMP
+        TempCube cube;
+        ID3D11Buffer *GUIvb;
+        ID3D11BlendState *transparencyBlendState;
 
         void createGBuffer();
+        void createInstanceBuffer();
+
         void cull();
         void draw();
-		void drawDeffered();
+        void drawGUI();
 		void createDepthStencil();
-		void createCubeInstances();
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
-    };
 
+        void createBlendState();
+        void createGUIBuffers();
+    };
 };

@@ -2,15 +2,20 @@
 
 using namespace Logic;
 
-Object::Object()
+Object::Object() 
 {
+	m_renderInfo.render = true;
 }
 
-Object::~Object()
+Object::~Object() { }
+
+void Object::setWorldMatrix(DirectX::SimpleMath::Matrix translation)
 {
+    m_renderInfo.translation = translation;
 }
 
-Graphics::RenderInfo* Logic::Object::getRenderInfo()
+void Object::render(RenderRegister& rRegister)
 {
-	return &m_renderInfo;
+	if (m_renderInfo.render)
+		rRegister.addRenderInfo(&m_renderInfo);
 }
