@@ -1,7 +1,4 @@
 #include "Game.h"
-#include <Engine\Constants.h>
-#include <AI/EntityManager.h>
-#include <thread>
 
 using namespace Logic;
 
@@ -84,7 +81,7 @@ void Game::update(float deltaTime)
 	}
 }
 
-void Game::render()
+void Game::render(Graphics::Renderer& renderer)
 {
 	if (m_menu->currentState() != gameStateGame)
 	{
@@ -92,20 +89,12 @@ void Game::render()
 	}
 	else
 	{
-		// Clearing previous frame
-		m_register.clear();
-
 		// Drawing player
-		m_player->render(m_register);
+		m_player->render(renderer);
 
 		// Drawing map
-		m_map->render(m_register);
+		m_map->render(renderer);
 	}
-}
-
-std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
-{
-	return m_register.getRenderInfo();
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

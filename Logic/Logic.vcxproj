@@ -238,7 +238,6 @@
     <ClCompile Include="source\AI\EntityManager.cpp" />
     <ClCompile Include="source\Misc\Card.cpp" />
     <ClCompile Include="source\Misc\CardManager.cpp" />
-    <ClCompile Include="source\Misc\RenderRegister.cpp" />
     <ClCompile Include="source\Misc\StateMachine.cpp" />
     <ClCompile Include="source\Physics\Physics.cpp" />
     <ClCompile Include="source\Player\Player.cpp" />

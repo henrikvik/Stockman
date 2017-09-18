@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include <Datatypes.h>
-#include <Resources/Mesh.h>
+#include "../Datatypes.h"
+#include "../Resources/Mesh.h"
 
 using namespace std;
 
