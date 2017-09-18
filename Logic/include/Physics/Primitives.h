@@ -80,8 +80,8 @@ namespace Logic
 			m_shape = ShapeTypeSphere;
 		}
 
-		void setNormal(float radius)	{ m_radius = radius;	}
-		float getNormal() const			{ return m_radius;		}
+		void setRadius(float radius)	{ m_radius = radius;	}
+		float getRadius() const			{ return m_radius;		}
 
 	private:
 		float		m_radius;
