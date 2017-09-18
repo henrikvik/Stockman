@@ -27,12 +27,14 @@ bool Game::init()
 	result = m_physics->init();
 
 	// Initializing Player
-	m_player = new Player(m_physics->addPlayer(Cube({ 0, 5, -15 }, { 0, 0, 90 }, { 1, 1, 1 }), 100));
+	m_player = new Player(m_physics->createBody(Sphere({ 5, -15, 0 }, { 0, 0, 0 }, 1.f), 75.f, false));
 	m_player->init();
 
+	// Initializing Menu's
 	m_menu = new MenuMachine();
 	m_menu->initialize(gameStateGame); //change here to accses menu tests
-	// Making the map
+									   
+	// Initializing the map
 	m_map = new Map();
 	m_map->init(m_physics);
 
@@ -46,12 +48,8 @@ void Game::clear()
 {
 	delete m_physics;
 	delete m_player;
-
-	// Deleting menu
 	m_menu->clear();
 	delete m_menu;
-
-	// Deleting map
 	delete m_map;
 }
 
@@ -63,10 +61,7 @@ void Game::update(float deltaTime)
 	}
 	else
 	{
-		// Updating physics
 		m_physics->update(deltaTime);
-
-		// Updating player
 		m_player->update(deltaTime);
 
 		// Updating Entities
@@ -85,10 +80,7 @@ void Game::render(Graphics::Renderer& renderer)
 	}
 	else
 	{
-		// Drawing player
 		m_player->render(renderer);
-
-		// Drawing map
 		m_map->render(renderer);
 
 		// Drawing Entities (enemies / triggers)
