@@ -38,6 +38,7 @@ bool Game::init()
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
 
+	// Initializing Player
 	m_player = m_physics->addPlayer(Cube({ 0, 5, -15 }, { 0, 0, 90 }, { 1, 1, 1 }), 100);
 	m_player->init();
 
@@ -45,8 +46,6 @@ bool Game::init()
 	m_map = new Map();
 	m_map->init(m_physics);
 
-    TEST_CUBE = m_physics->addBody(Cube({ 0, 10 , 0 }, { 0, 0 , 0 }, { 0.5, 0.5 , 0.5 }), 25.f, false);
-    
 	return result;
 }
 
@@ -67,11 +66,6 @@ void Game::update(float deltaTime)
 
 	// Updating map objects
 	m_map->update(deltaTime);
-
-    TEST_CUBE->update(deltaTime);
-
-	// Debugging for testing if physics is working:
-	// printf("Player:		");		m_player->consoleWritePosition();
 }
 
 void Game::render()
@@ -84,9 +78,6 @@ void Game::render()
 
 	// Drawing map
 	m_map->render(m_register);
-   
-//	TEST_CUBE->render(m_register);
-
 }
 
 std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()

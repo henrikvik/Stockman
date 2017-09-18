@@ -57,7 +57,7 @@ DirectX::SimpleMath::Vector3 Entity::getScale() const
 	return DirectX::SimpleMath::Vector3(m_body->getCollisionShape()->getLocalScaling());
 }
 
-DirectX::SimpleMath::Matrix Logic::Entity::getTransformMatrix() const
+DirectX::SimpleMath::Matrix Entity::getTransformMatrix() const
 {
 	// Making memory for a matrix
 	float* m = new float[4 * 16];

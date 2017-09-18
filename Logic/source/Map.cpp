@@ -33,9 +33,11 @@ void Map::initHitboxes(Physics* physics)
 
 void Map::initObjects(Physics * physics)
 {
-	Entity* box = physics->addBody(Cube({ 0, 10 , 0 }, { 0, 0 , 0 }, { 0.5, 0.5 , 0.5 }), 25.f, false);
-	
-	m_hitboxes.push_back(box);
+	for (int i = 0; i < 5; ++i)
+	{
+		Entity* box = physics->addBody(Cube({ 0, 10 , 0 }, { 0, 0 , 0 }, { 0.5, 0.5 , 0.5 }), 25.f, false);
+		m_objects.push_back(box);
+	}
 }
 
 void Map::clear()
