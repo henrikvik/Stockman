@@ -24,9 +24,10 @@ void Map::initProps()
 
 void Map::initHitboxes(Physics* physics)
 {
-	Hitbox* h = new Hitbox();
-	h->init(physics, BodyDesc(0, { 0, 0, 0 }, { 0, 1, 0 }));
-	m_hitboxes.push_back(h);
+	Entity* infinite = physics->addBody(Plane({ 0, 1, 0 }), 0, false);
+    infinite->setWorldMatrix(DirectX::SimpleMath::Matrix::CreateScale(1000, 0.01, 1000));
+
+    m_hitboxes.push_back(infinite);
 }
 
 void Map::clear()
@@ -54,4 +55,4 @@ void Map::render(RenderRegister & renderRegister)
 }
 
 std::vector<Object*>* Map::getProps()			{	return &m_props;		}
-std::vector<Hitbox*>* Logic::Map::getHitboxes() {	return &m_hitboxes;	}
+std::vector<Entity*>* Logic::Map::getHitboxes() {	return &m_hitboxes;	}

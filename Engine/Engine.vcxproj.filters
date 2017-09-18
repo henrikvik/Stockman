@@ -30,4 +30,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\Vertex.hlsl" />
+  </ItemGroup>
 </Project>

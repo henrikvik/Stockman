@@ -38,14 +38,15 @@ bool Game::init()
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
 
-	// Making a player class with a body at 100 above origin
-	m_player = new Player();
-	m_player->init(m_physics, BodyDesc(1, { 0, 100, 0 }, { 1, 1, 1 }));
+	m_player = m_physics->addPlayer(Cube({ 0, 5, -15 }, { 0, 0, 90 }, { 1, 1, 1 }), 100);
+	m_player->init();
 
 	// Making the map
 	m_map = new Map();
 	m_map->init(m_physics);
 
+    TEST_CUBE = m_physics->addBody(Cube({ 0, 10 , 0 }, { 0, 0 , 0 }, { 0.5, 0.5 , 0.5 }), 25.f, false);
+    
 	return result;
 }
 
@@ -64,20 +65,24 @@ void Game::update(float deltaTime)
 	// Updating player
 	m_player->update(deltaTime);
 
+    TEST_CUBE->update(deltaTime);
+
+
 	// Debugging for testing if physics is working:
-	printf("Player:		");		m_player->consoleWritePosition();
+	// printf("Player:		");		m_player->consoleWritePosition();
 }
 
 void Game::render()
 {
 	// Clearing previous frame
 	m_register.clear();
-
 	// Drawing player
 	m_player->render(m_register);
 
 	// Drawing map
 	m_map->render(m_register);
+    TEST_CUBE->render(m_register);
+
 }
 
 std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
@@ -85,12 +90,12 @@ std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
 	return m_register.getRenderInfo();
 }
 
-DirectX::SimpleMath::Vector3 Game::getPlayerLookAt()
+DirectX::SimpleMath::Vector3 Game::getPlayerForward()
 {
-	return m_player->getLookAt();
+	return m_player->getForward();
 }
 
-DirectX::SimpleMath::Vector3 Logic::Game::getPlayerPos()
+DirectX::SimpleMath::Vector3 Game::getPlayerPosition()
 {
 	return m_player->getPosition();
 }

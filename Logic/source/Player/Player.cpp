@@ -2,8 +2,10 @@
 
 using namespace Logic;
 
-Player::Player()
+Player::Player(btRigidBody* body)
+: Entity(body)
 {
+
 }
 
 Player::~Player()
@@ -11,18 +13,18 @@ Player::~Player()
 	clear();
 }
 
-void Player::init(Physics* physics, BodyDesc bodyDesc)
+void Player::init()
 {
-	Entity::init(physics, bodyDesc);
-
 	m_weaponManager.init();
 	m_skillManager.init();
 
 	// Default mouse sensetivity, lookAt
-	m_mouseSens = 1.f;
-	m_lookAt = DirectX::SimpleMath::Vector3(0, 0, 1);
+	m_camYaw = 90;
+	m_camPitch = 5;
 
-	m_moveSpeed = 1.f;
+	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
+	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
+	m_moveSpeed = PLAYER_MOVEMENT_SPEED;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -62,18 +64,17 @@ void Player::readFromFile()
 
 void Player::updateSpecific(float deltaTime)
 {
-
 	// Update Managers
 	m_weaponManager.update(deltaTime);
 	m_skillManager.update();
 
 	// Get Mouse and Keyboard states for this frame
+	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
 	// Movement
-	if(ks.IsKeyDown(DirectX::Keyboard::X))
-		mouseMovement(deltaTime, &ms);
+	mouseMovement(deltaTime, &ms);
 	move(deltaTime, &ks);
 	jump(deltaTime);
 	crouch(deltaTime);
@@ -112,7 +113,6 @@ void Player::updateSpecific(float deltaTime)
 		if (ks.IsKeyDown(m_reloadWeapon))
 			m_weaponManager.reloadWeapon();
 	}
-	
 }
 
 void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
@@ -123,34 +123,42 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
+		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
 		linearVel += dir;
 	}
 
 	// Move Right
 	if (ks->IsKeyDown(m_moveRight))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).cross(btVector3(0, 1, 0)).normalize();
+		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
 		linearVel += -dir;
 	}
 
 	// Move Forward
 	if (ks->IsKeyDown(m_moveForward))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).normalize();
+		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
 		linearVel += dir;
 	}
 
 	// Move Back
 	if (ks->IsKeyDown(m_moveBack))
 	{
-		btVector3 dir = btVector3(m_lookAt.x, 0, m_lookAt.z).normalize();
+		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
 		linearVel += -dir;
 	}
 
 	// Apply final force
 	rigidBody->applyCentralForce(linearVel * deltaTime * m_moveSpeed);
 
+	// Setting movement caps
+	btVector3 lv = rigidBody->getLinearVelocity();
+	float x = lv.getX(), y = lv.getY(), z = lv.getZ();
+	float hcap = PLAYER_MOVEMENT_HORIZONTAL_CAP;
+	float vcap = PLAYER_MOVEMENT_VERTICAL_CAP;
+	if (x > hcap || x < -hcap) rigidBody->setLinearVelocity(btVector3((x > 0) ? hcap : -hcap, y, z));
+	if (y > vcap || y < -vcap) rigidBody->setLinearVelocity(btVector3(x, (y > 0) ? vcap : -vcap, z));
+	if (z > hcap || z < -hcap) rigidBody->setLinearVelocity(btVector3(x, y, (z > 0) ? hcap : -hcap));
 }
 
 void Player::jump(float deltaTime)
@@ -167,43 +175,31 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
 	DirectX::SimpleMath::Vector2 midPoint = getWindowMidPoint();
 
-	POINT cursorPos;
-	GetCursorPos(&cursorPos);
+	m_camYaw	-= m_mouseSens * (ms->x);
+	m_camPitch	-= m_mouseSens * (ms->y);
 
-	static float yaw;
-	static float pitch;
+	// DirectX calculates position on the full resolution,
+	//  while getWindowMidPoint gets the current window's middle point!!!!!
 
-	if (deltaTime < 0.1f) // TEMP, fix for EXTREMELY low delta time
-		deltaTime = 0.1f;
-
-	yaw -= deltaTime * m_mouseSens * (cursorPos.x - midPoint.x);
-	pitch -= deltaTime * m_mouseSens * (cursorPos.y - midPoint.y);
-
-	//printf("x: %f  y: %f\n", cursorPos.x - midPoint.x, cursorPos.y - midPoint.y);
-	//printf("x: %f  y: %f\n", yaw, pitch);
-	//printf("msx: %d	msy: %d\n", cursorPos.x, cursorPos.y);
-
-	// Pitch lock and yaw correction
-	if (pitch > 89)
-		pitch = 89;
-	if (pitch < -89)
-		pitch = -89;
-	if (yaw < 0.f)
-		yaw += 360.f;
-	if (yaw > 360.f)
-		yaw -= 360.f;
+	 // Pitch lock and yaw correction
+	if (m_camPitch > 89)
+		m_camPitch = 89;
+	if (m_camPitch < -89)
+		m_camPitch = -89;
+	if (m_camYaw < 0.f)
+		m_camYaw += 360.f;
+	if (m_camYaw > 360.f)
+		m_camYaw -= 360.f;
 
 	// Reset cursor to mid point of window
-	SetCursorPos(midPoint.x, midPoint.y);
+//	SetCursorPos(midPoint.x, midPoint.y);
 
-	// Create lookAt
-	m_lookAt.x = cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw));
-	m_lookAt.y = sin(DirectX::XMConvertToRadians(pitch));
-	m_lookAt.z = cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw));
+	// Create forward
+	m_forward.x = cos(DirectX::XMConvertToRadians(m_camPitch)) * cos(DirectX::XMConvertToRadians(m_camYaw));
+	m_forward.y = sin(DirectX::XMConvertToRadians(m_camPitch));
+	m_forward.z = cos(DirectX::XMConvertToRadians(m_camPitch)) * sin(DirectX::XMConvertToRadians(m_camYaw));
 
-	m_lookAt.Normalize();
-
-	//printf("x: %f  y: %f  z: %f\n", m_lookAt.x, m_lookAt.y, m_lookAt.z);
+	m_forward.Normalize();
 }
 
 DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
@@ -214,4 +210,9 @@ DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
 	GetWindowRect(hwnd, &rect);
 
 	return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
+}
+
+DirectX::SimpleMath::Vector3 Player::getForward()
+{
+	return m_forward;
 }

@@ -9,7 +9,7 @@ namespace Logic
 	class EnemyTest : public Enemy
 	{
 		public:
-			EnemyTest();
+			EnemyTest(btRigidBody* body);
 			virtual ~EnemyTest();
 
 			virtual void clear();

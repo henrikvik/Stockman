@@ -1,0 +1,26 @@
+#pragma once
+#include <d3d11.h>
+#include <initializer_list>
+
+namespace Graphics
+{
+    class Shader
+    {
+    public:
+        enum Flags 
+        {
+            VS = 1 << 0,
+            PS = 1 << 1,
+        };
+
+        Shader(ID3D11Device * device, LPCWSTR shaderPath, std::initializer_list<D3D11_INPUT_ELEMENT_DESC> inputDesc);
+        virtual ~Shader();
+
+        void setShader(ID3D11DeviceContext * deviceContext, int flags = VS | PS);
+
+    private:
+        ID3D11InputLayout  * inputLayout;
+        ID3D11VertexShader * vertexShader;
+        ID3D11PixelShader  * pixelShader;
+    };
+}
