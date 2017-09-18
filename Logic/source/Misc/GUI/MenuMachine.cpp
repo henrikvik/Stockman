@@ -34,7 +34,7 @@ void Logic::MenuMachine::initialize(GameState state)
 	test2->initialize(std::bind(&MenuMachine::buttonClick2, this));
 	m_menuStates[gameStateGame] = test2;
 
-	showMenu(gameStateMenuMain);
+	showMenu(state);
 
 	//accquire menu state
 	//accquires position

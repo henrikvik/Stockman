@@ -44,7 +44,7 @@ bool Game::init()
 	m_player->init();
 
 	m_menu = new MenuMachine();
-	m_menu->initialize(gameStateMenuMain);
+	m_menu->initialize(gameStateGame); //change here to accses menu tests
 	// Making the map
 	m_map = new Map();
 	m_map->init(m_physics);
