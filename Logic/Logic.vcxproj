@@ -171,6 +171,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Misc\FileLoader.h" />
     <ClInclude Include="include\Misc\GUI\Button.h" />
     <ClInclude Include="include\Misc\GUI\MenuState.h" />
     <ClInclude Include="include\AI\EnemyTest.h" />
@@ -215,6 +216,7 @@
     <ClInclude Include="include\Entity\StatusManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Misc\FileLoader.cpp" />
     <ClCompile Include="source\Misc\GUI\Button.cpp" />
     <ClCompile Include="source\Misc\GUI\MenuState.cpp" />
     <ClCompile Include="source\AI\EnemyTest.cpp" />
