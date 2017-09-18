@@ -10,6 +10,8 @@ cbuffer Camera : register(b0)
 {
 	float4x4 ViewProjection;
 	float4x4 InvProjection;
+    float4x4 dummy;
+    float4 camPos;
 }
 
 // TODO: change
@@ -47,8 +49,8 @@ VSOutput VS(VSInput input) {
 	output.pos = mul(ViewProjection, output.worldPos);
 
 	output.uv = input.uv;
-	output.normal = input.normal;
-
+    output.normal = mul(input.world, float4(input.normal, 0));
+    output.normal = normalize(output.normal);
 	return output;
 }
 
@@ -71,25 +73,40 @@ PSOutput PS(VSOutput input) {
 	uint offset = LightGrid[tile].x;
 	uint count = LightGrid[tile].y;
 	
-	// temp
-	float3 lightPos = float3(0, 5, 10);
-	float diffuseFactor = saturate(dot(input.normal, normalize(lightPos - input.worldPos)));
-	float3 diffuse = diffuseFactor * float3(0.67, 0.67, 0.67);// Texture.Sample(Sampler, input.uv).xyz;
+	// temp WHEN DAY/NIGHT CYCLE IS A THING THIS WILL BE REMOVED
+    float3 lightPos = float3(0, 5, 10);
+    float diffuseFactor = saturate(dot(input.normal, normalize(lightPos - input.worldPos.xyz)));
+    float3 directionalDiffuse = diffuseFactor * float3(0.4, 0.3, 0);
 
-	float3 color = float3(0.5, 0.5, 0.5);
-	for (uint i = 0; i < count; i++) {
+
+    float3 ambient = float3(0.1, 0.1, 0.1);
+
+    //This will include a texture sample or material color later
+	float3 color = 0.1f;
+
+    //TODO:: FIX THE ODD BACKSIDE SPECULARITUYUY
+	for (uint i = 0; i < count; i++) 
+    {
 		uint idx = LightIndexList[offset + i];
 		Light light = Lights[idx];
 
+		float3 posToLight = light.positionWS - input.worldPos.xyz;
+        float3 reflectThing = normalize(posToLight + (camPos.xyz - input.worldPos.xyz));
 
-		float3 L = light.positionWS - input.worldPos.xyz;
-		float distance = length(L);
-		L = L / distance;
+        float distance = length(posToLight);
+        float3 normalizedLight = posToLight / distance;
 		float d = 1.0f - smoothstep(light.range * 0.5f, light.range, distance);
-		color += light.color * saturate(d);
+
+        float3 diffuse = saturate(dot(input.normal, posToLight));
+
+       
+        float3 specular = pow(saturate(dot(input.normal, reflectThing)), 1000) * light.color;
+        color += light.color * saturate(d) * saturate(diffuse + specular);
+
+        
 	}
 
-	output.color = float4(diffuse * color, 1);
+    output.color = float4(saturate(color), 1);
 
 	return output;
 }
