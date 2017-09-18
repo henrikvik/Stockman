@@ -70,7 +70,6 @@ namespace Graphics
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
-		deviceContext->RSSetState(states->CullClockwise());
 
         forwardPlus.setShader(deviceContext, Shader::VS);
 		deviceContext->OMSetRenderTargets(0, nullptr, dSV);
