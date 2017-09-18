@@ -1,4 +1,4 @@
-#include <resources/Skeleton.h>
+#include "Skeleton.h"
 
 namespace Graphics {
 	Skeleton::Skeleton()

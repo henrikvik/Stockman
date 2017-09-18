@@ -217,13 +217,13 @@ struct AnimVert
 
 };
 
-struct AnimationInfo
-{
-	unsigned int numberOfFrames = 0; // the amount of meshes
-	float		  animationTime = 0;
-	std::vector<std::vector<AnimVert>> meshesPerFrame; //a 2d array of all the shapes belonging to the animation
-	std::vector<FrameData> frames;
-};
+//struct AnimationInfo
+//{
+//	unsigned int numberOfFrames = 0; // the amount of meshes
+//	float		  animationTime = 0;
+//	std::vector<std::vector<AnimVert>> meshesPerFrame; //a 2d array of all the shapes belonging to the animation
+//	std::vector<FrameData> frames;
+//};
 
 struct Material
 {

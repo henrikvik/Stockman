@@ -1,10 +1,10 @@
 #pragma once
-#include "ShaderHandler.h"
-#include "Resources/Mesh.h"
-#include <Resources/MeshManager.h>
-#include <BRFImportHandler.h>
-#include <Resources\MaterialManager.h>
-#include <Structs.h>
+#include "../ShaderHandler.h"
+#include "Mesh.h"
+#include "MeshManager.h"
+#include "BRFImportHandler.h"
+#include "MaterialManager.h"
+#include <Graphics\include\Structs.h>
 
 
 #define NROFSAMPLERS 1

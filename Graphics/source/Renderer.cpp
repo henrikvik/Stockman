@@ -1,6 +1,6 @@
-#include "Renderer.h"
+#include <Graphics\include\Renderer.h>
 #include <stdio.h>
-#include "ThrowIfFailed.h"
+#include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 
 

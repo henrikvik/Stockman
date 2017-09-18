@@ -1,8 +1,9 @@
 #pragma once
+#include <Engine/Constants.h>
 #include "../Structs.h"
 #include "../Datatypes.h"
 #include <vector>
-#include <Engine/Constants.h>
+
 #include "WICTextureLoader.h"
 
 class TextureManager

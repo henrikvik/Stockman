@@ -1,4 +1,4 @@
-#include <Resources/ResourceManager.h>
+#include "ResourceManager.h"
 #include <Engine\Constants.h>
 
 namespace Graphics
@@ -118,7 +118,6 @@ namespace Graphics
 
     void ResourceManager::release()
     {
-        brfImporterHandler.release();
         meshManager.release();
     }
 }

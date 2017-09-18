@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include <Datatypes.h>
-#include <Graphics/include/Resources/TextureManager.h>
+#include <Graphics\include\Datatypes.h>
+#include "TextureManager.h"
 
 class MaterialManager
 {

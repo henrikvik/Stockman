@@ -1,15 +1,15 @@
 #pragma once
 
-#include <FileData.h>
-#include <Fetch.h>
-#include <MeshData.h>
-#include <MaterialData.h>
-#include <SkeletonData.h>
+#include "FileData.h"
+#include "Fetch.h"
+#include "MeshData.h"
+#include "MaterialData.h"
+#include "SkeletonData.h"
 
-#include <Resources/MeshManager.h>
-#include <Resources/MaterialManager.h>
-#include <Datatypes.h>
-#include <Resources\Mesh.h>
+#include "MeshManager.h"
+#include "MaterialManager.h"
+#include <Graphics\Include\Datatypes.h>
+#include "Mesh.h"
 
 class BRFImportHandler
 {
@@ -20,7 +20,6 @@ public:
 	void loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene);
 
 	void initialize(MeshManager & meshManager, MaterialManager & materialManager);
-	void release();
 
 private:
 	unsigned int materialID;
