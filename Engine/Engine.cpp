@@ -67,7 +67,7 @@ Engine::~Engine()
 	this->mBackBufferRTV->Release();
 
 	//Enable this to get additional information about live objects
-    //this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+    //this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
     this->mDebugDevice->Release();
 }
 
@@ -256,7 +256,7 @@ int Engine::run()
 			}
 
 			if (ks.Escape)
-				exit(0);
+				PostQuitMessage(0);
 
 			game.update(float(deltaTime));
 			game.render();
