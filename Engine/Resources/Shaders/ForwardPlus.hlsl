@@ -106,7 +106,7 @@ PSOutput PS(VSOutput input) {
         
 	}
 
-    output.color = float4(saturate(color), 1);
-
+    output.color = float4(saturate(directionalDiffuse + color), 1);
+    //output.color = float4(input.normal.xyz, 1);
 	return output;
 }
