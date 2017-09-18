@@ -1,10 +1,10 @@
 #pragma once
 
-#include "FileData.h"
-#include "Fetch.h"
-#include "MeshData.h"
-#include "MaterialData.h"
-#include "SkeletonData.h"
+#include <BRF\FileData.h>
+#include <BRF\Fetch.h>
+#include <BRF\MeshData.h>
+#include <BRF\MaterialData.h>
+#include <BRF\SkeletonData.h>
 
 #include "MeshManager.h"
 #include "MaterialManager.h"
