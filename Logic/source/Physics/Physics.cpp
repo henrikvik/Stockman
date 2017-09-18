@@ -49,11 +49,24 @@ void Physics::clear()
 	delete collisionConfiguration;
 }
 
+#include <ctime>
+#include <chrono>
+#include <iostream>
+
 void Physics::update(float deltaTime)
 {
-	this->stepSimulation(deltaTime * 0.001f); // bulletphysics doesn't support a not constant framrate, calling this will make the game not g8
-	//	this->stepSimulation(1 / 60.f);
+	static std::chrono::steady_clock::time_point begin;
+	static std::chrono::steady_clock::time_point end;
+
+	begin = std::chrono::steady_clock::now();
+
+//	std::cout << "Time since last was here in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() << std::endl;
+	float timeBetween = std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() * 0.000001;
 	
+	this->stepSimulation(timeBetween, 13);
+	end = std::chrono::steady_clock::now();
+	
+	// Message collisions
 	int numManifolds = dispatcher->getNumManifolds();
 	for (int i = 0; i < numManifolds; i++)
 	{

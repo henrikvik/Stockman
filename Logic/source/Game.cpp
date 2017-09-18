@@ -27,7 +27,7 @@ bool Game::init()
 	result = m_physics->init();
 
 	// Initializing Player
-	m_player = new Player(m_physics->createBody(Sphere({ 5, -15, 0 }, { 0, 0, 0 }, 1.f), 75.f, false));
+	m_player = new Player(m_physics->createBody(Sphere({ 5, -15, 0 }, { 0, 0, 0 }, 4.f), 75.f, false));
 	m_player->init();
 
 	// Initializing Menu's
