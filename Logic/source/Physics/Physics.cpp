@@ -95,6 +95,7 @@ btRigidBody* Logic::Physics::addPlayer(Cube& cube, float mass)
 	body->setRestitution(0.0f);		
 	body->setFriction(5.0f);	
 	body->setSleepingThresholds(0, 0);
+	body->setDamping({ 0 }, { 0 });
 
 	// Adding body to the world
 	this->addRigidBody(body);
