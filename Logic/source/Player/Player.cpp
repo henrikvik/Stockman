@@ -49,11 +49,6 @@ void Player::onCollision(Entity& other)
 {
 }
 
-DirectX::SimpleMath::Vector3 Logic::Player::getLookAt()
-{
-	return m_lookAt;
-}
-
 void Player::saveToFile()
 {
 }

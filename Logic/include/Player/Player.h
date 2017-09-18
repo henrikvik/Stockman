@@ -71,8 +71,6 @@ namespace Logic
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);
 
-		DirectX::SimpleMath::Vector3 getLookAt();
-
 		void saveToFile();
 		void readFromFile();
 
