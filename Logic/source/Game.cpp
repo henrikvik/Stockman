@@ -1,8 +1,5 @@
 #include "Game.h"
 
-#include <AI/EntityManager.h>
-#include <thread>
-
 using namespace Logic;
 
 Game::Game()
@@ -68,21 +65,13 @@ void Game::update(float deltaTime)
 	m_map->update(deltaTime);
 }
 
-void Game::render()
+void Game::render(Graphics::Renderer& renderer)
 {
-	// Clearing previous frame
-	m_register.clear();
-	
 	// Drawing player
-	m_player->render(m_register);
+	m_player->render(renderer);
 
 	// Drawing map
-	m_map->render(m_register);
-}
-
-std::queue<Graphics::RenderInfo*>* Game::getRenderQueue()
-{
-	return m_register.getRenderInfo();
+	m_map->render(renderer);
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Datatypes.h>
+#include "../Datatypes.h"
 #include <Engine\Constants.h>
 
 class Mesh

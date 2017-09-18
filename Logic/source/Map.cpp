@@ -26,7 +26,7 @@ void Map::initProps()
 void Map::initHitboxes(Physics* physics)
 {
 	Entity* infinite = new Entity(physics->addBody(Plane({ 0, 1, 0 }), 0, false));
-    infinite->setWorldMatrix(DirectX::SimpleMath::Matrix::CreateScale(1000, 0.01, 1000));
+    infinite->setWorldTranslation(DirectX::SimpleMath::Matrix::CreateScale(1000, 0.01, 1000));
 
     m_hitboxes.push_back(infinite);
 }
@@ -63,20 +63,20 @@ void Map::update(float deltaTime)
 		m_objects[i]->update(deltaTime);
 }
 
-void Map::render(RenderRegister & renderRegister)
+void Map::render(Graphics::Renderer& renderer)
 {
 	// Drawing props
-	for (size_t i = 0; i < m_props.size(); i++)
-		m_props[i]->render(renderRegister);
+	for (Object* o : m_props)
+		o->render(renderer);
 
 	// Drawing hitboxes
-	for (size_t i = 0; i < m_objects.size(); i++)
-		m_objects[i]->render(renderRegister);
+	for (Entity* e : m_objects)
+		e->render(renderer);
 
 	// Drawing hitboxes
 	if (m_drawHitboxes)
-		for (size_t i = 0; i < m_hitboxes.size(); i++)
-			m_hitboxes[i]->render(renderRegister);
+		for (Entity* e : m_hitboxes)
+			e->render(renderer);
 }
 
 std::vector<Object*>* Map::getProps()		{	return &m_props;		}

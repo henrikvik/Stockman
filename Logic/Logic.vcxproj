@@ -191,7 +191,6 @@
     <ClInclude Include="include\Entity\Object.h" />
     <ClInclude Include="include\Misc\Enums.h" />
     <ClInclude Include="include\Misc\MenuMachine.h" />
-    <ClInclude Include="include\Misc\RenderRegister.h" />
     <ClInclude Include="include\Misc\StateMachine.h" />
     <ClInclude Include="include\Physics\Physics.h" />
     <ClInclude Include="include\Physics\Primitives.h" />
@@ -232,7 +231,6 @@
     <ClCompile Include="source\AI\EntityManager.cpp" />
     <ClCompile Include="source\Misc\Card.cpp" />
     <ClCompile Include="source\Misc\CardManager.cpp" />
-    <ClCompile Include="source\Misc\RenderRegister.cpp" />
     <ClCompile Include="source\Misc\StateMachine.cpp" />
     <ClCompile Include="source\Physics\Physics.cpp" />
     <ClCompile Include="source\Player\Player.cpp" />
