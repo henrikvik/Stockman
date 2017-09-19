@@ -54,15 +54,13 @@ void Physics::update(float deltaTime)
 	static std::chrono::steady_clock::time_point begin;
 	static std::chrono::steady_clock::time_point end;
 
+	// Calculate the time since last call and tell bulletphysics
 	begin = std::chrono::steady_clock::now();
-
-//	std::cout << "Time since last was here in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() << std::endl;
-	float timeBetween = std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() * 0.000001;
-	
-	this->stepSimulation(timeBetween, 13);
+	float microsec = std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() * 0.000001;
+	this->stepSimulation(microsec, 13);
 	end = std::chrono::steady_clock::now();
 	
-	// Message collisions
+	// Collisions
 	int numManifolds = dispatcher->getNumManifolds();
 	for (int i = 0; i < numManifolds; i++)
 	{
