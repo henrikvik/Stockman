@@ -22,20 +22,20 @@ bool Game::init()
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();	// Configuration
 	btCollisionDispatcher* dispatcher = new	btCollisionDispatcher(collisionConfiguration);				// The default collision dispatcher
 	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								// Detecting aabb-overlapping object pairs
-	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver;	// Default constraint solver
+	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver();	// Default constraint solver
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
 
 	// Initializing Player
-	m_player = new Player(m_physics->createBody(Sphere({ 5, -15, 0 }, { 0, 0, 0 }, 1.f), 75.f, false));
+	m_player = new Player(m_physics->createBody(Cylinder({ 5, -15, 0 }, { 0, 0, 0 }, { 0.5, 3.0, 0.5 }), 75.f, false));
 	m_player->init();
 
 	// Initializing Menu's
-	m_menu = new MenuMachine();
-	m_menu->initialize(gameStateGame); //change here to accses menu tests
+	m_menu = newd MenuMachine();
+	m_menu->initialize(gameStateMenuMain); //change here to accses menu tests
 									   
 	// Initializing the map
-	m_map = new Map();
+	m_map = newd Map();
 	m_map->init(m_physics);
 
 	// TEST REMOVE
@@ -63,11 +63,7 @@ void Game::update(float deltaTime)
 	{
 		m_physics->update(deltaTime);
 		m_player->update(deltaTime);
-
-		// Updating Entities
 		m_entityManager.update(deltaTime);
-		
-		// Updating map objects
 		m_map->update(deltaTime);
 	}
 }
@@ -82,8 +78,6 @@ void Game::render(Graphics::Renderer& renderer)
 	{
 		m_player->render(renderer);
 		m_map->render(renderer);
-
-		// Drawing Entities (enemies / triggers)
 		m_entityManager.render(renderer);
 	}
 }

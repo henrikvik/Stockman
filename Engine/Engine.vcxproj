@@ -202,7 +202,9 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Data\Button.lw" />
     <None Include="Resources\Data\Effects.lw" />
+    <None Include="Resources\Data\Menu.lw" />
     <None Include="Resources\Shaders\Vertex.hlsl">
       <FileType>Document</FileType>
     </None>

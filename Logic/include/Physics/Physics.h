@@ -7,6 +7,8 @@
 2. Call physics->addRigidBody(ptr to rigidbody)
 */
 
+#include <ctime>
+#include <chrono>
 #include <Entity\Entity.h>
 #include <Player\Player.h>
 #include <Physics\Primitives.h>
@@ -27,9 +29,13 @@ namespace Logic
 		bool init();
 		void update(float deltaTime);
 
+		// Returns nullptr if not intersecting, otherwise returns the rigidbody of the hit
+		btRigidBody* checkRayIntersect(Ray& ray);
+
 		btRigidBody* createBody(Cube& cube, float mass, bool isSensor);
 		btRigidBody* createBody(Plane& plane, float mass, bool isSensor);
 		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor);
+		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor);
 
 	private:
 		btCollisionDispatcher* dispatcher;

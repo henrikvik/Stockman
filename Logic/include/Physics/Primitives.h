@@ -11,6 +11,31 @@ namespace Logic
 		ShapeTypeCylinder
 	};
 
+	class Ray
+	{
+	public:
+		Ray(btVector3 start, btVector3 end)
+		{
+			m_start = start;
+			m_end = end;
+		}
+
+		Ray(btVector3 start, btVector3 forward, btScalar length)
+		{
+			m_start = start;
+			m_end = start + (forward * length);
+		}
+
+		const btVector3& getStart() 		{ return m_start;	}
+		const btVector3& getEnd()			{ return m_end;		}
+		void setStart(btVector3 start)		{ m_start = start;	}
+		void setEnd(btVector3 end)			{ m_end = end;		}
+
+	private:
+		btVector3	m_start;
+		btVector3	m_end;
+	};
+
 	class Shape
 	{
 	public:
@@ -88,8 +113,20 @@ namespace Logic
 	};
 
 	/* *
-		Creates a Line */
+		Creates a 3D Cylinder centered around the origin, central axis around the y-axis */
+	class Cylinder : public Shape
+	{
+	public:
+		Cylinder(btVector3 position, btVector3 rotation, btVector3 halfExtends)
+			: Shape(position, rotation) {
+			m_halfExtends = halfExtends;
+			m_shape = ShapeTypeCylinder;
+		}
 
-	/* *
-		Creates a 3D Cylinder */
+		void setHeight(btVector3 halfExtends) { m_halfExtends = halfExtends; }
+		btVector3 getHalfExtends() const { return m_halfExtends; }
+
+	private:
+		btVector3 m_halfExtends;
+	};
 }
