@@ -5,9 +5,9 @@
 #include <SimpleMath.h>
 #include "CommonStates.h"
 #include "ThrowIfFailed.h"
-#include "ShaderHandler.h"
 #include "Structs.h"
 #include "Resources\ResourceManager.h"
+#include "Resources\Shader.h"
 
 #define BLOCK_SIZE 16
 
@@ -143,9 +143,6 @@ private:
 	DispatchParams m_Params;
 	ID3D11Buffer  *m_ParamsBuffer;
 
-	int m_FrustumGenerationCS;
-	int m_CullingCS;
-
 	StructuredBuffer<uint32_t> *m_ResetIndexCounter;
 	StructuredBuffer<uint32_t> *m_OpaqueIndexCounter;
 	StructuredBuffer<uint32_t> *m_TransparentIndexCounter;
@@ -165,6 +162,9 @@ private:
 	ID3D11ShaderResourceView  *m_TransparentLightGridSRV;
 
 	ID3D11ShaderResourceView  *gradientSRV;
+
+	ComputeShader *m_CullGrids;
+	ComputeShader *m_FrustumGeneration;
 };
 
 }
