@@ -27,7 +27,7 @@ bool Game::init()
 	result = m_physics->init();
 
 	// Initializing Player
-	m_player = new Player(m_physics->createBody(Sphere({ 5, -15, 0 }, { 0, 0, 0 }, 4.f), 75.f, false));
+	m_player = new Player(m_physics->createBody(Cylinder({ 5, -15, 0 }, { 0, 0, 0 }, { 0.5, 3.0, 0.5 }), 75.f, false));
 	m_player->init();
 
 	// Initializing Menu's
@@ -60,11 +60,7 @@ void Game::update(float deltaTime)
 	{
 		m_physics->update(deltaTime);
 		m_player->update(deltaTime);
-
-		// Updating Entities
 		m_entityManager.update(deltaTime);
-		
-		// Updating map objects
 		m_map->update(deltaTime);
 	}
 }
@@ -79,8 +75,6 @@ void Game::render(Graphics::Renderer& renderer)
 	{
 		m_player->render(renderer);
 		m_map->render(renderer);
-
-		// Drawing Entities (enemies / triggers)
 		m_entityManager.render(renderer);
 	}
 }
