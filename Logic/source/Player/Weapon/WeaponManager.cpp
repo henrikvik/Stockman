@@ -68,12 +68,12 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ m_projectileManager, ProjectileData(1, 1, 1, 100, 1, Graphics::ModelID::CUBE, 1), 1, 60, 60, 30, 30, 1, 1, 450, 1, 3000 },
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 2, 1, 40, 1, 3000 },
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 1, 1, 1, 1, 3000 },
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 3, 1, 1, 1, 3000 },
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000 },
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000 }
+		{ m_projectileManager, ProjectileData(1, 1, 1, 100, 1, Graphics::ModelID::CUBE, 1), 1, 60, 60, 30, 30, 1, 1, 0.f, 0.f, 1, 450, 1, 2700 },
+		{ m_projectileManager, ProjectileData(1, 0.1, 1, 25, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 6, 6, 0.5f, 0.5f, 1, 40, 1, 2700 },
+		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 1, 1, 1, 1, 1, 1, 1, 3000 },
+		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 3, 1, 1, 1, 1, 1, 1, 3000 },
+		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 },
+		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 }
 	};
 }
 

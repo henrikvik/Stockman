@@ -27,14 +27,21 @@ namespace Logic
 		int m_magSize;
 		int m_magAmmo;
 		int m_ammoConsumption;
+		int m_projectileCount;
+		float m_spreadH;
+		float m_spreadV;
 		float m_damage;
 		float m_attackRate;		// Attacks per minute
 		float m_freeze;
 		float m_reloadTime;
 	//	Animation m_animation;
+
+		btVector3 calcSpread(btVector3 forward);
+
 	public:
 		Weapon();
-		Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime);
+		Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+			float spreadH, float spreadV, float damage, float attackRate, float freeze, float reloadTime);
 
 		void use(btVector3 position, btVector3 forward);
 

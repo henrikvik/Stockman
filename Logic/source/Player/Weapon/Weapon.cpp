@@ -16,7 +16,8 @@ Weapon::Weapon()
 	m_reloadTime		= -1;
 }
 
-Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime)
+Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+	float spreadH, float spreadV, float damage, float attackRate, float freeze, float reloadTime)
 {
 	m_projectileManager = projectileManager;
 	m_weaponID			= weaponID;
@@ -25,6 +26,9 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	m_magSize			= magSize;
 	m_magAmmo			= magAmmo;
 	m_ammoConsumption	= ammoConsumption;
+	m_projectileCount	= projectileCount;
+	m_spreadH			= spreadH;
+	m_spreadV			= spreadV;
 	m_damage			= damage;
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
@@ -35,7 +39,37 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 void Weapon::use(btVector3 position, btVector3 forward)
 {
 	// use weapon
-	m_projectileManager->addProjectile(m_projectileData, position, forward);
+
+	for (int i = m_projectileCount; i--; )
+	{
+		if (m_spreadH != 0 || m_spreadV !=0)
+		{
+			btVector3 nForward = calcSpread(forward);
+			m_projectileManager->addProjectile(m_projectileData, position, nForward);
+		}
+		else
+		{
+			m_projectileManager->addProjectile(m_projectileData, position, forward);
+		}
+	}
+}
+
+btVector3 Logic::Weapon::calcSpread(btVector3 forward)
+{
+	if (m_spreadH != 0)
+	{
+		int sMagnified = m_spreadH * 1000;
+		float rs = ((rand() % (2 * sMagnified)) - sMagnified) * 0.001f;
+		forward = forward.rotate(btVector3(0, 1, 0), rs);
+	}
+
+	if (m_spreadV != 0)
+	{
+		int sMagnified = m_spreadV * 1000;
+		float rs = ((rand() % (2 * sMagnified)) - sMagnified) * 0.001f;
+		forward = forward.rotate(btVector3(1, 0, 0), rs);
+	}
+	return forward;
 }
 
 void Weapon::update()
