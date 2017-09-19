@@ -30,7 +30,6 @@ namespace Graphics
 		}
 	};
 
-
 	struct RenderInfo
 	{
 		bool render;
@@ -38,8 +37,6 @@ namespace Graphics
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
 	};
-
-
 
 	// TODO: Change
 #define NUM_LIGHTS 8

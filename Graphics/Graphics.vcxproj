@@ -29,9 +29,9 @@
     <ClCompile Include="include\Resources\Skeleton.cpp" />
     <ClCompile Include="include\Resources\SkeletonManager.cpp" />
     <ClCompile Include="include\Resources\TextureManager.cpp" />
-    <ClCompile Include="source\Camera.cpp" />
-    <ClCompile Include="source\LightGrid.cpp" />
-    <ClCompile Include="source\Renderer.cpp" />
+    <ClCompile Include="include\Camera.cpp" />
+    <ClCompile Include="include\LightGrid.cpp" />
+    <ClCompile Include="include\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />
