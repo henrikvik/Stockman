@@ -5,8 +5,6 @@
 #include <Renderer.h>
 #include <Game.h>
 #include "Keyboard.h"
-#include <stdlib.h>
-#include <time.h>
 
 class Engine
 {
