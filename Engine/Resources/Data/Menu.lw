@@ -1,46 +1,4 @@
 {
-	"buttonName" : "MenuMainButton1";
-	"texture" : "b";
-	"xPos" : 200.0f;
-	"yPos" : 200.0f;
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
-	"height" : 200.0f;
-	"width" : 200.0f;
-	"function" : "buttonClick0";
-}
-
-{
-	"buttonName" : "MenuSettingsButton1";
-	"texture" : "bl";
-	"xPos" : 200.0f;
-	"yPos" : 200.0f;
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
-	"height" : 200.0f;
-	"width" : 200.0f;
-	"function" : "buttonClick1";
-}
-
-{
-	"buttonName" : "GameButton1";
-	"texture" : "bla";
-	"xPos" : 200.0f;
-	"yPos" : 200.0f;
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
-	"height" : 200.0f;
-	"width" : 200.0f;
-	"function" : "buttonClick2";
-}
-
-{
 	"State" : 2;
 	"Background" : "bla";
 	"buttonAmmount" : 1;

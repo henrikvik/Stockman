@@ -37,46 +37,52 @@ void Logic::MenuMachine::initialize(GameState state)
 	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
 
 	//Load the lw file information
+	std::vector<FileLoader::LoadedStruct> buttonFile;
+	FileLoader::singleton().loadStructsFromFile(buttonFile, "Button");
 	std::vector<FileLoader::LoadedStruct> menuFile;
 	FileLoader::singleton().loadStructsFromFile(menuFile, "Menu");
 
 	//Gather all the buttons in a map for future allocation
 	std::map<std::string, MenuState::ButtonStruct> allButtons;
 
-	//Gather all the Menus in this vector for fututre use
-	std::vector<Menu> menuGather;
-	for (auto const& struc : menuFile)
+	for (auto const& button : buttonFile)
 	{
 		//If it is a button add it into its map
-		if (struc.strings.find("buttonName") != struc.strings.end())
+		if (button.strings.find("buttonName") != button.strings.end())
 		{
-			std::string testinging = struc.strings.at("function"); //crap used until the buggy file handler is fixed
+			std::string testinging = button.strings.at("function"); //crap used until the buggy file handler is fixed
 			testinging = testinging.substr(0, testinging.size() - 1); //crap used until the buggy file handler is fixed
-			allButtons[struc.strings.at("buttonName")] = MenuState::ButtonStruct({
-				struc.floats.at("xPos"),
-				struc.floats.at("yPos"),
-				struc.floats.at("xTexStart"),
-				struc.floats.at("yTexStart"),
-				struc.floats.at("xTexEnd"),
-				struc.floats.at("yTexEnd"),
-				struc.floats.at("height"),
-				struc.floats.at("width"),
-				struc.strings.at("texture"),
+			allButtons[button.strings.at("buttonName")] = MenuState::ButtonStruct({
+				button.floats.at("xPos"),
+				button.floats.at("yPos"),
+				button.floats.at("xTexStart"),
+				button.floats.at("yTexStart"),
+				button.floats.at("xTexEnd"),
+				button.floats.at("yTexEnd"),
+				button.floats.at("height"),
+				button.floats.at("width"),
+				button.strings.at("texture"),
 				functions.at(testinging) //crap used until the buggy file handler is fixed
 			});
 		}
+	}
+
+	//Gather all the Menus in this vector for fututre use
+	std::vector<Menu> menuGather;
+	for (auto const& menu : menuFile)
+	{
 		//If it is a menu add one to the vector
-		else if (struc.ints.find("State") != struc.ints.end())
+		if (menu.ints.find("State") != menu.ints.end())
 		{
 			//Temporary Button Vector until Menu has been given them
 			std::vector<MenuState::ButtonStruct> tempButton;
-			for (int i = 0; i < struc.ints.at("buttonAmmount"); i++)
+			for (int i = 0; i < menu.ints.at("buttonAmmount"); i++)
 			{
-				tempButton.push_back(allButtons.at(struc.strings.at("button" + std::to_string(i + 1))));
+				tempButton.push_back(allButtons.at(menu.strings.at("button" + std::to_string(i + 1))));
 			}
 			menuGather.push_back({
-				struc.ints.at("State"),
-				struc.strings.at("Background"),
+				menu.ints.at("State"),
+				menu.strings.at("Background"),
 				tempButton
 			});
 		}
