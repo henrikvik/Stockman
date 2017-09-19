@@ -90,6 +90,11 @@ void EntityManager::setCurrentWave(int currentWave)
 	m_currentWave = currentWave;
 }
 
+void EntityManager::render(Graphics::Renderer &renderer)
+{
+
+}
+
 int EntityManager::getCurrentWave() const 
 {
 	return m_currentWave;

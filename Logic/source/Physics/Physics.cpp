@@ -20,6 +20,7 @@ bool Physics::init()
 {
 	// World gravity
 	this->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
+	this->setLatencyMotionStateInterpolation(true);
 
 	return true;
 }
@@ -50,9 +51,16 @@ void Physics::clear()
 
 void Physics::update(float deltaTime)
 {
-	this->stepSimulation(deltaTime * 0.001f); // bulletphysics doesn't support a not constant framrate, calling this will make the game not g8
-	//	this->stepSimulation(1 / 60.f);
+	static std::chrono::steady_clock::time_point begin;
+	static std::chrono::steady_clock::time_point end;
+
+	// Calculate the time since last call and tell bulletphysics
+	begin = std::chrono::steady_clock::now();
+	float microsec = std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() * 0.000001;
+	this->stepSimulation(microsec, 13);
+	end = std::chrono::steady_clock::now();
 	
+	// Collisions
 	int numManifolds = dispatcher->getNumManifolds();
 	for (int i = 0; i < numManifolds; i++)
 	{
@@ -75,35 +83,27 @@ void Physics::update(float deltaTime)
 	}
 }
 
-btRigidBody* Logic::Physics::addPlayer(Cube& cube, float mass)
+btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
 {
-	// Setting Motions state with position & rotation
-	btQuaternion rotation;
-	rotation.setEulerZYX(cube.getRot().getZ(), cube.getRot().getY(), cube.getRot().getX());
-	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, cube.getPos()));
+	const btVector3& start	= ray.getStart();
+	const btVector3& end	= ray.getEnd();
 
-	// Creating the specific shape
-	btCollisionShape* shape = new btBoxShape(cube.getDimensions());
-	btVector3 localInertia(0, 0, 0);
-	shape->calculateLocalInertia(mass, localInertia);
+	// Ray testing to see first callback
+	btCollisionWorld::ClosestRayResultCallback rayCallBack(start, end);
+	this->rayTest(start, end, rayCallBack);
 
-	// Creating the actual body
-	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	if (rayCallBack.hasHit())
+	{
+		const btCollisionObject* object = rayCallBack.m_collisionObject;
+		btRigidBody* body = static_cast<btRigidBody*>(object->getUserPointer());
 
-	// Specifics
-	body->setRestitution(0.0f);		
-	body->setFriction(5.0f);	
-	body->setSleepingThresholds(0, 0);
-	body->setDamping({ 0 }, { 0 });
+		return body;
+	}
 
-	// Adding body to the world
-	this->addRigidBody(body);
-
-	return body;
+	return nullptr;
 }
 
-btRigidBody* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
+btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -121,13 +121,11 @@ btRigidBody* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, localInertia);
 	btRigidBody* body = new btRigidBody(constructionInfo);
+	shape->setUserPointer(body);
 
 	// Specifics
 	body->setRestitution(0.0f);
 	body->setFriction(1.0f);
-	body->setSleepingThresholds(0, 0);
-
-	// Deactivates sleeping
 	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
@@ -136,7 +134,7 @@ btRigidBody* Logic::Physics::addBody(Cube& cube, float mass, bool isSensor)
 	return body;
 }
 
-btRigidBody * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
+btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -144,11 +142,12 @@ btRigidBody * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
 	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, plane.getPos()));
 
 	// Creating the specific shape
-	btCollisionShape* shape = new btStaticPlaneShape(plane.getNormal(), 1);
+	btCollisionShape* shape = new btStaticPlaneShape(plane.getNormal(), 0.1f);
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
+	shape->setUserPointer(body);
 
 	// Specifics
 	body->setRestitution(0.0f);
@@ -161,7 +160,56 @@ btRigidBody * Logic::Physics::addBody(Plane& plane, float mass, bool isSensor)
 	return body;
 }
 
-btRigidBody * Logic::Physics::addBody(Sphere& sphere, float mass, bool isSensor)
+btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 {
-	return nullptr;
+	// Setting Motions state with position & rotation
+	btQuaternion rotation;
+	rotation.setEulerZYX(sphere.getRot().getZ(), sphere.getRot().getY(), sphere.getRot().getX());
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, sphere.getPos()));
+
+	// Creating the specific shape
+	btCollisionShape* shape = new btSphereShape(sphere.getRadius());
+
+	// Creating the actual body
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
+	btRigidBody* body = new btRigidBody(constructionInfo);
+	shape->setUserPointer(body);
+
+	// Specifics
+	body->setRestitution(0.0f);
+	body->setFriction(0.f);
+	body->setSleepingThresholds(0, 0);	
+	body->setDamping(0.9f, 0.9f);
+
+	// Adding body to the world
+	this->addRigidBody(body);
+
+	return body;
+}
+
+btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isSensor)
+{
+	// Setting Motions state with position & rotation
+	btQuaternion rotation;
+	rotation.setEulerZYX(cylinder.getRot().getZ(), cylinder.getRot().getY(), cylinder.getRot().getX());
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, cylinder.getPos()));
+
+	// Creating the specific shape
+	btCollisionShape* shape = new btCylinderShape(cylinder.getHalfExtends());
+
+	// Creating the actual body
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
+	btRigidBody* body = new btRigidBody(constructionInfo);
+	shape->setUserPointer(body);
+
+	// Specifics
+	body->setRestitution(0.0f);
+	body->setFriction(0.f);
+	body->setSleepingThresholds(0, 0);
+	body->setDamping(0.9f, 0.9f);
+
+	// Adding body to the world
+	this->addRigidBody(body);
+
+	return body;
 }

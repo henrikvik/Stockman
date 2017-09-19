@@ -44,6 +44,7 @@ namespace Logic
 		Player*				m_player;
 		Map*				m_map;
 		MenuMachine*		m_menu;
+		EntityManager		m_entityManager; // no ptr :>
 	};
 }
 

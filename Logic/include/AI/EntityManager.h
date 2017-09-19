@@ -4,6 +4,7 @@
 #include <vector>
 #include <AI/Enemy.h>
 #include <AI/WaveManager.h>
+#include <Graphics\include\Renderer.h>
 
 #pragma region ClassDesc
 	/*
@@ -40,6 +41,7 @@ namespace Logic
 		void spawnWave();
 
 		void setCurrentWave(int currentWave);
+		void render(Graphics::Renderer &renderer);
 
 		int getEnemiesAlive() const;
 		int getCurrentWave() const;

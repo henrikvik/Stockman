@@ -1,6 +1,6 @@
-#include "ShaderHandler.h"
+#include <Graphics\include\ShaderHandler.h>
 #include <comdef.h>
-#include <ThrowIfFailed.h>
+#include <Graphics\include\ThrowIfFailed.h>
 #include <Engine/Constants.h>
 
 using namespace Graphics;
