@@ -47,6 +47,12 @@ void Player::clear()
 
 void Player::onCollision(Entity& other)
 {
+
+}
+
+void Player::onCollision(Projectile& other)
+{
+
 }
 
 void Player::saveToFile()

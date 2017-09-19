@@ -71,6 +71,7 @@ namespace Logic
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);
+		void onCollision(Projectile& other);
 
 		void saveToFile();
 		void readFromFile();

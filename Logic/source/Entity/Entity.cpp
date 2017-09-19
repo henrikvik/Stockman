@@ -43,12 +43,6 @@ btRigidBody* Entity::getRigidbody()
 	return m_body;
 }
 
-// JUST FOR TESTING, REMOVE
-void Entity::consoleWritePosition()
-{
-	printf("Position = { %f, %f, %f }\n", m_transform->getOrigin().getX(), m_transform->getOrigin().getY(), m_transform->getOrigin().getZ());
-}
-
 DirectX::SimpleMath::Vector3 Entity::getPosition() const
 {
 	return DirectX::SimpleMath::Vector3(m_transform->getOrigin());

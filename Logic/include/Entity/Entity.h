@@ -24,16 +24,12 @@ namespace Logic
 							float deltaTime);
 		virtual void onCollision(Entity& other) { }
 
-		// JUST FOR TESTING, REMOVE
-		void consoleWritePosition();
-
 		DirectX::SimpleMath::Vector3 getPosition() const;
 		btVector3 getPositionBT() const;
 		DirectX::SimpleMath::Quaternion getRotation() const;
 		DirectX::SimpleMath::Vector3 getScale() const;
 		DirectX::SimpleMath::Matrix getTransformMatrix() const;
 
-	protected:
 		btRigidBody* getRigidbody();
 
 	private:
