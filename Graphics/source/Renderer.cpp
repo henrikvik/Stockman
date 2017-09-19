@@ -73,6 +73,7 @@ namespace Graphics
 		deviceContext->RSSetViewports(1, &viewPort);
 
         forwardPlus.setShader(deviceContext, Shader::VS);
+		deviceContext->PSSetShader(nullptr, nullptr, 0);
 		deviceContext->OMSetRenderTargets(0, nullptr, dSV);
 		
 		draw();
@@ -100,6 +101,7 @@ namespace Graphics
 			ptr[i].range = i / 1.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
 			ptr[i].intensity = 1.f;
 		}
+
 		lights->unmap(deviceContext);
 
 		grid.cull(camera, states, depthSRV, device, deviceContext, &resourceManager);
