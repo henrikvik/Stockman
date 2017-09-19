@@ -22,7 +22,7 @@ bool Game::init()
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();	// Configuration
 	btCollisionDispatcher* dispatcher = new	btCollisionDispatcher(collisionConfiguration);				// The default collision dispatcher
 	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								// Detecting aabb-overlapping object pairs
-	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver;	// Default constraint solver
+	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver();	// Default constraint solver
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 	result = m_physics->init();
 
@@ -31,11 +31,11 @@ bool Game::init()
 	m_player->init();
 
 	// Initializing Menu's
-	m_menu = new MenuMachine();
-	m_menu->initialize(gameStateGame); //change here to accses menu tests
+	m_menu = newd MenuMachine();
+	m_menu->initialize(gameStateMenuMain); //change here to accses menu tests
 									   
 	// Initializing the map
-	m_map = new Map();
+	m_map = newd Map();
 	m_map->init(m_physics);
 
 	return result;
