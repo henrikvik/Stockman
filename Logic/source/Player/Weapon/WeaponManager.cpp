@@ -68,7 +68,7 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ m_projectileManager, ProjectileData(1, 1, 1, 100, 0, Graphics::ModelID::CUBE, 1), 1, 60, 60, 5000, 5000, 1, 1, 0, 0, 1, 450, 1, 2700 },
+		{ m_projectileManager, ProjectileData(1, 1, 1, 100, 0, Graphics::ModelID::CUBE, 1), 1, 60, 60, 30, 30, 1, 1, 0, 0, 1, 450, 1, 2700 },
 		{ m_projectileManager, ProjectileData(1, 0.01f, 1, 25, 0, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 6, 18, 15, 10, 1, 40, 1, 2700 },
 		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 0, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 1, 1, 1, 1, 1, 1, 1, 3000 },
 		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 0, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 3, 1, 1, 1, 1, 1, 1, 3000 },

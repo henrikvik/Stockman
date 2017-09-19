@@ -62,21 +62,6 @@ void Weapon::use(btVector3 position, float yaw, float pitch)
 
 btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 {
-	/*if (m_spreadH != 0)
-	{
-		int sMagnified = m_spreadH * 1000;
-		float rs = ((rand() % (2 * sMagnified)) - sMagnified) * 0.001f;
-
-		forward = forward.rotate(btVector3(0, 1, 0), rs);
-	}
-
-	if (m_spreadV != 0)
-	{
-		int sMagnified = m_spreadV * 1000;
-		float rs = ((rand() % (2 * sMagnified)) - sMagnified) * 0.001f;
-		forward = forward.rotate(btVector3(1, 0, 0), rs);
-	}*/
-
 	int rsh = (rand() % (2 * m_spreadH)) - m_spreadH;
 	int rsv = (rand() % (2 * m_spreadV)) - m_spreadV;
 
