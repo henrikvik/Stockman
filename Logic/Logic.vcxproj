@@ -138,6 +138,7 @@
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -159,6 +160,7 @@
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
