@@ -11,8 +11,9 @@
 #include <SimpleMath.h>
 #include "Resources\Shader.h"
 #include "Datatypes.h"
-#include "LightGrid.h"
+#include "Lights\LightGrid.h"
 #include "Resources\DepthStencil.h"
+#include "Lights\DirectionalLight.h"
 
 namespace Graphics
 {
