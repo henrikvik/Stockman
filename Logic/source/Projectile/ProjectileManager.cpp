@@ -18,11 +18,18 @@ void ProjectileManager::clear()
 
 void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward)
 {
+	// Create body
 	btRigidBody* body = m_physPtr->createBody(Sphere(position + forward, btVector3(), pData.scale), 10.f, false);
+	// Set gravity modifier
+	body->setGravity(btVector3(0, pData.gravityModifier, 0));
+	// Create projectile
 	Projectile* p = newd Projectile(body, pData);
+	// Start
 	p->start(forward);
+
+	// Add to projectile list
 	m_projectiles.push_back(p);
-	printf("projs: %d\n", m_projectiles.size());
+	//printf("projs: %d\n", m_projectiles.size());
 }
 
 void ProjectileManager::removeProjectile()

@@ -98,9 +98,9 @@ void Player::updateSpecific(float deltaTime)
 		if (!m_weaponManager.isAttacking())
 		{
 			if ((ms.leftButton))
-				m_weaponManager.usePrimary(getPositionBT(), btVector3(m_forward.x, m_forward.y, m_forward.z));
+				m_weaponManager.usePrimary(getPositionBT(), m_camYaw, m_camPitch);
 			else if (ms.rightButton)
-				m_weaponManager.useSecondary(getPositionBT(), btVector3(m_forward.x, m_forward.y, m_forward.z));
+				m_weaponManager.useSecondary(getPositionBT(), m_camYaw, m_camPitch);
 		}
 
 		// Reload

@@ -17,7 +17,7 @@ Weapon::Weapon()
 }
 
 Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-	float spreadH, float spreadV, float damage, float attackRate, float freeze, float reloadTime)
+	int spreadH, int spreadV, float damage, float attackRate, float freeze, float reloadTime)
 {
 	m_projectileManager = projectileManager;
 	m_weaponID			= weaponID;
@@ -36,30 +36,37 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	m_projectileData	= projectileData;
 }
 
-void Weapon::use(btVector3 position, btVector3 forward)
+void Weapon::use(btVector3 position, float yaw, float pitch)
 {
 	// use weapon
-
-	for (int i = m_projectileCount; i--; )
+	if (m_spreadH != 0 || m_spreadV != 0)
 	{
-		if (m_spreadH != 0 || m_spreadV !=0)
+		for (int i = m_projectileCount; i--; )
 		{
-			btVector3 nForward = calcSpread(forward);
-			m_projectileManager->addProjectile(m_projectileData, position, nForward);
+			btVector3 projectileDir = calcSpread(yaw, pitch);
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
 		}
-		else
+	}
+	else
+	{
+		for (int i = m_projectileCount; i--; )
 		{
-			m_projectileManager->addProjectile(m_projectileData, position, forward);
+			btVector3 projectileDir;
+			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
+			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
+			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
 		}
 	}
 }
 
-btVector3 Logic::Weapon::calcSpread(btVector3 forward)
+btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 {
-	if (m_spreadH != 0)
+	/*if (m_spreadH != 0)
 	{
 		int sMagnified = m_spreadH * 1000;
 		float rs = ((rand() % (2 * sMagnified)) - sMagnified) * 0.001f;
+
 		forward = forward.rotate(btVector3(0, 1, 0), rs);
 	}
 
@@ -68,8 +75,20 @@ btVector3 Logic::Weapon::calcSpread(btVector3 forward)
 		int sMagnified = m_spreadV * 1000;
 		float rs = ((rand() % (2 * sMagnified)) - sMagnified) * 0.001f;
 		forward = forward.rotate(btVector3(1, 0, 0), rs);
-	}
-	return forward;
+	}*/
+
+	int rsh = (rand() % (2 * m_spreadH)) - m_spreadH;
+	int rsv = (rand() % (2 * m_spreadV)) - m_spreadV;
+
+	yaw += rsh;
+	pitch += rsv;
+
+	btVector3 projectileDir;
+	projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
+	projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
+	projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
+
+	return projectileDir;
 }
 
 void Weapon::update()

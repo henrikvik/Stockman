@@ -32,8 +32,8 @@ namespace Logic
 		void update(float deltaTime);
 
 		void switchWeapon(int weaponID);
-		void usePrimary(btVector3 position, btVector3 forward);
-		void useSecondary(btVector3 position, btVector3 forward);
+		void usePrimary(btVector3 position, float yaw, float pitch);
+		void useSecondary(btVector3 position, float yaw, float pitch);
 		void reloadWeapon();
 
 		bool isSwitching();
