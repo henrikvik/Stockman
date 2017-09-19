@@ -202,6 +202,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Data\Effects.lw" />
     <None Include="Resources\Shaders\Vertex.hlsl">
       <FileType>Document</FileType>
     </None>

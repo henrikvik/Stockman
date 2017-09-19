@@ -1,5 +1,8 @@
 #include <Entity\StatusManager.h>
 #include <stdio.h>
+#include <Misc/FileLoader.h>
+
+#define FILE_NAME "Effects"
 
 using namespace Logic;
 
@@ -10,24 +13,47 @@ StatusManager::StatusManager()
 { 
 	#ifndef BUFFS_CREATED
 	#define BUFFS_CREATED
-	/* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
-		Effect creating;
-
+		std::vector<FileLoader::LoadedStruct> loadedEffects;
+		FileLoader::singleton().loadStructsFromFile(loadedEffects, FILE_NAME);
 		Effect::Standards standards;
 		Effect::Modifiers modifiers;
 		Effect::Specifics spec;
+		int id = 0;
 
-		standards.flags = Effect::EFFECT_ON_FIRE | Effect::EFFECT_MODIFY_MOVEMENTSPEED;
-		standards.duration = 3000.f;
+		Effect creating;
+		for (auto const &fileStruct : loadedEffects)
+		{
+			memset(&creating, 0, sizeof(creating));
 
-		creating.setStandards(standards);
-		s_effects[ON_FIRE] = creating; // ON FIRE
+			standards.flags = fileStruct.ints.at("flags");
+			standards.duration = fileStruct.floats.at("duration");
 
-		standards.flags = Effect::EFFECT_MODIFY_DMG_GIVEN;
-		standards.duration = 0.f;
+			if (fileStruct.ints.at("modifiers"))
+			{
+				memset(&modifiers, 0, sizeof(modifiers));
 
-		creating.setStandards(standards);
-		s_effects[FREEZE] = creating; // FREEZE
+				modifiers.modifyDmgGiven =		fileStruct.floats.at("mDmgGiven");
+				modifiers.modifyDmgTaken =		fileStruct.floats.at("mDmgTaken");
+				modifiers.modifyFirerate =		fileStruct.floats.at("mFirerate");
+				modifiers.modifyHP =			fileStruct.floats.at("mHP");
+				modifiers.modifyMovementSpeed = fileStruct.floats.at("mMovementSpeed");
+
+				creating.setModifiers(modifiers);
+			}
+
+			if (fileStruct.ints.at("specifics"))
+			{
+				memset(&spec, 0, sizeof(spec));
+			
+				spec.isBulletTime = fileStruct.floats.at("sBulletTime");
+				spec.isFreezing =	fileStruct.floats.at("sFreezing");
+
+				creating.setSpecifics(spec);
+			}
+
+			creating.setStandards(standards);
+			s_effects[id++] = creating;
+		}
 	#endif // !buffsCreated
 
 	#ifndef UPGRADES_CREATED

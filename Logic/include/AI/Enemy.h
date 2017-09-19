@@ -34,6 +34,7 @@ namespace Logic
 			virtual void updateDead(float deltaTime) = 0;
 			virtual void updateSpecific(float deltaTime) = 0;
 
+			virtual void affect(int stacks, Effect const &effect, float dt);
 			void damage(float damage);
 
 			float getHealth() const;
