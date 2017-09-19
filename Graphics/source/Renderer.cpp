@@ -300,7 +300,7 @@ namespace Graphics
         float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
         deviceContext->ClearRenderTargetView(backBuffer, clearColor);
 
-        deviceContext->PSSetShaderResources(0, 3, &texture);
+        deviceContext->PSSetShaderResources(0, 1, &texture);
 
         UINT zero = 0;
         //deviceContext->IASetVertexBuffers(0, 1, nullptr, &zero, &zero);
@@ -318,7 +318,7 @@ namespace Graphics
         deviceContext->Draw(4, 0);
 
         ID3D11ShaderResourceView * srvNull = nullptr;
-        deviceContext->PSSetShaderResources(0, 3, &srvNull);
+        deviceContext->PSSetShaderResources(0, 1, &srvNull);
     }
 
     void Renderer::drawGUI()
