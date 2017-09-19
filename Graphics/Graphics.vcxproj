@@ -166,6 +166,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Resources\DepthStencil.h" />
     <ClInclude Include="include\BRFImportHandler.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Constants.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="include\Resources\Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\Resources\DepthStencil.cpp" />
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
     <ClCompile Include="include\Resources\MaterialManager.cpp" />
     <ClCompile Include="include\Resources\Mesh.cpp" />
