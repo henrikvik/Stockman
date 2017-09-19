@@ -13,6 +13,10 @@ namespace Graphics
 
         ID3D11DepthStencilView * getBuffer();
         ID3D11ShaderResourceView * getResource();
+
+        operator ID3D11DepthStencilView*() const { return depthBuffer; };
+        operator ID3D11ShaderResourceView*() const { return depthView; };
+
     private:
         
         ID3D11DepthStencilView * depthBuffer;
