@@ -23,6 +23,11 @@ namespace Graphics
 		ID3D11ShaderResourceView * normalMap;
 		ID3D11ShaderResourceView * glowSpecularMap;
 
+		~ModelInfo() 
+		{
+			indexBuffer->Release();
+			vertexBuffer->Release();
+		}
 	};
 
 

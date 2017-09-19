@@ -39,6 +39,7 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
+        resourceManager.release();
 
     }
 
