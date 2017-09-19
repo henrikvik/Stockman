@@ -68,7 +68,7 @@ Engine::~Engine()
 	this->mBackBufferRTV->Release();
 
 	//Enable this to get additional information about live objects
-    this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
+    //this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
     this->mDebugDevice->Release();
 }
 
