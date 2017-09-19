@@ -74,12 +74,12 @@ PSOutput PS(VSOutput input) {
 	uint count = LightGrid[tile].y;
 	
 	// temp WHEN DAY/NIGHT CYCLE IS A THING THIS WILL BE REMOVED
-    float3 lightPos = float3(0, 5, 10);
-    float diffuseFactor = saturate(dot(input.normal, normalize(lightPos - input.worldPos.xyz)));
-    float3 directionalDiffuse = diffuseFactor * float3(0.4, 0.3, 0);
+    float3 lightDir = float3(0, -0.5, 0.5);
+    float diffuseFactor = saturate(dot(input.normal, normalize(-lightDir)));
+    float3 directionalDiffuse = diffuseFactor * float3(0.1, 0.4, 0.7);
 
 
-    float3 ambient = float3(0.1, 0.1, 0.1);
+    float3 ambient = float3(0, 0.1, 0.2);
 
     //This will include a texture sample or material color later
 	float3 color = 0.1f;
@@ -95,15 +95,13 @@ PSOutput PS(VSOutput input) {
 
         float distance = length(posToLight);
         float3 normalizedLight = posToLight / distance;
-		float d = 1.0f - smoothstep(light.range * 0.5f, light.range, distance);
+		float attenuation = 1.0f - smoothstep(0, light.range, distance);
 
         float3 diffuse = saturate(dot(input.normal, posToLight));
 
        
         float3 specular = pow(saturate(dot(input.normal, reflectThing)), 1000) * light.color;
-        color += light.color * saturate(d) * saturate(diffuse + specular);
-
-        
+        color += light.color * attenuation * (saturate(diffuse) + specular);
 	}
 
     output.color = float4(saturate(directionalDiffuse + color), 1);
