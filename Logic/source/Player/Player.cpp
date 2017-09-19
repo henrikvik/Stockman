@@ -144,7 +144,7 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	}
 
 	// Apply final force
-	rigidBody->applyCentralForce(linearVel * deltaTime * m_moveSpeed);
+	rigidBody->setLinearVelocity(rigidBody->getLinearVelocity() + linearVel * deltaTime * m_moveSpeed);
 
 	// Setting movement caps
 	btVector3 lv = rigidBody->getLinearVelocity();

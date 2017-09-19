@@ -18,7 +18,7 @@ namespace Logic
 		void init(Physics* physics);
 		void clear();
 		void update(float deltaTime);
-		void render(RenderRegister& renderRegister);
+		void render(Graphics::Renderer& renderer);
 
 		std::vector<Object*>* getProps();
 		std::vector<Entity*>* getHitboxes();

@@ -1,4 +1,4 @@
-#include "LightGrid.h"
+#include <Graphics\include\LightGrid.h>
 #include "WICTextureLoader.h"
 #include "Engine\Constants.h"
 
@@ -17,6 +17,8 @@ LightGrid::~LightGrid()
 	delete m_TransparentIndexList;
 	delete m_Frustums;
 	delete m_Lights;
+	delete m_CullGrids;
+	delete m_FrustumGeneration;
 
 	SAFE_RELEASE(m_ParamsBuffer);
 
@@ -39,6 +41,8 @@ void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceCon
 	
 	//generateFrustums(camera, device, cxt, shaders);
 
+	m_CullGrids = newd ComputeShader(device, SHADER_PATH("LightGridCulling.hlsl"));
+	m_FrustumGeneration = newd ComputeShader(device, SHADER_PATH("LightGridGeneration.hlsl"));
 	Light lights[NUM_LIGHTS] = {};
 	lights[0].color = DirectX::SimpleMath::Vector3(1, 0, 0);
 	lights[0].positionWS = DirectX::SimpleMath::Vector3(1, 1, 1);
@@ -167,8 +171,8 @@ void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11Shader
 		m_DebugUAV
 	};
 
-	shaders->setShaders((VertexShaderID)-1, (PixelShaderID)-1, cxt);
-	shaders->setComputeShader(COMPUTE_CULL_GRIDS, cxt);
+	m_CullGrids->setShader(cxt);
+	
 
 	cxt->CSSetSamplers(0, 1, &sampler);
 	cxt->CSSetConstantBuffers(0, 2, bufs);
@@ -320,7 +324,7 @@ void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11Dev
 	auto count = m_Params.numThreads[0] * m_Params.numThreads[1];
 	m_Frustums = new StructuredBuffer<Frustum>(device, CpuAccess::None, count);
 
-	shaders->setComputeShader(COMPUTE_FRUSTUMS, cxt);
+	m_FrustumGeneration->setShader(cxt);
 	ID3D11Buffer *buffers[] = {
 		camera->getBuffer(),
 		m_ParamsBuffer,

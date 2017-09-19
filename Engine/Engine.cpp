@@ -30,7 +30,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
 	case WM_MOUSEHOVER:
-		DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
+	DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
 		break;
 
 	default:
@@ -67,7 +67,7 @@ Engine::~Engine()
 	this->mBackBufferRTV->Release();
 
 	//Enable this to get additional information about live objects
-    //this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+    this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
     this->mDebugDevice->Release();
 }
 
@@ -256,25 +256,15 @@ int Engine::run()
 			}
 
 			if (ks.Escape)
-				exit(0);
+				PostQuitMessage(0);
 
 			game.update(float(deltaTime));
-			game.render();
-          
-            while (!game.getRenderQueue()->empty())
-            {
-                renderer->queueRender(game.getRenderQueue()->front());
-                game.getRenderQueue()->pop();
-            }
-
+			game.render(*renderer);
 
             cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
 
-			
 			//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
             //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
-
-
 
             //////////////TEMP/////////////////
             Graphics::RenderInfo staticCube = {

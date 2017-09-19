@@ -24,6 +24,16 @@ void Enemy::damage(float damage)
 	m_health -= damage;
 }
 
+void Enemy::affect(int stacks, Effect const &effect, float dt) 
+{
+	int flags = effect.getStandards()->flags;
+
+	if (flags & Effect::EFFECT_KILL)
+		damage(m_health);
+	if (flags & Effect::EFFECT_ON_FIRE)
+		damage(effect.getModifiers()->modifyDmgTaken * dt);
+}
+
 float Enemy::getHealth() const
 {
 	return m_health;
