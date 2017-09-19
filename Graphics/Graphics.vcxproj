@@ -31,7 +31,6 @@
     <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\LightGrid.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
-    <ClCompile Include="source\ShaderHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />
@@ -49,7 +48,6 @@
     <ClInclude Include="include\Resources\Skeleton.h" />
     <ClInclude Include="include\Resources\SkeletonManager.h" />
     <ClInclude Include="include\Resources\TextureManager.h" />
-    <ClInclude Include="include\ShaderHandler.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
   </ItemGroup>

@@ -45,6 +45,7 @@ namespace Graphics
 		SAFE_RELEASE(dSS);
 		SAFE_RELEASE(dSV);
 		SAFE_RELEASE(depthSRV);
+		resourceManager.release();
 
     }
 
