@@ -188,3 +188,30 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 
 	return body;
 }
+
+btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isSensor)
+{
+	// Setting Motions state with position & rotation
+	btQuaternion rotation;
+	rotation.setEulerZYX(cylinder.getRot().getZ(), cylinder.getRot().getY(), cylinder.getRot().getX());
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, cylinder.getPos()));
+
+	// Creating the specific shape
+	btCollisionShape* shape = new btCylinderShape(cylinder.getHalfExtends());
+
+	// Creating the actual body
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
+	btRigidBody* body = new btRigidBody(constructionInfo);
+	shape->setUserPointer(body);
+
+	// Specifics
+	body->setRestitution(0.0f);
+	body->setFriction(0.f);
+	body->setSleepingThresholds(0, 0);
+	body->setDamping(0.9f, 0.9f);
+
+	// Adding body to the world
+	this->addRigidBody(body);
+
+	return body;
+}

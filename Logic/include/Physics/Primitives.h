@@ -113,8 +113,20 @@ namespace Logic
 	};
 
 	/* *
-		Creates a Line */
+		Creates a 3D Cylinder centered around the origin, central axis around the y-axis */
+	class Cylinder : public Shape
+	{
+	public:
+		Cylinder(btVector3 position, btVector3 rotation, btVector3 halfExtends)
+			: Shape(position, rotation) {
+			m_halfExtends = halfExtends;
+			m_shape = ShapeTypeCylinder;
+		}
 
-	/* *
-		Creates a 3D Cylinder */
+		void setHeight(btVector3 halfExtends) { m_halfExtends = halfExtends; }
+		btVector3 getHalfExtends() const { return m_halfExtends; }
+
+	private:
+		btVector3 m_halfExtends;
+	};
 }

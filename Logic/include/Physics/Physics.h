@@ -35,6 +35,7 @@ namespace Logic
 		btRigidBody* createBody(Cube& cube, float mass, bool isSensor);
 		btRigidBody* createBody(Plane& plane, float mass, bool isSensor);
 		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor);
+		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor);
 
 	private:
 		btCollisionDispatcher* dispatcher;
