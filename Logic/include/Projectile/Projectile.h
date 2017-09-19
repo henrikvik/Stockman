@@ -1,8 +1,8 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 
-#include "../Entity/Entity.h"
-#include "ProjectileStruct.h"
+#include <Entity/Entity.h>
+#include <Projectile\ProjectileStruct.h>
 
 namespace Logic
 {
@@ -11,11 +11,12 @@ namespace Logic
 	public:
 		Projectile(btRigidBody* body);
 		Projectile(btRigidBody* body, float damage, float speed, float gravityModifer);
-		Projectile(btRigidBody* body, ProjectileData pData, btVector3 forward);
+		Projectile(btRigidBody* body, ProjectileData pData);
 		Projectile(const Projectile& other) = delete;
 		Projectile* operator=(const Projectile& other) = delete;
 		~Projectile();
 
+		void start(btVector3 forward);
 		void onUpdate(float deltaTime);
 
 		float getDamage() const;

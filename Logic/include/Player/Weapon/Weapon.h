@@ -1,7 +1,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#include "../../Projectile/ProjectileStruct.h"
+#include <Projectile\ProjectileManager.h>
 
 #pragma region ClassDesc
 		
@@ -19,6 +19,8 @@ namespace Logic
 	class Weapon
 	{
 	private:
+		ProjectileManager* m_projectileManager;
+		ProjectileData m_projectileData;
 		int m_weaponID;
 		int m_ammoCap;
 		int m_ammo;
@@ -29,16 +31,16 @@ namespace Logic
 		float m_attackRate;		// Attacks per minute
 		float m_freeze;
 		float m_reloadTime;
-		ProjectileData m_projectileData;
 	//	Animation m_animation;
 	public:
 		Weapon();
-		Weapon(int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime, ProjectileData projectileData);
+		Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime);
 
-		void use();
+		void use(btVector3 position, btVector3 forward);
 
 		void update();
 
+		ProjectileData* getProjectileData();
 		int getAmmoCap();
 		void setAmmoCap(int ammoCap);
 		int getAmmo();
@@ -50,7 +52,6 @@ namespace Logic
 		void removeMagAmmo(int ammo);
 		int getAmmoConsumption();
 		float getAttackTimer();
-		ProjectileData* getProjectileData();
 
 		void fillMag();
 	};

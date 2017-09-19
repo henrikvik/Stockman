@@ -16,6 +16,7 @@
 #include "Entity\Entity.h"
 #include "Weapon\WeaponManager.h"
 #include "Skill\SkillManager.h"
+#include <Projectile\ProjectileManager.h>
 
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
 #define PLAYER_MOVEMENT_SPEED			0.1f
@@ -62,13 +63,11 @@ namespace Logic
 
 		DirectX::SimpleMath::Vector2 getWindowMidPoint();
 
-		void makeProjectiles();
-
 	public:
 		Player(btRigidBody* body);
 		~Player();
 
-		void init();
+		void init(ProjectileManager* projectileManager);
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);

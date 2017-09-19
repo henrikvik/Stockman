@@ -2,8 +2,7 @@
 #define PROJECTILEMANAGER_H
 
 #include <Physics\Physics.h>
-#include "Projectile.h"
-#include "ProjectileStruct.h"
+#include <Projectile\Projectile.h>
 #include <vector>
 
 namespace Logic
@@ -17,8 +16,11 @@ namespace Logic
 		~ProjectileManager();
 
 		void clear();
-		static void addProjectile(ProjectileData& pData, btVector3 forward);
+		void addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward);
 		void removeProjectile();
+
+		void update(float deltaTime);
+		void render(Graphics::Renderer &renderer);
 
 		std::vector<Projectile*>* getProjectiles();
 

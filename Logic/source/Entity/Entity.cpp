@@ -54,6 +54,11 @@ DirectX::SimpleMath::Vector3 Entity::getPosition() const
 	return DirectX::SimpleMath::Vector3(m_transform->getOrigin());
 }
 
+btVector3 Logic::Entity::getPositionBT() const
+{
+	return m_transform->getOrigin();
+}
+
 DirectX::SimpleMath::Quaternion Entity::getRotation() const
 {
 	return DirectX::SimpleMath::Quaternion(m_transform->getRotation());

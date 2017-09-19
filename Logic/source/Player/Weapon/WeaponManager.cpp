@@ -6,8 +6,9 @@ WeaponManager::WeaponManager() { }
 
 WeaponManager::~WeaponManager() { clear(); }
 
-void WeaponManager::init()
+void WeaponManager::init(ProjectileManager* projectileManager)
 {
+	m_projectileManager = projectileManager;
 	initializeWeapons();
 	makeWeaponLoadout();
 	m_currentWeapon = m_weaponsLoadouts[0];
@@ -67,12 +68,12 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ 1, 60, 60, 30, 30, 1, 1, 450, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) },
-		{ 1, 20, 20, 8, 8, 2, 1, 40, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) },
-		{ 1, 20, 20, 8, 8, 1, 1, 1, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) },
-		{ 1, 20, 20, 8, 8, 3, 1, 1, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) },
-		{ 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) },
-		{ 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000, ProjectileData(1, 1, 1, 0, Graphics::ModelID::CUBE, 1) }
+		{ m_projectileManager, ProjectileData(1, 1, 1, 100, 1, Graphics::ModelID::CUBE, 1), 1, 60, 60, 30, 30, 1, 1, 450, 1, 3000 },
+		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 2, 1, 40, 1, 3000 },
+		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 1, 1, 1, 1, 3000 },
+		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 3, 1, 1, 1, 3000 },
+		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000 },
+		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 1, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 0, 1, 1, 1, 3000 }
 	};
 }
 
@@ -102,15 +103,13 @@ void WeaponManager::switchWeapon(int index)
 	}
 }
 
-void WeaponManager::usePrimary()
+void WeaponManager::usePrimary(btVector3 position, btVector3 forward)
 {
 	if(m_attackTimer <= 0.f)
 	{
 		if (m_currentWeapon.first->getMagAmmo() > 0)
 		{
-			// TEMP
-			m_projToFire.push_back(m_currentWeapon.first->getProjectileData());
-
+			m_currentWeapon.first->use(position, forward);
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.first->getAmmoConsumption());
 			printf("fire prim\n");
 			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
@@ -123,13 +122,13 @@ void WeaponManager::usePrimary()
 	}
 }
 
-void WeaponManager::useSecondary()
+void WeaponManager::useSecondary(btVector3 position, btVector3 forward)
 {
 	if (m_attackTimer <= 0.f)
 	{
 		if (m_currentWeapon.first->getMagAmmo() > 0)
 		{
-			m_currentWeapon.second->use();
+			m_currentWeapon.second->use(position, forward);
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.second->getAmmoConsumption());
 			printf("fire sec\n");
 			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
@@ -165,14 +164,4 @@ bool Logic::WeaponManager::isAttacking()
 bool Logic::WeaponManager::isReloading()
 {
 	return m_reloadState != ReloadingWeapon::reloadingWeaponIdle;
-}
-
-std::vector<ProjectileData*>* Logic::WeaponManager::getProjectileList()
-{
-	return &m_projToFire;
-}
-
-void Logic::WeaponManager::clearProjectileList()
-{
-	m_projToFire.clear();
 }

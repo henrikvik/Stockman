@@ -11,18 +11,35 @@ ProjectileManager::~ProjectileManager() { }
 
 void ProjectileManager::clear()
 {
+	for (Projectile* p : m_projectiles)
+		delete p;
 	m_projectiles.clear();
 }
 
-void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 forward)
+void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward)
 {
-	//Projectile* p = newd Projectile(pData);
-	//m_projectiles.push_back(p);
+	btRigidBody* body = m_physPtr->createBody(Sphere(position + forward, btVector3(), pData.scale), 10.f, false);
+	Projectile* p = newd Projectile(body, pData);
+	p->start(forward);
+	m_projectiles.push_back(p);
+	printf("projs: %d\n", m_projectiles.size());
 }
 
 void ProjectileManager::removeProjectile()
 {
 
+}
+
+void Logic::ProjectileManager::update(float deltaTime)
+{
+	for (Projectile* p : m_projectiles)
+		p->update(deltaTime);
+}
+
+void Logic::ProjectileManager::render(Graphics::Renderer& renderer)
+{
+	for (Projectile* p : m_projectiles)
+		p->render(renderer);
 }
 
 std::vector<Projectile*>* ProjectileManager::getProjectiles()
