@@ -67,7 +67,9 @@ namespace Graphics
 
 		deviceContext->RSSetViewports(1, &viewPort);
 
+        deviceContext->IASetInputLayout(forwardPlus);
         deviceContext->VSSetShader(forwardPlus, nullptr, 0);
+
         deviceContext->PSSetShader(nullptr, nullptr, 0);
 		deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
         deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
@@ -265,7 +267,9 @@ namespace Graphics
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 
-        fullscreenQuad.setShader(deviceContext);
+        deviceContext->IASetInputLayout(fullscreenQuad);
+        deviceContext->VSSetShader(fullscreenQuad, nullptr, 0);
+        deviceContext->PSSetShader(fullscreenQuad, nullptr, 0);
 
         static ID3D11SamplerState * pointClamp = states->PointClamp();
         deviceContext->PSSetSamplers(0, 1, &pointClamp);

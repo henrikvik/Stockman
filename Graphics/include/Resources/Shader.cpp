@@ -43,18 +43,18 @@ namespace Graphics
         pixelShader->Release();
     }
 
-    void Shader::setShader(ID3D11DeviceContext * deviceContext, int flags)
-    {
-        if (flags & VS)
-        {
-            deviceContext->IASetInputLayout(inputLayout);
-            deviceContext->VSSetShader(vertexShader, nullptr, 0);
-        }
-        if (flags & PS)
-        {
-            deviceContext->PSSetShader(pixelShader, nullptr, 0);
-        }
-    }
+    //void Shader::setShader(ID3D11DeviceContext * deviceContext, int flags)
+    //{
+    //    if (flags & VS)
+    //    {
+    //        deviceContext->IASetInputLayout(inputLayout);
+    //        deviceContext->VSSetShader(vertexShader, nullptr, 0);
+    //    }
+    //    if (flags & PS)
+    //    {
+    //        deviceContext->PSSetShader(pixelShader, nullptr, 0);
+    //    }
+    //}
 
 
     ComputeShader::ComputeShader(ID3D11Device * device, LPCWSTR shaderPath)
@@ -77,8 +77,8 @@ namespace Graphics
         computeShader->Release();
     }
 
-    void ComputeShader::setShader(ID3D11DeviceContext * deviceContext)
-    {
-        deviceContext->CSSetShader(computeShader, nullptr, 0);
-    }
+    //void ComputeShader::setShader(ID3D11DeviceContext * deviceContext)
+    //{
+    //    deviceContext->CSSetShader(computeShader, nullptr, 0);
+    //}
 }

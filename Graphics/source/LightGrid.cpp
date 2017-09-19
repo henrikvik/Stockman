@@ -171,7 +171,7 @@ void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11Shader
 		m_DebugUAV
 	};
 
-	m_CullGrids->setShader(cxt);
+    cxt->CSSetShader(*m_CullGrids, nullptr, 0);
 	
 
 	cxt->CSSetSamplers(0, 1, &sampler);
@@ -324,7 +324,8 @@ void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11Dev
 	auto count = m_Params.numThreads[0] * m_Params.numThreads[1];
 	m_Frustums = new StructuredBuffer<Frustum>(device, CpuAccess::None, count);
 
-	m_FrustumGeneration->setShader(cxt);
+	cxt->CSSetShader(*m_FrustumGeneration, nullptr, 0);
+
 	ID3D11Buffer *buffers[] = {
 		camera->getBuffer(),
 		m_ParamsBuffer,
