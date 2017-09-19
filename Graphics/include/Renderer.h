@@ -109,7 +109,6 @@ namespace Graphics
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         std::vector<RenderInfo*> renderQueue;
         InstanceQueue_t instanceQueue;
-        GBuffer gbuffer;
 
 		LightGrid grid;
 		DirectX::CommonStates *states;
@@ -140,7 +139,7 @@ namespace Graphics
         ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
 
-        void createGBuffer();
+
         void createInstanceBuffer();
 
         void cull();

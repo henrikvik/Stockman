@@ -20,7 +20,6 @@ namespace Graphics
 		this->backBuffer = backBuffer;
 
 		createDepthStencil();
-		createGBuffer();
 		createInstanceBuffer();
 		initialize(gDevice, gDeviceContext);
 
@@ -38,7 +37,6 @@ namespace Graphics
     Renderer::~Renderer()
     {
         SAFE_RELEASE(instanceBuffer);
-        gbuffer.Release();
 		delete states;
 
     }
@@ -139,55 +137,6 @@ namespace Graphics
     }
 
 
-
-    void Renderer::createGBuffer()
-    {
-        D3D11_TEXTURE2D_DESC textureDesc = { 0 };
-        textureDesc.Width = WIN_WIDTH;
-        textureDesc.Height = WIN_HEIGHT;
-        textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-        textureDesc.SampleDesc.Count = 1;
-        textureDesc.ArraySize = 1;
-
-        ID3D11Texture2D * diffuseSpecTexture;
-        ID3D11Texture2D * normalMatTexture;
-        ID3D11Texture2D * positionTexture;
-
-        ThrowIfFailed(device->CreateTexture2D(&textureDesc, nullptr, &diffuseSpecTexture));
-        ThrowIfFailed(device->CreateTexture2D(&textureDesc, nullptr, &normalMatTexture));
-        ThrowIfFailed(device->CreateTexture2D(&textureDesc, nullptr, &positionTexture));
-        ThrowIfFailed(device->CreateRenderTargetView(diffuseSpecTexture, nullptr, &gbuffer.diffuseSpec));
-        ThrowIfFailed(device->CreateRenderTargetView(normalMatTexture, nullptr, &gbuffer.normalMat));
-        ThrowIfFailed(device->CreateRenderTargetView(positionTexture, nullptr, &gbuffer.position));
-        ThrowIfFailed(device->CreateShaderResourceView(diffuseSpecTexture, nullptr, &gbuffer.diffuseSpecView));
-        ThrowIfFailed(device->CreateShaderResourceView(normalMatTexture, nullptr, &gbuffer.normalMatView));
-        ThrowIfFailed(device->CreateShaderResourceView(positionTexture, nullptr, &gbuffer.positionView));
-
-
-        D3D11_TEXTURE2D_DESC depthTexDesc = {};
-        depthTexDesc.Width = WIN_WIDTH;
-        depthTexDesc.Height = WIN_HEIGHT;
-        depthTexDesc.Format = DXGI_FORMAT_R32_TYPELESS;
-        depthTexDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-        depthTexDesc.SampleDesc.Count = 1;
-        depthTexDesc.ArraySize = 1;
-
-        D3D11_DEPTH_STENCIL_VIEW_DESC depthDesc = {};
-        depthDesc.Format = DXGI_FORMAT_D32_FLOAT;
-        depthDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-        depthDesc.Texture2D.MipSlice = 0;
-        depthDesc.Flags = 0;
-
-        ID3D11Texture2D * depthTexture;
-        ThrowIfFailed(device->CreateTexture2D(&depthTexDesc, nullptr, &depthTexture));
-        ThrowIfFailed(device->CreateDepthStencilView(depthTexture, &depthDesc, &gbuffer.depth));
-
-        diffuseSpecTexture->Release();
-        normalMatTexture->Release();
-        positionTexture->Release();
-        depthTexture->Release();
-    }
 
     void Renderer::createInstanceBuffer()
     {
@@ -312,14 +261,7 @@ namespace Graphics
         float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
         deviceContext->ClearRenderTargetView(backBuffer, clearColor);
 
-        ID3D11ShaderResourceView * SRVS[] =
-        {
-            texture,
-            gbuffer.normalMatView,
-            gbuffer.positionView
-        };
-
-        deviceContext->PSSetShaderResources(0, 3, SRVS);
+        deviceContext->PSSetShaderResources(0, 3, &texture);
 
         UINT zero = 0;
         //deviceContext->IASetVertexBuffers(0, 1, nullptr, &zero, &zero);
@@ -336,13 +278,8 @@ namespace Graphics
 
         deviceContext->Draw(4, 0);
 
-        ID3D11ShaderResourceView * SRVNULLS[] =
-        {
-            NULL,
-            NULL,
-            NULL
-        };
-        deviceContext->PSSetShaderResources(0, 3, SRVNULLS);
+        ID3D11ShaderResourceView * srvNull = nullptr;
+        deviceContext->PSSetShaderResources(0, 3, &srvNull);
     }
 
     void Renderer::drawGUI()
