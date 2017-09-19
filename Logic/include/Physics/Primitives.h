@@ -11,6 +11,31 @@ namespace Logic
 		ShapeTypeCylinder
 	};
 
+	class Ray
+	{
+	public:
+		Ray(btVector3 start, btVector3 end)
+		{
+			m_start = start;
+			m_end = end;
+		}
+
+		Ray(btVector3 start, btVector3 forward, btScalar length)
+		{
+			m_start = start;
+			m_end = start + (forward * length);
+		}
+
+		const btVector3& getStart() 		{ return m_start;	}
+		const btVector3& getEnd()			{ return m_end;		}
+		void setStart(btVector3 start)		{ m_start = start;	}
+		void setEnd(btVector3 end)			{ m_end = end;		}
+
+	private:
+		btVector3	m_start;
+		btVector3	m_end;
+	};
+
 	class Shape
 	{
 	public:

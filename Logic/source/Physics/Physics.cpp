@@ -49,10 +49,6 @@ void Physics::clear()
 	delete collisionConfiguration;
 }
 
-#include <ctime>
-#include <chrono>
-#include <iostream>
-
 void Physics::update(float deltaTime)
 {
 	static std::chrono::steady_clock::time_point begin;
@@ -89,6 +85,26 @@ void Physics::update(float deltaTime)
 	}
 }
 
+btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
+{
+	const btVector3& start	= ray.getStart();
+	const btVector3& end	= ray.getEnd();
+
+	// Ray testing to see first callback
+	btCollisionWorld::ClosestRayResultCallback rayCallBack(start, end);
+	this->rayTest(start, end, rayCallBack);
+
+	if (rayCallBack.hasHit())
+	{
+		const btCollisionObject* object = rayCallBack.m_collisionObject;
+		btRigidBody* body = static_cast<btRigidBody*>(object->getUserPointer());
+
+		return body;
+	}
+
+	return nullptr;
+}
+
 btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation
@@ -107,6 +123,7 @@ btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, localInertia);
 	btRigidBody* body = new btRigidBody(constructionInfo);
+	shape->setUserPointer(body);
 
 	// Specifics
 	body->setRestitution(0.0f);
@@ -132,6 +149,7 @@ btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
+	shape->setUserPointer(body);
 
 	// Specifics
 	body->setRestitution(0.0f);
@@ -157,6 +175,7 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
+	shape->setUserPointer(body);
 
 	// Specifics
 	body->setRestitution(0.0f);
