@@ -28,10 +28,10 @@ namespace Logic
 		int m_magAmmo;
 		int m_ammoConsumption;
 		int m_projectileCount;
-		int m_spreadH;
-		int m_spreadV;
+		int m_spreadH;							// Horizontal spread in degrees	
+		int m_spreadV;							// Vertical spread in degrees
 		float m_damage;
-		float m_attackRate;		// Attacks per minute
+		float m_attackRate;						// Attacks per minute
 		float m_freeze;
 		float m_reloadTime;
 	//	Animation m_animation;
