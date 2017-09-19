@@ -15,13 +15,15 @@ Logic::MenuState::~MenuState()
 
 void Logic::MenuState::initialize(std::vector<ButtonStruct> buttonStruct, std::string background)
 {
-	/*DirectX::SimpleMath::Vector2 pos(xPos, yPos);
-	DirectX::SimpleMath::Vector2 texCoordStart(xTexStart, yTexStart);
-	DirectX::SimpleMath::Vector2 texCoordEnd(xTexEnd, yTexEnd);
-	m_buttons.push_back(newd Button());
-	m_buttons.at(m_buttons.size() - 1)->initialize(pos, texCoordStart, texCoordEnd, height, width, texture, callBack);
-
-	m_menu.m_buttons.push_back(&m_buttons.at(0)->getButtonInfo());*/
+	for (auto const& struc : buttonStruct)
+	{
+		DirectX::SimpleMath::Vector2 pos(struc.xPos, struc.yPos);
+		DirectX::SimpleMath::Vector2 texCoordStart(struc.xTexStart, struc.yTexStart);
+		DirectX::SimpleMath::Vector2 texCoordEnd(struc.xTexEnd, struc.yTexEnd);
+		m_buttons.push_back(newd Button());
+		m_buttons.at(m_buttons.size() - 1)->initialize(pos, texCoordStart, texCoordEnd, struc.height, struc.width, struc.texture, struc.m_CallBackFunction);
+		m_menu.m_buttons.push_back(&m_buttons.at(m_buttons.size() - 1)->getButtonInfo());
+	}
 }
 
 void Logic::MenuState::updateOnPress(int posX, int posY)

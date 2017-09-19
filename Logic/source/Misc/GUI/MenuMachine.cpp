@@ -22,6 +22,7 @@ MenuMachine::~MenuMachine()
 
 void Logic::MenuMachine::initialize(GameState state)
 {
+	//Structure to define everything one Menu needs
 	struct Menu
 	{
 		int theState;
@@ -29,14 +30,28 @@ void Logic::MenuMachine::initialize(GameState state)
 		std::vector<MenuState::ButtonStruct> buttons;
 	};
 
+	//Gather all the functions in a map for future allocation
+	std::map<std::string, std::function<void(void)>> functions;
+	functions["buttonClick0"] = std::bind(&MenuMachine::buttonClick0, this);
+	functions["buttonClick1"] = std::bind(&MenuMachine::buttonClick1, this);
+	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
+
+	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> menuFile;
 	FileLoader::singleton().loadStructsFromFile(menuFile, "Menu");
-	std::vector<Menu> menuGather;
+
+	//Gather all the buttons in a map for future allocation
 	std::map<std::string, MenuState::ButtonStruct> allButtons;
+
+	//Gather all the Menus in this vector for fututre use
+	std::vector<Menu> menuGather;
 	for (auto const& struc : menuFile)
 	{
+		//If it is a button add it into its map
 		if (struc.strings.find("buttonName") != struc.strings.end())
 		{
+			std::string testinging = struc.strings.at("function"); //crap used until the buggy file handler is fixed
+			testinging = testinging.substr(0, testinging.size() - 1); //crap used until the buggy file handler is fixed
 			allButtons[struc.strings.at("buttonName")] = MenuState::ButtonStruct({
 				struc.floats.at("xPos"),
 				struc.floats.at("yPos"),
@@ -47,11 +62,13 @@ void Logic::MenuMachine::initialize(GameState state)
 				struc.floats.at("height"),
 				struc.floats.at("width"),
 				struc.strings.at("texture"),
-				struc.strings.at("function")
+				functions.at(testinging) //crap used until the buggy file handler is fixed
 			});
 		}
+		//If it is a menu add one to the vector
 		else if (struc.ints.find("State") != struc.ints.end())
 		{
+			//Temporary Button Vector until Menu has been given them
 			std::vector<MenuState::ButtonStruct> tempButton;
 			for (int i = 0; i < struc.ints.at("buttonAmmount"); i++)
 			{
@@ -65,7 +82,7 @@ void Logic::MenuMachine::initialize(GameState state)
 		}
 	}
 
-	
+	//Create new Menus and send in the fitting information from Menu vector
 	for (auto const& menus : menuGather)
 	{
 		m_menuStates[GameState(menus.theState)] = newd MenuState();
