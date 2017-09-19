@@ -66,4 +66,3 @@ namespace Graphics
 		std::string m_menuTexture;			//< file path for the menu background ska bytas till enums
 	};
 };
-#endif // !STRUCTS_H
