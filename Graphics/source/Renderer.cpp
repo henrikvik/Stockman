@@ -13,24 +13,23 @@ namespace Graphics
         , forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_INSTANCE_DESC)
         , fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
         , lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
+        , depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
 		, cube(gDevice)
 	{
 		this->device = gDevice;
 		this->deviceContext = gDeviceContext;
 		this->backBuffer = backBuffer;
 
-		createDepthStencil();
 		createInstanceBuffer();
 		initialize(gDevice, gDeviceContext);
 
 		viewPort = { 0 };
 		viewPort.Width = WIN_WIDTH;
 		viewPort.Height = WIN_HEIGHT;
-		viewPort.MaxDepth = 1.f;
+		viewPort.MaxDepth = 1.0f;
 
 		states = new DirectX::CommonStates(device);
 		grid.initialize(camera, device, deviceContext, &resourceManager);
-
     }
 
 
@@ -40,9 +39,6 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
-		SAFE_RELEASE(dSS);
-		SAFE_RELEASE(dSV);
-		SAFE_RELEASE(depthSRV);
 
     }
 
@@ -65,14 +61,15 @@ namespace Graphics
 
 		static float clearColor[4] = { 0,0,0,1 };
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearDepthStencilView(dSV, D3D11_CLEAR_DEPTH, 1.f, 0);
+		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
 
         forwardPlus.setShader(deviceContext, Shader::VS);
 		deviceContext->PSSetShader(nullptr, nullptr, 0);
-		deviceContext->OMSetRenderTargets(0, nullptr, dSV);
+		deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
+        deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 		
 		draw();
 
@@ -102,7 +99,7 @@ namespace Graphics
 
 		lights->unmap(deviceContext);
 
-		grid.cull(camera, states, depthSRV, device, deviceContext, &resourceManager);
+		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 
 	    forwardPlus.setShader(deviceContext);
 
@@ -114,7 +111,7 @@ namespace Graphics
 		auto sampler = states->LinearClamp();
 		deviceContext->PSSetShaderResources(0, 3, SRVs);
 		deviceContext->PSSetSamplers(0, 1, &sampler);
-		deviceContext->OMSetRenderTargets(1, &backBuffer, dSV);
+		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 		
 		draw();
 
@@ -218,51 +215,6 @@ namespace Graphics
 
         deviceContext->Unmap(instanceBuffer, 0);
     }
-
-	// TEMP
-	void Renderer::createDepthStencil()
-	{
-		D3D11_TEXTURE2D_DESC descTex;
-		ZeroMemory(&descTex, sizeof(descTex));
-		descTex.ArraySize = descTex.MipLevels = 1;
-		descTex.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-		descTex.Format = DXGI_FORMAT_R32_TYPELESS;
-		descTex.Height = 720;
-		descTex.Width = 1280;
-		descTex.SampleDesc.Count = 1;
-		descTex.MipLevels = 1;
-
-		ID3D11Texture2D* texture;
-
-		ThrowIfFailed(this->device->CreateTexture2D(&descTex, NULL, &texture));
-
-
-		D3D11_DEPTH_STENCIL_DESC descSten;
-		ZeroMemory(&descSten, sizeof(D3D11_DEPTH_STENCIL_DESC));
-		descSten.DepthEnable = true;
-		descSten.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-		descSten.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		descSten.StencilEnable = false;
-
-		ThrowIfFailed(this->device->CreateDepthStencilState(&descSten, &this->dSS));
-
-
-		D3D11_DEPTH_STENCIL_VIEW_DESC descStenV;
-		ZeroMemory(&descStenV, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-		descStenV.Format = DXGI_FORMAT_D32_FLOAT;
-		descStenV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		ThrowIfFailed(this->device->CreateDepthStencilView(texture, &descStenV, &this->dSV));
-
-		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
-		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MipLevels = 1;
-		ThrowIfFailed(this->device->CreateShaderResourceView(texture, &srvDesc, &this->depthSRV));
-
-		this->deviceContext->OMSetDepthStencilState(this->dSS, 0);
-
-		texture->Release();
-	}
 
 	void Renderer::draw()
 	{

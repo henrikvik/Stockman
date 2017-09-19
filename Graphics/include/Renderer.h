@@ -12,6 +12,7 @@
 #include "Resources\Shader.h"
 #include "Datatypes.h"
 #include "LightGrid.h"
+#include "Resources\DepthStencil.h"
 
 namespace Graphics
 {
@@ -110,6 +111,8 @@ namespace Graphics
         std::vector<RenderInfo*> renderQueue;
         InstanceQueue_t instanceQueue;
 
+        DepthStencil depthStencil;
+
 		LightGrid grid;
 		DirectX::CommonStates *states;
 
@@ -126,10 +129,6 @@ namespace Graphics
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
-		ID3D11DepthStencilView * dSV;
-		ID3D11ShaderResourceView* depthSRV;
-
-		ID3D11DepthStencilState * dSS;
 
         // Egna Pekare
         ID3D11Buffer * instanceBuffer;		
@@ -146,7 +145,6 @@ namespace Graphics
         void writeInstanceData();
         void draw();
         void drawGUI();
-		void createDepthStencil();
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
