@@ -66,8 +66,8 @@ namespace Graphics
 
 		deviceContext->RSSetViewports(1, &viewPort);
 
-        forwardPlus.setShader(deviceContext, Shader::VS);
-		deviceContext->PSSetShader(nullptr, nullptr, 0);
+        deviceContext->VSSetShader(forwardPlus, nullptr, 0);
+        deviceContext->PSSetShader(nullptr, nullptr, 0);
 		deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
         deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 		
@@ -101,7 +101,9 @@ namespace Graphics
 
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 
-	    forwardPlus.setShader(deviceContext);
+        deviceContext->IASetInputLayout(forwardPlus);
+        deviceContext->VSSetShader(forwardPlus, nullptr, 0);
+        deviceContext->PSSetShader(forwardPlus, nullptr, 0);        
 
 		ID3D11ShaderResourceView *SRVs[] = {
 			grid.getOpaqueIndexList()->getSRV(),

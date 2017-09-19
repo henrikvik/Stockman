@@ -19,6 +19,9 @@ namespace Graphics
         // second argument is flags for which shaders to bind bitwise from Shader::Flags enum
         void setShader(ID3D11DeviceContext * deviceContext, int flags = VS | PS);
 
+        operator ID3D11InputLayout  *() { return inputLayout;  }
+        operator ID3D11VertexShader *() { return vertexShader; }
+        operator ID3D11PixelShader  *() { return pixelShader;  }
     private:
         ID3D11InputLayout  * inputLayout;
         ID3D11VertexShader * vertexShader;
