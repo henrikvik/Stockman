@@ -2,6 +2,10 @@
 #include <stdio.h>
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
+#include "TempCube.h"
+
+#define USE_TEMP_CUBE true
+#define ANIMATION_HIJACK_RENDER true
 
 
 namespace Graphics
@@ -14,7 +18,6 @@ namespace Graphics
         , fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
         , lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
         , depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
-		, cube(gDevice)
 	{
 		this->device = gDevice;
 		this->deviceContext = gDeviceContext;
@@ -53,6 +56,19 @@ namespace Graphics
 
 	void Renderer::render(Camera * camera)
 	{
+#if ANIMATION_HIJACK_RENDER
+        ID3D11Buffer *cameraBuffer = camera->getBuffer();
+        deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
+        deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
+
+        static float clearColor[4] = { 0,0,0,1 };
+        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+
+        deviceContext->RSSetViewports(1, &viewPort);
+
+
+#else
 		cull();
         writeInstanceData();
 
@@ -156,6 +172,7 @@ namespace Graphics
 
 
 		this->spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext);*/
+#endif
 	}
 
 
@@ -233,7 +250,12 @@ namespace Graphics
 
         for (InstanceQueue_t::value_type & pair : instanceQueue)
         {
-#if false
+#if USE_TEMP_CUBE
+            static TempCube tempCube(device);
+            buffers[0] = tempCube.vertexBuffer;
+            deviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+            deviceContext->DrawInstanced(36, (UINT)pair.second.size(), 0, 0);
+#else
             ModelInfo model = resourceManager.getModelInfo(pair.first);
 
             buffers[0] = model.vertexBuffer;
@@ -242,12 +264,7 @@ namespace Graphics
 
             deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, readOffset);
             readOffset += (UINT)pair.second.size() * sizeof(InstanceData);
-#else
-            buffers[0] = cube.vertexBuffer;
-            deviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
-            deviceContext->DrawInstanced(36, (UINT)pair.second.size(), 0, 0);
 #endif
-
         }
 
     }
