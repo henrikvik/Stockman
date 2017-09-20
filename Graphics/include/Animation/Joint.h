@@ -11,10 +11,12 @@ public:
     const UINT id;
 
 
-    inline void addChild(Joint & joint) { children.push_back(joint); }
+    inline void addChild(Joint joint) { children.push_back(joint); }
     inline void setAnimatedTransform(Matrix & transform) { animatedTransform = transform; }
     inline Matrix const& getAnimatedTransform() const { return animatedTransform; }
     inline Matrix const& getInvBindTransform() const { return invBindTransform; }
+
+    void getJointTransforms(std::vector<Matrix> const& animationTransforms, std::vector<Matrix> & jointTransforms);
 
     //void calcInvBindTransform(Matrix & parentBindTransform);
 private:

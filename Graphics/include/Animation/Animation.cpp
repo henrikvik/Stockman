@@ -8,13 +8,18 @@ Animation::Animation(float totalDuration, std::initializer_list<KeyFrame> keyFra
 
 std::pair<KeyFrame const&, KeyFrame const&> Animation::getKeyFrames(float duration)
 {
-    int i = 0;
-    for (; i < keyFrames.size() - 1; i++)
+    
+    int prevKeyFrame = 0;
+    int nextKeyFrame = 0;
+
+    for (int i = 0; i < keyFrames.size(); i++)
     {
         if (keyFrames[i].getTimeStamp() < duration)
         {
-            break;
+            prevKeyFrame = i;
+            nextKeyFrame = (i + 1) % keyFrames.size();
         }
     }
-    return { keyFrames[i], keyFrames[i+1] };
+
+    return { keyFrames[prevKeyFrame], keyFrames[nextKeyFrame] };
 }
