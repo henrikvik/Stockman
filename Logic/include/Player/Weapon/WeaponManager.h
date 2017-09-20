@@ -11,7 +11,6 @@
 
 #include <vector>
 #include <Player\Weapon\Weapon.h>
-#include <Misc\Enums.h>
 #include <Projectile\ProjectileManager.h>
 #include <Graphics\include\Structs.h>
 
@@ -41,6 +40,13 @@ namespace Logic
 		bool isReloading();
 
 	private:
+
+		enum ReloadingWeapon
+		{
+			reloadingWeaponIdle,
+			reloadingWeaponActive,
+			reloadingWeaponDone
+		};
 
 		void initializeWeapons();
 		void makeWeaponLoadout();

@@ -29,6 +29,14 @@ namespace Logic
 	class Player : public Entity
 	{
 	private:
+
+		enum PlayerState
+		{
+			playerStateStanding,
+			playerStateCrouching,
+			playerStateInAir
+		};
+
 		//ActionManager m_actionManager;
 		WeaponManager m_weaponManager;
 		SkillManager m_skillManager;
