@@ -2,7 +2,7 @@
 using namespace Logic;
 
 #define ENEMY_START_COUNT 16
-#define TEST_NAME "helloWave.xml"
+#define TEST_NAME "helloWave"
 
 #include <AI/EnemyTest.h>
 #include <ctime>
@@ -72,8 +72,7 @@ void EntityManager::spawnWave(Physics &physics)
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		i += 1;
-		m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 113.f, i * 37.f, i * 124.f }, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 100, false), {0.5f, 0.5f, 0.5f}));
-		m_deadEnemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 21.f, i * 11.f, i * 2.f}, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 500, false), {0.5f, 0.5f, 0.5f}));
+		m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 113.f, i * 37.f, i * 124.f }, { 0, 0, 0 }, {3.5f, 0.5f, 0.5f}), 100, false), {0.5f, 0.5f, 0.5f}));
 	}
 }
 
