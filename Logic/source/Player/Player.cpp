@@ -42,12 +42,15 @@ void Player::init(ProjectileManager* projectileManager)
 void Player::clear()
 {
 	m_weaponManager.clear();
-//	m_skillManager.clear();
+	m_skillManager.clear();
 }
 
 void Player::onCollision(Entity& other)
 {
-
+	if (Projectile* p = dynamic_cast<Projectile*>(&other))
+	{
+		onCollision(*p);
+	}
 }
 
 void Player::onCollision(Projectile& other)
@@ -57,10 +60,12 @@ void Player::onCollision(Projectile& other)
 
 void Player::saveToFile()
 {
+
 }
 
 void Player::readFromFile()
 {
+
 }
 
 void Player::updateSpecific(float deltaTime)
