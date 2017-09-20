@@ -73,7 +73,6 @@ void EntityManager::spawnWave(Physics &physics)
 	{
 		i += 1;
 		m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 113.f, i * 37.f, i * 124.f }, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 100, false), {0.5f, 0.5f, 0.5f}));
-
 		m_deadEnemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 21.f, i * 11.f, i * 2.f}, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 500, false), {0.5f, 0.5f, 0.5f}));
 	}
 }
