@@ -114,11 +114,12 @@ namespace Graphics
 		}
 	}
 
-	void MaterialManager::getMaterialInfo(ModelInfo modelInfo)
+	/*ID3D11ShaderResourceView* MaterialManager::getMaterialInfo(ModelInfo modelInfo)
 	{
-	/*	modelInfo.diffuseMap = textureManager->GetDiffuseTexture(materials->at(modelInfo.materialID).diffuse_ID);
-		modelInfo.normalMap = textureManager->GetNormalTexture(materials->at(modelInfo.materialID).normal_ID);
-		modelInfo.glowSpecularMap = textureManager->GetGlowTexture(materials->at(modelInfo.materialID).specular_ID);*/
-	}
+		modelInfo.diffuseMap = textureManager->GetDiffuseTexture(materials->at(1).diffuse_ID);
+		modelInfo.normalMap = textureManager->GetNormalTexture(materials->at(1).normal_ID);
+		modelInfo.glowSpecularMap = textureManager->GetGlowTexture(materials->at(1).specular_ID);
 
+	}
+*/
 }

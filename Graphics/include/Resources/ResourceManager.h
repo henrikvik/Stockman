@@ -53,7 +53,7 @@ namespace Graphics
 		MeshManager meshManager;
 		BRFImportHandler brfImporterHandler;
 		MaterialManager materialManager;
-		ModelInfo modelInfo;
+		TextureManager textureManager;
 
 	};
 }

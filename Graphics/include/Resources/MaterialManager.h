@@ -13,8 +13,8 @@ namespace Graphics
 		~MaterialManager();
 		void initialize(ID3D11Device* gDevice, ID3D11DeviceContext * gDeviceContext);
 		void release();
-		void getMaterialInfo(ModelInfo modelInfo);
-
+		/*ID3D11ShaderResourceView* getMaterialInfo(ModelInfo modelInfo);
+*/
 		bool compareMaterials(importedMaterial* import, unsigned int materialID);
 		bool compareImportMaterials(importedMaterial* import);
 		void addMaterials(vector<importedMaterial>* import);
@@ -22,5 +22,10 @@ namespace Graphics
 	private:
 		std::vector<Material>* materials;
 		TextureManager* textureManager;
+	
+		ID3D11ShaderResourceView*   diffuseMap = nullptr;
+		ID3D11ShaderResourceView*   normalMap = nullptr;
+		ID3D11ShaderResourceView*   specularMap = nullptr;
+
 	};
 }

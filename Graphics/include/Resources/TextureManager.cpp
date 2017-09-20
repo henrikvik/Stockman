@@ -293,7 +293,7 @@ namespace Graphics
 	{
 		ID3D11ShaderResourceView** texture = newd ID3D11ShaderResourceView*;
 
-		diffuseTex = (TEXTURE_PATH(L"Resources/Textures/"), diffuseTex);
+		diffuseTex = (TEXTURE_PATH(L""), diffuseTex);
 		wstring widestr = wstring(diffuseTex.begin(), diffuseTex.end());
 		const wchar_t* fileName = widestr.c_str();
 
@@ -307,7 +307,7 @@ namespace Graphics
 	{
 		ID3D11ShaderResourceView** texture = newd ID3D11ShaderResourceView*;
 
-		normalTex = (TEXTURE_PATH(L"Resources/Textures/"), normalTex);
+		normalTex = (TEXTURE_PATH(L""), normalTex);
 		wstring widestr = wstring(normalTex.begin(), normalTex.end());
 		const wchar_t* fileName = widestr.c_str();
 

@@ -28,11 +28,15 @@ namespace Graphics
         Mesh & mesh = meshManager.GetMeshes()->at(modelID);
 
 
-        ModelInfo info = {
-	
-            mesh.GetIndexCount(),
-            mesh.getIndexBuffer(),
-            mesh.getVertexBuffer()
+		ModelInfo info = {
+
+			mesh.GetIndexCount(),
+			mesh.getIndexBuffer(),
+			mesh.getVertexBuffer(),
+			textureManager.GetDiffuseTexture(0),
+			textureManager.GetNormalTexture(0),
+			textureManager.GetSpecularTexture(0),
+
         };
 
         return info;
