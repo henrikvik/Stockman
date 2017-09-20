@@ -84,7 +84,6 @@ PSOutput PS(VSOutput input) {
     //This will include a texture sample or material color later
 	float3 color = 0.1f;
 
-    //TODO:: FIX THE ODD BACKSIDE SPECULARITUYUY
 	for (uint i = 0; i < count; i++) 
     {
 		uint idx = LightIndexList[offset + i];
