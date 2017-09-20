@@ -25,7 +25,6 @@ cbuffer LightMatBuffer : register(b2)
 }
 
 
-// TODO: change
 struct Light {
 	float4 positionVS;
 	float3 positionWS;
@@ -49,6 +48,7 @@ struct VSInput
 struct VSOutput {
 	float4 pos : SV_POSITION;
 	float4 worldPos : POS;
+    float4 lightPos : LIGHT_POS;
 	float3 normal : NORMAL;
 	float2 uv : UV;
 };
@@ -62,6 +62,10 @@ VSOutput VS(VSInput input) {
 	output.uv = input.uv;
     output.normal = mul(input.world, float4(input.normal, 0));
     output.normal = normalize(output.normal);
+
+    output.lightPos = mul(input.world, output.pos - float4((output.normal.xyz), 1));
+    output.lightPos = mul(lightVP, output.worldPos);
+
 	return output;
 }
 
@@ -71,6 +75,17 @@ StructuredBuffer<Light> Lights : register(t2);
 
 Texture2D shadowMap : register(t3);
 SamplerState Sampler : register(s0);
+
+SamplerComparisonState cmpSampler : register(s1)
+{
+   // sampler state
+    Filter = COMPARISON_MIN_MAG_MIP_LINEAR;
+    AddressU = MIRROR;
+    AddressV = MIRROR;
+ 
+   // sampler comparison state
+    ComparisonFunc = LESS_EQUAL;
+};
 
 struct PSOutput {
 	float4 color : SV_Target;
@@ -95,6 +110,9 @@ PSOutput PS(VSOutput input) {
     //This will include a texture sample or material color later
 	float3 color = 0.1f;
 
+
+
+
 	for (uint i = 0; i < count; i++) 
     {
 		uint idx = LightIndexList[offset + i];
@@ -114,26 +132,41 @@ PSOutput PS(VSOutput input) {
         color += light.color * attenuation * (saturate(diffuse) + specular);
 	}
 
+            /////////////////////SHADOWS//////////////////////////////
+    input.lightPos.x = (input.lightPos.x * 0.5f) + 0.5f;
+    input.lightPos.y = (input.lightPos.y * -0.5f) + 0.5f;
 
-    ///SHADOWS
-    float4 posFromLight = input.worldPos;
-    posFromLight = mul(lightVP, posFromLight);
+    float addedShadow = 0;
 
-    //Maybe divisdion with w idk orthographic stuff is wierd
+    int samples = 1;
 
-    posFromLight.x = (posFromLight.x * 0.5f) + 0.5f;
-    posFromLight.y = (posFromLight.y * -0.5f) + 0.5f;
-
-    float depth = shadowMap.Sample(Sampler, posFromLight.xy).r;
-
-    if (depth < posFromLight.z)
+    for (int y = -samples; y <= samples; y += 1)
     {
-        color = 0;
-        directionalDiffuse = 0;
+        for (int x = -samples; x <= samples; x += 1)
+        {
+            addedShadow += shadowMap.SampleCmp(cmpSampler, input.lightPos.xy, input.lightPos.z - 0.01, int2(x, y)).r;
+        }
     }
 
+    //addedShadow += shadowMap.SampleCmp(cmpSampler, input.lightPos.xy, input.lightPos.z).r;
 
-    output.color = float4(saturate(directionalDiffuse + color + ambient), 1);
+
+    float shadow = addedShadow / 9;
+    //////////////////////// END SHADOW /////////////////////////
+
+
+   
+
+    ///DEBUG TEST TEMP
+    //if (input.lightPos.x > 1 || input.lightPos.x < 0 ||
+    //    input.lightPos.y > 1 || input.lightPos.y < 0)
+    //    output.color.xyz = ambient;
+
     //output.color = float4(input.normal.xyz, 1);
+
+        
+        output.color = float4(saturate((directionalDiffuse + color) * shadow + ambient), 1);
+
+
 	return output;
 }
