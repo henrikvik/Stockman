@@ -270,7 +270,7 @@ void Player::render(Graphics::Renderer & renderer)
 	Object::render(renderer);
 
 	// Drawing the weapon model
-	m_weaponManager.render(renderer);
+//	m_weaponManager.render(renderer);
 }
 
 DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()

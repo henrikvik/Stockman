@@ -80,11 +80,11 @@ void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTrans
 {
 	playerForward.Normalize();
 
-	DirectX::SimpleMath::Matrix newView = DirectX::XMMatrixLookToRH(playerTranslation.Translation(), playerForward , { 0, 1, 0 });
+	DirectX::SimpleMath::Matrix camera = DirectX::XMMatrixLookToRH({0, 0, 0}, playerForward, { 0, 1, 0 });
 	DirectX::SimpleMath::Vector3 offset = playerTranslation.Translation() + playerForward * 3.f;
-	offset.y -= 5;
+	DirectX::SimpleMath::Matrix result = camera.Invert() * DirectX::SimpleMath::Matrix::CreateTranslation(offset);
 
-	this->setWorldTranslation(newView.Invert() * DirectX::SimpleMath::Matrix::CreateTranslation(offset));
+	this->setWorldTranslation(result);
 }
 
 ProjectileData * Weapon::getProjectileData()
