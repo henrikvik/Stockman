@@ -3,6 +3,7 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 
+#define SHADOW_MAP_RESOLUTION 1024
 
 namespace Graphics
 {
@@ -15,7 +16,7 @@ namespace Graphics
 		, lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
 		, cube(gDevice)
-		, lightDir(gDevice, 1024, 1024, 40)
+		, lightDir(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
 	{
 		this->device = gDevice;
 		this->deviceContext = gDeviceContext;
@@ -43,7 +44,7 @@ namespace Graphics
 		SAFE_RELEASE(transparencyBlendState);
 		SAFE_RELEASE(shadowDSV);
 		SAFE_RELEASE(shadowSRV);
-		SAFE_RELEASE(shadowRasterState);
+		SAFE_RELEASE(shadowSampler);
         resourceManager.release();
 
     }
@@ -125,6 +126,7 @@ namespace Graphics
 		auto sampler = states->LinearClamp();
 		deviceContext->PSSetShaderResources(0, 4, SRVs);
 		deviceContext->PSSetSamplers(0, 1, &sampler);
+		deviceContext->PSSetSamplers(1, 1, &shadowSampler);
 
 		ID3D11Buffer *lightBuffs[] =
 		{
@@ -132,7 +134,8 @@ namespace Graphics
 			lightDir.getMatrixBuffer()
 		};
 		
-		deviceContext->PSSetConstantBuffers(1, 2, lightBuffs);
+		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
+		deviceContext->VSSetConstantBuffers(2, 1, &lightBuffs[1]);
 
 		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 		
@@ -300,7 +303,6 @@ namespace Graphics
 	void Renderer::drawShadows()
 	{
 		deviceContext->ClearDepthStencilView(shadowDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
-		deviceContext->RSSetState(shadowRasterState);
 
 		deviceContext->RSSetViewports(1, &lightDir.getViewPort());
 		deviceContext->IASetInputLayout(forwardPlus);
@@ -371,8 +373,8 @@ namespace Graphics
 		ID3D11Texture2D* texture;
 
 		D3D11_TEXTURE2D_DESC desc = {};
-		desc.Width = 1024;
-		desc.Height = 1024;
+		desc.Width = SHADOW_MAP_RESOLUTION;
+		desc.Height = SHADOW_MAP_RESOLUTION;
 		desc.MipLevels = 1;
 		desc.ArraySize = 1;
 		desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
@@ -398,19 +400,18 @@ namespace Graphics
 
 		SAFE_RELEASE(texture);
 
-		D3D11_RASTERIZER_DESC rasterDesc = {};
-		rasterDesc.AntialiasedLineEnable = false;
-		rasterDesc.CullMode = D3D11_CULL_BACK;
-		rasterDesc.DepthBias = D3D11_DEFAULT_DEPTH_BIAS;
-		rasterDesc.DepthBiasClamp = D3D11_DEFAULT_DEPTH_BIAS_CLAMP; // Maybe higher
-		rasterDesc.DepthClipEnable = true;
-		rasterDesc.FillMode = D3D11_FILL_SOLID;
-		rasterDesc.FrontCounterClockwise = true;
-		rasterDesc.MultisampleEnable = true;
-		rasterDesc.ScissorEnable = true;
-		rasterDesc.SlopeScaledDepthBias = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-		
-		device->CreateRasterizerState(&rasterDesc, &shadowRasterState);
+		D3D11_SAMPLER_DESC sDesc = {};
+		sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+		sDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+		sDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+		sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+		sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+		sDesc.MaxAnisotropy = 0;
+		sDesc.MinLOD = 0;
+		sDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		sDesc.MipLODBias = 0;
+
+		device->CreateSamplerState(&sDesc, &shadowSampler);
 	}
 
     void Renderer::createBlendState()
