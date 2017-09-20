@@ -43,6 +43,7 @@ void Player::init(ProjectileManager* projectileManager)
 void Player::clear()
 {
 	m_weaponManager.clear();
+	m_skillManager.clear();
 }
 
 void Player::onCollision(Entity& other)
@@ -73,7 +74,7 @@ void Player::updateSpecific(float deltaTime)
 {
 	// Update Managers
 	m_weaponManager.update(deltaTime);
-	m_skillManager.update();
+	m_skillManager.update(deltaTime);
 
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
