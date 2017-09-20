@@ -2,8 +2,8 @@
 
 using namespace Logic;
 
-Player::Player(btRigidBody* body)
-: Entity(body)
+Player::Player(btRigidBody* body, btVector3 halfExtent)
+: Entity(body, halfExtent)
 {
 
 }
@@ -47,6 +47,12 @@ void Player::clear()
 
 void Player::onCollision(Entity& other)
 {
+
+}
+
+void Player::onCollision(Projectile& other)
+{
+
 }
 
 void Player::saveToFile()

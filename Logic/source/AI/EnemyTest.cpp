@@ -1,8 +1,8 @@
 #include "AI/EnemyTest.h"
 using namespace Logic;
 
-EnemyTest::EnemyTest(btRigidBody* body)
-: Enemy(body, 10, 5, 3, 1) { //just test values
+EnemyTest::EnemyTest(btRigidBody* body, btVector3 halfExtent)
+: Enemy(body, halfExtent, 10, 5, 3, 1) { //just test values
 }
 
 

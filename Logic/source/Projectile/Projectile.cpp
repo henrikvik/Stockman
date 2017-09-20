@@ -3,24 +3,24 @@
 using namespace Logic;
 
 
-Projectile::Projectile(btRigidBody* body)
-: Entity(body) 
+Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
+: Entity(body, halfextent) 
 {
 	m_damage = 1.f;
 	m_speed = 0.f;
 	m_gravityModifier = 1.f;
 }
 
-Projectile::Projectile(btRigidBody* body, float damage, float speed, float gravityModifer)
-: Entity(body)
+Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer)
+: Entity(body, halfExtent)
 {
 	m_damage = damage;
 	m_speed = speed;
 	m_gravityModifier = gravityModifer;
 }
 
-Logic::Projectile::Projectile(btRigidBody* body, ProjectileData pData)
-: Entity(body)
+Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
+: Entity(body, halfExtent)
 {
 	m_damage = pData.damage;
 	m_speed = pData.speed;

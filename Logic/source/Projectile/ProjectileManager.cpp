@@ -23,7 +23,7 @@ void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position,
 	// Set gravity modifier
 	body->setGravity(btVector3(0, pData.gravityModifier, 0));
 	// Create projectile
-	Projectile* p = newd Projectile(body, pData);
+	Projectile* p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, pData);
 	// Start
 	p->start(forward);
 
