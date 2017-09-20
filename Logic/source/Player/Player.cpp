@@ -93,14 +93,6 @@ void Player::updateSpecific(float deltaTime)
 	// Movement
 	mouseMovement(deltaTime, &ms);
 	move(deltaTime, &ks);
-	/*if (ks.IsKeyDown(DirectX::Keyboard::Keys::X))
-	{
-		btTransform transform;
-		getRigidbody()->getMotionState()->getWorldTransform(transform);
-		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + btVector3(0.01f, 0, 0));
-		getRigidbody()->getMotionState()->setWorldTransform(transform);
-	}*/
-	
 	if(ks.IsKeyDown(m_jump))
 		jump();
 	crouch(deltaTime);
