@@ -13,19 +13,29 @@ public:
 
 	void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
 
+	ID3D11Buffer* getMatrixBuffer() { return matrixBuffer; };
+	ID3D11Buffer* getShaderBuffer() { return shaderBuffer; };
+	D3D11_VIEWPORT getViewPort() { return viewPort; };
+
 private:
-	DirectX::SimpleMath::Matrix model;
 	DirectX::SimpleMath::Matrix view;
 	DirectX::SimpleMath::Matrix projection;
 
-	struct ShaderValues
+	struct ShaderMatrix
 	{
-		DirectX::SimpleMath::Matrix mvp;
-		DirectX::SimpleMath::Vector4 pos;
-		DirectX::SimpleMath::Vector4 dir;
+		DirectX::SimpleMath::Matrix vp;
 	};
 
-	ShaderValues bufferStruct;
-	ID3D11Buffer* buffer;
+	struct ShaderValues
+	{
+		DirectX::SimpleMath::Vector4 pos;
+	};
+
+	ShaderMatrix matrixData;
+	ShaderValues shaderData;
+	ID3D11Buffer* matrixBuffer;
+	ID3D11Buffer* shaderBuffer;
+
+	D3D11_VIEWPORT viewPort;
 
 };
