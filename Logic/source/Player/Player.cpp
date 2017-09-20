@@ -27,7 +27,7 @@ void Player::init(ProjectileManager* projectileManager)
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
-	m_moveDir = btVector3(0, 0, 0);
+	m_moveDir = btVector3(1, 1, 1);
 	m_moveSpeed = 0.f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_jumpSpeed = PLAYER_JUMP_SPEED;
@@ -182,7 +182,6 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 
 	if (nonePressed)
 	{
-		// -accel
 		float toBrake = m_acceleration * deltaTime;
 
 		if (m_moveSpeed < toBrake)
