@@ -17,7 +17,8 @@ namespace Logic
 
 		void clear();
 		void addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward);
-		void removeProjectile();
+		void removeProjectile(Projectile* p);
+		void removeProjectile(Projectile* p, int index);
 
 		void update(float deltaTime);
 		void render(Graphics::Renderer &renderer);

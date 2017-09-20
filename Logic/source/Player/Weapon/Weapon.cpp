@@ -39,7 +39,7 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 void Weapon::use(btVector3 position, float yaw, float pitch)
 {
 	// use weapon
-	if (m_spreadH != 0 || m_spreadV != 0)
+	if (m_spreadH != 0 || m_spreadV != 0)	// Spread
 	{
 		for (int i = m_projectileCount; i--; )
 		{
@@ -47,7 +47,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch)
 			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
 		}
 	}
-	else
+	else									// No spread
 	{
 		for (int i = m_projectileCount; i--; )
 		{
@@ -117,7 +117,12 @@ float Weapon::getAttackTimer()
 	return (60.f / m_attackRate) * 1000;
 }
 
-void Weapon::fillMag()
+float Logic::Weapon::getRealoadTime()
+{
+	return m_reloadTime;
+}
+
+void Logic::Weapon::fillMag()
 {
 	int toAdd = m_magSize - m_magAmmo;
 

@@ -63,6 +63,7 @@ namespace Logic
 		void removeMagAmmo(int ammo);
 		int getAmmoConsumption();
 		float getAttackTimer();
+		float getRealoadTime();
 
 		void fillMag();
 	};

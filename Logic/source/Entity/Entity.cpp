@@ -15,6 +15,18 @@ Entity::~Entity()
 	// ALL physics is getting cleared by the Physics class, 
 }
 
+void Logic::Entity::destroyBody()
+{
+	if (m_body)
+	{
+		if (m_body->getMotionState())
+			delete m_body->getMotionState();
+		if(m_body->getCollisionShape())
+			delete m_body->getCollisionShape();
+		delete m_body;
+	}
+}
+
 void Entity::clear() { }
 
 void Entity::update(float deltaTime)
