@@ -1,9 +1,10 @@
 #include "Player/Player.h"
+#include <AI\EnemyTest.h>
 
 using namespace Logic;
 
-Player::Player(btRigidBody* body)
-: Entity(body)
+Player::Player(btRigidBody* body, btVector3 halfExtent)
+: Entity(body, halfExtent)
 {
 
 }
@@ -42,19 +43,30 @@ void Player::init(ProjectileManager* projectileManager)
 void Player::clear()
 {
 	m_weaponManager.clear();
-//	m_skillManager.clear();
 }
 
 void Player::onCollision(Entity& other)
 {
+	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);
+	if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
+	{
+		printf("Enemy slapped you right in the face.\n");
+	}
+}
+
+void Player::onCollision(Projectile& other)
+{
+
 }
 
 void Player::saveToFile()
 {
+
 }
 
 void Player::readFromFile()
 {
+
 }
 
 void Player::updateSpecific(float deltaTime)

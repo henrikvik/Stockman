@@ -2,11 +2,12 @@
 
 using namespace Logic;
 
-Entity::Entity(btRigidBody* body)
+Entity::Entity(btRigidBody* body, btVector3 halfextent)
 {
 	m_body = body;
 	m_body->setUserPointer(this);
 	m_transform = &m_body->getWorldTransform();
+	m_halfextent = halfextent;
 }
 
 Entity::~Entity() 
@@ -30,15 +31,20 @@ void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
-//	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
-//		affect(effectPair.first, *effectPair.second, deltaTime);
+	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
+		affect(effectPair.first, *effectPair.second, deltaTime);
 	
 	// Updating every at
-//	m_statusManager.update(deltaTime);
+	m_statusManager.update(deltaTime);
 
 	// Updating specific
 	updateSpecific(deltaTime);
 
+	updateGraphics();
+}
+
+void Logic::Entity::updateGraphics()
+{
 	// Get the new transformation from bulletphysics
 	setWorldTranslation(getTransformMatrix());
 }
@@ -53,12 +59,6 @@ void Entity::affect(int stacks, Effect const &effect, float dt) {}
 btRigidBody* Entity::getRigidbody()
 {
 	return m_body;
-}
-
-// JUST FOR TESTING, REMOVE
-void Entity::consoleWritePosition()
-{
-	printf("Position = { %f, %f, %f }\n", m_transform->getOrigin().getX(), m_transform->getOrigin().getY(), m_transform->getOrigin().getZ());
 }
 
 DirectX::SimpleMath::Vector3 Entity::getPosition() const
@@ -92,8 +92,11 @@ DirectX::SimpleMath::Matrix Entity::getTransformMatrix() const
 	// Translating to DirectX Math and assigning the variables
 	DirectX::SimpleMath::Matrix transformMatrix(m);
 
+	//Find the scaling matrix
+	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX(), m_halfextent.getY(), m_halfextent.getZ());
+
 	// Deleting the old created variables from memory
 	delete m;
 
-	return transformMatrix;
+	return scale * transformMatrix;
 }

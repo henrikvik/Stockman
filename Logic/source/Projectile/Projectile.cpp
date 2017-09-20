@@ -3,8 +3,8 @@
 using namespace Logic;
 
 
-Projectile::Projectile(btRigidBody* body)
-: Entity(body) 
+Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
+: Entity(body, halfextent) 
 {
 	m_damage = 1.f;
 	m_speed = 0.f;
@@ -12,8 +12,8 @@ Projectile::Projectile(btRigidBody* body)
 	m_ttl = 1000.f;
 }
 
-Projectile::Projectile(btRigidBody* body, float damage, float speed, float gravityModifer, float ttl)
-: Entity(body)
+Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer)
+: Entity(body, halfExtent)
 {
 	m_damage = damage;
 	m_speed = speed;
@@ -21,8 +21,8 @@ Projectile::Projectile(btRigidBody* body, float damage, float speed, float gravi
 	m_ttl = ttl;
 }
 
-Logic::Projectile::Projectile(btRigidBody* body, ProjectileData pData)
-: Entity(body)
+Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
+: Entity(body, halfExtent)
 {
 	m_damage = pData.damage;
 	m_speed = pData.speed;
@@ -40,7 +40,6 @@ void Logic::Projectile::start(btVector3 forward)
 void Projectile::updateSpecific(float deltaTime)
 {
 	m_ttl -= deltaTime;
-
 }
 
 float Projectile::getDamage() const { return m_damage; }

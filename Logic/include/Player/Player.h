@@ -1,11 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
+
 #pragma region ClassDesc
 		/*
-			CLASS: WeaponManager
+			CLASS: Player
 			AUTHOR:
 
-			DESCRIPTION: TODO
+			DESCRIPTION: Handles input-data from user
 		*/
 #pragma endregion
 
@@ -64,13 +65,14 @@ namespace Logic
 		DirectX::SimpleMath::Vector2 getWindowMidPoint();
 
 	public:
-		Player(btRigidBody* body);
+		Player(btRigidBody* body, btVector3 halfExtent);
 		~Player();
 
 		void init(ProjectileManager* projectileManager);
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);
+		void onCollision(Projectile& other);
 
 		void saveToFile();
 		void readFromFile();

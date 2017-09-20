@@ -9,9 +9,9 @@ namespace Logic
 	class Projectile : public Entity
 	{
 	public:
-		Projectile(btRigidBody* body);
-		Projectile(btRigidBody* body, float damage, float speed, float gravityModifer, float ttl);
-		Projectile(btRigidBody* body, ProjectileData pData);
+		Projectile(btRigidBody* body, btVector3 halfExtent);
+		Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer);
+		Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData);
 		Projectile(const Projectile& other) = delete;
 		Projectile* operator=(const Projectile& other) = delete;
 		~Projectile();
