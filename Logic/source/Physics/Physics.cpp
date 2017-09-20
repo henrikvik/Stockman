@@ -65,14 +65,14 @@ void Physics::update(float deltaTime)
 	for (int i = 0; i < numManifolds; i++)
 	{
 		btPersistentManifold* contactManifold = dispatcher->getManifoldByIndexInternal(i);
-		btCollisionObject* obA = (btCollisionObject*)(contactManifold->getBody0());
-		btCollisionObject* obB = (btCollisionObject*)(contactManifold->getBody1());
+		const btCollisionObject* obA = contactManifold->getBody0();
+		const btCollisionObject* obB = contactManifold->getBody1();
 
 		int numContacts = contactManifold->getNumContacts();
 		if (numContacts > 0)
 		{
-			Entity* pbodyA = (Entity*)obA->getUserPointer();
-			Entity* pbodyB = (Entity*)obB->getUserPointer();
+			Entity* pbodyA = reinterpret_cast<Entity*>(obA->getUserPointer());
+			Entity* pbodyB = reinterpret_cast<Entity*>(obB->getUserPointer());
 
 			if (pbodyA && pbodyB)
 			{
@@ -179,7 +179,7 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 	body->setRestitution(0.0f);
 	body->setFriction(0.f);
 	body->setSleepingThresholds(0, 0);	
-	body->setDamping(0.9f, 0.9f);
+	body->setDamping(0.f, 0.f);
 
 	// Adding body to the world
 	this->addRigidBody(body);

@@ -12,14 +12,14 @@ ActionManager::~ActionManager() { }
 void ActionManager::init()
 {
 //	m_skillManager.init();
-	m_weaponManager.init();
+//	m_weaponManager.init();
 }
 
 
 void ActionManager::clear()
 {
 //	m_skillManager.clear();
-	m_weaponManager.clear();
+//	m_weaponManager.clear();
 }
 
 void ActionManager::switchWeapon()

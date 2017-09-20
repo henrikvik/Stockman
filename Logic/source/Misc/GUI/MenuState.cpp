@@ -13,18 +13,17 @@ Logic::MenuState::~MenuState()
 	}
 }
 
-void Logic::MenuState::initialize(std::function<void(void)> callBack)
+void Logic::MenuState::initialize(std::vector<ButtonStruct> buttonStruct, std::string background)
 {
-	DirectX::SimpleMath::Vector2 pos(200.0f, 200.0f);
-	DirectX::SimpleMath::Vector2 texCoordStart(1.0f, 1.0f);
-	DirectX::SimpleMath::Vector2 texCoordEnd(0.0f, 0.0f);
-	float height = 200.0f;
-	float width = 200.0f;
-	std::string texture = "Bla";
-	m_buttons.push_back(new Button());
-	m_buttons.at(0)->initialize(pos, texCoordStart, texCoordEnd, height, width, texture, callBack);
-
-	m_menu.m_buttons.push_back(&m_buttons.at(0)->getButtonInfo());
+	for (auto const& struc : buttonStruct)
+	{
+		DirectX::SimpleMath::Vector2 pos(struc.xPos, struc.yPos);
+		DirectX::SimpleMath::Vector2 texCoordStart(struc.xTexStart, struc.yTexStart);
+		DirectX::SimpleMath::Vector2 texCoordEnd(struc.xTexEnd, struc.yTexEnd);
+		m_buttons.push_back(newd Button());
+		m_buttons.at(m_buttons.size() - 1)->initialize(pos, texCoordStart, texCoordEnd, struc.height, struc.width, struc.texture, struc.m_CallBackFunction);
+		m_menu.m_buttons.push_back(&m_buttons.at(m_buttons.size() - 1)->getButtonInfo());
+	}
 }
 
 void Logic::MenuState::updateOnPress(int posX, int posY)

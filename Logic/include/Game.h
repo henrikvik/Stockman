@@ -8,6 +8,7 @@
 #include <Physics\Physics.h>
 #include <Map.h>
 #include <Misc\GUI\MenuMachine.h>
+#include <Projectile\ProjectileManager.h>
 
 
 // DirectX Includes
@@ -43,6 +44,7 @@ namespace Logic
 		Physics*			m_physics;
 		Player*				m_player;
 		Map*				m_map;
+		ProjectileManager*	m_projectileManager;
 		MenuMachine*		m_menu;
 		EntityManager		m_entityManager; // no ptr :>
 	};
