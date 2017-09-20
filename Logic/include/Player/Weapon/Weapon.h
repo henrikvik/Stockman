@@ -14,9 +14,11 @@
 
 #pragma endregion
 
+#include <Entity\Object.h>
+
 namespace Logic
 {
-	class Weapon
+	class Weapon : public Object
 	{
 	private:
 		ProjectileManager* m_projectileManager;
@@ -46,6 +48,8 @@ namespace Logic
 		void use(btVector3 position, float yaw, float pitch);
 
 		void update();
+
+		void render(Graphics::Renderer& renderer);
 
 		ProjectileData* getProjectileData();
 		int getAmmoCap();
