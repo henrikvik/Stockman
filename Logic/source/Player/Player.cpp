@@ -195,8 +195,6 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 		
 		if (m_moveSpeed > m_moveMaxSpeed)
 			m_moveSpeed = m_moveMaxSpeed;
-		else if (m_moveSpeed < m_moveMaxSpeed)
-			m_moveSpeed += m_moveMaxSpeed;
 	}
 
 	btTransform transform;
