@@ -4,9 +4,13 @@
 #include <Engine\Constants.h>
 #include "TempCube.h"
 
+
 #define USE_TEMP_CUBE true
 #define ANIMATION_HIJACK_RENDER true
 
+#if ANIMATION_HIJACK_RENDER
+#include "Animation\AnimatedTestCube.h"
+#endif
 
 namespace Graphics
 {
@@ -51,13 +55,17 @@ namespace Graphics
         resourceManager.initialize(gDevice, gDeviceContext);
     }
 
-
-	float f = 59.42542;
-
-	void Renderer::render(Camera * camera)
-	{
+    void Renderer::render(Camera * camera)
+    {
 #if ANIMATION_HIJACK_RENDER
-        ID3D11Buffer *cameraBuffer = camera->getBuffer();
+
+        renderQueue.clear();
+        static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
+        static UINT ticks = 0;
+        ticks++;
+        cam.updateLookAt({ 5 * sinf(ticks * 0.001f), 5 * cosf(ticks * 0.001f), 5}, { 0,0,0 }, deviceContext);
+
+        ID3D11Buffer *cameraBuffer = cam.getBuffer();
         deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
         deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 
@@ -67,6 +75,30 @@ namespace Graphics
 
         deviceContext->RSSetViewports(1, &viewPort);
 
+        static AnimatedTestCube testCube(device);
+        static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"), ANIMATED_VERTEX_DESC);
+
+        deviceContext->IASetInputLayout(testShader);
+        deviceContext->VSSetShader(testShader, nullptr, 0);
+        deviceContext->PSSetShader(testShader, nullptr, 0);
+
+        deviceContext->IASetVertexBuffers(0, 1, testCube, &testCube.stride, &testCube.offset);
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->RSSetState(states->CullNone());
+
+        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+
+        deviceContext->Draw(testCube.vertexCount, 0);
+
+        auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, 3 * ((ticks % 1000) / 1000.f));
+
+        static StructuredBuffer<Matrix> jointBuffer(device, CpuAccess::Write, testSkeleton.getJointCount());
+        Matrix* bufferPtr = jointBuffer.map(deviceContext);
+        memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());        
+        jointBuffer.unmap(deviceContext);
+
+        ID3D11ShaderResourceView * jointView = jointBuffer.getSRV();
+        deviceContext->VSSetShaderResources(0, 1, &jointView);
 
 #else
 		cull();
@@ -94,6 +126,7 @@ namespace Graphics
 
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
+        static 	float f = 59.42542;
 		f += 0.001f;
 
 		auto lights = grid.getLights();
