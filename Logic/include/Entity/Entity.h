@@ -18,6 +18,7 @@ namespace Logic
 
 		virtual void clear();
 		void update(float deltaTime);
+		void updateGraphics();
 		virtual void updateSpecific(float deltaTime) { }
 		void collision(Entity& other);
 		virtual void affect(int stacks, Effect const &effect,
@@ -33,8 +34,9 @@ namespace Logic
 		btRigidBody* getRigidbody();
 
 	private:
+		StatusManager m_statusManager;
+		
 		btVector3 m_halfextent;
-	//	StatusManager m_statusManager;
 		btRigidBody* m_body;
 		btTransform* m_transform;
 	//	Hitbox* m_head; for headshot, put it here to remember

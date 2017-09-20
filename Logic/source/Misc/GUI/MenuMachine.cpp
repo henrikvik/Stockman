@@ -50,8 +50,7 @@ void Logic::MenuMachine::initialize(GameState state)
 		//If it is a button add it into its map
 		if (button.strings.find("buttonName") != button.strings.end())
 		{
-			std::string testinging = button.strings.at("function"); //crap used until the buggy file handler is fixed
-			testinging = testinging.substr(0, testinging.size() - 1); //crap used until the buggy file handler is fixed
+			std::string testinging = button.strings.at("function"); //crap used until the amazing file handler is fixed
 			allButtons[button.strings.at("buttonName")] = MenuState::ButtonStruct({
 				button.floats.at("xPos"),
 				button.floats.at("yPos"),
@@ -62,7 +61,7 @@ void Logic::MenuMachine::initialize(GameState state)
 				button.floats.at("height"),
 				button.floats.at("width"),
 				button.strings.at("texture"),
-				functions.at(testinging) //crap used until the buggy file handler is fixed
+				functions.at(testinging) // xd
 			});
 		}
 	}
