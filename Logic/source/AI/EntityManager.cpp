@@ -35,18 +35,18 @@ void EntityManager::reserveData()
 	m_deadEnemies.reserve(ENEMY_START_COUNT);
 }
 
-void EntityManager::update(float deltaTime) 
+void EntityManager::update(Player const &player, float deltaTime) 
 {
 	clock_t begin = clock();
 
 	for (int i = 0; i < m_enemies.size(); ++i)
 	{
-		m_enemies[i]->update(deltaTime);
+		m_enemies[i]->update(player, deltaTime);
 	}
 
 	for (int i = 0; i < m_bossEnemies.size(); ++i)
 	{
-		m_bossEnemies[i]->update(deltaTime);
+		m_bossEnemies[i]->update(player, deltaTime);
 	}
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
@@ -66,8 +66,8 @@ void EntityManager::spawnWave(Physics &physics)
 
 	for (int i = 0; i < enemies.size(); i++) 
 	{
-		m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ 0, 5, 0 }, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 100, false)));
-		m_deadEnemies.push_back(new EnemyTest(physics.createBody(Cube({ 0, 1, 0}, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 500, false)));
+	//	m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 2.f, i * 7.f, i * 4.f }, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 100, false)));
+	//	m_deadEnemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 21.f, i * 11.f, i * 2.f}, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 500, false)));
 	}
 }
 

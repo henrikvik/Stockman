@@ -69,7 +69,7 @@ void Game::update(float deltaTime)
 	{
 		m_physics->update(deltaTime);
 		m_player->update(deltaTime);
-		m_entityManager.update(deltaTime);
+		m_entityManager.update(*m_player, deltaTime);
 		m_map->update(deltaTime);
 
 		m_projectileManager->update(deltaTime);

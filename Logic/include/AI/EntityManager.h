@@ -6,6 +6,8 @@
 #include <AI/Enemy.h>
 #include <AI/WaveManager.h>
 
+#include <Player\Player.h>
+
 #include <Graphics\include\Renderer.h>
 #include <Physics\Physics.h>
 
@@ -38,7 +40,7 @@ namespace Logic
 		EntityManager(EntityManager const &entityManager) = delete;
 		~EntityManager();
 
-		void update(float deltaTime);
+		void update(Player const &player, float deltaTime);
 		void clear();
 
 		void spawnWave(Physics &physics);

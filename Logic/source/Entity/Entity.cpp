@@ -18,11 +18,11 @@ void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
-//	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
-//		affect(effectPair.first, *effectPair.second, deltaTime);
+	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
+		affect(effectPair.first, *effectPair.second, deltaTime);
 	
 	// Updating every at
-//	m_statusManager.update(deltaTime);
+	m_statusManager.update(deltaTime);
 
 	// Updating specific
 	updateSpecific(deltaTime);
