@@ -17,7 +17,7 @@ void EnemyTest::clear()
 void EnemyTest::onCollision(Entity &other)
 {
 	if (Projectile *p = dynamic_cast<Projectile*> (&other)) {
-		//damage(1);
+		damage(p->getDamage());
 		btVector3 dir = other.getRigidbody()->getLinearVelocity();
 		dir = dir.normalize();
 		dir *= 1000.f;
