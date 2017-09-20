@@ -19,8 +19,8 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, fl
 	m_gravityModifier = gravityModifer;
 }
 
-Logic::Projectile::Projectile(btRigidBody* body, ProjectileData pData)
-: Entity(body)
+Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
+: Entity(body, halfExtent)
 {
 	m_damage = pData.damage;
 	m_speed = pData.speed;
