@@ -37,7 +37,7 @@ bool Game::init()
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine();
-	m_menu->initialize(gameStateGame); //change here to accses menu tests
+	m_menu->initialize(gameStateMenuMain); //change here to accses menu tests
 									   
 	// Initializing the map
 	m_map = newd Map();
@@ -45,6 +45,9 @@ bool Game::init()
 
 	// TEST REMOVE
 	m_entityManager.spawnWave(*m_physics);
+
+	m_cardManager = newd CardManager();
+	m_cardManager->init();
 
 	return result;
 }

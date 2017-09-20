@@ -1,9 +1,12 @@
 {
-	"cardName" : "";
+	"cardName" : "Ammo";
+	"description" : "+ 10 Ammo clip size in selected weapon";
 	"texture" : "b";
 	"xTexStart" : 1.0f;
 	"yTexStart" : 1.0f;
 	"xTexEnd" : 0.0f;
 	"yTexEnd" : 0.0f;
-	"function" : "buttonClick0";
+	"upgradeAmmount" : 1;
+
+	"upgrade1" : 1;
 }

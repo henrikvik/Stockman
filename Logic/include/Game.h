@@ -9,6 +9,7 @@
 #include <Map.h>
 #include <Misc\GUI\MenuMachine.h>
 #include <Projectile\ProjectileManager.h>
+#include <Misc\CardManager.h>
 
 
 // DirectX Includes
@@ -47,6 +48,7 @@ namespace Logic
 		ProjectileManager*	m_projectileManager;
 		MenuMachine*		m_menu;
 		EntityManager		m_entityManager; // no ptr :>
+		CardManager*		m_cardManager;
 	};
 }
 

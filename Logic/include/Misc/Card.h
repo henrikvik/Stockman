@@ -2,7 +2,9 @@
 #define CARD_H
 
 #include <string>
-#include <Entity\StatusManager.h>
+#include <vector>
+#include <d3d11.h>
+#include <SimpleMath.h>
 
 namespace Logic
 {
@@ -10,20 +12,23 @@ namespace Logic
 	{
 	public:
 		Card();
-		Card(std::string name, std::string description, int statusID);
-		Card(const Card& other) = delete;
-		Card* operator=(const Card& other) = delete;
+		Card(std::string name, std::string texture, std::string description, std::vector<int> upgradesID, DirectX::SimpleMath::Vector2 texStart, DirectX::SimpleMath::Vector2 texEnd);
 		~Card();
 
 		std::string getName() const;
+		std::string getTexture() const;
 		std::string getDescription() const;
-		int getStatusID() const;
+		const std::vector<int>& getUpgradesID() const;
+		DirectX::SimpleMath::Vector2 getTexStart() const;
+		DirectX::SimpleMath::Vector2 getTexEnd() const;
 
 	private:
-		StatusManager m_statusManager;
 		std::string m_name;
+		std::string m_texture;
 		std::string m_description;
-		int m_statusID;
+		std::vector<int> m_upgradesID;
+		DirectX::SimpleMath::Vector2 m_TexStart;
+		DirectX::SimpleMath::Vector2 m_TexEnd;
 	};
 }
 

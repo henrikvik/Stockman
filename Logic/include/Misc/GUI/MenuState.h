@@ -14,7 +14,7 @@ This class creates menu states.
 #pragma endregion Description of class
 
 #include <vector>
-#include "Button.h"
+#include <Misc\GUI\Button.h>
 
 
 #pragma endregion Description of class
