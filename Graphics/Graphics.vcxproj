@@ -31,8 +31,6 @@
     <ClCompile Include="include\Resources\MeshManager.cpp" />
     <ClCompile Include="include\Resources\ResourceManager.cpp" />
     <ClCompile Include="include\Resources\Shader.cpp" />
-    <ClCompile Include="include\Resources\Skeleton.cpp" />
-    <ClCompile Include="include\Resources\SkeletonManager.cpp" />
     <ClCompile Include="include\Resources\TextureManager.cpp" />
     <ClCompile Include="include\Camera.cpp" />
     <ClCompile Include="include\LightGrid.cpp" />
@@ -59,10 +57,9 @@
     <ClInclude Include="include\Resources\MeshManager.h" />
     <ClInclude Include="include\Resources\ResourceManager.h" />
     <ClInclude Include="include\Resources\Shader.h" />
-    <ClInclude Include="include\Resources\Skeleton.h" />
-    <ClInclude Include="include\Resources\SkeletonManager.h" />
     <ClInclude Include="include\Resources\TextureManager.h" />
     <ClInclude Include="include\Structs.h" />
+    <ClInclude Include="include\StructuredBuffer.h" />
     <ClInclude Include="include\TempCube.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
   </ItemGroup>
