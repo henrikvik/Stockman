@@ -64,7 +64,7 @@ namespace Logic
 		DirectX::SimpleMath::Vector2 getWindowMidPoint();
 
 	public:
-		Player(btRigidBody* body);
+		Player(btRigidBody* body, btVector3 halfExtent);
 		~Player();
 
 		void init(ProjectileManager* projectileManager);

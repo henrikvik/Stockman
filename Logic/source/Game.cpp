@@ -31,7 +31,8 @@ bool Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(m_physics->createBody(Cylinder({ 5, -15, 0 }, { 0, 0, 0 }, { 0.5, 3.0, 0.5 }), 75.f, false));
+	btVector3 halfextent(0.5, 3.0, 0.5);
+	m_player = new Player(m_physics->createBody(Cylinder({ 5, -15, 0 }, { 0, 0, 0 }, halfextent), 75.f, false), halfextent);
 	m_player->init(m_projectileManager);
 
 	// Initializing Menu's
@@ -41,6 +42,9 @@ bool Game::init()
 	// Initializing the map
 	m_map = newd Map();
 	m_map->init(m_physics);
+
+	// TEST REMOVE
+	m_entityManager.spawnWave(*m_physics);
 
 	return result;
 }
@@ -66,7 +70,7 @@ void Game::update(float deltaTime)
 	{
 		m_physics->update(deltaTime);
 		m_player->update(deltaTime);
-		m_entityManager.update(deltaTime);
+		m_entityManager.update(*m_player, deltaTime);
 		m_map->update(deltaTime);
 
 		m_projectileManager->update(deltaTime);

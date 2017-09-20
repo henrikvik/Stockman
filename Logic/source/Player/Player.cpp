@@ -2,8 +2,8 @@
 
 using namespace Logic;
 
-Player::Player(btRigidBody* body)
-: Entity(body)
+Player::Player(btRigidBody* body, btVector3 halfExtent)
+: Entity(body, halfExtent)
 {
 
 }

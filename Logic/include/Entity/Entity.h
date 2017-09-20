@@ -11,13 +11,14 @@ namespace Logic
 	class Entity : public Object
 	{
 	public:
-		Entity(btRigidBody* body);
+		Entity(btRigidBody* body, btVector3 halfExtent);
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
 		virtual ~Entity();
 
 		virtual void clear();
 		void update(float deltaTime);
+		void updateGraphics();
 		virtual void updateSpecific(float deltaTime) { }
 		void collision(Entity& other);
 		virtual void affect(int stacks, Effect const &effect,
@@ -33,7 +34,9 @@ namespace Logic
 		btRigidBody* getRigidbody();
 
 	private:
-	//	StatusManager m_statusManager;
+		StatusManager m_statusManager;
+		
+		btVector3 m_halfextent;
 		btRigidBody* m_body;
 		btTransform* m_transform;
 	//	Hitbox* m_head; for headshot, put it here to remember
