@@ -12,7 +12,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 	m_ttl = 1000.f;
 }
 
-Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer)
+Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer, float ttl)
 : Entity(body, halfExtent)
 {
 	m_damage = damage;
