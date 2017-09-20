@@ -18,17 +18,22 @@ namespace Logic
 
 		void start(btVector3 forward);
 		void updateSpecific(float deltaTime);
+		void onCollision(Entity& other);
 
 		float getDamage() const;
 		float getSpeed() const;
 		float getGravityModifier() const;
 		float getTTL() const;
+		
+		void toRemove();
+		bool shouldRemove() const;
 
 	private:
 		float m_damage;
 		float m_speed;
 		float m_gravityModifier;
 		float m_ttl;
+		bool m_remove;
 	};
 }
 
