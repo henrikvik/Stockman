@@ -14,6 +14,17 @@ cbuffer Camera : register(b0)
     float4 camPos;
 }
 
+cbuffer LightPosBuffer : register(b1)
+{
+    float4 lightPos;
+}
+
+cbuffer LightMatBuffer : register(b2)
+{
+    float4x4 lightVP;
+}
+
+
 // TODO: change
 struct Light {
 	float4 positionVS;
@@ -58,7 +69,7 @@ StructuredBuffer<uint> LightIndexList : register(t0);
 Texture2D<uint2> LightGrid : register(t1);
 StructuredBuffer<Light> Lights : register(t2);
 
-Texture2D Texture : register(t3);
+Texture2D shadowMap : register(t3);
 SamplerState Sampler : register(s0);
 
 struct PSOutput {
@@ -84,7 +95,6 @@ PSOutput PS(VSOutput input) {
     //This will include a texture sample or material color later
 	float3 color = 0.1f;
 
-    //TODO:: FIX THE ODD BACKSIDE SPECULARITUYUY
 	for (uint i = 0; i < count; i++) 
     {
 		uint idx = LightIndexList[offset + i];
@@ -104,7 +114,26 @@ PSOutput PS(VSOutput input) {
         color += light.color * attenuation * (saturate(diffuse) + specular);
 	}
 
-    output.color = float4(saturate(directionalDiffuse + color), 1);
+
+    ///SHADOWS
+    float4 posFromLight = input.worldPos;
+    posFromLight = mul(lightVP, posFromLight);
+
+    //Maybe divisdion with w idk orthographic stuff is wierd
+
+    posFromLight.x = (posFromLight.x * 0.5f) + 0.5f;
+    posFromLight.y = (posFromLight.y * -0.5f) + 0.5f;
+
+    float depth = shadowMap.Sample(Sampler, posFromLight.xy).r;
+
+    if (depth < posFromLight.z)
+    {
+        color = 0;
+        directionalDiffuse = 0;
+    }
+
+
+    output.color = float4(saturate(directionalDiffuse + color + ambient), 1);
     //output.color = float4(input.normal.xyz, 1);
 	return output;
 }

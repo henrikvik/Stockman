@@ -16,6 +16,7 @@ namespace Logic
 		Entity* operator=(const Entity& other) = delete;
 		virtual ~Entity();
 
+		void destroyBody();
 		virtual void clear();
 		void update(float deltaTime);
 		void updateGraphics();
