@@ -35,7 +35,7 @@ void Map::initObjects(Physics * physics)
 {
 	for (int i = 0; i < 5; ++i)
 	{
-		btVector3 halfextent(1.0, 1.0 * i, 1.0);
+		btVector3 halfextent(1.0, 1.0, 1.0);
 		Entity* box = new Entity(physics->createBody(Cube({ 0, 10 , 0 }, { 0, 0 , 0 }, halfextent), 0.5f, false), halfextent);
 		m_objects.push_back(box);
 	}
