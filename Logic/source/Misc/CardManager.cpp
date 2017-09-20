@@ -5,9 +5,9 @@ using namespace Logic;
 
 CardManager::CardManager()
 {
-	for (int i = 0; i < sizeof(m_hand); i++)
+	for (int i = 0; i < handSize; i++)
 	{
-		m_hand[i] = -1; //is default which is healthpacks
+		m_hand[i] = -1; //is default
 	}
 }
 
@@ -47,20 +47,23 @@ void Logic::CardManager::createDeck(int nrOfEach)
 {
 	for (int i = 0; i < nrOfEach; i++)
 	{
-		for (int j = 0; j < m_cards.size(); j++)
+		for (int j = 1; j < m_cards.size(); j++)
 		{
 			m_deck.push_back(j);
 		}
 	}
 }
 
-void Logic::CardManager::pickThree(bool hp)
+void Logic::CardManager::pickThree(bool damaged)
 {
-	int handSize = 3;
-	if (!hp)
+	int ammount = handSize;
+	int end = handSize - 1;
+	if (!damaged)
 	{
-		handSize = 2;
+		m_hand[end] = healthPack;
+		ammount--;
 	}
+
 	for(int i = 0; i < handSize; i++)
 	{
 		m_hand[i] = m_deck.at(i);
@@ -69,30 +72,27 @@ void Logic::CardManager::pickThree(bool hp)
 
 void Logic::CardManager::shuffle(int times)
 {
-	for (int i; i < times; i++)
+	for (int i = 0; i < times; i++)
 	{
 		std::random_shuffle(m_deck.begin(), m_deck.end(), m_deck);
 	}
 }
 
-Card Logic::CardManager::pick(int i)
+Card Logic::CardManager::pick(int cardIndex)
 {
-	if (m_hand[i] == -1)
+	if (m_hand[cardIndex] != healthPack)
 	{
-		shuffle(1);
-		return healthPack;
+		m_deck.erase(m_deck.begin() + cardIndex);
 	}
-	else
+
+	shuffle(1);
+
+	Card choosen = m_cards.at(m_hand[cardIndex]);
+
+	for (int i = 0; i < handSize; i++)
 	{
-		m_deck.erase(m_deck.begin() + i);
-		shuffle(1);
-		Card choosen = m_cards.at(i);
-
-		for (int i = 0; i < sizeof(m_hand); i++)
-		{
-			m_hand[i] = -1; //is default which is healthpacks
-		}
-
-		return choosen;
+		m_hand[i] = -1; //is default
 	}
+
+	return choosen;
 }
