@@ -21,6 +21,7 @@
 
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
 #define PLAYER_MOVEMENT_SPEED			0.1f
+#define PLAYER_JUMP_SPEED				100.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
 
@@ -32,9 +33,9 @@ namespace Logic
 
 		enum PlayerState
 		{
-			playerStateStanding,
-			playerStateCrouching,
-			playerStateInAir
+			STANDING,
+			CROUCHING,
+			IN_AIR
 		};
 
 		//ActionManager m_actionManager;
@@ -42,8 +43,10 @@ namespace Logic
 		SkillManager m_skillManager;
 
 		// Stats
+		PlayerState m_playerState;
 		DirectX::SimpleMath::Vector3 m_forward;
 		float m_moveSpeed;
+		float m_jumpSpeed;
 
 		// Mouse
 		float m_mouseSens;
@@ -66,7 +69,7 @@ namespace Logic
 
 		// Movement
 		void move(float deltaTime, DirectX::Keyboard::State* ks);
-		void jump(float deltaTime);
+		void jump();
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
