@@ -16,6 +16,7 @@ namespace Logic
 		Entity* operator=(const Entity& other) = delete;
 		virtual ~Entity();
 
+		void destroyBody();
 		virtual void clear();
 		void update(float deltaTime);
 		virtual void updateSpecific(float deltaTime) { }
@@ -33,7 +34,6 @@ namespace Logic
 		DirectX::SimpleMath::Vector3 getScale() const;
 		DirectX::SimpleMath::Matrix getTransformMatrix() const;
 
-	protected:
 		btRigidBody* getRigidbody();
 
 	private:
