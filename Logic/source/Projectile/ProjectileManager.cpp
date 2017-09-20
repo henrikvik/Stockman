@@ -63,7 +63,7 @@ void Logic::ProjectileManager::update(float deltaTime)
 	{
 		Projectile* p = m_projectiles[i];
 		p->update(deltaTime);
-		if (p->shouldRemove() || p->getTTL() < 0.f)
+		if (p->shouldRemove() || p->getTTL() < 0.f)		// Check remove flag and ttl
 		{
 			removeProjectile(p, i);
 			i--;
