@@ -42,7 +42,6 @@ void Player::init(ProjectileManager* projectileManager)
 void Player::clear()
 {
 	m_weaponManager.clear();
-	//m_skillManager.clear();
 }
 
 void Player::onCollision(Entity& other)
