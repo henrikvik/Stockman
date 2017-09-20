@@ -25,16 +25,16 @@ namespace Logic
 		virtual void onCollision(Entity& other) { }
 
 		DirectX::SimpleMath::Vector3 getPosition() const;
+		btVector3 getPositionBT() const;
 		DirectX::SimpleMath::Quaternion getRotation() const;
 		DirectX::SimpleMath::Vector3 getScale() const;
 		DirectX::SimpleMath::Matrix getTransformMatrix() const;
 
-	protected:
 		btRigidBody* getRigidbody();
 
 	private:
 		btVector3 m_halfextent;
-		StatusManager m_statusManager;
+	//	StatusManager m_statusManager;
 		btRigidBody* m_body;
 		btTransform* m_transform;
 	//	Hitbox* m_head; for headshot, put it here to remember
