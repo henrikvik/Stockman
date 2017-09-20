@@ -208,6 +208,10 @@ btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isS
 	body->setSleepingThresholds(0, 0);
 	body->setDamping(0.9f, 0.9f);
 
+	// Making the cylinder a kinematic body
+	body->setCollisionFlags(body->getCollisionFlags() | btRigidBody::CF_KINEMATIC_OBJECT);
+	body->setActivationState(DISABLE_DEACTIVATION);
+
 	// Adding body to the world
 	this->addRigidBody(body);
 
