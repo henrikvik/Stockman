@@ -20,13 +20,16 @@ namespace Logic
 		void restart();
 
 		void createDeck(int nrOfEach);
-		void pickThree(int hp);
-		void shuffle();
-		void pick(int i);
+		void pickThree(bool hp);
+		void shuffle(int times);
+		Card pick(int i);
 
 		/*Card* getRandomCard();*/
 	private:
-		std::vector<Card> cards;
+		Card healthPack;
+		std::vector<Card> m_cards;
+		std::vector<int> m_deck;
+		int m_hand[3];
 	};
 }
 

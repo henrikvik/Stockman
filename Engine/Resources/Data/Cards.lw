@@ -1,4 +1,17 @@
 {
+	"cardName" : "Healthpack";
+	"description" : "Regain all your health";
+	"texture" : "b";
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+	"upgradeAmmount" : 1;
+
+	"upgrade1" : 1;
+}
+
+{
 	"cardName" : "Ammo";
 	"description" : "+ 10 Ammo clip size in selected weapon";
 	"texture" : "b";

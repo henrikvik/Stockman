@@ -5,14 +5,17 @@ using namespace Logic;
 
 CardManager::CardManager()
 {
-	
+	for (int i = 0; i < sizeof(m_hand); i++)
+	{
+		m_hand[i] = -1; //is default which is healthpacks
+	}
 }
 
 CardManager::~CardManager() { }
 
 void CardManager::clear()
 {
-	cards.clear();
+	m_cards.clear();
 }
 
 void CardManager::init() 
@@ -30,7 +33,7 @@ void CardManager::init()
 
 		DirectX::SimpleMath::Vector2 texStart(struc.floats.at("xTexStart"), struc.floats.at("yTexStart"));
 		DirectX::SimpleMath::Vector2 texEnd(struc.floats.at("xTexEnd"), struc.floats.at("yTexEnd"));;
-		cards.push_back(Card(struc.strings.at("cardName"), struc.strings.at("texture"), struc.strings.at("description"), upgrades, texStart, texEnd)); //something wrong here
+		m_cards.push_back(Card(struc.strings.at("cardName"), struc.strings.at("texture"), struc.strings.at("description"), upgrades, texStart, texEnd)); //something wrong here
 	}
 }
 
@@ -42,36 +45,54 @@ void CardManager::restart()
 
 void Logic::CardManager::createDeck(int nrOfEach)
 {
+	for (int i = 0; i < nrOfEach; i++)
+	{
+		for (int j = 0; j < m_cards.size(); j++)
+		{
+			m_deck.push_back(j);
+		}
+	}
 }
 
-void Logic::CardManager::pickThree(int hp)
+void Logic::CardManager::pickThree(bool hp)
 {
+	int handSize = 3;
+	if (!hp)
+	{
+		handSize = 2;
+	}
+	for(int i = 0; i < handSize; i++)
+	{
+		m_hand[i] = m_deck.at(i);
+	}
 }
 
-void Logic::CardManager::shuffle()
+void Logic::CardManager::shuffle(int times)
 {
+	for (int i; i < times; i++)
+	{
+		std::random_shuffle(m_deck.begin(), m_deck.end(), m_deck);
+	}
 }
 
-void Logic::CardManager::pick(int i)
+Card Logic::CardManager::pick(int i)
 {
-}
+	if (m_hand[i] == -1)
+	{
+		shuffle(1);
+		return healthPack;
+	}
+	else
+	{
+		m_deck.erase(m_deck.begin() + i);
+		shuffle(1);
+		Card choosen = m_cards.at(i);
 
-//Card* CardManager::getRandomCard() 
-//{
-//	Card choosenCards[3];
-//	int numbersToSkip[2] = { -1, -1 };
-//	int choosen = 0;
-//	while (choosen < 3)
-//	{
-//		int picked = rand() % cards.size() + 1;
-//		if ((numbersToSkip[0] != picked && numbersToSkip[1] != picked))
-//		{
-//			choosenCards[choosen] = cards.at(picked);
-//
-//			numbersToSkip[choosen] = picked;
-//			choosen++;
-//		}
-//	}
-//	int number = rand() % cards.size() + 1;
-//	return &cards[number];
-//}
+		for (int i = 0; i < sizeof(m_hand); i++)
+		{
+			m_hand[i] = -1; //is default which is healthpacks
+		}
+
+		return choosen;
+	}
+}
