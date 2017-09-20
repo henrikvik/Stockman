@@ -1,11 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
+
 #pragma region ClassDesc
 		/*
-			CLASS: WeaponManager
+			CLASS: Player
 			AUTHOR:
 
-			DESCRIPTION: TODO
+			DESCRIPTION: Handles input-data from user
 		*/
 #pragma endregion
 

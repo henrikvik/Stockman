@@ -1,4 +1,5 @@
 #include "Player/Player.h"
+#include <AI\EnemyTest.h>
 
 using namespace Logic;
 
@@ -46,9 +47,10 @@ void Player::clear()
 
 void Player::onCollision(Entity& other)
 {
-	if (Projectile* p = dynamic_cast<Projectile*>(&other))
+	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);
+	if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
 	{
-		onCollision(*p);
+		printf("Enemy slapped you right in the face.\n");
 	}
 }
 
