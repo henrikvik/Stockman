@@ -116,3 +116,28 @@ void Graphics::Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleM
 		context->Unmap(this->mVPBuffer, 0);
 	}
 }
+
+void Graphics::Camera::updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext * context)
+{
+    Matrix newView = DirectX::XMMatrixLookAtRH(pos, target, Vector3(0, 1, 0));
+
+    //if (newView != this->mView)
+    {
+        this->mView = newView;
+        this->mPos = pos;
+
+        values.mVP = this->mView * this->mProjection;
+        values.mInvP = this->mProjection.Invert();
+        values.mV = this->mView;
+        values.camPos = Vector4(pos.x, pos.y, pos.z, 1);
+
+        D3D11_MAPPED_SUBRESOURCE data;
+        ZeroMemory(&data, sizeof(data));
+
+        context->Map(this->mVPBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+
+        memcpy(data.pData, &values, sizeof(ShaderValues));
+
+        context->Unmap(this->mVPBuffer, 0);
+    }
+}
