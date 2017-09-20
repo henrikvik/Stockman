@@ -18,11 +18,11 @@ void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
-	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
-		affect(effectPair.first, *effectPair.second, deltaTime);
+//	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
+//		affect(effectPair.first, *effectPair.second, deltaTime);
 	
 	// Updating every at
-	m_statusManager.update(deltaTime);
+//	m_statusManager.update(deltaTime);
 
 	// Updating specific
 	updateSpecific(deltaTime);
@@ -48,9 +48,20 @@ btRigidBody* Entity::getRigidbody()
 	return m_body;
 }
 
+// JUST FOR TESTING, REMOVE
+void Entity::consoleWritePosition()
+{
+	printf("Position = { %f, %f, %f }\n", m_transform->getOrigin().getX(), m_transform->getOrigin().getY(), m_transform->getOrigin().getZ());
+}
+
 DirectX::SimpleMath::Vector3 Entity::getPosition() const
 {
 	return DirectX::SimpleMath::Vector3(m_transform->getOrigin());
+}
+
+btVector3 Logic::Entity::getPositionBT() const
+{
+	return m_transform->getOrigin();
 }
 
 DirectX::SimpleMath::Quaternion Entity::getRotation() const

@@ -43,6 +43,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 Engine::Engine(HINSTANCE hInstance, int width, int height)
 {
+	srand(time(NULL));				// Set random seed
 	this->mHeight = height;
 	this->mWidth = width;
 	this->hInstance = hInstance;
@@ -67,7 +68,7 @@ Engine::~Engine()
 	this->mBackBufferRTV->Release();
 
 	//Enable this to get additional information about live objects
-    this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
+    //this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
     this->mDebugDevice->Release();
 }
 

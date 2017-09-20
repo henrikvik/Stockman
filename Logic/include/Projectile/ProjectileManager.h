@@ -1,8 +1,8 @@
 #ifndef PROJECTILEMANAGER_H
 #define PROJECTILEMANAGER_H
 
-#include "Projectile.h"
-#include "ProjectileStruct.h"
+#include <Physics\Physics.h>
+#include <Projectile\Projectile.h>
 #include <vector>
 
 namespace Logic
@@ -10,19 +10,23 @@ namespace Logic
 	class ProjectileManager
 	{
 	public:
-		ProjectileManager();
+		ProjectileManager(Physics* physPtr);
 		ProjectileManager(const ProjectileManager& other) = delete;
 		ProjectileManager* operator=(const ProjectileManager& other) = delete;
 		~ProjectileManager();
 
 		void clear();
-		void addProjectile(ProjectileData& pData);
+		void addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward);
 		void removeProjectile();
+
+		void update(float deltaTime);
+		void render(Graphics::Renderer &renderer);
 
 		std::vector<Projectile*>* getProjectiles();
 
 	private:
 		std::vector<Projectile*> m_projectiles;
+		Physics* m_physPtr;
 	};
 }
 

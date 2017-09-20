@@ -1,13 +1,9 @@
 #pragma once
-#include "../ShaderHandler.h"
 #include "Mesh.h"
 #include "MeshManager.h"
 #include "BRFImportHandler.h"
 #include "MaterialManager.h"
 #include <Graphics\include\Structs.h>
-
-
-#define NROFSAMPLERS 1
 
 namespace Graphics
 {
@@ -49,26 +45,11 @@ namespace Graphics
 
 	void initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext);
 	void release();
-	
-	void setShaders(VertexShaderID vertexID, GeometryShaderID geometryID, PixelShaderID pixelID, ID3D11DeviceContext* context);
-	void setShaders(VertexShaderID vertexID, PixelShaderID pixelID, ID3D11DeviceContext* context);
-	void setComputeShader(ComputeShaderID id, ID3D11DeviceContext * context);
 
-		void setSampler(SamplerID id, ID3D11DeviceContext* context);
-
-		void initShaders(ID3D11Device *gdevice);
-
-        ModelInfo getModelInfo(ModelID modelID);
+    ModelInfo getModelInfo(ModelID modelID);
 
 
 	private:
-
-		void createSamplerState(ID3D11Device* device);
-
-		ShaderHandler shaderHandler;
-
-		ID3D11SamplerState* sampleStates[NROFSAMPLERS];
-
 		MeshManager meshManager;
 		BRFImportHandler brfImporterHandler;
 		MaterialManager materialManager;

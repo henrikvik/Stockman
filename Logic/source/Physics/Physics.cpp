@@ -179,7 +179,7 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 	body->setRestitution(0.0f);
 	body->setFriction(0.f);
 	body->setSleepingThresholds(0, 0);	
-	body->setDamping(0.9f, 0.9f);
+	body->setDamping(0.f, 0.f);
 
 	// Adding body to the world
 	this->addRigidBody(body);

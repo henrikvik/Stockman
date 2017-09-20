@@ -25,7 +25,11 @@ namespace Logic
 							float deltaTime);
 		virtual void onCollision(Entity& other) { }
 
+		// JUST FOR TESTING, REMOVE
+		void consoleWritePosition();
+
 		DirectX::SimpleMath::Vector3 getPosition() const;
+		btVector3 getPositionBT() const;
 		DirectX::SimpleMath::Quaternion getRotation() const;
 		DirectX::SimpleMath::Vector3 getScale() const;
 		DirectX::SimpleMath::Matrix getTransformMatrix() const;
@@ -34,7 +38,7 @@ namespace Logic
 		btRigidBody* getRigidbody();
 
 	private:
-		StatusManager m_statusManager;
+	//	StatusManager m_statusManager;
 		btRigidBody* m_body;
 		btTransform* m_transform;
 	//	Hitbox* m_head; for headshot, put it here to remember

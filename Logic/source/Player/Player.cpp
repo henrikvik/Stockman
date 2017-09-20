@@ -13,9 +13,9 @@ Player::~Player()
 	clear();
 }
 
-void Player::init()
+void Player::init(ProjectileManager* projectileManager)
 {
-	m_weaponManager.init();
+	m_weaponManager.init(projectileManager);
 	m_skillManager.init();
 
 	// Default mouse sensetivity, lookAt
@@ -98,10 +98,9 @@ void Player::updateSpecific(float deltaTime)
 		if (!m_weaponManager.isAttacking())
 		{
 			if ((ms.leftButton))
-				m_weaponManager.usePrimary();
-
-			if (ms.rightButton)
-				m_weaponManager.useSecondary();
+				m_weaponManager.usePrimary(getPositionBT(), m_camYaw, m_camPitch);
+			else if (ms.rightButton)
+				m_weaponManager.useSecondary(getPositionBT(), m_camYaw, m_camPitch);
 		}
 
 		// Reload
