@@ -39,7 +39,7 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 void Weapon::use(btVector3 position, float yaw, float pitch)
 {
 	// use weapon
-	if (m_spreadH != 0 || m_spreadV != 0)
+	if (m_spreadH != 0 || m_spreadV != 0)	// Spread
 	{
 		for (int i = m_projectileCount; i--; )
 		{
@@ -47,7 +47,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch)
 			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
 		}
 	}
-	else
+	else									// No spread
 	{
 		for (int i = m_projectileCount; i--; )
 		{
@@ -81,28 +81,28 @@ void Weapon::update()
 
 }
 
-ProjectileData * Logic::Weapon::getProjectileData()
+ProjectileData * Weapon::getProjectileData()
 {
 	return &m_projectileData;
 }
 
-int Logic::Weapon::getAmmoCap() { return m_ammoCap; }
+int Weapon::getAmmoCap() { return m_ammoCap; }
 
-void Logic::Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
+void Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
 
-int Logic::Weapon::getAmmo() { return m_ammo; }
+int Weapon::getAmmo() { return m_ammo; }
 
-void Logic::Weapon::setAmmo(int ammo) { m_ammo = ammo; }
+void Weapon::setAmmo(int ammo) { m_ammo = ammo; }
 
-int Logic::Weapon::getMagSize() { return m_magSize; }
+int Weapon::getMagSize() { return m_magSize; }
 
-void Logic::Weapon::setMagSize(int magSize) { m_magSize = magSize; }
+void Weapon::setMagSize(int magSize) { m_magSize = magSize; }
 
-int Logic::Weapon::getMagAmmo() { return m_magAmmo; }
+int Weapon::getMagAmmo() { return m_magAmmo; }
 
-void Logic::Weapon::removeMagAmmo() { m_magAmmo--; }
+void Weapon::removeMagAmmo() { m_magAmmo--; }
 
-void Logic::Weapon::removeMagAmmo(int ammo) 
+void Weapon::removeMagAmmo(int ammo) 
 { 
 	if (ammo > m_magAmmo)
 		m_magAmmo = 0;
@@ -110,11 +110,16 @@ void Logic::Weapon::removeMagAmmo(int ammo)
 		m_magAmmo -= ammo; 
 }
 
-int Logic::Weapon::getAmmoConsumption() { return m_ammoConsumption; }
+int Weapon::getAmmoConsumption() { return m_ammoConsumption; }
 
-float Logic::Weapon::getAttackTimer()
+float Weapon::getAttackTimer()
 {
 	return (60.f / m_attackRate) * 1000;
+}
+
+float Logic::Weapon::getRealoadTime()
+{
+	return m_reloadTime;
 }
 
 void Logic::Weapon::fillMag()
@@ -131,4 +136,9 @@ void Logic::Weapon::fillMag()
 		m_magAmmo += m_ammo;	// Add rest of ammo to mag
 		m_ammo = 0;				// Remove rest of ammo from total
 	}
+}
+
+void Weapon::render(Graphics::Renderer& renderer)
+{
+
 }

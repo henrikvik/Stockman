@@ -9,7 +9,8 @@
 		*/
 #pragma endregion
 
-#include "Skill.h"
+#include <Player\Skill\Skill.h>
+
 namespace Logic
 {
 	class SkillBulletTime : public Skill
@@ -17,7 +18,9 @@ namespace Logic
 	private:
 
 	public:
-		void update();
+		void onUse();
+		void onUpdate(float deltaTime);
+		void render(Graphics::Renderer& renderer);
 	};
 }
 #endif

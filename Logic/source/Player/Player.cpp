@@ -1,9 +1,10 @@
 #include "Player/Player.h"
+#include <AI\EnemyTest.h>
 
 using namespace Logic;
 
-Player::Player(btRigidBody* body)
-: Entity(body)
+Player::Player(btRigidBody* body, btVector3 halfExtent)
+: Entity(body, halfExtent)
 {
 
 }
@@ -42,13 +43,15 @@ void Player::init(ProjectileManager* projectileManager)
 void Player::clear()
 {
 	m_weaponManager.clear();
+	m_skillManager.clear();
 }
 
 void Player::onCollision(Entity& other)
 {
-	if (Projectile* p = dynamic_cast<Projectile*>(&other))
+	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);
+	if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
 	{
-		onCollision(*p);
+		printf("Enemy slapped you right in the face.\n");
 	}
 }
 
@@ -71,7 +74,7 @@ void Player::updateSpecific(float deltaTime)
 {
 	// Update Managers
 	m_weaponManager.update(deltaTime);
-	m_skillManager.update();
+	m_skillManager.update(deltaTime);
 
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);

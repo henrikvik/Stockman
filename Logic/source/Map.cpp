@@ -25,7 +25,7 @@ void Map::initProps()
 
 void Map::initHitboxes(Physics* physics)
 {
-	Entity* infinite = new Entity(physics->createBody(Plane({ 0, 1, 0 }), 0, false));
+	Entity* infinite = new Entity(physics->createBody(Plane({ 0, 1, 0 }), 0, false), btVector3(1000, 0.0001, 1000)); //to alter
     infinite->setWorldTranslation(DirectX::SimpleMath::Matrix::CreateScale(1000, 0.0001, 1000));
 
     m_hitboxes.push_back(infinite);
@@ -35,7 +35,8 @@ void Map::initObjects(Physics * physics)
 {
 	for (int i = 0; i < 5; ++i)
 	{
-		Entity* box = new Entity(physics->createBody(Cube({ 0, 10 , 0 }, { 0, 0 , 0 }, { 1, 1 , 1 }), 0.5f, false));
+		btVector3 halfextent(1.0, 1.0, 1.0);
+		Entity* box = new Entity(physics->createBody(Cube({ 0, 10 , 0 }, { 0, 0 , 0 }, halfextent), 0.5f, false), halfextent);
 		m_objects.push_back(box);
 	}
 }

@@ -1,5 +1,13 @@
 #include "Player/Skill/Skill.h"
 
-void Logic::Skill::update()
+using namespace Logic;
+
+void Skill::use()
 {
+	onUse();
+}
+
+void Skill::update(float deltaTime)
+{
+	onUpdate(deltaTime);
 }
