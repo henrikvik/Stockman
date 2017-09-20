@@ -43,6 +43,9 @@ bool Game::init()
 	m_map = newd Map();
 	m_map->init(m_physics);
 
+	// TEST REMOVE
+	m_entityManager.spawnWave(*m_physics);
+
 	return result;
 }
 
@@ -67,7 +70,7 @@ void Game::update(float deltaTime)
 	{
 		m_physics->update(deltaTime);
 		m_player->update(deltaTime);
-		m_entityManager.update(deltaTime);
+		m_entityManager.update(*m_player, deltaTime);
 		m_map->update(deltaTime);
 
 		m_projectileManager->update(deltaTime);

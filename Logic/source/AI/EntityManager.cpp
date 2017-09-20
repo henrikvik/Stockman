@@ -35,21 +35,21 @@ void EntityManager::reserveData()
 	m_deadEnemies.reserve(ENEMY_START_COUNT);
 }
 
-void EntityManager::update(float deltaTime) 
+void EntityManager::update(Player const &player, float deltaTime) 
 {
 	clock_t begin = clock();
 
-	for (int i = 0; i < m_enemies.size(); i++)
+	for (int i = 0; i < m_enemies.size(); ++i)
 	{
-		m_enemies[i]->update(deltaTime);
+		m_enemies[i]->update(player, deltaTime);
 	}
 
-	for (int i = 0; i < m_bossEnemies.size(); i++)
+	for (int i = 0; i < m_bossEnemies.size(); ++i)
 	{
-		m_bossEnemies[i]->update(deltaTime);
+		m_bossEnemies[i]->update(player, deltaTime);
 	}
 
-	for (int i = 0; i < m_deadEnemies.size(); i++)
+	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
 		m_deadEnemies[i]->updateDead(deltaTime);
 	}
@@ -59,15 +59,15 @@ void EntityManager::update(float deltaTime)
 //	printf("t: %f\n", elapsed_secs);
 }
 
-void EntityManager::spawnWave() 
+void EntityManager::spawnWave(Physics &physics) 
 {
 	std::vector<int> enemies = m_waveManager.getEnemies(m_currentWave++);
 	m_enemies.reserve(enemies.size() + m_enemies.size());
 
 	for (int i = 0; i < enemies.size(); i++)
 	{
-		m_enemies.push_back(new EnemyTest(nullptr, {0, 0, 0})); //alter this
-		m_deadEnemies.push_back(new EnemyTest(nullptr, { 0, 0, 0 })); //alter this
+	//	m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 2.f, i * 7.f, i * 4.f }, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 100, false), {0.5f, 0.5f, 0.5f}));
+	//	m_deadEnemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 21.f, i * 11.f, i * 2.f}, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 500, false), {0.5f, 0.5f, 0.5f}));
 	}
 }
 
@@ -92,7 +92,20 @@ void EntityManager::setCurrentWave(int currentWave)
 
 void EntityManager::render(Graphics::Renderer &renderer)
 {
+	for (int i = 0; i < m_enemies.size(); ++i)
+	{
+		m_enemies[i]->render(renderer);
+	}
 
+	for (int i = 0; i < m_bossEnemies.size(); ++i)
+	{
+		m_bossEnemies[i]->render(renderer);
+	}
+
+	for (int i = 0; i < m_deadEnemies.size(); ++i)
+	{
+		m_deadEnemies[i]->render(renderer);
+	}
 }
 
 int EntityManager::getCurrentWave() const 

@@ -15,8 +15,9 @@ Enemy::~Enemy() {
 
 }
 
-void Enemy::update(float deltaTime) {
-	updateSpecific(deltaTime);
+void Enemy::update(Player const &player, float deltaTime) {
+	Entity::update(deltaTime);
+	updateSpecific(player, deltaTime);
 }
 
 void Enemy::damage(float damage)

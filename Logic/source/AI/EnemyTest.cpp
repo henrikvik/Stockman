@@ -23,12 +23,16 @@ void EnemyTest::onCollision(Player& other)
 	
 }
 
-void EnemyTest::updateSpecific(float deltaTime)
+void EnemyTest::updateSpecific(Player const &player, float deltaTime)
 {
-	
+	btVector3 dir = player.getPositionBT() - getPositionBT();
+	dir = dir.normalize();
+	dir *= 10000.f;
+	getRigidbody()->applyCentralForce(dir);
 }
 
 void EnemyTest::updateDead(float deltaTime)
 {
+	Entity::updateGraphics();
 	// x _ x
 }
