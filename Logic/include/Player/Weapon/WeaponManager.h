@@ -43,9 +43,9 @@ namespace Logic
 
 		enum ReloadingWeapon
 		{
-			reloadingWeaponIdle,
-			reloadingWeaponActive,
-			reloadingWeaponDone
+			IDLE,
+			ACTIVE,
+			DONE
 		};
 
 		void initializeWeapons();

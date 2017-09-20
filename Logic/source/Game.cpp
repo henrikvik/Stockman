@@ -32,7 +32,7 @@ bool Game::init()
 
 	// Initializing Player
 	btVector3 halfextent(0.5, 3.0, 0.5);
-	m_player = new Player(m_physics->createBody(Cylinder({ 5, 5, 0 }, { 0, 0, 0 }, halfextent), 75.f, false), halfextent);
+	m_player = new Player(m_physics->createBody(Cylinder({ 5, 5, 0 }, { 0, 0, 0 }, halfextent), 0.f, false), halfextent);
 	m_player->init(m_projectileManager);
 
 	// Initializing Menu's

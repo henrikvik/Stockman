@@ -23,9 +23,11 @@ void Player::init(ProjectileManager* projectileManager)
 	m_camYaw = 90;
 	m_camPitch = 5;
 
+	m_playerState = PlayerState::STANDING;
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveSpeed = PLAYER_MOVEMENT_SPEED;
+	m_jumpSpeed = PLAYER_JUMP_SPEED;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -49,9 +51,13 @@ void Player::clear()
 void Player::onCollision(Entity& other)
 {
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);
-	if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
+	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
 	{
 		printf("Enemy slapped you right in the face.\n");
+	}
+	else
+	{
+		m_playerState = PlayerState::STANDING; // TEMP
 	}
 }
 
@@ -84,7 +90,8 @@ void Player::updateSpecific(float deltaTime)
 	// Movement
 	mouseMovement(deltaTime, &ms);
 	move(deltaTime, &ks);
-	jump(deltaTime);
+	if(ks.IsKeyDown(m_jump))
+		jump();
 	crouch(deltaTime);
 
 	// Weapon swap
@@ -168,9 +175,14 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	if (z > hcap || z < -hcap) rigidBody->setLinearVelocity(btVector3(x, y, (z > 0) ? hcap : -hcap));
 }
 
-void Player::jump(float deltaTime)
+void Player::jump()
 {
 	// jump
+	if (m_playerState != PlayerState::IN_AIR)
+	{
+		getRigidbody()->applyCentralImpulse(btVector3(0, m_jumpSpeed, 0));
+		m_playerState = PlayerState::IN_AIR;
+	}
 }
 
 void Player::crouch(float deltaTime)
