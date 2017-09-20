@@ -144,6 +144,7 @@ namespace Graphics
 		DirectionalLight lightDir;
 		ID3D11DepthStencilView* shadowDSV;
 		ID3D11ShaderResourceView* shadowSRV;
+		ID3D11RasterizerState* shadowRasterState;
 
 
         void createInstanceBuffer();
@@ -152,7 +153,7 @@ namespace Graphics
         void writeInstanceData();
         void draw();
         void drawGUI();
-		void drawShadows(Camera *cam);
+		void drawShadows();
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);

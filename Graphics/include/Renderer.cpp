@@ -15,7 +15,7 @@ namespace Graphics
 		, lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
 		, cube(gDevice)
-		, lightDir(gDevice, 1024, 1024, 100)
+		, lightDir(gDevice, 1024, 1024, 40)
 	{
 		this->device = gDevice;
 		this->deviceContext = gDeviceContext;
@@ -43,6 +43,7 @@ namespace Graphics
 		SAFE_RELEASE(transparencyBlendState);
 		SAFE_RELEASE(shadowDSV);
 		SAFE_RELEASE(shadowSRV);
+		SAFE_RELEASE(shadowRasterState);
         resourceManager.release();
 
     }
@@ -60,7 +61,7 @@ namespace Graphics
 		cull();
         writeInstanceData();
 
-		drawShadows(camera);
+		drawShadows();
 
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
@@ -72,6 +73,7 @@ namespace Graphics
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
+		deviceContext->RSSetState(states->CullCounterClockwise());
 
         deviceContext->IASetInputLayout(forwardPlus);
         deviceContext->VSSetShader(forwardPlus, nullptr, 0);
@@ -118,10 +120,20 @@ namespace Graphics
 			grid.getOpaqueIndexList()->getSRV(),
 			grid.getOpaqueLightGridSRV(),
 			grid.getLights()->getSRV(),
+			this->shadowSRV
 		};
 		auto sampler = states->LinearClamp();
-		deviceContext->PSSetShaderResources(0, 3, SRVs);
+		deviceContext->PSSetShaderResources(0, 4, SRVs);
 		deviceContext->PSSetSamplers(0, 1, &sampler);
+
+		ID3D11Buffer *lightBuffs[] =
+		{
+			lightDir.getShaderBuffer(),
+			lightDir.getMatrixBuffer()
+		};
+		
+		deviceContext->PSSetConstantBuffers(1, 2, lightBuffs);
+
 		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 		
 		draw();
@@ -129,7 +141,7 @@ namespace Graphics
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
 		ZeroMemory(SRVs, sizeof(SRVs));
-		deviceContext->PSSetShaderResources(0, 3, SRVs);
+		deviceContext->PSSetShaderResources(0, 4, SRVs);
 
 		deviceContext->RSSetState(states->CullCounterClockwise());
 		SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
@@ -285,9 +297,10 @@ namespace Graphics
 
     }
 
-	void Renderer::drawShadows(Camera *camera)
+	void Renderer::drawShadows()
 	{
 		deviceContext->ClearDepthStencilView(shadowDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
+		deviceContext->RSSetState(shadowRasterState);
 
 		deviceContext->RSSetViewports(1, &lightDir.getViewPort());
 		deviceContext->IASetInputLayout(forwardPlus);
@@ -384,6 +397,20 @@ namespace Graphics
 		ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &shadowSRV));
 
 		SAFE_RELEASE(texture);
+
+		D3D11_RASTERIZER_DESC rasterDesc = {};
+		rasterDesc.AntialiasedLineEnable = false;
+		rasterDesc.CullMode = D3D11_CULL_BACK;
+		rasterDesc.DepthBias = D3D11_DEFAULT_DEPTH_BIAS;
+		rasterDesc.DepthBiasClamp = D3D11_DEFAULT_DEPTH_BIAS_CLAMP; // Maybe higher
+		rasterDesc.DepthClipEnable = true;
+		rasterDesc.FillMode = D3D11_FILL_SOLID;
+		rasterDesc.FrontCounterClockwise = true;
+		rasterDesc.MultisampleEnable = true;
+		rasterDesc.ScissorEnable = true;
+		rasterDesc.SlopeScaledDepthBias = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+		
+		device->CreateRasterizerState(&rasterDesc, &shadowRasterState);
 	}
 
     void Renderer::createBlendState()
