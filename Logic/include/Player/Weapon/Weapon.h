@@ -46,7 +46,7 @@ namespace Logic
 			int spreadH, int spreadV, float damage, float attackRate, float freeze, float reloadTime);
 
 		void use(btVector3 position, float yaw, float pitch);
-		void setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation);
+		void setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		ProjectileData* getProjectileData();
 		int getAmmoCap();

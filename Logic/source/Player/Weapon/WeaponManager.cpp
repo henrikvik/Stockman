@@ -28,11 +28,14 @@ void WeaponManager::clear()
 	m_allWeapons.clear();
 }
 
-void WeaponManager::update(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation)
+void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
 	// Updating weapon model
-	m_currentWeapon.first->setWeaponModelFrontOfPlayer(playerTranslation);
+	m_currentWeapon.first->setWeaponModelFrontOfPlayer(playerTranslation, playerForward);
+}
 
+void WeaponManager::update(float deltaTime)
+{
 	// Timers / cooldowns
 
 	// Reload

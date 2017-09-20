@@ -76,17 +76,15 @@ btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 	return projectileDir;
 }
 
-void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation)
+void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
-//	DirectX::SimpleMath::Matrix pos;
-//	pos.
+	playerForward.Normalize();
 
-//	DirectX::SimpleMath::Vector3 scale = playerTranslation.;
-//	scale.CreateScale(1, 1, 1);
+	DirectX::SimpleMath::Matrix newView = DirectX::XMMatrixLookToRH(playerTranslation.Translation(), playerForward , { 0, 1, 0 });
+	DirectX::SimpleMath::Vector3 offset = playerTranslation.Translation() + playerForward * 3.f;
+	offset.y -= 5;
 
-//	DirectX::SimpleMath::Vector3 result = pos * scale * playerTranslation;
-
-	this->setWorldTranslation(playerTranslation);
+	this->setWorldTranslation(newView.Invert() * DirectX::SimpleMath::Matrix::CreateTranslation(offset));
 }
 
 ProjectileData * Weapon::getProjectileData()

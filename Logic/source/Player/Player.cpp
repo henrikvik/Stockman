@@ -78,10 +78,6 @@ void Player::readFromFile()
 
 void Player::updateSpecific(float deltaTime)
 {
-	// Update Managers
-	m_weaponManager.update(deltaTime, getTransformMatrix());
-	m_skillManager.update(deltaTime /* , getTransformMatrix() */ ); // The skills will also need the transform matrix to draw their models 
-
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
@@ -127,6 +123,13 @@ void Player::updateSpecific(float deltaTime)
 		if (ks.IsKeyDown(m_reloadWeapon))
 			m_weaponManager.reloadWeapon();
 	}
+
+	// Update weapon and skills
+	m_weaponManager.update(deltaTime);
+	m_skillManager.update(deltaTime);
+
+	m_weaponManager.setWeaponModel(getTransformMatrix(), m_forward);
+	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
 }
 
 void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
