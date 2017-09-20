@@ -9,22 +9,35 @@
 		*/
 #pragma endregion
 
-#include "Skill.h"
+#include <Graphics\include\Renderer.h>
+#include <Player\Skill\SkillBulletTime.h>
+#include <Player\Skill\SkillGrapplingHook.h>
+#include <Player\Skill\SkillShieldCharge.h>
 #include <vector>
 
 namespace Logic
 {
 	class SkillManager
 	{
-	private:
-		std::vector<Skill> m_skills;
+
 	public:
+		SkillManager();
+		~SkillManager();
+
 		void init();
+		void clear();
 
-		void switchSkill();
+		void switchToSkill(int index);
+
 		void useSkill();
-
-		void update();
+		void update(float deltaTime);
+		void render(Graphics::Renderer& renderer);
+	
+	private:
+		void initializeSkills();
+		
+		std::vector<Skill*> m_allSkills;
+		Skill* m_currentSkill;
 	};
 }
 #endif

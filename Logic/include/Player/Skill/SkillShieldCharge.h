@@ -1,5 +1,6 @@
 #ifndef SKILLSHIELDCHARGE_H
 #define SKILLSHIELDCHARGE_H
+
 #pragma region ClassDesc
 		/*
 			CLASS: SkillShieldCharge
@@ -8,7 +9,8 @@
 			DESCRIPTION: TODO
 		*/
 #pragma endregion
-#include "Skill.h"
+
+#include <Player\Skill\Skill.h>
 
 namespace Logic
 {
@@ -17,7 +19,9 @@ namespace Logic
 	private:
 		/*ProjectileData m_projectileData;*/
 	public:
-		void update();
+		void onUse();
+		void onUpdate(float deltaTime);
+		void render(Graphics::Renderer& renderer);
 	};
 }
 #endif
