@@ -2,6 +2,7 @@
 #define CARD_H
 
 #include <string>
+#include <Entity\StatusManager.h>
 
 namespace Logic
 {
@@ -19,6 +20,7 @@ namespace Logic
 		int getStatusID() const;
 
 	private:
+		StatusManager m_statusManager;
 		std::string m_name;
 		std::string m_description;
 		int m_statusID;

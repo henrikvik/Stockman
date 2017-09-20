@@ -1,0 +1,9 @@
+{
+	"cardName" : "";
+	"texture" : "b";
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+	"function" : "buttonClick0";
+}
