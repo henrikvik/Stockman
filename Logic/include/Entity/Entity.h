@@ -11,7 +11,7 @@ namespace Logic
 	class Entity : public Object
 	{
 	public:
-		Entity(btRigidBody* body);
+		Entity(btRigidBody* body, btVector3 halfExtent);
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
 		virtual ~Entity();
@@ -33,6 +33,7 @@ namespace Logic
 		btRigidBody* getRigidbody();
 
 	private:
+		btVector3 m_halfextent;
 		StatusManager m_statusManager;
 		btRigidBody* m_body;
 		btTransform* m_transform;

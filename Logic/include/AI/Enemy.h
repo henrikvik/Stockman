@@ -27,7 +27,7 @@ namespace Logic
 			int m_enemyType;
 			// Animation m_animation;
 		public:	
-			Enemy(btRigidBody* body, float maxHealth, float baseDamage, int enemyType, int animationId);
+			Enemy(btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, int enemyType, int animationId);
 			virtual ~Enemy();
 
 			virtual void update(float deltaTime);

@@ -27,7 +27,8 @@ bool Game::init()
 	result = m_physics->init();
 
 	// Initializing Player
-	m_player = new Player(m_physics->createBody(Cylinder({ 5, -15, 0 }, { 0, 0, 0 }, { 0.5, 3.0, 0.5 }), 75.f, false));
+	btVector3 halfextent(0.5, 3.0, 0.5);
+	m_player = new Player(m_physics->createBody(Cylinder({ 5, -15, 0 }, { 0, 0, 0 }, halfextent), 75.f, false), halfextent);
 	m_player->init();
 
 	// Initializing Menu's

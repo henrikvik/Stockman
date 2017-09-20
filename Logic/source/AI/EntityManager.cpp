@@ -64,10 +64,10 @@ void EntityManager::spawnWave()
 	std::vector<int> enemies = m_waveManager.getEnemies(m_currentWave++);
 	m_enemies.reserve(enemies.size() + m_enemies.size());
 
-	for (int i = 0; i < enemies.size(); i++) 
+	for (int i = 0; i < enemies.size(); i++)
 	{
-		m_enemies.push_back(new EnemyTest(nullptr));
-		m_deadEnemies.push_back(new EnemyTest(nullptr));
+		m_enemies.push_back(new EnemyTest(nullptr, {0, 0, 0})); //alter this
+		m_deadEnemies.push_back(new EnemyTest(nullptr, { 0, 0, 0 })); //alter this
 	}
 }
 
