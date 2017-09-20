@@ -20,7 +20,8 @@
 #include <Projectile\ProjectileManager.h>
 
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
-#define PLAYER_MOVEMENT_SPEED			0.1f
+#define PLAYER_MOVEMENT_MAX_SPEED		0.3f
+#define PLAYER_MOVEMENT_ACCELERATION	0.005f
 #define PLAYER_JUMP_SPEED				100.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
@@ -45,7 +46,10 @@ namespace Logic
 		// Stats
 		PlayerState m_playerState;
 		DirectX::SimpleMath::Vector3 m_forward;
+		float m_moveMaxSpeed;
+		btVector3 m_moveDir;
 		float m_moveSpeed;
+		float m_acceleration;
 		float m_jumpSpeed;
 
 		// Mouse
