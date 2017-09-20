@@ -10,10 +10,9 @@
 #include <ctime>
 #include <chrono>
 #include <Entity\Entity.h>
-#include <Player\Player.h>
 #include <Physics\Primitives.h>
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 #define PHYSICS_GRAVITY 9.82
 

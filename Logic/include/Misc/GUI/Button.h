@@ -18,6 +18,7 @@ This class creates buttons.
 #include <functional>
 #include <Graphics\include\Structs.h>
 
+
 namespace Logic
 {
 	class Button
