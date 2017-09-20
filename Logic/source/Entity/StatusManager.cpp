@@ -20,10 +20,9 @@ StatusManager::StatusManager()
 		Effect::Specifics spec;
 		int id = 0;
 
-		Effect creating;
 		for (auto const &fileStruct : loadedEffects)
 		{
-			memset(&creating, 0, sizeof(creating));
+			Effect creating;
 
 			standards.flags = fileStruct.ints.at("flags");
 			standards.duration = fileStruct.floats.at("duration");
@@ -78,7 +77,9 @@ StatusManager::StatusManager()
 	addStatus(0, 5, true);
 }
 
-StatusManager::~StatusManager() { }
+StatusManager::~StatusManager() {
+	clear();
+}
 
 void StatusManager::clear()
 {

@@ -38,7 +38,7 @@ namespace Logic
 		btRigidBody* getRigidbody();
 
 	private:
-	//	StatusManager m_statusManager;
+		StatusManager m_statusManager;
 		btRigidBody* m_body;
 		btTransform* m_transform;
 	//	Hitbox* m_head; for headshot, put it here to remember

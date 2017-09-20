@@ -66,8 +66,8 @@ void EntityManager::spawnWave(Physics &physics)
 
 	for (int i = 0; i < enemies.size(); i++) 
 	{
-		m_enemies.push_back(new EnemyTest(physics.addBody(Cube({ 0, 5, 0 }, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 100, false)));
-		m_deadEnemies.push_back(new EnemyTest(physics.addBody(Cube({ 0, 1, 0}, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 500, false)));
+		m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ 0, 5, 0 }, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 100, false)));
+		m_deadEnemies.push_back(new EnemyTest(physics.createBody(Cube({ 0, 1, 0}, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 500, false)));
 	}
 }
 
