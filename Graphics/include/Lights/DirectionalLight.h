@@ -8,7 +8,7 @@
 class DirectionalLight
 {
 public:
-	DirectionalLight(ID3D11Device* device, int width, int height, float drawDistance = 100);
+	DirectionalLight(ID3D11Device* device, int width, int height);
 	~DirectionalLight();
 
 	void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);

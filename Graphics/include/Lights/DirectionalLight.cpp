@@ -1,11 +1,11 @@
 #include "DirectionalLight.h"
 using namespace DirectX::SimpleMath;
 
-DirectionalLight::DirectionalLight(ID3D11Device * device, int width, int height, float drawDistance)
+DirectionalLight::DirectionalLight(ID3D11Device * device, int width, int height)
 {
 	shaderData.pos = Vector4(0, 10, 5, 1);
 
-	projection = DirectX::XMMatrixOrthographicRH(100.f, 100.f, 0.1, drawDistance);
+	projection = DirectX::XMMatrixOrthographicRH(100.f, 100.f, 1, 20);
 	view = DirectX::XMMatrixLookAtRH(shaderData.pos, Vector3(0, 0, 0), Vector3(0, 1, 0));
 
 	matrixData.vp = view * projection;
