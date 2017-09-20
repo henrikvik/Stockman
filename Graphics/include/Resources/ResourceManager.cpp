@@ -19,19 +19,17 @@ namespace Graphics
 		materialManager.initialize(gDevice, gDeviceContext);
 		brfImporterHandler.initialize(meshManager, materialManager);
 
-		brfImporterHandler.loadFile(MODEL_PATH_STR("kub.brf"), true, true, false, false);
-		brfImporterHandler.loadFile(MODEL_PATH_STR("kub2.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(MODEL_PATH_STR("kubenmedtextur.brf"), true, true, false, false);
+		//brfImporterHandler.loadFile(MODEL_PATH_STR("kub2.brf"), true, true, false, false);
     }
 
     ModelInfo ResourceManager::getModelInfo(ModelID modelID)
     {
         Mesh & mesh = meshManager.GetMeshes()->at(modelID);
 
-		
-		//materialManager.getMaterialInfo(mesh);
 
         ModelInfo info = {
-			
+	
             mesh.GetIndexCount(),
             mesh.getIndexBuffer(),
             mesh.getVertexBuffer()

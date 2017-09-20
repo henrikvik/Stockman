@@ -226,7 +226,7 @@ namespace Graphics
 
         for (InstanceQueue_t::value_type & pair : instanceQueue)
         {
-#if false
+#if true
             ModelInfo model = resourceManager.getModelInfo(pair.first);
 
             buffers[0] = model.vertexBuffer;
