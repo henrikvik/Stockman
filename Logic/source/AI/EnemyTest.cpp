@@ -16,11 +16,18 @@ void EnemyTest::clear()
 
 void EnemyTest::onCollision(Entity &other)
 {
+	if (Projectile *p = dynamic_cast<Projectile*> (&other))
+		 damage(1);
+	if (Player *p = dynamic_cast<Player*> (&other))
+		onCollision(*p);
 }
 
 void EnemyTest::onCollision(Player& other) 
 {
-	
+	btVector3 dir = getPositionBT() - other.getPositionBT();
+	dir = dir.normalize();
+	dir *= 100000.f;
+	getRigidbody()->applyCentralForce(dir);
 }
 
 void EnemyTest::updateSpecific(Player const &player, float deltaTime)
