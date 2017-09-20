@@ -27,7 +27,11 @@ namespace Graphics
     {
         Mesh & mesh = meshManager.GetMeshes()->at(modelID);
 
+		
+		//materialManager.getMaterialInfo(mesh);
+
         ModelInfo info = {
+			
             mesh.GetIndexCount(),
             mesh.getIndexBuffer(),
             mesh.getVertexBuffer()

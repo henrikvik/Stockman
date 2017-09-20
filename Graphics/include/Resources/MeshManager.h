@@ -2,38 +2,40 @@
 #include <vector>
 #include <Graphics\include\Datatypes.h>
 #include "Mesh.h"
-
-using namespace std;
-
-class MeshManager
+namespace Graphics
 {
-public:
-	MeshManager();
-	~MeshManager();
-	void initialize(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext);
-	void release();
+	using namespace std;
 
-	void addMesh(
-		bool hasSkeleton,
-		unsigned int skeletonID,
-		int materialID,
-		unsigned int vertexCount,
-		UINT indexCount,
-		vector<Vertex> vertices,
-		vector<UINT> indices,
-		bool isScene
-	);
+	class MeshManager
+	{
+	public:
+		MeshManager();
+		~MeshManager();
+		void initialize(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext);
+		void release();
 
-	vector<Mesh>* GetMeshes() { return &this->gameMeshes; }
+		void addMesh(
+			bool hasSkeleton,
+			unsigned int skeletonID,
+			int materialID,
+			unsigned int vertexCount,
+			UINT indexCount,
+			vector<Vertex> vertices,
+			vector<UINT> indices,
+			bool isScene
+		);
 
-private:
-	ID3D11Device *gDevice = nullptr;
-	ID3D11DeviceContext *gDeviceContext = nullptr;
+		vector<Mesh>* GetMeshes() { return &this->gameMeshes; }
 
-	vector<Mesh> gameMeshes;
-	vector<Mesh> sceneMeshes;
-	Mesh mesh;
+	private:
+		ID3D11Device *gDevice = nullptr;
+		ID3D11DeviceContext *gDeviceContext = nullptr;
+
+		vector<Mesh> gameMeshes;
+		vector<Mesh> sceneMeshes;
+		Mesh mesh;
 
 
-};
+	};
 
+}

@@ -1,65 +1,41 @@
 #include "MaterialManager.h"
 
-
-
-MaterialManager::MaterialManager()
+namespace Graphics
 {
-	textureManager = newd TextureManager;
-	materials = newd vector<Material>;;
-}
-
-
-MaterialManager::~MaterialManager()
-{
-	delete materials;
-	delete textureManager;
-}
-
-void MaterialManager::initialize(ID3D11Device * gDevice, ID3D11DeviceContext* gDeviceContext)
-{
-	textureManager->initilize(gDevice);
-}
-
-void MaterialManager::release()
-{
-	this->textureManager->release();
-}
-
-bool MaterialManager::compareMaterials(importedMaterial * import, unsigned int materialID)
-{
-	if (import->materialName == materials->at(materialID).materialName)
+	MaterialManager::MaterialManager()
 	{
-		if (materials->at(materialID).diffuse_ID == textureManager->findDiffuseID(import->diffuseTex))
-		{
-			if (materials->at(materialID).normal_ID == textureManager->findNormalID(import->normalTex))
-			{
-				if (materials->at(materialID).specular_ID == textureManager->findSpeularID(import->specularTex))
-				{
-					if (materials->at(materialID).glow_ID == textureManager->findGloowID(import->glowTex))
-					{
-						return true;
-					}
-				}
-			}
-		}
+		textureManager = newd TextureManager;
+		materials = newd vector<Material>;;
 	}
 
-	return false;
-}
 
-bool MaterialManager::compareImportMaterials(importedMaterial * import)
-{
-	for (unsigned int i = 0; i < materials->size(); i++)
+	MaterialManager::~MaterialManager()
 	{
-		if (import->materialName == materials->at(i).materialName)
+		delete materials;
+		delete textureManager;
+	}
+
+	void MaterialManager::initialize(ID3D11Device * gDevice, ID3D11DeviceContext* gDeviceContext)
+	{
+		textureManager->initilize(gDevice);
+	}
+
+	void MaterialManager::release()
+	{
+		this->textureManager->release();
+	}
+
+	bool MaterialManager::compareMaterials(importedMaterial * import, unsigned int materialID)
+	{
+		if (import->materialName == materials->at(materialID).materialName)
 		{
-			if (materials->at(i).diffuse_ID == textureManager->findDiffuseID(import->diffuseTex))
+			if (materials->at(materialID).diffuse_ID == textureManager->findDiffuseID(import->diffuseTex))
 			{
-				if (materials->at(i).normal_ID == textureManager->findNormalID(import->normalTex))
+				if (materials->at(materialID).normal_ID == textureManager->findNormalID(import->normalTex))
 				{
-					if (materials->at(i).specular_ID == textureManager->findSpeularID(import->specularTex))
+					if (materials->at(materialID).specular_ID == textureManager->findSpeularID(import->specularTex))
 					{
-						if (materials->at(i).glow_ID == textureManager->findGloowID(import->glowTex))
+						if (materials->at(materialID).glow_ID == textureManager->findGloowID(import->glowTex))
 						{
 							return true;
 						}
@@ -67,50 +43,82 @@ bool MaterialManager::compareImportMaterials(importedMaterial * import)
 				}
 			}
 		}
+
+		return false;
 	}
 
-	return false;
-}
-
-void MaterialManager::addMaterials(vector<importedMaterial>* import)
-{
-	for (unsigned int i = 0; i < import->size(); i++)
+	bool MaterialManager::compareImportMaterials(importedMaterial * import)
 	{
-		if (!compareImportMaterials(&import->at(i)))
+		for (unsigned int i = 0; i < materials->size(); i++)
 		{
-			Material tempMat;
-
-			tempMat.materialName = import->at(i).materialName;
-			tempMat.materialID = import->at(i).materialID;
-
-			tempMat.diffuseValue = import->at(i).diffuseValue;
-			tempMat.specularValue = import->at(i).specularValue;
-
-			tempMat.diffuse_ID = textureManager->getDiffuseID(import->at(i).diffuseTex);
-			tempMat.normal_ID = textureManager->getNormalID(import->at(i).normalTex);
-			tempMat.specular_ID = textureManager->getSpecularID(import->at(i).specularTex);
-			tempMat.glow_ID = textureManager->getGlowID(import->at(i).glowTex);
-
-			materials->push_back(tempMat);
-			materials->shrink_to_fit();
+			if (import->materialName == materials->at(i).materialName)
+			{
+				if (materials->at(i).diffuse_ID == textureManager->findDiffuseID(import->diffuseTex))
+				{
+					if (materials->at(i).normal_ID == textureManager->findNormalID(import->normalTex))
+					{
+						if (materials->at(i).specular_ID == textureManager->findSpeularID(import->specularTex))
+						{
+							if (materials->at(i).glow_ID == textureManager->findGloowID(import->glowTex))
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
 		}
-		else
+
+		return false;
+	}
+
+	void MaterialManager::addMaterials(vector<importedMaterial>* import)
+	{
+		for (unsigned int i = 0; i < import->size(); i++)
 		{
-			Material tempMat;
+			if (!compareImportMaterials(&import->at(i)))
+			{
+				Material tempMat;
 
-			tempMat.materialName = import->at(i).materialName;
-			tempMat.materialID = import->at(i).materialID;
+				tempMat.materialName = import->at(i).materialName;
+				tempMat.materialID = import->at(i).materialID;
 
-			tempMat.diffuseValue = import->at(i).diffuseValue;
-			tempMat.specularValue = import->at(i).specularValue;
+				tempMat.diffuseValue = import->at(i).diffuseValue;
+				tempMat.specularValue = import->at(i).specularValue;
 
-			tempMat.diffuse_ID = textureManager->getDiffuseID(import->at(i).diffuseTex);
-			tempMat.normal_ID = textureManager->getNormalID(import->at(i).normalTex);
-			tempMat.specular_ID = textureManager->getSpecularID(import->at(i).specularTex);
-			tempMat.glow_ID = textureManager->getGlowID(import->at(i).glowTex);
+				tempMat.diffuse_ID = textureManager->getDiffuseID(import->at(i).diffuseTex);
+				tempMat.normal_ID = textureManager->getNormalID(import->at(i).normalTex);
+				tempMat.specular_ID = textureManager->getSpecularID(import->at(i).specularTex);
+				tempMat.glow_ID = textureManager->getGlowID(import->at(i).glowTex);
 
-			materials->push_back(tempMat);
+				materials->push_back(tempMat);
+				materials->shrink_to_fit();
+			}
+			else
+			{
+				Material tempMat;
+
+				tempMat.materialName = import->at(i).materialName;
+				tempMat.materialID = import->at(i).materialID;
+
+				tempMat.diffuseValue = import->at(i).diffuseValue;
+				tempMat.specularValue = import->at(i).specularValue;
+
+				tempMat.diffuse_ID = textureManager->getDiffuseID(import->at(i).diffuseTex);
+				tempMat.normal_ID = textureManager->getNormalID(import->at(i).normalTex);
+				tempMat.specular_ID = textureManager->getSpecularID(import->at(i).specularTex);
+				tempMat.glow_ID = textureManager->getGlowID(import->at(i).glowTex);
+
+				materials->push_back(tempMat);
+			}
 		}
 	}
-}
 
+	void MaterialManager::getMaterialInfo(ModelInfo modelInfo)
+	{
+		//modelInfo.diffuseMap = textureManager->GetDiffuseTexture(materials->at(modelInfo->materialID).diffuse_ID);
+		//modelInfo.normalMap = textureManager->GetNormalTexture(materials->at(modelInfo->materialID).normal_ID);
+		//modelInfo.glowSpecularMap = textureManager->GetGlowTexture(materials->at(modelInfo->materialID).specular_ID);
+	}
+
+}

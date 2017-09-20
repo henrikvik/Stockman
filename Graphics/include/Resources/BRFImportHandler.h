@@ -10,22 +10,24 @@
 #include "MaterialManager.h"
 #include <Graphics\Include\Datatypes.h>
 #include "Mesh.h"
-
-class BRFImportHandler
+namespace Graphics
 {
-public:
-	BRFImportHandler();
-	~BRFImportHandler();
+	class BRFImportHandler
+	{
+	public:
+		BRFImportHandler();
+		~BRFImportHandler();
 
-	void loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene);
+		void loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene);
 
-	void initialize(MeshManager & meshManager, MaterialManager & materialManager);
+		void initialize(MeshManager & meshManager, MaterialManager & materialManager);
 
-private:
-	unsigned int materialID;
+	private:
+		unsigned int materialID;
 
-	BRFImporterLib::FileData* currentFile;
-	MeshManager * meshManager;
-	MaterialManager* materialManager;
-	
-};
+		BRFImporterLib::FileData* currentFile;
+		MeshManager * meshManager;
+		MaterialManager* materialManager;
+
+	};
+}

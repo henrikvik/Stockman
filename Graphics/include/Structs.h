@@ -16,18 +16,14 @@ namespace Graphics
 
 	struct ModelInfo
 	{
+		//unsigned int materialID;
+
 		size_t indexCount;
         ID3D11Buffer * indexBuffer;
         ID3D11Buffer * vertexBuffer;
 		ID3D11ShaderResourceView * diffuseMap;
 		ID3D11ShaderResourceView * normalMap;
 		ID3D11ShaderResourceView * glowSpecularMap;
-
-		~ModelInfo() 
-		{
-			indexBuffer->Release();
-			vertexBuffer->Release();
-		}
 	};
 
 	struct RenderInfo
