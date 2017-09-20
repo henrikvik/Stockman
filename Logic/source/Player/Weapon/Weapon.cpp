@@ -76,33 +76,41 @@ btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 	return projectileDir;
 }
 
-void Weapon::update()
+void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation)
 {
+//	DirectX::SimpleMath::Matrix pos;
+//	pos.
 
+//	DirectX::SimpleMath::Vector3 scale = playerTranslation.;
+//	scale.CreateScale(1, 1, 1);
+
+//	DirectX::SimpleMath::Vector3 result = pos * scale * playerTranslation;
+
+	this->setWorldTranslation(playerTranslation);
 }
 
-ProjectileData * Logic::Weapon::getProjectileData()
+ProjectileData * Weapon::getProjectileData()
 {
 	return &m_projectileData;
 }
 
-int Logic::Weapon::getAmmoCap() { return m_ammoCap; }
+int Weapon::getAmmoCap() { return m_ammoCap; }
 
-void Logic::Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
+void Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
 
-int Logic::Weapon::getAmmo() { return m_ammo; }
+int Weapon::getAmmo() { return m_ammo; }
 
-void Logic::Weapon::setAmmo(int ammo) { m_ammo = ammo; }
+void Weapon::setAmmo(int ammo) { m_ammo = ammo; }
 
-int Logic::Weapon::getMagSize() { return m_magSize; }
+int Weapon::getMagSize() { return m_magSize; }
 
-void Logic::Weapon::setMagSize(int magSize) { m_magSize = magSize; }
+void Weapon::setMagSize(int magSize) { m_magSize = magSize; }
 
-int Logic::Weapon::getMagAmmo() { return m_magAmmo; }
+int Weapon::getMagAmmo() { return m_magAmmo; }
 
-void Logic::Weapon::removeMagAmmo() { m_magAmmo--; }
+void Weapon::removeMagAmmo() { m_magAmmo--; }
 
-void Logic::Weapon::removeMagAmmo(int ammo) 
+void Weapon::removeMagAmmo(int ammo) 
 { 
 	if (ammo > m_magAmmo)
 		m_magAmmo = 0;
@@ -110,9 +118,9 @@ void Logic::Weapon::removeMagAmmo(int ammo)
 		m_magAmmo -= ammo; 
 }
 
-int Logic::Weapon::getAmmoConsumption() { return m_ammoConsumption; }
+int Weapon::getAmmoConsumption() { return m_ammoConsumption; }
 
-float Logic::Weapon::getAttackTimer()
+float Weapon::getAttackTimer()
 {
 	return (60.f / m_attackRate) * 1000;
 }

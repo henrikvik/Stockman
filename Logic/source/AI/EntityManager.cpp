@@ -2,7 +2,7 @@
 using namespace Logic;
 
 #define ENEMY_START_COUNT 16
-#define TEST_NAME "helloWave.xml"
+#define TEST_NAME "helloWave"
 
 #include <AI/EnemyTest.h>
 #include <ctime>
@@ -42,6 +42,11 @@ void EntityManager::update(Player const &player, float deltaTime)
 	for (int i = 0; i < m_enemies.size(); ++i)
 	{
 		m_enemies[i]->update(player, deltaTime);
+		if (m_enemies[i]->getHealth() <= 0) {
+			m_deadEnemies.push_back(m_enemies[i]);
+			std::swap(m_enemies[i], m_enemies[m_enemies.size() - 1]);
+			m_enemies.pop_back();
+		}
 	}
 
 	for (int i = 0; i < m_bossEnemies.size(); ++i)
@@ -66,8 +71,8 @@ void EntityManager::spawnWave(Physics &physics)
 
 	for (int i = 0; i < enemies.size(); i++)
 	{
-	//	m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 2.f, i * 7.f, i * 4.f }, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 100, false), {0.5f, 0.5f, 0.5f}));
-	//	m_deadEnemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 21.f, i * 11.f, i * 2.f}, { 0, 0, 0 }, {0.5f, 0.5f, 0.5f}), 500, false), {0.5f, 0.5f, 0.5f}));
+		i += 1;
+		m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 113.f, i * 37.f, i * 124.f }, { 0, 0, 0 }, {3.5f, 0.5f, 0.5f}), 100, false), {0.5f, 0.5f, 0.5f}));
 	}
 }
 

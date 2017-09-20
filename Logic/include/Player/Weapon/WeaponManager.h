@@ -28,7 +28,8 @@ namespace Logic
 
 		void init(ProjectileManager* projectileManager);
 		void clear();
-		void update(float deltaTime);
+		void update(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation);
+		void render(Graphics::Renderer& renderer);
 
 		void switchWeapon(int weaponID);
 		void usePrimary(btVector3 position, float yaw, float pitch);

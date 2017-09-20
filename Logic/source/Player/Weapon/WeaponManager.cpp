@@ -28,8 +28,11 @@ void WeaponManager::clear()
 	m_allWeapons.clear();
 }
 
-void Logic::WeaponManager::update(float deltaTime)
+void WeaponManager::update(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation)
 {
+	// Updating weapon model
+	m_currentWeapon.first->setWeaponModelFrontOfPlayer(playerTranslation);
+
 	// Timers / cooldowns
 
 	// Reload
@@ -61,6 +64,11 @@ void Logic::WeaponManager::update(float deltaTime)
 		m_swapWeaponTimer -= deltaTime;
 		m_attackTimer = m_swapWeaponTimer;
 	}
+}
+
+void WeaponManager::render(Graphics::Renderer& renderer)
+{
+	m_currentWeapon.first->render(renderer);
 }
 
 void WeaponManager::initializeWeapons()

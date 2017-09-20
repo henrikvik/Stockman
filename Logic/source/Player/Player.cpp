@@ -79,8 +79,8 @@ void Player::readFromFile()
 void Player::updateSpecific(float deltaTime)
 {
 	// Update Managers
-	m_weaponManager.update(deltaTime);
-	m_skillManager.update(deltaTime);
+	m_weaponManager.update(deltaTime, getTransformMatrix());
+	m_skillManager.update(deltaTime /* , getTransformMatrix() */ ); // The skills will also need the transform matrix to draw their models 
 
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
@@ -219,6 +219,15 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 	m_forward.z = cos(DirectX::XMConvertToRadians(m_camPitch)) * sin(DirectX::XMConvertToRadians(m_camYaw));
 
 	m_forward.Normalize();
+}
+
+void Player::render(Graphics::Renderer & renderer)
+{
+	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
+	Object::render(renderer);
+
+	// Drawing the weapon model
+	m_weaponManager.render(renderer);
 }
 
 DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
