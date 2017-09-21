@@ -57,14 +57,14 @@ VSOutput VS(VSInput input) {
 	VSOutput output;
 
 	output.worldPos = mul(input.world, float4(input.position, 1));
-	output.pos = mul(ViewProjection, output.worldPos);
+    output.pos = mul(ViewProjection, output.worldPos);
 
 	output.uv = input.uv;
     output.normal = mul(input.world, float4(input.normal, 0));
     output.normal = normalize(output.normal);
 
-    output.lightPos = mul(input.world, output.pos - float4((output.normal.xyz), 1));
-    output.lightPos = mul(lightVP, output.worldPos);
+    output.lightPos = output.worldPos + float4(output.normal * 0.18f, 0);
+    output.lightPos = mul(lightVP, output.lightPos);
 
 	return output;
 }
@@ -99,20 +99,24 @@ PSOutput PS(VSOutput input) {
 	uint offset = LightGrid[tile].x;
 	uint count = LightGrid[tile].y;
 	
-	// temp WHEN DAY/NIGHT CYCLE IS A THING THIS WILL BE REMOVED
-    float3 lightDir = float3(0, -0.5, 0.5);
+
+    ///////////////////////////////DIRECTIONAL LIGHT///////////////////////////////////////
+    float3 lightDir = normalize(camPos.xyz - lightPos.xyz);
     float diffuseFactor = saturate(dot(input.normal, normalize(-lightDir)));
     float3 directionalDiffuse = diffuseFactor * float3(0.1, 0.4, 0.7);
+    /////////////////////////////DIRECTIONAL LIGHT END///////////////////////////////////////
 
 
     float3 ambient = float3(0, 0.1, 0.2);
+
+
 
     //This will include a texture sample or material color later
 	float3 color = 0.1f;
 
 
 
-
+    ////////////////////////////////POINT LIGHTS//////////////////////////////////////////////
 	for (uint i = 0; i < count; i++) 
     {
 		uint idx = LightIndexList[offset + i];
@@ -131,8 +135,10 @@ PSOutput PS(VSOutput input) {
         float3 specular = pow(saturate(dot(input.normal, reflectThing)), 1000) * light.color;
         color += light.color * attenuation * (saturate(diffuse) + specular);
 	}
+    //////////////////////////////POINT LIGHTS END//////////////////////////////////////////////
 
-            /////////////////////SHADOWS//////////////////////////////
+
+     /////////////////////////////SHADOWS//////////////////////////////
     input.lightPos.x = (input.lightPos.x * 0.5f) + 0.5f;
     input.lightPos.y = (input.lightPos.y * -0.5f) + 0.5f;
 
@@ -144,7 +150,7 @@ PSOutput PS(VSOutput input) {
     {
         for (int x = -samples; x <= samples; x += 1)
         {
-            addedShadow += shadowMap.SampleCmp(cmpSampler, input.lightPos.xy, input.lightPos.z - 0.01, int2(x, y)).r;
+            addedShadow += shadowMap.SampleCmp(cmpSampler, input.lightPos.xy, input.lightPos.z, int2(x, y)).r;
         }
     }
 
@@ -155,17 +161,15 @@ PSOutput PS(VSOutput input) {
     //////////////////////// END SHADOW /////////////////////////
 
 
+    output.color = float4(saturate((directionalDiffuse * shadow) + color + ambient), 1);
    
 
-    ///DEBUG TEST TEMP
-    //if (input.lightPos.x > 1 || input.lightPos.x < 0 ||
-    //    input.lightPos.y > 1 || input.lightPos.y < 0)
-    //    output.color.xyz = ambient;
-
-    //output.color = float4(input.normal.xyz, 1);
+    //DEBUG TEST TEMP
+    if (input.lightPos.x > 1 || input.lightPos.x < 0 ||
+        input.lightPos.y > 1 || input.lightPos.y < 0)
+        output.color.xyz = ambient;
 
         
-        output.color = float4(saturate((directionalDiffuse + color) * shadow + ambient), 1);
 
 
 	return output;
