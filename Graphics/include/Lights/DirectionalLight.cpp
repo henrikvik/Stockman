@@ -45,7 +45,9 @@ void DirectionalLight::update(ID3D11DeviceContext * context, Vector3 offset)
 	//a little bit temp, might be final
 	static float rotationDeg = 0;
 
-	rotationDeg += 0.01745 * 0.25;
+	//Enable to get the day noght solko
+	//rotationDeg += 0.01745 * 0.25;
+	rotationDeg = 3.14 * 0.25;
 
 	if (rotationDeg >= 3.14159265 * 2)
 		rotationDeg = 0;
