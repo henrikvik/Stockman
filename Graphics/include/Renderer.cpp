@@ -62,6 +62,11 @@ namespace Graphics
 		cull();
         writeInstanceData();
 
+		///SUPER ULTRA MEGA ÜBER ARCADE EDITION TEMP
+		lightDir.update(deviceContext, camera->getPos());
+		////
+
+
 		drawShadows();
 
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
