@@ -277,16 +277,16 @@ int Engine::run()
 
             Graphics::RenderInfo staticSphere = {
                 true, //bool render;
-                Graphics::ModelID::CUBE, //ModelID meshId;
+                Graphics::ModelID::SPHERE, //ModelID meshId;
                 0, //int materialId;
                 DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
             };
 
             //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
             //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
-            staticCube.translation *= DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 2 + cosf(totalTime * 0.001f),0 });
+            staticCube.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + cosf(totalTime * 0.001f),0 });
 
-            staticSphere.translation *= DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 2 + sinf(totalTime * 0.001f),0 });
+            staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + sinf(totalTime * 0.001f),0 });
 
             renderer->queueRender(&staticCube);
             renderer->queueRender(&staticSphere);
