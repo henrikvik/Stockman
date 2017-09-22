@@ -228,8 +228,6 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-	DirectX::SimpleMath::Vector2 midPoint = getWindowMidPoint();
-
 	m_camYaw	+= m_mouseSens * (ms->x);
 	m_camPitch	-= m_mouseSens * (ms->y);
 
@@ -264,16 +262,6 @@ void Player::render(Graphics::Renderer & renderer)
 
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
-}
-
-DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
-{
-	HWND hwnd = FindWindow(NULL, "Stort spel");
-
-	RECT rect;
-	GetWindowRect(hwnd, &rect);
-
-	return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
 }
 
 DirectX::SimpleMath::Vector3 Player::getForward()

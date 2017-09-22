@@ -7,7 +7,7 @@ namespace Logic
 {
 	struct GameTime
 	{
-		GameTime() : targetMod(1.f), currentMod(1.f), dt(0) { }
+		GameTime() : targetMod(1.f), currentMod(1.f), dt(0), dtReal(0), duration(-1) { }
 
 		void slowMotion(float modifier, float duration)
 		{
@@ -20,11 +20,11 @@ namespace Logic
 			dtReal = deltaTime;
 
 			// If slowdown effect is completed
-			if (duration < 0)	targetMod = 1.f;
-			else				duration -= deltaTime;
+//			if (duration < 0)	targetMod = 1.f;
+//			else				duration -= deltaTime;
 
 			// Easing the slowdown to the target
-			currentMod += (targetMod - currentMod) * GAME_TIME_EASING * deltaTime;
+//			currentMod += (targetMod - currentMod) * GAME_TIME_EASING * deltaTime;
 
 			// Changing the deltatime with the current modifier
 			dt = currentMod * deltaTime;

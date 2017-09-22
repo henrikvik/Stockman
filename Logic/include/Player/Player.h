@@ -77,8 +77,6 @@ namespace Logic
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
-		DirectX::SimpleMath::Vector2 getWindowMidPoint();
-
 	public:
 		Player(btRigidBody* body, btVector3 halfExtent);
 		~Player();
