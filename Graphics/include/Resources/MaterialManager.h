@@ -13,8 +13,8 @@ namespace Graphics
 		~MaterialManager();
 		void initialize(ID3D11Device* gDevice, ID3D11DeviceContext * gDeviceContext);
 		void release();
-		/*ID3D11ShaderResourceView* getMaterialInfo(ModelInfo modelInfo);
-*/
+		void getMaterialInfo(ModelInfo & modelInfo, int iD);
+
 		bool compareMaterials(importedMaterial* import, unsigned int materialID);
 		bool compareImportMaterials(importedMaterial* import);
 		void addMaterials(vector<importedMaterial>* import);

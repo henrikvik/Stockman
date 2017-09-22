@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <map>
 #include <Graphics\include\Datatypes.h>
 #include "Mesh.h"
 namespace Graphics
@@ -15,6 +16,7 @@ namespace Graphics
 		void release();
 
 		void addMesh(
+			int id,
 			bool hasSkeleton,
 			unsigned int skeletonID,
 			int materialID,
@@ -25,13 +27,15 @@ namespace Graphics
 			bool isScene
 		);
 
-		vector<Mesh>* GetMeshes() { return &this->gameMeshes; }
+		Mesh * getMesh(int id) { return gameMeshes[id]; }
+		vector<Mesh>* getMeshes() { return &meshes; }
 
 	private:
 		ID3D11Device *gDevice = nullptr;
 		ID3D11DeviceContext *gDeviceContext = nullptr;
 
-		vector<Mesh> gameMeshes;
+		map<int,Mesh*> gameMeshes;
+		vector<Mesh> meshes;
 		vector<Mesh> sceneMeshes;
 		Mesh mesh;
 

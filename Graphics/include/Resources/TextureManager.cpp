@@ -5,6 +5,7 @@ namespace Graphics
 {
 	TextureManager::TextureManager()
 	{
+
 	}
 
 	TextureManager::~TextureManager()
@@ -30,7 +31,7 @@ namespace Graphics
 	void TextureManager::initilize(ID3D11Device * gDevice)
 	{
 		this->gDevice = gDevice;
-		CoInitialize((LPVOID)0);
+		//CoInitialize((LPVOID)0);
 	}
 
 	void TextureManager::release()
@@ -293,7 +294,7 @@ namespace Graphics
 	{
 		ID3D11ShaderResourceView** texture = newd ID3D11ShaderResourceView*;
 
-		diffuseTex = (TEXTURE_PATH(L""), diffuseTex);
+		diffuseTex = TEXTURE_PATH_SIMPLE + diffuseTex;
 		wstring widestr = wstring(diffuseTex.begin(), diffuseTex.end());
 		const wchar_t* fileName = widestr.c_str();
 
@@ -307,7 +308,7 @@ namespace Graphics
 	{
 		ID3D11ShaderResourceView** texture = newd ID3D11ShaderResourceView*;
 
-		normalTex = (TEXTURE_PATH(L""), normalTex);
+		normalTex = TEXTURE_PATH_SIMPLE + normalTex;
 		wstring widestr = wstring(normalTex.begin(), normalTex.end());
 		const wchar_t* fileName = widestr.c_str();
 
@@ -321,7 +322,7 @@ namespace Graphics
 	{
 		ID3D11ShaderResourceView** texture = newd ID3D11ShaderResourceView*;
 
-		specularTex = (TEXTURE_PATH(L"Resources/Textures/"), specularTex);
+		specularTex = TEXTURE_PATH_SIMPLE + specularTex;
 		wstring widestr = wstring(specularTex.begin(), specularTex.end());
 		const wchar_t* fileName = widestr.c_str();
 
@@ -335,7 +336,7 @@ namespace Graphics
 	{
 		ID3D11ShaderResourceView** texture = newd ID3D11ShaderResourceView*;
 
-		glowTex = (TEXTURE_PATH(L"Resources/Textures/"), glowTex);
+		glowTex = TEXTURE_PATH_SIMPLE + glowTex;
 		wstring widestr = wstring(glowTex.begin(), glowTex.end());
 		const wchar_t* fileName = widestr.c_str();
 

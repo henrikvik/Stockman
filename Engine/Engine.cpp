@@ -270,7 +270,7 @@ int Engine::run()
             //////////////TEMP/////////////////
             Graphics::RenderInfo staticCube = {
                 true, //bool render;
-                Graphics::ModelID::CUBE, //ModelID meshId;
+                Graphics::ModelID::SPHERE, //ModelID meshId;
                 0, //int materialId;
                 DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
             };

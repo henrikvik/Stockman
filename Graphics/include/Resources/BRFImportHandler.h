@@ -18,7 +18,7 @@ namespace Graphics
 		BRFImportHandler();
 		~BRFImportHandler();
 
-		void loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene);
+		void loadFile(int id, string fileName, bool mesh, bool material, bool skeleton, bool isScene);
 
 		void initialize(MeshManager & meshManager, MaterialManager & materialManager);
 

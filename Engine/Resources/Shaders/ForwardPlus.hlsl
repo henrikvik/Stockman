@@ -72,6 +72,10 @@ StructuredBuffer<Light> Lights : register(t2);
 Texture2D shadowMap : register(t3);
 SamplerState Sampler : register(s0);
 
+Texture2D diffuseMap : register(t10);
+Texture2D normalMap : register(t11);
+Texture2D specularMap : register(t12);
+
 struct PSOutput {
 	float4 color : SV_Target;
 };
@@ -132,8 +136,8 @@ PSOutput PS(VSOutput input) {
         directionalDiffuse = 0;
     }
 
-
-    output.color = float4(saturate(directionalDiffuse + color + ambient), 1);
+	float3 textureColor = diffuseMap.Sample(Sampler, input.uv);
+    output.color = float4(saturate(directionalDiffuse + color + textureColor + ambient), 1);
     //output.color = float4(input.normal.xyz, 1);
 	return output;
 }

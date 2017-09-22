@@ -11,7 +11,7 @@ namespace Graphics
 		delete this->currentFile;
 	}
 
-	void BRFImportHandler::loadFile(string fileName, bool mesh, bool material, bool skeleton, bool isScene)
+	void BRFImportHandler::loadFile(int id, string fileName, bool mesh, bool material, bool skeleton, bool isScene)
 	{
 		this->currentFile->LoadFile(fileName, mesh, skeleton, material);
 
@@ -79,7 +79,7 @@ namespace Graphics
 			tempIndices.shrink_to_fit();
 
 
-			meshManager->addMesh(false, 0, 0, tempVertexCount, tempIndexCount, tempVertices, tempIndices, isScene);
+			meshManager->addMesh(id, false, 0, 0, tempVertexCount, tempIndexCount, tempVertices, tempIndices, isScene);
 
 
 		}
@@ -88,7 +88,7 @@ namespace Graphics
 
 #pragma region ImportMaterials
 		vector<importedMaterial> importedMaterials;
-		vector<Mesh>* meshes = meshManager->GetMeshes();
+		vector<Mesh>* meshes = meshManager->getMeshes();
 		unsigned int materialSize = currentFile->fetch->Main()->materialAmount;
 
 		for (unsigned int i = 0; i < materialSize; i++)

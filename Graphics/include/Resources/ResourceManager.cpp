@@ -19,25 +19,27 @@ namespace Graphics
 		materialManager.initialize(gDevice, gDeviceContext);
 		brfImporterHandler.initialize(meshManager, materialManager);
 
-		brfImporterHandler.loadFile(MODEL_PATH_STR("kubenmedtextur.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(CUBE, MODEL_PATH_STR("kubfixadtextur.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(SPHERE, MODEL_PATH_STR("sphere.brf"), true, true, false, false);
+
 		//brfImporterHandler.loadFile(MODEL_PATH_STR("kub2.brf"), true, true, false, false);
     }
 
     ModelInfo ResourceManager::getModelInfo(ModelID modelID)
     {
-        Mesh & mesh = meshManager.GetMeshes()->at(modelID);
+        Mesh * mesh = &meshManager.getMeshes()->at(modelID);
 
 
 		ModelInfo info = {
 
-			mesh.GetIndexCount(),
-			mesh.getIndexBuffer(),
-			mesh.getVertexBuffer(),
-			textureManager.GetDiffuseTexture(0),
-			textureManager.GetNormalTexture(0),
-			textureManager.GetSpecularTexture(0),
+			mesh->GetIndexCount(),
+			mesh->getIndexBuffer(),
+			mesh->getVertexBuffer()
 
         };
+
+		materialManager.getMaterialInfo(info, modelID);
+		
 
         return info;
     }
@@ -45,5 +47,6 @@ namespace Graphics
     void ResourceManager::release()
     {
         meshManager.release();
+		materialManager.release();
     }
 }

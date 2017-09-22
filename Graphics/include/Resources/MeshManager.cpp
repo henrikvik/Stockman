@@ -20,9 +20,9 @@ namespace Graphics
 
 	void MeshManager::release()
 	{
-		for (size_t i = 0; i < gameMeshes.size(); i++)
+		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			gameMeshes.at(i).Release();
+			meshes.at(i).Release();
 		}
 		for (size_t i = 0; i < sceneMeshes.size(); i++)
 		{
@@ -30,7 +30,7 @@ namespace Graphics
 		}
 	}
 
-	void MeshManager::addMesh(bool hasSkeleton, unsigned int skeletonID, int materialID, unsigned int vertexCount, UINT indexCount, vector<Vertex> vertices, vector<UINT> indices, bool isScene)
+	void MeshManager::addMesh(int id, bool hasSkeleton, unsigned int skeletonID, int materialID, unsigned int vertexCount, UINT indexCount, vector<Vertex> vertices, vector<UINT> indices, bool isScene)
 	{
 		Vertex* newVertices = new Vertex[vertexCount];
 		for (unsigned int i = 0; i < vertexCount; i++)
@@ -51,7 +51,8 @@ namespace Graphics
 			this->sceneMeshes.push_back(newMesh);
 		else
 		{
-			this->gameMeshes.push_back(newMesh);
+			meshes.push_back(newMesh);
+			this->gameMeshes.insert_or_assign(id, &meshes[meshes.size() - 1]);
 			delete[] newVertices;
 			delete[] newIndices;
 
