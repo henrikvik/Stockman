@@ -203,7 +203,7 @@ namespace Graphics
         deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
         ZeroMemory(SRVs, sizeof(SRVs));
-        deviceContext->PSSetShaderResources(0, 3, SRVs);
+        deviceContext->PSSetShaderResources(0, 4, SRVs);
 
 
         //temp
