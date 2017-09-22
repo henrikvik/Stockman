@@ -306,6 +306,7 @@ namespace Graphics
 
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+		ID3D11ShaderResourceView * modelTextures[3] = { nullptr };
         for (InstanceQueue_t::value_type & pair : instanceQueue)
         {
 #if USE_TEMP_CUBE
@@ -317,14 +318,19 @@ namespace Graphics
             ModelInfo model = resourceManager.getModelInfo(pair.first);
 
             buffers[0] = model.vertexBuffer;
+			modelTextures[0] = model.diffuseMap;
+			modelTextures[1] = model.normalMap;
+			modelTextures[2] = model.specularMap;
+
             deviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
             deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			deviceContext->PSSetShaderResources(10, 3, modelTextures);
 
             deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, readOffset);
             readOffset += (UINT)pair.second.size() * sizeof(InstanceData);
 #endif
         }
-
     }
 
     void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)

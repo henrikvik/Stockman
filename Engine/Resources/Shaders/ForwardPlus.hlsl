@@ -87,6 +87,10 @@ SamplerComparisonState cmpSampler : register(s1)
     ComparisonFunc = LESS_EQUAL;
 };
 
+Texture2D diffuseMap : register(t10);
+Texture2D normalMap : register(t11);
+Texture2D specularMap : register(t12);
+
 struct PSOutput {
 	float4 color : SV_Target;
 };
@@ -154,23 +158,20 @@ PSOutput PS(VSOutput input) {
         }
     }
 
-    //addedShadow += shadowMap.SampleCmp(cmpSampler, input.lightPos.xy, input.lightPos.z).r;
+	
 
 
     float shadow = addedShadow / 9;
     //////////////////////// END SHADOW /////////////////////////
 
-
-    output.color = float4(saturate((directionalDiffuse * shadow) + color + ambient), 1);
+    float3 textureColor = diffuseMap.Sample(Sampler, input.uv);
+    output.color = float4(saturate((directionalDiffuse * shadow) + textureColor + ambient), 1);
    
 
     //DEBUG TEST TEMP
     if (input.lightPos.x > 1 || input.lightPos.x < 0 ||
         input.lightPos.y > 1 || input.lightPos.y < 0)
         output.color.xyz = ambient;
-
-        
-
 
 	return output;
 }
