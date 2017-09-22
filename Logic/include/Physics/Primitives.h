@@ -8,9 +8,15 @@ namespace Logic
 		ShapeTypeCube,			
 		ShapeTypeSphere,
 		ShapeTypePlane,
-		ShapeTypeCylinder
+		ShapeTypeCylinder, 
+		ShapeTypeCapsule
 	};
 
+
+	////////////////////////////////////////////////////////////
+	// A simple ray
+	//	Needs to have both a start and end
+	////////////////////////////////////////////////////////////
 	class Ray
 	{
 	public:
@@ -26,16 +32,20 @@ namespace Logic
 			m_end = start + (forward * length);
 		}
 
-		const btVector3& getStart() 		{ return m_start;	}
-		const btVector3& getEnd()			{ return m_end;		}
-		void setStart(btVector3 start)		{ m_start = start;	}
-		void setEnd(btVector3 end)			{ m_end = end;		}
+		const	btVector3& getStart() 			{ return m_start;	}
+		const	btVector3& getEnd()				{ return m_end;		}
+		void	setStart(btVector3 start)		{ m_start = start;	}
+		void	setEnd(btVector3 end)			{ m_end = end;		}
 
 	private:
 		btVector3	m_start;
 		btVector3	m_end;
 	};
 
+	////////////////////////////////////////////////////////////
+	// Base shape primitive
+	//  No use on it's own
+	////////////////////////////////////////////////////////////
 	class Shape
 	{
 	public:
@@ -58,8 +68,10 @@ namespace Logic
 		btVector3	m_rotation;
 	};
 
-	/* *
-		Creates a 3D cube */
+
+	////////////////////////////////////////////////////////////
+	//	Creates a simple 3D cube 
+	////////////////////////////////////////////////////////////
 	class Cube : public Shape
 	{
 	public:
@@ -69,15 +81,17 @@ namespace Logic
 			m_shape = ShapeTypeCube;
 		}
 
-		void setDimensions(btVector3 dimensions) { m_dimensions = dimensions; }
-		btVector3 getDimensions() const { return m_dimensions; }
+		void		setDimensions(btVector3 dimensions) { m_dimensions = dimensions;	}
+		btVector3	getDimensions() const				{ return m_dimensions;			}
 
 	private:
 		btVector3	m_dimensions;
 	};
 
-	/* *  
-		Creates a 2D plane which is always infinite */
+	////////////////////////////////////////////////////////////
+	// Creates a 2D plane which is always infinite in every situation
+	//	Mostly used for testing 
+	////////////////////////////////////////////////////////////
 	class Plane : public Shape
 	{
 	public:
@@ -87,15 +101,16 @@ namespace Logic
 			m_normal = normal;
 		}
 
-		void setNormal(btVector3 normal)	{ m_normal = normal;	}
-		btVector3 getNormal() const			{ return m_normal;		}
+		void		setNormal(btVector3 normal)	{ m_normal = normal;	}
+		btVector3	getNormal() const			{ return m_normal;		}
 
 	private:
 		btVector3	m_normal;	//< Direction of the plane
 	};
 
-	/* *
-		Creates a 3D sphere */
+	////////////////////////////////////////////////////////////
+	// Creates a 3D sphere 
+	////////////////////////////////////////////////////////////
 	class Sphere : public Shape
 	{
 	public:
@@ -105,15 +120,17 @@ namespace Logic
 			m_shape = ShapeTypeSphere;
 		}
 
-		void setRadius(float radius)	{ m_radius = radius;	}
-		float getRadius() const			{ return m_radius;		}
+		void	setRadius(float radius)		{ m_radius = radius;	}
+		float	getRadius() const			{ return m_radius;		}
 
 	private:
 		float		m_radius;
 	};
 
-	/* *
-		Creates a 3D Cylinder centered around the origin, central axis around the y-axis */
+	////////////////////////////////////////////////////////////
+	// Creates a 3D Cylinder 
+	//  Centered around the origin, central axis around the y-axis
+	////////////////////////////////////////////////////////////
 	class Cylinder : public Shape
 	{
 	public:
@@ -123,10 +140,35 @@ namespace Logic
 			m_shape = ShapeTypeCylinder;
 		}
 
-		void setHeight(btVector3 halfExtends) { m_halfExtends = halfExtends; }
-		btVector3 getHalfExtends() const { return m_halfExtends; }
+		void setHeight(btVector3 halfExtends)	{ m_halfExtends = halfExtends;	}
+		btVector3 getHalfExtends() const		{ return m_halfExtends;			}
 
 	private:
 		btVector3 m_halfExtends;
+	};
+
+	////////////////////////////////////////////////////////////
+	// Creates a 3D Capsule
+	//  Capsule around the Y-Axis
+	//  Used for characters, it's hard to make a capsule to get stuck in rough areas
+	////////////////////////////////////////////////////////////
+	class Capsule : public Shape
+	{
+	public:
+		Capsule(btVector3 position, btVector3 rotation, float radius, float height)
+		: Shape(position, rotation) {
+			m_radius = radius;
+			m_height = height;
+			m_shape = ShapeTypeCapsule;
+		}
+
+		void	setRadius(float radius)		{ m_radius = radius;	}
+		void	setHeight(float height)		{ m_height = height;	}
+		float	getRadius() const			{ return m_radius;		}
+		float	getHeight() const			{ return m_height;		}
+
+	private:
+		float m_radius;
+		float m_height;
 	};
 }

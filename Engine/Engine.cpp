@@ -48,7 +48,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mWidth = width;
 	this->hInstance = hInstance;
 	this->initializeWindow();
-	this->initializeGame();
+	this->game.init();
 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
@@ -203,17 +203,6 @@ long long Engine::timer()
 		return GetTickCount();
 	}
 }
-
-bool Engine::initializeGame()
-{
-	bool result;
-
-	// Trying to start game
-	result = game.init();
-
-	return result;
-}
-
 
 int Engine::run()
 {

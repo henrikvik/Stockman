@@ -34,11 +34,27 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
 	m_projectileData	= projectileData;
+
+	/////////////////////////////////////////////////////////////
+	// Weapon model - These are the constant matrices that moves the 
+	//					model a bit to the right and down & rotates a bit
+
+	// Pointing the gun upwards
+	rotX = DirectX::SimpleMath::Matrix::CreateRotationX(20.f * (3.14 / 180));
+
+	// Tilting the gun to the middle
+	rotY = DirectX::SimpleMath::Matrix::CreateRotationY(10.f * (3.14 / 180));
+
+	// Moving the model down to the right
+	trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
+
+	// Scaling the model by making it thinner and longer
+	scale = DirectX::SimpleMath::Matrix::CreateScale(0.25f, 0.20f, 0.70f);
 }
 
 void Weapon::use(btVector3 position, float yaw, float pitch)
 {
-	// use weapon
+	// Use weapon
 	if (m_spreadH != 0 || m_spreadV != 0)	// Spread
 	{
 		for (int i = m_projectileCount; i--; )
@@ -76,17 +92,20 @@ btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 	return projectileDir;
 }
 
-void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation)
+void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
-//	DirectX::SimpleMath::Matrix pos;
-//	pos.
+	static DirectX::SimpleMath::Matrix camera, result, offset;
 
-//	DirectX::SimpleMath::Vector3 scale = playerTranslation.;
-//	scale.CreateScale(1, 1, 1);
+	// Making a camera matrix and then inverting it 
+	camera = DirectX::XMMatrixLookToRH({0, 0, 0}, playerForward, { 0, 1, 0 });
 
-//	DirectX::SimpleMath::Vector3 result = pos * scale * playerTranslation;
+	// Pushing the model forward in the current view direction
+	offset = (DirectX::SimpleMath::Matrix::CreateTranslation(playerTranslation.Translation() + playerForward * 0.25f));
 
-	this->setWorldTranslation(playerTranslation);
+	// Multiplying all the matrices into one
+	result = trans * rotX * rotY * scale * camera.Invert() * offset;
+
+	this->setWorldTranslation(result);
 }
 
 ProjectileData * Weapon::getProjectileData()

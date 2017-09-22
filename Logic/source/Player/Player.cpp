@@ -23,9 +23,14 @@ void Player::init(ProjectileManager* projectileManager)
 	m_camYaw = 90;
 	m_camPitch = 5;
 
+	m_playerState = PlayerState::STANDING;
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
-	m_moveSpeed = PLAYER_MOVEMENT_SPEED;
+	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
+	m_moveDir = btVector3(1, 1, 1);
+	m_moveSpeed = 0.f;
+	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
+	m_jumpSpeed = PLAYER_JUMP_SPEED;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -43,15 +48,19 @@ void Player::init(ProjectileManager* projectileManager)
 void Player::clear()
 {
 	m_weaponManager.clear();
-	m_skillManager.clear();
+	//m_skillManager.clear();
 }
 
 void Player::onCollision(Entity& other)
 {
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);
-	if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
+	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
 	{
 		printf("Enemy slapped you right in the face.\n");
+	}
+	else
+	{
+		m_playerState = PlayerState::STANDING; // TEMP
 	}
 }
 
@@ -72,10 +81,6 @@ void Player::readFromFile()
 
 void Player::updateSpecific(float deltaTime)
 {
-	// Update Managers
-	m_weaponManager.update(deltaTime, getTransformMatrix());
-	m_skillManager.update(deltaTime /* , getTransformMatrix() */ ); // The skills will also need the transform matrix to draw their models 
-
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
@@ -84,7 +89,8 @@ void Player::updateSpecific(float deltaTime)
 	// Movement
 	mouseMovement(deltaTime, &ms);
 	move(deltaTime, &ks);
-	jump(deltaTime);
+	if(ks.IsKeyDown(m_jump))
+		jump();
 	crouch(deltaTime);
 
 	// Weapon swap
@@ -110,67 +116,109 @@ void Player::updateSpecific(float deltaTime)
 		// Primary and secondary attack
 		if (!m_weaponManager.isAttacking())
 		{
+			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z) * 2.85f;
 			if ((ms.leftButton))
-				m_weaponManager.usePrimary(getPositionBT(), m_camYaw, m_camPitch);
+				m_weaponManager.usePrimary(pos, m_camYaw, m_camPitch);
 			else if (ms.rightButton)
-				m_weaponManager.useSecondary(getPositionBT(), m_camYaw, m_camPitch);
+				m_weaponManager.useSecondary(pos, m_camYaw, m_camPitch);
 		}
 
 		// Reload
 		if (ks.IsKeyDown(m_reloadWeapon))
 			m_weaponManager.reloadWeapon();
 	}
+
+	// Update weapon and skills
+	m_weaponManager.update(deltaTime);
+	m_skillManager.update(deltaTime);
+
+	m_weaponManager.setWeaponModel(getTransformMatrix(), m_forward);
+	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
 }
 
 void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 {
-	btRigidBody* rigidBody = getRigidbody();
+	bool nonePressed = true;
 
-	btVector3 linearVel = btVector3(0, 0, 0);
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
-		linearVel += -dir;
+		m_moveDir += -dir;
+		nonePressed = false;
 	}
 
 	// Move Right
 	if (ks->IsKeyDown(m_moveRight))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
-		linearVel += dir;
+		m_moveDir += dir;
+		nonePressed = false;
 	}
 
 	// Move Forward
 	if (ks->IsKeyDown(m_moveForward))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
-		linearVel += dir;
+		m_moveDir += dir;
+		nonePressed = false;
 	}
 
 	// Move Back
 	if (ks->IsKeyDown(m_moveBack))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
-		linearVel += -dir;
+		m_moveDir += -dir;
+		nonePressed = false;
 	}
 
+	m_moveDir *= 1000;
+	if (m_moveDir.getX() != 0.f || m_moveDir.getY() != 0.f || m_moveDir.getZ() != 0.f)
+		m_moveDir = btVector3(m_moveDir).normalize();
+
+	if (nonePressed)
+	{
+		float toBrake = m_acceleration * deltaTime;
+
+		if (m_moveSpeed < toBrake)
+			m_moveSpeed = 0.f;
+		else if(m_moveSpeed > toBrake)
+			m_moveSpeed -= toBrake;
+	}
+	else
+	{
+		m_moveSpeed += m_acceleration * deltaTime;
+		
+		if (m_moveSpeed > m_moveMaxSpeed)
+			m_moveSpeed = m_moveMaxSpeed;
+	}
+
+	btTransform transform;
+	getRigidbody()->getMotionState()->getWorldTransform(transform);
+	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + m_moveDir * m_moveSpeed);
+	getRigidbody()->getMotionState()->setWorldTransform(transform);
+
 	// Apply final force
-	rigidBody->setLinearVelocity(rigidBody->getLinearVelocity() + linearVel * deltaTime * m_moveSpeed);
+	//rigidBody->setLinearVelocity(rigidBody->getLinearVelocity() + linearVel * deltaTime * m_moveSpeed);
 
 	// Setting movement caps
-	btVector3 lv = rigidBody->getLinearVelocity();
+	/*btVector3 lv = rigidBody->getLinearVelocity();
 	float x = lv.getX(), y = lv.getY(), z = lv.getZ();
 	float hcap = PLAYER_MOVEMENT_HORIZONTAL_CAP;
 	float vcap = PLAYER_MOVEMENT_VERTICAL_CAP;
 	if (x > hcap || x < -hcap) rigidBody->setLinearVelocity(btVector3((x > 0) ? hcap : -hcap, y, z));
 	if (y > vcap || y < -vcap) rigidBody->setLinearVelocity(btVector3(x, (y > 0) ? vcap : -vcap, z));
-	if (z > hcap || z < -hcap) rigidBody->setLinearVelocity(btVector3(x, y, (z > 0) ? hcap : -hcap));
+	if (z > hcap || z < -hcap) rigidBody->setLinearVelocity(btVector3(x, y, (z > 0) ? hcap : -hcap));*/
 }
 
-void Player::jump(float deltaTime)
+void Player::jump()
 {
 	// jump
+	if (m_playerState != PlayerState::IN_AIR)
+	{
+		getRigidbody()->applyCentralImpulse(btVector3(0, m_jumpSpeed, 0));
+		m_playerState = PlayerState::IN_AIR;
+	}
 }
 
 void Player::crouch(float deltaTime)
@@ -180,8 +228,6 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-	DirectX::SimpleMath::Vector2 midPoint = getWindowMidPoint();
-
 	m_camYaw	+= m_mouseSens * (ms->x);
 	m_camPitch	-= m_mouseSens * (ms->y);
 
@@ -216,16 +262,6 @@ void Player::render(Graphics::Renderer & renderer)
 
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
-}
-
-DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
-{
-	HWND hwnd = FindWindow(NULL, "Stort spel");
-
-	RECT rect;
-	GetWindowRect(hwnd, &rect);
-
-	return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
 }
 
 DirectX::SimpleMath::Vector3 Player::getForward()

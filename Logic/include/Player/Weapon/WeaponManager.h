@@ -11,7 +11,6 @@
 
 #include <vector>
 #include <Player\Weapon\Weapon.h>
-#include <Misc\Enums.h>
 #include <Projectile\ProjectileManager.h>
 #include <Graphics\include\Structs.h>
 
@@ -29,8 +28,10 @@ namespace Logic
 
 		void init(ProjectileManager* projectileManager);
 		void clear();
-		void update(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation);
+		void update(float deltaTime);
 		void render(Graphics::Renderer& renderer);
+
+		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		void switchWeapon(int weaponID);
 		void usePrimary(btVector3 position, float yaw, float pitch);
@@ -42,6 +43,13 @@ namespace Logic
 		bool isReloading();
 
 	private:
+
+		enum ReloadingWeapon
+		{
+			IDLE,
+			ACTIVE,
+			DONE
+		};
 
 		void initializeWeapons();
 		void makeWeaponLoadout();
