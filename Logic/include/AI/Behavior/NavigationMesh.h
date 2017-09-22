@@ -22,6 +22,7 @@ namespace Logic
 			~NavigationMesh();
 
 			void createTestMesh();
+			void addTriangle(Triangle const &triangle);
 			const std::vector<Triangle>& getList() const;
 		private:
 			std::vector<Triangle> triangleList;
