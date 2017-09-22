@@ -7,7 +7,7 @@ using namespace DirectX::SimpleMath;
 DirectionalLight::DirectionalLight(ID3D11Device * device, int width, int height)
 {
 	pos = Vector4(0, 50, 0.5, 1);
-	dayColor = Vector3(0.4, 0.4, 0.3);
+	dayColor = Vector3(1, 1, 0.8);
 	sunDownColor = Vector3(2, 0.5, -1);
 	
 
@@ -88,7 +88,7 @@ void DirectionalLight::update(ID3D11DeviceContext * context, Vector3 offset)
 	shaderData.color.z = snap(shaderData.color.z, 0, 1);
 
 	//printf("R: %f G: %f B: %f\n", shaderData.color.x, shaderData.color.y, shaderData.color.z);
-	printf("%f\n", dayAmount);
+	//printf("%f\n", dayAmount);
 	
 	this->shaderData.pos = shaderData.pos + offset;
 	view = DirectX::XMMatrixLookAtRH(shaderData.pos, offset, Vector3(0, 1, 0));
