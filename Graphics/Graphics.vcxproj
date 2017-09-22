@@ -61,9 +61,10 @@
     <ClInclude Include="include\Resources\Shader.h" />
     <ClInclude Include="include\Resources\TextureManager.h" />
     <ClInclude Include="include\Structs.h" />
-    <ClInclude Include="include\StructuredBuffer.h" />
+    <ClInclude Include="include\Utility\StructuredBuffer.h" />
     <ClInclude Include="include\TempCube.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
+    <ClInclude Include="include\Utility\ConstantBuffer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
