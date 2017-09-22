@@ -66,7 +66,8 @@ namespace Logic
 		btRigidBody* createBody(Cube& cube, float mass, bool isSensor = false);
 		btRigidBody* createBody(Plane& plane, float mass, bool isSensor = false);
 		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor = false);
-		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false);
+		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false); // Currently a kinematic body, can't be used for other stuff than player
+		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);
 
 	private:
 		btCollisionDispatcher* dispatcher;

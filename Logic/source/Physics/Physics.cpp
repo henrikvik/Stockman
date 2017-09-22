@@ -177,7 +177,7 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 
 	// Specifics
 	body->setRestitution(0.0f);
-	body->setFriction(0.f);
+	body->setFriction(1.f);
 	body->setSleepingThresholds(0, 0);	
 	body->setDamping(0.f, 0.f);
 
@@ -211,6 +211,33 @@ btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isS
 	// Making the cylinder a kinematic body
 	body->setCollisionFlags(body->getCollisionFlags() | btRigidBody::CF_KINEMATIC_OBJECT);
 	body->setActivationState(DISABLE_DEACTIVATION);
+
+	// Adding body to the world
+	this->addRigidBody(body);
+
+	return body;
+}
+
+btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
+{
+	// Setting Motions state with position & rotation
+	btQuaternion rotation;
+	rotation.setEulerZYX(capsule.getRot().getZ(), capsule.getRot().getY(), capsule.getRot().getX());
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, capsule.getPos()));
+
+	// Creating the specific shape
+	btCollisionShape* shape = new btCapsuleShape(capsule.getRadius(), capsule.getHeight());
+
+	// Creating the actual body
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
+	btRigidBody* body = new btRigidBody(constructionInfo);
+	shape->setUserPointer(body);
+
+	// Specifics
+	body->setRestitution(0.0f);
+	body->setFriction(0.f);
+	body->setSleepingThresholds(0, 0);
+	body->setDamping(0.0f, 0.0f);
 
 	// Adding body to the world
 	this->addRigidBody(body);
