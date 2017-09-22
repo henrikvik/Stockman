@@ -5,18 +5,28 @@
 
 #define SHADOW_MAP_RESOLUTION 1024
 
+#define USE_TEMP_CUBE false
+#define ANIMATION_HIJACK_RENDER false
+
+
+#if USE_TEMP_CUBE
+#include "TempCube.h"
+#endif
+#if ANIMATION_HIJACK_RENDER
+#include "Animation\AnimatedTestCube.h"
+#endif
+
+
 namespace Graphics
 {
 
-
 	Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-		: simpleForward(gDevice, SHADER_PATH("SimpleForward.hlsl"), VERTEX_INSTANCE_DESC)
-		, forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_INSTANCE_DESC)
+		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
-		, lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
-		, cube(gDevice)
 		, lightDir(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
+        , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
+        , instanceOffsetBuffer(gDevice)
 	{
 		this->device = gDevice;
 		this->deviceContext = gDeviceContext;
@@ -26,13 +36,13 @@ namespace Graphics
 		createShadowMap();
 		initialize(gDevice, gDeviceContext);
 
-		viewPort = { 0 };
-		viewPort.Width = WIN_WIDTH;
-		viewPort.Height = WIN_HEIGHT;
-		viewPort.MaxDepth = 1.0f;
+        viewPort = { 0 };
+        viewPort.Width = WIN_WIDTH;
+        viewPort.Height = WIN_HEIGHT;
+        viewPort.MaxDepth = 1.0f;
 
-		states = new DirectX::CommonStates(device);
-		grid.initialize(camera, device, deviceContext, &resourceManager);
+        states = new DirectX::CommonStates(device);
+        grid.initialize(camera, device, deviceContext, &resourceManager);
     }
 
 
@@ -54,12 +64,53 @@ namespace Graphics
         resourceManager.initialize(gDevice, gDeviceContext);
     }
 
+    void Renderer::render(Camera * camera)
+    {
+#if ANIMATION_HIJACK_RENDER
 
-	float f = 59.42542;
+        renderQueue.clear();
+        static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
+        static UINT ticks = 0;
+        ticks++;
+        cam.updateLookAt({ 5 * sinf(ticks * 0.001f), 5 * cosf(ticks * 0.001f), 5 }, { 0,0,0 }, deviceContext);
 
-	void Renderer::render(Camera * camera)
-	{
-		cull();
+        ID3D11Buffer *cameraBuffer = cam.getBuffer();
+        deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
+        deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
+
+        static float clearColor[4] = { 0,0,0,1 };
+        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+
+        deviceContext->RSSetViewports(1, &viewPort);
+
+        static AnimatedTestCube testCube(device);
+        static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"), ANIMATED_VERTEX_DESC);
+
+        deviceContext->IASetInputLayout(testShader);
+        deviceContext->VSSetShader(testShader, nullptr, 0);
+        deviceContext->PSSetShader(testShader, nullptr, 0);
+
+        deviceContext->IASetVertexBuffers(0, 1, testCube, &testCube.stride, &testCube.offset);
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->RSSetState(states->CullNone());
+
+        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+
+        deviceContext->Draw(testCube.vertexCount, 0);
+
+        auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, testAnimation.getTotalDuration() * ((ticks % 1000) / 1000.f));
+
+        static StructuredBuffer<Matrix> jointBuffer(device, CpuAccess::Write, testSkeleton.getJointCount());
+        Matrix* bufferPtr = jointBuffer.map(deviceContext);
+        memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());
+        jointBuffer.unmap(deviceContext);
+
+        ID3D11ShaderResourceView * jointView = jointBuffer.getSRV();
+        deviceContext->VSSetShaderResources(0, 1, &jointView);
+
+#else
+        cull();
         writeInstanceData();
 
 		///SUPER ULTRA MEGA ÜBER ARCADE EDITION TEMP
@@ -73,9 +124,9 @@ namespace Graphics
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 
-		static float clearColor[4] = { 0,0,0,1 };
-		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+        static float clearColor[4] = { 0,0,0,1 };
+        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
@@ -85,42 +136,45 @@ namespace Graphics
         deviceContext->VSSetShader(forwardPlus, nullptr, 0);
 
         deviceContext->PSSetShader(nullptr, nullptr, 0);
-		deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
+        deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
         deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
-		
-		draw();
 
-		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+        draw();
 
-		f += 0.001f;
+        deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
-		auto lights = grid.getLights();
+    #pragma region Light Temp
+        static 	float f = 59.42542;
+        f += 0.001f;
 
-		Light *ptr = lights->map(deviceContext);
-		for (int i = 0; i < NUM_LIGHTS; i++) {
-			ptr[i].color = DirectX::SimpleMath::Vector3(
-				((unsigned char)(5 + i * 53 * i + 4)) / 255.f,
-				((unsigned char)(66 + i * 23 + 4)) / 255.f,
-				((unsigned char)(11 + i * 455 + 4)) / 255.f
-			);
-			ptr[i].positionWS = (ptr[i].color * 2 - DirectX::SimpleMath::Vector3(1.f)) * 2;
-			ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 8;
-			ptr[i].positionWS.y = 1.f;
-			ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 8;
+        auto lights = grid.getLights();
 
-			//ptr[i].positionWS = DirectX::SimpleMath::Vector3(0.f, 1.f, 1.f - 1 / 8.f - i / 4.f);
-			ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
-			ptr[i].range = i / 1.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
-			ptr[i].intensity = 1.f;
-		}
+        Light *ptr = lights->map(deviceContext);
+        for (int i = 0; i < NUM_LIGHTS; i++) {
+            ptr[i].color = DirectX::SimpleMath::Vector3(
+                ((unsigned char)(5 + i * 53 * i + 4)) / 255.f,
+                ((unsigned char)(66 + i * 23 + 4)) / 255.f,
+                ((unsigned char)(11 + i * 455 + 4)) / 255.f
+            );
+            ptr[i].positionWS = (ptr[i].color * 2 - DirectX::SimpleMath::Vector3(1.f)) * 2;
+            ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 8;
+            ptr[i].positionWS.y = 1.f;
+            ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 8;
 
-		lights->unmap(deviceContext);
+            //ptr[i].positionWS = DirectX::SimpleMath::Vector3(0.f, 1.f, 1.f - 1 / 8.f - i / 4.f);
+            ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
+            ptr[i].range = i / 1.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
+            ptr[i].intensity = 1.f;
+        }
 
-		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
+        lights->unmap(deviceContext);
+    #pragma endregion
+
+        grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 
         deviceContext->IASetInputLayout(forwardPlus);
         deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-        deviceContext->PSSetShader(forwardPlus, nullptr, 0);        
+        deviceContext->PSSetShader(forwardPlus, nullptr, 0);
 
 		ID3D11ShaderResourceView *SRVs[] = {
 			grid.getOpaqueIndexList()->getSRV(),
@@ -146,18 +200,44 @@ namespace Graphics
 		
 		draw();
 
-		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+        deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
-		ZeroMemory(SRVs, sizeof(SRVs));
-		deviceContext->PSSetShaderResources(0, 4, SRVs);
+        ZeroMemory(SRVs, sizeof(SRVs));
+        deviceContext->PSSetShaderResources(0, 3, SRVs);
 
-		deviceContext->RSSetState(states->CullCounterClockwise());
-		SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
-		if ((1 << 15) & tabKeyState)
-		{
-			this->drawToBackbuffer(grid.getDebugSRV());
-		}
-	}
+
+        //temp
+        //this->drawDeffered();
+        //this->drawToBackbuffer(gbuffer.positionView);
+        deviceContext->RSSetState(states->CullCounterClockwise());
+        SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
+        if ((1 << 15) & tabKeyState)
+        {
+            this->drawToBackbuffer(grid.getDebugSRV());
+        }
+        /*D3D11_BUFFER_DESC bufferDesc = { 0 };
+        bufferDesc.ByteWidth = sizeof(FSQuadVerts);
+        bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+        D3D11_SUBRESOURCE_DATA data = { 0 };
+        data.pSysMem = FSQuadVerts;
+
+        ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &FSQuad2));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("cat.jpg"), nullptr, &view));
+
+
+        bufferDesc.ByteWidth = sizeof(defferedTest);
+        bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+        data.pSysMem = defferedTest;
+
+
+        ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
+
+
+        this->spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext);*/
+#endif
+    }
 
 
     void Renderer::queueRender(RenderInfo * renderInfo)
@@ -169,16 +249,16 @@ namespace Graphics
     }
 
 
-	//void Graphics::Renderer::renderMenu(MenuInfo * info)
-	//{
-	//	this->spriteBatch->Begin();
-	//	for (size_t i = 0; i < info->m_buttons.size(); i++)
-	//	{
-	//		/*this->spriteBatch->Draw(info->m_buttons.at(i)->m_texture, info->m_buttons.at(i)->m_rek);*/
-	//	}
-	//	this->spriteBatch->End();
+    //void Graphics::Renderer::renderMenu(MenuInfo * info)
+    //{
+    //	this->spriteBatch->Begin();
+    //	for (size_t i = 0; i < info->m_buttons.size(); i++)
+    //	{
+    //		/*this->spriteBatch->Draw(info->m_buttons.at(i)->m_texture, info->m_buttons.at(i)->m_rek);*/
+    //	}
+    //	this->spriteBatch->End();
  //  
-	//}
+    //}
 
     void Renderer::createInstanceBuffer()
     {
@@ -220,37 +300,52 @@ namespace Graphics
         }
 
         deviceContext->Unmap(instanceBuffer, 0);
-    }
 
-	void Renderer::draw()
-	{
-        // draw all instanced meshes
-        UINT readOffset = 0;
-        UINT offsets[2] = { 0, 0 };
-        UINT strides[2] = { sizeof(Vertex), sizeof(InstanceData) };
-        ID3D11Buffer * buffers[2] = { nullptr, instanceBuffer };
-
-		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+        InstanceData* ptr = instanceSBuffer.map(deviceContext);
         for (InstanceQueue_t::value_type & pair : instanceQueue)
         {
-#if false
-            ModelInfo model = resourceManager.getModelInfo(pair.first);
+            void * data = pair.second.data();
+            size_t size = pair.second.size() * sizeof(InstanceData);
+            memcpy(ptr, data, size);
+            ptr = (InstanceData*)((char*)ptr + size);
+        }
+        instanceSBuffer.unmap(deviceContext);
+    }
 
-            buffers[0] = model.vertexBuffer;
-            deviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
-            deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+    void Renderer::draw()
+    {
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->VSSetConstantBuffers(3, 1, instanceOffsetBuffer);
+        deviceContext->VSSetShaderResources(20, 1, instanceSBuffer);
 
-            deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, readOffset);
-            readOffset += (UINT)pair.second.size() * sizeof(InstanceData);
-#else
-            buffers[0] = cube.vertexBuffer;
+
+        UINT instanceOffset = 0;
+        for (InstanceQueue_t::value_type & pair : instanceQueue)
+        {
+            instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(UINT));
+            instanceOffset += pair.second.size();
+
+#if USE_TEMP_CUBE
+            static TempCube tempCube(device);
+            buffers[0] = tempCube.vertexBuffer;
             deviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
             deviceContext->DrawInstanced(36, (UINT)pair.second.size(), 0, 0);
+#else
+            ModelInfo model = resourceManager.getModelInfo(pair.first);
+
+            static UINT stride = sizeof(Vertex), offset = 0;
+            deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
+            deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+            static ID3D11ShaderResourceView * modelTextures[3] = { nullptr };
+            modelTextures[0] = model.diffuseMap;
+            modelTextures[1] = model.normalMap;
+            modelTextures[2] = model.specularMap;
+            deviceContext->PSSetShaderResources(10, 3, modelTextures);
+
+            deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, 0);
 #endif
-
         }
-
     }
 
     void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)

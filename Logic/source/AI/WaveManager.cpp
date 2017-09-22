@@ -13,7 +13,7 @@ WaveManager::~WaveManager()
 std::vector<int> Logic::WaveManager::getEnemies(int waveId)
 {
 	std::vector<int> enemies;
-	enemies.resize(2);
+	enemies.resize(20);
 	return enemies;
 }
 

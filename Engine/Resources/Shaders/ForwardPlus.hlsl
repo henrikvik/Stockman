@@ -26,6 +26,15 @@ cbuffer LightMatBuffer : register(b2)
     float4x4 lightVP;
 }
 
+struct InstanceData
+{
+    float4x4 world;
+};
+StructuredBuffer<InstanceData> instanceData : register(t20);
+cbuffer InstanceOffsetBuffer : register(b3)
+{
+    uint instanceOffset;
+}
 
 struct Light {
 	float4 positionVS;
@@ -42,9 +51,6 @@ struct VSInput
 	float2 uv : UV;
 	float2 biTangent : BITANGENT;
 	float2 tangent : TANGENT;
-
-	// INSTANCE DATA
-	float4x4 world : WORLD;
 };
 
 struct VSOutput {
@@ -55,14 +61,16 @@ struct VSOutput {
 	float2 uv : UV;
 };
 
-VSOutput VS(VSInput input) {
+VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
 	VSOutput output;
 
-	output.worldPos = mul(input.world, float4(input.position, 1));
+    float4x4 world = instanceData[instanceOffset + instanceId].world;
+
+	output.worldPos = mul(world, float4(input.position, 1));
     output.pos = mul(ViewProjection, output.worldPos);
 
 	output.uv = input.uv;
-    output.normal = mul(input.world, float4(input.normal, 0));
+    output.normal = mul(world, float4(input.normal, 0));
     output.normal = normalize(output.normal);
 
     output.lightPos = output.worldPos + float4(output.normal * 0.18f, 0);
@@ -88,6 +96,10 @@ SamplerComparisonState cmpSampler : register(s1)
    // sampler comparison state
     ComparisonFunc = LESS_EQUAL;
 };
+
+Texture2D diffuseMap : register(t10);
+Texture2D normalMap : register(t11);
+Texture2D specularMap : register(t12);
 
 struct PSOutput {
 	float4 color : SV_Target;
@@ -171,9 +183,32 @@ PSOutput PS(VSOutput input) {
     //////////////////////////////POINT LIGHTS END//////////////////////////////////////////////
 
 
+     /////////////////////////////SHADOWS//////////////////////////////
+    input.lightPos.x = (input.lightPos.x * 0.5f) + 0.5f;
+    input.lightPos.y = (input.lightPos.y * -0.5f) + 0.5f;
+
+    float addedShadow = 0;
+
+    int samples = 1;
+
+    for (int y = -samples; y <= samples; y += 1)
+    {
+        for (int x = -samples; x <= samples; x += 1)
+        {
+            addedShadow += shadowMap.SampleCmp(cmpSampler, input.lightPos.xy, input.lightPos.z, int2(x, y)).r;
+        }
+    }
+
+	
+
+
+    float shadow = addedShadow / 9;
+    //////////////////////// END SHADOW /////////////////////////
 
 
     output.color = float4(saturate(directionalComponent + pointLightComponent + ambient), 1);
+    float3 textureColor = diffuseMap.Sample(Sampler, input.uv);
+    output.color = float4(saturate((directionalDiffuse * shadow) + textureColor + ambient), 1);
    
 
     //DEBUG TEST TEMP

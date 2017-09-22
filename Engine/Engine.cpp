@@ -48,7 +48,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mWidth = width;
 	this->hInstance = hInstance;
 	this->initializeWindow();
-	this->initializeGame();
+	this->game.init();
 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
@@ -204,17 +204,6 @@ long long Engine::timer()
 	}
 }
 
-bool Engine::initializeGame()
-{
-	bool result;
-
-	// Trying to start game
-	result = game.init();
-
-	return result;
-}
-
-
 int Engine::run()
 {
 	MSG msg = { 0 };
@@ -272,15 +261,24 @@ int Engine::run()
                 true, //bool render;
                 Graphics::ModelID::CUBE, //ModelID meshId;
                 0, //int materialId;
+                DirectX::SimpleMath::Matrix()// DirectX::SimpleMath::Matrix translation;
+            };
+
+            Graphics::RenderInfo staticSphere = {
+                true, //bool render;
+                Graphics::ModelID::SPHERE, //ModelID meshId;
+                0, //int materialId;
                 DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
             };
 
             //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
             //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
-			//staticCube.translation *= DirectX::SimpleMath::Matrix::CreateTranslation({ 1 + sinf(totalTime * 0.00001f),2 + cosf(totalTime * 0.00001f),0 });
-			staticCube.translation *= DirectX::SimpleMath::Matrix::CreateFromAxisAngle({ 0.1f, 0.5f, 1.f }, totalTime*0.001f);
+            staticCube.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + cosf(totalTime * 0.001f),0 });
+
+            staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + sinf(totalTime * 0.001f),0 });
 
             renderer->queueRender(&staticCube);
+            renderer->queueRender(&staticSphere);
             ///////////////////////////////////
 
 
