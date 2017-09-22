@@ -2,13 +2,16 @@
 #include <stdio.h>
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
-#include "TempCube.h"
 
 #define SHADOW_MAP_RESOLUTION 1024
 
-#define USE_TEMP_CUBE true
+#define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
 
+
+#if USE_TEMP_CUBE
+#include "TempCube.h"
+#endif
 #if ANIMATION_HIJACK_RENDER
 #include "Animation\AnimatedTestCube.h"
 #endif
@@ -126,7 +129,7 @@ namespace Graphics
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
-		deviceContext->RSSetState(states->CullCounterClockwise());
+		deviceContext->RSSetState(states->Wireframe());
 
         deviceContext->IASetInputLayout(forwardPlus);
         deviceContext->VSSetShader(forwardPlus, nullptr, 0);
