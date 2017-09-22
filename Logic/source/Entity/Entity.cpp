@@ -8,6 +8,9 @@ Entity::Entity(btRigidBody* body, btVector3 halfextent)
 	m_body->setUserPointer(this);
 	m_transform = &m_body->getWorldTransform();
 	m_halfextent = halfextent;
+
+	// For non moving object, that doesn't update loop
+	updateGraphics();
 }
 
 Entity::~Entity() 

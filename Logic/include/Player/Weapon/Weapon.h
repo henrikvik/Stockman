@@ -21,6 +21,7 @@ namespace Logic
 	class Weapon : public Object
 	{
 	private:
+		DirectX::SimpleMath::Matrix rotX, rotY, trans, scale;
 		ProjectileManager* m_projectileManager;
 		ProjectileData m_projectileData;
 		int m_weaponID;

@@ -31,7 +31,7 @@ bool Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	btVector3 halfextent(0.5, 3.0, 0.5);
+	btVector3 halfextent(1.5f, 3.0f, 1.5f);
 	m_player = new Player(m_physics->createBody(Cylinder({ 0, 5, 0 }, { 0, 0, 0 }, halfextent), 0.f, false), halfextent);
 	m_player->init(m_projectileManager);
 

@@ -20,7 +20,7 @@ bool Physics::init()
 {
 	// World gravity
 	this->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
-	this->setLatencyMotionStateInterpolation(true);
+	this->setLatencyMotionStateInterpolation(false);
 
 	return true;
 }
@@ -57,7 +57,7 @@ void Physics::update(float deltaTime)
 	// Calculate the time since last call and tell bulletphysics
 	begin = std::chrono::steady_clock::now();
 	float microsec = std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() * 0.000001;
-	this->stepSimulation(microsec, 13);
+	this->stepSimulation(microsec, 16);
 	end = std::chrono::steady_clock::now();
 	
 	// Collisions
