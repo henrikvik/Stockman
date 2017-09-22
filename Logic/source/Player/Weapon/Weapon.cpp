@@ -78,11 +78,28 @@ btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 
 void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
-	playerForward.Normalize();
+	DirectX::SimpleMath::Matrix rotX, rotY, trans, scale, camera, result, offset;
 
-	DirectX::SimpleMath::Matrix camera = DirectX::XMMatrixLookToRH({0, 0, 0}, playerForward, { 0, 1, 0 });
-	DirectX::SimpleMath::Vector3 offset = playerTranslation.Translation() + playerForward * 3.f;
-	DirectX::SimpleMath::Matrix result = camera.Invert() * DirectX::SimpleMath::Matrix::CreateTranslation(offset);
+	// Making a camera matrix and then inverting it 
+	camera = DirectX::XMMatrixLookToRH({0, 0, 0}, playerForward, { 0, 1, 0 });
+
+	// Pushing the model forward in the current view direction
+	offset = DirectX::SimpleMath::Matrix::CreateTranslation(playerTranslation.Translation() + playerForward * 0.25f);
+
+	// Pointing the gun upwards
+	rotX = DirectX::SimpleMath::Matrix::CreateRotationX(20.f * (3.14 / 180));
+
+	// Tilting the gun to the middle
+	rotY = DirectX::SimpleMath::Matrix::CreateRotationY(10.f * (3.14 / 180));
+
+	// Moving the model down to the right
+	trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
+
+	// Scaling the model by making it thinner and longer
+	scale = DirectX::SimpleMath::Matrix::CreateScale(0.25f, 0.20f, 0.70f);
+
+	// Multiplying all the matrices into one
+	result = trans * rotX * rotY * scale * camera.Invert() * offset;
 
 	this->setWorldTranslation(result);
 }

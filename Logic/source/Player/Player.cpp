@@ -116,10 +116,11 @@ void Player::updateSpecific(float deltaTime)
 		// Primary and secondary attack
 		if (!m_weaponManager.isAttacking())
 		{
+			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z) * 2.85f;
 			if ((ms.leftButton))
-				m_weaponManager.usePrimary(getPositionBT(), m_camYaw, m_camPitch);
+				m_weaponManager.usePrimary(pos, m_camYaw, m_camPitch);
 			else if (ms.rightButton)
-				m_weaponManager.useSecondary(getPositionBT(), m_camYaw, m_camPitch);
+				m_weaponManager.useSecondary(pos, m_camYaw, m_camPitch);
 		}
 
 		// Reload
@@ -262,7 +263,7 @@ void Player::render(Graphics::Renderer & renderer)
 	Object::render(renderer);
 
 	// Drawing the weapon model
-//	m_weaponManager.render(renderer);
+	m_weaponManager.render(renderer);
 }
 
 DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
