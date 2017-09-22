@@ -10,9 +10,9 @@ JointTransform::~JointTransform()
 {
 }
 
-Matrix JointTransform::interpolateTo(JointTransform const & jointTransform, float progress) const
+Matrix JointTransform::interpolateTo(JointTransform const &other, float progress) const
 {
-    return Matrix::CreateTranslation(
-        Vector3::Lerp(position, jointTransform.position, progress)
-    );
+    Matrix r = Matrix::CreateFromQuaternion(Quaternion::Slerp(rotation, other.rotation, progress));
+    Matrix p = Matrix::CreateTranslation(Vector3::Lerp(position, other.position, progress));
+    return r * p;
 }

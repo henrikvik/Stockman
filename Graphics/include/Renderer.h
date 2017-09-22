@@ -38,8 +38,6 @@ namespace Graphics
         Shader fullscreenQuad;
         Shader simpleForward;
         Shader forwardPlus;
-        ComputeShader lightGridCull;
-        //ComputeShader lightGridGen; 
 
         ResourceManager resourceManager;
         D3D11_VIEWPORT viewPort;

@@ -14,10 +14,10 @@ Skeleton::~Skeleton()
 }
 
 std::vector<Matrix> Skeleton::getJointTransforms(Animation & animation, float duration)
-{
-    auto keyFrames = animation.getKeyFrames(duration);
+{   auto keyFrames = animation.getKeyFrames(duration);
     float first = keyFrames.first.getTimeStamp();
     float second = keyFrames.second.getTimeStamp();
+
     float progress = (duration - first) / (second - first + 0.001f);
 
     printf("%f, %f -> %f\n", duration, first, second);
