@@ -21,11 +21,12 @@ namespace Graphics
 {
 
 	Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-		: simpleForward(gDevice, SHADER_PATH("SimpleForward.hlsl"), VERTEX_INSTANCE_DESC)
-		, forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_INSTANCE_DESC)
+		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
 		, lightDir(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
+        , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
+        , instanceOffsetBuffer(gDevice)
 	{
 		this->device = gDevice;
 		this->deviceContext = gDeviceContext;
@@ -129,7 +130,7 @@ namespace Graphics
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
-		deviceContext->RSSetState(states->Wireframe());
+		deviceContext->RSSetState(states->CullCounterClockwise());
 
         deviceContext->IASetInputLayout(forwardPlus);
         deviceContext->VSSetShader(forwardPlus, nullptr, 0);
@@ -142,6 +143,7 @@ namespace Graphics
 
         deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
+    #pragma region Light Temp
         static 	float f = 59.42542;
         f += 0.001f;
 
@@ -166,6 +168,7 @@ namespace Graphics
         }
 
         lights->unmap(deviceContext);
+    #pragma endregion
 
         grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 
@@ -297,21 +300,31 @@ namespace Graphics
         }
 
         deviceContext->Unmap(instanceBuffer, 0);
+
+        InstanceData* ptr = instanceSBuffer.map(deviceContext);
+        for (InstanceQueue_t::value_type & pair : instanceQueue)
+        {
+            void * data = pair.second.data();
+            size_t size = pair.second.size() * sizeof(InstanceData);
+            memcpy(ptr, data, size);
+            ptr = (InstanceData*)((char*)ptr + size);
+        }
+        instanceSBuffer.unmap(deviceContext);
     }
 
     void Renderer::draw()
     {
-        // draw all instanced meshes
-        UINT readOffset = 0;
-        UINT offsets[2] = { 0, 0 };
-        UINT strides[2] = { sizeof(Vertex), sizeof(InstanceData) };
-        ID3D11Buffer * buffers[2] = { nullptr, instanceBuffer };
-
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->VSSetConstantBuffers(3, 1, instanceOffsetBuffer);
+        deviceContext->VSSetShaderResources(20, 1, instanceSBuffer);
 
-		ID3D11ShaderResourceView * modelTextures[3] = { nullptr };
+
+        UINT instanceOffset = 0;
         for (InstanceQueue_t::value_type & pair : instanceQueue)
         {
+            instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(UINT));
+            instanceOffset += pair.second.size();
+
 #if USE_TEMP_CUBE
             static TempCube tempCube(device);
             buffers[0] = tempCube.vertexBuffer;
@@ -320,18 +333,17 @@ namespace Graphics
 #else
             ModelInfo model = resourceManager.getModelInfo(pair.first);
 
-            buffers[0] = model.vertexBuffer;
-			modelTextures[0] = model.diffuseMap;
-			modelTextures[1] = model.normalMap;
-			modelTextures[2] = model.specularMap;
-
-            deviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+            static UINT stride = sizeof(Vertex), offset = 0;
+            deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
             deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-			deviceContext->PSSetShaderResources(10, 3, modelTextures);
+            static ID3D11ShaderResourceView * modelTextures[3] = { nullptr };
+            modelTextures[0] = model.diffuseMap;
+            modelTextures[1] = model.normalMap;
+            modelTextures[2] = model.specularMap;
+            deviceContext->PSSetShaderResources(10, 3, modelTextures);
 
-            deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, readOffset);
-            readOffset += (UINT)pair.second.size() * sizeof(InstanceData);
+            deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, 0);
 #endif
         }
     }

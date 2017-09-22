@@ -24,6 +24,15 @@ cbuffer LightMatBuffer : register(b2)
     float4x4 lightVP;
 }
 
+struct InstanceData
+{
+    float4x4 world;
+};
+StructuredBuffer<InstanceData> instanceData : register(t20);
+cbuffer InstanceOffsetBuffer : register(b3)
+{
+    uint instanceOffset;
+}
 
 struct Light {
 	float4 positionVS;
@@ -40,9 +49,6 @@ struct VSInput
 	float2 uv : UV;
 	float2 biTangent : BITANGENT;
 	float2 tangent : TANGENT;
-
-	// INSTANCE DATA
-	float4x4 world : WORLD;
 };
 
 struct VSOutput {
@@ -53,14 +59,16 @@ struct VSOutput {
 	float2 uv : UV;
 };
 
-VSOutput VS(VSInput input) {
+VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
 	VSOutput output;
 
-	output.worldPos = mul(input.world, float4(input.position, 1));
+    float4x4 world = instanceData[instanceOffset + instanceId].world;
+
+	output.worldPos = mul(world, float4(input.position, 1));
     output.pos = mul(ViewProjection, output.worldPos);
 
 	output.uv = input.uv;
-    output.normal = mul(input.world, float4(input.normal, 0));
+    output.normal = mul(world, float4(input.normal, 0));
     output.normal = normalize(output.normal);
 
     output.lightPos = output.worldPos + float4(output.normal * 0.18f, 0);
@@ -173,5 +181,7 @@ PSOutput PS(VSOutput input) {
         input.lightPos.y > 1 || input.lightPos.y < 0)
         output.color.xyz = ambient;
 
+
+    //output.color = float4(0.1, 0.5, 0.9, 1);
 	return output;
 }
