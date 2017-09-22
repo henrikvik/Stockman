@@ -12,23 +12,39 @@ template<typename T>
 class StructuredBuffer
 {
 public:
+#pragma region Constructors/Destructors
     StructuredBuffer(ID3D11Device *device, CpuAccess access, size_t count, T* ptr = nullptr);
     ~StructuredBuffer();
+#pragma endregion
 
+#pragma region Public Functions
+    void CopyTo(ID3D11DeviceContext *cxt, StructuredBuffer<T> *other);
+    T* map(ID3D11DeviceContext *cxt);
+    void unmap(ID3D11DeviceContext *cxt);
+#pragma endregion
+
+#pragma region Getters and Setters
     inline ID3D11Buffer *getBuffer() const { return m_Buffer; }
     inline ID3D11ShaderResourceView *getSRV() const { return m_SRV; }
     inline ID3D11UnorderedAccessView *getUAV() const { return m_UAV; }
+#pragma endregion
 
-    void CopyTo(ID3D11DeviceContext *cxt, StructuredBuffer<T> *other);
+#pragma region Implicit Conversion Operators
+    operator ID3D11Buffer*()               { return m_Buffer;  }
+    operator ID3D11Buffer**()              { return &m_Buffer; }
+    operator ID3D11ShaderResourceView*()   { return m_SRV;     }
+    operator ID3D11ShaderResourceView**()  { return &m_SRV;    }
+    operator ID3D11UnorderedAccessView*()  { return m_UAV;     }
+    operator ID3D11UnorderedAccessView**() { return &m_UAV;    }
+#pragma endregion
 
-    T* map(ID3D11DeviceContext *cxt);
-    void unmap(ID3D11DeviceContext *cxt);
 private:
     ID3D11Buffer              *m_Buffer;
     ID3D11ShaderResourceView  *m_SRV;
     ID3D11UnorderedAccessView *m_UAV;
 };
 
+#pragma region Constructors/Destructors
 template<typename T>
 inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess access, size_t count, T * ptr)
 {
@@ -93,7 +109,9 @@ inline StructuredBuffer<T>::~StructuredBuffer() {
     SAFE_RELEASE(m_UAV);
     SAFE_RELEASE(m_SRV);
 }
+#pragma endregion
 
+#pragma region Public Functions
 template<typename T>
 inline void StructuredBuffer<T>::CopyTo(ID3D11DeviceContext * cxt, StructuredBuffer<T>* other) {
     cxt->CopyResource(other->getBuffer(), this->getBuffer());
@@ -111,3 +129,4 @@ template<typename T>
 inline void StructuredBuffer<T>::unmap(ID3D11DeviceContext * cxt) {
     cxt->Unmap(m_Buffer, 0);
 }
+#pragma endregion
