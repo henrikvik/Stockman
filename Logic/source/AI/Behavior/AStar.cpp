@@ -13,7 +13,7 @@ AStar::~AStar()
 
 AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 {
-	return Node();
+	return { 0, target.getPositionBT() };
 }
 
 void AStar::generateNodesFromFile()

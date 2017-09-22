@@ -1,4 +1,5 @@
 #include "AI/EnemyTest.h"
+#include <AI\Behavior\AttackBehavior.h>
 using namespace Logic;
 
 EnemyTest::EnemyTest(btRigidBody* body, btVector3 halfExtent)
@@ -36,7 +37,7 @@ void EnemyTest::onCollision(Player& other)
 
 void EnemyTest::updateSpecific(Player const &player, float deltaTime)
 {
-	btVector3 dir = player.getPositionBT() - getPositionBT();
+	btVector3 dir = AStar::singleton().getNextNode(*this, player).position - getPositionBT();
 	dir = dir.normalize();
 	dir *= deltaTime / 1000.f;
 	dir *= 15;

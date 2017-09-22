@@ -3,8 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <d3d11.h>
-#include <SimpleMath.h>
 #include "NavigationMesh.h"
 
 #include <Entity\Entity.h>
@@ -15,9 +13,16 @@ namespace Logic
 	{
 		public:
 			struct Node {
-				DirectX::SimpleMath::Vector3 position;
 				int triangleID;
+				btVector3 position;
 			};
+
+			// singleton for the moment
+			static AStar& singleton()
+			{
+				static AStar aStar("");
+				return aStar;
+			}
 		private:
 			std::string file;
 			std::vector<Node> nodes; //testing
