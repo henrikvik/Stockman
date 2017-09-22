@@ -13,13 +13,15 @@
 #include "Animation\AnimatedTestCube.h"
 #endif
 
+
+namespace Graphics
+{
+
 	Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
 		: simpleForward(gDevice, SHADER_PATH("SimpleForward.hlsl"), VERTEX_INSTANCE_DESC)
 		, forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_INSTANCE_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
-		, lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
-		, cube(gDevice)
 		, lightDir(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
 	{
 		this->device = gDevice;
