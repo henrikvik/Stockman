@@ -11,8 +11,6 @@ namespace Logic
 	{
 	public:
 		Object();
-		Object(const Object& other) = delete;
-		Object* operator=(const Object& other) = delete;
 		virtual ~Object();
 
 		void setWorldTranslation(DirectX::SimpleMath::Matrix translation);

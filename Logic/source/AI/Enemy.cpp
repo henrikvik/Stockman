@@ -1,8 +1,8 @@
 #include <AI\Enemy.h>
 using namespace Logic;
 
-Enemy::Enemy(btRigidBody* body, float health, float baseDamage, int enemyType, int animationId)
-: Entity(body)
+Enemy::Enemy(btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, int enemyType, int animationId)
+: Entity(body, halfExtent)
 {
 	m_health = health;
 	m_baseDamage = baseDamage;
@@ -15,8 +15,9 @@ Enemy::~Enemy() {
 
 }
 
-void Enemy::update(float deltaTime) {
-	updateSpecific(deltaTime);
+void Enemy::update(Player const &player, float deltaTime) {
+	Entity::update(deltaTime);
+	updateSpecific(player, deltaTime);
 }
 
 void Enemy::damage(float damage)

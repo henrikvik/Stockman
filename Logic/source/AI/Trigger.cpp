@@ -1,8 +1,8 @@
 #include <AI/Trigger.h>
 using namespace Logic;
 
-Trigger::Trigger(btRigidBody* body, float cooldown)
-: Entity(body)
+Trigger::Trigger(btRigidBody* body, btVector3 halfExtent, float cooldown)
+: Entity(body, halfExtent)
 {
 	m_cooldown = cooldown;
 }

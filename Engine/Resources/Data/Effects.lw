@@ -1,5 +1,5 @@
 { // ON FIRE
-	"flags": 2; // 0x2
+	"flags": 0; // 0x2
 	"duration": 3000f;
 	"modifiers": 0;
 	"specifics": 1;

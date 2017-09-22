@@ -24,11 +24,13 @@ namespace Logic
 	class MenuMachine
 	{
 	private:
+
 		std::map<GameState, MenuState*> m_menuStates;
 		bool pressed;
 		MenuState* currentActiveMenu;
 		GameState currentActiveState;
 	public:
+
 		MenuMachine();
 		~MenuMachine();
 		void initialize(GameState state);					//< Load menu layout from file

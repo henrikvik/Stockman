@@ -16,23 +16,64 @@ Weapon::Weapon()
 	m_reloadTime		= -1;
 }
 
-Weapon::Weapon(int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime)
+Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+	int spreadH, int spreadV, float damage, float attackRate, float freeze, float reloadTime)
 {
+	m_projectileManager = projectileManager;
 	m_weaponID			= weaponID;
 	m_ammoCap			= ammoCap;
 	m_ammo				= ammo;
 	m_magSize			= magSize;
 	m_magAmmo			= magAmmo;
 	m_ammoConsumption	= ammoConsumption;
+	m_projectileCount	= projectileCount;
+	m_spreadH			= spreadH;
+	m_spreadV			= spreadV;
 	m_damage			= damage;
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
+	m_projectileData	= projectileData;
 }
 
-void Weapon::use()
+void Weapon::use(btVector3 position, float yaw, float pitch)
 {
 	// use weapon
+	if (m_spreadH != 0 || m_spreadV != 0)	// Spread
+	{
+		for (int i = m_projectileCount; i--; )
+		{
+			btVector3 projectileDir = calcSpread(yaw, pitch);
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
+		}
+	}
+	else									// No spread
+	{
+		for (int i = m_projectileCount; i--; )
+		{
+			btVector3 projectileDir;
+			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
+			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
+			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
+		}
+	}
+}
+
+btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
+{
+	int rsh = (rand() % (2 * m_spreadH)) - m_spreadH;
+	int rsv = (rand() % (2 * m_spreadV)) - m_spreadV;
+
+	yaw += rsh;
+	pitch += rsv;
+
+	btVector3 projectileDir;
+	projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
+	projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
+	projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
+
+	return projectileDir;
 }
 
 void Weapon::update()
@@ -40,23 +81,28 @@ void Weapon::update()
 
 }
 
-int Logic::Weapon::getAmmoCap() { return m_ammoCap; }
+ProjectileData * Weapon::getProjectileData()
+{
+	return &m_projectileData;
+}
 
-void Logic::Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
+int Weapon::getAmmoCap() { return m_ammoCap; }
 
-int Logic::Weapon::getAmmo() { return m_ammo; }
+void Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
 
-void Logic::Weapon::setAmmo(int ammo) { m_ammo = ammo; }
+int Weapon::getAmmo() { return m_ammo; }
 
-int Logic::Weapon::getMagSize() { return m_magSize; }
+void Weapon::setAmmo(int ammo) { m_ammo = ammo; }
 
-void Logic::Weapon::setMagSize(int magSize) { m_magSize = magSize; }
+int Weapon::getMagSize() { return m_magSize; }
 
-int Logic::Weapon::getMagAmmo() { return m_magAmmo; }
+void Weapon::setMagSize(int magSize) { m_magSize = magSize; }
 
-void Logic::Weapon::removeMagAmmo() { m_magAmmo--; }
+int Weapon::getMagAmmo() { return m_magAmmo; }
 
-void Logic::Weapon::removeMagAmmo(int ammo) 
+void Weapon::removeMagAmmo() { m_magAmmo--; }
+
+void Weapon::removeMagAmmo(int ammo) 
 { 
 	if (ammo > m_magAmmo)
 		m_magAmmo = 0;
@@ -64,7 +110,17 @@ void Logic::Weapon::removeMagAmmo(int ammo)
 		m_magAmmo -= ammo; 
 }
 
-int Logic::Weapon::getAmmoConsumption() { return m_ammoConsumption; }
+int Weapon::getAmmoConsumption() { return m_ammoConsumption; }
+
+float Weapon::getAttackTimer()
+{
+	return (60.f / m_attackRate) * 1000;
+}
+
+float Logic::Weapon::getRealoadTime()
+{
+	return m_reloadTime;
+}
 
 void Logic::Weapon::fillMag()
 {
@@ -80,4 +136,9 @@ void Logic::Weapon::fillMag()
 		m_magAmmo += m_ammo;	// Add rest of ammo to mag
 		m_ammo = 0;				// Remove rest of ammo from total
 	}
+}
+
+void Weapon::render(Graphics::Renderer& renderer)
+{
+
 }
