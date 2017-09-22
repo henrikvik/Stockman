@@ -1,8 +1,9 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-#include <Entity/Entity.h>
+#include <Entity\Entity.h>
 #include <Player\Player.h>
+#include <AI\Behavior\Behavior.h>
 
 #pragma region Comment
 /*
@@ -42,6 +43,8 @@ namespace Logic
 			float getMaxHealth() const;
 			float getBaseDamage() const;
 			int getEnemyType() const;
+		protected: //for testing
+			Logic::Behavior *m_behavior;
 	};
 }
 

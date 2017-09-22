@@ -73,6 +73,7 @@ namespace Logic
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);
 		void onCollision(Projectile& other);
+		void render(Graphics::Renderer& renderer); 
 
 		void saveToFile();
 		void readFromFile();

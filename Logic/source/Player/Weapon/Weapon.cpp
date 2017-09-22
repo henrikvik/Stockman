@@ -76,9 +76,17 @@ btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 	return projectileDir;
 }
 
-void Weapon::update()
+void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation)
 {
+//	DirectX::SimpleMath::Matrix pos;
+//	pos.
 
+//	DirectX::SimpleMath::Vector3 scale = playerTranslation.;
+//	scale.CreateScale(1, 1, 1);
+
+//	DirectX::SimpleMath::Vector3 result = pos * scale * playerTranslation;
+
+	this->setWorldTranslation(playerTranslation);
 }
 
 ProjectileData * Weapon::getProjectileData()
@@ -136,9 +144,4 @@ void Logic::Weapon::fillMag()
 		m_magAmmo += m_ammo;	// Add rest of ammo to mag
 		m_ammo = 0;				// Remove rest of ammo from total
 	}
-}
-
-void Weapon::render(Graphics::Renderer& renderer)
-{
-
 }
