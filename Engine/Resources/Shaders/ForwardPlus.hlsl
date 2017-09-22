@@ -14,9 +14,11 @@ cbuffer Camera : register(b0)
     float4 camPos;
 }
 
-cbuffer LightPosBuffer : register(b1)
+cbuffer LightBuffer : register(b1)
 {
-    float4 lightPos;
+    float4 dirLightPos;
+    float3 dirLightColor;
+    float dirFade;
 }
 
 cbuffer LightMatBuffer : register(b2)
@@ -101,18 +103,49 @@ PSOutput PS(VSOutput input) {
 	
 
     ///////////////////////////////DIRECTIONAL LIGHT///////////////////////////////////////
-    float3 lightDir = normalize(camPos.xyz - lightPos.xyz);
+    float3 lightDir = normalize(camPos.xyz - dirLightPos.xyz);
     float diffuseFactor = saturate(dot(input.normal, normalize(-lightDir)));
-    float3 directionalDiffuse = diffuseFactor * float3(0.1, 0.4, 0.7);
+    float3 directionalDiffuse = diffuseFactor * dirLightColor;
+
+    float3 posToLightDir = dirLightPos.xyz - input.worldPos.xyz;
+    float3 reflectThingDir = normalize(posToLightDir + (camPos.xyz - input.worldPos.xyz));
+    float3 specularDir = pow(saturate(dot(input.normal, reflectThingDir)), 500) * dirLightColor;
+
+    
+
+            /////////////////////////////SHADOWS//////////////////////////////
+    input.lightPos.x = (input.lightPos.x * 0.5f) + 0.5f;
+    input.lightPos.y = (input.lightPos.y * -0.5f) + 0.5f;
+
+    float addedShadow = 0;
+
+    int samples = 1;
+
+    for (int y = -samples; y <= samples; y += 1)
+    {
+        for (int x = -samples; x <= samples; x += 1)
+        {
+            addedShadow += shadowMap.SampleCmp(cmpSampler, input.lightPos.xy, input.lightPos.z, int2(x, y)).r;
+        }
+    }
+
+    float shadow = addedShadow / pow(samples * 2 + 1, 2);
+    
+            //////////////////////// END SHADOW /////////////////////////
+
+    float3 directionalComponent = (directionalDiffuse + specularDir) * dirFade * shadow;
+
     /////////////////////////////DIRECTIONAL LIGHT END///////////////////////////////////////
 
 
-    float3 ambient = float3(0, 0.1, 0.2);
+    float3 ambient = float3(0.1, 0.1, 0.2);
 
 
 
     //This will include a texture sample or material color later
-	float3 color = 0.1f;
+	float3 matColor = 0.1f;
+
+    float3 pointLightComponent = 0;
 
 
 
@@ -133,41 +166,20 @@ PSOutput PS(VSOutput input) {
 
        
         float3 specular = pow(saturate(dot(input.normal, reflectThing)), 1000) * light.color;
-        color += light.color * attenuation * (saturate(diffuse) + specular);
+        pointLightComponent += light.color * attenuation * (saturate(diffuse) + specular);
 	}
     //////////////////////////////POINT LIGHTS END//////////////////////////////////////////////
 
 
-     /////////////////////////////SHADOWS//////////////////////////////
-    input.lightPos.x = (input.lightPos.x * 0.5f) + 0.5f;
-    input.lightPos.y = (input.lightPos.y * -0.5f) + 0.5f;
-
-    float addedShadow = 0;
-
-    int samples = 1;
-
-    for (int y = -samples; y <= samples; y += 1)
-    {
-        for (int x = -samples; x <= samples; x += 1)
-        {
-            addedShadow += shadowMap.SampleCmp(cmpSampler, input.lightPos.xy, input.lightPos.z, int2(x, y)).r;
-        }
-    }
-
-    //addedShadow += shadowMap.SampleCmp(cmpSampler, input.lightPos.xy, input.lightPos.z).r;
 
 
-    float shadow = addedShadow / 9;
-    //////////////////////// END SHADOW /////////////////////////
-
-
-    output.color = float4(saturate((directionalDiffuse * shadow) + color + ambient), 1);
+    output.color = float4(saturate(directionalComponent + pointLightComponent + ambient), 1);
    
 
     //DEBUG TEST TEMP
-    if (input.lightPos.x > 1 || input.lightPos.x < 0 ||
-        input.lightPos.y > 1 || input.lightPos.y < 0)
-        output.color.xyz = ambient;
+    //if (input.lightPos.x > 1 || input.lightPos.x < 0 ||
+    //    input.lightPos.y > 1 || input.lightPos.y < 0)
+    //    output.color.xyz = ambient;
 
         
 
