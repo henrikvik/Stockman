@@ -3,7 +3,9 @@
 
 #include <string>
 #include <vector>
+#include <d3d11.h>
 #include <SimpleMath.h>
+#include "NavigationMesh.h"
 
 #include <Entity\Entity.h>
 
@@ -13,11 +15,13 @@ namespace Logic
 	{
 		public:
 			struct Node {
-				float x, y, z;
+				DirectX::SimpleMath::Vector3 position;
+				int triangleID;
 			};
 		private:
 			std::string file;
 			std::vector<Node> nodes; //testing
+			NavigationMesh navigationMesh;
 		
 			void generateNodesFromFile();
 		public:

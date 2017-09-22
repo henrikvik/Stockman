@@ -171,6 +171,8 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\Behavior\AStar.h" />
+    <ClInclude Include="include\AI\Behavior\NavigationMesh.h" />
     <ClInclude Include="include\Misc\FileLoader.h" />
     <ClInclude Include="include\Misc\GUI\Button.h" />
     <ClInclude Include="include\Misc\GUI\MenuState.h" />
@@ -216,6 +218,7 @@
     <ClInclude Include="include\Entity\StatusManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Behavior\AStar.cpp" />
     <ClCompile Include="source\Misc\FileLoader.cpp" />
     <ClCompile Include="source\Misc\GUI\Button.cpp" />
     <ClCompile Include="source\Misc\GUI\MenuState.cpp" />
