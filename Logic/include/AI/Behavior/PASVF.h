@@ -2,7 +2,7 @@
 #define PASVF_H
 
 #include "NavigationMesh.h"
-#include <Entity\Object.h>
+#include <Entity\Entity.h>
 
 #include <vector>
 
@@ -18,12 +18,12 @@ namespace Logic
 	class PASVF 
 	{
 		private:
-
+			inline DirectX::SimpleMath::Vector2 getNormal(DirectX::SimpleMath::Vector2 const &edge) const;
 		public:
 			PASVF();
 			virtual ~PASVF();
 
-			NavigationMesh generateNavMesh(int x, int y, int width, int height, std::vector<Object> collidableObjects) const;
+			NavigationMesh generateNavMesh(float x, float y, int width, int height, std::vector<Entity*> collidableObjects) const;
 	};
 }
 
