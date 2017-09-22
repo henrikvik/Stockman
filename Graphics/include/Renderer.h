@@ -18,6 +18,7 @@
 namespace Graphics
 {
 
+
     struct  TempCube
     {
         ID3D11Buffer * vertexBuffer;
@@ -144,7 +145,7 @@ namespace Graphics
 		DirectionalLight lightDir;
 		ID3D11DepthStencilView* shadowDSV;
 		ID3D11ShaderResourceView* shadowSRV;
-		ID3D11RasterizerState* shadowRasterState;
+		ID3D11SamplerState* shadowSampler;
 
 
         void createInstanceBuffer();

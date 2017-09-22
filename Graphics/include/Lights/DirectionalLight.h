@@ -4,14 +4,13 @@
 
 #include <SimpleMath.h>
 #include <Engine\Constants.h>
-
 class DirectionalLight
 {
 public:
-	DirectionalLight(ID3D11Device* device, int width, int height, float drawDistance = 100);
+	DirectionalLight(ID3D11Device* device, int width, int height);
 	~DirectionalLight();
 
-	void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
+	void update(ID3D11DeviceContext* context, DirectX::SimpleMath::Vector3 offset = DirectX::SimpleMath::Vector3(0, 0, 0));
 
 	ID3D11Buffer* getMatrixBuffer() { return matrixBuffer; };
 	ID3D11Buffer* getShaderBuffer() { return shaderBuffer; };
@@ -20,6 +19,7 @@ public:
 private:
 	DirectX::SimpleMath::Matrix view;
 	DirectX::SimpleMath::Matrix projection;
+	DirectX::SimpleMath::Vector4 pos;
 
 	struct ShaderMatrix
 	{
