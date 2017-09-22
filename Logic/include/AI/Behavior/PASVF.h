@@ -1,6 +1,11 @@
 #ifndef PASVF_H
 #define PASVF_H
 
+#include "NavigationMesh.h"
+#include <Entity\Object.h>
+
+#include <vector>
+
 namespace Logic
 {
 	// Lukas implementation of Planar Adaptive Space Filling Volumes.
@@ -9,6 +14,7 @@ namespace Logic
 		It’s a AI legend.
 		*The rest of the comment is corrupted, you can't read it*
 	*/
+
 	class PASVF 
 	{
 		private:
@@ -16,6 +22,8 @@ namespace Logic
 		public:
 			PASVF();
 			virtual ~PASVF();
+
+			NavigationMesh generateNavMesh(int x, int y, int width, int height, std::vector<Object> collidableObjects) const;
 	};
 }
 

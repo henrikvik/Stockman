@@ -17,8 +17,8 @@ namespace Logic
 			};
 
 			NavigationMesh();
-			NavigationMesh(NavigationMesh const &other) = delete;
-			NavigationMesh* operator=(NavigationMesh const &other) = delete;
+			//NavigationMesh(NavigationMesh const &other);
+			//NavigationMesh* operator=(NavigationMesh const &other);
 			~NavigationMesh();
 
 			void createTestMesh();
