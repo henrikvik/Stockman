@@ -3,9 +3,9 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 
-#define SHADOW_MAP_RESOLUTION 1024
+#define SHADOW_MAP_RESOLUTION 2048
 
-#define USE_TEMP_CUBE false
+#define USE_TEMP_CUBE true
 #define ANIMATION_HIJACK_RENDER false
 
 
@@ -24,6 +24,7 @@ namespace Graphics
 		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
+		, shadowDepthStencil(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
 		, lightDir(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
         , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
         , instanceOffsetBuffer(gDevice)
@@ -52,8 +53,6 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
-		SAFE_RELEASE(shadowDSV);
-		SAFE_RELEASE(shadowSRV);
 		SAFE_RELEASE(shadowSampler);
         resourceManager.release();
 
@@ -124,7 +123,7 @@ namespace Graphics
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 
-        static float clearColor[4] = { 0,0,0,1 };
+        static float clearColor[4] = { 0, 0.5, 0.7, 1 };
         deviceContext->ClearRenderTargetView(backBuffer, clearColor);
         deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
@@ -163,7 +162,7 @@ namespace Graphics
 
             //ptr[i].positionWS = DirectX::SimpleMath::Vector3(0.f, 1.f, 1.f - 1 / 8.f - i / 4.f);
             ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
-            ptr[i].range = i / 1.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
+			ptr[i].range = i / 1.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
             ptr[i].intensity = 1.f;
         }
 
@@ -180,7 +179,7 @@ namespace Graphics
 			grid.getOpaqueIndexList()->getSRV(),
 			grid.getOpaqueLightGridSRV(),
 			grid.getLights()->getSRV(),
-			this->shadowSRV
+			this->shadowDepthStencil
 		};
 		auto sampler = states->LinearClamp();
 		deviceContext->PSSetShaderResources(0, 4, SRVs);
@@ -205,37 +204,12 @@ namespace Graphics
         ZeroMemory(SRVs, sizeof(SRVs));
         deviceContext->PSSetShaderResources(0, 4, SRVs);
 
-
-        //temp
-        //this->drawDeffered();
-        //this->drawToBackbuffer(gbuffer.positionView);
         deviceContext->RSSetState(states->CullCounterClockwise());
         SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
         if ((1 << 15) & tabKeyState)
         {
             this->drawToBackbuffer(grid.getDebugSRV());
         }
-        /*D3D11_BUFFER_DESC bufferDesc = { 0 };
-        bufferDesc.ByteWidth = sizeof(FSQuadVerts);
-        bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-        D3D11_SUBRESOURCE_DATA data = { 0 };
-        data.pSysMem = FSQuadVerts;
-
-        ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &FSQuad2));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("cat.jpg"), nullptr, &view));
-
-
-        bufferDesc.ByteWidth = sizeof(defferedTest);
-        bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-        data.pSysMem = defferedTest;
-
-
-        ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
-
-
-        this->spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext);*/
 #endif
     }
 
@@ -327,9 +301,20 @@ namespace Graphics
 
 #if USE_TEMP_CUBE
             static TempCube tempCube(device);
-            buffers[0] = tempCube.vertexBuffer;
-            deviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
-            deviceContext->DrawInstanced(36, (UINT)pair.second.size(), 0, 0);
+			ModelInfo model = resourceManager.getModelInfo(CUBE);
+
+
+
+			static UINT stride = sizeof(Vertex), offset = 0;
+			deviceContext->IASetVertexBuffers(0, 1, &tempCube.vertexBuffer, &stride, &offset);
+
+			static ID3D11ShaderResourceView * modelTextures[3] = { nullptr };
+			modelTextures[0] = model.diffuseMap;
+			modelTextures[1] = model.normalMap;
+			modelTextures[2] = model.specularMap;
+			deviceContext->PSSetShaderResources(10, 3, modelTextures);
+
+			deviceContext->DrawInstanced(36, (UINT)pair.second.size(), 0, 0);
 #else
             ModelInfo model = resourceManager.getModelInfo(pair.first);
 
@@ -402,13 +387,13 @@ namespace Graphics
 
 	void Renderer::drawShadows()
 	{
-		deviceContext->ClearDepthStencilView(shadowDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
+		deviceContext->ClearDepthStencilView(shadowDepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 		deviceContext->RSSetViewports(1, &lightDir.getViewPort());
 		deviceContext->IASetInputLayout(forwardPlus);
 		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
 		deviceContext->PSSetShader(nullptr, nullptr, 0);
-		deviceContext->OMSetRenderTargets(0, nullptr, shadowDSV);
+		deviceContext->OMSetRenderTargets(0, nullptr, shadowDepthStencil);
 
 		ID3D11Buffer* light = lightDir.getMatrixBuffer();
 		deviceContext->VSSetConstantBuffers(0, 1, &light);
@@ -470,40 +455,14 @@ namespace Graphics
 
 	void Renderer::createShadowMap()
 	{
-		ID3D11Texture2D* texture;
-
-		D3D11_TEXTURE2D_DESC desc = {};
-		desc.Width = SHADOW_MAP_RESOLUTION;
-		desc.Height = SHADOW_MAP_RESOLUTION;
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-		desc.SampleDesc.Count = 1;
-		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-
-
-		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
-
-		dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-
-
-		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-		srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MipLevels = desc.MipLevels;
-
-		ThrowIfFailed(device->CreateTexture2D(&desc, NULL, &texture));
-		ThrowIfFailed(device->CreateDepthStencilView(texture, &dsvDesc, &shadowDSV));
-		ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &shadowSRV));
-
-		SAFE_RELEASE(texture);
-
 		D3D11_SAMPLER_DESC sDesc = {};
 		sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 		sDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 		sDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+		sDesc.BorderColor[0] = 1;
+		sDesc.BorderColor[1] = 1;
+		sDesc.BorderColor[2] = 1;
+		sDesc.BorderColor[3] = 1;
 		sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 		sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
 		sDesc.MaxAnisotropy = 0;
