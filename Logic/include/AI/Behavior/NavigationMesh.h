@@ -23,6 +23,10 @@ namespace Logic
 
 			void addTriangle(Triangle const &triangle);
 			void createNodesFromTriangles();
+			
+			// returns int of the index that has this pos in it
+			// (triangleList, getList(), index)
+			int getIndex(DirectX::SimpleMath::Vector3 const &pos) const;
 
 			const std::vector<Triangle>& getList() const;
 			const std::vector<DirectX::SimpleMath::Vector3>& getNodes() const;

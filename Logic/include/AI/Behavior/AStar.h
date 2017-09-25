@@ -19,6 +19,14 @@ namespace Logic
 				btVector3 position;
 			};
 
+			// to calc path testing rn
+			struct NavNode
+			{
+				bool open; // for testing
+				int nodeIndex; // index in nav mesh
+				float g; // cost to node
+			};
+
 			// singleton for the moment
 			static AStar& singleton()
 			{
@@ -30,6 +38,8 @@ namespace Logic
 			std::vector<Node> nodes; //testing
 			NavigationMesh navigationMesh;
 		
+			float heuristic(DirectX::SimpleMath::Vector3 &from,
+				DirectX::SimpleMath::Vector3 &to) const;
 			void generateNodesFromFile();
 		public:
 			// string for the offline loaded nav mesh

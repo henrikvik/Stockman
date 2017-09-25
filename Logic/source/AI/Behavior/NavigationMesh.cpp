@@ -33,6 +33,10 @@ const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() cons
 {
 	return nodes;
 }
+int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const & pos) const
+{
+	return 0;
+}
 const std::vector<NavigationMesh::Triangle>& NavigationMesh::getList() const
 {
 	return triangleList;
