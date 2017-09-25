@@ -11,10 +11,13 @@
 #include <SimpleMath.h>
 #include "Resources\Shader.h"
 #include "Datatypes.h"
-#include "LightGrid.h"
+#include "Lights\LightGrid.h"
+#include "Resources\DepthStencil.h"
+#include "Lights\DirectionalLight.h"
 
 namespace Graphics
 {
+
 
     struct  TempCube
     {
@@ -109,7 +112,8 @@ namespace Graphics
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         std::vector<RenderInfo*> renderQueue;
         InstanceQueue_t instanceQueue;
-        GBuffer gbuffer;
+
+        DepthStencil depthStencil;
 
 		LightGrid grid;
 		DirectX::CommonStates *states;
@@ -127,10 +131,6 @@ namespace Graphics
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
-		ID3D11DepthStencilView * dSV;
-		ID3D11ShaderResourceView* depthSRV;
-
-		ID3D11DepthStencilState * dSS;
 
         // Egna Pekare
         ID3D11Buffer * instanceBuffer;		
@@ -139,20 +139,28 @@ namespace Graphics
         TempCube cube;
         ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
+		
 
-        void createGBuffer();
+		////LITE TEMP
+		DirectionalLight lightDir;
+		ID3D11DepthStencilView* shadowDSV;
+		ID3D11ShaderResourceView* shadowSRV;
+		ID3D11SamplerState* shadowSampler;
+
+
         void createInstanceBuffer();
 
         void cull();
         void writeInstanceData();
         void draw();
         void drawGUI();
-		void createDepthStencil();
+		void drawShadows();
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
         void createBlendState();
         void createGUIBuffers();
+		void createShadowMap();
     };
 };

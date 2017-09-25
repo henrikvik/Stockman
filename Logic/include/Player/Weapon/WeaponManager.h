@@ -11,7 +11,8 @@
 
 #include <vector>
 #include <Player\Weapon\Weapon.h>
-#include <Misc\Enums.h>
+#include <Projectile\ProjectileManager.h>
+#include <Graphics\include\Structs.h>
 
 
 namespace Logic
@@ -25,13 +26,16 @@ namespace Logic
 		WeaponManager* operator=(const WeaponManager& other) = delete;
 		~WeaponManager();
 
-		void init();
+		void init(ProjectileManager* projectileManager);
 		void clear();
 		void update(float deltaTime);
+		void render(Graphics::Renderer& renderer);
+
+		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		void switchWeapon(int weaponID);
-		void usePrimary();
-		void useSecondary();
+		void usePrimary(btVector3 position, float yaw, float pitch);
+		void useSecondary(btVector3 position, float yaw, float pitch);
 		void reloadWeapon();
 
 		bool isSwitching();
@@ -40,12 +44,20 @@ namespace Logic
 
 	private:
 
+		enum ReloadingWeapon
+		{
+			IDLE,
+			ACTIVE,
+			DONE
+		};
+
 		void initializeWeapons();
 		void makeWeaponLoadout();
 
+		ProjectileManager* m_projectileManager;
 		std::vector<Weapon> m_allWeapons;
 		std::vector<std::pair<Weapon*, Weapon*>> m_weaponsLoadouts;
-		std::vector<int> ammoList;
+		//std::vector<int> ammoList;
 		std::pair<Weapon*, Weapon*> m_currentWeapon;
 
 		// Timers

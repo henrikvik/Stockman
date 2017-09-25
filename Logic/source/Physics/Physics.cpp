@@ -20,7 +20,7 @@ bool Physics::init()
 {
 	// World gravity
 	this->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
-	this->setLatencyMotionStateInterpolation(true);
+	this->setLatencyMotionStateInterpolation(false);
 
 	return true;
 }
@@ -57,7 +57,7 @@ void Physics::update(float deltaTime)
 	// Calculate the time since last call and tell bulletphysics
 	begin = std::chrono::steady_clock::now();
 	float microsec = std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() * 0.000001;
-	this->stepSimulation(microsec, 13);
+	this->stepSimulation(microsec, 16);
 	end = std::chrono::steady_clock::now();
 	
 	// Collisions
@@ -65,14 +65,14 @@ void Physics::update(float deltaTime)
 	for (int i = 0; i < numManifolds; i++)
 	{
 		btPersistentManifold* contactManifold = dispatcher->getManifoldByIndexInternal(i);
-		btCollisionObject* obA = (btCollisionObject*)(contactManifold->getBody0());
-		btCollisionObject* obB = (btCollisionObject*)(contactManifold->getBody1());
+		const btCollisionObject* obA = contactManifold->getBody0();
+		const btCollisionObject* obB = contactManifold->getBody1();
 
 		int numContacts = contactManifold->getNumContacts();
 		if (numContacts > 0)
 		{
-			Entity* pbodyA = (Entity*)obA->getUserPointer();
-			Entity* pbodyB = (Entity*)obB->getUserPointer();
+			Entity* pbodyA = reinterpret_cast<Entity*>(obA->getUserPointer());
+			Entity* pbodyB = reinterpret_cast<Entity*>(obB->getUserPointer());
 
 			if (pbodyA && pbodyB)
 			{
@@ -177,9 +177,9 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 
 	// Specifics
 	body->setRestitution(0.0f);
-	body->setFriction(0.f);
+	body->setFriction(1.f);
 	body->setSleepingThresholds(0, 0);	
-	body->setDamping(0.9f, 0.9f);
+	body->setDamping(0.f, 0.f);
 
 	// Adding body to the world
 	this->addRigidBody(body);
@@ -207,6 +207,37 @@ btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isS
 	body->setFriction(0.f);
 	body->setSleepingThresholds(0, 0);
 	body->setDamping(0.9f, 0.9f);
+
+	// Making the cylinder a kinematic body
+	body->setCollisionFlags(body->getCollisionFlags() | btRigidBody::CF_KINEMATIC_OBJECT);
+	body->setActivationState(DISABLE_DEACTIVATION);
+
+	// Adding body to the world
+	this->addRigidBody(body);
+
+	return body;
+}
+
+btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
+{
+	// Setting Motions state with position & rotation
+	btQuaternion rotation;
+	rotation.setEulerZYX(capsule.getRot().getZ(), capsule.getRot().getY(), capsule.getRot().getX());
+	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, capsule.getPos()));
+
+	// Creating the specific shape
+	btCollisionShape* shape = new btCapsuleShape(capsule.getRadius(), capsule.getHeight());
+
+	// Creating the actual body
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
+	btRigidBody* body = new btRigidBody(constructionInfo);
+	shape->setUserPointer(body);
+
+	// Specifics
+	body->setRestitution(0.0f);
+	body->setFriction(0.f);
+	body->setSleepingThresholds(0, 0);
+	body->setDamping(0.0f, 0.0f);
 
 	// Adding body to the world
 	this->addRigidBody(body);

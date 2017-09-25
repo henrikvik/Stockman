@@ -43,11 +43,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 Engine::Engine(HINSTANCE hInstance, int width, int height)
 {
+	srand(time(NULL));				// Set random seed
 	this->mHeight = height;
 	this->mWidth = width;
 	this->hInstance = hInstance;
 	this->initializeWindow();
-	this->initializeGame();
+	this->game.init();
 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
@@ -67,7 +68,7 @@ Engine::~Engine()
 	this->mBackBufferRTV->Release();
 
 	//Enable this to get additional information about live objects
-    this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
+    //this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
     this->mDebugDevice->Release();
 }
 
@@ -202,17 +203,6 @@ long long Engine::timer()
 		return GetTickCount();
 	}
 }
-
-bool Engine::initializeGame()
-{
-	bool result;
-
-	// Trying to start game
-	result = game.init();
-
-	return result;
-}
-
 
 int Engine::run()
 {

@@ -2,16 +2,32 @@
 
 using namespace Logic;
 
-Entity::Entity(btRigidBody* body)
+Entity::Entity(btRigidBody* body, btVector3 halfextent)
 {
 	m_body = body;
 	m_body->setUserPointer(this);
 	m_transform = &m_body->getWorldTransform();
+	m_halfextent = halfextent;
+
+	// For non moving object, that doesn't update loop
+	updateGraphics();
 }
 
 Entity::~Entity() 
 {
 	// ALL physics is getting cleared by the Physics class, 
+}
+
+void Entity::destroyBody()
+{
+	if (m_body)
+	{
+		if (m_body->getMotionState())
+			delete m_body->getMotionState();
+		if(m_body->getCollisionShape())
+			delete m_body->getCollisionShape();
+		delete m_body;
+	}
 }
 
 void Entity::clear() { }
@@ -27,6 +43,11 @@ void Entity::update(float deltaTime)
 	// Updating specific
 	updateSpecific(deltaTime);
 
+	updateGraphics();
+}
+
+void Entity::updateGraphics()
+{
 	// Get the new transformation from bulletphysics
 	setWorldTranslation(getTransformMatrix());
 }
@@ -46,6 +67,11 @@ btRigidBody* Entity::getRigidbody()
 DirectX::SimpleMath::Vector3 Entity::getPosition() const
 {
 	return DirectX::SimpleMath::Vector3(m_transform->getOrigin());
+}
+
+btVector3 Logic::Entity::getPositionBT() const
+{
+	return m_transform->getOrigin();
 }
 
 DirectX::SimpleMath::Quaternion Entity::getRotation() const
@@ -69,8 +95,11 @@ DirectX::SimpleMath::Matrix Entity::getTransformMatrix() const
 	// Translating to DirectX Math and assigning the variables
 	DirectX::SimpleMath::Matrix transformMatrix(m);
 
+	//Find the scaling matrix
+	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX(), m_halfextent.getY(), m_halfextent.getZ());
+
 	// Deleting the old created variables from memory
 	delete m;
 
-	return transformMatrix;
+	return scale * transformMatrix;
 }

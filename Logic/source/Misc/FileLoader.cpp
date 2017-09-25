@@ -46,7 +46,7 @@ int FileLoader::parseString(LoadedStruct &loaded, std::string const &str)
 		switch (data[data.size() - 1]) // save data
 		{
 			case STRING:
-				loaded.strings[name] = data.substr(1, data.size() - 1);
+				loaded.strings[name] = data.substr(1, data.size() - 2);
 				break;
 			case FLOAT:
 				loaded.floats[name] = std::stof(data.substr(0, data.size() - 1));

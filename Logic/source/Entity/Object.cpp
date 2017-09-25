@@ -5,6 +5,8 @@ using namespace Logic;
 Object::Object() 
 {
 	m_renderInfo.render = true;
+	m_renderInfo.meshId = Graphics::ModelID::CUBE;
+	m_renderInfo.materialId = 0;
 }
 
 Object::~Object() { }

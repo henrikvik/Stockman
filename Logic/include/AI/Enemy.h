@@ -1,7 +1,9 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-#include <Entity/Entity.h>
+#include <Entity\Entity.h>
+#include <Player\Player.h>
+#include <AI\Behavior\Behavior.h>
 
 #pragma region Comment
 /*
@@ -27,12 +29,12 @@ namespace Logic
 			int m_enemyType;
 			// Animation m_animation;
 		public:	
-			Enemy(btRigidBody* body, float maxHealth, float baseDamage, int enemyType, int animationId);
+			Enemy(btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, int enemyType, int animationId);
 			virtual ~Enemy();
 
-			virtual void update(float deltaTime);
+			virtual void update(Player const &player, float deltaTime);
 			virtual void updateDead(float deltaTime) = 0;
-			virtual void updateSpecific(float deltaTime) = 0;
+			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
 			void damage(float damage);
@@ -41,6 +43,8 @@ namespace Logic
 			float getMaxHealth() const;
 			float getBaseDamage() const;
 			int getEnemyType() const;
+		protected: //for testing
+			Logic::Behavior *m_behavior;
 	};
 }
 

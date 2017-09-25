@@ -1,9 +1,10 @@
 #include <AI\Enemy.h>
 using namespace Logic;
 
-Enemy::Enemy(btRigidBody* body, float health, float baseDamage, int enemyType, int animationId)
-: Entity(body)
+Enemy::Enemy(btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, int enemyType, int animationId)
+: Entity(body, halfExtent)
 {
+	m_behavior = nullptr;
 	m_health = health;
 	m_baseDamage = baseDamage;
 	m_enemyType = enemyType;
@@ -12,11 +13,16 @@ Enemy::Enemy(btRigidBody* body, float health, float baseDamage, int enemyType, i
 }
 
 Enemy::~Enemy() {
-
+	if (m_behavior)
+		delete m_behavior;
 }
 
-void Enemy::update(float deltaTime) {
-	updateSpecific(deltaTime);
+void Enemy::update(Player const &player, float deltaTime) {
+	Entity::update(deltaTime);
+	updateSpecific(player, deltaTime);
+
+	if (m_behavior)
+		m_behavior->update(player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 }
 
 void Enemy::damage(float damage)
