@@ -8,11 +8,26 @@ Entity::Entity(btRigidBody* body, btVector3 halfextent)
 	m_body->setUserPointer(this);
 	m_transform = &m_body->getWorldTransform();
 	m_halfextent = halfextent;
+
+	// For non moving object, that doesn't update loop
+	updateGraphics();
 }
 
 Entity::~Entity() 
 {
 	// ALL physics is getting cleared by the Physics class, 
+}
+
+void Entity::destroyBody()
+{
+	if (m_body)
+	{
+		if (m_body->getMotionState())
+			delete m_body->getMotionState();
+		if(m_body->getCollisionShape())
+			delete m_body->getCollisionShape();
+		delete m_body;
+	}
 }
 
 void Entity::clear() { }
@@ -31,7 +46,7 @@ void Entity::update(float deltaTime)
 	updateGraphics();
 }
 
-void Logic::Entity::updateGraphics()
+void Entity::updateGraphics()
 {
 	// Get the new transformation from bulletphysics
 	setWorldTranslation(getTransformMatrix());

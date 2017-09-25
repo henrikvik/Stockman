@@ -1,5 +1,16 @@
 #include "Player/Skill/SkillGrapplingHook.h"
 
-void Logic::SkillGrapplingHook::update()
+using namespace Logic;
+
+void SkillGrapplingHook::onUse()
+{
+	printf("Used Grappling Hook.\n");
+}
+
+void SkillGrapplingHook::onUpdate(float deltaTime)
+{
+}
+
+void SkillGrapplingHook::render(Graphics::Renderer& renderer)
 {
 }

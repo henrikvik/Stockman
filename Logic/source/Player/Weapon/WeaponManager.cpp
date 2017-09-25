@@ -19,7 +19,7 @@ void WeaponManager::init(ProjectileManager* projectileManager)
 	m_attackTimer = 0.f;
 
 	m_reloadTimer = 0.f;
-	m_reloadState = ReloadingWeapon::reloadingWeaponIdle;
+	m_reloadState = ReloadingWeapon::IDLE;
 }
 
 void WeaponManager::clear()
@@ -28,7 +28,13 @@ void WeaponManager::clear()
 	m_allWeapons.clear();
 }
 
-void Logic::WeaponManager::update(float deltaTime)
+void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
+{
+	// Updating weapon model
+	m_currentWeapon.first->setWeaponModelFrontOfPlayer(playerTranslation, playerForward);
+}
+
+void WeaponManager::update(float deltaTime)
 {
 	// Timers / cooldowns
 
@@ -37,14 +43,14 @@ void Logic::WeaponManager::update(float deltaTime)
 	{
 		m_reloadTimer -= deltaTime;
 	}
-	else if (m_reloadState == ReloadingWeapon::reloadingWeaponActive)
+	else if (m_reloadState == ReloadingWeapon::ACTIVE)
 	{
-		m_reloadState = ReloadingWeapon::reloadingWeaponDone;
+		m_reloadState = ReloadingWeapon::DONE;
 	}
-	if (m_reloadState == ReloadingWeapon::reloadingWeaponDone)
+	if (m_reloadState == ReloadingWeapon::DONE)
 	{
 		m_currentWeapon.first->fillMag();
-		m_reloadState = ReloadingWeapon::reloadingWeaponIdle;
+		m_reloadState = ReloadingWeapon::IDLE;
 		printf("adding ammo\n");
 		printf("ammo: %d\n", m_currentWeapon.first->getAmmo());
 		printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
@@ -63,17 +69,22 @@ void Logic::WeaponManager::update(float deltaTime)
 	}
 }
 
+void WeaponManager::render(Graphics::Renderer& renderer)
+{
+	m_currentWeapon.first->render(renderer);
+}
+
 void WeaponManager::initializeWeapons()
 {
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ m_projectileManager, ProjectileData(1, 1, 1, 100, 0, Graphics::ModelID::CUBE, 1), 1, 60, 60, 30, 30, 1, 1, 0, 0, 1, 450, 1, 2000 },
-		{ m_projectileManager, ProjectileData(1, 0.01f, 1, 100, 0, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 6, 18, 15, 10, 1, 40, 1, 2000 },
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 0, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 1, 1, 1, 1, 1, 1, 1, 3000 },
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 0, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 3, 1, 1, 1, 1, 1, 1, 3000 },
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 0, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 },
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 0, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 }
+		{ m_projectileManager, ProjectileData(1, 1, 1, 100, 0, 3000, Graphics::ModelID::CUBE, 1), 1, 60, 60, 30, 30, 1, 1, 0, 0, 1, 450, 1, 2000 },
+		{ m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0, 500, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 6, 18, 15, 10, 1, 100, 1, 2000 },
+		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 1, 1, 1, 1, 1, 1, 1, 3000 },
+		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 3, 1, 1, 1, 1, 1, 1, 3000 },
+		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 },
+		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 }
 	};
 }
 
@@ -97,7 +108,7 @@ void WeaponManager::switchWeapon(int index)
 		m_swapWeaponTimer = m_swapWeaponTimerMax;
 
 		m_reloadTimer = 0.f;
-		m_reloadState = ReloadingWeapon::reloadingWeaponIdle;
+		m_reloadState = ReloadingWeapon::IDLE;
 
 		printf("switch weapon %d\n", index);
 	}
@@ -118,7 +129,6 @@ void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch)
 			printf("out of ammo\n");
 
 		m_attackTimer = m_currentWeapon.first->getAttackTimer();
-		//m_attackTimer = 1000.f;
 	}
 }
 
@@ -137,7 +147,6 @@ void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch)
 			printf("out of ammo\n");
 
 		m_attackTimer = m_currentWeapon.second->getAttackTimer();
-		//m_attackTimer = 1000.f;
 	}
 }
 
@@ -145,8 +154,8 @@ void Logic::WeaponManager::reloadWeapon()
 {
 	if (m_reloadTimer <= 0.f && m_currentWeapon.first->getAmmo() > 0 && m_currentWeapon.first->getMagAmmo() < m_currentWeapon.first->getMagSize())
 	{
-		m_reloadTimer = 3000.f; // Replace with weapon reload speed
-		m_reloadState = ReloadingWeapon::reloadingWeaponActive;
+		m_reloadTimer = m_currentWeapon.first->getRealoadTime();
+		m_reloadState = ReloadingWeapon::ACTIVE;
 		printf("reloading weapon\n");
 	}
 }
@@ -163,5 +172,5 @@ bool Logic::WeaponManager::isAttacking()
 
 bool Logic::WeaponManager::isReloading()
 {
-	return m_reloadState != ReloadingWeapon::reloadingWeaponIdle;
+	return m_reloadState != ReloadingWeapon::IDLE;
 }

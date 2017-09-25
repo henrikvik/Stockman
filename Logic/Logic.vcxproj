@@ -171,7 +171,12 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\Behavior\AStar.h" />
+    <ClInclude Include="include\AI\Behavior\AttackBehavior.h" />
+    <ClInclude Include="include\AI\Behavior\Behavior.h" />
+    <ClInclude Include="include\AI\Behavior\NavigationMesh.h" />
     <ClInclude Include="include\Misc\FileLoader.h" />
+    <ClInclude Include="include\Misc\GameTime.h" />
     <ClInclude Include="include\Misc\GUI\Button.h" />
     <ClInclude Include="include\Misc\GUI\MenuState.h" />
     <ClInclude Include="include\AI\EnemyTest.h" />
@@ -198,7 +203,6 @@
     <ClInclude Include="include\Misc\StateMachine.h" />
     <ClInclude Include="include\Physics\Physics.h" />
     <ClInclude Include="include\Physics\Primitives.h" />
-    <ClInclude Include="include\Player\ActionManager.h" />
     <ClInclude Include="include\Player\Player.h" />
     <ClInclude Include="include\Player\Skill\Skill.h" />
     <ClInclude Include="include\Player\Skill\SkillBulletTime.h" />
@@ -216,6 +220,9 @@
     <ClInclude Include="include\Entity\StatusManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Behavior\AStar.cpp" />
+    <ClCompile Include="source\AI\Behavior\AttackBehavior.cpp" />
+    <ClCompile Include="source\AI\Behavior\NavigationMesh.cpp" />
     <ClCompile Include="source\Misc\FileLoader.cpp" />
     <ClCompile Include="source\Misc\GUI\Button.cpp" />
     <ClCompile Include="source\Misc\GUI\MenuState.cpp" />
@@ -227,7 +234,6 @@
     <ClCompile Include="source\AI\Trigger.cpp" />
     <ClCompile Include="source\AI\TriggerManager.cpp" />
     <ClCompile Include="source\Misc\GUI\MenuMachine.cpp" />
-    <ClCompile Include="source\Player\ActionManager.cpp" />
     <ClCompile Include="source\Player\Skill\Skill.cpp" />
     <ClCompile Include="source\Player\Skill\SkillBulletTime.cpp" />
     <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />

@@ -4,9 +4,9 @@ using namespace Logic;
 
 Game::Game()
 {
-	m_physics = nullptr;
-	m_player = nullptr;
-	m_map = nullptr;
+	m_physics			= nullptr;
+	m_player			= nullptr;
+	m_map				= nullptr;
 	m_projectileManager = nullptr;
 }
 
@@ -15,30 +15,27 @@ Game::~Game()
 	clear();
 }
 
-bool Game::init()
+void Game::init()
 {
-	bool result;
-
 	// Initializing Bullet physics
-	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();	// Configuration
-	btCollisionDispatcher* dispatcher = new	btCollisionDispatcher(collisionConfiguration);				// The default collision dispatcher
-	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								// Detecting aabb-overlapping object pairs
-	btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver();	// Default constraint solver
+	btDefaultCollisionConfiguration* collisionConfiguration		= new btDefaultCollisionConfiguration();				// Configuration
+	btCollisionDispatcher* dispatcher							= new btCollisionDispatcher(collisionConfiguration);	// The default collision dispatcher
+	btBroadphaseInterface* overlappingPairCache					= new btDbvtBroadphase();								// Detecting aabb-overlapping object pairs
+	btSequentialImpulseConstraintSolver* constraintSolver		= new btSequentialImpulseConstraintSolver();			// Default constraint solver
 	m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
-	result = m_physics->init();
+	m_physics->init();
 
 	// Initializing Projectile Manager
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	btVector3 halfextent(0.5, 3.0, 0.5);
-	m_player = new Player(m_physics->createBody(Cylinder({ 5, -15, 0 }, { 0, 0, 0 }, halfextent), 75.f, false), halfextent);
+	m_player = new Player(m_physics->createBody(Cylinder(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA), 0.f), PLAYER_START_SCA);
 	m_player->init(m_projectileManager);
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine();
-	m_menu->initialize(gameStateMenuMain); //change here to accses menu tests
-									   
+	m_menu->initialize(STARTING_STATE); 
+
 	// Initializing the map
 	m_map = newd Map();
 	m_map->init(m_physics);
@@ -68,35 +65,43 @@ void Game::clear()
 
 void Game::update(float deltaTime)
 {
-	if (m_menu->currentState() != gameStateGame)
-	{
-		m_menu->update();
-	}
-	else
-	{
-		m_physics->update(deltaTime);
-		m_player->update(deltaTime);
-		m_entityManager.update(*m_player, deltaTime);
-		m_map->update(deltaTime);
+	// Handles slow-mo & speed-up
+	m_gameTime.update(deltaTime);
 
-		m_projectileManager->update(deltaTime);
+	switch (m_menu->currentState())
+	{
+	case gameStateGame:
+		m_physics->update(m_gameTime.dt);
+		m_player->update(m_gameTime.dt);
+		m_entityManager.update(*m_player, m_gameTime.dt);
+		m_map->update(m_gameTime.dt);
+		m_projectileManager->update(m_gameTime.dt);
+		break;
+
+	case gameStateLoading:
+	case gameStateMenuMain:
+	case gameStateMenuSettings:
+	default: m_menu->update();
+		break;
 	}
 }
 
 void Game::render(Graphics::Renderer& renderer)
 {
-	if (m_menu->currentState() != gameStateGame)
+	switch (m_menu->currentState())
 	{
-
-	}
-	else
-	{
+	case gameStateGame:
 		m_player->render(renderer);
 		m_map->render(renderer);
 		m_entityManager.render(renderer);
-
-		// Drawing Projectiles
 		m_projectileManager->render(renderer);
+		break;
+
+	case gameStateLoading:
+	case gameStateMenuMain:
+	case gameStateMenuSettings:
+	default: // m_menu->render(renderer);
+		break;
 	}
 }
 

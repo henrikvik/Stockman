@@ -3,24 +3,27 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 
+#define SHADOW_MAP_RESOLUTION 1024
 
 namespace Graphics
 {
 
 
-    Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-        : simpleForward(gDevice, SHADER_PATH("SimpleForward.hlsl"), VERTEX_INSTANCE_DESC)
-        , forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_INSTANCE_DESC)
-        , fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
-        , lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
-        , depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
+	Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
+		: simpleForward(gDevice, SHADER_PATH("SimpleForward.hlsl"), VERTEX_INSTANCE_DESC)
+		, forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_INSTANCE_DESC)
+		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
+		, lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
+		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
 		, cube(gDevice)
+		, lightDir(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
 	{
 		this->device = gDevice;
 		this->deviceContext = gDeviceContext;
 		this->backBuffer = backBuffer;
 
 		createInstanceBuffer();
+		createShadowMap();
 		initialize(gDevice, gDeviceContext);
 
 		viewPort = { 0 };
@@ -39,6 +42,9 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
+		SAFE_RELEASE(shadowDSV);
+		SAFE_RELEASE(shadowSRV);
+		SAFE_RELEASE(shadowSampler);
         resourceManager.release();
 
     }
@@ -56,6 +62,13 @@ namespace Graphics
 		cull();
         writeInstanceData();
 
+		///SUPER ULTRA MEGA ÜBER ARCADE EDITION TEMP
+		lightDir.update(deviceContext, camera->getPos());
+		////
+
+
+		drawShadows();
+
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
@@ -66,6 +79,7 @@ namespace Graphics
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
+		deviceContext->RSSetState(states->CullCounterClockwise());
 
         deviceContext->IASetInputLayout(forwardPlus);
         deviceContext->VSSetShader(forwardPlus, nullptr, 0);
@@ -112,10 +126,22 @@ namespace Graphics
 			grid.getOpaqueIndexList()->getSRV(),
 			grid.getOpaqueLightGridSRV(),
 			grid.getLights()->getSRV(),
+			this->shadowSRV
 		};
 		auto sampler = states->LinearClamp();
-		deviceContext->PSSetShaderResources(0, 3, SRVs);
+		deviceContext->PSSetShaderResources(0, 4, SRVs);
 		deviceContext->PSSetSamplers(0, 1, &sampler);
+		deviceContext->PSSetSamplers(1, 1, &shadowSampler);
+
+		ID3D11Buffer *lightBuffs[] =
+		{
+			lightDir.getShaderBuffer(),
+			lightDir.getMatrixBuffer()
+		};
+		
+		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
+		deviceContext->VSSetConstantBuffers(2, 1, &lightBuffs[1]);
+
 		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 		
 		draw();
@@ -123,39 +149,14 @@ namespace Graphics
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
 		ZeroMemory(SRVs, sizeof(SRVs));
-		deviceContext->PSSetShaderResources(0, 3, SRVs);
+		deviceContext->PSSetShaderResources(0, 4, SRVs);
 
-	
-		//temp
-		//this->drawDeffered();
-		//this->drawToBackbuffer(gbuffer.positionView);
 		deviceContext->RSSetState(states->CullCounterClockwise());
 		SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
 		if ((1 << 15) & tabKeyState)
 		{
 			this->drawToBackbuffer(grid.getDebugSRV());
 		}
-		/*D3D11_BUFFER_DESC bufferDesc = { 0 };
-		bufferDesc.ByteWidth = sizeof(FSQuadVerts);
-		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-		D3D11_SUBRESOURCE_DATA data = { 0 };
-		data.pSysMem = FSQuadVerts;
-
-		ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &FSQuad2));
-		ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("cat.jpg"), nullptr, &view));
-
-
-		bufferDesc.ByteWidth = sizeof(defferedTest);
-		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-		data.pSysMem = defferedTest;
-
-
-		ThrowIfFailed(device->CreateBuffer(&bufferDesc, &data, &defferedTestBuffer));
-
-
-		this->spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext);*/
 	}
 
 
@@ -304,6 +305,22 @@ namespace Graphics
 
     }
 
+	void Renderer::drawShadows()
+	{
+		deviceContext->ClearDepthStencilView(shadowDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
+
+		deviceContext->RSSetViewports(1, &lightDir.getViewPort());
+		deviceContext->IASetInputLayout(forwardPlus);
+		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
+		deviceContext->PSSetShader(nullptr, nullptr, 0);
+		deviceContext->OMSetRenderTargets(0, nullptr, shadowDSV);
+
+		ID3D11Buffer* light = lightDir.getMatrixBuffer();
+		deviceContext->VSSetConstantBuffers(0, 1, &light);
+
+		draw();
+	}
+
     void Renderer::createGUIBuffers()
     {
         struct GUI
@@ -355,6 +372,52 @@ namespace Graphics
 
         ThrowIfFailed(device->CreateBuffer(&desc, &data, &GUIvb));
     }
+
+	void Renderer::createShadowMap()
+	{
+		ID3D11Texture2D* texture;
+
+		D3D11_TEXTURE2D_DESC desc = {};
+		desc.Width = SHADOW_MAP_RESOLUTION;
+		desc.Height = SHADOW_MAP_RESOLUTION;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+		desc.SampleDesc.Count = 1;
+		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+
+
+		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+
+		dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+		srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = desc.MipLevels;
+
+		ThrowIfFailed(device->CreateTexture2D(&desc, NULL, &texture));
+		ThrowIfFailed(device->CreateDepthStencilView(texture, &dsvDesc, &shadowDSV));
+		ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &shadowSRV));
+
+		SAFE_RELEASE(texture);
+
+		D3D11_SAMPLER_DESC sDesc = {};
+		sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+		sDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+		sDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+		sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+		sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+		sDesc.MaxAnisotropy = 0;
+		sDesc.MinLOD = 0;
+		sDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		sDesc.MipLODBias = 0;
+
+		device->CreateSamplerState(&sDesc, &shadowSampler);
+	}
 
     void Renderer::createBlendState()
     {

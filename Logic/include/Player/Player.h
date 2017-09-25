@@ -20,7 +20,9 @@
 #include <Projectile\ProjectileManager.h>
 
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
-#define PLAYER_MOVEMENT_SPEED			0.1f
+#define PLAYER_MOVEMENT_MAX_SPEED		0.5f
+#define PLAYER_MOVEMENT_ACCELERATION	0.005f
+#define PLAYER_JUMP_SPEED				100.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
 
@@ -29,13 +31,26 @@ namespace Logic
 	class Player : public Entity
 	{
 	private:
+
+		enum PlayerState
+		{
+			STANDING,
+			CROUCHING,
+			IN_AIR
+		};
+
 		//ActionManager m_actionManager;
 		WeaponManager m_weaponManager;
 		SkillManager m_skillManager;
 
 		// Stats
+		PlayerState m_playerState;
 		DirectX::SimpleMath::Vector3 m_forward;
+		float m_moveMaxSpeed;
+		btVector3 m_moveDir;
 		float m_moveSpeed;
+		float m_acceleration;
+		float m_jumpSpeed;
 
 		// Mouse
 		float m_mouseSens;
@@ -58,11 +73,9 @@ namespace Logic
 
 		// Movement
 		void move(float deltaTime, DirectX::Keyboard::State* ks);
-		void jump(float deltaTime);
+		void jump();
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
-
-		DirectX::SimpleMath::Vector2 getWindowMidPoint();
 
 	public:
 		Player(btRigidBody* body, btVector3 halfExtent);
@@ -73,6 +86,7 @@ namespace Logic
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);
 		void onCollision(Projectile& other);
+		void render(Graphics::Renderer& renderer); 
 
 		void saveToFile();
 		void readFromFile();

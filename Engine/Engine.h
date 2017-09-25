@@ -32,7 +32,6 @@ private:
 	std::unique_ptr<DirectX::Mouse> mMouse;
 	bool isFullscreen;
 
-	bool initializeGame();
 	void initializeWindow();
 	HRESULT createSwapChain();
 	long long timer();

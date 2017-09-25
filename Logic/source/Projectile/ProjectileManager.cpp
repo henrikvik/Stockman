@@ -19,7 +19,7 @@ void ProjectileManager::clear()
 void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward)
 {
 	// Create body
-	btRigidBody* body = m_physPtr->createBody(Sphere(position + forward, btVector3(), pData.scale), 10.f, false);
+	btRigidBody* body = m_physPtr->createBody(Sphere(position + (forward * 2), btVector3(), pData.scale), 10.f, false);
 	// Set gravity modifier
 	body->setGravity(btVector3(0, pData.gravityModifier, 0));
 	// Create projectile
@@ -32,15 +32,43 @@ void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position,
 	//printf("projs: %d\n", m_projectiles.size());
 }
 
-void ProjectileManager::removeProjectile()
+void ProjectileManager::removeProjectile(Projectile* p)
 {
+	m_physPtr->removeRigidBody(p->getRigidbody());
+	p->destroyBody();
+	delete p;
+	
+	int found = -1;
+	size_t nrProjectiles = m_projectiles.size();
+	for (size_t i = nrProjectiles; i-- && found == -1; )
+	{
+		if (m_projectiles[nrProjectiles - (i + 1)] == p)
+			found = i + 1;
+	}
 
+	m_projectiles.erase(m_projectiles.begin() + found);
+}
+
+void ProjectileManager::removeProjectile(Projectile* p, int index)
+{
+	m_physPtr->removeRigidBody(p->getRigidbody());
+	p->destroyBody();
+	delete p;
+	m_projectiles.erase(m_projectiles.begin() + index);
 }
 
 void Logic::ProjectileManager::update(float deltaTime)
 {
-	for (Projectile* p : m_projectiles)
+	for (size_t i = 0; i < m_projectiles.size(); i++)
+	{
+		Projectile* p = m_projectiles[i];
 		p->update(deltaTime);
+		if (p->shouldRemove() || p->getTTL() < 0.f)		// Check remove flag and ttl
+		{
+			removeProjectile(p, i);
+			i--;
+		}
+	}
 }
 
 void Logic::ProjectileManager::render(Graphics::Renderer& renderer)

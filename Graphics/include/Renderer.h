@@ -18,6 +18,7 @@
 namespace Graphics
 {
 
+
     struct  TempCube
     {
         ID3D11Buffer * vertexBuffer;
@@ -138,6 +139,13 @@ namespace Graphics
         TempCube cube;
         ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
+		
+
+		////LITE TEMP
+		DirectionalLight lightDir;
+		ID3D11DepthStencilView* shadowDSV;
+		ID3D11ShaderResourceView* shadowSRV;
+		ID3D11SamplerState* shadowSampler;
 
 
         void createInstanceBuffer();
@@ -146,11 +154,13 @@ namespace Graphics
         void writeInstanceData();
         void draw();
         void drawGUI();
+		void drawShadows();
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
         void createBlendState();
         void createGUIBuffers();
+		void createShadowMap();
     };
 };
