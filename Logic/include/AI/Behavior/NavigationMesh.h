@@ -21,11 +21,14 @@ namespace Logic
 			//NavigationMesh* operator=(NavigationMesh const &other);
 			~NavigationMesh();
 
-			void createTestMesh();
 			void addTriangle(Triangle const &triangle);
+			void createNodesFromTriangles();
+
 			const std::vector<Triangle>& getList() const;
+			const std::vector<DirectX::SimpleMath::Vector3>& getNodes() const;
 		private:
 			std::vector<Triangle> triangleList;
+			std::vector<DirectX::SimpleMath::Vector3> nodes;
 	};
 }
 

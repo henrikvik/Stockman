@@ -38,7 +38,7 @@ void EnemyTest::onCollision(Player& other)
 
 void EnemyTest::updateSpecific(Player const &player, float deltaTime)
 {
-	// use the behavoiur to use shareable move patterns
+	// use the behavior to use shareable patterns
 }
 
 void EnemyTest::updateDead(float deltaTime)

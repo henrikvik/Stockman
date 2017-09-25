@@ -6,6 +6,7 @@ Enemy::Enemy(btRigidBody* body, btVector3 halfExtent, float health, float baseDa
 : Entity(body, halfExtent)
 {
 	m_behavior = nullptr;
+
 	m_health = health;
 	m_baseDamage = baseDamage;
 	m_enemyType = enemyType;
@@ -17,6 +18,7 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
 {
 	if (m_behavior)
 		delete m_behavior;
+	m_behavior = nullptr;
 
 	switch (id) 
 	{
