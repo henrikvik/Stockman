@@ -5,7 +5,7 @@
 
 #define SHADOW_MAP_RESOLUTION 2048
 
-#define USE_TEMP_CUBE true
+#define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
 
 
