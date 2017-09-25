@@ -74,7 +74,6 @@ void Logic::CardManager::shuffle(int times)
 {
 	for (int i = 0; i < times; i++)
 	{
-		/*std::random_shuffle(m_deck.begin(), m_deck.end(), m_deck);*/
 		std::random_shuffle(m_deck.begin(), m_deck.end());
 	}
 }

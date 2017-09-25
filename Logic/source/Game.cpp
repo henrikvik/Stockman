@@ -50,7 +50,8 @@ void Game::init()
 	m_cardManager->createDeck(5);
 	m_cardManager->shuffle(1);
 	m_cardManager->pickThree(true);
-	m_cardManager->pick(2);
+	Card card = m_cardManager->pick(2);
+	/*m_player->getStatusManager()->addUpgrade(card.getUpgradesID());*/
 }
 
 void Game::clear()
