@@ -33,3 +33,8 @@ void Logic::MenuState::updateOnPress(int posX, int posY)
 		m_buttons.at(i)->updateOnPress(posX, posY);
 	}
 }
+
+Graphics::MenuInfo Logic::MenuState::getMenuInfo() const
+{
+    return m_menu;
+}
