@@ -67,4 +67,10 @@ namespace Graphics
 		std::vector<ButtonInfo*> m_buttons;		//< List of buttons on current menu
 		std::string m_menuTexture;			//< file path for the menu background ska bytas till enums
 	};
+
+    struct TriangleVertex
+    {
+        float x, y, z;
+        float u, v;
+    };
 };

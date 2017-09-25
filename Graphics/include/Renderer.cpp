@@ -333,11 +333,44 @@ namespace Graphics
 
 		draw();
 	}
+    //fills the button vertex buffer with button info;
+    void Renderer::mapButtons(ButtonInfo info)
+    {
+
+        //moves the buttons to ndc space
+        TriangleVertex triangleVertices[6] =
+        {
+            (info.m_rek.x + info.m_rek.width ) / WIN_WIDTH, (info.m_rek.y + info.m_rek.height) / WIN_HEIGHT, 0.0f,	//v0 pos
+            1.0f, 1.0f,
+
+            info.m_rek.x / WIN_WIDTH, (info.m_rek.y + info.m_rek.height) / WIN_HEIGHT, 0.0f,	//v1
+            0.0f, 1.0f,
+
+            info.m_rek.x / WIN_WIDTH, info.m_rek.y / WIN_HEIGHT, 0.0f, //v2
+            0.0f,  0.0f,
+
+            //t2
+            info.m_rek.x / WIN_WIDTH, info.m_rek.y / WIN_HEIGHT, 0.0f,	//v2 pos
+            0.0f, 0.0f,
+
+            (info.m_rek.x + info.m_rek.width) / WIN_WIDTH, info.m_rek.y / WIN_HEIGHT, 0.0f,	//v3
+            1.0f, 0.0f,
+
+            info.m_rek.x / WIN_WIDTH, (info.m_rek.y + info.m_rek.height) / WIN_HEIGHT, 0.0f, //v1
+            0.0f,  0.0f,
+        };
+        
+        D3D11_MAPPED_SUBRESOURCE data = { 0 };
+        ThrowIfFailed(deviceContext->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
+        memcpy(data.pData, triangleVertices, sizeof(TriangleVertex) * 6);
+        deviceContext->Unmap(buttonQuad, 0);
+
+    }
 
     //draws the menu
     void Renderer::drawMenu(Graphics::MenuInfo info)
     {
-
+        auto test = info;
 
 
 
@@ -459,11 +492,6 @@ namespace Graphics
     void Renderer::createMenuVBS()
     {
         //menu fullscreen quad
-        struct TriangleVertex
-        {
-            float x, y, z;
-            float u, v;
-        };
 
         TriangleVertex triangleVertices[6] =
         {

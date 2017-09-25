@@ -171,6 +171,8 @@ namespace Graphics
         void drawGUI();
 		void drawShadows();
 
+        void mapButtons(ButtonInfo info);
+
 
         
 		
