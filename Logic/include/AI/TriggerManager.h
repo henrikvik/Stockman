@@ -22,12 +22,17 @@ namespace Logic
 	class TriggerManager 
 	{
 		private:
-			std::vector<Trigger> triggers;
+			std::vector<Trigger*> m_triggers;
 		public:
 			TriggerManager();
 			~TriggerManager();
 
+			void addTrigger(Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects);
+
 			void update(float deltaTime);
+			void render(Graphics::Renderer &renderer);
+	
+			std::vector<Trigger*>& getTriggers();
 	};
 }
 

@@ -18,7 +18,7 @@ Entity::~Entity()
 	// ALL physics is getting cleared by the Physics class, 
 }
 
-void Logic::Entity::destroyBody()
+void Entity::destroyBody()
 {
 	if (m_body)
 	{
@@ -46,7 +46,7 @@ void Entity::update(float deltaTime)
 	updateGraphics();
 }
 
-void Logic::Entity::updateGraphics()
+void Entity::updateGraphics()
 {
 	// Get the new transformation from bulletphysics
 	setWorldTranslation(getTransformMatrix());
@@ -62,6 +62,11 @@ void Entity::affect(int stacks, Effect const &effect, float dt) {}
 btRigidBody* Entity::getRigidbody()
 {
 	return m_body;
+}
+
+StatusManager& Entity::getStatusManager()
+{
+	return m_statusManager;
 }
 
 DirectX::SimpleMath::Vector3 Entity::getPosition() const
@@ -96,7 +101,7 @@ DirectX::SimpleMath::Matrix Entity::getTransformMatrix() const
 	DirectX::SimpleMath::Matrix transformMatrix(m);
 
 	//Find the scaling matrix
-	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX(), m_halfextent.getY(), m_halfextent.getZ());
+	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);
 
 	// Deleting the old created variables from memory
 	delete m;

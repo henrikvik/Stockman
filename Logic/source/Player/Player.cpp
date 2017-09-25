@@ -69,6 +69,14 @@ void Player::onCollision(Projectile& other)
 
 }
 
+void Player::affect(int stacks, Effect const & effect, float deltaTime)
+{
+	int flags = effect.getStandards()->flags;
+
+	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
+		m_acceleration = 5.f;
+}
+
 void Player::saveToFile()
 {
 
@@ -228,8 +236,6 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-	DirectX::SimpleMath::Vector2 midPoint = getWindowMidPoint();
-
 	m_camYaw	+= m_mouseSens * (ms->x);
 	m_camPitch	-= m_mouseSens * (ms->y);
 
@@ -260,20 +266,10 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 void Player::render(Graphics::Renderer & renderer)
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
-	Object::render(renderer);
+//	Object::render(renderer);
 
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
-}
-
-DirectX::SimpleMath::Vector2 Logic::Player::getWindowMidPoint()
-{
-	HWND hwnd = FindWindow(NULL, "Stort spel");
-
-	RECT rect;
-	GetWindowRect(hwnd, &rect);
-
-	return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
 }
 
 DirectX::SimpleMath::Vector3 Player::getForward()

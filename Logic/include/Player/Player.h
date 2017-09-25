@@ -77,8 +77,6 @@ namespace Logic
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
-		DirectX::SimpleMath::Vector2 getWindowMidPoint();
-
 	public:
 		Player(btRigidBody* body, btVector3 halfExtent);
 		~Player();
@@ -88,6 +86,7 @@ namespace Logic
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);
 		void onCollision(Projectile& other);
+		void affect(int stacks, Effect const &effect, float deltaTime);
 		void render(Graphics::Renderer& renderer); 
 
 		void saveToFile();
