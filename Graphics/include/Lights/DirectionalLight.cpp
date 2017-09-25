@@ -3,6 +3,7 @@
 using namespace DirectX::SimpleMath;
 #define PI 3.14159265
 #define SUNSET_TIME 0.4f
+#define DAY_NIGHT_ON false
 
 DirectionalLight::DirectionalLight(ID3D11Device * device, int width, int height)
 {
@@ -11,7 +12,7 @@ DirectionalLight::DirectionalLight(ID3D11Device * device, int width, int height)
 	sunDownColor = Vector3(2, 0.5, -1);
 	
 
-	projection = DirectX::XMMatrixOrthographicRH(100.f, 100.f, 1, 100);
+	projection = DirectX::XMMatrixOrthographicRH(100.f, 100.f, 1, 200);
 	view = DirectX::XMMatrixLookAtRH(pos, Vector3(0, 0, 0), Vector3(0, 1, 0));
 
 	matrixData.vp = view * projection;
@@ -54,8 +55,11 @@ void DirectionalLight::update(ID3D11DeviceContext * context, Vector3 offset)
 	static float rotationDeg = 0;
 
 	//Enable to get the day noght solko
-	//rotationDeg += 0.01745 * 0.25 * 0.25;
+#if DAY_NIGHT_ON
+	rotationDeg += 0.01745 * 0.25;
+#else
 	rotationDeg = 3.14 * 0.25;
+#endif
 
 	if (rotationDeg >= PI * 2)
 		rotationDeg = 0;
