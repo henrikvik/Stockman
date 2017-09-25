@@ -34,7 +34,8 @@ cbuffer InstanceOffsetBuffer : register(b3)
     uint instanceOffset;
 }
 
-struct Light {
+struct Light 
+{
 	float4 positionVS;
 	float3 positionWS;
 	float range;
