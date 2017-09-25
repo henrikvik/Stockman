@@ -34,7 +34,9 @@ namespace Graphics
 		states = new DirectX::CommonStates(device);
 		grid.initialize(camera, device, deviceContext, &resourceManager);
 
-        menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
+        //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
+        loadModellessTextures();
+        createMenuVBS();
     }
 
 
@@ -196,8 +198,9 @@ namespace Graphics
     //loads the textures for menu and GUI
     void Renderer::loadModellessTextures()
     {
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, L"Resource/textures/cat.jpg", nullptr, &menuTexture));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, L"Resource/textures/cat.jpg", nullptr, &GUITexture));
+       
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, L"Resources/Textures/cat.jpg", nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, L"Resources/Textures/cat.jpg", nullptr, &GUITexture));
 
     }
 
@@ -332,17 +335,24 @@ namespace Graphics
 	}
 
     //draws the menu
-    void Renderer::drawMenu(Graphics::MenuInfo * info)
+    void Renderer::drawMenu(Graphics::MenuInfo info)
     {
-        menuSprite->Begin();
-        DirectX::SimpleMath::Vector2 temp;
-        for (size_t i = 0; i < info->m_buttons.size(); i++)
+
+
+
+
+
+
+        /*menuSprite->Begin(DirectX::SpriteSortMode_Deferred);
+        DirectX::SimpleMath::Vector2 temp = {0.0f, 0.0f};
+        DirectX::SimpleMath::Rectangle test(200, 200, 200, 200);
+        for (size_t i = 0; i < info.m_buttons.size(); i++)
         {
-            temp.x = info->m_buttons.at(i)->m_rek.x + info->m_buttons.at(i)->m_rek.width;
-            temp.y = info->m_buttons.at(i)->m_rek.y + info->m_buttons.at(i)->m_rek.height;
-            menuSprite->Draw(menuTexture, temp, DirectX::Colors::White);
+            temp.x = info.m_buttons.at(i)->m_rek.x + info.m_buttons.at(i)->m_rek.width;
+            temp.y = info.m_buttons.at(i)->m_rek.y + info.m_buttons.at(i)->m_rek.height;
+            menuSprite->Draw(menuTexture, test, DirectX::Colors::White);
         }
-        menuSprite->End();
+        menuSprite->End();*/
 
     }
 
@@ -444,6 +454,57 @@ namespace Graphics
 
 		device->CreateSamplerState(&sDesc, &shadowSampler);
 	}
+
+    //creates the vertexbuffers the menu uses.
+    void Renderer::createMenuVBS()
+    {
+        //menu fullscreen quad
+        struct TriangleVertex
+        {
+            float x, y, z;
+            float u, v;
+        };
+
+        TriangleVertex triangleVertices[6] =
+        {
+            1.f, -1.f, 0.0f,	//v0 pos
+            1.0f, 1.0f,
+
+            -1.f, -1.f, 0.0f,	//v1
+            0.0f, 1.0f,
+
+            -1.f, 1.f, 0.0f, //v2
+            0.0f,  0.0f,
+
+            //t2
+            -1.f, 1.f, 0.0f,	//v0 pos
+            0.0f, 0.0f,
+
+            1.f, 1.f, 0.0f,	//v1
+            1.0f, 0.0f,
+
+            1.f, -1.f, 0.0f, //v2
+            1.0f, 1.0f
+        };
+
+
+        D3D11_BUFFER_DESC desc = {0};
+
+        desc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
+        desc.ByteWidth = sizeof(TriangleVertex);
+
+        D3D11_SUBRESOURCE_DATA data = { 0 };
+        data.pSysMem = triangleVertices;
+
+        ThrowIfFailed(device->CreateBuffer(&desc, &data, &menuQuad));
+
+        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+        desc.Usage = D3D11_USAGE_DYNAMIC;
+
+        ThrowIfFailed(device->CreateBuffer(&desc, &data, &buttonQuad));
+
+
+    }
 
     void Renderer::createBlendState()
     {

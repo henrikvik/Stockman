@@ -106,6 +106,7 @@ namespace Graphics
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
 		virtual ~Renderer();
         void render(Camera * camera);
+        void drawMenu(Graphics::MenuInfo info);
         void queueRender(RenderInfo * renderInfo);
         void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
 
@@ -149,12 +150,15 @@ namespace Graphics
 
 
 
-        std::unique_ptr<DirectX::SpriteBatch> menuSprite;
+        //std::unique_ptr<DirectX::SpriteBatch> menuSprite;
         ID3D11ShaderResourceView * menuTexture;
         ID3D11ShaderResourceView * GUITexture;
 
         ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
+
+        ID3D11Buffer * menuQuad;
+        ID3D11Buffer * buttonQuad;
 
 
         void createInstanceBuffer();
@@ -168,7 +172,7 @@ namespace Graphics
 		void drawShadows();
 
 
-        void drawMenu(Graphics::MenuInfo *info);
+        
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
@@ -176,5 +180,6 @@ namespace Graphics
         void createBlendState();
         void createGUIBuffers();
 		void createShadowMap();
+        void createMenuVBS();
     };
 };
