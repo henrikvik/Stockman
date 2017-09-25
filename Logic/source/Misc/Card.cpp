@@ -8,7 +8,7 @@ Card::Card()
 	m_description = "";
 }
 
-Card::Card(std::string name, std::string texture, std::string description, std::vector<int> upgradesID, DirectX::SimpleMath::Vector2 texStart, DirectX::SimpleMath::Vector2 texEnd)
+Card::Card(std::string name, std::string texture, std::string description, std::vector<int> upgradesID, DirectX::SimpleMath::Vector2 texStart, DirectX::SimpleMath::Vector2 texEnd, bool isEffect)
 {
 	m_name = name;
 	m_texture = texture;
@@ -16,6 +16,7 @@ Card::Card(std::string name, std::string texture, std::string description, std::
 	m_upgradesID = upgradesID;
 	m_TexStart = texStart;
 	m_TexEnd = texEnd;
+	m_isEffect = isEffect;
 }
 
 Card::~Card() 

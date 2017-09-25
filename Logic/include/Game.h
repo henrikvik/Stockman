@@ -13,6 +13,7 @@
 #include <Projectile\ProjectileManager.h>
 #include <AI/EntityManager.h>
 #include <Misc\GameTime.h>
+#include <Misc\CardManager.h>
 
 // DirectX Includes
 #include <Windows.h>

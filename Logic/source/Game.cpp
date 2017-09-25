@@ -47,9 +47,10 @@ void Game::init()
 	m_cardManager->init();
 
 	//testing
-	/*m_cardManager->createDeck(2);*/
-
-	return result;
+	m_cardManager->createDeck(5);
+	m_cardManager->shuffle(1);
+	m_cardManager->pickThree(true);
+	m_cardManager->pick(2);
 }
 
 void Game::clear()

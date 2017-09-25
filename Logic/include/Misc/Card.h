@@ -12,7 +12,7 @@ namespace Logic
 	{
 	public:
 		Card();
-		Card(std::string name, std::string texture, std::string description, std::vector<int> upgradesID, DirectX::SimpleMath::Vector2 texStart, DirectX::SimpleMath::Vector2 texEnd);
+		Card(std::string name, std::string texture, std::string description, std::vector<int> upgradesID, DirectX::SimpleMath::Vector2 texStart, DirectX::SimpleMath::Vector2 texEnd, bool isEffect);
 		~Card();
 
 		std::string getName() const;
@@ -29,6 +29,7 @@ namespace Logic
 		std::vector<int> m_upgradesID;
 		DirectX::SimpleMath::Vector2 m_TexStart;
 		DirectX::SimpleMath::Vector2 m_TexEnd;
+		bool m_isEffect;
 	};
 }
 
