@@ -266,7 +266,7 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 void Player::render(Graphics::Renderer & renderer)
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
-	Object::render(renderer);
+//	Object::render(renderer);
 
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
