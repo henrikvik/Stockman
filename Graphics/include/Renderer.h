@@ -35,6 +35,8 @@ namespace Graphics
 
         DepthStencil depthStencil;
 
+		DepthStencil shadowDepthStencil;
+
 		LightGrid grid;
 		DirectX::CommonStates *states;
 
@@ -61,8 +63,6 @@ namespace Graphics
 
 		////LITE TEMP
 		DirectionalLight lightDir;
-		ID3D11DepthStencilView* shadowDSV;
-		ID3D11ShaderResourceView* shadowSRV;
 		ID3D11SamplerState* shadowSampler;
 
 
