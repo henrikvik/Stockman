@@ -4,6 +4,7 @@ using namespace Logic;
 
 EnemyTest::EnemyTest(btRigidBody* body, btVector3 halfExtent)
 : Enemy(body, halfExtent, 10, 5, 3, 1) { //just test values
+	setBehavior(TEST);
 }
 
 

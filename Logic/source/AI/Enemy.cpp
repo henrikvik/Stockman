@@ -11,7 +11,18 @@ Enemy::Enemy(btRigidBody* body, btVector3 halfExtent, float health, float baseDa
 	m_enemyType = enemyType;
 
 	//animation todo
-	m_behavior = new TestBehavior();
+}
+
+void Enemy::setBehavior(BEHAVIOR_ID id)
+{
+	if (m_behavior)
+		delete m_behavior;
+
+	switch (id) 
+	{
+		case TEST:
+			m_behavior = new TestBehavior();
+	}
 }
 
 Enemy::~Enemy() {
