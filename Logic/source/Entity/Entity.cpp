@@ -64,6 +64,11 @@ btRigidBody* Entity::getRigidbody()
 	return m_body;
 }
 
+StatusManager& Entity::getStatusManager()
+{
+	return m_statusManager;
+}
+
 DirectX::SimpleMath::Vector3 Entity::getPosition() const
 {
 	return DirectX::SimpleMath::Vector3(m_transform->getOrigin());
@@ -96,7 +101,7 @@ DirectX::SimpleMath::Matrix Entity::getTransformMatrix() const
 	DirectX::SimpleMath::Matrix transformMatrix(m);
 
 	//Find the scaling matrix
-	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX(), m_halfextent.getY(), m_halfextent.getZ());
+	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);
 
 	// Deleting the old created variables from memory
 	delete m;

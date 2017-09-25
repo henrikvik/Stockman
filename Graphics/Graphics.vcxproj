@@ -19,6 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\Animation\Animation.cpp" />
+    <ClCompile Include="include\Animation\Joint.cpp" />
+    <ClCompile Include="include\Animation\JointTransform.cpp" />
+    <ClCompile Include="include\Animation\KeyFrame.cpp" />
+    <ClCompile Include="include\Animation\Skeleton.cpp" />
     <ClCompile Include="include\Camera.cpp" />
     <ClCompile Include="include\Lights\DirectionalLight.cpp" />
     <ClCompile Include="include\Lights\LightGrid.cpp" />
@@ -30,11 +35,16 @@
     <ClCompile Include="include\Resources\MeshManager.cpp" />
     <ClCompile Include="include\Resources\ResourceManager.cpp" />
     <ClCompile Include="include\Resources\Shader.cpp" />
-    <ClCompile Include="include\Resources\Skeleton.cpp" />
-    <ClCompile Include="include\Resources\SkeletonManager.cpp" />
     <ClCompile Include="include\Resources\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Animation\AnimatedTestCube.h" />
+    <ClInclude Include="include\Animation\AnimatedVertex.h" />
+    <ClInclude Include="include\Animation\Animation.h" />
+    <ClInclude Include="include\Animation\Joint.h" />
+    <ClInclude Include="include\Animation\JointTransform.h" />
+    <ClInclude Include="include\Animation\KeyFrame.h" />
+    <ClInclude Include="include\Animation\Skeleton.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Datatypes.h" />
     <ClInclude Include="include\Graphics.h" />
@@ -49,11 +59,12 @@
     <ClInclude Include="include\Resources\MeshManager.h" />
     <ClInclude Include="include\Resources\ResourceManager.h" />
     <ClInclude Include="include\Resources\Shader.h" />
-    <ClInclude Include="include\Resources\Skeleton.h" />
-    <ClInclude Include="include\Resources\SkeletonManager.h" />
     <ClInclude Include="include\Resources\TextureManager.h" />
     <ClInclude Include="include\Structs.h" />
+    <ClInclude Include="include\Utility\StructuredBuffer.h" />
+    <ClInclude Include="include\TempCube.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
+    <ClInclude Include="include\Utility\ConstantBuffer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -137,6 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
@@ -153,6 +165,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
@@ -171,6 +184,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -191,6 +205,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

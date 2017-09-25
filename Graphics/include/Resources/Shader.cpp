@@ -1,5 +1,6 @@
 #include "Shader.h"
 #include "../ThrowIfFailed.h"
+#include <Engine\Constants.h>
 #include <d3dcompiler.h>
 #include <iostream>
 #include <Windows.h>
@@ -14,6 +15,11 @@ namespace Graphics
 
     Shader::Shader(ID3D11Device * device, LPCWSTR shaderPath, std::initializer_list<D3D11_INPUT_ELEMENT_DESC> inputDesc)
     {
+        inputLayout = nullptr;
+        vertexShader = nullptr;
+        pixelShader = nullptr;
+
+
         ID3DBlob *vsShader, *psShader, *errorMsg;
 
         HRESULT vshr = D3DCompileFromFile(shaderPath, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", SHADER_COMPILE_FLAGS, NULL, &vsShader, &errorMsg);
@@ -30,17 +36,20 @@ namespace Graphics
             throw "Failed to compile Pixel Shader";
         }
 
-        ThrowIfFailed(device->CreateInputLayout(inputDesc.begin(), inputDesc.size(), vsShader->GetBufferPointer(), vsShader->GetBufferSize(), &inputLayout));
-        ThrowIfFailed(device->CreateVertexShader(vsShader->GetBufferPointer(), vsShader->GetBufferSize(), NULL, &vertexShader));
+        if (inputDesc.size() > 0)
+        {
+            ThrowIfFailed(device->CreateInputLayout(inputDesc.begin(), inputDesc.size(), vsShader->GetBufferPointer(), vsShader->GetBufferSize(), &inputLayout));
+        }
 
+        ThrowIfFailed(device->CreateVertexShader(vsShader->GetBufferPointer(), vsShader->GetBufferSize(), NULL, &vertexShader));
         ThrowIfFailed(device->CreatePixelShader(psShader->GetBufferPointer(), psShader->GetBufferSize(), NULL, &pixelShader));
     }
 
     Shader::~Shader()
     {
-        inputLayout->Release();
-        vertexShader->Release();
-        pixelShader->Release();
+        SAFE_RELEASE(inputLayout);
+        SAFE_RELEASE(vertexShader);
+        SAFE_RELEASE(pixelShader);
     }
 
     //void Shader::setShader(ID3D11DeviceContext * deviceContext, int flags)
