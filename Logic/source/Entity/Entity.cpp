@@ -15,7 +15,7 @@ Entity::Entity(btRigidBody* body, btVector3 halfextent)
 
 Entity::~Entity() 
 {
-	// ALL physics is getting cleared by the Physics class, 
+	// ALL physics is getting cleared by the Physics class, but you can delete an entity early by calling destroyBody() below
 }
 
 void Entity::destroyBody()

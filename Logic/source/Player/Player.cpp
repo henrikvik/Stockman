@@ -74,7 +74,10 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 	int flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
-		m_acceleration = 5.f;
+	{
+		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f, 0));
+		m_playerState = PlayerState::IN_AIR;
+	}
 }
 
 void Player::saveToFile()

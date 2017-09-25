@@ -64,8 +64,8 @@ void Game::update(float deltaTime)
 	{
 	case gameStateGame:
 		m_physics->update(m_gameTime.dt);
-		m_player->update(m_gameTime.dt);
 		m_entityManager.update(*m_player, m_gameTime.dt);
+		m_player->update(m_gameTime.dt);
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
 		break;
