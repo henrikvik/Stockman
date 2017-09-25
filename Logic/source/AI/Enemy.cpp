@@ -40,6 +40,8 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 		damage(m_health);
 	if (flags & Effect::EFFECT_ON_FIRE)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
+	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
+		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f, 0));
 }
 
 float Enemy::getHealth() const

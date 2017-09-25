@@ -42,6 +42,23 @@ namespace Logic
 		btVector3	m_end;
 	};
 
+	class Triangle
+	{
+	public:
+		Triangle(btVector3 p1, btVector3 p2, btVector3 p3)
+		{
+		//	memcpy(point, (btVector3[3]) { p1, p2, p3 }, 3 * sizeof(btVector3));
+		}
+
+		btVector3 operator[] (int i)
+		{
+			return point[i];
+		}
+
+	private:
+		btVector3 point[3];
+	};
+
 	////////////////////////////////////////////////////////////
 	// Base shape primitive
 	//  No use on it's own

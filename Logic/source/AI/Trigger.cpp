@@ -44,18 +44,15 @@ void Trigger::onCollision(Entity& other)
 {
 	if (m_active)
 	{
-		if (Player* p = dynamic_cast<Player*>(&other))
-		{
-			// Sending statuses over to player
-			for (StatusManager::UPGRADE_ID u : getStatusManager().getActiveUpgrades())
-				p->getStatusManager().addUpgrade(u);
-			for (std::pair<int, StatusManager::EFFECT_ID> effect: getStatusManager().getActiveEffectsIDs())
-				p->getStatusManager().addStatus(effect.second, effect.first, true);
+		// Sending statuses over to player
+		for (StatusManager::UPGRADE_ID u : getStatusManager().getActiveUpgrades())
+			other.getStatusManager().addUpgrade(u);
+		for (std::pair<int, StatusManager::EFFECT_ID> effect: getStatusManager().getActiveEffectsIDs())
+			other.getStatusManager().addStatus(effect.second, effect.first, true);
 
-			// Starting Cooldown
-			m_cooldown = m_maxCooldown;
-			m_active = false;
-		}
+		// Starting Cooldown
+		m_cooldown = m_maxCooldown;
+		m_active = false;
 	}
 }
 
