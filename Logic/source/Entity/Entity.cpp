@@ -64,6 +64,11 @@ btRigidBody* Entity::getRigidbody()
 	return m_body;
 }
 
+StatusManager& Entity::getStatusManager()
+{
+	return m_statusManager;
+}
+
 DirectX::SimpleMath::Vector3 Entity::getPosition() const
 {
 	return DirectX::SimpleMath::Vector3(m_transform->getOrigin());

@@ -86,6 +86,7 @@ namespace Logic
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);
 		void onCollision(Projectile& other);
+		void affect(int stacks, Effect const &effect, float deltaTime);
 		void render(Graphics::Renderer& renderer); 
 
 		void saveToFile();
