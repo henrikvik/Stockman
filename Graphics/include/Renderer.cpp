@@ -193,6 +193,14 @@ namespace Graphics
         ThrowIfFailed(device->CreateBuffer(&instanceDesc, nullptr, &instanceBuffer));
     }
 
+    //loads the textures for menu and GUI
+    void Renderer::loadModellessTextures()
+    {
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, L"Resource/textures/cat.jpg", nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, L"Resource/textures/cat.jpg", nullptr, &GUITexture));
+
+    }
+
     void Renderer::cull()
     {
         instanceQueue.clear();
@@ -323,18 +331,22 @@ namespace Graphics
 		draw();
 	}
 
+    //draws the menu
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
         menuSprite->Begin();
-
+        DirectX::SimpleMath::Vector2 temp;
         for (size_t i = 0; i < info->m_buttons.size(); i++)
         {
-            
+            temp.x = info->m_buttons.at(i)->m_rek.x + info->m_buttons.at(i)->m_rek.width;
+            temp.y = info->m_buttons.at(i)->m_rek.y + info->m_buttons.at(i)->m_rek.height;
+            menuSprite->Draw(menuTexture, temp, DirectX::Colors::White);
         }
         menuSprite->End();
 
     }
 
+    //creates a vetrex buffer for the GUI
     void Renderer::createGUIBuffers()
     {
         struct GUI

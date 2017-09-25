@@ -138,8 +138,7 @@ namespace Graphics
 
         ///// SUPER TEMP
         TempCube cube;
-        ID3D11Buffer *GUIvb;
-        ID3D11BlendState *transparencyBlendState;
+       
 		
 
 		////LITE TEMP
@@ -148,10 +147,19 @@ namespace Graphics
 		ID3D11ShaderResourceView* shadowSRV;
 		ID3D11SamplerState* shadowSampler;
 
+
+
         std::unique_ptr<DirectX::SpriteBatch> menuSprite;
+        ID3D11ShaderResourceView * menuTexture;
+        ID3D11ShaderResourceView * GUITexture;
+
+        ID3D11Buffer *GUIvb;
+        ID3D11BlendState *transparencyBlendState;
 
 
         void createInstanceBuffer();
+
+        void loadModellessTextures();
 
         void cull();
         void writeInstanceData();
