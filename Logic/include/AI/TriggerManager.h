@@ -27,7 +27,7 @@ namespace Logic
 			TriggerManager();
 			~TriggerManager();
 
-			void addTrigger(Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects);
+			void addTrigger(Cube& cube, float cooldown, Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects);
 
 			void update(float deltaTime);
 			void render(Graphics::Renderer &renderer);

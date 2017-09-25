@@ -12,8 +12,7 @@ KeyFrame::~KeyFrame()
 
 std::vector<Matrix> KeyFrame::interpolateTo(KeyFrame const & keyFrame, float progress) const
 {
-    std::vector<Matrix> interpolatedTransforms;
-    interpolatedTransforms.resize(jointTransforms.size());
+    std::vector<Matrix> interpolatedTransforms(jointTransforms.size());
 
     for (int i = 0; i < jointTransforms.size(); i++)
     {

@@ -12,9 +12,10 @@ TriggerManager::~TriggerManager()
 	m_triggers.clear();
 }
 
-void TriggerManager::addTrigger(Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects)
+// Adds a trigger, with certain cooldown & buffs, (cooldown is is ms)
+void TriggerManager::addTrigger(Cube& cube, float cooldown, Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects)
 {
-	Trigger* trigger = new Trigger(physics.createBody(Cube({ 5, 1, 5 }, { 0, 0 ,0 }, { 5, 5, 5 }), 0.f, true), {5, 5, 5}, 1.f);
+	Trigger* trigger = new Trigger(physics.createBody(cube, TRIGGER_MASS, TRIGGER_IS_SENSOR), cube.getDimensions(), cooldown);
 
 	if (!upgrades.empty())
 		trigger->addUpgrades(upgrades);
@@ -25,12 +26,14 @@ void TriggerManager::addTrigger(Physics& physics, std::vector<StatusManager::UPG
 	m_triggers.push_back(trigger);
 }
 
+// Updates all the triggers cooldowns
 void TriggerManager::update(float deltaTime) 
 {
 	for (Trigger* t : m_triggers)
 		t->update(deltaTime);
 }
 
+// Draws all the triggers
 void TriggerManager::render(Graphics::Renderer & renderer)
 {
 	for (Trigger* trigger : m_triggers)

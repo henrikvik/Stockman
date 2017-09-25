@@ -74,7 +74,10 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 	int flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
-		m_acceleration = 5.f;
+	{
+		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f, 0));
+		m_playerState = PlayerState::IN_AIR;
+	}
 }
 
 void Player::saveToFile()
@@ -97,8 +100,7 @@ void Player::updateSpecific(float deltaTime)
 	// Movement
 	mouseMovement(deltaTime, &ms);
 	move(deltaTime, &ks);
-	if(ks.IsKeyDown(m_jump))
-		jump();
+	jump(deltaTime, &ks);
 	crouch(deltaTime);
 
 	// Weapon swap
@@ -148,11 +150,13 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 {
 	bool nonePressed = true;
 
+	btVector3 accelDir = btVector3(0, 0, 0);
+
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
-		m_moveDir += -dir;
+		accelDir += -dir;
 		nonePressed = false;
 	}
 
@@ -160,7 +164,7 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	if (ks->IsKeyDown(m_moveRight))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
-		m_moveDir += dir;
+		accelDir += dir;
 		nonePressed = false;
 	}
 
@@ -168,7 +172,7 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	if (ks->IsKeyDown(m_moveForward))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
-		m_moveDir += dir;
+		accelDir += dir;
 		nonePressed = false;
 	}
 
@@ -176,14 +180,24 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	if (ks->IsKeyDown(m_moveBack))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
-		m_moveDir += -dir;
+		accelDir += -dir;
 		nonePressed = false;
 	}
 
+	// Air movement TEMP
+	if (m_playerState == PlayerState::IN_AIR)
+	{
+		m_moveDir += m_moveDir * accelDir.dot(btVector3(m_forward.x, 0.f, m_forward.z));
+	}
+	else
+		m_moveDir += accelDir;
+	
+	// Normalize movement direction
 	m_moveDir *= 1000;
 	if (m_moveDir.getX() != 0.f || m_moveDir.getY() != 0.f || m_moveDir.getZ() != 0.f)
 		m_moveDir = btVector3(m_moveDir).normalize();
 
+	// If no movement key is pressed set reduce movespeed for brake effect
 	if (nonePressed)
 	{
 		float toBrake = m_acceleration * deltaTime;
@@ -193,6 +207,7 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 		else if(m_moveSpeed > toBrake)
 			m_moveSpeed -= toBrake;
 	}
+	// If any movement key is pressed add acceleration
 	else
 	{
 		m_moveSpeed += m_acceleration * deltaTime;
@@ -201,28 +216,15 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 			m_moveSpeed = m_moveMaxSpeed;
 	}
 
-	btTransform transform;
-	getRigidbody()->getMotionState()->getWorldTransform(transform);
+	// Update pos from movement direction and speed
+	btTransform transform = getRigidbody()->getWorldTransform();
 	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + m_moveDir * m_moveSpeed);
-	getRigidbody()->getMotionState()->setWorldTransform(transform);
-
-	// Apply final force
-	//rigidBody->setLinearVelocity(rigidBody->getLinearVelocity() + linearVel * deltaTime * m_moveSpeed);
-
-	// Setting movement caps
-	/*btVector3 lv = rigidBody->getLinearVelocity();
-	float x = lv.getX(), y = lv.getY(), z = lv.getZ();
-	float hcap = PLAYER_MOVEMENT_HORIZONTAL_CAP;
-	float vcap = PLAYER_MOVEMENT_VERTICAL_CAP;
-	if (x > hcap || x < -hcap) rigidBody->setLinearVelocity(btVector3((x > 0) ? hcap : -hcap, y, z));
-	if (y > vcap || y < -vcap) rigidBody->setLinearVelocity(btVector3(x, (y > 0) ? vcap : -vcap, z));
-	if (z > hcap || z < -hcap) rigidBody->setLinearVelocity(btVector3(x, y, (z > 0) ? hcap : -hcap));*/
+	getRigidbody()->setWorldTransform(transform);
 }
 
-void Player::jump()
+void Player::jump(float deltaTime, DirectX::Keyboard::State* ks)
 {
-	// jump
-	if (m_playerState != PlayerState::IN_AIR)
+	if (ks->IsKeyDown(m_jump) && m_playerState != PlayerState::IN_AIR)
 	{
 		getRigidbody()->applyCentralImpulse(btVector3(0, m_jumpSpeed, 0));
 		m_playerState = PlayerState::IN_AIR;

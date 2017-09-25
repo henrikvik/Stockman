@@ -114,22 +114,22 @@ static Animation testAnimation = [](){
         { Vector3( 0, 0, 0), Quaternion() },
 
         { Vector3( 2, 0, 0), Quaternion( 1, 0, 0, 0) },
-        { Vector3(-2, 0, 0), Quaternion(-1, 0, 0, 0) },
+        { Vector3(-2, 0, 0), Quaternion( 1, 0, 0, 0) },
         { Vector3( 0, 2, 0), Quaternion( 0, 1, 0, 0) },
-        { Vector3( 0,-2, 0), Quaternion( 0,-1, 0, 0) },
+        { Vector3( 0,-2, 0), Quaternion( 0, 1, 0, 0) },
         { Vector3( 0, 0, 2), Quaternion( 0, 0, 1, 0) },
-        { Vector3( 0, 0,-2), Quaternion( 0, 0,-1, 0) },
+        { Vector3( 0, 0,-2), Quaternion( 0, 0, 1, 0) },
     });
 
     KeyFrame closed2(2.0f, {
         { Vector3(0, 0, 0), Quaternion() },
 
-        { Vector3( 1, 0, 0), Quaternion() },
-        { Vector3(-1, 0, 0), Quaternion() },
-        { Vector3( 0, 1, 0), Quaternion() },
-        { Vector3( 0,-1, 0), Quaternion() },
-        { Vector3( 0, 0, 1), Quaternion() },
-        { Vector3( 0, 0,-1), Quaternion() },
+        { -Vector3( 1, 0, 0), Quaternion( 1, 0, 0, 0) },
+        { -Vector3(-1, 0, 0), Quaternion( 1, 0, 0, 0) },
+        { -Vector3( 0, 1, 0), Quaternion( 0, 1, 0, 0) },
+        { -Vector3( 0,-1, 0), Quaternion( 0, 1, 0, 0) },
+        { -Vector3( 0, 0, 1), Quaternion( 0, 0, 1, 0) },
+        { -Vector3( 0, 0,-1), Quaternion( 0, 0, 1, 0) },
     });
 
     return Animation(2.0f, { closed, open, closed2 });

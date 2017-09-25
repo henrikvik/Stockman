@@ -15,6 +15,9 @@
 	*/
 #pragma endregion
 
+#define TRIGGER_MASS		0.f		// Should always be 0.f, unless debugging
+#define TRIGGER_IS_SENSOR	true	// Should always be false, unless debugging
+
 namespace Logic
 {
 	class Trigger : public Entity
@@ -40,6 +43,7 @@ namespace Logic
 			bool m_active;
 			bool m_reusable;
 			float m_cooldown;
+			float m_maxCooldown;
 	};
 }
 

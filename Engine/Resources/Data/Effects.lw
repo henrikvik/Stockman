@@ -13,9 +13,9 @@
 	"modifiers": 0;
 	"specifics": 0;
 }
-{ // MOVEMENT
+{ // JUMP-PAD
 	"flags": 256; // 0x4
-	"duration": 2500f;
+	"duration": 0f;
 	"modifiers": 0;
 	"specifics": 0;
 }
