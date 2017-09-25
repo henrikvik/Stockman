@@ -14,5 +14,5 @@ Matrix JointTransform::interpolateTo(JointTransform const &other, float progress
 {
     Matrix r = Matrix::CreateFromQuaternion(Quaternion::Slerp(rotation, other.rotation, progress));
     Matrix p = Matrix::CreateTranslation(Vector3::Lerp(position, other.position, progress));
-    return r * p;
+    return p * r;
 }

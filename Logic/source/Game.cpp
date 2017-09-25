@@ -29,7 +29,7 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(m_physics->createBody(Cylinder(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA), 0.f), PLAYER_START_SCA);
+	m_player = new Player(m_physics->createBody(Cylinder(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
 	m_player->init(m_projectileManager);
 
 	// Initializing Menu's
@@ -74,8 +74,8 @@ void Game::update(float deltaTime)
 	{
 	case gameStateGame:
 		m_physics->update(m_gameTime.dt);
-		m_player->update(m_gameTime.dt);
 		m_entityManager.update(*m_player, m_gameTime.dt);
+		m_player->update(m_gameTime.dt);
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
 		break;

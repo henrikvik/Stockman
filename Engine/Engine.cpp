@@ -227,7 +227,7 @@ int Engine::run()
 		prev = currentTime;
         totalTime += deltaTime;
 
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 
@@ -235,56 +235,55 @@ int Engine::run()
 
 			DispatchMessage(&msg);
 		}
-		else
+		
+		//To enable/disable fullscreen
+		DirectX::Keyboard::State ks = this->mKeyboard->GetState();
+		if (ks.F11)
 		{
-			//To enable/disable fullscreen
-			DirectX::Keyboard::State ks = this->mKeyboard->GetState();
-			if (ks.F11)
-			{
-				mSwapChain->SetFullscreenState(!isFullscreen, NULL);
-				this->isFullscreen = !isFullscreen;
-			}
-
-			if (ks.Escape)
-				PostQuitMessage(0);
-
-			game.update(float(deltaTime));
-			game.render(*renderer);
-
-            cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
-
-			//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
-            //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
-
-            //////////////TEMP/////////////////
-            Graphics::RenderInfo staticCube = {
-                true, //bool render;
-                Graphics::ModelID::CUBE, //ModelID meshId;
-                0, //int materialId;
-                DirectX::SimpleMath::Matrix()// DirectX::SimpleMath::Matrix translation;
-            };
-
-            Graphics::RenderInfo staticSphere = {
-                true, //bool render;
-                Graphics::ModelID::SPHERE, //ModelID meshId;
-                0, //int materialId;
-                DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-            };
-
-            //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
-            //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
-            staticCube.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + cosf(totalTime * 0.001f),0 });
-
-            staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + sinf(totalTime * 0.001f),0 });
-
-            renderer->queueRender(&staticCube);
-            renderer->queueRender(&staticSphere);
-            ///////////////////////////////////
-
-
-			renderer->render(&cam);
-			mSwapChain->Present(0, 0);
+			mSwapChain->SetFullscreenState(!isFullscreen, NULL);
+			this->isFullscreen = !isFullscreen;
 		}
+
+		if (ks.Escape)
+			PostQuitMessage(0);
+
+		game.update(float(deltaTime));
+		game.render(*renderer);
+
+        cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+
+		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
+        //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
+
+        //////////////TEMP/////////////////
+        Graphics::RenderInfo staticCube = {
+            true, //bool render;
+            Graphics::ModelID::CUBE, //ModelID meshId;
+            0, //int materialId;
+            DirectX::SimpleMath::Matrix()// DirectX::SimpleMath::Matrix translation;
+        };
+
+        Graphics::RenderInfo staticSphere = {
+            true, //bool render;
+            Graphics::ModelID::SPHERE, //ModelID meshId;
+            0, //int materialId;
+            DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+        };
+
+        //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
+        //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
+        staticCube.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + cosf(totalTime * 0.001f),0 });
+
+        staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + sinf(totalTime * 0.001f),0 });
+
+        renderer->queueRender(&staticCube);
+        renderer->queueRender(&staticSphere);
+        ///////////////////////////////////
+
+
+		renderer->render(&cam);
+		mSwapChain->Present(0, 0);
+		
 		
 	}
 

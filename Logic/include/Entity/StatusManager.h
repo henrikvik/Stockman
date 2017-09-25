@@ -28,11 +28,11 @@ namespace Logic
 		};
 
 		enum EFFECT_ID {
-			ON_FIRE, FREEZE
+			ON_FIRE, FREEZE, BOOST_UP, LAST_ITEM_IN_EFFECTS
 		};
 
 		enum UPGRADE_ID {
-			BOUNCE, P10_AMMO
+			BOUNCE, P10_AMMO, LAST_ITEM_IN_UPGRADES
 		};
 
 		StatusManager();
@@ -41,27 +41,31 @@ namespace Logic
 		void clear();
 		void update(float deltaTime);
 
-		void addStatus(int statusID, int nrOfStacks, bool resetDuration = false);
+		void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, bool resetDuration = false);
 		void removeOneStatus(int statusID);
 		void removeAllStatus(int statusID);
 
 		void addUpgrade(UPGRADE_ID id);
+		Upgrade& getUpgrade(UPGRADE_ID id);
 
 		// nr of stacks and the effect itself
 		std::vector<std::pair<int, Effect*>> getActiveEffects();
-		std::vector<Upgrade>* getUpgrades();
+		// return stack and id of effect
+		std::vector<std::pair<int, StatusManager::EFFECT_ID>> getActiveEffectsIDs();
+		std::vector<UPGRADE_ID>& getActiveUpgrades();
 	private:
-		static const int NR_OF_EFFECTS = 2, NR_OF_UPGRADES = 2;
+		static const int NR_OF_EFFECTS = EFFECT_ID::LAST_ITEM_IN_EFFECTS, NR_OF_UPGRADES = UPGRADE_ID::LAST_ITEM_IN_UPGRADES;
 		static Effect s_effects[NR_OF_EFFECTS];
 		static Upgrade s_upgrades[NR_OF_UPGRADES];
 
 		// m_effectStacksIds[i] = id of the effect at m_effectsStacks[i]
 		std::vector<EffectStack> m_effectStacks; // fast loop speed bad lookup, but worth it? :<
-		std::vector<int> m_effectStacksIds; // mike acton approved (i hop)
+		std::vector<StatusManager::EFFECT_ID> m_effectStacksIds; // mike acton approved (i hop)
+
 
 		void removeEffect(int index);
 
-		std::vector<Upgrade> m_upgrades;
+		std::vector<UPGRADE_ID> m_upgrades;
 	};
 }
 

@@ -62,6 +62,8 @@ void EntityManager::update(Player const &player, float deltaTime)
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 //	printf("t: %f\n", elapsed_secs);
+
+	m_triggerManager.update(deltaTime);
 }
 
 void EntityManager::spawnWave(Physics &physics) 
@@ -74,6 +76,12 @@ void EntityManager::spawnWave(Physics &physics)
 		i += 1;
 		m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 113.f, i * 37.f, i * 124.f }, { 0, 0, 0 }, {3.5f, 0.5f, 0.5f}), 100, false), {0.5f, 0.5f, 0.5f}));
 	}
+
+	// Adds four jump-pads, load these from wave-file in the future
+	m_triggerManager.addTrigger(Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 2500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ -10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 2500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ -10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 2500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 2500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
 }
 
 int EntityManager::getEnemiesAlive() const 
@@ -111,6 +119,8 @@ void EntityManager::render(Graphics::Renderer &renderer)
 	{
 		m_deadEnemies[i]->render(renderer);
 	}
+
+	m_triggerManager.render(renderer);
 }
 
 int EntityManager::getCurrentWave() const 
