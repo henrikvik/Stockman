@@ -33,7 +33,7 @@ namespace Graphics {
 		ID3D11Buffer* getBuffer();
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
-
+        void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
 	private:
 		DirectX::SimpleMath::Vector3 mPos;
 		DirectX::SimpleMath::Vector3 mForward;

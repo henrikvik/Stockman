@@ -20,6 +20,8 @@ private:
 	DirectX::SimpleMath::Matrix view;
 	DirectX::SimpleMath::Matrix projection;
 	DirectX::SimpleMath::Vector4 pos;
+	DirectX::SimpleMath::Vector3 dayColor;
+	DirectX::SimpleMath::Vector3 sunDownColor;
 
 	struct ShaderMatrix
 	{
@@ -29,7 +31,14 @@ private:
 	struct ShaderValues
 	{
 		DirectX::SimpleMath::Vector4 pos;
+		DirectX::SimpleMath::Vector3 color;
+
+		//Value from 0 to 1, when it is 1 the shadows are on
+		float shadowFade;
 	};
+
+	//Clamp a value between min and max
+	float snap(float value, float min, float max);
 
 	ShaderMatrix matrixData;
 	ShaderValues shaderData;
