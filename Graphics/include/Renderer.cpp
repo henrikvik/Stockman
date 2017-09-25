@@ -33,6 +33,8 @@ namespace Graphics
 
 		states = new DirectX::CommonStates(device);
 		grid.initialize(camera, device, deviceContext, &resourceManager);
+
+        menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
     }
 
 
@@ -320,6 +322,18 @@ namespace Graphics
 
 		draw();
 	}
+
+    void Renderer::drawMenu(Graphics::MenuInfo * info)
+    {
+        menuSprite->Begin();
+
+        for (size_t i = 0; i < info->m_buttons.size(); i++)
+        {
+            
+        }
+        menuSprite->End();
+
+    }
 
     void Renderer::createGUIBuffers()
     {

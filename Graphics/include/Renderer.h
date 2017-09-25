@@ -14,6 +14,7 @@
 #include "Lights\LightGrid.h"
 #include "Resources\DepthStencil.h"
 #include "Lights\DirectionalLight.h"
+#include <SpriteBatch.h>
 
 namespace Graphics
 {
@@ -147,6 +148,8 @@ namespace Graphics
 		ID3D11ShaderResourceView* shadowSRV;
 		ID3D11SamplerState* shadowSampler;
 
+        std::unique_ptr<DirectX::SpriteBatch> menuSprite;
+
 
         void createInstanceBuffer();
 
@@ -155,6 +158,9 @@ namespace Graphics
         void draw();
         void drawGUI();
 		void drawShadows();
+
+
+        void drawMenu(Graphics::MenuInfo *info);
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
