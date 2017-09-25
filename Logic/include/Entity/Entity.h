@@ -18,12 +18,12 @@ namespace Logic
 
 		void destroyBody();
 		virtual void clear();
-		void update(float deltaTime);
+		virtual void update(float deltaTime);
 		void updateGraphics();
 		virtual void updateSpecific(float deltaTime) { }
 		void collision(Entity& other);
 		virtual void affect(int stacks, Effect const &effect,
-							float deltaTime);
+							float deltaTime);	
 		virtual void onCollision(Entity& other) { }
 
 		DirectX::SimpleMath::Vector3 getPosition() const;
@@ -33,7 +33,7 @@ namespace Logic
 		DirectX::SimpleMath::Matrix getTransformMatrix() const;
 
 		btRigidBody* getRigidbody();
-
+		StatusManager& getStatusManager();
 	private:
 		StatusManager m_statusManager;
 		

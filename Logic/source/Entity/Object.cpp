@@ -11,6 +11,11 @@ Object::Object()
 
 Object::~Object() { }
 
+void Object::setModelID(Graphics::ModelID modelID)
+{
+	m_renderInfo.meshId = modelID;
+}
+
 void Object::setWorldTranslation(DirectX::SimpleMath::Matrix translation)
 {
 	m_renderInfo.translation = translation;

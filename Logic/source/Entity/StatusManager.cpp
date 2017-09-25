@@ -7,7 +7,7 @@
 using namespace Logic;
 
 Effect StatusManager::s_effects[StatusManager::NR_OF_EFFECTS];
-Upgrade StatusManager::s_upgrades[StatusManager::NR_OF_EFFECTS];
+Upgrade StatusManager::s_upgrades[StatusManager::NR_OF_UPGRADES];
  
 StatusManager::StatusManager() 
 { 
@@ -73,8 +73,6 @@ StatusManager::StatusManager()
 			s_upgrades[P10_AMMO] = upgrade; // FREEZE
 			memset(&flat, 0, sizeof(flat));
 	#endif // !UPGRADES_CREATED
-
-	addStatus(0, 5, true);
 }
 
 StatusManager::~StatusManager() {
@@ -110,29 +108,34 @@ void StatusManager::update(float deltaTime)
 
 void StatusManager::addUpgrade(UPGRADE_ID id) 
 {
-	m_upgrades.push_back(Upgrade(s_upgrades[id]));
+	m_upgrades.push_back(id);
 }
 
-void StatusManager::addStatus(int statusID, int nrOfStacks, bool resetDuration)
+Upgrade & Logic::StatusManager::getUpgrade(UPGRADE_ID id)
+{
+	return s_upgrades[id];
+}
+
+void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks, bool resetDuration)
 {
 	bool found = false;
 	for (size_t i = 0; i < m_effectStacksIds.size() && !found; ++i)
 	{
-		if (m_effectStacksIds[i] == statusID)
+		if (m_effectStacksIds[i] == effectID)
 		{
 			found = true;
 
 			m_effectStacks[i].stack += nrOfStacks;
 			if (resetDuration) m_effectStacks[i].duration =
-				s_effects[statusID].getStandards()->duration;
+				s_effects[effectID].getStandards()->duration;
 		}
 	}
 
 	if (!found)
 	{
 		m_effectStacks.push_back({ nrOfStacks,
-								s_effects[statusID].getStandards()->duration });
-		m_effectStacksIds.push_back(statusID);
+								s_effects[effectID].getStandards()->duration });
+		m_effectStacksIds.push_back(effectID);
 	}
 }
 
@@ -187,4 +190,22 @@ std::vector <std::pair<int, Effect*>>
 	return actives;
 }
 
-std::vector<Upgrade>* StatusManager::getUpgrades() { return &m_upgrades; }
+std::vector<std::pair<int, StatusManager::EFFECT_ID>> StatusManager::getActiveEffectsIDs()
+{
+	std::vector<std::pair<int, StatusManager::EFFECT_ID>> effects;
+
+	int size = m_effectStacks.size();
+	effects.resize(size);
+
+	for (size_t i = 0; i < size; ++i)
+		effects[i].first = m_effectStacks[i].stack;
+	for (size_t i = 0; i < size; ++i)
+		effects[i].second = m_effectStacksIds[i];
+
+	return effects;
+}
+
+std::vector<StatusManager::UPGRADE_ID>& Logic::StatusManager::getActiveUpgrades()
+{
+	return m_upgrades;
+}

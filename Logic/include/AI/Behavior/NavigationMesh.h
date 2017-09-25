@@ -17,11 +17,12 @@ namespace Logic
 			};
 
 			NavigationMesh();
-			NavigationMesh(NavigationMesh const &other) = delete;
-			NavigationMesh* operator=(NavigationMesh const &other) = delete;
+			//NavigationMesh(NavigationMesh const &other);
+			//NavigationMesh* operator=(NavigationMesh const &other);
 			~NavigationMesh();
 
 			void createTestMesh();
+			void addTriangle(Triangle const &triangle);
 			const std::vector<Triangle>& getList() const;
 		private:
 			std::vector<Triangle> triangleList;

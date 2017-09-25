@@ -53,9 +53,6 @@ namespace Graphics
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 
-        // Egna Pekare
-        ID3D11Buffer * instanceBuffer;		
-
         ///// SUPER TEMP
         ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
@@ -65,9 +62,7 @@ namespace Graphics
 		DirectionalLight lightDir;
 		ID3D11SamplerState* shadowSampler;
 
-
-        void createInstanceBuffer();
-
+        
         void cull();
         void writeInstanceData();
         void draw();

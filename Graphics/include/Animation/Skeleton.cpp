@@ -23,8 +23,7 @@ std::vector<Matrix> Skeleton::getJointTransforms(Animation & animation, float du
     printf("%f, %f -> %f\n", duration, first, second);
 
     std::vector<Matrix> animationTransforms = keyFrames.first.interpolateTo(keyFrames.second, progress);
-    std::vector<Matrix> jointTransforms; 
-    jointTransforms.resize(jointCount);
+    std::vector<Matrix> jointTransforms(jointCount);
 
     rootJoint.getJointTransforms(animationTransforms, jointTransforms);
 

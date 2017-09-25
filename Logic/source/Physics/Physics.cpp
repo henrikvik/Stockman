@@ -123,6 +123,10 @@ btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 	btRigidBody* body = new btRigidBody(constructionInfo);
 	shape->setUserPointer(body);
 
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
 	// Specifics
 	body->setRestitution(0.0f);
 	body->setFriction(1.0f);
@@ -149,6 +153,10 @@ btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
 	btRigidBody* body = new btRigidBody(constructionInfo);
 	shape->setUserPointer(body);
 
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
 	// Specifics
 	body->setRestitution(0.0f);
 	body->setFriction(1.0f);
@@ -174,6 +182,10 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
 	shape->setUserPointer(body);
+
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
 	// Specifics
 	body->setRestitution(0.0f);
@@ -202,14 +214,18 @@ btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isS
 	btRigidBody* body = new btRigidBody(constructionInfo);
 	shape->setUserPointer(body);
 
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
 	// Specifics
 	body->setRestitution(0.0f);
-	body->setFriction(0.f);
+	body->setFriction(1.f);
 	body->setSleepingThresholds(0, 0);
-	body->setDamping(0.9f, 0.9f);
+	body->setDamping(0.f, 0.f);
 
 	// Making the cylinder a kinematic body
-	body->setCollisionFlags(body->getCollisionFlags() | btRigidBody::CF_KINEMATIC_OBJECT);
+	//body->setCollisionFlags(body->getCollisionFlags() | btRigidBody::CF_KINEMATIC_OBJECT | btRigidBody::CF_STATIC_OBJECT);
 	body->setActivationState(DISABLE_DEACTIVATION);
 
 	// Adding body to the world
@@ -232,6 +248,10 @@ btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
 	shape->setUserPointer(body);
+
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
 	// Specifics
 	body->setRestitution(0.0f);

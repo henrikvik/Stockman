@@ -33,7 +33,6 @@ namespace Graphics
 		this->deviceContext = gDeviceContext;
 		this->backBuffer = backBuffer;
 
-		createInstanceBuffer();
 		createShadowMap();
 		initialize(gDevice, gDeviceContext);
 
@@ -49,7 +48,6 @@ namespace Graphics
 
     Renderer::~Renderer()
     {
-        SAFE_RELEASE(instanceBuffer);
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
@@ -234,17 +232,6 @@ namespace Graphics
  //  
     //}
 
-    void Renderer::createInstanceBuffer()
-    {
-        D3D11_BUFFER_DESC instanceDesc = { 0 };
-        instanceDesc.ByteWidth = sizeof(InstanceData) * INSTANCE_CAP;
-        instanceDesc.Usage = D3D11_USAGE_DYNAMIC;
-        instanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-        instanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-        ThrowIfFailed(device->CreateBuffer(&instanceDesc, nullptr, &instanceBuffer));
-    }
-
     void Renderer::cull()
     {
         instanceQueue.clear();
@@ -260,21 +247,6 @@ namespace Graphics
 
     void Renderer::writeInstanceData()
     {
-        D3D11_MAPPED_SUBRESOURCE instanceMap = { 0 };
-
-        deviceContext->Map(instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &instanceMap);
-
-        char* dest = (char*)instanceMap.pData;
-        for (InstanceQueue_t::value_type & pair : instanceQueue)
-        {
-            void * data = pair.second.data();
-            size_t size = pair.second.size() * sizeof(InstanceData);
-            memcpy(dest, data, size);
-            dest += size;
-        }
-
-        deviceContext->Unmap(instanceBuffer, 0);
-
         InstanceData* ptr = instanceSBuffer.map(deviceContext);
         for (InstanceQueue_t::value_type & pair : instanceQueue)
         {

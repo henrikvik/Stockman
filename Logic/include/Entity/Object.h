@@ -13,6 +13,7 @@ namespace Logic
 		Object();
 		virtual ~Object();
 
+		void setModelID(Graphics::ModelID modelID);
 		void setWorldTranslation(DirectX::SimpleMath::Matrix translation);
 		virtual void render(Graphics::Renderer& renderer);
 
