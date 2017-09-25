@@ -83,8 +83,8 @@ VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
     output.biTangent.xy = input.biTangent.xy;
 
 
-    output.tangent.z = sqrt(pow(output.tangent.x, 2) + pow(output.tangent.y, 2));
-    output.biTangent.z = sqrt(pow(output.biTangent.x, 2) + pow(output.biTangent.y, 2));
+    output.tangent.z = sqrt(1 - pow(output.tangent.x, 2) + pow(output.tangent.y, 2));
+    output.biTangent.z = sqrt(1 - pow(output.biTangent.x, 2) + pow(output.biTangent.y, 2));
 
 
     output.biTangent = normalize(mul(world, output.biTangent));
