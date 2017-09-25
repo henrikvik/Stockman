@@ -41,7 +41,7 @@
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 
-#define PHYSICS_GRAVITY 9.82
+#define PHYSICS_GRAVITY 9.82 * 2
 
 namespace Logic
 {

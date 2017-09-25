@@ -20,9 +20,9 @@
 #include <Projectile\ProjectileManager.h>
 
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
-#define PLAYER_MOVEMENT_MAX_SPEED		0.5f
+#define PLAYER_MOVEMENT_MAX_SPEED		0.1f
 #define PLAYER_MOVEMENT_ACCELERATION	0.005f
-#define PLAYER_JUMP_SPEED				100.f
+#define PLAYER_JUMP_SPEED				50.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
 
@@ -73,7 +73,7 @@ namespace Logic
 
 		// Movement
 		void move(float deltaTime, DirectX::Keyboard::State* ks);
-		void jump();
+		void jump(float deltaTime, DirectX::Keyboard::State* ks);
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
