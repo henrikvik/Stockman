@@ -1,4 +1,5 @@
 #include <AI\Enemy.h>
+#include <AI\Behavior\TestBehavior.h>
 using namespace Logic;
 
 Enemy::Enemy(btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, int enemyType, int animationId)
@@ -10,6 +11,7 @@ Enemy::Enemy(btRigidBody* body, btVector3 halfExtent, float health, float baseDa
 	m_enemyType = enemyType;
 
 	//animation todo
+	m_behavior = new TestBehavior();
 }
 
 Enemy::~Enemy() {
@@ -22,7 +24,7 @@ void Enemy::update(Player const &player, float deltaTime) {
 	updateSpecific(player, deltaTime);
 
 	if (m_behavior)
-		m_behavior->update(player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+		m_behavior->update(*this, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 }
 
 void Enemy::damage(float damage)

@@ -18,12 +18,22 @@ namespace Logic
 	class PASVF 
 	{
 		private:
-			inline DirectX::SimpleMath::Vector2 getNormal(DirectX::SimpleMath::Vector2 const &edge) const;
+			inline DirectX::SimpleMath::Vector2 getNormal(DirectX::SimpleMath::Vector2 const &edge) const; // remove?
+			inline DirectX::SimpleMath::Vector3 getLine(DirectX::SimpleMath::Vector3 const &p1, DirectX::SimpleMath::Vector3 const &p2) const;
 		public:
+			enum VERTEX_ORDER { CLOCKWISE, COUNTER_CLOCKWISE };
+
+			struct Triangle {
+				DirectX::SimpleMath::Vector3 normal; // normal will be loaded in generation
+				DirectX::SimpleMath::Vector3 vertices[3]; // CW
+			};
+
 			PASVF();
 			virtual ~PASVF();
 
-			NavigationMesh generateNavMesh(float x, float y, int width, int height, std::vector<Entity*> collidableObjects) const;
+			void generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, std::vector<std::vector<Triangle>> objects) const;
+		private:
+			inline DirectX::SimpleMath::Vector3 getNormal(Triangle const &triangle, VERTEX_ORDER vertexOrder = CLOCKWISE) const;
 	};
 }
 

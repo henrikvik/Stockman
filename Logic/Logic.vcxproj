@@ -172,7 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\AI\Behavior\AStar.h" />
-    <ClInclude Include="include\AI\Behavior\AttackBehavior.h" />
+    <ClInclude Include="include\AI\Behavior\TestBehavior.h" />
     <ClInclude Include="include\AI\Behavior\Behavior.h" />
     <ClInclude Include="include\AI\Behavior\NavigationMesh.h" />
     <ClInclude Include="include\AI\Behavior\PASVF.h" />
@@ -222,7 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Behavior\AStar.cpp" />
-    <ClCompile Include="source\AI\Behavior\AttackBehavior.cpp" />
+    <ClCompile Include="source\AI\Behavior\TestBehavior.cpp" />
     <ClCompile Include="source\AI\Behavior\NavigationMesh.cpp" />
     <ClCompile Include="source\AI\Behavior\PASVF.cpp" />
     <ClCompile Include="source\Misc\FileLoader.cpp" />

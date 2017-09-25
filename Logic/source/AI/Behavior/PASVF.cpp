@@ -1,10 +1,16 @@
 #include <AI\Behavior\PASVF.h>
 #include <stdio.h>
+#include <cmath>
 using namespace Logic;
 
 inline DirectX::SimpleMath::Vector2 Logic::PASVF::getNormal(DirectX::SimpleMath::Vector2 const & edge) const
 {
 	return { -edge.y, edge.x };
+}
+
+inline DirectX::SimpleMath::Vector3 Logic::PASVF::getLine(DirectX::SimpleMath::Vector3 const & p1, DirectX::SimpleMath::Vector3 const & p2) const
+{
+	return p2 - p1;
 }
 
 PASVF::PASVF()
@@ -16,60 +22,48 @@ PASVF::~PASVF()
 }
 
 // TESTING TESTING TESTING DO NOT CALL
-NavigationMesh PASVF::generateNavMesh(float x, float y, int width, int height, std::vector<Entity*> collidableObjects) const
+// ACTUALLY I WONT DO PASVF, THE CLASS WILL BE RENAMED IN THE FUTURE I FOUND A SIMPLE, PROLLY WORSE, SOLUTION :<
+// THIS SHOULD ONLY BE CALLED OFFLINE AND THEN SAVED TO A FILE (TODO)
+void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, std::vector<std::vector<Triangle>> objects) const
 {
-	struct Polygon {
-		std::vector<DirectX::SimpleMath::Vector2> points;
-		std::vector<DirectX::SimpleMath::Vector2> edges;
-		btRigidBody* collision;
-	};
-	NavigationMesh nav;
+	std::vector<Triangle> moveableTerrain;
+	DirectX::SimpleMath::Vector3 up = { 0, 1, 0 };
+	float normalDotMax = 0.3f;
 
-	std::vector<Polygon> expanding;
-	std::vector<Polygon> done;
-
-	// FOR TESTING
-	Polygon base;
-	base.points.push_back({ x, y });
-	base.points.push_back({ x + 1, y });
-	base.points.push_back({ x + 1, y + 1 });
-	base.points.push_back({ x, y + 1 });
-	base.points.push_back({ x, y }); // SAME AS FIRST TO GO AROUND
-
-	base.edges.push_back({ 1, 0 }); // 0 -> 1
-	base.edges.push_back({ 0, 1 }); // 1 -> 2
-	base.edges.push_back({ -1, 0 }); // 2 -> 3
-	base.edges.push_back({ 0, -1 }); // 3 -> 4 / 0
-
-	btCollisionShape* shape = new btBoxShape({ 0.5f, 0.5f, 0.5f });
-	btRigidBody::btRigidBodyConstructionInfo constructionInfo(0, nullptr, shape);
-	base.collision = new btRigidBody(constructionInfo);
-
-	expanding.push_back(base);
-	
-	for (auto &polygon : expanding) 
+	// part 1 of the generation, make terrain into a "walkable" terrain map
+	for (auto &triangle : terrain)
 	{
-		for (size_t i = 0; i < polygon.edges.size(); ++i) 
-		{
-			DirectX::SimpleMath::Vector2 normal = getNormal(polygon.edges[i]);
-			normal.Normalize();
-			polygon.points[i] += normal;
-			polygon.points[i + 1] += normal;
+		triangle.normal = getNormal(triangle);
+		if (abs(triangle.normal.Dot(up)) < normalDotMax)
+			moveableTerrain.push_back(triangle); // if triangle is too steep, enemy wont be able to go up it
+	}
 
-			for (auto& obj : collidableObjects)
+	// part 2, use the objects break the moveable terrain
+
+
+	// part ??? of the generation, add it to the nav mesh because it is done :)
+	for (auto &triangle : moveableTerrain) 
+	{
+		nav.addTriangle(
 			{
-				if (obj->getRigidbody()->checkCollideWith(base.collision))
+				0,
 				{
-					printf("Collide with %s\n", obj);
+					triangle.vertices[0],
+					triangle.vertices[1],
+					triangle.vertices[2]
 				}
-			}
-		}
+		});
 	}
+}
 
-	done.push_back(base);
-	for (auto &polygon : done) {
-		delete polygon.collision;
+inline DirectX::SimpleMath::Vector3 PASVF::getNormal(Triangle const & triangle,
+	VERTEX_ORDER vertexOrder) const
+{ // remove vertexOrder after testing is done
+	if (vertexOrder == CLOCKWISE) {
+		return getLine(triangle.vertices[0], triangle.vertices[1]).Cross(getLine(triangle.vertices[0], triangle.vertices[2]));
 	}
-	delete shape;
-	return nav;
+	else if (vertexOrder == COUNTER_CLOCKWISE) 
+	{
+		return getLine(triangle.vertices[0], triangle.vertices[2]).Cross(getLine(triangle.vertices[0], triangle.vertices[1]));
+	}
 }

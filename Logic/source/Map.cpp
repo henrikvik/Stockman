@@ -9,7 +9,6 @@ Map::~Map()
 	clear();
 }
 
-#include <AI\Behavior\PASVF.h>
 void Map::init(Physics* physics)
 {
 	initProps();
@@ -17,10 +16,6 @@ void Map::init(Physics* physics)
 	initObjects(physics);
 
 	m_drawHitboxes = true;
-
-	// TESTING TESTING TESTING REMOVE REMOVE REMOVE NO MERGERINO
-	PASVF pasvf;
-	pasvf.generateNavMesh(0, 0, 250, 250, m_objects);
 }
 
 void Map::initProps()

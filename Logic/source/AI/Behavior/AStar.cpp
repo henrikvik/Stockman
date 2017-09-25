@@ -16,13 +16,13 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 	return { 0, target.getPositionBT() };
 }
 
+void AStar::generateNavigationMesh()
+{
+	PASVF pasvf;
+	pasvf.generateNavMesh(navigationMesh, {}, {});
+}
+
 void AStar::generateNodesFromFile()
 {
 
-}
-
-void AStar::init()
-{
-	// generateNodesFromFile();
-	navigationMesh.createTestMesh();
 }
