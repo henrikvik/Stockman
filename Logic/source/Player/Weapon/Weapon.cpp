@@ -49,7 +49,7 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
 
 	// Scaling the model by making it thinner and longer
-	scale = DirectX::SimpleMath::Matrix::CreateScale(0.25f, 0.20f, 0.70f);
+	scale = DirectX::SimpleMath::Matrix::CreateScale(0.50f, 0.40f, 1.40f);
 }
 
 void Weapon::use(btVector3 position, float yaw, float pitch)
@@ -100,7 +100,7 @@ void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTrans
 	camera = DirectX::XMMatrixLookToRH({0, 0, 0}, playerForward, { 0, 1, 0 });
 
 	// Pushing the model forward in the current view direction
-	offset = (DirectX::SimpleMath::Matrix::CreateTranslation(playerTranslation.Translation() + playerForward * 0.25f));
+	offset = (DirectX::SimpleMath::Matrix::CreateTranslation(playerTranslation.Translation() + playerForward * -0.4f));
 
 	// Multiplying all the matrices into one
 	result = trans * rotX * rotY * scale * camera.Invert() * offset;
