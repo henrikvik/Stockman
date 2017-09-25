@@ -99,7 +99,7 @@ namespace Graphics
 			tempMaterial.diffuseValue = {
 				(float)currentFile->fetch->Material(i)->diffuseVal[0],
 				(float)currentFile->fetch->Material(i)->diffuseVal[1],
-				(float)currentFile->fetch->Material(i)->diffuseVal[1]
+				(float)currentFile->fetch->Material(i)->diffuseVal[2]
 			};
 
 			tempMaterial.specularValue = {
