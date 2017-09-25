@@ -49,6 +49,9 @@ bool Game::init()
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
 
+	//testing
+	/*m_cardManager->createDeck(2);*/
+
 	return result;
 }
 
