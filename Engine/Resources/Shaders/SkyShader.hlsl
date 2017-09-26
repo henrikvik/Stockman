@@ -19,6 +19,12 @@ cbuffer transform : register(b1)
     float4x4 transform;
 };
 
+cbuffer colorChange : register(b2)
+{
+    float4 nope;
+    float3 color;
+};
+
 
 PS_IN VS(VS_IN input)
 {
@@ -38,5 +44,6 @@ SamplerState sState;
 
 float4 PS(PS_IN input) : SV_Target0
 {
-    return cube.Sample(sState, input.tex);
+   // return float4(color, 1);
+    return float4(cube.Sample(sState, input.tex).xyz * color, 1);
 }
