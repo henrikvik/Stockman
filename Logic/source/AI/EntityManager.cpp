@@ -71,7 +71,7 @@ void EntityManager::spawnWave(Physics &physics)
 	std::vector<int> enemies = m_waveManager.getEnemies(m_currentWave);
 	m_enemies.reserve(enemies.size() + m_enemies.size());
 
-	if (m_currentWave == 0)
+	if (m_currentWave == 1)
 	{
 		for (int i = 0; i < enemies.size(); i++)
 		{
@@ -92,7 +92,7 @@ void EntityManager::spawnWave(Physics &physics)
 		m_triggerManager.addTrigger(Cube({ 50, 40.f, -5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
 		m_triggerManager.addTrigger(Cube({ 40, 30.f, 2 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
 		m_triggerManager.addTrigger(Cube({ 70, 54.f, 10 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
-		m_triggerManager.addTrigger(Cube({ 80, 80.f, -2 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+		m_triggerManager.addTrigger(Cube({ 80, 80.f, -2 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 10.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
 		m_triggerManager.addTrigger(Cube({ 50, 65.f, 5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
 		m_triggerManager.addTrigger(Cube({ 130, 125.f, 5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
 	}
