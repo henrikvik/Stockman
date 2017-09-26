@@ -276,6 +276,8 @@ int Engine::run()
 
         staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + sinf(totalTime * 0.001f),0 });
 
+		renderer->updateLight(deltaTime, &cam);
+
         renderer->queueRender(&staticCube);
         renderer->queueRender(&staticSphere);
         ///////////////////////////////////
