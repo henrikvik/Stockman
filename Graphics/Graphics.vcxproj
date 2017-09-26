@@ -36,6 +36,7 @@
     <ClCompile Include="include\Resources\ResourceManager.cpp" />
     <ClCompile Include="include\Resources\Shader.cpp" />
     <ClCompile Include="include\Resources\TextureManager.cpp" />
+    <ClCompile Include="include\SkyRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Animation\AnimatedTestCube.h" />
@@ -60,6 +61,7 @@
     <ClInclude Include="include\Resources\ResourceManager.h" />
     <ClInclude Include="include\Resources\Shader.h" />
     <ClInclude Include="include\Resources\TextureManager.h" />
+    <ClInclude Include="include\SkyRenderer.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\Utility\StructuredBuffer.h" />
     <ClInclude Include="include\TempCube.h" />
