@@ -201,7 +201,7 @@ PSOutput PS(VSOutput input) {
     float3 finalDiffuse = saturate(pointDiffuse + directionalDiffuse) * colorSample;
     float3 finalSpecular = saturate(pointSpecular + pointDiffuse) * specularSample;
     
-    float3 ambient = float3(0.3, 0.3, 0.4) * colorSample;
+    float3 ambient = float3(0.2, 0.2, 0.3) * colorSample;
 
     float3 lighting = saturate(finalDiffuse + finalSpecular + ambient);
     
