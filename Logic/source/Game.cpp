@@ -46,12 +46,18 @@ void Game::init()
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
 
-	//testing
-	m_cardManager->createDeck(5);
-	m_cardManager->shuffle(1);
-	m_cardManager->pickThree(true);
-	Card card = m_cardManager->pick(2);
-	/*m_player->getStatusManager()->addUpgrade(card.getUpgradesID());*/
+	////testing
+	//m_cardManager->createDeck(5);
+	//m_cardManager->shuffle(1);
+	//m_cardManager->pickThree(true);
+	//Card card = m_cardManager->pick(2);
+
+	//std::vector<int> ID = card.getUpgradesID();
+
+	//for (auto id : ID)
+	//{
+	//	m_player->getStatusManager().addUpgrade(StatusManager::UPGRADE_ID(id));
+	//}
 }
 
 void Game::clear()
