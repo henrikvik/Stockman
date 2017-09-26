@@ -2,7 +2,8 @@
 
 using namespace Logic;
 
-Entity::Entity(btRigidBody* body, btVector3 halfextent)
+Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelID)
+: Object(modelID)
 {
 	m_body = body;
 	m_body->setUserPointer(this);

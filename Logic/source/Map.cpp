@@ -25,7 +25,7 @@ void Map::initProps()
 
 void Map::initHitboxes(Physics* physics)
 {
-	Entity* infinite = new Entity(physics->createBody(Plane({ 0, 1, 0 }), 0, false), btVector3(1000, 0.0001, 1000)); 
+	Entity* infinite = new Entity(physics->createBody(Plane({ 0, 1, 0 }), 0, false), btVector3(1000, 0.0001, 1000), Graphics::CUBE); 
     m_hitboxes.push_back(infinite);
 	//Entity* secondinfinite = new Entity(physics->createBody(Plane({ 0, 0, 1 }), 0, false), btVector3(1000, 0.0001, 1000));
 	//m_hitboxes.push_back(secondinfinite);
