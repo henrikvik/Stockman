@@ -1,6 +1,6 @@
 #include <AI\Behavior\NavigationMesh.h>
 #include <Misc\FileLoader.h>
-#define EPSILON 0.000001f
+#define EPSILON 0.0001f
 using namespace Logic;
 
 NavigationMesh::NavigationMesh()
@@ -58,7 +58,7 @@ int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const & pos) const
 		det = e1.Dot(p);
 
 		//if determinant is near zero, ray lies in plane of triangle otherwise not
-		if (det > -EPSILON && det < EPSILON) { return false; }
+		if (det > -EPSILON && det < EPSILON) { continue; }
 		invDet = 1.0f / det;
 
 		//calculate distance from p1 to ray origin
@@ -68,7 +68,7 @@ int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const & pos) const
 		u = t.Dot(p) * invDet;
 
 		//Check for ray hit
-		if (u < 0 || u > 1) { return false; }
+		if (u < 0 || u > 1) { continue; }
 
 		//Prepare to test v parameter
 		q = t.Cross(triangleList[i].vertices[0]);
@@ -77,7 +77,7 @@ int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const & pos) const
 		v = dir.Dot(p) * invDet;
 
 		//Check for ray hit
-		if (v < 0 || u + v > 1) { return false; }
+		if (v < 0 || u + v > 1) { continue; }
 
 		if ((triangleList[i].vertices[1].Dot(q) * invDet) > EPSILON)
 		{

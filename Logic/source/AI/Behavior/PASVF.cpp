@@ -26,6 +26,7 @@ PASVF::~PASVF()
 // THIS SHOULD ONLY BE CALLED OFFLINE AND THEN SAVED TO A FILE (TODO)
 void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, std::vector<std::vector<Triangle>> objects) const
 {
+#define T 100
 	std::vector<Triangle> moveableTerrain;
 	DirectX::SimpleMath::Vector3 up = { 0, 1, 0 };
 	float normalDotMin = 0.6f;
@@ -33,13 +34,13 @@ void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, 
 	// TEST DATA
 	Triangle t;
 	t.vertices[0] = DirectX::SimpleMath::Vector3(0, 0, 0);
-	t.vertices[1] = DirectX::SimpleMath::Vector3(1000, 0, 0);
-	t.vertices[2] = DirectX::SimpleMath::Vector3(1000, 0, 1000);
+	t.vertices[1] = DirectX::SimpleMath::Vector3(T, 0, T);
+	t.vertices[2] = DirectX::SimpleMath::Vector3(0, 0, T);
 	terrain.push_back(t);
 
 	t.vertices[0] = DirectX::SimpleMath::Vector3(0, 0, 0);
-	t.vertices[1] = DirectX::SimpleMath::Vector3(1000, 0, 1000);
-	t.vertices[2] = DirectX::SimpleMath::Vector3(0, 0, 1000);
+	t.vertices[1] = DirectX::SimpleMath::Vector3(T, 0, 0);
+	t.vertices[2] = DirectX::SimpleMath::Vector3(T, 0, T);
 	terrain.push_back(t);
 
 	// part 1 of the generation, make terrain into a "walkable" terrain map
@@ -72,10 +73,10 @@ void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, 
 inline DirectX::SimpleMath::Vector3 PASVF::getNormal(Triangle const & triangle,
 	VERTEX_ORDER vertexOrder) const
 { // remove vertexOrder after testing is done
-	if (vertexOrder == COUNTER_CLOCKWISE) {
+	if (vertexOrder == CLOCKWISE) {
 		return getLine(triangle.vertices[0], triangle.vertices[1]).Cross(getLine(triangle.vertices[0], triangle.vertices[2]));
 	}
-	else if (vertexOrder == CLOCKWISE)
+	else if (vertexOrder == COUNTER_CLOCKWISE)
 	{
 		return getLine(triangle.vertices[0], triangle.vertices[2]).Cross(getLine(triangle.vertices[0], triangle.vertices[1]));
 	}

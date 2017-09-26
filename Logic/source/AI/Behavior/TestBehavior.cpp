@@ -13,7 +13,7 @@ void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
 
 	dir = dir.normalize();
 	dir *= deltaTime / 1000.f;
-	dir *= 15;
+	dir *= 40;
 
 	if (enemy.getHealth() < 5)
 	{

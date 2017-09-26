@@ -220,6 +220,8 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	btTransform transform = getRigidbody()->getWorldTransform();
 	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + m_moveDir * m_moveSpeed);
 	getRigidbody()->setWorldTransform(transform);
+	printf("x: %f, z: %f\n", getRigidbody()->getWorldTransform().getOrigin().getX(), 
+		getRigidbody()->getWorldTransform().getOrigin().getZ());
 }
 
 void Player::jump(float deltaTime, DirectX::Keyboard::State* ks)

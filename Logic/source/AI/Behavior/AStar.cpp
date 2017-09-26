@@ -19,11 +19,12 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 		navigationMesh.getNodes();
 
 	// use getIndex in navMesh l8
-	int startIndex = navigationMesh.getIndex(enemy.getPosition()),
-		endIndex = navigationMesh.getIndex(target.getPosition());
 	std::vector<NavNode> openList;
+	DirectX::SimpleMath::Vector3 offset(0, 5, 0);
+	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset),
+		endIndex = navigationMesh.getIndex(target.getPosition() + offset);
 
-	if (startIndex == -1)
+	if (startIndex == -1 || endIndex == -1)
 		return { 0, target.getPositionBT() };
 
 	// open, nodeIndex and g
@@ -37,7 +38,7 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 		// a star to path ezpz
 	}
 
-	return { 0, target.getPositionBT() };
+	return { 0, {nodes[endIndex].x, nodes[endIndex].y, nodes[endIndex].z } };
 }
 
 void AStar::generateNavigationMesh()
