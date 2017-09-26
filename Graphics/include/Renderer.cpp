@@ -28,6 +28,7 @@ namespace Graphics
 		, lightDir(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
         , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
         , instanceOffsetBuffer(gDevice)
+		, skyRenderer(gDevice)
 	{
 		this->device = gDevice;
 		this->deviceContext = gDeviceContext;
@@ -196,6 +197,7 @@ namespace Graphics
 		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 		
 		draw();
+		skyRenderer.renderSky(deviceContext, camera);
 
         deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
