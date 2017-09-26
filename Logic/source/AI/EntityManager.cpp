@@ -78,10 +78,22 @@ void EntityManager::spawnWave(Physics &physics)
 	}
 
 	// Adds four jump-pads, load these from wave-file in the future
-	m_triggerManager.addTrigger(Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 2500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
-	m_triggerManager.addTrigger(Cube({ -10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 2500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
-	m_triggerManager.addTrigger(Cube({ -10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 2500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
-	m_triggerManager.addTrigger(Cube({ 10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 2500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ -10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ -10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 15, 10.f, 5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 20, 15.f, 10 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 25, 18.f, -5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 30, 25.f, -0 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 45, 30.f, 12 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 50, 40.f, -5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 40, 30.f, 2 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 70, 54.f, 10 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 80, 80.f, -2 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 50, 65.f, 5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+	m_triggerManager.addTrigger(Cube({ 130, 125.f, 5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+
 }
 
 int EntityManager::getEnemiesAlive() const 
