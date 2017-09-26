@@ -20,8 +20,6 @@ namespace Logic
 		{
 			dtReal = deltaTime;
 
-			printf("%f\n", currentMod);
-
 			// If slowdown effect is completed
 			if (duration < 0)	targetMod = 1.f;
 			else				duration -= deltaTime;
