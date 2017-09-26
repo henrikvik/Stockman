@@ -79,7 +79,7 @@ void Game::update(float deltaTime)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-		m_physics->update(m_gameTime.dt);
+		m_physics->update(m_gameTime);
 		m_entityManager.update(*m_player, m_gameTime.dt);
 		m_player->update(m_gameTime.dt);
 		m_map->update(m_gameTime.dt);
