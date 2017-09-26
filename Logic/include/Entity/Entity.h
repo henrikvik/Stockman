@@ -11,7 +11,7 @@ namespace Logic
 	class Entity : public Object
 	{
 	public:
-		Entity(btRigidBody* body, btVector3 halfExtent);
+		Entity(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID = Graphics::ModelID::CUBE);
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
 		virtual ~Entity();
