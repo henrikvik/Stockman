@@ -58,9 +58,7 @@ void WeaponManager::update(float deltaTime)
 
 	// Attack
 	if (m_attackTimer > 0.f)
-	{
 		m_attackTimer -= deltaTime;
-	}
 	// Weapon swap
 	if (m_swapWeaponTimer > 0.f)
 	{

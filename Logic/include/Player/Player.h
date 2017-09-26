@@ -21,8 +21,10 @@
 
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
 #define PLAYER_MOVEMENT_MAX_SPEED		0.1f
-#define PLAYER_MOVEMENT_ACCELERATION	0.005f
+#define PLAYER_MOVEMENT_ACCELERATION	0.001f
+#define PLAYER_MOVEMENT_AIRACCELERATION	0.001f
 #define PLAYER_JUMP_SPEED				50.f
+#define PLAYER_BHOP_TIMER				10.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
 
@@ -50,7 +52,16 @@ namespace Logic
 		btVector3 m_moveDir;
 		float m_moveSpeed;
 		float m_acceleration;
+		float m_deacceleration;
+		float m_airAcceleration;
+		float m_sideStrafeSpeed;
+		float m_sideStrafeAccel;
 		float m_jumpSpeed;
+		float m_moveDirForward;
+		float m_moveDirRight;
+
+		bool m_wishJump;
+		btVector3 m_wishDir;
 
 		// Mouse
 		float m_mouseSens;
@@ -72,7 +83,11 @@ namespace Logic
 		DirectX::Keyboard::Keys m_useSkill;
 
 		// Movement
+		void moveInput(DirectX::Keyboard::State* ks);
 		void move(float deltaTime, DirectX::Keyboard::State* ks);
+		void airMove(float deltaTime, DirectX::Keyboard::State* ks);
+		void accelerate(float deltaTime, float acceleration);
+		void applyFriction(float deltaTime, float friction);
 		void jump(float deltaTime, DirectX::Keyboard::State* ks);
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
