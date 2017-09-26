@@ -76,7 +76,7 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
 	{
 		getRigidbody()->setLinearVelocity(btVector3(getRigidbody()->getLinearVelocity().x(), 0, getRigidbody()->getLinearVelocity().z()));
-		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f, 0));
+		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
 		m_playerState = PlayerState::IN_AIR;
 	}
 }
