@@ -3,7 +3,8 @@ using namespace Logic;
 
 AStar::AStar(std::string file)
 {
-
+	// for testing
+	generateNavigationMesh();
 }
 
 AStar::~AStar()
@@ -17,13 +18,13 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 	std::vector<DirectX::SimpleMath::Vector3> nodes =
 		navigationMesh.getNodes();
 
-	// TEST DATA
-	nodes.push_back({ 0, 0, 0 });
-	nodes.push_back({ 10, 0, 10 });
-
 	// use getIndex in navMesh l8
-	int startIndex = 0, endIndex = 1;
+	int startIndex = navigationMesh.getIndex(enemy.getPosition()),
+		endIndex = navigationMesh.getIndex(target.getPosition());
 	std::vector<NavNode> openList;
+
+	if (startIndex == -1)
+		return { 0, target.getPositionBT() };
 
 	// open, nodeIndex and g
 	openList.push_back(
