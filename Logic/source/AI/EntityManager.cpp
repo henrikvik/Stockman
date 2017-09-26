@@ -68,7 +68,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 void EntityManager::spawnWave(Physics &physics) 
 {
-	std::vector<int> enemies = m_waveManager.getEnemies(m_currentWave++);
+	std::vector<int> enemies = m_waveManager.getEnemies(m_currentWave);
 	m_enemies.reserve(enemies.size() + m_enemies.size());
 
 	for (int i = 0; i < enemies.size(); i++)
