@@ -1,7 +1,11 @@
 #ifndef GAMETIME_H
 #define GAMETIME_H
 
-#define GAME_TIME_EASING	12.5f
+#define GAME_TIME_NORMAL_TIME		1.f
+#define GAME_TIME_EASING			12.5f
+#define GAME_TIME_EASING_THRESHOLD	0.95f
+#define GAME_TIME_EASING_OFFSET		0.05f
+#define GAME_TIME_MS_TO_SEC			0.0001f
 
 namespace Logic
 {
@@ -21,14 +25,14 @@ namespace Logic
 			dtReal = deltaTime;
 
 			// If slowdown effect is completed
-			if (duration < 0)	targetMod = 1.f;
+			if (duration < 0)	targetMod = GAME_TIME_NORMAL_TIME;
 			else				duration -= deltaTime;
 
 			// Easing the slowdown to the target
 			if (!done)
 			{
-				currentMod += (targetMod - currentMod) * GAME_TIME_EASING * (dtReal * 0.0001);
-				if (targetMod > 0.95f && targetMod - currentMod < 0.05f )
+				currentMod += (targetMod - currentMod) * GAME_TIME_EASING * (dtReal * GAME_TIME_MS_TO_SEC);
+				if (targetMod > GAME_TIME_EASING_THRESHOLD && targetMod - currentMod < GAME_TIME_EASING_OFFSET)
 				{
 					currentMod = targetMod;
 					done = true;
@@ -39,7 +43,7 @@ namespace Logic
 			dt = currentMod * dtReal;
 		}
 
-		bool done;
+		bool done;			// If the easing function can be avoided
 		float duration;		// The duration of the game time adjustment, in milliseconds
 		float targetMod;	// Target Modifer (for the easing function)
 		float currentMod;	// Current Modifier
