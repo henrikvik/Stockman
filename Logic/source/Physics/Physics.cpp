@@ -49,7 +49,7 @@ void Physics::clear()
 	delete collisionConfiguration;
 }
 
-void Physics::update(float deltaTime)
+void Physics::update(GameTime gameTime)
 {
 	static std::chrono::steady_clock::time_point begin;
 	static std::chrono::steady_clock::time_point end;
@@ -57,7 +57,14 @@ void Physics::update(float deltaTime)
 	// Calculate the time since last call and tell bulletphysics
 	begin = std::chrono::steady_clock::now();
 	float microsec = std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() * 0.000001;
+	
+	// Adding slowmotion effects
+	microsec *= gameTime.currentMod;
+	
+	// Stepping the physics
 	this->stepSimulation(microsec, 16);
+
+	// Saving the end time
 	end = std::chrono::steady_clock::now();
 	
 	// Collisions

@@ -21,17 +21,17 @@ void SkillManager::clear()
 	m_allSkills.clear();
 }
 
-void SkillManager::init()
+void SkillManager::init(ProjectileManager* projectileManager, GameTime* gameTime)
 {
-	initializeSkills();
+	initializeSkills(gameTime);
 	switchToSkill(0);
 }
 
-void SkillManager::initializeSkills()
+void SkillManager::initializeSkills(GameTime* gameTime)
 {
 	m_allSkills =
 	{
-		{ new SkillBulletTime() },
+		{ new SkillBulletTime(gameTime) },
 		{ new SkillGrapplingHook() },
 		{ new SkillShieldCharge() }
 	};

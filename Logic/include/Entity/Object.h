@@ -11,11 +11,18 @@ namespace Logic
 	{
 	public:
 		Object();
+		Object(Graphics::ModelID modelID);
 		virtual ~Object();
+		virtual void render(Graphics::Renderer& renderer);
 
+		void setShouldRender(bool render);
+		void setMaterialID(int id);
 		void setModelID(Graphics::ModelID modelID);
 		void setWorldTranslation(DirectX::SimpleMath::Matrix translation);
-		virtual void render(Graphics::Renderer& renderer);
+		bool getShouldRender() const;
+		int getMaterialID() const;
+		Graphics::ModelID getModelID() const;
+		DirectX::SimpleMath::Matrix getWorldTranslation() const;
 
 	private:
 		Graphics::RenderInfo m_renderInfo;

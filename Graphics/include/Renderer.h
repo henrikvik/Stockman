@@ -16,6 +16,7 @@
 #include "Resources\Shader.h"
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
+#include "SkyRenderer.h"
 
 namespace Graphics
 {
@@ -34,6 +35,10 @@ namespace Graphics
         InstanceQueue_t instanceQueue;
 
         DepthStencil depthStencil;
+
+		DepthStencil shadowDepthStencil;
+
+		SkyRenderer skyRenderer;
 
 		LightGrid grid;
 		DirectX::CommonStates *states;
@@ -58,8 +63,6 @@ namespace Graphics
 
 		////LITE TEMP
 		DirectionalLight lightDir;
-		ID3D11DepthStencilView* shadowDSV;
-		ID3D11ShaderResourceView* shadowSRV;
 		ID3D11SamplerState* shadowSampler;
 
         

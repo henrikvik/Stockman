@@ -19,9 +19,18 @@ namespace Logic
 		void init();
 		void restart();
 
-		Card* getRandomCard();
+		void createDeck(int nrOfEach);
+		void pickThree(bool damaged);
+		void shuffle(int times);
+		Card pick(int cardIndex);
+
+		/*Card* getRandomCard();*/
 	private:
-		std::vector<Card> cards;
+		const int healthPack = 0;
+		static const int handSize = 3;
+		std::vector<Card> m_cards;
+		std::vector<int> m_deck;
+		int m_hand[CardManager::handSize];
 	};
 }
 

@@ -60,6 +60,8 @@ struct VSOutput {
     float4 lightPos : LIGHT_POS;
 	float3 normal : NORMAL;
 	float2 uv : UV;
+    float3 biTangent : BITANGENT;
+    float3 tangent : TANGENT;
 };
 
 VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
@@ -74,8 +76,19 @@ VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
     output.normal = mul(world, float4(input.normal, 0));
     output.normal = normalize(output.normal);
 
-    output.lightPos = output.worldPos + float4(output.normal * 0.18f, 0);
+    output.lightPos = output.worldPos + float4(output.normal * 0.15f, 0);
     output.lightPos = mul(lightVP, output.lightPos);
+
+    output.tangent.xy = input.tangent.xy;
+    output.biTangent.xy = input.biTangent.xy;
+
+
+    output.tangent.z = sqrt(1 - pow(output.tangent.x, 2) + pow(output.tangent.y, 2));
+    output.biTangent.z = sqrt(1 - pow(output.biTangent.x, 2) + pow(output.biTangent.y, 2));
+
+
+    output.biTangent = normalize(mul(world, output.biTangent));
+    output.tangent = normalize(mul(world, output.tangent));
 
 	return output;
 }
@@ -87,16 +100,7 @@ StructuredBuffer<Light> Lights : register(t2);
 Texture2D shadowMap : register(t3);
 SamplerState Sampler : register(s0);
 
-SamplerComparisonState cmpSampler : register(s1)
-{
-   // sampler state
-    Filter = COMPARISON_MIN_MAG_MIP_LINEAR;
-    AddressU = MIRROR;
-    AddressV = MIRROR;
- 
-   // sampler comparison state
-    ComparisonFunc = LESS_EQUAL;
-};
+SamplerComparisonState cmpSampler : register(s1);
 
 Texture2D diffuseMap : register(t10);
 Texture2D normalMap : register(t11);
@@ -106,6 +110,27 @@ struct PSOutput {
 	float4 color : SV_Target;
 };
 
+//Returns the shadow amount of a given position
+float getShadowValue(float4 lightPos, int sampleCount = 1)
+{
+    lightPos.x = (lightPos.x * 0.5f) + 0.5f;
+    lightPos.y = (lightPos.y * -0.5f) + 0.5f;
+
+    float addedShadow = 0;
+
+    for (int y = -sampleCount; y <= sampleCount; y += 1)
+    {
+        for (int x = -sampleCount; x <= sampleCount; x += 1)
+        {
+            addedShadow += shadowMap.SampleCmp(cmpSampler, lightPos.xy, lightPos.z, int2(x, y)).r;
+        }
+    }
+
+    float shadow = addedShadow / pow(sampleCount * 2 + 1, 2);
+
+    return shadow;
+}
+
 [earlydepthstencil]
 PSOutput PS(VSOutput input) {
 	PSOutput output;
@@ -114,54 +139,46 @@ PSOutput PS(VSOutput input) {
 	uint offset = LightGrid[tile].x;
 	uint count = LightGrid[tile].y;
 
-    float3 textureColor = diffuseMap.Sample(Sampler, input.uv);
+    float3 colorSample = diffuseMap.Sample(Sampler, input.uv);
+    float3 specularSample = specularMap.Sample(Sampler, input.uv);
+    float3 normalSample = normalMap.Sample(Sampler, input.uv);
+
+    /////////////////NORMAL MAPPING
+    //To make sure the tangent is perpendicular
+    input.tangent = normalize(input.tangent - dot(input.tangent, normalSample) * normalSample);
+
+    float3x3 tangentMatrix = float3x3(input.tangent, input.biTangent, input.normal);
+    normalSample = normalize(normalSample * 2.0 - 1);
+
+
+    float3 finalNormal = normalize(mul(normalSample, tangentMatrix));
+
+    /////////////////////////////////////////////////////////
 	
 
     ///////////////////////////////DIRECTIONAL LIGHT///////////////////////////////////////
     float3 lightDir = normalize(camPos.xyz - dirLightPos.xyz);
-    float diffuseFactor = saturate(dot(input.normal, normalize(-lightDir)));
+    float diffuseFactor = saturate(dot(finalNormal, normalize(-lightDir)));
     float3 directionalDiffuse = diffuseFactor * dirLightColor;
 
     float3 posToLightDir = dirLightPos.xyz - input.worldPos.xyz;
     float3 reflectThingDir = normalize(posToLightDir + (camPos.xyz - input.worldPos.xyz));
-    float3 specularDir = pow(saturate(dot(input.normal, reflectThingDir)), 500) * dirLightColor;
+    float3 directionalSpecularity = pow(saturate(dot(finalNormal, reflectThingDir)), 500) * dirLightColor;
 
     
+    float shadow = getShadowValue(input.lightPos, 2);
 
-            /////////////////////////////SHADOWS//////////////////////////////
-    input.lightPos.x = (input.lightPos.x * 0.5f) + 0.5f;
-    input.lightPos.y = (input.lightPos.y * -0.5f) + 0.5f;
-
-    float addedShadow = 0;
-
-    int samples = 1;
-
-    for (int y = -samples; y <= samples; y += 1)
-    {
-        for (int x = -samples; x <= samples; x += 1)
-        {
-            addedShadow += shadowMap.SampleCmp(cmpSampler, input.lightPos.xy, input.lightPos.z, int2(x, y)).r;
-        }
-    }
-
-    float shadow = addedShadow / pow(samples * 2 + 1, 2);
-    
-
-        //DEBUG TEST TEMP
-    if (input.lightPos.x > 1 || input.lightPos.x < 0 ||
-        input.lightPos.y > 1 || input.lightPos.y < 0)
-        shadow = 1;
-
-            //////////////////////// END SHADOW /////////////////////////
-
-    float3 directionalComponent = (directionalDiffuse + specularDir) * dirFade * shadow;
+    directionalDiffuse *= dirFade * shadow;
+    directionalSpecularity *= dirFade * shadow;
 
     /////////////////////////////DIRECTIONAL LIGHT END///////////////////////////////////////
 
 
     ////////////////////////////////POINT LIGHTS//////////////////////////////////////////////
 
-    float3 pointLightComponent = 0;
+
+    float3 pointDiffuse = 0;
+    float3 pointSpecular = 0;
 
 	for (uint i = 0; i < count; i++) 
     {
@@ -175,25 +192,21 @@ PSOutput PS(VSOutput input) {
         float3 normalizedLight = posToLight / distance;
 		float attenuation = 1.0f - smoothstep(0, light.range, distance);
 
-        float3 diffuse = saturate(dot(input.normal, posToLight));
+        pointDiffuse += saturate(dot(finalNormal, posToLight)) * light.color * attenuation;
 
-       
-        float3 specular = pow(saturate(dot(input.normal, reflectThing)), 1000) * light.color;
-
-
-        pointLightComponent += light.color * attenuation * (saturate(diffuse) + specular);
-	}
+        pointSpecular += pow(saturate(dot(finalNormal, reflectThing)), 1000) * light.color * attenuation;
+    }
     //////////////////////////////POINT LIGHTS END//////////////////////////////////////////////
 
+    float3 finalDiffuse = saturate(pointDiffuse + directionalDiffuse) * colorSample;
+    float3 finalSpecular = saturate(pointSpecular + pointDiffuse) * specularSample;
     
-    float3 ambient = float3(0.3, 0.3, 0.4);
+    float3 ambient = float3(0.2, 0.2, 0.3) * colorSample;
 
-    float3 lighting = saturate(directionalComponent + pointLightComponent + ambient);
+    float3 lighting = saturate(finalDiffuse + finalSpecular + ambient);
     
+    output.color = float4(lighting, 1);
 
-
-
-    output.color = float4(lighting * textureColor, 1);
-
-	return output;
+        return output;
 }
+

@@ -33,7 +33,7 @@ namespace Logic
 
 		MenuMachine();
 		~MenuMachine();
-		void initialize(GameState state);					//< Load menu layout from file
+		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout
 		void update();
 
@@ -46,6 +46,8 @@ namespace Logic
 
 		void buttonClick2();
 
+
+		
 
 
 	};
