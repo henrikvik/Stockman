@@ -19,19 +19,25 @@ namespace Logic
 {
 	class HighScoreManager
 	{
+	private:
+		struct highScore
+		{
+			int score;
+			std::string name;
+		};
+
+		int m_score;							//< Current score
+		highScore m_highScore[10];				//< List of high scores
+		float m_comboTimer;						//< Current combo timer
+		int m_comboCount;						//< Killcount for current combo/streak
+		int m_killCount;						//< Overall killcount for current game
 	public:
 		HighScoreManager();
 		~HighScoreManager();
 
+		void addNewHighScore(std::string name);
 		void saveToFile();						//< Save high scores to file
 		void loadFromFile();					//< Load high scores from file 
-	private:
-		int m_score;							//< Current score
-		int m_highScore[10];					//< List of high scores
-		std::string m_highScoreNames[10];		//< List of names associated with the high scores
-		float m_comboTimer;						//< Current combo timer
-		int m_comboCount;						//< Killcount for current combo/streak
-		int m_killCount;						//< Overall killcount for current game
 	};
 }
 
