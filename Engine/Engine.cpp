@@ -208,7 +208,7 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight);
+	Graphics::Camera cam(mDevice, mWidth, mHeight, 250);
     cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
