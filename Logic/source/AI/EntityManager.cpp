@@ -79,7 +79,6 @@ void EntityManager::spawnWave(Physics &physics)
 			m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 113.f, i * 37.f, i * 124.f }, { 0, 0, 0 }, {3.5f, 0.5f, 0.5f}), 100, false), {0.5f, 0.5f, 0.5f}));
 		}
 
-		// Adds four jump-pads, load these from wave-file in the future
 		m_triggerManager.addTrigger(Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
 		m_triggerManager.addTrigger(Cube({ -10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
 		m_triggerManager.addTrigger(Cube({ -10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { }, { StatusManager::EFFECT_ID::BOOST_UP });
@@ -95,6 +94,12 @@ void EntityManager::spawnWave(Physics &physics)
 		m_triggerManager.addTrigger(Cube({ 80, 80.f, -2 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP, StatusManager::EFFECT_ID::BOOST_UP });
 		m_triggerManager.addTrigger(Cube({ 50, 65.f, 5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
 		m_triggerManager.addTrigger(Cube({ 130, 129.f, 5 }, { 0, 0, 0 }, { 10, 1.f, 10 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP, StatusManager::EFFECT_ID::BOOST_UP, StatusManager::EFFECT_ID::BOOST_UP, StatusManager::EFFECT_ID::BOOST_UP });
+	
+		// Jump pads below the grappling hooks
+		m_triggerManager.addTrigger(Cube({ -20, 20, 5 }, { 0, 0, 0 }, { 0.1f, 0.1f, 0.1f }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+		m_triggerManager.addTrigger(Cube({ -15, 40, -5 }, { 0, 0, 0 }, { 0.1f, 0.1f, 0.1f }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+		m_triggerManager.addTrigger(Cube({ -20, 60, 0 }, { 0, 0, 0 }, { 0.1f, 0.1f, 0.1f }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
+		m_triggerManager.addTrigger(Cube({ -60, 70, -60 }, { 0, 0, 0 }, { 50, 1.f, 50 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP });
 	}
 }
 
