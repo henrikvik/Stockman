@@ -48,6 +48,11 @@ void Game::init()
 	m_waveTime[2]	= WAVE_3_TIME;
 	m_waveTime[3]	= WAVE_4_TIME;
 	m_waveTime[4]	= WAVE_5_TIME;
+
+	// Initializing Card Manager
+	m_cardManager = newd CardManager();
+	m_cardManager->init();
+
 }
 
 void Game::clear()
@@ -57,6 +62,7 @@ void Game::clear()
 	m_menu->clear();
 	delete m_menu;
 	delete m_map;
+	delete m_cardManager;
 	m_projectileManager->clear();
 	delete m_projectileManager;
 }

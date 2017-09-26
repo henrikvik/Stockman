@@ -30,4 +30,17 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\Vertex.hlsl" />
+    <None Include="Resources\Data\Effects.lw" />
+    <None Include="Resources\Data\Menu.lw" />
+    <None Include="Resources\Data\Button.lw" />
+    <None Include="Resources\Data\Cards.lw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\data\Text.lw" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\LightGridCulling.hlsl" />
+  </ItemGroup>
 </Project>

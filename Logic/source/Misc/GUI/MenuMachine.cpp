@@ -22,14 +22,6 @@ MenuMachine::~MenuMachine()
 
 void Logic::MenuMachine::initialize(GameState state)
 {
-	//Structure to define everything one Menu needs
-	struct Menu
-	{
-		int theState;
-		std::string background;
-		std::vector<MenuState::ButtonStruct> buttons;
-	};
-
 	//Gather all the functions in a map for future allocation
 	std::map<std::string, std::function<void(void)>> functions;
 	functions["buttonClick0"] = std::bind(&MenuMachine::buttonClick0, this);
@@ -67,7 +59,6 @@ void Logic::MenuMachine::initialize(GameState state)
 	}
 
 	//Gather all the Menus in this vector for fututre use
-	std::vector<Menu> menuGather;
 	for (auto const& menu : menuFile)
 	{
 		//If it is a menu add one to the vector
@@ -79,39 +70,14 @@ void Logic::MenuMachine::initialize(GameState state)
 			{
 				tempButton.push_back(allButtons.at(menu.strings.at("button" + std::to_string(i + 1))));
 			}
-			menuGather.push_back({
-				menu.ints.at("State"),
-				menu.strings.at("Background"),
-				tempButton
-			});
+
+			//Create new Menus and send in the fitting information from Menu vector
+			m_menuStates[GameState(menu.ints.at("State"))] = newd MenuState();
+			m_menuStates.at(GameState(menu.ints.at("State")))->initialize(tempButton, menu.strings.at("Background"));
 		}
 	}
 
-	//Create new Menus and send in the fitting information from Menu vector
-	for (auto const& menus : menuGather)
-	{
-		m_menuStates[GameState(menus.theState)] = newd MenuState();
-		m_menuStates.at(GameState(menus.theState))->initialize(menus.buttons, menus.background);
-
-	}
-	/*MenuState* test = newd MenuState();
-	test->initialize(std::bind(&MenuMachine::buttonClick0, this));
-	m_menuStates[gameStateMenuMain] = test;
-
-	MenuState* test1 = newd MenuState();
-	test1->initialize(std::bind(&MenuMachine::buttonClick1, this));
-	m_menuStates[gameStateMenuSettings] = test1;
-
-	MenuState* test2 = newd MenuState();
-	test2->initialize(std::bind(&MenuMachine::buttonClick2, this));
-	m_menuStates[gameStateGame] = test2;*/
-
 	showMenu(state);
-
-	//accquire menu state
-	//accquires position
-	//accquires its width and height
-	//accquires texture
 }
 
 void Logic::MenuMachine::clear() 
@@ -135,6 +101,8 @@ void Logic::MenuMachine::update()
 	}
 }
 
+
+//Switches the currentState used 
 void Logic::MenuMachine::showMenu(GameState state)
 {
 	if (m_menuStates.find(state) != m_menuStates.end())

@@ -13,6 +13,7 @@
 #include <Projectile\ProjectileManager.h>
 #include <AI/EntityManager.h>
 #include <Misc\GameTime.h>
+#include <Misc\CardManager.h>
 
 // DirectX Includes
 #include <Windows.h>
@@ -67,6 +68,7 @@ namespace Logic
 		MenuMachine*		m_menu;
 		EntityManager		m_entityManager;
 		GameTime			m_gameTime;
+		CardManager*		m_cardManager;
 
 		// Wave
 		int		m_waveCurrent;
