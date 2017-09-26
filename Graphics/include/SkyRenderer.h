@@ -1,14 +1,20 @@
 #pragma once
 #include "Resources\Shader.h"
 #include "Camera.h"
+#include "Lights\Sun.h"
 
 class SkyRenderer
 {
 public:
-	SkyRenderer(ID3D11Device * device);
+	SkyRenderer(ID3D11Device * device, int shadowRes);
 	~SkyRenderer();
 
 	void renderSky(ID3D11DeviceContext * context, Graphics::Camera * cam);
+	void update(ID3D11DeviceContext * context, float deltaTime, DirectX::SimpleMath::Vector3 pos);
+
+	ID3D11Buffer* getLightMatrixBuffer() { return sun.getMatrixBuffer(); };
+	ID3D11Buffer* getShaderBuffer() { return sun.getShaderBuffer(); };
+	D3D11_VIEWPORT getViewPort() { return sun.getViewPort(); };
 
 private:
 	struct  SkyCube
@@ -91,5 +97,6 @@ private:
 	Graphics::Shader shader;
 	ID3D11ShaderResourceView * srv;
 	SkyCube cube;
+	Sun sun;
 
 };
