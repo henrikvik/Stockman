@@ -2,14 +2,14 @@
 #include <algorithm>
 using namespace DirectX::SimpleMath;
 #define PI 3.14159265
-#define SUNSET_TIME 0.4f
+#define SUNSET_TIME 0.5f
 #define DAY_NIGHT_ON true
 
 Sun::Sun(ID3D11Device * device, int width, int height)
 {
 	pos = Vector4(0, 50, 0.5, 1);
 	colors.dayColor = Vector3(1, 1, 0.8);
-	colors.sunDownColor = Vector3(2, 0.5, -1);
+	colors.sunDownColor = Vector3(2, 0.5, 0);
 	colors.nightColor = Vector3(0.1, 0.1, 0.3);
 	isNight = false;
 	

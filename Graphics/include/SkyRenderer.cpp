@@ -46,7 +46,7 @@ void SkyRenderer::renderSky(ID3D11DeviceContext * context, Graphics::Camera * ca
 
 void SkyRenderer::update(ID3D11DeviceContext * context, float deltaTime, Vector3 pos)
 {
-	float radiansPerSecond = 0.01745 * deltaTime * 0.05f;
+	float radiansPerSecond = 0.01745 * deltaTime * 0.005f;
 
 	sun.update(context, radiansPerSecond, pos);
 
