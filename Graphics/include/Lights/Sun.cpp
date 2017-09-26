@@ -1,16 +1,16 @@
-#include "DirectionalLight.h"
+#include "Sun.h"
 #include <algorithm>
 using namespace DirectX::SimpleMath;
 #define PI 3.14159265
 #define SUNSET_TIME 0.4f
-#define DAY_NIGHT_ON false
+#define DAY_NIGHT_ON true
 
-DirectionalLight::DirectionalLight(ID3D11Device * device, int width, int height)
+Sun::Sun(ID3D11Device * device, int width, int height)
 {
 	pos = Vector4(0, 50, 0.5, 1);
-	dayColor = Vector3(1, 1, 0.8);
-	sunDownColor = Vector3(2, 0.5, -1);
-	nightColor = Vector3(0.1, 0.1, 0.3);
+	colors.dayColor = Vector3(1, 1, 0.8);
+	colors.sunDownColor = Vector3(2, 0.5, -1);
+	colors.nightColor = Vector3(0.1, 0.1, 0.3);
 	isNight = false;
 	
 
@@ -19,7 +19,7 @@ DirectionalLight::DirectionalLight(ID3D11Device * device, int width, int height)
 
 	matrixData.vp = view * projection;
 	
-	shaderData.color = dayColor;
+	shaderData.color = colors.dayColor;
 	shaderData.shadowFade = 1;
 
 	D3D11_BUFFER_DESC desc = {};
@@ -33,7 +33,7 @@ DirectionalLight::DirectionalLight(ID3D11Device * device, int width, int height)
 
 	device->CreateBuffer(&desc, &data, &this->matrixBuffer);
 
-	desc.ByteWidth = sizeof(ShaderValues);
+	desc.ByteWidth = sizeof(LightValues);
 	data.pSysMem = &shaderData;
 
 	device->CreateBuffer(&desc, &data, &this->shaderBuffer);
@@ -45,20 +45,20 @@ DirectionalLight::DirectionalLight(ID3D11Device * device, int width, int height)
 	viewPort.MaxDepth = 1.f;
 }
 
-DirectionalLight::~DirectionalLight()
+Sun::~Sun()
 {
 	SAFE_RELEASE(matrixBuffer);
 	SAFE_RELEASE(shaderBuffer);
 }
 
-void DirectionalLight::update(ID3D11DeviceContext * context, Vector3 offset)
+void Sun::update(ID3D11DeviceContext * context, float rotationAmount, Vector3 offset)
 {
 	//a little bit temp, might be final
 	static float rotationDeg = 0;
 
 	//Enable to get the day night cycle
 #if DAY_NIGHT_ON
-	rotationDeg += 0.01745 * 0.25;
+	rotationDeg += rotationAmount;
 #else
 	rotationDeg = 3.14 * 0.25;
 #endif
@@ -87,10 +87,10 @@ void DirectionalLight::update(ID3D11DeviceContext * context, Vector3 offset)
 	float sundownAmount = 1 - min(shaderData.shadowFade, 1);
 
 	if (!isNight)
-		shaderData.color = (dayColor * dayAmount) + (sunDownColor * sundownAmount);
+		shaderData.color = (colors.dayColor * dayAmount) + (colors.sunDownColor * sundownAmount);
 	
 	else
-		shaderData.color = (nightColor * dayAmount);
+		shaderData.color = (colors.nightColor * dayAmount) + (colors.sunDownColor * sundownAmount);
 	
 	shaderData.color.x = snap(shaderData.color.x, 0, 1);
 	shaderData.color.y = snap(shaderData.color.y, 0, 1);
@@ -117,7 +117,22 @@ void DirectionalLight::update(ID3D11DeviceContext * context, Vector3 offset)
 
 }
 
-float DirectionalLight::snap(float value, float minVal, float maxVal)
+float Sun::getShadowFade() const
+{
+	return shaderData.shadowFade;
+}
+
+DirectX::SimpleMath::Vector3 Sun::getColor() const
+{
+	return shaderData.color;
+}
+
+Sun::ColorStruct Sun::getColors() const
+{
+	return colors;
+}
+
+float Sun::snap(float value, float minVal, float maxVal)
 {
 	value = max(min(value, maxVal), minVal);
 	return value;
