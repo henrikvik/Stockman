@@ -10,6 +10,8 @@ DirectionalLight::DirectionalLight(ID3D11Device * device, int width, int height)
 	pos = Vector4(0, 50, 0.5, 1);
 	dayColor = Vector3(1, 1, 0.8);
 	sunDownColor = Vector3(2, 0.5, -1);
+	nightColor = Vector3(0.1, 0.1, 0.3);
+	isNight = false;
 	
 
 	projection = DirectX::XMMatrixOrthographicRH(100.f, 100.f, 1, 200);
@@ -54,22 +56,20 @@ void DirectionalLight::update(ID3D11DeviceContext * context, Vector3 offset)
 	//a little bit temp, might be final
 	static float rotationDeg = 0;
 
-	//Enable to get the day noght solko
+	//Enable to get the day night cycle
 #if DAY_NIGHT_ON
 	rotationDeg += 0.01745 * 0.25;
 #else
 	rotationDeg = 3.14 * 0.25;
 #endif
 
-	if (rotationDeg >= PI * 2)
-		rotationDeg = 0;
+	if (rotationDeg >= PI * 0.5)
+	{
+		rotationDeg = -PI * 0.5;
+		isNight = !isNight;
+	}
 
 	Matrix rotation = Matrix::CreateRotationZ(rotationDeg);
-
-	if (rotationDeg > PI * 0.5 && rotationDeg < PI * 1.5)
-	{
-		rotation = Matrix::CreateRotationZ(PI * 0.5);
-	}
 
 	this->shaderData.pos = Vector4::Transform(pos, rotation);
 	
@@ -86,13 +86,15 @@ void DirectionalLight::update(ID3D11DeviceContext * context, Vector3 offset)
 	float dayAmount = min(shaderData.shadowFade, 1);
 	float sundownAmount = 1 - min(shaderData.shadowFade, 1);
 
-	shaderData.color = (dayColor * dayAmount) + (sunDownColor * sundownAmount);
+	if (!isNight)
+		shaderData.color = (dayColor * dayAmount) + (sunDownColor * sundownAmount);
+	
+	else
+		shaderData.color = (nightColor * dayAmount);
+	
 	shaderData.color.x = snap(shaderData.color.x, 0, 1);
 	shaderData.color.y = snap(shaderData.color.y, 0, 1);
 	shaderData.color.z = snap(shaderData.color.z, 0, 1);
-
-	//printf("R: %f G: %f B: %f\n", shaderData.color.x, shaderData.color.y, shaderData.color.z);
-	//printf("%f\n", dayAmount);
 	
 	this->shaderData.pos = shaderData.pos + offset;
 	view = DirectX::XMMatrixLookAtRH(shaderData.pos, offset, Vector3(0, 1, 0));

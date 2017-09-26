@@ -22,6 +22,8 @@ private:
 	DirectX::SimpleMath::Vector4 pos;
 	DirectX::SimpleMath::Vector3 dayColor;
 	DirectX::SimpleMath::Vector3 sunDownColor;
+	DirectX::SimpleMath::Vector3 nightColor;
+	bool isNight;
 
 	struct ShaderMatrix
 	{
