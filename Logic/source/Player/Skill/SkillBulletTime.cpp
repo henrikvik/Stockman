@@ -9,7 +9,7 @@ SkillBulletTime::SkillBulletTime(GameTime * gameTime)
 
 void SkillBulletTime::onUse()
 {
-	m_gameTime->slowMotion(0.65f, 5000.f);
+	m_gameTime->slowMotion(0.40f, 5000.f);
 }
 
 void SkillBulletTime::onUpdate(float deltaTime)
