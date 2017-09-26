@@ -14,10 +14,10 @@ Player::~Player()
 	clear();
 }
 
-void Player::init(ProjectileManager* projectileManager)
+void Player::init(ProjectileManager* projectileManager, GameTime* gameTime)
 {
 	m_weaponManager.init(projectileManager);
-	m_skillManager.init();
+	m_skillManager.init(projectileManager, gameTime);
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;

@@ -13,6 +13,8 @@
 #include <Player\Skill\SkillBulletTime.h>
 #include <Player\Skill\SkillGrapplingHook.h>
 #include <Player\Skill\SkillShieldCharge.h>
+#include <Projectile\ProjectileManager.h>
+#include <Misc\GameTime.h>
 #include <vector>
 
 namespace Logic
@@ -24,7 +26,7 @@ namespace Logic
 		SkillManager();
 		~SkillManager();
 
-		void init();
+		void init(ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
 
 		void switchToSkill(int index);
@@ -34,8 +36,11 @@ namespace Logic
 		void render(Graphics::Renderer& renderer);
 	
 	private:
-		void initializeSkills();
+		void initializeSkills(GameTime* gameTime);
 		
+		ProjectileManager* projectileManager;
+		GameTime* gameTime;
+
 		std::vector<Skill*> m_allSkills;
 		Skill* m_currentSkill;
 	};

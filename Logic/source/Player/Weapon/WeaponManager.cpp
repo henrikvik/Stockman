@@ -84,8 +84,7 @@ void WeaponManager::initializeWeapons()
 		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 1, 1, 1, 1, 1, 1, 1, 3000 },
 		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 3, 1, 1, 1, 1, 1, 1, 3000 },
 		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 },
-		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 }
-	};
+		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 } };
 }
 
 void WeaponManager::makeWeaponLoadout()

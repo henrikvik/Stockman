@@ -3,7 +3,9 @@
 
 #include <string>
 #include <vector>
+
 #include "NavigationMesh.h"
+#include "PASVF.h"
 
 #include <Entity\Entity.h>
 
@@ -37,7 +39,7 @@ namespace Logic
 			Node getNextNode(Entity const &enemy, Entity const &target);
 
 			// iniate the nodes
-			void init();
+			void generateNavigationMesh();
 	};
 }
 #endif
