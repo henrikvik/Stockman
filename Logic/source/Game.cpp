@@ -67,6 +67,7 @@ void Game::clear()
 	m_menu->clear();
 	delete m_menu;
 	delete m_map;
+	delete m_cardManager;
 	m_projectileManager->clear();
 	delete m_projectileManager;
 }
