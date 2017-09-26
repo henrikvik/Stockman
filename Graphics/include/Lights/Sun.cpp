@@ -14,7 +14,7 @@ Sun::Sun(ID3D11Device * device, int width, int height)
 	isNight = false;
 	
 
-	projection = DirectX::XMMatrixOrthographicRH(100.f, 100.f, 1, 200);
+	projection = DirectX::XMMatrixOrthographicRH(100.f, 100.f, 1, 300);
 	view = DirectX::XMMatrixLookAtRH(pos, Vector3(0, 0, 0), Vector3(0, 1, 0));
 
 	matrixData.vp = view * projection;
