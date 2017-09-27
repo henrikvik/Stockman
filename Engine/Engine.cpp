@@ -253,27 +253,27 @@ int Engine::run()
 
             cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
 
-			//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
-            //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
+			cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
+            cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
 
             //////////////TEMP/////////////////
-            Graphics::RenderInfo staticCube = {
-                true, //bool render;
-                Graphics::ModelID::CUBE, //ModelID meshId;
-                0, //int materialId;
-                DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-            };
+   //         Graphics::RenderInfo staticCube = {
+   //             true, //bool render;
+   //             Graphics::ModelID::CUBE, //ModelID meshId;
+   //             0, //int materialId;
+   //             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+   //         };
 
-            //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
-            //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
-			//staticCube.translation *= DirectX::SimpleMath::Matrix::CreateTranslation({ 1 + sinf(totalTime * 0.00001f),2 + cosf(totalTime * 0.00001f),0 });
-			staticCube.translation *= DirectX::SimpleMath::Matrix::CreateFromAxisAngle({ 0.1f, 0.5f, 1.f }, totalTime*0.001f);
+   //         //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
+   //         //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
+			////staticCube.translation *= DirectX::SimpleMath::Matrix::CreateTranslation({ 1 + sinf(totalTime * 0.00001f),2 + cosf(totalTime * 0.00001f),0 });
+			//staticCube.translation *= DirectX::SimpleMath::Matrix::CreateFromAxisAngle({ 0.1f, 0.5f, 1.f }, totalTime*0.001f);
 
-            renderer->queueRender(&staticCube);
-            ///////////////////////////////////
+   //         renderer->queueRender(&staticCube);
+   //         ///////////////////////////////////
 
 
-			renderer->render(&cam);
+			//renderer->render(&cam);
 			mSwapChain->Present(0, 0);
 		}
 		
