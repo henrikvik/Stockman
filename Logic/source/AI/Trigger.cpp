@@ -89,7 +89,7 @@ float Trigger::getCooldown() const
 	return m_cooldown;
 }
 
-bool Trigger::setShouldRemove(bool remove)
+void Trigger::setShouldRemove(bool remove)
 {
 	m_remove = remove;
 }
