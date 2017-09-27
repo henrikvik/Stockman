@@ -3,7 +3,6 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 
-#define SHADOW_MAP_RESOLUTION 2048
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
@@ -24,7 +23,6 @@ namespace Graphics
 		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
-		, shadowDepthStencil(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
         , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
         , instanceOffsetBuffer(gDevice)
 		, skyRenderer(gDevice, SHADOW_MAP_RESOLUTION)
@@ -33,7 +31,6 @@ namespace Graphics
 		this->deviceContext = gDeviceContext;
 		this->backBuffer = backBuffer;
 
-		createShadowMap();
 		initialize(gDevice, gDeviceContext);
 
         viewPort = { 0 };
@@ -51,7 +48,6 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
-		SAFE_RELEASE(shadowSampler);
         resourceManager.release();
 
     }
@@ -114,9 +110,12 @@ namespace Graphics
 #else
         cull();
         writeInstanceData();
+		
 
+		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
+		skyRenderer.drawShadows(deviceContext, &forwardPlus);
+		draw();
 
-		drawShadows();
 
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
@@ -174,16 +173,20 @@ namespace Graphics
         deviceContext->VSSetShader(forwardPlus, nullptr, 0);
         deviceContext->PSSetShader(forwardPlus, nullptr, 0);
 
+		
+
 		ID3D11ShaderResourceView *SRVs[] = {
 			grid.getOpaqueIndexList()->getSRV(),
 			grid.getOpaqueLightGridSRV(),
 			grid.getLights()->getSRV(),
-			this->shadowDepthStencil
+			*skyRenderer.getDepthStencil()
 		};
 		auto sampler = states->LinearClamp();
 		deviceContext->PSSetShaderResources(0, 4, SRVs);
 		deviceContext->PSSetSamplers(0, 1, &sampler);
-		deviceContext->PSSetSamplers(1, 1, &shadowSampler);
+
+		ID3D11SamplerState * samplers[] = { skyRenderer.getSampler() };
+		deviceContext->PSSetSamplers(1, 1, samplers);
 
 		ID3D11Buffer *lightBuffs[] =
 		{
@@ -315,9 +318,6 @@ namespace Graphics
         deviceContext->PSSetShaderResources(0, 1, &texture);
 
         UINT zero = 0;
-        //deviceContext->IASetVertexBuffers(0, 1, nullptr, &zero, &zero);
-        //deviceContext->IASetIndexBuffer(nullptr, DXGI_FORMAT_R32_UINT, zero);
-        //deviceContext->IASetInputLayout(nullptr);
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
@@ -359,21 +359,7 @@ namespace Graphics
 
     }
 
-	void Renderer::drawShadows()
-	{
-		deviceContext->ClearDepthStencilView(shadowDepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
-
-		deviceContext->RSSetViewports(1, &skyRenderer.getViewPort());
-		deviceContext->IASetInputLayout(forwardPlus);
-		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-		deviceContext->PSSetShader(nullptr, nullptr, 0);
-		deviceContext->OMSetRenderTargets(0, nullptr, shadowDepthStencil);
-
-		ID3D11Buffer* light = skyRenderer.getLightMatrixBuffer();
-		deviceContext->VSSetConstantBuffers(0, 1, &light);
-
-		draw();
-	}
+	
 
     void Renderer::createGUIBuffers()
     {
@@ -427,25 +413,7 @@ namespace Graphics
         ThrowIfFailed(device->CreateBuffer(&desc, &data, &GUIvb));
     }
 
-	void Renderer::createShadowMap()
-	{
-		D3D11_SAMPLER_DESC sDesc = {};
-		sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-		sDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-		sDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-		sDesc.BorderColor[0] = 1;
-		sDesc.BorderColor[1] = 1;
-		sDesc.BorderColor[2] = 1;
-		sDesc.BorderColor[3] = 1;
-		sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
-		sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
-		sDesc.MaxAnisotropy = 0;
-		sDesc.MinLOD = 0;
-		sDesc.MaxLOD = D3D11_FLOAT32_MAX;
-		sDesc.MipLODBias = 0;
-
-		device->CreateSamplerState(&sDesc, &shadowSampler);
-	}
+	
 
     void Renderer::createBlendState()
     {
