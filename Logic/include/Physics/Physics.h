@@ -57,7 +57,7 @@ namespace Logic
 		void update(GameTime gameTime);
 
 		// Returns nullptr if not intersecting, otherwise returns the rigidbody of the hit
-		btRigidBody* checkRayIntersect(Ray& ray);
+		const btRigidBody* checkRayIntersect(Ray& ray);
 
 		// Returns a ptr to the created rigidbody
 		// Works with different primitives
