@@ -278,12 +278,16 @@ int Engine::run()
 
 		renderer->updateLight(deltaTime, &cam);
 
-        renderer->queueRender(&staticCube);
-        renderer->queueRender(&staticSphere);
+        
         ///////////////////////////////////
 
-
-		renderer->render(&cam);
+        if (game.getState() != 2)
+        {
+            renderer->queueRender(&staticCube);
+            renderer->queueRender(&staticSphere);
+            renderer->render(&cam);
+        }
+		
 		mSwapChain->Present(0, 0);
 		
 		
