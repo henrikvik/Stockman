@@ -44,7 +44,7 @@ void Trigger::update(float deltaTime)
 // Collision with the player, give player the effect
 void Trigger::onCollision(Entity& other)
 {
-	if (m_active && !m_remove)
+	if (m_active)
 	{
 		if (Player* p = dynamic_cast<Player*>(&other))
 		{

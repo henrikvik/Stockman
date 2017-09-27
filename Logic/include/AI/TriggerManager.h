@@ -22,10 +22,13 @@ namespace Logic
 	class TriggerManager 
 	{
 		private:
+			Physics* m_physicsPtr;
 			std::vector<Trigger*> m_triggers;
 		public:
 			TriggerManager();
 			~TriggerManager();
+
+			void removeTrigger(Trigger* t, int index);
 
 			void addTrigger(Cube& cube, float cooldown, Physics& physics, 
 				std::vector<StatusManager::UPGRADE_ID> upgrades, 
