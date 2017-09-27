@@ -46,7 +46,7 @@ namespace Logic
 		~MenuState();
 		void initialize(std::vector<ButtonStruct> buttonStruct, std::string background);
 		void updateOnPress(int posX, int posY);
-        Graphics::MenuInfo getMenuInfo() const;
+        Graphics::MenuInfo getMenuInfo();
 	};
 }
 
