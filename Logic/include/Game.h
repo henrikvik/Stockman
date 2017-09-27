@@ -23,7 +23,7 @@
 #include <Graphics\include\Renderer.h>
 
 // Init Defines
-#define STARTING_STATE		gameStateGame
+#define STARTING_STATE		gameStateMenuMain
 #define PLAYER_START_SCA	btVector3(1.5f, 3.0f, 1.5f)
 #define PLAYER_START_POS	btVector3(0.0f, 5.0f, 0.0f)
 #define PLAYER_START_ROT	btVector3(0.0f, 0.0f, 0.0f)
