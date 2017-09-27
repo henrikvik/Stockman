@@ -88,6 +88,11 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 		m_playerState = PlayerState::IN_AIR;
 		m_wishJump = false;
 	}
+
+	if (flags & Effect::EFFECT_MODIFY_AMMO)
+	{
+		
+	}
 }
 
 void Player::upgrade(Upgrade const & upgrade)
