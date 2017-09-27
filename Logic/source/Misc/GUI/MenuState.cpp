@@ -22,8 +22,7 @@ void Logic::MenuState::initialize(std::vector<ButtonStruct> buttonStruct, std::s
 		DirectX::SimpleMath::Vector2 texCoordEnd(struc.xTexEnd, struc.yTexEnd);
 		m_buttons.push_back(newd Button());
 		m_buttons.at(m_buttons.size() - 1)->initialize(pos, texCoordStart, texCoordEnd, struc.height, struc.width, struc.texture, struc.m_CallBackFunction);
-		m_menu.m_buttons.push_back(&m_buttons.at(m_buttons.size() - 1)->getButtonInfo());
-	}
+    }
 }
 
 void Logic::MenuState::updateOnPress(int posX, int posY)
@@ -32,4 +31,15 @@ void Logic::MenuState::updateOnPress(int posX, int posY)
 	{
 		m_buttons.at(i)->updateOnPress(posX, posY);
 	}
+}
+
+Graphics::MenuInfo Logic::MenuState::getMenuInfo()
+{
+    m_menu.m_buttons.clear();
+    for (size_t i = 0; i < this->m_buttons.size(); i++)
+    {
+        auto temp = m_buttons.at(i)->getButtonInfo();
+        m_menu.m_buttons.push_back(*temp);
+    }
+    return m_menu;
 }

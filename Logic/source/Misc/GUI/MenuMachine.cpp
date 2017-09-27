@@ -101,6 +101,14 @@ void Logic::MenuMachine::update()
 	}
 }
 
+void Logic::MenuMachine::render(Graphics::Renderer & renderer)
+{
+    Graphics::MenuInfo temp = this->currentActiveMenu->getMenuInfo();
+
+    renderer.drawMenu(&temp);
+
+}
+
 
 //Switches the currentState used 
 void Logic::MenuMachine::showMenu(GameState state)
@@ -124,13 +132,13 @@ GameState Logic::MenuMachine::currentState()
 
 void Logic::MenuMachine::buttonClick0()
 {
-	showMenu(gameStateMenuSettings);
+	showMenu(gameStateGame);
 	std::cout << "Left Trigger: Switched To Menu State 1";
 }
 
 void Logic::MenuMachine::buttonClick1()
 {
-	showMenu(gameStateGame);
+	showMenu(gameStateMenuSettings);
 	std::cout << "Left Trigger: Switched To Menu State 2";
 }
 
