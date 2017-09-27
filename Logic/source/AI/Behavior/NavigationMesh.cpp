@@ -16,6 +16,16 @@ void NavigationMesh::addTriangle(Triangle const & triangle)
 	triangleList.push_back(triangle);
 }
 
+void NavigationMesh::addEdge(int from, int to)
+{
+	edges[from].indices.push_back(to);
+}
+
+std::vector<int>& NavigationMesh::getEdges(int from)
+{
+	return edges[from].indices;
+}
+
 void NavigationMesh::createNodesFromTriangles()
 {
 	nodes.clear();
@@ -28,11 +38,17 @@ void NavigationMesh::createNodesFromTriangles()
 		mid /= 3; // nr of vertices in tri
 	}
 	nodes.push_back(mid);
+	edges.push_back(Edge());
 }
 
 const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() const 
 {
 	return nodes;
+}
+
+const std::vector<NavigationMesh::Edge>& NavigationMesh::getEdges() const
+{
+	return edges;
 }
 
 int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const & pos) const

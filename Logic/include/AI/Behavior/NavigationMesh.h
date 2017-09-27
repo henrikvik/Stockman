@@ -15,6 +15,9 @@ namespace Logic
 				int id;
 				DirectX::SimpleMath::Vector3 vertices[3];
 			};
+			struct Edge {
+				std::vector<int> indices;
+			};
 
 			NavigationMesh();
 			//NavigationMesh(NavigationMesh const &other);
@@ -22,6 +25,8 @@ namespace Logic
 			~NavigationMesh();
 
 			void addTriangle(Triangle const &triangle);
+			void addEdge(int from, int to);
+			std::vector<int>& getEdges(int from);
 			void createNodesFromTriangles();
 			
 			// returns int of the index that has this pos in it
@@ -30,9 +35,11 @@ namespace Logic
 
 			const std::vector<Triangle>& getList() const;
 			const std::vector<DirectX::SimpleMath::Vector3>& getNodes() const;
+			const std::vector<Edge>& getEdges() const;
 		private:
 			std::vector<Triangle> triangleList;
 			std::vector<DirectX::SimpleMath::Vector3> nodes;
+			std::vector<Edge> edges;
 	};
 }
 
