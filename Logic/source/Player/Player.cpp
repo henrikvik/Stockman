@@ -1,5 +1,6 @@
 #include "Player/Player.h"
 #include <AI\EnemyTest.h>
+#include <AI\Trigger.h>
 
 using namespace Logic;
 
@@ -63,10 +64,12 @@ void Player::onCollision(Entity& other)
 	{
 		printf("Enemy slapped you right in the face.\n");
 	}
-	else
+	else if (Trigger* e = dynamic_cast<Trigger*>(&other))
 	{
-		m_playerState = PlayerState::STANDING; // TEMP
+		
 	}
+	else
+		m_playerState = PlayerState::STANDING; // TEMP
 }
 
 void Player::onCollision(Projectile& other)
@@ -83,6 +86,7 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 		getRigidbody()->setLinearVelocity(btVector3(getRigidbody()->getLinearVelocity().x(), 0, getRigidbody()->getLinearVelocity().z()));
 		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
 		m_playerState = PlayerState::IN_AIR;
+		m_wishJump = false;
 	}
 }
 
@@ -106,6 +110,10 @@ void Player::updateSpecific(float deltaTime)
 	// Movement
 	mouseMovement(deltaTime, &ms);
 	jump(deltaTime, &ks);
+
+	// If moving on y-axis, player is in air
+	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 0.001f || getRigidbody()->getLinearVelocity().y() < -0.001f))
+		m_playerState = PlayerState::IN_AIR;
 
 	// Get movement input
 	moveInput(&ks);
@@ -223,9 +231,7 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 		m_moveDir = m_moveDir.safeNormalize();
 
 	// Apply acceleration and move player
-	if(m_wishDir.isZero())
-		accelerate(deltaTime, 0.f);
-	else if(m_wishJump)
+	if(m_wishDir.isZero() || m_wishJump)
 		accelerate(deltaTime, 0.f);
 	else
 		accelerate(deltaTime, m_acceleration);
@@ -315,7 +321,7 @@ void Player::applyAirFriction(float deltaTime, float friction)
 
 void Player::jump(float deltaTime, DirectX::Keyboard::State* ks)
 {
-	if (ks->IsKeyDown(m_jump) && !m_wishJump)
+	if (ks->IsKeyDown(m_jump) && !m_wishJump && m_playerState != PlayerState::IN_AIR)
 		m_wishJump = true;
 	else if (ks->IsKeyUp(m_jump))
 		m_wishJump = false;
