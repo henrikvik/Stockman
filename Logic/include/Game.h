@@ -60,6 +60,8 @@ namespace Logic
 		DirectX::SimpleMath::Vector3 getPlayerForward();
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
 
+        int getState() const;
+
 	private:
 		Physics*			m_physics;
 		Player*				m_player;

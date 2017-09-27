@@ -146,3 +146,8 @@ DirectX::SimpleMath::Vector3 Game::getPlayerPosition()
 {
 	return m_player->getPosition();
 }
+
+int Logic::Game::getState() const
+{
+    return m_menu->currentState();
+}
