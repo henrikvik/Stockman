@@ -36,7 +36,7 @@ namespace Logic
 			bool getIsActive() const;
 			bool getIsReusable() const;
 			float getCooldown() const;
-			bool setShouldRemove(bool remove);
+			void setShouldRemove(bool remove);
 			void setIsActive(bool active);
 			void setIsReusable(bool	reusable);
 			void setCooldown(float cooldown);
