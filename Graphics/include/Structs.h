@@ -64,7 +64,7 @@ namespace Graphics
 
 	struct MenuInfo
 	{
-		std::vector<ButtonInfo*> m_buttons;		//< List of buttons on current menu
+		std::vector<ButtonInfo> m_buttons;		//< List of buttons on current menu
 		std::string m_menuTexture;			//< file path for the menu background ska bytas till enums
 	};
 

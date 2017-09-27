@@ -13,6 +13,7 @@ namespace Graphics
 		: simpleForward(gDevice, SHADER_PATH("SimpleForward.hlsl"), VERTEX_INSTANCE_DESC)
 		, forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_INSTANCE_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
+        , menuShader(gDevice, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 12, 0, D3D11_INPUT_PER_VERTEX_DATA} })
 		, lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
 		, cube(gDevice)
@@ -49,6 +50,11 @@ namespace Graphics
 		SAFE_RELEASE(shadowDSV);
 		SAFE_RELEASE(shadowSRV);
 		SAFE_RELEASE(shadowSampler);
+        SAFE_RELEASE(menuQuad);
+        SAFE_RELEASE(buttonQuad);
+        SAFE_RELEASE(buttonTexture);
+        SAFE_RELEASE(menuTexture);
+        SAFE_RELEASE(GUITexture);
         resourceManager.release();
 
     }
@@ -200,6 +206,7 @@ namespace Graphics
     {
        
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, L"Resources/Textures/cat.jpg", nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, L"Resources/Textures/cat.jpg", nullptr, &buttonTexture));
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, L"Resources/Textures/cat.jpg", nullptr, &GUITexture));
 
     }
@@ -334,29 +341,29 @@ namespace Graphics
 		draw();
 	}
     //fills the button vertex buffer with button info;
-    void Renderer::mapButtons(ButtonInfo info)
+    void Renderer::mapButtons(ButtonInfo * info)
     {
 
         //moves the buttons to ndc space
         TriangleVertex triangleVertices[6] =
         {
-            (info.m_rek.x + info.m_rek.width ) / WIN_WIDTH, (info.m_rek.y + info.m_rek.height) / WIN_HEIGHT, 0.0f,	//v0 pos
+            (info->m_rek.x + info->m_rek.width ) / WIN_WIDTH, (info->m_rek.y + info->m_rek.height) / WIN_HEIGHT, 0.0f,	//v0 pos
             1.0f, 1.0f,
 
-            info.m_rek.x / WIN_WIDTH, (info.m_rek.y + info.m_rek.height) / WIN_HEIGHT, 0.0f,	//v1
+            info->m_rek.x / WIN_WIDTH, (info->m_rek.y + info->m_rek.height) / WIN_HEIGHT, 0.0f,	//v1
             0.0f, 1.0f,
 
-            info.m_rek.x / WIN_WIDTH, info.m_rek.y / WIN_HEIGHT, 0.0f, //v2
+            info->m_rek.x / WIN_WIDTH, info->m_rek.y / WIN_HEIGHT, 0.0f, //v2
             0.0f,  0.0f,
 
             //t2
-            info.m_rek.x / WIN_WIDTH, info.m_rek.y / WIN_HEIGHT, 0.0f,	//v2 pos
+            info->m_rek.x / WIN_WIDTH, info->m_rek.y / WIN_HEIGHT, 0.0f,	//v2 pos
             0.0f, 0.0f,
 
-            (info.m_rek.x + info.m_rek.width) / WIN_WIDTH, info.m_rek.y / WIN_HEIGHT, 0.0f,	//v3
+            (info->m_rek.x + info->m_rek.width) / WIN_WIDTH, info->m_rek.y / WIN_HEIGHT, 0.0f,	//v3
             1.0f, 0.0f,
 
-            info.m_rek.x / WIN_WIDTH, (info.m_rek.y + info.m_rek.height) / WIN_HEIGHT, 0.0f, //v1
+            info->m_rek.x / WIN_WIDTH, (info->m_rek.y + info->m_rek.height) / WIN_HEIGHT, 0.0f, //v1
             0.0f,  0.0f,
         };
         
@@ -368,24 +375,37 @@ namespace Graphics
     }
 
     //draws the menu
-    void Renderer::drawMenu(Graphics::MenuInfo info)
+    void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
-        auto test = info;
+        //draws menu background
+        float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+        UINT stride = sizeof(Graphics::TriangleVertex) , offset = 0;
+        deviceContext->RSSetViewports(1, &viewPort);
+        deviceContext->IASetVertexBuffers(0, 1, &menuQuad, &stride, &offset);
+        deviceContext->IASetInputLayout(menuShader);
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->VSSetShader(menuShader, nullptr, 0);
+        deviceContext->PSSetShader(menuShader, nullptr, 0);
+        auto sampler = states->PointWrap();
+        deviceContext->PSSetSamplers(0, 1, &sampler);
+        deviceContext->PSSetShaderResources(0, 1, &menuTexture);
 
+        deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 
+        deviceContext->Draw(6, 0);
 
-
-
-        /*menuSprite->Begin(DirectX::SpriteSortMode_Deferred);
-        DirectX::SimpleMath::Vector2 temp = {0.0f, 0.0f};
-        DirectX::SimpleMath::Rectangle test(200, 200, 200, 200);
-        for (size_t i = 0; i < info.m_buttons.size(); i++)
+        //draws buttons
+        deviceContext->PSSetShaderResources(0, 1, &buttonTexture);
+        for (size_t i = 0; i < info->m_buttons.size(); i++)
         {
-            temp.x = info.m_buttons.at(i)->m_rek.x + info.m_buttons.at(i)->m_rek.width;
-            temp.y = info.m_buttons.at(i)->m_rek.y + info.m_buttons.at(i)->m_rek.height;
-            menuSprite->Draw(menuTexture, test, DirectX::Colors::White);
+            mapButtons(&info->m_buttons.at(i));
+            deviceContext->IASetVertexBuffers(0, 1, &buttonQuad, &stride, &offset);
+            deviceContext->Draw(6, 0);
         }
-        menuSprite->End();*/
+
+        ID3D11ShaderResourceView * SRVNULL = nullptr;
+        deviceContext->PSSetShaderResources(0, 1, &SRVNULL);
 
     }
 
@@ -495,31 +515,31 @@ namespace Graphics
 
         TriangleVertex triangleVertices[6] =
         {
-            1.f, -1.f, 0.0f,	//v0 pos
-            1.0f, 1.0f,
-
-            -1.f, -1.f, 0.0f,	//v1
+            -1.f, -1.f, 0.0f,	//v0 pos
             0.0f, 1.0f,
 
-            -1.f, 1.f, 0.0f, //v2
-            0.0f,  0.0f,
-
-            //t2
-            -1.f, 1.f, 0.0f,	//v0 pos
+            -1.f, 1.f, 0.0f,	//v1
             0.0f, 0.0f,
 
-            1.f, 1.f, 0.0f,	//v1
-            1.0f, 0.0f,
-
             1.f, -1.f, 0.0f, //v2
-            1.0f, 1.0f
+            1.0f,  1.0f,
+
+            //t2
+            1.f, 1.f, 0.0f,	//v0 pos
+            1.0f, 1.0f,
+
+            1.f, -1.f, 0.0f,	//v1
+            1.0f, 1.0f,
+
+            -1.f, 01.f, 0.0f, //v2
+            0.0f, 0.0f
         };
 
 
         D3D11_BUFFER_DESC desc = {0};
 
         desc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
-        desc.ByteWidth = sizeof(TriangleVertex);
+        desc.ByteWidth = sizeof(TriangleVertex) * 6;
 
         D3D11_SUBRESOURCE_DATA data = { 0 };
         data.pSysMem = triangleVertices;

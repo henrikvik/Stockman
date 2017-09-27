@@ -106,7 +106,7 @@ namespace Graphics
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
 		virtual ~Renderer();
         void render(Camera * camera);
-        void drawMenu(Graphics::MenuInfo info);
+        void drawMenu(Graphics::MenuInfo * info);
         void queueRender(RenderInfo * renderInfo);
         void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
 
@@ -123,6 +123,7 @@ namespace Graphics
         Shader fullscreenQuad;
         Shader simpleForward;
         Shader forwardPlus;
+        Shader menuShader;
         ComputeShader lightGridCull;
         //ComputeShader lightGridGen; 
 
@@ -153,6 +154,8 @@ namespace Graphics
         //std::unique_ptr<DirectX::SpriteBatch> menuSprite;
         ID3D11ShaderResourceView * menuTexture;
         ID3D11ShaderResourceView * GUITexture;
+        ID3D11ShaderResourceView * buttonTexture;
+       
 
         ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
@@ -171,7 +174,7 @@ namespace Graphics
         void drawGUI();
 		void drawShadows();
 
-        void mapButtons(ButtonInfo info);
+        void mapButtons(ButtonInfo * info);
 
 
         
