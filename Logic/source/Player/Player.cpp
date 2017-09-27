@@ -112,7 +112,7 @@ void Player::updateSpecific(float deltaTime)
 	jump(deltaTime, &ks);
 
 	// If moving on y-axis, player is in air
-	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 0.001f || getRigidbody()->getLinearVelocity().y() < -0.001f))
+	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 0.00001f || getRigidbody()->getLinearVelocity().y() < -0.00001f))
 		m_playerState = PlayerState::IN_AIR;
 
 	// Get movement input
@@ -264,7 +264,10 @@ void Player::accelerate(float deltaTime, float acceleration)
 
 	// Update pos of player
 	btTransform transform = getRigidbody()->getWorldTransform();
-	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
+	if (m_playerState != PlayerState::IN_AIR)
+		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
+	else
+		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime) + (m_wishDir * 0.004f * deltaTime));
 	getRigidbody()->setWorldTransform(transform);
 
 	printf("%f\n", m_moveSpeed);
