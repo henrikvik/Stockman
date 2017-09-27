@@ -36,9 +36,9 @@ void NavigationMesh::createNodesFromTriangles()
 		for (auto const &v : t.vertices)
 			mid += v;
 		mid /= 3; // nr of vertices in tri
+		nodes.push_back(mid);
+		edges.push_back(Edge());
 	}
-	nodes.push_back(mid);
-	edges.push_back(Edge());
 }
 
 const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() const 

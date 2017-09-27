@@ -1,5 +1,6 @@
 #include <AI/Behavior/AStar.h>
 #include <queue>
+#include <stdio.h> // for testing obv
 using namespace Logic;
 
 AStar::AStar(std::string file)
@@ -28,6 +29,7 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 	// get indicies
 	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset),
 		endIndex = navigationMesh.getIndex(target.getPosition() + offset);
+	printf("End index: %d (AStar:%d)\n", endIndex, __LINE__);
 
 	// test special cases
 	if (startIndex == -1 || endIndex == -1 || startIndex == endIndex)
@@ -68,6 +70,9 @@ void AStar::generateNavigationMesh()
 	PASVF pasvf;
 	pasvf.generateNavMesh(navigationMesh, {}, {});
 	navigationMesh.createNodesFromTriangles();
+	// test
+	navigationMesh.addEdge(0, 1);
+	navigationMesh.addEdge(1, 0);
 }
 
 float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,

@@ -26,8 +26,11 @@ namespace Logic
 				int nodeIndex; // index in nav mesh
 				float f, g; // cost to node
 
-				bool Compare(NavNode const &n, NavNode const &n2) {
-					return n.f > n2.f;
+				bool operator<(NavNode const &other) const {
+					return f < other.f;
+				}
+				bool operator>(NavNode const &other) const {
+					return f > other.f;
 				}
 			};
 
