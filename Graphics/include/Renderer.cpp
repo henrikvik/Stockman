@@ -13,7 +13,7 @@ namespace Graphics
 		: simpleForward(gDevice, SHADER_PATH("SimpleForward.hlsl"), VERTEX_INSTANCE_DESC)
 		, forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_INSTANCE_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
-        , menuShader(gDevice, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 12, 0, D3D11_INPUT_PER_VERTEX_DATA} })
+        , menuShader(gDevice, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
 		, lightGridCull(gDevice, SHADER_PATH("LightGridCulling.hlsl"))
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
 		, cube(gDevice)
@@ -343,28 +343,27 @@ namespace Graphics
     //fills the button vertex buffer with button info;
     void Renderer::mapButtons(ButtonInfo * info)
     {
-
         //moves the buttons to ndc space
         TriangleVertex triangleVertices[6] =
         {
-            (info->m_rek.x + info->m_rek.width ) / WIN_WIDTH, (info->m_rek.y + info->m_rek.height) / WIN_HEIGHT, 0.0f,	//v0 pos
+            2 *((float)((info->m_rek.x + info->m_rek.width )) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
             1.0f, 1.0f,
 
-            info->m_rek.x / WIN_WIDTH, (info->m_rek.y + info->m_rek.height) / WIN_HEIGHT, 0.0f,	//v1
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) -1 , 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v1
             0.0f, 1.0f,
 
-            info->m_rek.x / WIN_WIDTH, info->m_rek.y / WIN_HEIGHT, 0.0f, //v2
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
             0.0f,  0.0f,
 
             //t2
-            info->m_rek.x / WIN_WIDTH, info->m_rek.y / WIN_HEIGHT, 0.0f,	//v2 pos
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
             0.0f, 0.0f,
 
-            (info->m_rek.x + info->m_rek.width) / WIN_WIDTH, info->m_rek.y / WIN_HEIGHT, 0.0f,	//v3
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
             1.0f, 0.0f,
 
-            info->m_rek.x / WIN_WIDTH, (info->m_rek.y + info->m_rek.height) / WIN_HEIGHT, 0.0f, //v1
-            0.0f,  0.0f,
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) -1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) -1 , 0.0f, //v0
+            1.0f, 1.0f,
         };
         
         D3D11_MAPPED_SUBRESOURCE data = { 0 };
@@ -515,24 +514,24 @@ namespace Graphics
 
         TriangleVertex triangleVertices[6] =
         {
-            -1.f, -1.f, 0.0f,	//v0 pos
+            1.f, -1.f, 0.0f,	//v0 pos
+            1.0f, 1.0f,
+
+            -1.f, -1.f, 0.0f,	//v1
             0.0f, 1.0f,
 
-            -1.f, 1.f, 0.0f,	//v1
-            0.0f, 0.0f,
-
-            1.f, -1.f, 0.0f, //v2
-            1.0f,  1.0f,
+            -1.f, 1.f, 0.0f, //v2
+            0.0f,  0.0f,
 
             //t2
-            1.f, 1.f, 0.0f,	//v0 pos
-            1.0f, 1.0f,
+            -1.f, 1.f, 0.0f,	//v0 pos
+            0.0f, 0.0f,
 
-            1.f, -1.f, 0.0f,	//v1
-            1.0f, 1.0f,
+            1.f, 1.f, 0.0f,	//v1
+            1.0f, 0.0f,
 
-            -1.f, 01.f, 0.0f, //v2
-            0.0f, 0.0f
+            1.f, -1.f, 0.0f, //v2
+            1.0f, 1.0f
         };
 
 
