@@ -38,7 +38,7 @@ void Game::init()
 
 	// Initializing the map
 	m_map = newd Map();
-	m_map->init(m_physics);
+	m_map->init(m_physics, m_player);
 
 	// Load these from a file at a later dates
 	m_waveTimer		= NULL;

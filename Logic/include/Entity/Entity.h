@@ -22,8 +22,8 @@ namespace Logic
 		void updateGraphics();
 		virtual void updateSpecific(float deltaTime) { }
 		void collision(Entity& other);
-		virtual void affect(int stacks, Effect const &effect,
-							float deltaTime);	
+		virtual void affect(int stacks, Effect const &effect, float deltaTime);	
+		virtual void upgrade(Upgrade const &upgrade);
 		virtual void onCollision(Entity& other) { }
 
 		DirectX::SimpleMath::Vector3 getPosition() const;
