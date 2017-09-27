@@ -36,8 +36,6 @@ namespace Graphics
 
         DepthStencil depthStencil;
 
-		DepthStencil shadowDepthStencil;
-
 		SkyRenderer skyRenderer;
 
 		LightGrid grid;
@@ -59,21 +57,16 @@ namespace Graphics
         ///// SUPER TEMP
         ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
-		
-		ID3D11SamplerState* shadowSampler;
-
         
         void cull();
         void writeInstanceData();
         void draw();
         void drawGUI();
-		void drawShadows();
 		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
         void createBlendState();
         void createGUIBuffers();
-		void createShadowMap();
     };
 };

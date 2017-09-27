@@ -2,6 +2,8 @@
 #include "Resources\Shader.h"
 #include "Camera.h"
 #include "Lights\Sun.h"
+#include "Resources\DepthStencil.h"
+#define SHADOW_MAP_RESOLUTION 2048
 
 class SkyRenderer
 {
@@ -15,6 +17,10 @@ public:
 	ID3D11Buffer* getLightMatrixBuffer() { return sun.getMatrixBuffer(); };
 	ID3D11Buffer* getShaderBuffer() { return sun.getShaderBuffer(); };
 	D3D11_VIEWPORT getViewPort() { return sun.getViewPort(); };
+	Graphics::DepthStencil * getDepthStencil() { return &this->shadowDepthStencil; };
+	ID3D11SamplerState * getSampler() { return this->shadowSampler; };
+
+	void drawShadows(ID3D11DeviceContext * context, Graphics::Shader * shader);
 
 private:
 	struct  SkyCube
@@ -96,7 +102,13 @@ private:
 
 	Graphics::Shader shader;
 	ID3D11ShaderResourceView * srv;
+	Graphics::DepthStencil shadowDepthStencil;
+	ID3D11SamplerState* shadowSampler;
+
+
 	SkyCube cube;
 	Sun sun;
+
+	void createSampler(ID3D11Device * device);
 
 };
