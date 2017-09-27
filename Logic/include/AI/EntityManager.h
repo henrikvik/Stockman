@@ -5,6 +5,7 @@
 
 #include <AI/Enemy.h>
 #include <AI/WaveManager.h>
+#include <AI/TriggerManager.h>
 
 #include <Player\Player.h>
 
@@ -31,6 +32,7 @@ namespace Logic
 		std::vector<Enemy*> m_enemies, m_bossEnemies, m_deadEnemies;
 		std::vector<double> time;
 
+		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
 		int m_currentWave;
 

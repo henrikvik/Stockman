@@ -13,6 +13,7 @@
 #include <Projectile\ProjectileManager.h>
 #include <AI/EntityManager.h>
 #include <Misc\GameTime.h>
+#include <Misc\CardManager.h>
 
 // DirectX Includes
 #include <Windows.h>
@@ -25,8 +26,19 @@
 // Init Defines
 #define STARTING_STATE		gameStateMenuMain
 #define PLAYER_START_SCA	btVector3(1.5f, 3.0f, 1.5f)
-#define PLAYER_START_POS	btVector3(0.0f, 5.0f, 0.0f)
+#define PLAYER_START_POS	btVector3(0.0f, 6.0f, 0.0f)
 #define PLAYER_START_ROT	btVector3(0.0f, 0.0f, 0.0f)
+
+// Init Waves (wave times are in ms)
+#define MAX_WAVES			5
+#define WAVE_START			0		// If you wanna test certain waves for debugging
+#define WAVE_1_TIME			3000.f
+#define WAVE_2_TIME			15000.f
+#define WAVE_3_TIME			25000.f
+#define WAVE_4_TIME			35000.f
+#define WAVE_5_TIME			60000.f
+
+
 
 namespace Logic
 {
@@ -41,6 +53,7 @@ namespace Logic
 		void init();
 		void clear();
 
+		void waveUpdater();
 		void update(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 
@@ -55,6 +68,12 @@ namespace Logic
 		MenuMachine*		m_menu;
 		EntityManager		m_entityManager;
 		GameTime			m_gameTime;
+		CardManager*		m_cardManager;
+
+		// Wave
+		int		m_waveCurrent;
+		float	m_waveTimer;
+		float	m_waveTime[MAX_WAVES];
 	};
 }
 

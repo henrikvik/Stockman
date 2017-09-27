@@ -309,7 +309,7 @@ public:
 	SIMD_FORCE_INLINE btVector3& normalize() 
 	{
 		
-		btAssert(!fuzzyZero());
+	//	btAssert(!fuzzyZero());
 
 #if defined(BT_USE_SSE_IN_API) && defined (BT_USE_SSE)		
         // dot product first
@@ -347,7 +347,17 @@ public:
 		
 		return *this;
 #else	
-		return *this /= length();
+		btScalar l2 = length2();
+		//triNormal.normalize();
+		if (l2 >= SIMD_EPSILON*SIMD_EPSILON)
+		{
+			(*this) /= btSqrt(l2);
+		}
+		else
+		{
+			setValue(1, 0, 0);
+		}
+		return *this;
 #endif
 	}
 

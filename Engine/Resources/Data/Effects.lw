@@ -13,3 +13,9 @@
 	"modifiers": 0;
 	"specifics": 0;
 }
+{ // JUMP-PAD
+	"flags": 256; // 0x4
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 0;
+}

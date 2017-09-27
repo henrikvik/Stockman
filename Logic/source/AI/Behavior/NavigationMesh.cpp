@@ -26,6 +26,11 @@ void NavigationMesh::createTestMesh()
 	triangleList.push_back(two);
 }
 
+void NavigationMesh::addTriangle(Triangle const & triangle)
+{
+	triangleList.push_back(triangle);
+}
+
 const std::vector<NavigationMesh::Triangle>& NavigationMesh::getList() const
 {
 	return triangleList;

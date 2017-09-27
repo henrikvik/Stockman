@@ -35,6 +35,7 @@
     <None Include="Resources\Data\Effects.lw" />
     <None Include="Resources\Data\Menu.lw" />
     <None Include="Resources\Data\Button.lw" />
+    <None Include="Resources\Data\Cards.lw" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\data\Text.lw" />
