@@ -16,47 +16,120 @@ Weapon::Weapon()
 	m_reloadTime		= -1;
 }
 
-Weapon::Weapon(int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, float damage, float attackRate, float freeze, float reloadTime)
+Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+	int spreadH, int spreadV, float damage, float attackRate, float freeze, float reloadTime)
 {
+	m_projectileManager = projectileManager;
 	m_weaponID			= weaponID;
 	m_ammoCap			= ammoCap;
 	m_ammo				= ammo;
 	m_magSize			= magSize;
 	m_magAmmo			= magAmmo;
 	m_ammoConsumption	= ammoConsumption;
+	m_projectileCount	= projectileCount;
+	m_spreadH			= spreadH;
+	m_spreadV			= spreadV;
 	m_damage			= damage;
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
+	m_projectileData	= projectileData;
+
+	/////////////////////////////////////////////////////////////
+	// Weapon model - These are the constant matrices that moves the 
+	//					model a bit to the right and down & rotates a bit
+
+	// Pointing the gun upwards
+	rotX = DirectX::SimpleMath::Matrix::CreateRotationX(20.f * (3.14 / 180));
+
+	// Tilting the gun to the middle
+	rotY = DirectX::SimpleMath::Matrix::CreateRotationY(10.f * (3.14 / 180));
+
+	// Moving the model down to the right
+	trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
+
+	// Scaling the model by making it thinner and longer
+	scale = DirectX::SimpleMath::Matrix::CreateScale(0.50f, 0.40f, 1.40f);
 }
 
-void Weapon::use()
+void Weapon::use(btVector3 position, float yaw, float pitch)
 {
-	// use weapon
+	// Use weapon
+	if (m_spreadH != 0 || m_spreadV != 0)	// Spread
+	{
+		for (int i = m_projectileCount; i--; )
+		{
+			btVector3 projectileDir = calcSpread(yaw, pitch);
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
+		}
+	}
+	else									// No spread
+	{
+		for (int i = m_projectileCount; i--; )
+		{
+			btVector3 projectileDir;
+			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
+			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
+			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
+		}
+	}
 }
 
-void Weapon::update()
+btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 {
+	int rsh = (rand() % (2 * m_spreadH)) - m_spreadH;
+	int rsv = (rand() % (2 * m_spreadV)) - m_spreadV;
 
+	yaw += rsh;
+	pitch += rsv;
+
+	btVector3 projectileDir;
+	projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
+	projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
+	projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
+
+	return projectileDir;
 }
 
-int Logic::Weapon::getAmmoCap() { return m_ammoCap; }
+void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
+{
+	static DirectX::SimpleMath::Matrix camera, result, offset;
 
-void Logic::Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
+	// Making a camera matrix and then inverting it 
+	camera = DirectX::XMMatrixLookToRH({0, 0, 0}, playerForward, { 0, 1, 0 });
 
-int Logic::Weapon::getAmmo() { return m_ammo; }
+	// Pushing the model forward in the current view direction
+	offset = (DirectX::SimpleMath::Matrix::CreateTranslation(playerTranslation.Translation() + playerForward * -0.4f));
 
-void Logic::Weapon::setAmmo(int ammo) { m_ammo = ammo; }
+	// Multiplying all the matrices into one
+	result = trans * rotX * rotY * scale * camera.Invert() * offset;
 
-int Logic::Weapon::getMagSize() { return m_magSize; }
+	this->setWorldTranslation(result);
+}
 
-void Logic::Weapon::setMagSize(int magSize) { m_magSize = magSize; }
+ProjectileData * Weapon::getProjectileData()
+{
+	return &m_projectileData;
+}
 
-int Logic::Weapon::getMagAmmo() { return m_magAmmo; }
+int Weapon::getAmmoCap() { return m_ammoCap; }
 
-void Logic::Weapon::removeMagAmmo() { m_magAmmo--; }
+void Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
 
-void Logic::Weapon::removeMagAmmo(int ammo) 
+int Weapon::getAmmo() { return m_ammo; }
+
+void Weapon::setAmmo(int ammo) { m_ammo = ammo; }
+
+int Weapon::getMagSize() { return m_magSize; }
+
+void Weapon::setMagSize(int magSize) { m_magSize = magSize; }
+
+int Weapon::getMagAmmo() { return m_magAmmo; }
+
+void Weapon::removeMagAmmo() { m_magAmmo--; }
+
+void Weapon::removeMagAmmo(int ammo) 
 { 
 	if (ammo > m_magAmmo)
 		m_magAmmo = 0;
@@ -64,7 +137,17 @@ void Logic::Weapon::removeMagAmmo(int ammo)
 		m_magAmmo -= ammo; 
 }
 
-int Logic::Weapon::getAmmoConsumption() { return m_ammoConsumption; }
+int Weapon::getAmmoConsumption() { return m_ammoConsumption; }
+
+float Weapon::getAttackTimer()
+{
+	return (60.f / m_attackRate) * 1000;
+}
+
+float Logic::Weapon::getRealoadTime()
+{
+	return m_reloadTime;
+}
 
 void Logic::Weapon::fillMag()
 {

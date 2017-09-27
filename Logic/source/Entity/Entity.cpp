@@ -2,72 +2,55 @@
 
 using namespace Logic;
 
-Entity::Entity()
+Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelID)
+: Object(modelID)
 {
-	m_body = nullptr;
-}
-
-Entity::~Entity() { }
-
-bool Entity::init(Physics* physics, BodyDesc bodyDesc)
-{
-	if (physics == nullptr)
-		return false;
-
-	createBody(physics, bodyDesc);
-
-	return true;
-}
-
-void Entity::createBody(Physics* physics, BodyDesc bodyDesc)
-{
-	// Setting rotation & position
-	btQuaternion rotation;
-	rotation.setEulerZYX(bodyDesc.rotation.getZ(), bodyDesc.rotation.getY(), bodyDesc.rotation.getX());
-
-	btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, bodyDesc.position));
-
-	// Creating the specific shape
-	btCollisionShape* shape;
-	switch (bodyDesc.shape)
-	{
-	case ShapeBox:
-		shape = new btBoxShape(bodyDesc.boxDimensions);
-		break;
-	case ShapeSphere:
-		shape = new btSphereShape(bodyDesc.radius);
-		break;
-	case ShapeStaticPlane:
-		shape = new btStaticPlaneShape(bodyDesc.normal, bodyDesc.scalar);
-		break;
-	default: 
-		shape = nullptr;
-		break;
-	}
-
-	// Creating the actual body
-	m_body = new btRigidBody(bodyDesc.mass, motionState, shape);
-
-	// Specifics
-	m_body->setRestitution(bodyDesc.restitution);	// Bounciness, 0:1 = Loses velocity with each bounce, < 1 = Gains velocity with each bounce
-	m_body->setFriction(bodyDesc.friction);		// Friction, If set at zero, no spinning will happen
-
-	// Connecting the bulletphysics world with the logic side
+	m_body = body;
 	m_body->setUserPointer(this);
+	m_transform = &m_body->getWorldTransform();
+	m_halfextent = halfextent;
 
-	// Adding starting velocity
-	m_body->applyForce(bodyDesc.velocity, bodyDesc.position);
-
-	// Adding body to the world
-	physics->addRigidBody(m_body);
+	// For non moving object, that doesn't update loop
+	updateGraphics();
 }
 
-void Logic::Entity::clear() { }
+Entity::~Entity() 
+{
+	// ALL physics is getting cleared by the Physics class, but you can delete an entity early by calling destroyBody() below
+}
+
+void Entity::destroyBody()
+{
+	if (m_body)
+	{
+		if (m_body->getMotionState())
+			delete m_body->getMotionState();
+		if(m_body->getCollisionShape())
+			delete m_body->getCollisionShape();
+		delete m_body;
+	}
+}
+
+void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
+	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
+		affect(effectPair.first, *effectPair.second, deltaTime);
+	
+	// Updating every at
 	m_statusManager.update(deltaTime);
+
+	// Updating specific
 	updateSpecific(deltaTime);
+
+	updateGraphics();
+}
+
+void Entity::updateGraphics()
+{
+	// Get the new transformation from bulletphysics
+	setWorldTranslation(getTransformMatrix());
 }
 
 void Entity::collision(Entity& other)
@@ -75,20 +58,54 @@ void Entity::collision(Entity& other)
 	onCollision(other);
 }
 
+void Entity::affect(int stacks, Effect const &effect, float dt) {}
+
 btRigidBody* Entity::getRigidbody()
 {
 	return m_body;
 }
 
-// JUST FOR TESTING, REMOVE
-void Entity::consoleWritePosition()
+StatusManager& Entity::getStatusManager()
 {
-	btTransform trans = m_body->getWorldTransform();
-	printf("Position = { %f, %f, %f }\n", trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
+	return m_statusManager;
 }
 
-DirectX::SimpleMath::Vector3 Logic::Entity::getPosition()
+DirectX::SimpleMath::Vector3 Entity::getPosition() const
 {
-	btTransform trans = m_body->getWorldTransform();
-	return DirectX::SimpleMath::Vector3(trans.getOrigin());
+	return DirectX::SimpleMath::Vector3(m_transform->getOrigin());
+}
+
+btVector3 Logic::Entity::getPositionBT() const
+{
+	return m_transform->getOrigin();
+}
+
+DirectX::SimpleMath::Quaternion Entity::getRotation() const
+{
+	return DirectX::SimpleMath::Quaternion(m_transform->getRotation());
+}
+
+DirectX::SimpleMath::Vector3 Entity::getScale() const
+{
+	return DirectX::SimpleMath::Vector3(m_body->getCollisionShape()->getLocalScaling());
+}
+
+DirectX::SimpleMath::Matrix Entity::getTransformMatrix() const
+{
+	// Making memory for a matrix
+	float* m = new float[4 * 16];
+
+	// Getting this entity's matrix
+	m_transform->getOpenGLMatrix((btScalar*)(m));
+
+	// Translating to DirectX Math and assigning the variables
+	DirectX::SimpleMath::Matrix transformMatrix(m);
+
+	//Find the scaling matrix
+	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);
+
+	// Deleting the old created variables from memory
+	delete m;
+
+	return scale * transformMatrix;
 }

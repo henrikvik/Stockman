@@ -28,10 +28,12 @@ namespace Graphics {
 		DirectX::SimpleMath::Vector3 getForward() const;
 		DirectX::SimpleMath::Vector3 getUp() const;
 		DirectX::SimpleMath::Vector3 getRight() const;
+		DirectX::SimpleMath::Matrix getView() const;
+		DirectX::SimpleMath::Matrix getProj() const;
 		ID3D11Buffer* getBuffer();
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
-
+        void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
 	private:
 		DirectX::SimpleMath::Vector3 mPos;
 		DirectX::SimpleMath::Vector3 mForward;
@@ -45,8 +47,14 @@ namespace Graphics {
 		DirectX::SimpleMath::Matrix mView;
 		DirectX::SimpleMath::Matrix mProjection;
 
+		struct ShaderValues {
+			DirectX::SimpleMath::Matrix mVP;
+			DirectX::SimpleMath::Matrix mInvP;
+			DirectX::SimpleMath::Matrix mV;
+			DirectX::SimpleMath::Vector4 camPos;
+		} values;
+
 		ID3D11Buffer* mVPBuffer;
-		ID3D11Buffer* mInvProjBuffer;
 
 	};
 }

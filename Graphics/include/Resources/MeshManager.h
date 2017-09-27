@@ -1,38 +1,45 @@
 #pragma once
 #include <vector>
-#include <Datatypes.h>
-#include <Resources/Mesh.h>
-
-using namespace std;
-
-class MeshManager
+#include <map>
+#include <Graphics\include\Datatypes.h>
+#include "Mesh.h"
+namespace Graphics
 {
-public:
-	MeshManager();
-	~MeshManager();
-	void initialize(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext);
-	void release();
+	using namespace std;
 
-	void addMesh(
-		bool hasSkeleton,
-		unsigned int skeletonID,
-		int materialID,
-		unsigned int vertexCount,
-		UINT indexCount,
-		vector<Vertex> vertices,
-		vector<UINT> indices,
-		bool isScene
-	);
+	class MeshManager
+	{
+	public:
+		MeshManager();
+		~MeshManager();
+		void initialize(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext);
+		void release();
 
-	vector<Mesh>* GetMeshes() { return this->gameMeshes; }
+		void addMesh(
+			int id,
+			bool hasSkeleton,
+			unsigned int skeletonID,
+			int materialID,
+			unsigned int vertexCount,
+			UINT indexCount,
+			vector<Vertex> vertices,
+			vector<UINT> indices,
+			bool isScene
+		);
 
-private:
-	ID3D11Device *gDevice = nullptr;
-	ID3D11DeviceContext *gDeviceContext = nullptr;
+		Mesh * getMesh(int id) { return gameMeshes[id]; }
+		vector<Mesh>* getMeshes() { return &meshes; }
 
-	vector<Mesh>* gameMeshes = nullptr;
-	vector<Mesh>* sceneMeshes = nullptr;
+	private:
+		ID3D11Device *gDevice = nullptr;
+		ID3D11DeviceContext *gDeviceContext = nullptr;
+
+		map<int,Mesh*> gameMeshes;
+		vector<Mesh> meshes;
+		vector<Mesh> sceneMeshes;
+		Mesh mesh;
 
 
-};
+	};
 
+}

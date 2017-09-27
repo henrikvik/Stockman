@@ -2,8 +2,15 @@
 #define ENTITY_MANAGER_H
 
 #include <vector>
+
 #include <AI/Enemy.h>
 #include <AI/WaveManager.h>
+#include <AI/TriggerManager.h>
+
+#include <Player\Player.h>
+
+#include <Graphics\include\Renderer.h>
+#include <Physics\Physics.h>
 
 #pragma region ClassDesc
 	/*
@@ -25,6 +32,7 @@ namespace Logic
 		std::vector<Enemy*> m_enemies, m_bossEnemies, m_deadEnemies;
 		std::vector<double> time;
 
+		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
 		int m_currentWave;
 
@@ -34,12 +42,13 @@ namespace Logic
 		EntityManager(EntityManager const &entityManager) = delete;
 		~EntityManager();
 
-		void update(float deltaTime);
+		void update(Player const &player, float deltaTime);
 		void clear();
 
-		void spawnWave();
+		void spawnWave(Physics &physics);
 
 		void setCurrentWave(int currentWave);
+		void render(Graphics::Renderer &renderer);
 
 		int getEnemiesAlive() const;
 		int getCurrentWave() const;

@@ -1,0 +1,21 @@
+{ // ON FIRE
+	"flags": 0; // 0x2
+	"duration": 3000f;
+	"modifiers": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0.1f;
+	"sFreezing": 0.1f;
+}
+{ // FREEZE
+	"flags": 4; // 0x4
+	"duration": 2500f;
+	"modifiers": 0;
+	"specifics": 0;
+}
+{ // JUMP-PAD
+	"flags": 256; // 0x4
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 0;
+}

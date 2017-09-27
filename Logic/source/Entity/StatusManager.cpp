@@ -1,38 +1,63 @@
 #include <Entity\StatusManager.h>
 #include <stdio.h>
+#include <Misc/FileLoader.h>
+
+#define FILE_NAME "Effects"
 
 using namespace Logic;
 
 Effect StatusManager::s_effects[StatusManager::NR_OF_EFFECTS];
-Upgrade StatusManager::s_upgrades[StatusManager::NR_OF_EFFECTS];
+Upgrade StatusManager::s_upgrades[StatusManager::NR_OF_UPGRADES];
  
 StatusManager::StatusManager() 
 { 
 	#ifndef BUFFS_CREATED
 	#define BUFFS_CREATED
-	/* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
-		Effect creating;
-
+		std::vector<FileLoader::LoadedStruct> loadedEffects;
+		FileLoader::singleton().loadStructsFromFile(loadedEffects, FILE_NAME);
 		Effect::Standards standards;
 		Effect::Modifiers modifiers;
 		Effect::Specifics spec;
+		int id = 0;
 
-		standards.flags = Effect::EFFECT_ON_FIRE | Effect::EFFECT_MODIFY_MOVEMENTSPEED;
-		standards.duration = 300.f;
+		for (auto const &fileStruct : loadedEffects)
+		{
+			Effect creating;
 
-		creating.setStandards(standards);
-		s_effects[ON_FIRE] = creating; // ON FIRE
+			standards.flags = fileStruct.ints.at("flags");
+			standards.duration = fileStruct.floats.at("duration");
 
-		standards.flags = Effect::EFFECT_MODIFY_DMG_GIVEN;
-		standards.duration = 0.f;
+			if (fileStruct.ints.at("modifiers"))
+			{
+				memset(&modifiers, 0, sizeof(modifiers));
 
-		creating.setStandards(standards);
-		s_effects[FREEZE] = creating; // FREEZE
+				modifiers.modifyDmgGiven =		fileStruct.floats.at("mDmgGiven");
+				modifiers.modifyDmgTaken =		fileStruct.floats.at("mDmgTaken");
+				modifiers.modifyFirerate =		fileStruct.floats.at("mFirerate");
+				modifiers.modifyHP =			fileStruct.floats.at("mHP");
+				modifiers.modifyMovementSpeed = fileStruct.floats.at("mMovementSpeed");
+
+				creating.setModifiers(modifiers);
+			}
+
+			if (fileStruct.ints.at("specifics"))
+			{
+				memset(&spec, 0, sizeof(spec));
+			
+				spec.isBulletTime = fileStruct.floats.at("sBulletTime");
+				spec.isFreezing =	fileStruct.floats.at("sFreezing");
+
+				creating.setSpecifics(spec);
+			}
+
+			creating.setStandards(standards);
+			s_effects[id++] = creating;
+		}
 	#endif // !buffsCreated
 
 	#ifndef UPGRADES_CREATED
 	#define UPGRADES_CREATED
-										  /* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
+	/* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
 			Upgrade upgrade;
 			Upgrade::FlatUpgrades flat;
 			memset(&flat, 0, sizeof(flat));
@@ -48,11 +73,11 @@ StatusManager::StatusManager()
 			s_upgrades[P10_AMMO] = upgrade; // FREEZE
 			memset(&flat, 0, sizeof(flat));
 	#endif // !UPGRADES_CREATED
-
-	addStatus(0, 5, true);
 }
 
-StatusManager::~StatusManager() { }
+StatusManager::~StatusManager() {
+	clear();
+}
 
 void StatusManager::clear()
 {
@@ -74,8 +99,6 @@ void StatusManager::update(float deltaTime)
 {
 	for (size_t i = 0; i < m_effectStacks.size(); ++i)
 	{
-		// do stuff
-		printf("Dur: %f, DT: %f\n", m_effectStacks[i].duration, deltaTime);
 		if ((m_effectStacks[i].duration -= deltaTime) <= 0)
 		{
 			removeEffect(i);
@@ -85,29 +108,34 @@ void StatusManager::update(float deltaTime)
 
 void StatusManager::addUpgrade(UPGRADE_ID id) 
 {
-	m_upgrades.push_back(Upgrade(s_upgrades[id]));
+	m_upgrades.push_back(id);
 }
 
-void StatusManager::addStatus(int statusID, int nrOfStacks, bool resetDuration)
+Upgrade & Logic::StatusManager::getUpgrade(UPGRADE_ID id)
+{
+	return s_upgrades[id];
+}
+
+void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks, bool resetDuration)
 {
 	bool found = false;
 	for (size_t i = 0; i < m_effectStacksIds.size() && !found; ++i)
 	{
-		if (m_effectStacksIds[i] == statusID)
+		if (m_effectStacksIds[i] == effectID)
 		{
 			found = true;
 
 			m_effectStacks[i].stack += nrOfStacks;
 			if (resetDuration) m_effectStacks[i].duration =
-				s_effects[statusID].getStandards()->duration;
+				s_effects[effectID].getStandards()->duration;
 		}
 	}
 
 	if (!found)
 	{
 		m_effectStacks.push_back({ nrOfStacks,
-								s_effects[statusID].getStandards()->duration });
-		m_effectStacksIds.push_back(statusID);
+								s_effects[effectID].getStandards()->duration });
+		m_effectStacksIds.push_back(effectID);
 	}
 }
 
@@ -140,4 +168,44 @@ void StatusManager::removeAllStatus(int statusID)
 	}
 }
 
-std::vector<Upgrade>* StatusManager::getUpgrades() { return &m_upgrades; }
+std::vector <std::pair<int, Effect*>>
+	StatusManager::getActiveEffects() 
+{
+	// this is per frame allocation, kind of bad,
+	// should be changed but this is just to test
+	// the effects.
+
+	// For better ways to do this in the future see
+	// mike acton ty
+	int size = m_effectStacks.size();
+	std::vector<std::pair<int, Effect*>> actives;
+	actives.resize(size);
+
+	size_t i = 0; // OPTIMIZE!
+	for (i = 0; i < size; ++i)
+		actives[i].first = m_effectStacks[i].stack;
+	for (i = 0; i < size; ++i)
+		actives[i].second = &s_effects[m_effectStacksIds[i]];
+
+	return actives;
+}
+
+std::vector<std::pair<int, StatusManager::EFFECT_ID>> StatusManager::getActiveEffectsIDs()
+{
+	std::vector<std::pair<int, StatusManager::EFFECT_ID>> effects;
+
+	int size = m_effectStacks.size();
+	effects.resize(size);
+
+	for (size_t i = 0; i < size; ++i)
+		effects[i].first = m_effectStacks[i].stack;
+	for (size_t i = 0; i < size; ++i)
+		effects[i].second = m_effectStacksIds[i];
+
+	return effects;
+}
+
+std::vector<StatusManager::UPGRADE_ID>& Logic::StatusManager::getActiveUpgrades()
+{
+	return m_upgrades;
+}

@@ -8,7 +8,9 @@
 			DESCRIPTION: TODO
 		*/
 #pragma endregion
-#include "Skill.h"
+
+#include <Player\Skill\Skill.h>
+
 namespace Logic
 {
 	class SkillGrapplingHook : public Skill
@@ -16,7 +18,9 @@ namespace Logic
 	private:
 		/*ProjectileData m_projectileData;*/
 	public:
-		void update();
+		void onUse();
+		void onUpdate(float deltaTime);
+		void render(Graphics::Renderer& renderer);
 	};
 }
 #endif

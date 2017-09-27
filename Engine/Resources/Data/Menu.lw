@@ -1,0 +1,23 @@
+{
+	"State" : 2;
+	"Background" : "bla";
+	"buttonAmmount" : 1;
+
+	"button1" :  "MenuMainButton1";
+}
+
+{
+	"State" : 3;
+	"Background" : "la";
+	"buttonAmmount" : 1;
+
+	"button1" :  "MenuSettingsButton1";
+}
+
+{
+	"State" : 0;
+	"Background" : "a";
+	"buttonAmmount" : 1;
+
+	"button1" :  "GameButton1";
+}
