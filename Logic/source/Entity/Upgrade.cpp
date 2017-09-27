@@ -27,8 +27,8 @@ Upgrade::FlatUpgrades Upgrade::getFlatUpgrades() const
 {
 	return m_flatUpgrades;
 }
-
-std::vector<int> Upgrade::getTranferEffects() const
+ 
+long long Upgrade::getTranferEffects() const
 {
 	return m_tranferEffects;
 }

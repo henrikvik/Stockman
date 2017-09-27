@@ -14,7 +14,13 @@
 	"specifics": 0;
 }
 { // JUMP-PAD
-	"flags": 256; // 0x4
+	"flags": 256; // 0x100
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 0;
+}
+{ // AMMO_PICK_UP
+	"flags": 1024; // 0x400
 	"duration": 0f;
 	"modifiers": 0;
 	"specifics": 0;
