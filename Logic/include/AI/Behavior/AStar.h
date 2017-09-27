@@ -24,7 +24,11 @@ namespace Logic
 			{
 				bool open; // for testing
 				int nodeIndex; // index in nav mesh
-				float g; // cost to node
+				float f, g; // cost to node
+
+				bool Compare(NavNode const &n, NavNode const &n2) {
+					return n.f > n2.f;
+				}
 			};
 
 			// singleton for the moment
@@ -47,6 +51,8 @@ namespace Logic
 			~AStar();
 
 			Node getNextNode(Entity const &enemy, Entity const &target);
+			void reconstructPath(std::vector<NavNode> &navNodes,
+				std::vector<DirectX::SimpleMath::Vector3> &nodes);
 
 			// iniate the nodes
 			void generateNavigationMesh();

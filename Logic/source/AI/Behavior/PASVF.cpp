@@ -26,22 +26,26 @@ PASVF::~PASVF()
 // THIS SHOULD ONLY BE CALLED OFFLINE AND THEN SAVED TO A FILE (TODO)
 void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, std::vector<std::vector<Triangle>> objects) const
 {
-#define T 100
+#define T 20
 	std::vector<Triangle> moveableTerrain;
 	DirectX::SimpleMath::Vector3 up = { 0, 1, 0 };
 	float normalDotMin = 0.6f;
 
 	// TEST DATA
 	Triangle t;
-	t.vertices[0] = DirectX::SimpleMath::Vector3(0, 0, 0);
-	t.vertices[1] = DirectX::SimpleMath::Vector3(T, 0, T);
-	t.vertices[2] = DirectX::SimpleMath::Vector3(0, 0, T);
-	terrain.push_back(t);
 
-	t.vertices[0] = DirectX::SimpleMath::Vector3(0, 0, 0);
-	t.vertices[1] = DirectX::SimpleMath::Vector3(T, 0, 0);
-	t.vertices[2] = DirectX::SimpleMath::Vector3(T, 0, T);
-	terrain.push_back(t);
+	for (int i = 0; i < 25; i++)
+	{
+		t.vertices[0] = DirectX::SimpleMath::Vector3(i, 0, i);
+		t.vertices[1] = DirectX::SimpleMath::Vector3(T * (i + 1), 0, T * (i + 1));
+		t.vertices[2] = DirectX::SimpleMath::Vector3(i, 0, T * (i + 1));
+		terrain.push_back(t);
+
+		t.vertices[0] = DirectX::SimpleMath::Vector3(i, 0, i);
+		t.vertices[1] = DirectX::SimpleMath::Vector3(T * (i + 1), 0, i);
+		t.vertices[2] = DirectX::SimpleMath::Vector3(T * (i + 1), 0, T * (i + 1));
+		terrain.push_back(t);
+	}
 
 	// part 1 of the generation, make terrain into a "walkable" terrain map
 	for (auto &triangle : terrain)

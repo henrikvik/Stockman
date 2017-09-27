@@ -35,7 +35,7 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 
 	// open, nodeIndex and g
 	openList.push(
-		{ true, startIndex,
+		{ true, startIndex, 0,
 		heuristic(nodes[startIndex], nodes[endIndex]) }
 	);
 
@@ -46,15 +46,21 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 		openList.pop();
 
 		for (int index : navigationMesh.getEdges(currentNode.nodeIndex))
-			openList.push(
-				{ true, index,
-				heuristic(nodes[index], nodes[endIndex]) }
-			);
+			if (!open[index])
+				openList.push(
+					{ true, index,
+					currentNode.g + heuristic(nodes[index], nodes[endIndex]) }
+				);
 
 		open[currentNode.nodeIndex] = false;
 	}
 
-	return { 0, {nodes[endIndex].x, nodes[endIndex].y, nodes[endIndex].z } };
+	DirectX::SimpleMath::Vector3 node = nodes[currentNode.nodeIndex];
+	return { 0, { node.x, node.y, node.z } };
+}
+
+void AStar::reconstructPath(std::vector<NavNode>& navNodes, std::vector<DirectX::SimpleMath::Vector3>& nodes)
+{
 }
 
 void AStar::generateNavigationMesh()
