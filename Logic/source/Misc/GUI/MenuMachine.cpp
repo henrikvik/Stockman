@@ -135,6 +135,14 @@ void Logic::MenuMachine::update()
 	}
 }
 
+void Logic::MenuMachine::render(Graphics::Renderer & renderer)
+{
+    Graphics::MenuInfo temp = this->currentActiveMenu->getMenuInfo();
+
+    renderer.drawMenu(&temp);
+
+}
+
 void Logic::MenuMachine::showMenu(GameState state)
 {
 	if (m_menuStates.find(state) != m_menuStates.end())
