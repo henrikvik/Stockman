@@ -40,8 +40,9 @@
 #include <Physics\Primitives.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include <Misc\GameTime.h>
 
-#define PHYSICS_GRAVITY 9.82 * 2
+#define PHYSICS_GRAVITY 9.82f * 2.f
 
 namespace Logic
 {
@@ -53,10 +54,10 @@ namespace Logic
 
 		void clear();
 		bool init();
-		void update(float deltaTime);
+		void update(GameTime gameTime);
 
 		// Returns nullptr if not intersecting, otherwise returns the rigidbody of the hit
-		btRigidBody* checkRayIntersect(Ray& ray);
+		const btRigidBody* checkRayIntersect(Ray& ray);
 
 		// Returns a ptr to the created rigidbody
 		// Works with different primitives

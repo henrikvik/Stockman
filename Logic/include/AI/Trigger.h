@@ -15,12 +15,15 @@
 	*/
 #pragma endregion
 
+#define TRIGGER_MASS		0.f		// Should always be 0.f, unless debugging
+#define TRIGGER_IS_SENSOR	true	// Should always be false, unless debugging
+
 namespace Logic
 {
 	class Trigger : public Entity
 	{
 		public:
-			Trigger(btRigidBody* body, btVector3 halfExtent, float cooldown);
+			Trigger(btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable);
 			virtual ~Trigger();
 
 			void addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades);
@@ -29,17 +32,21 @@ namespace Logic
 			void update(float deltaTime);
 			void onCollision(Entity& other);
 
+			bool getShouldRemove() const;
 			bool getIsActive() const;
 			bool getIsReusable() const;
 			float getCooldown() const;
+			void setShouldRemove(bool remove);
 			void setIsActive(bool active);
 			void setIsReusable(bool	reusable);
 			void setCooldown(float cooldown);
 
 		private:
+			bool m_remove;
 			bool m_active;
 			bool m_reusable;
 			float m_cooldown;
+			float m_maxCooldown;
 	};
 }
 

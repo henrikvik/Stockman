@@ -14,10 +14,10 @@ Player::~Player()
 	clear();
 }
 
-void Player::init(ProjectileManager* projectileManager)
+void Player::init(ProjectileManager* projectileManager, GameTime* gameTime)
 {
 	m_weaponManager.init(projectileManager);
-	m_skillManager.init();
+	m_skillManager.init(projectileManager, gameTime);
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -78,8 +78,12 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 {
 	int flags = effect.getStandards()->flags;
 
-	//if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
-		//m_acceleration = 5.f;
+	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
+	{
+		getRigidbody()->setLinearVelocity(btVector3(getRigidbody()->getLinearVelocity().x(), 0, getRigidbody()->getLinearVelocity().z()));
+		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
+		m_playerState = PlayerState::IN_AIR;
+	}
 }
 
 void Player::saveToFile()

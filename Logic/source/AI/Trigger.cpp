@@ -1,18 +1,19 @@
 #include <AI/Trigger.h>
 using namespace Logic;
 
-Trigger::Trigger(btRigidBody* body, btVector3 halfExtent, float cooldown)
+Trigger::Trigger(btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
 : Entity(body, halfExtent)
 {
-	m_cooldown = cooldown;
-	m_active = (m_cooldown < NULL) ? true : false;
-
-	this->getStatusManager().addUpgrade(StatusManager::UPGRADE_ID::P10_AMMO);
-	this->getStatusManager().addStatus(StatusManager::EFFECT_ID::MOVEMENT_SPEED, 1, true);
+	m_maxCooldown = cooldown;
+	m_cooldown = -1;
+	m_active = true;
+	m_reusable = reusable;
+	m_remove = false;
 }
 
 Trigger::~Trigger() { }
 
+// Adds a vector of upgrades for this trigger (mostly ammo-pickups)
 void Trigger::addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades)
 {
 	for (StatusManager::UPGRADE_ID uID : upgrades)
@@ -20,6 +21,7 @@ void Trigger::addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades
 
 }
 
+// Adds a vector of effects for this trigger
 void Trigger::addEffects(const std::vector<StatusManager::EFFECT_ID>& effects)
 {
 	for (StatusManager::EFFECT_ID eID : effects)
@@ -46,12 +48,30 @@ void Trigger::onCollision(Entity& other)
 	{
 		if (Player* p = dynamic_cast<Player*>(&other))
 		{
+			// Sending statuses over to player
 			for (StatusManager::UPGRADE_ID u : getStatusManager().getActiveUpgrades())
-				p->getStatusManager().addUpgrade(u);
-			for (std::pair<int, StatusManager::EFFECT_ID> effect: getStatusManager().getActiveEffectsIDs())
-				p->getStatusManager().addStatus(effect.second, effect.first, true);
+				other.getStatusManager().addUpgrade(u);
+			for (std::pair<int, StatusManager::EFFECT_ID> effect : getStatusManager().getActiveEffectsIDs())
+				other.getStatusManager().addStatus(effect.second, effect.first, true);
+
+			if (m_reusable)
+			{
+				// Starting Cooldown
+				m_cooldown = m_maxCooldown;
+				m_active = false;
+			}
+			else
+			{
+				// Remove this trigger
+				m_remove = true;
+			}
 		}
 	}
+}
+
+bool Trigger::getShouldRemove() const
+{
+	return m_remove;
 }
 
 bool Trigger::getIsActive() const
@@ -67,6 +87,11 @@ bool Trigger::getIsReusable() const
 float Trigger::getCooldown() const
 {
 	return m_cooldown;
+}
+
+void Trigger::setShouldRemove(bool remove)
+{
+	m_remove = remove;
 }
 
 void Trigger::setIsActive(bool active)

@@ -2,7 +2,8 @@
 
 using namespace Logic;
 
-Entity::Entity(btRigidBody* body, btVector3 halfextent)
+Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelID)
+: Object(modelID)
 {
 	m_body = body;
 	m_body->setUserPointer(this);
@@ -15,7 +16,7 @@ Entity::Entity(btRigidBody* body, btVector3 halfextent)
 
 Entity::~Entity() 
 {
-	// ALL physics is getting cleared by the Physics class, 
+	// ALL physics is getting cleared by the Physics class, but you can delete an entity early by calling destroyBody() below
 }
 
 void Entity::destroyBody()

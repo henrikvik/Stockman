@@ -49,7 +49,7 @@ void Physics::clear()
 	delete collisionConfiguration;
 }
 
-void Physics::update(float deltaTime)
+void Physics::update(GameTime gameTime)
 {
 	static std::chrono::steady_clock::time_point begin;
 	static std::chrono::steady_clock::time_point end;
@@ -57,7 +57,14 @@ void Physics::update(float deltaTime)
 	// Calculate the time since last call and tell bulletphysics
 	begin = std::chrono::steady_clock::now();
 	float microsec = std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() * 0.000001;
+	
+	// Adding slowmotion effects
+	microsec *= gameTime.currentMod;
+	
+	// Stepping the physics
 	this->stepSimulation(microsec, 16);
+
+	// Saving the end time
 	end = std::chrono::steady_clock::now();
 	
 	// Collisions
@@ -83,7 +90,7 @@ void Physics::update(float deltaTime)
 	}
 }
 
-btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
+const btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
 {
 	const btVector3& start	= ray.getStart();
 	const btVector3& end	= ray.getEnd();
@@ -95,7 +102,7 @@ btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
 	if (rayCallBack.hasHit())
 	{
 		const btCollisionObject* object = rayCallBack.m_collisionObject;
-		btRigidBody* body = static_cast<btRigidBody*>(object->getUserPointer());
+		const btRigidBody* body = btRigidBody::upcast(object);;
 
 		return body;
 	}
@@ -123,6 +130,10 @@ btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 	btRigidBody* body = new btRigidBody(constructionInfo);
 	shape->setUserPointer(body);
 
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
 	// Specifics
 	body->setRestitution(0.0f);
 	body->setFriction(1.0f);
@@ -148,6 +159,10 @@ btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
 	shape->setUserPointer(body);
+
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
 	// Specifics
 	body->setRestitution(0.0f);
@@ -175,6 +190,10 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 	btRigidBody* body = new btRigidBody(constructionInfo);
 	shape->setUserPointer(body);
 
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
 	// Specifics
 	body->setRestitution(0.0f);
 	body->setFriction(1.f);
@@ -201,6 +220,10 @@ btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isS
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
 	shape->setUserPointer(body);
+
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
 	// Specifics
 	body->setRestitution(0.0f);
@@ -232,6 +255,10 @@ btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
 	btRigidBody* body = new btRigidBody(constructionInfo);
 	shape->setUserPointer(body);
+
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
 	// Specifics
 	body->setRestitution(0.0f);

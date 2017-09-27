@@ -25,7 +25,7 @@
     <ClCompile Include="include\Animation\KeyFrame.cpp" />
     <ClCompile Include="include\Animation\Skeleton.cpp" />
     <ClCompile Include="include\Camera.cpp" />
-    <ClCompile Include="include\Lights\DirectionalLight.cpp" />
+    <ClCompile Include="include\Lights\Sun.cpp" />
     <ClCompile Include="include\Lights\LightGrid.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
@@ -36,6 +36,7 @@
     <ClCompile Include="include\Resources\ResourceManager.cpp" />
     <ClCompile Include="include\Resources\Shader.cpp" />
     <ClCompile Include="include\Resources\TextureManager.cpp" />
+    <ClCompile Include="include\SkyRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Animation\AnimatedTestCube.h" />
@@ -48,7 +49,7 @@
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Datatypes.h" />
     <ClInclude Include="include\Graphics.h" />
-    <ClInclude Include="include\Lights\DirectionalLight.h" />
+    <ClInclude Include="include\Lights\Sun.h" />
     <ClInclude Include="include\Lights\LightGrid.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Resources\BRFImportHandler.h" />
@@ -60,6 +61,7 @@
     <ClInclude Include="include\Resources\ResourceManager.h" />
     <ClInclude Include="include\Resources\Shader.h" />
     <ClInclude Include="include\Resources\TextureManager.h" />
+    <ClInclude Include="include\SkyRenderer.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\Utility\StructuredBuffer.h" />
     <ClInclude Include="include\TempCube.h" />
