@@ -26,18 +26,15 @@ void Player::init(ProjectileManager* projectileManager)
 	m_playerState = PlayerState::STANDING;
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
-	m_moveMaxSpeed = 0.03f;
+	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
 	m_moveDir = btVector3(0, 0, 0);
 	m_moveSpeed = 0.f;
-	m_acceleration = 0.001f;
+	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_deacceleration = m_acceleration * 0.2f;
-	m_airAcceleration = 0.00001f;
-	m_sideStrafeSpeed = 0.1f;
-	m_sideStrafeAccel = 0.05f;
+	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
 	m_jumpSpeed = PLAYER_JUMP_SPEED;
 	m_moveDirForward = 0.f;
 	m_moveDirRight = 0.f;
-
 	m_wishJump = false;
 
 	// Default controlls
@@ -160,7 +157,7 @@ void Player::updateSpecific(float deltaTime)
 	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
 }
 
-void Logic::Player::moveInput(DirectX::Keyboard::State * ks)
+void Player::moveInput(DirectX::Keyboard::State * ks)
 {
 	// Reset wish direction
 	m_wishDir = btVector3(0, 0, 0);
@@ -212,9 +209,11 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 		m_moveDir += m_wishDir;
 	}
 	else
-		m_airAcceleration = 0.001f;
+	{
+		m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
+		applyAirFriction(deltaTime, getRigidbody()->getFriction() * 0.5f);
+	}
 	
-
 	// Normalize movement direction
 	if (!m_moveDir.isZero())
 		m_moveDir = m_moveDir.safeNormalize();
@@ -237,12 +236,41 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	}
 }
 
-void Logic::Player::airMove(float deltaTime, DirectX::Keyboard::State * ks)
+void Player::airMove(float deltaTime, DirectX::Keyboard::State * ks)
 {
+	applyAirFriction(deltaTime, 0.f);
 
-	float accel = m_airAcceleration;
+	accelerate(deltaTime, m_airAcceleration);
+
 	m_airAcceleration = 0.f;
+}
 
+void Player::accelerate(float deltaTime, float acceleration)
+{
+	m_moveSpeed += acceleration * deltaTime;
+
+	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
+		m_moveSpeed = m_moveMaxSpeed;
+
+	// Update pos of player
+	btTransform transform = getRigidbody()->getWorldTransform();
+	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
+	getRigidbody()->setWorldTransform(transform);
+
+	printf("%f\n", m_moveSpeed);
+}
+
+void Player::applyFriction(float deltaTime, float friction)
+{
+	float toDrop = m_deacceleration * deltaTime * friction;
+
+	m_moveSpeed -= toDrop;
+	if (m_moveSpeed < 0)
+		m_moveSpeed = 0;
+}
+
+void Player::applyAirFriction(float deltaTime, float friction)
+{
 	btVector3 rightMoveDir = m_moveDir.cross(btVector3(0.f, 1.f, 0.f));
 
 	btVector3 forward = btVector3(m_forward.x, 0.f, m_forward.z).safeNormalize();
@@ -258,67 +286,33 @@ void Logic::Player::airMove(float deltaTime, DirectX::Keyboard::State * ks)
 			if (lookMoveAngle < 0.05f)
 				m_moveDir = (m_moveDir + forward) * 0.5f;
 			else
-				applyFriction(deltaTime, 0.1f);
+				applyFriction(deltaTime, friction);
 		}
 		else if (lookMovedirection > 0.f && m_moveDirRight > 0.f)
 		{
 			if (lookMoveAngle < 0.05f)
 				m_moveDir = (m_moveDir + forward) * 0.5f;
 			else
-				applyFriction(deltaTime, 0.1f);
-		}	
+				applyFriction(deltaTime, friction);
+		}
 		else
-			accel = 0.f;
+		{
+			m_airAcceleration = 0.f;
+			applyFriction(deltaTime, friction);
+		}
 	}
 	else
 	{
-		applyFriction(deltaTime, accel);
+		m_airAcceleration = 0.f;
+		applyFriction(deltaTime, friction);
 	}
-
-
-	accelerate(deltaTime, accel);
-		
-}
-
-void Logic::Player::accelerate(float deltaTime, float acceleration)
-{
-	m_moveSpeed += acceleration * deltaTime;
-
-	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
-		m_moveSpeed = m_moveMaxSpeed;
-
-	// Update pos of player
-	btTransform transform = getRigidbody()->getWorldTransform();
-	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
-	getRigidbody()->setWorldTransform(transform);
-
-	printf("%f\n", m_moveSpeed);
-}
-
-void Logic::Player::applyFriction(float deltaTime, float friction)
-{
-	float toDrop = m_deacceleration * deltaTime * friction;
-
-	m_moveSpeed -= toDrop;
-	if (m_moveSpeed < 0)
-		m_moveSpeed = 0;
 }
 
 
 void Player::jump(float deltaTime, DirectX::Keyboard::State* ks)
 {
 	if (ks->IsKeyDown(m_jump) && !m_wishJump)
-	{
-		/*getRigidbody()->applyCentralImpulse(btVector3(0, m_jumpSpeed, 0));
-		m_playerState = PlayerState::IN_AIR;
-
-		if (m_jumpBhopTimer > 0.f)
-		{
-			m_moveSpeed += m_acceleration * 0.1f * deltaTime;
-			m_jumpBhopTimer = 0.f;
-		}*/
 		m_wishJump = true;
-	}
 	else if (ks->IsKeyUp(m_jump))
 		m_wishJump = false;
 }

@@ -20,9 +20,9 @@
 #include <Projectile\ProjectileManager.h>
 
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
-#define PLAYER_MOVEMENT_MAX_SPEED		0.1f
+#define PLAYER_MOVEMENT_MAX_SPEED		0.02f
 #define PLAYER_MOVEMENT_ACCELERATION	0.001f
-#define PLAYER_MOVEMENT_AIRACCELERATION	0.001f
+#define PLAYER_MOVEMENT_AIRACCELERATION	0.0005f
 #define PLAYER_JUMP_SPEED				50.f
 #define PLAYER_BHOP_TIMER				10.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
@@ -54,8 +54,6 @@ namespace Logic
 		float m_acceleration;
 		float m_deacceleration;
 		float m_airAcceleration;
-		float m_sideStrafeSpeed;
-		float m_sideStrafeAccel;
 		float m_jumpSpeed;
 		float m_moveDirForward;
 		float m_moveDirRight;
@@ -88,6 +86,7 @@ namespace Logic
 		void airMove(float deltaTime, DirectX::Keyboard::State* ks);
 		void accelerate(float deltaTime, float acceleration);
 		void applyFriction(float deltaTime, float friction);
+		void applyAirFriction(float deltaTime, float friction);
 		void jump(float deltaTime, DirectX::Keyboard::State* ks);
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
