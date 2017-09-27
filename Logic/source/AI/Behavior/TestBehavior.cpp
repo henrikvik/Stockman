@@ -1,5 +1,5 @@
 #include <AI\Behavior\TestBehavior.h> 
-#include "../../../include/AI/Enemy.h"
+#include <AI\Enemy.h>
 using namespace Logic;
 
 TestBehavior::~TestBehavior()

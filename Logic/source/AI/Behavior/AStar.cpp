@@ -35,7 +35,7 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 	if (startIndex == -1 || endIndex == -1 || startIndex == endIndex)
 		return { 0, target.getPositionBT() };
 
-	// open, nodeIndex and g
+	// open (test), nodeIndex and g
 	openList.push(
 		{ true, startIndex, 0,
 		heuristic(nodes[startIndex], nodes[endIndex]) }
