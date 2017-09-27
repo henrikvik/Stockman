@@ -205,6 +205,7 @@
     <None Include="Resources\Data\Button.lw" />
     <None Include="Resources\Data\Cards.lw" />
     <None Include="Resources\Data\Effects.lw" />
+    <None Include="Resources\Data\Highscore.lw" />
     <None Include="Resources\Data\Menu.lw" />
     <None Include="Resources\Shaders\Vertex.hlsl">
       <FileType>Document</FileType>

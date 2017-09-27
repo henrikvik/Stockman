@@ -38,6 +38,8 @@ namespace Logic
 		void addNewHighScore(std::string name);
 		void saveToFile();						//< Save high scores to file
 		void loadFromFile();					//< Load high scores from file 
+		void deadCount();
+		void comboCheck(float dt);
 	};
 }
 
