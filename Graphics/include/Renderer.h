@@ -82,7 +82,6 @@ namespace Graphics
         ID3D11Buffer * buttonQuad;
 
 
-        void createInstanceBuffer();
 
         void loadModellessTextures();
 

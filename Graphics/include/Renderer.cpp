@@ -254,9 +254,9 @@ namespace Graphics
     void Renderer::loadModellessTextures()
     {
        
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, L"Resources/Textures/cat.jpg", nullptr, &menuTexture));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, L"Resources/Textures/cat.jpg", nullptr, &buttonTexture));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, L"Resources/Textures/cat.jpg", nullptr, &GUITexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &buttonTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &GUITexture));
 
     }
 
