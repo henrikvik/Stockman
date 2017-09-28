@@ -25,6 +25,14 @@ void Logic::Button::updateOnPress(int posX, int posY)
 	}
 }
 
+void Logic::Button::animationTransition(float dt)
+{
+	
+	DirectX::SimpleMath::Vector2 temp = DirectX::SimpleMath::Vector2::Lerp({ buttonInfo.m_rek.x, buttonInfo.m_rek.y }, m_animationEnd, dt);
+	buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(temp.x, temp.y, buttonInfo.m_rek.width, buttonInfo.m_rek.height);
+
+}
+
 Graphics::ButtonInfo *Logic::Button::getButtonInfo()
 {
 	return &this->buttonInfo;

@@ -132,6 +132,9 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuMain:
         m_menu->render(renderer);
 	case gameStateMenuSettings:
+		m_menu->render(renderer);
+	case gameStateGameOver:
+		m_menu->render(renderer);
 	default: // m_menu->render(renderer);
 		break;
 	}

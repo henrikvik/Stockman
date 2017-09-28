@@ -42,11 +42,15 @@ namespace Logic
 		void showMenu(GameState state);		//< Creates a menu layout
 		GameState currentState();
 
+		void animationTransition(float dt);
+
 
 		void buttonClick0();
 		void buttonClick1();
 
 		void buttonClick2();
+
+		void buttonClick3();
 
 
 		

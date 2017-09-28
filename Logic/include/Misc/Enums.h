@@ -20,7 +20,8 @@ namespace Logic
 		gameStateGame,
 		gameStateLoading,
 		gameStateMenuMain,
-		gameStateMenuSettings
+		gameStateMenuSettings,
+		gameStateGameOver
 	};
 }
 

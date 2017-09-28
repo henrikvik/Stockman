@@ -27,6 +27,7 @@ void Logic::MenuMachine::initialize(GameState state)
 	functions["buttonClick0"] = std::bind(&MenuMachine::buttonClick0, this);
 	functions["buttonClick1"] = std::bind(&MenuMachine::buttonClick1, this);
 	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
+	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick2, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -130,20 +131,30 @@ GameState Logic::MenuMachine::currentState()
 	return currentActiveState;
 }
 
+void Logic::MenuMachine::animationTransition(float dt)
+{
+	currentActiveMenu->animationTransition(dt);
+}
+
 void Logic::MenuMachine::buttonClick0()
 {
 	showMenu(gameStateGame);
-	std::cout << "Left Trigger: Switched To Menu State 1";
+	std::cout << "Left Trigger: Switched To Menu State 0";
 }
 
 void Logic::MenuMachine::buttonClick1()
 {
 	showMenu(gameStateMenuSettings);
-	std::cout << "Left Trigger: Switched To Menu State 2";
+	std::cout << "Left Trigger: Switched To Menu State 3";
 }
 
 void Logic::MenuMachine::buttonClick2()
 {
 	showMenu(gameStateMenuMain);
-	std::cout << "Left Trigger: Switched To Menu State 0";
+	std::cout << "Left Trigger: Switched To Menu State 2";
+}
+
+void Logic::MenuMachine::buttonClick3()
+{
+	exit(0);
 }
