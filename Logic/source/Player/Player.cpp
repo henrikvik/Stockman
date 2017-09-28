@@ -103,7 +103,7 @@ void Player::upgrade(Upgrade const & upgrade)
 {
 	long long flags = upgrade.getTranferEffects();
 
-	if (flags & Upgrade::UPGRADE_INCREASE_DMG)
+	if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
 	{
 
 	}
@@ -170,9 +170,9 @@ void Player::updateSpecific(float deltaTime)
 		{
 			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z) * 2.85f;
 			if ((ms.leftButton))
-				m_weaponManager.usePrimary(pos, m_camYaw, m_camPitch);
+				m_weaponManager.usePrimary(pos, m_camYaw, m_camPitch, *this);
 			else if (ms.rightButton)
-				m_weaponManager.useSecondary(pos, m_camYaw, m_camPitch);
+				m_weaponManager.useSecondary(pos, m_camYaw, m_camPitch, *this);
 		}
 
 		// Reload

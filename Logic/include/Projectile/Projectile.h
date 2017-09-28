@@ -16,15 +16,19 @@ namespace Logic
 		Projectile* operator=(const Projectile& other) = delete;
 		~Projectile();
 
-		void start(btVector3 forward);
+		void start(btVector3 forward, StatusManager& statusManager);
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);
+		void upgrade(Upgrade const &upgrade);
 
 		float getDamage() const;
 		float getSpeed() const;
 		float getGravityModifier() const;
 		float getTTL() const;
-		
+		void setDamage(float damage);
+		void setSpeed(float speed);
+		void setGravityModifier(float gravityModifier);
+
 		void toRemove();
 		bool shouldRemove() const;
 

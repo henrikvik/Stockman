@@ -52,7 +52,7 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	scale = DirectX::SimpleMath::Matrix::CreateScale(0.50f, 0.40f, 1.40f);
 }
 
-void Weapon::use(btVector3 position, float yaw, float pitch)
+void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
 	// Use weapon
 	if (m_spreadH != 0 || m_spreadV != 0)	// Spread
@@ -60,7 +60,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch)
 		for (int i = m_projectileCount; i--; )
 		{
 			btVector3 projectileDir = calcSpread(yaw, pitch);
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
 		}
 	}
 	else									// No spread
@@ -71,7 +71,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch)
 			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
 			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
 			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
 		}
 	}
 }

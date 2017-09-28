@@ -34,6 +34,7 @@ namespace Logic
 
 		btRigidBody* getRigidbody();
 		StatusManager& getStatusManager();
+		void setStatusManager(StatusManager& statusManager);
 	private:
 		StatusManager m_statusManager;
 		

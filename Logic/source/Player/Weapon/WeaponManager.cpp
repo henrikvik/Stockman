@@ -77,8 +77,8 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ m_projectileManager, ProjectileData(1, 1, 1, 100, 0, 3000, Graphics::ModelID::CUBE, 1), 1, 60, 60, 30, 30, 1, 1, 0, 0, 1, 450, 1, 2000 },
-		{ m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0, 500, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 6, 18, 15, 10, 1, 100, 1, 2000 },
+		{ m_projectileManager, ProjectileData(1, 1, 0.1f, 100, 1.f, 3000, Graphics::ModelID::CUBE, 1), 1, 60, 60, 30, 30, 1, 1, 0, 0, 1, 450, 1, 2000 },
+		{ m_projectileManager, ProjectileData(1, 0.1f, 0.1f, 100, 1.f, 500, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 6, 18, 15, 10, 1, 100, 1, 2000 },
 		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 1, 1, 1, 1, 1, 1, 1, 3000 },
 		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 3, 1, 1, 1, 1, 1, 1, 3000 },
 		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 },
@@ -112,13 +112,13 @@ void WeaponManager::switchWeapon(int index)
 	}
 }
 
-void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch)
+void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
 	if(m_attackTimer <= 0.f)
 	{
 		if (m_currentWeapon.first->getMagAmmo() > 0)
 		{
-			m_currentWeapon.first->use(position, yaw, pitch);
+			m_currentWeapon.first->use(position, yaw, pitch, shooter);
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.first->getAmmoConsumption());
 			printf("fire prim\n");
 			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
@@ -130,13 +130,13 @@ void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch)
 	}
 }
 
-void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch)
+void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
 	if (m_attackTimer <= 0.f)
 	{
 		if (m_currentWeapon.first->getMagAmmo() > 0)
 		{
-			m_currentWeapon.second->use(position, yaw, pitch);
+			m_currentWeapon.second->use(position, yaw, pitch, shooter);
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.second->getAmmoConsumption());
 			printf("fire sec\n");
 			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());

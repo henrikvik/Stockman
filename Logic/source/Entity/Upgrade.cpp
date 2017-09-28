@@ -30,5 +30,5 @@ Upgrade::FlatUpgrades Upgrade::getFlatUpgrades() const
  
 long long Upgrade::getTranferEffects() const
 {
-	return m_tranferEffects;
+	return m_flags; // lukas you idiot, fix this boiiii!
 }
