@@ -23,7 +23,7 @@ namespace Graphics
 		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
         , menuShader(gDevice, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
-
+        , GUIShader(gDevice, SHADER_PATH("GUIShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA }, {"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA} })
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
         , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
         , instanceOffsetBuffer(gDevice)
@@ -46,6 +46,8 @@ namespace Graphics
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         loadModellessTextures();
         createMenuVBS();
+        createGUIBuffers();
+        createBlendState();
     }
 
 
@@ -225,6 +227,7 @@ namespace Graphics
         {
             this->drawToBackbuffer(grid.getDebugSRV());
         }
+        drawGUI();
 #endif
     }
 
@@ -360,19 +363,22 @@ namespace Graphics
 
     void Renderer::drawGUI()
     {
-        /*deviceContext->PSSetShaderResources(0, 1, &GUI);
-        deviceContext->PSSetShaderResources(1, 1, &view);*/
+     
         UINT stride = 12, offset = 0;
         deviceContext->IASetVertexBuffers(0, 1, &GUIvb, &stride, &offset);
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->IASetInputLayout(GUIShader);
 
         float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         UINT sampleMask = 0xffffffff;
         deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
         deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 
+        deviceContext->VSSetShader(GUIShader, nullptr, 0);
+        deviceContext->PSSetShader(GUIShader, nullptr, 0);
+       
 
-        //resourceManager.setShaders(VertexShaderID::VERTEX_GUI, PixelShaderID::PIXEL_GUI, deviceContext);
+
 
         deviceContext->Draw(12, 0);
 
