@@ -33,12 +33,15 @@ void Logic::MenuState::updateOnPress(int posX, int posY)
 	}
 }
 
-void Logic::MenuState::animationTransition(float dt)
+bool Logic::MenuState::animationTransition(float dt)
 {
+	bool done;
 	for (int i = 0; i < m_buttons.size(); i++)
 	{
-		m_buttons.at(i)->animationTransition(float dt);
+		done = m_buttons.at(i)->animationTransition(dt);
 	}
+
+	return done;
 }
 
 Graphics::MenuInfo Logic::MenuState::getMenuInfo()

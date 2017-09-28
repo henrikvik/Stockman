@@ -30,19 +30,20 @@ namespace Logic
 		bool pressed;
 		MenuState* currentActiveMenu;
 		GameState currentActiveState;
+		GameState stateToBe;
 	public:
 
 		MenuMachine();
 		~MenuMachine();
 		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout
-		void update();
+		void update(float dt);
         void render(Graphics::Renderer& renderer);
 
 		void showMenu(GameState state);		//< Creates a menu layout
 		GameState currentState();
 
-		void animationTransition(float dt);
+		bool animationTransition(float dt);
 
 
 		void buttonClick0();

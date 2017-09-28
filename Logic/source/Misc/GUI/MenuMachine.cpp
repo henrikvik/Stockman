@@ -78,6 +78,8 @@ void Logic::MenuMachine::initialize(GameState state)
 		}
 	}
 
+	stateToBe = gameStateDefault;
+
 	showMenu(state);
 }
 
@@ -86,7 +88,7 @@ void Logic::MenuMachine::clear()
 	currentActiveMenu = nullptr;
 }
 
-void Logic::MenuMachine::update()
+void Logic::MenuMachine::update(float dt)
 {
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
@@ -100,6 +102,15 @@ void Logic::MenuMachine::update()
 		pressed = false;
 
 	}
+
+	if (stateToBe != gameStateDefault) //change form magic value
+	{
+		if (animationTransition(dt))
+		{
+			showMenu(stateToBe);
+		}
+	}
+
 }
 
 void Logic::MenuMachine::render(Graphics::Renderer & renderer)
@@ -131,26 +142,26 @@ GameState Logic::MenuMachine::currentState()
 	return currentActiveState;
 }
 
-void Logic::MenuMachine::animationTransition(float dt)
+bool Logic::MenuMachine::animationTransition(float dt)
 {
-	currentActiveMenu->animationTransition(dt);
+	return currentActiveMenu->animationTransition(dt);
 }
 
 void Logic::MenuMachine::buttonClick0()
 {
-	showMenu(gameStateGame);
+	stateToBe = gameStateGame;
 	std::cout << "Left Trigger: Switched To Menu State 0";
 }
 
 void Logic::MenuMachine::buttonClick1()
 {
-	showMenu(gameStateMenuSettings);
+	stateToBe = gameStateMenuSettings;
 	std::cout << "Left Trigger: Switched To Menu State 3";
 }
 
 void Logic::MenuMachine::buttonClick2()
 {
-	showMenu(gameStateMenuMain);
+	stateToBe = gameStateMenuMain;
 	std::cout << "Left Trigger: Switched To Menu State 2";
 }
 

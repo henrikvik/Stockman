@@ -112,7 +112,7 @@ void Game::update(float deltaTime)
 	case gameStateMenuMain:
         
 	case gameStateMenuSettings:
-	default: m_menu->update();
+	default: m_menu->update(m_gameTime.dt);
 		break;
 	}
 }
