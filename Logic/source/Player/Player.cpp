@@ -85,8 +85,7 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 	{
 		getRigidbody()->setLinearVelocity(btVector3(getRigidbody()->getLinearVelocity().x(), 0, getRigidbody()->getLinearVelocity().z()));
 		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
-		m_playerState = PlayerState::IN_AIR;
-		m_wishJump = false;
+		m_playerState = PlayerState::STANDING;
 	}
 }
 
