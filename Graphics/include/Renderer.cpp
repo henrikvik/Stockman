@@ -61,7 +61,8 @@ namespace Graphics
         SAFE_RELEASE(buttonQuad);
         SAFE_RELEASE(buttonTexture);
         SAFE_RELEASE(menuTexture);
-        SAFE_RELEASE(GUITexture);
+        SAFE_RELEASE(GUITexture1);
+        SAFE_RELEASE(GUITexture2);
         resourceManager.release();
 
     }
@@ -259,7 +260,8 @@ namespace Graphics
        
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &menuTexture));
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &buttonTexture));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &GUITexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("crosshair.png"), nullptr, &GUITexture1));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("HPbar.png"), nullptr, &GUITexture2));
 
     }
 
@@ -375,6 +377,9 @@ namespace Graphics
         deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 
         deviceContext->VSSetShader(GUIShader, nullptr, 0);
+
+        deviceContext->PSSetShaderResources(0, 1, &GUITexture1);
+        deviceContext->PSSetShaderResources(1, 1, &GUITexture2);
         deviceContext->PSSetShader(GUIShader, nullptr, 0);
        
 
@@ -467,10 +472,10 @@ namespace Graphics
         };
 
         GUI GUIquad[12];
-        GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.1f, -0.1f };
-        GUIquad[1].verts = DirectX::SimpleMath::Vector2{ -0.1f, 0.1f };
-        GUIquad[2].verts = DirectX::SimpleMath::Vector2{ 0.1f, -0.1f };
-        GUIquad[3].verts = DirectX::SimpleMath::Vector2{ 0.1f, 0.1f };
+        GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.05f, -0.05f };
+        GUIquad[1].verts = DirectX::SimpleMath::Vector2{ -0.05f, 0.05f };
+        GUIquad[2].verts = DirectX::SimpleMath::Vector2{ 0.05f, -0.05f };
+        GUIquad[3].verts = DirectX::SimpleMath::Vector2{ 0.05f, 0.05f };
         GUIquad[4].verts = GUIquad[2].verts;
         GUIquad[5].verts = GUIquad[1].verts;
 

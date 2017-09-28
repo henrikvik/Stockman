@@ -70,9 +70,12 @@ namespace Graphics
 
 
 
-        //std::unique_ptr<DirectX::SpriteBatch> menuSprite;
+
         ID3D11ShaderResourceView * menuTexture;
-        ID3D11ShaderResourceView * GUITexture;
+        //crosshair
+        ID3D11ShaderResourceView * GUITexture1;
+        //HP bar
+        ID3D11ShaderResourceView * GUITexture2;
         ID3D11ShaderResourceView * buttonTexture;
        
 
