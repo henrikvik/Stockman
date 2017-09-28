@@ -3,7 +3,6 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 
-#define SHADOW_MAP_RESOLUTION 2048
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
@@ -23,8 +22,9 @@ namespace Graphics
 	Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
 		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
+        , menuShader(gDevice, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
+        , GUIShader(gDevice, SHADER_PATH("GUIShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA }, {"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA} })
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
-		, shadowDepthStencil(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
         , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
         , instanceOffsetBuffer(gDevice)
 		, skyRenderer(gDevice, SHADOW_MAP_RESOLUTION)
@@ -33,7 +33,6 @@ namespace Graphics
 		this->deviceContext = gDeviceContext;
 		this->backBuffer = backBuffer;
 
-		createShadowMap();
 		initialize(gDevice, gDeviceContext);
 
         viewPort = { 0 };
@@ -41,8 +40,14 @@ namespace Graphics
         viewPort.Height = WIN_HEIGHT;
         viewPort.MaxDepth = 1.0f;
 
-        states = new DirectX::CommonStates(device);
-        grid.initialize(camera, device, deviceContext, &resourceManager);
+		states = new DirectX::CommonStates(device);
+		grid.initialize(camera, device, deviceContext, &resourceManager);
+
+        //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
+        loadModellessTextures();
+        createMenuVBS();
+        createGUIBuffers();
+        createBlendState();
     }
 
 
@@ -51,7 +56,12 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
-		SAFE_RELEASE(shadowSampler);
+
+        SAFE_RELEASE(menuQuad);
+        SAFE_RELEASE(buttonQuad);
+        SAFE_RELEASE(buttonTexture);
+        SAFE_RELEASE(menuTexture);
+        SAFE_RELEASE(GUITexture);
         resourceManager.release();
 
     }
@@ -114,9 +124,12 @@ namespace Graphics
 #else
         cull();
         writeInstanceData();
+		
 
+		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
+		skyRenderer.drawShadows(deviceContext, &forwardPlus);
+		draw();
 
-		drawShadows();
 
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
@@ -174,16 +187,20 @@ namespace Graphics
         deviceContext->VSSetShader(forwardPlus, nullptr, 0);
         deviceContext->PSSetShader(forwardPlus, nullptr, 0);
 
+		
+
 		ID3D11ShaderResourceView *SRVs[] = {
 			grid.getOpaqueIndexList()->getSRV(),
 			grid.getOpaqueLightGridSRV(),
 			grid.getLights()->getSRV(),
-			this->shadowDepthStencil
+			*skyRenderer.getDepthStencil()
 		};
 		auto sampler = states->LinearClamp();
 		deviceContext->PSSetShaderResources(0, 4, SRVs);
 		deviceContext->PSSetSamplers(0, 1, &sampler);
-		deviceContext->PSSetSamplers(1, 1, &shadowSampler);
+
+		ID3D11SamplerState * samplers[] = { skyRenderer.getSampler() };
+		deviceContext->PSSetSamplers(1, 1, samplers);
 
 		ID3D11Buffer *lightBuffs[] =
 		{
@@ -210,6 +227,7 @@ namespace Graphics
         {
             this->drawToBackbuffer(grid.getDebugSRV());
         }
+        drawGUI();
 #endif
     }
 
@@ -233,6 +251,17 @@ namespace Graphics
     //	this->spriteBatch->End();
  //  
     //}
+
+
+    //loads the textures for menu and GUI
+    void Renderer::loadModellessTextures()
+    {
+       
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &buttonTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &GUITexture));
+
+    }
 
     void Renderer::cull()
     {
@@ -315,9 +344,6 @@ namespace Graphics
         deviceContext->PSSetShaderResources(0, 1, &texture);
 
         UINT zero = 0;
-        //deviceContext->IASetVertexBuffers(0, 1, nullptr, &zero, &zero);
-        //deviceContext->IASetIndexBuffer(nullptr, DXGI_FORMAT_R32_UINT, zero);
-        //deviceContext->IASetInputLayout(nullptr);
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
@@ -337,19 +363,22 @@ namespace Graphics
 
     void Renderer::drawGUI()
     {
-        /*deviceContext->PSSetShaderResources(0, 1, &GUI);
-        deviceContext->PSSetShaderResources(1, 1, &view);*/
+     
         UINT stride = 12, offset = 0;
         deviceContext->IASetVertexBuffers(0, 1, &GUIvb, &stride, &offset);
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->IASetInputLayout(GUIShader);
 
         float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         UINT sampleMask = 0xffffffff;
         deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
         deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 
+        deviceContext->VSSetShader(GUIShader, nullptr, 0);
+        deviceContext->PSSetShader(GUIShader, nullptr, 0);
+       
 
-        //resourceManager.setShaders(VertexShaderID::VERTEX_GUI, PixelShaderID::PIXEL_GUI, deviceContext);
+
 
         deviceContext->Draw(12, 0);
 
@@ -359,22 +388,76 @@ namespace Graphics
 
     }
 
-	void Renderer::drawShadows()
-	{
-		deviceContext->ClearDepthStencilView(shadowDepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+	
+    //fills the button vertex buffer with button info;
+    void Renderer::mapButtons(ButtonInfo * info)
+    {
+        //moves the buttons to ndc space
+        TriangleVertex triangleVertices[6] =
+        {
+            2 *((float)((info->m_rek.x + info->m_rek.width )) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
+            1.0f, 1.0f,
 
-		deviceContext->RSSetViewports(1, &skyRenderer.getViewPort());
-		deviceContext->IASetInputLayout(forwardPlus);
-		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-		deviceContext->PSSetShader(nullptr, nullptr, 0);
-		deviceContext->OMSetRenderTargets(0, nullptr, shadowDepthStencil);
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) -1 , 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v1
+            0.0f, 1.0f,
 
-		ID3D11Buffer* light = skyRenderer.getLightMatrixBuffer();
-		deviceContext->VSSetConstantBuffers(0, 1, &light);
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
+            0.0f,  0.0f,
 
-		draw();
-	}
+            //t2
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
+            0.0f, 0.0f,
 
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
+            1.0f, 0.0f,
+
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) -1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) -1 , 0.0f, //v0
+            1.0f, 1.0f,
+        };
+        
+        D3D11_MAPPED_SUBRESOURCE data = { 0 };
+        ThrowIfFailed(deviceContext->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
+        memcpy(data.pData, triangleVertices, sizeof(TriangleVertex) * 6);
+        deviceContext->Unmap(buttonQuad, 0);
+
+    }
+
+    //draws the menu
+    void Renderer::drawMenu(Graphics::MenuInfo * info)
+    {
+        //draws menu background
+        float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+        UINT stride = sizeof(Graphics::TriangleVertex) , offset = 0;
+        deviceContext->RSSetViewports(1, &viewPort);
+        deviceContext->IASetVertexBuffers(0, 1, &menuQuad, &stride, &offset);
+        deviceContext->IASetInputLayout(menuShader);
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->VSSetShader(menuShader, nullptr, 0);
+        deviceContext->PSSetShader(menuShader, nullptr, 0);
+        auto sampler = states->PointWrap();
+        deviceContext->PSSetSamplers(0, 1, &sampler);
+        deviceContext->PSSetShaderResources(0, 1, &menuTexture);
+
+        deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
+
+        deviceContext->Draw(6, 0);
+
+        //draws buttons
+        deviceContext->PSSetShaderResources(0, 1, &buttonTexture);
+        for (size_t i = 0; i < info->m_buttons.size(); i++)
+        {
+            mapButtons(&info->m_buttons.at(i));
+            deviceContext->IASetVertexBuffers(0, 1, &buttonQuad, &stride, &offset);
+            deviceContext->Draw(6, 0);
+        }
+
+        ID3D11ShaderResourceView * SRVNULL = nullptr;
+        deviceContext->PSSetShaderResources(0, 1, &SRVNULL);
+
+    }
+
+    //creates a vetrex buffer for the GUI
     void Renderer::createGUIBuffers()
     {
         struct GUI
@@ -427,25 +510,53 @@ namespace Graphics
         ThrowIfFailed(device->CreateBuffer(&desc, &data, &GUIvb));
     }
 
-	void Renderer::createShadowMap()
-	{
-		D3D11_SAMPLER_DESC sDesc = {};
-		sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-		sDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-		sDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-		sDesc.BorderColor[0] = 1;
-		sDesc.BorderColor[1] = 1;
-		sDesc.BorderColor[2] = 1;
-		sDesc.BorderColor[3] = 1;
-		sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
-		sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
-		sDesc.MaxAnisotropy = 0;
-		sDesc.MinLOD = 0;
-		sDesc.MaxLOD = D3D11_FLOAT32_MAX;
-		sDesc.MipLODBias = 0;
+	
 
-		device->CreateSamplerState(&sDesc, &shadowSampler);
-	}
+    //creates the vertexbuffers the menu uses.
+    void Renderer::createMenuVBS()
+    {
+        //menu fullscreen quad
+
+        TriangleVertex triangleVertices[6] =
+        {
+            1.f, -1.f, 0.0f,	//v0 pos
+            1.0f, 1.0f,
+
+            -1.f, -1.f, 0.0f,	//v1
+            0.0f, 1.0f,
+
+            -1.f, 1.f, 0.0f, //v2
+            0.0f,  0.0f,
+
+            //t2
+            -1.f, 1.f, 0.0f,	//v0 pos
+            0.0f, 0.0f,
+
+            1.f, 1.f, 0.0f,	//v1
+            1.0f, 0.0f,
+
+            1.f, -1.f, 0.0f, //v2
+            1.0f, 1.0f
+        };
+
+
+        D3D11_BUFFER_DESC desc = {0};
+
+        desc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
+        desc.ByteWidth = sizeof(TriangleVertex) * 6;
+
+        D3D11_SUBRESOURCE_DATA data = { 0 };
+        data.pSysMem = triangleVertices;
+
+        ThrowIfFailed(device->CreateBuffer(&desc, &data, &menuQuad));
+
+        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+        desc.Usage = D3D11_USAGE_DYNAMIC;
+
+        ThrowIfFailed(device->CreateBuffer(&desc, &data, &buttonQuad));
+
+
+    }
 
     void Renderer::createBlendState()
     {

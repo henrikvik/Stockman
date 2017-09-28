@@ -88,6 +88,15 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 		m_playerState = PlayerState::IN_AIR;
 		m_wishJump = false;
 	}
+
+	if (flags & Effect::EFFECT_MODIFY_AMMO)
+	{
+		printf("Ammo pack!\n");
+		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
+		int magSize		= wp->getMagSize();
+		int currentAmmo = wp->getAmmo();
+		wp->setAmmo(currentAmmo + (magSize * WEAPON_AMMO_PACK_MODIFIER));
+	}
 }
 
 void Player::upgrade(Upgrade const & upgrade)

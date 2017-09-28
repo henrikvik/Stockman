@@ -102,7 +102,7 @@ void EntityManager::spawnWave(Physics &physics)
 		m_triggerManager.addTrigger(Cube({ -60, 70, -60 }, { 0, 0, 0 }, { 50, 1.f, 50 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP }, true);
 
 		// Ammo refiller
-		m_triggerManager.addTrigger(Cube({ 0, 10, 40 }, { 0, 0, 0 }, { 10, 10, 10 }), 1000.f, physics, { StatusManager::UPGRADE_ID::P10_AMMO }, { });
+		m_triggerManager.addTrigger(Cube({ 0, 10, 40 }, { 0, 0, 0 }, { 10, 10, 10 }), 1000.f, physics, { }, { StatusManager::EFFECT_ID::AMMO_PICK_UP });
 	}
 }
 

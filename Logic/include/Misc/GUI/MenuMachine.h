@@ -18,6 +18,7 @@ This class creates menus and handles switching between different menu layouts.
 #include <map>
 #include <Misc\Enums.h>
 #include <Misc\GUI\MenuState.h>
+#include <Graphics\include\Renderer.h>
 
 namespace Logic
 {
@@ -36,6 +37,7 @@ namespace Logic
 		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout
 		void update();
+        void render(Graphics::Renderer& renderer);
 
 		void showMenu(GameState state);		//< Creates a menu layout
 		GameState currentState();

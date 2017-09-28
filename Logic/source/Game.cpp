@@ -110,6 +110,7 @@ void Game::update(float deltaTime)
 
 	case gameStateLoading:
 	case gameStateMenuMain:
+        
 	case gameStateMenuSettings:
 	default: m_menu->update();
 		break;
@@ -129,6 +130,7 @@ void Game::render(Graphics::Renderer& renderer)
 
 	case gameStateLoading:
 	case gameStateMenuMain:
+        m_menu->render(renderer);
 	case gameStateMenuSettings:
 	default: // m_menu->render(renderer);
 		break;
@@ -143,4 +145,9 @@ DirectX::SimpleMath::Vector3 Game::getPlayerForward()
 DirectX::SimpleMath::Vector3 Game::getPlayerPosition()
 {
 	return m_player->getPosition();
+}
+
+int Logic::Game::getState() const
+{
+    return m_menu->currentState();
 }
