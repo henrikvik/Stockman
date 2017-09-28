@@ -77,12 +77,13 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ m_projectileManager, ProjectileData(1, 1, 1, 100, 0, 3000, Graphics::ModelID::CUBE, 1), 1, 60, 60, 30, 30, 1, 1, 0, 0, 1, 450, 1, 2000 },
-		{ m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0, 500, Graphics::ModelID::CUBE, 1), 1, 20, 20, 8, 8, 6, 18, 15, 10, 1, 100, 1, 2000 },
-		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 1, 1, 1, 1, 1, 1, 1, 3000 },
-		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 3, 1, 1, 1, 1, 1, 1, 3000 },
-		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 },
-		{ m_projectileManager, ProjectileData(), 1, 20, 20, 8, 8, 0, 1, 1, 1, 1, 1, 1, 3000 } };
+		{ m_projectileManager, ProjectileData(1, 0.2, 1, 100, 0, 3000, Graphics::ModelID::CUBE, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 1, 2000 },		// Gattling prim
+		{ m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0, 500, Graphics::ModelID::CUBE, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 1, 2000 },		// Gattling sec
+		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 0, 500, Graphics::ModelID::CUBE, 1), 2, 100, 100, 50, 50, 1, 1, 0, 0, 750, 1, 3000 },		// Freeze prim
+		{ m_projectileManager, ProjectileData(1, 1, 1, 80, 8, 5000, Graphics::ModelID::CUBE, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000 },		// Freeze sec
+		{ m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1), 4, 0, 0, 0, 0, 0, 1, 0, 0, 50, 1, 3000 },				// Sledge prim
+		{ m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1), 5, 0, 0, 0, 0, 0, 1, 0, 0, 50, 1, 3000 }					// Sledge sec
+	};
 }
 
 void WeaponManager::makeWeaponLoadout()
@@ -115,7 +116,7 @@ void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch)
 {
 	if(m_attackTimer <= 0.f)
 	{
-		if (m_currentWeapon.first->getMagAmmo() > 0)
+		if (m_currentWeapon.first->getMagAmmo() > 0 || m_currentWeapon.first->getAmmoConsumption() == 0)
 		{
 			m_currentWeapon.first->use(position, yaw, pitch);
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.first->getAmmoConsumption());
@@ -133,7 +134,7 @@ void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch)
 {
 	if (m_attackTimer <= 0.f)
 	{
-		if (m_currentWeapon.first->getMagAmmo() > 0)
+		if (m_currentWeapon.first->getMagAmmo() > 0 || m_currentWeapon.second->getAmmoConsumption() == 0)
 		{
 			m_currentWeapon.second->use(position, yaw, pitch);
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.second->getAmmoConsumption());

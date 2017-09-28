@@ -21,7 +21,7 @@ void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position,
 	// Create body
 	btRigidBody* body = m_physPtr->createBody(Sphere(position + (forward * 2), btVector3(), pData.scale), 10.f, false);
 	// Set gravity modifier
-	body->setGravity(btVector3(0, pData.gravityModifier, 0));
+	body->setGravity(pData.gravityModifier * m_physPtr->getGravity());
 	// Create projectile
 	Projectile* p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, pData);
 	// Start

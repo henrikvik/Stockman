@@ -33,7 +33,6 @@ namespace Logic
 		int m_projectileCount;
 		int m_spreadH;							// Horizontal spread in degrees	
 		int m_spreadV;							// Vertical spread in degrees
-		float m_damage;
 		float m_attackRate;						// Attacks per minute
 		float m_freeze;
 		float m_reloadTime;
@@ -44,7 +43,7 @@ namespace Logic
 	public:
 		Weapon();
 		Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-			int spreadH, int spreadV, float damage, float attackRate, float freeze, float reloadTime);
+			int spreadH, int spreadV, float attackRate, float freeze, float reloadTime);
 
 		void use(btVector3 position, float yaw, float pitch);
 		void setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);

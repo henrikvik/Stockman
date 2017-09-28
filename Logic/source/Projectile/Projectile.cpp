@@ -51,7 +51,9 @@ void Logic::Projectile::onCollision(Entity & other)
 {
 	// TEMP
 	Player* p = dynamic_cast<Player*>(&other);
-	if (!p)	m_remove = true;;
+	if (!p)	m_remove = true;
+	Projectile* proj = dynamic_cast<Projectile*>(&other);
+	if (proj)	m_remove = false;
 	
 }
 
