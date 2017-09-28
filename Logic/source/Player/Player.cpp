@@ -34,8 +34,8 @@ void Player::init(ProjectileManager* projectileManager, GameTime* gameTime)
 	m_deacceleration = m_acceleration * 0.5f;
 	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
 	m_jumpSpeed = PLAYER_JUMP_SPEED;
-	m_moveDirForward = 0.f;
-	m_moveDirRight = 0.f;
+	m_wishDirForward = 0.f;
+	m_wishDirRight = 0.f;
 	m_wishJump = false;
 
 	// Default controlls
@@ -85,8 +85,7 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 	{
 		getRigidbody()->setLinearVelocity(btVector3(getRigidbody()->getLinearVelocity().x(), 0, getRigidbody()->getLinearVelocity().z()));
 		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
-		m_playerState = PlayerState::IN_AIR;
-		m_wishJump = false;
+		m_playerState = PlayerState::STANDING;
 	}
 }
 
@@ -123,6 +122,9 @@ void Player::updateSpecific(float deltaTime)
 	else if(m_playerState == PlayerState::IN_AIR)
 		// Move in air
 		airMove(deltaTime, &ks);
+
+	// Print player velocity
+	printf("velocity: %f\n", m_moveSpeed);
 
 	//crouch(deltaTime);
 
@@ -173,15 +175,15 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 {
 	// Reset wish direction
 	m_wishDir = btVector3(0, 0, 0);
-	m_moveDirForward = 0.f;
-	m_moveDirRight = 0.f;
+	m_wishDirForward = 0.f;
+	m_wishDirRight = 0.f;
 
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
 		m_wishDir += -dir;
-		m_moveDirRight += -1.f;
+		m_wishDirRight += -1.f;
 	}
 
 	// Move Right
@@ -189,7 +191,7 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
 		m_wishDir += dir;
-		m_moveDirRight += 1.f;
+		m_wishDirRight += 1.f;
 	}
 
 	// Move Forward
@@ -197,7 +199,7 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
 		m_wishDir += dir;
-		m_moveDirForward += 1.f;
+		m_wishDirForward += 1.f;
 	}
 
 	// Move Back
@@ -205,7 +207,7 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
 		m_wishDir += -dir;
-		m_moveDirForward += -1.f;
+		m_wishDirForward += -1.f;
 	}
 	
 	// Normalize movement direction
@@ -222,7 +224,7 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	}
 	else
 	{
-		m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
+		m_airAcceleration = (PLAYER_SPEED_LIMIT - m_moveSpeed) * PLAYER_MOVEMENT_AIRACCELERATION;
 		applyAirFriction(deltaTime, getRigidbody()->getFriction() * 0.5f);
 	}
 	
@@ -267,10 +269,8 @@ void Player::accelerate(float deltaTime, float acceleration)
 	if (m_playerState != PlayerState::IN_AIR)
 		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
 	else
-		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime) + (m_wishDir * 0.004f * deltaTime));
+		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED * deltaTime));
 	getRigidbody()->setWorldTransform(transform);
-
-	printf("%f\n", m_moveSpeed);
 }
 
 void Player::applyFriction(float deltaTime, float friction)
@@ -286,7 +286,7 @@ void Player::applyAirFriction(float deltaTime, float friction)
 {
 	btVector3 rightMoveDir = m_moveDir.cross(btVector3(0.f, 1.f, 0.f));
 
-	btVector3 forward = btVector3(m_forward.x, 0.f, m_forward.z).safeNormalize();
+	btVector3 forward = btVector3(m_forward.x, 0.f, m_forward.z).safeNormalize(); // forward vector (look direction)
 
 	float lookMoveAngle = m_moveDir.dot(forward);
 
@@ -299,16 +299,16 @@ void Player::applyAirFriction(float deltaTime, float friction)
 		forward *= -1.f;
 	}
 
-	if (lookMovedirection < 0.f && m_moveDirRight < 0.f)
+	if (lookMovedirection < 0.f && m_wishDirRight < 0.f)
 	{
-		if (lookMoveAngle > 0.95f)
+		if (lookMoveAngle > PLAYER_STRAFE_ANGLE)
 			m_moveDir = (m_moveDir + forward) * 0.5f;
 		else
 			applyFriction(deltaTime, friction);
 	}
-	else if (lookMovedirection > 0.f && m_moveDirRight > 0.f)
+	else if (lookMovedirection > 0.f && m_wishDirRight > 0.f)
 	{
-		if (lookMoveAngle > 0.95f)
+		if (lookMoveAngle > PLAYER_STRAFE_ANGLE)
 			m_moveDir = (m_moveDir + forward) * 0.5f;
 		else
 			applyFriction(deltaTime, friction);
