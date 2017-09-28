@@ -9,8 +9,10 @@ void SkillGrapplingHook::onUse()
 
 void SkillGrapplingHook::onUpdate(float deltaTime)
 {
+
 }
 
 void SkillGrapplingHook::render(Graphics::Renderer& renderer)
 {
+
 }

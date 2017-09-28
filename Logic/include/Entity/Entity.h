@@ -26,6 +26,8 @@ namespace Logic
 							float deltaTime);	
 		virtual void onCollision(Entity& other) { }
 
+		void setHalfExtent(btVector3 halfExtent);
+		btVector3 getHalfExtent() const;
 		DirectX::SimpleMath::Vector3 getPosition() const;
 		btVector3 getPositionBT() const;
 		DirectX::SimpleMath::Quaternion getRotation() const;
