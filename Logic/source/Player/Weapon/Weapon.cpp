@@ -10,14 +10,13 @@ Weapon::Weapon()
 	m_magSize			= -1;
 	m_magAmmo			= -1;
 	m_ammoConsumption	= -1;
-	m_damage			= -1;
 	m_attackRate		= -1;
 	m_freeze			= -1;
 	m_reloadTime		= -1;
 }
 
 Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-	int spreadH, int spreadV, float damage, float attackRate, float freeze, float reloadTime)
+	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime)
 {
 	m_projectileManager = projectileManager;
 	m_weaponID			= weaponID;
@@ -29,7 +28,6 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	m_projectileCount	= projectileCount;
 	m_spreadH			= spreadH;
 	m_spreadV			= spreadV;
-	m_damage			= damage;
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;

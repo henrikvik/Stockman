@@ -72,6 +72,16 @@ StatusManager& Entity::getStatusManager()
 	return m_statusManager;
 }
 
+void Entity::setHalfExtent(btVector3 halfExtent)
+{
+	m_halfextent = halfExtent;
+}
+
+btVector3 Entity::getHalfExtent() const
+{
+	return m_halfextent;
+}
+
 void Entity::setStatusManager(StatusManager & statusManager)
 {
 	m_statusManager = statusManager;
