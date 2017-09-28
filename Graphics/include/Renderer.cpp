@@ -22,6 +22,8 @@ namespace Graphics
 	Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
 		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
+        , menuShader(gDevice, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
+
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
         , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
         , instanceOffsetBuffer(gDevice)
@@ -38,8 +40,12 @@ namespace Graphics
         viewPort.Height = WIN_HEIGHT;
         viewPort.MaxDepth = 1.0f;
 
-        states = new DirectX::CommonStates(device);
-        grid.initialize(camera, device, deviceContext, &resourceManager);
+		states = new DirectX::CommonStates(device);
+		grid.initialize(camera, device, deviceContext, &resourceManager);
+
+        //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
+        loadModellessTextures();
+        createMenuVBS();
     }
 
 
@@ -48,6 +54,12 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
+
+        SAFE_RELEASE(menuQuad);
+        SAFE_RELEASE(buttonQuad);
+        SAFE_RELEASE(buttonTexture);
+        SAFE_RELEASE(menuTexture);
+        SAFE_RELEASE(GUITexture);
         resourceManager.release();
 
     }
@@ -237,6 +249,17 @@ namespace Graphics
  //  
     //}
 
+
+    //loads the textures for menu and GUI
+    void Renderer::loadModellessTextures()
+    {
+       
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &buttonTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &GUITexture));
+
+    }
+
     void Renderer::cull()
     {
         instanceQueue.clear();
@@ -360,7 +383,75 @@ namespace Graphics
     }
 
 	
+    //fills the button vertex buffer with button info;
+    void Renderer::mapButtons(ButtonInfo * info)
+    {
+        //moves the buttons to ndc space
+        TriangleVertex triangleVertices[6] =
+        {
+            2 *((float)((info->m_rek.x + info->m_rek.width )) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
+            1.0f, 1.0f,
 
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) -1 , 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v1
+            0.0f, 1.0f,
+
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
+            0.0f,  0.0f,
+
+            //t2
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
+            0.0f, 0.0f,
+
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
+            1.0f, 0.0f,
+
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) -1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) -1 , 0.0f, //v0
+            1.0f, 1.0f,
+        };
+        
+        D3D11_MAPPED_SUBRESOURCE data = { 0 };
+        ThrowIfFailed(deviceContext->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
+        memcpy(data.pData, triangleVertices, sizeof(TriangleVertex) * 6);
+        deviceContext->Unmap(buttonQuad, 0);
+
+    }
+
+    //draws the menu
+    void Renderer::drawMenu(Graphics::MenuInfo * info)
+    {
+        //draws menu background
+        float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+        UINT stride = sizeof(Graphics::TriangleVertex) , offset = 0;
+        deviceContext->RSSetViewports(1, &viewPort);
+        deviceContext->IASetVertexBuffers(0, 1, &menuQuad, &stride, &offset);
+        deviceContext->IASetInputLayout(menuShader);
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->VSSetShader(menuShader, nullptr, 0);
+        deviceContext->PSSetShader(menuShader, nullptr, 0);
+        auto sampler = states->PointWrap();
+        deviceContext->PSSetSamplers(0, 1, &sampler);
+        deviceContext->PSSetShaderResources(0, 1, &menuTexture);
+
+        deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
+
+        deviceContext->Draw(6, 0);
+
+        //draws buttons
+        deviceContext->PSSetShaderResources(0, 1, &buttonTexture);
+        for (size_t i = 0; i < info->m_buttons.size(); i++)
+        {
+            mapButtons(&info->m_buttons.at(i));
+            deviceContext->IASetVertexBuffers(0, 1, &buttonQuad, &stride, &offset);
+            deviceContext->Draw(6, 0);
+        }
+
+        ID3D11ShaderResourceView * SRVNULL = nullptr;
+        deviceContext->PSSetShaderResources(0, 1, &SRVNULL);
+
+    }
+
+    //creates a vetrex buffer for the GUI
     void Renderer::createGUIBuffers()
     {
         struct GUI
@@ -414,6 +505,52 @@ namespace Graphics
     }
 
 	
+
+    //creates the vertexbuffers the menu uses.
+    void Renderer::createMenuVBS()
+    {
+        //menu fullscreen quad
+
+        TriangleVertex triangleVertices[6] =
+        {
+            1.f, -1.f, 0.0f,	//v0 pos
+            1.0f, 1.0f,
+
+            -1.f, -1.f, 0.0f,	//v1
+            0.0f, 1.0f,
+
+            -1.f, 1.f, 0.0f, //v2
+            0.0f,  0.0f,
+
+            //t2
+            -1.f, 1.f, 0.0f,	//v0 pos
+            0.0f, 0.0f,
+
+            1.f, 1.f, 0.0f,	//v1
+            1.0f, 0.0f,
+
+            1.f, -1.f, 0.0f, //v2
+            1.0f, 1.0f
+        };
+
+
+        D3D11_BUFFER_DESC desc = {0};
+
+        desc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
+        desc.ByteWidth = sizeof(TriangleVertex) * 6;
+
+        D3D11_SUBRESOURCE_DATA data = { 0 };
+        data.pSysMem = triangleVertices;
+
+        ThrowIfFailed(device->CreateBuffer(&desc, &data, &menuQuad));
+
+        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+        desc.Usage = D3D11_USAGE_DYNAMIC;
+
+        ThrowIfFailed(device->CreateBuffer(&desc, &data, &buttonQuad));
+
+
+    }
 
     void Renderer::createBlendState()
     {
