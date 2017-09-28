@@ -19,11 +19,17 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 	// all nodes in navMesh
 	std::vector<DirectX::SimpleMath::Vector3> nodes =
 		navigationMesh.getNodes();
-	std::vector<bool> open; // insert in the nodes list later?
-	open.resize(nodes.size());
+
+	// reset nav nodes
+	for (int i = 0; i < navNodes.size(); i++)
+	{
+		navNodes[i].onClosedList = false;
+		navNodes[i].h = navNodes[i].g = 0;
+	}
 
 	// openlist and a test offset
-	std::priority_queue<NavNode> openList;
+	auto comp = [](int a, int b) { return navNodes[a] > navNodes[b]; };
+	std::priority_queue<int> openList;
 	DirectX::SimpleMath::Vector3 offset(0, 5, 0);
 
 	// get indicies
@@ -35,29 +41,38 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 	if (startIndex == -1 || endIndex == -1 || startIndex == endIndex)
 		return { 0, target.getPositionBT() };
 
-	// open (test), nodeIndex and g
-	openList.push(
-		{ true, startIndex, 0,
-		heuristic(nodes[startIndex], nodes[endIndex]) }
-	);
+	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[endIndex]);
+	openList.push(startIndex);
 
-	NavNode currentNode;
+	int currentNode;
+	float f;
 	while (!openList.empty())
 	{
 		currentNode = openList.top();
+		f = navNodes[currentNode].g + navNodes[currentNode].h;
 		openList.pop();
 
-		for (int index : navigationMesh.getEdges(currentNode.nodeIndex))
-			if (!open[index])
-				openList.push(
-					{ true, index,
-					currentNode.g + heuristic(nodes[index], nodes[endIndex]) }
-				);
+		for (int index : navigationMesh.getEdges(currentNode))
+			if (!navNodes[index].onClosedList)
+			{
+				navNodes[index].g = f;
+				navNodes[index].h = heuristic(nodes[index], nodes[endIndex]);
+				openList.push(index);
+			}
+			else if (nodeOnList(index, openList.))
+			{
 
-		open[currentNode.nodeIndex] = false;
+			}
+			else if (navNodes[index].g < f)
+			{
+				navNodes[index].g = f;
+				openList.push(index);
+			}
+
+		navNodes[currentNode].onClosedList = true;
 	}
 
-	DirectX::SimpleMath::Vector3 node = nodes[currentNode.nodeIndex];
+	DirectX::SimpleMath::Vector3 node = nodes[currentNode];
 	return { 0, { node.x, node.y, node.z } };
 }
 
@@ -78,6 +93,13 @@ void AStar::generateNavigationMesh()
 	// test
 	navigationMesh.addEdge(0, 1);
 	navigationMesh.addEdge(1, 0);
+
+	navNodes.clear();
+	for (int i = 0; i < navigationMesh.getNodes().size(); i++)
+		navNodes.push_back(
+			{ true, i,
+			0, 0 }
+		);
 }
 
 float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,
@@ -89,4 +111,12 @@ float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,
 void AStar::generateNodesFromFile()
 {
 
+}
+
+bool AStar::nodeInQue(int index, std::priority_queue<int> const &que) const
+{
+	for (int i = 0; i < que.size(); i++)
+		if (que[i] == index)
+			return true;
+	return false;
 }

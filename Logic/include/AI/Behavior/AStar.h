@@ -23,15 +23,16 @@ namespace Logic
 			// to calc path testing rn
 			struct NavNode
 			{
-				bool open; // for testing
+				bool onClosedList; // for testing
 				int nodeIndex; // index in nav mesh
-				float f, g; // cost to node
+				float h, g; // cost to node
 
+				// remove later, this is unused at the moment
 				bool operator<(NavNode const &other) const {
-					return f < other.f;
+					return g + h < other.g + other.h;
 				}
 				bool operator>(NavNode const &other) const {
-					return f > other.f;
+					return g + h > other.g + other.h;
 				}
 			};
 
@@ -43,12 +44,13 @@ namespace Logic
 			}
 		private:
 			std::string file;
-			std::vector<Node> nodes; //testing
+			std::vector<NavNode> navNodes; //testing
 			NavigationMesh navigationMesh;
 		
 			float heuristic(DirectX::SimpleMath::Vector3 &from,
 				DirectX::SimpleMath::Vector3 &to) const;
 			void generateNodesFromFile();
+			bool nodeInQue(int index, std::priority_queue<int> const &que) const;
 		public:
 			// string for the offline loaded nav mesh
 			AStar(std::string file);
