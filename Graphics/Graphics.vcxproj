@@ -25,7 +25,7 @@
     <ClCompile Include="include\Animation\KeyFrame.cpp" />
     <ClCompile Include="include\Animation\Skeleton.cpp" />
     <ClCompile Include="include\Camera.cpp" />
-    <ClCompile Include="include\Lights\DirectionalLight.cpp" />
+    <ClCompile Include="include\Lights\Sun.cpp" />
     <ClCompile Include="include\Lights\LightGrid.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
@@ -49,7 +49,7 @@
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Datatypes.h" />
     <ClInclude Include="include\Graphics.h" />
-    <ClInclude Include="include\Lights\DirectionalLight.h" />
+    <ClInclude Include="include\Lights\Sun.h" />
     <ClInclude Include="include\Lights\LightGrid.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Resources\BRFImportHandler.h" />

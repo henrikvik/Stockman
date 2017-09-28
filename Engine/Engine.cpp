@@ -208,7 +208,7 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight);
+	Graphics::Camera cam(mDevice, mWidth, mHeight, 250);
     cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
@@ -275,6 +275,8 @@ int Engine::run()
         staticCube.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + cosf(totalTime * 0.001f),0 });
 
         staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + sinf(totalTime * 0.001f),0 });
+
+		renderer->updateLight(deltaTime, &cam);
 
         renderer->queueRender(&staticCube);
         renderer->queueRender(&staticSphere);

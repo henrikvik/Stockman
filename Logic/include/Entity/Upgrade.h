@@ -46,13 +46,13 @@ namespace Logic
 
 		// Add get & sets here when you're not lazy
 		FlatUpgrades getFlatUpgrades() const;
-		std::vector<int> getTranferEffects() const;
+		long long getTranferEffects() const;
 	private:
 		long long m_flags;
 		int	m_actionID;				//< The specific ID of the weapon or skill
 		FlatUpgrades m_flatUpgrades;
 
-		std::vector<int> m_tranferEffects;		//< The list of effects that should be tranfered on hit
+		long long m_tranferEffects;		//< The list of effects that should be tranfered on hit
 	};
 }
 

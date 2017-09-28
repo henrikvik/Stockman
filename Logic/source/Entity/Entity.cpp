@@ -60,6 +60,8 @@ void Entity::collision(Entity& other)
 
 void Entity::affect(int stacks, Effect const &effect, float dt) {}
 
+void Entity::upgrade(Upgrade const & upgrade) {}
+
 btRigidBody* Entity::getRigidbody()
 {
 	return m_body;

@@ -25,10 +25,9 @@ namespace Graphics
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
 		, shadowDepthStencil(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
-		, lightDir(gDevice, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
         , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
         , instanceOffsetBuffer(gDevice)
-		, skyRenderer(gDevice)
+		, skyRenderer(gDevice, SHADOW_MAP_RESOLUTION)
 	{
 		this->device = gDevice;
 		this->deviceContext = gDeviceContext;
@@ -61,6 +60,11 @@ namespace Graphics
     {
         resourceManager.initialize(gDevice, gDeviceContext);
     }
+
+	void Renderer::updateLight(float deltaTime, Camera * camera)
+	{
+		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
+	}
 
     void Renderer::render(Camera * camera)
     {
@@ -110,10 +114,6 @@ namespace Graphics
 #else
         cull();
         writeInstanceData();
-
-		///SUPER ULTRA MEGA ÜBER ARCADE EDITION TEMP
-		lightDir.update(deviceContext, camera->getPos());
-		////
 
 
 		drawShadows();
@@ -187,8 +187,8 @@ namespace Graphics
 
 		ID3D11Buffer *lightBuffs[] =
 		{
-			lightDir.getShaderBuffer(),
-			lightDir.getMatrixBuffer()
+			skyRenderer.getShaderBuffer(),
+			skyRenderer.getLightMatrixBuffer()
 		};
 		
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
@@ -363,13 +363,13 @@ namespace Graphics
 	{
 		deviceContext->ClearDepthStencilView(shadowDepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
-		deviceContext->RSSetViewports(1, &lightDir.getViewPort());
+		deviceContext->RSSetViewports(1, &skyRenderer.getViewPort());
 		deviceContext->IASetInputLayout(forwardPlus);
 		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
 		deviceContext->PSSetShader(nullptr, nullptr, 0);
 		deviceContext->OMSetRenderTargets(0, nullptr, shadowDepthStencil);
 
-		ID3D11Buffer* light = lightDir.getMatrixBuffer();
+		ID3D11Buffer* light = skyRenderer.getLightMatrixBuffer();
 		deviceContext->VSSetConstantBuffers(0, 1, &light);
 
 		draw();

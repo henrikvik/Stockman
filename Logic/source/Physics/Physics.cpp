@@ -90,7 +90,7 @@ void Physics::update(GameTime gameTime)
 	}
 }
 
-btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
+const btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
 {
 	const btVector3& start	= ray.getStart();
 	const btVector3& end	= ray.getEnd();
@@ -102,7 +102,7 @@ btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
 	if (rayCallBack.hasHit())
 	{
 		const btCollisionObject* object = rayCallBack.m_collisionObject;
-		btRigidBody* body = static_cast<btRigidBody*>(object->getUserPointer());
+		const btRigidBody* body = btRigidBody::upcast(object);;
 
 		return body;
 	}

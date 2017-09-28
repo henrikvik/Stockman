@@ -5,13 +5,12 @@
 
 using namespace DirectX::SimpleMath;
 
-SkyRenderer::SkyRenderer(ID3D11Device * device) :
+SkyRenderer::SkyRenderer(ID3D11Device * device, int shadowRes) :
 	shader(device, SHADER_PATH("SkyShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } }),
-	cube(device)
+	cube(device),
+	sun(device, shadowRes, shadowRes)
 {
 	ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device, TEXTURE_PATH("skyBox.dds"), nullptr, &srv));
-
-
 }
 
 SkyRenderer::~SkyRenderer()
@@ -29,16 +28,6 @@ void SkyRenderer::renderSky(ID3D11DeviceContext * context, Graphics::Camera * ca
 	context->PSSetShader(shader, nullptr, 0);
 	context->PSSetShaderResources(0, 1, &srv);
 	
-	Matrix temp = Matrix::CreateTranslation(cam->getPos());
-
-	D3D11_MAPPED_SUBRESOURCE data = {};
-
-	context->Map(cube.transformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
-	
-	memcpy(data.pData, &temp, sizeof(Matrix));
-
-	context->Unmap(cube.transformBuffer, 0);
-	
 	ID3D11Buffer * buffers[] =
 	{
 		cam->getBuffer(),
@@ -47,6 +36,28 @@ void SkyRenderer::renderSky(ID3D11DeviceContext * context, Graphics::Camera * ca
 
 	context->VSSetConstantBuffers(0, 2, buffers);
 
+	ID3D11Buffer * temp = sun.getShaderBuffer();
+
+	context->PSSetConstantBuffers(2, 1, &temp);
+
 
 	context->Draw(36, 0);
+}
+
+void SkyRenderer::update(ID3D11DeviceContext * context, float deltaTime, Vector3 pos)
+{
+	float radiansPerSecond = 0.01745 * deltaTime * 0.005f;
+
+	sun.update(context, radiansPerSecond, pos);
+
+
+	Matrix temp = Matrix::CreateTranslation(pos);
+
+	D3D11_MAPPED_SUBRESOURCE data = {};
+
+	context->Map(cube.transformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+
+	memcpy(data.pData, &temp, sizeof(Matrix));
+
+	context->Unmap(cube.transformBuffer, 0);
 }

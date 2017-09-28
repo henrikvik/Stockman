@@ -1,12 +1,14 @@
 #include <AI/Trigger.h>
 using namespace Logic;
 
-Trigger::Trigger(btRigidBody* body, btVector3 halfExtent, float cooldown)
+Trigger::Trigger(btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
 : Entity(body, halfExtent)
 {
 	m_maxCooldown = cooldown;
 	m_cooldown = -1;
 	m_active = true;
+	m_reusable = reusable;
+	m_remove = false;
 }
 
 Trigger::~Trigger() { }
@@ -44,16 +46,32 @@ void Trigger::onCollision(Entity& other)
 {
 	if (m_active)
 	{
-		// Sending statuses over to player
-		for (StatusManager::UPGRADE_ID u : getStatusManager().getActiveUpgrades())
-			other.getStatusManager().addUpgrade(u);
-		for (std::pair<int, StatusManager::EFFECT_ID> effect: getStatusManager().getActiveEffectsIDs())
-			other.getStatusManager().addStatus(effect.second, effect.first, true);
+		if (Player* p = dynamic_cast<Player*>(&other))
+		{
+			// Sending statuses over to player
+			for (StatusManager::UPGRADE_ID u : getStatusManager().getActiveUpgrades())
+				other.getStatusManager().addUpgrade(u);
+			for (std::pair<int, StatusManager::EFFECT_ID> effect : getStatusManager().getActiveEffectsIDs())
+				other.getStatusManager().addStatus(effect.second, effect.first, true);
 
-		// Starting Cooldown
-		m_cooldown = m_maxCooldown;
-		m_active = false;
+			if (m_reusable)
+			{
+				// Starting Cooldown
+				m_cooldown = m_maxCooldown;
+				m_active = false;
+			}
+			else
+			{
+				// Remove this trigger
+				m_remove = true;
+			}
+		}
 	}
+}
+
+bool Trigger::getShouldRemove() const
+{
+	return m_remove;
 }
 
 bool Trigger::getIsActive() const
@@ -69,6 +87,11 @@ bool Trigger::getIsReusable() const
 float Trigger::getCooldown() const
 {
 	return m_cooldown;
+}
+
+void Trigger::setShouldRemove(bool remove)
+{
+	m_remove = remove;
 }
 
 void Trigger::setIsActive(bool active)
