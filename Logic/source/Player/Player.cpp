@@ -31,7 +31,7 @@ void Player::init(ProjectileManager* projectileManager, GameTime* gameTime)
 	m_moveDir = btVector3(0, 0, 0);
 	m_moveSpeed = 0.f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
-	m_deacceleration = m_acceleration * 0.2f;
+	m_deacceleration = m_acceleration * 0.5f;
 	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
 	m_jumpSpeed = PLAYER_JUMP_SPEED;
 	m_moveDirForward = 0.f;
@@ -112,7 +112,7 @@ void Player::updateSpecific(float deltaTime)
 	jump(deltaTime, &ks);
 
 	// If moving on y-axis, player is in air
-	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 0.00001f || getRigidbody()->getLinearVelocity().y() < -0.00001f))
+	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 0.01f || getRigidbody()->getLinearVelocity().y() < -0.01f))
 		m_playerState = PlayerState::IN_AIR;
 
 	// Get movement input
@@ -288,31 +288,30 @@ void Player::applyAirFriction(float deltaTime, float friction)
 
 	btVector3 forward = btVector3(m_forward.x, 0.f, m_forward.z).safeNormalize();
 
-	float lookMoveAngle = 1.f - m_moveDir.dot(forward);
+	float lookMoveAngle = m_moveDir.dot(forward);
 
-	if (lookMoveAngle <= 1.f)
+	float lookMovedirection = rightMoveDir.dot(forward);
+
+	// if looking backwards compared to move direction
+	if (lookMoveAngle < 0.f)
 	{
-		float lookMovedirection = rightMoveDir.dot(forward);
+		lookMoveAngle *= -1.f;
+		forward *= -1.f;
+	}
 
-		if (lookMovedirection < 0.f && m_moveDirRight < 0.f)
-		{
-			if (lookMoveAngle < 0.05f)
-				m_moveDir = (m_moveDir + forward) * 0.5f;
-			else
-				applyFriction(deltaTime, friction);
-		}
-		else if (lookMovedirection > 0.f && m_moveDirRight > 0.f)
-		{
-			if (lookMoveAngle < 0.05f)
-				m_moveDir = (m_moveDir + forward) * 0.5f;
-			else
-				applyFriction(deltaTime, friction);
-		}
+	if (lookMovedirection < 0.f && m_moveDirRight < 0.f)
+	{
+		if (lookMoveAngle > 0.95f)
+			m_moveDir = (m_moveDir + forward) * 0.5f;
 		else
-		{
-			m_airAcceleration = 0.f;
 			applyFriction(deltaTime, friction);
-		}
+	}
+	else if (lookMovedirection > 0.f && m_moveDirRight > 0.f)
+	{
+		if (lookMoveAngle > 0.95f)
+			m_moveDir = (m_moveDir + forward) * 0.5f;
+		else
+			applyFriction(deltaTime, friction);
 	}
 	else
 	{
