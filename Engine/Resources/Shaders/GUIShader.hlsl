@@ -33,12 +33,12 @@ float4 PS(VSOut psin) : SV_Target0
 {
     if(psin.elm == 0)
     {
-        return float4(1.0f, 0.0f, 0.0f, 1.0f);
+        return float4(1.0f, 0.0f, 0.0f, 0.0f);
         //return float4(crosshair.Sample(sState, psin.uv));
 
     }else
     {
-        return float4(0.0f, 1.0f, 0.0f, 1.0f);
+        return float4(0.0f, 1.0f, 0.0f, 0.0f);
         //return float4(HP.Sample(sState, psin.uv));
     }
 };

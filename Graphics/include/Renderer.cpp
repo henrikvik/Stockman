@@ -46,6 +46,8 @@ namespace Graphics
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         loadModellessTextures();
         createMenuVBS();
+        createGUIBuffers();
+        createBlendState();
     }
 
 
@@ -225,6 +227,7 @@ namespace Graphics
         {
             this->drawToBackbuffer(grid.getDebugSRV());
         }
+        drawGUI();
 #endif
     }
 
@@ -364,11 +367,16 @@ namespace Graphics
         UINT stride = 12, offset = 0;
         deviceContext->IASetVertexBuffers(0, 1, &GUIvb, &stride, &offset);
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->IASetInputLayout(GUIShader);
 
         float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         UINT sampleMask = 0xffffffff;
         deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
         deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
+
+        deviceContext->VSSetShader(GUIShader, nullptr, 0);
+        deviceContext->PSSetShader(GUIShader, nullptr, 0);
+       
 
 
 
