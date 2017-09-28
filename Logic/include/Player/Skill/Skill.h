@@ -15,11 +15,9 @@ namespace Logic
 {
 	class Skill
 	{
-	private:
-		// StatusManager statusManager;
-		float m_cooldown;
-		float m_duration;
 	public:
+		Skill(float cooldown, float duration = 0.f);
+
 		void use();
 		virtual void onUse() = 0;
 		
@@ -27,6 +25,18 @@ namespace Logic
 		virtual void onUpdate(float deltaTime) = 0;
 
 		virtual void render(Graphics::Renderer& renderer) = 0;
+
+		float	getCooldown() const;
+		float	getCooldownMax() const;
+		float	getDuration() const;
+		bool	getCanUse() const;
+
+	private:
+		// StatusManager statusManager;
+		float	m_cooldown;
+		float	m_cooldownMax;
+		float	m_duration;
+		bool	m_canUse;
 	};
 }
 #endif

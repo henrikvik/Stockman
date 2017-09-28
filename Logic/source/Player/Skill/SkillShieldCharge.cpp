@@ -2,6 +2,18 @@
 
 using namespace Logic;
 
+SkillShieldCharge::SkillShieldCharge(float cooldown, float duration, ProjectileManager * projectileManager, ProjectileData projectileData)
+: Skill(cooldown, duration)
+{
+	m_projectileManager = projectileManager;
+	m_projectileData = projectileData;
+}
+
+SkillShieldCharge::~SkillShieldCharge()
+{
+	m_projectileManager = nullptr;
+}
+
 void SkillShieldCharge::onUse()
 {
 	printf("Used Shield Charge.\n");

@@ -36,10 +36,9 @@ namespace Logic
 		void render(Graphics::Renderer& renderer);
 	
 	private:
-		void initializeSkills(GameTime* gameTime);
-		
-		ProjectileManager* projectileManager;
-		GameTime* gameTime;
+
+		ProjectileManager* m_projectileManager;	
+		GameTime* m_gameTime;	
 
 		std::vector<Skill*> m_allSkills;
 		Skill* m_currentSkill;
