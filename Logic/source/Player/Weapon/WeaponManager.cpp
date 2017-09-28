@@ -171,3 +171,13 @@ bool Logic::WeaponManager::isReloading()
 {
 	return m_reloadState != ReloadingWeapon::IDLE;
 }
+
+Weapon* Logic::WeaponManager::getCurrentWeaponPrimary()
+{
+	return m_currentWeapon.first;
+}
+
+Weapon* Logic::WeaponManager::getCurrentWeaponSecondary()
+{
+	return m_currentWeapon.second;
+}
