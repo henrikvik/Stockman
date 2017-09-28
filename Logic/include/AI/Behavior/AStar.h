@@ -8,6 +8,7 @@
 #include "PASVF.h"
 
 #include <Entity\Entity.h>
+#include <Graphics\include\Renderer.h>
 
 namespace Logic
 {
@@ -56,6 +57,7 @@ namespace Logic
 			Node getNextNode(Entity const &enemy, Entity const &target);
 			void reconstructPath(std::vector<NavNode> &navNodes,
 				std::vector<DirectX::SimpleMath::Vector3> &nodes);
+			void renderNavigationMesh(Graphics::Renderer &renderer);
 
 			// iniate the nodes
 			void generateNavigationMesh();

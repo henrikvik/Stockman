@@ -36,13 +36,12 @@ void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, 
 
 	for (int i = 0; i < 25; i++)
 	{
-		t.vertices[0] = DirectX::SimpleMath::Vector3(i, 0, i);
+		t.vertices[0] = DirectX::SimpleMath::Vector3(T * i, 0, T * i);
 		t.vertices[1] = DirectX::SimpleMath::Vector3(T * (i + 1), 0, T * (i + 1));
-		t.vertices[2] = DirectX::SimpleMath::Vector3(i, 0, T * (i + 1));
+		t.vertices[2] = DirectX::SimpleMath::Vector3(T * i, 0, T * (i + 1));
 		terrain.push_back(t);
 
-		t.vertices[0] = DirectX::SimpleMath::Vector3(i, 0, i);
-		t.vertices[1] = DirectX::SimpleMath::Vector3(T * (i + 1), 0, i);
+		t.vertices[1] = DirectX::SimpleMath::Vector3(T * (i + 1), 0, T * i);
 		t.vertices[2] = DirectX::SimpleMath::Vector3(T * (i + 1), 0, T * (i + 1));
 		terrain.push_back(t);
 	}

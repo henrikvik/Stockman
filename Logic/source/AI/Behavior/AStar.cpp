@@ -29,7 +29,7 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 	// get indicies
 	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset),
 		endIndex = navigationMesh.getIndex(target.getPosition() + offset);
-	printf("End index: %d (AStar:%d)\n", endIndex, __LINE__);
+	printf("End index: %d (%s:%d)\n", endIndex, __FILE__, __LINE__);
 
 	// test special cases
 	if (startIndex == -1 || endIndex == -1 || startIndex == endIndex)
@@ -63,6 +63,11 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 
 void AStar::reconstructPath(std::vector<NavNode>& navNodes, std::vector<DirectX::SimpleMath::Vector3>& nodes)
 {
+}
+
+void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
+{
+	Graphics::RenderInfo info;
 }
 
 void AStar::generateNavigationMesh()
