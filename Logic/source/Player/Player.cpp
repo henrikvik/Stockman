@@ -276,8 +276,6 @@ void Player::accelerate(float deltaTime, float acceleration)
 	btTransform transform = getRigidbody()->getWorldTransform();
 	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
 	getRigidbody()->setWorldTransform(transform);
-
-	printf("%f\n", m_moveSpeed);
 }
 
 void Player::applyFriction(float deltaTime, float friction)

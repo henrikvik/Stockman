@@ -87,15 +87,15 @@ int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const & pos) const
 		if (u < 0 || u > 1) { continue; }
 
 		//Prepare to test v parameter
-		q = t.Cross(triangleList[i].vertices[0]);
+		q = t.Cross(e1);
 
 		//Calculate v parameter
-		v = dir.Dot(p) * invDet;
+		v = dir.Dot(q) * invDet;
 
 		//Check for ray hit
 		if (v < 0 || u + v > 1) { continue; }
 
-		if ((triangleList[i].vertices[1].Dot(q) * invDet) > EPSILON)
+		if ((e2.Dot(q) * invDet) > EPSILON)
 		{
 			//ray does intersect
 			return i;

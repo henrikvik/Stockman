@@ -29,7 +29,7 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 	// get indicies
 	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset),
 		endIndex = navigationMesh.getIndex(target.getPosition() + offset);
-	printf("End index: %d (%s:%d)\n", endIndex, __FILE__, __LINE__);
+	printf("StartIndex: %d, End index: %d (AStar.cpp:%d)\n", startIndex, endIndex, __LINE__);
 
 	// test special cases
 	if (startIndex == -1 || endIndex == -1 || startIndex == endIndex)
