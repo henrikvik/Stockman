@@ -106,6 +106,7 @@ namespace Logic
 		void saveToFile();
 		void readFromFile();
 
+		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 	};
 

@@ -372,6 +372,11 @@ void Player::render(Graphics::Renderer & renderer)
 	m_weaponManager.render(renderer);
 }
 
+btVector3 Logic::Player::getForwardBT()
+{
+	return btVector3(m_forward.x, m_forward.y, m_forward.z);
+}
+
 DirectX::SimpleMath::Vector3 Player::getForward()
 {
 	return m_forward;
