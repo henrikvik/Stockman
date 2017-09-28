@@ -91,7 +91,11 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
-		
+		printf("Ammo pack!");
+		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
+		int magSize		= wp->getMagSize();
+		int currentAmmo = wp->getAmmo();
+		wp->setAmmo(currentAmmo + (magSize * WEAPON_AMMO_PACK_MODIFIER));
 	}
 }
 
