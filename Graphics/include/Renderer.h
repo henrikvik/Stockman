@@ -47,6 +47,7 @@ namespace Graphics
         Shader fullscreenQuad;
         Shader forwardPlus;
         Shader menuShader;
+        Shader GUIShader;
 
         //ComputeShader lightGridGen; 
 
