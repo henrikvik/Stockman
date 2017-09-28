@@ -104,6 +104,7 @@ namespace Logic
 		void onCollision(Entity& other);
 		void onCollision(Projectile& other);
 		void affect(int stacks, Effect const &effect, float deltaTime);
+		void upgrade(Upgrade const &upgrade);
 		void render(Graphics::Renderer& renderer); 
 
 		void saveToFile();

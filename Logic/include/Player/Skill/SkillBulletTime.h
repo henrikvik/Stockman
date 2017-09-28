@@ -12,6 +12,8 @@
 #include <Player\Skill\Skill.h>
 #include <Misc\GameTime.h>
 
+#define BULLET_TIME_CD 2500.f
+
 namespace Logic
 {
 	class SkillBulletTime : public Skill
@@ -19,7 +21,7 @@ namespace Logic
 	private:
 		GameTime* m_gameTime;
 	public:
-		SkillBulletTime(GameTime* gameTime);
+		SkillBulletTime(float cooldown, GameTime* gameTime);
 
 		void onUse();
 		void onUpdate(float deltaTime);

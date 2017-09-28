@@ -2,13 +2,15 @@
 
 using namespace Logic;
 
-SkillBulletTime::SkillBulletTime(GameTime * gameTime)
+SkillBulletTime::SkillBulletTime(float cooldown, GameTime * gameTime)
+: Skill(cooldown)
 {
 	m_gameTime = gameTime;
 }
 
 void SkillBulletTime::onUse()
 {
+	printf("Bullet Time used.\n");
 	m_gameTime->slowMotion(0.40f, 5000.f);
 }
 

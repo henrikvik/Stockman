@@ -79,13 +79,32 @@ void Player::onCollision(Projectile& other)
 
 void Player::affect(int stacks, Effect const & effect, float deltaTime)
 {
-	int flags = effect.getStandards()->flags;
+	long long flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
 	{
 		getRigidbody()->setLinearVelocity(btVector3(getRigidbody()->getLinearVelocity().x(), 0, getRigidbody()->getLinearVelocity().z()));
 		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
 		m_playerState = PlayerState::STANDING;
+	}
+
+	if (flags & Effect::EFFECT_MODIFY_AMMO)
+	{
+		printf("Ammo pack!\n");
+		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
+		int magSize		= wp->getMagSize();
+		int currentAmmo = wp->getAmmo();
+		wp->setAmmo(currentAmmo + (magSize * WEAPON_AMMO_PACK_MODIFIER));
+	}
+}
+
+void Player::upgrade(Upgrade const & upgrade)
+{
+	long long flags = upgrade.getTranferEffects();
+
+	if (flags & Upgrade::UPGRADE_INCREASE_DMG)
+	{
+
 	}
 }
 

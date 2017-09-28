@@ -1,8 +1,6 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#include <Projectile\ProjectileManager.h>
-
 #pragma region ClassDesc
 		
 		/*
@@ -14,7 +12,10 @@
 
 #pragma endregion
 
+#include <Projectile\ProjectileManager.h>
 #include <Entity\Object.h>
+
+#define WEAPON_AMMO_PACK_MODIFIER 2.f
 
 namespace Logic
 {

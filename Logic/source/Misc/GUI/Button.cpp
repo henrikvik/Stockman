@@ -25,7 +25,7 @@ void Logic::Button::updateOnPress(int posX, int posY)
 	}
 }
 
-Graphics::ButtonInfo Logic::Button::getButtonInfo() const
+Graphics::ButtonInfo *Logic::Button::getButtonInfo()
 {
-	return this->buttonInfo;
+	return &this->buttonInfo;
 }
