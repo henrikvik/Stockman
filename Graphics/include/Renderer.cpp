@@ -400,25 +400,26 @@ namespace Graphics
         //moves the buttons to ndc space
         TriangleVertex triangleVertices[6] =
         {
-            2 *((float)((info->m_rek.x + info->m_rek.width )) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
+            2 *((float)((info->m_rek.x + info->m_rek.width )) / WIN_WIDTH) - 1, 2 * ((float)(WIN_HEIGHT - info->m_rek.y - info->m_rek.height) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
             1.0f, 1.0f,
 
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) -1 , 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v1
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) -1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v1
             0.0f, 1.0f,
 
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
             0.0f,  0.0f,
 
             //t2
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
             0.0f, 0.0f,
 
-            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
             1.0f, 0.0f,
 
-            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) -1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) -1 , 0.0f, //v0
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) -1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) -1 , 0.0f, //v0
             1.0f, 1.0f,
         };
+
         
         D3D11_MAPPED_SUBRESOURCE data = { 0 };
         ThrowIfFailed(deviceContext->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
