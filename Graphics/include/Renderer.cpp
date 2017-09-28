@@ -45,6 +45,7 @@ namespace Graphics
 
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         loadModellessTextures();
+        menuTexturesLoaded = true;
         createMenuVBS();
         createGUIBuffers();
         createBlendState();
@@ -57,8 +58,7 @@ namespace Graphics
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
 
-        SAFE_RELEASE(menuQuad);
-        SAFE_RELEASE(buttonQuad);
+        unloadMenuTextures();
         SAFE_RELEASE(buttonTexture);
         SAFE_RELEASE(menuTexture);
         SAFE_RELEASE(GUITexture1);
@@ -79,6 +79,7 @@ namespace Graphics
 
     void Renderer::render(Camera * camera)
     {
+        unloadMenuTextures();
 #if ANIMATION_HIJACK_RENDER
 
         renderQueue.clear();
@@ -253,6 +254,29 @@ namespace Graphics
  //  
     //}
 
+
+    void Renderer::unloadMenuTextures()
+    {
+        if (menuTexturesLoaded == true)
+        {
+            SAFE_RELEASE(buttonTexture);
+            SAFE_RELEASE(menuTexture);
+            buttonTexture = nullptr;
+            menuTexture = nullptr;
+            menuTexturesLoaded = false;
+        }
+        
+    }
+
+    void Renderer::reloadMenuTextures()
+    {
+        if (menuTexturesLoaded == false)
+        {
+            ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("menuTexture.png"), nullptr, &menuTexture));
+            ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("button.png"), nullptr, &buttonTexture));
+            menuTexturesLoaded = true;
+        }
+    }
 
     //loads the textures for menu and GUI
     void Renderer::loadModellessTextures()
@@ -431,6 +455,8 @@ namespace Graphics
     //draws the menu
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
+        reloadMenuTextures();
+
         //draws menu background
         float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         deviceContext->ClearRenderTargetView(backBuffer, clearColor);

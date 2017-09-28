@@ -61,6 +61,12 @@ namespace Graphics
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 
+        bool menuTexturesLoaded;
+        void unloadMenuTextures();
+        void reloadMenuTextures();
+
+        
+
         ///// SUPER TEMP
        
        
