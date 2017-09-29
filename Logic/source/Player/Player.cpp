@@ -131,6 +131,8 @@ void Player::updateSpecific(float deltaTime)
 		btTransform transform = getRigidbody()->getWorldTransform();
 		transform.setOrigin({0, 0, 0});
 		getRigidbody()->setWorldTransform(transform);
+		getRigidbody()->setLinearVelocity({ 0, 0, 0 });
+		m_moveDir = {0, 0, 0};
 		m_moveSpeed = 0.f;
 	}
 
