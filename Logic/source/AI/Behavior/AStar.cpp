@@ -15,8 +15,9 @@ AStar::~AStar()
 
 }
 
+// returns nothing if on same triangle or an error occured
 std::vector<const DirectX::SimpleMath::Vector3*>
-	AStar::getNextNode(Entity const &enemy, Entity const &target)
+	AStar::getPath(Entity const &enemy, Entity const &target)
 {
 	// all nodes in navMesh
 	std::vector<DirectX::SimpleMath::Vector3> nodes =
@@ -41,7 +42,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 
 	// test special cases
 	if (startIndex == endIndex || startIndex == -1 || endIndex == -1)
-		return { &target.getPosition() };
+		return { };
 
 	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[endIndex]);
 	navNodes[startIndex].explored = true;
@@ -102,7 +103,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	{
 		printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
 			"Lukas or something (AStar.cpp:%d)\n", __LINE__);
-		return { &target.getPosition() };
+		return { };
 	}
 
 	return reconstructPath(currentNode);
@@ -118,7 +119,6 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 	{
 		list.push(&(navigationMesh.getNodes()[endNode->nodeIndex]));
 		endNode = &navNodes[endNode->parent];
-		printf("next: %d", endNode->parent);
 	}
 
 	while (!list.empty())

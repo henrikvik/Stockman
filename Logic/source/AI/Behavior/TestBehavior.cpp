@@ -13,20 +13,24 @@ TestBehavior::~TestBehavior()
 
 void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
 {
-	if (path.empty() || currentNode == path.size() - 1)
+	if (path.empty() || currentNode == path.size())
 	{
-		path = AStar::singleton().getNextNode(enemy, player);
+		path = AStar::singleton().getPath(enemy, player);
 		currentNode = 0;
 	}
 
-	const DirectX::SimpleMath::Vector3 *vec = path[currentNode];
-
-	btVector3 node = { vec->x, vec->y, vec->z };
+	btVector3 node;
+	if (path.empty())
+		node = player.getPositionBT();
+	else {
+		const DirectX::SimpleMath::Vector3 *vec = path[currentNode];
+		node = { vec->x, vec->y, vec->z };
+	}
 	btVector3 dir = node - enemy.getPositionBT();
 
 	dir = dir.normalize();
 	dir *= deltaTime / 1000.f;
-	dir *= 400;
+	dir *= 65;
 
 	if (enemy.getHealth() < 5)
 	{
@@ -37,6 +41,6 @@ void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
 		enemy.getRigidbody()->translate(dir);
 	}
 
-	if ((*vec - enemy.getPosition()).Length() < 2)
+	if ((node - enemy.getPositionBT()).length() < 0.8f)
 		currentNode++;
 }
