@@ -264,7 +264,7 @@ btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
 
 	// Specifics
 	body->setRestitution(0.0f);
-	body->setFriction(1.f);
+	body->setFriction(0.f);
 	body->setSleepingThresholds(0, 0);
 	body->setDamping(0.0f, 0.0f);
 
