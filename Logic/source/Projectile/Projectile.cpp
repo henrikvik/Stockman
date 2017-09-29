@@ -32,6 +32,7 @@ Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, Projectil
 	m_gravityModifier = pData.gravityModifier;
 	m_ttl = pData.ttl;
 	m_remove = false;
+	m_type = pData.type;
 	setModelID(pData.meshID);
 
 	switch (pData.type)
@@ -84,6 +85,7 @@ void Projectile::upgrade(Upgrade const &upgrade)
 	}
 }
 
+ProjectileType Projectile::getType() const { return m_type; }
 float Projectile::getDamage() const { return m_damage; }
 float Projectile::getSpeed() const { return m_speed; }
 float Projectile::getGravityModifier() const { return m_gravityModifier; }

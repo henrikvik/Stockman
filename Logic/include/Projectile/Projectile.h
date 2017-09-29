@@ -22,6 +22,7 @@ namespace Logic
 		void onCollision(Entity& other);
 		void upgrade(Upgrade const &upgrade);
 
+		ProjectileType getType() const;
 		float getDamage() const;
 		float getSpeed() const;
 		float getGravityModifier() const;
@@ -34,6 +35,7 @@ namespace Logic
 		bool shouldRemove() const;
 
 	private:
+		ProjectileType m_type;
 		float m_damage;
 		float m_speed;
 		float m_gravityModifier;
