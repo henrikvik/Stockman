@@ -23,7 +23,7 @@ namespace Graphics
 		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
         , menuShader(gDevice, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
-        , GUIShader(gDevice, SHADER_PATH("GUIShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA }, {"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA} })
+        , GUIShader(gDevice, SHADER_PATH("GUIShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } , {"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA} })
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
         , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
         , instanceOffsetBuffer(gDevice)
@@ -389,7 +389,7 @@ namespace Graphics
     void Renderer::drawGUI()
     {
      
-        UINT stride = 12, offset = 0;
+        UINT stride = 20, offset = 0;
         deviceContext->IASetVertexBuffers(0, 1, &GUIvb, &stride, &offset);
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         deviceContext->IASetInputLayout(GUIShader);
@@ -494,16 +494,28 @@ namespace Graphics
         struct GUI
         {
             DirectX::SimpleMath::Vector2 verts;
+            DirectX::SimpleMath::Vector2 uv;
             UINT element;
         };
 
         GUI GUIquad[12];
         GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.05f, -0.05f };
+        GUIquad[0].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
         GUIquad[1].verts = DirectX::SimpleMath::Vector2{ -0.05f, 0.05f };
+        GUIquad[1].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
         GUIquad[2].verts = DirectX::SimpleMath::Vector2{ 0.05f, -0.05f };
+        GUIquad[2].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
         GUIquad[3].verts = DirectX::SimpleMath::Vector2{ 0.05f, 0.05f };
+        GUIquad[3].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
         GUIquad[4].verts = GUIquad[2].verts;
+        GUIquad[4].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
         GUIquad[5].verts = GUIquad[1].verts;
+        GUIquad[5].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
         GUIquad[0].element = 0;
         GUIquad[1].element = 0;
@@ -514,11 +526,22 @@ namespace Graphics
 
 
         GUIquad[6].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
+        GUIquad[6].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
         GUIquad[7].verts = DirectX::SimpleMath::Vector2{ -1.0f, -0.8f };
-        GUIquad[8].verts = DirectX::SimpleMath::Vector2{ -0.7f, -1.0f };
-        GUIquad[9].verts = DirectX::SimpleMath::Vector2{ -0.7f, -0.8f };
+        GUIquad[7].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+        GUIquad[8].verts = DirectX::SimpleMath::Vector2{ -0.8f, -1.0f };
+        GUIquad[8].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+        GUIquad[9].verts = DirectX::SimpleMath::Vector2{ -0.8f, -0.8f };
+        GUIquad[9].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
         GUIquad[10].verts = GUIquad[8].verts;
+        GUIquad[10].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
         GUIquad[11].verts = GUIquad[7].verts;
+        GUIquad[11].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
         GUIquad[6].element = 1;
         GUIquad[7].element = 1;
