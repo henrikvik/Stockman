@@ -26,10 +26,49 @@ void Map::initProps()
 
 void Map::initHitboxes(Physics* physics)
 {
-	Entity* infinite = new Entity(physics->createBody(Plane({ 0, 1, 0 }), 0, false), btVector3(1000, 0.0001, 1000), Graphics::CUBE); 
-    m_hitboxes.push_back(infinite);
+	Entity* infinite = new Entity(physics->createBody(Plane({ 0, 1, 0 }), 0, false), btVector3(1000, 0.0001, 1000), Graphics::CUBE);
+	m_hitboxes.push_back(infinite);
 	//Entity* secondinfinite = new Entity(physics->createBody(Plane({ 0, 0, 1 }), 0, false), btVector3(1000, 0.0001, 1000));
 	//m_hitboxes.push_back(secondinfinite);
+
+	Entity* house;
+
+	house = new Entity(physics->createBody(Cube({ 60, 0.75, 60 }, { 0, 0, 0 }, { 45, 0.75, 45 }), 0.f, false), { 45, 1.5f, 45 });
+	m_hitboxes.push_back(house);
+	
+	house = new Entity(physics->createBody(Cube({ 45, 1.5f, 45 }, { 0, 0, 0 }, { 10, 1.5f, 10 }), 0.f, false), { 10, 1.5f, 10 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 60, 2, 60 }, { 0, 0, 0 }, { 10, 2, 10 }), 0.f, false), { 10, 2, 10 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 80, 3, 80 }, { 0, 0, 0 }, { 15, 3, 15 }), 0.f, false), { 15, 3, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 50, 1, 80 }, { 0, 90, 90 }, { 15, 3, 15 }), 0.f, false), { 15, 3, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 80, 1, 40 }, { 40, -90, -90 }, { 15, 3, 15 }), 0.f, false), { 15, 3, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 120, 1, 180 }, { 40, 0, -90 }, { 60, 10, 45 }), 0.f, false), { 60, 10, 45 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 125, 5, 100 }, { 0, 0, 0 }, { 15, 5, 15 }), 0.f, false), { 15, 5, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 100, 4, 100 }, { 0, 0, 0 }, { 15, 4, 15 }), 0.f, false), { 15, 4, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 120, 4, 60 }, { 0, 0, 0 }, { 15, 4, 15 }), 0.f, false), { 15, 4, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 130, 4, 110 }, { 45, 0, 45 }, { 15, 4, 15 }), 0.f, false), { 15, 4, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 150, 6, 150 }, { 0, 0, 0 }, { 40, 6, 40 }), 0.f, false), { 40, 6, 40 });
+	m_hitboxes.push_back(house);
+
 }
 
 void Map::initObjects(Physics * physics)

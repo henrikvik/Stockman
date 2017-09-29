@@ -443,7 +443,6 @@ namespace Graphics
             1.0f, 1.0f,
         };
 
-        
         D3D11_MAPPED_SUBRESOURCE data = { 0 };
         ThrowIfFailed(deviceContext->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
         memcpy(data.pData, triangleVertices, sizeof(TriangleVertex) * 6);
