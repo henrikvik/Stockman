@@ -10,18 +10,20 @@
 #pragma endregion
 
 #include <Player\Skill\Skill.h>
-#include <Misc\GameTime.h>
+#include <Projectile\ProjectileManager.h>
 
 #define BULLET_TIME_CD 2500.f
+#define BULLET_TIME_DURATION 5000.f
 
 namespace Logic
 {
 	class SkillBulletTime : public Skill
 	{
 	private:
-		GameTime* m_gameTime;
+		ProjectileData m_projectileData;
+		ProjectileManager* m_projectileManager;
 	public:
-		SkillBulletTime(float cooldown, GameTime* gameTime);
+		SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData);
 
 		void onUse(btVector3 forward, Entity& shooter);
 		void onUpdate(float deltaTime);
