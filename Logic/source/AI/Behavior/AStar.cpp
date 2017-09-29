@@ -32,7 +32,8 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	}
 
 	// openlist and a test offset
-	std::priority_queue<NavNode*> openList;
+	auto comp = [](NavNode *fir, NavNode *sec) { return *fir > *sec; };
+	std::priority_queue<NavNode*, std::vector<NavNode*>, decltype(comp)> openList(comp);
 	DirectX::SimpleMath::Vector3 offset(0, 5, 0);
 
 	// get indicies
@@ -74,7 +75,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 				explore->explored = true;
 
 				explore->g = f;
-				explore->h = heuristic(nodes[index], nodes[endIndex]);
+				explore->h = heuristic(nodes[index], nodes[endIndex]) * 0.1;
 
 				explore->parent = currentNode->nodeIndex;
 				openList.push(explore);
@@ -126,6 +127,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 		ret.push_back(list.top());
 		list.pop();
 	}
+	printf("nodes: %d\n", list.size());
 
 	return ret;
 }
@@ -140,11 +142,16 @@ void AStar::generateNavigationMesh()
 	PASVF pasvf;
 	pasvf.generateNavMesh(navigationMesh, {}, {});
 	navigationMesh.createNodesFromTriangles();
-	// test
-	for (size_t i = 0; i < navigationMesh.getEdges().size() - 1; i++)
+	// test //
+	for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
 	{
 		navigationMesh.addEdge(i, i + 1);
 		navigationMesh.addEdge(i + 1, i);
+	}
+	for (size_t i = 0; i < navigationMesh.getNodes().size() - 6; i++)
+	{
+	//	navigationMesh.addEdge(i, i + 6);
+	//	navigationMesh.addEdge(i + 6, i);
 	}
 
 	navNodes.clear();
