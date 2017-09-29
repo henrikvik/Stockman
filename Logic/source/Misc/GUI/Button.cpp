@@ -11,8 +11,8 @@ Logic::Button::~Button()
 void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float height, float width, std::string texture, std::function<void(void)> callBack)
 {
 	buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(pos.x, pos.y, width, height);
-	m_animationStart = DirectX::SimpleMath::Vector2(200, pos.y);
-	m_animationEnd = DirectX::SimpleMath::Vector2(-200, pos.y);
+	m_animationStart = DirectX::SimpleMath::Vector2(pos.x, pos.y);
+	m_animationEnd = DirectX::SimpleMath::Vector2(0 - width, pos.y);
 	m_animationTime = 0;
 	buttonInfo.m_texCoordStart = texCoordStart;
 	buttonInfo.m_texCoordEnd = texCoordEnd;
