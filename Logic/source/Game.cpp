@@ -29,7 +29,7 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(m_physics->createBody(Cylinder(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
+	m_player = new Player(m_physics->createBody(Capsule(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA.x(), PLAYER_START_SCA.y()), 75.f), PLAYER_START_SCA);
 	m_player->init(m_projectileManager, &m_gameTime);
 
 	// Initializing Menu's
