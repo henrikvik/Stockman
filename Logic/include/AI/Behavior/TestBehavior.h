@@ -1,15 +1,14 @@
 #ifndef TEST_BEHAVIOR_H
 #define TEST_BEHAVIOR_H
 
-#include "Behavior.h"
+#include "Behavior.h" 
 
 namespace Logic 
 {
 	class TestBehavior : public Behavior
 	{
 	private:
-		std::vector<const DirectX::SimpleMath::Vector3*> path;
-		int currentNode;
+		SimplePathing m_path;
 	public:
 		TestBehavior();
 		virtual ~TestBehavior();
