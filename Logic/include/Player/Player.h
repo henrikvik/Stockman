@@ -110,6 +110,9 @@ namespace Logic
 		void saveToFile();
 		void readFromFile();
 
+		float getMoveSpeed() const;
+		void setMoveSpeed(float speed);
+		void setMoveDirection(btVector3 moveDir);
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 	};

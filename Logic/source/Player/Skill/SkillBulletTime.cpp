@@ -2,16 +2,16 @@
 
 using namespace Logic;
 
-SkillBulletTime::SkillBulletTime(float cooldown, GameTime * gameTime)
-: Skill(cooldown)
+SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData)
+: Skill(BULLET_TIME_CD)
 {
-	m_gameTime = gameTime;
+	m_projectileData = pData;
+	m_projectileManager = projectileManager;
 }
 
-void SkillBulletTime::onUse()
+void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
 	printf("Bullet Time used.\n");
-	m_gameTime->slowMotion(0.40f, 5000.f);
 }
 
 void SkillBulletTime::onUpdate(float deltaTime)

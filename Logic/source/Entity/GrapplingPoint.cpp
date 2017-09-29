@@ -55,14 +55,32 @@ void GrapplingPoint::onCollision(Entity& other)
 {
 	if (Projectile* p = dynamic_cast<Projectile*>(&other))
 	{
+		if (p->getType() != ProjectileType::ProjectileTypeGrappling)
+			return;
+
 		btRigidBody* playerBody = m_playerPtr->getRigidbody();
 		btVector3 playerPos = m_playerPtr->getPositionBT();
 		btVector3 pointPos = getPositionBT();
 
 		const btRigidBody* intersectedBody = m_physicsPtr->checkRayIntersect(Ray(pointPos, playerPos));
-		if (intersectedBody == playerBody)
+		if (intersectedBody == p->getRigidbody() || intersectedBody == playerBody)
 		{
-			playerBody->translate(pointPos - playerPos);
+			btVector3 dir = pointPos - playerPos;
+			btVector3 dirY(NULL, GP_POWER * dir.y(), NULL);
+
+			playerBody->applyCentralImpulse({ dir * GP_POWER });
+			if (m_playerPtr->getMoveSpeed() < 0.001f)
+			{
+				m_playerPtr->setMoveSpeed(0.02f);
+			}
+			else
+			{
+				m_playerPtr->setMoveSpeed(m_playerPtr->getMoveSpeed() * 1.05f);
+			}
+
+			dir.normalize();
+			btVector3 dirXZ(dir.x(), 0.f, dir.z());
+			m_playerPtr->setMoveDirection({ dir.x(), NULL, dir.z() });
 		}
 		else if (intersectedBody == p->getRigidbody())
 		{

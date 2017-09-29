@@ -25,10 +25,10 @@ namespace Logic
 		ProjectileData m_projectileData;
 		ProjectileManager* m_projectileManager;
 	public:
-		SkillShieldCharge(float cooldown, float duration, ProjectileManager* projectileManager, ProjectileData projectileData);
+		SkillShieldCharge(ProjectileManager* projectileManager, ProjectileData projectileData);
 		~SkillShieldCharge();
 
-		void onUse();
+		void onUse(btVector3 forward, Entity& shooter);
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 	};

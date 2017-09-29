@@ -30,6 +30,9 @@
 #define GP_INVIS_MASS			0.f					// Should be kept at zero
 #define GP_INVIS_DEFAULT_RADIUS 1.f					// If the grapplingpoint is not created as a sphere, should not be used if created properly
 
+#define GP_POWER				55.f				// The amount of power of the impulse when hit
+#define GP_ACC					1.05f				// Amount of accerliraction on each hit
+
 namespace Logic
 {
 	class Player;
