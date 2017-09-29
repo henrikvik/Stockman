@@ -9,7 +9,7 @@ SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, Projectil
 	m_projectileManager = projectileManager;
 }
 
-void SkillBulletTime::onUse()
+void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
 	printf("Bullet Time used.\n");
 }

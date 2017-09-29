@@ -165,7 +165,7 @@ void Player::updateSpecific(float deltaTime)
 	{
 		// Skill
 		if (ks.IsKeyDown(m_useSkill))
-			m_skillManager.useSkill();
+			m_skillManager.useSkill(getForwardBT(), *this);
 
 		// Primary and secondary attack
 		if (!m_weaponManager.isAttacking())

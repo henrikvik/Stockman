@@ -14,9 +14,10 @@ SkillGrapplingHook::~SkillGrapplingHook()
 	m_projectileManager = nullptr;
 }
 
-void SkillGrapplingHook::onUse()
+void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 {
 	printf("Used Grappling Hook.\n");
+	m_projectileManager->addProjectile(m_projectileData, shooter.getPositionBT(), forward, shooter);
 }
 
 void SkillGrapplingHook::onUpdate(float deltaTime)

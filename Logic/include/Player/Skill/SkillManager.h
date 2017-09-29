@@ -31,7 +31,7 @@ namespace Logic
 
 		void switchToSkill(int index);
 
-		void useSkill();
+		void useSkill(btVector3 forward, Entity& shooter);
 		void update(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 	
