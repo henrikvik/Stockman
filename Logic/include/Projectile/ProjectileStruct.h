@@ -11,6 +11,7 @@ namespace Logic
 		ProjectileTypeGrappling,
 		ProjectileTypeMelee,
 		ProjectileTypeShield,
+		ProjectileTypeBulletTime,
 		ProjectileTypeIce
 	};
 

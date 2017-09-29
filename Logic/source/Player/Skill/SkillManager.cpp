@@ -25,9 +25,9 @@ void SkillManager::init(ProjectileManager* projectileManager, GameTime* gameTime
 {
 	m_allSkills =
 	{
-		{ new SkillBulletTime(BULLET_TIME_CD, gameTime) },
-		{ new SkillGrapplingHook(50.f, projectileManager, ProjectileData(0, 1, 1, 100, 0, 3000, Graphics::ModelID::SPHERE, 1)) },
-		{ new SkillShieldCharge(SHIELD_CHARGE_CD, SHIELD_CHARGE_DURATION, projectileManager, ProjectileData(0, 1, 0, 0, 0, 3000, Graphics::ModelID::CUBE, 1)) }
+		{ /*new SkillBulletTime(BULLET_TIME_CD, gameTime)*/ new SkillBulletTime(projectileManager, ProjectileData(0, 1, 1, 100, 0, BULLET_TIME_DURATION, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeBulletTime)) },
+		{ new SkillGrapplingHook(50.f, projectileManager, ProjectileData(0, 1, 1, 100, 0, 3000, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeGrappling)) },
+		{ new SkillShieldCharge(projectileManager, ProjectileData(0, 1, 0, 0, 0, 3000, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeShield)) }
 	};
 
 

@@ -25,7 +25,7 @@ namespace Logic
 		ProjectileData m_projectileData;
 		ProjectileManager* m_projectileManager;
 	public:
-		SkillShieldCharge(float cooldown, float duration, ProjectileManager* projectileManager, ProjectileData projectileData);
+		SkillShieldCharge(ProjectileManager* projectileManager, ProjectileData projectileData);
 		~SkillShieldCharge();
 
 		void onUse();

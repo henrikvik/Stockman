@@ -2,8 +2,8 @@
 
 using namespace Logic;
 
-SkillShieldCharge::SkillShieldCharge(float cooldown, float duration, ProjectileManager * projectileManager, ProjectileData projectileData)
-: Skill(cooldown, duration)
+SkillShieldCharge::SkillShieldCharge(ProjectileManager * projectileManager, ProjectileData projectileData)
+: Skill(SHIELD_CHARGE_CD, SHIELD_CHARGE_DURATION)
 {
 	m_projectileManager = projectileManager;
 	m_projectileData = projectileData;
