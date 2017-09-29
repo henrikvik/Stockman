@@ -2,8 +2,8 @@
 
 using namespace Logic;
 
-SkillGrapplingHook::SkillGrapplingHook(float cooldown, ProjectileManager * projectileManager, ProjectileData projectileData)
-: Skill(cooldown)
+SkillGrapplingHook::SkillGrapplingHook(ProjectileManager * projectileManager, ProjectileData projectileData)
+: Skill(GRAPPLING_HOOK_CD)
 {
 	m_projectileManager = projectileManager;
 	m_projectileData = projectileData;
@@ -16,7 +16,6 @@ SkillGrapplingHook::~SkillGrapplingHook()
 
 void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 {
-	printf("Used Grappling Hook.\n");
 	m_projectileManager->addProjectile(m_projectileData, shooter.getPositionBT(), forward, shooter);
 }
 

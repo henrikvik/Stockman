@@ -391,7 +391,22 @@ void Player::render(Graphics::Renderer & renderer)
 	m_weaponManager.render(renderer);
 }
 
-btVector3 Logic::Player::getForwardBT()
+float Logic::Player::getMoveSpeed() const
+{
+	return m_moveSpeed;
+}
+
+void Player::setMoveSpeed(float speed)
+{
+	m_moveSpeed = speed;
+}
+
+void Player::setMoveDirection(btVector3 moveDir)
+{
+	m_moveDir = moveDir;
+}
+
+btVector3 Player::getForwardBT()
 {
 	return btVector3(m_forward.x, m_forward.y, m_forward.z);
 }

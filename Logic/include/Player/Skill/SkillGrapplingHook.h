@@ -13,6 +13,8 @@
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
 
+#define GRAPPLING_HOOK_CD 1000.f
+
 namespace Logic
 {
 	class SkillGrapplingHook : public Skill
@@ -22,7 +24,7 @@ namespace Logic
 		ProjectileManager* m_projectileManager;
 
 	public:
-		SkillGrapplingHook(float cooldown, ProjectileManager* projectileManager, ProjectileData projectileData);
+		SkillGrapplingHook(ProjectileManager* projectileManager, ProjectileData projectileData);
 		~SkillGrapplingHook();
 
 		void onUse(btVector3 forward, Entity& shooter);
