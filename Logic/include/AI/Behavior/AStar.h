@@ -28,7 +28,6 @@ namespace Logic
 				int nodeIndex, parent; // index in nav mesh
 				float h, g; // cost to node
 
-				// remove later, this is unused at the moment
 				bool operator<(NavNode const &other) const {
 					return g + h < other.g + other.h;
 				}

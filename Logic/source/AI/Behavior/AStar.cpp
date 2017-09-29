@@ -38,7 +38,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	// get indicies
 	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset),
 		endIndex = navigationMesh.getIndex(target.getPosition() + offset);
-	printf("StartIndex: %d, End index: %d (AStar.cpp:%d)\n", startIndex, endIndex, __LINE__);
+	// printf("StartIndex: %d, End index: %d (AStar.cpp:%d)\n", startIndex, endIndex, __LINE__);
 
 	// test special cases
 	if (startIndex == endIndex || startIndex == -1 || endIndex == -1)
