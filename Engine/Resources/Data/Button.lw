@@ -1,0 +1,55 @@
+{
+	"buttonName" : "MenuMainButton1";
+	"texture" : "b";
+	"xPos" : 400.0f;
+	"yPos" : 300.0f;
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+	"height" : 100.0f;
+	"width" : 450.0f;
+	"function" : "buttonClick0";
+}
+
+{
+	"buttonName" : "MenuSettingsButton1";
+	"texture" : "bl";
+	"xPos" : 400.0f;
+	"yPos" : 300.0f;
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+	"height" : 200.0f;
+	"width" : 200.0f;
+	"function" : "buttonClick1";
+}
+
+{
+	"buttonName" : "GameButton1";
+	"texture" : "bla";
+	"xPos" : 400.0f;
+	"yPos" : 300.0f;
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+	"height" : 200.0f;
+	"width" : 200.0f;
+	"function" : "buttonClick2";
+}
+
+{
+	"buttonName" : "GameOverButton1";
+	"texture" : "bla";
+	"xPos" : 400.0f;
+	"yPos" : 300.0f;
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+	"height" : 200.0f;
+	"width" : 200.0f;
+	"function" : "buttonClick3";
+}
