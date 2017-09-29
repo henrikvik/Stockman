@@ -4,6 +4,7 @@ using namespace Logic;
 
 EnemyTest::EnemyTest(btRigidBody* body, btVector3 halfExtent)
 : Enemy(body, halfExtent, 10, 5, 3, 1) { //just test values
+	setBehavior(TEST);
 }
 
 
@@ -37,7 +38,7 @@ void EnemyTest::onCollision(Player& other)
 
 void EnemyTest::updateSpecific(Player const &player, float deltaTime)
 {
-	// use the behavoiur to use shareable move patterns
+	// use the behavior to use shareable patterns
 }
 
 void EnemyTest::updateDead(float deltaTime)

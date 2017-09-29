@@ -26,20 +26,40 @@ PASVF::~PASVF()
 // THIS SHOULD ONLY BE CALLED OFFLINE AND THEN SAVED TO A FILE (TODO)
 void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, std::vector<std::vector<Triangle>> objects) const
 {
+#define T 40
 	std::vector<Triangle> moveableTerrain;
 	DirectX::SimpleMath::Vector3 up = { 0, 1, 0 };
-	float normalDotMax = 0.3f;
+	float normalDotMin = 0.6f;
+
+	// TEST DATA
+	Triangle t;
+
+	for (int x = -3; x < 3; x++)
+	{
+		for (int z = -3; z < 3; z++)
+		{
+			t.vertices[0] = DirectX::SimpleMath::Vector3(T * x, 0, T * z);
+			t.vertices[1] = DirectX::SimpleMath::Vector3(T * (x + 1), 0, T * (z + 1));
+			t.vertices[2] = DirectX::SimpleMath::Vector3(T * x, 0, T * (z + 1));
+			terrain.push_back(t);
+
+			t.vertices[1] = DirectX::SimpleMath::Vector3(T * (x + 1), 0, T * z);
+			t.vertices[2] = DirectX::SimpleMath::Vector3(T * (x + 1), 0, T * (z + 1));
+			terrain.push_back(t);
+		}
+	}
 
 	// part 1 of the generation, make terrain into a "walkable" terrain map
 	for (auto &triangle : terrain)
 	{
 		triangle.normal = getNormal(triangle);
-		if (abs(triangle.normal.Dot(up)) < normalDotMax)
+		triangle.normal.Normalize();
+		if (abs(triangle.normal.Dot(up)) > normalDotMin)
 			moveableTerrain.push_back(triangle); // if triangle is too steep, enemy wont be able to go up it
 	}
 
 	// part 2, use the objects break the moveable terrain
-
+	
 
 	// part ??? of the generation, add it to the nav mesh because it is done :)
 	for (auto &triangle : moveableTerrain) 
@@ -62,7 +82,7 @@ inline DirectX::SimpleMath::Vector3 PASVF::getNormal(Triangle const & triangle,
 	if (vertexOrder == CLOCKWISE) {
 		return getLine(triangle.vertices[0], triangle.vertices[1]).Cross(getLine(triangle.vertices[0], triangle.vertices[2]));
 	}
-	else if (vertexOrder == COUNTER_CLOCKWISE) 
+	else if (vertexOrder == COUNTER_CLOCKWISE)
 	{
 		return getLine(triangle.vertices[0], triangle.vertices[2]).Cross(getLine(triangle.vertices[0], triangle.vertices[1]));
 	}

@@ -281,7 +281,7 @@ int Engine::run()
         
         ///////////////////////////////////
 
-        if (game.getState() != 2)
+        if (game.getState() == Logic::gameStateGame)
         {
             renderer->queueRender(&staticCube);
             renderer->queueRender(&staticSphere);

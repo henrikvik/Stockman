@@ -27,6 +27,7 @@ void Logic::MenuMachine::initialize(GameState state)
 	functions["buttonClick0"] = std::bind(&MenuMachine::buttonClick0, this);
 	functions["buttonClick1"] = std::bind(&MenuMachine::buttonClick1, this);
 	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
+	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick2, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -77,6 +78,8 @@ void Logic::MenuMachine::initialize(GameState state)
 		}
 	}
 
+	stateToBe = gameStateDefault;
+
 	showMenu(state);
 }
 
@@ -85,7 +88,7 @@ void Logic::MenuMachine::clear()
 	currentActiveMenu = nullptr;
 }
 
-void Logic::MenuMachine::update()
+void Logic::MenuMachine::update(float dt)
 {
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
@@ -99,6 +102,27 @@ void Logic::MenuMachine::update()
 		pressed = false;
 
 	}
+
+	if (stateToBe != gameStateDefault) //change form magic value
+	{
+		if (forward)
+		{
+			if (currentActiveMenu->animationTransition(dt, 500, forward))
+			{
+				showMenu(stateToBe);
+				forward = false;
+			}
+		}
+		else
+		{
+			if (currentActiveMenu->animationTransition(dt, 500, forward))
+			{
+				stateToBe = gameStateDefault;
+				forward = true;
+			}
+		}
+	}
+
 }
 
 void Logic::MenuMachine::render(Graphics::Renderer & renderer)
@@ -132,18 +156,23 @@ GameState Logic::MenuMachine::currentState()
 
 void Logic::MenuMachine::buttonClick0()
 {
-	showMenu(gameStateGame);
-	std::cout << "Left Trigger: Switched To Menu State 1";
+	stateToBe = gameStateGame;
+	std::cout << "Left Trigger: Switched To Menu State 0";
 }
 
 void Logic::MenuMachine::buttonClick1()
 {
-	showMenu(gameStateMenuSettings);
-	std::cout << "Left Trigger: Switched To Menu State 2";
+	stateToBe = gameStateMenuSettings;
+	std::cout << "Left Trigger: Switched To Menu State 3";
 }
 
 void Logic::MenuMachine::buttonClick2()
 {
-	showMenu(gameStateMenuMain);
-	std::cout << "Left Trigger: Switched To Menu State 0";
+	stateToBe = gameStateMenuMain;
+	std::cout << "Left Trigger: Switched To Menu State 2";
+}
+
+void Logic::MenuMachine::buttonClick3()
+{
+	exit(0);
 }
