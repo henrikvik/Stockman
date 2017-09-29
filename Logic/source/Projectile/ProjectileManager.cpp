@@ -16,16 +16,16 @@ void ProjectileManager::clear()
 	m_projectiles.clear();
 }
 
-void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward)
+void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)
 {
 	// Create body
-	btRigidBody* body = m_physPtr->createBody(Sphere(position + (forward * 2), btVector3(), pData.scale), 10.f, false);
+	btRigidBody* body = m_physPtr->createBody(Cube(position + (forward * 2), btVector3(), { pData.scale, pData.scale, pData.scale }), pData.mass, false);
 	// Set gravity modifier
-	body->setGravity(btVector3(0, pData.gravityModifier, 0));
+	body->setGravity(pData.gravityModifier * m_physPtr->getGravity());
 	// Create projectile
 	Projectile* p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, pData);
 	// Start
-	p->start(forward);
+	p->start(forward, shooter.getStatusManager());
 
 	// Add to projectile list
 	m_projectiles.push_back(p);
