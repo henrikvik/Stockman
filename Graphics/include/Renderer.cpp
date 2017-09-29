@@ -57,10 +57,9 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
-
+        SAFE_RELEASE(menuQuad);
+        SAFE_RELEASE(buttonQuad);
         unloadMenuTextures();
-        SAFE_RELEASE(buttonTexture);
-        SAFE_RELEASE(menuTexture);
         SAFE_RELEASE(GUITexture1);
         SAFE_RELEASE(GUITexture2);
         resourceManager.release();
