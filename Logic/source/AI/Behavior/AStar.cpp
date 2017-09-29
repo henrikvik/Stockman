@@ -85,7 +85,6 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 			}
 		}
 
-		printf("test loop");
 		currentNode->onClosedList = true;
 	}
 
