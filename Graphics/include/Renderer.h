@@ -12,9 +12,10 @@
 #include "Resources\ResourceManager.h"
 #include "Resources\DepthStencil.h"
 #include "Resources\ResourceManager.h"
-#include "Resources\Shader.h"
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
+#include "Resources\ShaderResource.h"
+#include "PostProccessor.h";
 #include "SkyRenderer.h"
 
 #include <SpriteBatch.h>
@@ -40,6 +41,7 @@ namespace Graphics
         DepthStencil depthStencil;
 
 		SkyRenderer skyRenderer;
+		PostProcessor postProcessor;
 
 		LightGrid grid;
 		DirectX::CommonStates *states;
@@ -66,6 +68,10 @@ namespace Graphics
         void reloadMenuTextures();
 
         
+
+		ShaderResource fakeBackBuffer;
+		ShaderResource fakeBackBufferSwap;
+		ShaderResource glowMap;
 
         ///// SUPER TEMP
        
@@ -95,6 +101,9 @@ namespace Graphics
 
         void loadModellessTextures();
 
+		ID3D11ShaderResourceView * glowTest;
+
+       
         void cull();
         void writeInstanceData();
         void draw();

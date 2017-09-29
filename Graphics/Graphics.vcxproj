@@ -27,6 +27,7 @@
     <ClCompile Include="include\Camera.cpp" />
     <ClCompile Include="include\Lights\Sun.cpp" />
     <ClCompile Include="include\Lights\LightGrid.cpp" />
+    <ClCompile Include="include\PostProccessor.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
     <ClCompile Include="include\Resources\DepthStencil.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="include\Resources\MeshManager.cpp" />
     <ClCompile Include="include\Resources\ResourceManager.cpp" />
     <ClCompile Include="include\Resources\Shader.cpp" />
+    <ClCompile Include="include\Resources\ShaderResource.cpp" />
     <ClCompile Include="include\Resources\TextureManager.cpp" />
     <ClCompile Include="include\SkyRenderer.cpp" />
   </ItemGroup>
@@ -51,6 +53,7 @@
     <ClInclude Include="include\Graphics.h" />
     <ClInclude Include="include\Lights\Sun.h" />
     <ClInclude Include="include\Lights\LightGrid.h" />
+    <ClInclude Include="include\PostProccessor.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Resources\BRFImportHandler.h" />
     <ClInclude Include="include\Resources\DepthStencil.h" />
@@ -60,6 +63,7 @@
     <ClInclude Include="include\Resources\MeshManager.h" />
     <ClInclude Include="include\Resources\ResourceManager.h" />
     <ClInclude Include="include\Resources\Shader.h" />
+    <ClInclude Include="include\Resources\ShaderResource.h" />
     <ClInclude Include="include\Resources\TextureManager.h" />
     <ClInclude Include="include\SkyRenderer.h" />
     <ClInclude Include="include\Structs.h" />

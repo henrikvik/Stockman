@@ -34,8 +34,8 @@ namespace Logic
 		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		void switchWeapon(int weaponID);
-		void usePrimary(btVector3 position, float yaw, float pitch);
-		void useSecondary(btVector3 position, float yaw, float pitch);
+		void usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter);
+		void useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter);
 		void reloadWeapon();
 
 		bool isSwitching();

@@ -26,10 +26,49 @@ void Map::initProps()
 
 void Map::initHitboxes(Physics* physics)
 {
-	Entity* infinite = new Entity(physics->createBody(Plane({ 0, 1, 0 }), 0, false), btVector3(1000, 0.0001, 1000), Graphics::CUBE); 
-    m_hitboxes.push_back(infinite);
+	Entity* infinite = new Entity(physics->createBody(Plane({ 0, 1, 0 }), 0, false), btVector3(1000, 0.0001, 1000), Graphics::CUBE);
+	m_hitboxes.push_back(infinite);
 	//Entity* secondinfinite = new Entity(physics->createBody(Plane({ 0, 0, 1 }), 0, false), btVector3(1000, 0.0001, 1000));
 	//m_hitboxes.push_back(secondinfinite);
+
+	Entity* house;
+
+	house = new Entity(physics->createBody(Cube({ 60, 0.75, 60 }, { 0, 0, 0 }, { 45, 0.75, 45 }), 0.f, false), { 45, 1.5f, 45 });
+	m_hitboxes.push_back(house);
+	
+	house = new Entity(physics->createBody(Cube({ 45, 1.5f, 45 }, { 0, 0, 0 }, { 10, 1.5f, 10 }), 0.f, false), { 10, 1.5f, 10 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 60, 2, 60 }, { 0, 0, 0 }, { 10, 2, 10 }), 0.f, false), { 10, 2, 10 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 80, 3, 80 }, { 0, 0, 0 }, { 15, 3, 15 }), 0.f, false), { 15, 3, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 50, 1, 80 }, { 0, 90, 90 }, { 15, 3, 15 }), 0.f, false), { 15, 3, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 80, 1, 40 }, { 40, -90, -90 }, { 15, 3, 15 }), 0.f, false), { 15, 3, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 120, 1, 180 }, { 40, 0, -90 }, { 60, 10, 45 }), 0.f, false), { 60, 10, 45 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 125, 5, 100 }, { 0, 0, 0 }, { 15, 5, 15 }), 0.f, false), { 15, 5, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 100, 4, 100 }, { 0, 0, 0 }, { 15, 4, 15 }), 0.f, false), { 15, 4, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 120, 4, 60 }, { 0, 0, 0 }, { 15, 4, 15 }), 0.f, false), { 15, 4, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 130, 4, 110 }, { 45, 0, 45 }, { 15, 4, 15 }), 0.f, false), { 15, 4, 15 });
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Cube({ 150, 6, 150 }, { 0, 0, 0 }, { 40, 6, 40 }), 0.f, false), { 40, 6, 40 });
+	m_hitboxes.push_back(house);
+
 }
 
 void Map::initObjects(Physics * physics)
@@ -42,28 +81,29 @@ void Map::initObjects(Physics * physics)
 	}
 }
 
+// Create the grappling points (Need to be spheres for optimization)
 void Map::initGrapplingPoints(Physics * physics, Player* player)
 {
-	btVector3 halfextent(1.f, 1.f, 1.f);
-	GrapplingPoint* grappling = new GrapplingPoint(physics->createBody(Sphere({ -20, 20, 5 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	btVector3 halfextent(2.f, 2.f, 2.f);
+	GrapplingPoint* grappling = new GrapplingPoint(physics->createBody(Sphere({ -20, 20, 5 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -15, 40, -5 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -15, 40, -5 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -20, 60, 0 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -20, 60, 0 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -30, 73, -30 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -30, 73, -30 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -80, 73, -30 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -80, 73, -30 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -30, 73, -80 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -30, 73, -80 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -80, 73, -80 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -80, 73, -80 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
 }
@@ -93,6 +133,10 @@ void Map::update(float deltaTime)
 	// Updating interactable objects
 	for (size_t i = 0; i < m_objects.size(); i++)
 		m_objects[i]->update(deltaTime);
+
+	// Updating grappling hooks
+	for (size_t i = 0; i < m_grapplingPoints.size(); i++)
+		m_grapplingPoints[i]->update(deltaTime);
 }
 
 void Map::render(Graphics::Renderer& renderer)

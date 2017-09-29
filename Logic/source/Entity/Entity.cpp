@@ -72,12 +72,27 @@ StatusManager& Entity::getStatusManager()
 	return m_statusManager;
 }
 
+void Entity::setHalfExtent(btVector3 halfExtent)
+{
+	m_halfextent = halfExtent;
+}
+
+btVector3 Entity::getHalfExtent() const
+{
+	return m_halfextent;
+}
+
+void Entity::setStatusManager(StatusManager & statusManager)
+{
+	m_statusManager = statusManager;
+}
+
 DirectX::SimpleMath::Vector3 Entity::getPosition() const
 {
 	return DirectX::SimpleMath::Vector3(m_transform->getOrigin());
 }
 
-btVector3 Logic::Entity::getPositionBT() const
+btVector3 Entity::getPositionBT() const
 {
 	return m_transform->getOrigin();
 }

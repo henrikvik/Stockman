@@ -19,21 +19,25 @@
 namespace Graphics
 {
 
-	Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
-		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
-        , menuShader(gDevice, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
-        , GUIShader(gDevice, SHADER_PATH("GUIShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } , {"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA} })
-		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
-        , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
-        , instanceOffsetBuffer(gDevice)
-		, skyRenderer(gDevice, SHADOW_MAP_RESOLUTION)
+	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
+		: forwardPlus(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
+		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
+        , menuShader(device, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
+        , GUIShader(device, SHADER_PATH("GUIShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } , {"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA} })
+		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
+        , instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
+        , instanceOffsetBuffer(device)
+		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
+		, postProcessor(device, deviceContext)
+		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
+		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
+		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
 	{
-		this->device = gDevice;
-		this->deviceContext = gDeviceContext;
+		this->device = device;
+		this->deviceContext = deviceContext;
 		this->backBuffer = backBuffer;
-
-		initialize(gDevice, gDeviceContext);
+		
+		initialize(device, deviceContext);
 
         viewPort = { 0 };
         viewPort.Width = WIN_WIDTH;
@@ -62,6 +66,7 @@ namespace Graphics
         unloadMenuTextures();
         SAFE_RELEASE(GUITexture1);
         SAFE_RELEASE(GUITexture2);
+		SAFE_RELEASE(glowTest);
         resourceManager.release();
 
     }
@@ -69,6 +74,11 @@ namespace Graphics
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
     {
         resourceManager.initialize(gDevice, gDeviceContext);
+
+		//temp
+		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
+
+
     }
 
 	void Renderer::updateLight(float deltaTime, Camera * camera)
@@ -125,7 +135,6 @@ namespace Graphics
 #else
         cull();
         writeInstanceData();
-		
 
 		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
 		skyRenderer.drawShadows(deviceContext, &forwardPlus);
@@ -136,8 +145,11 @@ namespace Graphics
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 
-        static float clearColor[4] = { 0, 0.5, 0.7, 1 };
-        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+		static float clearColor[4] = { 0, 0.5, 0.7, 1 };
+		static float blackClearColor[4] = {0};
+		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
+		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
+		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
         deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 
@@ -212,12 +224,19 @@ namespace Graphics
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
 		deviceContext->VSSetConstantBuffers(2, 1, &lightBuffs[1]);
 
-		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+		ID3D11RenderTargetView * rtvs[] =
+		{
+			fakeBackBuffer,
+			glowMap
+		};
+		deviceContext->OMSetRenderTargets(2, rtvs, depthStencil);
 		
 		draw();
 		skyRenderer.renderSky(deviceContext, camera);
 
-        deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+		ID3D11RenderTargetView * rtvNULL[2] = {nullptr};
+
+        deviceContext->OMSetRenderTargets(2, rtvNULL, nullptr);
 
         ZeroMemory(SRVs, sizeof(SRVs));
         deviceContext->PSSetShaderResources(0, 4, SRVs);
@@ -230,6 +249,12 @@ namespace Graphics
         }
         drawGUI();
 #endif
+
+		///////Post effext
+		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+
+
+		drawToBackbuffer(fakeBackBufferSwap);
     }
 
 
@@ -350,11 +375,12 @@ namespace Graphics
             deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
             deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-            static ID3D11ShaderResourceView * modelTextures[3] = { nullptr };
+            static ID3D11ShaderResourceView * modelTextures[4] = { nullptr };
             modelTextures[0] = model.diffuseMap;
             modelTextures[1] = model.normalMap;
             modelTextures[2] = model.specularMap;
-            deviceContext->PSSetShaderResources(10, 3, modelTextures);
+			modelTextures[3] = glowTest;
+            deviceContext->PSSetShaderResources(10, 4, modelTextures);
 
             deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, 0);
 #endif
@@ -443,7 +469,6 @@ namespace Graphics
             1.0f, 1.0f,
         };
 
-        
         D3D11_MAPPED_SUBRESOURCE data = { 0 };
         ThrowIfFailed(deviceContext->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
         memcpy(data.pData, triangleVertices, sizeof(TriangleVertex) * 6);
