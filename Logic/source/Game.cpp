@@ -110,9 +110,8 @@ void Game::update(float deltaTime)
 
 	case gameStateLoading:
 	case gameStateMenuMain:
-        
 	case gameStateMenuSettings:
-	default: m_menu->update();
+	default: m_menu->update(m_gameTime.dt);
 		break;
 	}
 }
@@ -132,6 +131,9 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuMain:
         m_menu->render(renderer);
 	case gameStateMenuSettings:
+		m_menu->render(renderer);
+	case gameStateGameOver:
+		m_menu->render(renderer);
 	default: // m_menu->render(renderer);
 		break;
 	}

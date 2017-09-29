@@ -2,7 +2,7 @@
 #define BEHAVIOR_H
 
 #include <Player\Player.h>
-#include "AStar.h"
+#include "SimplePathing.h"
 
 namespace Logic {
 	class Enemy;
