@@ -10,14 +10,13 @@ Weapon::Weapon()
 	m_magSize			= -1;
 	m_magAmmo			= -1;
 	m_ammoConsumption	= -1;
-	m_damage			= -1;
 	m_attackRate		= -1;
 	m_freeze			= -1;
 	m_reloadTime		= -1;
 }
 
 Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-	int spreadH, int spreadV, float damage, float attackRate, float freeze, float reloadTime)
+	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime)
 {
 	m_projectileManager = projectileManager;
 	m_weaponID			= weaponID;
@@ -29,7 +28,6 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	m_projectileCount	= projectileCount;
 	m_spreadH			= spreadH;
 	m_spreadV			= spreadV;
-	m_damage			= damage;
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
@@ -52,7 +50,7 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	scale = DirectX::SimpleMath::Matrix::CreateScale(0.50f, 0.40f, 1.40f);
 }
 
-void Weapon::use(btVector3 position, float yaw, float pitch)
+void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
 	// Use weapon
 	if (m_spreadH != 0 || m_spreadV != 0)	// Spread
@@ -60,7 +58,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch)
 		for (int i = m_projectileCount; i--; )
 		{
 			btVector3 projectileDir = calcSpread(yaw, pitch);
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
 		}
 	}
 	else									// No spread
@@ -71,7 +69,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch)
 			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
 			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
 			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
 		}
 	}
 }

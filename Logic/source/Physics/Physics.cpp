@@ -136,7 +136,7 @@ btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 
 	// Specifics
 	body->setRestitution(0.0f);
-	body->setFriction(1.0f);
+	body->setFriction(1.f);
 	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
@@ -196,9 +196,8 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 
 	// Specifics
 	body->setRestitution(0.0f);
-	body->setFriction(1.f);
+	body->setFriction(0.f);
 	body->setSleepingThresholds(0, 0);	
-	body->setDamping(0.f, 0.f);
 
 	// Adding body to the world
 	this->addRigidBody(body);

@@ -42,28 +42,29 @@ void Map::initObjects(Physics * physics)
 	}
 }
 
+// Create the grappling points (Need to be spheres for optimization)
 void Map::initGrapplingPoints(Physics * physics, Player* player)
 {
-	btVector3 halfextent(1.f, 1.f, 1.f);
-	GrapplingPoint* grappling = new GrapplingPoint(physics->createBody(Sphere({ -20, 20, 5 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	btVector3 halfextent(2.f, 2.f, 2.f);
+	GrapplingPoint* grappling = new GrapplingPoint(physics->createBody(Sphere({ -20, 20, 5 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -15, 40, -5 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -15, 40, -5 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -20, 60, 0 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -20, 60, 0 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -30, 73, -30 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -30, 73, -30 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -80, 73, -30 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -80, 73, -30 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -30, 73, -80 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -30, 73, -80 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -80, 73, -80 }, { 0, 0, 0 }, 2.f), 0.f, true), halfextent, Graphics::SPHERE);
+	grappling = new GrapplingPoint(physics->createBody(Sphere({ -80, 73, -80 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
 	grappling->init(physics, player);
 	m_grapplingPoints.push_back(grappling);
 }
@@ -93,6 +94,10 @@ void Map::update(float deltaTime)
 	// Updating interactable objects
 	for (size_t i = 0; i < m_objects.size(); i++)
 		m_objects[i]->update(deltaTime);
+
+	// Updating grappling hooks
+	for (size_t i = 0; i < m_grapplingPoints.size(); i++)
+		m_grapplingPoints[i]->update(deltaTime);
 }
 
 void Map::render(Graphics::Renderer& renderer)

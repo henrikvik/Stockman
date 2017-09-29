@@ -21,8 +21,11 @@
 
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
 #define PLAYER_MOVEMENT_MAX_SPEED		0.02f
-#define PLAYER_MOVEMENT_ACCELERATION	0.001f
-#define PLAYER_MOVEMENT_AIRACCELERATION	0.0005f
+#define PLAYER_MOVEMENT_ACCELERATION	0.0002f
+#define PLAYER_MOVEMENT_AIRACCELERATION	0.005f
+#define PLAYER_MOVEMENT_AIRSTRAFE_SPEED 0.004f
+#define PLAYER_SPEED_LIMIT				0.05f
+#define PLAYER_STRAFE_ANGLE				0.95f
 #define PLAYER_JUMP_SPEED				70.f
 #define PLAYER_BHOP_TIMER				10.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
@@ -55,11 +58,11 @@ namespace Logic
 		float m_deacceleration;
 		float m_airAcceleration;
 		float m_jumpSpeed;
-		float m_moveDirForward;
-		float m_moveDirRight;
 
 		bool m_wishJump;
 		btVector3 m_wishDir;
+		float m_wishDirForward;
+		float m_wishDirRight;
 
 		// Mouse
 		float m_mouseSens;
@@ -107,6 +110,7 @@ namespace Logic
 		void saveToFile();
 		void readFromFile();
 
+		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 	};
 

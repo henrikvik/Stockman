@@ -10,14 +10,21 @@
 #pragma endregion
 
 #include <Player\Skill\Skill.h>
+#include <Projectile\ProjectileManager.h>
+#include <Projectile\ProjectileStruct.h>
 
 namespace Logic
 {
 	class SkillGrapplingHook : public Skill
 	{
 	private:
-		/*ProjectileData m_projectileData;*/
+		ProjectileData m_projectileData;
+		ProjectileManager* m_projectileManager;
+
 	public:
+		SkillGrapplingHook(float cooldown, ProjectileManager* projectileManager, ProjectileData projectileData);
+		~SkillGrapplingHook();
+
 		void onUse();
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
