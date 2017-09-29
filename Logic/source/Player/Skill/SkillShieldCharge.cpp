@@ -14,7 +14,7 @@ SkillShieldCharge::~SkillShieldCharge()
 	m_projectileManager = nullptr;
 }
 
-void SkillShieldCharge::onUse()
+void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
 	printf("Used Shield Charge.\n");
 }

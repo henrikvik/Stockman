@@ -23,7 +23,7 @@ namespace Logic
 	public:
 		SkillBulletTime(float cooldown, GameTime* gameTime);
 
-		void onUse();
+		void onUse(btVector3 forward, Entity& shooter);
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 	};

@@ -39,10 +39,10 @@ void SkillManager::switchToSkill(int index)
 	m_currentSkill = m_allSkills[index];
 }
 
-void SkillManager::useSkill()
+void SkillManager::useSkill(btVector3 forward, Entity& shooter)
 {
 	if (m_currentSkill)
-		m_currentSkill->use();
+		m_currentSkill->use(forward, shooter);
 }
 
 void SkillManager::update(float deltaTime)

@@ -8,7 +8,7 @@ SkillBulletTime::SkillBulletTime(float cooldown, GameTime * gameTime)
 	m_gameTime = gameTime;
 }
 
-void SkillBulletTime::onUse()
+void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
 	printf("Bullet Time used.\n");
 	m_gameTime->slowMotion(0.40f, 5000.f);
