@@ -9,6 +9,7 @@ namespace Logic
 	class Projectile : public Entity
 	{
 	public:
+
 		Projectile(btRigidBody* body, btVector3 halfExtent);
 		Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer, float ttl);
 		Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData);

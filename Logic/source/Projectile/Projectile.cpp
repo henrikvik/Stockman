@@ -32,7 +32,12 @@ Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, Projectil
 	m_gravityModifier = pData.gravityModifier;
 	m_ttl = pData.ttl;
 	m_remove = false;
-	this->setModelID(Graphics::ModelID::SPHERE);
+	setModelID(pData.meshID);
+
+	switch (pData.type)
+	{
+		// Do specifics 
+	}
 }
 
 Projectile::~Projectile() { }
