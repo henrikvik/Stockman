@@ -12,7 +12,8 @@ namespace Graphics
 {
     enum ModelID {
         CUBE,
-		SPHERE
+		SPHERE,
+        CROSSBOW
     };
 
 	struct ModelInfo

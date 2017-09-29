@@ -21,6 +21,7 @@ namespace Graphics
 
 		brfImporterHandler.loadFile(CUBE, MODEL_PATH_STR("kubfixadtextur.brf"), true, true, false, false);
 		brfImporterHandler.loadFile(SPHERE, MODEL_PATH_STR("sphere.brf"), true, true, false, false);
+        brfImporterHandler.loadFile(CROSSBOW, MODEL_PATH_STR("CrossBow.brf"), true, true, false, false);
 
 		//brfImporterHandler.loadFile(MODEL_PATH_STR("kub2.brf"), true, true, false, false);
     }

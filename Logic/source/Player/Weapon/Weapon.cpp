@@ -39,17 +39,19 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	// Weapon model - These are the constant matrices that moves the 
 	//					model a bit to the right and down & rotates a bit
 
+    this->setModelID(Graphics::ModelID::CROSSBOW);
 	// Pointing the gun upwards
-	rotX = DirectX::SimpleMath::Matrix::CreateRotationX(20.f * (3.14 / 180));
+	rotX = DirectX::SimpleMath::Matrix::CreateRotationX(50.f * (3.14 / 180));
 
 	// Tilting the gun to the middle
-	rotY = DirectX::SimpleMath::Matrix::CreateRotationY(10.f * (3.14 / 180));
+	rotY = DirectX::SimpleMath::Matrix::CreateRotationY(0.f * (3.14 / 180));
 
 	// Moving the model down to the right
-	trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
+	//trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
+    trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0, -7.0f, -10.f));
 
 	// Scaling the model by making it thinner and longer
-	scale = DirectX::SimpleMath::Matrix::CreateScale(0.50f, 0.40f, 1.40f);
+	scale = DirectX::SimpleMath::Matrix::CreateScale(0.05f, 0.05f, 0.05f);
 }
 
 void Weapon::use(btVector3 position, float yaw, float pitch)
@@ -103,7 +105,7 @@ void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTrans
 	offset = (DirectX::SimpleMath::Matrix::CreateTranslation(playerTranslation.Translation() + playerForward * -0.4f));
 
 	// Multiplying all the matrices into one
-	result = trans * rotX * rotY * scale * camera.Invert() * offset;
+	result = rotX * rotY *trans * scale * camera.Invert() * offset;
 
 	this->setWorldTranslation(result);
 }
