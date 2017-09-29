@@ -7,7 +7,11 @@ namespace Logic
 {
 	class TestBehavior : public Behavior
 	{
+	private:
+		std::vector<const DirectX::SimpleMath::Vector3*> path;
+		int currentNode;
 	public:
+		TestBehavior();
 		virtual ~TestBehavior();
 
 		virtual void update(Enemy &enemy, Player const &player, float deltaTime);

@@ -1,6 +1,7 @@
 #include <AI/Behavior/AStar.h>
-#include <queue>
+#include <stack>
 #include <stdio.h> // for testing obv
+#define NO_PARENT -1
 using namespace Logic;
 
 AStar::AStar(std::string file)
@@ -14,18 +15,19 @@ AStar::~AStar()
 
 }
 
-AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
+std::vector<const DirectX::SimpleMath::Vector3*>
+	AStar::getNextNode(Entity const &enemy, Entity const &target)
 {
 	// all nodes in navMesh
 	std::vector<DirectX::SimpleMath::Vector3> nodes =
 		navigationMesh.getNodes();
 
 	// reset nav nodes
-	for (int i = 0; i < navNodes.size(); i++)
+	for (size_t i = 0; i < navNodes.size(); i++)
 	{
 		navNodes[i].onClosedList = navNodes[i].explored = false;
 		navNodes[i].h = navNodes[i].g = 0;
-		navNodes[i].parent = 0;
+		navNodes[i].parent = NO_PARENT;
 	}
 
 	// openlist and a test offset
@@ -38,16 +40,18 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 	printf("StartIndex: %d, End index: %d (AStar.cpp:%d)\n", startIndex, endIndex, __LINE__);
 
 	// test special cases
-	if (startIndex == -1 || endIndex == -1 || startIndex == endIndex)
-		return { 0, target.getPositionBT() };
+	if (startIndex == endIndex || startIndex == -1 || endIndex == -1)
+		return { &target.getPosition() };
 
 	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[endIndex]);
+	navNodes[startIndex].explored = true;
 	openList.push(&navNodes[startIndex]);
 
 	NavNode *currentNode = nullptr;
 	NavNode *explore = nullptr;
 
 	float f;
+
 
 	while (!openList.empty())
 	{
@@ -58,6 +62,12 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 		for (int index : navigationMesh.getEdges(currentNode->nodeIndex))
 		{
 			explore = &navNodes[index];
+			if (index == endIndex) {
+				explore->parent = currentNode->nodeIndex;
+				currentNode = explore;
+				break; // found node
+			}
+
 			if (!explore->explored) // Unexplored
 			{
 				explore->explored = true;
@@ -91,16 +101,33 @@ AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
 	if (!currentNode)
 	{
 		printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
-			"Lukas or something (AStar.cpp:%s)\n", __LINE__);
-		return { 0, {nodes[endIndex].x, nodes[endIndex].y, nodes[endIndex].z} };
+			"Lukas or something (AStar.cpp:%d)\n", __LINE__);
+		return { &target.getPosition() };
 	}
 
-	DirectX::SimpleMath::Vector3 node = nodes[currentNode->nodeIndex];
-	return { 0, { node.x, node.y, node.z } };
+	return reconstructPath(currentNode);
 }
 
-void AStar::reconstructPath(std::vector<NavNode*>& navNodes, std::vector<DirectX::SimpleMath::Vector3>& nodes)
+std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode *endNode)
 {
+	// flip the list
+	std::stack<const DirectX::SimpleMath::Vector3*> list;
+	std::vector<const DirectX::SimpleMath::Vector3*> ret;
+
+	while (endNode->parent != NO_PARENT)
+	{
+		list.push(&(navigationMesh.getNodes()[endNode->nodeIndex]));
+		endNode = &navNodes[endNode->parent];
+		printf("next: %d", endNode->parent);
+	}
+
+	while (!list.empty())
+	{
+		ret.push_back(list.top());
+		list.pop();
+	}
+
+	return ret;
 }
 
 void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
@@ -114,14 +141,17 @@ void AStar::generateNavigationMesh()
 	pasvf.generateNavMesh(navigationMesh, {}, {});
 	navigationMesh.createNodesFromTriangles();
 	// test
-	navigationMesh.addEdge(0, 1);
-	navigationMesh.addEdge(1, 0);
+	for (size_t i = 0; i < navigationMesh.getEdges().size() - 1; i++)
+	{
+		navigationMesh.addEdge(i, i + 1);
+		navigationMesh.addEdge(i + 1, i);
+	}
 
 	navNodes.clear();
-	for (int i = 0; i < navigationMesh.getNodes().size(); i++)
+	for (size_t i = 0; i < navigationMesh.getNodes().size(); i++)
 		navNodes.push_back(
 			{ false, false, 
-			i, 0, 0 }
+			static_cast<int> (i), 0, 0 }
 		);
 }
 

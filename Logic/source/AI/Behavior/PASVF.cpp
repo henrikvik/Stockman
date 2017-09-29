@@ -34,9 +34,9 @@ void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, 
 	// TEST DATA
 	Triangle t;
 
-	for (int x = 0; x < 5; x++)
+	for (int x = -3; x < 3; x++)
 	{
-		for (int z = 0; z < 5; z++)
+		for (int z = -3; z < 3; z++)
 		{
 			t.vertices[0] = DirectX::SimpleMath::Vector3(T * x, 0, T * z);
 			t.vertices[1] = DirectX::SimpleMath::Vector3(T * (x + 1), 0, T * (z + 1));

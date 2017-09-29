@@ -30,10 +30,10 @@ namespace Logic
 
 				// remove later, this is unused at the moment
 				bool operator<(NavNode const &other) const {
-					return g + h < other.g + other.h;
+					return g + h > other.g + other.h;
 				}
 				bool operator>(NavNode const &other) const {
-					return g + h > other.g + other.h;
+					return g + h < other.g + other.h;
 				}
 			};
 
@@ -57,9 +57,12 @@ namespace Logic
 			AStar(std::string file);
 			~AStar();
 
-			Node getNextNode(Entity const &enemy, Entity const &target);
-			void reconstructPath(std::vector<NavNode*> &navNodes,
-				std::vector<DirectX::SimpleMath::Vector3> &nodes);
+			std::vector<const DirectX::SimpleMath::Vector3*>
+				getNextNode(Entity const &enemy, Entity const &target);
+
+			std::vector<const DirectX::SimpleMath::Vector3*> 
+				reconstructPath(NavNode *endNode);
+
 			void renderNavigationMesh(Graphics::Renderer &renderer);
 
 			// iniate the nodes
