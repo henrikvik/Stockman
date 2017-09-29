@@ -19,7 +19,7 @@ void SimplePathing::setCurrentNode(int currentNode)
 
 const btVector3 SimplePathing::updateAndReturnCurrentNode(Entity const & from, Entity const & to)
 {
-	if (pastLastNode() || pathIsEmpty())
+	/*if (pastLastNode() || pathIsEmpty())*/
 	{
 		loadPath(from, to);
 		m_currentNode = 0;
