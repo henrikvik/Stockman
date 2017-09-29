@@ -24,7 +24,7 @@
 #include <Graphics\include\Renderer.h>
 
 // Init Defines
-#define STARTING_STATE		gameStateGame
+#define STARTING_STATE		gameStateMenuMain
 #define PLAYER_START_SCA	btVector3(1.5f, 3.0f, 1.5f)
 #define PLAYER_START_POS	btVector3(0.0f, 6.0f, 0.0f)
 #define PLAYER_START_ROT	btVector3(0.0f, 0.0f, 0.0f)
@@ -59,6 +59,8 @@ namespace Logic
 
 		DirectX::SimpleMath::Vector3 getPlayerForward();
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
+
+        int getState() const;
 
 	private:
 		Physics*			m_physics;

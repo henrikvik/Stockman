@@ -20,9 +20,14 @@
 #include <Projectile\ProjectileManager.h>
 
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
-#define PLAYER_MOVEMENT_MAX_SPEED		0.1f
-#define PLAYER_MOVEMENT_ACCELERATION	0.005f
-#define PLAYER_JUMP_SPEED				50.f
+#define PLAYER_MOVEMENT_MAX_SPEED		0.02f
+#define PLAYER_MOVEMENT_ACCELERATION	0.0002f
+#define PLAYER_MOVEMENT_AIRACCELERATION	0.005f
+#define PLAYER_MOVEMENT_AIRSTRAFE_SPEED 0.004f
+#define PLAYER_SPEED_LIMIT				0.05f
+#define PLAYER_STRAFE_ANGLE				0.95f
+#define PLAYER_JUMP_SPEED				70.f
+#define PLAYER_BHOP_TIMER				10.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
 
@@ -50,7 +55,14 @@ namespace Logic
 		btVector3 m_moveDir;
 		float m_moveSpeed;
 		float m_acceleration;
+		float m_deacceleration;
+		float m_airAcceleration;
 		float m_jumpSpeed;
+
+		bool m_wishJump;
+		btVector3 m_wishDir;
+		float m_wishDirForward;
+		float m_wishDirRight;
 
 		// Mouse
 		float m_mouseSens;
@@ -72,7 +84,12 @@ namespace Logic
 		DirectX::Keyboard::Keys m_useSkill;
 
 		// Movement
+		void moveInput(DirectX::Keyboard::State* ks);
 		void move(float deltaTime, DirectX::Keyboard::State* ks);
+		void airMove(float deltaTime, DirectX::Keyboard::State* ks);
+		void accelerate(float deltaTime, float acceleration);
+		void applyFriction(float deltaTime, float friction);
+		void applyAirFriction(float deltaTime, float friction);
 		void jump(float deltaTime, DirectX::Keyboard::State* ks);
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
@@ -87,11 +104,16 @@ namespace Logic
 		void onCollision(Entity& other);
 		void onCollision(Projectile& other);
 		void affect(int stacks, Effect const &effect, float deltaTime);
+		void upgrade(Upgrade const &upgrade);
 		void render(Graphics::Renderer& renderer); 
 
 		void saveToFile();
 		void readFromFile();
 
+		float getMoveSpeed() const;
+		void setMoveSpeed(float speed);
+		void setMoveDirection(btVector3 moveDir);
+		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 	};
 

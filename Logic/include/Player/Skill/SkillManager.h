@@ -31,15 +31,14 @@ namespace Logic
 
 		void switchToSkill(int index);
 
-		void useSkill();
+		void useSkill(btVector3 forward, Entity& shooter);
 		void update(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 	
 	private:
-		void initializeSkills(GameTime* gameTime);
-		
-		ProjectileManager* projectileManager;
-		GameTime* gameTime;
+
+		ProjectileManager* m_projectileManager;	
+		GameTime* m_gameTime;	
 
 		std::vector<Skill*> m_allSkills;
 		Skill* m_currentSkill;

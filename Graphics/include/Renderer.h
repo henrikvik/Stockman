@@ -18,6 +18,8 @@
 #include "PostProccessor.h";
 #include "SkyRenderer.h"
 
+#include <SpriteBatch.h>
+
 namespace Graphics
 {
     class Renderer
@@ -26,6 +28,7 @@ namespace Graphics
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
 		virtual ~Renderer();
         void render(Camera * camera);
+        void drawMenu(Graphics::MenuInfo * info);
         void queueRender(RenderInfo * renderInfo);
         void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
 
@@ -45,6 +48,10 @@ namespace Graphics
 
         Shader fullscreenQuad;
         Shader forwardPlus;
+        Shader menuShader;
+        Shader GUIShader;
+
+        //ComputeShader lightGridGen; 
 
         StructuredBuffer<InstanceData> instanceSBuffer;
         ConstantBuffer<UINT> instanceOffsetBuffer;
@@ -56,13 +63,44 @@ namespace Graphics
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 
+        bool menuTexturesLoaded;
+        void unloadMenuTextures();
+        void reloadMenuTextures();
+
+        
+
 		ShaderResource fakeBackBuffer;
 		ShaderResource fakeBackBufferSwap;
 		ShaderResource glowMap;
 
         ///// SUPER TEMP
+       
+       
+		
+
+	
+
+
+
+
+        ID3D11ShaderResourceView * menuTexture;
+        //crosshair
+        ID3D11ShaderResourceView * GUITexture1;
+        //HP bar
+        ID3D11ShaderResourceView * GUITexture2;
+        ID3D11ShaderResourceView * buttonTexture;
+       
+
         ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
+
+        ID3D11Buffer * menuQuad;
+        ID3D11Buffer * buttonQuad;
+
+
+
+        void loadModellessTextures();
+
 		ID3D11ShaderResourceView * glowTest;
 
        
@@ -72,9 +110,17 @@ namespace Graphics
         void drawGUI();
 		
 
+        void mapButtons(ButtonInfo * info);
+
+
+        
+		
+
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
         void createBlendState();
         void createGUIBuffers();
+
+        void createMenuVBS();
     };
 };

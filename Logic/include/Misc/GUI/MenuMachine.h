@@ -18,6 +18,7 @@ This class creates menus and handles switching between different menu layouts.
 #include <map>
 #include <Misc\Enums.h>
 #include <Misc\GUI\MenuState.h>
+#include <Graphics\include\Renderer.h>
 
 namespace Logic
 {
@@ -29,22 +30,29 @@ namespace Logic
 		bool pressed;
 		MenuState* currentActiveMenu;
 		GameState currentActiveState;
+		GameState stateToBe;
+		bool forward;
 	public:
 
 		MenuMachine();
 		~MenuMachine();
 		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout
-		void update();
+		void update(float dt);
+        void render(Graphics::Renderer& renderer);
 
 		void showMenu(GameState state);		//< Creates a menu layout
 		GameState currentState();
+
+		bool animationTransition(float dt, float maxAnimationTime);
 
 
 		void buttonClick0();
 		void buttonClick1();
 
 		void buttonClick2();
+
+		void buttonClick3();
 
 
 		

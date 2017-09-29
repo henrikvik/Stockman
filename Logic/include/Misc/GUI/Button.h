@@ -30,12 +30,16 @@ namespace Logic
 		std::string m_texture;*/
 		Graphics::ButtonInfo buttonInfo;
 		std::function<void(void)> m_CallBack;
+		DirectX::SimpleMath::Vector2 m_animationEnd;
+		DirectX::SimpleMath::Vector2 m_animationStart;
+		float m_animationTime;
 	public:
 		Button();
 		~Button();
 		void initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float height, float width, std::string texture, std::function<void(void)> callBack);
 		void updateOnPress(int posX, int posY);
-		Graphics::ButtonInfo getButtonInfo() const;
+		bool animationTransition(float dt, float maxAnimationTime, bool forward);
+		Graphics::ButtonInfo *getButtonInfo();
 	};
 }
 #endif

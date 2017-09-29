@@ -1,5 +1,6 @@
 #include "Player/Player.h"
 #include <AI\EnemyTest.h>
+#include <AI\Trigger.h>
 
 using namespace Logic;
 
@@ -27,10 +28,15 @@ void Player::init(ProjectileManager* projectileManager, GameTime* gameTime)
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
-	m_moveDir = btVector3(1, 1, 1);
+	m_moveDir = btVector3(0, 0, 0);
 	m_moveSpeed = 0.f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
+	m_deacceleration = m_acceleration * 0.5f;
+	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
 	m_jumpSpeed = PLAYER_JUMP_SPEED;
+	m_wishDirForward = 0.f;
+	m_wishDirRight = 0.f;
+	m_wishJump = false;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -58,10 +64,12 @@ void Player::onCollision(Entity& other)
 	{
 		printf("Enemy slapped you right in the face.\n");
 	}
-	else
+	else if (Trigger* e = dynamic_cast<Trigger*>(&other))
 	{
-		m_playerState = PlayerState::STANDING; // TEMP
+		
 	}
+	else
+		m_playerState = PlayerState::STANDING; // TEMP
 }
 
 void Player::onCollision(Projectile& other)
@@ -71,13 +79,32 @@ void Player::onCollision(Projectile& other)
 
 void Player::affect(int stacks, Effect const & effect, float deltaTime)
 {
-	int flags = effect.getStandards()->flags;
+	long long flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
 	{
 		getRigidbody()->setLinearVelocity(btVector3(getRigidbody()->getLinearVelocity().x(), 0, getRigidbody()->getLinearVelocity().z()));
 		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
-		m_playerState = PlayerState::IN_AIR;
+		m_playerState = PlayerState::STANDING;
+	}
+
+	if (flags & Effect::EFFECT_MODIFY_AMMO)
+	{
+		printf("Ammo pack!\n");
+		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
+		int magSize		= wp->getMagSize();
+		int currentAmmo = wp->getAmmo();
+		wp->setAmmo(currentAmmo + (magSize * WEAPON_AMMO_PACK_MODIFIER));
+	}
+}
+
+void Player::upgrade(Upgrade const & upgrade)
+{
+	long long flags = upgrade.getTranferEffects();
+
+	if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
+	{
+
 	}
 }
 
@@ -98,11 +125,38 @@ void Player::updateSpecific(float deltaTime)
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
+	// Temp for testing
+	if (ks.IsKeyDown(DirectX::Keyboard::B))
+	{
+		btTransform transform = getRigidbody()->getWorldTransform();
+		transform.setOrigin({0, 0, 0});
+		getRigidbody()->setWorldTransform(transform);
+		getRigidbody()->setLinearVelocity({ 0, 0, 0 });
+		m_moveDir = {0, 0, 0};
+		m_moveSpeed = 0.f;
+	}
+
 	// Movement
 	mouseMovement(deltaTime, &ms);
-	move(deltaTime, &ks);
 	jump(deltaTime, &ks);
-	crouch(deltaTime);
+
+	// If moving on y-axis, player is in air
+	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 0.01f || getRigidbody()->getLinearVelocity().y() < -0.01f))
+		m_playerState = PlayerState::IN_AIR;
+
+	// Get movement input
+	moveInput(&ks);
+	if (m_playerState == PlayerState::STANDING)
+		// Move
+		move(deltaTime, &ks);
+	else if(m_playerState == PlayerState::IN_AIR)
+		// Move in air
+		airMove(deltaTime, &ks);
+
+	// Print player velocity
+//	printf("velocity: %f\n", m_moveSpeed);
+
+	//crouch(deltaTime);
 
 	// Weapon swap
 	if (!m_weaponManager.isSwitching())
@@ -122,16 +176,16 @@ void Player::updateSpecific(float deltaTime)
 	{
 		// Skill
 		if (ks.IsKeyDown(m_useSkill))
-			m_skillManager.useSkill();
+			m_skillManager.useSkill(getForwardBT(), *this);
 
 		// Primary and secondary attack
 		if (!m_weaponManager.isAttacking())
 		{
 			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z) * 2.85f;
 			if ((ms.leftButton))
-				m_weaponManager.usePrimary(pos, m_camYaw, m_camPitch);
+				m_weaponManager.usePrimary(pos, m_camYaw, m_camPitch, *this);
 			else if (ms.rightButton)
-				m_weaponManager.useSecondary(pos, m_camYaw, m_camPitch);
+				m_weaponManager.useSecondary(pos, m_camYaw, m_camPitch, *this);
 		}
 
 		// Reload
@@ -147,89 +201,162 @@ void Player::updateSpecific(float deltaTime)
 	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
 }
 
-void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
+void Player::moveInput(DirectX::Keyboard::State * ks)
 {
-	bool nonePressed = true;
-
-	btVector3 accelDir = btVector3(0, 0, 0);
+	// Reset wish direction
+	m_wishDir = btVector3(0, 0, 0);
+	m_wishDirForward = 0.f;
+	m_wishDirRight = 0.f;
 
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
-		accelDir += -dir;
-		nonePressed = false;
+		m_wishDir += -dir;
+		m_wishDirRight += -1.f;
 	}
 
 	// Move Right
 	if (ks->IsKeyDown(m_moveRight))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
-		accelDir += dir;
-		nonePressed = false;
+		m_wishDir += dir;
+		m_wishDirRight += 1.f;
 	}
 
 	// Move Forward
 	if (ks->IsKeyDown(m_moveForward))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
-		accelDir += dir;
-		nonePressed = false;
+		m_wishDir += dir;
+		m_wishDirForward += 1.f;
 	}
 
 	// Move Back
 	if (ks->IsKeyDown(m_moveBack))
 	{
 		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
-		accelDir += -dir;
-		nonePressed = false;
+		m_wishDir += -dir;
+		m_wishDirForward += -1.f;
 	}
-
-	// Air movement TEMP
-	if (m_playerState == PlayerState::IN_AIR)
-	{
-		m_moveDir += m_moveDir * accelDir.dot(btVector3(m_forward.x, 0.f, m_forward.z));
-	}
-	else
-		m_moveDir += accelDir;
 	
 	// Normalize movement direction
-	m_moveDir *= 1000;
-	if (m_moveDir.getX() != 0.f || m_moveDir.getY() != 0.f || m_moveDir.getZ() != 0.f)
-		m_moveDir = btVector3(m_moveDir).normalize();
-
-	// If no movement key is pressed set reduce movespeed for brake effect
-	if (nonePressed)
-	{
-		float toBrake = m_acceleration * deltaTime;
-
-		if (m_moveSpeed < toBrake)
-			m_moveSpeed = 0.f;
-		else if(m_moveSpeed > toBrake)
-			m_moveSpeed -= toBrake;
-	}
-	// If any movement key is pressed add acceleration
-	else
-	{
-		m_moveSpeed += m_acceleration * deltaTime;
-		
-		if (m_moveSpeed > m_moveMaxSpeed)
-			m_moveSpeed = m_moveMaxSpeed;
-	}
-
-	// Update pos from movement direction and speed
-	btTransform transform = getRigidbody()->getWorldTransform();
-	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + m_moveDir * m_moveSpeed);
-	getRigidbody()->setWorldTransform(transform);
+	if(!m_wishDir.isZero())
+		m_wishDir = m_wishDir.safeNormalize();
 }
 
-void Player::jump(float deltaTime, DirectX::Keyboard::State* ks)
+void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 {
-	if (ks->IsKeyDown(m_jump) && m_playerState != PlayerState::IN_AIR)
+	if (!m_wishJump)
+	{
+		applyFriction(deltaTime, getRigidbody()->getFriction());
+		m_moveDir += m_wishDir;
+	}
+	else
+	{
+		m_airAcceleration = (PLAYER_SPEED_LIMIT - m_moveSpeed) * PLAYER_MOVEMENT_AIRACCELERATION;
+		applyAirFriction(deltaTime, getRigidbody()->getFriction() * 0.5f);
+	}
+	
+	// Normalize movement direction
+	if (!m_moveDir.isZero())
+		m_moveDir = m_moveDir.safeNormalize();
+
+	// Apply acceleration and move player
+	if(m_wishDir.isZero() || m_wishJump)
+		accelerate(deltaTime, 0.f);
+	else
+		accelerate(deltaTime, m_acceleration);
+
+	// Apply jump if player wants to jump
+	if (m_wishJump)
 	{
 		getRigidbody()->applyCentralImpulse(btVector3(0, m_jumpSpeed, 0));
 		m_playerState = PlayerState::IN_AIR;
+
+		m_wishJump = false;
 	}
+}
+
+void Player::airMove(float deltaTime, DirectX::Keyboard::State * ks)
+{
+	applyAirFriction(deltaTime, 0.f);
+
+	accelerate(deltaTime, m_airAcceleration);
+
+	m_airAcceleration = 0.f;
+}
+
+void Player::accelerate(float deltaTime, float acceleration)
+{
+	m_moveSpeed += acceleration * deltaTime;
+
+	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
+		m_moveSpeed = m_moveMaxSpeed;
+
+	// Update pos of player
+	btTransform transform = getRigidbody()->getWorldTransform();
+	if (m_playerState != PlayerState::IN_AIR)
+		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
+	else
+		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED * deltaTime));
+	getRigidbody()->setWorldTransform(transform);
+}
+
+void Player::applyFriction(float deltaTime, float friction)
+{
+	float toDrop = m_deacceleration * deltaTime * friction;
+
+	m_moveSpeed -= toDrop;
+	if (m_moveSpeed < 0)
+		m_moveSpeed = 0;
+}
+
+void Player::applyAirFriction(float deltaTime, float friction)
+{
+	btVector3 rightMoveDir = m_moveDir.cross(btVector3(0.f, 1.f, 0.f));
+
+	btVector3 forward = btVector3(m_forward.x, 0.f, m_forward.z).safeNormalize(); // forward vector (look direction)
+
+	float lookMoveAngle = m_moveDir.dot(forward);
+
+	float lookMovedirection = rightMoveDir.dot(forward);
+
+	// if looking backwards compared to move direction
+	if (lookMoveAngle < 0.f)
+	{
+		lookMoveAngle *= -1.f;
+		forward *= -1.f;
+	}
+
+	if (lookMovedirection < 0.f && m_wishDirRight < 0.f)
+	{
+		if (lookMoveAngle > PLAYER_STRAFE_ANGLE)
+			m_moveDir = (m_moveDir + forward) * 0.5f;
+		else
+			applyFriction(deltaTime, friction);
+	}
+	else if (lookMovedirection > 0.f && m_wishDirRight > 0.f)
+	{
+		if (lookMoveAngle > PLAYER_STRAFE_ANGLE)
+			m_moveDir = (m_moveDir + forward) * 0.5f;
+		else
+			applyFriction(deltaTime, friction);
+	}
+	else
+	{
+		m_airAcceleration = 0.f;
+		applyFriction(deltaTime, friction);
+	}
+}
+
+
+void Player::jump(float deltaTime, DirectX::Keyboard::State* ks)
+{
+	if (ks->IsKeyDown(m_jump) && !m_wishJump && m_playerState != PlayerState::IN_AIR)
+		m_wishJump = true;
+	else if (ks->IsKeyUp(m_jump))
+		m_wishJump = false;
 }
 
 void Player::crouch(float deltaTime)
@@ -273,6 +400,26 @@ void Player::render(Graphics::Renderer & renderer)
 
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
+}
+
+float Logic::Player::getMoveSpeed() const
+{
+	return m_moveSpeed;
+}
+
+void Player::setMoveSpeed(float speed)
+{
+	m_moveSpeed = speed;
+}
+
+void Player::setMoveDirection(btVector3 moveDir)
+{
+	m_moveDir = moveDir;
+}
+
+btVector3 Player::getForwardBT()
+{
+	return btVector3(m_forward.x, m_forward.y, m_forward.z);
 }
 
 DirectX::SimpleMath::Vector3 Player::getForward()

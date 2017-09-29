@@ -10,14 +10,13 @@ Weapon::Weapon()
 	m_magSize			= -1;
 	m_magAmmo			= -1;
 	m_ammoConsumption	= -1;
-	m_damage			= -1;
 	m_attackRate		= -1;
 	m_freeze			= -1;
 	m_reloadTime		= -1;
 }
 
 Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-	int spreadH, int spreadV, float damage, float attackRate, float freeze, float reloadTime)
+	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime)
 {
 	m_projectileManager = projectileManager;
 	m_weaponID			= weaponID;
@@ -29,7 +28,6 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	m_projectileCount	= projectileCount;
 	m_spreadH			= spreadH;
 	m_spreadV			= spreadV;
-	m_damage			= damage;
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
@@ -39,20 +37,22 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	// Weapon model - These are the constant matrices that moves the 
 	//					model a bit to the right and down & rotates a bit
 
+    this->setModelID(Graphics::ModelID::CROSSBOW);
 	// Pointing the gun upwards
-	rotX = DirectX::SimpleMath::Matrix::CreateRotationX(20.f * (3.14 / 180));
+	rotX = DirectX::SimpleMath::Matrix::CreateRotationX(50.f * (3.14 / 180));
 
 	// Tilting the gun to the middle
-	rotY = DirectX::SimpleMath::Matrix::CreateRotationY(10.f * (3.14 / 180));
+	rotY = DirectX::SimpleMath::Matrix::CreateRotationY(0.f * (3.14 / 180));
 
 	// Moving the model down to the right
-	trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
+	//trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
+    trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0, -7.0f, -10.f));
 
 	// Scaling the model by making it thinner and longer
-	scale = DirectX::SimpleMath::Matrix::CreateScale(0.50f, 0.40f, 1.40f);
+	scale = DirectX::SimpleMath::Matrix::CreateScale(0.05f, 0.05f, 0.05f);
 }
 
-void Weapon::use(btVector3 position, float yaw, float pitch)
+void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
 	// Use weapon
 	if (m_spreadH != 0 || m_spreadV != 0)	// Spread
@@ -60,7 +60,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch)
 		for (int i = m_projectileCount; i--; )
 		{
 			btVector3 projectileDir = calcSpread(yaw, pitch);
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
 		}
 	}
 	else									// No spread
@@ -71,7 +71,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch)
 			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
 			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
 			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir);
+			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
 		}
 	}
 }
@@ -103,7 +103,7 @@ void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTrans
 	offset = (DirectX::SimpleMath::Matrix::CreateTranslation(playerTranslation.Translation() + playerForward * -0.4f));
 
 	// Multiplying all the matrices into one
-	result = trans * rotX * rotY * scale * camera.Invert() * offset;
+	result = rotX * rotY *trans * scale * camera.Invert() * offset;
 
 	this->setWorldTranslation(result);
 }

@@ -22,10 +22,12 @@ namespace Logic
 		void updateGraphics();
 		virtual void updateSpecific(float deltaTime) { }
 		void collision(Entity& other);
-		virtual void affect(int stacks, Effect const &effect,
-							float deltaTime);	
+		virtual void affect(int stacks, Effect const &effect, float deltaTime);	
+		virtual void upgrade(Upgrade const &upgrade);
 		virtual void onCollision(Entity& other) { }
 
+		void setHalfExtent(btVector3 halfExtent);
+		btVector3 getHalfExtent() const;
 		DirectX::SimpleMath::Vector3 getPosition() const;
 		btVector3 getPositionBT() const;
 		DirectX::SimpleMath::Quaternion getRotation() const;
@@ -34,6 +36,7 @@ namespace Logic
 
 		btRigidBody* getRigidbody();
 		StatusManager& getStatusManager();
+		void setStatusManager(StatusManager& statusManager);
 	private:
 		StatusManager m_statusManager;
 		

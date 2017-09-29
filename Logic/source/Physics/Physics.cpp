@@ -49,6 +49,8 @@ void Physics::clear()
 	delete collisionConfiguration;
 }
 
+#include <BulletCollision\CollisionDispatch\btGhostObject.h>
+
 void Physics::update(GameTime gameTime)
 {
 	static std::chrono::steady_clock::time_point begin;
@@ -80,6 +82,7 @@ void Physics::update(GameTime gameTime)
 		{
 			Entity* pbodyA = reinterpret_cast<Entity*>(obA->getUserPointer());
 			Entity* pbodyB = reinterpret_cast<Entity*>(obB->getUserPointer());
+			
 
 			if (pbodyA && pbodyB)
 			{
@@ -136,7 +139,7 @@ btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 
 	// Specifics
 	body->setRestitution(0.0f);
-	body->setFriction(1.0f);
+	body->setFriction(1.f);
 	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
@@ -198,7 +201,6 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 	body->setRestitution(0.0f);
 	body->setFriction(1.f);
 	body->setSleepingThresholds(0, 0);	
-	body->setDamping(0.f, 0.f);
 
 	// Adding body to the world
 	this->addRigidBody(body);

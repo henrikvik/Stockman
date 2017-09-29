@@ -1,4 +1,5 @@
 {
+	"Name" : "MainMenu";
 	"State" : 2;
 	"Background" : "bla";
 	"buttonAmmount" : 1;
@@ -7,6 +8,7 @@
 }
 
 {
+	"Name" : "Settings";
 	"State" : 3;
 	"Background" : "la";
 	"buttonAmmount" : 1;
@@ -15,6 +17,7 @@
 }
 
 {
+	"Name" : "Game";
 	"State" : 0;
 	"Background" : "a";
 	"buttonAmmount" : 1;
