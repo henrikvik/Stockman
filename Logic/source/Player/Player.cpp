@@ -125,6 +125,14 @@ void Player::updateSpecific(float deltaTime)
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
+	// Temp for testing
+	if (ks.IsKeyDown(DirectX::Keyboard::B))
+	{
+		btTransform transform = getRigidbody()->getWorldTransform();
+		transform.setOrigin({0, 0, 0});
+		getRigidbody()->setWorldTransform(transform);
+	}
+
 	// Movement
 	mouseMovement(deltaTime, &ms);
 	jump(deltaTime, &ks);
@@ -143,7 +151,7 @@ void Player::updateSpecific(float deltaTime)
 		airMove(deltaTime, &ks);
 
 	// Print player velocity
-	printf("velocity: %f\n", m_moveSpeed);
+//	printf("velocity: %f\n", m_moveSpeed);
 
 	//crouch(deltaTime);
 
