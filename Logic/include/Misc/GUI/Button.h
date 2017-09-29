@@ -38,7 +38,7 @@ namespace Logic
 		~Button();
 		void initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float height, float width, std::string texture, std::function<void(void)> callBack);
 		void updateOnPress(int posX, int posY);
-		bool animationTransition(float dt);
+		bool animationTransition(float dt, float maxAnimationTime, bool forward);
 		Graphics::ButtonInfo *getButtonInfo();
 	};
 }

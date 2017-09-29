@@ -31,6 +31,7 @@ namespace Logic
 		MenuState* currentActiveMenu;
 		GameState currentActiveState;
 		GameState stateToBe;
+		bool forward;
 	public:
 
 		MenuMachine();
@@ -43,7 +44,7 @@ namespace Logic
 		void showMenu(GameState state);		//< Creates a menu layout
 		GameState currentState();
 
-		bool animationTransition(float dt);
+		bool animationTransition(float dt, float maxAnimationTime);
 
 
 		void buttonClick0();

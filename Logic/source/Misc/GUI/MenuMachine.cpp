@@ -105,9 +105,21 @@ void Logic::MenuMachine::update(float dt)
 
 	if (stateToBe != gameStateDefault) //change form magic value
 	{
-		if (animationTransition(dt))
+		if (forward)
 		{
-			showMenu(stateToBe);
+			if (currentActiveMenu->animationTransition(dt, 500, forward))
+			{
+				showMenu(stateToBe);
+				forward = false;
+			}
+		}
+		else
+		{
+			if (currentActiveMenu->animationTransition(dt, 500, forward))
+			{
+				stateToBe = gameStateDefault;
+				forward = true;
+			}
 		}
 	}
 
@@ -140,11 +152,6 @@ void Logic::MenuMachine::showMenu(GameState state)
 GameState Logic::MenuMachine::currentState()
 {
 	return currentActiveState;
-}
-
-bool Logic::MenuMachine::animationTransition(float dt)
-{
-	return currentActiveMenu->animationTransition(dt);
 }
 
 void Logic::MenuMachine::buttonClick0()

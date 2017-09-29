@@ -15,7 +15,7 @@
 {
 	"buttonName" : "MenuSettingsButton1";
 	"texture" : "bl";
-	"xPos" : 200.0f;
+	"xPos" : -200.0f;
 	"yPos" : 200.0f;
 	"xTexStart" : 1.0f;
 	"yTexStart" : 1.0f;
@@ -29,7 +29,7 @@
 {
 	"buttonName" : "GameButton1";
 	"texture" : "bla";
-	"xPos" : 200.0f;
+	"xPos" : -200.0f;
 	"yPos" : 200.0f;
 	"xTexStart" : 1.0f;
 	"yTexStart" : 1.0f;
