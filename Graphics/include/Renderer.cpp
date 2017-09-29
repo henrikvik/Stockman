@@ -23,7 +23,7 @@ namespace Graphics
 		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
         , menuShader(gDevice, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
-
+        , GUIShader(gDevice, SHADER_PATH("GUIShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } , {"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA} })
 		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
         , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
         , instanceOffsetBuffer(gDevice)
@@ -45,7 +45,10 @@ namespace Graphics
 
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         loadModellessTextures();
+        menuTexturesLoaded = true;
         createMenuVBS();
+        createGUIBuffers();
+        createBlendState();
     }
 
 
@@ -54,12 +57,11 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
-
         SAFE_RELEASE(menuQuad);
         SAFE_RELEASE(buttonQuad);
-        SAFE_RELEASE(buttonTexture);
-        SAFE_RELEASE(menuTexture);
-        SAFE_RELEASE(GUITexture);
+        unloadMenuTextures();
+        SAFE_RELEASE(GUITexture1);
+        SAFE_RELEASE(GUITexture2);
         resourceManager.release();
 
     }
@@ -76,6 +78,7 @@ namespace Graphics
 
     void Renderer::render(Camera * camera)
     {
+        unloadMenuTextures();
 #if ANIMATION_HIJACK_RENDER
 
         renderQueue.clear();
@@ -225,6 +228,7 @@ namespace Graphics
         {
             this->drawToBackbuffer(grid.getDebugSRV());
         }
+        drawGUI();
 #endif
     }
 
@@ -250,13 +254,37 @@ namespace Graphics
     //}
 
 
+    void Renderer::unloadMenuTextures()
+    {
+        if (menuTexturesLoaded == true)
+        {
+            SAFE_RELEASE(buttonTexture);
+            SAFE_RELEASE(menuTexture);
+            buttonTexture = nullptr;
+            menuTexture = nullptr;
+            menuTexturesLoaded = false;
+        }
+        
+    }
+
+    void Renderer::reloadMenuTextures()
+    {
+        if (menuTexturesLoaded == false)
+        {
+            ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("menuTexture.png"), nullptr, &menuTexture));
+            ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("button.png"), nullptr, &buttonTexture));
+            menuTexturesLoaded = true;
+        }
+    }
+
     //loads the textures for menu and GUI
     void Renderer::loadModellessTextures()
     {
        
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &menuTexture));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &buttonTexture));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &GUITexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("menuTexture.png"), nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("button.png"), nullptr, &buttonTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("crosshair.png"), nullptr, &GUITexture1));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("HPbar.png"), nullptr, &GUITexture2));
 
     }
 
@@ -360,19 +388,25 @@ namespace Graphics
 
     void Renderer::drawGUI()
     {
-        /*deviceContext->PSSetShaderResources(0, 1, &GUI);
-        deviceContext->PSSetShaderResources(1, 1, &view);*/
-        UINT stride = 12, offset = 0;
+     
+        UINT stride = 20, offset = 0;
         deviceContext->IASetVertexBuffers(0, 1, &GUIvb, &stride, &offset);
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->IASetInputLayout(GUIShader);
 
         float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         UINT sampleMask = 0xffffffff;
         deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
         deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 
+        deviceContext->VSSetShader(GUIShader, nullptr, 0);
 
-        //resourceManager.setShaders(VertexShaderID::VERTEX_GUI, PixelShaderID::PIXEL_GUI, deviceContext);
+        deviceContext->PSSetShaderResources(0, 1, &GUITexture1);
+        deviceContext->PSSetShaderResources(1, 1, &GUITexture2);
+        deviceContext->PSSetShader(GUIShader, nullptr, 0);
+       
+
+
 
         deviceContext->Draw(12, 0);
 
@@ -389,25 +423,26 @@ namespace Graphics
         //moves the buttons to ndc space
         TriangleVertex triangleVertices[6] =
         {
-            2 *((float)((info->m_rek.x + info->m_rek.width )) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
+            2 *((float)((info->m_rek.x + info->m_rek.width )) / WIN_WIDTH) - 1, 2 * ((float)(WIN_HEIGHT - info->m_rek.y - info->m_rek.height) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
             1.0f, 1.0f,
 
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) -1 , 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v1
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) -1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v1
             0.0f, 1.0f,
 
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
             0.0f,  0.0f,
 
             //t2
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
             0.0f, 0.0f,
 
-            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
             1.0f, 0.0f,
 
-            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) -1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) -1 , 0.0f, //v0
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) -1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) -1 , 0.0f, //v0
             1.0f, 1.0f,
         };
+
         
         D3D11_MAPPED_SUBRESOURCE data = { 0 };
         ThrowIfFailed(deviceContext->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
@@ -419,6 +454,8 @@ namespace Graphics
     //draws the menu
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
+        reloadMenuTextures();
+
         //draws menu background
         float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         deviceContext->ClearRenderTargetView(backBuffer, clearColor);
@@ -457,16 +494,28 @@ namespace Graphics
         struct GUI
         {
             DirectX::SimpleMath::Vector2 verts;
+            DirectX::SimpleMath::Vector2 uv;
             UINT element;
         };
 
         GUI GUIquad[12];
-        GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.1f, -0.1f };
-        GUIquad[1].verts = DirectX::SimpleMath::Vector2{ -0.1f, 0.1f };
-        GUIquad[2].verts = DirectX::SimpleMath::Vector2{ 0.1f, -0.1f };
-        GUIquad[3].verts = DirectX::SimpleMath::Vector2{ 0.1f, 0.1f };
+        GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.05f, -0.05f };
+        GUIquad[0].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
+        GUIquad[1].verts = DirectX::SimpleMath::Vector2{ -0.05f, 0.05f };
+        GUIquad[1].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+        GUIquad[2].verts = DirectX::SimpleMath::Vector2{ 0.05f, -0.05f };
+        GUIquad[2].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+        GUIquad[3].verts = DirectX::SimpleMath::Vector2{ 0.05f, 0.05f };
+        GUIquad[3].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
         GUIquad[4].verts = GUIquad[2].verts;
+        GUIquad[4].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
         GUIquad[5].verts = GUIquad[1].verts;
+        GUIquad[5].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
         GUIquad[0].element = 0;
         GUIquad[1].element = 0;
@@ -477,11 +526,22 @@ namespace Graphics
 
 
         GUIquad[6].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
+        GUIquad[6].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
         GUIquad[7].verts = DirectX::SimpleMath::Vector2{ -1.0f, -0.8f };
-        GUIquad[8].verts = DirectX::SimpleMath::Vector2{ -0.7f, -1.0f };
-        GUIquad[9].verts = DirectX::SimpleMath::Vector2{ -0.7f, -0.8f };
+        GUIquad[7].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+        GUIquad[8].verts = DirectX::SimpleMath::Vector2{ -0.8f, -1.0f };
+        GUIquad[8].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+        GUIquad[9].verts = DirectX::SimpleMath::Vector2{ -0.8f, -0.8f };
+        GUIquad[9].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
         GUIquad[10].verts = GUIquad[8].verts;
+        GUIquad[10].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
         GUIquad[11].verts = GUIquad[7].verts;
+        GUIquad[11].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
         GUIquad[6].element = 1;
         GUIquad[7].element = 1;

@@ -42,6 +42,9 @@ namespace Logic
 		bool isAttacking();
 		bool isReloading();
 
+		Weapon* getCurrentWeaponPrimary();
+		Weapon* getCurrentWeaponSecondary();
+
 	private:
 
 		enum ReloadingWeapon

@@ -47,6 +47,7 @@ namespace Graphics
         Shader fullscreenQuad;
         Shader forwardPlus;
         Shader menuShader;
+        Shader GUIShader;
 
         //ComputeShader lightGridGen; 
 
@@ -60,6 +61,12 @@ namespace Graphics
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 
+        bool menuTexturesLoaded;
+        void unloadMenuTextures();
+        void reloadMenuTextures();
+
+        
+
         ///// SUPER TEMP
        
        
@@ -69,9 +76,12 @@ namespace Graphics
 
 
 
-        //std::unique_ptr<DirectX::SpriteBatch> menuSprite;
+
         ID3D11ShaderResourceView * menuTexture;
-        ID3D11ShaderResourceView * GUITexture;
+        //crosshair
+        ID3D11ShaderResourceView * GUITexture1;
+        //HP bar
+        ID3D11ShaderResourceView * GUITexture2;
         ID3D11ShaderResourceView * buttonTexture;
        
 
