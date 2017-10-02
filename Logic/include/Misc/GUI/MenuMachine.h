@@ -43,9 +43,8 @@ namespace Logic
 
 		void showMenu(GameState state);		//< Creates a menu layout
 		GameState currentState();
-		void setGameState(GameState);
-
-		bool animationTransition(float dt, float maxAnimationTime);
+		void setStateToBe(GameState);
+		GameState getStateToBe();
 
 		void buttonClick0();
 		void buttonClick1();

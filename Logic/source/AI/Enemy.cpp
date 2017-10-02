@@ -2,8 +2,8 @@
 #include <AI\Behavior\TestBehavior.h>
 using namespace Logic;
 
-Enemy::Enemy(btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, float moveSpeed, int enemyType, int animationId)
-: Entity(body, halfExtent)
+Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, float moveSpeed, int enemyType, int animationId)
+: Entity(body, halfExtent, modelID)
 {
 	m_behavior = nullptr;
 

@@ -100,7 +100,7 @@ namespace Logic
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
 	public:
-		Player(btRigidBody* body, btVector3 halfExtent);
+		Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();
 
 		void init(ProjectileManager* projectileManager, GameTime* gameTime);
