@@ -263,7 +263,3 @@ __pycache__/
 *.pyc
 /Engine/packages.config
 /Graphics/packages.config
-imgui.ini
-*/imgui.ini
-
-!/libs/tbb/bin

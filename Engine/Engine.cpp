@@ -1,21 +1,8 @@
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
 
-#include "Profiler.h"
-
-#include <Windows.h>
-#include <imgui.h>
-#include <imgui_impl_dx11.h>
-
-extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	//if (
-	ImGui_ImplDX11_WndProcHandler(hwnd, msg, wparam, lparam);
-		//)
-		//return true;
-
 	switch (msg)
 	{
 	case WM_DESTROY:
@@ -72,7 +59,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 
 Engine::~Engine()
 {
-	ImGui_ImplDX11_Shutdown();
+
 	delete this->renderer;
 
 	this->mDevice->Release();
@@ -136,7 +123,7 @@ void Engine::initializeWindow()
 
 HRESULT Engine::createSwapChain()
 {
-
+	
 	DXGI_SWAP_CHAIN_DESC desc;
 	ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
@@ -149,8 +136,8 @@ HRESULT Engine::createSwapChain()
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
-
+  
+  
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -185,7 +172,7 @@ HRESULT Engine::createSwapChain()
 		backBuffer->Release();
 
 		//Creates a debug device to check for memory leaks etc
-		HRESULT hr = this->mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast <void **>(&mDebugDevice));
+		HRESULT hr = this->mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast <void **>(&mDebugDevice)); 
 		if (FAILED(hr))
 		{
 			MessageBox(0, "debug device creation failed", "error", MB_OK);
@@ -217,16 +204,12 @@ long long Engine::timer()
 	}
 }
 
-Profiler *g_Profiler;
-
 int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
 	Graphics::Camera cam(mDevice, mWidth, mHeight, 250);
     cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
-
-	ImGui_ImplDX11_Init(window, mDevice, mContext);
 
 	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
 
@@ -235,10 +218,7 @@ int Engine::run()
 	long long currentTime = 0;
 	long long deltaTime = 0; 
     long long totalTime = 0;
-	bool showProfiler = false;
 
-	g_Profiler = new Profiler(mDevice, mContext);
-	g_Profiler->registerThread("Main Thread");
 
 	while (WM_QUIT != msg.message)
 	{
@@ -255,7 +235,7 @@ int Engine::run()
 
 			DispatchMessage(&msg);
 		}
-
+		
 		//To enable/disable fullscreen
 		DirectX::Keyboard::State ks = this->mKeyboard->GetState();
 		if (ks.F11)
@@ -264,32 +244,11 @@ int Engine::run()
 			this->isFullscreen = !isFullscreen;
 		}
 
-		if (ks.F1)
-		{
-			g_Profiler->capture();
-			showProfiler = true;
-		}
-		if (ks.F2)
-		{
-			showProfiler = !showProfiler;
-		}
-
 		if (ks.Escape)
 			PostQuitMessage(0);
 
-		g_Profiler->start();
-
-		PROFILE_BEGINC("ImGui_ImplDX11_NewFrame", EventColor::PinkLight);
-		ImGui_ImplDX11_NewFrame();
-		PROFILE_END();
-
-		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
 		game.update(float(deltaTime));
-		PROFILE_END();
-
-		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game.render(*renderer);
-		PROFILE_END();
 
         cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
 
@@ -326,32 +285,11 @@ int Engine::run()
         {
             renderer->queueRender(&staticCube);
             renderer->queueRender(&staticSphere);
-
-			PROFILE_BEGINC("Game::render()", EventColor::PinkDark);
             renderer->render(&cam);
-			PROFILE_END();
         }
-		 
-		g_Profiler->poll();
-
-		if (showProfiler) {
-			//DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
-			
-			ImGui::SetNextWindowPos(ImVec2(0, 0));
-			ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
-			g_Profiler->render();
-		}
-		else {
-			//DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
-		}
-
-		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
-		PROFILE_BEGINC("ImGui_ImplDX11_NewFrame", EventColor::PinkLight);
-		ImGui::Render();
-		PROFILE_END();
-
+		
 		mSwapChain->Present(0, 0);
-		g_Profiler->frame();
+		
 		
 	}
 
