@@ -74,15 +74,20 @@ void Physics::update(GameTime gameTime)
 	for (int i = 0; i < numManifolds; i++)
 	{
 		btPersistentManifold* contactManifold = dispatcher->getManifoldByIndexInternal(i);
+	
 		const btCollisionObject* obA = contactManifold->getBody0();
 		const btCollisionObject* obB = contactManifold->getBody1();
 
 		int numContacts = contactManifold->getNumContacts();
-		if (numContacts > 0)
+		if (numContacts > 0) // Only returns the first contact as for now, fix this
 		{
+			btManifoldPoint contactPoint = contactManifold->getContactPoint(0);
+			btVector3 b = contactPoint.getPositionWorldOnA();
+			btVector3 a = contactPoint.getPositionWorldOnB();
+
+
 			Entity* pbodyA = reinterpret_cast<Entity*>(obA->getUserPointer());
 			Entity* pbodyB = reinterpret_cast<Entity*>(obB->getUserPointer());
-			
 
 			if (pbodyA && pbodyB)
 			{

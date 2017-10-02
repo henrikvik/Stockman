@@ -355,5 +355,8 @@ int Engine::run()
 		
 	}
 
+	g_Profiler->end();
+	delete g_Profiler;
+
 	return 0;
 }
