@@ -62,12 +62,11 @@ void Player::clear()
 
 void Player::onCollision(Entity& other)
 {
-	m_hp--;
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);
 	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
 	{
 		printf("Enemy slapped you right in the face.\n");
-		m_hp--;
+	//	m_hp--;
 	}
 	else if (Trigger* e = dynamic_cast<Trigger*>(&other))
 	{
