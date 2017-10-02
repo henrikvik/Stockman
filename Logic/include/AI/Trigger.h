@@ -23,7 +23,7 @@ namespace Logic
 	class Trigger : public Entity
 	{
 		public:
-			Trigger(btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable);
+			Trigger(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable);
 			virtual ~Trigger();
 
 			void addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades);

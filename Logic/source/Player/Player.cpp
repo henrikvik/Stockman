@@ -4,8 +4,8 @@
 
 using namespace Logic;
 
-Player::Player(btRigidBody* body, btVector3 halfExtent)
-: Entity(body, halfExtent)
+Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
+: Entity(body, halfExtent, modelID)
 {
 
 }
@@ -66,7 +66,7 @@ void Player::onCollision(Entity& other)
 	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
 	{
 		printf("Enemy slapped you right in the face.\n");
-		m_hp--;
+	//	m_hp--;
 	}
 	else if (Trigger* e = dynamic_cast<Trigger*>(&other))
 	{
@@ -135,8 +135,8 @@ int Player::getHP() const
 void Player::updateSpecific(float deltaTime)
 {
 	// Get Mouse and Keyboard states for this frame
-	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
+	DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
 	// Temp for testing
@@ -151,7 +151,8 @@ void Player::updateSpecific(float deltaTime)
 	}
 
 	// Movement
-	mouseMovement(deltaTime, &ms);
+	if (!ks.IsKeyDown(DirectX::Keyboard::LeftAlt))	// !TEMP!
+		mouseMovement(deltaTime, &ms);
 	jump(deltaTime, &ks);
 
 	// If moving on y-axis, player is in air

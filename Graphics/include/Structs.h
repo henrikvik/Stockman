@@ -39,6 +39,7 @@ namespace Graphics
         bool useDepth;
         DirectX::SimpleMath::Color color;
         std::vector<DirectX::SimpleMath::Vector3>* points;
+        D3D11_PRIMITIVE_TOPOLOGY topology;
     };
 
 	// TODO: Change
