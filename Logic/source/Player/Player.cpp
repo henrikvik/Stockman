@@ -150,6 +150,26 @@ void Player::updateSpecific(float deltaTime)
 		m_moveSpeed = 0.f;
 	}
 
+	// TEMP FREE MOVE
+	static bool freeMove = false;
+	if (ks.IsKeyDown(DirectX::Keyboard::N) && !freeMove)
+	{
+		getRigidbody()->setGravity(btVector3(0.f, 0.f, 0.f)); // remove gravity
+		freeMove = true;
+		printf("noclip activated\n");
+	}
+	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)
+	{
+		// reset movement
+		getRigidbody()->setGravity(btVector3(0.f, -PHYSICS_GRAVITY, 0.f));
+		getRigidbody()->setLinearVelocity({ 0, 0, 0 });
+		m_moveDir = { 0, 0, 0 };
+		m_moveSpeed = 0.f;
+		freeMove = false;
+		printf("noclip deactivated\n");
+	}
+		
+
 	// Movement
 	if (!ks.IsKeyDown(DirectX::Keyboard::LeftAlt))	// !TEMP!
 		mouseMovement(deltaTime, &ms);
@@ -161,12 +181,20 @@ void Player::updateSpecific(float deltaTime)
 
 	// Get movement input
 	moveInput(&ks);
-	if (m_playerState == PlayerState::STANDING)
-		// Move
-		move(deltaTime, &ks);
-	else if(m_playerState == PlayerState::IN_AIR)
-		// Move in air
-		airMove(deltaTime, &ks);
+	if (!freeMove)
+	{
+		if (m_playerState == PlayerState::STANDING)
+			// Move
+			move(deltaTime);
+		else if (m_playerState == PlayerState::IN_AIR)
+			// Move in air
+			airMove(deltaTime);
+	}
+	else
+	{
+		getRigidbody()->setGravity(btVector3(0.f, 0.f, 0.f));
+		moveFree(deltaTime, &ks);
+	}
 
 	// Print player velocity
 //	printf("velocity: %f\n", m_moveSpeed);
@@ -260,7 +288,22 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 		m_wishDir = m_wishDir.safeNormalize();
 }
 
-void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
+void Player::moveFree(float deltaTime, DirectX::Keyboard::State * ks)
+{
+	getRigidbody()->setLinearVelocity({ 0, 0, 0 }); // Remove linear velocity
+
+	if (ks->IsKeyDown(DirectX::Keyboard::Keys::LeftControl)) // down
+		m_wishDir.setY(-1.f);
+	if (ks->IsKeyDown(DirectX::Keyboard::Keys::Space))		 // up
+		m_wishDir.setY(1.f);
+
+	// Update pos of player
+	btTransform transform = getRigidbody()->getWorldTransform();
+	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_wishDir * m_moveMaxSpeed * 2.f * deltaTime));
+	getRigidbody()->setWorldTransform(transform);
+}
+
+void Player::move(float deltaTime)
 {
 	if (!m_wishJump)
 	{
@@ -293,7 +336,7 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 	}
 }
 
-void Player::airMove(float deltaTime, DirectX::Keyboard::State * ks)
+void Player::airMove(float deltaTime)
 {
 	applyAirFriction(deltaTime, 0.f);
 

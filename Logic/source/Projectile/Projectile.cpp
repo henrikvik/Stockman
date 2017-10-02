@@ -72,8 +72,6 @@ void Projectile::onCollision(Entity & other)
 					m_remove = false;
 		}
 	}
-	
-
 }
 
 void Projectile::upgrade(Upgrade const &upgrade)

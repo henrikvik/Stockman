@@ -31,7 +31,7 @@ void SkillManager::init(ProjectileManager* projectileManager, GameTime* gameTime
 	};
 
 
-	switchToSkill(1);
+	switchToSkill(0);
 }
 
 void SkillManager::switchToSkill(int index)

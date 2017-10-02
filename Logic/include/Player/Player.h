@@ -89,8 +89,9 @@ namespace Logic
 
 		// Movement
 		void moveInput(DirectX::Keyboard::State* ks);
-		void move(float deltaTime, DirectX::Keyboard::State* ks);
-		void airMove(float deltaTime, DirectX::Keyboard::State* ks);
+		void moveFree(float deltaTime, DirectX::Keyboard::State* ks);
+		void move(float deltaTime);
+		void airMove(float deltaTime);
 		void accelerate(float deltaTime, float acceleration);
 		void applyFriction(float deltaTime, float friction);
 		void applyAirFriction(float deltaTime, float friction);
