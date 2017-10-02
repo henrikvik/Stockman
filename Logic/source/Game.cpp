@@ -111,7 +111,7 @@ void Game::update(float deltaTime)
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
 
-		if (m_player->getHP() <= 9999)
+		if (m_player->getHP() <= 0)
 		{
 			printf("You ded bro.\n");
 			m_menu->setStateToBe(GameState::gameStateMenuMain);
