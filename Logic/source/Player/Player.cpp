@@ -156,7 +156,7 @@ void Player::updateSpecific(float deltaTime)
 	{
 		getRigidbody()->setGravity(btVector3(0.f, 0.f, 0.f)); // remove gravity
 		freeMove = true;
-		printf("noclip activated\n");
+		printf("free move activated\n");
 	}
 	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)
 	{
@@ -166,7 +166,7 @@ void Player::updateSpecific(float deltaTime)
 		m_moveDir = { 0, 0, 0 };
 		m_moveSpeed = 0.f;
 		freeMove = false;
-		printf("noclip deactivated\n");
+		printf("free move deactivated\n");
 	}
 		
 
