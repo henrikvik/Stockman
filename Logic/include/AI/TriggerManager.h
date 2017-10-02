@@ -30,7 +30,7 @@ namespace Logic
 
 			void removeTrigger(Trigger* t, int index);
 
-			void addTrigger(Cube& cube, float cooldown, Physics& physics, 
+			void addTrigger(Graphics::ModelID modelID, Cube& cube, float cooldown, Physics& physics,
 				std::vector<StatusManager::UPGRADE_ID> upgrades, 
 				std::vector<StatusManager::EFFECT_ID> effects, 
 				bool reusable = false);
