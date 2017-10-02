@@ -90,6 +90,7 @@ void Logic::MenuMachine::clear()
 
 void Logic::MenuMachine::update(float dt)
 {
+	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
 	if (Mouse.leftButton && !pressed)
@@ -154,20 +155,25 @@ GameState Logic::MenuMachine::currentState()
 	return currentActiveState;
 }
 
-void MenuMachine::setGameState(GameState gameState)
+void MenuMachine::setStateToBe(GameState gameState)
 {
-	currentActiveState = gameState;
+	stateToBe = gameState;
+}
+
+GameState Logic::MenuMachine::getStateToBe()
+{
+	return stateToBe;
 }
 
 void Logic::MenuMachine::buttonClick0()
 {
-	stateToBe = gameStateMenuSettings;
+	stateToBe = gameStateGame;
 	std::cout << "Left Trigger: Switched To Menu State 0";
 }
 
 void Logic::MenuMachine::buttonClick1()
 {
-	stateToBe = gameStateMenuMain;
+	stateToBe = gameStateMenuSettings;
 	std::cout << "Left Trigger: Switched To Menu State 3";
 }
 

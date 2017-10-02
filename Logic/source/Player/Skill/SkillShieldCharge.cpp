@@ -14,6 +14,7 @@ SkillShieldCharge::SkillShieldCharge(ProjectileManager * projectileManager, Proj
 SkillShieldCharge::~SkillShieldCharge()
 {
 	m_projectileManager = nullptr;
+	thePlayer = nullptr;
 }
 
 void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
