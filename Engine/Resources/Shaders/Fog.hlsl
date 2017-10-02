@@ -1,42 +1,16 @@
-/*struct VSInput
+cbuffer Color : register(b1)
 {
-	// Vertex data
-	float3 pos : POS;
-	float2 uv : UV;
-	float3 normal : NORMAL;
-	uint material : MATERIAL;
+	
 };
 
-struct VSOutput
+StructuredBuffer<float3> points : register(t0);
+
+
+float4 VS(uint id : SV_VertexID) : SV_Position
 {
-	float4 pos : SV_POSITION;
-	float4 wPos : WPOS;
-	float2 uv : UV;
-	float3 normal : NORMAL;
-};*/
-
-
-//Vertex Shader
-VSOutput VS(VSInput input, uint id : SV_InstanceID)
-{
-	VSOutput output;
-
-	return output;
+	return mul(PV, float4(points[id], 1));
 }
 
-
-
-//Pixel Shader
-/*struct PSOutput
+float4 PS(float4 ndc : SV_Position) : SV_Target
 {
-	float4 position : SV_Target2;
-};*/
-
-SamplerState sState;
-
-PSOutput PS(VSOutput input)
-{
-	PSOutput output;
-
-	return output;
 }
