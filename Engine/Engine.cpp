@@ -333,7 +333,7 @@ int Engine::run()
             renderer->queueRender(&staticCube);
             renderer->queueRender(&staticSphere);
 
-			PROFILE_BEGINC("Game::render()", EventColor::PinkDark);
+			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
 			PROFILE_END();
         }
