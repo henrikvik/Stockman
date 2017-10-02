@@ -18,19 +18,13 @@ void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 	const btRigidBody* intersection = m_physicsPtr->RayTestOnRigidBodies(Ray(shooter.getPositionBT(), forward, 500.f));
 	if (intersection)
 	{
-		if (intersection == shooter.getRigidbody())
+		printf("Hit! - Something else\n");
+		if (Entity* target = static_cast<Entity*>(intersection->getUserPointer()))
 		{
-			printf("Hit! - This enttiy\n");
-		}
-		else
-		{
-			printf("Hit! - Something else\n");
-			if (Entity* target = static_cast<Entity*>(intersection->getUserPointer()))
-			{
-				btRigidBody* shooterBody = shooter.getRigidbody();
-				btVector3 linearVelocity = shooterBody->getLinearVelocity();
-				shooterBody->setLinearVelocity(linearVelocity + (forward * 35));
-			}
+			btRigidBody* shooterBody = shooter.getRigidbody();
+			btVector3 linearVelocity = shooterBody->getLinearVelocity();
+			shooterBody->setLinearVelocity(linearVelocity + (forward * 35));
+			m_state = GrapplingHookStatePulling;
 		}
 	}
 	else
@@ -42,6 +36,7 @@ void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 void SkillGrapplingHook::onRelease()
 {
 	printf("Released\n");
+	m_state = GrapplingHookStateNothing;
 }
 
 void SkillGrapplingHook::onUpdate(float deltaTime)
