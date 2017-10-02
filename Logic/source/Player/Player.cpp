@@ -20,6 +20,9 @@ void Player::init(ProjectileManager* projectileManager, GameTime* gameTime)
 	m_weaponManager.init(projectileManager);
 	m_skillManager.init(projectileManager, gameTime);
 
+	// Stats
+	m_hp = PLAYER_STARTING_HP;
+
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
 	m_camPitch = 5;
@@ -63,6 +66,7 @@ void Player::onCollision(Entity& other)
 	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
 	{
 		printf("Enemy slapped you right in the face.\n");
+	//	m_hp--;
 	}
 	else if (Trigger* e = dynamic_cast<Trigger*>(&other))
 	{
@@ -118,15 +122,37 @@ void Player::readFromFile()
 
 }
 
+void Player::takeDamage(int damage)
+{
+	m_hp -= damage;
+}
+
+int Player::getHP() const
+{
+	return m_hp;
+}
+
 void Player::updateSpecific(float deltaTime)
 {
 	// Get Mouse and Keyboard states for this frame
-	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
+	DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
+	// Temp for testing
+	if (ks.IsKeyDown(DirectX::Keyboard::B))
+	{
+		btTransform transform = getRigidbody()->getWorldTransform();
+		transform.setOrigin({0, 0, 0});
+		getRigidbody()->setWorldTransform(transform);
+		getRigidbody()->setLinearVelocity({ 0, 0, 0 });
+		m_moveDir = {0, 0, 0};
+		m_moveSpeed = 0.f;
+	}
+
 	// Movement
-	mouseMovement(deltaTime, &ms);
+	if (!ks.IsKeyDown(DirectX::Keyboard::LeftAlt))	// !TEMP!
+		mouseMovement(deltaTime, &ms);
 	jump(deltaTime, &ks);
 
 	// If moving on y-axis, player is in air
@@ -143,7 +169,7 @@ void Player::updateSpecific(float deltaTime)
 		airMove(deltaTime, &ks);
 
 	// Print player velocity
-	printf("velocity: %f\n", m_moveSpeed);
+//	printf("velocity: %f\n", m_moveSpeed);
 
 	//crouch(deltaTime);
 
@@ -391,7 +417,22 @@ void Player::render(Graphics::Renderer & renderer)
 	m_weaponManager.render(renderer);
 }
 
-btVector3 Logic::Player::getForwardBT()
+float Logic::Player::getMoveSpeed() const
+{
+	return m_moveSpeed;
+}
+
+void Player::setMoveSpeed(float speed)
+{
+	m_moveSpeed = speed;
+}
+
+void Player::setMoveDirection(btVector3 moveDir)
+{
+	m_moveDir = moveDir;
+}
+
+btVector3 Player::getForwardBT()
 {
 	return btVector3(m_forward.x, m_forward.y, m_forward.z);
 }

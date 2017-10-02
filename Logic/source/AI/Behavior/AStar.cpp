@@ -1,9 +1,13 @@
 #include <AI/Behavior/AStar.h>
+#include <stack>
+#include <stdio.h> // for testing obv
+#define NO_PARENT -1
 using namespace Logic;
 
 AStar::AStar(std::string file)
 {
-
+	// for testing
+	generateNavigationMesh();
 }
 
 AStar::~AStar()
@@ -11,18 +15,182 @@ AStar::~AStar()
 
 }
 
-AStar::Node AStar::getNextNode(Entity const &enemy, Entity const &target)
+// returns nothing if on same triangle or an error occured
+std::vector<const DirectX::SimpleMath::Vector3*>
+	AStar::getPath(Entity const &enemy, Entity const &target)
 {
-	return { 0, target.getPositionBT() };
+	// all nodes in navMesh
+	std::vector<DirectX::SimpleMath::Vector3> nodes =
+		navigationMesh.getNodes();
+
+	// reset nav nodes
+	for (size_t i = 0; i < navNodes.size(); i++)
+	{
+		navNodes[i].onClosedList = navNodes[i].explored = false;
+		navNodes[i].h = navNodes[i].g = 0;
+		navNodes[i].parent = NO_PARENT;
+	}
+
+	// openlist and a test offset
+	auto comp = [](NavNode *fir, NavNode *sec) { return *fir > *sec; };
+	std::priority_queue<NavNode*, std::vector<NavNode*>, decltype(comp)> openList(comp);
+	DirectX::SimpleMath::Vector3 offset(0, 5, 0);
+
+	// get indicies
+	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset),
+		endIndex = navigationMesh.getIndex(target.getPosition() + offset);
+	// printf("StartIndex: %d, End index: %d (AStar.cpp:%d)\n", startIndex, endIndex, __LINE__);
+
+	// test special cases
+	if (startIndex == endIndex || startIndex == -1 || endIndex == -1)
+		return { };
+
+	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[endIndex]);
+	navNodes[startIndex].explored = true;
+	openList.push(&navNodes[startIndex]);
+
+	NavNode *currentNode = nullptr;
+	NavNode *explore = nullptr;
+
+	float f;
+
+
+	while (!openList.empty())
+	{
+		currentNode = openList.top();
+		f = currentNode->g + currentNode->h;
+		openList.pop();
+
+		for (int index : navigationMesh.getEdges(currentNode->nodeIndex))
+		{
+			explore = &navNodes[index];
+			if (index == endIndex) 
+			{
+				explore->parent = currentNode->nodeIndex;
+				currentNode = explore;
+				break; // found node
+			}
+
+			if (!explore->explored) // Unexplored
+			{
+				explore->explored = true;
+
+				explore->g = f;
+				explore->h = heuristic(nodes[index], nodes[endIndex]) * 0.1;
+
+				explore->parent = currentNode->nodeIndex;
+				openList.push(explore);
+			}
+			else if (explore->explored && !explore->onClosedList && explore->g > f) // in Open List
+			{
+				explore->g = f;
+
+				explore->parent = currentNode->nodeIndex;
+			}
+			else if (explore->g > f) // in Closed List
+			{
+				explore->onClosedList = false;
+
+				explore->g = f;
+
+				explore->parent = currentNode->nodeIndex;
+				openList.push(explore);
+			}
+		}
+
+		currentNode->onClosedList = true;
+	}
+
+	if (!currentNode)
+	{
+		printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
+			"Lukas or something (AStar.cpp:%d)\n", __LINE__);
+		return { };
+	}
+
+	return reconstructPath(currentNode);
+}
+
+std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode *endNode)
+{
+	// flip the list
+	std::stack<const DirectX::SimpleMath::Vector3*> list;
+	std::vector<const DirectX::SimpleMath::Vector3*> ret;
+
+	while (endNode->parent != NO_PARENT)
+	{
+		list.push(&(navigationMesh.getNodes()[endNode->nodeIndex]));
+		endNode = &navNodes[endNode->parent];
+	}
+
+	while (!list.empty())
+	{
+		ret.push_back(list.top());
+		list.pop();
+	}
+
+	return ret;
+}
+
+void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
+{
+	Graphics::RenderInfo info;
 }
 
 void AStar::generateNavigationMesh()
 {
 	PASVF pasvf;
 	pasvf.generateNavMesh(navigationMesh, {}, {});
+	navigationMesh.createNodesFromTriangles();
+	// test //
+#define ROW 4
+	for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
+	{
+		if (i % ROW != 0)
+		{
+			navigationMesh.addEdge(i, i + 1);
+			navigationMesh.addEdge(i + 1, i);
+		}
+
+		if (i < navigationMesh.getNodes().size() - ROW - 1)
+		{
+			navigationMesh.addEdge(i, i + ROW);
+			navigationMesh.addEdge(i + ROW, i);
+
+			if (i % ROW != 0)
+			{
+				navigationMesh.addEdge(i, i + ROW + 1);
+				navigationMesh.addEdge(i + ROW + 1, i);
+			}
+		}
+	}
+
+	navNodes.clear();
+	for (size_t i = 0; i < navigationMesh.getNodes().size(); i++)
+		navNodes.push_back(
+			{ false, false, 
+			static_cast<int> (i), 0, 0 }
+		);
+}
+
+float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,
+					   DirectX::SimpleMath::Vector3 &to) const
+{
+	return (to - from).LengthSquared(); // faster than Length()
 }
 
 void AStar::generateNodesFromFile()
 {
 
+}
+
+// this can maybe be optimized record most used functions to see which is needed
+bool AStar::nodeInQue(int index, std::priority_queue<NavNode*> que) const
+{
+	while (!que.empty())
+		if (que.top()->nodeIndex == index)
+			return true;
+		else
+			que.pop();
+	return false;
 }

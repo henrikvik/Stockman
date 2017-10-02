@@ -3,10 +3,10 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 
+#include <Engine\Profiler.h>
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
-
 
 #if USE_TEMP_CUBE
 #include "TempCube.h"
@@ -15,25 +15,36 @@
 #include "Animation\AnimatedTestCube.h"
 #endif
 
+#define MAX_DEBUG_POINTS 100
 
 namespace Graphics
 {
 
-	Renderer::Renderer(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-		: forwardPlus(gDevice, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
-		, fullscreenQuad(gDevice, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
-        , menuShader(gDevice, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
-        , GUIShader(gDevice, SHADER_PATH("GUIShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA }, {"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA} })
-		, depthStencil(gDevice, WIN_WIDTH, WIN_HEIGHT)
-        , instanceSBuffer(gDevice, CpuAccess::Write, INSTANCE_CAP)
-        , instanceOffsetBuffer(gDevice)
-		, skyRenderer(gDevice, SHADOW_MAP_RESOLUTION)
-	{
-		this->device = gDevice;
-		this->deviceContext = gDeviceContext;
-		this->backBuffer = backBuffer;
+	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
+		: forwardPlus(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
+		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
+        , menuShader(device, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
+        , GUIShader(device, SHADER_PATH("GUIShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } , {"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA} })
+		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
+        , instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
+        , instanceOffsetBuffer(device)
+		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
+		, postProcessor(device, deviceContext)
+		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
+		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
+		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
+    #pragma region RenderDebugInfo
+        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
+        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
+        , debugColorBuffer(device)
+    #pragma endregion
 
-		initialize(gDevice, gDeviceContext);
+	{
+		this->device = device;
+		this->deviceContext = deviceContext;
+		this->backBuffer = backBuffer;
+		
+		initialize(device, deviceContext);
 
         viewPort = { 0 };
         viewPort.Width = WIN_WIDTH;
@@ -45,6 +56,7 @@ namespace Graphics
 
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         loadModellessTextures();
+        menuTexturesLoaded = true;
         createMenuVBS();
         createGUIBuffers();
         createBlendState();
@@ -56,12 +68,12 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
-
         SAFE_RELEASE(menuQuad);
         SAFE_RELEASE(buttonQuad);
-        SAFE_RELEASE(buttonTexture);
-        SAFE_RELEASE(menuTexture);
-        SAFE_RELEASE(GUITexture);
+        unloadMenuTextures();
+        SAFE_RELEASE(GUITexture1);
+        SAFE_RELEASE(GUITexture2);
+		SAFE_RELEASE(glowTest);
         resourceManager.release();
 
     }
@@ -69,6 +81,11 @@ namespace Graphics
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
     {
         resourceManager.initialize(gDevice, gDeviceContext);
+
+		//temp
+		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
+
+
     }
 
 	void Renderer::updateLight(float deltaTime, Camera * camera)
@@ -78,6 +95,7 @@ namespace Graphics
 
     void Renderer::render(Camera * camera)
     {
+        unloadMenuTextures();
 #if ANIMATION_HIJACK_RENDER
 
         renderQueue.clear();
@@ -124,7 +142,6 @@ namespace Graphics
 #else
         cull();
         writeInstanceData();
-		
 
 		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
 		skyRenderer.drawShadows(deviceContext, &forwardPlus);
@@ -135,8 +152,11 @@ namespace Graphics
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 
-        static float clearColor[4] = { 0, 0.5, 0.7, 1 };
-        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+		static float clearColor[4] = { 0, 0.5, 0.7, 1 };
+		static float blackClearColor[4] = {0};
+		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
+		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
+		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
         deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 
@@ -211,12 +231,19 @@ namespace Graphics
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
 		deviceContext->VSSetConstantBuffers(2, 1, &lightBuffs[1]);
 
-		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+		ID3D11RenderTargetView * rtvs[] =
+		{
+			fakeBackBuffer,
+			glowMap
+		};
+		deviceContext->OMSetRenderTargets(2, rtvs, depthStencil);
 		
 		draw();
 		skyRenderer.renderSky(deviceContext, camera);
 
-        deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+		ID3D11RenderTargetView * rtvNULL[2] = {nullptr};
+
+        deviceContext->OMSetRenderTargets(2, rtvNULL, nullptr);
 
         ZeroMemory(SRVs, sizeof(SRVs));
         deviceContext->PSSetShaderResources(0, 4, SRVs);
@@ -227,8 +254,17 @@ namespace Graphics
         {
             this->drawToBackbuffer(grid.getDebugSRV());
         }
-        drawGUI();
+        
 #endif
+
+		///////Post effext
+		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+
+
+		drawToBackbuffer(fakeBackBufferSwap);
+
+        renderDebugInfo();
+        drawGUI();
     }
 
 
@@ -238,6 +274,11 @@ namespace Graphics
             throw "Renderer Exceeded Instance Cap.";
 
         renderQueue.push_back(renderInfo);
+    }
+
+    void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
+    {
+        renderDebugQueue.push_back(debugInfo);
     }
 
 
@@ -253,13 +294,37 @@ namespace Graphics
     //}
 
 
+    void Renderer::unloadMenuTextures()
+    {
+        if (menuTexturesLoaded == true)
+        {
+            SAFE_RELEASE(buttonTexture);
+            SAFE_RELEASE(menuTexture);
+            buttonTexture = nullptr;
+            menuTexture = nullptr;
+            menuTexturesLoaded = false;
+        }
+        
+    }
+
+    void Renderer::reloadMenuTextures()
+    {
+        if (menuTexturesLoaded == false)
+        {
+            ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("menuTexture.png"), nullptr, &menuTexture));
+            ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("button.png"), nullptr, &buttonTexture));
+            menuTexturesLoaded = true;
+        }
+    }
+
     //loads the textures for menu and GUI
     void Renderer::loadModellessTextures()
     {
        
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &menuTexture));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &buttonTexture));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("diffusemaptree.png"), nullptr, &GUITexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("menuTexture.png"), nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("button.png"), nullptr, &buttonTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("crosshair.png"), nullptr, &GUITexture1));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("HPbar.png"), nullptr, &GUITexture2));
 
     }
 
@@ -325,11 +390,12 @@ namespace Graphics
             deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
             deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-            static ID3D11ShaderResourceView * modelTextures[3] = { nullptr };
+            static ID3D11ShaderResourceView * modelTextures[4] = { nullptr };
             modelTextures[0] = model.diffuseMap;
             modelTextures[1] = model.normalMap;
             modelTextures[2] = model.specularMap;
-            deviceContext->PSSetShaderResources(10, 3, modelTextures);
+			modelTextures[3] = glowTest;
+            deviceContext->PSSetShaderResources(10, 4, modelTextures);
 
             deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, 0);
 #endif
@@ -364,7 +430,7 @@ namespace Graphics
     void Renderer::drawGUI()
     {
      
-        UINT stride = 12, offset = 0;
+        UINT stride = 20, offset = 0;
         deviceContext->IASetVertexBuffers(0, 1, &GUIvb, &stride, &offset);
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         deviceContext->IASetInputLayout(GUIShader);
@@ -375,6 +441,9 @@ namespace Graphics
         deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 
         deviceContext->VSSetShader(GUIShader, nullptr, 0);
+
+        deviceContext->PSSetShaderResources(0, 1, &GUITexture1);
+        deviceContext->PSSetShaderResources(1, 1, &GUITexture2);
         deviceContext->PSSetShader(GUIShader, nullptr, 0);
        
 
@@ -395,26 +464,26 @@ namespace Graphics
         //moves the buttons to ndc space
         TriangleVertex triangleVertices[6] =
         {
-            2 *((float)((info->m_rek.x + info->m_rek.width )) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
+            2 *((float)((info->m_rek.x + info->m_rek.width )) / WIN_WIDTH) - 1, 2 * ((float)(WIN_HEIGHT - info->m_rek.y - info->m_rek.height) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
             1.0f, 1.0f,
 
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) -1 , 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) - 1, 0.0f,	//v1
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) -1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v1
             0.0f, 1.0f,
 
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
             0.0f,  0.0f,
 
             //t2
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
+            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
             0.0f, 0.0f,
 
-            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((info->m_rek.y + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
             1.0f, 0.0f,
 
-            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) -1, 2 * ((float)((info->m_rek.y)) / WIN_HEIGHT) -1 , 0.0f, //v0
+            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) -1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) -1 , 0.0f, //v0
             1.0f, 1.0f,
         };
-        
+
         D3D11_MAPPED_SUBRESOURCE data = { 0 };
         ThrowIfFailed(deviceContext->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
         memcpy(data.pData, triangleVertices, sizeof(TriangleVertex) * 6);
@@ -425,6 +494,8 @@ namespace Graphics
     //draws the menu
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
+        reloadMenuTextures();
+
         //draws menu background
         float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         deviceContext->ClearRenderTargetView(backBuffer, clearColor);
@@ -463,16 +534,28 @@ namespace Graphics
         struct GUI
         {
             DirectX::SimpleMath::Vector2 verts;
+            DirectX::SimpleMath::Vector2 uv;
             UINT element;
         };
 
         GUI GUIquad[12];
-        GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.1f, -0.1f };
-        GUIquad[1].verts = DirectX::SimpleMath::Vector2{ -0.1f, 0.1f };
-        GUIquad[2].verts = DirectX::SimpleMath::Vector2{ 0.1f, -0.1f };
-        GUIquad[3].verts = DirectX::SimpleMath::Vector2{ 0.1f, 0.1f };
+        GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.05f, -0.05f };
+        GUIquad[0].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
+        GUIquad[1].verts = DirectX::SimpleMath::Vector2{ -0.05f, 0.05f };
+        GUIquad[1].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+        GUIquad[2].verts = DirectX::SimpleMath::Vector2{ 0.05f, -0.05f };
+        GUIquad[2].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+        GUIquad[3].verts = DirectX::SimpleMath::Vector2{ 0.05f, 0.05f };
+        GUIquad[3].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
         GUIquad[4].verts = GUIquad[2].verts;
+        GUIquad[4].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
         GUIquad[5].verts = GUIquad[1].verts;
+        GUIquad[5].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
         GUIquad[0].element = 0;
         GUIquad[1].element = 0;
@@ -483,11 +566,22 @@ namespace Graphics
 
 
         GUIquad[6].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
+        GUIquad[6].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
         GUIquad[7].verts = DirectX::SimpleMath::Vector2{ -1.0f, -0.8f };
-        GUIquad[8].verts = DirectX::SimpleMath::Vector2{ -0.7f, -1.0f };
-        GUIquad[9].verts = DirectX::SimpleMath::Vector2{ -0.7f, -0.8f };
+        GUIquad[7].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+        GUIquad[8].verts = DirectX::SimpleMath::Vector2{ -0.8f, -1.0f };
+        GUIquad[8].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+        GUIquad[9].verts = DirectX::SimpleMath::Vector2{ -0.8f, -0.8f };
+        GUIquad[9].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
         GUIquad[10].verts = GUIquad[8].verts;
+        GUIquad[10].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
         GUIquad[11].verts = GUIquad[7].verts;
+        GUIquad[11].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
         GUIquad[6].element = 1;
         GUIquad[7].element = 1;
@@ -558,6 +652,41 @@ namespace Graphics
 
     }
 
+    void Renderer::renderDebugInfo()
+    {
+        if (renderDebugQueue.size() == 0) return;
+
+        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
+        deviceContext->VSSetShaderResources(0, 1, debugPointsBuffer);
+        deviceContext->PSSetConstantBuffers(1, 1, debugColorBuffer);
+
+        deviceContext->IASetInputLayout(nullptr);
+        deviceContext->VSSetShader(debugRender, nullptr, 0);
+        deviceContext->PSSetShader(debugRender, nullptr, 0);
+
+        for (RenderDebugInfo * info : renderDebugQueue)
+        {
+            debugPointsBuffer.write( 
+                deviceContext, 
+                info->points->data(), 
+                info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
+            );
+
+            debugColorBuffer.write(
+                deviceContext,
+                &info->color,
+                sizeof(DirectX::SimpleMath::Color)
+            );
+
+            deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
+            deviceContext->Draw(info->points->size(), 0);
+        }
+
+        renderDebugQueue.clear();
+    }
+
     void Renderer::createBlendState()
     {
         D3D11_BLEND_DESC BlendState;
@@ -573,5 +702,6 @@ namespace Graphics
 
         ThrowIfFailed(this->device->CreateBlendState(&BlendState, &transparencyBlendState));
     }
+
 
 }

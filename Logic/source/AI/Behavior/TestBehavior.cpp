@@ -1,6 +1,12 @@
 #include <AI\Behavior\TestBehavior.h> 
-#include "../../../include/AI/Enemy.h"
+#include <AI\Enemy.h>
+
 using namespace Logic;
+
+TestBehavior::TestBehavior()
+{
+	
+}
 
 TestBehavior::~TestBehavior()
 {
@@ -8,8 +14,9 @@ TestBehavior::~TestBehavior()
 
 void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
 {
-	btVector3 dir = AStar::singleton().getNextNode(enemy, player).position
-		- enemy.getPositionBT();
+	/* UNDER CONSTRUCTION FOR NOW
+	btVector3 node = m_path.updateAndReturnCurrentNode(enemy, player);
+	btVector3 dir = node - enemy.getPositionBT();
 
 	dir = dir.normalize();
 	dir *= deltaTime / 1000.f;
@@ -23,4 +30,8 @@ void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
 	{
 		enemy.getRigidbody()->translate(dir);
 	}
+
+	if ((node - enemy.getPositionBT()).length() < 0.8f)
+		m_path.setCurrentNode(m_path.getCurrentNode() + 1);
+		*/
 }

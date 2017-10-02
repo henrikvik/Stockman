@@ -19,6 +19,7 @@
 #include "Skill\SkillManager.h"
 #include <Projectile\ProjectileManager.h>
 
+#define PLAYER_STARTING_HP				3
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
 #define PLAYER_MOVEMENT_MAX_SPEED		0.02f
 #define PLAYER_MOVEMENT_ACCELERATION	0.0002f
@@ -48,7 +49,10 @@ namespace Logic
 		WeaponManager m_weaponManager;
 		SkillManager m_skillManager;
 
-		// Stats
+		// UI States
+		int m_hp;
+
+		// Movements
 		PlayerState m_playerState;
 		DirectX::SimpleMath::Vector3 m_forward;
 		float m_moveMaxSpeed;
@@ -110,6 +114,12 @@ namespace Logic
 		void saveToFile();
 		void readFromFile();
 
+		void takeDamage(int damage);
+		int getHP() const;
+
+		float getMoveSpeed() const;
+		void setMoveSpeed(float speed);
+		void setMoveDirection(btVector3 moveDir);
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 	};
