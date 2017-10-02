@@ -21,6 +21,9 @@ namespace Logic
 
 		void use(btVector3 forward, Entity& shooter);
 		virtual void onUse(btVector3 forward, Entity& shooter) = 0;
+
+		void release();
+		virtual void onRelease() = 0;
 		
 		void update(float deltaTime);
 		virtual void onUpdate(float deltaTime) = 0;

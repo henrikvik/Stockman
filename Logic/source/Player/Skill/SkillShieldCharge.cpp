@@ -19,6 +19,8 @@ void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 	printf("Used Shield Charge.\n");
 }
 
+void SkillShieldCharge::onRelease() { }
+
 void SkillShieldCharge::onUpdate(float deltaTime)
 {
 

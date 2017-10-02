@@ -27,6 +27,7 @@ namespace Logic
 		~SkillGrapplingHook();
 
 		void onUse(btVector3 forward, Entity& shooter);
+		void onRelease();
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 	};

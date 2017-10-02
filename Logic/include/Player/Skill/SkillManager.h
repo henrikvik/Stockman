@@ -32,11 +32,15 @@ namespace Logic
 		void switchToSkill(int index);
 
 		void useSkill(btVector3 forward, Entity& shooter);
+		void releaseSkill();
+
 		void update(float deltaTime);
 		void render(Graphics::Renderer& renderer);
+
+		bool getCanBeUsed() const;
 	
 	private:
-
+		bool m_canBeUsed;
 		ProjectileManager* m_projectileManager;	
 		GameTime* m_gameTime;	
 

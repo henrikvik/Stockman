@@ -171,13 +171,19 @@ void Player::updateSpecific(float deltaTime)
 			m_weaponManager.switchWeapon(2);
 	}
 
+	// Skill
+	if (ks.IsKeyDown(m_useSkill) && m_skillManager.getCanBeUsed())
+	{
+		m_skillManager.useSkill(getForwardBT(), *this);
+	}
+	if (ks.IsKeyUp(m_useSkill) && !m_skillManager.getCanBeUsed())
+	{
+		m_skillManager.releaseSkill();
+	}
+
 	// Check if reloading
 	if (!m_weaponManager.isReloading())
 	{
-		// Skill
-		if (ks.IsKeyDown(m_useSkill))
-			m_skillManager.useSkill(getForwardBT(), *this);
-
 		// Primary and secondary attack
 		if (!m_weaponManager.isAttacking())
 		{

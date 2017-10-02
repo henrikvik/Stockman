@@ -5,6 +5,7 @@ using namespace Logic;
 SkillManager::SkillManager() 
 {
 	m_currentSkill = nullptr;
+	m_canBeUsed = true;
 }
 
 SkillManager::~SkillManager()
@@ -41,8 +42,18 @@ void SkillManager::switchToSkill(int index)
 
 void SkillManager::useSkill(btVector3 forward, Entity& shooter)
 {
+	m_canBeUsed = false;
+
 	if (m_currentSkill)
 		m_currentSkill->use(forward, shooter);
+}
+
+void SkillManager::releaseSkill()
+{
+	m_canBeUsed = true;
+
+	if (m_currentSkill)
+		m_currentSkill->release();
 }
 
 void SkillManager::update(float deltaTime)
@@ -53,4 +64,9 @@ void SkillManager::update(float deltaTime)
 void SkillManager::render(Graphics::Renderer& renderer)
 {
 	m_currentSkill->render(renderer);
+}
+
+bool Logic::SkillManager::getCanBeUsed() const
+{
+	return m_canBeUsed;
 }
