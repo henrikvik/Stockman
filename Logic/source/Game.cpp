@@ -106,6 +106,13 @@ void Game::update(float deltaTime)
 		m_player->update(m_gameTime.dt);
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
+
+		if (m_player->getHP() <= NULL)
+		{
+			printf("You ded bro.\n");
+			m_menu->setGameState(GameState::gameStateMenuMain);
+		}
+
 		break;
 
 	case gameStateLoading:
