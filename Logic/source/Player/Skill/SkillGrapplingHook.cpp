@@ -9,12 +9,19 @@ SkillGrapplingHook::SkillGrapplingHook(Physics* physics)
 	m_physicsPtr = physics;
 	m_shooter = nullptr;
 	m_point = { 0, 0, 0 };
+	renderDebug.points = new std::vector<DirectX::SimpleMath::Vector3>;
+	renderDebug.color = DirectX::SimpleMath::Color(1, 1, 1);
+	renderDebug.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+	renderDebug.useDepth = true;
 }
 
 SkillGrapplingHook::~SkillGrapplingHook()
 {
 	m_physicsPtr = nullptr;
 	m_shooter = nullptr;
+
+	// Debug
+	delete renderDebug.points;
 }
 
 void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
@@ -28,7 +35,12 @@ void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 			m_shooter = &shooter;
 			m_state = GrapplingHookStatePulling;
 			m_point = m_physicsPtr->RayTestGetPoint(Ray(shooter.getPositionBT(), forward, GRAPPLING_HOOK_RANGE));
-			renderDebug.color = DirectX::SimpleMath::Color ( rand() % 255, rand() % 255, rand() % 255 );
+
+			renderDebug.points->clear();
+			
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(shooter.getPositionBT() - (forward * 4.f)));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(shooter.getPositionBT() + (forward * GRAPPLING_HOOK_RANGE)));
+
 		}
 	}
 	else

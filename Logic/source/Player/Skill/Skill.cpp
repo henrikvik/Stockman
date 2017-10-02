@@ -10,6 +10,8 @@ Skill::Skill(float cooldown, float duration)
 	m_canUse = true;
 }
 
+Skill::~Skill() { }
+
 void Skill::use(btVector3 forward, Entity& shooter)
 {
 	if (m_canUse)

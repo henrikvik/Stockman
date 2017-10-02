@@ -57,7 +57,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 void Player::clear()
 {
 	m_weaponManager.clear();
-	//m_skillManager.clear();
+	m_skillManager.clear();
 }
 
 void Player::onCollision(Entity& other)
@@ -421,6 +421,7 @@ void Player::render(Graphics::Renderer & renderer)
 
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
+	m_skillManager.render(renderer);
 }
 
 float Logic::Player::getMoveSpeed() const

@@ -18,6 +18,7 @@ namespace Logic
 	{
 	public:
 		Skill(float cooldown, float duration = 0.f);
+		virtual ~Skill();
 
 		void use(btVector3 forward, Entity& shooter);
 		virtual void onUse(btVector3 forward, Entity& shooter) = 0;

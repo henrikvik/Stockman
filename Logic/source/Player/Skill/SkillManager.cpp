@@ -10,16 +10,16 @@ SkillManager::SkillManager()
 
 SkillManager::~SkillManager()
 {
+	for (int i = 0; i < m_allSkills.size(); i++)
+		delete m_allSkills[i];
+
 	m_currentSkill = nullptr;
 	clear();
 }
 
 void SkillManager::clear()
 {
-	for (int i = 0; i < m_allSkills.size(); i++)
-		delete m_allSkills[i];
 
-	m_allSkills.clear();
 }
 
 void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime)
@@ -32,7 +32,7 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, 
 	};
 
 
-	switchToSkill(2);
+	switchToSkill(1);
 }
 
 void SkillManager::switchToSkill(int index)

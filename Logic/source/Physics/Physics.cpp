@@ -111,7 +111,7 @@ const btRigidBody* Physics::RayTestOnRigidBodies(Ray& ray)
 	if (rayCallBack.hasHit())
 	{
 		const btCollisionObject* object = rayCallBack.m_collisionObject;
-		const btRigidBody* body = btRigidBody::upcast(object);;
+		const btRigidBody* body = btRigidBody::upcast(object);
 
 		return body;
 	}
