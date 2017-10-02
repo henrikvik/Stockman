@@ -64,6 +64,12 @@ struct VSOutput {
     float3 tangent : TANGENT;
 };
 
+struct PSOutput
+{
+    float4 backBuffer : SV_Target0;
+    float4 glowMap : SV_Target1;
+};
+
 VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
 	VSOutput output;
 
@@ -105,10 +111,7 @@ SamplerComparisonState cmpSampler : register(s1);
 Texture2D diffuseMap : register(t10);
 Texture2D normalMap : register(t11);
 Texture2D specularMap : register(t12);
-
-struct PSOutput {
-	float4 color : SV_Target;
-};
+Texture2D glowMap : register(t13);
 
 //Returns the shadow amount of a given position
 float getShadowValue(float4 lightPos, int sampleCount = 1)
@@ -205,7 +208,8 @@ PSOutput PS(VSOutput input) {
 
     float3 lighting = saturate(finalDiffuse + finalSpecular + ambient);
     
-    output.color = float4(lighting, 1);
+    output.backBuffer = float4(lighting, 1);
+    output.glowMap = glowMap.Sample(Sampler, input.uv);
 
         return output;
 }

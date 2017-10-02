@@ -10,14 +10,16 @@
 #include "WICTextureLoader.h"
 #include "Lights\LightGrid.h"
 #include "Resources\ResourceManager.h"
-#include "Resources\DepthStencil.h"
+#include "Utility\DepthStencil.h"
 #include "Resources\ResourceManager.h"
-#include "Resources\Shader.h"
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
+#include "Utility\ShaderResource.h"
+#include "PostProccessor.h";
 #include "SkyRenderer.h"
 
 #include <SpriteBatch.h>
+
 
 namespace Graphics
 {
@@ -26,20 +28,24 @@ namespace Graphics
     public:
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
 		virtual ~Renderer();
-        void render(Camera * camera);
-        void drawMenu(Graphics::MenuInfo * info);
-        void queueRender(RenderInfo * renderInfo);
         void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
 
+
+        void render(Camera * camera);
+        void queueRender(RenderInfo * renderInfo);
+        void queueRenderDebug(RenderDebugInfo * debugInfo);
+
+        void drawMenu(Graphics::MenuInfo * info);
 		void updateLight(float deltaTime, Camera * camera);
     private:
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
-        std::vector<RenderInfo*> renderQueue;
         InstanceQueue_t instanceQueue;
+        std::vector<RenderInfo*> renderQueue;
 
         DepthStencil depthStencil;
 
 		SkyRenderer skyRenderer;
+		PostProcessor postProcessor;
 
 		LightGrid grid;
 		DirectX::CommonStates *states;
@@ -66,6 +72,10 @@ namespace Graphics
         void reloadMenuTextures();
 
         
+
+		ShaderResource fakeBackBuffer;
+		ShaderResource fakeBackBufferSwap;
+		ShaderResource glowMap;
 
         ///// SUPER TEMP
        
@@ -95,6 +105,9 @@ namespace Graphics
 
         void loadModellessTextures();
 
+		ID3D11ShaderResourceView * glowTest;
+
+       
         void cull();
         void writeInstanceData();
         void draw();
@@ -113,5 +126,17 @@ namespace Graphics
         void createGUIBuffers();
 
         void createMenuVBS();
+
+
+    #pragma region RenderDebugInfo
+
+        Shader debugRender;
+        std::vector<RenderDebugInfo*> renderDebugQueue;
+        StructuredBuffer<DirectX::SimpleMath::Vector3> debugPointsBuffer;
+        ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
+        void renderDebugInfo();
+
+    #pragma endregion
+
     };
 };

@@ -154,6 +154,11 @@ GameState Logic::MenuMachine::currentState()
 	return currentActiveState;
 }
 
+void MenuMachine::setGameState(GameState gameState)
+{
+	currentActiveState = gameState;
+}
+
 void Logic::MenuMachine::buttonClick0()
 {
 	stateToBe = gameStateMenuSettings;

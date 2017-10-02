@@ -49,6 +49,8 @@ void Physics::clear()
 	delete collisionConfiguration;
 }
 
+#include <BulletCollision\CollisionDispatch\btGhostObject.h>
+
 void Physics::update(GameTime gameTime)
 {
 	static std::chrono::steady_clock::time_point begin;
@@ -80,6 +82,7 @@ void Physics::update(GameTime gameTime)
 		{
 			Entity* pbodyA = reinterpret_cast<Entity*>(obA->getUserPointer());
 			Entity* pbodyB = reinterpret_cast<Entity*>(obB->getUserPointer());
+			
 
 			if (pbodyA && pbodyB)
 			{
