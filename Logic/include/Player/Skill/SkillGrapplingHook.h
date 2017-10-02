@@ -15,7 +15,7 @@
 
 #define GRAPPLING_HOOK_CD	 500.f
 #define GRAPPLING_HOOK_RANGE 500.f
-#define GRAPPLING_HOOK_SPEED 50.f
+#define GRAPPLING_HOOK_SPEED 0.06f
 
 namespace Logic
 {

@@ -54,8 +54,9 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 		btVector3 dirToPoint =  (m_point - m_shooter->getPositionBT()).normalize();
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
+			player->getRigidbody()->setLinearVelocity({ 0, dirToPoint.y() * GRAPPLING_HOOK_SPEED, 0 });
 			player->setMoveDirection(dirToPoint);
-			player->setMoveSpeed(0.2f);
+			player->setMoveSpeed(GRAPPLING_HOOK_SPEED);
 		}
 	}
 }
