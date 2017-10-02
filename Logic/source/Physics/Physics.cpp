@@ -93,6 +93,7 @@ void Physics::update(GameTime gameTime)
 	}
 }
 
+// Returns nullptr if not intersecting, otherwise returns the rigidbody of the hit
 const btRigidBody* Physics::RayTestOnRigidBodies(Ray& ray)
 {
 	const btVector3& start	= ray.getStart();
@@ -111,6 +112,25 @@ const btRigidBody* Physics::RayTestOnRigidBodies(Ray& ray)
 	}
 
 	return nullptr;
+}
+
+// Returns the actual point of intersection, returns { 0, 0, 0 } if not hit (I KNOW, IT BECOMES FUCKING STUPID IF YOU ACTUALLY HIT THE 0,0,0, BUT I DIDN''T FIND A SIMPLE WAY)
+const btVector3 Physics::RayTestGetPoint(Ray & ray)
+{
+	const btVector3& start = ray.getStart();
+	const btVector3& end = ray.getEnd();
+
+	// Ray testing to see first callback
+	btCollisionWorld::ClosestRayResultCallback rayCallBack(start, end);
+	this->rayTest(start, end, rayCallBack);
+
+	if (rayCallBack.hasHit())
+	{
+		const btVector3 object = rayCallBack.m_hitPointWorld;
+		return object;
+	}
+
+	return { 0, 0, 0 };
 }
 
 btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)

@@ -13,7 +13,9 @@
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
 
-#define GRAPPLING_HOOK_CD 500.f
+#define GRAPPLING_HOOK_CD	 500.f
+#define GRAPPLING_HOOK_RANGE 500.f
+#define GRAPPLING_HOOK_SPEED 50.f
 
 namespace Logic
 {
@@ -23,11 +25,14 @@ namespace Logic
 		GrapplingHookStatePulling
 	};
 
+	class Player;
 	class SkillGrapplingHook : public Skill
 	{
 	private:
 		Physics* m_physicsPtr;
 		GrapplingHookState m_state;
+		Entity* m_shooter;
+		btVector3 m_point;
 
 	public:
 		SkillGrapplingHook(Physics* physics);

@@ -56,8 +56,8 @@ namespace Logic
 		bool init();
 		void update(GameTime gameTime);
 
-		// Returns nullptr if not intersecting, otherwise returns the rigidbody of the hit
 		const btRigidBody* RayTestOnRigidBodies(Ray& ray);
+		const btVector3 RayTestGetPoint(Ray& ray);
 
 		// Returns a ptr to the created rigidbody
 		// Works with different primitives
@@ -65,10 +65,10 @@ namespace Logic
 		// Sensor is used for triggers and will not interact with other rigidbodies
 		//	but it will tell us if it collides with anything
 		btRigidBody* createBody(Cube& cube, float mass, bool isSensor = false);
-		btRigidBody* createBody(Plane& plane, float mass, bool isSensor = false);
-		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor = false);
-		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false); // Currently a kinematic body, can't be used for other stuff than player
-		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);
+		btRigidBody* createBody(Plane& plane, float mass, bool isSensor = false);			// Static infinite plane, keep this temporary
+		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor = false);			
+		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false);
+		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);		// Should be used for player & enemies
 
 	private:
 		btCollisionDispatcher* dispatcher;
