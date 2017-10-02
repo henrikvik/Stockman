@@ -20,7 +20,5 @@
 	"Name" : "Game";
 	"State" : 0;
 	"Background" : "a";
-	"buttonAmmount" : 1;
-
-	"button1" :  "GameButton1";
+	"buttonAmmount" : 0;
 }

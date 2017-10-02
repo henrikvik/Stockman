@@ -31,7 +31,7 @@ namespace Logic
 		public:	
 			enum BEHAVIOR_ID { TEST };
 
-			Enemy(btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, int enemyType, int animationId);
+			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, int enemyType, int animationId);
 			virtual ~Enemy();
 
 			virtual void update(Player const &player, float deltaTime);
