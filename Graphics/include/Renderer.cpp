@@ -37,7 +37,6 @@ namespace Graphics
 		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
 		, debugColorBuffer(device)
 #pragma endregion
-		, fogShader(device, SHADER_PATH("Fog.hlsl"))
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -684,18 +683,6 @@ namespace Graphics
 
         renderDebugQueue.clear();
     }
-
-	void Renderer::renderFog()
-	{
-		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
-
-		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
-
-		deviceContext->IASetInputLayout(nullptr);
-		deviceContext->VSSetShader(fogShader, nullptr, 0);
-		deviceContext->PSSetShader(fogShader, nullptr, 0);
-
-	}
 
     void Renderer::createBlendState()
     {
