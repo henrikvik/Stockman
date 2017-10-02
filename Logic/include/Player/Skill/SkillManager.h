@@ -26,7 +26,7 @@ namespace Logic
 		SkillManager();
 		~SkillManager();
 
-		void init(ProjectileManager* projectileManager, GameTime* gameTime);
+		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
 
 		void switchToSkill(int index);

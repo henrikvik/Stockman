@@ -13,18 +13,17 @@
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
 
-#define GRAPPLING_HOOK_CD 1000.f
+#define GRAPPLING_HOOK_CD 500.f
 
 namespace Logic
 {
 	class SkillGrapplingHook : public Skill
 	{
 	private:
-		ProjectileData m_projectileData;
-		ProjectileManager* m_projectileManager;
+		Physics* m_physicsPtr;
 
 	public:
-		SkillGrapplingHook(ProjectileManager* projectileManager, ProjectileData projectileData);
+		SkillGrapplingHook(Physics* physics);
 		~SkillGrapplingHook();
 
 		void onUse(btVector3 forward, Entity& shooter);

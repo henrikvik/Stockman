@@ -2,21 +2,21 @@
 
 using namespace Logic;
 
-SkillGrapplingHook::SkillGrapplingHook(ProjectileManager * projectileManager, ProjectileData projectileData)
+SkillGrapplingHook::SkillGrapplingHook(Physics* physics)
 : Skill(GRAPPLING_HOOK_CD)
 {
-	m_projectileManager = projectileManager;
-	m_projectileData = projectileData;
+	m_physicsPtr = physics;
 }
 
 SkillGrapplingHook::~SkillGrapplingHook()
 {
-	m_projectileManager = nullptr;
+	m_physicsPtr = nullptr;
 }
 
 void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 {
-	m_projectileManager->addProjectile(m_projectileData, shooter.getPositionBT(), forward, shooter);
+
+
 }
 
 void SkillGrapplingHook::onUpdate(float deltaTime)
