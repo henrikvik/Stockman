@@ -271,7 +271,7 @@ int Engine::run()
 		}
 
         static bool F2wasPressed = false;
-        bool F2keyDown = !wasPressed && ks.F2;
+        bool F2keyDown = !F2wasPressed && ks.F2;
         F2wasPressed = ks.F2;
 
 		if (F2keyDown)
