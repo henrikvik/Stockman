@@ -14,6 +14,7 @@ namespace Logic
 		virtual ~TestBehavior();
 
 		virtual void update(Enemy &enemy, Player const &player, float deltaTime);
+		virtual void updatePath(Entity const &from, Entity const &to);
 	};
 }
 

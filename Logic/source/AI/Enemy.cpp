@@ -32,12 +32,16 @@ Enemy::~Enemy() {
 		delete m_behavior;
 }
 
-void Enemy::update(Player const &player, float deltaTime) {
+void Enemy::update(Player const &player, float deltaTime, bool updatePath) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 
-	if (m_behavior)
+	if (m_behavior) // remove later for better perf
+	{
+		if (updatePath)
+			m_behavior->updatePath(*this, player);
 		m_behavior->update(*this, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+	}
 }
 
 void Enemy::damage(float damage)

@@ -10,6 +10,7 @@ namespace Logic {
 		public:
 			virtual ~Behavior() {}
 			virtual void update(Enemy &enemy, Player const &player, float deltaTime) = 0;
+			virtual void updatePath(Entity const &from, Entity const &to) = 0;
 	};
 }
 

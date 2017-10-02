@@ -2,6 +2,7 @@
 using namespace Logic;
 
 #define ENEMY_START_COUNT 16
+#define ENEMIES_PATH_UPDATE_PER_FRAME 4
 #define TEST_NAME "helloWave"
 
 #include <AI/EnemyTest.h>
@@ -12,6 +13,7 @@ using namespace Logic;
 EntityManager::EntityManager()
 {
 	m_currentWave = 0;
+	m_frame = 0;
 
 	reserveData();
 
@@ -39,11 +41,12 @@ void EntityManager::reserveData()
 void EntityManager::update(Player const &player, float deltaTime) 
 {
 	clock_t begin = clock();
+	m_frame++;
 
 	AStar::singleton().loadTargetIndex(player);
 	for (int i = 0; i < m_enemies.size(); ++i)
 	{
-		m_enemies[i]->update(player, deltaTime);
+		m_enemies[i]->update(player, deltaTime, i % (m_frame + ENEMIES_PATH_UPDATE_PER_FRAME) == 0);
 		if (m_enemies[i]->getHealth() <= 0) {
 			m_deadEnemies.push_back(m_enemies[i]);
 			std::swap(m_enemies[i], m_enemies[m_enemies.size() - 1]);
@@ -63,7 +66,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-//	printf("t: %f\n", elapsed_secs);
+	printf("t: %f\n", elapsed_secs);
 
 	m_triggerManager.update(deltaTime);
 }
@@ -72,6 +75,7 @@ void EntityManager::spawnWave(Physics &physics)
 {
 	std::vector<int> enemies = m_waveManager.getEnemies(m_currentWave);
 	m_enemies.reserve(enemies.size() + m_enemies.size());
+	m_frame = 0;
 
 	if (m_currentWave == 1)
 	{

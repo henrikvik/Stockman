@@ -34,7 +34,7 @@ namespace Logic
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
-		int m_currentWave;
+		int m_currentWave, m_frame;
 
 		void reserveData(); // reserve space in vectors
 	public:

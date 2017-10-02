@@ -33,3 +33,9 @@ void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
 	if ((node - enemy.getPositionBT()).length() < 0.8f)
 		m_path.setCurrentNode(m_path.getCurrentNode() + 1);
 }
+
+void TestBehavior::updatePath(Entity const &from, Entity const &to)
+{
+	m_path.loadPath(from, to);
+	m_path.setCurrentNode(0);
+}
