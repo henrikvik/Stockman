@@ -44,6 +44,14 @@ void Enemy::update(Player const &player, float deltaTime, bool updatePath) {
 	}
 }
 
+void Enemy::debugRendering(Graphics::Renderer & renderer)
+{
+	if (m_behavior)
+	{
+		m_behavior->debugRendering(renderer);
+	}
+}
+
 void Enemy::damage(float damage)
 {
 	m_health -= damage;

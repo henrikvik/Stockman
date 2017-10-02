@@ -9,12 +9,14 @@ namespace Logic
 	{
 	private:
 		SimplePathing m_path;
+		Graphics::RenderDebugInfo debugInfo;
 	public:
 		TestBehavior();
 		virtual ~TestBehavior();
 
 		virtual void update(Enemy &enemy, Player const &player, float deltaTime);
 		virtual void updatePath(Entity const &from, Entity const &to);
+		virtual void debugRendering(Graphics::Renderer &renderer);
 	};
 }
 

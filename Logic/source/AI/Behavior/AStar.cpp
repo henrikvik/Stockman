@@ -1,6 +1,7 @@
 #include <AI/Behavior/AStar.h>
 #include <stack>
 #include <stdio.h> // for testing obv
+#include <cmath>
 #define NO_PARENT -1
 using namespace Logic;
 
@@ -157,7 +158,12 @@ void AStar::generateNavigationMesh()
 	pasvf.generateNavMesh(navigationMesh, {}, {});
 	navigationMesh.createNodesFromTriangles();
 	// test //
-#define ROW 12
+	/*
+		Basicly, divided by two because there is two triangles per square,
+		then square root because it is a square matrix (rows = columns).
+		Then times two again because one row = number of squares * 2.
+	*/
+	const int ROW = std::sqrt(navigationMesh.getNodes().size() / 2) * 2;
 	for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
 	{
 		if ((i + 1) % ROW != 0)

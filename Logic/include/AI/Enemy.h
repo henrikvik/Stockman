@@ -39,6 +39,10 @@ namespace Logic
 			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
+
+			// for debugging
+			void debugRendering(Graphics::Renderer &renderer);
+
 			void damage(float damage);
 			void setBehavior(BEHAVIOR_ID id);
 

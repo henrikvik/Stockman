@@ -2,8 +2,10 @@
 using namespace Logic;
 
 #define ENEMY_START_COUNT 16
-#define ENEMIES_PATH_UPDATE_PER_FRAME 4
+#define ENEMIES_PATH_UPDATE_PER_FRAME 3
 #define TEST_NAME "helloWave"
+#define DEBUG_ASTAR true
+#define DEBUG_PATH true
 
 #include <AI/EnemyTest.h>
 #include <AI\Behavior\AStar.h>
@@ -46,7 +48,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 	AStar::singleton().loadTargetIndex(player);
 	for (int i = 0; i < m_enemies.size(); ++i)
 	{
-		m_enemies[i]->update(player, deltaTime, i % (m_frame + ENEMIES_PATH_UPDATE_PER_FRAME) == 0);
+		m_enemies[i]->update(player, deltaTime, (i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0);
 		if (m_enemies[i]->getHealth() <= 0) {
 			m_deadEnemies.push_back(m_enemies[i]);
 			std::swap(m_enemies[i], m_enemies[m_enemies.size() - 1]);
@@ -134,6 +136,8 @@ void EntityManager::render(Graphics::Renderer &renderer)
 	for (int i = 0; i < m_enemies.size(); ++i)
 	{
 		m_enemies[i]->render(renderer);
+		if (DEBUG_PATH)
+			m_enemies[i]->debugRendering(renderer);
 	}
 
 	for (int i = 0; i < m_bossEnemies.size(); ++i)
@@ -147,7 +151,9 @@ void EntityManager::render(Graphics::Renderer &renderer)
 	}
 
 	m_triggerManager.render(renderer);
-	AStar::singleton().renderNavigationMesh(renderer);
+
+	if (DEBUG_ASTAR)
+		AStar::singleton().renderNavigationMesh(renderer);
 }
 
 int EntityManager::getCurrentWave() const 
