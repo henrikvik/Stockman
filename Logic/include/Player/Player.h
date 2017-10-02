@@ -103,7 +103,7 @@ namespace Logic
 		Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();
 
-		void init(ProjectileManager* projectileManager, GameTime* gameTime);
+		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
 		void updateSpecific(float deltaTime);
 		void onCollision(Entity& other);

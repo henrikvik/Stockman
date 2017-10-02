@@ -27,6 +27,8 @@ void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 	m_travelProjectile = m_projectileManager->addProjectile(travelPData, shooter.getPositionBT(), forward, shooter);
 }
 
+void SkillBulletTime::onRelease() { }
+
 void SkillBulletTime::onUpdate(float deltaTime)
 {
 	if (m_sensor)

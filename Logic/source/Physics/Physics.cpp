@@ -74,15 +74,20 @@ void Physics::update(GameTime gameTime)
 	for (int i = 0; i < numManifolds; i++)
 	{
 		btPersistentManifold* contactManifold = dispatcher->getManifoldByIndexInternal(i);
+	
 		const btCollisionObject* obA = contactManifold->getBody0();
 		const btCollisionObject* obB = contactManifold->getBody1();
 
 		int numContacts = contactManifold->getNumContacts();
-		if (numContacts > 0)
+		if (numContacts > 0) // Only returns the first contact as for now, fix this
 		{
+			btManifoldPoint contactPoint = contactManifold->getContactPoint(0);
+			btVector3 b = contactPoint.getPositionWorldOnA();
+			btVector3 a = contactPoint.getPositionWorldOnB();
+
+
 			Entity* pbodyA = reinterpret_cast<Entity*>(obA->getUserPointer());
 			Entity* pbodyB = reinterpret_cast<Entity*>(obB->getUserPointer());
-			
 
 			if (pbodyA && pbodyB)
 			{
@@ -93,7 +98,8 @@ void Physics::update(GameTime gameTime)
 	}
 }
 
-const btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
+// Returns nullptr if not intersecting, otherwise returns the rigidbody of the hit
+const btRigidBody* Physics::RayTestOnRigidBodies(Ray& ray)
 {
 	const btVector3& start	= ray.getStart();
 	const btVector3& end	= ray.getEnd();
@@ -105,12 +111,31 @@ const btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
 	if (rayCallBack.hasHit())
 	{
 		const btCollisionObject* object = rayCallBack.m_collisionObject;
-		const btRigidBody* body = btRigidBody::upcast(object);;
+		const btRigidBody* body = btRigidBody::upcast(object);
 
 		return body;
 	}
 
 	return nullptr;
+}
+
+// Returns the actual point of intersection, returns { 0, 0, 0 } if not hit (I KNOW, IT BECOMES FUCKING STUPID IF YOU ACTUALLY HIT THE 0,0,0, BUT I DIDN''T FIND A SIMPLE WAY)
+const btVector3 Physics::RayTestGetPoint(Ray & ray)
+{
+	const btVector3& start = ray.getStart();
+	const btVector3& end = ray.getEnd();
+
+	// Ray testing to see first callback
+	btCollisionWorld::ClosestRayResultCallback rayCallBack(start, end);
+	this->rayTest(start, end, rayCallBack);
+
+	if (rayCallBack.hasHit())
+	{
+		const btVector3 object = rayCallBack.m_hitPointWorld;
+		return object;
+	}
+
+	return { 0, 0, 0 };
 }
 
 btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
