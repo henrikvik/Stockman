@@ -25,11 +25,12 @@ namespace Logic
 	class Enemy : public Entity 
 	{
 		private:
-			float m_health, m_maxHealth, m_baseDamage; 
+			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
+			float m_moveSpeedMod;									// Variables for effect modifiers
 			int m_enemyType;
 			// Animation m_animation;
 		public:	
-			Enemy(btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, int enemyType, int animationId);
+			Enemy(btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, float moveSpeed, int enemyType, int animationId);
 			virtual ~Enemy();
 
 			virtual void update(Player const &player, float deltaTime);
@@ -42,6 +43,7 @@ namespace Logic
 			float getHealth() const;
 			float getMaxHealth() const;
 			float getBaseDamage() const;
+			float getMoveSpeed() const;
 			int getEnemyType() const;
 		protected: //for testing
 			Logic::Behavior *m_behavior;

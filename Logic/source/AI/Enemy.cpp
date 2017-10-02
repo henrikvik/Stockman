@@ -2,12 +2,13 @@
 #include <AI\Behavior\TestBehavior.h>
 using namespace Logic;
 
-Enemy::Enemy(btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, int enemyType, int animationId)
+Enemy::Enemy(btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, float moveSpeed, int enemyType, int animationId)
 : Entity(body, halfExtent)
 {
 	m_behavior = nullptr;
 	m_health = health;
 	m_baseDamage = baseDamage;
+	m_moveSpeed = moveSpeed;
 	m_enemyType = enemyType;
 
 	//animation todo
@@ -25,6 +26,8 @@ void Enemy::update(Player const &player, float deltaTime) {
 
 	if (m_behavior)
 		m_behavior->update(*this, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+
+	m_moveSpeedMod = 0.f; // Reset effect variables, should be in function if more variables are added.
 }
 
 void Enemy::damage(float damage)
@@ -41,7 +44,7 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 	if (flags & Effect::EFFECT_ON_FIRE)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
-		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f, 0));
+		m_moveSpeedMod += effect.getModifiers()->modifyMovementSpeed;
 }
 
 float Enemy::getHealth() const
@@ -57,6 +60,11 @@ float Enemy::getMaxHealth() const
 float Enemy::getBaseDamage() const
 {
 	return m_baseDamage;
+}
+
+float Enemy::getMoveSpeed() const
+{
+	return m_moveSpeed + m_moveSpeedMod;
 }
 
 int Enemy::getEnemyType() const

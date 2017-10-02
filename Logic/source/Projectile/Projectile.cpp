@@ -59,16 +59,21 @@ void Projectile::updateSpecific(float deltaTime)
 
 void Projectile::onCollision(Entity & other)
 {
-	// TEMP
-	Player* p = dynamic_cast<Player*>(&other);
-	if (!p)
+	if (m_type != ProjectileType::ProjectileTypeBulletTime && m_type != ProjectileType::ProjectileTypeBulletTimeSensor)
 	{
-		m_remove = true;
+		// TEMP
+		Player* p = dynamic_cast<Player*>(&other);
+		if (!p)
+		{
+			m_remove = true;
 
-		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
-			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
-				m_remove = false;
+			for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
+				if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
+					m_remove = false;
+		}
 	}
+	
+
 }
 
 void Projectile::upgrade(Upgrade const &upgrade)

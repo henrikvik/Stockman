@@ -12,6 +12,7 @@ namespace Logic
 		ProjectileTypeMelee,
 		ProjectileTypeShield,
 		ProjectileTypeBulletTime,
+		ProjectileTypeBulletTimeSensor,
 		ProjectileTypeIce
 	};
 

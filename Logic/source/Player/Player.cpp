@@ -143,7 +143,7 @@ void Player::updateSpecific(float deltaTime)
 		airMove(deltaTime, &ks);
 
 	// Print player velocity
-	printf("velocity: %f\n", m_moveSpeed);
+	//printf("velocity: %f\n", m_moveSpeed);
 
 	//crouch(deltaTime);
 
