@@ -62,7 +62,6 @@ void Player::clear()
 
 void Player::onCollision(Entity& other)
 {
-	m_hp--;
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);
 	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
 	{

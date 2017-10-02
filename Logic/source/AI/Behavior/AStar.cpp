@@ -13,7 +13,8 @@ AStar::AStar(std::string file)
 
 AStar::~AStar()
 {
-
+	delete debugDataTri.points;
+	delete debugDataEdges.points;
 }
 
 // returns nothing if on same triangle or an error occured
@@ -139,7 +140,8 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 
 void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
 {
-	renderer.queueRenderDebug(&info);
+	renderer.queueRenderDebug(&debugDataTri);
+	renderer.queueRenderDebug(&debugDataEdges);
 }
 
 void AStar::loadTargetIndex(Entity const & target)
@@ -183,9 +185,13 @@ void AStar::generateNavigationMesh()
 		);
 
 	// debugging
-	info.color = DirectX::SimpleMath::Color(0, 1, 0);
-	info.useDepth = false;
-	info.points = navigationMesh.getRenderData();
+	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
+	debugDataTri.useDepth = false;
+	debugDataTri.points = navigationMesh.getRenderDataTri();
+
+	debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);
+	debugDataEdges.useDepth = false;
+	debugDataEdges.points = navigationMesh.getRenderDataEdges();
 }
 
 float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,

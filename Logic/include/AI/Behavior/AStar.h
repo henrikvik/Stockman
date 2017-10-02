@@ -22,7 +22,7 @@ namespace Logic
 			};
 
 			// debugging
-			Graphics::RenderDebugInfo info;
+			Graphics::RenderDebugInfo debugDataTri, debugDataEdges;
 
 			// to calc path testing rn
 			struct NavNode
