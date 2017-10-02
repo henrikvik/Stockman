@@ -14,6 +14,8 @@ void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 	printf("Bullet Time used.\n");
 }
 
+void SkillBulletTime::onRelease() { }
+
 void SkillBulletTime::onUpdate(float deltaTime)
 {
 
