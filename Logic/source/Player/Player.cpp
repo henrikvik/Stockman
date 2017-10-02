@@ -72,8 +72,13 @@ void Player::onCollision(Entity& other)
 	{
 		
 	}
-	else
-		m_playerState = PlayerState::STANDING; // TEMP
+	else if (m_playerState == PlayerState::IN_AIR)
+	{
+	
+
+		m_playerState = PlayerState::STANDING;
+	}
+		
 }
 
 void Player::onCollision(Projectile& other)
