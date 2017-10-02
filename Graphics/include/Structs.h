@@ -34,6 +34,13 @@ namespace Graphics
 		DirectX::SimpleMath::Matrix translation;
 	};
 
+    struct RenderDebugInfo
+    {
+        bool useDepth;
+        DirectX::SimpleMath::Color color;
+        std::vector<DirectX::SimpleMath::Vector3>* points;
+    };
+
 	// TODO: Change
 #define NUM_LIGHTS 8
 
