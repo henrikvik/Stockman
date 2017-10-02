@@ -2,6 +2,7 @@
 #include <stack>
 #include <stdio.h> // for testing obv
 #include <cmath>
+#include <Engine\Profiler.h>
 #define NO_PARENT -1
 using namespace Logic;
 
@@ -22,6 +23,8 @@ AStar::~AStar()
 std::vector<const DirectX::SimpleMath::Vector3*>
 	AStar::getPath(Entity const &enemy, Entity const &target)
 {
+	PROFILE_BEGIN("AStar::getPath()");
+
 	// all nodes in navMesh
 	std::vector<DirectX::SimpleMath::Vector3> nodes =
 		navigationMesh.getNodes();
@@ -111,6 +114,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 		return { };
 	}
 
+	PROFILE_END();
 	return reconstructPath(currentNode);
 }
 

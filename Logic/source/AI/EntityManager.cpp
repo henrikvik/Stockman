@@ -9,6 +9,7 @@ using namespace Logic;
 
 #include <AI/EnemyTest.h>
 #include <AI\Behavior\AStar.h>
+#include <Engine\Profiler.h>
 #include <ctime>
 #include <stdio.h>
 
@@ -44,7 +45,8 @@ void EntityManager::update(Player const &player, float deltaTime)
 {
 	clock_t begin = clock();
 	m_frame++;
-
+	PROFILE_BEGIN("EntityManager::update()");
+	
 	AStar::singleton().loadTargetIndex(player);
 	for (int i = 0; i < m_enemies.size(); ++i)
 	{
@@ -72,6 +74,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 	printf("Entity Time Elapsed: %f seconds, (EntityManager.cpp:%d)\n", elapsed_secs, __LINE__);
 
 	m_triggerManager.update(deltaTime);
+	PROFILE_END();
 }
 
 void EntityManager::spawnWave(Physics &physics) 
@@ -86,7 +89,7 @@ void EntityManager::spawnWave(Physics &physics)
 		{
 			i += 1;
 			//m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 8.f, i * 10.f, i * 1.f }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f}), 100, false), { 0.5f, 0.5f, 0.5f}));
-            m_enemies.push_back(new EnemyTest(Graphics::ModelID::CUBE, physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f }), 100, false), { 0.5f, 0.5f, 0.5f }));
+            m_enemies.push_back(new EnemyTest(Graphics::ModelID::CUBE, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f }));
 		}
 		/*
 		m_triggerManager.addTrigger(Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
