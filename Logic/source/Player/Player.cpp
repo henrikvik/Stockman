@@ -4,8 +4,8 @@
 
 using namespace Logic;
 
-Player::Player(btRigidBody* body, btVector3 halfExtent)
-: Entity(body, halfExtent)
+Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
+: Entity(body, halfExtent, modelID)
 {
 
 }
