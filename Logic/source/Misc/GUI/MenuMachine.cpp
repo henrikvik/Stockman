@@ -156,13 +156,13 @@ GameState Logic::MenuMachine::currentState()
 
 void Logic::MenuMachine::buttonClick0()
 {
-	stateToBe = gameStateGame;
+	stateToBe = gameStateMenuSettings;
 	std::cout << "Left Trigger: Switched To Menu State 0";
 }
 
 void Logic::MenuMachine::buttonClick1()
 {
-	stateToBe = gameStateMenuSettings;
+	stateToBe = gameStateMenuMain;
 	std::cout << "Left Trigger: Switched To Menu State 3";
 }
 
