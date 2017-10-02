@@ -27,7 +27,9 @@ void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 			printf("Hit! - Something else\n");
 			if (Entity* target = static_cast<Entity*>(intersection->getUserPointer()))
 			{
-				shooter.getRigidbody()->setLinearVelocity(forward * 50);
+				btRigidBody* shooterBody = shooter.getRigidbody();
+				btVector3 linearVelocity = shooterBody->getLinearVelocity();
+				shooterBody->setLinearVelocity(linearVelocity + (forward * 35));
 			}
 		}
 	}
