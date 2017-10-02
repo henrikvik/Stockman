@@ -28,6 +28,7 @@ void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 			m_shooter = &shooter;
 			m_state = GrapplingHookStatePulling;
 			m_point = m_physicsPtr->RayTestGetPoint(Ray(shooter.getPositionBT(), forward, GRAPPLING_HOOK_RANGE));
+			renderDebug.color = DirectX::SimpleMath::Color ( rand() % 255, rand() % 255, rand() % 255 );
 		}
 	}
 	else
@@ -63,5 +64,5 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 
 void SkillGrapplingHook::render(Graphics::Renderer& renderer)
 {
-
+	renderer.queueRenderDebug(&renderDebug);
 }

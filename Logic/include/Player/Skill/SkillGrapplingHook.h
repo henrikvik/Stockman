@@ -33,6 +33,7 @@ namespace Logic
 		GrapplingHookState m_state;
 		Entity* m_shooter;
 		btVector3 m_point;
+		Graphics::RenderDebugInfo renderDebug;
 
 	public:
 		SkillGrapplingHook(Physics* physics);
