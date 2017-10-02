@@ -93,7 +93,7 @@ void Physics::update(GameTime gameTime)
 	}
 }
 
-const btRigidBody* Logic::Physics::checkRayIntersect(Ray& ray)
+const btRigidBody* Physics::RayTestOnRigidBodies(Ray& ray)
 {
 	const btVector3& start	= ray.getStart();
 	const btVector3& end	= ray.getEnd();

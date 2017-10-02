@@ -15,7 +15,7 @@ SkillGrapplingHook::~SkillGrapplingHook()
 
 void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 {
-	const btRigidBody* intersection = m_physicsPtr->checkRayIntersect(Ray(shooter.getPositionBT(), forward, 500.f));
+	const btRigidBody* intersection = m_physicsPtr->RayTestOnRigidBodies(Ray(shooter.getPositionBT(), forward, 500.f));
 	if (intersection)
 	{
 		if (intersection == shooter.getRigidbody())
@@ -27,7 +27,7 @@ void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 			printf("Hit! - Something else\n");
 			if (Entity* target = static_cast<Entity*>(intersection->getUserPointer()))
 			{
-				
+				shooter.getRigidbody()->setLinearVelocity(forward * 50);
 			}
 		}
 	}

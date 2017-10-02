@@ -17,10 +17,17 @@
 
 namespace Logic
 {
+	enum GrapplingHookState
+	{
+		GrapplingHookStateNothing,
+		GrapplingHookStatePulling
+	};
+
 	class SkillGrapplingHook : public Skill
 	{
 	private:
 		Physics* m_physicsPtr;
+		GrapplingHookState m_state;
 
 	public:
 		SkillGrapplingHook(Physics* physics);

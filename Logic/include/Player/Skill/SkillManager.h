@@ -41,6 +41,7 @@ namespace Logic
 	
 	private:
 		bool m_canBeUsed;
+		GrapplingHookState m_state;
 		ProjectileManager* m_projectileManager;	
 		GameTime* m_gameTime;	
 
