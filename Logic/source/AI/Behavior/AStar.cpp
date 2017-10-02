@@ -64,7 +64,8 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 		for (int index : navigationMesh.getEdges(currentNode->nodeIndex))
 		{
 			explore = &navNodes[index];
-			if (index == endIndex) {
+			if (index == endIndex) 
+			{
 				explore->parent = currentNode->nodeIndex;
 				currentNode = explore;
 				break; // found node
@@ -127,7 +128,6 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 		ret.push_back(list.top());
 		list.pop();
 	}
-	printf("nodes: %d\n", list.size());
 
 	return ret;
 }
@@ -143,15 +143,26 @@ void AStar::generateNavigationMesh()
 	pasvf.generateNavMesh(navigationMesh, {}, {});
 	navigationMesh.createNodesFromTriangles();
 	// test //
+#define ROW 4
 	for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
 	{
-		navigationMesh.addEdge(i, i + 1);
-		navigationMesh.addEdge(i + 1, i);
-	}
-	for (size_t i = 0; i < navigationMesh.getNodes().size() - 6; i++)
-	{
-	//	navigationMesh.addEdge(i, i + 6);
-	//	navigationMesh.addEdge(i + 6, i);
+		if (i % ROW != 0)
+		{
+			navigationMesh.addEdge(i, i + 1);
+			navigationMesh.addEdge(i + 1, i);
+		}
+
+		if (i < navigationMesh.getNodes().size() - ROW - 1)
+		{
+			navigationMesh.addEdge(i, i + ROW);
+			navigationMesh.addEdge(i + ROW, i);
+
+			if (i % ROW != 0)
+			{
+				navigationMesh.addEdge(i, i + ROW + 1);
+				navigationMesh.addEdge(i + ROW + 1, i);
+			}
+		}
 	}
 
 	navNodes.clear();
