@@ -3,6 +3,7 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 
+#include <Engine\Profiler.h>
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
@@ -253,7 +254,7 @@ namespace Graphics
         {
             this->drawToBackbuffer(grid.getDebugSRV());
         }
-        drawGUI();
+        
 #endif
 
 		///////Post effext
@@ -263,6 +264,7 @@ namespace Graphics
 		drawToBackbuffer(fakeBackBufferSwap);
 
         renderDebugInfo();
+        drawGUI();
     }
 
 
