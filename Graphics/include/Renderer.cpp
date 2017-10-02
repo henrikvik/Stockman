@@ -247,7 +247,7 @@ namespace Graphics
         {
             this->drawToBackbuffer(grid.getDebugSRV());
         }
-        drawGUI();
+        
 #endif
 
 		///////Post effext
@@ -255,6 +255,7 @@ namespace Graphics
 
 
 		drawToBackbuffer(fakeBackBufferSwap);
+        drawGUI();
     }
 
 
