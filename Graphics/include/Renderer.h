@@ -17,6 +17,7 @@
 #include "Utility\ShaderResource.h"
 #include "PostProccessor.h";
 #include "SkyRenderer.h"
+#include "Menu.h"
 
 #include <SpriteBatch.h>
 
@@ -52,7 +53,6 @@ namespace Graphics
 
         Shader fullscreenQuad;
         Shader forwardPlus;
-        Shader menuShader;
         Shader GUIShader;
 
         //ComputeShader lightGridGen; 
@@ -67,9 +67,7 @@ namespace Graphics
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 
-        bool menuTexturesLoaded;
-        void unloadMenuTextures();
-        void reloadMenuTextures();
+
 
         
 
@@ -87,19 +85,20 @@ namespace Graphics
 
 
 
-        ID3D11ShaderResourceView * menuTexture;
+
         //crosshair
         ID3D11ShaderResourceView * GUITexture1;
         //HP bar
         ID3D11ShaderResourceView * GUITexture2;
-        ID3D11ShaderResourceView * buttonTexture;
+
        
 
         ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
 
-        ID3D11Buffer * menuQuad;
-        ID3D11Buffer * buttonQuad;
+
+        Menu menu;
+
 
 
 
@@ -114,7 +113,6 @@ namespace Graphics
         void drawGUI();
 		
 
-        void mapButtons(ButtonInfo * info);
 
 
         
@@ -125,7 +123,6 @@ namespace Graphics
         void createBlendState();
         void createGUIBuffers();
 
-        void createMenuVBS();
 
 
     #pragma region RenderDebugInfo

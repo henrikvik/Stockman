@@ -22,7 +22,6 @@ namespace Graphics
 	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
 		: forwardPlus(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
-        , menuShader(device, SHADER_PATH("MenuShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA}, {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA} })
         , GUIShader(device, SHADER_PATH("GUIShader.hlsl"), { {"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } , {"ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA} })
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
         , instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
@@ -32,6 +31,7 @@ namespace Graphics
 		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
 		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
+        ,menu(device, deviceContext)
     #pragma region RenderDebugInfo
         , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
         , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
@@ -55,8 +55,7 @@ namespace Graphics
 
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         loadModellessTextures();
-        menuTexturesLoaded = true;
-        createMenuVBS();
+
         createGUIBuffers();
         createBlendState();
     }
@@ -67,9 +66,6 @@ namespace Graphics
 		delete states;
 		SAFE_RELEASE(GUIvb);
 		SAFE_RELEASE(transparencyBlendState);
-        SAFE_RELEASE(menuQuad);
-        SAFE_RELEASE(buttonQuad);
-        unloadMenuTextures();
         SAFE_RELEASE(GUITexture1);
         SAFE_RELEASE(GUITexture2);
 		SAFE_RELEASE(glowTest);
@@ -94,7 +90,7 @@ namespace Graphics
 
     void Renderer::render(Camera * camera)
     {
-        unloadMenuTextures();
+        menu.unloadTextures();
 #if ANIMATION_HIJACK_RENDER
 
         renderQueue.clear();
@@ -293,35 +289,12 @@ namespace Graphics
     //}
 
 
-    void Renderer::unloadMenuTextures()
-    {
-        if (menuTexturesLoaded == true)
-        {
-            SAFE_RELEASE(buttonTexture);
-            SAFE_RELEASE(menuTexture);
-            buttonTexture = nullptr;
-            menuTexture = nullptr;
-            menuTexturesLoaded = false;
-        }
-        
-    }
-
-    void Renderer::reloadMenuTextures()
-    {
-        if (menuTexturesLoaded == false)
-        {
-            ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("menuTexture.png"), nullptr, &menuTexture));
-            ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("button.png"), nullptr, &buttonTexture));
-            menuTexturesLoaded = true;
-        }
-    }
 
     //loads the textures for menu and GUI
     void Renderer::loadModellessTextures()
     {
        
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("menuTexture.png"), nullptr, &menuTexture));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("button.png"), nullptr, &buttonTexture));
+      
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("crosshair.png"), nullptr, &GUITexture1));
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, deviceContext, TEXTURE_PATH("HPbar.png"), nullptr, &GUITexture2));
 
@@ -456,74 +429,11 @@ namespace Graphics
 
     }
 
-	
-    //fills the button vertex buffer with button info;
-    void Renderer::mapButtons(ButtonInfo * info)
-    {
-        //moves the buttons to ndc space
-        TriangleVertex triangleVertices[6] =
-        {
-            2 *((float)((info->m_rek.x + info->m_rek.width )) / WIN_WIDTH) - 1, 2 * ((float)(WIN_HEIGHT - info->m_rek.y - info->m_rek.height) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
-            1.0f, 1.0f,
-
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) -1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v1
-            0.0f, 1.0f,
-
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
-            0.0f,  0.0f,
-
-            //t2
-            2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
-            0.0f, 0.0f,
-
-            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
-            1.0f, 0.0f,
-
-            2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) -1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) -1 , 0.0f, //v0
-            1.0f, 1.0f,
-        };
-
-        D3D11_MAPPED_SUBRESOURCE data = { 0 };
-        ThrowIfFailed(deviceContext->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
-        memcpy(data.pData, triangleVertices, sizeof(TriangleVertex) * 6);
-        deviceContext->Unmap(buttonQuad, 0);
-
-    }
-
     //draws the menu
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
-        reloadMenuTextures();
-
-        //draws menu background
-        float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-        UINT stride = sizeof(Graphics::TriangleVertex) , offset = 0;
         deviceContext->RSSetViewports(1, &viewPort);
-        deviceContext->IASetVertexBuffers(0, 1, &menuQuad, &stride, &offset);
-        deviceContext->IASetInputLayout(menuShader);
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->VSSetShader(menuShader, nullptr, 0);
-        deviceContext->PSSetShader(menuShader, nullptr, 0);
-        auto sampler = states->PointWrap();
-        deviceContext->PSSetSamplers(0, 1, &sampler);
-        deviceContext->PSSetShaderResources(0, 1, &menuTexture);
-
-        deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
-
-        deviceContext->Draw(6, 0);
-
-        //draws buttons
-        deviceContext->PSSetShaderResources(0, 1, &buttonTexture);
-        for (size_t i = 0; i < info->m_buttons.size(); i++)
-        {
-            mapButtons(&info->m_buttons.at(i));
-            deviceContext->IASetVertexBuffers(0, 1, &buttonQuad, &stride, &offset);
-            deviceContext->Draw(6, 0);
-        }
-
-        ID3D11ShaderResourceView * SRVNULL = nullptr;
-        deviceContext->PSSetShaderResources(0, 1, &SRVNULL);
+        menu.drawMenu(device, deviceContext, info, backBuffer);
 
     }
 
@@ -605,51 +515,6 @@ namespace Graphics
 
 	
 
-    //creates the vertexbuffers the menu uses.
-    void Renderer::createMenuVBS()
-    {
-        //menu fullscreen quad
-
-        TriangleVertex triangleVertices[6] =
-        {
-            1.f, -1.f, 0.0f,	//v0 pos
-            1.0f, 1.0f,
-
-            -1.f, -1.f, 0.0f,	//v1
-            0.0f, 1.0f,
-
-            -1.f, 1.f, 0.0f, //v2
-            0.0f,  0.0f,
-
-            //t2
-            -1.f, 1.f, 0.0f,	//v0 pos
-            0.0f, 0.0f,
-
-            1.f, 1.f, 0.0f,	//v1
-            1.0f, 0.0f,
-
-            1.f, -1.f, 0.0f, //v2
-            1.0f, 1.0f
-        };
-
-
-        D3D11_BUFFER_DESC desc = {0};
-
-        desc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
-        desc.ByteWidth = sizeof(TriangleVertex) * 6;
-
-        D3D11_SUBRESOURCE_DATA data = { 0 };
-        data.pSysMem = triangleVertices;
-
-        ThrowIfFailed(device->CreateBuffer(&desc, &data, &menuQuad));
-
-        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-        desc.Usage = D3D11_USAGE_DYNAMIC;
-
-        ThrowIfFailed(device->CreateBuffer(&desc, &data, &buttonQuad));
-
-
-    }
 
     void Renderer::renderDebugInfo()
     {
