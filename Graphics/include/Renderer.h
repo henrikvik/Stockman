@@ -18,6 +18,7 @@
 #include "PostProccessor.h";
 #include "SkyRenderer.h"
 #include "Menu.h"
+#include "HUD.h"
 
 #include <SpriteBatch.h>
 
@@ -53,7 +54,6 @@ namespace Graphics
 
         Shader fullscreenQuad;
         Shader forwardPlus;
-        Shader GUIShader;
 
         //ComputeShader lightGridGen; 
 
@@ -80,29 +80,16 @@ namespace Graphics
        
 		
 
-	
 
-
-
-
-
-        //crosshair
-        ID3D11ShaderResourceView * GUITexture1;
-        //HP bar
-        ID3D11ShaderResourceView * GUITexture2;
-
-       
-
-        ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
 
 
         Menu menu;
+        HUD hud;
 
 
 
 
-        void loadModellessTextures();
 
 		ID3D11ShaderResourceView * glowTest;
 
@@ -121,7 +108,6 @@ namespace Graphics
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
         void createBlendState();
-        void createGUIBuffers();
 
 
 

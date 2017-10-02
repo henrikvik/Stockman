@@ -1,0 +1,126 @@
+#include "HUD.H"
+#include <WICTextureLoader.h>
+
+Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
+:shader(device, SHADER_PATH("GUIShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } ,{ "ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA } })
+{
+    createHUDTextures(device, context);
+    createHUDVBS(device);
+}
+
+Graphics::HUD::~HUD()
+{
+    SAFE_RELEASE(vertexBuffer);
+    SAFE_RELEASE(crosshair);
+    SAFE_RELEASE(HP);
+}
+
+void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState)
+{
+    UINT stride = 20, offset = 0;
+    context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+    context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    context->IASetInputLayout(shader);
+
+    float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    UINT sampleMask = 0xffffffff;
+    context->OMSetBlendState(blendState, blendFactor, sampleMask);
+ 
+    context->OMSetRenderTargets(1, &backBuffer, nullptr);
+
+    context->VSSetShader(shader, nullptr, 0);
+
+    context->PSSetShaderResources(0, 1, &crosshair);
+    context->PSSetShaderResources(1, 1, &HP);
+    context->PSSetShader(shader, nullptr, 0);
+
+
+
+
+    context->Draw(12, 0);
+
+
+    ID3D11ShaderResourceView * SRVNULL = nullptr;
+    context->PSSetShaderResources(0, 1, &SRVNULL);
+}
+
+void Graphics::HUD::createHUDVBS(ID3D11Device * device)
+{
+    struct GUI
+    {
+        DirectX::SimpleMath::Vector2 verts;
+        DirectX::SimpleMath::Vector2 uv;
+        UINT element;
+    };
+
+    GUI GUIquad[12];
+    GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.05f, -0.05f };
+    GUIquad[0].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
+    GUIquad[1].verts = DirectX::SimpleMath::Vector2{ -0.05f, 0.05f };
+    GUIquad[1].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[2].verts = DirectX::SimpleMath::Vector2{ 0.05f, -0.05f };
+    GUIquad[2].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[3].verts = DirectX::SimpleMath::Vector2{ 0.05f, 0.05f };
+    GUIquad[3].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
+    GUIquad[4].verts = GUIquad[2].verts;
+    GUIquad[4].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[5].verts = GUIquad[1].verts;
+    GUIquad[5].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[0].element = 0;
+    GUIquad[1].element = 0;
+    GUIquad[2].element = 0;
+    GUIquad[3].element = 0;
+    GUIquad[4].element = 0;
+    GUIquad[5].element = 0;
+
+
+    GUIquad[6].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
+    GUIquad[6].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
+    GUIquad[7].verts = DirectX::SimpleMath::Vector2{ -1.0f, -0.8f };
+    GUIquad[7].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[8].verts = DirectX::SimpleMath::Vector2{ -0.8f, -1.0f };
+    GUIquad[8].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[9].verts = DirectX::SimpleMath::Vector2{ -0.8f, -0.8f };
+    GUIquad[9].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
+    GUIquad[10].verts = GUIquad[8].verts;
+    GUIquad[10].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[11].verts = GUIquad[7].verts;
+    GUIquad[11].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[6].element = 1;
+    GUIquad[7].element = 1;
+    GUIquad[8].element = 1;
+    GUIquad[9].element = 1;
+    GUIquad[10].element = 1;
+    GUIquad[11].element = 1;
+
+    D3D11_BUFFER_DESC desc;
+    ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
+
+    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    desc.ByteWidth = sizeof(GUIquad);
+
+    D3D11_SUBRESOURCE_DATA data;
+    ZeroMemory(&data, sizeof(D3D11_SUBRESOURCE_DATA));
+    data.pSysMem = GUIquad;
+
+
+    ThrowIfFailed(device->CreateBuffer(&desc, &data, &vertexBuffer));
+}
+
+void Graphics::HUD::createHUDTextures(ID3D11Device * device, ID3D11DeviceContext * context)
+{
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("crosshair.png"), nullptr, &crosshair));
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPbar.png"), nullptr, &HP));
+}
