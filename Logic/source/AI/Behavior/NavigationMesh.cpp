@@ -46,6 +46,11 @@ const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() cons
 	return nodes;
 }
 
+std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderData() 
+{
+	return &nodes;
+}
+
 const std::vector<NavigationMesh::Edge>& NavigationMesh::getEdges() const
 {
 	return edges;

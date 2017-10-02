@@ -139,7 +139,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 
 void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
 {
-	Graphics::RenderInfo info;
+	renderer.queueRenderDebug(&info);
 }
 
 void AStar::loadTargetIndex(Entity const & target)
@@ -181,6 +181,11 @@ void AStar::generateNavigationMesh()
 			{ false, false, 
 			static_cast<int> (i), 0, 0 }
 		);
+
+	// debugging
+	info.color = DirectX::SimpleMath::Color(0, 1, 0);
+	info.useDepth = false;
+	info.points = navigationMesh.getRenderData();
 }
 
 float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,

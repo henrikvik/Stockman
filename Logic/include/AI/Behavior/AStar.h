@@ -21,6 +21,9 @@ namespace Logic
 				btVector3 position;
 			};
 
+			// debugging
+			Graphics::RenderDebugInfo info;
+
 			// to calc path testing rn
 			struct NavNode
 			{

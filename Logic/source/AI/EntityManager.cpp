@@ -64,6 +64,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 		m_deadEnemies[i]->updateDead(deltaTime);
 	}
 
+		
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 	printf("Entity Time Elapsed: %f seconds, (EntityManager.cpp:%d)\n", elapsed_secs, __LINE__);
@@ -146,6 +147,7 @@ void EntityManager::render(Graphics::Renderer &renderer)
 	}
 
 	m_triggerManager.render(renderer);
+	AStar::singleton().renderNavigationMesh(renderer);
 }
 
 int EntityManager::getCurrentWave() const 
