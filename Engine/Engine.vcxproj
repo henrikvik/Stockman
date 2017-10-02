@@ -195,5 +195,8 @@
   <ItemGroup>
     <Text Include="Resources\data\Text.lw" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\Fog.hlsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

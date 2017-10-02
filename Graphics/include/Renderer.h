@@ -138,5 +138,12 @@ namespace Graphics
 
     #pragma endregion
 
+
+	#pragma region Fog
+		
+		Shader fogShader;
+		void renderFog();
+
+	#pragma endregion
     };
 };
