@@ -187,10 +187,12 @@ void AStar::generateNavigationMesh()
 	// debugging
 	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
 	debugDataTri.useDepth = false;
+	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	debugDataTri.points = navigationMesh.getRenderDataTri();
 
 	debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);
 	debugDataEdges.useDepth = false;
+	debugDataEdges.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
 	debugDataEdges.points = navigationMesh.getRenderDataEdges();
 }
 
