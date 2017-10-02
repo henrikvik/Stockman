@@ -14,7 +14,6 @@ TestBehavior::~TestBehavior()
 
 void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
 {
-	/* UNDER CONSTRUCTION FOR NOW
 	btVector3 node = m_path.updateAndReturnCurrentNode(enemy, player);
 	btVector3 dir = node - enemy.getPositionBT();
 
@@ -33,5 +32,4 @@ void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
 
 	if ((node - enemy.getPositionBT()).length() < 0.8f)
 		m_path.setCurrentNode(m_path.getCurrentNode() + 1);
-		*/
 }
