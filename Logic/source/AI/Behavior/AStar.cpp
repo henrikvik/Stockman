@@ -67,7 +67,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 			{
 				explore->parent = currentNode->nodeIndex;
 				currentNode = explore;
-				break; // found node
+				return reconstructPath(currentNode); // found node
 			}
 
 			if (!explore->explored) // Unexplored
@@ -115,6 +115,12 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 	// flip the list
 	std::stack<const DirectX::SimpleMath::Vector3*> list;
 	std::vector<const DirectX::SimpleMath::Vector3*> ret;
+
+	if (endNode->nodeIndex != targetIndex)
+	{
+		printf("BAD BAD BAD, A* fooked up, contact lw (AStar.cpp:%d)\n", __LINE__);
+
+	}
 
 	while (endNode->parent != NO_PARENT)
 	{
