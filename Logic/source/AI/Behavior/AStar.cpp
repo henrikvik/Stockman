@@ -43,6 +43,8 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	// printf("StartIndex: %d, End index: %d (AStar.cpp:%d)\n", startIndex, endIndex, __LINE__);
 
 	// test special cases
+	if (targetIndex > -1 && startIndex == targetIndex)
+		return reconstructPath(&navNodes[startIndex]);
 	if (startIndex == targetIndex || startIndex == -1 || targetIndex == -1)
 		return { };
 
@@ -155,26 +157,26 @@ void AStar::generateNavigationMesh()
 	pasvf.generateNavMesh(navigationMesh, {}, {});
 	navigationMesh.createNodesFromTriangles();
 	// test //
-#define ROW 4
+#define ROW 12
 	for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
 	{
-		if (i % ROW != 0)
+		if ((i + 1) % ROW != 0)
 		{
 			navigationMesh.addEdge(i, i + 1);
 			navigationMesh.addEdge(i + 1, i);
 		}
-
-		if (i < navigationMesh.getNodes().size() - ROW - 1)
+		
+		if (i < navigationMesh.getNodes().size() - ROW)
 		{
 			navigationMesh.addEdge(i, i + ROW);
 			navigationMesh.addEdge(i + ROW, i);
-
-			if (i % ROW != 0)
+			
+			if ((i + 1) % ROW != 0)
 			{
 				navigationMesh.addEdge(i, i + ROW + 1);
 				navigationMesh.addEdge(i + ROW + 1, i);
 			}
-		}
+		} 
 	}
 
 	navNodes.clear();
@@ -187,7 +189,7 @@ void AStar::generateNavigationMesh()
 	// debugging
 	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
 	debugDataTri.useDepth = false;
-	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
 	debugDataTri.points = navigationMesh.getRenderDataTri();
 
 	debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);

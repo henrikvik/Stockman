@@ -62,14 +62,15 @@ std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataEdges()
 {
 	std::vector<DirectX::SimpleMath::Vector3> *data =
 		new std::vector<DirectX::SimpleMath::Vector3>();
-
+	
 	for (int j = 0; j < edges.size(); j++)
+	{
 		for (int i = 0; i < edges[j].indices.size(); i++)
 		{
-			DirectX::SimpleMath::Vector3 edge =
-				nodes[j] = nodes[edges[j].indices[i]];
-			data->push_back(edge);
+			data->push_back(nodes[j]);
+			data->push_back(nodes[edges[j].indices[i]]);
 		}
+	}
 
 	return data;
 }
