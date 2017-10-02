@@ -5,6 +5,7 @@ using namespace Logic;
 #define TEST_NAME "helloWave"
 
 #include <AI/EnemyTest.h>
+#include <AI\Behavior\AStar.h>
 #include <ctime>
 #include <stdio.h>
 
@@ -39,6 +40,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 {
 	clock_t begin = clock();
 
+	AStar::singleton().loadTargetIndex(player);
 	for (int i = 0; i < m_enemies.size(); ++i)
 	{
 		m_enemies[i]->update(player, deltaTime);
@@ -79,7 +81,7 @@ void EntityManager::spawnWave(Physics &physics)
 			//m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 8.f, i * 10.f, i * 1.f }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f}), 100, false), { 0.5f, 0.5f, 0.5f}));
             m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f }), 100, false), { 0.5f, 0.5f, 0.5f }));
 		}
-
+		/*
 		m_triggerManager.addTrigger(Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
 		m_triggerManager.addTrigger(Cube({ -10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
 		m_triggerManager.addTrigger(Cube({ -10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
@@ -99,6 +101,7 @@ void EntityManager::spawnWave(Physics &physics)
 
 		// Ammo refiller
 		m_triggerManager.addTrigger(Cube({ 0, 10, 40 }, { 0, 0, 0 }, { 10, 10, 10 }), 1000.f, physics, { }, { StatusManager::EFFECT_ID::AMMO_PICK_UP });
+		*/
 	}
 }
 

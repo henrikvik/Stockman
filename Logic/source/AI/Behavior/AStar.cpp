@@ -8,6 +8,7 @@ AStar::AStar(std::string file)
 {
 	// for testing
 	generateNavigationMesh();
+	targetIndex = -1;
 }
 
 AStar::~AStar()
@@ -27,7 +28,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	for (size_t i = 0; i < navNodes.size(); i++)
 	{
 		navNodes[i].onClosedList = navNodes[i].explored = false;
-		navNodes[i].h = navNodes[i].g = 0;
+		navNodes[i].g = 0;
 		navNodes[i].parent = NO_PARENT;
 	}
 
@@ -37,15 +38,14 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	DirectX::SimpleMath::Vector3 offset(0, 5, 0);
 
 	// get indicies
-	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset),
-		endIndex = navigationMesh.getIndex(target.getPosition() + offset);
+	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset);
 	// printf("StartIndex: %d, End index: %d (AStar.cpp:%d)\n", startIndex, endIndex, __LINE__);
 
 	// test special cases
-	if (startIndex == endIndex || startIndex == -1 || endIndex == -1)
+	if (startIndex == targetIndex || startIndex == -1 || targetIndex == -1)
 		return { };
 
-	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[endIndex]);
+	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[targetIndex]);
 	navNodes[startIndex].explored = true;
 	openList.push(&navNodes[startIndex]);
 
@@ -53,7 +53,6 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	NavNode *explore = nullptr;
 
 	float f;
-
 
 	while (!openList.empty())
 	{
@@ -64,7 +63,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 		for (int index : navigationMesh.getEdges(currentNode->nodeIndex))
 		{
 			explore = &navNodes[index];
-			if (index == endIndex) 
+			if (index == targetIndex) 
 			{
 				explore->parent = currentNode->nodeIndex;
 				currentNode = explore;
@@ -76,7 +75,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 				explore->explored = true;
 
 				explore->g = f;
-				explore->h = heuristic(nodes[index], nodes[endIndex]) * 0.1;
+				explore->h = heuristic(nodes[index], nodes[targetIndex]) * 0.1;
 
 				explore->parent = currentNode->nodeIndex;
 				openList.push(explore);
@@ -135,6 +134,11 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
 {
 	Graphics::RenderInfo info;
+}
+
+void AStar::loadTargetIndex(Entity const & target)
+{
+	targetIndex = navigationMesh.getIndex(target.getPosition());
 }
 
 void AStar::generateNavigationMesh()
