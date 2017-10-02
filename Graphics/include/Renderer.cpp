@@ -15,7 +15,7 @@
 #include "Animation\AnimatedTestCube.h"
 #endif
 
-#define MAX_DEBUG_POINTS 1000
+#define MAX_DEBUG_POINTS 10000
 
 namespace Graphics
 {
