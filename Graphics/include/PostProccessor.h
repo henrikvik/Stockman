@@ -1,7 +1,7 @@
 #pragma once
 #include "Resources\Shader.h"
 #include <Engine\Constants.h>
-#include "Resources\ShaderResource.h"
+#include "Utility\ShaderResource.h"
 #include <CommonStates.h>
 #include "Utility\ConstantBuffer.h"
 #include <vector>
