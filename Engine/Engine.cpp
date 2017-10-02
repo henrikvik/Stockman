@@ -269,9 +269,15 @@ int Engine::run()
 			g_Profiler->capture();
 			showProfiler = true;
 		}
-		if (ks.F2)
+
+        static bool F2wasPressed = false;
+        bool F2keyDown = !wasPressed && ks.F2;
+        F2wasPressed = ks.F2;
+
+		if (F2keyDown)
 		{
-			showProfiler = !showProfiler;
+            showProfiler = !showProfiler;
+
 		}
 
 		if (ks.Escape)
