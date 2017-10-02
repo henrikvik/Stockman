@@ -100,6 +100,10 @@ void Game::update(float deltaTime)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
+		if (m_menu->getStateToBe() == GameState::gameStateMenuMain)
+		{
+			m_menu->update(m_gameTime.dt);
+		}
 		waveUpdater();
 		m_physics->update(m_gameTime);
 		m_entityManager.update(*m_player, m_gameTime.dt);
@@ -107,10 +111,10 @@ void Game::update(float deltaTime)
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
 
-		if (m_player->getHP() <= NULL)
+		if (m_player->getHP() <= 0)
 		{
 			printf("You ded bro.\n");
-			m_menu->setGameState(GameState::gameStateMenuMain);
+			m_menu->setStateToBe(GameState::gameStateMenuMain);
 		}
 
 		break;
