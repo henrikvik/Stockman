@@ -54,3 +54,4 @@ Graphics::MenuInfo Logic::MenuState::getMenuInfo()
     }
     return m_menu;
 }
+

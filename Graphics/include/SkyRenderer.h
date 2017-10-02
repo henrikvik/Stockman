@@ -2,7 +2,7 @@
 #include "Resources\Shader.h"
 #include "Camera.h"
 #include "Lights\Sun.h"
-#include "Resources\DepthStencil.h"
+#include "Utility\DepthStencil.h"
 #define SHADOW_MAP_RESOLUTION 2048
 
 class SkyRenderer

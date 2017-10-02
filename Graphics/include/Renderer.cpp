@@ -3,10 +3,10 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 
+#include <Engine\Profiler.h>
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
-
 
 #if USE_TEMP_CUBE
 #include "TempCube.h"
@@ -15,6 +15,7 @@
 #include "Animation\AnimatedTestCube.h"
 #endif
 
+#define MAX_DEBUG_POINTS 100
 
 namespace Graphics
 {
@@ -32,6 +33,12 @@ namespace Graphics
 		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
 		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
+    #pragma region RenderDebugInfo
+        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
+        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
+        , debugColorBuffer(device)
+    #pragma endregion
+
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -247,7 +254,7 @@ namespace Graphics
         {
             this->drawToBackbuffer(grid.getDebugSRV());
         }
-        drawGUI();
+        
 #endif
 
 		///////Post effext
@@ -255,6 +262,9 @@ namespace Graphics
 
 
 		drawToBackbuffer(fakeBackBufferSwap);
+
+        renderDebugInfo();
+        drawGUI();
     }
 
 
@@ -264,6 +274,11 @@ namespace Graphics
             throw "Renderer Exceeded Instance Cap.";
 
         renderQueue.push_back(renderInfo);
+    }
+
+    void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
+    {
+        renderDebugQueue.push_back(debugInfo);
     }
 
 
@@ -637,6 +652,41 @@ namespace Graphics
 
     }
 
+    void Renderer::renderDebugInfo()
+    {
+        if (renderDebugQueue.size() == 0) return;
+
+        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
+        deviceContext->VSSetShaderResources(0, 1, debugPointsBuffer);
+        deviceContext->PSSetConstantBuffers(1, 1, debugColorBuffer);
+
+        deviceContext->IASetInputLayout(nullptr);
+        deviceContext->VSSetShader(debugRender, nullptr, 0);
+        deviceContext->PSSetShader(debugRender, nullptr, 0);
+
+        for (RenderDebugInfo * info : renderDebugQueue)
+        {
+            debugPointsBuffer.write( 
+                deviceContext, 
+                info->points->data(), 
+                info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
+            );
+
+            debugColorBuffer.write(
+                deviceContext,
+                &info->color,
+                sizeof(DirectX::SimpleMath::Color)
+            );
+
+            deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
+            deviceContext->Draw(info->points->size(), 0);
+        }
+
+        renderDebugQueue.clear();
+    }
+
     void Renderer::createBlendState()
     {
         D3D11_BLEND_DESC BlendState;
@@ -652,5 +702,6 @@ namespace Graphics
 
         ThrowIfFailed(this->device->CreateBlendState(&BlendState, &transparencyBlendState));
     }
+
 
 }

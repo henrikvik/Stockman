@@ -20,6 +20,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	m_weaponManager.init(projectileManager);
 	m_skillManager.init(physics, projectileManager, gameTime);
 
+	// Stats
+	m_hp = PLAYER_STARTING_HP;
+
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
 	m_camPitch = 5;
@@ -63,6 +66,7 @@ void Player::onCollision(Entity& other)
 	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
 	{
 		printf("Enemy slapped you right in the face.\n");
+	//	m_hp--;
 	}
 	else if (Trigger* e = dynamic_cast<Trigger*>(&other))
 	{
@@ -116,6 +120,16 @@ void Player::saveToFile()
 void Player::readFromFile()
 {
 
+}
+
+void Player::takeDamage(int damage)
+{
+	m_hp -= damage;
+}
+
+int Player::getHP() const
+{
+	return m_hp;
 }
 
 void Player::updateSpecific(float deltaTime)
