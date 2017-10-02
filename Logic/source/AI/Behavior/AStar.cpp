@@ -172,10 +172,11 @@ void AStar::generateNavigationMesh()
 			navigationMesh.addEdge(i + 1, i);
 		}
 		
-		if (i < navigationMesh.getNodes().size() - ROW)
+		if (i < navigationMesh.getNodes().size() - ROW && i % 2 == 0)
 		{
-			navigationMesh.addEdge(i, i + ROW);
-			navigationMesh.addEdge(i + ROW, i);
+			// REMOVE THESE COMMENTS AND i % 2 == 0 TO MAKE ART
+		//	navigationMesh.addEdge(i, i + ROW); 
+		//	navigationMesh.addEdge(i + ROW, i);
 			
 			if ((i + 1) % ROW != 0)
 			{
@@ -195,7 +196,7 @@ void AStar::generateNavigationMesh()
 	// debugging
 	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
 	debugDataTri.useDepth = false;
-	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
 	debugDataTri.points = navigationMesh.getRenderDataTri();
 
 	debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);
