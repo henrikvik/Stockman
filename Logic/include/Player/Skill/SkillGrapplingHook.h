@@ -19,8 +19,9 @@
 
 #define GRAPPLING_HOOK_CD			50.f		// Cooldown in ms
 #define GRAPPLING_HOOK_RANGE		500.f		// Range in bulletphysics units (probably meters)
-#define GRAPPLING_HOOK_MAX_SPEED	0.05f		// The movement speed for the player in specific when used
 #define GRAPPLING_HOOK_POWER		0.001f		// The amount of power to reach the max speed
+#define GRAPPLING_HOOK_MAX_SPEED_XZ	0.05f		// The max speed in x & z
+#define GRAPPLING_HOOK_MAX_SPEED_Y	62.5f		// The max speed in y
 
 namespace Logic
 {

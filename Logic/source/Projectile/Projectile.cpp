@@ -53,7 +53,7 @@ void Projectile::updateSpecific(float deltaTime)
 	m_pData.ttl -= deltaTime;
 }
 
-void Projectile::onCollision(Entity & other)
+void Projectile::onCollision(Entity & other, const btRigidBody* collidedWithYour)
 {
 	// TEMP
 	Player* p = dynamic_cast<Player*>(&other);

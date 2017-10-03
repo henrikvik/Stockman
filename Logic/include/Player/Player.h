@@ -110,7 +110,7 @@ namespace Logic
 		void clear();
 		void updateSpecific(float deltaTime);
         void updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning);
-		void onCollision(Entity& other);
+		void onCollision(Entity& other, const btRigidBody* collidedWithYour);
 		void onCollision(Projectile& other);
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);
