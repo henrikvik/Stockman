@@ -195,7 +195,6 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="Resources\Shaders\ShaderConstants.h" />
     <ClInclude Include="Profiler.h" />
   </ItemGroup>
   <ItemGroup>
@@ -207,9 +206,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\data\Text.lw" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Resources\Shaders\Fog.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

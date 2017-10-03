@@ -6,25 +6,26 @@
 #include <SimpleMath.h>
 #include <vector>
 
-using namespace Graphics;
-
-class Fog
+namespace Graphics
 {
-public:
-	Fog(ID3D11Device* device);
-	~Fog();
-
-	void renderFog(ID3D11DeviceContext* deviceContext, ID3D11RenderTargetView * backBuffer);
-
-private:
-	struct FogData
+	class Fog
 	{
-		DirectX::SimpleMath::Vector3 pos;
-		DirectX::SimpleMath::Color color;
+	public:
+		Fog(ID3D11Device* device);
+		~Fog();
+
+		void renderFog(ID3D11DeviceContext* deviceContext, ID3D11RenderTargetView * backBuffer);
+
+	private:
+		struct FogData
+		{
+			DirectX::SimpleMath::Vector3 pos;
+			DirectX::SimpleMath::Vector4 color;
+
+		};
+		Shader fogShader;
+		std::vector<FogData> fogData;
+		StructuredBuffer<Fog::FogData> fogDataBuffer;
 
 	};
-	std::vector<FogData> fogVec;
-	Shader fogShader;
-	StructuredBuffer<Fog::FogData> fogDataBuffer;
-
-};
+}

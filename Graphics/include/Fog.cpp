@@ -1,46 +1,49 @@
 #include "Fog.H"
 
-const int maxFogSize = 100;
-
-Fog::Fog(ID3D11Device* device)
-	: fogShader(device, SHADER_PATH("FogShader.hlsl"))
-	, fogDataBuffer(device, CpuAccess::Write, maxFogSize)
+namespace Graphics
 {
-	fogVec.push_back({ { 1,1,1 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,0 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,0,1 },{ 1,0,0 } });
-	fogVec.push_back({ { 0,0,1 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,1 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,1 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,1 },{ 1,0,0 } });
-	fogVec.push_back({ { 0,0,0 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,1 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,1 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,0 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,1 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,0 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,1 },{ 1,0,0 } });
-	fogVec.push_back({ { 1,1,2 },{ 1,0,0 } });
-	fogVec.push_back({ {1,2,1}, {1,0,0} });
-}
+	constexpr int MAX_FOG_SIZE = 100;
 
-Fog::~Fog()
-{
-}
+	Fog::Fog(ID3D11Device* device)
+		: fogShader(device, SHADER_PATH("Fog.hlsl"))
+		, fogDataBuffer(device, CpuAccess::Write, MAX_FOG_SIZE)
+	{
+		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,0},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,0,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { 0,0,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { 0,0,0},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,0},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,0},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,1,2},{ 1,0,0, 1 } });
+		fogData.push_back({ { 1,2,1},{ 1,0,0, 1 } });
+	}
 
-void Fog::renderFog(ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer)
-{
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	Fog::~Fog()
+	{
+	}
 
-	deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
+	void Fog::renderFog(ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer)
+	{
+		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	deviceContext->IASetInputLayout(nullptr);
-	deviceContext->VSSetShader(fogShader, nullptr, 0);
-	deviceContext->PSSetShader(fogShader, nullptr, 0);
+		deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 
-	fogDataBuffer.write(deviceContext, fogVec.data(), fogVec.size() * sizeof(FogData));
+		deviceContext->IASetInputLayout(nullptr);
+		deviceContext->VSSetShader(fogShader, nullptr, 0);
+		deviceContext->PSSetShader(fogShader, nullptr, 0);
+
+		fogDataBuffer.write(deviceContext, fogData.data(), fogData.size() * sizeof(FogData));
 
 
-	deviceContext->VSSetShaderResources(0, 1, fogDataBuffer);
-	deviceContext->Draw(fogVec.size(), 0);
+		deviceContext->VSSetShaderResources(0, 1, fogDataBuffer);
+		deviceContext->Draw(fogData.size(), 0);
+	}
 }

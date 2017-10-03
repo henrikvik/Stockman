@@ -259,10 +259,9 @@ namespace Graphics
 
 		///////Post effext
 		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
-		fog.renderFog(deviceContext, backBuffer);
-
 		drawToBackbuffer(fakeBackBufferSwap);
 
+		fog.renderFog(deviceContext, backBuffer);
         renderDebugInfo();
         drawGUI();
     }
