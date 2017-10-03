@@ -13,7 +13,14 @@ namespace Graphics
     enum ModelID {
         CUBE,
 		SPHERE,
-        CROSSBOW
+        CROSSBOW,
+		AMMOBOX,
+		CUTTLERY,
+		JUMPPAD,
+		ENEMYGRUNT,
+		GRAPPLEPOINT,
+		GRASS,
+		BUSH,
     };
 
 	struct ModelInfo
@@ -32,6 +39,7 @@ namespace Graphics
         ModelID meshId;
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = true;
 	};
 
     struct RenderDebugInfo
