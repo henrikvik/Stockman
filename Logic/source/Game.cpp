@@ -89,6 +89,7 @@ void Game::waveUpdater()
 				end = true;
 			}
 		}
+        m_player->updateWaveInfo(m_waveCurrent + 1, m_entityManager.getEnemiesAlive(), (float)((m_waveTime[m_waveCurrent] - m_waveTimer) * 0.001));
 	}
 }
 
@@ -105,9 +106,9 @@ void Game::update(float deltaTime)
 			m_menu->update(m_gameTime.dt);
 		}
 		waveUpdater();
+		m_player->update(m_gameTime.dt);
 		m_physics->update(m_gameTime);
 		m_entityManager.update(*m_player, m_gameTime.dt);
-		m_player->update(m_gameTime.dt);
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
 

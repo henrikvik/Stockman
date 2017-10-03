@@ -45,6 +45,9 @@ namespace Logic
 		Weapon* getCurrentWeaponPrimary();
 		Weapon* getCurrentWeaponSecondary();
 
+        Weapon* getfirstWeapon();
+        Weapon* getSecondWeapon();
+
 	private:
 
 		enum ReloadingWeapon
