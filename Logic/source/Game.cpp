@@ -30,7 +30,7 @@ void Game::init()
 
 	// Initializing Player
 	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
-	m_player->init(m_projectileManager, &m_gameTime);
+	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine();
@@ -140,9 +140,7 @@ void Game::render(Graphics::Renderer& renderer)
 
 	case gameStateLoading:
 	case gameStateMenuMain:
-        m_menu->render(renderer);
 	case gameStateMenuSettings:
-		m_menu->render(renderer);
 	case gameStateGameOver:
 		m_menu->render(renderer);
 	default: // m_menu->render(renderer);

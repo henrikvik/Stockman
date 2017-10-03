@@ -26,6 +26,8 @@ void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 	thePlayer->getRigidbody()->applyCentralImpulse(forw);
 }
 
+void SkillShieldCharge::onRelease() { }
+
 void SkillShieldCharge::onUpdate(float deltaTime)
 {
 	if (active == true)
