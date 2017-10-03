@@ -16,7 +16,7 @@ namespace Graphics
         HUD(ID3D11Device * device, ID3D11DeviceContext * context);
         ~HUD();
         void drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState);
-        void queueText(Graphics::TextString text);
+        void queueText(Graphics::TextString * text);
 
     private:
         void createHUDVBS(ID3D11Device * device);
@@ -28,7 +28,7 @@ namespace Graphics
         ID3D11ShaderResourceView *HP;
         ID3D11Buffer * vertexBuffer;
 
-        std::unique_ptr<DirectX::SpriteFont> sFont;
+        std::unique_ptr<DirectX::SpriteFont> sFont[5];
         std::unique_ptr<DirectX::SpriteBatch> sBatch;
 
         std::vector<TextString> textQueue;

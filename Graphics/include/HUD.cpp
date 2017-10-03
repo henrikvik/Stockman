@@ -6,7 +6,7 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
 {
     createHUDTextures(device, context);
     createHUDVBS(device);
-   sFont = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/comicsans.spritefont");
+   sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/comicsans.spritefont");
    sBatch = std::make_unique<DirectX::SpriteBatch>(context);
 }
 
@@ -43,9 +43,9 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     context->PSSetShaderResources(0, 1, &SRVNULL);
 }
 
-void Graphics::HUD::queueText(Graphics::TextString text)
+void Graphics::HUD::queueText(Graphics::TextString * text)
 {
-    textQueue.push_back(text);
+    textQueue.push_back(*text);
 }
 
 void Graphics::HUD::createHUDVBS(ID3D11Device * device)
@@ -136,12 +136,11 @@ void Graphics::HUD::renderText(ID3D11BlendState * blendState)
     for (size_t i = 0; i < textQueue.size(); i++)
     {
         TextString temp = textQueue.at(i);
-        textQueue.pop_back();
-        sFont->DrawString(sBatch.get(), temp.text.c_str(), temp.pos, temp.color);
+
+            sFont[temp.font]->DrawString(sBatch.get(), temp.text.c_str(), temp.pos, temp.color);   
     }
+    textQueue.clear();
 
-
-    sFont->DrawString(sBatch.get(), L"Deus Vult!", DirectX::SimpleMath::Vector2(640, 400), DirectX::Colors::Black);
 
     sBatch->End();
 }
