@@ -7,6 +7,9 @@ using namespace Logic;
 RangedBehavior::RangedBehavior()
 {
 	m_distance = 20; // distance before stopping
+
+	// create node test, Behavior Trees is a WIP, and will continue to evolve during sprint #3 & #4. ETA: Sprint #4
+	BehaviorNode node;
 }
 
 void RangedBehavior::update(Enemy &enemy, Player const &player, float deltaTime)

@@ -19,11 +19,14 @@ void EnemyTest::clear()
 void EnemyTest::onCollision(Entity &other)
 {
 	if (Projectile *p = dynamic_cast<Projectile*> (&other)) {
-		damage(p->getProjectileData().damage);
-		btVector3 dir = other.getRigidbody()->getLinearVelocity();
-		dir = dir.normalize();
-		dir *= 1000.f;
-		getRigidbody()->applyCentralForce(dir);
+		if (!p->getProjectileData().enemyBullet)
+		{
+			damage(p->getProjectileData().damage);
+			btVector3 dir = other.getRigidbody()->getLinearVelocity();
+			dir = dir.normalize();
+			dir *= 1000.f;
+			getRigidbody()->applyCentralForce(dir);
+		}
 	} if (Player *p = dynamic_cast<Player*> (&other))
 		onCollision(*p);
 }

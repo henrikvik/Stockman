@@ -4,8 +4,8 @@ using namespace Logic;
 #define ENEMY_START_COUNT 16
 #define ENEMIES_PATH_UPDATE_PER_FRAME 3
 #define TEST_NAME "helloWave"
-#define DEBUG_ASTAR true
-#define DEBUG_PATH true
+#define DEBUG_ASTAR false
+#define DEBUG_PATH false
 
 #include <AI/EnemyTest.h>
 #include <AI/EnemyNecromancer.h>
@@ -96,7 +96,7 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 			enemy->setProjectileManager(projectiles);
 			m_enemies.push_back(enemy);
 		}
-		enemy = new EnemyTest(Graphics::ModelID::CUTTLERY, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
+		enemy = new EnemyTest(Graphics::ModelID::GRASS, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
 		enemy->setProjectileManager(projectiles);
 		m_enemies.push_back(enemy);
 		/*
