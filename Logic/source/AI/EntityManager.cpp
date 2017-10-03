@@ -96,6 +96,9 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 			enemy->setProjectileManager(projectiles);
 			m_enemies.push_back(enemy);
 		}
+		enemy = new EnemyTest(Graphics::ModelID::CUTTLERY, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
+		enemy->setProjectileManager(projectiles);
+		m_enemies.push_back(enemy);
 		/*
 		m_triggerManager.addTrigger(Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
 		m_triggerManager.addTrigger(Cube({ -10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);

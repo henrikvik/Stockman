@@ -25,8 +25,10 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
 	{
 		case TEST:
 			m_behavior = new TestBehavior();
+			break;
 		case RANGED:
 			m_behavior = new RangedBehavior();
+			break;
 	}
 }
 
