@@ -31,7 +31,7 @@ void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 		m_forw = btVector3(forward.getX(), 0.0f, forward.getZ());
 		m_forw = m_forw;
 		m_thePlayer = &shooter;
-		shooter.getStatusManager().addStatus(StatusManager::EFFECT_ID::SHEILD_CHARGE, 1, true);
+		shooter.getStatusManager().addStatus(StatusManager::EFFECT_ID::SHIELD_CHARGE, 1, true);
 	}
 }
 
