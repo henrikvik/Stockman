@@ -78,11 +78,18 @@ namespace Graphics
         float x, y, z;
         float u, v;
     };
-
+    enum Font
+    {
+        SMALL,
+        MEDUIM,
+        LARGE
+    };
     struct TextString
     {
         std::wstring text;
         DirectX::SimpleMath::Vector2 pos;
         DirectX::SimpleMath::Color color;
+        Font font;
     };
+
 };
