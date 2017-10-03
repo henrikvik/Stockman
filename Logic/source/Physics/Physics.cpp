@@ -85,7 +85,6 @@ void Physics::update(GameTime gameTime)
 			btVector3 b = contactPoint.getPositionWorldOnA();
 			btVector3 a = contactPoint.getPositionWorldOnB();
 
-
 			Entity* pbodyA = reinterpret_cast<Entity*>(obA->getUserPointer());
 			Entity* pbodyB = reinterpret_cast<Entity*>(obB->getUserPointer());
 
