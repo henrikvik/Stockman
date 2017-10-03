@@ -69,14 +69,14 @@ void Player::clear()
 	m_skillManager.clear();
 }
 
-void Player::onCollision(Entity& other, btVector3 collPoint)
+void Player::onCollision(Entity& other, btVector3 contactPoint)
 {
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
 	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))	{ printf("Enemy slapped you right in the face.\n"); }	// collision with enemy
 	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
 	else if(m_playerState == PlayerState::IN_AIR)
 	{
-		btVector3 dir = collPoint - getPositionBT();
+		btVector3 dir = contactPoint - getPositionBT();
 
 		btVector3 hitSurfaceNormal = m_physPtr->RayTestGetNormal(Ray(getPositionBT(), getPositionBT() + (dir*2))); // overshoot the ray test to get correct result
 

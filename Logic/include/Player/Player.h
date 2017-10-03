@@ -61,7 +61,7 @@ namespace Logic
 		PlayerState m_playerState;
 		DirectX::SimpleMath::Vector3 m_forward;
 		float m_moveMaxSpeed;
-		btVector3 m_moveDir;
+		btVector3 m_moveDir; // only 2 dimensional movement direction (x, z)
 		float m_moveSpeed;
 		float m_acceleration;
 		float m_deacceleration;
@@ -114,7 +114,7 @@ namespace Logic
 		void clear();
 		void updateSpecific(float deltaTime);
         void updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning);
-		void onCollision(Entity& other, btVector3 collPoint);
+		void onCollision(Entity& other, btVector3 contactPoint);
 		void onCollision(Projectile& other);
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);

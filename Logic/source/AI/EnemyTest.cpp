@@ -16,7 +16,7 @@ void EnemyTest::clear()
 {
 }
 
-void EnemyTest::onCollision(Entity &other, btVector3 collPoint)
+void EnemyTest::onCollision(Entity &other, btVector3 contactPoint)
 {
 	if (Projectile *p = dynamic_cast<Projectile*> (&other)) {
 		damage(p->getDamage());
@@ -28,7 +28,8 @@ void EnemyTest::onCollision(Entity &other, btVector3 collPoint)
 		// BULLET TIME
 		if (p->getType() == ProjectileType::ProjectileTypeBulletTimeSensor)
 			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, 1);
-	} if (Player *p = dynamic_cast<Player*> (&other))
+	} 
+	if (Player *p = dynamic_cast<Player*> (&other))
 		onCollision(*p);
 }
 

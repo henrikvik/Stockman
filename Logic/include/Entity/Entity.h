@@ -21,7 +21,7 @@ namespace Logic
 		virtual void update(float deltaTime);
 		void updateGraphics();
 		virtual void updateSpecific(float deltaTime) { }
-		void collision(Entity& other, btVector3 callPoint);
+		void collision(Entity& other, btVector3 contactPoint);
 		virtual void affect(int stacks, Effect const &effect, float deltaTime);	
 		virtual void upgrade(Upgrade const &upgrade);
 		virtual void onCollision(Entity& other, btVector3 collPoint) { }
