@@ -22,12 +22,16 @@ void Skill::use(btVector3 forward, Entity& shooter)
 
 void Skill::release()
 {
-	// Reset cooldown
-	m_cooldown = m_cooldownMax;
-	m_canUse = false;
+	if (!m_canUse)
+	{
+		// Reset cooldown
+		m_cooldown = m_cooldownMax;
+		m_canUse = false;
 
-	// Specific release stuff
-	onRelease();
+		// Specific release stuff
+		onRelease();
+	}
+	
 }
 
 void Skill::update(float deltaTime)
