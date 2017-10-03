@@ -38,7 +38,6 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     context->PSSetShader(shader, nullptr, 0);
 
     context->Draw(12, 0);
-
     ID3D11ShaderResourceView * SRVNULL = nullptr;
     context->PSSetShaderResources(0, 1, &SRVNULL);
 }
@@ -46,6 +45,11 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
 void Graphics::HUD::queueText(Graphics::TextString * text)
 {
     textQueue.push_back(*text);
+}
+
+void Graphics::HUD::fillHUDInfo(HUDInfo * info)
+{
+    currentInfo = info;
 }
 
 void Graphics::HUD::createHUDVBS(ID3D11Device * device)
