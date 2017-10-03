@@ -58,6 +58,7 @@ namespace Logic
 
 		const btRigidBody* RayTestOnRigidBodies(Ray& ray);
 		const btVector3 RayTestGetPoint(Ray& ray);
+		const btVector3 RayTestGetNormal(Ray& ray);
 
 		// Returns a ptr to the created rigidbody
 		// Works with different primitives
