@@ -80,7 +80,7 @@ void Game::waveUpdater()
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
 			m_entityManager.setCurrentWave(m_waveCurrent);
-			m_entityManager.spawnWave(*m_physics);
+			m_entityManager.spawnWave(*m_physics, m_projectileManager);
 
 			// If the player have completed all the waves
 			if (m_waveCurrent == MAX_WAVES)
@@ -89,6 +89,7 @@ void Game::waveUpdater()
 				end = true;
 			}
 		}
+        m_player->updateWaveInfo(m_waveCurrent + 1, m_entityManager.getEnemiesAlive(), (float)((m_waveTime[m_waveCurrent] - m_waveTimer) * 0.001));
 	}
 }
 

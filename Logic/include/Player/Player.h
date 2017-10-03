@@ -18,6 +18,7 @@
 #include "Weapon\WeaponManager.h"
 #include "Skill\SkillManager.h"
 #include <Projectile\ProjectileManager.h>
+#include <Graphics\include\Structs.h>
 
 #define PLAYER_STARTING_HP				3
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
@@ -50,6 +51,7 @@ namespace Logic
 		SkillManager m_skillManager;
 
 		// UI States
+        Graphics::HUDInfo info;
 		int m_hp;
 
 		// Movements
@@ -87,6 +89,8 @@ namespace Logic
 		DirectX::Keyboard::Keys m_reloadWeapon;
 		DirectX::Keyboard::Keys m_useSkill;
 
+
+
 		// Movement
 		void moveInput(DirectX::Keyboard::State* ks);
 		void move(float deltaTime, DirectX::Keyboard::State* ks);
@@ -105,6 +109,7 @@ namespace Logic
 		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
 		void updateSpecific(float deltaTime);
+        void updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning);
 		void onCollision(Entity& other, const btRigidBody* collidedWithYour);
 		void onCollision(Projectile& other);
 		void affect(int stacks, Effect const &effect, float deltaTime);

@@ -11,10 +11,10 @@ Map::~Map()
 
 void Map::init(Physics* physics, Player* player)
 {
-	initProps();
+//	initProps();
 	initHitboxes(physics);
-	initObjects(physics);			// Not used as intented as for rn, should only create non-moving objects, not entities
-	initGrapplingPoints(physics, player);
+//	initObjects(physics);			// Not used as intented as for rn, should only create non-moving objects, not entities
+//	initGrapplingPoints(physics, player);
 
 	m_drawHitboxes = true;
 }
@@ -70,7 +70,7 @@ void Map::initHitboxes(Physics* physics)
 	m_hitboxes.push_back(house);
 
 	house = new Entity(physics->createBody(Cube({ 150, 6, 150 }, { 0, 0, 0 }, { 40, 6, 40 }), 0.f, false), { 40, 6, 40 });
-	m_hitboxes.push_back(house);
+	m_hitboxes.push_back(house); 
 
 	house = new Entity(physics->createBody(Cube({ 60, 80, 60 }, { 0, 0, 0 }, { 45, 0.75, 45 }), 0.f, false), { 45, 1.5f, 45 });
 	m_hitboxes.push_back(house);

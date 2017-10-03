@@ -4,6 +4,7 @@
 #include <Entity\Entity.h>
 #include <Player\Player.h>
 #include <AI\Behavior\Behavior.h>
+#include <Projectile\ProjectileManager.h>
 
 #pragma region Comment
 /*
@@ -27,18 +28,26 @@ namespace Logic
 		private:
 			float m_health, m_maxHealth, m_baseDamage; 
 			int m_enemyType;
+			ProjectileManager *m_projectiles;
 			// Animation m_animation;
 		public:	
-			enum BEHAVIOR_ID { TEST };
+			enum BEHAVIOR_ID { TEST, RANGED };
 
 			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, int enemyType, int animationId);
 			virtual ~Enemy();
 
-			virtual void update(Player const &player, float deltaTime);
+			void setProjectileManager(ProjectileManager *projectileManager);
+
+			virtual void update(Player const &player, float deltaTime, bool updatePath = false);
+			virtual void useAbility(Entity const &target) {};
 			virtual void updateDead(float deltaTime) = 0;
 			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
+
+			// for debugging
+			void debugRendering(Graphics::Renderer &renderer);
+
 			void damage(float damage);
 			void setBehavior(BEHAVIOR_ID id);
 
@@ -46,6 +55,9 @@ namespace Logic
 			float getMaxHealth() const;
 			float getBaseDamage() const;
 			int getEnemyType() const;
+
+			void spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed);
+			ProjectileManager* getProjectileManager() const;
 		protected: //for testing
 			Logic::Behavior *m_behavior;
 			btRigidBody *weakPoint;

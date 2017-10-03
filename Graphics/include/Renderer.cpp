@@ -15,7 +15,7 @@
 #include "Animation\AnimatedTestCube.h"
 #endif
 
-#define MAX_DEBUG_POINTS 500
+#define MAX_DEBUG_POINTS 10000
 
 namespace Graphics
 {
@@ -277,6 +277,11 @@ namespace Graphics
     void Renderer::queueText(TextString * text)
     {
         hud.queueText(text);
+    }
+
+    void Renderer::fillHUDInfo(HUDInfo * info)
+    {
+        hud.fillHUDInfo(info);
     }
 
 

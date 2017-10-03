@@ -1,5 +1,6 @@
 #include <AI\Enemy.h>
 #include <AI\Behavior\TestBehavior.h>
+#include <AI\Behavior\RangedBehavior.h>
 using namespace Logic;
 
 Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, int enemyType, int animationId)
@@ -24,6 +25,10 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
 	{
 		case TEST:
 			m_behavior = new TestBehavior();
+			break;
+		case RANGED:
+			m_behavior = new RangedBehavior();
+			break;
 	}
 }
 
@@ -32,12 +37,29 @@ Enemy::~Enemy() {
 		delete m_behavior;
 }
 
-void Enemy::update(Player const &player, float deltaTime) {
+void Enemy::setProjectileManager(ProjectileManager * projectileManager)
+{
+	m_projectiles = projectileManager;
+}
+
+void Enemy::update(Player const &player, float deltaTime, bool updatePath) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 
-	if (m_behavior)
+	if (m_behavior) // remove later for better perf
+	{
+		if (updatePath)
+			m_behavior->updatePath(*this, player);
 		m_behavior->update(*this, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+	}
+}
+
+void Enemy::debugRendering(Graphics::Renderer & renderer)
+{
+	if (m_behavior)
+	{
+		m_behavior->debugRendering(renderer);
+	}
 }
 
 void Enemy::damage(float damage)
@@ -75,4 +97,23 @@ float Enemy::getBaseDamage() const
 int Enemy::getEnemyType() const
 {
 	return m_enemyType;
+}
+
+// projectiles
+void Enemy::spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed)
+{
+	ProjectileData data;
+
+	data.damage = getBaseDamage();
+	data.meshID = id;
+	data.speed = speed;
+	data.scale = 1.f;
+	data.enemyBullet = true;
+	
+	m_projectiles->addProjectile(data, getPositionBT(), dir, *this);
+}
+
+ProjectileManager * Enemy::getProjectileManager() const
+{
+	return m_projectiles;
 }

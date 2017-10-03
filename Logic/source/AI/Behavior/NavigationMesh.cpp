@@ -46,6 +46,35 @@ const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() cons
 	return nodes;
 }
 
+std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataTri() 
+{
+	std::vector<DirectX::SimpleMath::Vector3> *data =
+		new std::vector<DirectX::SimpleMath::Vector3>();
+
+	for (Triangle const &tri : triangleList)
+		for (int i = 0; i < 3; i++)
+			data->push_back(tri.vertices[i]);
+
+	return data;
+}
+
+std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataEdges()
+{
+	std::vector<DirectX::SimpleMath::Vector3> *data =
+		new std::vector<DirectX::SimpleMath::Vector3>();
+	
+	for (int j = 0; j < edges.size(); j++)
+	{
+		for (int i = 0; i < edges[j].indices.size(); i++)
+		{
+			data->push_back(nodes[j]);
+			data->push_back(nodes[edges[j].indices[i]]);
+		}
+	}
+
+	return data;
+}
+
 const std::vector<NavigationMesh::Edge>& NavigationMesh::getEdges() const
 {
 	return edges;
