@@ -6,6 +6,7 @@
 #include "Structs.h"
 #include <SpriteFont.h>
 #include <SpriteBatch.h>
+#include <vector>
 
 namespace Graphics
 {
@@ -15,6 +16,7 @@ namespace Graphics
         HUD(ID3D11Device * device, ID3D11DeviceContext * context);
         ~HUD();
         void drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState);
+        void queueText(Graphics::TextString text);
 
     private:
         void createHUDVBS(ID3D11Device * device);
@@ -28,6 +30,8 @@ namespace Graphics
 
         std::unique_ptr<DirectX::SpriteFont> sFont;
         std::unique_ptr<DirectX::SpriteBatch> sBatch;
+
+        std::vector<TextString> textQueue;
     };
 
 }

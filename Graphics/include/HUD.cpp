@@ -43,6 +43,11 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     context->PSSetShaderResources(0, 1, &SRVNULL);
 }
 
+void Graphics::HUD::queueText(Graphics::TextString text)
+{
+    textQueue.push_back(text);
+}
+
 void Graphics::HUD::createHUDVBS(ID3D11Device * device)
 {
     struct GUI
@@ -128,7 +133,6 @@ void Graphics::HUD::renderText(ID3D11BlendState * blendState)
 {
     sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
     sFont->DrawString(sBatch.get(), L"Deus Vult!", DirectX::SimpleMath::Vector2(640, 400), DirectX::Colors::Black);
-
 
     sBatch->End();
 }
