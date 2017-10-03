@@ -100,4 +100,14 @@ namespace Graphics
         Font font;
     };
 
+    struct HUDInfo
+    {
+        int hp;
+        int cuttleryAmmo[2];
+        int iceAmmo[2];
+        UINT score;
+        int wave;
+        int enemiesRemaining;
+    };
+
 };
