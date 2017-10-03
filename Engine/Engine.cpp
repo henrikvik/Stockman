@@ -324,7 +324,24 @@ int Engine::run()
         staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + sinf(totalTime * 0.001f),0 });
 
 		renderer->updateLight(deltaTime, &cam);
-
+        Graphics::TextString text{
+            L"The hills ",
+            DirectX::SimpleMath::Vector2(50, 50),
+            DirectX::SimpleMath::Color(DirectX::Colors::Black),
+            Graphics::Font::SMALL
+        };
+        Graphics::TextString text1{
+            L"are alive ",
+            DirectX::SimpleMath::Vector2(600, 200),
+            DirectX::SimpleMath::Color(DirectX::Colors::Crimson),
+            Graphics::Font::SMALL
+        };
+        Graphics::TextString text2{
+            L"With the sound of music! ",
+            DirectX::SimpleMath::Vector2(1000, 400),
+            DirectX::SimpleMath::Color(DirectX::Colors::Gold),
+            Graphics::Font::SMALL
+        };
         
         ///////////////////////////////////
 
@@ -332,7 +349,9 @@ int Engine::run()
         {
             renderer->queueRender(&staticCube);
             renderer->queueRender(&staticSphere);
-
+            renderer->queueText(&text);
+            renderer->queueText(&text1);
+            renderer->queueText(&text2);
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
 			PROFILE_END();
