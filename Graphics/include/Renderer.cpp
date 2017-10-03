@@ -274,6 +274,11 @@ namespace Graphics
         renderDebugQueue.push_back(debugInfo);
     }
 
+    void Renderer::queueText(TextString * text)
+    {
+        hud.queueText(text);
+    }
+
 
     //void Graphics::Renderer::renderMenu(MenuInfo * info)
     //{

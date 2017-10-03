@@ -36,6 +36,7 @@ namespace Graphics
         void render(Camera * camera);
         void queueRender(RenderInfo * renderInfo);
         void queueRenderDebug(RenderDebugInfo * debugInfo);
+        void queueText(TextString * text);
 
         void drawMenu(Graphics::MenuInfo * info);
 		void updateLight(float deltaTime, Camera * camera);
