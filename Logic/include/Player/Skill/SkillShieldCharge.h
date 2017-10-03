@@ -28,7 +28,7 @@ namespace Logic
 		bool m_active;
 		float m_time;
 		btVector3 m_forw;
-		Entity* m_thePlayer;
+		Entity* m_shooter;
 		float m_chargePower;
 	public:
 		SkillShieldCharge();
