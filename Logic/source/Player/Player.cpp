@@ -23,12 +23,13 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
     info.hp = m_hp;
-    info.cuttleryAmmo[0] = m_weaponManager.getCurrentWeaponPrimary()->getAmmo();
-    info.cuttleryAmmo[1] = m_weaponManager.getCurrentWeaponPrimary()->getAmmoCap();
-    info.iceAmmo[0] = m_weaponManager.getCurrentWeaponSecondary()->getAmmo();
-    info.iceAmmo[1] = m_weaponManager.getCurrentWeaponSecondary()->getAmmoCap();
+    info.cuttleryAmmo[0] = 0;
+    info.cuttleryAmmo[1] = 0;
+    info.iceAmmo[0] = 0 ;
+    info.iceAmmo[1] = 0 ;
     info.wave = 0;
     info.score = 0;
+    info.sledge = false;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -143,10 +144,18 @@ void Player::updateSpecific(float deltaTime)
 {
     //updates hudInfo with the current info
     info.hp = m_hp;
-    info.cuttleryAmmo[0] = m_weaponManager.getCurrentWeaponPrimary()->getAmmo();
-    info.cuttleryAmmo[1] = m_weaponManager.getCurrentWeaponPrimary()->getAmmoCap();
-    info.iceAmmo[0] = m_weaponManager.getCurrentWeaponSecondary()->getAmmo();
-    info.iceAmmo[1] = m_weaponManager.getCurrentWeaponSecondary()->getAmmoCap();
+    info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
+    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getMagSize();
+    info.iceAmmo[0] = m_weaponManager.getSecondWeapon()->getMagAmmo();
+    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getMagSize();
+    if (m_weaponManager.getCurrentWeaponPrimary()->getMagSize() == 0)
+    {
+        info.sledge  = true;
+    }
+    else
+    {
+        info.sledge = false;
+    }
 
 
 
