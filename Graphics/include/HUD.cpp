@@ -6,6 +6,8 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
 {
     createHUDTextures(device, context);
     createHUDVBS(device);
+   sFont = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/comicsans.spritefont");
+   sBatch = std::make_unique<DirectX::SpriteBatch>(context);
 }
 
 Graphics::HUD::~HUD()
@@ -17,6 +19,7 @@ Graphics::HUD::~HUD()
 
 void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState)
 {
+    renderText(blendState);
     UINT stride = 20, offset = 0;
     context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -34,11 +37,7 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     context->PSSetShaderResources(1, 1, &HP);
     context->PSSetShader(shader, nullptr, 0);
 
-
-
-
     context->Draw(12, 0);
-
 
     ID3D11ShaderResourceView * SRVNULL = nullptr;
     context->PSSetShaderResources(0, 1, &SRVNULL);
@@ -124,3 +123,13 @@ void Graphics::HUD::createHUDTextures(ID3D11Device * device, ID3D11DeviceContext
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("crosshair.png"), nullptr, &crosshair));
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPbar.png"), nullptr, &HP));
 }
+
+void Graphics::HUD::renderText(ID3D11BlendState * blendState)
+{
+    sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
+    sFont->DrawString(sBatch.get(), L"Deus Vult!", DirectX::SimpleMath::Vector2(640, 400), DirectX::Colors::Black);
+
+
+    sBatch->End();
+}
+
