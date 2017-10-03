@@ -23,6 +23,14 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
+    info.hp = m_hp;
+    info.cuttleryAmmo[0] = 0;
+    info.cuttleryAmmo[1] = 0;
+    info.iceAmmo[0] = 0 ;
+    info.iceAmmo[1] = 0 ;
+    info.wave = 0;
+    info.score = 0;
+    info.sledge = false;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -144,6 +152,23 @@ int Player::getHP() const
 
 void Player::updateSpecific(float deltaTime)
 {
+    //updates hudInfo with the current info
+    info.hp = m_hp;
+    info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
+    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getMagSize();
+    info.iceAmmo[0] = m_weaponManager.getSecondWeapon()->getMagAmmo();
+    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getMagSize();
+    if (m_weaponManager.getCurrentWeaponPrimary()->getMagSize() == 0)
+    {
+        info.sledge  = true;
+    }
+    else
+    {
+        info.sledge = false;
+    }
+
+
+
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
@@ -204,7 +229,7 @@ void Player::updateSpecific(float deltaTime)
 		moveFree(deltaTime, &ks);
 
 	// Print player velocity
-	printf("velocity: %f\n", m_moveSpeed);
+//	printf("velocity: %f\n", m_moveSpeed);
 
 	//crouch(deltaTime);
 
@@ -252,7 +277,14 @@ void Player::updateSpecific(float deltaTime)
 	// Update weapon and skills
 	m_weaponManager.update(deltaTime);
 	m_skillManager.update(deltaTime);
-	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
+}
+
+//fills the HUD info with wave info
+void Player::updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning)
+{
+    info.wave = wave;
+    info.enemiesRemaining = enemiesRemaining;
+    info.timeRemaining = timeRemaning;
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
@@ -476,11 +508,14 @@ void Player::render(Graphics::Renderer & renderer)
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);
 
+	// Setting position of updated weapon and skill models
 	m_weaponManager.setWeaponModel(getTransformMatrix(), m_forward);
+	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
 
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
 	m_skillManager.render(renderer);
+    renderer.fillHUDInfo(&info);
 }
 
 float Logic::Player::getMoveSpeed() const
@@ -506,4 +541,9 @@ btVector3 Player::getForwardBT()
 DirectX::SimpleMath::Vector3 Player::getForward()
 {
 	return m_forward;
+}
+
+btVector3 Player::getMoveDirection()
+{
+	return m_moveDir;
 }

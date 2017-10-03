@@ -36,6 +36,9 @@ namespace Logic
 		float	getDuration() const;
 		bool	getCanUse() const;
 
+		void setCooldown(float cooldown);
+		void setCanUse(bool canUse);
+
 	private:
 		// StatusManager statusManager;
 		float	m_cooldown;
