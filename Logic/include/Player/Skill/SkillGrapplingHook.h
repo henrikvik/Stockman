@@ -17,9 +17,10 @@
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
 
-#define GRAPPLING_HOOK_CD	 50.f		// Cooldown in ms
-#define GRAPPLING_HOOK_RANGE 500.f		// Range in bulletphysics units (probably meters)
-#define GRAPPLING_HOOK_SPEED 0.06f		// The movement speed for the player in specific when used
+#define GRAPPLING_HOOK_CD			50.f		// Cooldown in ms
+#define GRAPPLING_HOOK_RANGE		500.f		// Range in bulletphysics units (probably meters)
+#define GRAPPLING_HOOK_MAX_SPEED	0.05f		// The movement speed for the player in specific when used
+#define GRAPPLING_HOOK_POWER		0.001f		// The amount of power to reach the max speed
 
 namespace Logic
 {
@@ -41,6 +42,7 @@ namespace Logic
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 
+		GrapplingHookState getState() const;
 	private:
 		Physics*						m_physicsPtr;	//< Just a pointer to the physics to be able to raycast
 		GrapplingHookState				m_state;		//< Current state, if the grappling hook is currently pulling or not

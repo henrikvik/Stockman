@@ -122,6 +122,7 @@ namespace Logic
 		void setMoveDirection(btVector3 moveDir);
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
+		btVector3 getMoveDirection();
 	};
 
 }

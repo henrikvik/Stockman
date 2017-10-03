@@ -44,11 +44,13 @@ void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 			m_state = GrapplingHookStatePulling;
 
 			// Saving ray to intersection surface
-			m_point = m_physicsPtr->RayTestGetPoint(Ray(shooter.getPositionBT(), forward, GRAPPLING_HOOK_RANGE));
+			Ray ray(shooter.getPositionBT(), forward, GRAPPLING_HOOK_RANGE);
+			m_point = m_physicsPtr->RayTestGetPoint(ray);
 
 			// Drawing the ray
 			renderDebug.points->clear();
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(shooter.getPositionBT()));
+			renderDebug.color = DirectX::SimpleMath::Color(1, 1, 1);
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(ray.getStart()));
 			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(m_point));
 
 		}
@@ -58,10 +60,18 @@ void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 // On button release
 void SkillGrapplingHook::onRelease()
 {
+	// If unsuccesful hook, don't put full cooldown
+	if (!m_shooter)
+	{
+		setCooldown(GRAPPLING_HOOK_CD);
+		setCanUse(true);
+	}
+
 	// Set to defaults
 	m_state = GrapplingHookStateNothing;
 	m_shooter = nullptr;
 	m_point = { 0, 0, 0 };
+	renderDebug.color = DirectX::SimpleMath::Color( 1, 0, 0 );
 }
 
 // Moving the entity the grappling hook is active to the targeted point
@@ -77,9 +87,26 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 		// Setting player movement specific grappling hook variables
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
-			player->getRigidbody()->setLinearVelocity({ 0, dirToPoint.y() * GRAPPLING_HOOK_SPEED, 0 });
+			// Checks if the player does a 90 degree turn around mid-air
+			if (dirToPoint.dot(player->getMoveDirection()) > 0)
+			{
+				// Resets the vertical velocity to make a "stopping effect"
+				player->getRigidbody()->setLinearVelocity({ 0, 0, 0 });
+			}
+			else
+			{
+				// If the player targets hooks to something behind himself, reset the current speed to the ground-speed
+				player->setMoveSpeed(PLAYER_MOVEMENT_MAX_SPEED);
+			}
+
+			// Sets the current movedirection to avoid breaking strafing
 			player->setMoveDirection(dirToPoint);
-			player->setMoveSpeed(GRAPPLING_HOOK_SPEED);
+
+			// Easing to reach the targeted vertical speed
+			shooterBody->setLinearVelocity({ 0, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0 });
+
+			// Easing to reach the maximum vertical speed
+			player->setMoveSpeed(player->getMoveSpeed() + ((GRAPPLING_HOOK_MAX_SPEED - player->getMoveSpeed()) * GRAPPLING_HOOK_POWER * deltaTime));
 		}
 
 		// Setting entity movement specific varialbes
@@ -91,4 +118,9 @@ void SkillGrapplingHook::render(Graphics::Renderer& renderer)
 {
 	// Drawing a ray of the grappling hook for debugging purposes
 	renderer.queueRenderDebug(&renderDebug);
+}
+
+GrapplingHookState SkillGrapplingHook::getState() const
+{
+	return m_state;
 }
