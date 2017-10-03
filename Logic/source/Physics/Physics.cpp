@@ -85,14 +85,13 @@ void Physics::update(GameTime gameTime)
 			btVector3 b = contactPoint.getPositionWorldOnA();
 			btVector3 a = contactPoint.getPositionWorldOnB();
 
-
 			Entity* pbodyA = reinterpret_cast<Entity*>(obA->getUserPointer());
 			Entity* pbodyB = reinterpret_cast<Entity*>(obB->getUserPointer());
 
 			if (pbodyA && pbodyB)
 			{
-				pbodyA->collision(*pbodyB);
-				pbodyB->collision(*pbodyA);
+				pbodyA->collision(*pbodyB, a);
+				pbodyB->collision(*pbodyA, b);
 			}
 		}
 	}
@@ -132,6 +131,24 @@ const btVector3 Physics::RayTestGetPoint(Ray & ray)
 	if (rayCallBack.hasHit())
 	{
 		const btVector3 object = rayCallBack.m_hitPointWorld;
+		return object;
+	}
+
+	return { 0, 0, 0 };
+}
+
+const btVector3 Physics::RayTestGetNormal(Ray & ray)
+{
+	const btVector3& start = ray.getStart();
+	const btVector3& end = ray.getEnd();
+
+	// Ray testing to see first callback
+	btCollisionWorld::ClosestRayResultCallback rayCallBack(start, end);
+	this->rayTest(start, end, rayCallBack);
+
+	if (rayCallBack.hasHit())
+	{
+		const btVector3 object = rayCallBack.m_hitNormalWorld;
 		return object;
 	}
 

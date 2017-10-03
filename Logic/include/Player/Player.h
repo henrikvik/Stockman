@@ -27,7 +27,9 @@
 #define PLAYER_MOVEMENT_AIRSTRAFE_SPEED 0.004f
 #define PLAYER_SPEED_LIMIT				0.05f
 #define PLAYER_STRAFE_ANGLE				0.95f
-#define PLAYER_JUMP_SPEED				70.f
+#define PLAYER_FRICTION					14.f
+#define PLAYER_AIR_FRICTION				1.f
+#define PLAYER_JUMP_SPEED				7.f
 #define PLAYER_BHOP_TIMER				10.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
@@ -48,6 +50,7 @@ namespace Logic
 		//ActionManager m_actionManager;
 		WeaponManager m_weaponManager;
 		SkillManager m_skillManager;
+		Physics* m_physPtr;
 
 		// UI States
 		int m_hp;
@@ -106,7 +109,7 @@ namespace Logic
 		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
 		void updateSpecific(float deltaTime);
-		void onCollision(Entity& other);
+		void onCollision(Entity& other, btVector3 collPoint);
 		void onCollision(Projectile& other);
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);

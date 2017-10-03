@@ -30,7 +30,7 @@ namespace Logic
 			void addEffects(const std::vector<StatusManager::EFFECT_ID>& effects);
 
 			void update(float deltaTime);
-			void onCollision(Entity& other);
+			void onCollision(Entity& other, btVector3 collPoint);
 
 			bool getShouldRemove() const;
 			bool getIsActive() const;

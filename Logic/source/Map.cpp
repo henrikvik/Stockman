@@ -69,6 +69,9 @@ void Map::initHitboxes(Physics* physics)
 	house = new Entity(physics->createBody(Cube({ 150, 6, 150 }, { 0, 0, 0 }, { 40, 6, 40 }), 0.f, false), { 40, 6, 40 });
 	m_hitboxes.push_back(house);
 
+	house = new Entity(physics->createBody(Cube({ -60, 6, -60 }, { 0.5f, 0, 0 }, { 25, 3, 25 }), 0.f, false), {25, 3, 25 });
+	m_hitboxes.push_back(house);
+
 }
 
 void Map::initObjects(Physics * physics)

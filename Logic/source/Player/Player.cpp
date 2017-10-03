@@ -19,6 +19,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 {
 	m_weaponManager.init(projectileManager);
 	m_skillManager.init(physics, projectileManager, gameTime);
+	m_physPtr = physics;
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
@@ -60,23 +61,27 @@ void Player::clear()
 	m_skillManager.clear();
 }
 
-void Player::onCollision(Entity& other)
+void Player::onCollision(Entity& other, btVector3 collPoint)
 {
-	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);
-	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
+	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
+	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))	{ printf("Enemy slapped you right in the face.\n"); }	// collision with enemy
+	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
+	else if(m_playerState == PlayerState::IN_AIR)
 	{
-		printf("Enemy slapped you right in the face.\n");
-	//	m_hp--;
-	}
-	else if (Trigger* e = dynamic_cast<Trigger*>(&other))
-	{
-		
-	}
-	else if (m_playerState == PlayerState::IN_AIR)
-	{
-	
+		btVector3 dir = collPoint - getPositionBT();
 
-		m_playerState = PlayerState::STANDING;
+		btVector3 hitSurfaceNormal = m_physPtr->RayTestGetNormal(Ray(getPositionBT(), getPositionBT() + (dir*2))); // overshoot the ray test to get correct result
+
+		if (!hitSurfaceNormal.isZero())
+		{
+			float hitAngle = hitSurfaceNormal.dot({ 0.f, 1.f, 0.f });
+
+			// if angle between up-vector and surface-vector is over 0.8 player is grounded and can jump again
+			if (hitAngle > 0.8f)
+				m_playerState = PlayerState::STANDING;
+			else
+				m_playerState = PlayerState::IN_AIR;
+		}
 	}
 		
 }
@@ -159,14 +164,14 @@ void Player::updateSpecific(float deltaTime)
 	static bool freeMove = false;
 	if (ks.IsKeyDown(DirectX::Keyboard::N) && !freeMove)
 	{
-		getRigidbody()->setGravity(btVector3(0.f, 0.f, 0.f)); // remove gravity
+		getRigidbody()->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
 		freeMove = true;
 		printf("free move activated\n");
 	}
 	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)
 	{
 		// reset movement
-		getRigidbody()->setGravity(btVector3(0.f, -PHYSICS_GRAVITY, 0.f));
+		getRigidbody()->setGravity({ 0.f, -PHYSICS_GRAVITY, 0.f });
 		getRigidbody()->setLinearVelocity({ 0, 0, 0 });
 		m_moveDir = { 0, 0, 0 };
 		m_moveSpeed = 0.f;
@@ -181,7 +186,7 @@ void Player::updateSpecific(float deltaTime)
 	jump(deltaTime, &ks);
 
 	// If moving on y-axis, player is in air
-	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 0.01f || getRigidbody()->getLinearVelocity().y() < -0.01f))
+	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 1.f || getRigidbody()->getLinearVelocity().y() < -1.f))
 		m_playerState = PlayerState::IN_AIR;
 
 	// Get movement input
@@ -196,13 +201,10 @@ void Player::updateSpecific(float deltaTime)
 			airMove(deltaTime);
 	}
 	else
-	{
-		getRigidbody()->setGravity(btVector3(0.f, 0.f, 0.f));
 		moveFree(deltaTime, &ks);
-	}
 
 	// Print player velocity
-//	printf("velocity: %f\n", m_moveSpeed);
+	printf("velocity: %f\n", m_moveSpeed);
 
 	//crouch(deltaTime);
 
@@ -235,7 +237,7 @@ void Player::updateSpecific(float deltaTime)
 		// Primary and secondary attack
 		if (!m_weaponManager.isAttacking())
 		{
-			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z) * 2.85f;
+			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
 			if ((ms.leftButton))
 				m_weaponManager.usePrimary(pos, m_camYaw, m_camPitch, *this);
 			else if (ms.rightButton)
@@ -250,8 +252,6 @@ void Player::updateSpecific(float deltaTime)
 	// Update weapon and skills
 	m_weaponManager.update(deltaTime);
 	m_skillManager.update(deltaTime);
-
-	m_weaponManager.setWeaponModel(getTransformMatrix(), m_forward);
 	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
 }
 
@@ -265,7 +265,7 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
-		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
+		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross({ 0, 1, 0 }).normalize();
 		m_wishDir += -dir;
 		m_wishDirRight += -1.f;
 	}
@@ -273,7 +273,7 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 	// Move Right
 	if (ks->IsKeyDown(m_moveRight))
 	{
-		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross(btVector3(0, 1, 0)).normalize();
+		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross({ 0, 1, 0 }).normalize();
 		m_wishDir += dir;
 		m_wishDirRight += 1.f;
 	}
@@ -293,7 +293,7 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 		m_wishDir += -dir;
 		m_wishDirForward += -1.f;
 	}
-	
+
 	// Normalize movement direction
 	if(!m_wishDir.isZero())
 		m_wishDir = m_wishDir.safeNormalize();
@@ -316,20 +316,28 @@ void Player::moveFree(float deltaTime, DirectX::Keyboard::State * ks)
 
 void Player::move(float deltaTime)
 {
+	// On ground
 	if (!m_wishJump)
 	{
-		applyFriction(deltaTime, getRigidbody()->getFriction());
-		m_moveDir += m_wishDir;
+		applyFriction(deltaTime, (PLAYER_SPEED_LIMIT - m_moveSpeed) * 14);
+
+		// if player wants to move
+		if (!m_wishDir.isZero())
+		{
+			// Reset movement speed if changing direction
+			if (m_moveDir.dot(m_wishDir) <= 0.f)
+				m_moveSpeed = 0.f;
+
+			// Change move direction
+			m_moveDir = m_wishDir;
+		}
 	}
+	// On ground and about to jump
 	else
 	{
 		m_airAcceleration = (PLAYER_SPEED_LIMIT - m_moveSpeed) * PLAYER_MOVEMENT_AIRACCELERATION;
-		applyAirFriction(deltaTime, getRigidbody()->getFriction() * 0.5f);
+		applyAirFriction(deltaTime, PLAYER_AIR_FRICTION);
 	}
-	
-	// Normalize movement direction
-	if (!m_moveDir.isZero())
-		m_moveDir = m_moveDir.safeNormalize();
 
 	// Apply acceleration and move player
 	if(m_wishDir.isZero() || m_wishJump)
@@ -340,7 +348,7 @@ void Player::move(float deltaTime)
 	// Apply jump if player wants to jump
 	if (m_wishJump)
 	{
-		getRigidbody()->applyCentralImpulse(btVector3(0, m_jumpSpeed, 0));
+		getRigidbody()->setLinearVelocity({ 0, 7.f, 0 }); // Jump
 		m_playerState = PlayerState::IN_AIR;
 
 		m_wishJump = false;
@@ -349,7 +357,7 @@ void Player::move(float deltaTime)
 
 void Player::airMove(float deltaTime)
 {
-	applyAirFriction(deltaTime, 0.f);
+	applyAirFriction(deltaTime, (m_moveMaxSpeed - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_AIR_FRICTION);
 
 	accelerate(deltaTime, m_airAcceleration);
 
@@ -466,6 +474,8 @@ void Player::render(Graphics::Renderer & renderer)
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);
+
+	m_weaponManager.setWeaponModel(getTransformMatrix(), m_forward);
 
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
