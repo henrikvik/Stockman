@@ -13,7 +13,14 @@ namespace Graphics
     enum ModelID {
         CUBE,
 		SPHERE,
-        CROSSBOW
+        CROSSBOW,
+		AMMOBOX,
+		CUTTLERY,
+		JUMPPAD,
+		ENEMYGRUNT,
+		GRAPPLEPOINT,
+		GRASS,
+		BUSH,
     };
 
 	struct ModelInfo
@@ -32,6 +39,7 @@ namespace Graphics
         ModelID meshId;
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = true;
 	};
 
     struct RenderDebugInfo
@@ -39,6 +47,7 @@ namespace Graphics
         bool useDepth;
         DirectX::SimpleMath::Color color;
         std::vector<DirectX::SimpleMath::Vector3>* points;
+        D3D11_PRIMITIVE_TOPOLOGY topology;
     };
 
 	// TODO: Change

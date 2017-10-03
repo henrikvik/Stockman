@@ -4,8 +4,8 @@
 
 using namespace Logic;
 
-Player::Player(btRigidBody* body, btVector3 halfExtent)
-: Entity(body, halfExtent)
+Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
+: Entity(body, halfExtent, modelID)
 {
 
 }
@@ -15,10 +15,13 @@ Player::~Player()
 	clear();
 }
 
-void Player::init(ProjectileManager* projectileManager, GameTime* gameTime)
+void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime)
 {
 	m_weaponManager.init(projectileManager);
-	m_skillManager.init(projectileManager, gameTime);
+	m_skillManager.init(physics, projectileManager, gameTime);
+
+	// Stats
+	m_hp = PLAYER_STARTING_HP;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -54,7 +57,7 @@ void Player::init(ProjectileManager* projectileManager, GameTime* gameTime)
 void Player::clear()
 {
 	m_weaponManager.clear();
-	//m_skillManager.clear();
+	m_skillManager.clear();
 }
 
 void Player::onCollision(Entity& other)
@@ -63,6 +66,7 @@ void Player::onCollision(Entity& other)
 	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))
 	{
 		printf("Enemy slapped you right in the face.\n");
+	//	m_hp--;
 	}
 	else if (Trigger* e = dynamic_cast<Trigger*>(&other))
 	{
@@ -118,11 +122,21 @@ void Player::readFromFile()
 
 }
 
+void Player::takeDamage(int damage)
+{
+	m_hp -= damage;
+}
+
+int Player::getHP() const
+{
+	return m_hp;
+}
+
 void Player::updateSpecific(float deltaTime)
 {
 	// Get Mouse and Keyboard states for this frame
-	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
+	DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
 	// Temp for testing
@@ -137,7 +151,8 @@ void Player::updateSpecific(float deltaTime)
 	}
 
 	// Movement
-	mouseMovement(deltaTime, &ms);
+	if (!ks.IsKeyDown(DirectX::Keyboard::LeftAlt))	// !TEMP!
+		mouseMovement(deltaTime, &ms);
 	jump(deltaTime, &ks);
 
 	// If moving on y-axis, player is in air
@@ -171,13 +186,19 @@ void Player::updateSpecific(float deltaTime)
 			m_weaponManager.switchWeapon(2);
 	}
 
+	// Skill
+	if (ks.IsKeyDown(m_useSkill) && m_skillManager.getCanBeUsed())
+	{
+		m_skillManager.useSkill(getForwardBT(), *this);
+	}
+	if (ks.IsKeyUp(m_useSkill) && !m_skillManager.getCanBeUsed())
+	{
+		m_skillManager.releaseSkill();
+	}
+
 	// Check if reloading
 	if (!m_weaponManager.isReloading())
 	{
-		// Skill
-		if (ks.IsKeyDown(m_useSkill))
-			m_skillManager.useSkill(getForwardBT(), *this);
-
 		// Primary and secondary attack
 		if (!m_weaponManager.isAttacking())
 		{
@@ -400,6 +421,7 @@ void Player::render(Graphics::Renderer & renderer)
 
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
+	m_skillManager.render(renderer);
 }
 
 float Logic::Player::getMoveSpeed() const

@@ -3,6 +3,7 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 
+#include <Engine\Profiler.h>
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
@@ -253,7 +254,7 @@ namespace Graphics
         {
             this->drawToBackbuffer(grid.getDebugSRV());
         }
-        drawGUI();
+        
 #endif
 
 		///////Post effext
@@ -263,6 +264,7 @@ namespace Graphics
 		drawToBackbuffer(fakeBackBufferSwap);
 
         renderDebugInfo();
+        drawGUI();
     }
 
 
@@ -652,11 +654,11 @@ namespace Graphics
 
     void Renderer::renderDebugInfo()
     {
+        //PROFILE_BEGIN("Renderer::renderDebugInfo()");
         if (renderDebugQueue.size() == 0) return;
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
         deviceContext->VSSetShaderResources(0, 1, debugPointsBuffer);
         deviceContext->PSSetConstantBuffers(1, 1, debugColorBuffer);
 
@@ -666,6 +668,11 @@ namespace Graphics
 
         for (RenderDebugInfo * info : renderDebugQueue)
         {
+            if (info->points->size() > MAX_DEBUG_POINTS)
+            {
+                throw "vector is bigger than structured buffer";
+            }
+
             debugPointsBuffer.write( 
                 deviceContext, 
                 info->points->data(), 
@@ -678,11 +685,13 @@ namespace Graphics
                 sizeof(DirectX::SimpleMath::Color)
             );
 
+            deviceContext->IASetPrimitiveTopology(info->topology);
             deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
             deviceContext->Draw(info->points->size(), 0);
         }
 
         renderDebugQueue.clear();
+        //PROFILE_END();
     }
 
     void Renderer::createBlendState()
