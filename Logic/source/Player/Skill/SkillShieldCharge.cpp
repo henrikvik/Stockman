@@ -39,7 +39,7 @@ void SkillShieldCharge::onRelease() { }
 
 void SkillShieldCharge::onUpdate(float deltaTime)
 {
-	if (m_active == true)
+	if (m_active)
 	{
 		if (Player* player = dynamic_cast<Player*>(m_thePlayer))
 		{
