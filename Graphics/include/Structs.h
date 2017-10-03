@@ -4,6 +4,7 @@
 #include <SimpleMath.h>
 #include <Engine/Constants.h>
 #include <vector>
+#include <string>
 
 #define AVG_TILE_LIGHTS 200
 #define BLOCK_SIZE 16
@@ -85,4 +86,18 @@ namespace Graphics
         float x, y, z;
         float u, v;
     };
+    enum Font
+    {
+        SMALL,
+        MEDUIM,
+        LARGE
+    };
+    struct TextString
+    {
+        std::wstring text;
+        DirectX::SimpleMath::Vector2 pos;
+        DirectX::SimpleMath::Color color;
+        Font font;
+    };
+
 };
