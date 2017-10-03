@@ -41,7 +41,9 @@ void Skill::update(float deltaTime)
 	onUpdate(deltaTime);
 }
 
-float Skill::getCooldown() const	{ return m_cooldown;	}
-float Skill::getCooldownMax() const { return m_cooldownMax; }
-float Skill::getDuration() const	{ return m_duration;	}
-bool Skill::getCanUse() const		{ return m_canUse;		}
+float Skill::getCooldown() const		{ return m_cooldown;			}
+float Skill::getCooldownMax() const		{ return m_cooldownMax;			}
+float Skill::getDuration() const		{ return m_duration;			}
+bool Skill::getCanUse() const			{ return m_canUse;				}
+void Skill::setCooldown(float cooldown) { this->m_cooldown = cooldown;  }
+void Skill::setCanUse(bool canUse)		{ this->m_canUse = canUse;		}

@@ -217,9 +217,6 @@ void Player::updateSpecific(float deltaTime)
 	// Update weapon and skills
 	m_weaponManager.update(deltaTime);
 	m_skillManager.update(deltaTime);
-
-	m_weaponManager.setWeaponModel(getTransformMatrix(), m_forward);
-	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
@@ -419,6 +416,10 @@ void Player::render(Graphics::Renderer & renderer)
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);
 
+	// Setting position of updated weapon and skill models
+	m_weaponManager.setWeaponModel(getTransformMatrix(), m_forward);
+	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
+
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
 	m_skillManager.render(renderer);
@@ -447,4 +448,9 @@ btVector3 Player::getForwardBT()
 DirectX::SimpleMath::Vector3 Player::getForward()
 {
 	return m_forward;
+}
+
+btVector3 Player::getMoveDirection()
+{
+	return m_moveDir;
 }
