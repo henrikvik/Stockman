@@ -8,6 +8,7 @@
 #include <AI/TriggerManager.h>
 
 #include <Player\Player.h>
+#include <Projectile\ProjectileManager.h>
 
 #include <Graphics\include\Renderer.h>
 #include <Physics\Physics.h>
@@ -45,7 +46,7 @@ namespace Logic
 		void update(Player const &player, float deltaTime);
 		void clear();
 
-		void spawnWave(Physics &physics);
+		void spawnWave(Physics &physics, ProjectileManager *projectiles);
 
 		void setCurrentWave(int currentWave);
 		void render(Graphics::Renderer &renderer);

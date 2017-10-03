@@ -35,6 +35,11 @@ Enemy::~Enemy() {
 		delete m_behavior;
 }
 
+void Enemy::setProjectileManager(ProjectileManager * projectileManager)
+{
+	m_projectiles = projectileManager;
+}
+
 void Enemy::update(Player const &player, float deltaTime, bool updatePath) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
@@ -90,4 +95,23 @@ float Enemy::getBaseDamage() const
 int Enemy::getEnemyType() const
 {
 	return m_enemyType;
+}
+
+// projectiles
+void Enemy::spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed)
+{
+	ProjectileData data;
+
+	data.damage = getBaseDamage();
+	data.meshID = id;
+	data.speed = speed;
+	data.scale = 1.f;
+	data.enemyBullet = true;
+	
+	m_projectiles->addProjectile(data, getPositionBT(), dir, *this);
+}
+
+ProjectileManager * Enemy::getProjectileManager() const
+{
+	return m_projectiles;
 }

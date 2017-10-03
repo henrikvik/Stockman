@@ -6,7 +6,7 @@ using namespace Logic;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
 	btRigidBody* body, btVector3 halfExtent)
-	: Enemy(modelID, body, halfExtent, 10, 5, 0, 0) {
+	: Enemy(modelID, body, halfExtent, 5, 5, 0, 0) {
 	setBehavior(RANGED);
 }
 
@@ -20,10 +20,14 @@ void EnemyNecromancer::clear()
 
 void EnemyNecromancer::onCollision(Entity & other)
 {
+	if (Projectile *pj = dynamic_cast<Projectile*> (&other))
+		if (!pj->getProjectileData().enemyBullet)
+			damage(pj->getProjectileData().damage);
 }
 
 void EnemyNecromancer::onCollision(Player & other)
 {
+
 }
 
 void EnemyNecromancer::updateSpecific(Player const & player, float deltaTime)
@@ -38,10 +42,10 @@ void EnemyNecromancer::useAbility(Entity const &target)
 {
 	if (RandomGenerator::singleton().getRandomInt(0, 1))
 	{
-		damage(getHealth());
+		spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::GRASS, 150.f);
 	}
 	else
 	{
-
+		spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::ENEMYGRUNT, 150.f);
 	}
 }
