@@ -350,9 +350,9 @@ int Engine::run()
         {
             renderer->queueRender(&staticCube);
             renderer->queueRender(&staticSphere);
-            renderer->queueText(&text);
+         /*   renderer->queueText(&text);
             renderer->queueText(&text1);
-            renderer->queueText(&text2);
+            renderer->queueText(&text2);*/
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
 			PROFILE_END();
