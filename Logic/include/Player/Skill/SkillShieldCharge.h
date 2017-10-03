@@ -15,10 +15,11 @@
 #include <Player\Skill\Skill.h>
 
 #define SHIELD_CHARGE_CD		1500.f
-#define SHIELD_CHARGE_DURATION	2000.f
+#define SHIELD_CHARGE_DURATION	500.f
 
 namespace Logic
 {
+	class Player;
 	class SkillShieldCharge : public Skill
 	{
 	private:

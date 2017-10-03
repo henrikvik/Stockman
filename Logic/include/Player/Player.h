@@ -63,7 +63,7 @@ namespace Logic
 		float m_airAcceleration;
 		float m_jumpSpeed;
 
-		bool m_wishJump;
+		bool m_wishToJump;
 		btVector3 m_wishDir;
 		float m_wishDirForward;
 		float m_wishDirRight;
@@ -110,6 +110,7 @@ namespace Logic
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);
 		void render(Graphics::Renderer& renderer); 
+		void setMaxSpeed(float maxSpeed);
 
 		void saveToFile();
 		void readFromFile();

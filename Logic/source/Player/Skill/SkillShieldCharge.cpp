@@ -1,4 +1,6 @@
 #include "Player/Skill/SkillShieldCharge.h"
+#include <Player\Player.h>
+#include <iostream>
 
 using namespace Logic;
 
@@ -11,7 +13,7 @@ SkillShieldCharge::SkillShieldCharge(ProjectileManager * projectileManager, Proj
 	m_time = 0.0f;
 	m_forw = btVector3(0.0f, 0.0f, 0.0f);
 	m_thePlayer = nullptr;
-	m_chargePower = 10000.0f;
+	m_chargePower = 0.09f;
 }
 
 SkillShieldCharge::~SkillShieldCharge()
@@ -27,9 +29,8 @@ void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 		printf("Used Shield Charge.\n");
 		m_active = true;
 		m_forw = btVector3(forward.getX(), 0.0f, forward.getZ());
-		m_forw = m_forw * m_chargePower;
+		m_forw = m_forw;
 		m_thePlayer = &shooter;
-		m_thePlayer->getRigidbody()->applyCentralImpulse(m_forw);
 	}
 }
 
@@ -37,14 +38,22 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 {
 	if (m_active == true)
 	{
+		if (Player* player = dynamic_cast<Player*>(m_thePlayer))
+		{
+			player->setMaxSpeed(m_chargePower);
+			player->setMoveSpeed(m_chargePower);
+			player->setMoveDirection(m_forw);
 		if (m_time >= SHIELD_CHARGE_DURATION)
 		{
-			btVector3 impulse = (-m_thePlayer->getRigidbody()->getLinearVelocity()) / m_thePlayer->getRigidbody()->getLinearFactor() / m_thePlayer->getRigidbody()->getInvMass();
-			m_thePlayer->getRigidbody()->applyCentralImpulse(impulse);
+			player->setMaxSpeed(PLAYER_MOVEMENT_MAX_SPEED);
 			m_active = false;
 			m_time = 0;
+			player->setMoveSpeed(PLAYER_MOVEMENT_MAX_SPEED);
 		}
+
 		m_time += deltaTime;
+
+		}
 	}
 }
 

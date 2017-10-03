@@ -39,7 +39,7 @@ void Player::init(ProjectileManager* projectileManager, GameTime* gameTime)
 	m_jumpSpeed = PLAYER_JUMP_SPEED;
 	m_wishDirForward = 0.f;
 	m_wishDirRight = 0.f;
-	m_wishJump = false;
+	m_wishToJump = false;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -156,7 +156,7 @@ void Player::updateSpecific(float deltaTime)
 	jump(deltaTime, &ks);
 
 	// If moving on y-axis, player is in air
-	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 0.01f || getRigidbody()->getLinearVelocity().y() < -0.01f))
+	if (!m_wishToJump && (getRigidbody()->getLinearVelocity().y() > 0.01f || getRigidbody()->getLinearVelocity().y() < -0.01f))
 		m_playerState = PlayerState::IN_AIR;
 
 	// Get movement input
@@ -262,7 +262,7 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 
 void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 {
-	if (!m_wishJump)
+	if (!m_wishToJump)
 	{
 		applyFriction(deltaTime, getRigidbody()->getFriction());
 		m_moveDir += m_wishDir;
@@ -278,18 +278,18 @@ void Player::move(float deltaTime, DirectX::Keyboard::State* ks)
 		m_moveDir = m_moveDir.safeNormalize();
 
 	// Apply acceleration and move player
-	if(m_wishDir.isZero() || m_wishJump)
+	if(m_wishDir.isZero() || m_wishToJump)
 		accelerate(deltaTime, 0.f);
 	else
 		accelerate(deltaTime, m_acceleration);
 
 	// Apply jump if player wants to jump
-	if (m_wishJump)
+	if (m_wishToJump)
 	{
 		getRigidbody()->applyCentralImpulse(btVector3(0, m_jumpSpeed, 0));
 		m_playerState = PlayerState::IN_AIR;
 
-		m_wishJump = false;
+		m_wishToJump = false;
 	}
 }
 
@@ -306,7 +306,7 @@ void Player::accelerate(float deltaTime, float acceleration)
 {
 	m_moveSpeed += acceleration * deltaTime;
 
-	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
+	if (m_playerState != PlayerState::IN_AIR && !m_wishToJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;
 
 	// Update pos of player
@@ -368,10 +368,10 @@ void Player::applyAirFriction(float deltaTime, float friction)
 
 void Player::jump(float deltaTime, DirectX::Keyboard::State* ks)
 {
-	if (ks->IsKeyDown(m_jump) && !m_wishJump && m_playerState != PlayerState::IN_AIR)
-		m_wishJump = true;
+	if (ks->IsKeyDown(m_jump) && !m_wishToJump && m_playerState != PlayerState::IN_AIR)
+		m_wishToJump = true;
 	else if (ks->IsKeyUp(m_jump))
-		m_wishJump = false;
+		m_wishToJump = false;
 }
 
 void Player::crouch(float deltaTime)
@@ -415,6 +415,11 @@ void Player::render(Graphics::Renderer & renderer)
 
 	// Drawing the weapon model
 	m_weaponManager.render(renderer);
+}
+
+void Logic::Player::setMaxSpeed(float maxSpeed)
+{
+	m_moveMaxSpeed = maxSpeed;
 }
 
 float Logic::Player::getMoveSpeed() const
