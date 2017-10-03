@@ -1,8 +1,8 @@
 #include <AI/Trigger.h>
 using namespace Logic;
 
-Trigger::Trigger(btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
-: Entity(body, halfExtent)
+Trigger::Trigger(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
+: Entity(body, halfExtent, modelID)
 {
 	m_maxCooldown = cooldown;
 	m_cooldown = -1;

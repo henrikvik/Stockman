@@ -10,16 +10,24 @@ Skill::Skill(float cooldown, float duration)
 	m_canUse = true;
 }
 
+Skill::~Skill() { }
+
 void Skill::use(btVector3 forward, Entity& shooter)
 {
 	if (m_canUse)
 	{
 		onUse(forward, shooter);
-
-		// Reset cooldown
-		m_cooldown = m_cooldownMax;
-		m_canUse = false;
 	}
+}
+
+void Skill::release()
+{
+	// Reset cooldown
+	m_cooldown = m_cooldownMax;
+	m_canUse = false;
+
+	// Specific release stuff
+	onRelease();
 }
 
 void Skill::update(float deltaTime)

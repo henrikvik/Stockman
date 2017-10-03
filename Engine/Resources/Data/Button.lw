@@ -27,20 +27,6 @@
 }
 
 {
-	"buttonName" : "GameButton1";
-	"texture" : "bla";
-	"xPos" : 400.0f;
-	"yPos" : 300.0f;
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
-	"height" : 200.0f;
-	"width" : 200.0f;
-	"function" : "buttonClick2";
-}
-
-{
 	"buttonName" : "GameOverButton1";
 	"texture" : "bla";
 	"xPos" : 400.0f;

@@ -2,8 +2,8 @@
 #include <AI\Behavior\TestBehavior.h>
 using namespace Logic;
 
-EnemyTest::EnemyTest(btRigidBody* body, btVector3 halfExtent)
-: Enemy(body, halfExtent, 10, 5, 3, 1) { //just test values
+EnemyTest::EnemyTest(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
+: Enemy(modelID, body, halfExtent, 10, 5, 3, 1) { //just test values
 	setBehavior(TEST);
 }
 
