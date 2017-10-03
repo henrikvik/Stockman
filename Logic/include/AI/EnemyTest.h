@@ -13,7 +13,7 @@ namespace Logic
 			virtual ~EnemyTest();
 
 			virtual void clear();
-			virtual void onCollision(Entity& other, btVector3 contactPoint);
+			virtual void onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
 			virtual void onCollision(Player& other);
 			virtual void updateSpecific(Player const &player, float deltaTime);
 			virtual void updateDead(float deltaTime);

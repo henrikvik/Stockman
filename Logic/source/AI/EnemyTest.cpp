@@ -16,20 +16,22 @@ void EnemyTest::clear()
 {
 }
 
-void EnemyTest::onCollision(Entity &other, btVector3 contactPoint)
+void EnemyTest::onCollision(Entity &other, btVector3 contactPoint, const btRigidBody* collidedWithYour)
 {
 	if (Projectile *p = dynamic_cast<Projectile*> (&other)) {
-		damage(p->getDamage());
-		btVector3 dir = other.getRigidbody()->getLinearVelocity();
-		dir = dir.normalize();
-		dir *= 1000.f;
-		getRigidbody()->applyCentralForce(dir);
+		if (!p->getProjectileData().enemyBullet)
+		{
+			damage(p->getProjectileData().damage);
+			btVector3 dir = other.getRigidbody()->getLinearVelocity();
+			dir = dir.normalize();
+			dir *= 1000.f;
+			getRigidbody()->applyCentralForce(dir);
 
-		// BULLET TIME
-		if (p->getType() == ProjectileType::ProjectileTypeBulletTimeSensor)
-			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, 1);
-	} 
-	if (Player *p = dynamic_cast<Player*> (&other))
+			// BULLET TIME
+			if (p->getType() == ProjectileType::ProjectileTypeBulletTimeSensor)
+				getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, 1);
+		}
+	} if (Player *p = dynamic_cast<Player*> (&other))
 		onCollision(*p);
 }
 

@@ -85,13 +85,16 @@ void Physics::update(GameTime gameTime)
 			btVector3 b = contactPoint.getPositionWorldOnA();
 			btVector3 a = contactPoint.getPositionWorldOnB();
 
-			Entity* pbodyA = reinterpret_cast<Entity*>(obA->getUserPointer());
-			Entity* pbodyB = reinterpret_cast<Entity*>(obB->getUserPointer());
+			Entity* entityA = reinterpret_cast<Entity*>(obA->getUserPointer());
+			Entity* entityB = reinterpret_cast<Entity*>(obB->getUserPointer());
 
-			if (pbodyA && pbodyB)
+			const btRigidBody* rbodyA = btRigidBody::upcast(obA);
+			const btRigidBody* rbodyB = btRigidBody::upcast(obB);
+
+			if (entityA && entityB)
 			{
-				pbodyA->collision(*pbodyB, a);
-				pbodyB->collision(*pbodyA, b);
+				entityA->collision(*entityB, a, rbodyA);
+				entityB->collision(*entityA, b, rbodyB);
 			}
 		}
 	}

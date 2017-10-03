@@ -25,6 +25,13 @@
 	"modifiers": 0;
 	"specifics": 0;
 }
+{ // SHIELDCHARGE
+	"flags": 0; // 0x400
+	"duration": 1000f;
+	"modifiers": 0;
+	"specifics": 0;
+}
+}
 { // BULLET_TIME
 	"flags": 256; // 0x100
 	"duration": 10f;

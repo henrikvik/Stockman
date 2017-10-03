@@ -100,13 +100,13 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 			}
 
 			// Sets the current movedirection to avoid breaking strafing
-			player->setMoveDirection(dirToPoint);
+			player->setMoveDirection(btVector3(dirToPoint.x(), 0, dirToPoint.z()));
 
 			// Easing to reach the targeted vertical speed
-			shooterBody->setLinearVelocity({ 0, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0 });
+			shooterBody->setLinearVelocity({ 0, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0 });
 
 			// Easing to reach the maximum vertical speed
-			player->setMoveSpeed(player->getMoveSpeed() + ((GRAPPLING_HOOK_MAX_SPEED - player->getMoveSpeed()) * GRAPPLING_HOOK_POWER * deltaTime));
+			player->setMoveSpeed(player->getMoveSpeed() + ((GRAPPLING_HOOK_MAX_SPEED_XZ - player->getMoveSpeed()) * GRAPPLING_HOOK_POWER * deltaTime));
 		}
 
 		// Setting entity movement specific varialbes

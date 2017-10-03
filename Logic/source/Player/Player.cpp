@@ -23,14 +23,14 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
-    info.hp = m_hp;
-    info.cuttleryAmmo[0] = 0;
-    info.cuttleryAmmo[1] = 0;
-    info.iceAmmo[0] = 0 ;
-    info.iceAmmo[1] = 0 ;
-    info.wave = 0;
-    info.score = 0;
-    info.sledge = false;
+    	info.hp = m_hp;
+   	info.cuttleryAmmo[0] = 0;
+   	info.cuttleryAmmo[1] = 0;
+    	info.iceAmmo[0] = 0 ;
+    	info.iceAmmo[1] = 0 ;
+    	info.wave = 0;
+    	info.score = 0;
+    	info.sledge = false;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -48,7 +48,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	m_jumpSpeed = PLAYER_JUMP_SPEED;
 	m_wishDirForward = 0.f;
 	m_wishDirRight = 0.f;
-	m_wishJump = false;
+	m_wishToJump = false;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -69,7 +69,7 @@ void Player::clear()
 	m_skillManager.clear();
 }
 
-void Player::onCollision(Entity& other, btVector3 contactPoint)
+void Player::onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour)
 {
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
 	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))	{ printf("Enemy slapped you right in the face.\n"); }	// collision with enemy
@@ -166,8 +166,6 @@ void Player::updateSpecific(float deltaTime)
     {
         info.sledge = false;
     }
-
-
 
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
@@ -373,18 +371,18 @@ void Player::move(float deltaTime)
 	}
 
 	// Apply acceleration and move player
-	if(m_wishDir.isZero() || m_wishJump)
+	if(m_wishDir.isZero() || m_wishToJump)
 		accelerate(deltaTime, 0.f);
 	else
 		accelerate(deltaTime, m_acceleration);
 
 	// Apply jump if player wants to jump
-	if (m_wishJump)
+	if (m_wishToJump)
 	{
 		getRigidbody()->setLinearVelocity({ 0, PLAYER_JUMP_SPEED, 0 }); // Jump
 		m_playerState = PlayerState::IN_AIR;
 
-		m_wishJump = false;
+		m_wishToJump = false;
 	}
 }
 
@@ -401,10 +399,11 @@ void Player::accelerate(float deltaTime, float acceleration)
 {
 	m_moveSpeed += acceleration * deltaTime;
 
-	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
+	if (m_playerState != PlayerState::IN_AIR && !m_wishToJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;
 
 	// Update pos of player
+	
 	btTransform transform = getRigidbody()->getWorldTransform();
 	if (m_playerState != PlayerState::IN_AIR)
 		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
@@ -516,6 +515,11 @@ void Player::render(Graphics::Renderer & renderer)
 	m_weaponManager.render(renderer);
 	m_skillManager.render(renderer);
     renderer.fillHUDInfo(&info);
+}
+
+void Logic::Player::setMaxSpeed(float maxSpeed)
+{
+	m_moveMaxSpeed = maxSpeed;
 }
 
 float Logic::Player::getMoveSpeed() const

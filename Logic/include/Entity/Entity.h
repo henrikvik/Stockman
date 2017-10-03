@@ -21,10 +21,10 @@ namespace Logic
 		virtual void update(float deltaTime);
 		void updateGraphics();
 		virtual void updateSpecific(float deltaTime) { }
-		void collision(Entity& other, btVector3 contactPoint);
+		void collision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
 		virtual void affect(int stacks, Effect const &effect, float deltaTime);	
 		virtual void upgrade(Upgrade const &upgrade);
-		virtual void onCollision(Entity& other, btVector3 collPoint) { }
+		virtual void onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour) { }
 
 		void setHalfExtent(btVector3 halfExtent);
 		btVector3 getHalfExtent() const;
@@ -38,12 +38,11 @@ namespace Logic
 		StatusManager& getStatusManager();
 		void setStatusManager(StatusManager& statusManager);
 	private:
+
 		StatusManager m_statusManager;
-		
 		btVector3 m_halfextent;
 		btRigidBody* m_body;
 		btTransform* m_transform;
-	//	Hitbox* m_head; for headshot, put it here to remember
 	};
 }
 

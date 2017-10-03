@@ -21,6 +21,9 @@ namespace Logic
 				btVector3 position;
 			};
 
+			// debugging
+			Graphics::RenderDebugInfo debugDataTri, debugDataEdges;
+
 			// to calc path testing rn
 			struct NavNode
 			{
@@ -46,6 +49,7 @@ namespace Logic
 			std::string file;
 			std::vector<NavNode> navNodes; //testing
 			NavigationMesh navigationMesh;
+			int targetIndex; // save the triangle id to share beetwen path loading
 		
 			float heuristic(DirectX::SimpleMath::Vector3 &from,
 				DirectX::SimpleMath::Vector3 &to) const;
@@ -63,6 +67,8 @@ namespace Logic
 				reconstructPath(NavNode *endNode);
 
 			void renderNavigationMesh(Graphics::Renderer &renderer);
+			// load the target triangle once per frame instead of once per path load
+			void loadTargetIndex(Entity const &target);
 
 			// iniate the nodes
 			void generateNavigationMesh();
