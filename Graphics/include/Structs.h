@@ -4,6 +4,7 @@
 #include <SimpleMath.h>
 #include <Engine/Constants.h>
 #include <vector>
+#include <string>
 
 #define AVG_TILE_LIGHTS 200
 #define BLOCK_SIZE 16
@@ -13,7 +14,14 @@ namespace Graphics
     enum ModelID {
         CUBE,
 		SPHERE,
-        CROSSBOW
+        CROSSBOW,
+		AMMOBOX,
+		CUTTLERY,
+		JUMPPAD,
+		ENEMYGRUNT,
+		GRAPPLEPOINT,
+		GRASS,
+		BUSH,
     };
 
 	struct ModelInfo
@@ -32,6 +40,7 @@ namespace Graphics
         ModelID meshId;
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = true;
 	};
 
     struct RenderDebugInfo
@@ -77,4 +86,30 @@ namespace Graphics
         float x, y, z;
         float u, v;
     };
+    enum Font
+    {
+        SMALL,
+        MEDUIM,
+        LARGE
+    };
+    struct TextString
+    {
+        std::wstring text;
+        DirectX::SimpleMath::Vector2 pos;
+        DirectX::SimpleMath::Color color;
+        Font font;
+    };
+
+    struct HUDInfo
+    {
+        int hp;
+        int cuttleryAmmo[2];
+        int iceAmmo[2];
+        bool sledge;
+        UINT score;
+        int wave;
+        int enemiesRemaining;
+        float timeRemaining;
+    };
+
 };

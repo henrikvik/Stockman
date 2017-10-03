@@ -43,7 +43,7 @@ void GrapplingPoint::updateSpecific(float deltaTime)
 	if (frame % GP_RAY_TRACE_FRAME)
 	{
 		btRigidBody* pointBody = getRigidbody();
-		const btRigidBody* intersectedBody = m_physicsPtr->checkRayIntersect(Ray(m_playerPtr->getPositionBT(), m_playerPtr->getForwardBT(), GP_RAY_TRACE_DISTANCE));
+		const btRigidBody* intersectedBody = m_physicsPtr->RayTestOnRigidBodies(Ray(m_playerPtr->getPositionBT(), m_playerPtr->getForwardBT(), GP_RAY_TRACE_DISTANCE));
 		
 		m_correctAim = (intersectedBody == pointBody);
 		setModelID(m_correctAim ? Graphics::CUBE : Graphics::SPHERE);
@@ -62,7 +62,7 @@ void GrapplingPoint::onCollision(Entity& other)
 		btVector3 playerPos = m_playerPtr->getPositionBT();
 		btVector3 pointPos = getPositionBT();
 
-		const btRigidBody* intersectedBody = m_physicsPtr->checkRayIntersect(Ray(pointPos, playerPos));
+		const btRigidBody* intersectedBody = m_physicsPtr->RayTestOnRigidBodies(Ray(pointPos, playerPos));
 		if (intersectedBody == p->getRigidbody() || intersectedBody == playerBody)
 		{
 			btVector3 dir = pointPos - playerPos;

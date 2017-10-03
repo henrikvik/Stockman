@@ -35,6 +35,8 @@ void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 	}
 }
 
+void SkillShieldCharge::onRelease() { }
+
 void SkillShieldCharge::onUpdate(float deltaTime)
 {
 	if (m_active == true)
