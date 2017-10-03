@@ -319,7 +319,8 @@ void Player::move(float deltaTime)
 	// On ground
 	if (!m_wishJump)
 	{
-		applyFriction(deltaTime, (PLAYER_SPEED_LIMIT - m_moveSpeed) * 14);
+		float friction = (m_moveMaxSpeed * 2 - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_FRICTION; // smooth friction
+		applyFriction(deltaTime, friction > 0.1f ? friction : 0.1f);
 
 		// if player wants to move
 		if (!m_wishDir.isZero())
@@ -348,7 +349,7 @@ void Player::move(float deltaTime)
 	// Apply jump if player wants to jump
 	if (m_wishJump)
 	{
-		getRigidbody()->setLinearVelocity({ 0, 7.f, 0 }); // Jump
+		getRigidbody()->setLinearVelocity({ 0, PLAYER_JUMP_SPEED, 0 }); // Jump
 		m_playerState = PlayerState::IN_AIR;
 
 		m_wishJump = false;
@@ -357,7 +358,7 @@ void Player::move(float deltaTime)
 
 void Player::airMove(float deltaTime)
 {
-	applyAirFriction(deltaTime, (m_moveMaxSpeed - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_AIR_FRICTION);
+	applyAirFriction(deltaTime, (m_moveMaxSpeed - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_AIR_FRICTION); // smooth friction
 
 	accelerate(deltaTime, m_airAcceleration);
 
