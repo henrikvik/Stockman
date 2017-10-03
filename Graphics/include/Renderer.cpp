@@ -37,6 +37,7 @@ namespace Graphics
 		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
 		, debugColorBuffer(device)
 #pragma endregion
+		, fog(device)
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -257,7 +258,7 @@ namespace Graphics
 
 		///////Post effext
 		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
-
+		fog.renderFog(deviceContext, backBuffer);
 
 		drawToBackbuffer(fakeBackBufferSwap);
 

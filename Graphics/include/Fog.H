@@ -1,8 +1,12 @@
 #pragma once
-#include "Resources\Shader.h"
-#include "Utility\DepthStencil.h"
 #include <Engine\Constants.h>
+#include "Resources\Shader.h"
+#include "Utility\StructuredBuffer.h"
+#include <d3d11.h>
+#include <SimpleMath.h>
+#include <vector>
 
+using namespace Graphics;
 
 class Fog
 {
@@ -10,11 +14,17 @@ public:
 	Fog(ID3D11Device* device);
 	~Fog();
 
-	void createShaders(ID3D11Device* device);
-	void setFog(ID3D11DeviceContext * context);
+	void renderFog(ID3D11DeviceContext* deviceContext, ID3D11RenderTargetView * backBuffer);
+
 private:
-	ID3D11VertexShader* fog_VS_Shader;
-	ID3D11PixelShader* fog_PS_Shader;
-	ID3DBlob* vsTest;
+	struct FogData
+	{
+		DirectX::SimpleMath::Vector3 pos;
+		DirectX::SimpleMath::Color color;
+
+	};
+	std::vector<FogData> fogVec;
+	Shader fogShader;
+	StructuredBuffer<Fog::FogData> fogDataBuffer;
 
 };

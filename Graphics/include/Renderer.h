@@ -17,6 +17,7 @@
 #include "Utility\ShaderResource.h"
 #include "PostProccessor.h";
 #include "SkyRenderer.h"
+#include "Fog.H"
 
 #include <SpriteBatch.h>
 
@@ -137,5 +138,8 @@ namespace Graphics
         void renderDebugInfo();
 
     #pragma endregion
+		Fog fog;
+
+
     };
 };

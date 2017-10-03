@@ -1,22 +1,35 @@
-struct VS_Input
+cbuffer Camera : register(b0)
 {
-	float3 pos : POSITION;
-	float3 color : COLOR;
+	float4x4 PV;
 };
 
-struct VS_Output
+struct FogData
+{
+	float3 pos;
+	float3 color;
+}
+
+StructuredBuffer<FogData> fogData : register(t0);
+
+struct VSOut 
 {
 	float4 pos : SV_POSITION;
-	float3 color : COLOR;
+	float3 color : color;
 };
 
-VS_Output main(VS_Input input)
+VSOut VS(uint id : SV_VertexID)
 {
-	VS_Output output;
+	VSOut vsOut;
 
-	output.position = float4(input.position.x, input.position.y, input.position.z, 1);
+	vsOut.pos = mul(PV,fogData[id].pos);
+	vsOut.color = fogData[id].color;
 
-	output.color = input.color;
-
-	return output;
+	return vsOut
 }
+
+float4 PS(VSOut psIn) : SV_Target
+{
+
+
+	return float4(psIn.color, 1);
+}}
