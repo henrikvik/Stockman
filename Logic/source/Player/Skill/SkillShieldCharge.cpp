@@ -7,39 +7,45 @@ SkillShieldCharge::SkillShieldCharge(ProjectileManager * projectileManager, Proj
 {
 	m_projectileManager = projectileManager;
 	m_projectileData = projectileData;
-	active = false;
-	time = 0.0f;
+	m_active = false;
+	m_time = 0.0f;
+	m_forw = btVector3(0.0f, 0.0f, 0.0f);
+	m_thePlayer = nullptr;
+	m_chargePower = 10000.0f;
 }
 
 SkillShieldCharge::~SkillShieldCharge()
 {
 	m_projectileManager = nullptr;
-	thePlayer = nullptr;
+	m_thePlayer = nullptr;
 }
 
 void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
-	printf("Used Shield Charge.\n");
-	active = true;
-	forw = forward * SHIELD_CHARGE_DURATION;
-	thePlayer = &shooter;
-	thePlayer->getRigidbody()->applyCentralImpulse(forw);
+	if (!m_active)
+	{
+		printf("Used Shield Charge.\n");
+		m_active = true;
+		m_forw = btVector3(forward.getX(), 0.0f, forward.getZ());
+		m_forw = m_forw * m_chargePower;
+		m_thePlayer = &shooter;
+		m_thePlayer->getRigidbody()->applyCentralImpulse(m_forw);
+	}
 }
 
 void SkillShieldCharge::onUpdate(float deltaTime)
 {
-	if (active == true)
+	if (m_active == true)
 	{
-		if (time >= SHIELD_CHARGE_DURATION)
+		if (m_time >= SHIELD_CHARGE_DURATION)
 		{
-			btVector3 stop(0.0f, 0.0f, 0.0f);
-			active == false;
-			time = 0;
+			btVector3 impulse = (-m_thePlayer->getRigidbody()->getLinearVelocity()) / m_thePlayer->getRigidbody()->getLinearFactor() / m_thePlayer->getRigidbody()->getInvMass();
+			m_thePlayer->getRigidbody()->applyCentralImpulse(impulse);
+			m_active = false;
+			m_time = 0;
 		}
-		time += deltaTime;
+		m_time += deltaTime;
 	}
-	//Move you and bullet on a set speed for a set amount of time
-	//deactivate the bool
 }
 
 void SkillShieldCharge::render(Graphics::Renderer& renderer)
