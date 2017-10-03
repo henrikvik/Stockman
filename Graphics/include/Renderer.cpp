@@ -279,6 +279,11 @@ namespace Graphics
         hud.queueText(text);
     }
 
+    void Renderer::fillHUDInfo(HUDInfo * info)
+    {
+        hud.fillHUDInfo(info);
+    }
+
 
     //void Graphics::Renderer::renderMenu(MenuInfo * info)
     //{

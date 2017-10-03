@@ -6,6 +6,7 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
 {
     createHUDTextures(device, context);
     createHUDVBS(device);
+    setHUDTextRenderPos();
    sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/comicsans.spritefont");
    sBatch = std::make_unique<DirectX::SpriteBatch>(context);
 }
@@ -38,7 +39,6 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     context->PSSetShader(shader, nullptr, 0);
 
     context->Draw(12, 0);
-
     ID3D11ShaderResourceView * SRVNULL = nullptr;
     context->PSSetShaderResources(0, 1, &SRVNULL);
 }
@@ -46,6 +46,11 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
 void Graphics::HUD::queueText(Graphics::TextString * text)
 {
     textQueue.push_back(*text);
+}
+
+void Graphics::HUD::fillHUDInfo(HUDInfo * info)
+{
+    currentInfo = info;
 }
 
 void Graphics::HUD::createHUDVBS(ID3D11Device * device)
@@ -141,7 +146,52 @@ void Graphics::HUD::renderText(ID3D11BlendState * blendState)
     }
     textQueue.clear();
 
+    renderHUDText();
 
     sBatch->End();
+}
+
+void Graphics::HUD::setHUDTextRenderPos()
+{
+    ammoPos1 = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2)  + 60 , (WIN_HEIGHT / 2) + 60);
+    ammoPos2 = DirectX::SimpleMath::Vector2(WIN_WIDTH - 250, (WIN_HEIGHT / 2) + 300);
+    
+    scorePos = DirectX::SimpleMath::Vector2(0, 0);
+    wavePos = DirectX::SimpleMath::Vector2(0, 0);
+    timePos = DirectX::SimpleMath::Vector2(0, 0);
+}
+
+void Graphics::HUD::renderHUDText()
+{   
+    if (!currentInfo->sledge)
+    {
+        std::wstring temp = std::to_wstring(currentInfo->cuttleryAmmo[0]);
+        temp += L"/";
+        temp += std::to_wstring(currentInfo->cuttleryAmmo[1]);
+
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos1, DirectX::Colors::Red);
+
+        temp = std::to_wstring(currentInfo->iceAmmo[0]);
+        temp += L"/";
+        temp += std::to_wstring(currentInfo->iceAmmo[1]);
+
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2, DirectX::Colors::Red);
+    }
+    else
+    {
+        std::wstring temp = std::to_wstring(currentInfo->cuttleryAmmo[0]);
+        temp += L"/";
+        temp += std::to_wstring(currentInfo->cuttleryAmmo[1]);
+
+        DirectX::SimpleMath::Vector2 tempPos = ammoPos2;
+        tempPos.y += 20;
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), tempPos, DirectX::Colors::Red);
+
+        temp = std::to_wstring(currentInfo->iceAmmo[0]);
+        temp += L"/";
+        temp += std::to_wstring(currentInfo->iceAmmo[1]);
+
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2, DirectX::Colors::Red);
+    }
 }
 

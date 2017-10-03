@@ -182,3 +182,27 @@ Weapon* Logic::WeaponManager::getCurrentWeaponSecondary()
 {
 	return m_currentWeapon.second;
 }
+
+Weapon * Logic::WeaponManager::getfirstWeapon()
+{
+    if (m_weaponsLoadouts[0] == m_currentWeapon)
+    {
+        return m_weaponsLoadouts[0].first;
+    }
+    else
+    {
+        return m_weaponsLoadouts[1].first;
+    } 
+}
+
+Weapon * Logic::WeaponManager::getSecondWeapon()
+{
+    if (m_weaponsLoadouts[0] != m_currentWeapon)
+    {
+        return m_weaponsLoadouts[0].first;
+    }
+    else
+    {
+        return m_weaponsLoadouts[1].first;
+    };
+}
