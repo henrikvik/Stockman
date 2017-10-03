@@ -17,6 +17,8 @@ namespace Logic
 			virtual void onCollision(Player& other);
 			virtual void updateSpecific(Player const &player, float deltaTime);
 			virtual void updateDead(float deltaTime);
+
+			virtual void useAbility(Entity const &target);
 	};
 }
 

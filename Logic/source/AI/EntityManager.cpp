@@ -73,7 +73,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 		
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-	printf("Entity Time Elapsed: %f seconds, (EntityManager.cpp:%d)\n", elapsed_secs, __LINE__);
+	//printf("Entity Time Elapsed: %f seconds, (EntityManager.cpp:%d)\n", elapsed_secs, __LINE__);
 
 	m_triggerManager.update(deltaTime);
 	PROFILE_END();

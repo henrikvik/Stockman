@@ -1,5 +1,7 @@
 #include <AI\EnemyNecromancer.h>
 #include <AI\Behavior\RangedBehavior.h>
+#include <Misc\RandomGenerator.h>
+
 using namespace Logic;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
@@ -30,4 +32,16 @@ void EnemyNecromancer::updateSpecific(Player const & player, float deltaTime)
 
 void EnemyNecromancer::updateDead(float deltaTime)
 {
+}
+
+void EnemyNecromancer::useAbility(Entity const &target)
+{
+	if (RandomGenerator::singleton().getRandomInt(0, 1))
+	{
+		damage(getHealth());
+	}
+	else
+	{
+
+	}
 }

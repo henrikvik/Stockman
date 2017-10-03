@@ -1,5 +1,7 @@
 #include <AI\Behavior\RangedBehavior.h>
 #include <AI\Enemy.h>
+#include <Misc\RandomGenerator.h>
+
 using namespace Logic;
 
 RangedBehavior::RangedBehavior()
@@ -9,6 +11,9 @@ RangedBehavior::RangedBehavior()
 
 void RangedBehavior::update(Enemy &enemy, Player const &player, float deltaTime)
 {
+	if (RandomGenerator::singleton().getRandomInt(0, 1))
+		enemy.useAbility(player);
+
 	if ((enemy.getPosition() - player.getPosition()).Length() > m_distance)
 	{
 		btVector3 node = m_path.updateAndReturnCurrentNode(enemy, player);
