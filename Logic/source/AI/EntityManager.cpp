@@ -8,6 +8,8 @@ using namespace Logic;
 #define DEBUG_PATH true
 
 #include <AI/EnemyTest.h>
+#include <AI/EnemyNecromancer.h>
+
 #include <AI\Behavior\AStar.h>
 #include <Engine\Profiler.h>
 #include <ctime>
@@ -89,7 +91,7 @@ void EntityManager::spawnWave(Physics &physics)
 		{
 			i += 1;
 			//m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 8.f, i * 10.f, i * 1.f }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f}), 100, false), { 0.5f, 0.5f, 0.5f}));
-            m_enemies.push_back(new EnemyTest(Graphics::ModelID::CUBE, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f }));
+            m_enemies.push_back(new EnemyNecromancer(Graphics::ModelID::CUBE, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f }));
 		}
 		/*
 		m_triggerManager.addTrigger(Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);

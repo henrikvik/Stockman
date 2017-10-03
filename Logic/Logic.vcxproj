@@ -173,6 +173,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\EnemyNecromancer.h" />
     <ClInclude Include="include\Entity\GrapplingPoint.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -228,8 +229,11 @@
     <ClInclude Include="include\Entity\Upgrade.h" />
     <ClInclude Include="include\Entity\StatusManager.h" />
     <ClInclude Include="include\AI\Behavior\SimplePathing.h" />
+    <ClInclude Include="include\AI\Behavior\RangedBehavior.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Behavior\RangedBehavior.cpp" />
+    <ClCompile Include="source\AI\EnemyNecromancer.cpp" />
     <ClCompile Include="source\AI\Behavior\SimplePathing.cpp" />
     <ClCompile Include="source\Entity\GrapplingPoint.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

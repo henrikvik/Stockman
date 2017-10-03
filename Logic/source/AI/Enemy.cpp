@@ -1,5 +1,6 @@
 #include <AI\Enemy.h>
 #include <AI\Behavior\TestBehavior.h>
+#include <AI\Behavior\RangedBehavior.h>
 using namespace Logic;
 
 Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, int enemyType, int animationId)
@@ -24,6 +25,8 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
 	{
 		case TEST:
 			m_behavior = new TestBehavior();
+		case RANGED:
+			m_behavior = new RangedBehavior();
 	}
 }
 

@@ -29,7 +29,7 @@ namespace Logic
 			int m_enemyType;
 			// Animation m_animation;
 		public:	
-			enum BEHAVIOR_ID { TEST };
+			enum BEHAVIOR_ID { TEST, RANGED };
 
 			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, int enemyType, int animationId);
 			virtual ~Enemy();
