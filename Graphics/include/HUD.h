@@ -23,6 +23,8 @@ namespace Graphics
         void createHUDVBS(ID3D11Device * device);
         void createHUDTextures(ID3D11Device * device, ID3D11DeviceContext * context);
         void renderText(ID3D11BlendState * blendState);
+        void setHUDTextRenderPos();
+        void renderHUDText();
 
         Shader shader;
         ID3D11ShaderResourceView *crosshair;
@@ -35,7 +37,12 @@ namespace Graphics
         std::vector<TextString> textQueue;
         HUDInfo * currentInfo;
 
+        DirectX::SimpleMath::Vector2 ammoPos1;
+        DirectX::SimpleMath::Vector2 ammoPos2;
 
+        DirectX::SimpleMath::Vector2 scorePos;
+        DirectX::SimpleMath::Vector2 wavePos;
+        DirectX::SimpleMath::Vector2 timePos;
     };
 
 }
