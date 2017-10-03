@@ -31,7 +31,6 @@ void Skill::release()
 		// Specific release stuff
 		onRelease();
 	}
-	
 }
 
 void Skill::update(float deltaTime)
