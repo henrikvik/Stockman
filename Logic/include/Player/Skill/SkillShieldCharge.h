@@ -14,7 +14,7 @@
 #include <Projectile\ProjectileStruct.h>
 #include <Player\Skill\Skill.h>
 
-#define SHIELD_CHARGE_CD		2500.f
+#define SHIELD_CHARGE_CD 2500.f
 #define SHIELD_CHARGE_DURATION	1000.f
 
 namespace Logic
