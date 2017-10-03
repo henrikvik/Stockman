@@ -22,14 +22,14 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
-    info.hp = m_hp;
-    info.cuttleryAmmo[0] = 0;
-    info.cuttleryAmmo[1] = 0;
-    info.iceAmmo[0] = 0 ;
-    info.iceAmmo[1] = 0 ;
-    info.wave = 0;
-    info.score = 0;
-    info.sledge = false;
+    	info.hp = m_hp;
+   	info.cuttleryAmmo[0] = 0;
+   	info.cuttleryAmmo[1] = 0;
+    	info.iceAmmo[0] = 0 ;
+    	info.iceAmmo[1] = 0 ;
+    	info.wave = 0;
+    	info.score = 0;
+    	info.sledge = false;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -157,8 +157,6 @@ void Player::updateSpecific(float deltaTime)
         info.sledge = false;
     }
 
-
-
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
@@ -174,8 +172,6 @@ void Player::updateSpecific(float deltaTime)
 		m_moveDir = {0, 0, 0};
 		m_moveSpeed = 0.f;
 	}
-
-    
 
 	// Movement
 	if (!ks.IsKeyDown(DirectX::Keyboard::LeftAlt))	// !TEMP!
