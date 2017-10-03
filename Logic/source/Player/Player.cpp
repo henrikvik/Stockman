@@ -157,8 +157,6 @@ void Player::updateSpecific(float deltaTime)
         info.sledge = false;
     }
 
-
-
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
@@ -174,8 +172,6 @@ void Player::updateSpecific(float deltaTime)
 		m_moveDir = {0, 0, 0};
 		m_moveSpeed = 0.f;
 	}
-
-    
 
 	// Movement
 	if (!ks.IsKeyDown(DirectX::Keyboard::LeftAlt))	// !TEMP!
@@ -261,10 +257,6 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 	m_wishDirForward = 0.f;
 	m_wishDirRight = 0.f;
 
-	if (ks->IsKeyDown(DirectX::Keyboard::Space))
-	{
-		getRigidbody()->applyCentralForce({ 0, 10000, 0 });
-	}
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
