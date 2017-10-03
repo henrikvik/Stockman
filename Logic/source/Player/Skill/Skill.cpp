@@ -22,7 +22,7 @@ void Skill::use(btVector3 forward, Entity& shooter)
 
 void Skill::release()
 {
-	if (!m_canUse)
+	if (m_canUse)
 	{
 		// Reset cooldown
 		m_cooldown = m_cooldownMax;

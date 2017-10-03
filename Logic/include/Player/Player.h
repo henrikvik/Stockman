@@ -68,7 +68,7 @@ namespace Logic
 		float m_airAcceleration;
 		float m_jumpSpeed;
 
-		bool m_wishToJump;
+		bool m_wishJump;
 		btVector3 m_wishDir;
 		float m_wishDirForward;
 		float m_wishDirRight;

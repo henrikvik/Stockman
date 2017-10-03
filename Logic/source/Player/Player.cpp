@@ -48,7 +48,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	m_jumpSpeed = PLAYER_JUMP_SPEED;
 	m_wishDirForward = 0.f;
 	m_wishDirRight = 0.f;
-	m_wishToJump = false;
+	m_wishJump = false;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -371,18 +371,18 @@ void Player::move(float deltaTime)
 	}
 
 	// Apply acceleration and move player
-	if(m_wishDir.isZero() || m_wishToJump)
+	if(m_wishDir.isZero() || m_wishJump)
 		accelerate(deltaTime, 0.f);
 	else
 		accelerate(deltaTime, m_acceleration);
 
 	// Apply jump if player wants to jump
-	if (m_wishToJump)
+	if (m_wishJump)
 	{
 		getRigidbody()->setLinearVelocity({ 0, PLAYER_JUMP_SPEED, 0 }); // Jump
 		m_playerState = PlayerState::IN_AIR;
 
-		m_wishToJump = false;
+		m_wishJump = false;
 	}
 }
 
@@ -399,7 +399,7 @@ void Player::accelerate(float deltaTime, float acceleration)
 {
 	m_moveSpeed += acceleration * deltaTime;
 
-	if (m_playerState != PlayerState::IN_AIR && !m_wishToJump && m_moveSpeed > m_moveMaxSpeed)
+	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;
 
 	// Update pos of player
