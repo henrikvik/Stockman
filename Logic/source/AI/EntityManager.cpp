@@ -122,7 +122,7 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 
 int EntityManager::getEnemiesAlive() const 
 {
-    return m_deadEnemies.size();
+    return m_enemies.size();
 }
 
 void EntityManager::clear() 
