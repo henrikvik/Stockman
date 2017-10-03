@@ -23,7 +23,7 @@ namespace Logic
 		ProjectileData m_projectileData;
 		ProjectileManager* m_projectileManager;
 
-		Projectile* m_travelProjectile;
+		//Projectile* m_travelProjectile;
 		Projectile* m_sensor;
 
 	public:

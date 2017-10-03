@@ -8,7 +8,7 @@ SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, Projectil
 	m_projectileData = pData;
 	m_projectileManager = projectileManager;
 	m_sensor = nullptr;
-	m_travelProjectile = nullptr;
+	//m_travelProjectile = nullptr;
 }
 
 void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
@@ -21,17 +21,17 @@ void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 	bodySensor->setLinearVelocity(btVector3(0.f, 0.f, 0.f));
 	bodySensor->setCollisionFlags(bodySensor->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
-	ProjectileData travelPData = m_projectileData;
+	/*ProjectileData travelPData = m_projectileData;
 	travelPData.scale = 0.0001f;
 	travelPData.type = ProjectileType::ProjectileTypeBulletTime;
-	m_travelProjectile = m_projectileManager->addProjectile(travelPData, shooter.getPositionBT(), forward, shooter);
+	m_travelProjectile = m_projectileManager->addProjectile(travelPData, shooter.getPositionBT(), forward, shooter);*/
 }
 
 void SkillBulletTime::onRelease() { }
 
 void SkillBulletTime::onUpdate(float deltaTime)
 {
-	if (m_sensor)
+	/*if (m_sensor)
 		if (m_sensor->shouldRemove())
 			m_sensor = nullptr;
 	if (m_travelProjectile)
@@ -41,7 +41,7 @@ void SkillBulletTime::onUpdate(float deltaTime)
 	if (m_sensor && m_travelProjectile)
 	{
 		m_sensor->getRigidbody()->setWorldTransform(m_travelProjectile->getRigidbody()->getWorldTransform());
-	}
+	}*/
 }
 
 void SkillBulletTime::render(Graphics::Renderer& renderer)
