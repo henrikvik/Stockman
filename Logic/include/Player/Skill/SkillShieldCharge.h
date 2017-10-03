@@ -14,8 +14,8 @@
 #include <Projectile\ProjectileStruct.h>
 #include <Player\Skill\Skill.h>
 
-#define SHIELD_CHARGE_CD		1500.f
-#define SHIELD_CHARGE_DURATION	500.f
+#define SHIELD_CHARGE_CD		2500.f
+#define SHIELD_CHARGE_DURATION	1000.f
 
 namespace Logic
 {
@@ -31,7 +31,7 @@ namespace Logic
 		Entity* m_thePlayer;
 		float m_chargePower;
 	public:
-		SkillShieldCharge(ProjectileManager* projectileManager, ProjectileData projectileData);
+		SkillShieldCharge();
 		~SkillShieldCharge();
 
 		void onUse(btVector3 forward, Entity& shooter);
