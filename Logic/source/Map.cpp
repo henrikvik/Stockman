@@ -30,7 +30,7 @@ void Map::initHitboxes(Physics* physics)
 	m_hitboxes.push_back(infinite);
 	//Entity* secondinfinite = new Entity(physics->createBody(Plane({ 0, 0, 1 }), 0, false), btVector3(1000, 0.0001, 1000));
 	//m_hitboxes.push_back(secondinfinite);
-	/*
+	
 	Entity* house;
 
 	house = new Entity(physics->createBody(Cube({ 60, 0.75, 60 }, { 0, 0, 0 }, { 45, 0.75, 45 }), 0.f, false), { 45, 1.5f, 45 });
@@ -67,9 +67,7 @@ void Map::initHitboxes(Physics* physics)
 	m_hitboxes.push_back(house);
 
 	house = new Entity(physics->createBody(Cube({ 150, 6, 150 }, { 0, 0, 0 }, { 40, 6, 40 }), 0.f, false), { 40, 6, 40 });
-	m_hitboxes.push_back(house); */
-
-
+	m_hitboxes.push_back(house); 
 
 	house = new Entity(physics->createBody(Cube({ 60, 80, 60 }, { 0, 0, 0 }, { 45, 0.75, 45 }), 0.f, false), { 45, 1.5f, 45 });
 	m_hitboxes.push_back(house);

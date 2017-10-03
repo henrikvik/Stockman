@@ -12,8 +12,8 @@ namespace Logic {
 			struct BehaviorNode
 			{
 				std::vector<BehaviorNode> children;
-				std::function<bool> condition;
-				std::function<void> update;
+			//	std::function<bool> condition;
+			//	std::function<void> update;
 			};
 		private:
 			BehaviorNode root;
