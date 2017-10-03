@@ -22,6 +22,15 @@ namespace Graphics
 		brfImporterHandler.loadFile(CUBE, MODEL_PATH_STR("kubfixadtextur.brf"), true, true, false, false);
 		brfImporterHandler.loadFile(SPHERE, MODEL_PATH_STR("sphere.brf"), true, true, false, false);
         brfImporterHandler.loadFile(CROSSBOW, MODEL_PATH_STR("CrossBow.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(AMMOBOX, MODEL_PATH_STR("ammoBox.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(CUTTLERY, MODEL_PATH_STR("cuttlery.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(JUMPPAD, MODEL_PATH_STR("jumpPad.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(ENEMYGRUNT, MODEL_PATH_STR("enemyGrunt.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(GRAPPLEPOINT, MODEL_PATH_STR("grapplePoint.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(GRASS, MODEL_PATH_STR("grass.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(BUSH, MODEL_PATH_STR("bushgreen.brf"), true, true, false, false);
+
+
 
 		//brfImporterHandler.loadFile(MODEL_PATH_STR("kub2.brf"), true, true, false, false);
     }
