@@ -18,14 +18,13 @@ SkillShieldCharge::SkillShieldCharge()
 SkillShieldCharge::~SkillShieldCharge()
 {
 	m_projectileManager = nullptr;
-	m_thePlayer = nullptr;
+	m_shooter = nullptr;
 }
 
 void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
 	if (!m_active)
 	{
-
 		printf("Used Shield Charge.\n");
 		m_active = true;
 		m_forw = btVector3(forward.getX(), 0.0f, forward.getZ());
@@ -46,15 +45,17 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 			player->setMaxSpeed(m_chargePower);
 			player->setMoveSpeed(m_chargePower);
 			player->setMoveDirection(m_forw);
-		if (m_time >= SHIELD_CHARGE_DURATION)
-		{
-			player->setMaxSpeed(PLAYER_MOVEMENT_MAX_SPEED);
-			m_active = false;
-			m_time = 0;
-			player->setMoveSpeed(PLAYER_MOVEMENT_MAX_SPEED);
-		}
 
-		m_time += deltaTime;
+			m_time += deltaTime;
+
+
+			if (m_time >= SHIELD_CHARGE_DURATION)
+			{
+				player->setMaxSpeed(PLAYER_MOVEMENT_MAX_SPEED);
+				m_active = false;
+				m_time = 0;
+				player->setMoveSpeed(PLAYER_MOVEMENT_MAX_SPEED);
+			}
 
 		}
 	}
