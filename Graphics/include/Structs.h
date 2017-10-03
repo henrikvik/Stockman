@@ -108,6 +108,7 @@ namespace Graphics
         UINT score;
         int wave;
         int enemiesRemaining;
+        float timeRemaining;
     };
 
 };
