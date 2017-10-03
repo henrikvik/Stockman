@@ -132,6 +132,15 @@ void Graphics::HUD::createHUDTextures(ID3D11Device * device, ID3D11DeviceContext
 void Graphics::HUD::renderText(ID3D11BlendState * blendState)
 {
     sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
+
+    for (size_t i = 0; i < textQueue.size(); i++)
+    {
+        TextString temp = textQueue.at(i);
+        textQueue.pop_back();
+        sFont->DrawString(sBatch.get(), temp.text.c_str(), temp.pos, temp.color);
+    }
+
+
     sFont->DrawString(sBatch.get(), L"Deus Vult!", DirectX::SimpleMath::Vector2(640, 400), DirectX::Colors::Black);
 
     sBatch->End();
