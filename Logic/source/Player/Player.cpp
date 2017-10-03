@@ -261,6 +261,10 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 	m_wishDirForward = 0.f;
 	m_wishDirRight = 0.f;
 
+	if (ks->IsKeyDown(DirectX::Keyboard::Space))
+	{
+		getRigidbody()->applyCentralForce({ 0, 10000, 0 });
+	}
 	// Move Left
 	if (ks->IsKeyDown(m_moveLeft))
 	{
@@ -348,6 +352,7 @@ void Player::accelerate(float deltaTime, float acceleration)
 		m_moveSpeed = m_moveMaxSpeed;
 
 	// Update pos of player
+	
 	btTransform transform = getRigidbody()->getWorldTransform();
 	if (m_playerState != PlayerState::IN_AIR)
 		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));

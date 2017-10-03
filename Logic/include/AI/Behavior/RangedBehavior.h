@@ -1,18 +1,18 @@
-#ifndef TEST_BEHAVIOR_H
-#define TEST_BEHAVIOR_H
+#ifndef RANGED_BEHAVIOR_H
+#define RANGED_BEHAVIOR_H
 
 #include "Behavior.h" 
 
-namespace Logic 
+namespace Logic
 {
-	class TestBehavior : public Behavior
+	class RangedBehavior : public Behavior
 	{
 	private:
 		SimplePathing m_path;
-		Graphics::RenderDebugInfo debugInfo;
+		float m_distance;
 	public:
-		TestBehavior();
-		virtual ~TestBehavior();
+		RangedBehavior();
+		virtual ~RangedBehavior() {}
 
 		virtual void update(Enemy &enemy, Player const &player, float deltaTime);
 		virtual void updatePath(Entity const &from, Entity const &to);
