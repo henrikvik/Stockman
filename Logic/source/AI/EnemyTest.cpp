@@ -16,7 +16,7 @@ void EnemyTest::clear()
 {
 }
 
-void EnemyTest::onCollision(Entity &other)
+void EnemyTest::onCollision(Entity &other, const btRigidBody* collidedWithYour)
 {
 	if (Projectile *p = dynamic_cast<Projectile*> (&other)) {
 		damage(p->getDamage());

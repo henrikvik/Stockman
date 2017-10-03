@@ -53,9 +53,9 @@ void Entity::updateGraphics()
 	setWorldTranslation(getTransformMatrix());
 }
 
-void Entity::collision(Entity& other)
+void Entity::collision(Entity& other, const btRigidBody* collidedWithYour)
 {
-	onCollision(other);
+	onCollision(other, collidedWithYour);
 }
 
 void Entity::affect(int stacks, Effect const &effect, float dt) {}

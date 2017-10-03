@@ -48,6 +48,7 @@ namespace Logic
 			int getEnemyType() const;
 		protected: //for testing
 			Logic::Behavior *m_behavior;
+			btRigidBody *weakPoint;
 	};
 }
 

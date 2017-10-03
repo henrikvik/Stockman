@@ -19,7 +19,7 @@ namespace Logic
 
 		void start(btVector3 forward, StatusManager& statusManager);
 		void updateSpecific(float deltaTime);
-		void onCollision(Entity& other);
+		void onCollision(Entity& other, const btRigidBody* collidedWithYour);
 		void upgrade(Upgrade const &upgrade);
 
 		ProjectileType getType() const;
