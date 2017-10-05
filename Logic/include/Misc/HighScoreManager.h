@@ -35,7 +35,7 @@ namespace Logic
 		HighScoreManager();
 		~HighScoreManager();
 
-		void addNewHighScore(std::string name);
+		bool addNewHighScore(std::string name);
 		void saveToFile();						//< Save high scores to file
 		void loadFromFile();					//< Load high scores from file 
 		void deadCount();

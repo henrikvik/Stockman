@@ -17,12 +17,13 @@ HighScoreManager::~HighScoreManager()
 {
 }
 
-void Logic::HighScoreManager::addNewHighScore(std::string name)
+bool Logic::HighScoreManager::addNewHighScore(std::string name)
 {
 	highScore newScore;
 	newScore.score = m_score;
 	newScore.name = name;
 	int ammount = sizeof(m_highScore) / sizeof(highScore);
+	bool isNewHighScore = false;
 	for (int i = 0; i < ammount; i++)
 	{
 		if (m_highScore[i].score < newScore.score)
@@ -31,12 +32,14 @@ void Logic::HighScoreManager::addNewHighScore(std::string name)
 			temp = m_highScore[i];
 			m_highScore[i] = newScore;
 			newScore = temp;
+			isNewHighScore = true;
 		}
-		else if (m_highScore[i].score == -1)
+		else if (newScore.score == -1)
 		{
-			break;
+			return isNewHighScore;
 		}
 	}
+	return isNewHighScore;
 }
 
 void Logic::HighScoreManager::saveToFile()
@@ -68,6 +71,7 @@ void Logic::HighScoreManager::deadCount()
 {
 	m_killCount++;
 	m_comboCount++;
+	m_score += 1 * m_comboCount;
 	m_comboTimer = 5;
 }
 

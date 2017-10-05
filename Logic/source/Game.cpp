@@ -8,6 +8,9 @@ Game::Game()
 	m_player			= nullptr;
 	m_map				= nullptr;
 	m_projectileManager = nullptr;
+	m_cardManager		= nullptr;
+	m_menu				= nullptr;
+	m_highScoreManager	= nullptr;
 }
 
 Game::~Game() 
@@ -52,6 +55,8 @@ void Game::init()
 	// Initializing Card Manager
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
+
+	m_highScoreManager = newd HighScoreManager();
 
 }
 
@@ -115,6 +120,7 @@ void Game::update(float deltaTime)
 		if (m_player->getHP() <= 989999)
 		{
 			printf("You ded bro.\n");
+			//be offered to add your highscore to the listr, if it is too low it wont be added
 			m_menu->setStateToBe(GameState::gameStateGameOver);
 		}
 
@@ -123,6 +129,9 @@ void Game::update(float deltaTime)
 	case gameStateLoading:
 	case gameStateMenuMain:
 	case gameStateMenuSettings:
+	case gameStateGameOver:
+		//Add special triggers to show the scores on the side
+		m_menu->update(m_gameTime.dt);
 	default: m_menu->update(m_gameTime.dt);
 		break;
 	}
