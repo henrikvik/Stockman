@@ -22,3 +22,12 @@
 	"Background" : "a";
 	"buttonAmmount" : 0;
 }
+
+{
+	"Name" : "GameOver";
+	"State" : 4;
+	"Background" : "c";
+	"buttonAmmount" : 1;
+
+	"button1" : "GameOverButton1";
+}

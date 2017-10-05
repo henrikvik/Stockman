@@ -25,6 +25,7 @@ void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
 	if (!m_active)
 	{
+		//Sets up the shield charge by deciding its movement vector and who is gonna charge
 		printf("Used Shield Charge.\n");
 		m_active = true;
 		m_forw = btVector3(forward.getX(), 0.0f, forward.getZ());
@@ -42,6 +43,7 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 	{
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
+			//Pushes the player forward with a static charge power, charging towards the pre decided vector
 			player->setMaxSpeed(m_chargePower);
 			player->setMoveSpeed(m_chargePower);
 			player->setMoveDirection(m_forw);
@@ -51,6 +53,7 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 
 			if (m_time >= SHIELD_CHARGE_DURATION)
 			{
+				// When the duration of the skill is up the current charge is put to the max character speed
 				player->setMaxSpeed(PLAYER_MOVEMENT_MAX_SPEED);
 				m_active = false;
 				m_time = 0;

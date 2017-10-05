@@ -101,7 +101,7 @@ void Game::update(float deltaTime)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-		if (m_menu->getStateToBe() == GameState::gameStateMenuMain)
+		if (m_menu->getStateToBe() != GameState::gameStateGame)
 		{
 			m_menu->update(m_gameTime.dt);
 		}
@@ -112,10 +112,10 @@ void Game::update(float deltaTime)
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
 
-		if (m_player->getHP() <= 0)
+		if (m_player->getHP() <= 989999)
 		{
 			printf("You ded bro.\n");
-			m_menu->setStateToBe(GameState::gameStateMenuMain);
+			m_menu->setStateToBe(GameState::gameStateGameOver);
 		}
 
 		break;
@@ -143,8 +143,8 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuMain:
 	case gameStateMenuSettings:
 	case gameStateGameOver:
-		m_menu->render(renderer);
-	default: // m_menu->render(renderer);
+		/*m_menu->render(renderer);*/
+	default:  m_menu->render(renderer);
 		break;
 	}
 }

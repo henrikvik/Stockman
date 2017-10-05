@@ -35,7 +35,7 @@
 	"yTexStart" : 1.0f;
 	"xTexEnd" : 0.0f;
 	"yTexEnd" : 0.0f;
-	"height" : 200.0f;
-	"width" : 200.0f;
-	"function" : "buttonClick3";
+	"height" : 50.0f;
+	"width" : 450.0f;
+	"function" : "buttonClick2";
 }
