@@ -16,7 +16,7 @@ namespace Logic
 		~ProjectileManager();
 
 		void clear();
-		void addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter);
+		Projectile* addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter);
 		void removeProjectile(Projectile* p);
 		void removeProjectile(Projectile* p, int index);
 

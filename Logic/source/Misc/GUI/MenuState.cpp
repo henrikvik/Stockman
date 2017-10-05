@@ -41,6 +41,11 @@ bool Logic::MenuState::animationTransition(float dt, float maxAnimationTime, boo
 		done = m_buttons.at(i)->animationTransition(dt, maxAnimationTime, forward);
 	}
 
+	if (m_buttons.size() == 0)
+	{
+		done = true;
+	}
+
 	return done;
 }
 

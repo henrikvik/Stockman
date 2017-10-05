@@ -305,7 +305,7 @@ int Engine::run()
         //////////////TEMP/////////////////
         Graphics::RenderInfo staticCube = {
             true, //bool render;
-            Graphics::ModelID::CUBE, //ModelID meshId;
+            Graphics::ModelID::BUSH, //ModelID meshId;
             0, //int materialId;
             DirectX::SimpleMath::Matrix()// DirectX::SimpleMath::Matrix translation;
         };
@@ -319,12 +319,30 @@ int Engine::run()
 
         //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
         //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
-        staticCube.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + cosf(totalTime * 0.001f),0 });
+       /* staticCube.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + cosf(totalTime * 0.001f),0 });*/
+	   staticCube.translation = DirectX::SimpleMath::Matrix::CreateScale({ 3 + cosf(totalTime * 0.001f),3 + cosf(totalTime * 0.001f),3 + cosf(totalTime * 0.001f) });
 
-        staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + sinf(totalTime * 0.001f),0 });
+        staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 2, 3 + sinf(totalTime * 0.001f),0 });
 
 		renderer->updateLight(deltaTime, &cam);
-
+        Graphics::TextString text{
+            L"The hills ",
+            DirectX::SimpleMath::Vector2(50, 50),
+            DirectX::SimpleMath::Color(DirectX::Colors::Black),
+            Graphics::Font::SMALL
+        };
+        Graphics::TextString text1{
+            L"are alive ",
+            DirectX::SimpleMath::Vector2(600, 200),
+            DirectX::SimpleMath::Color(DirectX::Colors::Crimson),
+            Graphics::Font::SMALL
+        };
+        Graphics::TextString text2{
+            L"With the sound of music! ",
+            DirectX::SimpleMath::Vector2(1000, 400),
+            DirectX::SimpleMath::Color(DirectX::Colors::Gold),
+            Graphics::Font::SMALL
+        };
         
         ///////////////////////////////////
 
@@ -332,7 +350,9 @@ int Engine::run()
         {
             renderer->queueRender(&staticCube);
             renderer->queueRender(&staticSphere);
-
+         /*   renderer->queueText(&text);
+            renderer->queueText(&text1);
+            renderer->queueText(&text2);*/
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
 			PROFILE_END();
@@ -360,6 +380,9 @@ int Engine::run()
 		g_Profiler->frame();
 		
 	}
+
+	g_Profiler->end();
+	delete g_Profiler;
 
 	return 0;
 }

@@ -18,9 +18,13 @@ namespace Logic
 	{
 	public:
 		Skill(float cooldown, float duration = 0.f);
+		virtual ~Skill();
 
 		void use(btVector3 forward, Entity& shooter);
 		virtual void onUse(btVector3 forward, Entity& shooter) = 0;
+
+		void release();
+		virtual void onRelease() = 0;
 		
 		void update(float deltaTime);
 		virtual void onUpdate(float deltaTime) = 0;
@@ -31,6 +35,9 @@ namespace Logic
 		float	getCooldownMax() const;
 		float	getDuration() const;
 		bool	getCanUse() const;
+
+		void setCooldown(float cooldown);
+		void setCanUse(bool canUse);
 
 	private:
 		// StatusManager statusManager;

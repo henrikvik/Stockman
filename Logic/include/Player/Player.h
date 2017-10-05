@@ -18,6 +18,7 @@
 #include "Weapon\WeaponManager.h"
 #include "Skill\SkillManager.h"
 #include <Projectile\ProjectileManager.h>
+#include <Graphics\include\Structs.h>
 
 #define PLAYER_STARTING_HP				3
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
@@ -27,7 +28,9 @@
 #define PLAYER_MOVEMENT_AIRSTRAFE_SPEED 0.004f
 #define PLAYER_SPEED_LIMIT				0.05f
 #define PLAYER_STRAFE_ANGLE				0.95f
-#define PLAYER_JUMP_SPEED				70.f
+#define PLAYER_FRICTION					14.f
+#define PLAYER_AIR_FRICTION				1.f
+#define PLAYER_JUMP_SPEED				7.f
 #define PLAYER_BHOP_TIMER				10.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
@@ -48,15 +51,17 @@ namespace Logic
 		//ActionManager m_actionManager;
 		WeaponManager m_weaponManager;
 		SkillManager m_skillManager;
+		Physics* m_physPtr;
 
 		// UI States
+        Graphics::HUDInfo info;
 		int m_hp;
 
 		// Movements
 		PlayerState m_playerState;
 		DirectX::SimpleMath::Vector3 m_forward;
 		float m_moveMaxSpeed;
-		btVector3 m_moveDir;
+		btVector3 m_moveDir; // only 2 dimensional movement direction (x, z)
 		float m_moveSpeed;
 		float m_acceleration;
 		float m_deacceleration;
@@ -87,10 +92,13 @@ namespace Logic
 		DirectX::Keyboard::Keys m_reloadWeapon;
 		DirectX::Keyboard::Keys m_useSkill;
 
+
+
 		// Movement
 		void moveInput(DirectX::Keyboard::State* ks);
-		void move(float deltaTime, DirectX::Keyboard::State* ks);
-		void airMove(float deltaTime, DirectX::Keyboard::State* ks);
+		void moveFree(float deltaTime, DirectX::Keyboard::State* ks);
+		void move(float deltaTime);
+		void airMove(float deltaTime);
 		void accelerate(float deltaTime, float acceleration);
 		void applyFriction(float deltaTime, float friction);
 		void applyAirFriction(float deltaTime, float friction);
@@ -102,14 +110,16 @@ namespace Logic
 		Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();
 
-		void init(ProjectileManager* projectileManager, GameTime* gameTime);
+		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
 		void updateSpecific(float deltaTime);
-		void onCollision(Entity& other);
+        void updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning);
+		void onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
 		void onCollision(Projectile& other);
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);
 		void render(Graphics::Renderer& renderer); 
+		void setMaxSpeed(float maxSpeed);
 
 		void saveToFile();
 		void readFromFile();
@@ -122,6 +132,7 @@ namespace Logic
 		void setMoveDirection(btVector3 moveDir);
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
+		btVector3 getMoveDirection();
 	};
 
 }

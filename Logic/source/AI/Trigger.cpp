@@ -42,7 +42,7 @@ void Trigger::update(float deltaTime)
 }
 
 // Collision with the player, give player the effect
-void Trigger::onCollision(Entity& other)
+void Trigger::onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour)
 {
 	if (m_active)
 	{
