@@ -8,22 +8,13 @@ namespace Graphics
 		: fogShader(device, SHADER_PATH("Fog.hlsl"))
 		, fogDataBuffer(device, CpuAccess::Write, MAX_FOG_SIZE)
 	{
-		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,0},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,0,1},{ 1,0,0, 1 } });
-		fogData.push_back({ { 0,0,1},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
-		fogData.push_back({ { 0,0,0},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,0},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,0},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,1},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,1,2},{ 1,0,0, 1 } });
-		fogData.push_back({ { 1,2,1},{ 1,0,0, 1 } });
+		fogData.push_back({ { -200 ,2,-200},{ 0,1,0, 1 } });
+		fogData.push_back({ { 200,2,-200},{ 0,1,0, 1 } });
+		fogData.push_back({ { 200,2,200},{ 0,1,0, 1 } });
+		
+		fogData.push_back({ { 200,2,200},{ 0,1,0, 1 } });
+		fogData.push_back({ { -200,2,200 },{ 0,1,0, 1 } });
+		fogData.push_back({ { -200,2,-200 },{ 0,1,0, 1 } });
 	}
 
 	Fog::~Fog()

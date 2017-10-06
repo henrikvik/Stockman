@@ -1,6 +1,9 @@
 cbuffer Camera : register(b0)
 {
 	float4x4 PV;
+	float4x4 InvV;
+	float4x4 V;
+	float4 camPos;
 };
 
 struct FogData
@@ -14,7 +17,7 @@ StructuredBuffer<FogData> fogData : register(t0);
 struct VSOut 
 {
 	float4 pos : SV_POSITION;
-	float3 color : COLOR;
+	float4 color : COLOR;
 	float3 aV : AV;
 	float c1 : C1;
 	float c2 : C2;
@@ -25,33 +28,45 @@ VSOut VS(uint id : SV_VertexID)
 {
 	VSOut vsOut;
 	
-	//F is the four dimensional vector that represents the bounding plane 
-	float4 F;
-
+	//F is the four dimensional vector that represents the bounding plane, XYZ is the normal of the plane. 
+	float4 F = float4(0,-1,0,1);
+	F = normalize(F);
+	//ViewVec
+	float4 P = float4(fogData[id].pos, 1);
+	float4 V = camPos - P;
 	//a is a random posetive constant
-	float a = 1;
-	
-	float k;
-	if ()
-	{
+	float a = 1000;
+	//K is either 1 or 0
+	float k = 0;
 
+	if (dot(F, camPos) <= 0)
+	{
+		k = 1;
 	}
 
-	vsOut.pos = mul(PV, float4(fogData[id].pos, 1));
+	vsOut.aV = (a / 2) * V.xyzw;
+	vsOut.c1 = k * ((dot(F, P)) + (dot(F, camPos)));
+	vsOut.c2 = (1 - (2 * k) * dot(F, P));
+	vsOut.F_DOT_V = dot(F, V);
+
+	vsOut.pos = mul(PV, P);
 	vsOut.color = fogData[id].color;
 
 	return vsOut;
 }
 
-float4 PS(VSOut psIn) : SV_Target
+float4 PS (VSOut psIn) : SV_Target
 {
-	float3 fogColor = (0.5 ,0.5, 0.5);
-	float g;
+	float3 fogColor = (0.4 ,0.4, 0.4);
 
-	float f;
+	float g = min(psIn.c2, 0.0);
 
-	psIn.color.rgb = psIn.color.rgb * f + fogColor * (1.0 - f);
-	//psIn.color.a = ??
+	g = -length(psIn.aV) * (psIn.c1 - g * g / abs(psIn.F_DOT_V));
 
-	return float4(psIn.color, 1);
+	float f = saturate(exp2(-g));
+	
+
+	psIn.color.rgb = psIn.color.rgb * f + fogColor.rgb * (1.0 - f);
+
+	return float4(psIn.color.rgb, 0.5);
 }
