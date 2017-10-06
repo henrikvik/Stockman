@@ -233,6 +233,7 @@
     <ClInclude Include="include\AI\Behavior\RangedBehavior.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Behavior\Behavior.cpp" />
     <ClCompile Include="source\AI\Behavior\RangedBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyNecromancer.cpp" />
     <ClCompile Include="source\AI\Behavior\SimplePathing.cpp" />

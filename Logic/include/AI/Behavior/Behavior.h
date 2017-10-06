@@ -8,21 +8,54 @@
 namespace Logic {
 	class Enemy;
 	class Behavior {
-	protected: // ye this is protected, hater
+	protected: // This is protected at the moment, it will maybe be changed later, better solutions is welcome'd
+		// this is not complete just a thought
+		struct RunIn
+		{
+			Enemy *enemy;
+			const Player *target;
+			Behavior *behavior;
+			float deltaTime;
+		};
+
+		typedef bool(*run)(RunIn&);
+
+		enum NodeType
+		{
+			PRIORITY,
+			RANDOM,
+			CONDITION,
+			ACTION,
+			SEQUENCE
+		};
 		struct BehaviorNode
 		{
+			NodeType type;
+			int value; // value is dependent on node type
 			std::vector<BehaviorNode> children;
-			//	std::function<bool> condition;
-			//	std::function<void> update;
+
+			std::function<bool(RunIn&)> run; // return is fail / success
+			bool operator> (BehaviorNode const &other)
+			{
+				return value > other.value;
+			}
 		};
 	private:
-		BehaviorNode root;
+		BehaviorNode m_root;
 	public:
-			virtual ~Behavior() {};
-			virtual void update(Enemy &enemy, Player const &player, float deltaTime) = 0;
-			virtual void updatePath(Entity const &from, Entity const &to) = 0;
-			virtual void debugRendering(Graphics::Renderer &renderer) = 0;
-			BehaviorNode& getRoot() { return root; }
+		virtual ~Behavior();
+
+		virtual void update(Enemy &enemy, Player const &player, float deltaTime) = 0;
+		virtual void updatePath(Entity const &from, Entity const &to) = 0;
+		virtual void debugRendering(Graphics::Renderer &renderer) = 0;
+
+		void runTree(RunIn &in);
+		bool runNode(RunIn &in, BehaviorNode &node);
+		
+		BehaviorNode& setRoot(NodeType type, int value, run func);
+		BehaviorNode& addNode(BehaviorNode &parent, NodeType type, int value, run func);
+
+		BehaviorNode& getRoot();
 	};
 }
 
