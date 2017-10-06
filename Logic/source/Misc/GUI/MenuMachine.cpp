@@ -155,15 +155,17 @@ GameState Logic::MenuMachine::currentState()
 	return currentActiveState;
 }
 
+//Sets the state that the game is gonna show after the animation cycle has finished
 void MenuMachine::setStateToBe(GameState gameState)
 {
-	//Sets the state that the game is gonna show after the animation cycle has finished
+	
 	stateToBe = gameState;
 }
 
+//Gets the state that the game is gonna show after the animation cycle has finished
 GameState Logic::MenuMachine::getStateToBe()
 {
-	//Gets the state that the game is gonna show after the animation cycle has finished
+
 	return stateToBe;
 }
 
