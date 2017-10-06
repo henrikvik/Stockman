@@ -14,7 +14,7 @@ TriggerManager::~TriggerManager()
 
 void TriggerManager::removeTrigger(Trigger * t, int index)
 {
-	m_physicsPtr->removeRigidBody(t->getRigidbody());
+	m_physicsPtr->removeRigidBody(t->getRigidBody());
 	t->destroyBody();
 	delete t;
 	m_triggers.erase(m_triggers.begin() + index);

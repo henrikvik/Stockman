@@ -36,7 +36,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
 
 void ProjectileManager::removeProjectile(Projectile* p)
 {
-	m_physPtr->removeRigidBody(p->getRigidbody());
+	m_physPtr->removeRigidBody(p->getRigidBody());
 	p->destroyBody();
 	delete p;
 	
@@ -53,7 +53,7 @@ void ProjectileManager::removeProjectile(Projectile* p)
 
 void ProjectileManager::removeProjectile(Projectile* p, int index)
 {
-	m_physPtr->removeRigidBody(p->getRigidbody());
+	m_physPtr->removeRigidBody(p->getRigidBody());
 	p->destroyBody();
 	delete p;
 	m_projectiles.erase(m_projectiles.begin() + index);

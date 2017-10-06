@@ -18,7 +18,7 @@ void EnemyNecromancer::clear()
 {
 }
 
-void EnemyNecromancer::onCollision(Entity & other)
+void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	if (Projectile *pj = dynamic_cast<Projectile*> (&other))
 		if (!pj->getProjectileData().enemyBullet)

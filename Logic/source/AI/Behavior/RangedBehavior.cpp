@@ -27,7 +27,7 @@ void RangedBehavior::update(Enemy &enemy, Player const &player, float deltaTime)
 		dir *= deltaTime / 1000.f;
 		dir *= 10;
 
-		enemy.getRigidbody()->translate(dir);
+		enemy.getRigidBody()->translate(dir);
 
 		if ((node - enemy.getPositionBT()).length() < 0.3f)
 			m_path.setCurrentNode(m_path.getCurrentNode() + 1);

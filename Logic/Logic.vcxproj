@@ -174,12 +174,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\AI\EnemyNecromancer.h" />
-    <ClInclude Include="include\Entity\GrapplingPoint.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="include\AI\Behavior\AStar.h" />
     <ClInclude Include="include\AI\Behavior\TestBehavior.h" />
     <ClInclude Include="include\AI\Behavior\Behavior.h" />
@@ -231,21 +225,19 @@
     <ClInclude Include="include\Entity\StatusManager.h" />
     <ClInclude Include="include\AI\Behavior\SimplePathing.h" />
     <ClInclude Include="include\AI\Behavior\RangedBehavior.h" />
+    <ClInclude Include="include\Entity\PhysicsObject.h" />
+    <ClInclude Include="include\Entity\StaticObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Behavior\RangedBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyNecromancer.cpp" />
     <ClCompile Include="source\AI\Behavior\SimplePathing.cpp" />
-    <ClCompile Include="source\Entity\GrapplingPoint.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\AI\Behavior\AStar.cpp" />
     <ClCompile Include="source\AI\Behavior\TestBehavior.cpp" />
     <ClCompile Include="source\AI\Behavior\NavigationMesh.cpp" />
     <ClCompile Include="source\AI\Behavior\PASVF.cpp" />
+    <ClCompile Include="source\Entity\PhysicsObject.cpp" />
+    <ClCompile Include="source\Entity\StaticObject.cpp" />
     <ClCompile Include="source\Misc\FileLoader.cpp" />
     <ClCompile Include="source\Misc\GUI\Button.cpp" />
     <ClCompile Include="source\Misc\GUI\MenuState.cpp" />

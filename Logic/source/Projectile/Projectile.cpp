@@ -42,7 +42,7 @@ Projectile::~Projectile() { }
 
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
-	getRigidbody()->setLinearVelocity(forward * m_pData.speed);
+	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
 	setStatusManager(statusManager);
 
 	for (StatusManager::UPGRADE_ID id : statusManager.getActiveUpgrades())
@@ -54,7 +54,7 @@ void Projectile::updateSpecific(float deltaTime)
 	m_pData.ttl -= deltaTime;
 }
 
-void Projectile::onCollision(Entity & other, btVector3 contactPoint, float dmgMultiplier)
+void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	// TEMP
 	Player* p = dynamic_cast<Player*>(&other);
@@ -84,7 +84,7 @@ void Projectile::upgrade(Upgrade const &upgrade)
 	}
 	if (flags & Upgrade::UPGRADE_IS_BOUNCING)
 	{
-		this->getRigidbody()->setRestitution(1.f);
+		this->getRigidBody()->setRestitution(1.f);
 	}
 }
 
