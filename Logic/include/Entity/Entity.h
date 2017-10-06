@@ -45,8 +45,8 @@ namespace Logic
 		btRigidBody* m_body;
 		btTransform* m_transform;
 
-		btRigidBody* m_bodyWeakPoint;	//< The "head" for headshots multiplier
-		btVector3 m_weakPointOffset;	//< The constant offset from the body
+		btRigidBody* m_bodyWeakPoint;	//< The "head" for headshots multiplier change this to (std::pair<btRigidBody*, float multiplier) when you got time
+		btVector3 m_weakPointOffset;	//< The constant offset from the body 
 	};
 }
 

@@ -73,7 +73,6 @@ namespace Logic
 
 		void render(Graphics::Renderer& renderer);
 
-
 	private:
 		btCollisionDispatcher* dispatcher;
 		btBroadphaseInterface* overlappingPairCache;
@@ -82,6 +81,9 @@ namespace Logic
 
 		// Debug Rendering
 		Graphics::RenderDebugInfo renderDebug;
+
+		void renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body);
+		void renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRigidBody* body);
 	};
 }
 
