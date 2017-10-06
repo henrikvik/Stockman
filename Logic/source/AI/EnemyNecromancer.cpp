@@ -42,10 +42,10 @@ void EnemyNecromancer::useAbility(Entity const &target)
 {
 	if (RandomGenerator::singleton().getRandomInt(0, 1))
 	{
-		spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::GRASS, 150.f);
+		spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::GRASS, SPEED_AB2);
 	}
 	else
 	{
-		spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::ENEMYGRUNT, 150.f);
+		spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::ENEMYGRUNT, SPEED_AB1);
 	}
 }
