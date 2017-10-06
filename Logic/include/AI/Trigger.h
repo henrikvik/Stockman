@@ -29,8 +29,8 @@ namespace Logic
 			void addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades);
 			void addEffects(const std::vector<StatusManager::EFFECT_ID>& effects);
 
-			void update(float deltaTime);
-			void onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier);
+			void updateSpecific(float deltaTime);
+			void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 
 			bool getShouldRemove() const;
 			bool getIsActive() const;
