@@ -73,7 +73,7 @@ void Projectile::onCollision(Entity & other, btVector3 contactPoint, const btRig
 	if (proj)
 	{
 		if(proj->getProjectileData().type)
-			setStatusManager(proj->getStatusManager());
+			setStatusManager(proj->getStatusManager()); // TEMP
 	}
 	else if ((p && m_pData.enemyBullet) || (!p && !m_pData.enemyBullet))
 	{

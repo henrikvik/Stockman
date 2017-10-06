@@ -29,7 +29,7 @@ void EnemyTest::onCollision(Entity &other, btVector3 contactPoint, const btRigid
 
 			// BULLET TIME
 			if (p->getProjectileData().type == ProjectileType::ProjectileTypeBulletTimeSensor)
-				setStatusManager(p->getStatusManager());
+				setStatusManager(p->getStatusManager()); // TEMP
 		}
 	} if (Player *p = dynamic_cast<Player*> (&other))
 		onCollision(*p);
