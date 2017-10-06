@@ -60,8 +60,8 @@ void Game::init()
 	m_highScoreManager = newd HighScoreManager();
 
 	std:string name = "";
-	std::cout << "Enter your player name (will be used for highscore): ";
-	getline(std::cin, name);
+	//std::cout << "Enter your player name (will be used for highscore): ";
+	//getline(std::cin, name);
 	if (name.empty())
 	{
 		name = "Stockman";
@@ -128,7 +128,7 @@ void Game::update(float deltaTime)
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
 
-		if (m_player->getHP() <= 99999 && m_menu->currentState() == GameState::gameStateGame)
+		if (m_player->getHP() <= 0 && m_menu->currentState() == GameState::gameStateGame)
 		{
 			printf("You ded bro.\n");
 			m_highScoreManager->addNewHighScore();
