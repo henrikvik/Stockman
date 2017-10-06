@@ -29,8 +29,9 @@ namespace Graphics
         void createHUDCBs(ID3D11Device * device);
 
         Shader shader;
-        ID3D11ShaderResourceView *crosshair;
-        ID3D11ShaderResourceView *HP;
+        
+        
+        ID3D11ShaderResourceView *hudTextures[3];
         ID3D11Buffer * vertexBuffer;
         ID3D11Buffer * HUDCBuffer;
 
@@ -48,6 +49,7 @@ namespace Graphics
         DirectX::SimpleMath::Vector2 timePos;
 
         bool changed;
+        bool firstTime;
     };
 
 }

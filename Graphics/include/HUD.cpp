@@ -12,14 +12,18 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
    sBatch = std::make_unique<DirectX::SpriteBatch>(context);
 
    changed = false;
+   firstTime = true;
 }
 
 Graphics::HUD::~HUD()
 {
     SAFE_RELEASE(vertexBuffer);
-    SAFE_RELEASE(crosshair);
-    SAFE_RELEASE(HP);
+    //SAFE_RELEASE(crosshair);
+    //SAFE_RELEASE(HP);
     SAFE_RELEASE(HUDCBuffer);
+    SAFE_RELEASE(hudTextures[0]);
+    SAFE_RELEASE(hudTextures[1]);
+    SAFE_RELEASE(hudTextures[2]);
 }
 
 void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState)
@@ -42,13 +46,13 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
  
     context->OMSetRenderTargets(1, &backBuffer, nullptr);
 
+    context->VSSetConstantBuffers(0,1, &HUDCBuffer);
     context->VSSetShader(shader, nullptr, 0);
 
-    context->PSSetShaderResources(0, 1, &crosshair);
-    context->PSSetShaderResources(1, 1, &HP);
+    context->PSSetShaderResources(0, 3, hudTextures);
     context->PSSetShader(shader, nullptr, 0);
 
-    context->Draw(12, 0);
+    context->Draw(18, 0);
     ID3D11ShaderResourceView * SRVNULL = nullptr;
     context->PSSetShaderResources(0, 1, &SRVNULL);
 }
@@ -61,11 +65,19 @@ void Graphics::HUD::queueText(Graphics::TextString * text)
 //gives the graphics side the info to render the hud
 void Graphics::HUD::fillHUDInfo(HUDInfo * info)
 {
-    if (currentInfo->hp == info->hp)
+    if (!firstTime)
     {
-        changed = true;
+        if (currentInfo->hp == info->hp)
+        {
+            changed = true;
+        }
+        currentInfo = info;
     }
-    currentInfo = info;
+    else
+    {
+        currentInfo = info;
+    }
+    
 }
 
 void Graphics::HUD::createHUDVBS(ID3D11Device * device)
@@ -77,7 +89,7 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
         UINT element;
     };
 
-    GUI GUIquad[12];
+    GUI GUIquad[18];
     GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.05f, -0.05f };
     GUIquad[0].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
 
@@ -102,7 +114,6 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
     GUIquad[3].element = 0;
     GUIquad[4].element = 0;
     GUIquad[5].element = 0;
-
 
     GUIquad[6].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
     GUIquad[6].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
@@ -129,6 +140,32 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
     GUIquad[10].element = 1;
     GUIquad[11].element = 1;
 
+
+    GUIquad[12].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
+    GUIquad[12].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
+    GUIquad[13].verts = DirectX::SimpleMath::Vector2{ -1.0f, -0.8f };
+    GUIquad[13].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[14].verts = DirectX::SimpleMath::Vector2{ -0.8f, -1.0f };
+    GUIquad[14].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[15].verts = DirectX::SimpleMath::Vector2{ -0.8f, -0.8f };
+    GUIquad[15].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
+    GUIquad[16].verts = GUIquad[8].verts;
+    GUIquad[16].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[17].verts = GUIquad[7].verts;
+    GUIquad[17].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[12].element = 2;
+    GUIquad[13].element = 2;
+    GUIquad[14].element = 2;
+    GUIquad[15].element = 2;
+    GUIquad[16].element = 2;
+    GUIquad[17].element = 2;
+
     D3D11_BUFFER_DESC desc;
     ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
 
@@ -145,8 +182,11 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
 
 void Graphics::HUD::createHUDTextures(ID3D11Device * device, ID3D11DeviceContext * context)
 {
-    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("crosshair.png"), nullptr, &crosshair));
-    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPbar.png"), nullptr, &HP));
+
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("crosshair.png"), nullptr, &hudTextures[0]));
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPbar.png"), nullptr, &hudTextures[1]));
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPbarOutline.png"), nullptr, &hudTextures[2]));
+  
 }
 
 void Graphics::HUD::renderText(ID3D11BlendState * blendState)
@@ -216,6 +256,7 @@ void Graphics::HUD::updateHUDConstantBuffer(ID3D11DeviceContext * context)
     float temp[2] = { 1.0f };
     //3.0f comes from the max HP of the player
     temp[0] = (float)(currentInfo->hp / 3.0f);
+    //temp[0] =  1.0f - (float)(1 / 3.0f);
 
     D3D11_MAPPED_SUBRESOURCE data = { 0 };
     ThrowIfFailed(context->Map(HUDCBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
@@ -234,7 +275,7 @@ void Graphics::HUD::createHUDCBs(ID3D11Device * device)
     desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     desc.Usage = D3D11_USAGE_DYNAMIC;
     
-    float temp[2] = { 1.0f };
+    float temp[2] = { 0.0f, 0.0f };
     D3D11_SUBRESOURCE_DATA data = { 0 };
     data.pSysMem = temp;
 
