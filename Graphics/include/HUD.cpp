@@ -10,6 +10,8 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
     setHUDTextRenderPos();
    sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/comicsans.spritefont");
    sBatch = std::make_unique<DirectX::SpriteBatch>(context);
+
+   changed = false;
 }
 
 Graphics::HUD::~HUD()
@@ -22,6 +24,12 @@ Graphics::HUD::~HUD()
 
 void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState)
 {
+
+    if (changed)
+    {
+        updateHUDConstantBuffer(context);
+    }
+
     renderText(blendState);
     UINT stride = 20, offset = 0;
     context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
@@ -50,8 +58,13 @@ void Graphics::HUD::queueText(Graphics::TextString * text)
     textQueue.push_back(*text);
 }
 
+//gives the graphics side the info to render the hud
 void Graphics::HUD::fillHUDInfo(HUDInfo * info)
 {
+    if (currentInfo->hp == info->hp)
+    {
+        changed = true;
+    }
     currentInfo = info;
 }
 
@@ -197,8 +210,20 @@ void Graphics::HUD::renderHUDText()
     }
 }
 
-void Graphics::HUD::updateHUDConstant()
+//updates the hp and cooldown values on the GPU side
+void Graphics::HUD::updateHUDConstantBuffer(ID3D11DeviceContext * context)
 {
+    float temp[2] = { 1.0f };
+    //3.0f comes from the max HP of the player
+    temp[0] = (float)(currentInfo->hp / 3.0f);
+
+    D3D11_MAPPED_SUBRESOURCE data = { 0 };
+    ThrowIfFailed(context->Map(HUDCBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
+    memcpy(data.pData, temp, sizeof(float) * 2);
+
+    context->Unmap(HUDCBuffer, 0);
+
+    changed = false;
 }
 
 void Graphics::HUD::createHUDCBs(ID3D11Device * device)

@@ -25,7 +25,7 @@ namespace Graphics
         void renderText(ID3D11BlendState * blendState);
         void setHUDTextRenderPos();
         void renderHUDText();
-        void updateHUDConstant();
+        void updateHUDConstantBuffer(ID3D11DeviceContext * context);
         void createHUDCBs(ID3D11Device * device);
 
         Shader shader;
@@ -46,6 +46,8 @@ namespace Graphics
         DirectX::SimpleMath::Vector2 scorePos;
         DirectX::SimpleMath::Vector2 wavePos;
         DirectX::SimpleMath::Vector2 timePos;
+
+        bool changed;
     };
 
 }
