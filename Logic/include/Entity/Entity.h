@@ -16,6 +16,7 @@ namespace Logic
 		Entity* operator=(const Entity& other) = delete;
 		virtual ~Entity();
 
+		void addWeakpoint(btRigidBody* body, btVector3 offset);
 		void destroyBody();
 		virtual void clear();
 		virtual void update(float deltaTime);
@@ -44,10 +45,8 @@ namespace Logic
 		btRigidBody* m_body;
 		btTransform* m_transform;
 
-
-		Graphics::RenderInfo renderInfo;
-		btRigidBody* m_bodyWeakPoint;	//< The "head" for headshots multiplier
-		btVector3 m_weakPointOffset;	//< The offset from the body to place the head
+		btRigidBody* m_bodyWeakPoint;	//< The "head" for headshots multiplier change this to (std::pair<btRigidBody*, float multiplier) when you got time
+		btVector3 m_weakPointOffset;	//< The constant offset from the body 
 	};
 }
 
