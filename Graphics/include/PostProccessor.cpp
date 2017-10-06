@@ -4,13 +4,13 @@
 #include <string>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#define KERNELSIZE 7
-#define SIGMA 2
+#define KERNELSIZE 9
+#define SIGMA 5
 
 Graphics::PostProcessor::PostProcessor(ID3D11Device * device, ID3D11DeviceContext * context)
-	: glow(device, SHADER_PATH("Glow.hlsl"))
-	, glow2(device, SHADER_PATH("GlowSecond.hlsl"))
-	, merger(device, SHADER_PATH("Merger.hlsl"))
+	: glow(device, SHADER_PATH("GlowShaders/Glow.hlsl"))
+	, glow2(device, SHADER_PATH("GlowShaders/GlowSecond.hlsl"))
+	, merger(device, SHADER_PATH("GlowShaders/Merger.hlsl"))
 	, glowPass0(device, WIN_WIDTH / 2, WIN_HEIGHT / 2)
 	, glowPass1(device, WIN_WIDTH / 2, WIN_HEIGHT / 2)
 {

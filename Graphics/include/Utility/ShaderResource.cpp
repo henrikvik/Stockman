@@ -1,10 +1,10 @@
 #include "ShaderResource.h"
 
-ShaderResource::ShaderResource(ID3D11Device * device, UINT width, UINT height)
+ShaderResource::ShaderResource(ID3D11Device * device, UINT width, UINT height, DXGI_FORMAT format)
 {
 	D3D11_TEXTURE2D_DESC textureDesc = {};
 	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	textureDesc.Format = format;
 	textureDesc.Width = width;
 	textureDesc.Height = height;
 	textureDesc.MipLevels = 1;
@@ -15,20 +15,20 @@ ShaderResource::ShaderResource(ID3D11Device * device, UINT width, UINT height)
 	ThrowIfFailed(device->CreateTexture2D(&textureDesc, NULL, &texture));
 
 	D3D11_RENDER_TARGET_VIEW_DESC renderDesc = {};
-	renderDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	renderDesc.Format = format;
 	renderDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 
 	ThrowIfFailed(device->CreateRenderTargetView(texture, &renderDesc, &renderTarget));
 
 	D3D11_UNORDERED_ACCESS_VIEW_DESC unorderedDesc = {};
-	unorderedDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	unorderedDesc.Format = format;
 	unorderedDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 	unorderedDesc.Texture2D.MipSlice = 0;
 
 	ThrowIfFailed(device->CreateUnorderedAccessView(texture, &unorderedDesc, &unorderedAccess));
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC resourceDesc = {};
-	resourceDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	resourceDesc.Format = format;
 	resourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	resourceDesc.Texture2D.MipLevels = 1;
 

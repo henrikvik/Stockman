@@ -2,8 +2,12 @@
 #include <stdio.h>
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
+#include <Keyboard.h>
 
 #include <Engine\Profiler.h>
+//temp
+#include <random>
+
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
@@ -24,13 +28,20 @@ namespace Graphics
 		: forwardPlus(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
-        , instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
-        , instanceOffsetBuffer(device)
+		, instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
+		, instanceOffsetBuffer(device)
 		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
 		, postProcessor(device, deviceContext)
 		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
 		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
+		, normalTexture(device, WIN_WIDTH, WIN_HEIGHT)
+		, ssaoOutput(device, WIN_WIDTH, WIN_HEIGHT)
+		, ssaoOutputSwap(device, WIN_WIDTH, WIN_HEIGHT)
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
+		, ssaoShader(device, SHADER_PATH("SSAOShaders/SSAOComputeShader.hlsl"))
+		, blurHorizontal(device, SHADER_PATH("SSAOShaders/GaussianBlurHorizontal.hlsl"))
+		, blurVertical(device, SHADER_PATH("SSAOShaders/GaussianBlurVertical.hlsl"))
+		, ssaoMerger(device, SHADER_PATH("SSAOShaders/SSAOMerger.hlsl"))
         ,menu(device, deviceContext)
         ,hud(device, deviceContext)
     #pragma region RenderDebugInfo
@@ -66,6 +77,7 @@ namespace Graphics
 		SAFE_RELEASE(transparencyBlendState);
 
 		SAFE_RELEASE(glowTest);
+		SAFE_RELEASE(randomNormals);
         resourceManager.release();
 
     }
@@ -76,7 +88,7 @@ namespace Graphics
 
 		//temp
 		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
-
+		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("randomNormals.jpg"), NULL, &randomNormals);
 
     }
 
@@ -141,13 +153,13 @@ namespace Graphics
 
 
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-
+		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		static float clearColor[4] = { 0, 0.5, 0.7, 1 };
 		static float blackClearColor[4] = {0};
 		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
 		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
+		deviceContext->ClearRenderTargetView(normalTexture, blackClearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
         deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
@@ -226,16 +238,17 @@ namespace Graphics
 		ID3D11RenderTargetView * rtvs[] =
 		{
 			fakeBackBuffer,
-			glowMap
+			glowMap,
+			normalTexture
 		};
-		deviceContext->OMSetRenderTargets(2, rtvs, depthStencil);
+		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
 		
 		draw();
 		skyRenderer.renderSky(deviceContext, camera);
 
-		ID3D11RenderTargetView * rtvNULL[2] = {nullptr};
+		ID3D11RenderTargetView * rtvNULL[3] = {nullptr};
 
-        deviceContext->OMSetRenderTargets(2, rtvNULL, nullptr);
+        deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
 
         ZeroMemory(SRVs, sizeof(SRVs));
         deviceContext->PSSetShaderResources(0, 4, SRVs);
@@ -251,9 +264,10 @@ namespace Graphics
 
 		///////Post effext
 		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
-
+		renderSSAO(camera);
 
 		drawToBackbuffer(fakeBackBufferSwap);
+
 
         renderDebugInfo();
         hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
@@ -435,29 +449,111 @@ namespace Graphics
         deviceContext->VSSetShader(debugRender, nullptr, 0);
         deviceContext->PSSetShader(debugRender, nullptr, 0);
 
-        for (RenderDebugInfo * info : renderDebugQueue)
-        {
-            debugPointsBuffer.write( 
-                deviceContext, 
-                info->points->data(), 
-                info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
-            );
+		for (RenderDebugInfo * info : renderDebugQueue)
+		{
+			debugPointsBuffer.write(
+				deviceContext,
+				info->points->data(),
+				info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
+			);
 
-            debugColorBuffer.write(
-                deviceContext,
-                &info->color,
-                sizeof(DirectX::SimpleMath::Color)
-            );
+			debugColorBuffer.write(
+				deviceContext,
+				&info->color,
+				sizeof(DirectX::SimpleMath::Color)
+			);
+		}
 
-            deviceContext->IASetPrimitiveTopology(info->topology);
-            deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
-            
-            deviceContext->Draw(info->points->size(), 0);
-        }
 
-        renderDebugQueue.clear();
-        //PROFILE_END();
+
     }
+
+	void Renderer::renderSSAO(Camera * camera)
+	{
+		static float clear[4] = {0};
+		deviceContext->ClearUnorderedAccessViewFloat(ssaoOutput, clear);
+		
+		ID3D11SamplerState * samplers[] = 
+		{ 
+			states->PointClamp(),
+			states->PointWrap()
+		};
+		deviceContext->CSSetSamplers(0, 2, samplers);
+
+		deviceContext->CSSetShader(ssaoShader, nullptr, 0);
+		ID3D11ShaderResourceView * srvs[] =
+		{
+			depthStencil,
+			randomNormals,
+			normalTexture
+		};
+
+		deviceContext->CSSetShaderResources(0, 3, srvs);
+		deviceContext->CSSetUnorderedAccessViews(0, 1, ssaoOutput, nullptr);
+		ID3D11Buffer * buffer = camera->getInverseBuffer();
+		deviceContext->CSSetConstantBuffers(0, 1, &buffer);
+		deviceContext->Dispatch(80, 45, 1);
+
+		ID3D11ShaderResourceView * srvsNULL[3] = { nullptr };
+		deviceContext->CSSetShaderResources(0, 3, srvsNULL);
+		ID3D11ShaderResourceView * srvNULL = nullptr;
+
+		//blur the occlusion map in two passes
+		deviceContext->CSSetShader(blurHorizontal, nullptr, 0);
+		deviceContext->CSSetUnorderedAccessViews(0, 1, ssaoOutputSwap, nullptr);
+		deviceContext->CSSetShaderResources(0, 1, ssaoOutput);
+		deviceContext->Dispatch(80, 45, 1);
+
+		deviceContext->CSSetShaderResources(0, 1, &srvNULL);
+
+		deviceContext->CSSetShader(blurVertical, nullptr, 0);
+		deviceContext->CSSetUnorderedAccessViews(0, 1, ssaoOutput, nullptr);
+		deviceContext->CSSetShaderResources(0, 1, ssaoOutputSwap);
+		deviceContext->Dispatch(80, 45, 1);
+
+		//Merge the blurred occlusion map with back buffer
+		deviceContext->CSSetShader(ssaoMerger, nullptr, 0);
+		deviceContext->CSSetUnorderedAccessViews(0, 1, fakeBackBufferSwap, nullptr);
+		deviceContext->CSSetShaderResources(0, 1, fakeBackBuffer);
+		deviceContext->CSSetShaderResources(1, 1, ssaoOutput);
+		deviceContext->Dispatch(80, 45, 1);
+
+
+		deviceContext->CSSetShaderResources(0, 1, &srvNULL);
+		deviceContext->CSSetShaderResources(1, 1, &srvNULL);
+		ID3D11UnorderedAccessView * uavnull = nullptr;
+		deviceContext->CSSetUnorderedAccessViews(0, 1, &uavnull, nullptr);
+		
+	}
+
+	void Renderer::createSSAOSphere()
+	{
+		std::uniform_real_distribution<> randFloat(-1.0, 1.0);
+		std::default_random_engine engine;
+		std::vector<DirectX::SimpleMath::Vector3> normals;
+
+		for (size_t i = 0; i < 32; i++)
+		{
+			DirectX::SimpleMath::Vector3 normal(
+				randFloat(engine),
+				randFloat(engine),
+				randFloat(engine)
+			);
+
+			normal.Normalize();
+			normal *= randFloat(engine) * 0.5 + 0.5;
+
+			normals.push_back(normal);
+		}
+
+		std::string temp = "";
+
+		for (size_t i = 0; i < normals.size(); i++)
+		{
+			temp += "float3( " + std::to_string(normals[i].x) + ", " + std::to_string(normals[i].y) + ", " + std::to_string(normals[i].z) + "),\n";
+		}
+		OutputDebugStringA(temp.c_str());
+	}
 
     void Renderer::createBlendState()
     {
