@@ -36,7 +36,7 @@
 
 #include <ctime>
 #include <chrono>
-#include <Entity\Entity.h>
+#include <Entity\PhysicsObject.h>
 #include <Physics\Primitives.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>

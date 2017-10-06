@@ -69,7 +69,7 @@ void Player::clear()
 	m_skillManager.clear();
 }
 
-void Player::onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier)
+void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
 	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
@@ -105,8 +105,8 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
 	{
-		getRigidbody()->setLinearVelocity(btVector3(getRigidbody()->getLinearVelocity().x(), 0, getRigidbody()->getLinearVelocity().z()));
-		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
+		getRigidBody()->setLinearVelocity(btVector3(getRigidBody()->getLinearVelocity().x(), 0, getRigidBody()->getLinearVelocity().z()));
+		getRigidBody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
 		m_playerState = PlayerState::STANDING;
 	}
 
@@ -150,8 +150,11 @@ int Player::getHP() const
 	return m_hp;
 }
 
-void Player::updateSpecific(float deltaTime)
+void Player::update(float deltaTime)
 {
+	// Updates the player's status manager and graphical stuff
+	Entity::update(deltaTime);
+
     //updates hudInfo with the current info
     info.hp = m_hp;
     info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
@@ -175,10 +178,10 @@ void Player::updateSpecific(float deltaTime)
 	// Temp for testing
 	if (ks.IsKeyDown(DirectX::Keyboard::B))
 	{
-		btTransform transform = getRigidbody()->getWorldTransform();
+		btTransform transform = getTransform();
 		transform.setOrigin({0, 0, 0});
-		getRigidbody()->setWorldTransform(transform);
-		getRigidbody()->setLinearVelocity({ 0, 0, 0 });
+		getRigidBody()->setWorldTransform(transform);
+		getRigidBody()->setLinearVelocity({ 0, 0, 0 });
 		m_moveDir = {0, 0, 0};
 		m_moveSpeed = 0.f;
 	}
@@ -187,15 +190,15 @@ void Player::updateSpecific(float deltaTime)
 	static bool freeMove = false;
 	if (ks.IsKeyDown(DirectX::Keyboard::N) && !freeMove)
 	{
-		getRigidbody()->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
+		getRigidBody()->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
 		freeMove = true;
 		printf("free move activated\n");
 	}
 	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)
 	{
 		// reset movement
-		getRigidbody()->setGravity({ 0.f, -PHYSICS_GRAVITY, 0.f });
-		getRigidbody()->setLinearVelocity({ 0, 0, 0 });
+		getRigidBody()->setGravity({ 0.f, -PHYSICS_GRAVITY, 0.f });
+		getRigidBody()->setLinearVelocity({ 0, 0, 0 });
 		m_moveDir = { 0, 0, 0 };
 		m_moveSpeed = 0.f;
 		freeMove = false;
@@ -209,7 +212,7 @@ void Player::updateSpecific(float deltaTime)
 	jump(deltaTime, &ks);
 
 	// If moving on y-axis, player is in air
-	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 1.f || getRigidbody()->getLinearVelocity().y() < -1.f))
+	if (!m_wishJump && (getRigidBody()->getLinearVelocity().y() > 1.f || getRigidBody()->getLinearVelocity().y() < -1.f))
 		m_playerState = PlayerState::IN_AIR;
 
 	// Get movement input
@@ -331,7 +334,7 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 
 void Player::moveFree(float deltaTime, DirectX::Keyboard::State * ks)
 {
-	getRigidbody()->setLinearVelocity({ 0, 0, 0 }); // Remove linear velocity
+	getRigidBody()->setLinearVelocity({ 0, 0, 0 }); // Remove linear velocity
 
 	if (ks->IsKeyDown(DirectX::Keyboard::Keys::LeftControl)) // down
 		m_wishDir.setY(-1.f);
@@ -339,9 +342,9 @@ void Player::moveFree(float deltaTime, DirectX::Keyboard::State * ks)
 		m_wishDir.setY(1.f);
 
 	// Update pos of player
-	btTransform transform = getRigidbody()->getWorldTransform();
-	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_wishDir * m_moveMaxSpeed * 2.f * deltaTime));
-	getRigidbody()->setWorldTransform(transform);
+	btTransform transform = getTransform();
+	transform.setOrigin(getTransform().getOrigin() + (m_wishDir * m_moveMaxSpeed * 2.f * deltaTime));
+	getRigidBody()->setWorldTransform(transform);
 }
 
 void Player::move(float deltaTime)
@@ -379,7 +382,7 @@ void Player::move(float deltaTime)
 	// Apply jump if player wants to jump
 	if (m_wishJump)
 	{
-		getRigidbody()->setLinearVelocity({ 0, PLAYER_JUMP_SPEED, 0 }); // Jump
+		getRigidBody()->setLinearVelocity({ 0, PLAYER_JUMP_SPEED, 0 }); // Jump
 		m_playerState = PlayerState::IN_AIR;
 
 		m_wishJump = false;
@@ -404,12 +407,12 @@ void Player::accelerate(float deltaTime, float acceleration)
 
 	// Update pos of player
 	
-	btTransform transform = getRigidbody()->getWorldTransform();
+	btTransform transform = getTransform();
 	if (m_playerState != PlayerState::IN_AIR)
-		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
+		transform.setOrigin(getTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
 	else
-		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED * deltaTime));
-	getRigidbody()->setWorldTransform(transform);
+		transform.setOrigin(getTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED * deltaTime));
+	getRigidBody()->setWorldTransform(transform);
 }
 
 void Player::applyFriction(float deltaTime, float friction)

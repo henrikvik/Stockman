@@ -16,7 +16,7 @@ void EnemyTest::clear()
 {
 }
 
-void EnemyTest::onCollision(Entity &other, btVector3 contactPoint, float dmgMultiplier)
+void EnemyTest::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	if (Projectile *p = dynamic_cast<Projectile*> (&other)) {
 		if (!p->getProjectileData().enemyBullet)
@@ -39,7 +39,7 @@ void EnemyTest::onCollision(Player& other)
 	btVector3 dir = getPositionBT() - other.getPositionBT();
 	dir = dir.normalize();
 	dir *= 100000.f;
-	getRigidbody()->applyCentralForce(dir);
+	getRigidBody()->applyCentralForce(dir);
 }
 
 void EnemyTest::updateSpecific(Player const &player, float deltaTime)
@@ -49,6 +49,5 @@ void EnemyTest::updateSpecific(Player const &player, float deltaTime)
 
 void EnemyTest::updateDead(float deltaTime)
 {
-	Entity::updateGraphics();
-	// x _ x
+
 }
