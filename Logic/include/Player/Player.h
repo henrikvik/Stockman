@@ -28,7 +28,9 @@
 #define PLAYER_MOVEMENT_AIRSTRAFE_SPEED 0.004f
 #define PLAYER_SPEED_LIMIT				0.05f
 #define PLAYER_STRAFE_ANGLE				0.95f
-#define PLAYER_JUMP_SPEED				70.f
+#define PLAYER_FRICTION					14.f
+#define PLAYER_AIR_FRICTION				1.f
+#define PLAYER_JUMP_SPEED				7.f
 #define PLAYER_BHOP_TIMER				10.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
@@ -49,6 +51,7 @@ namespace Logic
 		//ActionManager m_actionManager;
 		WeaponManager m_weaponManager;
 		SkillManager m_skillManager;
+		Physics* m_physPtr;
 
 		// UI States
         Graphics::HUDInfo info;
@@ -58,14 +61,14 @@ namespace Logic
 		PlayerState m_playerState;
 		DirectX::SimpleMath::Vector3 m_forward;
 		float m_moveMaxSpeed;
-		btVector3 m_moveDir;
+		btVector3 m_moveDir; // only 2 dimensional movement direction (x, z)
 		float m_moveSpeed;
 		float m_acceleration;
 		float m_deacceleration;
 		float m_airAcceleration;
 		float m_jumpSpeed;
 
-		bool m_wishToJump;
+		bool m_wishJump;
 		btVector3 m_wishDir;
 		float m_wishDirForward;
 		float m_wishDirRight;
@@ -93,8 +96,9 @@ namespace Logic
 
 		// Movement
 		void moveInput(DirectX::Keyboard::State* ks);
-		void move(float deltaTime, DirectX::Keyboard::State* ks);
-		void airMove(float deltaTime, DirectX::Keyboard::State* ks);
+		void moveFree(float deltaTime, DirectX::Keyboard::State* ks);
+		void move(float deltaTime);
+		void airMove(float deltaTime);
 		void accelerate(float deltaTime, float acceleration);
 		void applyFriction(float deltaTime, float friction);
 		void applyAirFriction(float deltaTime, float friction);
@@ -110,7 +114,7 @@ namespace Logic
 		void clear();
 		void updateSpecific(float deltaTime);
         void updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning);
-		void onCollision(Entity& other, const btRigidBody* collidedWithYour);
+		void onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
 		void onCollision(Projectile& other);
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);

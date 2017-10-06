@@ -21,10 +21,10 @@ namespace Logic
 		virtual void update(float deltaTime);
 		void updateGraphics();
 		virtual void updateSpecific(float deltaTime) { }
-		void collision(Entity& other, const btRigidBody* collidedWithYour);
+		void collision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
 		virtual void affect(int stacks, Effect const &effect, float deltaTime);	
 		virtual void upgrade(Upgrade const &upgrade);
-		virtual void onCollision(Entity& other, const btRigidBody* collidedWithYour) { }
+		virtual void onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour) { }
 
 		void setHalfExtent(btVector3 halfExtent);
 		btVector3 getHalfExtent() const;
