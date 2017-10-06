@@ -1,4 +1,4 @@
-#include "ShaderConstants.h"
+#include "../ShaderConstants.h"
 
 
 Texture2D inputTexture : register(t0);
