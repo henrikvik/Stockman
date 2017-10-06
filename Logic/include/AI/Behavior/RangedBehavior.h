@@ -10,6 +10,8 @@ namespace Logic
 	private:
 		SimplePathing m_path;
 		float m_distance;
+
+		const int abilityChanche = 150;
 	public:
 		RangedBehavior();
 		virtual ~RangedBehavior() {}
