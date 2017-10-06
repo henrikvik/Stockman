@@ -63,8 +63,7 @@ float4 PS (VSOut psIn) : SV_Target
 
 	g = -length(psIn.aV) * (psIn.c1 - g * g / abs(psIn.F_DOT_V));
 
-	float f = saturate(exp2(-g));
-	
+	float f = saturate(exp2(-g));//is the exp2 for the fog density calc?
 
 	psIn.color.rgb = psIn.color.rgb * f + fogColor.rgb * (1.0 - f);
 
