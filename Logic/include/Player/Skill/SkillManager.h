@@ -38,6 +38,8 @@ namespace Logic
 		void render(Graphics::Renderer& renderer);
 
 		bool getCanBeUsed() const;
+
+        Skill* getCurrentSkill() const;
 	
 	private:
 		bool m_canBeUsed;

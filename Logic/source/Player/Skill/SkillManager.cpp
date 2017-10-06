@@ -70,3 +70,8 @@ bool Logic::SkillManager::getCanBeUsed() const
 {
 	return m_canBeUsed;
 }
+
+Skill * Logic::SkillManager::getCurrentSkill() const
+{
+    return m_currentSkill;
+}

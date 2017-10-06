@@ -31,6 +31,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
     	info.wave = 0;
     	info.score = 0;
     	info.sledge = false;
+        info.cd = 1.0f;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -158,9 +159,9 @@ void Player::update(float deltaTime)
     //updates hudInfo with the current info
     info.hp = m_hp;
     info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
-    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getMagSize();
+    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getAmmo();
     info.iceAmmo[0] = m_weaponManager.getSecondWeapon()->getMagAmmo();
-    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getMagSize();
+    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getAmmo();
     if (m_weaponManager.getCurrentWeaponPrimary()->getMagSize() == 0)
     {
         info.sledge  = true;
@@ -169,6 +170,17 @@ void Player::update(float deltaTime)
     {
         info.sledge = false;
     }
+
+    if (!m_skillManager.getCurrentSkill()->getCanUse())
+    {
+        info.cd = m_skillManager.getCurrentSkill()->getCooldown() / m_skillManager.getCurrentSkill()->getCooldownMax();
+    }
+    else
+    {
+        info.cd = 1.0f;
+    }
+    
+
 
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
