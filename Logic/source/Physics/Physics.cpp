@@ -56,8 +56,6 @@ void Physics::clear()
 	delete collisionConfiguration;
 }
 
-#include <BulletCollision\CollisionDispatch\btGhostObject.h>
-
 void Physics::update(GameTime gameTime)
 {
 	static std::chrono::steady_clock::time_point begin;

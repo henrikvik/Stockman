@@ -13,7 +13,7 @@ void Map::init(Physics* physics, Player* player)
 {
 //	initProps();
 	initHitboxes(physics);
-//	initObjects(physics);			// Not used as intented as for rn, should only create non-moving objects, not entities
+	initObjects(physics);			// Not used as intented as for rn, should only create non-moving objects, not entities
 	initGrapplingPoints(physics, player);
 
 	m_drawHitboxes = true;
@@ -117,12 +117,10 @@ void Map::initHitboxes(Physics* physics)
 
 void Map::initObjects(Physics * physics)
 {
-	for (int i = 0; i < 5; ++i)
-	{
-		btVector3 halfextent(1.0 * (i + 1), 1.0, 1.0);
-		Entity* box = new Entity(physics->createBody(Cube({ 1.f * (i * 0.25f + 1), 5, 0 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
-		m_objects.push_back(box);
-	}
+	btVector3 halfextent(1.0, 1.0, 1.0);
+	Entity* box = new Entity(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
+	box->addWeakpoint(physics->createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), { 0, 3.f, 0 });
+	m_objects.push_back(box);
 }
 
 // Create the grappling points (Need to be spheres for optimization)

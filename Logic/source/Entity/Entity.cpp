@@ -9,6 +9,9 @@ Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelI
 	m_body = body;
 	m_body->setUserPointer(this);
 
+	// Setting the weakness body as nullptr
+	m_bodyWeakPoint = nullptr;
+
 	// Saving ptr to the transform for easier reach
 	m_transform = &m_body->getWorldTransform();
 
@@ -24,15 +27,30 @@ Entity::~Entity()
 	// ALL physics is getting cleared by the Physics class, but you can delete an entity early by calling destroyBody() below
 }
 
+void Entity::addWeakpoint(btRigidBody* body, btVector3 offset)
+{
+	m_bodyWeakPoint = body;
+	m_bodyWeakPoint->setUserPointer(this);
+	m_weakPointOffset = offset;
+}
+
 void Entity::destroyBody()
 {
 	if (m_body)
 	{
 		if (m_body->getMotionState())
 			delete m_body->getMotionState();
-		if(m_body->getCollisionShape())
+		if (m_body->getCollisionShape())
 			delete m_body->getCollisionShape();
 		delete m_body;
+	}
+	if (m_bodyWeakPoint)
+	{
+		if (m_bodyWeakPoint->getMotionState())
+			delete m_bodyWeakPoint->getMotionState();
+		if (m_bodyWeakPoint->getCollisionShape())
+			delete m_bodyWeakPoint->getCollisionShape();
+		delete m_bodyWeakPoint;
 	}
 }
 
@@ -40,6 +58,14 @@ void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
+	// Updating the position of the weakpoint
+	if (m_bodyWeakPoint)
+	{
+		btVector3 mainOrigin = m_transform->getOrigin();
+		btVector3 newOrigin = mainOrigin + m_weakPointOffset;
+		m_bodyWeakPoint->getWorldTransform().setOrigin(newOrigin);
+	}
+
 	// Checking different buffs
 	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
 		affect(effectPair.first, *effectPair.second, deltaTime);
@@ -62,7 +88,11 @@ void Entity::updateGraphics()
 
 void Entity::collision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour)
 {
-	onCollision(other, contactPoint, 1.f);
+	// Remove this.
+	if (collidedWithYour == m_bodyWeakPoint)
+		printf("Auch. You hit my head, jerk.\n");
+
+	onCollision(other, contactPoint, (collidedWithYour == m_bodyWeakPoint) ? 2.f : 1.f);
 }
 
 void Entity::affect(int stacks, Effect const &effect, float dt) {}
