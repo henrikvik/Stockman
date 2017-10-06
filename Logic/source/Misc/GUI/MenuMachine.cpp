@@ -187,5 +187,5 @@ void Logic::MenuMachine::buttonClick2()
 
 void Logic::MenuMachine::buttonClick3()
 {
-	exit(0); //change to avoid memory leaks
+	PostQuitMessage(0); 
 }
