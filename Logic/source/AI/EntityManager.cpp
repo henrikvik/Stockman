@@ -50,9 +50,8 @@ void EntityManager::deleteData()
 
 void EntityManager::update(Player const &player, float deltaTime) 
 {
-	clock_t begin = clock();
 	m_frame++;
-	PROFILE_BEGIN("EntityManager::update()");
+//	PROFILE_BEGIN("EntityManager::update()");
 	
 	AStar::singleton().loadTargetIndex(player);
 	for (int i = 0; i < m_enemies.size(); ++i)
@@ -75,13 +74,8 @@ void EntityManager::update(Player const &player, float deltaTime)
 		m_deadEnemies[i]->updateDead(deltaTime);
 	}
 
-		
-	clock_t end = clock();
-	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-	//printf("Entity Time Elapsed: %f seconds, (EntityManager.cpp:%d)\n", elapsed_secs, __LINE__);
-
 	m_triggerManager.update(deltaTime);
-	PROFILE_END();
+//	PROFILE_END();
 }
 
 void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles) 
@@ -97,7 +91,7 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 		{
 			i += 1;
 			//m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 8.f, i * 10.f, i * 1.f }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f}), 100, false), { 0.5f, 0.5f, 0.5f}));
-			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
+			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ i * 5.f, 0, i * 5.f }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
 			enemy->setProjectileManager(projectiles);
 			m_enemies.push_back(enemy);
 		}
