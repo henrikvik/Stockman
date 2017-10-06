@@ -106,6 +106,7 @@ namespace Graphics
         int cuttleryAmmo[2];
         int iceAmmo[2];
         bool sledge;
+        float cd;
         UINT score;
         int wave;
         int enemiesRemaining;
