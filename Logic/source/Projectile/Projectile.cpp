@@ -1,5 +1,6 @@
 #include "../Projectile/Projectile.h"
 #include "../Player/Player.h"
+#include <AI\Enemy.h>
 
 using namespace Logic;
 
@@ -53,7 +54,7 @@ void Projectile::updateSpecific(float deltaTime)
 	m_pData.ttl -= deltaTime;
 }
 
-void Projectile::onCollision(Entity & other, const btRigidBody* collidedWithYour)
+void Projectile::onCollision(Entity & other, btVector3 contactPoint, float dmgMultiplier)
 {
 	// TEMP
 	Player* p = dynamic_cast<Player*>(&other);
@@ -63,7 +64,7 @@ void Projectile::onCollision(Entity & other, const btRigidBody* collidedWithYour
 	{
 		
 	}
-	else if ((p && m_pData.enemyBullet) || (!p && !m_pData.enemyBullet))
+	else if (p && m_pData.enemyBullet)
 	{
 		m_remove = true;
 

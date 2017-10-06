@@ -69,10 +69,9 @@ void Player::clear()
 	m_skillManager.clear();
 }
 
-void Player::onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour)
+void Player::onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
-	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))	{ printf("Enemy slapped you right in the face.\n"); }	// collision with enemy
 	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
 	else if(m_playerState == PlayerState::IN_AIR)
 	{
@@ -96,7 +95,8 @@ void Player::onCollision(Entity& other, btVector3 contactPoint, const btRigidBod
 
 void Player::onCollision(Projectile& other)
 {
-
+	if (other.getProjectileData().enemyBullet)
+		takeDamage(other.getProjectileData().damage);
 }
 
 void Player::affect(int stacks, Effect const & effect, float deltaTime)

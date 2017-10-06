@@ -16,6 +16,7 @@ namespace Logic
 		Entity* operator=(const Entity& other) = delete;
 		virtual ~Entity();
 
+		void addWeakpoint(btRigidBody* body, btVector3 offset);
 		void destroyBody();
 		virtual void clear();
 		virtual void update(float deltaTime);
@@ -24,7 +25,7 @@ namespace Logic
 		void collision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
 		virtual void affect(int stacks, Effect const &effect, float deltaTime);	
 		virtual void upgrade(Upgrade const &upgrade);
-		virtual void onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour) { }
+		virtual void onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier) {};
 
 		void setHalfExtent(btVector3 halfExtent);
 		btVector3 getHalfExtent() const;
@@ -43,6 +44,9 @@ namespace Logic
 		btVector3 m_halfextent;
 		btRigidBody* m_body;
 		btTransform* m_transform;
+
+		btRigidBody* m_bodyWeakPoint;	//< The "head" for headshots multiplier change this to (std::pair<btRigidBody*, float multiplier) when you got time
+		btVector3 m_weakPointOffset;	//< The constant offset from the body 
 	};
 }
 

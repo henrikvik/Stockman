@@ -271,6 +271,10 @@ namespace Graphics
 
     void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
     {
+        if (debugInfo->points->size() > MAX_DEBUG_POINTS)
+        {
+            throw "vector is bigger than structured buffer";
+        }
         renderDebugQueue.push_back(debugInfo);
     }
 
@@ -433,11 +437,6 @@ namespace Graphics
 
         for (RenderDebugInfo * info : renderDebugQueue)
         {
-            if (info->points->size() > MAX_DEBUG_POINTS)
-            {
-                throw "vector is bigger than structured buffer";
-            }
-
             debugPointsBuffer.write( 
                 deviceContext, 
                 info->points->data(), 
@@ -452,6 +451,7 @@ namespace Graphics
 
             deviceContext->IASetPrimitiveTopology(info->topology);
             deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
+            
             deviceContext->Draw(info->points->size(), 0);
         }
 

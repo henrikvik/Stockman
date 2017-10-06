@@ -145,6 +145,7 @@ void Game::update(float deltaTime)
 					break;
 				}
 			}
+			m_player->takeDamage(-3); // THIS IS A TEMPORARY FIX; A REAL RESET FUNCION MUST BE ADDED TODO TODO TODO
 		}
 
 		break;
@@ -169,6 +170,10 @@ void Game::render(Graphics::Renderer& renderer)
 		m_map->render(renderer);
 		m_entityManager.render(renderer);
 		m_projectileManager->render(renderer);
+
+	// Debug Draw physics
+	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
+		m_physics->render(renderer);
 		break;
 
 	case gameStateLoading:

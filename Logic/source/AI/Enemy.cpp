@@ -25,10 +25,10 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
 	switch (id) 
 	{
 		case TEST:
-			m_behavior = new TestBehavior();
+			m_behavior = newd TestBehavior();
 			break;
 		case RANGED:
-			m_behavior = new RangedBehavior();
+			m_behavior = newd RangedBehavior();
 			break;
 	}
 }
@@ -54,7 +54,7 @@ void Enemy::update(Player const &player, float deltaTime, bool updatePath) {
 		m_behavior->update(*this, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 	}
 
-	m_moveSpeedMod = 0.f; // Reset effect variables, should be in function if more variables are added.
+	m_moveSpeedMod = 0.f; // Reset effect variables, should be in a separate function if more variables are added.
 }
 
 void Enemy::debugRendering(Graphics::Renderer & renderer)

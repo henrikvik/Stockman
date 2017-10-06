@@ -15,7 +15,7 @@ RangedBehavior::RangedBehavior()
 void RangedBehavior::update(Enemy &enemy, Player const &player, float deltaTime)
 {
 	// this is frame bound, fix it
-	if (RandomGenerator::singleton().getRandomInt(0, 100) == 0)
+	if (RandomGenerator::singleton().getRandomInt(0, abilityChanche) == 0)
 		enemy.useAbility(player);
 
 	if ((enemy.getPosition() - player.getPosition()).Length() > m_distance)
