@@ -71,7 +71,6 @@ namespace Logic
 		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false);
 		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);		// Should be used for player & enemies
 
-		// Debug Render Physics
 		void render(Graphics::Renderer& renderer);
 
 

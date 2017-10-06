@@ -326,6 +326,7 @@ btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
 	return body;
 }
 
+// Only used for debugging, draws all collision shapes onto screen
 void Physics::render(Graphics::Renderer & renderer)
 {
 	renderDebug.points->clear();
@@ -367,22 +368,37 @@ void Physics::render(Graphics::Renderer & renderer)
 			ss->getBoundingSphere(c, r);
 			r /= 2;
 
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() + r));
+			// Side Front
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() + r));	
 			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() + r));	
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() - r));	
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() + r));
 			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() - r));
 			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() - r));
+
+			// Side Back
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() - r));
+
+			// Left
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() + r));
+
+			// Right
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() - r));
 			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() - r));
 			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() - r));
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() - r));
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() - r));
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() - r));
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() + r));
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() + r));
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() + r));
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() + r));
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() + r));
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() + r));
-			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() + r));
 
 			renderer.queueRenderDebug(&renderDebug);
 		}
