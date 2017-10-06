@@ -91,7 +91,8 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 		{
 			i += 1;
 			//m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 8.f, i * 10.f, i * 1.f }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f}), 100, false), { 0.5f, 0.5f, 0.5f}));
-			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ i * 5.f, 0, i * 5.f }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
+			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ i * 5.f, 0, i * 5.f }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
+			enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, {0.f, 3.f, 0.f});
 			enemy->setProjectileManager(projectiles);
 			m_enemies.push_back(enemy);
 		}

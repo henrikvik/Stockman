@@ -21,8 +21,15 @@ void EnemyNecromancer::clear()
 void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	if (Projectile *pj = dynamic_cast<Projectile*> (&other))
+	{
+		if (dmgMultiplier > 1.01f && dmgMultiplier < 2.01f)
+			printf("Headshot. 2X DMG.\n");
+		else
+			printf("Normal shot, scrub. 1X DMG...\n");
+
 		if (!pj->getProjectileData().enemyBullet)
-			damage(pj->getProjectileData().damage);
+			damage(pj->getProjectileData().damage * dmgMultiplier);
+	}
 }
 
 void EnemyNecromancer::onCollision(Player & other)

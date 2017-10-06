@@ -82,6 +82,7 @@ void PhysicsObject::updatePhysics(float deltaTime)
 void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, const btRigidBody * collidedWithYour)
 {
 	// Checks if the collision happened on one of the weakpoints
+	bool hit = false;
 	if (!m_weakPoints.empty())
 	{
 		for (int i = 0; i < m_weakPoints.size(); i++)
@@ -90,14 +91,14 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, con
 			btRigidBody* part = weakPoint.first;
 			if (collidedWithYour == part)
 			{
-				printf("Auch. You hit my head, jerk.\n");
 				onCollision(other, contactPoint, weakPoint.second);
-				break;
+				hit = true;
 			}
 		}
 	}
-	// Otherwise, just send 1.f as damage multiplier
-	else onCollision(other, contactPoint, 1.f);
+	
+	if (!hit)
+		onCollision(other, contactPoint, 1.f);
 }
 
 btVector3 PhysicsObject::getHalfExtent() const
