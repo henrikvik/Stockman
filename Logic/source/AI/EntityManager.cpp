@@ -28,12 +28,7 @@ EntityManager::EntityManager()
 
 EntityManager::~EntityManager()
 {
-	for (Enemy *enemy : m_enemies)
-		delete enemy;
-	for (Enemy *enemy : m_bossEnemies)
-		delete enemy;
-	for (Enemy *enemy : m_deadEnemies)
-		delete enemy;
+	deleteData();
 }
 
 void EntityManager::reserveData()
@@ -41,6 +36,16 @@ void EntityManager::reserveData()
 	m_bossEnemies.reserve(ENEMY_START_COUNT);
 	m_enemies.reserve(ENEMY_START_COUNT);
 	m_deadEnemies.reserve(ENEMY_START_COUNT);
+}
+
+void EntityManager::deleteData()
+{
+	for (Enemy *enemy : m_enemies)
+		delete enemy;
+	for (Enemy *enemy : m_bossEnemies)
+		delete enemy;
+	for (Enemy *enemy : m_deadEnemies)
+		delete enemy;
 }
 
 void EntityManager::update(Player const &player, float deltaTime) 
@@ -92,11 +97,11 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 		{
 			i += 1;
 			//m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 8.f, i * 10.f, i * 1.f }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f}), 100, false), { 0.5f, 0.5f, 0.5f}));
-			enemy = new EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
+			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
 			enemy->setProjectileManager(projectiles);
 			m_enemies.push_back(enemy);
 		}
-		enemy = new EnemyTest(Graphics::ModelID::GRASS, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
+		enemy = newd EnemyTest(Graphics::ModelID::GRASS, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
 		enemy->setProjectileManager(projectiles);
 		m_enemies.push_back(enemy);
 		
@@ -129,6 +134,8 @@ int EntityManager::getEnemiesAlive() const
 
 void EntityManager::clear() 
 {
+	deleteData();
+
 	m_deadEnemies.clear();
 	m_enemies.clear();
 	m_bossEnemies.clear();
