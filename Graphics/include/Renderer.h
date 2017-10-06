@@ -74,8 +74,14 @@ namespace Graphics
 		ShaderResource glowMap;
 
         ///// SUPER TEMP
-       
-       
+		ShaderResource ssaoOutput;
+		ShaderResource ssaoOutputSwap;
+		ComputeShader ssaoShader;
+		ComputeShader blurHorizontal;
+		ComputeShader blurVertical;
+		ComputeShader ssaoMerger;
+		ShaderResource normalTexture;
+		ID3D11ShaderResourceView * randomNormals;
 		
 
 	
@@ -122,5 +128,9 @@ namespace Graphics
         void createGUIBuffers();
 
         void createMenuVBS();
+
+		//temp
+		void renderSSAO(Camera * camera);
+		void createSSAOSphere();
     };
 };
