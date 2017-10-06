@@ -133,6 +133,18 @@ void Game::update(float deltaTime)
 			printf("You ded bro.\n");
 			m_highScoreManager->addNewHighScore();
 			m_menu->setStateToBe(GameState::gameStateGameOver);
+
+			for(int i = 0; i < 10; i++)
+			{
+				if (m_highScoreManager->gethighScore(i).score != -1)
+				{
+					highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
+				}
+				else
+				{
+					break;
+				}
+			}
 		}
 
 		break;

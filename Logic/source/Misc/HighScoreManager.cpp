@@ -14,7 +14,7 @@ HighScoreManager::HighScoreManager()
 	m_score = 0;
 	m_name = "";
 
-	/*loadFromFile();*/
+	loadFromFile();
 }
 
 
@@ -100,6 +100,15 @@ void  Logic::HighScoreManager::setName(std::string name)
 {
 	m_name = name;
 }
+
+Logic::HighScoreManager::highScore Logic::HighScoreManager::gethighScore(int index)
+{
+	return m_highScore[index];
+}
+
+
+
+
 
 
 

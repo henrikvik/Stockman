@@ -80,6 +80,7 @@ namespace Logic
 		float	m_waveTime[MAX_WAVES];
 
 		//GameOver
+		std::string highScore[10];
 	};
 }
 
