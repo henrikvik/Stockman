@@ -116,6 +116,7 @@ void Game::update(float deltaTime)
 		{
 			printf("You ded bro.\n");
 			m_menu->setStateToBe(GameState::gameStateMenuMain);
+			m_player->takeDamage(-3); // THIS IS A TEMPORARY FIX; A REAL RESET FUNCION MUST BE ADDED TODO TODO TODO
 		}
 
 		break;

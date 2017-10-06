@@ -23,7 +23,7 @@ AStar::~AStar()
 std::vector<const DirectX::SimpleMath::Vector3*>
 	AStar::getPath(Entity const &enemy, Entity const &target)
 {
-	PROFILE_BEGIN("AStar::getPath()");
+//	PROFILE_BEGIN("AStar::getPath()");
 
 	// all nodes in navMesh
 	std::vector<DirectX::SimpleMath::Vector3> nodes =
@@ -114,7 +114,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 		return { };
 	}
 
-	PROFILE_END();
+//	PROFILE_END();
 	return reconstructPath(currentNode);
 }
 
