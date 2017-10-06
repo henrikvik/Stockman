@@ -15,8 +15,10 @@ namespace Logic
 			virtual ~EnemyNecromancer();
 
 			virtual void clear();
+      
 			virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 			virtual void onCollision(Player& other);
+
 			virtual void updateSpecific(Player const &player, float deltaTime);
 			virtual void updateDead(float deltaTime);
 
