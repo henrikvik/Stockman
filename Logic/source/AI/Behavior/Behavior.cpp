@@ -9,38 +9,37 @@ Behavior::~Behavior()
 
 void Behavior::runTree(RunIn &in)
 {
-	runNode(in, getRoot());
+	runNode(in, m_root);
 }
 
-Behavior::BehaviorNode& Behavior::setRoot(NodeType type, int value, run func)
+void Behavior::setRoot(NodeType type, int value, run func)
 {
 	m_root = { type, value, {}, func };
-	return m_root;
 }
 
-Behavior::BehaviorNode& Behavior::addNode(BehaviorNode &parent,
+Behavior::BehaviorNode* Behavior::addNode(BehaviorNode *parent,
 	NodeType type, int value, run func)
 {
-	int index;
-	parent.children.push_back({ type, value,{}, func });
-	index = parent.children.size() - 1;
+	int index = parent->children.size();
+	parent->children.push_back({ type, value, {}, func });
 
-	if (parent.type == PRIORITY)
+	if (parent->type == PRIORITY)
 	{
 		while (index > 0 &&
-			parent.children[index].value > parent.children[index - 1].value)
+			parent->children[index].value > parent->children[index - 1].value)
 		{
-			std::swap(parent.children[index], parent.children[--index]);
+			std::swap(parent->children[index], parent->children[index - 1]);
+			index--; // weird..
 		}
 	}
 
-	return parent.children[index];
+	return &parent->children[index];
 }
 
 bool Behavior::runNode(RunIn &in, BehaviorNode &node)
 {
 	// Recursive method to run the entire tree, todo: opt
-	int totalWeight = 0, rng;
+	int totalWeight = 0, curr = 0, rng;
 	switch (node.type)
 	{
 		case NodeType::ACTION: // Action, just run the node
@@ -51,11 +50,11 @@ bool Behavior::runNode(RunIn &in, BehaviorNode &node)
 				totalWeight += n.value;
 			rng = RandomGenerator::singleton().getRandomInt(0, totalWeight);
 			for (BehaviorNode &n : node.children)
-				if (n.value <= rng)
-				{
-					runNode(in, node);
-					break;
-				}
+			{
+				curr += n.value;
+				if (rng <= curr)
+					return runNode(in, n);
+			}
 			break;
 		case NodeType::CONDITION: // Run the node, if true run children in seq
 			if (node.run(in))
@@ -78,6 +77,6 @@ bool Behavior::runNode(RunIn &in, BehaviorNode &node)
 	return true;
 }
 
-Behavior::BehaviorNode& Behavior::getRoot() {
-	return m_root; 
+Behavior::BehaviorNode* Behavior::getRoot() {
+	return &m_root; 
 }

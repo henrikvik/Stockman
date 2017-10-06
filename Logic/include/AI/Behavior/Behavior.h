@@ -52,10 +52,10 @@ namespace Logic {
 		void runTree(RunIn &in);
 		bool runNode(RunIn &in, BehaviorNode &node);
 		
-		BehaviorNode& setRoot(NodeType type, int value, run func);
-		BehaviorNode& addNode(BehaviorNode &parent, NodeType type, int value, run func);
+		void setRoot(NodeType type, int value, run func);
+		BehaviorNode* addNode(BehaviorNode *parent, NodeType type, int value, run func);
 
-		BehaviorNode& getRoot();
+		BehaviorNode* getRoot();
 	};
 }
 

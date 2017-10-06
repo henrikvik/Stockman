@@ -8,22 +8,43 @@ RangedBehavior::RangedBehavior()
 {
 	m_distance = 20; // distance before stopping
 
-	BehaviorNode &root = setRoot(NodeType::PRIORITY, 0, NULL);
+	setRoot(NodeType::PRIORITY, 0, NULL);
+
+	/*
+		IMP: WHEN USING NODETYPE:PROIRITY, ADDING CHILDREN HAS SHOULD BE ADDED DEPTH FIRST
+	*/
+
+	// STAY ?
+	BehaviorNode *stay = addNode(getRoot(), NodeType::RANDOM, 0, [](RunIn& in) -> bool {
+		return true;
+	});
+
+	// SHOOT !
+	addNode(stay, NodeType::ACTION, 995, [](RunIn& in) -> bool {
+		if (RandomGenerator::singleton().getRandomInt(0,
+			RangedBehavior::ABILITY_CHANCHE) == 0)
+			in.enemy->useAbility(*in.target);
+
+		return true;
+	});
+
+	// jump
+	addNode(stay, NodeType::ACTION, 5, [](RunIn& in) -> bool {
+		in.enemy->getRigidbody()->applyCentralForce({ 0, 8888, 0 });
+		return true;
+	});
 
 	// WALK TOWARDS ?
-	BehaviorNode &walkTowards = addNode(root, NodeType::CONDITION, 0,
+	BehaviorNode *walkTowards = addNode(getRoot(), NodeType::CONDITION, 1,
 		[](RunIn& in) -> bool {
 			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
-			if ((in.enemy->getPosition() - in.target->getPosition()).Length()
-				> behavior->getDistance())
-				return true;
-			else
-				return false;
+			return (in.enemy->getPosition() - in.target->getPosition()).Length()
+					> behavior->getDistance();
 		}
 	);
 
 	// WALK TOWARDS & SHOOT !
-	addNode(walkTowards, NodeType::ACTION, 0,
+	addNode(walkTowards, NodeType::ACTION, 1,
 		[](RunIn& in) -> bool {
 			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
 			if (RandomGenerator::singleton().getRandomInt(0, RangedBehavior::ABILITY_CHANCHE) == 0)
@@ -32,26 +53,6 @@ RangedBehavior::RangedBehavior()
 			return true;
 		}
 	);
-
-	// STAY ?
-	BehaviorNode &stay = addNode(root, NodeType::RANDOM, 1, [](RunIn& in) -> bool {
-		return true;
-	});
-
-	// SHOOT !
-	addNode(stay, NodeType::ACTION, 995, [](RunIn& in) -> bool {
-		if (RandomGenerator::singleton().getRandomInt(0,
-			RangedBehavior::ABILITY_CHANCHE) == 0)
-
-			in.enemy->useAbility(*in.target);
-		return true;
-	});
-
-	// jump
-	addNode(stay, NodeType::ACTION, 5, [](RunIn& in) -> bool {
-		in.enemy->getRigidbody()->applyCentralForce({ 0, 1000, 0 });
-		return true;
-	});
 }
 
 int RangedBehavior::getDistance() const
