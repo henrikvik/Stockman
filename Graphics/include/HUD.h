@@ -25,11 +25,14 @@ namespace Graphics
         void renderText(ID3D11BlendState * blendState);
         void setHUDTextRenderPos();
         void renderHUDText();
+        void updateHUDConstant();
+        void createHUDCBs(ID3D11Device * device);
 
         Shader shader;
         ID3D11ShaderResourceView *crosshair;
         ID3D11ShaderResourceView *HP;
         ID3D11Buffer * vertexBuffer;
+        ID3D11Buffer * HUDCBuffer;
 
         std::unique_ptr<DirectX::SpriteFont> sFont[5];
         std::unique_ptr<DirectX::SpriteBatch> sBatch;

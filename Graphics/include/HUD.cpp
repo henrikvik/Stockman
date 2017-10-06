@@ -6,6 +6,7 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
 {
     createHUDTextures(device, context);
     createHUDVBS(device);
+    createHUDCBs(device);
     setHUDTextRenderPos();
    sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/comicsans.spritefont");
    sBatch = std::make_unique<DirectX::SpriteBatch>(context);
@@ -16,6 +17,7 @@ Graphics::HUD::~HUD()
     SAFE_RELEASE(vertexBuffer);
     SAFE_RELEASE(crosshair);
     SAFE_RELEASE(HP);
+    SAFE_RELEASE(HUDCBuffer);
 }
 
 void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState)
@@ -193,5 +195,25 @@ void Graphics::HUD::renderHUDText()
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2, DirectX::Colors::Red);
     }
+}
+
+void Graphics::HUD::updateHUDConstant()
+{
+}
+
+void Graphics::HUD::createHUDCBs(ID3D11Device * device)
+{
+    D3D11_BUFFER_DESC desc = { 0 };
+    desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    desc.ByteWidth = sizeof(float) * 4;
+    desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    desc.Usage = D3D11_USAGE_DYNAMIC;
+    
+    float temp[2] = { 1.0f };
+    D3D11_SUBRESOURCE_DATA data = { 0 };
+    data.pSysMem = temp;
+
+    ThrowIfFailed(device->CreateBuffer(&desc, &data, &HUDCBuffer));
+
 }
 
