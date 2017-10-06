@@ -266,16 +266,7 @@ namespace Graphics
 		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
 		renderSSAO(camera);
 
-		//Turbotemp
-		auto ks = DirectX::Keyboard::Get().GetState();
-
-		if (ks.D1)
-		{
-			drawToBackbuffer(ssaoOutput);
-		}
-
-		else
-			drawToBackbuffer(fakeBackBufferSwap);
+		drawToBackbuffer(fakeBackBufferSwap);
 
 
         renderDebugInfo();
@@ -458,20 +449,20 @@ namespace Graphics
         deviceContext->VSSetShader(debugRender, nullptr, 0);
         deviceContext->PSSetShader(debugRender, nullptr, 0);
 
-        for (RenderDebugInfo * info : renderDebugQueue)
-        {
-            debugPointsBuffer.write( 
-                deviceContext, 
-                info->points->data(), 
-                info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
-            );
+		for (RenderDebugInfo * info : renderDebugQueue)
+		{
+			debugPointsBuffer.write(
+				deviceContext,
+				info->points->data(),
+				info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
+			);
 
-            debugColorBuffer.write(
-                deviceContext,
-                &info->color,
-                sizeof(DirectX::SimpleMath::Color)
-            );
-
+			debugColorBuffer.write(
+				deviceContext,
+				&info->color,
+				sizeof(DirectX::SimpleMath::Color)
+			);
+		}
 
 
 

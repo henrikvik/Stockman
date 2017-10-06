@@ -86,7 +86,8 @@ namespace Graphics
 		ComputeShader ssaoMerger;
 		ShaderResource normalTexture;
 		ID3D11ShaderResourceView * randomNormals;
-		
+		void renderSSAO(Camera * camera);
+		void createSSAOSphere();
 
 
         ID3D11BlendState *transparencyBlendState;
@@ -130,8 +131,6 @@ namespace Graphics
     #pragma endregion
 
 
-		//temp
-		void renderSSAO(Camera * camera);
-		void createSSAOSphere();
+
     };
 };
