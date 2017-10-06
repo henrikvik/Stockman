@@ -19,18 +19,18 @@ namespace Logic
 
 		void start(btVector3 forward, StatusManager& statusManager);
 		void updateSpecific(float deltaTime);
-		void onCollision(Entity& other, const btRigidBody* collidedWithYour);
+		void onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
+		void affect(int stacks, Effect const &effect, float dt);
 		void upgrade(Upgrade const &upgrade);
 
-		ProjectileType getType() const;
 		ProjectileData& getProjectileData();
 
 		void toRemove();
 		bool shouldRemove() const;
 
 	private:
-		ProjectileType m_type;
 		ProjectileData m_pData;
+		float m_speedMod;
 		bool m_remove;
 	};
 }

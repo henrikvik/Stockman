@@ -87,19 +87,19 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 
 	if (m_currentWave == 1)
 	{
-		Enemy *enemy;/* NO ENEMIES BECAUSE PEOPLE ARE HATERS AND COMPLAIN IF ENEMIES IS KILLING THEM; LIKE DUUH THAT IS THEIR POINT <.<<.<.<.<<
+		Enemy *enemy;// NO ENEMIES BECAUSE PEOPLE ARE HATERS AND COMPLAIN IF ENEMIES IS KILLING THEM; LIKE DUUH THAT IS THEIR POINT <.<<.<.<.<<
 		for (int i = 0; i < enemies.size(); i++)
 		{
 			i += 1;
-			//m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 8.f, i * 10.f, i * 1.f }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f}), 100, false), { 0.5f, 0.5f, 0.5f}));
-			enemy = new EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
-			enemy->setProjectileManager(projectiles);
-			m_enemies.push_back(enemy);
+			m_enemies.push_back(new EnemyTest(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Cube({ i * 8.f, i * 10.f, i * 1.f }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f}), 100, false), { 0.5f, 0.5f, 0.5f}));
+			//enemy = new EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
+			//enemy->setProjectileManager(projectiles);
+			//m_enemies.push_back(enemy);
 		}
 		enemy = new EnemyTest(Graphics::ModelID::GRASS, physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 0.5f), 100, false), { 0.5f, 0.5f, 0.5f });
 		enemy->setProjectileManager(projectiles);
 		m_enemies.push_back(enemy);
-		*/
+		
 		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
 		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ -10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
 		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ -10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);

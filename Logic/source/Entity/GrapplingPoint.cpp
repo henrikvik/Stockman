@@ -55,7 +55,7 @@ void GrapplingPoint::onCollision(Entity& other)
 {
 	if (Projectile* p = dynamic_cast<Projectile*>(&other))
 	{
-		if (p->getType() != ProjectileType::ProjectileTypeGrappling)
+		if (p->getProjectileData().type != ProjectileType::ProjectileTypeGrappling)
 			return;
 
 		btRigidBody* playerBody = m_playerPtr->getRigidbody();

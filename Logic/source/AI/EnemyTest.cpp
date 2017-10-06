@@ -28,8 +28,8 @@ void EnemyTest::onCollision(Entity &other, btVector3 contactPoint, const btRigid
 			getRigidbody()->applyCentralForce(dir);
 
 			// BULLET TIME
-			if (p->getType() == ProjectileType::ProjectileTypeBulletTimeSensor)
-				getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, 1);
+			if (p->getProjectileData().type == ProjectileType::ProjectileTypeBulletTimeSensor)
+				setStatusManager(p->getStatusManager());
 		}
 	} if (Player *p = dynamic_cast<Player*> (&other))
 		onCollision(*p);

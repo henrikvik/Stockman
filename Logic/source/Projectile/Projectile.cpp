@@ -12,6 +12,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 	m_pData.gravityModifier = 1.f;
 	m_pData.ttl = 1000.f;
 	m_remove = false;
+	m_speedMod = 1.f;
 }
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer, float ttl)
@@ -22,6 +23,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, fl
 	m_pData.gravityModifier = gravityModifer;
 	m_pData.ttl = ttl;
 	m_remove = false;
+	m_speedMod = 1.f;
 }
 
 Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
@@ -30,6 +32,7 @@ Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, Projectil
 	m_pData = pData;
 	m_remove = false;
 	setModelID(pData.meshID);
+	m_speedMod = 1.f;
 
 	switch (pData.type)
 	{
@@ -50,10 +53,18 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
 
 void Projectile::updateSpecific(float deltaTime)
 {
-	m_pData.ttl -= deltaTime;
+	btVector3 vel = getRigidbody()->getLinearVelocity().normalized();
+	getRigidbody()->setLinearVelocity(vel * m_pData.speed * m_speedMod);
+	getRigidbody()->setGravity({ 0, PHYSICS_GRAVITY * m_pData.gravityModifier * m_speedMod, 0.f });
+
+	if (m_pData.type == ProjectileTypeBulletTimeSensor)
+		m_pData.ttl -= deltaTime;
+	else
+		m_pData.ttl -= deltaTime * m_speedMod;
+	m_speedMod = 1.f;
 }
 
-void Projectile::onCollision(Entity & other, const btRigidBody* collidedWithYour)
+void Projectile::onCollision(Entity & other, btVector3 contactPoint, const btRigidBody* collidedWithYour)
 {
 	// TEMP
 	Player* p = dynamic_cast<Player*>(&other);
@@ -61,7 +72,8 @@ void Projectile::onCollision(Entity & other, const btRigidBody* collidedWithYour
 
 	if (proj)
 	{
-		
+		if(proj->getProjectileData().type)
+			setStatusManager(proj->getStatusManager());
 	}
 	else if ((p && m_pData.enemyBullet) || (!p && !m_pData.enemyBullet))
 	{
@@ -70,6 +82,21 @@ void Projectile::onCollision(Entity & other, const btRigidBody* collidedWithYour
 		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
 			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
 				m_remove = false;
+	}
+
+	if (m_pData.type == ProjectileTypeBulletTimeSensor)
+		m_remove = false;
+}
+
+void Projectile::affect(int stacks, Effect const &effect, float dt)
+{
+	int flags = effect.getStandards()->flags;
+
+	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
+	{
+		m_speedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+		//if(m_pData.type != ProjectileTypeBulletTimeSensor)
+			//printf("%d\n", stacks);
 	}
 }
 
@@ -87,8 +114,6 @@ void Projectile::upgrade(Upgrade const &upgrade)
 	}
 }
 
-ProjectileType Projectile::getType() const { return m_type; }
-// REPLACE THIS WITH GET STRUCT INSTEAD
 ProjectileData& Projectile::getProjectileData() { return m_pData; }
 
 void Logic::Projectile::toRemove()

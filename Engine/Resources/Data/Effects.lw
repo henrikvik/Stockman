@@ -31,10 +31,9 @@
 	"modifiers": 0;
 	"specifics": 0;
 }
-}
 { // BULLET_TIME
 	"flags": 256; // 0x100
-	"duration": 10f;
+	"duration": 0f;
 	"modifiers": 1;
 	"specifics": 0;
 
@@ -42,5 +41,5 @@
 	"mDmgTaken": 0f;
 	"mFirerate": 0f;
 	"mHP": 0f;
-	"mMovementSpeed": -10f;
+	"mMovementSpeed": 0.9f
 }
