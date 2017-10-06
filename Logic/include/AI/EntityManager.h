@@ -38,6 +38,7 @@ namespace Logic
 		int m_currentWave, m_frame;
 
 		void reserveData(); // reserve space in vectors
+		void deleteData(); // delete data in vectors
 	public:
 		EntityManager();
 		EntityManager(EntityManager const &entityManager) = delete;

@@ -1,5 +1,6 @@
 #include "../Projectile/Projectile.h"
 #include "../Player/Player.h"
+#include <AI\Enemy.h>
 
 using namespace Logic;
 
@@ -63,7 +64,7 @@ void Projectile::onCollision(Entity & other, btVector3 contactPoint, float dmgMu
 	{
 		
 	}
-	else if ((p && m_pData.enemyBullet) || (!p && !m_pData.enemyBullet))
+	else if (p && m_pData.enemyBullet)
 	{
 		m_remove = true;
 
