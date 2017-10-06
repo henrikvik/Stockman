@@ -11,14 +11,19 @@ namespace Logic
 		SimplePathing m_path;
 		float m_distance;
 
-		const int abilityChanche = 150;
 	public:
 		RangedBehavior();
 		virtual ~RangedBehavior() {}
 
+		int getDistance() const;
+
+		void walkTowardsPlayer(Enemy &enemy, Player const &player, float deltaTime);
+
 		virtual void update(Enemy &enemy, Player const &player, float deltaTime);
 		virtual void updatePath(Entity const &from, Entity const &to);
 		virtual void debugRendering(Graphics::Renderer &renderer);
+
+		static const int ABILITY_CHANCHE = 150;
 	};
 }
 

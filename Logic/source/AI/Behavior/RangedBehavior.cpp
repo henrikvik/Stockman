@@ -8,18 +8,60 @@ RangedBehavior::RangedBehavior()
 {
 	m_distance = 20; // distance before stopping
 
-	// create node test, Behavior Trees is a WIP, and will continue to evolve during sprint #3 & #4. ETA: Sprint #4
-	BehaviorNode node;
+	setRoot(NodeType::PRIORITY, 0, NULL);
+
+	/*
+		IMP: WHEN USING NODETYPE:PROIRITY, ADDING CHILDREN HAS SHOULD BE ADDED DEPTH FIRST
+	*/
+
+	// STAY ?
+	BehaviorNode *stay = addNode(getRoot(), NodeType::RANDOM, 0, [](RunIn& in) -> bool {
+		return true;
+	});
+
+	// SHOOT !
+	addNode(stay, NodeType::ACTION, 995, [](RunIn& in) -> bool {
+		if (RandomGenerator::singleton().getRandomInt(0,
+			RangedBehavior::ABILITY_CHANCHE) == 0)
+			in.enemy->useAbility(*in.target);
+
+		return true;
+	});
+
+	// jump
+	addNode(stay, NodeType::ACTION, 5, [](RunIn& in) -> bool {
+		in.enemy->getRigidbody()->applyCentralForce({ 0, 8888, 0 });
+		return true;
+	});
+
+	// WALK TOWARDS ?
+	BehaviorNode *walkTowards = addNode(getRoot(), NodeType::CONDITION, 1,
+		[](RunIn& in) -> bool {
+			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
+			return (in.enemy->getPosition() - in.target->getPosition()).Length()
+					> behavior->getDistance();
+		}
+	);
+
+	// WALK TOWARDS & SHOOT !
+	addNode(walkTowards, NodeType::ACTION, 1,
+		[](RunIn& in) -> bool {
+			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
+			if (RandomGenerator::singleton().getRandomInt(0, RangedBehavior::ABILITY_CHANCHE) == 0)
+				in.enemy->useAbility(*in.target);
+			behavior->walkTowardsPlayer(*in.enemy, *in.target, in.deltaTime);
+			return true;
+		}
+	);
 }
 
-void RangedBehavior::update(Enemy &enemy, Player const &player, float deltaTime)
+int RangedBehavior::getDistance() const
 {
-	// this is frame bound, fix it
-	if (RandomGenerator::singleton().getRandomInt(0, abilityChanche) == 0)
-		enemy.useAbility(player);
+	return m_distance;
+}
 
-	if ((enemy.getPosition() - player.getPosition()).Length() > m_distance)
-	{
+void RangedBehavior::walkTowardsPlayer(Enemy &enemy, Player const &player, float deltaTime)
+{
 		btVector3 node = m_path.updateAndReturnCurrentNode(enemy, player);
 		btVector3 dir = node - enemy.getPositionBT();
 
@@ -31,7 +73,13 @@ void RangedBehavior::update(Enemy &enemy, Player const &player, float deltaTime)
 
 		if ((node - enemy.getPositionBT()).length() < 0.3f)
 			m_path.setCurrentNode(m_path.getCurrentNode() + 1);
-	}
+}
+
+void RangedBehavior::update(Enemy &enemy, Player const &player, float deltaTime)
+{
+	// this is frame bound, fix it
+	RunIn in { &enemy, &player, this, deltaTime };
+	runTree(in);
 }
 
 void RangedBehavior::updatePath(Entity const &from, Entity const &to)
