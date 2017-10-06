@@ -9,10 +9,17 @@ Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overl
 	this->overlappingPairCache = overlappingPairCache;
 	this->constraintSolver = constraintSolver;
 	this->collisionConfiguration = collisionConfiguration;
+
+	// Render Debug Construction
+	renderDebug.points = new std::vector<DirectX::SimpleMath::Vector3>();
+	renderDebug.color = DirectX::SimpleMath::Color(1, 1, 1);
+	renderDebug.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+	renderDebug.useDepth = true;
 }
 
 Physics::~Physics()
 {
+	delete renderDebug.points;
 	clear();
 }
 
@@ -317,4 +324,67 @@ btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
 	this->addRigidBody(body);
 
 	return body;
+}
+
+void Physics::render(Graphics::Renderer & renderer)
+{
+	renderDebug.points->clear();
+
+	for (int i = this->getNumCollisionObjects() - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = this->getCollisionObjectArray()[i];
+		btRigidBody* body = btRigidBody::upcast(obj);
+		btCollisionShape* shape = obj->getCollisionShape();
+
+		// Render Boxes
+		if (btBoxShape* bs = dynamic_cast<btBoxShape*>(shape))
+		{
+			btVector3 vp = { 0, 0, 0 };
+			btVector3 center = body->getWorldTransform().getOrigin();
+			btQuaternion q = body->getWorldTransform().getRotation();
+			DirectX::SimpleMath::Matrix quaternion = DirectX::SimpleMath::Matrix::CreateFromQuaternion(DirectX::SimpleMath::Quaternion(q));
+
+			for (int i = 0; i < bs->getNumVertices(); i++)
+			{
+				for (int j = 0; j < bs->getNumVertices(); j++)
+				{
+					bs->getVertex(i, vp);
+					renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+					bs->getVertex(j, vp);
+					renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+				}
+			}
+			renderer.queueRenderDebug(&renderDebug);
+		}
+
+		// Render Spheres
+		if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
+		{
+			btVector3 center = body->getWorldTransform().getOrigin();
+			btVector3 c;
+			float r = 0.f;
+
+			ss->getBoundingSphere(c, r);
+			r /= 2;
+
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() - r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() + r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() - r, center.y() - r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() - r, center.z() + r));
+			renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center.x() + r, center.y() + r, center.z() + r));
+
+			renderer.queueRenderDebug(&renderDebug);
+		}
+	}
 }

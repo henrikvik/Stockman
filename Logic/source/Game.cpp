@@ -137,6 +137,10 @@ void Game::render(Graphics::Renderer& renderer)
 		m_map->render(renderer);
 		m_entityManager.render(renderer);
 		m_projectileManager->render(renderer);
+
+	// Debug Draw physics
+	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
+		m_physics->render(renderer);
 		break;
 
 	case gameStateLoading:
