@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <iostream>
 
 using namespace Logic;
 
@@ -58,6 +59,15 @@ void Game::init()
 
 	m_highScoreManager = newd HighScoreManager();
 
+	std:string name = "";
+	std::cout << "Enter your player name (will be used for highscore): ";
+	getline(std::cin, name);
+	if (name.empty())
+	{
+		name = "Stockman";
+	}
+
+	m_highScoreManager->setName(name);
 }
 
 void Game::clear()
@@ -68,6 +78,7 @@ void Game::clear()
 	delete m_menu;
 	delete m_map;
 	delete m_cardManager;
+	delete m_highScoreManager;
 	m_projectileManager->clear();
 	delete m_projectileManager;
 }
@@ -117,10 +128,10 @@ void Game::update(float deltaTime)
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
 
-		if (m_player->getHP() <= 989999)
+		if (m_player->getHP() <= 99999 && m_menu->currentState() == GameState::gameStateGame)
 		{
 			printf("You ded bro.\n");
-			//be offered to add your highscore to the listr, if it is too low it wont be added
+			m_highScoreManager->addNewHighScore();
 			m_menu->setStateToBe(GameState::gameStateGameOver);
 		}
 

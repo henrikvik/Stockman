@@ -108,7 +108,7 @@ void Logic::MenuMachine::update(float dt)
 	{
 		if (forward)
 		{
-			if (currentActiveMenu->animationTransition(dt, 500, forward))
+			if (currentActiveMenu->animationTransition(dt, 1000, forward))
 			{
 				showMenu(stateToBe);
 				forward = false;
@@ -116,7 +116,7 @@ void Logic::MenuMachine::update(float dt)
 		}
 		else
 		{
-			if (currentActiveMenu->animationTransition(dt, 500, forward))
+			if (currentActiveMenu->animationTransition(dt, 1000, forward))
 			{
 				stateToBe = gameStateDefault;
 				forward = true;
