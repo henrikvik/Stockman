@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <iostream>
 
 using namespace Logic;
 
@@ -8,6 +9,9 @@ Game::Game()
 	m_player			= nullptr;
 	m_map				= nullptr;
 	m_projectileManager = nullptr;
+	m_cardManager		= nullptr;
+	m_menu				= nullptr;
+	m_highScoreManager	= nullptr;
 }
 
 Game::~Game() 
@@ -53,6 +57,17 @@ void Game::init()
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
 
+	m_highScoreManager = newd HighScoreManager();
+
+	std:string name = "";
+	std::cout << "Enter your player name (will be used for highscore): ";
+	getline(std::cin, name);
+	if (name.empty())
+	{
+		name = "Stockman";
+	}
+
+	m_highScoreManager->setName(name);
 }
 
 void Game::clear()
@@ -63,6 +78,7 @@ void Game::clear()
 	delete m_menu;
 	delete m_map;
 	delete m_cardManager;
+	delete m_highScoreManager;
 	m_projectileManager->clear();
 	delete m_projectileManager;
 }
@@ -101,7 +117,7 @@ void Game::update(float deltaTime)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-		if (m_menu->getStateToBe() == GameState::gameStateMenuMain)
+		if (m_menu->getStateToBe() != GameState::gameStateGame)
 		{
 			m_menu->update(m_gameTime.dt);
 		}
@@ -112,11 +128,24 @@ void Game::update(float deltaTime)
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
 
-		if (m_player->getHP() <= 0)
+		if (m_player->getHP() <= 99999 && m_menu->currentState() == GameState::gameStateGame)
 		{
 			printf("You ded bro.\n");
-			m_menu->setStateToBe(GameState::gameStateMenuMain);
+			m_highScoreManager->addNewHighScore();
+			m_menu->setStateToBe(GameState::gameStateGameOver);
 			m_player->takeDamage(-3); // THIS IS A TEMPORARY FIX; A REAL RESET FUNCION MUST BE ADDED TODO TODO TODO
+
+			for(int i = 0; i < 10; i++)
+			{
+				if (m_highScoreManager->gethighScore(i).score != -1)
+				{
+					highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
+				}
+				else
+				{
+					break;
+				}
+			}
 		}
 
 		break;
@@ -124,6 +153,9 @@ void Game::update(float deltaTime)
 	case gameStateLoading:
 	case gameStateMenuMain:
 	case gameStateMenuSettings:
+	case gameStateGameOver:
+		//Add special triggers to show the scores on the side
+		m_menu->update(m_gameTime.dt);
 	default: m_menu->update(m_gameTime.dt);
 		break;
 	}
@@ -148,8 +180,8 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuMain:
 	case gameStateMenuSettings:
 	case gameStateGameOver:
-		m_menu->render(renderer);
-	default: // m_menu->render(renderer);
+		/*m_menu->render(renderer);*/
+	default:  m_menu->render(renderer);
 		break;
 	}
 }

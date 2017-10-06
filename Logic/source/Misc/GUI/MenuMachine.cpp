@@ -27,7 +27,7 @@ void Logic::MenuMachine::initialize(GameState state)
 	functions["buttonClick0"] = std::bind(&MenuMachine::buttonClick0, this);
 	functions["buttonClick1"] = std::bind(&MenuMachine::buttonClick1, this);
 	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
-	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick2, this);
+	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick3, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -104,11 +104,11 @@ void Logic::MenuMachine::update(float dt)
 
 	}
 
-	if (stateToBe != gameStateDefault) //change form magic value
+	if (stateToBe != gameStateDefault)
 	{
 		if (forward)
 		{
-			if (currentActiveMenu->animationTransition(dt, 500, forward))
+			if (currentActiveMenu->animationTransition(dt, 1000, forward))
 			{
 				showMenu(stateToBe);
 				forward = false;
@@ -116,7 +116,7 @@ void Logic::MenuMachine::update(float dt)
 		}
 		else
 		{
-			if (currentActiveMenu->animationTransition(dt, 500, forward))
+			if (currentActiveMenu->animationTransition(dt, 1000, forward))
 			{
 				stateToBe = gameStateDefault;
 				forward = true;
@@ -145,8 +145,8 @@ void Logic::MenuMachine::showMenu(GameState state)
 	}
 	else
 	{
-		currentActiveMenu = m_menuStates.at(gameStateMenuMain); //change to error state
-		currentActiveState = gameStateMenuMain;
+		currentActiveMenu = m_menuStates.at(gameStateDefault); //change to error state
+		currentActiveState = gameStateDefault;
 	}
 }
 
@@ -157,11 +157,13 @@ GameState Logic::MenuMachine::currentState()
 
 void MenuMachine::setStateToBe(GameState gameState)
 {
+	//Sets the state that the game is gonna show after the animation cycle has finished
 	stateToBe = gameState;
 }
 
 GameState Logic::MenuMachine::getStateToBe()
 {
+	//Gets the state that the game is gonna show after the animation cycle has finished
 	return stateToBe;
 }
 
@@ -185,5 +187,5 @@ void Logic::MenuMachine::buttonClick2()
 
 void Logic::MenuMachine::buttonClick3()
 {
-	exit(0);
+	exit(0); //change to avoid memory leaks
 }

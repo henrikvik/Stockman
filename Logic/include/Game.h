@@ -14,6 +14,7 @@
 #include <AI/EntityManager.h>
 #include <Misc\GameTime.h>
 #include <Misc\CardManager.h>
+#include <Misc\HighScoreManager.h>
 
 // DirectX Includes
 #include <Windows.h>
@@ -71,11 +72,15 @@ namespace Logic
 		EntityManager		m_entityManager;
 		GameTime			m_gameTime;
 		CardManager*		m_cardManager;
+		HighScoreManager*	m_highScoreManager;
 
 		// Wave
 		int		m_waveCurrent;
 		float	m_waveTimer;
 		float	m_waveTime[MAX_WAVES];
+
+		//GameOver
+		std::string highScore[10];
 	};
 }
 
