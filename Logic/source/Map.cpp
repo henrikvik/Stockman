@@ -14,7 +14,7 @@ void Map::init(Physics* physics, Player* player)
 //	initProps();
 	initHitboxes(physics);
 //	initObjects(physics);			// Not used as intented as for rn, should only create non-moving objects, not entities
-//	initGrapplingPoints(physics, player);
+	initGrapplingPoints(physics, player);
 
 	m_drawHitboxes = true;
 }
@@ -35,6 +35,14 @@ void Map::initHitboxes(Physics* physics)
 	//m_hitboxes.push_back(headboxTest);
 
 	Entity* house;
+
+	house = new Entity(physics->createBody(Sphere({ -20, 3, 10 }, { 0, 0, 0 }, 3.f), 0.f, false), { 1.5f, 1.5f, 1.5f });
+	house->setModelID(Graphics::SPHERE);
+	m_hitboxes.push_back(house);
+
+	house = new Entity(physics->createBody(Sphere({ -30, 5, 10 }, { 0, 0, 0 }, 1.f), 0.f, false), { 0.5f, 0.5f, 0.5f });
+	house->setModelID(Graphics::SPHERE);
+	m_hitboxes.push_back(house);
 
 	house = new Entity(physics->createBody(Cube({ 60, 0.75, 60 }, { 0, 0, 0 }, { 45, 0.75, 45 }), 0.f, false), { 45, 1.5f, 45 });
 	m_hitboxes.push_back(house);

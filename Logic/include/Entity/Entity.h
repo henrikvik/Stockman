@@ -24,7 +24,7 @@ namespace Logic
 		void collision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
 		virtual void affect(int stacks, Effect const &effect, float deltaTime);	
 		virtual void upgrade(Upgrade const &upgrade);
-		virtual void onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour) { }
+		virtual void onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier) { }
 
 		void setHalfExtent(btVector3 halfExtent);
 		btVector3 getHalfExtent() const;
@@ -43,6 +43,11 @@ namespace Logic
 		btVector3 m_halfextent;
 		btRigidBody* m_body;
 		btTransform* m_transform;
+
+
+		Graphics::RenderInfo renderInfo;
+		btRigidBody* m_bodyWeakPoint;	//< The "head" for headshots multiplier
+		btVector3 m_weakPointOffset;	//< The offset from the body to place the head
 	};
 }
 

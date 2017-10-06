@@ -5,9 +5,14 @@ using namespace Logic;
 Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelID)
 : Object(modelID)
 {
+	// Saving ptr to rigidbody and connecting them to each other
 	m_body = body;
 	m_body->setUserPointer(this);
+
+	// Saving ptr to the transform for easier reach
 	m_transform = &m_body->getWorldTransform();
+
+	// Saving the size for graphics to draw the correct scale
 	m_halfextent = halfextent;
 
 	// For non moving object, that doesn't update loop
@@ -35,6 +40,7 @@ void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
+	// Checking different buffs
 	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
 		affect(effectPair.first, *effectPair.second, deltaTime);
 	
@@ -44,6 +50,7 @@ void Entity::update(float deltaTime)
 	// Updating specific
 	updateSpecific(deltaTime);
 
+	// Updating the graphical sizde
 	updateGraphics();
 }
 
@@ -55,7 +62,7 @@ void Entity::updateGraphics()
 
 void Entity::collision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour)
 {
-	onCollision(other, contactPoint, collidedWithYour);
+	onCollision(other, contactPoint, 1.f);
 }
 
 void Entity::affect(int stacks, Effect const &effect, float dt) {}
