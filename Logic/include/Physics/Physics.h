@@ -71,11 +71,17 @@ namespace Logic
 		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false);
 		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);		// Should be used for player & enemies
 
+		void render(Graphics::Renderer& renderer);
+
+
 	private:
 		btCollisionDispatcher* dispatcher;
 		btBroadphaseInterface* overlappingPairCache;
 		btSequentialImpulseConstraintSolver* constraintSolver;
 		btDefaultCollisionConfiguration* collisionConfiguration;
+
+		// Debug Rendering
+		Graphics::RenderDebugInfo renderDebug;
 	};
 }
 

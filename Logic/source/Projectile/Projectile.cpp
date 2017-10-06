@@ -54,7 +54,7 @@ void Projectile::updateSpecific(float deltaTime)
 	m_pData.ttl -= deltaTime;
 }
 
-void Projectile::onCollision(Entity & other, const btRigidBody* collidedWithYour)
+void Projectile::onCollision(Entity & other, btVector3 contactPoint, float dmgMultiplier)
 {
 	// TEMP
 	Player* p = dynamic_cast<Player*>(&other);
@@ -66,17 +66,11 @@ void Projectile::onCollision(Entity & other, const btRigidBody* collidedWithYour
 	}
 	else if (p && m_pData.enemyBullet)
 	{
-		p->takeDamage(m_pData.damage);
 		m_remove = true;
 
 		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
 			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
 				m_remove = false;
-	}
-	else if (Enemy *enemy = dynamic_cast<Enemy*>(&other))
-	{
-		if (!m_pData.enemyBullet)
-			enemy->damage(m_pData.damage);
 	}
 }
 

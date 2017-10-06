@@ -69,7 +69,7 @@ void Player::clear()
 	m_skillManager.clear();
 }
 
-void Player::onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour)
+void Player::onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
 	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))	{ takeDamage(e->getBaseDamage()); }	// collision with enemy
@@ -96,7 +96,8 @@ void Player::onCollision(Entity& other, btVector3 contactPoint, const btRigidBod
 
 void Player::onCollision(Projectile& other)
 {
-
+	if (other.getProjectileData().enemyBullet)
+		takeDamage(other.getProjectileData().damage);
 }
 
 void Player::affect(int stacks, Effect const & effect, float deltaTime)
