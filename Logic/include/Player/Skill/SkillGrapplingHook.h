@@ -1,11 +1,15 @@
 #ifndef SKILLGRAPPLINGHOOK_H
 #define SKILLGRAPPLINGHOOK_H
+
 #pragma region ClassDesc
 		/*
-			CLASS: SkillGrapplingHook
-			AUTHOR:
+		CLASS: SkillGrapplingHook
+		AUTHOR: Simon Fredholm
 
-			DESCRIPTION: TODO
+		DESCRIPTION:
+		Handles all the actions for the grappling hook
+		Sends out a ray and gets the targeted area
+		Sends the entity that shot with a constant velocity (added on top of the movement from the entity) towards the point
 		*/
 #pragma endregion
 
@@ -13,23 +17,39 @@
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
 
-#define GRAPPLING_HOOK_CD 1000.f
+#define GRAPPLING_HOOK_CD			50.f		// Cooldown in ms
+#define GRAPPLING_HOOK_RANGE		500.f		// Range in bulletphysics units (probably meters)
+#define GRAPPLING_HOOK_POWER		0.00110f	// The amount of power to reach the max speed
+#define GRAPPLING_HOOK_MAX_SPEED_XZ	0.0615f		// The max speed in x & z
+#define GRAPPLING_HOOK_MAX_SPEED_Y	66.f		// The max speed in y
 
 namespace Logic
 {
+	enum GrapplingHookState
+	{
+		GrapplingHookStateNothing,
+		GrapplingHookStatePulling
+	};
+
+	class Player;
 	class SkillGrapplingHook : public Skill
 	{
-	private:
-		ProjectileData m_projectileData;
-		ProjectileManager* m_projectileManager;
-
 	public:
-		SkillGrapplingHook(ProjectileManager* projectileManager, ProjectileData projectileData);
+		SkillGrapplingHook(Physics* physics);
 		~SkillGrapplingHook();
 
 		void onUse(btVector3 forward, Entity& shooter);
+		void onRelease();
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
+
+		GrapplingHookState getState() const;
+	private:
+		Physics*						m_physicsPtr;	//< Just a pointer to the physics to be able to raycast
+		GrapplingHookState				m_state;		//< Current state, if the grappling hook is currently pulling or not
+		Entity*							m_shooter;		//< Saved entity after each onUse() call, later, pushes this entity
+		btVector3						m_point;		//< Saved point of intersection of the raytest, will push entity towards this point
+		Graphics::RenderDebugInfo		renderDebug;	//< Debug drawing the ray
 	};
 }
 #endif

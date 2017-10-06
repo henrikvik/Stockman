@@ -1,7 +1,7 @@
 #pragma once
 #include <d3d11.h>
 #include "../ThrowIfFailed.h"
-#include "../../../Engine/Constants.h"
+#include <Engine/Constants.h>
 class ShaderResource
 {
 public:

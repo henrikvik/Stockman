@@ -26,17 +26,22 @@ namespace Logic
 		SkillManager();
 		~SkillManager();
 
-		void init(ProjectileManager* projectileManager, GameTime* gameTime);
+		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
 
 		void switchToSkill(int index);
 
 		void useSkill(btVector3 forward, Entity& shooter);
+		void releaseSkill();
+
 		void update(float deltaTime);
 		void render(Graphics::Renderer& renderer);
+
+		bool getCanBeUsed() const;
 	
 	private:
-
+		bool m_canBeUsed;
+		GrapplingHookState m_state;
 		ProjectileManager* m_projectileManager;	
 		GameTime* m_gameTime;	
 

@@ -8,6 +8,7 @@
 #include <AI/TriggerManager.h>
 
 #include <Player\Player.h>
+#include <Projectile\ProjectileManager.h>
 
 #include <Graphics\include\Renderer.h>
 #include <Physics\Physics.h>
@@ -34,9 +35,10 @@ namespace Logic
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
-		int m_currentWave;
+		int m_currentWave, m_frame;
 
 		void reserveData(); // reserve space in vectors
+		void deleteData(); // delete data in vectors
 	public:
 		EntityManager();
 		EntityManager(EntityManager const &entityManager) = delete;
@@ -45,7 +47,7 @@ namespace Logic
 		void update(Player const &player, float deltaTime);
 		void clear();
 
-		void spawnWave(Physics &physics);
+		void spawnWave(Physics &physics, ProjectileManager *projectiles);
 
 		void setCurrentWave(int currentWave);
 		void render(Graphics::Renderer &renderer);

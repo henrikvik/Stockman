@@ -90,6 +90,7 @@ void Logic::MenuMachine::clear()
 
 void Logic::MenuMachine::update(float dt)
 {
+	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
 	if (Mouse.leftButton && !pressed)
@@ -152,6 +153,16 @@ void Logic::MenuMachine::showMenu(GameState state)
 GameState Logic::MenuMachine::currentState()
 {
 	return currentActiveState;
+}
+
+void MenuMachine::setStateToBe(GameState gameState)
+{
+	stateToBe = gameState;
+}
+
+GameState Logic::MenuMachine::getStateToBe()
+{
+	return stateToBe;
 }
 
 void Logic::MenuMachine::buttonClick0()

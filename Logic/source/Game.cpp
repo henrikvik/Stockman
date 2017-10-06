@@ -29,8 +29,8 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(m_physics->createBody(Cylinder(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
-	m_player->init(m_projectileManager, &m_gameTime);
+	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
+	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine();
@@ -38,7 +38,7 @@ void Game::init()
 
 	// Initializing the map
 	m_map = newd Map();
-	m_map->init(m_physics, m_player);
+	m_map->init(m_physics);
 
 	// Load these from a file at a later dates
 	m_waveTimer		= NULL;
@@ -80,7 +80,7 @@ void Game::waveUpdater()
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
 			m_entityManager.setCurrentWave(m_waveCurrent);
-			m_entityManager.spawnWave(*m_physics);
+			m_entityManager.spawnWave(*m_physics, m_projectileManager);
 
 			// If the player have completed all the waves
 			if (m_waveCurrent == MAX_WAVES)
@@ -89,6 +89,7 @@ void Game::waveUpdater()
 				end = true;
 			}
 		}
+        m_player->updateWaveInfo(m_waveCurrent + 1, m_entityManager.getEnemiesAlive(), (float)((m_waveTime[m_waveCurrent] - m_waveTimer) * 0.001));
 	}
 }
 
@@ -100,12 +101,24 @@ void Game::update(float deltaTime)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
+		if (m_menu->getStateToBe() == GameState::gameStateMenuMain)
+		{
+			m_menu->update(m_gameTime.dt);
+		}
 		waveUpdater();
+		m_player->update(m_gameTime.dt);
 		m_physics->update(m_gameTime);
 		m_entityManager.update(*m_player, m_gameTime.dt);
-		m_player->update(m_gameTime.dt);
 		m_map->update(m_gameTime.dt);
 		m_projectileManager->update(m_gameTime.dt);
+
+		if (m_player->getHP() <= 0)
+		{
+			printf("You ded bro.\n");
+			m_menu->setStateToBe(GameState::gameStateMenuMain);
+			m_player->takeDamage(-3); // THIS IS A TEMPORARY FIX; A REAL RESET FUNCION MUST BE ADDED TODO TODO TODO
+		}
+
 		break;
 
 	case gameStateLoading:
@@ -125,13 +138,15 @@ void Game::render(Graphics::Renderer& renderer)
 		m_map->render(renderer);
 		m_entityManager.render(renderer);
 		m_projectileManager->render(renderer);
+
+	// Debug Draw physics
+	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
+		m_physics->render(renderer);
 		break;
 
 	case gameStateLoading:
 	case gameStateMenuMain:
-        m_menu->render(renderer);
 	case gameStateMenuSettings:
-		m_menu->render(renderer);
 	case gameStateGameOver:
 		m_menu->render(renderer);
 	default: // m_menu->render(renderer);

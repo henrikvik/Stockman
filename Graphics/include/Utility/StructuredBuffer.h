@@ -21,6 +21,7 @@ public:
     void CopyTo(ID3D11DeviceContext *cxt, StructuredBuffer<T> *other);
     T* map(ID3D11DeviceContext *cxt);
     void unmap(ID3D11DeviceContext *cxt);
+    void write(ID3D11DeviceContext * context, T * data, UINT size);
 #pragma endregion
 
 #pragma region Getters and Setters
@@ -128,5 +129,12 @@ inline T * StructuredBuffer<T>::map(ID3D11DeviceContext * cxt) {
 template<typename T>
 inline void StructuredBuffer<T>::unmap(ID3D11DeviceContext * cxt) {
     cxt->Unmap(m_Buffer, 0);
+}
+
+template<typename T>
+inline void StructuredBuffer<T>::write(ID3D11DeviceContext * context, T * data, UINT size)
+{
+    memcpy(map(context), data, size);
+    unmap(context);
 }
 #pragma endregion

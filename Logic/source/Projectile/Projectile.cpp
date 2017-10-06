@@ -1,5 +1,6 @@
 #include "../Projectile/Projectile.h"
 #include "../Player/Player.h"
+#include <AI\Enemy.h>
 
 using namespace Logic;
 
@@ -7,32 +8,28 @@ using namespace Logic;
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 : Entity(body, halfextent) 
 {
-	m_damage = 1.f;
-	m_speed = 0.f;
-	m_gravityModifier = 1.f;
-	m_ttl = 1000.f;
+	m_pData.damage = 1.f;
+	m_pData.speed = 0.f;
+	m_pData.gravityModifier = 1.f;
+	m_pData.ttl = 1000.f;
 	m_remove = false;
 }
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer, float ttl)
 : Entity(body, halfExtent)
 {
-	m_damage = damage;
-	m_speed = speed;
-	m_gravityModifier = gravityModifer;
-	m_ttl = ttl;
+	m_pData.damage = damage;
+	m_pData.speed = speed;
+	m_pData.gravityModifier = gravityModifer;
+	m_pData.ttl = ttl;
 	m_remove = false;
 }
 
 Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
 : Entity(body, halfExtent)
 {
-	m_damage = pData.damage;
-	m_speed = pData.speed;
-	m_gravityModifier = pData.gravityModifier;
-	m_ttl = pData.ttl;
+	m_pData = pData;
 	m_remove = false;
-	m_type = pData.type;
 	setModelID(pData.meshID);
 
 	switch (pData.type)
@@ -45,7 +42,7 @@ Projectile::~Projectile() { }
 
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
-	getRigidbody()->setLinearVelocity(forward * m_speed);
+	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
 	setStatusManager(statusManager);
 
 	for (StatusManager::UPGRADE_ID id : statusManager.getActiveUpgrades())
@@ -54,14 +51,20 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
 
 void Projectile::updateSpecific(float deltaTime)
 {
-	m_ttl -= deltaTime;
+	m_pData.ttl -= deltaTime;
 }
 
-void Projectile::onCollision(Entity & other)
+void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	// TEMP
 	Player* p = dynamic_cast<Player*>(&other);
-	if (!p)
+	Projectile* proj = dynamic_cast<Projectile*> (&other);
+
+	if (proj)
+	{
+		
+	}
+	else if (p && m_pData.enemyBullet)
 	{
 		m_remove = true;
 
@@ -77,23 +80,17 @@ void Projectile::upgrade(Upgrade const &upgrade)
 
 	if (flags & Upgrade::UPGRADE_INCREASE_DMG)
 	{
-		this->setDamage(upgrade.getFlatUpgrades().increaseDmg);
+		m_pData.damage = upgrade.getFlatUpgrades().increaseDmg;
 	}
 	if (flags & Upgrade::UPGRADE_IS_BOUNCING)
 	{
-		this->getRigidbody()->setRestitution(1.f);
+		this->getRigidBody()->setRestitution(1.f);
 	}
 }
 
 ProjectileType Projectile::getType() const { return m_type; }
-float Projectile::getDamage() const { return m_damage; }
-float Projectile::getSpeed() const { return m_speed; }
-float Projectile::getGravityModifier() const { return m_gravityModifier; }
-void Projectile::setDamage(float damage) { m_damage = damage; }
-void Projectile::setSpeed(float speed) { m_speed = speed; }
-void Projectile::setGravityModifier(float gravityModifier) { m_gravityModifier = gravityModifier; }
-
-float Logic::Projectile::getTTL() const { return m_ttl; }
+// REPLACE THIS WITH GET STRUCT INSTEAD
+ProjectileData& Projectile::getProjectileData() { return m_pData; }
 
 void Logic::Projectile::toRemove()
 {

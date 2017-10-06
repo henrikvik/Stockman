@@ -10,15 +10,18 @@
 #include "WICTextureLoader.h"
 #include "Lights\LightGrid.h"
 #include "Resources\ResourceManager.h"
-#include "Resources\DepthStencil.h"
+#include "Utility\DepthStencil.h"
 #include "Resources\ResourceManager.h"
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
-#include "Resources\ShaderResource.h"
+#include "Utility\ShaderResource.h"
 #include "PostProccessor.h";
 #include "SkyRenderer.h"
+#include "Menu.h"
+#include "HUD.h"
 
 #include <SpriteBatch.h>
+
 
 namespace Graphics
 {
@@ -27,16 +30,21 @@ namespace Graphics
     public:
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
 		virtual ~Renderer();
-        void render(Camera * camera);
-        void drawMenu(Graphics::MenuInfo * info);
-        void queueRender(RenderInfo * renderInfo);
         void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
 
+
+        void render(Camera * camera);
+        void queueRender(RenderInfo * renderInfo);
+        void queueRenderDebug(RenderDebugInfo * debugInfo);
+        void queueText(TextString * text);
+        void fillHUDInfo(HUDInfo * info);
+
+        void drawMenu(Graphics::MenuInfo * info);
 		void updateLight(float deltaTime, Camera * camera);
     private:
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
-        std::vector<RenderInfo*> renderQueue;
         InstanceQueue_t instanceQueue;
+        std::vector<RenderInfo*> renderQueue;
 
         DepthStencil depthStencil;
 
@@ -48,8 +56,6 @@ namespace Graphics
 
         Shader fullscreenQuad;
         Shader forwardPlus;
-        Shader menuShader;
-        Shader GUIShader;
 
         //ComputeShader lightGridGen; 
 
@@ -63,9 +69,7 @@ namespace Graphics
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 
-        bool menuTexturesLoaded;
-        void unloadMenuTextures();
-        void reloadMenuTextures();
+
 
         
 
@@ -84,28 +88,16 @@ namespace Graphics
 		ID3D11ShaderResourceView * randomNormals;
 		
 
-	
 
-
-
-
-        ID3D11ShaderResourceView * menuTexture;
-        //crosshair
-        ID3D11ShaderResourceView * GUITexture1;
-        //HP bar
-        ID3D11ShaderResourceView * GUITexture2;
-        ID3D11ShaderResourceView * buttonTexture;
-       
-
-        ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
 
-        ID3D11Buffer * menuQuad;
-        ID3D11Buffer * buttonQuad;
+
+        Menu menu;
+        HUD hud;
 
 
 
-        void loadModellessTextures();
+
 
 		ID3D11ShaderResourceView * glowTest;
 
@@ -116,7 +108,6 @@ namespace Graphics
         void drawGUI();
 		
 
-        void mapButtons(ButtonInfo * info);
 
 
         
@@ -125,9 +116,19 @@ namespace Graphics
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
         void createBlendState();
-        void createGUIBuffers();
 
-        void createMenuVBS();
+
+
+    #pragma region RenderDebugInfo
+
+        Shader debugRender;
+        std::vector<RenderDebugInfo*> renderDebugQueue;
+        StructuredBuffer<DirectX::SimpleMath::Vector3> debugPointsBuffer;
+        ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
+        void renderDebugInfo();
+
+    #pragma endregion
+
 
 		//temp
 		void renderSSAO(Camera * camera);

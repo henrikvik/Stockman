@@ -1,8 +1,8 @@
 #include <AI/Trigger.h>
 using namespace Logic;
 
-Trigger::Trigger(btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
-: Entity(body, halfExtent)
+Trigger::Trigger(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
+: Entity(body, halfExtent, modelID)
 {
 	m_maxCooldown = cooldown;
 	m_cooldown = -1;
@@ -29,8 +29,10 @@ void Trigger::addEffects(const std::vector<StatusManager::EFFECT_ID>& effects)
 }
 
 // Checks if the trigger is non-active, if so, update the cooldown
-void Trigger::update(float deltaTime) 
+void Trigger::updateSpecific(float deltaTime) 
 {
+	Entity::update(deltaTime);
+
 	if (!m_active)
 	{
 		m_cooldown -= deltaTime;
@@ -42,7 +44,7 @@ void Trigger::update(float deltaTime)
 }
 
 // Collision with the player, give player the effect
-void Trigger::onCollision(Entity& other)
+void Trigger::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	if (m_active)
 	{
@@ -50,9 +52,9 @@ void Trigger::onCollision(Entity& other)
 		{
 			// Sending statuses over to player
 			for (StatusManager::UPGRADE_ID u : getStatusManager().getActiveUpgrades())
-				other.getStatusManager().addUpgrade(u);
+				p->getStatusManager().addUpgrade(u);
 			for (std::pair<int, StatusManager::EFFECT_ID> effect : getStatusManager().getActiveEffectsIDs())
-				other.getStatusManager().addStatus(effect.second, effect.first, true);
+				p->getStatusManager().addStatus(effect.second, effect.first, true);
 
 			if (m_reusable)
 			{

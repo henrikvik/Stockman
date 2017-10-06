@@ -16,7 +16,7 @@ void ProjectileManager::clear()
 	m_projectiles.clear();
 }
 
-void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)
+Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)
 {
 	// Create body
 	btRigidBody* body = m_physPtr->createBody(Cube(position + (forward * 2), btVector3(), { pData.scale, pData.scale, pData.scale }), pData.mass, false);
@@ -30,11 +30,13 @@ void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position,
 	// Add to projectile list
 	m_projectiles.push_back(p);
 	//printf("projs: %d\n", m_projectiles.size());
+
+	return p;
 }
 
 void ProjectileManager::removeProjectile(Projectile* p)
 {
-	m_physPtr->removeRigidBody(p->getRigidbody());
+	m_physPtr->removeRigidBody(p->getRigidBody());
 	p->destroyBody();
 	delete p;
 	
@@ -51,7 +53,7 @@ void ProjectileManager::removeProjectile(Projectile* p)
 
 void ProjectileManager::removeProjectile(Projectile* p, int index)
 {
-	m_physPtr->removeRigidBody(p->getRigidbody());
+	m_physPtr->removeRigidBody(p->getRigidBody());
 	p->destroyBody();
 	delete p;
 	m_projectiles.erase(m_projectiles.begin() + index);
@@ -63,7 +65,7 @@ void Logic::ProjectileManager::update(float deltaTime)
 	{
 		Projectile* p = m_projectiles[i];
 		p->update(deltaTime);
-		if (p->shouldRemove() || p->getTTL() < 0.f)		// Check remove flag and ttl
+		if (p->shouldRemove() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
 		{
 			removeProjectile(p, i);
 			i--;

@@ -22,10 +22,16 @@ namespace Logic
 	private:
 		ProjectileData m_projectileData;
 		ProjectileManager* m_projectileManager;
+
+		//Projectile* m_travelProjectile;
+		Projectile* m_sensor;
+
 	public:
 		SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData);
 
 		void onUse(btVector3 forward, Entity& shooter);
+		void onRelease();
+
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 	};
