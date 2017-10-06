@@ -28,6 +28,10 @@ void EnemyTest::onCollision(Entity &other, btVector3 contactPoint, float dmgMult
 				getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, 1);
 		}
 	}
+	if (Player *p = dynamic_cast<Player*> (&other))
+	{
+		p->takeDamage(getBaseDamage());
+	}
 }
 
 void EnemyTest::onCollision(Player& other) 

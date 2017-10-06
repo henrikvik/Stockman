@@ -72,7 +72,6 @@ void Player::clear()
 void Player::onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
-	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))	{ takeDamage(e->getBaseDamage()); }	// collision with enemy
 	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
 	else if(m_playerState == PlayerState::IN_AIR)
 	{
