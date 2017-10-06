@@ -25,7 +25,7 @@ namespace Logic
 		void collision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
 		virtual void affect(int stacks, Effect const &effect, float deltaTime);	
 		virtual void upgrade(Upgrade const &upgrade);
-		virtual void onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier) { }
+		virtual void onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier) {};
 
 		void setHalfExtent(btVector3 halfExtent);
 		btVector3 getHalfExtent() const;

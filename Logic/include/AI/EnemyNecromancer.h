@@ -15,8 +15,8 @@ namespace Logic
 			virtual ~EnemyNecromancer();
 
 			virtual void clear();
-			virtual void onCollision(Entity& other);
-			virtual void onCollision(Player& other);
+			virtual void onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier);
+			virtual void onCollision(Player& other); // todo move some to enemy classes and call the correct spec
 			virtual void updateSpecific(Player const &player, float deltaTime);
 			virtual void updateDead(float deltaTime);
 
