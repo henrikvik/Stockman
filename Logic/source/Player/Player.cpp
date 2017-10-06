@@ -31,6 +31,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
     	info.wave = 0;
     	info.score = 0;
     	info.sledge = false;
+        info.cd = 1.0f;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -166,6 +167,17 @@ void Player::updateSpecific(float deltaTime)
     {
         info.sledge = false;
     }
+
+    if (!m_skillManager.getCurrentSkill()->getCanUse())
+    {
+        info.cd = m_skillManager.getCurrentSkill()->getCooldown() / m_skillManager.getCurrentSkill()->getCooldownMax();
+    }
+    else
+    {
+        info.cd = 1.0f;
+    }
+    
+
 
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
