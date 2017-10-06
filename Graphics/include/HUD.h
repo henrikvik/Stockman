@@ -31,7 +31,7 @@ namespace Graphics
         Shader shader;
         
         
-        ID3D11ShaderResourceView *hudTextures[3];
+        ID3D11ShaderResourceView *hudTextures[5];
         ID3D11Buffer * vertexBuffer;
         ID3D11Buffer * HUDCBuffer;
 
@@ -47,9 +47,12 @@ namespace Graphics
         DirectX::SimpleMath::Vector2 scorePos;
         DirectX::SimpleMath::Vector2 wavePos;
         DirectX::SimpleMath::Vector2 timePos;
+        DirectX::SimpleMath::Vector2 cdPos;
 
         bool changed;
         bool firstTime;
+        int prevHP;
+        float prevCooldown;
     };
 
 }
