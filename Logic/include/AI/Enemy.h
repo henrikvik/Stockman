@@ -62,7 +62,7 @@ namespace Logic
 			ProjectileManager* getProjectileManager() const;
 		protected: //for testing
 			Logic::Behavior *m_behavior;
-			btRigidBody *weakPoint;
+			//btRigidBody *weakPoint;
 	};
 }
 

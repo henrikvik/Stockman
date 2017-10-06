@@ -16,7 +16,7 @@ void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 	printf("Bullet Time used.\n");
 	m_sensor = m_projectileManager->addProjectile(m_projectileData, shooter.getPositionBT(), forward, shooter);
 
-	btRigidBody* bodySensor = m_sensor->getRigidbody();
+	btRigidBody* bodySensor = m_sensor->getRigidBody();
 
 	bodySensor->setLinearVelocity(btVector3(0.f, 0.f, 0.f));
 	bodySensor->setCollisionFlags(bodySensor->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
@@ -40,7 +40,7 @@ void SkillBulletTime::onUpdate(float deltaTime)
 
 	if (m_sensor && m_travelProjectile)
 	{
-		m_sensor->getRigidbody()->setWorldTransform(m_travelProjectile->getRigidbody()->getWorldTransform());
+		m_sensor->getRigidBody()->setWorldTransform(m_travelProjectile->getTransform());
 	}*/
 }
 

@@ -28,11 +28,11 @@ void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
 
 	if (enemy.getHealth() < 5)
 	{
-		enemy.getRigidbody()->applyCentralForce(dir * -20000);
+		enemy.getRigidBody()->applyCentralForce(dir * -20000);
 	}
 		else 
 	{
-		enemy.getRigidbody()->translate(dir);
+		enemy.getRigidBody()->translate(dir);
 	}
 
 	if ((node - enemy.getPositionBT()).length() < 0.8f)
