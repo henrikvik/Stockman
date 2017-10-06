@@ -155,9 +155,9 @@ void Player::updateSpecific(float deltaTime)
     //updates hudInfo with the current info
     info.hp = m_hp;
     info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
-    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getMagSize();
+    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getAmmo();
     info.iceAmmo[0] = m_weaponManager.getSecondWeapon()->getMagAmmo();
-    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getMagSize();
+    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getAmmo();
     if (m_weaponManager.getCurrentWeaponPrimary()->getMagSize() == 0)
     {
         info.sledge  = true;
