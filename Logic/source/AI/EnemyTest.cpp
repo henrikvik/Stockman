@@ -16,12 +16,12 @@ void EnemyTest::clear()
 {
 }
 
-void EnemyTest::onCollision(Entity &other, btVector3 contactPoint, const btRigidBody* collidedWithYour)
+void EnemyTest::onCollision(Entity &other, btVector3 contactPoint, float dmgMultiplier)
 {
 	if (Projectile *p = dynamic_cast<Projectile*> (&other)) {
 		if (!p->getProjectileData().enemyBullet)
 		{
-			damage(p->getProjectileData().damage);
+			damage(p->getProjectileData().damage * dmgMultiplier);
 			btVector3 dir = other.getRigidbody()->getLinearVelocity();
 			dir = dir.normalize();
 			dir *= 1000.f;

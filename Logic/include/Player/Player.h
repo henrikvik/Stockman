@@ -114,7 +114,7 @@ namespace Logic
 		void clear();
 		void updateSpecific(float deltaTime);
         void updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning);
-		void onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
+		void onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier);
 		void onCollision(Projectile& other);
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);
