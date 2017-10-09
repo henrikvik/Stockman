@@ -14,8 +14,8 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
 
    changed = false;
    firstTime = true;
-   prevHP = -1;
-   prevCooldown = -1.0f;
+   prevHP = 3;
+   prevCooldown = 1.0f;
 }
 
 Graphics::HUD::~HUD()
@@ -36,7 +36,6 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     {
         updateHUDConstantBuffer(context);
     }
-
     
     UINT stride = 20, offset = 0;
     context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
@@ -72,7 +71,7 @@ void Graphics::HUD::fillHUDInfo(HUDInfo * info)
 {
     if (!firstTime)
     {
-        if (prevHP != info->hp || (prevCooldown - info->cd) < 0.001f)
+        if (prevHP != info->hp || (prevCooldown - info->cd) > 0.001f)
         {
             changed = true;
             prevHP = info->hp;
@@ -82,6 +81,7 @@ void Graphics::HUD::fillHUDInfo(HUDInfo * info)
     else
     {
         currentInfo = info;
+        firstTime = false;
     }
     
 }
@@ -296,7 +296,7 @@ void Graphics::HUD::updateHUDConstantBuffer(ID3D11DeviceContext * context)
 {
     float temp[2] = { 1.0f };
     //3.0f comes from the max HP of the player
-    temp[0] = (float)(currentInfo->hp / 3.0f);
+    temp[0] = 1.0f - (float)(currentInfo->hp / 3.0f);
     temp[1] = currentInfo->cd;
     //temp[0] =  1.0f - (float)(1 / 3.0f);
 
