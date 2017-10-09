@@ -101,6 +101,11 @@ void  Logic::HighScoreManager::setName(std::string name)
 	m_name = name;
 }
 
+std::string* Logic::HighScoreManager::getName()
+{
+	return &m_name;
+}
+
 Logic::HighScoreManager::highScore Logic::HighScoreManager::gethighScore(int index)
 {
 	return m_highScore[index];

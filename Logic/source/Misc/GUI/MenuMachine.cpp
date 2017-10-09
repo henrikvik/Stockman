@@ -1,6 +1,7 @@
 #include <Misc\GUI\MenuMachine.h>
 #include <iostream>
 #include <Misc\FileLoader.h>
+#include <Keyboard.h>
 using namespace Logic;
 
 MenuMachine::MenuMachine()
@@ -8,7 +9,15 @@ MenuMachine::MenuMachine()
 	pressed = false;
 	currentActiveMenu = nullptr;
 	currentActiveState = gameStateMenuMain;
+	m_highScoreNamePTR = nullptr;
+}
 
+MenuMachine::MenuMachine(string* highScoreNamePTR)
+{
+	pressed = false;
+	currentActiveMenu = nullptr;
+	currentActiveState = gameStateMenuMain;
+	m_highScoreNamePTR = highScoreNamePTR;
 }
 
 
@@ -18,6 +27,7 @@ MenuMachine::~MenuMachine()
 	{
 		delete a.second;
 	}
+
 }
 
 void Logic::MenuMachine::initialize(GameState state)
@@ -190,4 +200,24 @@ void Logic::MenuMachine::buttonClick2()
 void Logic::MenuMachine::buttonClick3()
 {
 	PostQuitMessage(0); 
+}
+
+void Logic::MenuMachine::buttonClick4()
+{
+	DirectX::Keyboard::State theState = DirectX::Keyboard::Get().GetState();
+	/*char key;
+	int asciiValue;
+	std::string name;
+
+	while (1)
+	{
+		key = getch();
+		asciiValue = key;
+
+		if (asciiValue == 13)
+		{
+			break;
+		}
+		name += key;
+	}*/
 }

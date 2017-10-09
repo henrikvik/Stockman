@@ -34,6 +34,7 @@ namespace Logic
 		void deadCount();
 		void comboCheck(float dt);
 		void setName(std::string name);
+		std::string* getName();
 		highScore gethighScore(int index);
 
 	private:
