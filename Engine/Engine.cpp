@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
+#include <iostream>
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -43,9 +44,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
 	case WM_MOUSEHOVER:
-	DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
+		DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
 		break;
-
+	case WM_CHAR:
+		std::cout << "This is the key we get: " << char((wchar_t)wparam); //Send this to Game somehow
+		break;
 	default:
 		return DefWindowProc(hwnd, msg, wparam, lparam);
 		break;
