@@ -26,13 +26,13 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, 
 {
 	m_allSkills =
 	{
-		{ new SkillBulletTime(projectileManager, ProjectileData(0, 100, 1, 0, 0.f, 5000, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeBulletTimeSensor)) },
+		{ new SkillBulletTime(projectileManager, ProjectileData(0, 100, 1, 0, 0.f, BULLET_TIME_DURATION, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeBulletTimeSensor)) },
 		{ new SkillGrapplingHook(physics) },
 		{ new SkillShieldCharge() }
 	};
 
 
-	switchToSkill(1);
+	switchToSkill(0);
 }
 
 void SkillManager::switchToSkill(int index)

@@ -3,7 +3,7 @@
 using namespace Logic;
 
 EnemyTest::EnemyTest(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
-: Enemy(modelID, body, halfExtent, 10, 1, 15, 3, 1) { //just test values
+: Enemy(modelID, body, halfExtent, 10, 1, 5, 3, 1) { //just test values
 	setBehavior(TEST);
 }
 
@@ -24,8 +24,8 @@ void EnemyTest::onCollision(PhysicsObject& other, btVector3 contactPoint, float 
 			damage(p->getProjectileData().damage);
 
 			// BULLET TIME
-			if (p->getType() == ProjectileType::ProjectileTypeBulletTimeSensor)
-				getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, 1);
+			if (p->getProjectileData().type == ProjectileType::ProjectileTypeBulletTimeSensor)
+				setStatusManager(p->getStatusManager()); // TEMP
 		}
 	}
 	if (Player *p = dynamic_cast<Player*> (&other))

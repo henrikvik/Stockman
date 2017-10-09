@@ -55,7 +55,7 @@ void Enemy::update(Player const &player, float deltaTime,
 		m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 	}
 
-	m_moveSpeedMod = 0.f; // Reset effect variables, should be in a separate function if more variables are added.
+	m_moveSpeedMod = 1.f; // Reset effect variables, should be in function if more variables are added.
 }
 
 void Enemy::debugRendering(Graphics::Renderer & renderer)
@@ -80,7 +80,10 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 	if (flags & Effect::EFFECT_ON_FIRE)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
-		m_moveSpeedMod += effect.getModifiers()->modifyMovementSpeed;
+	{
+		m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+	}
+		
 }
 
 float Enemy::getHealth() const
@@ -100,7 +103,7 @@ float Enemy::getBaseDamage() const
 
 float Enemy::getMoveSpeed() const
 {
-	return m_moveSpeed + m_moveSpeedMod;
+	return m_moveSpeed * m_moveSpeedMod;
 }
 
 int Enemy::getEnemyType() const

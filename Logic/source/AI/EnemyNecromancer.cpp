@@ -6,7 +6,7 @@ using namespace Logic;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
 	btRigidBody* body, btVector3 halfExtent)
-	: Enemy(modelID, body, halfExtent, 5, 1, 10, 0, 0) {
+	: Enemy(modelID, body, halfExtent, 5, 1, 5, 0, 0) {
 	setBehavior(RANGED);
 }
 

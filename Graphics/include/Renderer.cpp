@@ -258,11 +258,11 @@ namespace Graphics
 		PROFILE_END();
 
 		PROFILE_BEGIN("SSAO");
-		ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+		//ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
 		PROFILE_END();
 		
 		PROFILE_BEGIN("DrawToBackBuffer");
-		drawToBackbuffer(fakeBackBuffer);
+		drawToBackbuffer(fakeBackBufferSwap);
 		PROFILE_END();
 
 		PROFILE_BEGIN("HUD");
