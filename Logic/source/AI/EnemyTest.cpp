@@ -3,7 +3,7 @@
 using namespace Logic;
 
 EnemyTest::EnemyTest(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
-: Enemy(modelID, body, halfExtent, 10, 5, 15, 3, 1) { //just test values
+: Enemy(modelID, body, halfExtent, 10, 5, 5, 3, 1) { //just test values
 	setBehavior(TEST);
 }
 

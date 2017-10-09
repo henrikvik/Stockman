@@ -55,7 +55,7 @@ void Projectile::updateSpecific(float deltaTime)
 {
 	btVector3 vel = getRigidbody()->getLinearVelocity().normalized();
 	getRigidbody()->setLinearVelocity(vel * m_pData.speed * m_speedMod);
-	getRigidbody()->setGravity({ 0, PHYSICS_GRAVITY * m_pData.gravityModifier * m_speedMod, 0.f });
+	getRigidbody()->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_speedMod, 0.f });
 
 	if (m_pData.type == ProjectileTypeBulletTimeSensor)
 		m_pData.ttl -= deltaTime;

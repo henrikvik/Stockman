@@ -42,7 +42,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <Misc\GameTime.h>
 
-#define PHYSICS_GRAVITY 9.82f * 2.f
+#define PHYSICS_GRAVITY 0.982f * 0.5f
 
 namespace Logic
 {

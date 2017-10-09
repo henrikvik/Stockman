@@ -7,7 +7,7 @@ using namespace Logic;
 Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent, modelID)
 {
-
+	body->setAngularFactor({ 0.f, 0.f, 0.f });
 }
 
 Player::~Player()
@@ -84,9 +84,13 @@ void Player::onCollision(Entity& other, btVector3 contactPoint, const btRigidBod
 		{
 			float hitAngle = hitSurfaceNormal.dot({ 0.f, 1.f, 0.f });
 
-			// if angle between up-vector and surface-vector is over 0.8 player is grounded and can jump again
+			// if angle between up-vector and surface-vector is over 0.8, player is grounded and can jump again
 			if (hitAngle > 0.8f)
+			{
+				getRigidbody()->setLinearVelocity({ 0.f, 0.f, 0.f });
+				getRigidbody()->setGravity({ 0.f, -PHYSICS_GRAVITY * 40.f, 0.f });
 				m_playerState = PlayerState::STANDING;
+			}
 			else
 				m_playerState = PlayerState::IN_AIR;
 		}
@@ -106,7 +110,7 @@ void Player::affect(int stacks, Effect const & effect, float deltaTime)
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
 	{
 		getRigidbody()->setLinearVelocity(btVector3(getRigidbody()->getLinearVelocity().x(), 0, getRigidbody()->getLinearVelocity().z()));
-		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
+		getRigidbody()->applyCentralImpulse(btVector3(0, 250.f * stacks, 0));
 		m_playerState = PlayerState::STANDING;
 	}
 
@@ -209,8 +213,13 @@ void Player::updateSpecific(float deltaTime)
 	jump(deltaTime, &ks);
 
 	// If moving on y-axis, player is in air
-	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 1.f || getRigidbody()->getLinearVelocity().y() < -1.f))
+	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 0.001f || getRigidbody()->getLinearVelocity().y() < -FLT_EPSILON))
+	{
+		getRigidbody()->setFriction(0.f);
+		getRigidbody()->setGravity({ 0.f, -PHYSICS_GRAVITY, 0.f });
 		m_playerState = PlayerState::IN_AIR;
+	}
+		
 
 	// Get movement input
 	moveInput(&ks);
@@ -228,6 +237,7 @@ void Player::updateSpecific(float deltaTime)
 
 	// Print player velocity
 //	printf("velocity: %f\n", m_moveSpeed);
+	//printf("%f\n", getRigidbody()->getGravity().y());
 
 	//crouch(deltaTime);
 
@@ -349,6 +359,8 @@ void Player::move(float deltaTime)
 	// On ground
 	if (!m_wishJump)
 	{
+		getRigidbody()->setFriction(1.f);
+		getRigidbody()->setGravity({ 0.f, -PHYSICS_GRAVITY * 40.f, 0.f });
 		float friction = (m_moveMaxSpeed * 2 - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_FRICTION; // smooth friction
 		applyFriction(deltaTime, friction > 0.1f ? friction : 0.1f);
 
@@ -379,7 +391,9 @@ void Player::move(float deltaTime)
 	// Apply jump if player wants to jump
 	if (m_wishJump)
 	{
-		getRigidbody()->setLinearVelocity({ 0, PLAYER_JUMP_SPEED, 0 }); // Jump
+		getRigidbody()->setGravity({ 0.f, -PHYSICS_GRAVITY, 0.f });
+		getRigidbody()->setFriction(0.f);
+		getRigidbody()->setLinearVelocity({ 0, getRigidbody()->getLinearVelocity().y() + PLAYER_JUMP_SPEED, 0 }); // Jump
 		m_playerState = PlayerState::IN_AIR;
 
 		m_wishJump = false;
