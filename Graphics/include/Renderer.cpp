@@ -5,8 +5,6 @@
 #include <Keyboard.h>
 
 #include <Engine\Profiler.h>
-//temp
-#include <random>
 
 
 #define USE_TEMP_CUBE false
@@ -147,6 +145,7 @@ namespace Graphics
         cull();
         writeInstanceData();
 
+		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
 		skyRenderer.drawShadows(deviceContext, &forwardPlus);
 		draw();
@@ -172,7 +171,6 @@ namespace Graphics
 
         deviceContext->PSSetShader(nullptr, nullptr, 0);
         deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
-        deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 
         draw();
 
@@ -263,15 +261,26 @@ namespace Graphics
 #endif
 
 		///////Post effext
+		PROFILE_BEGIN("Glow");
 		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+		PROFILE_END();
+
+		PROFILE_BEGIN("SSAO");
 		renderSSAO(camera);
+		PROFILE_END();
 
+		PROFILE_BEGIN("DrawToBackBuffer");
 		drawToBackbuffer(fakeBackBufferSwap);
-
-
+		PROFILE_END();
+		
+		PROFILE_BEGIN("DebugInfo");
         renderDebugInfo();
+		PROFILE_END();
+
+		PROFILE_BEGIN("HUD");
         hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-        
+		PROFILE_END();
+
     }
 
 
@@ -449,6 +458,7 @@ namespace Graphics
         deviceContext->VSSetShader(debugRender, nullptr, 0);
         deviceContext->PSSetShader(debugRender, nullptr, 0);
 
+
 		for (RenderDebugInfo * info : renderDebugQueue)
 		{
 			debugPointsBuffer.write(
@@ -464,7 +474,7 @@ namespace Graphics
 			);
 		}
 
-
+		renderDebugQueue.clear();
 
     }
 
@@ -524,35 +534,6 @@ namespace Graphics
 		ID3D11UnorderedAccessView * uavnull = nullptr;
 		deviceContext->CSSetUnorderedAccessViews(0, 1, &uavnull, nullptr);
 		
-	}
-
-	void Renderer::createSSAOSphere()
-	{
-		std::uniform_real_distribution<> randFloat(-1.0, 1.0);
-		std::default_random_engine engine;
-		std::vector<DirectX::SimpleMath::Vector3> normals;
-
-		for (size_t i = 0; i < 32; i++)
-		{
-			DirectX::SimpleMath::Vector3 normal(
-				randFloat(engine),
-				randFloat(engine),
-				randFloat(engine)
-			);
-
-			normal.Normalize();
-			normal *= randFloat(engine) * 0.5 + 0.5;
-
-			normals.push_back(normal);
-		}
-
-		std::string temp = "";
-
-		for (size_t i = 0; i < normals.size(); i++)
-		{
-			temp += "float3( " + std::to_string(normals[i].x) + ", " + std::to_string(normals[i].y) + ", " + std::to_string(normals[i].z) + "),\n";
-		}
-		OutputDebugStringA(temp.c_str());
 	}
 
     void Renderer::createBlendState()

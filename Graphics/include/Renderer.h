@@ -15,7 +15,7 @@
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
-#include "PostProccessor.h";
+#include "Glow.h";
 #include "SkyRenderer.h"
 #include "Menu.h"
 #include "HUD.h"
@@ -49,7 +49,7 @@ namespace Graphics
         DepthStencil depthStencil;
 
 		SkyRenderer skyRenderer;
-		PostProcessor postProcessor;
+		Glow postProcessor;
 
 		LightGrid grid;
 		DirectX::CommonStates *states;

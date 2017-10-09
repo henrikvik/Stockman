@@ -8,11 +8,11 @@
 
 namespace Graphics
 {
-	class PostProcessor
+	class Glow
 	{
 	public:
-		PostProcessor(ID3D11Device * device, ID3D11DeviceContext * context);
-		~PostProcessor();
+		Glow(ID3D11Device * device, ID3D11DeviceContext * context);
+		~Glow();
 
 		void addGlow(ID3D11DeviceContext * context, ID3D11ShaderResourceView * backBuffer, ID3D11ShaderResourceView * glowMap, ShaderResource * outputTexture);
 

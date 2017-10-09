@@ -117,11 +117,10 @@ void Game::update(float deltaTime)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-        // THIS BREAKES THE GAME DONT NO WHY PLEAS FIX ANDREAS!!!!!
-		//if (m_menu->getStateToBe() != GameState::gameStateGame)
-		//{
-		//	m_menu->update(m_gameTime.dt);
-		//}
+		if (m_menu->getStateToBe() != GameState::gameStateGame && m_menu->getStateToBe() != GameState::gameStateDefault)
+		{
+			m_menu->update(m_gameTime.dt);
+		}
 		waveUpdater();
 		m_player->updateSpecific(m_gameTime.dt);
 		m_physics->update(m_gameTime);
