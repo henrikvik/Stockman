@@ -87,9 +87,8 @@ void Logic::Game::reset()
 {
 	/*m_entityManager.clear();*/
 	m_player->reset();
-
-	//player position
-	//wave counter reset
+	m_waveTimer = NULL;
+	m_waveCurrent = WAVE_START;
 }
 
 // Keeps check on which wave the game is on, and spawns incoming waves
