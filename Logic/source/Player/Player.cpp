@@ -4,6 +4,8 @@
 
 using namespace Logic;
 
+btVector3 Player::startPosition = btVector3(0.0f, 6.0f, 0.0f);
+
 Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent, modelID)
 {
@@ -72,6 +74,7 @@ void Player::clear()
 
 void Logic::Player::reset()
 {
+	getRigidBody()->getWorldTransform().setOrigin(startPosition);
 	m_weaponManager.reset();
 	m_hp = 3; // THIS IS A TEMPORARY FIX; A REAL RESET FUNCION MUST BE ADDED TODO TODO TODO
 }

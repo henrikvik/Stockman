@@ -134,6 +134,8 @@ namespace Logic
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 		btVector3 getMoveDirection();
+
+		static btVector3 startPosition;
 	};
 
 }
