@@ -19,6 +19,9 @@ void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::Simple
     buttonInfo.activeoffset = offset;
 	buttonInfo.m_texture = texture;
 	m_CallBack = callBack;
+    highlighted = false;
+    start = buttonInfo.m_texCoordStart.y;
+    end = buttonInfo.m_texCoordEnd.y;
 }
 
 void Logic::Button::updateOnPress(int posX, int posY)
@@ -27,6 +30,32 @@ void Logic::Button::updateOnPress(int posX, int posY)
 	{
 		m_CallBack();
 	}
+}
+
+void Logic::Button::HoverOver(int posX, int posY)
+{
+    if (buttonInfo.m_rek.Contains(posX, posY))
+    {
+        if (!highlighted)
+        {
+            buttonInfo.m_texCoordStart.y -= buttonInfo.activeoffset;
+
+            buttonInfo.m_texCoordEnd.y = buttonInfo.m_texCoordEnd.y - buttonInfo.activeoffset;
+            highlighted = true;
+        }
+
+    }
+    else
+    {
+        if (highlighted)
+        {
+            buttonInfo.m_texCoordStart.y = start;
+            buttonInfo.m_texCoordEnd.y = end;
+            highlighted = false;
+        }
+        
+    }
+
 }
 
 bool Logic::Button::animationTransition(float dt, float maxAnimationTime, bool forward)

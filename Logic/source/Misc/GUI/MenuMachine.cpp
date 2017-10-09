@@ -104,6 +104,7 @@ void Logic::MenuMachine::update(float dt)
 		pressed = false;
 
 	}
+    currentActiveMenu->hoverOver(Mouse.x, Mouse.y);
 
 	if (stateToBe != gameStateDefault)
 	{

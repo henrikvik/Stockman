@@ -33,6 +33,14 @@ void Logic::MenuState::updateOnPress(int posX, int posY)
 	}
 }
 
+void Logic::MenuState::hoverOver(int posX, int posY)
+{
+    for (int i = 0; i < m_buttons.size(); i++)
+    {
+        m_buttons.at(i)->HoverOver(posX, posY);
+    }
+}
+
 bool Logic::MenuState::animationTransition(float dt, float maxAnimationTime, bool forward)
 {
 	bool done;
