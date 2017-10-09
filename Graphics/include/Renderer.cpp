@@ -32,16 +32,10 @@ namespace Graphics
 		, postProcessor(device, deviceContext)
 		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
 		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
-		, normalTexture(device, WIN_WIDTH, WIN_HEIGHT)
-		, ssaoOutput(device, WIN_WIDTH, WIN_HEIGHT)
-		, ssaoOutputSwap(device, WIN_WIDTH, WIN_HEIGHT)
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
-		, ssaoShader(device, SHADER_PATH("SSAOShaders/SSAOComputeShader.hlsl"))
-		, blurHorizontal(device, SHADER_PATH("SSAOShaders/GaussianBlurHorizontal.hlsl"))
-		, blurVertical(device, SHADER_PATH("SSAOShaders/GaussianBlurVertical.hlsl"))
-		, ssaoMerger(device, SHADER_PATH("SSAOShaders/SSAOMerger.hlsl"))
         ,menu(device, deviceContext)
         ,hud(device, deviceContext)
+		,ssaoRenderer(device)
     #pragma region RenderDebugInfo
         , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
         , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
@@ -75,7 +69,6 @@ namespace Graphics
 		SAFE_RELEASE(transparencyBlendState);
 
 		SAFE_RELEASE(glowTest);
-		SAFE_RELEASE(randomNormals);
         resourceManager.release();
 
     }
@@ -86,7 +79,6 @@ namespace Graphics
 
 		//temp
 		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
-		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("randomNormals.jpg"), NULL, &randomNormals);
 
     }
 
@@ -158,7 +150,6 @@ namespace Graphics
 		static float blackClearColor[4] = {0};
 		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
 		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
-		deviceContext->ClearRenderTargetView(normalTexture, blackClearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
         deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
@@ -237,8 +228,9 @@ namespace Graphics
 		{
 			fakeBackBuffer,
 			glowMap,
-			normalTexture
+			*ssaoRenderer.getNormalShaderResource()
 		};
+
 		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
 		
 		draw();
@@ -266,11 +258,11 @@ namespace Graphics
 		PROFILE_END();
 
 		PROFILE_BEGIN("SSAO");
-		renderSSAO(camera);
+		ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
 		PROFILE_END();
-
+		
 		PROFILE_BEGIN("DrawToBackBuffer");
-		drawToBackbuffer(fakeBackBufferSwap);
+		drawToBackbuffer(fakeBackBuffer);
 		PROFILE_END();
 		
 		PROFILE_BEGIN("DebugInfo");
@@ -478,64 +470,7 @@ namespace Graphics
 
     }
 
-	void Renderer::renderSSAO(Camera * camera)
-	{
-		static float clear[4] = {0};
-		deviceContext->ClearUnorderedAccessViewFloat(ssaoOutput, clear);
-		
-		ID3D11SamplerState * samplers[] = 
-		{ 
-			states->PointClamp(),
-			states->PointWrap()
-		};
-		deviceContext->CSSetSamplers(0, 2, samplers);
-
-		deviceContext->CSSetShader(ssaoShader, nullptr, 0);
-		ID3D11ShaderResourceView * srvs[] =
-		{
-			depthStencil,
-			randomNormals,
-			normalTexture
-		};
-
-		deviceContext->CSSetShaderResources(0, 3, srvs);
-		deviceContext->CSSetUnorderedAccessViews(0, 1, ssaoOutput, nullptr);
-		ID3D11Buffer * buffer = camera->getInverseBuffer();
-		deviceContext->CSSetConstantBuffers(0, 1, &buffer);
-		deviceContext->Dispatch(80, 45, 1);
-
-		ID3D11ShaderResourceView * srvsNULL[3] = { nullptr };
-		deviceContext->CSSetShaderResources(0, 3, srvsNULL);
-		ID3D11ShaderResourceView * srvNULL = nullptr;
-
-		//blur the occlusion map in two passes
-		deviceContext->CSSetShader(blurHorizontal, nullptr, 0);
-		deviceContext->CSSetUnorderedAccessViews(0, 1, ssaoOutputSwap, nullptr);
-		deviceContext->CSSetShaderResources(0, 1, ssaoOutput);
-		deviceContext->Dispatch(80, 45, 1);
-
-		deviceContext->CSSetShaderResources(0, 1, &srvNULL);
-
-		deviceContext->CSSetShader(blurVertical, nullptr, 0);
-		deviceContext->CSSetUnorderedAccessViews(0, 1, ssaoOutput, nullptr);
-		deviceContext->CSSetShaderResources(0, 1, ssaoOutputSwap);
-		deviceContext->Dispatch(80, 45, 1);
-
-		//Merge the blurred occlusion map with back buffer
-		deviceContext->CSSetShader(ssaoMerger, nullptr, 0);
-		deviceContext->CSSetUnorderedAccessViews(0, 1, fakeBackBufferSwap, nullptr);
-		deviceContext->CSSetShaderResources(0, 1, fakeBackBuffer);
-		deviceContext->CSSetShaderResources(1, 1, ssaoOutput);
-		deviceContext->Dispatch(80, 45, 1);
-
-
-		deviceContext->CSSetShaderResources(0, 1, &srvNULL);
-		deviceContext->CSSetShaderResources(1, 1, &srvNULL);
-		ID3D11UnorderedAccessView * uavnull = nullptr;
-		deviceContext->CSSetUnorderedAccessViews(0, 1, &uavnull, nullptr);
-		
-	}
-
+	
     void Renderer::createBlendState()
     {
         D3D11_BLEND_DESC BlendState;
