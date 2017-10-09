@@ -4,6 +4,8 @@
 
 using namespace Logic;
 
+btVector3 Player::startPosition = btVector3(0.0f, 6.0f, 0.0f);
+
 Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent, modelID)
 {
@@ -68,6 +70,13 @@ void Player::clear()
 {
 	m_weaponManager.clear();
 	m_skillManager.clear();
+}
+
+void Logic::Player::reset()
+{
+	getRigidBody()->getWorldTransform().setOrigin(startPosition);
+	m_weaponManager.reset();
+	m_hp = 3;
 }
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
