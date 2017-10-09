@@ -96,7 +96,7 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 	m_enemies.reserve(enemies.size() + m_enemies.size());
 	m_frame = 0;
 
-	AStar aStar = AStar::singleton();
+	AStar &aStar = AStar::singleton();
 	int index;
 
 	if (m_currentWave == 1)

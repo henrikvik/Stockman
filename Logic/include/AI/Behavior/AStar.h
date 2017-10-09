@@ -59,6 +59,8 @@ namespace Logic
 		public:
 			// string for the offline loaded nav mesh
 			AStar(std::string file);
+			AStar(AStar const &other) = delete;
+			AStar* operator=(AStar const &other) = delete;
 			~AStar();
 
 			std::vector<const DirectX::SimpleMath::Vector3*>
