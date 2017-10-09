@@ -41,6 +41,7 @@
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 #include <Misc\GameTime.h>
+#include <Engine\Profiler.h>
 
 #define PHYSICS_GRAVITY 9.82f * 2.f
 

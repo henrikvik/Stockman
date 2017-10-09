@@ -127,16 +127,33 @@ void Game::update(float deltaTime)
 	case gameStateGame:
 		if (m_menu->getStateToBe() != GameState::gameStateDefault)
 		{
+			PROFILE_BEGIN("Menu");
 			m_menu->update(m_gameTime.dt);
+			PROFILE_END();
 		}
 		else
 		{
 			waveUpdater();
+
+			PROFILE_BEGIN("Player");
 			m_player->updateSpecific(m_gameTime.dt);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Physics");
 			m_physics->update(m_gameTime);
+			PROFILE_END();
+
+			PROFILE_BEGIN("AI & Triggers");
 			m_entityManager.update(*m_player, m_gameTime.dt);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Map");
 			m_map->update(m_gameTime.dt);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Projectiles");
 			m_projectileManager->update(m_gameTime.dt);
+			PROFILE_END();
 		}
 
 		if (m_player->getHP() <= 0 && m_menu->currentState() == GameState::gameStateGame)
@@ -182,10 +199,20 @@ void Game::render(Graphics::Renderer& renderer)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
+
 		m_player->render(renderer);
+
+		PROFILE_BEGIN("Render Map");
 		m_map->render(renderer);
+		PROFILE_END();
+
+		PROFILE_BEGIN("Render Enemies & Triggers")
 		m_entityManager.render(renderer);
+		PROFILE_END();
+
+		PROFILE_BEGIN("Render Projectiles")
 		m_projectileManager->render(renderer);
+		PROFILE_END();
 
 	// Debug Draw physics
 	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
