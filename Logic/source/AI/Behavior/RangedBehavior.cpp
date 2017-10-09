@@ -11,7 +11,11 @@ RangedBehavior::RangedBehavior()
 	setRoot(NodeType::PRIORITY, 0, NULL);
 
 	/*
-		IMP: WHEN USING NODETYPE:PROIRITY, ADDING CHILDREN SHOULD BE IMMEDIATELY
+		IMP: WHEN USING NODETYPE:PROIRITY, ADDING CHILDREN SHOULD BE DONE IMMEDIATELY
+		FOR PERF AND NOT CRASHING
+
+		Should change behvaior trees to follow Data Oriented Model, but for now
+		boids is more important. But the infractstructure is here.
 	*/
 
 	// STAY ?
