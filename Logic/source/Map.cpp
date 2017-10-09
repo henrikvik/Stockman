@@ -113,7 +113,11 @@ void Map::initObjects(Physics * physics)
 {
 	btVector3 halfextent(1.0, 1.0, 1.0);
 	StaticObject* box = new StaticObject(Graphics::CUBE, physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
-	box->addExtraBody(physics->createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0, 3.f, 0 });
+	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 2, 0 });/*
+	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 1, 4, 0 });
+	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 4, 1 });
+	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 4, 0 });
+	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 6, 0 });*/
 	m_objects.push_back(box);
 	
 }

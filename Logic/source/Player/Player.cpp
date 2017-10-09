@@ -81,6 +81,9 @@ void Logic::Player::reset()
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
+#ifdef _GOD_MODE
+	m_playerState = PlayerState::STANDING;
+#else
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
 	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
 	else if(m_playerState == PlayerState::IN_AIR)
@@ -104,7 +107,7 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
 				m_playerState = PlayerState::IN_AIR;
 		}
 	}
-		
+#endif
 }
 
 void Player::onCollision(Projectile& other)

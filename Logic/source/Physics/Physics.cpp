@@ -1,5 +1,6 @@
 #include "Physics\Physics.h"
 
+
 using namespace Logic;
 
 Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overlappingPairCache, btSequentialImpulseConstraintSolver* constraintSolver, btDefaultCollisionConfiguration* collisionConfiguration)
@@ -58,8 +59,15 @@ void Physics::clear()
 
 void Physics::update(GameTime gameTime)
 {
+	
+	
 	// Stepping the physics
+	PROFILE_BEGIN("Stepping Physics");
+
 	this->stepSimulation(gameTime.dtReal * 0.01f, 4);
+
+	PROFILE_END();
+	PROFILE_BEGIN("Collision Handling");
 
 	// Collisions
 	int numManifolds = dispatcher->getNumManifolds();
@@ -90,6 +98,7 @@ void Physics::update(GameTime gameTime)
 			}
 		}
 	}
+	PROFILE_END();
 }
 
 // Returns nullptr if not intersecting, otherwise returns the rigidbody of the hit

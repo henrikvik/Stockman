@@ -24,6 +24,9 @@
 // Graphics Includes
 #include <Graphics\include\Renderer.h>
 
+// Engine Includes
+#include <Engine\Profiler.h>
+
 // Init Defines
 #define STARTING_STATE		gameStateMenuMain
 #define PLAYER_START_SCA	btVector3(1.5f, 3.0f, 1.5f)
@@ -37,8 +40,6 @@
 #define WAVE_3_TIME			25000.f
 #define WAVE_4_TIME			35000.f
 #define WAVE_5_TIME			60000.f
-
-
 
 namespace Logic
 {
