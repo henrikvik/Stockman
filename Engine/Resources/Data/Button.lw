@@ -19,10 +19,10 @@
 	"xPos" : 400.0f;
 	"yPos" : 450.0f;
 	"xTexStart" : 0.0f;
-	"yTexStart" : 1.0f;
+	"yTexStart" : 0.76875f;
 	"xTexEnd" : 1.0f;
-	"yTexEnd" : 0.0f;
-        "activeOffset" : 0.0f;
+	"yTexEnd" : 0.86719f;
+    "activeOffset" : 0.50938f;
 	"height" : 100.0f;
 	"width" : 450.0f;
 	"function" : "buttonClick1";
@@ -34,10 +34,10 @@
 	"xPos" : 400.0f;
 	"yPos" : 600.0f;
 	"xTexStart" : 0.0f;
-	"yTexStart" : 1.0f;
+	"yTexStart" : 0.876565f;
 	"xTexEnd" : 1.0f;
-	"yTexEnd" : 0.0f;
-    "activeOffset" : 0.0f;
+	"yTexEnd" : 0.97188f;
+    "activeOffset" : 0.51094f;
 	"height" : 100.0f;
 	"width" : 450.0f;
 	"function" : "buttonClick3";
