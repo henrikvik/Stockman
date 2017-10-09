@@ -70,6 +70,12 @@ void Player::clear()
 	m_skillManager.clear();
 }
 
+void Logic::Player::reset()
+{
+	m_weaponManager.reset();
+	m_hp = 3; // THIS IS A TEMPORARY FIX; A REAL RESET FUNCION MUST BE ADDED TODO TODO TODO
+}
+
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile

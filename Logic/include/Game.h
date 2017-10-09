@@ -53,6 +53,7 @@ namespace Logic
 
 		void init();
 		void clear();
+		void reset();
 
 		void waveUpdater();
 		void update(float deltaTime);
