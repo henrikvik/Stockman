@@ -54,6 +54,7 @@ namespace Logic
 			float heuristic(DirectX::SimpleMath::Vector3 &from,
 				DirectX::SimpleMath::Vector3 &to) const;
 			void generateNodesFromFile();
+			void setupDebugging();
 			bool nodeInQue(int index, std::priority_queue<NavNode*> que) const;
 		public:
 			// string for the offline loaded nav mesh
@@ -69,6 +70,9 @@ namespace Logic
 			void renderNavigationMesh(Graphics::Renderer &renderer);
 			// load the target triangle once per frame instead of once per path load
 			void loadTargetIndex(Entity const &target);
+
+			int getIndex(Entity const &entity) const;
+			size_t getNrOfPolygons() const;
 
 			// iniate the nodes
 			void generateNavigationMesh();

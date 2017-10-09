@@ -70,11 +70,11 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 		for (int index : navigationMesh.getEdges(currentNode->nodeIndex))
 		{
 			explore = &navNodes[index];
-			if (index == targetIndex) 
+			if (index == targetIndex) // Node Found
 			{
 				explore->parent = currentNode->nodeIndex;
 				currentNode = explore;
-				return reconstructPath(currentNode); // found node
+				return reconstructPath(currentNode);
 			}
 
 			if (!explore->explored) // Unexplored
@@ -156,6 +156,16 @@ void AStar::loadTargetIndex(Entity const & target)
 	targetIndex = navigationMesh.getIndex(target.getPosition());
 }
 
+int AStar::getIndex(Entity const & entity) const
+{
+	return navigationMesh.getIndex(entity.getPosition());
+}
+
+size_t AStar::getNrOfPolygons() const
+{
+	return navigationMesh.getNodes().size();
+}
+
 void AStar::generateNavigationMesh()
 {
 	PASVF pasvf;
@@ -197,16 +207,7 @@ void AStar::generateNavigationMesh()
 			static_cast<int> (i), 0, 0 }
 		);
 
-	// debugging
-	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
-	debugDataTri.useDepth = false;
-	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
-	debugDataTri.points = navigationMesh.getRenderDataTri();
-
-	debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);
-	debugDataEdges.useDepth = false;
-	debugDataEdges.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-	debugDataEdges.points = navigationMesh.getRenderDataEdges();
+	setupDebugging();
 }
 
 float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,
@@ -218,6 +219,19 @@ float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,
 void AStar::generateNodesFromFile()
 {
 
+}
+
+void AStar::setupDebugging()
+{
+	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
+	debugDataTri.useDepth = false;
+	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+	debugDataTri.points = navigationMesh.getRenderDataTri();
+
+	debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);
+	debugDataEdges.useDepth = false;
+	debugDataEdges.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+	debugDataEdges.points = navigationMesh.getRenderDataEdges();
 }
 
 // this can maybe be optimized record most used functions to see which is needed
