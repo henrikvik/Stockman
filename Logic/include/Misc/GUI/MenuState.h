@@ -36,6 +36,7 @@ namespace Logic
 			float yTexStart;
 			float xTexEnd;
 			float yTexEnd;
+            float activeOffset;
 			float height;
 			float width;
 			std::string texture;

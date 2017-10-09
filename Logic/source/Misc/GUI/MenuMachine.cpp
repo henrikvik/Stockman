@@ -51,6 +51,7 @@ void Logic::MenuMachine::initialize(GameState state)
 				button.floats.at("yTexStart"),
 				button.floats.at("xTexEnd"),
 				button.floats.at("yTexEnd"),
+                button.floats.at("activeOffset"),
 				button.floats.at("height"),
 				button.floats.at("width"),
 				button.strings.at("texture"),

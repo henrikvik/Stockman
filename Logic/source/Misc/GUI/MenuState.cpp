@@ -21,7 +21,7 @@ void Logic::MenuState::initialize(std::vector<ButtonStruct> buttonStruct, std::s
 		DirectX::SimpleMath::Vector2 texCoordStart(struc.xTexStart, struc.yTexStart);
 		DirectX::SimpleMath::Vector2 texCoordEnd(struc.xTexEnd, struc.yTexEnd);
 		m_buttons.push_back(newd Button());
-		m_buttons.at(m_buttons.size() - 1)->initialize(pos, texCoordStart, texCoordEnd, struc.height, struc.width, struc.texture, struc.m_CallBackFunction);
+		m_buttons.at(m_buttons.size() - 1)->initialize(pos, texCoordStart, texCoordEnd, struc.activeOffset, struc.height, struc.width, struc.texture, struc.m_CallBackFunction);
     }
 }
 

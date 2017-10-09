@@ -8,7 +8,7 @@ Logic::Button::~Button()
 {
 }
 
-void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float height, float width, std::string texture, std::function<void(void)> callBack)
+void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width, std::string texture, std::function<void(void)> callBack)
 {
 	buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(pos.x, pos.y, width, height);
 	m_animationStart = DirectX::SimpleMath::Vector2(pos.x, pos.y);
@@ -16,6 +16,7 @@ void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::Simple
 	m_animationTime = 0;
 	buttonInfo.m_texCoordStart = texCoordStart;
 	buttonInfo.m_texCoordEnd = texCoordEnd;
+    buttonInfo.activeoffset = offset;
 	buttonInfo.m_texture = texture;
 	m_CallBack = callBack;
 }
