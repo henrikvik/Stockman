@@ -133,7 +133,7 @@ namespace Graphics
 
         auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, testAnimation.getTotalDuration() * ((ticks % 1000) / 1000.f));
 
-        static StructuredBuffer<Matrix> jointBuffer(device, CpuAccess::Write, testSkeleton.getJointCount());
+        static StructuredBuffer<Matrix> jointBuffer(device,		CpuAccess::Write, testSkeleton.getJointCount());
         Matrix* bufferPtr = jointBuffer.map(deviceContext);
         memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());
         jointBuffer.unmap(deviceContext);
@@ -272,15 +272,14 @@ namespace Graphics
 		PROFILE_BEGIN("DrawToBackBuffer");
 		drawToBackbuffer(fakeBackBufferSwap);
 		PROFILE_END();
-		
-		PROFILE_BEGIN("DebugInfo");
-        renderDebugInfo();
-		PROFILE_END();
 
 		PROFILE_BEGIN("HUD");
         hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
 		PROFILE_END();
 
+		PROFILE_BEGIN("DebugInfo");
+		renderDebugInfo(camera);
+		PROFILE_END();
     }
 
 
@@ -444,10 +443,13 @@ namespace Graphics
 	
 
 
-    void Renderer::renderDebugInfo()
+    void Renderer::renderDebugInfo(Camera* camera)
     {
-        //PROFILE_BEGIN("Renderer::renderDebugInfo()");
         if (renderDebugQueue.size() == 0) return;
+
+		ID3D11Buffer *cameraBuffer = camera->getBuffer();
+		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
+		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
@@ -472,10 +474,13 @@ namespace Graphics
 				&info->color,
 				sizeof(DirectX::SimpleMath::Color)
 			);
+
+			deviceContext->IASetPrimitiveTopology(info->topology);
+			deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
+			deviceContext->Draw(info->points->size(), 0);
 		}
 
 		renderDebugQueue.clear();
-
     }
 
 	void Renderer::renderSSAO(Camera * camera)

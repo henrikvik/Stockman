@@ -126,7 +126,7 @@ namespace Graphics
         std::vector<RenderDebugInfo*> renderDebugQueue;
         StructuredBuffer<DirectX::SimpleMath::Vector3> debugPointsBuffer;
         ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
-        void renderDebugInfo();
+        void renderDebugInfo(Camera* camera);
 
     #pragma endregion
 
