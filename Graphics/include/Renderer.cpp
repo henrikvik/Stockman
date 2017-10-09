@@ -261,15 +261,26 @@ namespace Graphics
 #endif
 
 		///////Post effext
+		PROFILE_BEGIN("Glow");
 		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+		PROFILE_END();
+
+		PROFILE_BEGIN("SSAO");
 		renderSSAO(camera);
+		PROFILE_END();
 
+		PROFILE_BEGIN("DrawToBackBuffer");
 		drawToBackbuffer(fakeBackBufferSwap);
-
-
+		PROFILE_END();
+		
+		PROFILE_BEGIN("DebugInfo");
         renderDebugInfo();
+		PROFILE_END();
+
+		PROFILE_BEGIN("HUD");
         hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-        
+		PROFILE_END();
+
     }
 
 
@@ -447,6 +458,7 @@ namespace Graphics
         deviceContext->VSSetShader(debugRender, nullptr, 0);
         deviceContext->PSSetShader(debugRender, nullptr, 0);
 
+
 		for (RenderDebugInfo * info : renderDebugQueue)
 		{
 			debugPointsBuffer.write(
@@ -462,7 +474,7 @@ namespace Graphics
 			);
 		}
 
-
+		renderDebugQueue.clear();
 
     }
 
