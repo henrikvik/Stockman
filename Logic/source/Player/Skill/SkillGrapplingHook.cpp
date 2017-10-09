@@ -80,7 +80,7 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 	if (m_shooter && m_state == GrapplingHookStatePulling)
 	{
 		// Getting variables from entity
-		btRigidBody* shooterBody = m_shooter->getRigidbody();
+		btRigidBody* shooterBody = m_shooter->getRigidBody();
 		btVector3 linearVelocity = shooterBody->getLinearVelocity();
 		btVector3 dirToPoint = (m_point - m_shooter->getPositionBT()).normalize();
 		
@@ -91,7 +91,7 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 			if (dirToPoint.dot(player->getMoveDirection()) > 0)
 			{
 				// Resets the vertical velocity to make a "stopping effect"
-				player->getRigidbody()->setLinearVelocity({ 0, 0, 0 });
+				player->getRigidBody()->setLinearVelocity({ 0, 0, 0 });
 			}
 			else
 			{

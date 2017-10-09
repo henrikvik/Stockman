@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
+#include <Keyboard.h>
 
 #include <Engine\Profiler.h>
+
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
@@ -24,8 +26,8 @@ namespace Graphics
 		: forwardPlus(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
-        , instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
-        , instanceOffsetBuffer(device)
+		, instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
+		, instanceOffsetBuffer(device)
 		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
 		, postProcessor(device, deviceContext)
 		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
@@ -33,6 +35,7 @@ namespace Graphics
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
         ,menu(device, deviceContext)
         ,hud(device, deviceContext)
+		,ssaoRenderer(device)
     #pragma region RenderDebugInfo
         , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
         , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
@@ -76,7 +79,6 @@ namespace Graphics
 
 		//temp
 		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
-
 
     }
 
@@ -123,7 +125,7 @@ namespace Graphics
 
         auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, testAnimation.getTotalDuration() * ((ticks % 1000) / 1000.f));
 
-        static StructuredBuffer<Matrix> jointBuffer(device, CpuAccess::Write, testSkeleton.getJointCount());
+        static StructuredBuffer<Matrix> jointBuffer(device,		CpuAccess::Write, testSkeleton.getJointCount());
         Matrix* bufferPtr = jointBuffer.map(deviceContext);
         memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());
         jointBuffer.unmap(deviceContext);
@@ -135,15 +137,15 @@ namespace Graphics
         cull();
         writeInstanceData();
 
+		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
 		skyRenderer.drawShadows(deviceContext, &forwardPlus);
 		draw();
 
 
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-
+		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		static float clearColor[4] = { 0, 0.5, 0.7, 1 };
 		static float blackClearColor[4] = {0};
 		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
@@ -160,7 +162,6 @@ namespace Graphics
 
         deviceContext->PSSetShader(nullptr, nullptr, 0);
         deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
-        deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 
         draw();
 
@@ -226,16 +227,18 @@ namespace Graphics
 		ID3D11RenderTargetView * rtvs[] =
 		{
 			fakeBackBuffer,
-			glowMap
+			glowMap,
+			*ssaoRenderer.getNormalShaderResource()
 		};
-		deviceContext->OMSetRenderTargets(2, rtvs, depthStencil);
+
+		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
 		
 		draw();
 		skyRenderer.renderSky(deviceContext, camera);
 
-		ID3D11RenderTargetView * rtvNULL[2] = {nullptr};
+		ID3D11RenderTargetView * rtvNULL[3] = {nullptr};
 
-        deviceContext->OMSetRenderTargets(2, rtvNULL, nullptr);
+        deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
 
         ZeroMemory(SRVs, sizeof(SRVs));
         deviceContext->PSSetShaderResources(0, 4, SRVs);
@@ -250,14 +253,25 @@ namespace Graphics
 #endif
 
 		///////Post effext
+		PROFILE_BEGIN("Glow");
 		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+		PROFILE_END();
 
+		PROFILE_BEGIN("SSAO");
+		ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+		PROFILE_END();
+		
+		PROFILE_BEGIN("DrawToBackBuffer");
+		drawToBackbuffer(fakeBackBuffer);
+		PROFILE_END();
 
-		drawToBackbuffer(fakeBackBufferSwap);
-
-        renderDebugInfo();
+		PROFILE_BEGIN("HUD");
         hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-        
+		PROFILE_END();
+
+		PROFILE_BEGIN("DebugInfo");
+		renderDebugInfo(camera);
+		PROFILE_END();
     }
 
 
@@ -271,6 +285,10 @@ namespace Graphics
 
     void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
     {
+        if (debugInfo->points->size() > MAX_DEBUG_POINTS)
+        {
+            throw "vector is bigger than structured buffer";
+        }
         renderDebugQueue.push_back(debugInfo);
     }
 
@@ -417,10 +435,13 @@ namespace Graphics
 	
 
 
-    void Renderer::renderDebugInfo()
+    void Renderer::renderDebugInfo(Camera* camera)
     {
-        //PROFILE_BEGIN("Renderer::renderDebugInfo()");
         if (renderDebugQueue.size() == 0) return;
+
+		ID3D11Buffer *cameraBuffer = camera->getBuffer();
+		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
+		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
@@ -431,34 +452,30 @@ namespace Graphics
         deviceContext->VSSetShader(debugRender, nullptr, 0);
         deviceContext->PSSetShader(debugRender, nullptr, 0);
 
-        for (RenderDebugInfo * info : renderDebugQueue)
-        {
-            if (info->points->size() > MAX_DEBUG_POINTS)
-            {
-                throw "vector is bigger than structured buffer";
-            }
 
-            debugPointsBuffer.write( 
-                deviceContext, 
-                info->points->data(), 
-                info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
-            );
+		for (RenderDebugInfo * info : renderDebugQueue)
+		{
+			debugPointsBuffer.write(
+				deviceContext,
+				info->points->data(),
+				info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
+			);
 
-            debugColorBuffer.write(
-                deviceContext,
-                &info->color,
-                sizeof(DirectX::SimpleMath::Color)
-            );
+			debugColorBuffer.write(
+				deviceContext,
+				&info->color,
+				sizeof(DirectX::SimpleMath::Color)
+			);
 
-            deviceContext->IASetPrimitiveTopology(info->topology);
-            deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
-            deviceContext->Draw(info->points->size(), 0);
-        }
+			deviceContext->IASetPrimitiveTopology(info->topology);
+			deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
+			deviceContext->Draw(info->points->size(), 0);
+		}
 
-        renderDebugQueue.clear();
-        //PROFILE_END();
+		renderDebugQueue.clear();
     }
 
+	
     void Renderer::createBlendState()
     {
         D3D11_BLEND_DESC BlendState;

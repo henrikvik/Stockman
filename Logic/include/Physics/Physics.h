@@ -36,7 +36,7 @@
 
 #include <ctime>
 #include <chrono>
-#include <Entity\Entity.h>
+#include <Entity\PhysicsObject.h>
 #include <Physics\Primitives.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
@@ -44,8 +44,25 @@
 
 #define PHYSICS_GRAVITY 0.982f * 0.5f
 
+#define DEFAULT_F 0.5f
+#define DEFAULT_R 0 
+#define DEFAULT_S { 0, 0 }
+#define DEFAULT_D { 0, 0 }
+
 namespace Logic
 {
+	struct BodySpecifics
+	{
+		BodySpecifics(float restitution, float friction, DirectX::SimpleMath::Vector2 sleepingThresholds, DirectX::SimpleMath::Vector2 damping, bool isSensor)
+			: isSensor(isSensor), restitution(restitution), friction(friction), sleepingThresholds(sleepingThresholds), damping(damping) { }
+
+		bool isSensor;
+		float restitution; 
+		float friction;
+		DirectX::SimpleMath::Vector2 sleepingThresholds;
+		DirectX::SimpleMath::Vector2 damping;
+	};
+
 	class Physics : public btDiscreteDynamicsWorld
 	{
 	public:
@@ -71,11 +88,21 @@ namespace Logic
 		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false);
 		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);		// Should be used for player & enemies
 
+		void render(Graphics::Renderer& renderer);
+
 	private:
 		btCollisionDispatcher* dispatcher;
 		btBroadphaseInterface* overlappingPairCache;
 		btSequentialImpulseConstraintSolver* constraintSolver;
 		btDefaultCollisionConfiguration* collisionConfiguration;
+
+		// Debug Rendering
+		Graphics::RenderDebugInfo renderDebug;
+
+		void renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body);
+		void renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRigidBody* body);
+		void renderCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btRigidBody* body);
+		btRigidBody* initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, BodySpecifics specifics);
 	};
 }
 

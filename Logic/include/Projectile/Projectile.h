@@ -19,9 +19,9 @@ namespace Logic
 
 		void start(btVector3 forward, StatusManager& statusManager);
 		void updateSpecific(float deltaTime);
-		void onCollision(Entity& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
-		void affect(int stacks, Effect const &effect, float dt);
+		void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 		void upgrade(Upgrade const &upgrade);
+		void affect(int stacks, Effect const & effect, float deltaTime);
 
 		ProjectileData& getProjectileData();
 

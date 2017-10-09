@@ -11,6 +11,7 @@
 #pragma comment (lib, "d3dcompiler.lib")
 
 #include <SimpleMath.h>
+#include "Utility\ConstantBuffer.h"
 
 namespace Graphics {
 	class Camera
@@ -31,6 +32,7 @@ namespace Graphics {
 		DirectX::SimpleMath::Matrix getView() const;
 		DirectX::SimpleMath::Matrix getProj() const;
 		ID3D11Buffer* getBuffer();
+		ID3D11Buffer* getInverseBuffer();
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
         void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
@@ -54,7 +56,14 @@ namespace Graphics {
 			DirectX::SimpleMath::Vector4 camPos;
 		} values;
 
-		ID3D11Buffer* mVPBuffer;
+		struct InverseMatrixes
+		{
+			DirectX::SimpleMath::Matrix mInvView;
+			DirectX::SimpleMath::Matrix mInvP;
 
+		} inverseMatrixes;
+
+		ID3D11Buffer* mVPBuffer;
+		ConstantBuffer<InverseMatrixes> inverseBuffer;
 	};
 }

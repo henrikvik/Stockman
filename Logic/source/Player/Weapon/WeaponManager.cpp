@@ -28,6 +28,14 @@ void WeaponManager::clear()
 	m_allWeapons.clear();
 }
 
+void Logic::WeaponManager::reset()
+{
+	for (int i = 0; i < m_allWeapons.size(); i++)
+	{
+		m_allWeapons[i].reset();
+	}
+}
+
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
 	// Updating weapon model
@@ -120,8 +128,6 @@ void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch, Entit
 		{
 			m_currentWeapon.first->use(position, yaw, pitch, shooter);
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.first->getAmmoConsumption());
-			printf("fire prim\n");
-			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
 		}
 		else
 			printf("out of ammo\n");
@@ -138,8 +144,6 @@ void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Ent
 		{
 			m_currentWeapon.second->use(position, yaw, pitch, shooter);
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.second->getAmmoConsumption());
-			printf("fire sec\n");
-			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
 		}
 		else
 			printf("out of ammo\n");

@@ -30,20 +30,23 @@ namespace Logic
 	class EntityManager
 	{
 	private:
-		std::vector<Enemy*> m_enemies, m_bossEnemies, m_deadEnemies;
+		std::vector<std::vector<Enemy*>> m_enemies;
+		std::vector<Enemy*> m_deadEnemies;
 		std::vector<double> time;
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
 		int m_currentWave, m_frame;
 
-		void reserveData(); // reserve space in vectors
+		void deleteData(); // delete data in vectors
+		void allocateData(); // resize enemy vector 
 	public:
 		EntityManager();
 		EntityManager(EntityManager const &entityManager) = delete;
 		~EntityManager();
 
 		void update(Player const &player, float deltaTime);
+		void updateEnemies(int index, Player const &player, float delatTime, bool updatePath);
 		void clear();
 
 		void spawnWave(Physics &physics, ProjectileManager *projectiles);

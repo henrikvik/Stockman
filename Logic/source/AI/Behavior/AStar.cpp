@@ -8,6 +8,8 @@ using namespace Logic;
 
 AStar::AStar(std::string file)
 {
+	debugDataTri.points = nullptr;
+	debugDataEdges.points = nullptr;
 	// for testing
 	generateNavigationMesh();
 	targetIndex = -1;
@@ -15,15 +17,17 @@ AStar::AStar(std::string file)
 
 AStar::~AStar()
 {
-	delete debugDataTri.points;
-	delete debugDataEdges.points;
+	if (debugDataTri.points)
+		delete debugDataTri.points;
+	if (debugDataEdges.points)
+		delete debugDataEdges.points;
 }
 
 // returns nothing if on same triangle or an error occured
 std::vector<const DirectX::SimpleMath::Vector3*>
 	AStar::getPath(Entity const &enemy, Entity const &target)
 {
-	PROFILE_BEGIN("AStar::getPath()");
+//	PROFILE_BEGIN("AStar::getPath()");
 
 	// all nodes in navMesh
 	std::vector<DirectX::SimpleMath::Vector3> nodes =
@@ -70,11 +74,11 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 		for (int index : navigationMesh.getEdges(currentNode->nodeIndex))
 		{
 			explore = &navNodes[index];
-			if (index == targetIndex) 
+			if (index == targetIndex) // Node Found
 			{
 				explore->parent = currentNode->nodeIndex;
 				currentNode = explore;
-				return reconstructPath(currentNode); // found node
+				return reconstructPath(currentNode);
 			}
 
 			if (!explore->explored) // Unexplored
@@ -114,7 +118,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 		return { };
 	}
 
-	PROFILE_END();
+//	PROFILE_END();
 	return reconstructPath(currentNode);
 }
 
@@ -154,6 +158,16 @@ void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
 void AStar::loadTargetIndex(Entity const & target)
 {
 	targetIndex = navigationMesh.getIndex(target.getPosition());
+}
+
+int AStar::getIndex(Entity const & entity) const
+{
+	return navigationMesh.getIndex(entity.getPosition());
+}
+
+size_t AStar::getNrOfPolygons() const
+{
+	return navigationMesh.getNodes().size();
 }
 
 void AStar::generateNavigationMesh()
@@ -197,16 +211,7 @@ void AStar::generateNavigationMesh()
 			static_cast<int> (i), 0, 0 }
 		);
 
-	// debugging
-	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
-	debugDataTri.useDepth = false;
-	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
-	debugDataTri.points = navigationMesh.getRenderDataTri();
-
-	debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);
-	debugDataEdges.useDepth = false;
-	debugDataEdges.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-	debugDataEdges.points = navigationMesh.getRenderDataEdges();
+	setupDebugging();
 }
 
 float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,
@@ -218,6 +223,19 @@ float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,
 void AStar::generateNodesFromFile()
 {
 
+}
+
+void AStar::setupDebugging()
+{
+	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
+	debugDataTri.useDepth = false;
+	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+	debugDataTri.points = navigationMesh.getRenderDataTri();
+
+	debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);
+	debugDataEdges.useDepth = false;
+	debugDataEdges.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+	debugDataEdges.points = navigationMesh.getRenderDataEdges();
 }
 
 // this can maybe be optimized record most used functions to see which is needed

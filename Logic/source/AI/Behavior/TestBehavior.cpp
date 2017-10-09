@@ -17,7 +17,8 @@ TestBehavior::~TestBehavior()
 		delete debugInfo.points;
 }
 
-void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
+void TestBehavior::update(Enemy &enemy, std::vector<Enemy*> const &close,
+	Player const & player, float deltaTime)
 {
 	btVector3 node = m_path.updateAndReturnCurrentNode(enemy, player);
 	btVector3 dir = node - enemy.getPositionBT();
@@ -28,11 +29,11 @@ void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
 
 	if (enemy.getHealth() < 5)
 	{
-		enemy.getRigidbody()->applyCentralForce(dir * -20000);
+		enemy.getRigidBody()->applyCentralForce(dir * -20000);
 	}
 		else 
 	{
-		enemy.getRigidbody()->translate(dir);
+		enemy.getRigidBody()->translate(dir);
 	}
 
 	if ((node - enemy.getPositionBT()).length() < 0.8f)

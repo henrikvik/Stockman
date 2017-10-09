@@ -21,7 +21,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-
+		
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
@@ -237,10 +237,12 @@ int Engine::run()
     long long totalTime = 0;
 	bool showProfiler = false;
 
+	bool running = true;
+
 	g_Profiler = new Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
 
-	while (WM_QUIT != msg.message)
+	while (running)
 	{
 		currentTime = this->timer();
 		deltaTime = currentTime - prev;
@@ -252,8 +254,10 @@ int Engine::run()
 			TranslateMessage(&msg);
 
 
-
 			DispatchMessage(&msg);
+
+			if (WM_QUIT == msg.message)
+				running = false;
 		}
 
 		//To enable/disable fullscreen
@@ -297,7 +301,8 @@ int Engine::run()
 		game.render(*renderer);
 		PROFILE_END();
 
-        cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+		if (!DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftControl))
+			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
 
 		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
         //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);

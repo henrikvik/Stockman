@@ -1,5 +1,6 @@
 #include "../Projectile/Projectile.h"
 #include "../Player/Player.h"
+#include <AI\Enemy.h>
 
 using namespace Logic;
 
@@ -44,11 +45,16 @@ Projectile::~Projectile() { }
 
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
-	getRigidbody()->setLinearVelocity(forward * m_pData.speed);
+	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
 	setStatusManager(statusManager);
 
 	for (StatusManager::UPGRADE_ID id : statusManager.getActiveUpgrades())
 		upgrade(statusManager.getUpgrade(id));
+}
+
+void Projectile::affect(int stacks, Effect const & effect, float deltaTime)
+{
+
 }
 
 void Projectile::updateSpecific(float deltaTime)
@@ -64,7 +70,7 @@ void Projectile::updateSpecific(float deltaTime)
 	m_speedMod = 1.f;
 }
 
-void Projectile::onCollision(Entity & other, btVector3 contactPoint, const btRigidBody* collidedWithYour)
+void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	// TEMP
 	Player* p = dynamic_cast<Player*>(&other);
@@ -75,7 +81,7 @@ void Projectile::onCollision(Entity & other, btVector3 contactPoint, const btRig
 		if(proj->getProjectileData().type)
 			setStatusManager(proj->getStatusManager()); // TEMP
 	}
-	else if ((p && m_pData.enemyBullet) || (!p && !m_pData.enemyBullet))
+	else
 	{
 		m_remove = true;
 
@@ -110,7 +116,7 @@ void Projectile::upgrade(Upgrade const &upgrade)
 	}
 	if (flags & Upgrade::UPGRADE_IS_BOUNCING)
 	{
-		this->getRigidbody()->setRestitution(1.f);
+		this->getRigidBody()->setRestitution(1.f);
 	}
 }
 

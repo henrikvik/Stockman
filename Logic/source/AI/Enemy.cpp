@@ -25,10 +25,10 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
 	switch (id) 
 	{
 		case TEST:
-			m_behavior = new TestBehavior();
+			m_behavior = newd TestBehavior();
 			break;
 		case RANGED:
-			m_behavior = new RangedBehavior();
+			m_behavior = newd RangedBehavior();
 			break;
 	}
 }
@@ -43,7 +43,8 @@ void Enemy::setProjectileManager(ProjectileManager * projectileManager)
 	m_projectiles = projectileManager;
 }
 
-void Enemy::update(Player const &player, float deltaTime, bool updatePath) {
+void Enemy::update(Player const &player, float deltaTime,
+	std::vector<Enemy*> const &closeEnemies, bool updatePath) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 
@@ -51,7 +52,7 @@ void Enemy::update(Player const &player, float deltaTime, bool updatePath) {
 	{
 		if (updatePath)
 			m_behavior->updatePath(*this, player);
-		m_behavior->update(*this, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+		m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 	}
 
 	m_moveSpeedMod = 1.f; // Reset effect variables, should be in function if more variables are added.
@@ -102,7 +103,6 @@ float Enemy::getBaseDamage() const
 
 float Enemy::getMoveSpeed() const
 {
-	//printf("%f\n", m_moveSpeedMod);
 	return m_moveSpeed * m_moveSpeedMod;
 }
 

@@ -2,9 +2,12 @@
 	"Name" : "MainMenu";
 	"State" : 2;
 	"Background" : "bla";
-	"buttonAmmount" : 1;
+	"buttonAmmount" : 3;
 
 	"button1" :  "MenuMainButton1";
+	"button2" :  "MenuMainButton2";
+	"button3" :  "MenuMainButton3";
+}
 }
 
 {
@@ -21,4 +24,14 @@
 	"State" : 0;
 	"Background" : "a";
 	"buttonAmmount" : 0;
+}
+
+{
+	"Name" : "GameOver";
+	"State" : 4;
+	"Background" : "c";
+	"buttonAmmount" : 2;
+
+	"button1" : "GameOverButton1";
+	"button2" : "GameOverButton2";
 }

@@ -9,10 +9,17 @@ Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overl
 	this->overlappingPairCache = overlappingPairCache;
 	this->constraintSolver = constraintSolver;
 	this->collisionConfiguration = collisionConfiguration;
+
+	// Render Debug Construction
+	renderDebug.points = new std::vector<DirectX::SimpleMath::Vector3>();
+	renderDebug.color = DirectX::SimpleMath::Color(1, 1, 1);
+	renderDebug.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+	renderDebug.useDepth = true;
 }
 
 Physics::~Physics()
 {
+	delete renderDebug.points;
 	clear();
 }
 
@@ -49,8 +56,6 @@ void Physics::clear()
 	delete collisionConfiguration;
 }
 
-#include <BulletCollision\CollisionDispatch\btGhostObject.h>
-
 void Physics::update(GameTime gameTime)
 {
 	// Stepping the physics
@@ -72,8 +77,8 @@ void Physics::update(GameTime gameTime)
 			btVector3 b = contactPoint.getPositionWorldOnA();
 			btVector3 a = contactPoint.getPositionWorldOnB();
 
-			Entity* entityA = reinterpret_cast<Entity*>(obA->getUserPointer());
-			Entity* entityB = reinterpret_cast<Entity*>(obB->getUserPointer());
+			PhysicsObject* entityA = reinterpret_cast<PhysicsObject*>(obA->getUserPointer());
+			PhysicsObject* entityB = reinterpret_cast<PhysicsObject*>(obB->getUserPointer());
 
 			const btRigidBody* rbodyA = btRigidBody::upcast(obA);
 			const btRigidBody* rbodyB = btRigidBody::upcast(obB);
@@ -154,25 +159,16 @@ btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 
 	// Creating the specific shape
 	btCollisionShape* shape = new btBoxShape(cube.getDimensions());
-
-	// Calculating the Inertia
+	
 	btVector3 localInertia(0, 0, 0);
 	if (mass != 0.f)
 		shape->calculateLocalInertia(mass, localInertia);
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, localInertia);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+	btRigidBody* body = initBody(constructionInfo, specifics);
 	shape->setUserPointer(body);
-
-	// If the body is a trigger
-	if (isSensor)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(1.f);
-	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
 	this->addRigidBody(body);
@@ -192,17 +188,9 @@ btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+	btRigidBody* body = initBody(constructionInfo, specifics);
 	shape->setUserPointer(body);
-
-	// If the body is a trigger
-	if (isSensor)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(1.0f);
-	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
 	this->addRigidBody(body);
@@ -222,17 +210,9 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+	btRigidBody* body = initBody(constructionInfo, specifics);
 	shape->setUserPointer(body);
-
-	// If the body is a trigger
-	if (isSensor)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(1.f);
-	body->setSleepingThresholds(0, 0);	
 
 	// Adding body to the world
 	this->addRigidBody(body);
@@ -252,22 +232,9 @@ btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isS
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+	btRigidBody* body = initBody(constructionInfo, specifics);
 	shape->setUserPointer(body);
-
-	// If the body is a trigger
-	if (isSensor)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(1.f);
-	body->setSleepingThresholds(0, 0);
-	body->setDamping(0.f, 0.f);
-
-	// Making the cylinder a kinematic body
-	//body->setCollisionFlags(body->getCollisionFlags() | btRigidBody::CF_KINEMATIC_OBJECT | btRigidBody::CF_STATIC_OBJECT);
-	body->setActivationState(DISABLE_DEACTIVATION);
 
 	// Adding body to the world
 	this->addRigidBody(body);
@@ -287,21 +254,163 @@ btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+	btRigidBody* body = initBody(constructionInfo, specifics);
 	shape->setUserPointer(body);
-
-	// If the body is a trigger
-	if (isSensor)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(0.f);
-	body->setSleepingThresholds(0, 0);
-	body->setDamping(0.0f, 0.0f);
 
 	// Adding body to the world
 	this->addRigidBody(body);
 
 	return body;
+}
+
+// Only used for debugging, draws all collision shapes onto screen
+void Physics::render(Graphics::Renderer & renderer)
+{
+	// Clearing last debug draw
+	renderDebug.points->clear();
+
+	for (int i = this->getNumCollisionObjects() - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = this->getCollisionObjectArray()[i];
+		btRigidBody* body = btRigidBody::upcast(obj);
+		btCollisionShape* shape = obj->getCollisionShape();
+
+		// Render Boxes
+		if (btBoxShape* bs = dynamic_cast<btBoxShape*>(shape))
+			renderCube(renderer, bs, body);
+
+		// Render Spheres
+		else if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
+			renderSphere(renderer, ss, body);
+
+		// Render Capsules
+		else if (btCapsuleShape* cs = dynamic_cast<btCapsuleShape*>(shape))
+			renderCapsule(renderer, cs, body);
+	}
+}
+
+btRigidBody* Physics::initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, BodySpecifics specifics)
+{
+	btRigidBody* body = new btRigidBody(constructionInfo);
+
+	// If the body is a trigger
+	if (specifics.isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
+	// Specifics
+	body->setRestitution(specifics.restitution);
+	body->setFriction(specifics.friction);
+	body->setSleepingThresholds(specifics.sleepingThresholds.x, specifics.sleepingThresholds.y);
+	body->setDamping(specifics.damping.x, specifics.damping.y);
+
+	return body;
+}
+
+// Render a debug with help of it's vertices
+void Physics::renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body)
+{
+	btVector3 vp = { 0, 0, 0 };
+	btVector3 center = body->getWorldTransform().getOrigin();
+	btQuaternion q = body->getWorldTransform().getRotation();
+	DirectX::SimpleMath::Matrix quaternion = DirectX::SimpleMath::Matrix::CreateFromQuaternion(DirectX::SimpleMath::Quaternion(q));
+
+	// Front side
+	for (int i = 0; i < bs->getNumVertices() - 1; i++)
+	{
+		bs->getVertex(0, vp);
+		renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+		bs->getVertex(i + 1, vp);
+		renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+
+		bs->getVertex(bs->getNumVertices() - 1, vp);
+		renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+		bs->getVertex(i + 1, vp);
+		renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	}
+
+
+	// Diagonal right
+	bs->getVertex(5, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	bs->getVertex(4, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	bs->getVertex(5, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	bs->getVertex(1, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+
+	// Diagonal left
+	bs->getVertex(6, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	bs->getVertex(4, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	bs->getVertex(6, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	bs->getVertex(2, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+
+	// Diagonal top
+	bs->getVertex(3, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	bs->getVertex(1, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	bs->getVertex(3, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	bs->getVertex(2, vp);
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+
+	renderer.queueRenderDebug(&renderDebug);
+}
+
+// Draws a cube around the sphere
+void Physics::renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRigidBody* body)
+{
+	btVector3 origin = body->getWorldTransform().getOrigin();
+	btVector3 c;
+	float r = 0.f;
+
+	ss->getBoundingSphere(c, r);
+	r /= 2;
+
+	// Side Front
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() + r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() + r, origin.z() - r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() - r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() - r, origin.z() - r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() + r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() - r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() + r, origin.z() - r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() - r, origin.z() - r));
+
+	// Side Back
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() + r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() + r, origin.z() - r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() - r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() - r, origin.z() - r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() + r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() - r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() + r, origin.z() - r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() - r, origin.z() - r));
+
+	// Left
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() + r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() + r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() - r, origin.z() + r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() - r, origin.z() + r));
+
+	// Right
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() + r, origin.z() - r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() + r, origin.z() - r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() - r, origin.z() - r));
+	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() - r, origin.z() - r));
+
+	renderer.queueRenderDebug(&renderDebug);
+}
+
+// Draws a cube around the capsule
+void Physics::renderCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btRigidBody* body)
+{
+
+	renderer.queueRenderDebug(&renderDebug);
 }

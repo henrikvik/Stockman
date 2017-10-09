@@ -5,24 +5,31 @@ using namespace Logic;
 
 HighScoreManager::HighScoreManager()
 {
-	for (highScore score : m_highScore)
+	int ammount = sizeof(m_highScore) / sizeof(highScore);
+	for (int i = 0; i < ammount; i++)
 	{
-		score.score = -1;
-		score.name = "???";
+		m_highScore[i].score = -1;
+		m_highScore[i].name = "???";
 	}
+	m_score = 0;
+	m_name = "";
+
+	loadFromFile();
 }
 
 
 HighScoreManager::~HighScoreManager()
 {
+	saveToFile();
 }
 
-void Logic::HighScoreManager::addNewHighScore(std::string name)
+bool Logic::HighScoreManager::addNewHighScore()
 {
 	highScore newScore;
 	newScore.score = m_score;
-	newScore.name = name;
+	newScore.name = m_name;
 	int ammount = sizeof(m_highScore) / sizeof(highScore);
+	bool isNewHighScore = false;
 	for (int i = 0; i < ammount; i++)
 	{
 		if (m_highScore[i].score < newScore.score)
@@ -31,12 +38,14 @@ void Logic::HighScoreManager::addNewHighScore(std::string name)
 			temp = m_highScore[i];
 			m_highScore[i] = newScore;
 			newScore = temp;
+			isNewHighScore = true;
 		}
-		else if (m_highScore[i].score == -1)
+		else if (newScore.score == -1)
 		{
-			break;
+			return isNewHighScore;
 		}
 	}
+	return isNewHighScore;
 }
 
 void Logic::HighScoreManager::saveToFile()
@@ -45,8 +54,10 @@ void Logic::HighScoreManager::saveToFile()
 	int ammount = sizeof(m_highScore) / sizeof(highScore);
 	for (int i = 0; i < ammount; i++)
 	{
-		saveTo.at(0).floats["Score" + i] = m_highScore[i].score;
-		saveTo.at(0).strings["Player" + i] = m_highScore[i].name;
+		FileLoader::LoadedStruct tempSave;
+		tempSave.floats["Score"] = m_highScore[i].score;
+		tempSave.strings["Player"] = m_highScore[i].name;
+		saveTo.push_back(tempSave);
 	}
 	FileLoader::singleton().saveStructsToFile(saveTo, "Highscore");
 }
@@ -54,13 +65,14 @@ void Logic::HighScoreManager::saveToFile()
 void Logic::HighScoreManager::loadFromFile()
 {
 	std::vector<FileLoader::LoadedStruct> loadTo;
-	FileLoader::singleton().saveStructsToFile(loadTo, "Highscore");
-	int ammount = sizeof(m_highScore) / sizeof(highScore);
+	FileLoader::singleton().loadStructsFromFile(loadTo, "Highscore");
+	int i = 0;
 
-	for (int i = 0; i < ammount; i++)
+	for (auto const& theScore : loadTo)
 	{
-		m_highScore[i].score = loadTo.at(0).floats["Score" + i];
-		m_highScore[i].name = loadTo.at(0).strings["Player" + i];
+		m_highScore[i].score = theScore.floats.at("Score");
+		m_highScore[i].name = theScore.strings.at("Player");
+		i++;
 	}
 }
 
@@ -68,6 +80,7 @@ void Logic::HighScoreManager::deadCount()
 {
 	m_killCount++;
 	m_comboCount++;
+	m_score += 1 * m_comboCount;
 	m_comboTimer = 5;
 }
 
@@ -82,6 +95,19 @@ void Logic::HighScoreManager::comboCheck(float dt)
 		m_comboCount = 0;
 	}
 }
+
+void  Logic::HighScoreManager::setName(std::string name)
+{
+	m_name = name;
+}
+
+Logic::HighScoreManager::highScore Logic::HighScoreManager::gethighScore(int index)
+{
+	return m_highScore[index];
+}
+
+
+
 
 
 

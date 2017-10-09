@@ -1,16 +1,16 @@
-#include "PostProccessor.h"
+#include "Glow.h"
 #include <WICTextureLoader.h>
 #include "ThrowIfFailed.h"
 #include <string>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#define KERNELSIZE 7
-#define SIGMA 2
+#define KERNELSIZE 9
+#define SIGMA 5
 
-Graphics::PostProcessor::PostProcessor(ID3D11Device * device, ID3D11DeviceContext * context)
-	: glow(device, SHADER_PATH("Glow.hlsl"))
-	, glow2(device, SHADER_PATH("GlowSecond.hlsl"))
-	, merger(device, SHADER_PATH("Merger.hlsl"))
+Graphics::Glow::Glow(ID3D11Device * device, ID3D11DeviceContext * context)
+	: glow(device, SHADER_PATH("GlowShaders/Glow.hlsl"))
+	, glow2(device, SHADER_PATH("GlowShaders/GlowSecond.hlsl"))
+	, merger(device, SHADER_PATH("GlowShaders/Merger.hlsl"))
 	, glowPass0(device, WIN_WIDTH / 2, WIN_HEIGHT / 2)
 	, glowPass1(device, WIN_WIDTH / 2, WIN_HEIGHT / 2)
 {
@@ -21,12 +21,12 @@ Graphics::PostProcessor::PostProcessor(ID3D11Device * device, ID3D11DeviceContex
 
 }
 
-Graphics::PostProcessor::~PostProcessor()
+Graphics::Glow::~Glow()
 {
 	delete states;
 }
 
-std::vector<float> Graphics::PostProcessor::generateKernel(int kernelSize, float sigma) 
+std::vector<float> Graphics::Glow::generateKernel(int kernelSize, float sigma) 
 {
 	if (kernelSize % 2 == 0) kernelSize--;
 	
@@ -63,7 +63,7 @@ std::vector<float> Graphics::PostProcessor::generateKernel(int kernelSize, float
 	return kernel;
 }
 
-void Graphics::PostProcessor::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResourceView * backBuffer, ID3D11ShaderResourceView * glowMap, ShaderResource * outputTexture)
+void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResourceView * backBuffer, ID3D11ShaderResourceView * glowMap, ShaderResource * outputTexture)
 {
 	ID3D11UnorderedAccessView * nullUAV = nullptr;
 	ID3D11ShaderResourceView * nullSRV = nullptr;

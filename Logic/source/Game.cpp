@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <iostream>
 
 using namespace Logic;
 
@@ -8,6 +9,9 @@ Game::Game()
 	m_player			= nullptr;
 	m_map				= nullptr;
 	m_projectileManager = nullptr;
+	m_cardManager		= nullptr;
+	m_menu				= nullptr;
+	m_highScoreManager	= nullptr;
 }
 
 Game::~Game() 
@@ -29,7 +33,7 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
+	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(Player::startPosition, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 
 	// Initializing Menu's
@@ -38,7 +42,7 @@ void Game::init()
 
 	// Initializing the map
 	m_map = newd Map();
-	m_map->init(m_physics, m_player);
+	m_map->init(m_physics);
 
 	// Load these from a file at a later dates
 	m_waveTimer		= NULL;
@@ -53,6 +57,17 @@ void Game::init()
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
 
+	m_highScoreManager = newd HighScoreManager();
+
+	std:string name = "";
+	//std::cout << "Enter your player name (will be used for highscore): ";
+	//getline(std::cin, name);
+	if (name.empty())
+	{
+		name = "Stockman";
+	}
+
+	m_highScoreManager->setName(name);
 }
 
 void Game::clear()
@@ -63,8 +78,17 @@ void Game::clear()
 	delete m_menu;
 	delete m_map;
 	delete m_cardManager;
+	delete m_highScoreManager;
 	m_projectileManager->clear();
 	delete m_projectileManager;
+}
+
+void Logic::Game::reset()
+{
+	/*m_entityManager.clear();*/
+	m_player->reset();
+	m_waveTimer = NULL;
+	m_waveCurrent = WAVE_START;
 }
 
 // Keeps check on which wave the game is on, and spawns incoming waves
@@ -101,29 +125,54 @@ void Game::update(float deltaTime)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-		if (m_menu->getStateToBe() == GameState::gameStateMenuMain)
+		if (m_menu->getStateToBe() != GameState::gameStateDefault)
 		{
 			m_menu->update(m_gameTime.dt);
 		}
-		waveUpdater();
-		m_player->update(m_gameTime.dt);
-		m_physics->update(m_gameTime);
-		m_entityManager.update(*m_player, m_gameTime.dt);
-		m_map->update(m_gameTime.dt);
-		m_projectileManager->update(m_gameTime.dt);
+		else
+		{
+			waveUpdater();
+			m_player->updateSpecific(m_gameTime.dt);
+			m_physics->update(m_gameTime);
+			m_entityManager.update(*m_player, m_gameTime.dt);
+			m_map->update(m_gameTime.dt);
+			m_projectileManager->update(m_gameTime.dt);
+		}
 
-		if (m_player->getHP() <= 0)
+		if (m_player->getHP() <= 0 && m_menu->currentState() == GameState::gameStateGame)
 		{
 			printf("You ded bro.\n");
-			m_menu->setStateToBe(GameState::gameStateMenuMain);
+			m_highScoreManager->addNewHighScore();
+			m_menu->setStateToBe(GameState::gameStateGameOver);
+
+			for(int i = 0; i < 10; i++)
+			{
+				if (m_highScoreManager->gethighScore(i).score != -1)
+				{
+					highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
+				}
+				else
+				{
+					break;
+				}
+			}
+			reset();
 		}
 
 		break;
 
 	case gameStateLoading:
+		m_menu->update(m_gameTime.dt);
+		break;
 	case gameStateMenuMain:
+		m_menu->update(m_gameTime.dt);
+		break;
 	case gameStateMenuSettings:
-	default: m_menu->update(m_gameTime.dt);
+		m_menu->update(m_gameTime.dt);
+		break;
+	case gameStateGameOver:
+		//Add special triggers to show the scores on the side
+		m_menu->update(m_gameTime.dt);
 		break;
 	}
 }
@@ -137,14 +186,18 @@ void Game::render(Graphics::Renderer& renderer)
 		m_map->render(renderer);
 		m_entityManager.render(renderer);
 		m_projectileManager->render(renderer);
+
+	// Debug Draw physics
+	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
+		m_physics->render(renderer);
 		break;
 
 	case gameStateLoading:
 	case gameStateMenuMain:
 	case gameStateMenuSettings:
 	case gameStateGameOver:
-		m_menu->render(renderer);
-	default: // m_menu->render(renderer);
+		/*m_menu->render(renderer);*/
+	default:  m_menu->render(renderer);
 		break;
 	}
 }
