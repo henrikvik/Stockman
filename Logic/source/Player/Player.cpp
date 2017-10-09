@@ -76,7 +76,7 @@ void Logic::Player::reset()
 {
 	getRigidBody()->getWorldTransform().setOrigin(startPosition);
 	m_weaponManager.reset();
-	m_hp = 3; // THIS IS A TEMPORARY FIX; A REAL RESET FUNCION MUST BE ADDED TODO TODO TODO
+	m_hp = 3;
 }
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
