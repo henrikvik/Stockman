@@ -10,19 +10,19 @@ WaveManager::~WaveManager()
 {
 }
 
-std::vector<int> Logic::WaveManager::getEnemies(int waveId)
+std::vector<int> WaveManager::getEnemies(int waveId)
 {
 	std::vector<int> enemies;
 	enemies.resize(10);
 	return enemies;
 }
 
-void Logic::WaveManager::setName(std::string name)
+void WaveManager::setName(std::string name)
 {
 	m_waveFileName = name;
 }
 
-std::string Logic::WaveManager::getWaveFileName() const
+std::string WaveManager::getWaveFileName() const
 {
 	return m_waveFileName;
 }

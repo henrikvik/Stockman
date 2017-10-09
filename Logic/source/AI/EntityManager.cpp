@@ -71,14 +71,28 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 	bool updatePath)
 {
 	Enemy *enemy;
+	int newIndex;
 	for (int i = 0; i < m_enemies[index].size(); ++i)
 	{
 		enemy = m_enemies[index][i];
 		enemy->update(player, deltaTime, m_enemies[index], updatePath);
 
+		if (updatePath)
+		{
+			newIndex = AStar::singleton().getIndex(*enemy);
+			if (newIndex != -1 && newIndex != index)
+			{
+				m_enemies[newIndex].push_back(enemy);
+				std::swap(m_enemies[index][i], 
+					m_enemies[index][m_enemies[index].size() - 1]);
+				m_enemies[index].pop_back();
+			}
+		}
+
 		if (enemy->getHealth() <= 0) {
 			m_deadEnemies.push_back(enemy);
-			std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);
+			std::swap(m_enemies[index][i],
+				m_enemies[index][m_enemies[index].size() - 1]);
 			m_enemies[index].pop_back();
 		}
 	}
@@ -111,7 +125,7 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 
 			index = aStar.getIndex(*enemy);
 			if (index == -1)
-				m_enemies[0].push_back(enemy); //TODO
+				m_enemies[0].push_back(enemy);
 			else
 				m_enemies[index].push_back(enemy);
 		}

@@ -23,6 +23,7 @@ RangedBehavior::RangedBehavior()
 		return true;
 	});
 
+	
 	// SHOOT !
 	addNode(stay, NodeType::ACTION, 995, [](RunIn& in) -> bool {
 		if (RandomGenerator::singleton().getRandomInt(0,

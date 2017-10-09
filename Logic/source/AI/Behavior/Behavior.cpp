@@ -3,6 +3,13 @@
 #include <Misc\RandomGenerator.h>
 #define MAX_SPEED 10.f // testing
 
+#define SCALAR_DIR 0.3f
+#define SCALAR_ALIGN 1.1f
+#define SCALAR_COHES 0.8f
+#define SCALAR_SEP 1.2f
+
+#define MAX_LEN_FOR_SEPERATION 7.5f
+
 #include <queue>
 
 using namespace Logic;
@@ -29,16 +36,24 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 	std::vector<Enemy*> const &close, float maxSpeed, float dt)
 {
 	btVector3 sep, align, cohes;
+	int totalSep = 0;
 	if (close.size() == 0)
 		return; // just move
 	// make the vectors
+	btVector3 temp;
 	for (auto const &enemy : close)
 	{
 		align += enemy->getRigidBody()->getLinearVelocity();
 
 		cohes += enemy->getPositionBT();
 
-		sep += pos - enemy->getPositionBT(); // to steer away
+		// sep += enemy->getPositionBT() - pos; // to steer away
+		temp = pos - enemy->getPositionBT();
+		if (temp.length() < MAX_LEN_FOR_SEPERATION)
+		{
+			sep += temp;
+			totalSep++;
+		}
 	}
 	
 	// SEPERATION (Steer away from the group)
@@ -51,11 +66,11 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 	align = align.normalize();
 
 	// COHESION (Stay towards group position)
-	sep /= close.size();
+	sep /= totalSep;
 	sep = sep.normalize();
 
 	// RET
-	dir += cohes + align + sep;
+	dir = dir * SCALAR_DIR + cohes * SCALAR_COHES + align * SCALAR_ALIGN + sep * SCALAR_SEP;
 	dir.normalize();
 	dir *= maxSpeed;
 	dir *= dt / 1000.f;
