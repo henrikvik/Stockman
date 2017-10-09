@@ -11,7 +11,7 @@ RangedBehavior::RangedBehavior()
 	setRoot(NodeType::PRIORITY, 0, NULL);
 
 	/*
-		IMP: WHEN USING NODETYPE:PROIRITY, ADDING CHILDREN HAS SHOULD BE ADDED DEPTH FIRST
+		IMP: WHEN USING NODETYPE:PROIRITY, ADDING CHILDREN SHOULD BE IMMEDIATELY
 	*/
 
 	// STAY ?
@@ -30,7 +30,7 @@ RangedBehavior::RangedBehavior()
 
 	// jump
 	addNode(stay, NodeType::ACTION, 5, [](RunIn& in) -> bool {
-		in.enemy->getRigidbody()->applyCentralForce({ 0, 8888, 0 });
+		in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
 		return true;
 	});
 
