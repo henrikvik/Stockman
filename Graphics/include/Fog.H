@@ -14,7 +14,7 @@ namespace Graphics
 		Fog(ID3D11Device* device);
 		~Fog();
 
-		void renderFog(ID3D11DeviceContext* deviceContext, ID3D11RenderTargetView * backBuffer);
+		void renderFog(ID3D11DeviceContext* deviceContext, ID3D11RenderTargetView * backBuffer, ID3D11ShaderResourceView* worldPosMap);
 
 	private:
 		struct FogData

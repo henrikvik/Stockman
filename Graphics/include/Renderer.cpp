@@ -39,6 +39,7 @@ namespace Graphics
 		, debugColorBuffer(device)
 #pragma endregion
 		, fog(device)
+		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -234,10 +235,11 @@ namespace Graphics
 		ID3D11RenderTargetView * rtvs[] =
 		{
 			fakeBackBuffer,
-			glowMap
+			glowMap,
+			worldPosMap
 		};
-		deviceContext->OMSetRenderTargets(2, rtvs, depthStencil);
-		
+		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
+
 		draw();
 		skyRenderer.renderSky(deviceContext, camera);
 
@@ -261,7 +263,7 @@ namespace Graphics
 		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
 		drawToBackbuffer(fakeBackBufferSwap);
 
-		fog.renderFog(deviceContext, backBuffer);
+		fog.renderFog(deviceContext, backBuffer, worldPosMap);
         renderDebugInfo();
         drawGUI();
     }

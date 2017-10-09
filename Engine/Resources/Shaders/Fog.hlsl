@@ -34,8 +34,9 @@ VSOut VS(uint id : SV_VertexID)
 	//ViewVec
 	float4 P = float4(fogData[id].pos, 1);
 	float4 V = camPos - P;
-	//a is a random posetive constant
-	float a = 1000;
+	//a is a random posetive constant, NOTE let it be over 20 or the color of
+	//the fragment is going to "shine through" when under the fog halfspace
+	float a = 20;
 	//K is either 1 or 0
 	float k = 0;
 
@@ -55,17 +56,21 @@ VSOut VS(uint id : SV_VertexID)
 	return vsOut;
 }
 
+Texture2D worldPosMap : register(t1);
+
 float4 PS (VSOut psIn) : SV_Target
 {
+	//float3 worldPos = worldPosMap.Load(psIn.pos.xyz).xyz;
+
 	float3 fogColor = (0.4 ,0.4, 0.4);
 
 	float g = min(psIn.c2, 0.0);
 
 	g = -length(psIn.aV) * (psIn.c1 - g * g / abs(psIn.F_DOT_V));
 
-	float f = saturate(exp2(-g));//is the exp2 for the fog density calc?
+	float f = saturate(exp2(-g));
 
 	psIn.color.rgb = psIn.color.rgb * f + fogColor.rgb * (1.0 - f);
 
-	return float4(psIn.color.rgb, 0.5);
+	return float4(psIn.color.rgb, 0.2);
 }

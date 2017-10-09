@@ -8,20 +8,20 @@ namespace Graphics
 		: fogShader(device, SHADER_PATH("Fog.hlsl"))
 		, fogDataBuffer(device, CpuAccess::Write, MAX_FOG_SIZE)
 	{
-		fogData.push_back({ { -200 ,2,-200},{ 0,1,0, 1 } });
-		fogData.push_back({ { 200,2,-200},{ 0,1,0, 1 } });
-		fogData.push_back({ { 200,2,200},{ 0,1,0, 1 } });
+		fogData.push_back({ { -200 ,2,-200},{ 1,0,0, 1 } });
+		fogData.push_back({ { 200,2,-200},{ 1,0,0, 1 } });
+		fogData.push_back({ { 200,2,200},{ 1,0,0, 1 } });
 		
-		fogData.push_back({ { 200,2,200},{ 0,1,0, 1 } });
-		fogData.push_back({ { -200,2,200 },{ 0,1,0, 1 } });
-		fogData.push_back({ { -200,2,-200 },{ 0,1,0, 1 } });
+		fogData.push_back({ { 200,2,200},{ 1,0,0, 1 } });
+		fogData.push_back({ { -200,2,200 },{ 1,0,0, 1 } });
+		fogData.push_back({ { -200,2,-200 },{ 1,0,0, 1 } });
 	}
 
 	Fog::~Fog()
 	{
 	}
 
-	void Fog::renderFog(ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer)
+	void Fog::renderFog(ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, ID3D11ShaderResourceView* worldPosMap)
 	{
 		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -34,7 +34,8 @@ namespace Graphics
 		fogDataBuffer.write(deviceContext, fogData.data(), fogData.size() * sizeof(FogData));
 
 
-		deviceContext->VSSetShaderResources(0, 1, fogDataBuffer);
+		deviceContext->VSSetShaderResources(0, 1, fogDataBuffer); 
+		deviceContext->VSSetShaderResources(1, 1, &worldPosMap);
 		deviceContext->Draw(fogData.size(), 0);
 	}
 }
