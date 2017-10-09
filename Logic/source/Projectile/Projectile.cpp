@@ -54,14 +54,21 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
 
 void Projectile::affect(int stacks, Effect const & effect, float deltaTime)
 {
+	int flags = effect.getStandards()->flags;
 
+	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
+	{
+		m_speedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+	}
 }
 
 void Projectile::updateSpecific(float deltaTime)
 {
-	btVector3 vel = getRigidbody()->getLinearVelocity().normalized();
-	getRigidbody()->setLinearVelocity(vel * m_pData.speed * m_speedMod);
-	getRigidbody()->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_speedMod, 0.f });
+	Entity::update(deltaTime);
+
+	btVector3 vel = getRigidBody()->getLinearVelocity().normalized();
+	getRigidBody()->setLinearVelocity(vel * m_pData.speed * m_speedMod);
+	getRigidBody()->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_speedMod, 0.f });
 
 	if (m_pData.type == ProjectileTypeBulletTimeSensor)
 		m_pData.ttl -= deltaTime;
@@ -81,7 +88,7 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 		if(proj->getProjectileData().type)
 			setStatusManager(proj->getStatusManager()); // TEMP
 	}
-	else
+	else if(!p)
 	{
 		m_remove = true;
 
@@ -92,18 +99,6 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 
 	if (m_pData.type == ProjectileTypeBulletTimeSensor)
 		m_remove = false;
-}
-
-void Projectile::affect(int stacks, Effect const &effect, float dt)
-{
-	int flags = effect.getStandards()->flags;
-
-	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
-	{
-		m_speedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-		//if(m_pData.type != ProjectileTypeBulletTimeSensor)
-			//printf("%d\n", stacks);
-	}
 }
 
 void Projectile::upgrade(Upgrade const &upgrade)

@@ -60,7 +60,7 @@ void Physics::update(GameTime gameTime)
 {
 	// Stepping the physics
 	this->stepSimulation(gameTime.dtReal * 0.01f, 4);
-	
+
 	// Collisions
 	int numManifolds = dispatcher->getNumManifolds();
 	for (int i = 0; i < numManifolds; i++)
