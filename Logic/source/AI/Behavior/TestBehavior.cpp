@@ -17,7 +17,8 @@ TestBehavior::~TestBehavior()
 		delete debugInfo.points;
 }
 
-void TestBehavior::update(Enemy &enemy, Player const & player, float deltaTime)
+void TestBehavior::update(Enemy &enemy, std::vector<Enemy*> const &close,
+	Player const & player, float deltaTime)
 {
 	btVector3 node = m_path.updateAndReturnCurrentNode(enemy, player);
 	btVector3 dir = node - enemy.getPositionBT();

@@ -65,15 +65,15 @@ float4 PS(VSOut psin) : SV_Target0
         return float4(outline.Sample(sState, psin.uv));
     }else
     {
-        if (1 - cdLeft < 0.001f)
-        {
-            return float4(cd.Sample(sState, psin.uv));
-        }
-        else
-        {
-            return float4(cdActive.Sample(sState, psin.uv));
-        }
-
+        //if (1 - cdLeft > 0.001f)
+        //{
+        //    return float4(cd.Sample(sState, psin.uv));
+        //}
+        //else
+        //{
+        //    return float4(cdActive.Sample(sState, psin.uv));
+        //}
+        return float4(cdActive.Sample(sState, psin.uv));
     }
 
     //return float4(HP.Sample(sState, psin.uv));

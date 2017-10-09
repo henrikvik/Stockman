@@ -11,7 +11,11 @@ RangedBehavior::RangedBehavior()
 	setRoot(NodeType::PRIORITY, 0, NULL);
 
 	/*
-		IMP: WHEN USING NODETYPE:PROIRITY, ADDING CHILDREN HAS SHOULD BE ADDED DEPTH FIRST
+		IMP: WHEN USING NODETYPE:PROIRITY, ADDING CHILDREN SHOULD BE DONE IMMEDIATELY
+		FOR PERF AND NOT CRASHING
+
+		Should change behvaior trees to follow Data Oriented Model, but for now
+		boids is more important. But the infractstructure is here.
 	*/
 
 	// STAY ?
@@ -19,6 +23,7 @@ RangedBehavior::RangedBehavior()
 		return true;
 	});
 
+	
 	// SHOOT !
 	addNode(stay, NodeType::ACTION, 995, [](RunIn& in) -> bool {
 		if (RandomGenerator::singleton().getRandomInt(0,
@@ -49,7 +54,7 @@ RangedBehavior::RangedBehavior()
 			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
 			if (RandomGenerator::singleton().getRandomInt(0, RangedBehavior::ABILITY_CHANCHE) == 0)
 				in.enemy->useAbility(*in.target);
-			behavior->walkTowardsPlayer(*in.enemy, *in.target, in.deltaTime);
+			behavior->walkPath(behavior->getPath(), in);
 			return true;
 		}
 	);
@@ -62,23 +67,14 @@ int RangedBehavior::getDistance() const
 
 void RangedBehavior::walkTowardsPlayer(Enemy &enemy, Player const &player, float deltaTime)
 {
-		btVector3 node = m_path.updateAndReturnCurrentNode(enemy, player);
-		btVector3 dir = node - enemy.getPositionBT();
-
-		dir = dir.normalize();
-		dir *= deltaTime / 1000.f;
-		dir *= 10;
-
-		enemy.getRigidBody()->translate(dir);
-
-		if ((node - enemy.getPositionBT()).length() < 0.3f)
-			m_path.setCurrentNode(m_path.getCurrentNode() + 1);
+		
 }
 
-void RangedBehavior::update(Enemy &enemy, Player const &player, float deltaTime)
+void RangedBehavior::update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
+	Player const &player, float deltaTime)
 {
 	// this is frame bound, fix it
-	RunIn in { &enemy, &player, this, deltaTime };
+	RunIn in { &enemy, closeEnemies, &player, this, deltaTime };
 	runTree(in);
 }
 
@@ -90,4 +86,9 @@ void RangedBehavior::updatePath(Entity const &from, Entity const &to)
 
 void RangedBehavior::debugRendering(Graphics::Renderer &renderer)
 {
+}
+
+SimplePathing RangedBehavior::getPath() const
+{
+	return m_path;
 }
