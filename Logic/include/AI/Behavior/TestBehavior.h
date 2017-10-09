@@ -14,7 +14,7 @@ namespace Logic
 		TestBehavior();
 		virtual ~TestBehavior();
 
-		virtual void update(Enemy &enemy, Player const &player, float deltaTime);
+		virtual void update(Enemy &enemy, std::vector<Enemy*> const &close, Player const &player, float deltaTime);
 		virtual void updatePath(Entity const &from, Entity const &to);
 		virtual void debugRendering(Graphics::Renderer &renderer);
 	};

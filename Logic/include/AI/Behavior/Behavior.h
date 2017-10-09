@@ -13,6 +13,7 @@ namespace Logic {
 		struct RunIn
 		{
 			Enemy *enemy;
+			std::vector<Enemy*> closeEnemies;
 			const Player *target;
 			Behavior *behavior;
 			float deltaTime;
@@ -45,9 +46,12 @@ namespace Logic {
 	public:
 		virtual ~Behavior();
 
-		virtual void update(Enemy &enemy, Player const &player, float deltaTime) = 0;
+		virtual void update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
+			Player const &player, float deltaTime) = 0;
 		virtual void updatePath(Entity const &from, Entity const &to) = 0;
 		virtual void debugRendering(Graphics::Renderer &renderer) = 0;
+
+		virtual void walkPath(SimplePathing pathing, RunIn &runIn);
 
 		void runTree(RunIn &in);
 		bool runNode(RunIn &in, BehaviorNode &node);

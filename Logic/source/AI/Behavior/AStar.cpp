@@ -8,6 +8,8 @@ using namespace Logic;
 
 AStar::AStar(std::string file)
 {
+	debugDataTri.points = nullptr;
+	debugDataEdges.points = nullptr;
 	// for testing
 	generateNavigationMesh();
 	targetIndex = -1;
@@ -15,8 +17,10 @@ AStar::AStar(std::string file)
 
 AStar::~AStar()
 {
-	delete debugDataTri.points;
-	delete debugDataEdges.points;
+	if (debugDataTri.points)
+		delete debugDataTri.points;
+	if (debugDataEdges.points)
+		delete debugDataEdges.points;
 }
 
 // returns nothing if on same triangle or an error occured

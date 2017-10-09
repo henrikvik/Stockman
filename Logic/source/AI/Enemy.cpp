@@ -43,7 +43,8 @@ void Enemy::setProjectileManager(ProjectileManager * projectileManager)
 	m_projectiles = projectileManager;
 }
 
-void Enemy::update(Player const &player, float deltaTime, bool updatePath) {
+void Enemy::update(Player const &player, float deltaTime,
+	std::vector<Enemy*> const &closeEnemies, bool updatePath) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 
@@ -51,7 +52,7 @@ void Enemy::update(Player const &player, float deltaTime, bool updatePath) {
 	{
 		if (updatePath)
 			m_behavior->updatePath(*this, player);
-		m_behavior->update(*this, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+		m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 	}
 
 	m_moveSpeedMod = 0.f; // Reset effect variables, should be in a separate function if more variables are added.

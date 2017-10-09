@@ -1,10 +1,28 @@
 #include <AI\Behavior\Behavior.h>
-#include <queue>
+#include <AI\Enemy.h>
 #include <Misc\RandomGenerator.h>
+
+#include <queue>
+
 using namespace Logic;
 
 Behavior::~Behavior()
 {
+}
+
+void Behavior::walkPath(SimplePathing pathing, RunIn &in)
+{
+	btVector3 node = pathing.updateAndReturnCurrentNode(*in.enemy, *in.target);
+	btVector3 dir = node - in.enemy->getPositionBT();
+
+	dir = dir.normalize();
+	dir *= in.deltaTime / 1000.f;
+	dir *= 10;
+
+	in.enemy->getRigidBody()->translate(dir);
+
+	if ((node - in.enemy->getPositionBT()).length() < 0.3f)
+		pathing.setCurrentNode(pathing.getCurrentNode() + 1);
 }
 
 void Behavior::runTree(RunIn &in)
