@@ -43,7 +43,7 @@ void TriggerManager::update(float deltaTime)
 	for (size_t i = 0; i < m_triggers.size(); i++)
 	{
 		Trigger* t = m_triggers[i];
-		t->update(deltaTime);
+		t->updateSpecific(deltaTime);
 		
 		// Remove triggers
 		if (t->getShouldRemove())

@@ -15,10 +15,11 @@
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
-#include "PostProccessor.h";
+#include "Glow.h";
 #include "SkyRenderer.h"
 #include "Menu.h"
 #include "HUD.h"
+#include "SSAORenderer.h"
 
 #include <SpriteBatch.h>
 
@@ -49,7 +50,7 @@ namespace Graphics
         DepthStencil depthStencil;
 
 		SkyRenderer skyRenderer;
-		PostProcessor postProcessor;
+		Glow postProcessor;
 
 		LightGrid grid;
 		DirectX::CommonStates *states;
@@ -70,25 +71,12 @@ namespace Graphics
         ID3D11RenderTargetView * backBuffer;
 
 
-
+		SSAORenderer ssaoRenderer;
         
 
 		ShaderResource fakeBackBuffer;
 		ShaderResource fakeBackBufferSwap;
 		ShaderResource glowMap;
-
-        ///// SUPER TEMP
-		ShaderResource ssaoOutput;
-		ShaderResource ssaoOutputSwap;
-		ComputeShader ssaoShader;
-		ComputeShader blurHorizontal;
-		ComputeShader blurVertical;
-		ComputeShader ssaoMerger;
-		ShaderResource normalTexture;
-		ID3D11ShaderResourceView * randomNormals;
-		void renderSSAO(Camera * camera);
-		void createSSAOSphere();
-
 
         ID3D11BlendState *transparencyBlendState;
 
@@ -126,7 +114,7 @@ namespace Graphics
         std::vector<RenderDebugInfo*> renderDebugQueue;
         StructuredBuffer<DirectX::SimpleMath::Vector3> debugPointsBuffer;
         ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
-        void renderDebugInfo();
+        void renderDebugInfo(Camera* camera);
 
     #pragma endregion
 

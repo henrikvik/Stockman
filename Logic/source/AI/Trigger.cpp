@@ -28,11 +28,15 @@ void Trigger::addEffects(const std::vector<StatusManager::EFFECT_ID>& effects)
 		this->getStatusManager().addStatus(eID, 1, true);
 }
 
-// Checks if the trigger is non-active, if so, update the cooldown
-void Trigger::updateSpecific(float deltaTime) 
+// Affects
+void Trigger::affect(int stacks, Effect const & effect, float deltaTime)
 {
-	Entity::update(deltaTime);
 
+}
+
+// Checks if the trigger is non-active, if so, update the cooldown
+void Trigger::updateSpecific(float deltaTime)
+{
 	if (!m_active)
 	{
 		m_cooldown -= deltaTime;

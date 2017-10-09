@@ -112,7 +112,7 @@ namespace Logic
 
 		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
-		void update(float deltaTime);
+		void updateSpecific(float deltaTime);
         void updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning);
 		void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 		void onCollision(Projectile& other);

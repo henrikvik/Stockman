@@ -84,6 +84,7 @@ namespace Logic
 
 		void renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body);
 		void renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRigidBody* body);
+		btRigidBody* initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, bool isSensor);
 	};
 }
 

@@ -100,7 +100,7 @@ void Player::onCollision(Projectile& other)
 		takeDamage(other.getProjectileData().damage);
 }
 
-void Player::affect(int stacks, Effect const & effect, float deltaTime)
+void Player::affect(int stacks, Effect const &effect, float deltaTime)
 {
 	long long flags = effect.getStandards()->flags;
 
@@ -151,10 +151,9 @@ int Player::getHP() const
 	return m_hp;
 }
 
-void Player::update(float deltaTime)
+void Player::updateSpecific(float deltaTime)
 {
-	// Updates the player's status manager and graphical stuff
-	Entity::update(deltaTime);
+	Player::update(deltaTime);
 
     //updates hudInfo with the current info
     info.hp = m_hp;
@@ -180,8 +179,6 @@ void Player::update(float deltaTime)
         info.cd = 1.0f;
     }
     
-
-
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
