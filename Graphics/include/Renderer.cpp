@@ -145,6 +145,7 @@ namespace Graphics
         cull();
         writeInstanceData();
 
+		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
 		skyRenderer.drawShadows(deviceContext, &forwardPlus);
 		draw();
@@ -170,7 +171,6 @@ namespace Graphics
 
         deviceContext->PSSetShader(nullptr, nullptr, 0);
         deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
-        deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 
         draw();
 
