@@ -33,7 +33,7 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
+	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(Player::startPosition, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 
 	// Initializing Menu's
@@ -83,6 +83,14 @@ void Game::clear()
 	delete m_projectileManager;
 }
 
+void Logic::Game::reset()
+{
+	/*m_entityManager.clear();*/
+	m_player->reset();
+	m_waveTimer = NULL;
+	m_waveCurrent = WAVE_START;
+}
+
 // Keeps check on which wave the game is on, and spawns incoming waves
 void Game::waveUpdater()
 {
@@ -117,23 +125,25 @@ void Game::update(float deltaTime)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-		if (m_menu->getStateToBe() != GameState::gameStateGame && m_menu->getStateToBe() != GameState::gameStateDefault)
+		if (m_menu->getStateToBe() != GameState::gameStateDefault)
 		{
 			m_menu->update(m_gameTime.dt);
 		}
-		waveUpdater();
-		m_player->update(m_gameTime.dt);
-		m_physics->update(m_gameTime);
-		m_entityManager.update(*m_player, m_gameTime.dt);
-		m_map->update(m_gameTime.dt);
-		m_projectileManager->update(m_gameTime.dt);
+		else
+		{
+			waveUpdater();
+			m_player->updateSpecific(m_gameTime.dt);
+			m_physics->update(m_gameTime);
+			m_entityManager.update(*m_player, m_gameTime.dt);
+			m_map->update(m_gameTime.dt);
+			m_projectileManager->update(m_gameTime.dt);
+		}
 
 		if (m_player->getHP() <= 0 && m_menu->currentState() == GameState::gameStateGame)
 		{
 			printf("You ded bro.\n");
 			m_highScoreManager->addNewHighScore();
 			m_menu->setStateToBe(GameState::gameStateGameOver);
-			m_player->takeDamage(-3); // THIS IS A TEMPORARY FIX; A REAL RESET FUNCION MUST BE ADDED TODO TODO TODO
 
 			for(int i = 0; i < 10; i++)
 			{
@@ -146,17 +156,23 @@ void Game::update(float deltaTime)
 					break;
 				}
 			}
+			reset();
 		}
 
 		break;
 
 	case gameStateLoading:
+		m_menu->update(m_gameTime.dt);
+		break;
 	case gameStateMenuMain:
+		m_menu->update(m_gameTime.dt);
+		break;
 	case gameStateMenuSettings:
+		m_menu->update(m_gameTime.dt);
+		break;
 	case gameStateGameOver:
 		//Add special triggers to show the scores on the side
 		m_menu->update(m_gameTime.dt);
-	default: m_menu->update(m_gameTime.dt);
 		break;
 	}
 }

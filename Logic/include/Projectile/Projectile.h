@@ -21,6 +21,7 @@ namespace Logic
 		void updateSpecific(float deltaTime);
 		void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 		void upgrade(Upgrade const &upgrade);
+		void affect(int stacks, Effect const & effect, float deltaTime);
 
 		ProjectileType getType() const;
 		ProjectileData& getProjectileData();
