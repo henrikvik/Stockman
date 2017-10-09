@@ -49,8 +49,15 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
 		upgrade(statusManager.getUpgrade(id));
 }
 
+void Projectile::affect(int stacks, Effect const & effect, float deltaTime)
+{
+
+}
+
 void Projectile::updateSpecific(float deltaTime)
 {
+	Projectile::update(deltaTime);
+
 	m_pData.ttl -= deltaTime;
 }
 
@@ -64,7 +71,7 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 	{
 		
 	}
-	else if (p && m_pData.enemyBullet)
+	else
 	{
 		m_remove = true;
 

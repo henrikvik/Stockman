@@ -360,7 +360,7 @@ void Profiler::render()
 			temp.yoffset = y;
 
 			if (thread.count >= 1) {
-				RenderEventNodes(thread, frame.start, 0, 0, threads_open[i]);
+				RenderEventNodes(thread, frame.start, 0, 0, true);
 			}
 
 			if (threads_open[i])

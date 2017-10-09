@@ -19,7 +19,7 @@ namespace Logic
 		virtual void clear();
 		virtual void update(float deltaTime);
 
-		virtual void affect(int stacks, Effect const &effect, float deltaTime);	
+		virtual void affect(int stacks, Effect const &effect, float deltaTime) = 0;
 		virtual void upgrade(Upgrade const &upgrade);
 
 		StatusManager& getStatusManager();

@@ -173,24 +173,10 @@ btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 	// Creating the specific shape
 	btCollisionShape* shape = new btBoxShape(cube.getDimensions());
 
-	// Calculating the Inertia
-	btVector3 localInertia(0, 0, 0);
-	if (mass != 0.f)
-		shape->calculateLocalInertia(mass, localInertia);
-
 	// Creating the actual body
-	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, localInertia);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
+	btRigidBody* body = initBody(constructionInfo, isSensor);
 	shape->setUserPointer(body);
-
-	// If the body is a trigger
-	if (isSensor)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(1.f);
-	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
 	this->addRigidBody(body);
@@ -210,17 +196,8 @@ btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	btRigidBody* body = initBody(constructionInfo, isSensor);
 	shape->setUserPointer(body);
-
-	// If the body is a trigger
-	if (isSensor)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(1.0f);
-	body->setSleepingThresholds(0, 0);
 
 	// Adding body to the world
 	this->addRigidBody(body);
@@ -240,17 +217,8 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	btRigidBody* body = initBody(constructionInfo, isSensor);
 	shape->setUserPointer(body);
-
-	// If the body is a trigger
-	if (isSensor)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(1.f);
-	body->setSleepingThresholds(0, 0);	
 
 	// Adding body to the world
 	this->addRigidBody(body);
@@ -270,22 +238,8 @@ btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isS
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	btRigidBody* body = initBody(constructionInfo, isSensor);
 	shape->setUserPointer(body);
-
-	// If the body is a trigger
-	if (isSensor)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(1.f);
-	body->setSleepingThresholds(0, 0);
-	body->setDamping(0.f, 0.f);
-
-	// Making the cylinder a kinematic body
-	//body->setCollisionFlags(body->getCollisionFlags() | btRigidBody::CF_KINEMATIC_OBJECT | btRigidBody::CF_STATIC_OBJECT);
-	body->setActivationState(DISABLE_DEACTIVATION);
 
 	// Adding body to the world
 	this->addRigidBody(body);
@@ -305,18 +259,8 @@ btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = new btRigidBody(constructionInfo);
+	btRigidBody* body = initBody(constructionInfo, isSensor);
 	shape->setUserPointer(body);
-
-	// If the body is a trigger
-	if (isSensor)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(0.f);
-	body->setSleepingThresholds(0, 0);
-	body->setDamping(0.0f, 0.0f);
 
 	// Adding body to the world
 	this->addRigidBody(body);
@@ -346,6 +290,23 @@ void Physics::render(Graphics::Renderer & renderer)
 	}
 }
 
+btRigidBody* Physics::initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, bool isSensor)
+{
+	btRigidBody* body = new btRigidBody(constructionInfo);
+
+	// If the body is a trigger
+	if (isSensor)
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
+	// Specifics
+	body->setRestitution(0.0f);
+	body->setFriction(0.f);
+	body->setSleepingThresholds(0, 0);
+	body->setDamping(0.0f, 0.0f);
+
+	return body;
+}
+
 // Render a debug with help of it's vertices
 void Physics::renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body)
 {
@@ -353,7 +314,6 @@ void Physics::renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBo
 	btVector3 center = body->getWorldTransform().getOrigin();
 	btQuaternion q = body->getWorldTransform().getRotation();
 	DirectX::SimpleMath::Matrix quaternion = DirectX::SimpleMath::Matrix::CreateFromQuaternion(DirectX::SimpleMath::Quaternion(q));
-
 
 	// Front side
 	for (int i = 0; i < bs->getNumVertices() - 1; i++)
