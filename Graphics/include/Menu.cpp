@@ -56,7 +56,7 @@ void Graphics::Menu::loadTextures(ID3D11Device * device, ID3D11DeviceContext * c
     if (loaded == false)
     {
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("menuTexture.png"), nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuTexture.png"), nullptr, &menuTexture));
 
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("button.png"), nullptr, &buttonTexture));
         loaded = true;
