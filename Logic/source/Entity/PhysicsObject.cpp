@@ -72,6 +72,10 @@ void PhysicsObject::updatePhysics(float deltaTime)
 			btVector3 mainOrigin = m_transform->getOrigin();
 			btVector3 newOrigin = mainOrigin + m_weakPointOffset;
 			part->getWorldTransform().setOrigin(newOrigin);
+
+			// Rotate the head around himself
+			//btMatrix3x3 rotation = m_transform->getBasis();
+			//part->getWorldTransform().setOrigin(rotation * newOrigin);
 		}
 	}
 

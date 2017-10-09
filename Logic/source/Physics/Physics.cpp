@@ -172,10 +172,15 @@ btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 
 	// Creating the specific shape
 	btCollisionShape* shape = new btBoxShape(cube.getDimensions());
+	
+	btVector3 localInertia(0, 0, 0);
+	if (mass != 0.f)
+		shape->calculateLocalInertia(mass, localInertia);
 
 	// Creating the actual body
-	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = initBody(constructionInfo, isSensor);
+	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, localInertia);
+	BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+	btRigidBody* body = initBody(constructionInfo, specifics);
 	shape->setUserPointer(body);
 
 	// Adding body to the world
@@ -196,7 +201,8 @@ btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = initBody(constructionInfo, isSensor);
+	BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+	btRigidBody* body = initBody(constructionInfo, specifics);
 	shape->setUserPointer(body);
 
 	// Adding body to the world
@@ -217,7 +223,8 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = initBody(constructionInfo, isSensor);
+	BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+	btRigidBody* body = initBody(constructionInfo, specifics);
 	shape->setUserPointer(body);
 
 	// Adding body to the world
@@ -238,7 +245,8 @@ btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isS
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = initBody(constructionInfo, isSensor);
+	BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+	btRigidBody* body = initBody(constructionInfo, specifics);
 	shape->setUserPointer(body);
 
 	// Adding body to the world
@@ -259,7 +267,8 @@ btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
 
 	// Creating the actual body
 	btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape);
-	btRigidBody* body = initBody(constructionInfo, isSensor);
+	BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+	btRigidBody* body = initBody(constructionInfo, specifics);
 	shape->setUserPointer(body);
 
 	// Adding body to the world
@@ -285,24 +294,28 @@ void Physics::render(Graphics::Renderer & renderer)
 			renderCube(renderer, bs, body);
 
 		// Render Spheres
-		if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
+		else if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
 			renderSphere(renderer, ss, body);
+
+		// Render Capsules
+		else if (btCapsuleShape* cs = dynamic_cast<btCapsuleShape*>(shape))
+			renderCapsule(renderer, cs, body);
 	}
 }
 
-btRigidBody* Physics::initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, bool isSensor)
+btRigidBody* Physics::initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, BodySpecifics specifics)
 {
 	btRigidBody* body = new btRigidBody(constructionInfo);
 
 	// If the body is a trigger
-	if (isSensor)
+	if (specifics.isSensor)
 		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
 	// Specifics
-	body->setRestitution(0.0f);
-	body->setFriction(0.f);
-	body->setSleepingThresholds(0, 0);
-	body->setDamping(0.0f, 0.0f);
+	body->setRestitution(specifics.restitution);
+	body->setFriction(specifics.friction);
+	body->setSleepingThresholds(specifics.sleepingThresholds.x, specifics.sleepingThresholds.y);
+	body->setDamping(specifics.damping.x, specifics.damping.y);
 
 	return body;
 }
@@ -404,6 +417,13 @@ void Physics::renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRi
 	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() + r, origin.z() - r));
 	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + r, origin.y() - r, origin.z() - r));
 	renderDebug.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - r, origin.y() - r, origin.z() - r));
+
+	renderer.queueRenderDebug(&renderDebug);
+}
+
+// Draws a cube around the capsule
+void Physics::renderCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btRigidBody* body)
+{
 
 	renderer.queueRenderDebug(&renderDebug);
 }

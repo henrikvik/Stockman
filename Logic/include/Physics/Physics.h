@@ -44,8 +44,25 @@
 
 #define PHYSICS_GRAVITY 9.82f * 2.f
 
+#define DEFAULT_F 0.5f
+#define DEFAULT_R 0 
+#define DEFAULT_S { 0, 0 }
+#define DEFAULT_D { 0, 0 }
+
 namespace Logic
 {
+	struct BodySpecifics
+	{
+		BodySpecifics(float restitution, float friction, DirectX::SimpleMath::Vector2 sleepingThresholds, DirectX::SimpleMath::Vector2 damping, bool isSensor)
+			: isSensor(isSensor), restitution(restitution), friction(friction), sleepingThresholds(sleepingThresholds), damping(damping) { }
+
+		bool isSensor;
+		float restitution; 
+		float friction;
+		DirectX::SimpleMath::Vector2 sleepingThresholds;
+		DirectX::SimpleMath::Vector2 damping;
+	};
+
 	class Physics : public btDiscreteDynamicsWorld
 	{
 	public:
@@ -84,7 +101,8 @@ namespace Logic
 
 		void renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body);
 		void renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRigidBody* body);
-		btRigidBody* initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, bool isSensor);
+		void renderCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btRigidBody* body);
+		btRigidBody* initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, BodySpecifics specifics);
 	};
 }
 
