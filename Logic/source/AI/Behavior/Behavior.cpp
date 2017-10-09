@@ -1,6 +1,7 @@
 #include <AI\Behavior\Behavior.h>
 #include <AI\Enemy.h>
 #include <Misc\RandomGenerator.h>
+#define MAX_SPEED 10.f // testing
 
 #include <queue>
 
@@ -14,15 +15,51 @@ void Behavior::walkPath(SimplePathing pathing, RunIn &in)
 {
 	btVector3 node = pathing.updateAndReturnCurrentNode(*in.enemy, *in.target);
 	btVector3 dir = node - in.enemy->getPositionBT();
-
-	dir = dir.normalize();
-	dir *= in.deltaTime / 1000.f;
-	dir *= 10;
+	
+	boidCalculations(in.enemy->getPositionBT(), 
+		dir, in.closeEnemies, MAX_SPEED, in.deltaTime);
 
 	in.enemy->getRigidBody()->translate(dir);
 
 	if ((node - in.enemy->getPositionBT()).length() < 0.3f)
 		pathing.setCurrentNode(pathing.getCurrentNode() + 1);
+}
+
+void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
+	std::vector<Enemy*> const &close, float maxSpeed, float dt)
+{
+	btVector3 sep, align, cohes;
+	if (close.size() == 0)
+		return; // just move
+	// make the vectors
+	for (auto const &enemy : close)
+	{
+		align += enemy->getRigidBody()->getLinearVelocity();
+
+		cohes += enemy->getPositionBT();
+
+		sep += pos - enemy->getPositionBT(); // to steer away
+	}
+	
+	// SEPERATION (Steer away from the group)
+	cohes /= close.size();
+	cohes = cohes - pos;
+	cohes = cohes.normalize();
+
+	// ALIGNMENT (Have same vel as group)
+	align /= close.size();
+	align = align.normalize();
+
+	// COHESION (Stay towards group position)
+	sep /= close.size();
+	sep = sep.normalize();
+
+	// RET
+	dir += cohes + align + sep;
+	dir.normalize();
+	dir *= maxSpeed;
+	dir *= dt / 1000.f;
+	dir.setY(0); // right now y should not be changed
 }
 
 void Behavior::runTree(RunIn &in)

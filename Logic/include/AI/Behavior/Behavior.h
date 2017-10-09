@@ -52,6 +52,8 @@ namespace Logic {
 		virtual void debugRendering(Graphics::Renderer &renderer) = 0;
 
 		virtual void walkPath(SimplePathing pathing, RunIn &runIn);
+		virtual void boidCalculations(btVector3 &pos, btVector3 &dir,
+			std::vector<Enemy*> const &close, float maxSpeed, float dt);
 
 		void runTree(RunIn &in);
 		bool runNode(RunIn &in, BehaviorNode &node);
