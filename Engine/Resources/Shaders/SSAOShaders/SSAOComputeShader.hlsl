@@ -2,16 +2,16 @@
 Texture2D depthTexture : register(t0);
 Texture2D randomNormalTexture : register(t1);
 Texture2D normalTexture : register(t2);
-RWTexture2D<unorm float4> output: register(u0);
+RWTexture2D<unorm float> output: register(u0);
 SamplerState Sampler : register(s0);
 SamplerState RandomSampler : register(s1);
 
 #define RANDOM_SIZE 256
-#define SAMPLE_RADIUS 2.f
+#define SAMPLE_RADIUS 0.5f
 #define INTENSITY 5.0
 #define SCALE 1.f
 #define BIAS 0.3f
-#define ITERATIONS 2
+#define ITERATIONS 4
 
 
 cbuffer Camera : register(b0)
@@ -101,6 +101,4 @@ void CS( uint3 DTid : SV_DispatchThreadID )
     occlusion /= float(ITERATIONS) * 4.0;
     
     output[DTid.xy] = saturate(1 - occlusion);
-    //output[DTid.xy] = float4(normalTexture.SampleLevel(Sampler, uv, 0).xyz, 1);
-
 }
