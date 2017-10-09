@@ -24,8 +24,6 @@ void Entity::update(float deltaTime)
 	m_statusManager.update(deltaTime);
 }
 
-void Entity::affect(int stacks, Effect const &effect, float dt) { }
-
 void Entity::upgrade(Upgrade const & upgrade) { }
 
 StatusManager& Entity::getStatusManager()
