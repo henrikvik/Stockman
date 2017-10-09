@@ -28,6 +28,14 @@ void WeaponManager::clear()
 	m_allWeapons.clear();
 }
 
+void Logic::WeaponManager::reset()
+{
+	for (int i = 0; i < m_allWeapons.size(); i++)
+	{
+		m_allWeapons[i].reset();
+	}
+}
+
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
 	// Updating weapon model

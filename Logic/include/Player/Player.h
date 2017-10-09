@@ -112,6 +112,7 @@ namespace Logic
 
 		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
+		void reset();
 		void updateSpecific(float deltaTime);
         void updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning);
 		void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
@@ -133,6 +134,8 @@ namespace Logic
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 		btVector3 getMoveDirection();
+
+		static btVector3 startPosition;
 	};
 
 }

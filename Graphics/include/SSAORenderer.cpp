@@ -5,8 +5,8 @@ namespace Graphics
 {
 	SSAORenderer::SSAORenderer(ID3D11Device * device):
 		normalTexture(device, WIN_WIDTH, WIN_HEIGHT),
-		ssaoOutput(device, WIN_WIDTH, WIN_HEIGHT),
-		ssaoOutputSwap(device, WIN_WIDTH, WIN_HEIGHT),
+		ssaoOutput(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8_UNORM),
+		ssaoOutputSwap(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8_UNORM),
 		ssaoShader(device, SHADER_PATH("SSAOShaders/SSAOComputeShader.hlsl")),
 		blurHorizontal(device, SHADER_PATH("SSAOShaders/GaussianBlurHorizontal.hlsl")),
 		blurVertical(device, SHADER_PATH("SSAOShaders/GaussianBlurVertical.hlsl")),
