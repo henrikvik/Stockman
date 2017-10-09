@@ -59,8 +59,6 @@ void Physics::clear()
 
 void Physics::update(GameTime gameTime)
 {
-	
-	
 	// Stepping the physics
 	PROFILE_BEGIN("Stepping Physics");
 
