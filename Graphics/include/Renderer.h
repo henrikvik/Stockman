@@ -19,6 +19,7 @@
 #include "SkyRenderer.h"
 #include "Menu.h"
 #include "HUD.h"
+#include "SSAORenderer.h"
 
 #include <SpriteBatch.h>
 
@@ -70,25 +71,12 @@ namespace Graphics
         ID3D11RenderTargetView * backBuffer;
 
 
-
+		SSAORenderer ssaoRenderer;
         
 
 		ShaderResource fakeBackBuffer;
 		ShaderResource fakeBackBufferSwap;
 		ShaderResource glowMap;
-
-        ///// SUPER TEMP
-		ShaderResource ssaoOutput;
-		ShaderResource ssaoOutputSwap;
-		ComputeShader ssaoShader;
-		ComputeShader blurHorizontal;
-		ComputeShader blurVertical;
-		ComputeShader ssaoMerger;
-		ShaderResource normalTexture;
-		ID3D11ShaderResourceView * randomNormals;
-		void renderSSAO(Camera * camera);
-		void createSSAOSphere();
-
 
         ID3D11BlendState *transparencyBlendState;
 
