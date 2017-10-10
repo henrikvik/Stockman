@@ -33,7 +33,7 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
 	}
 }
 
-void EnemyNecromancer::onCollision(Player & other)
+void EnemyNecromancer::onCollision(Player &other)
 {
 
 }
@@ -44,16 +44,20 @@ void EnemyNecromancer::updateSpecific(Player const & player, float deltaTime)
 
 void EnemyNecromancer::updateDead(float deltaTime)
 {
+	Entity::update(deltaTime);
 }
 
 void EnemyNecromancer::useAbility(Entity const &target)
 {
-	if (RandomGenerator::singleton().getRandomInt(0, 1))
+	if (RandomGenerator::singleton().getRandomInt(0, 1000))
 	{
-		spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::GRASS, SPEED_AB2);
-	}
-	else
-	{
-		spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::ENEMYGRUNT, SPEED_AB1);
+		if (RandomGenerator::singleton().getRandomInt(0, 1))
+		{
+			spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::GRASS, SPEED_AB2);
+		}
+		else
+		{
+			spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::ENEMYGRUNT, SPEED_AB1);
+		}
 	}
 }

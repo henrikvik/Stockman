@@ -195,7 +195,6 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="Resources\Shaders\ShaderConstants.h" />
     <ClInclude Include="Profiler.h" />
   </ItemGroup>
   <ItemGroup>

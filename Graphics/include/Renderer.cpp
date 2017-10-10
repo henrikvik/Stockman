@@ -33,14 +33,16 @@ namespace Graphics
 		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
 		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
+#pragma region RenderDebugInfo
+		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
+		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
+		, debugColorBuffer(device)
+#pragma endregion
+		, fog(device)
+		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
         ,menu(device, deviceContext)
         ,hud(device, deviceContext)
 		,ssaoRenderer(device)
-    #pragma region RenderDebugInfo
-        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
-        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
-        , debugColorBuffer(device)
-    #pragma endregion
 
 	{
 		this->device = device;
@@ -228,10 +230,11 @@ namespace Graphics
 		{
 			fakeBackBuffer,
 			glowMap,
-			*ssaoRenderer.getNormalShaderResource()
+			*ssaoRenderer.getNormalShaderResource(),
+			worldPosMap
 		};
 
-		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
+		deviceContext->OMSetRenderTargets(4, rtvs, depthStencil);
 		
 		draw();
 		skyRenderer.renderSky(deviceContext, camera);
@@ -258,11 +261,11 @@ namespace Graphics
 		PROFILE_END();
 
 		PROFILE_BEGIN("SSAO");
-		//ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+		ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
 		PROFILE_END();
 		
 		PROFILE_BEGIN("DrawToBackBuffer");
-		drawToBackbuffer(fakeBackBufferSwap);
+		drawToBackbuffer(fakeBackBuffer);
 		PROFILE_END();
 
 		PROFILE_BEGIN("HUD");
@@ -272,6 +275,8 @@ namespace Graphics
 		PROFILE_BEGIN("DebugInfo");
 		renderDebugInfo(camera);
 		PROFILE_END();
+		fog.renderFog(deviceContext, backBuffer, worldPosMap);
+        drawGUI();
     }
 
 
@@ -323,7 +328,10 @@ namespace Graphics
         {
             if (info->render)
             {
-                instanceQueue[info->meshId].push_back({ info->translation });
+                instanceQueue[info->meshId].push_back({ 
+					info->translation,
+					info->translation.Invert().Transpose()
+				});
             }
         }
         renderQueue.clear();

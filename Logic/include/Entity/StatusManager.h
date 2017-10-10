@@ -48,6 +48,16 @@ namespace Logic
 		void addUpgrade(UPGRADE_ID id);
 		Upgrade& getUpgrade(UPGRADE_ID id);
 
+		const Effect& getEffect(EFFECT_ID id) const;
+
+		/* returns 0 if effect is not active
+		this is O(n) BUT it should NEVER be called ONCE PER FRAME
+		use affect() then instead 
+		
+		Don
+		*/
+		int getStacksOfEffectFlag(Effect::EFFECT_FLAG flag) const;
+
 		// nr of stacks and the effect itself
 		std::vector<std::pair<int, Effect*>> getActiveEffects();
 		// return stack and id of effect
@@ -61,7 +71,6 @@ namespace Logic
 		// m_effectStacksIds[i] = id of the effect at m_effectsStacks[i]
 		std::vector<EffectStack> m_effectStacks; // fast loop speed bad lookup, but worth it? :<
 		std::vector<StatusManager::EFFECT_ID> m_effectStacksIds; // mike acton approved (i hop)
-
 
 		void removeEffect(int index);
 

@@ -26,6 +26,7 @@
     <ClCompile Include="include\Animation\Skeleton.cpp" />
     <ClCompile Include="include\Camera.cpp" />
     <ClCompile Include="include\HUD.cpp" />
+    <ClCompile Include="include\Fog.cpp" />
     <ClCompile Include="include\Lights\Sun.cpp" />
     <ClCompile Include="include\Lights\LightGrid.cpp" />
     <ClCompile Include="include\Menu.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="include\Animation\Skeleton.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Datatypes.h" />
+    <ClInclude Include="include\Fog.H" />
     <ClInclude Include="include\Graphics.h" />
     <ClInclude Include="include\HUD.h" />
     <ClInclude Include="include\Lights\Sun.h" />

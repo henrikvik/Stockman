@@ -9,6 +9,7 @@ using namespace Logic;
 #include <AI/EnemyTest.h>
 #include <AI/EnemyNecromancer.h>
 #include <AI/Behavior/AStar.h>
+#include <DebugDefines.h>
 
 #include <Engine\Profiler.h>
 #include <Misc\RandomGenerator.h>
@@ -49,7 +50,6 @@ void EntityManager::deleteData()
 void EntityManager::update(Player const &player, float deltaTime) 
 {
 	m_frame++;
-//	PROFILE_BEGIN("EntityManager::update()");
 	
 	AStar::singleton().loadTargetIndex(player);
 
@@ -65,8 +65,6 @@ void EntityManager::update(Player const &player, float deltaTime)
 	}
 
 	m_triggerManager.update(deltaTime);
-
-//	PROFILE_END();
 }
 
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime,
@@ -95,6 +93,7 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 		{
 			// Adds the score into the combo machine
 			ComboMachine::Get().Kill(Enemy::ENEMY_TYPE(enemy->getEnemyType()));
+			enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
 
 			m_deadEnemies.push_back(enemy);
 			std::swap(m_enemies[index][i],
@@ -174,7 +173,7 @@ void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
 void EntityManager::spawnTrigger(int id, btVector3 const &pos,
 	std::vector<int> &effects, Physics &physics, ProjectileManager *projectiles)
 {
-	// this is unefficient, could prolly be optimized but should be done once per wave load
+	// this is unefficient, could prolly be optimized but should only be done once per wave load
 	std::vector<StatusManager::EFFECT_ID> effectsIds;
 	effectsIds.reserve(effects.size());
 	for (auto const &effect : effects)
@@ -224,7 +223,9 @@ void EntityManager::render(Graphics::Renderer &renderer)
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
-		m_deadEnemies[i]->render(renderer);
+	#ifndef _DISABLE_RENDERING_DEAD_ENEMIES
+			m_deadEnemies[i]->render(renderer);
+	#endif
 	}
 
 	m_triggerManager.render(renderer);

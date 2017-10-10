@@ -64,6 +64,7 @@ namespace Graphics
 	struct InstanceData
 	{
 		DirectX::SimpleMath::Matrix translation;
+		DirectX::SimpleMath::Matrix invTranspose;
 	};
 
 	struct ButtonInfo
@@ -72,14 +73,14 @@ namespace Graphics
 		DirectX::SimpleMath::Vector2 m_texCoordStart;
 		DirectX::SimpleMath::Vector2 m_texCoordEnd;
         float activeoffset;
-		std::string m_texture;
+        int textureIndex;
 		bool pressed;
 	};
 
 	struct MenuInfo
 	{
 		std::vector<ButtonInfo> m_buttons;		//< List of buttons on current menu
-		std::string m_menuTexture;			//< file path for the menu background ska bytas till enums
+		int m_menuTexture;			
 	};
 
     struct TriangleVertex
