@@ -82,9 +82,12 @@ VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
     output.pos = mul(ViewProjection, output.worldPos);
 
 	output.uv = input.uv;
-    output.normal = mul(world, float4(input.normal, 0));
+
+    //Temporary fix until normals are RH
+    input.normal.z *= -1;
+
     
-    //output.normal = mul(invWorldT, float4(input.normal, 0));
+    output.normal = mul(invWorldT, float4(input.normal, 0));
     output.normal = normalize(output.normal);
 
     output.lightPos = output.worldPos + float4(output.normal * 0.15f, 0);
@@ -213,7 +216,7 @@ PSOutput PS(VSOutput input) {
 
     float3 lighting = saturate(finalDiffuse + finalSpecular + ambient);
     
-    output.backBuffer = float4(input.normal.xyz, 1);
+    output.backBuffer = float4(lighting, 1);
     output.glowMap = glowMap.Sample(Sampler, input.uv);
     //Varför inte vertex shader?
     output.normalView = float4(mul(View, input.normal).xyz, 1);
