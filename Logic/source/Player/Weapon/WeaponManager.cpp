@@ -85,10 +85,10 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ m_projectileManager, ProjectileData(1, 0.2, 1, 100, 1.f, 3000, Graphics::ModelID::CUTTLERY, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 1, 2000 },		// Gattling prim
-		{ m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 1.f, 500, Graphics::ModelID::CUTTLERY, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 1, 2000 },		// Gattling sec
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 0, 500, Graphics::ModelID::CUBE, 1), 2, 100, 100, 50, 50, 1, 1, 0, 0, 750, 1, 3000 },		// Freeze prim
-		{ m_projectileManager, ProjectileData(1, 1, 1, 80, 8, 5000, Graphics::ModelID::CUBE, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000 },		// Freeze sec
+		{ m_projectileManager, ProjectileData(1, 0.2, 1, 50, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 1, 2000 },		// Gattling prim
+		{ m_projectileManager, ProjectileData(1, 0.1f, 1, 50, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 1, 2000 },		// Gattling sec
+		{ m_projectileManager, ProjectileData(1, 1, 1, 1, 0, 500, Graphics::ModelID::CUBE, 1), 2, 100, 100, 50, 50, 1, 1, 0, 0, 750, 1, 3000 },		// Freeze prim
+		{ m_projectileManager, ProjectileData(1, 1, 1, 8, 5, 5000, Graphics::ModelID::CUBE, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000 },		// Freeze sec
 		{ m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1), 4, 0, 0, 0, 0, 0, 1, 0, 0, 50, 1, 3000 },				// Sledge prim
 		{ m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1), 5, 0, 0, 0, 0, 0, 1, 0, 0, 50, 1, 3000 }					// Sledge sec
 	};

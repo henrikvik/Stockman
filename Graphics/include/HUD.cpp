@@ -172,16 +172,16 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
     GUIquad[16].element = 2;
     GUIquad[17].element = 2;
 
-    GUIquad[18].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x - 50 + 24) / WIN_WIDTH )- 1,  2 * (float)((WIN_HEIGHT - cdPos.y - 50 -14) / WIN_HEIGHT) - 1 };
+    GUIquad[18].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x - 31 + 29) / WIN_WIDTH )- 1,  2 * (float)((WIN_HEIGHT - cdPos.y - 31 -14) / WIN_HEIGHT) - 1 };
     GUIquad[18].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
 
-    GUIquad[19].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x - 50 + 24 ) / WIN_WIDTH) - 1,  2 * (float)((WIN_HEIGHT - cdPos.y + 50 -14) / WIN_HEIGHT) - 1 };
+    GUIquad[19].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x - 31 + 29 ) / WIN_WIDTH) - 1,  2 * (float)((WIN_HEIGHT - cdPos.y + 31 -14) / WIN_HEIGHT) - 1 };
     GUIquad[19].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
-    GUIquad[20].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x + 50 + 24) / WIN_WIDTH) - 1,  2 * (float)((WIN_HEIGHT - cdPos.y - 50 -14) / WIN_HEIGHT) - 1 };
+    GUIquad[20].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x + 31 + 29) / WIN_WIDTH) - 1,  2 * (float)((WIN_HEIGHT - cdPos.y - 31 -14) / WIN_HEIGHT) - 1 };
     GUIquad[20].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
 
-    GUIquad[21].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x + 50 + 24) / WIN_WIDTH) - 1,   2 * (float)((WIN_HEIGHT -cdPos.y + 50 -14) / WIN_HEIGHT) - 1 };
+    GUIquad[21].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x + 31 + 29) / WIN_WIDTH) - 1,   2 * (float)((WIN_HEIGHT -cdPos.y + 31 -14) / WIN_HEIGHT) - 1 };
     GUIquad[21].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
 
     GUIquad[22].verts = GUIquad[20].verts;
@@ -285,7 +285,11 @@ void Graphics::HUD::renderHUDText()
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2, DirectX::Colors::Red);
     }
-    int tempInt = (currentInfo->cd)* 100;
+    int tempInt = (1 - currentInfo->cd)* 100;
+    if (tempInt == 0)
+    {
+        tempInt = 100;
+    }
     temp = (std::to_wstring(tempInt));
     temp += L"%";
     sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos, DirectX::Colors::Red);

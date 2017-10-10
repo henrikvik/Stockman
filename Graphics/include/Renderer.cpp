@@ -258,11 +258,11 @@ namespace Graphics
 		PROFILE_END();
 
 		PROFILE_BEGIN("SSAO");
-		ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+		//ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
 		PROFILE_END();
 		
 		PROFILE_BEGIN("DrawToBackBuffer");
-		drawToBackbuffer(fakeBackBuffer);
+		drawToBackbuffer(fakeBackBufferSwap);
 		PROFILE_END();
 
 		PROFILE_BEGIN("HUD");
@@ -425,7 +425,7 @@ namespace Graphics
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
         deviceContext->RSSetViewports(1, &viewPort);
-        menu.drawMenu(device, deviceContext, info, backBuffer);
+        menu.drawMenu(device, deviceContext, info, backBuffer, transparencyBlendState);
 
     }
 

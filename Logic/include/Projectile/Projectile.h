@@ -23,15 +23,14 @@ namespace Logic
 		void upgrade(Upgrade const &upgrade);
 		void affect(int stacks, Effect const & effect, float deltaTime);
 
-		ProjectileType getType() const;
 		ProjectileData& getProjectileData();
 
 		void toRemove();
 		bool shouldRemove() const;
 
 	private:
-		ProjectileType m_type;
 		ProjectileData m_pData;
+		float m_speedMod;
 		bool m_remove;
 	};
 }

@@ -3,7 +3,7 @@
 using namespace Logic;
 
 SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData)
-: Skill(BULLET_TIME_CD)
+	: Skill(BULLET_TIME_CD, BULLET_TIME_DURATION)
 {
 	m_projectileData = pData;
 	m_projectileManager = projectileManager;
@@ -21,6 +21,18 @@ void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 	bodySensor->setLinearVelocity(btVector3(0.f, 0.f, 0.f));
 	bodySensor->setCollisionFlags(bodySensor->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
+	slowDownIntervals.clear();
+	speedUpIntervals.clear();
+	for (int i = BULLET_TIME_SMOOTHNESS_INTERVAL + 1; --i;)
+	{
+		slowDownIntervals.push_back(i * ((BULLET_TIME_SLOW_DOWN_DURATION) / BULLET_TIME_SMOOTHNESS_INTERVAL) + BULLET_TIME_DURATION - BULLET_TIME_SLOW_DOWN_DURATION);
+	}
+
+	for (int i = BULLET_TIME_SMOOTHNESS_INTERVAL + 1; --i;)
+	{
+		speedUpIntervals.push_back(i * (BULLET_TIME_SPEED_UP_DURATION / BULLET_TIME_SMOOTHNESS_INTERVAL));
+	}
+
 	/*ProjectileData travelPData = m_projectileData;
 	travelPData.scale = 0.0001f;
 	travelPData.type = ProjectileType::ProjectileTypeBulletTime;
@@ -31,10 +43,27 @@ void SkillBulletTime::onRelease() { }
 
 void SkillBulletTime::onUpdate(float deltaTime)
 {
-	/*if (m_sensor)
+	if (m_sensor)
+	{
 		if (m_sensor->shouldRemove())
 			m_sensor = nullptr;
-	if (m_travelProjectile)
+		else
+		{
+			int stacks = 0;
+			for (size_t i = 0; i < BULLET_TIME_SMOOTHNESS_INTERVAL; i++)
+			{
+				if (slowDownIntervals[i] > getDuration())
+					stacks++;
+				if (speedUpIntervals[i] > getDuration())
+					stacks--;
+			}
+
+			if (stacks != 0)
+				m_sensor->getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, stacks);
+		}
+	}
+
+	/*if (m_travelProjectile)
 		if (m_travelProjectile->shouldRemove())
 			m_travelProjectile = nullptr;
 
