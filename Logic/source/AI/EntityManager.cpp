@@ -1,16 +1,18 @@
 #include <AI/EntityManager.h>
 using namespace Logic;
 
-#define ENEMIES_PATH_UPDATE_PER_FRAME 3
-#define TEST_NAME "helloWave"
+#define ENEMIES_PATH_UPDATE_PER_FRAME 20
+#define FILE_ABOUT_WHALES "Enemies/Wave"
 #define DEBUG_ASTAR false
 #define DEBUG_PATH false
 
 #include <AI/EnemyTest.h>
 #include <AI/EnemyNecromancer.h>
+#include <AI/Behavior/AStar.h>
 
-#include <AI\Behavior\AStar.h>
 #include <Engine\Profiler.h>
+#include <Misc\RandomGenerator.h>
+
 #include <ctime>
 #include <stdio.h>
 
@@ -21,9 +23,9 @@ EntityManager::EntityManager()
 
 	allocateData();
 
-	m_waveManager.setName(TEST_NAME);
+	m_waveManager.setName(FILE_ABOUT_WHALES);
+	m_waveManager.loadFile();
 }
-
 
 EntityManager::~EntityManager()
 {
@@ -106,48 +108,82 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 		return;
 	}
 
-	std::vector<int> enemies = m_waveManager.getEnemies(m_currentWave);
-	m_enemies.reserve(enemies.size() + m_enemies.size());
+	WaveManager::EntitiesInWave entities = m_waveManager.getEntities(m_currentWave);
 	m_frame = 0;
 
-	AStar &aStar = AStar::singleton();
 	int index;
 
-	if (m_currentWave == 1)
+	Enemy *enemy;
+	btVector3 pos;
+	RandomGenerator &generator = RandomGenerator::singleton();
+
+	for (int entity : entities.enemies)
 	{
-		Enemy *enemy;
-		for (int i = 0; i < enemies.size(); i++)
-		{
-			//m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 8.f, i * 10.f, i * 1.f }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f}), 100, false), { 0.5f, 0.5f, 0.5f}));
-			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ i * 5.f, 0, i * 5.f }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
-			enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, {0.f, 3.f, 0.f});
-			enemy->setProjectileManager(projectiles);
+		// just temp test values as of now, better with no random spawns?
+		// should atleast check if spawn area is a walkable area
+		// using nav mesh that would be easy but not trivial
+		pos = { generator.getRandomFloat(0, 100), generator.getRandomFloat(10, 15),
+				generator.getRandomFloat(0, 100) };
 
-			index = aStar.getIndex(*enemy);
-			if (index == -1)
-				m_enemies[0].push_back(enemy);
-			else
-				m_enemies[index].push_back(enemy);
-		}
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ -10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ -10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
+		spawnEnemy(static_cast<EnemyType> (entity), pos, {}, physics, projectiles);
+	}
 
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 15, 10.f, 5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 20, 15.f, 10 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 25, 18.f, -5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 30, 25.f, -0 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 45, 30.f, 12 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 50, 40.f, -5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 40, 30.f, 2 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 70, 54.f, 10 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 80, 80.f, -2 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP, StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 50, 65.f, 5 }, { 0, 0, 0 }, { 2, 1.f, 2 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP }, true);
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 130, 128.f, 5 }, { 0, 0, 0 }, { 10, 1.f, 10 }), 500.f, physics, {}, { StatusManager::EFFECT_ID::BOOST_UP, StatusManager::EFFECT_ID::BOOST_UP, StatusManager::EFFECT_ID::BOOST_UP, StatusManager::EFFECT_ID::BOOST_UP });
+	for (WaveManager::Entity e : entities.triggers)
+	{
+		spawnTrigger(e.id, { e.x, e.y, e.z }, e.effects, physics, projectiles);
+	}
 
-		// Ammo refiller
-		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 0, 10, 40 }, { 0, 0, 0 }, { 10, 10, 10 }), 1000.f, physics, { }, { StatusManager::EFFECT_ID::AMMO_PICK_UP });
+	for (WaveManager::Entity e : entities.bosses)
+	{
+		spawnEnemy(static_cast<EnemyType> (e.id), { e.x, e.y, e.z },
+			e.effects, physics, projectiles);
+	}
+}
+
+void EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
+	std::vector<int> const &effects, Physics &physics, ProjectileManager *projectiles)
+{
+	Enemy *enemy;
+	int index;
+
+	switch (id)
+	{
+		case NECROMANCER:
+			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
+			break;
+		default:
+			enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
+			break;
+	}
+
+	enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0.f, 3.f, 0.f });
+	enemy->setProjectileManager(projectiles);
+
+	index = AStar::singleton().getIndex(*enemy);
+	if (index == -1)
+		m_enemies[0].push_back(enemy);
+	else
+		m_enemies[index].push_back(enemy);
+}
+
+void EntityManager::spawnTrigger(int id, btVector3 const &pos,
+	std::vector<int> &effects, Physics &physics, ProjectileManager *projectiles)
+{
+	// this is unefficient, could prolly be optimized but should be done once per wave load
+	std::vector<StatusManager::EFFECT_ID> effectsIds;
+	effectsIds.reserve(effects.size());
+	for (auto const &effect : effects)
+		effectsIds.push_back(static_cast<StatusManager::EFFECT_ID> (effect));
+
+	switch (id)
+	{
+		default:
+			m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD,
+				Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
+				500.f, physics, { },
+				effectsIds,
+				true);
+		break;
 	}
 }
 
