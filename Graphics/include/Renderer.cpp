@@ -153,6 +153,7 @@ namespace Graphics
 		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
 		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+		deviceContext->ClearRenderTargetView(worldPosMap, clearColor);
 		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 
@@ -282,6 +283,8 @@ namespace Graphics
 			PROFILE_BEGIN("DrawToBackBuffer");
 			drawToBackbuffer(fakeBackBuffer);
 			PROFILE_END();
+
+			fog.renderFog(deviceContext, backBuffer, worldPosMap);
 		}
 
 		else
@@ -291,7 +294,6 @@ namespace Graphics
 			PROFILE_END();
 		}
 
-		fog.renderFog(deviceContext, backBuffer, worldPosMap);
 
 
 		PROFILE_BEGIN("HUD");
