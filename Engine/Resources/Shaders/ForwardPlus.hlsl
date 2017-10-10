@@ -71,6 +71,7 @@ struct PSOutput
     float4 backBuffer : SV_Target0;
     float4 glowMap : SV_Target1;
     float4 normalView : SV_Target2;
+	float4 worldPosMap : SV_Target3;
 };
 
 VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
@@ -223,5 +224,8 @@ PSOutput PS(VSOutput input) {
     output.glowMap = glowMap.Sample(Sampler, input.uv);
     output.normalView = float4(input.normalView.xyz, 1);
     return output;
+	output.worldPosMap = input.worldPos;
+
+        return output;
 }
 

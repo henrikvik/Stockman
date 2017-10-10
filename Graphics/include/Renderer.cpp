@@ -33,14 +33,16 @@ namespace Graphics
 		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
 		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
+#pragma region RenderDebugInfo
+		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
+		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
+		, debugColorBuffer(device)
+#pragma endregion
+		, fog(device)
+		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
         ,menu(device, deviceContext)
         ,hud(device, deviceContext)
 		,ssaoRenderer(device)
-    #pragma region RenderDebugInfo
-        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
-        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
-        , debugColorBuffer(device)
-    #pragma endregion
 
 	{
 		this->device = device;
@@ -228,11 +230,12 @@ namespace Graphics
 		{
 			fakeBackBuffer,
 			glowMap,
-			*ssaoRenderer.getNormalShaderResource()
+			*ssaoRenderer.getNormalShaderResource(),
+			worldPosMap
 		};
 
-		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
-
+		deviceContext->OMSetRenderTargets(4, rtvs, depthStencil);
+		
 		draw();
 		skyRenderer.renderSky(deviceContext, camera);
 
@@ -262,6 +265,8 @@ namespace Graphics
 
 		if (!wasPressed && isPressed)
 			enablePostEffects = !enablePostEffects;
+
+		fog.renderFog(deviceContext, backBuffer, worldPosMap);
 
 		if (enablePostEffects)
 		{

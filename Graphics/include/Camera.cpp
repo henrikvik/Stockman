@@ -13,7 +13,7 @@ Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, 
 	values.mVP = this->mProjection * this->mView;
 	values.mV = this->mView;
 	values.mInvP = this->mProjection.Invert();
-
+	
 	D3D11_BUFFER_DESC desc = {};
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	desc.ByteWidth = sizeof(ShaderValues);

@@ -179,6 +179,7 @@
     <ClInclude Include="include\AI\Behavior\Behavior.h" />
     <ClInclude Include="include\AI\Behavior\NavigationMesh.h" />
     <ClInclude Include="include\AI\Behavior\PASVF.h" />
+    <ClInclude Include="include\DebugDefines.h" />
     <ClInclude Include="include\Misc\FileLoader.h" />
     <ClInclude Include="include\Misc\GameTime.h" />
     <ClInclude Include="include\Misc\GUI\Button.h" />

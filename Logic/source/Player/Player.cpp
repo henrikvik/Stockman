@@ -1,7 +1,7 @@
 #include "Player/Player.h"
 #include <AI\EnemyTest.h>
 #include <AI\Trigger.h>
-#define _GOD_MODE
+#include <DebugDefines.h>
 
 using namespace Logic;
 
