@@ -223,9 +223,7 @@ PSOutput PS(VSOutput input) {
     output.backBuffer = float4(lighting, 1);
     output.glowMap = glowMap.Sample(Sampler, input.uv);
     output.normalView = float4(input.normalView.xyz, 1);
-    return output;
 	output.worldPosMap = input.worldPos;
 
-        return output;
+    return output;
 }
-
