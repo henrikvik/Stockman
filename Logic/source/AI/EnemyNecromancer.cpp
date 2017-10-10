@@ -6,7 +6,7 @@ using namespace Logic;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
 	btRigidBody* body, btVector3 halfExtent)
-	: Enemy(modelID, body, halfExtent, 5, 1, 10, 0, 0) {
+	: Enemy(modelID, body, halfExtent, 5, 1, 5, 0, 0) {
 	setBehavior(RANGED);
 }
 
@@ -20,7 +20,10 @@ void EnemyNecromancer::clear()
 
 void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-	if (Projectile *pj = dynamic_cast<Projectile*> (&other))
+	if (Enemy *e = dynamic_cast<Enemy*>(&other))
+	{
+	}
+	else if (Projectile *pj = dynamic_cast<Projectile*> (&other))
 	{
 		if (dmgMultiplier > 1.01f && dmgMultiplier < 2.01f)
 			printf("Headshot. 2X DMG.\n");

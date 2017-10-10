@@ -34,6 +34,7 @@ namespace Logic
 		float	getCooldown() const;
 		float	getCooldownMax() const;
 		float	getDuration() const;
+		float	getDurationMax() const;
 		bool	getCanUse() const;
 
 		void setCooldown(float cooldown);
@@ -44,6 +45,7 @@ namespace Logic
 		float	m_cooldown;
 		float	m_cooldownMax;
 		float	m_duration;
+		float	m_durationMax;
 		bool	m_canUse;
 	};
 }

@@ -10,6 +10,17 @@ namespace Logic
 	class PhysicsObject : public Object
 	{
 	public:
+		struct Weakpoint
+		{
+			Weakpoint(btRigidBody* inBody, float inMultiplier, btVector3 inOffset)
+				: body(inBody), multiplier(inMultiplier), offset(inOffset) { }
+
+			btRigidBody*	body;
+			btVector3		offset;
+			float			multiplier;
+		};
+
+
 		PhysicsObject(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID = Graphics::ModelID::CUBE);
 		PhysicsObject(const PhysicsObject& other) = delete;
 		PhysicsObject* operator=(const PhysicsObject& other) = delete;
@@ -40,8 +51,7 @@ namespace Logic
 		btVector3 m_halfextent;										//< The scaling for the graphical side
 		btRigidBody* m_body;										//< The main rigidbody of this physics object
 		btTransform* m_transform;									//< Easy acces to the transform
-		btVector3 m_weakPointOffset;								//< The constant offset from the body 
-		std::vector<std::pair<btRigidBody*, float>> m_weakPoints;	//< The "head" for headshots multiplier change this to (std::pair<btRigidBody*, float multiplier) when you got time
+		std::vector<Weakpoint> m_weakPoints;						//< The "head" for headshots multiplier change this to (std::pair<btRigidBody*, float multiplier) when you got time
 	};
 }
 

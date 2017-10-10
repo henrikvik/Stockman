@@ -20,7 +20,7 @@ Graphics::Menu::~Menu()
     delete states;
 }
 
-void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * contex, Graphics::MenuInfo * info, ID3D11RenderTargetView * backBuffer)
+void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * contex, Graphics::MenuInfo * info, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState)
 {
     active = info;
     loadTextures(device, contex);
@@ -38,6 +38,9 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
     contex->PSSetSamplers(0, 1, &sampler);
     contex->PSSetShaderResources(0, 1, &menuTexture);
 
+    float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    UINT sampleMask = 0xffffffff;
+    contex->OMSetBlendState(blendState, blendFactor, sampleMask);
     contex->OMSetRenderTargets(1, &backBuffer, nullptr);
 
     contex->Draw(6, 0);
@@ -56,9 +59,9 @@ void Graphics::Menu::loadTextures(ID3D11Device * device, ID3D11DeviceContext * c
     if (loaded == false)
     {
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("menuTexture.png"), nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuTexture.png"), nullptr, &menuTexture));
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("button.png"), nullptr, &buttonTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuButton.png"), nullptr, &buttonTexture));
         loaded = true;
     }
 }
@@ -83,23 +86,23 @@ void Graphics::Menu::mapButtons(ID3D11DeviceContext * contex, ButtonInfo * info)
     TriangleVertex triangleVertices[6] =
     {
         2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)(WIN_HEIGHT - info->m_rek.y - info->m_rek.height) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
-        1.0f, 1.0f,
+        info->m_texCoordEnd.x, info->m_texCoordEnd.y,
 
         2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v1
-        0.0f, 1.0f,
+        info->m_texCoordStart.x, info->m_texCoordEnd.y,
 
         2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
-        0.0f,  0.0f,
+        info->m_texCoordStart.x,  info->m_texCoordStart.y,
 
         //t2
         2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
-        0.0f, 0.0f,
+        info->m_texCoordStart.x, info->m_texCoordStart.y,
 
         2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
-        1.0f, 0.0f,
+        info->m_texCoordEnd.x, info->m_texCoordStart.y,
 
         2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f, //v0
-        1.0f, 1.0f,
+        info->m_texCoordEnd.x, info->m_texCoordEnd.y,
     };
 
     D3D11_MAPPED_SUBRESOURCE data = { 0 };

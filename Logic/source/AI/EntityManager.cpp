@@ -1,7 +1,6 @@
 #include <AI/EntityManager.h>
 using namespace Logic;
 
-#define ENEMY_START_COUNT 16
 #define ENEMIES_PATH_UPDATE_PER_FRAME 3
 #define TEST_NAME "helloWave"
 #define DEBUG_ASTAR false
@@ -20,7 +19,7 @@ EntityManager::EntityManager()
 	m_currentWave = 0;
 	m_frame = 0;
 
-	reserveData();
+	allocateData();
 
 	m_waveManager.setName(TEST_NAME);
 }
@@ -31,19 +30,16 @@ EntityManager::~EntityManager()
 	deleteData();
 }
 
-void EntityManager::reserveData()
+void EntityManager::allocateData()
 {
-	m_bossEnemies.reserve(ENEMY_START_COUNT);
-	m_enemies.reserve(ENEMY_START_COUNT);
-	m_deadEnemies.reserve(ENEMY_START_COUNT);
+	m_enemies.resize(AStar::singleton().getNrOfPolygons());
 }
 
 void EntityManager::deleteData()
 {
-	for (Enemy *enemy : m_enemies)
-		delete enemy;
-	for (Enemy *enemy : m_bossEnemies)
-		delete enemy;
+	for (std::vector<Enemy*> list : m_enemies)
+		for (Enemy *enemy : list)
+			delete enemy;
 	for (Enemy *enemy : m_deadEnemies)
 		delete enemy;
 }
@@ -54,19 +50,11 @@ void EntityManager::update(Player const &player, float deltaTime)
 //	PROFILE_BEGIN("EntityManager::update()");
 	
 	AStar::singleton().loadTargetIndex(player);
-	for (int i = 0; i < m_enemies.size(); ++i)
-	{
-		m_enemies[i]->update(player, deltaTime, (i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0);
-		if (m_enemies[i]->getHealth() <= 0) {
-			m_deadEnemies.push_back(m_enemies[i]);
-			std::swap(m_enemies[i], m_enemies[m_enemies.size() - 1]);
-			m_enemies.pop_back();
-		}
-	}
 
-	for (int i = 0; i < m_bossEnemies.size(); ++i)
+	for (int i = 0; i < m_enemies.size(); i++)
 	{
-		m_bossEnemies[i]->update(player, deltaTime);
+		updateEnemies(i, player, deltaTime,
+			(i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0);
 	}
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
@@ -75,27 +63,72 @@ void EntityManager::update(Player const &player, float deltaTime)
 	}
 
 	m_triggerManager.update(deltaTime);
+
 //	PROFILE_END();
+}
+
+void EntityManager::updateEnemies(int index, Player const &player, float deltaTime,
+	bool updatePath)
+{
+	Enemy *enemy;
+	int newIndex;
+	for (int i = 0; i < m_enemies[index].size(); ++i)
+	{
+		enemy = m_enemies[index][i];
+		enemy->update(player, deltaTime, m_enemies[index], updatePath);
+
+		if (updatePath)
+		{
+			newIndex = AStar::singleton().getIndex(*enemy);
+			if (newIndex != -1 && newIndex != index)
+			{
+				m_enemies[newIndex].push_back(enemy);
+				std::swap(m_enemies[index][i], 
+					m_enemies[index][m_enemies[index].size() - 1]);
+				m_enemies[index].pop_back();
+			}
+		}
+
+		if (enemy->getHealth() <= 0) {
+			m_deadEnemies.push_back(enemy);
+			std::swap(m_enemies[index][i],
+				m_enemies[index][m_enemies[index].size() - 1]);
+			m_enemies[index].pop_back();
+		}
+	}
 }
 
 void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles) 
 {
+	if (m_enemies.empty())
+	{
+		printf("This will crash, data is not allocated, call allocateData() before spawning");
+		return;
+	}
+
 	std::vector<int> enemies = m_waveManager.getEnemies(m_currentWave);
 	m_enemies.reserve(enemies.size() + m_enemies.size());
 	m_frame = 0;
 
+	AStar &aStar = AStar::singleton();
+	int index;
+
 	if (m_currentWave == 1)
 	{
 		Enemy *enemy;
-		for (int i = 0; i < enemies.size(); i++)
+		/*for (int i = 0; i < enemies.size(); i++)
 		{
-			i += 1;
 			//m_enemies.push_back(new EnemyTest(physics.createBody(Cube({ i * 8.f, i * 10.f, i * 1.f }, { 0, 0, 0 }, { 0.5f, 0.5f, 0.5f}), 100, false), { 0.5f, 0.5f, 0.5f}));
 			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ i * 5.f, 0, i * 5.f }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
 			enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, {0.f, 3.f, 0.f});
 			enemy->setProjectileManager(projectiles);
-			m_enemies.push_back(enemy);
-		}
+
+			index = aStar.getIndex(*enemy);
+			if (index == -1)
+				m_enemies[0].push_back(enemy);
+			else
+				m_enemies[index].push_back(enemy);
+		}*/
 		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ 10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
 		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ -10, 0.1f, 10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
 		m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD, Cube({ -10, 0.1f, -10 }, { 0, 0, 0 }, { 2, 0.1f, 2 }), 500.f, physics, { StatusManager::UPGRADE_ID::BOUNCE }, { StatusManager::EFFECT_ID::BOOST_UP }, true);
@@ -129,9 +162,6 @@ void EntityManager::clear()
 
 	m_deadEnemies.clear();
 	m_enemies.clear();
-	m_bossEnemies.clear();
-
-	reserveData();
 }
 
 void EntityManager::setCurrentWave(int currentWave) 
@@ -143,14 +173,12 @@ void EntityManager::render(Graphics::Renderer &renderer)
 {
 	for (int i = 0; i < m_enemies.size(); ++i)
 	{
-		m_enemies[i]->render(renderer);
-		if (DEBUG_PATH)
-			m_enemies[i]->debugRendering(renderer);
-	}
-
-	for (int i = 0; i < m_bossEnemies.size(); ++i)
-	{
-		m_bossEnemies[i]->render(renderer);
+		for (Enemy *enemy : m_enemies[i])
+		{
+			enemy->render(renderer);
+			if (DEBUG_PATH)
+				enemy->debugRendering(renderer);
+		}
 	}
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
