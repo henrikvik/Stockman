@@ -29,6 +29,7 @@ cbuffer LightMatBuffer : register(b2)
 struct InstanceData
 {
     float4x4 world;
+    float4x4 invWorldT;
 };
 StructuredBuffer<InstanceData> instanceData : register(t20);
 cbuffer InstanceOffsetBuffer : register(b3)
@@ -75,12 +76,15 @@ VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
 	VSOutput output;
 
     float4x4 world = instanceData[instanceOffset + instanceId].world;
+    float4x4 invWorldT = instanceData[instanceOffset + instanceId].invWorldT;
 
 	output.worldPos = mul(world, float4(input.position, 1));
     output.pos = mul(ViewProjection, output.worldPos);
 
 	output.uv = input.uv;
     output.normal = mul(world, float4(input.normal, 0));
+    
+    //output.normal = mul(invWorldT, float4(input.normal, 0));
     output.normal = normalize(output.normal);
 
     output.lightPos = output.worldPos + float4(output.normal * 0.15f, 0);
@@ -209,8 +213,9 @@ PSOutput PS(VSOutput input) {
 
     float3 lighting = saturate(finalDiffuse + finalSpecular + ambient);
     
-    output.backBuffer = float4(lighting, 1);
+    output.backBuffer = float4(input.normal.xyz, 1);
     output.glowMap = glowMap.Sample(Sampler, input.uv);
+    //Varför inte vertex shader?
     output.normalView = float4(mul(View, input.normal).xyz, 1);
     return output;
 }
