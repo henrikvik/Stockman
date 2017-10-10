@@ -256,8 +256,17 @@ int Engine::run()
 
 			DispatchMessage(&msg);
 
-			if (WM_QUIT == msg.message)
-				running = false;
+            if (WM_QUIT == msg.message)
+            {
+                running = false;
+                if (!isFullscreen)
+                {
+                    mSwapChain->SetFullscreenState(false, NULL);
+                }
+                
+            }
+				
+                
 		}
 
 		//To enable/disable fullscreen
