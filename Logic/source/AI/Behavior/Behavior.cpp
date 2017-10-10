@@ -24,7 +24,7 @@ void Behavior::walkPath(SimplePathing pathing, RunIn &in)
 	btVector3 dir = node - in.enemy->getPositionBT();
 	
 	boidCalculations(in.enemy->getPositionBT(), 
-		dir, in.closeEnemies, MAX_SPEED, in.deltaTime);
+		dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
 	in.enemy->getRigidBody()->translate(dir);
 

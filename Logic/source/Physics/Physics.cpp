@@ -78,7 +78,7 @@ void Physics::update(GameTime gameTime)
 	// Saving the end time
 	end = std::chrono::steady_clock::now();*/
 
-	printf("%f\n", gameTime.dtReal);
+	//printf("%f\n", gameTime.dtReal);
 	
 	this->stepSimulation(gameTime.dtReal * 0.01f, 4.f);
 

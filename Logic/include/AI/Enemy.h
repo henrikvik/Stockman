@@ -27,7 +27,7 @@ namespace Logic
 	{
 		private:
 			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
-			float m_moveSpeedMod;									// Variables for effect modifiers
+			float m_bulletTimeMod;									// Variables for effect modifiers
 			int m_enemyType;
 			ProjectileManager *m_projectiles;
 			// Animation m_animation;
