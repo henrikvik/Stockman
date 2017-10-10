@@ -40,7 +40,7 @@ namespace Logic
 	public:
 		Button();
 		~Button();
-		void initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width, std::string texture, std::function<void(void)> callBack);
+		void initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width, int textureIndex, std::function<void(void)> callBack);
 		void updateOnPress(int posX, int posY);
         void HoverOver(int posX, int posY);
 		bool animationTransition(float dt, float maxAnimationTime, bool forward);
