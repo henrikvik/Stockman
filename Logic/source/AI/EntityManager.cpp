@@ -9,6 +9,7 @@ using namespace Logic;
 #include <AI/EnemyTest.h>
 #include <AI/EnemyNecromancer.h>
 #include <AI/Behavior/AStar.h>
+#include <DebugDefines.h>
 
 #include <Engine\Profiler.h>
 #include <Misc\RandomGenerator.h>
@@ -167,7 +168,7 @@ void EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
 void EntityManager::spawnTrigger(int id, btVector3 const &pos,
 	std::vector<int> &effects, Physics &physics, ProjectileManager *projectiles)
 {
-	// this is unefficient, could prolly be optimized but should be done once per wave load
+	// this is unefficient, could prolly be optimized but should only be done once per wave load
 	std::vector<StatusManager::EFFECT_ID> effectsIds;
 	effectsIds.reserve(effects.size());
 	for (auto const &effect : effects)
@@ -217,7 +218,9 @@ void EntityManager::render(Graphics::Renderer &renderer)
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
-		m_deadEnemies[i]->render(renderer);
+	#ifndef _DISABLE_RENDERING_DEAD_ENEMIES
+			m_deadEnemies[i]->render(renderer);
+	#endif
 	}
 
 	m_triggerManager.render(renderer);

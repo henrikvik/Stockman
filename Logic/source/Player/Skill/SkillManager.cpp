@@ -1,3 +1,4 @@
+#include <DebugDefines.h>
 #include "Player/Skill/SkillManager.h"
 
 using namespace Logic;
@@ -32,7 +33,7 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, 
 	};
 
 
-	switchToSkill(2);
+	switchToSkill(SKILL_USED);
 }
 
 void SkillManager::switchToSkill(int index)
