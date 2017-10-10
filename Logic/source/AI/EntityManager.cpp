@@ -49,7 +49,6 @@ void EntityManager::deleteData()
 void EntityManager::update(Player const &player, float deltaTime) 
 {
 	m_frame++;
-//	PROFILE_BEGIN("EntityManager::update()");
 	
 	AStar::singleton().loadTargetIndex(player);
 
@@ -65,8 +64,6 @@ void EntityManager::update(Player const &player, float deltaTime)
 	}
 
 	m_triggerManager.update(deltaTime);
-
-//	PROFILE_END();
 }
 
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime,
@@ -92,6 +89,7 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 		}
 
 		if (enemy->getHealth() <= 0) {
+			enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f}); // FOR TESTING, death animation should play instead
 			m_deadEnemies.push_back(enemy);
 			std::swap(m_enemies[index][i],
 				m_enemies[index][m_enemies[index].size() - 1]);

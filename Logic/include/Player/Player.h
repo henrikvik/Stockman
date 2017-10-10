@@ -125,7 +125,7 @@ namespace Logic
 		void saveToFile();
 		void readFromFile();
 
-		void takeDamage(int damage);
+		void takeDamage(int damage, bool damageThroughProtection = false);
 		int getHP() const;
 
 		float getMoveSpeed() const;

@@ -86,6 +86,17 @@ void StatusManager::clear()
 	m_effectStacksIds.clear();
 }
 
+int StatusManager::getStacksOfEffectFlag(Effect::EFFECT_FLAG flag) const
+{
+	int stacks = 0;
+	for (size_t i = 0; i < m_effectStacksIds.size(); ++i)
+	{
+		if (s_effects[m_effectStacksIds[i]].getStandards()->flags & flag)
+			stacks += m_effectStacks[i].stack;
+	}
+	return stacks;
+}
+
 void StatusManager::removeEffect(int index)
 {
 	std::swap(m_effectStacks[index], m_effectStacks[m_effectStacks.size() - 1]);
@@ -114,6 +125,11 @@ void StatusManager::addUpgrade(UPGRADE_ID id)
 Upgrade & Logic::StatusManager::getUpgrade(UPGRADE_ID id)
 {
 	return s_upgrades[id];
+}
+
+const Effect& StatusManager::getEffect(EFFECT_ID id) const
+{
+	return s_effects[id];
 }
 
 void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks, bool resetDuration)
@@ -205,7 +221,7 @@ std::vector<std::pair<int, StatusManager::EFFECT_ID>> StatusManager::getActiveEf
 	return effects;
 }
 
-std::vector<StatusManager::UPGRADE_ID>& Logic::StatusManager::getActiveUpgrades()
+std::vector<StatusManager::UPGRADE_ID>& StatusManager::getActiveUpgrades()
 {
 	return m_upgrades;
 }

@@ -32,7 +32,7 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, 
 	};
 
 
-	switchToSkill(0);
+	switchToSkill(2);
 }
 
 void SkillManager::switchToSkill(int index)
