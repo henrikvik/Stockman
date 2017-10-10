@@ -223,7 +223,7 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight, 250);
+	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
     cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
@@ -313,56 +313,31 @@ int Engine::run()
         //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
 
         //////////////TEMP/////////////////
-        Graphics::RenderInfo staticCube = {
-            true, //bool render;
-            Graphics::ModelID::BUSH, //ModelID meshId;
-            0, //int materialId;
-            DirectX::SimpleMath::Matrix()// DirectX::SimpleMath::Matrix translation;
-        };
-
         Graphics::RenderInfo staticSphere = {
             true, //bool render;
-            Graphics::ModelID::SPHERE, //ModelID meshId;
+            Graphics::ModelID::CUBE, //ModelID meshId;
             0, //int materialId;
             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
         };
 
-        //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
-        //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
-       /* staticCube.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + cosf(totalTime * 0.001f),0 });*/
-	   staticCube.translation = DirectX::SimpleMath::Matrix::CreateScale({ 3 + cosf(totalTime * 0.001f),3 + cosf(totalTime * 0.001f),3 + cosf(totalTime * 0.001f) });
-
-        staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 2, 3 + sinf(totalTime * 0.001f),0 });
-
+		staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(6, 2, 1) * DirectX::SimpleMath::Matrix::CreateTranslation({0, 2, 0}) * DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0, totalTime * 0.001f, totalTime * 0.001f);
+		
 		renderer->updateLight(deltaTime, &cam);
         Graphics::TextString text{
-            L"The hills ",
+            L"The hills!",
             DirectX::SimpleMath::Vector2(50, 50),
             DirectX::SimpleMath::Color(DirectX::Colors::Black),
             Graphics::Font::SMALL
         };
-        Graphics::TextString text1{
-            L"are alive ",
-            DirectX::SimpleMath::Vector2(600, 200),
-            DirectX::SimpleMath::Color(DirectX::Colors::Crimson),
-            Graphics::Font::SMALL
-        };
-        Graphics::TextString text2{
-            L"With the sound of music! ",
-            DirectX::SimpleMath::Vector2(1000, 400),
-            DirectX::SimpleMath::Color(DirectX::Colors::Gold),
-            Graphics::Font::SMALL
-        };
+
         
         ///////////////////////////////////
 
         if (game.getState() == Logic::gameStateGame)
         {
-            renderer->queueRender(&staticCube);
-            renderer->queueRender(&staticSphere);
-         /*   renderer->queueText(&text);
-            renderer->queueText(&text1);
-            renderer->queueText(&text2);*/
+         // renderer->queueRender(&staticSphere);
+         // renderer->queueText(&text);
+
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
 			PROFILE_END();
