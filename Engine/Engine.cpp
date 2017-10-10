@@ -335,7 +335,7 @@ int Engine::run()
 
         if (game.getState() == Logic::gameStateGame)
         {
-            renderer->queueRender(&staticSphere);
+         // renderer->queueRender(&staticSphere);
          // renderer->queueText(&text);
 
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
