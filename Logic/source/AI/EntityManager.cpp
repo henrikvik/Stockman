@@ -91,7 +91,11 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 			}
 		}
 
-		if (enemy->getHealth() <= 0) {
+		if (enemy->getHealth() <= 0) 
+		{
+			// Adds the score into the combo machine
+			ComboMachine::Get().Kill(Enemy::ENEMY_TYPE(enemy->getEnemyType()));
+
 			m_deadEnemies.push_back(enemy);
 			std::swap(m_enemies[index][i],
 				m_enemies[index][m_enemies[index].size() - 1]);
@@ -125,7 +129,7 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 		pos = { generator.getRandomFloat(0, 100), generator.getRandomFloat(10, 15),
 				generator.getRandomFloat(0, 100) };
 
-		spawnEnemy(static_cast<EnemyType> (entity), pos, {}, physics, projectiles);
+		spawnEnemy(static_cast<Enemy::ENEMY_TYPE> (entity), pos, {}, physics, projectiles);
 	}
 
 	for (WaveManager::Entity e : entities.triggers)
@@ -135,12 +139,12 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 
 	for (WaveManager::Entity e : entities.bosses)
 	{
-		spawnEnemy(static_cast<EnemyType> (e.id), { e.x, e.y, e.z },
+		spawnEnemy(static_cast<Enemy::ENEMY_TYPE> (e.id), { e.x, e.y, e.z },
 			e.effects, physics, projectiles);
 	}
 }
 
-void EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
+void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
 	std::vector<int> const &effects, Physics &physics, ProjectileManager *projectiles)
 {
 	Enemy *enemy;
@@ -148,7 +152,7 @@ void EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
 
 	switch (id)
 	{
-		case NECROMANCER:
+		case Enemy::NECROMANCER:
 			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
 			break;
 		default:
@@ -156,6 +160,7 @@ void EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
 			break;
 	}
 
+	enemy->setEnemyType(id);
 	enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0.f, 3.f, 0.f });
 	enemy->setProjectileManager(projectiles);
 

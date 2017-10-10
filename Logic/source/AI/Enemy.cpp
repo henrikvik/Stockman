@@ -33,6 +33,11 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
 	}
 }
 
+void Enemy::setEnemyType(ENEMY_TYPE id)
+{
+	m_enemyType = id;
+}
+
 Enemy::~Enemy() {
 	if (m_behavior)
 		delete m_behavior;

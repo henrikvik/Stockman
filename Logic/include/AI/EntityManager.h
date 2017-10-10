@@ -6,6 +6,7 @@
 #include <AI/Enemy.h>
 #include <AI/WaveManager.h>
 #include <AI/TriggerManager.h>
+#include <Misc/ComboMachine.h>
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileManager.h>
@@ -41,10 +42,6 @@ namespace Logic
 		void deleteData(); // delete data in vectors
 		void allocateData(); // resize enemy vector 
 	public:
-		enum EnemyType
-		{
-			NECROMANCER
-		};
 
 		EntityManager();
 		EntityManager(EntityManager const &entityManager) = delete;
@@ -55,7 +52,7 @@ namespace Logic
 		void clear();
 
 		void spawnWave(Physics &physics, ProjectileManager *projectiles);
-		void spawnEnemy(EnemyType id, btVector3 const &pos, std::vector<int> const &effects,
+		void spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
 			Physics &physics, ProjectileManager *projectiles);
 		void spawnTrigger(int id, btVector3 const &pos, std::vector<int> &effects,
 			Physics &physics, ProjectileManager *projectiles);

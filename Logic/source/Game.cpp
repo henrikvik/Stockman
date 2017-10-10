@@ -62,6 +62,10 @@ void Game::init()
 	//std::cout << "Enter your player name (will be used for highscore): ";
 	//getline(std::cin, name);
 	m_highScoreManager->setName(name.empty() ? "Stockamn" : name);
+
+	// Resetting Combo's
+	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
+	ComboMachine::Get().Reset();
 }
 
 void Game::clear()
@@ -77,12 +81,12 @@ void Game::clear()
 	delete m_projectileManager;
 }
 
-void Logic::Game::reset()
+void Game::reset()
 {
 	/*m_entityManager.clear();*/
 	m_player->reset();
-
-	m_points = NULL;
+	
+	ComboMachine::Get().Reset();
 	m_waveTimer = NULL;
 	m_waveCurrent = WAVE_START;
 }
@@ -100,7 +104,7 @@ void Game::waveUpdater()
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
 			m_entityManager.setCurrentWave(m_waveCurrent);
-			m_entityManager.spawnWave(*m_physics, m_projectileManager, &m_points);
+			m_entityManager.spawnWave(*m_physics, m_projectileManager);
 
 			// If the player have completed all the waves
 			if (m_waveCurrent == MAX_WAVES)
@@ -129,6 +133,11 @@ void Game::update(float deltaTime)
 		}
 		else
 		{
+			ComboMachine::Get().Reward(1);
+			ComboMachine::Get().Update(deltaTime);
+			printf("Score: %d \t Combo: %d\n", ComboMachine::Get().GetCurrentScore(), ComboMachine::Get().GetCurrentCombo());
+
+
 			waveUpdater();
 
 			PROFILE_BEGIN("Player");

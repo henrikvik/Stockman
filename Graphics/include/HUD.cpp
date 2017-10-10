@@ -247,7 +247,7 @@ void Graphics::HUD::setHUDTextRenderPos()
 
     cdPos = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2) - 24, (WIN_HEIGHT / 2) + 120);
     
-    scorePos = DirectX::SimpleMath::Vector2(0, 0);
+    scorePos = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2 - 24), (WIN_HEIGHT / 2) - 200);
     wavePos = DirectX::SimpleMath::Vector2(0, 0);
     timePos = DirectX::SimpleMath::Vector2(0, 0);
 }
@@ -293,6 +293,10 @@ void Graphics::HUD::renderHUDText()
     temp = (std::to_wstring(tempInt));
     temp += L"%";
     sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos, DirectX::Colors::Red);
+
+	temp = (std::to_wstring(currentInfo->score));
+	temp += L" Points";
+	sFont[0]->DrawString(sBatch.get(), temp.c_str(), scorePos, DirectX::Colors::White);
 }
 
 //updates the hp and cooldown values on the GPU side

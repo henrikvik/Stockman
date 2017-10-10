@@ -15,6 +15,7 @@
 #include <Misc\GameTime.h>
 #include <Misc\CardManager.h>
 #include <Misc\HighScoreManager.h>
+#include <Misc\ComboMachine.h>
 
 // DirectX Includes
 #include <Windows.h>

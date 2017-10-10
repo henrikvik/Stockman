@@ -1,6 +1,7 @@
 #include "Player/Player.h"
 #include <AI\EnemyTest.h>
 #include <AI\Trigger.h>
+#include <Misc\ComboMachine.h>
 
 using namespace Logic;
 
@@ -25,15 +26,15 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
-    	info.hp = m_hp;
+    info.hp = m_hp;
    	info.cuttleryAmmo[0] = 0;
    	info.cuttleryAmmo[1] = 0;
-    	info.iceAmmo[0] = 0 ;
-    	info.iceAmmo[1] = 0 ;
-    	info.wave = 0;
-    	info.score = 0;
-    	info.sledge = false;
-        info.cd = 1.0f;
+    info.iceAmmo[0] = 0 ;
+    info.iceAmmo[1] = 0 ;
+    info.wave = 0;
+    info.score = 0;
+    info.sledge = false;
+    info.cd = 1.0f;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -172,6 +173,7 @@ void Player::updateSpecific(float deltaTime)
 	Player::update(deltaTime);
 
     //updates hudInfo with the current info
+	info.score = ComboMachine::Get().GetCurrentScore();
     info.hp = m_hp;
     info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
     info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getAmmo();
