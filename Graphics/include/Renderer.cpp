@@ -254,11 +254,11 @@ namespace Graphics
 
 		///////Post effext
 		PROFILE_BEGIN("Glow");
-		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+		//postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
 		PROFILE_END();
 
 		PROFILE_BEGIN("SSAO");
-		ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+		//ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
 		PROFILE_END();
 		
 		PROFILE_BEGIN("DrawToBackBuffer");
@@ -323,7 +323,10 @@ namespace Graphics
         {
             if (info->render)
             {
-                instanceQueue[info->meshId].push_back({ info->translation });
+                instanceQueue[info->meshId].push_back({ 
+					info->translation,
+					info->translation.Invert()
+				});
             }
         }
         renderQueue.clear();
