@@ -2,6 +2,9 @@
 #include <Player\Player.h>
 #include <iostream>
 
+#define SHIELD_CHARGE_CD 5000.f
+#define SHIELD_CHARGE_DURATION	1000.f
+
 using namespace Logic;
 
 SkillShieldCharge::SkillShieldCharge()
@@ -26,7 +29,6 @@ void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 	if (!m_active)
 	{
 		//Sets up the shield charge by deciding its movement vector and who is gonna charge
-		printf("Used Shield Charge.\n");
 		m_active = true;
 		m_forw = btVector3(forward.getX(), 0.0f, forward.getZ());
 		m_forw = m_forw;

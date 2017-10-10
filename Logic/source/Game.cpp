@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#define _GOD_MODE
 
 using namespace Logic;
 

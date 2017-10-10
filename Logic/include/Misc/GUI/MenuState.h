@@ -36,6 +36,7 @@ namespace Logic
 			float yTexStart;
 			float xTexEnd;
 			float yTexEnd;
+            float activeOffset;
 			float height;
 			float width;
 			std::string texture;
@@ -46,6 +47,7 @@ namespace Logic
 		~MenuState();
 		void initialize(std::vector<ButtonStruct> buttonStruct, std::string background);
 		void updateOnPress(int posX, int posY);
+        void hoverOver(int posX, int posY);
 		bool animationTransition(float dt, float maxAnimationTime, bool forward);
         Graphics::MenuInfo getMenuInfo();
 	};

@@ -72,7 +72,7 @@ void Player::clear()
 	m_skillManager.clear();
 }
 
-void Logic::Player::reset()
+void Player::reset()
 {
 	getRigidBody()->getWorldTransform().setOrigin(startPosition);
 	m_weaponManager.reset();
@@ -86,7 +86,14 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
 #else
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
 	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
-	else if(m_playerState == PlayerState::IN_AIR)
+	else if (Enemy *e = dynamic_cast<Enemy*> (&other))
+	{
+		int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
+		e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * stacks); 
+		stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
+		e->damage(2 * stacks); // replace 1 with the player damage when it is better
+	}
+	else if (m_playerState == PlayerState::IN_AIR)
 	{
 		btVector3 dir = contactPoint - getPositionBT();
 
@@ -157,9 +164,13 @@ void Player::readFromFile()
 
 }
 
-void Player::takeDamage(int damage)
+void Player::takeDamage(int damage, bool damageThroughProtection)
 {
-	m_hp -= damage;
+#ifndef _GOD_MODE
+	if (damageThroughProtection ||
+		getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
+		m_hp -= damage;
+#endif
 }
 
 int Player::getHP() const

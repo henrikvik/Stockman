@@ -71,6 +71,7 @@ namespace Graphics
 		DirectX::SimpleMath::Rectangle m_rek;
 		DirectX::SimpleMath::Vector2 m_texCoordStart;
 		DirectX::SimpleMath::Vector2 m_texCoordEnd;
+        float activeoffset;
 		std::string m_texture;
 		bool pressed;
 	};

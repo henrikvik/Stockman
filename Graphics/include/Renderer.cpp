@@ -425,7 +425,7 @@ namespace Graphics
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
         deviceContext->RSSetViewports(1, &viewPort);
-        menu.drawMenu(device, deviceContext, info, backBuffer);
+        menu.drawMenu(device, deviceContext, info, backBuffer, transparencyBlendState);
 
     }
 
