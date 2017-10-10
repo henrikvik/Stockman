@@ -11,7 +11,7 @@ SamplerState RandomSampler : register(s1);
 #define INTENSITY 5.0
 #define SCALE 1.f
 #define BIAS 0.3f
-#define ITERATIONS 3
+#define ITERATIONS 1
 
 
 cbuffer Camera : register(b0)
