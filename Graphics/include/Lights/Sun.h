@@ -39,6 +39,10 @@ private:
 	struct ShaderMatrix
 	{
 		DirectX::SimpleMath::Matrix vp;
+		//"padding" TODO: Should probably make a new shader instead
+		DirectX::SimpleMath::Matrix mInvP;
+		DirectX::SimpleMath::Matrix mV;
+		DirectX::SimpleMath::Vector4 camPos;
 	};
 
 	struct LightValues
