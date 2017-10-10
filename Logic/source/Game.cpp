@@ -182,17 +182,14 @@ void Game::update(float deltaTime)
 void Game::gameOver()
 {
 	printf("You ded bro.\n");
-	m_highScoreManager->addNewHighScore();
+	m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
 	m_menu->setStateToBe(GameState::gameStateGameOver);
 
 	for (int i = 0; i < 10; i++)
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
-		}
-		else
-		{
+			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(ComboMachine::Get().GetCurrentScore());
 			break;
 		}
 	}

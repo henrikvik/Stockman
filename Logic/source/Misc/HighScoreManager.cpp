@@ -11,24 +11,20 @@ HighScoreManager::HighScoreManager()
 		m_highScore[i].score = -1;
 		m_highScore[i].name = "???";
 	}
-	m_score = 0;
 	m_name = "";
-	m_killCount = 0;
-	m_comboCount = 1;
 
 	loadFromFile();
 }
-
 
 HighScoreManager::~HighScoreManager()
 {
 	saveToFile();
 }
 
-bool Logic::HighScoreManager::addNewHighScore()
+bool Logic::HighScoreManager::addNewHighScore(int score)
 {
 	highScore newScore;
-	newScore.score = m_score;
+	newScore.score = score;
 	newScore.name = m_name;
 	int ammount = sizeof(m_highScore) / sizeof(highScore);
 	bool isNewHighScore = false;
@@ -75,26 +71,6 @@ void Logic::HighScoreManager::loadFromFile()
 		m_highScore[i].score = theScore.floats.at("Score");
 		m_highScore[i].name = theScore.strings.at("Player");
 		i++;
-	}
-}
-
-void Logic::HighScoreManager::deadCount()
-{
-	m_killCount++;
-	m_comboCount++;
-	m_score += 1 * m_comboCount;
-	m_comboTimer = 5;
-}
-
-void Logic::HighScoreManager::comboCheck(float dt)
-{
-	if (m_comboTimer > 0)
-	{
-		m_comboTimer = m_comboTimer - dt;
-	}
-	else if(m_comboCount != 1)
-	{
-		m_comboCount = 1;
 	}
 }
 
