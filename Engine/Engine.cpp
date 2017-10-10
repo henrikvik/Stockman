@@ -223,7 +223,7 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight, 250);
+	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
     cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
@@ -320,7 +320,7 @@ int Engine::run()
             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
         };
 
-		staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({0, 2, 0}) * DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0, totalTime * 0.001f, totalTime * 0.001f);
+		staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(6, 2, 1) * DirectX::SimpleMath::Matrix::CreateTranslation({0, 2, 0}) * DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0, totalTime * 0.001f, totalTime * 0.001f);
 		
 		renderer->updateLight(deltaTime, &cam);
         Graphics::TextString text{
