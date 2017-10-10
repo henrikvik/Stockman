@@ -266,7 +266,6 @@ namespace Graphics
 		if (!wasPressed && isPressed)
 			enablePostEffects = !enablePostEffects;
 
-		fog.renderFog(deviceContext, backBuffer, worldPosMap);
 
 		if (enablePostEffects)
 		{
@@ -283,14 +282,6 @@ namespace Graphics
 			PROFILE_BEGIN("DrawToBackBuffer");
 			drawToBackbuffer(fakeBackBuffer);
 			PROFILE_END();
-
-			PROFILE_BEGIN("HUD");
-			hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-			PROFILE_END();
-
-			PROFILE_BEGIN("DebugInfo");
-			renderDebugInfo(camera);
-			PROFILE_END();
 		}
 
 		else
@@ -298,15 +289,18 @@ namespace Graphics
 			PROFILE_BEGIN("DrawToBackBuffer");
 			drawToBackbuffer(fakeBackBuffer);
 			PROFILE_END();
-
-			PROFILE_BEGIN("HUD");
-			hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-			PROFILE_END();
-
-			PROFILE_BEGIN("DebugInfo");
-			renderDebugInfo(camera);
-			PROFILE_END();
 		}
+
+		fog.renderFog(deviceContext, backBuffer, worldPosMap);
+
+
+		PROFILE_BEGIN("HUD");
+		hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
+		PROFILE_END();
+
+		PROFILE_BEGIN("DebugInfo");
+		renderDebugInfo(camera);
+		PROFILE_END();
 	}
 
 
