@@ -8,22 +8,22 @@ namespace Graphics
 		: fogShader(device, SHADER_PATH("Fog.hlsl"))
 		, fogDataBuffer(device, CpuAccess::Write, MAX_FOG_SIZE)
 	{
-		fogData.push_back({ { -200, 2,-200},{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
-		fogData.push_back({ { 200,  2,-200},{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
-		fogData.push_back({ { 200,  2,200},{  FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { -1000, 2,-1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { 1000,  2,-1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { 1000,  2, 1000 },{  FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
 									
-		fogData.push_back({ { 200,  2,200},{   FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
-		fogData.push_back({ { -200, 2,200 },{  FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
-		fogData.push_back({ { -200, 2,-200 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { 1000,  2,1000 },{   FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { -1000, 2,1000 },{  FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { -1000, 2,-1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
 
 
-		/*fogData.push_back({ { 1, 1, 0 },{ 1,0,0, 1 } });
-		fogData.push_back({ { , 8,0 },{ 1,0,0, 1 } });
-		fogData.push_back({ { ,8,0 },{ 1,0,0, 1 } });
+		/*fogData.push_back({ { 1, 0, 3 },{ 1,0,0, 1 } });
+		fogData.push_back({ { 0, 1, 3 },{ 1,0,0, 1 } });
+		fogData.push_back({ { 0, 0, 3 },{ 1,0,0, 1 } });
 
-		fogData.push_back({ { -200, 8,-200 },{ 1,0,0, 1 } });
-		fogData.push_back({ { -200, 8,200 },{ 1,0,0, 1 } });
-		fogData.push_back({ { 200,  8,200 },{ 1,0,0, 1 } });*/
+		fogData.push_back({ { 1, 0, 3 },{ 1,0,0, 1 } });
+		fogData.push_back({ { 1, 1, 3 },{ 1,0,0, 1 } });
+		fogData.push_back({ { 0, 1, 3 },{ 1,0,0, 1 } });*/
 	}
 
 	Fog::~Fog()

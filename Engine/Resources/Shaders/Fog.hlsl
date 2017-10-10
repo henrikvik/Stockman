@@ -31,12 +31,12 @@ VSOut VS(uint id : SV_VertexID)
 	
 	//F is the four dimensional vector that represents the bounding plane, XYZ 
 	//is the normal of the plane. 
-	float4 F = float4(0,-2, 0, 1);
+	float4 F = float4(0,-1, 0, 1);
 	F = normalize(F);
 	//ViewVec
 	float4 P = float4(fogData[id].pos, 1);
 	float4 V = camPos - P;
-	//a is a random posetive constant, NOTE let it be over 20 or the color of
+	//a is a random posetive constant, NOTE if the value is over 20 or the color of
 	//the fragment is going to "shine through" when under the fog halfspace
 	float a = 0.1;
 	//K is either 1 or 0
@@ -69,13 +69,14 @@ float4 PS (VSOut psIn) : SV_Target
 	float maxDistance = 15;
 	
 
-	float3 fogColor = (0.3 ,0.3, 0.3);
+	float3 fogColor = (0.4 ,0.4, 0.4);
 
 	float g = min(psIn.c2, 0.0);
 	g = -length(psIn.aV) * (psIn.c1 - g * g / abs(psIn.F_DOT_V));
 
 	float f = saturate(exp2(-g));
-	float fogDepth = clamp(saturate(1 - worldPos.y),0.2, 0.9);
+	float fogDepth = clamp(saturate(1 - worldPos.y), 0, 0.8);
+
 	//fogDepth = max(saturate());
 
 	psIn.color.rgb = psIn.color.rgb * f + fogColor.rgb * (1.0 - f);
