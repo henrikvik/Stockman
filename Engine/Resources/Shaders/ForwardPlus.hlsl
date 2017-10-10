@@ -60,6 +60,7 @@ struct VSOutput {
 	float4 worldPos : POS;
     float4 lightPos : LIGHT_POS;
 	float3 normal : NORMAL;
+    float3 normalView : NORMALVIEW;
 	float2 uv : UV;
     float3 biTangent : BITANGENT;
     float3 tangent : TANGENT;
@@ -89,6 +90,8 @@ VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
     
     output.normal = mul(invWorldT, float4(input.normal, 0));
     output.normal = normalize(output.normal);
+
+    output.normalView = normalize(mul(View, float4(output.normal, 0)));
 
     output.lightPos = output.worldPos + float4(output.normal * 0.15f, 0);
     output.lightPos = mul(lightVP, output.lightPos);
@@ -218,8 +221,7 @@ PSOutput PS(VSOutput input) {
     
     output.backBuffer = float4(lighting, 1);
     output.glowMap = glowMap.Sample(Sampler, input.uv);
-    //Varför inte vertex shader?
-    output.normalView = float4(mul(View, input.normal).xyz, 1);
+    output.normalView = float4(input.normalView.xyz, 1);
     return output;
 }
 
