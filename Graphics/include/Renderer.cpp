@@ -87,55 +87,55 @@ namespace Graphics
 		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
 	}
 
-    void Renderer::render(Camera * camera)
-    {
-        menu.unloadTextures();
+	void Renderer::render(Camera * camera)
+	{
+		menu.unloadTextures();
 #if ANIMATION_HIJACK_RENDER
 
-        renderQueue.clear();
-        static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
-        static UINT ticks = 0;
-        ticks++;
-        cam.updateLookAt({ 5 * sinf(ticks * 0.001f), 5 * cosf(ticks * 0.001f), 5 }, { 0,0,0 }, deviceContext);
+		renderQueue.clear();
+		static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
+		static UINT ticks = 0;
+		ticks++;
+		cam.updateLookAt({ 5 * sinf(ticks * 0.001f), 5 * cosf(ticks * 0.001f), 5 }, { 0,0,0 }, deviceContext);
 
-        ID3D11Buffer *cameraBuffer = cam.getBuffer();
-        deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-        deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
+		ID3D11Buffer *cameraBuffer = cam.getBuffer();
+		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
+		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 
-        static float clearColor[4] = { 0,0,0,1 };
-        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+		static float clearColor[4] = { 0,0,0,1 };
+		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
-        deviceContext->RSSetViewports(1, &viewPort);
+		deviceContext->RSSetViewports(1, &viewPort);
 
-        static AnimatedTestCube testCube(device);
-        static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"), ANIMATED_VERTEX_DESC);
+		static AnimatedTestCube testCube(device);
+		static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"), ANIMATED_VERTEX_DESC);
 
-        deviceContext->IASetInputLayout(testShader);
-        deviceContext->VSSetShader(testShader, nullptr, 0);
-        deviceContext->PSSetShader(testShader, nullptr, 0);
+		deviceContext->IASetInputLayout(testShader);
+		deviceContext->VSSetShader(testShader, nullptr, 0);
+		deviceContext->PSSetShader(testShader, nullptr, 0);
 
-        deviceContext->IASetVertexBuffers(0, 1, testCube, &testCube.stride, &testCube.offset);
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->RSSetState(states->CullNone());
+		deviceContext->IASetVertexBuffers(0, 1, testCube, &testCube.stride, &testCube.offset);
+		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		deviceContext->RSSetState(states->CullNone());
 
-        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
-        deviceContext->Draw(testCube.vertexCount, 0);
+		deviceContext->Draw(testCube.vertexCount, 0);
 
-        auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, testAnimation.getTotalDuration() * ((ticks % 1000) / 1000.f));
+		auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, testAnimation.getTotalDuration() * ((ticks % 1000) / 1000.f));
 
-        static StructuredBuffer<Matrix> jointBuffer(device,		CpuAccess::Write, testSkeleton.getJointCount());
-        Matrix* bufferPtr = jointBuffer.map(deviceContext);
-        memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());
-        jointBuffer.unmap(deviceContext);
+		static StructuredBuffer<Matrix> jointBuffer(device, CpuAccess::Write, testSkeleton.getJointCount());
+		Matrix* bufferPtr = jointBuffer.map(deviceContext);
+		memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());
+		jointBuffer.unmap(deviceContext);
 
-        ID3D11ShaderResourceView * jointView = jointBuffer.getSRV();
-        deviceContext->VSSetShaderResources(0, 1, &jointView);
+		ID3D11ShaderResourceView * jointView = jointBuffer.getSRV();
+		deviceContext->VSSetShaderResources(0, 1, &jointView);
 
 #else
-        cull();
-        writeInstanceData();
+		cull();
+		writeInstanceData();
 
 		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
@@ -147,60 +147,60 @@ namespace Graphics
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		static float clearColor[4] = { 0, 0.5, 0.7, 1 };
-		static float blackClearColor[4] = {0};
+		static float blackClearColor[4] = { 0 };
 		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
 		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
 		deviceContext->RSSetState(states->CullCounterClockwise());
 
-        deviceContext->IASetInputLayout(forwardPlus);
-        deviceContext->VSSetShader(forwardPlus, nullptr, 0);
+		deviceContext->IASetInputLayout(forwardPlus);
+		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
 
-        deviceContext->PSSetShader(nullptr, nullptr, 0);
-        deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
+		deviceContext->PSSetShader(nullptr, nullptr, 0);
+		deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
 
-        draw();
+		draw();
 
-        deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
-    #pragma region Light Temp
-        static 	float f = 59.42542;
-        f += 0.001f;
+#pragma region Light Temp
+		static 	float f = 59.42542;
+		f += 0.001f;
 
-        auto lights = grid.getLights();
+		auto lights = grid.getLights();
 
-        Light *ptr = lights->map(deviceContext);
-        for (int i = 0; i < NUM_LIGHTS; i++) {
-            ptr[i].color = DirectX::SimpleMath::Vector3(
-                ((unsigned char)(5 + i * 53 * i + 4)) / 255.f,
-                ((unsigned char)(66 + i * 23 + 4)) / 255.f,
-                ((unsigned char)(11 + i * 455 + 4)) / 255.f
-            );
-            ptr[i].positionWS = (ptr[i].color * 2 - DirectX::SimpleMath::Vector3(1.f)) * 2;
-            ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 8;
-            ptr[i].positionWS.y = 1.f;
-            ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 8;
+		Light *ptr = lights->map(deviceContext);
+		for (int i = 0; i < NUM_LIGHTS; i++) {
+			ptr[i].color = DirectX::SimpleMath::Vector3(
+				((unsigned char)(5 + i * 53 * i + 4)) / 255.f,
+				((unsigned char)(66 + i * 23 + 4)) / 255.f,
+				((unsigned char)(11 + i * 455 + 4)) / 255.f
+			);
+			ptr[i].positionWS = (ptr[i].color * 2 - DirectX::SimpleMath::Vector3(1.f)) * 2;
+			ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 8;
+			ptr[i].positionWS.y = 1.f;
+			ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 8;
 
-            //ptr[i].positionWS = DirectX::SimpleMath::Vector3(0.f, 1.f, 1.f - 1 / 8.f - i / 4.f);
-            ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
+			//ptr[i].positionWS = DirectX::SimpleMath::Vector3(0.f, 1.f, 1.f - 1 / 8.f - i / 4.f);
+			ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
 			ptr[i].range = i / 1.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
-            ptr[i].intensity = 1.f;
-        }
+			ptr[i].intensity = 1.f;
+		}
 
-        lights->unmap(deviceContext);
-    #pragma endregion
+		lights->unmap(deviceContext);
+#pragma endregion
 
-        grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
+		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 
-        deviceContext->IASetInputLayout(forwardPlus);
-        deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-        deviceContext->PSSetShader(forwardPlus, nullptr, 0);
+		deviceContext->IASetInputLayout(forwardPlus);
+		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
+		deviceContext->PSSetShader(forwardPlus, nullptr, 0);
 
-		
+
 
 		ID3D11ShaderResourceView *SRVs[] = {
 			grid.getOpaqueIndexList()->getSRV(),
@@ -220,7 +220,7 @@ namespace Graphics
 			skyRenderer.getShaderBuffer(),
 			skyRenderer.getLightMatrixBuffer()
 		};
-		
+
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
 		deviceContext->VSSetConstantBuffers(2, 1, &lightBuffs[1]);
 
@@ -232,47 +232,77 @@ namespace Graphics
 		};
 
 		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
-		
+
 		draw();
 		skyRenderer.renderSky(deviceContext, camera);
 
-		ID3D11RenderTargetView * rtvNULL[3] = {nullptr};
+		ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
 
-        deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
+		deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
 
-        ZeroMemory(SRVs, sizeof(SRVs));
-        deviceContext->PSSetShaderResources(0, 4, SRVs);
+		ZeroMemory(SRVs, sizeof(SRVs));
+		deviceContext->PSSetShaderResources(0, 4, SRVs);
 
-        deviceContext->RSSetState(states->CullCounterClockwise());
-        SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
-        if ((1 << 15) & tabKeyState)
-        {
-            this->drawToBackbuffer(grid.getDebugSRV());
-        }
-        
+		deviceContext->RSSetState(states->CullCounterClockwise());
+		SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
+		if ((1 << 15) & tabKeyState)
+		{
+			this->drawToBackbuffer(grid.getDebugSRV());
+		}
+
 #endif
+		//TEEEMP
+		auto ks = DirectX::Keyboard::Get().GetState();
 
-		///////Post effext
-		PROFILE_BEGIN("Glow");
-		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
-		PROFILE_END();
+		static bool wasPressed = false;
+		static bool isPressed = false;
+		static bool enablePostEffects = true;
+		wasPressed = isPressed;
+		isPressed = ks.V;
 
-		PROFILE_BEGIN("SSAO");
-		ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
-		PROFILE_END();
-		
-		PROFILE_BEGIN("DrawToBackBuffer");
-		drawToBackbuffer(fakeBackBuffer);
-		PROFILE_END();
+		if (!wasPressed && isPressed)
+			enablePostEffects = !enablePostEffects;
 
-		PROFILE_BEGIN("HUD");
-        hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-		PROFILE_END();
+		if (enablePostEffects)
+		{
 
-		PROFILE_BEGIN("DebugInfo");
-		renderDebugInfo(camera);
-		PROFILE_END();
-    }
+			///////Post effects
+			PROFILE_BEGIN("Glow");
+			postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+			PROFILE_END();
+
+			PROFILE_BEGIN("SSAO");
+			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+			PROFILE_END();
+
+			PROFILE_BEGIN("DrawToBackBuffer");
+			drawToBackbuffer(fakeBackBuffer);
+			PROFILE_END();
+
+			PROFILE_BEGIN("HUD");
+			hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
+			PROFILE_END();
+
+			PROFILE_BEGIN("DebugInfo");
+			renderDebugInfo(camera);
+			PROFILE_END();
+		}
+
+		else
+		{
+			PROFILE_BEGIN("DrawToBackBuffer");
+			drawToBackbuffer(fakeBackBuffer);
+			PROFILE_END();
+
+			PROFILE_BEGIN("HUD");
+			hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
+			PROFILE_END();
+
+			PROFILE_BEGIN("DebugInfo");
+			renderDebugInfo(camera);
+			PROFILE_END();
+		}
+	}
 
 
     void Renderer::queueRender(RenderInfo * renderInfo)
