@@ -92,8 +92,6 @@ namespace Logic
 		DirectX::Keyboard::Keys m_reloadWeapon;
 		DirectX::Keyboard::Keys m_useSkill;
 
-
-
 		// Movement
 		void moveInput(DirectX::Keyboard::State* ks);
 		void moveFree(float deltaTime, DirectX::Keyboard::State* ks);

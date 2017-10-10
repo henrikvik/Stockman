@@ -59,16 +59,14 @@ void Game::init()
 	m_cardManager->init();
 
 	m_highScoreManager = newd HighScoreManager();
-
 	std:string name = "";
 	//std::cout << "Enter your player name (will be used for highscore): ";
 	//getline(std::cin, name);
-	if (name.empty())
-	{
-		name = "Stockman";
-	}
+	m_highScoreManager->setName(name.empty() ? "Stockamn" : name);
 
-	m_highScoreManager->setName(name);
+	// Resetting Combo's
+	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
+	ComboMachine::Get().Reset();
 }
 
 void Game::clear()
@@ -84,10 +82,12 @@ void Game::clear()
 	delete m_projectileManager;
 }
 
-void Logic::Game::reset()
+void Game::reset()
 {
 	/*m_entityManager.clear();*/
 	m_player->reset();
+	
+	ComboMachine::Get().Reset();
 	m_waveTimer = NULL;
 	m_waveCurrent = WAVE_START;
 }
@@ -134,6 +134,7 @@ void Game::update(float deltaTime)
 		}
 		else
 		{
+			ComboMachine::Get().Update(deltaTime);
 			waveUpdater();
 
 			PROFILE_BEGIN("Player");
@@ -157,25 +158,8 @@ void Game::update(float deltaTime)
 			PROFILE_END();
 		}
 
-		if (m_player->getHP() <= 0 && m_menu->currentState() == GameState::gameStateGame)
-		{
-			printf("You ded bro.\n");
-			m_highScoreManager->addNewHighScore();
-			m_menu->setStateToBe(GameState::gameStateGameOver);
-
-			for(int i = 0; i < 10; i++)
-			{
-				if (m_highScoreManager->gethighScore(i).score != -1)
-				{
-					highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
-				}
-				else
-				{
-					break;
-				}
-			}
-			reset();
-		}
+		if (m_player->getHP() <= 0)
+			gameOver();
 
 		break;
 
@@ -193,6 +177,23 @@ void Game::update(float deltaTime)
 		m_menu->update(m_gameTime.dt);
 		break;
 	}
+}
+
+void Game::gameOver()
+{
+	printf("You ded bro.\n");
+	m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
+	m_menu->setStateToBe(GameState::gameStateGameOver);
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_highScoreManager->gethighScore(i).score != -1)
+		{
+			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(ComboMachine::Get().GetCurrentScore());
+			break;
+		}
+	}
+	reset();
 }
 
 void Game::render(Graphics::Renderer& renderer)
