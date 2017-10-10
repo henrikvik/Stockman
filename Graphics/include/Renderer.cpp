@@ -258,11 +258,11 @@ namespace Graphics
 		PROFILE_END();
 
 		PROFILE_BEGIN("SSAO");
-		//ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+		ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
 		PROFILE_END();
 		
 		PROFILE_BEGIN("DrawToBackBuffer");
-		drawToBackbuffer(fakeBackBufferSwap);
+		drawToBackbuffer(fakeBackBuffer);
 		PROFILE_END();
 
 		PROFILE_BEGIN("HUD");
@@ -323,7 +323,10 @@ namespace Graphics
         {
             if (info->render)
             {
-                instanceQueue[info->meshId].push_back({ info->translation });
+                instanceQueue[info->meshId].push_back({ 
+					info->translation,
+					info->translation.Invert().Transpose()
+				});
             }
         }
         renderQueue.clear();
