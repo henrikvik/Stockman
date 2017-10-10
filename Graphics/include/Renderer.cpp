@@ -43,11 +43,6 @@ namespace Graphics
         ,menu(device, deviceContext)
         ,hud(device, deviceContext)
 		,ssaoRenderer(device)
-    #pragma region RenderDebugInfo
-        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
-        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
-        , debugColorBuffer(device)
-    #pragma endregion
 
 	{
 		this->device = device;
@@ -235,12 +230,11 @@ namespace Graphics
 		{
 			fakeBackBuffer,
 			glowMap,
-			*ssaoRenderer.getNormalShaderResource()
-			glowMap,
+			*ssaoRenderer.getNormalShaderResource(),
 			worldPosMap
 		};
 
-		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
+		deviceContext->OMSetRenderTargets(4, rtvs, depthStencil);
 		
 		draw();
 		skyRenderer.renderSky(deviceContext, camera);
@@ -282,7 +276,6 @@ namespace Graphics
 		renderDebugInfo(camera);
 		PROFILE_END();
 		fog.renderFog(deviceContext, backBuffer, worldPosMap);
-        renderDebugInfo();
         drawGUI();
     }
 
