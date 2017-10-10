@@ -9,7 +9,7 @@ namespace Logic
 	class EnemyNecromancer : public Enemy
 	{
 		private:
-			const int SPEED_AB1 = 75, SPEED_AB2 = 100;
+			const int SPEED_AB1 = 5, SPEED_AB2 = 10;
 		public:
 			EnemyNecromancer(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
 			virtual ~EnemyNecromancer();
