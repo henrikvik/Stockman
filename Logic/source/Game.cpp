@@ -134,11 +134,7 @@ void Game::update(float deltaTime)
 		}
 		else
 		{
-			ComboMachine::Get().Reward(1);
 			ComboMachine::Get().Update(deltaTime);
-			printf("Score: %d \t Combo: %d\n", ComboMachine::Get().GetCurrentScore(), ComboMachine::Get().GetCurrentCombo());
-
-
 			waveUpdater();
 
 			PROFILE_BEGIN("Player");
