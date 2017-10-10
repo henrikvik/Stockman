@@ -61,29 +61,29 @@
 {
 	"buttonName" : "GameOverButton1";
 	"texture" : 1;
-	"xPos" : 400.0f;
-	"yPos" : 300.0f;
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xPos" : 50.0f;
+	"yPos" : 640.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.125f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.40625f;
     "activeOffset" : 0.0f;
 	"height" : 50.0f;
-	"width" : 450.0f;
+	"width" : 200.0f;
 	"function" : "buttonClick2";
 }
 
 {
 	"buttonName" : "GameOverButton2";
 	"texture" : 1;
-	"xPos" : 400.0f;
-	"yPos" : 400.0f;
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xPos" : 1000.0f;
+	"yPos" : 640.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.54375f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.79375f;
     "activeOffset" : 0.0f;
 	"height" : 50.0f;
-	"width" : 450.0f;
+	"width" : 200.0f;
 	"function" : "buttonClick3";
 }
