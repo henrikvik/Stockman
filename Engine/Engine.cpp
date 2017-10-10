@@ -322,7 +322,6 @@ int Engine::run()
 
 		staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(6, 2, 1) * DirectX::SimpleMath::Matrix::CreateTranslation({0, 2, 0}) * DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0, totalTime * 0.001f, totalTime * 0.001f);
 		
-		renderer->updateLight(deltaTime, &cam);
         Graphics::TextString text{
             L"The hills!",
             DirectX::SimpleMath::Vector2(50, 50),
@@ -337,6 +336,7 @@ int Engine::run()
         {
          // renderer->queueRender(&staticSphere);
          // renderer->queueText(&text);
+			renderer->updateLight(deltaTime, &cam);
 
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
