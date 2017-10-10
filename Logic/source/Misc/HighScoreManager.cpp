@@ -13,6 +13,8 @@ HighScoreManager::HighScoreManager()
 	}
 	m_score = 0;
 	m_name = "";
+	m_killCount = 0;
+	m_comboCount = 1;
 
 	loadFromFile();
 }
@@ -90,9 +92,9 @@ void Logic::HighScoreManager::comboCheck(float dt)
 	{
 		m_comboTimer = m_comboTimer - dt;
 	}
-	else if(m_comboCount != 0)
+	else if(m_comboCount != 1)
 	{
-		m_comboCount = 0;
+		m_comboCount = 1;
 	}
 }
 
@@ -105,10 +107,3 @@ Logic::HighScoreManager::highScore Logic::HighScoreManager::gethighScore(int ind
 {
 	return m_highScore[index];
 }
-
-
-
-
-
-
-

@@ -58,16 +58,10 @@ void Game::init()
 	m_cardManager->init();
 
 	m_highScoreManager = newd HighScoreManager();
-
 	std:string name = "";
 	//std::cout << "Enter your player name (will be used for highscore): ";
 	//getline(std::cin, name);
-	if (name.empty())
-	{
-		name = "Stockman";
-	}
-
-	m_highScoreManager->setName(name);
+	m_highScoreManager->setName(name.empty() ? "Stockamn" : name);
 }
 
 void Game::clear()
@@ -87,6 +81,8 @@ void Logic::Game::reset()
 {
 	/*m_entityManager.clear();*/
 	m_player->reset();
+
+	m_points = NULL;
 	m_waveTimer = NULL;
 	m_waveCurrent = WAVE_START;
 }
@@ -104,7 +100,7 @@ void Game::waveUpdater()
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
 			m_entityManager.setCurrentWave(m_waveCurrent);
-			m_entityManager.spawnWave(*m_physics, m_projectileManager);
+			m_entityManager.spawnWave(*m_physics, m_projectileManager, &m_points);
 
 			// If the player have completed all the waves
 			if (m_waveCurrent == MAX_WAVES)
@@ -156,25 +152,8 @@ void Game::update(float deltaTime)
 			PROFILE_END();
 		}
 
-		if (m_player->getHP() <= 0 && m_menu->currentState() == GameState::gameStateGame)
-		{
-			printf("You ded bro.\n");
-			m_highScoreManager->addNewHighScore();
-			m_menu->setStateToBe(GameState::gameStateGameOver);
-
-			for(int i = 0; i < 10; i++)
-			{
-				if (m_highScoreManager->gethighScore(i).score != -1)
-				{
-					highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
-				}
-				else
-				{
-					break;
-				}
-			}
-			reset();
-		}
+		if (m_player->getHP() <= 0)
+			gameOver();
 
 		break;
 
@@ -192,6 +171,26 @@ void Game::update(float deltaTime)
 		m_menu->update(m_gameTime.dt);
 		break;
 	}
+}
+
+void Game::gameOver()
+{
+	printf("You ded bro.\n");
+	m_highScoreManager->addNewHighScore();
+	m_menu->setStateToBe(GameState::gameStateGameOver);
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_highScoreManager->gethighScore(i).score != -1)
+		{
+			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
+		}
+		else
+		{
+			break;
+		}
+	}
+	reset();
 }
 
 void Game::render(Graphics::Renderer& renderer)
