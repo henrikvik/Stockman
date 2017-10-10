@@ -26,13 +26,13 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, 
 {
 	m_allSkills =
 	{
-		{ /*new SkillBulletTime(BULLET_TIME_CD, gameTime)*/ new SkillBulletTime(projectileManager, ProjectileData(0, 1, 1, 100, 0, BULLET_TIME_DURATION, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeBulletTime)) },
+		{ new SkillBulletTime(projectileManager, ProjectileData(0, 100, 0, 0, 0.f, BULLET_TIME_DURATION, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeBulletTimeSensor)) },
 		{ new SkillGrapplingHook(physics) },
-		{ new SkillShieldCharge(projectileManager, ProjectileData(0, 1, 0, 0, 0, 3000, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeShield)) }
+		{ new SkillShieldCharge() }
 	};
 
 
-	switchToSkill(1);
+	switchToSkill(2);
 }
 
 void SkillManager::switchToSkill(int index)
@@ -69,4 +69,9 @@ void SkillManager::render(Graphics::Renderer& renderer)
 bool Logic::SkillManager::getCanBeUsed() const
 {
 	return m_canBeUsed;
+}
+
+Skill * Logic::SkillManager::getCurrentSkill() const
+{
+    return m_currentSkill;
 }

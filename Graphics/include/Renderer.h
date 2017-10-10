@@ -15,8 +15,11 @@
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
-#include "PostProccessor.h";
+#include "Glow.h";
 #include "SkyRenderer.h"
+#include "Menu.h"
+#include "HUD.h"
+#include "SSAORenderer.h"
 #include "Fog.H"
 
 #include <SpriteBatch.h>
@@ -35,6 +38,8 @@ namespace Graphics
         void render(Camera * camera);
         void queueRender(RenderInfo * renderInfo);
         void queueRenderDebug(RenderDebugInfo * debugInfo);
+        void queueText(TextString * text);
+        void fillHUDInfo(HUDInfo * info);
 
         void drawMenu(Graphics::MenuInfo * info);
 		void updateLight(float deltaTime, Camera * camera);
@@ -46,15 +51,13 @@ namespace Graphics
         DepthStencil depthStencil;
 
 		SkyRenderer skyRenderer;
-		PostProcessor postProcessor;
+		Glow postProcessor;
 
 		LightGrid grid;
 		DirectX::CommonStates *states;
 
         Shader fullscreenQuad;
         Shader forwardPlus;
-        Shader menuShader;
-        Shader GUIShader;
 
         //ComputeShader lightGridGen; 
 
@@ -68,43 +71,23 @@ namespace Graphics
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 
-        bool menuTexturesLoaded;
-        void unloadMenuTextures();
-        void reloadMenuTextures();
 
+		SSAORenderer ssaoRenderer;
         
 
 		ShaderResource fakeBackBuffer;
 		ShaderResource fakeBackBufferSwap;
 		ShaderResource glowMap;
 
-        ///// SUPER TEMP
-       
-       
-		
-
-	
-
-
-
-
-        ID3D11ShaderResourceView * menuTexture;
-        //crosshair
-        ID3D11ShaderResourceView * GUITexture1;
-        //HP bar
-        ID3D11ShaderResourceView * GUITexture2;
-        ID3D11ShaderResourceView * buttonTexture;
-       
-
-        ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
 
-        ID3D11Buffer * menuQuad;
-        ID3D11Buffer * buttonQuad;
+
+        Menu menu;
+        HUD hud;
 
 
 
-        void loadModellessTextures();
+
 
 		ID3D11ShaderResourceView * glowTest;
 
@@ -115,7 +98,6 @@ namespace Graphics
         void drawGUI();
 		
 
-        void mapButtons(ButtonInfo * info);
 
 
         
@@ -124,9 +106,7 @@ namespace Graphics
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
         void createBlendState();
-        void createGUIBuffers();
 
-        void createMenuVBS();
 
 
     #pragma region RenderDebugInfo
@@ -135,11 +115,13 @@ namespace Graphics
         std::vector<RenderDebugInfo*> renderDebugQueue;
         StructuredBuffer<DirectX::SimpleMath::Vector3> debugPointsBuffer;
         ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
-        void renderDebugInfo();
+        void renderDebugInfo(Camera* camera);
 
     #pragma endregion
 		Fog fog;
 		ShaderResource worldPosMap;
+
+
 
 
     };

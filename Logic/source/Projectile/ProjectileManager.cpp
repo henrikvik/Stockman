@@ -16,12 +16,20 @@ void ProjectileManager::clear()
 	m_projectiles.clear();
 }
 
-void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)
+Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)
 {
 	// Create body
-	btRigidBody* body = m_physPtr->createBody(Cube(position + (forward * 2), btVector3(), { pData.scale, pData.scale, pData.scale }), pData.mass, false);
+	btRigidBody* body = m_physPtr->createBody(Cube(position + (forward * 2), btVector3(forward), { pData.scale, pData.scale, pData.scale }), pData.mass, false);
+
+	// Taking the forward vector and getitng the pitch and yaw from it
+	float pitch = asin(-forward.getY());
+	float yaw = atan2(forward.getX(), forward.getZ());
+	btQuaternion q(yaw, pitch, 0.f);
+	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - (180 * M_PI / 180), 0.f));
+
 	// Set gravity modifier
 	body->setGravity(pData.gravityModifier * m_physPtr->getGravity());
+
 	// Create projectile
 	Projectile* p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, pData);
 	// Start
@@ -30,11 +38,13 @@ void ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position,
 	// Add to projectile list
 	m_projectiles.push_back(p);
 	//printf("projs: %d\n", m_projectiles.size());
+
+	return p;
 }
 
 void ProjectileManager::removeProjectile(Projectile* p)
 {
-	m_physPtr->removeRigidBody(p->getRigidbody());
+	m_physPtr->removeRigidBody(p->getRigidBody());
 	p->destroyBody();
 	delete p;
 	
@@ -51,7 +61,7 @@ void ProjectileManager::removeProjectile(Projectile* p)
 
 void ProjectileManager::removeProjectile(Projectile* p, int index)
 {
-	m_physPtr->removeRigidBody(p->getRigidbody());
+	m_physPtr->removeRigidBody(p->getRigidBody());
 	p->destroyBody();
 	delete p;
 	m_projectiles.erase(m_projectiles.begin() + index);
@@ -62,8 +72,8 @@ void Logic::ProjectileManager::update(float deltaTime)
 	for (size_t i = 0; i < m_projectiles.size(); i++)
 	{
 		Projectile* p = m_projectiles[i];
-		p->update(deltaTime);
-		if (p->shouldRemove() || p->getTTL() < 0.f)		// Check remove flag and ttl
+		p->updateSpecific(deltaTime);
+		if (p->shouldRemove() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
 		{
 			removeProjectile(p, i);
 			i--;

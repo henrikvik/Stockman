@@ -1,4 +1,5 @@
 #pragma once
+#include "../ThrowIfFailed.h"
 
 template<typename T, size_t size = 1>
 class ConstantBuffer

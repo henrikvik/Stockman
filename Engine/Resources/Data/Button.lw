@@ -3,13 +3,44 @@
 	"texture" : "b";
 	"xPos" : 400.0f;
 	"yPos" : 300.0f;
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.50781f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.75156f;
+    "activeOffset" : 0.50781f;
 	"height" : 100.0f;
 	"width" : 450.0f;
 	"function" : "buttonClick0";
+}
+
+{
+	"buttonName" : "MenuMainButton2";
+	"texture" : "b";
+	"xPos" : 400.0f;
+	"yPos" : 450.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.76875f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.86719f;
+    "activeOffset" : 0.50938f;
+	"height" : 100.0f;
+	"width" : 450.0f;
+	"function" : "buttonClick1";
+}
+
+{
+	"buttonName" : "MenuMainButton3";
+	"texture" : "b";
+	"xPos" : 400.0f;
+	"yPos" : 600.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.876565f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.97188f;
+    "activeOffset" : 0.51094f;
+	"height" : 100.0f;
+	"width" : 450.0f;
+	"function" : "buttonClick3";
 }
 
 {
@@ -21,9 +52,10 @@
 	"yTexStart" : 1.0f;
 	"xTexEnd" : 0.0f;
 	"yTexEnd" : 0.0f;
+    "activeOffset" : 0.0f;
 	"height" : 200.0f;
 	"width" : 200.0f;
-	"function" : "buttonClick1";
+	"function" : "buttonClick2";
 }
 
 {
@@ -35,7 +67,23 @@
 	"yTexStart" : 1.0f;
 	"xTexEnd" : 0.0f;
 	"yTexEnd" : 0.0f;
-	"height" : 200.0f;
-	"width" : 200.0f;
+    "activeOffset" : 0.0f;
+	"height" : 50.0f;
+	"width" : 450.0f;
+	"function" : "buttonClick2";
+}
+
+{
+	"buttonName" : "GameOverButton2";
+	"texture" : "bla";
+	"xPos" : 400.0f;
+	"yPos" : 400.0f;
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+    "activeOffset" : 0.0f;
+	"height" : 50.0f;
+	"width" : 450.0f;
 	"function" : "buttonClick3";
 }

@@ -5,7 +5,7 @@
 class ShaderResource
 {
 public:
-	ShaderResource(ID3D11Device * device, UINT width, UINT height);
+	ShaderResource(ID3D11Device * device, UINT width, UINT height, DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM);
 	~ShaderResource();
 
 	operator ID3D11RenderTargetView*() const { return renderTarget; }

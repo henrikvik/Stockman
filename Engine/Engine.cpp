@@ -21,7 +21,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-
+		
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
@@ -223,7 +223,7 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight, 250);
+	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
     cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
@@ -237,10 +237,12 @@ int Engine::run()
     long long totalTime = 0;
 	bool showProfiler = false;
 
+	bool running = true;
+
 	g_Profiler = new Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
 
-	while (WM_QUIT != msg.message)
+	while (running)
 	{
 		currentTime = this->timer();
 		deltaTime = currentTime - prev;
@@ -252,8 +254,10 @@ int Engine::run()
 			TranslateMessage(&msg);
 
 
-
 			DispatchMessage(&msg);
+
+			if (WM_QUIT == msg.message)
+				running = false;
 		}
 
 		//To enable/disable fullscreen
@@ -297,42 +301,42 @@ int Engine::run()
 		game.render(*renderer);
 		PROFILE_END();
 
-        cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
+		if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftControl)) cam.update(oldPos, game.getPlayerForward(), mContext);
+		else
+		{
+			oldPos = game.getPlayerPosition();
+			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+		}
 
 		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
         //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
 
         //////////////TEMP/////////////////
-        Graphics::RenderInfo staticCube = {
-            true, //bool render;
-            Graphics::ModelID::BUSH, //ModelID meshId;
-            0, //int materialId;
-            DirectX::SimpleMath::Matrix()// DirectX::SimpleMath::Matrix translation;
-        };
-
         Graphics::RenderInfo staticSphere = {
             true, //bool render;
-            Graphics::ModelID::SPHERE, //ModelID meshId;
+            Graphics::ModelID::CUBE, //ModelID meshId;
             0, //int materialId;
             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
         };
 
-        //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
-        //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
-       /* staticCube.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + cosf(totalTime * 0.001f),0 });*/
-	   staticCube.translation = DirectX::SimpleMath::Matrix::CreateScale({ 3 + cosf(totalTime * 0.001f),3 + cosf(totalTime * 0.001f),3 + cosf(totalTime * 0.001f) });
-
-        staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 2, 3 + sinf(totalTime * 0.001f),0 });
-
+		staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(6, 2, 1) * DirectX::SimpleMath::Matrix::CreateTranslation({0, 2, 0}) * DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0, totalTime * 0.001f, totalTime * 0.001f);
+		
 		renderer->updateLight(deltaTime, &cam);
+        Graphics::TextString text{
+            L"The hills!",
+            DirectX::SimpleMath::Vector2(50, 50),
+            DirectX::SimpleMath::Color(DirectX::Colors::Black),
+            Graphics::Font::SMALL
+        };
 
         
         ///////////////////////////////////
 
         if (game.getState() == Logic::gameStateGame)
         {
-            renderer->queueRender(&staticCube);
-            renderer->queueRender(&staticSphere);
+         // renderer->queueRender(&staticSphere);
+         // renderer->queueText(&text);
 
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);

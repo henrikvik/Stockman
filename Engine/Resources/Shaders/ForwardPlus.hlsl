@@ -10,7 +10,7 @@ cbuffer Camera : register(b0)
 {
 	float4x4 ViewProjection;
 	float4x4 InvProjection;
-    float4x4 dummy;
+    float4x4 View;
     float4 camPos;
 }
 
@@ -29,6 +29,7 @@ cbuffer LightMatBuffer : register(b2)
 struct InstanceData
 {
     float4x4 world;
+    float4x4 invWorldT;
 };
 StructuredBuffer<InstanceData> instanceData : register(t20);
 cbuffer InstanceOffsetBuffer : register(b3)
@@ -59,6 +60,7 @@ struct VSOutput {
 	float4 worldPos : POS;
     float4 lightPos : LIGHT_POS;
 	float3 normal : NORMAL;
+    float3 normalView : NORMALVIEW;
 	float2 uv : UV;
     float3 biTangent : BITANGENT;
     float3 tangent : TANGENT;
@@ -68,6 +70,7 @@ struct PSOutput
 {
     float4 backBuffer : SV_Target0;
     float4 glowMap : SV_Target1;
+    float4 normalView : SV_Target2;
 	float4 worldPosMap : SV_Target2;
 };
 
@@ -75,13 +78,21 @@ VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
 	VSOutput output;
 
     float4x4 world = instanceData[instanceOffset + instanceId].world;
+    float4x4 invWorldT = instanceData[instanceOffset + instanceId].invWorldT;
 
 	output.worldPos = mul(world, float4(input.position, 1));
     output.pos = mul(ViewProjection, output.worldPos);
 
 	output.uv = input.uv;
-    output.normal = mul(world, float4(input.normal, 0));
+
+    //Temporary fix until normals are RH
+    input.normal.z *= -1;
+
+    
+    output.normal = mul(invWorldT, float4(input.normal, 0));
     output.normal = normalize(output.normal);
+
+    output.normalView = normalize(mul(View, float4(output.normal, 0)));
 
     output.lightPos = output.worldPos + float4(output.normal * 0.15f, 0);
     output.lightPos = mul(lightVP, output.lightPos);
@@ -211,6 +222,8 @@ PSOutput PS(VSOutput input) {
     
     output.backBuffer = float4(lighting, 1);
     output.glowMap = glowMap.Sample(Sampler, input.uv);
+    output.normalView = float4(input.normalView.xyz, 1);
+    return output;
 	output.worldPosMap = input.worldPos;
 
         return output;

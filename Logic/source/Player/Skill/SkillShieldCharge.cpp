@@ -1,47 +1,69 @@
 #include "Player/Skill/SkillShieldCharge.h"
+#include <Player\Player.h>
+#include <iostream>
+
+#define SHIELD_CHARGE_CD 5000.f
+#define SHIELD_CHARGE_DURATION	1000.f
 
 using namespace Logic;
 
-SkillShieldCharge::SkillShieldCharge(ProjectileManager * projectileManager, ProjectileData projectileData)
+SkillShieldCharge::SkillShieldCharge()
 : Skill(SHIELD_CHARGE_CD, SHIELD_CHARGE_DURATION)
 {
-	m_projectileManager = projectileManager;
-	m_projectileData = projectileData;
-	active = false;
-	time = 0.0f;
+	m_active = false;
+	m_time = 0.0f;
+	m_forw = btVector3(0.0f, 0.0f, 0.0f);
+	m_shooter = nullptr;
+	m_chargePower = 0.07f;
+
 }
 
 SkillShieldCharge::~SkillShieldCharge()
 {
 	m_projectileManager = nullptr;
-	thePlayer = nullptr;
+	m_shooter = nullptr;
 }
 
 void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
-	printf("Used Shield Charge.\n");
-	active = true;
-	forw = forward * SHIELD_CHARGE_DURATION;
-	thePlayer = &shooter;
-	thePlayer->getRigidbody()->applyCentralImpulse(forw);
+	if (!m_active)
+	{
+		//Sets up the shield charge by deciding its movement vector and who is gonna charge
+		m_active = true;
+		m_forw = btVector3(forward.getX(), 0.0f, forward.getZ());
+		m_forw = m_forw;
+		m_shooter = &shooter;
+		shooter.getStatusManager().addStatus(StatusManager::EFFECT_ID::SHIELD_CHARGE, 1, true);
+	}
 }
 
 void SkillShieldCharge::onRelease() { }
 
 void SkillShieldCharge::onUpdate(float deltaTime)
 {
-	if (active == true)
+	if (m_active)
 	{
-		if (time >= SHIELD_CHARGE_DURATION)
+		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
-			btVector3 stop(0.0f, 0.0f, 0.0f);
-			active == false;
-			time = 0;
+			//Pushes the player forward with a static charge power, charging towards the pre decided vector
+			player->setMaxSpeed(m_chargePower);
+			player->setMoveSpeed(m_chargePower);
+			player->setMoveDirection(m_forw);
+
+			m_time += deltaTime;
+
+
+			if (m_time >= SHIELD_CHARGE_DURATION)
+			{
+				// When the duration of the skill is up the current charge is put to the max character speed
+				player->setMaxSpeed(PLAYER_MOVEMENT_MAX_SPEED);
+				m_active = false;
+				m_time = 0;
+				player->setMoveSpeed(PLAYER_MOVEMENT_MAX_SPEED);
+			}
+
 		}
-		time += deltaTime;
 	}
-	//Move you and bullet on a set speed for a set amount of time
-	//deactivate the bool
 }
 
 void SkillShieldCharge::render(Graphics::Renderer& renderer)

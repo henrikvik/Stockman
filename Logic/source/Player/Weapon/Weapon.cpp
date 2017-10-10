@@ -42,14 +42,20 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	rotX = DirectX::SimpleMath::Matrix::CreateRotationX(50.f * (3.14 / 180));
 
 	// Tilting the gun to the middle
-	rotY = DirectX::SimpleMath::Matrix::CreateRotationY(0.f * (3.14 / 180));
+	rotY = DirectX::SimpleMath::Matrix::CreateRotationY(15.f * (3.14 / 180));
 
 	// Moving the model down to the right
-	//trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
-    trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0, -7.0f, -10.f));
+	// trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
+    trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(3.f, -7.0f, -10.f));
 
 	// Scaling the model by making it thinner and longer
 	scale = DirectX::SimpleMath::Matrix::CreateScale(0.05f, 0.05f, 0.05f);
+}
+
+void Logic::Weapon::reset()
+{
+	m_ammo = m_ammoCap;
+	m_magAmmo = m_magSize;
 }
 
 void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)

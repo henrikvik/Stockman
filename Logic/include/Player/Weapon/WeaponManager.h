@@ -28,6 +28,7 @@ namespace Logic
 
 		void init(ProjectileManager* projectileManager);
 		void clear();
+		void reset();
 		void update(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 
@@ -44,6 +45,9 @@ namespace Logic
 
 		Weapon* getCurrentWeaponPrimary();
 		Weapon* getCurrentWeaponSecondary();
+
+        Weapon* getfirstWeapon();
+        Weapon* getSecondWeapon();
 
 	private:
 

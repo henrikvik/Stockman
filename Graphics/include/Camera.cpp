@@ -2,7 +2,8 @@
 using namespace DirectX::SimpleMath;
 using namespace Graphics;
 
-Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, float fieldOfView)
+Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, float fieldOfView):
+	inverseBuffer(device)
 {
 	this->mFieldOfView = fieldOfView;
 	this->mDrawDistance = drawDistance;
@@ -85,59 +86,63 @@ ID3D11Buffer* Graphics::Camera::getBuffer()
 	return this->mVPBuffer;
 }
 
+ID3D11Buffer * Graphics::Camera::getInverseBuffer()
+{
+	return this->inverseBuffer;
+}
+
 #include <Mouse.h>
 
 void Graphics::Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context)
 {
 	forward.Normalize();
-	auto &m = DirectX::Mouse::Get();
-	//pos.x = cosf(m.GetState().x*0.01f)*M_PI;
-	//pos.y = cosf(m.GetState().y*0.025f)*M_PI;
-	//pos.z = sinf(m.GetState().x*0.01f)*M_PI;
-	Matrix newView = DirectX::XMMatrixLookToRH(pos, forward, Vector3(0, 1, 0));
 
-	//if (newView != this->mView)
-	{
-		this->mView = newView;
-		this->mPos = pos;
+	this->mView = DirectX::XMMatrixLookToRH(pos, forward, Vector3(0, 1, 0));
+	
+	
+	this->mPos = pos;
 
-		values.mVP = this->mView * this->mProjection;
-		values.mInvP = this->mProjection.Invert();
-		values.mV = this->mView;
-		values.camPos = Vector4(pos.x, pos.y, pos.z, 1);
+	values.mV = this->mView;
+	values.mVP = this->mView * this->mProjection;
+	values.mInvP = this->mProjection.Invert();
+	values.camPos = Vector4(pos.x, pos.y, pos.z, 1);
 
-		D3D11_MAPPED_SUBRESOURCE data;
-		ZeroMemory(&data, sizeof(data));
+	inverseMatrixes.mInvP = values.mInvP;
+	inverseMatrixes.mInvView = mView.Invert();
 
-		context->Map(this->mVPBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	inverseBuffer.write(context, &inverseMatrixes, sizeof(InverseMatrixes));
 
-		memcpy(data.pData, &values, sizeof(ShaderValues));
+	D3D11_MAPPED_SUBRESOURCE data;
+	ZeroMemory(&data, sizeof(data));
 
-		context->Unmap(this->mVPBuffer, 0);
-	}
+	context->Map(this->mVPBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+
+	memcpy(data.pData, &values, sizeof(ShaderValues));
+
+	context->Unmap(this->mVPBuffer, 0);
+	
 }
 
 void Graphics::Camera::updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext * context)
 {
     Matrix newView = DirectX::XMMatrixLookAtRH(pos, target, Vector3(0, 1, 0));
 
-    //if (newView != this->mView)
-    {
-        this->mView = newView;
-        this->mPos = pos;
+  
+    this->mView = newView;
+    this->mPos = pos;
 
-        values.mVP = this->mView * this->mProjection;
-        values.mInvP = this->mProjection.Invert();
-        values.mV = this->mView;
-        values.camPos = Vector4(pos.x, pos.y, pos.z, 1);
+    values.mVP = this->mView * this->mProjection;
+    values.mInvP = this->mProjection.Invert();
+    values.mV = this->mView;
+    values.camPos = Vector4(pos.x, pos.y, pos.z, 1);
 
-        D3D11_MAPPED_SUBRESOURCE data;
-        ZeroMemory(&data, sizeof(data));
+    D3D11_MAPPED_SUBRESOURCE data;
+    ZeroMemory(&data, sizeof(data));
 
-        context->Map(this->mVPBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+    context->Map(this->mVPBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 
-        memcpy(data.pData, &values, sizeof(ShaderValues));
+    memcpy(data.pData, &values, sizeof(ShaderValues));
 
-        context->Unmap(this->mVPBuffer, 0);
-    }
+    context->Unmap(this->mVPBuffer, 0);
+    
 }
