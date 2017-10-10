@@ -13,7 +13,7 @@ namespace Graphics
         Menu(ID3D11Device * device, ID3D11DeviceContext * contex);
         ~Menu();
 
-        void drawMenu(ID3D11Device * device, ID3D11DeviceContext * contex, Graphics::MenuInfo * info, ID3D11RenderTargetView * backBuffer);
+        void drawMenu(ID3D11Device * device, ID3D11DeviceContext * contex, Graphics::MenuInfo * info, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState);
         
         void unloadTextures();
 
