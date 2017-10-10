@@ -1,3 +1,7 @@
+#define a 0.01 // Color Change Radious
+#define TRAD 7 // Transparancy Radious
+#define FOGCOLOR 0.3 //Fog Color
+
 cbuffer Camera : register(b0)
 {
 	float4x4 PV;
@@ -39,7 +43,7 @@ VSOut VS(uint id : SV_VertexID)
 	float4 V = camPos - P;
 	//a is a random posetive constant, NOTE if the value is over 20 or the color of
 	//the fragment is going to "shine through" when under the fog halfspace
-	float a = 0.01;
+	//float a = 0.01;
 	//K is either 1 or 0
 	float k = 0;
 
@@ -68,9 +72,9 @@ float4 PS (VSOut psIn) : SV_Target
 {
 	float3 worldPos = worldPosMap.Load(float3(psIn.pos.xy, 0)).xyz;
 
-	float playerDistance = length( psIn.worldPos.xz - camPos.xz);
+	float playerDistance = length( psIn.worldPos.xyz - camPos.xyz);
 
-	float3 fogColor = (0.5 ,0.5, 0.5);
+	float3 fogColor = (FOGCOLOR , FOGCOLOR, FOGCOLOR);
 
 	float g = min(psIn.c2, 0.0);
 
@@ -79,7 +83,7 @@ float4 PS (VSOut psIn) : SV_Target
 
 	float f = saturate(exp2(-g));
 
-	float fogDepth = clamp(min(saturate(1 - worldPos.y), saturate(playerDistance / 7)), 0, 0.8);
+	float fogDepth = clamp(min(saturate(1 - worldPos.y), saturate(playerDistance / TRAD)), 0, 0.8);
 
 	psIn.color.rgb = psIn.color.rgb * f + fogColor.rgb * (1.0 - f);
 
