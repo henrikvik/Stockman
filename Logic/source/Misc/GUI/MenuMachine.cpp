@@ -2,6 +2,8 @@
 #include <iostream>
 #include <Misc\FileLoader.h>
 #include <Keyboard.h>
+#include <Engine\Typing.h>
+#include <Keyboard.h>
 using namespace Logic;
 
 MenuMachine::MenuMachine()
@@ -10,6 +12,8 @@ MenuMachine::MenuMachine()
 	currentActiveMenu = nullptr;
 	currentActiveState = gameStateMenuMain;
 	m_highScoreNamePTR = nullptr;
+	m_highScoreName = "";
+	m_typing = false;
 }
 
 MenuMachine::MenuMachine(string* highScoreNamePTR)
@@ -18,6 +22,8 @@ MenuMachine::MenuMachine(string* highScoreNamePTR)
 	currentActiveMenu = nullptr;
 	currentActiveState = gameStateMenuMain;
 	m_highScoreNamePTR = highScoreNamePTR;
+	m_highScoreName = *m_highScoreNamePTR;
+	m_typing = false;
 }
 
 
@@ -38,6 +44,7 @@ void Logic::MenuMachine::initialize(GameState state)
 	functions["buttonClick1"] = std::bind(&MenuMachine::buttonClick1, this);
 	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
 	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick3, this);
+	functions["buttonClick4"] = std::bind(&MenuMachine::buttonClick4, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -103,7 +110,7 @@ void Logic::MenuMachine::update(float dt)
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
-	if (Mouse.leftButton && !pressed)
+	if (Mouse.leftButton && !pressed && !m_typing)
 	{
 		pressed = true;
 		currentActiveMenu->updateOnPress(Mouse.x, Mouse.y);
@@ -114,7 +121,7 @@ void Logic::MenuMachine::update(float dt)
 
 	}
 
-	if (stateToBe != gameStateDefault)
+	if (stateToBe != gameStateDefault && !m_typing)
 	{
 		if (forward)
 		{
@@ -131,6 +138,26 @@ void Logic::MenuMachine::update(float dt)
 				stateToBe = gameStateDefault;
 				forward = true;
 			}
+		}
+	}
+
+	if (m_typing)
+	{
+		DirectX::Keyboard::State keyboard = DirectX::Keyboard::Get().GetState();
+		Typing* theChar = Typing::getInstance(); //might need to be deleted
+		char tempChar = theChar->getSymbol();
+		if (keyboard.IsKeyDown(DirectX::Keyboard::Enter))
+		{
+			m_typing = false;
+			*m_highScoreNamePTR = m_highScoreName;
+		}
+		else if (keyboard.IsKeyDown(DirectX::Keyboard::Back) && m_highScoreNamePTR->compare("") != 0)
+		{
+			m_highScoreNamePTR->pop_back();
+		}
+		else if (tempChar != 0)
+		{
+			m_highScoreName += tempChar;
 		}
 	}
 
@@ -204,20 +231,9 @@ void Logic::MenuMachine::buttonClick3()
 
 void Logic::MenuMachine::buttonClick4()
 {
-	DirectX::Keyboard::State theState = DirectX::Keyboard::Get().GetState();
-	/*char key;
-	int asciiValue;
-	std::string name;
-
-	while (1)
-	{
-		key = getch();
-		asciiValue = key;
-
-		if (asciiValue == 13)
-		{
-			break;
-		}
-		name += key;
-	}*/
+	//triggers the typing button
+	Typing* theChar = Typing::getInstance(); //might need to be deleted
+	char trashThis = theChar->getSymbol();
+	m_typing = true;
+	m_highScoreName = "";
 }

@@ -33,6 +33,8 @@ namespace Logic
 		GameState stateToBe;
 		bool forward;
 		std::string* m_highScoreNamePTR;
+		std::string m_highScoreName;
+		bool m_typing;
 	public:
 		MenuMachine();
 		MenuMachine(string* highScoreNamePTR);

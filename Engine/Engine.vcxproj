@@ -191,12 +191,14 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Profiler.cpp" />
+    <ClCompile Include="Typing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Resources\Shaders\ShaderConstants.h" />
     <ClInclude Include="Profiler.h" />
+    <ClInclude Include="Typing.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Data\Button.lw" />
