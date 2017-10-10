@@ -247,7 +247,7 @@ void Graphics::HUD::setHUDTextRenderPos()
 
     cdPos = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2) - 24, (WIN_HEIGHT / 2) + 120);
     
-    scorePos = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2 - 24), (WIN_HEIGHT / 2) - 200);
+    scorePos = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2 - 24), (WIN_HEIGHT / 2) - 300);
     wavePos = DirectX::SimpleMath::Vector2(0, 0);
     timePos = DirectX::SimpleMath::Vector2(0, 0);
 }
