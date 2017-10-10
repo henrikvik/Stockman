@@ -1,6 +1,7 @@
 #include "Player/Player.h"
 #include <AI\EnemyTest.h>
 #include <AI\Trigger.h>
+#include <DebugDefines.h>
 
 using namespace Logic;
 

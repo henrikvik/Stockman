@@ -19,7 +19,7 @@
 #include "Skill\SkillManager.h"
 #include <Projectile\ProjectileManager.h>
 #include <Graphics\include\Structs.h>
-#define _GOD_MODE
+
 #define PLAYER_STARTING_HP				3
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
 #define PLAYER_MOVEMENT_MAX_SPEED		0.015f
