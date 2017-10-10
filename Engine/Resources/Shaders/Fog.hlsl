@@ -23,6 +23,7 @@ struct VSOut
 	float c1 : C1;
 	float c2 : C2;
 	float F_DOT_V : F_DOT_V;
+
 };
 
 VSOut VS(uint id : SV_VertexID)
@@ -38,7 +39,7 @@ VSOut VS(uint id : SV_VertexID)
 	float4 V = camPos - P;
 	//a is a random posetive constant, NOTE if the value is over 20 or the color of
 	//the fragment is going to "shine through" when under the fog halfspace
-	float a = 0.1;
+	float a = 0.01;
 	//K is either 1 or 0
 	float k = 0;
 
@@ -51,6 +52,8 @@ VSOut VS(uint id : SV_VertexID)
 	vsOut.c1 = k * ((dot(F, P)) + (dot(F, camPos)));
 	vsOut.c2 = (1 - (2 * k) * dot(F, P));
 	vsOut.F_DOT_V = dot(F, V);
+
+
 
 	vsOut.pos = mul(PV, P);
 	vsOut.color = fogData[id].color;
@@ -65,25 +68,20 @@ float4 PS (VSOut psIn) : SV_Target
 {
 	float3 worldPos = worldPosMap.Load(float3(psIn.pos.xy, 0)).xyz;
 
-	float playerDistance = distance(camPos.xyz, worldPos);
-	float maxDistance = 15;
-	
+	float playerDistance = length( psIn.worldPos.xz - camPos.xz);
 
-	float3 fogColor = (0.4 ,0.4, 0.4);
+	float3 fogColor = (0.5 ,0.5, 0.5);
 
 	float g = min(psIn.c2, 0.0);
+
+	//calculates where the cam is and is used to let 
 	g = -length(psIn.aV) * (psIn.c1 - g * g / abs(psIn.F_DOT_V));
 
 	float f = saturate(exp2(-g));
-	float fogDepth = clamp(saturate(1 - worldPos.y), 0, 0.8);
 
-	//fogDepth = max(saturate());
+	float fogDepth = clamp(min(saturate(1 - worldPos.y), saturate(playerDistance / 7)), 0, 0.8);
 
 	psIn.color.rgb = psIn.color.rgb * f + fogColor.rgb * (1.0 - f);
 
-	//return float4(fogColor, fogDepth);
-
-
-
-	return float4(psIn.color.rbg, fogDepth);//psIn.color.r);
+	return float4(psIn.color.rbg, fogDepth);
 }
