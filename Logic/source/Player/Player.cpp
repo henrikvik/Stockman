@@ -440,7 +440,6 @@ void Player::accelerate(float deltaTime, float acceleration)
 		m_moveSpeed = m_moveMaxSpeed;
 
 	// Update pos of player
-	
 	btTransform transform = getTransform();
 	if (m_playerState != PlayerState::IN_AIR)
 		transform.setOrigin(getTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));

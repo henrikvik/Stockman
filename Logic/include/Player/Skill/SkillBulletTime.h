@@ -32,6 +32,8 @@ namespace Logic
 		std::vector<float> slowDownIntervals;
 		std::vector<float> speedUpIntervals;
 
+		int m_stacks;
+
 	public:
 		SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData);
 
