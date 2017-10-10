@@ -3,18 +3,27 @@
 namespace Graphics
 {
 	constexpr int MAX_FOG_SIZE = 100;
-
+	constexpr float FOG_COLOR = 0.5;
 	Fog::Fog(ID3D11Device* device)
 		: fogShader(device, SHADER_PATH("Fog.hlsl"))
 		, fogDataBuffer(device, CpuAccess::Write, MAX_FOG_SIZE)
 	{
-		fogData.push_back({ { -200 ,2,-200},{ 1,0,0, 1 } });
-		fogData.push_back({ { 200,2,-200},{ 1,0,0, 1 } });
-		fogData.push_back({ { 200,2,200},{ 1,0,0, 1 } });
-		
-		fogData.push_back({ { 200,2,200},{ 1,0,0, 1 } });
-		fogData.push_back({ { -200,2,200 },{ 1,0,0, 1 } });
-		fogData.push_back({ { -200,2,-200 },{ 1,0,0, 1 } });
+		fogData.push_back({ { -200, 2,-200},{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { 200,  2,-200},{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { 200,  2,200},{  FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+									
+		fogData.push_back({ { 200,  2,200},{   FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { -200, 2,200 },{  FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { -200, 2,-200 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+
+
+		/*fogData.push_back({ { 1, 1, 0 },{ 1,0,0, 1 } });
+		fogData.push_back({ { , 8,0 },{ 1,0,0, 1 } });
+		fogData.push_back({ { ,8,0 },{ 1,0,0, 1 } });
+
+		fogData.push_back({ { -200, 8,-200 },{ 1,0,0, 1 } });
+		fogData.push_back({ { -200, 8,200 },{ 1,0,0, 1 } });
+		fogData.push_back({ { 200,  8,200 },{ 1,0,0, 1 } });*/
 	}
 
 	Fog::~Fog()
@@ -35,7 +44,7 @@ namespace Graphics
 
 
 		deviceContext->VSSetShaderResources(0, 1, fogDataBuffer); 
-		deviceContext->VSSetShaderResources(1, 1, &worldPosMap);
+		deviceContext->PSSetShaderResources(1, 1, &worldPosMap);
 		deviceContext->Draw(fogData.size(), 0);
 	}
 }

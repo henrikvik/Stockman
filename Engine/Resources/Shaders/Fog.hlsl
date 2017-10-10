@@ -16,6 +16,7 @@ StructuredBuffer<FogData> fogData : register(t0);
 
 struct VSOut 
 {
+	float3 worldPos : WORLD;
 	float4 pos : SV_POSITION;
 	float4 color : COLOR;
 	float3 aV : AV;
@@ -28,15 +29,16 @@ VSOut VS(uint id : SV_VertexID)
 {
 	VSOut vsOut;
 	
-	//F is the four dimensional vector that represents the bounding plane, XYZ is the normal of the plane. 
-	float4 F = float4(0,-1,0,1);
+	//F is the four dimensional vector that represents the bounding plane, XYZ 
+	//is the normal of the plane. 
+	float4 F = float4(0,-2, 0, 1);
 	F = normalize(F);
 	//ViewVec
 	float4 P = float4(fogData[id].pos, 1);
 	float4 V = camPos - P;
 	//a is a random posetive constant, NOTE let it be over 20 or the color of
 	//the fragment is going to "shine through" when under the fog halfspace
-	float a = 20;
+	float a = 0.1;
 	//K is either 1 or 0
 	float k = 0;
 
@@ -52,6 +54,7 @@ VSOut VS(uint id : SV_VertexID)
 
 	vsOut.pos = mul(PV, P);
 	vsOut.color = fogData[id].color;
+	vsOut.worldPos = P.xyz;
 
 	return vsOut;
 }
@@ -60,17 +63,26 @@ Texture2D worldPosMap : register(t1);
 
 float4 PS (VSOut psIn) : SV_Target
 {
-	//float3 worldPos = worldPosMap.Load(psIn.pos.xyz).xyz;
+	float3 worldPos = worldPosMap.Load(float3(psIn.pos.xy, 0)).xyz;
 
-	float3 fogColor = (0.4 ,0.4, 0.4);
+	float playerDistance = distance(camPos.xyz, worldPos);
+	float maxDistance = 15;
+	
+
+	float3 fogColor = (0.3 ,0.3, 0.3);
 
 	float g = min(psIn.c2, 0.0);
-
 	g = -length(psIn.aV) * (psIn.c1 - g * g / abs(psIn.F_DOT_V));
 
 	float f = saturate(exp2(-g));
+	float fogDepth = clamp(saturate(1 - worldPos.y),0.2, 0.9);
+	//fogDepth = max(saturate());
 
 	psIn.color.rgb = psIn.color.rgb * f + fogColor.rgb * (1.0 - f);
 
-	return float4(psIn.color.rgb, 0.2);
+	//return float4(fogColor, fogDepth);
+
+
+
+	return float4(psIn.color.rbg, fogDepth);//psIn.color.r);
 }
