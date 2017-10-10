@@ -33,6 +33,13 @@ namespace Graphics
 		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
 		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
+#pragma region RenderDebugInfo
+		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
+		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
+		, debugColorBuffer(device)
+#pragma endregion
+		, fog(device)
+		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
         ,menu(device, deviceContext)
         ,hud(device, deviceContext)
 		,ssaoRenderer(device)
@@ -229,6 +236,8 @@ namespace Graphics
 			fakeBackBuffer,
 			glowMap,
 			*ssaoRenderer.getNormalShaderResource()
+			glowMap,
+			worldPosMap
 		};
 
 		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
@@ -272,6 +281,9 @@ namespace Graphics
 		PROFILE_BEGIN("DebugInfo");
 		renderDebugInfo(camera);
 		PROFILE_END();
+		fog.renderFog(deviceContext, backBuffer, worldPosMap);
+        renderDebugInfo();
+        drawGUI();
     }
 
 

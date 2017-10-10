@@ -20,6 +20,7 @@
 #include "Menu.h"
 #include "HUD.h"
 #include "SSAORenderer.h"
+#include "Fog.H"
 
 #include <SpriteBatch.h>
 
@@ -117,6 +118,9 @@ namespace Graphics
         void renderDebugInfo(Camera* camera);
 
     #pragma endregion
+		Fog fog;
+		ShaderResource worldPosMap;
+
 
 
 

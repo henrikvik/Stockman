@@ -44,9 +44,6 @@
     <ClInclude Include="Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resources\Shaders\ShaderConstants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Profiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -1,4 +1,5 @@
 #include "Entity/Object.h"
+#include <Graphics\include\Renderer.h>
 
 using namespace Logic;
 
