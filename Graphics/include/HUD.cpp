@@ -285,7 +285,11 @@ void Graphics::HUD::renderHUDText()
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2, DirectX::Colors::Red);
     }
-    int tempInt = (currentInfo->cd)* 100;
+    int tempInt = (1 - currentInfo->cd)* 100;
+    if (tempInt == 0)
+    {
+        tempInt = 100;
+    }
     temp = (std::to_wstring(tempInt));
     temp += L"%";
     sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos, DirectX::Colors::Red);
