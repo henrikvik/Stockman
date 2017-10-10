@@ -54,7 +54,7 @@ void Logic::MenuMachine::initialize(GameState state)
                 button.floats.at("activeOffset"),
 				button.floats.at("height"),
 				button.floats.at("width"),
-				button.strings.at("texture"),
+				button.ints.at("texture"),
 				functions.at(testinging) // xd
 			});
 		}
@@ -75,7 +75,7 @@ void Logic::MenuMachine::initialize(GameState state)
 
 			//Create new Menus and send in the fitting information from Menu vector
 			m_menuStates[GameState(menu.ints.at("State"))] = newd MenuState();
-			m_menuStates.at(GameState(menu.ints.at("State")))->initialize(tempButton, menu.strings.at("Background"));
+			m_menuStates.at(GameState(menu.ints.at("State")))->initialize(tempButton, menu.ints.at("Background"));
 		}
 	}
 

@@ -13,8 +13,12 @@ Graphics::Menu::Menu(ID3D11Device * device, ID3D11DeviceContext * contex)
 Graphics::Menu::~Menu()
 {
     
-    SAFE_RELEASE(buttonTexture);
-    SAFE_RELEASE(menuTexture);
+    SAFE_RELEASE(buttonTexture[0]);
+    SAFE_RELEASE(buttonTexture[1]);
+    SAFE_RELEASE(menuTexture[0]);
+    SAFE_RELEASE(menuTexture[1]);
+    SAFE_RELEASE(menuTexture[2]);
+    SAFE_RELEASE(menuTexture[3]);
     SAFE_RELEASE(menuQuad);
     SAFE_RELEASE(buttonQuad);
     delete states;
@@ -36,7 +40,7 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
     contex->PSSetShader(shader, nullptr, 0);
     auto sampler = states->PointWrap();
     contex->PSSetSamplers(0, 1, &sampler);
-    contex->PSSetShaderResources(0, 1, &menuTexture);
+    contex->PSSetShaderResources(0, 1, &menuTexture[active->m_menuTexture]);
 
     float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
     UINT sampleMask = 0xffffffff;
@@ -45,7 +49,7 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
 
     contex->Draw(6, 0);
 
-    contex->PSSetShaderResources(0, 1, &buttonTexture);
+    contex->PSSetShaderResources(0, 1, &buttonTexture[active->m_buttons.at(0).textureIndex]);
     for (size_t i = 0; i < info->m_buttons.size(); i++)
     {
         mapButtons(contex, &info->m_buttons.at(i));
@@ -59,9 +63,17 @@ void Graphics::Menu::loadTextures(ID3D11Device * device, ID3D11DeviceContext * c
     if (loaded == false)
     {
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuTexture.png"), nullptr, &menuTexture));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuTexture.png"), nullptr, &menuTexture[0]));
+        menuTexture[1] = nullptr;
+        menuTexture[2] = nullptr;
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuButton.png"), nullptr, &buttonTexture));
+        /*ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuTexture.png"), nullptr, &menuTexture[0]));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuTexture.png"), nullptr, &menuTexture[0]));*/
+
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverTexture.png"), nullptr, &menuTexture[4]));
+
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuButton.png"), nullptr, &buttonTexture[0]));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuButton.png"), nullptr, &buttonTexture[1]));
         loaded = true;
     }
 }
@@ -70,10 +82,12 @@ void Graphics::Menu::unloadTextures()
 {
     if (loaded == true)
     {
-        SAFE_RELEASE(buttonTexture);
-        SAFE_RELEASE(menuTexture);
-        buttonTexture = nullptr;
-        menuTexture = nullptr;
+        SAFE_RELEASE(buttonTexture[0]);
+        SAFE_RELEASE(buttonTexture[1]);
+        SAFE_RELEASE(menuTexture[0]);
+        SAFE_RELEASE(menuTexture[1]);
+        SAFE_RELEASE(menuTexture[2]);
+        SAFE_RELEASE(menuTexture[3]);
         loaded = false;
     }
 }
