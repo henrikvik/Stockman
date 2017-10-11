@@ -22,6 +22,7 @@ namespace Graphics
 		GRAPPLEPOINT,
 		GRASS,
 		BUSH,
+        TESTCUBEANIMATED
     };
 
 	struct ModelInfo

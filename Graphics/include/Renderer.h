@@ -15,10 +15,11 @@
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
-#include "PostProccessor.h";
+#include "PostProccessor.h"
 #include "SkyRenderer.h"
 #include "Menu.h"
 #include "HUD.h"
+#include "HybrisLoader.h"
 
 #include <SpriteBatch.h>
 
@@ -42,6 +43,8 @@ namespace Graphics
         void drawMenu(Graphics::MenuInfo * info);
 		void updateLight(float deltaTime, Camera * camera);
     private:
+        HybrisLoader hybrisLoader;
+
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;
         std::vector<RenderInfo*> renderQueue;

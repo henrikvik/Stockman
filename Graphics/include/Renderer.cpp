@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
-
+#include "Utility\sizeofv.h"
 #include <Engine\Profiler.h>
 
 #define USE_TEMP_CUBE false
-#define ANIMATION_HIJACK_RENDER false
+#define ANIMATION_HIJACK_RENDER true
 
 #if USE_TEMP_CUBE
 #include "TempCube.h"
@@ -87,8 +87,7 @@ namespace Graphics
 
     void Renderer::render(Camera * camera)
     {
-        menu.unloadTextures();
-#if ANIMATION_HIJACK_RENDER
+    #if ANIMATION_HIJACK_RENDER
 
         renderQueue.clear();
         static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
@@ -119,19 +118,21 @@ namespace Graphics
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
-        deviceContext->Draw(testCube.vertexCount, 0);
 
-        auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, testAnimation.getTotalDuration() * ((ticks % 1000) / 1000.f));
+        static Model * testCubeA = hybrisLoader.getModel(FileID::TestCubeA);
+        auto jointTransforms = testCubeA->getPoseTransforms("Bend", 60 * ((ticks % 1000) / 1000.f));
 
         static StructuredBuffer<Matrix> jointBuffer(device, CpuAccess::Write, testSkeleton.getJointCount());
-        Matrix* bufferPtr = jointBuffer.map(deviceContext);
-        memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());
-        jointBuffer.unmap(deviceContext);
+        jointBuffer.write(deviceContext, jointTransforms.data(), sizeofv(jointTransforms));
 
         ID3D11ShaderResourceView * jointView = jointBuffer.getSRV();
         deviceContext->VSSetShaderResources(0, 1, &jointView);
 
+        deviceContext->Draw(testCube.vertexCount, 0);
+
+
 #else
+        menu.unloadTextures();
         cull();
         writeInstanceData();
 
@@ -247,7 +248,6 @@ namespace Graphics
             this->drawToBackbuffer(grid.getDebugSRV());
         }
         
-#endif
 
 		///////Post effext
 		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
@@ -258,6 +258,7 @@ namespace Graphics
         renderDebugInfo();
         hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
         
+    #endif
     }
 
 

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\Animation\Animation.cpp" />
+    <ClCompile Include="include\HybrisLoader.cpp" />
     <ClCompile Include="include\Animation\Joint.cpp" />
     <ClCompile Include="include\Animation\JointTransform.cpp" />
     <ClCompile Include="include\Animation\KeyFrame.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="include\Animation\AnimatedTestCube.h" />
     <ClInclude Include="include\Animation\AnimatedVertex.h" />
     <ClInclude Include="include\Animation\Animation.h" />
+    <ClInclude Include="include\HybrisLoader.h" />
     <ClInclude Include="include\Animation\Joint.h" />
     <ClInclude Include="include\Animation\JointTransform.h" />
     <ClInclude Include="include\Animation\KeyFrame.h" />
@@ -71,6 +73,7 @@
     <ClInclude Include="include\Resources\TextureManager.h" />
     <ClInclude Include="include\SkyRenderer.h" />
     <ClInclude Include="include\Structs.h" />
+    <ClInclude Include="include\Utility\sizeofv.h" />
     <ClInclude Include="include\Utility\StructuredBuffer.h" />
     <ClInclude Include="include\TempCube.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
@@ -130,27 +133,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\Hybris;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\Hybris;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\Hybris;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\Hybris;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
