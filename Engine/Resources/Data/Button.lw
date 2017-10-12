@@ -54,7 +54,6 @@
 	"width" : 200.0f;
 	"function" : "buttonClick4";
 }
-
 {
 	"buttonName" : "MenuSettingsButton2";
 	"texture" : 0;
