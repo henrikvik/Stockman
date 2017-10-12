@@ -43,6 +43,9 @@ namespace Graphics
 
         void drawMenu(Graphics::MenuInfo * info);
 		void updateLight(float deltaTime, Camera * camera);
+
+		//indicates how gray the screen will be
+		void setBulletTimeCBuffer(float value);
     private:
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;
@@ -86,9 +89,10 @@ namespace Graphics
         HUD hud;
 
 
+		ConstantBuffer<float> bulletTimeBuffer;
 
 
-
+		//temp
 		ID3D11ShaderResourceView * glowTest;
 
        

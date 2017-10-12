@@ -3,7 +3,6 @@
 #include <Misc\FileLoader.h>
 #include <Keyboard.h>
 #include <Engine\Typing.h>
-#include <Keyboard.h>
 using namespace Logic;
 
 MenuMachine::MenuMachine()
