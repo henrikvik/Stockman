@@ -7,6 +7,10 @@ Typing::Typing()
 	m_symbol = 0;
 }
 
+Typing::~Typing()
+{
+}
+
 Typing* Typing::getInstance()
 {
 	if (instance == 0)
@@ -30,4 +34,9 @@ char Typing::getSymbol()
 void Typing::setSymbol(char symbol)
 {
 	m_symbol = symbol;
+}
+
+void Typing::releaseInstance()
+{
+	delete instance;
 }

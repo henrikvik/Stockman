@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#include <Engine\Typing.h>
 
 using namespace Logic;
 
@@ -17,6 +18,7 @@ Game::Game()
 Game::~Game() 
 { 
 	clear();
+	Typing::releaseInstance();
 }
 
 void Game::init()

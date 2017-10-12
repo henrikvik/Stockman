@@ -153,7 +153,7 @@ void Logic::MenuMachine::update(float dt)
 		}
 		else if (keyboard.IsKeyDown(DirectX::Keyboard::Back) && m_highScoreNamePTR->compare("") != 0)
 		{
-			m_highScoreNamePTR->pop_back();
+			m_highScoreName.pop_back();
 		}
 		else if (tempChar != 0)
 		{
@@ -232,8 +232,8 @@ void Logic::MenuMachine::buttonClick3()
 void Logic::MenuMachine::buttonClick4()
 {
 	//triggers the typing button
-	Typing* theChar = Typing::getInstance(); //might need to be deleted
-	char trashThis = theChar->getSymbol();
+	//Typing* theChar = Typing::getInstance(); //might need to be deleted
+	//char trashThis = theChar->getSymbol();
 	m_typing = true;
 	m_highScoreName = "";
 }
