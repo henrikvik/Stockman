@@ -234,8 +234,8 @@ void Logic::MenuMachine::buttonClick3()
 void Logic::MenuMachine::buttonClick4()
 {
 	//triggers the typing button
-	//Typing* theChar = Typing::getInstance(); //might need to be deleted
-	//char trashThis = theChar->getSymbol();
+	Typing* theChar = Typing::getInstance(); //might need to be deleted
+	char trashThis = theChar->getSymbol();
 	m_typing = true;
 	m_highScoreName = "";
 }

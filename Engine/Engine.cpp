@@ -47,8 +47,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
 		break;
 	case WM_CHAR:
-		//make so it does not run during game, only during menues
-		std::cout << "This is the key we get: " << int((wchar_t)wparam) << " or in text " << char((wchar_t)wparam); //Send this to Game somehow
 		theChar->setSymbol(char((wchar_t)wparam));
 		break;
 	default:
