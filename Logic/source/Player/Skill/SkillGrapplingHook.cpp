@@ -87,6 +87,8 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 		// Setting player movement specific grappling hook variables
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
+			player->getRigidBody()->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
+
 			// Checks if the player does a 90 degree turn around mid-air
 			if (dirToPoint.dot(player->getMoveDirection()) > 0)
 			{

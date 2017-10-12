@@ -2,23 +2,27 @@
 #include <Player\Player.h>
 #include <iostream>
 
+#define SHIELD_CHARGE_CD 5000.f
+#define SLOWDOWN_DURATION 100.f
+#define SHIELD_CHARGE_DURATION 700.f
+
 using namespace Logic;
 
 SkillShieldCharge::SkillShieldCharge()
 : Skill(SHIELD_CHARGE_CD, SHIELD_CHARGE_DURATION)
 {
 	m_active = false;
+	m_slowdown = false;
+
 	m_time = 0.0f;
 	m_forw = btVector3(0.0f, 0.0f, 0.0f);
-	m_shooter = nullptr;
-	m_chargePower = 0.07f;
+	m_chargePower = 8.f;
 
 }
 
 SkillShieldCharge::~SkillShieldCharge()
 {
 	m_projectileManager = nullptr;
-	m_shooter = nullptr;
 }
 
 void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
@@ -26,12 +30,19 @@ void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 	if (!m_active)
 	{
 		//Sets up the shield charge by deciding its movement vector and who is gonna charge
-		printf("Used Shield Charge.\n");
+		m_time = 0;
+
 		m_active = true;
-		m_forw = btVector3(forward.getX(), 0.0f, forward.getZ());
-		m_forw = m_forw;
+		m_slowdown = false;
+
+		m_forw = forward;
+		m_forw.setY(0);
+		m_forw = m_forw.normalize();
 		m_shooter = &shooter;
 		shooter.getStatusManager().addStatus(StatusManager::EFFECT_ID::SHIELD_CHARGE, 1, true);
+		
+		if (Player* player = dynamic_cast<Player*>(m_shooter))
+			player->setMaxSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
 	}
 }
 
@@ -44,22 +55,33 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
 			//Pushes the player forward with a static charge power, charging towards the pre decided vector
-			player->setMaxSpeed(m_chargePower);
-			player->setMoveSpeed(m_chargePower);
+			player->setMoveSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
 			player->setMoveDirection(m_forw);
 
 			m_time += deltaTime;
 
-
 			if (m_time >= SHIELD_CHARGE_DURATION)
 			{
 				// When the duration of the skill is up the current charge is put to the max character speed
-				player->setMaxSpeed(PLAYER_MOVEMENT_MAX_SPEED);
+				m_slowdown = true;
 				m_active = false;
 				m_time = 0;
-				player->setMoveSpeed(PLAYER_MOVEMENT_MAX_SPEED);
 			}
-
+		}
+	} 
+	else if (m_slowdown)
+	{
+		if (Player* player = dynamic_cast<Player*>(m_shooter))
+		{
+			m_time += deltaTime;
+			float power = m_chargePower * ((SLOWDOWN_DURATION - m_time) / SLOWDOWN_DURATION);
+			player->setMoveSpeed(power * PLAYER_MOVEMENT_MAX_SPEED);
+			if (m_time >= SLOWDOWN_DURATION)
+			{
+				player->setMaxSpeed(PLAYER_MOVEMENT_MAX_SPEED);
+				player->setMoveSpeed(PLAYER_MOVEMENT_MAX_SPEED);
+				m_slowdown = false;
+			}
 		}
 	}
 }

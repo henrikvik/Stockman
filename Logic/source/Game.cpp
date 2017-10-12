@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <iostream>
 #include <Engine\Typing.h>
+#define _GOD_MODE
 
 using namespace Logic;
 
@@ -64,6 +65,10 @@ void Game::init()
 	// Initializing Card Manager
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
+
+	// Resetting Combo's
+	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
+	ComboMachine::Get().Reset();
 }
 
 void Game::clear()
@@ -79,10 +84,12 @@ void Game::clear()
 	delete m_projectileManager;
 }
 
-void Logic::Game::reset()
+void Game::reset()
 {
 	/*m_entityManager.clear();*/
 	m_player->reset();
+	
+	ComboMachine::Get().Reset();
 	m_waveTimer = NULL;
 	m_waveCurrent = WAVE_START;
 }
@@ -123,37 +130,38 @@ void Game::update(float deltaTime)
 	case gameStateGame:
 		if (m_menu->getStateToBe() != GameState::gameStateDefault)
 		{
+			PROFILE_BEGIN("Menu");
 			m_menu->update(m_gameTime.dt);
+			PROFILE_END();
 		}
 		else
 		{
+			ComboMachine::Get().Update(deltaTime);
 			waveUpdater();
+
+			PROFILE_BEGIN("Player");
 			m_player->updateSpecific(m_gameTime.dt);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Physics");
 			m_physics->update(m_gameTime);
+			PROFILE_END();
+
+			PROFILE_BEGIN("AI & Triggers");
 			m_entityManager.update(*m_player, m_gameTime.dt);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Map");
 			m_map->update(m_gameTime.dt);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Projectiles");
 			m_projectileManager->update(m_gameTime.dt);
+			PROFILE_END();
 		}
 
-		if (m_player->getHP() <= 0 && m_menu->currentState() == GameState::gameStateGame)
-		{
-			printf("You ded bro.\n");
-			m_highScoreManager->addNewHighScore();
-			m_menu->setStateToBe(GameState::gameStateGameOver);
-
-			for(int i = 0; i < 10; i++)
-			{
-				if (m_highScoreManager->gethighScore(i).score != -1)
-				{
-					highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
-				}
-				else
-				{
-					break;
-				}
-			}
-			reset();
-		}
+		if (m_player->getHP() <= 0)
+			gameOver();
 
 		break;
 
@@ -173,15 +181,42 @@ void Game::update(float deltaTime)
 	}
 }
 
+void Game::gameOver()
+{
+	printf("You ded bro.\n");
+	m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
+	m_menu->setStateToBe(GameState::gameStateGameOver);
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_highScoreManager->gethighScore(i).score != -1)
+		{
+			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(ComboMachine::Get().GetCurrentScore());
+			break;
+		}
+	}
+	reset();
+}
+
 void Game::render(Graphics::Renderer& renderer)
 {
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
+
 		m_player->render(renderer);
+
+		PROFILE_BEGIN("Render Map");
 		m_map->render(renderer);
+		PROFILE_END();
+
+		PROFILE_BEGIN("Render Enemies & Triggers")
 		m_entityManager.render(renderer);
+		PROFILE_END();
+
+		PROFILE_BEGIN("Render Projectiles")
 		m_projectileManager->render(renderer);
+		PROFILE_END();
 
 	// Debug Draw physics
 	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))

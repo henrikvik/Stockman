@@ -15,6 +15,7 @@
 #include <Misc\GameTime.h>
 #include <Misc\CardManager.h>
 #include <Misc\HighScoreManager.h>
+#include <Misc\ComboMachine.h>
 
 // DirectX Includes
 #include <Windows.h>
@@ -23,6 +24,9 @@
 
 // Graphics Includes
 #include <Graphics\include\Renderer.h>
+
+// Engine Includes
+#include <Engine\Profiler.h>
 
 // Init Defines
 #define STARTING_STATE		gameStateMenuMain
@@ -37,8 +41,6 @@
 #define WAVE_3_TIME			25000.f
 #define WAVE_4_TIME			35000.f
 #define WAVE_5_TIME			60000.f
-
-
 
 namespace Logic
 {
@@ -64,6 +66,10 @@ namespace Logic
         int getState() const;
 
 	private:
+		// Private functions
+		void gameOver();
+
+		// Members
 		Physics*			m_physics;
 		Player*				m_player;
 		Map*				m_map;
@@ -75,12 +81,12 @@ namespace Logic
 		HighScoreManager*	m_highScoreManager;
 
 		// Wave
-		int		m_waveCurrent;
-		float	m_waveTimer;
-		float	m_waveTime[MAX_WAVES];
+		int					m_waveCurrent;
+		float				m_waveTimer;
+		float				m_waveTime[MAX_WAVES];
 
 		//GameOver
-		std::string highScore[10];
+		std::string			highScore[10];
 	};
 }
 

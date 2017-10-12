@@ -8,7 +8,7 @@ Logic::Button::~Button()
 {
 }
 
-void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float height, float width, std::string texture, std::function<void(void)> callBack)
+void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width, int textureIndex, std::function<void(void)> callBack)
 {
 	buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(pos.x, pos.y, width, height);
 	m_animationStart = DirectX::SimpleMath::Vector2(pos.x, pos.y);
@@ -16,8 +16,12 @@ void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::Simple
 	m_animationTime = 0;
 	buttonInfo.m_texCoordStart = texCoordStart;
 	buttonInfo.m_texCoordEnd = texCoordEnd;
-	buttonInfo.m_texture = texture;
+    buttonInfo.activeoffset = offset;
+    buttonInfo.textureIndex = textureIndex;
 	m_CallBack = callBack;
+    highlighted = false;
+    start = buttonInfo.m_texCoordStart.y;
+    end = buttonInfo.m_texCoordEnd.y;
 }
 
 void Logic::Button::updateOnPress(int posX, int posY)
@@ -26,6 +30,32 @@ void Logic::Button::updateOnPress(int posX, int posY)
 	{
 		m_CallBack();
 	}
+}
+
+void Logic::Button::HoverOver(int posX, int posY)
+{
+    if (buttonInfo.m_rek.Contains(posX, posY))
+    {
+        if (!highlighted)
+        {
+            buttonInfo.m_texCoordStart.y -= buttonInfo.activeoffset;
+
+            buttonInfo.m_texCoordEnd.y = buttonInfo.m_texCoordEnd.y - buttonInfo.activeoffset;
+            highlighted = true;
+        }
+
+    }
+    else
+    {
+        if (highlighted)
+        {
+            buttonInfo.m_texCoordStart.y = start;
+            buttonInfo.m_texCoordEnd.y = end;
+            highlighted = false;
+        }
+        
+    }
+
 }
 
 bool Logic::Button::animationTransition(float dt, float maxAnimationTime, bool forward)

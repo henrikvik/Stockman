@@ -1,6 +1,8 @@
 #include "Player/Player.h"
 #include <AI\EnemyTest.h>
 #include <AI\Trigger.h>
+#include <DebugDefines.h>
+#include <Misc\ComboMachine.h>
 
 using namespace Logic;
 
@@ -9,7 +11,7 @@ btVector3 Player::startPosition = btVector3(0.0f, 6.0f, 0.0f);
 Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent, modelID)
 {
-
+	body->setAngularFactor({ 0.f, 0.f, 0.f });
 }
 
 Player::~Player()
@@ -25,15 +27,15 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
-    	info.hp = m_hp;
+    info.hp = m_hp;
    	info.cuttleryAmmo[0] = 0;
    	info.cuttleryAmmo[1] = 0;
-    	info.iceAmmo[0] = 0 ;
-    	info.iceAmmo[1] = 0 ;
-    	info.wave = 0;
-    	info.score = 0;
-    	info.sledge = false;
-        info.cd = 1.0f;
+    info.iceAmmo[0] = 0 ;
+    info.iceAmmo[1] = 0 ;
+    info.wave = 0;
+    info.score = 0;
+    info.sledge = false;
+    info.cd = 1.0f;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -72,7 +74,7 @@ void Player::clear()
 	m_skillManager.clear();
 }
 
-void Logic::Player::reset()
+void Player::reset()
 {
 	getRigidBody()->getWorldTransform().setOrigin(startPosition);
 	m_weaponManager.reset();
@@ -81,9 +83,19 @@ void Logic::Player::reset()
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
+#ifdef _GOD_MODE
+	m_playerState = PlayerState::STANDING;
+#else
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
 	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
-	else if(m_playerState == PlayerState::IN_AIR)
+	else if (Enemy *e = dynamic_cast<Enemy*> (&other))
+	{
+		int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
+		e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * stacks); 
+		stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
+		e->damage(2 * stacks); // replace 1 with the player damage when it is better
+	}
+	else if (m_playerState == PlayerState::IN_AIR)
 	{
 		btVector3 dir = contactPoint - getPositionBT();
 
@@ -93,14 +105,18 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
 		{
 			float hitAngle = hitSurfaceNormal.dot({ 0.f, 1.f, 0.f });
 
-			// if angle between up-vector and surface-vector is over 0.8 player is grounded and can jump again
+			// if angle between up-vector and surface-vector is over 0.8, player is grounded and can jump again
 			if (hitAngle > 0.8f)
+			{
+				getRigidBody()->setLinearVelocity({ 0.f, 0.f, 0.f });
+				getRigidBody()->setGravity({ 0.f, -PHYSICS_GRAVITY * 40.f, 0.f });
 				m_playerState = PlayerState::STANDING;
+			}
 			else
 				m_playerState = PlayerState::IN_AIR;
 		}
 	}
-		
+#endif
 }
 
 void Player::onCollision(Projectile& other)
@@ -116,7 +132,7 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
 	{
 		getRigidBody()->setLinearVelocity(btVector3(getRigidBody()->getLinearVelocity().x(), 0, getRigidBody()->getLinearVelocity().z()));
-		getRigidBody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
+		getRigidBody()->applyCentralImpulse(btVector3(0, 250.f * stacks, 0));
 		m_playerState = PlayerState::STANDING;
 	}
 
@@ -150,9 +166,13 @@ void Player::readFromFile()
 
 }
 
-void Player::takeDamage(int damage)
+void Player::takeDamage(int damage, bool damageThroughProtection)
 {
-	m_hp -= damage;
+#ifndef _GOD_MODE
+	if (damageThroughProtection ||
+		getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
+		m_hp -= damage;
+#endif
 }
 
 int Player::getHP() const
@@ -165,6 +185,7 @@ void Player::updateSpecific(float deltaTime)
 	Player::update(deltaTime);
 
     //updates hudInfo with the current info
+	info.score = ComboMachine::Get().GetCurrentScore();
     info.hp = m_hp;
     info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
     info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getAmmo();
@@ -230,8 +251,13 @@ void Player::updateSpecific(float deltaTime)
 	jump(deltaTime, &ks);
 
 	// If moving on y-axis, player is in air
-	if (!m_wishJump && (getRigidBody()->getLinearVelocity().y() > 1.f || getRigidBody()->getLinearVelocity().y() < -1.f))
+	if (!m_wishJump && (getRigidBody()->getLinearVelocity().y() > 0.001f || getRigidBody()->getLinearVelocity().y() < -FLT_EPSILON))
+	{
+		getRigidBody()->setFriction(0.f);
+		getRigidBody()->setGravity({ 0.f, -PHYSICS_GRAVITY, 0.f });
 		m_playerState = PlayerState::IN_AIR;
+	}
+		
 
 	// Get movement input
 	moveInput(&ks);
@@ -370,6 +396,8 @@ void Player::move(float deltaTime)
 	// On ground
 	if (!m_wishJump)
 	{
+		getRigidBody()->setFriction(1.f);
+		getRigidBody()->setGravity({ 0.f, -PHYSICS_GRAVITY * 40.f, 0.f });
 		float friction = (m_moveMaxSpeed * 2 - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_FRICTION; // smooth friction
 		applyFriction(deltaTime, friction > 0.1f ? friction : 0.1f);
 
@@ -400,7 +428,9 @@ void Player::move(float deltaTime)
 	// Apply jump if player wants to jump
 	if (m_wishJump)
 	{
-		getRigidBody()->setLinearVelocity({ 0, PLAYER_JUMP_SPEED, 0 }); // Jump
+		getRigidBody()->setGravity({ 0.f, -PHYSICS_GRAVITY, 0.f });
+		getRigidBody()->setFriction(0.f);
+		getRigidBody()->setLinearVelocity({ 0, getRigidBody()->getLinearVelocity().y() + PLAYER_JUMP_SPEED, 0 }); // Jump
 		m_playerState = PlayerState::IN_AIR;
 
 		m_wishJump = false;

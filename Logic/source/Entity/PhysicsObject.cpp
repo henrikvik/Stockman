@@ -28,8 +28,7 @@ PhysicsObject::~PhysicsObject()
 void PhysicsObject::addExtraBody(btRigidBody* body, float multiplier, btVector3 offset)
 {
 	body->setUserPointer(this);
-	m_weakPointOffset = offset;
-	m_weakPoints.push_back({ body, multiplier });
+	m_weakPoints.push_back(Weakpoint(body, multiplier, offset));
 }
 
 // Destroy this physics object early
@@ -48,15 +47,12 @@ void PhysicsObject::destroyBody()
 	// Delete the weakpoints
 	for (int i = 0; i < m_weakPoints.size(); i++)
 	{
-		btRigidBody* part = m_weakPoints[i].first;
-		if (part)
-		{
-			if (part->getMotionState())
-				delete part->getMotionState();
-			if (part->getCollisionShape())
-				delete part->getCollisionShape();
-			delete part;
-		}
+		btRigidBody* weakPoint = m_weakPoints[i].body;
+		if (weakPoint->getMotionState())
+			delete weakPoint->getMotionState();
+		if (weakPoint->getCollisionShape())
+			delete weakPoint->getCollisionShape();
+		delete weakPoint;
 	}
 }
 
@@ -67,15 +63,12 @@ void PhysicsObject::updatePhysics(float deltaTime)
 	{
 		for (int i = 0; i < m_weakPoints.size(); i++)
 		{
-			std::pair<btRigidBody*, float> weakPoint = m_weakPoints[i];
-			btRigidBody* part = weakPoint.first;
-			btVector3 mainOrigin = m_transform->getOrigin();
-			btVector3 newOrigin = mainOrigin + m_weakPointOffset;
-			part->getWorldTransform().setOrigin(newOrigin);
+			Weakpoint weakPoint = m_weakPoints[i];
 
-			// Rotate the head around himself
-			//btMatrix3x3 rotation = m_transform->getBasis();
-			//part->getWorldTransform().setOrigin(rotation * newOrigin);
+			float n[16];
+			m_transform->getOpenGLMatrix((btScalar*)(&n));
+			weakPoint.body->getWorldTransform().setFromOpenGLMatrix((btScalar*)(&n));
+			weakPoint.body->getWorldTransform().setOrigin(m_transform->getOrigin() + btVector3(n[4] * weakPoint.offset.x(), n[5] * weakPoint.offset.y(), n[6] * weakPoint.offset.z()));
 		}
 	}
 
@@ -91,16 +84,16 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, con
 	{
 		for (int i = 0; i < m_weakPoints.size(); i++)
 		{
-			std::pair<btRigidBody*, float> weakPoint = m_weakPoints[i];
-			btRigidBody* part = weakPoint.first;
-			if (collidedWithYour == part)
+			Weakpoint weakPoint = m_weakPoints[i];
+
+			if (collidedWithYour == weakPoint.body)
 			{
-				onCollision(other, contactPoint, weakPoint.second);
+				onCollision(other, contactPoint, weakPoint.multiplier);
 				hit = true;
 			}
 		}
 	}
-	
+
 	if (!hit)
 		onCollision(other, contactPoint, 1.f);
 }
@@ -167,5 +160,5 @@ int PhysicsObject::getNumberOfWeakPoints() const
 
 btRigidBody * PhysicsObject::getRigidBodyWeakPoint(int i)
 {
-	return m_weakPoints[i].first;
+	return m_weakPoints[i].body;
 }

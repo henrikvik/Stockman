@@ -36,16 +36,18 @@ namespace Logic
 			float yTexStart;
 			float xTexEnd;
 			float yTexEnd;
+            float activeOffset;
 			float height;
 			float width;
-			std::string texture;
+			int textureIndex;
 			std::function<void(void)> m_CallBackFunction; //must change to a function aqquiering
 		};
 
 		MenuState();
 		~MenuState();
-		void initialize(std::vector<ButtonStruct> buttonStruct, std::string background);
+		void initialize(std::vector<ButtonStruct> buttonStruct, int background);
 		void updateOnPress(int posX, int posY);
+        void hoverOver(int posX, int posY);
 		bool animationTransition(float dt, float maxAnimationTime, bool forward);
         Graphics::MenuInfo getMenuInfo();
 	};

@@ -32,6 +32,11 @@ namespace Logic
 			ProjectileManager *m_projectiles;
 			// Animation m_animation;
 		public:	
+			enum ENEMY_TYPE
+			{
+				NECROMANCER
+			};
+
 			enum BEHAVIOR_ID { TEST, RANGED };
 
 			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, float moveSpeed, int enemyType, int animationId);
@@ -39,7 +44,8 @@ namespace Logic
 
 			void setProjectileManager(ProjectileManager *projectileManager);
 
-			virtual void update(Player const &player, float deltaTime, bool updatePath = false);
+			virtual void update(Player const &player, float deltaTime,
+				std::vector<Enemy*> const &closeEnemies, bool updatePath = false);
 			virtual void useAbility(Entity const &target) {};
 			virtual void updateDead(float deltaTime) = 0;
 			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
@@ -51,6 +57,7 @@ namespace Logic
 
 			void damage(float damage);
 			void setBehavior(BEHAVIOR_ID id);
+			void setEnemyType(ENEMY_TYPE id);
 
 			float getHealth() const;
 			float getMaxHealth() const;

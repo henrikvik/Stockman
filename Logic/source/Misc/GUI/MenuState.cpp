@@ -13,7 +13,7 @@ Logic::MenuState::~MenuState()
 	}
 }
 
-void Logic::MenuState::initialize(std::vector<ButtonStruct> buttonStruct, std::string background)
+void Logic::MenuState::initialize(std::vector<ButtonStruct> buttonStruct, int background)
 {
 	for (auto const& struc : buttonStruct)
 	{
@@ -21,8 +21,9 @@ void Logic::MenuState::initialize(std::vector<ButtonStruct> buttonStruct, std::s
 		DirectX::SimpleMath::Vector2 texCoordStart(struc.xTexStart, struc.yTexStart);
 		DirectX::SimpleMath::Vector2 texCoordEnd(struc.xTexEnd, struc.yTexEnd);
 		m_buttons.push_back(newd Button());
-		m_buttons.at(m_buttons.size() - 1)->initialize(pos, texCoordStart, texCoordEnd, struc.height, struc.width, struc.texture, struc.m_CallBackFunction);
+		m_buttons.at(m_buttons.size() - 1)->initialize(pos, texCoordStart, texCoordEnd, struc.activeOffset, struc.height, struc.width, struc.textureIndex, struc.m_CallBackFunction);
     }
+    m_menu.m_menuTexture = background;
 }
 
 void Logic::MenuState::updateOnPress(int posX, int posY)
@@ -31,6 +32,14 @@ void Logic::MenuState::updateOnPress(int posX, int posY)
 	{
 		m_buttons.at(i)->updateOnPress(posX, posY);
 	}
+}
+
+void Logic::MenuState::hoverOver(int posX, int posY)
+{
+    for (int i = 0; i < m_buttons.size(); i++)
+    {
+        m_buttons.at(i)->HoverOver(posX, posY);
+    }
 }
 
 bool Logic::MenuState::animationTransition(float dt, float maxAnimationTime, bool forward)

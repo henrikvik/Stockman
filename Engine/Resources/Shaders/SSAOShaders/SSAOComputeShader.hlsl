@@ -1,17 +1,12 @@
+#include "../ShaderConstants.h"
+
 
 Texture2D depthTexture : register(t0);
 Texture2D randomNormalTexture : register(t1);
 Texture2D normalTexture : register(t2);
-RWTexture2D<unorm float4> output: register(u0);
+RWTexture2D<unorm float> output: register(u0);
 SamplerState Sampler : register(s0);
 SamplerState RandomSampler : register(s1);
-
-#define RANDOM_SIZE 256
-#define SAMPLE_RADIUS 2.f
-#define INTENSITY 5.0
-#define SCALE 1.f
-#define BIAS 0.3f
-#define ITERATIONS 2
 
 
 cbuffer Camera : register(b0)
@@ -64,9 +59,7 @@ float caculateOcclusion(float2 texCoord, float2 uv, float3 pos, float3 normal)
 [numthreads(16, 16, 1)]
 void CS( uint3 DTid : SV_DispatchThreadID )
 {
-    const float2 screenSize = float2(1280, 720);
-
-    float2 uv = float2(DTid.xy / screenSize);
+    float2 uv = float2(DTid.xy * 2.0 / SCREEN_SIZE);
 
     float occlusion = 0;
 
@@ -77,7 +70,7 @@ void CS( uint3 DTid : SV_DispatchThreadID )
     };
 
     //Remove magic 256 and make a define
-    float2 randomNormal = normalize(randomNormalTexture.SampleLevel(RandomSampler, (uv * screenSize / RANDOM_SIZE), 0).xy * 2 - 1);
+    float2 randomNormal = normalize(randomNormalTexture.SampleLevel(RandomSampler, (uv * SCREEN_SIZE / RANDOM_SIZE), 0).xy * 2 - 1);
 
     float3 normal = normalTexture.SampleLevel(Sampler, uv, 0).xyz;
     
@@ -101,6 +94,4 @@ void CS( uint3 DTid : SV_DispatchThreadID )
     occlusion /= float(ITERATIONS) * 4.0;
     
     output[DTid.xy] = saturate(1 - occlusion);
-    //output[DTid.xy] = float4(normalTexture.SampleLevel(Sampler, uv, 0).xyz, 1);
-
 }
