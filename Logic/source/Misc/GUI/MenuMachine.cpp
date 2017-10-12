@@ -1,6 +1,9 @@
 #include <Misc\GUI\MenuMachine.h>
 #include <iostream>
 #include <Misc\FileLoader.h>
+
+#define TRANSITION_TIME 350.f
+
 using namespace Logic;
 
 MenuMachine::MenuMachine()
@@ -8,7 +11,6 @@ MenuMachine::MenuMachine()
 	pressed = false;
 	currentActiveMenu = nullptr;
 	currentActiveState = gameStateMenuMain;
-
 }
 
 
@@ -20,7 +22,7 @@ MenuMachine::~MenuMachine()
 	}
 }
 
-void Logic::MenuMachine::initialize(GameState state)
+void MenuMachine::initialize(GameState state)
 {
 	//Gather all the functions in a map for future allocation
 	std::map<std::string, std::function<void(void)>> functions;
@@ -43,7 +45,7 @@ void Logic::MenuMachine::initialize(GameState state)
 		//If it is a button add it into its map
 		if (button.strings.find("buttonName") != button.strings.end())
 		{
-			std::string testinging = button.strings.at("function"); //crap used until the amazing file handler is fixed
+			std::string functionName = button.strings.at("function");
 			allButtons[button.strings.at("buttonName")] = MenuState::ButtonStruct({
 				button.floats.at("xPos"),
 				button.floats.at("yPos"),
@@ -55,7 +57,7 @@ void Logic::MenuMachine::initialize(GameState state)
 				button.floats.at("height"),
 				button.floats.at("width"),
 				button.ints.at("texture"),
-				functions.at(testinging) // xd
+				functions.at(functionName)
 			});
 		}
 	}
@@ -68,7 +70,7 @@ void Logic::MenuMachine::initialize(GameState state)
 		{
 			//Temporary Button Vector until Menu has been given them
 			std::vector<MenuState::ButtonStruct> tempButton;
-			for (int i = 0; i < menu.ints.at("buttonAmmount"); i++)
+			for (int i = 0; i < menu.ints.at("buttonAmount"); i++)
 			{
 				tempButton.push_back(allButtons.at(menu.strings.at("button" + std::to_string(i + 1))));
 			}
@@ -84,12 +86,12 @@ void Logic::MenuMachine::initialize(GameState state)
 	showMenu(state);
 }
 
-void Logic::MenuMachine::clear() 
+void MenuMachine::clear() 
 {
 	currentActiveMenu = nullptr;
 }
 
-void Logic::MenuMachine::update(float dt)
+void MenuMachine::update(float dt)
 {
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 	auto Mouse = DirectX::Mouse::Get().GetState();
@@ -110,7 +112,7 @@ void Logic::MenuMachine::update(float dt)
 	{
 		if (forward)
 		{
-			if (currentActiveMenu->animationTransition(dt, 1000, forward))
+			if (currentActiveMenu->animationTransition(dt, TRANSITION_TIME, forward))
 			{
 				showMenu(stateToBe);
 				forward = false;
@@ -118,7 +120,7 @@ void Logic::MenuMachine::update(float dt)
 		}
 		else
 		{
-			if (currentActiveMenu->animationTransition(dt, 1000, forward))
+			if (currentActiveMenu->animationTransition(dt, TRANSITION_TIME, forward))
 			{
 				stateToBe = gameStateDefault;
 				forward = true;
@@ -128,7 +130,7 @@ void Logic::MenuMachine::update(float dt)
 
 }
 
-void Logic::MenuMachine::render(Graphics::Renderer & renderer)
+void MenuMachine::render(Graphics::Renderer & renderer)
 {
     Graphics::MenuInfo temp = this->currentActiveMenu->getMenuInfo();
 
@@ -136,9 +138,8 @@ void Logic::MenuMachine::render(Graphics::Renderer & renderer)
 
 }
 
-
 //Switches the currentState used 
-void Logic::MenuMachine::showMenu(GameState state)
+void MenuMachine::showMenu(GameState state)
 {
 	if (m_menuStates.find(state) != m_menuStates.end())
 	{
@@ -152,7 +153,7 @@ void Logic::MenuMachine::showMenu(GameState state)
 	}
 }
 
-GameState Logic::MenuMachine::currentState()
+GameState MenuMachine::currentState()
 {
 	return currentActiveState;
 }
@@ -165,31 +166,28 @@ void MenuMachine::setStateToBe(GameState gameState)
 }
 
 //Gets the state that the game is gonna show after the animation cycle has finished
-GameState Logic::MenuMachine::getStateToBe()
+GameState MenuMachine::getStateToBe()
 {
 
 	return stateToBe;
 }
 
-void Logic::MenuMachine::buttonClick0()
+void MenuMachine::buttonClick0()
 {
 	stateToBe = gameStateGame;
-	std::cout << "Left Trigger: Switched To Menu State 0";
 }
 
-void Logic::MenuMachine::buttonClick1()
+void MenuMachine::buttonClick1()
 {
 	stateToBe = gameStateMenuSettings;
-	std::cout << "Left Trigger: Switched To Menu State 3";
 }
 
-void Logic::MenuMachine::buttonClick2()
+void MenuMachine::buttonClick2()
 {
 	stateToBe = gameStateMenuMain;
-	std::cout << "Left Trigger: Switched To Menu State 2";
 }
 
-void Logic::MenuMachine::buttonClick3()
+void MenuMachine::buttonClick3()
 {
 	PostQuitMessage(0); 
 }
