@@ -2,10 +2,12 @@
 *  Author: fkaa
 *
 */
+#include "ShaderConstants.hlsli"
 
 #define BLOCK_SIZE 16.f
 #define NUM_LIGHTS 8
 
+//used by VS & PS
 cbuffer Camera : register(b0)
 {
 	float4x4 ViewProjection;
@@ -14,6 +16,7 @@ cbuffer Camera : register(b0)
     float4 camPos;
 }
 
+//used by PS
 cbuffer LightBuffer : register(b1)
 {
     float4 dirLightPos;
@@ -21,11 +24,13 @@ cbuffer LightBuffer : register(b1)
     float dirFade;
 }
 
+//used by VS
 cbuffer LightMatBuffer : register(b2)
 {
     float4x4 lightVP;
 }
 
+//Used by VS
 struct InstanceData
 {
     float4x4 world;
@@ -37,6 +42,13 @@ cbuffer InstanceOffsetBuffer : register(b3)
     uint instanceOffset;
 }
 
+//Used by PS
+cbuffer BulletTimeTimer : register(b4)
+{
+    float bulletTimer;
+};
+
+//Used by PS
 struct Light 
 {
 	float4 positionVS;
@@ -220,10 +232,14 @@ PSOutput PS(VSOutput input) {
 
     float3 lighting = saturate(finalDiffuse + finalSpecular + ambient);
     
+    lighting = adjustSaturation(lighting, bulletTimer);
+    lighting = adjustContrast(lighting, 2 - bulletTimer, 0.3);
+
     output.backBuffer = float4(lighting, 1);
     output.glowMap = glowMap.Sample(Sampler, input.uv);
     output.normalView = float4(input.normalView.xyz, 1);
 	output.worldPosMap = input.worldPos;
+
 
     return output;
 }
