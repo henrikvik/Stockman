@@ -32,6 +32,7 @@ namespace Logic
 		void saveToFile();						//< Save high scores to file
 		void loadFromFile();					//< Load high scores from file 
 		void setName(std::string name);
+		std::string* getName();
 		highScore gethighScore(int index);
 
 	private:
