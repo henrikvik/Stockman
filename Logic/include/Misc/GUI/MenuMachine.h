@@ -32,15 +32,17 @@ namespace Logic
 		GameState currentActiveState;
 		GameState stateToBe;
 		bool forward;
+		std::string* m_highScoreNamePTR;
+		std::string m_highScoreName;
+		bool m_typing;
 	public:
-
 		MenuMachine();
+		MenuMachine(string* highScoreNamePTR);
 		~MenuMachine();
 		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout
 		void update(float dt);
         void render(Graphics::Renderer& renderer);
-
 		void showMenu(GameState state);		//< Creates a menu layout
 		GameState currentState();
 		void setStateToBe(GameState);
@@ -50,6 +52,7 @@ namespace Logic
 		void buttonClick1();
 		void buttonClick2();
 		void buttonClick3();
+		void buttonClick4();
 
 	};
 }
