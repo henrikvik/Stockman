@@ -158,6 +158,24 @@ float getShadowValue(float4 lightPos, int sampleCount = 1)
     return shadow;
 }
 
+//This is because i waas bored, it is not something we will use maybe i think
+float3 toonify(float3 color, float intensity)
+{
+    if(intensity > 0.95)
+        color = color; //Yes.
+
+    else if (intensity > 0.5)
+        color = 0.7 * color;
+
+    else if (intensity > 0.05)
+        color = 0.35 * color;
+
+    else
+        color = 0.1 * color;
+
+    return color;
+}
+
 [earlydepthstencil]
 PSOutput PS(VSOutput input) {
 	PSOutput output;
@@ -235,11 +253,14 @@ PSOutput PS(VSOutput input) {
     lighting = adjustSaturation(lighting, bulletTimer);
     lighting = adjustContrast(lighting, 2 - bulletTimer, 0.3);
 
+    //Nah
+    //lighting = toonify(lighting, diffuseFactor * dirFade);
+
     output.backBuffer = float4(lighting, 1);
     output.glowMap = glowMap.Sample(Sampler, input.uv);
     output.normalView = float4(input.normalView.xyz, 1);
 	output.worldPosMap = input.worldPos;
 
-
+    
     return output;
 }
