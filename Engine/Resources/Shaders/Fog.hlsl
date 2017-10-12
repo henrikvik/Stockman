@@ -1,6 +1,6 @@
 #define a 0.01 // Color Change Radious
 #define TRAD 7 // Transparancy Radious
-#define FOGCOLOR float3(0.3, 0.3, 0.6) //Fog Color
+#define FOGCOLOR float3(0.3, 0.3, 0.3) //Fog Color
 
 cbuffer Camera : register(b0)
 {
