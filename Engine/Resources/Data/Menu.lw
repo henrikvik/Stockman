@@ -8,8 +8,6 @@
 	"button2" :  "MenuMainButton2";
 	"button3" :  "MenuMainButton3";
 }
-}
-
 {
 	"Name" : "Settings";
 	"State" : 3;
@@ -17,6 +15,7 @@
 	"buttonAmount" : 1;
 
 	"button1" :  "MenuSettingsButton1";
+	"button2" :  "MenuSettingsButton2";
 }
 {
 	"Name" : "Game";

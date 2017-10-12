@@ -1,40 +1,40 @@
 {
-	"Player": "Stockamn";
-	"Score": 30f;
-}
-{
-	"Player": "Stockamn";
-	"Score": 15f;
-}
-{
-	"Player": "Stockman";
+	"Player": "Andreas";
 	"Score": 0f;
 }
 {
-	"Player": "Stockman";
-	"Score": 0f;
+	"Player": "???";
+	"Score": -1f;
 }
 {
-	"Player": "Stockman";
-	"Score": 0f;
+	"Player": "???";
+	"Score": -1f;
 }
 {
-	"Player": "Stockman";
-	"Score": 0f;
+	"Player": "???";
+	"Score": -1f;
 }
 {
-	"Player": "Stockman";
-	"Score": 0f;
+	"Player": "???";
+	"Score": -1f;
 }
 {
-	"Player": "Stockman";
-	"Score": 0f;
+	"Player": "???";
+	"Score": -1f;
 }
 {
-	"Player": "Stockman";
-	"Score": 0f;
+	"Player": "???";
+	"Score": -1f;
 }
 {
-	"Player": "Stockman";
-	"Score": 0f;
+	"Player": "???";
+	"Score": -1f;
+}
+{
+	"Player": "???";
+	"Score": -1f;
+}
+{
+	"Player": "???";
+	"Score": -1f;
 }

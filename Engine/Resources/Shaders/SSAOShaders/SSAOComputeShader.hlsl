@@ -1,4 +1,4 @@
-#include "../ShaderConstants.h"
+#include "../ShaderConstants.hlsli"
 
 
 Texture2D depthTexture : register(t0);

@@ -233,7 +233,7 @@ void Player::updateSpecific(float deltaTime)
 		freeMove = true;
 		printf("free move activated\n");
 	}
-	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)
+	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)	
 	{
 		// reset movement
 		getRigidBody()->setGravity({ 0.f, -PHYSICS_GRAVITY, 0.f });

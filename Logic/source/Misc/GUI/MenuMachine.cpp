@@ -2,7 +2,10 @@
 #include <iostream>
 #include <Misc\FileLoader.h>
 
-#define TRANSITION_TIME 350.f
+#include <Keyboard.h>
+#include <Engine\Typing.h>
+
+#define TRANSITION_TIME 400
 
 using namespace Logic;
 
@@ -11,6 +14,19 @@ MenuMachine::MenuMachine()
 	pressed = false;
 	currentActiveMenu = nullptr;
 	currentActiveState = gameStateMenuMain;
+	m_highScoreNamePTR = nullptr;
+	m_highScoreName = "";
+	m_typing = false;
+}
+
+MenuMachine::MenuMachine(string* highScoreNamePTR)
+{
+	pressed = false;
+	currentActiveMenu = nullptr;
+	currentActiveState = gameStateMenuMain;
+	m_highScoreNamePTR = highScoreNamePTR;
+	m_highScoreName = *m_highScoreNamePTR;
+	m_typing = false;
 }
 
 
@@ -20,6 +36,7 @@ MenuMachine::~MenuMachine()
 	{
 		delete a.second;
 	}
+
 }
 
 void MenuMachine::initialize(GameState state)
@@ -30,6 +47,7 @@ void MenuMachine::initialize(GameState state)
 	functions["buttonClick1"] = std::bind(&MenuMachine::buttonClick1, this);
 	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
 	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick3, this);
+	functions["buttonClick4"] = std::bind(&MenuMachine::buttonClick4, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -96,7 +114,7 @@ void MenuMachine::update(float dt)
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
-	if (Mouse.leftButton && !pressed)
+	if (Mouse.leftButton && !pressed && !m_typing)
 	{
 		pressed = true;
 		currentActiveMenu->updateOnPress(Mouse.x, Mouse.y);
@@ -106,9 +124,9 @@ void MenuMachine::update(float dt)
 		pressed = false;
 
 	}
-    currentActiveMenu->hoverOver(Mouse.x, Mouse.y);
+	currentActiveMenu->hoverOver(Mouse.x, Mouse.y);
 
-	if (stateToBe != gameStateDefault)
+	if (stateToBe != gameStateDefault && !m_typing)
 	{
 		if (forward)
 		{
@@ -128,14 +146,32 @@ void MenuMachine::update(float dt)
 		}
 	}
 
+	if (m_typing)
+	{
+		DirectX::Keyboard::State keyboard = DirectX::Keyboard::Get().GetState();
+		Typing* theChar = Typing::getInstance(); //might need to be deleted
+		char tempChar = theChar->getSymbol();
+		if (keyboard.IsKeyDown(DirectX::Keyboard::Enter))
+		{
+			m_typing = false;
+			*m_highScoreNamePTR = m_highScoreName;
+		}
+		else if (keyboard.IsKeyDown(DirectX::Keyboard::Back) && m_highScoreNamePTR->compare("") != 0)
+		{
+			m_highScoreName.pop_back();
+		}
+		else if (tempChar != 0)
+		{
+			m_highScoreName += tempChar;
+		}
+	}
 }
 
-void MenuMachine::render(Graphics::Renderer & renderer)
+void MenuMachine::render(Graphics::Renderer &renderer)
 {
     Graphics::MenuInfo temp = this->currentActiveMenu->getMenuInfo();
 
     renderer.drawMenu(&temp);
-
 }
 
 //Switches the currentState used 
@@ -190,4 +226,13 @@ void MenuMachine::buttonClick2()
 void MenuMachine::buttonClick3()
 {
 	PostQuitMessage(0); 
+}
+
+void MenuMachine::buttonClick4()
+{
+	//triggers the typing button
+	Typing* theChar = Typing::getInstance(); //might need to be deleted
+	char trashThis = theChar->getSymbol();
+	m_typing = true;
+	m_highScoreName = "";
 }

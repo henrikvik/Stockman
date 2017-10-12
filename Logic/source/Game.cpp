@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#include <Engine\Typing.h>
 #define _GOD_MODE
 
 using namespace Logic;
@@ -18,6 +19,7 @@ Game::Game()
 Game::~Game() 
 { 
 	clear();
+	Typing::releaseInstance();
 }
 
 void Game::init()
@@ -37,8 +39,14 @@ void Game::init()
 	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(Player::startPosition, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 
+	m_highScoreManager = newd HighScoreManager();
+
+	std:string name = "Stockman";
+
+	m_highScoreManager->setName(name);
+
 	// Initializing Menu's
-	m_menu = newd MenuMachine();
+	m_menu = newd MenuMachine(m_highScoreManager->getName());
 	m_menu->initialize(STARTING_STATE); 
 
 	// Initializing the map
@@ -57,12 +65,6 @@ void Game::init()
 	// Initializing Card Manager
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
-
-	m_highScoreManager = newd HighScoreManager();
-	std:string name = "";
-	//std::cout << "Enter your player name (will be used for highscore): ";
-	//getline(std::cin, name);
-	m_highScoreManager->setName(name.empty() ? "Stockamn" : name);
 
 	// Resetting Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
