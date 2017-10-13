@@ -45,7 +45,7 @@ void SkillBulletTime::onUpdate(float deltaTime)
 {
 	if (m_sensor)
 	{
-		if (m_sensor->shouldRemove())
+		if (m_sensor->getProjectileData().ttl < deltaTime)
 			m_sensor = nullptr;
 		else
 		{
