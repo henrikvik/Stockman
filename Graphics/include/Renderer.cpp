@@ -113,6 +113,11 @@ namespace Graphics
 		PROFILE_END();
 	}
 
+	void Renderer::updateShake(float deltaTime)
+	{
+		hud.updateShake(deviceContext, deltaTime);
+	}
+
 	void Renderer::render(Camera * camera)
 	{
 		menu.unloadTextures();
@@ -172,10 +177,10 @@ namespace Graphics
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-		static float clearColor[4] = { 0, 0.5, 0.7, 1 };
-		static float blackClearColor[4] = { 0 };
+
+		static float clearColor[4] = { 0 };
 		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
+		deviceContext->ClearRenderTargetView(glowMap, clearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
 		deviceContext->ClearRenderTargetView(worldPosMap, clearColor);
 		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
@@ -193,7 +198,7 @@ namespace Graphics
 		draw();
 
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-
+		 
 		grid.updateLights(deviceContext, camera);
 
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
@@ -306,6 +311,11 @@ namespace Graphics
 		PROFILE_BEGIN("DebugInfo");
 		renderDebugInfo(camera);
 		PROFILE_END();
+
+		if (ks.G)
+		{
+			hud.startShake(30, 1000);
+		}
 	}
 
 
