@@ -81,10 +81,7 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 	if (flags & Effect::EFFECT_ON_FIRE)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
 	if (flags & Effect::EFFECT_BULLET_TIME)
-	{
-		printf("%f\n", stacks);
 		m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
-	}
 		
 }
 

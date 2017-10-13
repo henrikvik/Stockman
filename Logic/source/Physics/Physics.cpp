@@ -28,7 +28,7 @@ bool Physics::init()
 {
 	// World gravity
 	this->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
-	this->setLatencyMotionStateInterpolation(false);
+	this->setLatencyMotionStateInterpolation(true);
 
 	return true;
 }
@@ -60,27 +60,12 @@ void Physics::clear()
 void Physics::update(GameTime gameTime)
 {
 	// Stepping the physics
-	/*PROFILE_BEGIN("Stepping Physics");
-
-	static std::chrono::steady_clock::time_point begin;
-	static std::chrono::steady_clock::time_point end;
+	PROFILE_BEGIN("Stepping Physics");
 	
-	// Calculate the time since last call and tell bulletphysics
-	begin = std::chrono::steady_clock::now();
-	float microsec = std::chrono::duration_cast<std::chrono::microseconds>(begin - end).count() * 0.000001;
-	
-	// Adding slowmotion effects
-	microsec *= gameTime.currentMod;
-
-	// Stepping the physics
-	this->stepSimulation(microsec, 16);
-	
-	// Saving the end time
-	end = std::chrono::steady_clock::now();*/
-
-	//printf("%f\n", gameTime.dtReal);
-	
-	this->stepSimulation(gameTime.dtReal * 0.01f, 4.f);
+	if (gameTime.dtReal * 0.001f > (1.f / 60.f))
+		this->stepSimulation(1.f / 60.f, 0, 0);
+	else
+		this->stepSimulation(gameTime.dtReal * 0.001f, 0, 0);
 
 	PROFILE_END();
 	PROFILE_BEGIN("Collision Handling");

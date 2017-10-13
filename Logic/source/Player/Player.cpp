@@ -85,7 +85,7 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
 	m_playerState = PlayerState::STANDING;
 #else
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
-	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
+	else if (Trigger* t = dynamic_cast<Trigger*>(&other))	 	{ }														// collision with trigger
 	else if (Enemy *e = dynamic_cast<Enemy*> (&other))
 	{
 		int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
@@ -93,7 +93,7 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
 		stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
 		e->damage(2 * stacks); // replace 1 with the player damage when it is better
 	}
-	else if (m_playerState == PlayerState::IN_AIR)
+	else
 	{
 		btVector3 dir = contactPoint - getPositionBT();
 
@@ -104,16 +104,51 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
 			float hitAngle = hitSurfaceNormal.dot({ 0.f, 1.f, 0.f });
 
 			// if angle between up-vector and surface-vector is over 0.8, player is grounded and can jump again
-			if (hitAngle > 0.8f)
+			if (m_playerState == PlayerState::IN_AIR && hitAngle > 0.8f)
 			{
 				getRigidBody()->setLinearVelocity({ 0.f, 0.f, 0.f });
 				getRigidBody()->setGravity({ 0.f, -PHYSICS_GRAVITY * 40.f, 0.f });
 				m_playerState = PlayerState::STANDING;
 			}
-			else
-				m_playerState = PlayerState::IN_AIR;
+
+			if (abs(hitAngle) < 0.5f)
+			{
+				if (abs(m_moveDir.x()) > abs(hitSurfaceNormal.x()))
+					m_moveDir.setX(m_moveDir.x() + hitSurfaceNormal.x());
+				else
+					m_moveDir.setX(0.f);
+
+				if (abs(m_moveDir.z()) > abs(hitSurfaceNormal.z()))
+					m_moveDir.setZ(m_moveDir.z() + hitSurfaceNormal.z());
+				else
+					m_moveDir.setZ(0.f);
+			}
 		}
 	}
+	/*else
+	{
+		btVector3 dir = contactPoint - getPositionBT();
+
+		btVector3 hitSurfaceNormal = m_physPtr->RayTestGetNormal(Ray(getPositionBT(), getPositionBT() + (dir * 2))); // overshoot the ray test to get correct result
+
+		if (!hitSurfaceNormal.isZero())
+		{
+			float hitAngle = hitSurfaceNormal.dot({ 0.f, 1.f, 0.f });
+
+			if (abs(hitAngle) < 0.5f)
+			{
+				if (abs(m_moveDir.x()) < abs(hitSurfaceNormal.x()))	
+					m_moveDir.setX(m_moveDir.x() - hitSurfaceNormal.x());
+				else												
+					m_moveDir.setX(0.f);
+
+				if (abs(m_moveDir.z()) < abs(hitSurfaceNormal.z()))
+					m_moveDir.setZ(m_moveDir.z() - hitSurfaceNormal.z());
+				else												
+					m_moveDir.setZ(0.f);
+			}
+		}
+	}*/
 #endif
 }
 
@@ -445,6 +480,9 @@ void Player::airMove(float deltaTime)
 
 void Player::accelerate(float deltaTime, float acceleration)
 {
+	if (deltaTime * 0.001f > (1.f / 60.f))
+		deltaTime = (1.f / 60.f) * 1000.f;
+
 	m_moveSpeed += acceleration * deltaTime;
 
 	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)

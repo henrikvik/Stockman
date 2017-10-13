@@ -43,8 +43,8 @@
 #include <Misc\GameTime.h>
 #include <Engine\Profiler.h>
 
-#define PHYSICS_GRAVITY 0.982f * 0.5f
-//#define PHYSICS_GRAVITY 9.82f * 2.f
+//#define PHYSICS_GRAVITY 0.00982f
+#define PHYSICS_GRAVITY 9.82f * 2.f
 
 #define DEFAULT_F 0.5f
 #define DEFAULT_R 0 
