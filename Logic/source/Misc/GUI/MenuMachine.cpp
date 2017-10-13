@@ -169,6 +169,16 @@ void MenuMachine::update(float dt)
 
 void MenuMachine::render(Graphics::Renderer &renderer)
 {
+	/*std::wstring tempSTR(m_highScoreName.length(), L'');
+	std::copy(m_highScoreName.begin(), m_highScoreName.end(), tempSTR.begin());
+	Graphics::TextString text
+	{
+		tempSTR,
+		DirectX::SimpleMath::Vector2(50, 50),
+		DirectX::SimpleMath::Color(DirectX::Colors::White),
+		Graphics::Font::SMALL
+	};*/
+
     Graphics::MenuInfo temp = this->currentActiveMenu->getMenuInfo();
 
     renderer.drawMenu(&temp);
