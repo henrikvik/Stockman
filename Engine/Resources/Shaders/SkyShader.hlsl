@@ -1,3 +1,5 @@
+#include "ShaderConstants.hlsli"
+
 struct VS_IN
 {
     float3 pos : POSITION;
@@ -25,6 +27,11 @@ cbuffer colorChange : register(b2)
     float3 color;
 };
 
+cbuffer BulletTimeTimer : register(b3)
+{
+    float bulletTimer;
+};
+
 
 PS_IN VS(VS_IN input)
 {
@@ -44,6 +51,8 @@ SamplerState sState;
 
 float4 PS(PS_IN input) : SV_Target0
 {
-   // return float4(color, 1);
-    return float4(cube.Sample(sState, input.tex).xyz * color, 1);
+    float3 finalColor = cube.Sample(sState, input.tex).xyz * color;
+    finalColor = adjustSaturation(finalColor, bulletTimer);
+    finalColor = adjustContrast(finalColor, 2 - bulletTimer, 0.3);
+    return float4(finalColor, 1);
 }

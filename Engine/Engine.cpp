@@ -6,6 +6,8 @@
 #include <Windows.h>
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
+#include <iostream>
+#include "Typing.h"
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -15,7 +17,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	ImGui_ImplDX11_WndProcHandler(hwnd, msg, wparam, lparam);
 		//)
 		//return true;
-
+	Typing* theChar = Typing::getInstance(); //might need to be deleted
 	switch (msg)
 	{
 	case WM_DESTROY:
@@ -27,7 +29,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
-		
 		break;
 
 	case WM_ACTIVATEAPP:
@@ -43,9 +44,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
 	case WM_MOUSEHOVER:
-	DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
+		DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
 		break;
-
+	case WM_CHAR:
+		theChar->setSymbol(char((wchar_t)wparam));
+		break;
 	default:
 		return DefWindowProc(hwnd, msg, wparam, lparam);
 		break;

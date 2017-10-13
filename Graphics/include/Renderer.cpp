@@ -43,7 +43,7 @@ namespace Graphics
         ,menu(device, deviceContext)
         ,hud(device, deviceContext)
 		,ssaoRenderer(device)
-
+		,bulletTimeBuffer(device)
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -58,6 +58,9 @@ namespace Graphics
 
 		states = new DirectX::CommonStates(device);
 		grid.initialize(camera, device, deviceContext, &resourceManager);
+
+		float temp = 1.f;
+		bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
 
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         createBlendState();
@@ -87,6 +90,29 @@ namespace Graphics
 	void Renderer::updateLight(float deltaTime, Camera * camera)
 	{
 		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
+	}
+
+	//this function is called in SkillBulletTime.cpp
+	void Renderer::setBulletTimeCBuffer(float amount)
+	{
+		PROFILE_BEGIN("SetBulletTimeCBuffer()");
+		//These two must always add up to one ir i'll have to fix the formula
+		static const float TOP_THRESHOLD = 0.9;
+		static const float BOT_THRESHOLD = 0.1;
+
+
+		if (amount > TOP_THRESHOLD)
+			amount = (amount - TOP_THRESHOLD) / BOT_THRESHOLD;
+
+		else if (amount < BOT_THRESHOLD)
+			amount = 1 - ((amount) / BOT_THRESHOLD);
+
+		else amount = 0;
+
+		printf("%f\n", amount);
+
+		bulletTimeBuffer.write(deviceContext, &amount, sizeof(float));
+		PROFILE_END();
 	}
 
 	void Renderer::render(Camera * camera)
@@ -153,6 +179,7 @@ namespace Graphics
 		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
 		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+		deviceContext->ClearRenderTargetView(worldPosMap, clearColor);
 		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 
@@ -226,6 +253,8 @@ namespace Graphics
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
 		deviceContext->VSSetConstantBuffers(2, 1, &lightBuffs[1]);
 
+		deviceContext->PSSetConstantBuffers(4, 1, bulletTimeBuffer);
+
 		ID3D11RenderTargetView * rtvs[] =
 		{
 			fakeBackBuffer,
@@ -237,6 +266,8 @@ namespace Graphics
 		deviceContext->OMSetRenderTargets(4, rtvs, depthStencil);
 		
 		draw();
+
+		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
 		skyRenderer.renderSky(deviceContext, camera);
 
 		ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
@@ -282,6 +313,8 @@ namespace Graphics
 			PROFILE_BEGIN("DrawToBackBuffer");
 			drawToBackbuffer(fakeBackBuffer);
 			PROFILE_END();
+
+			fog.renderFog(deviceContext, backBuffer, worldPosMap);
 		}
 
 		else
@@ -291,7 +324,6 @@ namespace Graphics
 			PROFILE_END();
 		}
 
-		fog.renderFog(deviceContext, backBuffer, worldPosMap);
 
 
 		PROFILE_BEGIN("HUD");

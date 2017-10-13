@@ -1,6 +1,6 @@
 #define a 0.01 // Color Change Radious
 #define TRAD 7 // Transparancy Radious
-#define FOGCOLOR 0.3 //Fog Color
+#define FOGCOLOR float3(0.3, 0.3, 0.3) //Fog Color
 
 cbuffer Camera : register(b0)
 {
@@ -74,7 +74,7 @@ float4 PS (VSOut psIn) : SV_Target
 
 	float playerDistance = length( psIn.worldPos.xyz - camPos.xyz);
 
-	float3 fogColor = (FOGCOLOR , FOGCOLOR, FOGCOLOR);
+	float3 fogColor = FOGCOLOR;
 
 	float g = min(psIn.c2, 0.0);
 
@@ -87,5 +87,5 @@ float4 PS (VSOut psIn) : SV_Target
 
 	psIn.color.rgb = psIn.color.rgb * f + fogColor.rgb * (1.0 - f);
 
-	return float4(psIn.color.rbg, fogDepth);
+	return float4(psIn.color.rgb, fogDepth);
 }
