@@ -37,33 +37,33 @@ namespace Graphics {
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
         void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
 	private:
-		DirectX::SimpleMath::Vector3 mPos;
-		DirectX::SimpleMath::Vector3 mForward;
-		DirectX::SimpleMath::Vector3 mUp;
-		DirectX::SimpleMath::Vector3 mRight;	//Uncertain if needed
+		DirectX::SimpleMath::Vector3 pos;
+		DirectX::SimpleMath::Vector3 forward;
+		DirectX::SimpleMath::Vector3 up;
+		DirectX::SimpleMath::Vector3 right;	//Uncertain if needed
 
-		float mDrawDistance;
-		float mFieldOfView;
-		float mFadeStart;
+		float drawDistance;
+		float fieldOfView;
+		float fadeStart;
 
-		DirectX::SimpleMath::Matrix mView;
-		DirectX::SimpleMath::Matrix mProjection;
+		DirectX::SimpleMath::Matrix view;
+		DirectX::SimpleMath::Matrix projection;
 
 		struct ShaderValues {
-			DirectX::SimpleMath::Matrix mVP;
-			DirectX::SimpleMath::Matrix mInvP;
-			DirectX::SimpleMath::Matrix mV;
+			DirectX::SimpleMath::Matrix vP;
+			DirectX::SimpleMath::Matrix invP;
+			DirectX::SimpleMath::Matrix view;
 			DirectX::SimpleMath::Vector4 camPos;
 		} values;
 
 		struct InverseMatrixes
 		{
-			DirectX::SimpleMath::Matrix mInvView;
-			DirectX::SimpleMath::Matrix mInvP;
+			DirectX::SimpleMath::Matrix invView;
+			DirectX::SimpleMath::Matrix invP;
 
 		} inverseMatrixes;
 
-		ID3D11Buffer* mVPBuffer;
+		ID3D11Buffer* vPBuffer;
 		ConstantBuffer<InverseMatrixes> inverseBuffer;
 	};
 }
