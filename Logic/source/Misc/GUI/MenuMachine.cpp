@@ -11,9 +11,9 @@ using namespace Logic;
 
 MenuMachine::MenuMachine()
 {
-	pressed = false;
-	currentActiveMenu = nullptr;
-	currentActiveState = gameStateMenuMain;
+	m_pressed = false;
+	m_currentActiveMenu = nullptr;
+	m_currentActiveState = gameStateMenuMain;
 	m_highScoreNamePTR = nullptr;
 	m_highScoreName = "";
 	m_typing = false;
@@ -21,9 +21,9 @@ MenuMachine::MenuMachine()
 
 MenuMachine::MenuMachine(string* highScoreNamePTR)
 {
-	pressed = false;
-	currentActiveMenu = nullptr;
-	currentActiveState = gameStateMenuMain;
+	m_pressed = false;
+	m_currentActiveMenu = nullptr;
+	m_currentActiveState = gameStateMenuMain;
 	m_highScoreNamePTR = highScoreNamePTR;
 	m_highScoreName = *m_highScoreNamePTR;
 	m_typing = false;
@@ -99,14 +99,14 @@ void MenuMachine::initialize(GameState state)
 		}
 	}
 
-	stateToBe = gameStateDefault;
+	m_stateToBe = gameStateDefault;
 
 	showMenu(state);
 }
 
 void MenuMachine::clear() 
 {
-	currentActiveMenu = nullptr;
+	m_currentActiveMenu = nullptr;
 }
 
 void MenuMachine::update(float dt)
@@ -114,34 +114,34 @@ void MenuMachine::update(float dt)
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
-	if (Mouse.leftButton && !pressed && !m_typing)
+	if (Mouse.leftButton && !m_pressed && !m_typing)
 	{
-		pressed = true;
-		currentActiveMenu->updateOnPress(Mouse.x, Mouse.y);
+		m_pressed = true;
+		m_currentActiveMenu->updateOnPress(Mouse.x, Mouse.y);
 	}
-	else if (!Mouse.leftButton && pressed)
+	else if (!Mouse.leftButton && m_pressed)
 	{
-		pressed = false;
+		m_pressed = false;
 
 	}
-	currentActiveMenu->hoverOver(Mouse.x, Mouse.y);
+	m_currentActiveMenu->hoverOver(Mouse.x, Mouse.y);
 
-	if (stateToBe != gameStateDefault && !m_typing)
+	if (m_stateToBe != gameStateDefault && !m_typing)
 	{
-		if (forward)
+		if (m_forward)
 		{
-			if (currentActiveMenu->animationTransition(dt, TRANSITION_TIME, forward))
+			if (m_currentActiveMenu->animationTransition(dt, TRANSITION_TIME, m_forward))
 			{
-				showMenu(stateToBe);
-				forward = false;
+				showMenu(m_stateToBe);
+				m_forward = false;
 			}
 		}
 		else
 		{
-			if (currentActiveMenu->animationTransition(dt, TRANSITION_TIME, forward))
+			if (m_currentActiveMenu->animationTransition(dt, TRANSITION_TIME, m_forward))
 			{
-				stateToBe = gameStateDefault;
-				forward = true;
+				m_stateToBe = gameStateDefault;
+				m_forward = true;
 			}
 		}
 	}
@@ -179,7 +179,7 @@ void MenuMachine::render(Graphics::Renderer &renderer)
 		Graphics::Font::SMALL
 	};*/
 
-    Graphics::MenuInfo temp = this->currentActiveMenu->getMenuInfo();
+    Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
 
     renderer.drawMenu(&temp);
 }
@@ -189,48 +189,48 @@ void MenuMachine::showMenu(GameState state)
 {
 	if (m_menuStates.find(state) != m_menuStates.end())
 	{
-		currentActiveMenu = m_menuStates.at(state);
-		currentActiveState = state;
+		m_currentActiveMenu = m_menuStates.at(state);
+		m_currentActiveState = state;
 	}
 	else
 	{
-		currentActiveMenu = m_menuStates.at(gameStateDefault); //change to error state
-		currentActiveState = gameStateDefault;
+		m_currentActiveMenu = m_menuStates.at(gameStateDefault); //change to error state
+		m_currentActiveState = gameStateDefault;
 	}
 }
 
 GameState MenuMachine::currentState()
 {
-	return currentActiveState;
+	return m_currentActiveState;
 }
 
 //Sets the state that the game is gonna show after the animation cycle has finished
 void MenuMachine::setStateToBe(GameState gameState)
 {
 	
-	stateToBe = gameState;
+	m_stateToBe = gameState;
 }
 
 //Gets the state that the game is gonna show after the animation cycle has finished
 GameState MenuMachine::getStateToBe()
 {
 
-	return stateToBe;
+	return m_stateToBe;
 }
 
 void MenuMachine::buttonClick0()
 {
-	stateToBe = gameStateGame;
+	m_stateToBe = gameStateGame;
 }
 
 void MenuMachine::buttonClick1()
 {
-	stateToBe = gameStateMenuSettings;
+	m_stateToBe = gameStateMenuSettings;
 }
 
 void MenuMachine::buttonClick2()
 {
-	stateToBe = gameStateMenuMain;
+	m_stateToBe = gameStateMenuMain;
 }
 
 void MenuMachine::buttonClick3()
