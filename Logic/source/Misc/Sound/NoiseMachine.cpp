@@ -21,8 +21,8 @@ void NoiseMachine::init()
 	ERRCHECK(result);
 
 	// Initialize sounds
-	result = m_system->createSound(SOUND_SFX_PATH("test.ogg"), FMOD_DEFAULT, 0, &m_sound);
-	ERRCHECK(result);
+	initSFX();
+	initMusic();
 }
 
 void NoiseMachine::update()
@@ -55,9 +55,33 @@ void NoiseMachine::update()
 	}
 }
 
-void NoiseMachine::playSound()
+void NoiseMachine::playSFX(SoundData sData, SFX sfx, ...)
 {
-	ERRCHECK(m_system->playSound(m_sound, 0, false, &m_channel));
+	ERRCHECK(m_system->playSound(m_sound[sfx], 0, false, &m_channel));
+}
+
+void NoiseMachine::playMusic(SoundData sData, MUSIC music, ...)
+{
+	ERRCHECK(m_system->playSound(m_music[music], 0, false, &m_channel));
+}
+
+void NoiseMachine::initSFX()
+{
+	ERRCHECK(createSound(SFX::TEST, "test.ogg"));
+}
+
+void NoiseMachine::initMusic()
+{
+}
+
+FMOD_RESULT NoiseMachine::createSound(SFX sfx, std::string path)
+{
+	return m_system->createSound(std::string(SOUND_SFX_PATH + path).c_str(), FMOD_DEFAULT, 0, &m_sound[sfx]);
+}
+
+FMOD_RESULT NoiseMachine::createSound(MUSIC music, std::string path)
+{
+	return m_system->createSound(std::string(SOUND_MUSIC_PATH + path).c_str(), FMOD_DEFAULT, 0, &m_music[music]);
 }
 
 void NoiseMachine::CRASH_EVERYTHING(const char * format, ...)
