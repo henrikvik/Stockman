@@ -280,5 +280,8 @@
     <Text Include="include\Player\Skill\gitinclude.txt" />
     <Text Include="source\Player\Skill\gitinclude.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

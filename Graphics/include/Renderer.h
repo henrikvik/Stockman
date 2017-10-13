@@ -46,6 +46,9 @@ namespace Graphics
 
 		//indicates how gray the screen will be
 		void setBulletTimeCBuffer(float value);
+
+		void updateShake(float deltaTime);
+		void startShake(float radius, float duration);
     private:
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;
