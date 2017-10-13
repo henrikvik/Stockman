@@ -25,7 +25,7 @@ RangedBehavior::RangedBehavior()
 
 	
 	// SHOOT !
-	addNode(stay, NodeType::ACTION, 995, [](RunIn& in) -> bool {
+	addNode(stay, NodeType::ACTION, 9999, [](RunIn& in) -> bool {
 		if (RandomGenerator::singleton().getRandomInt(0,
 			RangedBehavior::ABILITY_CHANCHE) == 0)
 			in.enemy->useAbility(*in.target);
@@ -34,7 +34,7 @@ RangedBehavior::RangedBehavior()
 	});
 
 	// jump
-	addNode(stay, NodeType::ACTION, 5, [](RunIn& in) -> bool {
+	addNode(stay, NodeType::ACTION, 1, [](RunIn& in) -> bool {
 		in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
 		return true;
 	});
@@ -55,6 +55,22 @@ RangedBehavior::RangedBehavior()
 			if (RandomGenerator::singleton().getRandomInt(0, RangedBehavior::ABILITY_CHANCHE) == 0)
 				in.enemy->useAbility(*in.target);
 			behavior->walkPath(behavior->getPath(), in);
+			return true;
+		}
+	);
+
+	// omg 
+	BehaviorNode *flee = addNode(getRoot(), NodeType::CONDITION, 2,
+		[](RunIn& in) -> bool {
+			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
+			return (in.enemy->getPosition() - in.target->getPosition()).Length()
+				< behavior->getDistance() * 0.2f;
+		}
+	);
+
+	addNode(flee, NodeType::ACTION, 0, [](RunIn& in) -> bool {
+			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
+			in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
 			return true;
 		}
 	);
