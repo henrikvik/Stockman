@@ -17,6 +17,7 @@ MenuMachine::MenuMachine()
 	m_highScoreNamePTR = nullptr;
 	m_highScoreName = "";
 	m_typing = false;
+	m_forward = true;
 }
 
 MenuMachine::MenuMachine(string* highScoreNamePTR)
@@ -27,6 +28,7 @@ MenuMachine::MenuMachine(string* highScoreNamePTR)
 	m_highScoreNamePTR = highScoreNamePTR;
 	m_highScoreName = *m_highScoreNamePTR;
 	m_typing = false;
+	m_forward = true;
 }
 
 
