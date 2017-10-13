@@ -33,6 +33,10 @@
 #define PLAYER_START_SCA	btVector3(1.5f, 3.0f, 1.5f)
 #define PLAYER_START_ROT	btVector3(0.0f, 0.0f, 0.0f)
 
+//Init Cards
+
+#define NUMBER_OF_EACH_CARD	5
+
 // Init Waves (wave times are in ms)
 #define MAX_WAVES			5
 #define WAVE_START			0		// If you wanna test certain waves for debugging
@@ -58,7 +62,10 @@ namespace Logic
 
 		void waveUpdater();
 		void update(float deltaTime);
+		void gameRunTime(float deltaTime);
 		void render(Graphics::Renderer& renderer);
+
+		void gameRunTimeRender(Graphics::Renderer & renderer);
 
 		DirectX::SimpleMath::Vector3 getPlayerForward();
 		DirectX::SimpleMath::Vector3 getPlayerPosition();

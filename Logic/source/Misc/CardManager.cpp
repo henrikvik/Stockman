@@ -52,6 +52,7 @@ void Logic::CardManager::createDeck(int nrOfEach)
 			m_deck.push_back(j);
 		}
 	}
+	shuffle(1);
 }
 
 void Logic::CardManager::pickThree(bool damaged)

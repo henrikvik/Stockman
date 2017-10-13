@@ -54,6 +54,12 @@ namespace Logic
 		void buttonClick3();
 		void buttonClick4();
 
+		void buttonClick5();
+
+		void buttonClick6();
+
+		void buttonClick7();
+
 	};
 }
 

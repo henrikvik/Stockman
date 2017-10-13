@@ -96,3 +96,45 @@
 	"width" : 170.0f;
 	"function" : "buttonClick3";
 }
+{
+	"buttonName" : "CardUpgradeButton1";
+	"texture" : 1;
+	"xPos" : 200.0f;
+	"yPos" : 300.0f;
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+	"activeOffset" : 0.0f;
+	"height" : 400.0f;
+	"width" : 200.0f;
+	"function" : "buttonClick5";
+}
+{
+	"buttonName" : "CardUpgradeButton2";
+	"texture" : 1;
+	"xPos" : 550.0f;
+	"yPos" : 300.0f;
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+	"activeOffset" : 0.0f;
+	"height" : 400.0f;
+	"width" : 200.0f;
+	"function" : "buttonClick6";
+}
+{
+	"buttonName" : "CardUpgradeButton3";
+	"texture" : 1;
+	"xPos" : 800.0f;
+	"yPos" : 300.0f;
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+	"activeOffset" : 0.0f;
+	"height" : 400.0f;
+	"width" : 200.0f;
+	"function" : "buttonClick7";
+}

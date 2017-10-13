@@ -22,7 +22,8 @@ namespace Logic
 		gameStateMenuMain,
 		gameStateMenuSettings,
 		gameStateGameOver,
-		gameStateDefault
+		gameStateDefault,
+		gameStateGameUpgrade
 	};
 }
 

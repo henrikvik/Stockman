@@ -50,6 +50,9 @@ void MenuMachine::initialize(GameState state)
 	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
 	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick3, this);
 	functions["buttonClick4"] = std::bind(&MenuMachine::buttonClick4, this);
+	functions["buttonClick5"] = std::bind(&MenuMachine::buttonClick5, this);
+	functions["buttonClick6"] = std::bind(&MenuMachine::buttonClick6, this);
+	functions["buttonClick7"] = std::bind(&MenuMachine::buttonClick7, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -227,7 +230,7 @@ void MenuMachine::buttonClick0()
 
 void MenuMachine::buttonClick1()
 {
-	m_stateToBe = gameStateMenuSettings;
+	m_stateToBe = gameStateGameUpgrade;
 }
 
 void MenuMachine::buttonClick2()
@@ -247,4 +250,19 @@ void MenuMachine::buttonClick4()
 	char trashThis = theChar->getSymbol();
 	m_typing = true;
 	m_highScoreName = "";
+}
+
+void MenuMachine::buttonClick5() //Upgrade button1
+{
+
+}
+
+void MenuMachine::buttonClick6() //Upgrade button2
+{
+
+}
+
+void MenuMachine::buttonClick7() //Upgrade button3
+{
+
 }
