@@ -59,6 +59,7 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     context->PSSetShaderResources(0, 1, &SRVNULL);
 
     renderText(blendState);
+    renderHUDText(blendState);
 }
 
 void Graphics::HUD::queueText(Graphics::TextString * text)
@@ -235,7 +236,7 @@ void Graphics::HUD::renderText(ID3D11BlendState * blendState)
     }
     textQueue.clear();
 
-    renderHUDText();
+    
 
     sBatch->End();
 }
@@ -252,8 +253,9 @@ void Graphics::HUD::setHUDTextRenderPos()
     timePos = DirectX::SimpleMath::Vector2(0, 0);
 }
 
-void Graphics::HUD::renderHUDText()
+void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 {   
+    sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
     std::wstring temp = L"";
     if (!currentInfo->sledge)
     {
@@ -297,6 +299,7 @@ void Graphics::HUD::renderHUDText()
 	temp = (std::to_wstring(currentInfo->score));
 	temp += L" Points";
 	sFont[0]->DrawString(sBatch.get(), temp.c_str(), scorePos, DirectX::Colors::White);
+    sBatch->End();
 }
 
 //updates the hp and cooldown values on the GPU side

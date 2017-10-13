@@ -18,13 +18,14 @@ namespace Graphics
         void drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState);
         void queueText(Graphics::TextString * text);
         void fillHUDInfo(HUDInfo * info);
+        void renderText(ID3D11BlendState * blendState);
 
     private:
         void createHUDVBS(ID3D11Device * device);
         void createHUDTextures(ID3D11Device * device, ID3D11DeviceContext * context);
-        void renderText(ID3D11BlendState * blendState);
+
         void setHUDTextRenderPos();
-        void renderHUDText();
+        void renderHUDText(ID3D11BlendState * blendState);
         void updateHUDConstantBuffer(ID3D11DeviceContext * context);
         void createHUDCBs(ID3D11Device * device);
 

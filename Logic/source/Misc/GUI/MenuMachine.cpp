@@ -17,6 +17,9 @@ MenuMachine::MenuMachine()
 	m_highScoreNamePTR = nullptr;
 	m_highScoreName = "";
 	m_typing = false;
+    blinkMarker = true;
+    blinkTimer = 0.0f;
+    deleteCharCD = 20.0f;
 }
 
 MenuMachine::MenuMachine(string* highScoreNamePTR)
@@ -27,6 +30,8 @@ MenuMachine::MenuMachine(string* highScoreNamePTR)
 	m_highScoreNamePTR = highScoreNamePTR;
 	m_highScoreName = *m_highScoreNamePTR;
 	m_typing = false;
+    blinkTimer = 0.0f;
+    deleteCharCD = 20.0f;
 }
 
 
@@ -148,6 +153,27 @@ void MenuMachine::update(float dt)
 
 	if (m_typing)
 	{
+        if (blinkMarker == false)
+        {
+            blinkTimer += dt;
+            if (blinkTimer > 500.0f)
+            {
+                blinkMarker = true;
+                blinkTimer = 0.0f;
+            }
+        }
+        else
+        {
+            blinkTimer += dt;
+            if (blinkTimer > 500.0f)
+            {
+                blinkMarker = false;
+                blinkTimer = 0.0f;
+            }
+        }
+
+        
+        deleteCharCD += dt;
 		DirectX::Keyboard::State keyboard = DirectX::Keyboard::Get().GetState();
 		Typing* theChar = Typing::getInstance(); //might need to be deleted
 		char tempChar = theChar->getSymbol();
@@ -156,11 +182,12 @@ void MenuMachine::update(float dt)
 			m_typing = false;
 			*m_highScoreNamePTR = m_highScoreName;
 		}
-		else if (keyboard.IsKeyDown(DirectX::Keyboard::Back) && m_highScoreNamePTR->compare("") != 0)
+		else if (keyboard.IsKeyDown(DirectX::Keyboard::Back) && m_highScoreName != "" && deleteCharCD > 200.0f)
 		{
-			m_highScoreName.pop_back();
+            m_highScoreName.erase(m_highScoreName.length() - 1, 1);
+            deleteCharCD = 0.0f;
 		}
-		else if (tempChar != 0)
+		else if (tempChar != 0 && tempChar > 32 && tempChar < 122)
 		{
 			m_highScoreName += tempChar;
 		}
@@ -178,6 +205,33 @@ void MenuMachine::render(Graphics::Renderer &renderer)
 		DirectX::SimpleMath::Color(DirectX::Colors::White),
 		Graphics::Font::SMALL
 	};*/
+    if (currentActiveState == gameStateMenuSettings)
+    {
+        std::wstring tempString = L"";
+        Graphics::ButtonInfo tempButton = currentActiveMenu->getMenuInfo().m_buttons.at(0);
+        DirectX::SimpleMath::Vector2 tempPos;
+        //TODO tis is wierd. no magic number should be used
+        tempPos.x = tempButton.m_rek.x +128;
+        tempPos.y = tempButton.m_rek.y +50;
+        tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
+        if (m_typing)
+        {
+            if (blinkMarker)
+            {
+                tempString += L"|";
+            }
+
+        }
+        Graphics::TextString text
+        {
+            tempString.c_str(),
+            tempPos,
+            DirectX::SimpleMath::Color(DirectX::Colors::White),
+            Graphics::Font::SMALL
+        };
+        renderer.queueText(&text);
+    }
+    
 
     Graphics::MenuInfo temp = this->currentActiveMenu->getMenuInfo();
 
