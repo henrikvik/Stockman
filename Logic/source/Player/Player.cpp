@@ -84,7 +84,30 @@ void Player::reset()
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 #ifdef _GOD_MODE
-	m_playerState = PlayerState::STANDING;
+	if (!(dynamic_cast<Projectile*>(&other)) &&
+		!(dynamic_cast<Trigger*>(&other)) &&
+		!(dynamic_cast<Enemy*> (&other)) &&
+		m_playerState == PlayerState::IN_AIR)
+	{
+		btVector3 dir = contactPoint - getPositionBT();
+
+		btVector3 hitSurfaceNormal = m_physPtr->RayTestGetNormal(Ray(getPositionBT(), getPositionBT() + (dir * 2))); // overshoot the ray test to get correct result
+
+		if (!hitSurfaceNormal.isZero())
+		{
+			float hitAngle = hitSurfaceNormal.dot({ 0.f, 1.f, 0.f });
+
+			// if angle between up-vector and surface-vector is over 0.8, player is grounded and can jump again
+			if (hitAngle > 0.8f)
+			{
+				getRigidBody()->setLinearVelocity({ 0.f, 0.f, 0.f });
+				getRigidBody()->setGravity({ 0.f, -PHYSICS_GRAVITY * 40.f, 0.f });
+				m_playerState = PlayerState::STANDING;
+			}
+			else
+				m_playerState = PlayerState::IN_AIR;
+		}
+	}
 #else
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
 	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
