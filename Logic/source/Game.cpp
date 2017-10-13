@@ -1,7 +1,6 @@
 #include "Game.h"
 #include <iostream>
 #include <Engine\Typing.h>
-#define _GOD_MODE
 
 using namespace Logic;
 
@@ -66,9 +65,12 @@ void Game::init()
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
 
-	// Resetting Combo's
+	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
+
+	// Initializing Sound
+	NoiseMachine::Get().init();
 }
 
 void Game::clear()
@@ -137,6 +139,7 @@ void Game::update(float deltaTime)
 		else
 		{
 			ComboMachine::Get().Update(deltaTime);
+			NoiseMachine::Get().update();
 			waveUpdater();
 
 			PROFILE_BEGIN("Player");

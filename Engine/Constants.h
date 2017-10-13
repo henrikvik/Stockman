@@ -24,3 +24,5 @@
 #define MODEL_PATH(path)   L"Resources/Models/" path
 #define MODEL_PATH_STR(path)   "Resources/Models/" path
 #define SHADER_PATH(path) L"Resources/Shaders/" path
+#define SOUND_SFX_PATH(path) "Resources/Sound/SFX" path
+#define SOUND_MUSIC_PATH(path) "Resources/Sound/Music" path
