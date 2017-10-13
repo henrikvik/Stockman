@@ -37,6 +37,7 @@ namespace Graphics
 
         void render(Camera * camera);
         void queueRender(RenderInfo * renderInfo);
+		void queueFoliageRender(FoliageRenderInfo * renderInfo);
         void queueRenderDebug(RenderDebugInfo * debugInfo);
         void queueText(TextString * text);
         void fillHUDInfo(HUDInfo * info);
@@ -47,6 +48,7 @@ namespace Graphics
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;
         std::vector<RenderInfo*> renderQueue;
+		std::vector<FoliageRenderInfo*> renderFoliageQueue;
 
         DepthStencil depthStencil;
 
@@ -66,7 +68,7 @@ namespace Graphics
         ResourceManager resourceManager;
         D3D11_VIEWPORT viewPort;
 
-        // Lånade Pekare
+        // Lånade Pekareu
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
@@ -97,9 +99,13 @@ namespace Graphics
         void draw();
         void drawGUI();
 		
-
-
-
+#pragma region Foliage
+		 
+		ConstantBuffer <UINT> timeBuffer;
+		UINT time = 0;
+		void drawFoliage(Camera * camera);
+		Shader foliageShader;
+#pragma endregion
         
 		
 

@@ -329,6 +329,13 @@ int Engine::run()
             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
         };
 
+		Graphics::FoliageRenderInfo grass = {
+			true, //bool render;
+			Graphics::ModelID::GRASS, //ModelID meshId;
+			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+		};
+
+		grass.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5);
 		staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(6, 2, 1) * DirectX::SimpleMath::Matrix::CreateTranslation({0, 2, 0}) * DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0, totalTime * 0.001f, totalTime * 0.001f);
 		
         Graphics::TextString text{
@@ -343,6 +350,8 @@ int Engine::run()
 
         if (game.getState() == Logic::gameStateGame)
         {
+			renderer->queueFoliageRender(&grass);
+
          // renderer->queueRender(&staticSphere);
          // renderer->queueText(&text);
 			renderer->updateLight(deltaTime, &cam);

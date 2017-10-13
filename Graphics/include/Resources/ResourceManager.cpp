@@ -27,7 +27,7 @@ namespace Graphics
 		brfImporterHandler.loadFile(JUMPPAD, MODEL_PATH_STR("jumpPad.brf"), true, true, false, false);
 		brfImporterHandler.loadFile(ENEMYGRUNT, MODEL_PATH_STR("enemyGrunt.brf"), true, true, false, false);
 		brfImporterHandler.loadFile(GRAPPLEPOINT, MODEL_PATH_STR("grapplePoint.brf"), true, true, false, false);
-		brfImporterHandler.loadFile(GRASS, MODEL_PATH_STR("grass.brf"), true, true, false, false);
+		brfImporterHandler.loadFile(GRASS, MODEL_PATH_STR("grassfunctioning.brf"), true, true, false, false);
 		brfImporterHandler.loadFile(BUSH, MODEL_PATH_STR("bushgreen.brf"), true, true, false, false);
 
 

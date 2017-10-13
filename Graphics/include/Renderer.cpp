@@ -40,9 +40,14 @@ namespace Graphics
 #pragma endregion
 		, fog(device)
 		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
-        ,menu(device, deviceContext)
-        ,hud(device, deviceContext)
-		,ssaoRenderer(device)
+		, menu(device, deviceContext)
+		, hud(device, deviceContext)
+		, ssaoRenderer(device)
+#pragma region Foliage
+		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
+		, timeBuffer(device)
+
+#pragma endregion
 
 	{
 		this->device = device;
@@ -238,6 +243,11 @@ namespace Graphics
 		deviceContext->OMSetRenderTargets(4, rtvs, depthStencil);
 		
 		draw();
+
+		PROFILE_BEGIN("RenderFoliage");
+		drawFoliage(camera);
+		PROFILE_END();
+
 		skyRenderer.renderSky(deviceContext, camera);
 
 		ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
@@ -253,6 +263,8 @@ namespace Graphics
 		{
 			this->drawToBackbuffer(grid.getDebugSRV());
 		}
+
+
 
 #endif
 		//TEEEMP
@@ -314,6 +326,17 @@ namespace Graphics
         renderQueue.push_back(renderInfo);
     }
 
+	void Renderer::queueFoliageRender(FoliageRenderInfo * renderInfo)
+	{
+		if (renderFoliageQueue.size() > INSTANCE_CAP)
+		{
+			throw "Foliage renderer exceeded instance cap.";
+		}
+
+		renderFoliageQueue.push_back(renderInfo);
+	
+	}
+
     void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
     {
         if (debugInfo->points->size() > MAX_DEBUG_POINTS)
@@ -333,7 +356,6 @@ namespace Graphics
         hud.fillHUDInfo(info);
     }
 
-
     //void Graphics::Renderer::renderMenu(MenuInfo * info)
     //{
     //	this->spriteBatch->Begin();
@@ -344,8 +366,6 @@ namespace Graphics
     //	this->spriteBatch->End();
  //  
     //}
-
-
 
     void Renderer::cull()
     {
@@ -375,6 +395,45 @@ namespace Graphics
         }
         instanceSBuffer.unmap(deviceContext);
     }
+
+	void Renderer::drawFoliage(Camera * camera)
+	{
+		time++;
+		timeBuffer.write(deviceContext, &time, sizeof(time));
+
+		ID3D11Buffer *cameraBuffer = camera->getBuffer();
+		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
+		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
+
+		deviceContext->VSSetConstantBuffers(1, 1, timeBuffer);
+		deviceContext->RSSetState(states->CullNone());
+		deviceContext->OMSetRenderTargets(1, fakeBackBuffer, depthStencil);
+
+		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		UINT sampleMask = 0xffffffff;
+		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+
+		deviceContext->IASetInputLayout(foliageShader);
+		deviceContext->VSSetShader(foliageShader, nullptr, 0);
+		deviceContext->PSSetShader(foliageShader, nullptr, 0);
+
+		for (FoliageRenderInfo * info : renderFoliageQueue)
+		{
+			ModelInfo model = resourceManager.getModelInfo(info->meshId);
+
+			static UINT stride = sizeof(Vertex), offset = 0;
+			deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
+			deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			static ID3D11ShaderResourceView * modelTextures[1] = { nullptr };
+			modelTextures[0] = model.diffuseMap;
+			deviceContext->PSSetShaderResources(0, 1, modelTextures);
+
+			deviceContext->DrawIndexed((UINT)model.indexCount, 0, 0);
+		}
+
+		renderFoliageQueue.clear();
+	}
 
     void Renderer::draw()
     {

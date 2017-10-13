@@ -43,6 +43,14 @@ namespace Graphics
 		bool backFaceCulling = true;
 	};
 
+	struct FoliageRenderInfo
+	{
+		bool render;
+		ModelID meshId;
+		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = false;
+	};
+
     struct RenderDebugInfo
     {
         bool useDepth;
