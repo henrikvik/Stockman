@@ -42,13 +42,13 @@
 }
 {
 	"buttonName" : "MenuSettingsButton1";
-	"texture" : 0;
+	"texture" : 2;
 	"xPos" : 400.0f;
 	"yPos" : 300.0f;
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"yTexEnd" : 0.06484f;
     "activeOffset" : 0.0f;
 	"height" : 200.0f;
 	"width" : 200.0f;
@@ -56,13 +56,13 @@
 }
 {
 	"buttonName" : "MenuSettingsButton2";
-	"texture" : 0;
+	"texture" : 2;
 	"xPos" : 400.0f;
 	"yPos" : 600.0f;
-	"xTexStart" : 1.0f;
+	"xTexStart" : 0.0f;
 	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
 	"activeOffset" : 0.0f;
 	"height" : 200.0f;
 	"width" : 200.0f;
