@@ -234,9 +234,9 @@ namespace Graphics
 		};
 
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
-		deviceContext->VSSetConstantBuffers(2, 1, &lightBuffs[1]);
+		deviceContext->VSSetConstantBuffers(4, 1, &lightBuffs[1]);
 
-		deviceContext->PSSetConstantBuffers(4, 1, bulletTimeBuffer);
+		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
 
 		ID3D11RenderTargetView * rtvs[] =
 		{
@@ -250,6 +250,7 @@ namespace Graphics
 		
 		draw();
 
+		//The sky renderer uses the bullet time on register 3
 		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
 		skyRenderer.renderSky(deviceContext, camera);
 
