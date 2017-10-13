@@ -12,7 +12,7 @@
 	"Name" : "Settings";
 	"State" : 3;
 	"Background" : 1;
-	"buttonAmount" : 1;
+	"buttonAmount" : 2;
 
 	"button1" :  "MenuSettingsButton1";
 	"button2" :  "MenuSettingsButton2";
