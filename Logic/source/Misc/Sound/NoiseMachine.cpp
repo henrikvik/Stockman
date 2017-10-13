@@ -21,7 +21,7 @@ void NoiseMachine::init()
 	ERRCHECK(result);
 
 	// Initialize sounds
-	result = m_system->createSound(SOUND_SFX_PATH("test.wav"), FMOD_DEFAULT, 0, &m_sound);
+	result = m_system->createSound(SOUND_SFX_PATH("test.ogg"), FMOD_DEFAULT, 0, &m_sound);
 	ERRCHECK(result);
 }
 
@@ -51,7 +51,7 @@ void NoiseMachine::update()
 		// Gets the current playing sound
 		ERRCHECK(m_channel->getCurrentSound(&currentsound));
 
-		printf("FMOD_Info - IsPlaying: %d, IsPausing: %d, Current Sound Playing: %d.\n", playing, paused, currentsound);
+		printf("FMOD_Info - IsPlaying: %d, IsPausing: %d, Current Sound Playing: %p.\n", playing, paused, currentsound);
 	}
 }
 

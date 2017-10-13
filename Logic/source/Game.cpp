@@ -142,6 +142,9 @@ void Game::update(float deltaTime)
 			NoiseMachine::Get().update();
 			waveUpdater();
 
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K))
+				NoiseMachine::Get().playSound();
+
 			PROFILE_BEGIN("Player");
 			m_player->updateSpecific(m_gameTime.dt);
 			PROFILE_END();

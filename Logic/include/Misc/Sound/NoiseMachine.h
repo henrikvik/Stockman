@@ -7,6 +7,9 @@
 #include <iostream>
 #include <stdarg.h>
 
+#define SOUND_SFX_PATH(path) "Resources/Sound/SFX/" path
+#define SOUND_MUSIC_PATH(path) "Resources/Sound/Music/" path
+
 /* 
 
 	// if it eats up memory
