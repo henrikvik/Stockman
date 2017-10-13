@@ -3,8 +3,6 @@ using namespace Logic;
 
 #define ENEMIES_PATH_UPDATE_PER_FRAME 20
 #define FILE_ABOUT_WHALES "Enemies/Wave"
-#define DEBUG_ASTAR false
-#define DEBUG_PATH false
 
 #include <AI/EnemyTest.h>
 #include <AI/EnemyNecromancer.h>
@@ -216,22 +214,24 @@ void EntityManager::render(Graphics::Renderer &renderer)
 		for (Enemy *enemy : m_enemies[i])
 		{
 			enemy->render(renderer);
-			if (DEBUG_PATH)
-				enemy->debugRendering(renderer);
+#ifdef DEBUG_PATH	
+			enemy->debugRendering(renderer);
+#endif
 		}
 	}
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
-	#ifndef _DISABLE_RENDERING_DEAD_ENEMIES
+#ifndef DISABLE_RENDERING_DEAD_ENEMIES
 			m_deadEnemies[i]->render(renderer);
-	#endif
+#endif
 	}
 
 	m_triggerManager.render(renderer);
 
-	if (DEBUG_ASTAR)
+#ifdef DEBUG_ASTAR
 		AStar::singleton().renderNavigationMesh(renderer);
+#endif
 }
 
 int EntityManager::getCurrentWave() const 

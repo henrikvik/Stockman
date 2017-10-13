@@ -1,12 +1,11 @@
 #include <AI\Behavior\Behavior.h>
 #include <AI\Enemy.h>
 #include <Misc\RandomGenerator.h>
-#define MAX_SPEED 10.f // testing
 
 #define SCALAR_DIR 0.3f
 #define SCALAR_ALIGN 1.1f
-#define SCALAR_COHES 0.8f
-#define SCALAR_SEP 1.2f
+#define SCALAR_COHES 0.9f
+#define SCALAR_SEP 1.3f
 
 #define MAX_LEN_FOR_SEPERATION 7.5f
 
@@ -24,7 +23,7 @@ void Behavior::walkPath(SimplePathing pathing, RunIn &in)
 	btVector3 dir = node - in.enemy->getPositionBT();
 	
 	boidCalculations(in.enemy->getPositionBT(), 
-		dir, in.closeEnemies, MAX_SPEED, in.deltaTime);
+		dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
 	in.enemy->getRigidBody()->translate(dir);
 
@@ -47,7 +46,6 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 
 		cohes += enemy->getPositionBT();
 
-		// sep += enemy->getPositionBT() - pos; // to steer away
 		temp = pos - enemy->getPositionBT();
 		if (temp.length() < MAX_LEN_FOR_SEPERATION)
 		{
@@ -71,10 +69,9 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 
 	// RET
 	dir = dir * SCALAR_DIR + cohes * SCALAR_COHES + align * SCALAR_ALIGN + sep * SCALAR_SEP;
-	dir.normalize();
-	dir *= maxSpeed;
-	dir *= dt / 1000.f;
 	dir.setY(0); // right now y should not be changed
+	dir.normalize();
+	dir *= maxSpeed * (dt * 0.001f);
 }
 
 void Behavior::runTree(RunIn &in)

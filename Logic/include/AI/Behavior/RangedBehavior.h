@@ -10,6 +10,8 @@ namespace Logic
 	private:
 		SimplePathing m_path;
 		float m_distance;
+
+		static const int ABILITY_CHANCHE = 150;
 	public:
 		RangedBehavior();
 		virtual ~RangedBehavior() {}
@@ -24,8 +26,6 @@ namespace Logic
 		virtual void debugRendering(Graphics::Renderer &renderer);
 
 		SimplePathing getPath() const;
-
-		static const int ABILITY_CHANCHE = 150;
 	};
 }
 
