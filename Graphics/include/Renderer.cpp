@@ -118,6 +118,11 @@ namespace Graphics
 		hud.updateShake(deviceContext, deltaTime);
 	}
 
+	void Renderer::startShake(float radius, float duration)
+	{
+		hud.startShake(radius, duration);
+	}
+
 	void Renderer::render(Camera * camera)
 	{
 		menu.unloadTextures();
@@ -314,7 +319,7 @@ namespace Graphics
 
 		if (ks.G)
 		{
-			hud.startShake(30, 1000);
+			startShake(30, 1000);
 		}
 	}
 
@@ -345,20 +350,6 @@ namespace Graphics
     {
         hud.fillHUDInfo(info);
     }
-
-
-    //void Graphics::Renderer::renderMenu(MenuInfo * info)
-    //{
-    //	this->spriteBatch->Begin();
-    //	for (size_t i = 0; i < info->m_buttons.size(); i++)
-    //	{
-    //		/*this->spriteBatch->Draw(info->m_buttons.at(i)->m_texture, info->m_buttons.at(i)->m_rek);*/
-    //	}
-    //	this->spriteBatch->End();
- //  
-    //}
-
-
 
     void Renderer::cull()
     {
@@ -462,12 +453,6 @@ namespace Graphics
         deviceContext->PSSetShaderResources(0, 1, &srvNull);
     }
 
-    void Renderer::drawGUI()
-    {
-        
-        
-    }
-
     //draws the menu
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
@@ -475,11 +460,6 @@ namespace Graphics
         menu.drawMenu(device, deviceContext, info, backBuffer, transparencyBlendState);
 
     }
-
-    //creates a vetrex buffer for the GUI
-    
-
-	
 
 
     void Renderer::renderDebugInfo(Camera* camera)
