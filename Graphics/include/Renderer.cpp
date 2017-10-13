@@ -109,8 +109,6 @@ namespace Graphics
 
 		else amount = 0;
 
-		printf("%f\n", amount);
-
 		bulletTimeBuffer.write(deviceContext, &amount, sizeof(float));
 		PROFILE_END();
 	}
