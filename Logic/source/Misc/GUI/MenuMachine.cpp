@@ -189,7 +189,7 @@ void MenuMachine::update(float dt)
             m_highScoreName.erase(m_highScoreName.length() - 1, 1);
             deleteCharCD = 0.0f;
 		}
-		else if (tempChar != 0 && tempChar > 32 && tempChar < 122)
+		else if (tempChar != 0 && tempChar >= 32 && tempChar <= 122)
 		{
 			m_highScoreName += tempChar;
 		}
@@ -207,10 +207,10 @@ void MenuMachine::render(Graphics::Renderer &renderer)
 		DirectX::SimpleMath::Color(DirectX::Colors::White),
 		Graphics::Font::SMALL
 	};*/
-    if (currentActiveState == gameStateMenuSettings)
+    if (m_currentActiveState == gameStateMenuSettings)
     {
         std::wstring tempString = L"";
-        Graphics::ButtonInfo tempButton = currentActiveMenu->getMenuInfo().m_buttons.at(0);
+        Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
         DirectX::SimpleMath::Vector2 tempPos;
         //TODO tis is wierd. no magic number should be used
         tempPos.x = tempButton.m_rek.x +128;
