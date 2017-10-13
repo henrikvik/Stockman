@@ -22,6 +22,8 @@ namespace Graphics
 		GRAPPLEPOINT,
 		GRASS,
 		BUSH,
+		CLOUDS,
+		
     };
 
 	struct ModelInfo

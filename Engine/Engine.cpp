@@ -324,7 +324,7 @@ int Engine::run()
         //////////////TEMP/////////////////
         Graphics::RenderInfo staticSphere = {
             true, //bool render;
-            Graphics::ModelID::CUBE, //ModelID meshId;
+            Graphics::ModelID::CLOUDS, //ModelID meshId;
             0, //int materialId;
             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
         };
@@ -334,9 +334,15 @@ int Engine::run()
 			Graphics::ModelID::GRASS, //ModelID meshId;
 			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
 		};
+		Graphics::FoliageRenderInfo clouds = {
+			true, //bool render;
+			Graphics::ModelID::CLOUDS, //ModelID meshId;
+			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+		};
 
 		grass.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5);
-		staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(6, 2, 1) * DirectX::SimpleMath::Matrix::CreateTranslation({0, 2, 0}) * DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0, totalTime * 0.001f, totalTime * 0.001f);
+		clouds.translation = DirectX::SimpleMath::Matrix::CreateScale(10, 10, 10);//* DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 30, 0 });
+		//staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(6, 2, 1); // *DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 2, 0 }) * DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0, totalTime * 0.001f, totalTime * 0.001f);
 		
         Graphics::TextString text{
             L"The hills!",
@@ -351,8 +357,10 @@ int Engine::run()
         if (game.getState() == Logic::gameStateGame)
         {
 			renderer->queueFoliageRender(&grass);
+			renderer->queueFoliageRender(&clouds);
 
-         // renderer->queueRender(&staticSphere);
+
+         //renderer->queueRender(&staticSphere);
          // renderer->queueText(&text);
 			renderer->updateLight(deltaTime, &cam);
 
