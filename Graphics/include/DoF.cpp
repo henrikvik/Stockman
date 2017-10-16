@@ -1,24 +1,25 @@
 #include "DoF.h"
-#include <Engine\Constants.h>
-
-DoF::DoF(ID3D11Device * device)
+namespace Graphics
 {
+    DoF::DoF(ID3D11Device * device)
+    {
 
-    states = new DirectX::CommonStates(device);
-    samplers[0] = states->PointClamp();
-    samplers[1] = states->LinearClamp();
+        states = new DirectX::CommonStates(device);
+        samplers[0] = states->PointClamp();
+        samplers[1] = states->LinearClamp();
 
-}
+    }
 
-DoF::~DoF()
-{
-    SAFE_RELEASE(samplers[0]);
-    SAFE_RELEASE(samplers[1]);
-    delete states;
-}
+    DoF::~DoF()
+    {
+        SAFE_RELEASE(samplers[0]);
+        SAFE_RELEASE(samplers[1]);
+        delete states;
+    }
 
-void DoF::DoFRender(ID3D11DeviceContext * context, ShaderResource * colorBuffer, DepthStencil * depthBuffer, ShaderResource * outputBuffer)
-{
+    void DoF::DoFRender(ID3D11DeviceContext * context, ShaderResource * colorBuffer, DepthStencil * depthBuffer, ShaderResource * outputBuffer)
+    {
 
 
+    }
 }
