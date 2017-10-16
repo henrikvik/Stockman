@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\DoF.cpp" />
     <ClCompile Include="include\Animation\Animation.cpp" />
     <ClCompile Include="include\Animation\Joint.cpp" />
     <ClCompile Include="include\Animation\JointTransform.cpp" />
@@ -45,6 +46,7 @@
     <ClCompile Include="include\SkyRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DoF.h" />
     <ClInclude Include="include\Animation\AnimatedTestCube.h" />
     <ClInclude Include="include\Animation\AnimatedVertex.h" />
     <ClInclude Include="include\Animation\Animation.h" />
