@@ -64,12 +64,13 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mWidth = width;
 	this->hInstance = hInstance;
 	this->initializeWindow();
-	this->game.init();
 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
 	this->mMouse->SetWindow(window);
+
+	this->game.init();
 
 }
 
@@ -354,6 +355,18 @@ int Engine::run()
             renderer->render(&cam);
 			PROFILE_END();
         }
+
+		if (game.getState() == Logic::gameStateGameUpgrade)
+		{
+			renderer->updateLight(deltaTime, &cam);
+
+			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
+			renderer->render(&cam);
+			PROFILE_END();
+
+			game.menuRender(renderer);
+		}
+
 		 
 		g_Profiler->poll();
 

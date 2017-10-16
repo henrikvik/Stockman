@@ -67,6 +67,8 @@ namespace Logic
 
 		void gameRunTimeRender(Graphics::Renderer & renderer);
 
+		void menuRender(Graphics::Renderer * renderer);
+
 		DirectX::SimpleMath::Vector3 getPlayerForward();
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
 

@@ -37,7 +37,7 @@ namespace Logic
 		bool m_typing;
 	public:
 		MenuMachine();
-		MenuMachine(string* highScoreNamePTR);
+		MenuMachine(std::string* highScoreNamePTR);
 		~MenuMachine();
 		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout

@@ -35,7 +35,7 @@
 {
 	"Name" : "GameCardUpgrade";
 	"State" : 6;
-	"Background" : 2;
+	"Background" : -1;
 	"buttonAmount" : 3;
 
 	"button1" : "CardUpgradeButton1";

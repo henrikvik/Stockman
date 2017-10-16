@@ -5,6 +5,8 @@
 #include <Keyboard.h>
 #include <Engine\Typing.h>
 
+#include <Engine\Profiler.h>
+
 #define TRANSITION_TIME 400
 
 using namespace Logic;
@@ -20,7 +22,7 @@ MenuMachine::MenuMachine()
 	m_forward = true;
 }
 
-MenuMachine::MenuMachine(string* highScoreNamePTR)
+MenuMachine::MenuMachine(std::string* highScoreNamePTR)
 {
 	m_pressed = false;
 	m_currentActiveMenu = nullptr;
@@ -116,7 +118,7 @@ void MenuMachine::clear()
 
 void MenuMachine::update(float dt)
 {
-	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+	PROFILE_BEGIN("Menu");
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
 	if (Mouse.leftButton && !m_pressed && !m_typing)
@@ -170,10 +172,12 @@ void MenuMachine::update(float dt)
 			m_highScoreName += tempChar;
 		}
 	}
+	PROFILE_END();
 }
 
 void MenuMachine::render(Graphics::Renderer &renderer)
 {
+	PROFILE_BEGIN("Menu Render");
 	/*std::wstring tempSTR(m_highScoreName.length(), L'');
 	std::copy(m_highScoreName.begin(), m_highScoreName.end(), tempSTR.begin());
 	Graphics::TextString text
@@ -187,6 +191,7 @@ void MenuMachine::render(Graphics::Renderer &renderer)
     Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
 
     renderer.drawMenu(&temp);
+	PROFILE_END();
 }
 
 //Switches the currentState used 
@@ -194,6 +199,14 @@ void MenuMachine::showMenu(GameState state)
 {
 	if (m_menuStates.find(state) != m_menuStates.end())
 	{
+		if (state != gameStateGame)
+		{
+			DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+		}
+		else
+		{
+
+		}
 		m_currentActiveMenu = m_menuStates.at(state);
 		m_currentActiveState = state;
 	}

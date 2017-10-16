@@ -29,7 +29,7 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
     active = info;
     loadTextures(device, contex);
     float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-    contex->ClearRenderTargetView(backBuffer, clearColor);
+    //contex->ClearRenderTargetView(backBuffer, clearColor);
 
     UINT stride = sizeof(Graphics::TriangleVertex), offset = 0;
     contex->IASetVertexBuffers(0, 1, &menuQuad, &stride, &offset);
@@ -40,14 +40,19 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
     contex->PSSetShader(shader, nullptr, 0);
     auto sampler = states->PointWrap();
     contex->PSSetSamplers(0, 1, &sampler);
-    contex->PSSetShaderResources(0, 1, &menuTexture[active->m_menuTexture]);
+    
 
     float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
     UINT sampleMask = 0xffffffff;
     contex->OMSetBlendState(blendState, blendFactor, sampleMask);
     contex->OMSetRenderTargets(1, &backBuffer, nullptr);
 
-    contex->Draw(6, 0);
+	if (active->m_menuTexture != -1)
+	{
+		contex->PSSetShaderResources(0, 1, &menuTexture[active->m_menuTexture]);
+		contex->Draw(6, 0);
+	}
+    
 
     contex->PSSetShaderResources(0, 1, &buttonTexture[active->m_buttons.at(0).textureIndex]);
     for (size_t i = 0; i < info->m_buttons.size(); i++)

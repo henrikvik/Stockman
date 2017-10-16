@@ -45,10 +45,6 @@ void Game::init()
 
 	m_highScoreManager->setName(name);
 
-	// Initializing Menu's
-	m_menu = newd MenuMachine(m_highScoreManager->getName());
-	m_menu->initialize(STARTING_STATE); 
-
 	// Initializing the map
 	m_map = newd Map();
 	m_map->init(m_physics);
@@ -70,6 +66,10 @@ void Game::init()
 	// Resetting Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
+
+	// Initializing Menu's
+	m_menu = newd MenuMachine(m_highScoreManager->getName());
+	m_menu->initialize(STARTING_STATE);
 }
 
 void Game::clear()
@@ -131,21 +131,20 @@ void Game::update(float deltaTime)
 	case gameStateGame:
 		if (m_menu->getStateToBe() != GameState::gameStateDefault)
 		{
-			PROFILE_BEGIN("Menu");
 			m_menu->update(m_gameTime.dt);
-			PROFILE_END();
 			break;
 		}
 		else
 		{
+			DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
+			DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
 			gameRunTime(deltaTime);
 		}
 
 		break;
 	case gameStateGameUpgrade:
-		PROFILE_BEGIN("Menu");
 		m_menu->update(m_gameTime.dt);
-		PROFILE_END();
+
 		if (m_menu->getStateToBe() != GameState::gameStateDefault)
 		{
 			break;
@@ -229,8 +228,8 @@ void Game::render(Graphics::Renderer& renderer)
 
 	case gameStateGameUpgrade:
 		gameRunTimeRender(renderer);
-		m_menu->render(renderer);
 		break;
+
 	case gameStateLoading:
 	case gameStateMenuMain:
 	case gameStateMenuSettings:
@@ -243,7 +242,9 @@ void Game::render(Graphics::Renderer& renderer)
 
 void Game::gameRunTimeRender(Graphics::Renderer& renderer)
 {
+	PROFILE_BEGIN("Player Render");
 	m_player->render(renderer);
+	PROFILE_END();
 
 	PROFILE_BEGIN("Render Map");
 	m_map->render(renderer);
@@ -256,6 +257,11 @@ void Game::gameRunTimeRender(Graphics::Renderer& renderer)
 	PROFILE_BEGIN("Render Projectiles");
 	m_projectileManager->render(renderer);
 	PROFILE_END();
+}
+
+void Logic::Game::menuRender(Graphics::Renderer * renderer)
+{
+	m_menu->render(*renderer);
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()
