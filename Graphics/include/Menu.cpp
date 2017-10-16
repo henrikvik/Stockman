@@ -1,13 +1,15 @@
 #include "Menu.h"
 #include <WICTextureLoader.h>
+#include <Engine\Profiler.h>
 
 Graphics::Menu::Menu(ID3D11Device * device, ID3D11DeviceContext * contex)
     : shader(device, SHADER_PATH("MenuShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA } })
 {
-    this->active = nullptr;
+    this->active = MenuInfo();
     this->loaded = false;
     this->states = new DirectX::CommonStates(device);
 
+    buttonsMaped = false;
     createVBuffers(device);
 }
 Graphics::Menu::~Menu()
@@ -26,9 +28,13 @@ Graphics::Menu::~Menu()
 
 void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * contex, Graphics::MenuInfo * info, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState)
 {
-    active = info;
+    active = *info;
     loadTextures(device, contex);
-    float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    //float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    if (buttonsMaped && active.m_menuTexture != -1)
+    {
+        buttonsMaped = false;
+    }
     //contex->ClearRenderTargetView(backBuffer, clearColor);
 
     static UINT stride = sizeof(Graphics::TriangleVertex), offset = 0;
@@ -47,16 +53,20 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
     contex->OMSetBlendState(blendState, blendFactor, sampleMask);
     contex->OMSetRenderTargets(1, &backBuffer, nullptr);
 
-	if (active->m_menuTexture != -1)
+	if (active.m_menuTexture != -1)
 	{
-		contex->PSSetShaderResources(0, 1, &menuTexture[active->m_menuTexture]);
+		contex->PSSetShaderResources(0, 1, &menuTexture[active.m_menuTexture]);
 		contex->Draw(6, 0);
 	}
     
 
-    contex->PSSetShaderResources(0, 1, &buttonTexture[active->m_buttons.at(0).textureIndex]);
-  
-    mapButtons(contex, info);
+    contex->PSSetShaderResources(0, 1, &buttonTexture[active.m_buttons.at(0).textureIndex]);
+    if (!buttonsMaped)
+    {
+        mapButtons(contex, info);
+        buttonsMaped = true;
+    }
+    
         
    
     contex->IASetVertexBuffers(0, 1, &buttonQuad, &stride, &offset);
@@ -86,13 +96,13 @@ void Graphics::Menu::loadTextures(ID3D11Device * device, ID3D11DeviceContext * c
 
 void Graphics::Menu::unloadTextures()
 {
-    if (loaded == true)
+    if (loaded == true && active.m_menuTexture != -1)
     {
         SAFE_RELEASE(buttonTexture[0]);
         SAFE_RELEASE(buttonTexture[1]);
         SAFE_RELEASE(menuTexture[0]);
-        //SAFE_RELEASE(menuTexture[1]);
-        //SAFE_RELEASE(menuTexture[2]);
+        SAFE_RELEASE(menuTexture[1]);
+        SAFE_RELEASE(menuTexture[2]);
         SAFE_RELEASE(menuTexture[3]);
         loaded = false;
     }
@@ -131,28 +141,6 @@ void Graphics::Menu::mapButtons(ID3D11DeviceContext * contex, Graphics::MenuInfo
         };
         buttonIndex++;
     }
-    //moves the buttons to ndc space
-    //TriangleVertex triangleVertices[6] =
-    //{
-    //    2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)(WIN_HEIGHT - info->m_rek.y - info->m_rek.height) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
-    //    info->m_texCoordEnd.x, info->m_texCoordEnd.y,
-
-    //    2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v1
-    //    info->m_texCoordStart.x, info->m_texCoordEnd.y,
-
-    //    2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
-    //    info->m_texCoordStart.x,  info->m_texCoordStart.y,
-
-    //    //t2
-    //    2 * ((float)(info->m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
-    //    info->m_texCoordStart.x, info->m_texCoordStart.y,
-
-    //    2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height + info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
-    //    info->m_texCoordEnd.x, info->m_texCoordStart.y,
-
-    //    2 * ((float)((info->m_rek.x + info->m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info->m_rek.y - info->m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f, //v0
-    //    info->m_texCoordEnd.x, info->m_texCoordEnd.y,
-    //};
 
     D3D11_MAPPED_SUBRESOURCE data = { 0 };
     ThrowIfFailed(contex->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
