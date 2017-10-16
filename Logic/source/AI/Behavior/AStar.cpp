@@ -35,7 +35,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
 {
-	PROFILE_BEGIN("AStar::getPath()");
+	// PROFILE_BEGIN("AStar::getPath()");
 
 	// all nodes in navMesh
 	std::vector<DirectX::SimpleMath::Vector3> nodes =
@@ -121,7 +121,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 		return {};
 	}
 
-	PROFILE_END();
+	// PROFILE_END();
 	return reconstructPath(currentNode);
 }
 

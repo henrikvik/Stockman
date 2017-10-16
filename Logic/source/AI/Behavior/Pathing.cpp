@@ -8,13 +8,16 @@ Pathing::Pathing()
 	m_debugInfo.points = nullptr;
 }
 
+Pathing::~Pathing()
+{
+	if (m_debugInfo.points)
+		delete m_debugInfo.points;
+}
+
 void Pathing::setPath(std::vector<const DirectX::SimpleMath::Vector3*> const &path)
 {
 	m_currentNode = 0;
 	m_path = path;
-
-	if (m_debugInfo.points)
-		delete m_debugInfo.points;
 }
 
 std::vector<const DirectX::SimpleMath::Vector3*>& Logic::Pathing::getPath()
@@ -56,7 +59,12 @@ void Pathing::initDebugRendering()
 	m_debugInfo.points = new std::vector<DirectX::SimpleMath::Vector3>();
 }
 
-void Pathing::renderDebugging(Graphics::Renderer &renderer)
+void Pathing::renderDebugging(Graphics::Renderer &renderer, DirectX::SimpleMath::Vector3 &start)
 {
+	m_debugInfo.points->clear();
+	m_debugInfo.points->push_back(start);
+	for (int i = 0; i < m_path.size(); i++) // this is slow, but debugging should not be when efficiency is required 
+		m_debugInfo.points->push_back(*m_path[i]);
+
 	renderer.queueRenderDebug(&m_debugInfo);
 }

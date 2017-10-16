@@ -17,6 +17,9 @@ namespace Logic
 		Graphics::RenderDebugInfo m_debugInfo;
 	public:
 		Pathing();
+		Pathing(Pathing const &other) = delete;
+		Pathing* operator=(Pathing const &other) = delete;
+		virtual ~Pathing();
 
 		void setPath(std::vector <const DirectX::SimpleMath::Vector3*> const &path);
 		std::vector<const DirectX::SimpleMath::Vector3*>& getPath();
@@ -30,7 +33,7 @@ namespace Logic
 
 		// debugging - move to a debug render class or something maybe ty
 		void initDebugRendering();
-		void renderDebugging(Graphics::Renderer &renderer);
+		void renderDebugging(Graphics::Renderer &renderer, DirectX::SimpleMath::Vector3 &startPosition);
 	};
 }
 

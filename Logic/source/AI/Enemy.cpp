@@ -67,7 +67,7 @@ void Enemy::debugRendering(Graphics::Renderer & renderer)
 {
 	if (m_behavior)
 	{
-		m_behavior->getPath().renderDebugging(renderer);
+		m_behavior->getPath().renderDebugging(renderer, getPosition());
 	}
 }
 

@@ -53,12 +53,15 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 	for (int i = 0; i < m_enemies.size(); i++)
 	{
-		if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) {
-			updateEnemies(i, player, deltaTime);
-		}
-		else
+		if (m_enemies[i].size() > 0)
 		{
-			updateEnemiesAndPath(i, player, deltaTime);
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) {
+				updateEnemies(i, player, deltaTime);
+			}
+			else
+			{
+				updateEnemiesAndPath(i, player, deltaTime);
+			}
 		}
 	}
 
@@ -96,14 +99,17 @@ void EntityManager::updateEnemiesAndPath(int index, Player const &player, float 
 		updateEnemy(enemy, index, player, deltaTime);
 
 		newIndex = AStar::singleton().getIndex(*enemy);
-		if (newIndex != -1 && newIndex != index)
+		if (newIndex != -1 && newIndex != index) // this will be optimized in future
 		{
 			m_enemies[newIndex].push_back(enemy);
 			std::swap(m_enemies[index][i],
 				m_enemies[index][m_enemies[index].size() - 1]);
 			m_enemies[index].pop_back();
-			enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
 		}	
+		else
+		{
+			enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
+		}
 	}
 }
 
@@ -145,8 +151,8 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 		// just temp test values as of now, better with no random spawns?
 		// should atleast check if spawn area is a walkable area
 		// using nav mesh that would be easy but not trivial
-		pos = { generator.getRandomFloat(0, 100), generator.getRandomFloat(10, 15),
-				generator.getRandomFloat(0, 100) };
+		pos = { generator.getRandomFloat(-5, 5), generator.getRandomFloat(10, 25),
+				generator.getRandomFloat(-5, 5) };
 
 		spawnEnemy(static_cast<Enemy::ENEMY_TYPE> (entity), pos, {}, physics, projectiles);
 	}
@@ -183,15 +189,15 @@ void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
 	enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0.f, 3.f, 0.f });
 	enemy->setProjectileManager(projectiles);
 
+#ifdef DEBUG_PATH
+	enemy->getBehavior()->getPath().initDebugRendering(); // todo change to enemy->initDebugPath()
+#endif
+
 	index = AStar::singleton().getIndex(*enemy);
 	if (index == -1)
 		m_enemies[0].push_back(enemy);
 	else
 		m_enemies[index].push_back(enemy);
-
-#ifndef DEBUG_PATH
-	enemy->getBehavior()->getPath().initDebugRendering(); // todo change to enemy->initDebugPath()
-#endif
 }
 
 void EntityManager::spawnTrigger(int id, btVector3 const &pos,
