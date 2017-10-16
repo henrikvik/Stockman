@@ -1,52 +1,38 @@
 #ifndef NOISESTRUCTS_H
-#define NOISESTRUCTS
+#define NOISESTRUCTS_H
 
 struct THRESHOLD
 {
-	static const int MAX_CHANNELS = 1000;
-	static const int MAX_GROUPS = 3;
-	static const int MAX_SFX = 32;
-	static const int MAX_SONGS = 32;
+	static const int MAX_CHANNELS	= 1000;
+	static const int MAX_GROUPS		= 4;
+	static const int MAX_SFX		= 32;
+	static const int MAX_SONGS		= 32;
 };
 
-enum CHANNEL_GROUP {
+enum CHANNEL_GROUP 
+{
+	CHANNEL_MASTER,
 	CHANNEL_SFX,
 	CHANNEL_MUSIC,
 	CHANNEL_AMBIENT
 };
 
-enum SFX {
+enum SFX 
+{
 	TEST
 };
 
-enum MUSIC {
-	BOOM
-};
-
-struct SoundSettings
+enum MUSIC 
 {
-	SoundSettings()
-	{
-		volume[CHANNEL_SFX]		= 1.f;
-		volume[CHANNEL_MUSIC]	= 1.f;
-		volume[CHANNEL_AMBIENT] = 1.f;
-		pitch[CHANNEL_SFX]		= 1.f;
-		pitch[CHANNEL_MUSIC]	= 1.f;
-		pitch[CHANNEL_AMBIENT]	= 1.f;
-	}
-
-	float pitch[THRESHOLD::MAX_CHANNELS];	//< Between 0:1
-	float volume[THRESHOLD::MAX_CHANNELS];	//< Between 0:1
+	BOOM
 };
 
 struct Sound
 {
 	Sound() : channel(nullptr), data(nullptr), group(CHANNEL_GROUP(0)) { }
 
-	void setVolume(float vol)	{	channel->setVolume(vol);	}
-	void setPitch(float pitch)	{ 	channel->setPitch(pitch);	}
-	void set3DAttributes(FMOD_VECTOR pos, FMOD_VECTOR vel) 	{ 	channel->set3DAttributes(&pos, &vel); 	}
-
+	FMOD_VECTOR		pos;
+	FMOD_VECTOR		vel;
 	FMOD::Channel*	channel;
 	FMOD::Sound*	data;
 	CHANNEL_GROUP	group;

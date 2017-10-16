@@ -70,7 +70,7 @@ void Game::init()
 	ComboMachine::Get().Reset();
 
 	// Initializing Sound
-	NoiseMachine::Get().init(SoundSettings());
+	NoiseMachine::Get().init();
 }
 
 void Game::clear()
@@ -139,6 +139,10 @@ void Game::update(float deltaTime)
 		}
 		else
 		{
+
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L))
+				NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_SFX, 0);
+
 			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K))
 				NoiseMachine::Get().playSFX(SFX::TEST);
 

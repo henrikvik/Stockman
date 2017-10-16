@@ -3,11 +3,8 @@
 using namespace Logic;
 
 // Initializes all sound system & sounds into memory
-void NoiseMachine::init(SoundSettings settings)
+void NoiseMachine::init()
 {
-	// Saves the settings
-	m_settings = settings;
-
 	// Creates a empty system
 	FMOD_RESULT result;
 	ERRCHECK(FMOD::System_Create(&m_system));
@@ -28,6 +25,7 @@ void NoiseMachine::init(SoundSettings settings)
 //	m_system->set3DSettings();
 
 	// Initialize sounds
+	initGroups();
 	initSFX();
 	initMusic();
 }
@@ -78,34 +76,49 @@ void NoiseMachine::update(ListenerData& listener)
 	DEBUG_SOUND(m_sfx[SFX::TEST]);
 }
 
-// Play a specific sound effect
+// Play a specific sound effect, if overdrive is true, then it will play sound over an already playing sound
 void NoiseMachine::playSFX(SFX sfx, bool overdrive)
 {
-	play(m_sfx[sfx], overdrive);
+	checkIfPlay(m_sfx[sfx], overdrive);
 }
 
-// Play a specific music piece
+// Play a specific music piece, if overdrive is true, then it will play music over an already playing music, (pretty much a restart of the song)
 void NoiseMachine::playMusic(MUSIC music, bool overdrive)
 {
-	play(m_music[music], overdrive);
+	checkIfPlay(m_music[music], overdrive);
 }
 
-void NoiseMachine::play(Sound * sound, bool overdrive)
+void NoiseMachine::checkIfPlay(Sound * sound, bool overdrive)
 {
 	if (overdrive)
-		ERRCHECK(m_system->playSound(sound->data, 0, false, &sound->channel));
+		play(sound);
 	else
 	{
-		bool playing = false;
-
 		// Checking if channel is currently playing something
+		bool playing = false;
 		if (sound->channel)
 			ERRCHECK(sound->channel->isPlaying(&playing));
 
 		// If not playing sound, play sound
 		if (!playing)
-			ERRCHECK(m_system->playSound(sound->data, 0, false, &sound->channel));
+			play(sound);
 	}
+}
+
+void NoiseMachine::play(Sound* sound)
+{
+	ERRCHECK(m_system->playSound(sound->data, m_group[sound->group], false, &sound->channel));
+}
+
+void NoiseMachine::initGroups()
+{
+	// Setting speicific groups
+	ERRCHECK(m_system->createChannelGroup("SFX",		&m_group[CHANNEL_GROUP::CHANNEL_SFX]));
+	ERRCHECK(m_system->createChannelGroup("MUSIC",		&m_group[CHANNEL_GROUP::CHANNEL_MUSIC]));
+	ERRCHECK(m_system->createChannelGroup("AMBIENT",	&m_group[CHANNEL_GROUP::CHANNEL_AMBIENT]));
+
+	// Setting master group
+	ERRCHECK(m_system->getMasterChannelGroup(&m_group[CHANNEL_GROUP::CHANNEL_MASTER]));
 }
 
 // Initialize all sound effects
@@ -114,6 +127,7 @@ void NoiseMachine::initSFX()
 	// Setting full array as nullptr
 	for (int i = 0; i < THRESHOLD::MAX_SFX; i++) m_sfx[i] = nullptr;
 
+	// Init all the sfx here
 	ERRCHECK(createSound(SFX::TEST, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D));
 }
 
@@ -123,6 +137,7 @@ void NoiseMachine::initMusic()
 	// Setting full array as nullptr
 	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) m_music[i] = nullptr;
 
+	// Init all the music here
 }
 
 // Allocates a specific sound effect into memory
@@ -145,6 +160,18 @@ FMOD_RESULT NoiseMachine::createSound(MUSIC music, CHANNEL_GROUP group, std::str
 	return result;
 }
 
+// Altering the volume for all sounds in the group (Not optimized, but should only be called from the settings anyway.)
+void NoiseMachine::setGroupVolume(CHANNEL_GROUP group, float inVolume)
+{
+	m_group[group]->setVolume(inVolume);
+}
+
+// Altering the pitch for all sounds in group (Not optimized, but should only be called from the settings anyway.)
+void NoiseMachine::setGroupPitch(CHANNEL_GROUP group, float inPitch)
+{
+	m_group[group]->setPitch(inPitch);
+}
+
 void NoiseMachine::DEBUG_SOUND(Sound* sound)
 {
 	if (sound->channel)
@@ -153,10 +180,6 @@ void NoiseMachine::DEBUG_SOUND(Sound* sound)
 		FMOD::Sound*	currentsound = 0;
 		bool			playing = 0;
 		bool			paused = 0;
-
-		// Setting settings
-		sound->setVolume(m_settings.volume[sound->group]);
-		sound->setPitch(m_settings.pitch[sound->group]);
 
 		// Checks if channel is playing
 		result = sound->channel->isPlaying(&playing);

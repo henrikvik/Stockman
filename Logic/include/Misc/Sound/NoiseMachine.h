@@ -24,20 +24,25 @@ namespace Logic
 			return noiceMachine;
 		}
 
-		void init(SoundSettings settings);
+		void init();
 		void clear();
 		void update(ListenerData& listener);
 
 		void playSFX(SFX sfx, bool overdrive = false);
 		void playMusic(MUSIC music, bool overdrive = false);
 
+		void setGroupVolume(CHANNEL_GROUP group, float inVolume);
+		void setGroupPitch(CHANNEL_GROUP group, float inPitch);
+
 	private:
 
 		// Initializing
+		void initGroups();
 		void initSFX();
 		void initMusic();
 
-		void play(Sound* sound, bool overdrive);
+		void checkIfPlay(Sound* sound, bool overdrive);
+		void play(Sound* sound);
 
 		FMOD_RESULT createSound(SFX sfx, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
 		FMOD_RESULT createSound(MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
@@ -46,11 +51,11 @@ namespace Logic
 		void DEBUG_SOUND(Sound* sound);
 		void CRASH_EVERYTHING(const char *format, ...);
 		void ERRCHECK(FMOD_RESULT result);
-
-		SoundSettings	m_settings;
-		FMOD::System*	m_system;
-		Sound*			m_sfx[THRESHOLD::MAX_SFX];
-		Sound*			m_music[THRESHOLD::MAX_SONGS];
+;
+		FMOD::System*		m_system;
+		FMOD::ChannelGroup*	m_group[THRESHOLD::MAX_GROUPS];
+		Sound*				m_sfx[THRESHOLD::MAX_SFX];
+		Sound*				m_music[THRESHOLD::MAX_SONGS];
 	};
 }
 
