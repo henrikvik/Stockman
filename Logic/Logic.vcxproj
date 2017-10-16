@@ -173,6 +173,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\Behavior\Pathing\Pathing.h" />
     <ClInclude Include="include\AI\EnemyNecromancer.h" />
     <ClInclude Include="include\AI\Behavior\AStar.h" />
     <ClInclude Include="include\AI\Behavior\TestBehavior.h" />
@@ -225,16 +226,19 @@
     <ClInclude Include="include\Map.h" />
     <ClInclude Include="include\Entity\Upgrade.h" />
     <ClInclude Include="include\Entity\StatusManager.h" />
-    <ClInclude Include="include\AI\Behavior\SimplePathing.h" />
+    <ClInclude Include="include\AI\Behavior\Pathing\PathingChase.h" />
     <ClInclude Include="include\AI\Behavior\RangedBehavior.h" />
     <ClInclude Include="include\Entity\PhysicsObject.h" />
     <ClInclude Include="include\Entity\StaticObject.h" />
+    <ClInclude Include="include\AI\Behavior\Pathing\PathingFlank.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Behavior\Pathing\Pathing.cpp" />
+    <ClCompile Include="source\AI\Behavior\Pathing\PathingFlank.cpp" />
     <ClCompile Include="source\AI\Behavior\Behavior.cpp" />
     <ClCompile Include="source\AI\Behavior\RangedBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyNecromancer.cpp" />
-    <ClCompile Include="source\AI\Behavior\SimplePathing.cpp" />
+    <ClCompile Include="source\AI\Behavior\Pathing\PathingChase.cpp" />
     <ClCompile Include="source\AI\Behavior\AStar.cpp" />
     <ClCompile Include="source\AI\Behavior\TestBehavior.cpp" />
     <ClCompile Include="source\AI\Behavior\NavigationMesh.cpp" />
