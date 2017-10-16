@@ -73,7 +73,7 @@ void NoiseMachine::update(ListenerData& listener)
 	/* 
 		Remove this
 	*/
-	DEBUG_SOUND(m_sfx[SFX::TEST]);
+//	DEBUG_SOUND(m_sfx[SFX::TEST]);
 }
 
 // Play a specific sound effect, if overdrive is true, then it will play sound over an already playing sound
@@ -97,7 +97,13 @@ void NoiseMachine::checkIfPlay(Sound * sound, bool overdrive)
 		// Checking if channel is currently playing something
 		bool playing = false;
 		if (sound->channel)
-			ERRCHECK(sound->channel->isPlaying(&playing));
+		{
+			FMOD_RESULT result = sound->channel->isPlaying(&playing);
+			if ((result != FMOD_OK) && (result != FMOD_ERR_INVALID_HANDLE) && (result != FMOD_ERR_CHANNEL_STOLEN))
+			{
+				ERRCHECK(result);
+			}
+		}
 
 		// If not playing sound, play sound
 		if (!playing)
@@ -170,6 +176,22 @@ void NoiseMachine::setGroupVolume(CHANNEL_GROUP group, float inVolume)
 void NoiseMachine::setGroupPitch(CHANNEL_GROUP group, float inPitch)
 {
 	m_group[group]->setPitch(inPitch);
+}
+
+// Returns the current group volume
+float NoiseMachine::getGroupVolume(CHANNEL_GROUP group)
+{
+	float vol;
+	ERRCHECK(m_group[group]->getVolume(&vol));
+	return vol;
+}
+
+// Returns the current group pitch
+float NoiseMachine::getGroupPitch(CHANNEL_GROUP group)
+{
+	float pitch;
+	ERRCHECK(m_group[group]->getPitch(&pitch));
+	return pitch;
 }
 
 void NoiseMachine::DEBUG_SOUND(Sound* sound)

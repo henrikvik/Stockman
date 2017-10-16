@@ -34,6 +34,9 @@ namespace Logic
 		void setGroupVolume(CHANNEL_GROUP group, float inVolume);
 		void setGroupPitch(CHANNEL_GROUP group, float inPitch);
 
+		float getGroupVolume(CHANNEL_GROUP group);
+		float getGroupPitch(CHANNEL_GROUP group);
+
 	private:
 
 		// Initializing

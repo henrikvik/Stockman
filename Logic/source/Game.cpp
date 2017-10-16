@@ -139,12 +139,9 @@ void Game::update(float deltaTime)
 		}
 		else
 		{
-
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L))
-				NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_SFX, 0);
-
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K))
-				NoiseMachine::Get().playSFX(SFX::TEST);
+			/* Temp sound testing */
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K)) NoiseMachine::Get().playSFX(SFX::TEST);
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L)) NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MASTER, 0);
 
 			ComboMachine::Get().Update(deltaTime);
 			waveUpdater();
