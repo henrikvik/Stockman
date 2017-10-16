@@ -47,15 +47,15 @@ namespace Logic
 		FMOD_RESULT createSound(SFX sfx, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
 		FMOD_RESULT createSound(MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
 
-		// Debugging and Errors
-		void DEBUG_SOUND(Sound* sound);
-		void CRASH_EVERYTHING(const char *format, ...);
-		void ERRCHECK(FMOD_RESULT result);
-;
 		FMOD::System*		m_system;
 		FMOD::ChannelGroup*	m_group[THRESHOLD::MAX_GROUPS];
 		Sound*				m_sfx[THRESHOLD::MAX_SFX];
 		Sound*				m_music[THRESHOLD::MAX_SONGS];
+
+		// Debugging and Errors
+		void DEBUG_SOUND(Sound* sound);
+		void CRASH_EVERYTHING(const char *format, ...);
+		void ERRCHECK(FMOD_RESULT result);
 	};
 }
 

@@ -17,16 +17,19 @@ enum CHANNEL_GROUP
 	CHANNEL_AMBIENT
 };
 
+// Put all identifier for sfx here
 enum SFX 
 {
 	TEST
 };
 
+// Put all identifier for music here
 enum MUSIC 
 {
 	BOOM
 };
 
+// Keeps track of everything about a specific sound
 struct Sound
 {
 	Sound() : channel(nullptr), data(nullptr), group(CHANNEL_GROUP(0)) { }
@@ -38,6 +41,7 @@ struct Sound
 	CHANNEL_GROUP	group;
 };
 
+// The "Ears"
 struct ListenerData
 {
 	ListenerData() : id(0), vel({ 0.f, 1.f, 0.f }), up({ 0.f, 1.f, 0.f }), forward({ 0.f, 0.f, 1.f }), pos({ 0.f, 0.f, 0.f }) { }
