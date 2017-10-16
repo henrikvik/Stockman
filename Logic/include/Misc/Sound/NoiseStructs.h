@@ -20,13 +20,13 @@ enum CHANNEL_GROUP
 // Put all identifier for sfx here
 enum SFX 
 {
-	TEST
+	BOING
 };
 
 // Put all identifier for music here
 enum MUSIC 
 {
-	BOOM
+	NES
 };
 
 // Keeps track of everything about a specific sound

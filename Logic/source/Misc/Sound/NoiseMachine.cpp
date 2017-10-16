@@ -135,7 +135,7 @@ void NoiseMachine::initSFX()
 	for (int i = 0; i < THRESHOLD::MAX_SFX; i++) m_sfx[i] = nullptr;
 
 	// Init all the sfx here
-	ERRCHECK(createSound(SFX::TEST, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D));
+	ERRCHECK(createSound(SFX::BOING, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D));
 }
 
 // Initialize all music pieces
@@ -145,6 +145,7 @@ void NoiseMachine::initMusic()
 	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) m_music[i] = nullptr;
 
 	// Init all the music here
+	ERRCHECK(createSound(MUSIC::NES, CHANNEL_GROUP::CHANNEL_MUSIC, "music.ogg", FMOD_2D));
 }
 
 // Allocates a specific sound effect into memory
