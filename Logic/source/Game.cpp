@@ -160,6 +160,18 @@ void Game::update(float deltaTime)
 		{
 			//add information to player
 			m_menu->setStateToBe(gameStateMenuMain); //change to gameStateGame
+
+			for (auto const& ID : temp.getUpgradesID())
+			{
+				if (temp.getIsEffect())
+				{
+					m_player->getStatusManager().addStatus(static_cast<StatusManager::EFFECT_ID>(ID), 1); //edit to how you feel it should be
+				}
+				else
+				{
+					m_player->getStatusManager().addUpgrade(static_cast<StatusManager::UPGRADE_ID>(ID));
+				}
+			}
 		}
 
 		gameRunTime(deltaTime);

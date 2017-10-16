@@ -61,7 +61,7 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
     
 
     contex->PSSetShaderResources(0, 1, &buttonTexture[active.m_buttons.at(0).textureIndex]);
-    if (!buttonsMaped)
+    /*if (buttonsMaped)*/
     {
         mapButtons(contex, info);
         buttonsMaped = true;

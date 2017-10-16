@@ -54,3 +54,8 @@ DirectX::SimpleMath::Vector2 Logic::Card::getTexEnd() const
 {
 	return m_TexEnd;
 }
+
+bool Card::getIsEffect() const
+{
+	return m_isEffect;
+}

@@ -6,10 +6,9 @@
 	"yTexStart" : 1.0f;
 	"xTexEnd" : 0.0f;
 	"yTexEnd" : 0.0f;
-	"isEffect" : 0;
+	"isEffect" : 1;
 	"upgradeAmmount" : 1;
-
-	"upgrade1" : 0;
+	"upgrade1" : 32;
 }
 
 {
@@ -24,18 +23,4 @@
 	"upgradeAmmount" : 1;
 
 	"upgrade1" : 1;
-}
-
-{
-	"cardName" : "Damage";
-	"description" : "+ 10 Damage on selected weapon";
-	"texture" : "b";
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
-	"isEffect" : 0;
-	"upgradeAmmount" : 1;
-
-	"upgrade1" : 2;
 }

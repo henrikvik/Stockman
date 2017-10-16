@@ -19,6 +19,7 @@ namespace Logic
 		std::string getTexture() const;
 		std::string getDescription() const;
 		const std::vector<int>& getUpgradesID() const;
+		bool getIsEffect() const;
 		DirectX::SimpleMath::Vector2 getTexStart() const;
 		DirectX::SimpleMath::Vector2 getTexEnd() const;
 
