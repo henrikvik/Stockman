@@ -35,6 +35,7 @@ namespace Logic
 		std::string* m_highScoreNamePTR;
 		std::string m_highScoreName;
 		bool m_typing;
+		int m_cardUpgrade;
 	public:
 		MenuMachine();
 		MenuMachine(std::string* highScoreNamePTR);
@@ -47,6 +48,7 @@ namespace Logic
 		GameState currentState();
 		void setStateToBe(GameState);
 		GameState getStateToBe();
+		int getChoiceUpgrade();
 
 		void buttonClick0();
 		void buttonClick1();

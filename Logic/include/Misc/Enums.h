@@ -25,6 +25,13 @@ namespace Logic
 		gameStateDefault,
 		gameStateGameUpgrade
 	};
+
+	enum CardChoices
+	{
+		choice1,
+		choice2,
+		choice3
+	};
 }
 
 #endif // !ENUMS_H

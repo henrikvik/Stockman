@@ -268,7 +268,7 @@ void Player::updateSpecific(float deltaTime)
 		
 
 	// Movement
-	if (ms.positionMode == DirectX::Mouse::MODE_RELATIVE)	// !TEMP!
+	if (ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
 		mouseMovement(deltaTime, &ms);
 	jump(deltaTime, &ks);
 
@@ -327,7 +327,7 @@ void Player::updateSpecific(float deltaTime)
 	if (!m_weaponManager.isReloading())
 	{
 		// Primary and secondary attack
-		if (!m_weaponManager.isAttacking())
+		if (!m_weaponManager.isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
 		{
 			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
 			if ((ms.leftButton))

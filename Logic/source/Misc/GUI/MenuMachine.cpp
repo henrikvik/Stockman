@@ -20,6 +20,7 @@ MenuMachine::MenuMachine()
 	m_highScoreName = "";
 	m_typing = false;
 	m_forward = true;
+	m_cardUpgrade = -1;
 }
 
 MenuMachine::MenuMachine(std::string* highScoreNamePTR)
@@ -31,6 +32,7 @@ MenuMachine::MenuMachine(std::string* highScoreNamePTR)
 	m_highScoreName = *m_highScoreNamePTR;
 	m_typing = false;
 	m_forward = true;
+	m_cardUpgrade = -1;
 }
 
 
@@ -236,6 +238,17 @@ GameState MenuMachine::getStateToBe()
 	return m_stateToBe;
 }
 
+int Logic::MenuMachine::getChoiceUpgrade()
+{
+	int choosenUpgrade = -1;
+	if (m_cardUpgrade != -1)
+	{
+		choosenUpgrade = m_cardUpgrade;
+		m_cardUpgrade = -1;
+	}
+	return choosenUpgrade;
+}
+
 void MenuMachine::buttonClick0()
 {
 	m_stateToBe = gameStateGame;
@@ -267,15 +280,15 @@ void MenuMachine::buttonClick4()
 
 void MenuMachine::buttonClick5() //Upgrade button1
 {
-
+	m_cardUpgrade = choice1;
 }
 
 void MenuMachine::buttonClick6() //Upgrade button2
 {
-
+	m_cardUpgrade = choice2;
 }
 
 void MenuMachine::buttonClick7() //Upgrade button3
 {
-
+	m_cardUpgrade = choice3;
 }

@@ -125,11 +125,17 @@ void Game::update(float deltaTime)
 {
 	// Handles slow-mo & speed-up
 	m_gameTime.update(deltaTime);
-
+	Card temp;
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-		if (m_menu->getStateToBe() != GameState::gameStateDefault)
+		if (m_menu->getStateToBe() == GameState::gameStateGameUpgrade)
+		{
+			m_cardManager->pickThree(false); //get some trigger for injury
+			m_menu->update(m_gameTime.dt);
+			break;
+		}
+		else if (m_menu->getStateToBe() != GameState::gameStateDefault)
 		{
 			m_menu->update(m_gameTime.dt);
 			break;
@@ -144,10 +150,16 @@ void Game::update(float deltaTime)
 		break;
 	case gameStateGameUpgrade:
 		m_menu->update(m_gameTime.dt);
-
 		if (m_menu->getStateToBe() != GameState::gameStateDefault)
 		{
 			break;
+		}
+		temp = m_cardManager->pick(m_menu->getChoiceUpgrade());
+
+		if (temp.getName().compare("") != 0 && temp.getDescription().compare("") != 0)
+		{
+			//add information to player
+			m_menu->setStateToBe(gameStateMenuMain); //change to gameStateGame
 		}
 
 		gameRunTime(deltaTime);
@@ -157,6 +169,10 @@ void Game::update(float deltaTime)
 		m_menu->update(m_gameTime.dt);
 		break;
 	case gameStateMenuMain:
+		if (m_menu->getStateToBe() == GameState::gameStateGameUpgrade) //remove once duebugged
+		{
+			m_cardManager->pickThree(false); //get some trigger for injury
+		}
 		m_menu->update(m_gameTime.dt);
 		break;
 	case gameStateMenuSettings:

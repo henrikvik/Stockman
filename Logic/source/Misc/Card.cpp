@@ -5,7 +5,12 @@ using namespace Logic;
 Card::Card()
 {
 	m_name = "";
+	m_texture = "";
 	m_description = "";
+	m_TexStart = DirectX::SimpleMath::Vector2(0.0f,0.0f);
+	m_TexEnd = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
+	m_isEffect = false;
+
 }
 
 Card::Card(std::string name, std::string texture, std::string description, std::vector<int> upgradesID, DirectX::SimpleMath::Vector2 texStart, DirectX::SimpleMath::Vector2 texEnd, bool isEffect)
