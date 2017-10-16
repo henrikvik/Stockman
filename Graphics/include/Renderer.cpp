@@ -43,7 +43,8 @@ namespace Graphics
         ,menu(device, deviceContext)
         ,hud(device, deviceContext)
 		,ssaoRenderer(device)
-		,bulletTimeBuffer(device)
+		,bulletTimeBuffer(device),
+        DoFRenderer(device)
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
