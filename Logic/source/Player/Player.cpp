@@ -207,6 +207,10 @@ void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
 
+	// Updates listener info for sounds
+//	m_listenerData.update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, getTransform().getOrigin());
+	m_listenerData.update({ 0, 1, 0 }, { 0, 1, 0 }, { 0, 0, 1 }, getTransform().getOrigin());
+
     //updates hudInfo with the current info
 	info.score = ComboMachine::Get().GetCurrentScore();
     info.hp = m_hp;
@@ -624,4 +628,9 @@ DirectX::SimpleMath::Vector3 Player::getForward()
 btVector3 Player::getMoveDirection()
 {
 	return m_moveDir;
+}
+
+ListenerData & Logic::Player::getListenerData()
+{
+	return m_listenerData;
 }

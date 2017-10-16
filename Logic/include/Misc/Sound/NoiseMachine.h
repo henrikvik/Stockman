@@ -12,30 +12,76 @@
 #define SOUND_SFX_PATH "Resources/Sound/SFX/"
 #define SOUND_MUSIC_PATH "Resources/Sound/Music/"
 
-/* 
-
-	// if it eats up memory
-	ERRCHECK(FMOD::Memory_Initialize(malloc(4*1024*1024), 4*1024*1024, 0,0,0));
-
-*/
-
 namespace Logic
 {
-	static const int MAX_CHANNELS	= 32;
+	static const int MAX_CHANNELS	= 1000;
+	static const int MAX_GROUPS		= 3;
 	static const int MAX_SFX		= 32;
 	static const int MAX_SONGS		= 32;
 
-	struct SoundData
-	{
-		SoundData() : pos({0, 0, 0}), radius(100.f) { }
-		SoundData(btVector3 inPos, btScalar inRadius) : pos(inPos), radius(inRadius) { }
-
-		btVector3 pos;
-		btScalar radius;
+	enum CHANNEL_GROUP {
+		CHANNEL_SFX,
+		CHANNEL_MUSIC,
+		CHANNEL_AMBIENT
 	};
 
-	enum SFX { TEST };
-	enum MUSIC { BOOM };
+	enum SFX {
+		TEST
+	};
+
+	enum MUSIC {
+		BOOM
+	};
+
+	struct SoundSettings
+	{
+		SoundSettings() 
+		{ 
+			volume[CHANNEL_SFX]			= 1.f;
+			volume[CHANNEL_MUSIC]		= 1.f;
+			volume[CHANNEL_AMBIENT]		= 1.f;
+			pitch[CHANNEL_SFX]			= 1.f;
+			pitch[CHANNEL_MUSIC]		= 1.f;
+			pitch[CHANNEL_AMBIENT]		= 1.f;
+		}
+
+		float pitch[MAX_CHANNELS];	//< Between 0:1
+		float volume[MAX_CHANNELS];	//< Between 0:1
+	};
+
+	struct Sound
+	{
+		Sound() : channel(nullptr), data(nullptr), group(CHANNEL_GROUP(0)) { }
+
+		void setVolume(float vol)								
+		{ channel->setVolume(vol); }
+		void setPitch(float pitch)								
+		{ channel->setPitch(pitch); }
+		void set3DAttributes(FMOD_VECTOR pos, FMOD_VECTOR vel)	
+		{ channel->set3DAttributes(&pos, &vel); }
+
+		FMOD::Channel*	channel;
+		FMOD::Sound*	data;
+		CHANNEL_GROUP	group;
+	};
+
+	struct ListenerData
+	{
+		ListenerData() : id(0), vel({ 0.f, 1.f, 0.f }), up({ 0.f, 1.f, 0.f }), forward({ 0.f, 0.f, 1.f }), pos({0.f, 0.f, 0.f}) { }
+		void update(btVector3 inVelocity, btVector3 inUp, btVector3 inForward, btVector3 inPosition)
+		{
+			vel			= { inVelocity.x(), inVelocity.y(), inVelocity.z()	};
+			up			= { inUp.x(),		inUp.y(),		inUp.z()		};
+			forward		= { inForward.x(),	inForward.y(),	inForward.z()	};
+			pos			= { inPosition.x(), inPosition.y(), inPosition.z()	};
+		}
+
+		__int8		id;			//< Different id for different players
+		FMOD_VECTOR vel;
+		FMOD_VECTOR up;
+		FMOD_VECTOR forward;
+		FMOD_VECTOR pos;
+	};
 
 	class NoiseMachine
 	{
@@ -46,28 +92,33 @@ namespace Logic
 			return noiceMachine;
 		}
 
-		void init();
-		void update();
+		void init(SoundSettings settings);
+		void clear();
+		void update(ListenerData& listener);
 
-		void playSFX(SoundData sData, SFX sfx, ...);
-		void playMusic(SoundData sData, MUSIC music, ...);
+		void playSFX(SFX sfx, bool overdrive = false);
+		void playMusic(MUSIC music, bool overdrive = false);
 
 	private:
 
 		// Initializing
 		void initSFX();
 		void initMusic();
-		FMOD_RESULT createSound(SFX sfx, std::string path);
-		FMOD_RESULT createSound(MUSIC music, std::string path);
+
+		void play(Sound* sound, bool overdrive);
+
+		FMOD_RESULT createSound(SFX sfx, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
+		FMOD_RESULT createSound(MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
 
 		// Debugging and Errors
+		void DEBUG_SOUND(Sound* sound);
 		void CRASH_EVERYTHING(const char *format, ...);
 		void ERRCHECK(FMOD_RESULT result);
 
+		SoundSettings	m_settings;
 		FMOD::System*	m_system;
-		FMOD::Channel*	m_channel;
-		FMOD::Sound*	m_sound[MAX_SFX];
-		FMOD::Sound*	m_music[MAX_SFX];
+		Sound*			m_sfx[MAX_SFX];
+		Sound*			m_music[MAX_SONGS];
 	};
 }
 

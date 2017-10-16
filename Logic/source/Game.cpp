@@ -70,7 +70,7 @@ void Game::init()
 	ComboMachine::Get().Reset();
 
 	// Initializing Sound
-	NoiseMachine::Get().init();
+	NoiseMachine::Get().init(SoundSettings());
 }
 
 void Game::clear()
@@ -84,6 +84,7 @@ void Game::clear()
 	delete m_highScoreManager;
 	m_projectileManager->clear();
 	delete m_projectileManager;
+	NoiseMachine::Get().clear();
 }
 
 void Game::reset()
@@ -138,12 +139,15 @@ void Game::update(float deltaTime)
 		}
 		else
 		{
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K))
+				NoiseMachine::Get().playSFX(SFX::TEST);
+
 			ComboMachine::Get().Update(deltaTime);
-			NoiseMachine::Get().update();
 			waveUpdater();
 
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K))
-				NoiseMachine::Get().playSFX(SoundData(), SFX::TEST);
+			PROFILE_BEGIN("Sound");
+			NoiseMachine::Get().update(m_player->getListenerData());
+			PROFILE_END();
 
 			PROFILE_BEGIN("Player");
 			m_player->updateSpecific(m_gameTime.dt);

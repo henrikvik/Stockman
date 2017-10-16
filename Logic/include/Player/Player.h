@@ -19,6 +19,7 @@
 #include "Skill\SkillManager.h"
 #include <Projectile\ProjectileManager.h>
 #include <Graphics\include\Structs.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 #define PLAYER_STARTING_HP				3
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
@@ -72,6 +73,9 @@ namespace Logic
 		btVector3 m_wishDir;
 		float m_wishDirForward;
 		float m_wishDirRight;
+
+		// Sound
+		ListenerData m_listenerData;
 
 		// Mouse
 		float m_mouseSens;
@@ -132,6 +136,7 @@ namespace Logic
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 		btVector3 getMoveDirection();
+		ListenerData& getListenerData();
 
 		static btVector3 startPosition;
 	};
