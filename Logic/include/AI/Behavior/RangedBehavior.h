@@ -17,12 +17,8 @@ namespace Logic
 
 		int getDistance() const;
 
-		void walkTowardsPlayer(Enemy &enemy, Player const &player, float deltaTime);
-
-		virtual void update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
+		virtual void updateSpecific(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
 			Player const &player, float deltaTime);
-		virtual void updatePath(Entity const &from, Entity const &to);
-		virtual void debugRendering(Graphics::Renderer &renderer);
 	};
 }
 

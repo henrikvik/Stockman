@@ -12,11 +12,24 @@
 #define CHANGE_NODE_DIST 0.3f
 
 #include <queue>
-
 using namespace Logic;
+
+Behavior::Behavior(PathingType type)
+{
+	m_pathingType = type;
+}
 
 Behavior::~Behavior()
 {
+}
+
+void Behavior::update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies, Player const & player, float deltaTime)
+{
+	updateSpecific(enemy, closeEnemies, player, deltaTime);
+
+	// this is frame bound, idk how to fix that tho
+	RunIn in{ &enemy, closeEnemies, &player, this, deltaTime };
+	runTree(in);
 }
 
 void Behavior::walkPath(RunIn &in)
@@ -150,4 +163,19 @@ bool Behavior::runNode(RunIn &in, BehaviorNode &node)
 
 Behavior::BehaviorNode* Behavior::getRoot() {
 	return &m_root; 
+}
+
+Pathing& Behavior::getPath()
+{
+	return m_pathing;
+}
+
+Behavior::PathingType Behavior::getPathingType() const
+{
+	return m_pathingType;
+}
+
+void Behavior::setPathingType(PathingType pathingType)
+{
+	m_pathingType = pathingType;
 }

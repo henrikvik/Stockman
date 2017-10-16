@@ -25,10 +25,13 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
 	switch (id) 
 	{
 		case TEST:
-			m_behavior = newd TestBehavior();
+				m_behavior = newd TestBehavior();
 			break;
 		case RANGED:
-			m_behavior = newd RangedBehavior();
+				m_behavior = newd RangedBehavior();
+			break;
+		default:
+				m_behavior = newd TestBehavior();
 			break;
 	}
 }
@@ -55,8 +58,6 @@ void Enemy::update(Player const &player, float deltaTime,
 
 	if (m_behavior) // remove later for better perf
 	{
-		if (updatePath)
-			m_behavior->updatePath(*this, player);
 		m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 	}
 

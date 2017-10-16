@@ -13,6 +13,8 @@ namespace Logic
 		// a quick notice, they point to a position in the navmesh, directly to that data, so don't change const 
 		std::vector<const DirectX::SimpleMath::Vector3*> m_path;
 		int m_currentNode;
+
+		Graphics::RenderDebugInfo m_debugInfo;
 	public:
 		Pathing();
 
@@ -25,6 +27,10 @@ namespace Logic
 
 		bool pathIsEmpty() const;
 		bool pathOnLastNode() const;
+
+		// debugging - move to a debug render class or something maybe ty
+		void initDebugRendering();
+		void renderDebugging(Graphics::Renderer &renderer);
 	};
 }
 

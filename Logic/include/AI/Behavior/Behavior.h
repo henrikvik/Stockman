@@ -12,6 +12,8 @@ namespace Logic {
 	class Behavior {
 	protected: // This is protected at the moment, it will maybe be changed later, better solutions is welcome'd
 		// this is not complete just a thought
+
+		// input for calculations, can probably be better, a TODO
 		struct RunIn
 		{
 			Enemy *enemy;
@@ -31,6 +33,7 @@ namespace Logic {
 			ACTION,
 			SEQUENCE
 		};
+
 		struct BehaviorNode
 		{
 			NodeType type;
@@ -49,12 +52,20 @@ namespace Logic {
 
 		bool runNode(RunIn &in, BehaviorNode &node);
 	public:
+		enum PathingType
+		{
+			NO_PATHING,
+			CHASING,
+			FLANKING
+		};
+
+		Behavior(PathingType type);
 		virtual ~Behavior();
 
-		virtual void update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
-			Player const &player, float deltaTime) = 0;
-		virtual void updatePath(Entity const &from, Entity const &to) = 0;
-		virtual void debugRendering(Graphics::Renderer &renderer) = 0;
+		void update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
+			Player const &player, float deltaTime);
+		virtual void updateSpecific(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
+			Player const &player, float deltaTime) {};
 
 		virtual void walkPath(RunIn &runIn);
 		virtual void boidCalculations(btVector3 &pos, btVector3 &dir,
@@ -66,6 +77,12 @@ namespace Logic {
 		BehaviorNode* addNode(BehaviorNode *parent, NodeType type, int value, run func);
 
 		BehaviorNode* getRoot();
+		Pathing& getPath();
+
+		PathingType getPathingType() const;
+		void setPathingType(PathingType pathingType);
+	private:
+		PathingType m_pathingType;
 	};
 }
 
