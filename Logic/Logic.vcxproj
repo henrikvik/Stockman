@@ -72,26 +72,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -208,6 +208,7 @@
     <ClInclude Include="include\Misc\GUI\MenuMachine.h" />
     <ClInclude Include="include\Misc\RandomGenerator.h" />
     <ClInclude Include="include\Misc\RenderRegister.h" />
+    <ClInclude Include="include\Misc\Sound\NoiseStructs.h" />
     <ClInclude Include="include\Misc\StateMachine.h" />
     <ClInclude Include="include\Physics\Physics.h" />
     <ClInclude Include="include\Physics\Primitives.h" />
@@ -229,6 +230,7 @@
     <ClInclude Include="include\AI\Behavior\RangedBehavior.h" />
     <ClInclude Include="include\Entity\PhysicsObject.h" />
     <ClInclude Include="include\Entity\StaticObject.h" />
+    <ClInclude Include="include\Misc\Sound\NoiseMachine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Behavior\Pathing.cpp" />
@@ -254,6 +256,7 @@
     <ClCompile Include="source\AI\TriggerManager.cpp" />
     <ClCompile Include="source\Misc\GUI\MenuMachine.cpp" />
     <ClCompile Include="source\Misc\RandomGenerator.cpp" />
+    <ClCompile Include="source\Misc\Sound\NoiseMachine.cpp" />
     <ClCompile Include="source\Player\Skill\Skill.cpp" />
     <ClCompile Include="source\Player\Skill\SkillBulletTime.cpp" />
     <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />
