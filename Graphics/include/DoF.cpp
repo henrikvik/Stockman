@@ -27,6 +27,8 @@ namespace Graphics
         context->PSSetSamplers(0, 2, samplers);
         UINT stride = 16, offset = 0;
         context->IASetVertexBuffers(0,1, &vertexBuffer, &stride, &offset);
+
+
     }
 
 
