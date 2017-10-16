@@ -145,7 +145,7 @@ void NoiseMachine::initMusic()
 	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) m_music[i] = nullptr;
 
 	// Init all the music here
-	ERRCHECK(createSound(MUSIC::NES, CHANNEL_GROUP::CHANNEL_MUSIC, "music.ogg", FMOD_2D));
+	ERRCHECK(createSound(MUSIC::NES, CHANNEL_GROUP::CHANNEL_MUSIC, "music.ogg", FMOD_3D));
 }
 
 // Allocates a specific sound effect into memory

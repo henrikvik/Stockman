@@ -207,8 +207,11 @@ void Player::updateSpecific(float deltaTime)
 	Player::update(deltaTime);
 
 	// Updates listener info for sounds
-//	m_listenerData.update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, getTransform().getOrigin());
-	m_listenerData.update({ 0, 1, 0 }, { 0, 1, 0 }, { 0, 0, 1 }, getTransform().getOrigin());
+	btVector3 up		= { 0, 1, 0 };
+	btVector3 forward	= getForwardBT();
+	btVector3 right		= up.cross(forward);
+	btVector3 actualUp	= right.cross(forward);
+	m_listenerData.update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, getTransform().getOrigin());
 
     //updates hudInfo with the current info
 	info.score = ComboMachine::Get().GetCurrentScore();
