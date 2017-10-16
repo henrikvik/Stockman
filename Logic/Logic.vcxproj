@@ -173,6 +173,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\Behavior\Pathing.h" />
     <ClInclude Include="include\AI\EnemyNecromancer.h" />
     <ClInclude Include="include\AI\Behavior\AStar.h" />
     <ClInclude Include="include\AI\Behavior\TestBehavior.h" />
@@ -226,17 +227,16 @@
     <ClInclude Include="include\Map.h" />
     <ClInclude Include="include\Entity\Upgrade.h" />
     <ClInclude Include="include\Entity\StatusManager.h" />
-    <ClInclude Include="include\AI\Behavior\SimplePathing.h" />
     <ClInclude Include="include\AI\Behavior\RangedBehavior.h" />
     <ClInclude Include="include\Entity\PhysicsObject.h" />
     <ClInclude Include="include\Entity\StaticObject.h" />
     <ClInclude Include="include\Misc\Sound\NoiseMachine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Behavior\Pathing.cpp" />
     <ClCompile Include="source\AI\Behavior\Behavior.cpp" />
     <ClCompile Include="source\AI\Behavior\RangedBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyNecromancer.cpp" />
-    <ClCompile Include="source\AI\Behavior\SimplePathing.cpp" />
     <ClCompile Include="source\AI\Behavior\AStar.cpp" />
     <ClCompile Include="source\AI\Behavior\TestBehavior.cpp" />
     <ClCompile Include="source\AI\Behavior\NavigationMesh.cpp" />
@@ -282,6 +282,9 @@
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />
     <Text Include="source\Player\Skill\gitinclude.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

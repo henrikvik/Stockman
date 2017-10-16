@@ -11,22 +11,29 @@ using namespace Logic;
 
 MenuMachine::MenuMachine()
 {
-	pressed = false;
-	currentActiveMenu = nullptr;
-	currentActiveState = gameStateMenuMain;
+	m_pressed = false;
+	m_currentActiveMenu = nullptr;
+	m_currentActiveState = gameStateMenuMain;
 	m_highScoreNamePTR = nullptr;
 	m_highScoreName = "";
 	m_typing = false;
+	m_forward = true;
+    blinkMarker = true;
+    blinkTimer = 0.0f;
+    deleteCharCD = 20.0f;
 }
 
 MenuMachine::MenuMachine(string* highScoreNamePTR)
 {
-	pressed = false;
-	currentActiveMenu = nullptr;
-	currentActiveState = gameStateMenuMain;
+	m_pressed = false;
+	m_currentActiveMenu = nullptr;
+	m_currentActiveState = gameStateMenuMain;
 	m_highScoreNamePTR = highScoreNamePTR;
 	m_highScoreName = *m_highScoreNamePTR;
 	m_typing = false;
+	m_forward = true;
+    blinkTimer = 0.0f;
+    deleteCharCD = 20.0f;
 }
 
 
@@ -99,14 +106,14 @@ void MenuMachine::initialize(GameState state)
 		}
 	}
 
-	stateToBe = gameStateDefault;
+	m_stateToBe = gameStateDefault;
 
 	showMenu(state);
 }
 
 void MenuMachine::clear() 
 {
-	currentActiveMenu = nullptr;
+	m_currentActiveMenu = nullptr;
 }
 
 void MenuMachine::update(float dt)
@@ -114,40 +121,61 @@ void MenuMachine::update(float dt)
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
-	if (Mouse.leftButton && !pressed && !m_typing)
+	if (Mouse.leftButton && !m_pressed && !m_typing)
 	{
-		pressed = true;
-		currentActiveMenu->updateOnPress(Mouse.x, Mouse.y);
+		m_pressed = true;
+		m_currentActiveMenu->updateOnPress(Mouse.x, Mouse.y);
 	}
-	else if (!Mouse.leftButton && pressed)
+	else if (!Mouse.leftButton && m_pressed)
 	{
-		pressed = false;
+		m_pressed = false;
 
 	}
-	currentActiveMenu->hoverOver(Mouse.x, Mouse.y);
+	m_currentActiveMenu->hoverOver(Mouse.x, Mouse.y);
 
-	if (stateToBe != gameStateDefault && !m_typing)
+	if (m_stateToBe != gameStateDefault && !m_typing)
 	{
-		if (forward)
+		if (m_forward)
 		{
-			if (currentActiveMenu->animationTransition(dt, TRANSITION_TIME, forward))
+			if (m_currentActiveMenu->animationTransition(dt, TRANSITION_TIME, m_forward))
 			{
-				showMenu(stateToBe);
-				forward = false;
+				showMenu(m_stateToBe);
+				m_forward = false;
 			}
 		}
 		else
 		{
-			if (currentActiveMenu->animationTransition(dt, TRANSITION_TIME, forward))
+			if (m_currentActiveMenu->animationTransition(dt, TRANSITION_TIME, m_forward))
 			{
-				stateToBe = gameStateDefault;
-				forward = true;
+				m_stateToBe = gameStateDefault;
+				m_forward = true;
 			}
 		}
 	}
 
 	if (m_typing)
 	{
+        if (blinkMarker == false)
+        {
+            blinkTimer += dt;
+            if (blinkTimer > 500.0f)
+            {
+                blinkMarker = true;
+                blinkTimer = 0.0f;
+            }
+        }
+        else
+        {
+            blinkTimer += dt;
+            if (blinkTimer > 500.0f)
+            {
+                blinkMarker = false;
+                blinkTimer = 0.0f;
+            }
+        }
+
+        
+        deleteCharCD += dt;
 		DirectX::Keyboard::State keyboard = DirectX::Keyboard::Get().GetState();
 		Typing* theChar = Typing::getInstance(); //might need to be deleted
 		char tempChar = theChar->getSymbol();
@@ -156,11 +184,12 @@ void MenuMachine::update(float dt)
 			m_typing = false;
 			*m_highScoreNamePTR = m_highScoreName;
 		}
-		else if (keyboard.IsKeyDown(DirectX::Keyboard::Back) && m_highScoreNamePTR->compare("") != 0)
+		else if (keyboard.IsKeyDown(DirectX::Keyboard::Back) && m_highScoreName != "" && deleteCharCD > 200.0f)
 		{
-			m_highScoreName.pop_back();
+            m_highScoreName.erase(m_highScoreName.length() - 1, 1);
+            deleteCharCD = 0.0f;
 		}
-		else if (tempChar != 0)
+		else if (tempChar != 0 && tempChar >= 32 && tempChar <= 122)
 		{
 			m_highScoreName += tempChar;
 		}
@@ -178,8 +207,35 @@ void MenuMachine::render(Graphics::Renderer &renderer)
 		DirectX::SimpleMath::Color(DirectX::Colors::White),
 		Graphics::Font::SMALL
 	};*/
+    if (m_currentActiveState == gameStateMenuSettings)
+    {
+        std::wstring tempString = L"";
+        Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
+        DirectX::SimpleMath::Vector2 tempPos;
+        //TODO tis is wierd. no magic number should be used
+        tempPos.x = tempButton.m_rek.x +128;
+        tempPos.y = tempButton.m_rek.y +50;
+        tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
+        if (m_typing)
+        {
+            if (blinkMarker)
+            {
+                tempString += L"|";
+            }
 
-    Graphics::MenuInfo temp = this->currentActiveMenu->getMenuInfo();
+        }
+        Graphics::TextString text
+        {
+            tempString.c_str(),
+            tempPos,
+            DirectX::SimpleMath::Color(DirectX::Colors::White),
+            Graphics::Font::SMALL
+        };
+        renderer.queueText(&text);
+    }
+    
+
+    Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
 
     renderer.drawMenu(&temp);
 }
@@ -189,48 +245,48 @@ void MenuMachine::showMenu(GameState state)
 {
 	if (m_menuStates.find(state) != m_menuStates.end())
 	{
-		currentActiveMenu = m_menuStates.at(state);
-		currentActiveState = state;
+		m_currentActiveMenu = m_menuStates.at(state);
+		m_currentActiveState = state;
 	}
 	else
 	{
-		currentActiveMenu = m_menuStates.at(gameStateDefault); //change to error state
-		currentActiveState = gameStateDefault;
+		m_currentActiveMenu = m_menuStates.at(gameStateDefault); //change to error state
+		m_currentActiveState = gameStateDefault;
 	}
 }
 
 GameState MenuMachine::currentState()
 {
-	return currentActiveState;
+	return m_currentActiveState;
 }
 
 //Sets the state that the game is gonna show after the animation cycle has finished
 void MenuMachine::setStateToBe(GameState gameState)
 {
 	
-	stateToBe = gameState;
+	m_stateToBe = gameState;
 }
 
 //Gets the state that the game is gonna show after the animation cycle has finished
 GameState MenuMachine::getStateToBe()
 {
 
-	return stateToBe;
+	return m_stateToBe;
 }
 
 void MenuMachine::buttonClick0()
 {
-	stateToBe = gameStateGame;
+	m_stateToBe = gameStateGame;
 }
 
 void MenuMachine::buttonClick1()
 {
-	stateToBe = gameStateMenuSettings;
+	m_stateToBe = gameStateMenuSettings;
 }
 
 void MenuMachine::buttonClick2()
 {
-	stateToBe = gameStateMenuMain;
+	m_stateToBe = gameStateMenuMain;
 }
 
 void MenuMachine::buttonClick3()

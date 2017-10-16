@@ -83,7 +83,7 @@ void Player::reset()
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-#ifdef _GOD_MODE
+#ifdef GOD_MODE
 	if (!(dynamic_cast<Projectile*>(&other)) &&
 		!(dynamic_cast<Trigger*>(&other)) &&
 		!(dynamic_cast<Enemy*> (&other)) &&
@@ -161,7 +161,6 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
-		printf("Ammo pack!\n");
 		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
 		int magSize		= wp->getMagSize();
 		int currentAmmo = wp->getAmmo();
@@ -191,7 +190,7 @@ void Player::readFromFile()
 
 void Player::takeDamage(int damage, bool damageThroughProtection)
 {
-#ifndef _GOD_MODE
+#ifndef GOD_MODE
 	if (damageThroughProtection ||
 		getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
 		m_hp -= damage;

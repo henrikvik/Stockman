@@ -3,8 +3,6 @@ using namespace Logic;
 
 #define ENEMIES_PATH_UPDATE_PER_FRAME 20
 #define FILE_ABOUT_WHALES "Enemies/Wave"
-#define DEBUG_ASTAR false
-#define DEBUG_PATH false
 
 #include <AI/EnemyTest.h>
 #include <AI/EnemyNecromancer.h>
@@ -55,8 +53,16 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 	for (int i = 0; i < m_enemies.size(); i++)
 	{
-		updateEnemies(i, player, deltaTime,
-			(i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0);
+		if (m_enemies[i].size() > 0)
+		{
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) {
+				updateEnemies(i, player, deltaTime);
+			}
+			else
+			{
+				updateEnemiesAndPath(i, player, deltaTime);
+			}
+		}
 	}
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
@@ -67,39 +73,59 @@ void EntityManager::update(Player const &player, float deltaTime)
 	m_triggerManager.update(deltaTime);
 }
 
-void EntityManager::updateEnemies(int index, Player const &player, float deltaTime,
-	bool updatePath)
+void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	Enemy *enemy;
 	int newIndex;
+
 	for (int i = 0; i < m_enemies[index].size(); ++i)
 	{
 		enemy = m_enemies[index][i];
-		enemy->update(player, deltaTime, m_enemies[index], updatePath);
+		updateEnemy(enemy, index, player, deltaTime);
+	}
+}
 
-		if (updatePath)
+void EntityManager::updateEnemiesAndPath(int index, Player const &player, float deltaTime)
+{
+	Enemy *enemy;
+	int newIndex;
+
+	AStar &aStar = AStar::singleton();
+	std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
+
+	for (int i = 0; i < m_enemies[index].size(); ++i)
+	{
+		enemy = m_enemies[index][i];
+		updateEnemy(enemy, index, player, deltaTime);
+
+		newIndex = AStar::singleton().getIndex(*enemy);
+		if (newIndex != -1 && newIndex != index) // this will be optimized in future
 		{
-			newIndex = AStar::singleton().getIndex(*enemy);
-			if (newIndex != -1 && newIndex != index)
-			{
-				m_enemies[newIndex].push_back(enemy);
-				std::swap(m_enemies[index][i], 
-					m_enemies[index][m_enemies[index].size() - 1]);
-				m_enemies[index].pop_back();
-			}
-		}
-
-		if (enemy->getHealth() <= 0) 
-		{
-			// Adds the score into the combo machine
-			ComboMachine::Get().Kill(Enemy::ENEMY_TYPE(enemy->getEnemyType()));
-			enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
-
-			m_deadEnemies.push_back(enemy);
+			m_enemies[newIndex].push_back(enemy);
 			std::swap(m_enemies[index][i],
 				m_enemies[index][m_enemies[index].size() - 1]);
 			m_enemies[index].pop_back();
+		}	
+		else
+		{
+			enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
 		}
+	}
+}
+
+void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, float deltaTime)
+{
+	enemy->update(player, deltaTime, m_enemies[index]);
+
+	if (enemy->getHealth() <= 0)
+	{
+		// Adds the score into the combo machine
+		ComboMachine::Get().Kill(Enemy::ENEMY_TYPE(enemy->getEnemyType()));
+		enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
+
+		std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);
+		m_deadEnemies.push_back(enemy);
+		m_enemies[index].pop_back();
 	}
 }
 
@@ -125,8 +151,8 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 		// just temp test values as of now, better with no random spawns?
 		// should atleast check if spawn area is a walkable area
 		// using nav mesh that would be easy but not trivial
-		pos = { generator.getRandomFloat(0, 100), generator.getRandomFloat(10, 15),
-				generator.getRandomFloat(0, 100) };
+		pos = { generator.getRandomFloat(-5, 5), generator.getRandomFloat(10, 25),
+				generator.getRandomFloat(-5, 5) };
 
 		spawnEnemy(static_cast<Enemy::ENEMY_TYPE> (entity), pos, {}, physics, projectiles);
 	}
@@ -163,6 +189,10 @@ void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
 	enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0.f, 3.f, 0.f });
 	enemy->setProjectileManager(projectiles);
 
+#ifdef DEBUG_PATH
+	enemy->getBehavior()->getPath().initDebugRendering(); // todo change to enemy->initDebugPath()
+#endif
+
 	index = AStar::singleton().getIndex(*enemy);
 	if (index == -1)
 		m_enemies[0].push_back(enemy);
@@ -196,7 +226,7 @@ int EntityManager::getEnemiesAlive() const
     return m_enemies.size();
 }
 
-void EntityManager::clear() 
+void EntityManager::clear()
 {
 	deleteData();
 
@@ -216,22 +246,24 @@ void EntityManager::render(Graphics::Renderer &renderer)
 		for (Enemy *enemy : m_enemies[i])
 		{
 			enemy->render(renderer);
-			if (DEBUG_PATH)
-				enemy->debugRendering(renderer);
+#ifdef DEBUG_PATH	
+			enemy->debugRendering(renderer);
+#endif
 		}
 	}
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
-	#ifndef _DISABLE_RENDERING_DEAD_ENEMIES
+#ifndef DISABLE_RENDERING_DEAD_ENEMIES
 			m_deadEnemies[i]->render(renderer);
-	#endif
+#endif
 	}
 
 	m_triggerManager.render(renderer);
 
-	if (DEBUG_ASTAR)
+#ifdef DEBUG_ASTAR
 		AStar::singleton().renderNavigationMesh(renderer);
+#endif
 }
 
 int EntityManager::getCurrentWave() const 

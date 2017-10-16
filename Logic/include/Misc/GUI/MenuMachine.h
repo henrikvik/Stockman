@@ -27,14 +27,17 @@ namespace Logic
 	private:
 
 		std::map<GameState, MenuState*> m_menuStates;
-		bool pressed;
-		MenuState* currentActiveMenu;
-		GameState currentActiveState;
-		GameState stateToBe;
-		bool forward;
+		bool m_pressed;
+		MenuState* m_currentActiveMenu;
+		GameState m_currentActiveState;
+		GameState m_stateToBe;
+		bool m_forward;
 		std::string* m_highScoreNamePTR;
 		std::string m_highScoreName;
 		bool m_typing;
+        bool blinkMarker;
+        float  blinkTimer;
+        float deleteCharCD;
 	public:
 		MenuMachine();
 		MenuMachine(string* highScoreNamePTR);
