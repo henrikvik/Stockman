@@ -207,6 +207,7 @@
     <ClInclude Include="include\Misc\GUI\MenuMachine.h" />
     <ClInclude Include="include\Misc\RandomGenerator.h" />
     <ClInclude Include="include\Misc\RenderRegister.h" />
+    <ClInclude Include="include\Misc\Sound\NoiseStructs.h" />
     <ClInclude Include="include\Misc\StateMachine.h" />
     <ClInclude Include="include\Physics\Physics.h" />
     <ClInclude Include="include\Physics\Primitives.h" />

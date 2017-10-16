@@ -21,7 +21,7 @@ void NoiseMachine::init(SoundSettings settings)
 
 	// Initialize the FMOD system
 	void* extraDriverData = nullptr;
-	ERRCHECK(m_system->init(MAX_CHANNELS, FMOD_INIT_NORMAL, extraDriverData));
+	ERRCHECK(m_system->init(THRESHOLD::MAX_CHANNELS, FMOD_INIT_NORMAL, extraDriverData));
 	ERRCHECK(result);
 
 	// Specific settings of the system
@@ -36,7 +36,7 @@ void NoiseMachine::init(SoundSettings settings)
 void NoiseMachine::clear()
 {
 	// Release sounds
-	for (int i = 0; i < MAX_SFX; i++)
+	for (int i = 0; i < THRESHOLD::MAX_SFX; i++)
 	{
 		if (m_sfx[i] != nullptr)
 		{
@@ -47,7 +47,7 @@ void NoiseMachine::clear()
 	}
 
 	// Release music
-	for (int i = 0; i < MAX_SONGS; i++)
+	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)
 	{
 		if (m_music[i] != nullptr)
 		{
@@ -112,7 +112,7 @@ void NoiseMachine::play(Sound * sound, bool overdrive)
 void NoiseMachine::initSFX()
 {
 	// Setting full array as nullptr
-	for (int i = 0; i < MAX_SFX; i++) m_sfx[i] = nullptr;
+	for (int i = 0; i < THRESHOLD::MAX_SFX; i++) m_sfx[i] = nullptr;
 
 	ERRCHECK(createSound(SFX::TEST, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D));
 }
@@ -121,7 +121,7 @@ void NoiseMachine::initSFX()
 void NoiseMachine::initMusic()
 {
 	// Setting full array as nullptr
-	for (int i = 0; i < MAX_SONGS; i++) m_music[i] = nullptr;
+	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) m_music[i] = nullptr;
 
 }
 
