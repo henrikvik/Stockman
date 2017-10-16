@@ -3,7 +3,9 @@
 
 #include <Player\Player.h>
 #include <vector>
-#include "SimplePathing.h"
+#include "Pathing.h"
+
+// this class is pretty bloated but it is neccessary, may make it better in future
 
 namespace Logic {
 	class Enemy;
@@ -43,6 +45,9 @@ namespace Logic {
 		};
 	private:
 		BehaviorNode m_root;
+		Pathing m_pathing;
+
+		bool runNode(RunIn &in, BehaviorNode &node);
 	public:
 		virtual ~Behavior();
 
@@ -51,12 +56,11 @@ namespace Logic {
 		virtual void updatePath(Entity const &from, Entity const &to) = 0;
 		virtual void debugRendering(Graphics::Renderer &renderer) = 0;
 
-		virtual void walkPath(SimplePathing pathing, RunIn &runIn);
+		virtual void walkPath(RunIn &runIn);
 		virtual void boidCalculations(btVector3 &pos, btVector3 &dir,
 			std::vector<Enemy*> const &close, float maxSpeed, float dt);
 
 		void runTree(RunIn &in);
-		bool runNode(RunIn &in, BehaviorNode &node);
 		
 		void setRoot(NodeType type, int value, run func);
 		BehaviorNode* addNode(BehaviorNode *parent, NodeType type, int value, run func);

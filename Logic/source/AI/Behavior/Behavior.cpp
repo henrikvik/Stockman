@@ -8,6 +8,8 @@
 #define SCALAR_SEP 1.3f
 
 #define MAX_LEN_FOR_SEPERATION 7.5f
+// this can be changed in the future maybe who knows
+#define CHANGE_NODE_DIST 0.3f
 
 #include <queue>
 
@@ -17,9 +19,10 @@ Behavior::~Behavior()
 {
 }
 
-void Behavior::walkPath(SimplePathing pathing, RunIn &in)
+void Behavior::walkPath(RunIn &in)
 {
-	btVector3 node = pathing.updateAndReturnCurrentNode(*in.enemy, *in.target);
+	DirectX::SimpleMath::Vector3 pathNode = m_pathing.getNode();
+	btVector3 node { pathNode.x, pathNode.y, pathNode.z };
 	btVector3 dir = node - in.enemy->getPositionBT();
 	
 	boidCalculations(in.enemy->getPositionBT(), 
@@ -27,8 +30,9 @@ void Behavior::walkPath(SimplePathing pathing, RunIn &in)
 
 	in.enemy->getRigidBody()->translate(dir);
 
-	if ((node - in.enemy->getPositionBT()).length() < 0.3f)
-		pathing.setCurrentNode(pathing.getCurrentNode() + 1);
+	if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST
+		&& m_pathing.pathOnLastNode())
+		m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
