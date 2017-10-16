@@ -70,9 +70,7 @@ void NoiseMachine::update(ListenerData& listener)
 	// Update the 3D sound engine
 	ERRCHECK(m_system->update());
 
-	/* 
-		Remove this
-	*/
+	/*  Remove this */
 //	DEBUG_SOUND(m_sfx[SFX::TEST]);
 }
 
@@ -88,7 +86,8 @@ void NoiseMachine::playMusic(MUSIC music, bool overdrive)
 	checkIfPlay(m_music[music], overdrive);
 }
 
-void NoiseMachine::checkIfPlay(Sound * sound, bool overdrive)
+// Checks if sound if currently playing and if overdrive should be used
+void NoiseMachine::checkIfPlay(Sound* sound, bool overdrive)
 {
 	if (overdrive)
 		play(sound);
@@ -111,11 +110,13 @@ void NoiseMachine::checkIfPlay(Sound * sound, bool overdrive)
 	}
 }
 
+// Actually plays the sound
 void NoiseMachine::play(Sound* sound)
 {
 	ERRCHECK(m_system->playSound(sound->data, m_group[sound->group], false, &sound->channel));
 }
 
+// Initialize all sound groups
 void NoiseMachine::initGroups()
 {
 	// Setting speicific groups
@@ -130,7 +131,7 @@ void NoiseMachine::initGroups()
 // Initialize all sound effects
 void NoiseMachine::initSFX()
 {
-	// Setting full array as nullptr
+	// Setting full array as nullptr to avoid crashing
 	for (int i = 0; i < THRESHOLD::MAX_SFX; i++) m_sfx[i] = nullptr;
 
 	// Init all the sfx here
@@ -140,7 +141,7 @@ void NoiseMachine::initSFX()
 // Initialize all music pieces
 void NoiseMachine::initMusic()
 {
-	// Setting full array as nullptr
+	// Setting full array as nullptr to avoid crashing
 	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) m_music[i] = nullptr;
 
 	// Init all the music here
@@ -194,6 +195,7 @@ float NoiseMachine::getGroupPitch(CHANNEL_GROUP group)
 	return pitch;
 }
 
+// Prints information about sound
 void NoiseMachine::DEBUG_SOUND(Sound* sound)
 {
 	if (sound->channel)
