@@ -293,7 +293,11 @@ namespace Graphics
 
 			PROFILE_BEGIN("SSAO");
 			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
-			PROFILE_END();
+			
+
+            PROFILE_BEGIN("Dof");
+            DoFRenderer.DoFRender(deviceContext, &fakeBackBuffer, &depthStencil, &fakeBackBufferSwap, camera);
+            PROFILE_END();
 
 			PROFILE_BEGIN("DrawToBackBuffer");
 			drawToBackbuffer(fakeBackBuffer);

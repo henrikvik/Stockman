@@ -12,12 +12,15 @@ namespace Graphics
     public:
         DoF(ID3D11Device * device);
         ~DoF();
-        void DoFRender(ID3D11DeviceContext * context, ShaderResource * colorBuffer, DepthStencil * depthBuffer, ShaderResource * outputBuffer);
+        void DoFRender(ID3D11DeviceContext * context, ShaderResource * colorBuffer, DepthStencil * depthBuffer, ShaderResource * outputBuffer, Camera *cam);
 
     private:
 
         DirectX::CommonStates *states;
+        ID3D11Buffer * vertexBuffer;
         //ID3D11SamplerState * samplers[2];
+
+        void createFullScreenQuad(ID3D11Device * device);
     };
 }
 
