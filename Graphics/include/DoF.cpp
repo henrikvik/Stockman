@@ -5,15 +5,15 @@ namespace Graphics
     {
 
         states = new DirectX::CommonStates(device);
-        samplers[0] = states->PointClamp();
-        samplers[1] = states->LinearClamp();
+        //samplers[0] = states->PointClamp();
+        //samplers[1] = states->LinearClamp();
 
     }
 
     DoF::~DoF()
     {
-        SAFE_RELEASE(samplers[0]);
-        SAFE_RELEASE(samplers[1]);
+        //SAFE_RELEASE(samplers[0]);
+        //SAFE_RELEASE(samplers[1]);
         delete states;
     }
 

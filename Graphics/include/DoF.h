@@ -17,7 +17,7 @@ namespace Graphics
     private:
 
         DirectX::CommonStates *states;
-        ID3D11SamplerState * samplers[2];
+        //ID3D11SamplerState * samplers[2];
     };
 }
 
