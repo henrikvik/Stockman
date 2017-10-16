@@ -70,6 +70,8 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 {
 	Enemy *enemy;
 	int newIndex;
+	std::vector<DirectX::SimpleMath::Vector3*> path;
+
 	for (int i = 0; i < m_enemies[index].size(); ++i)
 	{
 		enemy = m_enemies[index][i];
@@ -84,6 +86,10 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 				std::swap(m_enemies[index][i], 
 					m_enemies[index][m_enemies[index].size() - 1]);
 				m_enemies[index].pop_back();
+			}
+			else
+			{
+
 			}
 		}
 
@@ -166,6 +172,10 @@ void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
 		m_enemies[0].push_back(enemy);
 	else
 		m_enemies[index].push_back(enemy);
+
+#ifndef DEBUG_PATH
+	enemy->getBehavior()->getPath().initDebugRendering(); // todo change to enemy->initDebugPath()
+#endif
 }
 
 void EntityManager::spawnTrigger(int id, btVector3 const &pos,

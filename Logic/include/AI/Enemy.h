@@ -26,11 +26,15 @@ namespace Logic
 	class Enemy : public Entity 
 	{
 		private:
-			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
-			float m_moveSpeedMod;									// Variables for effect modifiers
-			int m_enemyType;
-			ProjectileManager *m_projectiles;
 			// Animation m_animation;
+
+			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
+			float m_moveSpeedMod;									// modifiers
+
+			int m_enemyType;
+
+			ProjectileManager *m_projectiles;
+			Behavior *m_behavior;
 		public:	
 			enum ENEMY_TYPE
 			{
@@ -66,9 +70,10 @@ namespace Logic
 			int getEnemyType() const;
 
 			void spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed);
+
 			ProjectileManager* getProjectileManager() const;
+			Behavior* getBehavior() const;
 		protected: //for testing
-			Logic::Behavior *m_behavior;
 			//btRigidBody *weakPoint;
 	};
 }

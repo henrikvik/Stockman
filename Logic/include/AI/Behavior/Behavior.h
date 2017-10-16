@@ -60,6 +60,8 @@ namespace Logic {
 		};
 
 		Behavior(PathingType type);
+		Behavior(Behavior const &behavior) = delete;
+		Behavior* operator=(Behavior const &other) = delete;
 		virtual ~Behavior();
 
 		void update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,

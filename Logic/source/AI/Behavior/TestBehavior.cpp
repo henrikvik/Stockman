@@ -7,5 +7,6 @@ TestBehavior::TestBehavior() : Behavior(PathingType::CHASING)
 {
 	setRoot(NodeType::ACTION, 0, [](RunIn &in) -> bool {
 		in.behavior->walkPath(in);
+		return true;
 	});
 }

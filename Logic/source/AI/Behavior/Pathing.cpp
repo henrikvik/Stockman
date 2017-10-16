@@ -1,4 +1,5 @@
 #include <AI\Behavior\Pathing.h>
+#include <Graphics\include\Renderer.h>
 using namespace Logic;
 
 Pathing::Pathing()
@@ -23,6 +24,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>& Logic::Pathing::getPath()
 
 const DirectX::SimpleMath::Vector3& Pathing::getNode() const
 {
+	if (m_path.empty()) return { 0,0,0 }; // for testing
 	return *m_path[m_currentNode];
 }
 

@@ -68,7 +68,7 @@ void Enemy::debugRendering(Graphics::Renderer & renderer)
 {
 	if (m_behavior)
 	{
-		m_behavior->debugRendering(renderer);
+		m_behavior->getPath().renderDebugging(renderer);
 	}
 }
 
@@ -89,7 +89,6 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 	{
 		m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
 	}
-		
 }
 
 float Enemy::getHealth() const
@@ -134,4 +133,9 @@ void Enemy::spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed)
 ProjectileManager * Enemy::getProjectileManager() const
 {
 	return m_projectiles;
+}
+
+Behavior* Enemy::getBehavior() const
+{
+	return m_behavior;
 }
