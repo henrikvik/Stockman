@@ -53,8 +53,13 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 	for (int i = 0; i < m_enemies.size(); i++)
 	{
-		updateEnemies(i, player, deltaTime,
-			(i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0);
+		if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) {
+			updateEnemies(i, player, deltaTime);
+		}
+		else
+		{
+			updateEnemiesAndPath(i, player, deltaTime);
+		}
 	}
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
@@ -65,45 +70,56 @@ void EntityManager::update(Player const &player, float deltaTime)
 	m_triggerManager.update(deltaTime);
 }
 
-void EntityManager::updateEnemies(int index, Player const &player, float deltaTime,
-	bool updatePath)
+void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	Enemy *enemy;
 	int newIndex;
-	std::vector<DirectX::SimpleMath::Vector3*> path;
 
 	for (int i = 0; i < m_enemies[index].size(); ++i)
 	{
 		enemy = m_enemies[index][i];
-		enemy->update(player, deltaTime, m_enemies[index], updatePath);
+		updateEnemy(enemy, index, player, deltaTime);
+	}
+}
 
-		if (updatePath)
+void EntityManager::updateEnemiesAndPath(int index, Player const &player, float deltaTime)
+{
+	Enemy *enemy;
+	int newIndex;
+
+	AStar &aStar = AStar::singleton();
+	std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
+
+	for (int i = 0; i < m_enemies[index].size(); ++i)
+	{
+		enemy = m_enemies[index][i];
+		updateEnemy(enemy, index, player, deltaTime);
+
+		newIndex = AStar::singleton().getIndex(*enemy);
+		if (newIndex != -1 && newIndex != index)
 		{
-			newIndex = AStar::singleton().getIndex(*enemy);
-			if (newIndex != -1 && newIndex != index)
-			{
-				m_enemies[newIndex].push_back(enemy);
-				std::swap(m_enemies[index][i], 
-					m_enemies[index][m_enemies[index].size() - 1]);
-				m_enemies[index].pop_back();
-			}
-			else
-			{
-
-			}
-		}
-
-		if (enemy->getHealth() <= 0) 
-		{
-			// Adds the score into the combo machine
-			ComboMachine::Get().Kill(Enemy::ENEMY_TYPE(enemy->getEnemyType()));
-			enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
-
-			m_deadEnemies.push_back(enemy);
+			m_enemies[newIndex].push_back(enemy);
 			std::swap(m_enemies[index][i],
 				m_enemies[index][m_enemies[index].size() - 1]);
 			m_enemies[index].pop_back();
-		}
+			enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
+		}	
+	}
+}
+
+void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, float deltaTime)
+{
+	enemy->update(player, deltaTime, m_enemies[index]);
+
+	if (enemy->getHealth() <= 0)
+	{
+		// Adds the score into the combo machine
+		ComboMachine::Get().Kill(Enemy::ENEMY_TYPE(enemy->getEnemyType()));
+		enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
+
+		std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);
+		m_deadEnemies.push_back(enemy);
+		m_enemies[index].pop_back();
 	}
 }
 
@@ -204,7 +220,7 @@ int EntityManager::getEnemiesAlive() const
     return m_enemies.size();
 }
 
-void EntityManager::clear() 
+void EntityManager::clear()
 {
 	deleteData();
 

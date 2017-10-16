@@ -27,7 +27,15 @@ AStar::~AStar()
 std::vector<const DirectX::SimpleMath::Vector3*>
 	AStar::getPath(Entity const &enemy, Entity const &target)
 {
-//	PROFILE_BEGIN("AStar::getPath()");
+	DirectX::SimpleMath::Vector3 offset(0, 5, 0);
+	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset);
+	int targetIndex = navigationMesh.getIndex(target.getPosition() + offset);
+	return getPath(startIndex, targetIndex);
+}
+
+std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
+{
+	PROFILE_BEGIN("AStar::getPath()");
 
 	// all nodes in navMesh
 	std::vector<DirectX::SimpleMath::Vector3> nodes =
@@ -44,17 +52,12 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	// openlist and a test offset
 	auto comp = [](NavNode *fir, NavNode *sec) { return *fir > *sec; };
 	std::priority_queue<NavNode*, std::vector<NavNode*>, decltype(comp)> openList(comp);
-	DirectX::SimpleMath::Vector3 offset(0, 5, 0);
-
-	// get indicies
-	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset);
-	// printf("StartIndex: %d, End index: %d (AStar.cpp:%d)\n", startIndex, endIndex, __LINE__);
 
 	// test special cases
 	if (targetIndex > -1 && startIndex == targetIndex)
 		return reconstructPath(&navNodes[startIndex]);
 	if (startIndex == targetIndex || startIndex == -1 || targetIndex == -1)
-		return { };
+		return {};
 
 	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[targetIndex]);
 	navNodes[startIndex].explored = true;
@@ -115,11 +118,16 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	{
 		printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
 			"Lukas or something (AStar.cpp:%d)\n", __LINE__);
-		return { };
+		return {};
 	}
 
-//	PROFILE_END();
+	PROFILE_END();
 	return reconstructPath(currentNode);
+}
+
+std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int fromIndex)
+{
+	return getPath(fromIndex, targetIndex);
 }
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode *endNode)

@@ -51,8 +51,7 @@ void Enemy::setProjectileManager(ProjectileManager * projectileManager)
 	m_projectiles = projectileManager;
 }
 
-void Enemy::update(Player const &player, float deltaTime,
-	std::vector<Enemy*> const &closeEnemies, bool updatePath) {
+void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 

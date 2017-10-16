@@ -49,7 +49,7 @@ namespace Logic
 			void setProjectileManager(ProjectileManager *projectileManager);
 
 			virtual void update(Player const &player, float deltaTime,
-				std::vector<Enemy*> const &closeEnemies, bool updatePath = false);
+				std::vector<Enemy*> const &closeEnemies);
 			virtual void useAbility(Entity const &target) {};
 			virtual void updateDead(float deltaTime) = 0;
 			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
