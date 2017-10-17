@@ -21,6 +21,9 @@ namespace Graphics
         //ID3D11SamplerState * samplers[2];
 
         void createFullScreenQuad(ID3D11Device * device);
+        ShaderResource blur1col0;
+        ShaderResource blur1col1;
+        ShaderResource blur2Final;
     };
 }
 

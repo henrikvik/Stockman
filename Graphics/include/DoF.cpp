@@ -1,7 +1,10 @@
 #include "DoF.h"
 namespace Graphics
 {
-    DoF::DoF(ID3D11Device * device)
+    DoF::DoF(ID3D11Device * device):
+        blur1col0(device, WIN_WIDTH, WIN_HEIGHT),
+        blur1col1(device, WIN_WIDTH, WIN_HEIGHT),
+        blur2Final(device, WIN_WIDTH, WIN_HEIGHT)
     {
 
         states = new DirectX::CommonStates(device);
@@ -24,11 +27,72 @@ namespace Graphics
             states->LinearClamp()
         };
 
-        context->PSSetSamplers(0, 2, samplers);
-        UINT stride = 16, offset = 0;
+        
+        static UINT stride = 16, offset = 0;
         context->IASetVertexBuffers(0,1, &vertexBuffer, &stride, &offset);
 
 
+        //calculate CoC pass
+        ID3D11ShaderResourceView * srv[] =
+        {
+            *colorBuffer,
+            *depthBuffer
+        };
+        context->PSSetSamplers(0, 2, samplers);
+        context->PSSetShaderResources(0, 2, srv);
+
+        context->OMSetRenderTargets(1, blur2Final, nullptr);
+
+        static ID3D11RenderTargetView * rtvNULL = nullptr;
+        context->OMSetRenderTargets(1, &rtvNULL, nullptr);
+
+        //blur pass 1
+        context->PSSetShaderResources(0, 1, blur2Final);
+
+
+
+        ID3D11RenderTargetView * rtv[] =
+        {
+            blur1col0,
+            blur1col1
+        };
+        context->OMSetRenderTargets(2, rtv, nullptr);
+
+
+
+
+        static ID3D11ShaderResourceView * srvNULL = nullptr;
+        context->PSSetShaderResources(0, 1, &srvNULL);
+        static ID3D11RenderTargetView * rtvNULLAr[] =
+        {
+            nullptr,
+            nullptr
+        };
+        context->OMSetRenderTargets(2, rtvNULLAr, nullptr);
+
+
+        //blur pass 2
+        context->PSSetShaderResources(0, 1, blur1col0);
+        context->PSSetShaderResources(1, 1, blur1col1);
+
+
+        context->OMSetRenderTargets(1, blur2Final, nullptr);
+
+
+        context->OMSetRenderTargets(1, &rtvNULL, nullptr);
+        static ID3D11ShaderResourceView * srvNULL[] =
+        {
+            nullptr,
+            nullptr
+        };
+
+
+        //glue pass
+        context->PSSetShaderResources(0, 1, blur2Final);
+
+        context->OMSetRenderTargets(1, *outputBuffer, nullptr);
+
+        context->OMSetRenderTargets(1, &rtvNULL, nullptr);
     }
 
 
