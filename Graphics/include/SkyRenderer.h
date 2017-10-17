@@ -28,89 +28,7 @@ namespace Graphics
 		ID3D11SamplerState * getSampler() { return this->shadowSampler; };
 
 		void drawShadows(ID3D11DeviceContext * context, Graphics::Shader * shader);
-
 	private:
-		/*
-		struct  SkyCube
-		{
-			ID3D11Buffer * vertexBuffer;
-			ID3D11Buffer * transformBuffer;
-			SkyCube(ID3D11Device * device)
-			{
-				DirectX::SimpleMath::Vector3 vertices[] =
-				{
-					// FRONT
-					 { -1, -1, -1},
-					 { -1,  1, -1},
-					 {  1, -1, -1},
-					 {  1, -1, -1},
-					 { -1,  1, -1},
-					 {  1,  1, -1},
-					 // TOP						
-					  { -1,  1, -1},
-					  { -1,  1,  1},
-					  {  1,  1, -1},
-					  {  1,  1, -1},
-					  { -1,  1,  1},
-					  {  1,  1,  1},
-					  // LEFT						
-					   { -1, -1,  1},
-					   { -1,  1,  1},
-					   { -1, -1, -1},
-					   { -1, -1, -1},
-					   { -1,  1,  1},
-					   { -1,  1, -1},
-					   // RIGHT					
-						{ 1,  1,   1},
-						{ 1, -1,   1},
-						{ 1, -1,  -1},
-						{ 1,  1,   1},
-						{ 1, -1,  -1},
-						{ 1,  1,  -1},
-						// BACK			
-						 { -1,  1,  1},
-						 { -1, -1,  1},
-						 {  1, -1,  1},
-						 { -1,  1,  1},
-						 {  1, -1,  1},
-						 {  1,  1,  1},
-						 // BOTTOM					
-						  { -1, -1,  1},
-						  { -1, -1, -1},
-						  {  1, -1, -1},
-						  { -1, -1,  1},
-						  {  1, -1, -1},
-						  {  1, -1,  1}
-				};
-
-				D3D11_SUBRESOURCE_DATA subData = {};
-				subData.pSysMem = vertices;
-
-				D3D11_BUFFER_DESC desc = { 0 };
-				desc.ByteWidth = sizeof(vertices);
-				desc.Usage = D3D11_USAGE_IMMUTABLE;
-				desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-				device->CreateBuffer(&desc, &subData, &vertexBuffer);
-
-				desc.ByteWidth = sizeof(DirectX::SimpleMath::Matrix);
-				desc.Usage = D3D11_USAGE_DYNAMIC;
-				desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-				desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-
-				device->CreateBuffer(&desc, NULL, &transformBuffer);
-			}
-
-
-
-			~SkyCube()
-			{
-				vertexBuffer->Release();
-				transformBuffer->Release();
-			}
-		};
-		*/
-
 		ModelInfo skySphere;
 
 		Shader shader;
@@ -122,7 +40,6 @@ namespace Graphics
 
 		ConstantBuffer<DirectX::SimpleMath::Matrix> sphereTransformBuffer;
 
-		//SkyCube cube;
 		Sun sun;
 
 		void createSampler(ID3D11Device * device);
