@@ -102,6 +102,8 @@ private:
 
 	Graphics::Shader shader;
 	ID3D11ShaderResourceView * srv;
+	ID3D11ShaderResourceView * srv2;
+
 	Graphics::DepthStencil shadowDepthStencil;
 	ID3D11SamplerState* shadowSampler;
 

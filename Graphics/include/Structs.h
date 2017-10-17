@@ -22,6 +22,9 @@ namespace Graphics
 		GRAPPLEPOINT,
 		GRASS,
 		BUSH,
+		CLOUDS,
+		MEGAGRASS,
+
     };
 
 	struct ModelInfo
@@ -41,6 +44,14 @@ namespace Graphics
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
 		bool backFaceCulling = true;
+	};
+
+	struct FoliageRenderInfo
+	{
+		bool render;
+		ModelID meshId;
+		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = false;
 	};
 
     struct RenderDebugInfo
