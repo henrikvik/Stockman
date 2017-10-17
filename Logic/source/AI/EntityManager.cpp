@@ -31,6 +31,7 @@ EntityManager::EntityManager()
 EntityManager::~EntityManager()
 {
 	deleteData();
+	deleteThreads();
 }
 
 void EntityManager::allocateData()
@@ -40,7 +41,7 @@ void EntityManager::allocateData()
 
 void EntityManager::resetThreads()
 {
-	for (auto *t : threads)
+	for (std::thread *t : threads)
 	{
 		if (t)
 		{
@@ -53,14 +54,26 @@ void EntityManager::resetThreads()
 
 void EntityManager::deleteThreads()
 {
-	for (auto *t : threads)
-		delete t;
+	for (std::thread *t : threads)
+	{
+		if (t)
+		{
+			deleteThread(t);
+		}
+	}
 }
 
 void EntityManager::joinAllThreads()
 {
 	for (auto *t : threads)
 		t->join();
+}
+
+void EntityManager::deleteThread(std::thread *t)
+{
+	if (t->joinable())
+		t->join();
+	delete t;
 }
 
 void EntityManager::deleteData()
@@ -82,19 +95,20 @@ void EntityManager::update(Player const &player, float deltaTime)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) {
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0) {
 				updateEnemies(i, player, deltaTime);
 			}
 			else
 			{
 				// seperate threads based on i, but join them before end
-				if (threads[i % NR_OF_THREADS])
+				std::thread *t = threads[i % NR_OF_THREADS];
+				if (t)
 				{
-					threads[i % NR_OF_THREADS]->join();
-					delete threads[i % NR_OF_THREADS];
+					deleteThread(t);
 				}
-				std::thread *t = new std::thread(EntityManager::updateEnemiesAndPath, this, i, std::ref(player), deltaTime);
-				threads[i & NR_OF_THREADS] = t;
+				t = newd std::thread(EntityManager::updateEnemiesAndPath, this,
+					i, std::ref(player), deltaTime);
+				threads[i % NR_OF_THREADS] = t;
 			}
 		}
 	}
@@ -120,7 +134,7 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 
 	AStar &aStar = AStar::singleton();
 	std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
-	auto enemies = manager->m_enemies;
+	auto &enemies = manager->m_enemies;
 
 	for (int i = 0; i < enemies[index].size(); ++i)
 	{

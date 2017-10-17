@@ -49,6 +49,7 @@ namespace Logic
 		void resetThreads();
 		void deleteThreads();
 		void joinAllThreads();
+		void deleteThread(std::thread *t);
 	public:
 
 		EntityManager();
