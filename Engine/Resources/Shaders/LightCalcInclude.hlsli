@@ -1,5 +1,11 @@
 #include "ShaderConstants.hlsli"
 
+//If you want to include this file this is the allocated resources:
+//cbuffer register 0, 1, 2 and 3
+//texture 0, 1, 2, 3, 10, 11, 12 and 13
+//samplerState 0 and 1
+//Use other registers for YOUR resources.
+
 #define BLOCK_SIZE 16.f
 #define NUM_LIGHTS 8
 
@@ -12,13 +18,13 @@ cbuffer Camera : register(b0)
     float4 camPos;
 }
 
-
 //used by PS
 cbuffer LightBuffer : register(b1)
 {
     float4 dirLightPos;
     float3 dirLightColor;
-    float dirFade;
+    float time;
+    float fade;
 }
 
 //Used by PS
@@ -26,6 +32,12 @@ cbuffer BulletTimeTimer : register(b2)
 {
     float bulletTimer;
 };
+
+//used by VS
+cbuffer LightMatBuffer : register(b3)
+{
+    float4x4 lightVP;
+}
 
 //Used by PS
 struct Light
@@ -52,7 +64,7 @@ Texture2D specularMap : register(t12);
 Texture2D glowMap : register(t13);
 
 //Returns the shadow amount of a given position
-float getShadowValue(float3 lightPos, int sampleCount = 1)
+float calculateShadowValue(float3 lightPos, int sampleCount = 1)
 {
     lightPos.x = (lightPos.x * 0.5f) + 0.5f;
     lightPos.y = (lightPos.y * -0.5f) + 0.5f;
@@ -101,37 +113,21 @@ float3 getNormalMappedNormal(float3 tangent, float3 biTangent, float3 normal, fl
     return normalize(mul(normalSample, tangentMatrix));
 }
 
-float3 calculateLight(float3 wPos, float3 lightPos, float3 NDCPos, float2 uv, float3 normal)
+//Specularity is currently broken.
+float3 calculateSpecularity(float3 wPos, float3 lightPos, float3 NDCPos, float2 uv, float3 normal, float shadowValue = 1)
 {
     uint2 tile = uint2(floor(NDCPos.xy / BLOCK_SIZE));
     uint offset = LightGrid[tile].x;
     uint count = LightGrid[tile].y;
-
-    float3 colorSample = diffuseMap.Sample(Sampler, uv);
+    
     float3 specularSample = specularMap.Sample(Sampler, uv);
-
-    ///////////////////////////////DIRECTIONAL LIGHT///////////////////////////////////////
-    float3 lightDir = normalize(camPos.xyz - dirLightPos.xyz);
-    float diffuseFactor = saturate(dot(normal, normalize(-lightDir)));
-    float3 directionalDiffuse = diffuseFactor * dirLightColor;
-
+    
     float3 posToLightDir = dirLightPos.xyz - wPos.xyz;
     float3 reflectThingDir = normalize(posToLightDir + (camPos.xyz - wPos.xyz));
     float3 directionalSpecularity = pow(saturate(dot(normal, reflectThingDir)), 500) * dirLightColor;
-
     
-    float shadow = getShadowValue(lightPos, 2);
+    directionalSpecularity *= fade * shadowValue;
 
-    directionalDiffuse *= dirFade * shadow;
-    directionalSpecularity *= dirFade * shadow;
-
-    /////////////////////////////DIRECTIONAL LIGHT END///////////////////////////////////////
-
-
-    ////////////////////////////////POINT LIGHTS//////////////////////////////////////////////
-
-
-    float3 pointDiffuse = 0;
     float3 pointSpecular = 0;
 
     for (uint i = 0; i < count; i++)
@@ -146,21 +142,52 @@ float3 calculateLight(float3 wPos, float3 lightPos, float3 NDCPos, float2 uv, fl
         float3 normalizedLight = posToLight / distance;
         float attenuation = 1.0f - smoothstep(0, light.range, distance);
 
-        pointDiffuse += saturate(dot(normal, posToLight)) * light.color * attenuation;
-
         pointSpecular += pow(saturate(dot(normal, reflectThing)), 1000) * light.color * attenuation;
     }
-    //////////////////////////////POINT LIGHTS END//////////////////////////////////////////////
 
-    float3 finalDiffuse = saturate(pointDiffuse + directionalDiffuse) * colorSample;
-    float3 finalSpecular = saturate(pointSpecular + pointDiffuse) * specularSample;
-    
-    float3 ambient = float3(0.2, 0.2, 0.3) * colorSample;
+    float3 finalSpecular = saturate(pointSpecular + directionalSpecularity) * specularSample;
 
-    float3 lighting = saturate(finalDiffuse + finalSpecular + ambient);
+    return finalSpecular;
+}
+
+float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2 uv, float3 normal, float shadowValue = 1)
+{
+    uint2 tile = uint2(floor(NDCPos.xy / BLOCK_SIZE));
+    uint offset = LightGrid[tile].x;
+    uint count = LightGrid[tile].y;
+
+    float4 colorSample = diffuseMap.Sample(Sampler, uv);
+
+    float3 lightDir = normalize(camPos.xyz - dirLightPos.xyz);
+    float diffuseFactor = saturate(dot(normal, normalize(-lightDir)));
+    float3 directionalDiffuse = diffuseFactor * dirLightColor;
+
+    directionalDiffuse *= fade * shadowValue;
+
+    float3 pointDiffuse = 0;
+
+    for (uint i = 0; i < count; i++)
+    {
+        uint idx = LightIndexList[offset + i];
+        Light light = Lights[idx];
+
+        float3 posToLight = light.positionWS - wPos.xyz;
+
+        float distance = length(posToLight);
+        float3 normalizedLight = posToLight / distance;
+        float attenuation = 1.0f - smoothstep(0, light.range, distance);
+
+        pointDiffuse += saturate(dot(normal, posToLight)) * light.color * attenuation;
+    }
+
+    float4 finalDiffuse = float4(saturate(pointDiffuse + directionalDiffuse).xyz, 1) * colorSample;
     
-    lighting = adjustSaturation(lighting, bulletTimer);
-    lighting = adjustContrast(lighting, 2 - bulletTimer, 0.3);
+    float4 ambient = float4(0.2, 0.2, 0.3, 1.0) * colorSample;
+
+    float4 lighting = saturate(finalDiffuse + ambient);
+    
+    lighting.xyz = adjustSaturation(lighting.xyz, bulletTimer);
+    lighting.xyz = adjustContrast(lighting.xyz, 2 - bulletTimer, 0.3);
 
     return lighting;
 }

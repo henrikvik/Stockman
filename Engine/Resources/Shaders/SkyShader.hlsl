@@ -21,12 +21,13 @@ cbuffer transform : register(b1)
     float4x4 transform;
 };
 
-cbuffer colorChange : register(b2)
+cbuffer LightBuffer : register(b1)
 {
-    float4 nope;
-    float3 color;
-	float time;
-};
+    float4 dirLightPos;
+    float3 dirLightColor;
+    float time;
+    float fade;
+}
 
 cbuffer BulletTimeTimer : register(b3)
 {
