@@ -80,12 +80,12 @@ namespace Graphics
 
 
         context->OMSetRenderTargets(1, &rtvNULL, nullptr);
-        static ID3D11ShaderResourceView * srvNULL[] =
+        static ID3D11ShaderResourceView * srvNULLAr[] =
         {
             nullptr,
             nullptr
         };
-
+        context->PSSetShaderResources(0, 2, srvNULLAr);
 
         //glue pass
         context->PSSetShaderResources(0, 1, blur2Final);
@@ -93,6 +93,7 @@ namespace Graphics
         context->OMSetRenderTargets(1, *outputBuffer, nullptr);
 
         context->OMSetRenderTargets(1, &rtvNULL, nullptr);
+        context->PSSetShaderResources(0, 1, &srvNULL);
     }
 
 
