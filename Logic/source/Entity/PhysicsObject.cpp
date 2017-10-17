@@ -2,21 +2,24 @@
 
 using namespace Logic;
 
-PhysicsObject::PhysicsObject(btRigidBody * body, btVector3 halfExtent, Graphics::ModelID modelID)
+PhysicsObject::PhysicsObject(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID)
 	: Object(modelID)
 {
-	// Connecting Physics with Logic
-	m_body = body;
-	m_body->setUserPointer(this);
+	if (body)
+	{
+		// Connecting Physics with Logic
+		m_body = body;
+		m_body->setUserPointer(this);
 
-	// Saving halfextent
-	m_halfextent = halfExtent;
+		// Saving halfextent
+		m_halfextent = halfExtent;
 
-	// Saving ptr to transform
-	m_transform = &m_body->getWorldTransform();
+		// Saving ptr to transform
+		m_transform = &m_body->getWorldTransform();
 
-	// Get the new transformation from bulletphysics and putting in graphics (for things that doesn't use the update loop things)
-	setWorldTranslation(getTransformMatrix());
+		// Get the new transformation from bulletphysics and putting in graphics (for things that doesn't use the update loop things)
+		setWorldTranslation(getTransformMatrix());
+	}
 }
 
 PhysicsObject::~PhysicsObject()

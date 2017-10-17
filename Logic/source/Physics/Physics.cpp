@@ -22,6 +22,7 @@ Physics::~Physics()
 {
 	delete renderDebug.points;
 	clear();
+	delete ghostPairCB;
 }
 
 bool Physics::init()
@@ -29,7 +30,8 @@ bool Physics::init()
 	// World gravity
 	this->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
 	this->setLatencyMotionStateInterpolation(true);
-
+	ghostPairCB = new btGhostPairCallback();
+	m_broadphasePairCache->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCB);
 	return true;
 }
 
@@ -61,13 +63,14 @@ void Physics::update(GameTime gameTime)
 {
 	// Stepping the physics
 	PROFILE_BEGIN("Stepping Physics");
-	
+
 	if (gameTime.dtReal * 0.001f > (1.f / 60.f))
 		this->stepSimulation(1.f / 60.f, 0, 0);
 	else
 		this->stepSimulation(gameTime.dtReal * 0.001f, 0, 0);
 
 	PROFILE_END();
+
 	PROFILE_BEGIN("Collision Handling");
 
 	// Collisions
@@ -274,6 +277,29 @@ btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
 	return body;
 }
 
+btPairCachingGhostObject* Physics::createPlayer(btCapsuleShape* capsule, btVector3 pos)
+{
+	btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
+
+	ghostObject->setCollisionShape(capsule);
+	ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
+
+	// Rotation
+	btQuaternion rotation;
+	rotation.setEulerZYX(0.f, 0.f, 0.f);
+	ghostObject->getWorldTransform().setRotation(rotation);
+
+	// Position
+	btTransform transform = ghostObject->getWorldTransform();
+	transform.setOrigin(pos);
+	ghostObject->setWorldTransform(transform);
+
+	// Adding to physics world
+	this->addCollisionObject(ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter);
+
+	return ghostObject;
+}
+
 // Only used for debugging, draws all collision shapes onto screen
 void Physics::render(Graphics::Renderer & renderer)
 {
@@ -283,24 +309,31 @@ void Physics::render(Graphics::Renderer & renderer)
 	for (int i = this->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
 		btCollisionObject* obj = this->getCollisionObjectArray()[i];
-		btRigidBody* body = btRigidBody::upcast(obj);
-		btCollisionShape* shape = obj->getCollisionShape();
+		if (btGhostObject* ghostObject = dynamic_cast<btGhostObject*>(obj))
+		{
+			renderGhostCapsule(renderer, dynamic_cast<btCapsuleShape*>(ghostObject->getCollisionShape()), ghostObject);
+		}
+		else
+		{
+			btRigidBody* body = btRigidBody::upcast(obj);
+			btCollisionShape* shape = obj->getCollisionShape();
 
-		// Render Boxes
-		if (btBoxShape* bs = dynamic_cast<btBoxShape*>(shape))
-			renderCube(renderer, bs, body);
+			// Render Boxes
+			if (btBoxShape* bs = dynamic_cast<btBoxShape*>(shape))
+				renderCube(renderer, bs, body);
 
-		// Render Spheres
-		else if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
-			renderSphere(renderer, ss, body);
+			// Render Spheres
+			else if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
+				renderSphere(renderer, ss, body);
 
-		// Render Cylinders
-		else if (btCylinderShape* cs = dynamic_cast<btCylinderShape*>(shape))
-			renderCylinder(renderer, cs, body);
+			// Render Cylinders
+			else if (btCylinderShape* cs = dynamic_cast<btCylinderShape*>(shape))
+				renderCylinder(renderer, cs, body);
 
-		// Render Capsules
-		else if (btCapsuleShape* cs = dynamic_cast<btCapsuleShape*>(shape))
-			renderCapsule(renderer, cs, body);
+			// Render Capsules
+			else if (btCapsuleShape* cs = dynamic_cast<btCapsuleShape*>(shape))
+				renderCapsule(renderer, cs, body);
+		}
 	}
 }
 
@@ -402,6 +435,15 @@ void Physics::renderCylinder(Graphics::Renderer & renderer, btCylinderShape * cs
 void Physics::renderCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btRigidBody* body)
 {
 	btVector3 origin = body->getWorldTransform().getOrigin();
+	btVector3 half = cs->getImplicitShapeDimensions();
+
+	renderRectangleAround(renderer, origin, half);
+}
+
+// Draws a cube around the capsule
+void Physics::renderGhostCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btGhostObject* ghostObject)
+{
+	btVector3 origin = ghostObject->getWorldTransform().getOrigin();
 	btVector3 half = cs->getImplicitShapeDimensions();
 
 	renderRectangleAround(renderer, origin, half);

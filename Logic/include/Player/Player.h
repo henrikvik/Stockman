@@ -20,6 +20,10 @@
 #include <Projectile\ProjectileManager.h>
 #include <Graphics\include\Structs.h>
 
+
+#define PLAYER_GRAVITY					PHYSICS_GRAVITY * 0.0000015f
+#define PLAYER_SIZE_RADIUS				0.5f
+#define PLAYER_SIZE_HEIGHT				2.f
 #define PLAYER_STARTING_HP				3
 #define PLAYER_MOUSE_SENSETIVITY		0.01f
 #define PLAYER_MOVEMENT_MAX_SPEED		0.015f
@@ -30,7 +34,7 @@
 #define PLAYER_STRAFE_ANGLE				0.95f
 #define PLAYER_FRICTION					20.f
 #define PLAYER_AIR_FRICTION				1.f
-#define PLAYER_JUMP_SPEED				7.f
+#define PLAYER_JUMP_SPEED				0.008f
 #define PLAYER_BHOP_TIMER				10.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
@@ -47,6 +51,8 @@ namespace Logic
 			CROUCHING,
 			IN_AIR
 		};
+
+		btKinematicCharacterController* m_charController;
 
 		//ActionManager m_actionManager;
 		WeaponManager m_weaponManager;
@@ -72,6 +78,9 @@ namespace Logic
 		btVector3 m_wishDir;
 		float m_wishDirForward;
 		float m_wishDirRight;
+
+		bool m_wallColl;
+		btVector3 m_wallNormal;
 
 		// Mouse
 		float m_mouseSens;
@@ -128,6 +137,9 @@ namespace Logic
 		void takeDamage(int damage, bool damageThroughProtection = false);
 		int getHP() const;
 
+		DirectX::SimpleMath::Matrix getTransformMatrix() const;
+		virtual DirectX::SimpleMath::Vector3 getPosition() const;
+		virtual btVector3 getPositionBT() const;
 		float getMoveSpeed() const;
 		void setMoveSpeed(float speed);
 		void setMoveDirection(btVector3 moveDir);
