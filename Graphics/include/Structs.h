@@ -21,10 +21,10 @@ namespace Graphics
 		ENEMYGRUNT,
 		GRAPPLEPOINT,
 		GRASS,
+		SKY_SPHERE,
 		BUSH,
 		CLOUDS,
-		MEGAGRASS,
-		SKY_SPHERE
+		MEGAGRASS
 
     };
 
