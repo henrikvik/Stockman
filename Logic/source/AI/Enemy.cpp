@@ -82,8 +82,8 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 {
 	int flags = effect.getStandards()->flags;
 
-	//if (flags & Effect::EFFECT_KILL)
-	//	damage(m_health);
+	if (flags & Effect::EFFECT_KILL)
+		damage(m_health);
 	if (flags & Effect::EFFECT_ON_FIRE)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)

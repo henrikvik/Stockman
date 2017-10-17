@@ -26,7 +26,8 @@ enum SFX
 // Put all identifier for music here
 enum MUSIC 
 {
-	TEST_MUSIC	
+	TEST,
+	ENRAGE
 };
 
 // Keeps track of everything about a specific sound
