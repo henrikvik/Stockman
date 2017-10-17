@@ -48,7 +48,9 @@ namespace Logic
 		~EntityManager();
 
 		void update(Player const &player, float deltaTime);
-		void updateEnemies(int index, Player const &player, float delatTime, bool updatePath);
+		void updateEnemies(int index, Player const &player, float deltaTime);
+		void updateEnemiesAndPath(int index, Player const &player, float deltaTime);
+		void updateEnemy(Enemy *enemy, int index, Player const &player, float deltaTime);
 		void clear();
 
 		void spawnWave(Physics &physics, ProjectileManager *projectiles);

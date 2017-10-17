@@ -83,7 +83,7 @@ void Player::reset()
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-#ifdef _GOD_MODE
+#ifdef GOD_MODE
 	if (!(dynamic_cast<Projectile*>(&other)) &&
 		!(dynamic_cast<Trigger*>(&other)) &&
 		!(dynamic_cast<Enemy*> (&other)) &&
@@ -161,7 +161,6 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
-		printf("Ammo pack!\n");
 		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
 		int magSize		= wp->getMagSize();
 		int currentAmmo = wp->getAmmo();
@@ -191,7 +190,7 @@ void Player::readFromFile()
 
 void Player::takeDamage(int damage, bool damageThroughProtection)
 {
-#ifndef _GOD_MODE
+#ifndef GOD_MODE
 	if (damageThroughProtection ||
 		getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
 		m_hp -= damage;
@@ -206,6 +205,13 @@ int Player::getHP() const
 void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
+
+	// Updates listener info for sounds
+	btVector3 up		= { 0, 1, 0 };
+	btVector3 forward	= getForwardBT();
+	btVector3 right		= up.cross(forward);
+	btVector3 actualUp	= right.cross(forward);
+	m_listenerData.update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, getTransform().getOrigin());
 
     //updates hudInfo with the current info
 	info.score = ComboMachine::Get().GetCurrentScore();
@@ -623,4 +629,9 @@ DirectX::SimpleMath::Vector3 Player::getForward()
 btVector3 Player::getMoveDirection()
 {
 	return m_moveDir;
+}
+
+ListenerData & Logic::Player::getListenerData()
+{
+	return m_listenerData;
 }

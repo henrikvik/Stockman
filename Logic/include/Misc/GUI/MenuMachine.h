@@ -35,6 +35,9 @@ namespace Logic
 		std::string* m_highScoreNamePTR;
 		std::string m_highScoreName;
 		bool m_typing;
+        bool blinkMarker;
+        float  blinkTimer;
+        float deleteCharCD;
 		int m_cardUpgrade;
 	public:
 		MenuMachine();

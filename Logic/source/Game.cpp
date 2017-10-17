@@ -1,7 +1,6 @@
 #include "Game.h"
 #include <iostream>
 #include <Engine\Typing.h>
-#define _GOD_MODE
 
 using namespace Logic;
 
@@ -63,9 +62,12 @@ void Game::init()
 	m_cardManager->init();
 	m_cardManager->createDeck(NUMBER_OF_EACH_CARD);
 
-	// Resetting Combo's
+	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
+
+	// Initializing Sound
+	NoiseMachine::Get().init();
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine(m_highScoreManager->getName());
@@ -83,6 +85,7 @@ void Game::clear()
 	delete m_highScoreManager;
 	m_projectileManager->clear();
 	delete m_projectileManager;
+	NoiseMachine::Get().clear();
 }
 
 void Game::reset()
@@ -154,6 +157,13 @@ void Game::update(float deltaTime)
 		{
 			break;
 		}
+		else
+		{
+			/* Temp sound testing */
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::J)) NoiseMachine::Get().playSFX(SFX::BOING);
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K)) NoiseMachine::Get().playMusic(MUSIC::NES);
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L)) NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MASTER, 0);
+		}
 		temp = m_cardManager->pick(m_menu->getChoiceUpgrade());
 
 		if (temp.getName().compare("") != 0 && temp.getDescription().compare("") != 0)
@@ -201,6 +211,10 @@ void Game::gameRunTime(float deltaTime)
 {
 	ComboMachine::Get().Update(deltaTime);
 	waveUpdater();
+
+	PROFILE_BEGIN("Sound");
+	NoiseMachine::Get().update(m_player->getListenerData());
+	PROFILE_END();
 
 	PROFILE_BEGIN("Player");
 	m_player->updateSpecific(m_gameTime.dt);

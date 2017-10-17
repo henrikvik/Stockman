@@ -16,6 +16,7 @@
 #include <Misc\CardManager.h>
 #include <Misc\HighScoreManager.h>
 #include <Misc\ComboMachine.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 // DirectX Includes
 #include <Windows.h>

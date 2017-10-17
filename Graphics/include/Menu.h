@@ -25,7 +25,7 @@ namespace Graphics
         
 
         ID3D11ShaderResourceView * menuTexture[4];
-        ID3D11ShaderResourceView * buttonTexture[2];
+        ID3D11ShaderResourceView * buttonTexture[3];
         ID3D11Buffer * buttonQuad;
         ID3D11Buffer * menuQuad;
 
