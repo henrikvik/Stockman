@@ -1,5 +1,5 @@
 {
-	"enemies" : "";
+	"enemies" : "0,0,0,0,0";
 	"triggers" : 7;
 	"bosses": 0;
 }

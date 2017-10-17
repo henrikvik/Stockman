@@ -1,6 +1,6 @@
 #include "Game.h"
 #include <iostream>
-#define _GOD_MODE
+#include <Engine\Typing.h>
 
 using namespace Logic;
 
@@ -18,6 +18,7 @@ Game::Game()
 Game::~Game() 
 { 
 	clear();
+	Typing::releaseInstance();
 }
 
 void Game::init()
@@ -37,8 +38,14 @@ void Game::init()
 	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(Player::startPosition, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 
+	m_highScoreManager = newd HighScoreManager();
+
+	std:string name = "Stockman";
+
+	m_highScoreManager->setName(name);
+
 	// Initializing Menu's
-	m_menu = newd MenuMachine();
+	m_menu = newd MenuMachine(m_highScoreManager->getName());
 	m_menu->initialize(STARTING_STATE); 
 
 	// Initializing the map
@@ -58,15 +65,12 @@ void Game::init()
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
 
-	m_highScoreManager = newd HighScoreManager();
-	std:string name = "";
-	//std::cout << "Enter your player name (will be used for highscore): ";
-	//getline(std::cin, name);
-	m_highScoreManager->setName(name.empty() ? "Stockamn" : name);
-
-	// Resetting Combo's
+	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
+
+	// Initializing Sound
+	NoiseMachine::Get().init();
 }
 
 void Game::clear()
@@ -80,6 +84,7 @@ void Game::clear()
 	delete m_highScoreManager;
 	m_projectileManager->clear();
 	delete m_projectileManager;
+	NoiseMachine::Get().clear();
 }
 
 void Game::reset()
@@ -134,8 +139,17 @@ void Game::update(float deltaTime)
 		}
 		else
 		{
+			/* Temp sound testing */
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::J)) NoiseMachine::Get().playSFX(SFX::BOING);
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K)) NoiseMachine::Get().playMusic(MUSIC::NES);
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L)) NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MASTER, 0);
+
 			ComboMachine::Get().Update(deltaTime);
 			waveUpdater();
+
+			PROFILE_BEGIN("Sound");
+			NoiseMachine::Get().update(m_player->getListenerData());
+			PROFILE_END();
 
 			PROFILE_BEGIN("Player");
 			m_player->updateSpecific(m_gameTime.dt);

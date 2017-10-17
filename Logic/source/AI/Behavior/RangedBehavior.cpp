@@ -4,10 +4,10 @@
 
 using namespace Logic;
 
-RangedBehavior::RangedBehavior()
+RangedBehavior::RangedBehavior() :
+	Behavior(PathingType::CHASING)
 {
 	m_distance = 20; // distance before stopping
-
 	setRoot(NodeType::PRIORITY, 0, NULL);
 
 	/*
@@ -25,7 +25,7 @@ RangedBehavior::RangedBehavior()
 
 	
 	// SHOOT !
-	addNode(stay, NodeType::ACTION, 995, [](RunIn& in) -> bool {
+	addNode(stay, NodeType::ACTION, 9999, [](RunIn& in) -> bool {
 		if (RandomGenerator::singleton().getRandomInt(0,
 			RangedBehavior::ABILITY_CHANCHE) == 0)
 			in.enemy->useAbility(*in.target);
@@ -34,7 +34,7 @@ RangedBehavior::RangedBehavior()
 	});
 
 	// jump
-	addNode(stay, NodeType::ACTION, 5, [](RunIn& in) -> bool {
+	addNode(stay, NodeType::ACTION, 1, [](RunIn& in) -> bool {
 		in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
 		return true;
 	});
@@ -54,7 +54,23 @@ RangedBehavior::RangedBehavior()
 			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
 			if (RandomGenerator::singleton().getRandomInt(0, RangedBehavior::ABILITY_CHANCHE) == 0)
 				in.enemy->useAbility(*in.target);
-			behavior->walkPath(behavior->getPath(), in);
+			behavior->walkPath(in);
+			return true;
+		}
+	);
+
+	// omg 
+	BehaviorNode *flee = addNode(getRoot(), NodeType::CONDITION, 2,
+		[](RunIn& in) -> bool {
+			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
+			return (in.enemy->getPosition() - in.target->getPosition()).Length()
+				< behavior->getDistance() * 0.2f;
+		}
+	);
+
+	addNode(flee, NodeType::ACTION, 0, [](RunIn& in) -> bool {
+			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
+			in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
 			return true;
 		}
 	);
@@ -65,30 +81,7 @@ int RangedBehavior::getDistance() const
 	return m_distance;
 }
 
-void RangedBehavior::walkTowardsPlayer(Enemy &enemy, Player const &player, float deltaTime)
-{
-		
-}
-
-void RangedBehavior::update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
+void RangedBehavior::updateSpecific(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
 	Player const &player, float deltaTime)
 {
-	// this is frame bound, fix it
-	RunIn in { &enemy, closeEnemies, &player, this, deltaTime };
-	runTree(in);
-}
-
-void RangedBehavior::updatePath(Entity const &from, Entity const &to)
-{
-	m_path.loadPath(from, to);
-	m_path.setCurrentNode(0);
-}
-
-void RangedBehavior::debugRendering(Graphics::Renderer &renderer)
-{
-}
-
-SimplePathing RangedBehavior::getPath() const
-{
-	return m_path;
 }

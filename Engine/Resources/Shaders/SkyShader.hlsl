@@ -1,3 +1,5 @@
+#include "ShaderConstants.hlsli"
+
 struct VS_IN
 {
     float3 pos : POSITION;
@@ -26,6 +28,11 @@ cbuffer colorChange : register(b2)
 	float time;
 };
 
+cbuffer BulletTimeTimer : register(b3)
+{
+    float bulletTimer;
+};
+
 
 PS_IN VS(VS_IN input)
 {
@@ -48,8 +55,10 @@ SamplerState WrapState : register (s2);
 
 float4 PS(PS_IN input) : SV_Target0
 {
-   // return float4(color, 1);
+    
 	float cubemap = 1-cube.Sample(sState, input.tex).x;
 	float3 gradient = SkyGradient.Sample(WrapState, float2(time, cubemap));
+    gradient = adjustSaturation(gradient, bulletTimer);
+    gradient = adjustContrast(gradient, 2 - bulletTimer, 0.3);
     return float4(gradient, 1);
 }

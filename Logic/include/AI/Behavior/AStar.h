@@ -65,6 +65,10 @@ namespace Logic
 
 			std::vector<const DirectX::SimpleMath::Vector3*>
 				getPath(Entity const &enemy, Entity const &target);
+			std::vector<const DirectX::SimpleMath::Vector3*>
+				getPath(int fromIndex, int toIndex);
+			std::vector<const DirectX::SimpleMath::Vector3*>
+				getPath(int fromIndex);
 
 			std::vector<const DirectX::SimpleMath::Vector3*> 
 				reconstructPath(NavNode *endNode);

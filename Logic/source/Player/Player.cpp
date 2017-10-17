@@ -83,8 +83,31 @@ void Player::reset()
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-#ifdef _GOD_MODE
-	m_playerState = PlayerState::STANDING;
+#ifdef GOD_MODE
+	if (!(dynamic_cast<Projectile*>(&other)) &&
+		!(dynamic_cast<Trigger*>(&other)) &&
+		!(dynamic_cast<Enemy*> (&other)) &&
+		m_playerState == PlayerState::IN_AIR)
+	{
+		btVector3 dir = contactPoint - getPositionBT();
+
+		btVector3 hitSurfaceNormal = m_physPtr->RayTestGetNormal(Ray(getPositionBT(), getPositionBT() + (dir * 2))); // overshoot the ray test to get correct result
+
+		if (!hitSurfaceNormal.isZero())
+		{
+			float hitAngle = hitSurfaceNormal.dot({ 0.f, 1.f, 0.f });
+
+			// if angle between up-vector and surface-vector is over 0.8, player is grounded and can jump again
+			if (hitAngle > 0.8f)
+			{
+				getRigidBody()->setLinearVelocity({ 0.f, 0.f, 0.f });
+				getRigidBody()->setGravity({ 0.f, -PHYSICS_GRAVITY * 40.f, 0.f });
+				m_playerState = PlayerState::STANDING;
+			}
+			else
+				m_playerState = PlayerState::IN_AIR;
+		}
+	}
 #else
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
 	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
@@ -138,7 +161,6 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
-		printf("Ammo pack!\n");
 		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
 		int magSize		= wp->getMagSize();
 		int currentAmmo = wp->getAmmo();
@@ -168,7 +190,7 @@ void Player::readFromFile()
 
 void Player::takeDamage(int damage, bool damageThroughProtection)
 {
-#ifndef _GOD_MODE
+#ifndef GOD_MODE
 	if (damageThroughProtection ||
 		getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
 		m_hp -= damage;
@@ -183,6 +205,13 @@ int Player::getHP() const
 void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
+
+	// Updates listener info for sounds
+	btVector3 up		= { 0, 1, 0 };
+	btVector3 forward	= getForwardBT();
+	btVector3 right		= up.cross(forward);
+	btVector3 actualUp	= right.cross(forward);
+	m_listenerData.update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, getTransform().getOrigin());
 
     //updates hudInfo with the current info
 	info.score = ComboMachine::Get().GetCurrentScore();
@@ -233,7 +262,7 @@ void Player::updateSpecific(float deltaTime)
 		freeMove = true;
 		printf("free move activated\n");
 	}
-	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)
+	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)	
 	{
 		// reset movement
 		getRigidBody()->setGravity({ 0.f, -PHYSICS_GRAVITY, 0.f });
@@ -601,4 +630,9 @@ DirectX::SimpleMath::Vector3 Player::getForward()
 btVector3 Player::getMoveDirection()
 {
 	return m_moveDir;
+}
+
+ListenerData & Logic::Player::getListenerData()
+{
+	return m_listenerData;
 }

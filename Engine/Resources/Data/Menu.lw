@@ -2,35 +2,32 @@
 	"Name" : "MainMenu";
 	"State" : 2;
 	"Background" : 0;
-	"buttonAmmount" : 3;
+	"buttonAmount" : 3;
 
 	"button1" :  "MenuMainButton1";
 	"button2" :  "MenuMainButton2";
 	"button3" :  "MenuMainButton3";
 }
-}
-
 {
 	"Name" : "Settings";
 	"State" : 3;
 	"Background" : 1;
-	"buttonAmmount" : 1;
+	"buttonAmount" : 2;
 
 	"button1" :  "MenuSettingsButton1";
+	"button2" :  "MenuSettingsButton2";
 }
-
 {
 	"Name" : "Game";
 	"State" : 0;
 	"Background" : 2;
-	"buttonAmmount" : 0;
+	"buttonAmount" : 0;
 }
-
 {
 	"Name" : "GameOver";
 	"State" : 4;
 	"Background" : 3;
-	"buttonAmmount" : 2;
+	"buttonAmount" : 2;
 
 	"button1" : "GameOverButton1";
 	"button2" : "GameOverButton2";

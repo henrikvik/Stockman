@@ -40,7 +40,7 @@ void SkyRenderer::renderSky(ID3D11DeviceContext * context, Graphics::Camera * ca
 		cam->getBuffer(),
 		cube.transformBuffer
 	};
-
+	
 	context->VSSetConstantBuffers(0, 2, buffers);
 
 	ID3D11Buffer * temp = sun.getShaderBuffer();

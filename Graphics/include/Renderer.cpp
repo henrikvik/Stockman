@@ -40,15 +40,15 @@ namespace Graphics
 #pragma endregion
 		, fog(device)
 		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
-		, menu(device, deviceContext)
-		, hud(device, deviceContext)
-		, ssaoRenderer(device)
+        ,menu(device, deviceContext)
+        ,hud(device, deviceContext)
+		,ssaoRenderer(device)
+		,bulletTimeBuffer(device)
 #pragma region Foliage
 		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
 		, timeBuffer(device)
 
 #pragma endregion
-
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -63,6 +63,9 @@ namespace Graphics
 
 		states = new DirectX::CommonStates(device);
 		grid.initialize(camera, device, deviceContext, &resourceManager);
+
+		float temp = 1.f;
+		bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
 
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         createBlendState();
@@ -92,6 +95,37 @@ namespace Graphics
 	void Renderer::updateLight(float deltaTime, Camera * camera)
 	{
 		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
+	}
+
+	//this function is called in SkillBulletTime.cpp
+	void Renderer::setBulletTimeCBuffer(float amount)
+	{
+		PROFILE_BEGIN("SetBulletTimeCBuffer()");
+		//These two must always add up to one ir i'll have to fix the formula
+		static const float TOP_THRESHOLD = 0.9;
+		static const float BOT_THRESHOLD = 0.1;
+
+
+		if (amount > TOP_THRESHOLD)
+			amount = (amount - TOP_THRESHOLD) / BOT_THRESHOLD;
+
+		else if (amount < BOT_THRESHOLD)
+			amount = 1 - ((amount) / BOT_THRESHOLD);
+
+		else amount = 0;
+
+		bulletTimeBuffer.write(deviceContext, &amount, sizeof(float));
+		PROFILE_END();
+	}
+
+	void Renderer::updateShake(float deltaTime)
+	{
+		hud.updateShake(deviceContext, deltaTime);
+	}
+
+	void Renderer::startShake(float radius, float duration)
+	{
+		hud.startShake(radius, duration);
 	}
 
 	void Renderer::render(Camera * camera)
@@ -153,10 +187,10 @@ namespace Graphics
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-		static float clearColor[4] = { 0, 0.5, 0.7, 1 };
-		static float blackClearColor[4] = { 0 };
+
+		static float clearColor[4] = { 0 };
 		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
+		deviceContext->ClearRenderTargetView(glowMap, clearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
 		deviceContext->ClearRenderTargetView(worldPosMap, clearColor);
 		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
@@ -174,33 +208,8 @@ namespace Graphics
 		draw();
 
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-
-#pragma region Light Temp
-		static 	float f = 59.42542;
-		f += 0.001f;
-
-		auto lights = grid.getLights();
-
-		Light *ptr = lights->map(deviceContext);
-		for (int i = 0; i < NUM_LIGHTS; i++) {
-			ptr[i].color = DirectX::SimpleMath::Vector3(
-				((unsigned char)(5 + i * 53 * i + 4)) / 255.f,
-				((unsigned char)(66 + i * 23 + 4)) / 255.f,
-				((unsigned char)(11 + i * 455 + 4)) / 255.f
-			);
-			ptr[i].positionWS = (ptr[i].color * 2 - DirectX::SimpleMath::Vector3(1.f)) * 2;
-			ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 8;
-			ptr[i].positionWS.y = 1.f;
-			ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 8;
-
-			//ptr[i].positionWS = DirectX::SimpleMath::Vector3(0.f, 1.f, 1.f - 1 / 8.f - i / 4.f);
-			ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
-			ptr[i].range = i / 1.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
-			ptr[i].intensity = 1.f;
-		}
-
-		lights->unmap(deviceContext);
-#pragma endregion
+		 
+		grid.updateLights(deviceContext, camera);
 
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 
@@ -233,7 +242,9 @@ namespace Graphics
 		};
 
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
-		deviceContext->VSSetConstantBuffers(2, 1, &lightBuffs[1]);
+		deviceContext->VSSetConstantBuffers(4, 1, &lightBuffs[1]);
+
+		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
 
 		ID3D11RenderTargetView * rtvs[] =
 		{
@@ -251,6 +262,9 @@ namespace Graphics
 		drawFoliage(camera);
 		PROFILE_END();
 
+
+		//The sky renderer uses the bullet time on register 3
+		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
 		skyRenderer.renderSky(deviceContext, camera);
 
 		ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
@@ -318,6 +332,11 @@ namespace Graphics
 		PROFILE_BEGIN("DebugInfo");
 		renderDebugInfo(camera);
 		PROFILE_END();
+
+		if (ks.G)
+		{
+			startShake(30, 1000);
+		}
 	}
 
 
@@ -358,17 +377,6 @@ namespace Graphics
     {
         hud.fillHUDInfo(info);
     }
-
-    //void Graphics::Renderer::renderMenu(MenuInfo * info)
-    //{
-    //	this->spriteBatch->Begin();
-    //	for (size_t i = 0; i < info->m_buttons.size(); i++)
-    //	{
-    //		/*this->spriteBatch->Draw(info->m_buttons.at(i)->m_texture, info->m_buttons.at(i)->m_rek);*/
-    //	}
-    //	this->spriteBatch->End();
- //  
-    //}
 
     void Renderer::cull()
     {
@@ -511,24 +519,14 @@ namespace Graphics
         deviceContext->PSSetShaderResources(0, 1, &srvNull);
     }
 
-    void Renderer::drawGUI()
-    {
-        
-        
-    }
-
     //draws the menu
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
         deviceContext->RSSetViewports(1, &viewPort);
         menu.drawMenu(device, deviceContext, info, backBuffer, transparencyBlendState);
+        hud.renderText(transparencyBlendState);
 
     }
-
-    //creates a vetrex buffer for the GUI
-    
-
-	
 
 
     void Renderer::renderDebugInfo(Camera* camera)

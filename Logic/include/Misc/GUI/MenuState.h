@@ -25,7 +25,7 @@ namespace Logic
 	{
 	private:
 		Graphics::MenuInfo m_menu;
-		std::vector<Button*> m_buttons;		//< List of buttons on current menu
+		std::vector<Button> m_buttons;		//< List of buttons on current menu
 	public:
 
 		struct ButtonStruct
