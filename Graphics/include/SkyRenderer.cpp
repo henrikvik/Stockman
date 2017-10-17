@@ -21,6 +21,7 @@ SkyRenderer::~SkyRenderer()
 {
 	SAFE_RELEASE(shadowSampler);
 	SAFE_RELEASE(srv);
+	SAFE_RELEASE(srv2);
 }
 
 void SkyRenderer::renderSky(ID3D11DeviceContext * context, Graphics::Camera * cam)
