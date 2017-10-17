@@ -66,6 +66,7 @@ namespace Graphics
 
         Shader fullscreenQuad;
         Shader forwardPlus;
+		Shader depthShader;
 
         //ComputeShader lightGridGen; 
 
@@ -104,12 +105,11 @@ namespace Graphics
         void cull();
         void writeInstanceData();
         void draw();
-        void drawGUI();
 		
 #pragma region Foliage
 		 
 		ConstantBuffer <UINT> timeBuffer;
-		UINT time = 0;
+		UINT grassTime = 0;
 		void drawFoliage(Camera * camera);
 		Shader foliageShader;
 #pragma endregion

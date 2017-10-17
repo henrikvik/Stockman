@@ -24,6 +24,7 @@ namespace Graphics
 		BUSH,
 		CLOUDS,
 		MEGAGRASS,
+		SKY_SPHERE
 
     };
 

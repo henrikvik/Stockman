@@ -40,15 +40,15 @@ namespace Graphics
 #pragma endregion
 		, fog(device)
 		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
-        ,menu(device, deviceContext)
-        ,hud(device, deviceContext)
-		,ssaoRenderer(device)
-		,bulletTimeBuffer(device)
+        , menu(device, deviceContext)
+        , hud(device, deviceContext)
+		, ssaoRenderer(device)
+		, bulletTimeBuffer(device)
 #pragma region Foliage
 		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
 		, timeBuffer(device)
-
 #pragma endregion
+		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -207,8 +207,18 @@ namespace Graphics
 
 		draw();
 
+		deviceContext->IASetInputLayout(foliageShader);
+		deviceContext->VSSetShader(foliageShader, nullptr, 0);
+		deviceContext->PSSetShader(depthShader, nullptr, 0);
+		
+		//this be no deltatime
+		grassTime++;
+
+		drawFoliage(camera);
+
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-		 
+		deviceContext->RSSetState(states->CullCounterClockwise());
+
 		grid.updateLights(deviceContext, camera);
 
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
@@ -242,7 +252,7 @@ namespace Graphics
 		};
 
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
-		deviceContext->VSSetConstantBuffers(4, 1, &lightBuffs[1]);
+		deviceContext->VSSetConstantBuffers(3, 1, &lightBuffs[1]);
 
 		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
 
@@ -259,7 +269,11 @@ namespace Graphics
 		draw();
 
 		PROFILE_BEGIN("RenderFoliage");
+		deviceContext->IASetInputLayout(foliageShader);
+		deviceContext->VSSetShader(foliageShader, nullptr, 0);
+		deviceContext->PSSetShader(foliageShader, nullptr, 0);
 		drawFoliage(camera);
+		renderFoliageQueue.clear();
 		PROFILE_END();
 
 
@@ -409,24 +423,15 @@ namespace Graphics
 
 	void Renderer::drawFoliage(Camera * camera)
 	{
-		time++;
-		timeBuffer.write(deviceContext, &time, sizeof(time));
+		timeBuffer.write(deviceContext, &grassTime, sizeof(grassTime));
 
-		ID3D11Buffer *cameraBuffer = camera->getBuffer();
-		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-
-		deviceContext->VSSetConstantBuffers(1, 1, timeBuffer);
+		deviceContext->VSSetConstantBuffers(4, 1, timeBuffer);
 		deviceContext->RSSetState(states->CullNone());
 		deviceContext->OMSetRenderTargets(1, fakeBackBuffer, depthStencil);
 
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		UINT sampleMask = 0xffffffff;
 		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-
-		deviceContext->IASetInputLayout(foliageShader);
-		deviceContext->VSSetShader(foliageShader, nullptr, 0);
-		deviceContext->PSSetShader(foliageShader, nullptr, 0);
 
 		for (FoliageRenderInfo * info : renderFoliageQueue)
 		{
@@ -438,18 +443,17 @@ namespace Graphics
 
 			static ID3D11ShaderResourceView * modelTextures[1] = { nullptr };
 			modelTextures[0] = model.diffuseMap;
-			deviceContext->PSSetShaderResources(0, 1, modelTextures);
+			deviceContext->PSSetShaderResources(10, 1, modelTextures);
 
 			deviceContext->DrawIndexed((UINT)model.indexCount, 0, 0);
 		}
 
-		renderFoliageQueue.clear();
 	}
 
     void Renderer::draw()
     {
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->VSSetConstantBuffers(3, 1, instanceOffsetBuffer);
+        deviceContext->VSSetConstantBuffers(4, 1, instanceOffsetBuffer);
         deviceContext->VSSetShaderResources(20, 1, instanceSBuffer);
 
 

@@ -327,7 +327,7 @@ int Engine::run()
         //////////////TEMP/////////////////
         Graphics::RenderInfo staticSphere = {
             true, //bool render;
-            Graphics::ModelID::GRASS, //ModelID meshId;
+            Graphics::ModelID::BUSH, //ModelID meshId;
             0, //int materialId;
             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
         };
@@ -363,7 +363,7 @@ int Engine::run()
 			//renderer->queueFoliageRender(&bush);
 
 
-         //renderer->queueRender(&staticSphere);
+			renderer->queueRender(&staticSphere);
          // renderer->queueText(&text);
 			renderer->updateLight(deltaTime, &cam);
 			renderer->updateShake(deltaTime);
