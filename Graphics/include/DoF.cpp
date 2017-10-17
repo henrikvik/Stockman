@@ -2,9 +2,9 @@
 namespace Graphics
 {
     DoF::DoF(ID3D11Device * device):
-        blur1col0(device, WIN_WIDTH, WIN_HEIGHT),
-        blur1col1(device, WIN_WIDTH, WIN_HEIGHT),
-        blur2Final(device, WIN_WIDTH, WIN_HEIGHT),
+        blur1col0(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
+        blur1col1(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
+        blur2Final(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
         CoCcreation(device, SHADER_PATH("DoFShaders/CreateCoc.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
         blur1(device, SHADER_PATH("DoFShaders/Blur1.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
         blur2(device, SHADER_PATH("DoFShaders/Blur2.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
@@ -14,13 +14,14 @@ namespace Graphics
         states = new DirectX::CommonStates(device);
         //samplers[0] = states->PointClamp();
         //samplers[1] = states->LinearClamp();
-
+        createFullScreenQuad(device);
     }
 
     DoF::~DoF()
     {
         //SAFE_RELEASE(samplers[0]);
         //SAFE_RELEASE(samplers[1]);
+        SAFE_RELEASE(vertexBuffer);
         delete states;
     }
 
@@ -33,8 +34,12 @@ namespace Graphics
 
         
         static UINT stride = 16, offset = 0;
-        context->IASetVertexBuffers(0,1, &vertexBuffer, &stride, &offset);
-
+        context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        context->IASetInputLayout(CoCcreation);
+        float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+        UINT sampleMask = 0xffffffff;
+        context->OMSetBlendState(nullptr, blendFactor, sampleMask);
 
         //calculate CoC pass
         ID3D11ShaderResourceView * srv[] =
@@ -42,10 +47,14 @@ namespace Graphics
             *colorBuffer,
             *depthBuffer
         };
+        context->VSSetShader(CoCcreation, nullptr, 0);
+        context->PSSetShader(CoCcreation, nullptr, 0);
+
         context->PSSetSamplers(0, 2, samplers);
         context->PSSetShaderResources(0, 2, srv);
 
         context->OMSetRenderTargets(1, blur2Final, nullptr);
+        context->Draw(6, 0);
 
         static ID3D11RenderTargetView * rtvNULL = nullptr;
         context->OMSetRenderTargets(1, &rtvNULL, nullptr);
@@ -54,6 +63,8 @@ namespace Graphics
         context->PSSetShaderResources(0, 1, blur2Final);
 
 
+        context->PSSetShader(blur1, nullptr, 0);
+        
 
         ID3D11RenderTargetView * rtv[] =
         {
@@ -62,7 +73,7 @@ namespace Graphics
         };
         context->OMSetRenderTargets(2, rtv, nullptr);
 
-
+        context->Draw(6, 0);
 
 
         static ID3D11ShaderResourceView * srvNULL = nullptr;
@@ -79,10 +90,10 @@ namespace Graphics
         context->PSSetShaderResources(0, 1, blur1col0);
         context->PSSetShaderResources(1, 1, blur1col1);
 
-
+        context->PSSetShader(blur2, nullptr, 0);
         context->OMSetRenderTargets(1, blur2Final, nullptr);
 
-
+        context->Draw(6, 0);
         context->OMSetRenderTargets(1, &rtvNULL, nullptr);
         static ID3D11ShaderResourceView * srvNULLAr[] =
         {
@@ -93,9 +104,12 @@ namespace Graphics
 
         //glue pass
         context->PSSetShaderResources(0, 1, blur2Final);
+        context->PSSetShader(glue, nullptr, 0);
+
+
 
         context->OMSetRenderTargets(1, *outputBuffer, nullptr);
-
+        context->Draw(6, 0);
         context->OMSetRenderTargets(1, &rtvNULL, nullptr);
         context->PSSetShaderResources(0, 1, &srvNULL);
     }

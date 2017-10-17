@@ -298,9 +298,11 @@ namespace Graphics
             PROFILE_BEGIN("Dof");
             DoFRenderer.DoFRender(deviceContext, &fakeBackBuffer, &depthStencil, &fakeBackBufferSwap, camera);
             PROFILE_END();
-
+            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+            static UINT sampleMask = 0xffffffff;
+            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
 			PROFILE_BEGIN("DrawToBackBuffer");
-			drawToBackbuffer(fakeBackBuffer);
+			drawToBackbuffer(fakeBackBufferSwap);
 			PROFILE_END();
 
 			fog.renderFog(deviceContext, backBuffer, worldPosMap);
