@@ -1,4 +1,5 @@
 #include <Misc\FPSRenderer.h>
+#define FPS_STRING L"FPS: "
 using namespace Logic;
 
 FPSRenderer::FPSRenderer()
@@ -26,7 +27,7 @@ void FPSRenderer::updateFPS(float deltaTime)
 		fps = frames;
 		frames = 0;
 		fpsTimer = 0;
-		fpsString.text = L"FPS: " + std::to_wstring(fps);
+		fpsString.text = FPS_STRING + std::to_wstring(fps);
 	}
 }
 
