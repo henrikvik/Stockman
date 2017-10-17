@@ -86,6 +86,7 @@ namespace Graphics
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
     {
         resourceManager.initialize(gDevice, gDeviceContext);
+		skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
 
 		//temp
 		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);

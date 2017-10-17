@@ -327,7 +327,7 @@ int Engine::run()
         //////////////TEMP/////////////////
         Graphics::RenderInfo staticSphere = {
             true, //bool render;
-            Graphics::ModelID::BUSH, //ModelID meshId;
+            Graphics::ModelID::SKY_SPHERE, //ModelID meshId;
             0, //int materialId;
             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
         };
