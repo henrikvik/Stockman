@@ -56,6 +56,5 @@ float4 PS(Pixel pixel) : SV_Target
 
 	clip(color.a - 0.5);
 
-    //return float4(pixel.normal, 1);
     return color;
 }
