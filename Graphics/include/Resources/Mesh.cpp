@@ -1,6 +1,5 @@
 #include "Mesh.h"
 
-
 namespace Graphics
 {
 	Mesh::Mesh(bool hasSkeleton, unsigned int skeletonID, unsigned int materialID)
@@ -15,7 +14,9 @@ namespace Graphics
 	{
 	}
 
-	Mesh::~Mesh()
+   
+
+    Mesh::~Mesh()
 	{
 		if (vertices != nullptr)
 			delete[] vertices;
@@ -115,3 +116,4 @@ namespace Graphics
 		}
 	}
 }
+

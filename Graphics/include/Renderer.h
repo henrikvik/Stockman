@@ -11,7 +11,6 @@
 #include "Lights\LightGrid.h"
 #include "Resources\ResourceManager.h"
 #include "Utility\DepthStencil.h"
-#include "Resources\ResourceManager.h"
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
@@ -19,7 +18,7 @@
 #include "SkyRenderer.h"
 #include "Menu.h"
 #include "HUD.h"
-#include "HybrisLoader.h"
+#include "HybrisLoader\HybrisLoader.h"
 
 #include <SpriteBatch.h>
 
@@ -43,7 +42,7 @@ namespace Graphics
         void drawMenu(Graphics::MenuInfo * info);
 		void updateLight(float deltaTime, Camera * camera);
     private:
-        HybrisLoader hybrisLoader;
+        HybrisLoader::HybrisLoader hybrisLoader;
 
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;

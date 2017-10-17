@@ -12,6 +12,7 @@
 //-------------------------------------------------------------------------------------
 
 #pragma once
+#define SM DirectX::SimpleMath
 
 #if !defined(__d3d11_h__) && !defined(__d3d11_x_h__) && !defined(__d3d12_h__) && !defined(__d3d12_x_h__)
 #error include d3d11.h or d3d12.h before including SimpleMath.h

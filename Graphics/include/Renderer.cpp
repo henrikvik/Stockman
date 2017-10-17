@@ -11,9 +11,7 @@
 #if USE_TEMP_CUBE
 #include "TempCube.h"
 #endif
-#if ANIMATION_HIJACK_RENDER
-#include "Animation\AnimatedTestCube.h"
-#endif
+
 
 #define MAX_DEBUG_POINTS 10000
 
@@ -38,6 +36,7 @@ namespace Graphics
         , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
         , debugColorBuffer(device)
     #pragma endregion
+        , hybrisLoader(device)
 
 	{
 		this->device = device;
@@ -93,7 +92,11 @@ namespace Graphics
         static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
         static UINT ticks = 0;
         ticks++;
-        cam.updateLookAt({ 5 * sinf(ticks * 0.001f), 5 * cosf(ticks * 0.001f), 5 }, { 0,0,0 }, deviceContext);
+        cam.updateLookAt({
+            0 + 4 * sinf(ticks * 0.002f), 
+            2 + 2 * cosf(ticks * 0.002f), 
+            0 + 4 * cosf(ticks * 0.002f), 
+        }, { 0,0,0 }, deviceContext);
 
         ID3D11Buffer *cameraBuffer = cam.getBuffer();
         deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
@@ -105,30 +108,28 @@ namespace Graphics
 
         deviceContext->RSSetViewports(1, &viewPort);
 
-        static AnimatedTestCube testCube(device);
-        static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"), ANIMATED_VERTEX_DESC);
+        static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"));
+        static HybrisLoader::Model * model = hybrisLoader.getModel(HybrisLoader::FileID::Cylinder);
 
-        deviceContext->IASetInputLayout(testShader);
+        deviceContext->IASetInputLayout(nullptr);
         deviceContext->VSSetShader(testShader, nullptr, 0);
         deviceContext->PSSetShader(testShader, nullptr, 0);
 
-        deviceContext->IASetVertexBuffers(0, 1, testCube, &testCube.stride, &testCube.offset);
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->RSSetState(states->CullNone());
+        deviceContext->RSSetState(states->CullClockwise());
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
+        std::vector<SM::Matrix> jointTransforms = model->evalAnimation("Rotate", 6 * ((ticks % 1000) / 1000.f));
 
-        static Model * testCubeA = hybrisLoader.getModel(FileID::TestCubeA);
-        auto jointTransforms = testCubeA->getPoseTransforms("Bend", 60 * ((ticks % 1000) / 1000.f));
-
-        static StructuredBuffer<Matrix> jointBuffer(device, CpuAccess::Write, testSkeleton.getJointCount());
+        static StructuredBuffer<SM::Matrix> jointBuffer(device, CpuAccess::Write, 10);
         jointBuffer.write(deviceContext, jointTransforms.data(), sizeofv(jointTransforms));
 
-        ID3D11ShaderResourceView * jointView = jointBuffer.getSRV();
-        deviceContext->VSSetShaderResources(0, 1, &jointView);
+        deviceContext->VSSetShaderResources(0, 1, model->getVertexBuffer());
+        deviceContext->VSSetShaderResources(1, 1, jointBuffer);
 
-        deviceContext->Draw(testCube.vertexCount, 0);
+        deviceContext->IASetIndexBuffer(model->getIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+        deviceContext->DrawIndexed(model->getIndexCount(), 0, 0);
 
 
 #else

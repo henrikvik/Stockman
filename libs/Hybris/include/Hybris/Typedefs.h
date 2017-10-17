@@ -10,7 +10,6 @@ namespace Hybris
     typedef float vector2_t[2];
     typedef float vector3_t[3];
     typedef float vector4_t[4];
-    typedef float quaternion_t[4];
     typedef vector4_t matrix4_t[4];
     typedef id_t ivector4_t[4];
 }

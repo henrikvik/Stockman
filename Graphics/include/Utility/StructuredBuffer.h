@@ -1,4 +1,5 @@
 #pragma once
+#include <Engine\Constants.h>
 
 enum class CpuAccess
 {
@@ -105,7 +106,8 @@ inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess ac
 }
 
 template<typename T>
-inline StructuredBuffer<T>::~StructuredBuffer() {
+inline StructuredBuffer<T>::~StructuredBuffer()
+{
     SAFE_RELEASE(m_Buffer);
     SAFE_RELEASE(m_UAV);
     SAFE_RELEASE(m_SRV);
