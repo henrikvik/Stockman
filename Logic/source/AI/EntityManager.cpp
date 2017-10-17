@@ -129,6 +129,7 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 
 void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)
 {
+	// g_Profiler->registerThread("Enemy Thread %d\0", (index % NR_OF_THREADS));
 	Enemy *enemy;
 	int newIndex;
 
@@ -148,7 +149,7 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 			std::swap(enemies[index][i],
 				enemies[index][enemies[index].size() - 1]);
 			enemies[index].pop_back();
-		}	
+		}
 		else
 		{
 			enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
@@ -272,6 +273,13 @@ void EntityManager::clear()
 
 	m_deadEnemies.clear();
 	m_enemies.clear();
+}
+
+void EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
+{
+	for (auto &vec : m_enemies)
+		for (auto *enemy : vec)
+			enemy->getStatusManager().addStatus(id, 1, true);
 }
 
 void EntityManager::setCurrentWave(int currentWave) 

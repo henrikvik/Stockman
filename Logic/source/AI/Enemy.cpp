@@ -87,9 +87,7 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 	if (flags & Effect::EFFECT_ON_FIRE)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
-	{
 		m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-	}
 }
 
 float Enemy::getHealth() const
