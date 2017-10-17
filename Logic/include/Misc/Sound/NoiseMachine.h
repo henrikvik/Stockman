@@ -2,7 +2,6 @@
 #define NOISEMACHINE_H
 
 #include <Engine\Constants.h>	// Paths to folders
-#include <fmod.hpp>
 #include <fmod_errors.h>
 #include <iostream>
 #include <stdarg.h>
@@ -41,8 +40,8 @@ namespace Logic
 		void initSFX();
 		void initMusic();
 
-		void checkIfPlay(Sound* sound, bool overdrive);
-		void play(Sound* sound);
+		void checkIfPlay(Sound* sound, FMOD::Channel* channel, bool overdrive);
+		void play(Sound* sound, FMOD::Channel* channel);
 
 		FMOD_RESULT createSound(SFX sfx, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
 		FMOD_RESULT createSound(MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);

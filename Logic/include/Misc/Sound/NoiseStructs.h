@@ -1,9 +1,11 @@
 #ifndef NOISESTRUCTS_H
 #define NOISESTRUCTS_H
 
+#include <fmod.hpp>
+
 struct THRESHOLD
 {
-	static const int MAX_CHANNELS	= 1000;
+	static const int MAX_CHANNELS	= 100;
 	static const int MAX_GROUPS		= 4;
 	static const int MAX_SFX		= 32;
 	static const int MAX_SONGS		= 32;
@@ -34,8 +36,6 @@ struct Sound
 {
 	Sound() : channel(nullptr), data(nullptr), group(CHANNEL_GROUP(0)) { }
 
-	FMOD_VECTOR		pos;
-	FMOD_VECTOR		vel;
 	FMOD::Channel*	channel;
 	FMOD::Sound*	data;
 	CHANNEL_GROUP	group;

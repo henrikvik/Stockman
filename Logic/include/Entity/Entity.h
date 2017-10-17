@@ -5,6 +5,7 @@
 #include "StatusManager.h"
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include <Misc/Sound/NoiseMachine.h>
 
 namespace Logic
 {
@@ -24,6 +25,7 @@ namespace Logic
 
 		StatusManager& getStatusManager();
 		void setStatusManager(StatusManager& statusManager);
+
 	private:
 		StatusManager m_statusManager;
 	};

@@ -5,7 +5,6 @@ using namespace Logic;
 Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelID)
 : PhysicsObject(body, halfextent, modelID)
 {
-
 }
 
 Entity::~Entity() { }
@@ -15,6 +14,13 @@ void Entity::clear() { }
 void Entity::update(float deltaTime)
 {
 	PhysicsObject::updatePhysics(deltaTime);
+
+	// Update sound position
+//	btVector3 pos = getPositionBT();
+//	btVector3 vel = getRigidBody()->getLinearVelocity();
+//	soundSource.pos = { pos.x(), pos.y(), pos.z() };
+//	soundSource.vel = { vel.x(), vel.y(), vel.z() };
+//	soundSource.update();
 
 	// Checking different buffs
 	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt

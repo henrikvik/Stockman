@@ -23,6 +23,9 @@ Game::~Game()
 
 void Game::init()
 {
+	// Initializing Sound
+	NoiseMachine::Get().init();
+
 	// Initializing Bullet physics
 	btDefaultCollisionConfiguration* collisionConfiguration		= new btDefaultCollisionConfiguration();				// Configuration
 	btCollisionDispatcher* dispatcher							= new btCollisionDispatcher(collisionConfiguration);	// The default collision dispatcher
@@ -68,9 +71,6 @@ void Game::init()
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
-
-	// Initializing Sound
-	NoiseMachine::Get().init();
 }
 
 void Game::clear()
