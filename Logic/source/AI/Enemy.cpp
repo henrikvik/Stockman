@@ -9,9 +9,11 @@ Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent,
 	m_behavior = nullptr;
 
 	m_health = health;
+	m_maxHealth = health;
 	m_baseDamage = baseDamage;
 	m_moveSpeed = moveSpeed;
 	m_enemyType = enemyType;
+	m_moveSpeedMod = 0.0f;
 
 	//animation todo
 }
