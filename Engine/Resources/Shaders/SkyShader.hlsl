@@ -55,7 +55,7 @@ SamplerState WrapState : register (s2);
 
 float4 PS(PS_IN input) : SV_Target0
 {
-    
+   // return float4(color, 1);
 	float cubemap = 1-cube.Sample(sState, input.tex).x;
 	float3 gradient = SkyGradient.Sample(WrapState, float2(time, cubemap));
     gradient = adjustSaturation(gradient, bulletTimer);
