@@ -53,7 +53,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
 	{
 		if (RandomGenerator::singleton().getRandomInt(0, 1))
 		{
-			spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::GRASS, SPEED_AB2);
+			spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::BUSH, SPEED_AB2);
 		}
 		else
 		{
