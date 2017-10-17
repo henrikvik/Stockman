@@ -81,17 +81,17 @@ void Sun::update(ID3D11DeviceContext * context, float rotationAmount, Vector3 of
 	Vector3 groundDir(1, 0, 0);
 
 	float fade = snap(1.0 - abs(lightDir.Dot(groundDir)), 0, SUNSET_TIME);
-	//shaderData.shadowFade = fade / SUNSET_TIME;
+	shaderData.fade = fade / SUNSET_TIME;
 
-	//Interpolates between colors
-	//float dayAmount = min(shaderData.shadowFade, 1);
-	//float sundownAmount = 1 - min(shaderData.shadowFade, 1);
+	//Interpolates between ground colors
+	float dayAmount = min(shaderData.fade, 1);
+	float sundownAmount = 1 - min(shaderData.fade, 1);
 
-	//if (!isNight)
-	//	shaderData.color = (colors.dayColor * dayAmount) + (colors.sunDownColor * sundownAmount);
-	//
-	//else
-	//	shaderData.color = (colors.nightColor * dayAmount) + (colors.sunDownColor * sundownAmount);
+	if (!isNight)
+		shaderData.color = (colors.dayColor * dayAmount) + (colors.sunDownColor * sundownAmount);
+	
+	else
+		shaderData.color = (colors.nightColor * dayAmount) + (colors.sunDownColor * sundownAmount);
 	
 	shaderData.color.x = snap(shaderData.color.x, 0, 1);
 	shaderData.color.y = snap(shaderData.color.y, 0, 1);
