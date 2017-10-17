@@ -24,16 +24,56 @@ EntityManager::EntityManager()
 
 	m_waveManager.setName(FILE_ABOUT_WHALES);
 	m_waveManager.loadFile();
+
+	resetThreads();
 }
 
 EntityManager::~EntityManager()
 {
 	deleteData();
+	deleteThreads();
 }
 
 void EntityManager::allocateData()
 {
 	m_enemies.resize(AStar::singleton().getNrOfPolygons());
+}
+
+void EntityManager::resetThreads()
+{
+	for (std::thread *t : threads)
+	{
+		if (t)
+		{
+			t->join();
+			delete t;
+		}
+		t = nullptr;
+	}
+}
+
+void EntityManager::deleteThreads()
+{
+	for (std::thread *t : threads)
+	{
+		if (t)
+		{
+			deleteThread(t);
+		}
+	}
+}
+
+void EntityManager::joinAllThreads()
+{
+	for (auto *t : threads)
+		t->join();
+}
+
+void EntityManager::deleteThread(std::thread *t)
+{
+	if (t->joinable())
+		t->join();
+	delete t;
 }
 
 void EntityManager::deleteData()
@@ -55,12 +95,20 @@ void EntityManager::update(Player const &player, float deltaTime)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) {
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0) {
 				updateEnemies(i, player, deltaTime);
 			}
 			else
 			{
-				updateEnemiesAndPath(i, player, deltaTime);
+				// seperate threads based on i, but join them before end
+				std::thread *t = threads[i % NR_OF_THREADS];
+				if (t)
+				{
+					deleteThread(t);
+				}
+				t = newd std::thread(EntityManager::updateEnemiesAndPath, this,
+					i, std::ref(player), deltaTime);
+				threads[i % NR_OF_THREADS] = t;
 			}
 		}
 	}
@@ -75,36 +123,31 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
-	Enemy *enemy;
-	int newIndex;
-
 	for (int i = 0; i < m_enemies[index].size(); ++i)
-	{
-		enemy = m_enemies[index][i];
-		updateEnemy(enemy, index, player, deltaTime);
-	}
+		updateEnemy(m_enemies[index][i], index, player, deltaTime);
 }
 
-void EntityManager::updateEnemiesAndPath(int index, Player const &player, float deltaTime)
+void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)
 {
 	Enemy *enemy;
 	int newIndex;
 
 	AStar &aStar = AStar::singleton();
 	std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
+	auto &enemies = manager->m_enemies;
 
-	for (int i = 0; i < m_enemies[index].size(); ++i)
+	for (int i = 0; i < enemies[index].size(); ++i)
 	{
-		enemy = m_enemies[index][i];
-		updateEnemy(enemy, index, player, deltaTime);
+		enemy = enemies[index][i];
+		manager->updateEnemy(enemy, index, player, deltaTime);
 
 		newIndex = AStar::singleton().getIndex(*enemy);
 		if (newIndex != -1 && newIndex != index) // this will be optimized in future
 		{
-			m_enemies[newIndex].push_back(enemy);
-			std::swap(m_enemies[index][i],
-				m_enemies[index][m_enemies[index].size() - 1]);
-			m_enemies[index].pop_back();
+			enemies[newIndex].push_back(enemy);
+			std::swap(enemies[index][i],
+				enemies[index][enemies[index].size() - 1]);
+			enemies[index].pop_back();
 		}	
 		else
 		{
@@ -140,9 +183,6 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 	WaveManager::EntitiesInWave entities = m_waveManager.getEntities(m_currentWave);
 	m_frame = 0;
 
-	int index;
-
-	Enemy *enemy;
 	btVector3 pos;
 	RandomGenerator &generator = RandomGenerator::singleton();
 
@@ -221,7 +261,7 @@ void EntityManager::spawnTrigger(int id, btVector3 const &pos,
 	}
 }
 
-int EntityManager::getEnemiesAlive() const 
+size_t EntityManager::getEnemiesAlive() const 
 {
     return m_enemies.size();
 }
