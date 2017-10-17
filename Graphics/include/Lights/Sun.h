@@ -51,7 +51,7 @@ private:
 		DirectX::SimpleMath::Vector3 color;
 
 		//Value from 0 to 1, when it is 1 the shadows are on
-		float shadowFade;
+		float time;
 	};
 
 	//Clamp a value between min and max

@@ -13,6 +13,7 @@ SkyRenderer::SkyRenderer(ID3D11Device * device, int shadowRes) :
 	sun(device, shadowRes, shadowRes)
 {
 	ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device, TEXTURE_PATH("skyBox.dds"), nullptr, &srv));
+	ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device, TEXTURE_PATH("skyboxgradient.dds"), nullptr, &srv2));
 	createSampler(device);
 }
 
@@ -20,6 +21,7 @@ SkyRenderer::~SkyRenderer()
 {
 	SAFE_RELEASE(shadowSampler);
 	SAFE_RELEASE(srv);
+	SAFE_RELEASE(srv2);
 }
 
 void SkyRenderer::renderSky(ID3D11DeviceContext * context, Graphics::Camera * cam)
@@ -31,6 +33,8 @@ void SkyRenderer::renderSky(ID3D11DeviceContext * context, Graphics::Camera * ca
 	context->VSSetShader(shader, nullptr, 0);
 	context->PSSetShader(shader, nullptr, 0);
 	context->PSSetShaderResources(0, 1, &srv);
+	context->PSSetShaderResources(1, 1, &srv2);
+
 	
 	ID3D11Buffer * buffers[] =
 	{
@@ -53,7 +57,6 @@ void SkyRenderer::update(ID3D11DeviceContext * context, float deltaTime, Vector3
 	float radiansPerSecond = 0.01745 * deltaTime * 0.005f;
 
 	sun.update(context, radiansPerSecond, pos);
-
 
 	Matrix temp = Matrix::CreateTranslation(pos);
 

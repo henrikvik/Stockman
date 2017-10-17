@@ -25,6 +25,7 @@ cbuffer colorChange : register(b2)
 {
     float4 nope;
     float3 color;
+	float time;
 };
 
 cbuffer BulletTimeTimer : register(b3)
@@ -47,12 +48,17 @@ PS_IN VS(VS_IN input)
 }
 
 TextureCube cube : register(t0);
-SamplerState sState;
+Texture2D SkyGradient : register(t1);
+SamplerState sState : register (s0);
+SamplerState WrapState : register (s2);
+
 
 float4 PS(PS_IN input) : SV_Target0
 {
-    float3 finalColor = cube.Sample(sState, input.tex).xyz * color;
-    finalColor = adjustSaturation(finalColor, bulletTimer);
-    finalColor = adjustContrast(finalColor, 2 - bulletTimer, 0.3);
-    return float4(finalColor, 1);
+   // return float4(color, 1);
+	float cubemap = 1-cube.Sample(sState, input.tex).x;
+	float3 gradient = SkyGradient.Sample(WrapState, float2(time, cubemap));
+    gradient = adjustSaturation(gradient, bulletTimer);
+    gradient = adjustContrast(gradient, 2 - bulletTimer, 0.3);
+    return float4(gradient, 1);
 }
