@@ -148,6 +148,11 @@ void Game::update(float deltaTime)
 			DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 			DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
 			gameRunTime(deltaTime);
+			if (ks.IsKeyDown(DirectX::Keyboard::U))
+			{
+				m_menu->setStateToBe(gameStateGameUpgrade);
+				m_cardManager->pickThree(false);
+			}
 		}
 
 		break;
@@ -157,19 +162,12 @@ void Game::update(float deltaTime)
 		{
 			break;
 		}
-		else
-		{
-			/* Temp sound testing */
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::J)) NoiseMachine::Get().playSFX(SFX::BOING);
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K)) NoiseMachine::Get().playMusic(MUSIC::NES);
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L)) NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MASTER, 0);
-		}
 		temp = m_cardManager->pick(m_menu->getChoiceUpgrade());
 
 		if (temp.getName().compare("") != 0 && temp.getDescription().compare("") != 0)
 		{
 			//add information to player
-			m_menu->setStateToBe(gameStateMenuMain); //change to gameStateGame
+			m_menu->setStateToBe(gameStateGame); //change to gameStateGame
 
 			for (auto const& ID : temp.getUpgradesID())
 			{
@@ -191,10 +189,6 @@ void Game::update(float deltaTime)
 		m_menu->update(m_gameTime.dt);
 		break;
 	case gameStateMenuMain:
-		if (m_menu->getStateToBe() == GameState::gameStateGameUpgrade) //remove once duebugged
-		{
-			m_cardManager->pickThree(false); //get some trigger for injury
-		}
 		m_menu->update(m_gameTime.dt);
 		break;
 	case gameStateMenuSettings:
@@ -211,6 +205,11 @@ void Game::gameRunTime(float deltaTime)
 {
 	ComboMachine::Get().Update(deltaTime);
 	waveUpdater();
+
+	/* Temp sound testing */
+	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::J)) NoiseMachine::Get().playSFX(SFX::BOING);
+	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K)) NoiseMachine::Get().playMusic(MUSIC::NES);
+	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L)) NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MASTER, 0);
 
 	PROFILE_BEGIN("Sound");
 	NoiseMachine::Get().update(m_player->getListenerData());

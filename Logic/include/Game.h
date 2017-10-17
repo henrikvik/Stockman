@@ -36,7 +36,7 @@
 
 //Init Cards
 
-#define NUMBER_OF_EACH_CARD	5
+#define NUMBER_OF_EACH_CARD	13
 
 // Init Waves (wave times are in ms)
 #define MAX_WAVES			5
