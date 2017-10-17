@@ -35,7 +35,7 @@ RangedBehavior::RangedBehavior() :
 
 	// jump
 	addNode(stay, NodeType::ACTION, 1, [](RunIn& in) -> bool {
-		in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
+	//	in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
 		return true;
 	});
 
