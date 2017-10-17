@@ -26,8 +26,21 @@ namespace Logic
 		StatusManager& getStatusManager();
 		void setStatusManager(StatusManager& statusManager);
 
+		SoundSource* getSoundSource();
+
 	private:
+		SoundSource m_soundSource;
 		StatusManager m_statusManager;
+	};
+
+	class Speaker : public Entity
+	{
+	public :
+		Speaker(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID = Graphics::ModelID::CUBE)
+			: Entity(body, halfExtent, modelID) { }
+		void affect(int stacks, Effect const &effect, float deltaTime) { }
+		void onCollision(PhysicsObject & other, btVector3 contactPoint, float multiplier) { }
+
 	};
 }
 

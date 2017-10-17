@@ -5,10 +5,14 @@
 
 struct THRESHOLD
 {
-	static const int MAX_CHANNELS	= 100;
-	static const int MAX_GROUPS		= 4;
-	static const int MAX_SFX		= 32;
-	static const int MAX_SONGS		= 32;
+	static const int	MAX_CHANNELS	= 100;
+	static const int	MAX_GROUPS		= 4;
+	static const int	MAX_SFX			= 32;
+	static const int	MAX_SONGS		= 32;
+	static const int	MUSIC_MIN_DIST	= 1;
+	static const int	MUSIC_MAX_DIST	= 25;
+	static const int	SFX_MIN_DIST	= 1;
+	static const int	SFX_MAX_DIST	= 25;
 };
 
 enum CHANNEL_GROUP 
@@ -29,6 +33,22 @@ enum SFX
 enum MUSIC 
 {
 	NES
+};
+
+struct SoundSource
+{
+	SoundSource() : channel(nullptr), pos(), vel() { }
+	void update()
+	{
+		if (channel)
+		{
+			channel->set3DAttributes(&pos, &vel);
+		}
+	}
+
+	FMOD_VECTOR		pos;
+	FMOD_VECTOR		vel;
+	FMOD::Channel*	channel;
 };
 
 // Keeps track of everything about a specific sound

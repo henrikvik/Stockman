@@ -16,11 +16,11 @@ void Entity::update(float deltaTime)
 	PhysicsObject::updatePhysics(deltaTime);
 
 	// Update sound position
-//	btVector3 pos = getPositionBT();
-//	btVector3 vel = getRigidBody()->getLinearVelocity();
-//	soundSource.pos = { pos.x(), pos.y(), pos.z() };
-//	soundSource.vel = { vel.x(), vel.y(), vel.z() };
-//	soundSource.update();
+	btVector3 pos = getPositionBT();
+	btVector3 vel = getRigidBody()->getLinearVelocity();
+	m_soundSource.pos = { pos.x(), pos.y(), pos.z() };
+	m_soundSource.vel = { vel.x(), vel.y(), vel.z() };
+	m_soundSource.update();
 
 	// Checking different buffs
 	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
@@ -40,4 +40,9 @@ StatusManager& Entity::getStatusManager()
 void Entity::setStatusManager(StatusManager & statusManager)
 {
 	m_statusManager = statusManager;
+}
+
+SoundSource* Entity::getSoundSource()
+{
+	return &m_soundSource;
 }

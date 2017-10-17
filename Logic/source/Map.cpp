@@ -112,12 +112,20 @@ void Map::initHitboxes(Physics* physics)
 void Map::initObjects(Physics * physics)
 {
 	btVector3 halfextent(1.0, 1.0, 1.0);
-	StaticObject* box = new StaticObject(Graphics::CUBE, physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
-	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 2, 0 });/*
-	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 1, 4, 0 });
-	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 4, 1 });
-	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 4, 0 });
-	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 6, 0 });*/
+	Speaker* box = new Speaker(physics->createBody(Cube({ 5, 3, 34 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	NoiseMachine::Get().playMusic(MUSIC::NES, box->getSoundSource(), false);
+	m_objects.push_back(box);
+
+	box = new Speaker(physics->createBody(Cube({ 6, 3, 40 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	NoiseMachine::Get().playMusic(MUSIC::NES, box->getSoundSource(), false);
+	m_objects.push_back(box);
+
+	box = new Speaker(physics->createBody(Cube({ 5, 3, 37 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	NoiseMachine::Get().playMusic(MUSIC::NES, box->getSoundSource(), false);
+	m_objects.push_back(box);
+
+	box = new Speaker(physics->createBody(Cube({ 5, 2, 37 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	NoiseMachine::Get().playMusic(MUSIC::NES, box->getSoundSource(), false);
 	m_objects.push_back(box);
 	
 }
@@ -152,7 +160,7 @@ void Map::render(Graphics::Renderer& renderer)
 		o->render(renderer);
 
 	// Drawing objects
-	for (StaticObject* e : m_objects)
+	for (Speaker* e : m_objects)
 		e->render(renderer);
 
 	// Drawing hitboxes
@@ -163,4 +171,4 @@ void Map::render(Graphics::Renderer& renderer)
 	
 std::vector<Object*>*				Map::getProps()				{ return &m_props;				}
 std::vector<StaticObject*>*			Map::getHitboxes()			{ return &m_hitboxes;			}
-std::vector<StaticObject*>*			Map::getObjects()			{ return &m_objects;			}
+std::vector<Speaker*>*				Map::getObjects()			{ return &m_objects;			}

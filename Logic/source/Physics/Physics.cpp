@@ -4,6 +4,8 @@
 
 using namespace Logic;
 
+#include <libs\Bullet2.86\include\BulletCollision\CollisionDispatch\btGhostObject.h>
+
 Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overlappingPairCache, btSequentialImpulseConstraintSolver* constraintSolver, btDefaultCollisionConfiguration* collisionConfiguration)
 	: btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration)
 {

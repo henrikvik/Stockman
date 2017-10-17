@@ -22,7 +22,7 @@ void NoiseMachine::init()
 	ERRCHECK(result);
 
 	// Specific settings of the system
-//	m_system->set3DSettings();
+	m_system->set3DSettings(1.0f, 1.0f, 1.0f);
 
 	// Initialize sounds
 	initGroups();
@@ -74,30 +74,28 @@ void NoiseMachine::update(ListenerData& listener)
 //	DEBUG_SOUND(m_sfx[SFX::TEST]);
 }
 
-// Play a specific sound effect, if overdrive is true, then it will play sound over an already playing sound
-void NoiseMachine::playSFX(SFX sfx, bool overdrive)
+void NoiseMachine::playMusic(SFX sfx, SoundSource* soundSource, bool overdrive)
 {
-	checkIfPlay(m_sfx[sfx], m_sfx[sfx]->channel, overdrive);
+	checkIfPlay(m_sfx[sfx], soundSource, overdrive);
 }
 
-// Play a specific music piece, if overdrive is true, then it will play music over an already playing music, (pretty much a restart of the song)
-void NoiseMachine::playMusic(MUSIC music, bool overdrive)
+void NoiseMachine::playMusic(MUSIC music, SoundSource* soundSource, bool overdrive)
 {
-	checkIfPlay(m_music[music], m_music[music]->channel, overdrive);
+	checkIfPlay(m_music[music], soundSource, overdrive);
 }
 
 // Checks if sound if currently playing and if overdrive should be used
-void NoiseMachine::checkIfPlay(Sound* sound, FMOD::Channel* channel, bool overdrive)
+void NoiseMachine::checkIfPlay(Sound* sound, SoundSource* soundSource, bool overdrive)
 {
 	if (overdrive)
-		play(sound, channel);
+		play(sound, soundSource);
 	else
 	{
 		// Checking if channel is currently playing something
 		bool playing = false;
-		if (channel)
+		if (soundSource->channel)
 		{
-			FMOD_RESULT result = channel->isPlaying(&playing);
+			FMOD_RESULT result = soundSource->channel->isPlaying(&playing);
 			if ((result != FMOD_OK) && (result != FMOD_ERR_INVALID_HANDLE) && (result != FMOD_ERR_CHANNEL_STOLEN))
 			{
 				ERRCHECK(result);
@@ -106,14 +104,18 @@ void NoiseMachine::checkIfPlay(Sound* sound, FMOD::Channel* channel, bool overdr
 
 		// If not playing sound, play sound
 		if (!playing)
-			play(sound, channel);
+			play(sound, soundSource);
 	}
 }
 
 // Actually plays the sound
-void NoiseMachine::play(Sound* sound, FMOD::Channel* channel)
+void NoiseMachine::play(Sound* sound, SoundSource* soundSource)
 {
-	ERRCHECK(m_system->playSound(sound->data, m_group[sound->group], false, &channel));
+	// Playing sound
+	ERRCHECK(m_system->playSound(sound->data, m_group[sound->group], false, &soundSource->channel));
+
+	// Saving the created channel onto the sound class for modifications on it
+	sound->channel = soundSource->channel;
 }
 
 // Initialize all sound groups
@@ -135,7 +137,12 @@ void NoiseMachine::initSFX()
 	for (int i = 0; i < THRESHOLD::MAX_SFX; i++) m_sfx[i] = nullptr;
 
 	// Init all the sfx here
-	ERRCHECK(createSound(SFX::BOING, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D));
+	ERRCHECK(createSound(SFX::BOING, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
+
+	// Setting the thresholds of where the listener can hear the sfx
+	for (int i = 0; i < THRESHOLD::MAX_SFX; i++)
+		if (m_sfx[i])
+			m_sfx[i]->data->set3DMinMaxDistance(THRESHOLD::SFX_MIN_DIST, THRESHOLD::SFX_MAX_DIST);
 }
 
 // Initialize all music pieces
@@ -145,7 +152,12 @@ void NoiseMachine::initMusic()
 	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) m_music[i] = nullptr;
 
 	// Init all the music here
-	ERRCHECK(createSound(MUSIC::NES, CHANNEL_GROUP::CHANNEL_MUSIC, "music.ogg", FMOD_3D));
+	ERRCHECK(createSound(MUSIC::NES, CHANNEL_GROUP::CHANNEL_MUSIC, "music.ogg", FMOD_3D_LINEARROLLOFF));
+
+	// Setting the thresholds of where the listener can hear the music
+	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) 
+		if (m_sfx[i])
+			m_music[i]->data->set3DMinMaxDistance(THRESHOLD::MUSIC_MIN_DIST, THRESHOLD::MUSIC_MAX_DIST);
 }
 
 // Allocates a specific sound effect into memory

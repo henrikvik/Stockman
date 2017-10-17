@@ -27,8 +27,8 @@ namespace Logic
 		void clear();
 		void update(ListenerData& listener);
 
-		void playSFX(SFX sfx, bool overdrive = false);
-		void playMusic(MUSIC music, bool overdrive = false);
+		void playMusic(SFX sfx, SoundSource* soundSource, bool overdrive);
+		void playMusic(MUSIC music, SoundSource* soundSource, bool overdrive);
 
 		void setGroupVolume(CHANNEL_GROUP group, float inVolume);
 		void setGroupPitch(CHANNEL_GROUP group, float inPitch);
@@ -40,8 +40,8 @@ namespace Logic
 		void initSFX();
 		void initMusic();
 
-		void checkIfPlay(Sound* sound, FMOD::Channel* channel, bool overdrive);
-		void play(Sound* sound, FMOD::Channel* channel);
+		void checkIfPlay(Sound* sound, SoundSource* soundSource, bool overdrive);
+		void play(Sound* sound, SoundSource* soundSource);
 
 		FMOD_RESULT createSound(SFX sfx, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
 		FMOD_RESULT createSound(MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
