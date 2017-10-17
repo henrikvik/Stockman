@@ -2,6 +2,7 @@
 #define ENTITY_MANAGER_H
 
 #include <vector>
+#include <thread>
 
 #include <AI/Enemy.h>
 #include <AI/WaveManager.h>
@@ -31,9 +32,12 @@ namespace Logic
 	class EntityManager
 	{
 	private:
+		static const int NR_OF_THREADS = 8;
+
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
 		std::vector<double> time;
+		std::thread *threads[NR_OF_THREADS];
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
@@ -41,6 +45,10 @@ namespace Logic
 
 		void deleteData(); // delete data in vectors
 		void allocateData(); // resize enemy vector 
+
+		void resetThreads();
+		void deleteThreads();
+		void joinAllThreads();
 	public:
 
 		EntityManager();
@@ -49,7 +57,8 @@ namespace Logic
 
 		void update(Player const &player, float deltaTime);
 		void updateEnemies(int index, Player const &player, float deltaTime);
-		void updateEnemiesAndPath(int index, Player const &player, float deltaTime);
+		// statis because threads will use this
+		static void updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime);
 		void updateEnemy(Enemy *enemy, int index, Player const &player, float deltaTime);
 		void clear();
 
@@ -62,7 +71,7 @@ namespace Logic
 		void setCurrentWave(int currentWave);
 		void render(Graphics::Renderer &renderer);
 
-		int getEnemiesAlive() const;
+		size_t getEnemiesAlive() const;
 		int getCurrentWave() const;
 
 		EntityManager* operator=(EntityManager const &entityManager) = delete;
