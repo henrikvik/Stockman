@@ -185,6 +185,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Misc\FPSRenderer.h" />
     <ClInclude Include="include\AI\Behavior\Pathing.h" />
     <ClInclude Include="include\AI\EnemyNecromancer.h" />
     <ClInclude Include="include\AI\Behavior\AStar.h" />
@@ -245,6 +246,7 @@
     <ClInclude Include="include\Misc\Sound\NoiseMachine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Misc\FPSRenderer.cpp" />
     <ClCompile Include="source\AI\Behavior\Pathing.cpp" />
     <ClCompile Include="source\AI\Behavior\Behavior.cpp" />
     <ClCompile Include="source\AI\Behavior\RangedBehavior.cpp" />

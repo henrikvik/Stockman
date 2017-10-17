@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <iostream>
 #include <Engine\Typing.h>
+#include <DebugDefines.h>
 
 using namespace Logic;
 
@@ -13,6 +14,8 @@ Game::Game()
 	m_cardManager		= nullptr;
 	m_menu				= nullptr;
 	m_highScoreManager	= nullptr;
+
+
 }
 
 Game::~Game() 
@@ -191,11 +194,13 @@ void Game::update(float deltaTime)
 		m_menu->update(m_gameTime.dt);
 		break;
 	}
+#ifdef SHOW_FPS 
+	fpsRenderer.updateFPS(deltaTime);
+#endif
 }
 
 void Game::gameOver()
 {
-	printf("You ded bro.\n");
 	m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
 	m_menu->setStateToBe(GameState::gameStateGameOver);
 
@@ -240,9 +245,14 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuSettings:
 	case gameStateGameOver:
 		/*m_menu->render(renderer);*/
-	default:  m_menu->render(renderer);
+	default:  
+		m_menu->render(renderer);
 		break;
 	}
+
+#ifdef SHOW_FPS 
+	fpsRenderer.renderFPS(renderer);
+#endif
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()
