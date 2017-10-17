@@ -24,6 +24,11 @@ namespace Graphics
         ShaderResource blur1col0;
         ShaderResource blur1col1;
         ShaderResource blur2Final;
+
+        Shader CoCcreation;
+        Shader blur1;
+        Shader blur2;
+        Shader glue;
     };
 }
 

@@ -4,7 +4,11 @@ namespace Graphics
     DoF::DoF(ID3D11Device * device):
         blur1col0(device, WIN_WIDTH, WIN_HEIGHT),
         blur1col1(device, WIN_WIDTH, WIN_HEIGHT),
-        blur2Final(device, WIN_WIDTH, WIN_HEIGHT)
+        blur2Final(device, WIN_WIDTH, WIN_HEIGHT),
+        CoCcreation(device, SHADER_PATH("DoFShaders/CreateCoc.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
+        blur1(device, SHADER_PATH("DoFShaders/Blur1.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
+        blur2(device, SHADER_PATH("DoFShaders/Blur2.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
+        glue(device, SHADER_PATH("DoFShaders/Glue.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } })
     {
 
         states = new DirectX::CommonStates(device);
@@ -105,7 +109,7 @@ namespace Graphics
             DirectX::SimpleMath::Vector2 uv;
         };
 
-        GUI GUIquad[24];
+        GUI GUIquad[6];
         GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
         GUIquad[0].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
 
