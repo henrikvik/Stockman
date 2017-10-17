@@ -4,8 +4,8 @@
 
 #define SCALAR_DIR 0.3f
 #define SCALAR_ALIGN 1.1f
-#define SCALAR_COHES 0.9f
-#define SCALAR_SEP 1.3f
+#define SCALAR_COHES 0.7f
+#define SCALAR_SEP 2.3f
 
 #define MAX_LEN_FOR_SEPERATION 7.5f
 // this can be changed in the future maybe who knows
@@ -81,7 +81,7 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 	align = align.normalize();
 
 	// COHESION (Stay towards group position)
-	sep /= totalSep;
+	sep /= totalSep + 1;
 	sep = sep.normalize();
 
 	// RET

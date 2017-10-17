@@ -9,9 +9,11 @@ Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent,
 	m_behavior = nullptr;
 
 	m_health = health;
+	m_maxHealth = health;
 	m_baseDamage = baseDamage;
 	m_moveSpeed = moveSpeed;
 	m_enemyType = enemyType;
+	m_moveSpeedMod = 0.0f;
 
 	//animation todo
 }
@@ -85,9 +87,7 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 	if (flags & Effect::EFFECT_ON_FIRE)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
-	{
 		m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-	}
 }
 
 float Enemy::getHealth() const
