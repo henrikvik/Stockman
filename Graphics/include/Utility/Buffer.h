@@ -40,7 +40,7 @@ enum class BufferCpuAccess : uint32_t
 { 
     None  = 0,
     Write = D3D11_CPU_ACCESS_WRITE,
-    Read  = D3D11_CPU_ACCESS_READ
+	Read = D3D11_CPU_ACCESS_READ
 }; MAKE_FLAG(BufferCpuAccess);
 
 enum class BufferMisc : uint32_t
@@ -81,7 +81,7 @@ private:
 };
 
 template<typename T>
-Buffer<T>::Buffer(ID3D11Device * device, BufferUsage usage, BufferBind bindFlags, BufferCpuAccess cpuFlags,  BufferMisc miscFlags, size_t size, T * data)
+Buffer<T>::Buffer(ID3D11Device * device, BufferUsage usage, BufferBind bindFlags, BufferCpuAccess cpuFlags, BufferMisc miscFlags, size_t size, T * data)
 {
     D3D11_BUFFER_DESC desc = {};
     desc.ByteWidth           = sizeof(T) * size;
