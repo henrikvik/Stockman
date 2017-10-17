@@ -23,7 +23,8 @@ namespace Graphics
 		GRASS,
 		BUSH,
 		CLOUDS,
-		
+		MEGAGRASS,
+
     };
 
 	struct ModelInfo

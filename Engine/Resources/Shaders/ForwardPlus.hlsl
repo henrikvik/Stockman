@@ -31,6 +31,7 @@ struct InstanceData
     float4x4 world;
     float4x4 invWorldT;
 };
+
 StructuredBuffer<InstanceData> instanceData : register(t20);
 cbuffer InstanceOffsetBuffer : register(b3)
 {

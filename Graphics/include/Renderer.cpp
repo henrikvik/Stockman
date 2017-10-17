@@ -220,6 +220,9 @@ namespace Graphics
 		deviceContext->PSSetShaderResources(0, 4, SRVs);
 		deviceContext->PSSetSamplers(0, 1, &sampler);
 
+		auto samplerWrap = states->LinearWrap();
+		deviceContext->PSSetSamplers(2, 1, &samplerWrap);
+
 		ID3D11SamplerState * samplers[] = { skyRenderer.getSampler() };
 		deviceContext->PSSetSamplers(1, 1, samplers);
 
