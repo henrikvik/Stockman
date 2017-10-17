@@ -7,7 +7,7 @@
 #define SCALAR_COHES 0.7f
 #define SCALAR_SEP 2.3f
 
-#define MAX_LEN_FOR_SEPERATION 7.5f
+#define MAX_LEN_FOR_SEPERATION 10.f
 // this can be changed in the future maybe who knows
 #define CHANGE_NODE_DIST 0.3f
 
