@@ -192,8 +192,8 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 		// just temp test values as of now, better with no random spawns?
 		// should atleast check if spawn area is a walkable area
 		// using nav mesh that would be easy but not trivial
-		pos = { generator.getRandomFloat(-5, 5), generator.getRandomFloat(10, 25),
-				generator.getRandomFloat(-5, 5) };
+		pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
+				generator.getRandomFloat(-85, 85) };
 
 		spawnEnemy(static_cast<Enemy::ENEMY_TYPE> (entity), pos, {}, physics, projectiles);
 	}
