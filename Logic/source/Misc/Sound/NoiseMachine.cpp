@@ -18,7 +18,7 @@ void NoiseMachine::init()
 
 	// Initialize the FMOD system
 	void* extraDriverData = nullptr;
-	ERRCHECK(m_system->init(THRESHOLD::MAX_CHANNELS, FMOD_INIT_NORMAL, extraDriverData));
+	ERRCHECK(m_system->init(THRESHOLD::MAX_CHANNELS, FMOD_INIT_CHANNEL_DISTANCEFILTER, extraDriverData));
 	ERRCHECK(result);
 
 	// Specific settings of the system
