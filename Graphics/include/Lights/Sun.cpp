@@ -74,7 +74,6 @@ void Sun::update(ID3D11DeviceContext * context, float rotationAmount, Vector3 of
 	this->shaderData.pos = Vector4::Transform(pos, rotation);
 	
 	shaderData.time = rotationDeg / (PI);
-	printf("%f\n", shaderData.time);
 
 
 	//If its nighttime the shadows fade out
