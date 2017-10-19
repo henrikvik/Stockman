@@ -123,8 +123,21 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
+	bool goalNodeChanged = false;
+	Enemy *enemy;
+	
 	for (int i = 0; i < m_enemies[index].size(); ++i)
-		updateEnemy(m_enemies[index][i], index, player, deltaTime);
+	{
+		enemy = m_enemies[index][i];
+
+		updateEnemy(enemy, index, player, deltaTime);
+		goalNodeChanged = enemy->getBehavior()->isGoalChangedAndSetToFalse();
+
+		if (goalNodeChanged && AStar::singleton().getIndex(*enemy) != i)
+		{
+
+		}
+	}
 }
 
 void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)

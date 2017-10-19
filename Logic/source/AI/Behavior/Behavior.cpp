@@ -45,7 +45,10 @@ void Behavior::walkPath(RunIn &in)
 
 	if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST
 		&& m_pathing.pathOnLastNode())
+	{
 		m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
+		m_changedGoalNode = true;
+	}
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
@@ -159,6 +162,13 @@ bool Behavior::runNode(RunIn &in, BehaviorNode &node)
 			break;
 	}
 	return true;
+}
+
+bool Behavior::isGoalChangedAndSetToFalse()
+{
+	bool nodeChange = m_changedGoalNode;
+	m_changedGoalNode = false;
+	return nodeChange;
 }
 
 Behavior::BehaviorNode* Behavior::getRoot() {
