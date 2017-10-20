@@ -1,14 +1,39 @@
 #include <Misc\GUI\MenuMachine.h>
 #include <iostream>
 #include <Misc\FileLoader.h>
+
+#include <Keyboard.h>
+#include <Engine\Typing.h>
+
+#define TRANSITION_TIME 400
+
 using namespace Logic;
 
 MenuMachine::MenuMachine()
 {
-	pressed = false;
-	currentActiveMenu = nullptr;
-	currentActiveState = gameStateMenuMain;
+	m_pressed = false;
+	m_currentActiveMenu = nullptr;
+	m_currentActiveState = gameStateMenuMain;
+	m_highScoreNamePTR = nullptr;
+	m_highScoreName = "";
+	m_typing = false;
+	m_forward = true;
+    blinkMarker = true;
+    blinkTimer = 0.0f;
+    deleteCharCD = 20.0f;
+}
 
+MenuMachine::MenuMachine(string* highScoreNamePTR)
+{
+	m_pressed = false;
+	m_currentActiveMenu = nullptr;
+	m_currentActiveState = gameStateMenuMain;
+	m_highScoreNamePTR = highScoreNamePTR;
+	m_highScoreName = *m_highScoreNamePTR;
+	m_typing = false;
+	m_forward = true;
+    blinkTimer = 0.0f;
+    deleteCharCD = 20.0f;
 }
 
 
@@ -18,16 +43,18 @@ MenuMachine::~MenuMachine()
 	{
 		delete a.second;
 	}
+
 }
 
-void Logic::MenuMachine::initialize(GameState state)
+void MenuMachine::initialize(GameState state)
 {
 	//Gather all the functions in a map for future allocation
 	std::map<std::string, std::function<void(void)>> functions;
 	functions["buttonClick0"] = std::bind(&MenuMachine::buttonClick0, this);
 	functions["buttonClick1"] = std::bind(&MenuMachine::buttonClick1, this);
 	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
-	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick2, this);
+	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick3, this);
+	functions["buttonClick4"] = std::bind(&MenuMachine::buttonClick4, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -43,7 +70,7 @@ void Logic::MenuMachine::initialize(GameState state)
 		//If it is a button add it into its map
 		if (button.strings.find("buttonName") != button.strings.end())
 		{
-			std::string testinging = button.strings.at("function"); //crap used until the amazing file handler is fixed
+			std::string functionName = button.strings.at("function");
 			allButtons[button.strings.at("buttonName")] = MenuState::ButtonStruct({
 				button.floats.at("xPos"),
 				button.floats.at("yPos"),
@@ -51,10 +78,11 @@ void Logic::MenuMachine::initialize(GameState state)
 				button.floats.at("yTexStart"),
 				button.floats.at("xTexEnd"),
 				button.floats.at("yTexEnd"),
+                button.floats.at("activeOffset"),
 				button.floats.at("height"),
 				button.floats.at("width"),
-				button.strings.at("texture"),
-				functions.at(testinging) // xd
+				button.ints.at("texture"),
+				functions.at(functionName)
 			});
 		}
 	}
@@ -67,123 +95,210 @@ void Logic::MenuMachine::initialize(GameState state)
 		{
 			//Temporary Button Vector until Menu has been given them
 			std::vector<MenuState::ButtonStruct> tempButton;
-			for (int i = 0; i < menu.ints.at("buttonAmmount"); i++)
+			for (int i = 0; i < menu.ints.at("buttonAmount"); i++)
 			{
 				tempButton.push_back(allButtons.at(menu.strings.at("button" + std::to_string(i + 1))));
 			}
 
 			//Create new Menus and send in the fitting information from Menu vector
 			m_menuStates[GameState(menu.ints.at("State"))] = newd MenuState();
-			m_menuStates.at(GameState(menu.ints.at("State")))->initialize(tempButton, menu.strings.at("Background"));
+			m_menuStates.at(GameState(menu.ints.at("State")))->initialize(tempButton, menu.ints.at("Background"));
 		}
 	}
 
-	stateToBe = gameStateDefault;
+	m_stateToBe = gameStateDefault;
 
 	showMenu(state);
 }
 
-void Logic::MenuMachine::clear() 
+void MenuMachine::clear() 
 {
-	currentActiveMenu = nullptr;
+	m_currentActiveMenu = nullptr;
 }
 
-void Logic::MenuMachine::update(float dt)
+void MenuMachine::update(float dt)
 {
 	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
-	if (Mouse.leftButton && !pressed)
+	if (Mouse.leftButton && !m_pressed && !m_typing)
 	{
-		pressed = true;
-		currentActiveMenu->updateOnPress(Mouse.x, Mouse.y);
+		m_pressed = true;
+		m_currentActiveMenu->updateOnPress(Mouse.x, Mouse.y);
 	}
-	else if (!Mouse.leftButton && pressed)
+	else if (!Mouse.leftButton && m_pressed)
 	{
-		pressed = false;
+		m_pressed = false;
 
 	}
+	m_currentActiveMenu->hoverOver(Mouse.x, Mouse.y);
 
-	if (stateToBe != gameStateDefault) //change form magic value
+	if (m_stateToBe != gameStateDefault && !m_typing)
 	{
-		if (forward)
+		if (m_forward)
 		{
-			if (currentActiveMenu->animationTransition(dt, 500, forward))
+			if (m_currentActiveMenu->animationTransition(dt, TRANSITION_TIME, m_forward))
 			{
-				showMenu(stateToBe);
-				forward = false;
+				showMenu(m_stateToBe);
+				m_forward = false;
 			}
 		}
 		else
 		{
-			if (currentActiveMenu->animationTransition(dt, 500, forward))
+			if (m_currentActiveMenu->animationTransition(dt, TRANSITION_TIME, m_forward))
 			{
-				stateToBe = gameStateDefault;
-				forward = true;
+				m_stateToBe = gameStateDefault;
+				m_forward = true;
 			}
 		}
 	}
 
+	if (m_typing)
+	{
+        if (blinkMarker == false)
+        {
+            blinkTimer += dt;
+            if (blinkTimer > 500.0f)
+            {
+                blinkMarker = true;
+                blinkTimer = 0.0f;
+            }
+        }
+        else
+        {
+            blinkTimer += dt;
+            if (blinkTimer > 500.0f)
+            {
+                blinkMarker = false;
+                blinkTimer = 0.0f;
+            }
+        }
+
+        
+        deleteCharCD += dt;
+		DirectX::Keyboard::State keyboard = DirectX::Keyboard::Get().GetState();
+		Typing* theChar = Typing::getInstance(); //might need to be deleted
+		char tempChar = theChar->getSymbol();
+		if (keyboard.IsKeyDown(DirectX::Keyboard::Enter))
+		{
+			m_typing = false;
+			*m_highScoreNamePTR = m_highScoreName;
+		}
+		else if (keyboard.IsKeyDown(DirectX::Keyboard::Back) && m_highScoreName != "" && deleteCharCD > 200.0f)
+		{
+            m_highScoreName.erase(m_highScoreName.length() - 1, 1);
+            deleteCharCD = 0.0f;
+		}
+		else if (tempChar != 0 && tempChar >= 32 && tempChar <= 122)
+		{
+			m_highScoreName += tempChar;
+		}
+	}
 }
 
-void Logic::MenuMachine::render(Graphics::Renderer & renderer)
+void MenuMachine::render(Graphics::Renderer &renderer)
 {
-    Graphics::MenuInfo temp = this->currentActiveMenu->getMenuInfo();
+	/*std::wstring tempSTR(m_highScoreName.length(), L'');
+	std::copy(m_highScoreName.begin(), m_highScoreName.end(), tempSTR.begin());
+	Graphics::TextString text
+	{
+		tempSTR,
+		DirectX::SimpleMath::Vector2(50, 50),
+		DirectX::SimpleMath::Color(DirectX::Colors::White),
+		Graphics::Font::SMALL
+	};*/
+    if (m_currentActiveState == gameStateMenuSettings)
+    {
+        std::wstring tempString = L"";
+        Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
+        DirectX::SimpleMath::Vector2 tempPos;
+        //TODO tis is wierd. no magic number should be used
+        tempPos.x = tempButton.m_rek.x +128;
+        tempPos.y = tempButton.m_rek.y +50;
+        tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
+        if (m_typing)
+        {
+            if (blinkMarker)
+            {
+                tempString += L"|";
+            }
+
+        }
+        Graphics::TextString text
+        {
+            tempString.c_str(),
+            tempPos,
+            DirectX::SimpleMath::Color(DirectX::Colors::White),
+            Graphics::Font::SMALL
+        };
+        renderer.queueText(&text);
+    }
+    
+
+    Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
 
     renderer.drawMenu(&temp);
-
 }
 
-
 //Switches the currentState used 
-void Logic::MenuMachine::showMenu(GameState state)
+void MenuMachine::showMenu(GameState state)
 {
 	if (m_menuStates.find(state) != m_menuStates.end())
 	{
-		currentActiveMenu = m_menuStates.at(state);
-		currentActiveState = state;
+		m_currentActiveMenu = m_menuStates.at(state);
+		m_currentActiveState = state;
 	}
 	else
 	{
-		currentActiveMenu = m_menuStates.at(gameStateMenuMain); //change to error state
-		currentActiveState = gameStateMenuMain;
+		m_currentActiveMenu = m_menuStates.at(gameStateDefault); //change to error state
+		m_currentActiveState = gameStateDefault;
 	}
 }
 
-GameState Logic::MenuMachine::currentState()
+GameState MenuMachine::currentState()
 {
-	return currentActiveState;
+	return m_currentActiveState;
 }
 
+//Sets the state that the game is gonna show after the animation cycle has finished
 void MenuMachine::setStateToBe(GameState gameState)
 {
-	stateToBe = gameState;
+	
+	m_stateToBe = gameState;
 }
 
-GameState Logic::MenuMachine::getStateToBe()
+//Gets the state that the game is gonna show after the animation cycle has finished
+GameState MenuMachine::getStateToBe()
 {
-	return stateToBe;
+
+	return m_stateToBe;
 }
 
-void Logic::MenuMachine::buttonClick0()
+void MenuMachine::buttonClick0()
 {
-	stateToBe = gameStateGame;
-	std::cout << "Left Trigger: Switched To Menu State 0";
+	m_stateToBe = gameStateGame;
 }
 
-void Logic::MenuMachine::buttonClick1()
+void MenuMachine::buttonClick1()
 {
-	stateToBe = gameStateMenuSettings;
-	std::cout << "Left Trigger: Switched To Menu State 3";
+	m_stateToBe = gameStateMenuSettings;
 }
 
-void Logic::MenuMachine::buttonClick2()
+void MenuMachine::buttonClick2()
 {
-	stateToBe = gameStateMenuMain;
-	std::cout << "Left Trigger: Switched To Menu State 2";
+	m_stateToBe = gameStateMenuMain;
 }
 
-void Logic::MenuMachine::buttonClick3()
+void MenuMachine::buttonClick3()
 {
-	exit(0);
+	PostQuitMessage(0); 
+}
+
+void MenuMachine::buttonClick4()
+{
+	//triggers the typing button
+	Typing* theChar = Typing::getInstance(); //might need to be deleted
+	char trashThis = theChar->getSymbol();
+	m_typing = true;
+	m_highScoreName = "";
 }

@@ -26,12 +26,20 @@ namespace Logic
 	class Enemy : public Entity 
 	{
 		private:
-			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
-			float m_moveSpeedMod;									// Variables for effect modifiers
-			int m_enemyType;
-			ProjectileManager *m_projectiles;
 			// Animation m_animation;
+
+			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
+			float m_bulletTimeMod;									// Variables for effect modifiers
+			int m_enemyType;
+
+			ProjectileManager *m_projectiles;
+			Behavior *m_behavior;
 		public:	
+			enum ENEMY_TYPE
+			{
+				NECROMANCER
+			};
+
 			enum BEHAVIOR_ID { TEST, RANGED };
 
 			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, float moveSpeed, int enemyType, int animationId);
@@ -39,7 +47,8 @@ namespace Logic
 
 			void setProjectileManager(ProjectileManager *projectileManager);
 
-			virtual void update(Player const &player, float deltaTime, bool updatePath = false);
+			virtual void update(Player const &player, float deltaTime,
+				std::vector<Enemy*> const &closeEnemies);
 			virtual void useAbility(Entity const &target) {};
 			virtual void updateDead(float deltaTime) = 0;
 			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
@@ -51,6 +60,7 @@ namespace Logic
 
 			void damage(float damage);
 			void setBehavior(BEHAVIOR_ID id);
+			void setEnemyType(ENEMY_TYPE id);
 
 			float getHealth() const;
 			float getMaxHealth() const;
@@ -59,10 +69,11 @@ namespace Logic
 			int getEnemyType() const;
 
 			void spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed);
+
 			ProjectileManager* getProjectileManager() const;
+			Behavior* getBehavior() const;
 		protected: //for testing
-			Logic::Behavior *m_behavior;
-			btRigidBody *weakPoint;
+			//btRigidBody *weakPoint;
 	};
 }
 

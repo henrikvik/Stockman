@@ -1,3 +1,4 @@
+#include <DebugDefines.h>
 #include "Player/Skill/SkillManager.h"
 
 using namespace Logic;
@@ -26,13 +27,13 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, 
 {
 	m_allSkills =
 	{
-		{ new SkillBulletTime(projectileManager, ProjectileData(0, 100, 1, 0, 0.f, 5000, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeBulletTimeSensor)) },
+		{ new SkillBulletTime(projectileManager, ProjectileData(0, 100, 0, 0, 0.f, BULLET_TIME_DURATION, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeBulletTimeSensor)) },
 		{ new SkillGrapplingHook(physics) },
 		{ new SkillShieldCharge() }
 	};
 
 
-	switchToSkill(1);
+	switchToSkill(SKILL_USED);
 }
 
 void SkillManager::switchToSkill(int index)
@@ -69,4 +70,9 @@ void SkillManager::render(Graphics::Renderer& renderer)
 bool Logic::SkillManager::getCanBeUsed() const
 {
 	return m_canBeUsed;
+}
+
+Skill * Logic::SkillManager::getCurrentSkill() const
+{
+    return m_currentSkill;
 }

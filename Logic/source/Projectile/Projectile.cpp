@@ -1,5 +1,6 @@
 #include "../Projectile/Projectile.h"
 #include "../Player/Player.h"
+#include <AI\Enemy.h>
 
 using namespace Logic;
 
@@ -12,6 +13,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 	m_pData.gravityModifier = 1.f;
 	m_pData.ttl = 1000.f;
 	m_remove = false;
+	m_bulletTimeMod = 1.f;
 }
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer, float ttl)
@@ -22,6 +24,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, fl
 	m_pData.gravityModifier = gravityModifer;
 	m_pData.ttl = ttl;
 	m_remove = false;
+	m_bulletTimeMod = 1.f;
 }
 
 Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
@@ -30,6 +33,7 @@ Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, Projectil
 	m_pData = pData;
 	m_remove = false;
 	setModelID(pData.meshID);
+	m_bulletTimeMod = 1.f;
 
 	switch (pData.type)
 	{
@@ -41,19 +45,39 @@ Projectile::~Projectile() { }
 
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
-	getRigidbody()->setLinearVelocity(forward * m_pData.speed);
+	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
 	setStatusManager(statusManager);
 
 	for (StatusManager::UPGRADE_ID id : statusManager.getActiveUpgrades())
 		upgrade(statusManager.getUpgrade(id));
 }
 
-void Projectile::updateSpecific(float deltaTime)
+void Projectile::affect(int stacks, Effect const & effect, float deltaTime)
 {
-	m_pData.ttl -= deltaTime;
+	int flags = effect.getStandards()->flags;
+
+	if (flags & Effect::EFFECT_BULLET_TIME)
+	{
+		m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
+	}
 }
 
-void Projectile::onCollision(Entity & other, btVector3 contactPoint, float dmgMultiplier)
+void Projectile::updateSpecific(float deltaTime)
+{
+	Entity::update(deltaTime);
+
+	btVector3 vel = getRigidBody()->getLinearVelocity().normalized();
+	getRigidBody()->setLinearVelocity(vel * m_pData.speed * m_bulletTimeMod);
+	getRigidBody()->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_bulletTimeMod, 0.f });
+
+	if (m_pData.type == ProjectileTypeBulletTimeSensor)
+		m_pData.ttl -= deltaTime;
+	else
+		m_pData.ttl -= deltaTime * m_bulletTimeMod;
+	m_bulletTimeMod = 1.f;
+}
+
+void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
 	// TEMP
 	Player* p = dynamic_cast<Player*>(&other);
@@ -61,9 +85,10 @@ void Projectile::onCollision(Entity & other, btVector3 contactPoint, float dmgMu
 
 	if (proj)
 	{
-		
+		if(proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
 	}
-	else if ((p && m_pData.enemyBullet) || (!p && !m_pData.enemyBullet))
+	else if(!p)
 	{
 		m_remove = true;
 
@@ -71,6 +96,9 @@ void Projectile::onCollision(Entity & other, btVector3 contactPoint, float dmgMu
 			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
 				m_remove = false;
 	}
+
+	if (m_pData.type == ProjectileTypeBulletTimeSensor)
+		m_remove = false;
 }
 
 void Projectile::upgrade(Upgrade const &upgrade)
@@ -83,12 +111,10 @@ void Projectile::upgrade(Upgrade const &upgrade)
 	}
 	if (flags & Upgrade::UPGRADE_IS_BOUNCING)
 	{
-		this->getRigidbody()->setRestitution(1.f);
+		this->getRigidBody()->setRestitution(1.f);
 	}
 }
 
-ProjectileType Projectile::getType() const { return m_type; }
-// REPLACE THIS WITH GET STRUCT INSTEAD
 ProjectileData& Projectile::getProjectileData() { return m_pData; }
 
 void Logic::Projectile::toRemove()

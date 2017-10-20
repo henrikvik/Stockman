@@ -192,6 +192,33 @@ namespace Graphics {
 		cxt->CSSetShader(nullptr, nullptr, 0);
 	}
 
+	void LightGrid::updateLights(ID3D11DeviceContext * context, Camera * camera)
+	{
+		static 	float f = 59.42542;
+		f += 0.001f;
+
+		auto lights = getLights();
+
+		Light *ptr = lights->map(context);
+		for (int i = 0; i < NUM_LIGHTS; i++) {
+			ptr[i].color = DirectX::SimpleMath::Vector3(
+				((unsigned char)(5 + i * 53 * i + 4)) / 255.f,
+				((unsigned char)(66 + i * 23 + 4)) / 255.f,
+				((unsigned char)(11 + i * 455 + 4)) / 255.f
+			);
+			ptr[i].positionWS = (ptr[i].color * 2 - DirectX::SimpleMath::Vector3(1.f)) * 2;
+			ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 8;
+			ptr[i].positionWS.y = 1.f;
+			ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 8;
+
+			ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
+			ptr[i].range = i / 1.f;
+			ptr[i].intensity = 1.f;
+		}
+
+		lights->unmap(context);
+	}
+
 	inline Plane computePlane(DirectX::SimpleMath::Vector3 a, DirectX::SimpleMath::Vector3 b)
 	{
 		Plane plane;

@@ -80,18 +80,19 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 	if (m_shooter && m_state == GrapplingHookStatePulling)
 	{
 		// Getting variables from entity
-		btRigidBody* shooterBody = m_shooter->getRigidbody();
-		btVector3 linearVelocity = shooterBody->getLinearVelocity();
+		//btRigidBody* shooterBody = m_shooter->getRigidBody();
+		//btVector3 linearVelocity = shooterBody->getLinearVelocity();
 		btVector3 dirToPoint = (m_point - m_shooter->getPositionBT()).normalize();
 		
 		// Setting player movement specific grappling hook variables
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
+
 			// Checks if the player does a 90 degree turn around mid-air
 			if (dirToPoint.dot(player->getMoveDirection()) > 0)
 			{
 				// Resets the vertical velocity to make a "stopping effect"
-				player->getRigidbody()->setLinearVelocity({ 0, 0, 0 });
+				//player->getRigidBody()->setLinearVelocity({ 0, 0, 0 });
 			}
 			else
 			{
@@ -103,7 +104,7 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 			player->setMoveDirection(btVector3(dirToPoint.x(), 0, dirToPoint.z()));
 
 			// Easing to reach the targeted vertical speed
-			shooterBody->setLinearVelocity({ 0, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0 });
+			//shooterBody->setLinearVelocity({ 0, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0 });
 
 			// Easing to reach the maximum vertical speed
 			player->setMoveSpeed(player->getMoveSpeed() + ((GRAPPLING_HOOK_MAX_SPEED_XZ - player->getMoveSpeed()) * GRAPPLING_HOOK_POWER * deltaTime));

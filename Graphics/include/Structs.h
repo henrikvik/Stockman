@@ -21,8 +21,11 @@ namespace Graphics
 		ENEMYGRUNT,
 		GRAPPLEPOINT,
 		GRASS,
+		SKY_SPHERE,
 		BUSH,
-        TESTCUBEANIMATED
+		CLOUDS,
+		MEGAGRASS
+
     };
 
 	struct ModelInfo
@@ -42,6 +45,14 @@ namespace Graphics
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
 		bool backFaceCulling = true;
+	};
+
+	struct FoliageRenderInfo
+	{
+		bool render;
+		ModelID meshId;
+		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = false;
 	};
 
     struct RenderDebugInfo
@@ -65,6 +76,7 @@ namespace Graphics
 	struct InstanceData
 	{
 		DirectX::SimpleMath::Matrix translation;
+		DirectX::SimpleMath::Matrix invTranspose;
 	};
 
 	struct ButtonInfo
@@ -72,14 +84,15 @@ namespace Graphics
 		DirectX::SimpleMath::Rectangle m_rek;
 		DirectX::SimpleMath::Vector2 m_texCoordStart;
 		DirectX::SimpleMath::Vector2 m_texCoordEnd;
-		std::string m_texture;
+        float activeoffset;
+        int textureIndex;
 		bool pressed;
 	};
 
 	struct MenuInfo
 	{
 		std::vector<ButtonInfo> m_buttons;		//< List of buttons on current menu
-		std::string m_menuTexture;			//< file path for the menu background ska bytas till enums
+		int m_menuTexture;			
 	};
 
     struct TriangleVertex
@@ -90,7 +103,7 @@ namespace Graphics
     enum Font
     {
         SMALL,
-        MEDUIM,
+        MEDIUM,
         LARGE
     };
     struct TextString
@@ -107,6 +120,7 @@ namespace Graphics
         int cuttleryAmmo[2];
         int iceAmmo[2];
         bool sledge;
+        float cd;
         UINT score;
         int wave;
         int enemiesRemaining;

@@ -36,16 +36,37 @@
 
 #include <ctime>
 #include <chrono>
-#include <Entity\Entity.h>
+#include <Entity\PhysicsObject.h>
 #include <Physics\Primitives.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include <BulletDynamics\Character\btKinematicCharacterController.h>
+#include <BulletCollision\CollisionDispatch\btGhostObject.h>
 #include <Misc\GameTime.h>
+#include <Engine\Profiler.h>
 
+//#define PHYSICS_GRAVITY 0.00982f
 #define PHYSICS_GRAVITY 9.82f * 2.f
+
+#define DEFAULT_F 0.5f
+#define DEFAULT_R 0 
+#define DEFAULT_S { 0, 0 }
+#define DEFAULT_D { 0, 0 }
 
 namespace Logic
 {
+	struct BodySpecifics
+	{
+		BodySpecifics(float restitution, float friction, DirectX::SimpleMath::Vector2 sleepingThresholds, DirectX::SimpleMath::Vector2 damping, bool isSensor)
+			: isSensor(isSensor), restitution(restitution), friction(friction), sleepingThresholds(sleepingThresholds), damping(damping) { }
+
+		bool isSensor;
+		float restitution; 
+		float friction;
+		DirectX::SimpleMath::Vector2 sleepingThresholds;
+		DirectX::SimpleMath::Vector2 damping;
+	};
+
 	class Physics : public btDiscreteDynamicsWorld
 	{
 	public:
@@ -58,30 +79,35 @@ namespace Logic
 
 		const btRigidBody* RayTestOnRigidBodies(Ray& ray);
 		const btVector3 RayTestGetPoint(Ray& ray);
-		const btVector3 RayTestGetNormal(Ray& ray);
+		const btVector3 RayTestGetNormal(Ray& ray);											
 
 		// Returns a ptr to the created rigidbody
-		// Works with different primitives
-		// Mass is the weight, for simplicity, use it like kilogram
-		// Sensor is used for triggers and will not interact with other rigidbodies
-		//	but it will tell us if it collides with anything
-		btRigidBody* createBody(Cube& cube, float mass, bool isSensor = false);
+		btRigidBody* createBody(Cube& cube, float mass, bool isSensor = false);				// Should only be used for hitboxes on map, nothing else
 		btRigidBody* createBody(Plane& plane, float mass, bool isSensor = false);			// Static infinite plane, keep this temporary
-		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor = false);			
-		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false);
-		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);		// Should be used for player & enemies
+		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor = false);			// Should be used as often as possible because it needs less processing of collisions
+		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false);		// Should be used for enemies
+		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);		// Should be used for enemies
+		btPairCachingGhostObject* createPlayer(btCapsuleShape* capsule, btVector3 pos);		// Should be used for player
 
+		// Debug Rendering
 		void render(Graphics::Renderer& renderer);
-
 
 	private:
 		btCollisionDispatcher* dispatcher;
 		btBroadphaseInterface* overlappingPairCache;
 		btSequentialImpulseConstraintSolver* constraintSolver;
 		btDefaultCollisionConfiguration* collisionConfiguration;
+		btRigidBody* initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, BodySpecifics specifics);
+		btGhostPairCallback* ghostPairCB;
 
 		// Debug Rendering
 		Graphics::RenderDebugInfo renderDebug;
+		void renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body);
+		void renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRigidBody* body);
+		void renderCylinder(Graphics::Renderer& renderer, btCylinderShape* cs, btRigidBody* body);
+		void renderCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btRigidBody* body);
+		void renderRectangleAround(Graphics::Renderer& renderer, btVector3 origin, btVector3 half);
+		void renderGhostCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btGhostObject* ghostObject);
 	};
 }
 

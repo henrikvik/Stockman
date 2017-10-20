@@ -9,9 +9,11 @@ Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent,
 	m_behavior = nullptr;
 
 	m_health = health;
+	m_maxHealth = health;
 	m_baseDamage = baseDamage;
 	m_moveSpeed = moveSpeed;
 	m_enemyType = enemyType;
+	m_bulletTimeMod = 1.f;
 
 	//animation todo
 }
@@ -25,12 +27,20 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
 	switch (id) 
 	{
 		case TEST:
-			m_behavior = new TestBehavior();
+				m_behavior = newd TestBehavior();
 			break;
 		case RANGED:
-			m_behavior = new RangedBehavior();
+				m_behavior = newd RangedBehavior();
+			break;
+		default:
+				m_behavior = newd TestBehavior();
 			break;
 	}
+}
+
+void Enemy::setEnemyType(ENEMY_TYPE id)
+{
+	m_enemyType = id;
 }
 
 Enemy::~Enemy() {
@@ -43,25 +53,23 @@ void Enemy::setProjectileManager(ProjectileManager * projectileManager)
 	m_projectiles = projectileManager;
 }
 
-void Enemy::update(Player const &player, float deltaTime, bool updatePath) {
+void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 
 	if (m_behavior) // remove later for better perf
 	{
-		if (updatePath)
-			m_behavior->updatePath(*this, player);
-		m_behavior->update(*this, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+		m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 	}
 
-	m_moveSpeedMod = 0.f; // Reset effect variables, should be in function if more variables are added.
+	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
 }
 
 void Enemy::debugRendering(Graphics::Renderer & renderer)
 {
 	if (m_behavior)
 	{
-		m_behavior->debugRendering(renderer);
+		m_behavior->getPath().renderDebugging(renderer, getPosition());
 	}
 }
 
@@ -74,12 +82,13 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 {
 	int flags = effect.getStandards()->flags;
 
-	if (flags & Effect::EFFECT_KILL)
-		damage(m_health);
+	//if (flags & Effect::EFFECT_KILL)
+	//	damage(m_health);
 	if (flags & Effect::EFFECT_ON_FIRE)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
-	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
-		m_moveSpeedMod += effect.getModifiers()->modifyMovementSpeed;
+	if (flags & Effect::EFFECT_BULLET_TIME)
+		m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
+		
 }
 
 float Enemy::getHealth() const
@@ -99,7 +108,7 @@ float Enemy::getBaseDamage() const
 
 float Enemy::getMoveSpeed() const
 {
-	return m_moveSpeed + m_moveSpeedMod;
+	return m_moveSpeed * m_bulletTimeMod;
 }
 
 int Enemy::getEnemyType() const
@@ -124,4 +133,9 @@ void Enemy::spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed)
 ProjectileManager * Enemy::getProjectileManager() const
 {
 	return m_projectiles;
+}
+
+Behavior* Enemy::getBehavior() const
+{
+	return m_behavior;
 }

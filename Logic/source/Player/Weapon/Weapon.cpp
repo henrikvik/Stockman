@@ -52,6 +52,12 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	scale = DirectX::SimpleMath::Matrix::CreateScale(0.05f, 0.05f, 0.05f);
 }
 
+void Logic::Weapon::reset()
+{
+	m_ammo = m_ammoCap;
+	m_magAmmo = m_magSize;
+}
+
 void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
 	// Use weapon

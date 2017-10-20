@@ -1,5 +1,5 @@
 { // ON FIRE
-	"flags": 0; // 0x2
+	"flags": 1; // 0x2
 	"duration": 3000f;
 	"modifiers": 0;
 	"specifics": 1;
@@ -14,26 +14,8 @@
 	"specifics": 0;
 }
 { // JUMP-PAD
-	"flags": 256; // 0x100
+	"flags": 128; // 0x80
 	"duration": 0f;
-	"modifiers": 0;
-	"specifics": 0;
-}
-{ // AMMO_PICK_UP
-	"flags": 1024; // 0x400
-	"duration": 0f;
-	"modifiers": 0;
-	"specifics": 0;
-}
-{ // SHIELDCHARGE
-	"flags": 0; // 0x400
-	"duration": 1000f;
-	"modifiers": 0;
-	"specifics": 0;
-}
-{ // BULLET_TIME
-	"flags": 256; // 0x100
-	"duration": 10f;
 	"modifiers": 1;
 	"specifics": 0;
 
@@ -41,5 +23,26 @@
 	"mDmgTaken": 0f;
 	"mFirerate": 0f;
 	"mHP": 0f;
-	"mMovementSpeed": -10f;
+	"mMovementSpeed": 2.f
+}
+{ // AMMO_PICK_UP
+	"flags": 512; // 0x200
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 0;
+}
+{ // SHIELDCHARGE
+	"flags": 7168; // 0x400 + 0x800 + 0x1000
+	"duration": 1500f;
+	"modifiers": 0;
+	"specifics": 0;
+}
+{ // BULLET_TIME
+	"flags": 8192; // 0x2000
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0.9f;
+	"sFreezing": 0f;
 }

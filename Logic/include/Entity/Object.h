@@ -1,9 +1,14 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <Graphics\include\Renderer.h>
 #include <Graphics\include\Structs.h>
 #include <SimpleMath.h>
+
+
+namespace Graphics
+{
+	class Renderer;
+}
 
 namespace Logic
 {

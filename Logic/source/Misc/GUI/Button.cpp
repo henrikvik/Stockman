@@ -1,67 +1,88 @@
-#include "..\..\..\include\Misc\GUI\Button.h"
+#include <Misc\GUI\Button.h>
+using namespace Logic;
 
-Logic::Button::Button()
+Button::Button()
 {
 }
 
-Logic::Button::~Button()
+Button::~Button()
 {
 }
 
-void Logic::Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float height, float width, std::string texture, std::function<void(void)> callBack)
+void Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width, int textureIndex, std::function<void(void)> callback)
 {
-	buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(pos.x, pos.y, width, height);
+	m_buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(pos.x, pos.y, width, height);
+	m_buttonInfo.m_texCoordStart = texCoordStart;
+	m_buttonInfo.m_texCoordEnd = texCoordEnd;
+	m_buttonInfo.activeoffset = offset;
+	m_buttonInfo.textureIndex = textureIndex;
+
 	m_animationStart = DirectX::SimpleMath::Vector2(pos.x, pos.y);
 	m_animationEnd = DirectX::SimpleMath::Vector2(0 - width, pos.y);
 	m_animationTime = 0;
-	buttonInfo.m_texCoordStart = texCoordStart;
-	buttonInfo.m_texCoordEnd = texCoordEnd;
-	buttonInfo.m_texture = texture;
-	m_CallBack = callBack;
+	m_start = m_buttonInfo.m_texCoordStart.y;
+	m_end = m_buttonInfo.m_texCoordEnd.y;
+
+	m_callback = callback;
+	m_highlighted = false;
 }
 
-void Logic::Button::updateOnPress(int posX, int posY)
+void Button::updateOnPress(int posX, int posY)
 {
-	if (buttonInfo.m_rek.Contains(posX, posY))
+	if (m_buttonInfo.m_rek.Contains(posX, posY))
 	{
-		m_CallBack();
+		m_callback();
 	}
 }
 
-bool Logic::Button::animationTransition(float dt, float maxAnimationTime, bool forward)
+void Button::hoverOver(int posX, int posY)
+{
+    if (m_buttonInfo.m_rek.Contains(posX, posY))
+    {
+        if (!m_highlighted)
+        {
+            m_buttonInfo.m_texCoordStart.y -= m_buttonInfo.activeoffset;
+
+			m_buttonInfo.m_texCoordEnd.y = m_buttonInfo.m_texCoordEnd.y - m_buttonInfo.activeoffset;
+            m_highlighted = true;
+        }
+
+    }
+    else
+    {
+        if (m_highlighted)
+        {
+            m_buttonInfo.m_texCoordStart.y = m_start;
+            m_buttonInfo.m_texCoordEnd.y = m_end;
+			m_highlighted = false;
+        }
+    }
+}
+
+bool Button::animationTransition(float dt, float maxAnimationTime, bool forward)
 {
 	m_animationTime += dt * (1 / maxAnimationTime);
-	if (m_animationTime > 1)
+	bool done = false;
+
+	if (m_animationTime >= 1)
 	{
-		m_animationTime = 1;
+		m_animationTime = 0;
+		done = true;
 	}
+ 
+	DirectX::SimpleMath::Vector2 lerpResult;
 	if (forward)
-	{
-		DirectX::SimpleMath::Vector2 temp = DirectX::SimpleMath::Vector2::Lerp(m_animationStart, m_animationEnd, m_animationTime);
-		buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(temp.x, temp.y, buttonInfo.m_rek.width, buttonInfo.m_rek.height);
-
-		if (buttonInfo.m_rek.x == m_animationEnd.x && buttonInfo.m_rek.y == m_animationEnd.y)
-		{
-			m_animationTime = 0;
-			return true;
-		}
-	}
+		lerpResult = DirectX::SimpleMath::Vector2::Lerp(m_animationStart, m_animationEnd, done ? 1 : m_animationTime);
 	else
-	{
-		DirectX::SimpleMath::Vector2 temp = DirectX::SimpleMath::Vector2::Lerp(m_animationEnd, m_animationStart, m_animationTime);
-		buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(temp.x, temp.y, buttonInfo.m_rek.width, buttonInfo.m_rek.height);
-
-		if (buttonInfo.m_rek.x == m_animationStart.x && buttonInfo.m_rek.y == m_animationStart.y)
-		{
-			m_animationTime = 0;
-			return true;
-		}
-	}
+		lerpResult = DirectX::SimpleMath::Vector2::Lerp(m_animationEnd, m_animationStart, done ? 1 : m_animationTime);
 	
-	return false;
+	m_buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(lerpResult.x, lerpResult.y,
+		m_buttonInfo.m_rek.width, m_buttonInfo.m_rek.height);
+
+	return done;
 }
 
-Graphics::ButtonInfo *Logic::Button::getButtonInfo()
+Graphics::ButtonInfo& Button::getButtonInfo()
 {
-	return &this->buttonInfo;
+	return m_buttonInfo;
 }

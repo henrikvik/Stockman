@@ -3,7 +3,10 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 #include "Utility\sizeofv.h"
+#include <Keyboard.h>
+
 #include <Engine\Profiler.h>
+
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER true
@@ -22,22 +25,29 @@ namespace Graphics
 		: forwardPlus(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
-        , instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
-        , instanceOffsetBuffer(device)
+		, instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
+		, instanceOffsetBuffer(device)
 		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
 		, postProcessor(device, deviceContext)
 		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
 		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
-        ,menu(device, deviceContext)
-        ,hud(device, deviceContext)
-    #pragma region RenderDebugInfo
-        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
-        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
-        , debugColorBuffer(device)
-    #pragma endregion
-        , hybrisLoader(device)
-
+#pragma region RenderDebugInfo
+		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
+		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
+		, debugColorBuffer(device)
+#pragma endregion
+		, fog(device)
+		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
+        , menu(device, deviceContext)
+        , hud(device, deviceContext)
+		, ssaoRenderer(device)
+		, bulletTimeBuffer(device)
+#pragma region Foliage
+		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
+		, timeBuffer(device)
+#pragma endregion
+		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -52,6 +62,9 @@ namespace Graphics
 
 		states = new DirectX::CommonStates(device);
 		grid.initialize(camera, device, deviceContext, &resourceManager);
+
+		float temp = 1.f;
+		bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
 
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         createBlendState();
@@ -72,10 +85,10 @@ namespace Graphics
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
     {
         resourceManager.initialize(gDevice, gDeviceContext);
+		skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
 
 		//temp
 		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
-
 
     }
 
@@ -84,9 +97,41 @@ namespace Graphics
 		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
 	}
 
-    void Renderer::render(Camera * camera)
-    {
-    #if ANIMATION_HIJACK_RENDER
+	//this function is called in SkillBulletTime.cpp
+	void Renderer::setBulletTimeCBuffer(float amount)
+	{
+		PROFILE_BEGIN("SetBulletTimeCBuffer()");
+		//These two must always add up to one ir i'll have to fix the formula
+		static const float TOP_THRESHOLD = 0.9;
+		static const float BOT_THRESHOLD = 0.1;
+
+
+		if (amount > TOP_THRESHOLD)
+			amount = (amount - TOP_THRESHOLD) / BOT_THRESHOLD;
+
+		else if (amount < BOT_THRESHOLD)
+			amount = 1 - ((amount) / BOT_THRESHOLD);
+
+		else amount = 0;
+
+		bulletTimeBuffer.write(deviceContext, &amount, sizeof(float));
+		PROFILE_END();
+	}
+
+	void Renderer::updateShake(float deltaTime)
+	{
+		hud.updateShake(deviceContext, deltaTime);
+	}
+
+	void Renderer::startShake(float radius, float duration)
+	{
+		hud.startShake(radius, duration);
+	}
+
+	void Renderer::render(Camera * camera)
+	{
+		menu.unloadTextures();
+#if ANIMATION_HIJACK_RENDER
 
         renderQueue.clear();
         static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
@@ -98,15 +143,15 @@ namespace Graphics
             0 + 0 * cosf(ticks * 0.002f), 
         }, { 0,0,0 }, deviceContext);
 
-        ID3D11Buffer *cameraBuffer = cam.getBuffer();
-        deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-        deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
+		ID3D11Buffer *cameraBuffer = cam.getBuffer();
+		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
+		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 
-        static float clearColor[4] = { 0,0,0,1 };
-        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+		static float clearColor[4] = { 0,0,0,1 };
+		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
-        deviceContext->RSSetViewports(1, &viewPort);
+		deviceContext->RSSetViewports(1, &viewPort);
 
         static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"));
         static HybrisLoader::Model * model = hybrisLoader.getModel(Resources::Models::Cube);
@@ -118,7 +163,7 @@ namespace Graphics
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         deviceContext->RSSetState(states->CullClockwise());
 
-        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
         std::vector<SM::Matrix> animTransforms = model->evalAnimation(
             "Rotate", ((ticks % (int)(1000 * model->getAnimationDuration("Rotate"))) / 1000.f)
@@ -162,75 +207,59 @@ namespace Graphics
 
 
 #else
-        menu.unloadTextures();
-        cull();
-        writeInstanceData();
+		cull();
+		writeInstanceData();
 
+		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
 		skyRenderer.drawShadows(deviceContext, &forwardPlus);
 		draw();
 
 
 		ID3D11Buffer *cameraBuffer = camera->getBuffer();
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
+		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 
-		static float clearColor[4] = { 0, 0.5, 0.7, 1 };
-		static float blackClearColor[4] = {0};
+		static float clearColor[4] = { 0 };
 		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
+		deviceContext->ClearRenderTargetView(glowMap, clearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+		deviceContext->ClearRenderTargetView(worldPosMap, clearColor);
+		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
 		deviceContext->RSSetState(states->CullCounterClockwise());
 
-        deviceContext->IASetInputLayout(forwardPlus);
-        deviceContext->VSSetShader(forwardPlus, nullptr, 0);
+		deviceContext->IASetInputLayout(forwardPlus);
+		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
 
-        deviceContext->PSSetShader(nullptr, nullptr, 0);
-        deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
-        deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
+		deviceContext->PSSetShader(nullptr, nullptr, 0);
+		deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
 
-        draw();
+		draw();
 
-        deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-
-    #pragma region Light Temp
-        static 	float f = 59.42542;
-        f += 0.001f;
-
-        auto lights = grid.getLights();
-
-        Light *ptr = lights->map(deviceContext);
-        for (int i = 0; i < NUM_LIGHTS; i++) {
-            ptr[i].color = DirectX::SimpleMath::Vector3(
-                ((unsigned char)(5 + i * 53 * i + 4)) / 255.f,
-                ((unsigned char)(66 + i * 23 + 4)) / 255.f,
-                ((unsigned char)(11 + i * 455 + 4)) / 255.f
-            );
-            ptr[i].positionWS = (ptr[i].color * 2 - DirectX::SimpleMath::Vector3(1.f)) * 2;
-            ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 8;
-            ptr[i].positionWS.y = 1.f;
-            ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 8;
-
-            //ptr[i].positionWS = DirectX::SimpleMath::Vector3(0.f, 1.f, 1.f - 1 / 8.f - i / 4.f);
-            ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
-			ptr[i].range = i / 1.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
-            ptr[i].intensity = 1.f;
-        }
-
-        lights->unmap(deviceContext);
-    #pragma endregion
-
-        grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
-
-        deviceContext->IASetInputLayout(forwardPlus);
-        deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-        deviceContext->PSSetShader(forwardPlus, nullptr, 0);
-
+		deviceContext->IASetInputLayout(foliageShader);
+		deviceContext->VSSetShader(foliageShader, nullptr, 0);
+		deviceContext->PSSetShader(depthShader, nullptr, 0);
 		
+		//this be no deltatime
+		grassTime++;
+
+		drawFoliage(camera);
+
+		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+		deviceContext->RSSetState(states->CullCounterClockwise());
+
+		grid.updateLights(deviceContext, camera);
+
+		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
+
+		deviceContext->IASetInputLayout(forwardPlus);
+		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
+		deviceContext->PSSetShader(forwardPlus, nullptr, 0);
+
+
 
 		ID3D11ShaderResourceView *SRVs[] = {
 			grid.getOpaqueIndexList()->getSRV(),
@@ -242,6 +271,9 @@ namespace Graphics
 		deviceContext->PSSetShaderResources(0, 4, SRVs);
 		deviceContext->PSSetSamplers(0, 1, &sampler);
 
+		auto samplerWrap = states->LinearWrap();
+		deviceContext->PSSetSamplers(2, 1, &samplerWrap);
+
 		ID3D11SamplerState * samplers[] = { skyRenderer.getSampler() };
 		deviceContext->PSSetSamplers(1, 1, samplers);
 
@@ -250,46 +282,108 @@ namespace Graphics
 			skyRenderer.getShaderBuffer(),
 			skyRenderer.getLightMatrixBuffer()
 		};
-		
+
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
-		deviceContext->VSSetConstantBuffers(2, 1, &lightBuffs[1]);
+		deviceContext->VSSetConstantBuffers(3, 1, &lightBuffs[1]);
+
+		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
 
 		ID3D11RenderTargetView * rtvs[] =
 		{
 			fakeBackBuffer,
-			glowMap
+			glowMap,
+			*ssaoRenderer.getNormalShaderResource(),
+			worldPosMap
 		};
-		deviceContext->OMSetRenderTargets(2, rtvs, depthStencil);
+
+		deviceContext->OMSetRenderTargets(4, rtvs, depthStencil);
 		
 		draw();
+
+		PROFILE_BEGIN("RenderFoliage");
+		deviceContext->IASetInputLayout(foliageShader);
+		deviceContext->VSSetShader(foliageShader, nullptr, 0);
+		deviceContext->PSSetShader(foliageShader, nullptr, 0);
+		drawFoliage(camera);
+		renderFoliageQueue.clear();
+		PROFILE_END();
+
+
+		//The sky renderer uses the bullet time on register 3
+		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
 		skyRenderer.renderSky(deviceContext, camera);
 
-		ID3D11RenderTargetView * rtvNULL[2] = {nullptr};
+		ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
 
-        deviceContext->OMSetRenderTargets(2, rtvNULL, nullptr);
+		deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
 
-        ZeroMemory(SRVs, sizeof(SRVs));
-        deviceContext->PSSetShaderResources(0, 4, SRVs);
+		ZeroMemory(SRVs, sizeof(SRVs));
+		deviceContext->PSSetShaderResources(0, 4, SRVs);
 
-        deviceContext->RSSetState(states->CullCounterClockwise());
-        SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
-        if ((1 << 15) & tabKeyState)
-        {
-            this->drawToBackbuffer(grid.getDebugSRV());
-        }
-        
-
-		///////Post effext
-		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+		deviceContext->RSSetState(states->CullCounterClockwise());
+		SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
+		if ((1 << 15) & tabKeyState)
+		{
+			this->drawToBackbuffer(grid.getDebugSRV());
+		}
 
 
-		drawToBackbuffer(fakeBackBufferSwap);
 
-        renderDebugInfo();
-        hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-        
-    #endif
-    }
+#endif
+		//TEEEMP
+		auto ks = DirectX::Keyboard::Get().GetState();
+
+		static bool wasPressed = false;
+		static bool isPressed = false;
+		static bool enablePostEffects = true;
+		wasPressed = isPressed;
+		isPressed = ks.V;
+
+		if (!wasPressed && isPressed)
+			enablePostEffects = !enablePostEffects;
+
+
+		if (enablePostEffects)
+		{
+
+			///////Post effects
+			PROFILE_BEGIN("Glow");
+			postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+			PROFILE_END();
+
+			PROFILE_BEGIN("SSAO");
+			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+			PROFILE_END();
+
+			PROFILE_BEGIN("DrawToBackBuffer");
+			drawToBackbuffer(fakeBackBuffer);
+			PROFILE_END();
+
+			fog.renderFog(deviceContext, backBuffer, worldPosMap);
+		}
+
+		else
+		{
+			PROFILE_BEGIN("DrawToBackBuffer");
+			drawToBackbuffer(fakeBackBuffer);
+			PROFILE_END();
+		}
+
+
+
+		PROFILE_BEGIN("HUD");
+		hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
+		PROFILE_END();
+
+		PROFILE_BEGIN("DebugInfo");
+		renderDebugInfo(camera);
+		PROFILE_END();
+
+		if (ks.G)
+		{
+			startShake(30, 1000);
+		}
+	}
 
 
     void Renderer::queueRender(RenderInfo * renderInfo)
@@ -299,6 +393,17 @@ namespace Graphics
 
         renderQueue.push_back(renderInfo);
     }
+
+	void Renderer::queueFoliageRender(FoliageRenderInfo * renderInfo)
+	{
+		if (renderFoliageQueue.size() > INSTANCE_CAP)
+		{
+			throw "Foliage renderer exceeded instance cap.";
+		}
+
+		renderFoliageQueue.push_back(renderInfo);
+	
+	}
 
     void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
     {
@@ -319,20 +424,6 @@ namespace Graphics
         hud.fillHUDInfo(info);
     }
 
-
-    //void Graphics::Renderer::renderMenu(MenuInfo * info)
-    //{
-    //	this->spriteBatch->Begin();
-    //	for (size_t i = 0; i < info->m_buttons.size(); i++)
-    //	{
-    //		/*this->spriteBatch->Draw(info->m_buttons.at(i)->m_texture, info->m_buttons.at(i)->m_rek);*/
-    //	}
-    //	this->spriteBatch->End();
- //  
-    //}
-
-
-
     void Renderer::cull()
     {
         instanceQueue.clear();
@@ -340,7 +431,10 @@ namespace Graphics
         {
             if (info->render)
             {
-                instanceQueue[info->meshId].push_back({ info->translation });
+                instanceQueue[info->meshId].push_back({ 
+					info->translation,
+					info->translation.Invert().Transpose()
+				});
             }
         }
         renderQueue.clear();
@@ -359,10 +453,39 @@ namespace Graphics
         instanceSBuffer.unmap(deviceContext);
     }
 
+	void Renderer::drawFoliage(Camera * camera)
+	{
+		timeBuffer.write(deviceContext, &grassTime, sizeof(grassTime));
+
+		deviceContext->VSSetConstantBuffers(4, 1, timeBuffer);
+		deviceContext->RSSetState(states->CullNone());
+		deviceContext->OMSetRenderTargets(1, fakeBackBuffer, depthStencil);
+
+		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		UINT sampleMask = 0xffffffff;
+		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+
+		for (FoliageRenderInfo * info : renderFoliageQueue)
+		{
+			ModelInfo model = resourceManager.getModelInfo(info->meshId);
+
+			static UINT stride = sizeof(Vertex), offset = 0;
+			deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
+			deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			static ID3D11ShaderResourceView * modelTextures[1] = { nullptr };
+			modelTextures[0] = model.diffuseMap;
+			deviceContext->PSSetShaderResources(10, 1, modelTextures);
+
+			deviceContext->DrawIndexed((UINT)model.indexCount, 0, 0);
+		}
+
+	}
+
     void Renderer::draw()
     {
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->VSSetConstantBuffers(3, 1, instanceOffsetBuffer);
+        deviceContext->VSSetConstantBuffers(4, 1, instanceOffsetBuffer);
         deviceContext->VSSetShaderResources(20, 1, instanceSBuffer);
 
 
@@ -432,30 +555,23 @@ namespace Graphics
         deviceContext->PSSetShaderResources(0, 1, &srvNull);
     }
 
-    void Renderer::drawGUI()
-    {
-        
-        
-    }
-
     //draws the menu
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
         deviceContext->RSSetViewports(1, &viewPort);
-        menu.drawMenu(device, deviceContext, info, backBuffer);
+        menu.drawMenu(device, deviceContext, info, backBuffer, transparencyBlendState);
+        hud.renderText(transparencyBlendState);
 
     }
 
-    //creates a vetrex buffer for the GUI
-    
 
-	
-
-
-    void Renderer::renderDebugInfo()
+    void Renderer::renderDebugInfo(Camera* camera)
     {
-        //PROFILE_BEGIN("Renderer::renderDebugInfo()");
         if (renderDebugQueue.size() == 0) return;
+
+		ID3D11Buffer *cameraBuffer = camera->getBuffer();
+		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
+		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
@@ -466,30 +582,30 @@ namespace Graphics
         deviceContext->VSSetShader(debugRender, nullptr, 0);
         deviceContext->PSSetShader(debugRender, nullptr, 0);
 
-        for (RenderDebugInfo * info : renderDebugQueue)
-        {
-            debugPointsBuffer.write( 
-                deviceContext, 
-                info->points->data(), 
-                info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
-            );
 
-            debugColorBuffer.write(
-                deviceContext,
-                &info->color,
-                sizeof(DirectX::SimpleMath::Color)
-            );
+		for (RenderDebugInfo * info : renderDebugQueue)
+		{
+			debugPointsBuffer.write(
+				deviceContext,
+				info->points->data(),
+				info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
+			);
 
-            deviceContext->IASetPrimitiveTopology(info->topology);
-            deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
-            
-            deviceContext->Draw(info->points->size(), 0);
-        }
+			debugColorBuffer.write(
+				deviceContext,
+				&info->color,
+				sizeof(DirectX::SimpleMath::Color)
+			);
 
-        renderDebugQueue.clear();
-        //PROFILE_END();
+			deviceContext->IASetPrimitiveTopology(info->topology);
+			deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
+			deviceContext->Draw(info->points->size(), 0);
+		}
+
+		renderDebugQueue.clear();
     }
 
+	
     void Renderer::createBlendState()
     {
         D3D11_BLEND_DESC BlendState;

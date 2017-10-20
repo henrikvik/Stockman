@@ -14,6 +14,11 @@
 #include <AI/EntityManager.h>
 #include <Misc\GameTime.h>
 #include <Misc\CardManager.h>
+#include <Misc\HighScoreManager.h>
+#include <Misc\ComboMachine.h>
+#include <Misc\Sound\NoiseMachine.h>
+#include <Misc\FPSRenderer.h>
+
 
 // DirectX Includes
 #include <Windows.h>
@@ -23,10 +28,12 @@
 // Graphics Includes
 #include <Graphics\include\Renderer.h>
 
+// Engine Includes
+#include <Engine\Profiler.h>
+
 // Init Defines
 #define STARTING_STATE		gameStateMenuMain
 #define PLAYER_START_SCA	btVector3(1.5f, 3.0f, 1.5f)
-#define PLAYER_START_POS	btVector3(0.0f, 6.0f, 0.0f)
 #define PLAYER_START_ROT	btVector3(0.0f, 0.0f, 0.0f)
 
 // Init Waves (wave times are in ms)
@@ -37,8 +44,6 @@
 #define WAVE_3_TIME			25000.f
 #define WAVE_4_TIME			35000.f
 #define WAVE_5_TIME			60000.f
-
-
 
 namespace Logic
 {
@@ -52,6 +57,7 @@ namespace Logic
 
 		void init();
 		void clear();
+		void reset();
 
 		void waveUpdater();
 		void update(float deltaTime);
@@ -61,8 +67,11 @@ namespace Logic
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
 
         int getState() const;
-
 	private:
+		// Private functions
+		void gameOver();
+
+		// Members
 		Physics*			m_physics;
 		Player*				m_player;
 		Map*				m_map;
@@ -71,11 +80,18 @@ namespace Logic
 		EntityManager		m_entityManager;
 		GameTime			m_gameTime;
 		CardManager*		m_cardManager;
+		HighScoreManager*	m_highScoreManager;
 
 		// Wave
-		int		m_waveCurrent;
-		float	m_waveTimer;
-		float	m_waveTime[MAX_WAVES];
+		int					m_waveCurrent;
+		float				m_waveTimer;
+		float				m_waveTime[MAX_WAVES];
+
+		//GameOver
+		std::string			highScore[10];
+
+		// FPS
+		FPSRenderer fpsRenderer;
 	};
 }
 

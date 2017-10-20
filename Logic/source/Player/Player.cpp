@@ -1,8 +1,13 @@
 #include "Player/Player.h"
 #include <AI\EnemyTest.h>
 #include <AI\Trigger.h>
+#include <DebugDefines.h>
+#include <Misc\ComboMachine.h>
+#include <Engine\Profiler.h>
 
 using namespace Logic;
+
+btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
 Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent, modelID)
@@ -21,16 +26,25 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	m_skillManager.init(physics, projectileManager, gameTime);
 	m_physPtr = physics;
 
+	btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_HEIGHT, PLAYER_SIZE_RADIUS);
+	btPairCachingGhostObject* ghostObject = m_physPtr->createPlayer(playerShape, startPosition);
+	ghostObject->setUserPointer(this);
+
+	m_charController = new btKinematicCharacterController(ghostObject, playerShape, 0.2f, btVector3(0.f, 1.f, 0.f));
+	m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
+	m_physPtr->addAction(m_charController);
+
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
     	info.hp = m_hp;
    	info.cuttleryAmmo[0] = 0;
    	info.cuttleryAmmo[1] = 0;
-    	info.iceAmmo[0] = 0 ;
-    	info.iceAmmo[1] = 0 ;
+    	info.iceAmmo[0] = 0;
+    	info.iceAmmo[1] = 0;
     	info.wave = 0;
-    	info.score = 0;
-    	info.sledge = false;
+   	info.score = 0;
+   	info.sledge = false;
+	info.cd = 1.0f;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -67,52 +81,52 @@ void Player::clear()
 {
 	m_weaponManager.clear();
 	m_skillManager.clear();
+	
+	delete m_charController;
 }
 
-void Player::onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier)
+void Player::reset()
 {
+	getRigidBody()->getWorldTransform().setOrigin(startPosition);
+	m_weaponManager.reset();
+	m_hp = 3;
+}
+
+void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
+{
+#ifdef GOD_MODE
+	
+#else
 	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
-	else if (EnemyTest* e = dynamic_cast<EnemyTest*>(&other))	{ printf("Enemy slapped you right in the face.\n"); }	// collision with enemy
-	else if (Trigger* t = dynamic_cast<Trigger*>(&other))		{ }														// collision with trigger
-	else if(m_playerState == PlayerState::IN_AIR)
+	else if (Trigger* t = dynamic_cast<Trigger*>(&other))	 	{ }														// collision with trigger
+	else if (Enemy *e = dynamic_cast<Enemy*> (&other))
 	{
-		btVector3 dir = contactPoint - getPositionBT();
-
-		btVector3 hitSurfaceNormal = m_physPtr->RayTestGetNormal(Ray(getPositionBT(), getPositionBT() + (dir*2))); // overshoot the ray test to get correct result
-
-		if (!hitSurfaceNormal.isZero())
-		{
-			float hitAngle = hitSurfaceNormal.dot({ 0.f, 1.f, 0.f });
-
-			// if angle between up-vector and surface-vector is over 0.8 player is grounded and can jump again
-			if (hitAngle > 0.8f)
-				m_playerState = PlayerState::STANDING;
-			else
-				m_playerState = PlayerState::IN_AIR;
-		}
+		int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
+		e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * stacks); 
+		stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
+		e->damage(2 * stacks); // replace 1 with the player damage when it is better
 	}
-		
+#endif
 }
 
 void Player::onCollision(Projectile& other)
 {
-
+	if (other.getProjectileData().enemyBullet)
+		takeDamage(other.getProjectileData().damage);
 }
 
-void Player::affect(int stacks, Effect const & effect, float deltaTime)
+void Player::affect(int stacks, Effect const &effect, float deltaTime)
 {
 	long long flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
 	{
-		getRigidbody()->setLinearVelocity(btVector3(getRigidbody()->getLinearVelocity().x(), 0, getRigidbody()->getLinearVelocity().z()));
-		getRigidbody()->applyCentralImpulse(btVector3(0, 1500.f * stacks, 0));
-		m_playerState = PlayerState::STANDING;
+		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * 3, 0.f });
+		m_playerState = PlayerState::IN_AIR;
 	}
 
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
-		printf("Ammo pack!\n");
 		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
 		int magSize		= wp->getMagSize();
 		int currentAmmo = wp->getAmmo();
@@ -140,9 +154,13 @@ void Player::readFromFile()
 
 }
 
-void Player::takeDamage(int damage)
+void Player::takeDamage(int damage, bool damageThroughProtection)
 {
-	m_hp -= damage;
+#ifndef GOD_MODE
+	if (damageThroughProtection ||
+		getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
+		m_hp -= damage;
+#endif
 }
 
 int Player::getHP() const
@@ -152,12 +170,22 @@ int Player::getHP() const
 
 void Player::updateSpecific(float deltaTime)
 {
+	Player::update(deltaTime);
+
+	// Updates listener info for sounds
+	btVector3 up		= { 0, 1, 0 };
+	btVector3 forward	= getForwardBT();
+	btVector3 right		= up.cross(forward);
+	btVector3 actualUp	= right.cross(forward);
+	m_listenerData.update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
+
     //updates hudInfo with the current info
+	info.score = ComboMachine::Get().GetCurrentScore();
     info.hp = m_hp;
     info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
-    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getMagSize();
+    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getAmmo();
     info.iceAmmo[0] = m_weaponManager.getSecondWeapon()->getMagAmmo();
-    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getMagSize();
+    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getAmmo();
     if (m_weaponManager.getCurrentWeaponPrimary()->getMagSize() == 0)
     {
         info.sledge  = true;
@@ -167,6 +195,15 @@ void Player::updateSpecific(float deltaTime)
         info.sledge = false;
     }
 
+    if (!m_skillManager.getCurrentSkill()->getCanUse())
+    {
+        info.cd = m_skillManager.getCurrentSkill()->getCooldown() / m_skillManager.getCurrentSkill()->getCooldownMax();
+    }
+    else
+    {
+        info.cd = 1.0f;
+    }
+    
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
@@ -175,10 +212,10 @@ void Player::updateSpecific(float deltaTime)
 	// Temp for testing
 	if (ks.IsKeyDown(DirectX::Keyboard::B))
 	{
-		btTransform transform = getRigidbody()->getWorldTransform();
+		btTransform transform = getTransform();
 		transform.setOrigin({0, 0, 0});
-		getRigidbody()->setWorldTransform(transform);
-		getRigidbody()->setLinearVelocity({ 0, 0, 0 });
+		getRigidBody()->setWorldTransform(transform);
+		getRigidBody()->setLinearVelocity({ 0, 0, 0 });
 		m_moveDir = {0, 0, 0};
 		m_moveSpeed = 0.f;
 	}
@@ -187,30 +224,29 @@ void Player::updateSpecific(float deltaTime)
 	static bool freeMove = false;
 	if (ks.IsKeyDown(DirectX::Keyboard::N) && !freeMove)
 	{
-		getRigidbody()->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
+		m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
 		freeMove = true;
 		printf("free move activated\n");
 	}
-	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)
+	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)	
 	{
+		m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
 		// reset movement
-		getRigidbody()->setGravity({ 0.f, -PHYSICS_GRAVITY, 0.f });
-		getRigidbody()->setLinearVelocity({ 0, 0, 0 });
 		m_moveDir = { 0, 0, 0 };
 		m_moveSpeed = 0.f;
 		freeMove = false;
 		printf("free move deactivated\n");
 	}
 		
+	if (m_charController->onGround())
+		m_playerState = PlayerState::STANDING;
+	else
+		m_playerState = PlayerState::IN_AIR;
 
 	// Movement
 	if (!ks.IsKeyDown(DirectX::Keyboard::LeftAlt))	// !TEMP!
 		mouseMovement(deltaTime, &ms);
 	jump(deltaTime, &ks);
-
-	// If moving on y-axis, player is in air
-	if (!m_wishJump && (getRigidbody()->getLinearVelocity().y() > 1.f || getRigidbody()->getLinearVelocity().y() < -1.f))
-		m_playerState = PlayerState::IN_AIR;
 
 	// Get movement input
 	moveInput(&ks);
@@ -325,23 +361,21 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 	}
 
 	// Normalize movement direction
-	if(!m_wishDir.isZero())
+	if (!m_wishDir.isZero())
 		m_wishDir = m_wishDir.safeNormalize();
 }
 
 void Player::moveFree(float deltaTime, DirectX::Keyboard::State * ks)
 {
-	getRigidbody()->setLinearVelocity({ 0, 0, 0 }); // Remove linear velocity
-
 	if (ks->IsKeyDown(DirectX::Keyboard::Keys::LeftControl)) // down
-		m_wishDir.setY(-1.f);
+		m_wishDir.setY(-0.1f * deltaTime);
 	if (ks->IsKeyDown(DirectX::Keyboard::Keys::Space))		 // up
-		m_wishDir.setY(1.f);
+		m_wishDir.setY(0.1f * deltaTime);
 
 	// Update pos of player
-	btTransform transform = getRigidbody()->getWorldTransform();
-	transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_wishDir * m_moveMaxSpeed * 2.f * deltaTime));
-	getRigidbody()->setWorldTransform(transform);
+	btTransform transform = m_charController->getGhostObject()->getWorldTransform();
+	transform.setOrigin(transform.getOrigin() + (m_wishDir * m_moveMaxSpeed * 2.f * deltaTime));
+	m_charController->getGhostObject()->setWorldTransform(transform);
 }
 
 void Player::move(float deltaTime)
@@ -379,8 +413,7 @@ void Player::move(float deltaTime)
 	// Apply jump if player wants to jump
 	if (m_wishJump)
 	{
-		getRigidbody()->setLinearVelocity({ 0, PLAYER_JUMP_SPEED, 0 }); // Jump
-		m_playerState = PlayerState::IN_AIR;
+		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
 
 		m_wishJump = false;
 	}
@@ -397,19 +430,25 @@ void Player::airMove(float deltaTime)
 
 void Player::accelerate(float deltaTime, float acceleration)
 {
+	if (deltaTime * 0.001f > (1.f / 60.f))
+		deltaTime = (1.f / 60.f) * 1000.f;
+
 	m_moveSpeed += acceleration * deltaTime;
 
 	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;
 
-	// Update pos of player
-	
-	btTransform transform = getRigidbody()->getWorldTransform();
-	if (m_playerState != PlayerState::IN_AIR)
-		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime));
+	// Apply moveDir and moveSpeed to plyer
+	if(m_playerState != PlayerState::IN_AIR)
+		m_charController->setVelocityForTimeInterval(m_moveDir * m_moveSpeed, deltaTime);
 	else
-		transform.setOrigin(getRigidbody()->getWorldTransform().getOrigin() + (m_moveDir * m_moveSpeed * deltaTime) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED * deltaTime));
-	getRigidbody()->setWorldTransform(transform);
+		m_charController->setVelocityForTimeInterval((m_moveDir * m_moveSpeed) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED), deltaTime);
+
+	PROFILE_BEGIN("Stepping player");
+	// Step player
+	m_charController->preStep(m_physPtr);
+	m_charController->playerStep(m_physPtr, deltaTime);
+	PROFILE_END()
 }
 
 void Player::applyFriction(float deltaTime, float friction)
@@ -475,8 +514,8 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-	m_camYaw	+= m_mouseSens * (ms->x);
-	m_camPitch	-= m_mouseSens * (ms->y);
+	m_camYaw	+= m_mouseSens * (ms->x * deltaTime);
+	m_camPitch	-= m_mouseSens * (ms->y * deltaTime);
 
 	// DirectX calculates position on the full resolution,
 	//  while getWindowMidPoint gets the current window's middle point!!!!!
@@ -502,6 +541,26 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 	m_forward.Normalize();
 }
 
+DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
+{
+	// Making memory for a matrix
+	float* m = new float[4 * 16];
+
+	// Getting this entity's matrix
+	m_charController->getGhostObject()->getWorldTransform().getOpenGLMatrix((btScalar*)(m));
+
+	// Translating to DirectX Math and assigning the variables
+	DirectX::SimpleMath::Matrix transformMatrix(m);
+
+	//Find the scaling matrix
+	auto scale = DirectX::SimpleMath::Matrix::CreateScale(PLAYER_SIZE_RADIUS * 2, PLAYER_SIZE_HEIGHT * 2, PLAYER_SIZE_RADIUS * 2);
+
+	// Deleting the old created variables from memory
+	delete m;
+
+	return scale * transformMatrix;
+}
+
 void Player::render(Graphics::Renderer & renderer)
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
@@ -520,6 +579,16 @@ void Player::render(Graphics::Renderer & renderer)
 void Logic::Player::setMaxSpeed(float maxSpeed)
 {
 	m_moveMaxSpeed = maxSpeed;
+}
+
+DirectX::SimpleMath::Vector3 Player::getPosition() const
+{
+	return DirectX::SimpleMath::Vector3(m_charController->getGhostObject()->getWorldTransform().getOrigin());
+}
+
+btVector3 Logic::Player::getPositionBT() const
+{
+	return m_charController->getGhostObject()->getWorldTransform().getOrigin();
 }
 
 float Logic::Player::getMoveSpeed() const
@@ -550,4 +619,9 @@ DirectX::SimpleMath::Vector3 Player::getForward()
 btVector3 Player::getMoveDirection()
 {
 	return m_moveDir;
+}
+
+ListenerData & Logic::Player::getListenerData()
+{
+	return m_listenerData;
 }

@@ -1,4 +1,7 @@
 #include "Game.h"
+#include <iostream>
+#include <Engine\Typing.h>
+#include <DebugDefines.h>
 
 using namespace Logic;
 
@@ -8,11 +11,17 @@ Game::Game()
 	m_player			= nullptr;
 	m_map				= nullptr;
 	m_projectileManager = nullptr;
+	m_cardManager		= nullptr;
+	m_menu				= nullptr;
+	m_highScoreManager	= nullptr;
+
+
 }
 
 Game::~Game() 
 { 
 	clear();
+	Typing::releaseInstance();
 }
 
 void Game::init()
@@ -29,16 +38,22 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(PLAYER_START_POS, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
+	m_player = new Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 
+	m_highScoreManager = newd HighScoreManager();
+
+	std:string name = "Stockman";
+
+	m_highScoreManager->setName(name);
+
 	// Initializing Menu's
-	m_menu = newd MenuMachine();
+	m_menu = newd MenuMachine(m_highScoreManager->getName());
 	m_menu->initialize(STARTING_STATE); 
 
 	// Initializing the map
 	m_map = newd Map();
-	m_map->init(m_physics, m_player);
+	m_map->init(m_physics);
 
 	// Load these from a file at a later dates
 	m_waveTimer		= NULL;
@@ -53,6 +68,12 @@ void Game::init()
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
 
+	// Initializing Combo's
+	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
+	ComboMachine::Get().Reset();
+
+	// Initializing Sound
+	NoiseMachine::Get().init();
 }
 
 void Game::clear()
@@ -63,8 +84,20 @@ void Game::clear()
 	delete m_menu;
 	delete m_map;
 	delete m_cardManager;
+	delete m_highScoreManager;
 	m_projectileManager->clear();
 	delete m_projectileManager;
+	NoiseMachine::Get().clear();
+}
+
+void Game::reset()
+{
+	/*m_entityManager.clear();*/
+	m_player->reset();
+	
+	ComboMachine::Get().Reset();
+	m_waveTimer = NULL;
+	m_waveCurrent = WAVE_START;
 }
 
 // Keeps check on which wave the game is on, and spawns incoming waves
@@ -77,6 +110,7 @@ void Game::waveUpdater()
 		if (m_waveTimer > m_waveTime[m_waveCurrent])
 		{
 			// Spawning next wave
+			m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ON_FIRE);
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
 			m_entityManager.setCurrentWave(m_waveCurrent);
@@ -101,31 +135,85 @@ void Game::update(float deltaTime)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-		if (m_menu->getStateToBe() == GameState::gameStateMenuMain)
+		if (m_menu->getStateToBe() != GameState::gameStateDefault)
 		{
+			PROFILE_BEGIN("Menu");
 			m_menu->update(m_gameTime.dt);
+			PROFILE_END();
 		}
-		waveUpdater();
-		m_player->update(m_gameTime.dt);
-		m_physics->update(m_gameTime);
-		m_entityManager.update(*m_player, m_gameTime.dt);
-		m_map->update(m_gameTime.dt);
-		m_projectileManager->update(m_gameTime.dt);
+		else
+		{
+			/* Temp sound testing */
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::J)) NoiseMachine::Get().playSFX(SFX::BOING);
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K)) NoiseMachine::Get().playMusic(MUSIC::TEST_MUSIC);
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L)) NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MASTER, 0);
+
+			ComboMachine::Get().Update(deltaTime);
+			waveUpdater();
+
+			PROFILE_BEGIN("Sound");
+			NoiseMachine::Get().update(m_player->getListenerData());
+			PROFILE_END();
+
+			PROFILE_BEGIN("Physics");
+			m_physics->update(m_gameTime);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Player");
+			m_player->updateSpecific(m_gameTime.dt);
+			PROFILE_END();
+
+			PROFILE_BEGIN("AI & Triggers");
+			m_entityManager.update(*m_player, m_gameTime.dt);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Map");
+			m_map->update(m_gameTime.dt);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Projectiles");
+			m_projectileManager->update(m_gameTime.dt);
+			PROFILE_END();
+		}
 
 		if (m_player->getHP() <= 0)
-		{
-			printf("You ded bro.\n");
-			m_menu->setStateToBe(GameState::gameStateMenuMain);
-		}
+			gameOver();
 
 		break;
 
 	case gameStateLoading:
+		m_menu->update(m_gameTime.dt);
+		break;
 	case gameStateMenuMain:
+		m_menu->update(m_gameTime.dt);
+		break;
 	case gameStateMenuSettings:
-	default: m_menu->update(m_gameTime.dt);
+		m_menu->update(m_gameTime.dt);
+		break;
+	case gameStateGameOver:
+		//Add special triggers to show the scores on the side
+		m_menu->update(m_gameTime.dt);
 		break;
 	}
+#ifdef SHOW_FPS 
+	fpsRenderer.updateFPS(deltaTime);
+#endif
+}
+
+void Game::gameOver()
+{
+	m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
+	m_menu->setStateToBe(GameState::gameStateGameOver);
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_highScoreManager->gethighScore(i).score != -1)
+		{
+			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(ComboMachine::Get().GetCurrentScore());
+			break;
+		}
+	}
+	reset();
 }
 
 void Game::render(Graphics::Renderer& renderer)
@@ -133,10 +221,20 @@ void Game::render(Graphics::Renderer& renderer)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
+
 		m_player->render(renderer);
+
+		PROFILE_BEGIN("Render Map");
 		m_map->render(renderer);
+		PROFILE_END();
+
+		PROFILE_BEGIN("Render Enemies & Triggers")
 		m_entityManager.render(renderer);
+		PROFILE_END();
+
+		PROFILE_BEGIN("Render Projectiles")
 		m_projectileManager->render(renderer);
+		PROFILE_END();
 
 	// Debug Draw physics
 	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
@@ -147,10 +245,15 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuMain:
 	case gameStateMenuSettings:
 	case gameStateGameOver:
+		/*m_menu->render(renderer);*/
+	default:  
 		m_menu->render(renderer);
-	default: // m_menu->render(renderer);
 		break;
 	}
+
+#ifdef SHOW_FPS 
+	fpsRenderer.renderFPS(renderer);
+#endif
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

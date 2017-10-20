@@ -19,18 +19,23 @@
 #include "Skill\SkillManager.h"
 #include <Projectile\ProjectileManager.h>
 #include <Graphics\include\Structs.h>
+#include <Misc\Sound\NoiseMachine.h>
 
+
+#define PLAYER_GRAVITY					PHYSICS_GRAVITY * 0.0000015f
+#define PLAYER_SIZE_RADIUS				0.5f
+#define PLAYER_SIZE_HEIGHT				2.f
 #define PLAYER_STARTING_HP				3
-#define PLAYER_MOUSE_SENSETIVITY		0.1f
-#define PLAYER_MOVEMENT_MAX_SPEED		0.02f
+#define PLAYER_MOUSE_SENSETIVITY		0.01f
+#define PLAYER_MOVEMENT_MAX_SPEED		0.015f
 #define PLAYER_MOVEMENT_ACCELERATION	0.0002f
 #define PLAYER_MOVEMENT_AIRACCELERATION	0.005f
 #define PLAYER_MOVEMENT_AIRSTRAFE_SPEED 0.004f
-#define PLAYER_SPEED_LIMIT				0.05f
+#define PLAYER_SPEED_LIMIT				0.04f
 #define PLAYER_STRAFE_ANGLE				0.95f
-#define PLAYER_FRICTION					14.f
+#define PLAYER_FRICTION					20.f
 #define PLAYER_AIR_FRICTION				1.f
-#define PLAYER_JUMP_SPEED				7.f
+#define PLAYER_JUMP_SPEED				0.008f
 #define PLAYER_BHOP_TIMER				10.f
 #define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
 #define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
@@ -47,6 +52,8 @@ namespace Logic
 			CROUCHING,
 			IN_AIR
 		};
+
+		btKinematicCharacterController* m_charController;
 
 		//ActionManager m_actionManager;
 		WeaponManager m_weaponManager;
@@ -73,6 +80,9 @@ namespace Logic
 		float m_wishDirForward;
 		float m_wishDirRight;
 
+		// Sound
+		ListenerData m_listenerData;
+
 		// Mouse
 		float m_mouseSens;
 		float m_camYaw;
@@ -92,8 +102,6 @@ namespace Logic
 		DirectX::Keyboard::Keys m_reloadWeapon;
 		DirectX::Keyboard::Keys m_useSkill;
 
-
-
 		// Movement
 		void moveInput(DirectX::Keyboard::State* ks);
 		void moveFree(float deltaTime, DirectX::Keyboard::State* ks);
@@ -112,9 +120,10 @@ namespace Logic
 
 		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
+		void reset();
 		void updateSpecific(float deltaTime);
         void updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning);
-		void onCollision(Entity& other, btVector3 contactPoint, float dmgMultiplier);
+		void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 		void onCollision(Projectile& other);
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);
@@ -124,15 +133,21 @@ namespace Logic
 		void saveToFile();
 		void readFromFile();
 
-		void takeDamage(int damage);
+		void takeDamage(int damage, bool damageThroughProtection = false);
 		int getHP() const;
 
+		DirectX::SimpleMath::Matrix getTransformMatrix() const;
+		virtual DirectX::SimpleMath::Vector3 getPosition() const;
+		virtual btVector3 getPositionBT() const;
 		float getMoveSpeed() const;
 		void setMoveSpeed(float speed);
 		void setMoveDirection(btVector3 moveDir);
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 		btVector3 getMoveDirection();
+		ListenerData& getListenerData();
+
+		static btVector3 startPosition;
 	};
 
 }

@@ -1,0 +1,436 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Logic::WaveManager" Collapsed="true">
+    <Position X="22.25" Y="4.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="Logic::WaveManager::Entity" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>include\AI\WaveManager.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Logic::WaveManager::EntitiesInWave" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>include\AI\WaveManager.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAEAEABAGAAAAAAAAAIQBAQAAAAAAAAEA=</HashCode>
+      <FileName>include\AI\WaveManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::PASVF" Collapsed="true">
+    <Position X="20.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAgAAAAAAAgIAAAAAAAABAAA=</HashCode>
+      <FileName>include\AI\Behavior\PASVF.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::RandomGenerator" Collapsed="true">
+    <Position X="25.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAACAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>include\Misc\RandomGenerator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Enemy" Collapsed="true">
+    <Position X="9" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgBABgCAIEAggEAAABAgAwIAAIACAAAEIARACAAGAQA=</HashCode>
+      <FileName>include\AI\Enemy.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::TestBehavior" Collapsed="true">
+    <Position X="2.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQIAAAgAAAAAAAAAAIAAAAAAAAAAAAAEAgAAAAAEAAA=</HashCode>
+      <FileName>include\AI\Behavior\TestBehavior.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Behavior" Collapsed="true">
+    <Position X="1.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAACCAAgAAAACgAAAAAAACAAAAAAEAAgBAAAEAQA=</HashCode>
+      <FileName>include\AI\Behavior\Behavior.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::MenuState" Collapsed="true">
+    <Position X="17" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAHAACAAAAAAAAAAgEgAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>include\Misc\GUI\MenuState.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::AStar" Collapsed="true">
+    <Position X="17" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAgAEAAQABAACACAAAIEAIBAQAAAgABBCMgAAAAAAA=</HashCode>
+      <FileName>include\AI\Behavior\AStar.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::ComboMachine" Collapsed="true">
+    <Position X="24" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYIAAAAIHCABABAAAABAAAAABAQAAAAIgQAAAAAAQA=</HashCode>
+      <FileName>include\Misc\ComboMachine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Card" Collapsed="true">
+    <Position X="20.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EABAAQAgAQAwBgAAAAAAAAAAAAAAACAAQAAEAAJABAA=</HashCode>
+      <FileName>include\Misc\Card.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Game" Collapsed="true">
+    <Position X="20.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEkAACCEAAAAAAAAC0AGAAACIAiBABIAAAYgAAAUAIA=</HashCode>
+      <FileName>include\Game.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::StateMachine" Collapsed="true">
+    <Position X="24" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEAQAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>include\Misc\StateMachine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::EnemyTest" Collapsed="true">
+    <Position X="7.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAACAAAAAAAAAAAAAAAAAAAQAAAAAAAAACCAACAA=</HashCode>
+      <FileName>include\AI\EnemyTest.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Button" Collapsed="true">
+    <Position X="18.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgCAACEAAgAAAkAAgEAgMAAAAAAAAAQAAAAAAGAAAA=</HashCode>
+      <FileName>include\Misc\GUI\Button.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::EnemyNecromancer" Collapsed="true">
+    <Position X="10" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAACAAAAAgAAAAAAgAAAAAAAAAEAAAAAACCAACAA=</HashCode>
+      <FileName>include\AI\EnemyNecromancer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Upgrade" Collapsed="true">
+    <Position X="20.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gABAAAAAAEAAAAAACAAgAAEAAAgAAAIAAAAAAAAAAAg=</HashCode>
+      <FileName>include\Entity\Upgrade.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Skill" Collapsed="true">
+    <Position X="3" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ERACAgAQAJgAIRAEAEACAAAgAAAAQAAABAAAAAAUAAA=</HashCode>
+      <FileName>include\Player\Skill\Skill.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::HighScoreManager" Collapsed="true">
+    <Position X="22.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAgAAACACBAAAAUAIAIIAA=</HashCode>
+      <FileName>include\Misc\HighScoreManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Ray" Collapsed="true">
+    <Position X="17" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAACAAAAACAAAAAAAAIAAAAAAAgAwAAAAAAAAAAA=</HashCode>
+      <FileName>include\Physics\Primitives.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Triangle" Collapsed="true">
+    <Position X="17" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAABAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>include\Physics\Primitives.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Shape" Collapsed="true">
+    <Position X="5.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAACAAiAAAAAAAAAAAAAAAAAoEAAAAAAAAAEAAAA=</HashCode>
+      <FileName>include\Physics\Primitives.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Cube" Collapsed="true">
+    <Position X="0.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAIBAA=</HashCode>
+      <FileName>include\Physics\Primitives.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Plane" Collapsed="true">
+    <Position X="3" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAgAAAAAAAAAAAAIAAEAAAAA=</HashCode>
+      <FileName>include\Physics\Primitives.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Sphere" Collapsed="true">
+    <Position X="5.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAQAAAAAAAAAAAAACIAAAAAAAAA=</HashCode>
+      <FileName>include\Physics\Primitives.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Cylinder" Collapsed="true">
+    <Position X="7.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAQAAAAAQAA=</HashCode>
+      <FileName>include\Physics\Primitives.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Capsule" Collapsed="true">
+    <Position X="9.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAABIAAAAAAAAAAAQAAECIAAAAAAAAA=</HashCode>
+      <FileName>include\Physics\Primitives.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Physics" Collapsed="true">
+    <Position X="22.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AFBAAQQAAAkAAABBAAJAAKAAAAAAAEIAEAAACCAUAAg=</HashCode>
+      <FileName>include\Physics\Physics.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Map" Collapsed="true">
+    <Position X="24" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAEABBAAACAIAAAAAAAAAAEAAAIggQBoAABUAAA=</HashCode>
+      <FileName>include\Map.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Projectile" Collapsed="true">
+    <Position X="5.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAABAgAgEAAAAAIIAAAAAAEFAgACAAIAA=</HashCode>
+      <FileName>include\Projectile\Projectile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::CardManager" Collapsed="true">
+    <Position X="22.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CEAYAFQACAAAAAAAAAgAIBAAAAQAAAIAAAQgAAAAAAA=</HashCode>
+      <FileName>include\Misc\CardManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::RangedBehavior" Collapsed="true">
+    <Position X="0.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAABAAAAAQAAQAIAAAQIAAAAAAAAVAAAAAAAEAAA=</HashCode>
+      <FileName>include\AI\Behavior\RangedBehavior.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::FileLoader" Collapsed="true">
+    <Position X="18.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAIAAEACAQBAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>include\Misc\FileLoader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::ProjectileManager" Collapsed="true">
+    <Position X="24" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAACAABAAAAAAACgAAAAAABAAAAAAgAAAUAEA=</HashCode>
+      <FileName>include\Projectile\ProjectileManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::SkillBulletTime" Collapsed="true">
+    <Position X="5.25" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAIAAAAAEAQAAQAAAAAAAQBAAAQBAAAAQAAA=</HashCode>
+      <FileName>include\Player\Skill\SkillBulletTime.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Player" Collapsed="true">
+    <Position X="14.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IEUCBxCNgCGAghCggBIMCYgkKIDACAKAQAAIFWISURE=</HashCode>
+      <FileName>include\Player\Player.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::SkillGrapplingHook" Collapsed="true">
+    <Position X="0.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QRAAAAAAAIABAAAQAAAAAAAAAAAAQAQgEAAACAAQAAA=</HashCode>
+      <FileName>include\Player\Skill\SkillGrapplingHook.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::SkillShieldCharge" Collapsed="true">
+    <Position X="3" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AZABAAAAQIAAAAAWAAAAAQAAAAAAQBAAAAAAAAAQAAA=</HashCode>
+      <FileName>include\Player\Skill\SkillShieldCharge.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::SkillManager" Collapsed="true">
+    <Position X="22.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAQAAAAABAAAQAEAAAAAAoJIAABIAABAAAAAUAEA=</HashCode>
+      <FileName>include\Player\Skill\SkillManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::NavigationMesh" Collapsed="true">
+    <Position X="18.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAIAIAFAAAAAAEAAAIAAAACAAAAAAAgEIIAA=</HashCode>
+      <FileName>include\AI\Behavior\NavigationMesh.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::TriggerManager" Collapsed="true">
+    <Position X="18.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAABICAAAAAAAhAAgAAAAUAAA=</HashCode>
+      <FileName>include\AI\TriggerManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Trigger" Collapsed="true">
+    <Position X="12.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAgCBAAAACBAAAAAAQAAgNIABFBAAAAhAACAIAAA=</HashCode>
+      <FileName>include\AI\Trigger.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::MenuMachine" Collapsed="true">
+    <Position X="25.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEUBAiAIAggBAAAAKAEAIABAAAAAIAAAAAAAAAAWAAA=</HashCode>
+      <FileName>include\Misc\GUI\MenuMachine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::StaticObject" Collapsed="true">
+    <Position X="3.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAIAAAAAAAAAAAAAAAAAAAAACAEAAA=</HashCode>
+      <FileName>include\Entity\StaticObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::EntityManager" Collapsed="true">
+    <Position X="17" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AFIBAAAAAAgAAEAAALAAQEIBAAIAAAgAAQAgAACUAAg=</HashCode>
+      <FileName>include\AI\EntityManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Effect" Collapsed="true">
+    <Position X="25.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAgAAIAACAACUAAAAACAAAAAAAAgAACEACA=</HashCode>
+      <FileName>include\Entity\Effect.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Entity" Collapsed="true">
+    <Position X="10" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EEAAAAAAAAAAAAAAAAAAQAAAIOAAAAAAAAAgAAAEBAA=</HashCode>
+      <FileName>include\Entity\Entity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Object" Collapsed="true">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAgAAAAAAAAAAAAAAAEACRABEISAAA=</HashCode>
+      <FileName>include\Entity\Object.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::StatusManager" Collapsed="true">
+    <Position X="25.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgACmAEAAgAAAAGAAIACAAAACAAEIAACIAICAAEBAA=</HashCode>
+      <FileName>include\Entity\StatusManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::PhysicsObject" Collapsed="true">
+    <Position X="9" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAoIAIgAAAgEIACACAAACgAKAgAAAgAAAgACAEAAE=</HashCode>
+      <FileName>include\Entity\PhysicsObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::SimplePathing" Collapsed="true">
+    <Position X="20.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AggAAAAAAAAAAAAAAISAQAIAAAABABAAIAAIAAAAAAA=</HashCode>
+      <FileName>include\AI\Behavior\SimplePathing.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::WeaponManager" Collapsed="true">
+    <Position X="24" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>LFAOAgAEABAABgAIQBAgCAABAAAACRIEAAAgAAAWABA=</HashCode>
+      <FileName>include\Player\Weapon\WeaponManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logic::Weapon" Collapsed="true">
+    <Position X="1" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ALEAIhAEAEABICAEAAARAAECAAALIBgAFAwGIAIAAEA=</HashCode>
+      <FileName>include\Player\Weapon\Weapon.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Graphics::Renderer" Collapsed="true">
+    <Position X="18.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SAAwiggDAgICACQAEAMwACgCSDYFQUIERAGCBEASAIA=</HashCode>
+      <FileName>c:\Users\Luken\Documents\GitHub\DV1544-Stort-Spel\Graphics\include\Renderer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Logic::ProjectileData" Collapsed="true">
+    <Position X="20.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAQAAgAAAIAAAAAACAAABJQAEAAAAAAAAAAA=</HashCode>
+      <FileName>include\Projectile\ProjectileStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Logic::BodySpecifics" Collapsed="true">
+    <Position X="17" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABIAAAAAAAAAAAAAAMAAAAAAQEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>include\Physics\Physics.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Logic::GameTime" Collapsed="true">
+    <Position X="18.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABIAQAAAABAAAAAIAAAAAAAAAACAAAQAEAAEAAA=</HashCode>
+      <FileName>include\Misc\GameTime.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="Logic::ProjectileType" Collapsed="true">
+    <Position X="20.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEQAAAAAQAAAAAABAAAAAgABAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>include\Projectile\ProjectileStruct.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Logic::ShapeType" Collapsed="true">
+    <Position X="22.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAIAAQAAAAAAAAAhAAEAAA=</HashCode>
+      <FileName>include\Physics\Primitives.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Logic::GrapplingHookState" Collapsed="true">
+    <Position X="18.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>include\Player\Skill\SkillGrapplingHook.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Logic::GameState" Collapsed="true">
+    <Position X="17" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAEAQAAAAAAAAAAAAAAAAAEEAAAAAAAAAAEA=</HashCode>
+      <FileName>include\Misc\Enums.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

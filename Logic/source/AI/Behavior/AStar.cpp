@@ -8,49 +8,55 @@ using namespace Logic;
 
 AStar::AStar(std::string file)
 {
+	debugDataTri.points = nullptr;
+	debugDataEdges.points = nullptr;
 	// for testing
 	generateNavigationMesh();
 	targetIndex = -1;
-}
 
-AStar::~AStar()
-{
-	delete debugDataTri.points;
-	delete debugDataEdges.points;
-}
-
-// returns nothing if on same triangle or an error occured
-std::vector<const DirectX::SimpleMath::Vector3*>
-	AStar::getPath(Entity const &enemy, Entity const &target)
-{
-	PROFILE_BEGIN("AStar::getPath()");
-
-	// all nodes in navMesh
-	std::vector<DirectX::SimpleMath::Vector3> nodes =
-		navigationMesh.getNodes();
-
-	// reset nav nodes
 	for (size_t i = 0; i < navNodes.size(); i++)
 	{
 		navNodes[i].onClosedList = navNodes[i].explored = false;
 		navNodes[i].g = 0;
 		navNodes[i].parent = NO_PARENT;
 	}
+}
+
+AStar::~AStar()
+{
+	if (debugDataTri.points)
+		delete debugDataTri.points;
+	if (debugDataEdges.points)
+		delete debugDataEdges.points;
+}
+
+// returns nothing if on same triangle or an error occured
+std::vector<const DirectX::SimpleMath::Vector3*>
+	AStar::getPath(Entity const &enemy, Entity const &target)
+{
+	DirectX::SimpleMath::Vector3 offset(0, 5, 0);
+	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset);
+	int targetIndex = navigationMesh.getIndex(target.getPosition() + offset);
+	return getPath(startIndex, targetIndex);
+}
+
+std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
+{
+	// PROFILE_BEGIN("AStar::getPath()");
+
+	// all nodes in navMesh
+	const std::vector<DirectX::SimpleMath::Vector3> &nodes = navigationMesh.getNodes();
+	std::vector<AStar::NavNode> navNodes = this->navNodes;
 
 	// openlist and a test offset
 	auto comp = [](NavNode *fir, NavNode *sec) { return *fir > *sec; };
 	std::priority_queue<NavNode*, std::vector<NavNode*>, decltype(comp)> openList(comp);
-	DirectX::SimpleMath::Vector3 offset(0, 5, 0);
-
-	// get indicies
-	int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset);
-	// printf("StartIndex: %d, End index: %d (AStar.cpp:%d)\n", startIndex, endIndex, __LINE__);
 
 	// test special cases
 	if (targetIndex > -1 && startIndex == targetIndex)
 		return reconstructPath(&navNodes[startIndex]);
 	if (startIndex == targetIndex || startIndex == -1 || targetIndex == -1)
-		return { };
+		return {};
 
 	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[targetIndex]);
 	navNodes[startIndex].explored = true;
@@ -60,6 +66,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	NavNode *explore = nullptr;
 
 	float f;
+	int index;
 
 	while (!openList.empty())
 	{
@@ -67,14 +74,15 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 		f = currentNode->g + currentNode->h;
 		openList.pop();
 
-		for (int index : navigationMesh.getEdges(currentNode->nodeIndex))
+		for (int i = 0; i < navigationMesh.getEdges(currentNode->nodeIndex).size(); i++)
 		{
+			index = navigationMesh.getEdges(currentNode->nodeIndex)[i];
 			explore = &navNodes[index];
-			if (index == targetIndex) 
+			if (index == targetIndex) // Node Found
 			{
 				explore->parent = currentNode->nodeIndex;
 				currentNode = explore;
-				return reconstructPath(currentNode); // found node
+				return reconstructPath(currentNode);
 			}
 
 			if (!explore->explored) // Unexplored
@@ -111,11 +119,16 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 	{
 		printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
 			"Lukas or something (AStar.cpp:%d)\n", __LINE__);
-		return { };
+		return {};
 	}
 
-	PROFILE_END();
+	// PROFILE_END();
 	return reconstructPath(currentNode);
+}
+
+std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int fromIndex)
+{
+	return getPath(fromIndex, targetIndex);
 }
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode *endNode)
@@ -127,7 +140,6 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 	if (endNode->nodeIndex != targetIndex)
 	{
 		printf("BAD BAD BAD, A* fooked up, contact lw (AStar.cpp:%d)\n", __LINE__);
-
 	}
 
 	while (endNode->parent != NO_PARENT)
@@ -154,6 +166,16 @@ void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
 void AStar::loadTargetIndex(Entity const & target)
 {
 	targetIndex = navigationMesh.getIndex(target.getPosition());
+}
+
+int AStar::getIndex(Entity const & entity) const
+{
+	return navigationMesh.getIndex(entity.getPosition());
+}
+
+size_t AStar::getNrOfPolygons() const
+{
+	return navigationMesh.getNodes().size();
 }
 
 void AStar::generateNavigationMesh()
@@ -197,7 +219,22 @@ void AStar::generateNavigationMesh()
 			static_cast<int> (i), 0, 0 }
 		);
 
-	// debugging
+	setupDebugging();
+}
+
+float AStar::heuristic(DirectX::SimpleMath::Vector3 const &from,
+					   DirectX::SimpleMath::Vector3 const &to) const
+{
+	return (to - from).LengthSquared(); // faster than Length()
+}
+
+void AStar::generateNodesFromFile()
+{
+
+}
+
+void AStar::setupDebugging()
+{
 	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
 	debugDataTri.useDepth = false;
 	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
@@ -207,17 +244,6 @@ void AStar::generateNavigationMesh()
 	debugDataEdges.useDepth = false;
 	debugDataEdges.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
 	debugDataEdges.points = navigationMesh.getRenderDataEdges();
-}
-
-float AStar::heuristic(DirectX::SimpleMath::Vector3 &from,
-					   DirectX::SimpleMath::Vector3 &to) const
-{
-	return (to - from).LengthSquared(); // faster than Length()
-}
-
-void AStar::generateNodesFromFile()
-{
-
 }
 
 // this can maybe be optimized record most used functions to see which is needed

@@ -2,10 +2,12 @@
 #define ENTITY_MANAGER_H
 
 #include <vector>
+#include <thread>
 
 #include <AI/Enemy.h>
 #include <AI/WaveManager.h>
 #include <AI/TriggerManager.h>
+#include <Misc/ComboMachine.h>
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileManager.h>
@@ -30,28 +32,49 @@ namespace Logic
 	class EntityManager
 	{
 	private:
-		std::vector<Enemy*> m_enemies, m_bossEnemies, m_deadEnemies;
+		static const int NR_OF_THREADS = 8;
+
+		std::vector<std::vector<Enemy*>> m_enemies;
+		std::vector<Enemy*> m_deadEnemies;
 		std::vector<double> time;
+		std::thread *threads[NR_OF_THREADS];
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
 		int m_currentWave, m_frame;
 
-		void reserveData(); // reserve space in vectors
+		void deleteData(); // delete data in vectors
+		void allocateData(); // resize enemy vector 
+
+		void resetThreads();
+		void deleteThreads();
+		void joinAllThreads();
+		void deleteThread(std::thread *t);
 	public:
+
 		EntityManager();
 		EntityManager(EntityManager const &entityManager) = delete;
 		~EntityManager();
 
 		void update(Player const &player, float deltaTime);
+		void updateEnemies(int index, Player const &player, float deltaTime);
+		// statis because threads will use this
+		static void updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime);
+		void updateEnemy(Enemy *enemy, int index, Player const &player, float deltaTime);
 		void clear();
 
+		void giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
+
 		void spawnWave(Physics &physics, ProjectileManager *projectiles);
+		void spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
+			Physics &physics, ProjectileManager *projectiles);
+		void spawnTrigger(int id, btVector3 const &pos, std::vector<int> &effects,
+			Physics &physics, ProjectileManager *projectiles);
 
 		void setCurrentWave(int currentWave);
 		void render(Graphics::Renderer &renderer);
 
-		int getEnemiesAlive() const;
+		size_t getEnemiesAlive() const;
 		int getCurrentWave() const;
 
 		EntityManager* operator=(EntityManager const &entityManager) = delete;

@@ -28,6 +28,14 @@ void WeaponManager::clear()
 	m_allWeapons.clear();
 }
 
+void Logic::WeaponManager::reset()
+{
+	for (int i = 0; i < m_allWeapons.size(); i++)
+	{
+		m_allWeapons[i].reset();
+	}
+}
+
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
 	// Updating weapon model
@@ -77,10 +85,10 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ m_projectileManager, ProjectileData(1, 0.2, 1, 100, 1.f, 3000, Graphics::ModelID::CUTTLERY, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 1, 2000 },		// Gattling prim
-		{ m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 1.f, 500, Graphics::ModelID::CUTTLERY, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 1, 2000 },		// Gattling sec
-		{ m_projectileManager, ProjectileData(1, 1, 1, 10, 0, 500, Graphics::ModelID::CUBE, 1), 2, 100, 100, 50, 50, 1, 1, 0, 0, 750, 1, 3000 },		// Freeze prim
-		{ m_projectileManager, ProjectileData(1, 1, 1, 80, 8, 5000, Graphics::ModelID::CUBE, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000 },		// Freeze sec
+		{ m_projectileManager, ProjectileData(1, 0.2, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 1, 2000 },		// Gattling prim
+		{ m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 1, 2000 },		// Gattling sec
+		{ m_projectileManager, ProjectileData(1, 1, 1, 5, 0, 500, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeNormal, true), 2, 100, 100, 50, 50, 1, 1, 0, 0, 750, 1, 3000 },		// Freeze prim
+		{ m_projectileManager, ProjectileData(1, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000 },		// Freeze sec
 		{ m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1), 4, 0, 0, 0, 0, 0, 1, 0, 0, 50, 1, 3000 },				// Sledge prim
 		{ m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1), 5, 0, 0, 0, 0, 0, 1, 0, 0, 50, 1, 3000 }					// Sledge sec
 	};
@@ -120,8 +128,6 @@ void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch, Entit
 		{
 			m_currentWeapon.first->use(position, yaw, pitch, shooter);
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.first->getAmmoConsumption());
-			printf("fire prim\n");
-			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
 		}
 		else
 			printf("out of ammo\n");
@@ -138,8 +144,6 @@ void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Ent
 		{
 			m_currentWeapon.second->use(position, yaw, pitch, shooter);
 			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.second->getAmmoConsumption());
-			printf("fire sec\n");
-			printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
 		}
 		else
 			printf("out of ammo\n");

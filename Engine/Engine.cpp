@@ -6,6 +6,8 @@
 #include <Windows.h>
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
+#include <iostream>
+#include "Typing.h"
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -15,19 +17,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	ImGui_ImplDX11_WndProcHandler(hwnd, msg, wparam, lparam);
 		//)
 		//return true;
-
+	Typing* theChar = Typing::getInstance(); //might need to be deleted
 	switch (msg)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-
+		
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
-		
 		break;
 
 	case WM_ACTIVATEAPP:
@@ -43,9 +44,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
 	case WM_MOUSEHOVER:
-	DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
+		DirectX::Mouse::ProcessMessage(msg, wparam, lparam);
 		break;
-
+	case WM_CHAR:
+		theChar->setSymbol(char((wchar_t)wparam));
+		break;
 	default:
 		return DefWindowProc(hwnd, msg, wparam, lparam);
 		break;
@@ -223,7 +226,7 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight, 250);
+	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
     cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
@@ -237,10 +240,12 @@ int Engine::run()
     long long totalTime = 0;
 	bool showProfiler = false;
 
+	bool running = true;
+
 	g_Profiler = new Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
 
-	while (WM_QUIT != msg.message)
+	while (running)
 	{
 		currentTime = this->timer();
 		deltaTime = currentTime - prev;
@@ -252,8 +257,19 @@ int Engine::run()
 			TranslateMessage(&msg);
 
 
-
 			DispatchMessage(&msg);
+
+            if (WM_QUIT == msg.message)
+            {
+                running = false;
+                if (!isFullscreen)
+                {
+                    mSwapChain->SetFullscreenState(false, NULL);
+                }
+                
+            }
+				
+                
 		}
 
 		//To enable/disable fullscreen
@@ -297,62 +313,61 @@ int Engine::run()
 		game.render(*renderer);
 		PROFILE_END();
 
-        cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
+		if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftControl)) cam.update(oldPos, game.getPlayerForward(), mContext);
+		else
+		{
+			oldPos = game.getPlayerPosition();
+			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+		}
 
 		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
         //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
 
         //////////////TEMP/////////////////
-        Graphics::RenderInfo staticCube = {
-            true, //bool render;
-            Graphics::ModelID::BUSH, //ModelID meshId;
-            0, //int materialId;
-            DirectX::SimpleMath::Matrix()// DirectX::SimpleMath::Matrix translation;
-        };
-
         Graphics::RenderInfo staticSphere = {
             true, //bool render;
-            Graphics::ModelID::SPHERE, //ModelID meshId;
+            Graphics::ModelID::SKY_SPHERE, //ModelID meshId;
             0, //int materialId;
             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
         };
 
-        //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationY(deltaTime * 0.001f);
-        //staticCube.translation *= DirectX::SimpleMath::Matrix::CreateRotationX(deltaTime * 0.0005f);
-       /* staticCube.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 3 + cosf(totalTime * 0.001f),0 });*/
-	   staticCube.translation = DirectX::SimpleMath::Matrix::CreateScale({ 3 + cosf(totalTime * 0.001f),3 + cosf(totalTime * 0.001f),3 + cosf(totalTime * 0.001f) });
+		Graphics::FoliageRenderInfo grass = {
+			true, //bool render;
+			Graphics::ModelID::GRASS, //ModelID meshId;
+			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+		};
+		//Graphics::FoliageRenderInfo bush = {
+		//	true, //bool render;
+		//	Graphics::ModelID::BUSH, //ModelID meshId;
+		//	DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+		//};
 
-        staticSphere.translation = DirectX::SimpleMath::Matrix::CreateTranslation({ 2, 3 + sinf(totalTime * 0.001f),0 });
-
-		renderer->updateLight(deltaTime, &cam);
+		//grass.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5);
+		//bush.translation = DirectX::SimpleMath::Matrix::CreateScale(10, 10, 10);//* DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 30, 0 });
+		//staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5) * DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 20, 0 });
+		
         Graphics::TextString text{
-            L"The hills ",
+            L"The hills!",
             DirectX::SimpleMath::Vector2(50, 50),
             DirectX::SimpleMath::Color(DirectX::Colors::Black),
             Graphics::Font::SMALL
         };
-        Graphics::TextString text1{
-            L"are alive ",
-            DirectX::SimpleMath::Vector2(600, 200),
-            DirectX::SimpleMath::Color(DirectX::Colors::Crimson),
-            Graphics::Font::SMALL
-        };
-        Graphics::TextString text2{
-            L"With the sound of music! ",
-            DirectX::SimpleMath::Vector2(1000, 400),
-            DirectX::SimpleMath::Color(DirectX::Colors::Gold),
-            Graphics::Font::SMALL
-        };
+
         
         ///////////////////////////////////
 
         if (game.getState() == Logic::gameStateGame)
         {
-            renderer->queueRender(&staticCube);
-            renderer->queueRender(&staticSphere);
-         /*   renderer->queueText(&text);
-            renderer->queueText(&text1);
-            renderer->queueText(&text2);*/
+			renderer->queueFoliageRender(&grass);
+			//renderer->queueFoliageRender(&bush);
+
+
+			renderer->queueRender(&staticSphere);
+         // renderer->queueText(&text);
+			renderer->updateLight(deltaTime, &cam);
+			renderer->updateShake(deltaTime);
+
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
 			PROFILE_END();
