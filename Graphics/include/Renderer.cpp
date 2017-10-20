@@ -267,8 +267,8 @@ namespace Graphics
 
 		ID3D11Buffer *lightBuffs[] =
 		{
-			skyRenderer.getShaderBuffer(),
-			skyRenderer.getLightMatrixBuffer()
+			*skyRenderer.getShaderBuffer(),
+			*skyRenderer.getLightMatrixBuffer()
 		};
 
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
