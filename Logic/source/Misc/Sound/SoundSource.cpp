@@ -3,10 +3,9 @@
 
 using namespace Logic;
 
-SoundSource::SoundSource() : channel(nullptr), pos(), vel()
+SoundSource::SoundSource() : channel(nullptr), pos(), vel(), autoPlayer(nullptr), delayPlayer(nullptr)
 {
 	noiseMachine = &NoiseMachine::Get();
-	autoPlayer = nullptr;
 }
 
 SoundSource::~SoundSource()
@@ -15,6 +14,11 @@ SoundSource::~SoundSource()
 	{
 		delete autoPlayer;
 		autoPlayer = nullptr;
+	}
+	if (delayPlayer)
+	{
+		delete delayPlayer;
+		delayPlayer = nullptr;
 	}
 }
 
@@ -34,6 +38,17 @@ void SoundSource::update(float deltaTime)
 			noiseMachine->playSFX(autoPlayer->sfx, this, false);
 		}
 	}
+
+	if (delayPlayer)
+	{
+		if (delayPlayer->checkIfDone(deltaTime))
+		{
+			(delayPlayer->id) ? noiseMachine->playSFX(SFX(delayPlayer->type), this, false) :
+								noiseMachine->playMusic(MUSIC(delayPlayer->type), this, false);
+			delete delayPlayer;
+			delayPlayer = nullptr;
+		}
+	}
 }
 
 // Simply plays a SFX one time
@@ -48,11 +63,31 @@ void SoundSource::playMusic(MUSIC music)
 	noiseMachine->playMusic(music, this, false);
 }
 
+// Plays a SFX but after a specific delay of time in ms
+void SoundSource::delayPlaySFX(SFX sfx, float delay)
+{
+	if (delayPlayer) delete delayPlayer;
+	delayPlayer = new DelayPlayer(0, sfx, delay);
+}
+
+// Plays a song but after a specific delay of time in ms
+void SoundSource::delayPlayMusic(MUSIC music, float delay)
+{
+	if (delayPlayer) delete delayPlayer;
+	delayPlayer = new DelayPlayer(1, music, delay);
+}
+
 // Plays a SFX inbetween intervals, example: autoPlaySFX(SFX::BOING, 5000.f, 500.f); - plays the BOING sfx every 5000 ms, with a 500 ms random variation
 void SoundSource::autoPlaySFX(SFX sfx, float timeBetween, float timeOffset, float pitch, float pitchOffset)
 {
 	if (autoPlayer)	delete autoPlayer;
 	autoPlayer = new AutoPlayer(sfx, timeBetween, timeOffset, pitch, pitchOffset);
+}
+
+// Use with caution
+FMOD::Channel * SoundSource::getChannel()
+{
+	return channel;
 }
 
 /*	******************	*
@@ -82,6 +117,17 @@ void SoundSource::AutoPlayer::reset()
 {
 	time.value = time.original + RandomGenerator::singleton().getRandomFloat(-time.offset, time.offset);
 	pitch.value = pitch.original + RandomGenerator::singleton().getRandomFloat(-pitch.offset, pitch.offset);
+}
+
+/*	*******************		*
+	DELAY PLAYER STRUCT 
+*	*******************		*/
+SoundSource::DelayPlayer::DelayPlayer(__int8 inID, __int8 inType, float inTimer) : id(inID), type(inType), timer(inTimer) { }
+
+bool SoundSource::DelayPlayer::checkIfDone(float deltaTime)
+{
+	timer -= deltaTime;
+	return (timer < NULL);
 }
 
 /*	*************	*

@@ -106,7 +106,6 @@ void Map::initHitboxes(Physics* physics)
 
 	house = new StaticObject(Graphics::CUBE, physics->createBody(Cube({ -60, 6, -60 }, { 0.3f, 0, 0 }, { 25, 3, 25 }), 0.f, false), { 25, 3, 25 });
 	m_hitboxes.push_back(house);
-
 }
 
 void Map::initObjects(Physics * physics)
@@ -121,11 +120,11 @@ void Map::initObjects(Physics * physics)
 	m_objects.push_back(box);
 
 	box = new Speaker(physics->createBody(Cube({ 5, 3, 37 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-	box->getSoundSource()->autoPlaySFX(SFX::BOING, 4000.f, 250.f, 0.65f, 0.025);
+	box->getSoundSource()->autoPlaySFX(SFX::BOING, 4000.f, 250.f, 0.95f, 0.025);
 	m_objects.push_back(box);
 
 	box = new Speaker(physics->createBody(Cube({ 5, 2, 37 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-	box->getSoundSource()->autoPlaySFX(SFX::BOING, 1500.f, 250.f, 1.35f, 0.025);
+	box->getSoundSource()->autoPlaySFX(SFX::BOING, 1500.f, 250.f, 1.05f, 0.025);
 	m_objects.push_back(box);
 }
 

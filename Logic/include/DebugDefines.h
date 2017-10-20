@@ -10,4 +10,4 @@
 
 // Dont comment out defines below this line
 // 0: Bullet time,	1: Grappling hook,	2: Shield charge
-#define SKILL_USED 0
+#define SKILL_USED 1

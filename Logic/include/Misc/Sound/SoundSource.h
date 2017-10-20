@@ -18,6 +18,16 @@ namespace Logic
 			float value, original, offset;
 		};
 
+		struct DelayPlayer
+		{
+			DelayPlayer(__int8 inID, __int8 inType, float inTimer);
+			bool checkIfDone(float deltaTime);
+
+			__int8 id;
+			__int8 type;
+			float timer;
+		};
+
 		struct AutoPlayer
 		{
 			AutoPlayer(SFX inSFX, float inTimeBetween, float inTimeOffset, float inPitch, float inPitchOffset);
@@ -30,15 +40,18 @@ namespace Logic
 
 		SoundSource();
 		~SoundSource();
-
 		void update(float deltaTime);
 
 		void playSFX(SFX sfx);
 		void playMusic(MUSIC music);
-
+		void delayPlaySFX(SFX sfx, float delay);
+		void delayPlayMusic(MUSIC music, float delay);
 		void autoPlaySFX(SFX sfx, float timeBetween, float timeOffset, float pitch = 1, float pitchOffset = 0);
 
+		FMOD::Channel* getChannel();
+
 	public:
+		DelayPlayer*	delayPlayer;
 		AutoPlayer*		autoPlayer;
 		FMOD_VECTOR		pos;
 		FMOD_VECTOR		vel;
