@@ -83,9 +83,6 @@ namespace Logic
 		// Sound
 		ListenerData m_listenerData;
 
-		bool m_wallColl;
-		btVector3 m_wallNormal;
-
 		// Mouse
 		float m_mouseSens;
 		float m_camYaw;

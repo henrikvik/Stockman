@@ -30,7 +30,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	btPairCachingGhostObject* ghostObject = m_physPtr->createPlayer(playerShape, startPosition);
 	ghostObject->setUserPointer(this);
 
-	m_charController = new btKinematicCharacterController(ghostObject, playerShape, 0.1f, btVector3(0.f, 1.f, 0.f));
+	m_charController = new btKinematicCharacterController(ghostObject, playerShape, 0.2f, btVector3(0.f, 1.f, 0.f));
 	m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
 	m_physPtr->addAction(m_charController);
 
