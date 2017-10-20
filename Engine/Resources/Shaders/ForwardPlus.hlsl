@@ -90,17 +90,15 @@ PSOutput PS(VSOutput input) {
 
     float3 normal = getNormalMappedNormal(input.tangent, input.biTangent, input.normal, input.uv);
     float shadow = calculateShadowValue(input.lightPos.xyz, 2);
-    float3 lighting = calculateDiffuseLight(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, normal, shadow);
-    lighting += calculateSpecularity(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, normal, shadow);
+    float3 lighting = calculateDiffuseLight(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, 1);
+    lighting += calculateSpecularity(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, 1);
     
     lighting = saturate(lighting);
     
     
-    output.backBuffer = float4(lighting, 1);
-    output.glowMap = glowMap.Sample(Sampler, input.uv);
-    output.normalView = float4(input.normalView.xyz, 1);
-	output.worldPosMap = input.worldPos;
-
+    output.backBuffer = float4(lighting, 1); //500~
+    output.glowMap = glowMap.Sample(Sampler, input.uv); //300~
+    output.normalView = float4(input.normalView.xyz, 1); //300~
     
     return output;
 }

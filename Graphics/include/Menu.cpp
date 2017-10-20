@@ -1,5 +1,6 @@
 #include "Menu.h"
 #include <WICTextureLoader.h>
+#include <Engine\Profiler.h>
 
 Graphics::Menu::Menu(ID3D11Device * device, ID3D11DeviceContext * contex)
     : shader(device, SHADER_PATH("MenuShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA } })
@@ -48,15 +49,20 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
     contex->OMSetBlendState(blendState, blendFactor, sampleMask);
     contex->OMSetRenderTargets(1, &backBuffer, nullptr);
 
+	PROFILE_BEGIN("draw(6, 0)");
     contex->Draw(6, 0);
+	PROFILE_END();
 
     contex->PSSetShaderResources(0, 1, &buttonTexture[active->m_buttons.at(0).textureIndex]);
     for (size_t i = 0; i < info->m_buttons.size(); i++)
     {
         mapButtons(contex, &info->m_buttons.at(i));
         contex->IASetVertexBuffers(0, 1, &buttonQuad, &stride, &offset);
+
+		PROFILE_BEGIN("draw(6, 0)");
         contex->Draw(6, 0);
-    }
+		PROFILE_END();
+	}
 }
 
 void Graphics::Menu::loadTextures(ID3D11Device * device, ID3D11DeviceContext * context)

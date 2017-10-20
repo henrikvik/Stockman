@@ -322,6 +322,18 @@ void Player::updateSpecific(float deltaTime)
 	// Update weapon and skills
 	m_weaponManager.update(deltaTime);
 	m_skillManager.update(deltaTime);
+
+
+#ifdef GOD_MODE
+	static bool isNum = false;
+	static bool wasNum = false;
+	wasNum = isNum;
+	isNum = ks.NumPad8;
+
+	if (isNum && !wasNum)
+		m_hp--;
+#endif
+
 }
 
 //fills the HUD info with wave info

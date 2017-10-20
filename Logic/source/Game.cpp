@@ -110,7 +110,15 @@ void Game::waveUpdater()
 		if (m_waveTimer > m_waveTime[m_waveCurrent])
 		{
 			// Spawning next wave
-			m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ON_FIRE);
+			// Enrage
+			int affectedEnemies = m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE);
+			if (affectedEnemies > 0)
+			{
+				NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MUSIC, 0.1f);
+				NoiseMachine::Get().setGroupPitch(CHANNEL_GROUP::CHANNEL_MUSIC, 1.5f);
+				NoiseMachine::Get().playMusic(MUSIC::ENRAGE);
+			}
+
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
 			m_entityManager.setCurrentWave(m_waveCurrent);

@@ -37,7 +37,9 @@ namespace Logic
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
 		std::vector<double> time;
+
 		std::thread *threads[NR_OF_THREADS];
+		bool m_threadRunning[NR_OF_THREADS];
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
@@ -63,7 +65,7 @@ namespace Logic
 		void updateEnemy(Enemy *enemy, int index, Player const &player, float deltaTime);
 		void clear();
 
-		void giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
+		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
 
 		void spawnWave(Physics &physics, ProjectileManager *projectiles);
 		void spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
