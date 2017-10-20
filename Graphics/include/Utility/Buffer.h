@@ -76,6 +76,14 @@ public:
     ID3D11Buffer** operator&() { return &buffer; }
 
     Buffer & operator=(Buffer & other) = delete;
+	T* map(ID3D11DeviceContext *cxt) {
+		D3D11_MAPPED_SUBRESOURCE data = {};
+		cxt->Map(buffer, 0, D3D11_MAP_WRITE, D3D11_MAP_WRITE_DISCARD, &data);
+		return (T*)data.pData;
+	}
+	void unmap(ID3D11DeviceContext *cxt) {
+		cxt->Unmap(buffer, 0);
+	}
 private:
     ID3D11Buffer * buffer;
 };

@@ -9,6 +9,7 @@
 #include "Particle.h"
 #include "../Camera.h"
 #include "../Utility/Buffer.h"
+#include "../Resources/Shader.h"
 
 namespace Graphics {;
 
@@ -36,8 +37,9 @@ class ParticleSystem {
 public:
 	ParticleSystem(ID3D11Device *device, uint32_t capacity, const char *path);
 
-	void render(Camera *cam, DirectX::CommonStates *states, ID3D11DepthStencilView *dest_dsv, bool debug);
-	void update(Camera *cam, float dt);
+	void renderPrePass(ID3D11DeviceContext *cxt, Camera *cam, DirectX::CommonStates *states, ID3D11DepthStencilView *dest_dsv);
+	void render(ID3D11DeviceContext *cxt, Camera *cam, DirectX::CommonStates *states, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView *dest_dsv, bool debug);
+	void update(ID3D11DeviceContext *cxt, Camera *cam, float dt);
 private:
 	void readSphereModel(ID3D11Device *device);
 
@@ -68,8 +70,7 @@ private:
 	Buffer<UINT16> *m_SphereIndexBuffer;
 	Buffer<GeometryParticleInstance> *m_GeometryInstanceBuffer;
 
-	ID3D11InputLayout *m_GeometryLayout;
-	ID3D11VertexShader *m_GeometryVS;
+	Shader *m_GeometryVS;
 
 	// constants
 	std::vector<ParticleEffect> m_EffectDefinitions;

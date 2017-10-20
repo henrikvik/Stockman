@@ -32,6 +32,7 @@
     <ClCompile Include="include\Lights\LightGrid.cpp" />
     <ClCompile Include="include\Menu.cpp" />
     <ClCompile Include="include\Glow.cpp" />
+    <ClCompile Include="include\Particles\Particle.cpp" />
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
