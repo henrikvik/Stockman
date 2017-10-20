@@ -4,7 +4,7 @@
 #include <d3dcompiler.h>
 #include <iostream>
 #include <Windows.h>
-#ifdef DEBUG
+#ifdef _DEBUG
 #define SHADER_COMPILE_FLAGS D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION
 #else
 #define SHADER_COMPILE_FLAGS NULL
