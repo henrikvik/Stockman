@@ -285,11 +285,16 @@ void EntityManager::clear()
 	m_enemies.clear();
 }
 
-void EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
+int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
 {
+	int i = 0;
 	for (auto &vec : m_enemies)
 		for (auto *enemy : vec)
+		{
 			enemy->getStatusManager().addStatus(id, 1, true);
+			i++;
+		}
+	return i;
 }
 
 void EntityManager::setCurrentWave(int currentWave) 

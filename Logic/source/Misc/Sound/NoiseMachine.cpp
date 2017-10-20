@@ -146,6 +146,7 @@ void NoiseMachine::initMusic()
 
 	// Init all the music here
 	ERRCHECK(createSound(MUSIC::TEST_MUSIC, CHANNEL_GROUP::CHANNEL_MUSIC, "superBoy.mp3", FMOD_3D || FMOD_LOWMEM));
+	ERRCHECK(createSound(MUSIC::ENRAGE, CHANNEL_GROUP::CHANNEL_MUSIC, "enrageTimer.mp3", FMOD_3D || FMOD_LOWMEM));
 }
 
 // Allocates a specific sound effect into memory

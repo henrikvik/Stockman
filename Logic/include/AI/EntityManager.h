@@ -63,7 +63,7 @@ namespace Logic
 		void updateEnemy(Enemy *enemy, int index, Player const &player, float deltaTime);
 		void clear();
 
-		void giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
+		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
 
 		void spawnWave(Physics &physics, ProjectileManager *projectiles);
 		void spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
