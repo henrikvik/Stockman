@@ -22,8 +22,6 @@ cbuffer Camera : register(b0)
 cbuffer LightBuffer : register(b1)
 {
     float4 dirLightPos;
-    float3 dirLightColor;
-    float time;
     float fade;
 }
 
@@ -48,6 +46,10 @@ struct Light
     float3 color;
     float intensity;
 };
+
+#define DAY_COLOR float3(1, 1, 0.8)
+#define DAWN_COLOR float3(2, 0.5, 0)
+#define NIGHT_COLOR float3(0.1, 0.1, 0.3)
 
 StructuredBuffer<uint> LightIndexList : register(t0);
 Texture2D<uint2> LightGrid : register(t1);
@@ -95,7 +97,7 @@ float3 toonify(float3 color, float intensity)
         color = 0.35 * color;
     else
         color = 0.1 * color;
-
+    
     return color;
 }
 
@@ -103,7 +105,11 @@ float3 getNormalMappedNormal(float3 tangent, float3 biTangent, float3 normal, fl
 {
     float3 normalSample = normalMap.Sample(Sampler, uv);
 
-        //To make sure the tangent is perpendicular
+    //Remove when everything is working
+    if (normalSample.x == 0 && normalSample.y == 0 && normalSample.z == 0)
+        return normal;
+
+    //To make sure the tangent is perpendicular
     tangent = normalize(tangent - dot(tangent, normalSample) * normalSample);
 
     float3x3 tangentMatrix = float3x3(tangent, biTangent, normal);
@@ -113,6 +119,15 @@ float3 getNormalMappedNormal(float3 tangent, float3 biTangent, float3 normal, fl
     return normalize(mul(normalSample, tangentMatrix));
 }
 
+float3 getCurrentDirColor(float time)
+{
+    float3 dirColor0 = lerp(DAY_COLOR, DAWN_COLOR, time);
+    float3 dirColor1 = lerp(DAWN_COLOR, NIGHT_COLOR, time);
+    float3 dirColor2 = lerp(dirColor0, dirColor1, time);
+
+    return dirColor2;
+}
+
 //Specularity is currently broken.
 float3 calculateSpecularity(float3 wPos, float3 lightPos, float3 NDCPos, float2 uv, float3 normal, float shadowValue = 1)
 {
@@ -120,11 +135,13 @@ float3 calculateSpecularity(float3 wPos, float3 lightPos, float3 NDCPos, float2 
     uint offset = LightGrid[tile].x;
     uint count = LightGrid[tile].y;
     
+    float3 dirColor = getCurrentDirColor(1 - fade);
+
     float3 specularSample = specularMap.Sample(Sampler, uv);
     
     float3 posToLightDir = dirLightPos.xyz - wPos.xyz;
     float3 reflectThingDir = normalize(posToLightDir + (camPos.xyz - wPos.xyz));
-    float3 directionalSpecularity = pow(saturate(dot(normal, reflectThingDir)), 500) * dirLightColor;
+    float3 directionalSpecularity = pow(saturate(dot(normal, reflectThingDir)), 500) * dirColor;
     
     directionalSpecularity *= fade * shadowValue;
 
@@ -156,11 +173,13 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
     uint offset = LightGrid[tile].x;
     uint count = LightGrid[tile].y;
 
+    float3 dirColor = getCurrentDirColor(1 - fade);
+
     float4 colorSample = diffuseMap.Sample(Sampler, uv);
 
     float3 lightDir = normalize(camPos.xyz - dirLightPos.xyz);
     float diffuseFactor = saturate(dot(normal, normalize(-lightDir)));
-    float3 directionalDiffuse = diffuseFactor * dirLightColor;
+    float3 directionalDiffuse = diffuseFactor * dirColor;
 
     directionalDiffuse *= fade * shadowValue;
 

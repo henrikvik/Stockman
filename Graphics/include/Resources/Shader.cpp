@@ -2,9 +2,10 @@
 #include "../ThrowIfFailed.h"
 #include <Engine\Constants.h>
 #include <d3dcompiler.h>
+#pragma comment (lib, "d3dcompiler.lib")
 #include <iostream>
 #include <Windows.h>
-#ifdef DEBUG
+#ifdef _DEBUG
 #define SHADER_COMPILE_FLAGS D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION
 #else
 #define SHADER_COMPILE_FLAGS NULL

@@ -2,6 +2,7 @@
 #include <Engine\Constants.h>
 #include <DDSTextureLoader.h>
 #include "ThrowIfFailed.h"
+#include <Engine\Profiler.h>
 
 using namespace DirectX::SimpleMath;
 namespace Graphics 
@@ -46,15 +47,13 @@ namespace Graphics
 
 		ID3D11Buffer * buffers[] =
 		{
-			cam->getBuffer(),
+			*cam->getBuffer(),
 			sphereTransformBuffer
 		};
 
 		context->VSSetConstantBuffers(0, 2, buffers);
 
-		ID3D11Buffer * temp = sun.getShaderBuffer();
-
-		context->PSSetConstantBuffers(2, 1, &temp);
+		context->PSSetConstantBuffers(2, 1, *sun.getShaderBuffer());
 
 
 
@@ -80,16 +79,21 @@ namespace Graphics
 
 	void SkyRenderer::drawShadows(ID3D11DeviceContext * context, Graphics::Shader * shader)
 	{
-		context->ClearDepthStencilView(shadowDepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
+		PROFILE_BEGIN("SetupShaders");
 		context->RSSetViewports(1, &sun.getViewPort());
 		context->IASetInputLayout(*shader);
 		context->VSSetShader(*shader, nullptr, 0);
 		context->PSSetShader(nullptr, nullptr, 0);
 		context->OMSetRenderTargets(0, nullptr, shadowDepthStencil);
 
-		ID3D11Buffer* light = sun.getMatrixBuffer();
-		context->VSSetConstantBuffers(0, 1, &light);
+		context->VSSetConstantBuffers(0, 1, *sun.getMatrixBuffer());
+		PROFILE_END();
+	}
+
+	void SkyRenderer::clear(ID3D11DeviceContext * context)
+	{
+		context->ClearDepthStencilView(shadowDepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 	}
 
 	void SkyRenderer::createSampler(ID3D11Device * device)

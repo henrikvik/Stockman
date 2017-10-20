@@ -75,6 +75,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	m_switchWeaponThree = DirectX::Keyboard::Keys::D3;
 	m_reloadWeapon = DirectX::Keyboard::Keys::R;
 	m_useSkill = DirectX::Keyboard::Keys::E;
+	m_listenerData.update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 }
 
 void Player::clear()
@@ -142,6 +143,16 @@ void Player::upgrade(Upgrade const & upgrade)
 	{
 
 	}
+}
+
+void Player::updateSound(float deltaTime)
+{
+	// Update sound position
+	btVector3 pos = getPositionBT();
+	btVector3 vel = m_charController->getLinearVelocity();
+	m_soundSource.pos = { pos.x(), pos.y(), pos.z() };
+	m_soundSource.vel = { vel.x(), vel.y(), vel.z() };
+	m_soundSource.update(deltaTime);
 }
 
 void Player::saveToFile()
@@ -311,6 +322,18 @@ void Player::updateSpecific(float deltaTime)
 	// Update weapon and skills
 	m_weaponManager.update(deltaTime);
 	m_skillManager.update(deltaTime);
+
+
+#ifdef GOD_MODE
+	static bool isNum = false;
+	static bool wasNum = false;
+	wasNum = isNum;
+	isNum = ks.NumPad8;
+
+	if (isNum && !wasNum)
+		m_hp--;
+#endif
+
 }
 
 //fills the HUD info with wave info

@@ -44,8 +44,7 @@ namespace Graphics
 
 		context->CSSetShaderResources(0, 3, srvs);
 		context->CSSetUnorderedAccessViews(0, 1, ssaoOutput, nullptr);
-		ID3D11Buffer * buffer = camera->getInverseBuffer();
-		context->CSSetConstantBuffers(0, 1, &buffer);
+		context->CSSetConstantBuffers(0, 1, *camera->getInverseBuffer());
 		context->Dispatch(40, 23, 1);
 
 		ID3D11ShaderResourceView * srvsNULL[3] = { nullptr };

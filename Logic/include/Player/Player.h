@@ -114,6 +114,9 @@ namespace Logic
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
+		// Sound
+		void updateSound(float deltaTime);
+
 	public:
 		Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();

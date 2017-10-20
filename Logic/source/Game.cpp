@@ -26,6 +26,9 @@ Game::~Game()
 
 void Game::init()
 {
+	// Initializing Sound
+	NoiseMachine::Get().init();
+
 	// Initializing Bullet physics
 	btDefaultCollisionConfiguration* collisionConfiguration		= new btDefaultCollisionConfiguration();				// Configuration
 	btCollisionDispatcher* dispatcher							= new btCollisionDispatcher(collisionConfiguration);	// The default collision dispatcher
@@ -40,18 +43,17 @@ void Game::init()
 	// Initializing Player
 	m_player = new Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
+	NoiseMachine::Get().update(m_player->getListenerData());
 
+	// Initializing Highscore Manager
 	m_highScoreManager = newd HighScoreManager();
-
-	std:string name = "Stockman";
-
-	m_highScoreManager->setName(name);
+	m_highScoreManager->setName("Stockman");
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine(m_highScoreManager->getName());
 	m_menu->initialize(STARTING_STATE); 
 
-	// Initializing the map
+	// Initializing the Map
 	m_map = newd Map();
 	m_map->init(m_physics);
 
@@ -71,9 +73,6 @@ void Game::init()
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
-
-	// Initializing Sound
-	NoiseMachine::Get().init();
 }
 
 void Game::clear()
@@ -153,16 +152,10 @@ void Game::update(float deltaTime)
 		else
 		{
 			/* Temp sound testing */
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::J)) NoiseMachine::Get().playSFX(SFX::BOING);
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K)) NoiseMachine::Get().playMusic(MUSIC::TEST_MUSIC);
 			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L)) NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MASTER, 0);
 
 			ComboMachine::Get().Update(deltaTime);
 			waveUpdater();
-
-			PROFILE_BEGIN("Sound");
-			NoiseMachine::Get().update(m_player->getListenerData());
-			PROFILE_END();
 
 			PROFILE_BEGIN("Physics");
 			m_physics->update(m_gameTime);
@@ -182,6 +175,10 @@ void Game::update(float deltaTime)
 
 			PROFILE_BEGIN("Projectiles");
 			m_projectileManager->update(m_gameTime.dt);
+			PROFILE_END();
+		
+			PROFILE_BEGIN("Sound");
+			NoiseMachine::Get().update(m_player->getListenerData());
 			PROFILE_END();
 		}
 

@@ -222,6 +222,7 @@
     <ClInclude Include="include\Misc\RandomGenerator.h" />
     <ClInclude Include="include\Misc\RenderRegister.h" />
     <ClInclude Include="include\Misc\Sound\NoiseStructs.h" />
+    <ClInclude Include="include\Misc\Sound\SoundSource.h" />
     <ClInclude Include="include\Misc\StateMachine.h" />
     <ClInclude Include="include\Physics\Physics.h" />
     <ClInclude Include="include\Physics\Primitives.h" />
@@ -271,6 +272,7 @@
     <ClCompile Include="source\Misc\GUI\MenuMachine.cpp" />
     <ClCompile Include="source\Misc\RandomGenerator.cpp" />
     <ClCompile Include="source\Misc\Sound\NoiseMachine.cpp" />
+    <ClCompile Include="source\Misc\Sound\SoundSource.cpp" />
     <ClCompile Include="source\Player\Skill\Skill.cpp" />
     <ClCompile Include="source\Player\Skill\SkillBulletTime.cpp" />
     <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />
