@@ -72,9 +72,6 @@ void Sun::update(ID3D11DeviceContext * context, float rotationAmount, Vector3 of
 	Matrix rotation = Matrix::CreateRotationZ(rotationDeg);
 
 	this->shaderData.pos = Vector4::Transform(pos, rotation);
-	
-	shaderData.time = rotationDeg / (PI);
-
 
 	//If its nighttime the shadows fade out
 	Vector3 lightDir = -shaderData.pos;
