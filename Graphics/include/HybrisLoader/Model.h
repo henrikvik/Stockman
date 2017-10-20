@@ -15,11 +15,14 @@ namespace HybrisLoader
     public:
         Model(ID3D11Device * device, Hybris::File & file);
         
-        StructuredBuffer<Vertex> & getVertexBuffer() { return mesh.getVertexBuffer(); }
-        Buffer<uint32_t> &         getIndexBuffer()  { return mesh.getIndexBuffer(); }
-        size_t                     getIndexCount()   { return mesh.getIndexCount(); }
+        size_t getVertexCount()  { return mesh.getVertexCount(); }
 
+        StructuredBuffer<Vertex> & getVertexBuffer() { return mesh.getVertexBuffer(); }
+        
+        std::vector<SM::Matrix> getJointTransforms() { return skeleton.getJointTransforms(); }
         std::vector<SM::Matrix> evalAnimation(const char * animationName, float timeStamp) { return skeleton.evalAnimation(animationName, timeStamp); };
+       
+        float getAnimationDuration(const char * animationName) { return skeleton.getAnimationDuration(animationName); }
     private:
 
         Mesh mesh;

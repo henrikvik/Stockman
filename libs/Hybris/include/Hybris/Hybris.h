@@ -28,6 +28,7 @@ namespace Hybris
     struct Animation
     {
         name_t name;
+        time_t duration;
         List<KeyFrame> keyFrames;
     };
 
@@ -49,7 +50,6 @@ namespace Hybris
 
     struct Mesh
     {
-        List<Index>  indices;
         List<Vertex> vertices;
     };
 

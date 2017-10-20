@@ -93,9 +93,9 @@ namespace Graphics
         static UINT ticks = 0;
         ticks++;
         cam.updateLookAt({
-            0 + 4 * sinf(ticks * 0.002f), 
-            2 + 2 * cosf(ticks * 0.002f), 
-            0 + 4 * cosf(ticks * 0.002f), 
+            5 + 0 * sinf(ticks * 0.002f), 
+            0 + 0 * cosf(ticks * 0.002f), 
+            0 + 0 * cosf(ticks * 0.002f), 
         }, { 0,0,0 }, deviceContext);
 
         ID3D11Buffer *cameraBuffer = cam.getBuffer();
@@ -109,7 +109,7 @@ namespace Graphics
         deviceContext->RSSetViewports(1, &viewPort);
 
         static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"));
-        static HybrisLoader::Model * model = hybrisLoader.getModel(HybrisLoader::FileID::Cylinder);
+        static HybrisLoader::Model * model = hybrisLoader.getModel(Resources::Models::Cube);
 
         deviceContext->IASetInputLayout(nullptr);
         deviceContext->VSSetShader(testShader, nullptr, 0);
@@ -120,16 +120,45 @@ namespace Graphics
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
-        std::vector<SM::Matrix> jointTransforms = model->evalAnimation("Rotate", 6 * ((ticks % 1000) / 1000.f));
-
-        static StructuredBuffer<SM::Matrix> jointBuffer(device, CpuAccess::Write, 10);
-        jointBuffer.write(deviceContext, jointTransforms.data(), sizeofv(jointTransforms));
+        std::vector<SM::Matrix> animTransforms = model->evalAnimation(
+            "Rotate", ((ticks % (int)(1000 * model->getAnimationDuration("Rotate"))) / 1000.f)
+        );
+        static StructuredBuffer<SM::Matrix> animTransformBuffer(device, CpuAccess::Write, animTransforms.size());
+        animTransformBuffer.write(deviceContext, animTransforms.data(), sizeofv(animTransforms));
 
         deviceContext->VSSetShaderResources(0, 1, model->getVertexBuffer());
-        deviceContext->VSSetShaderResources(1, 1, jointBuffer);
+        deviceContext->VSSetShaderResources(1, 1, animTransformBuffer);
 
-        deviceContext->IASetIndexBuffer(model->getIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
-        deviceContext->DrawIndexed(model->getIndexCount(), 0, 0);
+        deviceContext->Draw(model->getVertexCount(), 0);
+
+
+    #pragma region Draw Joints
+        static Shader animationInstanced(device, SHADER_PATH("AnimationTestInstanced.hlsl"));
+        deviceContext->IASetInputLayout(nullptr);
+        deviceContext->VSSetShader(animationInstanced, nullptr, 0);
+        deviceContext->PSSetShader(animationInstanced, nullptr, 0);
+
+        
+        std::vector<SM::Matrix> instanceTransforms = model->getJointTransforms();
+
+        for (size_t i = 0; i < instanceTransforms.size(); i++)
+        {
+            instanceTransforms[i] = instanceTransforms[i] * animTransforms[i];
+        }
+
+        static StructuredBuffer<SM::Matrix> instanceTransformBuffer(device, CpuAccess::Write, instanceTransforms.size());
+        instanceTransformBuffer.write(deviceContext, instanceTransforms.data(), sizeofv(instanceTransforms));
+        deviceContext->VSSetShaderResources(2, 1, instanceTransformBuffer);
+
+        static HybrisLoader::Model * staticCube = hybrisLoader.getModel(Resources::Models::StaticCube);
+        deviceContext->VSSetShaderResources(0, 1, staticCube->getVertexBuffer());
+
+        deviceContext->RSSetState(states->Wireframe());
+        deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
+        deviceContext->DrawInstanced(staticCube->getVertexCount(), instanceTransforms.size(), 0, 0);
+
+
+    #pragma endregion
 
 
 #else

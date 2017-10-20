@@ -23,11 +23,11 @@ namespace HybrisLoader
 
         for (size_t i = 0; i < transformed.size(); i++)
         {
-            transformed[i] =
-                keyFrame.jointTransforms.at(i).createMatrix() 
-                * 
-                joints.at(i).invBindTransform  
-                //SM::Matrix()
+            transformed[i] 
+                =
+                joints.at(i).invBindTransform
+                *
+                keyFrame.jointTransforms.at(i).createMatrix()
                 ;
         }
 
@@ -46,6 +46,16 @@ namespace HybrisLoader
         KeyFrame keyFrame = KeyFrame::lerp(*current_next.first, *current_next.second, progress);
 
         return evaluateJointTransforms(keyFrame);
+    }
+
+    std::vector<SM::Matrix> Skeleton::getJointTransforms()
+    {
+        std::vector<SM::Matrix> jointTransforms(joints.size());
+        for (size_t i = 0; i < joints.size(); i++)
+        {
+            jointTransforms[i] = joints.at(i).invBindTransform.Invert();
+        }
+        return jointTransforms;
     }
 
     Joint::Joint()

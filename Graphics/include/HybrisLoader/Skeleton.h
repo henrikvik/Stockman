@@ -21,8 +21,10 @@ namespace HybrisLoader
     {
     public:
         Skeleton::Skeleton(Hybris::Skeleton & skeleton);
+        std::vector<SM::Matrix> evalAnimation(const char * animationName, float timeStamp);
+        std::vector<SM::Matrix> getJointTransforms();
 
-        std::vector<DirectX::SimpleMath::Matrix> evalAnimation(const char * animationName, float timeStamp);
+        float getAnimationDuration(const char * animationName) { return getAnimation(animationName)->getDuration(); }
 
     private:
         std::vector<Joint> joints;

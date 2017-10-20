@@ -5,6 +5,7 @@ namespace HybrisLoader
     Animation::Animation(Hybris::Animation & animation)
     {
         name = animation.name;
+        duration = animation.duration;
         for (size_t i = 0; i < animation.keyFrames.size; i++)
         {
             keyFrames.emplace_back(animation.keyFrames[i]);
@@ -26,6 +27,11 @@ namespace HybrisLoader
         }
 
         return {&keyFrames[prevKeyFrame], &keyFrames[nextKeyFrame]};
+    }
+
+    float Animation::getDuration() 
+    { 
+        return duration; 
     }
 
     KeyFrame KeyFrame::lerp(KeyFrame & from, KeyFrame & to, float progress)
@@ -57,6 +63,7 @@ namespace HybrisLoader
         }
     }
 
+
     JointTransform JointTransform::lerp(JointTransform & from, JointTransform & to, float progress)
     {
         if (from == to) return from;
@@ -64,7 +71,7 @@ namespace HybrisLoader
         JointTransform jointTransform;
 
         jointTransform.translation = SM::Vector3::Lerp(from.translation, to.translation, progress);
-        jointTransform.rotation = SM::Quaternion::Slerp(from.rotation, to.rotation, progress);
+        jointTransform.rotation = SM::Quaternion::Lerp(from.rotation, to.rotation, progress);
         jointTransform.scale = SM::Vector3::Lerp(from.scale, to.scale, progress);
 
         return jointTransform;
@@ -102,8 +109,8 @@ namespace HybrisLoader
         SM::Matrix r = SM::Matrix::CreateFromQuaternion(rotation);
         SM::Matrix s = SM::Matrix::CreateScale(scale);
 
-
-        return DirectX::XMMatrixAffineTransformation(scale, SM::Vector3(), rotation, translation);
+        return DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
+        //return t * r;
     }
     bool JointTransform::operator==(JointTransform const & other) const
     {

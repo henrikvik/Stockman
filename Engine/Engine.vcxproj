@@ -190,6 +190,7 @@
     <ClCompile Include="..\libs\ImGui\imgui_demo.cpp" />
     <ClCompile Include="..\libs\ImGui\imgui_draw.cpp" />
     <ClCompile Include="..\libs\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\Resources\Resources.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Profiler.cpp" />
@@ -197,7 +198,6 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="Resources\Shaders\ShaderConstants.h" />
     <ClInclude Include="Profiler.h" />
   </ItemGroup>
   <ItemGroup>

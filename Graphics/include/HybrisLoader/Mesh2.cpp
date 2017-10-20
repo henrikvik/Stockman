@@ -10,29 +10,13 @@ namespace HybrisLoader
             vertices.emplace_back(mesh.vertices[i]);
         }
 
+        vertexCount = vertices.size();
         vertexBuffer = new StructuredBuffer<Vertex>(device, CpuAccess::None, vertices.size(), vertices.data());
-
-        std::vector<uint32_t> indecies;
-        for (size_t i = 0; i < mesh.indices.size; i++)
-        {
-            indecies.push_back(mesh.indices[i].vertexId);
-        }
-
-        indexCount = indecies.size();
-        indexBuffer = new Buffer<uint32_t>(device,
-            BufferUsage::Immutable,
-            BufferBind::IndexBuffer,
-            BufferCpuAccess::None,
-            BufferMisc::None,
-            indecies.size(),
-            indecies.data()
-        );
     }
 
     Mesh::~Mesh()
     {
         delete vertexBuffer;
-        delete indexBuffer;
     }
 
     Vertex::Vertex(Hybris::Vertex & vertex)

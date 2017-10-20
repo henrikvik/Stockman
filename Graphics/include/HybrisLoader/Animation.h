@@ -40,8 +40,11 @@ namespace HybrisLoader
     public:
         Animation(Hybris::Animation & animation);
         std::pair<KeyFrame*, KeyFrame*> getCurrentAndNextFrame(float timeStamp);
+
+        float getDuration();
     private:
         std::string name;
+        float duration;
         std::vector<KeyFrame> keyFrames;
     };
 }

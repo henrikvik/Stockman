@@ -31,12 +31,11 @@ namespace HybrisLoader
         Mesh(ID3D11Device * device, Hybris::Mesh & mesh);
         virtual ~Mesh();
 
+        size_t getVertexCount() { return vertexCount; }
+        
         StructuredBuffer<Vertex> & getVertexBuffer() { return *vertexBuffer; }
-        Buffer<uint32_t> & getIndexBuffer()          { return *indexBuffer; }
-        uint32_t getIndexCount()                     { return indexCount; }
     private:
+        size_t vertexCount;
         StructuredBuffer<Vertex> * vertexBuffer;
-        Buffer<uint32_t> * indexBuffer;
-        uint32_t indexCount;
     };
 }

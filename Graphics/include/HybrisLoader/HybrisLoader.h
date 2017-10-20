@@ -6,19 +6,10 @@
 #include "Model.h"
 
 #include <Hybris\Hybris.h>
+#include <Resources\Resources.h>
 
 namespace HybrisLoader
 {
-    enum class FileID
-    {
-        BakedTest,
-        AnimationWithLayers,
-        Animation1Layer,
-        Oriented,
-        Golem,
-        GolemOrigo,
-        Cylinder
-    };
 
     class HybrisLoader
     {
@@ -26,9 +17,9 @@ namespace HybrisLoader
         HybrisLoader(ID3D11Device * device);
         virtual ~HybrisLoader();
 
-        Model * getModel(FileID fileId) { return models.at(fileId); }
+        Model * getModel(Resources::Models::Files fileId) { return models.at(fileId); }
     private:
-        std::map<FileID, Model*> models;
+        std::map<Resources::Models::Files, Model*> models;
 
         Hybris::File loadFile(const char * filePath);
     };
