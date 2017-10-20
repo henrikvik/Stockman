@@ -163,7 +163,6 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 		enemy = enemies[index][i];
 		manager->updateEnemy(enemy, index, player, deltaTime);
 
-	//	newIndex = AStar::singleton().getIndex(*enemy);
 		enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
 	}
 }
