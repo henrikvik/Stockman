@@ -19,6 +19,7 @@
 #include "Skill\SkillManager.h"
 #include <Projectile\ProjectileManager.h>
 #include <Graphics\include\Structs.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 
 #define PLAYER_GRAVITY					PHYSICS_GRAVITY * 0.0000015f
@@ -79,6 +80,9 @@ namespace Logic
 		float m_wishDirForward;
 		float m_wishDirRight;
 
+		// Sound
+		ListenerData m_listenerData;
+
 		bool m_wallColl;
 		btVector3 m_wallNormal;
 
@@ -100,8 +104,6 @@ namespace Logic
 		DirectX::Keyboard::Keys m_switchWeaponThree;
 		DirectX::Keyboard::Keys m_reloadWeapon;
 		DirectX::Keyboard::Keys m_useSkill;
-
-
 
 		// Movement
 		void moveInput(DirectX::Keyboard::State* ks);
@@ -146,6 +148,7 @@ namespace Logic
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 		btVector3 getMoveDirection();
+		ListenerData& getListenerData();
 
 		static btVector3 startPosition;
 	};

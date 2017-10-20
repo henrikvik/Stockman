@@ -1,13 +1,20 @@
 #include "HUD.H"
 #include <WICTextureLoader.h>
+#include <Logic\include\Misc\RandomGenerator.h>
+#define SHAKE_FALLOFF 0.9f
 
 Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
-:shader(device, SHADER_PATH("GUIShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } ,{ "ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA } })
+	:shader(device, SHADER_PATH("GUIShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } ,{ "ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA } }),
+	offsetBuffer(device)
 {
     createHUDTextures(device, context);
     setHUDTextRenderPos();
     createHUDVBS(device);
     createHUDCBs(device);
+
+	offset.x = 0;
+	offset.y = 0;
+	offsetBuffer.write(context, &offset, sizeof(DirectX::SimpleMath::Vector2));
     
    sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/comicsans.spritefont");
    sBatch = std::make_unique<DirectX::SpriteBatch>(context);
@@ -16,6 +23,7 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
    firstTime = true;
    prevHP = 3;
    prevCooldown = 1.0f;
+   isShaking = false;
 }
 
 Graphics::HUD::~HUD()
@@ -48,7 +56,8 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
  
     context->OMSetRenderTargets(1, &backBuffer, nullptr);
 
-    context->VSSetConstantBuffers(0,1, &HUDCBuffer);
+    context->VSSetConstantBuffers(0, 1, &HUDCBuffer);
+	context->VSSetConstantBuffers(1, 1, offsetBuffer);
     context->VSSetShader(shader, nullptr, 0);
 
     context->PSSetShaderResources(0, 5, hudTextures);
@@ -59,6 +68,7 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     context->PSSetShaderResources(0, 1, &SRVNULL);
 
     renderText(blendState);
+    renderHUDText(blendState);
 }
 
 void Graphics::HUD::queueText(Graphics::TextString * text)
@@ -84,6 +94,38 @@ void Graphics::HUD::fillHUDInfo(HUDInfo * info)
         firstTime = false;
     }
     
+}
+
+void Graphics::HUD::startShake(float radius, float duration)
+{
+	isShaking = true;
+	shakeRadius = radius;
+	shakeDuration = duration;
+	shakeCounter = 0;
+}
+
+void Graphics::HUD::updateShake(ID3D11DeviceContext * context, float deltaTime)
+{
+	if (isShaking)
+	{
+		static float angle = 0;
+		angle = Logic::RandomGenerator::singleton().getRandomFloat(0, 360);
+		offset = DirectX::SimpleMath::Vector2(sin(angle) * shakeRadius, cos(angle) * shakeRadius);
+
+
+		shakeRadius *= SHAKE_FALLOFF;
+
+		shakeCounter += deltaTime;
+		if (shakeCounter >= shakeDuration)
+		{
+			isShaking = false;
+			offset = DirectX::SimpleMath::Vector2(0, 0);
+		}
+
+		DirectX::SimpleMath::Vector2 NDCOffset((float)(offset.x * 2.f / WIN_WIDTH), ((WIN_HEIGHT - offset.y) / WIN_HEIGHT) - 1.f);
+
+		offsetBuffer.write(context, &NDCOffset, sizeof(NDCOffset));
+	}
 }
 
 void Graphics::HUD::createHUDVBS(ID3D11Device * device)
@@ -235,7 +277,7 @@ void Graphics::HUD::renderText(ID3D11BlendState * blendState)
     }
     textQueue.clear();
 
-    renderHUDText();
+    
 
     sBatch->End();
 }
@@ -247,13 +289,14 @@ void Graphics::HUD::setHUDTextRenderPos()
 
     cdPos = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2) - 24, (WIN_HEIGHT / 2) + 120);
     
-    scorePos = DirectX::SimpleMath::Vector2(0, 0);
+    scorePos = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2 - 24), (WIN_HEIGHT / 2) - 300);
     wavePos = DirectX::SimpleMath::Vector2(0, 0);
     timePos = DirectX::SimpleMath::Vector2(0, 0);
 }
 
-void Graphics::HUD::renderHUDText()
+void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 {   
+    sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
     std::wstring temp = L"";
     if (!currentInfo->sledge)
     {
@@ -261,13 +304,13 @@ void Graphics::HUD::renderHUDText()
         temp += L"/";
         temp += std::to_wstring(currentInfo->cuttleryAmmo[1]);
 
-        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos1, DirectX::Colors::Red);
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos1 + offset, DirectX::Colors::Red);
 
         temp = std::to_wstring(currentInfo->iceAmmo[0]);
         temp += L"/";
         temp += std::to_wstring(currentInfo->iceAmmo[1]);
 
-        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2, DirectX::Colors::Red);
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
     }
     else
     {
@@ -275,15 +318,15 @@ void Graphics::HUD::renderHUDText()
         temp += L"/";
         temp += std::to_wstring(currentInfo->cuttleryAmmo[1]);
 
-        DirectX::SimpleMath::Vector2 tempPos = ammoPos2;
+        DirectX::SimpleMath::Vector2 tempPos = ammoPos2 + offset;
         tempPos.y += 20;
-        sFont[0]->DrawString(sBatch.get(), temp.c_str(), tempPos, DirectX::Colors::Red);
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), tempPos + offset, DirectX::Colors::Red);
 
         temp = std::to_wstring(currentInfo->iceAmmo[0]);
         temp += L"/";
         temp += std::to_wstring(currentInfo->iceAmmo[1]);
 
-        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2, DirectX::Colors::Red);
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
     }
     int tempInt = (1 - currentInfo->cd)* 100;
     if (tempInt == 0)
@@ -292,7 +335,13 @@ void Graphics::HUD::renderHUDText()
     }
     temp = (std::to_wstring(tempInt));
     temp += L"%";
-    sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos, DirectX::Colors::Red);
+    sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos + offset, DirectX::Colors::Red);
+
+	temp = (std::to_wstring(currentInfo->score));
+	temp += L" Points";
+	sFont[0]->DrawString(sBatch.get(), temp.c_str(), scorePos + offset, DirectX::Colors::White);
+	sFont[0]->DrawString(sBatch.get(), temp.c_str(), scorePos, DirectX::Colors::White);
+    sBatch->End();
 }
 
 //updates the hp and cooldown values on the GPU side

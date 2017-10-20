@@ -20,7 +20,7 @@ Sun::Sun(ID3D11Device * device, int width, int height)
 	matrixData.vp = view * projection;
 	
 	shaderData.color = colors.dayColor;
-	shaderData.shadowFade = 1;
+	//shaderData.shadowFade = 1;
 
 	D3D11_BUFFER_DESC desc = {};
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -73,6 +73,9 @@ void Sun::update(ID3D11DeviceContext * context, float rotationAmount, Vector3 of
 
 	this->shaderData.pos = Vector4::Transform(pos, rotation);
 	
+	shaderData.time = rotationDeg / (PI);
+
+
 	//If its nighttime the shadows fade out
 	Vector3 lightDir = -shaderData.pos;
 	lightDir.Normalize();
@@ -80,11 +83,11 @@ void Sun::update(ID3D11DeviceContext * context, float rotationAmount, Vector3 of
 	Vector3 groundDir(1, 0, 0);
 
 	float fade = snap(1.0 - abs(lightDir.Dot(groundDir)), 0, SUNSET_TIME);
-	shaderData.shadowFade = fade / SUNSET_TIME;
+	shaderData.fade = fade / SUNSET_TIME;
 
-	//Interpolates between colors
-	float dayAmount = min(shaderData.shadowFade, 1);
-	float sundownAmount = 1 - min(shaderData.shadowFade, 1);
+	//Interpolates between ground colors
+	float dayAmount = min(shaderData.fade, 1);
+	float sundownAmount = 1 - min(shaderData.fade, 1);
 
 	if (!isNight)
 		shaderData.color = (colors.dayColor * dayAmount) + (colors.sunDownColor * sundownAmount);
@@ -119,7 +122,8 @@ void Sun::update(ID3D11DeviceContext * context, float rotationAmount, Vector3 of
 
 float Sun::getShadowFade() const
 {
-	return shaderData.shadowFade;
+	//return shaderData.shadowFade;
+	return 0;
 }
 
 DirectX::SimpleMath::Vector3 Sun::getColor() const

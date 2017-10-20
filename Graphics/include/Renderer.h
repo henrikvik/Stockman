@@ -20,6 +20,7 @@
 #include "Menu.h"
 #include "HUD.h"
 #include "SSAORenderer.h"
+#include "Fog.H"
 
 #include <SpriteBatch.h>
 
@@ -36,16 +37,24 @@ namespace Graphics
 
         void render(Camera * camera);
         void queueRender(RenderInfo * renderInfo);
+		void queueFoliageRender(FoliageRenderInfo * renderInfo);
         void queueRenderDebug(RenderDebugInfo * debugInfo);
         void queueText(TextString * text);
         void fillHUDInfo(HUDInfo * info);
 
         void drawMenu(Graphics::MenuInfo * info);
 		void updateLight(float deltaTime, Camera * camera);
+
+		//indicates how gray the screen will be
+		void setBulletTimeCBuffer(float value);
+
+		void updateShake(float deltaTime);
+		void startShake(float radius, float duration);
     private:
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;
         std::vector<RenderInfo*> renderQueue;
+		std::vector<FoliageRenderInfo*> renderFoliageQueue;
 
         DepthStencil depthStencil;
 
@@ -57,6 +66,7 @@ namespace Graphics
 
         Shader fullscreenQuad;
         Shader forwardPlus;
+		Shader depthShader;
 
         //ComputeShader lightGridGen; 
 
@@ -65,7 +75,7 @@ namespace Graphics
         ResourceManager resourceManager;
         D3D11_VIEWPORT viewPort;
 
-        // Lånade Pekare
+        // Lånade Pekareu
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
@@ -85,20 +95,24 @@ namespace Graphics
         HUD hud;
 
 
+		ConstantBuffer<float> bulletTimeBuffer;
 
 
-
+		//temp
 		ID3D11ShaderResourceView * glowTest;
 
        
         void cull();
         void writeInstanceData();
         void draw();
-        void drawGUI();
 		
-
-
-
+#pragma region Foliage
+		 
+		ConstantBuffer <UINT> timeBuffer;
+		UINT grassTime = 0;
+		void drawFoliage(Camera * camera);
+		Shader foliageShader;
+#pragma endregion
         
 		
 
@@ -117,6 +131,9 @@ namespace Graphics
         void renderDebugInfo(Camera* camera);
 
     #pragma endregion
+		Fog fog;
+		ShaderResource worldPosMap;
+
 
 
 

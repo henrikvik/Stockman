@@ -39,15 +39,20 @@ private:
 	struct ShaderMatrix
 	{
 		DirectX::SimpleMath::Matrix vp;
+		//"padding" TODO: Should probably make a new shader instead
+		DirectX::SimpleMath::Matrix mInvP;
+		DirectX::SimpleMath::Matrix mV;
+		DirectX::SimpleMath::Vector4 camPos;
 	};
 
 	struct LightValues
 	{
 		DirectX::SimpleMath::Vector4 pos;
 		DirectX::SimpleMath::Vector3 color;
-
+		float time;
 		//Value from 0 to 1, when it is 1 the shadows are on
-		float shadowFade;
+		float fade;
+		char pad[12];
 	};
 
 	//Clamp a value between min and max

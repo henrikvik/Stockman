@@ -43,7 +43,7 @@ void SkillBulletTime::onUpdate(float deltaTime)
 {
 	if (m_sensor)
 	{
-		if (m_sensor->shouldRemove())
+		if (m_sensor->getProjectileData().ttl < deltaTime)
 			m_sensor = nullptr;
 		else
 		{
@@ -75,5 +75,6 @@ void SkillBulletTime::onUpdate(float deltaTime)
 
 void SkillBulletTime::render(Graphics::Renderer& renderer)
 {
-
+	if (m_sensor && m_sensor->getProjectileData().ttl > 0)
+		renderer.setBulletTimeCBuffer(m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION);
 }

@@ -18,6 +18,11 @@ cbuffer hudInfo : register(b0)
     float cdLeft;
 }
 
+cbuffer positionOffset : register(b1)
+{
+    float2 offset;
+}
+
 VSOut VS(VSIn vsin)
 {
     VSOut vsout;
@@ -36,6 +41,11 @@ VSOut VS(VSIn vsin)
     }
     vsout.uv = vsin.uv;
     vsout.elm = vsin.elm;
+
+
+    vsout.pos.xy += offset.xy * min(vsout.elm, 1);
+
+
 
     return vsout;
 }

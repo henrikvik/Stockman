@@ -1,70 +1,65 @@
-#include "..\..\..\include\Misc\GUI\MenuState.h"
+#include <Misc\GUI\MenuState.h>
+using namespace Logic;
 
-
-Logic::MenuState::MenuState()
+MenuState::MenuState()
 {
 }
 
-Logic::MenuState::~MenuState()
+MenuState::~MenuState()
 {
-	for (int i = 0; i < m_buttons.size(); i++)
-	{
-		delete m_buttons[i];
-	}
 }
 
-void Logic::MenuState::initialize(std::vector<ButtonStruct> buttonStruct, std::string background)
+void MenuState::initialize(std::vector<ButtonStruct> buttonStruct, int background)
 {
+	Button button;
 	for (auto const& struc : buttonStruct)
 	{
 		DirectX::SimpleMath::Vector2 pos(struc.xPos, struc.yPos);
 		DirectX::SimpleMath::Vector2 texCoordStart(struc.xTexStart, struc.yTexStart);
 		DirectX::SimpleMath::Vector2 texCoordEnd(struc.xTexEnd, struc.yTexEnd);
-		m_buttons.push_back(newd Button());
-		m_buttons.at(m_buttons.size() - 1)->initialize(pos, texCoordStart, texCoordEnd, struc.activeOffset, struc.height, struc.width, struc.texture, struc.m_CallBackFunction);
+		
+		button.initialize(pos, texCoordStart, texCoordEnd, struc.activeOffset,
+			struc.height, struc.width, struc.textureIndex, struc.m_CallBackFunction);
+		m_buttons.push_back(button);
     }
+    m_menu.m_menuTexture = background;
 }
 
-void Logic::MenuState::updateOnPress(int posX, int posY)
+void MenuState::updateOnPress(int posX, int posY)
 {
-	for (int i = 0; i < m_buttons.size(); i++)
+	for (Button &b : m_buttons)
 	{
-		m_buttons.at(i)->updateOnPress(posX, posY);
+		b.updateOnPress(posX, posY);
 	}
 }
 
-void Logic::MenuState::hoverOver(int posX, int posY)
+void MenuState::hoverOver(int posX, int posY)
 {
-    for (int i = 0; i < m_buttons.size(); i++)
+    for (Button &b : m_buttons)
     {
-        m_buttons.at(i)->HoverOver(posX, posY);
+        b.hoverOver(posX, posY);
     }
 }
 
-bool Logic::MenuState::animationTransition(float dt, float maxAnimationTime, bool forward)
+bool MenuState::animationTransition(float dt, float maxAnimationTime, bool forward)
 {
-	bool done;
+	bool done = true;
 
-	if (m_buttons.size() == 0)
+	for (Button &b : m_buttons)
 	{
-		return true;
-	}
-
-	for (int i = 0; i < m_buttons.size(); i++)
-	{
-		done = m_buttons.at(i)->animationTransition(dt, maxAnimationTime, forward);
+		// i dont know how this is suppose to work, the last item in the list is very important
+		done = b.animationTransition(dt, maxAnimationTime, forward);
 	}
 
 	return done;
 }
 
-Graphics::MenuInfo Logic::MenuState::getMenuInfo()
+Graphics::MenuInfo MenuState::getMenuInfo()
 {
     m_menu.m_buttons.clear();
-    for (size_t i = 0; i < this->m_buttons.size(); i++)
+    for (Button &b : m_buttons)
     {
-        auto temp = m_buttons.at(i)->getButtonInfo();
-        m_menu.m_buttons.push_back(*temp);
+        m_menu.m_buttons.push_back(b.getButtonInfo());
     }
     return m_menu;
 }

@@ -1,26 +1,41 @@
 #include <AI\Behavior\Behavior.h>
 #include <AI\Enemy.h>
 #include <Misc\RandomGenerator.h>
-#define MAX_SPEED 10.f // testing
 
 #define SCALAR_DIR 0.3f
 #define SCALAR_ALIGN 1.1f
-#define SCALAR_COHES 0.8f
-#define SCALAR_SEP 1.2f
+#define SCALAR_COHES 0.7f
+#define SCALAR_SEP 2.3f
 
-#define MAX_LEN_FOR_SEPERATION 7.5f
+#define MAX_LEN_FOR_SEPERATION 10.f
+// this can be changed in the future maybe who knows
+#define CHANGE_NODE_DIST 0.3f
 
 #include <queue>
-
 using namespace Logic;
+
+Behavior::Behavior(PathingType type)
+{
+	m_pathingType = type;
+}
 
 Behavior::~Behavior()
 {
 }
 
-void Behavior::walkPath(SimplePathing pathing, RunIn &in)
+void Behavior::update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies, Player const & player, float deltaTime)
 {
-	btVector3 node = pathing.updateAndReturnCurrentNode(*in.enemy, *in.target);
+	updateSpecific(enemy, closeEnemies, player, deltaTime);
+
+	// this is frame bound, idk how to fix that tho
+	RunIn in{ &enemy, closeEnemies, &player, this, deltaTime };
+	runTree(in);
+}
+
+void Behavior::walkPath(RunIn &in)
+{
+	DirectX::SimpleMath::Vector3 pathNode = m_pathing.getNode();
+	btVector3 node { pathNode.x, pathNode.y, pathNode.z };
 	btVector3 dir = node - in.enemy->getPositionBT();
 	
 	boidCalculations(in.enemy->getPositionBT(), 
@@ -28,8 +43,9 @@ void Behavior::walkPath(SimplePathing pathing, RunIn &in)
 
 	in.enemy->getRigidBody()->translate(dir);
 
-	if ((node - in.enemy->getPositionBT()).length() < 0.3f)
-		pathing.setCurrentNode(pathing.getCurrentNode() + 1);
+	if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST
+		&& m_pathing.pathOnLastNode())
+		m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
@@ -47,7 +63,6 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 
 		cohes += enemy->getPositionBT();
 
-		// sep += enemy->getPositionBT() - pos; // to steer away
 		temp = pos - enemy->getPositionBT();
 		if (temp.length() < MAX_LEN_FOR_SEPERATION)
 		{
@@ -66,15 +81,14 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 	align = align.normalize();
 
 	// COHESION (Stay towards group position)
-	sep /= totalSep;
+	sep /= totalSep + 1;
 	sep = sep.normalize();
 
 	// RET
 	dir = dir * SCALAR_DIR + cohes * SCALAR_COHES + align * SCALAR_ALIGN + sep * SCALAR_SEP;
-	dir.normalize();
-	dir *= maxSpeed;
-	dir *= dt / 1000.f;
 	dir.setY(0); // right now y should not be changed
+	dir.normalize();
+	dir *= maxSpeed * (dt * 0.001f);
 }
 
 void Behavior::runTree(RunIn &in)
@@ -149,4 +163,19 @@ bool Behavior::runNode(RunIn &in, BehaviorNode &node)
 
 Behavior::BehaviorNode* Behavior::getRoot() {
 	return &m_root; 
+}
+
+Pathing& Behavior::getPath()
+{
+	return m_pathing;
+}
+
+Behavior::PathingType Behavior::getPathingType() const
+{
+	return m_pathingType;
+}
+
+void Behavior::setPathingType(PathingType pathingType)
+{
+	m_pathingType = pathingType;
 }

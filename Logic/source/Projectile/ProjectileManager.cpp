@@ -1,4 +1,6 @@
 #include "../Projectile/ProjectileManager.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace Logic;
 
@@ -20,6 +22,13 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
 {
 	// Create body
 	btRigidBody* body = m_physPtr->createBody(Cube(position + (forward * 2), btVector3(forward), { pData.scale, pData.scale, pData.scale }), pData.mass, pData.isSensor);
+
+	// Taking the forward vector and getitng the pitch and yaw from it
+	float pitch = asin(-forward.getY());
+	float yaw = atan2(forward.getX(), forward.getZ());
+	btQuaternion q(yaw, pitch, 0.f);
+	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - (180 * M_PI / 180), 0.f));
+
 	// Set gravity modifier
 	body->setGravity(pData.gravityModifier * m_physPtr->getGravity());
 

@@ -1,4 +1,5 @@
 #include "Physics\Physics.h"
+#include <Graphics\include\Renderer.h>
 
 
 using namespace Logic;
@@ -85,7 +86,10 @@ void Physics::update(GameTime gameTime)
 		int numContacts = contactManifold->getNumContacts();
 		if (numContacts > 0) // Only returns the first contact as for now, fix this
 		{
+	//		if (obA->getCollisionShape()->getShapeType() != BroadphaseNativeTypes::SPHERE_SHAPE_PROXYTYPE)
+		
 			btManifoldPoint contactPoint = contactManifold->getContactPoint(0);
+
 			btVector3 b = contactPoint.getPositionWorldOnA();
 			btVector3 a = contactPoint.getPositionWorldOnB();
 

@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <iostream>
-#define _GOD_MODE
+#include <Engine\Typing.h>
+#include <DebugDefines.h>
 
 using namespace Logic;
 
@@ -13,11 +14,14 @@ Game::Game()
 	m_cardManager		= nullptr;
 	m_menu				= nullptr;
 	m_highScoreManager	= nullptr;
+
+
 }
 
 Game::~Game() 
 { 
 	clear();
+	Typing::releaseInstance();
 }
 
 void Game::init()
@@ -37,8 +41,14 @@ void Game::init()
 	m_player = new Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 
+	m_highScoreManager = newd HighScoreManager();
+
+	std:string name = "Stockman";
+
+	m_highScoreManager->setName(name);
+
 	// Initializing Menu's
-	m_menu = newd MenuMachine();
+	m_menu = newd MenuMachine(m_highScoreManager->getName());
 	m_menu->initialize(STARTING_STATE); 
 
 	// Initializing the map
@@ -58,17 +68,12 @@ void Game::init()
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
 
-	m_highScoreManager = newd HighScoreManager();
+	// Initializing Combo's
+	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
+	ComboMachine::Get().Reset();
 
-	std:string name = "";
-	//std::cout << "Enter your player name (will be used for highscore): ";
-	//getline(std::cin, name);
-	if (name.empty())
-	{
-		name = "Stockman";
-	}
-
-	m_highScoreManager->setName(name);
+	// Initializing Sound
+	NoiseMachine::Get().init();
 }
 
 void Game::clear()
@@ -82,12 +87,15 @@ void Game::clear()
 	delete m_highScoreManager;
 	m_projectileManager->clear();
 	delete m_projectileManager;
+	NoiseMachine::Get().clear();
 }
 
-void Logic::Game::reset()
+void Game::reset()
 {
 	/*m_entityManager.clear();*/
 	m_player->reset();
+	
+	ComboMachine::Get().Reset();
 	m_waveTimer = NULL;
 	m_waveCurrent = WAVE_START;
 }
@@ -102,6 +110,7 @@ void Game::waveUpdater()
 		if (m_waveTimer > m_waveTime[m_waveCurrent])
 		{
 			// Spawning next wave
+			m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ON_FIRE);
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
 			m_entityManager.setCurrentWave(m_waveCurrent);
@@ -134,9 +143,17 @@ void Game::update(float deltaTime)
 		}
 		else
 		{
+			/* Temp sound testing */
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::J)) NoiseMachine::Get().playSFX(SFX::BOING);
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K)) NoiseMachine::Get().playMusic(MUSIC::TEST_MUSIC);
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L)) NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MASTER, 0);
+
+			ComboMachine::Get().Update(deltaTime);
 			waveUpdater();
 
-			
+			PROFILE_BEGIN("Sound");
+			NoiseMachine::Get().update(m_player->getListenerData());
+			PROFILE_END();
 
 			PROFILE_BEGIN("Physics");
 			m_physics->update(m_gameTime);
@@ -159,25 +176,8 @@ void Game::update(float deltaTime)
 			PROFILE_END();
 		}
 
-		if (m_player->getHP() <= 0 && m_menu->currentState() == GameState::gameStateGame)
-		{
-			printf("You ded bro.\n");
-			m_highScoreManager->addNewHighScore();
-			m_menu->setStateToBe(GameState::gameStateGameOver);
-
-			for(int i = 0; i < 10; i++)
-			{
-				if (m_highScoreManager->gethighScore(i).score != -1)
-				{
-					highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
-				}
-				else
-				{
-					break;
-				}
-			}
-			reset();
-		}
+		if (m_player->getHP() <= 0)
+			gameOver();
 
 		break;
 
@@ -195,6 +195,25 @@ void Game::update(float deltaTime)
 		m_menu->update(m_gameTime.dt);
 		break;
 	}
+#ifdef SHOW_FPS 
+	fpsRenderer.updateFPS(deltaTime);
+#endif
+}
+
+void Game::gameOver()
+{
+	m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
+	m_menu->setStateToBe(GameState::gameStateGameOver);
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_highScoreManager->gethighScore(i).score != -1)
+		{
+			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(ComboMachine::Get().GetCurrentScore());
+			break;
+		}
+	}
+	reset();
 }
 
 void Game::render(Graphics::Renderer& renderer)
@@ -227,9 +246,14 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuSettings:
 	case gameStateGameOver:
 		/*m_menu->render(renderer);*/
-	default:  m_menu->render(renderer);
+	default:  
+		m_menu->render(renderer);
 		break;
 	}
+
+#ifdef SHOW_FPS 
+	fpsRenderer.renderFPS(renderer);
+#endif
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()
