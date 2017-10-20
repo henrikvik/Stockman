@@ -56,5 +56,5 @@
 	"mDmgTaken": 0f;
 	"mFirerate": 10f;
 	"mHP": 0f;
-	"mMovementSpeed": 10f;
+	"mMovementSpeed": 15f;
 }

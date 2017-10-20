@@ -114,7 +114,11 @@ void Game::waveUpdater()
 			// Enrage
 			int affectedEnemies = m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE);
 			if (affectedEnemies > 0)
+			{
+				NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MUSIC, 0.1f);
+				NoiseMachine::Get().setGroupPitch(CHANNEL_GROUP::CHANNEL_MUSIC, 1.5f);
 				NoiseMachine::Get().playMusic(MUSIC::ENRAGE);
+			}
 
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
