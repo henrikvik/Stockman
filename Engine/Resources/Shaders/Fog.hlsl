@@ -1,5 +1,7 @@
-#define a 0.01 // Color Change Radious
-#define TRAD 7 // Transparancy Radious
+#include "ShaderConstants.hlsli"
+
+#define a 0.01 // Color Change Radius
+#define TRAD 7 // Transparancy Radius
 #define FOGCOLOR float3(0.3, 0.3, 0.3) //Fog Color
 
 cbuffer Camera : register(b0)
@@ -9,6 +11,12 @@ cbuffer Camera : register(b0)
 	float4x4 V;
 	float4 camPos;
 };
+
+cbuffer CameraInverses : register(b1)
+{
+    float4x4 invView;
+    float4x4 invProjection;
+}
 
 struct FogData
 {
@@ -36,7 +44,7 @@ VSOut VS(uint id : SV_VertexID)
 	
 	//F is the four dimensional vector that represents the bounding plane, XYZ 
 	//is the normal of the plane. 
-	float4 F = float4(0,-1, 0, 1);
+	float4 F = float4(0, -1, 0, 1);
 	F = normalize(F);
 	//ViewVec
 	float4 P = float4(fogData[id].pos, 1);
@@ -66,13 +74,33 @@ VSOut VS(uint id : SV_VertexID)
 	return vsOut;
 }
 
-Texture2D worldPosMap : register(t1);
+Texture2D depthMap : register(t1);
+SamplerState Sampler : register(s0);
+
+float3 generateWorldSpacePos(float2 uv, float2 offset = float2(0, 0))
+{
+    float depth = depthMap.SampleLevel(Sampler, uv + offset, 0).r;
+
+    float4 pos;
+    pos.x = (uv.x + offset.x) * 2 - 1;
+    pos.y = (1 - uv.y + offset.y) * 2 - 1;
+    pos.z = depth;
+    pos.w = 1;
+
+    pos = mul(invProjection, pos);
+
+    pos /= pos.w;
+    
+    pos = mul(invView, pos);
+
+    return pos.xyz;
+}
 
 float4 PS (VSOut psIn) : SV_Target
 {
-	float3 worldPos = worldPosMap.Load(float3(psIn.pos.xy, 0)).xyz;
+    float3 worldPos = generateWorldSpacePos(psIn.pos.xy / SCREEN_SIZE);
 
-	float playerDistance = length( psIn.worldPos.xyz - camPos.xyz);
+    float playerDistance = length(psIn.worldPos.xyz - camPos.xyz);
 
 	float3 fogColor = FOGCOLOR;
 
