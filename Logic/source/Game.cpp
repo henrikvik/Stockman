@@ -78,16 +78,17 @@ void Game::init()
 
 void Game::clear()
 {
+	m_menu->clear();
+	m_projectileManager->clear();
+	NoiseMachine::Get().clear();
+
 	delete m_physics;
 	delete m_player;
-	m_menu->clear();
 	delete m_menu;
 	delete m_map;
 	delete m_cardManager;
 	delete m_highScoreManager;
-	m_projectileManager->clear();
 	delete m_projectileManager;
-	NoiseMachine::Get().clear();
 }
 
 void Game::reset()

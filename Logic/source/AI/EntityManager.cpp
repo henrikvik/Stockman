@@ -2,6 +2,7 @@
 using namespace Logic;
 
 #define ENEMIES_PATH_UPDATE_PER_FRAME 20
+#define ENEMIES_TEST_UPDATE_PER_FRAME 200
 #define FILE_ABOUT_WHALES "Enemies/Wave"
 
 #include <AI/EnemyTest.h>
@@ -123,8 +124,28 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
+	bool goalNodeChanged = false;
+	Enemy *enemy;
+	
 	for (int i = 0; i < m_enemies[index].size(); ++i)
-		updateEnemy(m_enemies[index][i], index, player, deltaTime);
+	{
+		enemy = m_enemies[index][i];
+
+		updateEnemy(enemy, index, player, deltaTime);
+
+		if (i + m_frame % ENEMIES_TEST_UPDATE_PER_FRAME)
+		{
+			goalNodeChanged = enemy->getBehavior()->isGoalChangedAndSetToFalse();
+
+			if (goalNodeChanged && !AStar::singleton().isEntityOnIndex(*enemy, index))
+			{
+				m_enemies[AStar::singleton().getIndex(*enemy)].push_back(enemy);
+				std::swap(m_enemies[index][i],
+					m_enemies[index][m_enemies[index].size() - 1]);
+				m_enemies[index].pop_back();
+			}
+		}
+	}
 }
 
 void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)
@@ -142,18 +163,7 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 		enemy = enemies[index][i];
 		manager->updateEnemy(enemy, index, player, deltaTime);
 
-		newIndex = AStar::singleton().getIndex(*enemy);
-		if (newIndex != -1 && newIndex != index) // this will be optimized in future
-		{
-			enemies[newIndex].push_back(enemy);
-			std::swap(enemies[index][i],
-				enemies[index][enemies[index].size() - 1]);
-			enemies[index].pop_back();
-		}
-		else
-		{
-			enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
-		}
+		enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
 	}
 }
 
