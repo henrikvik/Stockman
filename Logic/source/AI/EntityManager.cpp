@@ -100,22 +100,25 @@ void EntityManager::update(Player const &player, float deltaTime)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0) {			
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0) {
 				updateEnemies(i, player, deltaTime);
 			}
 			else
 			{				// seperate threads based on i, but join them before end
 				int thread = getThread(i);
-				std::thread *t = threads[thread];
 				if (!m_threadRunning[thread])
 				{
+					m_threadRunning[thread] = true;
+					std::thread *t = threads[thread];
+
 					if (t)
 						deleteThread(t);
 
-					m_threadRunning[thread] = true;
+					PROFILE_BEGIN("Create Thread");
 					t = newd std::thread(EntityManager::updateEnemiesAndPath, this,
 						i, std::ref(player), deltaTime);
 					threads[thread] = t;
+					PROFILE_END();
 				}
 			}
 		}
@@ -160,7 +163,6 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 {
 	// g_Profiler->registerThread("Enemy Thread %d\0", (index % NR_OF_THREADS));
 	Enemy *enemy;
-	int newIndex;
 
 	AStar &aStar = AStar::singleton();
 	aStar.loadTargetIndex(player);

@@ -32,7 +32,7 @@ namespace Logic
 	class EntityManager
 	{
 	private:
-		static const int NR_OF_THREADS = 8;
+		static const int NR_OF_THREADS = 4;
 
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
