@@ -20,7 +20,7 @@ namespace Logic
 
 		virtual void clear();
 		virtual void update(float deltaTime);
-		void updateSound(float deltaTime);
+		virtual void updateSound(float deltaTime);
 
 		virtual void affect(int stacks, Effect const &effect, float deltaTime) = 0;
 		virtual void upgrade(Upgrade const &upgrade);

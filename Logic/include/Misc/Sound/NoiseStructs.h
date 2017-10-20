@@ -13,7 +13,7 @@ struct THRESHOLD
 	static const int	MUSIC_MIN_DIST	= 1;
 	static const int	MUSIC_MAX_DIST	= 25;
 	static const int	SFX_MIN_DIST	= 1;
-	static const int	SFX_MAX_DIST	= 25;
+	static const int	SFX_MAX_DIST	= 10;
 };
 
 enum CHANNEL_GROUP 

@@ -149,10 +149,6 @@ void Game::update(float deltaTime)
 			ComboMachine::Get().Update(deltaTime);
 			waveUpdater();
 
-			PROFILE_BEGIN("Sound");
-			NoiseMachine::Get().update(m_player->getListenerData());
-			PROFILE_END();
-
 			PROFILE_BEGIN("Physics");
 			m_physics->update(m_gameTime);
 			PROFILE_END();
@@ -171,6 +167,10 @@ void Game::update(float deltaTime)
 
 			PROFILE_BEGIN("Projectiles");
 			m_projectileManager->update(m_gameTime.dt);
+			PROFILE_END();
+		
+			PROFILE_BEGIN("Sound");
+			NoiseMachine::Get().update(m_player->getListenerData());
 			PROFILE_END();
 		}
 

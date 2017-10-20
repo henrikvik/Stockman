@@ -5,7 +5,7 @@ using namespace Logic;
 Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelID)
 : PhysicsObject(body, halfextent, modelID)
 {
-	updateSound(0.1);
+
 }
 
 Entity::~Entity() { }
@@ -15,6 +15,7 @@ void Entity::clear() { }
 void Entity::update(float deltaTime)
 {
 	PhysicsObject::updatePhysics(deltaTime);
+
 	updateSound(deltaTime);
 
 	// Checking different buffs

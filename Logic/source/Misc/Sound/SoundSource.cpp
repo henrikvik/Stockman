@@ -30,7 +30,7 @@ void SoundSource::update(float deltaTime)
 		if (autoPlayer->checkIfPlay(deltaTime))
 		{
 			noiseMachine->playSFX(autoPlayer->sfx, this, false);
-			channel->setPitch(autoPlayer->pitch.value);
+			channel->set3DAttributes(&pos, &vel);
 		}
 	}
 
@@ -38,8 +38,8 @@ void SoundSource::update(float deltaTime)
 	{
 		if (delayPlayer->checkIfDone(deltaTime))
 		{
-			(delayPlayer->id) ? noiseMachine->playMusic(MUSIC(delayPlayer->type), this, false) :
-								noiseMachine->playSFX(SFX(delayPlayer->type), this, false);
+			(delayPlayer->id) ? noiseMachine->playMusic(MUSIC(delayPlayer->type), this, true) :
+								noiseMachine->playSFX(SFX(delayPlayer->type), this, true);
 			delete delayPlayer;
 			delayPlayer = nullptr;
 		}
@@ -84,7 +84,17 @@ void SoundSource::autoPlaySFX(SFX sfx, float timeBetween, float timeOffset, floa
 	autoPlayer = new AutoPlayer(sfx, timeBetween, timeOffset, pitch, pitchOffset);
 }
 
-// Use with caution
+FMOD_VECTOR* SoundSource::getPosition()
+{
+	return &pos;
+}
+
+FMOD_VECTOR* SoundSource::getVelocity()
+{
+	return &vel;
+}
+
+// Use with caution, can be nullptr if no active sound
 FMOD::Channel * SoundSource::getChannel()
 {
 	return channel;

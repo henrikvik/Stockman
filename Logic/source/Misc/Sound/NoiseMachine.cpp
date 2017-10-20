@@ -153,7 +153,7 @@ void NoiseMachine::initMusic()
 	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) m_music[i] = nullptr;
 
 	// Init all the music here
-	ERRCHECK(createSound(MUSIC::NES, CHANNEL_GROUP::CHANNEL_MUSIC, "music.ogg", FMOD_3D_LINEARROLLOFF));
+	ERRCHECK(createSound(MUSIC::TEST_MUSIC, CHANNEL_GROUP::CHANNEL_MUSIC, "music.ogg", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the music
 	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) 

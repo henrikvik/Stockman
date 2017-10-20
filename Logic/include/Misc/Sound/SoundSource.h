@@ -48,6 +48,8 @@ namespace Logic
 		void delayPlayMusic(MUSIC music, float delay);
 		void autoPlaySFX(SFX sfx, float timeBetween, float timeOffset, float pitch = 1, float pitchOffset = 0);
 
+		FMOD_VECTOR* getPosition();
+		FMOD_VECTOR* getVelocity();
 		FMOD::Channel* getChannel();
 
 	public:
