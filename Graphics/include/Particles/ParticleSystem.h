@@ -41,6 +41,7 @@ public:
 	void render(ID3D11DeviceContext *cxt, Camera *cam, DirectX::CommonStates *states, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView *dest_dsv, bool debug);
 	void update(ID3D11DeviceContext *cxt, Camera *cam, float dt);
 private:
+	void readParticleFile(ID3D11Device *device, const char *path);
 	void readSphereModel(ID3D11Device *device);
 
 	struct SphereVertex {
@@ -61,6 +62,8 @@ private:
 	};
 
 	// runtime
+	uint32_t m_Capacity;
+
 	std::vector<ParticleEffectInstance> m_ParticleEffects;
 	std::vector<GeometryParticle> m_GeometryParticles;
 
@@ -74,7 +77,8 @@ private:
 
 	// constants
 	std::vector<ParticleEffect> m_EffectDefinitions;
-	std::vector<ID3D11PixelShader*> m_Materials;
+	std::vector<GeometryDefinition> m_GeometryDefinitions;
+	std::vector<std::tuple<ID3D11PixelShader*, ID3D11PixelShader*>> m_Materials;
 	std::vector<ID3D11ShaderResourceView*> m_Textures;
 };
 

@@ -3,13 +3,38 @@
 #include <fstream>
 #include <algorithm>
 
+#include <WICTextureLoader.h>
+
+std::wstring ConvertToWString(const std::string & s)
+{
+	const char * cs = s.c_str();
+	const size_t wn = std::mbsrtowcs(NULL, &cs, 0, NULL);
+
+	if (wn == size_t(-1))
+	{
+		return L"";
+	}
+
+	std::vector<wchar_t> buf(wn + 1);
+	const size_t wn_again = std::mbsrtowcs(buf.data(), &cs, wn + 1, NULL);
+
+	if (wn_again == size_t(-1))
+	{
+		return L"";
+	}
+
+	return std::wstring(buf.data(), wn);
+}
+
 namespace Graphics {;
 
 ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const char * path)
+	: m_Capacity(capacity)
 {
 	readSphereModel(device);
+	readParticleFile(device, path);
 
-	m_GeometryParticles.reserve(512);
+	m_GeometryParticles.reserve(capacity);
 }
 
 void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, DirectX::CommonStates * states, ID3D11DepthStencilView * dest_dsv)
@@ -70,7 +95,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
 			}
 			// if material changes, flush our built up batching
 			else if (current_material != particle.idx) {
-				cxt->PSSetShader(m_Materials[current_material], nullptr, 0);
+				cxt->PSSetShader(std::get<0>(m_Materials[current_material]), nullptr, 0);
 				cxt->DrawIndexedInstanced(m_SphereIndices, len, 0, 0, offset);
 
 				current_material = particle.idx;
@@ -85,14 +110,14 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
 
 void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
 {
-	// TODO: sort by material index
+	std::sort(m_GeometryParticles.begin(), m_GeometryParticles.end(), [](GeometryParticle &a, GeometryParticle &b) { return a.idx < b.idx; });
 
 	{
 		GeometryParticleInstance *ptr = m_GeometryInstanceBuffer->map(cxt);
 
 		auto it = m_GeometryParticles.begin();
 		int i = 0;
-		while (it != m_GeometryParticles.end() && i < 256) {
+		while (it != m_GeometryParticles.end() && i < m_Capacity) {
 			auto &particle = *it;
 			auto def = *particle.def;
 
@@ -129,9 +154,134 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
 			it++;
 			ptr++;
 			i++;
-			// todo: remove
 		}
 		m_GeometryInstanceBuffer->unmap(cxt);
+	}
+}
+
+void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
+{
+	// cleanup previous resources, if any
+	if (!m_Textures.empty()) {
+		for (auto &tex : m_Textures) {
+			tex->Release();
+		}
+		m_Textures.clear();
+	}
+
+	if (!m_Materials.empty()) {
+		for (auto &mat : m_Materials) {
+			std::get<0>(mat)->Release();
+			std::get<1>(mat)->Release();
+		}
+		m_Materials.clear();
+	}
+
+	FILE *f = fopen(path, "rb");
+	if (!f)
+		throw "Can't load particle file";
+
+
+	// parse header
+	const uint8_t FILE_MAGIC[4] = {
+		'p', 'a', 'r', 't'
+	};
+	uint8_t magic[4] = {};
+	fread(magic, sizeof(uint8_t), 4,  f);
+
+	if (memcmp(magic, FILE_MAGIC, 4) != 0)
+		throw "Invalid file magic number";
+
+	uint32_t texture_count = 0;
+	fread(&texture_count, sizeof(texture_count), 1, f);
+
+	// load all textures
+	for (int i = 0; i < texture_count; i++) {
+		char path[128];
+		fread(path, sizeof(char), 128, f);
+
+		ID3D11ShaderResourceView *tex = nullptr;
+
+		std::wstring file = ConvertToWString(path);
+		auto res = CreateWICTextureFromFile(device, file.c_str(), (ID3D11Resource**)nullptr, &tex);
+		if (!SUCCEEDED(res))
+			throw "Failed to load texture";
+
+		m_Textures.push_back(tex);
+	}
+
+	uint32_t material_count = 0;
+	fread(&material_count, sizeof(material_count), 1, f);
+
+	// load all materials
+	for (int i = 0; i < material_count; i++) {
+		char path[128];
+		fread(path, sizeof(char), 128, f);
+
+		ID3D11PixelShader *ps = nullptr, *psDepth = nullptr;
+
+		ID3DBlob *blob = nullptr, *error = nullptr;
+		std::wstring file = ConvertToWString(path);
+
+		// TODO: add ifdef for DEBUG compilation flag
+		auto res = D3DCompileFromFile(
+			file.c_str(),
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			"PS",
+			"ps_5_0",
+			D3DCOMPILE_DEBUG,
+			0,
+			&blob,
+			&error
+		);
+
+		if (!SUCCEEDED(res)) {
+			throw "Failed to compile material shader PS";
+		}
+
+		// TODO: add ifdef for DEBUG compilation flag
+		res = D3DCompileFromFile(
+			file.c_str(),
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			"PS_depth",
+			"ps_5_0",
+			D3DCOMPILE_DEBUG,
+			0,
+			&blob,
+			&error
+		);
+
+		if (!SUCCEEDED(res)) {
+			throw "Failed to compile material shader PS_depth";
+		}
+
+		m_Materials.push_back(std::make_tuple(ps, psDepth));
+	}
+
+	uint32_t geometry_count = 0;
+	fread(&geometry_count, sizeof(geometry_count), 1, f);
+
+	// load all geom definitions
+	// hopefully works
+	m_GeometryDefinitions.clear();
+	m_GeometryDefinitions.resize(geometry_count);
+	fread(&m_GeometryDefinitions.data[0], sizeof(GeometryDefinition), geometry_count, f);
+
+	uint32_t fx_count = 0;
+	fread(&fx_count, 1, sizeof(fx_count), f);
+
+	// load all particle fx
+	for (int i = 0; i < fx_count; i++) {
+		ParticleEffect fx;
+		fread(fx.m_Name, sizeof(char), 16, f);
+		fread(&fx.m_Count, sizeof(fx.m_Count), 1, f);
+		fread(&fx.m_Time, sizeof(fx.m_Time), 1, f);
+		fread(&fx.m_EntryCount, sizeof(fx.m_EntryCount), 1, f);
+
+		fx.m_Entries.resize(fx.m_EntryCount);
+		fread(&fx.m_Entries.data[0], sizeof(ParticleEffectEntry), fx.m_EntryCount, f);
 	}
 }
 
