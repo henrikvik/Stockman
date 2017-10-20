@@ -59,7 +59,7 @@ namespace Graphics
         DepthStencil depthStencil;
 
 		SkyRenderer skyRenderer;
-		Glow postProcessor;
+		Glow glowRenderer;
 
 		LightGrid grid;
 		DirectX::CommonStates *states;
@@ -105,6 +105,7 @@ namespace Graphics
         void cull();
         void writeInstanceData();
         void draw();
+		void clear();
 		
 #pragma region Foliage
 		 

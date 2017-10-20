@@ -24,12 +24,12 @@ namespace Logic
 
 		std::vector<Object*>*				getProps();
 		std::vector<StaticObject*>*			getHitboxes();
-		std::vector<StaticObject*>*			getObjects();
+		std::vector<Speaker*>*				getObjects();
 
 	private:
 		std::vector<Object*>				m_props;
 		std::vector<StaticObject*>			m_hitboxes;
-		std::vector<StaticObject*>			m_objects;
+		std::vector<Speaker*>				m_objects;
 
 		bool m_drawHitboxes;	// debugging purposes
 

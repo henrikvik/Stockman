@@ -71,14 +71,14 @@ void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResource
 	context->CSSetShader(glow, nullptr, 0);
 	context->CSSetUnorderedAccessViews(0, 1, glowPass0, nullptr);
 	context->CSSetShaderResources(0, 1, &glowMap);
-	context->Dispatch(WIN_WIDTH / 32, WIN_HEIGHT / 18, 1);
+	context->Dispatch(40, 23, 1);
 
 
 	context->CSSetUnorderedAccessViews(0, 1, glowPass1, nullptr);
 	context->CSSetShaderResources(0, 1, glowPass0);
 
 	context->CSSetShader(glow2, nullptr, 0);
-	context->Dispatch(WIN_WIDTH / 32, WIN_HEIGHT / 18, 1);
+	context->Dispatch(40, 23, 1);
 
 	context->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
 
@@ -90,7 +90,7 @@ void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResource
 	context->CSSetShaderResources(1, 1, glowPass1);
 	context->CSSetUnorderedAccessViews(0, 1, *outputTexture, nullptr);
 
-	context->Dispatch(WIN_WIDTH / 16, WIN_HEIGHT / 9, 1);
+	context->Dispatch(80, 45, 1);
 
 	context->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
 	context->CSSetShaderResources(0, 1, &nullSRV);
