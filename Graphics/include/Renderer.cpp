@@ -40,10 +40,15 @@ namespace Graphics
 #pragma endregion
 		, fog(device)
 		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
-        ,menu(device, deviceContext)
-        ,hud(device, deviceContext)
-		,ssaoRenderer(device)
-		,bulletTimeBuffer(device)
+        , menu(device, deviceContext)
+        , hud(device, deviceContext)
+		, ssaoRenderer(device)
+		, bulletTimeBuffer(device)
+#pragma region Foliage
+		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
+		, timeBuffer(device)
+#pragma endregion
+		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -81,6 +86,7 @@ namespace Graphics
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
     {
         resourceManager.initialize(gDevice, gDeviceContext);
+		skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
 
 		//temp
 		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
@@ -202,8 +208,18 @@ namespace Graphics
 
 		draw();
 
+		deviceContext->IASetInputLayout(foliageShader);
+		deviceContext->VSSetShader(foliageShader, nullptr, 0);
+		deviceContext->PSSetShader(depthShader, nullptr, 0);
+		
+		//this be no deltatime
+		grassTime++;
+
+		drawFoliage(camera);
+
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-		 
+		deviceContext->RSSetState(states->CullCounterClockwise());
+
 		grid.updateLights(deviceContext, camera);
 
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
@@ -224,6 +240,9 @@ namespace Graphics
 		deviceContext->PSSetShaderResources(0, 4, SRVs);
 		deviceContext->PSSetSamplers(0, 1, &sampler);
 
+		auto samplerWrap = states->LinearWrap();
+		deviceContext->PSSetSamplers(2, 1, &samplerWrap);
+
 		ID3D11SamplerState * samplers[] = { skyRenderer.getSampler() };
 		deviceContext->PSSetSamplers(1, 1, samplers);
 
@@ -234,7 +253,7 @@ namespace Graphics
 		};
 
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
-		deviceContext->VSSetConstantBuffers(4, 1, &lightBuffs[1]);
+		deviceContext->VSSetConstantBuffers(3, 1, &lightBuffs[1]);
 
 		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
 
@@ -249,6 +268,15 @@ namespace Graphics
 		deviceContext->OMSetRenderTargets(4, rtvs, depthStencil);
 		
 		draw();
+
+		PROFILE_BEGIN("RenderFoliage");
+		deviceContext->IASetInputLayout(foliageShader);
+		deviceContext->VSSetShader(foliageShader, nullptr, 0);
+		deviceContext->PSSetShader(foliageShader, nullptr, 0);
+		drawFoliage(camera);
+		renderFoliageQueue.clear();
+		PROFILE_END();
+
 
 		//The sky renderer uses the bullet time on register 3
 		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
@@ -267,6 +295,8 @@ namespace Graphics
 		{
 			this->drawToBackbuffer(grid.getDebugSRV());
 		}
+
+
 
 #endif
 		//TEEEMP
@@ -333,6 +363,17 @@ namespace Graphics
         renderQueue.push_back(renderInfo);
     }
 
+	void Renderer::queueFoliageRender(FoliageRenderInfo * renderInfo)
+	{
+		if (renderFoliageQueue.size() > INSTANCE_CAP)
+		{
+			throw "Foliage renderer exceeded instance cap.";
+		}
+
+		renderFoliageQueue.push_back(renderInfo);
+	
+	}
+
     void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
     {
         if (debugInfo->points->size() > MAX_DEBUG_POINTS)
@@ -381,10 +422,39 @@ namespace Graphics
         instanceSBuffer.unmap(deviceContext);
     }
 
+	void Renderer::drawFoliage(Camera * camera)
+	{
+		timeBuffer.write(deviceContext, &grassTime, sizeof(grassTime));
+
+		deviceContext->VSSetConstantBuffers(4, 1, timeBuffer);
+		deviceContext->RSSetState(states->CullNone());
+		deviceContext->OMSetRenderTargets(1, fakeBackBuffer, depthStencil);
+
+		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		UINT sampleMask = 0xffffffff;
+		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+
+		for (FoliageRenderInfo * info : renderFoliageQueue)
+		{
+			ModelInfo model = resourceManager.getModelInfo(info->meshId);
+
+			static UINT stride = sizeof(Vertex), offset = 0;
+			deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
+			deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			static ID3D11ShaderResourceView * modelTextures[1] = { nullptr };
+			modelTextures[0] = model.diffuseMap;
+			deviceContext->PSSetShaderResources(10, 1, modelTextures);
+
+			deviceContext->DrawIndexed((UINT)model.indexCount, 0, 0);
+		}
+
+	}
+
     void Renderer::draw()
     {
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->VSSetConstantBuffers(3, 1, instanceOffsetBuffer);
+        deviceContext->VSSetConstantBuffers(4, 1, instanceOffsetBuffer);
         deviceContext->VSSetShaderResources(20, 1, instanceSBuffer);
 
 

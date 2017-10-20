@@ -4,10 +4,10 @@
 
 #define SCALAR_DIR 0.3f
 #define SCALAR_ALIGN 1.1f
-#define SCALAR_COHES 0.9f
-#define SCALAR_SEP 1.3f
+#define SCALAR_COHES 0.7f
+#define SCALAR_SEP 2.3f
 
-#define MAX_LEN_FOR_SEPERATION 7.5f
+#define MAX_LEN_FOR_SEPERATION 10.f
 // this can be changed in the future maybe who knows
 #define CHANGE_NODE_DIST 0.3f
 
@@ -45,7 +45,10 @@ void Behavior::walkPath(RunIn &in)
 
 	if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST
 		&& m_pathing.pathOnLastNode())
+	{
 		m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
+		m_changedGoalNode = true;
+	}
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
@@ -81,7 +84,7 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 	align = align.normalize();
 
 	// COHESION (Stay towards group position)
-	sep /= totalSep;
+	sep /= totalSep + 1;
 	sep = sep.normalize();
 
 	// RET
@@ -159,6 +162,13 @@ bool Behavior::runNode(RunIn &in, BehaviorNode &node)
 			break;
 	}
 	return true;
+}
+
+bool Behavior::isGoalChangedAndSetToFalse()
+{
+	bool nodeChange = m_changedGoalNode;
+	m_changedGoalNode = false;
+	return nodeChange;
 }
 
 Behavior::BehaviorNode* Behavior::getRoot() {

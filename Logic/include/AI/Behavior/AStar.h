@@ -51,8 +51,8 @@ namespace Logic
 			NavigationMesh navigationMesh;
 			int targetIndex; // save the triangle id to share beetwen path loading
 		
-			float heuristic(DirectX::SimpleMath::Vector3 &from,
-				DirectX::SimpleMath::Vector3 &to) const;
+			float heuristic(DirectX::SimpleMath::Vector3 const &from,
+				DirectX::SimpleMath::Vector3 const &to) const;
 			void generateNodesFromFile();
 			void setupDebugging();
 			bool nodeInQue(int index, std::priority_queue<NavNode*> que) const;
@@ -78,6 +78,7 @@ namespace Logic
 			void loadTargetIndex(Entity const &target);
 
 			int getIndex(Entity const &entity) const;
+			int isEntityOnIndex(Entity const &entity, int index) const;
 			size_t getNrOfPolygons() const;
 
 			// iniate the nodes

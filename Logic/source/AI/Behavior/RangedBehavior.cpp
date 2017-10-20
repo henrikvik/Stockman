@@ -26,16 +26,16 @@ RangedBehavior::RangedBehavior() :
 	
 	// SHOOT !
 	addNode(stay, NodeType::ACTION, 9999, [](RunIn& in) -> bool {
-		if (RandomGenerator::singleton().getRandomInt(0,
-			RangedBehavior::ABILITY_CHANCHE) == 0)
-			in.enemy->useAbility(*in.target);
+		//if (RandomGenerator::singleton().getRandomInt(0,
+			//RangedBehavior::ABILITY_CHANCHE) == 0)
+			//in.enemy->useAbility(*in.target);
 
 		return true;
 	});
 
 	// jump
 	addNode(stay, NodeType::ACTION, 1, [](RunIn& in) -> bool {
-		in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
+	//	in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
 		return true;
 	});
 
@@ -52,8 +52,8 @@ RangedBehavior::RangedBehavior() :
 	addNode(walkTowards, NodeType::ACTION, 1,
 		[](RunIn& in) -> bool {
 			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
-			if (RandomGenerator::singleton().getRandomInt(0, RangedBehavior::ABILITY_CHANCHE) == 0)
-				in.enemy->useAbility(*in.target);
+			//if (RandomGenerator::singleton().getRandomInt(0, RangedBehavior::ABILITY_CHANCHE) == 0)
+			//	in.enemy->useAbility(*in.target);
 			behavior->walkPath(in);
 			return true;
 		}

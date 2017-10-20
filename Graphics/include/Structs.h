@@ -21,7 +21,11 @@ namespace Graphics
 		ENEMYGRUNT,
 		GRAPPLEPOINT,
 		GRASS,
+		SKY_SPHERE,
 		BUSH,
+		CLOUDS,
+		MEGAGRASS
+
     };
 
 	struct ModelInfo
@@ -41,6 +45,14 @@ namespace Graphics
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
 		bool backFaceCulling = true;
+	};
+
+	struct FoliageRenderInfo
+	{
+		bool render;
+		ModelID meshId;
+		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = false;
 	};
 
     struct RenderDebugInfo
@@ -91,7 +103,7 @@ namespace Graphics
     enum Font
     {
         SMALL,
-        MEDUIM,
+        MEDIUM,
         LARGE
     };
     struct TextString

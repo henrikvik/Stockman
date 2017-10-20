@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <iostream>
 #include <Engine\Typing.h>
+#include <DebugDefines.h>
 
 using namespace Logic;
 
@@ -13,6 +14,8 @@ Game::Game()
 	m_cardManager		= nullptr;
 	m_menu				= nullptr;
 	m_highScoreManager	= nullptr;
+
+
 }
 
 Game::~Game() 
@@ -38,7 +41,7 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(Player::startPosition, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
+	m_player = new Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 	NoiseMachine::Get().update(m_player->getListenerData());
 
@@ -74,16 +77,17 @@ void Game::init()
 
 void Game::clear()
 {
+	m_menu->clear();
+	m_projectileManager->clear();
+	NoiseMachine::Get().clear();
+
 	delete m_physics;
 	delete m_player;
-	m_menu->clear();
 	delete m_menu;
 	delete m_map;
 	delete m_cardManager;
 	delete m_highScoreManager;
-	m_projectileManager->clear();
 	delete m_projectileManager;
-	NoiseMachine::Get().clear();
 }
 
 void Game::reset()
@@ -106,6 +110,7 @@ void Game::waveUpdater()
 		if (m_waveTimer > m_waveTime[m_waveCurrent])
 		{
 			// Spawning next wave
+			m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ON_FIRE);
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
 			m_entityManager.setCurrentWave(m_waveCurrent);
@@ -148,12 +153,12 @@ void Game::update(float deltaTime)
 			NoiseMachine::Get().update(m_player->getListenerData());
 			PROFILE_END();
 
-			PROFILE_BEGIN("Player");
-			m_player->updateSpecific(m_gameTime.dt);
-			PROFILE_END();
-
 			PROFILE_BEGIN("Physics");
 			m_physics->update(m_gameTime);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Player");
+			m_player->updateSpecific(m_gameTime.dt);
 			PROFILE_END();
 
 			PROFILE_BEGIN("AI & Triggers");
@@ -188,11 +193,13 @@ void Game::update(float deltaTime)
 		m_menu->update(m_gameTime.dt);
 		break;
 	}
+#ifdef SHOW_FPS 
+	fpsRenderer.updateFPS(deltaTime);
+#endif
 }
 
 void Game::gameOver()
 {
-	printf("You ded bro.\n");
 	m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
 	m_menu->setStateToBe(GameState::gameStateGameOver);
 
@@ -237,9 +244,14 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuSettings:
 	case gameStateGameOver:
 		/*m_menu->render(renderer);*/
-	default:  m_menu->render(renderer);
+	default:  
+		m_menu->render(renderer);
 		break;
 	}
+
+#ifdef SHOW_FPS 
+	fpsRenderer.renderFPS(renderer);
+#endif
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

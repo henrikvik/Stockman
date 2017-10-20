@@ -104,7 +104,7 @@ void Map::initHitboxes(Physics* physics)
 	house = new StaticObject(Graphics::CUBE, physics->createBody(Cube({ 150, 60, 150 }, { 0, 0, 0 }, { 40, 6, 40 }), 0.f, false), { 40, 6, 40 });
 	m_hitboxes.push_back(house);
 
-	house = new StaticObject(Graphics::CUBE, physics->createBody(Cube({ -60, 6, -60 }, { 0.3f, 0, 0 }, { 25, 3, 25 }), 0.f, false), { 25, 3, 25 });
+	house = new StaticObject(Graphics::CUBE, physics->createBody(Cube({ -60, 1, -60 }, { 0, 0.3f, 0 }, { 25, 3, 25 }), 0.f, false), { 25, 3, 25 });
 	m_hitboxes.push_back(house);
 }
 

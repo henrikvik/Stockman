@@ -33,7 +33,7 @@ enum SFX
 // Put all identifier for music here
 enum MUSIC 
 {
-	NES
+	TEST_MUSIC	
 };
 
 // Keeps track of everything about a specific sound

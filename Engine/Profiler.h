@@ -29,7 +29,6 @@
 #define PROFILE_BEGIN(msg) g_Profiler->begin(msg);
 #define PROFILE_END() g_Profiler->end();
 
-
 enum class EventColor {
 	Inherit = 0,
 	PinkDark = 1,
@@ -176,6 +175,16 @@ private:
 };
 
 extern Profiler *g_Profiler;
+
+class ScopedProfile {
+public:
+	ScopedProfile(const char *msg, EventColor col = EventColor::Inherit) {
+		g_Profiler->begin(msg, col);
+	}
+	~ScopedProfile() {
+		g_Profiler->end();
+	}
+};
 
 /*class TbbProfilerObserver : public tbb::task_scheduler_observer {
 public:
