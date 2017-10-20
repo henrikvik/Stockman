@@ -48,6 +48,7 @@ namespace Graphics
 		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
 		, timeBuffer(device)
 
+
 #pragma endregion
 	{
 		this->device = device;
@@ -262,6 +263,9 @@ namespace Graphics
 		drawFoliage(camera);
 		PROFILE_END();
 
+	/*	PROFILE_BEGIN("RenderWater");
+		drawWater(camera);
+		PROFILE_END();*/
 
 		//The sky renderer uses the bullet time on register 3
 		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
@@ -357,6 +361,16 @@ namespace Graphics
 
 		renderFoliageQueue.push_back(renderInfo);
 	
+	}
+
+	void Renderer::queueWaterRender(WaterRenderInfo * renderInfo)
+	{
+		if (renderWaterQueue.size() > INSTANCE_CAP)
+		{
+			throw "Water renderer exceeded instance cap.";
+		}
+
+		renderWaterQueue.push_back(renderInfo);
 	}
 
     void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)

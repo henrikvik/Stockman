@@ -39,17 +39,17 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 
     this->setModelID(Graphics::ModelID::CROSSBOW);
 	// Pointing the gun upwards
-	rotX = DirectX::SimpleMath::Matrix::CreateRotationX(50.f * (3.14 / 180));
+	//rotX = DirectX::SimpleMath::Matrix::CreateRotationX(10.0f * (3.14 / 180));
 
 	// Tilting the gun to the middle
-	rotY = DirectX::SimpleMath::Matrix::CreateRotationY(15.f * (3.14 / 180));
+	//rotY = DirectX::SimpleMath::Matrix::CreateRotationY(15.f * (3.14 / 180));
 
 	// Moving the model down to the right
 	// trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.f, -2.25f, 0.f));
-    trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(3.f, -7.0f, -10.f));
+    trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.f, -1.0f, -1.5f));
 
 	// Scaling the model by making it thinner and longer
-	scale = DirectX::SimpleMath::Matrix::CreateScale(0.05f, 0.05f, 0.05f);
+	scale = DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f);
 }
 
 void Logic::Weapon::reset()
@@ -101,6 +101,21 @@ btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
 	static DirectX::SimpleMath::Matrix camera, result, offset;
+
+	static float ltrans[3];
+	static float lscale[3];
+
+	ImGui::Begin("asdoasdoasod");
+
+	ImGui::SliderFloat3("translate", ltrans, -5, 5);
+	ImGui::SliderFloat3("scale", lscale, -5, 5);
+
+	ImGui::End();
+
+	trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(ltrans));
+
+	// Scaling the model by making it thinner and longer
+	scale = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3(lscale));
 
 	// Making a camera matrix and then inverting it 
 	camera = DirectX::XMMatrixLookToRH({0, 0, 0}, playerForward, { 0, 1, 0 });

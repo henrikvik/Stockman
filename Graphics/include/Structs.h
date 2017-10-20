@@ -21,9 +21,11 @@ namespace Graphics
 		ENEMYGRUNT,
 		GRAPPLEPOINT,
 		GRASS,
-		BUSH,
-		CLOUDS,
-		MEGAGRASS,
+		//BUSH,
+		//CLOUDS,
+		//MEGAGRASS,
+		WATER,
+		GROUND,
 
     };
 
@@ -47,6 +49,14 @@ namespace Graphics
 	};
 
 	struct FoliageRenderInfo
+	{
+		bool render;
+		ModelID meshId;
+		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = false;
+	};
+
+	struct WaterRenderInfo
 	{
 		bool render;
 		ModelID meshId;
