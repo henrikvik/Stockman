@@ -23,7 +23,7 @@ void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 
 	slowDownIntervals.clear();
 	speedUpIntervals.clear();
-	for (int i = 1; i < 21; i++)
+	for (int i = 1; i < BULLET_TIME_SMOOTHNESS_INTERVAL; i++)
 	{
 		slowDownIntervals.push_back(i * ((BULLET_TIME_SLOW_DOWN_DURATION) / BULLET_TIME_SMOOTHNESS_INTERVAL) + BULLET_TIME_DURATION - BULLET_TIME_SLOW_DOWN_DURATION);
 		speedUpIntervals.push_back(i * (BULLET_TIME_SPEED_UP_DURATION / BULLET_TIME_SMOOTHNESS_INTERVAL));
