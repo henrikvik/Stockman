@@ -2,6 +2,7 @@
 #define NOISESTRUCTS_H
 
 #include <fmod.hpp>
+#include <btBulletCollisionCommon.h>
 
 struct THRESHOLD
 {

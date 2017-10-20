@@ -20,7 +20,7 @@ void Entity::update(float deltaTime)
 	btVector3 vel = getRigidBody()->getLinearVelocity();
 	m_soundSource.pos = { pos.x(), pos.y(), pos.z() };
 	m_soundSource.vel = { vel.x(), vel.y(), vel.z() };
-	m_soundSource.update();
+	m_soundSource.update(deltaTime);
 
 	// Checking different buffs
 	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt

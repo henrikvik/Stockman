@@ -29,11 +29,13 @@ namespace Logic
 
 		SoundSource* getSoundSource();
 
+	protected:
+		SoundSource m_soundSource; // they'll never catch me
 	private:
-		SoundSource m_soundSource;
 		StatusManager m_statusManager;
 	};
 
+	/* Temp class cuz the fucking entity is abstract */
 	class Speaker : public Entity
 	{
 	public :
