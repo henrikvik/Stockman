@@ -76,6 +76,7 @@ namespace Logic
 			void renderNavigationMesh(Graphics::Renderer &renderer);
 			// load the target triangle once per frame instead of once per path load
 			void loadTargetIndex(Entity const &target);
+			int getTargetIndex();
 
 			int getIndex(Entity const &entity) const;
 			int isEntityOnIndex(Entity const &entity, int index) const;
