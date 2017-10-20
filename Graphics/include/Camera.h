@@ -17,6 +17,20 @@ namespace Graphics {
 	class Camera
 	{
 	public:
+		struct ShaderValues {
+			DirectX::SimpleMath::Matrix vP;
+			DirectX::SimpleMath::Matrix invP;
+			DirectX::SimpleMath::Matrix view;
+			DirectX::SimpleMath::Vector4 camPos;
+		} values;
+
+		struct InverseMatrixes
+		{
+			DirectX::SimpleMath::Matrix invView;
+			DirectX::SimpleMath::Matrix invP;
+
+		};
+
 		Camera(ID3D11Device* device, int width, int height, float drawDistance = 100, float fieldOfView = M_PI * 0.45);
 		~Camera();
 
@@ -31,8 +45,8 @@ namespace Graphics {
 		DirectX::SimpleMath::Vector3 getRight() const;
 		DirectX::SimpleMath::Matrix getView() const;
 		DirectX::SimpleMath::Matrix getProj() const;
-		ID3D11Buffer* getBuffer();
-		ID3D11Buffer* getInverseBuffer();
+		ConstantBuffer<ShaderValues>* getBuffer();
+		ConstantBuffer<InverseMatrixes>* getInverseBuffer();
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
         void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
@@ -49,21 +63,10 @@ namespace Graphics {
 		DirectX::SimpleMath::Matrix view;
 		DirectX::SimpleMath::Matrix projection;
 
-		struct ShaderValues {
-			DirectX::SimpleMath::Matrix vP;
-			DirectX::SimpleMath::Matrix invP;
-			DirectX::SimpleMath::Matrix view;
-			DirectX::SimpleMath::Vector4 camPos;
-		} values;
 
-		struct InverseMatrixes
-		{
-			DirectX::SimpleMath::Matrix invView;
-			DirectX::SimpleMath::Matrix invP;
+		InverseMatrixes inverseMatrixes;
 
-		} inverseMatrixes;
-
-		ID3D11Buffer* vPBuffer;
+		ConstantBuffer<ShaderValues> CameraBuffer;
 		ConstantBuffer<InverseMatrixes> inverseBuffer;
 	};
 }
