@@ -28,7 +28,6 @@ cbuffer LightBuffer : register(b2)
 {
     float4 dirLightPos;
     float3 dirLightColor;
-    float time;
     float fade;
 }
 
