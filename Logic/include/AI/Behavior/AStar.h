@@ -78,6 +78,7 @@ namespace Logic
 			void loadTargetIndex(Entity const &target);
 
 			int getIndex(Entity const &entity) const;
+			int isEntityOnIndex(Entity const &entity, int index) const;
 			size_t getNrOfPolygons() const;
 
 			// iniate the nodes

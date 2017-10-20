@@ -173,6 +173,11 @@ int AStar::getIndex(Entity const & entity) const
 	return navigationMesh.getIndex(entity.getPosition());
 }
 
+int AStar::isEntityOnIndex(Entity const & entity, int index) const
+{
+	return navigationMesh.isPosOnIndex(entity.getPosition(), index);
+}
+
 size_t AStar::getNrOfPolygons() const
 {
 	return navigationMesh.getNodes().size();
