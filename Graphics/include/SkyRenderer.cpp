@@ -53,9 +53,7 @@ namespace Graphics
 
 		context->VSSetConstantBuffers(0, 2, buffers);
 
-		ID3D11Buffer * temp = sun.getShaderBuffer();
-
-		context->PSSetConstantBuffers(2, 1, &temp);
+		context->PSSetConstantBuffers(2, 1, *sun.getShaderBuffer());
 
 
 
@@ -89,8 +87,7 @@ namespace Graphics
 		context->PSSetShader(nullptr, nullptr, 0);
 		context->OMSetRenderTargets(0, nullptr, shadowDepthStencil);
 
-		ID3D11Buffer* light = sun.getMatrixBuffer();
-		context->VSSetConstantBuffers(0, 1, &light);
+		context->VSSetConstantBuffers(0, 1, *sun.getMatrixBuffer());
 		PROFILE_END();
 	}
 
