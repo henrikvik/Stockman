@@ -113,16 +113,8 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 			player->setMoveDirection(btVector3(dirToPoint.x(), 0, dirToPoint.z()));
 
 			// Easing to reach the targeted vertical speed
-			//shooterBody->setLinearVelocity({ 0, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0 });
 			if(!(m_point.y() < player->getPositionBT().y()))
 				player->getCharController()->setLinearVelocity({ 0.f, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0.f });
-				//player->getCharController()->jump({ 0.f, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * 0.01f * deltaTime, 0.f });
-				//player->getCharController()->setLinearVelocity({ 0.f, 1.f, 0.f });
-			//else
-				//player->getCharController()->setLinearVelocity({ 0.f, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime * 0.0000015f, 0.f });
-				//player->getCharController()->jump({ 0.f, (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0.f });
-
-			//printf("%f\n", player->getCharController()->getLinearVelocity().y());
 
 			// Easing to reach the maximum vertical speed
 			player->setMoveSpeed(player->getMoveSpeed() + ((GRAPPLING_HOOK_MAX_SPEED_XZ - player->getMoveSpeed()) * GRAPPLING_HOOK_POWER * deltaTime));
