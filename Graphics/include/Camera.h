@@ -1,17 +1,11 @@
 #pragma once
 
+#include "Utility\ConstantBuffer.h"
+
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-
-#include <d3d11.h>
-#include <d3dcompiler.h>
-
-#pragma comment (lib, "d3d11.lib")
-#pragma comment (lib, "d3dcompiler.lib")
-
 #include <SimpleMath.h>
-#include "Utility\ConstantBuffer.h"
 
 namespace Graphics {
 	class Camera
