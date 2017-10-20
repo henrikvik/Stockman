@@ -104,28 +104,6 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
 		stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
 		e->damage(2 * stacks); // replace 1 with the player damage when it is better
 	}
-	/*else
-	{
-		btVector3 dir = contactPoint - getPositionBT();
-
-		btVector3 hitSurfaceNormal = m_physPtr->RayTestGetNormal(Ray(getPositionBT(), getPositionBT() + (dir*2))); // overshoot the ray test to get correct result
-
-		if (!hitSurfaceNormal.isZero())
-		{
-			float hitAngle = hitSurfaceNormal.dot({ 0.f, 1.f, 0.f });
-
-			// Wall
-			if (abs(hitAngle) < 0.1f)
-			{
-				m_wallColl = true;
-				m_wallNormal = hitSurfaceNormal;
-
-				btVector3 m_moveDir = m_moveDir - m_wallNormal * (m_moveDir.dot(m_wallNormal) / m_wallNormal.length2());
-			}
-			else
-				m_wallColl = false;
-		}
-	}*/
 #endif
 }
 
@@ -375,12 +353,7 @@ void Player::moveInput(DirectX::Keyboard::State * ks)
 
 	// Normalize movement direction
 	if (!m_wishDir.isZero())
-	{
 		m_wishDir = m_wishDir.safeNormalize();
-		if (m_wallColl)
-			btVector3 m_wishDir = m_wishDir - m_wallNormal * (m_wishDir.dot(m_wallNormal) / m_wallNormal.length2());
-	}
-		
 }
 
 void Player::moveFree(float deltaTime, DirectX::Keyboard::State * ks)
