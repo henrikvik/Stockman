@@ -4,7 +4,6 @@
 #include <Player\Player.h>
 #include <vector>
 #include "Pathing.h"
-#include <functional>
 
 // this class is pretty bloated but it is neccessary, may make it better in future
 
@@ -25,7 +24,6 @@ namespace Logic {
 		};
 
 		typedef bool(*run)(RunIn&);
-		std::function<std::string(std::string)> testFunc;
 
 		enum NodeType
 		{
