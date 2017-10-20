@@ -30,6 +30,9 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
 
 		if (!pj->getProjectileData().enemyBullet)
 			damage(pj->getProjectileData().damage * dmgMultiplier);
+
+		if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
 	}
 }
 
@@ -53,7 +56,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
 	{
 		if (RandomGenerator::singleton().getRandomInt(0, 1))
 		{
-			spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::BUSH, SPEED_AB2);
+			spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB2);
 		}
 		else
 		{

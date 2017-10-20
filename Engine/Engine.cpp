@@ -327,7 +327,7 @@ int Engine::run()
         //////////////TEMP/////////////////
         Graphics::RenderInfo staticSphere = {
             true, //bool render;
-            Graphics::ModelID::BUSH, //ModelID meshId;
+            Graphics::ModelID::SKY_SPHERE, //ModelID meshId;
             0, //int materialId;
             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
         };
@@ -387,11 +387,13 @@ int Engine::run()
 		}
 
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
-		PROFILE_BEGINC("ImGui_ImplDX11_NewFrame", EventColor::PinkLight);
+		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
 		PROFILE_END();
 
+		PROFILE_BEGINC("IDXGISwapChain::Present()", EventColor::Cyan);
 		mSwapChain->Present(0, 0);
+		PROFILE_END();
 		g_Profiler->frame();
 		
 	}
