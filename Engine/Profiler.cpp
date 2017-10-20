@@ -429,6 +429,7 @@ void Profiler::render()
 	ImGui::End();
 }
 
+// danger ahead
 void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int depth, bool children)
 {
 	Event *prev = nullptr;
@@ -438,12 +439,12 @@ void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int 
 	int colDepth = 0;
 
 	for (int i = idx; i < thread.count; i++) {
-		Event evt = thread.events[i];
+		Event &evt = thread.events[i];
 		float start = ToMilliseconds(base, evt.start);
 		float end = ToMilliseconds(base, evt.end);
 
 		if (prev) {
-			if (evt.end.QuadPart < prev->end.QuadPart) {
+			if (evt.end.QuadPart <= prev->end.QuadPart) {
 				if (!children) continue;
 				depth += 1;
 				
@@ -454,23 +455,23 @@ void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int 
 				parent = prev;
 				maxEnd = prev->end.QuadPart;
 			}
-			else if (evt.end.QuadPart > maxEnd) {
-				if (depth > 0)
+			else if (evt.end.QuadPart >= maxEnd) {
+				if (depth > 0) {
 					depth--;
+					parent = &thread.events[parent->parent];
+					maxEnd = parent->end.QuadPart;
+				}
 			}
 		}
 
 		ImGui::SetCursorPosX((temp.innerCursor.x - temp.outerCursor.x) + start * temp.factor);
 		ImGui::SetCursorPosY(temp.yoffset + 8 + 19 * depth);
 
-		if (evt.color == EventColor::Inherit && depth == 0) {
-			thread.events[i].color = evt.color = (EventColor)(1 + (i % 4));
-		}
-		else if (evt.color == EventColor::Inherit) {
+		if (evt.color == EventColor::Inherit) {
 			evt.color = parent->color;
 		}
 		auto col_idx = ((int)evt.color - 1) * 5;
-		auto col = EVENT_COLORS[col_idx + 1 + colDepth % 4];
+		auto col = EVENT_COLORS[col_idx + 1 + (depth) % 4];
 		auto col_hover = EVENT_COLORS[col_idx];
 		auto col_active = EVENT_COLORS[col_idx];
 
@@ -487,7 +488,7 @@ void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int 
 
 		prev = &thread.events[i];
 		if (evt.end.QuadPart > maxEnd) {
-			parent = prev;
+			//parent = prev;
 			maxEnd = evt.end.QuadPart;
 		}
 	}
