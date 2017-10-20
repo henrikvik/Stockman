@@ -165,7 +165,7 @@ void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
 
 void AStar::loadTargetIndex(Entity const & target)
 {
-	if (!isEntityOnIndex(target, targetIndex))
+	if (targetIndex == -1 || !isEntityOnIndex(target, targetIndex))
 		targetIndex = navigationMesh.getIndex(target.getPosition());
 }
 

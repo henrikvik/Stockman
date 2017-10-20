@@ -243,7 +243,7 @@ void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
 	switch (id)
 	{
 		case Enemy::NECROMANCER:
-			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
+			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Logic::Cylinder({ pos }, { 0, 0, 0 }, {1.f, 2.f, 1.f}), 100, false), { 0.5f, 0.5f, 0.5f });
 			break;
 		default:
 			enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
