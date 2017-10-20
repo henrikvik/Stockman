@@ -1,7 +1,7 @@
 #include <AI/EntityManager.h>
 using namespace Logic;
 
-#define ENEMIES_PATH_UPDATE_PER_FRAME 20
+#define ENEMIES_PATH_UPDATE_PER_FRAME 200
 #define ENEMIES_TEST_UPDATE_PER_FRAME 200
 #define FILE_ABOUT_WHALES "Enemies/Wave"
 
@@ -15,6 +15,8 @@ using namespace Logic;
 
 #include <ctime>
 #include <stdio.h>
+
+#define getThread(i) i % NR_OF_THREADS
 
 EntityManager::EntityManager()
 {
@@ -51,6 +53,8 @@ void EntityManager::resetThreads()
 		}
 		t = nullptr;
 	}
+
+	ZeroMemory(&m_threadRunning, sizeof(m_threadRunning));
 }
 
 void EntityManager::deleteThreads()
@@ -62,6 +66,7 @@ void EntityManager::deleteThreads()
 			deleteThread(t);
 		}
 	}
+	ZeroMemory(&m_threadRunning, sizeof(m_threadRunning));
 }
 
 void EntityManager::joinAllThreads()
@@ -90,29 +95,32 @@ void EntityManager::update(Player const &player, float deltaTime)
 {
 	m_frame++;
 	
-	AStar::singleton().loadTargetIndex(player);
-
+	PROFILE_BEGIN("EntityManager::update()");
 	for (int i = 0; i < m_enemies.size(); i++)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0) {
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0) {			
 				updateEnemies(i, player, deltaTime);
 			}
 			else
-			{
-				// seperate threads based on i, but join them before end
-				std::thread *t = threads[i % NR_OF_THREADS];
-				if (t)
+			{				// seperate threads based on i, but join them before end
+				int thread = getThread(i);
+				std::thread *t = threads[thread];
+				if (!m_threadRunning[thread])
 				{
-					deleteThread(t);
+					if (t)
+						deleteThread(t);
+
+					m_threadRunning[thread] = true;
+					t = newd std::thread(EntityManager::updateEnemiesAndPath, this,
+						i, std::ref(player), deltaTime);
+					threads[thread] = t;
 				}
-				t = newd std::thread(EntityManager::updateEnemiesAndPath, this,
-					i, std::ref(player), deltaTime);
-				threads[i % NR_OF_THREADS] = t;
 			}
 		}
 	}
+	PROFILE_END();
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
@@ -155,6 +163,8 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 	int newIndex;
 
 	AStar &aStar = AStar::singleton();
+	aStar.loadTargetIndex(player);
+
 	std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
 	auto &enemies = manager->m_enemies;
 
@@ -165,6 +175,8 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 
 		enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
 	}
+
+	manager->m_threadRunning[getThread(index)] = false;
 }
 
 void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, float deltaTime)

@@ -12,7 +12,7 @@ AStar::AStar(std::string file)
 	debugDataEdges.points = nullptr;
 	// for testing
 	generateNavigationMesh();
-	targetIndex = -1;
+	targetIndex = 0;
 
 	for (size_t i = 0; i < navNodes.size(); i++)
 	{
@@ -165,7 +165,13 @@ void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
 
 void AStar::loadTargetIndex(Entity const & target)
 {
-	targetIndex = navigationMesh.getIndex(target.getPosition());
+	if (!isEntityOnIndex(target, targetIndex))
+		targetIndex = navigationMesh.getIndex(target.getPosition());
+}
+
+int AStar::getTargetIndex()
+{
+	return targetIndex;
 }
 
 int AStar::getIndex(Entity const & entity) const

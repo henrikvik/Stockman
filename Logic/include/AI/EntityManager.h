@@ -37,7 +37,9 @@ namespace Logic
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
 		std::vector<double> time;
+
 		std::thread *threads[NR_OF_THREADS];
+		bool m_threadRunning[NR_OF_THREADS];
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
