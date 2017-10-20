@@ -2,6 +2,7 @@
 #include "../ThrowIfFailed.h"
 #include <Engine\Constants.h>
 #include <d3dcompiler.h>
+#pragma comment (lib, "d3dcompiler.lib")
 #include <iostream>
 #include <Windows.h>
 #ifdef _DEBUG
