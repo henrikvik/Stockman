@@ -8,6 +8,7 @@
 #include <string>
 #include <btBulletCollisionCommon.h>
 #include <Misc\Sound\NoiseStructs.h>
+#include <Misc\Sound\SoundSource.h>
 
 #define SOUND_SFX_PATH "Resources/Sound/SFX/"
 #define SOUND_MUSIC_PATH "Resources/Sound/Music/"
@@ -27,7 +28,7 @@ namespace Logic
 		void clear();
 		void update(ListenerData& listener);
 
-		void playMusic(SFX sfx, SoundSource* soundSource, bool overdrive);
+		void playSFX(SFX sfx, SoundSource* soundSource, bool overdrive);
 		void playMusic(MUSIC music, SoundSource* soundSource, bool overdrive);
 
 		void setGroupVolume(CHANNEL_GROUP group, float inVolume);

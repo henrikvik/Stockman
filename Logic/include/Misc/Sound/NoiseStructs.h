@@ -35,22 +35,6 @@ enum MUSIC
 	NES
 };
 
-struct SoundSource
-{
-	SoundSource() : channel(nullptr), pos(), vel() { }
-	void update()
-	{
-		if (channel)
-		{
-			channel->set3DAttributes(&pos, &vel);
-		}
-	}
-
-	FMOD_VECTOR		pos;
-	FMOD_VECTOR		vel;
-	FMOD::Channel*	channel;
-};
-
 // Keeps track of everything about a specific sound
 struct Sound
 {

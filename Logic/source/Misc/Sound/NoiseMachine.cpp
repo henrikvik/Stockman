@@ -1,4 +1,5 @@
 #include <Misc\Sound\NoiseMachine.h>
+#include <Misc\Sound\SoundSource.h>
 
 using namespace Logic;
 
@@ -74,7 +75,7 @@ void NoiseMachine::update(ListenerData& listener)
 //	DEBUG_SOUND(m_sfx[SFX::TEST]);
 }
 
-void NoiseMachine::playMusic(SFX sfx, SoundSource* soundSource, bool overdrive)
+void NoiseMachine::playSFX(SFX sfx, SoundSource* soundSource, bool overdrive)
 {
 	checkIfPlay(m_sfx[sfx], soundSource, overdrive);
 }
