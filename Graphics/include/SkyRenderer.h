@@ -28,6 +28,7 @@ namespace Graphics
 		ID3D11SamplerState * getSampler() { return this->shadowSampler; };
 
 		void drawShadows(ID3D11DeviceContext * context, Graphics::Shader * shader);
+		void clear(ID3D11DeviceContext * context);
 	private:
 		ModelInfo skySphere;
 
