@@ -40,18 +40,17 @@ void Game::init()
 	// Initializing Player
 	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(Player::startPosition, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
+	NoiseMachine::Get().update(m_player->getListenerData());
 
+	// Initializing Highscore Manager
 	m_highScoreManager = newd HighScoreManager();
-
-	std:string name = "Stockman";
-
-	m_highScoreManager->setName(name);
+	m_highScoreManager->setName("Stockman");
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine(m_highScoreManager->getName());
 	m_menu->initialize(STARTING_STATE); 
 
-	// Initializing the map
+	// Initializing the Map
 	m_map = newd Map();
 	m_map->init(m_physics);
 

@@ -111,19 +111,19 @@ void Map::initHitboxes(Physics* physics)
 void Map::initObjects(Physics * physics)
 {
 	btVector3 halfextent(1.0, 1.0, 1.0);
-	Speaker* box = new Speaker(physics->createBody(Cube({ 5, 3, 34 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	Speaker* box = new Speaker(physics->createBody(Cube({ -25, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
 	box->getSoundSource()->autoPlaySFX(SFX::BOING, 500.f, 250.f);
 	m_objects.push_back(box);
 
-	box = new Speaker(physics->createBody(Cube({ 6, 3, 40 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-	box->getSoundSource()->playMusic(MUSIC::NES);
+	box = new Speaker(physics->createBody(Cube({ -26, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	box->getSoundSource()->delayPlayMusic(MUSIC::NES, 500.f);
 	m_objects.push_back(box);
 
-	box = new Speaker(physics->createBody(Cube({ 5, 3, 37 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	box = new Speaker(physics->createBody(Cube({ -23, 3, 74 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
 	box->getSoundSource()->autoPlaySFX(SFX::BOING, 4000.f, 250.f, 0.95f, 0.025);
 	m_objects.push_back(box);
 
-	box = new Speaker(physics->createBody(Cube({ 5, 2, 37 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	box = new Speaker(physics->createBody(Cube({ -23, 2, 73 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
 	box->getSoundSource()->autoPlaySFX(SFX::BOING, 1500.f, 250.f, 1.05f, 0.025);
 	m_objects.push_back(box);
 }

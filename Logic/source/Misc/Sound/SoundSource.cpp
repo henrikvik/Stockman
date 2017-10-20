@@ -25,17 +25,12 @@ SoundSource::~SoundSource()
 // Updates this entity's 3D position and autoplayer
 void SoundSource::update(float deltaTime)
 {
-	if (channel)
-	{
-		channel->set3DAttributes(&pos, &vel);
-	}
-
 	if (autoPlayer)
 	{
 		if (autoPlayer->checkIfPlay(deltaTime))
 		{
-			channel->setFrequency(autoPlayer->pitch.value);
 			noiseMachine->playSFX(autoPlayer->sfx, this, false);
+			channel->setPitch(autoPlayer->pitch.value);
 		}
 	}
 
@@ -43,11 +38,16 @@ void SoundSource::update(float deltaTime)
 	{
 		if (delayPlayer->checkIfDone(deltaTime))
 		{
-			(delayPlayer->id) ? noiseMachine->playSFX(SFX(delayPlayer->type), this, false) :
-								noiseMachine->playMusic(MUSIC(delayPlayer->type), this, false);
+			(delayPlayer->id) ? noiseMachine->playMusic(MUSIC(delayPlayer->type), this, false) :
+								noiseMachine->playSFX(SFX(delayPlayer->type), this, false);
 			delete delayPlayer;
 			delayPlayer = nullptr;
 		}
+	}
+
+	if (channel)
+	{
+		channel->set3DAttributes(&pos, &vel);
 	}
 }
 
