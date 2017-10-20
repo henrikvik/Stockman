@@ -24,8 +24,8 @@ void EnemyTest::onCollision(PhysicsObject& other, btVector3 contactPoint, float 
 			damage(p->getProjectileData().damage);
 
 			// BULLET TIME
-			if (p->getProjectileData().type == ProjectileType::ProjectileTypeBulletTimeSensor)
-				setStatusManager(p->getStatusManager()); // TEMP
+			if (p->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+				getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, p->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
 		}
 	}
 	if (Player *p = dynamic_cast<Player*> (&other))

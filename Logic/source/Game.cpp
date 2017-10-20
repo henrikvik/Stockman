@@ -38,7 +38,7 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(Player::startPosition, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
+	m_player = new Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 
 	m_highScoreManager = newd HighScoreManager();
@@ -155,12 +155,12 @@ void Game::update(float deltaTime)
 			NoiseMachine::Get().update(m_player->getListenerData());
 			PROFILE_END();
 
-			PROFILE_BEGIN("Player");
-			m_player->updateSpecific(m_gameTime.dt);
-			PROFILE_END();
-
 			PROFILE_BEGIN("Physics");
 			m_physics->update(m_gameTime);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Player");
+			m_player->updateSpecific(m_gameTime.dt);
 			PROFILE_END();
 
 			PROFILE_BEGIN("AI & Triggers");
