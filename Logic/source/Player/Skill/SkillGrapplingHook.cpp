@@ -3,6 +3,12 @@
 
 using namespace Logic;
 
+#define GRAPPLING_HOOK_CD			50.f		// Cooldown in ms
+#define GRAPPLING_HOOK_RANGE		500.f		// Range in bulletphysics units (probably meters)
+#define GRAPPLING_HOOK_POWER		0.0011f	// The amount of power to reach the max speed
+#define GRAPPLING_HOOK_MAX_SPEED_XZ	0.0615f		// The max speed in x & z
+#define GRAPPLING_HOOK_MAX_SPEED_Y	15.f		// The max speed in y
+
 SkillGrapplingHook::SkillGrapplingHook(Physics* physics)
 : Skill(GRAPPLING_HOOK_CD)
 {
@@ -66,6 +72,11 @@ void SkillGrapplingHook::onRelease()
 		setCooldown(GRAPPLING_HOOK_CD);
 		setCanUse(true);
 	}
+	else if (Player* player = dynamic_cast<Player*>(m_shooter))
+	{
+		player->getCharController()->setLinearVelocity({ 0.f, 0.f, 0.f });
+	}
+
 
 	// Set to defaults
 	m_state = GrapplingHookStateNothing;
@@ -79,20 +90,18 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 {
 	if (m_shooter && m_state == GrapplingHookStatePulling)
 	{
-		// Getting variables from entity
-		//btRigidBody* shooterBody = m_shooter->getRigidBody();
-		//btVector3 linearVelocity = shooterBody->getLinearVelocity();
-		btVector3 dirToPoint = (m_point - m_shooter->getPositionBT()).normalize();
-		
 		// Setting player movement specific grappling hook variables
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
+			btGhostObject* ghostObject = player->getGhostObject();
+			btVector3 linearVelocity = player->getCharController()->getLinearVelocity();
+			btVector3 dirToPoint = (m_point - player->getPositionBT()).normalize();
 
 			// Checks if the player does a 90 degree turn around mid-air
 			if (dirToPoint.dot(player->getMoveDirection()) > 0)
 			{
 				// Resets the vertical velocity to make a "stopping effect"
-				//player->getRigidBody()->setLinearVelocity({ 0, 0, 0 });
+				player->getCharController()->setLinearVelocity({ 0, linearVelocity.y(), 0 });
 			}
 			else
 			{
@@ -105,9 +114,25 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 
 			// Easing to reach the targeted vertical speed
 			//shooterBody->setLinearVelocity({ 0, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0 });
+			if(!(m_point.y() < player->getPositionBT().y()))
+				player->getCharController()->setLinearVelocity({ 0.f, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0.f });
+				//player->getCharController()->jump({ 0.f, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * 0.01f * deltaTime, 0.f });
+				//player->getCharController()->setLinearVelocity({ 0.f, 1.f, 0.f });
+			//else
+				//player->getCharController()->setLinearVelocity({ 0.f, linearVelocity.y() + (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime * 0.0000015f, 0.f });
+				//player->getCharController()->jump({ 0.f, (((dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0.f });
+
+			//printf("%f\n", player->getCharController()->getLinearVelocity().y());
 
 			// Easing to reach the maximum vertical speed
 			player->setMoveSpeed(player->getMoveSpeed() + ((GRAPPLING_HOOK_MAX_SPEED_XZ - player->getMoveSpeed()) * GRAPPLING_HOOK_POWER * deltaTime));
+		}
+		else
+		{
+			// Getting variables from entity
+			btRigidBody* shooterBody = m_shooter->getRigidBody();
+			btVector3 linearVelocity = shooterBody->getLinearVelocity();
+			btVector3 dirToPoint = (m_point - m_shooter->getPositionBT()).normalize();
 		}
 
 		// Setting entity movement specific varialbes

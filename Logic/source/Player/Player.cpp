@@ -32,16 +32,17 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 
 	m_charController = new btKinematicCharacterController(ghostObject, playerShape, 0.2f, btVector3(0.f, 1.f, 0.f));
 	m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
+	m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
 	m_physPtr->addAction(m_charController);
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
-    	info.hp = m_hp;
+    info.hp = m_hp;
    	info.cuttleryAmmo[0] = 0;
    	info.cuttleryAmmo[1] = 0;
-    	info.iceAmmo[0] = 0;
-    	info.iceAmmo[1] = 0;
-    	info.wave = 0;
+    info.iceAmmo[0] = 0;
+    info.iceAmmo[1] = 0;
+    info.wave = 0;
    	info.score = 0;
    	info.sledge = false;
 	info.cd = 1.0f;
@@ -54,12 +55,13 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
-	m_moveDir = btVector3(0, 0, 0);
+	m_moveDir = btVector3(0.f, 0.f, 0.f);
 	m_moveSpeed = 0.f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_deacceleration = m_acceleration * 0.5f;
 	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
 	m_jumpSpeed = PLAYER_JUMP_SPEED;
+	m_wishDir = btVector3(0.f, 0.f, 0.f);
 	m_wishDirForward = 0.f;
 	m_wishDirRight = 0.f;
 	m_wishJump = false;
@@ -87,7 +89,7 @@ void Player::clear()
 
 void Player::reset()
 {
-	getRigidBody()->getWorldTransform().setOrigin(startPosition);
+	getTransform().setOrigin(startPosition);
 	m_weaponManager.reset();
 	m_hp = 3;
 }
@@ -214,8 +216,8 @@ void Player::updateSpecific(float deltaTime)
 	{
 		btTransform transform = getTransform();
 		transform.setOrigin({0, 0, 0});
-		getRigidBody()->setWorldTransform(transform);
-		getRigidBody()->setLinearVelocity({ 0, 0, 0 });
+		m_charController->getGhostObject()->setWorldTransform(transform);
+		m_charController->setLinearVelocity({ 0, 0, 0 });
 		m_moveDir = {0, 0, 0};
 		m_moveSpeed = 0.f;
 	}
@@ -239,7 +241,10 @@ void Player::updateSpecific(float deltaTime)
 	}
 		
 	if (m_charController->onGround())
+	{
 		m_playerState = PlayerState::STANDING;
+		m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
+	}
 	else
 		m_playerState = PlayerState::IN_AIR;
 
@@ -263,7 +268,9 @@ void Player::updateSpecific(float deltaTime)
 		moveFree(deltaTime, &ks);
 
 	// Print player velocity
-//	printf("velocity: %f\n", m_moveSpeed);
+	//printf("velocity: %f\n", m_moveSpeed);
+	//printf("%f\n", m_charController->getLinearVelocity().y());
+	//printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
 
 	//crouch(deltaTime);
 
@@ -401,7 +408,11 @@ void Player::move(float deltaTime)
 	else
 	{
 		m_airAcceleration = (PLAYER_SPEED_LIMIT - m_moveSpeed) * PLAYER_MOVEMENT_AIRACCELERATION;
-		applyAirFriction(deltaTime, PLAYER_AIR_FRICTION);
+		
+		if (!m_wishDir.isZero() && m_moveDir.dot(m_wishDir) <= 0.f)
+			applyAirFriction(deltaTime, PLAYER_AIR_FRICTION * 6.f);		// TEMP FIX
+		else
+			applyAirFriction(deltaTime, PLAYER_AIR_FRICTION);
 	}
 
 	// Apply acceleration and move player
@@ -438,11 +449,11 @@ void Player::accelerate(float deltaTime, float acceleration)
 	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;
 
-	// Apply moveDir and moveSpeed to plyer
+	// Apply moveDir and moveSpeed to player
 	if(m_playerState != PlayerState::IN_AIR)
 		m_charController->setVelocityForTimeInterval(m_moveDir * m_moveSpeed, deltaTime);
 	else
-		m_charController->setVelocityForTimeInterval((m_moveDir * m_moveSpeed) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED), deltaTime);
+		m_charController->setVelocityForTimeInterval(((m_moveDir + btVector3(0.f, m_charController->getLinearVelocity().y(), 0.f)) * m_moveSpeed) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED), deltaTime);
 
 	PROFILE_BEGIN("Stepping player");
 	// Step player
@@ -482,14 +493,20 @@ void Player::applyAirFriction(float deltaTime, float friction)
 		if (lookMoveAngle > PLAYER_STRAFE_ANGLE)
 			m_moveDir = (m_moveDir + forward) * 0.5f;
 		else
+		{
+			m_airAcceleration = 0.f;
 			applyFriction(deltaTime, friction);
+		}
 	}
 	else if (lookMovedirection > 0.f && m_wishDirRight > 0.f)
 	{
 		if (lookMoveAngle > PLAYER_STRAFE_ANGLE)
 			m_moveDir = (m_moveDir + forward) * 0.5f;
 		else
+		{
+			m_airAcceleration = 0.f;
 			applyFriction(deltaTime, friction);
+		}
 	}
 	else
 	{
@@ -541,6 +558,16 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 	m_forward.Normalize();
 }
 
+btKinematicCharacterController * Logic::Player::getCharController()
+{
+	return m_charController;
+}
+
+btGhostObject* Player::getGhostObject()
+{
+	return m_charController->getGhostObject();
+}
+
 DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 {
 	// Making memory for a matrix
@@ -589,6 +616,11 @@ DirectX::SimpleMath::Vector3 Player::getPosition() const
 btVector3 Logic::Player::getPositionBT() const
 {
 	return m_charController->getGhostObject()->getWorldTransform().getOrigin();
+}
+
+btTransform& Player::getTransform() const
+{
+	return m_charController->getGhostObject()->getWorldTransform();
 }
 
 float Logic::Player::getMoveSpeed() const

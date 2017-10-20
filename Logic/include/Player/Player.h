@@ -136,9 +136,12 @@ namespace Logic
 		void takeDamage(int damage, bool damageThroughProtection = false);
 		int getHP() const;
 
+		btKinematicCharacterController* getCharController();
+		btGhostObject* getGhostObject();
 		DirectX::SimpleMath::Matrix getTransformMatrix() const;
 		virtual DirectX::SimpleMath::Vector3 getPosition() const;
 		virtual btVector3 getPositionBT() const;
+		virtual btTransform& getTransform() const;
 		float getMoveSpeed() const;
 		void setMoveSpeed(float speed);
 		void setMoveDirection(btVector3 moveDir);
