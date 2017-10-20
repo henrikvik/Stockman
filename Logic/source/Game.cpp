@@ -2,6 +2,7 @@
 #include <iostream>
 #include <Engine\Typing.h>
 
+
 using namespace Logic;
 
 Game::Game()
@@ -71,6 +72,10 @@ void Game::init()
 
 	// Initializing Sound
 	NoiseMachine::Get().init();
+
+	//debug things
+	m_debugOpen = true;
+	m_firstTrigger = false;
 }
 
 void Game::clear()
@@ -125,9 +130,29 @@ void Game::waveUpdater()
 
 void Game::update(float deltaTime)
 {
-	// Handles slow-mo & speed-up
 	m_gameTime.update(deltaTime);
 
+	if (m_debugOpen)
+	{
+		m_debugWindow.draw("Test");
+	}
+
+	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::RightAlt) && m_debugOpen && !m_firstTrigger)
+	{
+		m_debugOpen = false;
+		m_firstTrigger = true;
+	}
+	else if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::RightAlt) && !m_debugOpen && !m_firstTrigger)
+	{
+		m_debugOpen = true;
+		m_firstTrigger = true;
+	}
+
+	if (DirectX::Keyboard::Get().GetState().IsKeyUp(DirectX::Keyboard::RightAlt) && m_firstTrigger)
+	{
+		m_firstTrigger = false;
+	}
+	// Handles slow-mo & speed-up
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
