@@ -3,8 +3,9 @@ namespace Resources
 {
   namespace Models
   {
-    char const * Paths[3] =
+    char const * Paths[4] =
     {
+      R"(Resources\Models\AnimationWithLayers.hyb)",
       R"(Resources\Models\Cube.hyb)",
       R"(Resources\Models\KittyGolemAnim.hyb)",
       R"(Resources\Models\StaticCube.hyb)"

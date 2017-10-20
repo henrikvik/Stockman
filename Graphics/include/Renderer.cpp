@@ -48,6 +48,7 @@ namespace Graphics
 		, timeBuffer(device)
 #pragma endregion
 		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
+        , hybrisLoader(device)
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -131,82 +132,7 @@ namespace Graphics
 	void Renderer::render(Camera * camera)
 	{
 		menu.unloadTextures();
-#if ANIMATION_HIJACK_RENDER
 
-        renderQueue.clear();
-        static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
-        static UINT ticks = 0;
-        ticks++;
-        cam.updateLookAt({
-            5 + 0 * sinf(ticks * 0.002f), 
-            0 + 0 * cosf(ticks * 0.002f), 
-            0 + 0 * cosf(ticks * 0.002f), 
-        }, { 0,0,0 }, deviceContext);
-
-		ID3D11Buffer *cameraBuffer = cam.getBuffer();
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-
-		static float clearColor[4] = { 0,0,0,1 };
-		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
-
-		deviceContext->RSSetViewports(1, &viewPort);
-
-        static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"));
-        static HybrisLoader::Model * model = hybrisLoader.getModel(Resources::Models::Cube);
-
-        deviceContext->IASetInputLayout(nullptr);
-        deviceContext->VSSetShader(testShader, nullptr, 0);
-        deviceContext->PSSetShader(testShader, nullptr, 0);
-
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->RSSetState(states->CullClockwise());
-
-		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
-
-        std::vector<SM::Matrix> animTransforms = model->evalAnimation(
-            "Rotate", ((ticks % (int)(1000 * model->getAnimationDuration("Rotate"))) / 1000.f)
-        );
-        static StructuredBuffer<SM::Matrix> animTransformBuffer(device, CpuAccess::Write, animTransforms.size());
-        animTransformBuffer.write(deviceContext, animTransforms.data(), sizeofv(animTransforms));
-
-        deviceContext->VSSetShaderResources(0, 1, model->getVertexBuffer());
-        deviceContext->VSSetShaderResources(1, 1, animTransformBuffer);
-
-        deviceContext->Draw(model->getVertexCount(), 0);
-
-
-    #pragma region Draw Joints
-        static Shader animationInstanced(device, SHADER_PATH("AnimationTestInstanced.hlsl"));
-        deviceContext->IASetInputLayout(nullptr);
-        deviceContext->VSSetShader(animationInstanced, nullptr, 0);
-        deviceContext->PSSetShader(animationInstanced, nullptr, 0);
-
-        
-        std::vector<SM::Matrix> instanceTransforms = model->getJointTransforms();
-
-        for (size_t i = 0; i < instanceTransforms.size(); i++)
-        {
-            instanceTransforms[i] = instanceTransforms[i] * animTransforms[i];
-        }
-
-        static StructuredBuffer<SM::Matrix> instanceTransformBuffer(device, CpuAccess::Write, instanceTransforms.size());
-        instanceTransformBuffer.write(deviceContext, instanceTransforms.data(), sizeofv(instanceTransforms));
-        deviceContext->VSSetShaderResources(2, 1, instanceTransformBuffer);
-
-        static HybrisLoader::Model * staticCube = hybrisLoader.getModel(Resources::Models::StaticCube);
-        deviceContext->VSSetShaderResources(0, 1, staticCube->getVertexBuffer());
-
-        deviceContext->RSSetState(states->Wireframe());
-        deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
-        deviceContext->DrawInstanced(staticCube->getVertexCount(), instanceTransforms.size(), 0, 0);
-
-
-    #pragma endregion
-
-
-#else
 		cull();
 		writeInstanceData();
 
@@ -328,8 +254,6 @@ namespace Graphics
 		}
 
 
-
-#endif
 		//TEEEMP
 		auto ks = DirectX::Keyboard::Get().GetState();
 

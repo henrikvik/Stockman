@@ -72,25 +72,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -99,7 +99,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
@@ -120,7 +121,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -142,7 +144,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
@@ -167,7 +170,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Simon\Downloads\BulletPhysics\bullet3-2.86.1\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
