@@ -39,7 +39,6 @@ namespace Graphics
 		, debugColorBuffer(device)
 #pragma endregion
 		, fog(device)
-		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
         , menu(device, deviceContext)
         , hud(device, deviceContext)
 		, ssaoRenderer(device)
@@ -280,11 +279,10 @@ namespace Graphics
 		{
 			fakeBackBuffer,
 			glowMap,
-			*ssaoRenderer.getNormalShaderResource(),
-			worldPosMap
+			*ssaoRenderer.getNormalShaderResource()
 		};
 
-		deviceContext->OMSetRenderTargets(4, rtvs, depthStencil);
+		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
 		
 		draw();
 		PROFILE_END();
@@ -518,7 +516,6 @@ namespace Graphics
 		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
 		deviceContext->ClearRenderTargetView(glowMap, clearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(worldPosMap, clearColor);
 		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 		skyRenderer.clear(deviceContext);
 	}

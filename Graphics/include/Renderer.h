@@ -133,10 +133,6 @@ namespace Graphics
 
     #pragma endregion
 		Fog fog;
-		ShaderResource worldPosMap;
-
-
-
 
     };
 };

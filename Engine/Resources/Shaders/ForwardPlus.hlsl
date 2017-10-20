@@ -44,7 +44,6 @@ struct PSOutput
     float4 backBuffer : SV_Target0;
     float4 glowMap : SV_Target1;
     float4 normalView : SV_Target2;
-	float4 worldPosMap : SV_Target3;
 };
 
 VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
