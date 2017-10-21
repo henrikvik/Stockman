@@ -48,7 +48,7 @@ bool Pathing::pathIsEmpty() const
 
 bool Pathing::pathOnLastNode() const
 {
-	return m_currentNode < m_path.size() - 1;
+	return m_currentNode >= m_path.size() - 1;
 }
 
 void Pathing::initDebugRendering()
