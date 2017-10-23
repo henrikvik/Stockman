@@ -23,6 +23,7 @@ EntityManager::EntityManager()
 {
     m_currentWave = 0;
     m_frame = 0;
+    m_killChildren = false;
 
     allocateData();
 
@@ -47,11 +48,6 @@ void EntityManager::resetThreads()
 {
     for (std::thread *t : threads)
     {
-        if (t)
-        {
-            t->join();
-            delete t;
-        }
         t = nullptr;
     }
 
@@ -60,14 +56,15 @@ void EntityManager::resetThreads()
 
 void EntityManager::deleteThreads()
 {
+    m_killChildren = true;
     for (std::thread *t : threads)
     {
         if (t)
         {
-            deleteThread(t);
+            t->join();
+            delete t;
         }
     }
-    ZeroMemory(&m_threadRunning, sizeof(m_threadRunning));
 }
 
 void EntityManager::joinAllThreads()
@@ -178,8 +175,11 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 
 	manager->m_threadRunning[getThread(index)] = false;
     PROFILE_END();
-	while (!manager->m_threadRunning[getThread(index)])
-		std::this_thread::sleep_for(2ms); // this is stupid but works
+    while (!manager->m_threadRunning[getThread(index)])
+    {
+        std::this_thread::sleep_for(2ms); // this is stupid but works
+        if (manager->m_killChildren) return;
+    }
     updateEnemiesAndPath(manager, manager->m_indexRunning[getThread(index)], std::ref(player), manager->m_deltaTime);
 }
 

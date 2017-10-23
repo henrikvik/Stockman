@@ -49,6 +49,7 @@ namespace Logic
 		WaveManager m_waveManager;
 		int m_currentWave, m_frame;
 		float m_deltaTime;
+        bool m_killChildren;
 
 		void deleteData(); // delete data in vectors
 		void allocateData(); // resize enemy vector 
