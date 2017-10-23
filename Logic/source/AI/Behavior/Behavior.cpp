@@ -60,7 +60,7 @@ void Behavior::walkPath(RunIn &in)
 	boidCalculations(in.enemy->getPositionBT(), 
 		dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
-    dir.setY(-.33f); // right now y should not be changed
+    dir.setY(-.33f); // my super fix to tower building
     dir.normalize();
     dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
 

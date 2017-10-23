@@ -1,8 +1,8 @@
 #include <AI/EntityManager.h>
 using namespace Logic;
 
-#define ENEMIES_PATH_UPDATE_PER_FRAME 200
-#define ENEMIES_TEST_UPDATE_PER_FRAME 200
+#define ENEMIES_PATH_UPDATE_PER_FRAME 25
+#define ENEMIES_TEST_UPDATE_PER_FRAME 4 
 #define FILE_ABOUT_WHALES "Enemies/Wave"
 
 #include <AI/EnemyTest.h>
@@ -102,7 +102,8 @@ void EntityManager::update(Player const &player, float deltaTime)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0 && !isThreadLocked(i)) {
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0 &&
+                !(isThreadLocked(i) && m_indexRunning[getThread(i)] == i)) {
 				updateEnemies(i, player, deltaTime);
 			}
 			else if (!isThreadLocked(i))
@@ -143,23 +144,17 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 	for (size_t i = 0; i < enemies.size(); ++i)
 	{
 		enemy = m_enemies[index][i];
-
 		updateEnemy(enemy, index, player, deltaTime);
 
-		if (i + m_frame % ENEMIES_TEST_UPDATE_PER_FRAME)
-		{
-			goalNodeChanged = enemy->getBehavior()->isGoalChangedAndSetToFalse();
+        if (!AStar::singleton().isEntityOnIndex(*enemy, index))
+        {
+            int newIndex = AStar::singleton().getIndex(*enemy);
 
-			if (goalNodeChanged && !AStar::singleton().isEntityOnIndex(*enemy, index))
-			{
-                int newIndex = AStar::singleton().getIndex(*enemy);
+            std::swap(enemies[i], enemies[enemies.size() - 1]);
+            enemies.pop_back();
 
-				std::swap(enemies[i], enemies[enemies.size() - 1]);
-                enemies.pop_back();
-
-                m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
-			}
-		}
+            m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
+        }
 	}
 }
 
