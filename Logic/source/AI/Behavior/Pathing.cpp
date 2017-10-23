@@ -27,7 +27,6 @@ std::vector<const DirectX::SimpleMath::Vector3*>& Pathing::getPath()
 
 const DirectX::SimpleMath::Vector3& Pathing::getNode() const
 {
-	if (m_path.empty()) return { 0,0,0 }; // for testing
 	return *m_path[m_currentNode];
 }
 
@@ -61,11 +60,14 @@ void Pathing::initDebugRendering()
 
 void Pathing::renderDebugging(Graphics::Renderer &renderer, DirectX::SimpleMath::Vector3 &start)
 {
-	m_debugInfo.points->clear();
-	m_debugInfo.points->push_back(start);
+    if (m_debugInfo.points->size() > 1)
+    {
+        m_debugInfo.points->clear();
+        m_debugInfo.points->push_back(start);
 
-	for (int i = 0; i < m_path.size(); i++) // this is slow, but debugging should not be when efficiency is required 
-		m_debugInfo.points->push_back(*m_path[i]);
+        for (int i = 0; i < m_path.size(); i++) // this is slow, but debugging should not be when efficiency is required 
+            m_debugInfo.points->push_back(*m_path[i]);
 
-	renderer.queueRenderDebug(&m_debugInfo);
+        renderer.queueRenderDebug(&m_debugInfo);
+    }
 }

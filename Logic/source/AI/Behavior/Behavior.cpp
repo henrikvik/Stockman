@@ -2,14 +2,14 @@
 #include <AI\Enemy.h>
 #include <Misc\RandomGenerator.h>
 
-#define SCALAR_DIR 0.3f
+#define SCALAR_DIR 0.5f
 #define SCALAR_ALIGN 1.1f
 #define SCALAR_COHES 0.7f
 #define SCALAR_SEP 2.f
 
 #define MAX_LEN_FOR_SEPERATION 5.f
 // this can be changed in the future maybe who knows
-#define CHANGE_NODE_DIST 0.8f
+#define CHANGE_NODE_DIST 1.2
 
 #include <queue>
 using namespace Logic;
@@ -17,6 +17,7 @@ using namespace Logic;
 Behavior::Behavior(PathingType type)
 {
 	m_pathingType = type;
+    m_changedGoalNode = false;
 }
 
 Behavior::~Behavior()
@@ -34,23 +35,36 @@ void Behavior::update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies, Pla
 
 void Behavior::walkPath(RunIn &in)
 {
-	DirectX::SimpleMath::Vector3 pathNode = m_pathing.getNode();
-	btVector3 node { pathNode.x, pathNode.y, pathNode.z };
-	btVector3 dir = node - in.enemy->getPositionBT();
+    btVector3 dir;
+
+    if (m_pathing.pathIsEmpty())
+    {
+        dir = in.target->getPositionBT() - in.enemy->getPositionBT();
+        m_changedGoalNode = true;
+    } 
+    else 
+    {
+        DirectX::SimpleMath::Vector3 pathNode = m_pathing.getNode();
+        btVector3 node{ pathNode.x, pathNode.y, pathNode.z };
+	    dir = node - in.enemy->getPositionBT();
+
+        if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST)
+        {
+            if (!m_pathing.pathOnLastNode())
+                m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
+            printf("Node change: %d\n", m_pathing.getCurrentNode());
+            m_changedGoalNode = true;
+        }
+    }
 	
 	boidCalculations(in.enemy->getPositionBT(), 
 		dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
-    in.enemy->getRigidBody()->translate(dir);
-    printf("Len: %f\n", (node - in.enemy->getPositionBT()).length());
+    dir.setY(-.33f); // right now y should not be changed
+    dir.normalize();
+    dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
 
-	if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST)
-	{
-		if (!m_pathing.pathOnLastNode())
-			m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
-        printf("Node change: %d\n", m_pathing.getCurrentNode());
-		m_changedGoalNode = true;
-	}
+    in.enemy->getRigidBody()->translate(dir);
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
@@ -60,14 +74,11 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 	int totalSep = 0;
     if (close.size() <= 1)
     {
-        dir.setY(0); // right now y should not be changed
-        dir.normalize();
-        dir *= maxSpeed * (dt * 0.001f);
         return;
     }
 	// make the vectors
 	btVector3 temp;
-	for (auto const &enemy : close)
+	for (auto *enemy : close)
 	{
 		align += enemy->getRigidBody()->getLinearVelocity();
 

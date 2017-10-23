@@ -17,6 +17,7 @@ using namespace Logic;
 #include <stdio.h>
 
 #define getThread(i) i % NR_OF_THREADS
+#define isThreadLocked(i) m_threadRunning[getThread(i)]
 
 EntityManager::EntityManager()
 {
@@ -101,28 +102,25 @@ void EntityManager::update(Player const &player, float deltaTime)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0) {
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0 && !isThreadLocked(i)) {
 				updateEnemies(i, player, deltaTime);
 			}
-			else
+			else if (!isThreadLocked(i))
 			{
 				int thread = getThread(i);
-				if (!m_threadRunning[thread])
-				{
-					std::thread *t = threads[thread];
-					m_threadRunning[thread] = true;
+                m_threadRunning[thread] = true;
+                std::thread *t = threads[thread];
 
-					if (t)
-						m_indexRunning[thread] = i;
-					else
-					{
-						PROFILE_BEGIN("Create Thread");
-						t = newd std::thread(EntityManager::onPathThreadCreation, this,
-							i, std::ref(player), deltaTime);
-						threads[thread] = t;
-						PROFILE_END();
-					}
-				}
+                if (t)
+                    m_indexRunning[thread] = i;
+                else
+                {
+                    PROFILE_BEGIN("Create Thread");
+                    t = newd std::thread(EntityManager::onPathThreadCreation, this,
+                        i, std::ref(player), deltaTime);
+                    threads[thread] = t;
+                    PROFILE_END();
+                }
 			}
 		}
 	}
@@ -140,9 +138,9 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 {
 	bool goalNodeChanged = false;
 	Enemy *enemy;
-	size_t size = m_enemies[index].size();
+    std::vector<Enemy*> &enemies = m_enemies[index];
 	
-	for (size_t i = 0; i < size; ++i)
+	for (size_t i = 0; i < enemies.size(); ++i)
 	{
 		enemy = m_enemies[index][i];
 
@@ -155,9 +153,11 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 			if (goalNodeChanged && !AStar::singleton().isEntityOnIndex(*enemy, index))
 			{
                 int newIndex = AStar::singleton().getIndex(*enemy);
-				m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
-				std::swap(m_enemies[index][i], m_enemies[index][size - 1]);
-				m_enemies[index].pop_back();                   
+
+				std::swap(enemies[i], enemies[enemies.size() - 1]);
+                enemies.pop_back();
+
+                m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
 			}
 		}
 	}
@@ -165,23 +165,24 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 
 void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)
 {
+    PROFILE_BEGIN("Path Update");
 	Enemy *enemy;
 
 	AStar &aStar = AStar::singleton();
 	aStar.loadTargetIndex(player);
 
 	std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
-	auto enemies = manager->m_enemies; // make a copy of the list to prevent conflicts, but this might not be good enough
+	auto &enemies = manager->m_enemies;
 
 	for (size_t i = 0; i < enemies[index].size(); ++i)
 	{
 		enemy = enemies[index][i];
-		manager->updateEnemy(enemy, index, player, deltaTime);
-
 		enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
+		manager->updateEnemy(enemy, index, player, deltaTime);
 	}
 
 	manager->m_threadRunning[getThread(index)] = false;
+    PROFILE_END();
 	while (!manager->m_threadRunning[getThread(index)])
 		std::this_thread::sleep_for(2ms); // this is stupid but works
     updateEnemiesAndPath(manager, manager->m_indexRunning[getThread(index)], std::ref(player), manager->m_deltaTime);
@@ -255,7 +256,7 @@ void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
 	switch (id)
 	{
 		case Enemy::NECROMANCER:
-			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Logic::Cylinder({ pos }, { 0, 0, 0 }, {1.f, 2.f, 1.f}), 100, false), { 0.5f, 0.5f, 0.5f });
+			enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
 			break;
 		default:
 			enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });

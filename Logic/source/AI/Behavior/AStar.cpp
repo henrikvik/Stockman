@@ -132,28 +132,15 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int fromIndex)
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode const *endNode, std::vector<NavNode> const &navNodes, int toIndex)
 {
-	// flip the list
-	std::stack<const DirectX::SimpleMath::Vector3*> list;
-	std::vector<const DirectX::SimpleMath::Vector3*> ret;
+	std::vector<const DirectX::SimpleMath::Vector3*> list;
 
-	if (endNode->nodeIndex != toIndex)
-	{
-		printf("BAD BAD BAD, A* fooked up, contact lw (AStar.cpp:%d)\n", __LINE__);
-	}
-
-	while (endNode->parent != NO_PARENT)
-	{
-		list.push(&(navigationMesh.getNodes()[endNode->nodeIndex]));
+    do {
+        list.push_back(&(navigationMesh.getNodes()[endNode->nodeIndex]));
 		endNode = &navNodes[endNode->parent];
-	}
+    } while (endNode->parent != NO_PARENT);
 
-	while (!list.empty())
-	{
-		ret.push_back(list.top());
-		list.pop();
-	}
-
-	return ret;
+    std::reverse(list.begin(), list.end());
+	return list;
 }
 
 void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
