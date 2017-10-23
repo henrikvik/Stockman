@@ -41,6 +41,9 @@ namespace Logic
 		std::thread *threads[NR_OF_THREADS];
 		bool m_threadRunning[NR_OF_THREADS];
 
+        Physics* m_physicsPtr;
+        ProjectileManager* m_projectilePtr;
+
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
 		int m_currentWave, m_frame;
