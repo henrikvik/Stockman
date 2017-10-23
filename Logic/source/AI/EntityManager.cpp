@@ -1,7 +1,8 @@
 #include <AI/EntityManager.h>
 using namespace Logic;
 
-#define ENEMIES_PATH_UPDATE_PER_FRAME 20
+#define ENEMIES_PATH_UPDATE_PER_FRAME 200
+#define ENEMIES_TEST_UPDATE_PER_FRAME 200
 #define FILE_ABOUT_WHALES "Enemies/Wave"
 
 #include <AI/EnemyTest.h>
@@ -15,6 +16,8 @@ using namespace Logic;
 #include <ctime>
 #include <stdio.h>
 
+#define getThread(i) i % NR_OF_THREADS
+
 EntityManager::EntityManager()
 {
 	m_currentWave = 0;
@@ -24,16 +27,59 @@ EntityManager::EntityManager()
 
 	m_waveManager.setName(FILE_ABOUT_WHALES);
 	m_waveManager.loadFile();
+
+	resetThreads();
 }
 
 EntityManager::~EntityManager()
 {
 	deleteData();
+	deleteThreads();
 }
 
 void EntityManager::allocateData()
 {
 	m_enemies.resize(AStar::singleton().getNrOfPolygons());
+}
+
+void EntityManager::resetThreads()
+{
+	for (std::thread *t : threads)
+	{
+		if (t)
+		{
+			t->join();
+			delete t;
+		}
+		t = nullptr;
+	}
+
+	ZeroMemory(&m_threadRunning, sizeof(m_threadRunning));
+}
+
+void EntityManager::deleteThreads()
+{
+	for (std::thread *t : threads)
+	{
+		if (t)
+		{
+			deleteThread(t);
+		}
+	}
+	ZeroMemory(&m_threadRunning, sizeof(m_threadRunning));
+}
+
+void EntityManager::joinAllThreads()
+{
+	for (auto *t : threads)
+		t->join();
+}
+
+void EntityManager::deleteThread(std::thread *t)
+{
+	if (t->joinable())
+		t->join();
+	delete t;
 }
 
 void EntityManager::deleteData()
@@ -49,21 +95,32 @@ void EntityManager::update(Player const &player, float deltaTime)
 {
 	m_frame++;
 	
-	AStar::singleton().loadTargetIndex(player);
-
+	PROFILE_BEGIN("EntityManager::update()");
 	for (int i = 0; i < m_enemies.size(); i++)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) {
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0) {			
 				updateEnemies(i, player, deltaTime);
 			}
 			else
-			{
-				updateEnemiesAndPath(i, player, deltaTime);
+			{				// seperate threads based on i, but join them before end
+				int thread = getThread(i);
+				std::thread *t = threads[thread];
+				if (!m_threadRunning[thread])
+				{
+					if (t)
+						deleteThread(t);
+
+					m_threadRunning[thread] = true;
+					t = newd std::thread(EntityManager::updateEnemiesAndPath, this,
+						i, std::ref(player), deltaTime);
+					threads[thread] = t;
+				}
 			}
 		}
 	}
+	PROFILE_END();
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
@@ -75,42 +132,51 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
+	bool goalNodeChanged = false;
 	Enemy *enemy;
-	int newIndex;
-
+	
 	for (int i = 0; i < m_enemies[index].size(); ++i)
 	{
 		enemy = m_enemies[index][i];
+
 		updateEnemy(enemy, index, player, deltaTime);
+
+		if (i + m_frame % ENEMIES_TEST_UPDATE_PER_FRAME)
+		{
+			goalNodeChanged = enemy->getBehavior()->isGoalChangedAndSetToFalse();
+
+			if (goalNodeChanged && !AStar::singleton().isEntityOnIndex(*enemy, index))
+			{
+				m_enemies[AStar::singleton().getIndex(*enemy)].push_back(enemy);
+				std::swap(m_enemies[index][i],
+					m_enemies[index][m_enemies[index].size() - 1]);
+				m_enemies[index].pop_back();
+			}
+		}
 	}
 }
 
-void EntityManager::updateEnemiesAndPath(int index, Player const &player, float deltaTime)
+void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)
 {
+	// g_Profiler->registerThread("Enemy Thread %d\0", (index % NR_OF_THREADS));
 	Enemy *enemy;
 	int newIndex;
 
 	AStar &aStar = AStar::singleton();
+	aStar.loadTargetIndex(player);
+
 	std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
+	auto &enemies = manager->m_enemies;
 
-	for (int i = 0; i < m_enemies[index].size(); ++i)
+	for (int i = 0; i < enemies[index].size(); ++i)
 	{
-		enemy = m_enemies[index][i];
-		updateEnemy(enemy, index, player, deltaTime);
+		enemy = enemies[index][i];
+		manager->updateEnemy(enemy, index, player, deltaTime);
 
-		newIndex = AStar::singleton().getIndex(*enemy);
-		if (newIndex != -1 && newIndex != index) // this will be optimized in future
-		{
-			m_enemies[newIndex].push_back(enemy);
-			std::swap(m_enemies[index][i],
-				m_enemies[index][m_enemies[index].size() - 1]);
-			m_enemies[index].pop_back();
-		}	
-		else
-		{
-			enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
-		}
+		enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
 	}
+
+	manager->m_threadRunning[getThread(index)] = false;
 }
 
 void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, float deltaTime)
@@ -140,9 +206,6 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 	WaveManager::EntitiesInWave entities = m_waveManager.getEntities(m_currentWave);
 	m_frame = 0;
 
-	int index;
-
-	Enemy *enemy;
 	btVector3 pos;
 	RandomGenerator &generator = RandomGenerator::singleton();
 
@@ -151,8 +214,8 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 		// just temp test values as of now, better with no random spawns?
 		// should atleast check if spawn area is a walkable area
 		// using nav mesh that would be easy but not trivial
-		pos = { generator.getRandomFloat(-5, 5), generator.getRandomFloat(10, 25),
-				generator.getRandomFloat(-5, 5) };
+		pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
+				generator.getRandomFloat(-85, 85) };
 
 		spawnEnemy(static_cast<Enemy::ENEMY_TYPE> (entity), pos, {}, physics, projectiles);
 	}
@@ -221,7 +284,7 @@ void EntityManager::spawnTrigger(int id, btVector3 const &pos,
 	}
 }
 
-int EntityManager::getEnemiesAlive() const 
+size_t EntityManager::getEnemiesAlive() const 
 {
     return m_enemies.size();
 }
@@ -232,6 +295,18 @@ void EntityManager::clear()
 
 	m_deadEnemies.clear();
 	m_enemies.clear();
+}
+
+int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
+{
+	int i = 0;
+	for (auto &vec : m_enemies)
+		for (auto *enemy : vec)
+		{
+			enemy->getStatusManager().addStatus(id, 1, true);
+			i++;
+		}
+	return i;
 }
 
 void EntityManager::setCurrentWave(int currentWave) 

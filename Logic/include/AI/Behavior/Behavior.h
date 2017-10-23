@@ -49,6 +49,7 @@ namespace Logic {
 	private:
 		BehaviorNode m_root;
 		Pathing m_pathing;
+		bool m_changedGoalNode;
 
 		bool runNode(RunIn &in, BehaviorNode &node);
 	public:
@@ -77,6 +78,9 @@ namespace Logic {
 		
 		void setRoot(NodeType type, int value, run func);
 		BehaviorNode* addNode(BehaviorNode *parent, NodeType type, int value, run func);
+
+		// Returns if current goal node has been changed and set it to false
+		bool isGoalChangedAndSetToFalse();
 
 		BehaviorNode* getRoot();
 		Pathing& getPath();

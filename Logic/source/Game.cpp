@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <iostream>
 #include <Engine\Typing.h>
+#include <DebugDefines.h>
 
 
 using namespace Logic;
@@ -14,6 +15,8 @@ Game::Game()
 	m_cardManager		= nullptr;
 	m_menu				= nullptr;
 	m_highScoreManager	= nullptr;
+
+
 }
 
 Game::~Game() 
@@ -24,6 +27,9 @@ Game::~Game()
 
 void Game::init()
 {
+	// Initializing Sound
+	NoiseMachine::Get().init();
+
 	// Initializing Bullet physics
 	btDefaultCollisionConfiguration* collisionConfiguration		= new btDefaultCollisionConfiguration();				// Configuration
 	btCollisionDispatcher* dispatcher							= new btCollisionDispatcher(collisionConfiguration);	// The default collision dispatcher
@@ -36,20 +42,19 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(Player::startPosition, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
+	m_player = new Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
+	NoiseMachine::Get().update(m_player->getListenerData());
 
+	// Initializing Highscore Manager
 	m_highScoreManager = newd HighScoreManager();
-
-	std:string name = "Stockman";
-
-	m_highScoreManager->setName(name);
+	m_highScoreManager->setName("Stockman");
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine(m_highScoreManager->getName());
 	m_menu->initialize(STARTING_STATE); 
 
-	// Initializing the map
+	// Initializing the Map
 	m_map = newd Map();
 	m_map->init(m_physics);
 
@@ -65,13 +70,11 @@ void Game::init()
 	// Initializing Card Manager
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
+	m_cardManager->createDeck(NUMBER_OF_EACH_CARD);
 
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
-
-	// Initializing Sound
-	NoiseMachine::Get().init();
 
 	//debug things
 	m_debugOpen = true;
@@ -80,16 +83,17 @@ void Game::init()
 
 void Game::clear()
 {
+	m_menu->clear();
+	m_projectileManager->clear();
+	NoiseMachine::Get().clear();
+
 	delete m_physics;
 	delete m_player;
-	m_menu->clear();
 	delete m_menu;
 	delete m_map;
 	delete m_cardManager;
 	delete m_highScoreManager;
-	m_projectileManager->clear();
 	delete m_projectileManager;
-	NoiseMachine::Get().clear();
 }
 
 void Game::reset()
@@ -112,6 +116,15 @@ void Game::waveUpdater()
 		if (m_waveTimer > m_waveTime[m_waveCurrent])
 		{
 			// Spawning next wave
+			// Enrage
+			int affectedEnemies = m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE);
+			if (affectedEnemies > 0)
+			{
+				NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MUSIC, 0.1f);
+				NoiseMachine::Get().setGroupPitch(CHANNEL_GROUP::CHANNEL_MUSIC, 1.5f);
+				NoiseMachine::Get().playMusic(MUSIC::ENRAGE, m_player->getSoundSource(), false);
+			}
+
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
 			m_entityManager.setCurrentWave(m_waveCurrent);
@@ -131,6 +144,7 @@ void Game::waveUpdater()
 void Game::update(float deltaTime)
 {
 	m_gameTime.update(deltaTime);
+	Card temp;
 
 	if (m_debugOpen)
 	{
@@ -156,52 +170,59 @@ void Game::update(float deltaTime)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-		if (m_menu->getStateToBe() != GameState::gameStateDefault)
+		if (m_menu->getStateToBe() == GameState::gameStateGameUpgrade)
 		{
-			PROFILE_BEGIN("Menu");
+			m_cardManager->pickThree(false); //get some trigger for injury
 			m_menu->update(m_gameTime.dt);
-			PROFILE_END();
+			break;
+		}
+		else if (m_menu->getStateToBe() != GameState::gameStateDefault)
+		{
+			m_menu->update(m_gameTime.dt);
+			break;
 		}
 		else
 		{
-			/* Temp sound testing */
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::J)) NoiseMachine::Get().playSFX(SFX::BOING);
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::K)) NoiseMachine::Get().playMusic(MUSIC::NES);
-			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L)) NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MASTER, 0);
-
-			ComboMachine::Get().Update(deltaTime);
-			waveUpdater();
-
-			PROFILE_BEGIN("Sound");
-			NoiseMachine::Get().update(m_player->getListenerData());
-			PROFILE_END();
-
-			PROFILE_BEGIN("Player");
-			m_player->updateSpecific(m_gameTime.dt);
-			PROFILE_END();
-
-			PROFILE_BEGIN("Physics");
-			m_physics->update(m_gameTime);
-			PROFILE_END();
-
-			PROFILE_BEGIN("AI & Triggers");
-			m_entityManager.update(*m_player, m_gameTime.dt);
-			PROFILE_END();
-
-			PROFILE_BEGIN("Map");
-			m_map->update(m_gameTime.dt);
-			PROFILE_END();
-
-			PROFILE_BEGIN("Projectiles");
-			m_projectileManager->update(m_gameTime.dt);
-			PROFILE_END();
+			DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
+			DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
+			gameRunTime(deltaTime);
+			if (ks.IsKeyDown(DirectX::Keyboard::U))
+			{
+				m_menu->setStateToBe(gameStateGameUpgrade);
+				m_cardManager->pickThree(false);
+			}
 		}
 
-		if (m_player->getHP() <= 0)
-			gameOver();
+		break;
+	case gameStateGameUpgrade:
+		m_menu->update(m_gameTime.dt);
+		if (m_menu->getStateToBe() != GameState::gameStateDefault)
+		{
+			break;
+		}
+		temp = m_cardManager->pick(m_menu->getChoiceUpgrade());
+
+		if (temp.getName().compare("") != 0 && temp.getDescription().compare("") != 0)
+		{
+			//add information to player
+			m_menu->setStateToBe(gameStateGame); //change to gameStateGame
+
+			for (auto const& ID : temp.getUpgradesID())
+			{
+				if (temp.getIsEffect())
+				{
+					m_player->getStatusManager().addStatus(static_cast<StatusManager::EFFECT_ID>(ID), 1); //edit to how you feel it should be
+				}
+				else
+				{
+					m_player->getStatusManager().addUpgrade(static_cast<StatusManager::UPGRADE_ID>(ID));
+				}
+			}
+		}
+
+		gameRunTime(deltaTime);
 
 		break;
-
 	case gameStateLoading:
 		m_menu->update(m_gameTime.dt);
 		break;
@@ -218,9 +239,41 @@ void Game::update(float deltaTime)
 	}
 }
 
+void Game::gameRunTime(float deltaTime)
+{
+	ComboMachine::Get().Update(deltaTime);
+	waveUpdater();
+
+	PROFILE_BEGIN("Sound");
+	NoiseMachine::Get().update(m_player->getListenerData());
+	PROFILE_END();
+
+	PROFILE_BEGIN("Player");
+	m_player->updateSpecific(m_gameTime.dt);
+	PROFILE_END();
+
+	PROFILE_BEGIN("Physics");
+	m_physics->update(m_gameTime);
+	PROFILE_END();
+
+	PROFILE_BEGIN("AI & Triggers");
+	m_entityManager.update(*m_player, m_gameTime.dt);
+	PROFILE_END();
+
+	PROFILE_BEGIN("Map");
+	m_map->update(m_gameTime.dt);
+	PROFILE_END();
+
+	PROFILE_BEGIN("Projectiles");
+	m_projectileManager->update(m_gameTime.dt);
+	PROFILE_END();
+
+	if (m_player->getHP() <= 0)
+		gameOver();
+}
+
 void Game::gameOver()
 {
-	printf("You ded bro.\n");
 	m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
 	m_menu->setStateToBe(GameState::gameStateGameOver);
 
@@ -240,24 +293,14 @@ void Game::render(Graphics::Renderer& renderer)
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
+		gameRunTimeRender(renderer);
+		// Debug Draw physics
+		if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
+			m_physics->render(renderer);
+		break;
 
-		m_player->render(renderer);
-
-		PROFILE_BEGIN("Render Map");
-		m_map->render(renderer);
-		PROFILE_END();
-
-		PROFILE_BEGIN("Render Enemies & Triggers")
-		m_entityManager.render(renderer);
-		PROFILE_END();
-
-		PROFILE_BEGIN("Render Projectiles")
-		m_projectileManager->render(renderer);
-		PROFILE_END();
-
-	// Debug Draw physics
-	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
-		m_physics->render(renderer);
+	case gameStateGameUpgrade:
+		gameRunTimeRender(renderer);
 		break;
 
 	case gameStateLoading:
@@ -268,6 +311,30 @@ void Game::render(Graphics::Renderer& renderer)
 	default:  m_menu->render(renderer);
 		break;
 	}
+}
+
+void Game::gameRunTimeRender(Graphics::Renderer& renderer)
+{
+	PROFILE_BEGIN("Player Render");
+	m_player->render(renderer);
+	PROFILE_END();
+
+	PROFILE_BEGIN("Render Map");
+	m_map->render(renderer);
+	PROFILE_END();
+
+	PROFILE_BEGIN("Render Enemies & Triggers");
+	m_entityManager.render(renderer);
+	PROFILE_END();
+
+	PROFILE_BEGIN("Render Projectiles");
+	m_projectileManager->render(renderer);
+	PROFILE_END();
+}
+
+void Logic::Game::menuRender(Graphics::Renderer * renderer)
+{
+	m_menu->render(*renderer);
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

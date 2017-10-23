@@ -152,7 +152,7 @@ namespace Graphics {
 
 		ID3D11SamplerState *sampler = states->LinearClamp();
 		ID3D11Buffer *bufs[] = {
-			camera->getBuffer(),
+			*camera->getBuffer(),
 			m_ParamsBuffer
 		};
 		ID3D11ShaderResourceView *SRVs[] = {
@@ -354,7 +354,7 @@ namespace Graphics {
 		cxt->CSSetShader(*m_FrustumGeneration, nullptr, 0);
 
 		ID3D11Buffer *buffers[] = {
-			camera->getBuffer(),
+			*camera->getBuffer(),
 			m_ParamsBuffer,
 		};
 		cxt->CSSetConstantBuffers(0, 2, buffers);

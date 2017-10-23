@@ -4,10 +4,11 @@
 // NOTICE: INCLUDE THIS ONLY IN CPP FILES; THE COMPILE TIME IS LONG ENOUGH; DON'T MAKE IT LONGER TY.
 
 #define GOD_MODE
+#define SHOW_FPS
 // #define DEBUG_ASTAR
 // #define DEBUG_PATH 
 // #define DISABLE_RENDERING_DEAD_ENEMIES
 
 // Dont comment out defines below this line
 // 0: Bullet time,	1: Grappling hook,	2: Shield charge
-#define SKILL_USED 0
+#define SKILL_USED 1

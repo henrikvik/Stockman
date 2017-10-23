@@ -1,12 +1,19 @@
 #ifndef NOISESTRUCTS_H
 #define NOISESTRUCTS_H
 
+#include <fmod.hpp>
+#include <btBulletCollisionCommon.h>
+
 struct THRESHOLD
 {
-	static const int MAX_CHANNELS	= 1000;
-	static const int MAX_GROUPS		= 4;
-	static const int MAX_SFX		= 32;
-	static const int MAX_SONGS		= 32;
+	static const int	MAX_CHANNELS	= 100;
+	static const int	MAX_GROUPS		= 4;
+	static const int	MAX_SFX			= 32;
+	static const int	MAX_SONGS		= 32;
+	static const int	MUSIC_MIN_DIST	= 1;
+	static const int	MUSIC_MAX_DIST	= 25;
+	static const int	SFX_MIN_DIST	= 1;
+	static const int	SFX_MAX_DIST	= 10;
 };
 
 enum CHANNEL_GROUP 
@@ -26,7 +33,8 @@ enum SFX
 // Put all identifier for music here
 enum MUSIC 
 {
-	NES
+	TEST_MUSIC,
+	ENRAGE
 };
 
 // Keeps track of everything about a specific sound
@@ -34,8 +42,6 @@ struct Sound
 {
 	Sound() : channel(nullptr), data(nullptr), group(CHANNEL_GROUP(0)) { }
 
-	FMOD_VECTOR		pos;
-	FMOD_VECTOR		vel;
 	FMOD::Channel*	channel;
 	FMOD::Sound*	data;
 	CHANNEL_GROUP	group;

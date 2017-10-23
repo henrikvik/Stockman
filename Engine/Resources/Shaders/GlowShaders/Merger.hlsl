@@ -4,7 +4,7 @@ Texture2D toMerge : register(t1);
 RWTexture2D<unorm float4> output : register(u0);
 sampler Sampler : register(s0);
 
-[numthreads(16, 9, 1)]
+[numthreads(16, 16, 1)]
 void CS( uint3 DTid : SV_DispatchThreadID )
 {
     float2 uv;

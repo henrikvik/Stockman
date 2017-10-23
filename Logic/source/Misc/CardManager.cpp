@@ -52,6 +52,7 @@ void Logic::CardManager::createDeck(int nrOfEach)
 			m_deck.push_back(j);
 		}
 	}
+	shuffle(1);
 }
 
 void Logic::CardManager::pickThree(bool damaged)
@@ -80,19 +81,24 @@ void Logic::CardManager::shuffle(int times)
 
 Card Logic::CardManager::pick(int cardIndex)
 {
-	if (m_hand[cardIndex] != healthPack)
+	if (cardIndex >= 0)
 	{
-		m_deck.erase(m_deck.begin() + cardIndex);
-	}
+		if (m_hand[cardIndex] != healthPack)
+		{
+			m_deck.erase(m_deck.begin() + cardIndex);
+		}
 
-	shuffle(1);
+		shuffle(1);
 
-	Card choosen = m_cards.at(m_hand[cardIndex]);
+		Card choosen = m_cards.at(m_hand[cardIndex]);
 
-	for (int i = 0; i < handSize; i++)
-	{
-		m_hand[i] = -1; //is default
-	}
+		for (int i = 0; i < handSize; i++)
+		{
+			m_hand[i] = -1; //is default
+		}
+		return choosen;
+	}	
 
-	return choosen;
+	Card emptyDefault;
+	return emptyDefault;
 }
