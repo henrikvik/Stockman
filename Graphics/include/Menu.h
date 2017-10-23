@@ -19,7 +19,7 @@ namespace Graphics
 
 
     private:
-        void mapButtons(ID3D11DeviceContext * contex, ButtonInfo * info);
+        void mapButtons(ID3D11DeviceContext * contex, Graphics::MenuInfo * info);
         void createVBuffers(ID3D11Device * device);
         void loadTextures(ID3D11Device * device, ID3D11DeviceContext * contex);
         
@@ -32,7 +32,8 @@ namespace Graphics
         DirectX::CommonStates * states;
 
         Shader shader;
-        MenuInfo * active;
+        MenuInfo active;
         bool loaded;
+        bool buttonsMaped;
     };
 }
