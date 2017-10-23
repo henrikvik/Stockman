@@ -131,7 +131,7 @@ namespace Graphics
         float focalPlaneR = focalPlane * farP;
 
         float CoC[2] = {
-            ((apature * focalLength * (farP - nearP)) / ((focalPlaneR - focalLength) * nearP * farP)), //scale
+            ((apature * focalLength * focalPlaneR * (farP - nearP)) / ((focalPlaneR - focalLength) * nearP * farP)), //scale
             ((apature * focalLength * (nearP - focalPlaneR)) / ((focalPlaneR * focalLength) * nearP))    //bias
         };
         
