@@ -152,7 +152,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 		endNode = &navNodes[endNode->parent];
 	}
 
-	while (!list.empty)
+	while (!list.empty())
 	{
 		ret.push_back(list.top());
 		list.pop();
