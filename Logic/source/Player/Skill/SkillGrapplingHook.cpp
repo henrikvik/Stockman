@@ -88,8 +88,7 @@ void SkillGrapplingHook::onRelease()
 	else if (Player* player = dynamic_cast<Player*>(m_shooter))
 	{
 		float yVel = player->getCharController()->getLinearVelocity().y();
-		//player->getCharController()->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
-        player->getCharController()->setFallSpeed(PHYSICS_GRAVITY);
+        player->getCharController()->setFallSpeed(1.f);
 		player->getCharController()->setLinearVelocity({ 0.f, yVel, 0.f });
 	}
 
