@@ -128,17 +128,15 @@ namespace Graphics
         //change these if near and far changes
         float nearP = 0.1f;
         float farP = 250.0f;
+        float focalPlaneR = focalPlane * farP;
 
         float CoC[2] = {
-            ((apature * focalLength * (farP - nearP)) / ((focalPlane - focalLength) * nearP * farP)), //scale
-            ((apature * focalLength * (nearP - focalPlane)) / ((focalPlane - focalLength) * nearP))    //bias
+            ((apature * focalLength * (farP - nearP)) / ((focalPlaneR - focalLength) * nearP * farP)), //scale
+            ((apature * focalLength * (nearP - focalPlaneR)) / ((focalPlaneR * focalLength) * nearP))    //bias
         };
         
-
-        cbuffer.map(context);
         cbuffer.write(context, CoC, sizeof(float) * 2);
-        cbuffer.unmap(context);
-        
+
     }
 
 

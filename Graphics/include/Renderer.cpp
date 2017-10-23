@@ -7,6 +7,7 @@
 #include <Engine\Profiler.h>
 
 
+
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
 
@@ -360,10 +361,15 @@ namespace Graphics
 
             if (enableCoCWindow)
             {
+                ImGui::Begin("camera stuff");
                 static float fp;
                 static float fl;
                 static float a;
+                ImGui::SliderFloat("focal Plane", &fp, 0.01f, 1.0f);
+                ImGui::SliderFloat("focal lenght", &fl, 0.01f, 1.0f);
+                ImGui::SliderFloat("apature", &a, 0.01f, 1.0f);
                 DoFRenderer.updateCoc(deviceContext, fp, fl, a);
+                ImGui::End();
             }
             DoFRenderer.DoFRender(deviceContext, &fakeBackBuffer, &depthStencil, &fakeBackBufferSwap, camera);
             PROFILE_END();
