@@ -39,11 +39,13 @@ namespace Logic
 		std::vector<double> time;
 
 		std::thread *threads[NR_OF_THREADS];
+		int m_indexRunning[NR_OF_THREADS];
 		bool m_threadRunning[NR_OF_THREADS];
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
 		int m_currentWave, m_frame;
+		float m_deltaTime;
 
 		void deleteData(); // delete data in vectors
 		void allocateData(); // resize enemy vector 
@@ -62,6 +64,7 @@ namespace Logic
 		void updateEnemies(int index, Player const &player, float deltaTime);
 		// statis because threads will use this
 		static void updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime);
+		static void onPathThreadCreation(EntityManager *manager, int index, Player const &player, float deltaTime);
 		void updateEnemy(Enemy *enemy, int index, Player const &player, float deltaTime);
 		void clear();
 
