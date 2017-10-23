@@ -201,10 +201,7 @@ void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, 
         enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
 
         std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);
-        m_
-          
-          
-        Enemies.push_back(enemy);
+        m_deadEnemies.push_back(enemy);
         m_enemies[index].pop_back();
     }
 }

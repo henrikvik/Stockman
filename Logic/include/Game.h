@@ -103,7 +103,7 @@ namespace Logic
 		std::string			highScore[10];
 
 		// FPS
-		FPSRenderer fpsRenderer;
+		FPSRenderer         m_fpsRenderer;
 
 		//Debug
 		bool				m_debugOpen;
