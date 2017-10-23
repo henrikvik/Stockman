@@ -5,6 +5,8 @@ namespace Graphics
         blur1col0(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
         blur1col1(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
         blur2Final(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
+        //renderTarget(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
+        cbuffer(device),
         CoCcreation(device, SHADER_PATH("DoFShaders/CreateCoc.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
         blur1(device, SHADER_PATH("DoFShaders/Blur1.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
         blur2(device, SHADER_PATH("DoFShaders/Blur2.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
@@ -15,6 +17,7 @@ namespace Graphics
         //samplers[0] = states->PointClamp();
         //samplers[1] = states->LinearClamp();
         createFullScreenQuad(device);
+        firstTime = true;
     }
 
     DoF::~DoF()
@@ -27,6 +30,10 @@ namespace Graphics
 
     void DoF::DoFRender(ID3D11DeviceContext * context, ShaderResource * colorBuffer, DepthStencil * depthBuffer, ShaderResource * outputBuffer, Camera *cam)
     {
+        if (firstTime)
+        {
+            updateCoc(context);
+        }
         static ID3D11SamplerState * samplers[] = {
             states->PointClamp(),
             states->LinearClamp()
@@ -47,6 +54,7 @@ namespace Graphics
             *colorBuffer,
             *depthBuffer
         };
+        context->PSSetConstantBuffers(0, 1, cbuffer);
         context->VSSetShader(CoCcreation, nullptr, 0);
         context->PSSetShader(CoCcreation, nullptr, 0);
 
@@ -112,6 +120,25 @@ namespace Graphics
         context->Draw(6, 0);
         context->OMSetRenderTargets(1, &rtvNULL, nullptr);
         context->PSSetShaderResources(0, 1, &srvNULL);
+    }
+
+    //updates the values that create the circle of confusion
+    void DoF::updateCoc(ID3D11DeviceContext *context, float focalLength, float focalPlane, float apature)
+    {
+        //change these if near and far changes
+        float nearP = 0.1f;
+        float farP = 250.0f;
+
+        float CoC[2] = {
+            ((apature * focalLength * (farP - nearP)) / ((focalPlane - focalLength) * nearP * farP)), //scale
+            ((apature * focalLength * (nearP - focalPlane)) / ((focalPlane - focalLength) * nearP))    //bias
+        };
+        
+
+        cbuffer.map(context);
+        cbuffer.write(context, CoC, sizeof(float) * 2);
+        cbuffer.unmap(context);
+        
     }
 
 

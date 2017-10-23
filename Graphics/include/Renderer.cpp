@@ -324,28 +324,50 @@ namespace Graphics
 		static bool wasPressed = false;
 		static bool isPressed = false;
 		static bool enablePostEffects = true;
+        
 		wasPressed = isPressed;
 		isPressed = ks.V;
 
 		if (!wasPressed && isPressed)
 			enablePostEffects = !enablePostEffects;
 
+        
+        
+       
 
 		if (enablePostEffects)
 		{
 
 			///////Post effects
 			PROFILE_BEGIN("Glow");
-			glowRenderer.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+			//glowRenderer.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
 			PROFILE_END();
 
 			PROFILE_BEGIN("SSAO");
-			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+			//ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
 			
 
             PROFILE_BEGIN("Dof");
+            static bool wasPressed1 = false;
+            static bool isPressed1 = false;
+            static bool enableCoCWindow = false;
+
+            wasPressed1 = isPressed1;
+            isPressed1 = ks.K;
+
+            if (!wasPressed1 && isPressed1)
+                enableCoCWindow = !enableCoCWindow;
+
+            if (enableCoCWindow)
+            {
+                static float fp;
+                static float fl;
+                static float a;
+                DoFRenderer.updateCoc(deviceContext, fp, fl, a);
+            }
             DoFRenderer.DoFRender(deviceContext, &fakeBackBuffer, &depthStencil, &fakeBackBufferSwap, camera);
             PROFILE_END();
+
             static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
             static UINT sampleMask = 0xffffffff;
             deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
@@ -356,7 +378,7 @@ namespace Graphics
 			PROFILE_BEGIN("renderFog()");
 
 			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
-			fog.renderFog(deviceContext, backBuffer, depthStencil);
+			//fog.renderFog(deviceContext, backBuffer, depthStencil);
 			PROFILE_END();
 		}
 

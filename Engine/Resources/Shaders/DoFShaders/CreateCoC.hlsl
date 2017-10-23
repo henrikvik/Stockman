@@ -5,6 +5,13 @@ struct VSOutput
     float2 uv : TEXCOORD;
 };
 
+cbuffer CoCbuffer : register(b0)
+{
+    float CoCScale;
+    float CoCBias;
+}
+
+
 VSOutput VS( VSInput input)
 {
     VSOutput output = (VSOutput) 0;
@@ -13,6 +20,7 @@ VSOutput VS( VSInput input)
     return output;
 }
 
+
 Texture2D colorBuffer : register(t0);
 Texture2D depthBuffer : register(t1);
 
@@ -20,9 +28,8 @@ float4 PS(VSOutput input) : SV_Target0
 {
     float4 color;
     color.xyz = colorBuffer.Sample(linearSampler, input.uv).xyz;
-    color.w = depthBuffer.Sample(pointSampler, input.uv).x;
+    color.w = depthBuffer.Sample(pointSampler, input.uv);
 
-    //color.w = 0.5f -((CoCScale * color.w) + CoCBias);
     color.w = ((CoCScale * color.w) + CoCBias);
     return color;
 }

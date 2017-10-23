@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include <CommonStates.h>
 #include "Utility\DepthStencil.h"
+#include "Utility\ConstantBuffer.h"
 
 namespace Graphics
 {
@@ -13,6 +14,7 @@ namespace Graphics
         DoF(ID3D11Device * device);
         ~DoF();
         void DoFRender(ID3D11DeviceContext * context, ShaderResource * colorBuffer, DepthStencil * depthBuffer, ShaderResource * outputBuffer, Camera *cam);
+        void updateCoc(ID3D11DeviceContext *context, float focalLength = 0.21f, float focalPlane = 5.0f, float apature = 0.1);
 
     private:
 
@@ -24,11 +26,14 @@ namespace Graphics
         ShaderResource blur1col0;
         ShaderResource blur1col1;
         ShaderResource blur2Final;
+        //ShaderResource renderTarget;
 
         Shader CoCcreation;
         Shader blur1;
         Shader blur2;
         Shader glue;
+        ConstantBuffer<float> cbuffer;
+        bool firstTime;
     };
 }
 
