@@ -11,19 +11,21 @@ SamplerState pointSampler : register(s0);
 SamplerState linearSampler : register(s1);
 
 #define apature .1f
-#define focalLenght 1.45f
-#define focalPlane 2.5f
+#define focalLenght .21f
+#define focalPlane 5.0f
+#define DoFkernel 3
 
 
-#define CoCScale ((apature * focalLenght * (farP-nearP)) / ((focalPlane - focalLenght) * nearP * farP))
-#define CoCBias ((apature * focalLenght * (nearP - focalPlane)) / ((focalPlane * focalLenght) * nearP))
+//#define CoCScale ((apature * focalLenght * (farP-nearP)) / ((focalPlane - focalLenght) * nearP * farP))
+//#define CoCBias ((apature * focalLenght * (nearP - focalPlane)) / ((focalPlane - focalLenght) * nearP))
 
-float CoCBlur(Texture2D inTexture, float2 uv, float baseCoC, float4 inColor, float stepDistance, out float4 outColor)
+float CoCBlur(Texture2D inTexture, float2 uv, float baseCoC, half4 inColor, float stepDistance, out half4 outColor)
 {
     outColor = inColor;
-    float4 color = inTexture.Sample(linearSampler, uv);
-    bool blurNear = (color.w > 0.0f);
-    //to avoid ifs
+    half4 color = inTexture.Sample(linearSampler, uv);
+    bool blurNear = (color.w < 0.0f);
+
+
     float absCoC = abs(color.w);
     if (absCoC > stepDistance && blurNear || (baseCoC > 0.0f && absCoC < baseCoC * 2.0f))
     {
