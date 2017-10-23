@@ -52,7 +52,6 @@ void Behavior::walkPath(RunIn &in)
         {
             if (!m_pathing.pathOnLastNode())
                 m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
-            printf("Node change: %d\n", m_pathing.getCurrentNode());
             m_changedGoalNode = true;
         }
     }
