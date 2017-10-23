@@ -37,7 +37,7 @@ namespace Logic
 		float getGroupPitch(CHANNEL_GROUP group);
 
 	private:
-		void initGroups();
+		void initGroups(bool mute);
 		int initSFX(LOAD_MODE loadMode);
         int initMusic(LOAD_MODE loadMode);
 
