@@ -6,8 +6,8 @@ struct VSOutput
 };
 struct PSOutput
 {
-    float4 color0 : SV_Target0;
-    float4 color1 : SV_Target1;
+    half4 color0 : SV_Target0;
+    half4 color1 : SV_Target1;
 };
 
 VSOutput VS(VSInput input)
@@ -33,7 +33,7 @@ PSOutput PS(VSOutput input) : SV_Target0
     float sampelCount1 = 0.0f;
 
     float diagonalStep = 0.866f * (ONE_OVER_SCREEN_SIZE.x / ONE_OVER_SCREEN_SIZE.y);
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < DoFkernel; i++)
     {
         float stepDistance = (i + 0.5f) * ONE_OVER_SCREEN_SIZE.y;
         

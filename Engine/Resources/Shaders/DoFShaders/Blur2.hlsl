@@ -18,13 +18,13 @@ Texture2D blurT1 : register(t1);
 
 float4 PS(VSOutput input) : SV_Target0
 {
-    float4 finalColor;
+    half4 finalColor;
 
-    float4 baseColor = blurT1.Sample(linearSampler, input.uv);
+    half4 baseColor = blurT1.Sample(linearSampler, input.uv);
 
 
-    float4 color0 = float4(0.0f, 0.0f, 0.0f, baseColor.w);
-    float4 color1 = float4(0.0f, 0.0f, 0.0f, baseColor.w);
+    half4 color0 = float4(0.0f, 0.0f, 0.0f, baseColor.w);
+    half4 color1 = float4(0.0f, 0.0f, 0.0f, baseColor.w);
     float sampelCount0 = 0.0f;
     float sampleCount1 = 0.0f;
 
@@ -32,7 +32,7 @@ float4 PS(VSOutput input) : SV_Target0
     float step0 = float2(diagonalStep, -0.5f);
     float step1 = float2(-diagonalStep, -0.5f);
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < DoFkernel; i++)
     {
         float stepDistance = (i + 0.5f) * ONE_OVER_SCREEN_SIZE.y;
 
