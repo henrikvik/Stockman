@@ -105,18 +105,15 @@ void EntityManager::update(Player const &player, float deltaTime)
 				updateEnemies(i, player, deltaTime);
 			}
 			else
-			{				// seperate threads based on i, but join them before end
+			{
 				int thread = getThread(i);
 				if (!m_threadRunning[thread])
 				{
-					m_threadRunning[thread] = true;
 					std::thread *t = threads[thread];
+					m_threadRunning[thread] = true;
 
 					if (t)
-					{
-					//	deleteThread(t);
 						m_indexRunning[thread] = i;
-					}
 					else
 					{
 						PROFILE_BEGIN("Create Thread");
@@ -157,9 +154,10 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 
 			if (goalNodeChanged && !AStar::singleton().isEntityOnIndex(*enemy, index))
 			{
-				m_enemies[AStar::singleton().getIndex(*enemy)].push_back(enemy);
+                int newIndex = AStar::singleton().getIndex(*enemy);
+				m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
 				std::swap(m_enemies[index][i], m_enemies[index][size - 1]);
-				m_enemies[index].pop_back();
+				m_enemies[index].pop_back();                   
 			}
 		}
 	}
@@ -173,7 +171,7 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 	aStar.loadTargetIndex(player);
 
 	std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
-	auto &enemies = manager->m_enemies;
+	auto enemies = manager->m_enemies; // make a copy of the list to prevent conflicts, but this might not be good enough
 
 	for (size_t i = 0; i < enemies[index].size(); ++i)
 	{
@@ -186,7 +184,7 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 	manager->m_threadRunning[getThread(index)] = false;
 	while (!manager->m_threadRunning[getThread(index)])
 		std::this_thread::sleep_for(2ms); // this is stupid but works
-	updateEnemiesAndPath(manager, manager->m_indexRunning[getThread(index)], player, manager->m_deltaTime);
+    updateEnemiesAndPath(manager, manager->m_indexRunning[getThread(index)], std::ref(player), manager->m_deltaTime);
 }
 
 void EntityManager::onPathThreadCreation(EntityManager * manager, int index, Player const & player, float deltaTime)

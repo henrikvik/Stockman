@@ -63,6 +63,7 @@ void Pathing::renderDebugging(Graphics::Renderer &renderer, DirectX::SimpleMath:
 {
 	m_debugInfo.points->clear();
 	m_debugInfo.points->push_back(start);
+
 	for (int i = 0; i < m_path.size(); i++) // this is slow, but debugging should not be when efficiency is required 
 		m_debugInfo.points->push_back(*m_path[i]);
 

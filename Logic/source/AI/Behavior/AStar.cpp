@@ -43,6 +43,10 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
 {
+	// Edge cases 
+	if (startIndex == toIndex || startIndex == -1 || toIndex == -1)
+		return {};
+
 	// all nodes in navMesh
 	const std::vector<DirectX::SimpleMath::Vector3> &nodes = navigationMesh.getNodes();
 	std::vector<AStar::NavNode> navNodes = this->navNodes;
@@ -50,12 +54,6 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 	// openlist and a test offset
 	auto comp = [](NavNode *fir, NavNode *sec) { return *fir > *sec; };
 	std::priority_queue<NavNode*, std::vector<NavNode*>, decltype(comp)> openList(comp);
-
-	// test special cases
-	if (toIndex > -1 && startIndex == toIndex)
-		return reconstructPath(&navNodes[startIndex], navNodes, toIndex);
-	if (startIndex == toIndex || startIndex == -1 || toIndex == -1)
-		return {};
 
 	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[toIndex]);
 	navNodes[startIndex].explored = true;
@@ -155,7 +153,6 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 		list.pop();
 	}
 
-	printf("List size: %d, Target Index: %d\n", ret.size(), toIndex);
 	return ret;
 }
 

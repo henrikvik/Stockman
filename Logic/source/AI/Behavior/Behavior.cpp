@@ -5,11 +5,11 @@
 #define SCALAR_DIR 0.3f
 #define SCALAR_ALIGN 1.1f
 #define SCALAR_COHES 0.7f
-#define SCALAR_SEP 2.3f
+#define SCALAR_SEP 2.f
 
-#define MAX_LEN_FOR_SEPERATION 10.f
+#define MAX_LEN_FOR_SEPERATION 5.f
 // this can be changed in the future maybe who knows
-#define CHANGE_NODE_DIST 0.3f
+#define CHANGE_NODE_DIST 0.8f
 
 #include <queue>
 using namespace Logic;
@@ -41,12 +41,14 @@ void Behavior::walkPath(RunIn &in)
 	boidCalculations(in.enemy->getPositionBT(), 
 		dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
-	in.enemy->getRigidBody()->translate(dir);
+    in.enemy->getRigidBody()->translate(dir);
+    printf("Len: %f\n", (node - in.enemy->getPositionBT()).length());
 
 	if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST)
 	{
 		if (!m_pathing.pathOnLastNode())
 			m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
+        printf("Node change: %d\n", m_pathing.getCurrentNode());
 		m_changedGoalNode = true;
 	}
 }
@@ -56,8 +58,13 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 {
 	btVector3 sep, align, cohes;
 	int totalSep = 0;
-	if (close.size() == 0)
-		return; // just move
+    if (close.size() <= 1)
+    {
+        dir.setY(0); // right now y should not be changed
+        dir.normalize();
+        dir *= maxSpeed * (dt * 0.001f);
+        return;
+    }
 	// make the vectors
 	btVector3 temp;
 	for (auto const &enemy : close)
@@ -89,9 +96,6 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 
 	// RET
 	dir = dir * SCALAR_DIR + cohes * SCALAR_COHES + align * SCALAR_ALIGN + sep * SCALAR_SEP;
-	dir.setY(0); // right now y should not be changed
-	dir.normalize();
-	dir *= maxSpeed * (dt * 0.001f);
 }
 
 void Behavior::runTree(RunIn &in)
