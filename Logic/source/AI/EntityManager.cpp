@@ -185,9 +185,7 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 
 	manager->m_threadRunning[getThread(index)] = false;
 	while (!manager->m_threadRunning[getThread(index)])
-	{
-		std::this_thread::sleep_for(10ms); // this is stupid but works
-	}
+		std::this_thread::sleep_for(2ms); // this is stupid but works
 	updateEnemiesAndPath(manager, manager->m_indexRunning[getThread(index)], player, manager->m_deltaTime);
 }
 

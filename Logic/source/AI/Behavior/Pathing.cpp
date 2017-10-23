@@ -20,7 +20,7 @@ void Pathing::setPath(std::vector<const DirectX::SimpleMath::Vector3*> const &pa
 	m_path = path;
 }
 
-std::vector<const DirectX::SimpleMath::Vector3*>& Logic::Pathing::getPath()
+std::vector<const DirectX::SimpleMath::Vector3*>& Pathing::getPath()
 {
 	return m_path;
 }

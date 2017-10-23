@@ -43,10 +43,10 @@ void Behavior::walkPath(RunIn &in)
 
 	in.enemy->getRigidBody()->translate(dir);
 
-	if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST
-		&& !m_pathing.pathOnLastNode())
+	if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST)
 	{
-		m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
+		if (!m_pathing.pathOnLastNode())
+			m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
 		m_changedGoalNode = true;
 	}
 }

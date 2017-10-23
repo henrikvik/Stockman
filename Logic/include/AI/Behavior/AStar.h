@@ -71,7 +71,7 @@ namespace Logic
 				getPath(int fromIndex);
 
 			std::vector<const DirectX::SimpleMath::Vector3*> 
-				reconstructPath(NavNode const *endNode, std::vector<NavNode> const &navNodes);
+				reconstructPath(NavNode const *endNode, std::vector<NavNode> const &navNodes, int toIndex);
 
 			void renderNavigationMesh(Graphics::Renderer &renderer);
 			// load the target triangle once per frame instead of once per path load
