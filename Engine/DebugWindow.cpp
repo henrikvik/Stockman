@@ -1,5 +1,9 @@
 #include "DebugWindow.h"
+#include <vector>
 #define ARRAYSIZE(ARR) ((int)(sizeof(ARR)/sizeof(*ARR)))
+
+DebugWindow* DebugWindow::instance = 0;
+
 DebugWindow::DebugWindow()
 {
 	clearLog();
@@ -17,6 +21,20 @@ DebugWindow::~DebugWindow()
 	{
 		free(m_history.at(i));
 	}
+}
+
+DebugWindow * DebugWindow::getInstance()
+{
+	if (instance == 0)
+	{
+		instance = new DebugWindow();
+	}
+	return instance;
+}
+
+void DebugWindow::releaseInstance()
+{
+	delete instance;
 }
 
 void DebugWindow::clearLog()
@@ -43,6 +61,24 @@ void DebugWindow::addLog(const char* command_line, ...) IM_FMTARGS(2)
 
 void DebugWindow::draw(const char * title)
 {
+	ImGuiStyle * style = &ImGui::GetStyle();
+
+	style->WindowPadding = ImVec2(15, 15);
+	style->WindowRounding = 5.0f;
+	style->FramePadding = ImVec2(5, 5);
+	style->FrameRounding = 4.0f;
+	style->ItemSpacing = ImVec2(12, 8);
+	style->ItemInnerSpacing = ImVec2(8, 6);
+	style->IndentSpacing = 25.0f;
+	style->ScrollbarSize = 15.0f;
+	style->ScrollbarRounding = 9.0f;
+	style->GrabMinSize = 5.0f;
+	style->GrabRounding = 3.0f;
+
+	style->Colors[ImGuiCol_Button] = ImVec4(1.00f, 0.6f, 0.6f, 0.50f);
+	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(1.00f, 0.7f, 0.7f, 0.50f);
+	style->Colors[ImGuiCol_ButtonActive] = ImVec4(1.00f, 0.8f, 0.8f, 0.50f);
+
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_Always);
 	if (ImGui::Begin(title))
 	{
@@ -55,7 +91,7 @@ void DebugWindow::draw(const char * title)
 		}
 
 		ImGui::SameLine();
-		bool copy_to_clipboard = ImGui::SmallButton("Copy");
+		bool copy_to_clipboard = ImGui::SmallButton("Copy entire output window");
 		ImGui::SameLine();
 
 		if (ImGui::SmallButton("Scroll to bottom"))
@@ -180,18 +216,38 @@ void DebugWindow::doCommand(const char* command_line)
 
 	m_history.push_back(Strdup(command_line));
 
+	std::vector<std::string> args;
+	int length = std::strlen(command_line);
+	std::string temp = "";
+
+	for (int i = 0; i < length; i++)
+	{
+		if (command_line[i] == ' ')
+		{
+			args.push_back(temp);
+			temp = "";
+		}
+		else
+		{
+			temp += command_line[i];
+		}
+	}
+	args.push_back(temp);
+
+	const char* finalCommand = args[0].c_str();
+
 	// Process command
-	if (Stricmp(command_line, "CLEAR") == 0)
+	if (Stricmp(finalCommand, "CLEAR") == 0)
 	{
 		clearLog();
 	}
-	else if (Stricmp(command_line, "HELP") == 0)
+	else if (Stricmp(finalCommand, "HELP") == 0)
 	{
 		addLog("Commands:");
 		for (int i = 0; i < m_command.size(); i++)
 			addLog("- %s", m_command[i]);
 	}
-	else if (Stricmp(command_line, "HISTORY") == 0)
+	else if (Stricmp(finalCommand, "HISTORY") == 0)
 	{
 		int first = m_history.size() - 10;
 		for (int i = first > 0 ? first : 0; i < m_history.size(); i++)
@@ -199,7 +255,7 @@ void DebugWindow::doCommand(const char* command_line)
 	}
 	else
 	{
-		addLog("Unknown command: '%s'\n", command_line);
+		addLog("Unknown command: '%s'\n", finalCommand);
 	}
 
 }
@@ -301,7 +357,6 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 					m_historyPos = -1;
 		}
 
-		// A better implementation would preserve the data on the current input line along with cursor position.
 		if (prev_history_pos != m_historyPos)
 		{
 			data->CursorPos = data->SelectionStart = data->SelectionEnd = data->BufTextLen = (int)snprintf(data->Buf, (size_t)data->BufSize, "%s", (m_historyPos >= 0) ? m_history[m_historyPos] : "");
@@ -312,4 +367,10 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 	}
 	}
 	return 0;
+}
+
+void DebugWindow::registerCommand(char* command, std::function<std::string(std::stringstream&)> function)
+{
+	m_command.push_back(command);
+	functions.push_back(function);
 }
