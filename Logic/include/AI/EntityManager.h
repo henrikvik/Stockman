@@ -42,6 +42,9 @@ namespace Logic
 		int m_indexRunning[NR_OF_THREADS];
 		bool m_threadRunning[NR_OF_THREADS];
 
+        Physics* m_physicsPtr;
+        ProjectileManager* m_projectilePtr;
+
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
 		int m_currentWave, m_frame;

@@ -30,7 +30,7 @@ void NoiseMachine::init()
     for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)  m_music[i]  = nullptr;
 
 	// Initialize sounds
-	initGroups();
+	initGroups(SOUNDSETTINGS::MUTE_ALL);
     int nrSFX = initSFX(SOUNDSETTINGS::SFX_LOAD_MODE);    
     int nrSongs = initMusic (SOUNDSETTINGS::MUSIC_LOAD_MODE);
 
@@ -137,7 +137,7 @@ void NoiseMachine::play(Sound* sound, SoundSource* soundSource)
 }
 
 // Initialize all sound groups
-void NoiseMachine::initGroups()
+void NoiseMachine::initGroups(bool mute)
 {
 	// Setting speicific groups
 	ERRCHECK(m_system->createChannelGroup("SFX",		&m_group[CHANNEL_GROUP::CHANNEL_SFX]));
@@ -146,6 +146,9 @@ void NoiseMachine::initGroups()
 
 	// Setting master group
 	ERRCHECK(m_system->getMasterChannelGroup(&m_group[CHANNEL_GROUP::CHANNEL_MASTER]));
+
+    // Muting if active
+    if (mute) for (int i = 0; i < THRESHOLD::MAX_GROUPS; i++) m_group[i]->setVolume(NULL);
 }
 
 // Initialize all sound effects
