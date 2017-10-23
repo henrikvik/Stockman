@@ -6,7 +6,7 @@ using namespace Logic;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
 	btRigidBody* body, btVector3 halfExtent)
-	: Enemy(modelID, body, halfExtent, 5, 1, 5, 0, 0) {
+	: Enemy(modelID, body, halfExtent, 5, 1, 15, 0, 0) {
 	setBehavior(RANGED);
 }
 
@@ -30,6 +30,9 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
 
 		if (!pj->getProjectileData().enemyBullet)
 			damage(pj->getProjectileData().damage * dmgMultiplier);
+
+		if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
 	}
 }
 
@@ -53,7 +56,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
 	{
 		if (RandomGenerator::singleton().getRandomInt(0, 1))
 		{
-			spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::GRASS, SPEED_AB2);
+			spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB2);
 		}
 		else
 		{

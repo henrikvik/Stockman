@@ -33,13 +33,13 @@ namespace Logic
 		void collision(PhysicsObject& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
 		virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier) = 0;
 
-		btVector3 getHalfExtent() const;
-		btVector3 getPositionBT() const;
+		virtual btVector3 getHalfExtent() const;
+		virtual btVector3 getPositionBT() const;
 
-		DirectX::SimpleMath::Vector3 getPosition() const;
+		virtual DirectX::SimpleMath::Vector3 getPosition() const;
 		DirectX::SimpleMath::Quaternion getRotation() const;
 		DirectX::SimpleMath::Vector3 getScale() const;
-		DirectX::SimpleMath::Matrix getTransformMatrix() const;
+		virtual DirectX::SimpleMath::Matrix getTransformMatrix() const;
 
 		btRigidBody* getRigidBody();
 		btTransform& getTransform();

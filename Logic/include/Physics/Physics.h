@@ -40,10 +40,13 @@
 #include <Physics\Primitives.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include <BulletDynamics\Character\btKinematicCharacterController.h>
+#include <BulletCollision\CollisionDispatch\btGhostObject.h>
 #include <Misc\GameTime.h>
 #include <Engine\Profiler.h>
 
-#define PHYSICS_GRAVITY 0.982f * 0.5f
+//#define PHYSICS_GRAVITY 0.00982f
+#define PHYSICS_GRAVITY 9.82f * 2.f
 
 #define DEFAULT_F 0.5f
 #define DEFAULT_R 0 
@@ -82,8 +85,9 @@ namespace Logic
 		btRigidBody* createBody(Cube& cube, float mass, bool isSensor = false);				// Should only be used for hitboxes on map, nothing else
 		btRigidBody* createBody(Plane& plane, float mass, bool isSensor = false);			// Static infinite plane, keep this temporary
 		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor = false);			// Should be used as often as possible because it needs less processing of collisions
-		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false);		// Should be used for player & enemies
-		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);		// Should be used for player & enemies
+		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false);		// Should be used for enemies
+		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);		// Should be used for enemies
+		btPairCachingGhostObject* createPlayer(btCapsuleShape* capsule, btVector3 pos);		// Should be used for player
 
 		// Debug Rendering
 		void render(Graphics::Renderer& renderer);
@@ -94,6 +98,7 @@ namespace Logic
 		btSequentialImpulseConstraintSolver* constraintSolver;
 		btDefaultCollisionConfiguration* collisionConfiguration;
 		btRigidBody* initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, BodySpecifics specifics);
+		btGhostPairCallback* ghostPairCB;
 
 		// Debug Rendering
 		Graphics::RenderDebugInfo renderDebug;
@@ -102,6 +107,7 @@ namespace Logic
 		void renderCylinder(Graphics::Renderer& renderer, btCylinderShape* cs, btRigidBody* body);
 		void renderCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btRigidBody* body);
 		void renderRectangleAround(Graphics::Renderer& renderer, btVector3 origin, btVector3 half);
+		void renderGhostCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btGhostObject* ghostObject);
 	};
 }
 

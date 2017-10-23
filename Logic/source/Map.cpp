@@ -104,22 +104,28 @@ void Map::initHitboxes(Physics* physics)
 	house = new StaticObject(Graphics::CUBE, physics->createBody(Cube({ 150, 60, 150 }, { 0, 0, 0 }, { 40, 6, 40 }), 0.f, false), { 40, 6, 40 });
 	m_hitboxes.push_back(house);
 
-	house = new StaticObject(Graphics::CUBE, physics->createBody(Cube({ -60, 6, -60 }, { 0.3f, 0, 0 }, { 25, 3, 25 }), 0.f, false), { 25, 3, 25 });
+	house = new StaticObject(Graphics::CUBE, physics->createBody(Cube({ -60, 1, -60 }, { 0, 0.3f, 0 }, { 25, 3, 25 }), 0.f, false), { 25, 3, 25 });
 	m_hitboxes.push_back(house);
-
 }
 
 void Map::initObjects(Physics * physics)
 {
 	btVector3 halfextent(1.0, 1.0, 1.0);
-	StaticObject* box = new StaticObject(Graphics::CUBE, physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
-	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 2, 0 });/*
-	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 1, 4, 0 });
-	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 4, 1 });
-	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 4, 0 });
-	box->addExtraBody(physics->createBody(Cube({ 5, 3, -5 }, { 0, 0, 0 }, halfextent), 0.f, true), 2.f, { 0, 6, 0 });*/
+	Speaker* box = new Speaker(physics->createBody(Cube({ -25, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	box->getSoundSource()->autoPlaySFX(SFX::BOING, 6000.f, 250.f);
 	m_objects.push_back(box);
-	
+
+	box = new Speaker(physics->createBody(Cube({ -26, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	box->getSoundSource()->delayPlayMusic(MUSIC::TEST_MUSIC, 500.f);
+	m_objects.push_back(box);
+
+	box = new Speaker(physics->createBody(Cube({ -23, 3, 74 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	box->getSoundSource()->autoPlaySFX(SFX::BOING, 4000.f, 250.f);
+	m_objects.push_back(box);
+
+	box = new Speaker(physics->createBody(Cube({ -23, 2, 73 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+	box->getSoundSource()->autoPlaySFX(SFX::BOING, 3500.f, 250.f);
+	m_objects.push_back(box);
 }
 
 void Map::clear()
@@ -152,7 +158,7 @@ void Map::render(Graphics::Renderer& renderer)
 		o->render(renderer);
 
 	// Drawing objects
-	for (StaticObject* e : m_objects)
+	for (Speaker* e : m_objects)
 		e->render(renderer);
 
 	// Drawing hitboxes
@@ -163,4 +169,4 @@ void Map::render(Graphics::Renderer& renderer)
 	
 std::vector<Object*>*				Map::getProps()				{ return &m_props;				}
 std::vector<StaticObject*>*			Map::getHitboxes()			{ return &m_hitboxes;			}
-std::vector<StaticObject*>*			Map::getObjects()			{ return &m_objects;			}
+std::vector<Speaker*>*				Map::getObjects()			{ return &m_objects;			}

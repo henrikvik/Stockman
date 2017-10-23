@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <iostream>
 #include <Engine\Typing.h>
-#define _GOD_MODE
+#include <DebugDefines.h>
 
 using namespace Logic;
 
@@ -14,6 +14,8 @@ Game::Game()
 	m_cardManager		= nullptr;
 	m_menu				= nullptr;
 	m_highScoreManager	= nullptr;
+
+
 }
 
 Game::~Game() 
@@ -24,6 +26,9 @@ Game::~Game()
 
 void Game::init()
 {
+	// Initializing Sound
+	NoiseMachine::Get().init();
+
 	// Initializing Bullet physics
 	btDefaultCollisionConfiguration* collisionConfiguration		= new btDefaultCollisionConfiguration();				// Configuration
 	btCollisionDispatcher* dispatcher							= new btCollisionDispatcher(collisionConfiguration);	// The default collision dispatcher
@@ -36,20 +41,19 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, m_physics->createBody(Cylinder(Player::startPosition, PLAYER_START_ROT, PLAYER_START_SCA), 75.f), PLAYER_START_SCA);
+	m_player = new Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
+	NoiseMachine::Get().update(m_player->getListenerData());
 
+	// Initializing Highscore Manager
 	m_highScoreManager = newd HighScoreManager();
-
-	std:string name = "Stockman";
-
-	m_highScoreManager->setName(name);
+	m_highScoreManager->setName("Stockman");
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine(m_highScoreManager->getName());
 	m_menu->initialize(STARTING_STATE); 
 
-	// Initializing the map
+	// Initializing the Map
 	m_map = newd Map();
 	m_map->init(m_physics);
 
@@ -66,21 +70,23 @@ void Game::init()
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
 
-	// Resetting Combo's
+	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
 }
 
 void Game::clear()
 {
+	m_menu->clear();
+	m_projectileManager->clear();
+	NoiseMachine::Get().clear();
+
 	delete m_physics;
 	delete m_player;
-	m_menu->clear();
 	delete m_menu;
 	delete m_map;
 	delete m_cardManager;
 	delete m_highScoreManager;
-	m_projectileManager->clear();
 	delete m_projectileManager;
 }
 
@@ -104,6 +110,15 @@ void Game::waveUpdater()
 		if (m_waveTimer > m_waveTime[m_waveCurrent])
 		{
 			// Spawning next wave
+			// Enrage
+			int affectedEnemies = m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE);
+			if (affectedEnemies > 0)
+			{
+				NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MUSIC, 0.1f);
+				NoiseMachine::Get().setGroupPitch(CHANNEL_GROUP::CHANNEL_MUSIC, 1.5f);
+				NoiseMachine::Get().playMusic(MUSIC::ENRAGE, m_player->getSoundSource(), false);
+			}
+
 			m_waveCurrent++;
 			printf("Spawing wave: %d\n", m_waveCurrent);
 			m_entityManager.setCurrentWave(m_waveCurrent);
@@ -136,15 +151,18 @@ void Game::update(float deltaTime)
 		}
 		else
 		{
+			/* Temp sound testing */
+			if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L)) NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MASTER, 0);
+
 			ComboMachine::Get().Update(deltaTime);
 			waveUpdater();
 
-			PROFILE_BEGIN("Player");
-			m_player->updateSpecific(m_gameTime.dt);
-			PROFILE_END();
-
 			PROFILE_BEGIN("Physics");
 			m_physics->update(m_gameTime);
+			PROFILE_END();
+
+			PROFILE_BEGIN("Player");
+			m_player->updateSpecific(m_gameTime.dt);
 			PROFILE_END();
 
 			PROFILE_BEGIN("AI & Triggers");
@@ -157,6 +175,10 @@ void Game::update(float deltaTime)
 
 			PROFILE_BEGIN("Projectiles");
 			m_projectileManager->update(m_gameTime.dt);
+			PROFILE_END();
+		
+			PROFILE_BEGIN("Sound");
+			NoiseMachine::Get().update(m_player->getListenerData());
 			PROFILE_END();
 		}
 
@@ -179,11 +201,13 @@ void Game::update(float deltaTime)
 		m_menu->update(m_gameTime.dt);
 		break;
 	}
+#ifdef SHOW_FPS 
+	fpsRenderer.updateFPS(deltaTime);
+#endif
 }
 
 void Game::gameOver()
 {
-	printf("You ded bro.\n");
 	m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
 	m_menu->setStateToBe(GameState::gameStateGameOver);
 
@@ -228,9 +252,14 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuSettings:
 	case gameStateGameOver:
 		/*m_menu->render(renderer);*/
-	default:  m_menu->render(renderer);
+	default:  
+		m_menu->render(renderer);
 		break;
 	}
+
+#ifdef SHOW_FPS 
+	fpsRenderer.renderFPS(renderer);
+#endif
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

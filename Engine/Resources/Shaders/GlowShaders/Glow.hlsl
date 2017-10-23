@@ -4,7 +4,7 @@
 Texture2D inputTexture : register(t0);
 RWTexture2D<unorm float4> output : register(u0);
 
-[numthreads(16, 9, 1)]
+[numthreads(16, 16, 1)]
 void CS(uint3 DTid : SV_DispatchThreadID)
 {
     int3 textureLocation = DTid * 2 - int3(KERNELSIZE -1, 0, 0);

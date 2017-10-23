@@ -7,6 +7,7 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <iostream>
+#pragma comment (lib, "d3d11.lib")
 #include "Typing.h"
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -152,7 +153,8 @@ HRESULT Engine::createSwapChain()
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
+	desc.BufferDesc.RefreshRate.Denominator = 0;
+	desc.BufferDesc.RefreshRate.Numerator = 0;
 
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
@@ -327,12 +329,25 @@ int Engine::run()
         //////////////TEMP/////////////////
         Graphics::RenderInfo staticSphere = {
             true, //bool render;
-            Graphics::ModelID::CUBE, //ModelID meshId;
+            Graphics::ModelID::SKY_SPHERE, //ModelID meshId;
             0, //int materialId;
             DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
         };
 
-		staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(6, 2, 1) * DirectX::SimpleMath::Matrix::CreateTranslation({0, 2, 0}) * DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0, totalTime * 0.001f, totalTime * 0.001f);
+		Graphics::FoliageRenderInfo grass = {
+			true, //bool render;
+			Graphics::ModelID::GRASS, //ModelID meshId;
+			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+		};
+		//Graphics::FoliageRenderInfo bush = {
+		//	true, //bool render;
+		//	Graphics::ModelID::BUSH, //ModelID meshId;
+		//	DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+		//};
+
+		//grass.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5);
+		//bush.translation = DirectX::SimpleMath::Matrix::CreateScale(10, 10, 10);//* DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 30, 0 });
+		//staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5) * DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 20, 0 });
 		
         Graphics::TextString text{
             L"The hills!",
@@ -346,7 +361,11 @@ int Engine::run()
 
         if (game.getState() == Logic::gameStateGame)
         {
-         // renderer->queueRender(&staticSphere);
+			renderer->queueFoliageRender(&grass);
+			//renderer->queueFoliageRender(&bush);
+
+
+			renderer->queueRender(&staticSphere);
          // renderer->queueText(&text);
 			renderer->updateLight(deltaTime, &cam);
 			renderer->updateShake(deltaTime);
@@ -359,22 +378,20 @@ int Engine::run()
 		g_Profiler->poll();
 
 		if (showProfiler) {
-			//DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 			
 			ImGui::SetNextWindowPos(ImVec2(0, 0));
 			ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
 			g_Profiler->render();
 		}
-		else {
-			//DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
-		}
 
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
-		PROFILE_BEGINC("ImGui_ImplDX11_NewFrame", EventColor::PinkLight);
+		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
 		PROFILE_END();
 
+		PROFILE_BEGINC("IDXGISwapChain::Present()", EventColor::Cyan);
 		mSwapChain->Present(0, 0);
+		PROFILE_END();
 		g_Profiler->frame();
 		
 	}

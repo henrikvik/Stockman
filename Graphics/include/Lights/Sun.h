@@ -1,67 +1,59 @@
 #pragma once
 
-#include <d3d11.h>
+#include "../Utility/ConstantBuffer.h"
 
 #include <SimpleMath.h>
 #include <Engine\Constants.h>
-class Sun
+namespace Graphics
 {
-public:
-	struct ColorStruct
+	class Sun
 	{
-		DirectX::SimpleMath::Vector3 dayColor;
-		DirectX::SimpleMath::Vector3 sunDownColor;
-		DirectX::SimpleMath::Vector3 nightColor;
-	};
+	public:
+		struct ShaderMatrix
+		{
+			DirectX::SimpleMath::Matrix vp;
+			//"padding" TODO: Should probably make a new shader instead
+			DirectX::SimpleMath::Matrix mInvP;
+			//End padding
+			DirectX::SimpleMath::Matrix mV;
+			DirectX::SimpleMath::Vector4 camPos;
+		};
 
+		struct LightValues
+		{
+			DirectX::SimpleMath::Vector4 pos;
+			//Value from 0 to 1, when it is 1 the shadows are on
+			float fade;
+			char pad[12];
+		};
 
-	Sun(ID3D11Device* device, int width, int height);
-	~Sun();
+		Sun(ID3D11Device* device, int width, int height);
+		~Sun();
 
-	void update(ID3D11DeviceContext* context, float rotationAmount, DirectX::SimpleMath::Vector3 offset = DirectX::SimpleMath::Vector3(0, 0, 0));
+		void update(ID3D11DeviceContext* context, float rotationAmount, DirectX::SimpleMath::Vector3 offset = DirectX::SimpleMath::Vector3(0, 0, 0));
 
-	ID3D11Buffer* getMatrixBuffer() { return matrixBuffer; };
-	ID3D11Buffer* getShaderBuffer() { return shaderBuffer; };
-	D3D11_VIEWPORT getViewPort() { return viewPort; };
-	float getShadowFade() const;
-	DirectX::SimpleMath::Vector3 getColor() const;
+		ConstantBuffer<ShaderMatrix>* getMatrixBuffer() { return &matrixBuffer; };
+		ConstantBuffer<LightValues>* getShaderBuffer() { return &shaderBuffer; };
+		D3D11_VIEWPORT getViewPort() { return viewPort; };
+		float getShadowFade() const;
 
-	//If this is never used, please remove it
-	ColorStruct getColors() const;
-
-private:
-	DirectX::SimpleMath::Matrix view;
-	DirectX::SimpleMath::Matrix projection;
-	DirectX::SimpleMath::Vector4 pos;
-	ColorStruct colors;
-	bool isNight;
-
-	struct ShaderMatrix
-	{
-		DirectX::SimpleMath::Matrix vp;
-		//"padding" TODO: Should probably make a new shader instead
-		DirectX::SimpleMath::Matrix mInvP;
-		DirectX::SimpleMath::Matrix mV;
-		DirectX::SimpleMath::Vector4 camPos;
-	};
-
-	struct LightValues
-	{
+	private:
+		DirectX::SimpleMath::Matrix view;
+		DirectX::SimpleMath::Matrix projection;
 		DirectX::SimpleMath::Vector4 pos;
-		DirectX::SimpleMath::Vector3 color;
+		bool isNight;
 
-		//Value from 0 to 1, when it is 1 the shadows are on
-		float shadowFade;
+		
+
+		//Clamp a value between min and max
+		float snap(float value, float min, float max);
+
+		ShaderMatrix matrixData;
+		LightValues shaderData;
+		ConstantBuffer<ShaderMatrix> matrixBuffer;
+		ConstantBuffer<LightValues> shaderBuffer;
+
+		D3D11_VIEWPORT viewPort;
+
 	};
-
-	//Clamp a value between min and max
-	float snap(float value, float min, float max);
-
-	ShaderMatrix matrixData;
-	LightValues shaderData;
-	ID3D11Buffer* matrixBuffer;
-	ID3D11Buffer* shaderBuffer;
-
-	D3D11_VIEWPORT viewPort;
-
-};
+}
