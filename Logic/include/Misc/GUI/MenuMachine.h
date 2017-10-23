@@ -38,9 +38,10 @@ namespace Logic
         bool blinkMarker;
         float  blinkTimer;
         float deleteCharCD;
+		int m_cardUpgrade;
 	public:
 		MenuMachine();
-		MenuMachine(string* highScoreNamePTR);
+		MenuMachine(std::string* highScoreNamePTR);
 		~MenuMachine();
 		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout
@@ -50,12 +51,19 @@ namespace Logic
 		GameState currentState();
 		void setStateToBe(GameState);
 		GameState getStateToBe();
+		int getChoiceUpgrade();
 
 		void buttonClick0();
 		void buttonClick1();
 		void buttonClick2();
 		void buttonClick3();
 		void buttonClick4();
+
+		void buttonClick5();
+
+		void buttonClick6();
+
+		void buttonClick7();
 
 	};
 }
