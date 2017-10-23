@@ -30,6 +30,8 @@
 
 // Engine Includes
 #include <Engine\Profiler.h>
+#include <Engine\DebugWindow.h>
+
 
 // Init Defines
 #define STARTING_STATE		gameStateMenuMain
@@ -90,6 +92,7 @@ namespace Logic
 		GameTime			m_gameTime;
 		CardManager*		m_cardManager;
 		HighScoreManager*	m_highScoreManager;
+		DebugWindow			m_debugWindow;
 
 		// Wave
 		int					m_waveCurrent;
@@ -101,6 +104,10 @@ namespace Logic
 
 		// FPS
 		FPSRenderer fpsRenderer;
+
+		//Debug
+		bool				m_debugOpen;
+		bool				m_firstTrigger;
 	};
 }
 
