@@ -185,7 +185,7 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 
 void EntityManager::onPathThreadCreation(EntityManager * manager, int index, Player const & player, float deltaTime)
 {
-	g_Profiler->registerThread("Enemy Thread %d\0", getThread(index));
+	// g_Profiler->registerThread("Enemy Thread %d\0", getThread(index));
 	updateEnemiesAndPath(manager, index, player, deltaTime);
 }
 
