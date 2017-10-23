@@ -37,6 +37,10 @@ class ParticleSystem {
 public:
 	ParticleSystem(ID3D11Device *device, uint32_t capacity, const char *path);
 
+    void processEffect(ParticleEffect *fx, DirectX::SimpleMath::Matrix model, float dt);
+    void addEffect(std::string name, XMMATRIX model);
+    ParticleEffect getEffect(std::string name);
+
 	void renderPrePass(ID3D11DeviceContext *cxt, Camera *cam, DirectX::CommonStates *states, ID3D11DepthStencilView *dest_dsv);
 	void render(ID3D11DeviceContext *cxt, Camera *cam, DirectX::CommonStates *states, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView *dest_dsv, bool debug);
 	void update(ID3D11DeviceContext *cxt, Camera *cam, float dt);
