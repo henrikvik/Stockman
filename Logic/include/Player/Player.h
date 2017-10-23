@@ -44,14 +44,15 @@ namespace Logic
 {
 	class Player : public Entity
 	{
-	private:
-
+	public:
 		enum PlayerState
 		{
 			STANDING,
 			CROUCHING,
 			IN_AIR
 		};
+
+	private:
 
 		btKinematicCharacterController* m_charController;
 
@@ -148,6 +149,8 @@ namespace Logic
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 		btVector3 getMoveDirection();
+		void setPlayerState(PlayerState playerState);
+		PlayerState getPlayerState() const;
 		ListenerData& getListenerData();
 
 		static btVector3 startPosition;

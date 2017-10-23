@@ -54,6 +54,8 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 	{
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
+			player->setPlayerState(Player::PlayerState::IN_AIR);
+
 			//Pushes the player forward with a static charge power, charging towards the pre decided vector
 			player->setMoveSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
 			player->setMoveDirection(m_forw);

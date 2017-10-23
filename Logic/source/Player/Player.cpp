@@ -32,7 +32,8 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 
 	m_charController = new btKinematicCharacterController(ghostObject, playerShape, 0.2f, btVector3(0.f, 1.f, 0.f));
 	m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
-	m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
+    m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
+    m_charController->setFallSpeed(1.f);
 	m_physPtr->addAction(m_charController);
 
 	// Stats
@@ -55,13 +56,13 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
-	m_moveDir = btVector3(0.f, 0.f, 0.f);
+	m_moveDir.setZero();
 	m_moveSpeed = 0.f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_deacceleration = m_acceleration * 0.5f;
 	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
 	m_jumpSpeed = PLAYER_JUMP_SPEED;
-	m_wishDir = btVector3(0.f, 0.f, 0.f);
+	m_wishDir.setZero();
 	m_wishDirForward = 0.f;
 	m_wishDirRight = 0.f;
 	m_wishJump = false;
@@ -174,6 +175,10 @@ void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
 
+    // Update weapon and skills
+    m_weaponManager.update(deltaTime);
+    m_skillManager.update(deltaTime);
+
 	// Updates listener info for sounds
 	btVector3 up		= { 0, 1, 0 };
 	btVector3 forward	= getForwardBT();
@@ -214,11 +219,9 @@ void Player::updateSpecific(float deltaTime)
 	// Temp for testing
 	if (ks.IsKeyDown(DirectX::Keyboard::B))
 	{
-		btTransform transform = getTransform();
-		transform.setOrigin({0, 0, 0});
-		m_charController->getGhostObject()->setWorldTransform(transform);
-		m_charController->setLinearVelocity({ 0, 0, 0 });
-		m_moveDir = {0, 0, 0};
+        m_charController->warp({ 0.f, 0.f, 0.f });
+		m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
+		m_moveDir = { 0.f, 0.f, 0.f };
 		m_moveSpeed = 0.f;
 	}
 
@@ -234,19 +237,11 @@ void Player::updateSpecific(float deltaTime)
 	{
 		m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
 		// reset movement
-		m_moveDir = { 0, 0, 0 };
+		m_moveDir.setZero();
 		m_moveSpeed = 0.f;
 		freeMove = false;
 		printf("free move deactivated\n");
 	}
-		
-	if (m_charController->onGround())
-	{
-		m_playerState = PlayerState::STANDING;
-		m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
-	}
-	else
-		m_playerState = PlayerState::IN_AIR;
 
 	// Movement
 	if (!ks.IsKeyDown(DirectX::Keyboard::LeftAlt))	// !TEMP!
@@ -267,9 +262,17 @@ void Player::updateSpecific(float deltaTime)
 	else
 		moveFree(deltaTime, &ks);
 
+	if (m_charController->onGround())
+	{
+		m_playerState = PlayerState::STANDING;
+		m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
+	}
+	else
+		m_playerState = PlayerState::IN_AIR;
+
 	// Print player velocity
 	//printf("velocity: %f\n", m_moveSpeed);
-	//printf("%f\n", m_charController->getLinearVelocity().y());
+	printf("%f\n", m_charController->getLinearVelocity().y());
 	//printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
 
 	//crouch(deltaTime);
@@ -314,10 +317,6 @@ void Player::updateSpecific(float deltaTime)
 		if (ks.IsKeyDown(m_reloadWeapon))
 			m_weaponManager.reloadWeapon();
 	}
-
-	// Update weapon and skills
-	m_weaponManager.update(deltaTime);
-	m_skillManager.update(deltaTime);
 }
 
 //fills the HUD info with wave info
@@ -331,7 +330,7 @@ void Player::updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning)
 void Player::moveInput(DirectX::Keyboard::State * ks)
 {
 	// Reset wish direction
-	m_wishDir = btVector3(0, 0, 0);
+	m_wishDir.setZero();
 	m_wishDirForward = 0.f;
 	m_wishDirRight = 0.f;
 
@@ -651,6 +650,16 @@ DirectX::SimpleMath::Vector3 Player::getForward()
 btVector3 Player::getMoveDirection()
 {
 	return m_moveDir;
+}
+
+void Player::setPlayerState(PlayerState playerState)
+{
+	m_playerState = playerState;
+}
+
+Player::PlayerState Player::getPlayerState() const
+{
+	return m_playerState;
 }
 
 ListenerData & Logic::Player::getListenerData()

@@ -43,6 +43,8 @@ namespace Logic
 		GrapplingHookState				m_state;		//< Current state, if the grappling hook is currently pulling or not
 		Entity*							m_shooter;		//< Saved entity after each onUse() call, later, pushes this entity
 		btVector3						m_point;		//< Saved point of intersection of the raytest, will push entity towards this point
+        bool                            m_goingUp;      //< Direction of the grappling hook
+        btVector3                       m_dirToPoint;
 		Graphics::RenderDebugInfo		renderDebug;	//< Debug drawing the ray
 	};
 }
