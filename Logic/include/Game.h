@@ -17,6 +17,8 @@
 #include <Misc\HighScoreManager.h>
 #include <Misc\ComboMachine.h>
 #include <Misc\Sound\NoiseMachine.h>
+#include <Misc\FPSRenderer.h>
+
 
 // DirectX Includes
 #include <Windows.h>
@@ -74,7 +76,6 @@ namespace Logic
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
 
         int getState() const;
-
 	private:
 		// Private functions
 		void gameOver();
@@ -97,6 +98,9 @@ namespace Logic
 
 		//GameOver
 		std::string			highScore[10];
+
+		// FPS
+		FPSRenderer fpsRenderer;
 	};
 }
 

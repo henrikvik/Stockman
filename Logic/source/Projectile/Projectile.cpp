@@ -13,7 +13,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 	m_pData.gravityModifier = 1.f;
 	m_pData.ttl = 1000.f;
 	m_remove = false;
-	m_speedMod = 1.f;
+	m_bulletTimeMod = 1.f;
 }
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer, float ttl)
@@ -24,7 +24,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, fl
 	m_pData.gravityModifier = gravityModifer;
 	m_pData.ttl = ttl;
 	m_remove = false;
-	m_speedMod = 1.f;
+	m_bulletTimeMod = 1.f;
 }
 
 Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
@@ -33,7 +33,7 @@ Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, Projectil
 	m_pData = pData;
 	m_remove = false;
 	setModelID(pData.meshID);
-	m_speedMod = 1.f;
+	m_bulletTimeMod = 1.f;
 
 	switch (pData.type)
 	{
@@ -56,9 +56,9 @@ void Projectile::affect(int stacks, Effect const & effect, float deltaTime)
 {
 	int flags = effect.getStandards()->flags;
 
-	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
+	if (flags & Effect::EFFECT_BULLET_TIME)
 	{
-		m_speedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+		m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
 	}
 }
 
@@ -67,14 +67,14 @@ void Projectile::updateSpecific(float deltaTime)
 	Entity::update(deltaTime);
 
 	btVector3 vel = getRigidBody()->getLinearVelocity().normalized();
-	getRigidBody()->setLinearVelocity(vel * m_pData.speed * m_speedMod);
-	getRigidBody()->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_speedMod, 0.f });
+	getRigidBody()->setLinearVelocity(vel * m_pData.speed * m_bulletTimeMod);
+	getRigidBody()->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_bulletTimeMod, 0.f });
 
 	if (m_pData.type == ProjectileTypeBulletTimeSensor)
 		m_pData.ttl -= deltaTime;
 	else
-		m_pData.ttl -= deltaTime * m_speedMod;
-	m_speedMod = 1.f;
+		m_pData.ttl -= deltaTime * m_bulletTimeMod;
+	m_bulletTimeMod = 1.f;
 }
 
 void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
@@ -85,8 +85,8 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 
 	if (proj)
 	{
-		if(proj->getProjectileData().type)
-			setStatusManager(proj->getStatusManager()); // TEMP
+		if(proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
 	}
 	else if(!p)
 	{

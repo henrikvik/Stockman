@@ -8,8 +8,8 @@ namespace Logic
 	class ComboMachine
 	{
 	public:
-		const int MAX_COMBO		= 16;
-		const int COMBO_TIMER	= 5000.f;
+		const int	MAX_COMBO	= 16;
+		const float COMBO_TIMER	= 5000.f;
 
 		static ComboMachine& Get()
 		{

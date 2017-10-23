@@ -2,13 +2,13 @@
 #define NOISEMACHINE_H
 
 #include <Engine\Constants.h>	// Paths to folders
-#include <fmod.hpp>
 #include <fmod_errors.h>
 #include <iostream>
 #include <stdarg.h>
 #include <string>
 #include <btBulletCollisionCommon.h>
 #include <Misc\Sound\NoiseStructs.h>
+#include <Misc\Sound\SoundSource.h>
 
 #define SOUND_SFX_PATH "Resources/Sound/SFX/"
 #define SOUND_MUSIC_PATH "Resources/Sound/Music/"
@@ -28,8 +28,8 @@ namespace Logic
 		void clear();
 		void update(ListenerData& listener);
 
-		void playSFX(SFX sfx, bool overdrive = false);
-		void playMusic(MUSIC music, bool overdrive = false);
+		void playSFX(SFX sfx, SoundSource* soundSource, bool overdrive);
+		void playMusic(MUSIC music, SoundSource* soundSource, bool overdrive);
 
 		void setGroupVolume(CHANNEL_GROUP group, float inVolume);
 		void setGroupPitch(CHANNEL_GROUP group, float inPitch);
@@ -41,8 +41,8 @@ namespace Logic
 		void initSFX();
 		void initMusic();
 
-		void checkIfPlay(Sound* sound, bool overdrive);
-		void play(Sound* sound);
+		void checkIfPlay(Sound* sound, SoundSource* soundSource, bool overdrive);
+		void play(Sound* sound, SoundSource* soundSource);
 
 		FMOD_RESULT createSound(SFX sfx, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
 		FMOD_RESULT createSound(MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);

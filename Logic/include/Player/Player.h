@@ -52,6 +52,8 @@ namespace Logic
 			IN_AIR
 		};
 
+		btKinematicCharacterController* m_charController;
+
 		//ActionManager m_actionManager;
 		WeaponManager m_weaponManager;
 		SkillManager m_skillManager;
@@ -111,6 +113,9 @@ namespace Logic
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
+		// Sound
+		void updateSound(float deltaTime);
+
 	public:
 		Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();
@@ -133,6 +138,9 @@ namespace Logic
 		void takeDamage(int damage, bool damageThroughProtection = false);
 		int getHP() const;
 
+		DirectX::SimpleMath::Matrix getTransformMatrix() const;
+		virtual DirectX::SimpleMath::Vector3 getPosition() const;
+		virtual btVector3 getPositionBT() const;
 		float getMoveSpeed() const;
 		void setMoveSpeed(float speed);
 		void setMoveDirection(btVector3 moveDir);
