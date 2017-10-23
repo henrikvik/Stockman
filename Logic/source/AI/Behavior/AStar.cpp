@@ -17,7 +17,8 @@ AStar::AStar(std::string file)
 	for (size_t i = 0; i < navNodes.size(); i++)
 	{
 		navNodes[i].onClosedList = navNodes[i].explored = false;
-		navNodes[i].g = 0;
+		navNodes[i].g = navNodes[i].h = 0;
+		navNodes[i].nodeIndex = i;
 		navNodes[i].parent = NO_PARENT;
 	}
 }
@@ -42,7 +43,9 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
 {
-	// PROFILE_BEGIN("AStar::getPath()");
+	// Edge cases 
+	if (startIndex == toIndex || startIndex == -1 || toIndex == -1)
+		return {};
 
 	// all nodes in navMesh
 	const std::vector<DirectX::SimpleMath::Vector3> &nodes = navigationMesh.getNodes();
@@ -52,13 +55,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 	auto comp = [](NavNode *fir, NavNode *sec) { return *fir > *sec; };
 	std::priority_queue<NavNode*, std::vector<NavNode*>, decltype(comp)> openList(comp);
 
-	// test special cases
-	if (targetIndex > -1 && startIndex == targetIndex)
-		return reconstructPath(&navNodes[startIndex]);
-	if (startIndex == targetIndex || startIndex == -1 || targetIndex == -1)
-		return {};
-
-	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[targetIndex]);
+	navNodes[startIndex].h = heuristic(nodes[startIndex], nodes[toIndex]);
 	navNodes[startIndex].explored = true;
 	openList.push(&navNodes[startIndex]);
 
@@ -74,15 +71,15 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 		f = currentNode->g + currentNode->h;
 		openList.pop();
 
-		for (int i = 0; i < navigationMesh.getEdges(currentNode->nodeIndex).size(); i++)
+		for (size_t i = 0; i < navigationMesh.getEdges(currentNode->nodeIndex).size(); i++)
 		{
 			index = navigationMesh.getEdges(currentNode->nodeIndex)[i];
 			explore = &navNodes[index];
-			if (index == targetIndex) // Node Found
+
+			if (index == toIndex) // Node Found
 			{
 				explore->parent = currentNode->nodeIndex;
-				currentNode = explore;
-				return reconstructPath(currentNode);
+				return reconstructPath(explore, navNodes, toIndex);
 			}
 
 			if (!explore->explored) // Unexplored
@@ -90,25 +87,28 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 				explore->explored = true;
 
 				explore->g = f;
-				explore->h = heuristic(nodes[index], nodes[targetIndex]) * 0.1;
+				explore->h = heuristic(nodes[index], nodes[toIndex]) * 0.1;
 
 				explore->parent = currentNode->nodeIndex;
 				openList.push(explore);
-			}
-			else if (explore->explored && !explore->onClosedList && explore->g > f) // in Open List
+			} 
+			else if (explore->g > f) // If path to explore is LONGER than path to it now then set it again
 			{
-				explore->g = f;
+				if (!explore->onClosedList) // in Open List
+				{
+					explore->g = f;
 
-				explore->parent = currentNode->nodeIndex;
-			}
-			else if (explore->g > f) // in Closed List
-			{
-				explore->onClosedList = false;
+					explore->parent = currentNode->nodeIndex;
+				}
+				else // in Closed List
+				{
+					explore->onClosedList = false;
 
-				explore->g = f;
+					explore->g = f;
 
-				explore->parent = currentNode->nodeIndex;
-				openList.push(explore);
+					explore->parent = currentNode->nodeIndex;
+					openList.push(explore);
+				}
 			}
 		}
 
@@ -122,8 +122,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 		return {};
 	}
 
-	// PROFILE_END();
-	return reconstructPath(currentNode);
+	return reconstructPath(currentNode, navNodes, toIndex);
 }
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int fromIndex)
@@ -131,30 +130,17 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int fromIndex)
 	return getPath(fromIndex, targetIndex);
 }
 
-std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode *endNode)
+std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode const *endNode, std::vector<NavNode> const &navNodes, int toIndex)
 {
-	// flip the list
-	std::stack<const DirectX::SimpleMath::Vector3*> list;
-	std::vector<const DirectX::SimpleMath::Vector3*> ret;
+	std::vector<const DirectX::SimpleMath::Vector3*> list;
 
-	if (endNode->nodeIndex != targetIndex)
-	{
-		printf("BAD BAD BAD, A* fooked up, contact lw (AStar.cpp:%d)\n", __LINE__);
-	}
-
-	while (endNode->parent != NO_PARENT)
-	{
-		list.push(&(navigationMesh.getNodes()[endNode->nodeIndex]));
+    do {
+        list.push_back(&(navigationMesh.getNodes()[endNode->nodeIndex]));
 		endNode = &navNodes[endNode->parent];
-	}
+    } while (endNode->parent != NO_PARENT);
 
-	while (!list.empty())
-	{
-		ret.push_back(list.top());
-		list.pop();
-	}
-
-	return ret;
+    std::reverse(list.begin(), list.end());
+	return list;
 }
 
 void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
@@ -165,7 +151,7 @@ void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
 
 void AStar::loadTargetIndex(Entity const & target)
 {
-	if (!isEntityOnIndex(target, targetIndex))
+	if (targetIndex == -1 || !isEntityOnIndex(target, targetIndex))
 		targetIndex = navigationMesh.getIndex(target.getPosition());
 }
 
@@ -227,7 +213,7 @@ void AStar::generateNavigationMesh()
 	for (size_t i = 0; i < navigationMesh.getNodes().size(); i++)
 		navNodes.push_back(
 			{ false, false, 
-			static_cast<int> (i), 0, 0 }
+			static_cast<int> (i), -1, 0, 0 }
 		);
 
 	setupDebugging();

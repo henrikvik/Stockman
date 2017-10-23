@@ -1,8 +1,8 @@
 #include <AI/EntityManager.h>
 using namespace Logic;
 
-#define ENEMIES_PATH_UPDATE_PER_FRAME 200
-#define ENEMIES_TEST_UPDATE_PER_FRAME 200
+#define ENEMIES_PATH_UPDATE_PER_FRAME 25
+#define ENEMIES_TEST_UPDATE_PER_FRAME 4 
 #define FILE_ABOUT_WHALES "Enemies/Wave"
 
 #include <AI/EnemyTest.h>
@@ -17,6 +17,7 @@ using namespace Logic;
 #include <stdio.h>
 
 #define getThread(i) i % NR_OF_THREADS
+#define isThreadLocked(i) m_threadRunning[getThread(i)]
 
 EntityManager::EntityManager()
 {
@@ -93,74 +94,74 @@ void EntityManager::deleteData()
 
 void EntityManager::update(Player const &player, float deltaTime)
 {
-    m_frame++;
-
-    PROFILE_BEGIN("EntityManager::update()");
-    for (int i = 0; i < m_enemies.size(); i++)
-    {
-        if (m_enemies[i].size() > 0)
-        {
-            if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0) {
-                updateEnemies(i, player, deltaTime);
-            }
-            else
-            {				// seperate threads based on i, but join them before end
-                int thread = getThread(i);
+	m_frame++;
+	m_deltaTime = deltaTime;
+	
+	PROFILE_BEGIN("EntityManager::update()");
+	for (size_t i = 0; i < m_enemies.size(); i++)
+	{
+		if (m_enemies[i].size() > 0)
+		{
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0 &&
+                !(isThreadLocked(i) && m_indexRunning[getThread(i)] == i)) {
+				updateEnemies(i, player, deltaTime);
+			}
+			else if (!isThreadLocked(i))
+			{
+				int thread = getThread(i);
+                m_threadRunning[thread] = true;
                 std::thread *t = threads[thread];
-                if (!m_threadRunning[thread])
-                {
-                    if (t)
-                        deleteThread(t);
 
-                    m_threadRunning[thread] = true;
-                    t = newd std::thread(EntityManager::updateEnemiesAndPath, this,
+                if (t)
+                    m_indexRunning[thread] = i;
+                else
+                {
+                    PROFILE_BEGIN("Create Thread");
+                    t = newd std::thread(EntityManager::onPathThreadCreation, this,
                         i, std::ref(player), deltaTime);
                     threads[thread] = t;
+                    PROFILE_END();
                 }
-            }
-        }
-    }
-    PROFILE_END();
+			}
+		}
+	}
+	PROFILE_END();
 
-    for (int i = 0; i < m_deadEnemies.size(); ++i)
-    {
-        m_deadEnemies[i]->updateDead(deltaTime);
-    }
+	for (int i = 0; i < m_deadEnemies.size(); ++i)
+	{
+		m_deadEnemies[i]->updateDead(deltaTime);
+	}
 
-    m_triggerManager.update(deltaTime);
+	m_triggerManager.update(deltaTime);
 }
 
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
-    bool goalNodeChanged = false;
-    Enemy *enemy;
+	bool goalNodeChanged = false;
+	Enemy *enemy;
+    std::vector<Enemy*> &enemies = m_enemies[index];
+	
+	for (size_t i = 0; i < enemies.size(); ++i)
+	{
+		enemy = m_enemies[index][i];
+		updateEnemy(enemy, index, player, deltaTime);
 
-    for (int i = 0; i < m_enemies[index].size(); ++i)
-    {
-        enemy = m_enemies[index][i];
-
-        updateEnemy(enemy, index, player, deltaTime);
-
-        if (i + m_frame % ENEMIES_TEST_UPDATE_PER_FRAME)
+        if (!AStar::singleton().isEntityOnIndex(*enemy, index))
         {
-            goalNodeChanged = enemy->getBehavior()->isGoalChangedAndSetToFalse();
+            int newIndex = AStar::singleton().getIndex(*enemy);
 
-            if (goalNodeChanged && !AStar::singleton().isEntityOnIndex(*enemy, index))
-            {
-                m_enemies[AStar::singleton().getIndex(*enemy)].push_back(enemy);
-                std::swap(m_enemies[index][i],
-                    m_enemies[index][m_enemies[index].size() - 1]);
-                m_enemies[index].pop_back();
-            }
+            std::swap(enemies[i], enemies[enemies.size() - 1]);
+            enemies.pop_back();
+
+            m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
         }
-    }
+	}
 }
 
 void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)
 {
-    // g_Profiler->registerThread("Enemy Thread %d\0", (index % NR_OF_THREADS));
-    Enemy *enemy;
-    int newIndex;
+    PROFILE_BEGIN("Path Update");
+	  Enemy *enemy;
 
     AStar &aStar = AStar::singleton();
     aStar.loadTargetIndex(player);
@@ -168,15 +169,24 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
     std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
     auto &enemies = manager->m_enemies;
 
-    for (int i = 0; i < enemies[index].size(); ++i)
-    {
-        enemy = enemies[index][i];
-        manager->updateEnemy(enemy, index, player, deltaTime);
+	for (size_t i = 0; i < enemies[index].size(); ++i)
+	{
+		enemy = enemies[index][i];
+		enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
+		manager->updateEnemy(enemy, index, player, deltaTime);
+	}
 
-        enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
-    }
+	manager->m_threadRunning[getThread(index)] = false;
+    PROFILE_END();
+	while (!manager->m_threadRunning[getThread(index)])
+		std::this_thread::sleep_for(2ms); // this is stupid but works
+    updateEnemiesAndPath(manager, manager->m_indexRunning[getThread(index)], std::ref(player), manager->m_deltaTime);
+}
 
-    manager->m_threadRunning[getThread(index)] = false;
+void EntityManager::onPathThreadCreation(EntityManager * manager, int index, Player const & player, float deltaTime)
+{
+	// g_Profiler->registerThread("Enemy Thread %d\0", getThread(index));
+	updateEnemiesAndPath(manager, index, player, deltaTime);
 }
 
 void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, float deltaTime)
@@ -191,7 +201,10 @@ void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, 
         enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
 
         std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);
-        m_deadEnemies.push_back(enemy);
+        m_
+          
+          
+        Enemies.push_back(enemy);
         m_enemies[index].pop_back();
     }
 }
