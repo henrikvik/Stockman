@@ -25,10 +25,25 @@ void NoiseMachine::init()
 	// Specific settings of the system
 	m_system->set3DSettings(1.0f, 1.0f, 1.0f);
 
+    // Setting full array as nullptr to avoid crashing
+    for (int i = 0; i < THRESHOLD::MAX_SFX; i++)    m_sfx[i]    = nullptr;
+    for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)  m_music[i]  = nullptr;
+
 	// Initialize sounds
 	initGroups();
-	initSFX();
-	initMusic();
+	int nrSFX = initSFX();
+    int nrSongs = initMusic();
+
+    // Print information
+    int numdrivers, systemrate, speakermodechannels;
+    long long samplebytes, streambytes, otherbytes;
+    FMOD_SPEAKERMODE speakermode;
+    FMOD_GUID guid;
+    m_system->getNumDrivers(&numdrivers);
+    m_system->getDriverInfo(0, 0, 0, &guid, &systemrate, &speakermode, &speakermodechannels);
+    m_system->getFileUsage(&samplebytes, &streambytes, &otherbytes);
+    printf("*Sound information*\nNumber of sound drivers: \t%d\nSpeaker Mode: \t\t\t%d\nSpeaker Mode Channels: \t\t%d\nSound Sample Rate: \t\t%d\n", numdrivers, speakermode, speakermodechannels, systemrate);
+    printf("\n*Sound usage in bytes*\nSamples: \t\t\t%lld (%d/%d Sound Effects)\nStream: \t\t\t%lld (%d/%d Songs)\nOther: \t\t\t\t%lld\n", samplebytes, nrSFX, THRESHOLD::MAX_SFX, streambytes, nrSongs, THRESHOLD::MAX_SONGS, otherbytes);
 }
 
 // Clears sound system & sounds from memory
@@ -77,12 +92,14 @@ void NoiseMachine::update(ListenerData& listener)
 
 void NoiseMachine::playSFX(SFX sfx, SoundSource* soundSource, bool overdrive)
 {
-	checkIfPlay(m_sfx[sfx], soundSource, overdrive);
+    if (m_sfx[sfx])
+	    checkIfPlay(m_sfx[sfx], soundSource, overdrive);
 }
 
 void NoiseMachine::playMusic(MUSIC music, SoundSource* soundSource, bool overdrive)
 {
-	checkIfPlay(m_music[music], soundSource, overdrive);
+    if (m_music[music])
+	    checkIfPlay(m_music[music], soundSource, overdrive);
 }
 
 // Checks if sound if currently playing and if overdrive should be used
@@ -132,34 +149,34 @@ void NoiseMachine::initGroups()
 }
 
 // Initialize all sound effects
-void NoiseMachine::initSFX()
+int NoiseMachine::initSFX()
 {
-	// Setting full array as nullptr to avoid crashing
-	for (int i = 0; i < THRESHOLD::MAX_SFX; i++) m_sfx[i] = nullptr;
-
 	// Init all the sfx here
-	ERRCHECK(createSound(SFX::BOING, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
+    int count = 1; // Just for debugging purposes, won't crash anything
+    ERRCHECK(createSound(SFX::BOING, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the sfx
 	for (int i = 0; i < THRESHOLD::MAX_SFX; i++)
 		if (m_sfx[i])
 			m_sfx[i]->data->set3DMinMaxDistance(THRESHOLD::SFX_MIN_DIST, THRESHOLD::SFX_MAX_DIST);
+
+    return count;
 }
 
 // Initialize all music pieces
-void NoiseMachine::initMusic()
+int NoiseMachine::initMusic()
 {
-	// Setting full array as nullptr to avoid crashing
-	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) m_music[i] = nullptr;
-
 	// Init all the music here
+    int count = 2; // Just for debugging purposes, won't crash anything
 	ERRCHECK(createSound(MUSIC::ENRAGE, CHANNEL_GROUP::CHANNEL_MUSIC, "enrageTimer.mp3", FMOD_3D || FMOD_LOWMEM));
 	ERRCHECK(createSound(MUSIC::TEST_MUSIC, CHANNEL_GROUP::CHANNEL_MUSIC, "music.ogg", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the music
-	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++) 
+	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)
 		if (m_sfx[i])
 			m_music[i]->data->set3DMinMaxDistance(THRESHOLD::MUSIC_MIN_DIST, THRESHOLD::MUSIC_MAX_DIST);
+
+    return count;
 }
 
 // Allocates a specific sound effect into memory
@@ -176,7 +193,7 @@ FMOD_RESULT NoiseMachine::createSound(SFX sfx, CHANNEL_GROUP group, std::string 
 FMOD_RESULT NoiseMachine::createSound(MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode)
 {
 	m_music[music] = newd Sound();
-	FMOD_RESULT result = m_system->createSound(std::string(SOUND_MUSIC_PATH + path).c_str(), mode, 0, &m_music[music]->data);
+	FMOD_RESULT result = m_system->createStream(std::string(SOUND_MUSIC_PATH + path).c_str(), mode, 0, &m_music[music]->data);
 	m_music[music]->group = group;
 
 	return result;

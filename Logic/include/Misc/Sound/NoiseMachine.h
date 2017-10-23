@@ -38,8 +38,8 @@ namespace Logic
 
 	private:
 		void initGroups();
-		void initSFX();
-		void initMusic();
+		int initSFX();
+        int initMusic();
 
 		void checkIfPlay(Sound* sound, SoundSource* soundSource, bool overdrive);
 		void play(Sound* sound, SoundSource* soundSource);
