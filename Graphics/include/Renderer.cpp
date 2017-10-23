@@ -257,6 +257,9 @@ namespace Graphics
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 		PROFILE_END();
 
+        particleSystem->update(deviceContext, camera, 0.0016f);
+        particleSystem->render(deviceContext, camera, states, fakeBackBuffer, depthStencil, false);
+
 		PROFILE_BEGIN("draw()");
 		deviceContext->IASetInputLayout(forwardPlus);
 		deviceContext->VSSetShader(forwardPlus, nullptr, 0);

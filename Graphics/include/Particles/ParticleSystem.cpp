@@ -121,7 +121,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
 
-    cxt->PSSetShaderResources(4, m_Textures.size(), m_Textures.data());
+    cxt->PSSetShaderResources(0, m_Textures.size(), m_Textures.data());
 
     // spheres
     {
@@ -176,11 +176,22 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
 
             len++;
         }
+
+        if (len > 0) {
+            cxt->PSSetShader(std::get<0>(m_Materials[current_material]), nullptr, 0);
+            cxt->DrawIndexedInstanced(m_SphereIndices, len, 0, 0, offset);
+        }
+        
+        cxt->RSSetState(states->CullCounterClockwise());
     }
 }
 
 void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
 {
+    for (auto &fx : m_ParticleEffects) {
+        processEffect(&fx.effect, XMMatrixTranslationFromVector(fx.position), dt);
+    }
+
     std::sort(m_GeometryParticles.begin(), m_GeometryParticles.end(), [](GeometryParticle &a, GeometryParticle &b) { return a.idx < b.idx; });
 
     {

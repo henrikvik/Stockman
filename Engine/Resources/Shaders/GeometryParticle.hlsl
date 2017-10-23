@@ -1,7 +1,6 @@
 cbuffer Camera : register(b0)
 {
-	float4x4 View;
-	float4x4 Proj;
+	float4x4 ViewProjection;
 };
 
 struct VSIn {
@@ -209,7 +208,7 @@ VSOutput VS(VSIn input) {
 	float4 world = mul(input.model, float4(input.position, 1));
 	float expand = cnoise(world * input.deform + input.position*input.age*input.deformspeed); //Noise.SampleLevel(Sampler, input.uv + float2(0, input.age*0.01), 0).r * input.normal;
 
-	output.position = mul(Proj, mul(View, world + float4(input.normal * expand * input.deform, 0)));
+	output.position = mul(ViewProjection, world + float4(input.normal * expand * input.deform, 0));
 	output.worldPos = world;
 	output.normal = mul(input.model, input.normal).xyz;
 	output.normal = normalize(output.normal);

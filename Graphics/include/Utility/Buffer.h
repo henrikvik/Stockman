@@ -78,7 +78,7 @@ public:
     Buffer & operator=(Buffer & other) = delete;
 	T* map(ID3D11DeviceContext *cxt) {
 		D3D11_MAPPED_SUBRESOURCE data = {};
-		cxt->Map(buffer, 0, D3D11_MAP_WRITE, D3D11_MAP_WRITE_DISCARD, &data);
+		cxt->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 		return (T*)data.pData;
 	}
 	void unmap(ID3D11DeviceContext *cxt) {
