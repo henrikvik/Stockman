@@ -21,7 +21,6 @@
 #include <Graphics\include\Structs.h>
 #include <Misc\Sound\NoiseMachine.h>
 
-
 #define PLAYER_GRAVITY					PHYSICS_GRAVITY * 0.0000015f
 #define PLAYER_SIZE_RADIUS				0.5f
 #define PLAYER_SIZE_HEIGHT				2.f

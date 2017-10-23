@@ -38,14 +38,14 @@ namespace Logic
 
 	private:
 		void initGroups();
-		void initSFX();
-		void initMusic();
+		int initSFX(LOAD_MODE loadMode);
+        int initMusic(LOAD_MODE loadMode);
 
 		void checkIfPlay(Sound* sound, SoundSource* soundSource, bool overdrive);
 		void play(Sound* sound, SoundSource* soundSource);
 
-		FMOD_RESULT createSound(SFX sfx, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
-		FMOD_RESULT createSound(MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
+		FMOD_RESULT createSound(LOAD_MODE loadMode, SFX sfx, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
+		FMOD_RESULT createSound(LOAD_MODE loadMode, MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
 
 		FMOD::System*		m_system;
 		FMOD::ChannelGroup*	m_group[THRESHOLD::MAX_GROUPS];
@@ -53,7 +53,6 @@ namespace Logic
 		Sound*				m_music[THRESHOLD::MAX_SONGS];
 
 		// Debugging and Errors
-		void DEBUG_SOUND(Sound* sound);
 		void CRASH_EVERYTHING(const char *format, ...);
 		void ERRCHECK(FMOD_RESULT result);
 	};
