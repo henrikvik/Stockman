@@ -3,6 +3,8 @@
 #include <Logic\include\Misc\RandomGenerator.h>
 #define SHAKE_FALLOFF 0.9f
 
+#include <Engine\Profiler.h>
+
 Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
 	:shader(device, SHADER_PATH("GUIShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } ,{ "ELEMENT", 0, DXGI_FORMAT_R32_UINT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA } }),
 	offsetBuffer(device)
@@ -45,13 +47,13 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
         updateHUDConstantBuffer(context);
     }
     
-    UINT stride = 20, offset = 0;
+    static UINT stride = 20, offset = 0;
     context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     context->IASetInputLayout(shader);
 
-    float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-    UINT sampleMask = 0xffffffff;
+    static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    static UINT sampleMask = 0xffffffff;
     context->OMSetBlendState(blendState, blendFactor, sampleMask);
  
     context->OMSetRenderTargets(1, &backBuffer, nullptr);
@@ -67,8 +69,10 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     ID3D11ShaderResourceView * SRVNULL = nullptr;
     context->PSSetShaderResources(0, 1, &SRVNULL);
 
+    PROFILE_BEGIN("draw text");
     renderText(blendState);
-    renderHUDText(blendState);
+    //renderHUDText(blendState);
+    PROFILE_END();
 }
 
 void Graphics::HUD::queueText(Graphics::TextString * text)
@@ -277,8 +281,11 @@ void Graphics::HUD::renderText(ID3D11BlendState * blendState)
     }
     textQueue.clear();
 
+    if (!firstTime)
+    {
+        renderHUDText(blendState);
+    }
     
-
     sBatch->End();
 }
 
@@ -296,7 +303,7 @@ void Graphics::HUD::setHUDTextRenderPos()
 
 void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 {   
-    sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
+    //sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
     std::wstring temp = L"";
     if (!currentInfo->sledge)
     {
@@ -340,8 +347,8 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 	temp = (std::to_wstring(currentInfo->score));
 	temp += L" Points";
 	sFont[0]->DrawString(sBatch.get(), temp.c_str(), scorePos + offset, DirectX::Colors::White);
-	sFont[0]->DrawString(sBatch.get(), temp.c_str(), scorePos, DirectX::Colors::White);
-    sBatch->End();
+	//sFont[0]->DrawString(sBatch.get(), temp.c_str(), scorePos, DirectX::Colors::White);
+    //sBatch->End();
 }
 
 //updates the hp and cooldown values on the GPU side
