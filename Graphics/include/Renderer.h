@@ -21,6 +21,7 @@
 #include "HUD.h"
 #include "SSAORenderer.h"
 #include "Fog.H"
+#include "DoF.h"
 
 #include <SpriteBatch.h>
 
@@ -92,9 +93,11 @@ namespace Graphics
 
         ID3D11BlendState *transparencyBlendState;
 
+        
 
         Menu menu;
         HUD hud;
+        DoF DoFRenderer;
 
 
 		ConstantBuffer<float> bulletTimeBuffer;
