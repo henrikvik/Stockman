@@ -51,3 +51,4 @@ float CoCBlur(Texture2D inTexture, float2 uv, float baseCoC, half4 inColor, floa
     }
     return 0.0f;
 }
+

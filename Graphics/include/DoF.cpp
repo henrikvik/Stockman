@@ -2,10 +2,10 @@
 namespace Graphics
 {
     DoF::DoF(ID3D11Device * device):
-        blur1col0(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
-        blur1col1(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
-        blur2Final(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
-        //renderTarget(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_SNORM),
+        blur1col0(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_SNORM),
+        blur1col1(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_SNORM),
+        blur2Final(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_SNORM),
+        //renderTarget(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_SNORM),
         cbuffer(device),
         CoCcreation(device, SHADER_PATH("DoFShaders/CreateCoc.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
         blur1(device, SHADER_PATH("DoFShaders/Blur1.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
@@ -33,6 +33,7 @@ namespace Graphics
         if (firstTime)
         {
             updateCoc(context);
+            firstTime = false;
         }
         static ID3D11SamplerState * samplers[] = {
             states->PointClamp(),
