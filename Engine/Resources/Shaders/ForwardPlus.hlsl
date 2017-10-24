@@ -92,6 +92,8 @@ PSOutput PS(VSOutput input) {
     float3 lighting = calculateDiffuseLight(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, shadow);
     lighting += calculateSpecularity(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, shadow);
     
+    lighting = calculateStatusEffect(lighting);
+
     lighting = saturate(lighting);
     
     

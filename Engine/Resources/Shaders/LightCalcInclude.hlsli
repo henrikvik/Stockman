@@ -1,8 +1,8 @@
 #include "ShaderConstants.hlsli"
 
 //If you want to include this file this is the allocated resources:
-//cbuffer register 0, 1, 2 and 3
-//0: Camera     1: DirectionalLight     2: BulletTime   3: LightVP
+//cbuffer register 0, 1, 2, 3 and 4
+//0: Camera     1: DirectionalLight     2: BulletTime   3: LightVP     4: Freeze&burn data
 
 //texture 0, 1, 2, 3, 10, 11, 12 and 13
 //0: LightIndexList     1: LightGrid    2: lights   3: shadowmap
@@ -44,6 +44,14 @@ cbuffer LightMatBuffer : register(b3)
     float4x4 lightVP;
 }
 
+//Increase specularity for icy enemies
+//used by PS
+cbuffer statusBuffer : register(b4)
+{
+    float burn;
+    float freeze;
+};
+
 //Used by PS
 struct Light
 {
@@ -57,6 +65,10 @@ struct Light
 #define DAY_COLOR float3(0.1, 0.1, 0.3)//float3(1, 1, 0.8)
 #define DAWN_COLOR float3(0.1, 0.1, 0.3)//float3(2, 0.5, 0)
 #define NIGHT_COLOR float3(0.1, 0.1, 0.3)
+
+#define FREEZE_COLOR float3(0.3, 0.6, 1)
+#define BURN_COLOR float3(1, 0.2, 0)
+
 
 StructuredBuffer<uint> LightIndexList : register(t0);
 Texture2D<uint2> LightGrid : register(t1);
@@ -133,6 +145,14 @@ float3 getCurrentDirColor(float time)
     float3 dirColor2 = lerp(dirColor0, dirColor1, time);
 
     return dirColor2;
+}
+
+float3 calculateStatusEffect(float3 color)
+{
+    color = lerp(color, FREEZE_COLOR, freeze);
+    color += lerp(color, BURN_COLOR, burn);
+
+    return color;
 }
 
 //Specularity is currently broken.
