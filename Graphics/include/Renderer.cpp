@@ -104,6 +104,7 @@ namespace Graphics
 	{
 		PROFILE_BEGIN("SetBulletTimeCBuffer()");
 		//These two must always add up to one ir i'll have to fix the formula
+		//They represents how long the fade in and fade out are. 
 		static const float TOP_THRESHOLD = 0.9;
 		static const float BOT_THRESHOLD = 0.1;
 

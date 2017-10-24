@@ -47,8 +47,8 @@ struct Light
     float intensity;
 };
 
-#define DAY_COLOR float3(1, 1, 0.8)
-#define DAWN_COLOR float3(2, 0.5, 0)
+#define DAY_COLOR float3(0.1, 0.1, 0.3)//float3(1, 1, 0.8)
+#define DAWN_COLOR float3(0.1, 0.1, 0.3)//float3(2, 0.5, 0)
 #define NIGHT_COLOR float3(0.1, 0.1, 0.3)
 
 StructuredBuffer<uint> LightIndexList : register(t0);
