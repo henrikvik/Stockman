@@ -328,12 +328,12 @@ int Engine::run()
         //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
 
         //////////////TEMP/////////////////
-        Graphics::RenderInfo staticSphere = {
-            true, //bool render;
-            Graphics::ModelID::SKY_SPHERE, //ModelID meshId;
-            0, //int materialId;
-            DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-        };
+        //Graphics::RenderInfo staticSphere = {
+        //    true, //bool render;
+        //    Graphics::ModelID::WATER, //ModelID meshId;
+        //    0, //int materialId;
+        //    DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+        //};
 
 		Graphics::FoliageRenderInfo grass = {
 			true, //bool render;
@@ -378,7 +378,7 @@ int Engine::run()
 			//renderer->queueFoliageRender(&bush);
 
 
-			renderer->queueRender(&staticSphere);
+			//renderer->queueRender(&staticSphere);
          // renderer->queueText(&text);
 			renderer->updateLight(deltaTime, &cam);
 			renderer->updateShake(deltaTime);
