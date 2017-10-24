@@ -37,7 +37,7 @@
 #define WIDTH 1280
 #define HEIGHT 720
 
-#define NUM_LIGHTS 8
+#define MAX_LIGHTS 128
 
 cbuffer Camera : register(b0)
 {
@@ -258,7 +258,7 @@ void CS(CSInput input)
 
 	// loop through all lights and test if inside/intersecting with our group
 	// frustum, and add to light list if so
-	for (uint i = input.groupIndex; i < NUM_LIGHTS; i += BLOCK_SIZE * BLOCK_SIZE) {
+	for (uint i = input.groupIndex; i < MAX_LIGHTS; i += BLOCK_SIZE * BLOCK_SIZE) {
 		Light light = Lights[i];
 
 		if (light.range == 0) continue;
@@ -307,5 +307,5 @@ void CS(CSInput input)
 		TransparentLightIndexList[TransparentLightIndexOffset + i] = TransparentLightList[i];
 	}
 
-	DebugTexture[coord] = GetDebugColor(input, OpaqueLightCount, NUM_LIGHTS);
+	DebugTexture[coord] = GetDebugColor(input, OpaqueLightCount, MAX_LIGHTS);
 }
