@@ -61,7 +61,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
                 Entity *entity = reinterpret_cast<Entity*> (data.dataPtr);
                 std::vector<int> effects = { StatusManager::EFFECT_ID::AMMO_PICK_UP };
 
-                SpawnTrigger(0, data.caller->getPositionBT(), effects);
+               // SpawnTrigger(1, data.caller->getPositionBT(), effects);
             });
 		}
 		else

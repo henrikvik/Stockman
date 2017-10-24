@@ -288,7 +288,7 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
 
     switch (id)
     {
-    case 1:
+    case 1: // wtf, starts at 1
         trigger = m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD,
             Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
             500.f, physics, {},
