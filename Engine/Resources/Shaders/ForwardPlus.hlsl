@@ -89,8 +89,8 @@ PSOutput PS(VSOutput input) {
 
     float3 normal = getNormalMappedNormal(input.tangent, input.biTangent, input.normal, input.uv);
     float shadow = calculateShadowValue(input.lightPos.xyz, 2);
-    float3 lighting = calculateDiffuseLight(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, 1);
-    lighting += calculateSpecularity(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, 1);
+    float3 lighting = calculateDiffuseLight(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, shadow);
+    lighting += calculateSpecularity(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, shadow);
     
     lighting = saturate(lighting);
     
