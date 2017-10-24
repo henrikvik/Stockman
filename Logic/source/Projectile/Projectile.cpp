@@ -83,7 +83,9 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
     {
         if (Entity *entity = dynamic_cast<Entity*> (&other))
         {
-            getCallbacks()[ON_COLLISION](CallbackData{ entity });
+            CallbackData data;
+            data.dataPtr = reinterpret_cast<std::intptr_t> (entity);
+            getCallbacks()[ON_COLLISION](data);
         }
     }
 

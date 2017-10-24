@@ -21,6 +21,7 @@ namespace Logic
         {
             std::int64_t data64;
             std::int32_t data32;
+            std::intptr_t dataPtr;
         };
         typedef void(*callback)(CallbackData&);
 
