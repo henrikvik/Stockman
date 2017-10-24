@@ -58,7 +58,8 @@ void EnemyNecromancer::useAbility(Entity const &target)
 		{
 		    Projectile *pj = spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB2);
             pj->addCallback(ON_COLLISION, [](CallbackData &data) -> void {
-                data.test->getRigidBody()->applyCentralForce({ 0, 1000000, 0 });
+                reinterpret_cast<Entity*> (data.dataPtr)->
+                    getRigidBody()->applyCentralForce({ 0, 10000, 0 });
             });
 		}
 		else
