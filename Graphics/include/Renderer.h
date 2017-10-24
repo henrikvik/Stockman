@@ -28,9 +28,10 @@
 
 namespace Graphics
 {
-    class Renderer
+	class Renderer
     {
     public:
+
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
 		virtual ~Renderer();
         void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
@@ -59,6 +60,7 @@ namespace Graphics
         std::vector<RenderInfo*> renderQueue;
 		std::vector<FoliageRenderInfo*> renderFoliageQueue;
 		std::vector<WaterRenderInfo*> renderWaterQueue;
+
 
         DepthStencil depthStencil;
 
@@ -90,14 +92,19 @@ namespace Graphics
 		SSAORenderer ssaoRenderer;
         
 
-		ShaderResource fakeBackBuffer;
-		ShaderResource fakeBackBufferSwap;
+		ShaderResource* fakeBackBuffer;
+		ShaderResource* fakeBackBufferSwap;
 		ShaderResource glowMap;
 
         ID3D11BlendState *transparencyBlendState;
 
         
 		bool enablePostEffects = true;
+
+		bool enableSSAO = true;
+		bool enableGlow = true;
+		bool enableFog = true;
+		bool enableDOF = true;
 
         Menu menu;
         HUD hud;
@@ -115,6 +122,7 @@ namespace Graphics
         void writeInstanceData();
         void draw();
 		void clear();
+		void swapBackBuffers();
 		
 #pragma region Foliage
 		 
@@ -127,7 +135,7 @@ namespace Graphics
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
         void createBlendState();
-
+		void registerDebugFunction();
 
 
     #pragma region RenderDebugInfo
