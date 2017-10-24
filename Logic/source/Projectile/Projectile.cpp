@@ -99,6 +99,9 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 
 	if (m_pData.type == ProjectileTypeBulletTimeSensor)
 		m_remove = false;
+
+    if (m_pData.type == ProjectileTypeIce)
+        m_remove = false;
 }
 
 void Projectile::upgrade(Upgrade const &upgrade)

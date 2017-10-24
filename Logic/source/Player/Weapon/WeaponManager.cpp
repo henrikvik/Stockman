@@ -85,12 +85,12 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ Graphics::ModelID::CROSSBOW, m_projectileManager, ProjectileData(1, 0.2, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 1, 2000 },		                                    // Gattling prim
-		{ Graphics::ModelID::CROSSBOW, m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 1, 2000 },		                                    // Gattling sec
-		{ Graphics::ModelID::GRASS, m_projectileManager, ProjectileData(1, 1, 1, 5, 0, 500, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeNormal, true), 2, 100, 100, 50, 50, 1, 1, 0, 0, 750, 1, 3000 },		// Freeze prim
-		{ Graphics::ModelID::GRASS, m_projectileManager, ProjectileData(1, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000 },		                                            // Freeze sec
-		{ Graphics::ModelID::JUMPPAD, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeNormal, true), 4, 0, 0, 0, 0, 0, 1, 0, 0, 50, 1, 3000 },				                                            // Sledge prim
-		{ Graphics::ModelID::JUMPPAD, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeNormal, true), 5, 0, 0, 0, 0, 0, 1, 0, 0, 50, 1, 3000 }					                                        // Sledge sec
+		{ Weapon(Graphics::ModelID::CROSSBOW, m_projectileManager, ProjectileData(1, 0.2, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 1, 2000) },		                                    // Gattling prim
+		{ Weapon(Graphics::ModelID::CROSSBOW, m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 1, 2000) },		                                    // Gattling sec
+		{ Weapon(Graphics::ModelID::GRASS, m_projectileManager, ProjectileData(1, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), 2, 300, 200, 100, 100, 1, 1, 17, 5, 750, 1, 3000) },		// Freeze prim
+		{ Weapon(Graphics::ModelID::GRASS, m_projectileManager, ProjectileData(1, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000) },		                                            // Freeze sec
+		{ Weapon(Graphics::ModelID::JUMPPAD, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeNormal, true), 4, 0, 0, 0, 0, 0, 1, 0, 0, 50, 1, 3000) },				                                            // Sledge prim
+		{ Weapon(Graphics::ModelID::JUMPPAD, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeNormal, true), 5, 0, 0, 0, 0, 0, 1, 0, 0, 50, 1, 3000) }					                                        // Sledge sec
 	};
 }
 
