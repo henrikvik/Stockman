@@ -217,7 +217,6 @@ void Player::updateSpecific(float deltaTime)
     
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
-	DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
 	// Temp for testing
@@ -255,7 +254,7 @@ void Player::updateSpecific(float deltaTime)
 		m_playerState = PlayerState::IN_AIR;
 
 	// Movement
-	if (!ks.IsKeyDown(DirectX::Keyboard::LeftAlt))	// !TEMP!
+	if (ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
 		mouseMovement(deltaTime, &ms);
 	jump(deltaTime, &ks);
 
@@ -305,7 +304,7 @@ void Player::updateSpecific(float deltaTime)
 	if (!m_weaponManager.isReloading())
 	{
 		// Primary and secondary attack
-		if (!m_weaponManager.isAttacking())
+		if (!m_weaponManager.isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
 		{
 			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
 			if ((ms.leftButton))

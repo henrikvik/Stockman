@@ -5,6 +5,8 @@
 #include <Keyboard.h>
 #include <Engine\Typing.h>
 
+#include <Engine\Profiler.h>
+
 #define TRANSITION_TIME 400
 
 using namespace Logic;
@@ -21,9 +23,10 @@ MenuMachine::MenuMachine()
     blinkMarker = true;
     blinkTimer = 0.0f;
     deleteCharCD = 20.0f;
+	m_cardUpgrade = -1;
 }
 
-MenuMachine::MenuMachine(string* highScoreNamePTR)
+MenuMachine::MenuMachine(std::string* highScoreNamePTR)
 {
 	m_pressed = false;
 	m_currentActiveMenu = nullptr;
@@ -34,6 +37,7 @@ MenuMachine::MenuMachine(string* highScoreNamePTR)
 	m_forward = true;
     blinkTimer = 0.0f;
     deleteCharCD = 20.0f;
+	m_cardUpgrade = -1;
 }
 
 
@@ -55,6 +59,9 @@ void MenuMachine::initialize(GameState state)
 	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
 	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick3, this);
 	functions["buttonClick4"] = std::bind(&MenuMachine::buttonClick4, this);
+	functions["buttonClick5"] = std::bind(&MenuMachine::buttonClick5, this);
+	functions["buttonClick6"] = std::bind(&MenuMachine::buttonClick6, this);
+	functions["buttonClick7"] = std::bind(&MenuMachine::buttonClick7, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -118,7 +125,7 @@ void MenuMachine::clear()
 
 void MenuMachine::update(float dt)
 {
-	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+	PROFILE_BEGIN("Menu");
 	auto Mouse = DirectX::Mouse::Get().GetState();
 
 	if (Mouse.leftButton && !m_pressed && !m_typing)
@@ -194,19 +201,12 @@ void MenuMachine::update(float dt)
 			m_highScoreName += tempChar;
 		}
 	}
+	PROFILE_END();
 }
 
 void MenuMachine::render(Graphics::Renderer &renderer)
 {
-	/*std::wstring tempSTR(m_highScoreName.length(), L'');
-	std::copy(m_highScoreName.begin(), m_highScoreName.end(), tempSTR.begin());
-	Graphics::TextString text
-	{
-		tempSTR,
-		DirectX::SimpleMath::Vector2(50, 50),
-		DirectX::SimpleMath::Color(DirectX::Colors::White),
-		Graphics::Font::SMALL
-	};*/
+	PROFILE_BEGIN("Menu Render");
     if (m_currentActiveState == gameStateMenuSettings)
     {
         std::wstring tempString = L"";
@@ -237,6 +237,7 @@ void MenuMachine::render(Graphics::Renderer &renderer)
     Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
 
     renderer.drawMenu(&temp);
+	PROFILE_END();
 }
 
 //Switches the currentState used 
@@ -244,6 +245,14 @@ void MenuMachine::showMenu(GameState state)
 {
 	if (m_menuStates.find(state) != m_menuStates.end())
 	{
+		if (state != gameStateGame)
+		{
+			DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+		}
+		else
+		{
+
+		}
 		m_currentActiveMenu = m_menuStates.at(state);
 		m_currentActiveState = state;
 	}
@@ -273,6 +282,17 @@ GameState MenuMachine::getStateToBe()
 	return m_stateToBe;
 }
 
+int Logic::MenuMachine::getChoiceUpgrade()
+{
+	int choosenUpgrade = -1;
+	if (m_cardUpgrade != -1)
+	{
+		choosenUpgrade = m_cardUpgrade;
+		m_cardUpgrade = -1;
+	}
+	return choosenUpgrade;
+}
+
 void MenuMachine::buttonClick0()
 {
 	m_stateToBe = gameStateGame;
@@ -300,4 +320,19 @@ void MenuMachine::buttonClick4()
 	char trashThis = theChar->getSymbol();
 	m_typing = true;
 	m_highScoreName = "";
+}
+
+void MenuMachine::buttonClick5() //Upgrade button1
+{
+	m_cardUpgrade = choice1;
+}
+
+void MenuMachine::buttonClick6() //Upgrade button2
+{
+	m_cardUpgrade = choice2;
+}
+
+void MenuMachine::buttonClick7() //Upgrade button3
+{
+	m_cardUpgrade = choice3;
 }

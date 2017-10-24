@@ -4,6 +4,18 @@
 #include <fmod.hpp>
 #include <btBulletCollisionCommon.h>
 
+enum LOAD_MODE
+{
+    SAMPLE, STREAM
+};
+
+struct SOUNDSETTINGS
+{
+    static const bool       MUTE_ALL        = false;
+    static const LOAD_MODE  SFX_LOAD_MODE   = LOAD_MODE::SAMPLE;
+    static const LOAD_MODE  MUSIC_LOAD_MODE = LOAD_MODE::STREAM;
+};
+
 struct THRESHOLD
 {
 	static const int	MAX_CHANNELS	= 100;
