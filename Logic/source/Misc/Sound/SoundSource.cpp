@@ -29,8 +29,7 @@ void SoundSource::update(float deltaTime)
 	{
 		if (autoPlayer->checkIfPlay(deltaTime))
 		{
-			noiseMachine->playSFX(autoPlayer->sfx, this, false);
-			channel->set3DAttributes(&pos, &vel);
+			noiseMachine->playSFX(autoPlayer->sfx, this, true);
 		}
 	}
 

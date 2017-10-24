@@ -92,7 +92,6 @@ namespace Logic
 		GameTime			m_gameTime;
 		CardManager*		m_cardManager;
 		HighScoreManager*	m_highScoreManager;
-		DebugWindow			m_debugWindow;
 
 		// Wave
 		int					m_waveCurrent;

@@ -107,7 +107,9 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 				m_remove = false;
 	}
 
-	if (m_pData.type == ProjectileTypeBulletTimeSensor)
+	if (m_pData.type == ProjectileTypeBulletTimeSensor  ||
+        m_pData.type == ProjectileTypeIce               ||
+        m_pData.type == ProjectileTypeMelee)
 		m_remove = false;
 }
 

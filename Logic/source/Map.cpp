@@ -25,7 +25,8 @@ void Map::initProps()
 
 void Map::initHitboxes(Physics* physics)
 {
-	StaticObject* infinite = new StaticObject(Graphics::CUBE, physics->createBody(Plane({ 0, 1, 0 }), 0, false), btVector3(1000, 0.0001, 1000));
+	StaticObject* infinite = new StaticObject(Graphics::GROUND, physics->createBody(Plane({ 0, 1, 0 }), 0, false), btVector3(1, 1, 2));
+	infinite->setWorldTranslation(DirectX::SimpleMath::Matrix::CreateTranslation(0,-2,0));
 	m_hitboxes.push_back(infinite);
 
 	StaticObject* house;

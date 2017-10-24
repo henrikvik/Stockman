@@ -7,7 +7,7 @@
 //Use other registers for YOUR resources.
 
 #define BLOCK_SIZE 16.f
-#define NUM_LIGHTS 8
+#define MAX_LIGHTS 128
 
 //used by VS & PS
 cbuffer Camera : register(b0)
@@ -47,8 +47,8 @@ struct Light
     float intensity;
 };
 
-#define DAY_COLOR float3(1, 1, 0.8)
-#define DAWN_COLOR float3(2, 0.5, 0)
+#define DAY_COLOR float3(0.1, 0.1, 0.3)//float3(1, 1, 0.8)
+#define DAWN_COLOR float3(0.1, 0.1, 0.3)//float3(2, 0.5, 0)
 #define NIGHT_COLOR float3(0.1, 0.1, 0.3)
 
 StructuredBuffer<uint> LightIndexList : register(t0);
@@ -196,7 +196,7 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
         float3 normalizedLight = posToLight / distance;
         float attenuation = 1.0f - smoothstep(0, light.range, distance);
 
-        pointDiffuse += saturate(dot(normal, posToLight)) * light.color * attenuation;
+        pointDiffuse += saturate(dot(normal, posToLight)) * light.color * attenuation * light.intensity;
     }
 
     float4 finalDiffuse = float4(saturate(pointDiffuse + directionalDiffuse).xyz, 1) * colorSample;

@@ -35,22 +35,20 @@
 #define PLAYER_FRICTION					20.f
 #define PLAYER_AIR_FRICTION				1.f
 #define PLAYER_JUMP_SPEED				0.008f
-#define PLAYER_BHOP_TIMER				10.f
-#define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
-#define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
 
 namespace Logic
 {
 	class Player : public Entity
 	{
-	private:
-
+	public:
 		enum PlayerState
 		{
 			STANDING,
 			CROUCHING,
 			IN_AIR
 		};
+
+	private:
 
 		btKinematicCharacterController* m_charController;
 
@@ -138,15 +136,20 @@ namespace Logic
 		void takeDamage(int damage, bool damageThroughProtection = false);
 		int getHP() const;
 
+		btKinematicCharacterController* getCharController();
+		btGhostObject* getGhostObject();
 		DirectX::SimpleMath::Matrix getTransformMatrix() const;
 		virtual DirectX::SimpleMath::Vector3 getPosition() const;
 		virtual btVector3 getPositionBT() const;
+		virtual btTransform& getTransform() const;
 		float getMoveSpeed() const;
 		void setMoveSpeed(float speed);
 		void setMoveDirection(btVector3 moveDir);
 		btVector3 getForwardBT();
 		DirectX::SimpleMath::Vector3 getForward();
 		btVector3 getMoveDirection();
+		void setPlayerState(PlayerState playerState);
+		PlayerState getPlayerState() const;
 		ListenerData& getListenerData();
 
 		static btVector3 startPosition;

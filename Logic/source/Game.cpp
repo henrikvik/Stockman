@@ -16,13 +16,14 @@ Game::Game()
 	m_menu				= nullptr;
 	m_highScoreManager	= nullptr;
 
-
+	
 }
 
 Game::~Game() 
 { 
 	clear();
 	Typing::releaseInstance();
+	DebugWindow::releaseInstance();
 }
 
 void Game::init()
@@ -77,8 +78,22 @@ void Game::init()
 	ComboMachine::Get().Reset();
 
 	//debug things
-	m_debugOpen = true;
+	m_debugOpen = false;
 	m_firstTrigger = false;
+
+	/*int m_currentHP;
+	DebugWindow *debugWindow = DebugWindow::getInstance();
+	debugWindow->registerCommand("SPAWNENEMIES", [&](std::stringstream &args)->std::string
+	{
+		int enemyCount;
+		float enemyHP;
+		args.read((char*)enemyCount, sizeof(int));
+		args.read((char*)enemyHP, sizeof(float));
+	});
+
+
+	---- SPAWNENEMIES 100 10.0f */
+
 }
 
 void Game::clear()
@@ -120,9 +135,9 @@ void Game::waveUpdater()
 			int affectedEnemies = m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE);
 			if (affectedEnemies > 0)
 			{
-				NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MUSIC, 0.1f);
-				NoiseMachine::Get().setGroupPitch(CHANNEL_GROUP::CHANNEL_MUSIC, 1.5f);
-				NoiseMachine::Get().playMusic(MUSIC::ENRAGE, m_player->getSoundSource(), false);
+			//	NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MUSIC, 0.1f);
+			//	NoiseMachine::Get().setGroupPitch(CHANNEL_GROUP::CHANNEL_MUSIC, 1.5f);
+			//	NoiseMachine::Get().playMusic(MUSIC::ENRAGE, m_player->getSoundSource(), false);
 			}
 
 			m_waveCurrent++;
@@ -143,13 +158,14 @@ void Game::waveUpdater()
 
 void Game::update(float deltaTime)
 {
+	DebugWindow *debugWindow = DebugWindow::getInstance();
 	m_gameTime.update(deltaTime);
     m_fpsRenderer.updateFPS(deltaTime);
 	Card temp;
 
 	if (m_debugOpen)
 	{
-		m_debugWindow.draw("Test");
+		debugWindow->draw("Test");
 	}
 
 	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::RightAlt) && m_debugOpen && !m_firstTrigger)
