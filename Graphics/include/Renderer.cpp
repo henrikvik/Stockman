@@ -75,7 +75,7 @@ namespace Graphics
         createBlendState();
 
 		DebugWindow *debugWindow = DebugWindow::getInstance();
-		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", 0, [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
 		{
 			enablePostEffects = !enablePostEffects;
 
