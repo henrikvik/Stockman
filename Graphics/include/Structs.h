@@ -22,13 +22,13 @@ namespace Graphics
 		GRAPPLEPOINT,
 		GRASS,
 		SKY_SPHERE,
-		BUSH,
-		CLOUDS,
-		MEGAGRASS
 		//BUSH,
 		//CLOUDS,
 		//MEGAGRASS,
-		WATER,
+		//BUSH,
+		//CLOUDS,
+		//MEGAGRASS,
+		//WATER,
 		GROUND,
 
     };

@@ -32,7 +32,7 @@ namespace Graphics
 		//brfImporterHandler.loadFile(BUSH, MODEL_PATH_STR("bushgreen.brf"), true, true, false, false);
 		//brfImporterHandler.loadFile(CLOUDS, MODEL_PATH_STR("clouds.brf"), true, true, false, false);
 		//brfImporterHandler.loadFile(MEGAGRASS, MODEL_PATH_STR("megaGrass.brf"), true, true, false, false);
-		brfImporterHandler.loadFile(WATER, MODEL_PATH_STR("waterPlane.brf"), true, true, false, false);
+		//brfImporterHandler.loadFile(WATER, MODEL_PATH_STR("waterPlane.brf"), true, true, false, false);
 		brfImporterHandler.loadFile(GROUND, MODEL_PATH_STR("Mark.brf"), true, true, false, false);
 
 
