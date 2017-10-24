@@ -79,7 +79,7 @@ namespace Graphics
 		{
 			enablePostEffects = !enablePostEffects;
 
-			return "";
+			return "PostEffect Toggled";
 		});
     }
 

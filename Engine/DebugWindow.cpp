@@ -257,7 +257,7 @@ void DebugWindow::doCommand(const char* command_line)
 		if (Stricmp(finalCommand.c_str(), command) == 0)
 		{
 			std::string outPut = m_functions.at(j)(args);
-			if (outPut.compare("") == 0)
+			if (outPut.compare("") != 0)
 			{
 				addLog(outPut.c_str());
 			}
