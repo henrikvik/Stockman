@@ -160,6 +160,7 @@ void Game::update(float deltaTime)
 {
 	DebugWindow *debugWindow = DebugWindow::getInstance();
 	m_gameTime.update(deltaTime);
+    m_fpsRenderer.updateFPS(deltaTime);
 	Card temp;
 
 	if (m_debugOpen)
@@ -327,6 +328,8 @@ void Game::render(Graphics::Renderer& renderer)
 	default:  m_menu->render(renderer);
 		break;
 	}
+
+    m_fpsRenderer.renderFPS(renderer);
 }
 
 void Game::gameRunTimeRender(Graphics::Renderer& renderer)

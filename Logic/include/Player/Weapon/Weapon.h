@@ -22,7 +22,7 @@ namespace Logic
 	class Weapon : public Object
 	{
 	private:
-		DirectX::SimpleMath::Matrix rotX, rotY, trans, scale;
+		DirectX::SimpleMath::Matrix rot, trans, scale;
 		ProjectileManager* m_projectileManager;
 		ProjectileData m_projectileData;
 		int m_weaponID;
@@ -43,7 +43,7 @@ namespace Logic
 
 	public:
 		Weapon();
-		Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
 			int spreadH, int spreadV, float attackRate, float freeze, float reloadTime);
 		void reset();
 

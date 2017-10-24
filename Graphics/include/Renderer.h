@@ -21,6 +21,7 @@
 #include "HUD.h"
 #include "SSAORenderer.h"
 #include "Fog.H"
+#include "DoF.h"
 
 #include <SpriteBatch.h>
 
@@ -38,6 +39,7 @@ namespace Graphics
         void render(Camera * camera);
         void queueRender(RenderInfo * renderInfo);
 		void queueFoliageRender(FoliageRenderInfo * renderInfo);
+		void queueWaterRender(WaterRenderInfo * renderInfo);
         void queueRenderDebug(RenderDebugInfo * debugInfo);
         void queueText(TextString * text);
         void fillHUDInfo(HUDInfo * info);
@@ -55,6 +57,7 @@ namespace Graphics
         InstanceQueue_t instanceQueue;
         std::vector<RenderInfo*> renderQueue;
 		std::vector<FoliageRenderInfo*> renderFoliageQueue;
+		std::vector<WaterRenderInfo*> renderWaterQueue;
 
         DepthStencil depthStencil;
 
@@ -90,9 +93,11 @@ namespace Graphics
 
         ID3D11BlendState *transparencyBlendState;
 
+        
 
         Menu menu;
         HUD hud;
+        DoF DoFRenderer;
 
 
 		ConstantBuffer<float> bulletTimeBuffer;
@@ -114,8 +119,6 @@ namespace Graphics
 		void drawFoliage(Camera * camera);
 		Shader foliageShader;
 #pragma endregion
-        
-		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 

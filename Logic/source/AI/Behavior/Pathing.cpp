@@ -20,14 +20,13 @@ void Pathing::setPath(std::vector<const DirectX::SimpleMath::Vector3*> const &pa
 	m_path = path;
 }
 
-std::vector<const DirectX::SimpleMath::Vector3*>& Logic::Pathing::getPath()
+std::vector<const DirectX::SimpleMath::Vector3*>& Pathing::getPath()
 {
 	return m_path;
 }
 
 const DirectX::SimpleMath::Vector3& Pathing::getNode() const
 {
-	if (m_path.empty()) return { 0,0,0 }; // for testing
 	return *m_path[m_currentNode];
 }
 
@@ -48,7 +47,7 @@ bool Pathing::pathIsEmpty() const
 
 bool Pathing::pathOnLastNode() const
 {
-	return m_currentNode < m_path.size() - 1;
+	return m_currentNode >= m_path.size() - 1;
 }
 
 void Pathing::initDebugRendering()
@@ -61,10 +60,14 @@ void Pathing::initDebugRendering()
 
 void Pathing::renderDebugging(Graphics::Renderer &renderer, DirectX::SimpleMath::Vector3 &start)
 {
-	m_debugInfo.points->clear();
-	m_debugInfo.points->push_back(start);
-	for (int i = 0; i < m_path.size(); i++) // this is slow, but debugging should not be when efficiency is required 
-		m_debugInfo.points->push_back(*m_path[i]);
+    if (m_debugInfo.points->size() > 1)
+    {
+        m_debugInfo.points->clear();
+        m_debugInfo.points->push_back(start);
 
-	renderer.queueRenderDebug(&m_debugInfo);
+        for (int i = 0; i < m_path.size(); i++) // this is slow, but debugging should not be when efficiency is required 
+            m_debugInfo.points->push_back(*m_path[i]);
+
+        renderer.queueRenderDebug(&m_debugInfo);
+    }
 }
