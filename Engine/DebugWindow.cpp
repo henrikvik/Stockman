@@ -1,5 +1,6 @@
 #include "DebugWindow.h"
 #include <vector>
+#include <sstream>
 #define ARRAYSIZE(ARR) ((int)(sizeof(ARR)/sizeof(*ARR)))
 
 DebugWindow* DebugWindow::instance = 0;
@@ -8,9 +9,29 @@ DebugWindow::DebugWindow()
 {
 	clearLog();
 	m_historyPos = -1;
-	m_command.push_back("HELP");
-	m_command.push_back("HISTORY");
-	m_command.push_back("CLEAR");
+	registerCommand("HELP", 0, [&](std::vector<std::string> &args)->std::string
+	{
+		addLog("Commands:");
+		for (int i = 0; i < m_command.size(); i++)
+		{
+			addLog("- %s", m_command[i]);
+		}
+		return "";
+	});
+	registerCommand("HISTORY", 0, [&](std::vector<std::string> &args)->std::string
+	{
+		int first = m_history.size() - 10;
+		for (int i = first > 0 ? first : 0; i < m_history.size(); i++)
+		{
+			addLog("%3d: %s\n", i, m_history[i]);
+		}
+		return "";
+	});
+	registerCommand("CLEAR", 0, [&](std::vector<std::string> &args)->std::string
+	{
+		clearLog();
+		return "";
+	});
 	addLog("Welcome to the Debug Window");
 }
 
@@ -216,56 +237,40 @@ void DebugWindow::doCommand(const char* command_line)
 
 	m_history.push_back(Strdup(command_line));
 
+	std::stringstream commandStream(command_line);
+	std::string command;
+
 	std::vector<std::string> args;
-	int length = std::strlen(command_line);
-	std::string temp = "";
-
-	for (int i = 0; i < length; i++)
+	while (std::getline(commandStream, command, ' '))
 	{
-		if (command_line[i] == ' ')
-		{
-			args.push_back(temp);
-			temp = "";
-		}
-		else
-		{
-			temp += command_line[i];
-		}
+		args.push_back(command);
 	}
-	args.push_back(temp);
 
-	const char* finalCommand = args[0].c_str();
+	std::string finalCommand = args[0];
+	
+	args.erase(args.begin());
 
+	bool commandFound = false;
+	int j = 0;
 	for (const char* command : m_command)
 	{
-		if (Stricmp(finalCommand, command) == 0)
+		if (Stricmp(finalCommand.c_str(), command) == 0 && m_nrOfArgs.at(j) == args.size())
 		{
-
+			std::string outPut = m_functions.at(j)(args);
+			if (outPut.compare("") == 0)
+			{
+				addLog(outPut.c_str());
+			}
+			commandFound = true;
+			break;
 		}
+		j++;
 	}
 
-	// Process command
-	if (Stricmp(finalCommand, "CLEAR") == 0)
+	if(!commandFound)
 	{
-		clearLog();
+		addLog("Unknown command: '%s'\n", command_line);
 	}
-	else if (Stricmp(finalCommand, "HELP") == 0)
-	{
-		addLog("Commands:");
-		for (int i = 0; i < m_command.size(); i++)
-			addLog("- %s", m_command[i]);
-	}
-	else if (Stricmp(finalCommand, "HISTORY") == 0)
-	{
-		int first = m_history.size() - 10;
-		for (int i = first > 0 ? first : 0; i < m_history.size(); i++)
-			addLog("%3d: %s\n", i, m_history[i]);
-	}
-	else
-	{
-		addLog("Unknown command: '%s'\n", finalCommand);
-	}
-
 }
 
 int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
@@ -377,8 +382,9 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 	return 0;
 }
 
-void DebugWindow::registerCommand(char* command, std::function<std::string(std::stringstream&)> function)
+void DebugWindow::registerCommand(char* command, int nrOfArgs, CommandFunction function)
 {
 	m_command.push_back(command);
-	functions.push_back(function);
+	m_nrOfArgs.push_back(nrOfArgs);
+	m_functions.push_back(function);
 }

@@ -6,19 +6,32 @@
 #include <ctype.h>
 #include <functional>
 #include <iostream>
+#pragma region Comment
 
+/*
+Class: DebugWindow
+Author: Andreas Eriksson
+
+Description:
+This class creates a debugwindow which is a singleton. This system can have functions and commands inserted into it by easily using the registerCommand which in turn uses lambda, all functions aqquiered
+returns strings for some kind of input into the system. Make sure to always use caps when you create your command and that you only call the ammount of arguments that you have placed within it.
+
+*/
+
+#pragma endregion Description of class
 class DebugWindow
 {
 private:
 	//https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp my information to make this shit
-
-	char															m_inputBuf[256];
-	bool															m_scrollToBottom;
-	std::vector<char*>												m_items;
-	std::vector<char*>												m_history;
-	int																m_historyPos;
-	std::vector<const char*>										m_command;
-	std::vector<std::function<std::string(std::stringstream&)>>		functions;
+	typedef std::function < std::string(std::vector<std::string>&)> CommandFunction;
+	char								m_inputBuf[256];
+	bool								m_scrollToBottom;
+	std::vector<char*>					m_items;
+	std::vector<char*>					m_history;
+	int									m_historyPos;
+	std::vector<const char*>			m_command;
+	std::vector<CommandFunction>		m_functions;
+	std::vector<int>					m_nrOfArgs;
 
 	static DebugWindow*				instance;
 
@@ -60,6 +73,6 @@ public:
 	void draw(const char* title);
 	void doCommand(const char* command_line);
 	int TextEditCallback(ImGuiTextEditCallbackData* data);
-	void registerCommand(char* command, std::function<std::string(std::stringstream&)> function);
+	void registerCommand(char* command, int nrOfArgs, CommandFunction function);
 };
 #endif
