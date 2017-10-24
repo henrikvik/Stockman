@@ -39,6 +39,7 @@ namespace Graphics
         void render(Camera * camera);
         void queueRender(RenderInfo * renderInfo);
 		void queueFoliageRender(FoliageRenderInfo * renderInfo);
+		void queueWaterRender(WaterRenderInfo * renderInfo);
         void queueRenderDebug(RenderDebugInfo * debugInfo);
         void queueText(TextString * text);
         void fillHUDInfo(HUDInfo * info);
@@ -56,6 +57,7 @@ namespace Graphics
         InstanceQueue_t instanceQueue;
         std::vector<RenderInfo*> renderQueue;
 		std::vector<FoliageRenderInfo*> renderFoliageQueue;
+		std::vector<WaterRenderInfo*> renderWaterQueue;
 
         DepthStencil depthStencil;
 
@@ -117,8 +119,6 @@ namespace Graphics
 		void drawFoliage(Camera * camera);
 		Shader foliageShader;
 #pragma endregion
-        
-		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
