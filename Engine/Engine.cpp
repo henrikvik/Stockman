@@ -340,6 +340,18 @@ int Engine::run()
 			Graphics::ModelID::GRASS, //ModelID meshId;
 			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
 		};
+
+		Graphics::Light light;
+		light.color = DirectX::SimpleMath::Vector3(1, 1, 0);
+		light.positionWS = DirectX::SimpleMath::Vector3(0, 2, 0);
+		light.intensity = 1;
+		light.range = 5;
+		
+		renderer->queueLight(light);
+		
+
+
+
 		//Graphics::FoliageRenderInfo bush = {
 		//	true, //bool render;
 		//	Graphics::ModelID::BUSH, //ModelID meshId;
