@@ -1,12 +1,37 @@
 #include "DebugWindow.h"
+#include <vector>
+#include <sstream>
 #define ARRAYSIZE(ARR) ((int)(sizeof(ARR)/sizeof(*ARR)))
+
+DebugWindow* DebugWindow::instance = 0;
+
 DebugWindow::DebugWindow()
 {
 	clearLog();
 	m_historyPos = -1;
-	m_command.push_back("HELP");
-	m_command.push_back("HISTORY");
-	m_command.push_back("CLEAR");
+	registerCommand("HELP", 0, [&](std::vector<std::string> &args)->std::string
+	{
+		addLog("Commands:");
+		for (int i = 0; i < m_command.size(); i++)
+		{
+			addLog("- %s", m_command[i]);
+		}
+		return "";
+	});
+	registerCommand("HISTORY", 0, [&](std::vector<std::string> &args)->std::string
+	{
+		int first = m_history.size() - 10;
+		for (int i = first > 0 ? first : 0; i < m_history.size(); i++)
+		{
+			addLog("%3d: %s\n", i, m_history[i]);
+		}
+		return "";
+	});
+	registerCommand("CLEAR", 0, [&](std::vector<std::string> &args)->std::string
+	{
+		clearLog();
+		return "";
+	});
 	addLog("Welcome to the Debug Window");
 }
 
@@ -17,6 +42,20 @@ DebugWindow::~DebugWindow()
 	{
 		free(m_history.at(i));
 	}
+}
+
+DebugWindow * DebugWindow::getInstance()
+{
+	if (instance == 0)
+	{
+		instance = new DebugWindow();
+	}
+	return instance;
+}
+
+void DebugWindow::releaseInstance()
+{
+	delete instance;
 }
 
 void DebugWindow::clearLog()
@@ -43,6 +82,24 @@ void DebugWindow::addLog(const char* command_line, ...) IM_FMTARGS(2)
 
 void DebugWindow::draw(const char * title)
 {
+	ImGuiStyle * style = &ImGui::GetStyle();
+
+	style->WindowPadding = ImVec2(15, 15);
+	style->WindowRounding = 5.0f;
+	style->FramePadding = ImVec2(5, 5);
+	style->FrameRounding = 4.0f;
+	style->ItemSpacing = ImVec2(12, 8);
+	style->ItemInnerSpacing = ImVec2(8, 6);
+	style->IndentSpacing = 25.0f;
+	style->ScrollbarSize = 15.0f;
+	style->ScrollbarRounding = 9.0f;
+	style->GrabMinSize = 5.0f;
+	style->GrabRounding = 3.0f;
+
+	style->Colors[ImGuiCol_Button] = ImVec4(1.00f, 0.6f, 0.6f, 0.50f);
+	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(1.00f, 0.7f, 0.7f, 0.50f);
+	style->Colors[ImGuiCol_ButtonActive] = ImVec4(1.00f, 0.8f, 0.8f, 0.50f);
+
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_Always);
 	if (ImGui::Begin(title))
 	{
@@ -55,7 +112,7 @@ void DebugWindow::draw(const char * title)
 		}
 
 		ImGui::SameLine();
-		bool copy_to_clipboard = ImGui::SmallButton("Copy");
+		bool copy_to_clipboard = ImGui::SmallButton("Copy entire output window");
 		ImGui::SameLine();
 
 		if (ImGui::SmallButton("Scroll to bottom"))
@@ -180,28 +237,40 @@ void DebugWindow::doCommand(const char* command_line)
 
 	m_history.push_back(Strdup(command_line));
 
-	// Process command
-	if (Stricmp(command_line, "CLEAR") == 0)
+	std::stringstream commandStream(command_line);
+	std::string command;
+
+	std::vector<std::string> args;
+	while (std::getline(commandStream, command, ' '))
 	{
-		clearLog();
+		args.push_back(command);
 	}
-	else if (Stricmp(command_line, "HELP") == 0)
+
+	std::string finalCommand = args[0];
+	
+	args.erase(args.begin());
+
+	bool commandFound = false;
+	int j = 0;
+	for (const char* command : m_command)
 	{
-		addLog("Commands:");
-		for (int i = 0; i < m_command.size(); i++)
-			addLog("- %s", m_command[i]);
+		if (Stricmp(finalCommand.c_str(), command) == 0 && m_nrOfArgs.at(j) == args.size())
+		{
+			std::string outPut = m_functions.at(j)(args);
+			if (outPut.compare("") == 0)
+			{
+				addLog(outPut.c_str());
+			}
+			commandFound = true;
+			break;
+		}
+		j++;
 	}
-	else if (Stricmp(command_line, "HISTORY") == 0)
-	{
-		int first = m_history.size() - 10;
-		for (int i = first > 0 ? first : 0; i < m_history.size(); i++)
-			addLog("%3d: %s\n", i, m_history[i]);
-	}
-	else
+
+	if(!commandFound)
 	{
 		addLog("Unknown command: '%s'\n", command_line);
 	}
-
 }
 
 int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
@@ -301,7 +370,6 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 					m_historyPos = -1;
 		}
 
-		// A better implementation would preserve the data on the current input line along with cursor position.
 		if (prev_history_pos != m_historyPos)
 		{
 			data->CursorPos = data->SelectionStart = data->SelectionEnd = data->BufTextLen = (int)snprintf(data->Buf, (size_t)data->BufSize, "%s", (m_historyPos >= 0) ? m_history[m_historyPos] : "");
@@ -312,4 +380,11 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 	}
 	}
 	return 0;
+}
+
+void DebugWindow::registerCommand(char* command, int nrOfArgs, CommandFunction function)
+{
+	m_command.push_back(command);
+	m_nrOfArgs.push_back(nrOfArgs);
+	m_functions.push_back(function);
 }
