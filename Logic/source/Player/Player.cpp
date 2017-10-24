@@ -40,10 +40,10 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
     info.hp = m_hp;
-   	info.cuttleryAmmo[0] = 0;
-   	info.cuttleryAmmo[1] = 0;
-    info.iceAmmo[0] = 0;
-    info.iceAmmo[1] = 0;
+   	info.activeAmmo[0] = 0;
+   	info.activeAmmo[1] = 0;
+    info.inactiveAmmo[0] = 0;
+    info.inactiveAmmo[1] = 0;
     info.wave = 0;
    	info.score = 0;
    	info.sledge = false;
@@ -132,10 +132,21 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
-		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
-		int magSize		= wp->getMagSize();
-		int currentAmmo = wp->getAmmo();
-		wp->setAmmo(currentAmmo + (magSize * WEAPON_AMMO_PACK_MODIFIER));
+        Weapon* wp = nullptr;
+        if(effect.getSpecifics()->ammoType == 0)
+		    wp = m_weaponManager.getFirstWeapon().first;
+        else if(effect.getSpecifics()->ammoType == 1)
+            wp = m_weaponManager.getSecondWeapon().first;
+
+        if (wp)
+        {
+            int magSize = wp->getMagSize();
+            int currentAmmo = wp->getAmmo();
+            if (currentAmmo + magSize > wp->getAmmoCap())
+                wp->setAmmo(wp->getAmmoCap());
+            else
+                wp->setAmmo(currentAmmo + magSize);
+        }
 	}
 }
 
@@ -201,10 +212,10 @@ void Player::updateSpecific(float deltaTime)
     //updates hudInfo with the current info
 	info.score = ComboMachine::Get().GetCurrentScore();
     info.hp = m_hp;
-    info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
-    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getAmmo();
-    info.iceAmmo[0] = m_weaponManager.getSecondWeapon()->getMagAmmo();
-    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getAmmo();
+    info.activeAmmo[0] = m_weaponManager.getActiveWeapon()->getMagAmmo();
+    info.activeAmmo[1] = m_weaponManager.getActiveWeapon()->getAmmo();
+    info.inactiveAmmo[0] = m_weaponManager.getInactiveWeapon()->getMagAmmo();
+    info.inactiveAmmo[1] = m_weaponManager.getInactiveWeapon()->getAmmo();
     if (m_weaponManager.getCurrentWeaponPrimary()->getMagSize() == 0)
     {
         info.sledge  = true;

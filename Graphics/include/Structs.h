@@ -117,8 +117,8 @@ namespace Graphics
     struct HUDInfo
     {
         int hp;
-        int cuttleryAmmo[2];
-        int iceAmmo[2];
+        int activeAmmo[2];
+        int inactiveAmmo[2];
         bool sledge;
         float cd;
         UINT score;

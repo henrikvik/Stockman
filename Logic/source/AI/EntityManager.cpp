@@ -197,7 +197,13 @@ void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, 
     {
         // Adds the score into the combo machine
         ComboMachine::Get().Kill(Enemy::ENEMY_TYPE(enemy->getEnemyType()));
-        spawnTrigger(2, enemy->getPositionBT(), std::vector<int>{StatusManager::AMMO_PICK_UP}, *m_physicsPtr, m_projectilePtr);
+
+        // Random ammo pick-up
+        if (RandomGenerator::singleton().getRandomFloat(0.f, 1.f) > 0.5)
+            spawnTrigger(2, enemy->getPositionBT(), std::vector<int>{StatusManager::AMMO_PICK_UP_PRIMARY}, *m_physicsPtr, m_projectilePtr);
+        else
+            spawnTrigger(2, enemy->getPositionBT(), std::vector<int>{StatusManager::AMMO_PICK_UP_SECONDARY}, *m_physicsPtr, m_projectilePtr);
+
         enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
 
         std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);

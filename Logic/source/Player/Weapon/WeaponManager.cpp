@@ -152,7 +152,7 @@ void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Ent
 	}
 }
 
-void Logic::WeaponManager::reloadWeapon()
+void WeaponManager::reloadWeapon()
 {
 	if (m_reloadTimer <= 0.f && m_currentWeapon.first->getAmmo() > 0 && m_currentWeapon.first->getMagAmmo() < m_currentWeapon.first->getMagSize())
 	{
@@ -162,32 +162,42 @@ void Logic::WeaponManager::reloadWeapon()
 	}
 }
 
-bool Logic::WeaponManager::isSwitching()
+bool WeaponManager::isSwitching()
 {
 	return m_swapWeaponTimer > 0.f;
 }
 
-bool Logic::WeaponManager::isAttacking()
+bool WeaponManager::isAttacking()
 {
 	return m_attackTimer > 0.f;
 }
 
-bool Logic::WeaponManager::isReloading()
+bool WeaponManager::isReloading()
 {
 	return m_reloadState != ReloadingWeapon::IDLE;
 }
 
-Weapon* Logic::WeaponManager::getCurrentWeaponPrimary()
+Weapon* WeaponManager::getCurrentWeaponPrimary()
 {
 	return m_currentWeapon.first;
 }
 
-Weapon* Logic::WeaponManager::getCurrentWeaponSecondary()
+Weapon* WeaponManager::getCurrentWeaponSecondary()
 {
 	return m_currentWeapon.second;
 }
 
-Weapon * Logic::WeaponManager::getfirstWeapon()
+std::pair<Weapon*, Weapon*> WeaponManager::getFirstWeapon()
+{
+    return m_weaponsLoadouts[0];
+}
+
+std::pair<Weapon*, Weapon*> WeaponManager::getSecondWeapon()
+{
+    return m_weaponsLoadouts[1];
+}
+
+Weapon* Logic::WeaponManager::getActiveWeapon()
 {
     if (m_weaponsLoadouts[0] == m_currentWeapon)
     {
@@ -199,7 +209,7 @@ Weapon * Logic::WeaponManager::getfirstWeapon()
     } 
 }
 
-Weapon * Logic::WeaponManager::getSecondWeapon()
+Weapon * Logic::WeaponManager::getInactiveWeapon()
 {
     if (m_weaponsLoadouts[0] != m_currentWeapon)
     {

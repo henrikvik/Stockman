@@ -46,8 +46,10 @@ namespace Logic
 		Weapon* getCurrentWeaponPrimary();
 		Weapon* getCurrentWeaponSecondary();
 
-        Weapon* getfirstWeapon();
-        Weapon* getSecondWeapon();
+        std::pair<Weapon*, Weapon*> getFirstWeapon();
+        std::pair<Weapon*, Weapon*> getSecondWeapon();
+        Weapon* getActiveWeapon();
+        Weapon* getInactiveWeapon();
 
 	private:
 

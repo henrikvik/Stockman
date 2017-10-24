@@ -46,6 +46,7 @@ StatusManager::StatusManager()
 			
 				spec.isBulletTime = fileStruct.floats.at("sBulletTime");
 				spec.isFreezing =	fileStruct.floats.at("sFreezing");
+                spec.ammoType =     fileStruct.floats.at("sAmmoType");
 
 				creating.setSpecifics(spec);
 			}
