@@ -124,11 +124,13 @@
   <ItemGroup>
     <ClInclude Include="Circlebuffer.h" />
     <ClInclude Include="LinkFiles.h" />
+    <ClInclude Include="MayaNodes.h" />
     <ClInclude Include="Mutex.h" />
     <ClInclude Include="MayaStructs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Circlebuffer.cpp" />
+    <ClCompile Include="MayaNodes.cpp" />
     <ClCompile Include="Mutex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

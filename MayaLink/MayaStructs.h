@@ -38,6 +38,13 @@ struct MeshType
 	size_t vertexCount;
 };
 
+struct PointLight
+{
+	float position[3];
+	float color[3];
+	float intensity;
+};
+
 struct Camera
 {
 	char messageType[256];
@@ -72,15 +79,17 @@ std::vector<Meshes> meshVector;
 Meshes meshStruct;
 
 M3dView camView;
-MDagPath camera;
-
-
+MDagPath cameraPath;
 
 MVector vertexNormals;
-
 
 TransformType transformType;
 Camera camera;
 MeshType meshType;
 Material material;
 
+char * msg;
+
+enum MessageType { MayaMesh, MayaCamera, MayaTransform, MayaMaterial, MayaNodeDelete, MayaLight };
+
+CircleBuffer * circleBuffer;
