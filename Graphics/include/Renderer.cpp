@@ -353,7 +353,7 @@ namespace Graphics
 
 			PROFILE_BEGIN("SSAO");
 			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
-			
+            PROFILE_END();
 
             PROFILE_BEGIN("Dof");
             static bool wasPressed1 = false;
