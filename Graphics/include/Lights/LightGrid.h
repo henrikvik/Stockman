@@ -35,7 +35,7 @@ namespace Graphics {
 		void initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
 		void cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
 
-		void updateLights(ID3D11DeviceContext * context, Camera * camera);
+		void updateLights(ID3D11DeviceContext * context, Camera * camera, std::vector<Light> lights);
 
 		StructuredBuffer<uint32_t> *getOpaqueIndexCounter() const { return m_OpaqueIndexCounter; }
 		StructuredBuffer<uint32_t> *getTransparentIndexCounter() const { return m_TransparentIndexCounter; }

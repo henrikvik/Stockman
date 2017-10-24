@@ -235,7 +235,10 @@ namespace Graphics
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 		deviceContext->RSSetState(states->CullCounterClockwise());
 
-		grid.updateLights(deviceContext, camera);
+		
+
+		grid.updateLights(deviceContext, camera, lights);
+		lights.clear();
 		PROFILE_END();
 
 		PROFILE_BEGIN("grid.cull()");
@@ -410,6 +413,11 @@ namespace Graphics
     {
         hud.queueText(text);
     }
+
+	void Renderer::queueLight(Light light)
+	{
+		lights.push_back(light);
+	}
 
     void Renderer::fillHUDInfo(HUDInfo * info)
     {
