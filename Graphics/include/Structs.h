@@ -63,8 +63,8 @@ namespace Graphics
         D3D11_PRIMITIVE_TOPOLOGY topology;
     };
 
-	// TODO: Change
-#define NUM_LIGHTS 8
+
+#define MAX_LIGHTS 128
 
 	struct Light {
 		DirectX::SimpleMath::Vector4 positionVS;
@@ -72,6 +72,16 @@ namespace Graphics
 		float range;
 		DirectX::SimpleMath::Vector3 color;
 		float intensity;
+
+		Light(){}
+
+		Light(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 color, float range = 1, float intensity = 1)
+		{
+			positionWS = pos;
+			this->range = range;
+			this->color = color;
+			this->intensity = intensity;
+		}
 	};
 	struct InstanceData
 	{

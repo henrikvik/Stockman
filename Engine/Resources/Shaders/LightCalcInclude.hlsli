@@ -7,7 +7,7 @@
 //Use other registers for YOUR resources.
 
 #define BLOCK_SIZE 16.f
-#define NUM_LIGHTS 8
+#define MAX_LIGHTS 128
 
 //used by VS & PS
 cbuffer Camera : register(b0)
@@ -196,7 +196,7 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
         float3 normalizedLight = posToLight / distance;
         float attenuation = 1.0f - smoothstep(0, light.range, distance);
 
-        pointDiffuse += saturate(dot(normal, posToLight)) * light.color * attenuation;
+        pointDiffuse += saturate(dot(normal, posToLight)) * light.color * attenuation * light.intensity;
     }
 
     float4 finalDiffuse = float4(saturate(pointDiffuse + directionalDiffuse).xyz, 1) * colorSample;
