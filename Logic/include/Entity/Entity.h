@@ -26,7 +26,7 @@ namespace Logic
                 std::intptr_t dataPtr;
             };
         };
-        typedef void(*callback)(CallbackData&);
+        typedef std::function<void(CallbackData)> callback;
 
 		Entity(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID = Graphics::ModelID::CUBE);
 		Entity(const Entity& other) = delete;

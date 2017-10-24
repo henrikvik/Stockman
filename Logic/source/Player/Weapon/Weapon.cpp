@@ -1,4 +1,5 @@
 #include "Player/Weapon/Weapon.h"
+#include <Player\Player.h>
 
 using namespace Logic;
 
@@ -81,7 +82,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
 			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
 			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
+			Projectile *pj = m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
 		}
 	}
 }
