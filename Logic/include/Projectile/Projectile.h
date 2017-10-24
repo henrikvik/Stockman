@@ -30,7 +30,7 @@ namespace Logic
 
 	private:
 		ProjectileData m_pData;
-		float m_speedMod;
+		float m_bulletTimeMod;
 		bool m_remove;
 	};
 }

@@ -29,7 +29,7 @@ namespace Graphics
 		, instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
 		, instanceOffsetBuffer(device)
 		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
-		, postProcessor(device, deviceContext)
+		, glowRenderer(device, deviceContext)
 		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
 		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
@@ -39,17 +39,17 @@ namespace Graphics
 		, debugColorBuffer(device)
 #pragma endregion
 		, fog(device)
-		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
-        ,menu(device, deviceContext)
-        ,hud(device, deviceContext)
-		,ssaoRenderer(device)
-		,bulletTimeBuffer(device)
+        , menu(device, deviceContext)
+        , hud(device, deviceContext)
+		, ssaoRenderer(device)
+		, bulletTimeBuffer(device)
 #pragma region Foliage
 		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
 		, timeBuffer(device)
 
 
 #pragma endregion
+		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -87,6 +87,7 @@ namespace Graphics
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
     {
         resourceManager.initialize(gDevice, gDeviceContext);
+		skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
 
 		//temp
 		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
@@ -95,7 +96,9 @@ namespace Graphics
 
 	void Renderer::updateLight(float deltaTime, Camera * camera)
 	{
+		PROFILE_BEGIN("UpdateLights()");
 		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
+		PROFILE_END();
 	}
 
 	//this function is called in SkillBulletTime.cpp
@@ -121,7 +124,9 @@ namespace Graphics
 
 	void Renderer::updateShake(float deltaTime)
 	{
+		PROFILE_BEGIN("UpdateShake()");
 		hud.updateShake(deviceContext, deltaTime);
+		PROFILE_END();
 	}
 
 	void Renderer::startShake(float radius, float duration)
@@ -176,25 +181,34 @@ namespace Graphics
 		deviceContext->VSSetShaderResources(0, 1, &jointView);
 
 #else
+
+		PROFILE_BEGIN("clear()");
+		clear();
+		PROFILE_END();
+
+		PROFILE_BEGIN("Cull()");
 		cull();
+		PROFILE_END();
+
+		PROFILE_BEGIN("WriteInstanceData()");
 		writeInstanceData();
+		PROFILE_END();
+
+		PROFILE_BEGIN("drawShadows()");
 
 		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
 		skyRenderer.drawShadows(deviceContext, &forwardPlus);
 		draw();
+		PROFILE_END();
 
 
-		ID3D11Buffer *cameraBuffer = camera->getBuffer();
-		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
+		PROFILE_BEGIN("depthPass");
 
-		static float clearColor[4] = { 0 };
-		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(glowMap, clearColor);
-		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(worldPosMap, clearColor);
-		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+		deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
+		deviceContext->VSSetConstantBuffers(0, 1, *camera->getBuffer());
+
+		
 
 
 		deviceContext->RSSetViewports(1, &viewPort);
@@ -208,12 +222,28 @@ namespace Graphics
 
 		draw();
 
+		deviceContext->IASetInputLayout(foliageShader);
+		deviceContext->VSSetShader(foliageShader, nullptr, 0);
+		deviceContext->PSSetShader(depthShader, nullptr, 0);
+		
+		//this be no deltatime
+		grassTime++;
+
+		drawFoliage(camera);
+		PROFILE_END();
+
+		PROFILE_BEGIN("grid.updateLights()");
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-		 
+		deviceContext->RSSetState(states->CullCounterClockwise());
+
 		grid.updateLights(deviceContext, camera);
+		PROFILE_END();
 
+		PROFILE_BEGIN("grid.cull()");
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
+		PROFILE_END();
 
+		PROFILE_BEGIN("draw()");
 		deviceContext->IASetInputLayout(forwardPlus);
 		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
 		deviceContext->PSSetShader(forwardPlus, nullptr, 0);
@@ -238,12 +268,12 @@ namespace Graphics
 
 		ID3D11Buffer *lightBuffs[] =
 		{
-			skyRenderer.getShaderBuffer(),
-			skyRenderer.getLightMatrixBuffer()
+			*skyRenderer.getShaderBuffer(),
+			*skyRenderer.getLightMatrixBuffer()
 		};
 
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
-		deviceContext->VSSetConstantBuffers(4, 1, &lightBuffs[1]);
+		deviceContext->VSSetConstantBuffers(3, 1, &lightBuffs[1]);
 
 		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
 
@@ -251,16 +281,20 @@ namespace Graphics
 		{
 			fakeBackBuffer,
 			glowMap,
-			*ssaoRenderer.getNormalShaderResource(),
-			worldPosMap
+			*ssaoRenderer.getNormalShaderResource()
 		};
 
-		deviceContext->OMSetRenderTargets(4, rtvs, depthStencil);
+		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
 		
 		draw();
+		PROFILE_END();
 
 		PROFILE_BEGIN("RenderFoliage");
+		deviceContext->IASetInputLayout(foliageShader);
+		deviceContext->VSSetShader(foliageShader, nullptr, 0);
+		deviceContext->PSSetShader(foliageShader, nullptr, 0);
 		drawFoliage(camera);
+		renderFoliageQueue.clear();
 		PROFILE_END();
 
 	/*	PROFILE_BEGIN("RenderWater");
@@ -284,7 +318,7 @@ namespace Graphics
 		{
 			this->drawToBackbuffer(grid.getDebugSRV());
 		}
-
+		PROFILE_END();
 
 
 #endif
@@ -306,7 +340,7 @@ namespace Graphics
 
 			///////Post effects
 			PROFILE_BEGIN("Glow");
-			postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+			glowRenderer.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
 			PROFILE_END();
 
 			PROFILE_BEGIN("SSAO");
@@ -317,7 +351,11 @@ namespace Graphics
 			drawToBackbuffer(fakeBackBuffer);
 			PROFILE_END();
 
-			fog.renderFog(deviceContext, backBuffer, worldPosMap);
+			PROFILE_BEGIN("renderFog()");
+
+			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
+			fog.renderFog(deviceContext, backBuffer, depthStencil);
+			PROFILE_END();
 		}
 
 		else
@@ -423,24 +461,15 @@ namespace Graphics
 
 	void Renderer::drawFoliage(Camera * camera)
 	{
-		time++;
-		timeBuffer.write(deviceContext, &time, sizeof(time));
+		timeBuffer.write(deviceContext, &grassTime, sizeof(grassTime));
 
-		ID3D11Buffer *cameraBuffer = camera->getBuffer();
-		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-
-		deviceContext->VSSetConstantBuffers(1, 1, timeBuffer);
+		deviceContext->VSSetConstantBuffers(4, 1, timeBuffer);
 		deviceContext->RSSetState(states->CullNone());
 		deviceContext->OMSetRenderTargets(1, fakeBackBuffer, depthStencil);
 
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		UINT sampleMask = 0xffffffff;
 		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-
-		deviceContext->IASetInputLayout(foliageShader);
-		deviceContext->VSSetShader(foliageShader, nullptr, 0);
-		deviceContext->PSSetShader(foliageShader, nullptr, 0);
 
 		for (FoliageRenderInfo * info : renderFoliageQueue)
 		{
@@ -452,44 +481,29 @@ namespace Graphics
 
 			static ID3D11ShaderResourceView * modelTextures[1] = { nullptr };
 			modelTextures[0] = model.diffuseMap;
-			deviceContext->PSSetShaderResources(0, 1, modelTextures);
+			deviceContext->PSSetShaderResources(10, 1, modelTextures);
 
+			PROFILE_BEGIN("DrawIndexed()");
 			deviceContext->DrawIndexed((UINT)model.indexCount, 0, 0);
+			PROFILE_END();
 		}
 
-		renderFoliageQueue.clear();
 	}
 
     void Renderer::draw()
     {
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->VSSetConstantBuffers(3, 1, instanceOffsetBuffer);
+        deviceContext->VSSetConstantBuffers(4, 1, instanceOffsetBuffer);
         deviceContext->VSSetShaderResources(20, 1, instanceSBuffer);
 
 
         UINT instanceOffset = 0;
         for (InstanceQueue_t::value_type & pair : instanceQueue)
         {
+			PROFILE_BEGIN("Setup for draw");
             instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(UINT));
             instanceOffset += pair.second.size();
 
-#if USE_TEMP_CUBE
-            static TempCube tempCube(device);
-			ModelInfo model = resourceManager.getModelInfo(CUBE);
-
-
-
-			static UINT stride = sizeof(Vertex), offset = 0;
-			deviceContext->IASetVertexBuffers(0, 1, &tempCube.vertexBuffer, &stride, &offset);
-
-			static ID3D11ShaderResourceView * modelTextures[3] = { nullptr };
-			modelTextures[0] = model.diffuseMap;
-			modelTextures[1] = model.normalMap;
-			modelTextures[2] = model.specularMap;
-			deviceContext->PSSetShaderResources(10, 3, modelTextures);
-
-			deviceContext->DrawInstanced(36, (UINT)pair.second.size(), 0, 0);
-#else
             ModelInfo model = resourceManager.getModelInfo(pair.first);
 
             static UINT stride = sizeof(Vertex), offset = 0;
@@ -502,17 +516,27 @@ namespace Graphics
             modelTextures[2] = model.specularMap;
 			modelTextures[3] = glowTest;
             deviceContext->PSSetShaderResources(10, 4, modelTextures);
+			PROFILE_END();
 
+			PROFILE_BEGIN("DrawIndexedInstanced()");
             deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, 0);
-#endif
+			PROFILE_END();
         }
     }
 
+	void Renderer::clear()
+	{
+		static float clearColor[4] = { 0 };
+		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
+		deviceContext->ClearRenderTargetView(glowMap, clearColor);
+		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+		skyRenderer.clear(deviceContext);
+	}
+
     void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
     {
-        float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-
         deviceContext->PSSetShaderResources(0, 1, &texture);
 
         UINT zero = 0;
@@ -527,7 +551,9 @@ namespace Graphics
         static ID3D11SamplerState * pointClamp = states->PointClamp();
         deviceContext->PSSetSamplers(0, 1, &pointClamp);
 
+		PROFILE_BEGIN("Draw(4, 0)");
         deviceContext->Draw(4, 0);
+		PROFILE_END();
 
         ID3D11ShaderResourceView * srvNull = nullptr;
         deviceContext->PSSetShaderResources(0, 1, &srvNull);
@@ -547,9 +573,8 @@ namespace Graphics
     {
         if (renderDebugQueue.size() == 0) return;
 
-		ID3D11Buffer *cameraBuffer = camera->getBuffer();
-		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
+		deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
+		deviceContext->VSSetConstantBuffers(0, 1, *camera->getBuffer());
 
         deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 

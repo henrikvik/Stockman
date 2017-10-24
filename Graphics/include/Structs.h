@@ -21,6 +21,10 @@ namespace Graphics
 		ENEMYGRUNT,
 		GRAPPLEPOINT,
 		GRASS,
+		SKY_SPHERE,
+		BUSH,
+		CLOUDS,
+		MEGAGRASS
 		//BUSH,
 		//CLOUDS,
 		//MEGAGRASS,
@@ -112,7 +116,7 @@ namespace Graphics
     enum Font
     {
         SMALL,
-        MEDUIM,
+        MEDIUM,
         LARGE
     };
     struct TextString

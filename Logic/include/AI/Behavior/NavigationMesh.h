@@ -32,6 +32,7 @@ namespace Logic
 			// returns int of the index that has this pos in it
 			// (triangleList, getList(), index)
 			int getIndex(DirectX::SimpleMath::Vector3 const &pos) const;
+			bool isPosOnIndex(DirectX::SimpleMath::Vector3 const &pos, int index) const;
 
 			const std::vector<Triangle>& getList() const;
 			const std::vector<DirectX::SimpleMath::Vector3>& getNodes() const;
@@ -43,6 +44,8 @@ namespace Logic
 			std::vector<Triangle> triangleList;
 			std::vector<DirectX::SimpleMath::Vector3> nodes;
 			std::vector<Edge> edges;
+
+			static const DirectX::SimpleMath::Vector3 dir;
 	};
 }
 
