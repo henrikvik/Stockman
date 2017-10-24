@@ -4,7 +4,7 @@
 
 #define SHIELD_CHARGE_CD 5000.f
 #define SLOWDOWN_DURATION 100.f
-#define SHIELD_CHARGE_DURATION 700.f
+#define SHIELD_CHARGE_DURATION 400.f
 
 using namespace Logic;
 
@@ -16,7 +16,7 @@ SkillShieldCharge::SkillShieldCharge()
 
 	m_time = 0.0f;
 	m_forw = btVector3(0.0f, 0.0f, 0.0f);
-	m_chargePower = 8.f;
+	m_chargePower = 5.f;
 
 }
 

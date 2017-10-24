@@ -272,7 +272,7 @@ void Player::updateSpecific(float deltaTime)
 
 	// Print player velocity
 	//printf("velocity: %f\n", m_moveSpeed);
-	printf("%f\n", m_charController->getLinearVelocity().y());
+	//printf("%f\n", m_charController->getLinearVelocity().y());
 	//printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
 
 	//crouch(deltaTime);
