@@ -2,8 +2,15 @@
 
 //If you want to include this file this is the allocated resources:
 //cbuffer register 0, 1, 2 and 3
+//0: Camera     1: DirectionalLight     2: BulletTime   3: LightVP
+
 //texture 0, 1, 2, 3, 10, 11, 12 and 13
+//0: LightIndexList     1: LightGrid    2: lights   3: shadowmap
+//10: diffuseMap    11: NormalMap   12: specularMap     13: glowMap
+
 //samplerState 0 and 1
+//0: linear     1: comparisonSomething
+
 //Use other registers for YOUR resources.
 
 #define BLOCK_SIZE 16.f
