@@ -41,7 +41,6 @@ namespace Graphics
 		DirectX::SimpleMath::Matrix view;
 		DirectX::SimpleMath::Matrix projection;
 		DirectX::SimpleMath::Vector4 pos;
-		bool isNight;
 
 		
 

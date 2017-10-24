@@ -3,7 +3,7 @@
 using namespace DirectX::SimpleMath;
 #define PI 3.14159265
 #define SUNSET_TIME 0.5f
-#define DAY_NIGHT_ON true
+#define DAY_NIGHT_ON false
 
 namespace Graphics
 {
@@ -12,8 +12,6 @@ namespace Graphics
 		shaderBuffer(device)
 	{
 		pos = Vector4(0, 50, 0.5, 1);
-		isNight = false;
-
 
 		projection = DirectX::XMMatrixOrthographicRH(100.f, 100.f, 1, 300);
 		view = DirectX::XMMatrixLookAtRH(pos, Vector3(0, 0, 0), Vector3(0, 1, 0));
@@ -39,14 +37,11 @@ namespace Graphics
 #if DAY_NIGHT_ON
 		rotationDeg += rotationAmount;
 #else
-		rotationDeg = 3.14 * 0.25;
+		rotationDeg = PI * 0.25;
 #endif
 
 		if (rotationDeg >= PI * 0.5)
-		{
 			rotationDeg = -PI * 0.5;
-			isNight = !isNight;
-		}
 
 		Matrix rotation = Matrix::CreateRotationZ(rotationDeg);
 
