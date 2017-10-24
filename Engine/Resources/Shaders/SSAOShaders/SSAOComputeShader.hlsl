@@ -31,6 +31,9 @@ float3 generateViewSpacePos(float2 uv, float2 offset = float2(0, 0))
 {
     float depth = depthTexture.SampleLevel(Sampler, uv + offset, 0).r;
 
+    if (depth < 0.85)
+        return 0;
+
     float4 pos;
     pos.x = (uv.x + offset.x) * 2 - 1;
     pos.y = (1 - uv.y + offset.y) * 2 - 1;
@@ -69,7 +72,6 @@ void CS( uint3 DTid : SV_DispatchThreadID )
         float2(0, 1), float2(0, -1)
     };
 
-    //Remove magic 256 and make a define
     float2 randomNormal = normalize(randomNormalTexture.SampleLevel(RandomSampler, (uv * SCREEN_SIZE / RANDOM_SIZE), 0).xy * 2 - 1);
 
     float3 normal = normalTexture.SampleLevel(Sampler, uv, 0).xyz;
@@ -94,4 +96,7 @@ void CS( uint3 DTid : SV_DispatchThreadID )
     occlusion /= float(ITERATIONS) * 4.0;
     
     output[DTid.xy] = saturate(1 - occlusion);
+
+    if ( pos.x == 0 && pos.y == 0 && pos.z == 0)
+        output[DTid.xy] = 1;
 }
