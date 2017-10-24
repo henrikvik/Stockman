@@ -99,11 +99,8 @@ void EntityManager::update(Player const &player, float deltaTime)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0 &&
-                !(isThreadLocked(i) && m_indexRunning[getThread(i)] == i)) {
-				updateEnemies(i, player, deltaTime);
-			}
-			else if (!isThreadLocked(i))
+			updateEnemies(i, player, deltaTime);
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0 && !isThreadLocked(i))
 			{
 				int thread = getThread(i);
                 m_threadRunning[thread] = true;
@@ -135,6 +132,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	bool goalNodeChanged = false;
+    bool removeDeadEnemies = !(isThreadLocked(index) && m_indexRunning[getThread(index)] == index);
 	Enemy *enemy;
     std::vector<Enemy*> &enemies = m_enemies[index];
 	
@@ -143,7 +141,7 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 		enemy = m_enemies[index][i];
 		updateEnemy(enemy, index, player, deltaTime);
 
-        if (!AStar::singleton().isEntityOnIndex(*enemy, index))
+        if (removeDeadEnemies && !AStar::singleton().isEntityOnIndex(*enemy, index))
         {
             int newIndex = AStar::singleton().getIndex(*enemy);
 
@@ -170,7 +168,7 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 	{
 		enemy = enemies[index][i];
 		enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
-		manager->updateEnemy(enemy, index, player, deltaTime);
+		//manager->updateEnemy(enemy, index, player, deltaTime);
 	}
 
 	manager->m_threadRunning[getThread(index)] = false;

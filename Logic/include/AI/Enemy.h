@@ -68,7 +68,7 @@ namespace Logic
 			float getMoveSpeed() const;
 			int getEnemyType() const;
 
-			void spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed);
+			Projectile* spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed);
 
 			ProjectileManager* getProjectileManager() const;
 			Behavior* getBehavior() const;
