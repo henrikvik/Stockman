@@ -78,7 +78,7 @@ void Game::init()
 	ComboMachine::Get().Reset();
 
 	//debug things
-	m_debugOpen = true;
+	m_debugOpen = false;
 	m_firstTrigger = false;
 
 	/*int m_currentHP;
