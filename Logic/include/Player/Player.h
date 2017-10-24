@@ -36,9 +36,6 @@
 #define PLAYER_FRICTION					20.f
 #define PLAYER_AIR_FRICTION				1.f
 #define PLAYER_JUMP_SPEED				0.008f
-#define PLAYER_BHOP_TIMER				10.f
-#define PLAYER_MOVEMENT_HORIZONTAL_CAP	20.f
-#define PLAYER_MOVEMENT_VERTICAL_CAP	100.f
 
 namespace Logic
 {
