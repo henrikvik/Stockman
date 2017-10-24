@@ -236,6 +236,14 @@ void DebugWindow::doCommand(const char* command_line)
 
 	const char* finalCommand = args[0].c_str();
 
+	for (const char* command : m_command)
+	{
+		if (Stricmp(finalCommand, command) == 0)
+		{
+
+		}
+	}
+
 	// Process command
 	if (Stricmp(finalCommand, "CLEAR") == 0)
 	{
