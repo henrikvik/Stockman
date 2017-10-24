@@ -348,11 +348,11 @@ namespace Graphics
 
 			///////Post effects
 			PROFILE_BEGIN("Glow");
-			//glowRenderer.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+			glowRenderer.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
 			PROFILE_END();
 
 			PROFILE_BEGIN("SSAO");
-			//ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
 			
 
             PROFILE_BEGIN("Dof");
@@ -369,8 +369,8 @@ namespace Graphics
             if (enableCoCWindow)
             {
                 ImGui::Begin("camera stuff");
-                static float fp = 0.02f;
-                static float fl = 0.22f;
+                static float fp = 0.125f;
+                static float fl = 0.28f;
                 static float a = 0.1f;
                 ImGui::SliderFloat("focal Plane", &fp, 0.01f, 1.0f);
                 ImGui::SliderFloat("focal lenght", &fl, 0.01f, 1.0f);
@@ -391,7 +391,7 @@ namespace Graphics
 			PROFILE_BEGIN("renderFog()");
 
 			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
-			//fog.renderFog(deviceContext, backBuffer, depthStencil);
+			fog.renderFog(deviceContext, backBuffer, depthStencil);
 			PROFILE_END();
 		}
 
