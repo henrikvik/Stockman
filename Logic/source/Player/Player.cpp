@@ -35,6 +35,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
     m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
     m_charController->setFallSpeed(1.f);
 	m_physPtr->addAction(m_charController);
+    m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
