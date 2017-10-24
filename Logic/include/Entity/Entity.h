@@ -17,11 +17,14 @@ namespace Logic
 	{
     public:
         enum EntityEvent { ON_DEATH, ON_DAMAGE_TAKEN, ON_DAMAGE_GIVEN, ON_COLLISION };
-        union CallbackData
-        {
-            std::int64_t data64;
-            std::int32_t data32;
-            std::intptr_t dataPtr;
+        struct CallbackData {
+            Entity *caller;
+            union
+            {
+                std::int64_t data64;
+                std::int32_t data32;
+                std::intptr_t dataPtr;
+            };
         };
         typedef void(*callback)(CallbackData&);
 

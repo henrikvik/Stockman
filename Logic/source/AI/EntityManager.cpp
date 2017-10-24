@@ -156,7 +156,7 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)
 {
     PROFILE_BEGIN("Path Update");
-	  Enemy *enemy;
+	Enemy *enemy;
 
     AStar &aStar = AStar::singleton();
     aStar.loadTargetIndex(player);
