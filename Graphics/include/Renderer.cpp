@@ -393,6 +393,7 @@ namespace Graphics
 
 			PROFILE_BEGIN("renderFog()");
 
+			deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
 			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
 			fog.renderFog(deviceContext, backBuffer, depthStencil);
 			PROFILE_END();
