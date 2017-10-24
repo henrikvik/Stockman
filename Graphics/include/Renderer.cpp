@@ -7,6 +7,7 @@
 #include <Engine\Profiler.h>
 
 
+
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
 
@@ -43,9 +44,12 @@ namespace Graphics
         , hud(device, deviceContext)
 		, ssaoRenderer(device)
 		, bulletTimeBuffer(device)
+        , DoFRenderer(device)
 #pragma region Foliage
 		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
 		, timeBuffer(device)
+
+
 #pragma endregion
 		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
 	{
@@ -235,7 +239,10 @@ namespace Graphics
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 		deviceContext->RSSetState(states->CullCounterClockwise());
 
-		grid.updateLights(deviceContext, camera);
+		
+
+		grid.updateLights(deviceContext, camera, lights);
+		lights.clear();
 		PROFILE_END();
 
 		PROFILE_BEGIN("grid.cull()");
@@ -297,6 +304,10 @@ namespace Graphics
 		PROFILE_END();
 
 		PROFILE_BEGIN("DebugThings");
+	/*	PROFILE_BEGIN("RenderWater");
+		drawWater(camera);
+		PROFILE_END();*/
+
 		//The sky renderer uses the bullet time on register 3
 		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
 		skyRenderer.renderSky(deviceContext, camera);
@@ -324,12 +335,16 @@ namespace Graphics
 		static bool wasPressed = false;
 		static bool isPressed = false;
 		static bool enablePostEffects = true;
+        
 		wasPressed = isPressed;
 		isPressed = ks.V;
 
 		if (!wasPressed && isPressed)
 			enablePostEffects = !enablePostEffects;
 
+        
+        
+       
 
 		if (enablePostEffects)
 		{
@@ -341,14 +356,44 @@ namespace Graphics
 
 			PROFILE_BEGIN("SSAO");
 			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
-			PROFILE_END();
+            PROFILE_END();
 
+            PROFILE_BEGIN("Dof");
+            static bool wasPressed1 = false;
+            static bool isPressed1 = false;
+            static bool enableCoCWindow = false;
+
+            wasPressed1 = isPressed1;
+            isPressed1 = ks.K;
+
+            if (!wasPressed1 && isPressed1)
+                enableCoCWindow = !enableCoCWindow;
+
+            if (enableCoCWindow)
+            {
+                ImGui::Begin("camera stuff");
+                static float fp = 0.125f;
+                static float fl = 0.28f;
+                static float a = 0.1f;
+                ImGui::SliderFloat("focal Plane", &fp, 0.01f, 1.0f);
+                ImGui::SliderFloat("focal lenght", &fl, 0.01f, 1.0f);
+                ImGui::SliderFloat("apature", &a, 0.01f, 1.0f);
+                DoFRenderer.updateCoc(deviceContext, fp, fl, a);
+                ImGui::End();
+            }
+            DoFRenderer.DoFRender(deviceContext, &fakeBackBuffer, &depthStencil, &fakeBackBufferSwap, camera);
+            PROFILE_END();
+
+            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+            static UINT sampleMask = 0xffffffff;
+            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
 			PROFILE_BEGIN("DrawToBackBuffer");
-			drawToBackbuffer(fakeBackBuffer);
+			drawToBackbuffer(fakeBackBufferSwap);
 			PROFILE_END();
 
 			PROFILE_BEGIN("renderFog()");
 
+			deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
 			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
 			fog.renderFog(deviceContext, backBuffer, depthStencil);
 			PROFILE_END();
@@ -397,6 +442,16 @@ namespace Graphics
 	
 	}
 
+	void Renderer::queueWaterRender(WaterRenderInfo * renderInfo)
+	{
+		if (renderWaterQueue.size() > INSTANCE_CAP)
+		{
+			throw "Water renderer exceeded instance cap.";
+		}
+
+		renderWaterQueue.push_back(renderInfo);
+	}
+
     void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
     {
         if (debugInfo->points->size() > MAX_DEBUG_POINTS)
@@ -410,6 +465,11 @@ namespace Graphics
     {
         hud.queueText(text);
     }
+
+	void Renderer::queueLight(Light light)
+	{
+		lights.push_back(light);
+	}
 
     void Renderer::fillHUDInfo(HUDInfo * info)
     {
