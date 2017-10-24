@@ -239,7 +239,10 @@ namespace Graphics
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 		deviceContext->RSSetState(states->CullCounterClockwise());
 
-		grid.updateLights(deviceContext, camera);
+		
+
+		grid.updateLights(deviceContext, camera, lights);
+		lights.clear();
 		PROFILE_END();
 
 		PROFILE_BEGIN("grid.cull()");
@@ -390,6 +393,7 @@ namespace Graphics
 
 			PROFILE_BEGIN("renderFog()");
 
+			deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
 			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
 			fog.renderFog(deviceContext, backBuffer, depthStencil);
 			PROFILE_END();
@@ -461,6 +465,11 @@ namespace Graphics
     {
         hud.queueText(text);
     }
+
+	void Renderer::queueLight(Light light)
+	{
+		lights.push_back(light);
+	}
 
     void Renderer::fillHUDInfo(HUDInfo * info)
     {

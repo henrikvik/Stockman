@@ -42,7 +42,8 @@ namespace Graphics
 		void queueWaterRender(WaterRenderInfo * renderInfo);
         void queueRenderDebug(RenderDebugInfo * debugInfo);
         void queueText(TextString * text);
-        void fillHUDInfo(HUDInfo * info);
+		void queueLight(Light light);
+		void fillHUDInfo(HUDInfo * info);
 
         void drawMenu(Graphics::MenuInfo * info);
 		void updateLight(float deltaTime, Camera * camera);
@@ -65,6 +66,8 @@ namespace Graphics
 		Glow glowRenderer;
 
 		LightGrid grid;
+		std::vector<Light> lights;
+
 		DirectX::CommonStates *states;
 
         Shader fullscreenQuad;

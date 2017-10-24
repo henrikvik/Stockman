@@ -43,18 +43,9 @@ namespace Graphics {
 
 		m_CullGrids = newd ComputeShader(device, SHADER_PATH("LightGridCulling.hlsl"));
 		m_FrustumGeneration = newd ComputeShader(device, SHADER_PATH("LightGridGeneration.hlsl"));
-		Light lights[NUM_LIGHTS] = {};
-		lights[0].color = DirectX::SimpleMath::Vector3(1, 0, 0);
-		lights[0].positionWS = DirectX::SimpleMath::Vector3(1, 1, 1);
-		lights[0].range = 4.f;
-		lights[1].color = DirectX::SimpleMath::Vector3(0, 1, 0);
-		lights[1].positionWS = DirectX::SimpleMath::Vector3(4, 1, 3);
-		lights[1].range = 4.f;
-		lights[2].color = DirectX::SimpleMath::Vector3(0, 0, 1);
-		lights[2].positionWS = DirectX::SimpleMath::Vector3(1, 1, 4);
-		lights[2].range = 3.f;
+		
 
-		m_Lights = new StructuredBuffer<Light>(device, CpuAccess::Write, NUM_LIGHTS, lights);
+		m_Lights = new StructuredBuffer<Light>(device, CpuAccess::Write, MAX_LIGHTS);
 
 		uint32_t initial = 0;
 		m_ResetIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::Read, 1, &initial);
@@ -192,31 +183,28 @@ namespace Graphics {
 		cxt->CSSetShader(nullptr, nullptr, 0);
 	}
 
-	void LightGrid::updateLights(ID3D11DeviceContext * context, Camera * camera)
+	void LightGrid::updateLights(ID3D11DeviceContext * context, Camera * camera, std::vector<Light> lights)
 	{
-		static 	float f = 59.42542;
-		f += 0.001f;
+		auto lightStructuredBuffer = getLights();
 
-		auto lights = getLights();
-
-		Light *ptr = lights->map(context);
-		for (int i = 0; i < NUM_LIGHTS; i++) {
-			ptr[i].color = DirectX::SimpleMath::Vector3(
-				((unsigned char)(5 + i * 53 * i + 4)) / 255.f,
-				((unsigned char)(66 + i * 23 + 4)) / 255.f,
-				((unsigned char)(11 + i * 455 + 4)) / 255.f
-			);
-			ptr[i].positionWS = (ptr[i].color * 2 - DirectX::SimpleMath::Vector3(1.f)) * 2;
-			ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 8;
-			ptr[i].positionWS.y = 1.f;
-			ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 8;
-
-			ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
-			ptr[i].range = i / 1.f;
-			ptr[i].intensity = 1.f;
+		Light *ptr = lightStructuredBuffer->map(context);
+		for (int i = 0; i < MAX_LIGHTS; i++) 
+		{
+			if (i < lights.size())
+			{
+				ptr[i] = lights[i];
+				ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(lights[i].positionWS.x, lights[i].positionWS.y, lights[i].positionWS.z, 1.f), camera->getView());
+			}
+			else
+			{
+				ptr[i].range = 0;
+			}
 		}
 
-		lights->unmap(context);
+		if (lights.size() > MAX_LIGHTS)
+			printf("There is too many point light! %d will not be visible!\n", lights.size() - MAX_LIGHTS);
+
+		lightStructuredBuffer->unmap(context);
 	}
 
 	inline Plane computePlane(DirectX::SimpleMath::Vector3 a, DirectX::SimpleMath::Vector3 b)
