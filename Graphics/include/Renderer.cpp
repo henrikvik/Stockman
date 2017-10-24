@@ -423,11 +423,6 @@ namespace Graphics
 		PROFILE_BEGIN("DebugInfo");
 		renderDebugInfo(camera);
 		PROFILE_END();
-
-		if (ks.G)
-		{
-			startShake(30, 1000);
-		}
 	}
 
 
