@@ -297,6 +297,7 @@ namespace Graphics
 		renderFoliageQueue.clear();
 		PROFILE_END();
 
+		PROFILE_BEGIN("DebugThings");
 	/*	PROFILE_BEGIN("RenderWater");
 		drawWater(camera);
 		PROFILE_END();*/
