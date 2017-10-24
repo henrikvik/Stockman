@@ -11,7 +11,7 @@ FPSRenderer::FPSRenderer()
 	fpsString.color = DirectX::SimpleMath::Color{ 1, 1, 1 };
 	fpsString.font = Graphics::Font::SMALL;
 	fpsString.pos = DirectX::SimpleMath::Vector2{ 5, 5 };
-	fpsString.text = L"Why did the chick disappoint his mother? He wasn't what he was cracked up to be!";
+	fpsString.text = L"Ta inte bort min kod - LW";
 }
 
 FPSRenderer::~FPSRenderer()

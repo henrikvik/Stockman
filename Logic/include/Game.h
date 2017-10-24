@@ -30,11 +30,17 @@
 
 // Engine Includes
 #include <Engine\Profiler.h>
+#include <Engine\DebugWindow.h>
+
 
 // Init Defines
 #define STARTING_STATE		gameStateMenuMain
 #define PLAYER_START_SCA	btVector3(1.5f, 3.0f, 1.5f)
 #define PLAYER_START_ROT	btVector3(0.0f, 0.0f, 0.0f)
+
+//Init Cards
+
+#define NUMBER_OF_EACH_CARD	13
 
 // Init Waves (wave times are in ms)
 #define MAX_WAVES			5
@@ -61,7 +67,12 @@ namespace Logic
 
 		void waveUpdater();
 		void update(float deltaTime);
+		void gameRunTime(float deltaTime);
 		void render(Graphics::Renderer& renderer);
+
+		void gameRunTimeRender(Graphics::Renderer & renderer);
+
+		void menuRender(Graphics::Renderer * renderer);
 
 		DirectX::SimpleMath::Vector3 getPlayerForward();
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
@@ -81,6 +92,7 @@ namespace Logic
 		GameTime			m_gameTime;
 		CardManager*		m_cardManager;
 		HighScoreManager*	m_highScoreManager;
+		DebugWindow			m_debugWindow;
 
 		// Wave
 		int					m_waveCurrent;
@@ -91,7 +103,11 @@ namespace Logic
 		std::string			highScore[10];
 
 		// FPS
-		FPSRenderer fpsRenderer;
+		FPSRenderer         m_fpsRenderer;
+
+		//Debug
+		bool				m_debugOpen;
+		bool				m_firstTrigger;
 	};
 }
 

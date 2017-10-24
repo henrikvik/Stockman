@@ -15,7 +15,7 @@ Weapon::Weapon()
 	m_reloadTime		= -1;
 }
 
-Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
 	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime)
 {
 	m_projectileManager = projectileManager;
@@ -33,11 +33,12 @@ Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData projectileDa
 	m_reloadTime		= reloadTime;
 	m_projectileData	= projectileData;
 
+    // Setting model ID
+    this->setModelID(modelID);
+
 	/////////////////////////////////////////////////////////////
 	// Weapon model - These are the constant matrices that moves the 
 	//					model a bit to the right and down & rotates a bit
-
-    this->setModelID(Graphics::ModelID::CROSSBOW);
 	// Pointing the gun upwards
 	//rotX = DirectX::SimpleMath::Matrix::CreateRotationX(10.0f * (3.14 / 180));
 

@@ -42,7 +42,7 @@ namespace Logic
 		virtual DirectX::SimpleMath::Matrix getTransformMatrix() const;
 
 		btRigidBody* getRigidBody();
-		btTransform& getTransform();
+		virtual btTransform& getTransform();
 
 		int getNumberOfWeakPoints() const;
 		btRigidBody* getRigidBodyWeakPoint(int i);
