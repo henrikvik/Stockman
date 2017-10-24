@@ -132,7 +132,7 @@ namespace Graphics
 
         float CoC[2] = {
             ((apature * focalLength * focalPlaneR * (farP - nearP)) / ((focalPlaneR - focalLength) * nearP * farP)), //scale
-            ((apature * focalLength * (nearP - focalPlaneR)) / ((focalPlaneR * focalLength) * nearP))    //bias
+            ((apature * focalLength * (nearP - focalPlaneR)) / ((focalPlaneR - focalLength) * nearP))    //bias
         };
         
         cbuffer.write(context, CoC, sizeof(float) * 2);
