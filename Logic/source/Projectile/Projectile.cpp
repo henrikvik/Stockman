@@ -79,6 +79,14 @@ void Projectile::updateSpecific(float deltaTime)
 
 void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
+    if (hasCallback(ON_COLLISION))
+    {
+        if (Entity *entity = dynamic_cast<Entity*> (&other))
+        {
+            getCallbacks()[ON_COLLISION](CallbackData{ entity });
+        }
+    }
+
 	// TEMP
 	Player* p = dynamic_cast<Player*>(&other);
 	Projectile* proj = dynamic_cast<Projectile*> (&other);
