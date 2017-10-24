@@ -97,6 +97,7 @@ namespace Graphics
         ID3D11BlendState *transparencyBlendState;
 
         
+		bool enablePostEffects = false;
 
         Menu menu;
         HUD hud;

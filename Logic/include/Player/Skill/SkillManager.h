@@ -48,6 +48,7 @@ namespace Logic
 		GameTime* m_gameTime;	
 
 		std::vector<Skill*> m_allSkills;
+  //      std::pair<Skill*> m_currentSkill;
 		Skill* m_currentSkill;
 	};
 }

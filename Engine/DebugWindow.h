@@ -31,7 +31,6 @@ private:
 	int									m_historyPos;
 	std::vector<const char*>			m_command;
 	std::vector<CommandFunction>		m_functions;
-	std::vector<int>					m_nrOfArgs;
 
 	static DebugWindow*				instance;
 
@@ -73,6 +72,6 @@ public:
 	void draw(const char* title);
 	void doCommand(const char* command_line);
 	int TextEditCallback(ImGuiTextEditCallbackData* data);
-	void registerCommand(char* command, int nrOfArgs, CommandFunction function);
+	void registerCommand(char* command, CommandFunction function);
 };
 #endif

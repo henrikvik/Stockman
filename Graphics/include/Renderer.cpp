@@ -3,6 +3,7 @@
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
 #include <Keyboard.h>
+#include <Engine\DebugWindow.h>
 
 #include <Engine\Profiler.h>
 
@@ -72,6 +73,14 @@ namespace Graphics
 
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         createBlendState();
+
+		DebugWindow *debugWindow = DebugWindow::getInstance();
+		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
+		{
+			enablePostEffects = !enablePostEffects;
+
+			return "";
+		});
     }
 
 
@@ -329,22 +338,8 @@ namespace Graphics
 
 
 #endif
-		//TEEEMP
 		auto ks = DirectX::Keyboard::Get().GetState();
-
-		static bool wasPressed = false;
-		static bool isPressed = false;
-		static bool enablePostEffects = true;
-        
-		wasPressed = isPressed;
-		isPressed = ks.V;
-
-		if (!wasPressed && isPressed)
-			enablePostEffects = !enablePostEffects;
-
-        
-        
-       
+		
 
 		if (enablePostEffects)
 		{

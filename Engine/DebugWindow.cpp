@@ -9,7 +9,7 @@ DebugWindow::DebugWindow()
 {
 	clearLog();
 	m_historyPos = -1;
-	registerCommand("HELP", 0, [&](std::vector<std::string> &args)->std::string
+	registerCommand("HELP", [&](std::vector<std::string> &args)->std::string
 	{
 		addLog("Commands:");
 		for (int i = 0; i < m_command.size(); i++)
@@ -18,7 +18,7 @@ DebugWindow::DebugWindow()
 		}
 		return "";
 	});
-	registerCommand("HISTORY", 0, [&](std::vector<std::string> &args)->std::string
+	registerCommand("HISTORY", [&](std::vector<std::string> &args)->std::string
 	{
 		int first = m_history.size() - 10;
 		for (int i = first > 0 ? first : 0; i < m_history.size(); i++)
@@ -27,7 +27,7 @@ DebugWindow::DebugWindow()
 		}
 		return "";
 	});
-	registerCommand("CLEAR", 0, [&](std::vector<std::string> &args)->std::string
+	registerCommand("CLEAR", [&](std::vector<std::string> &args)->std::string
 	{
 		clearLog();
 		return "";
@@ -254,7 +254,7 @@ void DebugWindow::doCommand(const char* command_line)
 	int j = 0;
 	for (const char* command : m_command)
 	{
-		if (Stricmp(finalCommand.c_str(), command) == 0 && m_nrOfArgs.at(j) == args.size())
+		if (Stricmp(finalCommand.c_str(), command) == 0)
 		{
 			std::string outPut = m_functions.at(j)(args);
 			if (outPut.compare("") == 0)
@@ -382,9 +382,8 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 	return 0;
 }
 
-void DebugWindow::registerCommand(char* command, int nrOfArgs, CommandFunction function)
+void DebugWindow::registerCommand(char* command, CommandFunction function)
 {
 	m_command.push_back(command);
-	m_nrOfArgs.push_back(nrOfArgs);
 	m_functions.push_back(function);
 }
