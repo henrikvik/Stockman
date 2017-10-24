@@ -6,6 +6,8 @@
 
 #include "PhysicsObject.h"
 #include "StatusManager.h"
+#include <Projectile\ProjectileStruct.h>
+#include <AI\EnemyType.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 #include <Misc/Sound/NoiseMachine.h>
@@ -13,6 +15,10 @@
 
 namespace Logic
 {
+    class Projectile;
+    class Trigger;
+    class Enemy;
+
 	class Entity : public PhysicsObject
 	{
     public:
@@ -31,7 +37,14 @@ namespace Logic
 		Entity(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID = Graphics::ModelID::CUBE);
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
+
 		virtual ~Entity();
+
+        virtual void setSpawnFunctions(std::function<Projectile*(ProjectileData& pData,
+            btVector3 position, btVector3 forward, Entity& shooter)> spawnProjectile,
+            std::function<Enemy*(btVector3 &pos, ENEMY_TYPE type)> spawnEnemy,
+            std::function<Trigger*(int id, btVector3 const &pos,
+                std::vector<int> &effects)> spawnTrigger);
 
 		virtual void clear();
 		virtual void update(float deltaTime);
@@ -52,6 +65,12 @@ namespace Logic
         std::unordered_map<EntityEvent, std::function<void (CallbackData&)>>& getCallbacks();
 	protected:
 		SoundSource m_soundSource; // they'll never catch me
+        // Functions to spawn other things
+        std::function<Projectile*(ProjectileData& pData, btVector3 position,
+            btVector3 forward, Entity& shooter)> SpawnProjectile;
+        std::function<Enemy*(btVector3 &pos, ENEMY_TYPE type)> SpawnEnemy;
+        std::function<Trigger*(int id, btVector3 const &pos,
+            std::vector<int> &effects)>    SpawnTrigger;
 	private:
 		StatusManager m_statusManager;
         // change functions to linked list if many callbacks is wanted, but i don't see it being necessary

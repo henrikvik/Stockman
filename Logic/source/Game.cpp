@@ -81,6 +81,9 @@ void Game::init()
 	m_debugOpen = false;
 	m_firstTrigger = false;
 
+    // Loading func
+    m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
+
 	/*int m_currentHP;
 	DebugWindow *debugWindow = DebugWindow::getInstance();
 	debugWindow->registerCommand("SPAWNENEMIES", [&](std::stringstream &args)->std::string
