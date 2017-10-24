@@ -1,9 +1,9 @@
 #pragma once
-#include "Resources\Shader.h"
+#include "Utility\Shader.h"
 #include "Utility\ConstantBuffer.h"
+#include "Utility\DepthStencil.h"
 #include "Camera.h"
 #include "Lights\Sun.h"
-#include "Utility\DepthStencil.h"
 #include "Datatypes.h"
 #include "Structs.h"
 #define SHADOW_MAP_RESOLUTION 2048

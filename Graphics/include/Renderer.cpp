@@ -8,8 +8,8 @@
 #include <Engine\Profiler.h>
 
 
-#define USE_TEMP_CUBE false
-#define ANIMATION_HIJACK_RENDER true
+#define USE_TEMP_CUBE true
+#define ANIMATION_HIJACK_RENDER false
 
 #if USE_TEMP_CUBE
 #include "TempCube.h"
@@ -62,7 +62,7 @@ namespace Graphics
         viewPort.MaxDepth = 1.0f;
 
 		states = new DirectX::CommonStates(device);
-		grid.initialize(camera, device, deviceContext, &resourceManager);
+		grid.initialize(camera, device, deviceContext);
 
 		float temp = 1.f;
 		bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
@@ -79,14 +79,14 @@ namespace Graphics
 		SAFE_RELEASE(transparencyBlendState);
 
 		SAFE_RELEASE(glowTest);
-        resourceManager.release();
+//        resourceManager.release();
 
     }
 
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
     {
-        resourceManager.initialize(gDevice, gDeviceContext);
-		skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
+        //resourceManager.initialize(gDevice, gDeviceContext);
+		//skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
 
 		//temp
 		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
@@ -129,7 +129,49 @@ namespace Graphics
 		hud.startShake(radius, duration);
 	}
 
-	void Renderer::render(Camera * camera)
+    void Renderer::render(Camera * camera)
+    #if ANIMATION_HIJACK_RENDER
+    {
+        static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
+
+        static UINT tick = 0;
+        tick++;
+        float sin = std::sin(tick / 1000.f);
+        float cos = std::cos(tick / 1000.f);
+
+        cam.updateLookAt({5 * sin,0,5 * cos}, {0,0,0}, deviceContext);
+
+        using namespace HybrisLoader;
+        static Shader animationTest(device, Resources::Shaders::AnimationTest);
+        static Model * model = hybrisLoader.getModel(Resources::Models::Cube);
+        static float clearColor[4] = {0,0,0,0};
+
+
+        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1, 0);
+
+        deviceContext->IASetInputLayout(nullptr);
+        deviceContext->VSSetShader(animationTest, nullptr, 0);
+        deviceContext->PSSetShader(animationTest, nullptr, 0);
+
+        deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->RSSetState(states->CullClockwise());
+        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+
+        deviceContext->VSSetConstantBuffers(0, 1, cam);
+        deviceContext->PSSetConstantBuffers(0, 1, cam);
+
+        deviceContext->VSSetShaderResources(0, 1, model->getMesh().getVertexBuffer());
+        deviceContext->PSSetShaderResources(2, 1, model->getMaterial().getDiffuse());
+
+        static ID3D11SamplerState * sampler = states->PointClamp();
+        deviceContext->PSSetSamplers(0, 1, &sampler);
+
+
+        deviceContext->Draw(model->getMesh().getVertexCount(), 0);
+    }
+    #else
 	{
 		menu.unloadTextures();
 
@@ -157,7 +199,7 @@ namespace Graphics
 		deviceContext->RSSetViewports(1, &viewPort);
 		deviceContext->RSSetState(states->CullCounterClockwise());
 
-		deviceContext->IASetInputLayout(forwardPlus);
+		deviceContext->IASetInputLayout(nullptr);
 		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
 
 		deviceContext->PSSetShader(nullptr, nullptr, 0);
@@ -179,9 +221,9 @@ namespace Graphics
 
 		grid.updateLights(deviceContext, camera);
 
-		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
+		grid.cull(camera, states, depthStencil, device, deviceContext);
 
-		deviceContext->IASetInputLayout(forwardPlus);
+		deviceContext->IASetInputLayout(nullptr);
 		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
 		deviceContext->PSSetShader(forwardPlus, nullptr, 0);
 
@@ -308,7 +350,7 @@ namespace Graphics
 			startShake(30, 1000);
 		}
 	}
-
+    #endif
 
     void Renderer::queueRender(RenderInfo * renderInfo)
     {
@@ -325,7 +367,7 @@ namespace Graphics
 			throw "Foliage renderer exceeded instance cap.";
 		}
 
-		renderFoliageQueue.push_back(renderInfo);
+		//renderFoliageQueue.push_back(renderInfo);
 	
 	}
 
@@ -335,7 +377,7 @@ namespace Graphics
         {
             throw "vector is bigger than structured buffer";
         }
-        renderDebugQueue.push_back(debugInfo);
+        //renderDebugQueue.push_back(debugInfo);
     }
 
     void Renderer::queueText(TextString * text)
@@ -391,7 +433,7 @@ namespace Graphics
 
 		for (FoliageRenderInfo * info : renderFoliageQueue)
 		{
-			ModelInfo model = resourceManager.getModelInfo(info->meshId);
+			/*ModelInfo model = resourceManager.getModelInfo(info->meshId);
 
 			static UINT stride = sizeof(Vertex), offset = 0;
 			deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
@@ -401,7 +443,7 @@ namespace Graphics
 			modelTextures[0] = model.diffuseMap;
 			deviceContext->PSSetShaderResources(10, 1, modelTextures);
 
-			deviceContext->DrawIndexed((UINT)model.indexCount, 0, 0);
+			deviceContext->DrawIndexed((UINT)model.indexCount, 0, 0);*/
 		}
 
 	}
@@ -410,47 +452,34 @@ namespace Graphics
     {
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         deviceContext->VSSetConstantBuffers(4, 1, instanceOffsetBuffer);
-        deviceContext->VSSetShaderResources(20, 1, instanceSBuffer);
-
+        deviceContext->VSSetShaderResources(5, 1, instanceSBuffer);
 
         UINT instanceOffset = 0;
-        for (InstanceQueue_t::value_type & pair : instanceQueue)
+        for (auto & pair : instanceQueue)
         {
-            instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(UINT));
-            instanceOffset += pair.second.size();
+            ModelID modelId = pair.first;
+            std::vector<InstanceData> & instanceData = pair.second;
 
-#if USE_TEMP_CUBE
-            static TempCube tempCube(device);
-			ModelInfo model = resourceManager.getModelInfo(CUBE);
+            instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(instanceOffset));
+            instanceOffset += instanceData.size();
 
+            HybrisLoader::Model    * model = hybrisLoader.getModel(Resources::Models::Cube);
+            HybrisLoader::Mesh     * mesh = &model->getMesh();
+            HybrisLoader::Material * material = &model->getMaterial();
+            HybrisLoader::Skeleton * skeleton = &model->getSkeleton();
 
+            deviceContext->VSSetShaderResources(4, 1, mesh->getVertexBuffer());
 
-			static UINT stride = sizeof(Vertex), offset = 0;
-			deviceContext->IASetVertexBuffers(0, 1, &tempCube.vertexBuffer, &stride, &offset);
+            deviceContext->PSSetShaderResources(10, 1, material->getDiffuse()); // Diffuse
+            deviceContext->PSSetShaderResources(11, 1, material->getDiffuse()); // Normal
+            deviceContext->PSSetShaderResources(12, 1, material->getDiffuse()); // Specular
+            deviceContext->PSSetShaderResources(13, 1, material->getDiffuse()); // Glow
 
-			static ID3D11ShaderResourceView * modelTextures[3] = { nullptr };
-			modelTextures[0] = model.diffuseMap;
-			modelTextures[1] = model.normalMap;
-			modelTextures[2] = model.specularMap;
-			deviceContext->PSSetShaderResources(10, 3, modelTextures);
-
-			deviceContext->DrawInstanced(36, (UINT)pair.second.size(), 0, 0);
-#else
-            ModelInfo model = resourceManager.getModelInfo(pair.first);
-
-            static UINT stride = sizeof(Vertex), offset = 0;
-            deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
-            deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-            static ID3D11ShaderResourceView * modelTextures[4] = { nullptr };
-            modelTextures[0] = model.diffuseMap;
-            modelTextures[1] = model.normalMap;
-            modelTextures[2] = model.specularMap;
-			modelTextures[3] = glowTest;
-            deviceContext->PSSetShaderResources(10, 4, modelTextures);
-
-            deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, 0);
-#endif
+            deviceContext->DrawInstanced(
+                mesh->getVertexCount(), 
+                instanceData.size(),
+                0, 0
+            );
         }
     }
 

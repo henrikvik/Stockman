@@ -22,10 +22,10 @@ namespace HybrisLoader
     Vertex::Vertex(Hybris::Vertex & vertex)
     {
         position = Vector3(vertex.position);
-        normal = Vector3(vertex.normal);
+        normal   = Vector3(vertex.normal);
         binormal = Vector3(vertex.binormal);
-        tangent = Vector3(vertex.tangent);
-        uv = Vector2(vertex.uv);
+        tangent  = Vector3(vertex.tangent);
+        uv       = Vector2(vertex.uv);
 
         for (size_t i = 0; i < 4; i++)
         {

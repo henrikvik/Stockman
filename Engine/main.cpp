@@ -4,7 +4,6 @@
 #include <crtdbg.h>
 #include <Game.h>
 #include "Constants.h"
-#include <Resources\ResourceManager.h>
 
 // int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow){

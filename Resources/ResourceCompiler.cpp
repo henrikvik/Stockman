@@ -107,7 +107,7 @@ struct Dir
 
             for (auto & file : files)
             {
-                ostream << pad.str() << "R\"(" << file << ")\"";
+                ostream << pad.str() << "R\"(..\\" << file << ")\"";
                 if (file != files.back())
                     ostream << ",";
                 ostream << "\n";

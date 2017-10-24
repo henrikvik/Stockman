@@ -5,11 +5,11 @@
 #include <vector>
 #include <unordered_map>
 #include "Camera.h"
-#include "Structs.h"
+//#include "Structs.h"
 #include "Datatypes.h"
 #include "WICTextureLoader.h"
 #include "Lights\LightGrid.h"
-#include "Resources\ResourceManager.h"
+//#include "Resources\ResourceManager.h"
 #include "Utility\DepthStencil.h"
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
@@ -74,7 +74,7 @@ namespace Graphics
 
         StructuredBuffer<InstanceData> instanceSBuffer;
         ConstantBuffer<UINT> instanceOffsetBuffer;
-        ResourceManager resourceManager;
+//        ResourceManager resourceManager;
         D3D11_VIEWPORT viewPort;
 
         // Lånade Pekareu

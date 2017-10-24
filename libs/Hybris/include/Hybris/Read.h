@@ -17,6 +17,8 @@ namespace Hybris
         }
     }
     void read(std::ifstream & ifile, File & file);
+    void read(std::ifstream & ifile, Material & material);
+    void read(std::ifstream & ifile, Texture & texture);
     void read(std::ifstream & ifile, Mesh & mesh);
     void read(std::ifstream & ifile, Skeleton & skeleton);
     void read(std::ifstream & ifile, Vertex & vertex);
@@ -37,4 +39,5 @@ namespace Hybris
     //void read(std::ifstream & ifile, quaternion_t & quaternion);
     void read(std::ifstream & ifile, matrix4_t & matrix4);
     void read(std::ifstream & ifile, ivector4_t & ivector4);
+    void read(std::ifstream & ifile, byte_t & byte);
 }

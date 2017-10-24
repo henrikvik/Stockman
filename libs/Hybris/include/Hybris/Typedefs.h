@@ -12,4 +12,5 @@ namespace Hybris
     typedef float vector4_t[4];
     typedef vector4_t matrix4_t[4];
     typedef id_t ivector4_t[4];
+    typedef uint8_t byte_t;
 }

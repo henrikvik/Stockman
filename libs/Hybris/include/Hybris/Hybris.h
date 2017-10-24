@@ -1,7 +1,6 @@
 #pragma once
 #include "Typedefs.h"
 #include "List.h"
-#include "IO.h"
 
 namespace Hybris
 {
@@ -59,9 +58,24 @@ namespace Hybris
         List<Animation> animations;
     };
 
+    struct Texture
+    {
+        name_t extension;
+        List<byte_t> data;
+    };
+
+    struct Material
+    {
+        Texture diffuseMap;
+        Texture normalMap;
+        Texture specularMap;
+        Texture glowMap;
+    };
+
     struct File
     {
         Mesh mesh;
+        Material material;
         Skeleton skeleton;
     };
 }

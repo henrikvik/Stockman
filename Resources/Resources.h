@@ -5,12 +5,9 @@ namespace Resources
   {
     enum Files
     {
-      AnimationWithLayers,
-      Cube,
-      KittyGolemAnim,
-      StaticCube
+      Cube
     };
-    extern char const * Paths[4];
+    extern char const * Paths[1];
   }
   namespace Shaders
   {

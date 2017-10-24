@@ -3,19 +3,16 @@ namespace Resources
 {
   namespace Models
   {
-    char const * Paths[4] =
+    char const * Paths[1] =
     {
-      R"(Resources\Models\AnimationWithLayers.hyb)",
-      R"(Resources\Models\Cube.hyb)",
-      R"(Resources\Models\KittyGolemAnim.hyb)",
-      R"(Resources\Models\StaticCube.hyb)"
+      R"(..\Resources\Models\Cube.hyb)"
     };
   }
   namespace Shaders
   {
     char const * Paths[1] =
     {
-      R"(Resources\Shaders\AnimationTest.hlsl)"
+      R"(..\Resources\Shaders\AnimationTest.hlsl)"
     };
   }
 }

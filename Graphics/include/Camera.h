@@ -36,6 +36,9 @@ namespace Graphics {
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
         void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
+
+        operator ID3D11Buffer*() { return vPBuffer; };
+        operator ID3D11Buffer**() { return &vPBuffer; };
 	private:
 		DirectX::SimpleMath::Vector3 pos;
 		DirectX::SimpleMath::Vector3 forward;

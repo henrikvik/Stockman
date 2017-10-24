@@ -7,6 +7,7 @@
 #include "Skeleton.h"
 #include "Animation.h"
 #include "Mesh.h"
+#include "Material.h"
 
 namespace HybrisLoader
 {
@@ -23,9 +24,16 @@ namespace HybrisLoader
         std::vector<SM::Matrix> evalAnimation(const char * animationName, float timeStamp) { return skeleton.evalAnimation(animationName, timeStamp); };
        
         float getAnimationDuration(const char * animationName) { return skeleton.getAnimationDuration(animationName); }
-    private:
 
+
+        Mesh & getMesh() { return mesh; }
+        Material & getMaterial() { return material; }
+        Skeleton & getSkeleton() { return skeleton; }
+
+    private:
         Mesh mesh;
+        Material material;
         Skeleton skeleton;
+
     };
 }

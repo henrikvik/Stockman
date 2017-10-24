@@ -34,7 +34,7 @@ namespace Graphics {
 		SAFE_RELEASE(gradientSRV);
 	}
 
-	void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
+	void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt)
 	{
 		generateFrustumsCPU(camera, device);
 		//
@@ -144,7 +144,7 @@ namespace Graphics {
 #pragma endregion
 	}
 
-	void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
+	void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt)
 	{
 		//generateFrustums(camera, device, cxt, shaders);
 		m_ResetIndexCounter->CopyTo(cxt, m_OpaqueIndexCounter);
@@ -322,7 +322,7 @@ namespace Graphics {
 		}
 	}
 
-	void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
+	void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt)
 	{
 		m_Params.numThreads[0] = ceil(1280 / (float)BLOCK_SIZE);
 		m_Params.numThreads[1] = ceil(720 / (float)BLOCK_SIZE);

@@ -1,10 +1,10 @@
 #pragma once
-#include "Resources\Shader.h"
-#include <Engine\Constants.h>
-#include "Utility\ShaderResource.h"
-#include <CommonStates.h>
-#include "Utility\ConstantBuffer.h"
 #include <vector>
+#include <CommonStates.h>
+#include <Engine\Constants.h>
+#include "Utility\Shader.h"
+#include "Utility\ShaderResource.h"
+#include "Utility\ConstantBuffer.h"
 
 namespace Graphics
 {

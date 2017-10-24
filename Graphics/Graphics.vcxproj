@@ -25,6 +25,7 @@
     <ClCompile Include="include\HUD.cpp" />
     <ClCompile Include="include\HybrisLoader\Animation.cpp" />
     <ClCompile Include="include\HybrisLoader\HybrisLoader.cpp" />
+    <ClCompile Include="include\HybrisLoader\Material.cpp" />
     <ClCompile Include="include\HybrisLoader\Mesh2.cpp" />
     <ClCompile Include="include\HybrisLoader\Model.cpp" />
     <ClCompile Include="include\HybrisLoader\Skeleton.cpp" />
@@ -32,17 +33,12 @@
     <ClCompile Include="include\Lights\Sun.cpp" />
     <ClCompile Include="include\Menu.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
-    <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
-    <ClCompile Include="include\Resources\MaterialManager.cpp" />
-    <ClCompile Include="include\Resources\Mesh.cpp" />
-    <ClCompile Include="include\Resources\MeshManager.cpp" />
-    <ClCompile Include="include\Resources\ResourceManager.cpp" />
-    <ClCompile Include="include\Resources\Shader.cpp" />
-    <ClCompile Include="include\Resources\TextureManager.cpp" />
+    <ClCompile Include="include\Utility\Shader.cpp" />
     <ClCompile Include="include\SkyRenderer.cpp" />
     <ClCompile Include="include\SSAORenderer.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
     <ClCompile Include="include\Utility\ShaderResource.cpp" />
+    <ClCompile Include="include\Utility\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />
@@ -53,6 +49,7 @@
     <ClInclude Include="include\HUD.h" />
     <ClInclude Include="include\HybrisLoader\Animation.h" />
     <ClInclude Include="include\HybrisLoader\HybrisLoader.h" />
+    <ClInclude Include="include\HybrisLoader\Material.h" />
     <ClInclude Include="include\HybrisLoader\Mesh.h" />
     <ClInclude Include="include\HybrisLoader\Model.h" />
     <ClInclude Include="include\HybrisLoader\Skeleton.h" />
@@ -60,17 +57,10 @@
     <ClInclude Include="include\Lights\Sun.h" />
     <ClInclude Include="include\Menu.h" />
     <ClInclude Include="include\Renderer.h" />
-    <ClInclude Include="include\Resources\BRFImportHandler.h" />
-    <ClInclude Include="include\Resources\Importerstructs.h" />
-    <ClInclude Include="include\Resources\MaterialManager.h" />
-    <ClInclude Include="include\Resources\Mesh.h" />
-    <ClInclude Include="include\Resources\MeshManager.h" />
-    <ClInclude Include="include\Resources\ResourceManager.h" />
-    <ClInclude Include="include\Resources\Shader.h" />
-    <ClInclude Include="include\Resources\TextureManager.h" />
+    <ClInclude Include="include\Structs.h" />
+    <ClInclude Include="include\Utility\Shader.h" />
     <ClInclude Include="include\SkyRenderer.h" />
     <ClInclude Include="include\SSAORenderer.h" />
-    <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\TempCube.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
     <ClInclude Include="include\Utility\Buffer.h" />
@@ -79,6 +69,7 @@
     <ClInclude Include="include\Utility\ShaderResource.h" />
     <ClInclude Include="include\Utility\sizeofv.h" />
     <ClInclude Include="include\Utility\StructuredBuffer.h" />
+    <ClInclude Include="include\Utility\Texture.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

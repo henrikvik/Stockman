@@ -6,8 +6,8 @@
 #include "../Camera.h"
 #include "../ThrowIfFailed.h"
 #include "../Structs.h"
-#include "../Resources/ResourceManager.h"
-#include "../Resources/Shader.h"
+//#include "../Resources/ResourceManager.h"
+#include "../Utility/Shader.h"
 #include "../Utility/StructuredBuffer.h"
 
 #define BLOCK_SIZE 16
@@ -32,8 +32,8 @@ namespace Graphics {
 		LightGrid();
 		virtual ~LightGrid();
 
-		void initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
-		void cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
+		void initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt);
+		void cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt);
 
 		void updateLights(ID3D11DeviceContext * context, Camera * camera);
 
@@ -52,7 +52,7 @@ namespace Graphics {
 		ID3D11ShaderResourceView *getDebugSRV() const { return m_DebugSRV; }
 	private:
 		void generateFrustumsCPU(Camera *camera, ID3D11Device *device);
-		void generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
+		void generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt);
 
 		DispatchParams m_Params;
 		ID3D11Buffer  *m_ParamsBuffer;

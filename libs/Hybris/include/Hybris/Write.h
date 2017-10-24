@@ -14,6 +14,8 @@ namespace Hybris
         }
     }
     void write(std::ofstream & ofile, File & file);
+    void write(std::ofstream & ofile, Material & mesh);
+    void write(std::ofstream & ofile, Texture & texture);
     void write(std::ofstream & ofile, Mesh & mesh);
     void write(std::ofstream & ofile, Skeleton & skeleton);
     void write(std::ofstream & ofile, Vertex & vertex);
@@ -34,4 +36,6 @@ namespace Hybris
     //void write(std::ofstream & ofile, quaternion_t & quaternion);
     void write(std::ofstream & ofile, matrix4_t & matrix4);
     void write(std::ofstream & ofile, ivector4_t & ivector4);
+    void write(std::ofstream & ofile, byte_t & byte);
+
 }

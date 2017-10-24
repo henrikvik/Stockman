@@ -4,12 +4,12 @@
 #define ANIMATION_T_SLOT t1
 #include "Animation.hlsli"
 
-
 struct Fragment
 {
     float4 ndcPos : SV_Position;
     float3 normal : Normal;
     float4 color  : Color;
+    float2 uv     : UV;
 };
 
 struct Pixel
@@ -31,19 +31,28 @@ Fragment VS(uint vertexId : SV_VertexId)
     Vertex vertex = getVertex(vertexId);
     Fragment fragment;
     
-    float4x4 animMatrix = calculateAnimationMatrix(vertex);
+    float4x4 animMatrix = float4x4(
+        1,0,0,0,
+        0,1,0,0,
+        0,0,1,0,
+        0,0,0,1    
+    ); //calculateAnimationMatrix(vertex);
+
     fragment.ndcPos = mul(VP, mul(animMatrix, float4(vertex.position, 1)));
     fragment.normal = mul(VP, mul(animMatrix, float4(vertex.normal, 0)));
-    fragment.color  = float4(abs(vertex.normal), 1);
+    fragment.uv     = vertex.uv;
 
     return fragment;
 }
+
+Texture2D diffuse : register(t2);
+SamplerState pointSampler : register(s0);
 
 Pixel PS(Fragment fragment)
 {
     Pixel pixel;
 
-    pixel.color = fragment.color;
+    pixel.color = diffuse.Sample(pointSampler, fragment.uv);
 
     return pixel;
 }
