@@ -7,6 +7,7 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <iostream>
+#pragma comment (lib, "d3d11.lib")
 #include "Typing.h"
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -64,12 +65,13 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mWidth = width;
 	this->hInstance = hInstance;
 	this->initializeWindow();
-	this->game.init();
 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
 	this->mMouse->SetWindow(window);
+
+	this->game.init();
 
 }
 
@@ -152,7 +154,8 @@ HRESULT Engine::createSwapChain()
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
+	desc.BufferDesc.RefreshRate.Denominator = 0;
+	desc.BufferDesc.RefreshRate.Numerator = 0;
 
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
@@ -372,26 +375,36 @@ int Engine::run()
             renderer->render(&cam);
 			PROFILE_END();
         }
+
+		if (game.getState() == Logic::gameStateGameUpgrade)
+		{
+			renderer->updateLight(deltaTime, &cam);
+
+			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
+			renderer->render(&cam);
+			PROFILE_END();
+
+			game.menuRender(renderer);
+		}
+
 		 
 		g_Profiler->poll();
 
 		if (showProfiler) {
-			//DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 			
 			ImGui::SetNextWindowPos(ImVec2(0, 0));
 			ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
 			g_Profiler->render();
 		}
-		else {
-			//DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
-		}
 
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
-		PROFILE_BEGINC("ImGui_ImplDX11_NewFrame", EventColor::PinkLight);
+		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
 		PROFILE_END();
 
+		PROFILE_BEGINC("IDXGISwapChain::Present()", EventColor::Cyan);
 		mSwapChain->Present(0, 0);
+		PROFILE_END();
 		g_Profiler->frame();
 		
 	}

@@ -78,6 +78,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	m_switchWeaponThree = DirectX::Keyboard::Keys::D3;
 	m_reloadWeapon = DirectX::Keyboard::Keys::R;
 	m_useSkill = DirectX::Keyboard::Keys::E;
+	m_listenerData.update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 }
 
 void Player::clear()
@@ -147,6 +148,16 @@ void Player::upgrade(Upgrade const & upgrade)
 	}
 }
 
+void Player::updateSound(float deltaTime)
+{
+	// Update sound position
+	btVector3 pos = getPositionBT();
+	btVector3 vel = m_charController->getLinearVelocity();
+	m_soundSource.pos = { pos.x(), pos.y(), pos.z() };
+	m_soundSource.vel = { vel.x(), vel.y(), vel.z() };
+	m_soundSource.update(deltaTime);
+}
+
 void Player::saveToFile()
 {
 
@@ -213,7 +224,6 @@ void Player::updateSpecific(float deltaTime)
     
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
-	DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
 	// Temp for testing
@@ -244,7 +254,7 @@ void Player::updateSpecific(float deltaTime)
 	}
 
 	// Movement
-	if (!ks.IsKeyDown(DirectX::Keyboard::LeftAlt))	// !TEMP!
+	if (ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
 		mouseMovement(deltaTime, &ms);
 	jump(deltaTime, &ks);
 
@@ -304,7 +314,7 @@ void Player::updateSpecific(float deltaTime)
 	if (!m_weaponManager.isReloading())
 	{
 		// Primary and secondary attack
-		if (!m_weaponManager.isAttacking())
+		if (!m_weaponManager.isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
 		{
 			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
 			if ((ms.leftButton))
@@ -317,6 +327,22 @@ void Player::updateSpecific(float deltaTime)
 		if (ks.IsKeyDown(m_reloadWeapon))
 			m_weaponManager.reloadWeapon();
 	}
+
+	// Update weapon and skills
+	m_weaponManager.update(deltaTime);
+	m_skillManager.update(deltaTime);
+
+
+#ifdef GOD_MODE
+	static bool isNum = false;
+	static bool wasNum = false;
+	wasNum = isNum;
+	isNum = ks.NumPad8;
+
+	if (isNum && !wasNum)
+		m_hp--;
+#endif
+
 }
 
 //fills the HUD info with wave info
@@ -379,9 +405,7 @@ void Player::moveFree(float deltaTime, DirectX::Keyboard::State * ks)
 		m_wishDir.setY(0.1f * deltaTime);
 
 	// Update pos of player
-	btTransform transform = m_charController->getGhostObject()->getWorldTransform();
-	transform.setOrigin(transform.getOrigin() + (m_wishDir * m_moveMaxSpeed * 2.f * deltaTime));
-	m_charController->getGhostObject()->setWorldTransform(transform);
+    m_charController->warp(getPositionBT() + (m_wishDir * m_moveMaxSpeed * 2.f * deltaTime));
 }
 
 void Player::move(float deltaTime)
@@ -409,7 +433,7 @@ void Player::move(float deltaTime)
 		m_airAcceleration = (PLAYER_SPEED_LIMIT - m_moveSpeed) * PLAYER_MOVEMENT_AIRACCELERATION;
 		
 		if (!m_wishDir.isZero() && m_moveDir.dot(m_wishDir) <= 0.f)
-			applyAirFriction(deltaTime, PLAYER_AIR_FRICTION * 6.f);		// TEMP FIX
+			applyAirFriction(deltaTime, PLAYER_AIR_FRICTION * 6.f);		// if trying to move in opposite direction in air apply more friction
 		else
 			applyAirFriction(deltaTime, PLAYER_AIR_FRICTION);
 	}

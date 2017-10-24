@@ -37,11 +37,19 @@ namespace Logic
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
 		std::vector<double> time;
+
 		std::thread *threads[NR_OF_THREADS];
+		int m_indexRunning[NR_OF_THREADS];
+		bool m_threadRunning[NR_OF_THREADS];
+
+        Physics* m_physicsPtr;
+        ProjectileManager* m_projectilePtr;
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
 		int m_currentWave, m_frame;
+		float m_deltaTime;
+        bool m_killChildren;
 
 		void deleteData(); // delete data in vectors
 		void allocateData(); // resize enemy vector 
@@ -60,10 +68,11 @@ namespace Logic
 		void updateEnemies(int index, Player const &player, float deltaTime);
 		// statis because threads will use this
 		static void updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime);
+		static void onPathThreadCreation(EntityManager *manager, int index, Player const &player, float deltaTime);
 		void updateEnemy(Enemy *enemy, int index, Player const &player, float deltaTime);
 		void clear();
 
-		void giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
+		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
 
 		void spawnWave(Physics &physics, ProjectileManager *projectiles);
 		void spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,

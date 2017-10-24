@@ -1,4 +1,5 @@
 #pragma once
+#include <d3d11.h>
 #include "../ThrowIfFailed.h"
 
 template<typename T, size_t size = 1>
