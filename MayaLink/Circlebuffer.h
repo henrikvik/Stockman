@@ -10,6 +10,8 @@
 #include "Mutex.h"
 #include <iostream>
 
+#define LENGTHPADDED length + padding
+
 class CircleBuffer
 {
 private:
@@ -32,19 +34,18 @@ private:
 	{
 		HEAD,
 		TAIL,
-		CLIENTCOUNT
+		CLIENTC
 	};
 
 #pragma region Variables
-	Mutex mutex;
-
 	HANDLE fileMap, fileControl;
-	HANDLE memMtx, clientMtx, readMtx;
+	HANDLE mutex;
 
 	size_t buff_size, chnk_size, msg_Count, client_Pos;
 	size_t *_head, *_tail, *_clients, *_freemem;
 
-	LPCWSTR buffName;
+	LPCSTR buff_Name;
+	LPCSTR control_Name;
 
 	bool isProducer;
 
@@ -57,22 +58,25 @@ private:
 
 
 	size_t round_Up(size_t val, size_t multiple = 256);
-	void createMaps();
+	void createMaps(LPCSTR buffName, LPCSTR controlName);
 	void updateControlBuffer();
 public:
-	CircleBuffer(LPCWSTR buffName,		// unique buffname
+	CircleBuffer(LPCSTR buffName,		// unique buffname
 		const size_t & buffSize,		// the size of the whole filemap
 		const bool &isProducer,			// if its going to be used as a producer or not
 		const size_t&chunkSize);		// round up message to multiple of this <-
 	~CircleBuffer();
 
+	
 	size_t calcFreeMemory();
-
 	bool push(const void*msg, size_t length); // Sends a message through buffer, if return succeed if false not enough space.
 	bool pop(char*msg, size_t&length);        //read a message from buffer, puts content in memory. 
+
+	void createMutex();
+	void lock();
+	void unlock();
+
+	void setHeadPosition(size_t position);
+	void setTailPosition(size_t position);
 	
-	size_t freeMem();
-
-	size_t fileHeaderSize = sizeof(FileHeader);
-
 };

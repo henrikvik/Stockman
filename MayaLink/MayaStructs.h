@@ -45,6 +45,14 @@ struct PointLight
 	float intensity;
 };
 
+struct DirectionalLight
+{
+	float position[3];
+	
+	float color[3];
+	float intensity;
+};
+
 struct Camera
 {
 	char messageType[256];
@@ -56,40 +64,3 @@ struct Camera
 	float nearPlane;
 	float fov;
 };
-
-MStatus res = MS::kSuccess;
-MCallbackIdArray idList;
-size_t offset = 0;
-
-MFloatPointArray points;
-std::vector<Vertices> vertices;
-MIntArray vertexCount,
-polyVerticesID,
-normalList,
-normalCount;
-MFloatArray U, V;
-MIntArray uvCounts, uvIDS;
-MFloatVectorArray normals;
-MIntArray triangleCountsOffsets, triangleIndices;
-
-MFloatMatrix projMatrix;
-MObject parentCamera, parentMesh;
-
-std::vector<Meshes> meshVector;
-Meshes meshStruct;
-
-M3dView camView;
-MDagPath cameraPath;
-
-MVector vertexNormals;
-
-TransformType transformType;
-Camera camera;
-MeshType meshType;
-Material material;
-
-char * msg;
-
-enum MessageType { MayaMesh, MayaCamera, MayaTransform, MayaMaterial, MayaNodeDelete, MayaLight };
-
-CircleBuffer * circleBuffer;

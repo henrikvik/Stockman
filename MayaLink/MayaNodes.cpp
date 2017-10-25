@@ -66,6 +66,11 @@ void MayaNodes::getMeshInfo(MFnMesh & mesh)
 	circleBuffer->push(msg, offset);
 }
 
+void MayaNodes::getTransform(MFnTransform & transform)
+{
+
+}
+
 void MayaNodes::getLight()
 {
 
@@ -92,7 +97,7 @@ void MayaNodes::MeshCallBack(MNodeMessage::AttributeMessage msg, MPlug &plug, MP
 {
 	if (msg & MNodeMessage::AttributeMessage::kAttributeSet)
 	{
-		MFnMesh mesh(plug.node(), &res);
+		MFnMesh mesh(plug.node(), &result);
 		if (res == MS::kSuccess)
 		{
 			getMeshInfo(mesh);

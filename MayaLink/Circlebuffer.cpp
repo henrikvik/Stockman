@@ -1,19 +1,24 @@
 #include "Circlebuffer.h"
 
-size_t CircleBuffer::round_Up(size_t val, size_t multiple)
+size_t CircleBuffer::round_Up(size_t value, size_t multiple)
 {
 	assert(multiple);
 
-	return((val + multiple - 1) / multiple)*multiple;
+	return((value + multiple - 1) / multiple)*multiple;
 }
 
 CircleBuffer::CircleBuffer(
-	LPCWSTR buffName,
+	LPCSTR buffName,
 	const size_t & buffSize,
 	const bool & isProducer,
 	const size_t & chunkSize)
 {
-	this->buffName = buffName;
+	createMutex();
+
+	this->fileMap = NULL;
+	this->fileControl = NULL;
+
+	this->buff_Name = buffName;
 	this->buff_size = buffSize;
 	this->isProducer = isProducer;
 	this->chnk_size = chunkSize;
@@ -21,7 +26,11 @@ CircleBuffer::CircleBuffer(
 	this->client_Pos = 0;
 	this->msg_Count = 0;
 
-	createMaps();
+	LPCSTR c = "Control";
+	std::string temp = std::string(buff_Name) + c;
+	control_Name = temp.c_str();
+
+	createMaps(buff_Name, control_Name);
 	updateControlBuffer();
 
 }
@@ -35,48 +44,71 @@ CircleBuffer::~CircleBuffer()
 	CloseHandle(fileControl);
 }
 
-void CircleBuffer::createMaps()
+void CircleBuffer::createMaps(LPCSTR buffName, LPCSTR controlName)
 {
-	// map for messages
 
-	this->fileMap = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, (DWORD)buff_size, TEXT("fileMap"));
+#pragma region FileMapregion
+	this->fileMap = CreateFileMapping
+	(
+		INVALID_HANDLE_VALUE,
+		NULL, PAGE_READWRITE,
+		0,
+		(DWORD)buff_size,
+		buffName
+	);
 
 	if (fileMap == NULL)
-		std::cout << "Could not create filemap";
-
+		throw std::runtime_error("Could not create filemap");
 
 	this->messageData = (char*)MapViewOfFile(this->fileMap, FILE_MAP_ALL_ACCESS, 0, 0, buff_size);
 
 	if (messageData == NULL)
 	{
-		std::cout << "Could not create map view of file"; 
 		CloseHandle(this->fileMap);
+		throw std::runtime_error("Could not create map view of file");
 	}
+#pragma endregion  Creates the map that will handle messages
 
+#pragma region ControlMapregion
 	// map for control
-	this->fileControl = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(ControlHeader), TEXT("ControlMap"));
+	this->fileControl = CreateFileMapping
+	(
+		INVALID_HANDLE_VALUE, 
+		NULL,
+		PAGE_READWRITE,
+		0,
+		sizeof(ControlHeader), 
+		controlName
+	);
 
 	if (this->fileControl == NULL)
-		std::cout << "Could not create map for control";
-	
+	{
+		throw std::runtime_error("Could not create map for control");
+	}
+
 	this->controlPointer = (size_t *)MapViewOfFile(this->fileControl, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(ControlHeader));
-	
+
 	if (this->controlPointer == NULL)
 	{
-		std::cout << "Could not create map view of file, control";
 		CloseHandle(this->fileControl);
+		throw std::runtime_error("Could not create map view of file, control");
 	}
+#pragma endregion Creates the map that will be used for control
+
 }
 
 void CircleBuffer::updateControlBuffer()
 {
-	if (isProducer == true)
-		controlPointer[HEAD] = 0;
+	if (isProducer == false)
+	{
+	
+	controlPointer[HEAD] = 0;
+	controlPointer[TAIL] = 0;
+	controlPointer[CLIENTC] += 1;
+	}
 	else
 	{
 		controlPointer[HEAD] = 0;
-		controlPointer[TAIL] = 0;
-		controlPointer[CLIENTCOUNT] += 1;
 	}
 }
 
@@ -96,7 +128,7 @@ bool CircleBuffer::push(const void * msg, size_t length)
 	size_t padding = chnk_size - ((client_Pos + sizeof(FileHeader) + length % chnk_size)); 
 
 	// Header isnt alowed to reach the tail. but tail can reach head
-	if (calcFreeMemory() > (sizeof(FileHeader) + length + padding))
+	if (calcFreeMemory() > (sizeof(FileHeader) + LENGTHPADDED))
 	{
 		if (client_Pos == buff_size)
 			client_Pos = 0;
@@ -104,13 +136,14 @@ bool CircleBuffer::push(const void * msg, size_t length)
 		FileHeader msgHeader;
 		msgHeader.id = msg_Count;
 		msgHeader.padding = padding;
-		msgHeader.clients = controlPointer[CLIENTCOUNT];
+		msgHeader.clients = controlPointer[CLIENTC];
 		msgHeader.length = length;
 
 		memcpy(&messageData[client_Pos], &msgHeader, sizeof(FileHeader));
 		client_Pos += sizeof(FileHeader);
-
-		if (buff_size - client_Pos >= length + padding)
+		
+		// 
+		if (buff_size - client_Pos >= LENGTHPADDED)
 		{
 			memcpy(&messageData[client_Pos], msg, length);
 			client_Pos += length;
@@ -139,9 +172,10 @@ bool CircleBuffer::pop(char * msg, size_t & lenght)
 	if (this->client_Pos == controlPointer[HEAD])
 		return false; // read all
 
-	mutex.lock();
+	lock();
 	if (client_Pos == buff_size)
 		client_Pos = 0;
+
 	// read and move forward
 	FileHeader * msgHeader = (FileHeader*)&messageData[this->client_Pos];
 	client_Pos += sizeof(FileHeader); 
@@ -167,8 +201,33 @@ bool CircleBuffer::pop(char * msg, size_t & lenght)
 	if (msgHeader->clients = 0)
 		controlPointer[TAIL] = client_Pos;
 
-	mutex.unlock();
+	unlock();
 
 	return true;
 		
+}
+
+void CircleBuffer::createMutex()
+{
+	mutex = CreateMutex(nullptr, false, "Name");
+}
+
+void CircleBuffer::lock()
+{
+	WaitForSingleObject(mutex, INFINITE);
+}
+
+void CircleBuffer::unlock()
+{
+	ReleaseMutex(mutex);
+}
+
+void CircleBuffer::setHeadPosition(size_t position)
+{
+	controlPointer[HEAD] = position;
+}
+
+void CircleBuffer::setTailPosition(size_t position)
+{
+	controlPointer[TAIL] = position;
 }

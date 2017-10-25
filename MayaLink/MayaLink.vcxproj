@@ -125,13 +125,15 @@
     <ClInclude Include="Circlebuffer.h" />
     <ClInclude Include="LinkFiles.h" />
     <ClInclude Include="MayaNodes.h" />
-    <ClInclude Include="Mutex.h" />
     <ClInclude Include="MayaStructs.h" />
+    <ClInclude Include="mayaVariables.h" />
+    <ClInclude Include="Plugin.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Circlebuffer.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="MayaNodes.cpp" />
-    <ClCompile Include="Mutex.cpp" />
+    <ClCompile Include="Plugin.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -46,7 +46,7 @@ void DebugWindow::draw(const char * title)
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_Always);
 	if (ImGui::Begin(title))
 	{
-		ImGui::TextWrapped("This is the Dr.Stockman Studios Debug Window");
+		ImGui::TextWrapped("This is Dr.Stockman Studios Debug Window");
 		ImGui::TextWrapped("Enter 'HELP' for help, press TAB to use text completion.");
 
 		if (ImGui::SmallButton("Clear"))

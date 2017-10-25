@@ -1,8 +1,7 @@
 #pragma once
 
-#include "LinkFiles.h"
 #include <Windows.h>
-#include "Circlebuffer.h"
+#include "mayaVariables.h"
 #include "MayaStructs.h"
 
 class MayaNodes
@@ -14,6 +13,7 @@ public:
 	~MayaNodes();
 	
 	void getMeshInfo(MFnMesh &mesh);
+	void getTransform(MFnTransform & transform);
 	void getLight();
 	void getCamera();
 	void MeshCallBack(MNodeMessage::AttributeMessage msg, MPlug & plug, MPlug & otherPlug, void * clientData);
