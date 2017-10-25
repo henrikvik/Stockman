@@ -48,9 +48,9 @@ namespace HybrisLoader
         return evaluateJointTransforms(keyFrame);
     }
 
-    std::vector<SM::Matrix> Skeleton::getJointTransforms()
+    std::vector<DirectX::SimpleMath::Matrix> Skeleton::getJointTransforms()
     {
-        std::vector<SM::Matrix> jointTransforms(joints.size());
+        std::vector<DirectX::SimpleMath::Matrix> jointTransforms(joints.size());
         for (size_t i = 0; i < joints.size(); i++)
         {
             jointTransforms[i] = joints.at(i).invBindTransform.Invert();

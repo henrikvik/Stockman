@@ -3,6 +3,7 @@
 
 #include <Graphics\include\Structs.h>
 #include <SimpleMath.h>
+#include <Graphics\include\RenderQueue.h>
 
 
 namespace Graphics
@@ -31,6 +32,7 @@ namespace Logic
 
 	private:
 		Graphics::RenderInfo m_renderInfo;
+        StaticRenderInfo renderInfo;
 	};
 }
 

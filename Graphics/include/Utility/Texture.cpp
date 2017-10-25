@@ -3,6 +3,12 @@
 #include <WICTextureLoader.h>
 #include <comdef.h>
 
+Texture::Texture()
+{
+    resource = nullptr;
+    resourceView = nullptr;
+}
+
 Texture::Texture(ID3D11Device * device, std::vector<uint8_t>& data)
 {
     ThrowIfFailed(DirectX::CreateWICTextureFromMemory(device, data.data(), data.size(), &resource, &resourceView));
@@ -15,6 +21,6 @@ Texture::Texture(ID3D11Device * device, const char * filePath)
 
 Texture::~Texture()
 {
-    resource->Release();
-    resourceView->Release();
+    resource ? resource->Release() : NULL;
+    resourceView ? resourceView->Release() : NULL;
 }

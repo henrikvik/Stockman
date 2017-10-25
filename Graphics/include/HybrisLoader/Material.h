@@ -11,6 +11,9 @@ namespace HybrisLoader
         virtual ~Material();
 
         Texture & getDiffuse() { return *diffuse; }
+        Texture & getSpecular() { return *specular; }
+        Texture & getNormals() { return *normals; }
+        Texture & getGlow() { return *glow; }
 
     private:
         Texture * diffuse;

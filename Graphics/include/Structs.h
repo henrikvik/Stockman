@@ -75,8 +75,8 @@ namespace Graphics
 	};
 	struct InstanceData
 	{
-		DirectX::SimpleMath::Matrix translation;
-		DirectX::SimpleMath::Matrix invTranspose;
+		DirectX::SimpleMath::Matrix transform;
+		DirectX::SimpleMath::Matrix transformInvT;
 	};
 
 	struct ButtonInfo

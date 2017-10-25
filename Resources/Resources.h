@@ -5,16 +5,19 @@ namespace Resources
   {
     enum Files
     {
-      Cube
+      Cube,
+      UnitCube
     };
-    extern char const * Paths[1];
+    extern char const * Paths[2];
   }
   namespace Shaders
   {
     enum Files
     {
-      AnimationTest
+      AnimationTest,
+      ForwardPlus,
+      SimpleForward
     };
-    extern char const * Paths[1];
+    extern char const * Paths[3];
   }
 }

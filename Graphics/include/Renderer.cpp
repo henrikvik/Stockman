@@ -6,10 +6,10 @@
 #include <Keyboard.h>
 
 #include <Engine\Profiler.h>
-
+#include "RenderQueue.h";
 
 #define USE_TEMP_CUBE true
-#define ANIMATION_HIJACK_RENDER false
+#define ANIMATION_HIJACK_RENDER true
 
 #if USE_TEMP_CUBE
 #include "TempCube.h"
@@ -17,6 +17,7 @@
 
 
 #define MAX_DEBUG_POINTS 10000
+#define _INSTANCE_CAP 300
 
 namespace Graphics
 {
@@ -25,7 +26,7 @@ namespace Graphics
 		: forwardPlus(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
-		, instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
+		, instanceSBuffer(device, CpuAccess::Write, _INSTANCE_CAP)
 		, instanceOffsetBuffer(device)
 		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
 		, postProcessor(device, deviceContext)
@@ -49,6 +50,7 @@ namespace Graphics
 #pragma endregion
 		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
         , hybrisLoader(device)
+        , staticInstanceBuffer(device, CpuAccess::Write, StaticRenderInfo::INSTANCE_CAP)
 	{
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -132,44 +134,45 @@ namespace Graphics
     void Renderer::render(Camera * camera)
     #if ANIMATION_HIJACK_RENDER
     {
-        static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
-
-        static UINT tick = 0;
-        tick++;
-        float sin = std::sin(tick / 1000.f);
-        float cos = std::cos(tick / 1000.f);
-
-        cam.updateLookAt({5 * sin,0,5 * cos}, {0,0,0}, deviceContext);
-
-        using namespace HybrisLoader;
-        static Shader animationTest(device, Resources::Shaders::AnimationTest);
-        static Model * model = hybrisLoader.getModel(Resources::Models::Cube);
+        static Shader shader(device, Resources::Shaders::SimpleForward);
+        static HybrisLoader::Model * model = hybrisLoader.getModel(Resources::Models::Cube);
         static float clearColor[4] = {0,0,0,0};
 
+        static StructuredBuffer<InstanceData> instanceBuffer(device, CpuAccess::Write, _INSTANCE_CAP, nullptr);
 
         deviceContext->ClearRenderTargetView(backBuffer, clearColor);
         deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1, 0);
 
         deviceContext->IASetInputLayout(nullptr);
-        deviceContext->VSSetShader(animationTest, nullptr, 0);
-        deviceContext->PSSetShader(animationTest, nullptr, 0);
+        deviceContext->VSSetShader(shader, nullptr, 0);
+        deviceContext->PSSetShader(shader, nullptr, 0);
 
         deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         deviceContext->RSSetState(states->CullClockwise());
         deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
-        deviceContext->VSSetConstantBuffers(0, 1, cam);
-        deviceContext->PSSetConstantBuffers(0, 1, cam);
-
-        deviceContext->VSSetShaderResources(0, 1, model->getMesh().getVertexBuffer());
-        deviceContext->PSSetShaderResources(2, 1, model->getMaterial().getDiffuse());
+        deviceContext->VSSetConstantBuffers(0, 1, *camera);
+        deviceContext->PSSetConstantBuffers(0, 1, *camera);
 
         static ID3D11SamplerState * sampler = states->PointClamp();
         deviceContext->PSSetSamplers(0, 1, &sampler);
 
+        cull();
+        //for (auto & pair : instanceQueue)
+        //{
+        //    HybrisLoader::Mesh & mesh = model->getMesh();
 
-        deviceContext->Draw(model->getMesh().getVertexCount(), 0);
+        //    instanceBuffer.write(deviceContext, pair.second.data(), sizeofv(pair.second));
+        //    deviceContext->DrawInstanced(mesh.getVertexCount(), pair.second.size(), 0, 0);
+        //}
+        instanceQueue.clear();
+
+        //writeInstanceBuffers();
+
+        //drawStatic();
+
+        RenderQueue::clearAllQueues();
     }
     #else
 	{
@@ -354,7 +357,7 @@ namespace Graphics
 
     void Renderer::queueRender(RenderInfo * renderInfo)
     {
-        if (renderQueue.size() > INSTANCE_CAP)
+        if (renderQueue.size() > _INSTANCE_CAP)
             throw "Renderer Exceeded Instance Cap.";
 
         renderQueue.push_back(renderInfo);
@@ -362,22 +365,22 @@ namespace Graphics
 
 	void Renderer::queueFoliageRender(FoliageRenderInfo * renderInfo)
 	{
-		if (renderFoliageQueue.size() > INSTANCE_CAP)
-		{
-			throw "Foliage renderer exceeded instance cap.";
-		}
+		//if (renderFoliageQueue.size() > INSTANCE_CAP)
+		//{
+		//	throw "Foliage renderer exceeded instance cap.";
+		//}
 
-		//renderFoliageQueue.push_back(renderInfo);
+		////renderFoliageQueue.push_back(renderInfo);
 	
 	}
 
     void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
     {
-        if (debugInfo->points->size() > MAX_DEBUG_POINTS)
-        {
-            throw "vector is bigger than structured buffer";
-        }
-        //renderDebugQueue.push_back(debugInfo);
+        //if (debugInfo->points->size() > MAX_DEBUG_POINTS)
+        //{
+        //    throw "vector is bigger than structured buffer";
+        //}
+        ////renderDebugQueue.push_back(debugInfo);
     }
 
     void Renderer::queueText(TextString * text)
@@ -448,22 +451,18 @@ namespace Graphics
 
 	}
 
-    void Renderer::draw()
+    void Renderer::drawStatic()
     {
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->VSSetConstantBuffers(4, 1, instanceOffsetBuffer);
-        deviceContext->VSSetShaderResources(5, 1, instanceSBuffer);
+        deviceContext->VSSetShaderResources(5, 1, staticInstanceBuffer);
 
         UINT instanceOffset = 0;
-        for (auto & pair : instanceQueue)
+        for (auto & pair : RenderQueue::getQueue<StaticRenderInfo>())
         {
-            ModelID modelId = pair.first;
-            std::vector<InstanceData> & instanceData = pair.second;
+            auto & modelId = pair.first;
+            auto & renderInfos = pair.second;
 
-            instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(instanceOffset));
-            instanceOffset += instanceData.size();
-
-            HybrisLoader::Model    * model = hybrisLoader.getModel(Resources::Models::Cube);
+            HybrisLoader::Model    * model = hybrisLoader.getModel(Resources::Models::UnitCube);
             HybrisLoader::Mesh     * mesh = &model->getMesh();
             HybrisLoader::Material * material = &model->getMaterial();
             HybrisLoader::Skeleton * skeleton = &model->getSkeleton();
@@ -471,15 +470,18 @@ namespace Graphics
             deviceContext->VSSetShaderResources(4, 1, mesh->getVertexBuffer());
 
             deviceContext->PSSetShaderResources(10, 1, material->getDiffuse()); // Diffuse
-            deviceContext->PSSetShaderResources(11, 1, material->getDiffuse()); // Normal
-            deviceContext->PSSetShaderResources(12, 1, material->getDiffuse()); // Specular
-            deviceContext->PSSetShaderResources(13, 1, material->getDiffuse()); // Glow
+            deviceContext->PSSetShaderResources(11, 1, material->getNormals()); // Normal
+            deviceContext->PSSetShaderResources(12, 1, material->getSpecular()); // Specular
+            deviceContext->PSSetShaderResources(13, 1, material->getGlow()); // Glow
 
             deviceContext->DrawInstanced(
                 mesh->getVertexCount(), 
-                instanceData.size(),
-                0, 0
+                renderInfos.size(),
+                0,
+                instanceOffset
             );
+
+            instanceOffset += renderInfos.size();
         }
     }
 
@@ -556,6 +558,38 @@ namespace Graphics
 		}
 
 		renderDebugQueue.clear();
+    }
+
+    void Renderer::writeInstanceBuffers()
+    {
+        void * dest = staticInstanceBuffer.map(deviceContext);
+        size_t offset = 0;
+
+        for (auto & model_infos : RenderQueue::getQueue<StaticRenderInfo>())
+        {
+            auto & infos = model_infos.second;
+            for (auto & info : infos)
+            {
+                InstanceData instanceData = {};
+                instanceData.transform = info->transform;
+                instanceData.transformInvT = info->transform.Invert().Transpose();
+
+                memcpy((char*)dest + offset, &instanceData, sizeof(instanceData));
+                offset += sizeof(instanceData);
+            }
+        }
+        staticInstanceBuffer.unmap(deviceContext);
+
+
+        InstanceData* ptr = instanceSBuffer.map(deviceContext);
+        for (InstanceQueue_t::value_type & pair : instanceQueue)
+        {
+            void * data = pair.second.data();
+            size_t size = pair.second.size() * sizeof(InstanceData);
+            memcpy(ptr, data, size);
+            ptr = (InstanceData*)((char*)ptr + size);
+        }
+        instanceSBuffer.unmap(deviceContext);
     }
 
 	

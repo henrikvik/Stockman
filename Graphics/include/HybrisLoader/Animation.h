@@ -14,7 +14,7 @@ namespace HybrisLoader
         JointTransform();
         JointTransform(Hybris::JointTransform & jointTransform);
 
-        SM::Matrix createMatrix();
+        DirectX::SimpleMath::Matrix createMatrix();
 
         bool operator==(JointTransform const& other) const;
     private:

@@ -5,11 +5,9 @@
 #include <vector>
 #include <unordered_map>
 #include "Camera.h"
-//#include "Structs.h"
 #include "Datatypes.h"
 #include "WICTextureLoader.h"
 #include "Lights\LightGrid.h"
-//#include "Resources\ResourceManager.h"
 #include "Utility\DepthStencil.h"
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
@@ -72,8 +70,7 @@ namespace Graphics
 
         //ComputeShader lightGridGen; 
 
-        StructuredBuffer<InstanceData> instanceSBuffer;
-        ConstantBuffer<UINT> instanceOffsetBuffer;
+
 //        ResourceManager resourceManager;
         D3D11_VIEWPORT viewPort;
 
@@ -106,7 +103,7 @@ namespace Graphics
        
         void cull();
         void writeInstanceData();
-        void draw();
+        void drawStatic();
 		
 #pragma region Foliage
 		 
@@ -136,6 +133,17 @@ namespace Graphics
 		Fog fog;
 		ShaderResource worldPosMap;
 
+
+
+    #pragma region Draw Functions and Buffers
+
+        StructuredBuffer<InstanceData> instanceSBuffer;
+        ConstantBuffer<UINT> instanceOffsetBuffer;
+
+        void writeInstanceBuffers();
+        StructuredBuffer<InstanceData> staticInstanceBuffer;
+
+    #pragma endregion
 
 
 

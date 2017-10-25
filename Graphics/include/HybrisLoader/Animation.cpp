@@ -70,9 +70,9 @@ namespace HybrisLoader
 
         JointTransform jointTransform;
 
-        jointTransform.translation = SM::Vector3::Lerp(from.translation, to.translation, progress);
-        jointTransform.rotation = SM::Quaternion::Lerp(from.rotation, to.rotation, progress);
-        jointTransform.scale = SM::Vector3::Lerp(from.scale, to.scale, progress);
+        jointTransform.translation = DirectX::SimpleMath::Vector3::Lerp(from.translation, to.translation, progress);
+        jointTransform.rotation = DirectX::SimpleMath::Quaternion::Lerp(from.rotation, to.rotation, progress);
+        jointTransform.scale = DirectX::SimpleMath::Vector3::Lerp(from.scale, to.scale, progress);
 
         return jointTransform;
     }
@@ -103,11 +103,11 @@ namespace HybrisLoader
         );
     }
     
-    SM::Matrix JointTransform::createMatrix()
+    DirectX::SimpleMath::Matrix JointTransform::createMatrix()
     {
-        SM::Matrix t = SM::Matrix::CreateTranslation(translation);
-        SM::Matrix r = SM::Matrix::CreateFromQuaternion(rotation);
-        SM::Matrix s = SM::Matrix::CreateScale(scale);
+        DirectX::SimpleMath::Matrix t = DirectX::SimpleMath::Matrix::CreateTranslation(translation);
+        DirectX::SimpleMath::Matrix r = DirectX::SimpleMath::Matrix::CreateFromQuaternion(rotation);
+        DirectX::SimpleMath::Matrix s = DirectX::SimpleMath::Matrix::CreateScale(scale);
 
         return DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
         //return t * r;

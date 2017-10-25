@@ -20,8 +20,8 @@ namespace HybrisLoader
 
         StructuredBuffer<Vertex> & getVertexBuffer() { return mesh.getVertexBuffer(); }
         
-        std::vector<SM::Matrix> getJointTransforms() { return skeleton.getJointTransforms(); }
-        std::vector<SM::Matrix> evalAnimation(const char * animationName, float timeStamp) { return skeleton.evalAnimation(animationName, timeStamp); };
+        std::vector<DirectX::SimpleMath::Matrix> getJointTransforms() { return skeleton.getJointTransforms(); }
+        std::vector<DirectX::SimpleMath::Matrix> evalAnimation(const char * animationName, float timeStamp) { return skeleton.evalAnimation(animationName, timeStamp); };
        
         float getAnimationDuration(const char * animationName) { return skeleton.getAnimationDuration(animationName); }
 

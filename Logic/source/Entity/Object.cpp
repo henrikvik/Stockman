@@ -28,8 +28,11 @@ Object::~Object()
 
 void Object::render(Graphics::Renderer& renderer)
 {
-	if (m_renderInfo.render)
-		renderer.queueRender(&m_renderInfo);
+    if (m_renderInfo.render)
+    {
+        renderer.queueRender(&m_renderInfo);
+        //RenderQueue::queue(&renderInfo);
+    }
 }
 
 void Object::setShouldRender(bool render)
@@ -45,11 +48,13 @@ void Object::setMaterialID(int id)
 void Object::setModelID(Graphics::ModelID modelID)
 {
 	m_renderInfo.meshId = modelID;
+    renderInfo.model = Resources::Models::UnitCube;
 }
 
 void Object::setWorldTranslation(DirectX::SimpleMath::Matrix translation)
 {
 	m_renderInfo.translation = translation;
+    renderInfo.transform = translation;
 }
 
 int Object::getMaterialID() const

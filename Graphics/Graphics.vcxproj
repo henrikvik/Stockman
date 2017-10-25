@@ -33,6 +33,7 @@
     <ClCompile Include="include\Lights\Sun.cpp" />
     <ClCompile Include="include\Menu.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
+    <ClCompile Include="include\RenderQueue.cpp" />
     <ClCompile Include="include\Utility\Shader.cpp" />
     <ClCompile Include="include\SkyRenderer.cpp" />
     <ClCompile Include="include\SSAORenderer.cpp" />
@@ -57,6 +58,7 @@
     <ClInclude Include="include\Lights\Sun.h" />
     <ClInclude Include="include\Menu.h" />
     <ClInclude Include="include\Renderer.h" />
+    <ClInclude Include="include\RenderQueue.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\Utility\Shader.h" />
     <ClInclude Include="include\SkyRenderer.h" />
