@@ -172,7 +172,7 @@ namespace Graphics
 
         //drawStatic();
 
-        RenderQueue::clearAllQueues();
+        RenderQueue.clearAllQueues();
     }
     #else
 	{
@@ -457,7 +457,7 @@ namespace Graphics
         deviceContext->VSSetShaderResources(5, 1, staticInstanceBuffer);
 
         UINT instanceOffset = 0;
-        for (auto & pair : RenderQueue::getQueue<StaticRenderInfo>())
+        for (auto & pair : RenderQueue.getQueue<StaticRenderInfo>())
         {
             auto & modelId = pair.first;
             auto & renderInfos = pair.second;
@@ -565,7 +565,7 @@ namespace Graphics
         void * dest = staticInstanceBuffer.map(deviceContext);
         size_t offset = 0;
 
-        for (auto & model_infos : RenderQueue::getQueue<StaticRenderInfo>())
+        for (auto & model_infos : RenderQueue.getQueue<StaticRenderInfo>())
         {
             auto & infos = model_infos.second;
             for (auto & info : infos)

@@ -1,8 +1,9 @@
 #include "RenderQueue.h"
 
-std::unordered_map<std::type_index, std::unique_ptr<RenderQueue::QueueContainer_t>> RenderQueue::instanceQueues;
-
-void RenderQueue::clearAllQueues()
+void RenderQueue_t::clearAllQueues()
 {
     instanceQueues.clear();
 }
+
+
+RenderQueue_t RenderQueue;

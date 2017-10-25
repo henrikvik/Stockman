@@ -35,21 +35,28 @@ struct AnimatedRenderInfo : StaticRenderInfo
 //
 //INSTANCE_CAP(StaticRenderInfo, 300)
 
-class RenderQueue
+class RenderQueue_t
 {
 public:
     template<typename T>
     using InstanceQueue = std::unordered_map<Resources::Models::Files, std::vector<T*>>;
 
-    RenderQueue() = delete;
+    RenderQueue_t()
+    {
+        OutputDebugString("\n\nRENDER QUEUE CREATED!\n\n");
+    }
+    virtual ~RenderQueue_t()
+    {
+        OutputDebugString("\n\nRENDER QUEUE DESTROEYD!\n\n");
+    }
 
     template<typename T>
-    static void queue(T * info);
+    void queue(T * info);
 
     template<typename T>
-    static InstanceQueue<T>& getQueue();
+    InstanceQueue<T>& getQueue();
 
-    static void clearAllQueues();
+    void clearAllQueues();
 
 private:
     struct QueueContainer_t
@@ -64,13 +71,13 @@ private:
     };
 
     template<typename T> 
-    static QueueContainer<T> & getQueueContainer();
+    QueueContainer<T> & getQueueContainer();
 
-    static std::unordered_map<std::type_index, std::unique_ptr<QueueContainer_t>> instanceQueues;
+    std::unordered_map<std::type_index, std::unique_ptr<QueueContainer_t>> instanceQueues;
 };
 
 template<typename T>
-void RenderQueue::queue(T * info)
+void RenderQueue_t::queue(T * info)
 {
     QueueContainer<T> & queueContainer = getQueueContainer<T>();
 
@@ -82,13 +89,13 @@ void RenderQueue::queue(T * info)
 }
 
 template<typename T>
-RenderQueue::InstanceQueue<T>& RenderQueue::getQueue()
+RenderQueue_t::InstanceQueue<T>& RenderQueue_t::getQueue()
 {
     return getQueueContainer<T>().instances;
 }
 
 template<typename T>
-RenderQueue::QueueContainer<T>& RenderQueue::getQueueContainer()
+RenderQueue_t::QueueContainer<T>& RenderQueue_t::getQueueContainer()
 {
     static_assert(std::is_base_of<StaticRenderInfo, T>::value, "T must have StaticRenderInfo as base type");
     QueueContainer<T> * queueContainer = (QueueContainer<T>*)instanceQueues[typeid(T)].get();
@@ -101,3 +108,6 @@ RenderQueue::QueueContainer<T>& RenderQueue::getQueueContainer()
 
     return *queueContainer;
 }
+
+
+extern RenderQueue_t RenderQueue;
