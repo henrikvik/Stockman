@@ -14,7 +14,9 @@
 class CircleBuffer
 {
 private:
-	struct FileHeader 
+
+#pragma region StructsEnums
+	struct FileHeader
 	{
 		size_t id;
 		size_t length;
@@ -35,6 +37,7 @@ private:
 		TAIL,
 		CLIENTC
 	};
+#pragma endregion Headerstructs and enum for head,tail,clientc
 
 #pragma region Variables
 	HANDLE fileMap, fileControl;
@@ -53,8 +56,7 @@ private:
 
 	size_t localTail;
 	size_t msg_Id;
-#pragma endregion
-
+#pragma endregion General variables
 
 	size_t round_Up(size_t val, size_t multiple = 256);
 	void createMaps(LPCSTR buffName, LPCSTR controlName);
