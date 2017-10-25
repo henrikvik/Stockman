@@ -13,7 +13,7 @@ CircleBuffer::CircleBuffer(
 	const bool & isProducer,
 	const size_t & chunkSize)
 {
-	createMutex();
+	mutex = CreateMutex(nullptr, false, "Name");
 
 	this->fileMap = NULL;
 	this->fileControl = NULL;
@@ -172,7 +172,8 @@ bool CircleBuffer::pop(char * msg, size_t & lenght)
 	if (this->client_Pos == controlPointer[HEAD])
 		return false; // read all
 
-	lock();
+	WaitForSingleObject(mutex, INFINITE);
+
 	if (client_Pos == buff_size)
 		client_Pos = 0;
 
@@ -201,25 +202,11 @@ bool CircleBuffer::pop(char * msg, size_t & lenght)
 	if (msgHeader->clients = 0)
 		controlPointer[TAIL] = client_Pos;
 
-	unlock();
+	ReleaseMutex(mutex);
+
 
 	return true;
 		
-}
-
-void CircleBuffer::createMutex()
-{
-	mutex = CreateMutex(nullptr, false, "Name");
-}
-
-void CircleBuffer::lock()
-{
-	WaitForSingleObject(mutex, INFINITE);
-}
-
-void CircleBuffer::unlock()
-{
-	ReleaseMutex(mutex);
 }
 
 void CircleBuffer::setHeadPosition(size_t position)

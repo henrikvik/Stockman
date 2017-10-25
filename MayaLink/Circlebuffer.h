@@ -7,7 +7,6 @@
 #include <assert.h>
 #include <time.h>
 #include <mutex>
-#include "Mutex.h"
 #include <iostream>
 
 #define LENGTHPADDED length + padding
@@ -71,10 +70,6 @@ public:
 	size_t calcFreeMemory();
 	bool push(const void*msg, size_t length); // Sends a message through buffer, if return succeed if false not enough space.
 	bool pop(char*msg, size_t&length);        //read a message from buffer, puts content in memory. 
-
-	void createMutex();
-	void lock();
-	void unlock();
 
 	void setHeadPosition(size_t position);
 	void setTailPosition(size_t position);
