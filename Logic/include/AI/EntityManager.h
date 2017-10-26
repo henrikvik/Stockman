@@ -44,9 +44,9 @@ namespace Logic
 
         Physics* m_physicsPtr;
         ProjectileManager* m_projectilePtr;
-
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
+
 		int m_currentWave, m_frame;
 		float m_deltaTime;
         bool m_killChildren;
@@ -58,8 +58,13 @@ namespace Logic
 		void deleteThreads();
 		void joinAllThreads();
 		void deleteThread(std::thread *t);
-	public:
 
+        std::function<Projectile*(ProjectileData& pData, btVector3 position,
+            btVector3 forward, Entity& shooter)> SpawnProjectile;
+        std::function<Enemy*(btVector3 &pos,ENEMY_TYPE type)> SpawnEnemy;
+        std::function<Trigger*(int id, btVector3 const &pos,
+            std::vector<int> &effects)> SpawnTrigger;
+	public:
 		EntityManager();
 		EntityManager(EntityManager const &entityManager) = delete;
 		~EntityManager();
@@ -75,9 +80,9 @@ namespace Logic
 		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
 
 		void spawnWave(Physics &physics, ProjectileManager *projectiles);
-		void spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
+		Enemy* spawnEnemy(ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
 			Physics &physics, ProjectileManager *projectiles);
-		void spawnTrigger(int id, btVector3 const &pos, std::vector<int> &effects,
+		Trigger* spawnTrigger(int id, btVector3 const &pos, std::vector<int> &effects,
 			Physics &physics, ProjectileManager *projectiles);
 
 		void setCurrentWave(int currentWave);
@@ -87,6 +92,7 @@ namespace Logic
 		int getCurrentWave() const;
 
 		EntityManager* operator=(EntityManager const &entityManager) = delete;
+        void setSpawnFunctions(ProjectileManager &projManager, Physics &physics);
 	};
 }
 
