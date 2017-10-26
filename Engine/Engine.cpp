@@ -22,7 +22,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	Typing* theChar = Typing::getInstance(); //might need to be deleted
 	DebugWindow * debug = DebugWindow::getInstance();
 	int key = MapVirtualKey((int)wparam, 0);
-	static int prevKey = -1;
 
 	switch (msg)
 	{
@@ -30,15 +29,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0);
 		break;
 		
-	case WM_KEYDOWN:
-		if (key == 41 && key != prevKey)
-		{
-			prevKey = key;
-			debug->toggleDebugToDraw();
-		}
-
 	case WM_KEYUP:
-		prevKey = -1;
+		if (key == 41)
+			debug->toggleDebugToDraw();
+
+	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
