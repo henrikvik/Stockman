@@ -77,6 +77,10 @@ void Game::init()
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
 
+
+    // Loading func
+    m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
+
 	/*int m_currentHP;
 	DebugWindow *debugWindow = DebugWindow::getInstance();
 	debugWindow->registerCommand("SPAWNENEMIES", [&](std::stringstream &args)->std::string
