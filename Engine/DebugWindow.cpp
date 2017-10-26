@@ -84,6 +84,9 @@ void DebugWindow::addLog(const char* command_line, ...) IM_FMTARGS(2)
 
 void DebugWindow::draw(const char * title)
 {
+	if (!this->isDrawing)
+		return;
+
 	ImGuiStyle * style = &ImGui::GetStyle();
 
 	/*style->WindowPadding = ImVec2(15, 15);
