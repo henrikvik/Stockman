@@ -578,7 +578,7 @@ namespace Graphics
             modelTextures[0] = model.diffuseMap;
             modelTextures[1] = model.normalMap;
             modelTextures[2] = model.specularMap;
-            modelTextures[3] = glowTest;
+            modelTextures[3] = model.glowMap;
             deviceContext->PSSetShaderResources(10, 4, modelTextures);
 			PROFILE_END();
 

@@ -30,6 +30,7 @@ namespace Graphics
 		//MEGAGRASS,
 		//WATER,
 		GROUND,
+		STAFF,
 
     };
 
@@ -41,6 +42,7 @@ namespace Graphics
 		ID3D11ShaderResourceView * diffuseMap;
 		ID3D11ShaderResourceView * normalMap;
 		ID3D11ShaderResourceView * specularMap;
+		ID3D11ShaderResourceView * glowMap;
 	};
 
 	struct RenderInfo
