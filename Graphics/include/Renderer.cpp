@@ -32,8 +32,6 @@ namespace Graphics
 		, instanceOffsetBuffer(device)
 		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
 		, glowRenderer(device, deviceContext)
-		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
-		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
 		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
 #pragma region RenderDebugInfo
 		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
@@ -60,6 +58,9 @@ namespace Graphics
 		
 		initialize(device, deviceContext);
 
+		fakeBackBuffer = new ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
+		fakeBackBufferSwap = new ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
+
         viewPort = { 0 };
         viewPort.Width = WIN_WIDTH;
         viewPort.Height = WIN_HEIGHT;
@@ -74,20 +75,15 @@ namespace Graphics
         //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
         createBlendState();
 
-		DebugWindow *debugWindow = DebugWindow::getInstance();
-		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
-		{
-			enablePostEffects = !enablePostEffects;
-
-			return "";
-		});
+		registerDebugFunction();
     }
 
 
     Renderer::~Renderer()
     {
 		delete states;
-
+		delete fakeBackBuffer;
+		delete fakeBackBufferSwap;
 		SAFE_RELEASE(transparencyBlendState);
 
 		SAFE_RELEASE(glowTest);
@@ -294,7 +290,7 @@ namespace Graphics
 
 		ID3D11RenderTargetView * rtvs[] =
 		{
-			fakeBackBuffer,
+			*fakeBackBuffer,
 			glowMap,
 			*ssaoRenderer.getNormalShaderResource()
 		};
@@ -340,74 +336,81 @@ namespace Graphics
 #endif
 		auto ks = DirectX::Keyboard::Get().GetState();
 		
-
+		
 		if (enablePostEffects)
 		{
 
 			///////Post effects
+			if (enableGlow)
+			{
+				PROFILE_BEGIN("Glow");
+				glowRenderer.addGlow(deviceContext, *fakeBackBuffer, glowMap, fakeBackBufferSwap);
+				swapBackBuffers();
+				PROFILE_END();
+			}
 
-            PROFILE_BEGIN("Dof");
-            static bool wasPressed1 = false;
-            static bool isPressed1 = false;
-            static bool enableCoCWindow = false;
+			if (enableSSAO)
+			{
+				PROFILE_BEGIN("SSAO");
+				ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, fakeBackBuffer, fakeBackBufferSwap);
+				swapBackBuffers();
+				PROFILE_END();
+			}
 
-            wasPressed1 = isPressed1;
-            isPressed1 = ks.K;
+			if (enableDOF)
+			{
+				PROFILE_BEGIN("Dof");
+				static bool wasPressed1 = false;
+				static bool isPressed1 = false;
+				static bool enableCoCWindow = false;
 
-            if (!wasPressed1 && isPressed1)
-                enableCoCWindow = !enableCoCWindow;
+				wasPressed1 = isPressed1;
+				isPressed1 = ks.K;
 
-            if (enableCoCWindow)
-            {
-                ImGui::Begin("camera stuff");
-                static float fp = 0.125f;
-                static float fl = 0.28f;
-                static float a = 0.1f;
-                ImGui::SliderFloat("focal Plane", &fp, 0.001f, 1.0f);
-                ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
-                ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
-                DoFRenderer.updateCoc(deviceContext, fl, fp, a);
-                ImGui::End();
-            }
-            DoFRenderer.DoFRender(deviceContext, &fakeBackBuffer, &depthStencil, &fakeBackBufferSwap, camera);
-            PROFILE_END();
+				if (!wasPressed1 && isPressed1)
+					enableCoCWindow = !enableCoCWindow;
 
+				if (enableCoCWindow)
+				{
+					ImGui::Begin("camera stuff");
+					static float fp = 0.125f;
+					static float fl = 0.28f;
+					static float a = 0.1f;
+					ImGui::SliderFloat("focal Plane", &fp, 0.01f, 1.0f);
+					ImGui::SliderFloat("focal lenght", &fl, 0.01f, 1.0f);
+					ImGui::SliderFloat("apature", &a, 0.01f, 1.0f);
+					DoFRenderer.updateCoc(deviceContext, fp, fl, a);
+					ImGui::End();
+				}
+				DoFRenderer.DoFRender(deviceContext, fakeBackBuffer, &depthStencil, fakeBackBufferSwap, camera);
+				swapBackBuffers();
+				PROFILE_END();
+			}
 
-			PROFILE_BEGIN("Glow");
-			glowRenderer.addGlow(deviceContext, fakeBackBufferSwap, glowMap, &fakeBackBuffer);
+			static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			static UINT sampleMask = 0xffffffff;
+			deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+
+			PROFILE_BEGIN("DrawToBackBuffer");
+			drawToBackbuffer(*fakeBackBuffer);
 			PROFILE_END();
 
-			PROFILE_BEGIN("SSAO");
-			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBuffer, &fakeBackBufferSwap);
-            PROFILE_END();
 
-          
+			if (enableFog)
+			{
+				PROFILE_BEGIN("renderFog()");
 
-            PROFILE_BEGIN("DrawToBackBuffer");
-            drawToBackbuffer(fakeBackBufferSwap);
-            PROFILE_END();
-
-           
-
-            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-            static UINT sampleMask = 0xffffffff;
-            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-			
-
-			PROFILE_BEGIN("renderFog()");
-
-			deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
-			fog.renderFog(deviceContext, backBuffer, depthStencil);
-			PROFILE_END();
-
-            
+				deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
+				deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
+				fog.renderFog(deviceContext, backBuffer, depthStencil);
+				PROFILE_END();
+			}
 		}
 
 		else
 		{
 			PROFILE_BEGIN("DrawToBackBuffer");
-			drawToBackbuffer(fakeBackBuffer);
+			drawToBackbuffer(*fakeBackBuffer);
 			PROFILE_END();
 		}
 
@@ -420,11 +423,6 @@ namespace Graphics
 		PROFILE_BEGIN("DebugInfo");
 		renderDebugInfo(camera);
 		PROFILE_END();
-
-		if (ks.G)
-		{
-			startShake(30, 1000);
-		}
 	}
 
 
@@ -464,12 +462,6 @@ namespace Graphics
             throw "vector is bigger than structured buffer";
         }
         renderDebugQueue.push_back(debugInfo);
-    }
-
-    void Renderer::queuePlayerModels(RenderInfo player)
-    {
-
-
     }
 
     void Renderer::queueText(TextString * text)
@@ -522,7 +514,7 @@ namespace Graphics
 
 		deviceContext->VSSetConstantBuffers(4, 1, timeBuffer);
 		deviceContext->RSSetState(states->CullNone());
-		deviceContext->OMSetRenderTargets(1, fakeBackBuffer, depthStencil);
+		deviceContext->OMSetRenderTargets(1, *fakeBackBuffer, depthStencil);
 
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		UINT sampleMask = 0xffffffff;
@@ -562,7 +554,7 @@ namespace Graphics
             instanceOffset += pair.second.size();
 
             ModelInfo model = resourceManager.getModelInfo(pair.first);
-            
+
             static UINT stride = sizeof(Vertex), offset = 0;
             deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
             deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
@@ -585,11 +577,18 @@ namespace Graphics
 	{
 		static float clearColor[4] = { 0 };
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
+		deviceContext->ClearRenderTargetView(*fakeBackBuffer, clearColor);
 		deviceContext->ClearRenderTargetView(glowMap, clearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
 		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 		skyRenderer.clear(deviceContext);
+	}
+
+	void Renderer::swapBackBuffers()
+	{
+		ShaderResource * temp = fakeBackBuffer;
+		fakeBackBuffer = fakeBackBufferSwap;
+		fakeBackBufferSwap = temp;
 	}
 
     void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
@@ -683,4 +682,57 @@ namespace Graphics
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	void Renderer::registerDebugFunction()
+	{
+		DebugWindow *debugWindow = DebugWindow::getInstance();
+		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
+		{
+			enablePostEffects = !enablePostEffects;
+
+			return "Post effects toggled!";
+		});
+
+		debugWindow->registerCommand("TOGGLESSAO", [&](std::vector<std::string> &args)->std::string
+		{
+			enableSSAO = !enableSSAO;
+
+			return "Post effects toggled!";
+		});
+
+		debugWindow->registerCommand("TOGGLEGLOW", [&](std::vector<std::string> &args)->std::string
+		{
+			enableGlow = !enableGlow;
+
+			return "Post effects toggled!";
+		});
+
+		debugWindow->registerCommand("TOGGLEFOG", [&](std::vector<std::string> &args)->std::string
+		{
+			enableFog = !enableFog;
+
+			return "Post effects toggled!";
+		});
+
+		debugWindow->registerCommand("TOGGLEDOF", [&](std::vector<std::string> &args)->std::string
+		{
+			enableDOF = !enableDOF;
+
+			return "Post effects toggled!";
+		});
+	}
 }
