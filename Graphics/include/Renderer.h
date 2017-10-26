@@ -41,6 +41,7 @@ namespace Graphics
 		void queueFoliageRender(FoliageRenderInfo * renderInfo);
 		void queueWaterRender(WaterRenderInfo * renderInfo);
         void queueRenderDebug(RenderDebugInfo * debugInfo);
+        void queuePlayerModels(RenderInfo player);
         void queueText(TextString * text);
 		void queueLight(Light light);
 		void fillHUDInfo(HUDInfo * info);
@@ -115,6 +116,7 @@ namespace Graphics
         void writeInstanceData();
         void draw();
 		void clear();
+
 		
 #pragma region Foliage
 		 

@@ -24,26 +24,27 @@ Texture2D CoCTexture : register(t0);
 PSOutput PS(VSOutput input) : SV_Target0
 {
     PSOutput output = (PSOutput) 0.0f;
-    float4 baseColor = CoCTexture.Sample(linearSampler, input.uv);
+    half4 baseColor = CoCTexture.Sample(linearSampler, input.uv);
+    baseColor.w /= 100.0f;
     
     output.color0.w = baseColor.w;
     output.color1.w = baseColor.w;
 
-    float sampelCount0 = 0.0f;
-    float sampelCount1 = 0.0f;
+    half sampelCount0 = 0.0f;
+    half sampelCount1 = 0.0f;
 
-    float diagonalStep = 0.866f * (ONE_OVER_SCREEN_SIZE.x / ONE_OVER_SCREEN_SIZE.y);
+    half diagonalStep = 0.866f * (ONE_OVER_SCREEN_SIZE.x / ONE_OVER_SCREEN_SIZE.y);
     for (int i = 0; i < DoFkernel; i++)
     {
-        float stepDistance = (i + 0.5f) * ONE_OVER_SCREEN_SIZE.y;
+        half stepDistance = (i + 0.5f) * ONE_OVER_SCREEN_SIZE.y;
         
 
         //vetical
-        float2 step0 = float2(0.0f, 1.0f) * stepDistance;
+        half2 step0 = half2(0.0f, 1.0f) * stepDistance;
         sampelCount0  += CoCBlur(CoCTexture, input.uv + step0, baseColor.w, output.color0, stepDistance, output.color0);
 
         //diagonal
-        float step1 = float2(diagonalStep, 1.0f) * stepDistance;
+        half step1 = half2(diagonalStep, 1.0f) * stepDistance;
         sampelCount1 += CoCBlur(CoCTexture, input.uv + step1, baseColor.w, output.color1, stepDistance, output.color1);
 
     }

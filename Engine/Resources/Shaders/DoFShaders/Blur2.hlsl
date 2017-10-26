@@ -23,18 +23,18 @@ float4 PS(VSOutput input) : SV_Target0
     half4 baseColor = blurT1.Sample(linearSampler, input.uv);
 
 
-    half4 color0 = float4(0.0f, 0.0f, 0.0f, baseColor.w);
-    half4 color1 = float4(0.0f, 0.0f, 0.0f, baseColor.w);
-    float sampelCount0 = 0.0f;
-    float sampleCount1 = 0.0f;
+    half4 color0 = half4(0.0f, 0.0f, 0.0f, baseColor.w);
+    half4 color1 = half4(0.0f, 0.0f, 0.0f, baseColor.w);
+    half sampelCount0 = 0.0f;
+    half sampleCount1 = 0.0f;
 
-    float diagonalStep = 0.866f * (ONE_OVER_SCREEN_SIZE.x / ONE_OVER_SCREEN_SIZE.y);
-    float step0 = float2(diagonalStep, -0.5f);
-    float step1 = float2(-diagonalStep, -0.5f);
+    half diagonalStep = 0.866f * (ONE_OVER_SCREEN_SIZE.x / ONE_OVER_SCREEN_SIZE.y);
+    half step0 = float2(diagonalStep, -0.5f);
+    half step1 = float2(-diagonalStep, -0.5f);
 
     for (int i = 0; i < DoFkernel; i++)
     {
-        float stepDistance = (i + 0.5f) * ONE_OVER_SCREEN_SIZE.y;
+        half stepDistance = (i + 0.5f) * ONE_OVER_SCREEN_SIZE.y;
 
         sampelCount0 += CoCBlur(blurT0, (input.uv + (step0 * stepDistance)), baseColor.w, color0, stepDistance, color0);
         sampleCount1 += CoCBlur(blurT1, input.uv + (step1 * stepDistance), baseColor.w, color1, stepDistance, color1);

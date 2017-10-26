@@ -38,6 +38,7 @@ float4 PS(VSOutput input) : SV_Target0
     //color.w = getLinearDepth(nearP, farP, input.uv);
 
     color.w = ((CoCScale * color.w) + CoCBias);
+    color.w *= 100.f;
     return color;
 }
 

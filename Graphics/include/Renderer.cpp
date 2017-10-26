@@ -345,13 +345,6 @@ namespace Graphics
 		{
 
 			///////Post effects
-			PROFILE_BEGIN("Glow");
-			glowRenderer.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
-			PROFILE_END();
-
-			PROFILE_BEGIN("SSAO");
-			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
-            PROFILE_END();
 
             PROFILE_BEGIN("Dof");
             static bool wasPressed1 = false;
@@ -370,21 +363,36 @@ namespace Graphics
                 static float fp = 0.125f;
                 static float fl = 0.28f;
                 static float a = 0.1f;
-                ImGui::SliderFloat("focal Plane", &fp, 0.01f, 1.0f);
-                ImGui::SliderFloat("focal lenght", &fl, 0.01f, 1.0f);
-                ImGui::SliderFloat("apature", &a, 0.01f, 1.0f);
-                DoFRenderer.updateCoc(deviceContext, fp, fl, a);
+                ImGui::SliderFloat("focal Plane", &fp, 0.001f, 1.0f);
+                ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
+                ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
+                DoFRenderer.updateCoc(deviceContext, fl, fp, a);
                 ImGui::End();
             }
             DoFRenderer.DoFRender(deviceContext, &fakeBackBuffer, &depthStencil, &fakeBackBufferSwap, camera);
             PROFILE_END();
 
+
+			PROFILE_BEGIN("Glow");
+			glowRenderer.addGlow(deviceContext, fakeBackBufferSwap, glowMap, &fakeBackBuffer);
+			PROFILE_END();
+
+			PROFILE_BEGIN("SSAO");
+			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBuffer, &fakeBackBufferSwap);
+            PROFILE_END();
+
+          
+
+            PROFILE_BEGIN("DrawToBackBuffer");
+            drawToBackbuffer(fakeBackBufferSwap);
+            PROFILE_END();
+
+           
+
             static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
             static UINT sampleMask = 0xffffffff;
             deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-			PROFILE_BEGIN("DrawToBackBuffer");
-			drawToBackbuffer(fakeBackBufferSwap);
-			PROFILE_END();
+			
 
 			PROFILE_BEGIN("renderFog()");
 
@@ -392,6 +400,8 @@ namespace Graphics
 			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
 			fog.renderFog(deviceContext, backBuffer, depthStencil);
 			PROFILE_END();
+
+            
 		}
 
 		else
@@ -454,6 +464,12 @@ namespace Graphics
             throw "vector is bigger than structured buffer";
         }
         renderDebugQueue.push_back(debugInfo);
+    }
+
+    void Renderer::queuePlayerModels(RenderInfo player)
+    {
+
+
     }
 
     void Renderer::queueText(TextString * text)
@@ -546,7 +562,7 @@ namespace Graphics
             instanceOffset += pair.second.size();
 
             ModelInfo model = resourceManager.getModelInfo(pair.first);
-
+            
             static UINT stride = sizeof(Vertex), offset = 0;
             deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
             deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
