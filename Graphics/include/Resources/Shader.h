@@ -2,7 +2,7 @@
 #include <d3d11.h>
 #include <initializer_list>
 
-		
+
 namespace Graphics
 {
 	enum ShaderType
@@ -18,7 +18,7 @@ namespace Graphics
 	{
 	public:
 		typedef size_t Flags;
-		
+
 
 		Shader(ID3D11Device * device, LPCWSTR shaderPath, std::initializer_list<D3D11_INPUT_ELEMENT_DESC> inputDesc = {}, ShaderType shaderType = VS | PS);
 		virtual ~Shader();
