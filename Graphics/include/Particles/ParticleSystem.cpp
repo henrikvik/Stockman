@@ -50,6 +50,15 @@ ParticleSystem::~ParticleSystem()
     delete m_SphereIndexBuffer;
     delete m_GeometryInstanceBuffer;
     delete m_GeometryVS;
+
+    for (auto &tex : m_Textures) {
+        tex->Release();
+    }
+
+    for (auto &mat : m_Materials) {
+        std::get<0>(mat)->Release();
+        std::get<1>(mat)->Release();
+    }
 }
 
 void ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Matrix model, float dt)
@@ -177,7 +186,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
             // if material changes, flush our built up batching
             else if (current_material != particle.idx) {
                 cxt->PSSetShader(std::get<0>(m_Materials[current_material]), nullptr, 0);
-                cxt->DrawIndexedInstanced(m_SphereIndices, len, 0, 0, offset);
+                cxt->DrawIndexedInstanced(m_SphereIndices, min(m_Capacity, len), 0, 0, offset);
 
                 current_material = particle.idx;
                 offset = i;
@@ -189,7 +198,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
 
         if (len > 0) {
             cxt->PSSetShader(std::get<0>(m_Materials[current_material]), nullptr, 0);
-            cxt->DrawIndexedInstanced(m_SphereIndices, len, 0, 0, offset);
+            cxt->DrawIndexedInstanced(m_SphereIndices, min(m_Capacity, len), 0, 0, offset);
         }
         
         cxt->RSSetState(states->CullCounterClockwise());
@@ -450,7 +459,7 @@ void ParticleSystem::readSphereModel(ID3D11Device *device)
     m_SphereVertexBuffer = new Buffer<SphereVertex>(device, BufferUsage::Immutable, BufferBind::VertexBuffer, BufferCpuAccess::None, BufferMisc::None, vertexcount, &vertices[0]);
     m_SphereIndexBuffer = new Buffer<UINT16>(device, BufferUsage::Immutable, BufferBind::IndexBuffer, BufferCpuAccess::None, BufferMisc::None, indexcount, &indices[0]);
 
-    m_GeometryInstanceBuffer = new Buffer<GeometryParticleInstance>(device, BufferUsage::Dynamic, BufferBind::VertexBuffer, BufferCpuAccess::Write, BufferMisc::None, 512);
+    m_GeometryInstanceBuffer = new Buffer<GeometryParticleInstance>(device, BufferUsage::Dynamic, BufferBind::VertexBuffer, BufferCpuAccess::Write, BufferMisc::None, m_Capacity);
 
     m_GeometryVS = new Shader(device, L"Resources/Shaders/GeometryParticle.hlsl", {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,                            D3D11_INPUT_PER_VERTEX_DATA, 0 },
