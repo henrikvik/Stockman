@@ -2,44 +2,26 @@
 #include "LinkFiles.h"
 #include "MayaStructs.h"
 #include "MayaNodes.h"
+#include "Circlebuffer.h"
 
 #define MSSUCCESS MS::kSuccess
 #define DisplayI MGlobal::displayInfo
 
 MStatus result = MS::kSuccess;
 MCallbackIdArray idList;
-size_t offset = 0;
-
-MFloatPointArray points;
-std::vector<Vertices> vertices;
-MIntArray vertexCount,
-polyVerticesID,
-normalList,
-normalCount;
-MFloatArray U, V;
-MIntArray uvCounts, uvIDS;
-MFloatVectorArray normals;
-MIntArray triangleCountsOffsets, triangleIndices;
-
-MFloatMatrix projMatrix;
-MObject parentCamera, parentMesh;
-
-std::vector<Meshes> meshVector;
-Meshes meshStruct;
-
-M3dView camView;
-MDagPath cameraPath;
-
-MVector vertexNormals;
-
-TransformType transformType;
-Camera camera;
-MeshType meshType;
-Material material;
 
 char * msg;
 
-enum MessageType { MayaMesh, MayaCamera, MayaTransform, MayaMaterial, MayaNodeDelete, MayaLight };
+enum MessageType 
+{ 
+	MMesh,
+	MTransform,
+	MMaterial,
+	MCamera,
+	MDeleteNode,
+	MDirectionalLight,
+	MPointLight
+};
 
 CircleBuffer * circleBuffer = nullptr;
 MayaNodes * MN = nullptr;

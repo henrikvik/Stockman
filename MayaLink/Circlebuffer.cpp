@@ -101,10 +101,9 @@ void CircleBuffer::updateControlBuffer()
 {
 	if (isProducer == false)
 	{
-	
-	controlPointer[HEAD] = 0;
-	controlPointer[TAIL] = 0;
-	controlPointer[CLIENTC] += 1;
+		controlPointer[HEAD] = 0;
+		controlPointer[TAIL] = 0;
+		controlPointer[CLIENTC] += 1;
 	}
 	else
 	{

@@ -5,12 +5,10 @@ Plugin::Plugin()
 
 }
 
-
 Plugin::~Plugin()
 {
 
 }
-
 
 EXPORT MStatus initializePlugin(MObject obj)
 {

@@ -47,9 +47,10 @@ void MayaNodes::getMeshInfo(MFnMesh & mesh)
 		vertices[i].uvs[1] = V[uvIDS[triangleIndices[i]]];
 	}
 
+#pragma region CopyRegion
 	offset = 0;
 
-	int Type = MessageType::MayaMesh;
+	int Type = MessageType::MMesh;
 	memcpy(msg, &Type, sizeof(int));
 	offset += sizeof(int);
 
@@ -58,20 +59,113 @@ void MayaNodes::getMeshInfo(MFnMesh & mesh)
 	meshType.vertexCount = vertices.size();
 
 	memcpy((msg + offset), &meshType, sizeof(MeshType));
-	offset += sizeof(MeshType); 
+	offset += sizeof(MeshType);
 
 	memcpy(msg + offset, vertices.data(), sizeof(Vertices) * vertices.size());
 	offset += sizeof(vertices) * vertices.size();
 
 	circleBuffer->push(msg, offset);
+#pragma endregion
+
 }
 
-void MayaNodes::getTransform(MFnTransform & transform)
+void MayaNodes::getTransform(MFnTransform & transform, MFnMesh &mesh)
+{
+	transform.getScale(transformType.scale);
+	transform.getRotationQuaternion
+	(
+		transformType.rotation[0],
+		transformType.rotation[1],
+		transformType.rotation[2],
+		transformType.rotation[3]
+	);
+
+	transformType.translation[0] = transform.getTranslation(MSpace::kTransform).x;
+	transformType.translation[1] = transform.getTranslation(MSpace::kTransform).y;
+	transformType.translation[2] = transform.getTranslation(MSpace::kTransform).z;
+	
+	offset = 0;
+
+	int type = MessageType::MTransform;
+	memcpy(msg, &type, sizeof(type));
+
+	offset += sizeof(type);
+
+	memcpy(&transformType.meshName, mesh.name().asChar(), sizeof(transformType.meshName));
+	memcpy((msg + offset), &transformType, sizeof(TransformType));
+
+	offset += sizeof(TransformType);
+
+	circleBuffer->push(msg, offset);
+
+}
+
+MPlug MayaNodes::plugSearch(MFnDependencyNode &node, MString string)
+{
+	return node.findPlug(string);
+}
+
+void MayaNodes::getMaterial(MObject &iterator)
+{
+	MFnDependencyNode materialNode(iterator);
+	
+	DisplayI("Material name: " + materialNode.name());
+
+	outColor = plugSearch(materialNode, "Outcolor");
+	color = plugSearch(materialNode, "color");
+	diffuse = plugSearch(materialNode, "diffuse");
+
+	color.connectedTo(textureGroup, true, false, &result);
+
+	color.getValue(data);
+	MFnNumericData nData(data);
+	nData.getData
+	(
+		material.color[0],
+		material.color[1],
+		material.color[2]
+	);
+	diffuse.getValue(material.diffuse);
+	material.texture = false;
+	
+	for (int i = 0; i < textureGroup.length(); i++)
+	{
+		MString file;
+		MFnDependencyNode textureNode(textureGroup[i].node());
+
+		plugSearch(textureNode,"fileTextureName").getValue(file);
+		memcpy(&material.textureFilePath, file.asChar(), sizeof(material.textureFilePath));
+
+		material.texture = true;
+	}
+
+	shadingGroupArr
+#pragma region Copyregion
+	offset = 0;
+
+	int Type = MessageType::MMaterial;
+	memcpy(msg, &Type, sizeof(int));
+	offset += sizeof(int);
+
+	memcpy(&material.materialName, materialNode.name().asChar(), sizeof(const char[256]));
+	memcpy((msg + offset), &material, sizeof(Material));
+	offset += sizeof(Material);
+
+	memcpy(msg + offset, meshVector.data(), sizeof(Meshes) * meshVector.size());
+	offset += sizeof(Meshes) * meshVector.size();
+
+	circleBuffer->push(msg, offset);
+	meshVector.clear();
+#pragma endregion
+
+}
+
+void MayaNodes::getDirectionalLight()
 {
 
 }
 
-void MayaNodes::getLight()
+void MayaNodes::getPointLight()
 {
 
 }
@@ -93,12 +187,17 @@ void MayaNodes::getCamera()
 		camera.perspective = true;
 }
 
+void MayaNodes::updateCamera()
+{
+
+}
+
 void MayaNodes::MeshCallBack(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
 	if (msg & MNodeMessage::AttributeMessage::kAttributeSet)
 	{
 		MFnMesh mesh(plug.node(), &result);
-		if (res == MS::kSuccess)
+		if (result == MSSUCCESS)
 		{
 			getMeshInfo(mesh);
 		}
