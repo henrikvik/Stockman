@@ -21,6 +21,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		//return true;
 	Typing* theChar = Typing::getInstance(); //might need to be deleted
 	DebugWindow * debug = DebugWindow::getInstance();
+	int key = MapVirtualKey((int)wparam, 0);
+	static int prevKey = -1;
+
 	switch (msg)
 	{
 	case WM_DESTROY:
@@ -28,20 +31,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		break;
 		
 	case WM_KEYDOWN:
-		int key = MapVirtualKey((int)wparam, 0);
-		
-		if (key == 41)
+		if (key == 41 && key != prevKey)
 		{
-			debug->
+			prevKey = key;
+			debug->toggleDebugToDraw();
 		}
 
 	case WM_KEYUP:
-		key = MapVirtualKey((int)wparam, 0);
-		if (key == 41)
-		{
-
-		}
-
+		prevKey = -1;
 	case WM_SYSKEYDOWN:
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
@@ -264,6 +261,8 @@ int Engine::run()
 	g_Profiler = new Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
 
+	DebugWindow * debug = DebugWindow::getInstance();
+
 	while (running)
 	{
 		currentTime = this->timer();
@@ -290,6 +289,7 @@ int Engine::run()
 				
                 
 		}
+
 
 		//To enable/disable fullscreen
 		DirectX::Keyboard::State ks = this->mKeyboard->GetState();
@@ -324,8 +324,11 @@ int Engine::run()
 		ImGui_ImplDX11_NewFrame();
 		PROFILE_END();
 
+		debug->draw("Title?");
+
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
-		game.update(float(deltaTime));
+		if (!debug->isOpen())
+			game.update(float(deltaTime));
 		PROFILE_END();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
@@ -395,8 +398,11 @@ int Engine::run()
          // renderer->queueText(&text);
 			renderer->queueLight(light);
 
-			renderer->updateLight(deltaTime, &cam);
-			renderer->updateShake(deltaTime);
+			if (!debug->isOpen())
+			{
+				renderer->updateLight(deltaTime, &cam);
+				renderer->updateShake(deltaTime);
+			}
 
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);

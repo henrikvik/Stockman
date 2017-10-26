@@ -154,15 +154,9 @@ void Game::waveUpdater()
 
 void Game::update(float deltaTime)
 {
-	DebugWindow *debugWindow = DebugWindow::getInstance();
 	m_gameTime.update(deltaTime);
     m_fpsRenderer.updateFPS(deltaTime);
 	Card temp;
-
-	if (m_debugOpen)
-	{
-		debugWindow->draw("Test");
-	}
 
 	// Handles slow-mo & speed-up
 	switch (m_menu->currentState())
