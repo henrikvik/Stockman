@@ -105,6 +105,7 @@ namespace Graphics
 		bool enableGlow = true;
 		bool enableFog = true;
 		bool enableDOF = true;
+        bool enableCoCWindow = false;
 
         Menu menu;
         HUD hud;
