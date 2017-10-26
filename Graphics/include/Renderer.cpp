@@ -37,7 +37,6 @@ namespace Graphics
 		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
 		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
 		, debugColorBuffer(device)
-		, statusBuffer(device)
 #pragma endregion
 		, fog(device)
 		, menu(device, deviceContext)
@@ -149,8 +148,6 @@ namespace Graphics
 	void Renderer::render(Camera * camera)
 	{
 		menu.unloadTextures();
-
-		statusBuffer.write(deviceContext, &statusData, sizeof(statusData));
 
 #if ANIMATION_HIJACK_RENDER
 
@@ -292,7 +289,6 @@ namespace Graphics
 		deviceContext->VSSetConstantBuffers(3, 1, &lightBuffs[1]);
 
 		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
-		deviceContext->PSSetConstantBuffers(4, 1, statusBuffer);
 
 		ID3D11RenderTargetView * rtvs[] =
 		{
@@ -494,7 +490,9 @@ namespace Graphics
             {
                 instanceQueue[info->meshId].push_back({ 
 					info->translation,
-					info->translation.Invert().Transpose()
+					info->translation.Invert().Transpose(),
+					this->statusData.freeze,
+					this->statusData.burn
 				});
             }
         }
