@@ -39,11 +39,11 @@ namespace Graphics
 		, debugColorBuffer(device)
 #pragma endregion
 		, fog(device)
-        , menu(device, deviceContext)
-        , hud(device, deviceContext)
+		, menu(device, deviceContext)
+		, hud(device, deviceContext)
 		, ssaoRenderer(device)
 		, bulletTimeBuffer(device)
-        , DoFRenderer(device)
+		, DoFRenderer(device)
 #pragma region Foliage
 		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
 		, timeBuffer(device)
@@ -55,16 +55,16 @@ namespace Graphics
 		this->device = device;
 		this->deviceContext = deviceContext;
 		this->backBuffer = backBuffer;
-		
+
 		initialize(device, deviceContext);
 
 		fakeBackBuffer = new ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
 		fakeBackBufferSwap = new ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
 
-        viewPort = { 0 };
-        viewPort.Width = WIN_WIDTH;
-        viewPort.Height = WIN_HEIGHT;
-        viewPort.MaxDepth = 1.0f;
+		viewPort = { 0 };
+		viewPort.Width = WIN_WIDTH;
+		viewPort.Height = WIN_HEIGHT;
+		viewPort.MaxDepth = 1.0f;
 
 		states = new DirectX::CommonStates(device);
 		grid.initialize(camera, device, deviceContext, &resourceManager);
@@ -72,10 +72,13 @@ namespace Graphics
 		float temp = 1.f;
 		bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
 
-        //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
-        createBlendState();
+		//menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
+		createBlendState();
 
 		registerDebugFunction();
+
+		statusData.burn = 0;
+		statusData.freeze = 0;
     }
 
 
@@ -145,6 +148,7 @@ namespace Graphics
 	void Renderer::render(Camera * camera)
 	{
 		menu.unloadTextures();
+
 #if ANIMATION_HIJACK_RENDER
 
 		renderQueue.clear();
@@ -243,8 +247,6 @@ namespace Graphics
 		PROFILE_BEGIN("grid.updateLights()");
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 		deviceContext->RSSetState(states->CullCounterClockwise());
-
-		
 
 		grid.updateLights(deviceContext, camera, lights);
 		lights.clear();
@@ -488,7 +490,9 @@ namespace Graphics
             {
                 instanceQueue[info->meshId].push_back({ 
 					info->translation,
-					info->translation.Invert().Transpose()
+					info->translation.Invert().Transpose(),
+					this->statusData.freeze,
+					this->statusData.burn
 				});
             }
         }
@@ -733,6 +737,46 @@ namespace Graphics
 			enableDOF = !enableDOF;
 
 			return "Post effects toggled!";
+		});
+
+		debugWindow->registerCommand("SETFREEZE", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+			try
+			{
+				this->statusData.freeze = std::stof(args[0]);
+			}
+			catch (const std::exception&)
+			{
+				catcher = "Argument must be float between 1 and 0";
+			}
+
+			return catcher;
+		});
+
+		debugWindow->registerCommand("SETBURN", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+			try
+			{
+				this->statusData.burn = std::stof(args[0]);
+			}
+			catch (const std::exception&)
+			{
+				catcher = "Argument must be float between 1 and 0";
+			}
+
+			return catcher;
+		});
+
+		debugWindow->registerCommand("RELOADFORWARDSHADER", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+			
+			forwardPlus.recompile(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC);
+
+
+			return catcher;
 		});
 	}
 }

@@ -117,6 +117,13 @@ namespace Graphics
 		//temp
 		ID3D11ShaderResourceView * glowTest;
 
+
+		//superTemp
+		struct StatusData
+		{
+			float burn;
+			float freeze;
+		} statusData;
        
         void cull();
         void writeInstanceData();

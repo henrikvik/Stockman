@@ -58,6 +58,10 @@ struct Light
 #define DAWN_COLOR float3(0.1, 0.1, 0.3)//float3(2, 0.5, 0)
 #define NIGHT_COLOR float3(0.1, 0.1, 0.3)
 
+#define FREEZE_COLOR float3(0.3, 0.6, 1)
+#define BURN_COLOR float3(1, 0.2, 0)
+
+
 StructuredBuffer<uint> LightIndexList : register(t0);
 Texture2D<uint2> LightGrid : register(t1);
 StructuredBuffer<Light> Lights : register(t2);
@@ -133,6 +137,14 @@ float3 getCurrentDirColor(float time)
     float3 dirColor2 = lerp(dirColor0, dirColor1, time);
 
     return dirColor2;
+}
+
+float3 calculateStatusEffect(float3 color, float freeze, float burn)
+{
+    color = lerp(color, FREEZE_COLOR, freeze);
+    color += lerp(color, BURN_COLOR, burn);
+
+    return color;
 }
 
 //Specularity is currently broken.
