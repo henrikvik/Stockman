@@ -9,6 +9,7 @@
 #include <iostream>
 #pragma comment (lib, "d3d11.lib")
 #include "Typing.h"
+#include "DebugWindow.h"
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -19,6 +20,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		//)
 		//return true;
 	Typing* theChar = Typing::getInstance(); //might need to be deleted
+	DebugWindow * debug = DebugWindow::getInstance();
 	switch (msg)
 	{
 	case WM_DESTROY:
@@ -26,8 +28,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		break;
 		
 	case WM_KEYDOWN:
-	case WM_SYSKEYDOWN:
+		int key = MapVirtualKey((int)wparam, 0);
+		
+		if (key == 41)
+		{
+			debug->
+		}
+
 	case WM_KEYUP:
+		key = MapVirtualKey((int)wparam, 0);
+		if (key == 41)
+		{
+
+		}
+
+	case WM_SYSKEYDOWN:
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
 		break;
@@ -78,6 +93,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 Engine::~Engine()
 {
 	ImGui_ImplDX11_Shutdown();
+	DebugWindow::releaseInstance();
 	delete this->renderer;
 
 	this->mDevice->Release();

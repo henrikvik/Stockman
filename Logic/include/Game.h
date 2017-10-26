@@ -30,7 +30,6 @@
 
 // Engine Includes
 #include <Engine\Profiler.h>
-#include <Engine\DebugWindow.h>
 
 
 // Init Defines
@@ -78,6 +77,7 @@ namespace Logic
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
 
         int getState() const;
+
 	private:
 		// Private functions
 		void gameOver();
@@ -103,10 +103,6 @@ namespace Logic
 
 		// FPS
 		FPSRenderer         m_fpsRenderer;
-
-		//Debug
-		bool				m_debugOpen;
-		bool				m_firstTrigger;
 	};
 }
 

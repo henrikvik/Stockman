@@ -32,6 +32,8 @@ private:
 	std::vector<const char*>			m_command;
 	std::vector<CommandFunction>		m_functions;
 
+	bool isDrawing = false;
+
 	static DebugWindow*				instance;
 
 	static int Stricmp(const char* str1, const char* str2) 
@@ -73,5 +75,6 @@ public:
 	void doCommand(const char* command_line);
 	int TextEditCallback(ImGuiTextEditCallbackData* data);
 	void registerCommand(char* command, CommandFunction function);
+	void setDebugToDraw(bool draw) { isDrawing = draw; }
 };
 #endif
