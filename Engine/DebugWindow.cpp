@@ -1,6 +1,8 @@
 #include "DebugWindow.h"
 #include <vector>
 #include <sstream>
+#include <algorithm>
+
 #define ARRAYSIZE(ARR) ((int)(sizeof(ARR)/sizeof(*ARR)))
 
 DebugWindow* DebugWindow::instance = 0;
@@ -87,7 +89,7 @@ void DebugWindow::draw(const char * title)
 
 	ImGuiStyle * style = &ImGui::GetStyle();
 
-	style->WindowPadding = ImVec2(15, 15);
+	/*style->WindowPadding = ImVec2(15, 15);
 	style->WindowRounding = 5.0f;
 	style->FramePadding = ImVec2(5, 5);
 	style->FrameRounding = 4.0f;
@@ -101,7 +103,7 @@ void DebugWindow::draw(const char * title)
 
 	style->Colors[ImGuiCol_Button] = ImVec4(1.00f, 0.6f, 0.6f, 0.50f);
 	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(1.00f, 0.7f, 0.7f, 0.50f);
-	style->Colors[ImGuiCol_ButtonActive] = ImVec4(1.00f, 0.8f, 0.8f, 0.50f);
+	style->Colors[ImGuiCol_ButtonActive] = ImVec4(1.00f, 0.8f, 0.8f, 0.50f);*/
 
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_Always);
 	if (ImGui::Begin(title))
@@ -385,8 +387,14 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 	return 0;
 }
 
-void DebugWindow::registerCommand(char* command, CommandFunction function)
+void DebugWindow::registerCommand(const char* command, CommandFunction function)
 {
-	m_command.push_back(command);
-	m_functions.push_back(function);
+    auto result = std::find_if(m_command.begin(), m_command.end(), [command](const char*a) {
+        return std::strcmp(command, a) == 0;
+    });
+
+    if (result == m_command.end()) {
+        m_command.push_back(command);
+        m_functions.push_back(function);
+    }
 }
