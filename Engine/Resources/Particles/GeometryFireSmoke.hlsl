@@ -22,7 +22,7 @@ float4 PS(PSInput input) : SV_Target0
 	float noise3 = Noise.SampleLevel(Sampler, 0.1*input.uv + float2(0, input.age*input.noisespeed), 0).r;
 
 	float emissive = 0.1;
-	float ambient = 0.04;
+	float ambient = 0.2;
 	float diffuse = max(dot(normalize(input.normal * (noise3 * 2 - 1)), lightDir), 0);
 	
 	float cap = 1 - input.age;

@@ -33,6 +33,8 @@ std::wstring ConvertToWString(const std::string & s)
 
 namespace Graphics {;
 
+ParticleSystem *FXSystem;
+
 ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const char * path)
     : m_Capacity(capacity)
 {
@@ -40,6 +42,14 @@ ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const c
     readParticleFile(device, path);
 
     m_GeometryParticles.reserve(capacity);
+}
+
+ParticleSystem::~ParticleSystem()
+{
+    delete m_SphereVertexBuffer;
+    delete m_SphereIndexBuffer;
+    delete m_GeometryInstanceBuffer;
+    delete m_GeometryVS;
 }
 
 void ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Matrix model, float dt)
@@ -188,12 +198,17 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
 
 void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
 {
+    // process all active effects/emitters (spawns particles)
     for (auto &fx : m_ParticleEffects) {
         processEffect(&fx.effect, XMMatrixTranslationFromVector(fx.position), dt);
     }
 
-    std::sort(m_GeometryParticles.begin(), m_GeometryParticles.end(), [](GeometryParticle &a, GeometryParticle &b) { return a.idx < b.idx; });
+    // sort by material to improve batching
+    std::sort(m_GeometryParticles.begin(), m_GeometryParticles.end(), [](GeometryParticle &a, GeometryParticle &b) {
+        return a.idx < b.idx;
+    });
 
+    // process all active *particles*
     {
         GeometryParticleInstance *ptr = m_GeometryInstanceBuffer->map(cxt);
 

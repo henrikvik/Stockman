@@ -7,6 +7,7 @@
 
 #include <Engine\Profiler.h>
 
+#include "Particles\ParticleSystem.h"
 
 
 #define USE_TEMP_CUBE false
@@ -58,18 +59,18 @@ namespace Graphics
 
 		initialize(device, deviceContext);
 
-		fakeBackBuffer = new ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
-		fakeBackBufferSwap = new ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
+		fakeBackBuffer = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
+		fakeBackBufferSwap = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
 
 		viewPort = { 0 };
 		viewPort.Width = WIN_WIDTH;
 		viewPort.Height = WIN_HEIGHT;
 		viewPort.MaxDepth = 1.0f;
 
-        states = new DirectX::CommonStates(device);
+        states = newd DirectX::CommonStates(device);
         grid.initialize(camera, device, deviceContext, &resourceManager);
 
-        particleSystem = new ParticleSystem(device, 512, "Resources/Particles/base.part");
+        FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
 
         float temp = 1.f;
         bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
@@ -89,6 +90,7 @@ namespace Graphics
 		delete states;
 		delete fakeBackBuffer;
 		delete fakeBackBufferSwap;
+        delete FXSystem;
 		SAFE_RELEASE(transparencyBlendState);
 
 		SAFE_RELEASE(glowTest);
@@ -257,8 +259,13 @@ namespace Graphics
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 		PROFILE_END();
 
-        particleSystem->update(deviceContext, camera, 0.0016f);
-        particleSystem->render(deviceContext, camera, states, fakeBackBuffer, depthStencil, false);
+        PROFILE_BEGIN("FXSystem::update()")
+        FXSystem->update(deviceContext, camera, 0.016f);
+        PROFILE_END();
+
+        PROFILE_BEGIN("FXSystem::render()")
+        FXSystem->render(deviceContext, camera, states, *fakeBackBuffer, depthStencil, false);
+        PROFILE_END();
 
 		PROFILE_BEGIN("draw()");
 		deviceContext->IASetInputLayout(forwardPlus);

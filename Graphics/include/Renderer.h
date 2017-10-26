@@ -22,7 +22,6 @@
 #include "SSAORenderer.h"
 #include "Fog.H"
 #include "DoF.h"
-#include "Particles\ParticleSystem.h"
 
 #include <SpriteBatch.h>
 
@@ -65,7 +64,6 @@ namespace Graphics
 
         DepthStencil depthStencil;
 
-        ParticleSystem *particleSystem;
         SkyRenderer skyRenderer;
         Glow glowRenderer;
 

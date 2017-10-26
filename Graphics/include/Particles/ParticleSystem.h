@@ -36,6 +36,7 @@ class ParticleSystem {
 
 public:
 	ParticleSystem(ID3D11Device *device, uint32_t capacity, const char *path);
+    virtual ~ParticleSystem();
 
     void processEffect(ParticleEffect *fx, DirectX::SimpleMath::Matrix model, float dt);
     void addEffect(std::string name, XMMATRIX model);
@@ -85,5 +86,7 @@ private:
 	std::vector<std::tuple<ID3D11PixelShader*, ID3D11PixelShader*>> m_Materials;
 	std::vector<ID3D11ShaderResourceView*> m_Textures;
 };
+
+extern ParticleSystem *FXSystem;
 
 }

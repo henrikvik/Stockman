@@ -72,6 +72,6 @@ public:
 	void draw(const char* title);
 	void doCommand(const char* command_line);
 	int TextEditCallback(ImGuiTextEditCallbackData* data);
-	void registerCommand(char* command, CommandFunction function);
+	void registerCommand(const char* command, CommandFunction function);
 };
 #endif
