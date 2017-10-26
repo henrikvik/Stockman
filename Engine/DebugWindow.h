@@ -75,6 +75,7 @@ public:
 	void doCommand(const char* command_line);
 	int TextEditCallback(ImGuiTextEditCallbackData* data);
 	void registerCommand(const char* command, CommandFunction function);
-	void setDebugToDraw(bool draw) { isDrawing = draw; }
+	void toggleDebugToDraw() { isDrawing = !isDrawing; }
+	bool isOpen() const { return isDrawing; }
 };
 #endif
