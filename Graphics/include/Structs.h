@@ -50,6 +50,8 @@ namespace Graphics
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
 		bool backFaceCulling = true;
+		float freezeAmount;
+		float burnAmount;
 	};
 
 	struct FoliageRenderInfo
@@ -100,6 +102,8 @@ namespace Graphics
 	{
 		DirectX::SimpleMath::Matrix translation;
 		DirectX::SimpleMath::Matrix invTranspose;
+		float freeze;
+		float burn;
 	};
 
 	struct ButtonInfo
