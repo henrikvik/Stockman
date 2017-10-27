@@ -106,9 +106,9 @@ void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTrans
 {
 	static DirectX::SimpleMath::Matrix camera, result, offset;
 
-	static float ltrans[3];
-	static float lscale[3] = {1, 1, 1};
-	static float lrot[3];
+	//static float ltrans[3];
+	//static float lscale[3] = {1, 1, 1};
+	//static float lrot[3];
 
 	//ImGui::Begin("asdoasdoasod");
 
@@ -129,7 +129,7 @@ void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTrans
 
 	// Pushing the model forward in the current view direction
 	offset = (DirectX::SimpleMath::Matrix::CreateTranslation(playerTranslation.Translation() + playerForward * -0.4f));
-
+	
 	// Multiplying all the matrices into one
 	result = rot *trans * scale * camera.Invert() * offset;
 

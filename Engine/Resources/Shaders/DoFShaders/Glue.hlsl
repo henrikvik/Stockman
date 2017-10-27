@@ -17,7 +17,7 @@ Texture2D finalTexture : register(t0);
 
 float4 PS(VSOutput input) : SV_Target0
 {
-    float4 finalColor = finalTexture.Sample(linearSampler, input.uv); 
+    half4 finalColor = finalTexture.Sample(linearSampler, input.uv); 
 
     finalColor.w = saturate(1000.f * (abs(finalColor) - 0.001f));
 

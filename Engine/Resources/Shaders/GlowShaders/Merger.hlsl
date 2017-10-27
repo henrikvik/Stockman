@@ -1,3 +1,4 @@
+#include "../ShaderConstants.hlsli"
 
 Texture2D backBuffer : register(t0);
 Texture2D toMerge : register(t1);
@@ -13,9 +14,17 @@ void CS( uint3 DTid : SV_DispatchThreadID )
 
 
     float3 color = backBuffer.SampleLevel(Sampler, uv, 0);
-    color += toMerge.SampleLevel(Sampler, uv, 0);
-    color = saturate(color);
+    float3 glowColor = toMerge.SampleLevel(Sampler, uv, 0);
+
+      
+
+    color = adjustSaturation(color, GLOW_ORIGINAL_SATURATION) * GLOW_ORIGINAL_INTENSITY;
+    glowColor = adjustSaturation(glowColor, GLOW_SATURATION) * GLOW_INTENSITY;
+
+
+    color *= (1 - saturate(glowColor));
+
+    color = saturate(color + glowColor);
 
     output[DTid.xy] = float4(color, 1);
-
 }

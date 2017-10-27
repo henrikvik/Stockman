@@ -169,6 +169,23 @@ const btVector3 Physics::RayTestGetNormal(Ray & ray)
 	return { 0, 0, 0 };
 }
 
+btRigidBody* Physics::createBody(Shape* shape, float mass, bool isSensor)
+{
+    btRigidBody* body = nullptr;
+
+    switch (shape->getType())
+    {
+    case ShapeType::ShapeTypeCube:      body = createBody(static_cast<Cube&>       (*shape), mass, isSensor); break;
+    case ShapeType::ShapeTypeCapsule:   body = createBody(static_cast<Capsule&>    (*shape), mass, isSensor); break;
+    case ShapeType::ShapeTypeCylinder:  body = createBody(static_cast<Cylinder&>   (*shape), mass, isSensor); break;
+    case ShapeType::ShapeTypePlane:     body = createBody(static_cast<Plane&>      (*shape), mass, isSensor); break;
+    case ShapeType::ShapeTypeSphere:    body = createBody(static_cast<Sphere&>     (*shape), mass, isSensor); break;
+    default: printf("Could not create rigidbody, what the fuck did you do?\n"); break;
+    }
+
+    return body;
+}
+
 btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation

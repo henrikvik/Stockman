@@ -23,7 +23,7 @@ Game::~Game()
 { 
 	clear();
 	Typing::releaseInstance();
-	DebugWindow::releaseInstance();
+
 }
 
 void Game::init()
@@ -77,9 +77,6 @@ void Game::init()
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
 
-	//debug things
-	m_debugOpen = false;
-	m_firstTrigger = false;
 
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
@@ -163,31 +160,10 @@ void Game::waveUpdater()
 
 void Game::update(float deltaTime)
 {
-	DebugWindow *debugWindow = DebugWindow::getInstance();
 	m_gameTime.update(deltaTime);
     m_fpsRenderer.updateFPS(deltaTime);
 	Card temp; // per frame allocation for something that is just a copy of an already existing ob
 
-	if (m_debugOpen)
-	{
-		debugWindow->draw("Test");
-	}
-
-	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::RightAlt) && m_debugOpen && !m_firstTrigger)
-	{
-		m_debugOpen = false;
-		m_firstTrigger = true;
-	}
-	else if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::RightAlt) && !m_debugOpen && !m_firstTrigger)
-	{
-		m_debugOpen = true;
-		m_firstTrigger = true;
-	}
-
-	if (DirectX::Keyboard::Get().GetState().IsKeyUp(DirectX::Keyboard::RightAlt) && m_firstTrigger)
-	{
-		m_firstTrigger = false;
-	}
 	// Handles slow-mo & speed-up
 	switch (m_menu->currentState())
 	{
