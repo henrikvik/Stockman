@@ -40,6 +40,9 @@ SkillGrapplingHook::~SkillGrapplingHook()
 // When the grappling hook is used, send out a ray to the targeted surface and save variables
 bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 {
+    if (m_state == GrapplingHookStatePulling)
+        return false;
+
     if (abs(forward.dot({ 0.f, 1.f, 0.f })) > GRAPPLING_HOOK_NON_HOOK_ANGLE)
     {
         // Ray testing to see if we're hitting a rigidbody

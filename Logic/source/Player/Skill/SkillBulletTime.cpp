@@ -13,6 +13,9 @@ SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, Projectil
 
 bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
+    setCanUse(false);
+    setCooldown(BULLET_TIME_CD);
+
 	printf("Bullet Time used.\n");
 	m_sensor = m_projectileManager->addProjectile(m_projectileData, shooter.getPositionBT(), forward, shooter);
 

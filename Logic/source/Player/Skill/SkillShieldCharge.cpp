@@ -26,6 +26,9 @@ SkillShieldCharge::~SkillShieldCharge()
 
 bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
+    setCanUse(false);
+    setCooldown(BULLET_TIME_CD);
+
 	if (!m_active)
 	{
 		//Sets up the shield charge by deciding its movement vector and who is gonna charge
