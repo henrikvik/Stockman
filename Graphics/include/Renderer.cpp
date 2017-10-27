@@ -78,6 +78,13 @@ namespace Graphics
 		//menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
 		createBlendState();
 
+		DebugWindow *debugWindow = DebugWindow::getInstance();
+		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
+		{
+			enablePostEffects = !enablePostEffects;
+
+			return "PostEffect Toggled";
+		});
 		registerDebugFunction();
 
 		statusData.burn = 0;
@@ -144,6 +151,7 @@ namespace Graphics
 		PROFILE_END();
 	}
 
+	//Radius is in pixels on screen, duration is in MS
     void Renderer::startShake(float radius, float duration)
     {
         hud.startShake(radius, duration);
@@ -780,6 +788,15 @@ namespace Graphics
 			
 			forwardPlus.recompile(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC);
 
+
+			return catcher;
+		});
+
+		debugWindow->registerCommand("RELOADGLOWSHADERS", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+
+			glowRenderer.recompileGlow(device);
 
 			return catcher;
 		});

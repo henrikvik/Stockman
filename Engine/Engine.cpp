@@ -310,7 +310,7 @@ int Engine::run()
 
 		}
 
-		if (ks.Escape)
+		if (ks.Escape && !debug->isOpen())
 			PostQuitMessage(0);
 
 		g_Profiler->start();

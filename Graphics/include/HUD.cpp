@@ -1,7 +1,6 @@
 #include "HUD.H"
 #include <WICTextureLoader.h>
 #include <Logic\include\Misc\RandomGenerator.h>
-#define SHAKE_FALLOFF 0.9f
 
 #include <Engine\Profiler.h>
 
@@ -112,12 +111,13 @@ void Graphics::HUD::updateShake(ID3D11DeviceContext * context, float deltaTime)
 {
 	if (isShaking)
 	{
+		float currentShakeAmount = shakeRadius * (1 - (shakeCounter / shakeDuration));
+
 		static float angle = 0;
 		angle = Logic::RandomGenerator::singleton().getRandomFloat(0, 360);
-		offset = DirectX::SimpleMath::Vector2(sin(angle) * shakeRadius, cos(angle) * shakeRadius);
+		offset = DirectX::SimpleMath::Vector2(sin(angle) * currentShakeAmount, cos(angle) * currentShakeAmount);
 
-
-		shakeRadius *= SHAKE_FALLOFF;
+		
 
 		shakeCounter += deltaTime;
 		if (shakeCounter >= shakeDuration)
