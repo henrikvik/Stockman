@@ -99,11 +99,8 @@ void EntityManager::update(Player const &player, float deltaTime)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0 &&
-                !(isThreadLocked(i) && m_indexRunning[getThread(i)] == i)) {
-				updateEnemies(i, player, deltaTime);
-			}
-			else if (!isThreadLocked(i))
+			updateEnemies(i, player, deltaTime);
+			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0 && !isThreadLocked(i))
 			{
 				int thread = getThread(i);
                 m_threadRunning[thread] = true;
@@ -135,6 +132,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	bool goalNodeChanged = false;
+    bool removeDeadEnemies = !(isThreadLocked(index) && m_indexRunning[getThread(index)] == index);
 	Enemy *enemy;
     std::vector<Enemy*> &enemies = m_enemies[index];
 	
@@ -143,7 +141,7 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 		enemy = m_enemies[index][i];
 		updateEnemy(enemy, index, player, deltaTime);
 
-        if (!AStar::singleton().isEntityOnIndex(*enemy, index))
+        if (removeDeadEnemies && !AStar::singleton().isEntityOnIndex(*enemy, index))
         {
             int newIndex = AStar::singleton().getIndex(*enemy);
 
@@ -158,7 +156,7 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)
 {
     PROFILE_BEGIN("Path Update");
-	  Enemy *enemy;
+	Enemy *enemy;
 
     AStar &aStar = AStar::singleton();
     aStar.loadTargetIndex(player);
@@ -170,7 +168,7 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 	{
 		enemy = enemies[index][i];
 		enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
-		manager->updateEnemy(enemy, index, player, deltaTime);
+		//manager->updateEnemy(enemy, index, player, deltaTime);
 	}
 
 	manager->m_threadRunning[getThread(index)] = false;
@@ -237,7 +235,7 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
         pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
             generator.getRandomFloat(-85, 85) };
 
-        spawnEnemy(static_cast<Enemy::ENEMY_TYPE> (entity), pos, {}, physics, projectiles);
+        spawnEnemy(static_cast<ENEMY_TYPE> (entity), pos, {}, physics, projectiles);
     }
 
     for (WaveManager::Entity e : entities.triggers)
@@ -247,12 +245,12 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 
     for (WaveManager::Entity e : entities.bosses)
     {
-        spawnEnemy(static_cast<Enemy::ENEMY_TYPE> (e.id), { e.x, e.y, e.z },
+        spawnEnemy(static_cast<ENEMY_TYPE> (e.id), { e.x, e.y, e.z },
             e.effects, physics, projectiles);
     }
 }
 
-void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
+Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     std::vector<int> const &effects, Physics &physics, ProjectileManager *projectiles)
 {
     Enemy *enemy;
@@ -260,7 +258,7 @@ void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
 
     switch (id)
     {
-    case Enemy::NECROMANCER:
+    case ENEMY_TYPE::NECROMANCER:
         enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
         break;
     default:
@@ -272,18 +270,19 @@ void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
     enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0.f, 3.f, 0.f });
     enemy->setProjectileManager(projectiles);
 
+    enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
+
 #ifdef DEBUG_PATH
     enemy->getBehavior()->getPath().initDebugRendering(); // todo change to enemy->initDebugPath()
 #endif
 
     index = AStar::singleton().getIndex(*enemy);
-    if (index == -1)
-        m_enemies[0].push_back(enemy);
-    else
-        m_enemies[index].push_back(enemy);
+    m_enemies[index == -1 ? 0 : index].push_back(enemy);
+
+    return enemy;
 }
 
-void EntityManager::spawnTrigger(int id, btVector3 const &pos,
+Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
     std::vector<int> &effects, Physics &physics, ProjectileManager *projectiles)
 {
     // this is unefficient, could prolly be optimized but should only be done once per wave load
@@ -291,23 +290,28 @@ void EntityManager::spawnTrigger(int id, btVector3 const &pos,
     effectsIds.reserve(effects.size());
     for (auto const &effect : effects)
         effectsIds.push_back(static_cast<StatusManager::EFFECT_ID> (effect));
+    Trigger *trigger;
 
     switch (id)
     {
-    case 1:
-        m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD,
+    case 1: // wtf, starts at 1
+        trigger = m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD,
             Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
             500.f, physics, {},
             effectsIds,
             true);
         break;
     case 2:
-        m_triggerManager.addTrigger(Graphics::ModelID::AMMOBOX,
+        trigger = m_triggerManager.addTrigger(Graphics::ModelID::AMMOBOX,
             Cube(pos, { 0, 0, 0 }, { 1, 0.5, 1 }), 0.f, physics, {},
             effectsIds,
             false);
         break;
+    default:
+        trigger = nullptr;
     }
+
+    return trigger;
 }
 
 size_t EntityManager::getEnemiesAlive() const
@@ -370,4 +374,18 @@ void EntityManager::render(Graphics::Renderer &renderer)
 int EntityManager::getCurrentWave() const
 {
     return m_currentWave;
+}
+
+void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &physics)
+{
+    SpawnEnemy = [&](btVector3 &pos, ENEMY_TYPE type) -> Enemy* {
+        return spawnEnemy(type, pos, {}, physics, &projManager);
+    };
+    SpawnProjectile = [&](ProjectileData& pData, btVector3 position,
+        btVector3 forward, Entity& shooter) -> Projectile* {
+        return projManager.addProjectile(pData, position, forward, shooter);
+    };
+    SpawnTrigger = [&](int id, btVector3 const &pos, std::vector<int> &effects) -> Trigger* {
+        return spawnTrigger(id, pos, effects, physics, &projManager);
+    };
 }

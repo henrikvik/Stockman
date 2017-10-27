@@ -16,13 +16,14 @@ Game::Game()
 	m_menu				= nullptr;
 	m_highScoreManager	= nullptr;
 
-
+	
 }
 
 Game::~Game() 
 { 
 	clear();
 	Typing::releaseInstance();
+
 }
 
 void Game::init()
@@ -76,9 +77,23 @@ void Game::init()
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
 
-	//debug things
-	m_debugOpen = true;
-	m_firstTrigger = false;
+
+    // Loading func
+    m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
+
+	/*int m_currentHP;
+	DebugWindow *debugWindow = DebugWindow::getInstance();
+	debugWindow->registerCommand("SPAWNENEMIES", [&](std::stringstream &args)->std::string
+	{
+		int enemyCount;
+		float enemyHP;
+		args.read((char*)enemyCount, sizeof(int));
+		args.read((char*)enemyHP, sizeof(float));
+	});
+
+
+	---- SPAWNENEMIES 100 10.0f */
+
 }
 
 void Game::clear()
@@ -120,9 +135,9 @@ void Game::waveUpdater()
 			int affectedEnemies = m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE);
 			if (affectedEnemies > 0)
 			{
-				NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MUSIC, 0.1f);
-				NoiseMachine::Get().setGroupPitch(CHANNEL_GROUP::CHANNEL_MUSIC, 1.5f);
-				NoiseMachine::Get().playMusic(MUSIC::ENRAGE, m_player->getSoundSource(), false);
+			//	NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MUSIC, 0.1f);
+			//	NoiseMachine::Get().setGroupPitch(CHANNEL_GROUP::CHANNEL_MUSIC, 1.5f);
+			//	NoiseMachine::Get().playMusic(MUSIC::ENRAGE, m_player->getSoundSource(), false);
 			}
 
 			m_waveCurrent++;
@@ -147,26 +162,6 @@ void Game::update(float deltaTime)
     m_fpsRenderer.updateFPS(deltaTime);
 	Card temp;
 
-	if (m_debugOpen)
-	{
-		m_debugWindow.draw("Test");
-	}
-
-	if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::RightAlt) && m_debugOpen && !m_firstTrigger)
-	{
-		m_debugOpen = false;
-		m_firstTrigger = true;
-	}
-	else if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::RightAlt) && !m_debugOpen && !m_firstTrigger)
-	{
-		m_debugOpen = true;
-		m_firstTrigger = true;
-	}
-
-	if (DirectX::Keyboard::Get().GetState().IsKeyUp(DirectX::Keyboard::RightAlt) && m_firstTrigger)
-	{
-		m_firstTrigger = false;
-	}
 	// Handles slow-mo & speed-up
 	switch (m_menu->currentState())
 	{

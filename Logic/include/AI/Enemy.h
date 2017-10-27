@@ -5,6 +5,7 @@
 #include <Player\Player.h>
 #include <AI\Behavior\Behavior.h>
 #include <Projectile\ProjectileManager.h>
+#include <AI\EnemyType.h>
 
 #pragma region Comment
 /*
@@ -35,11 +36,6 @@ namespace Logic
 			ProjectileManager *m_projectiles;
 			Behavior *m_behavior;
 		public:	
-			enum ENEMY_TYPE
-			{
-				NECROMANCER
-			};
-
 			enum BEHAVIOR_ID { TEST, RANGED };
 
 			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, float moveSpeed, int enemyType, int animationId);
@@ -68,7 +64,7 @@ namespace Logic
 			float getMoveSpeed() const;
 			int getEnemyType() const;
 
-			void spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed);
+			Projectile* spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed);
 
 			ProjectileManager* getProjectileManager() const;
 			Behavior* getBehavior() const;

@@ -64,7 +64,7 @@
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 1.0f;
 	"activeOffset" : 0.0f;
-	"height" : 160.0f;
+	"height" : 55.0f;
 	"width" : 370.0f;
 	"function" : "buttonClick2";
 }
@@ -78,7 +78,7 @@
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 0.40625f;
     "activeOffset" : 0.0f;
-	"height" : 60.0f;
+	"height" : 55.0f;
 	"width" : 170.0f;
 	"function" : "buttonClick2";
 }

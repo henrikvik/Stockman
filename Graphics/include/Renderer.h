@@ -21,47 +21,55 @@
 #include "HUD.h"
 #include "SSAORenderer.h"
 #include "Fog.H"
+#include "DoF.h"
 
 #include <SpriteBatch.h>
 
 
 namespace Graphics
 {
-    class Renderer
+	class Renderer
     {
     public:
+
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
-		virtual ~Renderer();
+        virtual ~Renderer();
         void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
 
 
         void render(Camera * camera);
         void queueRender(RenderInfo * renderInfo);
 		void queueFoliageRender(FoliageRenderInfo * renderInfo);
+		void queueWaterRender(WaterRenderInfo * renderInfo);
         void queueRenderDebug(RenderDebugInfo * debugInfo);
         void queueText(TextString * text);
-        void fillHUDInfo(HUDInfo * info);
+		void queueLight(Light light);
+		void fillHUDInfo(HUDInfo * info);
 
         void drawMenu(Graphics::MenuInfo * info);
-		void updateLight(float deltaTime, Camera * camera);
+        void updateLight(float deltaTime, Camera * camera);
 
-		//indicates how gray the screen will be
-		void setBulletTimeCBuffer(float value);
+        //indicates how gray the screen will be
+        void setBulletTimeCBuffer(float value);
 
-		void updateShake(float deltaTime);
-		void startShake(float radius, float duration);
+        void updateShake(float deltaTime);
+        void startShake(float radius, float duration);
     private:
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;
         std::vector<RenderInfo*> renderQueue;
 		std::vector<FoliageRenderInfo*> renderFoliageQueue;
+		std::vector<WaterRenderInfo*> renderWaterQueue;
+
 
         DepthStencil depthStencil;
 
-		SkyRenderer skyRenderer;
-		Glow glowRenderer;
+        SkyRenderer skyRenderer;
+        Glow glowRenderer;
 
 		LightGrid grid;
+		std::vector<Light> lights;
+
 		DirectX::CommonStates *states;
 
         Shader fullscreenQuad;
@@ -84,28 +92,42 @@ namespace Graphics
 		SSAORenderer ssaoRenderer;
         
 
-		ShaderResource fakeBackBuffer;
-		ShaderResource fakeBackBufferSwap;
+		ShaderResource* fakeBackBuffer;
+		ShaderResource* fakeBackBufferSwap;
 		ShaderResource glowMap;
 
         ID3D11BlendState *transparencyBlendState;
 
+        
+		bool enablePostEffects = true;
+
+		bool enableSSAO = true;
+		bool enableGlow = true;
+		bool enableFog = true;
+		bool enableDOF = true;
 
         Menu menu;
         HUD hud;
+        DoF DoFRenderer;
+
+        ConstantBuffer<float> bulletTimeBuffer;
+
+        //temp
+        ID3D11ShaderResourceView * glowTest;
 
 
-		ConstantBuffer<float> bulletTimeBuffer;
-
-
-		//temp
-		ID3D11ShaderResourceView * glowTest;
-
+		//superTemp
+		struct StatusData
+		{
+			float burn;
+			float freeze;
+		} statusData;
        
         void cull();
         void writeInstanceData();
         void draw();
 		void clear();
+		void swapBackBuffers();
 		
 #pragma region Foliage
 		 
@@ -114,13 +136,10 @@ namespace Graphics
 		void drawFoliage(Camera * camera);
 		Shader foliageShader;
 #pragma endregion
-        
-		
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
-
         void createBlendState();
-
+		void registerDebugFunction();
 
 
     #pragma region RenderDebugInfo

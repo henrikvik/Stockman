@@ -212,9 +212,8 @@ void MenuMachine::render(Graphics::Renderer &renderer)
         std::wstring tempString = L"";
         Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
         DirectX::SimpleMath::Vector2 tempPos;
-        //TODO tis is wierd. no magic number should be used
-        tempPos.x = tempButton.m_rek.x +128;
-        tempPos.y = tempButton.m_rek.y +50;
+        tempPos.x = tempButton.m_rek.x +tempButton.m_rek.width;
+        tempPos.y = tempButton.m_rek.y + tempButton.m_rek.height -50;
         tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
         if (m_typing)
         {

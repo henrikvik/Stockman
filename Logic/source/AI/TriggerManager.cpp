@@ -21,7 +21,7 @@ void TriggerManager::removeTrigger(Trigger * t, int index)
 }
 
 // Adds a trigger, with certain cooldown & buffs, (cooldown is is ms)
-void TriggerManager::addTrigger(Graphics::ModelID modelID, Cube& cube, float cooldown, Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects, bool reusable)
+Trigger* TriggerManager::addTrigger(Graphics::ModelID modelID, Cube& cube, float cooldown, Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects, bool reusable)
 {
 	this->m_physicsPtr = &physics;
 
@@ -34,6 +34,7 @@ void TriggerManager::addTrigger(Graphics::ModelID modelID, Cube& cube, float coo
 		trigger->addEffects(effects);
 
 	m_triggers.push_back(trigger);
+    return trigger;
 }
 
 // Updates all the triggers cooldowns

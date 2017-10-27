@@ -117,7 +117,7 @@ int Enemy::getEnemyType() const
 }
 
 // projectiles
-void Enemy::spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed)
+Projectile* Enemy::spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed)
 {
 	ProjectileData data;
 
@@ -127,7 +127,7 @@ void Enemy::spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed)
 	data.scale = 1.f;
 	data.enemyBullet = true;
 	
-	m_projectiles->addProjectile(data, getPositionBT(), dir, *this);
+	return m_projectiles->addProjectile(data, getPositionBT(), dir, *this);
 }
 
 ProjectileManager * Enemy::getProjectileManager() const

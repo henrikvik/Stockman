@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\DoF.cpp" />
     <ClCompile Include="include\Animation\Animation.cpp" />
     <ClCompile Include="include\Animation\Joint.cpp" />
     <ClCompile Include="include\Animation\JointTransform.cpp" />
@@ -31,6 +32,8 @@
     <ClCompile Include="include\Lights\LightGrid.cpp" />
     <ClCompile Include="include\Menu.cpp" />
     <ClCompile Include="include\Glow.cpp" />
+    <ClCompile Include="include\Particles\Particle.cpp" />
+    <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
     <ClCompile Include="include\SSAORenderer.cpp" />
@@ -43,8 +46,10 @@
     <ClCompile Include="include\Utility\ShaderResource.cpp" />
     <ClCompile Include="include\Resources\TextureManager.cpp" />
     <ClCompile Include="include\SkyRenderer.cpp" />
+    <ClCompile Include="include\Effects\Water.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DoF.h" />
     <ClInclude Include="include\Animation\AnimatedTestCube.h" />
     <ClInclude Include="include\Animation\AnimatedVertex.h" />
     <ClInclude Include="include\Animation\Animation.h" />
@@ -61,9 +66,12 @@
     <ClInclude Include="include\Lights\LightGrid.h" />
     <ClInclude Include="include\Menu.h" />
     <ClInclude Include="include\Glow.h" />
+    <ClInclude Include="include\Particles\Particle.h" />
+    <ClInclude Include="include\Particles\ParticleSystem.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Resources\BRFImportHandler.h" />
     <ClInclude Include="include\SSAORenderer.h" />
+    <ClInclude Include="include\Utility\Buffer.h" />
     <ClInclude Include="include\Utility\DepthStencil.h" />
     <ClInclude Include="include\Resources\Importerstructs.h" />
     <ClInclude Include="include\Resources\MaterialManager.h" />
@@ -79,6 +87,7 @@
     <ClInclude Include="include\TempCube.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
     <ClInclude Include="include\Utility\ConstantBuffer.h" />
+    <ClInclude Include="include\Effects\Water.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -162,7 +171,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
@@ -179,7 +188,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
@@ -198,7 +207,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
@@ -219,7 +228,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>

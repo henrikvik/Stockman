@@ -11,6 +11,8 @@ struct InstanceData
 {
     float4x4 world;
     float4x4 invWorldT;
+    float freeze;
+    float burn;
 };
 
 StructuredBuffer<InstanceData> instanceData : register(t20);
@@ -37,6 +39,10 @@ struct VSOutput {
 	float2 uv : UV;
     float3 biTangent : BITANGENT;
     float3 tangent : TANGENT;
+
+    //Change this to struct later
+    float freeze : FREEZE;
+    float burn : BURN;
 };
 
 struct PSOutput
@@ -51,6 +57,8 @@ VSOutput VS(VSInput input, uint instanceId : SV_InstanceId) {
 
     float4x4 world = instanceData[instanceOffset + instanceId].world;
     float4x4 invWorldT = instanceData[instanceOffset + instanceId].invWorldT;
+    output.freeze = instanceData[instanceOffset + instanceId].freeze;
+    output.burn = instanceData[instanceOffset + instanceId].burn;
 
 	output.worldPos = mul(world, float4(input.position, 1));
     output.pos = mul(ViewProjection, output.worldPos);
@@ -89,9 +97,11 @@ PSOutput PS(VSOutput input) {
 
     float3 normal = getNormalMappedNormal(input.tangent, input.biTangent, input.normal, input.uv);
     float shadow = calculateShadowValue(input.lightPos.xyz, 2);
-    float3 lighting = calculateDiffuseLight(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, 1);
-    lighting += calculateSpecularity(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, 1);
+    float3 lighting = calculateDiffuseLight(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, shadow);
+    lighting += calculateSpecularity(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, shadow);
     
+    lighting = calculateStatusEffect(lighting, input.freeze, input.burn);
+
     lighting = saturate(lighting);
     
     

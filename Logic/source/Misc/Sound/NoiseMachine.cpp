@@ -131,6 +131,10 @@ void NoiseMachine::play(Sound* sound, SoundSource* soundSource)
 {
 	// Playing sound
 	ERRCHECK(m_system->playSound(sound->data, m_group[sound->group], false, &soundSource->channel));
+    
+    // Force update (because FMOD updates faster than our game)
+    soundSource->channel->set3DAttributes(&soundSource->pos, &soundSource->vel);
+    ERRCHECK(m_system->update());
 
 	// Saving the created channel onto the sound class for modifications on it
 	sound->channel = soundSource->channel;
