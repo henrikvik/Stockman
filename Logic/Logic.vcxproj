@@ -185,6 +185,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
     <ClInclude Include="include\Entity\LightObject.h" />
     <ClInclude Include="include\AI\EnemyType.h" />
     <ClInclude Include="include\Misc\FPSRenderer.h" />
@@ -250,6 +251,7 @@
     <ClInclude Include="include\Misc\Sound\NoiseMachine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Behavior\EnemyThreadHandler.cpp" />
     <ClCompile Include="source\Entity\LightObject.cpp" />
     <ClCompile Include="source\Misc\FPSRenderer.cpp" />
     <ClCompile Include="source\AI\Behavior\Pathing.cpp" />

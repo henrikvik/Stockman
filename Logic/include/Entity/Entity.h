@@ -6,7 +6,6 @@
 
 #include "PhysicsObject.h"
 #include "StatusManager.h"
-#include <Projectile\ProjectileStruct.h>
 #include <AI\EnemyType.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
@@ -18,13 +17,14 @@ namespace Logic
     class Projectile;
     class Trigger;
     class Enemy;
+    struct ProjectileData;
 
 	class Entity : public PhysicsObject
 	{
     public:
         enum EntityEvent { ON_DEATH, ON_DAMAGE_TAKEN, ON_DAMAGE_GIVEN, ON_COLLISION };
         struct CallbackData {
-            Entity *caller;
+            Entity *caller; // The entity that called the callback
             union
             {
                 std::int64_t data64;
@@ -67,10 +67,10 @@ namespace Logic
 		SoundSource m_soundSource; // they'll never catch me
         // Functions to spawn other things
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
-            btVector3 forward, Entity& shooter)> SpawnProjectile;
+            btVector3 forward, Entity& shooter)>               SpawnProjectile;
         std::function<Enemy*(btVector3 &pos, ENEMY_TYPE type)> SpawnEnemy;
         std::function<Trigger*(int id, btVector3 const &pos,
-            std::vector<int> &effects)>    SpawnTrigger;
+            std::vector<int> &effects)>                        SpawnTrigger;
 	private:
 		StatusManager m_statusManager;
         // change functions to linked list if many callbacks is wanted, but i don't see it being necessary

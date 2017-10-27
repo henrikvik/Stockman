@@ -760,7 +760,14 @@ namespace Graphics
 			std::string catcher = "";
 			try
 			{
-				this->statusData.freeze = std::stof(args[0]);
+                if (args.size() != 0)
+                {
+                    this->statusData.freeze = std::stof(args[0]);
+                }
+                else
+                {
+                    return "missing argument freeze amount";
+                }
 			}
 			catch (const std::exception&)
 			{
@@ -775,7 +782,14 @@ namespace Graphics
 			std::string catcher = "";
 			try
 			{
-				this->statusData.burn = std::stof(args[0]);
+                if (args.size() != 0)
+                {
+                    this->statusData.burn = std::stof(args[0]);
+                }
+                else
+                {
+                    return "missing argument burn amount";
+                }
 			}
 			catch (const std::exception&)
 			{

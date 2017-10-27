@@ -5,79 +5,47 @@ using namespace Logic;
 #define ENEMIES_TEST_UPDATE_PER_FRAME 4 
 #define FILE_ABOUT_WHALES "Enemies/Wave"
 
-#include <AI/EnemyTest.h>
-#include <AI/EnemyNecromancer.h>
-#include <AI/Behavior/AStar.h>
-#include <DebugDefines.h>
+#include <AI\Behavior\EnemyThreadHandler.h>
+#include <AI\Behavior\AStar.h>
+#include <AI\EnemyTest.h>
+#include <AI\EnemyNecromancer.h>
+#include <Misc\ComboMachine.h>
 
+#include <Player\Player.h>
+#include <Projectile\ProjectileManager.h>
+
+#include <Graphics\include\Renderer.h>
+#include <Graphics\include\Structs.h>
+#include <Physics\Physics.h>
+
+#include <DebugDefines.h>
 #include <Engine\Profiler.h>
 #include <Misc\RandomGenerator.h>
 
 #include <ctime>
 #include <stdio.h>
 
-#define getThread(i) i % NR_OF_THREADS
-#define isThreadLocked(i) m_threadRunning[getThread(i)]
-
 EntityManager::EntityManager()
 {
     m_currentWave = 0;
     m_frame = 0;
-    m_killChildren = false;
 
     allocateData();
 
     m_waveManager.setName(FILE_ABOUT_WHALES);
     m_waveManager.loadFile();
-
-    resetThreads();
 }
 
 EntityManager::~EntityManager()
 {
+    delete m_threadHandler;
     deleteData();
-    deleteThreads();
 }
 
 void EntityManager::allocateData()
 {
     m_enemies.resize(AStar::singleton().getNrOfPolygons());
-}
-
-void EntityManager::resetThreads()
-{
-    for (std::thread *t : threads)
-    {
-        t = nullptr;
-    }
-
-    ZeroMemory(&m_threadRunning, sizeof(m_threadRunning));
-}
-
-void EntityManager::deleteThreads()
-{
-    m_killChildren = true;
-    for (std::thread *t : threads)
-    {
-        if (t)
-        {
-            t->join();
-            delete t;
-        }
-    }
-}
-
-void EntityManager::joinAllThreads()
-{
-    for (auto *t : threads)
-        t->join();
-}
-
-void EntityManager::deleteThread(std::thread *t)
-{
-    if (t->joinable())
-        t->join();
-    delete t;
+    m_threadHandler = newd EnemyThreadHandler();
 }
 
 void EntityManager::deleteData()
@@ -100,23 +68,12 @@ void EntityManager::update(Player const &player, float deltaTime)
 		if (m_enemies[i].size() > 0)
 		{
 			updateEnemies(i, player, deltaTime);
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0 && !isThreadLocked(i))
-			{
-				int thread = getThread(i);
-                m_threadRunning[thread] = true;
-                std::thread *t = threads[thread];
-
-                if (t)
-                    m_indexRunning[thread] = i;
-                else
-                {
-                    PROFILE_BEGIN("Create Thread");
-                    t = newd std::thread(EntityManager::onPathThreadCreation, this,
-                        i, std::ref(player), deltaTime);
-                    threads[thread] = t;
-                    PROFILE_END();
-                }
-			}
+            if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) 
+            {
+                PROFILE_BEGIN("ThreadHandler::addWork");
+                m_threadHandler->addWork({ this, static_cast<int> (i), player });
+                PROFILE_END();
+            }
 		}
 	}
 	PROFILE_END();
@@ -126,22 +83,22 @@ void EntityManager::update(Player const &player, float deltaTime)
 		m_deadEnemies[i]->updateDead(deltaTime);
 	}
 
+
 	m_triggerManager.update(deltaTime);
 }
-
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	bool goalNodeChanged = false;
-    bool removeDeadEnemies = !(isThreadLocked(index) && m_indexRunning[getThread(index)] == index);
+    bool swapOnNewIndex = !(m_threadHandler->getThreadStatus(index) & EnemyThreadHandler::RUNNING);
 	Enemy *enemy;
     std::vector<Enemy*> &enemies = m_enemies[index];
 	
 	for (size_t i = 0; i < enemies.size(); ++i)
 	{
 		enemy = m_enemies[index][i];
-		updateEnemy(enemy, index, player, deltaTime);
+        updateEnemy(enemy, index, player, deltaTime);
 
-        if (removeDeadEnemies && !AStar::singleton().isEntityOnIndex(*enemy, index))
+        if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, index))
         {
             int newIndex = AStar::singleton().getIndex(*enemy);
 
@@ -153,40 +110,6 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 	}
 }
 
-void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)
-{
-    PROFILE_BEGIN("Path Update");
-	Enemy *enemy;
-
-    AStar &aStar = AStar::singleton();
-    aStar.loadTargetIndex(player);
-
-    std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
-    auto &enemies = manager->m_enemies;
-
-	for (size_t i = 0; i < enemies[index].size(); ++i)
-	{
-		enemy = enemies[index][i];
-		enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
-		//manager->updateEnemy(enemy, index, player, deltaTime);
-	}
-
-	manager->m_threadRunning[getThread(index)] = false;
-    PROFILE_END();
-    while (!manager->m_threadRunning[getThread(index)])
-    {
-        std::this_thread::sleep_for(2ms); // this is stupid but works
-        if (manager->m_killChildren) return;
-    }
-    updateEnemiesAndPath(manager, manager->m_indexRunning[getThread(index)], std::ref(player), manager->m_deltaTime);
-}
-
-void EntityManager::onPathThreadCreation(EntityManager * manager, int index, Player const & player, float deltaTime)
-{
-	// g_Profiler->registerThread("Enemy Thread %d\0", getThread(index));
-	updateEnemiesAndPath(manager, index, player, deltaTime);
-}
-
 void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, float deltaTime)
 {
     enemy->update(player, deltaTime, m_enemies[index]);
@@ -195,7 +118,6 @@ void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, 
     {
         // Adds the score into the combo machine
         ComboMachine::Get().Kill(ENEMY_TYPE(enemy->getEnemyType()));
-        spawnTrigger(2, enemy->getPositionBT(), std::vector<int>{StatusManager::AMMO_PICK_UP}, *m_physicsPtr, m_projectilePtr);
         enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
 
         std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);
@@ -206,9 +128,6 @@ void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, 
 
 void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 {
-    m_physicsPtr = &physics;
-    m_projectilePtr = projectiles;
-
     if (m_enemies.empty())
     {
         printf("This will crash, data is not allocated, call allocateData() before spawning");
@@ -262,7 +181,6 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
 
     enemy->setEnemyType(id);
     enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0.f, 3.f, 0.f });
-    enemy->setProjectileManager(projectiles);
 
     enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 
@@ -308,7 +226,7 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
     return trigger;
 }
 
-size_t EntityManager::getEnemiesAlive() const
+size_t EntityManager::getNrOfAliveEnemies() const
 {
     return m_enemies.size();
 }
@@ -368,6 +286,11 @@ void EntityManager::render(Graphics::Renderer &renderer)
 int EntityManager::getCurrentWave() const
 {
     return m_currentWave;
+}
+
+const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const
+{
+    return m_enemies;
 }
 
 void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &physics)
