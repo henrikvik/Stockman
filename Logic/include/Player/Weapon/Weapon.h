@@ -15,8 +15,6 @@
 #include <Projectile\ProjectileManager.h>
 #include <Entity\Object.h>
 
-#define WEAPON_AMMO_PACK_MODIFIER 2.f
-
 namespace Logic
 {
 	class Weapon : public Object
