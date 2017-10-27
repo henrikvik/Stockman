@@ -2,9 +2,9 @@
 namespace Graphics
 {
     DoF::DoF(ID3D11Device * device):
-        blur1col0(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_SNORM),
-        blur1col1(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_SNORM),
-        blur2Final(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_SNORM),
+        blur1col0(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_UNORM),
+        blur1col1(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_UNORM),
+        blur2Final(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R8G8B8A8_UNORM),
         //renderTarget(device, WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_SNORM),
         cbuffer(device),
         CoCcreation(device, SHADER_PATH("DoFShaders/CreateCoc.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } }),
@@ -114,7 +114,6 @@ namespace Graphics
         //glue pass
         context->PSSetShaderResources(0, 1, blur2Final);
         context->PSSetShader(glue, nullptr, 0);
-
 
 
         context->OMSetRenderTargets(1, *outputBuffer, nullptr);

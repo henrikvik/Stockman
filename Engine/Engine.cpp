@@ -310,7 +310,7 @@ int Engine::run()
 
 		}
 
-		if (ks.Escape)
+		if (ks.Escape && !debug->isOpen())
 			PostQuitMessage(0);
 
 		g_Profiler->start();
@@ -373,12 +373,12 @@ int Engine::run()
 		//bush.translation = DirectX::SimpleMath::Matrix::CreateScale(10, 10, 10);//* DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 30, 0 });
 		//staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5) * DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 20, 0 });
 		
-        Graphics::TextString text{
-            L"The hills!",
-            DirectX::SimpleMath::Vector2(50, 50),
-            DirectX::SimpleMath::Color(DirectX::Colors::Black),
-            Graphics::Font::SMALL
-        };
+        //Graphics::TextString text{
+        //    L"The hills!",
+        //    DirectX::SimpleMath::Vector2(50, 50),
+        //    DirectX::SimpleMath::Color(DirectX::Colors::Black),
+        //    Graphics::Font::SMALL
+        //};
 
         
         ///////////////////////////////////
