@@ -104,7 +104,7 @@ namespace Graphics
 		bool enableSSAO = true;
 		bool enableGlow = true;
 		bool enableFog = true;
-		bool enableDOF = true;
+		bool enableDOF = false;
         bool enableCoCWindow = false;
 
         Menu menu;
