@@ -30,7 +30,7 @@ Player::~Player()
 void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime)
 {
 	m_weaponManager.init(projectileManager);
-	m_skillManager.init(physics, projectileManager, gameTime);
+	m_skillManager.init(physics, projectileManager);
 	m_physPtr = physics;
 
 	btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_HEIGHT, PLAYER_SIZE_RADIUS);

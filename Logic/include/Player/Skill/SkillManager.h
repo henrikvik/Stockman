@@ -48,7 +48,7 @@ namespace Logic
 		SkillManager();
 		~SkillManager();
 
-		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
+		void init(Physics* physics, ProjectileManager* projectileManager);
 		void clear();
 
 		void switchToSkill(std::vector<int> skillsToUse);

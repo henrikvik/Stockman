@@ -32,7 +32,7 @@ void SkillManager::clear()
 
 }
 
-void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime)
+void SkillManager::init(Physics* physics, ProjectileManager* projectileManager)
 {
 	m_allSkills =
 	{
