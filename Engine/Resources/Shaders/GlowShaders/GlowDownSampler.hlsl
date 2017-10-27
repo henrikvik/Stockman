@@ -17,16 +17,10 @@ VSOut VS(uint id: SV_VertexID)
 	vsout.uv = float2((id << 1) & 2, id & 2);
 	vsout.pos = float4(vsout.uv * float2(2, -2) + float2(-1, 1), 0, 1);
 
-
     return vsout;
 }
 
 float4 PS(VSOut input) : SV_Target0
 {
-	float4 final = { 0.0, 0.0, 0.0, 1.0 };
-    for (uint y = 0; y < KERNELSIZE; y++)
-		final += inputTexture.Sample(Sampler, input.uv, int2(0, y)) * gaussianFilter[y];
-	
-
-	return final;
+    return inputTexture.Sample(Sampler, input.uv);
 }
