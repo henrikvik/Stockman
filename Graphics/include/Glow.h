@@ -17,6 +17,8 @@ namespace Graphics
 		void addGlow(ID3D11DeviceContext * context, ID3D11ShaderResourceView * backBuffer, ID3D11ShaderResourceView * glowMap, ShaderResource * outputTexture);
 
 		std::vector<float> generateKernel(int kernelSize, float sigma);
+
+		void recompileGlow(ID3D11Device * device);
 	private:
 		ComputeShader glow;
 		ComputeShader glow2;

@@ -796,5 +796,14 @@ namespace Graphics
 
 			return catcher;
 		});
+
+		debugWindow->registerCommand("RELOADGLOWSHADERS", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+
+			glowRenderer.recompileGlow(device);
+
+			return catcher;
+		});
 	}
 }
