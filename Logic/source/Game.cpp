@@ -152,7 +152,9 @@ void Game::waveUpdater()
 				end = true;
 			}
 		}
-        m_player->updateWaveInfo(m_waveCurrent + 1, m_entityManager.getEnemiesAlive(), (float)((m_waveTime[m_waveCurrent] - m_waveTimer) * 0.001));
+        m_player->updateWaveInfo(m_waveCurrent + 1,
+            m_entityManager.getNrOfAliveEnemies(),
+            (float)((m_waveTime[m_waveCurrent] - m_waveTimer) * 0.001));
 	}
 }
 
@@ -160,7 +162,7 @@ void Game::update(float deltaTime)
 {
 	m_gameTime.update(deltaTime);
     m_fpsRenderer.updateFPS(deltaTime);
-	Card temp;
+	Card temp; // per frame allocation for something that is just a copy of an already existing ob
 
 	// Handles slow-mo & speed-up
 	switch (m_menu->currentState())

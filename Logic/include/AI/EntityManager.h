@@ -4,16 +4,8 @@
 #include <vector>
 #include <thread>
 
-#include <AI/Enemy.h>
 #include <AI/WaveManager.h>
 #include <AI/TriggerManager.h>
-#include <Misc/ComboMachine.h>
-
-#include <Player\Player.h>
-#include <Projectile\ProjectileManager.h>
-
-#include <Graphics\include\Renderer.h>
-#include <Physics\Physics.h>
 
 #pragma region ClassDesc
 	/*
@@ -29,35 +21,30 @@
 
 namespace Logic 
 {
+    class ProjectileManager;
+    class Physics;
+    class Enemy;
+    class Renderer;
+    class EnemyThreadHandler;
+
 	class EntityManager
 	{
 	private:
-		static const int NR_OF_THREADS = 8;
+		static const int NR_OF_THREADS = 4;
 
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
 		std::vector<double> time;
 
-		std::thread *threads[NR_OF_THREADS];
-		int m_indexRunning[NR_OF_THREADS];
-		bool m_threadRunning[NR_OF_THREADS];
-
-        Physics* m_physicsPtr;
-        ProjectileManager* m_projectilePtr;
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
+        EnemyThreadHandler *m_threadHandler; // Just because i want to delete it when i want
 
 		int m_currentWave, m_frame;
 		float m_deltaTime;
-        bool m_killChildren;
 
 		void deleteData(); // delete data in vectors
 		void allocateData(); // resize enemy vector 
-
-		void resetThreads();
-		void deleteThreads();
-		void joinAllThreads();
-		void deleteThread(std::thread *t);
 
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)> SpawnProjectile;
@@ -72,8 +59,6 @@ namespace Logic
 		void update(Player const &player, float deltaTime);
 		void updateEnemies(int index, Player const &player, float deltaTime);
 		// statis because threads will use this
-		static void updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime);
-		static void onPathThreadCreation(EntityManager *manager, int index, Player const &player, float deltaTime);
 		void updateEnemy(Enemy *enemy, int index, Player const &player, float deltaTime);
 		void clear();
 
@@ -88,8 +73,9 @@ namespace Logic
 		void setCurrentWave(int currentWave);
 		void render(Graphics::Renderer &renderer);
 
-		size_t getEnemiesAlive() const;
+		size_t getNrOfAliveEnemies() const;
 		int getCurrentWave() const;
+        const std::vector<std::vector<Enemy*>>& getAliveEnemies() const;
 
 		EntityManager* operator=(EntityManager const &entityManager) = delete;
         void setSpawnFunctions(ProjectileManager &projManager, Physics &physics);
