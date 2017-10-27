@@ -4,6 +4,7 @@
 #include <AI\Behavior\MeleeBehavior.h>
 
 #include <Player\Player.h>
+#include <Projectile\ProjectileStruct.h>
 
 using namespace Logic;
 

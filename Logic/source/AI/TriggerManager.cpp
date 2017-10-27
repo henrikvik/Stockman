@@ -1,4 +1,5 @@
 #include <AI/TriggerManager.h>
+#include <Physics\Physics.h>
 using namespace Logic;
 
 TriggerManager::TriggerManager() 

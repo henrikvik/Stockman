@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Trigger.h"
+#include <Physics\Primitives.h>
 
 #pragma region Comment
 	/*

@@ -12,6 +12,11 @@
 #include <Misc/Sound/NoiseMachine.h>
 #include <Misc/Sound/SoundSource.h>
 
+namespace Sound
+{
+    class SoundSource;
+}
+
 namespace Logic
 {
     class Projectile;
@@ -61,10 +66,9 @@ namespace Logic
 		StatusManager& getStatusManager();
 		void setStatusManager(StatusManager& statusManager);
 
-		SoundSource* getSoundSource();
+		Sound::SoundSource* getSoundSource();
         std::unordered_map<EntityEvent, std::function<void (CallbackData&)>>& getCallbacks();
 	protected:
-		SoundSource m_soundSource; // they'll never catch me
         // Functions to spawn other things
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)>               SpawnProjectile;
@@ -72,6 +76,7 @@ namespace Logic
         std::function<Trigger*(int id, btVector3 const &pos,
             std::vector<int> &effects)>                        SpawnTrigger;
 	private:
+        Sound::SoundSource* m_soundSource;
 		StatusManager m_statusManager;
         // change functions to linked list if many callbacks is wanted, but i don't see it being necessary
         std::unordered_map<EntityEvent, std::function<void (CallbackData&)>> m_callbacks;

@@ -3,6 +3,7 @@
 #include <AI\Enemy.h>
 #include <Graphics\include\Particles\ParticleSystem.h>
 #include <Engine\DebugWindow.h>
+#include <Physics\Physics.h>
 
 using namespace Logic;
 

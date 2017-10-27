@@ -1,5 +1,6 @@
 #include "AI/EnemyTest.h"
 #include <AI\Behavior\TestBehavior.h>
+#include <Projectile\Projectile.h>
 using namespace Logic;
 
 EnemyTest::EnemyTest(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
