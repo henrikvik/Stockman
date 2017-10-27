@@ -151,6 +151,7 @@ namespace Graphics
 		PROFILE_END();
 	}
 
+	//Radius is in pixels on screen, duration is in MS
     void Renderer::startShake(float radius, float duration)
     {
         hud.startShake(radius, duration);
