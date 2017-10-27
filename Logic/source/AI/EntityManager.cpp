@@ -172,15 +172,15 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     switch (id)
     {
     case ENEMY_TYPE::NECROMANCER:
-        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
+        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false, Physics::COL_ENEMY), { 0.5f, 0.5f, 0.5f });
         break;
     default:
-        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
+        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false, Physics::COL_ENEMY), { 0.5f, 0.5f, 0.5f });
         break;
     }
 
     enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0.f, 3.f, 0.f });
+    enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true, Physics::COL_ENEMY), 2.f, { 0.f, 3.f, 0.f });
 
     enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 

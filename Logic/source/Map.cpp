@@ -21,7 +21,11 @@ void Map::add(FrameProp frameProp)
 
 void Map::add(FrameHitbox frameHitbox)
 {
-    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL), frameHitbox.dimensions));
+    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+        Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+        Physics::COL_HITBOX,
+        Physics::COL_EVERYTHING),
+        frameHitbox.dimensions));
 }
 
 void Map::init(Physics* physics)

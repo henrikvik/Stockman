@@ -10,7 +10,10 @@ StaticObject::StaticObject(Graphics::ModelID modelID, btRigidBody * body, btVect
 
 StaticObject::~StaticObject() { }
 
-void StaticObject::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier) { }
+void StaticObject::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier) 
+{
+
+}
 
 void StaticObject::update(float deltaTime) 
 {
