@@ -5,8 +5,7 @@ using namespace Logic;
 
 SkillManager::SkillManager() 
 {
-	m_currentSkill = nullptr;
-	m_canBeUsed = true;
+    m_current = { nullptr, nullptr };
 }
 
 SkillManager::~SkillManager()
@@ -14,7 +13,7 @@ SkillManager::~SkillManager()
 	for (int i = 0; i < m_allSkills.size(); i++)
 		delete m_allSkills[i];
 
-	m_currentSkill = nullptr;
+    m_current = { nullptr, nullptr };
 	clear();
 }
 
@@ -33,46 +32,56 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, 
 	};
 
 
-	switchToSkill(SKILL_USED);
+    switchToSkill({ SKILL_MOVE, SKILL_UTIL });
 }
 
-void SkillManager::switchToSkill(int index)
+void SkillManager::switchToSkill(std::pair<int, int> index)
 {
-	m_currentSkill = m_allSkills[index];
+    m_current = { m_allSkills[index.first], m_allSkills[index.second] };
 }
 
-void SkillManager::useSkill(btVector3 forward, Entity& shooter)
+void SkillManager::usePrimarySkill(btVector3 forward, Entity& shooter)
 {
-	m_canBeUsed = false;
-
-	if (m_currentSkill)
-		m_currentSkill->use(forward, shooter);
+	if (m_current.first)
+        m_current.first->use(forward, shooter);
 }
 
-void SkillManager::releaseSkill()
+void SkillManager::useSecondarySkill(btVector3 forward, Entity& shooter)
 {
-	m_canBeUsed = true;
+    if (m_current.second)
+        m_current.second->use(forward, shooter);
+}
 
-	if (m_currentSkill)
-		m_currentSkill->release();
+void SkillManager::releasePrimarySkill()
+{
+	if (m_current.first)
+        m_current.first->release();
+}
+
+void SkillManager::releaseSecondarySkill()
+{
+    if (m_current.second)
+        m_current.second->release();
 }
 
 void SkillManager::update(float deltaTime)
 {
-	m_currentSkill->update(deltaTime);
+    m_current.first->update(deltaTime);
+    m_current.second->update(deltaTime);
 }
 
 void SkillManager::render(Graphics::Renderer& renderer)
 {
-	m_currentSkill->render(renderer);
+    m_current.first->render(renderer);
+    m_current.second->render(renderer);
 }
 
-bool Logic::SkillManager::getCanBeUsed() const
+Skill * SkillManager::getPrimarySkill() const
 {
-	return m_canBeUsed;
+    return m_current.first;
 }
 
-Skill * Logic::SkillManager::getCurrentSkill() const
+Skill * SkillManager::getSecondarySkill() const
 {
-    return m_currentSkill;
+    return m_current.second;
 }

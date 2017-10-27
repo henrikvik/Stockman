@@ -14,7 +14,6 @@
 #include <Player\Skill\SkillGrapplingHook.h>
 #include <Player\Skill\SkillShieldCharge.h>
 #include <Projectile\ProjectileManager.h>
-#include <Misc\GameTime.h>
 #include <vector>
 
 namespace Logic
@@ -29,27 +28,24 @@ namespace Logic
 		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
 
-		void switchToSkill(int index);
+		void switchToSkill(std::pair<int, int> index);
 
-		void useSkill(btVector3 forward, Entity& shooter);
-		void releaseSkill();
+		void usePrimarySkill(btVector3 forward, Entity& shooter);
+        void useSecondarySkill(btVector3 forward, Entity& shooter);
+
+		void releasePrimarySkill();
+        void releaseSecondarySkill();
 
 		void update(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 
-		bool getCanBeUsed() const;
-
-        Skill* getCurrentSkill() const;
+        Skill* getPrimarySkill() const;
+        Skill* getSecondarySkill() const;
 	
 	private:
-		bool m_canBeUsed;
-		GrapplingHookState m_state;
-		ProjectileManager* m_projectileManager;	
-		GameTime* m_gameTime;	
 
 		std::vector<Skill*> m_allSkills;
-  //      std::pair<Skill*> m_currentSkill;
-		Skill* m_currentSkill;
+        std::pair<Skill*, Skill*> m_current;
 	};
 }
 #endif
