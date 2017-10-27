@@ -9,7 +9,7 @@ EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
 	: Enemy(modelID, body, halfExtent, 5, 1, 8, 0, 0) {
 	setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
-        SpawnTrigger(1, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP });
+        SpawnTrigger(2, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP });
     });
     m_spawnedMinions = 0;
 }
@@ -79,7 +79,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
 		}
 		else
 		{
-            shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::ENEMYGRUNT, SPEED_AB1);
+            shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB1);
 		}
 	}
 }
