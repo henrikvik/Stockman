@@ -166,7 +166,7 @@ void Game::update(float deltaTime)
 	DebugWindow *debugWindow = DebugWindow::getInstance();
 	m_gameTime.update(deltaTime);
     m_fpsRenderer.updateFPS(deltaTime);
-	Card temp;
+	Card temp; // per frame allocation for something that is just a copy of an already existing ob
 
 	if (m_debugOpen)
 	{

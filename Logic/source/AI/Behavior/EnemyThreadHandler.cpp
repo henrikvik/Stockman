@@ -65,18 +65,21 @@ void EnemyThreadHandler::threadMain(WorkData data)
 
 void EnemyThreadHandler::addWork(WorkData data)
 {
-    int thread = getThreadId(data.index);
-    m_threadRunning[thread] = true;
-    std::thread *t = threads[thread];
-
-    if (t)
-        m_indexRunning[thread] = data.index;
-    else
+    if (getThreadStatus(data.index) & OPEN)
     {
-        PROFILE_BEGIN("Create Thread");
-        t = newd std::thread(&EnemyThreadHandler::threadMain, this, data);
-        threads[thread] = t;
-        PROFILE_END();
+        int thread = getThreadId(data.index);
+        m_threadRunning[thread] = true;
+        std::thread *t = threads[thread];
+
+        if (t)
+            m_indexRunning[thread] = data.index;
+        else
+        {
+            PROFILE_BEGIN("Create Thread");
+            t = newd std::thread(&EnemyThreadHandler::threadMain, this, data);
+            threads[thread] = t;
+            PROFILE_END();
+        }
     }
 }
 
