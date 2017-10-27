@@ -12,7 +12,13 @@ namespace Logic
 		virtual ~StaticObject();
 		void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 		void update(float deltaTime);
-	};
+
+        void renderD(Graphics::Renderer& renderer);
+
+    private:
+        Graphics::RenderDebugInfo renderDebug;
+    
+    };
 }
 
 #endif // !STATICOBJECT_H

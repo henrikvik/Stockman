@@ -336,28 +336,32 @@ void Physics::render(Graphics::Renderer & renderer)
 		btCollisionObject* obj = this->getCollisionObjectArray()[i];
 		if (btGhostObject* ghostObject = dynamic_cast<btGhostObject*>(obj))
 		{
-			renderGhostCapsule(renderer, dynamic_cast<btCapsuleShape*>(ghostObject->getCollisionShape()), ghostObject);
+		//	renderGhostCapsule(renderer, dynamic_cast<btCapsuleShape*>(ghostObject->getCollisionShape()), ghostObject);
 		}
 		else
 		{
 			btRigidBody* body = btRigidBody::upcast(obj);
 			btCollisionShape* shape = obj->getCollisionShape();
 
-			// Render Boxes
-			if (btBoxShape* bs = dynamic_cast<btBoxShape*>(shape))
-				renderCube(renderer, bs, body);
+            // Static Bodies have already been built as debug mesh and gets drawn from map.cpp
+            if (!shape->isNonMoving())
+            {
+                // Render Boxes
+                if (btBoxShape* bs = dynamic_cast<btBoxShape*>(shape))
+                    renderCube(renderer, bs, body);
 
-			// Render Spheres
-			else if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
-				renderSphere(renderer, ss, body);
+                // Render Spheres
+                else if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
+                    renderSphere(renderer, ss, body);
 
-			// Render Cylinders
-			else if (btCylinderShape* cs = dynamic_cast<btCylinderShape*>(shape))
-				renderCylinder(renderer, cs, body);
+                // Render Cylinders
+                else if (btCylinderShape* cs = dynamic_cast<btCylinderShape*>(shape))
+                    renderCylinder(renderer, cs, body);
 
-			// Render Capsules
-			else if (btCapsuleShape* cs = dynamic_cast<btCapsuleShape*>(shape))
-				renderCapsule(renderer, cs, body);
+                // Render Capsules
+                else if (btCapsuleShape* cs = dynamic_cast<btCapsuleShape*>(shape))
+                    renderCapsule(renderer, cs, body);
+            }
 		}
 	}
 }
