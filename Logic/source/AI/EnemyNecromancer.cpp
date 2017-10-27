@@ -25,11 +25,12 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
 	}
 	else if (Projectile *pj = dynamic_cast<Projectile*> (&other))
 	{
-		if (dmgMultiplier > 1.01f && dmgMultiplier < 2.01f)
-			printf("Headshot. 2X DMG.\n");
-
-		if (!pj->getProjectileData().enemyBullet)
-			damage(pj->getProjectileData().damage * dmgMultiplier);
+        if (!pj->getProjectileData().enemyBullet)
+        {
+            damage(pj->getProjectileData().damage * dmgMultiplier);
+            if (dmgMultiplier > 1.01f)
+                printf("HS.");
+        }
 
 		if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
 			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);

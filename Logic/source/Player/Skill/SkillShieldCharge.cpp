@@ -17,7 +17,6 @@ SkillShieldCharge::SkillShieldCharge()
 	m_time = 0.0f;
 	m_forw = btVector3(0.0f, 0.0f, 0.0f);
 	m_chargePower = 5.f;
-
 }
 
 SkillShieldCharge::~SkillShieldCharge()
@@ -25,8 +24,11 @@ SkillShieldCharge::~SkillShieldCharge()
 	m_projectileManager = nullptr;
 }
 
-void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
+bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
+    setCanUse(false);
+    setCooldown(BULLET_TIME_CD);
+
 	if (!m_active)
 	{
 		//Sets up the shield charge by deciding its movement vector and who is gonna charge
@@ -43,7 +45,11 @@ void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 		
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 			player->setMaxSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
+
+        return true;
 	}
+
+    return false;
 }
 
 void SkillShieldCharge::onRelease() { }
