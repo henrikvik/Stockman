@@ -64,7 +64,7 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     context->PSSetShaderResources(0, 5, hudTextures);
     context->PSSetShader(shader, nullptr, 0);
 
-    context->Draw(24, 0);
+    context->Draw(42, 0);
     ID3D11ShaderResourceView * SRVNULL = nullptr;
     context->PSSetShaderResources(0, 1, &SRVNULL);
 
@@ -141,7 +141,7 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
         UINT element;
     };
 
-    GUI GUIquad[24];
+    GUI GUIquad[42];
     GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.05f, -0.05f };
     GUIquad[0].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
 
