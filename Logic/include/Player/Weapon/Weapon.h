@@ -13,25 +13,21 @@
 #pragma endregion
 
 #include <Entity\Object.h>
-//#include <Projectile\ProjectileManager.h>
-#include <Projectile\ProjectileStruct.h>
-
-namespace Graphics
-{
-    class Renderer;
-    class Structs;
-}
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 namespace Logic
 {
+    class Entity;
+    class Projectile;
     class ProjectileManager;
-    //struct ProjetileData;
+    struct ProjectileData;
 
 	class Weapon : public Object
 	{
 	private:
 		DirectX::SimpleMath::Matrix rot, trans, scale;
-		ProjectileData m_projectileData;
+		ProjectileData* m_projectileData;
 		int m_weaponID;
 		int m_ammoCap;
 		int m_ammo;
@@ -55,6 +51,7 @@ namespace Logic
 		Weapon();
 		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
 			int spreadH, int spreadV, float attackRate, float freeze, float reloadTime);
+        ~Weapon();
 		void reset();
 
         void setSpawnFunctions(ProjectileManager &projManager);

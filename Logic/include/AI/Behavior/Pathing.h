@@ -5,6 +5,11 @@
 #include <Entity\Entity.h>
 #include <SimpleMath.h>
 
+namespace Graphics
+{
+    struct RenderDebugInfo;
+}
+
 namespace Logic
 {
 	class Pathing
@@ -14,7 +19,7 @@ namespace Logic
 		std::vector<const DirectX::SimpleMath::Vector3*> m_path;
 		int m_currentNode;
 
-		Graphics::RenderDebugInfo m_debugInfo;
+		Graphics::RenderDebugInfo* m_debugInfo;
 	public:
 		Pathing();
 		Pathing(Pathing const &other) = delete;

@@ -1,4 +1,7 @@
 #include "Player/Weapon/WeaponManager.h"
+#include <Player\Weapon\Weapon.h>
+#include <Graphics\include\Structs.h>
+#include <Projectile\ProjectileStruct.h>
 
 using namespace Logic;
 
@@ -24,6 +27,8 @@ void WeaponManager::init(ProjectileManager* projectileManager)
 
 void WeaponManager::clear()
 {
+    for (Weapon* weapon : m_allWeapons)
+        delete weapon;
 	m_weaponsLoadouts.clear();
 	m_allWeapons.clear();
 }
@@ -32,7 +37,7 @@ void Logic::WeaponManager::reset()
 {
 	for (int i = 0; i < m_allWeapons.size(); i++)
 	{
-		m_allWeapons[i].reset();
+		m_allWeapons[i]->reset();
 	}
 }
 
@@ -85,12 +90,12 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ Weapon(Graphics::ModelID::CROSSBOW, m_projectileManager, ProjectileData(1, 0.2, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 0, 2000) },		                                    // Gattling prim
-		{ Weapon(Graphics::ModelID::CROSSBOW, m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 0, 2000) },		                                    // Gattling sec
-		{ Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(1, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), 2, 300, 200, 100, 100, 1, 1, 17, 5, 750, 1, 3000) },		// Freeze prim
-		{ Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(1, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000) },		                                            // Freeze sec
-		{ Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), 4, 0, 0, 0, 0, 0, 1, 0, 0, 50, 0, 2000) },				                                            // Sledge prim
-		{ Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), 5, 0, 0, 0, 0, 0, 1, 0, 0, 50, 0, 3000) }					                                        // Sledge sec
+		{ new Weapon(Graphics::ModelID::CROSSBOW, m_projectileManager, ProjectileData(1, 0.2, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 0, 2000) },		                                    // Gattling prim
+		{ new Weapon(Graphics::ModelID::CROSSBOW, m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 0, 2000) },		                                    // Gattling sec
+		{ new Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(1, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), 2, 300, 200, 100, 100, 1, 1, 17, 5, 750, 1, 3000) },		// Freeze prim
+		{ new Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(1, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000) },		                                            // Freeze sec
+		{ new Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), 4, 0, 0, 0, 0, 0, 1, 0, 0, 50, 0, 2000) },				                                            // Sledge prim
+		{ new Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), 5, 0, 0, 0, 0, 0, 1, 0, 0, 50, 0, 3000) }					                                        // Sledge sec
 	};
 }
 
@@ -99,9 +104,9 @@ void WeaponManager::makeWeaponLoadout()
 	// Adding current weapon pair
 	m_weaponsLoadouts =
 	{ 
-		{ &m_allWeapons[0], &m_allWeapons[1] },
-		{ &m_allWeapons[2], &m_allWeapons[3] },
-		{ &m_allWeapons[4], &m_allWeapons[5] }
+		{ m_allWeapons[0], m_allWeapons[1] },
+		{ m_allWeapons[2], m_allWeapons[3] },
+		{ m_allWeapons[4], m_allWeapons[5] }
 	};
 }
 

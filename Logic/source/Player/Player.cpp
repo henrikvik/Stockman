@@ -4,6 +4,13 @@
 #include <DebugDefines.h>
 #include <Misc\ComboMachine.h>
 #include <Engine\Profiler.h>
+#include <Projectile\ProjectileManager.h>
+#include <Player\Weapon\WeaponManager.h>
+#include <Player\Weapon\Weapon.h>
+#include <Player\Skill\SkillManager.h>
+#include <Player\Skill\Skill.h>
+#include <Misc\Sound\NoiseStructs.h>
+#include <Graphics\include\Renderer.h>
 
 using namespace Logic;
 
@@ -698,7 +705,7 @@ Player::PlayerState Player::getPlayerState() const
 	return m_playerState;
 }
 
-ListenerData & Logic::Player::getListenerData()
+ListenerData& Player::getListenerData()
 {
 	return m_listenerData;
 }

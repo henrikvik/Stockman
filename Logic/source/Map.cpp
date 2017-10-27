@@ -1,4 +1,5 @@
 #include "Map.h"
+#include <Graphics\include\Structs.h>
 
 using namespace Logic;
 
