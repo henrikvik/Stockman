@@ -78,6 +78,13 @@ namespace Graphics
 		//menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
 		createBlendState();
 
+		DebugWindow *debugWindow = DebugWindow::getInstance();
+		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
+		{
+			enablePostEffects = !enablePostEffects;
+
+			return "PostEffect Toggled";
+		});
 		registerDebugFunction();
 
 		statusData.burn = 0;
