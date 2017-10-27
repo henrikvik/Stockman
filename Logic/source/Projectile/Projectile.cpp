@@ -93,35 +93,49 @@ void Projectile::updateSpecific(float deltaTime)
 
 void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-    if (hasCallback(ON_COLLISION))
+    // TEMP
+    bool callback = false;
+
+    if (Projectile* proj = dynamic_cast<Projectile*> (&other))  // if projectile
+        if (proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+        {
+            getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME,
+                proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+            callback = true;
+        }
+        else {} // this might seem really pointless, because it is, but if you remove it, it will stop working, so dont touch this godly else
+	 else if(!dynamic_cast<Player*>(&other)) // if not player
+	    {
+        if (dynamic_cast<Enemy*> (&other) && getProjectileData().enemyBullet)
+        {
+            m_remove = false;
+        }
+        else
+        {
+       		m_remove = true;
+            callback = true;
+        }
+
+		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
+			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
+				m_remove = false;
+
+        if (m_remove && FUN_MODE)
+            Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+    }
+    else if (getProjectileData().enemyBullet)  // if player and enemy bullet
+    {
+        m_remove = true;
+        callback = true;
+    }
+
+    if (callback && hasCallback(ON_COLLISION))
     {
         CallbackData data;
         data.caller = this;
         data.dataPtr = reinterpret_cast<std::intptr_t> (&other);
         getCallbacks()[ON_COLLISION](data);
     }
-
-	// TEMP
-	Player* p = dynamic_cast<Player*>(&other);
-	Projectile* proj = dynamic_cast<Projectile*> (&other);
-
-	if (proj)
-	{
-		if(proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
-	}
-	else if(!p)
-	{
-		m_remove = true;
-
-        // TEMP: ta bort mig
-        if (FUN_MODE)
-            Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
-
-		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
-			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
-				m_remove = false;
-	}
 
 	if (m_pData.type == ProjectileTypeBulletTimeSensor  ||
         m_pData.type == ProjectileTypeIce               ||

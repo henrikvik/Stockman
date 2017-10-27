@@ -2,13 +2,14 @@
 using namespace Logic;
 
 #define ENEMIES_PATH_UPDATE_PER_FRAME 25
-#define ENEMIES_TEST_UPDATE_PER_FRAME 4 
+#define ENEMIES_TEST_UPDATE_PER_FRAME 25 
 #define FILE_ABOUT_WHALES "Enemies/Wave"
 
 #include <AI\Behavior\EnemyThreadHandler.h>
 #include <AI\Behavior\AStar.h>
 #include <AI\EnemyTest.h>
 #include <AI\EnemyNecromancer.h>
+#include <AI\EnemyChaser.h>
 #include <Misc\ComboMachine.h>
 
 #include <Player\Player.h>
@@ -168,15 +169,19 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
 {
     Enemy *enemy;
     int index;
+    btRigidBody *testBody = physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false);
 
     switch (id)
     {
     case ENEMY_TYPE::NECROMANCER:
-        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false, Physics::COL_ENEMY), { 0.5f, 0.5f, 0.5f });
+        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
+        break;
+    case ENEMY_TYPE::NECROMANCER_MINION:
+        enemy = newd EnemyChaser(testBody);
         break;
     default:
-        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false, Physics::COL_ENEMY), { 0.5f, 0.5f, 0.5f });
-        break;
+        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
+		break;
     }
 
     enemy->setEnemyType(id);

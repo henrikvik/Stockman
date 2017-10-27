@@ -13,6 +13,13 @@ EnemyThreadHandler::EnemyThreadHandler()
     ZeroMemory(&m_threadRunning, sizeof(m_threadRunning));
     ZeroMemory(&m_indexRunning,  sizeof(m_indexRunning));
     resetThreads();
+    initThreads();
+}
+
+void EnemyThreadHandler::initThreads()
+{
+    for (std::thread *&t : threads)
+        t = newd std::thread(&EnemyThreadHandler::threadMain, this);
 }
 
 EnemyThreadHandler::~EnemyThreadHandler()
@@ -54,34 +61,23 @@ void EnemyThreadHandler::updateEnemiesAndPath(WorkData &data)
     m_threadRunning[getThreadId(data.index)] = false;
 }
 
-void EnemyThreadHandler::threadMain(WorkData data)
+void EnemyThreadHandler::threadMain()
 {
     while (!m_killChildren)
     {
-        if (m_threadRunning[getThreadId(data.index)])
-            updateEnemiesAndPath(data);
-        std::this_thread::sleep_for(2ms);
+        if (work.size() > 0)
+        {
+            WorkData todo = work.front();
+            work.pop();
+            updateEnemiesAndPath(todo);
+        }
+        std::this_thread::sleep_for(2ns);
     }
 }
 
 void EnemyThreadHandler::addWork(WorkData data)
 {
-    if (getThreadStatus(data.index) & OPEN)
-    {
-        int thread = getThreadId(data.index);
-        m_threadRunning[thread] = true;
-        std::thread *t = threads[thread];
-
-        if (t)
-            m_indexRunning[thread] = data.index;
-        else
-        {
-            PROFILE_BEGIN("Create Thread");
-            t = newd std::thread(&EnemyThreadHandler::threadMain, this, data);
-            threads[thread] = t;
-            PROFILE_END();
-        }
-    }
+    work.push(data);
 }
 
 int EnemyThreadHandler::getThreadStatus(int i) {
