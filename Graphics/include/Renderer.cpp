@@ -33,7 +33,6 @@ namespace Graphics
 		, instanceOffsetBuffer(device)
 		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
 		, glowRenderer(device, deviceContext)
-		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
 #pragma region RenderDebugInfo
 		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
 		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
@@ -81,9 +80,12 @@ namespace Graphics
 		DebugWindow *debugWindow = DebugWindow::getInstance();
 		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
 		{
-			enablePostEffects = !enablePostEffects;
+			enableSSAO = false;
+			enableGlow= false;
+			enableDOF = false;
+			enableFog = false;
 
-			return "PostEffect Toggled";
+			return "PostEffect OFF";
 		});
 		registerDebugFunction();
 
@@ -312,7 +314,7 @@ namespace Graphics
 		ID3D11RenderTargetView * rtvs[] =
 		{
 			*fakeBackBuffer,
-			glowMap,
+			glowRenderer,
 			*ssaoRenderer.getNormalShaderResource()
 		};
 
@@ -387,7 +389,7 @@ namespace Graphics
 			if (enableGlow)
 			{
 				PROFILE_BEGIN("Glow");
-				glowRenderer.addGlow(deviceContext, *fakeBackBuffer, glowMap, fakeBackBufferSwap);
+				glowRenderer.addGlow(deviceContext, *fakeBackBuffer, fakeBackBufferSwap);
 				swapBackBuffers();
 				PROFILE_END();
 			}
@@ -595,10 +597,11 @@ namespace Graphics
 		static float clearColor[4] = { 0 };
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
 		deviceContext->ClearRenderTargetView(*fakeBackBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(glowMap, clearColor);
+		deviceContext->ClearRenderTargetView(glowRenderer, clearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
 		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 		skyRenderer.clear(deviceContext);
+		glowRenderer.clear(deviceContext, clearColor);
 	}
 
 	void Renderer::swapBackBuffers()
