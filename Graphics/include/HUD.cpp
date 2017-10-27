@@ -218,7 +218,115 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
     GUIquad[16].element = 2;
     GUIquad[17].element = 2;
 
-    GUIquad[18].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x - 31 + 29) / WIN_WIDTH )- 1,  2 * (float)((WIN_HEIGHT - cdPos.y - 31 -14) / WIN_HEIGHT) - 1 };
+    //weapon icon 1
+
+    GUIquad[18].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
+    GUIquad[18].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
+    GUIquad[19].verts = DirectX::SimpleMath::Vector2{ -1.0f, -0.8f };
+    GUIquad[19].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[20].verts = DirectX::SimpleMath::Vector2{ -0.8f, -1.0f };
+    GUIquad[20].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[21].verts = DirectX::SimpleMath::Vector2{ -0.8f, -0.8f };
+    GUIquad[21].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
+    GUIquad[22].verts = GUIquad[14].verts;
+    GUIquad[22].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[23].verts = GUIquad[13].verts;
+    GUIquad[23].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[18].element = 3;
+    GUIquad[19].element = 3;
+    GUIquad[20].element = 3;
+    GUIquad[21].element = 3;
+    GUIquad[22].element = 3;
+    GUIquad[23].element = 3;
+
+    //weapon icon 2
+
+    GUIquad[24].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
+    GUIquad[24].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
+    GUIquad[25].verts = DirectX::SimpleMath::Vector2{ -1.0f, -0.8f };
+    GUIquad[25].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[26].verts = DirectX::SimpleMath::Vector2{ -0.8f, -1.0f };
+    GUIquad[26].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[27].verts = DirectX::SimpleMath::Vector2{ -0.8f, -0.8f };
+    GUIquad[27].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
+    GUIquad[28].verts = GUIquad[14].verts;
+    GUIquad[28].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[29].verts = GUIquad[13].verts;
+    GUIquad[29].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[24].element = 4;
+    GUIquad[25].element = 4;
+    GUIquad[26].element = 4;
+    GUIquad[27].element = 4;
+    GUIquad[28].element = 4;
+    GUIquad[29].element = 4;
+
+    //skill icon 1
+
+    GUIquad[30].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
+    GUIquad[30].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
+    GUIquad[31].verts = DirectX::SimpleMath::Vector2{ -1.0f, -0.8f };
+    GUIquad[31].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[32].verts = DirectX::SimpleMath::Vector2{ -0.8f, -1.0f };
+    GUIquad[32].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[33].verts = DirectX::SimpleMath::Vector2{ -0.8f, -0.8f };
+    GUIquad[33].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
+    GUIquad[34].verts = GUIquad[14].verts;
+    GUIquad[34].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[35].verts = GUIquad[13].verts;
+    GUIquad[35].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[30].element = 5;
+    GUIquad[31].element = 5;
+    GUIquad[32].element = 5;
+    GUIquad[33].element = 5;
+    GUIquad[34].element = 5;
+    GUIquad[35].element = 5;
+
+    //weapon icon 2
+
+    GUIquad[36].verts = DirectX::SimpleMath::Vector2{ -1.0f, -1.0f };
+    GUIquad[36].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
+
+    GUIquad[37].verts = DirectX::SimpleMath::Vector2{ -1.0f, -0.8f };
+    GUIquad[37].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[38].verts = DirectX::SimpleMath::Vector2{ -0.8f, -1.0f };
+    GUIquad[38].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[39].verts = DirectX::SimpleMath::Vector2{ -0.8f, -0.8f };
+    GUIquad[39].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
+    GUIquad[40].verts = GUIquad[14].verts;
+    GUIquad[40].uv = DirectX::SimpleMath::Vector2{ 1.0f, 1.0f };
+
+    GUIquad[41].verts = GUIquad[13].verts;
+    GUIquad[41].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[36].element = 6;
+    GUIquad[37].element = 6;
+    GUIquad[38].element = 6;
+    GUIquad[39].element = 6;
+    GUIquad[40].element = 6;
+    GUIquad[41].element = 6;
+
+   /* GUIquad[18].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x - 31 + 29) / WIN_WIDTH )- 1,  2 * (float)((WIN_HEIGHT - cdPos.y - 31 -14) / WIN_HEIGHT) - 1 };
     GUIquad[18].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
 
     GUIquad[19].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x - 31 + 29 ) / WIN_WIDTH) - 1,  2 * (float)((WIN_HEIGHT - cdPos.y + 31 -14) / WIN_HEIGHT) - 1 };
@@ -241,7 +349,7 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
     GUIquad[20].element = 3;
     GUIquad[21].element = 3;
     GUIquad[22].element = 3;
-    GUIquad[23].element = 3;
+    GUIquad[23].element = 3;*/
 
     D3D11_BUFFER_DESC desc;
     ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
@@ -373,11 +481,11 @@ void Graphics::HUD::createHUDCBs(ID3D11Device * device)
 {
     D3D11_BUFFER_DESC desc = { 0 };
     desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    desc.ByteWidth = sizeof(float) * 4;
+    desc.ByteWidth = 32;
     desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     desc.Usage = D3D11_USAGE_DYNAMIC;
     
-    float temp[2] = { 0.0f, 0.0f };
+    float temp[8] = { 0.0f};
     D3D11_SUBRESOURCE_DATA data = { 0 };
     data.pSysMem = temp;
 

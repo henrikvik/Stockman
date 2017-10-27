@@ -15,7 +15,10 @@ struct VSOut
 cbuffer hudInfo : register(b0)
 {
     float hpProcent;
-    float cdLeft;
+    float offset0;
+    float offset1;
+    float offset2;
+    float offset3;
 }
 
 cbuffer positionOffset : register(b1)
