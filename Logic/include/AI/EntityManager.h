@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <thread>
+
 #include <AI/WaveManager.h>
 #include <AI/TriggerManager.h>
 

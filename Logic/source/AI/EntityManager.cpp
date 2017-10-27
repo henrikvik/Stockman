@@ -181,18 +181,16 @@ void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Play
 
 	manager->m_threadRunning[getThread(index)] = false;
     PROFILE_END();
-    while (!manager->m_threadRunning[getThread(index)])
-    {
-        std::this_thread::sleep_for(2ms); // this is stupid but works
-        if (manager->m_killChildren) return;
-    }
-    updateEnemiesAndPath(manager, manager->m_indexRunning[getThread(index)], std::ref(player), manager->m_deltaTime);
 }
 
 void EntityManager::onPathThreadCreation(EntityManager * manager, int index, Player const & player, float deltaTime)
 {
-	// g_Profiler->registerThread("Enemy Thread %d\0", getThread(index));
-	updateEnemiesAndPath(manager, index, player, deltaTime);
+    while (!manager->m_killChildren)
+    {
+        if (manager->m_threadRunning[getThread(index)])
+            updateEnemiesAndPath(manager, index, player, deltaTime);
+        std::this_thread::sleep_for(2ms);
+    }
 }
 
 void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, float deltaTime)
