@@ -15,8 +15,6 @@ Game::Game()
 	m_cardManager		= nullptr;
 	m_menu				= nullptr;
 	m_highScoreManager	= nullptr;
-
-	
 }
 
 Game::~Game() 

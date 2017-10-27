@@ -6,11 +6,12 @@ using namespace Logic;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
 	btRigidBody* body, btVector3 halfExtent)
-	: Enemy(modelID, body, halfExtent, 5, 1, 15, 0, 0) {
+	: Enemy(modelID, body, halfExtent, 5, 1, 8, 0, 0) {
 	setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         SpawnTrigger(1, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP });
     });
+    m_spawnedMinions = 0;
 }
 
 EnemyNecromancer::~EnemyNecromancer()
@@ -58,14 +59,22 @@ void EnemyNecromancer::useAbility(Entity const &target)
 {
 	if (RandomGenerator::singleton().getRandomInt(0, 1000))
 	{
-		if (RandomGenerator::singleton().getRandomInt(0, 1))
+		if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
 		{
-		    Projectile *pj = shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB2);
+            Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{0, 105, 0}).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB2);
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 Entity *entity = reinterpret_cast<Entity*> (data.dataPtr);
                 std::vector<int> effects = { StatusManager::EFFECT_ID::AMMO_PICK_UP };
 
-               // SpawnTrigger(1, data.caller->getPositionBT(), effects);
+                if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
+                {
+                    Enemy *e = SpawnEnemy(getPositionBT(), ENEMY_TYPE::NECROMANCER_MINION);
+                    m_spawnedMinions++;
+
+                    e->addCallback(ON_DEATH, [&](CallbackData data) -> void {
+                        m_spawnedMinions--;
+                    });
+                }
             });
 		}
 		else

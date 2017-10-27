@@ -35,7 +35,7 @@ namespace Logic
 
 			Behavior *m_behavior;
 		public:	
-			enum BEHAVIOR_ID { TEST, RANGED };
+			enum BEHAVIOR_ID { TEST, RANGED, MELEE };
 
 			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, float moveSpeed, int enemyType, int animationId);
 			virtual ~Enemy();

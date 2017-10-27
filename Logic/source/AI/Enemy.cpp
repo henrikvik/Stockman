@@ -1,6 +1,7 @@
 #include <AI\Enemy.h>
 #include <AI\Behavior\TestBehavior.h>
 #include <AI\Behavior\RangedBehavior.h>
+#include <AI\Behavior\MeleeBehavior.h>
 
 #include <Player\Player.h>
 
@@ -35,6 +36,9 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
 		case RANGED:
 				m_behavior = newd RangedBehavior();
 			break;
+        case MELEE:
+                m_behavior = newd MeleeBehavior();
+            break;
 		default:
 				m_behavior = newd TestBehavior();
 			break;
@@ -122,8 +126,11 @@ Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed)
 	data.damage = getBaseDamage();
 	data.meshID = id;
 	data.speed = speed;
+    data.ttl = 20000;
+    data.gravityModifier = 2.5;
 	data.scale = 1.f;
     data.enemyBullet = true;
+    data.isSensor = true;
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     

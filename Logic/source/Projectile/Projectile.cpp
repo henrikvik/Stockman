@@ -92,27 +92,26 @@ void Projectile::updateSpecific(float deltaTime)
 
 void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-	// TEMP
+    // TEMP
     bool callback = false;
-	Player* p = dynamic_cast<Player*>(&other);
-	Projectile* proj = dynamic_cast<Projectile*> (&other);
 
-	if (proj)
+    if (Projectile* proj = dynamic_cast<Projectile*> (&other))  // if projectile
         if (proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
         {
             getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME,
                 proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
             callback = true;
         }
-	else if(!p)
-	{
+        else {} // this might seem really pointless, because it is, but if you remove it, it will stop working, so dont touch this godly else
+	 else if(!dynamic_cast<Player*>(&other)) // if not player
+	    {
         if (dynamic_cast<Enemy*> (&other) && getProjectileData().enemyBullet)
         {
             m_remove = false;
         }
         else
         {
-    		m_remove = true;
+       		m_remove = true;
             callback = true;
         }
 
@@ -123,7 +122,12 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
 			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
 				m_remove = false;
-	}
+    }
+    else if (getProjectileData().enemyBullet)  // if player and enemy bullet
+    {
+        m_remove = true;
+        callback = true;
+    }
 
     if (callback && hasCallback(ON_COLLISION))
     {
