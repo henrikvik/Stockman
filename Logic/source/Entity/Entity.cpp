@@ -1,4 +1,5 @@
 #include <Entity/Entity.h>
+#include <AI\Enemy.h>
 
 using namespace Logic;
 
@@ -9,6 +10,17 @@ Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelI
 }
 
 Entity::~Entity() { }
+
+void Entity::setSpawnFunctions(std::function<Projectile*(ProjectileData& pData,
+    btVector3 position, btVector3 forward, Entity& shooter)> spawnProjectile,
+    std::function<Enemy*(btVector3 &pos, ENEMY_TYPE type)> spawnEnemy,
+    std::function<Trigger*(int id, btVector3 const &pos,
+        std::vector<int> &effects)> spawnTrigger)
+{
+    SpawnProjectile = spawnProjectile;
+    SpawnEnemy = spawnEnemy;
+    SpawnTrigger = spawnTrigger;
+}
 
 void Entity::clear() { }
 

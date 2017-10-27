@@ -1,9 +1,13 @@
 #include "../Projectile/Projectile.h"
 #include "../Player/Player.h"
 #include <AI\Enemy.h>
+#include <Graphics\include\Particles\ParticleSystem.h>
+#include <Engine\DebugWindow.h>
 
 using namespace Logic;
 
+// TEMP: ta bort mig
+static bool FUN_MODE = false;
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 : Entity(body, halfextent) 
@@ -45,6 +49,15 @@ Projectile::~Projectile() { }
 
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
+    // TEMP: ta bort mig
+    DebugWindow *debugWindow = DebugWindow::getInstance();
+    debugWindow->registerCommand("FUNMODE", [&](std::vector<std::string> &args) -> std::string
+    {
+        FUN_MODE = !FUN_MODE;
+
+        return "Fun mode toggled!";
+    });
+
 	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
 	setStatusManager(statusManager);
 
@@ -81,12 +94,10 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 {
     if (hasCallback(ON_COLLISION))
     {
-        if (Entity *entity = dynamic_cast<Entity*> (&other))
-        {
-            CallbackData data;
-            data.dataPtr = reinterpret_cast<std::intptr_t> (entity);
-            getCallbacks()[ON_COLLISION](data);
-        }
+        CallbackData data;
+        data.caller = this;
+        data.dataPtr = reinterpret_cast<std::intptr_t> (&other);
+        getCallbacks()[ON_COLLISION](data);
     }
 
 	// TEMP
@@ -101,6 +112,10 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 	else if(!p)
 	{
 		m_remove = true;
+
+        // TEMP: ta bort mig
+        if (FUN_MODE)
+            Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
 
 		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
 			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)

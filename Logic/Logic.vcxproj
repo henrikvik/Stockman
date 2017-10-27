@@ -186,6 +186,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Entity\LightObject.h" />
+    <ClInclude Include="include\AI\EnemyType.h" />
     <ClInclude Include="include\Misc\FPSRenderer.h" />
     <ClInclude Include="include\AI\Behavior\Pathing.h" />
     <ClInclude Include="include\AI\EnemyNecromancer.h" />
