@@ -5,17 +5,21 @@ using namespace Logic;
 
 SkillManager::SkillManager() 
 {
-	m_currentSkill = nullptr;
-	m_canBeUsed = true;
+    for (int i = 0; i < THRESHOLD::MAX_SKILLS; i++)
+        m_current[i] = nullptr;
 }
 
 SkillManager::~SkillManager()
 {
+    // Deleting all skills
 	for (int i = 0; i < m_allSkills.size(); i++)
 		delete m_allSkills[i];
 
-	m_currentSkill = nullptr;
-	clear();
+    // Resetting pointers
+    for (int i = 0; i < THRESHOLD::MAX_SKILLS; i++)
+        m_current[i] = nullptr;
+	
+    clear();
 }
 
 void SkillManager::clear()
@@ -32,47 +36,61 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, 
 		{ new SkillShieldCharge() }
 	};
 
-
-	switchToSkill(SKILL_USED);
+    switchToSkill({ 0, 1, 2 });
 }
 
-void SkillManager::switchToSkill(int index)
+void SkillManager::switchToSkill(std::vector<int> skillsToUse)
 {
-	m_currentSkill = m_allSkills[index];
+    if (skillsToUse.size() > THRESHOLD::MAX_SKILLS)
+        printf("The number of skills is breaking the threshold. The player don't have space for more.");
+
+    for (size_t i = 0;  i < skillsToUse.size() ||
+                        i < THRESHOLD::MAX_SKILLS; i++)
+        m_current[i] = m_allSkills[skillsToUse[i]];
 }
 
-void SkillManager::useSkill(btVector3 forward, Entity& shooter)
+void SkillManager::use(int index, btVector3 forward, Entity& shooter)
 {
-	m_canBeUsed = false;
-
-	if (m_currentSkill)
-		m_currentSkill->use(forward, shooter);
+    if (isLegit(index))
+    {
+        if (m_current[index])
+        {
+             m_current[index]->use(forward, shooter);
+        }
+    }
 }
 
-void SkillManager::releaseSkill()
+void SkillManager::release(int index)
 {
-	m_canBeUsed = true;
-
-	if (m_currentSkill)
-		m_currentSkill->release();
+    if (isLegit(index))
+    {
+        if (m_current[index])
+        {
+            m_current[index]->release();
+        }
+    }
 }
 
 void SkillManager::update(float deltaTime)
 {
-	m_currentSkill->update(deltaTime);
+    for (size_t i = 0; i < THRESHOLD::MAX_SKILLS; i++)
+        m_current[i]->update(deltaTime);
 }
 
 void SkillManager::render(Graphics::Renderer& renderer)
 {
-	m_currentSkill->render(renderer);
+    for (size_t i = 0; i < THRESHOLD::MAX_SKILLS; i++)
+        m_current[i]->render(renderer);
 }
 
-bool Logic::SkillManager::getCanBeUsed() const
+Skill* SkillManager::getSkill(int index) const
 {
-	return m_canBeUsed;
+    if (!isLegit(index))
+        return nullptr;
+    return m_current[index];
 }
 
-Skill * Logic::SkillManager::getCurrentSkill() const
+bool SkillManager::isLegit(int index) const
 {
-    return m_currentSkill;
+    return (!(index >= THRESHOLD::MAX_SKILLS && index < NULL));
 }

@@ -97,7 +97,9 @@ namespace Logic
 		DirectX::Keyboard::Keys m_switchWeaponTwo;
 		DirectX::Keyboard::Keys m_switchWeaponThree;
 		DirectX::Keyboard::Keys m_reloadWeapon;
-		DirectX::Keyboard::Keys m_useSkill;
+		DirectX::Keyboard::Keys m_useSkillPrimary;
+        DirectX::Keyboard::Keys m_useSkillSecondary;
+        DirectX::Keyboard::Keys m_useSkillTertiary;
 
 		// Movement
 		void moveInput(DirectX::Keyboard::State* ks);
