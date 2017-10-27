@@ -5,16 +5,21 @@ using namespace Logic;
 
 SkillManager::SkillManager() 
 {
-    m_current = { nullptr, nullptr };
+    for (int i = 0; i < THRESHOLD::MAX_SKILLS; i++)
+        m_current[i] = nullptr;
 }
 
 SkillManager::~SkillManager()
 {
+    // Deleting all skills
 	for (int i = 0; i < m_allSkills.size(); i++)
 		delete m_allSkills[i];
 
-    m_current = { nullptr, nullptr };
-	clear();
+    // Resetting pointers
+    for (int i = 0; i < THRESHOLD::MAX_SKILLS; i++)
+        m_current[i] = nullptr;
+	
+    clear();
 }
 
 void SkillManager::clear()
@@ -31,57 +36,61 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, 
 		{ new SkillShieldCharge() }
 	};
 
-
-    switchToSkill({ SKILL_MOVE, SKILL_UTIL });
+    switchToSkill({ 0, 1, 2 });
 }
 
-void SkillManager::switchToSkill(std::pair<int, int> index)
+void SkillManager::switchToSkill(std::vector<int> skillsToUse)
 {
-    m_current = { m_allSkills[index.first], m_allSkills[index.second] };
+    if (skillsToUse.size() > THRESHOLD::MAX_SKILLS)
+        printf("The number of skills is breaking the threshold. The player don't have space for more.");
+
+    for (size_t i = 0;  i < skillsToUse.size() ||
+                        i < THRESHOLD::MAX_SKILLS; i++)
+        m_current[i] = m_allSkills[skillsToUse[i]];
 }
 
-void SkillManager::usePrimarySkill(btVector3 forward, Entity& shooter)
+void SkillManager::use(int index, btVector3 forward, Entity& shooter)
 {
-	if (m_current.first)
-        m_current.first->use(forward, shooter);
+    if (isLegit(index))
+    {
+        if (m_current[index])
+        {
+             m_current[index]->use(forward, shooter);
+        }
+    }
 }
 
-void SkillManager::useSecondarySkill(btVector3 forward, Entity& shooter)
+void SkillManager::release(int index)
 {
-    if (m_current.second)
-        m_current.second->use(forward, shooter);
-}
-
-void SkillManager::releasePrimarySkill()
-{
-	if (m_current.first)
-        m_current.first->release();
-}
-
-void SkillManager::releaseSecondarySkill()
-{
-    if (m_current.second)
-        m_current.second->release();
+    if (isLegit(index))
+    {
+        if (m_current[index])
+        {
+            m_current[index]->release();
+        }
+    }
 }
 
 void SkillManager::update(float deltaTime)
 {
-    m_current.first->update(deltaTime);
-    m_current.second->update(deltaTime);
+    for (size_t i = 0; i < THRESHOLD::MAX_SKILLS; i++)
+        m_current[i]->update(deltaTime);
 }
 
 void SkillManager::render(Graphics::Renderer& renderer)
 {
-    m_current.first->render(renderer);
-    m_current.second->render(renderer);
+    for (size_t i = 0; i < THRESHOLD::MAX_SKILLS; i++)
+        m_current[i]->render(renderer);
 }
 
-Skill * SkillManager::getPrimarySkill() const
+Skill* SkillManager::getSkill(int index) const
 {
-    return m_current.first;
+    if (!isLegit(index))
+        return nullptr;
+    return m_current[index];
 }
 
-Skill * SkillManager::getSecondarySkill() const
+bool SkillManager::isLegit(int index) const
 {
-    return m_current.second;
+    return (!(index >= THRESHOLD::MAX_SKILLS && index < NULL));
 }

@@ -78,7 +78,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 	m_switchWeaponTwo = DirectX::Keyboard::Keys::D2;
 	m_switchWeaponThree = DirectX::Keyboard::Keys::D3;
 	m_reloadWeapon = DirectX::Keyboard::Keys::R;
-	m_useSkill = DirectX::Keyboard::Keys::E;
+    m_useSkillPrimary = DirectX::Keyboard::Keys::E;
+    m_useSkillSecondary = DirectX::Keyboard::Keys::F;
+    m_useSkillTertiary = DirectX::Keyboard::Keys::G;
 	m_listenerData.update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 }
 
@@ -187,10 +189,6 @@ void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
 
-    // Update weapon and skills
-    m_weaponManager.update(deltaTime);
-    m_skillManager.update(deltaTime);
-
 	// Updates listener info for sounds
 	btVector3 up		= { 0, 1, 0 };
 	btVector3 forward	= getForwardBT();
@@ -214,14 +212,20 @@ void Player::updateSpecific(float deltaTime)
         info.sledge = false;
     }
 
-    if (!m_skillManager.getCurrentSkill()->getCanUse())
-    {
-        info.cd = m_skillManager.getCurrentSkill()->getCooldown() / m_skillManager.getCurrentSkill()->getCooldownMax();
-    }
+    // HUD info on the first skill
+    Skill* primary = m_skillManager.getSkill(SkillManager::ID::PRIMARY);
+    if (!primary->getCanUse())
+        info.cd = primary->getCooldown() / primary->getCooldownMax();
     else
-    {
         info.cd = 1.0f;
-    }
+
+    // HUD info on the second skill
+//    Skill* secondary = m_skillManager.getSkill(SkillManager::SKILL_ID::SECONDARY);
+//    if (!secondary->getCanUse())
+//        info.cd = secondary->getCooldown() / secondary->getCooldownMax();
+//    else
+//        info.cd = 1.0f;
+
     
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
@@ -301,15 +305,22 @@ void Player::updateSpecific(float deltaTime)
 			m_weaponManager.switchWeapon(2);
 	}
 
-	// Skill
-	if (ks.IsKeyDown(m_useSkill) && m_skillManager.getCanBeUsed())
-	{
-		m_skillManager.useSkill(getForwardBT(), *this);
-	}
-	if (ks.IsKeyUp(m_useSkill) && !m_skillManager.getCanBeUsed())
-	{
-		m_skillManager.releaseSkill();
-	}
+	// Skills
+    PROFILE_BEGIN("SkillManager");
+    forward = getForwardBT();
+	if (ks.IsKeyDown(m_useSkillPrimary))
+        m_skillManager.use(SkillManager::ID::PRIMARY, forward, *this);
+	if (ks.IsKeyUp(m_useSkillPrimary))
+        m_skillManager.release(SkillManager::ID::PRIMARY);
+    if (ks.IsKeyDown(m_useSkillSecondary))
+        m_skillManager.use(SkillManager::ID::SECONDARY, forward, *this);
+    if (ks.IsKeyUp(m_useSkillSecondary))
+        m_skillManager.release(SkillManager::ID::SECONDARY);
+    if (ks.IsKeyDown(m_useSkillTertiary))
+        m_skillManager.use(SkillManager::ID::TERTIARY, forward, *this);
+    if (ks.IsKeyUp(m_useSkillTertiary))
+        m_skillManager.release(SkillManager::ID::TERTIARY);
+    PROFILE_END();
 
 	// Check if reloading
 	if (!m_weaponManager.isReloading())
@@ -329,10 +340,9 @@ void Player::updateSpecific(float deltaTime)
 			m_weaponManager.reloadWeapon();
 	}
 
-	// Update weapon and skills
-	m_weaponManager.update(deltaTime);
-	m_skillManager.update(deltaTime);
-
+    // Update weapon and skills
+    m_weaponManager.update(deltaTime);
+    m_skillManager.update(deltaTime);
 
 #ifdef GOD_MODE
 	static bool isNum = false;

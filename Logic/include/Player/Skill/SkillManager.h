@@ -19,33 +19,44 @@
 namespace Logic
 {
 	class SkillManager
-	{
-
+    {
 	public:
+
+        // Easier to understand which is which in "player.cpp"
+        struct ID
+        {
+            static const int PRIMARY = 0;
+            static const int SECONDARY = 1;
+            static const int TERTIARY = 2;
+        };
+
+        struct THRESHOLD
+        {
+            static const int MAX_SKILLS = 3;
+        };
+
 		SkillManager();
 		~SkillManager();
 
 		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
 		void clear();
 
-		void switchToSkill(std::pair<int, int> index);
+		void switchToSkill(std::vector<int> skillsToUse);
 
-		void usePrimarySkill(btVector3 forward, Entity& shooter);
-        void useSecondarySkill(btVector3 forward, Entity& shooter);
-
-		void releasePrimarySkill();
-        void releaseSecondarySkill();
+		void use(int index, btVector3 forward, Entity& shooter);
+		void release(int index);
 
 		void update(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 
-        Skill* getPrimarySkill() const;
-        Skill* getSecondarySkill() const;
+        Skill* getSkill(int index) const;
 	
 	private:
 
+        bool isLegit(int index) const;
+
 		std::vector<Skill*> m_allSkills;
-        std::pair<Skill*, Skill*> m_current;
+        Skill* m_current[THRESHOLD::MAX_SKILLS];
 	};
 }
 #endif

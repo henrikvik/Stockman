@@ -11,7 +11,7 @@ SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, Projectil
 	//m_travelProjectile = nullptr;
 }
 
-void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
+bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
 	printf("Bullet Time used.\n");
 	m_sensor = m_projectileManager->addProjectile(m_projectileData, shooter.getPositionBT(), forward, shooter);
@@ -30,6 +30,8 @@ void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 	}
 
 	m_stacks = 0;
+
+    return true;
 
 	/*ProjectileData travelPData = m_projectileData;
 	travelPData.scale = 0.0001f;

@@ -17,8 +17,12 @@ void Skill::use(btVector3 forward, Entity& shooter)
 {
 	if (m_canUse)
 	{
-		onUse(forward, shooter);
-		m_duration = m_durationMax;
+        if (onUse(forward, shooter))
+        {
+            m_duration = m_durationMax;
+            m_cooldown = m_cooldownMax;
+            m_canUse = false;
+        }
 	}
 }
 
@@ -26,10 +30,6 @@ void Skill::release()
 {
 	if (m_canUse)
 	{
-		// Reset cooldown
-		m_cooldown = m_cooldownMax;
-		m_canUse = false;
-
 		// Specific release stuff
 		onRelease();
 	}
