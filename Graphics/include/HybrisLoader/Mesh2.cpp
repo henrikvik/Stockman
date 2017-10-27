@@ -11,7 +11,7 @@ namespace HybrisLoader
         }
 
         vertexCount = vertices.size();
-        vertexBuffer = new StructuredBuffer<Vertex>(device, CpuAccess::None, vertices.size(), vertices.data());
+        vertexBuffer = newd StructuredBuffer<Vertex>(device, CpuAccess::None, vertices.size(), vertices.data());
     }
 
     Mesh::~Mesh()

@@ -35,10 +35,10 @@ void Game::init()
 	m_physics->init();
 
 	// Initializing Projectile Manager
-	m_projectileManager = new ProjectileManager(m_physics);
+	m_projectileManager = newd ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
+	m_player = newd Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
 	m_player->init(m_physics, m_projectileManager, &m_gameTime);
 
 	m_highScoreManager = newd HighScoreManager();

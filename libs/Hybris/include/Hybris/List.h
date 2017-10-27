@@ -93,7 +93,7 @@ namespace Hybris
     template<typename T>
     void List<T>::release()
     {
-        if (size > 0)
+        if (data != nullptr)
         {
             delete[] data;
             data = nullptr;

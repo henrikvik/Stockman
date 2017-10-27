@@ -12,7 +12,7 @@ SkillGrapplingHook::SkillGrapplingHook(Physics* physics)
 	m_point = { 0, 0, 0 };
 
 	// Debug draw ray
-	renderDebug.points = new std::vector<DirectX::SimpleMath::Vector3>;
+	renderDebug.points = newd std::vector<DirectX::SimpleMath::Vector3>;
 	renderDebug.color = DirectX::SimpleMath::Color(1, 1, 1);
 	renderDebug.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
 	renderDebug.useDepth = true;

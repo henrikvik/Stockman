@@ -1,16 +1,21 @@
-#include <Graphics.h>
-#include "Engine.h"
+#define _CRTDBG_MAP_ALLOC  
+#include <stdlib.h>  
+#include <crtdbg.h>  
+
 #include <Windows.h>
-#include <crtdbg.h>
-#include <Game.h>
+#include "Engine.h"
 #include "Constants.h"
 
 // int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
-int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow){
+int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
+{
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-    Logic::Game gameTest();
+    int r = 0;
+    {
+        Engine engine(hInstance, WIN_WIDTH, WIN_HEIGHT);
+        r = engine.run();
+    }
 
-    Engine engine(hInstance, WIN_WIDTH, WIN_HEIGHT);
-    return engine.run();
+    return r;
 }

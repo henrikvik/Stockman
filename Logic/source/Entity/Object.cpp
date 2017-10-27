@@ -9,6 +9,8 @@ Object::Object()
 	m_renderInfo.render = true;
 	m_renderInfo.meshId = Graphics::ModelID::CUBE;
 	m_renderInfo.materialId = 0;
+
+    renderInfo.model = Resources::Models::Staff;
 }
 
 // This constructor should be used on release (add materialID here aswell, when implemented)
@@ -17,6 +19,7 @@ Object::Object(Graphics::ModelID modelID)
 	m_renderInfo.render = true;
 	m_renderInfo.meshId = modelID;
 	m_renderInfo.materialId = 0;
+    renderInfo.model = Resources::Models::Staff;
 }
 
 Object::~Object() 
@@ -31,7 +34,7 @@ void Object::render(Graphics::Renderer& renderer)
     if (m_renderInfo.render)
     {
         renderer.queueRender(&m_renderInfo);
-        //RenderQueue::queue(&renderInfo);
+        RenderQueue_t::get().queue(&renderInfo);
     }
 }
 
@@ -48,7 +51,6 @@ void Object::setMaterialID(int id)
 void Object::setModelID(Graphics::ModelID modelID)
 {
 	m_renderInfo.meshId = modelID;
-    renderInfo.model = Resources::Models::UnitCube;
 }
 
 void Object::setWorldTranslation(DirectX::SimpleMath::Matrix translation)

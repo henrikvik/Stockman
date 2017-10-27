@@ -51,6 +51,10 @@ private:
 template<typename T>
 inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess access, size_t count, T * ptr)
 {
+    m_Buffer = nullptr;
+    m_SRV = nullptr;
+    m_UAV = nullptr;
+
     D3D11_BUFFER_DESC desc = {};
     desc.ByteWidth = sizeof(T) * count;
 

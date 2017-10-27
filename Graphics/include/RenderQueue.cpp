@@ -2,8 +2,9 @@
 
 void RenderQueue_t::clearAllQueues()
 {
-    instanceQueues.clear();
+    for (auto & queue : instanceQueues)
+    {
+        queue.second->clear();
+    }
+    //instanceQueues.clear();
 }
-
-
-RenderQueue_t RenderQueue;

@@ -54,16 +54,16 @@ namespace Graphics {
 		lights[2].positionWS = DirectX::SimpleMath::Vector3(1, 1, 4);
 		lights[2].range = 3.f;
 
-		m_Lights = new StructuredBuffer<Light>(device, CpuAccess::Write, NUM_LIGHTS, lights);
+		m_Lights = newd StructuredBuffer<Light>(device, CpuAccess::Write, NUM_LIGHTS, lights);
 
 		uint32_t initial = 0;
-		m_ResetIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::Read, 1, &initial);
-		m_OpaqueIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::None, 1, &initial);
-		m_TransparentIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::None, 1, &initial);
+		m_ResetIndexCounter = newd StructuredBuffer<uint32_t>(device, CpuAccess::Read, 1, &initial);
+		m_OpaqueIndexCounter = newd StructuredBuffer<uint32_t>(device, CpuAccess::None, 1, &initial);
+		m_TransparentIndexCounter = newd StructuredBuffer<uint32_t>(device, CpuAccess::None, 1, &initial);
 
 		auto count = m_Params.numThreadGroups[0] * m_Params.numThreadGroups[1] * AVG_TILE_LIGHTS;
-		m_OpaqueIndexList = new StructuredBuffer<uint32_t>(device, CpuAccess::None, count, nullptr);
-		m_TransparentIndexList = new StructuredBuffer<uint32_t>(device, CpuAccess::None, count, nullptr);
+		m_OpaqueIndexList = newd StructuredBuffer<uint32_t>(device, CpuAccess::None, count, nullptr);
+		m_TransparentIndexList = newd StructuredBuffer<uint32_t>(device, CpuAccess::None, count, nullptr);
 
 
 #pragma region Light Grid UAVs
@@ -247,7 +247,7 @@ namespace Graphics {
 
 
 		auto count = m_Params.numThreads[0] * m_Params.numThreads[1];
-		auto frustums = new Frustum[count];
+		auto frustums = newd Frustum[count];
 
 		auto invProj = camera->getProj().Invert();
 
@@ -295,7 +295,7 @@ namespace Graphics {
 			}
 		}
 
-		m_Frustums = new StructuredBuffer<Frustum>(device, CpuAccess::None, count, frustums);
+		m_Frustums = newd StructuredBuffer<Frustum>(device, CpuAccess::None, count, frustums);
 		delete[] frustums;
 
 
@@ -349,7 +349,7 @@ namespace Graphics {
 
 		// Frustums
 		auto count = m_Params.numThreads[0] * m_Params.numThreads[1];
-		m_Frustums = new StructuredBuffer<Frustum>(device, CpuAccess::None, count);
+		m_Frustums = newd StructuredBuffer<Frustum>(device, CpuAccess::None, count);
 
 		cxt->CSSetShader(*m_FrustumGeneration, nullptr, 0);
 

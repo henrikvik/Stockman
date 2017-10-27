@@ -13,7 +13,7 @@ Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overl
 	this->collisionConfiguration = collisionConfiguration;
 
 	// Render Debug Construction
-	renderDebug.points = new std::vector<DirectX::SimpleMath::Vector3>();
+	renderDebug.points = newd std::vector<DirectX::SimpleMath::Vector3>();
 	renderDebug.color = DirectX::SimpleMath::Color(1, 1, 1);
 	renderDebug.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
 	renderDebug.useDepth = true;
@@ -31,7 +31,7 @@ bool Physics::init()
 	// World gravity
 	this->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
 	this->setLatencyMotionStateInterpolation(true);
-	ghostPairCB = new btGhostPairCallback();
+	ghostPairCB = newd btGhostPairCallback();
 	m_broadphasePairCache->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCB);
 	return true;
 }

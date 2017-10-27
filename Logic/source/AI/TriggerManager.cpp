@@ -25,7 +25,7 @@ void TriggerManager::addTrigger(Graphics::ModelID modelID, Cube& cube, float coo
 {
 	this->m_physicsPtr = &physics;
 
-	Trigger* trigger = new Trigger(modelID, physics.createBody(cube, TRIGGER_MASS, TRIGGER_IS_SENSOR), cube.getDimensions(), cooldown, reusable);
+	Trigger* trigger = newd Trigger(modelID, physics.createBody(cube, TRIGGER_MASS, TRIGGER_IS_SENSOR), cube.getDimensions(), cooldown, reusable);
 
 	if (!upgrades.empty())
 		trigger->addUpgrades(upgrades);

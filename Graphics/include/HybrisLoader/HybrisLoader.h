@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <memory>
 #include <vector>
 #include <d3d11.h>
 #include <SimpleMath.h>

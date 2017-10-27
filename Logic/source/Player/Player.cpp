@@ -544,7 +544,7 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 {
 	// Making memory for a matrix
-	float* m = new float[4 * 16];
+	float* m = newd float[4 * 16];
 
 	// Getting this entity's matrix
 	m_charController->getGhostObject()->getWorldTransform().getOpenGLMatrix((btScalar*)(m));

@@ -20,5 +20,7 @@ namespace HybrisLoader
         Texture * specular;
         Texture * normals;
         Texture * glow;
+
+        void loadTexture(ID3D11Device * device, Hybris::Texture & src, Texture ** des);
     };
 }

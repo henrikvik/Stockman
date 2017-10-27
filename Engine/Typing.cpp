@@ -1,4 +1,5 @@
 #include "Typing.h"
+#include <Engine\newd.h>
 
 Typing* Typing::instance = 0;
 
@@ -15,7 +16,7 @@ Typing* Typing::getInstance()
 {
 	if (instance == 0)
 	{
-		instance = new Typing();
+		instance = newd Typing();
 	}
 	return instance;
 }

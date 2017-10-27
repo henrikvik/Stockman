@@ -7,8 +7,8 @@ class Texture
 {
 public:
     Texture();
-    Texture(ID3D11Device * device, std::vector<uint8_t> & data);
-    Texture(ID3D11Device * device, const char * filePath);
+    Texture(ID3D11Device * device, std::vector<uint8_t> & data, bool useDDS = false);
+    Texture(ID3D11Device * device, const char * filePath, bool useDDS = false);
     virtual ~Texture();
 
     operator ID3D11ShaderResourceView*() { return resourceView; }

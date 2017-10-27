@@ -25,7 +25,6 @@ namespace HybrisLoader
        
         float getAnimationDuration(const char * animationName) { return skeleton.getAnimationDuration(animationName); }
 
-
         Mesh & getMesh() { return mesh; }
         Material & getMaterial() { return material; }
         Skeleton & getSkeleton() { return skeleton; }
@@ -34,6 +33,5 @@ namespace HybrisLoader
         Mesh mesh;
         Material material;
         Skeleton skeleton;
-
     };
 }

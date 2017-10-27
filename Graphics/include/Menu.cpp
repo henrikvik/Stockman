@@ -6,7 +6,7 @@ Graphics::Menu::Menu(ID3D11Device * device, ID3D11DeviceContext * contex)
 {
     this->active = nullptr;
     this->loaded = false;
-    this->states = new DirectX::CommonStates(device);
+    this->states = newd DirectX::CommonStates(device);
 
     createVBuffers(device);
 }

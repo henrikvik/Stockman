@@ -28,6 +28,7 @@ namespace Graphics
     class Renderer
     {
     public:
+        int idasfg;
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
 		virtual ~Renderer();
         void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);

@@ -231,7 +231,7 @@ int Engine::run()
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
 
-	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
+	this->renderer = newd Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
 
 	long long start = this->timer();
 	long long prev = start;
@@ -242,7 +242,7 @@ int Engine::run()
 
 	bool running = true;
 
-	g_Profiler = new Profiler(mDevice, mContext);
+	g_Profiler = newd Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
 
 	while (running)

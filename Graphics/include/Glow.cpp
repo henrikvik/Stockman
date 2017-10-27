@@ -14,7 +14,7 @@ Graphics::Glow::Glow(ID3D11Device * device, ID3D11DeviceContext * context)
 	, glowPass0(device, WIN_WIDTH / 2, WIN_HEIGHT / 2)
 	, glowPass1(device, WIN_WIDTH / 2, WIN_HEIGHT / 2)
 {
-	this->states = new DirectX::CommonStates(device);
+	this->states = newd DirectX::CommonStates(device);
 
 	//Enable this only if you want a new gaussian filter
 	//auto kernels = generateKernel(KERNELSIZE, SIGMA);

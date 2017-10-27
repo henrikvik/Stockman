@@ -85,6 +85,7 @@
     <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
@@ -94,6 +95,7 @@
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
@@ -103,6 +105,7 @@
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,6 +115,7 @@
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +132,7 @@
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +152,7 @@
       </AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -168,6 +174,7 @@
       </AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -191,7 +198,6 @@
     <ClCompile Include="..\libs\ImGui\imgui_demo.cpp" />
     <ClCompile Include="..\libs\ImGui\imgui_draw.cpp" />
     <ClCompile Include="..\libs\ImGui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\Resources\Resources.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Profiler.cpp" />
@@ -200,6 +206,7 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="newd.h" />
     <ClInclude Include="Profiler.h" />
     <ClInclude Include="Typing.h" />
   </ItemGroup>

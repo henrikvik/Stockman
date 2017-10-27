@@ -1,23 +1,39 @@
 #pragma once
+#include <map>
 namespace Resources
 {
-  namespace Models
-  {
-    enum Files
+    namespace Models
     {
-      Cube,
-      UnitCube
-    };
-    extern char const * Paths[2];
-  }
-  namespace Shaders
-  {
-    enum Files
+        enum Files
+        {
+            Cube,
+            SkySphere,
+            Staff,
+            UnitCube
+        };
+        const std::map<Files, const char *> Paths =
+        {
+            {Cube, R"(..\Resources\Models\Cube.hyb)"},
+            {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
+            {Staff, R"(..\Resources\Models\Staff.hyb)"},
+            {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
+        };
+    }
+    namespace Shaders
     {
-      AnimationTest,
-      ForwardPlus,
-      SimpleForward
-    };
-    extern char const * Paths[3];
-  }
+        enum Files
+        {
+            AnimationTest,
+            ForwardPlus,
+            SimpleForward,
+            SkyShader
+        };
+        const std::map<Files, const char *> Paths =
+        {
+            {AnimationTest, R"(..\Resources\Shaders\AnimationTest.hlsl)"},
+            {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
+            {SimpleForward, R"(..\Resources\Shaders\SimpleForward.hlsl)"},
+            {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"}
+        };
+    }
 }

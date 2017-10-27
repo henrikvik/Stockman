@@ -14,7 +14,7 @@ struct Pad
            
         for (size_t i = 0; i < tabs; i++)
         {
-            s += "  ";
+            s += "    ";
         }
 
         return s;
@@ -78,7 +78,20 @@ struct Dir
             pad.dec();
             ostream << pad.str() << "};\n";
 
-            ostream << pad.str() << "extern char const * Paths[" << files.size() << "];\n";
+            ostream << pad.str() << "const std::map<Files, const char *> Paths =\n";
+            ostream << pad.str() << "{\n";
+            pad.inc();
+
+            for (auto & file : files)
+            {
+                ostream << pad.str() << "{" << file.stem() << ", R\"(..\\" << file << ")\"}";
+                if (file != files.back())
+                    ostream << ",";
+                ostream << "\n";
+            }
+
+            pad.dec();
+            ostream << pad.str() << "};\n";
         }
 
 
@@ -138,13 +151,14 @@ void buildModelFileList()
 
     std::ofstream hfile("Resources/Resources.h", std::ios::trunc);
     hfile << "#pragma once\n";
+    hfile << "#include <map>\n";
     resources.h(hfile, Pad());
     hfile.close();
 
-    std::ofstream cppfile("Resources/Resources.cpp", std::ios::trunc);
+    /*std::ofstream cppfile("Resources/Resources.cpp", std::ios::trunc);
     cppfile << "#include \"Resources.h\"\n";
     resources.cpp(cppfile, Pad());
-    cppfile.close();
+    cppfile.close();*/
 
     std::cout << "Done\n";
 }

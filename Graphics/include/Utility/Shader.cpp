@@ -20,7 +20,7 @@ namespace Graphics
 	}
 
     Shader::Shader(ID3D11Device * device, Resources::Shaders::Files shader, std::initializer_list<D3D11_INPUT_ELEMENT_DESC> inputDesc, ShaderType shaderType)
-        : Shader(device, _bstr_t(Resources::Shaders::Paths[shader]), inputDesc, shaderType)
+        : Shader(device, _bstr_t(Resources::Shaders::Paths.at(shader)), inputDesc, shaderType)
     {
     }
 

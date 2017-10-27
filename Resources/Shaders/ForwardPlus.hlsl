@@ -1,9 +1,4 @@
-/*
-*  Author: fkaa
-*
-*/
 #include "LightCalcInclude.hlsli"
-
 
 #define VERTEX_T_SLOT t4
 #include "Vertex.hlsli"
