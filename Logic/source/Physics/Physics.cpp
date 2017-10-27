@@ -171,24 +171,24 @@ const btVector3 Physics::RayTestGetNormal(Ray & ray)
 	return { 0, 0, 0 };
 }
 
-btRigidBody* Physics::createBody(Shape* shape, float mass, bool isSensor)
+btRigidBody* Physics::createBody(Shape* shape, float mass, bool isSensor, int group, int mask)
 {
     btRigidBody* body = nullptr;
 
     switch (shape->getType())
     {
-    case ShapeType::ShapeTypeCube:      body = createBody(static_cast<Cube&>       (*shape), mass, isSensor); break;
-    case ShapeType::ShapeTypeCapsule:   body = createBody(static_cast<Capsule&>    (*shape), mass, isSensor); break;
-    case ShapeType::ShapeTypeCylinder:  body = createBody(static_cast<Cylinder&>   (*shape), mass, isSensor); break;
-    case ShapeType::ShapeTypePlane:     body = createBody(static_cast<Plane&>      (*shape), mass, isSensor); break;
-    case ShapeType::ShapeTypeSphere:    body = createBody(static_cast<Sphere&>     (*shape), mass, isSensor); break;
+    case ShapeType::ShapeTypeCube:      body = createBody(static_cast<Cube&>       (*shape), mass, isSensor, group, mask); break;
+    case ShapeType::ShapeTypeCapsule:   body = createBody(static_cast<Capsule&>    (*shape), mass, isSensor, group, mask); break;
+    case ShapeType::ShapeTypeCylinder:  body = createBody(static_cast<Cylinder&>   (*shape), mass, isSensor, group, mask); break;
+    case ShapeType::ShapeTypePlane:     body = createBody(static_cast<Plane&>      (*shape), mass, isSensor, group, mask); break;
+    case ShapeType::ShapeTypeSphere:    body = createBody(static_cast<Sphere&>     (*shape), mass, isSensor, group, mask); break;
     default: printf("Could not create rigidbody, what the fuck did you do?\n"); break;
     }
 
     return body;
 }
 
-btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
+btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor, int group, int mask)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -209,12 +209,12 @@ btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 	shape->setUserPointer(body);
 
 	// Adding body to the world
-	this->addRigidBody(body);
+	this->addRigidBody(body, group, mask);
 
 	return body;
 }
 
-btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
+btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor, int group, int mask)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -231,12 +231,12 @@ btRigidBody * Physics::createBody(Plane& plane, float mass, bool isSensor)
 	shape->setUserPointer(body);
 
 	// Adding body to the world
-	this->addRigidBody(body);
+    this->addRigidBody(body, group, mask);
 
 	return body;
 }
 
-btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
+btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor, int group, int mask)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -253,12 +253,12 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor)
 	shape->setUserPointer(body);
 
 	// Adding body to the world
-	this->addRigidBody(body);
+    this->addRigidBody(body, group, mask);
 
 	return body;
 }
 
-btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isSensor)
+btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isSensor, int group, int mask)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -275,12 +275,12 @@ btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isS
 	shape->setUserPointer(body);
 
 	// Adding body to the world
-	this->addRigidBody(body);
+    this->addRigidBody(body, group, mask);
 
 	return body;
 }
 
-btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
+btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor, int group, int mask)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
@@ -297,7 +297,7 @@ btRigidBody* Physics::createBody(Capsule& capsule, float mass, bool isSensor)
 	shape->setUserPointer(body);
 
 	// Adding body to the world
-	this->addRigidBody(body);
+    this->addRigidBody(body, group, mask);
 
 	return body;
 }
@@ -307,7 +307,6 @@ btPairCachingGhostObject* Physics::createPlayer(btCapsuleShape* capsule, btVecto
 	btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
 
 	ghostObject->setCollisionShape(capsule);
-	ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
 	// Rotation
 	btQuaternion rotation;
@@ -320,7 +319,7 @@ btPairCachingGhostObject* Physics::createPlayer(btCapsuleShape* capsule, btVecto
 	ghostObject->setWorldTransform(transform);
 
 	// Adding to physics world
-	this->addCollisionObject(ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter);
+	this->addCollisionObject(ghostObject, COL_FLAG::COL_PLAYER, Physics::COL_HITBOX);
 
 	return ghostObject;
 }

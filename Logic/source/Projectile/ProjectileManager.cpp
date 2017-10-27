@@ -21,7 +21,10 @@ void ProjectileManager::clear()
 Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)
 {
 	// Create body
-	btRigidBody* body = m_physPtr->createBody(Sphere(position + (forward * 2), btVector3(forward), pData.scale), pData.mass, pData.isSensor);
+    btRigidBody* body = m_physPtr->createBody(Cube(position + (forward * 2), btVector3(forward), { pData.scale, pData.scale, pData.scale } ), pData.mass, pData.isSensor 
+        // Ignores contact with the shooter
+        , (pData.enemyBullet) ? (Physics::COL_EN_PROJ) : (Physics::COL_PL_PROJ)
+        , (pData.enemyBullet) ? (Physics::COL_EVERYTHING &~(Physics::COL_ENEMY)) : (Physics::COL_EVERYTHING &~(Physics::COL_PLAYER)));
 
 	// Taking the forward vector and getitng the pitch and yaw from it
 	float pitch = asin(-forward.getY());

@@ -48,7 +48,10 @@ StaticObject::~StaticObject()
     delete renderDebug;
 }
 
-void StaticObject::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier) { }
+void StaticObject::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier) 
+{
+
+}
 
 void StaticObject::update(float deltaTime) 
 {

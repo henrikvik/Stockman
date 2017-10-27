@@ -116,13 +116,12 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
             callback = true;
         }
 
-        // TEMP: ta bort mig
-        if (FUN_MODE)
-            Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
-
 		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
 			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
 				m_remove = false;
+
+        if (m_remove && FUN_MODE)
+            Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
     }
     else if (getProjectileData().enemyBullet)  // if player and enemy bullet
     {

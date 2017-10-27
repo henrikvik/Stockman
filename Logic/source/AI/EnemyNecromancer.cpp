@@ -10,7 +10,7 @@ EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
 	: Enemy(modelID, body, halfExtent, 5, 1, 8, 0, 0) {
 	setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
-        SpawnTrigger(2, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP });
+        SpawnTrigger(2, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY });
     });
     m_spawnedMinions = 0;
 }
