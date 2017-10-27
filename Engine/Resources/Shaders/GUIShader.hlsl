@@ -42,7 +42,32 @@ VSOut VS(VSIn vsin)
     {
         vsout.pos = float4(vsin.pos, 0, 1);
     }
-    vsout.uv = vsin.uv;
+
+    if (vsin.elm == 3)
+    {
+        vsout.uv = vsin.uv;
+        vsout.uv.y += offset0;
+    }
+    else if (vsin.elm == 4)
+    {
+        vsout.uv = vsin.uv;
+        vsout.uv.y += offset1;
+    }
+    else if (vsin.elm == 5)
+    {
+        vsout.uv = vsin.uv;
+        vsout.uv.y += offset2;
+    }
+    else if (vsin.elm == 6)
+    {
+        vsout.uv = vsin.uv;
+        vsout.uv.y += offset3;
+    }else
+    {
+        vsout.uv = vsin.uv;
+    }
+    
+
     vsout.elm = vsin.elm;
 
 
@@ -78,14 +103,6 @@ float4 PS(VSOut psin) : SV_Target0
         return float4(outline.Sample(sState, psin.uv));
     }else
     {
-        //if (1 - cdLeft > 0.001f)
-        //{
-        //    return float4(cd.Sample(sState, psin.uv));
-        //}
-        //else
-        //{
-        //    return float4(cdActive.Sample(sState, psin.uv));
-        //}
         return float4(cdActive.Sample(sState, psin.uv));
     }
 
