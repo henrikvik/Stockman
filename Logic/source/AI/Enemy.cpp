@@ -3,6 +3,7 @@
 #include <AI\Behavior\RangedBehavior.h>
 
 #include <Player\Player.h>
+#include <Projectile\ProjectileStruct.h>
 
 using namespace Logic;
 

@@ -4,6 +4,7 @@
 #include <AI\Enemy.h>
 #include <AI\Behavior\AStar.h>
 #include <AI\Behavior\Behavior.h>
+#include <Engine\Profiler.h>
 
 using namespace Logic;
 
