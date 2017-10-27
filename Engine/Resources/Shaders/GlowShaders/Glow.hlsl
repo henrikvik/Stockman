@@ -14,5 +14,5 @@ void CS(uint3 DTid : SV_DispatchThreadID)
         final += inputTexture.Load(textureLocation + int3(x * 2, 0, 0)) * gaussianFilter[x];
 	
 
-    output[DTid.xy] = final;
+    output[DTid.xy] =  final;
 }
