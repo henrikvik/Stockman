@@ -51,19 +51,23 @@ namespace Logic
 		GameState currentState();
 		void setStateToBe(GameState);
 		GameState getStateToBe();
+		void startGame();
+		void startSettings();
+		void startMainMenu();
+		void quitGame();
+		void writing();
+		void chooseUpgrade1();
+		void chooseUpgrade2();
+		void chooseUpgrade3();
+		void startSettingsVideo();
+		void startSettingsSound();
+		void startSettingsControls();
+		void startSettingsOther();
+		void plusSound();
+		void minusSound();
 		int getChoiceUpgrade();
 
-		void buttonClick0();
-		void buttonClick1();
-		void buttonClick2();
-		void buttonClick3();
-		void buttonClick4();
 
-		void buttonClick5();
-
-		void buttonClick6();
-
-		void buttonClick7();
 
 	};
 }

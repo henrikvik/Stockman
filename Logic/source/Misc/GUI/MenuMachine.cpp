@@ -54,14 +54,20 @@ void MenuMachine::initialize(GameState state)
 {
 	//Gather all the functions in a map for future allocation
 	std::map<std::string, std::function<void(void)>> functions;
-	functions["buttonClick0"] = std::bind(&MenuMachine::buttonClick0, this);
-	functions["buttonClick1"] = std::bind(&MenuMachine::buttonClick1, this);
-	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
-	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick3, this);
-	functions["buttonClick4"] = std::bind(&MenuMachine::buttonClick4, this);
-	functions["buttonClick5"] = std::bind(&MenuMachine::buttonClick5, this);
-	functions["buttonClick6"] = std::bind(&MenuMachine::buttonClick6, this);
-	functions["buttonClick7"] = std::bind(&MenuMachine::buttonClick7, this);
+	functions["buttonClick0"] = std::bind(&MenuMachine::startGame, this);
+	functions["buttonClick1"] = std::bind(&MenuMachine::startSettings, this);
+	functions["buttonClick2"] = std::bind(&MenuMachine::startMainMenu, this);
+	functions["buttonClick3"] = std::bind(&MenuMachine::quitGame, this);
+	functions["buttonClick4"] = std::bind(&MenuMachine::writing, this);
+	functions["buttonClick5"] = std::bind(&MenuMachine::chooseUpgrade1, this);
+	functions["buttonClick6"] = std::bind(&MenuMachine::chooseUpgrade2, this);
+	functions["buttonClick7"] = std::bind(&MenuMachine::chooseUpgrade3, this);
+	functions["buttonClick8"] = std::bind(&MenuMachine::startSettingsVideo, this);
+	functions["buttonClick9"] = std::bind(&MenuMachine::startSettingsSound, this);
+	functions["buttonClick10"] = std::bind(&MenuMachine::startSettingsControls, this);
+	functions["buttonClick11"] = std::bind(&MenuMachine::startSettingsOther, this);
+	functions["buttonClick12"] = std::bind(&MenuMachine::plusSound, this);
+	functions["buttonClick13"] = std::bind(&MenuMachine::minusSound, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -207,7 +213,7 @@ void MenuMachine::update(float dt)
 void MenuMachine::render(Graphics::Renderer &renderer)
 {
 	PROFILE_BEGIN("Menu Render");
-    if (m_currentActiveState == gameStateMenuSettings)
+    if (m_currentActiveState == gameStateMenuSettingsOther)
     {
         std::wstring tempString = L"";
         Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
@@ -293,27 +299,27 @@ int Logic::MenuMachine::getChoiceUpgrade()
 	return choosenUpgrade;
 }
 
-void MenuMachine::buttonClick0()
+void MenuMachine::startGame()
 {
 	m_stateToBe = gameStateGame;
 }
 
-void MenuMachine::buttonClick1()
+void MenuMachine::startSettings()
 {
 	m_stateToBe = gameStateMenuSettings;
 }
 
-void MenuMachine::buttonClick2()
+void MenuMachine::startMainMenu()
 {
 	m_stateToBe = gameStateMenuMain;
 }
 
-void MenuMachine::buttonClick3()
+void MenuMachine::quitGame()
 {
 	PostQuitMessage(0); 
 }
 
-void MenuMachine::buttonClick4()
+void MenuMachine::writing()
 {
 	//triggers the typing button
 	Typing* theChar = Typing::getInstance(); //might need to be deleted
@@ -322,17 +328,41 @@ void MenuMachine::buttonClick4()
 	m_highScoreName = "";
 }
 
-void MenuMachine::buttonClick5() //Upgrade button1
+void MenuMachine::chooseUpgrade1() //Upgrade button1
 {
 	m_cardUpgrade = choice1;
 }
 
-void MenuMachine::buttonClick6() //Upgrade button2
+void MenuMachine::chooseUpgrade2() //Upgrade button2
 {
 	m_cardUpgrade = choice2;
 }
 
-void MenuMachine::buttonClick7() //Upgrade button3
+void MenuMachine::chooseUpgrade3() //Upgrade button3
 {
 	m_cardUpgrade = choice3;
+}
+void MenuMachine::startSettingsVideo()
+{
+	m_stateToBe = gameStateMenuSettingsVideo;
+}
+void MenuMachine::startSettingsSound()
+{
+	m_stateToBe = gameStateMenuSettingsSound;
+}
+void MenuMachine::startSettingsControls()
+{
+	m_stateToBe = gameStateMenuSettingsControls;
+}
+void MenuMachine::startSettingsOther()
+{
+	m_stateToBe = gameStateMenuSettingsOther;
+}
+void MenuMachine::plusSound()
+{
+
+}
+void MenuMachine::minusSound()
+{
+
 }
