@@ -17,7 +17,7 @@ LightObject::LightObject(FrameLight& frame)
     renderDebug.useDepth = true;
 
     // Box
-    DirectX::SimpleMath::Vector3 pos = positionWS, size(LIGHT_DEBUG_BOX_SIZE);
+    DirectX::SimpleMath::Vector3 pos = positionWS, size(frame.range);
     renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z + size.z));
     renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z - size.z));
     renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z + size.z));
