@@ -82,6 +82,7 @@ namespace Logic
 		const btVector3 RayTestGetNormal(Ray& ray);											
 
 		// Returns a ptr to the created rigidbody
+        btRigidBody* createBody(Shape* shape, float mass, bool isSensor = false);           // More versitile func but more expensive
 		btRigidBody* createBody(Cube& cube, float mass, bool isSensor = false);				// Should only be used for hitboxes on map, nothing else
 		btRigidBody* createBody(Plane& plane, float mass, bool isSensor = false);			// Static infinite plane, keep this temporary
 		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor = false);			// Should be used as often as possible because it needs less processing of collisions

@@ -71,13 +71,15 @@ namespace Logic
 				getPath(int fromIndex);
 
 			std::vector<const DirectX::SimpleMath::Vector3*> 
-				reconstructPath(NavNode *endNode);
+				reconstructPath(NavNode const *endNode, std::vector<NavNode> const &navNodes, int toIndex);
 
 			void renderNavigationMesh(Graphics::Renderer &renderer);
 			// load the target triangle once per frame instead of once per path load
 			void loadTargetIndex(Entity const &target);
+			int getTargetIndex();
 
 			int getIndex(Entity const &entity) const;
+			int isEntityOnIndex(Entity const &entity, int index) const;
 			size_t getNrOfPolygons() const;
 
 			// iniate the nodes

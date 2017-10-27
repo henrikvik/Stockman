@@ -1,6 +1,9 @@
 #include <AI\Enemy.h>
 #include <AI\Behavior\TestBehavior.h>
 #include <AI\Behavior\RangedBehavior.h>
+
+#include <Player\Player.h>
+
 using namespace Logic;
 
 Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, float moveSpeed, int enemyType, int animationId)
@@ -48,29 +51,18 @@ Enemy::~Enemy() {
 		delete m_behavior;
 }
 
-void Enemy::setProjectileManager(ProjectileManager * projectileManager)
-{
-	m_projectiles = projectileManager;
-}
-
 void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 
-	if (m_behavior) // remove later for better perf
-	{
-		m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
-	}
+	m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
 }
 
 void Enemy::debugRendering(Graphics::Renderer & renderer)
 {
-	if (m_behavior)
-	{
-		m_behavior->getPath().renderDebugging(renderer, getPosition());
-	}
+	m_behavior->getPath().renderDebugging(renderer, getPosition());
 }
 
 void Enemy::damage(float damage)
@@ -82,8 +74,8 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 {
 	int flags = effect.getStandards()->flags;
 
-	//if (flags & Effect::EFFECT_KILL)
-	//	damage(m_health);
+	if (flags & Effect::EFFECT_KILL)
+		damage(m_health);
 	if (flags & Effect::EFFECT_ON_FIRE)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
 	if (flags & Effect::EFFECT_BULLET_TIME)
@@ -116,8 +108,7 @@ int Enemy::getEnemyType() const
 	return m_enemyType;
 }
 
-// projectiles
-void Enemy::spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed)
+Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed)
 {
 	ProjectileData data;
 
@@ -127,12 +118,7 @@ void Enemy::spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed)
 	data.scale = 1.f;
 	data.enemyBullet = true;
 	
-	m_projectiles->addProjectile(data, getPositionBT(), dir, *this);
-}
-
-ProjectileManager * Enemy::getProjectileManager() const
-{
-	return m_projectiles;
+    return SpawnProjectile(data, getPositionBT(), dir, *this);
 }
 
 Behavior* Enemy::getBehavior() const

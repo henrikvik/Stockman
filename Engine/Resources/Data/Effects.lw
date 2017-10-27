@@ -46,3 +46,15 @@
 	"sBulletTime": 0.9f;
 	"sFreezing": 0f;
 }
+{ // ENRAGE
+	"flags": 200; // 0x8 + 0x40 + 0x80 
+	"duration": 800000f;
+	"modifiers": 1;
+	"specifics": 0;
+
+	"mDmgGiven": 10f;
+	"mDmgTaken": 0f;
+	"mFirerate": 10f;
+	"mHP": 0f;
+	"mMovementSpeed": 15f;
+}

@@ -37,7 +37,7 @@ namespace Logic
 	public:
 		SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData);
 
-		void onUse(btVector3 forward, Entity& shooter);
+		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
 
 		void onUpdate(float deltaTime);

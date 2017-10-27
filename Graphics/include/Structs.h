@@ -22,9 +22,15 @@ namespace Graphics
 		GRAPPLEPOINT,
 		GRASS,
 		SKY_SPHERE,
-		BUSH,
-		CLOUDS,
-		MEGAGRASS
+		//BUSH,
+		//CLOUDS,
+		//MEGAGRASS,
+		//BUSH,
+		//CLOUDS,
+		//MEGAGRASS,
+		//WATER,
+		GROUND,
+		STAFF,
 
     };
 
@@ -36,6 +42,7 @@ namespace Graphics
 		ID3D11ShaderResourceView * diffuseMap;
 		ID3D11ShaderResourceView * normalMap;
 		ID3D11ShaderResourceView * specularMap;
+		ID3D11ShaderResourceView * glowMap;
 	};
 
 	struct RenderInfo
@@ -45,9 +52,19 @@ namespace Graphics
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
 		bool backFaceCulling = true;
+		float freezeAmount;
+		float burnAmount;
 	};
 
 	struct FoliageRenderInfo
+	{
+		bool render;
+		ModelID meshId;
+		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = false;
+	};
+
+	struct WaterRenderInfo
 	{
 		bool render;
 		ModelID meshId;
@@ -63,8 +80,8 @@ namespace Graphics
         D3D11_PRIMITIVE_TOPOLOGY topology;
     };
 
-	// TODO: Change
-#define NUM_LIGHTS 8
+
+#define MAX_LIGHTS 128
 
 	struct Light {
 		DirectX::SimpleMath::Vector4 positionVS;
@@ -72,11 +89,23 @@ namespace Graphics
 		float range;
 		DirectX::SimpleMath::Vector3 color;
 		float intensity;
+
+		Light(){}
+
+		Light(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 color, float range = 1, float intensity = 1)
+		{
+			positionWS = pos;
+			this->range = range;
+			this->color = color;
+			this->intensity = intensity;
+		}
 	};
 	struct InstanceData
 	{
 		DirectX::SimpleMath::Matrix transform;
 		DirectX::SimpleMath::Matrix transformInvT;
+		float freeze;
+		float burn;
 	};
 
 	struct ButtonInfo

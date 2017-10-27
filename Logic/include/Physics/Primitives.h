@@ -66,9 +66,8 @@ namespace Logic
 	class Shape
 	{
 	public:
-		Shape(btVector3 position, btVector3 rotation)
+		Shape(btVector3 position, btVector3 rotation, ShapeType type = ShapeTypePoint)
 		{
-			m_shape = ShapeTypePoint;
 			m_position = position;
 			m_rotation = rotation;
 		}
@@ -77,6 +76,7 @@ namespace Logic
 		void		setRot(btVector3 rotation)	{ m_rotation = rotation;	}
 		btVector3	getPos() const				{ return m_position;		}
 		btVector3	getRot() const				{ return m_rotation;		}
+        ShapeType	getType() const             { return m_shape;           }
 
 	protected:
 		ShapeType	m_shape;
@@ -93,9 +93,8 @@ namespace Logic
 	{
 	public:
 		Cube(btVector3 position, btVector3 rotation, btVector3 dimensions)
-		: Shape(position, rotation) {
+		: Shape(position, rotation, ShapeTypeCube) {
 			m_dimensions = dimensions;
-			m_shape = ShapeTypeCube;
 		}
 
 		void		setDimensions(btVector3 dimensions) { m_dimensions = dimensions;	}
@@ -113,8 +112,7 @@ namespace Logic
 	{
 	public:
 		Plane(btVector3 normal)
-			: Shape({ 0, 0, 0 }, { 0, 0, 0 }) {
-			m_shape = ShapeTypePlane;
+			: Shape({ 0, 0, 0 }, { 0, 0, 0 }, ShapeTypePlane) {
 			m_normal = normal;
 		}
 
@@ -132,9 +130,8 @@ namespace Logic
 	{
 	public:
 		Sphere(btVector3 position, btVector3 rotation, float radius)
-			: Shape(position, rotation) {
+			: Shape(position, rotation, ShapeTypeSphere) {
 			m_radius = radius;
-			m_shape = ShapeTypeSphere;
 		}
 
 		void	setRadius(float radius)		{ m_radius = radius;	}
@@ -152,9 +149,8 @@ namespace Logic
 	{
 	public:
 		Cylinder(btVector3 position, btVector3 rotation, btVector3 halfExtends)
-			: Shape(position, rotation) {
+			: Shape(position, rotation, ShapeTypeCylinder) {
 			m_halfExtends = halfExtends;
-			m_shape = ShapeTypeCylinder;
 		}
 
 		void setHeight(btVector3 halfExtends)	{ m_halfExtends = halfExtends;	}
@@ -173,10 +169,9 @@ namespace Logic
 	{
 	public:
 		Capsule(btVector3 position, btVector3 rotation, float radius, float height)
-		: Shape(position, rotation) {
+		: Shape(position, rotation, ShapeTypeCapsule) {
 			m_radius = radius;
 			m_height = height;
-			m_shape = ShapeTypeCapsule;
 		}
 
 		void	setRadius(float radius)		{ m_radius = radius;	}

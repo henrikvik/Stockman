@@ -4,6 +4,8 @@
 
 using namespace Logic;
 
+#include <libs\Bullet2.86\include\BulletCollision\CollisionDispatch\btGhostObject.h>
+
 Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overlappingPairCache, btSequentialImpulseConstraintSolver* constraintSolver, btDefaultCollisionConfiguration* collisionConfiguration)
 	: btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration)
 {
@@ -167,6 +169,23 @@ const btVector3 Physics::RayTestGetNormal(Ray & ray)
 	return { 0, 0, 0 };
 }
 
+btRigidBody* Physics::createBody(Shape* shape, float mass, bool isSensor)
+{
+    btRigidBody* body = nullptr;
+
+    switch (shape->getType())
+    {
+    case ShapeType::ShapeTypeCube:      body = createBody(static_cast<Cube&>       (*shape), mass, isSensor); break;
+    case ShapeType::ShapeTypeCapsule:   body = createBody(static_cast<Capsule&>    (*shape), mass, isSensor); break;
+    case ShapeType::ShapeTypeCylinder:  body = createBody(static_cast<Cylinder&>   (*shape), mass, isSensor); break;
+    case ShapeType::ShapeTypePlane:     body = createBody(static_cast<Plane&>      (*shape), mass, isSensor); break;
+    case ShapeType::ShapeTypeSphere:    body = createBody(static_cast<Sphere&>     (*shape), mass, isSensor); break;
+    default: printf("Could not create rigidbody, what the fuck did you do?\n"); break;
+    }
+
+    return body;
+}
+
 btRigidBody* Physics::createBody(Cube& cube, float mass, bool isSensor)
 {
 	// Setting Motions state with position & rotation
@@ -315,28 +334,32 @@ void Physics::render(Graphics::Renderer & renderer)
 		btCollisionObject* obj = this->getCollisionObjectArray()[i];
 		if (btGhostObject* ghostObject = dynamic_cast<btGhostObject*>(obj))
 		{
-			renderGhostCapsule(renderer, dynamic_cast<btCapsuleShape*>(ghostObject->getCollisionShape()), ghostObject);
+		//	renderGhostCapsule(renderer, dynamic_cast<btCapsuleShape*>(ghostObject->getCollisionShape()), ghostObject);
 		}
 		else
 		{
 			btRigidBody* body = btRigidBody::upcast(obj);
 			btCollisionShape* shape = obj->getCollisionShape();
 
-			// Render Boxes
-			if (btBoxShape* bs = dynamic_cast<btBoxShape*>(shape))
-				renderCube(renderer, bs, body);
+            // Static Bodies have already been built as debug mesh and gets drawn from map.cpp
+            if (!shape->isNonMoving())
+            {
+                // Render Boxes
+                if (btBoxShape* bs = dynamic_cast<btBoxShape*>(shape))
+                    renderCube(renderer, bs, body);
 
-			// Render Spheres
-			else if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
-				renderSphere(renderer, ss, body);
+                // Render Spheres
+                else if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
+                    renderSphere(renderer, ss, body);
 
-			// Render Cylinders
-			else if (btCylinderShape* cs = dynamic_cast<btCylinderShape*>(shape))
-				renderCylinder(renderer, cs, body);
+                // Render Cylinders
+                else if (btCylinderShape* cs = dynamic_cast<btCylinderShape*>(shape))
+                    renderCylinder(renderer, cs, body);
 
-			// Render Capsules
-			else if (btCapsuleShape* cs = dynamic_cast<btCapsuleShape*>(shape))
-				renderCapsule(renderer, cs, body);
+                // Render Capsules
+                else if (btCapsuleShape* cs = dynamic_cast<btCapsuleShape*>(shape))
+                    renderCapsule(renderer, cs, body);
+            }
 		}
 	}
 }

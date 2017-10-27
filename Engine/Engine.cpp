@@ -7,7 +7,9 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <iostream>
+#pragma comment (lib, "d3d11.lib")
 #include "Typing.h"
+#include "DebugWindow.h"
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -18,15 +20,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		//)
 		//return true;
 	Typing* theChar = Typing::getInstance(); //might need to be deleted
+	DebugWindow * debug = DebugWindow::getInstance();
+	int key = MapVirtualKey((int)wparam, 0);
+
 	switch (msg)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
 		
+	case WM_KEYUP:
+		if (key == 41)
+			debug->toggleDebugToDraw();
+
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
-	case WM_KEYUP:
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
 		break;
@@ -64,18 +72,20 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mWidth = width;
 	this->hInstance = hInstance;
 	this->initializeWindow();
-	this->game.init();
 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
 	this->mMouse->SetWindow(window);
 
+	this->game.init();
+
 }
 
 Engine::~Engine()
 {
 	ImGui_ImplDX11_Shutdown();
+	DebugWindow::releaseInstance();
 	delete this->renderer;
 
 	this->mDevice->Release();
@@ -152,7 +162,8 @@ HRESULT Engine::createSwapChain()
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
+	desc.BufferDesc.RefreshRate.Denominator = 0;
+	desc.BufferDesc.RefreshRate.Numerator = 0;
 
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
@@ -245,6 +256,8 @@ int Engine::run()
 	g_Profiler = newd Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
 
+	DebugWindow * debug = DebugWindow::getInstance();
+
 	while (running)
 	{
 		currentTime = this->timer();
@@ -272,6 +285,7 @@ int Engine::run()
                 
 		}
 
+
 		//To enable/disable fullscreen
 		DirectX::Keyboard::State ks = this->mKeyboard->GetState();
 		if (ks.F11)
@@ -296,7 +310,7 @@ int Engine::run()
 
 		}
 
-		if (ks.Escape)
+		if (ks.Escape && !debug->isOpen())
 			PostQuitMessage(0);
 
 		g_Profiler->start();
@@ -305,8 +319,11 @@ int Engine::run()
 		ImGui_ImplDX11_NewFrame();
 		PROFILE_END();
 
+		debug->draw("Title?");
+
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
-		game.update(float(deltaTime));
+		if (!debug->isOpen())
+			game.update(float(deltaTime));
 		PROFILE_END();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
@@ -325,18 +342,27 @@ int Engine::run()
         //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
 
         //////////////TEMP/////////////////
-        Graphics::RenderInfo staticSphere = {
-            true, //bool render;
-            Graphics::ModelID::SKY_SPHERE, //ModelID meshId;
-            0, //int materialId;
-            DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-        };
+        //Graphics::RenderInfo staticSphere = {
+        //    true, //bool render;
+        //    Graphics::ModelID::WATER, //ModelID meshId;
+        //    0, //int materialId;
+        //    DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
+        //};
 
 		Graphics::FoliageRenderInfo grass = {
 			true, //bool render;
 			Graphics::ModelID::GRASS, //ModelID meshId;
 			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
 		};
+
+		Graphics::Light light;
+		light.color = DirectX::SimpleMath::Vector3(1, 1, 0);
+		light.positionWS = DirectX::SimpleMath::Vector3(0, 2, 0);
+		light.intensity = 1;
+		light.range = 5;
+
+
+
 		//Graphics::FoliageRenderInfo bush = {
 		//	true, //bool render;
 		//	Graphics::ModelID::BUSH, //ModelID meshId;
@@ -347,12 +373,12 @@ int Engine::run()
 		//bush.translation = DirectX::SimpleMath::Matrix::CreateScale(10, 10, 10);//* DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 30, 0 });
 		//staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5) * DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 20, 0 });
 		
-        Graphics::TextString text{
-            L"The hills!",
-            DirectX::SimpleMath::Vector2(50, 50),
-            DirectX::SimpleMath::Color(DirectX::Colors::Black),
-            Graphics::Font::SMALL
-        };
+        //Graphics::TextString text{
+        //    L"The hills!",
+        //    DirectX::SimpleMath::Vector2(50, 50),
+        //    DirectX::SimpleMath::Color(DirectX::Colors::Black),
+        //    Graphics::Font::SMALL
+        //};
 
         
         ///////////////////////////////////
@@ -363,35 +389,50 @@ int Engine::run()
 			//renderer->queueFoliageRender(&bush);
 
 
-			renderer->queueRender(&staticSphere);
+			//renderer->queueRender(&staticSphere);
          // renderer->queueText(&text);
-			renderer->updateLight(deltaTime, &cam);
-			renderer->updateShake(deltaTime);
+			renderer->queueLight(light);
+
+			if (!debug->isOpen())
+			{
+				renderer->updateLight(deltaTime, &cam);
+				renderer->updateShake(deltaTime);
+			}
 
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
 			PROFILE_END();
         }
+
+		if (game.getState() == Logic::gameStateGameUpgrade)
+		{
+			renderer->updateLight(deltaTime, &cam);
+
+			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
+			renderer->render(&cam);
+			PROFILE_END();
+
+			game.menuRender(renderer);
+		}
+
 		 
 		g_Profiler->poll();
 
 		if (showProfiler) {
-			//DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 			
 			ImGui::SetNextWindowPos(ImVec2(0, 0));
 			ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
 			g_Profiler->render();
 		}
-		else {
-			//DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
-		}
 
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
-		PROFILE_BEGINC("ImGui_ImplDX11_NewFrame", EventColor::PinkLight);
+		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
 		PROFILE_END();
 
+		PROFILE_BEGINC("IDXGISwapChain::Present()", EventColor::Cyan);
 		mSwapChain->Present(0, 0);
+		PROFILE_END();
 		g_Profiler->frame();
 		
 	}

@@ -2,17 +2,29 @@
 
 
 Texture2D inputTexture : register(t0);
-RWTexture2D<unorm float4> output : register(u0);
+SamplerState Sampler : register(s0);
 
-[numthreads(16, 9, 1)]
-void CS(uint3 DTid : SV_DispatchThreadID)
+struct VSOut
 {
-    int3 textureLocation = DTid * 2 - int3(KERNELSIZE -1, 0, 0);
+    float4 pos : SV_POSITION;
+    float2 uv : UV;
+};
 
+VSOut VS(uint id: SV_VertexID)
+{
+    VSOut vsout;
+    
+	vsout.uv = float2((id << 1) & 2, id & 2);
+	vsout.pos = float4(vsout.uv * float2(2, -2) + float2(-1, 1), 0, 1);
+
+    return vsout;
+}
+
+float4 PS(VSOut input) : SV_Target0
+{
     float4 final = { 0.0, 0.0, 0.0, 1.0 };
     for (uint x = 0; x < KERNELSIZE; x++)
-        final += inputTexture.Load(textureLocation + int3(x * 2, 0, 0)) * gaussianFilter[x];
+        final += inputTexture.Sample(Sampler, input.uv, int2(x -(KERNELSIZE / 2), 0)) * gaussianFilter[x];
 	
-
-    output[DTid.xy] = final;
+    return final;
 }

@@ -2,6 +2,8 @@
 #include <d3d11.h>
 #include "../ThrowIfFailed.h"
 
+#include <cstdint>
+
 #define MAKE_FLAG(Enum)\
 inline Enum operator|(Enum a, Enum b)\
 {\
@@ -12,7 +14,7 @@ inline Enum operator&(Enum a, Enum b)\
     return static_cast<Enum>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));\
 }
 
-enum class BufferUsage
+enum class BufferUsage : uint32_t
 {
     Default   = D3D11_USAGE_DEFAULT,
     Immutable = D3D11_USAGE_IMMUTABLE,
@@ -20,7 +22,7 @@ enum class BufferUsage
     Staging   = D3D11_USAGE_STAGING
 }; MAKE_FLAG(BufferUsage);
 
-enum class BufferBind 
+enum class BufferBind : uint32_t
 {
     VertexBuffer    = D3D11_BIND_VERTEX_BUFFER,
     IndexBuffer     = D3D11_BIND_INDEX_BUFFER,
@@ -34,14 +36,14 @@ enum class BufferBind
     VideoEncoder    = D3D11_BIND_VIDEO_ENCODER
 }; MAKE_FLAG(BufferBind);
 
-enum class BufferCpuAccess 
+enum class BufferCpuAccess : uint32_t
 { 
     None  = 0,
     Write = D3D11_CPU_ACCESS_WRITE,
-    Read  = D3D11_CPU_ACCESS_READ
+	Read = D3D11_CPU_ACCESS_READ
 }; MAKE_FLAG(BufferCpuAccess);
 
-enum class BufferMisc
+enum class BufferMisc : uint32_t
 { 
     None                         = 0,
     GenerateMips                 = D3D11_RESOURCE_MISC_GENERATE_MIPS,
@@ -74,12 +76,20 @@ public:
     ID3D11Buffer** operator&() { return &buffer; }
 
     Buffer & operator=(Buffer & other) = delete;
+	T* map(ID3D11DeviceContext *cxt) {
+		D3D11_MAPPED_SUBRESOURCE data = {};
+		cxt->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+		return (T*)data.pData;
+	}
+	void unmap(ID3D11DeviceContext *cxt) {
+		cxt->Unmap(buffer, 0);
+	}
 private:
     ID3D11Buffer * buffer;
 };
 
 template<typename T>
-Buffer<T>::Buffer(ID3D11Device * device, BufferUsage usage, BufferBind bindFlags, BufferCpuAccess cpuFlags,  BufferMisc miscFlags, size_t size, T * data)
+Buffer<T>::Buffer(ID3D11Device * device, BufferUsage usage, BufferBind bindFlags, BufferCpuAccess cpuFlags, BufferMisc miscFlags, size_t size, T * data)
 {
     D3D11_BUFFER_DESC desc = {};
     desc.ByteWidth           = sizeof(T) * size;

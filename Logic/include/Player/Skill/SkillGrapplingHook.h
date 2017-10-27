@@ -17,12 +17,6 @@
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
 
-#define GRAPPLING_HOOK_CD			50.f		// Cooldown in ms
-#define GRAPPLING_HOOK_RANGE		500.f		// Range in bulletphysics units (probably meters)
-#define GRAPPLING_HOOK_POWER		0.00110f	// The amount of power to reach the max speed
-#define GRAPPLING_HOOK_MAX_SPEED_XZ	0.0615f		// The max speed in x & z
-#define GRAPPLING_HOOK_MAX_SPEED_Y	15.f		// The max speed in y
-
 namespace Logic
 {
 	enum GrapplingHookState
@@ -38,7 +32,7 @@ namespace Logic
 		SkillGrapplingHook(Physics* physics);
 		~SkillGrapplingHook();
 
-		void onUse(btVector3 forward, Entity& shooter);
+		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
@@ -49,6 +43,8 @@ namespace Logic
 		GrapplingHookState				m_state;		//< Current state, if the grappling hook is currently pulling or not
 		Entity*							m_shooter;		//< Saved entity after each onUse() call, later, pushes this entity
 		btVector3						m_point;		//< Saved point of intersection of the raytest, will push entity towards this point
+        bool                            m_goingUp;      //< Direction of the grappling hook
+        btVector3                       m_dirToPoint;
 		Graphics::RenderDebugInfo		renderDebug;	//< Debug drawing the ray
 	};
 }

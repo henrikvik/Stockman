@@ -25,11 +25,12 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
 	}
 	else if (Projectile *pj = dynamic_cast<Projectile*> (&other))
 	{
-		if (dmgMultiplier > 1.01f && dmgMultiplier < 2.01f)
-			printf("Headshot. 2X DMG.\n");
-
-		if (!pj->getProjectileData().enemyBullet)
-			damage(pj->getProjectileData().damage * dmgMultiplier);
+        if (!pj->getProjectileData().enemyBullet)
+        {
+            damage(pj->getProjectileData().damage * dmgMultiplier);
+            if (dmgMultiplier > 1.01f)
+                printf("HS.");
+        }
 
 		if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
 			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
@@ -56,11 +57,17 @@ void EnemyNecromancer::useAbility(Entity const &target)
 	{
 		if (RandomGenerator::singleton().getRandomInt(0, 1))
 		{
-			spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB2);
+		    Projectile *pj = shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB2);
+            pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+                Entity *entity = reinterpret_cast<Entity*> (data.dataPtr);
+                std::vector<int> effects = { StatusManager::EFFECT_ID::AMMO_PICK_UP };
+
+               // SpawnTrigger(1, data.caller->getPositionBT(), effects);
+            });
 		}
 		else
 		{
-			spawnProjectile((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::ENEMYGRUNT, SPEED_AB1);
+            shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::ENEMYGRUNT, SPEED_AB1);
 		}
 	}
 }

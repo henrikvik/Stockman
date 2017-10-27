@@ -11,7 +11,7 @@
 {
 	"Name" : "Settings";
 	"State" : 3;
-	"Background" : 1;
+	"Background" : 0;
 	"buttonAmount" : 2;
 
 	"button1" :  "MenuSettingsButton1";
@@ -31,4 +31,14 @@
 
 	"button1" : "GameOverButton1";
 	"button2" : "GameOverButton2";
+}
+{
+	"Name" : "GameCardUpgrade";
+	"State" : 6;
+	"Background" : -1;
+	"buttonAmount" : 3;
+
+	"button1" : "CardUpgradeButton1";
+	"button2" : "CardUpgradeButton2";
+	"button3" : "CardUpgradeButton3";
 }

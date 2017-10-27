@@ -196,6 +196,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
+    <ClInclude Include="include\Entity\LightObject.h" />
+    <ClInclude Include="include\AI\EnemyType.h" />
     <ClInclude Include="include\Misc\FPSRenderer.h" />
     <ClInclude Include="include\AI\Behavior\Pathing.h" />
     <ClInclude Include="include\AI\EnemyNecromancer.h" />
@@ -230,9 +233,11 @@
     <ClInclude Include="include\Entity\Object.h" />
     <ClInclude Include="include\Misc\Enums.h" />
     <ClInclude Include="include\Misc\GUI\MenuMachine.h" />
+    <ClInclude Include="include\Misc\MapStructs.h" />
     <ClInclude Include="include\Misc\RandomGenerator.h" />
     <ClInclude Include="include\Misc\RenderRegister.h" />
     <ClInclude Include="include\Misc\Sound\NoiseStructs.h" />
+    <ClInclude Include="include\Misc\Sound\SoundSource.h" />
     <ClInclude Include="include\Misc\StateMachine.h" />
     <ClInclude Include="include\Physics\Physics.h" />
     <ClInclude Include="include\Physics\Primitives.h" />
@@ -257,6 +262,8 @@
     <ClInclude Include="include\Misc\Sound\NoiseMachine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Behavior\EnemyThreadHandler.cpp" />
+    <ClCompile Include="source\Entity\LightObject.cpp" />
     <ClCompile Include="source\Misc\FPSRenderer.cpp" />
     <ClCompile Include="source\AI\Behavior\Pathing.cpp" />
     <ClCompile Include="source\AI\Behavior\Behavior.cpp" />
@@ -282,6 +289,7 @@
     <ClCompile Include="source\Misc\GUI\MenuMachine.cpp" />
     <ClCompile Include="source\Misc\RandomGenerator.cpp" />
     <ClCompile Include="source\Misc\Sound\NoiseMachine.cpp" />
+    <ClCompile Include="source\Misc\Sound\SoundSource.cpp" />
     <ClCompile Include="source\Player\Skill\Skill.cpp" />
     <ClCompile Include="source\Player\Skill\SkillBulletTime.cpp" />
     <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />
