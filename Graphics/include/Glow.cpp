@@ -4,6 +4,7 @@
 #include <string>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <Engine\DebugWindow.h>
 #define KERNELSIZE 9
 #define SIGMA 5
 
@@ -19,6 +20,7 @@ Graphics::Glow::Glow(ID3D11Device * device, ID3D11DeviceContext * context)
 	//Enable this only if you want a new gaussian filter
 	//auto kernels = generateKernel(KERNELSIZE, SIGMA);
 
+	DebugWindow *debugWindow = DebugWindow::getInstance();
 }
 
 Graphics::Glow::~Glow()
@@ -61,6 +63,13 @@ std::vector<float> Graphics::Glow::generateKernel(int kernelSize, float sigma)
 	OutputDebugStringW(output.c_str());
 
 	return kernel;
+}
+
+void Graphics::Glow::recompileGlow(ID3D11Device * device)
+{
+	merger.recompile(device, SHADER_PATH("GlowShaders/Merger.hlsl"));
+	glow.recompile(device, SHADER_PATH("GlowShaders/Glow.hlsl"));
+	glow2.recompile(device, SHADER_PATH("GlowShaders/GlowSecond.hlsl"));
 }
 
 void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResourceView * backBuffer, ID3D11ShaderResourceView * glowMap, ShaderResource * outputTexture)

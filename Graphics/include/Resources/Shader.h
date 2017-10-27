@@ -41,6 +41,7 @@ namespace Graphics
 	public:
 		ComputeShader(ID3D11Device * device, LPCWSTR shaderPath);
 		virtual ~ComputeShader();
+		void recompile(ID3D11Device * device, LPCWSTR shaderPath);
 
 		//void setShader(ID3D11DeviceContext * deviceContext);
 		inline operator ID3D11ComputeShader*() { return computeShader; };

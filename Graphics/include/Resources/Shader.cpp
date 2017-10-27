@@ -144,4 +144,21 @@ namespace Graphics
 	{
 		computeShader->Release();
 	}
+
+	void ComputeShader::recompile(ID3D11Device * device, LPCWSTR shaderPath)
+	{
+		computeShader->Release();
+		
+		ID3DBlob *csShader, *errorMsg;
+
+		HRESULT cshr = D3DCompileFromFile(shaderPath, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "CS", "cs_5_0", SHADER_COMPILE_FLAGS, NULL, &csShader, &errorMsg);
+		if FAILED(cshr)
+		{
+			OutputDebugString((char*)errorMsg->GetBufferPointer());
+			throw "Failed to compile Compute Shader";
+		}
+
+		ThrowIfFailed(device->CreateComputeShader(csShader->GetBufferPointer(), csShader->GetBufferSize(), NULL, &computeShader));
+
+	}
 }
