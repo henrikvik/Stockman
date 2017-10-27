@@ -25,7 +25,7 @@ float4 PS(VSOut input) : SV_Target0
 {
 	float4 final = { 0.0, 0.0, 0.0, 1.0 };
     for (uint y = 0; y < KERNELSIZE; y++)
-		final += inputTexture.Sample(Sampler, input.uv, int2(0, y)) * gaussianFilter[y];
+        final += inputTexture.Sample(Sampler, input.uv, int2(0, y - (KERNELSIZE / 2))) * gaussianFilter[y];
 	
 
 	return final;
