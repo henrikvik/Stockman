@@ -14,7 +14,7 @@ namespace Graphics
         DoF(ID3D11Device * device);
         ~DoF();
         void DoFRender(ID3D11DeviceContext * context, ShaderResource * colorBuffer, DepthStencil * depthBuffer, ShaderResource * outputBuffer, Camera *cam);
-        void updateCoc(ID3D11DeviceContext *context, float focalLength = 0.278000027f, float focalPlane = 0.0230000019f, float apature = 0.0820000023f);
+        void updateCoc(ID3D11DeviceContext *context, float focalLength = 0.015f, float focalPlane = 0.06f, float apature = 0.099f);
 
     private:
 

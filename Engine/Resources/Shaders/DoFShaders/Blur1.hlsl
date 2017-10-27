@@ -25,7 +25,7 @@ PSOutput PS(VSOutput input) : SV_Target0
 {
     PSOutput output = (PSOutput) 0.0f;
     half4 baseColor = CoCTexture.Sample(linearSampler, input.uv);
-    baseColor.w /= 100.0f;
+    //baseColor.w /= 100.0f;
     
     output.color0.w = baseColor.w;
     output.color1.w = baseColor.w;

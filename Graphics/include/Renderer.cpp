@@ -362,9 +362,9 @@ namespace Graphics
                 if (enableCoCWindow)
                 {
                     ImGui::Begin("camera stuff");
-                    static float fp = 0.023f;
-                    static float fl = 0.278f;
-                    static float a = 0.082f;
+                    static float fp = 0.088f;
+                    static float fl = 0.05f;
+                    static float a = 0.12f;
                     ImGui::SliderFloat("focal Plane", &fp, 0.001f, 1.0f);
                     ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
                     ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
