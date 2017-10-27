@@ -27,7 +27,7 @@ namespace Logic
 			EFFECT_MODIFY_FIRERATE		= 0x40,
 			EFFECT_MODIFY_MOVEMENTSPEED	= 0x80,
 			EFFECT_MODIFY_FREEZING		= 0x100,
-			EFFECT_MODIFY_AMMO			= 0x200,
+			EFFECT_MODIFY_AMMO	        = 0x200,
 			EFFECT_CONSTANT_INVINC		= 0x400,
 			EFFECT_CONSTANT_PUSH_BACK	= 0x800,
 			EFFECT_CONSTANT_DAMAGE_ON_CONTACT = 0x1000,
@@ -50,6 +50,7 @@ namespace Logic
 		struct Specifics {
 			float	isFreezing;	//< The amount of freezed (0 : 1)
 			float	isBulletTime;	//< Multiplier of the current bulletTime (for example, this effect will adjust every entity except player during the bullet time skill)
+            float   ammoType;
 		};
 
 		Effect();

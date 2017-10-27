@@ -3,6 +3,7 @@
 #include <AI\Enemy.h>
 #include <Graphics\include\Particles\ParticleSystem.h>
 #include <Engine\DebugWindow.h>
+#include <Physics\Physics.h>
 
 using namespace Logic;
 
@@ -10,7 +11,7 @@ using namespace Logic;
 static bool FUN_MODE = false;
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
-: Entity(body, halfextent) 
+: Entity(body, halfextent, Graphics::ModelID::SPHERE) 
 {
 	m_pData.damage = 1.f;
 	m_pData.speed = 0.f;
@@ -21,7 +22,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 }
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer, float ttl)
-: Entity(body, halfExtent)
+: Entity(body, halfExtent, Graphics::ModelID::SPHERE)
 {
 	m_pData.damage = damage;
 	m_pData.speed = speed;
@@ -32,7 +33,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, fl
 }
 
 Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
-: Entity(body, halfExtent)
+: Entity(body, halfExtent, Graphics::ModelID::SPHERE)
 {
 	m_pData = pData;
 	m_remove = false;

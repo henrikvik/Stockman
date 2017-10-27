@@ -4,6 +4,13 @@
 #include <DebugDefines.h>
 #include <Misc\ComboMachine.h>
 #include <Engine\Profiler.h>
+#include <Projectile\ProjectileManager.h>
+#include <Player\Weapon\WeaponManager.h>
+#include <Player\Weapon\Weapon.h>
+#include <Player\Skill\SkillManager.h>
+#include <Player\Skill\Skill.h>
+#include <Misc\Sound\NoiseStructs.h>
+#include <Graphics\include\Renderer.h>
 
 using namespace Logic;
 
@@ -12,7 +19,10 @@ btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent, modelID)
 {
-
+    m_weaponManager = new WeaponManager();
+    m_skillManager = new SkillManager();
+    m_listenerData = new Sound::ListenerData();
+    info = new Graphics::HUDInfo();
 }
 
 Player::~Player()
@@ -20,10 +30,10 @@ Player::~Player()
 	clear();
 }
 
-void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime)
+void Player::init(Physics* physics, ProjectileManager* projectileManager)
 {
-	m_weaponManager.init(projectileManager);
-	m_skillManager.init(physics, projectileManager, gameTime);
+	m_weaponManager->init(projectileManager);
+	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
 
 	btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_HEIGHT, PLAYER_SIZE_RADIUS);
@@ -39,15 +49,15 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
-    info.hp = m_hp;
-   	info.cuttleryAmmo[0] = 0;
-   	info.cuttleryAmmo[1] = 0;
-    info.iceAmmo[0] = 0;
-    info.iceAmmo[1] = 0;
-    info.wave = 0;
-   	info.score = 0;
-   	info.sledge = false;
-	info.cd = 1.0f;
+    info->hp = m_hp;
+   	info->activeAmmo[0] = 0;
+   	info->activeAmmo[1] = 0;
+    info->inactiveAmmo[0] = 0;
+    info->inactiveAmmo[1] = 0;
+    info->wave = 0;
+   	info->score = 0;
+   	info->sledge = false;
+	info->cd = 1.0f;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -81,21 +91,28 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
     m_useSkillPrimary = DirectX::Keyboard::Keys::F;
     m_useSkillSecondary = DirectX::Keyboard::Keys::E;
     m_useSkillTertiary = DirectX::Keyboard::Keys::G;
-	m_listenerData.update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
+	m_listenerData->update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 }
 
 void Player::clear()
 {
-	m_weaponManager.clear();
-	m_skillManager.clear();
-	
+	m_weaponManager->clear();
+	m_skillManager->clear();
+    delete m_weaponManager;
+    delete m_skillManager;
+
 	delete m_charController;
+
+    delete m_listenerData;
+
+    // HUD info
+    delete info;
 }
 
 void Player::reset()
 {
 	getTransform().setOrigin(startPosition);
-	m_weaponManager.reset();
+	m_weaponManager->reset();
 	m_hp = 3;
 }
 
@@ -134,10 +151,21 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
-		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
-		int magSize		= wp->getMagSize();
-		int currentAmmo = wp->getAmmo();
-		wp->setAmmo(currentAmmo + (magSize * WEAPON_AMMO_PACK_MODIFIER));
+        Weapon* wp = nullptr;
+        if(effect.getSpecifics()->ammoType == 0)
+		    wp = m_weaponManager->getFirstWeapon().first;
+        else if(effect.getSpecifics()->ammoType == 1)
+            wp = m_weaponManager->getSecondWeapon().first;
+
+        if (wp)
+        {
+            int magSize = wp->getMagSize();
+            int currentAmmo = wp->getAmmo();
+            if (currentAmmo + magSize > wp->getAmmoCap())
+                wp->setAmmo(wp->getAmmoCap());
+            else
+                wp->setAmmo(currentAmmo + magSize);
+        }
 	}
 }
 
@@ -156,9 +184,9 @@ void Player::updateSound(float deltaTime)
 	// Update sound position
 	btVector3 pos = getPositionBT();
 	btVector3 vel = m_charController->getLinearVelocity();
-	m_soundSource.pos = { pos.x(), pos.y(), pos.z() };
-	m_soundSource.vel = { vel.x(), vel.y(), vel.z() };
-	m_soundSource.update(deltaTime);
+	getSoundSource()->pos = { pos.x(), pos.y(), pos.z() };
+    getSoundSource()->vel = { vel.x(), vel.y(), vel.z() };
+    getSoundSource()->update(deltaTime);
 }
 
 void Player::saveToFile()
@@ -194,37 +222,37 @@ void Player::updateSpecific(float deltaTime)
 	btVector3 forward	= getForwardBT();
 	btVector3 right		= up.cross(forward);
 	btVector3 actualUp	= right.cross(forward);
-	m_listenerData.update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
+	m_listenerData->update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 
     //updates hudInfo with the current info
-	info.score = ComboMachine::Get().GetCurrentScore();
-    info.hp = m_hp;
-    info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
-    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getAmmo();
-    info.iceAmmo[0] = m_weaponManager.getSecondWeapon()->getMagAmmo();
-    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getAmmo();
-    if (m_weaponManager.getCurrentWeaponPrimary()->getMagSize() == 0)
+	info->score = ComboMachine::Get().GetCurrentScore();
+    info->hp = m_hp;
+    info->activeAmmo[0] = m_weaponManager->getActiveWeapon()->getMagAmmo();
+    info->activeAmmo[1] = m_weaponManager->getActiveWeapon()->getAmmo();
+    info->inactiveAmmo[0] = m_weaponManager->getInactiveWeapon()->getMagAmmo();
+    info->inactiveAmmo[1] = m_weaponManager->getInactiveWeapon()->getAmmo();
+    if (m_weaponManager->getCurrentWeaponPrimary()->getMagSize() == 0)
     {
-        info.sledge  = true;
+        info->sledge  = true;
     }
     else
     {
-        info.sledge = false;
+        info->sledge = false;
     }
 
     // HUD info on the first skill
-    Skill* primary = m_skillManager.getSkill(SkillManager::ID::PRIMARY);
+    Skill* primary = m_skillManager->getSkill(SkillManager::ID::PRIMARY);
     if (!primary->getCanUse())
-        info.cd = primary->getCooldown() / primary->getCooldownMax();
+        info->cd = primary->getCooldown() / primary->getCooldownMax();
     else
-        info.cd = 1.0f;
+        info->cd = 1.0f;
 
     // HUD info on the second skill
-//    Skill* secondary = m_skillManager.getSkill(SkillManager::SKILL_ID::SECONDARY);
+//    Skill* secondary = m_skillManager->getSkill(SkillManager::SKILL_ID::SECONDARY);
 //    if (!secondary->getCanUse())
-//        info.cd = secondary->getCooldown() / secondary->getCooldownMax();
+//        info->cd = secondary->getCooldown() / secondary->getCooldownMax();
 //    else
-//        info.cd = 1.0f;
+//        info->cd = 1.0f;
 
     
 	// Get Mouse and Keyboard states for this frame
@@ -293,56 +321,56 @@ void Player::updateSpecific(float deltaTime)
 	//crouch(deltaTime);
 
 	// Weapon swap
-	if (!m_weaponManager.isSwitching())
+	if (!m_weaponManager->isSwitching())
 	{
 		if (ks.IsKeyDown(m_switchWeaponOne))
-			m_weaponManager.switchWeapon(0);
+			m_weaponManager->switchWeapon(0);
 
 		if (ks.IsKeyDown(m_switchWeaponTwo))
-			m_weaponManager.switchWeapon(1);
+			m_weaponManager->switchWeapon(1);
 
 		if (ks.IsKeyDown(m_switchWeaponThree))
-			m_weaponManager.switchWeapon(2);
+			m_weaponManager->switchWeapon(2);
 	}
 
 	// Skills
     PROFILE_BEGIN("SkillManager");
     forward = getForwardBT();
 	if (ks.IsKeyDown(m_useSkillPrimary))
-        m_skillManager.use(SkillManager::ID::PRIMARY, forward, *this);
+        m_skillManager->use(SkillManager::ID::PRIMARY, forward, *this);
 	if (ks.IsKeyUp(m_useSkillPrimary))
-        m_skillManager.release(SkillManager::ID::PRIMARY);
+        m_skillManager->release(SkillManager::ID::PRIMARY);
     if (ks.IsKeyDown(m_useSkillSecondary))
-        m_skillManager.use(SkillManager::ID::SECONDARY, forward, *this);
+        m_skillManager->use(SkillManager::ID::SECONDARY, forward, *this);
     if (ks.IsKeyUp(m_useSkillSecondary))
-        m_skillManager.release(SkillManager::ID::SECONDARY);
+        m_skillManager->release(SkillManager::ID::SECONDARY);
     if (ks.IsKeyDown(m_useSkillTertiary))
-        m_skillManager.use(SkillManager::ID::TERTIARY, forward, *this);
+        m_skillManager->use(SkillManager::ID::TERTIARY, forward, *this);
     if (ks.IsKeyUp(m_useSkillTertiary))
-        m_skillManager.release(SkillManager::ID::TERTIARY);
+        m_skillManager->release(SkillManager::ID::TERTIARY);
     PROFILE_END();
 
 	// Check if reloading
-	if (!m_weaponManager.isReloading())
+	if (!m_weaponManager->isReloading())
 	{
 		// Primary and secondary attack
-		if (!m_weaponManager.isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
+		if (!m_weaponManager->isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
 		{
 			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
 			if ((ms.leftButton))
-				m_weaponManager.usePrimary(pos, m_camYaw, m_camPitch, *this);
+				m_weaponManager->usePrimary(pos, m_camYaw, m_camPitch, *this);
 			else if (ms.rightButton)
-				m_weaponManager.useSecondary(pos, m_camYaw, m_camPitch, *this);
+				m_weaponManager->useSecondary(pos, m_camYaw, m_camPitch, *this);
 		}
 
 		// Reload
 		if (ks.IsKeyDown(m_reloadWeapon))
-			m_weaponManager.reloadWeapon();
+			m_weaponManager->reloadWeapon();
 	}
 
     // Update weapon and skills
-    m_weaponManager.update(deltaTime);
-    m_skillManager.update(deltaTime);
+    m_weaponManager->update(deltaTime);
+    m_skillManager->update(deltaTime);
 
 #ifdef GOD_MODE
 	static bool isNum = false;
@@ -359,9 +387,9 @@ void Player::updateSpecific(float deltaTime)
 //fills the HUD info with wave info
 void Player::updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning)
 {
-    info.wave = wave;
-    info.enemiesRemaining = enemiesRemaining;
-    info.timeRemaining = timeRemaning;
+    info->wave = wave;
+    info->enemiesRemaining = enemiesRemaining;
+    info->timeRemaining = timeRemaning;
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
@@ -628,13 +656,13 @@ void Player::render(Graphics::Renderer & renderer)
 //	Object::render(renderer);
 
 	// Setting position of updated weapon and skill models
-	m_weaponManager.setWeaponModel(getTransformMatrix(), m_forward);
-	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
+	m_weaponManager->setWeaponModel(getTransformMatrix(), m_forward);
+	//	m_skillManager->setWeaponModel(getTransformMatrix(), m_forward);
 
 	// Drawing the weapon model
-	m_weaponManager.render(renderer);
-	m_skillManager.render(renderer);
-    renderer.fillHUDInfo(&info);
+	m_weaponManager->render(renderer);
+	m_skillManager->render(renderer);
+    renderer.fillHUDInfo(info);
 }
 
 void Logic::Player::setMaxSpeed(float maxSpeed)
@@ -697,7 +725,7 @@ Player::PlayerState Player::getPlayerState() const
 	return m_playerState;
 }
 
-ListenerData & Logic::Player::getListenerData()
+Sound::ListenerData& Player::getListenerData()
 {
-	return m_listenerData;
+	return *m_listenerData;
 }
