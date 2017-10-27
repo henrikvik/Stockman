@@ -194,7 +194,7 @@ void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, 
     if (enemy->getHealth() <= 0)
     {
         // Adds the score into the combo machine
-        ComboMachine::Get().Kill(Enemy::ENEMY_TYPE(enemy->getEnemyType()));
+        ComboMachine::Get().Kill(ENEMY_TYPE(enemy->getEnemyType()));
 
         // Random ammo pick-up
         if (RandomGenerator::singleton().getRandomFloat(0.f, 1.f) > 0.5)

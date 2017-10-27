@@ -12,16 +12,25 @@
 
 #pragma endregion
 
-#include <Projectile\ProjectileManager.h>
 #include <Entity\Object.h>
+//#include <Projectile\ProjectileManager.h>
+#include <Projectile\ProjectileStruct.h>
+
+namespace Graphics
+{
+    class Renderer;
+    class Structs;
+}
 
 namespace Logic
 {
+    class ProjectileManager;
+    //struct ProjetileData;
+
 	class Weapon : public Object
 	{
 	private:
 		DirectX::SimpleMath::Matrix rot, trans, scale;
-		ProjectileManager* m_projectileManager;
 		ProjectileData m_projectileData;
 		int m_weaponID;
 		int m_ammoCap;
@@ -39,11 +48,16 @@ namespace Logic
 
 		btVector3 calcSpread(float yaw, float pitch);
 
+        std::function<Projectile*(ProjectileData& pData, btVector3 position,
+            btVector3 forward, Entity& shooter)> SpawnProjectile;
+
 	public:
 		Weapon();
-		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
 			int spreadH, int spreadV, float attackRate, float freeze, float reloadTime);
 		void reset();
+
+        void setSpawnFunctions(ProjectileManager &projManager);
 
 		void use(btVector3 position, float yaw, float pitch, Entity& shooter);
 		void setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
