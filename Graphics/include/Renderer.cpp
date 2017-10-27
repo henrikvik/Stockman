@@ -34,10 +34,7 @@ namespace Graphics
 		, instanceSBuffer(device, CpuAccess::Write, _INSTANCE_CAP)
 		, instanceOffsetBuffer(device)
 		, skyRenderer(device, SHADOW_MAP_RESOLUTION, hybrisLoader)
-		, postProcessor(device, deviceContext)
-		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
-		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
-		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
+		, glowRenderer(device, deviceContext)
 #pragma region RenderDebugInfo
 		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
 		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
@@ -206,7 +203,6 @@ namespace Graphics
 	{
         writeInstanceBuffers();
         menu.unloadTextures();
-#else
 
 		PROFILE_BEGIN("clear()");
 		clear();
@@ -263,7 +259,7 @@ namespace Graphics
 
 		PROFILE_BEGIN("grid.updateLights()");
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-		deviceContext->RSSetState(states->CullClockwise());
+		deviceContext->RSSetState(states->CullCounterClockwise());
 
 		grid.updateLights(deviceContext, camera, lights);
 		lights.clear();
@@ -322,7 +318,7 @@ namespace Graphics
 
 		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
 		
-		drawStatic();
+        drawStatic();
 		PROFILE_END();
 
         // FIIX
@@ -341,7 +337,7 @@ namespace Graphics
 
 		//The sky renderer uses the bullet time on register 3
 		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
-		skyRenderer.renderSky(deviceContext, camera);
+		//skyRenderer.renderSky(deviceContext, camera);
 
         ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
 
@@ -469,12 +465,12 @@ namespace Graphics
 
 	void Renderer::queueWaterRender(WaterRenderInfo * renderInfo)
 	{
-		if (renderWaterQueue.size() > INSTANCE_CAP)
-		{
-			throw "Water renderer exceeded instance cap.";
-		}
+		//if (renderWaterQueue.size() > INSTANCE_CAP)
+		//{
+		//	throw "Water renderer exceeded instance cap.";
+		//}
 
-		renderWaterQueue.push_back(renderInfo);
+		//renderWaterQueue.push_back(renderInfo);
 	}
 
     void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
@@ -566,6 +562,7 @@ namespace Graphics
     void Renderer::drawStatic()
     {
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->RSSetState(states->CullClockwise());
         deviceContext->VSSetShaderResources(5, 1, staticInstanceBuffer);
 
         UINT instanceOffset = 0;

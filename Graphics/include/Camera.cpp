@@ -5,7 +5,7 @@ namespace Graphics
 {
 
 	Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, float fieldOfView) :
-		CameraBuffer(device),
+		cameraBuffer(device),
 		inverseBuffer(device)
 	{
 		this->fieldOfView = fieldOfView;
@@ -39,7 +39,7 @@ namespace Graphics
 		inverseMatrixes.invP = values.invP;
 		inverseMatrixes.invView = view.Invert();
 
-		CameraBuffer.write(context, &values, sizeof(ShaderValues));
+		cameraBuffer.write(context, &values, sizeof(ShaderValues));
 		inverseBuffer.write(context, &inverseMatrixes, sizeof(InverseMatrixes));
 	}
 
@@ -60,11 +60,11 @@ namespace Graphics
 		D3D11_MAPPED_SUBRESOURCE data;
 		ZeroMemory(&data, sizeof(data));
 
-		context->Map(this->CameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+		context->Map(this->cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 
 		memcpy(data.pData, &values, sizeof(ShaderValues));
 
-		context->Unmap(this->CameraBuffer, 0);
+		context->Unmap(this->cameraBuffer, 0);
 
 	}
 
@@ -121,7 +121,7 @@ namespace Graphics
 
 	ConstantBuffer<Camera::ShaderValues>* Camera::getBuffer()
 	{
-		return &this->CameraBuffer;
+		return &this->cameraBuffer;
 	}
 
 	ConstantBuffer<Camera::InverseMatrixes>* Camera::getInverseBuffer()
