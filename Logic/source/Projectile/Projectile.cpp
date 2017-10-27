@@ -92,26 +92,29 @@ void Projectile::updateSpecific(float deltaTime)
 
 void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-    if (hasCallback(ON_COLLISION))
-    {
-        CallbackData data;
-        data.caller = this;
-        data.dataPtr = reinterpret_cast<std::intptr_t> (&other);
-        getCallbacks()[ON_COLLISION](data);
-    }
-
 	// TEMP
+    bool callback = false;
 	Player* p = dynamic_cast<Player*>(&other);
 	Projectile* proj = dynamic_cast<Projectile*> (&other);
 
 	if (proj)
-	{
-		if(proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
-	}
+        if (proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+        {
+            getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME,
+                proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+            callback = true;
+        }
 	else if(!p)
 	{
-		m_remove = true;
+        if (dynamic_cast<Enemy*> (&other) && getProjectileData().enemyBullet)
+        {
+            m_remove = false;
+        }
+        else
+        {
+    		m_remove = true;
+            callback = true;
+        }
 
         // TEMP: ta bort mig
         if (FUN_MODE)
@@ -121,6 +124,14 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
 				m_remove = false;
 	}
+
+    if (callback && hasCallback(ON_COLLISION))
+    {
+        CallbackData data;
+        data.caller = this;
+        data.dataPtr = reinterpret_cast<std::intptr_t> (&other);
+        getCallbacks()[ON_COLLISION](data);
+    }
 
 	if (m_pData.type == ProjectileTypeBulletTimeSensor  ||
         m_pData.type == ProjectileTypeIce               ||
