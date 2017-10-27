@@ -1,5 +1,6 @@
 #include <Entity/Entity.h>
 #include <AI\Enemy.h>
+#include <Projectile\ProjectileStruct.h>
 
 using namespace Logic;
 
