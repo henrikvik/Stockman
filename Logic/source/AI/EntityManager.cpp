@@ -8,8 +8,16 @@ using namespace Logic;
 #include <AI/EnemyTest.h>
 #include <AI/EnemyNecromancer.h>
 #include <AI/Behavior/AStar.h>
-#include <DebugDefines.h>
+#include <AI/TriggerManager.h>
+#include <Misc/ComboMachine.h>
 
+#include <Player\Player.h>
+#include <Projectile\ProjectileManager.h>
+
+#include <Graphics\include\Renderer.h>
+#include <Physics\Physics.h>
+
+#include <DebugDefines.h>
 #include <Engine\Profiler.h>
 #include <Misc\RandomGenerator.h>
 
@@ -195,7 +203,6 @@ void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, 
     {
         // Adds the score into the combo machine
         ComboMachine::Get().Kill(ENEMY_TYPE(enemy->getEnemyType()));
-        spawnTrigger(2, enemy->getPositionBT(), std::vector<int>{StatusManager::AMMO_PICK_UP}, *m_physicsPtr, m_projectilePtr);
         enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
 
         std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);
@@ -206,9 +213,6 @@ void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, 
 
 void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
 {
-    m_physicsPtr = &physics;
-    m_projectilePtr = projectiles;
-
     if (m_enemies.empty())
     {
         printf("This will crash, data is not allocated, call allocateData() before spawning");

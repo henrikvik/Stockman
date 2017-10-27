@@ -3,17 +3,8 @@
 
 #include <vector>
 #include <thread>
-
-#include <AI/Enemy.h>
 #include <AI/WaveManager.h>
 #include <AI/TriggerManager.h>
-#include <Misc/ComboMachine.h>
-
-#include <Player\Player.h>
-#include <Projectile\ProjectileManager.h>
-
-#include <Graphics\include\Renderer.h>
-#include <Physics\Physics.h>
 
 #pragma region ClassDesc
 	/*
@@ -29,6 +20,11 @@
 
 namespace Logic 
 {
+    class ProjectileManager;
+    class Physics;
+    class Enemy;
+    class Renderer;
+
 	class EntityManager
 	{
 	private:
@@ -42,8 +38,6 @@ namespace Logic
 		int m_indexRunning[NR_OF_THREADS];
 		bool m_threadRunning[NR_OF_THREADS];
 
-        Physics* m_physicsPtr;
-        ProjectileManager* m_projectilePtr;
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
 
