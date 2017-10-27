@@ -373,7 +373,7 @@ namespace Graphics
                     static float fp = 0.088f;
                     static float fl = 0.05f;
                     static float a = 0.12f;
-                    ImGui::SliderFloat("focal Plane", &fp, 0.001f, 1.0f);
+                    ImGui::SliderFloat("focal Plane", &fp, 0.0001f, .1f);
                     ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
                     ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
                     DoFRenderer.updateCoc(deviceContext, fl, fp, a);
