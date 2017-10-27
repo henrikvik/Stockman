@@ -5,6 +5,7 @@
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileStruct.h>
+#include <Projectile\Projectile.h>
 
 using namespace Logic;
 

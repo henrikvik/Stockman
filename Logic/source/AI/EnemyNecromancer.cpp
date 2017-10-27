@@ -33,12 +33,10 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
         if (!pj->getProjectileData().enemyBullet)
         {
             damage(pj->getProjectileData().damage * dmgMultiplier);
-            if (dmgMultiplier > 1.01f)
-                printf("HS.");
-        }
 
-		if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+            if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+                getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+        }
 	}
 }
 
@@ -65,7 +63,6 @@ void EnemyNecromancer::useAbility(Entity const &target)
             Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{0, 80, 0}).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB2);
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 Entity *entity = reinterpret_cast<Entity*> (data.dataPtr);
-                std::vector<int> effects = { StatusManager::EFFECT_ID::AMMO_PICK_UP_PRIMARY };
 
                 if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
                 {
