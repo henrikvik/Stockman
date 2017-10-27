@@ -68,6 +68,13 @@ void Enemy::debugRendering(Graphics::Renderer & renderer)
 void Enemy::damage(float damage)
 {
 	m_health -= damage;
+
+    if (hasCallback(ON_DAMAGE_TAKEN))
+        getCallbacks()[ON_DAMAGE_TAKEN](CallbackData { this, static_cast<int32_t> (damage) });
+
+    if (m_health <= 0 && m_health + damage > 0)
+        if (hasCallback(ON_DEATH))
+            getCallbacks()[ON_DEATH](CallbackData {this, static_cast<int32_t> (damage)});
 }
 
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
@@ -116,9 +123,14 @@ Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed)
 	data.meshID = id;
 	data.speed = speed;
 	data.scale = 1.f;
-	data.enemyBullet = true;
+    data.enemyBullet = true;
+
+    Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
+    
+    if (hasCallback(ON_DAMAGE_GIVEN))
+        pj->addCallback(ON_DAMAGE_GIVEN, getCallbacks()[ON_DAMAGE_GIVEN]);
 	
-    return SpawnProjectile(data, getPositionBT(), dir, *this);
+    return pj;
 }
 
 Behavior* Enemy::getBehavior() const

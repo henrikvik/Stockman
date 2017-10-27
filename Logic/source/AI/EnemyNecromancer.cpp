@@ -8,6 +8,9 @@ EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
 	btRigidBody* body, btVector3 halfExtent)
 	: Enemy(modelID, body, halfExtent, 5, 1, 15, 0, 0) {
 	setBehavior(RANGED);
+    addCallback(ON_DEATH, [&](CallbackData data) -> void {
+        SpawnTrigger(1, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP });
+    });
 }
 
 EnemyNecromancer::~EnemyNecromancer()
