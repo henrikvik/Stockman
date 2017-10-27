@@ -1,4 +1,5 @@
 #include "Map.h"
+#include <Keyboard.h>
 
 using namespace Logic;
 
@@ -95,6 +96,9 @@ void Map::clear()
 
 void Map::update(float deltaTime)
 {
+    // If user holds tab, draw debug info
+    m_drawHitboxesAndLights = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
+
 	// Updating interactable objects
 	for (size_t i = 0; i < m_objects.size(); i++)
 		m_objects[i]->update(deltaTime);
@@ -102,15 +106,16 @@ void Map::update(float deltaTime)
 
 void Map::render(Graphics::Renderer& renderer)
 {
-	for (Object* o : m_props)       o->render(renderer);
-	for (Speaker* e : m_objects)    e->render(renderer);
-    for (LightObject* l : m_lights) l->render(renderer);
+	for (Object* o : m_props)           o->render(renderer);
+	for (Speaker* e : m_objects)        e->render(renderer);
+    for (LightObject* l : m_lights)     l->render(renderer);
+    for (StaticObject* e : m_hitboxes)  e->render(renderer); // Should not be visiable at all in release
 
-	// Drawing hitboxes
+	// Drawing hitboxes & lights
     if (m_drawHitboxesAndLights)
     {
         for (StaticObject* e : m_hitboxes)
-            e->render(renderer);
+            e->renderD(renderer);
         for (LightObject* l : m_lights)
             l->renderD(renderer);
     }
