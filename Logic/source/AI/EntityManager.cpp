@@ -8,6 +8,7 @@ using namespace Logic;
 #include <AI/EnemyTest.h>
 #include <AI/EnemyNecromancer.h>
 #include <AI/Behavior/AStar.h>
+#include <AI\Behavior\Behavior.h>
 #include <AI/TriggerManager.h>
 #include <Misc/ComboMachine.h>
 
@@ -264,7 +265,6 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
 
     enemy->setEnemyType(id);
     enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0.f, 3.f, 0.f });
-    enemy->setProjectileManager(projectiles);
 
     enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 
