@@ -1,5 +1,6 @@
 #include "Map.h"
 #include <Keyboard.h>
+#include <Graphics\include\Structs.h>
 
 using namespace Logic;
 

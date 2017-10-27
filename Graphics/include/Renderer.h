@@ -94,7 +94,6 @@ namespace Graphics
 
 		ShaderResource* fakeBackBuffer;
 		ShaderResource* fakeBackBufferSwap;
-		ShaderResource glowMap;
 
         ID3D11BlendState *transparencyBlendState;
 

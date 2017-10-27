@@ -2,19 +2,28 @@
 
 Texture2D backBuffer : register(t0);
 Texture2D toMerge : register(t1);
-RWTexture2D<unorm float4> output : register(u0);
 sampler Sampler : register(s0);
 
-[numthreads(16, 16, 1)]
-void CS( uint3 DTid : SV_DispatchThreadID )
+struct VSOut
 {
-    float2 uv;
-    uv.x = DTid.x / 1280.f;
-    uv.y = DTid.y / 720.f;
+    float4 pos : SV_POSITION;
+    float2 uv : UV;
+};
 
+VSOut VS(uint id: SV_VertexID)
+{
+    VSOut vsout;
+    
+	vsout.uv = float2((id << 1) & 2, id & 2);
+	vsout.pos = float4(vsout.uv * float2(2, -2) + float2(-1, 1), 0, 1);
 
-    float3 color = backBuffer.SampleLevel(Sampler, uv, 0);
-    float3 glowColor = toMerge.SampleLevel(Sampler, uv, 0);
+    return vsout;
+}
+
+float4 PS(VSOut input) : SV_Target0
+{
+    float3 color = backBuffer.Sample(Sampler, input.uv);
+    float3 glowColor = toMerge.Sample(Sampler, input.uv);
 
       
 
@@ -26,5 +35,5 @@ void CS( uint3 DTid : SV_DispatchThreadID )
 
     color = saturate(color + glowColor);
 
-    output[DTid.xy] = float4(color, 1);
+    return float4(color, 1);
 }

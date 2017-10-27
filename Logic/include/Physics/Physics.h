@@ -53,6 +53,11 @@
 #define DEFAULT_S { 0, 0 }
 #define DEFAULT_D { 0, 0 }
 
+namespace Graphics
+{
+    struct RenderDebugInfo;
+}
+
 namespace Logic
 {
 	struct BodySpecifics
@@ -102,7 +107,7 @@ namespace Logic
 		btGhostPairCallback* ghostPairCB;
 
 		// Debug Rendering
-		Graphics::RenderDebugInfo renderDebug;
+		Graphics::RenderDebugInfo* renderDebug;
 		void renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body);
 		void renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRigidBody* body);
 		void renderCylinder(Graphics::Renderer& renderer, btCylinderShape* cs, btRigidBody* body);

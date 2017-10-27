@@ -1,6 +1,5 @@
 #include "Player/Skill/SkillShieldCharge.h"
 #include <Player\Player.h>
-#include <iostream>
 
 #define SHIELD_CHARGE_CD 5000.f
 #define SLOWDOWN_DURATION 100.f
@@ -21,13 +20,13 @@ SkillShieldCharge::SkillShieldCharge()
 
 SkillShieldCharge::~SkillShieldCharge()
 {
-	m_projectileManager = nullptr;
+
 }
 
 bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
     setCanUse(false);
-    setCooldown(BULLET_TIME_CD);
+    setCooldown(SHIELD_CHARGE_CD);
 
 	if (!m_active)
 	{

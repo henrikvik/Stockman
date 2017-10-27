@@ -18,7 +18,6 @@
 #include "Weapon\WeaponManager.h"
 #include "Skill\SkillManager.h"
 #include <Projectile\ProjectileManager.h>
-#include <Graphics\include\Structs.h>
 #include <Misc\Sound\NoiseMachine.h>
 
 #define PLAYER_GRAVITY					PHYSICS_GRAVITY * 0.0000015f
@@ -38,6 +37,10 @@
 
 namespace Logic
 {
+    class WeaponManager;
+    class SkillManager;
+    class ProjectileManager;
+
 	class Player : public Entity
 	{
 	public:

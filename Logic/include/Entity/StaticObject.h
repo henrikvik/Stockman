@@ -1,7 +1,13 @@
 #ifndef STATICOBJECT_H
 #define STATICOBJECT_H
 
-#include <Entity\Entity.h>
+#include <Entity\PhysicsObject.h>
+
+namespace Graphics
+{
+    class Renderer;
+    struct RenderDebugInfo;
+}
 
 namespace Logic
 {
@@ -16,7 +22,7 @@ namespace Logic
         void renderD(Graphics::Renderer& renderer);
 
     private:
-        Graphics::RenderDebugInfo renderDebug;
+        Graphics::RenderDebugInfo* renderDebug;
     
     };
 }
