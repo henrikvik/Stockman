@@ -20,6 +20,9 @@ static const float gaussianFilter[KERNELSIZE] =
 #define GLOW_ORIGINAL_SATURATION 1.f
 
 
+
+
+
 ///SSAO CONSTANTS////
 #define SSAOKERNELSIZE 5
 static const float ssaoGaussianFilter[SSAOKERNELSIZE] =
@@ -33,6 +36,9 @@ static const float ssaoGaussianFilter[SSAOKERNELSIZE] =
 #define SSAO_SCALE 1.f
 #define SSAO_BIAS 0.3f
 #define SSAO_ITERATIONS 4
+
+
+
 
 
 //makes stuff gray
