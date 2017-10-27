@@ -1,5 +1,6 @@
 #include "Player/Skill/SkillGrapplingHook.h"
 #include <Player\Player.h>
+#include <Graphics\include\Renderer.h>
 
 using namespace Logic;
 
@@ -21,10 +22,11 @@ SkillGrapplingHook::SkillGrapplingHook(Physics* physics)
     m_goingUp = true;
 
 	// Debug draw ray
-	renderDebug.points = new std::vector<DirectX::SimpleMath::Vector3>;
-	renderDebug.color = DirectX::SimpleMath::Color(1, 1, 1);
-	renderDebug.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-	renderDebug.useDepth = true;
+    renderDebug = new Graphics::RenderDebugInfo();
+	renderDebug->points = new std::vector<DirectX::SimpleMath::Vector3>;
+	renderDebug->color = DirectX::SimpleMath::Color(1, 1, 1);
+	renderDebug->topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+	renderDebug->useDepth = true;
 }
 
 SkillGrapplingHook::~SkillGrapplingHook()
@@ -34,7 +36,8 @@ SkillGrapplingHook::~SkillGrapplingHook()
 	m_shooter = nullptr;
 
 	// Debug
-	delete renderDebug.points;
+	delete renderDebug->points;
+    delete renderDebug;
 }
 
 // When the grappling hook is used, send out a ray to the targeted surface and save variables
@@ -62,10 +65,10 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
                 m_point = m_physicsPtr->RayTestGetPoint(ray);
 
                 // Drawing the ray
-                renderDebug.points->clear();
-                renderDebug.color = DirectX::SimpleMath::Color(1, 1, 1);
-                renderDebug.points->push_back(DirectX::SimpleMath::Vector3(ray.getStart()));
-                renderDebug.points->push_back(DirectX::SimpleMath::Vector3(m_point));
+                renderDebug->points->clear();
+                renderDebug->color = DirectX::SimpleMath::Color(1, 1, 1);
+                renderDebug->points->push_back(DirectX::SimpleMath::Vector3(ray.getStart()));
+                renderDebug->points->push_back(DirectX::SimpleMath::Vector3(m_point));
 
                 if (m_point.y() < shooter.getPositionBT().y())
                     m_goingUp = false;
@@ -97,11 +100,12 @@ void SkillGrapplingHook::onRelease()
 		player->getCharController()->setLinearVelocity({ 0.f, yVel, 0.f });
 	}
 
-    // Set to defaults
-    m_state = GrapplingHookStateNothing;
-    m_shooter = nullptr;
-    m_point = { 0, 0, 0 };
-    renderDebug.color = DirectX::SimpleMath::Color(1, 0, 0);
+    
+	// Set to defaults
+	m_state = GrapplingHookStateNothing;
+	m_shooter = nullptr;
+	m_point = { 0, 0, 0 };
+	renderDebug->color = DirectX::SimpleMath::Color( 1, 0, 0 );
 }
 
 // Moving the entity the grappling hook is active to the targeted point
@@ -157,7 +161,7 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 void SkillGrapplingHook::render(Graphics::Renderer& renderer)
 {
 	// Drawing a ray of the grappling hook for debugging purposes
-	renderer.queueRenderDebug(&renderDebug);
+	renderer.queueRenderDebug(renderDebug);
 }
 
 GrapplingHookState SkillGrapplingHook::getState() const

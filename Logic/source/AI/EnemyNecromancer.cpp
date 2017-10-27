@@ -60,7 +60,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
 		    Projectile *pj = shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB2);
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 Entity *entity = reinterpret_cast<Entity*> (data.dataPtr);
-                std::vector<int> effects = { StatusManager::EFFECT_ID::AMMO_PICK_UP };
+                std::vector<int> effects = { StatusManager::EFFECT_ID::AMMO_PICK_UP_PRIMARY };
 
                // SpawnTrigger(1, data.caller->getPositionBT(), effects);
             });

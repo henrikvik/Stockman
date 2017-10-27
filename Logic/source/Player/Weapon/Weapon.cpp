@@ -1,4 +1,7 @@
 #include "Player/Weapon/Weapon.h"
+#include <Physics\Physics.h>
+#include <Projectile\ProjectileManager.h>
+#include <Projectile\ProjectileStruct.h>
 
 using namespace Logic;
 
@@ -13,12 +16,12 @@ Weapon::Weapon()
 	m_attackRate		= -1;
 	m_freeze			= -1;
 	m_reloadTime		= -1;
+    m_projectileData = new ProjectileData();
 }
 
-Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime)
+Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime) : Object(modelID)
 {
-	m_projectileManager = projectileManager;
 	m_weaponID			= weaponID;
 	m_ammoCap			= ammoCap;
 	m_ammo				= ammo;
@@ -31,10 +34,10 @@ Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, 
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
-	m_projectileData	= projectileData;
+    m_projectileData    = new ProjectileData(projectileData);
 
-    // Setting model ID
-    this->setModelID(modelID);
+
+    setSpawnFunctions(*projectileManager);
 
 	/////////////////////////////////////////////////////////////
 	// Weapon model - These are the constant matrices that moves the 
@@ -56,10 +59,23 @@ Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, 
 
 }
 
+Weapon::~Weapon()
+{
+    delete m_projectileData;
+}
+
 void Logic::Weapon::reset()
 {
 	m_ammo = m_ammoCap;
 	m_magAmmo = m_magSize;
+}
+
+void Weapon::setSpawnFunctions(ProjectileManager &projManager)
+{
+    SpawnProjectile = [&](ProjectileData& pData, btVector3 position,
+        btVector3 forward, Entity& shooter) -> Projectile* {
+        return projManager.addProjectile(pData, position, forward, shooter);
+    };
 }
 
 void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
@@ -70,7 +86,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 		for (int i = m_projectileCount; i--; )
 		{
 			btVector3 projectileDir = calcSpread(yaw, pitch);
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
+			SpawnProjectile(*m_projectileData, position, projectileDir, shooter);
 		}
 	}
 	else									// No spread
@@ -81,7 +97,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
 			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
 			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
+			SpawnProjectile(*m_projectileData, position, projectileDir, shooter);
 		}
 	}
 }
@@ -136,9 +152,9 @@ void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTrans
 	this->setWorldTranslation(result);
 }
 
-ProjectileData * Weapon::getProjectileData()
+ProjectileData* Weapon::getProjectileData()
 {
-	return &m_projectileData;
+	return m_projectileData;
 }
 
 int Weapon::getAmmoCap() { return m_ammoCap; }

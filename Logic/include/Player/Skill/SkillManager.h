@@ -9,15 +9,25 @@
 		*/
 #pragma endregion
 
-#include <Graphics\include\Renderer.h>
-#include <Player\Skill\SkillBulletTime.h>
-#include <Player\Skill\SkillGrapplingHook.h>
-#include <Player\Skill\SkillShieldCharge.h>
-#include <Projectile\ProjectileManager.h>
 #include <vector>
+#include <d3d11.h>
+#include <SimpleMath.h>
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
+
+namespace Graphics
+{
+    class Renderer;
+}
 
 namespace Logic
 {
+    class Physics;
+    class Entity;
+    class ProjectileManager;
+    class Skill;
+    enum GrapplingHookState;
+
 	class SkillManager
     {
 	public:
@@ -38,7 +48,7 @@ namespace Logic
 		SkillManager();
 		~SkillManager();
 
-		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
+		void init(Physics* physics, ProjectileManager* projectileManager);
 		void clear();
 
 		void switchToSkill(std::vector<int> skillsToUse);

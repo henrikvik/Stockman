@@ -1,5 +1,10 @@
 #include <DebugDefines.h>
 #include "Player/Skill/SkillManager.h"
+#include <Player\Skill\SkillBulletTime.h>
+#include <Player\Skill\SkillGrapplingHook.h>
+#include <Player\Skill\SkillShieldCharge.h>
+#include <Projectile\ProjectileManager.h>
+#include <Entity\Entity.h>
 
 using namespace Logic;
 
@@ -27,7 +32,7 @@ void SkillManager::clear()
 
 }
 
-void SkillManager::init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime)
+void SkillManager::init(Physics* physics, ProjectileManager* projectileManager)
 {
 	m_allSkills =
 	{
