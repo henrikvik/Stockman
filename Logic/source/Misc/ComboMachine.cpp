@@ -9,7 +9,7 @@ void ComboMachine::Reward(int score)
 }
 
 // Gives the player score depending on enemy type
-void ComboMachine::Kill(Enemy::ENEMY_TYPE type)
+void ComboMachine::Kill(ENEMY_TYPE type)
 {
 	CheckCombo();
 	m_Score += GetReward(type) * m_Combo;
@@ -71,7 +71,7 @@ void ComboMachine::ReadEnemyBoardFromFile(std::string path)
 }
 
 // Gets the price on each enemy's head
-int ComboMachine::GetReward(Enemy::ENEMY_TYPE type)
+int ComboMachine::GetReward(ENEMY_TYPE type)
 {
 	return m_Board[type];
 }

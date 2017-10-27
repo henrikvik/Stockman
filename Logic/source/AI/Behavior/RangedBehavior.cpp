@@ -26,9 +26,9 @@ RangedBehavior::RangedBehavior() :
 	
 	// SHOOT !
 	addNode(stay, NodeType::ACTION, 9999, [](RunIn& in) -> bool {
-		//if (RandomGenerator::singleton().getRandomInt(0,
-			//RangedBehavior::ABILITY_CHANCHE) == 0)
-			//in.enemy->useAbility(*in.target);
+		if (RandomGenerator::singleton().getRandomInt(0,
+			RangedBehavior::ABILITY_CHANCHE) == 0)
+			in.enemy->useAbility(*in.target);
 
 		return true;
 	});
