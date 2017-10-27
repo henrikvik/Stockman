@@ -19,8 +19,11 @@ SkillBulletTime::~SkillBulletTime()
     delete m_pData;
 }
 
-void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
+bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
+    setCanUse(false);
+    setCooldown(BULLET_TIME_CD);
+
 	printf("Bullet Time used.\n");
 	m_sensor = SpawnProjectile(*m_pData, shooter.getPositionBT(), forward, shooter);
 
@@ -38,6 +41,8 @@ void SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 	}
 
 	m_stacks = 0;
+
+    return true;
 
 	/*ProjectileData travelPData = m_projectileData;
 	travelPData.scale = 0.0001f;

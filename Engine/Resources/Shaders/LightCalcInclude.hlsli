@@ -220,7 +220,7 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
 
     float4 finalDiffuse = float4(saturate(pointDiffuse + directionalDiffuse).xyz, 1) * colorSample;
     
-    float4 ambient = float4(0.2, 0.2, 0.3, 1.0) * colorSample;
+    float4 ambient = float4(0.05, 0.05, 0.05, 1.0) * colorSample;
 
     float4 lighting = saturate(finalDiffuse + ambient);
     

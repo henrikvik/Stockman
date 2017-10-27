@@ -70,7 +70,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 			updateEnemies(i, player, deltaTime);
             if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) 
             {
-                PROFILE_BEGIN("ThreadHandler::doWork");
+                PROFILE_BEGIN("ThreadHandler::addWork");
                 m_threadHandler->addWork({ this, static_cast<int> (i), player });
                 PROFILE_END();
             }

@@ -78,6 +78,13 @@ namespace Graphics
 		//menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
 		createBlendState();
 
+		DebugWindow *debugWindow = DebugWindow::getInstance();
+		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
+		{
+			enablePostEffects = !enablePostEffects;
+
+			return "PostEffect Toggled";
+		});
 		registerDebugFunction();
 
 		statusData.burn = 0;
@@ -144,6 +151,7 @@ namespace Graphics
 		PROFILE_END();
 	}
 
+	//Radius is in pixels on screen, duration is in MS
     void Renderer::startShake(float radius, float duration)
     {
         hud.startShake(radius, duration);
@@ -354,6 +362,28 @@ namespace Graphics
 		{
 
 			///////Post effects
+
+            if (enableDOF)
+            {
+                PROFILE_BEGIN("Dof");
+
+                if (enableCoCWindow)
+                {
+                    ImGui::Begin("camera stuff");
+                    static float fp = 0.088f;
+                    static float fl = 0.05f;
+                    static float a = 0.12f;
+                    ImGui::SliderFloat("focal Plane", &fp, 0.0001f, .1f);
+                    ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
+                    ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
+                    DoFRenderer.updateCoc(deviceContext, fl, fp, a);
+                    ImGui::End();
+                }
+                DoFRenderer.DoFRender(deviceContext, fakeBackBuffer, &depthStencil, fakeBackBufferSwap, camera);
+                swapBackBuffers();
+                PROFILE_END();
+            }
+
 			if (enableGlow)
 			{
 				PROFILE_BEGIN("Glow");
@@ -370,35 +400,7 @@ namespace Graphics
 				PROFILE_END();
 			}
 
-			if (enableDOF)
-			{
-				PROFILE_BEGIN("Dof");
-				static bool wasPressed1 = false;
-				static bool isPressed1 = false;
-				static bool enableCoCWindow = false;
-
-				wasPressed1 = isPressed1;
-				isPressed1 = ks.K;
-
-				if (!wasPressed1 && isPressed1)
-					enableCoCWindow = !enableCoCWindow;
-
-				if (enableCoCWindow)
-				{
-					ImGui::Begin("camera stuff");
-					static float fp = 0.125f;
-					static float fl = 0.28f;
-					static float a = 0.1f;
-					ImGui::SliderFloat("focal Plane", &fp, 0.01f, 1.0f);
-					ImGui::SliderFloat("focal lenght", &fl, 0.01f, 1.0f);
-					ImGui::SliderFloat("apature", &a, 0.01f, 1.0f);
-					DoFRenderer.updateCoc(deviceContext, fp, fl, a);
-					ImGui::End();
-				}
-				DoFRenderer.DoFRender(deviceContext, fakeBackBuffer, &depthStencil, fakeBackBufferSwap, camera);
-				swapBackBuffers();
-				PROFILE_END();
-			}
+			
 
 			static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 			static UINT sampleMask = 0xffffffff;
@@ -755,7 +757,14 @@ namespace Graphics
 			std::string catcher = "";
 			try
 			{
-				this->statusData.freeze = std::stof(args[0]);
+                if (args.size() != 0)
+                {
+                    this->statusData.freeze = std::stof(args[0]);
+                }
+                else
+                {
+                    return "missing argument freeze amount";
+                }
 			}
 			catch (const std::exception&)
 			{
@@ -770,7 +779,14 @@ namespace Graphics
 			std::string catcher = "";
 			try
 			{
-				this->statusData.burn = std::stof(args[0]);
+                if (args.size() != 0)
+                {
+                    this->statusData.burn = std::stof(args[0]);
+                }
+                else
+                {
+                    return "missing argument burn amount";
+                }
 			}
 			catch (const std::exception&)
 			{
@@ -789,5 +805,20 @@ namespace Graphics
 
 			return catcher;
 		});
+
+		debugWindow->registerCommand("RELOADGLOWSHADERS", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+
+			glowRenderer.recompileGlow(device);
+
+			return catcher;
+		});
+        debugWindow->registerCommand("ENABLEDOFSLIDERS", [&](std::vector<std::string> &args)->std::string
+        {
+            enableCoCWindow = !enableCoCWindow;
+
+            return "Post effects toggled!";
+        });
 	}
 }

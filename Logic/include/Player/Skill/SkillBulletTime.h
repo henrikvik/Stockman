@@ -49,7 +49,7 @@ namespace Logic
 
         void setSpawnFunctions(ProjectileManager &projManager);
 
-		void onUse(btVector3 forward, Entity& shooter);
+		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
 
 		void onUpdate(float deltaTime);

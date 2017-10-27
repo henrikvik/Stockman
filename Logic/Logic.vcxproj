@@ -186,6 +186,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
+    <ClInclude Include="include\Entity\LightObject.h" />
     <ClInclude Include="include\AI\EnemyType.h" />
     <ClInclude Include="include\Misc\FPSRenderer.h" />
     <ClInclude Include="include\AI\Behavior\Pathing.h" />
@@ -221,6 +222,7 @@
     <ClInclude Include="include\Entity\Object.h" />
     <ClInclude Include="include\Misc\Enums.h" />
     <ClInclude Include="include\Misc\GUI\MenuMachine.h" />
+    <ClInclude Include="include\Misc\MapStructs.h" />
     <ClInclude Include="include\Misc\RandomGenerator.h" />
     <ClInclude Include="include\Misc\RenderRegister.h" />
     <ClInclude Include="include\Misc\Sound\NoiseStructs.h" />
@@ -250,6 +252,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Behavior\EnemyThreadHandler.cpp" />
+    <ClCompile Include="source\Entity\LightObject.cpp" />
     <ClCompile Include="source\Misc\FPSRenderer.cpp" />
     <ClCompile Include="source\AI\Behavior\Pathing.cpp" />
     <ClCompile Include="source\AI\Behavior\Behavior.cpp" />

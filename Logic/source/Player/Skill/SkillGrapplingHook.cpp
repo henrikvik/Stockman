@@ -7,10 +7,10 @@ using namespace Logic;
 #define GRAPPLING_HOOK_CD			50.f		// Cooldown in ms
 #define GRAPPLING_HOOK_RANGE		100.f		// Range in bulletphysics units (probably meters)
 #define GRAPPLING_HOOK_RANGE_MIN    8.f         // Min range
-#define GRAPPLING_HOOK_POWER		0.0011f	// The amount of power to reach the max speed
+#define GRAPPLING_HOOK_POWER		0.0011f	    // The amount of power to reach the max speed
 #define GRAPPLING_HOOK_MAX_SPEED_XZ	0.0615f		// The max speed in x & z
 #define GRAPPLING_HOOK_MAX_SPEED_Y	20.f		// The max speed in y
-#define GRAPPLING_HOOK_NON_HOOK_ANGLE 0.05f      // Can't hook if the angle between up vector and forward is less than this
+#define GRAPPLING_HOOK_NON_HOOK_ANGLE 0.05f     // Can't hook if the angle between up vector and forward is less than this
 
 SkillGrapplingHook::SkillGrapplingHook(Physics* physics)
 : Skill(GRAPPLING_HOOK_CD)
@@ -41,8 +41,10 @@ SkillGrapplingHook::~SkillGrapplingHook()
 }
 
 // When the grappling hook is used, send out a ray to the targeted surface and save variables
-void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
+bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 {
+    if (m_state == GrapplingHookStatePulling)
+        return false;
 
     if (abs(forward.dot({ 0.f, 1.f, 0.f })) > GRAPPLING_HOOK_NON_HOOK_ANGLE)
     {
@@ -74,21 +76,24 @@ void SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
                     m_goingUp = true;
 
                 m_dirToPoint = (m_point - shooter.getPositionBT()).normalize();
+
+                return true;
             }
         }
     }
+    return false;
 }
 
 // On button release
 void SkillGrapplingHook::onRelease()
 {
 	// If unsuccesful hook, don't put full cooldown
-	if (!m_shooter)
+/*	if (!m_shooter)
 	{
 		setCooldown(GRAPPLING_HOOK_CD);
 		setCanUse(true);
 	}
-	else if (Player* player = dynamic_cast<Player*>(m_shooter))
+	else */ if (Player* player = dynamic_cast<Player*>(m_shooter))
 	{
 		float yVel = player->getCharController()->getLinearVelocity().y();
         player->getCharController()->setFallSpeed(1.f);

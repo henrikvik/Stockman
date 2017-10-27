@@ -9,6 +9,7 @@ Skill::Skill(float cooldown, float duration)
 	m_durationMax = duration;
 	m_duration = -1.f;
 	m_canUse = true;
+    m_active = false;
 }
 
 Skill::~Skill() { }
@@ -17,20 +18,22 @@ void Skill::use(btVector3 forward, Entity& shooter)
 {
 	if (m_canUse)
 	{
-		onUse(forward, shooter);
-		m_duration = m_durationMax;
+        if (onUse(forward, shooter))
+        {
+            m_duration = m_durationMax;
+            m_active = true;
+        }
 	}
 }
 
 void Skill::release()
 {
-	if (m_canUse)
+	if (m_active)
 	{
-		// Reset cooldown
-		m_cooldown = m_cooldownMax;
-		m_canUse = false;
-
 		// Specific release stuff
+        m_cooldown = m_cooldownMax;
+        m_canUse = false;
+        m_active = false;
 		onRelease();
 	}
 }
@@ -38,7 +41,7 @@ void Skill::release()
 void Skill::update(float deltaTime)
 {
 	// Reloading
-	if (m_cooldown < 0)
+	if (m_cooldown < 0 && !m_active) 
 		m_canUse = true;
 	else 
 		m_cooldown -= deltaTime;

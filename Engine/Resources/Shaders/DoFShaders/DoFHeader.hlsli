@@ -13,7 +13,7 @@ SamplerState linearSampler : register(s1);
 #define apature .1f
 #define focalLenght .21f
 #define focalPlane 5.0f
-#define DoFkernel 3
+#define DoFkernel 2
 
 
 //#define CoCScale ((apature * focalLenght * (farP-nearP)) / ((focalPlane - focalLenght) * nearP * farP))
@@ -26,7 +26,7 @@ float CoCBlur(Texture2D inTexture, float2 uv, float baseCoC, half4 inColor, floa
     bool blurNear = (color.w < 0.0f);
 
 
-    float absCoC = abs(color.w);
+    half absCoC = abs(color.w);
     if (absCoC > stepDistance && blurNear || (baseCoC > 0.0f && absCoC < baseCoC * 2.0f))
     {
         if (blurNear)
@@ -44,7 +44,7 @@ float CoCBlur(Texture2D inTexture, float2 uv, float baseCoC, half4 inColor, floa
 
             }
         }
-        float sampleFraction = saturate((absCoC - stepDistance) / ONE_OVER_SCREEN_SIZE.y);
+        half sampleFraction = saturate((absCoC - stepDistance) / ONE_OVER_SCREEN_SIZE.y);
         outColor.xyz += sampleFraction * color.xyz;
 
         return sampleFraction;

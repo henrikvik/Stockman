@@ -30,7 +30,7 @@ namespace Logic
 		virtual ~Skill();
 
 		void use(btVector3 forward, Entity& shooter);
-		virtual void onUse(btVector3 forward, Entity& shooter) = 0;
+		virtual bool onUse(btVector3 forward, Entity& shooter) = 0;
 
 		void release();
 		virtual void onRelease() = 0;
@@ -56,6 +56,7 @@ namespace Logic
 		float	m_duration;
 		float	m_durationMax;
 		bool	m_canUse;
+        bool    m_active;
 	};
 }
 #endif
