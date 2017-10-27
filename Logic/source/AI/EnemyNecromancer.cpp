@@ -1,6 +1,7 @@
 #include <AI\EnemyNecromancer.h>
 #include <AI\Behavior\RangedBehavior.h>
 #include <Misc\RandomGenerator.h>
+#include <Projectile\Projectile.h>
 
 using namespace Logic;
 
