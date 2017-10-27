@@ -1,16 +1,24 @@
 #include "Player/Player.h"
-#include <AI\EnemyTest.h>
-#include <AI\Trigger.h>
+
 #include <DebugDefines.h>
 #include <Misc\ComboMachine.h>
-#include <Engine\Profiler.h>
+
+#include <AI\EnemyTest.h>
+#include <AI\Trigger.h>
+
 #include <Projectile\ProjectileManager.h>
+
 #include <Player\Weapon\WeaponManager.h>
 #include <Player\Weapon\Weapon.h>
+
 #include <Player\Skill\SkillManager.h>
 #include <Player\Skill\Skill.h>
+
 #include <Misc\Sound\NoiseStructs.h>
 #include <Graphics\include\Renderer.h>
+
+#include <Engine\Profiler.h>
+#include <Engine\DebugWindow.h>
 
 using namespace Logic;
 
@@ -65,6 +73,19 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 
 	m_playerState = PlayerState::STANDING;
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
+
+    DebugWindow::getInstance()->registerCommand("SETMOUSESENS", [&](std::vector<string> &para) -> std::string {
+        try 
+        { // Boilerplate code bois
+            m_mouseSens = stof(para[0]);
+        }
+        catch (int i)
+        {
+            return "That is not going to work";
+        }
+        return "Mouse sens set";
+    });
+
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
 	m_moveDir.setZero();
