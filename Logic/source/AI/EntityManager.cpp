@@ -96,34 +96,35 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 	
 	for (size_t i = 0; i < enemies.size(); ++i)
 	{
-		enemy = m_enemies[index][i];
-        updateEnemy(enemy, index, player, deltaTime);
-
-        if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, index))
-        {
-            int newIndex = AStar::singleton().getIndex(*enemy);
-
-            std::swap(enemies[i], enemies[enemies.size() - 1]);
-            enemies.pop_back();
-
-            m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
-        }
+        updateEnemy(enemies[i], enemies, i, index, player, deltaTime, swapOnNewIndex);
 	}
 }
 
-void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, float deltaTime)
+void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, 
+    int enemyIndex, int flockIndex, Player const &player, float deltaTime, bool swapOnNewIndex)
 {
-    enemy->update(player, deltaTime, m_enemies[index]);
+    enemy->update(player, deltaTime, flock);
 
-    if (enemy->getHealth() <= 0)
+    if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, flockIndex))
     {
-        // Adds the score into the combo machine
-        ComboMachine::Get().Kill(ENEMY_TYPE(enemy->getEnemyType()));
-        enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
+        int newIndex = AStar::singleton().getIndex(*enemy);
+        std::swap(
+            flock[enemyIndex],
+            flock[flock.size() - 1]
+        );
+        flock.pop_back();
 
-        std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);
+        m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
+    }
+    else if (enemy->getHealth() <= 0)
+    {
+        std::swap(
+            flock[enemyIndex],
+            flock[flock.size() - 1]
+        );
+
         m_deadEnemies.push_back(enemy);
-        m_enemies[index].pop_back();
+        flock.pop_back();
     }
 }
 
