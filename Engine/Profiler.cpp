@@ -207,6 +207,34 @@ void Profiler::begin(const char * name, EventColor color)
 	}
 }
 
+void Profiler::beginf(const char * fmt, ...)
+{
+    Thread *thread = t_LocalThreadProfiler.thread;
+    if (thread && t_LocalThreadProfiler.active && m_CaptureThisFrame) {
+        Event ev;
+        ev.color = EventColor::Inherit;
+        va_list args;
+        va_start(args, fmt);
+        vsprintf_s(ev.name, fmt, args);
+        va_end(args);
+        
+        
+        QueryPerformanceCounter(&ev.start);
+
+        if (t_LocalThreadProfiler.level == 0) {
+            thread->events[thread->count++] = ev;
+        }
+        else {
+            ev.parent = t_LocalThreadProfiler.current_idx;
+            thread->events[thread->count++] = ev;
+        }
+
+        t_LocalThreadProfiler.level++;
+        thread->depth = max(thread->depth, t_LocalThreadProfiler.level);
+        t_LocalThreadProfiler.current_idx = thread->count - 1;
+    }
+}
+
 void Profiler::end()
 {
 	Thread *thread = t_LocalThreadProfiler.thread;
@@ -326,18 +354,21 @@ void Profiler::render()
 
 	ImGui::EndChild();
 
-	bool threads_open[16] = {};
+	bool threads_open[16] = { true, false, false, false, false };
 	ImGui::BeginChild("threads", ImVec2(180, 0), true);
 	{
 		for (int i = 0; i < threadCount; i++) {
 			Thread &thread = frame.m_Threads[i];
-			if (ImGui::CollapsingHeader(thread.name)) {
+			if (ImGui::CollapsingHeader(thread.name, "asdasdasd", true, threads_open[i])) {
 				threads_open[i] = true;
 				if (thread.depth > 0) {
 					ImGui::BeginChild(thread.name + 1, ImVec2(0, max(1, (thread.depth - 1) * 19)), true);
 					ImGui::EndChild();
 				}
-			}
+            }
+            else {
+                threads_open[i] = false;
+            }
 		}
 	}
 	ImGui::EndChild();
@@ -360,7 +391,7 @@ void Profiler::render()
 			temp.yoffset = y;
 
 			if (thread.count >= 1) {
-				RenderEventNodes(thread, frame.start, 0, 0, true);
+				RenderEventNodes(thread, frame.start, 0, 0, threads_open[i]);
 			}
 
 			if (threads_open[i])
@@ -468,7 +499,8 @@ void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int 
 		ImGui::SetCursorPosY(temp.yoffset + 8 + 19 * depth);
 
 		if (evt.color == EventColor::Inherit) {
-			evt.color = parent->color;
+            // TODO: add lazy random color if we dont have a parent
+			evt.color = parent ? parent->color : (EventColor)((i % 4) * 5 + 1 + (depth % 4));
 		}
 		auto col_idx = ((int)evt.color - 1) * 5;
 		auto col = EVENT_COLORS[col_idx + 1 + (depth) % 4];
