@@ -38,7 +38,7 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager)
         { new SkillBulletTime(projectileManager, ProjectileData(0, 100, 0, 0, 0.f, BULLET_TIME_DURATION, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeBulletTimeSensor)) }
     };
 
-    switchToSkill({ SKILL_GRAPPLING_HOOK, SKILL_SHIELD_CHARGE, SKILL_BULLET_TIME });
+    switchToSkill({ SKILL_SHIELD_CHARGE, SKILL_GRAPPLING_HOOK, SKILL_BULLET_TIME });
 }
 
 // Switches out currently active skills to a new list of skill, by using the parameter's skill indexes
