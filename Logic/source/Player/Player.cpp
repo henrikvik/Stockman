@@ -245,37 +245,6 @@ void Player::updateSpecific(float deltaTime)
 	btVector3 actualUp	= right.cross(forward);
 	m_listenerData->update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 
-    //updates hudInfo with the current info
-	info->score = ComboMachine::Get().GetCurrentScore();
-    info->hp = m_hp;
-    info->activeAmmo[0] = m_weaponManager->getActiveWeapon()->getMagAmmo();
-    info->activeAmmo[1] = m_weaponManager->getActiveWeapon()->getAmmo();
-    info->inactiveAmmo[0] = m_weaponManager->getInactiveWeapon()->getMagAmmo();
-    info->inactiveAmmo[1] = m_weaponManager->getInactiveWeapon()->getAmmo();
-    if (m_weaponManager->getCurrentWeaponPrimary()->getMagSize() == 0)
-    {
-        info->sledge  = true;
-    }
-    else
-    {
-        info->sledge = false;
-    }
-
-    // HUD info on the first skill
-    Skill* primary = m_skillManager->getSkill(SkillManager::ID::PRIMARY);
-    if (!primary->getCanUse())
-        info->cd = primary->getCooldown() / primary->getCooldownMax();
-    else
-        info->cd = 1.0f;
-
-    // HUD info on the second skill
-//    Skill* secondary = m_skillManager->getSkill(SkillManager::SKILL_ID::SECONDARY);
-//    if (!secondary->getCanUse())
-//        info->cd = secondary->getCooldown() / secondary->getCooldownMax();
-//    else
-//        info->cd = 1.0f;
-
-    
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();

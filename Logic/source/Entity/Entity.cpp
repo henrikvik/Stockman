@@ -18,7 +18,8 @@ Entity::~Entity()
 
 void Entity::setSpawnFunctions(std::function<Projectile*(ProjectileData& pData,
     btVector3 position, btVector3 forward, Entity& shooter)> spawnProjectile,
-    std::function<Enemy*(btVector3 &pos, ENEMY_TYPE type)> spawnEnemy,
+    std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
+        std::vector<int> effects)> spawnEnemy,
     std::function<Trigger*(int id, btVector3 const &pos,
         std::vector<int> &effects)> spawnTrigger)
 {

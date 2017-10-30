@@ -251,6 +251,7 @@
     <ClInclude Include="include\Entity\StaticObject.h" />
     <ClInclude Include="include\Misc\Sound\NoiseMachine.h" />
     <ClInclude Include="include\AI\Behavior\MeleeBehavior.h" />
+    <ClInclude Include="include\AI\WaveTimeManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Behavior\MeleeBehavior.cpp" />
@@ -304,6 +305,7 @@
     <ClCompile Include="source\Entity\Upgrade.cpp" />
     <ClCompile Include="source\Entity\StatusManager.cpp" />
     <ClCompile Include="source\AI\WaveManager.cpp" />
+    <ClCompile Include="source\AI\WaveTimeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

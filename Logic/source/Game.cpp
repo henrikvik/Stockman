@@ -3,8 +3,13 @@
 #include <Engine\Typing.h>
 #include <DebugDefines.h>
 
-
 using namespace Logic;
+
+const int Game::NUMBER_OF_UNIQUE_CARDS      = 13;
+
+const GameState Game::STATE_START           = gameStateMenuMain;
+const btVector3 Game::PLAYER_START_SCALE    = { 1.5f, 3.0f, 1.5f };
+const btVector3 Game::PLAYER_START_ROTATION = { 0.0f, 0.0f, 0.0f };
 
 Game::Game()
 {
@@ -41,7 +46,7 @@ void Game::init()
 	m_projectileManager = new ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
+	m_player = new Player(Graphics::ModelID::CUBE, nullptr, Game::PLAYER_START_SCALE);
 	m_player->init(m_physics, m_projectileManager);
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
 
@@ -51,25 +56,16 @@ void Game::init()
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine(m_highScoreManager->getName());
-	m_menu->initialize(STARTING_STATE); 
+	m_menu->initialize(Game::STATE_START);
 
 	// Initializing the Map
 	m_map = newd Map();
 	m_map->init(m_physics);
 
-	// Load these from a file at a later dates
-	m_waveTimer		= NULL;
-	m_waveCurrent	= WAVE_START;
-	m_waveTime[0]	= WAVE_1_TIME;
-	m_waveTime[1]	= WAVE_2_TIME;
-	m_waveTime[2]	= WAVE_3_TIME;
-	m_waveTime[3]	= WAVE_4_TIME;
-	m_waveTime[4]	= WAVE_5_TIME;
-
 	// Initializing Card Manager
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
-	m_cardManager->createDeck(NUMBER_OF_EACH_CARD);
+	m_cardManager->createDeck(Game::NUMBER_OF_UNIQUE_CARDS);
 
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
@@ -115,45 +111,6 @@ void Game::reset()
 	m_player->reset();
 	
 	ComboMachine::Get().Reset();
-	m_waveTimer = NULL;
-	m_waveCurrent = WAVE_START;
-}
-
-// Keeps check on which wave the game is on, and spawns incoming waves
-void Game::waveUpdater()
-{
-	static bool	end = false;
-	if (!end)
-	{
-		m_waveTimer += m_gameTime.dt;
-		if (m_waveTimer > m_waveTime[m_waveCurrent])
-		{
-			// Spawning next wave
-			// Enrage
-			int affectedEnemies = m_entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE);
-			if (affectedEnemies > 0)
-			{
-			//	NoiseMachine::Get().setGroupVolume(CHANNEL_GROUP::CHANNEL_MUSIC, 0.1f);
-			//	NoiseMachine::Get().setGroupPitch(CHANNEL_GROUP::CHANNEL_MUSIC, 1.5f);
-			//	NoiseMachine::Get().playMusic(MUSIC::ENRAGE, m_player->getSoundSource(), false);
-			}
-
-			m_waveCurrent++;
-			printf("Spawing wave: %d\n", m_waveCurrent);
-			m_entityManager.setCurrentWave(m_waveCurrent);
-			m_entityManager.spawnWave(*m_physics, m_projectileManager);
-
-			// If the player have completed all the waves
-			if (m_waveCurrent == MAX_WAVES)
-			{
-				printf("No more waves.");
-				end = true;
-			}
-		}
-        m_player->updateWaveInfo(m_waveCurrent + 1,
-            m_entityManager.getNrOfAliveEnemies(),
-            (float)((m_waveTime[m_waveCurrent] - m_waveTimer) * 0.001));
-	}
 }
 
 void Game::update(float deltaTime)
@@ -238,7 +195,7 @@ void Game::update(float deltaTime)
 void Game::gameRunTime(float deltaTime)
 {
 	ComboMachine::Get().Update(deltaTime);
-	waveUpdater();
+	m_waveTimeManager.update(deltaTime, m_entityManager);
 
 	PROFILE_BEGIN("Sound");
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());

@@ -33,11 +33,6 @@
 #define PLAYER_AIR_FRICTION				1.f
 #define PLAYER_JUMP_SPEED				0.008f
 
-namespace Graphics
-{
-    struct HUDInfo;
-}
-
 namespace Sound
 {
     struct ListenerData;

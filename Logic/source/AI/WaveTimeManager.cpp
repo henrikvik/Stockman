@@ -1,0 +1,67 @@
+#include <AI\WaveTimeManager.h>
+#include <AI\EntityManager.h>
+using namespace Logic;
+
+WaveTimeManager::WaveTimeManager()
+{
+    m_timeCurrent = 0.f;
+    m_timeRequired = 0.f;
+
+    m_onLastWave = false;
+    m_enraged = false;
+}
+
+
+WaveTimeManager::~WaveTimeManager()
+{
+}
+
+void WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
+{
+    if (!onLastWave)
+    {
+        m_timeCurrent += deltaTime;
+        if (m_timeCurrent > m_timeRequired)
+        {
+            if (m_enraged && entityManager.getNrOfAliveEnemies() > 0)
+            {
+                // do something fun
+            } 
+            else
+            {
+                m_enraged = entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE) > 0;
+                if (!m_enraged)
+                    entityManager.spawnWave(++m_waveCurrent);
+
+                    // If the player have completed all the waves
+                    if (m_waveCurrent == entityManager.getWaveManager().getWaveInformation().nrOfWaves)
+                        m_onLastWave = true;
+                }
+            }
+        }
+        /*
+        m_player->updateWaveInfo(m_waveCurrent + 1,
+            m_entityManager.getNrOfAliveEnemies(),
+            (float)((currentWaveTime - m_waveTimer) * 0.001)); */
+    }
+}
+
+int WaveTimeManager::getCurrentWave() const
+{
+    return m_waveCurrent;
+}
+
+float WaveTimeManager::getTimeCurrent() const
+{
+    return m_timeCurrent;
+}
+
+float WaveTimeManager::getTimeRequired() const
+{
+    return m_timeRequired;
+}
+
+bool WaveTimeManager::onLastWave() const
+{
+    return m_onLastWave;
+}
