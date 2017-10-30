@@ -31,12 +31,12 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
 {
     active = *info;
     loadTextures(device, contex);
-    //float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
     if (buttonsMaped && active.m_menuTexture != -1)
     {
         buttonsMaped = false;
     }
-    //contex->ClearRenderTargetView(backBuffer, clearColor);
+    contex->ClearRenderTargetView(backBuffer, clearColor);
 
     static UINT stride = sizeof(Graphics::TriangleVertex), offset = 0;
     contex->IASetVertexBuffers(0, 1, &menuQuad, &stride, &offset);
