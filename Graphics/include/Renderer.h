@@ -22,7 +22,7 @@
 #include "SSAORenderer.h"
 #include "Fog.H"
 #include "DoF.h"
-//#include "SnowManager.h"
+#include "SnowManager.h"
 
 #include <SpriteBatch.h>
 
@@ -116,7 +116,7 @@ namespace Graphics
         //temp
         ID3D11ShaderResourceView * glowTest;
 
-		//SnowManager snowManager;
+		SnowManager snowManager;
 
 
 		//superTemp

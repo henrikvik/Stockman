@@ -47,7 +47,7 @@ namespace Graphics
 #pragma region Foliage
 		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
 		, timeBuffer(device)
-		//, snowManager(device)
+		, snowManager(device)
 
 
 #pragma endregion
@@ -115,13 +115,18 @@ namespace Graphics
 
         //temp
         DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
-		//snowManager.initializeSnowflakes(camera);
+		snowManager.initializeSnowflakes(camera);
     }
 
 	void Renderer::updateLight(float deltaTime, Camera * camera)
 	{
 		PROFILE_BEGIN("UpdateLights()");
 		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
+		PROFILE_END();
+
+		//Temp or rename function
+		PROFILE_BEGIN("updateSnow()");
+		snowManager.updateSnow(deltaTime, camera, deviceContext);
 		PROFILE_END();
 	}
 
@@ -359,7 +364,7 @@ namespace Graphics
 
 #endif
 		auto ks = DirectX::Keyboard::Get().GetState();
-		
+
 		
 		if (enablePostEffects)
 		{

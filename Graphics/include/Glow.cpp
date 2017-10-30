@@ -10,7 +10,7 @@
 
 Graphics::Glow::Glow(ID3D11Device * device, ID3D11DeviceContext * context)
 	: glow(device, SHADER_PATH("GlowShaders/GlowBlurHorizontal.hlsl"), {})
-	, glow2(device, SHADER_PATH("GlowShaders/glowBlurVertical.hlsl"), {})
+	, glow2(device, SHADER_PATH("GlowShaders/GlowBlurVertical.hlsl"), {})
 	, merger(device, SHADER_PATH("GlowShaders/Merger.hlsl"), {})
 	, mipGenerator(device, SHADER_PATH("GlowShaders/GlowDownSampler.hlsl"), {})
 	, mipCombinder(device, SHADER_PATH("GlowShaders/GlowMipCombinder.hlsl"), {})

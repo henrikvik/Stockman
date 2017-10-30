@@ -1,19 +1,13 @@
 #pragma once
 #include "Camera.h"
 #include <vector>
+#define MAX_SNOW 256
 
 namespace Graphics 
 {
 	class SnowManager
 	{
 	public:
-		struct SnowFlake
-		{
-			DirectX::SimpleMath::Vector3 position;
-		};
-
-		DirectX::SimpleMath::Vector3 velocity;
-
 		SnowManager(ID3D11Device * device);
 		~SnowManager();
 
@@ -21,21 +15,29 @@ namespace Graphics
 		void initializeSnowflakes(Camera * camera);
 
 	private:
-		struct FrustumPlane
+		struct Plane
 		{
-			DirectX::SimpleMath::Vector4 leftPlane;
-			DirectX::SimpleMath::Vector4 rightPlane;
-			DirectX::SimpleMath::Vector4 upPlane;
-			DirectX::SimpleMath::Vector4 bottomPlane;
-			DirectX::SimpleMath::Vector4 farPlane;
+			DirectX::SimpleMath::Vector3 normal;
+			float distance;
+		};
+		struct FrustumPlanes
+		{
+			Plane leftPlane;
+			Plane rightPlane;
+			Plane topPlane;
+			Plane bottomPlane;
+			Plane nearPlane;
+			Plane farPlane;
 		};
 
-		ConstantBuffer<SnowFlake> snowBuffer;
+		ConstantBuffer<DirectX::SimpleMath::Vector3, MAX_SNOW> snowBuffer;
 
-		std::vector<SnowFlake> snowFlakes;
+		std::vector<DirectX::SimpleMath::Vector3> positions;
+		std::vector<DirectX::SimpleMath::Vector3> velocities;
 
-		void addSnowFlake(Camera * camera);
-		FrustumPlane generatePlanes(Camera * camera);
-
+		void addSnowFlake(FrustumPlanes& planes, Camera * camera);
+		FrustumPlanes generatePlanes(Camera * camera);
+		bool isPointInFrontOfPlane(Plane plane, DirectX::SimpleMath::Vector3 point);
+		bool isInFrustum(FrustumPlanes& planes, DirectX::SimpleMath::Vector3 point);
 	};
 }
