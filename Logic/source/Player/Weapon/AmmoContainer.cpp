@@ -22,7 +22,7 @@ void Logic::AmmoContainer::reset()
     m_aInfo.magAmmo = m_aInfo.magSize;
 }
 
-AmmoContainer::AmmoInfo& AmmoContainer::getAmmoInfo()
+const AmmoContainer::AmmoInfo& AmmoContainer::getAmmoInfo() const
 {
     return m_aInfo;
 }
@@ -41,6 +41,11 @@ void AmmoContainer::removeSecondaryAmmo()
         m_aInfo.magAmmo = 0;
     else
         m_aInfo.magAmmo -= m_aInfo.secAmmoConsumption;
+}
+
+void Logic::AmmoContainer::setAmmo(int ammo)
+{
+    m_aInfo.ammo = ammo;
 }
 
 void AmmoContainer::fillMag()

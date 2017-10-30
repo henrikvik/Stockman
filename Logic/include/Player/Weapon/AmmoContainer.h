@@ -24,10 +24,11 @@ namespace Logic
 
         void reset();
 
-        AmmoContainer::AmmoInfo& getAmmoInfo();
+        const AmmoContainer::AmmoInfo& getAmmoInfo() const;
 
         void removePrimaryAmmo();
         void removeSecondaryAmmo();
+        void setAmmo(int ammo);
         void fillMag();
 
     private:

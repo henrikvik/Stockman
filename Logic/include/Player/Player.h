@@ -43,6 +43,7 @@ namespace Logic
     class Physics;
     class WeaponManager;
     class Weapon;
+    struct AmmoContainer;
     class SkillManager;
     class Skill;
     class ProjectileManager;
@@ -170,8 +171,8 @@ namespace Logic
 		PlayerState getPlayerState() const;
 		Sound::ListenerData& getListenerData();
 
-        const Weapon* getMainHand() const;
-        const Weapon* getOffHand() const;
+        const AmmoContainer& getActiveAmmoContainer() const;
+        const AmmoContainer& getInactiveAmmoContainer() const;
         const Skill* getSkill(int id) const;
         bool isUsingMeleeWeapon() const;
 

@@ -10,6 +10,7 @@
 
 #include <Player\Weapon\WeaponManager.h>
 #include <Player\Weapon\Weapon.h>
+#include <Player\Weapon\AmmoContainer.h>
 
 #include <Player\Skill\SkillManager.h>
 #include <Player\Skill\Skill.h>
@@ -18,7 +19,6 @@
 #include <Graphics\include\Renderer.h>
 #include <Physics\Physics.h>
 #include <Projectile\Projectile.h>
-#include <Player\Weapon\AmmoContainer.h>
 
 #include <Engine\Profiler.h>
 #include <Engine\DebugWindow.h>
@@ -172,10 +172,10 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
         {
             int magSize = wp->ammoContainer->getAmmoInfo().magSize;
             int currentAmmo = wp->ammoContainer->getAmmoInfo().ammo;
-            if (currentAmmo + magSize > wp->ammoContainer->getAmmoInfo().ammoCap)
-                wp->ammoContainer->getAmmoInfo().ammo = wp->ammoContainer->getAmmoInfo().ammoCap;
+            if ((currentAmmo + magSize) > wp->ammoContainer->getAmmoInfo().ammoCap)
+                wp->ammoContainer->setAmmo(wp->ammoContainer->getAmmoInfo().ammoCap);
             else
-                wp->ammoContainer->getAmmoInfo().ammo = currentAmmo + magSize;
+                wp->ammoContainer->setAmmo(currentAmmo + magSize);
         }
 	}
 }
@@ -235,37 +235,6 @@ void Player::updateSpecific(float deltaTime)
 	btVector3 actualUp	= right.cross(forward);
 	m_listenerData->update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 
-    //updates hudInfo with the current info
-	info->score = ComboMachine::Get().GetCurrentScore();
-    info->hp = m_hp;
-    info->activeAmmo[0] = m_weaponManager->getActiveWeapon()->getMagAmmo();
-    info->activeAmmo[1] = m_weaponManager->getActiveWeapon()->getAmmo();
-    info->inactiveAmmo[0] = m_weaponManager->getInactiveWeapon()->getMagAmmo();
-    info->inactiveAmmo[1] = m_weaponManager->getInactiveWeapon()->getAmmo();
-    if (m_weaponManager->getCurrentWeaponPrimary()->getMagSize() == 0)
-    {
-        info->sledge  = true;
-    }
-    else
-    {
-        info->sledge = false;
-    }
-
-    // HUD info on the first skill
-    Skill* primary = m_skillManager->getSkill(SkillManager::ID::PRIMARY);
-    if (!primary->getCanUse())
-        info->cd = primary->getCooldown() / primary->getCooldownMax();
-    else
-        info->cd = 1.0f;
-
-    // HUD info on the second skill
-//    Skill* secondary = m_skillManager->getSkill(SkillManager::SKILL_ID::SECONDARY);
-//    if (!secondary->getCanUse())
-//        info->cd = secondary->getCooldown() / secondary->getCooldownMax();
-//    else
-//        info->cd = 1.0f;
-
-    
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
@@ -732,14 +701,14 @@ Sound::ListenerData& Player::getListenerData()
 	return *m_listenerData;
 }
 
-const Weapon* Player::getMainHand() const
+const AmmoContainer& Player::getActiveAmmoContainer() const
 {
-    return m_weaponManager->getActiveWeapon();
+    return *m_weaponManager->getActiveWeaponLoadout()->ammoContainer;
 }
 
-const Weapon* Player::getOffHand() const
+const AmmoContainer& Player::getInactiveAmmoContainer() const
 {
-    return m_weaponManager->getInactiveWeapon();
+    return *m_weaponManager->getInactiveWeaponLoadout()->ammoContainer;
 }
 
 const Skill* Player::getSkill(int id) const
@@ -749,5 +718,5 @@ const Skill* Player::getSkill(int id) const
 
 bool Player::isUsingMeleeWeapon() const
 {
-    return m_weaponManager->getActiveWeapon()->getAmmoConsumption() == 0;
+    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().primAmmoConsumption == 0;
 }
