@@ -210,7 +210,7 @@ bool Game::updateMenu(float deltaTime)
 
 void Game::updateGame(float deltaTime)
 {
-	ComboMachine::Get().Update(deltaTime);
+   	ComboMachine::Get().Update(deltaTime);
 	m_waveTimeManager.update(deltaTime, m_entityManager);
 
 	PROFILE_BEGIN("Sound");
@@ -263,6 +263,8 @@ void Game::gameOver()
 
 void Game::render(Graphics::Renderer& renderer)
 {
+    renderer.startShake(50.f, 5000.f);
+
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
