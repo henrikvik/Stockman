@@ -109,12 +109,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 void Player::clear()
 {
 	m_weaponManager->clear();
-	m_skillManager->clear();
     delete m_weaponManager;
     delete m_skillManager;
-
 	delete m_charController;
-
     delete m_listenerData;
 }
 
@@ -711,6 +708,16 @@ Sound::ListenerData& Player::getListenerData()
 	return *m_listenerData;
 }
 
+SkillManager* Player::getSkillManager()
+{
+    return m_skillManager;
+}
+
+WeaponManager* Player::getWeaponManager()
+{
+    return m_weaponManager;
+}
+
 const Weapon* Player::getMainHand() const
 {
     return m_weaponManager->getActiveWeapon();
@@ -729,9 +736,4 @@ const Skill* Player::getSkill(int id) const
 bool Player::isUsingMeleeWeapon() const
 {
     return m_weaponManager->getActiveWeapon()->getAmmoConsumption() == 0;
-}
-
-int Logic::Player::getCurrentWeapon() const
-{
-    return this->currentWeapon;
 }
