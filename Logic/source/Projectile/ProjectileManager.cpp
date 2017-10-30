@@ -1,6 +1,8 @@
 #include "../Projectile/ProjectileManager.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <Physics\Physics.h>
+#include <Projectile\Projectile.h>
 
 using namespace Logic;
 

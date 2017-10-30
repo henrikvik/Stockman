@@ -11,6 +11,8 @@
 #include <Player\Skill\Skill.h>
 #include <Misc\Sound\NoiseStructs.h>
 #include <Graphics\include\Renderer.h>
+#include <Physics\Physics.h>
+#include <Projectile\Projectile.h>
 
 using namespace Logic;
 

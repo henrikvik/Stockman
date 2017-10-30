@@ -7,35 +7,13 @@ using namespace Logic;
 
 Weapon::Weapon()
 {
-	m_weaponID			= -1;
-	m_ammoCap			= -1;
-	m_ammo				= -1;
-	m_magSize			= -1;
-	m_magAmmo			= -1;
-	m_ammoConsumption	= -1;
-	m_attackRate		= -1;
-	m_freeze			= -1;
-	m_reloadTime		= -1;
     m_projectileData = new ProjectileData();
 }
 
-Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime) : Object(modelID)
+Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo) : Object(modelID)
 {
-	m_weaponID			= weaponID;
-	m_ammoCap			= ammoCap;
-	m_ammo				= ammo;
-	m_magSize			= magSize;
-	m_magAmmo			= magAmmo;
-	m_ammoConsumption	= ammoConsumption;
-	m_projectileCount	= projectileCount;
-	m_spreadH			= spreadH;
-	m_spreadV			= spreadV;
-	m_attackRate		= attackRate;
-	m_freeze			= freeze;
-	m_reloadTime		= reloadTime;
+    m_wInfo = wInfo;
     m_projectileData    = new ProjectileData(projectileData);
-
 
     setSpawnFunctions(*projectileManager);
 
@@ -66,8 +44,8 @@ Weapon::~Weapon()
 
 void Logic::Weapon::reset()
 {
-	m_ammo = m_ammoCap;
-	m_magAmmo = m_magSize;
+	m_wInfo.ammo = m_wInfo.ammoCap;
+    m_wInfo.magAmmo = m_wInfo.magSize;
 }
 
 void Weapon::setSpawnFunctions(ProjectileManager &projManager)
@@ -81,9 +59,9 @@ void Weapon::setSpawnFunctions(ProjectileManager &projManager)
 void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
 	// Use weapon
-	if (m_spreadH != 0 || m_spreadV != 0)	// Spread
+	if (m_wInfo.spreadH != 0 || m_wInfo.spreadV != 0)	// Spread
 	{
-		for (int i = m_projectileCount; i--; )
+		for (int i = m_wInfo.projectileCount; i--; )
 		{
 			btVector3 projectileDir = calcSpread(yaw, pitch);
 			SpawnProjectile(*m_projectileData, position, projectileDir, shooter);
@@ -91,7 +69,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 	}
 	else									// No spread
 	{
-		for (int i = m_projectileCount; i--; )
+		for (int i = m_wInfo.projectileCount; i--; )
 		{
 			btVector3 projectileDir;
 			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
@@ -104,8 +82,8 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 
 btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 {
-	int rsh = (rand() % (2 * m_spreadH)) - m_spreadH;
-	int rsv = (rand() % (2 * m_spreadV)) - m_spreadV;
+	int rsh = (rand() % (2 * m_wInfo.spreadH)) - m_wInfo.spreadH;
+	int rsv = (rand() % (2 * m_wInfo.spreadV)) - m_wInfo.spreadV;
 
 	yaw += rsh;
 	pitch += rsv;
@@ -157,54 +135,54 @@ ProjectileData* Weapon::getProjectileData()
 	return m_projectileData;
 }
 
-int Weapon::getAmmoCap() { return m_ammoCap; }
+int Weapon::getAmmoCap() { return m_wInfo.ammoCap; }
 
-void Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
+void Weapon::setAmmoCap(int ammoCap) { m_wInfo.ammoCap = ammoCap; }
 
-int Weapon::getAmmo() { return m_ammo; }
+int Weapon::getAmmo() { return m_wInfo.ammo; }
 
-void Weapon::setAmmo(int ammo) { m_ammo = ammo; }
+void Weapon::setAmmo(int ammo) { m_wInfo.ammo = ammo; }
 
-int Weapon::getMagSize() { return m_magSize; }
+int Weapon::getMagSize() { return m_wInfo.magSize; }
 
-void Weapon::setMagSize(int magSize) { m_magSize = magSize; }
+void Weapon::setMagSize(int magSize) { m_wInfo.magSize = magSize; }
 
-int Weapon::getMagAmmo() { return m_magAmmo; }
+int Weapon::getMagAmmo() { return m_wInfo.magAmmo; }
 
-void Weapon::removeMagAmmo() { m_magAmmo--; }
+void Weapon::removeMagAmmo() { m_wInfo.magAmmo--; }
 
 void Weapon::removeMagAmmo(int ammo) 
 { 
-	if (ammo > m_magAmmo)
-		m_magAmmo = 0;
+	if (ammo > m_wInfo.magAmmo)
+        m_wInfo.magAmmo = 0;
 	else
-		m_magAmmo -= ammo; 
+        m_wInfo.magAmmo -= ammo;
 }
 
-int Weapon::getAmmoConsumption() { return m_ammoConsumption; }
+int Weapon::getAmmoConsumption() { return m_wInfo.ammoConsumption; }
 
 float Weapon::getAttackTimer()
 {
-	return (60.f / m_attackRate) * 1000;
+	return (60.f / m_wInfo.attackRate) * 1000;
 }
 
 float Logic::Weapon::getRealoadTime()
 {
-	return m_reloadTime;
+	return m_wInfo.reloadTime;
 }
 
 void Logic::Weapon::fillMag()
 {
-	int toAdd = m_magSize - m_magAmmo;
+	int toAdd = m_wInfo.magSize - m_wInfo.magAmmo;
 
-	if (m_ammo >= toAdd)
+	if (m_wInfo.ammo >= toAdd)
 	{
-		m_ammo -= toAdd;		// Remove ammo from total
-		m_magAmmo = m_magSize;	// Add ammo to mag
+        m_wInfo.ammo -= toAdd;		// Remove ammo from total
+        m_wInfo.magAmmo = m_wInfo.magSize;	// Add ammo to mag
 	}
 	else
 	{
-		m_magAmmo += m_ammo;	// Add rest of ammo to mag
-		m_ammo = 0;				// Remove rest of ammo from total
+        m_wInfo.magAmmo += m_wInfo.ammo;	// Add rest of ammo to mag
+        m_wInfo.ammo = 0;				// Remove rest of ammo from total
 	}
 }

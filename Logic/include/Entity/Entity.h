@@ -8,7 +8,6 @@
 #include "StatusManager.h"
 #include <AI\EnemyType.h>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 #include <Misc/Sound/NoiseMachine.h>
 #include <Misc/Sound/SoundSource.h>
 

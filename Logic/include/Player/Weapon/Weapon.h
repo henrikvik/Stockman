@@ -14,7 +14,6 @@
 
 #include <Entity\Object.h>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 
 namespace Logic
 {
@@ -25,21 +24,28 @@ namespace Logic
 
 	class Weapon : public Object
 	{
+    public:
+        struct WeaponInfo
+        {
+            int weaponID;
+            int ammoCap;
+            int ammo;
+            int magSize;
+            int magAmmo;
+            int ammoConsumption;
+            int projectileCount;
+            int spreadH;							// Horizontal spread in degrees	
+            int spreadV;							// Vertical spread in degrees
+            float attackRate;						// Attacks per minute
+            float freeze;
+            float reloadTime;
+        };
+
 	private:
 		DirectX::SimpleMath::Matrix rot, trans, scale;
 		ProjectileData* m_projectileData;
-		int m_weaponID;
-		int m_ammoCap;
-		int m_ammo;
-		int m_magSize;
-		int m_magAmmo;
-		int m_ammoConsumption;
-		int m_projectileCount;
-		int m_spreadH;							// Horizontal spread in degrees	
-		int m_spreadV;							// Vertical spread in degrees
-		float m_attackRate;						// Attacks per minute
-		float m_freeze;
-		float m_reloadTime;
+
+        WeaponInfo m_wInfo;
 	//	Animation m_animation;
 
 		btVector3 calcSpread(float yaw, float pitch);
@@ -49,8 +55,7 @@ namespace Logic
 
 	public:
 		Weapon();
-		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-			int spreadH, int spreadV, float attackRate, float freeze, float reloadTime);
+		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo);
         ~Weapon();
 		void reset();
 
