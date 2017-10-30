@@ -29,17 +29,10 @@ namespace Graphics
 
 	void SkyRenderer::renderSky(ID3D11DeviceContext * context, Graphics::Camera * cam)
 	{
-		static UINT stride = sizeof(Vertex), offset = 0;
-
-		context->IASetInputLayout(nullptr);
-
-		
+		context->IASetInputLayout(nullptr);		
 		context->VSSetShader(shader, nullptr, 0);
 		context->PSSetShader(shader, nullptr, 0);
-        context->VSSetShaderResources(4, 1, skySphere->getVertexBuffer());
-
-        context->PSSetShaderResources(0, 1, &srv);
-		context->PSSetShaderResources(1, 1, &srv2);
+        context->VSSetShaderResources(0, 1, skySphere->getVertexBuffer());
 
 		ID3D11Buffer * buffers[] =
 		{

@@ -2,12 +2,19 @@
 
 //If you want to include this file this is the allocated resources:
 //cbuffer register 0, 1, 2 and 3
+//0: Camera     1: DirectionalLight     2: BulletTime   3: LightVP
+
 //texture 0, 1, 2, 3, 10, 11, 12 and 13
+//0: LightIndexList     1: LightGrid    2: lights   3: shadowmap
+//10: diffuseMap    11: NormalMap   12: specularMap     13: glowMap
+
 //samplerState 0 and 1
+//0: linear     1: comparisonSomething
+
 //Use other registers for YOUR resources.
 
 #define BLOCK_SIZE 16.f
-#define NUM_LIGHTS 8
+#define MAX_LIGHTS 128
 
 //used by VS & PS
 cbuffer Camera : register(b0)
@@ -22,8 +29,6 @@ cbuffer Camera : register(b0)
 cbuffer LightBuffer : register(b1)
 {
     float4 dirLightPos;
-    float3 dirLightColor;
-    float time;
     float fade;
 }
 
@@ -48,6 +53,14 @@ struct Light
     float3 color;
     float intensity;
 };
+
+#define DAY_COLOR float3(0.1, 0.1, 0.3)//float3(1, 1, 0.8)
+#define DAWN_COLOR float3(0.1, 0.1, 0.3)//float3(2, 0.5, 0)
+#define NIGHT_COLOR float3(0.1, 0.1, 0.3)
+
+#define FREEZE_COLOR float3(0.3, 0.6, 1)
+#define BURN_COLOR float3(1, 0.2, 0)
+
 
 StructuredBuffer<uint> LightIndexList : register(t0);
 Texture2D<uint2> LightGrid : register(t1);
@@ -95,7 +108,7 @@ float3 toonify(float3 color, float intensity)
         color = 0.35 * color;
     else
         color = 0.1 * color;
-
+    
     return color;
 }
 
@@ -103,7 +116,14 @@ float3 getNormalMappedNormal(float3 tangent, float3 biTangent, float3 normal, fl
 {
     float3 normalSample = normalMap.Sample(Sampler, uv);
 
-        //To make sure the tangent is perpendicular
+    //Remove when everything is working
+    if (normalSample.x == 0 && normalSample.y == 0 && normalSample.z == 0)
+        return normal;
+
+    if (normalSample.x == 1 && normalSample.y == 1 && normalSample.z == 1)
+        normalSample = float3(0, 1, 0);
+
+    //To make sure the tangent is perpendicular
     tangent = normalize(tangent - dot(tangent, normalSample) * normalSample);
 
     float3x3 tangentMatrix = float3x3(tangent, biTangent, normal);
@@ -113,6 +133,23 @@ float3 getNormalMappedNormal(float3 tangent, float3 biTangent, float3 normal, fl
     return normalize(mul(normalSample, tangentMatrix));
 }
 
+float3 getCurrentDirColor(float time)
+{
+    float3 dirColor0 = lerp(DAY_COLOR, DAWN_COLOR, time);
+    float3 dirColor1 = lerp(DAWN_COLOR, NIGHT_COLOR, time);
+    float3 dirColor2 = lerp(dirColor0, dirColor1, time);
+
+    return dirColor2;
+}
+
+float3 calculateStatusEffect(float3 color, float freeze, float burn)
+{
+    color = lerp(color, FREEZE_COLOR, freeze);
+    color += lerp(color, BURN_COLOR, burn);
+
+    return color;
+}
+
 //Specularity is currently broken.
 float3 calculateSpecularity(float3 wPos, float3 lightPos, float3 NDCPos, float2 uv, float3 normal, float shadowValue = 1)
 {
@@ -120,11 +157,13 @@ float3 calculateSpecularity(float3 wPos, float3 lightPos, float3 NDCPos, float2 
     uint offset = LightGrid[tile].x;
     uint count = LightGrid[tile].y;
     
+    float3 dirColor = getCurrentDirColor(1 - fade);
+
     float3 specularSample = specularMap.Sample(Sampler, uv);
     
     float3 posToLightDir = dirLightPos.xyz - wPos.xyz;
     float3 reflectThingDir = normalize(posToLightDir + (camPos.xyz - wPos.xyz));
-    float3 directionalSpecularity = pow(saturate(dot(normal, reflectThingDir)), 500) * dirLightColor;
+    float3 directionalSpecularity = pow(saturate(dot(normal, reflectThingDir)), 500) * dirColor;
     
     directionalSpecularity *= fade * shadowValue;
 
@@ -156,11 +195,13 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
     uint offset = LightGrid[tile].x;
     uint count = LightGrid[tile].y;
 
+    float3 dirColor = getCurrentDirColor(1 - fade);
+
     float4 colorSample = diffuseMap.Sample(Sampler, uv);
 
     float3 lightDir = normalize(camPos.xyz - dirLightPos.xyz);
     float diffuseFactor = saturate(dot(normal, normalize(-lightDir)));
-    float3 directionalDiffuse = diffuseFactor * dirLightColor;
+    float3 directionalDiffuse = diffuseFactor * dirColor;
 
     directionalDiffuse *= fade * shadowValue;
 
@@ -177,12 +218,12 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
         float3 normalizedLight = posToLight / distance;
         float attenuation = 1.0f - smoothstep(0, light.range, distance);
 
-        pointDiffuse += saturate(dot(normal, posToLight)) * light.color * attenuation;
+        pointDiffuse += saturate(dot(normal, posToLight)) * light.color * attenuation * light.intensity;
     }
 
     float4 finalDiffuse = float4(saturate(pointDiffuse + directionalDiffuse).xyz, 1) * colorSample;
     
-    float4 ambient = float4(0.2, 0.2, 0.3, 1.0) * colorSample;
+    float4 ambient = float4(0.05, 0.05, 0.05, 1.0) * colorSample;
 
     float4 lighting = saturate(finalDiffuse + ambient);
     

@@ -34,7 +34,7 @@ namespace Logic
 		DirectX::SimpleMath::Matrix getWorldTranslation() const;
 
 	private:
-		Graphics::RenderInfo m_renderInfo;
+		Graphics::RenderInfo * m_renderInfo;
         StaticRenderInfo renderInfo;
 	};
 }

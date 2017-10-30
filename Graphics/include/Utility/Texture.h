@@ -2,6 +2,7 @@
 #include <d3d11.h>
 #include <vector>
 #include <stdint.h>
+#include <Resources\Resources.h>
 
 class Texture
 {

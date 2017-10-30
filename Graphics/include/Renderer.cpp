@@ -339,7 +339,8 @@ namespace Graphics
 
 		//The sky renderer uses the bullet time on register 3
 		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
-		//skyRenderer.renderSky(deviceContext, camera);
+        deviceContext->RSSetState(states->CullCounterClockwise());
+        skyRenderer.renderSky(deviceContext, camera);
 
         ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
 

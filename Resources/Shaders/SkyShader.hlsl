@@ -1,7 +1,14 @@
 #include "ShaderConstants.hlsli"
 
-#define VERTEX_T_SLOT t4
+#define VERTEX_T_SLOT t0
 #include "Vertex.hlsli"
+
+struct VS_IN
+{
+    float3 pos : POSITION;
+    float3 normal : NORMAL;
+    float2 uv : UV;
+};
 
 struct PS_IN
 {
@@ -23,8 +30,6 @@ cbuffer transform : register(b1)
 cbuffer LightBuffer : register(b2)
 {
     float4 dirLightPos;
-    float3 dirLightColor;
-    float time;
     float fade;
 }
 
@@ -72,8 +77,8 @@ float4 PS(PS_IN input) : SV_Target0
 
     float3 gradient = lerp(dayDawnGradient, dawnNightGradient, 1 - fade);
 
-    gradient = adjustSaturation(gradient, bulletTimer);
-    gradient = adjustContrast(gradient, 2 - bulletTimer, 0.3);
+    nightGradient = adjustSaturation(nightGradient, bulletTimer);
+    nightGradient = adjustContrast(nightGradient, 2 - bulletTimer, 0.3);
 
-    return float4(gradient, 1);
+    return float4(nightGradient, 1);
 }

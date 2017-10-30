@@ -32,8 +32,6 @@ Object::~Object()
 void Object::render(Graphics::Renderer& renderer)
 {
 	if (m_renderInfo->render)
-		renderer.queueRender(m_renderInfo);
-    if (m_renderInfo.render)
     {
         renderer.queueRender(m_renderInfo);
         RenderQueue_t::get().queue(&renderInfo);
