@@ -54,12 +54,17 @@ bool MenuState::animationTransition(float dt, float maxAnimationTime, bool forwa
 	return done;
 }
 
+Button* MenuState::getButton(int index)
+{
+    return &m_buttons[index];
+}
+
 Graphics::MenuInfo MenuState::getMenuInfo()
 {
     m_menu.m_buttons.clear();
     for (Button &b : m_buttons)
     {
-        m_menu.m_buttons.push_back(b.getButtonInfo());
+        m_menu.m_buttons.push_back(*b.getButtonInfo());
     }
     return m_menu;
 }

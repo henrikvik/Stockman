@@ -6,31 +6,24 @@
 #include <Engine\Typing.h>
 
 #include <Engine\Profiler.h>
+#include <DebugDefines.h>
 
 #define TRANSITION_TIME 400
 
 using namespace Logic;
 
-MenuMachine::MenuMachine()
-{
-	m_pressed = false;
-	m_currentActiveMenu = nullptr;
-	m_currentActiveState = gameStateMenuMain;
-	m_highScoreNamePTR = nullptr;
-	m_highScoreName = "";
-	m_typing = false;
-	m_forward = true;
-    blinkMarker = true;
-    blinkTimer = 0.0f;
-    deleteCharCD = 20.0f;
-	m_cardUpgrade = -1;
-}
-
 MenuMachine::MenuMachine(std::string* highScoreNamePTR)
 {
 	m_pressed = false;
 	m_currentActiveMenu = nullptr;
-	m_currentActiveState = gameStateMenuMain;
+
+#ifndef SKIP_MENU
+    m_currentActiveState = gameStateMenuMain;
+#else
+    m_currentActiveState = gameStateGame;
+    printf("\n *Skipping Menus, Disable in 'Logic/include/DebugDefines.h'\n");
+#endif
+
 	m_highScoreNamePTR = highScoreNamePTR;
 	m_highScoreName = *m_highScoreNamePTR;
 	m_typing = false;
@@ -38,6 +31,7 @@ MenuMachine::MenuMachine(std::string* highScoreNamePTR)
     blinkTimer = 0.0f;
     deleteCharCD = 20.0f;
 	m_cardUpgrade = -1;
+    m_selectedSkills = { -1, -1 };
 }
 
 
@@ -62,6 +56,9 @@ void MenuMachine::initialize(GameState state)
 	functions["buttonClick5"] = std::bind(&MenuMachine::buttonClick5, this);
 	functions["buttonClick6"] = std::bind(&MenuMachine::buttonClick6, this);
 	functions["buttonClick7"] = std::bind(&MenuMachine::buttonClick7, this);
+    functions["buttonClick8"] = std::bind(&MenuMachine::buttonSkillPick1, this);
+    functions["buttonClick9"] = std::bind(&MenuMachine::buttonSkillPick2, this);
+    functions["buttonClick10"] = std::bind(&MenuMachine::buttonSkillPick3, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -113,7 +110,11 @@ void MenuMachine::initialize(GameState state)
 		}
 	}
 
-	m_stateToBe = gameStateDefault;
+#ifndef SKIP_MENU
+    m_stateToBe = gameStateDefault;
+#else
+    m_stateToBe = gameStateGame;
+#endif
 
 	showMenu(state);
 }
@@ -232,7 +233,6 @@ void MenuMachine::render(Graphics::Renderer &renderer)
         };
         renderer.queueText(&text);
     }
-    
 
     Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
 
@@ -293,14 +293,24 @@ int Logic::MenuMachine::getChoiceUpgrade()
 	return choosenUpgrade;
 }
 
+MenuState * Logic::MenuMachine::getActiveMenu()
+{
+    return m_currentActiveMenu;
+}
+
+std::pair<int, int>* MenuMachine::getSkillPick()
+{
+    return &m_selectedSkills;
+}
+
 void MenuMachine::buttonClick0()
 {
-	m_stateToBe = gameStateGame;
+	m_stateToBe = gameStateSkillPick;
 }
 
 void MenuMachine::buttonClick1()
 {
-	m_stateToBe = gameStateMenuSettings;
+    m_stateToBe = gameStateMenuSettings;
 }
 
 void MenuMachine::buttonClick2()
@@ -335,4 +345,48 @@ void MenuMachine::buttonClick6() //Upgrade button2
 void MenuMachine::buttonClick7() //Upgrade button3
 {
 	m_cardUpgrade = choice3;
+}
+
+// Buttons for skill selection
+void MenuMachine::buttonSkillPick1() { selectSkillButton(0); }
+void MenuMachine::buttonSkillPick2() { selectSkillButton(1); }
+void MenuMachine::buttonSkillPick3() { selectSkillButton(2); }
+
+// Tries to replace the currently selected skill
+void MenuMachine::selectSkillButton(int id)
+{
+    // Gets a pointer to the button that was pressed
+    Button* button = m_currentActiveMenu->getButton(id);
+
+    // Hardcoded "Selected" tex-cords, currently not supported
+    if (replaceSkill(id))   button->setStartAndEnd(2.f * (1.f/3.f), 1.f);
+    else                    button->setStartAndEnd(0.f, (1.f/3.f));
+}
+
+// Returns true if succesful swapping of selected skill, returns false if the selected skill should be reset (if it was already selected, for example)
+bool MenuMachine::replaceSkill(int id)
+{
+    // Primary skill pick
+    if (m_selectedSkills.first == -1)
+    {
+        m_selectedSkills.first = id;
+        return true;
+    }
+    // Secondary skill can be picked and is not the same as the first pick
+    else if (m_selectedSkills.second == -1 && m_selectedSkills.first != id)
+    {
+        m_selectedSkills.second = id;
+        return true;
+    }
+    // Undo the skillpick
+    else
+    {
+        if (m_selectedSkills.first == id)
+            m_selectedSkills.first = -1;
+
+        if (m_selectedSkills.second == id)
+            m_selectedSkills.second = -1;
+
+        return false;
+    }
 }

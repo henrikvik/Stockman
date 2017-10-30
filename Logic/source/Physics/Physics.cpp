@@ -64,15 +64,15 @@ void Physics::clear()
 	delete collisionConfiguration;
 }
 
-void Physics::update(GameTime gameTime)
+void Physics::update(float delta)
 {
 	// Stepping the physics
 	PROFILE_BEGIN("Stepping Physics");
 
-	if (gameTime.dtReal * 0.001f > (1.f / 60.f))
+	if (delta * 0.001f > (1.f / 60.f))
 		this->stepSimulation(1.f / 60.f, 0, 0);
 	else
-		this->stepSimulation(gameTime.dtReal * 0.001f, 0, 0);
+		this->stepSimulation(delta * 0.001f, 0, 0);
 
 	PROFILE_END();
 
