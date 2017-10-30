@@ -24,10 +24,7 @@ namespace Logic
 		gameStateGameOver,
 		gameStateDefault,
 		gameStateGameUpgrade,
-		gameStateMenuSettingsVideo,
-		gameStateMenuSettingsSound,
-		gameStateMenuSettingsControls,
-		gameStateMenuSettingsOther,
+		gameStateHighscore
 	};
 
 	enum CardChoices

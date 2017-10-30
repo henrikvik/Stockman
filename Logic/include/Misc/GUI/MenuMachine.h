@@ -59,12 +59,17 @@ namespace Logic
 		void chooseUpgrade1();
 		void chooseUpgrade2();
 		void chooseUpgrade3();
-		void startSettingsVideo();
-		void startSettingsSound();
-		void startSettingsControls();
-		void startSettingsOther();
-		void plusSound();
-		void minusSound();
+		void plusSense();
+		void minusSense();
+		void plusMaster();
+		void minusMaster();
+		void plusSFX();
+		void minusSFX();
+		void muteUnmute();
+		void plusFOV();
+		void minusFOV();
+		void windowed();
+		void showHighscore();
 		int getChoiceUpgrade();
 
 

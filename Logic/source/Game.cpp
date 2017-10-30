@@ -249,20 +249,11 @@ void Game::update(float deltaTime)
 	case gameStateMenuSettings:
 		m_menu->update(m_gameTime.dt);
 		break;
-	case gameStateMenuSettingsVideo:
-		m_menu->update(m_gameTime.dt);
-		break;
-	case gameStateMenuSettingsSound:
-		m_menu->update(m_gameTime.dt);
-		break;
-	case gameStateMenuSettingsControls:
-		m_menu->update(m_gameTime.dt);
-		break;
-	case gameStateMenuSettingsOther:
-		m_menu->update(m_gameTime.dt);
-		break;
 	case gameStateGameOver:
 		//Add special triggers to show the scores on the side
+		m_menu->update(m_gameTime.dt);
+		break;
+	case gameStateHighscore:
 		m_menu->update(m_gameTime.dt);
 		break;
 	}
@@ -335,11 +326,8 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateLoading:
 	case gameStateMenuMain:
 	case gameStateMenuSettings:
-	case gameStateMenuSettingsVideo:
-	case gameStateMenuSettingsSound:
-	case gameStateMenuSettingsControls:
-	case gameStateMenuSettingsOther:
 	case gameStateGameOver:
+	case gameStateHighscore:
 	default:  m_menu->render(renderer);
 		break;
 	}

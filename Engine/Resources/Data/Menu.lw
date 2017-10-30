@@ -2,58 +2,31 @@
 	"Name" : "MainMenu";
 	"State" : 2;
 	"Background" : 0;
-	"buttonAmount" : 3;
+	"buttonAmount" : 4;
 
 	"button1" :  "MenuStartGame";
 	"button2" :  "MenuStartSettings";
-	"button3" :  "MenuQuitGame";
+	"button3" :  "MenuStartHighscore";
+	"button4" :  "MenuQuitGame";
 }
 {
 	"Name" : "Settings";
 	"State" : 3;
 	"Background" : 0;
-	"buttonAmount" : 5;
+	"buttonAmount" : 12;
 
-	"button1" :  "MenuSettingsStartVideo";
-	"button2" :  "MenuSettingsStartSound";
-	"button3" :  "MenuSettingsButton3";
-	"button4" :  "MenuSettingsButton4";
-	"button5" :  "MenuSettingsButton5";
-}
-{
-	"Name" : "SettingsVideo";
-	"State" : 7;
-	"Background" : 0;
-	"buttonAmount" : 1;
-
-	"button1" :  "MenuSettingsVideoButton1";
-}
-{
-	"Name" : "SettingsSound";
-	"State" : 8;
-	"Background" : 0;
-	"buttonAmount" : 1;
-
-	"button1" :  "MenuSettingsSoundButton1";
-}
-{
-	"Name" : "SettingsControls";
-	"State" : 9;
-	"Background" : 0;
-	"buttonAmount" : 3;
-
-	"button1" :  "MenuSettingsControlsButton1";
-	"button2" :  "MenuSettingsControlsButton2";
-	"button3" :  "MenuSettingsControlsButton3";
-}
-{
-	"Name" : "SettingsOther";
-	"State" : 10;
-	"Background" : 0;
-	"buttonAmount" : 2;
-
-	"button1" :  "MenuSettingsOtherButton1";
-	"button2" :  "MenuSettingsOtherButton2";
+	"button1" :  "MenuSettingsWriting";
+	"button2" :  "MenuSettingsStartMenu";
+	"button3" :  "MenuSettingsSoundMasterMinus";
+	"button4" :  "MenuSettingsSoundMasterPlus";
+	"button5" :  "MenuSettingsSoundSFXMinus";
+	"button6" :  "MenuSettingsSoundSFXPlus";
+	"button7" :  "MenuSettingsMuteUnmute";
+	"button8" :  "MenuSettingsControlsMouseSenseMinus";
+	"button9" :  "MenuSettingsControlsMouseSensePlus";
+	"button10" :  "MenuSettingsVideoFOVMinus";
+	"button11" :  "MenuSettingsVideoFOVPlus";
+	"button12" :  "MenuSettingsVideoWindowed"
 }
 {
 	"Name" : "Game";
@@ -67,8 +40,8 @@
 	"Background" : 3;
 	"buttonAmount" : 2;
 
-	"button1" : "GameOverButton1";
-	"button2" : "GameOverButton2";
+	"button1" : "GameOverStartMenu";
+	"button2" : "GameOverQuitGame";
 }
 {
 	"Name" : "GameCardUpgrade";
@@ -76,7 +49,16 @@
 	"Background" : -1;
 	"buttonAmount" : 3;
 
-	"button1" : "CardUpgradeButton1";
-	"button2" : "CardUpgradeButton2";
-	"button3" : "CardUpgradeButton3";
+	"button1" : "CardUpgradeChoice1";
+	"button2" : "CardUpgradeChoice2";
+	"button3" : "CardUpgradeChoice3";
+}
+
+{
+	"Name" : "Highscore";
+	"State" : 7;
+	"Background" : 0;
+	"buttonAmount" : 1;
+
+	"button1" : "HighscoreStartMenu";
 }

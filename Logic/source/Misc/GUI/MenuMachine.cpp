@@ -62,12 +62,17 @@ void MenuMachine::initialize(GameState state)
 	functions["buttonClick5"] = std::bind(&MenuMachine::chooseUpgrade1, this);
 	functions["buttonClick6"] = std::bind(&MenuMachine::chooseUpgrade2, this);
 	functions["buttonClick7"] = std::bind(&MenuMachine::chooseUpgrade3, this);
-	functions["buttonClick8"] = std::bind(&MenuMachine::startSettingsVideo, this);
-	functions["buttonClick9"] = std::bind(&MenuMachine::startSettingsSound, this);
-	functions["buttonClick10"] = std::bind(&MenuMachine::startSettingsControls, this);
-	functions["buttonClick11"] = std::bind(&MenuMachine::startSettingsOther, this);
-	functions["buttonClick12"] = std::bind(&MenuMachine::plusSound, this);
-	functions["buttonClick13"] = std::bind(&MenuMachine::minusSound, this);
+	functions["buttonClick8"] = std::bind(&MenuMachine::minusSense, this);
+	functions["buttonClick9"] = std::bind(&MenuMachine::plusSense, this);
+	functions["buttonClick10"] = std::bind(&MenuMachine::minusMaster, this);
+	functions["buttonClick11"] = std::bind(&MenuMachine::plusMaster, this);
+	functions["buttonClick12"] = std::bind(&MenuMachine::minusSFX, this);
+	functions["buttonClick13"] = std::bind(&MenuMachine::plusSFX, this);
+	functions["buttonClick14"] = std::bind(&MenuMachine::muteUnmute, this);
+	functions["buttonClick15"] = std::bind(&MenuMachine::minusFOV, this);
+	functions["buttonClick16"] = std::bind(&MenuMachine::plusFOV, this);
+	functions["buttonClick17"] = std::bind(&MenuMachine::windowed, this);
+	functions["buttonClick18"] = std::bind(&MenuMachine::showHighscore, this);
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -108,9 +113,9 @@ void MenuMachine::initialize(GameState state)
 		{
 			//Temporary Button Vector until Menu has been given them
 			std::vector<MenuState::ButtonStruct> tempButton;
-			for (int i = 0; i < menu.ints.at("buttonAmount"); i++)
+			for (int i = 1; i <= menu.ints.at("buttonAmount"); i++)
 			{
-				tempButton.push_back(allButtons.at(menu.strings.at("button" + std::to_string(i + 1))));
+				tempButton.push_back(allButtons.at(menu.strings.at("button" + std::to_string(i))));
 			}
 
 			//Create new Menus and send in the fitting information from Menu vector
@@ -213,7 +218,7 @@ void MenuMachine::update(float dt)
 void MenuMachine::render(Graphics::Renderer &renderer)
 {
 	PROFILE_BEGIN("Menu Render");
-    if (m_currentActiveState == gameStateMenuSettingsOther)
+    if (m_currentActiveState == gameStateMenuSettings)
     {
         std::wstring tempString = L"";
         Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
@@ -342,27 +347,53 @@ void MenuMachine::chooseUpgrade3() //Upgrade button3
 {
 	m_cardUpgrade = choice3;
 }
-void MenuMachine::startSettingsVideo()
-{
-	m_stateToBe = gameStateMenuSettingsVideo;
-}
-void MenuMachine::startSettingsSound()
-{
-	m_stateToBe = gameStateMenuSettingsSound;
-}
-void MenuMachine::startSettingsControls()
-{
-	m_stateToBe = gameStateMenuSettingsControls;
-}
-void MenuMachine::startSettingsOther()
-{
-	m_stateToBe = gameStateMenuSettingsOther;
-}
-void MenuMachine::plusSound()
+void MenuMachine::plusSense()
 {
 
 }
-void MenuMachine::minusSound()
+void MenuMachine::minusSense()
 {
 
+}
+
+void MenuMachine::plusMaster()
+{
+
+}
+void MenuMachine::minusMaster()
+{
+
+}
+
+void Logic::MenuMachine::plusSFX()
+{
+
+}
+
+void Logic::MenuMachine::minusSFX()
+{
+
+}
+
+void Logic::MenuMachine::muteUnmute()
+{
+
+}
+
+void Logic::MenuMachine::plusFOV()
+{
+
+}
+
+void Logic::MenuMachine::minusFOV()
+{
+
+}
+void Logic::MenuMachine::windowed()
+{
+
+}
+void Logic::MenuMachine::showHighscore()
+{
+	m_stateToBe = gameStateHighscore;
 }
