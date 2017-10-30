@@ -5,13 +5,17 @@ using namespace Logic;
 Pathing::Pathing()
 {
 	m_currentNode = 0;
-	m_debugInfo.points = nullptr;
+    m_debugInfo = nullptr;
 }
 
 Pathing::~Pathing()
 {
-	if (m_debugInfo.points)
-		delete m_debugInfo.points;
+    if (m_debugInfo)
+    {
+        if (m_debugInfo->points)
+            delete m_debugInfo->points;
+        delete m_debugInfo;
+    }
 }
 
 void Pathing::setPath(std::vector<const DirectX::SimpleMath::Vector3*> const &path)
@@ -52,22 +56,23 @@ bool Pathing::pathOnLastNode() const
 
 void Pathing::initDebugRendering()
 {
-	m_debugInfo.color = DirectX::SimpleMath::Color(1, 0, 0);
-	m_debugInfo.useDepth = true;
-	m_debugInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
-	m_debugInfo.points = newd std::vector<DirectX::SimpleMath::Vector3>();
+    m_debugInfo = new Graphics::RenderDebugInfo();
+    m_debugInfo->color = DirectX::SimpleMath::Color(1, 0, 0);
+    m_debugInfo->useDepth = true;
+    m_debugInfo->topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+    m_debugInfo->points = new std::vector<DirectX::SimpleMath::Vector3>();
 }
 
 void Pathing::renderDebugging(Graphics::Renderer &renderer, DirectX::SimpleMath::Vector3 &start)
 {
-    if (m_debugInfo.points->size() > 1)
+    if (m_debugInfo->points->size() > 1)
     {
-        m_debugInfo.points->clear();
-        m_debugInfo.points->push_back(start);
+        m_debugInfo->points->clear();
+        m_debugInfo->points->push_back(start);
 
         for (int i = 0; i < m_path.size(); i++) // this is slow, but debugging should not be when efficiency is required 
-            m_debugInfo.points->push_back(*m_path[i]);
+            m_debugInfo->points->push_back(*m_path[i]);
 
-        renderer.queueRenderDebug(&m_debugInfo);
+        renderer.queueRenderDebug(m_debugInfo);
     }
 }

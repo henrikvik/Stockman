@@ -1,5 +1,6 @@
 #include "Map.h"
 #include <Keyboard.h>
+#include <Graphics\include\Structs.h>
 
 using namespace Logic;
 
@@ -22,7 +23,11 @@ void Map::add(FrameProp frameProp)
 
 void Map::add(FrameHitbox frameHitbox)
 {
-    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL), frameHitbox.dimensions));
+    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+        Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+        Physics::COL_HITBOX,
+        Physics::COL_EVERYTHING),
+        frameHitbox.dimensions));
 }
 
 void Map::init(Physics* physics)
@@ -135,18 +140,18 @@ void Map::debugInitObjects()
 {
     btVector3 halfextent(1.0, 1.0, 1.0);
     Speaker* box = new Speaker(m_physicsPtr->createBody(Cube({ -25, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->autoPlaySFX(SFX::BOING, 6000.f, 250.f);
+    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 6000.f, 250.f);
     m_objects.push_back(box);
 
     box = new Speaker(m_physicsPtr->createBody(Cube({ -26, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->delayPlayMusic(MUSIC::TEST_MUSIC, 500.f);
+    box->getSoundSource()->delayPlayMusic(Sound::MUSIC::TEST_MUSIC, 500.f);
     m_objects.push_back(box);
 
     box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 3, 74 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->autoPlaySFX(SFX::BOING, 4000.f, 250.f);
+    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 4000.f, 250.f);
     m_objects.push_back(box);
 
     box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 2, 73 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->autoPlaySFX(SFX::BOING, 3500.f, 250.f);
+    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 3500.f, 250.f);
     m_objects.push_back(box);
 }

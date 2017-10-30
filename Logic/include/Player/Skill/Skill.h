@@ -9,11 +9,20 @@
 		*/
 #pragma endregion
 
-#include <Graphics\include\Renderer.h>
-#include <Entity\Entity.h>
+#include <d3d11.h>
+#include <SimpleMath.h>
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
+
+namespace Graphics
+{
+    class Renderer;
+}
 
 namespace Logic
 {
+    class Entity;
+
 	class Skill
 	{
 	public:

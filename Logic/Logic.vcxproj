@@ -196,6 +196,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\EnemyChaser.h" />
     <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
     <ClInclude Include="include\Entity\LightObject.h" />
     <ClInclude Include="include\AI\EnemyType.h" />
@@ -260,8 +261,11 @@
     <ClInclude Include="include\Entity\PhysicsObject.h" />
     <ClInclude Include="include\Entity\StaticObject.h" />
     <ClInclude Include="include\Misc\Sound\NoiseMachine.h" />
+    <ClInclude Include="include\AI\Behavior\MeleeBehavior.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Behavior\MeleeBehavior.cpp" />
+    <ClCompile Include="source\AI\EnemyChaser.cpp" />
     <ClCompile Include="source\AI\Behavior\EnemyThreadHandler.cpp" />
     <ClCompile Include="source\Entity\LightObject.cpp" />
     <ClCompile Include="source\Misc\FPSRenderer.cpp" />

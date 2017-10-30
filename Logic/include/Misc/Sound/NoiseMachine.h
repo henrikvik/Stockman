@@ -13,7 +13,7 @@
 #define SOUND_SFX_PATH "Resources/Sound/SFX/"
 #define SOUND_MUSIC_PATH "Resources/Sound/Music/"
 
-namespace Logic
+namespace Sound
 {
 	class NoiseMachine
 	{
@@ -41,16 +41,16 @@ namespace Logic
 		int initSFX(LOAD_MODE loadMode);
         int initMusic(LOAD_MODE loadMode);
 
-		void checkIfPlay(Sound* sound, SoundSource* soundSource, bool overdrive);
-		void play(Sound* sound, SoundSource* soundSource);
+		void checkIfPlay(Noise* sound, SoundSource* soundSource, bool overdrive);
+		void play(Noise* sound, SoundSource* soundSource);
 
 		FMOD_RESULT createSound(LOAD_MODE loadMode, SFX sfx, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
 		FMOD_RESULT createSound(LOAD_MODE loadMode, MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode);
 
 		FMOD::System*		m_system;
 		FMOD::ChannelGroup*	m_group[THRESHOLD::MAX_GROUPS];
-		Sound*				m_sfx[THRESHOLD::MAX_SFX];
-		Sound*				m_music[THRESHOLD::MAX_SONGS];
+		Noise*				m_sfx[THRESHOLD::MAX_SFX];
+		Noise*				m_music[THRESHOLD::MAX_SONGS];
 
 		// Debugging and Errors
 		void CRASH_EVERYTHING(const char *format, ...);

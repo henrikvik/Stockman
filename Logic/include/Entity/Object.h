@@ -1,15 +1,16 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <Graphics\include\Structs.h>
+#include <d3d11.h>
 #include <SimpleMath.h>
 #include <Graphics\include\RenderQueue.h>
 
-
-namespace Graphics
+namespace Graphics 
 {
-	class Renderer;
-}
+    class Renderer;
+    struct RenderInfo;
+    enum ModelID;
+};
 
 namespace Logic
 {
@@ -18,6 +19,8 @@ namespace Logic
 	public:
 		Object();
 		Object(Graphics::ModelID modelID);
+        Object(const Object &other) = delete;
+        Object* operator=(const Object &other) = delete;
 		virtual ~Object();
 		virtual void render(Graphics::Renderer& renderer);
 

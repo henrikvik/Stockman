@@ -15,13 +15,10 @@
 #include <Mouse.h>
 
 #include "Entity\Entity.h"
-#include "Weapon\WeaponManager.h"
-#include "Skill\SkillManager.h"
-#include <Projectile\ProjectileManager.h>
-#include <Graphics\include\Structs.h>
-#include <Misc\Sound\NoiseMachine.h>
+#include <BulletDynamics\Character\btKinematicCharacterController.h>
+#include <BulletCollision\CollisionDispatch\btGhostObject.h>
 
-#define PLAYER_GRAVITY					PHYSICS_GRAVITY * 0.0000015f
+#define PLAYER_GRAVITY					9.82f * 2.f * 0.0000015f
 #define PLAYER_SIZE_RADIUS				0.5f
 #define PLAYER_SIZE_HEIGHT				2.f
 #define PLAYER_STARTING_HP				3
@@ -36,8 +33,23 @@
 #define PLAYER_AIR_FRICTION				1.f
 #define PLAYER_JUMP_SPEED				0.008f
 
+namespace Graphics
+{
+    struct HUDInfo;
+}
+
+namespace Sound
+{
+    struct ListenerData;
+}
+
 namespace Logic
 {
+    class Physics;
+    class WeaponManager;
+    class SkillManager;
+    class ProjectileManager;
+
 	class Player : public Entity
 	{
 	public:
@@ -53,12 +65,12 @@ namespace Logic
 		btKinematicCharacterController* m_charController;
 
 		//ActionManager m_actionManager;
-		WeaponManager m_weaponManager;
-		SkillManager m_skillManager;
+		WeaponManager* m_weaponManager;
+		SkillManager* m_skillManager;
 		Physics* m_physPtr;
 
 		// UI States
-        Graphics::HUDInfo info;
+        Graphics::HUDInfo* info;
 		int m_hp;
 
 		// Movements
@@ -78,7 +90,7 @@ namespace Logic
 		float m_wishDirRight;
 
 		// Sound
-		ListenerData m_listenerData;
+		Sound::ListenerData* m_listenerData;
 
 		// Mouse
 		float m_mouseSens;
@@ -120,7 +132,7 @@ namespace Logic
 		Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();
 
-		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
+		void init(Physics* physics, ProjectileManager* projectileManager);
 		void clear();
 		void reset();
 		void updateSpecific(float deltaTime);
@@ -152,7 +164,7 @@ namespace Logic
 		btVector3 getMoveDirection();
 		void setPlayerState(PlayerState playerState);
 		PlayerState getPlayerState() const;
-		ListenerData& getListenerData();
+		Sound::ListenerData& getListenerData();
 
 		static btVector3 startPosition;
 	};

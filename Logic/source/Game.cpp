@@ -15,8 +15,6 @@ Game::Game()
 	m_cardManager		= nullptr;
 	m_menu				= nullptr;
 	m_highScoreManager	= nullptr;
-
-	
 }
 
 Game::~Game() 
@@ -29,7 +27,7 @@ Game::~Game()
 void Game::init()
 {
 	// Initializing Sound
-	NoiseMachine::Get().init();
+	Sound::NoiseMachine::Get().init();
 
 	// Initializing Bullet physics
 	btDefaultCollisionConfiguration* collisionConfiguration		= new btDefaultCollisionConfiguration();				// Configuration
@@ -43,9 +41,9 @@ void Game::init()
 	m_projectileManager = newd ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = newd Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
-	m_player->init(m_physics, m_projectileManager, &m_gameTime);
-	NoiseMachine::Get().update(m_player->getListenerData());
+	m_player = new Player(Graphics::ModelID::CUBE, nullptr, PLAYER_START_SCA);
+	m_player->init(m_physics, m_projectileManager);
+	Sound::NoiseMachine::Get().update(m_player->getListenerData());
 
 	// Initializing Highscore Manager
 	m_highScoreManager = newd HighScoreManager();
@@ -100,7 +98,7 @@ void Game::clear()
 {
 	m_menu->clear();
 	m_projectileManager->clear();
-	NoiseMachine::Get().clear();
+	Sound::NoiseMachine::Get().clear();
 
 	delete m_physics;
 	delete m_player;
@@ -243,7 +241,7 @@ void Game::gameRunTime(float deltaTime)
 	waveUpdater();
 
 	PROFILE_BEGIN("Sound");
-	NoiseMachine::Get().update(m_player->getListenerData());
+	Sound::NoiseMachine::Get().update(m_player->getListenerData());
 	PROFILE_END();
 
 	PROFILE_BEGIN("Player");
