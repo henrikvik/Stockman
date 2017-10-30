@@ -30,7 +30,7 @@ namespace Logic
 	class EntityManager
 	{
 	private:
-		static const int NR_OF_THREADS = 4;
+		static const int NR_OF_THREADS;
 
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
@@ -40,46 +40,54 @@ namespace Logic
 		WaveManager m_waveManager;
         EnemyThreadHandler *m_threadHandler; // Just because i want to delete it when i want
 
-		int m_currentWave, m_frame;
+		int m_frame;
 		float m_deltaTime;
 
 		void deleteData(); // delete data in vectors
 		void allocateData(); // resize enemy vector 
 
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
-            btVector3 forward, Entity& shooter)> SpawnProjectile;
-        std::function<Enemy*(btVector3 &pos,ENEMY_TYPE type)> SpawnEnemy;
+            btVector3 forward, Entity& shooter)>            SpawnProjectile;
+        std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
+            std::vector<int> effects)>                      SpawnEnemy;
         std::function<Trigger*(int id, btVector3 const &pos,
-            std::vector<int> &effects)> SpawnTrigger;
+            std::vector<int> &effects)>                     SpawnTrigger;
 	public:
 		EntityManager();
 		EntityManager(EntityManager const &entityManager) = delete;
+		EntityManager* operator=(EntityManager const &entityManager) = delete;
 		~EntityManager();
+
+        // data handling
+		void clear();
+
+        // render / updates
+		void render(Graphics::Renderer &renderer);
 
 		void update(Player const &player, float deltaTime);
 		void updateEnemies(int index, Player const &player, float deltaTime);
 		// statis because threads will use this
 		void updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, int enemyIndex,
             int flockIndex, Player const &player, float deltaTime, bool swapOnNewIndex);
-		void clear();
 
+        // effects
 		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
 
-		void spawnWave(Physics &physics, ProjectileManager *projectiles);
+        // spawning
+		void spawnWave(int waveId);
 		Enemy* spawnEnemy(ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
 			Physics &physics, ProjectileManager *projectiles);
 		Trigger* spawnTrigger(int id, btVector3 const &pos, std::vector<int> &effects,
 			Physics &physics, ProjectileManager *projectiles);
 
-		void setCurrentWave(int currentWave);
-		void render(Graphics::Renderer &renderer);
+        // sets & gets
+
+        void setSpawnFunctions(ProjectileManager &projManager, Physics &physics);
 
 		size_t getNrOfAliveEnemies() const;
-		int getCurrentWave() const;
-        const std::vector<std::vector<Enemy*>>& getAliveEnemies() const;
 
-		EntityManager* operator=(EntityManager const &entityManager) = delete;
-        void setSpawnFunctions(ProjectileManager &projManager, Physics &physics);
+        const WaveManager& getWaveManager() const;
+        const std::vector<std::vector<Enemy*>>& getAliveEnemies() const;
 	};
 }
 

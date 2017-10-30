@@ -26,9 +26,10 @@ using namespace Logic;
 #include <ctime>
 #include <stdio.h>
 
+const int EntityManager::NR_OF_THREADS = 4;
+
 EntityManager::EntityManager()
 {
-    m_currentWave = 0;
     m_frame = 0;
 
     allocateData();
@@ -128,7 +129,7 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
     }
 }
 
-void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
+void EntityManager::spawnWave(int waveId)
 {
     if (m_enemies.empty())
     {
@@ -136,7 +137,7 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
         return;
     }
 
-    WaveManager::EntitiesInWave entities = m_waveManager.getEntities(m_currentWave);
+    WaveManager::EntitiesInWave entities = m_waveManager.getEntities(waveId);
     m_frame = 0;
 
     btVector3 pos;
@@ -150,19 +151,14 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
         pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
             generator.getRandomFloat(-85, 85) };
 
-        spawnEnemy(static_cast<ENEMY_TYPE> (entity), pos, {}, physics, projectiles);
+        SpawnEnemy(static_cast<ENEMY_TYPE> (entity), pos, {});
     }
 
     for (WaveManager::Entity e : entities.triggers)
-    {
-        spawnTrigger(e.id, { e.x, e.y, e.z }, e.effects, physics, projectiles);
-    }
+        SpawnTrigger(e.id, { e.x, e.y, e.z }, e.effects);
 
     for (WaveManager::Entity e : entities.bosses)
-    {
-        spawnEnemy(static_cast<ENEMY_TYPE> (e.id), { e.x, e.y, e.z },
-            e.effects, physics, projectiles);
-    }
+        SpawnEnemy(static_cast<ENEMY_TYPE> (e.id), btVector3{ e.x, e.y, e.z }, e.effects);
 }
 
 Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
@@ -257,11 +253,6 @@ int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
     return i;
 }
 
-void EntityManager::setCurrentWave(int currentWave)
-{
-    m_currentWave = currentWave;
-}
-
 void EntityManager::render(Graphics::Renderer &renderer)
 {
     for (int i = 0; i < m_enemies.size(); ++i)
@@ -289,20 +280,20 @@ void EntityManager::render(Graphics::Renderer &renderer)
 #endif
 }
 
-int EntityManager::getCurrentWave() const
-{
-    return m_currentWave;
-}
-
 const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const
 {
     return m_enemies;
 }
 
+const WaveManager& Logic::EntityManager::getWaveManager() const
+{
+    return m_waveManager;
+}
+
 void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &physics)
 {
-    SpawnEnemy = [&](btVector3 &pos, ENEMY_TYPE type) -> Enemy* {
-        return spawnEnemy(type, pos, {}, physics, &projManager);
+    SpawnEnemy = [&](ENEMY_TYPE type, btVector3 &pos, std::vector<int> effects) -> Enemy* {
+        return spawnEnemy(type, pos, effects, physics, &projManager);
     };
     SpawnProjectile = [&](ProjectileData& pData, btVector3 position,
         btVector3 forward, Entity& shooter) -> Projectile* {
