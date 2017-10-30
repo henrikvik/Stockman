@@ -9,6 +9,7 @@ namespace Resources
             Cube,
             SkySphere,
             Staff,
+            Tablet1,
             UnitCube
         };
         const std::map<Files, const char *> Paths =
@@ -16,6 +17,7 @@ namespace Resources
             {Cube, R"(..\Resources\Models\Cube.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
+            {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
     }

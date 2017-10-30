@@ -3,6 +3,8 @@ struct Instance
 {
     float4x4 world;
     float4x4 worldInvT;
+    float freeze;
+    float burn;
 };
 
 StructuredBuffer<Instance> INSTANCE_DATA : register(INSTANCE_T_SLOT);

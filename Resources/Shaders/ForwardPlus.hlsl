@@ -39,7 +39,7 @@ VSOutput VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
 	output.uv = vertex.uv;
 
     //Temporary fix until normals are RH
-    //input.normal.z *= -1;
+    //vertex.normal.z *= -1;
 
     
     output.normal = mul(instance.worldInvT, float4(vertex.normal, 0));
@@ -76,11 +76,9 @@ PSOutput PS(VSOutput input) {
     lighting = saturate(lighting);
     
     
-    output.backBuffer = diffuseMap.Sample(Sampler, input.uv); //float4(lighting, 1);
-    //output.glowMap = glowMap.Sample(Sampler, input.uv);
-    //output.normalView = float4(input.normalView.xyz, 1);
-	//output.worldPosMap = input.worldPos;
-
+    output.backBuffer = float4(lighting, 1);
+    output.glowMap = glowMap.Sample(Sampler, input.uv);
+    output.normalView = float4(input.normalView.xyz, 1);
     
     
     return output;

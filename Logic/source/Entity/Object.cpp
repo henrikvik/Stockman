@@ -19,7 +19,7 @@ Object::Object(Graphics::ModelID modelID)
 	m_renderInfo.render = true;
 	m_renderInfo.meshId = modelID;
 	m_renderInfo.materialId = 0;
-    renderInfo.model = Resources::Models::Staff;
+    renderInfo.model = Resources::Models::UnitCube;
 }
 
 Object::~Object() 

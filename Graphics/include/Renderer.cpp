@@ -201,23 +201,25 @@ namespace Graphics
     }
     #else
 	{
+        PROFILE_BEGIN("writeInstanceBuffers()");
         writeInstanceBuffers();
+        PROFILE_END();
+
         menu.unloadTextures();
 
 		PROFILE_BEGIN("clear()");
 		clear();
 		PROFILE_END();
 
-		PROFILE_BEGIN("Cull()");
-		cull();
-		PROFILE_END();
+		//PROFILE_BEGIN("Cull()");
+		//cull();
+		//PROFILE_END();
 
-		PROFILE_BEGIN("WriteInstanceData()");
-		writeInstanceData();
-		PROFILE_END();
+		//PROFILE_BEGIN("WriteInstanceData()");
+		//writeInstanceData();
+		//PROFILE_END();
 
 		PROFILE_BEGIN("drawShadows()");
-
 		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
 		skyRenderer.drawShadows(deviceContext, &forwardPlus);
