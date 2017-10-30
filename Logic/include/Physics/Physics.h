@@ -42,7 +42,6 @@
 #include <btBulletDynamicsCommon.h>
 #include <BulletDynamics\Character\btKinematicCharacterController.h>
 #include <BulletCollision\CollisionDispatch\btGhostObject.h>
-#include <Misc\GameTime.h>
 #include <Engine\Profiler.h>
 
 //#define PHYSICS_GRAVITY 0.00982f
@@ -89,7 +88,7 @@ namespace Logic
 
 		void clear();
 		bool init();
-		void update(GameTime gameTime);
+		void update(float delta);
 
 		const btRigidBody* RayTestOnRigidBodies(Ray& ray);
 		const btVector3 RayTestGetPoint(Ray& ray);

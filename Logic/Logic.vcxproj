@@ -201,7 +201,6 @@
     <ClInclude Include="include\DebugDefines.h" />
     <ClInclude Include="include\Misc\ComboMachine.h" />
     <ClInclude Include="include\Misc\FileLoader.h" />
-    <ClInclude Include="include\Misc\GameTime.h" />
     <ClInclude Include="include\Misc\GUI\Button.h" />
     <ClInclude Include="include\Misc\GUI\MenuState.h" />
     <ClInclude Include="include\AI\EnemyTest.h" />
