@@ -38,13 +38,24 @@ public:
 	ParticleSystem(ID3D11Device *device, uint32_t capacity, const char *path);
     virtual ~ParticleSystem();
 
-    void processEffect(ParticleEffect *fx, DirectX::SimpleMath::Matrix model, float dt);
+    bool processEffect(ParticleEffect *fx, DirectX::SimpleMath::Matrix model, float dt);
     void addEffect(std::string name, XMMATRIX model);
     ParticleEffect getEffect(std::string name);
 
 	void renderPrePass(ID3D11DeviceContext *cxt, Camera *cam, DirectX::CommonStates *states, ID3D11DepthStencilView *dest_dsv);
 	void render(ID3D11DeviceContext *cxt, Camera *cam, DirectX::CommonStates *states, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView *dest_dsv, bool debug);
 	void update(ID3D11DeviceContext *cxt, Camera *cam, float dt);
+
+    struct GeometryParticleInstance {
+        XMMATRIX m_Model;
+        XMVECTOR m_Color;
+        float m_Age;
+        float m_Deform;
+        float m_DeformSpeed;
+
+        float m_NoiseScale;
+        float m_NoiseSpeed;
+    };
 private:
 	void readParticleFile(ID3D11Device *device, const char *path);
 	void readSphereModel(ID3D11Device *device);
@@ -53,17 +64,6 @@ private:
 		XMFLOAT3 position;
 		XMFLOAT3 normal;
 		XMFLOAT2 uv;
-	};
-
-	struct GeometryParticleInstance {
-		XMMATRIX m_Model;
-		XMVECTOR m_Color;
-		float m_Age;
-		float m_Deform;
-		float m_DeformSpeed;
-
-		float m_NoiseScale;
-		float m_NoiseSpeed;
 	};
 
 	// runtime
