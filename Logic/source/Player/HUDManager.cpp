@@ -39,6 +39,7 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info->inactiveAmmo[HUDManager::CURRENT_AMMO] =   player.getOffHand()->getMagAmmo();
     info->inactiveAmmo[HUDManager::TOTAL_AMMO] = player.getOffHand()->getAmmo();
     info->sledge = player.isUsingMeleeWeapon();
+    info->currentWeapon = player.getCurrentWeapon();
 
     // HUD info on the first skill
     const Skill* primary = player.getSkill(SkillManager::ID::PRIMARY);

@@ -56,6 +56,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
+    currentWeapon = 0;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -303,21 +304,21 @@ void Player::updateSpecific(float deltaTime)
         if (ks.IsKeyDown(m_switchWeaponOne))
         {
             m_weaponManager->switchWeapon(0);
-            info->currentWeapon = 0;
+            currentWeapon = 0;
         }
 			
 
         if (ks.IsKeyDown(m_switchWeaponTwo))
         {
             m_weaponManager->switchWeapon(1);
-            info->currentWeapon = 1;
+            currentWeapon = 1;
         }
 			
 
         if (ks.IsKeyDown(m_switchWeaponThree))
         {
             m_weaponManager->switchWeapon(2);
-            info->currentWeapon = 2;
+            currentWeapon = 2;
         }
 			
 	}
@@ -728,4 +729,9 @@ const Skill* Player::getSkill(int id) const
 bool Player::isUsingMeleeWeapon() const
 {
     return m_weaponManager->getActiveWeapon()->getAmmoConsumption() == 0;
+}
+
+int Logic::Player::getCurrentWeapon() const
+{
+    return this->currentWeapon;
 }

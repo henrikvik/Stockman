@@ -67,6 +67,7 @@ namespace Logic
 
 		// UI States
 		int m_hp;
+        int currentWeapon;
 
 		// Movements
 		PlayerState m_playerState;
@@ -174,6 +175,7 @@ namespace Logic
         const Weapon* getOffHand() const;
         const Skill* getSkill(int id) const;
         bool isUsingMeleeWeapon() const;
+        int getCurrentWeapon() const;
 
 		static btVector3 startPosition;
 	};

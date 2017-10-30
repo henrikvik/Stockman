@@ -446,14 +446,14 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
     }
-    int tempInt = (1 - currentInfo->cd)* 100;
+    /*int tempInt = (1 - currentInfo->cd)* 100;
     if (tempInt == 0)
     {
         tempInt = 100;
     }
     temp = (std::to_wstring(tempInt));
     temp += L"%";
-    sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos + offset, DirectX::Colors::Red);
+    sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos + offset, DirectX::Colors::Red);*/
 
 	temp = (std::to_wstring(currentInfo->score));
 	temp += L" Points";
