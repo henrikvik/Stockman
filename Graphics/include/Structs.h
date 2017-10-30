@@ -154,6 +154,7 @@ namespace Graphics
         int wave;
         int enemiesRemaining;
         float timeRemaining;
+        int currentWeapon;
     };
 
 };

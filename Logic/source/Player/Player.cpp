@@ -66,6 +66,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
    	info->score = 0;
    	info->sledge = false;
 	info->cd = 1.0f;
+    info->currentWeapon = 0;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -344,14 +345,26 @@ void Player::updateSpecific(float deltaTime)
 	// Weapon swap
 	if (!m_weaponManager->isSwitching())
 	{
-		if (ks.IsKeyDown(m_switchWeaponOne))
-			m_weaponManager->switchWeapon(0);
+        if (ks.IsKeyDown(m_switchWeaponOne))
+        {
+            m_weaponManager->switchWeapon(0);
+            info->currentWeapon = 0;
+        }
+			
 
-		if (ks.IsKeyDown(m_switchWeaponTwo))
-			m_weaponManager->switchWeapon(1);
+        if (ks.IsKeyDown(m_switchWeaponTwo))
+        {
+            m_weaponManager->switchWeapon(1);
+            info->currentWeapon = 1;
+        }
+			
 
-		if (ks.IsKeyDown(m_switchWeaponThree))
-			m_weaponManager->switchWeapon(2);
+        if (ks.IsKeyDown(m_switchWeaponThree))
+        {
+            m_weaponManager->switchWeapon(2);
+            info->currentWeapon = 2;
+        }
+			
 	}
 
 	// Skills
