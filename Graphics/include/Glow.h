@@ -37,8 +37,8 @@ namespace Graphics
 
 		ID3D11ShaderResourceView * srvAllMips;
 
-		ShaderResource glowPass00;
-		ShaderResource glowPass01;
+		ShaderResource glowPass0;
+		ShaderResource glowPass1;
 
 		DirectX::CommonStates * states;
 

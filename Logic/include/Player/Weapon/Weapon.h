@@ -60,18 +60,22 @@ namespace Logic
 		void setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		ProjectileData* getProjectileData();
-		int getAmmoCap();
 		void setAmmoCap(int ammoCap);
-		int getAmmo();
+
 		void setAmmo(int ammo);
-		int getMagSize();
 		void setMagSize(int magSize);
-		int getMagAmmo();
 		void removeMagAmmo();
 		void removeMagAmmo(int ammo);
-		int getAmmoConsumption();
-		float getAttackTimer();
-		float getRealoadTime();
+
+		int getAmmoConsumption() const;
+
+		float getAttackTimer() const;
+		float getRealoadTime() const;
+
+        int getAmmoCap() const;
+        int getAmmo() const;
+        int getMagSize() const;
+        int getMagAmmo() const;
 
 		void fillMag();
 	};

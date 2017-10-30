@@ -157,19 +157,19 @@ ProjectileData* Weapon::getProjectileData()
 	return m_projectileData;
 }
 
-int Weapon::getAmmoCap() { return m_ammoCap; }
+int Weapon::getAmmoCap() const { return m_ammoCap; }
 
 void Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
 
-int Weapon::getAmmo() { return m_ammo; }
+int Weapon::getAmmo() const { return m_ammo; }
 
 void Weapon::setAmmo(int ammo) { m_ammo = ammo; }
 
-int Weapon::getMagSize() { return m_magSize; }
+int Weapon::getMagSize() const { return m_magSize; }
 
 void Weapon::setMagSize(int magSize) { m_magSize = magSize; }
 
-int Weapon::getMagAmmo() { return m_magAmmo; }
+int Weapon::getMagAmmo() const { return m_magAmmo; }
 
 void Weapon::removeMagAmmo() { m_magAmmo--; }
 
@@ -181,14 +181,14 @@ void Weapon::removeMagAmmo(int ammo)
 		m_magAmmo -= ammo; 
 }
 
-int Weapon::getAmmoConsumption() { return m_ammoConsumption; }
+int Weapon::getAmmoConsumption() const { return m_ammoConsumption; }
 
-float Weapon::getAttackTimer()
+float Weapon::getAttackTimer() const
 {
 	return (60.f / m_attackRate) * 1000;
 }
 
-float Logic::Weapon::getRealoadTime()
+float Weapon::getRealoadTime() const
 {
 	return m_reloadTime;
 }
