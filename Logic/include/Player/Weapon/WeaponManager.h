@@ -24,6 +24,7 @@ namespace Logic
     class Entity;
     class Weapon;
     class AmmoContainer;
+    class WeaponModel;
     class ProjectileManager;
 
 	class WeaponManager
@@ -34,10 +35,11 @@ namespace Logic
             Weapon* primary;
             Weapon* secondary;
             AmmoContainer* ammoContainer;
+            WeaponModel* weaponModel;
 
             bool operator==(const WeaponLoadout &other)
             {
-                return (primary == other.primary && secondary == other.secondary && ammoContainer == other.ammoContainer);
+                return (primary == other.primary && secondary == other.secondary && ammoContainer == other.ammoContainer && weaponModel && other.weaponModel);
             }
         };
 

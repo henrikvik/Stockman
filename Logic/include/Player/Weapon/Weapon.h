@@ -12,7 +12,8 @@
 
 #pragma endregion
 
-#include <Entity\Object.h>
+#include <d3d11.h>
+#include <SimpleMath.h>
 #include <btBulletCollisionCommon.h>
 
 namespace Logic
@@ -22,7 +23,7 @@ namespace Logic
     class ProjectileManager;
     struct ProjectileData;
 
-	class Weapon : public Object
+	class Weapon
 	{
     public:
         struct WeaponInfo
@@ -36,11 +37,9 @@ namespace Logic
         };
 
 	private:
-		DirectX::SimpleMath::Matrix rot, trans, scale;
 		ProjectileData* m_projectileData;
 
         WeaponInfo m_wInfo;
-	//	Animation m_animation;
 
 		btVector3 calcSpread(float yaw, float pitch);
 
@@ -49,13 +48,12 @@ namespace Logic
 
 	public:
 		Weapon();
-		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo);
+		Weapon(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo);
         ~Weapon();
 
         void setSpawnFunctions(ProjectileManager &projManager);
 
 		void use(btVector3 position, float yaw, float pitch, Entity& shooter);
-		void setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		ProjectileData* getProjectileData();
 		float getAttackTimer();

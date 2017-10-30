@@ -3,6 +3,7 @@
 #include <Graphics\include\Structs.h>
 #include <Projectile\ProjectileStruct.h>
 #include <Player\Weapon\AmmoContainer.h>
+#include <Player\Weapon\WeaponModel.h>
 
 using namespace Logic;
 
@@ -31,6 +32,7 @@ void WeaponManager::clear()
         delete weaponLoadout->primary;
         delete weaponLoadout->secondary;
         delete weaponLoadout->ammoContainer;
+        delete weaponLoadout->weaponModel;
         delete weaponLoadout;
     }
         
@@ -46,7 +48,8 @@ void WeaponManager::reset()
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
 	// Updating weapon model
-	m_currentWeapon->primary->setWeaponModelFrontOfPlayer(playerTranslation, playerForward);
+	//m_currentWeapon->primary->setWeaponModelFrontOfPlayer(playerTranslation, playerForward);
+    m_currentWeapon->weaponModel->update(playerTranslation, playerForward);
 }
 
 void WeaponManager::update(float deltaTime)
@@ -84,7 +87,8 @@ void WeaponManager::update(float deltaTime)
 
 void WeaponManager::render(Graphics::Renderer& renderer)
 {
-	m_currentWeapon->primary->render(renderer);
+	//m_currentWeapon->primary->render(renderer);
+    m_currentWeapon->weaponModel->render(renderer);
 }
 
 void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
@@ -94,17 +98,24 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     {
         // Gattling
         new WeaponLoadout{ 
-        /* Primary */   new Weapon(Graphics::ModelID::CROSSBOW, projectileManager, ProjectileData(1, 0.2, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 450, 0 }),
-        /* Secondary*/  new Weapon(Graphics::ModelID::CROSSBOW, projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), Weapon::WeaponInfo{ 1, 18, 15, 10, 100, 0 }),
-        /* AmmoContainer */ new AmmoContainer(AmmoContainer::AmmoInfo{ 60, 60, 30, 30, 1, 6, 2000 }) },
+        /* Primary */       new Weapon(projectileManager, ProjectileData(1, 0.2, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 450, 0 }),
+        /* Secondary*/      new Weapon(projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), Weapon::WeaponInfo{ 1, 18, 15, 10, 100, 0 }),
+        /* AmmoContainer */ new AmmoContainer(AmmoContainer::AmmoInfo{ 60, 60, 30, 30, 1, 6, 2000 }), 
+        /* WeaponModel */   new WeaponModel(Graphics::ModelID::CROSSBOW, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.107f, -1.592f, -9.159f)), DirectX::SimpleMath::Matrix::CreateScale(0.197f, 0.199f, 0.097f) }) },
 
-        /* Primary */new WeaponLoadout{ new Weapon(Graphics::ModelID::STAFF, projectileManager, ProjectileData(1, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 1 }),
-        /* Secondary*/new Weapon(Graphics::ModelID::STAFF, projectileManager, ProjectileData(1, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), Weapon::WeaponInfo{ 3, 1, 0, 0, 100, 1 }),
-        /* AmmoContainer */ new AmmoContainer(AmmoContainer::AmmoInfo{ 300, 200, 100, 100, 1, 10, 3000 }) },
+        // Ice
+        new WeaponLoadout{ 
+        /* Primary */       new Weapon(projectileManager, ProjectileData(1, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 1 }),
+        /* Secondary*/      new Weapon(projectileManager, ProjectileData(1, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), Weapon::WeaponInfo{ 3, 1, 0, 0, 100, 1 }),
+        /* AmmoContainer */ new AmmoContainer(AmmoContainer::AmmoInfo{ 300, 200, 100, 100, 1, 10, 3000 }),
+        /* WeaponModel */   new WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.107f, -1.592f, -9.159f)), DirectX::SimpleMath::Matrix::CreateScale(0.197f, 0.199f, 0.097f) }) },
 
-        /* Primary */new WeaponLoadout{ new Weapon(Graphics::ModelID::STAFF, projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), Weapon::WeaponInfo{ 4, 1, 0, 0, 50, 0 }),
-        /* Secondary*/new Weapon(Graphics::ModelID::STAFF, projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), Weapon::WeaponInfo{ 5, 1, 0, 0, 50, 0 }),
-        /* AmmoContainer */ new AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0 }) }
+        // Sledge/Melee
+        new WeaponLoadout{ 
+        /* Primary */       new Weapon(projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), Weapon::WeaponInfo{ 4, 1, 0, 0, 50, 0 }),
+        /* Secondary*/      new Weapon(projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), Weapon::WeaponInfo{ 5, 1, 0, 0, 50, 0 }),
+        /* AmmoContainer */ new AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0 }),
+        /* WeaponModel */   new WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.107f, -1.592f, -9.159f)), DirectX::SimpleMath::Matrix::CreateScale(0.197f, 0.199f, 0.097f) }) }
     };
 }
 

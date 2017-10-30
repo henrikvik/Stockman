@@ -36,6 +36,6 @@ namespace Logic
 
     };
 }
-#endif //AMMO_CONTAINER_H
+#endif // !AMMO_CONTAINER_H
 
 
