@@ -23,11 +23,24 @@ namespace Logic
 {
     class Entity;
     class Weapon;
+    class AmmoContainer;
     class ProjectileManager;
 
 	class WeaponManager
 	{
-	public:		
+	public:
+        struct WeaponLoadout
+        {
+            Weapon* primary;
+            Weapon* secondary;
+            AmmoContainer* ammoContainer;
+
+            bool operator==(const WeaponLoadout &other)
+            {
+                return (primary == other.primary && secondary == other.secondary && ammoContainer == other.ammoContainer);
+            }
+        };
+
 		WeaponManager();
 		WeaponManager(const WeaponManager& other) = delete;
 		WeaponManager* operator=(const WeaponManager& other) = delete;
@@ -50,31 +63,23 @@ namespace Logic
 		bool isAttacking();
 		bool isReloading();
 
-		Weapon* getCurrentWeaponPrimary();
-		Weapon* getCurrentWeaponSecondary();
-
-        std::pair<Weapon*, Weapon*> getFirstWeapon();
-        std::pair<Weapon*, Weapon*> getSecondWeapon();
-        Weapon* getActiveWeapon();
-        Weapon* getInactiveWeapon();
+        WeaponLoadout* getCurrentWeaponLoadout();
+        WeaponLoadout* getWeaponLoadout(int index);
+        WeaponLoadout* getActiveWeaponLoadout();
+        WeaponLoadout* getInactiveWeaponLoadout();
 
 	private:
+        enum ReloadingWeapon
+        {
+            IDLE,
+            ACTIVE,
+            DONE
+        };
 
-		enum ReloadingWeapon
-		{
-			IDLE,
-			ACTIVE,
-			DONE
-		};
+		void initializeWeapons(ProjectileManager* projectileManager);
 
-		void initializeWeapons();
-		void makeWeaponLoadout();
-
-		ProjectileManager* m_projectileManager;
-		std::vector<Weapon*> m_allWeapons;
-		std::vector<std::pair<Weapon*, Weapon*>> m_weaponsLoadouts;
-		//std::vector<int> ammoList;
-		std::pair<Weapon*, Weapon*> m_currentWeapon;
+        std::vector<WeaponLoadout*> m_weaponLoadouts;
+		WeaponLoadout* m_currentWeapon;
 
 		// Timers
 		float m_swapWeaponTimer;

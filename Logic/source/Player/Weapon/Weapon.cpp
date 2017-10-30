@@ -42,12 +42,6 @@ Weapon::~Weapon()
     delete m_projectileData;
 }
 
-void Logic::Weapon::reset()
-{
-	m_wInfo.ammo = m_wInfo.ammoCap;
-    m_wInfo.magAmmo = m_wInfo.magSize;
-}
-
 void Weapon::setSpawnFunctions(ProjectileManager &projManager)
 {
     SpawnProjectile = [&](ProjectileData& pData, btVector3 position,
@@ -135,54 +129,7 @@ ProjectileData* Weapon::getProjectileData()
 	return m_projectileData;
 }
 
-int Weapon::getAmmoCap() { return m_wInfo.ammoCap; }
-
-void Weapon::setAmmoCap(int ammoCap) { m_wInfo.ammoCap = ammoCap; }
-
-int Weapon::getAmmo() { return m_wInfo.ammo; }
-
-void Weapon::setAmmo(int ammo) { m_wInfo.ammo = ammo; }
-
-int Weapon::getMagSize() { return m_wInfo.magSize; }
-
-void Weapon::setMagSize(int magSize) { m_wInfo.magSize = magSize; }
-
-int Weapon::getMagAmmo() { return m_wInfo.magAmmo; }
-
-void Weapon::removeMagAmmo() { m_wInfo.magAmmo--; }
-
-void Weapon::removeMagAmmo(int ammo) 
-{ 
-	if (ammo > m_wInfo.magAmmo)
-        m_wInfo.magAmmo = 0;
-	else
-        m_wInfo.magAmmo -= ammo;
-}
-
-int Weapon::getAmmoConsumption() { return m_wInfo.ammoConsumption; }
-
 float Weapon::getAttackTimer()
 {
 	return (60.f / m_wInfo.attackRate) * 1000;
-}
-
-float Logic::Weapon::getRealoadTime()
-{
-	return m_wInfo.reloadTime;
-}
-
-void Logic::Weapon::fillMag()
-{
-	int toAdd = m_wInfo.magSize - m_wInfo.magAmmo;
-
-	if (m_wInfo.ammo >= toAdd)
-	{
-        m_wInfo.ammo -= toAdd;		// Remove ammo from total
-        m_wInfo.magAmmo = m_wInfo.magSize;	// Add ammo to mag
-	}
-	else
-	{
-        m_wInfo.magAmmo += m_wInfo.ammo;	// Add rest of ammo to mag
-        m_wInfo.ammo = 0;				// Remove rest of ammo from total
-	}
 }

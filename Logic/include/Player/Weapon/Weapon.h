@@ -28,17 +28,11 @@ namespace Logic
         struct WeaponInfo
         {
             int weaponID;
-            int ammoCap;
-            int ammo;
-            int magSize;
-            int magAmmo;
-            int ammoConsumption;
             int projectileCount;
             int spreadH;							// Horizontal spread in degrees	
             int spreadV;							// Vertical spread in degrees
             float attackRate;						// Attacks per minute
             float freeze;
-            float reloadTime;
         };
 
 	private:
@@ -57,7 +51,6 @@ namespace Logic
 		Weapon();
 		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo);
         ~Weapon();
-		void reset();
 
         void setSpawnFunctions(ProjectileManager &projManager);
 
@@ -65,20 +58,7 @@ namespace Logic
 		void setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		ProjectileData* getProjectileData();
-		int getAmmoCap();
-		void setAmmoCap(int ammoCap);
-		int getAmmo();
-		void setAmmo(int ammo);
-		int getMagSize();
-		void setMagSize(int magSize);
-		int getMagAmmo();
-		void removeMagAmmo();
-		void removeMagAmmo(int ammo);
-		int getAmmoConsumption();
 		float getAttackTimer();
-		float getRealoadTime();
-
-		void fillMag();
 	};
 }
 

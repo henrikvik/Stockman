@@ -13,6 +13,7 @@
 #include <Graphics\include\Renderer.h>
 #include <Physics\Physics.h>
 #include <Projectile\Projectile.h>
+#include <Player\Weapon\AmmoContainer.h>
 
 using namespace Logic;
 
@@ -153,20 +154,20 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
-        Weapon* wp = nullptr;
+        WeaponManager::WeaponLoadout* wp = nullptr;
         if(effect.getSpecifics()->ammoType == 0)
-		    wp = m_weaponManager->getFirstWeapon().first;
+		    wp = m_weaponManager->getWeaponLoadout(0);
         else if(effect.getSpecifics()->ammoType == 1)
-            wp = m_weaponManager->getSecondWeapon().first;
+            wp = m_weaponManager->getWeaponLoadout(1);
 
         if (wp)
         {
-            int magSize = wp->getMagSize();
-            int currentAmmo = wp->getAmmo();
-            if (currentAmmo + magSize > wp->getAmmoCap())
-                wp->setAmmo(wp->getAmmoCap());
+            int magSize = wp->ammoContainer->getAmmoInfo().magSize;
+            int currentAmmo = wp->ammoContainer->getAmmoInfo().ammo;
+            if (currentAmmo + magSize > wp->ammoContainer->getAmmoInfo().ammoCap)
+                wp->ammoContainer->getAmmoInfo().ammo = wp->ammoContainer->getAmmoInfo().ammoCap;
             else
-                wp->setAmmo(currentAmmo + magSize);
+                wp->ammoContainer->getAmmoInfo().ammo = currentAmmo + magSize;
         }
 	}
 }
@@ -229,11 +230,11 @@ void Player::updateSpecific(float deltaTime)
     //updates hudInfo with the current info
 	info->score = ComboMachine::Get().GetCurrentScore();
     info->hp = m_hp;
-    info->activeAmmo[0] = m_weaponManager->getActiveWeapon()->getMagAmmo();
-    info->activeAmmo[1] = m_weaponManager->getActiveWeapon()->getAmmo();
-    info->inactiveAmmo[0] = m_weaponManager->getInactiveWeapon()->getMagAmmo();
-    info->inactiveAmmo[1] = m_weaponManager->getInactiveWeapon()->getAmmo();
-    if (m_weaponManager->getCurrentWeaponPrimary()->getMagSize() == 0)
+    info->activeAmmo[0] = m_weaponManager->getActiveWeaponLoadout()->ammoContainer->getAmmoInfo().magAmmo;
+    info->activeAmmo[1] = m_weaponManager->getActiveWeaponLoadout()->ammoContainer->getAmmoInfo().ammo;
+    info->inactiveAmmo[0] = m_weaponManager->getInactiveWeaponLoadout()->ammoContainer->getAmmoInfo().magAmmo;
+    info->inactiveAmmo[1] = m_weaponManager->getInactiveWeaponLoadout()->ammoContainer->getAmmoInfo().ammo;
+    if (m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().magSize == 0)
     {
         info->sledge  = true;
     }
