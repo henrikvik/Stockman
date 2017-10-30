@@ -104,7 +104,7 @@ float4 PS(VSOut psin) : SV_Target0
     }else
     {
         //return float4(cdActive.Sample(sState, psin.uv));
-        return float4(0.0f, 1.0f, 0.0f, 1.0f);
+        return float4(psin.uv.y, 0.0f, 0.0f, 1.0f);
     }
 
     //return float4(HP.Sample(sState, psin.uv));
