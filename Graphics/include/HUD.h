@@ -57,7 +57,8 @@ namespace Graphics
         bool changed;
         bool firstTime;
         int prevHP;
-        float prevCooldown;
+        float prevCooldown0;
+        float prevCooldown1;
         int prevWeapon;
 
 		float shakeRadius;

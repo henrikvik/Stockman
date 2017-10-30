@@ -23,7 +23,8 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
    changed = false;
    firstTime = true;
    prevHP = 3;
-   prevCooldown = 1.0f;
+   prevCooldown0 = 1.0f;
+   prevCooldown1 = 1.0f;
    isShaking = false;
    prevWeapon = 0;
 }
@@ -65,7 +66,7 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     context->PSSetShaderResources(0, 5, hudTextures);
     context->PSSetShader(shader, nullptr, 0);
 
-    context->Draw(42, 0);
+    context->Draw(48, 0);
     ID3D11ShaderResourceView * SRVNULL = nullptr;
     context->PSSetShaderResources(0, 1, &SRVNULL);
 
@@ -85,12 +86,12 @@ void Graphics::HUD::fillHUDInfo(HUDInfo * info)
 {
     if (!firstTime)
     {
-        if (prevHP != info->hp || (prevCooldown - info->cd0) > 0.001f || prevWeapon != info->currentWeapon)
+        if (prevHP != info->hp || (prevCooldown0 - info->cd0) > 0.001f || (prevCooldown1 - info->cd1) > 0.001f || prevWeapon != info->currentWeapon)
         {
             changed = true;
             prevHP = info->hp;
             prevWeapon = info->activeAmmo[2];
-            prevCooldown = info->cd0;
+            prevCooldown0 = info->cd0;
         }
     }
     else
@@ -144,7 +145,7 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
         UINT element;
     };
 
-    GUI GUIquad[42];
+    GUI GUIquad[48];
     GUIquad[0].verts = DirectX::SimpleMath::Vector2{ -0.05f, -0.05f };
     GUIquad[0].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
 
@@ -223,16 +224,16 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
 
     //weapon icon 1
 
-    GUIquad[18].verts = DirectX::SimpleMath::Vector2{ 0.4f, -1.0f };
+    GUIquad[18].verts = DirectX::SimpleMath::Vector2{ 0.25f, -.9f };
     GUIquad[18].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.5f };
 
-    GUIquad[19].verts = DirectX::SimpleMath::Vector2{ 0.4f, -0.65f };
+    GUIquad[19].verts = DirectX::SimpleMath::Vector2{ 0.25f, -0.65f };
     GUIquad[19].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
-    GUIquad[20].verts = DirectX::SimpleMath::Vector2{ 0.55f, -1.0f };
+    GUIquad[20].verts = DirectX::SimpleMath::Vector2{ 0.4f, -.9f };
     GUIquad[20].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.50f };
 
-    GUIquad[21].verts = DirectX::SimpleMath::Vector2{ 0.55f, -0.65f };
+    GUIquad[21].verts = DirectX::SimpleMath::Vector2{ 0.4f, -0.65f };
     GUIquad[21].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
 
     GUIquad[22].verts = GUIquad[20].verts;
@@ -250,16 +251,16 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
 
     //weapon icon 2
 
-    GUIquad[24].verts = DirectX::SimpleMath::Vector2{ 0.55f, -1.0f };
-    GUIquad[24].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.50f };
+    GUIquad[24].verts = DirectX::SimpleMath::Vector2{ 0.4f, -.9f };
+    GUIquad[24].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.5f };
 
-    GUIquad[25].verts = DirectX::SimpleMath::Vector2{ 0.55f, -0.65f };
+    GUIquad[25].verts = DirectX::SimpleMath::Vector2{ 0.4f, -0.65f };
     GUIquad[25].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
-    GUIquad[26].verts = DirectX::SimpleMath::Vector2{ 0.70f, -1.0f };
-    GUIquad[26].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.5f };
+    GUIquad[26].verts = DirectX::SimpleMath::Vector2{ 0.55f, -.9f };
+    GUIquad[26].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.50f };
 
-    GUIquad[27].verts = DirectX::SimpleMath::Vector2{ 0.70f, -0.65f };
+    GUIquad[27].verts = DirectX::SimpleMath::Vector2{ 0.55f, -0.65f };
     GUIquad[27].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
 
     GUIquad[28].verts = GUIquad[26].verts;
@@ -275,18 +276,18 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
     GUIquad[28].element = 4;
     GUIquad[29].element = 4;
 
-    //skill icon 1
+    //weapon icon 3
 
-    GUIquad[30].verts = DirectX::SimpleMath::Vector2{ 0.7f, -1.0f };
-    GUIquad[30].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.5f };
+    GUIquad[30].verts = DirectX::SimpleMath::Vector2{ 0.55f, -.9f };
+    GUIquad[30].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.50f };
 
-    GUIquad[31].verts = DirectX::SimpleMath::Vector2{ 0.7f, -0.65f };
+    GUIquad[31].verts = DirectX::SimpleMath::Vector2{ 0.55f, -0.65f };
     GUIquad[31].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
-    GUIquad[32].verts = DirectX::SimpleMath::Vector2{ 0.85f, -1.0f };
+    GUIquad[32].verts = DirectX::SimpleMath::Vector2{ 0.70f, -.9f };
     GUIquad[32].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.5f };
 
-    GUIquad[33].verts = DirectX::SimpleMath::Vector2{ 0.85f, -0.65f };
+    GUIquad[33].verts = DirectX::SimpleMath::Vector2{ 0.70f, -0.65f };
     GUIquad[33].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
 
     GUIquad[34].verts = GUIquad[32].verts;
@@ -302,18 +303,18 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
     GUIquad[34].element = 5;
     GUIquad[35].element = 5;
 
-    //skill icon 2
+    //skill icon 1
 
-    GUIquad[36].verts = DirectX::SimpleMath::Vector2{ 0.85f, -1.0f };
+    GUIquad[36].verts = DirectX::SimpleMath::Vector2{ 0.7f, -.9f };
     GUIquad[36].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.5f };
 
-    GUIquad[37].verts = DirectX::SimpleMath::Vector2{ 0.85f, -0.65f };
+    GUIquad[37].verts = DirectX::SimpleMath::Vector2{ 0.7f, -0.65f };
     GUIquad[37].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
 
-    GUIquad[38].verts = DirectX::SimpleMath::Vector2{ 1.0f, -1.0f };
+    GUIquad[38].verts = DirectX::SimpleMath::Vector2{ 0.85f, -.9f };
     GUIquad[38].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.5f };
 
-    GUIquad[39].verts = DirectX::SimpleMath::Vector2{ 1.0f, -0.65f };
+    GUIquad[39].verts = DirectX::SimpleMath::Vector2{ 0.85f, -0.65f };
     GUIquad[39].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
 
     GUIquad[40].verts = GUIquad[38].verts;
@@ -328,6 +329,33 @@ void Graphics::HUD::createHUDVBS(ID3D11Device * device)
     GUIquad[39].element = 6;
     GUIquad[40].element = 6;
     GUIquad[41].element = 6;
+
+    //skill icon 2
+
+    GUIquad[42].verts = DirectX::SimpleMath::Vector2{ 0.85f, -.9f };
+    GUIquad[42].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.5f };
+
+    GUIquad[43].verts = DirectX::SimpleMath::Vector2{ 0.85f, -0.65f };
+    GUIquad[43].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[44].verts = DirectX::SimpleMath::Vector2{ 1.0f, -.9f };
+    GUIquad[44].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.5f };
+
+    GUIquad[45].verts = DirectX::SimpleMath::Vector2{ 1.0f, -0.65f };
+    GUIquad[45].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+
+    GUIquad[46].verts = GUIquad[44].verts;
+    GUIquad[46].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.5f };
+
+    GUIquad[47].verts = GUIquad[43].verts;
+    GUIquad[47].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+
+    GUIquad[42].element = 7;
+    GUIquad[43].element = 7;
+    GUIquad[44].element = 7;
+    GUIquad[45].element = 7;
+    GUIquad[46].element = 7;
+    GUIquad[47].element = 7;
 
    /* GUIquad[18].verts = DirectX::SimpleMath::Vector2{ 2 * (float)((cdPos.x - 31 + 29) / WIN_WIDTH )- 1,  2 * (float)((WIN_HEIGHT - cdPos.y - 31 -14) / WIN_HEIGHT) - 1 };
     GUIquad[18].uv = DirectX::SimpleMath::Vector2{ 0.0f, 1.0f };
@@ -465,36 +493,55 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 //updates the hp and cooldown values on the GPU side
 void Graphics::HUD::updateHUDConstantBuffer(ID3D11DeviceContext * context)
 {
-    float temp[5] = { 0.0f };
+    float temp[6] = { 0.0f };
     //3.0f comes from the max HP of the player
     temp[0] = 1.0f - (float)(currentInfo->hp / 3.0f);
-    if (currentInfo->currentWeapon != 2)
+
+
+    if (currentInfo->currentWeapon == 0)
     {
-        if (currentInfo->currentWeapon == 0)
-        {
-            temp[1] = 0.5f;
-            temp[2] = 0.0f;
-        }
-        else
-        {
-            temp[2] = 0.5f;
-            temp[1] = 0.0f;
-        }
+        temp[1] = 0.5f;
+        temp[2] = 0.0f;
+        temp[3] = 0.0f;
+    }
+    else if (currentInfo->currentWeapon == 1)
+    {
+        temp[1] = 0.0f;
+        temp[2] = 0.5f;
+        temp[3] = 0.0f;
     }
     else
     {
         temp[1] = 0.0f;
         temp[2] = 0.0f;
+        temp[3] = 0.5f;
     }
 
 
+    if ((1 -currentInfo->cd0) < 0.001f)
+    {
+        temp[4] = 0.5f;
+    }
+    else
+    {
+        temp[4] = 0.0f;
+    }
+
+    if ((1 - currentInfo->cd1) < 0.001f)
+    {
+        temp[5] = 0.5f;
+    }
+    else
+    {
+        temp[5] = 0.0f;
+    }
 
 
 
 
     D3D11_MAPPED_SUBRESOURCE data = { 0 };
     ThrowIfFailed(context->Map(HUDCBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
-    memcpy(data.pData, temp, sizeof(float) * 5);
+    memcpy(data.pData, temp, sizeof(float) * 6);
 
     context->Unmap(HUDCBuffer, 0);
 

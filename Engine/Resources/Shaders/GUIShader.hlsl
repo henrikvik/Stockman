@@ -19,6 +19,7 @@ cbuffer hudInfo : register(b0)
     float offset1;
     float offset2;
     float offset3;
+    float offset4;
 }
 
 cbuffer positionOffset : register(b1)
@@ -62,7 +63,13 @@ VSOut VS(VSIn vsin)
     {
         vsout.uv = vsin.uv;
         vsout.uv.y += offset3;
-    }else
+    }
+    else if (vsin.elm == 7)
+    {
+        vsout.uv = vsin.uv;
+        vsout.uv.y += offset4;
+    }
+    else
     {
         vsout.uv = vsin.uv;
     }
