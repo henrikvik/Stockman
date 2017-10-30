@@ -30,7 +30,6 @@ Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExten
     m_weaponManager = new WeaponManager();
     m_skillManager = new SkillManager();
     m_listenerData = new Sound::ListenerData();
-    info = new Graphics::HUDInfo();
 }
 
 Player::~Player()
@@ -57,15 +56,6 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
-    info->hp = m_hp;
-   	info->activeAmmo[0] = 0;
-   	info->activeAmmo[1] = 0;
-    info->inactiveAmmo[0] = 0;
-    info->inactiveAmmo[1] = 0;
-    info->wave = 0;
-   	info->score = 0;
-   	info->sledge = false;
-	info->cd = 1.0f;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -125,9 +115,6 @@ void Player::clear()
 	delete m_charController;
 
     delete m_listenerData;
-
-    // HUD info
-    delete info;
 }
 
 void Player::reset()
@@ -372,14 +359,6 @@ void Player::updateSpecific(float deltaTime)
 		m_hp--;
 #endif
 
-}
-
-//fills the HUD info with wave info
-void Player::updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning)
-{
-    info->wave = wave;
-    info->enemiesRemaining = enemiesRemaining;
-    info->timeRemaining = timeRemaning;
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
@@ -652,7 +631,6 @@ void Player::render(Graphics::Renderer & renderer)
 	// Drawing the weapon model
 	m_weaponManager->render(renderer);
 	m_skillManager->render(renderer);
-    renderer.fillHUDInfo(info);
 }
 
 void Logic::Player::setMaxSpeed(float maxSpeed)
@@ -718,4 +696,24 @@ Player::PlayerState Player::getPlayerState() const
 Sound::ListenerData& Player::getListenerData()
 {
 	return *m_listenerData;
+}
+
+const Weapon* Player::getMainHand() const
+{
+    return m_weaponManager->getActiveWeapon();
+}
+
+const Weapon* Player::getOffHand() const
+{
+    return m_weaponManager->getInactiveWeapon();
+}
+
+const Skill* Player::getSkill(int id) const
+{
+    return m_skillManager->getSkill(id);
+}
+
+bool Player::isUsingMeleeWeapon() const
+{
+    return m_weaponManager->getActiveWeapon()->getAmmoConsumption() == 0;
 }

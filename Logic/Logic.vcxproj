@@ -185,6 +185,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Player\HUDManager.h" />
     <ClInclude Include="include\AI\EnemyChaser.h" />
     <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
     <ClInclude Include="include\Entity\LightObject.h" />
@@ -254,6 +255,7 @@
     <ClInclude Include="include\AI\WaveTimeManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Player\HUDManager.cpp" />
     <ClCompile Include="source\AI\Behavior\MeleeBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyChaser.cpp" />
     <ClCompile Include="source\AI\Behavior\EnemyThreadHandler.cpp" />

@@ -1,7 +1,5 @@
-#ifndef HUD_HANDLER_H
-#define HUD_HANDLER_H
-
-#include <Graphics\include\Renderer.h>
+#ifndef HUD_MANAGER_H
+#define HUD_MANAGER_H
 
 namespace Graphics
 {
@@ -15,13 +13,14 @@ namespace Logic
     class WaveTimeManager;
     class EntityManager;
 
-    class HUDHandler
+    class HUDManager
     {
     private:
         Graphics::HUDInfo *info;
+        static const int CURRENT_AMMO, TOTAL_AMMO;
     public:
-        HUDHandler();
-        virtual ~HUDHandler();
+        HUDManager();
+        virtual ~HUDManager();
 
         void update(Player const &player, WaveTimeManager const &timeManager,
             EntityManager const &manager);

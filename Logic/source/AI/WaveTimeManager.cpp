@@ -18,7 +18,7 @@ WaveTimeManager::~WaveTimeManager()
 
 void WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
 {
-    if (!onLastWave)
+    if (!m_onLastWave)
     {
         m_timeCurrent += deltaTime;
         if (m_timeCurrent > m_timeRequired)
@@ -30,7 +30,7 @@ void WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
             else
             {
                 m_enraged = entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE) > 0;
-                if (!m_enraged)
+                if (!m_enraged) {
                     entityManager.spawnWave(++m_waveCurrent);
 
                     // If the player have completed all the waves
@@ -39,10 +39,6 @@ void WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
                 }
             }
         }
-        /*
-        m_player->updateWaveInfo(m_waveCurrent + 1,
-            m_entityManager.getNrOfAliveEnemies(),
-            (float)((currentWaveTime - m_waveTimer) * 0.001)); */
     }
 }
 

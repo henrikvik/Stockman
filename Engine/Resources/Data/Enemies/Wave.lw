@@ -6,7 +6,7 @@
 	"bossTimeBonus": "3";
 	"bossWaves": "9";
 }
-{
+{ // 0
 	"enemies" : "0";
 	"triggers" : 7;
 	"bosses": 0;

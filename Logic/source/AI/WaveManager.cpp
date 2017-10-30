@@ -38,22 +38,21 @@ WaveManager::EntitiesInWave WaveManager::getEntities(int waveId) const
 	FileLoader::LoadedStruct struc;
 	for (int i = 1; i < m_waveFileLoaded.size(); i++)
 	{
+		struc = m_waveFileLoaded[i];
 		if (currentWave == waveId)
 		{
-			struc = m_waveFileLoaded[i];
 			entities.enemies = splitInts(struc.strings[FILE_ENEMIES], FILE_DELIM);
 
-			for (int j = 0; j < m_waveFileLoaded[i].ints[FILE_TRIGGERS];
+			for (int j = 0; j < struc.ints.at(FILE_TRIGGERS);
 				j++) // load triggers
 				entities.triggers.push_back(loadEntity(i, j + 1));
-
-			for (int k = 0; k < m_waveFileLoaded[i].ints[FILE_ENEMIES]; k++)
+			for (int k = 0; k < struc.ints.at(FILE_BOSSES); k++)
 				entities.bosses.push_back(
-					loadEntity(i + m_waveFileLoaded[i].ints[FILE_TRIGGERS], k));
+					loadEntity(i + struc.ints.at(FILE_BOSSES), k));
 		}
 		else
 		{
-			i += struc.ints[FILE_BOSSES] + struc.ints[FILE_TRIGGERS];
+			i += struc.ints.at(FILE_BOSSES) + struc.ints.at(FILE_TRIGGERS);
 		}
 		currentWave++;
 	}

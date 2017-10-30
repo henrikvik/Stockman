@@ -7,6 +7,7 @@
 
 // Player, Physics, Map & PJM
 #include <Player\Player.h>
+#include <Player\HUDManager.h>
 #include <Physics\Physics.h>
 #include <Map.h>
 #include <Projectile\ProjectileManager.h>
@@ -86,6 +87,7 @@ namespace Logic
 		ProjectileManager*	m_projectileManager;
 		MenuMachine*		m_menu;
         EntityManager		m_entityManager;
+        HUDManager		    m_hudManager;
         WaveTimeManager		m_waveTimeManager;
 		GameTime			m_gameTime;
 		CardManager*		m_cardManager;

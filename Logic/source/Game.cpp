@@ -221,6 +221,10 @@ void Game::gameRunTime(float deltaTime)
 	m_projectileManager->update(m_gameTime.dt);
 	PROFILE_END();
 
+    PROFILE_BEGIN("HUD");
+    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
+    PROFILE_END();
+
 	if (m_player->getHP() <= 0)
 		gameOver();
 }
@@ -285,6 +289,10 @@ void Game::gameRunTimeRender(Graphics::Renderer& renderer)
 	PROFILE_BEGIN("Render Projectiles");
 	m_projectileManager->render(renderer);
 	PROFILE_END();
+
+    PROFILE_BEGIN("Render HUD");
+    m_hudManager.render(renderer);
+    PROFILE_END();
 }
 
 void Logic::Game::menuRender(Graphics::Renderer * renderer)
