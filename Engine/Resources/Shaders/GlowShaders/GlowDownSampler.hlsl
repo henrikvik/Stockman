@@ -22,9 +22,5 @@ VSOut VS(uint id: SV_VertexID)
 
 float4 PS(VSOut input) : SV_Target0
 {
-    float4 final = { 0.0, 0.0, 0.0, 1.0 };
-    for (uint x = 0; x < KERNELSIZE; x++)
-        final += inputTexture.Sample(Sampler, input.uv, int2(x -(KERNELSIZE / 2), 0)) * gaussianFilter[x];
-	
-    return final;
+    return inputTexture.Sample(Sampler, input.uv);
 }

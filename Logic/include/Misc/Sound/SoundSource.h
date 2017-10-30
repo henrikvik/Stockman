@@ -4,7 +4,7 @@
 #include <Misc\Sound\NoiseStructs.h>
 #include <Misc\RandomGenerator.h>
 
-namespace Logic
+namespace Sound
 {
 	class NoiseMachine;
 	class SoundSource

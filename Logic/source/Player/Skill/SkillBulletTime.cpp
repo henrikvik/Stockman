@@ -1,14 +1,22 @@
 #include "Player/Skill/SkillBulletTime.h"
+#include <Projectile\ProjectileManager.h>
+#include <Projectile\ProjectileStruct.h>
+#include <Graphics\include\Renderer.h>
 
 using namespace Logic;
 
 SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData)
 	: Skill(BULLET_TIME_CD, BULLET_TIME_DURATION)
 {
-	m_projectileData = pData;
-	m_projectileManager = projectileManager;
+	m_pData = new ProjectileData(pData);
 	m_sensor = nullptr;
+    setSpawnFunctions(*projectileManager);
 	//m_travelProjectile = nullptr;
+}
+
+SkillBulletTime::~SkillBulletTime()
+{
+    delete m_pData;
 }
 
 bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
@@ -17,7 +25,7 @@ bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
     setCooldown(BULLET_TIME_CD);
 
 	printf("Bullet Time used.\n");
-	m_sensor = m_projectileManager->addProjectile(m_projectileData, shooter.getPositionBT(), forward, shooter);
+	m_sensor = SpawnProjectile(*m_pData, shooter.getPositionBT(), forward, shooter);
 
 	btRigidBody* bodySensor = m_sensor->getRigidBody();
 
@@ -41,6 +49,15 @@ bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 	travelPData.type = ProjectileType::ProjectileTypeBulletTime;
 	m_travelProjectile = m_projectileManager->addProjectile(travelPData, shooter.getPositionBT(), forward, shooter);*/
 }
+
+void SkillBulletTime::setSpawnFunctions(ProjectileManager &projManager)
+{
+    SpawnProjectile = [&](ProjectileData& pData, btVector3 position,
+        btVector3 forward, Entity& shooter) -> Projectile* {
+        return projManager.addProjectile(pData, position, forward, shooter);
+    };
+}
+
 
 void SkillBulletTime::onRelease() { }
 

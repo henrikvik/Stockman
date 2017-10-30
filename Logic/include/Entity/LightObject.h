@@ -4,8 +4,6 @@
 #include <Graphics\include\Structs.h>
 #include <Misc\MapStructs.h>
 
-#define LIGHT_DEBUG_BOX_SIZE 0.5f
-
 namespace Graphics { class Renderer; }
 namespace Logic
 {

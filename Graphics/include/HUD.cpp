@@ -415,31 +415,31 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
     std::wstring temp = L"";
     if (!currentInfo->sledge)
     {
-        temp = std::to_wstring(currentInfo->cuttleryAmmo[0]);
+        temp = std::to_wstring(currentInfo->activeAmmo[0]);
         temp += L"/";
-        temp += std::to_wstring(currentInfo->cuttleryAmmo[1]);
+        temp += std::to_wstring(currentInfo->activeAmmo[1]);
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos1 + offset, DirectX::Colors::Red);
 
-        temp = std::to_wstring(currentInfo->iceAmmo[0]);
+        temp = std::to_wstring(currentInfo->inactiveAmmo[0]);
         temp += L"/";
-        temp += std::to_wstring(currentInfo->iceAmmo[1]);
+        temp += std::to_wstring(currentInfo->inactiveAmmo[1]);
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
     }
     else
     {
-        std::wstring temp = std::to_wstring(currentInfo->cuttleryAmmo[0]);
+        std::wstring temp = std::to_wstring(currentInfo->activeAmmo[0]);
         temp += L"/";
-        temp += std::to_wstring(currentInfo->cuttleryAmmo[1]);
+        temp += std::to_wstring(currentInfo->activeAmmo[1]);
 
         DirectX::SimpleMath::Vector2 tempPos = ammoPos2 + offset;
         tempPos.y += 20;
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), tempPos + offset, DirectX::Colors::Red);
 
-        temp = std::to_wstring(currentInfo->iceAmmo[0]);
+        temp = std::to_wstring(currentInfo->inactiveAmmo[0]);
         temp += L"/";
-        temp += std::to_wstring(currentInfo->iceAmmo[1]);
+        temp += std::to_wstring(currentInfo->inactiveAmmo[1]);
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
     }

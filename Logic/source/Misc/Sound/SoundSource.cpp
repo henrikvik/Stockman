@@ -1,7 +1,7 @@
 #include <Misc\Sound\SoundSource.h>
 #include <Misc\Sound\NoiseMachine.h>
 
-using namespace Logic;
+using namespace Sound;
 
 SoundSource::SoundSource() : channel(nullptr), pos(), vel(), autoPlayer(nullptr), delayPlayer(nullptr)
 {
@@ -124,8 +124,8 @@ bool SoundSource::AutoPlayer::checkIfPlay(float deltaTime)
 // Reset new variables with random generator
 void SoundSource::AutoPlayer::reset()
 {
-	time.value = time.original + RandomGenerator::singleton().getRandomFloat(-time.offset, time.offset);
-	pitch.value = pitch.original + RandomGenerator::singleton().getRandomFloat(-pitch.offset, pitch.offset);
+	time.value = time.original + Logic::RandomGenerator::singleton().getRandomFloat(-time.offset, time.offset);
+	pitch.value = pitch.original + Logic::RandomGenerator::singleton().getRandomFloat(-pitch.offset, pitch.offset);
 }
 
 /*	*******************		*

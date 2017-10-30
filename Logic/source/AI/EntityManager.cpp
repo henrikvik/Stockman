@@ -2,13 +2,14 @@
 using namespace Logic;
 
 #define ENEMIES_PATH_UPDATE_PER_FRAME 25
-#define ENEMIES_TEST_UPDATE_PER_FRAME 4 
+#define ENEMIES_TEST_UPDATE_PER_FRAME 25 
 #define FILE_ABOUT_WHALES "Enemies/Wave"
 
 #include <AI\Behavior\EnemyThreadHandler.h>
 #include <AI\Behavior\AStar.h>
 #include <AI\EnemyTest.h>
 #include <AI\EnemyNecromancer.h>
+#include <AI\EnemyChaser.h>
 #include <Misc\ComboMachine.h>
 
 #include <Player\Player.h>
@@ -95,34 +96,35 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 	
 	for (size_t i = 0; i < enemies.size(); ++i)
 	{
-		enemy = m_enemies[index][i];
-        updateEnemy(enemy, index, player, deltaTime);
-
-        if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, index))
-        {
-            int newIndex = AStar::singleton().getIndex(*enemy);
-
-            std::swap(enemies[i], enemies[enemies.size() - 1]);
-            enemies.pop_back();
-
-            m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
-        }
+        updateEnemy(enemies[i], enemies, i, index, player, deltaTime, swapOnNewIndex);
 	}
 }
 
-void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, float deltaTime)
+void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, 
+    int enemyIndex, int flockIndex, Player const &player, float deltaTime, bool swapOnNewIndex)
 {
-    enemy->update(player, deltaTime, m_enemies[index]);
+    enemy->update(player, deltaTime, flock);
 
-    if (enemy->getHealth() <= 0)
+    if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, flockIndex))
     {
-        // Adds the score into the combo machine
-        ComboMachine::Get().Kill(ENEMY_TYPE(enemy->getEnemyType()));
-        enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
+        int newIndex = AStar::singleton().getIndex(*enemy);
+        std::swap(
+            flock[enemyIndex],
+            flock[flock.size() - 1]
+        );
+        flock.pop_back();
 
-        std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);
+        m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
+    }
+    else if (enemy->getHealth() <= 0)
+    {
+        std::swap(
+            flock[enemyIndex],
+            flock[flock.size() - 1]
+        );
+
         m_deadEnemies.push_back(enemy);
-        m_enemies[index].pop_back();
+        flock.pop_back();
     }
 }
 
@@ -168,19 +170,23 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
 {
     Enemy *enemy;
     int index;
+    btRigidBody *testBody = physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false);
 
     switch (id)
     {
     case ENEMY_TYPE::NECROMANCER:
-        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
+        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
+        break;
+    case ENEMY_TYPE::NECROMANCER_MINION:
+        enemy = newd EnemyChaser(testBody);
         break;
     default:
-        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
-        break;
+        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
+		break;
     }
 
     enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0.f, 3.f, 0.f });
+    enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true, Physics::COL_ENEMY), 2.f, { 0.f, 3.f, 0.f });
 
     enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 

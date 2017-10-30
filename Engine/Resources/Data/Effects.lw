@@ -6,6 +6,7 @@
 
 	"sBulletTime": 0.1f;
 	"sFreezing": 0.1f;
+	"sAmmoType": 0f;
 }
 { // FREEZE
 	"flags": 4; // 0x4
@@ -23,13 +24,27 @@
 	"mDmgTaken": 0f;
 	"mFirerate": 0f;
 	"mHP": 0f;
-	"mMovementSpeed": 2.f
+	"mMovementSpeed": 2.f;
 }
-{ // AMMO_PICK_UP
+{ // AMMO_PICK_UP_PRIMARY
 	"flags": 512; // 0x200
 	"duration": 0f;
 	"modifiers": 0;
-	"specifics": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0f;
+	"sFreezing": 0f;
+	"sAmmoType": 0f;
+}
+{ // AMMO_PICK_UP_SECONDARY
+	"flags": 512; // 0x200
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0f;
+	"sFreezing": 0f;
+	"sAmmoType": 1.f;
 }
 { // SHIELDCHARGE
 	"flags": 7168; // 0x400 + 0x800 + 0x1000
@@ -45,6 +60,7 @@
 
 	"sBulletTime": 0.9f;
 	"sFreezing": 0f;
+	"sAmmoType": 0f;
 }
 { // ENRAGE
 	"flags": 200; // 0x8 + 0x40 + 0x80 

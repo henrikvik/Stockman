@@ -1,9 +1,10 @@
 #include "AI/EnemyTest.h"
 #include <AI\Behavior\TestBehavior.h>
+#include <Projectile\Projectile.h>
 using namespace Logic;
 
 EnemyTest::EnemyTest(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
-: Enemy(modelID, body, halfExtent, 10, 1, 5, 3, 1) { //just test values
+: Enemy(modelID, body, halfExtent, 10, 1, 5, NECROMANCER, 1) { //just test values
 	setBehavior(TEST);
 }
 

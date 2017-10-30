@@ -1,7 +1,7 @@
 #include <Misc\Sound\NoiseMachine.h>
 #include <Misc\Sound\SoundSource.h>
 
-using namespace Logic;
+using namespace Sound;
 
 // Initializes all sound system & sounds into memory
 void NoiseMachine::init()
@@ -103,7 +103,7 @@ void NoiseMachine::playMusic(MUSIC music, SoundSource* soundSource, bool overdri
 }
 
 // Checks if sound if currently playing and if overdrive should be used
-void NoiseMachine::checkIfPlay(Sound* sound, SoundSource* soundSource, bool overdrive)
+void NoiseMachine::checkIfPlay(Noise* sound, SoundSource* soundSource, bool overdrive)
 {
 	if (overdrive)
 		play(sound, soundSource);
@@ -127,7 +127,7 @@ void NoiseMachine::checkIfPlay(Sound* sound, SoundSource* soundSource, bool over
 }
 
 // Actually plays the sound
-void NoiseMachine::play(Sound* sound, SoundSource* soundSource)
+void NoiseMachine::play(Noise* sound, SoundSource* soundSource)
 {
 	// Playing sound
 	ERRCHECK(m_system->playSound(sound->data, m_group[sound->group], false, &soundSource->channel));
@@ -189,7 +189,7 @@ int NoiseMachine::initMusic(LOAD_MODE loadMode)
 // Allocates a specific sound effect into memory or stream
 FMOD_RESULT NoiseMachine::createSound(LOAD_MODE loadMode, SFX sfx, CHANNEL_GROUP group, std::string path, FMOD_MODE mode)
 {
-	m_sfx[sfx] = newd Sound();
+	m_sfx[sfx] = newd Noise();
     FMOD_RESULT result;
     switch (loadMode) {
     case STREAM: result = m_system->createStream(std::string(SOUND_SFX_PATH + path).c_str(), mode, 0, &m_sfx[sfx]->data);  break;
@@ -202,7 +202,7 @@ FMOD_RESULT NoiseMachine::createSound(LOAD_MODE loadMode, SFX sfx, CHANNEL_GROUP
 // Allocates a specific music piece into memory or stream
 FMOD_RESULT NoiseMachine::createSound(LOAD_MODE loadMode, MUSIC music, CHANNEL_GROUP group, std::string path, FMOD_MODE mode)
 {
-	m_music[music] = newd Sound();
+	m_music[music] = newd Noise();
     FMOD_RESULT result;
     switch (loadMode) {
     case STREAM: result = m_system->createStream(std::string(SOUND_MUSIC_PATH + path).c_str(), mode, 0, &m_music[music]->data);     break;
