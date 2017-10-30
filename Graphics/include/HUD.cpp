@@ -63,7 +63,7 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
 	context->VSSetConstantBuffers(1, 1, offsetBuffer);
     context->VSSetShader(shader, nullptr, 0);
 
-    context->PSSetShaderResources(0, 5, hudTextures);
+    context->PSSetShaderResources(0, 4, hudTextures);
     context->PSSetShader(shader, nullptr, 0);
 
     context->Draw(48, 0);
@@ -498,40 +498,40 @@ void Graphics::HUD::updateHUDConstantBuffer(ID3D11DeviceContext * context)
 
     if (currentInfo->currentWeapon == 0)
     {
-        temp[1] = 0.5f;
-        temp[2] = 0.0f;
-        temp[3] = 0.0f;
+        temp[1] = 0.0f;
+        temp[2] = 0.50f;
+        temp[3] = 0.50f;
     }
     else if (currentInfo->currentWeapon == 1)
     {
-        temp[1] = 0.0f;
-        temp[2] = 0.5f;
-        temp[3] = 0.0f;
+        temp[1] = 0.5f;
+        temp[2] = 0.0f;
+        temp[3] = 0.5f;
     }
     else
     {
-        temp[1] = 0.0f;
-        temp[2] = 0.0f;
-        temp[3] = 0.5f;
+        temp[1] = 0.5f;
+        temp[2] = 0.5f;
+        temp[3] = 0.0f;
     }
 
 
     if ((1 -currentInfo->cd0) < 0.001f)
     {
-        temp[4] = 0.5f;
+        temp[4] = 0.0f;
     }
     else
     {
-        temp[4] = 0.0f;
+        temp[4] = 0.5f;
     }
 
     if ((1 - currentInfo->cd1) < 0.001f)
     {
-        temp[5] = 0.5f;
+        temp[5] = 0.0f;
     }
     else
     {
-        temp[5] = 0.0f;
+        temp[5] = 0.5f;
     }
 
 

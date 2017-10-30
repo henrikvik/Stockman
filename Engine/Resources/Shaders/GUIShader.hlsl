@@ -88,8 +88,8 @@ VSOut VS(VSIn vsin)
 Texture2D crosshair : register(t0);
 Texture2D HP : register(t1);
 Texture2D outline : register(t2);
-Texture2D cd : register(t3);
-Texture2D cdActive : register(t4);
+Texture2D skillbar : register(t3);
+
 SamplerState sState;
 
 float4 PS(VSOut psin) : SV_Target0
@@ -110,8 +110,8 @@ float4 PS(VSOut psin) : SV_Target0
         return float4(outline.Sample(sState, psin.uv));
     }else
     {
-        //return float4(cdActive.Sample(sState, psin.uv));
-        return float4(psin.uv.x, 0.0f, 0.0f, 1.0f);
+        return float4(skillbar.Sample(sState, psin.uv));
+        //return float4(psin.uv.x, 0.0f, 0.0f, 1.0f);
     }
 
     //return float4(HP.Sample(sState, psin.uv));
