@@ -36,6 +36,7 @@
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
+    <ClCompile Include="include\SnowManager.cpp" />
     <ClCompile Include="include\SSAORenderer.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
     <ClCompile Include="include\Resources\MaterialManager.cpp" />

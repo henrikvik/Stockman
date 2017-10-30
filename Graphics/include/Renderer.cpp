@@ -47,6 +47,7 @@ namespace Graphics
 #pragma region Foliage
 		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
 		, timeBuffer(device)
+		//, snowManager(device)
 
 
 #pragma endregion
@@ -56,7 +57,7 @@ namespace Graphics
 		this->deviceContext = deviceContext;
 		this->backBuffer = backBuffer;
 
-		initialize(device, deviceContext);
+		initialize(device, deviceContext, camera);
 
 		fakeBackBuffer = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
 		fakeBackBufferSwap = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
@@ -107,14 +108,14 @@ namespace Graphics
 
     }
 
-    void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
+    void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext, Camera * camera)
     {
         resourceManager.initialize(gDevice, gDeviceContext);
 		skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
 
         //temp
         DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
-
+		//snowManager.initializeSnowflakes(camera);
     }
 
 	void Renderer::updateLight(float deltaTime, Camera * camera)
