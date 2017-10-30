@@ -170,7 +170,6 @@ namespace Logic
 		PlayerState getPlayerState() const;
 		Sound::ListenerData& getListenerData();
         SkillManager* getSkillManager();
-        WeaponManager* getWeaponManager();
 
         const Weapon* getMainHand() const;
         const Weapon* getOffHand() const;
