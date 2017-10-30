@@ -263,8 +263,6 @@ void Game::gameOver()
 
 void Game::render(Graphics::Renderer& renderer)
 {
-    renderer.startShake(50.f, 5000.f);
-
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
@@ -289,6 +287,8 @@ void Game::renderGame(Graphics::Renderer& renderer)
     // Debug Draw physics
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
         m_physics->render(renderer);
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::CapsLock))
+        renderer.startShake(50.f, 2500.f);
 
 	PROFILE_BEGIN("Player Render");
 	m_player->render(renderer);
