@@ -713,11 +713,6 @@ SkillManager* Player::getSkillManager()
     return m_skillManager;
 }
 
-WeaponManager* Player::getWeaponManager()
-{
-    return m_weaponManager;
-}
-
 const Weapon* Player::getMainHand() const
 {
     return m_weaponManager->getActiveWeapon();
@@ -736,4 +731,9 @@ const Skill* Player::getSkill(int id) const
 bool Player::isUsingMeleeWeapon() const
 {
     return m_weaponManager->getActiveWeapon()->getAmmoConsumption() == 0;
+}
+
+int Logic::Player::getCurrentWeapon() const
+{
+    return currentWeapon;
 }
