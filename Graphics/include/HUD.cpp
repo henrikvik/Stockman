@@ -85,12 +85,12 @@ void Graphics::HUD::fillHUDInfo(HUDInfo * info)
 {
     if (!firstTime)
     {
-        if (prevHP != info->hp || (prevCooldown - info->cd) > 0.001f || prevWeapon != info->currentWeapon)
+        if (prevHP != info->hp || (prevCooldown - info->cd0) > 0.001f || prevWeapon != info->currentWeapon)
         {
             changed = true;
             prevHP = info->hp;
             prevWeapon = info->activeAmmo[2];
-            prevCooldown = info->cd;
+            prevCooldown = info->cd0;
         }
     }
     else
@@ -416,7 +416,7 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 {   
     //sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
     std::wstring temp = L"";
-    if (!currentInfo->sledge)
+    if (currentInfo->currentWeapon != 2)
     {
         temp = std::to_wstring(currentInfo->activeAmmo[0]);
         temp += L"/";
@@ -465,10 +465,10 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 //updates the hp and cooldown values on the GPU side
 void Graphics::HUD::updateHUDConstantBuffer(ID3D11DeviceContext * context)
 {
-    float temp[5] = { 1.0f };
+    float temp[5] = { 0.0f };
     //3.0f comes from the max HP of the player
     temp[0] = 1.0f - (float)(currentInfo->hp / 3.0f);
-    if (!currentInfo->sledge)
+    if (currentInfo->currentWeapon != 2)
     {
         if (currentInfo->currentWeapon == 0)
         {
@@ -486,6 +486,7 @@ void Graphics::HUD::updateHUDConstantBuffer(ID3D11DeviceContext * context)
         temp[1] = 0.0f;
         temp[2] = 0.0f;
     }
+
 
 
 
