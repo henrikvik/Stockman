@@ -165,6 +165,8 @@ namespace Logic
 		void setPlayerState(PlayerState playerState);
 		PlayerState getPlayerState() const;
 		Sound::ListenerData& getListenerData();
+        SkillManager* getSkillManager();
+        WeaponManager* getWeaponManager();
 
 		static btVector3 startPosition;
 	};

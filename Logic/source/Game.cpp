@@ -2,7 +2,7 @@
 #include <iostream>
 #include <Engine\Typing.h>
 #include <DebugDefines.h>
-
+#include <Player\Skill\SkillManager.h>
 
 using namespace Logic;
 
@@ -74,7 +74,6 @@ void Game::init()
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
 	ComboMachine::Get().Reset();
-
 
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
@@ -219,6 +218,22 @@ void Game::update(float deltaTime)
 		gameRunTime(deltaTime);
 
 		break;
+    case gameStateSkillPick:
+        m_menu->update(m_gameTime.dt);
+        {
+            std::pair<int, int>* selectedSkills = m_menu->getSkillPick();
+            if (selectedSkills->first != -1 && selectedSkills->second != -1)
+            {
+                m_player->getSkillManager()->switchToSkill({
+                    SkillManager::SKILL(selectedSkills->second),
+                    SkillManager::SKILL(selectedSkills->first) 
+                });
+                selectedSkills->first = -1;
+                selectedSkills->second = -1;
+                m_menu->setStateToBe(gameStateGame); //change to gameStateGame
+            }
+        }
+        break;
 	case gameStateLoading:
 		m_menu->update(m_gameTime.dt);
 		break;
@@ -231,7 +246,7 @@ void Game::update(float deltaTime)
 	case gameStateGameOver:
 		//Add special triggers to show the scores on the side
 		m_menu->update(m_gameTime.dt);
-		break;
+        break;
 	}
 }
 
@@ -296,13 +311,13 @@ void Game::render(Graphics::Renderer& renderer)
 		break;
 
 	case gameStateGameUpgrade:
-		gameRunTimeRender(renderer);
 		break;
 
 	case gameStateLoading:
 	case gameStateMenuMain:
 	case gameStateMenuSettings:
 	case gameStateGameOver:
+    case gameStateSkillPick:
 		/*m_menu->render(renderer);*/
 	default:  m_menu->render(renderer);
 		break;

@@ -42,3 +42,13 @@
 	"button2" : "CardUpgradeButton2";
 	"button3" : "CardUpgradeButton3";
 }
+{
+	"Name" : "GameSkillPick";
+	"State" : 7;
+	"Background" : 0;
+	"buttonAmount" : 3;
+
+	"button1" : "SkillPickButton1";
+	"button2" : "SkillPickButton2";
+	"button3" : "SkillPickButton3";
+}

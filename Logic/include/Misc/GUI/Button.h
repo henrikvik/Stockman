@@ -42,7 +42,8 @@ namespace Logic
 		void updateOnPress(int posX, int posY);
         void hoverOver(int posX, int posY);
 		bool animationTransition(float dt, float maxAnimationTime, bool forward);
-		 Graphics::ButtonInfo& getButtonInfo();
+		Graphics::ButtonInfo* getButtonInfo();
+        void setStartAndEnd(float start, float end);
 	};
 }
 #endif
