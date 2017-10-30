@@ -3,6 +3,7 @@
 
 #include <thread>
 #include <queue>
+#include <mutex>
 
 namespace Logic
 {
@@ -30,7 +31,8 @@ namespace Logic
     private:
         static const int NR_OF_THREADS = 8;
 
-        std::queue<WorkData> work;
+        std::queue<WorkData> m_work;
+        std::mutex m_workMutex;
 
         std::thread *threads[NR_OF_THREADS];
         int m_indexRunning[NR_OF_THREADS];

@@ -59,7 +59,8 @@ namespace Logic
 		void update(Player const &player, float deltaTime);
 		void updateEnemies(int index, Player const &player, float deltaTime);
 		// statis because threads will use this
-		void updateEnemy(Enemy *enemy, int index, Player const &player, float deltaTime);
+		void updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, int enemyIndex,
+            int flockIndex, Player const &player, float deltaTime, bool swapOnNewIndex);
 		void clear();
 
 		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
