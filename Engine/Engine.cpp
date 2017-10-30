@@ -255,6 +255,7 @@ int Engine::run()
 
 	g_Profiler = new Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
+    TbbProfilerObserver observer(g_Profiler);
 
 	DebugWindow * debug = DebugWindow::getInstance();
 

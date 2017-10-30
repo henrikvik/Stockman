@@ -2,14 +2,16 @@
 #include <AI\Behavior\RangedBehavior.h>
 #include <Misc\RandomGenerator.h>
 #include <Projectile\Projectile.h>
+#include <Misc\ComboMachine.h>
 
 using namespace Logic;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
 	btRigidBody* body, btVector3 halfExtent)
-	: Enemy(modelID, body, halfExtent, 5, 1, 8, 0, 0) {
+	: Enemy(modelID, body, halfExtent, 5, 1, 8, NECROMANCER, 0) {
 	setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
+        ComboMachine::Get().Kill(getEnemyType());
         SpawnTrigger(2, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY });
     });
     m_spawnedMinions = 0;
@@ -66,7 +68,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
 
                 if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
                 {
-                    Enemy *e = SpawnEnemy(data.caller->getPositionBT(), ENEMY_TYPE::NECROMANCER_MINION);
+                    Enemy *e = SpawnEnemy(ENEMY_TYPE::NECROMANCER_MINION, data.caller->getPositionBT(), {});
                     m_spawnedMinions++;
 
                     e->addCallback(ON_DEATH, [&](CallbackData data) -> void {

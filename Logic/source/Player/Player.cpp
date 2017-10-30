@@ -1,19 +1,27 @@
 #include "Player/Player.h"
-#include <AI\EnemyTest.h>
-#include <AI\Trigger.h>
+
 #include <DebugDefines.h>
 #include <Misc\ComboMachine.h>
-#include <Engine\Profiler.h>
+
+#include <AI\EnemyTest.h>
+#include <AI\Trigger.h>
+
 #include <Projectile\ProjectileManager.h>
+
 #include <Player\Weapon\WeaponManager.h>
 #include <Player\Weapon\Weapon.h>
+
 #include <Player\Skill\SkillManager.h>
 #include <Player\Skill\Skill.h>
+
 #include <Misc\Sound\NoiseStructs.h>
 #include <Graphics\include\Renderer.h>
 #include <Physics\Physics.h>
 #include <Projectile\Projectile.h>
 #include <Player\Weapon\AmmoContainer.h>
+
+#include <Engine\Profiler.h>
+#include <Engine\DebugWindow.h>
 
 using namespace Logic;
 
@@ -25,7 +33,6 @@ Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExten
     m_weaponManager = new WeaponManager();
     m_skillManager = new SkillManager();
     m_listenerData = new Sound::ListenerData();
-    info = new Graphics::HUDInfo();
 }
 
 Player::~Player()
@@ -52,15 +59,6 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
-    info->hp = m_hp;
-   	info->activeAmmo[0] = 0;
-   	info->activeAmmo[1] = 0;
-    info->inactiveAmmo[0] = 0;
-    info->inactiveAmmo[1] = 0;
-    info->wave = 0;
-   	info->score = 0;
-   	info->sledge = false;
-	info->cd = 1.0f;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -68,6 +66,19 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 
 	m_playerState = PlayerState::STANDING;
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
+
+    DebugWindow::getInstance()->registerCommand("SETMOUSESENS", [&](std::vector<string> &para) -> std::string {
+        try 
+        { // Boilerplate code bois
+            m_mouseSens = stof(para[0]);
+        }
+        catch (int i)
+        {
+            return "That is not going to work";
+        }
+        return "Mouse sens set";
+    });
+
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
 	m_moveDir.setZero();
@@ -107,9 +118,6 @@ void Player::clear()
 	delete m_charController;
 
     delete m_listenerData;
-
-    // HUD info
-    delete info;
 }
 
 void Player::reset()
@@ -230,11 +238,11 @@ void Player::updateSpecific(float deltaTime)
     //updates hudInfo with the current info
 	info->score = ComboMachine::Get().GetCurrentScore();
     info->hp = m_hp;
-    info->activeAmmo[0] = m_weaponManager->getActiveWeaponLoadout()->ammoContainer->getAmmoInfo().magAmmo;
-    info->activeAmmo[1] = m_weaponManager->getActiveWeaponLoadout()->ammoContainer->getAmmoInfo().ammo;
-    info->inactiveAmmo[0] = m_weaponManager->getInactiveWeaponLoadout()->ammoContainer->getAmmoInfo().magAmmo;
-    info->inactiveAmmo[1] = m_weaponManager->getInactiveWeaponLoadout()->ammoContainer->getAmmoInfo().ammo;
-    if (m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().magSize == 0)
+    info->activeAmmo[0] = m_weaponManager->getActiveWeapon()->getMagAmmo();
+    info->activeAmmo[1] = m_weaponManager->getActiveWeapon()->getAmmo();
+    info->inactiveAmmo[0] = m_weaponManager->getInactiveWeapon()->getMagAmmo();
+    info->inactiveAmmo[1] = m_weaponManager->getInactiveWeapon()->getAmmo();
+    if (m_weaponManager->getCurrentWeaponPrimary()->getMagSize() == 0)
     {
         info->sledge  = true;
     }
@@ -385,14 +393,6 @@ void Player::updateSpecific(float deltaTime)
 		m_hp--;
 #endif
 
-}
-
-//fills the HUD info with wave info
-void Player::updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning)
-{
-    info->wave = wave;
-    info->enemiesRemaining = enemiesRemaining;
-    info->timeRemaining = timeRemaning;
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
@@ -665,7 +665,6 @@ void Player::render(Graphics::Renderer & renderer)
 	// Drawing the weapon model
 	m_weaponManager->render(renderer);
 	m_skillManager->render(renderer);
-    renderer.fillHUDInfo(info);
 }
 
 void Logic::Player::setMaxSpeed(float maxSpeed)
@@ -731,4 +730,24 @@ Player::PlayerState Player::getPlayerState() const
 Sound::ListenerData& Player::getListenerData()
 {
 	return *m_listenerData;
+}
+
+const Weapon* Player::getMainHand() const
+{
+    return m_weaponManager->getActiveWeapon();
+}
+
+const Weapon* Player::getOffHand() const
+{
+    return m_weaponManager->getInactiveWeapon();
+}
+
+const Skill* Player::getSkill(int id) const
+{
+    return m_skillManager->getSkill(id);
+}
+
+bool Player::isUsingMeleeWeapon() const
+{
+    return m_weaponManager->getActiveWeapon()->getAmmoConsumption() == 0;
 }

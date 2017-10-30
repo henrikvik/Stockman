@@ -33,11 +33,6 @@
 #define PLAYER_AIR_FRICTION				1.f
 #define PLAYER_JUMP_SPEED				0.008f
 
-namespace Graphics
-{
-    struct HUDInfo;
-}
-
 namespace Sound
 {
     struct ListenerData;
@@ -47,7 +42,9 @@ namespace Logic
 {
     class Physics;
     class WeaponManager;
+    class Weapon;
     class SkillManager;
+    class Skill;
     class ProjectileManager;
 
 	class Player : public Entity
@@ -61,7 +58,6 @@ namespace Logic
 		};
 
 	private:
-
 		btKinematicCharacterController* m_charController;
 
 		//ActionManager m_actionManager;
@@ -70,7 +66,6 @@ namespace Logic
 		Physics* m_physPtr;
 
 		// UI States
-        Graphics::HUDInfo* info;
 		int m_hp;
 
 		// Movements
@@ -135,12 +130,15 @@ namespace Logic
 		void init(Physics* physics, ProjectileManager* projectileManager);
 		void clear();
 		void reset();
+
 		void updateSpecific(float deltaTime);
-        void updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning);
+
 		void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 		void onCollision(Projectile& other);
+
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);
+
 		void render(Graphics::Renderer& renderer); 
 		void setMaxSpeed(float maxSpeed);
 
@@ -152,19 +150,30 @@ namespace Logic
 
 		btKinematicCharacterController* getCharController();
 		btGhostObject* getGhostObject();
-		DirectX::SimpleMath::Matrix getTransformMatrix() const;
 		virtual DirectX::SimpleMath::Vector3 getPosition() const;
-		virtual btVector3 getPositionBT() const;
-		virtual btTransform& getTransform() const;
-		float getMoveSpeed() const;
+
+		void setPlayerState(PlayerState playerState);
+
 		void setMoveSpeed(float speed);
 		void setMoveDirection(btVector3 moveDir);
+
 		btVector3 getForwardBT();
-		DirectX::SimpleMath::Vector3 getForward();
 		btVector3 getMoveDirection();
-		void setPlayerState(PlayerState playerState);
+
+		virtual btVector3 getPositionBT() const;
+		virtual btTransform& getTransform() const;
+
+		DirectX::SimpleMath::Vector3 getForward();
+		DirectX::SimpleMath::Matrix getTransformMatrix() const;
+
+		float getMoveSpeed() const;
 		PlayerState getPlayerState() const;
 		Sound::ListenerData& getListenerData();
+
+        const Weapon* getMainHand() const;
+        const Weapon* getOffHand() const;
+        const Skill* getSkill(int id) const;
+        bool isUsingMeleeWeapon() const;
 
 		static btVector3 startPosition;
 	};

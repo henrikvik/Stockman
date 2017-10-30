@@ -1,15 +1,16 @@
 #include <AI\Behavior\EnemyThreadHandler.h>
-
 #include <AI\EntityManager.h>
 #include <AI\Enemy.h>
 #include <AI\Behavior\AStar.h>
 #include <AI\Behavior\Behavior.h>
+
 #include <Engine\Profiler.h>
 
 using namespace Logic;
 
 EnemyThreadHandler::EnemyThreadHandler()
 {
+    m_killChildren = false;
     ZeroMemory(&m_threadRunning, sizeof(m_threadRunning));
     ZeroMemory(&m_indexRunning,  sizeof(m_indexRunning));
     resetThreads();
@@ -65,10 +66,11 @@ void EnemyThreadHandler::threadMain()
 {
     while (!m_killChildren)
     {
-        if (work.size() > 0)
+        std::lock_guard<std::mutex> lock(m_workMutex);
+        if (!m_work.empty())
         {
-            WorkData todo = work.front();
-            work.pop();
+            WorkData todo = m_work.front();
+            m_work.pop();
             updateEnemiesAndPath(todo);
         }
         std::this_thread::sleep_for(2ns);
@@ -77,7 +79,7 @@ void EnemyThreadHandler::threadMain()
 
 void EnemyThreadHandler::addWork(WorkData data)
 {
-    work.push(data);
+    m_work.push(data);
 }
 
 int EnemyThreadHandler::getThreadStatus(int i) {

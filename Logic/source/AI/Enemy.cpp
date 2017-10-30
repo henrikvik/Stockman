@@ -9,7 +9,7 @@
 
 using namespace Logic;
 
-Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, float moveSpeed, int enemyType, int animationId)
+Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId)
 : Entity(body, halfExtent, modelID)
 {
 	m_behavior = nullptr;
@@ -116,7 +116,7 @@ float Enemy::getMoveSpeed() const
 	return m_moveSpeed * m_bulletTimeMod;
 }
 
-int Enemy::getEnemyType() const
+ENEMY_TYPE Enemy::getEnemyType() const
 {
 	return m_enemyType;
 }
