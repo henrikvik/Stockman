@@ -9,18 +9,15 @@
 #define SIGMA 5
 
 Graphics::Glow::Glow(ID3D11Device * device, ID3D11DeviceContext * context)
-	: glow(device, SHADER_PATH("GlowShaders/Glow.hlsl"), {})
-	, glow2(device, SHADER_PATH("GlowShaders/GlowSecond.hlsl"), {})
+	: glow(device, SHADER_PATH("GlowShaders/GlowBlurHorizontal.hlsl"), {})
+	, glow2(device, SHADER_PATH("GlowShaders/glowBlurVertical.hlsl"), {})
 	, merger(device, SHADER_PATH("GlowShaders/Merger.hlsl"), {})
 	, mipGenerator(device, SHADER_PATH("GlowShaders/GlowDownSampler.hlsl"), {})
 	, mipCombinder(device, SHADER_PATH("GlowShaders/GlowMipCombinder.hlsl"), {})
-	, glowPass00(device, WIN_WIDTH, WIN_HEIGHT)
-	, glowPass01(device, WIN_WIDTH, WIN_HEIGHT)
+	, glowPass0(device, WIN_WIDTH, WIN_HEIGHT)
+	, glowPass1(device, WIN_WIDTH, WIN_HEIGHT)
 {
 	this->states = newd DirectX::CommonStates(device);
-
-	//Enable this only if you want a new gaussian filter
-	//auto kernels = generateKernel(KERNELSIZE, SIGMA);
 
 	DebugWindow *debugWindow = DebugWindow::getInstance();
 	createMips(device);
@@ -39,6 +36,7 @@ Graphics::Glow::~Glow()
 
 }
 
+//Not really used since we have a standalone program now
 std::vector<float> Graphics::Glow::generateKernel(int kernelSize, float sigma) 
 {
 	if (kernelSize % 2 == 0) kernelSize--;
@@ -79,8 +77,8 @@ std::vector<float> Graphics::Glow::generateKernel(int kernelSize, float sigma)
 void Graphics::Glow::recompileGlow(ID3D11Device * device)
 {
 	merger.recompile(device, SHADER_PATH("GlowShaders/Merger.hlsl"));
-	glow.recompile(device, SHADER_PATH("GlowShaders/Glow.hlsl"));
-	glow2.recompile(device, SHADER_PATH("GlowShaders/GlowSecond.hlsl"));
+	glow.recompile(device, SHADER_PATH("GlowShaders/glowBlurVertical.hlsl"));
+	glow2.recompile(device, SHADER_PATH("GlowShaders/GlowBlurHorizontal.hlsl"));
 }
 
 void Graphics::Glow::clear(ID3D11DeviceContext * context, float color[4])
@@ -171,7 +169,7 @@ void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResource
 	}
 
 	context->PSSetShader(mipCombinder, nullptr, 0);
-	context->OMSetRenderTargets(1, glowPass01, nullptr);
+	context->OMSetRenderTargets(1, glowPass1, nullptr);
 	context->PSSetShaderResources(0, 1, &srvAllMips);
 	setMipViewPort(context, 0);
 
@@ -185,15 +183,15 @@ void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResource
 	context->IASetInputLayout(nullptr);
 	context->VSSetShader(glow, nullptr, 0);
 	context->PSSetShader(glow, nullptr, 0);
-	context->OMSetRenderTargets(1, glowPass00, nullptr);
-	context->PSSetShaderResources(0, 1, glowPass01);
+	context->OMSetRenderTargets(1, glowPass0, nullptr);
+	context->PSSetShaderResources(0, 1, glowPass1);
 	context->Draw(3, 0);
 
 	context->OMSetRenderTargets(1, &nullRTV, nullptr);
 	context->PSSetShaderResources(0, 1, &nullSRV);
 
-	context->OMSetRenderTargets(1, glowPass01, nullptr);
-	context->PSSetShaderResources(0, 1, glowPass00);
+	context->OMSetRenderTargets(1, glowPass1, nullptr);
+	context->PSSetShaderResources(0, 1, glowPass0);
 
 	context->VSSetShader(glow2, nullptr, 0);
 	context->PSSetShader(glow2, nullptr, 0);
@@ -209,7 +207,7 @@ void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResource
 	
 
 	context->PSSetShaderResources(0, 1, &backBuffer);
-	context->PSSetShaderResources(1, 1, glowPass01);
+	context->PSSetShaderResources(1, 1, glowPass1);
 	context->OMSetRenderTargets(1, *outputTexture, nullptr);
 
 	context->Draw(3, 0);
