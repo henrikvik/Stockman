@@ -70,6 +70,7 @@
     <ClInclude Include="include\Particles\ParticleSystem.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Resources\BRFImportHandler.h" />
+    <ClInclude Include="include\SnowManager.h" />
     <ClInclude Include="include\SSAORenderer.h" />
     <ClInclude Include="include\Utility\Buffer.h" />
     <ClInclude Include="include\Utility\DepthStencil.h" />
