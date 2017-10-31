@@ -12,7 +12,7 @@ Weapon::Weapon()
 Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo)
 {
     m_wInfo = wInfo;
-    m_projectileData    = new ProjectileData(projectileData);
+    m_projectileData = new ProjectileData(projectileData);
 
     setSpawnFunctions(*projectileManager);
 }

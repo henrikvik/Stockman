@@ -11,17 +11,17 @@ namespace Logic
         struct WeaponModelInfo
         {
             DirectX::SimpleMath::Matrix rot, trans, scale;
+            float forwardMultiplier;
         };
 
         WeaponModel();
-        WeaponModel(Graphics::ModelID modelID, WeaponModelInfo mInfo, float forwardMultiplier);
+        WeaponModel(Graphics::ModelID modelID, WeaponModelInfo mInfo);
         ~WeaponModel();
 
         void update(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
     private:
         WeaponModelInfo m_mInfo;
-        float m_forwardMultiplier;
     };
 }
 
