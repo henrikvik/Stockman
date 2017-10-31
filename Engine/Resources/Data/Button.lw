@@ -310,42 +310,42 @@
 {
 	"buttonName" : "SkillPickButton1";
 	"texture" : 3;
-	"xPos" : 250.0f;
-	"yPos" : 225.0f;
+	"xPos" : 200.666666667f;
+	"yPos" : 200.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.3333f;
 	"yTexEnd" : 0.3333f;
 	"activeOffset" : 0.6666f;
-	"height" : 256.0f;
-	"width" : 256.0f;
+	"height" : 170.666666667f;
+	"width" : 170.666666667f;
 	"function" : "buttonClick8";
 }
 {
 	"buttonName" : "SkillPickButton2";
 	"texture" : 3;
-	"xPos" : 540.0f;
-	"yPos" : 225.0f;
+	"xPos" : 560.f;
+	"yPos" : 200.0f;
 	"xTexStart" : 0.3333f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.6666f;
 	"yTexEnd" : 0.3333f;
 	"activeOffset" : 0.6666f;
-	"height" : 256.0f;
-	"width" : 256.0f;
+	"height" : 170.666666667f;
+	"width" : 170.666666667f;
 	"function" : "buttonClick9";
 }
 {
 	"buttonName" : "SkillPickButton3";
 	"texture" : 3;
-	"xPos" : 840.0f;
-	"yPos" : 225.0f;
+	"xPos" : 950.0f;
+	"yPos" : 200.0f;
 	"xTexStart" : 0.6666f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 0.3333f;
 	"activeOffset" : 0.6666f;
-	"height" : 256.0f;
-	"width" : 256.0f;
+	"height" : 170.666666667f;
+	"width" : 170.666666667f;
 	"function" : "buttonClick10";
 }
