@@ -1,7 +1,11 @@
 #include "Game.h"
 #include <iostream>
 #include <Engine\Typing.h>
+
+#include <GameType.h>
 #include <DebugDefines.h>
+
+#define cat(a, b) a##b
 
 using namespace Logic;
 
@@ -29,8 +33,14 @@ Game::~Game()
 
 }
 
-void Game::init()
+void Game::init(LPWSTR *cmdLine, int args)
 {
+    m_gameType = GameType::NORMAL_MODE;
+    for (int i = 1; i < args; i++) // first arg is name of file
+        for (std::wstring const &str : GameTypeStr)
+            if (wcscmp(str.c_str(), cmdLine[i]) == 0)
+                m_gameType = static_cast<GameType> (i - 1); // offset for filename
+
 	// Initializing Sound
 	Sound::NoiseMachine::Get().init();
 
@@ -210,7 +220,8 @@ void Game::gameRunTime(float deltaTime)
 	PROFILE_END();
 
 	PROFILE_BEGIN("AI & Triggers");
-	m_entityManager.update(*m_player, m_gameTime.dt);
+    if (m_gameType != GameType::TESTING_MODE)
+	    m_entityManager.update(*m_player, m_gameTime.dt);
 	PROFILE_END();
 
 	PROFILE_BEGIN("Map");
