@@ -38,7 +38,7 @@
     "activeOffset" : 0.50938f;
 	"height" : 45.0f;
 	"width" : 300.0f;
-	"function" : "buttonClick18";
+	"function" : "buttonClick21";
 }
 {
 	"buttonName" : "MenuQuitGame";
@@ -80,7 +80,7 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick10";
+	"function" : "buttonClick13";
 }
 {
 	"buttonName" : "MenuSettingsSoundMasterPlus";
@@ -94,7 +94,7 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick11";
+	"function" : "buttonClick14";
 }
 
 {
@@ -109,7 +109,7 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick12";
+	"function" : "buttonClick15";
 }
 {
 	"buttonName" : "MenuSettingsSoundSFXPlus";
@@ -123,7 +123,7 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick13";
+	"function" : "buttonClick16";
 }
 {
 	"buttonName" : "MenuSettingsMuteUnmute";
@@ -137,7 +137,7 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick13";
+	"function" : "buttonClick17";
 }
 {
 	"buttonName" : "MenuSettingsControlsMouseSenseMinus";
@@ -151,7 +151,7 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick8";
+	"function" : "buttonClick11";
 }
 {
 	"buttonName" : "MenuSettingsControlsMouseSensePlus";
@@ -165,7 +165,7 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick9";
+	"function" : "buttonClick12";
 }
 {
 	"buttonName" : "MenuSettingsVideoFOVMinus";
@@ -179,7 +179,7 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick15";
+	"function" : "buttonClick18";
 }
 {
 	"buttonName" : "MenuSettingsVideoFOVPlus";
@@ -193,7 +193,7 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick16";
+	"function" : "buttonClick19";
 }
 {
 	"buttonName" : "MenuSettingsVideoWindowed";
@@ -207,7 +207,7 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick17";
+	"function" : "buttonClick20";
 }
 {
 	"buttonName" : "MenuSettingsWriting";

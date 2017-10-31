@@ -62,17 +62,17 @@ void MenuMachine::initialize(GameState state)
 	functions["buttonClick5"] = std::bind(&MenuMachine::chooseUpgrade1, this);
 	functions["buttonClick6"] = std::bind(&MenuMachine::chooseUpgrade2, this);
 	functions["buttonClick7"] = std::bind(&MenuMachine::chooseUpgrade3, this);
-	functions["buttonClick8"] = std::bind(&MenuMachine::minusSense, this);
-	functions["buttonClick9"] = std::bind(&MenuMachine::plusSense, this);
-	functions["buttonClick10"] = std::bind(&MenuMachine::minusMaster, this);
-	functions["buttonClick11"] = std::bind(&MenuMachine::plusMaster, this);
-	functions["buttonClick12"] = std::bind(&MenuMachine::minusSFX, this);
-	functions["buttonClick13"] = std::bind(&MenuMachine::plusSFX, this);
-	functions["buttonClick14"] = std::bind(&MenuMachine::muteUnmute, this);
-	functions["buttonClick15"] = std::bind(&MenuMachine::minusFOV, this);
-	functions["buttonClick16"] = std::bind(&MenuMachine::plusFOV, this);
-	functions["buttonClick17"] = std::bind(&MenuMachine::windowed, this);
-	functions["buttonClick18"] = std::bind(&MenuMachine::showHighscore, this);
+	functions["buttonClick11"] = std::bind(&MenuMachine::minusSense, this);//8
+	functions["buttonClick12"] = std::bind(&MenuMachine::plusSense, this);//9
+	functions["buttonClick13"] = std::bind(&MenuMachine::minusMaster, this);//10
+	functions["buttonClick14"] = std::bind(&MenuMachine::plusMaster, this);//11
+	functions["buttonClick15"] = std::bind(&MenuMachine::minusSFX, this);//12
+	functions["buttonClick16"] = std::bind(&MenuMachine::plusSFX, this);//13
+	functions["buttonClick17"] = std::bind(&MenuMachine::muteUnmute, this);//14
+	functions["buttonClick18"] = std::bind(&MenuMachine::minusFOV, this);//15
+	functions["buttonClick19"] = std::bind(&MenuMachine::plusFOV, this);//16
+	functions["buttonClick20"] = std::bind(&MenuMachine::windowed, this);//17
+	functions["buttonClick21"] = std::bind(&MenuMachine::showHighscore, this);//18
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
