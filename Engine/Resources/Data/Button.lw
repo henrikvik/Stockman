@@ -316,7 +316,7 @@
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.3333f;
 	"yTexEnd" : 0.3333f;
-	"activeOffset" : 0.6666f;
+	"activeOffset" : 0.33333f;
 	"height" : 170.666666667f;
 	"width" : 170.666666667f;
 	"function" : "buttonClick8";
@@ -330,7 +330,7 @@
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.6666f;
 	"yTexEnd" : 0.3333f;
-	"activeOffset" : 0.6666f;
+	"activeOffset" : 0.33333f;
 	"height" : 170.666666667f;
 	"width" : 170.666666667f;
 	"function" : "buttonClick9";
@@ -344,7 +344,7 @@
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 0.3333f;
-	"activeOffset" : 0.6666f;
+	"activeOffset" : 0.33333f;
 	"height" : 170.666666667f;
 	"width" : 170.666666667f;
 	"function" : "buttonClick10";
