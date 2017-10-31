@@ -1,18 +1,18 @@
 {
+	"Player": "Andreas E";
+	"Score": 2000f;
+}
+{
+	"Player": "Simon";
+	"Score": 1000f;
+}
+{
 	"Player": "Andreas";
 	"Score": 0f;
 }
 {
-	"Player": "???";
-	"Score": -1f;
-}
-{
-	"Player": "???";
-	"Score": -1f;
-}
-{
-	"Player": "???";
-	"Score": -1f;
+	"Player": "Stockman";
+	"Score": 0f;
 }
 {
 	"Player": "???";

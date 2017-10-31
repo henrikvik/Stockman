@@ -24,7 +24,8 @@ namespace Logic
 		gameStateGameOver,
 		gameStateDefault,
 		gameStateGameUpgrade,
-        gameStateSkillPick
+        gameStateSkillPick,
+		gameStateHighscore
 	};
 
 	enum CardChoices

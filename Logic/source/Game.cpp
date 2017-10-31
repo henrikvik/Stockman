@@ -53,6 +53,18 @@ void Game::init()
 	m_highScoreManager = newd HighScoreManager();
 	m_highScoreManager->setName("Stockman");
 
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_highScoreManager->gethighScore(i).score != -1)
+		{
+			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+		}
+		else
+		{
+			highScore[i] = "";
+		}
+	}
+
 	// Initializing Menu's
 	m_menu = newd MenuMachine(m_highScoreManager->getName());
 	m_menu->initialize(Game::STATE_START);
@@ -201,6 +213,7 @@ bool Game::updateMenu(float deltaTime)
     case gameStateMenuMain:
     case gameStateMenuSettings:
     case gameStateGameOver:
+	case gameStateHighscore:
     default:
         m_menu->update(deltaTime);
         break;
@@ -255,7 +268,7 @@ void Game::gameOver()
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(ComboMachine::Get().GetCurrentScore());
+			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
 			break;
 		}
 	}
@@ -276,6 +289,7 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuSettings:
 	case gameStateGameOver:
     case gameStateSkillPick:
+	case gameStateHighscore:
     default: renderMenu(renderer);
 		break;
 	}
@@ -314,7 +328,7 @@ void Game::renderGame(Graphics::Renderer& renderer)
 
 void Game::renderMenu(Graphics::Renderer& renderer)
 {
-	m_menu->render(renderer);
+	m_menu->render(renderer, highScore);
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()
