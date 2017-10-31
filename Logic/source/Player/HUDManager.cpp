@@ -49,7 +49,7 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
 
     info->wave = timeManager.getCurrentWave() + 1;
     info->timeRemaining = (timeManager.getTimeRequired() - timeManager.getTimeCurrent()) * 0.001f;
-    info->enemiesRemaining = entityManager.getNrOfAliveEnemies();
+    info->enemiesRemaining = (int)entityManager.getNrOfAliveEnemies();
 }
 
 void HUDManager::render(Graphics::Renderer &renderer)

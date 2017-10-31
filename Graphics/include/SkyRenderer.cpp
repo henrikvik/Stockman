@@ -57,12 +57,12 @@ namespace Graphics
 
 
 
-		context->DrawIndexed(skySphere.indexCount, 0, 0);
+		context->DrawIndexed((UINT)skySphere.indexCount, 0, 0);
 	}
 
 	void SkyRenderer::update(ID3D11DeviceContext * context, float deltaTime, Vector3 pos)
 	{
-		float radiansPerSecond = 0.01745 * deltaTime * 0.005f;
+		float radiansPerSecond = 0.01745f * deltaTime * 0.005f;
 
 		sun.update(context, radiansPerSecond, pos);
 

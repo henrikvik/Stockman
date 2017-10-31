@@ -113,7 +113,7 @@ void StatusManager::update(float deltaTime)
 	{
 		if ((m_effectStacks[i].duration -= deltaTime) <= 0)
 		{
-			removeEffect(i);
+			removeEffect((int)i);
 		}
 	}
 }
@@ -165,7 +165,7 @@ void StatusManager::removeOneStatus(int statusID)
 		{
 			if (m_effectStacks[i].stack-- <= 0) // no more stacks, then remove the effect
 			{
-				removeEffect(i);
+				removeEffect((int)i);
 			}
 			found = true;
 		}
@@ -179,7 +179,7 @@ void StatusManager::removeAllStatus(int statusID)
 	{
 		if (m_effectStacksIds[i] == statusID)
 		{
-			removeEffect(i);
+			removeEffect((int)i);
 			found = true;
 		}
 	}
@@ -194,7 +194,7 @@ std::vector <std::pair<int, Effect*>>
 
 	// For better ways to do this in the future see
 	// mike acton ty
-	int size = m_effectStacks.size();
+	int size = (int)m_effectStacks.size();
 	std::vector<std::pair<int, Effect*>> actives;
 	actives.resize(size);
 
@@ -211,7 +211,7 @@ std::vector<std::pair<int, StatusManager::EFFECT_ID>> StatusManager::getActiveEf
 {
 	std::vector<std::pair<int, StatusManager::EFFECT_ID>> effects;
 
-	int size = m_effectStacks.size();
+	int size = (int)m_effectStacks.size();
 	effects.resize(size);
 
 	for (size_t i = 0; i < size; ++i)
