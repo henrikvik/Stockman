@@ -31,6 +31,7 @@ namespace Graphics
         void renderHUDText(ID3D11BlendState * blendState);
         void updateHUDConstantBuffer(ID3D11DeviceContext * context);
         void createHUDCBs(ID3D11Device * device);
+        void setSkillIcons(ID3D11DeviceContext *context);
 
         Shader shader;
 		ConstantBuffer<DirectX::SimpleMath::Vector2> offsetBuffer;
@@ -65,6 +66,7 @@ namespace Graphics
 		bool isShaking;
 		float shakeDuration;
 		float shakeCounter;
+        bool vbCreated;
     };
 
 }
