@@ -43,9 +43,9 @@ namespace Logic
 		int m_frame, m_aliveEnemies;
 		float m_deltaTime;
 
-		void deleteData(); // delete data in vectors
 		void allocateData(); // resize enemy vector 
 
+        std::function<void(Entity& entity)>                 DeleteBody;
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)>            SpawnProjectile;
         std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
@@ -59,7 +59,7 @@ namespace Logic
 		~EntityManager();
 
         // data handling
-		void clear();
+        void deleteData(); // delete data in vectors
 
         // render / updates
 		void render(Graphics::Renderer &renderer);

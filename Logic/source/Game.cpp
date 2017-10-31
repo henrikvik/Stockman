@@ -106,9 +106,9 @@ void Game::clear()
 
 void Game::reset()
 {
-	/*m_entityManager.clear();*/
-	m_player->reset();
-	
+ //   m_entityManager.deleteData();
+    m_player->reset();
+
 	ComboMachine::Get().Reset();
 }
 

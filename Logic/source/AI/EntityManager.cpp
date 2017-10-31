@@ -55,7 +55,10 @@ void EntityManager::deleteData()
 {
     for (std::vector<Enemy*> list : m_enemies)
         for (Enemy *enemy : list)
+        {
+
             delete enemy;
+        }
     for (Enemy *enemy : m_deadEnemies)
         delete enemy;
     m_aliveEnemies = 0;
@@ -170,7 +173,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
 {
     Enemy *enemy;
     int index;
-    btRigidBody *testBody = physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~ Physics::COL_PLAYER));
+    btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER));
 
     switch (id)
     {
@@ -186,7 +189,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     }
 
     enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER)), 2.f, { 0.f, 3.f, 0.f });
+    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER)), 2.f, { 0.f, 3.f, 0.f });
 
     enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 
@@ -236,14 +239,6 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
 size_t EntityManager::getNrOfAliveEnemies() const
 {
     return m_aliveEnemies;
-}
-
-void EntityManager::clear()
-{
-    deleteData();
-
-    m_deadEnemies.clear();
-    m_enemies.clear();
 }
 
 int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
