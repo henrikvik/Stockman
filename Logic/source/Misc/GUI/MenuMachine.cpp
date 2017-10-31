@@ -48,17 +48,28 @@ void MenuMachine::initialize(GameState state)
 {
 	//Gather all the functions in a map for future allocation
 	std::map<std::string, std::function<void(void)>> functions;
-	functions["buttonClick0"] = std::bind(&MenuMachine::buttonClick0, this);
-	functions["buttonClick1"] = std::bind(&MenuMachine::buttonClick1, this);
-	functions["buttonClick2"] = std::bind(&MenuMachine::buttonClick2, this);
-	functions["buttonClick3"] = std::bind(&MenuMachine::buttonClick3, this);
-	functions["buttonClick4"] = std::bind(&MenuMachine::buttonClick4, this);
-	functions["buttonClick5"] = std::bind(&MenuMachine::buttonClick5, this);
-	functions["buttonClick6"] = std::bind(&MenuMachine::buttonClick6, this);
-	functions["buttonClick7"] = std::bind(&MenuMachine::buttonClick7, this);
-    functions["buttonClick8"] = std::bind(&MenuMachine::buttonSkillPick1, this);
-    functions["buttonClick9"] = std::bind(&MenuMachine::buttonSkillPick2, this);
-    functions["buttonClick10"] = std::bind(&MenuMachine::buttonSkillPick3, this);
+	functions["buttonClick0"] = std::bind(&MenuMachine::startGame, this);
+	functions["buttonClick1"] = std::bind(&MenuMachine::startSettings, this);
+	functions["buttonClick2"] = std::bind(&MenuMachine::startMainMenu, this);
+	functions["buttonClick3"] = std::bind(&MenuMachine::quitGame, this);
+	functions["buttonClick4"] = std::bind(&MenuMachine::writing, this);
+	functions["buttonClick5"] = std::bind(&MenuMachine::chooseUpgrade1, this);
+	functions["buttonClick6"] = std::bind(&MenuMachine::chooseUpgrade2, this);
+	functions["buttonClick7"] = std::bind(&MenuMachine::chooseUpgrade3, this);
+	functions["buttonClick8"] = std::bind(&MenuMachine::buttonSkillPick1, this);
+	functions["buttonClick9"] = std::bind(&MenuMachine::buttonSkillPick2, this);
+	functions["buttonClick10"] = std::bind(&MenuMachine::buttonSkillPick3, this);
+	functions["buttonClick11"] = std::bind(&MenuMachine::minusSense, this);//8
+	functions["buttonClick12"] = std::bind(&MenuMachine::plusSense, this);//9
+	functions["buttonClick13"] = std::bind(&MenuMachine::minusMaster, this);//10
+	functions["buttonClick14"] = std::bind(&MenuMachine::plusMaster, this);//11
+	functions["buttonClick15"] = std::bind(&MenuMachine::minusSFX, this);//12
+	functions["buttonClick16"] = std::bind(&MenuMachine::plusSFX, this);//13
+	functions["buttonClick17"] = std::bind(&MenuMachine::muteUnmute, this);//14
+	functions["buttonClick18"] = std::bind(&MenuMachine::minusFOV, this);//15
+	functions["buttonClick19"] = std::bind(&MenuMachine::plusFOV, this);//16
+	functions["buttonClick20"] = std::bind(&MenuMachine::windowed, this);//17
+	functions["buttonClick21"] = std::bind(&MenuMachine::showHighscore, this);//18
 
 	//Load the lw file information
 	std::vector<FileLoader::LoadedStruct> buttonFile;
@@ -99,9 +110,9 @@ void MenuMachine::initialize(GameState state)
 		{
 			//Temporary Button Vector until Menu has been given them
 			std::vector<MenuState::ButtonStruct> tempButton;
-			for (int i = 0; i < menu.ints.at("buttonAmount"); i++)
+			for (int i = 1; i <= menu.ints.at("buttonAmount"); i++)
 			{
-				tempButton.push_back(allButtons.at(menu.strings.at("button" + std::to_string(i + 1))));
+				tempButton.push_back(allButtons.at(menu.strings.at("button" + std::to_string(i))));
 			}
 
 			//Create new Menus and send in the fitting information from Menu vector
@@ -205,7 +216,7 @@ void MenuMachine::update(float dt)
 	PROFILE_END();
 }
 
-void MenuMachine::render(Graphics::Renderer &renderer)
+void MenuMachine::render(Graphics::Renderer &renderer, std::string highScore[10])
 {
 	PROFILE_BEGIN("Menu Render");
     if (m_currentActiveState == gameStateMenuSettings)
@@ -233,6 +244,66 @@ void MenuMachine::render(Graphics::Renderer &renderer)
         };
         renderer.queueText(&text);
     }
+	if (m_currentActiveState == gameStateHighscore)
+	{
+		std::string tempString = "";
+		std::wstring tempWString = L"";
+		DirectX::SimpleMath::Vector2 tempPos;
+		for (int i = 0; i < 10; i++)
+		{
+			if (highScore[i].compare("") == 0)
+			{
+				break;
+			}
+			else
+			{
+				tempString += highScore[i] + "\n";
+			}
+		}
+		tempWString.assign(tempString.begin(), tempString.end());
+		tempPos.x = 400.0f;
+		tempPos.y = 300.0f;
+
+		Graphics::TextString text
+		{
+			tempWString.c_str(),
+			tempPos,
+			DirectX::SimpleMath::Color(DirectX::Colors::White),
+			Graphics::Font::SMALL
+		};
+		renderer.queueText(&text);
+	}
+
+	if (m_currentActiveState == gameStateGameOver)
+	{
+		std::string tempString = "";
+		std::wstring tempWString = L"";
+		DirectX::SimpleMath::Vector2 tempPos;
+		for (int i = 0; i < 10; i++)
+		{
+			if (highScore[i].compare("") == 0)
+			{
+				break;
+			}
+			else
+			{
+				tempString += highScore[i] + "\n";
+			}
+		}
+		tempWString.assign(tempString.begin(), tempString.end());
+		tempPos.x = 400.0f;
+		tempPos.y = 300.0f;
+
+		Graphics::TextString text
+		{
+			tempWString.c_str(),
+			tempPos,
+			DirectX::SimpleMath::Color(DirectX::Colors::White),
+			Graphics::Font::SMALL
+		};
+		renderer.queueText(&text);
+	}
+    
 
     Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
 
@@ -303,27 +374,27 @@ std::pair<int, int>* MenuMachine::getSkillPick()
     return &m_selectedSkills;
 }
 
-void MenuMachine::buttonClick0()
+void MenuMachine::startGame()
 {
 	m_stateToBe = gameStateSkillPick;
 }
 
-void MenuMachine::buttonClick1()
+void MenuMachine::startSettings()
 {
     m_stateToBe = gameStateMenuSettings;
 }
 
-void MenuMachine::buttonClick2()
+void MenuMachine::startMainMenu()
 {
 	m_stateToBe = gameStateMenuMain;
 }
 
-void MenuMachine::buttonClick3()
+void MenuMachine::quitGame()
 {
 	PostQuitMessage(0); 
 }
 
-void MenuMachine::buttonClick4()
+void MenuMachine::writing()
 {
 	//triggers the typing button
 	Typing* theChar = Typing::getInstance(); //might need to be deleted
@@ -332,25 +403,86 @@ void MenuMachine::buttonClick4()
 	m_highScoreName = "";
 }
 
-void MenuMachine::buttonClick5() //Upgrade button1
+void MenuMachine::chooseUpgrade1() //Upgrade button1
 {
 	m_cardUpgrade = choice1;
 }
 
-void MenuMachine::buttonClick6() //Upgrade button2
+void MenuMachine::chooseUpgrade2() //Upgrade button2
 {
 	m_cardUpgrade = choice2;
 }
 
-void MenuMachine::buttonClick7() //Upgrade button3
+void MenuMachine::chooseUpgrade3() //Upgrade button3
 {
 	m_cardUpgrade = choice3;
 }
+void MenuMachine::plusSense()
+{
+
+}
+void MenuMachine::minusSense()
+{
+
+}
+
+void MenuMachine::plusMaster()
+{
+
+}
+void MenuMachine::minusMaster()
+{
+
+}
+
+void Logic::MenuMachine::plusSFX()
+{
+
+}
+
+void Logic::MenuMachine::minusSFX()
+{
+
+}
+
+void Logic::MenuMachine::muteUnmute()
+{
+
+}
+
+void Logic::MenuMachine::plusFOV()
+{
+
+}
+
+void Logic::MenuMachine::minusFOV()
+{
+
+}
+void Logic::MenuMachine::windowed()
+{
+
+}
+void Logic::MenuMachine::showHighscore()
+{
+	m_stateToBe = gameStateHighscore;
+}
 
 // Buttons for skill selection
-void MenuMachine::buttonSkillPick1() { selectSkillButton(0); }
-void MenuMachine::buttonSkillPick2() { selectSkillButton(1); }
-void MenuMachine::buttonSkillPick3() { selectSkillButton(2); }
+void MenuMachine::buttonSkillPick1()
+{ 
+	selectSkillButton(0); 
+}
+
+void MenuMachine::buttonSkillPick2()
+{ 
+	selectSkillButton(1); 
+}
+
+void MenuMachine::buttonSkillPick3()
+{ 
+	selectSkillButton(2); 
+}
 
 // Tries to replace the currently selected skill
 void MenuMachine::selectSkillButton(int id)
