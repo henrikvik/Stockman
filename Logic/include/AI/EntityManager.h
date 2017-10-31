@@ -40,7 +40,7 @@ namespace Logic
 		WaveManager m_waveManager;
         EnemyThreadHandler *m_threadHandler; // Just because i want to delete it when i want
 
-		int m_frame;
+		int m_frame, m_aliveEnemies;
 		float m_deltaTime;
 
 		void deleteData(); // delete data in vectors
