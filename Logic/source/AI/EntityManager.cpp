@@ -74,7 +74,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			updateEnemies(i, player, deltaTime);
+			updateEnemies((int)i, player, deltaTime);
             if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) 
             {
                 PROFILE_BEGIN("ThreadHandler::addWork");
@@ -97,12 +97,11 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 {
 	bool goalNodeChanged = false;
     bool swapOnNewIndex = !(m_threadHandler->getThreadStatus(index) & EnemyThreadHandler::RUNNING);
-	Enemy *enemy;
     std::vector<Enemy*> &enemies = m_enemies[index];
 	
 	for (size_t i = 0; i < enemies.size(); ++i)
 	{
-        updateEnemy(enemies[i], enemies, i, index, player, deltaTime, swapOnNewIndex);
+        updateEnemy(enemies[i], enemies, (int)i, index, player, deltaTime, swapOnNewIndex);
 	}
 }
 

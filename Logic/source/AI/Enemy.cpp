@@ -85,7 +85,7 @@ void Enemy::damage(float damage)
 
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
 {
-	int flags = effect.getStandards()->flags;
+	auto flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_KILL)
 		damage(m_health);
