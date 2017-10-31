@@ -77,7 +77,7 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     context->PSSetShaderResources(0, 1, &SRVNULL);
 
     PROFILE_BEGIN("draw text");
-    renderText(blendState);
+    renderText(blendState, true);
     //renderHUDText(blendState);
     PROFILE_END();
 }
@@ -418,7 +418,7 @@ void Graphics::HUD::createHUDTextures(ID3D11Device * device, ID3D11DeviceContext
   
 }
 
-void Graphics::HUD::renderText(ID3D11BlendState * blendState)
+void Graphics::HUD::renderText(ID3D11BlendState * blendState, bool fulhack)
 {
     sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
 
@@ -430,7 +430,7 @@ void Graphics::HUD::renderText(ID3D11BlendState * blendState)
     }
     textQueue.clear();
 
-    if (!firstTime)
+    if (fulhack)
     {
         renderHUDText(blendState);
     }

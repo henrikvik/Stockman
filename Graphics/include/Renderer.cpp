@@ -640,7 +640,7 @@ namespace Graphics
     {
         deviceContext->RSSetViewports(1, &viewPort);
         menu.drawMenu(device, deviceContext, info, backBuffer, transparencyBlendState);
-        hud.renderText(transparencyBlendState);
+        hud.renderText(transparencyBlendState, false);
 
     }
 

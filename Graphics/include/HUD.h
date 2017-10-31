@@ -21,7 +21,7 @@ namespace Graphics
         void fillHUDInfo(HUDInfo * info);
 		void startShake(float radius, float duration);
 		void updateShake(ID3D11DeviceContext * context, float deltaTime);
-        void renderText(ID3D11BlendState * blendState);
+        void renderText(ID3D11BlendState * blendState, bool fulhack);
 
     private:
         void createHUDVBS(ID3D11Device * device);

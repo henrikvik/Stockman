@@ -359,7 +359,6 @@ void Player::updateSpecific(float deltaTime)
     m_weaponManager->update(deltaTime);
     m_skillManager->update(deltaTime);
 
-#ifdef GOD_MODE
 	static bool isNum = false;
 	static bool wasNum = false;
 	wasNum = isNum;
@@ -367,7 +366,7 @@ void Player::updateSpecific(float deltaTime)
 
 	if (isNum && !wasNum)
 		m_hp--;
-#endif
+
 
 }
 
