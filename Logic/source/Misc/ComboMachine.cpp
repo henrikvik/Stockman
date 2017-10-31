@@ -32,7 +32,7 @@ void ComboMachine::Reset()
 // Returns a value between 0-100, representing the time left of combo-timer, where zero is the time when the combo ends
 int ComboMachine::GetComboTimer()
 {
-	int procent = std::round((m_TimeSinceLastKill / COMBO_TIMER) / 100.f);
+	int procent = (int)std::round((m_TimeSinceLastKill / COMBO_TIMER) / 100.f);
 	return procent;
 }
 

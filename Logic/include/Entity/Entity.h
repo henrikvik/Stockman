@@ -48,7 +48,7 @@ namespace Logic
         virtual void setSpawnFunctions(std::function<Projectile*(ProjectileData& pData,
             btVector3 position, btVector3 forward, Entity& shooter)> spawnProjectile,
             std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos, std::vector<int> effects)> SpawnEnemy,
-            std::function<Trigger*(int id, btVector3 const &pos, std::vector<int> &effects)> spawnTrigger);
+            std::function<Trigger*(int id, btVector3 const &pos, std::vector<int> &effects)> spawnTriggery);
 
 		virtual void clear();
 		virtual void update(float deltaTime);

@@ -40,10 +40,10 @@ Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, Projectil
 	setModelID(pData.meshID);
 	m_bulletTimeMod = 1.f;
 
-	switch (pData.type)
+	/*switch (pData.type)
 	{
 		// Do specifics 
-	}
+	}*/
 }
 
 Projectile::~Projectile() { }
@@ -68,7 +68,7 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
 
 void Projectile::affect(int stacks, Effect const & effect, float deltaTime)
 {
-	int flags = effect.getStandards()->flags;
+	auto flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_BULLET_TIME)
 	{

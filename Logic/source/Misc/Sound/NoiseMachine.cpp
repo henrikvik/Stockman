@@ -165,7 +165,7 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
 	// Setting the thresholds of where the listener can hear the sfx
 	for (int i = 0; i < THRESHOLD::MAX_SFX; i++)
 		if (m_sfx[i])
-			m_sfx[i]->data->set3DMinMaxDistance(THRESHOLD::SFX_MIN_DIST, THRESHOLD::SFX_MAX_DIST);
+			m_sfx[i]->data->set3DMinMaxDistance((float)THRESHOLD::SFX_MIN_DIST, (float)THRESHOLD::SFX_MAX_DIST);
 
     return count;
 }
@@ -181,7 +181,7 @@ int NoiseMachine::initMusic(LOAD_MODE loadMode)
 	// Setting the thresholds of where the listener can hear the music
 	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)
 		if (m_sfx[i])
-			m_music[i]->data->set3DMinMaxDistance(THRESHOLD::MUSIC_MIN_DIST, THRESHOLD::MUSIC_MAX_DIST);
+			m_music[i]->data->set3DMinMaxDistance((float)THRESHOLD::MUSIC_MIN_DIST, (float)THRESHOLD::MUSIC_MAX_DIST);
 
     return count;
 }

@@ -70,7 +70,7 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
         
    
     contex->IASetVertexBuffers(0, 1, &buttonQuad, &stride, &offset);
-    contex->Draw(info->m_buttons.size() * 6, 0);
+    contex->Draw((UINT)info->m_buttons.size() * 6, 0);
 
 }
 

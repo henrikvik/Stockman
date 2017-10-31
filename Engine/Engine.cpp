@@ -67,7 +67,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 Engine::Engine(HINSTANCE hInstance, int width, int height)
 {
-	srand(time(NULL));				// Set random seed
+	srand((unsigned int)time(NULL));				// Set random seed
 	this->mHeight = height;
 	this->mWidth = width;
 	this->hInstance = hInstance;
@@ -323,9 +323,9 @@ int Engine::run()
 		debug->draw("Title?");
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
-		if (!debug->isOpen())
-			game.update(float(deltaTime));
-		PROFILE_END();
+        if (!debug->isOpen())
+            game.update(float(deltaTime));
+        PROFILE_END();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game.render(*renderer);
@@ -396,9 +396,9 @@ int Engine::run()
 
 			if (!debug->isOpen())
 			{
-				renderer->updateLight(deltaTime, &cam);
-				renderer->updateShake(deltaTime);
-			}
+                renderer->updateLight((float)deltaTime, &cam);
+                renderer->updateShake((float)deltaTime);
+            }
 
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
@@ -407,7 +407,7 @@ int Engine::run()
 
 		if (game.getState() == Logic::gameStateGameUpgrade)
 		{
-			renderer->updateLight(deltaTime, &cam);
+            renderer->updateLight((float)deltaTime, &cam);
 
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
 			renderer->render(&cam);
