@@ -156,6 +156,7 @@ namespace Graphics
         int enemiesRemaining;
         float timeRemaining;
         int currentWeapon;
+        int currentSkills[2];
     };
 
 };

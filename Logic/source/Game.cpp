@@ -203,6 +203,7 @@ bool Game::updateMenu(float deltaTime)
                     SkillManager::SKILL(selectedSkills->second),
                     SkillManager::SKILL(selectedSkills->first)
                 });
+                m_player->setCurrentSkills(selectedSkills->first, selectedSkills->second);
                 selectedSkills->first = -1;
                 selectedSkills->second = -1;
                 m_menu->setStateToBe(gameStateGame); //change to gameStateGame

@@ -68,6 +68,7 @@ namespace Graphics
 		float shakeDuration;
 		float shakeCounter;
         bool vbCreated;
+        bool fuligasehacket;
     };
 
 }

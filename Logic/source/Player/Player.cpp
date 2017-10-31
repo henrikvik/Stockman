@@ -736,3 +736,19 @@ int Logic::Player::getCurrentWeapon() const
 {
     return currentWeapon;
 }
+
+void Logic::Player::setCurrentSkills(int first, int second)
+{
+    currentSkills[0] = first;
+    currentSkills[1] = second;
+}
+
+int Logic::Player::getCurrentSkill1() const
+{
+    return currentSkills[1];
+}
+
+int Logic::Player::getCurrentSkill0() const
+{
+    return currentSkills[0];
+}

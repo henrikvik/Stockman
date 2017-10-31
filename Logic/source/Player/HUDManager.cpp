@@ -16,6 +16,7 @@ using namespace Logic;
 const int HUDManager::CURRENT_AMMO = 0;
 const int HUDManager::TOTAL_AMMO = 1;
 
+
 HUDManager::HUDManager()
 {
     info = new Graphics::HUDInfo;
@@ -58,6 +59,12 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info->wave = timeManager.getCurrentWave() + 1;
     info->timeRemaining = (timeManager.getTimeRequired() - timeManager.getTimeCurrent()) * 0.001f;
     info->enemiesRemaining = (int)entityManager.getNrOfAliveEnemies();
+
+
+    info->currentSkills[0] = player.getCurrentSkill0();
+    info->currentSkills[1] = player.getCurrentSkill1();
+
+    
 }
 
 void HUDManager::render(Graphics::Renderer &renderer)

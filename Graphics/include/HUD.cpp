@@ -28,6 +28,7 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
    isShaking = false;
    prevWeapon = 0;
    vbCreated = false;
+   fuligasehacket = false;
 }
 
 Graphics::HUD::~HUD()
@@ -48,11 +49,15 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     {
         updateHUDConstantBuffer(context);
     }
-    if (!vbCreated)
+
+
+    if (!vbCreated && !firstTime)
     {
         this->setSkillIcons(context);
         vbCreated = true;
     }
+
+    
     
     static UINT stride = 20, offset = 0;
     context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
