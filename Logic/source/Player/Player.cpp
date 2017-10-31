@@ -700,11 +700,6 @@ SkillManager* Player::getSkillManager()
     return m_skillManager;
 }
 
-WeaponManager* Player::getWeaponManager()
-{
-    return m_weaponManager;
-}
-
 const Weapon* Player::getMainHand() const
 {
     return m_weaponManager->getActiveWeapon();
