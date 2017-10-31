@@ -440,10 +440,11 @@ void Graphics::HUD::renderText(ID3D11BlendState * blendState, bool fulhack)
 
 void Graphics::HUD::setHUDTextRenderPos()
 {
-    ammoPos1 = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2)  + 60 , (WIN_HEIGHT / 2) + 50);
-    ammoPos2 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 250) , (WIN_HEIGHT / 2) + 300);
+    ammoPos1 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 450), (WIN_HEIGHT / 2) + 315);
+    ammoPos2 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 375) , (WIN_HEIGHT / 2) + 315);
 
-    cdPos = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2) - 24, (WIN_HEIGHT / 2) + 120);
+    cdPos0 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 180), (WIN_HEIGHT / 2) + 315);
+    cdPos1 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 80), (WIN_HEIGHT / 2) + 315);
     
     scorePos = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2 - 24), (WIN_HEIGHT / 2) - 300);
     wavePos = DirectX::SimpleMath::Vector2(0, 0);
@@ -454,7 +455,7 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 {   
     //sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
     std::wstring temp = L"";
-    if (currentInfo->currentWeapon != 2)
+    if (currentInfo->currentWeapon == 0)
     {
         temp = std::to_wstring(currentInfo->activeAmmo[0]);
         temp += L"/";
@@ -468,30 +469,60 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
     }
-    else
+    else if (currentInfo->currentWeapon == 1)
     {
-        std::wstring temp = std::to_wstring(currentInfo->activeAmmo[0]);
+        
+
+        temp = std::to_wstring(currentInfo->activeAmmo[0]);
         temp += L"/";
         temp += std::to_wstring(currentInfo->activeAmmo[1]);
 
-        DirectX::SimpleMath::Vector2 tempPos = ammoPos2 + offset;
-        tempPos.y += 20;
-        sFont[0]->DrawString(sBatch.get(), temp.c_str(), tempPos + offset, DirectX::Colors::Red);
+
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
 
         temp = std::to_wstring(currentInfo->inactiveAmmo[0]);
         temp += L"/";
         temp += std::to_wstring(currentInfo->inactiveAmmo[1]);
 
-        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos1 + offset, DirectX::Colors::Red);
+
+        
     }
-    /*int tempInt = (1 - currentInfo->cd)* 100;
+    else
+    {
+        temp = std::to_wstring(currentInfo->activeAmmo[0]);
+        temp += L"/";
+        temp += std::to_wstring(currentInfo->activeAmmo[1]);
+
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
+
+        temp = std::to_wstring(currentInfo->inactiveAmmo[0]);
+        temp += L"/";
+        temp += std::to_wstring(currentInfo->inactiveAmmo[1]);
+
+        sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos1 + offset, DirectX::Colors::Red);
+    }
+
+
+
+
+    int tempInt = (1 - currentInfo->cd0)* 100;
     if (tempInt == 0)
     {
         tempInt = 100;
     }
     temp = (std::to_wstring(tempInt));
     temp += L"%";
-    sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos + offset, DirectX::Colors::Red);*/
+    sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos0 + offset, DirectX::Colors::Red);
+
+    tempInt = (1 - currentInfo->cd1) * 100;
+    if (tempInt == 0)
+    {
+        tempInt = 100;
+    }
+    temp = (std::to_wstring(tempInt));
+    temp += L"%";
+    sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos1 + offset, DirectX::Colors::Red);
 
 	temp = (std::to_wstring(currentInfo->score));
 	temp += L" Points";

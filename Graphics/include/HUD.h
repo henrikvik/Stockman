@@ -53,7 +53,8 @@ namespace Graphics
         DirectX::SimpleMath::Vector2 scorePos;
         DirectX::SimpleMath::Vector2 wavePos;
         DirectX::SimpleMath::Vector2 timePos;
-        DirectX::SimpleMath::Vector2 cdPos;
+        DirectX::SimpleMath::Vector2 cdPos0;
+        DirectX::SimpleMath::Vector2 cdPos1;
 
         bool changed;
         bool firstTime;
