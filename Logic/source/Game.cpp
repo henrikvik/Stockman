@@ -94,6 +94,7 @@ void Game::clear()
 	m_projectileManager->clear();
 	Sound::NoiseMachine::Get().clear();
     Typing::releaseInstance();
+    m_entityManager.deleteData();
 
 	delete m_physics;
 	delete m_player;
@@ -106,7 +107,7 @@ void Game::clear()
 
 void Game::reset()
 {
- //   m_entityManager.deleteData();
+    m_entityManager.deleteData();
     m_player->reset();
 
 	ComboMachine::Get().Reset();

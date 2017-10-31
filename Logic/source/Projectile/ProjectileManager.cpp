@@ -13,8 +13,12 @@ ProjectileManager::~ProjectileManager() { }
 
 void ProjectileManager::clear()
 {
-	for (Projectile* p : m_projectiles)
-		delete p;
+    for (Projectile* p : m_projectiles)
+    {
+        m_physPtr->removeRigidBody(p->getRigidBody());
+        p->destroyBody();
+        delete p;
+    }
 	m_projectiles.clear();
 }
 

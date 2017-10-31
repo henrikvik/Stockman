@@ -42,7 +42,6 @@ EntityManager::EntityManager()
 EntityManager::~EntityManager()
 {
     delete m_threadHandler;
-    deleteData();
 }
 
 void EntityManager::allocateData()
@@ -53,14 +52,22 @@ void EntityManager::allocateData()
 
 void EntityManager::deleteData()
 {
-    for (std::vector<Enemy*> list : m_enemies)
+    for (std::vector<Enemy*>& list : m_enemies)
+    {
         for (Enemy *enemy : list)
         {
-
+            DeleteBody(*enemy); 
             delete enemy;
         }
+        list.clear();
+    }
     for (Enemy *enemy : m_deadEnemies)
+    {
+        DeleteBody(*enemy);
         delete enemy;
+    }
+    m_deadEnemies.clear();
+
     m_aliveEnemies = 0;
 }
 
@@ -174,6 +181,9 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     Enemy *enemy;
     int index;
     btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER));
+    
+    // Restrict "tilting" over
+    testBody->setAngularFactor(btVector3(0, 1, 0));
 
     switch (id)
     {
@@ -301,5 +311,11 @@ void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &p
     };
     SpawnTrigger = [&](int id, btVector3 const &pos, std::vector<int> &effects) -> Trigger* {
         return spawnTrigger(id, pos, effects, physics, &projManager);
+    };
+    DeleteBody = [&](Entity& entity) -> void {
+        physics.removeRigidBody(entity.getRigidBody());
+        for (int i = 0; i < entity.getNumberOfWeakPoints(); i++)
+            physics.removeRigidBody(entity.getRigidBodyWeakPoint(i));
+        entity.destroyBody();
     };
 }
