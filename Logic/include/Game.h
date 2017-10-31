@@ -5,20 +5,24 @@
 #include <stdio.h>
 #include <thread>
 
-// Logic Includes
+// Player, Physics, Map & PJM
 #include <Player\Player.h>
+#include <Player\HUDManager.h>
 #include <Physics\Physics.h>
 #include <Map.h>
-#include <Misc\GUI\MenuMachine.h>
 #include <Projectile\ProjectileManager.h>
+
+// AI
 #include <AI/EntityManager.h>
-#include <Misc\GameTime.h>
+#include <AI/WaveTimeManager.h>
+
+// Misc
 #include <Misc\CardManager.h>
 #include <Misc\HighScoreManager.h>
 #include <Misc\ComboMachine.h>
 #include <Misc\Sound\NoiseMachine.h>
 #include <Misc\FPSRenderer.h>
-
+#include <Misc\GUI\MenuMachine.h>
 
 // DirectX Includes
 #include <Windows.h>
@@ -30,31 +34,24 @@
 
 // Engine Includes
 #include <Engine\Profiler.h>
-#include <Engine\DebugWindow.h>
-
-
-// Init Defines
-#define STARTING_STATE		gameStateMenuMain
-#define PLAYER_START_SCA	btVector3(1.5f, 3.0f, 1.5f)
-#define PLAYER_START_ROT	btVector3(0.0f, 0.0f, 0.0f)
-
-//Init Cards
-
-#define NUMBER_OF_EACH_CARD	13
-
-// Init Waves (wave times are in ms)
-#define MAX_WAVES			5
-#define WAVE_START			0		// If you wanna test certain waves for debugging
-#define WAVE_1_TIME			3000.f
-#define WAVE_2_TIME			15000.f
-#define WAVE_3_TIME			25000.f
-#define WAVE_4_TIME			35000.f
-#define WAVE_5_TIME			60000.f
 
 namespace Logic
 {
 	class Game
 	{
+    private:
+        static const GameState STATE_START;
+        static const btVector3 PLAYER_START_SCALE,
+                               PLAYER_START_ROTATION;
+        static const int NUMBER_OF_UNIQUE_CARDS;
+
+        enum GameType
+        {
+            TESTING_MODE =  0x1,
+            NORMAL_MODE =   0x2,
+            HARDCORE_MODE = 0x4,
+            DARK_SOULS =    0x8,
+        };
 	public:
 		Game();
 		Game(const Game& other) = delete;
@@ -65,14 +62,13 @@ namespace Logic
 		void clear();
 		void reset();
 
-		void waveUpdater();
 		void update(float deltaTime);
-		void gameRunTime(float deltaTime);
+        bool updateMenu(float deltaTime);
+		void updateGame(float deltaTime);
+
 		void render(Graphics::Renderer& renderer);
-
-		void gameRunTimeRender(Graphics::Renderer & renderer);
-
-		void menuRender(Graphics::Renderer * renderer);
+		void renderGame(Graphics::Renderer& renderer);
+		void renderMenu(Graphics::Renderer& renderer);
 
 		DirectX::SimpleMath::Vector3 getPlayerForward();
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
@@ -88,25 +84,17 @@ namespace Logic
 		Map*				m_map;
 		ProjectileManager*	m_projectileManager;
 		MenuMachine*		m_menu;
-		EntityManager		m_entityManager;
-		GameTime			m_gameTime;
+        EntityManager		m_entityManager;
+        HUDManager		    m_hudManager;
+        WaveTimeManager		m_waveTimeManager;
 		CardManager*		m_cardManager;
 		HighScoreManager*	m_highScoreManager;
-
-		// Wave
-		int					m_waveCurrent;
-		float				m_waveTimer;
-		float				m_waveTime[MAX_WAVES];
 
 		//GameOver
 		std::string			highScore[10];
 
 		// FPS
 		FPSRenderer         m_fpsRenderer;
-
-		//Debug
-		bool				m_debugOpen;
-		bool				m_firstTrigger;
 	};
 }
 

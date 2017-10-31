@@ -24,6 +24,7 @@ namespace Logic
 		gameStateGameOver,
 		gameStateDefault,
 		gameStateGameUpgrade,
+        gameStateSkillPick,
 		gameStateHighscore
 	};
 

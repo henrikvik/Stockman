@@ -56,9 +56,19 @@
 
 {
 	"Name" : "Highscore";
-	"State" : 7;
+	"State" : 8;
 	"Background" : 0;
 	"buttonAmount" : 1;
 
 	"button1" : "HighscoreStartMenu";
+}
+{
+	"Name" : "GameSkillPick";
+	"State" : 7;
+	"Background" : 0;
+	"buttonAmount" : 3;
+
+	"button1" : "SkillPickButton1";
+	"button2" : "SkillPickButton2";
+	"button3" : "SkillPickButton3";
 }

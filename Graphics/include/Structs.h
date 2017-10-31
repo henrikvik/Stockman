@@ -30,6 +30,7 @@ namespace Graphics
 		//MEGAGRASS,
 		//WATER,
 		GROUND,
+		STAFF,
 
     };
 
@@ -41,6 +42,7 @@ namespace Graphics
 		ID3D11ShaderResourceView * diffuseMap;
 		ID3D11ShaderResourceView * normalMap;
 		ID3D11ShaderResourceView * specularMap;
+		ID3D11ShaderResourceView * glowMap;
 	};
 
 	struct RenderInfo
@@ -50,6 +52,8 @@ namespace Graphics
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
 		bool backFaceCulling = true;
+		float freezeAmount;
+		float burnAmount;
 	};
 
 	struct FoliageRenderInfo
@@ -100,6 +104,8 @@ namespace Graphics
 	{
 		DirectX::SimpleMath::Matrix translation;
 		DirectX::SimpleMath::Matrix invTranspose;
+		float freeze;
+		float burn;
 	};
 
 	struct ButtonInfo
@@ -140,8 +146,8 @@ namespace Graphics
     struct HUDInfo
     {
         int hp;
-        int cuttleryAmmo[2];
-        int iceAmmo[2];
+        int activeAmmo[2];
+        int inactiveAmmo[2];
         bool sledge;
         float cd;
         UINT score;

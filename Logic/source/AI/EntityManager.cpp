@@ -2,91 +2,73 @@
 using namespace Logic;
 
 #define ENEMIES_PATH_UPDATE_PER_FRAME 25
-#define ENEMIES_TEST_UPDATE_PER_FRAME 4 
+#define ENEMIES_TEST_UPDATE_PER_FRAME 25 
 #define FILE_ABOUT_WHALES "Enemies/Wave"
 
-#include <AI/EnemyTest.h>
-#include <AI/EnemyNecromancer.h>
-#include <AI/Behavior/AStar.h>
-#include <DebugDefines.h>
+#include <AI\Behavior\EnemyThreadHandler.h>
+#include <AI\Behavior\AStar.h>
+#include <AI\EnemyTest.h>
+#include <AI\EnemyNecromancer.h>
+#include <AI\EnemyChaser.h>
+#include <Misc\ComboMachine.h>
 
+#include <Player\Player.h>
+#include <Projectile\ProjectileManager.h>
+
+#include <Graphics\include\Renderer.h>
+#include <Graphics\include\Structs.h>
+#include <Physics\Physics.h>
+
+#include <DebugDefines.h>
 #include <Engine\Profiler.h>
 #include <Misc\RandomGenerator.h>
 
 #include <ctime>
 #include <stdio.h>
 
-#define getThread(i) i % NR_OF_THREADS
-#define isThreadLocked(i) m_threadRunning[getThread(i)]
+const int EntityManager::NR_OF_THREADS = 4;
 
 EntityManager::EntityManager()
 {
-    m_currentWave = 0;
     m_frame = 0;
-    m_killChildren = false;
+    m_aliveEnemies = 0;
 
     allocateData();
 
     m_waveManager.setName(FILE_ABOUT_WHALES);
     m_waveManager.loadFile();
-
-    resetThreads();
 }
 
 EntityManager::~EntityManager()
 {
-    deleteData();
-    deleteThreads();
+    delete m_threadHandler;
 }
 
 void EntityManager::allocateData()
 {
     m_enemies.resize(AStar::singleton().getNrOfPolygons());
-}
-
-void EntityManager::resetThreads()
-{
-    for (std::thread *t : threads)
-    {
-        t = nullptr;
-    }
-
-    ZeroMemory(&m_threadRunning, sizeof(m_threadRunning));
-}
-
-void EntityManager::deleteThreads()
-{
-    m_killChildren = true;
-    for (std::thread *t : threads)
-    {
-        if (t)
-        {
-            t->join();
-            delete t;
-        }
-    }
-}
-
-void EntityManager::joinAllThreads()
-{
-    for (auto *t : threads)
-        t->join();
-}
-
-void EntityManager::deleteThread(std::thread *t)
-{
-    if (t->joinable())
-        t->join();
-    delete t;
+    m_threadHandler = newd EnemyThreadHandler();
 }
 
 void EntityManager::deleteData()
 {
-    for (std::vector<Enemy*> list : m_enemies)
+    for (std::vector<Enemy*>& list : m_enemies)
+    {
         for (Enemy *enemy : list)
+        {
+            DeleteBody(*enemy); 
             delete enemy;
+        }
+        list.clear();
+    }
     for (Enemy *enemy : m_deadEnemies)
+    {
+        DeleteBody(*enemy);
         delete enemy;
+    }
+    m_deadEnemies.clear();
+
+    m_aliveEnemies = 0;
 }
 
 void EntityManager::update(Player const &player, float deltaTime)
@@ -99,27 +81,13 @@ void EntityManager::update(Player const &player, float deltaTime)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME != 0 &&
-                !(isThreadLocked(i) && m_indexRunning[getThread(i)] == i)) {
-				updateEnemies(i, player, deltaTime);
-			}
-			else if (!isThreadLocked(i))
-			{
-				int thread = getThread(i);
-                m_threadRunning[thread] = true;
-                std::thread *t = threads[thread];
-
-                if (t)
-                    m_indexRunning[thread] = i;
-                else
-                {
-                    PROFILE_BEGIN("Create Thread");
-                    t = newd std::thread(EntityManager::onPathThreadCreation, this,
-                        i, std::ref(player), deltaTime);
-                    threads[thread] = t;
-                    PROFILE_END();
-                }
-			}
+			updateEnemies((int)i, player, deltaTime);
+            if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) 
+            {
+                PROFILE_BEGIN("ThreadHandler::addWork");
+                m_threadHandler->addWork({ this, static_cast<int> (i), player });
+                PROFILE_END();
+            }
 		}
 	}
 	PROFILE_END();
@@ -129,95 +97,60 @@ void EntityManager::update(Player const &player, float deltaTime)
 		m_deadEnemies[i]->updateDead(deltaTime);
 	}
 
+
 	m_triggerManager.update(deltaTime);
 }
-
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	bool goalNodeChanged = false;
-	Enemy *enemy;
+    bool swapOnNewIndex = !(m_threadHandler->getThreadStatus(index) & EnemyThreadHandler::RUNNING);
     std::vector<Enemy*> &enemies = m_enemies[index];
 	
 	for (size_t i = 0; i < enemies.size(); ++i)
 	{
-		enemy = m_enemies[index][i];
-		updateEnemy(enemy, index, player, deltaTime);
-
-        if (!AStar::singleton().isEntityOnIndex(*enemy, index))
-        {
-            int newIndex = AStar::singleton().getIndex(*enemy);
-
-            std::swap(enemies[i], enemies[enemies.size() - 1]);
-            enemies.pop_back();
-
-            m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
-        }
+        updateEnemy(enemies[i], enemies, (int)i, index, player, deltaTime, swapOnNewIndex);
 	}
 }
 
-void EntityManager::updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime)
+void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, 
+    int enemyIndex, int flockIndex, Player const &player, float deltaTime, bool swapOnNewIndex)
 {
-    PROFILE_BEGIN("Path Update");
-	  Enemy *enemy;
+    enemy->update(player, deltaTime, flock);
 
-    AStar &aStar = AStar::singleton();
-    aStar.loadTargetIndex(player);
-
-    std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(index);
-    auto &enemies = manager->m_enemies;
-
-	for (size_t i = 0; i < enemies[index].size(); ++i)
-	{
-		enemy = enemies[index][i];
-		enemy->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
-		manager->updateEnemy(enemy, index, player, deltaTime);
-	}
-
-	manager->m_threadRunning[getThread(index)] = false;
-    PROFILE_END();
-    while (!manager->m_threadRunning[getThread(index)])
+    if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, flockIndex))
     {
-        std::this_thread::sleep_for(2ms); // this is stupid but works
-        if (manager->m_killChildren) return;
+        int newIndex = AStar::singleton().getIndex(*enemy);
+        std::swap(
+            flock[enemyIndex],
+            flock[flock.size() - 1]
+        );
+        flock.pop_back();
+
+        m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
     }
-    updateEnemiesAndPath(manager, manager->m_indexRunning[getThread(index)], std::ref(player), manager->m_deltaTime);
-}
-
-void EntityManager::onPathThreadCreation(EntityManager * manager, int index, Player const & player, float deltaTime)
-{
-	// g_Profiler->registerThread("Enemy Thread %d\0", getThread(index));
-	updateEnemiesAndPath(manager, index, player, deltaTime);
-}
-
-void EntityManager::updateEnemy(Enemy *enemy, int index, Player const & player, float deltaTime)
-{
-    enemy->update(player, deltaTime, m_enemies[index]);
-
-    if (enemy->getHealth() <= 0)
+    else if (enemy->getHealth() <= 0)
     {
-        // Adds the score into the combo machine
-        ComboMachine::Get().Kill(Enemy::ENEMY_TYPE(enemy->getEnemyType()));
-        spawnTrigger(2, enemy->getPositionBT(), std::vector<int>{StatusManager::AMMO_PICK_UP}, *m_physicsPtr, m_projectilePtr);
-        enemy->getRigidBody()->applyCentralForce({ 500.75f, 30000.f, 100.0f });
+        m_aliveEnemies--;
 
-        std::swap(enemy, m_enemies[index][m_enemies[index].size() - 1]);
+        std::swap(
+            flock[enemyIndex],
+            flock[flock.size() - 1]
+        );
+
         m_deadEnemies.push_back(enemy);
-        m_enemies[index].pop_back();
+        flock.pop_back();
     }
 }
 
-void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
+void EntityManager::spawnWave(int waveId)
 {
-    m_physicsPtr = &physics;
-    m_projectilePtr = projectiles;
-
     if (m_enemies.empty())
     {
         printf("This will crash, data is not allocated, call allocateData() before spawning");
         return;
     }
 
-    WaveManager::EntitiesInWave entities = m_waveManager.getEntities(m_currentWave);
+    WaveManager::EntitiesInWave entities = m_waveManager.getEntities(waveId);
     m_frame = 0;
 
     btVector3 pos;
@@ -231,53 +164,56 @@ void EntityManager::spawnWave(Physics &physics, ProjectileManager *projectiles)
         pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
             generator.getRandomFloat(-85, 85) };
 
-        spawnEnemy(static_cast<Enemy::ENEMY_TYPE> (entity), pos, {}, physics, projectiles);
+        SpawnEnemy(static_cast<ENEMY_TYPE> (entity), pos, {});
     }
 
     for (WaveManager::Entity e : entities.triggers)
-    {
-        spawnTrigger(e.id, { e.x, e.y, e.z }, e.effects, physics, projectiles);
-    }
+        SpawnTrigger(e.id, { e.x, e.y, e.z }, e.effects);
 
     for (WaveManager::Entity e : entities.bosses)
-    {
-        spawnEnemy(static_cast<Enemy::ENEMY_TYPE> (e.id), { e.x, e.y, e.z },
-            e.effects, physics, projectiles);
-    }
+        SpawnEnemy(static_cast<ENEMY_TYPE> (e.id), btVector3{ e.x, e.y, e.z }, e.effects);
 }
 
-void EntityManager::spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos,
+Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     std::vector<int> const &effects, Physics &physics, ProjectileManager *projectiles)
 {
     Enemy *enemy;
     int index;
+    btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER));
+    
+    // Restrict "tilting" over
+    testBody->setAngularFactor(btVector3(0, 1, 0));
 
     switch (id)
     {
-    case Enemy::NECROMANCER:
-        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
+    case ENEMY_TYPE::NECROMANCER:
+        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
+        break;
+    case ENEMY_TYPE::NECROMANCER_MINION:
+        enemy = newd EnemyChaser(testBody);
         break;
     default:
-        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false), { 0.5f, 0.5f, 0.5f });
-        break;
+        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
+		break;
     }
 
     enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true), 2.f, { 0.f, 3.f, 0.f });
-    enemy->setProjectileManager(projectiles);
+    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER)), 2.f, { 0.f, 3.f, 0.f });
+
+    enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 
 #ifdef DEBUG_PATH
     enemy->getBehavior()->getPath().initDebugRendering(); // todo change to enemy->initDebugPath()
 #endif
 
     index = AStar::singleton().getIndex(*enemy);
-    if (index == -1)
-        m_enemies[0].push_back(enemy);
-    else
-        m_enemies[index].push_back(enemy);
+    m_enemies[index == -1 ? 0 : index].push_back(enemy);
+    m_aliveEnemies++;
+
+    return enemy;
 }
 
-void EntityManager::spawnTrigger(int id, btVector3 const &pos,
+Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
     std::vector<int> &effects, Physics &physics, ProjectileManager *projectiles)
 {
     // this is unefficient, could prolly be optimized but should only be done once per wave load
@@ -285,36 +221,33 @@ void EntityManager::spawnTrigger(int id, btVector3 const &pos,
     effectsIds.reserve(effects.size());
     for (auto const &effect : effects)
         effectsIds.push_back(static_cast<StatusManager::EFFECT_ID> (effect));
+    Trigger *trigger;
 
     switch (id)
     {
-    case 1:
-        m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD,
+    case 1: // wtf, starts at 1
+        trigger = m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD,
             Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
             500.f, physics, {},
             effectsIds,
             true);
         break;
     case 2:
-        m_triggerManager.addTrigger(Graphics::ModelID::AMMOBOX,
+        trigger = m_triggerManager.addTrigger(Graphics::ModelID::AMMOBOX,
             Cube(pos, { 0, 0, 0 }, { 1, 0.5, 1 }), 0.f, physics, {},
             effectsIds,
             false);
         break;
+    default:
+        trigger = nullptr;
     }
+
+    return trigger;
 }
 
-size_t EntityManager::getEnemiesAlive() const
+size_t EntityManager::getNrOfAliveEnemies() const
 {
-    return m_enemies.size();
-}
-
-void EntityManager::clear()
-{
-    deleteData();
-
-    m_deadEnemies.clear();
-    m_enemies.clear();
+    return m_aliveEnemies;
 }
 
 int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
@@ -327,11 +260,6 @@ int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
             i++;
         }
     return i;
-}
-
-void EntityManager::setCurrentWave(int currentWave)
-{
-    m_currentWave = currentWave;
 }
 
 void EntityManager::render(Graphics::Renderer &renderer)
@@ -361,7 +289,32 @@ void EntityManager::render(Graphics::Renderer &renderer)
 #endif
 }
 
-int EntityManager::getCurrentWave() const
+const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const
 {
-    return m_currentWave;
+    return m_enemies;
+}
+
+const WaveManager& Logic::EntityManager::getWaveManager() const
+{
+    return m_waveManager;
+}
+
+void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &physics)
+{
+    SpawnEnemy = [&](ENEMY_TYPE type, btVector3 &pos, std::vector<int> effects) -> Enemy* {
+        return spawnEnemy(type, pos, effects, physics, &projManager);
+    };
+    SpawnProjectile = [&](ProjectileData& pData, btVector3 position,
+        btVector3 forward, Entity& shooter) -> Projectile* {
+        return projManager.addProjectile(pData, position, forward, shooter);
+    };
+    SpawnTrigger = [&](int id, btVector3 const &pos, std::vector<int> &effects) -> Trigger* {
+        return spawnTrigger(id, pos, effects, physics, &projManager);
+    };
+    DeleteBody = [&](Entity& entity) -> void {
+        physics.removeRigidBody(entity.getRigidBody());
+        for (int i = 0; i < entity.getNumberOfWeakPoints(); i++)
+            physics.removeRigidBody(entity.getRigidBodyWeakPoint(i));
+        entity.destroyBody();
+    };
 }

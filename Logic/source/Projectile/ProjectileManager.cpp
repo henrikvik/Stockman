@@ -13,21 +13,28 @@ ProjectileManager::~ProjectileManager() { }
 
 void ProjectileManager::clear()
 {
-	for (Projectile* p : m_projectiles)
-		delete p;
+    for (Projectile* p : m_projectiles)
+    {
+        m_physPtr->removeRigidBody(p->getRigidBody());
+        p->destroyBody();
+        delete p;
+    }
 	m_projectiles.clear();
 }
 
 Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)
 {
 	// Create body
-    btRigidBody* body = m_physPtr->createBody(Cube(position + (forward * 2), btVector3(forward), { pData.scale, pData.scale, pData.scale } ), pData.mass, pData.isSensor);
+    btRigidBody* body = m_physPtr->createBody(Sphere(position + (forward * 2), btVector3(forward), pData.scale ), pData.mass, pData.isSensor 
+        // Ignores contact with the shooter
+        , (pData.enemyBullet) ? (Physics::COL_EN_PROJ) : (Physics::COL_PL_PROJ)
+        , (pData.enemyBullet) ? (Physics::COL_EVERYTHING &~(Physics::COL_ENEMY)) : (Physics::COL_EVERYTHING &~(Physics::COL_PLAYER)));
 
 	// Taking the forward vector and getitng the pitch and yaw from it
 	float pitch = asin(-forward.getY());
 	float yaw = atan2(forward.getX(), forward.getZ());
 	btQuaternion q(yaw, pitch, 0.f);
-	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - (180 * M_PI / 180), 0.f));
+	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), 0.f));
 
 	// Set gravity modifier
 	body->setGravity(pData.gravityModifier * m_physPtr->getGravity());
@@ -55,7 +62,7 @@ void ProjectileManager::removeProjectile(Projectile* p)
 	for (size_t i = nrProjectiles; i-- && found == -1; )
 	{
 		if (m_projectiles[nrProjectiles - (i + 1)] == p)
-			found = i + 1;
+			found = (int)i + 1;
 	}
 
 	m_projectiles.erase(m_projectiles.begin() + found);
@@ -77,7 +84,7 @@ void Logic::ProjectileManager::update(float deltaTime)
 		p->updateSpecific(deltaTime);
 		if (p->shouldRemove() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
 		{
-			removeProjectile(p, i);
+			removeProjectile(p, (int)i);
 			i--;
 		}
 	}

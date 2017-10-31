@@ -1,6 +1,8 @@
 #include "DebugWindow.h"
 #include <vector>
 #include <sstream>
+#include <algorithm>
+
 #define ARRAYSIZE(ARR) ((int)(sizeof(ARR)/sizeof(*ARR)))
 
 DebugWindow* DebugWindow::instance = 0;
@@ -20,7 +22,7 @@ DebugWindow::DebugWindow()
 	});
 	registerCommand("HISTORY", [&](std::vector<std::string> &args)->std::string
 	{
-		int first = m_history.size() - 10;
+		int first = (int)m_history.size() - 10;
 		for (int i = first > 0 ? first : 0; i < m_history.size(); i++)
 		{
 			addLog("%3d: %s\n", i, m_history[i]);
@@ -82,9 +84,12 @@ void DebugWindow::addLog(const char* command_line, ...) IM_FMTARGS(2)
 
 void DebugWindow::draw(const char * title)
 {
+	if (!this->isDrawing)
+		return;
+
 	ImGuiStyle * style = &ImGui::GetStyle();
 
-	style->WindowPadding = ImVec2(15, 15);
+	/*style->WindowPadding = ImVec2(15, 15);
 	style->WindowRounding = 5.0f;
 	style->FramePadding = ImVec2(5, 5);
 	style->FrameRounding = 4.0f;
@@ -98,7 +103,7 @@ void DebugWindow::draw(const char * title)
 
 	style->Colors[ImGuiCol_Button] = ImVec4(1.00f, 0.6f, 0.6f, 0.50f);
 	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(1.00f, 0.7f, 0.7f, 0.50f);
-	style->Colors[ImGuiCol_ButtonActive] = ImVec4(1.00f, 0.8f, 0.8f, 0.50f);
+	style->Colors[ImGuiCol_ButtonActive] = ImVec4(1.00f, 0.8f, 0.8f, 0.50f);*/
 
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_Always);
 	if (ImGui::Begin(title))
@@ -225,7 +230,7 @@ void DebugWindow::doCommand(const char* command_line)
 	// Insert into history. First find match and delete it so it can be pushed to the back. This isn't trying to be smart or optimal.
 	m_historyPos = -1;
 
-	for (int i = m_history.size() - 1; i >= 0; i--)
+	for (int i = (int)m_history.size() - 1; i >= 0; i--)
 	{
 		if (Stricmp(m_history[i], command_line) == 0)
 		{
@@ -257,7 +262,7 @@ void DebugWindow::doCommand(const char* command_line)
 		if (Stricmp(finalCommand.c_str(), command) == 0)
 		{
 			std::string outPut = m_functions.at(j)(args);
-			if (outPut.compare("") == 0)
+			if (outPut.compare("") != 0)
 			{
 				addLog(outPut.c_str());
 			}
@@ -359,7 +364,7 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 		if (data->EventKey == ImGuiKey_UpArrow)
 		{
 			if (m_historyPos == -1)
-				m_historyPos = m_history.size() - 1;
+				m_historyPos = (int)m_history.size() - 1;
 			else if (m_historyPos > 0)
 				m_historyPos--;
 		}
@@ -382,8 +387,14 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 	return 0;
 }
 
-void DebugWindow::registerCommand(char* command, CommandFunction function)
+void DebugWindow::registerCommand(const char* command, CommandFunction function)
 {
-	m_command.push_back(command);
-	m_functions.push_back(function);
+    auto result = std::find_if(m_command.begin(), m_command.end(), [command](const char*a) {
+        return std::strcmp(command, a) == 0;
+    });
+
+    if (result == m_command.end()) {
+        m_command.push_back(command);
+        m_functions.push_back(function);
+    }
 }

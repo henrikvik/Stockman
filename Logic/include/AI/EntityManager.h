@@ -4,16 +4,8 @@
 #include <vector>
 #include <thread>
 
-#include <AI/Enemy.h>
 #include <AI/WaveManager.h>
 #include <AI/TriggerManager.h>
-#include <Misc/ComboMachine.h>
-
-#include <Player\Player.h>
-#include <Projectile\ProjectileManager.h>
-
-#include <Graphics\include\Renderer.h>
-#include <Physics\Physics.h>
 
 #pragma region ClassDesc
 	/*
@@ -29,64 +21,73 @@
 
 namespace Logic 
 {
+    class ProjectileManager;
+    class Physics;
+    class Enemy;
+    class Renderer;
+    class EnemyThreadHandler;
+
 	class EntityManager
 	{
 	private:
-		static const int NR_OF_THREADS = 8;
+		static const int NR_OF_THREADS;
 
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
 		std::vector<double> time;
 
-		std::thread *threads[NR_OF_THREADS];
-		int m_indexRunning[NR_OF_THREADS];
-		bool m_threadRunning[NR_OF_THREADS];
-
-        Physics* m_physicsPtr;
-        ProjectileManager* m_projectilePtr;
-
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
-		int m_currentWave, m_frame;
-		float m_deltaTime;
-        bool m_killChildren;
+        EnemyThreadHandler *m_threadHandler; // Just because i want to delete it when i want
 
-		void deleteData(); // delete data in vectors
+		int m_frame, m_aliveEnemies;
+		float m_deltaTime;
+
 		void allocateData(); // resize enemy vector 
 
-		void resetThreads();
-		void deleteThreads();
-		void joinAllThreads();
-		void deleteThread(std::thread *t);
+        std::function<void(Entity& entity)>                 DeleteBody;
+        std::function<Projectile*(ProjectileData& pData, btVector3 position,
+            btVector3 forward, Entity& shooter)>            SpawnProjectile;
+        std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
+            std::vector<int> effects)>                      SpawnEnemy;
+        std::function<Trigger*(int id, btVector3 const &pos,
+            std::vector<int> &effects)>                     SpawnTrigger;
 	public:
-
 		EntityManager();
 		EntityManager(EntityManager const &entityManager) = delete;
+		EntityManager* operator=(EntityManager const &entityManager) = delete;
 		~EntityManager();
+
+        // data handling
+        void deleteData(); // delete data in vectors
+
+        // render / updates
+		void render(Graphics::Renderer &renderer);
 
 		void update(Player const &player, float deltaTime);
 		void updateEnemies(int index, Player const &player, float deltaTime);
 		// statis because threads will use this
-		static void updateEnemiesAndPath(EntityManager *manager, int index, Player const &player, float deltaTime);
-		static void onPathThreadCreation(EntityManager *manager, int index, Player const &player, float deltaTime);
-		void updateEnemy(Enemy *enemy, int index, Player const &player, float deltaTime);
-		void clear();
+		void updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, int enemyIndex,
+            int flockIndex, Player const &player, float deltaTime, bool swapOnNewIndex);
 
+        // effects
 		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
 
-		void spawnWave(Physics &physics, ProjectileManager *projectiles);
-		void spawnEnemy(Enemy::ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
+        // spawning
+		void spawnWave(int waveId);
+		Enemy* spawnEnemy(ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
 			Physics &physics, ProjectileManager *projectiles);
-		void spawnTrigger(int id, btVector3 const &pos, std::vector<int> &effects,
+		Trigger* spawnTrigger(int id, btVector3 const &pos, std::vector<int> &effects,
 			Physics &physics, ProjectileManager *projectiles);
 
-		void setCurrentWave(int currentWave);
-		void render(Graphics::Renderer &renderer);
+        // sets & gets
 
-		size_t getEnemiesAlive() const;
-		int getCurrentWave() const;
+        void setSpawnFunctions(ProjectileManager &projManager, Physics &physics);
 
-		EntityManager* operator=(EntityManager const &entityManager) = delete;
+		size_t getNrOfAliveEnemies() const;
+
+        const WaveManager& getWaveManager() const;
+        const std::vector<std::vector<Enemy*>>& getAliveEnemies() const;
 	};
 }
 

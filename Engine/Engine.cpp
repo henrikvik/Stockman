@@ -9,6 +9,7 @@
 #include <iostream>
 #pragma comment (lib, "d3d11.lib")
 #include "Typing.h"
+#include "DebugWindow.h"
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -19,15 +20,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		//)
 		//return true;
 	Typing* theChar = Typing::getInstance(); //might need to be deleted
+	DebugWindow * debug = DebugWindow::getInstance();
+	int key = MapVirtualKey((int)wparam, 0);
+
 	switch (msg)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
 		
+	case WM_KEYUP:
+		if (key == 41)
+			debug->toggleDebugToDraw();
+
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
-	case WM_KEYUP:
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
 		break;
@@ -60,7 +67,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 Engine::Engine(HINSTANCE hInstance, int width, int height)
 {
-	srand(time(NULL));				// Set random seed
+	srand((unsigned int)time(NULL));				// Set random seed
 	this->mHeight = height;
 	this->mWidth = width;
 	this->hInstance = hInstance;
@@ -78,6 +85,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 Engine::~Engine()
 {
 	ImGui_ImplDX11_Shutdown();
+	DebugWindow::releaseInstance();
 	delete this->renderer;
 
 	this->mDevice->Release();
@@ -247,6 +255,9 @@ int Engine::run()
 
 	g_Profiler = new Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
+    TbbProfilerObserver observer(g_Profiler);
+
+	DebugWindow * debug = DebugWindow::getInstance();
 
 	while (running)
 	{
@@ -275,6 +286,7 @@ int Engine::run()
                 
 		}
 
+
 		//To enable/disable fullscreen
 		DirectX::Keyboard::State ks = this->mKeyboard->GetState();
 		if (ks.F11)
@@ -299,7 +311,7 @@ int Engine::run()
 
 		}
 
-		if (ks.Escape)
+		if (ks.Escape && !debug->isOpen())
 			PostQuitMessage(0);
 
 		g_Profiler->start();
@@ -308,9 +320,12 @@ int Engine::run()
 		ImGui_ImplDX11_NewFrame();
 		PROFILE_END();
 
+		debug->draw("Title?");
+
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
-		game.update(float(deltaTime));
-		PROFILE_END();
+        if (!debug->isOpen())
+            game.update(float(deltaTime));
+        PROFILE_END();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game.render(*renderer);
@@ -346,9 +361,6 @@ int Engine::run()
 		light.positionWS = DirectX::SimpleMath::Vector3(0, 2, 0);
 		light.intensity = 1;
 		light.range = 5;
-		
-		renderer->queueLight(light);
-		
 
 
 
@@ -362,12 +374,12 @@ int Engine::run()
 		//bush.translation = DirectX::SimpleMath::Matrix::CreateScale(10, 10, 10);//* DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 30, 0 });
 		//staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5) * DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 20, 0 });
 		
-        Graphics::TextString text{
-            L"The hills!",
-            DirectX::SimpleMath::Vector2(50, 50),
-            DirectX::SimpleMath::Color(DirectX::Colors::Black),
-            Graphics::Font::SMALL
-        };
+        //Graphics::TextString text{
+        //    L"The hills!",
+        //    DirectX::SimpleMath::Vector2(50, 50),
+        //    DirectX::SimpleMath::Color(DirectX::Colors::Black),
+        //    Graphics::Font::SMALL
+        //};
 
         
         ///////////////////////////////////
@@ -380,8 +392,13 @@ int Engine::run()
 
 			//renderer->queueRender(&staticSphere);
          // renderer->queueText(&text);
-			renderer->updateLight(deltaTime, &cam);
-			renderer->updateShake(deltaTime);
+			renderer->queueLight(light);
+
+			if (!debug->isOpen())
+			{
+                renderer->updateLight((float)deltaTime, &cam);
+                renderer->updateShake((float)deltaTime);
+            }
 
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
@@ -390,13 +407,13 @@ int Engine::run()
 
 		if (game.getState() == Logic::gameStateGameUpgrade)
 		{
-			renderer->updateLight(deltaTime, &cam);
+            renderer->updateLight((float)deltaTime, &cam);
 
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
 			renderer->render(&cam);
 			PROFILE_END();
 
-			game.menuRender(renderer);
+			game.renderMenu(*renderer);
 		}
 
 		 

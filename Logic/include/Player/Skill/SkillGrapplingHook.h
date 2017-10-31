@@ -14,11 +14,20 @@
 #pragma endregion
 
 #include <Player\Skill\Skill.h>
-#include <Projectile\ProjectileManager.h>
-#include <Projectile\ProjectileStruct.h>
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
+
+namespace Graphics
+{
+    class Renderer;
+    struct RenderDebugInfo;
+}
 
 namespace Logic
 {
+    class Entity;
+    class Physics;
+
 	enum GrapplingHookState
 	{
 		GrapplingHookStateNothing,
@@ -32,7 +41,7 @@ namespace Logic
 		SkillGrapplingHook(Physics* physics);
 		~SkillGrapplingHook();
 
-		void onUse(btVector3 forward, Entity& shooter);
+		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
@@ -45,7 +54,7 @@ namespace Logic
 		btVector3						m_point;		//< Saved point of intersection of the raytest, will push entity towards this point
         bool                            m_goingUp;      //< Direction of the grappling hook
         btVector3                       m_dirToPoint;
-		Graphics::RenderDebugInfo		renderDebug;	//< Debug drawing the ray
+		Graphics::RenderDebugInfo*		renderDebug;	//< Debug drawing the ray
 	};
 }
 #endif

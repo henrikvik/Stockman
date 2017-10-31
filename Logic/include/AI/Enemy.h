@@ -2,9 +2,7 @@
 #define ENEMY_H
 
 #include <Entity\Entity.h>
-#include <Player\Player.h>
-#include <AI\Behavior\Behavior.h>
-#include <Projectile\ProjectileManager.h>
+#include <AI\EnemyType.h>
 
 #pragma region Comment
 /*
@@ -23,6 +21,9 @@
 
 namespace Logic 
 {
+    class Player;
+    class Behavior;
+
 	class Enemy : public Entity 
 	{
 		private:
@@ -30,22 +31,14 @@ namespace Logic
 
 			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
 			float m_bulletTimeMod;									// Variables for effect modifiers
-			int m_enemyType;
+			ENEMY_TYPE m_enemyType;
 
-			ProjectileManager *m_projectiles;
 			Behavior *m_behavior;
 		public:	
-			enum ENEMY_TYPE
-			{
-				NECROMANCER
-			};
+			enum BEHAVIOR_ID { TEST, RANGED, MELEE };
 
-			enum BEHAVIOR_ID { TEST, RANGED };
-
-			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, float moveSpeed, int enemyType, int animationId);
+			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId);
 			virtual ~Enemy();
-
-			void setProjectileManager(ProjectileManager *projectileManager);
 
 			virtual void update(Player const &player, float deltaTime,
 				std::vector<Enemy*> const &closeEnemies);
@@ -54,6 +47,8 @@ namespace Logic
 			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
+
+			Projectile* shoot(btVector3 dir, Graphics::ModelID id, float speed);
 
 			// for debugging
 			void debugRendering(Graphics::Renderer &renderer);
@@ -66,14 +61,8 @@ namespace Logic
 			float getMaxHealth() const;
 			float getBaseDamage() const;
 			float getMoveSpeed() const;
-			int getEnemyType() const;
-
-			void spawnProjectile(btVector3 dir, Graphics::ModelID id, float speed);
-
-			ProjectileManager* getProjectileManager() const;
+			ENEMY_TYPE getEnemyType() const;
 			Behavior* getBehavior() const;
-		protected: //for testing
-			//btRigidBody *weakPoint;
 	};
 }
 

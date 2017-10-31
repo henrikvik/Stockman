@@ -1,14 +1,32 @@
 #include <Entity/Entity.h>
+#include <AI\Enemy.h>
+#include <Projectile\ProjectileStruct.h>
+#include <Misc\Sound\SoundSource.h>
 
 using namespace Logic;
 
 Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelID)
 : PhysicsObject(body, halfextent, modelID)
 {
-
+    m_soundSource = new Sound::SoundSource();
 }
 
-Entity::~Entity() { }
+Entity::~Entity() 
+{
+    delete m_soundSource;
+}
+
+void Entity::setSpawnFunctions(std::function<Projectile*(ProjectileData& pData,
+    btVector3 position, btVector3 forward, Entity& shooter)> spawnProjectile,
+    std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
+        std::vector<int> effects)> spawnEnemy,
+    std::function<Trigger*(int id, btVector3 const &pos,
+        std::vector<int> &effects)> spawnTrigger)
+{
+    SpawnProjectile = spawnProjectile;
+    SpawnEnemy = spawnEnemy;
+    SpawnTrigger = spawnTrigger;
+}
 
 void Entity::clear() { }
 
@@ -33,9 +51,19 @@ void Entity::updateSound(float deltaTime)
 	// Update sound position
 	btVector3 pos = getPositionBT();
 	btVector3 vel = getRigidBody()->getLinearVelocity();
-	m_soundSource.pos = { pos.x(), pos.y(), pos.z() };
-	m_soundSource.vel = { vel.x(), vel.y(), vel.z() };
-	m_soundSource.update(deltaTime);
+	m_soundSource->pos = { pos.x(), pos.y(), pos.z() };
+	m_soundSource->vel = { vel.x(), vel.y(), vel.z() };
+	m_soundSource->update(deltaTime);
+}
+
+void Entity::addCallback(Entity::EntityEvent entityEvent, callback callback)
+{
+    m_callbacks[entityEvent] = callback;
+}
+
+bool Entity::hasCallback(EntityEvent entityEvent) const
+{
+    return m_callbacks.find(entityEvent) != m_callbacks.end();
 }
 
 StatusManager& Entity::getStatusManager()
@@ -48,7 +76,12 @@ void Entity::setStatusManager(StatusManager & statusManager)
 	m_statusManager = statusManager;
 }
 
-SoundSource* Entity::getSoundSource()
+Sound::SoundSource* Entity::getSoundSource()
 {
-	return &m_soundSource;
+	return m_soundSource;
+}
+
+std::unordered_map<Entity::EntityEvent, std::function<void (Entity::CallbackData&)>>& Entity::getCallbacks()
+{
+    return m_callbacks;
 }

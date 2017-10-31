@@ -9,11 +9,20 @@
 		*/
 #pragma endregion
 
-#include <Graphics\include\Renderer.h>
-#include <Entity\Entity.h>
+#include <d3d11.h>
+#include <SimpleMath.h>
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
+
+namespace Graphics
+{
+    class Renderer;
+}
 
 namespace Logic
 {
+    class Entity;
+
 	class Skill
 	{
 	public:
@@ -21,7 +30,7 @@ namespace Logic
 		virtual ~Skill();
 
 		void use(btVector3 forward, Entity& shooter);
-		virtual void onUse(btVector3 forward, Entity& shooter) = 0;
+		virtual bool onUse(btVector3 forward, Entity& shooter) = 0;
 
 		void release();
 		virtual void onRelease() = 0;
@@ -47,6 +56,7 @@ namespace Logic
 		float	m_duration;
 		float	m_durationMax;
 		bool	m_canUse;
+        bool    m_active;
 	};
 }
 #endif

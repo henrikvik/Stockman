@@ -9,7 +9,7 @@ void ComboMachine::Reward(int score)
 }
 
 // Gives the player score depending on enemy type
-void ComboMachine::Kill(Enemy::ENEMY_TYPE type)
+void ComboMachine::Kill(ENEMY_TYPE type)
 {
 	CheckCombo();
 	m_Score += GetReward(type) * m_Combo;
@@ -32,7 +32,7 @@ void ComboMachine::Reset()
 // Returns a value between 0-100, representing the time left of combo-timer, where zero is the time when the combo ends
 int ComboMachine::GetComboTimer()
 {
-	int procent = std::round((m_TimeSinceLastKill / COMBO_TIMER) / 100.f);
+	int procent = (int)std::round((m_TimeSinceLastKill / COMBO_TIMER) / 100.f);
 	return procent;
 }
 
@@ -71,7 +71,7 @@ void ComboMachine::ReadEnemyBoardFromFile(std::string path)
 }
 
 // Gets the price on each enemy's head
-int ComboMachine::GetReward(Enemy::ENEMY_TYPE type)
+int ComboMachine::GetReward(ENEMY_TYPE type)
 {
 	return m_Board[type];
 }

@@ -39,8 +39,10 @@ namespace Logic
         float  blinkTimer;
         float deleteCharCD;
 		int m_cardUpgrade;
+        std::pair<int, int> m_selectedSkills;
+        void selectSkillButton(int id);
+        bool replaceSkill(int id);
 	public:
-		MenuMachine();
 		MenuMachine(std::string* highScoreNamePTR);
 		~MenuMachine();
 		void initialize(GameState state);	//< Load menu layout from file
@@ -71,8 +73,14 @@ namespace Logic
 		void windowed();
 		void showHighscore();
 		int getChoiceUpgrade();
+        MenuState* getActiveMenu();
+        std::pair<int, int>* getSkillPick();
 
 
+
+        void buttonSkillPick1();
+        void buttonSkillPick2();
+        void buttonSkillPick3();
 
 	};
 }

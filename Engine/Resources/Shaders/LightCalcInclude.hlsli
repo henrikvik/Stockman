@@ -2,8 +2,15 @@
 
 //If you want to include this file this is the allocated resources:
 //cbuffer register 0, 1, 2 and 3
+//0: Camera     1: DirectionalLight     2: BulletTime   3: LightVP
+
 //texture 0, 1, 2, 3, 10, 11, 12 and 13
+//0: LightIndexList     1: LightGrid    2: lights   3: shadowmap
+//10: diffuseMap    11: NormalMap   12: specularMap     13: glowMap
+
 //samplerState 0 and 1
+//0: linear     1: comparisonSomething
+
 //Use other registers for YOUR resources.
 
 #define BLOCK_SIZE 16.f
@@ -50,6 +57,10 @@ struct Light
 #define DAY_COLOR float3(0.1, 0.1, 0.3)//float3(1, 1, 0.8)
 #define DAWN_COLOR float3(0.1, 0.1, 0.3)//float3(2, 0.5, 0)
 #define NIGHT_COLOR float3(0.1, 0.1, 0.3)
+
+#define FREEZE_COLOR float3(0.3, 0.6, 1)
+#define BURN_COLOR float3(1, 0.2, 0)
+
 
 StructuredBuffer<uint> LightIndexList : register(t0);
 Texture2D<uint2> LightGrid : register(t1);
@@ -128,6 +139,14 @@ float3 getCurrentDirColor(float time)
     return dirColor2;
 }
 
+float3 calculateStatusEffect(float3 color, float freeze, float burn)
+{
+    color = lerp(color, FREEZE_COLOR, freeze);
+    color += lerp(color, BURN_COLOR, burn);
+
+    return color;
+}
+
 //Specularity is currently broken.
 float3 calculateSpecularity(float3 wPos, float3 lightPos, float3 NDCPos, float2 uv, float3 normal, float shadowValue = 1)
 {
@@ -201,7 +220,7 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
 
     float4 finalDiffuse = float4(saturate(pointDiffuse + directionalDiffuse).xyz, 1) * colorSample;
     
-    float4 ambient = float4(0.2, 0.2, 0.3, 1.0) * colorSample;
+    float4 ambient = float4(0.05, 0.05, 0.05, 1.0) * colorSample;
 
     float4 lighting = saturate(finalDiffuse + ambient);
     

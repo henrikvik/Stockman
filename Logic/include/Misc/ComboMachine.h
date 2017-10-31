@@ -1,7 +1,8 @@
 #ifndef COMBOMACHINE_H
 #define COMBOMACHINE_H
 
-#include <AI\Enemy.h>
+#include <AI\EnemyType.h>
+#include <string>
 
 namespace Logic
 {
@@ -18,7 +19,7 @@ namespace Logic
 		}
 
 		void Reward(int score);
-		void Kill(Enemy::ENEMY_TYPE type);
+		void Kill(ENEMY_TYPE type);
 		void Update(float deltaTime);
 		void Reset();
 
@@ -30,7 +31,7 @@ namespace Logic
 
 	private:
 		void CheckCombo();
-		int GetReward(Enemy::ENEMY_TYPE type);
+		int GetReward(ENEMY_TYPE type);
 
 		float		m_TimeSinceLastKill;
 		int			m_Combo;					

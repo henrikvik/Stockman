@@ -7,6 +7,7 @@
 
 #include <Engine\Profiler.h>
 
+#include "Particles\ParticleSystem.h"
 
 
 #define USE_TEMP_CUBE false
@@ -32,20 +33,17 @@ namespace Graphics
 		, instanceOffsetBuffer(device)
 		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
 		, glowRenderer(device, deviceContext)
-		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
-		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
-		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
 #pragma region RenderDebugInfo
 		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
 		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
 		, debugColorBuffer(device)
 #pragma endregion
 		, fog(device)
-        , menu(device, deviceContext)
-        , hud(device, deviceContext)
+		, menu(device, deviceContext)
+		, hud(device, deviceContext)
 		, ssaoRenderer(device)
 		, bulletTimeBuffer(device)
-        , DoFRenderer(device)
+		, DoFRenderer(device)
 #pragma region Foliage
 		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
 		, timeBuffer(device)
@@ -57,37 +55,51 @@ namespace Graphics
 		this->device = device;
 		this->deviceContext = deviceContext;
 		this->backBuffer = backBuffer;
-		
+
 		initialize(device, deviceContext);
 
-        viewPort = { 0 };
-        viewPort.Width = WIN_WIDTH;
-        viewPort.Height = WIN_HEIGHT;
-        viewPort.MaxDepth = 1.0f;
+		fakeBackBuffer = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
+		fakeBackBufferSwap = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
 
-		states = new DirectX::CommonStates(device);
-		grid.initialize(camera, device, deviceContext, &resourceManager);
+		viewPort = { 0 };
+		viewPort.Width = WIN_WIDTH;
+		viewPort.Height = WIN_HEIGHT;
+		viewPort.MaxDepth = 1.0f;
 
-		float temp = 1.f;
-		bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
+        states = newd DirectX::CommonStates(device);
+        grid.initialize(camera, device, deviceContext, &resourceManager);
 
-        //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
-        createBlendState();
+        FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
+
+        float temp = 1.f;
+        bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
+
+		//menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
+		createBlendState();
 
 		DebugWindow *debugWindow = DebugWindow::getInstance();
 		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
 		{
-			enablePostEffects = !enablePostEffects;
+			enableSSAO = false;
+			enableGlow= false;
+			enableDOF = false;
+			enableFog = false;
 
-			return "";
+			return "PostEffect OFF";
 		});
+		registerDebugFunction();
+
+		statusData.burn = 0;
+		statusData.freeze = 0;
     }
 
 
     Renderer::~Renderer()
     {
 		delete states;
-
+		delete fakeBackBuffer;
+		delete fakeBackBufferSwap;
+        delete FXSystem;
 		SAFE_RELEASE(transparencyBlendState);
 
 		SAFE_RELEASE(glowTest);
@@ -100,8 +112,8 @@ namespace Graphics
         resourceManager.initialize(gDevice, gDeviceContext);
 		skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
 
-		//temp
-		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
+        //temp
+        DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
 
     }
 
@@ -118,21 +130,21 @@ namespace Graphics
 		PROFILE_BEGIN("SetBulletTimeCBuffer()");
 		//These two must always add up to one ir i'll have to fix the formula
 		//They represents how long the fade in and fade out are. 
-		static const float TOP_THRESHOLD = 0.9;
-		static const float BOT_THRESHOLD = 0.1;
+		static const float TOP_THRESHOLD = 0.9f;
+		static const float BOT_THRESHOLD = 0.1f;
 
 
-		if (amount > TOP_THRESHOLD)
-			amount = (amount - TOP_THRESHOLD) / BOT_THRESHOLD;
+        if (amount > TOP_THRESHOLD)
+            amount = (amount - TOP_THRESHOLD) / BOT_THRESHOLD;
 
-		else if (amount < BOT_THRESHOLD)
-			amount = 1 - ((amount) / BOT_THRESHOLD);
+        else if (amount < BOT_THRESHOLD)
+            amount = 1 - ((amount) / BOT_THRESHOLD);
 
-		else amount = 0;
+        else amount = 0;
 
-		bulletTimeBuffer.write(deviceContext, &amount, sizeof(float));
-		PROFILE_END();
-	}
+        bulletTimeBuffer.write(deviceContext, &amount, sizeof(float));
+        PROFILE_END();
+    }
 
 	void Renderer::updateShake(float deltaTime)
 	{
@@ -141,56 +153,57 @@ namespace Graphics
 		PROFILE_END();
 	}
 
-	void Renderer::startShake(float radius, float duration)
-	{
-		hud.startShake(radius, duration);
-	}
+	//Radius is in pixels on screen, duration is in MS
+    void Renderer::startShake(float radius, float duration)
+    {
+        hud.startShake(radius, duration);
+    }
 
-	void Renderer::render(Camera * camera)
-	{
-		menu.unloadTextures();
+    void Renderer::render(Camera * camera)
+    {
+        menu.unloadTextures();
 #if ANIMATION_HIJACK_RENDER
 
-		renderQueue.clear();
-		static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
-		static UINT ticks = 0;
-		ticks++;
-		cam.updateLookAt({ 5 * sinf(ticks * 0.001f), 5 * cosf(ticks * 0.001f), 5 }, { 0,0,0 }, deviceContext);
+        renderQueue.clear();
+        static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
+        static UINT ticks = 0;
+        ticks++;
+        cam.updateLookAt({ 5 * sinf(ticks * 0.001f), 5 * cosf(ticks * 0.001f), 5 }, { 0,0,0 }, deviceContext);
 
-		ID3D11Buffer *cameraBuffer = cam.getBuffer();
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
+        ID3D11Buffer *cameraBuffer = cam.getBuffer();
+        deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
+        deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
 
-		static float clearColor[4] = { 0,0,0,1 };
-		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+        static float clearColor[4] = { 0,0,0,1 };
+        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
+        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 
-		deviceContext->RSSetViewports(1, &viewPort);
+        deviceContext->RSSetViewports(1, &viewPort);
 
-		static AnimatedTestCube testCube(device);
-		static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"), ANIMATED_VERTEX_DESC);
+        static AnimatedTestCube testCube(device);
+        static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"), ANIMATED_VERTEX_DESC);
 
-		deviceContext->IASetInputLayout(testShader);
-		deviceContext->VSSetShader(testShader, nullptr, 0);
-		deviceContext->PSSetShader(testShader, nullptr, 0);
+        deviceContext->IASetInputLayout(testShader);
+        deviceContext->VSSetShader(testShader, nullptr, 0);
+        deviceContext->PSSetShader(testShader, nullptr, 0);
 
-		deviceContext->IASetVertexBuffers(0, 1, testCube, &testCube.stride, &testCube.offset);
-		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		deviceContext->RSSetState(states->CullNone());
+        deviceContext->IASetVertexBuffers(0, 1, testCube, &testCube.stride, &testCube.offset);
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        deviceContext->RSSetState(states->CullNone());
 
-		deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
-		deviceContext->Draw(testCube.vertexCount, 0);
+        deviceContext->Draw(testCube.vertexCount, 0);
 
-		auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, testAnimation.getTotalDuration() * ((ticks % 1000) / 1000.f));
+        auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, testAnimation.getTotalDuration() * ((ticks % 1000) / 1000.f));
 
-		static StructuredBuffer<Matrix> jointBuffer(device, CpuAccess::Write, testSkeleton.getJointCount());
-		Matrix* bufferPtr = jointBuffer.map(deviceContext);
-		memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());
-		jointBuffer.unmap(deviceContext);
+        static StructuredBuffer<Matrix> jointBuffer(device, CpuAccess::Write, testSkeleton.getJointCount());
+        Matrix* bufferPtr = jointBuffer.map(deviceContext);
+        memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());
+        jointBuffer.unmap(deviceContext);
 
-		ID3D11ShaderResourceView * jointView = jointBuffer.getSRV();
-		deviceContext->VSSetShaderResources(0, 1, &jointView);
+        ID3D11ShaderResourceView * jointView = jointBuffer.getSRV();
+        deviceContext->VSSetShaderResources(0, 1, &jointView);
 
 #else
 
@@ -226,13 +239,13 @@ namespace Graphics
 		deviceContext->RSSetViewports(1, &viewPort);
 		deviceContext->RSSetState(states->CullCounterClockwise());
 
-		deviceContext->IASetInputLayout(forwardPlus);
-		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
+        deviceContext->IASetInputLayout(forwardPlus);
+        deviceContext->VSSetShader(forwardPlus, nullptr, 0);
 
-		deviceContext->PSSetShader(nullptr, nullptr, 0);
-		deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
+        deviceContext->PSSetShader(nullptr, nullptr, 0);
+        deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
 
-		draw();
+        draw();
 
 		deviceContext->IASetInputLayout(foliageShader);
 		deviceContext->VSSetShader(foliageShader, nullptr, 0);
@@ -248,8 +261,6 @@ namespace Graphics
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 		deviceContext->RSSetState(states->CullCounterClockwise());
 
-		
-
 		grid.updateLights(deviceContext, camera, lights);
 		lights.clear();
 		PROFILE_END();
@@ -258,6 +269,14 @@ namespace Graphics
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 		PROFILE_END();
 
+        PROFILE_BEGIN("FXSystem::update()")
+        FXSystem->update(deviceContext, camera, 0.016f);
+        PROFILE_END();
+
+        PROFILE_BEGIN("FXSystem::render()")
+        FXSystem->render(deviceContext, camera, states, *fakeBackBuffer, depthStencil, false);
+        PROFILE_END();
+
 		PROFILE_BEGIN("draw()");
 		deviceContext->IASetInputLayout(forwardPlus);
 		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
@@ -265,15 +284,15 @@ namespace Graphics
 
 
 
-		ID3D11ShaderResourceView *SRVs[] = {
-			grid.getOpaqueIndexList()->getSRV(),
-			grid.getOpaqueLightGridSRV(),
-			grid.getLights()->getSRV(),
-			*skyRenderer.getDepthStencil()
-		};
-		auto sampler = states->LinearClamp();
-		deviceContext->PSSetShaderResources(0, 4, SRVs);
-		deviceContext->PSSetSamplers(0, 1, &sampler);
+        ID3D11ShaderResourceView *SRVs[] = {
+            grid.getOpaqueIndexList()->getSRV(),
+            grid.getOpaqueLightGridSRV(),
+            grid.getLights()->getSRV(),
+            *skyRenderer.getDepthStencil()
+        };
+        auto sampler = states->LinearClamp();
+        deviceContext->PSSetShaderResources(0, 4, SRVs);
+        deviceContext->PSSetSamplers(0, 1, &sampler);
 
 		auto samplerWrap = states->LinearWrap();
 		deviceContext->PSSetSamplers(2, 1, &samplerWrap);
@@ -290,12 +309,12 @@ namespace Graphics
 		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
 		deviceContext->VSSetConstantBuffers(3, 1, &lightBuffs[1]);
 
-		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
+        deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
 
 		ID3D11RenderTargetView * rtvs[] =
 		{
-			fakeBackBuffer,
-			glowMap,
+			*fakeBackBuffer,
+			glowRenderer,
 			*ssaoRenderer.getNormalShaderResource()
 		};
 
@@ -321,12 +340,12 @@ namespace Graphics
 		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
 		skyRenderer.renderSky(deviceContext, camera);
 
-		ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
+        ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
 
-		deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
+        deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
 
-		ZeroMemory(SRVs, sizeof(SRVs));
-		deviceContext->PSSetShaderResources(0, 4, SRVs);
+        ZeroMemory(SRVs, sizeof(SRVs));
+        deviceContext->PSSetShaderResources(0, 4, SRVs);
 
 		deviceContext->RSSetState(states->CullCounterClockwise());
 		SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
@@ -340,81 +359,87 @@ namespace Graphics
 #endif
 		auto ks = DirectX::Keyboard::Get().GetState();
 		
-
+		
 		if (enablePostEffects)
 		{
 
 			///////Post effects
-			PROFILE_BEGIN("Glow");
-			glowRenderer.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
-			PROFILE_END();
 
-			PROFILE_BEGIN("SSAO");
-			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
-            PROFILE_END();
-
-            PROFILE_BEGIN("Dof");
-            static bool wasPressed1 = false;
-            static bool isPressed1 = false;
-            static bool enableCoCWindow = false;
-
-            wasPressed1 = isPressed1;
-            isPressed1 = ks.K;
-
-            if (!wasPressed1 && isPressed1)
-                enableCoCWindow = !enableCoCWindow;
-
-            if (enableCoCWindow)
+            if (enableDOF)
             {
-                ImGui::Begin("camera stuff");
-                static float fp = 0.125f;
-                static float fl = 0.28f;
-                static float a = 0.1f;
-                ImGui::SliderFloat("focal Plane", &fp, 0.01f, 1.0f);
-                ImGui::SliderFloat("focal lenght", &fl, 0.01f, 1.0f);
-                ImGui::SliderFloat("apature", &a, 0.01f, 1.0f);
-                DoFRenderer.updateCoc(deviceContext, fp, fl, a);
-                ImGui::End();
+                PROFILE_BEGIN("Dof");
+
+                if (enableCoCWindow)
+                {
+                    ImGui::Begin("camera stuff");
+                    static float fp = 0.088f;
+                    static float fl = 0.05f;
+                    static float a = 0.12f;
+                    ImGui::SliderFloat("focal Plane", &fp, 0.0001f, .1f);
+                    ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
+                    ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
+                    DoFRenderer.updateCoc(deviceContext, fl, fp, a);
+                    ImGui::End();
+                }
+                DoFRenderer.DoFRender(deviceContext, fakeBackBuffer, &depthStencil, fakeBackBufferSwap, camera);
+                swapBackBuffers();
+                PROFILE_END();
             }
-            DoFRenderer.DoFRender(deviceContext, &fakeBackBuffer, &depthStencil, &fakeBackBufferSwap, camera);
-            PROFILE_END();
 
-            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-            static UINT sampleMask = 0xffffffff;
-            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+			if (enableGlow)
+			{
+				PROFILE_BEGIN("Glow");
+				glowRenderer.addGlow(deviceContext, *fakeBackBuffer, fakeBackBufferSwap);
+				swapBackBuffers();
+				PROFILE_END();
+			}
+
+			if (enableSSAO)
+			{
+				PROFILE_BEGIN("SSAO");
+				ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, fakeBackBuffer, fakeBackBufferSwap);
+				swapBackBuffers();
+				PROFILE_END();
+			}
+
+			
+
+			static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			static UINT sampleMask = 0xffffffff;
+			deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+
 			PROFILE_BEGIN("DrawToBackBuffer");
-			drawToBackbuffer(fakeBackBufferSwap);
+			drawToBackbuffer(*fakeBackBuffer);
 			PROFILE_END();
 
-			PROFILE_BEGIN("renderFog()");
 
-			deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
-			fog.renderFog(deviceContext, backBuffer, depthStencil);
-			PROFILE_END();
+			if (enableFog)
+			{
+				PROFILE_BEGIN("renderFog()");
+
+				deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
+				deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
+				fog.renderFog(deviceContext, backBuffer, depthStencil);
+				PROFILE_END();
+			}
 		}
 
 		else
 		{
 			PROFILE_BEGIN("DrawToBackBuffer");
-			drawToBackbuffer(fakeBackBuffer);
+			drawToBackbuffer(*fakeBackBuffer);
 			PROFILE_END();
 		}
 
 
 
-		PROFILE_BEGIN("HUD");
-		hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-		PROFILE_END();
+        PROFILE_BEGIN("HUD");
+        hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
+        PROFILE_END();
 
 		PROFILE_BEGIN("DebugInfo");
 		renderDebugInfo(camera);
 		PROFILE_END();
-
-		if (ks.G)
-		{
-			startShake(30, 1000);
-		}
 	}
 
 
@@ -480,7 +505,9 @@ namespace Graphics
             {
                 instanceQueue[info->meshId].push_back({ 
 					info->translation,
-					info->translation.Invert().Transpose()
+					info->translation.Invert().Transpose(),
+					this->statusData.freeze,
+					this->statusData.burn
 				});
             }
         }
@@ -506,7 +533,7 @@ namespace Graphics
 
 		deviceContext->VSSetConstantBuffers(4, 1, timeBuffer);
 		deviceContext->RSSetState(states->CullNone());
-		deviceContext->OMSetRenderTargets(1, fakeBackBuffer, depthStencil);
+		deviceContext->OMSetRenderTargets(1, *fakeBackBuffer, depthStencil);
 
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		UINT sampleMask = 0xffffffff;
@@ -543,7 +570,7 @@ namespace Graphics
         {
 			PROFILE_BEGIN("Setup for draw");
             instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(UINT));
-            instanceOffset += pair.second.size();
+            instanceOffset += (UINT)pair.second.size();
 
             ModelInfo model = resourceManager.getModelInfo(pair.first);
 
@@ -555,7 +582,7 @@ namespace Graphics
             modelTextures[0] = model.diffuseMap;
             modelTextures[1] = model.normalMap;
             modelTextures[2] = model.specularMap;
-			modelTextures[3] = glowTest;
+            modelTextures[3] = model.glowMap;
             deviceContext->PSSetShaderResources(10, 4, modelTextures);
 			PROFILE_END();
 
@@ -569,11 +596,19 @@ namespace Graphics
 	{
 		static float clearColor[4] = { 0 };
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(glowMap, clearColor);
+		deviceContext->ClearRenderTargetView(*fakeBackBuffer, clearColor);
+		deviceContext->ClearRenderTargetView(glowRenderer, clearColor);
 		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
 		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 		skyRenderer.clear(deviceContext);
+		glowRenderer.clear(deviceContext, clearColor);
+	}
+
+	void Renderer::swapBackBuffers()
+	{
+		ShaderResource * temp = fakeBackBuffer;
+		fakeBackBuffer = fakeBackBufferSwap;
+		fakeBackBufferSwap = temp;
 	}
 
     void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
@@ -627,29 +662,29 @@ namespace Graphics
         deviceContext->PSSetShader(debugRender, nullptr, 0);
 
 
-		for (RenderDebugInfo * info : renderDebugQueue)
-		{
-			debugPointsBuffer.write(
-				deviceContext,
-				info->points->data(),
-				info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
-			);
+        for (RenderDebugInfo * info : renderDebugQueue)
+        {
+            debugPointsBuffer.write(
+                deviceContext,
+                info->points->data(),
+                (UINT)(info->points->size() * sizeof(DirectX::SimpleMath::Vector3))
+            );
 
-			debugColorBuffer.write(
-				deviceContext,
-				&info->color,
-				sizeof(DirectX::SimpleMath::Color)
-			);
+            debugColorBuffer.write(
+                deviceContext,
+                &info->color,
+                (UINT)sizeof(DirectX::SimpleMath::Color)
+            );
 
-			deviceContext->IASetPrimitiveTopology(info->topology);
-			deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
-			deviceContext->Draw(info->points->size(), 0);
-		}
+            deviceContext->IASetPrimitiveTopology(info->topology);
+            deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
+            deviceContext->Draw((UINT)info->points->size(), 0);
+        }
 
-		renderDebugQueue.clear();
+        renderDebugQueue.clear();
     }
 
-	
+
     void Renderer::createBlendState()
     {
         D3D11_BLEND_DESC BlendState;
@@ -667,4 +702,126 @@ namespace Graphics
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	void Renderer::registerDebugFunction()
+	{
+		DebugWindow *debugWindow = DebugWindow::getInstance();
+		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
+		{
+			enablePostEffects = !enablePostEffects;
+
+			return "Post effects toggled!";
+		});
+
+		debugWindow->registerCommand("TOGGLESSAO", [&](std::vector<std::string> &args)->std::string
+		{
+			enableSSAO = !enableSSAO;
+
+			return "Post effects toggled!";
+		});
+
+		debugWindow->registerCommand("TOGGLEGLOW", [&](std::vector<std::string> &args)->std::string
+		{
+			enableGlow = !enableGlow;
+
+			return "Post effects toggled!";
+		});
+
+		debugWindow->registerCommand("TOGGLEFOG", [&](std::vector<std::string> &args)->std::string
+		{
+			enableFog = !enableFog;
+
+			return "Post effects toggled!";
+		});
+
+		debugWindow->registerCommand("TOGGLEDOF", [&](std::vector<std::string> &args)->std::string
+		{
+			enableDOF = !enableDOF;
+
+			return "Post effects toggled!";
+		});
+
+		debugWindow->registerCommand("SETFREEZE", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+			try
+			{
+                if (args.size() != 0)
+                {
+                    this->statusData.freeze = std::stof(args[0]);
+                }
+                else
+                {
+                    return "missing argument freeze amount";
+                }
+			}
+			catch (const std::exception&)
+			{
+				catcher = "Argument must be float between 1 and 0";
+			}
+
+			return catcher;
+		});
+
+		debugWindow->registerCommand("SETBURN", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+			try
+			{
+                if (args.size() != 0)
+                {
+                    this->statusData.burn = std::stof(args[0]);
+                }
+                else
+                {
+                    return "missing argument burn amount";
+                }
+			}
+			catch (const std::exception&)
+			{
+				catcher = "Argument must be float between 1 and 0";
+			}
+
+			return catcher;
+		});
+
+		debugWindow->registerCommand("RELOADFORWARDSHADER", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+			
+			forwardPlus.recompile(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC);
+
+
+			return catcher;
+		});
+
+		debugWindow->registerCommand("RELOADGLOWSHADERS", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+
+			glowRenderer.recompileGlow(device);
+
+			return catcher;
+		});
+        debugWindow->registerCommand("ENABLEDOFSLIDERS", [&](std::vector<std::string> &args)->std::string
+        {
+            enableCoCWindow = !enableCoCWindow;
+
+            return "Post effects toggled!";
+        });
+	}
 }

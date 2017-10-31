@@ -59,7 +59,7 @@ void Behavior::walkPath(RunIn &in)
 	boidCalculations(in.enemy->getPositionBT(), 
 		dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
-    dir.setY(-.33f); // my super fix to tower building
+    dir.setY(-0.f); // my super fix to tower building
     dir.normalize();
     dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
 
@@ -92,16 +92,16 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 	}
 	
 	// SEPERATION (Steer away from the group)
-	cohes /= close.size();
+	cohes /= (float)close.size();
 	cohes = cohes - pos;
 	cohes = cohes.normalize();
 
 	// ALIGNMENT (Have same vel as group)
-	align /= close.size();
+	align /= (float)close.size();
 	align = align.normalize();
 
 	// COHESION (Stay towards group position)
-	sep /= totalSep + 1;
+	sep /= float(totalSep + 1);
 	sep = sep.normalize();
 
 	// RET
@@ -121,7 +121,7 @@ void Behavior::setRoot(NodeType type, int value, run func)
 Behavior::BehaviorNode* Behavior::addNode(BehaviorNode *parent,
 	NodeType type, int value, run func)
 {
-	int index = parent->children.size();
+	int index = (int)parent->children.size();
 	parent->children.push_back({ type, value, {}, func });
 
 	if (parent->type == PRIORITY)

@@ -10,18 +10,17 @@
 		*/
 #pragma endregion
 
-#include <Projectile\ProjectileManager.h>
-#include <Projectile\ProjectileStruct.h>
 #include <Player\Skill\Skill.h>
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 namespace Logic
 {
-	class Player;
+    class Entity;
+
 	class SkillShieldCharge : public Skill
 	{
 	private:
-		ProjectileData m_projectileData;
-		ProjectileManager* m_projectileManager;
 		bool m_active, m_slowdown;
 		float m_time;
 		btVector3 m_forw;
@@ -31,7 +30,7 @@ namespace Logic
 		SkillShieldCharge();
 		~SkillShieldCharge();
 
-		void onUse(btVector3 forward, Entity& shooter);
+        bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
