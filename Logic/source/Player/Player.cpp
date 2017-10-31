@@ -69,7 +69,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
         { // Boilerplate code bois
             m_mouseSens = stof(para[0]);
         }
-        catch (int i)
+        catch (int)
         {
             return "That is not going to work";
         }
@@ -108,12 +108,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 void Player::clear()
 {
 	m_weaponManager->clear();
-	m_skillManager->clear();
     delete m_weaponManager;
     delete m_skillManager;
-
 	delete m_charController;
-
     delete m_listenerData;
 }
 
@@ -144,7 +141,7 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
 void Player::onCollision(Projectile& other)
 {
 	if (other.getProjectileData().enemyBullet)
-		takeDamage(other.getProjectileData().damage);
+		takeDamage((int)other.getProjectileData().damage);
 }
 
 void Player::affect(int stacks, Effect const &effect, float deltaTime)
@@ -696,6 +693,11 @@ Player::PlayerState Player::getPlayerState() const
 Sound::ListenerData& Player::getListenerData()
 {
 	return *m_listenerData;
+}
+
+SkillManager* Player::getSkillManager()
+{
+    return m_skillManager;
 }
 
 const Weapon* Player::getMainHand() const

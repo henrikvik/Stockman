@@ -169,6 +169,7 @@ namespace Logic
 		float getMoveSpeed() const;
 		PlayerState getPlayerState() const;
 		Sound::ListenerData& getListenerData();
+        SkillManager* getSkillManager();
 
         const Weapon* getMainHand() const;
         const Weapon* getOffHand() const;

@@ -17,7 +17,6 @@
 #include <AI/WaveTimeManager.h>
 
 // Misc
-#include <Misc\GameTime.h>
 #include <Misc\CardManager.h>
 #include <Misc\HighScoreManager.h>
 #include <Misc\ComboMachine.h>
@@ -58,12 +57,12 @@ namespace Logic
 		void reset();
 
 		void update(float deltaTime);
-		void gameRunTime(float deltaTime);
+        bool updateMenu(float deltaTime);
+		void updateGame(float deltaTime);
+
 		void render(Graphics::Renderer& renderer);
-
-		void gameRunTimeRender(Graphics::Renderer & renderer);
-
-		void menuRender(Graphics::Renderer * renderer);
+		void renderGame(Graphics::Renderer& renderer);
+		void renderMenu(Graphics::Renderer& renderer);
 
 		DirectX::SimpleMath::Vector3 getPlayerForward();
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
@@ -82,7 +81,6 @@ namespace Logic
         EntityManager		m_entityManager;
         HUDManager		    m_hudManager;
         WaveTimeManager		m_waveTimeManager;
-		GameTime			m_gameTime;
 		CardManager*		m_cardManager;
 		HighScoreManager*	m_highScoreManager;
 

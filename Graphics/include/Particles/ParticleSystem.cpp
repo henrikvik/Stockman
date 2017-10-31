@@ -4,9 +4,14 @@
 
 #include <fstream>
 #include <algorithm>
+#include <array>
 
 #include <WICTextureLoader.h>
 #include <d3dcompiler.h>
+
+#include <Engine\Profiler.h>
+
+#include <tbb\tbb.h>
 
 namespace fs = std::experimental::filesystem;
 
@@ -61,9 +66,9 @@ ParticleSystem::~ParticleSystem()
     }
 }
 
-void ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Matrix model, float dt)
+bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Matrix model, float dt)
 {
-    for (int i = 0; i < fx->m_Count; i++) {
+    for (unsigned int i = 0; i < fx->m_Count; i++) {
         auto &entry = fx->m_Entries[i];
 
         fx->m_Age += dt;
@@ -104,6 +109,8 @@ void ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Mat
         } break;
         }
     }
+
+    return fx->m_Age > fx->m_Time;
 }
 
 void ParticleSystem::addEffect(std::string name, XMMATRIX model)
@@ -140,7 +147,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
 
-    cxt->PSSetShaderResources(0, m_Textures.size(), m_Textures.data());
+    cxt->PSSetShaderResources(0, (UINT)m_Textures.size(), m_Textures.data());
 
     // spheres
     {
@@ -173,7 +180,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
         cxt->RSSetState(states->CullNone());
 
         int offset = 0;
-        int len = 0;
+        unsigned int len = 0;
         int current_material = -1;
 
         for (int i = 0; i < m_GeometryParticles.size(); i++) {
@@ -205,32 +212,31 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
     }
 }
 
-void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
-{
-    // process all active effects/emitters (spawns particles)
-    for (auto &fx : m_ParticleEffects) {
-        processEffect(&fx.effect, XMMatrixTranslationFromVector(fx.position), dt);
-    }
+class GeometryParticleUpdater {
+public:
+    GeometryParticleUpdater(std::vector<GeometryParticle> *particles, tbb::atomic<int> *deleteSize, std::array<int, 32> *deleteList, float delta, ParticleSystem::GeometryParticleInstance *ptr)
+        : m_DeleteSize(deleteSize), m_DeleteList(deleteList), m_Particles(particles), m_Delta(delta), m_Ptr(ptr)
+    {}
 
-    // sort by material to improve batching
-    std::sort(m_GeometryParticles.begin(), m_GeometryParticles.end(), [](GeometryParticle &a, GeometryParticle &b) {
-        return a.idx < b.idx;
-    });
+    void operator()(const tbb::blocked_range<int>& range) const {
+        PROFILE_BEGINF("update task (%d)", range.size());
 
-    // process all active *particles*
-    {
-        GeometryParticleInstance *ptr = m_GeometryInstanceBuffer->map(cxt);
+        float dt = m_Delta;
+        auto ptr = m_Ptr + range.begin();
 
-        auto it = m_GeometryParticles.begin();
-        int i = 0;
-        while (it != m_GeometryParticles.end() && i < m_Capacity) {
-            auto &particle = *it;
+        for (auto it = range.begin(); it != range.end(); ++it) {
+            auto &particle = (*m_Particles)[it];
             auto def = *particle.def;
 
             if (particle.age > def.m_Lifetime) {
-                it = m_GeometryParticles.erase(it);
+                int idx = m_DeleteSize->fetch_and_increment();
+                if (idx < 32) {
+                    (*m_DeleteList)[idx] = it;
+                }
                 continue;
             }
+
+            ParticleSystem::GeometryParticleInstance instance;
 
             auto factor = particle.age / def.m_Lifetime;
 
@@ -240,28 +246,84 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
 
             auto scale = ease_size(def.m_SizeStart, def.m_SizeEnd, factor);
 
-            ptr->m_Model = XMMatrixRotationAxis(XMLoadFloat3(&particle.rot), (particle.rotprog + particle.age) * particle.rotvel)  * XMMatrixScaling(scale, scale, scale) * XMMatrixTranslationFromVector(XMLoadFloat3(&particle.pos));
-            ptr->m_Age = factor;
+            instance.m_Model = XMMatrixRotationAxis(XMLoadFloat3(&particle.rot), (particle.rotprog + particle.age) * particle.rotvel)  * XMMatrixScaling(scale, scale, scale) * XMMatrixTranslationFromVector(XMLoadFloat3(&particle.pos));
+            instance.m_Age = factor;
 
             auto col_start = XMFLOAT4((float*)def.m_ColorStart);
             auto col_end = XMFLOAT4((float*)def.m_ColorStart);
 
-            ptr->m_Color = ease_color(DirectX::XMLoadFloat4(&col_start), DirectX::XMLoadFloat4(&col_end), factor);
-            ptr->m_Deform = ease_deform(def.m_DeformStart, def.m_DeformEnd, factor);
-            ptr->m_DeformSpeed = def.m_DeformSpeed;
-            ptr->m_NoiseScale = def.m_NoiseScale;
-            ptr->m_NoiseSpeed = def.m_NoiseSpeed;
+            instance.m_Color = ease_color(DirectX::XMLoadFloat4(&col_start), DirectX::XMLoadFloat4(&col_end), factor);
+            instance.m_Deform = ease_deform(def.m_DeformStart, def.m_DeformEnd, factor);
+            instance.m_DeformSpeed = def.m_DeformSpeed;
+            instance.m_NoiseScale = def.m_NoiseScale;
+            instance.m_NoiseSpeed = def.m_NoiseSpeed;
+
+            *ptr = instance;
 
             particle.age += dt;
             particle.rotprog += dt;
 
             XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
 
-            it++;
             ptr++;
-            i++;
         }
-        m_GeometryInstanceBuffer->unmap(cxt);
+        PROFILE_END();
+    }
+    mutable tbb::atomic<int> *m_DeleteSize;
+    std::array<int, 32> *m_DeleteList;
+
+private:
+    std::vector<GeometryParticle> *m_Particles;
+
+    float m_Delta;
+    ParticleSystem::GeometryParticleInstance *m_Ptr;
+};
+
+void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
+{
+    // process all active effects/emitters (spawns particles)
+    PROFILE_BEGIN("process FX");
+    auto it = m_ParticleEffects.begin();
+    while (it != m_ParticleEffects.end()) {
+        if (processEffect(&it->effect, XMMatrixTranslationFromVector(it->position), dt)) {
+            it = m_ParticleEffects.erase(it);
+        }
+        else {
+            it++;
+        }
+    }
+    PROFILE_END();
+
+    // sort by material to improve batching
+    PROFILE_BEGIN("sort particles");
+    std::sort(m_GeometryParticles.begin(), m_GeometryParticles.end(), [](GeometryParticle &a, GeometryParticle &b) {
+        return a.idx < b.idx;
+    });
+    PROFILE_END();
+
+    PROFILE_BEGIN("update particles");
+    GeometryParticleInstance *ptr = m_GeometryInstanceBuffer->map(cxt);
+    std::array<int, 32> deleteList {-1};
+    tbb::atomic<int> deleteSize = 0;
+    auto updater = GeometryParticleUpdater(&m_GeometryParticles, &deleteSize, &deleteList, dt, ptr);
+    
+    tbb::parallel_for(
+        tbb::blocked_range<int>(0, min((int)m_GeometryParticles.size(), (int)m_Capacity)),
+        updater,
+        tbb::static_partitioner()
+    );
+
+    m_GeometryInstanceBuffer->unmap(cxt);
+    PROFILE_END();
+
+    std::sort(deleteList.begin(), deleteList.end(), [](int a, int b) {
+        return a > b;
+    });
+
+    int sz = deleteSize;
+    for (int i = 0; i < sz; i++) {
+        auto idx = deleteList.at(i);
+        m_GeometryParticles.erase(m_GeometryParticles.begin() + idx);
     }
 }
 
@@ -305,7 +367,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
     fread(&texture_count, sizeof(texture_count), 1, f);
 
     // load all textures
-    for (int i = 0; i < texture_count; i++) {
+    for (unsigned int i = 0; i < texture_count; i++) {
         char path[128];
         fread(path, sizeof(char), 128, f);
 
@@ -323,7 +385,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
     fread(&material_count, sizeof(material_count), 1, f);
 
     // load all materials
-    for (int i = 0; i < material_count; i++) {
+    for (unsigned int i = 0; i < material_count; i++) {
         char path[128];
         fread(path, sizeof(char), 128, f);
 
@@ -388,7 +450,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
     fread(&fx_count, 1, sizeof(fx_count), f);
 
     // load all particle fx
-    for (int i = 0; i < fx_count; i++) {
+    for (unsigned int i = 0; i < fx_count; i++) {
         ParticleEffect fx;
         fread(fx.m_Name, sizeof(char), 16, f);
         fread(&fx.m_Count, sizeof(fx.m_Count), 1, f);
@@ -400,7 +462,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         fx.m_Entries.resize(fx.m_Count);
 
         // read all fx entries
-        for (int j = 0; j < fx.m_Count; j++) {
+        for (unsigned int j = 0; j < fx.m_Count; j++) {
 
 #define LAZY_READ(field) \
     fread(&fx.m_Entries[j].field, sizeof(fx.m_Entries[j].field), 1, f);

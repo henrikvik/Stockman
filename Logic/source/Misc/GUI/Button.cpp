@@ -11,7 +11,7 @@ Button::~Button()
 
 void Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width, int textureIndex, std::function<void(void)> callback)
 {
-	m_buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(pos.x, pos.y, width, height);
+	m_buttonInfo.m_rek = DirectX::SimpleMath::Rectangle((long)pos.x, (long)pos.y, (long)width, (long)height);
 	m_buttonInfo.m_texCoordStart = texCoordStart;
 	m_buttonInfo.m_texCoordEnd = texCoordEnd;
 	m_buttonInfo.activeoffset = offset;
@@ -76,13 +76,19 @@ bool Button::animationTransition(float dt, float maxAnimationTime, bool forward)
 	else
 		lerpResult = DirectX::SimpleMath::Vector2::Lerp(m_animationEnd, m_animationStart, done ? 1 : m_animationTime);
 	
-	m_buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(lerpResult.x, lerpResult.y,
+	m_buttonInfo.m_rek = DirectX::SimpleMath::Rectangle((long)lerpResult.x, (long)lerpResult.y,
 		m_buttonInfo.m_rek.width, m_buttonInfo.m_rek.height);
 
 	return done;
 }
 
-Graphics::ButtonInfo& Button::getButtonInfo()
+Graphics::ButtonInfo* Button::getButtonInfo()
 {
-	return m_buttonInfo;
+	return &m_buttonInfo;
+}
+
+void Button::setStartAndEnd(float start, float end)
+{
+    m_start = start;
+    m_end = end;
 }

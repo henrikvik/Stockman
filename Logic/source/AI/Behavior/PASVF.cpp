@@ -26,8 +26,8 @@ PASVF::~PASVF()
 // THIS SHOULD ONLY BE CALLED OFFLINE AND THEN SAVED TO A FILE (TODO)
 void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, std::vector<std::vector<Triangle>> objects) const
 {
-#define T 20 // size
-#define Y 0 // node y position
+#define T 20.f // size
+#define Y 0.f // node y position
 	std::vector<Triangle> moveableTerrain;
 	DirectX::SimpleMath::Vector3 up = { 0, 1, 0 };
 	float normalDotMin = 0.6f;
@@ -83,7 +83,7 @@ inline DirectX::SimpleMath::Vector3 PASVF::getNormal(Triangle const & triangle,
 	if (vertexOrder == CLOCKWISE) {
 		return getLine(triangle.vertices[0], triangle.vertices[1]).Cross(getLine(triangle.vertices[0], triangle.vertices[2]));
 	}
-	else if (vertexOrder == COUNTER_CLOCKWISE)
+	else //if (vertexOrder == COUNTER_CLOCKWISE)
 	{
 		return getLine(triangle.vertices[0], triangle.vertices[2]).Cross(getLine(triangle.vertices[0], triangle.vertices[1]));
 	}
