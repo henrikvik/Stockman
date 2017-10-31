@@ -15,8 +15,6 @@ Game::Game()
 	m_cardManager		= nullptr;
 	m_menu				= nullptr;
 	m_highScoreManager	= nullptr;
-
-	
 }
 
 Game::~Game() 
@@ -50,6 +48,18 @@ void Game::init()
 	// Initializing Highscore Manager
 	m_highScoreManager = newd HighScoreManager();
 	m_highScoreManager->setName("Stockman");
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_highScoreManager->gethighScore(i).score != -1)
+		{
+			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+		}
+		else
+		{
+			highScore[i] = "";
+		}
+	}
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine(m_highScoreManager->getName());
@@ -301,7 +311,7 @@ void Game::gameOver()
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(ComboMachine::Get().GetCurrentScore());
+			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
 			break;
 		}
 	}
@@ -328,7 +338,7 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuSettings:
 	case gameStateGameOver:
 	case gameStateHighscore:
-	default:  m_menu->render(renderer);
+	default:  m_menu->render(renderer, highScore);
 		break;
 	}
 
@@ -356,7 +366,7 @@ void Game::gameRunTimeRender(Graphics::Renderer& renderer)
 
 void Logic::Game::menuRender(Graphics::Renderer * renderer)
 {
-	m_menu->render(*renderer);
+	m_menu->render(*renderer, highScore);
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

@@ -215,7 +215,7 @@ void MenuMachine::update(float dt)
 	PROFILE_END();
 }
 
-void MenuMachine::render(Graphics::Renderer &renderer)
+void MenuMachine::render(Graphics::Renderer &renderer, std::string highScore[10])
 {
 	PROFILE_BEGIN("Menu Render");
     if (m_currentActiveState == gameStateMenuSettings)
@@ -243,6 +243,65 @@ void MenuMachine::render(Graphics::Renderer &renderer)
         };
         renderer.queueText(&text);
     }
+	if (m_currentActiveState == gameStateHighscore)
+	{
+		std::string tempString = "";
+		std::wstring tempWString = L"";
+		DirectX::SimpleMath::Vector2 tempPos;
+		for (int i = 0; i < 10; i++)
+		{
+			if (highScore[i].compare("") == 0)
+			{
+				break;
+			}
+			else
+			{
+				tempString += highScore[i] + "\n";
+			}
+		}
+		tempWString.assign(tempString.begin(), tempString.end());
+		tempPos.x = 400.0f;
+		tempPos.y = 300.0f;
+
+		Graphics::TextString text
+		{
+			tempWString.c_str(),
+			tempPos,
+			DirectX::SimpleMath::Color(DirectX::Colors::White),
+			Graphics::Font::SMALL
+		};
+		renderer.queueText(&text);
+	}
+
+	if (m_currentActiveState == gameStateGameOver)
+	{
+		std::string tempString = "";
+		std::wstring tempWString = L"";
+		DirectX::SimpleMath::Vector2 tempPos;
+		for (int i = 0; i < 10; i++)
+		{
+			if (highScore[i].compare("") == 0)
+			{
+				break;
+			}
+			else
+			{
+				tempString += highScore[i] + "\n";
+			}
+		}
+		tempWString.assign(tempString.begin(), tempString.end());
+		tempPos.x = 400.0f;
+		tempPos.y = 300.0f;
+
+		Graphics::TextString text
+		{
+			tempWString.c_str(),
+			tempPos,
+			DirectX::SimpleMath::Color(DirectX::Colors::White),
+			Graphics::Font::SMALL
+		};
+		renderer.queueText(&text);
+	}
     
 
     Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
