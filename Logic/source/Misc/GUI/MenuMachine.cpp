@@ -213,8 +213,8 @@ void MenuMachine::render(Graphics::Renderer &renderer)
         std::wstring tempString = L"";
         Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
         DirectX::SimpleMath::Vector2 tempPos;
-        tempPos.x = tempButton.m_rek.x +tempButton.m_rek.width;
-        tempPos.y = tempButton.m_rek.y + tempButton.m_rek.height -50;
+        tempPos.x = (float)(tempButton.m_rek.x +tempButton.m_rek.width);
+        tempPos.y = (float)(tempButton.m_rek.y + tempButton.m_rek.height -50);
         tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
         if (m_typing)
         {

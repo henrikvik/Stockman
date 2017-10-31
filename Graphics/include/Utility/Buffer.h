@@ -92,7 +92,7 @@ template<typename T>
 Buffer<T>::Buffer(ID3D11Device * device, BufferUsage usage, BufferBind bindFlags, BufferCpuAccess cpuFlags, BufferMisc miscFlags, size_t size, T * data)
 {
     D3D11_BUFFER_DESC desc = {};
-    desc.ByteWidth           = sizeof(T) * size;
+    desc.ByteWidth           = static_cast<UINT>(sizeof(T) * size);
     desc.Usage               = static_cast<D3D11_USAGE>(usage);
     desc.BindFlags           = static_cast<UINT>(bindFlags);
     desc.CPUAccessFlags      = static_cast<UINT>(cpuFlags);
