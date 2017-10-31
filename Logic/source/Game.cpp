@@ -328,7 +328,7 @@ void Game::renderGame(Graphics::Renderer& renderer)
 
 void Game::renderMenu(Graphics::Renderer& renderer)
 {
-	m_menu->render(*renderer, highScore);
+	m_menu->render(renderer, highScore);
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()
