@@ -243,7 +243,8 @@ bool Game::updateMenu(float deltaTime)
 void Game::updateGame(float deltaTime)
 {
    	ComboMachine::Get().Update(deltaTime);
-	m_waveTimeManager.update(deltaTime, m_entityManager);
+    if (m_waveTimeManager.update(deltaTime, m_entityManager))
+        m_projectileManager->getProjectiles();
 
 	PROFILE_BEGIN("Sound");
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());

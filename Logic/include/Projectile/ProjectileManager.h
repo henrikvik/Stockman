@@ -19,6 +19,7 @@ namespace Logic
 		void clear();
 		Projectile* addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter);
 		void removeProjectile(Projectile* p, int index);
+        void removeAllProjectiles();
 
 		void update(float deltaTime);
 		void render(Graphics::Renderer &renderer);

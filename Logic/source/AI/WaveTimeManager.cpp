@@ -16,7 +16,8 @@ WaveTimeManager::~WaveTimeManager()
 {
 }
 
-void WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
+// Returns true if a new wave is going to spawn
+bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
 {
     if (!m_onLastWave)
     {
@@ -40,10 +41,14 @@ void WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
                     // If the player have completed all the waves
                     if (m_waveCurrent == entityManager.getWaveManager().getWaveInformation().nrOfWaves)
                         m_onLastWave = true;
+
+                    return true;
                 }
             }   
         }
     }
+
+    return false;
 }
 
 int WaveTimeManager::getCurrentWave() const
