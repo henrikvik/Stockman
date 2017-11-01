@@ -134,7 +134,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
 
         // reset collision flags
         if (p->getProjectileData().isSensor)
-            body->setCollisionFlags(body->getCollisionFlags() &~ btCollisionObject::CF_NO_CONTACT_RESPONSE);
+            body->setCollisionFlags(body->getCollisionFlags() &~btCollisionObject::CF_NO_CONTACT_RESPONSE);
         body->getBroadphaseProxy()->m_collisionFilterGroup = 0;
         body->getBroadphaseProxy()->m_collisionFilterMask = 0;
         // benching body
@@ -149,7 +149,8 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         // add to idle stack
         m_projectilesIdle.push_back(p);
     }
-	m_projectilesActive.erase(m_projectilesActive.begin() + index);
+    std::swap(m_projectilesActive[index], m_projectilesActive[m_projectilesActive.size() - 1]);
+    m_projectilesActive.pop_back();
 }
 
 void Logic::ProjectileManager::update(float deltaTime)
@@ -174,7 +175,7 @@ void Logic::ProjectileManager::render(Graphics::Renderer& renderer)
 
 void ProjectileManager::removeAllProjectiles()
 {
-    for (size_t i = 0; i < m_projectilesActive.size(); i++)
+    for (int i = m_projectilesActive.size() - 1; i >= 0; i--)
         removeProjectile(m_projectilesActive[i], i);
 }
 

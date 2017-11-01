@@ -64,14 +64,12 @@ void EnemyNecromancer::useAbility(Entity const &target)
 		{
             Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{0, 80, 0}).normalize(), Graphics::ModelID::SKY_SPHERE, (float)SPEED_AB2, 2.5f, 0.6f);
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
-                Entity *entity = reinterpret_cast<Entity*> (data.dataPtr);
-
                 if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
                 {
                     Enemy *e = SpawnEnemy(ENEMY_TYPE::NECROMANCER_MINION, data.caller->getPositionBT(), {});
                     m_spawnedMinions++;
-                    increaseCallbackEntities();
 
+                    increaseCallbackEntities();
                     e->addCallback(ON_DEATH, [&](CallbackData data) -> void {
                         m_spawnedMinions--;
                     });

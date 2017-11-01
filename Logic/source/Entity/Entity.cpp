@@ -70,10 +70,6 @@ bool Entity::hasCallback(EntityEvent entityEvent) const
 void Entity::clearCallbacks()
 {
     callback(ON_DESTROY, CallbackData{ this }); // This is a new projectile for the callbacker
-    for (auto callbacks : m_callbacks)
-    {
-        callbacks.second.clear();
-    }
     m_callbacks.clear();
 }
 

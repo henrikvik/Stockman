@@ -131,9 +131,9 @@ void Game::clear()
 
 void Game::reset()
 {
+    m_projectileManager->removeAllProjectiles();
     m_entityManager.deallocateData();
     m_player->reset();
-    m_projectileManager->removeAllProjectiles();
 
 	ComboMachine::Get().Reset();
 }
