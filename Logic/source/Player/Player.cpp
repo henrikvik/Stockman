@@ -638,6 +638,13 @@ void Player::render(Graphics::Renderer & renderer)
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);
 
+    static int lastHP = getHP();
+    if (lastHP != getHP())
+    {
+        lastHP = getHP();
+        renderer.startShake(10., 500.f);
+    }
+
 	// Setting position of updated weapon and skill models
 	m_weaponManager->setWeaponModel(getTransformMatrix(), m_forward);
 	//	m_skillManager->setWeaponModel(getTransformMatrix(), m_forward);
