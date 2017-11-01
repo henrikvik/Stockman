@@ -27,9 +27,9 @@ btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent, modelID)
 {
-    m_weaponManager = new WeaponManager();
-    m_skillManager = new SkillManager();
-    m_listenerData = new Sound::ListenerData();
+    m_weaponManager = newd WeaponManager();
+    m_skillManager = newd SkillManager();
+    m_listenerData = newd Sound::ListenerData();
 }
 
 Player::~Player()
@@ -594,7 +594,7 @@ btGhostObject* Player::getGhostObject()
 DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 {
 	// Making memory for a matrix
-	float* m = new float[4 * 16];
+	float* m = newd float[4 * 16];
 
 	// Getting this entity's matrix
 	m_charController->getGhostObject()->getWorldTransform().getOpenGLMatrix((btScalar*)(m));

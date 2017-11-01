@@ -8,7 +8,7 @@ using namespace Logic;
 SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData)
 	: Skill(BULLET_TIME_CD, BULLET_TIME_DURATION)
 {
-	m_pData = new ProjectileData(pData);
+	m_pData = newd ProjectileData(pData);
 	m_sensor = nullptr;
     setSpawnFunctions(*projectileManager);
 	//m_travelProjectile = nullptr;

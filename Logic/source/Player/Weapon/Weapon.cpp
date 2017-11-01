@@ -16,7 +16,7 @@ Weapon::Weapon()
 	m_attackRate		= -1;
 	m_freeze			= -1;
 	m_reloadTime		= -1;
-    m_projectileData = new ProjectileData();
+    m_projectileData = newd ProjectileData();
 }
 
 Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
@@ -34,7 +34,7 @@ Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, 
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
-    m_projectileData    = new ProjectileData(projectileData);
+    m_projectileData    = newd ProjectileData(projectileData);
 
 
     setSpawnFunctions(*projectileManager);
