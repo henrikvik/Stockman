@@ -29,7 +29,7 @@ void Map::add(FrameHitbox frameHitbox)
             Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
             Physics::COL_HITBOX,
             Physics::COL_EVERYTHING),
-            {1, 1.525f, 1}));
+            {1, 1.f, 1}));
 
     m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
         Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
