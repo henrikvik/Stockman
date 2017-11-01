@@ -74,6 +74,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         body = p->getRigidBody();
         // adding the body to physics world
         m_physPtr->addRigidBody(body);
+        p->getStatusManager().clear();
         
         // isSensor
         if (pData.isSensor)
