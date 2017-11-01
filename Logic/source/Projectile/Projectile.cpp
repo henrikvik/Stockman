@@ -91,6 +91,7 @@ void Projectile::updateSpecific(float deltaTime)
 	m_bulletTimeMod = 1.f;
 }
 
+// This function is a bloody mess
 void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
     // TEMP
@@ -116,22 +117,31 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
             callback = true;
 
             // DELETE THIS 
-
             if (dynamic_cast<Enemy*> (&other))
             {
                 if (FUN_MODE)
                 {
+                    if (m_pData.damage > 0)
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+
                     // DELETE THIS 
                     if (dynamic_cast<Enemy*> (&other)->getHealth() < 0)
-                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+                    {
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(2, 2, 2)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(-3, 2, -3)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(-2, 3, -3)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(3, 2, 3)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(2, 3, -2)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(0, 6, 0)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(0, 0, 0)));
+                    }
                 }
                 if (m_pData.type == ProjectileTypeIce)
                 {
                     dynamic_cast<Enemy*> (&other)->getStatusManager().addStatus(StatusManager::FREEZE, 1, true);
-
-                    // DELETE THIS 
+                    
                     if (FUN_MODE)
-                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+                        if ((rand() % 10) == 1)Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
                 }
             }
         }
@@ -139,10 +149,6 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
 			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
 				m_remove = false;
-
-        // DELETE THIS 
-        if (m_remove && FUN_MODE)
-            Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
     }
     else if (getProjectileData().enemyBullet)  // if player and enemy bullet
     {
@@ -162,6 +168,10 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         m_pData.type == ProjectileTypeMelee ||
         m_pData.type == ProjectileTypeIce)
 		m_remove = false;
+
+    // DELETE THIS 
+    if (m_remove && FUN_MODE)
+        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
 }
 
 void Projectile::upgrade(Upgrade const &upgrade)
