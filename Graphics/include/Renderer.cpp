@@ -337,11 +337,16 @@ namespace Graphics
 		renderFoliageQueue.clear();
 		PROFILE_END();
 
-		
-		snowManager.drawSnowflakes(deviceContext, camera);
-		deviceContext->GSSetShader(nullptr, nullptr, 0);
-		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+        if (enableSnow)
+        {
+            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+            static UINT sampleMask = 0xffffffff;
+            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+            snowManager.drawSnowflakes(deviceContext, camera);
+            deviceContext->GSSetShader(nullptr, nullptr, 0);
+            deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        }
 		
 
 		PROFILE_BEGIN("DebugThings");
@@ -745,6 +750,13 @@ namespace Graphics
 
 			return "Post effects toggled!";
 		});
+
+        debugWindow->registerCommand("TOGGLESNOW", [&](std::vector<std::string> &args)->std::string
+        {
+            enableSnow = !enableSnow;
+
+            return "Snow toggled!";
+        });
 
 		debugWindow->registerCommand("TOGGLEGLOW", [&](std::vector<std::string> &args)->std::string
 		{

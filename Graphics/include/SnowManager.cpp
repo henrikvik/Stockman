@@ -1,6 +1,7 @@
 #include "SnowManager.h"
 #include <Logic\include\Misc\RandomGenerator.h>
 #include <math.h>
+#include <CommonStates.h>
 #include <Engine\Constants.h>
 #define SNOW_RADIUS 50.f
 #define MAX_SNOW 256
@@ -108,7 +109,7 @@ namespace Graphics
 
 	void SnowManager::recompile(ID3D11Device * device)
 	{
-		snowShader.recompile(device, SHADER_PATH("SnowShaders/SnowShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } }, ShaderType::GS | ShaderType::PS | ShaderType::VS);
+		snowShader.recompile(device, SHADER_PATH("SnowShaders/SnowShader.hlsl"), {}, ShaderType::GS | ShaderType::PS | ShaderType::VS);
 	}
 
 	void SnowManager::clearSnow()
