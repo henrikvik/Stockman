@@ -72,6 +72,7 @@ void EntityManager::loadDebugCmds()
 
 void EntityManager::deallocateData()
 {
+    m_threadHandler->deleteThreads();
     for (std::vector<Enemy*>& list : m_enemies)
     {
         for (Enemy *enemy : list)
@@ -91,6 +92,7 @@ void EntityManager::deallocateData()
 
     m_deadEnemies.clear();
     m_aliveEnemies = 0;
+    m_threadHandler->initThreads();
 }
 
 void EntityManager::update(Player const &player, float deltaTime)
