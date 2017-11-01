@@ -198,7 +198,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
 {
     Enemy *enemy;
     int index;
-    btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER));
+    btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/));
     
     // Restrict "tilting" over
     testBody->setAngularFactor(btVector3(0, 1, 0));
@@ -217,7 +217,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     }
 
     enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER)), 2.f, { 0.f, 3.f, 0.f });
+    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/)), 2.f, { 0.f, 3.f, 0.f });
 
     enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 

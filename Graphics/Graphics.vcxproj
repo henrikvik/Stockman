@@ -36,6 +36,7 @@
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
+    <ClCompile Include="include\SnowManager.cpp" />
     <ClCompile Include="include\SSAORenderer.cpp" />
     <ClCompile Include="include\Utility\DebugDraw.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
@@ -71,6 +72,7 @@
     <ClInclude Include="include\Particles\ParticleSystem.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Resources\BRFImportHandler.h" />
+    <ClInclude Include="include\SnowManager.h" />
     <ClInclude Include="include\SSAORenderer.h" />
     <ClInclude Include="include\Utility\Buffer.h" />
     <ClInclude Include="include\Utility\DebugDraw.h" />

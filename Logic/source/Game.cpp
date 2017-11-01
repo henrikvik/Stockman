@@ -47,10 +47,10 @@ void Game::init(LPWSTR *cmdLine, int args)
 	m_physics->init();
 
 	// Initializing Projectile Manager
-	m_projectileManager = new ProjectileManager(m_physics);
+	m_projectileManager = newd ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, nullptr, Game::PLAYER_START_SCALE);
+	m_player = newd Player(Graphics::ModelID::CUBE, nullptr, Game::PLAYER_START_SCALE);
 	m_player->init(m_physics, m_projectileManager);
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
 
