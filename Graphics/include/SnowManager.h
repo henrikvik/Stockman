@@ -1,5 +1,7 @@
 #pragma once
 #include "Camera.h"
+#include "Resources\Shader.h"
+#include "Utility\StructuredBuffer.h"
 #include <vector>
 #define MAX_SNOW 256
 
@@ -13,7 +15,11 @@ namespace Graphics
 
 		void updateSnow(float deltaTime, Camera * camera, ID3D11DeviceContext * context);
 		void initializeSnowflakes(Camera * camera);
+		void drawSnowflakes(ID3D11DeviceContext * context, Camera * camera);
+		void recompile(ID3D11Device * device);
 
+		//temp
+		std::vector<DirectX::SimpleMath::Vector3> test;
 	private:
 		struct Plane
 		{
@@ -30,14 +36,21 @@ namespace Graphics
 			Plane farPlane;
 		};
 
-		ConstantBuffer<DirectX::SimpleMath::Vector3, MAX_SNOW> snowBuffer;
+		StructuredBuffer<DirectX::SimpleMath::Vector4> snowBuffer;
+		Shader snowShader;
 
-		std::vector<DirectX::SimpleMath::Vector3> positions;
+		int snowFlakeCount;
+
+
+		std::vector<DirectX::SimpleMath::Vector4> positions;
 		std::vector<DirectX::SimpleMath::Vector3> velocities;
 
 		void addSnowFlake(FrustumPlanes& planes, Camera * camera);
+		void addRandomSnowFlake(FrustumPlanes& planes, Camera * camera);
+		void moveSnowFlake(FrustumPlanes& planes, Camera * camera, int snowFlake);
 		FrustumPlanes generatePlanes(Camera * camera);
 		bool isPointInFrontOfPlane(Plane plane, DirectX::SimpleMath::Vector3 point);
 		bool isInFrustum(FrustumPlanes& planes, DirectX::SimpleMath::Vector3 point);
+		void clearSnow();
 	};
 }
