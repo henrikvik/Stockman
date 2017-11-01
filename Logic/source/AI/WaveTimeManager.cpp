@@ -32,7 +32,7 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
             {
                 m_enraged = entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE) > 0;
                 if (!m_enraged) {
-                    entityManager.deallocateData();
+                    entityManager.deallocateData(false);
                     entityManager.spawnWave(m_waveCurrent++);
 
                     m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent);

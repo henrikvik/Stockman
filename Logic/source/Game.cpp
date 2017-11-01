@@ -133,6 +133,7 @@ void Game::reset()
 {
     m_entityManager.deallocateData();
     m_player->reset();
+    m_projectileManager->removeAllProjectiles();
 
 	ComboMachine::Get().Reset();
 }
@@ -243,8 +244,7 @@ bool Game::updateMenu(float deltaTime)
 void Game::updateGame(float deltaTime)
 {
    	ComboMachine::Get().Update(deltaTime);
-    if (m_waveTimeManager.update(deltaTime, m_entityManager))
-        m_projectileManager->removeAllProjectiles();
+    m_waveTimeManager.update(deltaTime, m_entityManager);
 
 	PROFILE_BEGIN("Sound");
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());

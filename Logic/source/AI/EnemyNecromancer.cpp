@@ -69,9 +69,13 @@ void EnemyNecromancer::useAbility(Entity const &target)
                 {
                     Enemy *e = SpawnEnemy(ENEMY_TYPE::NECROMANCER_MINION, data.caller->getPositionBT(), {});
                     m_spawnedMinions++;
+                    increaseCallbackEntities();
 
                     e->addCallback(ON_DEATH, [&](CallbackData &data) -> void {
                         m_spawnedMinions--;
+                    });
+                    e->addCallback(ON_DESTROY, [&](CallbackData data) -> void {
+                        decreaseCallbackEntities();
                     });
                 }
             });
