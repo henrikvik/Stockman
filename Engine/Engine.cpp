@@ -1,3 +1,9 @@
+#include "Engine.h"
+#include <Graphics\include\Structs.h>
+#include <Graphics\include\Utility\DebugDraw.h>
+
+#include "Profiler.h"
+
 #include <Windows.h>
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
@@ -254,6 +260,8 @@ int Engine::run()
 
 	DebugWindow * debug = DebugWindow::getInstance();
 
+    Graphics::Debug::Initialize(mDevice);
+
 	while (running)
 	{
 		currentTime = this->timer();
@@ -415,6 +423,7 @@ int Engine::run()
 			g_Profiler->render();
 		}
 
+        Graphics::Debug::Render(&cam);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
 		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
@@ -427,7 +436,8 @@ int Engine::run()
 		
 	}
 
-	g_Profiler->end();
+    Graphics::Debug::Destroy();
+    g_Profiler->end();
 	delete g_Profiler;
 
 	return 0;
