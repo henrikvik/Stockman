@@ -95,7 +95,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
     body->getBroadphaseProxy()->m_collisionFilterMask = 
         (pData.enemyBullet) ? (Physics::COL_EVERYTHING &~(Physics::COL_ENEMY)) : (Physics::COL_EVERYTHING &~(Physics::COL_PLAYER));
 
-	// Taking the forward vector and getitng the pitch and yaw from it
+	// Taking the forward vector and getting the pitch and yaw from it
 	float pitch = asin(-forward.getY());
 	float yaw = atan2(forward.getX(), forward.getZ());
 	btQuaternion q(yaw, pitch, 0.f);
