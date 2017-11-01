@@ -79,7 +79,7 @@ void Graphics::Menu::loadTextures(ID3D11Device * device, ID3D11DeviceContext * c
     if (loaded == false)
     {
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainmenupicture.dds"), nullptr, &menuTexture[0]));;
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("Mainmenu.dds"), nullptr, &menuTexture[0]));;
         menuTexture[2] = nullptr;
 
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("SettingsMenuTexture.png"), nullptr, &menuTexture[1]));
@@ -88,11 +88,13 @@ void Graphics::Menu::loadTextures(ID3D11Device * device, ID3D11DeviceContext * c
 
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverTexture.png"), nullptr, &menuTexture[3]));
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuButton.png"), nullptr, &buttonTexture[0]));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverMenuButtons.png"), nullptr, &buttonTexture[1]));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainmenubuttons.dds"), nullptr, &buttonTexture[0]));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverMenuButtons.dds"), nullptr, &buttonTexture[1]));
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("SettingsMenuButtons.png"), nullptr, &buttonTexture[2]));
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("Color_pick_icons.dds"), nullptr, &buttonTexture[3]));
-        loaded = true;
+		ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("Backbutton.dds"), nullptr, &buttonTexture[4]));
+
+		loaded = true;
     }
 }
 
@@ -104,6 +106,7 @@ void Graphics::Menu::unloadTextures()
         SAFE_RELEASE(buttonTexture[1]);
         SAFE_RELEASE(buttonTexture[2]);
         SAFE_RELEASE(buttonTexture[3]);
+		SAFE_RELEASE(buttonTexture[4]);
         SAFE_RELEASE(menuTexture[0]);
         SAFE_RELEASE(menuTexture[1]);
         SAFE_RELEASE(menuTexture[2]);

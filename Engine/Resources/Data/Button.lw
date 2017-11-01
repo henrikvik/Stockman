@@ -1,57 +1,57 @@
 {
 	"buttonName" : "MenuStartGame";
 	"texture" : 0;
-	"xPos" : 400.0f;
-	"yPos" : 300.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.50781f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 0.75156f;
-    "activeOffset" : 0.50781f;
-	"height" : 156.0f;
-	"width" : 545.0f;
+	"xPos" : 170.0f;
+	"yPos" : 275.0f;
+	"xTexStart" : 0.328125f;
+	"yTexStart" : 0.51953125f;
+	"xTexEnd" : 0.6640625f;
+	"yTexEnd" : 0.6171875f;
+    "activeOffset" : 0.47046875f;
+	"height" : 28.0f;
+	"width" : 85.0f;
 	"function" : "buttonClick0";
 }
 {
 	"buttonName" : "MenuStartSettings";
 	"texture" : 0;
-	"xPos" : 400.0f;
-	"yPos" : 480.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.76875f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 0.86719f;
-    "activeOffset" : 0.50938f;
-	"height" : 85.0f;
-	"width" : 600.0f;
+	"xPos" : 155.0f;
+	"yPos" : 340.0f;
+	"xTexStart" : 0.21484375f;
+	"yTexStart" : 0.74953125f;
+	"xTexEnd" : 0.7968750f;
+	"yTexEnd" : 0.87546875f;
+    "activeOffset" : 0.4856875f;
+	"height" : 25.0f;
+	"width" : 115.0f;
 	"function" : "buttonClick1";
 }
 {
 	"buttonName" : "MenuStartHighscore";
 	"texture" : 0;
-	"xPos" : 400.0f;
-	"yPos" : 580.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.76875f;
+	"xPos" : 115.0f;
+	"yPos" : 310.0f;
+	"xTexStart" : 0.016015625f;
+	"yTexStart" : 0.63671875f;
 	"xTexEnd" : 1.0f;
-	"yTexEnd" : 0.86719f;
-    "activeOffset" : 0.50938f;
-	"height" : 45.0f;
-	"width" : 300.0f;
+	"yTexEnd" : 0.74609375f;
+    "activeOffset" : 0.47728125f;
+	"height" : 28.0f;
+	"width" : 195.0f;
 	"function" : "buttonClick21";
 }
 {
 	"buttonName" : "MenuQuitGame";
 	"texture" : 0;
-	"xPos" : 400.0f;
-	"yPos" : 640.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.876565f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 0.97188f;
-    "activeOffset" : 0.51094f;
-	"height" : 40.0f;
-	"width" : 160.0f;
+	"xPos" : 185.0f;
+	"yPos" : 370.0f;
+	"xTexStart" : 0.359375f;
+	"yTexStart" : 0.86671875f;
+	"xTexEnd" : 0.65625f;
+	"yTexEnd" : 0.98875f;
+    "activeOffset" : 0.488125f;
+	"height" : 28.0f;
+	"width" : 60.0f;
 	"function" : "buttonClick3";
 }
 {
@@ -293,18 +293,18 @@
 	"width" : 200.0f;
 	"function" : "buttonClick7";
 }
-{
+{ 
 	"buttonName" : "HighscoreStartMenu";
-	"texture" : 1;
+	"texture" : 4;
 	"xPos" : 400.0f;
-	"yPos" : 480.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.54375f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 0.79375f;
-    "activeOffset" : 0.0f;
-	"height" : 100.0f;
-	"width" : 340.0f;
+	"yPos" : 600.0f;
+	"xTexStart" : 0.28515625f;
+	"yTexStart" : 0.10890625f;
+	"xTexEnd" : 0.7265625f;
+	"yTexEnd" : 0.40234375f;
+    "activeOffset" : 0.556875f;
+	"height" : 75.0f;
+	"width" : 120.0f;
 	"function" : "buttonClick2";
 }
 {
