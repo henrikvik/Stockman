@@ -72,6 +72,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         p->setHalfExtent({ pData.scale, pData.scale, pData.scale });
         // fetching body
         body = p->getRigidBody();
+        // adding the body to physics world
         m_physPtr->addRigidBody(body);
         
         // isSensor
@@ -110,23 +111,6 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
 	m_projectilesActive.push_back(p);
 
 	return p;
-}
-
-void ProjectileManager::removeProjectile(Projectile* p)
-{
-	m_physPtr->removeRigidBody(p->getRigidBody());
-	p->destroyBody();
-	delete p;
-	
-	int found = -1;
-	size_t nrProjectiles = m_projectilesActive.size();
-	for (size_t i = nrProjectiles; i-- && found == -1; )
-	{
-		if (m_projectilesActive[nrProjectiles - (i + 1)] == p)
-			found = (int)i + 1;
-	}
-
-	m_projectilesActive.erase(m_projectilesActive.begin() + found);
 }
 
 void ProjectileManager::removeProjectile(Projectile* p, int index)
