@@ -52,7 +52,7 @@ template<typename T>
 inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess access, size_t count, T * ptr)
 {
     D3D11_BUFFER_DESC desc = {};
-    desc.ByteWidth = sizeof(T) * count;
+    desc.ByteWidth = (UINT)(sizeof(T) * count);
 
     if ((int)access & (int)CpuAccess::Read)
     {
@@ -90,7 +90,7 @@ inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess ac
         D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
         srvDesc.Format = DXGI_FORMAT_UNKNOWN;
         srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-        srvDesc.Buffer.NumElements = count;
+        srvDesc.Buffer.NumElements = (UINT)count;
 
         ThrowIfFailed(device->CreateShaderResourceView(m_Buffer, &srvDesc, &m_SRV));
     }
@@ -100,7 +100,7 @@ inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess ac
         D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
         uavDesc.Format = DXGI_FORMAT_UNKNOWN;
         uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-        uavDesc.Buffer.NumElements = count;
+        uavDesc.Buffer.NumElements = (UINT)count;
 
         ThrowIfFailed(device->CreateUnorderedAccessView(m_Buffer, &uavDesc, &m_UAV));
     }

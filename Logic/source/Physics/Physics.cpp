@@ -53,7 +53,8 @@ void Physics::clear()
 			delete body->getMotionState();
 		}
 		this->removeCollisionObject(obj);
-		delete shape;
+        if (shape)
+		    delete shape;
 		delete obj;
 	} 
 

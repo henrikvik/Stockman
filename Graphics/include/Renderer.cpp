@@ -136,8 +136,8 @@ namespace Graphics
 		PROFILE_BEGIN("SetBulletTimeCBuffer()");
 		//These two must always add up to one ir i'll have to fix the formula
 		//They represents how long the fade in and fade out are. 
-		static const float TOP_THRESHOLD = 0.9;
-		static const float BOT_THRESHOLD = 0.1;
+		static const float TOP_THRESHOLD = 0.9f;
+		static const float BOT_THRESHOLD = 0.1f;
 
 
         if (amount > TOP_THRESHOLD)
@@ -582,7 +582,7 @@ namespace Graphics
         {
 			PROFILE_BEGIN("Setup for draw");
             instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(UINT));
-            instanceOffset += pair.second.size();
+            instanceOffset += (UINT)pair.second.size();
 
             ModelInfo model = resourceManager.getModelInfo(pair.first);
 
@@ -679,18 +679,18 @@ namespace Graphics
             debugPointsBuffer.write(
                 deviceContext,
                 info->points->data(),
-                info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
+                (UINT)(info->points->size() * sizeof(DirectX::SimpleMath::Vector3))
             );
 
             debugColorBuffer.write(
                 deviceContext,
                 &info->color,
-                sizeof(DirectX::SimpleMath::Color)
+                (UINT)sizeof(DirectX::SimpleMath::Color)
             );
 
             deviceContext->IASetPrimitiveTopology(info->topology);
             deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
-            deviceContext->Draw(info->points->size(), 0);
+            deviceContext->Draw((UINT)info->points->size(), 0);
         }
 
         renderDebugQueue.clear();

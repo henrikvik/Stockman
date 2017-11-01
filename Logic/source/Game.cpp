@@ -1,7 +1,10 @@
 #include "Game.h"
 #include <iostream>
 #include <Engine\Typing.h>
+
+#include <GameType.h>
 #include <DebugDefines.h>
+#include <Engine\DebugWindow.h> 
 #include <Player\Skill\SkillManager.h>
 
 using namespace Logic;
@@ -28,8 +31,10 @@ Game::~Game()
 	clear();
 }
 
-void Game::init()
+void Game::init(LPWSTR *cmdLine, int args)
 {
+    m_gameType = GameType::NORMAL_MODE;
+
 	// Initializing Sound
 	Sound::NoiseMachine::Get().init();
 
@@ -53,6 +58,18 @@ void Game::init()
 	m_highScoreManager = newd HighScoreManager();
 	m_highScoreManager->setName("Stockman");
 
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_highScoreManager->gethighScore(i).score != -1)
+		{
+			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+		}
+		else
+		{
+			highScore[i] = "";
+		}
+	}
+
 	// Initializing Menu's
 	m_menu = newd MenuMachine(m_highScoreManager->getName());
 	m_menu->initialize(Game::STATE_START);
@@ -73,25 +90,33 @@ void Game::init()
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
 
-	/*int m_currentHP;
-	DebugWindow *debugWindow = DebugWindow::getInstance();
-	debugWindow->registerCommand("SPAWNENEMIES", [&](std::stringstream &args)->std::string
-	{
-		int enemyCount;
-		float enemyHP;
-		args.read((char*)enemyCount, sizeof(int));
-		args.read((char*)enemyHP, sizeof(float));
-	});
+#ifdef _DEBUG
+    DebugWindow *win = DebugWindow::getInstance();
+    win->registerCommand("SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            this->m_menu->setStateToBe(static_cast<GameState> (stoi(para[0])));
+            return "Menu State set to " + stoi(para[0]);
+        } catch (std::exception e) {
+            return "Chaos is a pit.";
+        }
+    });
 
+    for (int i = 1; i < args; i++) // first arg is name of file
+        for (std::wstring const &str : GameTypeStr)
+            if (wcscmp(str.c_str(), cmdLine[i]) == 0)
+                m_gameType = static_cast<GameType> (i - 1); // offset for filename
 
-	---- SPAWNENEMIES 100 10.0f */
-
+    for (std::string const &cmd : GameCommands[m_gameType])
+        if (!cmd.empty())
+            win->doCommand(cmd.c_str());
+#endif
 }
 
 void Game::clear()
 {
 	m_menu->clear();
 	m_projectileManager->clear();
+    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
 	Sound::NoiseMachine::Get().clear();
     Typing::releaseInstance();
 
@@ -106,7 +131,7 @@ void Game::clear()
 
 void Game::reset()
 {
- //   m_entityManager.deleteData();
+    m_entityManager.deallocateData();
     m_player->reset();
 
 	ComboMachine::Get().Reset();
@@ -190,8 +215,13 @@ bool Game::updateMenu(float deltaTime)
                     SkillManager::SKILL(selectedSkills->second),
                     SkillManager::SKILL(selectedSkills->first)
                 });
+               
+                // Reset menu stuff
                 selectedSkills->first = -1;
                 selectedSkills->second = -1;
+                for (size_t i = 0; i < m_menu->getActiveMenu()->getMenuInfo().m_buttons.size(); i++)
+                    m_menu->getActiveMenu()->getButton(int(i))->setStartAndEnd(0, (1.f/3.f));
+
                 m_menu->setStateToBe(gameStateGame); //change to gameStateGame
             }
         }
@@ -200,6 +230,7 @@ bool Game::updateMenu(float deltaTime)
     case gameStateMenuMain:
     case gameStateMenuSettings:
     case gameStateGameOver:
+	case gameStateHighscore:
     default:
         m_menu->update(deltaTime);
         break;
@@ -226,7 +257,8 @@ void Game::updateGame(float deltaTime)
 	PROFILE_END();
 
 	PROFILE_BEGIN("AI & Triggers");
-	m_entityManager.update(*m_player, deltaTime);
+    if (m_gameType != GameType::TESTING_MODE)
+	    m_entityManager.update(*m_player, deltaTime);
 	PROFILE_END();
 
 	PROFILE_BEGIN("Map");
@@ -241,6 +273,9 @@ void Game::updateGame(float deltaTime)
     m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
     PROFILE_END();
 
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
+        m_player->takeDamage(1, 0);
+
 	if (m_player->getHP() <= 0)
 		gameOver();
 }
@@ -254,7 +289,7 @@ void Game::gameOver()
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + std::to_string(ComboMachine::Get().GetCurrentScore());
+			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
 			break;
 		}
 	}
@@ -275,6 +310,7 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuSettings:
 	case gameStateGameOver:
     case gameStateSkillPick:
+	case gameStateHighscore:
     default: renderMenu(renderer);
 		break;
 	}
@@ -313,7 +349,7 @@ void Game::renderGame(Graphics::Renderer& renderer)
 
 void Game::renderMenu(Graphics::Renderer& renderer)
 {
-	m_menu->render(renderer);
+	m_menu->render(renderer, highScore);
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

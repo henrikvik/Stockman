@@ -38,6 +38,7 @@
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
     <ClCompile Include="include\SnowManager.cpp" />
     <ClCompile Include="include\SSAORenderer.cpp" />
+    <ClCompile Include="include\Utility\DebugDraw.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
     <ClCompile Include="include\Resources\MaterialManager.cpp" />
     <ClCompile Include="include\Resources\Mesh.cpp" />
@@ -74,6 +75,7 @@
     <ClInclude Include="include\SnowManager.h" />
     <ClInclude Include="include\SSAORenderer.h" />
     <ClInclude Include="include\Utility\Buffer.h" />
+    <ClInclude Include="include\Utility\DebugDraw.h" />
     <ClInclude Include="include\Utility\DepthStencil.h" />
     <ClInclude Include="include\Resources\Importerstructs.h" />
     <ClInclude Include="include\Resources\MaterialManager.h" />

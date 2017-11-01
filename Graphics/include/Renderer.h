@@ -15,7 +15,7 @@
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
-#include "Glow.h";
+#include "Glow.h"
 #include "SkyRenderer.h"
 #include "Menu.h"
 #include "HUD.h"
