@@ -1,40 +1,42 @@
-#include "MayaNodes.h"
+#pragma once
 
-MayaNodes::MayaNodes()
+#include "MayaHelpClass.h"
+
+MayaHelpClass::MayaHelpClass()
 {
 
 }
 
-MayaNodes::~MayaNodes()
+MayaHelpClass::~MayaHelpClass()
 {
 
 }
 
-void copy(float dest[], MFloatPoint & src)
-{
-	dest[0] = src.x;
-	dest[1] = src.y;
-	dest[2] = src.z;
-}
-
-void copy(float dest[], MFloatVector & src)
+void MayaHelpClass::copy(float dest[], MFloatPoint & src)
 {
 	dest[0] = src.x;
 	dest[1] = src.y;
 	dest[2] = src.z;
 }
 
-void MayaNodes::getMeshInfo(MFnMesh & mesh)
+void MayaHelpClass::copy(float dest[], MFloatVector & src)
+{
+	dest[0] = src.x;
+	dest[1] = src.y;
+	dest[2] = src.z;
+}
+
+void MayaHelpClass::getMeshInfo(MFnMesh & mesh)
 {
 	mesh.getPoints(points, MSpace::kObject);
-	mesh.getUVs(U,V, 0);
+	mesh.getUVs(U, V, 0);
 	mesh.getAssignedUVs(uvCounts, uvIDS);
 
 	mesh.getTriangleOffsets(triangleCountsOffsets, triangleIndices);
 	mesh.getVertices(vertexCount, polyVerticesID);
 	mesh.getNormals(normals, MSpace::kObject);
 
-	vertices.resize(triangleIndices.length);
+	//	vertices.resize(triangleIndices.length);
 
 	mesh.getNormalIds(normalCount, normalList);
 
@@ -64,12 +66,12 @@ void MayaNodes::getMeshInfo(MFnMesh & mesh)
 	memcpy(msg + offset, vertices.data(), sizeof(Vertices) * vertices.size());
 	offset += sizeof(vertices) * vertices.size();
 
-	circleBuffer->push(msg, offset);
+	//circleBuffer->push(msg, offset);
 #pragma endregion
 
 }
 
-void MayaNodes::getTransform(MFnTransform & transform, MFnMesh &mesh)
+void MayaHelpClass::getTransform(MFnTransform & transform, MFnMesh &mesh)
 {
 	transform.getScale(transformType.scale);
 	transform.getRotationQuaternion
@@ -83,7 +85,7 @@ void MayaNodes::getTransform(MFnTransform & transform, MFnMesh &mesh)
 	transformType.translation[0] = transform.getTranslation(MSpace::kTransform).x;
 	transformType.translation[1] = transform.getTranslation(MSpace::kTransform).y;
 	transformType.translation[2] = transform.getTranslation(MSpace::kTransform).z;
-	
+
 	offset = 0;
 
 	int type = MessageType::MTransform;
@@ -96,19 +98,19 @@ void MayaNodes::getTransform(MFnTransform & transform, MFnMesh &mesh)
 
 	offset += sizeof(TransformType);
 
-	circleBuffer->push(msg, offset);
+	//circleBuffer->push(msg, offset);
 
 }
 
-MPlug MayaNodes::plugSearch(MFnDependencyNode &node, MString string)
+MPlug MayaHelpClass::plugSearch(MFnDependencyNode &node, MString string)
 {
 	return node.findPlug(string);
 }
 
-void MayaNodes::getMaterial(MObject &iterator)
+void MayaHelpClass::getMaterial(MObject &iterator)
 {
 	MFnDependencyNode materialNode(iterator);
-	
+
 	DisplayI("Material name: " + materialNode.name());
 
 	outColor = plugSearch(materialNode, "Outcolor");
@@ -127,19 +129,19 @@ void MayaNodes::getMaterial(MObject &iterator)
 	);
 	diffuse.getValue(material.diffuse);
 	material.texture = false;
-	
+
 	for (int i = 0; i < textureGroup.length(); i++)
 	{
 		MString file;
 		MFnDependencyNode textureNode(textureGroup[i].node());
 
-		plugSearch(textureNode,"fileTextureName").getValue(file);
+		plugSearch(textureNode, "fileTextureName").getValue(file);
 		memcpy(&material.textureFilePath, file.asChar(), sizeof(material.textureFilePath));
 
 		material.texture = true;
 	}
 
-	shadingGroupArr
+
 #pragma region Copyregion
 	offset = 0;
 
@@ -154,23 +156,28 @@ void MayaNodes::getMaterial(MObject &iterator)
 	memcpy(msg + offset, meshVector.data(), sizeof(Meshes) * meshVector.size());
 	offset += sizeof(Meshes) * meshVector.size();
 
-	circleBuffer->push(msg, offset);
+	//circleBuffer->push(msg, offset);
 	meshVector.clear();
 #pragma endregion
 
 }
 
-void MayaNodes::getDirectionalLight()
+void MayaHelpClass::surfaceShaderMaterial(MPlug &Plug)
 {
+	outColor.connectedTo(shadingGroupArr, false, true, &result);
 
+	for (int i = 0; i < shadingGroupArr.length(); i++)
+	{
+		if (shadingGroupArr[i].node().hasFn(MFn::kShadingEngine))
+		{
+			MFnDependencyNode shadingNode = shadingGroupArr[i].node();
+
+
+		}
+	}
 }
 
-void MayaNodes::getPointLight()
-{
-
-}
-
-void MayaNodes::getCamera()
+void MayaHelpClass::getCamera()
 {
 	camView = M3dView::active3dView();
 	camView.getCamera(cameraPath);
@@ -186,21 +193,3 @@ void MayaNodes::getCamera()
 	else
 		camera.perspective = true;
 }
-
-void MayaNodes::updateCamera()
-{
-
-}
-
-void MayaNodes::MeshCallBack(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
-{
-	if (msg & MNodeMessage::AttributeMessage::kAttributeSet)
-	{
-		MFnMesh mesh(plug.node(), &result);
-		if (result == MSSUCCESS)
-		{
-			getMeshInfo(mesh);
-		}
-	}
-}
-

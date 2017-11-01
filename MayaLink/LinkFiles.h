@@ -1,12 +1,10 @@
 #pragma once
 
-
 #define NT_PLUGIN
 #define REQUIRE_IOSTREAM
 #define EXPORT __declspec(dllexport)
 
 #include <maya/MFloatMatrix.h>
-#include <maya/MFnPlugin.h>
 #include <maya/MFnMesh.h>
 #include <maya/MFnTransform.h>
 #include <maya/MFloatPointArray.h>
@@ -29,6 +27,10 @@
 #include <maya/MFnPointLight.h>
 #include <maya/MSelectionList.h>
 #include <maya/MItDependencyNodes.h>
+
+//#include <maya/MFnNumericAttribute.h>
+//#include "maya/MPlug.h"
+
 #include <vector>
 
 // Wrappers
@@ -57,3 +59,4 @@
 #pragma comment(lib,"OpenMayaUI.lib")
 
 #include <iostream>
+

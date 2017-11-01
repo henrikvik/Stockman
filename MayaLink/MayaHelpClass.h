@@ -1,14 +1,18 @@
 #pragma once
 
-#include <Windows.h>
-#include "mayaVariables.h"
-#include "MayaStructs.h"
+#ifndef MayaHelpClass_H
+#define MayaHelpClass_H
 
-class MayaNodes
+#include "LinkFiles.h"
+//#include "MStructs.h"
+
+//#include "Circlebuffer.h"
+
+class MayaHelpClass
 {
 private:
 
-#pragma region Variables
+	//CircleBuffer * circleBuffer = nullptr;
 	size_t offset = 0;
 
 	MFloatPointArray points;
@@ -47,29 +51,28 @@ private:
 	MPlug outColor;
 	MPlug color;
 	MPlug diffuse;
-	
+
 	MObject data;
-#pragma endregion
 
 public:
-	MayaNodes();
-	~MayaNodes();
-	
-	void getMeshInfo(MFnMesh &mesh);
-	void getTransform(MFnTransform & transform, MFnMesh & mesh);
+	MayaHelpClass();
+	~MayaHelpClass();
 
-	MPlug plugSearch(MFnDependencyNode &node, MString string);
+	//void copy(float dest[], MFloatPoint & src);
 
-	void getMaterial(MObject & iterator);
+	//void copy(float dest[], MFloatVector & src);
 
-	void surfaceShaderMaterial(MPlug & plug);
+	//void getMeshInfo(MFnMesh &mesh);
+	//void getTransform(MFnTransform & transform, MFnMesh & mesh);
 
-	void getDirectionalLight();
-	void getPointLight();
+	//MPlug plugSearch(MFnDependencyNode &node, MString string);
 
-	void getCamera();
-	void updateCamera();
+	//void getMaterial(MObject & iterator);
 
-	void MeshCallBack(MNodeMessage::AttributeMessage msg, MPlug & plug, MPlug & otherPlug, void * clientData);
+	//void surfaceShaderMaterial(MPlug & plug);
+
+	//void getCamera();
 };
 
+
+#endif MayaHelpClass_H
