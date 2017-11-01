@@ -337,13 +337,23 @@ namespace Graphics
 		renderFoliageQueue.clear();
 		PROFILE_END();
 
+
+		snowManager.drawSnowflakes(deviceContext, camera);
+		deviceContext->GSSetShader(nullptr, nullptr, 0);
+		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		RenderDebugInfo test;
+		test.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+		test.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+		test.points = &snowManager.test;
+		queueRenderDebug(&test);
+
 		PROFILE_BEGIN("DebugThings");
 	/*	PROFILE_BEGIN("RenderWater");
 		drawWater(camera);
 		PROFILE_END();*/
 
-		//The sky renderer uses the bullet time on register 3
-		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
+		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
 		skyRenderer.renderSky(deviceContext, camera);
 
         ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
@@ -823,7 +833,17 @@ namespace Graphics
 
 			return catcher;
 		});
-        debugWindow->registerCommand("ENABLEDOFSLIDERS", [&](std::vector<std::string> &args)->std::string
+
+		debugWindow->registerCommand("RELOADSNOWSHADER", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+
+			snowManager.recompile(device);
+
+			return catcher;
+		});
+    
+		debugWindow->registerCommand("ENABLEDOFSLIDERS", [&](std::vector<std::string> &args)->std::string
         {
             enableCoCWindow = !enableCoCWindow;
 

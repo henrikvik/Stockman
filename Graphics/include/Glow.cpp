@@ -206,15 +206,15 @@ void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResource
 	context->PSSetShader(merger, nullptr, 0);
 	
 
-	context->PSSetShaderResources(0, 1, &backBuffer);
-	context->PSSetShaderResources(1, 1, glowPass1);
+	context->PSSetShaderResources(4, 1, &backBuffer);
+	context->PSSetShaderResources(5, 1, glowPass1);
 	context->OMSetRenderTargets(1, *outputTexture, nullptr);
 
 	context->Draw(3, 0);
 
 	context->OMSetRenderTargets(1, &nullRTV, nullptr);
-	context->PSSetShaderResources(0, 1, &nullSRV);
-	context->PSSetShaderResources(1, 1, &nullSRV);
+	context->PSSetShaderResources(4, 1, &nullSRV);
+	context->PSSetShaderResources(5, 1, &nullSRV);
 
 
 }
