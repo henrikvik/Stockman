@@ -1,6 +1,7 @@
 #include "Map.h"
 #include <Keyboard.h>
 #include <Graphics\include\Structs.h>
+#include <Graphics\include\Utility\DebugDraw.h>
 
 using namespace Logic;
 
@@ -121,8 +122,10 @@ void Map::render(Graphics::Renderer& renderer)
     {
         for (StaticObject* e : m_hitboxes)
             e->renderD(renderer);
-        for (LightObject* l : m_lights)
-            l->renderD(renderer);
+        for (LightObject* l : m_lights) {
+            //l->renderD(renderer);
+            Graphics::Debug::PointLight(*l);
+        }
     }
 }
 	
