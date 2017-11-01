@@ -20,7 +20,7 @@ Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, 
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
-    m_projectileData    = new ProjectileData(projectileData);
+    m_projectileData    = newd ProjectileData(projectileData);
 
 
     setSpawnFunctions(*projectileManager);
