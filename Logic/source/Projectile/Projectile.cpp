@@ -105,7 +105,7 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         }
         else {} // this might seem really pointless, because it is, but if you remove it, it will stop working, so dont touch this godly else
 	 else if(!dynamic_cast<Player*>(&other)) // if not player
-	    {
+	 {
         if (dynamic_cast<Enemy*> (&other) && getProjectileData().enemyBullet)
         {
             m_remove = false;
@@ -114,12 +114,33 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         {
        		m_remove = true;
             callback = true;
+
+            // DELETE THIS 
+
+            if (dynamic_cast<Enemy*> (&other))
+            {
+                if (FUN_MODE)
+                {
+                    // DELETE THIS 
+                    if (dynamic_cast<Enemy*> (&other)->getHealth() < 0)
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+                }
+                if (m_pData.type == ProjectileTypeIce)
+                {
+                    dynamic_cast<Enemy*> (&other)->getStatusManager().addStatus(StatusManager::FREEZE, 1, true);
+
+                    // DELETE THIS 
+                    if (FUN_MODE)
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+                }
+            }
         }
 
 		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
 			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
 				m_remove = false;
 
+        // DELETE THIS 
         if (m_remove && FUN_MODE)
             Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
     }
@@ -138,8 +159,8 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
     }
 
 	if (m_pData.type == ProjectileTypeBulletTimeSensor  ||
-        m_pData.type == ProjectileTypeIce               ||
-        m_pData.type == ProjectileTypeMelee)
+        m_pData.type == ProjectileTypeMelee ||
+        m_pData.type == ProjectileTypeIce)
 		m_remove = false;
 }
 

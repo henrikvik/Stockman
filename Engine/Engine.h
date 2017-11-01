@@ -9,11 +9,10 @@
 class Engine
 {
 public:
-	Engine(HINSTANCE hInstance, int width, int height);
+	Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int args);
 	virtual ~Engine();
 
 	int run();
-
 private:
 	Logic::Game game;
 	HWND window;

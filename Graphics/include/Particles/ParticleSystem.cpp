@@ -10,6 +10,7 @@
 #include <d3dcompiler.h>
 
 #include <Engine\Profiler.h>
+#include "../Utility/DebugDraw.h"
 
 #include <tbb\tbb.h>
 
@@ -68,6 +69,8 @@ ParticleSystem::~ParticleSystem()
 
 bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Matrix model, float dt)
 {
+    Debug::ParticleFX({ SimpleMath::Vector3::Transform({}, model), *fx });
+
     for (unsigned int i = 0; i < fx->m_Count; i++) {
         auto &entry = fx->m_Entries[i];
 
@@ -320,7 +323,7 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
         return a > b;
     });
 
-    int sz = deleteSize;
+    int sz = min(32, deleteSize);
     for (int i = 0; i < sz; i++) {
         auto idx = deleteList.at(i);
         m_GeometryParticles.erase(m_GeometryParticles.begin() + idx);

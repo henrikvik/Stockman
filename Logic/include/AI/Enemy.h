@@ -31,6 +31,7 @@ namespace Logic
 
 			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
 			float m_bulletTimeMod;									// Variables for effect modifiers
+            float m_moveSpeedMod;
 			ENEMY_TYPE m_enemyType;
 
 			Behavior *m_behavior;

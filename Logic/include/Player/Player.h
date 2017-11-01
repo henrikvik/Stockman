@@ -58,6 +58,9 @@ namespace Logic
 		};
 
 	private:
+        // Special modes (move to other class)
+        bool m_godMode, m_noclip;
+
 		btKinematicCharacterController* m_charController;
 
 		//ActionManager m_actionManager;
@@ -122,10 +125,11 @@ namespace Logic
 
 		// Sound
 		void updateSound(float deltaTime);
-
 	public:
 		Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();
+
+        void registerDebugCmds();
 
 		void init(Physics* physics, ProjectileManager* projectileManager);
 		void clear();
