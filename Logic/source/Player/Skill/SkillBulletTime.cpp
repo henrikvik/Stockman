@@ -29,9 +29,6 @@ bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 
 	btRigidBody* bodySensor = m_sensor->getRigidBody();
 
-	bodySensor->setLinearVelocity(btVector3(0.f, 0.f, 0.f));
-	bodySensor->setCollisionFlags(bodySensor->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
 	slowDownIntervals.clear();
 	speedUpIntervals.clear();
 	for (int i = 1; i < BULLET_TIME_SMOOTHNESS_INTERVAL; i++)

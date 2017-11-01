@@ -295,17 +295,12 @@ void Player::updateSpecific(float deltaTime)
 	//crouch(deltaTime);
 
 	// Weapon swap
-	if (!m_weaponManager->isSwitching())
-	{
-		if (ks.IsKeyDown(m_switchWeaponOne))
-			m_weaponManager->switchWeapon(0);
-
-		if (ks.IsKeyDown(m_switchWeaponTwo))
-			m_weaponManager->switchWeapon(1);
-
-		if (ks.IsKeyDown(m_switchWeaponThree))
-			m_weaponManager->switchWeapon(2);
-	}
+	if (ks.IsKeyDown(m_switchWeaponOne))
+		m_weaponManager->switchWeapon(0);
+	if (ks.IsKeyDown(m_switchWeaponTwo))
+		m_weaponManager->switchWeapon(1);
+	if (ks.IsKeyDown(m_switchWeaponThree))
+		m_weaponManager->switchWeapon(2);
 
 	// Skills
     PROFILE_BEGIN("SkillManager");
