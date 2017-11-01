@@ -123,12 +123,11 @@ void EntityManager::update(Player const &player, float deltaTime)
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	bool goalNodeChanged = false;
-    bool swapOnNewIndex = !(m_threadHandler->getThreadStatus(index) & EnemyThreadHandler::RUNNING);
     std::vector<Enemy*> &enemies = m_enemies[index];
 	
 	for (size_t i = 0; i < enemies.size(); ++i)
 	{
-        updateEnemy(enemies[i], enemies, (int)i, index, player, deltaTime, swapOnNewIndex);
+        updateEnemy(enemies[i], enemies, (int)i, index, player, deltaTime, true);
 	}
 }
 
