@@ -31,6 +31,7 @@ const int EntityManager::NR_OF_THREADS = 4;
 EntityManager::EntityManager()
 {
     m_frame = 0;
+    m_aliveEnemies = 0;
 
     allocateData();
 
@@ -54,9 +55,13 @@ void EntityManager::deleteData()
 {
     for (std::vector<Enemy*> list : m_enemies)
         for (Enemy *enemy : list)
+        {
+
             delete enemy;
+        }
     for (Enemy *enemy : m_deadEnemies)
         delete enemy;
+    m_aliveEnemies = 0;
 }
 
 void EntityManager::update(Player const &player, float deltaTime)
@@ -119,6 +124,8 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
     }
     else if (enemy->getHealth() <= 0)
     {
+        m_aliveEnemies--;
+
         std::swap(
             flock[enemyIndex],
             flock[flock.size() - 1]
@@ -166,7 +173,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
 {
     Enemy *enemy;
     int index;
-    btRigidBody *testBody = physics.createBody(Sphere({ pos }, { 0, 0, 0 }, 1.f), 100, false);
+    btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER));
 
     switch (id)
     {
@@ -182,7 +189,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     }
 
     enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Sphere({ 0, 0, 0 }, { 0, 0, 0 }, 1.f), 0.f, true, Physics::COL_ENEMY), 2.f, { 0.f, 3.f, 0.f });
+    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER)), 2.f, { 0.f, 3.f, 0.f });
 
     enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 
@@ -192,6 +199,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
 
     index = AStar::singleton().getIndex(*enemy);
     m_enemies[index == -1 ? 0 : index].push_back(enemy);
+    m_aliveEnemies++;
 
     return enemy;
 }
@@ -230,15 +238,7 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
 
 size_t EntityManager::getNrOfAliveEnemies() const
 {
-    return m_enemies.size();
-}
-
-void EntityManager::clear()
-{
-    deleteData();
-
-    m_deadEnemies.clear();
-    m_enemies.clear();
+    return m_aliveEnemies;
 }
 
 int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)

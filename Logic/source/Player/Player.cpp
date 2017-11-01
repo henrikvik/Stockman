@@ -108,12 +108,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 void Player::clear()
 {
 	m_weaponManager->clear();
-	m_skillManager->clear();
     delete m_weaponManager;
     delete m_skillManager;
-
 	delete m_charController;
-
     delete m_listenerData;
 }
 
@@ -696,6 +693,11 @@ Player::PlayerState Player::getPlayerState() const
 Sound::ListenerData& Player::getListenerData()
 {
 	return *m_listenerData;
+}
+
+SkillManager* Player::getSkillManager()
+{
+    return m_skillManager;
 }
 
 const Weapon* Player::getMainHand() const

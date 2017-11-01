@@ -413,7 +413,7 @@ int Engine::run()
 			renderer->render(&cam);
 			PROFILE_END();
 
-			game.menuRender(renderer);
+			game.renderMenu(*renderer);
 		}
 
 		 
