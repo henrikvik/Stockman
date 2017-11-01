@@ -57,7 +57,7 @@ void SkillManager::switchToSkill(std::vector<SKILL> skillsToUse)
         m_current[i] = m_allSkills[skillsToUse[i]];
 
     // Saving the number of skills currently active
-    m_nrOfSkills = skillsToUse.size();
+    m_nrOfSkills = (short)skillsToUse.size();
 }
 
 // Trying to use a skill of a specific index

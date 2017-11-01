@@ -130,13 +130,13 @@ private:
 	float ToMilliseconds(LARGE_INTEGER time) const {
 		double ms = double(time.QuadPart) / double(m_Frequency.QuadPart);
 		
-		return ms * 1000.0;
+		return float(ms * 1000.0);
 	}
 
 	float ToMilliseconds(LARGE_INTEGER start, LARGE_INTEGER end) const {
 		double ms = double(end.QuadPart - start.QuadPart) / double(m_Frequency.QuadPart);
 
-		return ms * 1000.0;
+		return float(ms * 1000.0);
 	}
 
 	std::atomic<int> m_ThreadCount;

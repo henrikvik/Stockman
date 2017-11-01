@@ -164,7 +164,7 @@ btTransform& PhysicsObject::getTransform()
 
 int PhysicsObject::getNumberOfWeakPoints() const
 {
-	return m_weakPoints.size();
+	return (int)m_weakPoints.size();
 }
 
 btRigidBody * PhysicsObject::getRigidBodyWeakPoint(int i)

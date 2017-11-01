@@ -42,7 +42,6 @@ EntityManager::EntityManager()
 EntityManager::~EntityManager()
 {
     delete m_threadHandler;
-    deleteData();
 }
 
 void EntityManager::allocateData()
@@ -53,14 +52,22 @@ void EntityManager::allocateData()
 
 void EntityManager::deleteData()
 {
-    for (std::vector<Enemy*> list : m_enemies)
+    for (std::vector<Enemy*>& list : m_enemies)
+    {
         for (Enemy *enemy : list)
         {
-
+            DeleteBody(*enemy); 
             delete enemy;
         }
+        list.clear();
+    }
     for (Enemy *enemy : m_deadEnemies)
+    {
+        DeleteBody(*enemy);
         delete enemy;
+    }
+    m_deadEnemies.clear();
+
     m_aliveEnemies = 0;
 }
 
@@ -74,7 +81,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 	{
 		if (m_enemies[i].size() > 0)
 		{
-			updateEnemies(i, player, deltaTime);
+			updateEnemies((int)i, player, deltaTime);
             if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) 
             {
                 PROFILE_BEGIN("ThreadHandler::addWork");
@@ -97,12 +104,11 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 {
 	bool goalNodeChanged = false;
     bool swapOnNewIndex = !(m_threadHandler->getThreadStatus(index) & EnemyThreadHandler::RUNNING);
-	Enemy *enemy;
     std::vector<Enemy*> &enemies = m_enemies[index];
 	
 	for (size_t i = 0; i < enemies.size(); ++i)
 	{
-        updateEnemy(enemies[i], enemies, i, index, player, deltaTime, swapOnNewIndex);
+        updateEnemy(enemies[i], enemies, (int)i, index, player, deltaTime, swapOnNewIndex);
 	}
 }
 
@@ -174,6 +180,9 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     Enemy *enemy;
     int index;
     btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER));
+    
+    // Restrict "tilting" over
+    testBody->setAngularFactor(btVector3(0, 1, 0));
 
     switch (id)
     {
@@ -301,5 +310,11 @@ void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &p
     };
     SpawnTrigger = [&](int id, btVector3 const &pos, std::vector<int> &effects) -> Trigger* {
         return spawnTrigger(id, pos, effects, physics, &projManager);
+    };
+    DeleteBody = [&](Entity& entity) -> void {
+        physics.removeRigidBody(entity.getRigidBody());
+        for (int i = 0; i < entity.getNumberOfWeakPoints(); i++)
+            physics.removeRigidBody(entity.getRigidBodyWeakPoint(i));
+        entity.destroyBody();
     };
 }

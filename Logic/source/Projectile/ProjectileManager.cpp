@@ -98,7 +98,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
 	float pitch = asin(-forward.getY());
 	float yaw = atan2(forward.getX(), forward.getZ());
 	btQuaternion q(yaw, pitch, 0.f);
-    body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - (180 * M_PI / 180), 0.f));
+	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), 0.f));
 
 	// Set gravity modifier
 	body->setGravity(pData.gravityModifier * m_physPtr->getGravity());
@@ -123,7 +123,7 @@ void ProjectileManager::removeProjectile(Projectile* p)
 	for (size_t i = nrProjectiles; i-- && found == -1; )
 	{
 		if (m_projectilesActive[nrProjectiles - (i + 1)] == p)
-			found = i + 1;
+			found = (int)i + 1;
 	}
 
 	m_projectilesActive.erase(m_projectilesActive.begin() + found);
@@ -175,7 +175,7 @@ void Logic::ProjectileManager::update(float deltaTime)
 		p->updateSpecific(deltaTime);
 		if (p->shouldRemove() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
 		{
-			removeProjectile(p, i);
+			removeProjectile(p, (int)i);
 			i--;
 		}
 	}

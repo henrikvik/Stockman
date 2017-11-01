@@ -53,7 +53,7 @@ void Logic::HighScoreManager::saveToFile()
 	for (int i = 0; i < ammount; i++)
 	{
 		FileLoader::LoadedStruct tempSave;
-		tempSave.floats["Score"] = m_highScore[i].score;
+		tempSave.floats["Score"] = (float)m_highScore[i].score;
 		tempSave.strings["Player"] = m_highScore[i].name;
 		saveTo.push_back(tempSave);
 	}
@@ -68,7 +68,7 @@ void Logic::HighScoreManager::loadFromFile()
 
 	for (auto const& theScore : loadTo)
 	{
-		m_highScore[i].score = theScore.floats.at("Score");
+		m_highScore[i].score = (int)theScore.floats.at("Score");
 		m_highScore[i].name = theScore.strings.at("Player");
 		i++;
 	}
