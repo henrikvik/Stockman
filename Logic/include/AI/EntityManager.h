@@ -29,6 +29,10 @@ namespace Logic
 
 	class EntityManager
 	{
+    public:
+        enum AIType {
+            NORMAL_MODE, NO_AI_MODE, HARDCORE, DARK_SOULS
+        };
 	private:
 		static const int NR_OF_THREADS;
 
@@ -40,10 +44,12 @@ namespace Logic
 		WaveManager m_waveManager;
         EnemyThreadHandler *m_threadHandler; // Just because i want to delete it when i want
 
-		int m_frame, m_aliveEnemies;
+        int m_frame, m_aliveEnemies;
+        AIType m_aiType;
 		float m_deltaTime;
 
 		void allocateData(); // resize enemy vector 
+        void loadDebugCmds();
 
         std::function<void(Entity& entity)>                 DeleteBody;
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
@@ -59,7 +65,7 @@ namespace Logic
 		~EntityManager();
 
         // data handling
-        void deleteData(); // delete data in vectors
+        void deallocateData(); // delete data in vectors
 
         // render / updates
 		void render(Graphics::Renderer &renderer);

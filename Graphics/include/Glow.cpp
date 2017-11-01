@@ -10,7 +10,7 @@
 
 Graphics::Glow::Glow(ID3D11Device * device, ID3D11DeviceContext * context)
 	: glow(device, SHADER_PATH("GlowShaders/GlowBlurHorizontal.hlsl"), {})
-	, glow2(device, SHADER_PATH("GlowShaders/glowBlurVertical.hlsl"), {})
+	, glow2(device, SHADER_PATH("GlowShaders/GlowBlurVertical.hlsl"), {})
 	, merger(device, SHADER_PATH("GlowShaders/Merger.hlsl"), {})
 	, mipGenerator(device, SHADER_PATH("GlowShaders/GlowDownSampler.hlsl"), {})
 	, mipCombinder(device, SHADER_PATH("GlowShaders/GlowMipCombinder.hlsl"), {})
@@ -206,15 +206,15 @@ void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResource
 	context->PSSetShader(merger, nullptr, 0);
 	
 
-	context->PSSetShaderResources(0, 1, &backBuffer);
-	context->PSSetShaderResources(1, 1, glowPass1);
+	context->PSSetShaderResources(4, 1, &backBuffer);
+	context->PSSetShaderResources(5, 1, glowPass1);
 	context->OMSetRenderTargets(1, *outputTexture, nullptr);
 
 	context->Draw(3, 0);
 
 	context->OMSetRenderTargets(1, &nullRTV, nullptr);
-	context->PSSetShaderResources(0, 1, &nullSRV);
-	context->PSSetShaderResources(1, 1, &nullSRV);
+	context->PSSetShaderResources(4, 1, &nullSRV);
+	context->PSSetShaderResources(5, 1, &nullSRV);
 
 
 }

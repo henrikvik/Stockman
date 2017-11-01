@@ -10,9 +10,13 @@
 }
 { // FREEZE
 	"flags": 4; // 0x4
-	"duration": 2500f;
+	"duration": 5000f;
 	"modifiers": 0;
-	"specifics": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0f;
+	"sFreezing": 0.96f;
+	"sAmmoType": 0f;
 }
 { // JUMP-PAD
 	"flags": 128; // 0x80

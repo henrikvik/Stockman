@@ -11,6 +11,10 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCm
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	Engine engine(hInstance, WIN_WIDTH, WIN_HEIGHT);
+    int args;
+    LPWSTR *cmd = CommandLineToArgvW(GetCommandLineW(), &args);
+	Engine engine(hInstance, WIN_WIDTH, WIN_HEIGHT, cmd, args);
+    LocalFree(cmd);
+
 	return engine.run();
 }
