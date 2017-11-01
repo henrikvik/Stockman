@@ -23,6 +23,8 @@ HUDManager::HUDManager()
     ZeroMemory(info, sizeof(info));
     info->cd0 = 1.0f;
     info->cd1 = 1.0f;
+    info->currentSkills[0] = -1;
+    info->currentSkills[1] = -1;
 }
 
 HUDManager::~HUDManager()
