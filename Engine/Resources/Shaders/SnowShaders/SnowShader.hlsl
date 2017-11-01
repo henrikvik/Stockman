@@ -2,14 +2,15 @@
 
 struct Vertex
 {
-    float4 pos : POSITION;
+    float3 pos : POSITION;
+    float rot  : ROTATIONVALUE;
 };
 
 StructuredBuffer<Vertex> vertexBuffer : register(t4);
 
-float3 VS(uint vertexId : SV_VertexId) : POS
+Vertex VS(uint vertexId : SV_VertexId)
 {
-    return vertexBuffer[vertexId].pos;
+    return vertexBuffer[vertexId];
 }
 
 struct GS_OUT
@@ -18,17 +19,45 @@ struct GS_OUT
 };
 
 [maxvertexcount(3)]
-void GS(point float3 input[1] : POS, inout TriangleStream<GS_OUT> output)
+void GS(point Vertex input[1], inout TriangleStream<GS_OUT> output)
 {
     GS_OUT hablaPos = (GS_OUT)0;
 
-    float4 temp = mul(ViewProjection, float4(input[0], 1));
-    hablaPos.pos = temp.xyzw / temp.w;
+    float rot = input[0].rot;
+    float4x4 rotation = 
+    {
+        cos(rot), -sin(rot),  -sin(rot),      0,
 
+        sin(rot),  cos(rot),   cos(rot),      0,
+
+        sin(rot),  sin(rot),   cos(rot),      0,
+
+            0,         0,          0,         1
+    };
+
+    float4 positions[3] = 
+    { 
+          0, 0, 0, 0,
+          1, 0, 0, 0,
+        0.5, 1, 0, 0
+    };
+
+    for (int i = 0; i < 3; i++)
+    {
+        positions[i] = mul(rotation, positions[i]);
+    }
+
+    float4 temp = float4(input[0].pos, 1);
+    hablaPos.pos = temp.xyzw + positions[0];
+    hablaPos.pos = mul(ViewProjection, hablaPos.pos);
     output.Append(hablaPos);
-    hablaPos.pos = (temp + float4(1, 0.0, 0.0, 0)) / temp.w;
+
+    hablaPos.pos = temp + positions[1];
+    hablaPos.pos = mul(ViewProjection, hablaPos.pos);
     output.Append(hablaPos);
-    hablaPos.pos = (temp + float4(0.0, 1, 0.0, 0)) / temp.w;
+
+    hablaPos.pos = temp + positions[2];
+    hablaPos.pos = mul(ViewProjection, hablaPos.pos);
     output.Append(hablaPos);
 }
 

@@ -342,11 +342,7 @@ namespace Graphics
 		deviceContext->GSSetShader(nullptr, nullptr, 0);
 		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		RenderDebugInfo test;
-		test.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
-		test.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-		test.points = &snowManager.test;
-		queueRenderDebug(&test);
+		
 
 		PROFILE_BEGIN("DebugThings");
 	/*	PROFILE_BEGIN("RenderWater");

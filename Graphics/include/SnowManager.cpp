@@ -2,6 +2,8 @@
 #include <Logic\include\Misc\RandomGenerator.h>
 #include <math.h>
 #include <Engine\Constants.h>
+#define SNOW_RADIUS 50.f
+#define MAX_SNOW 256
 
 //temp
 #include <Keyboard.h>
@@ -15,18 +17,16 @@ namespace Graphics
 		snowBuffer(device, CpuAccess::Write, MAX_SNOW),
 		snowShader(device, SHADER_PATH("SnowShaders/SnowShader.hlsl"), {}, ShaderType::GS | ShaderType::PS | ShaderType::VS)
 	{
-		test = std::vector<DirectX::SimpleMath::Vector3>(20);
+
 	}
 
 	SnowManager::~SnowManager()
 	{
-		GÖR EN SPHERE I STÄLLET
+		
 	}
 
 	void SnowManager::updateSnow(float deltaTime, Camera * camera, ID3D11DeviceContext * context)
 	{
-		FrustumPlanes planes = generatePlanes(camera);
-
 		//temp
 		auto ks = DirectX::Keyboard::Get().GetState();
 
@@ -37,107 +37,42 @@ namespace Graphics
 
 		if (!wasP && isP)
 		{
-			clearSnow();
-			for (int i = 0; i < 1; i++)
-			{
-				addSnowFlake(planes, camera);
-			}
+			initializeSnowflakes(camera);
 		}
 
-		/*for (int i = 0; i < 1; i++)
+		for (int i = 0; i < MAX_SNOW; i++)
 		{
-			if (!isInFrustum(planes, positions[i]))
-			{
-				moveSnowFlake(planes, camera, i);
-			}
-		}*/
-
-		//if (isPointInFrontOfPlane(planes.topPlane, positions[0]))
-			//printf("utanfur");
+			if ((snowFlakes[i].position - camera->getPos()).Length() > SNOW_RADIUS)
+				moveSnowFlake(camera, i);
+		}
 		
-		snowBuffer.write(context, &positions[0], snowFlakeCount * sizeof(Vector4));
+		snowBuffer.write(context, &snowFlakes[0], snowFlakeCount * sizeof(Vector4));
 
 	}
 
-	void SnowManager::addSnowFlake(FrustumPlanes& planes, Camera * camera)
+	void SnowManager::addRandomSnowFlake(Camera * camera)
 	{
-		Logic::RandomGenerator & random = Logic::RandomGenerator::singleton();
+	    Logic::RandomGenerator & generator = Logic::RandomGenerator::singleton();
 
-		Vector3 randVec(random.getRandomFloat(-400, 400), random.getRandomFloat(0, 300), random.getRandomFloat(-400, 400));
+		Vector3 randVec(generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS));
 
-		Vector3 pointInPlane = randVec - (planes.farPlane.normal * (planes.farPlane.normal.Dot(randVec) / planes.farPlane.normal.LengthSquared()));
-		pointInPlane = pointInPlane - (planes.farPlane.distance * planes.farPlane.normal);
+		Vector3 finalPos = camera->getPos() + randVec;
 
-		Vector3 dist = (pointInPlane - camera->getPos()) * random.getRandomFloat(0.01f, 0.7f);
-		Vector4 snowPos = Vector4(camera->getPos() + dist);
-		snowPos.w = 1;
+		SnowFlake flake;
+		flake.position = finalPos;
+		flake.randomRot = generator.getRandomFloat(0, 360);
 
-		snowPos.y = camera->getPos().y + 20;
-
-		positions.push_back(snowPos);
-		velocities.push_back({ 0, -1, 0 });
-
+		snowFlakes.push_back(flake);
+		velocities.push_back(Vector3(0, -1, 0));
 		snowFlakeCount++;
 	}
 
-	void SnowManager::addRandomSnowFlake(FrustumPlanes & planes, Camera * camera)
+	void SnowManager::moveSnowFlake(Camera * camera, int snowFlake)
 	{
-		Logic::RandomGenerator & random = Logic::RandomGenerator::singleton();
+		Vector3 posToCam = camera->getPos() - snowFlakes[snowFlake].position;
+		posToCam.Normalize();
 
-		Vector3 randVec(random.getRandomFloat(-400, 400), random.getRandomFloat(0, 300), random.getRandomFloat(-400, 400));
-
-		Vector3 pointInPlane = randVec - (planes.farPlane.normal * (planes.farPlane.normal.Dot(randVec) / planes.farPlane.normal.LengthSquared()));
-		pointInPlane = pointInPlane - (planes.farPlane.distance * planes.farPlane.normal);
-
-		Vector3 dist = (pointInPlane - camera->getPos()) * random.getRandomFloat(0.1f, 0.7f);
-		Vector4 snowPos = Vector4(camera->getPos() + dist);
-		snowPos.w = 1;
-
-		positions.push_back(snowPos);
-		velocities.push_back({ 0, -1, 0 });
-
-		snowFlakeCount++;
-	}
-
-	void SnowManager::moveSnowFlake(FrustumPlanes & planes, Camera * camera, int snowFlake)
-	{
-		//TESTA DETTA I STÄLLET
-		Vector4 newPos = Vector4::Transform(Vector4(positions[snowFlake].x, positions[snowFlake].y, positions[snowFlake].z, 1), camera->getView() * camera->getProj());
-		newPos /= newPos.w;
-
-		if (newPos.x > 1)
-		{
-		}
-
-
-		//if (isPointInFrontOfPlane(planes.leftPlane, positions[snowFlake]))
-		//{
-		//	Vector2 as(camera->getPos().x, camera->getPos().x);
-		//	Vector2 ad(camera->getForward().x, camera->getForward().z);
-
-		//	Vector2 bs(positions[snowFlake].x, positions[snowFlake].z);
-		//	Vector2 bd(-planes.leftPlane.normal.x, -planes.leftPlane.normal.z);
-
-		//	Vector2 delta = bs - as;
-		//	
-		//	float det = (bd.x * ad.y) - (bd.y * ad.x);
-		//	float u = (delta.y * bd.x - delta.x * bd.y) / det;
-		//	float v = (delta.y * ad.x - delta.x * ad.y) / det;
-
-		//	if (u > 0 && v > 0)
-		//	{
-		//		Vector2 intersection = as + ad * v;
-		//		
-		//		Vector2 reflect = intersection - bs;
-		//		Vector2 reflected = Vector2::Reflect(reflect, ad);
-
-		//		Vector2 finalPos = reflect + reflected;
-
-		//		positions[snowFlake].x = finalPos.x;
-		//		positions[snowFlake].z = finalPos.y;
-		//	}
-		//}
-
+		snowFlakes[snowFlake].position = camera->getPos() + (posToCam * SNOW_RADIUS);
 	}
 
 	//this function randomizes snow all over the frustum because otherwise all snow will start from the top
@@ -145,12 +80,9 @@ namespace Graphics
 	{
 		clearSnow();
 
-		FrustumPlanes planes = generatePlanes(camera);
-
-
 		for (int i = 0; i < MAX_SNOW; i++)
 		{
-			addRandomSnowFlake(planes, camera);
+			addRandomSnowFlake(camera);
 		}
 	}
 
@@ -173,83 +105,9 @@ namespace Graphics
 		snowShader.recompile(device, SHADER_PATH("SnowShaders/SnowShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } }, ShaderType::GS | ShaderType::PS | ShaderType::VS);
 	}
 
-	SnowManager::FrustumPlanes SnowManager::generatePlanes(Camera * camera)
-	{
-
-		Matrix v = camera->getView() * camera->getProj();
-
-		Plane planeArr[6] =
-		{
-		{ { -(v._14 + v._11), -(v._24 + v._21), -(v._34 + v._31) }, { -(v._44 + v._41) } },
-		{ { -(v._14 - v._11), -(v._24 - v._21), -(v._34 - v._31) }, { -(v._44 - v._41) } },
-		{ { -(v._14 - v._12), -(v._24 - v._22), -(v._34 - v._32) }, { -(v._44 - v._42) } },
-		{ { -(v._14 + v._12), -(v._24 + v._22), -(v._34 + v._32) }, { -(v._44 + v._42) } },
-		{ { -(v._14 + v._13), -(v._24 + v._23), -(v._34 + v._33) }, { -(v._44 + v._43) } },
-		{ { -(v._14 - v._13), -(v._24 - v._23), -(v._34 - v._33) }, { -(v._44 - v._43) } }
-		};
-
-		for (int i = 0; i < 6; i++)
-		{
-			float denom = 1.f / planeArr[i].normal.Length();
-
-			planeArr[i].normal *= denom;
-			planeArr[i].distance *= denom;
-		}
-
-
-		FrustumPlanes planes;
-		planes.leftPlane	=	planeArr[0];
-		planes.rightPlane	=	planeArr[1];
-		planes.topPlane		=	planeArr[2];
-		planes.bottomPlane	=	planeArr[3];
-		planes.nearPlane	=   planeArr[4];
-		planes.farPlane		=	planeArr[5];
-
-		return planes;
-	}
-	
-	bool SnowManager::isPointInFrontOfPlane(Plane plane, DirectX::SimpleMath::Vector3 point)
-	{
-		bool ret = false;
-		Vector3 compare = plane.normal * plane.distance;
-
-		compare = point - compare;
-
-		compare.Normalize();
-
-		if ((plane.normal).Dot(compare) > 0)
-			ret = true;
-
-		return ret;
-	}
-	
-	bool SnowManager::isInFrustum(FrustumPlanes& planes, DirectX::SimpleMath::Vector3 point)
-	{
-		if (isPointInFrontOfPlane(planes.leftPlane, point))
-			return false;
-
-		if (isPointInFrontOfPlane(planes.rightPlane, point))
-			return false;
-
-		if (isPointInFrontOfPlane(planes.topPlane, point))
-			return false;
-
-		if (isPointInFrontOfPlane(planes.bottomPlane, point))
-			return false;
-
-		if (isPointInFrontOfPlane(planes.nearPlane, point))
-			return false;
-
-		if (isPointInFrontOfPlane(planes.farPlane, point))
-			return false;
-
-
-		return true;
-	}
-	
 	void SnowManager::clearSnow()
 	{
-		positions.clear();
+		snowFlakes.clear();
 		velocities.clear();
 		snowFlakeCount = 0;
 	}

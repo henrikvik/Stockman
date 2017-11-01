@@ -3,7 +3,6 @@
 #include "Resources\Shader.h"
 #include "Utility\StructuredBuffer.h"
 #include <vector>
-#define MAX_SNOW 256
 
 namespace Graphics 
 {
@@ -18,39 +17,24 @@ namespace Graphics
 		void drawSnowflakes(ID3D11DeviceContext * context, Camera * camera);
 		void recompile(ID3D11Device * device);
 
-		//temp
-		std::vector<DirectX::SimpleMath::Vector3> test;
+
 	private:
-		struct Plane
+		struct SnowFlake
 		{
-			DirectX::SimpleMath::Vector3 normal;
-			float distance;
-		};
-		struct FrustumPlanes
-		{
-			Plane leftPlane;
-			Plane rightPlane;
-			Plane topPlane;
-			Plane bottomPlane;
-			Plane nearPlane;
-			Plane farPlane;
+			DirectX::SimpleMath::Vector3 position;
+			float randomRot;
 		};
 
-		StructuredBuffer<DirectX::SimpleMath::Vector4> snowBuffer;
+		StructuredBuffer<SnowFlake> snowBuffer;
 		Shader snowShader;
-
 		int snowFlakeCount;
 
 
-		std::vector<DirectX::SimpleMath::Vector4> positions;
+		std::vector<SnowFlake> snowFlakes;
 		std::vector<DirectX::SimpleMath::Vector3> velocities;
 
-		void addSnowFlake(FrustumPlanes& planes, Camera * camera);
-		void addRandomSnowFlake(FrustumPlanes& planes, Camera * camera);
-		void moveSnowFlake(FrustumPlanes& planes, Camera * camera, int snowFlake);
-		FrustumPlanes generatePlanes(Camera * camera);
-		bool isPointInFrontOfPlane(Plane plane, DirectX::SimpleMath::Vector3 point);
-		bool isInFrustum(FrustumPlanes& planes, DirectX::SimpleMath::Vector3 point);
+		void addRandomSnowFlake(Camera * camera);
+		void moveSnowFlake(Camera * camera, int snowFlake);
 		void clearSnow();
 	};
 }
