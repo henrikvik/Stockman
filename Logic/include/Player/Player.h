@@ -88,7 +88,6 @@ namespace Logic
 		Sound::ListenerData* m_listenerData;
 
 		// Mouse
-		float m_mouseSens;
 		float m_camYaw;
 		float m_camPitch;
 

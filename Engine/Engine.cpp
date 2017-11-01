@@ -10,6 +10,7 @@
 #pragma comment (lib, "d3d11.lib")
 #include "Typing.h"
 #include "DebugWindow.h"
+#include <Engine\Settings.h>
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -235,9 +236,10 @@ Profiler *g_Profiler;
 
 int Engine::run()
 {
+	Settings* setting = Settings::getInstance();
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
+	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(setting->getFOV()));
     cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
@@ -294,6 +296,18 @@ int Engine::run()
 			mSwapChain->SetFullscreenState(!isFullscreen, NULL);
 			this->isFullscreen = !isFullscreen;
 		}
+
+        if (setting->getWindowed() && !isFullscreen)
+        {
+            mSwapChain->SetFullscreenState(!isFullscreen, NULL);
+            this->isFullscreen = !isFullscreen;
+        }
+
+        if (!setting->getWindowed() && isFullscreen)
+        {
+            mSwapChain->SetFullscreenState(!isFullscreen, NULL);
+            this->isFullscreen = !isFullscreen;
+        }
 
 		if (ks.F1)
 		{

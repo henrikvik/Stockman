@@ -99,11 +99,11 @@ void DebugWindow::draw(const char * title)
 	style->ScrollbarSize = 15.0f;
 	style->ScrollbarRounding = 9.0f;
 	style->GrabMinSize = 5.0f;
-	style->GrabRounding = 3.0f;
+	style->GrabRounding = 3.0f;*/
 
 	style->Colors[ImGuiCol_Button] = ImVec4(1.00f, 0.6f, 0.6f, 0.50f);
 	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(1.00f, 0.7f, 0.7f, 0.50f);
-	style->Colors[ImGuiCol_ButtonActive] = ImVec4(1.00f, 0.8f, 0.8f, 0.50f);*/
+	style->Colors[ImGuiCol_ButtonActive] = ImVec4(1.00f, 0.8f, 0.8f, 0.50f);
 
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_Always);
 	if (ImGui::Begin(title))
