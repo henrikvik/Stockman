@@ -127,7 +127,7 @@ void Engine::initializeWindow()
 	this->window = CreateWindow(
 		"Basic test",
 		"Stort spel",
-		WS_CAPTION,
+		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		rc.right - rc.left,
@@ -141,6 +141,8 @@ void Engine::initializeWindow()
 	{
 		MessageBox(this->window, "window creation failed", "Error", MB_OK);
 	}
+
+    SetWindowLong(window, GWL_STYLE, GetWindowLong(window, GWL_STYLE) & ~WS_SIZEBOX);
 
 	SetWindowPos(GetConsoleWindow(), 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	SetWindowPos(this->window, 0, 100, 150, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
