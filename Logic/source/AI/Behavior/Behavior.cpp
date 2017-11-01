@@ -2,12 +2,12 @@
 #include <AI\Enemy.h>
 #include <Misc\RandomGenerator.h>
 
-#define SCALAR_DIR 0.5f
+#define SCALAR_DIR 0.8f
 #define SCALAR_ALIGN 1.1f
-#define SCALAR_COHES 0.7f
+#define SCALAR_COHES 0.6f
 #define SCALAR_SEP 2.f
 
-#define MAX_LEN_FOR_SEPERATION 5.f
+#define MAX_LEN_FOR_SEPERATION 15.f
 // this can be changed in the future maybe who knows
 #define CHANGE_NODE_DIST 1.2
 
@@ -63,7 +63,7 @@ void Behavior::walkPath(RunIn &in)
     dir.normalize();
     dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
 
-    in.enemy->getRigidBody()->translate(dir);
+    in.enemy->getRigidBody()->setLinearVelocity(dir * 100);
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
