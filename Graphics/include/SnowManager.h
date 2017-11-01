@@ -23,6 +23,7 @@ namespace Graphics
 		{
 			DirectX::SimpleMath::Vector3 position;
 			float randomRot;
+			float distance;
 		};
 
 		StructuredBuffer<SnowFlake> snowBuffer;

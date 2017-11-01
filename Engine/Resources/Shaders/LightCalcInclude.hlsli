@@ -78,6 +78,8 @@ Texture2D glowMap : register(t13);
 //makes stuff gray
 float3 adjustSaturation(float3 color, float saturation)
 {
+
+    //Touch these values and yer ded kid. (lower saturation or something)
 	float grey = dot(color, float3(0.3, 0.59, 0.11));
 
 	return lerp(grey, color, saturation);
@@ -237,7 +239,7 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
     float4 lighting = saturate(finalDiffuse + ambient);
     
     lighting.xyz = adjustSaturation(lighting.xyz, bulletTimer);
-    lighting.xyz = adjustContrast(lighting.xyz, 2 - bulletTimer, 0.3);
+    lighting.xyz = adjustContrast(lighting.xyz, 2 - bulletTimer, 0.1);
 
     return lighting;
 }

@@ -44,6 +44,8 @@ namespace Graphics
 		{
 			if ((snowFlakes[i].position - camera->getPos()).Length() > SNOW_RADIUS)
 				moveSnowFlake(camera, i);
+
+			snowFlakes[i].distance = (snowFlakes[i].position - camera->getPos()).Length();
 		}
 		
 		snowBuffer.write(context, &snowFlakes[0], snowFlakeCount * sizeof(Vector4));
@@ -61,9 +63,11 @@ namespace Graphics
 		SnowFlake flake;
 		flake.position = finalPos;
 		flake.randomRot = generator.getRandomFloat(0, 360);
+		flake.distance = randVec.Length();
 
 		snowFlakes.push_back(flake);
 		velocities.push_back(Vector3(0, -1, 0));
+
 		snowFlakeCount++;
 	}
 
