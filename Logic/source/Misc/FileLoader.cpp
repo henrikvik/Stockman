@@ -36,11 +36,11 @@ int FileLoader::parseString(LoadedStruct &loaded, std::string const &str)
 	// optimize, but shouldnt be a problem with load on startup and small files
 	while (getline(stringStreamBlock, line, LINE_END))
 	{
-		index = line.find(STRING) + 1; // find beginning of name
+		index = (int)line.find(STRING) + 1; // find beginning of name
 		name = line.substr(index, line.find(STRING, index) - index); // extract name
 
-		index = line.find(LINE_ASSIGN); // find line assignment ':'
-		index = line.find_first_not_of(SPACE, index + 1); // find the data
+		index = (int)line.find(LINE_ASSIGN); // find line assignment ':'
+		index = (int)line.find_first_not_of(SPACE, index + 1); // find the data
 		data = line.substr(index); // substract data
 
 		switch (data[data.size() - 1]) // save data

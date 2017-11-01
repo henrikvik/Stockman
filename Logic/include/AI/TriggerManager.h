@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Trigger.h"
+#include <Physics\Primitives.h>
 
 #pragma region Comment
 	/*
@@ -30,7 +31,7 @@ namespace Logic
 
 			void removeTrigger(Trigger* t, int index);
 
-			void addTrigger(Cube& cube, float cooldown, Physics& physics, 
+			Trigger* addTrigger(Graphics::ModelID modelID, Cube& cube, float cooldown, Physics& physics,
 				std::vector<StatusManager::UPGRADE_ID> upgrades, 
 				std::vector<StatusManager::EFFECT_ID> effects, 
 				bool reusable = false);

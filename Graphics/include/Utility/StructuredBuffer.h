@@ -1,4 +1,6 @@
 #pragma once
+#include "../ThrowIfFailed.h"
+#include <Engine\Constants.h>
 
 enum class CpuAccess
 {
@@ -21,6 +23,7 @@ public:
     void CopyTo(ID3D11DeviceContext *cxt, StructuredBuffer<T> *other);
     T* map(ID3D11DeviceContext *cxt);
     void unmap(ID3D11DeviceContext *cxt);
+    void write(ID3D11DeviceContext * context, T * data, UINT size);
 #pragma endregion
 
 #pragma region Getters and Setters
@@ -49,7 +52,7 @@ template<typename T>
 inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess access, size_t count, T * ptr)
 {
     D3D11_BUFFER_DESC desc = {};
-    desc.ByteWidth = sizeof(T) * count;
+    desc.ByteWidth = (UINT)(sizeof(T) * count);
 
     if ((int)access & (int)CpuAccess::Read)
     {
@@ -87,7 +90,7 @@ inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess ac
         D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
         srvDesc.Format = DXGI_FORMAT_UNKNOWN;
         srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-        srvDesc.Buffer.NumElements = count;
+        srvDesc.Buffer.NumElements = (UINT)count;
 
         ThrowIfFailed(device->CreateShaderResourceView(m_Buffer, &srvDesc, &m_SRV));
     }
@@ -97,7 +100,7 @@ inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess ac
         D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
         uavDesc.Format = DXGI_FORMAT_UNKNOWN;
         uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-        uavDesc.Buffer.NumElements = count;
+        uavDesc.Buffer.NumElements = (UINT)count;
 
         ThrowIfFailed(device->CreateUnorderedAccessView(m_Buffer, &uavDesc, &m_UAV));
     }
@@ -128,5 +131,12 @@ inline T * StructuredBuffer<T>::map(ID3D11DeviceContext * cxt) {
 template<typename T>
 inline void StructuredBuffer<T>::unmap(ID3D11DeviceContext * cxt) {
     cxt->Unmap(m_Buffer, 0);
+}
+
+template<typename T>
+inline void StructuredBuffer<T>::write(ID3D11DeviceContext * context, T * data, UINT size)
+{
+    memcpy(map(context), data, size);
+    unmap(context);
 }
 #pragma endregion

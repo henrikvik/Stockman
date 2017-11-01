@@ -1,114 +1,49 @@
 #pragma once
 #include "Resources\Shader.h"
+#include "Utility\ConstantBuffer.h"
 #include "Camera.h"
 #include "Lights\Sun.h"
-#include "Resources\DepthStencil.h"
+#include "Utility\DepthStencil.h"
+#include "Datatypes.h"
+#include "Structs.h"
 #define SHADOW_MAP_RESOLUTION 2048
 
-class SkyRenderer
+namespace Graphics
 {
-public:
-	SkyRenderer(ID3D11Device * device, int shadowRes);
-	~SkyRenderer();
-
-	void renderSky(ID3D11DeviceContext * context, Graphics::Camera * cam);
-	void update(ID3D11DeviceContext * context, float deltaTime, DirectX::SimpleMath::Vector3 pos);
-
-	ID3D11Buffer* getLightMatrixBuffer() { return sun.getMatrixBuffer(); };
-	ID3D11Buffer* getShaderBuffer() { return sun.getShaderBuffer(); };
-	D3D11_VIEWPORT getViewPort() { return sun.getViewPort(); };
-	Graphics::DepthStencil * getDepthStencil() { return &this->shadowDepthStencil; };
-	ID3D11SamplerState * getSampler() { return this->shadowSampler; };
-
-	void drawShadows(ID3D11DeviceContext * context, Graphics::Shader * shader);
-
-private:
-	struct  SkyCube
+	class SkyRenderer
 	{
-		ID3D11Buffer * vertexBuffer;
-		ID3D11Buffer * transformBuffer;
-		SkyCube(ID3D11Device * device)
-		{
-			DirectX::SimpleMath::Vector3 vertices[] =
-			{
-				// FRONT
-				 { -1, -1, -1},
-				 { -1,  1, -1},
-				 {  1, -1, -1},
-				 {  1, -1, -1},
-				 { -1,  1, -1},
-				 {  1,  1, -1},
-				// TOP						
-				 { -1,  1, -1},
-				 { -1,  1,  1},
-				 {  1,  1, -1},
-				 {  1,  1, -1},
-				 { -1,  1,  1},
-				 {  1,  1,  1},
-				// LEFT						
-				 { -1, -1,  1},
-				 { -1,  1,  1},
-				 { -1, -1, -1},
-				 { -1, -1, -1},
-				 { -1,  1,  1},
-				 { -1,  1, -1},
-				// RIGHT					
-				 { 1,  1,   1},
-				 { 1, -1,   1},
-				 { 1, -1,  -1},
-				 { 1,  1,   1},
-				 { 1, -1,  -1},
-				 { 1,  1,  -1},
-				// BACK			
-				 { -1,  1,  1},
-				 { -1, -1,  1},
-				 {  1, -1,  1},
-				 { -1,  1,  1},
-				 {  1, -1,  1},
-				 {  1,  1,  1},
-				// BOTTOM					
-				 { -1, -1,  1},
-				 { -1, -1, -1},
-				 {  1, -1, -1},
-				 { -1, -1,  1},
-				 {  1, -1, -1},
-				 {  1, -1,  1}			
-			};
+	public:
+		SkyRenderer(ID3D11Device * device, int shadowRes);
+		~SkyRenderer();
 
-			D3D11_SUBRESOURCE_DATA subData = {};
-			subData.pSysMem = vertices;
+		void initialize(ModelInfo info);
 
-			D3D11_BUFFER_DESC desc = { 0 };
-			desc.ByteWidth = sizeof(vertices);
-			desc.Usage = D3D11_USAGE_IMMUTABLE;
-			desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		void renderSky(ID3D11DeviceContext * context, Graphics::Camera * cam);
+		void update(ID3D11DeviceContext * context, float deltaTime, DirectX::SimpleMath::Vector3 pos);
 
-			device->CreateBuffer(&desc, &subData, &vertexBuffer);
+		ConstantBuffer<Sun::ShaderMatrix>* getLightMatrixBuffer() { return sun.getMatrixBuffer(); };
+		ConstantBuffer<Sun::LightValues>*  getShaderBuffer() { return sun.getShaderBuffer(); };
+		D3D11_VIEWPORT getViewPort() { return sun.getViewPort(); };
+		Graphics::DepthStencil * getDepthStencil() { return &this->shadowDepthStencil; };
+		ID3D11SamplerState * getSampler() { return this->shadowSampler; };
 
-			desc.ByteWidth = sizeof(DirectX::SimpleMath::Matrix);
-			desc.Usage = D3D11_USAGE_DYNAMIC;
-			desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		void drawShadows(ID3D11DeviceContext * context, Graphics::Shader * shader);
+		void clear(ID3D11DeviceContext * context);
+	private:
+		ModelInfo skySphere;
 
-			device->CreateBuffer(&desc, NULL, &transformBuffer);
-		}
+		Shader shader;
+		ID3D11ShaderResourceView * srv;
+		ID3D11ShaderResourceView * srv2;
 
-		~SkyCube()
-		{
-			vertexBuffer->Release();
-			transformBuffer->Release();
-		}
+		DepthStencil shadowDepthStencil;
+		ID3D11SamplerState* shadowSampler;
+
+		ConstantBuffer<DirectX::SimpleMath::Matrix> sphereTransformBuffer;
+
+		Sun sun;
+
+		void createSampler(ID3D11Device * device);
+
 	};
-
-	Graphics::Shader shader;
-	ID3D11ShaderResourceView * srv;
-	Graphics::DepthStencil shadowDepthStencil;
-	ID3D11SamplerState* shadowSampler;
-
-
-	SkyCube cube;
-	Sun sun;
-
-	void createSampler(ID3D11Device * device);
-
-};
+}

@@ -10,25 +10,28 @@
 		*/
 #pragma endregion
 
-#include <Projectile\ProjectileManager.h>
-#include <Projectile\ProjectileStruct.h>
 #include <Player\Skill\Skill.h>
-
-#define SHIELD_CHARGE_CD		1500.f
-#define SHIELD_CHARGE_DURATION	300.f
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 namespace Logic
 {
+    class Entity;
+
 	class SkillShieldCharge : public Skill
 	{
 	private:
-		ProjectileData m_projectileData;
-		ProjectileManager* m_projectileManager;
+		bool m_active, m_slowdown;
+		float m_time;
+		btVector3 m_forw;
+		Entity *m_shooter;
+		float m_chargePower;
 	public:
-		SkillShieldCharge(ProjectileManager* projectileManager, ProjectileData projectileData);
+		SkillShieldCharge();
 		~SkillShieldCharge();
 
-		void onUse(btVector3 forward, Entity& shooter);
+        bool onUse(btVector3 forward, Entity& shooter);
+		void onRelease();
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 	};

@@ -1,4 +1,7 @@
 #include "Map.h"
+#include <Keyboard.h>
+#include <Graphics\include\Structs.h>
+#include <Graphics\include\Utility\DebugDraw.h>
 
 using namespace Logic;
 
@@ -9,157 +12,165 @@ Map::~Map()
 	clear();
 }
 
-void Map::init(Physics* physics, Player* player)
+void Map::add(FrameLight frameLight)
 {
-	initProps();
-	initHitboxes(physics);
-	initObjects(physics);			// Not used as intented as for rn, should only create non-moving objects, not entities
-	initGrapplingPoints(physics, player);
-
-	m_drawHitboxes = true;
+    m_lights.push_back(new LightObject(frameLight));
 }
 
-void Map::initProps()
+void Map::add(FrameProp frameProp)
 {
-
+  //  m_objects.push_back(new Object(frameProp.modelID, frameProp.position, frameProp.rotation));
 }
 
-void Map::initHitboxes(Physics* physics)
+void Map::add(FrameHitbox frameHitbox)
 {
-	Entity* infinite = new Entity(physics->createBody(Plane({ 0, 1, 0 }), 0, false), btVector3(1000, 0.0001, 1000), Graphics::CUBE);
-	m_hitboxes.push_back(infinite);
-	//Entity* secondinfinite = new Entity(physics->createBody(Plane({ 0, 0, 1 }), 0, false), btVector3(1000, 0.0001, 1000));
-	//m_hitboxes.push_back(secondinfinite);
+    if (frameHitbox.modelID == Graphics::GROUND)
+        m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+            Physics::COL_HITBOX,
+            Physics::COL_EVERYTHING),
+            {1, 1.f, 1}));
 
-	Entity* house;
+    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+        Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+        Physics::COL_HITBOX,
+        Physics::COL_EVERYTHING),
+        frameHitbox.dimensions));
+}
 
-	house = new Entity(physics->createBody(Cube({ 60, 0.75, 60 }, { 0, 0, 0 }, { 45, 0.75, 45 }), 0.f, false), { 45, 1.5f, 45 });
-	m_hitboxes.push_back(house);
+void Map::init(Physics* physics)
+{
+    m_physicsPtr = physics;
+    m_drawHitboxesAndLights = false;
+
+    readFromFile("maya.level");
 	
-	house = new Entity(physics->createBody(Cube({ 45, 1.5f, 45 }, { 0, 0, 0 }, { 10, 1.5f, 10 }), 0.f, false), { 10, 1.5f, 10 });
-	m_hitboxes.push_back(house);
-
-	house = new Entity(physics->createBody(Cube({ 60, 2, 60 }, { 0, 0, 0 }, { 10, 2, 10 }), 0.f, false), { 10, 2, 10 });
-	m_hitboxes.push_back(house);
-
-	house = new Entity(physics->createBody(Cube({ 80, 3, 80 }, { 0, 0, 0 }, { 15, 3, 15 }), 0.f, false), { 15, 3, 15 });
-	m_hitboxes.push_back(house);
-
-	house = new Entity(physics->createBody(Cube({ 50, 1, 80 }, { 0, 90, 90 }, { 15, 3, 15 }), 0.f, false), { 15, 3, 15 });
-	m_hitboxes.push_back(house);
-
-	house = new Entity(physics->createBody(Cube({ 80, 1, 40 }, { 40, -90, -90 }, { 15, 3, 15 }), 0.f, false), { 15, 3, 15 });
-	m_hitboxes.push_back(house);
-
-	house = new Entity(physics->createBody(Cube({ 120, 1, 180 }, { 40, 0, -90 }, { 60, 10, 45 }), 0.f, false), { 60, 10, 45 });
-	m_hitboxes.push_back(house);
-
-	house = new Entity(physics->createBody(Cube({ 125, 5, 100 }, { 0, 0, 0 }, { 15, 5, 15 }), 0.f, false), { 15, 5, 15 });
-	m_hitboxes.push_back(house);
-
-	house = new Entity(physics->createBody(Cube({ 100, 4, 100 }, { 0, 0, 0 }, { 15, 4, 15 }), 0.f, false), { 15, 4, 15 });
-	m_hitboxes.push_back(house);
-
-	house = new Entity(physics->createBody(Cube({ 120, 4, 60 }, { 0, 0, 0 }, { 15, 4, 15 }), 0.f, false), { 15, 4, 15 });
-	m_hitboxes.push_back(house);
-
-	house = new Entity(physics->createBody(Cube({ 130, 4, 110 }, { 45, 0, 45 }, { 15, 4, 15 }), 0.f, false), { 15, 4, 15 });
-	m_hitboxes.push_back(house);
-
-	house = new Entity(physics->createBody(Cube({ 150, 6, 150 }, { 0, 0, 0 }, { 40, 6, 40 }), 0.f, false), { 40, 6, 40 });
-	m_hitboxes.push_back(house);
-
+    debugInitProps();
+    debugInitObjects();
 }
 
-void Map::initObjects(Physics * physics)
+// This could be loaded from level file
+void Map::readFromFile(std::string path)
 {
-	for (int i = 0; i < 5; ++i)
-	{
-		btVector3 halfextent(1.0 * (i + 1), 1.0, 1.0);
-		Entity* box = new Entity(physics->createBody(Cube({ 1.f * (i * 0.25f + 1), 5, 0 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
-		m_objects.push_back(box);
-	}
-}
+    // Loads hitboxes
+    std::vector<FrameHitbox> hitboxes;
+    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Graphics::GROUND });
+    hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
+    hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Graphics::CUBE });
+    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
+    hitboxes.push_back({ { 80, 3, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 50, 1, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
+    hitboxes.push_back({ { 80, 1, 40 },{ 40, -90, -90 },{ 15, 3, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 120, 1, 180 },{ 40, 0, -90 },{ 60, 10, 45 }, Graphics::CUBE });
+    hitboxes.push_back({ { 125, 5, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 100, 4, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 120, 4, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 130, 4, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 150, 6, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Graphics::CUBE });
+    hitboxes.push_back({ { 60, 80, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
+    hitboxes.push_back({ { 45, 70, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
+    hitboxes.push_back({ { 60, 50, 60 },{ 0, 0, 0 },{ 10, 2, 10 }, Graphics::CUBE });
+    hitboxes.push_back({ { 80, 42, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 50, 40, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 125, 35, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 100, 40, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 120, 50, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 130, 40, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 150, 60, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Graphics::CUBE });
+    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 }, Graphics::CUBE });
 
-// Create the grappling points (Need to be spheres for optimization)
-void Map::initGrapplingPoints(Physics * physics, Player* player)
-{
-	btVector3 halfextent(2.f, 2.f, 2.f);
-	GrapplingPoint* grappling = new GrapplingPoint(physics->createBody(Sphere({ -20, 20, 5 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
-	grappling->init(physics, player);
-	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -15, 40, -5 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
-	grappling->init(physics, player);
-	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -20, 60, 0 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
-	grappling->init(physics, player);
-	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -30, 73, -30 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
-	grappling->init(physics, player);
-	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -80, 73, -30 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
-	grappling->init(physics, player);
-	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -30, 73, -80 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
-	grappling->init(physics, player);
-	m_grapplingPoints.push_back(grappling);
-	grappling = new GrapplingPoint(physics->createBody(Sphere({ -80, 73, -80 }, { 0, 0, 0 }, 4.f), 0.f, true), halfextent, Graphics::SPHERE);
-	grappling->init(physics, player);
-	m_grapplingPoints.push_back(grappling);
+    // Loads lights
+    std::vector<FrameLight> lights;
+    lights.push_back({ DirectX::SimpleMath::Vector3(-35, 2, 35), DirectX::SimpleMath::Vector3(1, 1, 0), 0.75f, 10.f });
+    lights.push_back({ DirectX::SimpleMath::Vector3(-35, 2, -35), DirectX::SimpleMath::Vector3(1, 0, 1), 0.75f, 10.f });
+    lights.push_back({ DirectX::SimpleMath::Vector3(35, 2, -35), DirectX::SimpleMath::Vector3(0, 1, 1), 0.75f, 10.f });
+    lights.push_back({ DirectX::SimpleMath::Vector3(35, 2, 35), DirectX::SimpleMath::Vector3(1, 0.25f, 0.5f), 0.75f, 10.f });
+    lights.push_back({ DirectX::SimpleMath::Vector3(-23, 3, 74), DirectX::SimpleMath::Vector3(0.75, 0.25f, 0.5f), 0.85f, 10.f });
+    lights.push_back({ DirectX::SimpleMath::Vector3(-22, 3, 70), DirectX::SimpleMath::Vector3(1, 0.55f, 0.5f), 0.85f, 10.f });
+
+    // Create everything and save
+    for (size_t i = hitboxes.size(); i--;)  add(hitboxes[i]);
+    for (size_t i = lights.size(); i--;)    add(lights[i]);
 }
 
 void Map::clear()
 {
-	for (size_t i = 0; i < m_props.size(); i++)
-		delete m_props[i];
-
-	for (size_t i = 0; i < m_hitboxes.size(); i++)
-		delete m_hitboxes[i];
-
-	for (size_t i = 0; i < m_objects.size(); i++)
-		delete m_objects[i];
-
-	for (size_t i = 0; i < m_grapplingPoints.size(); i++)
-		delete m_grapplingPoints[i];
+	for (size_t i = 0; i < m_props.size(); i++)     delete m_props[i];
+	for (size_t i = 0; i < m_hitboxes.size(); i++)  delete m_hitboxes[i];
+	for (size_t i = 0; i < m_objects.size(); i++)   delete m_objects[i];
+    for (size_t i = 0; i < m_lights.size(); i++)    delete m_lights[i];
 
 	m_props.clear();
 	m_hitboxes.clear();
 	m_objects.clear();
-	m_grapplingPoints.clear();
+    m_lights.clear();
 }
 
 void Map::update(float deltaTime)
 {
+    // If user holds tab, draw debug info
+    m_drawHitboxesAndLights = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
+
 	// Updating interactable objects
 	for (size_t i = 0; i < m_objects.size(); i++)
 		m_objects[i]->update(deltaTime);
-
-	// Updating grappling hooks
-	for (size_t i = 0; i < m_grapplingPoints.size(); i++)
-		m_grapplingPoints[i]->update(deltaTime);
 }
 
 void Map::render(Graphics::Renderer& renderer)
 {
-	// Drawing props
-	for (Object* o : m_props)
-		o->render(renderer);
+	for (Object* o : m_props)           o->render(renderer);
+	for (Speaker* e : m_objects)        e->render(renderer);
+    for (LightObject* l : m_lights)     l->render(renderer);
+    for (StaticObject* e : m_hitboxes)  e->render(renderer); // Should not be visiable at all in release
 
-	// Drawing objects
-	for (Entity* e : m_objects)
-		e->render(renderer);
+	// Drawing hitboxes & lights
+    if (m_drawHitboxesAndLights)
+    {
+        for (StaticObject* e : m_hitboxes)
+            e->renderD(renderer);
+        for (LightObject* l : m_lights) {
+            //l->renderD(renderer);
+            Graphics::Debug::PointLight(*l);
+        }
+    }
+}
+	
+std::vector<Object*>*				Map::getProps()				{ return &m_props;				}
+std::vector<StaticObject*>*			Map::getHitboxes()			{ return &m_hitboxes;			}
+std::vector<Speaker*>*				Map::getObjects()			{ return &m_objects;			}
+std::vector<LightObject*>*			Map::getLights()            { return &m_lights;             }
 
-	// Drawing grappling points
-	for (GrapplingPoint* g : m_grapplingPoints)
-		g->render(renderer);
+void Map::debugInitProps()
+{
 
-	// Drawing hitboxes
-	if (m_drawHitboxes)
-		for (Entity* e : m_hitboxes)
-			e->render(renderer);
 }
 
-std::vector<Object*>*			Map::getProps()				{ return &m_props;				}
-std::vector<Entity*>*			Map::getHitboxes()			{ return &m_hitboxes;			}
-std::vector<Entity*>*			Map::getObjects()			{ return &m_objects;			}
-std::vector<GrapplingPoint*>*	Map::getGrapplingPoints()	{ return &m_grapplingPoints;	}
+void Map::debugInitObjects()
+{
+    // Debugging for Sound bug testing
+    btVector3 halfextent(1.0, 1.0, 1.0);
+    Speaker* box = new Speaker(m_physicsPtr->createBody(Cube({ -25, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 6000.f, 250.f);
+    m_objects.push_back(box);
+
+    box = new Speaker(m_physicsPtr->createBody(Cube({ -26, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+    box->getSoundSource()->delayPlayMusic(Sound::MUSIC::TEST_MUSIC, 500.f);
+    m_objects.push_back(box);
+
+    box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 3, 74 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 4000.f, 250.f);
+    m_objects.push_back(box);
+
+    box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 2, 73 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
+    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 3500.f, 250.f);
+    m_objects.push_back(box);
+
+    // Debugging for Testing model scaling
+    for (int i = 0; i < 12; i++)
+    {
+        if (i == Graphics::ModelID::GROUND) break;
+        box = new Speaker(m_physicsPtr->createBody(Cube({ -200.f + (i * 10.f), 2.f, 123.f }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::ModelID(i));
+        m_objects.push_back(box);
+    }
+}

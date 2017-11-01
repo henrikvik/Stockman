@@ -15,18 +15,19 @@ namespace Logic
 		ProjectileManager* operator=(const ProjectileManager& other) = delete;
 		~ProjectileManager();
 
+        void init();
 		void clear();
-		void addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter);
-		void removeProjectile(Projectile* p);
+		Projectile* addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter);
 		void removeProjectile(Projectile* p, int index);
 
 		void update(float deltaTime);
 		void render(Graphics::Renderer &renderer);
 
-		std::vector<Projectile*>* getProjectiles();
+		std::vector<Projectile*>& getProjectiles();
 
 	private:
-		std::vector<Projectile*> m_projectiles;
+		std::vector<Projectile*> m_projectilesActive;
+        std::vector<Projectile*> m_projectilesIdle;
 		Physics* m_physPtr;
 	};
 }

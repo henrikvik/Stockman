@@ -26,7 +26,8 @@ PASVF::~PASVF()
 // THIS SHOULD ONLY BE CALLED OFFLINE AND THEN SAVED TO A FILE (TODO)
 void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, std::vector<std::vector<Triangle>> objects) const
 {
-#define T 40
+#define T 50.f // size
+#define Y 0.f // node y position
 	std::vector<Triangle> moveableTerrain;
 	DirectX::SimpleMath::Vector3 up = { 0, 1, 0 };
 	float normalDotMin = 0.6f;
@@ -34,17 +35,17 @@ void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, 
 	// TEST DATA
 	Triangle t; 
 
-	for (int z = -3; z < 3; z++)
+	for (int z = -6; z < 6; z++)
 	{
-		for (int x = -3; x < 3; x++)
+		for (int x = -6; x < 6; x++)
 		{
-			t.vertices[0] = DirectX::SimpleMath::Vector3(T * x, 0, T * z);
-			t.vertices[1] = DirectX::SimpleMath::Vector3(T * (x + 1), 0, T * (z + 1));
-			t.vertices[2] = DirectX::SimpleMath::Vector3(T * x, 0, T * (z + 1));
+			t.vertices[0] = DirectX::SimpleMath::Vector3(T * x, Y, T * z);
+			t.vertices[1] = DirectX::SimpleMath::Vector3(T * (x + 1), Y, T * (z + 1));
+			t.vertices[2] = DirectX::SimpleMath::Vector3(T * x, Y, T * (z + 1));
 			terrain.push_back(t);
 
-			t.vertices[1] = DirectX::SimpleMath::Vector3(T * (x + 1), 0, T * z);
-			t.vertices[2] = DirectX::SimpleMath::Vector3(T * (x + 1), 0, T * (z + 1));
+			t.vertices[1] = DirectX::SimpleMath::Vector3(T * (x + 1), Y, T * z);
+			t.vertices[2] = DirectX::SimpleMath::Vector3(T * (x + 1), Y, T * (z + 1));
 			terrain.push_back(t);
 		}
 	}
@@ -82,7 +83,7 @@ inline DirectX::SimpleMath::Vector3 PASVF::getNormal(Triangle const & triangle,
 	if (vertexOrder == CLOCKWISE) {
 		return getLine(triangle.vertices[0], triangle.vertices[1]).Cross(getLine(triangle.vertices[0], triangle.vertices[2]));
 	}
-	else if (vertexOrder == COUNTER_CLOCKWISE)
+	else //if (vertexOrder == COUNTER_CLOCKWISE)
 	{
 		return getLine(triangle.vertices[0], triangle.vertices[2]).Cross(getLine(triangle.vertices[0], triangle.vertices[1]));
 	}

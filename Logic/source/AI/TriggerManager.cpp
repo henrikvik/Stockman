@@ -1,4 +1,5 @@
 #include <AI/TriggerManager.h>
+#include <Physics\Physics.h>
 using namespace Logic;
 
 TriggerManager::TriggerManager() 
@@ -14,18 +15,18 @@ TriggerManager::~TriggerManager()
 
 void TriggerManager::removeTrigger(Trigger * t, int index)
 {
-	m_physicsPtr->removeRigidBody(t->getRigidbody());
+	m_physicsPtr->removeRigidBody(t->getRigidBody());
 	t->destroyBody();
 	delete t;
 	m_triggers.erase(m_triggers.begin() + index);
 }
 
 // Adds a trigger, with certain cooldown & buffs, (cooldown is is ms)
-void TriggerManager::addTrigger(Cube& cube, float cooldown, Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects, bool reusable)
+Trigger* TriggerManager::addTrigger(Graphics::ModelID modelID, Cube& cube, float cooldown, Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects, bool reusable)
 {
 	this->m_physicsPtr = &physics;
 
-	Trigger* trigger = new Trigger(physics.createBody(cube, TRIGGER_MASS, TRIGGER_IS_SENSOR), cube.getDimensions(), cooldown, reusable);
+	Trigger* trigger = new Trigger(modelID, physics.createBody(cube, TRIGGER_MASS, TRIGGER_IS_SENSOR), cube.getDimensions(), cooldown, reusable);
 
 	if (!upgrades.empty())
 		trigger->addUpgrades(upgrades);
@@ -34,6 +35,7 @@ void TriggerManager::addTrigger(Cube& cube, float cooldown, Physics& physics, st
 		trigger->addEffects(effects);
 
 	m_triggers.push_back(trigger);
+    return trigger;
 }
 
 // Updates all the triggers cooldowns
@@ -43,11 +45,11 @@ void TriggerManager::update(float deltaTime)
 	for (size_t i = 0; i < m_triggers.size(); i++)
 	{
 		Trigger* t = m_triggers[i];
-		t->update(deltaTime);
+		t->updateSpecific(deltaTime);
 		
 		// Remove triggers
 		if (t->getShouldRemove())
-			removeTrigger(t, i);
+			removeTrigger(t, (int)i);
 	}
 }
 

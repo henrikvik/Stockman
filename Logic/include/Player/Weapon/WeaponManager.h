@@ -10,16 +10,24 @@
 #pragma endregion
 
 #include <vector>
-#include <Player\Weapon\Weapon.h>
-#include <Projectile\ProjectileManager.h>
-#include <Graphics\include\Structs.h>
+#include <d3d11.h>
+#include <SimpleMath.h>
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
+namespace Graphics
+{
+    class Renderer;
+}
 
 namespace Logic
 {
+    class Entity;
+    class Weapon;
+    class ProjectileManager;
+
 	class WeaponManager
 	{
-
 	public:		
 		WeaponManager();
 		WeaponManager(const WeaponManager& other) = delete;
@@ -28,6 +36,7 @@ namespace Logic
 
 		void init(ProjectileManager* projectileManager);
 		void clear();
+		void reset();
 		void update(float deltaTime);
 		void render(Graphics::Renderer& renderer);
 
@@ -45,6 +54,11 @@ namespace Logic
 		Weapon* getCurrentWeaponPrimary();
 		Weapon* getCurrentWeaponSecondary();
 
+        std::pair<Weapon*, Weapon*> getFirstWeapon();
+        std::pair<Weapon*, Weapon*> getSecondWeapon();
+        Weapon* getActiveWeapon();
+        Weapon* getInactiveWeapon();
+
 	private:
 
 		enum ReloadingWeapon
@@ -58,7 +72,7 @@ namespace Logic
 		void makeWeaponLoadout();
 
 		ProjectileManager* m_projectileManager;
-		std::vector<Weapon> m_allWeapons;
+		std::vector<Weapon*> m_allWeapons;
 		std::vector<std::pair<Weapon*, Weapon*>> m_weaponsLoadouts;
 		//std::vector<int> ammoList;
 		std::pair<Weapon*, Weapon*> m_currentWeapon;

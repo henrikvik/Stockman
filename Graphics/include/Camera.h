@@ -1,14 +1,9 @@
 #pragma once
 
+#include "Utility\ConstantBuffer.h"
+
 #define _USE_MATH_DEFINES
 #include <math.h>
-
-
-#include <d3d11.h>
-#include <d3dcompiler.h>
-
-#pragma comment (lib, "d3d11.lib")
-#pragma comment (lib, "d3dcompiler.lib")
 
 #include <SimpleMath.h>
 
@@ -16,6 +11,20 @@ namespace Graphics {
 	class Camera
 	{
 	public:
+		struct ShaderValues {
+			DirectX::SimpleMath::Matrix vP;
+			DirectX::SimpleMath::Matrix invP;
+			DirectX::SimpleMath::Matrix view;
+			DirectX::SimpleMath::Vector4 camPos;
+		} values;
+
+		struct InverseMatrixes
+		{
+			DirectX::SimpleMath::Matrix invView;
+			DirectX::SimpleMath::Matrix invP;
+
+		};
+
 		Camera(ID3D11Device* device, int width, int height, float drawDistance = 100, float fieldOfView = M_PI * 0.45);
 		~Camera();
 
@@ -30,31 +39,29 @@ namespace Graphics {
 		DirectX::SimpleMath::Vector3 getRight() const;
 		DirectX::SimpleMath::Matrix getView() const;
 		DirectX::SimpleMath::Matrix getProj() const;
-		ID3D11Buffer* getBuffer();
+		float getFarPlane() const { return drawDistance; };
+		ConstantBuffer<ShaderValues>* getBuffer();
+		ConstantBuffer<InverseMatrixes>* getInverseBuffer();
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
         void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
 	private:
-		DirectX::SimpleMath::Vector3 mPos;
-		DirectX::SimpleMath::Vector3 mForward;
-		DirectX::SimpleMath::Vector3 mUp;
-		DirectX::SimpleMath::Vector3 mRight;	//Uncertain if needed
+		DirectX::SimpleMath::Vector3 pos;
+		DirectX::SimpleMath::Vector3 forward;
+		DirectX::SimpleMath::Vector3 up;
+		DirectX::SimpleMath::Vector3 right;	//Uncertain if needed
 
-		float mDrawDistance;
-		float mFieldOfView;
-		float mFadeStart;
+		float drawDistance;
+		float fieldOfView;
+		float fadeStart;
 
-		DirectX::SimpleMath::Matrix mView;
-		DirectX::SimpleMath::Matrix mProjection;
+		DirectX::SimpleMath::Matrix view;
+		DirectX::SimpleMath::Matrix projection;
 
-		struct ShaderValues {
-			DirectX::SimpleMath::Matrix mVP;
-			DirectX::SimpleMath::Matrix mInvP;
-			DirectX::SimpleMath::Matrix mV;
-			DirectX::SimpleMath::Vector4 camPos;
-		} values;
 
-		ID3D11Buffer* mVPBuffer;
+		InverseMatrixes inverseMatrixes;
 
+		ConstantBuffer<ShaderValues> CameraBuffer;
+		ConstantBuffer<InverseMatrixes> inverseBuffer;
 	};
 }

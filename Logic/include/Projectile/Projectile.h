@@ -19,27 +19,20 @@ namespace Logic
 
 		void start(btVector3 forward, StatusManager& statusManager);
 		void updateSpecific(float deltaTime);
-		void onCollision(Entity& other);
+		void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 		void upgrade(Upgrade const &upgrade);
+		void affect(int stacks, Effect const & effect, float deltaTime);
 
-		ProjectileType getType() const;
-		float getDamage() const;
-		float getSpeed() const;
-		float getGravityModifier() const;
-		float getTTL() const;
-		void setDamage(float damage);
-		void setSpeed(float speed);
-		void setGravityModifier(float gravityModifier);
+		ProjectileData& getProjectileData();
+        void setProjectileData(ProjectileData pData);
 
 		void toRemove();
+        void toRemove(bool remove);
 		bool shouldRemove() const;
 
 	private:
-		ProjectileType m_type;
-		float m_damage;
-		float m_speed;
-		float m_gravityModifier;
-		float m_ttl;
+		ProjectileData m_pData;
+		float m_bulletTimeMod;
 		bool m_remove;
 	};
 }

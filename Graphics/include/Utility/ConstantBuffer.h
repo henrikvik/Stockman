@@ -1,4 +1,6 @@
 #pragma once
+#include <d3d11.h>
+#include "../ThrowIfFailed.h"
 
 template<typename T, size_t size = 1>
 class ConstantBuffer
@@ -26,7 +28,7 @@ inline ConstantBuffer<T, size>::ConstantBuffer(ID3D11Device * device)
     desc.Usage = D3D11_USAGE::D3D11_USAGE_DYNAMIC;
     desc.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
     desc.ByteWidth = max(sizeof(T) * size, 16);
-
+	
     ThrowIfFailed(device->CreateBuffer(&desc, nullptr, &cbuffer));
 }
 

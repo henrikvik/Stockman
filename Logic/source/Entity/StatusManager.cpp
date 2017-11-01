@@ -46,6 +46,7 @@ StatusManager::StatusManager()
 			
 				spec.isBulletTime = fileStruct.floats.at("sBulletTime");
 				spec.isFreezing =	fileStruct.floats.at("sFreezing");
+                spec.ammoType =     fileStruct.floats.at("sAmmoType");
 
 				creating.setSpecifics(spec);
 			}
@@ -86,6 +87,17 @@ void StatusManager::clear()
 	m_effectStacksIds.clear();
 }
 
+int StatusManager::getStacksOfEffectFlag(Effect::EFFECT_FLAG flag) const
+{
+	int stacks = 0;
+	for (size_t i = 0; i < m_effectStacksIds.size(); ++i)
+	{
+		if (s_effects[m_effectStacksIds[i]].getStandards()->flags & flag)
+			stacks += m_effectStacks[i].stack;
+	}
+	return stacks;
+}
+
 void StatusManager::removeEffect(int index)
 {
 	std::swap(m_effectStacks[index], m_effectStacks[m_effectStacks.size() - 1]);
@@ -101,7 +113,7 @@ void StatusManager::update(float deltaTime)
 	{
 		if ((m_effectStacks[i].duration -= deltaTime) <= 0)
 		{
-			removeEffect(i);
+			removeEffect((int)i);
 		}
 	}
 }
@@ -114,6 +126,11 @@ void StatusManager::addUpgrade(UPGRADE_ID id)
 Upgrade & Logic::StatusManager::getUpgrade(UPGRADE_ID id)
 {
 	return s_upgrades[id];
+}
+
+const Effect& StatusManager::getEffect(EFFECT_ID id) const
+{
+	return s_effects[id];
 }
 
 void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks, bool resetDuration)
@@ -148,7 +165,7 @@ void StatusManager::removeOneStatus(int statusID)
 		{
 			if (m_effectStacks[i].stack-- <= 0) // no more stacks, then remove the effect
 			{
-				removeEffect(i);
+				removeEffect((int)i);
 			}
 			found = true;
 		}
@@ -162,7 +179,7 @@ void StatusManager::removeAllStatus(int statusID)
 	{
 		if (m_effectStacksIds[i] == statusID)
 		{
-			removeEffect(i);
+			removeEffect((int)i);
 			found = true;
 		}
 	}
@@ -177,7 +194,7 @@ std::vector <std::pair<int, Effect*>>
 
 	// For better ways to do this in the future see
 	// mike acton ty
-	int size = m_effectStacks.size();
+	int size = (int)m_effectStacks.size();
 	std::vector<std::pair<int, Effect*>> actives;
 	actives.resize(size);
 
@@ -194,7 +211,7 @@ std::vector<std::pair<int, StatusManager::EFFECT_ID>> StatusManager::getActiveEf
 {
 	std::vector<std::pair<int, StatusManager::EFFECT_ID>> effects;
 
-	int size = m_effectStacks.size();
+	int size = (int)m_effectStacks.size();
 	effects.resize(size);
 
 	for (size_t i = 0; i < size; ++i)
@@ -205,7 +222,7 @@ std::vector<std::pair<int, StatusManager::EFFECT_ID>> StatusManager::getActiveEf
 	return effects;
 }
 
-std::vector<StatusManager::UPGRADE_ID>& Logic::StatusManager::getActiveUpgrades()
+std::vector<StatusManager::UPGRADE_ID>& StatusManager::getActiveUpgrades()
 {
 	return m_upgrades;
 }

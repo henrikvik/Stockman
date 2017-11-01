@@ -1,26 +1,74 @@
 {
 	"Name" : "MainMenu";
 	"State" : 2;
-	"Background" : "bla";
-	"buttonAmmount" : 1;
+	"Background" : 0;
+	"buttonAmount" : 4;
 
-	"button1" :  "MenuMainButton1";
+	"button1" :  "MenuStartGame";
+	"button2" :  "MenuStartSettings";
+	"button3" :  "MenuStartHighscore";
+	"button4" :  "MenuQuitGame";
 }
-
 {
 	"Name" : "Settings";
 	"State" : 3;
-	"Background" : "la";
-	"buttonAmmount" : 1;
+	"Background" : 0;
+	"buttonAmount" : 12;
 
-	"button1" :  "MenuSettingsButton1";
+	"button1" :  "MenuSettingsWriting";
+	"button2" :  "MenuSettingsStartMenu";
+	"button3" :  "MenuSettingsSoundMasterMinus";
+	"button4" :  "MenuSettingsSoundMasterPlus";
+	"button5" :  "MenuSettingsSoundSFXMinus";
+	"button6" :  "MenuSettingsSoundSFXPlus";
+	"button7" :  "MenuSettingsMuteUnmute";
+	"button8" :  "MenuSettingsControlsMouseSenseMinus";
+	"button9" :  "MenuSettingsControlsMouseSensePlus";
+	"button10" :  "MenuSettingsVideoFOVMinus";
+	"button11" :  "MenuSettingsVideoFOVPlus";
+	"button12" :  "MenuSettingsVideoWindowed"
 }
-
 {
 	"Name" : "Game";
 	"State" : 0;
-	"Background" : "a";
-	"buttonAmmount" : 1;
+	"Background" : 2;
+	"buttonAmount" : 0;
+}
+{
+	"Name" : "GameOver";
+	"State" : 4;
+	"Background" : 3;
+	"buttonAmount" : 2;
 
-	"button1" :  "GameButton1";
+	"button1" : "GameOverStartMenu";
+	"button2" : "GameOverQuitGame";
+}
+{
+	"Name" : "GameCardUpgrade";
+	"State" : 6;
+	"Background" : -1;
+	"buttonAmount" : 3;
+
+	"button1" : "CardUpgradeChoice1";
+	"button2" : "CardUpgradeChoice2";
+	"button3" : "CardUpgradeChoice3";
+}
+
+{
+	"Name" : "Highscore";
+	"State" : 8;
+	"Background" : 0;
+	"buttonAmount" : 1;
+
+	"button1" : "HighscoreStartMenu";
+}
+{
+	"Name" : "GameSkillPick";
+	"State" : 7;
+	"Background" : 2;
+	"buttonAmount" : 3;
+
+	"button1" : "SkillPickButton1";
+	"button2" : "SkillPickButton2";
+	"button3" : "SkillPickButton3";
 }

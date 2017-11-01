@@ -19,28 +19,39 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\DoF.cpp" />
     <ClCompile Include="include\Animation\Animation.cpp" />
     <ClCompile Include="include\Animation\Joint.cpp" />
     <ClCompile Include="include\Animation\JointTransform.cpp" />
     <ClCompile Include="include\Animation\KeyFrame.cpp" />
     <ClCompile Include="include\Animation\Skeleton.cpp" />
     <ClCompile Include="include\Camera.cpp" />
+    <ClCompile Include="include\HUD.cpp" />
+    <ClCompile Include="include\Fog.cpp" />
     <ClCompile Include="include\Lights\Sun.cpp" />
     <ClCompile Include="include\Lights\LightGrid.cpp" />
-    <ClCompile Include="include\PostProccessor.cpp" />
+    <ClCompile Include="include\Menu.cpp" />
+    <ClCompile Include="include\Glow.cpp" />
+    <ClCompile Include="include\Particles\Particle.cpp" />
+    <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
-    <ClCompile Include="include\Resources\DepthStencil.cpp" />
+    <ClCompile Include="include\SnowManager.cpp" />
+    <ClCompile Include="include\SSAORenderer.cpp" />
+    <ClCompile Include="include\Utility\DebugDraw.cpp" />
+    <ClCompile Include="include\Utility\DepthStencil.cpp" />
     <ClCompile Include="include\Resources\MaterialManager.cpp" />
     <ClCompile Include="include\Resources\Mesh.cpp" />
     <ClCompile Include="include\Resources\MeshManager.cpp" />
     <ClCompile Include="include\Resources\ResourceManager.cpp" />
     <ClCompile Include="include\Resources\Shader.cpp" />
-    <ClCompile Include="include\Resources\ShaderResource.cpp" />
+    <ClCompile Include="include\Utility\ShaderResource.cpp" />
     <ClCompile Include="include\Resources\TextureManager.cpp" />
     <ClCompile Include="include\SkyRenderer.cpp" />
+    <ClCompile Include="include\Effects\Water.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DoF.h" />
     <ClInclude Include="include\Animation\AnimatedTestCube.h" />
     <ClInclude Include="include\Animation\AnimatedVertex.h" />
     <ClInclude Include="include\Animation\Animation.h" />
@@ -50,20 +61,29 @@
     <ClInclude Include="include\Animation\Skeleton.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Datatypes.h" />
+    <ClInclude Include="include\Fog.H" />
     <ClInclude Include="include\Graphics.h" />
+    <ClInclude Include="include\HUD.h" />
     <ClInclude Include="include\Lights\Sun.h" />
     <ClInclude Include="include\Lights\LightGrid.h" />
-    <ClInclude Include="include\PostProccessor.h" />
+    <ClInclude Include="include\Menu.h" />
+    <ClInclude Include="include\Glow.h" />
+    <ClInclude Include="include\Particles\Particle.h" />
+    <ClInclude Include="include\Particles\ParticleSystem.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Resources\BRFImportHandler.h" />
-    <ClInclude Include="include\Resources\DepthStencil.h" />
+    <ClInclude Include="include\SnowManager.h" />
+    <ClInclude Include="include\SSAORenderer.h" />
+    <ClInclude Include="include\Utility\Buffer.h" />
+    <ClInclude Include="include\Utility\DebugDraw.h" />
+    <ClInclude Include="include\Utility\DepthStencil.h" />
     <ClInclude Include="include\Resources\Importerstructs.h" />
     <ClInclude Include="include\Resources\MaterialManager.h" />
     <ClInclude Include="include\Resources\Mesh.h" />
     <ClInclude Include="include\Resources\MeshManager.h" />
     <ClInclude Include="include\Resources\ResourceManager.h" />
     <ClInclude Include="include\Resources\Shader.h" />
-    <ClInclude Include="include\Resources\ShaderResource.h" />
+    <ClInclude Include="include\Utility\ShaderResource.h" />
     <ClInclude Include="include\Resources\TextureManager.h" />
     <ClInclude Include="include\SkyRenderer.h" />
     <ClInclude Include="include\Structs.h" />
@@ -71,6 +91,7 @@
     <ClInclude Include="include\TempCube.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
     <ClInclude Include="include\Utility\ConstantBuffer.h" />
+    <ClInclude Include="include\Effects\Water.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -126,33 +147,35 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
@@ -169,7 +192,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
@@ -188,7 +211,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
@@ -209,7 +232,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>

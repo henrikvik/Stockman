@@ -1,70 +1,69 @@
 #include <Entity/Entity.h>
+#include <AI\Enemy.h>
+#include <Projectile\ProjectileStruct.h>
+#include <Misc\Sound\SoundSource.h>
 
 using namespace Logic;
 
 Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelID)
-: Object(modelID)
+: PhysicsObject(body, halfextent, modelID)
 {
-	m_body = body;
-	m_body->setUserPointer(this);
-	m_transform = &m_body->getWorldTransform();
-	m_halfextent = halfextent;
-
-	// For non moving object, that doesn't update loop
-	updateGraphics();
+    m_soundSource = new Sound::SoundSource();
 }
 
 Entity::~Entity() 
 {
-	// ALL physics is getting cleared by the Physics class, but you can delete an entity early by calling destroyBody() below
+    delete m_soundSource;
 }
 
-void Entity::destroyBody()
+void Entity::setSpawnFunctions(std::function<Projectile*(ProjectileData& pData,
+    btVector3 position, btVector3 forward, Entity& shooter)> spawnProjectile,
+    std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
+        std::vector<int> effects)> spawnEnemy,
+    std::function<Trigger*(int id, btVector3 const &pos,
+        std::vector<int> &effects)> spawnTrigger)
 {
-	if (m_body)
-	{
-		if (m_body->getMotionState())
-			delete m_body->getMotionState();
-		if(m_body->getCollisionShape())
-			delete m_body->getCollisionShape();
-		delete m_body;
-	}
+    SpawnProjectile = spawnProjectile;
+    SpawnEnemy = spawnEnemy;
+    SpawnTrigger = spawnTrigger;
 }
 
 void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
+	PhysicsObject::updatePhysics(deltaTime);
+
+	updateSound(deltaTime);
+
+	// Checking different buffs
 	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
 		affect(effectPair.first, *effectPair.second, deltaTime);
 	
-	// Updating every at
+	// Updating buffs duration
 	m_statusManager.update(deltaTime);
-
-	// Updating specific
-	updateSpecific(deltaTime);
-
-	updateGraphics();
 }
 
-void Entity::updateGraphics()
+void Entity::upgrade(Upgrade const & upgrade) { }
+
+void Entity::updateSound(float deltaTime)
 {
-	// Get the new transformation from bulletphysics
-	setWorldTranslation(getTransformMatrix());
+	// Update sound position
+	btVector3 pos = getPositionBT();
+	btVector3 vel = getRigidBody()->getLinearVelocity();
+	m_soundSource->pos = { pos.x(), pos.y(), pos.z() };
+	m_soundSource->vel = { vel.x(), vel.y(), vel.z() };
+	m_soundSource->update(deltaTime);
 }
 
-void Entity::collision(Entity& other)
+void Entity::addCallback(Entity::EntityEvent entityEvent, callback callback)
 {
-	onCollision(other);
+    m_callbacks[entityEvent] = callback;
 }
 
-void Entity::affect(int stacks, Effect const &effect, float dt) {}
-
-void Entity::upgrade(Upgrade const & upgrade) {}
-
-btRigidBody* Entity::getRigidbody()
+bool Entity::hasCallback(EntityEvent entityEvent) const
 {
-	return m_body;
+    return m_callbacks.find(entityEvent) != m_callbacks.end();
 }
 
 StatusManager& Entity::getStatusManager()
@@ -72,57 +71,17 @@ StatusManager& Entity::getStatusManager()
 	return m_statusManager;
 }
 
-void Entity::setHalfExtent(btVector3 halfExtent)
-{
-	m_halfextent = halfExtent;
-}
-
-btVector3 Entity::getHalfExtent() const
-{
-	return m_halfextent;
-}
-
 void Entity::setStatusManager(StatusManager & statusManager)
 {
 	m_statusManager = statusManager;
 }
 
-DirectX::SimpleMath::Vector3 Entity::getPosition() const
+Sound::SoundSource* Entity::getSoundSource()
 {
-	return DirectX::SimpleMath::Vector3(m_transform->getOrigin());
+	return m_soundSource;
 }
 
-btVector3 Entity::getPositionBT() const
+std::unordered_map<Entity::EntityEvent, std::function<void (Entity::CallbackData&)>>& Entity::getCallbacks()
 {
-	return m_transform->getOrigin();
-}
-
-DirectX::SimpleMath::Quaternion Entity::getRotation() const
-{
-	return DirectX::SimpleMath::Quaternion(m_transform->getRotation());
-}
-
-DirectX::SimpleMath::Vector3 Entity::getScale() const
-{
-	return DirectX::SimpleMath::Vector3(m_body->getCollisionShape()->getLocalScaling());
-}
-
-DirectX::SimpleMath::Matrix Entity::getTransformMatrix() const
-{
-	// Making memory for a matrix
-	float* m = new float[4 * 16];
-
-	// Getting this entity's matrix
-	m_transform->getOpenGLMatrix((btScalar*)(m));
-
-	// Translating to DirectX Math and assigning the variables
-	DirectX::SimpleMath::Matrix transformMatrix(m);
-
-	//Find the scaling matrix
-	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);
-
-	// Deleting the old created variables from memory
-	delete m;
-
-	return scale * transformMatrix;
+    return m_callbacks;
 }

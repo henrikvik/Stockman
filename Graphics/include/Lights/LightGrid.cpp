@@ -43,18 +43,9 @@ namespace Graphics {
 
 		m_CullGrids = newd ComputeShader(device, SHADER_PATH("LightGridCulling.hlsl"));
 		m_FrustumGeneration = newd ComputeShader(device, SHADER_PATH("LightGridGeneration.hlsl"));
-		Light lights[NUM_LIGHTS] = {};
-		lights[0].color = DirectX::SimpleMath::Vector3(1, 0, 0);
-		lights[0].positionWS = DirectX::SimpleMath::Vector3(1, 1, 1);
-		lights[0].range = 4.f;
-		lights[1].color = DirectX::SimpleMath::Vector3(0, 1, 0);
-		lights[1].positionWS = DirectX::SimpleMath::Vector3(4, 1, 3);
-		lights[1].range = 4.f;
-		lights[2].color = DirectX::SimpleMath::Vector3(0, 0, 1);
-		lights[2].positionWS = DirectX::SimpleMath::Vector3(1, 1, 4);
-		lights[2].range = 3.f;
+		
 
-		m_Lights = new StructuredBuffer<Light>(device, CpuAccess::Write, NUM_LIGHTS, lights);
+		m_Lights = new StructuredBuffer<Light>(device, CpuAccess::Write, MAX_LIGHTS);
 
 		uint32_t initial = 0;
 		m_ResetIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::Read, 1, &initial);
@@ -152,7 +143,7 @@ namespace Graphics {
 
 		ID3D11SamplerState *sampler = states->LinearClamp();
 		ID3D11Buffer *bufs[] = {
-			camera->getBuffer(),
+			*camera->getBuffer(),
 			m_ParamsBuffer
 		};
 		ID3D11ShaderResourceView *SRVs[] = {
@@ -192,6 +183,30 @@ namespace Graphics {
 		cxt->CSSetShader(nullptr, nullptr, 0);
 	}
 
+	void LightGrid::updateLights(ID3D11DeviceContext * context, Camera * camera, std::vector<Light> lights)
+	{
+		auto lightStructuredBuffer = getLights();
+
+		Light *ptr = lightStructuredBuffer->map(context);
+		for (int i = 0; i < MAX_LIGHTS; i++) 
+		{
+			if (i < lights.size())
+			{
+				ptr[i] = lights[i];
+				ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(lights[i].positionWS.x, lights[i].positionWS.y, lights[i].positionWS.z, 1.f), camera->getView());
+			}
+			else
+			{
+				ptr[i].range = 0;
+			}
+		}
+
+		if (lights.size() > MAX_LIGHTS)
+			printf("There is too many point light! %d will not be visible!\n", (int)(lights.size() - MAX_LIGHTS));
+
+		lightStructuredBuffer->unmap(context);
+	}
+
 	inline Plane computePlane(DirectX::SimpleMath::Vector3 a, DirectX::SimpleMath::Vector3 b)
 	{
 		Plane plane;
@@ -209,12 +224,12 @@ namespace Graphics {
 	{
 		using namespace DirectX::SimpleMath;
 
-		m_Params.numThreads[0] = ceil(1280 / (float)BLOCK_SIZE);
-		m_Params.numThreads[1] = ceil(720 / (float)BLOCK_SIZE);
+		m_Params.numThreads[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
+		m_Params.numThreads[1] = (int)ceil(720 / (float)BLOCK_SIZE);
 		m_Params.numThreads[2] = 1;
 
-		m_Params.numThreadGroups[0] = ceil(m_Params.numThreads[0] / (float)BLOCK_SIZE);
-		m_Params.numThreadGroups[1] = ceil(m_Params.numThreads[1] / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[0] = (int)ceil(m_Params.numThreads[0] / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[1] = (int)ceil(m_Params.numThreads[1] / (float)BLOCK_SIZE);
 		m_Params.numThreadGroups[2] = 1;
 
 
@@ -236,10 +251,10 @@ namespace Graphics {
 						auto threadIdY = (groupY * BLOCK_SIZE + threadY);
 
 						Vector4 corners[] = {
-							Vector4(threadIdX      * BLOCK_SIZE,  threadIdY      * BLOCK_SIZE, 1.f, 1.f),
-							Vector4((threadIdX + 1) * BLOCK_SIZE,  threadIdY      * BLOCK_SIZE, 1.f, 1.f),
-							Vector4(threadIdX      * BLOCK_SIZE, (threadIdY + 1) * BLOCK_SIZE, 1.f, 1.f),
-							Vector4((threadIdX + 1) * BLOCK_SIZE, (threadIdY + 1) * BLOCK_SIZE, 1.f, 1.f)
+							Vector4(float(threadIdX       * BLOCK_SIZE),  float(threadIdY       * BLOCK_SIZE), 1.f, 1.f),
+							Vector4(float((threadIdX + 1) * BLOCK_SIZE),  float(threadIdY       * BLOCK_SIZE), 1.f, 1.f),
+							Vector4(float(threadIdX       * BLOCK_SIZE),  float((threadIdY + 1) * BLOCK_SIZE), 1.f, 1.f),
+							Vector4(float((threadIdX + 1) * BLOCK_SIZE),  float((threadIdY + 1) * BLOCK_SIZE), 1.f, 1.f)
 						};
 
 						Vector3 points[4];
@@ -272,19 +287,19 @@ namespace Graphics {
 		delete[] frustums;
 
 
-		m_Params.numThreadGroups[0] = ceil(1280 / (float)BLOCK_SIZE);
-		m_Params.numThreadGroups[1] = ceil(720 / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[1] = (int)ceil(720 / (float)BLOCK_SIZE);
 		m_Params.numThreadGroups[2] = 1;
 
-		m_Params.numThreads[0] = m_Params.numThreadGroups[0] * BLOCK_SIZE;
-		m_Params.numThreads[1] = m_Params.numThreadGroups[1] * BLOCK_SIZE;
+		m_Params.numThreads[0] = (int)m_Params.numThreadGroups[0] * BLOCK_SIZE;
+		m_Params.numThreads[1] = (int)m_Params.numThreadGroups[1] * BLOCK_SIZE;
 		m_Params.numThreads[2] = 1;
 
 		// Grid params
 		{
 			D3D11_BUFFER_DESC desc = {};
 			desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			desc.ByteWidth = sizeof(DispatchParams);
+			desc.ByteWidth = (UINT)sizeof(DispatchParams);
 			desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			desc.Usage = D3D11_USAGE_DYNAMIC;
 
@@ -297,12 +312,12 @@ namespace Graphics {
 
 	void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
 	{
-		m_Params.numThreads[0] = ceil(1280 / (float)BLOCK_SIZE);
-		m_Params.numThreads[1] = ceil(720 / (float)BLOCK_SIZE);
+		m_Params.numThreads[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
+		m_Params.numThreads[1] = (int)ceil(720 / (float)BLOCK_SIZE);
 		m_Params.numThreads[2] = 1;
 
-		m_Params.numThreadGroups[0] = ceil(m_Params.numThreads[0] / (float)BLOCK_SIZE);
-		m_Params.numThreadGroups[1] = ceil(m_Params.numThreads[1] / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[0] = (int)ceil(m_Params.numThreads[0] / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[1] = (int)ceil(m_Params.numThreads[1] / (float)BLOCK_SIZE);
 		m_Params.numThreadGroups[2] = 1;
 
 
@@ -310,7 +325,7 @@ namespace Graphics {
 		{
 			D3D11_BUFFER_DESC desc = {};
 			desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			desc.ByteWidth = sizeof(DispatchParams);
+			desc.ByteWidth = (UINT)sizeof(DispatchParams);
 			desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			desc.Usage = D3D11_USAGE_DYNAMIC;
 
@@ -327,7 +342,7 @@ namespace Graphics {
 		cxt->CSSetShader(*m_FrustumGeneration, nullptr, 0);
 
 		ID3D11Buffer *buffers[] = {
-			camera->getBuffer(),
+			*camera->getBuffer(),
 			m_ParamsBuffer,
 		};
 		cxt->CSSetConstantBuffers(0, 2, buffers);
@@ -340,12 +355,12 @@ namespace Graphics {
 		cxt->CSSetUnorderedAccessViews(0, 1, &reset, 0);
 
 
-		m_Params.numThreadGroups[0] = ceil(1280 / (float)BLOCK_SIZE);
-		m_Params.numThreadGroups[1] = ceil(720 / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[1] = (int)ceil(720 / (float)BLOCK_SIZE);
 		m_Params.numThreadGroups[2] = 1;
 
-		m_Params.numThreads[0] = m_Params.numThreadGroups[0] * BLOCK_SIZE;
-		m_Params.numThreads[1] = m_Params.numThreadGroups[1] * BLOCK_SIZE;
+		m_Params.numThreads[0] = (int)m_Params.numThreadGroups[0] * BLOCK_SIZE;
+		m_Params.numThreads[1] = (int)m_Params.numThreadGroups[1] * BLOCK_SIZE;
 		m_Params.numThreads[2] = 1;
 
 

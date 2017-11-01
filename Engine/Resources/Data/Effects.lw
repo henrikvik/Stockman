@@ -1,27 +1,80 @@
 { // ON FIRE
-	"flags": 0; // 0x2
+	"flags": 1; // 0x2
 	"duration": 3000f;
 	"modifiers": 0;
 	"specifics": 1;
 
 	"sBulletTime": 0.1f;
 	"sFreezing": 0.1f;
+	"sAmmoType": 0f;
 }
 { // FREEZE
 	"flags": 4; // 0x4
-	"duration": 2500f;
+	"duration": 5000f;
 	"modifiers": 0;
-	"specifics": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0f;
+	"sFreezing": 0.99f;
+	"sAmmoType": 0f;
 }
 { // JUMP-PAD
-	"flags": 256; // 0x100
+	"flags": 128; // 0x80
 	"duration": 0f;
+	"modifiers": 1;
+	"specifics": 0;
+
+	"mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 2.f;
+}
+{ // AMMO_PICK_UP_PRIMARY
+	"flags": 512; // 0x200
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0f;
+	"sFreezing": 0f;
+	"sAmmoType": 0f;
+}
+{ // AMMO_PICK_UP_SECONDARY
+	"flags": 512; // 0x200
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0f;
+	"sFreezing": 0f;
+	"sAmmoType": 1.f;
+}
+{ // SHIELDCHARGE
+	"flags": 7168; // 0x400 + 0x800 + 0x1000
+	"duration": 1500f;
 	"modifiers": 0;
 	"specifics": 0;
 }
-{ // AMMO_PICK_UP
-	"flags": 1024; // 0x400
+{ // BULLET_TIME
+	"flags": 8192; // 0x2000
 	"duration": 0f;
 	"modifiers": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0.9f;
+	"sFreezing": 0f;
+	"sAmmoType": 0f;
+}
+{ // ENRAGE
+	"flags": 200; // 0x8 + 0x40 + 0x80 
+	"duration": 800000f;
+	"modifiers": 1;
 	"specifics": 0;
+
+	"mDmgGiven": 10f;
+	"mDmgTaken": 0f;
+	"mFirerate": 10f;
+	"mHP": 0f;
+	"mMovementSpeed": 15f;
 }

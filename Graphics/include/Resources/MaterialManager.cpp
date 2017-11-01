@@ -119,6 +119,7 @@ namespace Graphics
 		modelInfo.diffuseMap = textureManager->GetDiffuseTexture(materials->at(iD).diffuse_ID);
 		modelInfo.normalMap = textureManager->GetNormalTexture(materials->at(iD).normal_ID);
 		modelInfo.specularMap = textureManager->GetSpecularTexture(materials->at(iD).specular_ID);
+		modelInfo.glowMap = textureManager->GetGlowTexture(materials->at(iD).glow_ID);
 	}
 
 }

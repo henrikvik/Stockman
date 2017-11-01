@@ -1,9 +1,15 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <Graphics\include\Renderer.h>
-#include <Graphics\include\Structs.h>
+#include <d3d11.h>
 #include <SimpleMath.h>
+
+namespace Graphics 
+{
+    class Renderer;
+    struct RenderInfo;
+    enum ModelID;
+};
 
 namespace Logic
 {
@@ -12,6 +18,8 @@ namespace Logic
 	public:
 		Object();
 		Object(Graphics::ModelID modelID);
+        Object(const Object &other) = delete;
+        Object* operator=(const Object &other) = delete;
 		virtual ~Object();
 		virtual void render(Graphics::Renderer& renderer);
 
@@ -25,7 +33,7 @@ namespace Logic
 		DirectX::SimpleMath::Matrix getWorldTranslation() const;
 
 	private:
-		Graphics::RenderInfo m_renderInfo;
+		Graphics::RenderInfo* m_renderInfo;
 	};
 }
 

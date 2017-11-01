@@ -10,46 +10,72 @@
 #include "WICTextureLoader.h"
 #include "Lights\LightGrid.h"
 #include "Resources\ResourceManager.h"
-#include "Resources\DepthStencil.h"
+#include "Utility\DepthStencil.h"
 #include "Resources\ResourceManager.h"
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
-#include "Resources\ShaderResource.h"
-#include "PostProccessor.h";
+#include "Utility\ShaderResource.h"
+#include "Glow.h"
 #include "SkyRenderer.h"
+#include "Menu.h"
+#include "HUD.h"
+#include "SSAORenderer.h"
+#include "Fog.H"
+#include "DoF.h"
+#include "SnowManager.h"
 
 #include <SpriteBatch.h>
 
+
 namespace Graphics
 {
-    class Renderer
+	class Renderer
     {
     public:
-        Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
-		virtual ~Renderer();
-        void render(Camera * camera);
-        void drawMenu(Graphics::MenuInfo * info);
-        void queueRender(RenderInfo * renderInfo);
-        void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
 
-		void updateLight(float deltaTime, Camera * camera);
+        Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
+        virtual ~Renderer();
+        void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, Camera * camera);
+
+
+        void render(Camera * camera);
+        void queueRender(RenderInfo * renderInfo);
+		void queueFoliageRender(FoliageRenderInfo * renderInfo);
+		void queueWaterRender(WaterRenderInfo * renderInfo);
+        void queueRenderDebug(RenderDebugInfo * debugInfo);
+        void queueText(TextString * text);
+		void queueLight(Light light);
+		void fillHUDInfo(HUDInfo * info);
+
+        void drawMenu(Graphics::MenuInfo * info);
+        void updateLight(float deltaTime, Camera * camera);
+
+        //indicates how gray the screen will be
+        void setBulletTimeCBuffer(float value);
+
+        void updateShake(float deltaTime);
+        void startShake(float radius, float duration);
     private:
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
-        std::vector<RenderInfo*> renderQueue;
         InstanceQueue_t instanceQueue;
+        std::vector<RenderInfo*> renderQueue;
+		std::vector<FoliageRenderInfo*> renderFoliageQueue;
+		std::vector<WaterRenderInfo*> renderWaterQueue;
+
 
         DepthStencil depthStencil;
 
-		SkyRenderer skyRenderer;
-		PostProcessor postProcessor;
+        SkyRenderer skyRenderer;
+        Glow glowRenderer;
 
 		LightGrid grid;
+		std::vector<Light> lights;
+
 		DirectX::CommonStates *states;
 
         Shader fullscreenQuad;
         Shader forwardPlus;
-        Shader menuShader;
-        Shader GUIShader;
+		Shader depthShader;
 
         //ComputeShader lightGridGen; 
 
@@ -58,69 +84,78 @@ namespace Graphics
         ResourceManager resourceManager;
         D3D11_VIEWPORT viewPort;
 
-        // Lånade Pekare
+        // Lånade Pekareu
         ID3D11Device * device;
         ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 
-        bool menuTexturesLoaded;
-        void unloadMenuTextures();
-        void reloadMenuTextures();
 
+		SSAORenderer ssaoRenderer;
         
 
-		ShaderResource fakeBackBuffer;
-		ShaderResource fakeBackBufferSwap;
-		ShaderResource glowMap;
+		ShaderResource* fakeBackBuffer;
+		ShaderResource* fakeBackBufferSwap;
 
-        ///// SUPER TEMP
-       
-       
-		
-
-	
-
-
-
-
-        ID3D11ShaderResourceView * menuTexture;
-        //crosshair
-        ID3D11ShaderResourceView * GUITexture1;
-        //HP bar
-        ID3D11ShaderResourceView * GUITexture2;
-        ID3D11ShaderResourceView * buttonTexture;
-       
-
-        ID3D11Buffer *GUIvb;
         ID3D11BlendState *transparencyBlendState;
 
-        ID3D11Buffer * menuQuad;
-        ID3D11Buffer * buttonQuad;
+        
+		bool enablePostEffects = true;
+
+		bool enableSSAO = true;
+		bool enableGlow = true;
+		bool enableFog = true;
+		bool enableDOF = true;
+        bool enableCoCWindow = false;
+        bool enableSnow = false;
+
+        Menu menu;
+        HUD hud;
+        DoF DoFRenderer;
+
+        ConstantBuffer<float> bulletTimeBuffer;
+
+        //temp
+        ID3D11ShaderResourceView * glowTest;
+
+		SnowManager snowManager;
 
 
-
-        void loadModellessTextures();
-
-		ID3D11ShaderResourceView * glowTest;
-
+		//superTemp
+		struct StatusData
+		{
+			float burn;
+			float freeze;
+		} statusData;
        
         void cull();
         void writeInstanceData();
         void draw();
-        void drawGUI();
+		void clear();
+		void swapBackBuffers();
 		
-
-        void mapButtons(ButtonInfo * info);
-
-
-        
-		
+#pragma region Foliage
+		 
+		ConstantBuffer <UINT> timeBuffer;
+		UINT grassTime = 0;
+		void drawFoliage(Camera * camera);
+		Shader foliageShader;
+#pragma endregion
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
-
         void createBlendState();
-        void createGUIBuffers();
+		void registerDebugFunction();
 
-        void createMenuVBS();
+
+    #pragma region RenderDebugInfo
+
+        Shader debugRender;
+        std::vector<RenderDebugInfo*> renderDebugQueue;
+        StructuredBuffer<DirectX::SimpleMath::Vector3> debugPointsBuffer;
+        ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
+        void renderDebugInfo(Camera* camera);
+
+    #pragma endregion
+		Fog fog;
+
     };
 };
