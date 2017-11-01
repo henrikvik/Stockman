@@ -122,7 +122,7 @@ ENEMY_TYPE Enemy::getEnemyType() const
 	return m_enemyType;
 }
 
-Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed)
+Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed, float gravity, float scale)
 {
 	ProjectileData data;
 
@@ -131,7 +131,7 @@ Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed)
 	data.speed = speed;
     data.ttl = 20000;
     data.gravityModifier = 2.5;
-	data.scale = 1.f;
+	data.scale = scale;
     data.enemyBullet = true;
     data.isSensor = true;
 
