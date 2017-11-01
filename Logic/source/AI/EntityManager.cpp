@@ -100,7 +100,6 @@ void EntityManager::deallocateData(bool forceDestroy)
     {
         if (forceDestroy || !enemy->hasCallbackEntities()) 
         {
-            DeleteBody(*enemy);
             delete enemy;
             enemy = nullptr;
         }
@@ -181,8 +180,7 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
             flock[flock.size() - 1]
         );
 
-        enemy->getRigidBody()->getWorldTransform().setOrigin({ 0.f, -999.f, 0.f });
-        enemy->getRigidBody()->setLinearVelocity({ 0.f, 0.f, 0.f });
+        DeleteBody(*enemy);
         m_deadEnemies.push_back(enemy);
         flock.pop_back();
     }

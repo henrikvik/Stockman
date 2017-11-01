@@ -15,7 +15,11 @@ TriggerManager::~TriggerManager()
 void TriggerManager::reset()
 {
     for (Trigger* trigger : m_triggers)
+    {
+        m_physicsPtr->removeRigidBody(trigger->getRigidBody());
+        trigger->destroyBody();
         delete trigger;
+    }
     m_triggers.clear();
 }
 
