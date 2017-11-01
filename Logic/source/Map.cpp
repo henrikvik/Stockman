@@ -170,6 +170,7 @@ void Map::debugInitObjects()
     for (int i = 0; i < 12; i++)
     {
         if (i == Graphics::ModelID::GROUND) break;
+        if (i == Graphics::ModelID::SKY_SPHERE) break;
         box = new Speaker(m_physicsPtr->createBody(Cube({ -200.f + (i * 10.f), 2.f, 123.f }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::ModelID(i));
         m_objects.push_back(box);
     }
