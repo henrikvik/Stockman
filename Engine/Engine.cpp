@@ -127,7 +127,7 @@ void Engine::initializeWindow()
 	this->window = CreateWindow(
 		"Basic test",
 		"Stort spel",
-		WS_OVERLAPPEDWINDOW,
+		WS_CAPTION,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		rc.right - rc.left,
