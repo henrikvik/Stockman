@@ -22,6 +22,7 @@ Graphics::Menu::~Menu()
     SAFE_RELEASE(menuTexture[1]);
     SAFE_RELEASE(menuTexture[2]);
     SAFE_RELEASE(menuTexture[3]);
+    SAFE_RELEASE(menuTexture[4]);
     SAFE_RELEASE(menuQuad);
     SAFE_RELEASE(buttonQuad);
     delete states;
