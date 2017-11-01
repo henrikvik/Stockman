@@ -22,6 +22,7 @@ Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent,
 	m_bulletTimeMod = 1.f;
     m_moveSpeedMod = 1.f;
 
+
 	//animation todo
 }
 
