@@ -51,7 +51,7 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     }
 
 
-    if (!vbCreated && !firstTime)
+    if (!vbCreated && !firstTime && currentInfo->currentSkills[0] >= 0)
     {
         this->setSkillIcons(context);
         vbCreated = true;
@@ -757,13 +757,13 @@ void Graphics::HUD::setSkillIcons(ID3D11DeviceContext *context)
     GUIquad[31].uv = DirectX::SimpleMath::Vector2{ 2.f / 6.5f, 0.0f };
 
     GUIquad[32].verts = DirectX::SimpleMath::Vector2{ 0.71f, -.9f };
-    GUIquad[32].uv = DirectX::SimpleMath::Vector2{ 3.f / 6.1f, 0.5f };
+    GUIquad[32].uv = DirectX::SimpleMath::Vector2{ 3.f / 6.2f, 0.5f };
 
     GUIquad[33].verts = DirectX::SimpleMath::Vector2{ 0.71f, -0.65f };
-    GUIquad[33].uv = DirectX::SimpleMath::Vector2{ 3.f / 6.1f, 0.0f };
+    GUIquad[33].uv = DirectX::SimpleMath::Vector2{ 3.f / 6.2f, 0.0f };
 
     GUIquad[34].verts = GUIquad[32].verts;
-    GUIquad[34].uv = DirectX::SimpleMath::Vector2{ 3.f / 6.1f, 0.5f };
+    GUIquad[34].uv = DirectX::SimpleMath::Vector2{ 3.f / 6.2f, 0.5f };
 
     GUIquad[35].verts = GUIquad[31].verts;
     GUIquad[35].uv = DirectX::SimpleMath::Vector2{ 2.f / 6.5f, 0.0f };
@@ -777,23 +777,26 @@ void Graphics::HUD::setSkillIcons(ID3D11DeviceContext *context)
 
     //skill icon 1
 
+    float skillUV0 = 3.f / 6.2f + (1.0f/6.0f * currentInfo->currentSkills[1]);
+    float skillUV1 = 3.f / 6.1f + (1.0f / 6.0f * (currentInfo->currentSkills[1] +1 )) ;
+
     GUIquad[36].verts = DirectX::SimpleMath::Vector2{ 0.7f, -.9f };
-    GUIquad[36].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.5f };
+    GUIquad[36].uv = DirectX::SimpleMath::Vector2{ skillUV0, 0.5f };
 
     GUIquad[37].verts = DirectX::SimpleMath::Vector2{ 0.7f, -0.65f };
-    GUIquad[37].uv = DirectX::SimpleMath::Vector2{ .0f, 0.0f };
+    GUIquad[37].uv = DirectX::SimpleMath::Vector2{ skillUV0, 0.0f };
 
     GUIquad[38].verts = DirectX::SimpleMath::Vector2{ 0.85f, -.9f };
-    GUIquad[38].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.5f };
+    GUIquad[38].uv = DirectX::SimpleMath::Vector2{ skillUV1, 0.5f };
 
     GUIquad[39].verts = DirectX::SimpleMath::Vector2{ 0.85f, -0.65f };
-    GUIquad[39].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+    GUIquad[39].uv = DirectX::SimpleMath::Vector2{ skillUV1, 0.0f };
 
     GUIquad[40].verts = GUIquad[38].verts;
-    GUIquad[40].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.5f };
+    GUIquad[40].uv = DirectX::SimpleMath::Vector2{ skillUV1, 0.5f };
 
     GUIquad[41].verts = GUIquad[37].verts;
-    GUIquad[41].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+    GUIquad[41].uv = DirectX::SimpleMath::Vector2{ skillUV0, 0.0f };
 
     GUIquad[36].element = 6;
     GUIquad[37].element = 6;
@@ -804,23 +807,26 @@ void Graphics::HUD::setSkillIcons(ID3D11DeviceContext *context)
 
     //skill icon 2
 
+    skillUV0 = 3.f / 6.2f + (1.0f / 6.0f) * currentInfo->currentSkills[0];
+    skillUV1 = 3.f / 6.1f + (1.0f / 6.0f) * (currentInfo->currentSkills[0] + 1);
+
     GUIquad[42].verts = DirectX::SimpleMath::Vector2{ 0.85f, -.9f };
-    GUIquad[42].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.5f };
+    GUIquad[42].uv = DirectX::SimpleMath::Vector2{ skillUV0, 0.5f };
 
     GUIquad[43].verts = DirectX::SimpleMath::Vector2{ 0.85f, -0.65f };
-    GUIquad[43].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+    GUIquad[43].uv = DirectX::SimpleMath::Vector2{ skillUV0, 0.0f };
 
     GUIquad[44].verts = DirectX::SimpleMath::Vector2{ 1.0f, -.9f };
-    GUIquad[44].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.5f };
+    GUIquad[44].uv = DirectX::SimpleMath::Vector2{ skillUV1, 0.5f };
 
     GUIquad[45].verts = DirectX::SimpleMath::Vector2{ 1.0f, -0.65f };
-    GUIquad[45].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.0f };
+    GUIquad[45].uv = DirectX::SimpleMath::Vector2{ skillUV1, 0.0f };
 
     GUIquad[46].verts = GUIquad[44].verts;
-    GUIquad[46].uv = DirectX::SimpleMath::Vector2{ 1.0f, 0.5f };
+    GUIquad[46].uv = DirectX::SimpleMath::Vector2{ skillUV1, 0.5f };
 
     GUIquad[47].verts = GUIquad[43].verts;
-    GUIquad[47].uv = DirectX::SimpleMath::Vector2{ 0.0f, 0.0f };
+    GUIquad[47].uv = DirectX::SimpleMath::Vector2{ skillUV0, 0.0f };
 
     GUIquad[42].element = 7;
     GUIquad[43].element = 7;
