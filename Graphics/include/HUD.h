@@ -21,7 +21,7 @@ namespace Graphics
         void fillHUDInfo(HUDInfo * info);
 		void startShake(float radius, float duration);
 		void updateShake(ID3D11DeviceContext * context, float deltaTime);
-        void renderText(ID3D11BlendState * blendState);
+        void renderText(ID3D11BlendState * blendState, bool fulhack);
 
     private:
         void createHUDVBS(ID3D11Device * device);
@@ -31,6 +31,7 @@ namespace Graphics
         void renderHUDText(ID3D11BlendState * blendState);
         void updateHUDConstantBuffer(ID3D11DeviceContext * context);
         void createHUDCBs(ID3D11Device * device);
+        void setSkillIcons(ID3D11DeviceContext *context);
 
         Shader shader;
 		ConstantBuffer<DirectX::SimpleMath::Vector2> offsetBuffer;
@@ -52,17 +53,22 @@ namespace Graphics
         DirectX::SimpleMath::Vector2 scorePos;
         DirectX::SimpleMath::Vector2 wavePos;
         DirectX::SimpleMath::Vector2 timePos;
-        DirectX::SimpleMath::Vector2 cdPos;
+        DirectX::SimpleMath::Vector2 cdPos0;
+        DirectX::SimpleMath::Vector2 cdPos1;
 
         bool changed;
         bool firstTime;
         int prevHP;
-        float prevCooldown;
+        float prevCooldown0;
+        float prevCooldown1;
+        int prevWeapon;
 
 		float shakeRadius;
 		bool isShaking;
 		float shakeDuration;
 		float shakeCounter;
+        bool vbCreated;
+        bool fuligasehacket;
     };
 
 }
