@@ -1,5 +1,3 @@
-#include "ShaderConstants.hlsli"
-
 //If you want to include this file this is the allocated resources:
 //cbuffer register 0, 1, 2 and 3
 //0: Camera     1: DirectionalLight     2: BulletTime   3: LightVP
@@ -75,6 +73,20 @@ Texture2D diffuseMap : register(t10);
 Texture2D normalMap : register(t11);
 Texture2D specularMap : register(t12);
 Texture2D glowMap : register(t13);
+
+
+//makes stuff gray
+float3 adjustSaturation(float3 color, float saturation)
+{
+	float grey = dot(color, float3(0.3, 0.59, 0.11));
+
+	return lerp(grey, color, saturation);
+}
+
+float3 adjustContrast(float3 color, float contrast, float threshold)
+{
+    return (color - threshold) * max(contrast, 0.f) + threshold;
+}
 
 //Returns the shadow amount of a given position
 float calculateShadowValue(float3 lightPos, int sampleCount = 1)
