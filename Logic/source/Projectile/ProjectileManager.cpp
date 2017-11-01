@@ -175,8 +175,8 @@ void Logic::ProjectileManager::render(Graphics::Renderer& renderer)
 
 void ProjectileManager::removeAllProjectiles()
 {
-    for (int i = m_projectilesActive.size() - 1; i >= 0; i--)
-        removeProjectile(m_projectilesActive[i], i);
+    while (!m_projectilesActive.empty())
+        removeProjectile(m_projectilesActive[0], 0);
 }
 
 std::vector<Projectile*>& ProjectileManager::getProjectiles()

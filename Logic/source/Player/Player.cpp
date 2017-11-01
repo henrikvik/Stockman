@@ -155,9 +155,9 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
         else if (Enemy *e = dynamic_cast<Enemy*> (&other))
         {
             int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
-            e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * stacks);
+            e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * static_cast<btScalar> (stacks));
             stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
-            e->damage(2 * stacks); // replace 1 with the player damage when it is better
+            e->damage(2.f * stacks); // replace 1 with the player damage when it is better
         }
     }
 }
