@@ -141,7 +141,8 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
                     dynamic_cast<Enemy*> (&other)->getStatusManager().addStatus(StatusManager::FREEZE, 1, true);
                     
                     if (FUN_MODE)
-                        if ((rand() % 10) == 1)Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+                        if ((rand() % 100) == 1) 
+                            Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
                 }
             }
         }
