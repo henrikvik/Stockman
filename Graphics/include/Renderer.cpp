@@ -337,7 +337,7 @@ namespace Graphics
 		renderFoliageQueue.clear();
 		PROFILE_END();
 
-
+		
 		snowManager.drawSnowflakes(deviceContext, camera);
 		deviceContext->GSSetShader(nullptr, nullptr, 0);
 		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
