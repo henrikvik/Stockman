@@ -45,7 +45,8 @@ static const float ssaoGaussianFilter[SSAOKERNELSIZE] =
 //makes stuff gray
 float3 adjustSaturation(float3 color, float saturation)
 {
-	float grey = dot(color, float3(0.3, 0.59, 0.11));
+//	float grey = dot(color, float3(0.3, 0.59, 0.11));
+    float grey = dot(color, float3(1, 1, 1));
 
 	return lerp(grey, color, saturation);
 }
