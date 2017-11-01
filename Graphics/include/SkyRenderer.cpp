@@ -45,15 +45,10 @@ namespace Graphics
 		context->PSSetShaderResources(0, 1, &srv);
 		context->PSSetShaderResources(1, 1, &srv2);
 
-		ID3D11Buffer * buffers[] =
-		{
-			*cam->getBuffer(),
-			sphereTransformBuffer
-		};
+		context->VSSetConstantBuffers(0, 1, *cam->getBuffer());
+		context->VSSetConstantBuffers(4, 1, sphereTransformBuffer);
 
-		context->VSSetConstantBuffers(0, 2, buffers);
-
-		context->PSSetConstantBuffers(2, 1, *sun.getShaderBuffer());
+		context->PSSetConstantBuffers(1, 1, *sun.getShaderBuffer());
 
 
 

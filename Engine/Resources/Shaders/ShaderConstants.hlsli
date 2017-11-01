@@ -37,21 +37,3 @@ static const float ssaoGaussianFilter[SSAOKERNELSIZE] =
 #define SSAO_SCALE 1.f
 #define SSAO_BIAS 0.3f
 #define SSAO_ITERATIONS 4
-
-
-
-
-
-//makes stuff gray
-float3 adjustSaturation(float3 color, float saturation)
-{
-//	float grey = dot(color, float3(0.3, 0.59, 0.11));
-    float grey = dot(color, float3(1, 1, 1));
-
-	return lerp(grey, color, saturation);
-}
-
-float3 adjustContrast(float3 color, float contrast, float threshold)
-{
-    return (color - threshold) * max(contrast, 0.f) + threshold;
-}

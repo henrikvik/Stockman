@@ -1,8 +1,8 @@
 #include "../ShaderConstants.hlsli"
+#include "../LightCalcInclude.hlsli"
 
-Texture2D backBuffer : register(t0);
-Texture2D toMerge : register(t1);
-sampler Sampler : register(s0);
+Texture2D backBuffer : register(t4);
+Texture2D toMerge : register(t5);
 
 struct VSOut
 {
