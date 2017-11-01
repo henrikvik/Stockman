@@ -123,7 +123,15 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
                 {
                     // DELETE THIS 
                     if (dynamic_cast<Enemy*> (&other)->getHealth() < 0)
-                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+                    {
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(2, 2, 2)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(-3, 2, -3)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(-2, 3, -3)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(3, 2, 3)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(2, 3, -2)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(0, 6, 0)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(0, 0, 0)));
+                    }
                 }
                 if (m_pData.type == ProjectileTypeIce)
                 {
@@ -131,7 +139,7 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 
                     // DELETE THIS 
                     if (FUN_MODE)
-                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+                        if (rand() % 8 + 1 == 1) Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
                 }
             }
         }
