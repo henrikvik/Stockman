@@ -39,7 +39,7 @@ namespace Logic
             float activeOffset;
 			float height;
 			float width;
-			int textureIndex;
+			int texture;
 			std::function<void(void)> m_CallBackFunction; //must change to a function aqquiering
 		};
 
@@ -50,6 +50,8 @@ namespace Logic
         void hoverOver(int posX, int posY);
 		bool animationTransition(float dt, float maxAnimationTime, bool forward);
         Graphics::MenuInfo getMenuInfo();
+
+        virtual void render() const;
 	};
 }
 

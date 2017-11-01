@@ -46,7 +46,7 @@ void Game::init()
 	m_projectileManager = newd ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, nullptr, Game::PLAYER_START_SCALE);
+	m_player = new Player(Resources::Models::UnitCube, nullptr, Game::PLAYER_START_SCALE);
 	m_player->init(m_physics, m_projectileManager);
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
 
@@ -245,19 +245,19 @@ void Game::gameOver()
 	reset();
 }
 
-void Game::render(Graphics::Renderer& renderer)
+void Game::render()
 {
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-		gameRunTimeRender(renderer);
+		gameRunTimeRender();
 		// Debug Draw physics
 		if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
-			m_physics->render(renderer);
+			m_physics->render();
 		break;
 
 	case gameStateGameUpgrade:
-		gameRunTimeRender(renderer);
+		gameRunTimeRender();
 		break;
 
 	case gameStateLoading:
@@ -265,39 +265,34 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateMenuSettings:
 	case gameStateGameOver:
 		/*m_menu->render(renderer);*/
-	default:  m_menu->render(renderer);
+	default:  m_menu->render();
 		break;
 	}
 
-    m_fpsRenderer.renderFPS(renderer);
+    m_fpsRenderer.render();
 }
 
-void Game::gameRunTimeRender(Graphics::Renderer& renderer)
+void Game::gameRunTimeRender()
 {
 	PROFILE_BEGIN("Player Render");
-	m_player->render(renderer);
+	m_player->render();
 	PROFILE_END();
 
 	PROFILE_BEGIN("Render Map");
-	m_map->render(renderer);
+	m_map->render();
 	PROFILE_END();
 
 	PROFILE_BEGIN("Render Enemies & Triggers");
-	m_entityManager.render(renderer);
+	m_entityManager.render();
 	PROFILE_END();
 
 	PROFILE_BEGIN("Render Projectiles");
-	m_projectileManager->render(renderer);
+	m_projectileManager->render();
 	PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    m_hudManager.render(renderer);
+    //m_hudManager.render();
     PROFILE_END();
-}
-
-void Logic::Game::menuRender(Graphics::Renderer * renderer)
-{
-	m_menu->render(*renderer);
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

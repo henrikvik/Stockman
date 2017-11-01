@@ -9,6 +9,7 @@
 #include <d3dcompiler.h>
 
 namespace fs = std::experimental::filesystem;
+using namespace DirectX;
 
 std::wstring ConvertToWString(const std::string & s)
 {

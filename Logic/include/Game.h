@@ -66,11 +66,10 @@ namespace Logic
 
 		void update(float deltaTime);
 		void gameRunTime(float deltaTime);
-		void render(Graphics::Renderer& renderer);
+		void render();
 
-		void gameRunTimeRender(Graphics::Renderer & renderer);
+		void gameRunTimeRender();
 
-		void menuRender(Graphics::Renderer * renderer);
 
 		DirectX::SimpleMath::Vector3 getPlayerForward();
 		DirectX::SimpleMath::Vector3 getPlayerPosition();

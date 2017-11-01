@@ -8,9 +8,8 @@
 			DESCRIPTION: This class defines a skill of the system
 		*/
 #pragma endregion
+#include <Graphics\include\RenderQueue.h>
 
-#include <d3d11.h>
-#include <SimpleMath.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 
@@ -38,7 +37,7 @@ namespace Logic
 		void update(float deltaTime);
 		virtual void onUpdate(float deltaTime) = 0;
 
-		virtual void render(Graphics::Renderer& renderer) = 0;
+		virtual void render() = 0;
 
 		float	getCooldown() const;
 		float	getCooldownMax() const;

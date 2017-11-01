@@ -27,15 +27,15 @@ namespace Logic
 		void init(Physics* physics);
 		void clear();
 		void update(float deltaTime);
-		void render(Graphics::Renderer& renderer);
+		void render();
 
-		std::vector<Object*>*				getProps();
+		std::vector<StaticObject*>*			getProps();
 		std::vector<StaticObject*>*			getHitboxes();
 		std::vector<Speaker*>*				getObjects();
         std::vector<LightObject*>*			getLights();
 
 	private:
-		std::vector<Object*>				m_props;
+        std::vector<StaticObject*>          m_props;
 		std::vector<StaticObject*>			m_hitboxes;
 		std::vector<Speaker*>				m_objects;
         std::vector<LightObject*>			m_lights;

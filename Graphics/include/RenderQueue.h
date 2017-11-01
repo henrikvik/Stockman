@@ -1,132 +1,176 @@
 #pragma once
 #include <unordered_map>
-#include <Resources\Resources.h>
-#include <d3d11.h>
-#include <SimpleMath.h>
-#include <memory>
 #include <typeindex>
 #include <type_traits>
 #include <Engine\newd.h>
+#include "RenderInfo.h"
 
-namespace Graphics
-{
-    class Renderer;
-}
-
-struct RenderInfo
-{
-    static constexpr size_t INSTANCE_CAP = 3000;
-};
-
-struct StaticRenderInfo : RenderInfo
-{
-    Resources::Models::Files model;
-    DirectX::SimpleMath::Matrix transform;
-};
-
-struct FoliageRenderInfo : StaticRenderInfo
-{
-};
-
-struct AnimatedRenderInfo : StaticRenderInfo
-{
-    const char * animationName;
-    float animationProgress;
-};
-
-
-class RenderQueue_t
+class RenderQueue
 {
 public:
+    template<typename T>
+    using Queue = std::vector<T*>;
 
     template<typename T>
-    using InstanceQueue = std::unordered_map<Resources::Models::Files, std::vector<T*>>;
+    using InstancedQueue = std::unordered_map<size_t, Queue<T>>;
 
     template<typename T>
-    void queue(T * info);
-
-    template<typename T>
-    InstanceQueue<T>& getQueue();
-
-    void clearAllQueues();
-
-    static RenderQueue_t& get()
+    void queue(T * info)
     {
-        static RenderQueue_t instance;
+        static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
+        static_assert(!std::is_base_of_v<StaticRenderInfo, T>, "T has StaticRenderInfo as base, use queueInstanced instead!");
+
+        QueueContainer<T> * container = getQueueContainer<T>();
+        container->queue(info);
+    }
+    template<typename T>
+    void queueInstanced(T * info)
+    {
+        static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
+        static_assert(std::is_base_of_v<StaticRenderInfo, T>, "T does not have StaticRenderInfo as base, use queueInstanced instead!");
+
+        InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
+        container->queue((size_t)info->model, info);
+    }
+
+    template<typename T>
+    Queue<T>& getQueue()
+    {
+        QueueContainer<T> * container = getQueueContainer<T>();
+        return container->instances;
+    }
+    template<typename T>
+    InstancedQueue<T>& getInstancedQueue()
+    {
+        InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
+        return container->instances;
+    }
+
+    void clearAllQueues()
+    {
+        for (auto & queue : queues)
+        {
+            queue.second->clear();
+        }
+    }
+
+    static RenderQueue& get()
+    {
+        static RenderQueue instance;
         return instance;
     }
 private:
-    RenderQueue_t()
+    RenderQueue()
     {
         OutputDebugString("\n\nRENDER QUEUE CREATED!\n\n");
     }
-    virtual ~RenderQueue_t()
+    virtual ~RenderQueue()
     {
         OutputDebugString("\n\nRENDER QUEUE DESTROEYD!\n\n");
-        for (auto & instanceQueue : instanceQueues)
+        for (auto & instanceQueue : queues)
         {
             delete instanceQueue.second;
         }
     }
 
-
     struct QueueContainer_t
     {
+        QueueContainer_t() {};
         virtual ~QueueContainer_t() {};
-
-        size_t instanceCount = 0;
+        virtual size_t count() = 0;
         virtual void clear() = 0;
     };
 
     template<typename T>
     struct QueueContainer : QueueContainer_t
     {
+        QueueContainer() {};
         virtual ~QueueContainer() {};
-        InstanceQueue<T> instances;
+        Queue<T> instances;
+
+        virtual void clear() override
+        {
+            instances.clear();
+        }
+        virtual size_t count() override
+        {
+            return instances.size();
+        }
+        void queue(T * info)
+        {
+            if (count() > T::INSTANCE_CAP)
+                throw std::runtime_error("Instance cap exceeded.");
+
+            instances.push_back(info);
+        }
+    };
+
+    template<typename T>
+    struct InstancedQueueContainer : QueueContainer_t
+    {
+        InstancedQueueContainer() {};
+        virtual ~InstancedQueueContainer() {};
+        InstancedQueue<T> instances;
+        size_t instanceCount = 0;
+
         virtual void clear() override
         {
             instanceCount = 0;
             instances.clear();
         }
+        virtual size_t count() override
+        {
+            return instanceCount;
+        }
+        void queue(size_t key, T * info)
+        {
+            if (count() > T::INSTANCE_CAP)
+                throw std::runtime_error("Instance cap exceeded.");
+
+            instances[key].push_back(info);
+            instanceCount++;
+        }
     };
 
     template<typename T> 
-    QueueContainer<T> * getQueueContainer();
-
-    typedef std::unordered_map<std::type_index, QueueContainer_t *> InstanceQueues_t;
-    InstanceQueues_t instanceQueues;
-};
-
-template<typename T>
-void RenderQueue_t::queue(T * info)
-{
-    QueueContainer<T> * queueContainer = getQueueContainer<T>();
-
-    if (T::INSTANCE_CAP < queueContainer->instanceCount)
-        throw std::runtime_error("RenderQueue has exceeded Instance Capacity");
-
-    queueContainer->instances[info->model].push_back(info);
-    queueContainer->instanceCount++;
-}
-
-template<typename T>
-RenderQueue_t::InstanceQueue<T>& RenderQueue_t::getQueue()
-{
-    return getQueueContainer<T>()->instances;
-}
-
-template<typename T>
-RenderQueue_t::QueueContainer<T> * RenderQueue_t::getQueueContainer()
-{
-    static_assert(std::is_base_of<RenderInfo, T>::value, "T must have StaticRenderInfo as base type");
-
-    InstanceQueues_t::iterator it = instanceQueues.find(typeid(T));
-    if (it == instanceQueues.end())
+    QueueContainer<T> * getQueueContainer()
     {
-        it = instanceQueues.insert(
-            InstanceQueues_t::value_type(typeid(T), newd QueueContainer<T>())
-        ).first;
+        QueueContainer<T> * queue = nullptr;
+
+        Queues_t::iterator it = queues.find(typeid(T));
+        if (it != queues.end())
+        {
+            queue = (QueueContainer<T>*)it->second;
+        }
+        else
+        {
+            queue = newd QueueContainer<T>();
+            queues.insert(Queues_t::value_type(typeid(T), queue));
+        }
+
+        return queue;
     }
 
-    return dynamic_cast<QueueContainer<T>*>(it->second);
-}
+    template<typename T> 
+    InstancedQueueContainer<T> * getInstancedQueueContainer()
+    {
+        InstancedQueueContainer<T> * queue = nullptr;
+
+        Queues_t::iterator it = queues.find(typeid(T));
+        if (it != queues.end())
+        {
+            queue = (InstancedQueueContainer<T>*)it->second;
+        }
+        else
+        {
+            queue = newd InstancedQueueContainer<T>();
+            queues.insert(Queues_t::value_type(typeid(T), queue));
+        }
+
+        return queue;
+    }
+
+    typedef std::unordered_map<std::type_index, QueueContainer_t*> Queues_t;
+    Queues_t queues;
+};
+

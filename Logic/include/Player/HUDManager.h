@@ -3,7 +3,6 @@
 
 namespace Graphics
 {
-    class Renderer;
     struct HUDInfo;
 }
 
@@ -24,7 +23,7 @@ namespace Logic
 
         void update(Player const &player, WaveTimeManager const &timeManager,
             EntityManager const &manager);
-        void render(Graphics::Renderer &renderer);
+        void render();
     };
 }
 

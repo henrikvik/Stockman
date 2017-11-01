@@ -10,6 +10,8 @@
 		*/
 #pragma endregion
 
+#include <Graphics\include\RenderInfo.h>
+
 #include <Windows.h>
 #include <Keyboard.h>
 #include <Mouse.h>
@@ -124,7 +126,7 @@ namespace Logic
 		void updateSound(float deltaTime);
 
 	public:
-		Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
+		Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();
 
 		void init(Physics* physics, ProjectileManager* projectileManager);
@@ -139,7 +141,7 @@ namespace Logic
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);
 
-		void render(Graphics::Renderer& renderer); 
+		void render(); 
 		void setMaxSpeed(float maxSpeed);
 
 		void saveToFile();

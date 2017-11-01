@@ -39,7 +39,7 @@ namespace Logic
         };
         typedef std::function<void(CallbackData)> callback;
 
-		Entity(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID);
+		Entity(btRigidBody* body, btVector3 halfExtent);
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
 
@@ -86,8 +86,8 @@ namespace Logic
 	class Speaker : public Entity
 	{
 	public :
-		Speaker(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID)
-			: Entity(body, halfExtent, modelID) { }
+		Speaker(btRigidBody* body, btVector3 halfExtent)
+			: Entity(body, halfExtent) { }
 		void affect(int stacks, Effect const &effect, float deltaTime) { }
 		void onCollision(PhysicsObject & other, btVector3 contactPoint, float multiplier) { }
 	};

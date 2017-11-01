@@ -24,8 +24,8 @@ using namespace Logic;
 
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
-Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
-: Entity(body, halfExtent, modelID)
+Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
+: Entity(body, halfExtent)
 {
     m_weaponManager = new WeaponManager();
     m_skillManager = new SkillManager();
@@ -64,10 +64,10 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_playerState = PlayerState::STANDING;
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 
-    DebugWindow::getInstance()->registerCommand("SETMOUSESENS", [&](std::vector<string> &para) -> std::string {
+    DebugWindow::getInstance()->registerCommand("SETMOUSESENS", [&](std::vector<std::string> &para) -> std::string {
         try 
         { // Boilerplate code bois
-            m_mouseSens = stof(para[0]);
+            m_mouseSens = std::stof(para[0]);
         }
         catch (int i)
         {
@@ -619,7 +619,7 @@ DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 	return scale * transformMatrix;
 }
 
-void Player::render(Graphics::Renderer & renderer)
+void Player::render()
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);
@@ -629,8 +629,8 @@ void Player::render(Graphics::Renderer & renderer)
 	//	m_skillManager->setWeaponModel(getTransformMatrix(), m_forward);
 
 	// Drawing the weapon model
-	m_weaponManager->render(renderer);
-	m_skillManager->render(renderer);
+	m_weaponManager->render();
+	m_skillManager->render();
 }
 
 void Logic::Player::setMaxSpeed(float maxSpeed)

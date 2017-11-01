@@ -268,8 +268,6 @@ int Engine::run()
 		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
-
-
 			DispatchMessage(&msg);
 
             if (WM_QUIT == msg.message)
@@ -279,10 +277,7 @@ int Engine::run()
                 {
                     mSwapChain->SetFullscreenState(false, NULL);
                 }
-                
             }
-				
-                
 		}
 
 
@@ -307,7 +302,6 @@ int Engine::run()
 		if (F2keyDown)
 		{
             showProfiler = !showProfiler;
-
 		}
 
 		if (ks.Escape && !debug->isOpen())
@@ -327,7 +321,7 @@ int Engine::run()
 		PROFILE_END();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
-		game.render(*renderer);
+		game.render();
 		PROFILE_END();
 
 		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
@@ -338,86 +332,15 @@ int Engine::run()
 			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
 		}
 
-		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
-        //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
+        ///// USH! /////
+		renderer->updateLight(deltaTime, &cam);
+        ////////////////
 
-        //////////////TEMP/////////////////
-        //Graphics::RenderInfo staticSphere = {
-        //    true, //bool render;
-        //    Graphics::ModelID::WATER, //ModelID meshId;
-        //    0, //int materialId;
-        //    DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-        //};
+        PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
+        renderer->render(&cam);
+        PROFILE_END();
 
-		Graphics::FoliageRenderInfo grass = {
-			true, //bool render;
-			Graphics::ModelID::GRASS, //ModelID meshId;
-			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-		};
-
-		Graphics::Light light;
-		light.color = DirectX::SimpleMath::Vector3(1, 1, 0);
-		light.positionWS = DirectX::SimpleMath::Vector3(0, 2, 0);
-		light.intensity = 1;
-		light.range = 5;
-
-
-
-		//Graphics::FoliageRenderInfo bush = {
-		//	true, //bool render;
-		//	Graphics::ModelID::BUSH, //ModelID meshId;
-		//	DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-		//};
-
-		//grass.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5);
-		//bush.translation = DirectX::SimpleMath::Matrix::CreateScale(10, 10, 10);//* DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 30, 0 });
-		//staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5) * DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 20, 0 });
-		
-        //Graphics::TextString text{
-        //    L"The hills!",
-        //    DirectX::SimpleMath::Vector2(50, 50),
-        //    DirectX::SimpleMath::Color(DirectX::Colors::Black),
-        //    Graphics::Font::SMALL
-        //};
-
-        
-        ///////////////////////////////////
-
-        if (game.getState() == Logic::gameStateGame)
-        {
-			renderer->queueFoliageRender(&grass);
-			//renderer->queueFoliageRender(&bush);
-
-
-			//renderer->queueRender(&staticSphere);
-         // renderer->queueText(&text);
-			renderer->queueLight(light);
-
-			if (!debug->isOpen())
-			{
-				renderer->updateLight(deltaTime, &cam);
-				renderer->updateShake(deltaTime);
-			}
-
-			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
-            renderer->render(&cam);
-			PROFILE_END();
-        }
-
-		if (game.getState() == Logic::gameStateGameUpgrade)
-		{
-			renderer->updateLight(deltaTime, &cam);
-
-			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
-			renderer->render(&cam);
-			PROFILE_END();
-
-			game.menuRender(renderer);
-		}
-
-		 
 		g_Profiler->poll();
-
 		if (showProfiler) {
 			
 			ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -435,7 +358,8 @@ int Engine::run()
 		PROFILE_END();
 		g_Profiler->frame();
 		
-	}
+        RenderQueue::get().clearAllQueues();
+    }
 
 	g_Profiler->end();
 	delete g_Profiler;

@@ -27,7 +27,10 @@ struct Pad
 std::set<std::wstring> const whitelist =
 {
     L".hyb",
-    L".hlsl"
+    L".hlsl",
+    L".dds",
+    L".png",
+    L".spritefont"
 };
 
 struct Dir
@@ -164,8 +167,38 @@ void buildModelFileList()
 }
 
 
+#include <Windows.h>
+struct A
+{
+    A() { OutputDebugString("A CREATED\n"); }
+    ~A() { OutputDebugString("A DESTROYED\n"); }
+    int i = 0;
+};
+
+struct B
+{
+    void a()
+    {
+        static A a;
+        a;
+
+        char s[7];
+        _itoa_s(a.i,s,10);
+        OutputDebugString(s);
+        OutputDebugString("\n");
+        a.i++;
+    }
+};
+
 int main()
 {
     buildModelFileList();
+
+    B a, b, c, d;
+    a.a();
+    b.a();
+    c.a();
+    b.a();
+
     return 0;
 }

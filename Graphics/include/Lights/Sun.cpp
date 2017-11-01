@@ -1,20 +1,19 @@
 #include "Sun.h"
 #include <algorithm>
-using namespace DirectX::SimpleMath;
 #define PI 3.14159265
 #define SUNSET_TIME 0.5f
 #define DAY_NIGHT_ON false
 
 namespace Graphics
 {
-	Sun::Sun(ID3D11Device * device, int width, int height):
+    Sun::Sun(ID3D11Device * device, int width, int height):
 		matrixBuffer(device),
 		shaderBuffer(device)
 	{
-		pos = Vector4(0, 50, 0.5, 1);
+		pos = DirectX::SimpleMath::Vector4(0, 50, 0.5, 1);
 
 		projection = DirectX::XMMatrixOrthographicRH(100.f, 100.f, 1, 300);
-		view = DirectX::XMMatrixLookAtRH(pos, Vector3(0, 0, 0), Vector3(0, 1, 0));
+		view = DirectX::XMMatrixLookAtRH(pos, DirectX::SimpleMath::Vector3(0, 0, 0), DirectX::SimpleMath::Vector3(0, 1, 0));
 
 		matrixData.vp = view * projection;
 
@@ -28,7 +27,7 @@ namespace Graphics
 	{
 	}
 
-	void Sun::update(ID3D11DeviceContext * context, float rotationAmount, Vector3 offset)
+	void Sun::update(ID3D11DeviceContext * context, float rotationAmount, DirectX::SimpleMath::Vector3 offset)
 	{
 		//a little bit temp, might be final
 		static float rotationDeg = 0;
@@ -43,21 +42,21 @@ namespace Graphics
 		if (rotationDeg >= PI * 0.5)
 			rotationDeg = -PI * 0.5;
 
-		Matrix rotation = Matrix::CreateRotationZ(rotationDeg);
+        DirectX::SimpleMath::Matrix rotation = DirectX::SimpleMath::Matrix::CreateRotationZ(rotationDeg);
 
-		this->shaderData.pos = Vector4::Transform(pos, rotation);
+		this->shaderData.pos = DirectX::SimpleMath::Vector4::Transform(pos, rotation);
 
 		//If its nighttime the shadows fade out
-		Vector3 lightDir = -shaderData.pos;
+        DirectX::SimpleMath::Vector3 lightDir = -shaderData.pos;
 		lightDir.Normalize();
 
-		Vector3 groundDir(1, 0, 0);
+        DirectX::SimpleMath::Vector3 groundDir(1, 0, 0);
 
 		float fade = snap(1.0 - abs(lightDir.Dot(groundDir)), 0, SUNSET_TIME);
 		shaderData.fade = fade / SUNSET_TIME;
 
 		this->shaderData.pos = shaderData.pos + offset;
-		view = DirectX::XMMatrixLookAtRH(shaderData.pos, offset, Vector3(0, 1, 0));
+		view = DirectX::XMMatrixLookAtRH(shaderData.pos, offset, DirectX::SimpleMath::Vector3(0, 1, 0));
 		matrixData.vp = view * projection;
 
 		shaderBuffer.write(context, &shaderData, sizeof(shaderData));

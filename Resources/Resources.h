@@ -2,6 +2,19 @@
 #include <map>
 namespace Resources
 {
+    namespace Fonts
+    {
+        enum Files
+        {
+            comicsans,
+            morpheus
+        };
+        const std::map<Files, const char *> Paths =
+        {
+            {comicsans, R"(..\Resources\Fonts\comicsans.spritefont)"},
+            {morpheus, R"(..\Resources\Fonts\morpheus.spritefont)"}
+        };
+    }
     namespace Models
     {
         enum Files
@@ -36,6 +49,31 @@ namespace Resources
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
             {SimpleForward, R"(..\Resources\Shaders\SimpleForward.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"}
+        };
+    }
+    namespace Textures
+    {
+        enum Files
+        {
+            crosshair,
+            gameOverMenuButtons,
+            gameOverTexture,
+            HPbar,
+            HPbarOutline,
+            mainMenuButton,
+            mainmenupicture,
+            SettingsMenuButtons
+        };
+        const std::map<Files, const char *> Paths =
+        {
+            {crosshair, R"(..\Resources\Textures\crosshair.png)"},
+            {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
+            {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
+            {HPbar, R"(..\Resources\Textures\HPbar.png)"},
+            {HPbarOutline, R"(..\Resources\Textures\HPbarOutline.png)"},
+            {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
+            {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
+            {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"}
         };
     }
 }

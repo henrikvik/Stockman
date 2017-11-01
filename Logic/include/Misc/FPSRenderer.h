@@ -1,7 +1,7 @@
 #ifndef FPS_RENDERER_H
 #define FPS_RENDERER_H
 
-#include <Graphics\include\Renderer.h>
+#include <Graphics\include\RenderQueue.h>
 
 namespace Logic
 {
@@ -10,12 +10,12 @@ namespace Logic
 	private:
 		int fps, frames;
 		float fpsTimer;
-		Graphics::TextString fpsString;
+		TextRenderInfo fpsString;
 	public:
 		FPSRenderer();
 		~FPSRenderer();
 
-		void renderFPS(Graphics::Renderer& renderer);
+		void render();
 		void updateFPS(float deltaTime);
 	};
 }

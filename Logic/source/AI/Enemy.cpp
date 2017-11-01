@@ -9,8 +9,8 @@
 
 using namespace Logic;
 
-Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId)
-: Entity(body, halfExtent, modelID)
+Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId)
+: Entity(body, halfExtent)
 {
 	m_behavior = nullptr;
 
@@ -22,6 +22,15 @@ Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent,
 	m_bulletTimeMod = 1.f;
 
 	//animation todo
+    enemyRenderInfo.model = modelID;
+    enemyRenderInfo.animationName = "";
+    enemyRenderInfo.animationProgress = 0;
+    enemyRenderInfo.freeze = 0;
+    enemyRenderInfo.burn = 0;
+
+    float worldTransform[16];
+    body->getWorldTransform().getOpenGLMatrix(worldTransform);
+    enemyRenderInfo.transform = DirectX::SimpleMath::Matrix(worldTransform);
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -66,9 +75,9 @@ void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> co
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
 }
 
-void Enemy::debugRendering(Graphics::Renderer & renderer)
+void Enemy::debugRendering()
 {
-	m_behavior->getPath().renderDebugging(renderer, getPosition());
+	m_behavior->getPath().renderDebugging(getPosition());
 }
 
 void Enemy::damage(float damage)
@@ -121,7 +130,7 @@ ENEMY_TYPE Enemy::getEnemyType() const
 	return m_enemyType;
 }
 
-Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed)
+Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed)
 {
 	ProjectileData data;
 
@@ -145,4 +154,9 @@ Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed)
 Behavior* Enemy::getBehavior() const
 {
 	return m_behavior;
+}
+
+void Logic::Enemy::render() const
+{
+    RenderQueue::get().queueInstanced(&enemyRenderInfo);
 }

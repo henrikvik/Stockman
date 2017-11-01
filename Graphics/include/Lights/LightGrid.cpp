@@ -222,8 +222,6 @@ namespace Graphics {
 
 	void LightGrid::generateFrustumsCPU(Camera * camera, ID3D11Device * device)
 	{
-		using namespace DirectX::SimpleMath;
-
 		m_Params.numThreads[0] = ceil(1280 / (float)BLOCK_SIZE);
 		m_Params.numThreads[1] = ceil(720 / (float)BLOCK_SIZE);
 		m_Params.numThreads[2] = 1;
@@ -250,22 +248,22 @@ namespace Graphics {
 						auto threadIdX = (groupX * BLOCK_SIZE + threadX);
 						auto threadIdY = (groupY * BLOCK_SIZE + threadY);
 
-						Vector4 corners[] = {
-							Vector4(threadIdX      * BLOCK_SIZE,  threadIdY      * BLOCK_SIZE, 1.f, 1.f),
-							Vector4((threadIdX + 1) * BLOCK_SIZE,  threadIdY      * BLOCK_SIZE, 1.f, 1.f),
-							Vector4(threadIdX      * BLOCK_SIZE, (threadIdY + 1) * BLOCK_SIZE, 1.f, 1.f),
-							Vector4((threadIdX + 1) * BLOCK_SIZE, (threadIdY + 1) * BLOCK_SIZE, 1.f, 1.f)
+                        DirectX::SimpleMath::Vector4 corners[] = {
+							DirectX::SimpleMath::Vector4(threadIdX      * BLOCK_SIZE,  threadIdY      * BLOCK_SIZE, 1.f, 1.f),
+							DirectX::SimpleMath::Vector4((threadIdX + 1) * BLOCK_SIZE,  threadIdY      * BLOCK_SIZE, 1.f, 1.f),
+							DirectX::SimpleMath::Vector4(threadIdX      * BLOCK_SIZE, (threadIdY + 1) * BLOCK_SIZE, 1.f, 1.f),
+							DirectX::SimpleMath::Vector4((threadIdX + 1) * BLOCK_SIZE, (threadIdY + 1) * BLOCK_SIZE, 1.f, 1.f)
 						};
 
-						Vector3 points[4];
+                        DirectX::SimpleMath::Vector3 points[4];
 						for (auto i = 0; i < 4; i++) {
 							auto vec = corners[i];
-							auto coord = Vector2(vec.x, vec.y) / Vector2(1280, 720);
-							auto clip = Vector4(coord.x * 2.f - 1.f, (1.f - coord.y) * 2.f - 1.f, vec.z, vec.w);
-							auto view = Vector4(DirectX::XMVector4Transform(clip, invProj));
+							auto coord = DirectX::SimpleMath::Vector2(vec.x, vec.y) / DirectX::SimpleMath::Vector2(1280, 720);
+							auto clip = DirectX::SimpleMath::Vector4(coord.x * 2.f - 1.f, (1.f - coord.y) * 2.f - 1.f, vec.z, vec.w);
+							auto view = DirectX::SimpleMath::Vector4(DirectX::XMVector4Transform(clip, invProj));
 							view = view / view.w;
 
-							points[i] = Vector3(view);
+							points[i] = DirectX::SimpleMath::Vector3(view);
 						}
 
 						Frustum frustum;

@@ -28,7 +28,12 @@ namespace Logic
 		void toRemove();
 		bool shouldRemove() const;
 
+
+        virtual void render() const;
+
 	private:
+        StaticRenderInfo renderInfo;
+
 		ProjectileData m_pData;
 		float m_bulletTimeMod;
 		bool m_remove;

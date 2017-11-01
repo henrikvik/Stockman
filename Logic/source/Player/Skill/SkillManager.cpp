@@ -36,7 +36,7 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager)
 {
 	m_allSkills =
 	{
-		{ new SkillBulletTime(projectileManager, ProjectileData(0, 100, 0, 0, 0.f, BULLET_TIME_DURATION, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeBulletTimeSensor)) },
+		{ new SkillBulletTime(projectileManager, ProjectileData(0, 100, 0, 0, 0.f, BULLET_TIME_DURATION, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeBulletTimeSensor)) },
 		{ new SkillGrapplingHook(physics) },
 		{ new SkillShieldCharge() }
 	};
@@ -82,10 +82,10 @@ void SkillManager::update(float deltaTime)
         m_current[i]->update(deltaTime);
 }
 
-void SkillManager::render(Graphics::Renderer& renderer)
+void SkillManager::render()
 {
     for (size_t i = 0; i < THRESHOLD::MAX_SKILLS; i++)
-        m_current[i]->render(renderer);
+        m_current[i]->render();
 }
 
 Skill* SkillManager::getSkill(int index) const

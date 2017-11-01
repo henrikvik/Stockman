@@ -4,10 +4,9 @@
 #include "ThrowIfFailed.h"
 #include <Engine\Profiler.h>
 
-using namespace DirectX::SimpleMath;
 namespace Graphics 
 {
-	SkyRenderer::SkyRenderer(ID3D11Device * device, int shadowRes, HybrisLoader::HybrisLoader & hybrisLoader) :
+    SkyRenderer::SkyRenderer(ID3D11Device * device, int shadowRes, HybrisLoader::HybrisLoader & hybrisLoader) :
 		shader(device, Resources::Shaders::SkyShader),
 		sphereTransformBuffer(device),
 		shadowDepthStencil(device, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION),
@@ -47,19 +46,19 @@ namespace Graphics
 		context->Draw(skySphere->getVertexCount(), 0);
 	}
 
-	void SkyRenderer::update(ID3D11DeviceContext * context, float deltaTime, Vector3 pos)
+	void SkyRenderer::update(ID3D11DeviceContext * context, float deltaTime, DirectX::SimpleMath::Vector3 pos)
 	{
 		float radiansPerSecond = 0.01745 * deltaTime * 0.005f;
 
 		sun.update(context, radiansPerSecond, pos);
 
-		Matrix temp = Matrix::CreateTranslation(pos);
+        DirectX::SimpleMath::Matrix temp = DirectX::SimpleMath::Matrix::CreateTranslation(pos);
 
 		D3D11_MAPPED_SUBRESOURCE data = {};
 
 		context->Map(sphereTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 
-		memcpy(data.pData, &temp, sizeof(Matrix));
+		memcpy(data.pData, &temp, sizeof(DirectX::SimpleMath::Matrix));
 
 		context->Unmap(sphereTransformBuffer, 0);
 	}

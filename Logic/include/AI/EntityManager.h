@@ -62,7 +62,7 @@ namespace Logic
 		void clear();
 
         // render / updates
-		void render(Graphics::Renderer &renderer);
+		void render();
 
 		void update(Player const &player, float deltaTime);
 		void updateEnemies(int index, Player const &player, float deltaTime);

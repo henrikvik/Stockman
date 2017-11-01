@@ -12,6 +12,8 @@
 
 #pragma endregion
 
+#include <Graphics\include\RenderQueue.h>
+
 #include <Entity\Object.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
@@ -49,7 +51,7 @@ namespace Logic
 
 	public:
 		Weapon();
-		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+		Weapon(Resources::Models::Files modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
 			int spreadH, int spreadV, float attackRate, float freeze, float reloadTime);
         ~Weapon();
 		void reset();
@@ -78,6 +80,10 @@ namespace Logic
         int getMagAmmo() const;
 
 		void fillMag();
+
+
+        virtual void render() const;
+        PlayerRenderInfo playerRenderInfo;
 	};
 }
 

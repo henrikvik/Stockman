@@ -1,37 +1,60 @@
 #include <Misc\GUI\Button.h>
 using namespace Logic;
 
-Button::Button()
+
+Logic::Button::Button(
+    Resources::Textures::Files texture,
+    DirectX::SimpleMath::Rectangle screenRect,
+    DirectX::SimpleMath::Rectangle inactive,
+    std::function<void(void)> callback
+)
+    : Button(texture, screenRect, inactive, inactive, callback)
 {
+}
+
+Logic::Button::Button(
+    Resources::Textures::Files texture, 
+    DirectX::SimpleMath::Rectangle screenRect, 
+    DirectX::SimpleMath::Rectangle inactive,
+    DirectX::SimpleMath::Rectangle active,
+    std::function<void(void)> callback
+)
+    : Button(texture, screenRect, inactive, active, active, callback)
+{
+}
+
+Logic::Button::Button(
+    Resources::Textures::Files texture, 
+    DirectX::SimpleMath::Rectangle screenRect, 
+    DirectX::SimpleMath::Rectangle inactive, 
+    DirectX::SimpleMath::Rectangle active, 
+    DirectX::SimpleMath::Rectangle hover,
+    std::function<void(void)> callback
+)
+    : texture(texture)
+    , screenRect(screenRect)
+    , inactive(inactive)
+    , active(active)
+    , hover(hover)
+    , callback(callback)
+{
+    textureRect = &inactive;
 }
 
 Button::~Button()
 {
 }
 
-void Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width, int textureIndex, std::function<void(void)> callback)
+void Logic::Button::setCallback(std::function<void(void)> callback)
 {
-	m_buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(pos.x, pos.y, width, height);
-	m_buttonInfo.m_texCoordStart = texCoordStart;
-	m_buttonInfo.m_texCoordEnd = texCoordEnd;
-	m_buttonInfo.activeoffset = offset;
-	m_buttonInfo.textureIndex = textureIndex;
-
-	m_animationStart = DirectX::SimpleMath::Vector2(pos.x, pos.y);
-	m_animationEnd = DirectX::SimpleMath::Vector2(0 - width, pos.y);
-	m_animationTime = 0;
-	m_start = m_buttonInfo.m_texCoordStart.y;
-	m_end = m_buttonInfo.m_texCoordEnd.y;
-
-	m_callback = callback;
-	m_highlighted = false;
+    callback = callback;
 }
 
 void Button::updateOnPress(int posX, int posY)
 {
-	if (m_buttonInfo.m_rek.Contains(posX, posY))
+	if (callback && m_buttonInfo.m_rek.Contains(posX, posY))
 	{
-		m_callback();
+        callback();
 	}
 }
 
@@ -39,23 +62,11 @@ void Button::hoverOver(int posX, int posY)
 {
     if (m_buttonInfo.m_rek.Contains(posX, posY))
     {
-        if (!m_highlighted)
-        {
-            m_buttonInfo.m_texCoordStart.y -= m_buttonInfo.activeoffset;
-
-			m_buttonInfo.m_texCoordEnd.y = m_buttonInfo.m_texCoordEnd.y - m_buttonInfo.activeoffset;
-            m_highlighted = true;
-        }
-
+        state = HOVER;
     }
     else
     {
-        if (m_highlighted)
-        {
-            m_buttonInfo.m_texCoordStart.y = m_start;
-            m_buttonInfo.m_texCoordEnd.y = m_end;
-			m_highlighted = false;
-        }
+        state = INACTIVE;
     }
 }
 
@@ -76,8 +87,8 @@ bool Button::animationTransition(float dt, float maxAnimationTime, bool forward)
 	else
 		lerpResult = DirectX::SimpleMath::Vector2::Lerp(m_animationEnd, m_animationStart, done ? 1 : m_animationTime);
 	
-	m_buttonInfo.m_rek = DirectX::SimpleMath::Rectangle(lerpResult.x, lerpResult.y,
-		m_buttonInfo.m_rek.width, m_buttonInfo.m_rek.height);
+    screenRect.x = lerpResult.x;
+    screenRect.y = lerpResult.y;
 
 	return done;
 }
@@ -85,4 +96,31 @@ bool Button::animationTransition(float dt, float maxAnimationTime, bool forward)
 Graphics::ButtonInfo& Button::getButtonInfo()
 {
 	return m_buttonInfo;
+}
+
+void Logic::Button::setState(State state)
+{
+    this->state = state;
+    switch (state)
+    {
+    case INACTIVE:
+        textureRect = &inactive;
+        break;
+    case ACTIVE:
+        textureRect = &active;
+        break;
+    case HOVER:
+        textureRect = &hover;
+        break;
+    }
+}
+
+void Logic::Button::render() const
+{
+    SpriteRenderInfo renderInfo = {};
+    renderInfo.texture = texture;
+    renderInfo.screenRect = screenRect;
+    renderInfo.textureRect = *textureRect;
+
+    RenderQueue::get().queue(&renderInfo);
 }

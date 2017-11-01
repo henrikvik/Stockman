@@ -86,10 +86,10 @@ void Logic::ProjectileManager::update(float deltaTime)
 	}
 }
 
-void Logic::ProjectileManager::render(Graphics::Renderer& renderer)
+void Logic::ProjectileManager::render()
 {
 	for (Projectile* p : m_projectiles)
-		p->render(renderer);
+		p->render();
 }
 
 std::vector<Projectile*>* ProjectileManager::getProjectiles()

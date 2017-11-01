@@ -1,5 +1,6 @@
 #include "../Misc/CardManager.h"
 #include <Misc\FileLoader.h>
+#include <algorithm>
 
 using namespace Logic;
 
@@ -73,9 +74,11 @@ void Logic::CardManager::pickThree(bool damaged)
 
 void Logic::CardManager::shuffle(int times)
 {
+    std::random_device rd;
+    std::mt19937 g(rd());
 	for (int i = 0; i < times; i++)
 	{
-		std::random_shuffle(m_deck.begin(), m_deck.end());
+		std::shuffle(m_deck.begin(), m_deck.end(), g);
 	}
 }
 

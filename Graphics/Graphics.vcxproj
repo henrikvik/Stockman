@@ -80,6 +80,7 @@
     <ClInclude Include="include\Utility\sizeofv.h" />
     <ClInclude Include="include\Utility\StructuredBuffer.h" />
     <ClInclude Include="include\Utility\Texture.h" />
+    <ClInclude Include="include\RenderInfo.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

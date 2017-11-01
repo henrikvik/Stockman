@@ -1,3 +1,5 @@
+#include <Graphics\include\RenderQueue.h>
+
 #include <Misc\GUI\MenuMachine.h>
 #include <iostream>
 #include <Misc\FileLoader.h>
@@ -204,7 +206,7 @@ void MenuMachine::update(float dt)
 	PROFILE_END();
 }
 
-void MenuMachine::render(Graphics::Renderer &renderer)
+void MenuMachine::render()
 {
 	PROFILE_BEGIN("Menu Render");
     if (m_currentActiveState == gameStateMenuSettings)
@@ -223,20 +225,18 @@ void MenuMachine::render(Graphics::Renderer &renderer)
             }
 
         }
-        Graphics::TextString text
-        {
-            tempString.c_str(),
-            tempPos,
-            DirectX::SimpleMath::Color(DirectX::Colors::White),
-            Graphics::Font::SMALL
-        };
-        renderer.queueText(&text);
+
+
+        TextRenderInfo text = {};
+        text.text = tempString.c_str();
+        text.position = tempPos;
+        text.font = Resources::Fonts::comicsans;
+        text.color = DirectX::Colors::White;
+
+        RenderQueue::get().queue(&text);
     }
     
-
-    Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
-
-    renderer.drawMenu(&temp);
+    m_currentActiveMenu->render();
 	PROFILE_END();
 }
 

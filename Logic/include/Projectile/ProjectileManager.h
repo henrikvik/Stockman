@@ -21,7 +21,7 @@ namespace Logic
 		void removeProjectile(Projectile* p, int index);
 
 		void update(float deltaTime);
-		void render(Graphics::Renderer &renderer);
+		void render();
 
 		std::vector<Projectile*>* getProjectiles();
 

@@ -171,13 +171,13 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     switch (id)
     {
     case ENEMY_TYPE::NECROMANCER:
-        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
+        enemy = newd EnemyNecromancer(testBody, { 0.5f, 0.5f, 0.5f });
         break;
     case ENEMY_TYPE::NECROMANCER_MINION:
         enemy = newd EnemyChaser(testBody);
         break;
     default:
-        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
+        enemy = newd EnemyTest(testBody, { 0.5f, 0.5f, 0.5f });
 		break;
     }
 
@@ -209,14 +209,14 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
     switch (id)
     {
     case 1: // wtf, starts at 1
-        trigger = m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD,
+        trigger = m_triggerManager.addTrigger(Resources::Models::UnitCube,
             Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
             500.f, physics, {},
             effectsIds,
             true);
         break;
     case 2:
-        trigger = m_triggerManager.addTrigger(Graphics::ModelID::AMMOBOX,
+        trigger = m_triggerManager.addTrigger(Resources::Models::UnitCube,
             Cube(pos, { 0, 0, 0 }, { 1, 0.5, 1 }), 0.f, physics, {},
             effectsIds,
             false);
@@ -253,15 +253,15 @@ int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
     return i;
 }
 
-void EntityManager::render(Graphics::Renderer &renderer)
+void EntityManager::render()
 {
     for (int i = 0; i < m_enemies.size(); ++i)
     {
         for (Enemy *enemy : m_enemies[i])
         {
-            enemy->render(renderer);
+            enemy->render();
 #ifdef DEBUG_PATH	
-            enemy->debugRendering(renderer);
+            enemy->debugRendering();
 #endif
         }
     }
@@ -269,14 +269,14 @@ void EntityManager::render(Graphics::Renderer &renderer)
     for (int i = 0; i < m_deadEnemies.size(); ++i)
     {
 #ifndef DISABLE_RENDERING_DEAD_ENEMIES
-        m_deadEnemies[i]->render(renderer);
+        m_deadEnemies[i]->render();
 #endif
     }
 
-    m_triggerManager.render(renderer);
+    m_triggerManager.render();
 
 #ifdef DEBUG_ASTAR
-    AStar::singleton().renderNavigationMesh(renderer);
+    AStar::singleton().renderNavigationMesh();
 #endif
 }
 

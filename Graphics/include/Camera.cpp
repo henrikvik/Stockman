@@ -1,5 +1,4 @@
 #include <Graphics\include\Camera.h>
-using namespace DirectX::SimpleMath;
 
 namespace Graphics
 {
@@ -27,14 +26,14 @@ namespace Graphics
 	{
 		forward.Normalize();
 
-		this->view = DirectX::XMMatrixLookToRH(pos, forward, Vector3(0, 1, 0));
+		this->view = DirectX::XMMatrixLookToRH(pos, forward, DirectX::SimpleMath::Vector3(0, 1, 0));
 
 		this->pos = pos;
 
 		values.view = this->view;
 		values.vP = this->view * this->projection;
 		values.invP = this->projection.Invert();
-		values.camPos = Vector4(pos.x, pos.y, pos.z, 1);
+		values.camPos = DirectX::SimpleMath::Vector4(pos.x, pos.y, pos.z, 1);
 
 		inverseMatrixes.invP = values.invP;
 		inverseMatrixes.invView = view.Invert();
@@ -46,7 +45,7 @@ namespace Graphics
 	//Depricated, use update instead.
 	void Camera::updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext * context)
 	{
-		Matrix newView = DirectX::XMMatrixLookAtRH(pos, target, Vector3(0, 1, 0));
+        DirectX::SimpleMath::Matrix newView = DirectX::XMMatrixLookAtRH(pos, target, DirectX::SimpleMath::Vector3(0, 1, 0));
 
 
 		this->view = newView;
@@ -55,7 +54,7 @@ namespace Graphics
 		values.vP = this->view * this->projection;
 		values.invP = this->projection.Invert();
 		values.view = this->view;
-		values.camPos = Vector4(pos.x, pos.y, pos.z, 1);
+		values.camPos = DirectX::SimpleMath::Vector4(pos.x, pos.y, pos.z, 1);
 
 		D3D11_MAPPED_SUBRESOURCE data;
 		ZeroMemory(&data, sizeof(data));

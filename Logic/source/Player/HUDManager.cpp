@@ -9,7 +9,9 @@
 
 #include <Misc\ComboMachine.h>
 
-#include <Graphics\include\Renderer.h>
+#include <Graphics\include\Structs.h>
+
+#include <comdef.h>
 
 using namespace Logic;
 
@@ -52,7 +54,11 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info->enemiesRemaining = entityManager.getNrOfAliveEnemies();
 }
 
-void HUDManager::render(Graphics::Renderer &renderer)
+void HUDManager::render()
 {
-    renderer.fillHUDInfo(info);
+    
+    TextRenderInfo scoreInfo = {};
+    char scoreStr[128];
+    _bstr_t wstr(_itoa_s(info->score, scoreStr, 10));
+    scoreInfo.text = wstr;
 }

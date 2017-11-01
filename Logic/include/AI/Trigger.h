@@ -1,6 +1,8 @@
 #ifndef TRIGGER_H
 #define TRIGGER_H
 
+#include <Graphics\include\RenderQueue.h>
+
 #include <Player\Player.h>
 #include <Entity\Entity.h>
 
@@ -23,7 +25,7 @@ namespace Logic
 	class Trigger : public Entity
 	{
 		public:
-			Trigger(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable);
+			Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable);
 			virtual ~Trigger();
 
 			void addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades);
@@ -42,12 +44,16 @@ namespace Logic
 			void setIsReusable(bool	reusable);
 			void setCooldown(float cooldown);
 
+            virtual void render() const;
+
 		private:
 			bool m_remove;
 			bool m_active;
 			bool m_reusable;
 			float m_cooldown;
 			float m_maxCooldown;
+
+            AnimatedRenderInfo animatedRenderInfo;
 	};
 }
 

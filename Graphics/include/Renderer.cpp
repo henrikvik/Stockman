@@ -197,7 +197,7 @@ namespace Graphics
 
         drawStatic();
 
-        RenderQueue_t::get().clearAllQueues();
+        RenderQueue::get().clearAllQueues();
     }
     #else
 	{
@@ -446,8 +446,6 @@ namespace Graphics
 		{
 			startShake(30, 1000);
 		}
-
-        RenderQueue_t::get().clearAllQueues();
 	}
     #endif
 
@@ -569,9 +567,9 @@ namespace Graphics
         deviceContext->VSSetShaderResources(5, 1, staticInstanceBuffer);
 
         UINT instanceOffset = 0;
-        for (auto & pair : RenderQueue_t::get().getQueue<StaticRenderInfo>())
+        for (auto & pair : RenderQueue::get().getInstancedQueue<StaticRenderInfo>())
         {
-            auto & modelId = pair.first;
+            Resources::Models::Files modelId = (Resources::Models::Files)pair.first;
             auto & renderInfos = pair.second;
 
             HybrisLoader::Model    * model = hybrisLoader.getModel(modelId);
@@ -698,7 +696,7 @@ namespace Graphics
         void * dest = staticInstanceBuffer.map(deviceContext);
         size_t offset = 0;
 
-        for (auto & model_infos : RenderQueue_t::get().getQueue<StaticRenderInfo>())
+        for (auto & model_infos : RenderQueue::get().getInstancedQueue<StaticRenderInfo>())
         {
             for (auto & info : model_infos.second)
             {

@@ -31,13 +31,13 @@ namespace Logic
 
 			void removeTrigger(Trigger* t, int index);
 
-			Trigger* addTrigger(Graphics::ModelID modelID, Cube& cube, float cooldown, Physics& physics,
+			Trigger* addTrigger(Resources::Models::Files modelID, Cube& cube, float cooldown, Physics& physics,
 				std::vector<StatusManager::UPGRADE_ID> upgrades, 
 				std::vector<StatusManager::EFFECT_ID> effects, 
 				bool reusable = false);
 
 			void update(float deltaTime);
-			void render(Graphics::Renderer &renderer);
+			void render();
 	
 			std::vector<Trigger*>& getTriggers();
 	};

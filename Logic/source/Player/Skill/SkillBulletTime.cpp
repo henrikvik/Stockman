@@ -12,6 +12,9 @@ SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, Projectil
 	m_sensor = nullptr;
     setSpawnFunctions(*projectileManager);
 	//m_travelProjectile = nullptr;
+
+    renderInfo.effect = SpecialEffectRenderInfo::BulletTime;
+    renderInfo.progress = 0;
 }
 
 SkillBulletTime::~SkillBulletTime()
@@ -95,8 +98,11 @@ void SkillBulletTime::onUpdate(float deltaTime)
 	}*/
 }
 
-void SkillBulletTime::render(Graphics::Renderer& renderer)
+void SkillBulletTime::render()
 {
-	if (m_sensor && m_sensor->getProjectileData().ttl > 0)
-		renderer.setBulletTimeCBuffer(m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION);
+    if (m_sensor && m_sensor->getProjectileData().ttl > 0)
+    {
+        renderInfo.progress = m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION;
+        RenderQueue::get().queue(&renderInfo);
+    }
 }

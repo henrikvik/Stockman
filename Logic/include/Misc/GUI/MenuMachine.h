@@ -46,7 +46,7 @@ namespace Logic
 		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout
 		void update(float dt);
-        void render(Graphics::Renderer& renderer);
+        void render();
 		void showMenu(GameState state);		//< Creates a menu layout
 		GameState currentState();
 		void setStateToBe(GameState);

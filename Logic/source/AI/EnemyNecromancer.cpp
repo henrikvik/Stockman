@@ -6,9 +6,9 @@
 
 using namespace Logic;
 
-EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
-	btRigidBody* body, btVector3 halfExtent)
-	: Enemy(modelID, body, halfExtent, 5, 1, 8, NECROMANCER, 0) {
+EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
+	: Enemy(Resources::Models::Files::UnitCube, body, halfExtent, 5, 1, 8, NECROMANCER, 0)
+{
 	setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().Kill(getEnemyType());
@@ -62,7 +62,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
 	{
 		if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
 		{
-            Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{0, 80, 0}).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB2);
+            Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{0, 80, 0}).normalize(), Resources::Models::UnitCube, SPEED_AB2);
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 Entity *entity = reinterpret_cast<Entity*> (data.dataPtr);
 
@@ -79,7 +79,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
 		}
 		else
 		{
-            shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, SPEED_AB1);
+            shoot((target.getPositionBT() - getPositionBT()).normalize(), Resources::Models::UnitCube, SPEED_AB1);
 		}
 	}
 }

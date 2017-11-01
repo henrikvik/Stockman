@@ -11,7 +11,7 @@ using namespace Logic;
 static bool FUN_MODE = false;
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
-: Entity(body, halfextent, Graphics::ModelID::SPHERE) 
+: Entity(body, halfextent) 
 {
 	m_pData.damage = 1.f;
 	m_pData.speed = 0.f;
@@ -22,7 +22,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 }
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer, float ttl)
-: Entity(body, halfExtent, Graphics::ModelID::SPHERE)
+: Entity(body, halfExtent)
 {
 	m_pData.damage = damage;
 	m_pData.speed = speed;
@@ -30,20 +30,23 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, fl
 	m_pData.ttl = ttl;
 	m_remove = false;
 	m_bulletTimeMod = 1.f;
+
+    renderInfo.model = Resources::Models::UnitCube;
 }
 
 Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
-: Entity(body, halfExtent, Graphics::ModelID::SPHERE)
+: Entity(body, halfExtent)
 {
 	m_pData = pData;
 	m_remove = false;
-	setModelID(pData.meshID);
 	m_bulletTimeMod = 1.f;
 
 	switch (pData.type)
 	{
-		// Do specifics 
+		// Do specifics
 	}
+
+    renderInfo.model = Resources::Models::UnitCube;
 }
 
 Projectile::~Projectile() { }
@@ -89,6 +92,11 @@ void Projectile::updateSpecific(float deltaTime)
 	else
 		m_pData.ttl -= deltaTime * m_bulletTimeMod;
 	m_bulletTimeMod = 1.f;
+
+
+    float worldTransform[16];
+    getRigidBody()->getWorldTransform().getOpenGLMatrix(worldTransform);
+    renderInfo.transform = DirectX::SimpleMath::Matrix(worldTransform);
 }
 
 void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
@@ -167,4 +175,9 @@ void Logic::Projectile::toRemove()
 bool Logic::Projectile::shouldRemove() const
 {
 	return m_remove;
+}
+
+void Logic::Projectile::render() const
+{
+    RenderQueue::get().queueInstanced(&renderInfo);
 }

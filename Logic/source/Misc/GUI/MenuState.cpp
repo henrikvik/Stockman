@@ -1,3 +1,5 @@
+#include <Graphics\include\RenderQueue.h>
+
 #include <Misc\GUI\MenuState.h>
 using namespace Logic;
 
@@ -9,18 +11,45 @@ MenuState::~MenuState()
 {
 }
 
+const std::map<int, Resources::Textures::Files> tempTextureLookup =
+{
+    {0, Resources::Textures::mainMenuButton},
+    {1, Resources::Textures::gameOverMenuButtons},
+    {2, Resources::Textures::SettingsMenuButtons}
+};
+
 void MenuState::initialize(std::vector<ButtonStruct> buttonStruct, int background)
 {
-	Button button;
 	for (auto const& struc : buttonStruct)
 	{
-		DirectX::SimpleMath::Vector2 pos(struc.xPos, struc.yPos);
-		DirectX::SimpleMath::Vector2 texCoordStart(struc.xTexStart, struc.yTexStart);
-		DirectX::SimpleMath::Vector2 texCoordEnd(struc.xTexEnd, struc.yTexEnd);
-		
-		button.initialize(pos, texCoordStart, texCoordEnd, struc.activeOffset,
-			struc.height, struc.width, struc.textureIndex, struc.m_CallBackFunction);
-		m_buttons.push_back(button);
+        DirectX::SimpleMath::Rectangle screenRect = {
+            (long) struc.xPos, 
+            (long) struc.yPos,
+            (long) struc.width,
+            (long) struc.height
+        };
+        DirectX::SimpleMath::Rectangle inactive = {
+            (long) struc.xTexStart,
+            (long) struc.yTexStart,
+            (long) (struc.xTexEnd - struc.xTexStart),
+            (long) (struc.yTexEnd - struc.yTexStart)
+        };
+        DirectX::SimpleMath::Rectangle active = {
+            (long) struc.xTexStart,
+            (long) (struc.yTexStart + struc.activeOffset),
+            (long) (struc.xTexEnd - struc.xTexStart),
+            (long) (struc.yTexEnd - struc.yTexStart)
+        };
+
+        Resources::Textures::Files texture = tempTextureLookup.at(struc.texture);
+
+        m_buttons.emplace_back(
+            texture,
+            screenRect,
+            inactive, 
+            active,
+            struc.m_CallBackFunction
+        );
     }
     m_menu.m_menuTexture = background;
 }
@@ -62,5 +91,13 @@ Graphics::MenuInfo MenuState::getMenuInfo()
         m_menu.m_buttons.push_back(b.getButtonInfo());
     }
     return m_menu;
+}
+
+void Logic::MenuState::render() const
+{
+    for (Button const& b : m_buttons)
+    {
+        b.render();
+    }
 }
 
