@@ -1,6 +1,7 @@
 #ifndef PHYSICSOBJECT_H
 #define PHYSICSOBJECT_H
 
+#include <vector>
 #include <Entity/Object.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
@@ -21,7 +22,7 @@ namespace Logic
 		};
 
 
-		PhysicsObject(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID = Graphics::ModelID::CUBE);
+		PhysicsObject(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID);
 		PhysicsObject(const PhysicsObject& other) = delete;
 		PhysicsObject* operator=(const PhysicsObject& other) = delete;
 		virtual ~PhysicsObject();
@@ -33,6 +34,7 @@ namespace Logic
 		void collision(PhysicsObject& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
 		virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier) = 0;
 
+        virtual void setHalfExtent(btVector3 halfExtent);
 		virtual btVector3 getHalfExtent() const;
 		virtual btVector3 getPositionBT() const;
 
