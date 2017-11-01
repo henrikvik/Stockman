@@ -215,6 +215,7 @@ bool Game::updateMenu(float deltaTime)
                     SkillManager::SKILL(selectedSkills->second),
                     SkillManager::SKILL(selectedSkills->first)
                 });
+                m_player->setCurrentSkills(selectedSkills->first, selectedSkills->second);
                
                 // Reset menu stuff
                 selectedSkills->first = -1;

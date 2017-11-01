@@ -70,6 +70,8 @@ namespace Logic
 
 		// UI States
 		int m_hp;
+        int currentWeapon;
+        int currentSkills[2];
 
 		// Movements
 		PlayerState m_playerState;
@@ -134,6 +136,7 @@ namespace Logic
 		void init(Physics* physics, ProjectileManager* projectileManager);
 		void clear();
 		void reset();
+        
 
 		void updateSpecific(float deltaTime);
 
@@ -179,8 +182,14 @@ namespace Logic
         const Weapon* getOffHand() const;
         const Skill* getSkill(int id) const;
         bool isUsingMeleeWeapon() const;
+        int getCurrentWeapon() const;
 
 		static btVector3 startPosition;
+
+        void setCurrentSkills(int first, int second);
+        int getCurrentSkill0() const;
+        int getCurrentSkill1() const;
+
 	};
 
 }
