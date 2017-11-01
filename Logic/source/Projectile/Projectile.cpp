@@ -162,7 +162,7 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         CallbackData data;
         data.caller = this;
         data.dataPtr = reinterpret_cast<std::intptr_t> (&other);
-        getCallbacks()[ON_COLLISION](data);
+        this->callback(ON_COLLISION, data);
     }
 
 	if (m_pData.type == ProjectileTypeBulletTimeSensor  ||
