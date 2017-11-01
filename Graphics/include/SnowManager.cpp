@@ -46,6 +46,8 @@ namespace Graphics
 				moveSnowFlake(camera, i);
 
 			snowFlakes[i].distance = (snowFlakes[i].position - camera->getPos()).Length();
+
+			snowFlakes[i].position += velocities[i] * deltaTime * 0.01;
 		}
 		
 		snowBuffer.write(context, &snowFlakes[0], snowFlakeCount * sizeof(Vector4));
