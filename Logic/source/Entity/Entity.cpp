@@ -13,6 +13,7 @@ Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelI
 
 Entity::~Entity() 
 {
+    callback(EntityEvent::ON_DESTROY, CallbackData{this});
     delete m_soundSource;
 }
 
@@ -56,14 +57,31 @@ void Entity::updateSound(float deltaTime)
 	m_soundSource->update(deltaTime);
 }
 
-void Entity::addCallback(Entity::EntityEvent entityEvent, callback callback)
+void Entity::addCallback(Entity::EntityEvent entityEvent, Callback callback)
 {
-    m_callbacks[entityEvent] = callback;
+    m_callbacks[entityEvent].push_back(callback);
 }
 
 bool Entity::hasCallback(EntityEvent entityEvent) const
 {
     return m_callbacks.find(entityEvent) != m_callbacks.end();
+}
+
+void Entity::clearCallbacks()
+{
+    callback(ON_DESTROY, CallbackData{ this }); // This is a new projectile for the callbacker
+    for (auto callbacks : m_callbacks)
+    {
+        callbacks.second.clear();
+    }
+    m_callbacks.clear();
+}
+
+void Entity::callback(EntityEvent entityEvent, CallbackData &data)
+{
+    if (hasCallback(entityEvent))
+        for (Callback &callback : m_callbacks[entityEvent])
+            callback(data);
 }
 
 StatusManager& Entity::getStatusManager()
@@ -79,9 +97,4 @@ void Entity::setStatusManager(StatusManager & statusManager)
 Sound::SoundSource* Entity::getSoundSource()
 {
 	return m_soundSource;
-}
-
-std::unordered_map<Entity::EntityEvent, std::function<void (Entity::CallbackData&)>>& Entity::getCallbacks()
-{
-    return m_callbacks;
 }

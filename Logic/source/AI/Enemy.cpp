@@ -21,6 +21,8 @@ Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent,
 	m_enemyType = enemyType;
 	m_bulletTimeMod = 1.f;
     m_moveSpeedMod = 1.f;
+
+    m_nrOfCallbacksEntities = 0;
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -71,16 +73,28 @@ void Enemy::debugRendering(Graphics::Renderer & renderer)
 	m_behavior->getPath().renderDebugging(renderer, getPosition());
 }
 
+void Enemy::increaseCallbackEntities()
+{
+    m_nrOfCallbacksEntities++;
+}
+
+void Enemy::decreaseCallbackEntities()
+{
+    m_nrOfCallbacksEntities--;
+}
+
+bool Enemy::hasCallbackEntities()
+{
+    return m_nrOfCallbacksEntities > 0;
+}
+
 void Enemy::damage(float damage)
 {
 	m_health -= damage;
 
-    if (hasCallback(ON_DAMAGE_TAKEN))
-        getCallbacks()[ON_DAMAGE_TAKEN](CallbackData { this, static_cast<int32_t> (damage) });
-
+    callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)
-        if (hasCallback(ON_DEATH))
-            getCallbacks()[ON_DEATH](CallbackData {this, static_cast<int32_t> (damage)});
+        callback(ON_DEATH, CallbackData {this, static_cast<int32_t> (damage)});
 }
 
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
@@ -137,8 +151,16 @@ Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed, float
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     
+    increaseCallbackEntities();
     if (hasCallback(ON_DAMAGE_GIVEN))
-        pj->addCallback(ON_DAMAGE_GIVEN, getCallbacks()[ON_DAMAGE_GIVEN]);
+    {
+        pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
+            callback(ON_DAMAGE_GIVEN, data);
+        });
+        pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+            decreaseCallbackEntities();
+        });
+    }
 	
     return pj;
 }

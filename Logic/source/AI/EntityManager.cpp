@@ -70,27 +70,44 @@ void EntityManager::loadDebugCmds()
 #endif
 }
 
-void EntityManager::deallocateData()
+void EntityManager::deallocateData(bool forceDestroy)
 {
     m_threadHandler->deleteThreads();
     for (std::vector<Enemy*>& list : m_enemies)
     {
         for (Enemy *enemy : list)
         {
-            DeleteBody(*enemy); 
-            delete enemy;
-            enemy = nullptr;
+            if (forceDestroy || !enemy->hasCallbackEntities())
+            {
+                DeleteBody(*enemy);
+                delete enemy;
+                enemy = nullptr;
+            }
+            else {
+                m_deadEnemies.push_back(enemy);
+            }
         }
         list.clear();
     }
 
-    for (Enemy *enemy : m_deadEnemies)
+    // clear out enemies without callbacks in needs to do
+    for (Enemy *&enemy : m_deadEnemies)
     {
-        DeleteBody(*enemy);
-        delete enemy;
+        if (forceDestroy || !enemy->hasCallbackEntities()) 
+        {
+            DeleteBody(*enemy);
+            delete enemy;
+            enemy = nullptr;
+        }
     }
 
+    // copy over old list without destroyed enemies
+    std::vector<Enemy*> oldList = m_deadEnemies;
     m_deadEnemies.clear();
+    for (Enemy *enemy : oldList)
+        if (enemy)
+            m_deadEnemies.push_back(enemy);
+
     m_aliveEnemies = 0;
     m_threadHandler->initThreads();
 }
@@ -109,7 +126,7 @@ void EntityManager::update(Player const &player, float deltaTime)
             {
                 updateEnemies(static_cast<int> (i), player, deltaTime);
                 if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0)
-                    m_threadHandler->addWork({ this, static_cast<int> (i), player });
+                    m_threadHandler->addWork({ this, static_cast<int> (i), &player });
             }
         }
     }
@@ -122,6 +139,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 	m_triggerManager.update(deltaTime);
 }
+
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	bool goalNodeChanged = false;
@@ -160,11 +178,6 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
 
         m_deadEnemies.push_back(enemy);
         flock.pop_back();
-
-        // nice little death stuff
-        btVector3 oldVel = enemy->getRigidBody()->getLinearVelocity();
-        enemy->getRigidBody()->setLinearVelocity(btVector3());
-        enemy->getRigidBody()->applyCentralForce(oldVel * 1000);
     }
 }
 
@@ -304,7 +317,7 @@ void EntityManager::render(Graphics::Renderer &renderer)
     for (int i = 0; i < m_deadEnemies.size(); ++i)
     {
 #ifndef DISABLE_RENDERING_DEAD_ENEMIES
-        m_deadEnemies[i]->render(renderer);
+     //   m_deadEnemies[i]->render(renderer);
 #endif
     }
 

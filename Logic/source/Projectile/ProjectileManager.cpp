@@ -144,7 +144,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         p->toRemove(false);
 
         // remove all callbacks from the projectile
-        p->getCallbacks().clear();
+        p->clearCallbacks();
 
         // add to idle stack
         m_projectilesIdle.push_back(p);

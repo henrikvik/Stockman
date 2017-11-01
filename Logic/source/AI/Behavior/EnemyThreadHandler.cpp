@@ -52,7 +52,7 @@ void EnemyThreadHandler::deleteThreads()
 void EnemyThreadHandler::updateEnemiesAndPath(WorkData &data)
 {
     AStar &aStar = AStar::singleton();
-    aStar.loadTargetIndex(data.player);
+    aStar.loadTargetIndex(*data.player);
 
     std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(data.index);
     const std::vector<Enemy*> &enemies = data.manager->getAliveEnemies()[data.index];
@@ -65,13 +65,22 @@ void EnemyThreadHandler::threadMain()
 {
     while (!m_killChildren)
     {
-        std::lock_guard<std::mutex> lock(m_workMutex);
-        if (!m_work.empty())
+        WorkData todo;
+        bool haveWork = false;
+
         {
-            WorkData todo = m_work.front();
-            m_work.pop();
-            updateEnemiesAndPath(todo);
+            std::lock_guard<std::mutex> lock(m_workMutex);
+            if (!m_work.empty())
+            {
+                todo = m_work.front();
+                m_work.pop();
+                haveWork = true;
+            }
         }
+
+        if (haveWork)
+            updateEnemiesAndPath(todo);
+
         std::this_thread::sleep_for(2ns);
     }
 }
