@@ -1,15 +1,16 @@
-#include "Engine.h"
-#include <Graphics\include\Structs.h>
-
-#include "Profiler.h"
-
 #include <Windows.h>
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <iostream>
-#pragma comment (lib, "d3d11.lib")
+#include <Graphics\include\Structs.h>
+
+#include "Engine.h"
+#include "Profiler.h"
 #include "Typing.h"
+
 #include "DebugWindow.h"
+
+#pragma comment (lib, "d3d11.lib")
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -65,7 +66,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-Engine::Engine(HINSTANCE hInstance, int width, int height)
+Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int args)
 {
 	srand((unsigned int)time(NULL));				// Set random seed
 	this->mHeight = height;
@@ -78,8 +79,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mMouse = std::make_unique<DirectX::Mouse>();
 	this->mMouse->SetWindow(window);
 
-	this->game.init();
-
+	this->game.init(cmdLine, args);
 }
 
 Engine::~Engine()
@@ -109,9 +109,6 @@ void Engine::initializeWindow()
 	wc.hCursor = LoadCursor(0, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.lpszClassName = "Basic test";
-
-
-   
 
 	if (!RegisterClass(&wc))
 	{
@@ -144,7 +141,6 @@ void Engine::initializeWindow()
 
 	ShowWindow(this->window, SW_SHOWDEFAULT);
 	UpdateWindow(this->window);
-
 }
 
 HRESULT Engine::createSwapChain()
@@ -164,7 +160,6 @@ HRESULT Engine::createSwapChain()
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	desc.BufferDesc.RefreshRate.Denominator = 0;
 	desc.BufferDesc.RefreshRate.Numerator = 0;
-
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -269,8 +264,6 @@ int Engine::run()
 		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
-
-
 			DispatchMessage(&msg);
 
             if (WM_QUIT == msg.message)
@@ -280,12 +273,8 @@ int Engine::run()
                 {
                     mSwapChain->SetFullscreenState(false, NULL);
                 }
-                
             }
-				
-                
 		}
-
 
 		//To enable/disable fullscreen
 		DirectX::Keyboard::State ks = this->mKeyboard->GetState();
@@ -303,6 +292,7 @@ int Engine::run()
 
         static bool F2wasPressed = false;
         bool F2keyDown = !F2wasPressed && ks.F2;
+
         F2wasPressed = ks.F2;
 
 		if (F2keyDown)
@@ -326,6 +316,7 @@ int Engine::run()
         if (!debug->isOpen())
             game.update(float(deltaTime));
         PROFILE_END();
+
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game.render(*renderer);
@@ -361,8 +352,6 @@ int Engine::run()
 		light.positionWS = DirectX::SimpleMath::Vector3(0, 2, 0);
 		light.intensity = 1;
 		light.range = 5;
-
-
 
 		//Graphics::FoliageRenderInfo bush = {
 		//	true, //bool render;

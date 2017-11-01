@@ -37,6 +37,8 @@
 
 namespace Logic
 {
+    enum GameType;
+
 	class Game
 	{
     private:
@@ -44,21 +46,13 @@ namespace Logic
         static const btVector3 PLAYER_START_SCALE,
                                PLAYER_START_ROTATION;
         static const int NUMBER_OF_UNIQUE_CARDS;
-
-        enum GameType
-        {
-            TESTING_MODE =  0x1,
-            NORMAL_MODE =   0x2,
-            HARDCORE_MODE = 0x4,
-            DARK_SOULS =    0x8,
-        };
 	public:
 		Game();
 		Game(const Game& other) = delete;
 		Game* operator=(const Game& other) = delete;
 		~Game();
 
-		void init();
+        void init(LPWSTR *cmdLine, int args);
 		void clear();
 		void reset();
 
@@ -89,6 +83,8 @@ namespace Logic
         WaveTimeManager		m_waveTimeManager;
 		CardManager*		m_cardManager;
 		HighScoreManager*	m_highScoreManager;
+
+        GameType m_gameType;
 
 		//GameOver
 		std::string			highScore[10];
