@@ -10,14 +10,16 @@ using namespace Logic;
 
 EnemyThreadHandler::EnemyThreadHandler()
 {
-    m_killChildren = false;
-
     resetThreads();
     initThreads();
 }
 
 void EnemyThreadHandler::initThreads()
 {
+    m_killChildren = false;
+    while (!m_work.empty())
+        m_work.pop();
+
     for (std::thread *&t : threads)
         t = newd std::thread(&EnemyThreadHandler::threadMain, this);
 }

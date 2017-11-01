@@ -31,10 +31,10 @@ namespace Logic
 
         bool m_killChildren;
 
-        void initThreads();
     public:
         EnemyThreadHandler();
         ~EnemyThreadHandler();
+        void initThreads();
 
         void updateEnemiesAndPath(WorkData &data);
         void threadMain();
