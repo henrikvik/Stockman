@@ -244,7 +244,7 @@ void Game::updateGame(float deltaTime)
 {
    	ComboMachine::Get().Update(deltaTime);
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
-        m_projectileManager->getProjectiles();
+        m_projectileManager->removeAllProjectiles();
 
 	PROFILE_BEGIN("Sound");
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
