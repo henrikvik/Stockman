@@ -190,9 +190,19 @@ void Projectile::upgrade(Upgrade const &upgrade)
 
 ProjectileData& Projectile::getProjectileData() { return m_pData; }
 
+void Logic::Projectile::setProjectileData(ProjectileData pData)
+{
+    m_pData = pData;
+}
+
 void Logic::Projectile::toRemove()
 {
 	m_remove = true;
+}
+
+void Logic::Projectile::toRemove(bool remove)
+{
+    m_remove = remove;
 }
 
 bool Logic::Projectile::shouldRemove() const

@@ -1,9 +1,10 @@
 #include <AI\EnemyChaser.h>
+#include <Player\Player.h>
 #include <Projectile\Projectile.h>
 using namespace Logic;
 
 const float EnemyChaser::MAX_HP = 3;
-const float EnemyChaser::BASE_DAMAGE = 5;
+const float EnemyChaser::BASE_DAMAGE = 1;
 const float EnemyChaser::MOVE_SPEED = 13;
 
 EnemyChaser::EnemyChaser(btRigidBody* body)
@@ -18,14 +19,22 @@ EnemyChaser::~EnemyChaser()
 
 void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-    if (Projectile *pj = dynamic_cast<Projectile*> (&other))
+    if (getHealth() > 0)
     {
-        if (!pj->getProjectileData().enemyBullet)
+        if (Projectile *pj = dynamic_cast<Projectile*> (&other))
         {
-            damage(pj->getProjectileData().damage * dmgMultiplier);
+            if (!pj->getProjectileData().enemyBullet)
+            {
+                damage(pj->getProjectileData().damage * dmgMultiplier);
 
-            if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-                getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+                if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+                    getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+            }
+        }
+        else if (Player *p = dynamic_cast<Player*> (&other))
+        {
+            p->takeDamage(getBaseDamage());
+            damage(getHealth());
         }
     }
 }

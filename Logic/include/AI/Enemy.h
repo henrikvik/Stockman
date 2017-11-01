@@ -49,7 +49,7 @@ namespace Logic
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
 
-			Projectile* shoot(btVector3 dir, Graphics::ModelID id, float speed);
+			Projectile* shoot(btVector3 dir, Graphics::ModelID id, float speed, float gravity, float scale);
 
 			// for debugging
 			void debugRendering(Graphics::Renderer &renderer);

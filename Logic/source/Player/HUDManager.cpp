@@ -19,7 +19,7 @@ const int HUDManager::TOTAL_AMMO = 1;
 
 HUDManager::HUDManager()
 {
-    info = new Graphics::HUDInfo;
+    info = newd Graphics::HUDInfo;
     ZeroMemory(info, sizeof(info));
     info->cd0 = 1.0f;
     info->cd1 = 1.0f;
