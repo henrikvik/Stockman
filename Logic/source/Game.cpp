@@ -244,7 +244,7 @@ void Game::updateGame(float deltaTime)
 {
    	ComboMachine::Get().Update(deltaTime);
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
-        m_projectileManager->getProjectiles();
+        m_projectileManager->removeAllProjectiles();
 
 	PROFILE_BEGIN("Sound");
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
@@ -291,7 +291,7 @@ void Game::gameOver()
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
 			break;
 		}
 	}
