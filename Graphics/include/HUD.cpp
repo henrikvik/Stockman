@@ -17,7 +17,9 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
 	offset.y = 0;
 	offsetBuffer.write(context, &offset, sizeof(DirectX::SimpleMath::Vector2));
     
-   sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/comicsans.spritefont");
+   sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshe.spritefont");
+   sFont[1] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshelarger.spritefont");
+   sFont[2] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshelargest.spritefont");
    sBatch = std::make_unique<DirectX::SpriteBatch>(context);
 
    changed = false;
@@ -445,11 +447,14 @@ void Graphics::HUD::renderText(ID3D11BlendState * blendState, bool fulhack)
 
 void Graphics::HUD::setHUDTextRenderPos()
 {
-    ammoPos1 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 450), (WIN_HEIGHT / 2) + 315);
-    ammoPos2 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 375) , (WIN_HEIGHT / 2) + 315);
+    ammoPos1 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 450), (WIN_HEIGHT / 2) + 318);
+    ammoPos2 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 370) , (WIN_HEIGHT / 2) + 318);
 
-    cdPos0 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 180), (WIN_HEIGHT / 2) + 315);
-    cdPos1 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 80), (WIN_HEIGHT / 2) + 315);
+   
+
+    cdPos0 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 170), (WIN_HEIGHT / 2) + 315);
+    cdPos1 = DirectX::SimpleMath::Vector2((WIN_WIDTH - 70), (WIN_HEIGHT / 2) + 315);
+   
     
     scorePos = DirectX::SimpleMath::Vector2((WIN_WIDTH / 2 - 24), (WIN_HEIGHT / 2) - 300);
     wavePos = DirectX::SimpleMath::Vector2(0, 0);
@@ -530,7 +535,7 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
     sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos1 + offset, DirectX::Colors::Red);
 
 	temp = (std::to_wstring(currentInfo->score));
-	temp += L" Points";
+	temp += L"p";
 	sFont[0]->DrawString(sBatch.get(), temp.c_str(), scorePos + offset, DirectX::Colors::White);
 }
 
