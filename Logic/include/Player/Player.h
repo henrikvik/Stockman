@@ -43,7 +43,7 @@ namespace Logic
     class Physics;
     class WeaponManager;
     class Weapon;
-    struct AmmoContainer;
+    class AmmoContainer;
     class SkillManager;
     class Skill;
     class ProjectileManager;
