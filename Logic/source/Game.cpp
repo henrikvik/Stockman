@@ -215,8 +215,13 @@ bool Game::updateMenu(float deltaTime)
                     SkillManager::SKILL(selectedSkills->second),
                     SkillManager::SKILL(selectedSkills->first)
                 });
+               
+                // Reset menu stuff
                 selectedSkills->first = -1;
                 selectedSkills->second = -1;
+                for (size_t i = 0; i < m_menu->getActiveMenu()->getMenuInfo().m_buttons.size(); i++)
+                    m_menu->getActiveMenu()->getButton(int(i))->setStartAndEnd(0, (1.f/3.f));
+
                 m_menu->setStateToBe(gameStateGame); //change to gameStateGame
             }
         }
@@ -267,6 +272,9 @@ void Game::updateGame(float deltaTime)
     PROFILE_BEGIN("HUD");
     m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
     PROFILE_END();
+
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
+        m_player->takeDamage(1, 0);
 
 	if (m_player->getHP() <= 0)
 		gameOver();

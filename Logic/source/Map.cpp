@@ -33,7 +33,7 @@ void Map::add(FrameHitbox frameHitbox)
 void Map::init(Physics* physics)
 {
     m_physicsPtr = physics;
-    m_drawHitboxesAndLights = true;
+    m_drawHitboxesAndLights = false;
 
     readFromFile("maya.level");
 	
