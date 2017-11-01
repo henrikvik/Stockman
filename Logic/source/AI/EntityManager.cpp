@@ -158,6 +158,11 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
 
         m_deadEnemies.push_back(enemy);
         flock.pop_back();
+
+        // nice little death stuff
+        btVector3 oldVel = enemy->getRigidBody()->getLinearVelocity();
+        enemy->getRigidBody()->setLinearVelocity(btVector3());
+        enemy->getRigidBody()->applyCentralForce(oldVel * 1000);
     }
 }
 

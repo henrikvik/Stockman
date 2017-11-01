@@ -59,11 +59,12 @@ void Behavior::walkPath(RunIn &in)
 	boidCalculations(in.enemy->getPositionBT(), 
 		dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
-    dir.setY(-0.f); // my super fix to tower building
+    float y = in.enemy->getRigidBody()->getLinearVelocity().getY();
+    dir.setY(0);
     dir.normalize();
     dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
 
-    in.enemy->getRigidBody()->setLinearVelocity(dir * 100);
+    in.enemy->getRigidBody()->setLinearVelocity({ dir.x() * 100, y, dir.z() * 100 });
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
