@@ -30,9 +30,9 @@ btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent, modelID)
 {
-    m_weaponManager = new WeaponManager();
-    m_skillManager = new SkillManager();
-    m_listenerData = new Sound::ListenerData();
+    m_weaponManager = newd WeaponManager();
+    m_skillManager = newd SkillManager();
+    m_listenerData = newd Sound::ListenerData();
 }
 
 Player::~Player()
@@ -67,17 +67,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_playerState = PlayerState::STANDING;
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 
-    DebugWindow::getInstance()->registerCommand("SETMOUSESENS", [&](std::vector<string> &para) -> std::string {
-        try 
-        { // Boilerplate code bois
-            m_mouseSens = stof(para[0]);
-        }
-        catch (int i)
-        {
-            return "That is not going to work";
-        }
-        return "Mouse sens set";
-    });
+    m_godMode = m_noclip = false;
+
+    registerDebugCmds();
 
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
@@ -108,15 +100,44 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_listenerData->update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 }
 
+void Player::registerDebugCmds()
+{
+    DebugWindow *win = DebugWindow::getInstance();
+    win->registerCommand("SETMOUSESENS", [&](std::vector<string> &para) -> std::string {
+        try
+        { // Boilerplate code bois
+            m_mouseSens = stof(para[0]);
+        }
+        catch (int)
+        {
+            return "That is not going to work";
+        }
+        return "Mouse sens set";
+    });
+    win->registerCommand("GODMODE", [&](std::vector<string> &para) -> std::string {
+        m_godMode = !m_godMode;
+        return "Godmode updated";
+    });
+    win->registerCommand("NOCLIP", [&](std::vector<string> &para) -> std::string {
+        m_noclip = !m_noclip;
+        if (m_noclip)
+            m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
+        else {
+            m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
+            // reset movement
+            m_moveDir.setZero();
+            m_moveSpeed = 0.f;
+        }
+        return "Noclip updated";
+    });
+}
+
 void Player::clear()
 {
 	m_weaponManager->clear();
-	m_skillManager->clear();
     delete m_weaponManager;
     delete m_skillManager;
-
 	delete m_charController;
-
     delete m_listenerData;
 }
 
@@ -129,25 +150,24 @@ void Player::reset()
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-#ifdef GOD_MODE
-	
-#else
-	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
-	else if (Trigger* t = dynamic_cast<Trigger*>(&other))	 	{ }														// collision with trigger
-	else if (Enemy *e = dynamic_cast<Enemy*> (&other))
-	{
-		int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
-		e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * stacks); 
-		stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
-		e->damage(2 * stacks); // replace 1 with the player damage when it is better
-	}
-#endif
+    if (!m_godMode)
+    {
+        if (Projectile* p = dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
+        else if (Trigger* t = dynamic_cast<Trigger*>(&other)) {}														// collision with trigger
+        else if (Enemy *e = dynamic_cast<Enemy*> (&other))
+        {
+            int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
+            e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * stacks);
+            stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
+            e->damage(2 * stacks); // replace 1 with the player damage when it is better
+        }
+    }
 }
 
 void Player::onCollision(Projectile& other)
 {
 	if (other.getProjectileData().enemyBullet)
-		takeDamage(other.getProjectileData().damage);
+		takeDamage((int)other.getProjectileData().damage);
 }
 
 void Player::affect(int stacks, Effect const &effect, float deltaTime)
@@ -212,11 +232,12 @@ void Player::readFromFile()
 
 void Player::takeDamage(int damage, bool damageThroughProtection)
 {
-#ifndef GOD_MODE
-	if (damageThroughProtection ||
-		getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
-		m_hp -= damage;
-#endif
+    if (!m_godMode)
+    {
+        if (damageThroughProtection ||
+            getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
+            m_hp -= damage;
+    }
 }
 
 int Player::getHP() const
@@ -249,20 +270,19 @@ void Player::updateSpecific(float deltaTime)
 	}
 
 	// TEMP FREE MOVE
-	static bool freeMove = false;
-	if (ks.IsKeyDown(DirectX::Keyboard::N) && !freeMove)
+	if (ks.IsKeyDown(DirectX::Keyboard::N) && !m_noclip)
 	{
 		m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
-		freeMove = true;
+        m_noclip = true;
 		printf("free move activated\n");
 	}
-	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)	
+	else if (ks.IsKeyDown(DirectX::Keyboard::M) && m_noclip)
 	{
 		m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
 		// reset movement
 		m_moveDir.setZero();
 		m_moveSpeed = 0.f;
-		freeMove = false;
+        m_noclip = false;
 		printf("free move deactivated\n");
 	}
 
@@ -273,7 +293,7 @@ void Player::updateSpecific(float deltaTime)
 
 	// Get movement input
 	moveInput(&ks);
-	if (!freeMove)
+	if (!m_noclip)
 	{
 		if (m_playerState == PlayerState::STANDING)
 			// Move
@@ -301,17 +321,12 @@ void Player::updateSpecific(float deltaTime)
 	//crouch(deltaTime);
 
 	// Weapon swap
-	if (!m_weaponManager->isSwitching())
-	{
-		if (ks.IsKeyDown(m_switchWeaponOne))
-			m_weaponManager->switchWeapon(0);
-
-		if (ks.IsKeyDown(m_switchWeaponTwo))
-			m_weaponManager->switchWeapon(1);
-
-		if (ks.IsKeyDown(m_switchWeaponThree))
-			m_weaponManager->switchWeapon(2);
-	}
+	if (ks.IsKeyDown(m_switchWeaponOne))
+		m_weaponManager->switchWeapon(0);
+	if (ks.IsKeyDown(m_switchWeaponTwo))
+		m_weaponManager->switchWeapon(1);
+	if (ks.IsKeyDown(m_switchWeaponThree))
+		m_weaponManager->switchWeapon(2);
 
 	// Skills
     PROFILE_BEGIN("SkillManager");
@@ -352,16 +367,16 @@ void Player::updateSpecific(float deltaTime)
     m_weaponManager->update(deltaTime);
     m_skillManager->update(deltaTime);
 
-#ifdef GOD_MODE
-	static bool isNum = false;
-	static bool wasNum = false;
-	wasNum = isNum;
-	isNum = ks.NumPad8;
+    if (m_godMode)
+    {
+        static bool isNum = false;
+        static bool wasNum = false;
+        wasNum = isNum;
+        isNum = ks.NumPad8;
 
-	if (isNum && !wasNum)
-		m_hp--;
-#endif
-
+        if (isNum && !wasNum)
+            m_hp--;
+    }
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
@@ -459,7 +474,6 @@ void Player::move(float deltaTime)
 	if (m_wishJump)
 	{
 		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
-
 		m_wishJump = false;
 	}
 }
@@ -605,7 +619,7 @@ btGhostObject* Player::getGhostObject()
 DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 {
 	// Making memory for a matrix
-	float* m = new float[4 * 16];
+	float* m = newd float[4 * 16];
 
 	// Getting this entity's matrix
 	m_charController->getGhostObject()->getWorldTransform().getOpenGLMatrix((btScalar*)(m));
@@ -701,6 +715,10 @@ Sound::ListenerData& Player::getListenerData()
 	return *m_listenerData;
 }
 
+SkillManager* Player::getSkillManager()
+{
+    return m_skillManager;
+}
 const AmmoContainer& Player::getActiveAmmoContainer() const
 {
     return *m_weaponManager->getActiveWeaponLoadout()->ammoContainer;

@@ -24,7 +24,7 @@ namespace Logic
     class Entity;
     class ProjectileManager;
     class Projectile;
-    class ProjectileData;
+    struct ProjectileData;
 
 	class SkillBulletTime : public Skill
 	{

@@ -10,7 +10,7 @@
 
 Graphics::Glow::Glow(ID3D11Device * device, ID3D11DeviceContext * context)
 	: glow(device, SHADER_PATH("GlowShaders/GlowBlurHorizontal.hlsl"), {})
-	, glow2(device, SHADER_PATH("GlowShaders/glowBlurVertical.hlsl"), {})
+	, glow2(device, SHADER_PATH("GlowShaders/GlowBlurVertical.hlsl"), {})
 	, merger(device, SHADER_PATH("GlowShaders/Merger.hlsl"), {})
 	, mipGenerator(device, SHADER_PATH("GlowShaders/GlowDownSampler.hlsl"), {})
 	, mipCombinder(device, SHADER_PATH("GlowShaders/GlowMipCombinder.hlsl"), {})
@@ -44,8 +44,8 @@ std::vector<float> Graphics::Glow::generateKernel(int kernelSize, float sigma)
 	std::vector<float> kernel(kernelSize);
 
 	auto g = [&](int x) -> float {
-		static float gMult = 1.0f / (sqrt(2.0f * M_PI) * sigma);
-		return gMult * pow(M_E, -(pow(x, 2) / (2.0f * pow(sigma, 2))));
+		static float gMult = 1.0f / (sqrtf(2.0f * (float)M_PI) * sigma);
+		return gMult * powf((float)M_E, -(powf((float)x, 2) / (2.0f * powf(sigma, 2))));
 	};
 
 	float kernelSum = 0;
@@ -132,10 +132,10 @@ void Graphics::Glow::createMips(ID3D11Device * device)
 
 void Graphics::Glow::setMipViewPort(ID3D11DeviceContext * context, int level)
 {
-	level = pow(2, level);
+	level = (int)powf(2.f, (float)level);
 	D3D11_VIEWPORT viewPort = {};
-	viewPort.Height = WIN_HEIGHT / level;
-	viewPort.Width = WIN_WIDTH / level;
+	viewPort.Height = float(WIN_HEIGHT / level);
+	viewPort.Width = float(WIN_WIDTH / level);
 	viewPort.MaxDepth = 1.f;
 
 	context->RSSetViewports(1, &viewPort);
@@ -206,15 +206,15 @@ void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResource
 	context->PSSetShader(merger, nullptr, 0);
 	
 
-	context->PSSetShaderResources(0, 1, &backBuffer);
-	context->PSSetShaderResources(1, 1, glowPass1);
+	context->PSSetShaderResources(4, 1, &backBuffer);
+	context->PSSetShaderResources(5, 1, glowPass1);
 	context->OMSetRenderTargets(1, *outputTexture, nullptr);
 
 	context->Draw(3, 0);
 
 	context->OMSetRenderTargets(1, &nullRTV, nullptr);
-	context->PSSetShaderResources(0, 1, &nullSRV);
-	context->PSSetShaderResources(1, 1, &nullSRV);
+	context->PSSetShaderResources(4, 1, &nullSRV);
+	context->PSSetShaderResources(5, 1, &nullSRV);
 
 
 }

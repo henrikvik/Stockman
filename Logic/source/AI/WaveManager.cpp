@@ -26,7 +26,7 @@ void WaveManager::loadFile()
     m_waveInformation.timeMul   = waveInfo.floats["timeMul"];
     m_waveInformation.timeBonus = waveInfo.floats["timeBonus"];
     m_waveInformation.bossWaves = splitInts(waveInfo.strings["bossWaves"], FILE_DELIM);
-    m_waveInformation.bossTimeBonus = waveInfo.floats["bossTimeBonus"];
+    m_waveInformation.bossTimeBonus = (int)waveInfo.floats["bossTimeBonus"];
 }
 
 WaveManager::EntitiesInWave WaveManager::getEntities(int waveId) const
@@ -50,10 +50,8 @@ WaveManager::EntitiesInWave WaveManager::getEntities(int waveId) const
 				entities.bosses.push_back(
 					loadEntity(i + struc.ints.at(FILE_BOSSES), k));
 		}
-		else
-		{
-			i += struc.ints.at(FILE_BOSSES) + struc.ints.at(FILE_TRIGGERS);
-		}
+		i += struc.ints.at(FILE_BOSSES) + struc.ints.at(FILE_TRIGGERS);
+		
 		currentWave++;
 	}
 

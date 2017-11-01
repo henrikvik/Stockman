@@ -20,8 +20,7 @@ Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent,
 	m_moveSpeed = moveSpeed;
 	m_enemyType = enemyType;
 	m_bulletTimeMod = 1.f;
-
-	//animation todo
+    m_moveSpeedMod = 1.f;
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -63,6 +62,7 @@ void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> co
 
 	m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 
+    m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
 }
 
@@ -85,7 +85,7 @@ void Enemy::damage(float damage)
 
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
 {
-	int flags = effect.getStandards()->flags;
+	auto flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_KILL)
 		damage(m_health);
@@ -93,7 +93,8 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
 	if (flags & Effect::EFFECT_BULLET_TIME)
 		m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
-		
+    if (flags & Effect::EFFECT_IS_FROZEN)
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
 }
 
 float Enemy::getHealth() const
@@ -113,7 +114,7 @@ float Enemy::getBaseDamage() const
 
 float Enemy::getMoveSpeed() const
 {
-	return m_moveSpeed * m_bulletTimeMod;
+	return m_moveSpeed * m_bulletTimeMod * m_moveSpeedMod;
 }
 
 ENEMY_TYPE Enemy::getEnemyType() const

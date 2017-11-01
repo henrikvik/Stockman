@@ -50,6 +50,7 @@ namespace Logic
         void hoverOver(int posX, int posY);
 		bool animationTransition(float dt, float maxAnimationTime, bool forward);
         Graphics::MenuInfo getMenuInfo();
+        Button* getButton(int index);
 	};
 }
 

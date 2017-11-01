@@ -122,7 +122,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
 void WeaponManager::switchWeapon(int index)
 {
 	// Check if swapTimer is active or swapping to same weapon 
-	if (m_swapWeaponTimer <= 0.f && !(m_currentWeapon == m_weaponLoadouts[index]))
+	if (!(m_currentWeapon == m_weaponsLoadouts[index]))
 	{
 		m_currentWeapon = m_weaponLoadouts[index];
 		m_swapWeaponTimer = m_swapWeaponTimerMax;

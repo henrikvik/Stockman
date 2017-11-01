@@ -31,7 +31,7 @@ void EnemyTest::onCollision(PhysicsObject& other, btVector3 contactPoint, float 
 	}
 	if (Player *p = dynamic_cast<Player*> (&other))
 	{
-		p->takeDamage(getBaseDamage());
+		p->takeDamage((int)getBaseDamage());
 	}
 }
 

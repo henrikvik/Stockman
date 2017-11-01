@@ -18,7 +18,7 @@ AStar::AStar(std::string file)
 	{
 		navNodes[i].onClosedList = navNodes[i].explored = false;
 		navNodes[i].g = navNodes[i].h = 0;
-		navNodes[i].nodeIndex = i;
+		navNodes[i].nodeIndex = (int)i;
 		navNodes[i].parent = NO_PARENT;
 	}
 }
@@ -87,7 +87,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 				explore->explored = true;
 
 				explore->g = f;
-				explore->h = heuristic(nodes[index], nodes[toIndex]) * 0.1;
+				explore->h = heuristic(nodes[index], nodes[toIndex]) * 0.1f;
 
 				explore->parent = currentNode->nodeIndex;
 				openList.push(explore);
@@ -186,13 +186,13 @@ void AStar::generateNavigationMesh()
 		then square root because it is a square matrix (rows = columns).
 		Then times two again because one row = number of squares * 2.
 	*/
-	const int ROW = std::sqrt(navigationMesh.getNodes().size() / 2) * 2;
+	const int ROW = (int)std::sqrt(navigationMesh.getNodes().size() / 2) * 2;
 	for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
 	{
 		if ((i + 1) % ROW != 0)
 		{
-			navigationMesh.addEdge(i, i + 1);
-			navigationMesh.addEdge(i + 1, i);
+			navigationMesh.addEdge((int)i, (int)i + 1);
+			navigationMesh.addEdge((int)i + 1, (int)i);
 		}
 		
 		if (i < navigationMesh.getNodes().size() - ROW && i % 2 == 0)
@@ -203,8 +203,8 @@ void AStar::generateNavigationMesh()
 			
 			if ((i + 1) % ROW != 0)
 			{
-				navigationMesh.addEdge(i, i + ROW + 1);
-				navigationMesh.addEdge(i + ROW + 1, i);
+				navigationMesh.addEdge((int)i, (int)i + ROW + 1);
+				navigationMesh.addEdge((int)i + ROW + 1, (int)i);
 			}
 		} 
 	}

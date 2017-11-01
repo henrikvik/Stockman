@@ -47,6 +47,7 @@ namespace Graphics
 #pragma region Foliage
 		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
 		, timeBuffer(device)
+		, snowManager(device)
 
 
 #pragma endregion
@@ -56,7 +57,7 @@ namespace Graphics
 		this->deviceContext = deviceContext;
 		this->backBuffer = backBuffer;
 
-		initialize(device, deviceContext);
+		initialize(device, deviceContext, camera);
 
 		fakeBackBuffer = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
 		fakeBackBufferSwap = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
@@ -107,20 +108,25 @@ namespace Graphics
 
     }
 
-    void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
+    void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext, Camera * camera)
     {
         resourceManager.initialize(gDevice, gDeviceContext);
 		skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
 
         //temp
         DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
-
+		snowManager.initializeSnowflakes(camera);
     }
 
 	void Renderer::updateLight(float deltaTime, Camera * camera)
 	{
 		PROFILE_BEGIN("UpdateLights()");
 		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
+		PROFILE_END();
+
+		//Temp or rename function
+		PROFILE_BEGIN("updateSnow()");
+		snowManager.updateSnow(deltaTime, camera, deviceContext);
 		PROFILE_END();
 	}
 
@@ -130,8 +136,8 @@ namespace Graphics
 		PROFILE_BEGIN("SetBulletTimeCBuffer()");
 		//These two must always add up to one ir i'll have to fix the formula
 		//They represents how long the fade in and fade out are. 
-		static const float TOP_THRESHOLD = 0.9;
-		static const float BOT_THRESHOLD = 0.1;
+		static const float TOP_THRESHOLD = 0.9f;
+		static const float BOT_THRESHOLD = 0.1f;
 
 
         if (amount > TOP_THRESHOLD)
@@ -331,13 +337,19 @@ namespace Graphics
 		renderFoliageQueue.clear();
 		PROFILE_END();
 
+		
+		snowManager.drawSnowflakes(deviceContext, camera);
+		deviceContext->GSSetShader(nullptr, nullptr, 0);
+		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		
+
 		PROFILE_BEGIN("DebugThings");
 	/*	PROFILE_BEGIN("RenderWater");
 		drawWater(camera);
 		PROFILE_END();*/
 
-		//The sky renderer uses the bullet time on register 3
-		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
+		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
 		skyRenderer.renderSky(deviceContext, camera);
 
         ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
@@ -358,7 +370,7 @@ namespace Graphics
 
 #endif
 		auto ks = DirectX::Keyboard::Get().GetState();
-		
+
 		
 		if (enablePostEffects)
 		{
@@ -570,7 +582,7 @@ namespace Graphics
         {
 			PROFILE_BEGIN("Setup for draw");
             instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(UINT));
-            instanceOffset += pair.second.size();
+            instanceOffset += (UINT)pair.second.size();
 
             ModelInfo model = resourceManager.getModelInfo(pair.first);
 
@@ -667,18 +679,18 @@ namespace Graphics
             debugPointsBuffer.write(
                 deviceContext,
                 info->points->data(),
-                info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
+                (UINT)(info->points->size() * sizeof(DirectX::SimpleMath::Vector3))
             );
 
             debugColorBuffer.write(
                 deviceContext,
                 &info->color,
-                sizeof(DirectX::SimpleMath::Color)
+                (UINT)sizeof(DirectX::SimpleMath::Color)
             );
 
             deviceContext->IASetPrimitiveTopology(info->topology);
             deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
-            deviceContext->Draw(info->points->size(), 0);
+            deviceContext->Draw((UINT)info->points->size(), 0);
         }
 
         renderDebugQueue.clear();
@@ -817,7 +829,17 @@ namespace Graphics
 
 			return catcher;
 		});
-        debugWindow->registerCommand("ENABLEDOFSLIDERS", [&](std::vector<std::string> &args)->std::string
+
+		debugWindow->registerCommand("RELOADSNOWSHADER", [&](std::vector<std::string> &args)->std::string
+		{
+			std::string catcher = "";
+
+			snowManager.recompile(device);
+
+			return catcher;
+		});
+    
+		debugWindow->registerCommand("ENABLEDOFSLIDERS", [&](std::vector<std::string> &args)->std::string
         {
             enableCoCWindow = !enableCoCWindow;
 

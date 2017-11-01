@@ -1,5 +1,5 @@
 {
-	"buttonName" : "MenuMainButton1";
+	"buttonName" : "MenuStartGame";
 	"texture" : 0;
 	"xPos" : 400.0f;
 	"yPos" : 300.0f;
@@ -13,7 +13,7 @@
 	"function" : "buttonClick0";
 }
 {
-	"buttonName" : "MenuMainButton2";
+	"buttonName" : "MenuStartSettings";
 	"texture" : 0;
 	"xPos" : 400.0f;
 	"yPos" : 480.0f;
@@ -22,15 +22,29 @@
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 0.86719f;
     "activeOffset" : 0.50938f;
-	"height" : 45.0f;
-	"width" : 300.0f;
+	"height" : 85.0f;
+	"width" : 600.0f;
 	"function" : "buttonClick1";
 }
 {
-	"buttonName" : "MenuMainButton3";
+	"buttonName" : "MenuStartHighscore";
 	"texture" : 0;
 	"xPos" : 400.0f;
-	"yPos" : 540.0f;
+	"yPos" : 580.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.76875f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.86719f;
+    "activeOffset" : 0.50938f;
+	"height" : 45.0f;
+	"width" : 300.0f;
+	"function" : "buttonClick21";
+}
+{
+	"buttonName" : "MenuQuitGame";
+	"texture" : 0;
+	"xPos" : 400.0f;
+	"yPos" : 640.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.876565f;
 	"xTexEnd" : 1.0f;
@@ -41,7 +55,162 @@
 	"function" : "buttonClick3";
 }
 {
-	"buttonName" : "MenuSettingsButton1";
+	"buttonName" : "MenuSettingsStartMenu";
+	"texture" : 1;
+	"xPos" : 400.0f;
+	"yPos" : 480.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.54375f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.79375f;
+    "activeOffset" : 0.0f;
+	"height" : 100.0f;
+	"width" : 340.0f;
+	"function" : "buttonClick2";
+}
+{
+	"buttonName" : "MenuSettingsSoundMasterMinus";
+	"texture" : 2;
+	"xPos" : 100.0f;
+	"yPos" : 270.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.5f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.0f;
+	"height" : 75.0f;
+	"width" : 75.0f;
+	"function" : "buttonClick13";
+}
+{
+	"buttonName" : "MenuSettingsSoundMasterPlus";
+	"texture" : 2;
+	"xPos" : 175.0f;
+	"yPos" : 270.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.5f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.0f;
+	"height" : 75.0f;
+	"width" : 75.0f;
+	"function" : "buttonClick14";
+}
+
+{
+	"buttonName" : "MenuSettingsSoundSFXMinus";
+	"texture" : 2;
+	"xPos" : 100.0f;
+	"yPos" : 370.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.5f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.0f;
+	"height" : 75.0f;
+	"width" : 75.0f;
+	"function" : "buttonClick15";
+}
+{
+	"buttonName" : "MenuSettingsSoundSFXPlus";
+	"texture" : 2;
+	"xPos" : 175.0f;
+	"yPos" : 370.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.5f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.0f;
+	"height" : 75.0f;
+	"width" : 75.0f;
+	"function" : "buttonClick16";
+}
+{
+	"buttonName" : "MenuSettingsMuteUnmute";
+	"texture" : 2;
+	"xPos" : 137.5f;
+	"yPos" : 470.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.5f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.0f;
+	"height" : 75.0f;
+	"width" : 75.0f;
+	"function" : "buttonClick17";
+}
+{
+	"buttonName" : "MenuSettingsControlsMouseSenseMinus";
+	"texture" : 2;
+	"xPos" : 250.0f;
+	"yPos" : 270.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.5f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.0f;
+	"height" : 75.0f;
+	"width" : 75.0f;
+	"function" : "buttonClick11";
+}
+{
+	"buttonName" : "MenuSettingsControlsMouseSensePlus";
+	"texture" : 2;
+	"xPos" : 325.0f;
+	"yPos" : 270.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.5f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.0f;
+	"height" : 75.0f;
+	"width" : 75.0f;
+	"function" : "buttonClick12";
+}
+{
+	"buttonName" : "MenuSettingsVideoFOVMinus";
+	"texture" : 2;
+	"xPos" : 400.0f;
+	"yPos" : 270.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.5f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.0f;
+	"height" : 75.0f;
+	"width" : 75.0f;
+	"function" : "buttonClick18";
+}
+{
+	"buttonName" : "MenuSettingsVideoFOVPlus";
+	"texture" : 2;
+	"xPos" : 475.0f;
+	"yPos" : 270.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.5f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.0f;
+	"height" : 75.0f;
+	"width" : 75.0f;
+	"function" : "buttonClick19";
+}
+{
+	"buttonName" : "MenuSettingsVideoWindowed";
+	"texture" : 2;
+	"xPos" : 550.0f;
+	"yPos" : 270.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.5f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.0f;
+	"height" : 75.0f;
+	"width" : 75.0f;
+	"function" : "buttonClick20";
+}
+{
+	"buttonName" : "MenuSettingsWriting";
 	"texture" : 2;
 	"xPos" : 400.0f;
 	"yPos" : 100.0f;
@@ -55,21 +224,7 @@
 	"function" : "buttonClick4";
 }
 {
-	"buttonName" : "MenuSettingsButton2";
-	"texture" : 2;
-	"xPos" : 400.0f;
-	"yPos" : 260.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 55.0f;
-	"width" : 370.0f;
-	"function" : "buttonClick2";
-}
-{
-	"buttonName" : "GameOverButton1";
+	"buttonName" : "GameOverStartMenu";
 	"texture" : 1;
 	"xPos" : 50.0f;
 	"yPos" : 600.0f;
@@ -80,10 +235,10 @@
     "activeOffset" : 0.0f;
 	"height" : 55.0f;
 	"width" : 170.0f;
-	"function" : "buttonClick2";
+	"function" : "buttonClick0";
 }
 {
-	"buttonName" : "GameOverButton2";
+	"buttonName" : "GameOverQuitGame";
 	"texture" : 1;
 	"xPos" : 1000.0f;
 	"yPos" : 600.0f;
@@ -94,10 +249,10 @@
     "activeOffset" : 0.0f;
 	"height" : 50.0f;
 	"width" : 170.0f;
-	"function" : "buttonClick3";
+	"function" : "buttonClick2";
 }
 {
-	"buttonName" : "CardUpgradeButton1";
+	"buttonName" : "CardUpgradeChoice1";
 	"texture" : 1;
 	"xPos" : 290.0f;
 	"yPos" : 225.0f;
@@ -111,7 +266,7 @@
 	"function" : "buttonClick5";
 }
 {
-	"buttonName" : "CardUpgradeButton2";
+	"buttonName" : "CardUpgradeChoice2";
 	"texture" : 1;
 	"xPos" : 540.0f;
 	"yPos" : 225.0f;
@@ -125,7 +280,7 @@
 	"function" : "buttonClick6";
 }
 {
-	"buttonName" : "CardUpgradeButton3";
+	"buttonName" : "CardUpgradeChoice3";
 	"texture" : 1;
 	"xPos" : 790.0f;
 	"yPos" : 225.0f;
@@ -137,4 +292,60 @@
 	"height" : 250.0f;
 	"width" : 200.0f;
 	"function" : "buttonClick7";
+}
+{
+	"buttonName" : "HighscoreStartMenu";
+	"texture" : 1;
+	"xPos" : 400.0f;
+	"yPos" : 480.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.54375f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.79375f;
+    "activeOffset" : 0.0f;
+	"height" : 100.0f;
+	"width" : 340.0f;
+	"function" : "buttonClick2";
+}
+{
+	"buttonName" : "SkillPickButton1";
+	"texture" : 3;
+	"xPos" : 200.666666667f;
+	"yPos" : 200.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.0f;
+	"xTexEnd" : 0.3333f;
+	"yTexEnd" : 0.3333f;
+	"activeOffset" : 0.33333f;
+	"height" : 170.666666667f;
+	"width" : 170.666666667f;
+	"function" : "buttonClick8";
+}
+{
+	"buttonName" : "SkillPickButton2";
+	"texture" : 3;
+	"xPos" : 560.f;
+	"yPos" : 200.0f;
+	"xTexStart" : 0.3333f;
+	"yTexStart" : 0.0f;
+	"xTexEnd" : 0.6666f;
+	"yTexEnd" : 0.3333f;
+	"activeOffset" : 0.33333f;
+	"height" : 170.666666667f;
+	"width" : 170.666666667f;
+	"function" : "buttonClick9";
+}
+{
+	"buttonName" : "SkillPickButton3";
+	"texture" : 3;
+	"xPos" : 950.0f;
+	"yPos" : 200.0f;
+	"xTexStart" : 0.6666f;
+	"yTexStart" : 0.0f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.3333f;
+	"activeOffset" : 0.33333f;
+	"height" : 170.666666667f;
+	"width" : 170.666666667f;
+	"function" : "buttonClick10";
 }

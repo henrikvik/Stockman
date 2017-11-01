@@ -101,6 +101,11 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, con
 		onCollision(other, contactPoint, 1.f);
 }
 
+void Logic::PhysicsObject::setHalfExtent(btVector3 halfExtent)
+{
+    m_halfextent = halfExtent;
+}
+
 btVector3 PhysicsObject::getHalfExtent() const
 {
 	return m_halfextent;
@@ -159,7 +164,7 @@ btTransform& PhysicsObject::getTransform()
 
 int PhysicsObject::getNumberOfWeakPoints() const
 {
-	return m_weakPoints.size();
+	return (int)m_weakPoints.size();
 }
 
 btRigidBody * PhysicsObject::getRigidBodyWeakPoint(int i)

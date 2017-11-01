@@ -19,7 +19,7 @@ const int HUDManager::TOTAL_AMMO = 1;
 
 HUDManager::HUDManager()
 {
-    info = new Graphics::HUDInfo;
+    info = newd Graphics::HUDInfo;
     ZeroMemory(info, sizeof(info));
     info->cd = 1.0f;
 }
@@ -50,7 +50,7 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
 
     info->wave = timeManager.getCurrentWave() + 1;
     info->timeRemaining = (timeManager.getTimeRequired() - timeManager.getTimeCurrent()) * 0.001f;
-    info->enemiesRemaining = entityManager.getNrOfAliveEnemies();
+    info->enemiesRemaining = (int)entityManager.getNrOfAliveEnemies();
 }
 
 void HUDManager::render(Graphics::Renderer &renderer)

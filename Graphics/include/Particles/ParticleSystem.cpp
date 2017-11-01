@@ -10,6 +10,7 @@
 #include <d3dcompiler.h>
 
 #include <Engine\Profiler.h>
+#include "../Utility/DebugDraw.h"
 
 #include <tbb\tbb.h>
 
@@ -68,7 +69,9 @@ ParticleSystem::~ParticleSystem()
 
 bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Matrix model, float dt)
 {
-    for (int i = 0; i < fx->m_Count; i++) {
+    Debug::ParticleFX({ SimpleMath::Vector3::Transform({}, model), *fx });
+
+    for (unsigned int i = 0; i < fx->m_Count; i++) {
         auto &entry = fx->m_Entries[i];
 
         fx->m_Age += dt;
@@ -147,7 +150,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
 
-    cxt->PSSetShaderResources(0, m_Textures.size(), m_Textures.data());
+    cxt->PSSetShaderResources(0, (UINT)m_Textures.size(), m_Textures.data());
 
     // spheres
     {
@@ -180,7 +183,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
         cxt->RSSetState(states->CullNone());
 
         int offset = 0;
-        int len = 0;
+        unsigned int len = 0;
         int current_material = -1;
 
         for (int i = 0; i < m_GeometryParticles.size(); i++) {
@@ -308,7 +311,7 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
     auto updater = GeometryParticleUpdater(&m_GeometryParticles, &deleteSize, &deleteList, dt, ptr);
     
     tbb::parallel_for(
-        tbb::blocked_range<int>(0, min(m_GeometryParticles.size(), m_Capacity)),
+        tbb::blocked_range<int>(0, min((int)m_GeometryParticles.size(), (int)m_Capacity)),
         updater,
         tbb::static_partitioner()
     );
@@ -320,7 +323,7 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
         return a > b;
     });
 
-    int sz = deleteSize;
+    int sz = min(32, deleteSize);
     for (int i = 0; i < sz; i++) {
         auto idx = deleteList.at(i);
         m_GeometryParticles.erase(m_GeometryParticles.begin() + idx);
@@ -367,7 +370,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
     fread(&texture_count, sizeof(texture_count), 1, f);
 
     // load all textures
-    for (int i = 0; i < texture_count; i++) {
+    for (unsigned int i = 0; i < texture_count; i++) {
         char path[128];
         fread(path, sizeof(char), 128, f);
 
@@ -385,7 +388,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
     fread(&material_count, sizeof(material_count), 1, f);
 
     // load all materials
-    for (int i = 0; i < material_count; i++) {
+    for (unsigned int i = 0; i < material_count; i++) {
         char path[128];
         fread(path, sizeof(char), 128, f);
 
@@ -450,7 +453,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
     fread(&fx_count, 1, sizeof(fx_count), f);
 
     // load all particle fx
-    for (int i = 0; i < fx_count; i++) {
+    for (unsigned int i = 0; i < fx_count; i++) {
         ParticleEffect fx;
         fread(fx.m_Name, sizeof(char), 16, f);
         fread(&fx.m_Count, sizeof(fx.m_Count), 1, f);
@@ -462,7 +465,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         fx.m_Entries.resize(fx.m_Count);
 
         // read all fx entries
-        for (int j = 0; j < fx.m_Count; j++) {
+        for (unsigned int j = 0; j < fx.m_Count; j++) {
 
 #define LAZY_READ(field) \
     fread(&fx.m_Entries[j].field, sizeof(fx.m_Entries[j].field), 1, f);
