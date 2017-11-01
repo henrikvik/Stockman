@@ -320,7 +320,7 @@ btPairCachingGhostObject* Physics::createPlayer(btCapsuleShape* capsule, btVecto
 	ghostObject->setWorldTransform(transform);
 
 	// Adding to physics world
-	this->addCollisionObject(ghostObject, COL_FLAG::COL_PLAYER, Physics::COL_HITBOX);
+	this->addCollisionObject(ghostObject, COL_FLAG::COL_PLAYER, Physics::COL_EVERYTHING);
 
 	return ghostObject;
 }

@@ -86,7 +86,7 @@ void Graphics::Menu::loadTextures(ID3D11Device * device, ID3D11DeviceContext * c
         //ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuTexture.png"), nullptr, &menuTexture[2]));
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("skillpickbackground.dds"), nullptr, &menuTexture[2]));
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverTexture.png"), nullptr, &menuTexture[3]));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverTexture.dds"), nullptr, &menuTexture[3]));
 
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainmenubuttons.dds"), nullptr, &buttonTexture[0]));
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverMenuButtons.dds"), nullptr, &buttonTexture[1]));

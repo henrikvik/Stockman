@@ -18,10 +18,13 @@ using namespace Logic;
 #include <Graphics\include\Renderer.h>
 #include <Graphics\include\Structs.h>
 #include <Physics\Physics.h>
+#include <Graphics\include\Particles\ParticleSystem.h>
 
 #include <DebugDefines.h>
-#include <Engine\Profiler.h>
 #include <Misc\RandomGenerator.h>
+
+#include <Engine\DebugWindow.h>
+#include <Engine\Profiler.h>
 
 #include <ctime>
 #include <stdio.h>
@@ -32,8 +35,10 @@ EntityManager::EntityManager()
 {
     m_frame = 0;
     m_aliveEnemies = 0;
+    m_aiType = NORMAL_MODE;
 
     allocateData();
+    loadDebugCmds();
 
     m_waveManager.setName(FILE_ABOUT_WHALES);
     m_waveManager.loadFile();
@@ -41,6 +46,7 @@ EntityManager::EntityManager()
 
 EntityManager::~EntityManager()
 {
+    deallocateData();
     delete m_threadHandler;
 }
 
@@ -50,7 +56,21 @@ void EntityManager::allocateData()
     m_threadHandler = newd EnemyThreadHandler();
 }
 
-void EntityManager::deleteData()
+void EntityManager::loadDebugCmds()
+{
+#ifdef _DEBUG
+    DebugWindow::getInstance()->registerCommand("SETAI", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            m_aiType = static_cast<AIType> (stoi(para[0]));
+            return "AI Mode Updated";
+        } catch (std::exception e) {
+            return "No, Chaos is a ladder.";
+        }
+    });
+#endif
+}
+
+void EntityManager::deallocateData()
 {
     for (std::vector<Enemy*>& list : m_enemies)
     {
@@ -58,16 +78,18 @@ void EntityManager::deleteData()
         {
             DeleteBody(*enemy); 
             delete enemy;
+            enemy = nullptr;
         }
         list.clear();
     }
+
     for (Enemy *enemy : m_deadEnemies)
     {
         DeleteBody(*enemy);
         delete enemy;
     }
-    m_deadEnemies.clear();
 
+    m_deadEnemies.clear();
     m_aliveEnemies = 0;
 }
 
@@ -77,19 +99,18 @@ void EntityManager::update(Player const &player, float deltaTime)
 	m_deltaTime = deltaTime;
 	
 	PROFILE_BEGIN("EntityManager::update()");
-	for (size_t i = 0; i < m_enemies.size(); i++)
-	{
-		if (m_enemies[i].size() > 0)
-		{
-			updateEnemies((int)i, player, deltaTime);
-            if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) 
+    if (m_aiType != NO_AI_MODE)
+    {
+        for (size_t i = 0; i < m_enemies.size(); i++)
+        {
+            if (m_enemies[i].size() > 0)
             {
-                PROFILE_BEGIN("ThreadHandler::addWork");
-                m_threadHandler->addWork({ this, static_cast<int> (i), player });
-                PROFILE_END();
+                updateEnemies(static_cast<int> (i), player, deltaTime);
+                if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0)
+                    m_threadHandler->addWork({ this, static_cast<int> (i), player });
             }
-		}
-	}
+        }
+    }
 	PROFILE_END();
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
@@ -97,18 +118,16 @@ void EntityManager::update(Player const &player, float deltaTime)
 		m_deadEnemies[i]->updateDead(deltaTime);
 	}
 
-
 	m_triggerManager.update(deltaTime);
 }
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	bool goalNodeChanged = false;
-    bool swapOnNewIndex = !(m_threadHandler->getThreadStatus(index) & EnemyThreadHandler::RUNNING);
     std::vector<Enemy*> &enemies = m_enemies[index];
 	
 	for (size_t i = 0; i < enemies.size(); ++i)
 	{
-        updateEnemy(enemies[i], enemies, (int)i, index, player, deltaTime, swapOnNewIndex);
+        updateEnemy(enemies[i], enemies, (int)i, index, player, deltaTime, true);
 	}
 }
 
@@ -139,6 +158,11 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
 
         m_deadEnemies.push_back(enemy);
         flock.pop_back();
+
+        // nice little death stuff
+        btVector3 oldVel = enemy->getRigidBody()->getLinearVelocity();
+        enemy->getRigidBody()->setLinearVelocity(btVector3());
+        enemy->getRigidBody()->applyCentralForce(oldVel * 1000);
     }
 }
 
@@ -179,7 +203,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
 {
     Enemy *enemy;
     int index;
-    btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER));
+    btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/));
     
     // Restrict "tilting" over
     testBody->setAngularFactor(btVector3(0, 1, 0));
@@ -198,7 +222,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     }
 
     enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER)), 2.f, { 0.f, 3.f, 0.f });
+    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/)), 2.f, { 0.f, 3.f, 0.f });
 
     enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 

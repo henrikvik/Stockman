@@ -101,6 +101,11 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, con
 		onCollision(other, contactPoint, 1.f);
 }
 
+void Logic::PhysicsObject::setHalfExtent(btVector3 halfExtent)
+{
+    m_halfextent = halfExtent;
+}
+
 btVector3 PhysicsObject::getHalfExtent() const
 {
 	return m_halfextent;
@@ -137,6 +142,10 @@ DirectX::SimpleMath::Matrix PhysicsObject::getTransformMatrix() const
 	// Translating to DirectX Math and assigning the variables
 	DirectX::SimpleMath::Matrix transformMatrix(m);
 	// transformMatrix -= DirectX::SimpleMath::Matrix::CreateTranslation({ 0, static_cast<float> (m_halfextent.getY()), 0 });
+
+    // KILL ME NOW
+    if (getModelID() == 10)
+        transformMatrix._42 += 3.0;
 
 	//Find the scaling matrix
 	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);

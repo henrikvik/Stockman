@@ -31,6 +31,7 @@ namespace Logic
 
 			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
 			float m_bulletTimeMod;									// Variables for effect modifiers
+            float m_moveSpeedMod;
 			ENEMY_TYPE m_enemyType;
 
 			Behavior *m_behavior;
@@ -48,7 +49,7 @@ namespace Logic
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
 
-			Projectile* shoot(btVector3 dir, Graphics::ModelID id, float speed);
+			Projectile* shoot(btVector3 dir, Graphics::ModelID id, float speed, float gravity, float scale);
 
 			// for debugging
 			void debugRendering(Graphics::Renderer &renderer);

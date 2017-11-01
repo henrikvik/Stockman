@@ -235,7 +235,7 @@
     "activeOffset" : 0.0f;
 	"height" : 55.0f;
 	"width" : 170.0f;
-	"function" : "buttonClick2";
+	"function" : "buttonClick0";
 }
 {
 	"buttonName" : "GameOverQuitGame";
@@ -249,7 +249,7 @@
     "activeOffset" : 0.0f;
 	"height" : 50.0f;
 	"width" : 170.0f;
-	"function" : "buttonClick3";
+	"function" : "buttonClick2";
 }
 {
 	"buttonName" : "CardUpgradeChoice1";

@@ -22,6 +22,7 @@
 #include "SSAORenderer.h"
 #include "Fog.H"
 #include "DoF.h"
+#include "SnowManager.h"
 
 #include <SpriteBatch.h>
 
@@ -34,7 +35,7 @@ namespace Graphics
 
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
         virtual ~Renderer();
-        void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
+        void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, Camera * camera);
 
 
         void render(Camera * camera);
@@ -105,6 +106,7 @@ namespace Graphics
 		bool enableFog = true;
 		bool enableDOF = true;
         bool enableCoCWindow = false;
+        bool enableSnow = false;
 
         Menu menu;
         HUD hud;
@@ -114,6 +116,8 @@ namespace Graphics
 
         //temp
         ID3D11ShaderResourceView * glowTest;
+
+		SnowManager snowManager;
 
 
 		//superTemp

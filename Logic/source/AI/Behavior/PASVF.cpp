@@ -26,7 +26,7 @@ PASVF::~PASVF()
 // THIS SHOULD ONLY BE CALLED OFFLINE AND THEN SAVED TO A FILE (TODO)
 void PASVF::generateNavMesh(NavigationMesh &nav, std::vector<Triangle> terrain, std::vector<std::vector<Triangle>> objects) const
 {
-#define T 20.f // size
+#define T 50.f // size
 #define Y 0.f // node y position
 	std::vector<Triangle> moveableTerrain;
 	DirectX::SimpleMath::Vector3 up = { 0, 1, 0 };
