@@ -18,6 +18,7 @@ using namespace Logic;
 #include <Graphics\include\Renderer.h>
 #include <Graphics\include\Structs.h>
 #include <Physics\Physics.h>
+#include <Graphics\include\Particles\ParticleSystem.h>
 
 #include <DebugDefines.h>
 #include <Engine\Profiler.h>
