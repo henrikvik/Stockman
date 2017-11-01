@@ -4,9 +4,8 @@
 
 #include <GameType.h>
 #include <DebugDefines.h>
+#include <Engine\DebugWindow.h> 
 #include <Player\Skill\SkillManager.h>
-
-#define cat(a, b) a##b
 
 using namespace Logic;
 
@@ -35,10 +34,6 @@ Game::~Game()
 void Game::init(LPWSTR *cmdLine, int args)
 {
     m_gameType = GameType::NORMAL_MODE;
-    for (int i = 1; i < args; i++) // first arg is name of file
-        for (std::wstring const &str : GameTypeStr)
-            if (wcscmp(str.c_str(), cmdLine[i]) == 0)
-                m_gameType = static_cast<GameType> (i - 1); // offset for filename
 
 	// Initializing Sound
 	Sound::NoiseMachine::Get().init();
@@ -95,28 +90,35 @@ void Game::init(LPWSTR *cmdLine, int args)
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
 
-	/*int m_currentHP;
-	DebugWindow *debugWindow = DebugWindow::getInstance();
-	debugWindow->registerCommand("SPAWNENEMIES", [&](std::stringstream &args)->std::string
-	{
-		int enemyCount;
-		float enemyHP;
-		args.read((char*)enemyCount, sizeof(int));
-		args.read((char*)enemyHP, sizeof(float));
-	});
+#ifdef _DEBUG
+    DebugWindow *win = DebugWindow::getInstance();
+    win->registerCommand("SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            this->m_menu->setStateToBe(static_cast<GameState> (stoi(para[0])));
+            return "Menu State set to " + stoi(para[0]);
+        } catch (std::exception e) {
+            return "Chaos is a pit.";
+        }
+    });
 
+    for (int i = 1; i < args; i++) // first arg is name of file
+        for (std::wstring const &str : GameTypeStr)
+            if (wcscmp(str.c_str(), cmdLine[i]) == 0)
+                m_gameType = static_cast<GameType> (i - 1); // offset for filename
 
-	---- SPAWNENEMIES 100 10.0f */
-
+    for (std::string const &cmd : GameCommands[m_gameType])
+        if (!cmd.empty())
+            win->doCommand(cmd.c_str());
+#endif
 }
 
 void Game::clear()
 {
 	m_menu->clear();
 	m_projectileManager->clear();
+    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
 	Sound::NoiseMachine::Get().clear();
     Typing::releaseInstance();
-    m_entityManager.deleteData();
 
 	delete m_physics;
 	delete m_player;
@@ -129,7 +131,7 @@ void Game::clear()
 
 void Game::reset()
 {
-    m_entityManager.deleteData();
+    m_entityManager.deallocateData();
     m_player->reset();
 
 	ComboMachine::Get().Reset();

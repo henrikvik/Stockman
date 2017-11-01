@@ -20,8 +20,10 @@ using namespace Logic;
 #include <Physics\Physics.h>
 
 #include <DebugDefines.h>
-#include <Engine\Profiler.h>
 #include <Misc\RandomGenerator.h>
+
+#include <Engine\DebugWindow.h>
+#include <Engine\Profiler.h>
 
 #include <ctime>
 #include <stdio.h>
@@ -32,8 +34,10 @@ EntityManager::EntityManager()
 {
     m_frame = 0;
     m_aliveEnemies = 0;
+    m_aiType = NORMAL_MODE;
 
     allocateData();
+    loadDebugCmds();
 
     m_waveManager.setName(FILE_ABOUT_WHALES);
     m_waveManager.loadFile();
@@ -41,6 +45,7 @@ EntityManager::EntityManager()
 
 EntityManager::~EntityManager()
 {
+    deallocateData();
     delete m_threadHandler;
 }
 
@@ -50,7 +55,21 @@ void EntityManager::allocateData()
     m_threadHandler = newd EnemyThreadHandler();
 }
 
-void EntityManager::deleteData()
+void EntityManager::loadDebugCmds()
+{
+#ifdef _DEBUG
+    DebugWindow::getInstance()->registerCommand("SETAI", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            m_aiType = static_cast<AIType> (stoi(para[0]));
+            return "AI Mode Updated";
+        } catch (std::exception e) {
+            return "No, Chaos is a ladder.";
+        }
+    });
+#endif
+}
+
+void EntityManager::deallocateData()
 {
     for (std::vector<Enemy*>& list : m_enemies)
     {
@@ -58,16 +77,18 @@ void EntityManager::deleteData()
         {
             DeleteBody(*enemy); 
             delete enemy;
+            enemy = nullptr;
         }
         list.clear();
     }
+
     for (Enemy *enemy : m_deadEnemies)
     {
         DeleteBody(*enemy);
         delete enemy;
     }
-    m_deadEnemies.clear();
 
+    m_deadEnemies.clear();
     m_aliveEnemies = 0;
 }
 
@@ -77,26 +98,24 @@ void EntityManager::update(Player const &player, float deltaTime)
 	m_deltaTime = deltaTime;
 	
 	PROFILE_BEGIN("EntityManager::update()");
-	for (size_t i = 0; i < m_enemies.size(); i++)
-	{
-		if (m_enemies[i].size() > 0)
-		{
-			updateEnemies((int)i, player, deltaTime);
-            if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0) 
+    if (m_aiType != NO_AI_MODE)
+    {
+        for (size_t i = 0; i < m_enemies.size(); i++)
+        {
+            if (m_enemies[i].size() > 0)
             {
-                PROFILE_BEGIN("ThreadHandler::addWork");
-                m_threadHandler->addWork({ this, static_cast<int> (i), player });
-                PROFILE_END();
+                updateEnemies(static_cast<int> (i), player, deltaTime);
+                if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0)
+                    m_threadHandler->addWork({ this, static_cast<int> (i), player });
             }
-		}
-	}
+        }
+    }
 	PROFILE_END();
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
 		m_deadEnemies[i]->updateDead(deltaTime);
 	}
-
 
 	m_triggerManager.update(deltaTime);
 }
