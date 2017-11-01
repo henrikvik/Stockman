@@ -3,6 +3,7 @@
 #include <AI\Enemy.h>
 #include <Graphics\include\Particles\ParticleSystem.h>
 #include <Engine\DebugWindow.h>
+#include <Physics\Physics.h>
 
 using namespace Logic;
 
@@ -10,7 +11,7 @@ using namespace Logic;
 static bool FUN_MODE = false;
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
-: Entity(body, halfextent) 
+: Entity(body, halfextent, Graphics::ModelID::SPHERE) 
 {
 	m_pData.damage = 1.f;
 	m_pData.speed = 0.f;
@@ -21,7 +22,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 }
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer, float ttl)
-: Entity(body, halfExtent)
+: Entity(body, halfExtent, Graphics::ModelID::SPHERE)
 {
 	m_pData.damage = damage;
 	m_pData.speed = speed;
@@ -32,17 +33,17 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, fl
 }
 
 Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
-: Entity(body, halfExtent)
+: Entity(body, halfExtent, Graphics::ModelID::SPHERE)
 {
 	m_pData = pData;
 	m_remove = false;
 	setModelID(pData.meshID);
 	m_bulletTimeMod = 1.f;
 
-	switch (pData.type)
+	/*switch (pData.type)
 	{
 		// Do specifics 
-	}
+	}*/
 }
 
 Projectile::~Projectile() { }
@@ -67,7 +68,7 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
 
 void Projectile::affect(int stacks, Effect const & effect, float deltaTime)
 {
-	int flags = effect.getStandards()->flags;
+	auto flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_BULLET_TIME)
 	{
@@ -90,9 +91,72 @@ void Projectile::updateSpecific(float deltaTime)
 	m_bulletTimeMod = 1.f;
 }
 
+// This function is a bloody mess
 void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-    if (hasCallback(ON_COLLISION))
+    // TEMP
+    bool callback = false;
+
+    if (Projectile* proj = dynamic_cast<Projectile*> (&other))  // if projectile
+        if (proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+        {
+            getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME,
+                proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+            callback = true;
+        }
+        else {} // this might seem really pointless, because it is, but if you remove it, it will stop working, so dont touch this godly else
+	 else if(!dynamic_cast<Player*>(&other)) // if not player
+	 {
+        if (dynamic_cast<Enemy*> (&other) && getProjectileData().enemyBullet)
+        {
+            m_remove = false;
+        }
+        else
+        {
+       		m_remove = true;
+            callback = true;
+
+            // DELETE THIS 
+            if (dynamic_cast<Enemy*> (&other))
+            {
+                if (FUN_MODE)
+                {
+                    if (m_pData.damage > 0)
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+
+                    // DELETE THIS 
+                    if (dynamic_cast<Enemy*> (&other)->getHealth() < 0)
+                    {
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(2, 2, 2)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(-3, 2, -3)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(-2, 3, -3)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(3, 2, 3)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(2, 3, -2)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(0, 6, 0)));
+                        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition() + DirectX::SimpleMath::Vector3(0, 0, 0)));
+                    }
+                }
+                if (m_pData.type == ProjectileTypeIce)
+                {
+                    dynamic_cast<Enemy*> (&other)->getStatusManager().addStatus(StatusManager::FREEZE, 1, true);
+                    
+                    if (FUN_MODE)
+                        if ((rand() % 10) == 1)Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+                }
+            }
+        }
+
+		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
+			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
+				m_remove = false;
+    }
+    else if (getProjectileData().enemyBullet)  // if player and enemy bullet
+    {
+        m_remove = true;
+        callback = true;
+    }
+
+    if (callback && hasCallback(ON_COLLISION))
     {
         CallbackData data;
         data.caller = this;
@@ -100,32 +164,14 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         getCallbacks()[ON_COLLISION](data);
     }
 
-	// TEMP
-	Player* p = dynamic_cast<Player*>(&other);
-	Projectile* proj = dynamic_cast<Projectile*> (&other);
-
-	if (proj)
-	{
-		if(proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-			getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
-	}
-	else if(!p)
-	{
-		m_remove = true;
-
-        // TEMP: ta bort mig
-        if (FUN_MODE)
-            Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
-
-		for (StatusManager::UPGRADE_ID upgrade : this->getStatusManager().getActiveUpgrades())
-			if (this->getStatusManager().getUpgrade(upgrade).getTranferEffects() & Upgrade::UPGRADE_IS_BOUNCING)
-				m_remove = false;
-	}
-
 	if (m_pData.type == ProjectileTypeBulletTimeSensor  ||
-        m_pData.type == ProjectileTypeIce               ||
-        m_pData.type == ProjectileTypeMelee)
+        m_pData.type == ProjectileTypeMelee ||
+        m_pData.type == ProjectileTypeIce)
 		m_remove = false;
+
+    // DELETE THIS 
+    if (m_remove && FUN_MODE)
+        Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
 }
 
 void Projectile::upgrade(Upgrade const &upgrade)
@@ -144,9 +190,19 @@ void Projectile::upgrade(Upgrade const &upgrade)
 
 ProjectileData& Projectile::getProjectileData() { return m_pData; }
 
+void Logic::Projectile::setProjectileData(ProjectileData pData)
+{
+    m_pData = pData;
+}
+
 void Logic::Projectile::toRemove()
 {
 	m_remove = true;
+}
+
+void Logic::Projectile::toRemove(bool remove)
+{
+    m_remove = remove;
 }
 
 bool Logic::Projectile::shouldRemove() const

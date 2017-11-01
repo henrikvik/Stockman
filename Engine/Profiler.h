@@ -10,6 +10,7 @@
 #include <dxgi1_4.h>
 
 #include <imgui.h>
+#include <tbb\tbb.h>
 
 #pragma comment(lib, "dxgi.lib")
 
@@ -26,6 +27,7 @@
 // simpler to replace a macro with an empty body compared to if-deffing out a
 // class method body
 #define PROFILE_BEGINC(msg, col) g_Profiler->begin(msg, col);
+#define PROFILE_BEGINF(msg, ...) g_Profiler->beginf(msg, __VA_ARGS__);
 #define PROFILE_BEGIN(msg) g_Profiler->begin(msg);
 #define PROFILE_END() g_Profiler->end();
 
@@ -107,8 +109,9 @@ public:
 	void start();
 	void frame();
 
-	void begin(const char *name, EventColor color = EventColor::Inherit);
-	void end();
+    void begin(const char *name, EventColor color = EventColor::Inherit);
+    void beginf(const char *fmt, ...);
+    void end();
 
 	void registerThread(const char *fmt, ...);
 	void unregisterThread();
@@ -127,13 +130,13 @@ private:
 	float ToMilliseconds(LARGE_INTEGER time) const {
 		double ms = double(time.QuadPart) / double(m_Frequency.QuadPart);
 		
-		return ms * 1000.0;
+		return float(ms * 1000.0);
 	}
 
 	float ToMilliseconds(LARGE_INTEGER start, LARGE_INTEGER end) const {
 		double ms = double(end.QuadPart - start.QuadPart) / double(m_Frequency.QuadPart);
 
-		return ms * 1000.0;
+		return float(ms * 1000.0);
 	}
 
 	std::atomic<int> m_ThreadCount;
@@ -186,7 +189,7 @@ public:
 	}
 };
 
-/*class TbbProfilerObserver : public tbb::task_scheduler_observer {
+class TbbProfilerObserver : public tbb::task_scheduler_observer {
 public:
 	TbbProfilerObserver(Profiler *profiler)
 		: m_Profiler(profiler)
@@ -207,4 +210,4 @@ public:
 private:
 	tbb::atomic<int> m_ThreadId;
 	Profiler *m_Profiler;
-};*/
+};

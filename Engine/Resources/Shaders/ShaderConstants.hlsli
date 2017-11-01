@@ -5,10 +5,11 @@
 #define farP 250.f
 
 ///GLOW CONSTANTS///
-#define KERNELSIZE 15
+#define MIP_LEVELS 5
+#define KERNELSIZE 5
 static const float gaussianFilter[KERNELSIZE] =
 {
-	0.057092, 0.060926, 0.064371, 0.067334, 0.069732, 0.071497, 0.072578, 0.072942, 0.072578, 0.071497, 0.069732, 0.067334, 0.064371, 0.060926, 0.057092  
+	0.192051, 0.203926, 0.208046, 0.203926, 0.192051 
 };
 
 #define GLOW_INTENSITY 1.f
@@ -36,20 +37,3 @@ static const float ssaoGaussianFilter[SSAOKERNELSIZE] =
 #define SSAO_SCALE 1.f
 #define SSAO_BIAS 0.3f
 #define SSAO_ITERATIONS 4
-
-
-
-
-
-//makes stuff gray
-float3 adjustSaturation(float3 color, float saturation)
-{
-	float grey = dot(color, float3(0.3, 0.59, 0.11));
-
-	return lerp(grey, color, saturation);
-}
-
-float3 adjustContrast(float3 color, float contrast, float threshold)
-{
-    return (color - threshold) * max(contrast, 0.f) + threshold;
-}

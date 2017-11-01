@@ -1,4 +1,7 @@
 #include "Map.h"
+#include <Keyboard.h>
+#include <Graphics\include\Structs.h>
+#include <Graphics\include\Utility\DebugDraw.h>
 
 using namespace Logic;
 
@@ -21,13 +24,24 @@ void Map::add(FrameProp frameProp)
 
 void Map::add(FrameHitbox frameHitbox)
 {
-    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL), frameHitbox.dimensions));
+    if (frameHitbox.modelID == Graphics::GROUND)
+        m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+            Physics::COL_HITBOX,
+            Physics::COL_EVERYTHING),
+            {1, 1.f, 1}));
+
+    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+        Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+        Physics::COL_HITBOX,
+        Physics::COL_EVERYTHING),
+        frameHitbox.dimensions));
 }
 
 void Map::init(Physics* physics)
 {
     m_physicsPtr = physics;
-    m_drawHitboxesAndLights = true;
+    m_drawHitboxesAndLights = false;
 
     readFromFile("maya.level");
 	
@@ -40,7 +54,7 @@ void Map::readFromFile(std::string path)
 {
     // Loads hitboxes
     std::vector<FrameHitbox> hitboxes;
-    hitboxes.push_back({ { 0, 0, 0 }, {0, 0, 0}, {500.f, 0.01f, 500.f}, Graphics::GROUND });
+    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Graphics::GROUND });
     hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
     hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Graphics::CUBE });
     hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
@@ -95,6 +109,9 @@ void Map::clear()
 
 void Map::update(float deltaTime)
 {
+    // If user holds tab, draw debug info
+    m_drawHitboxesAndLights = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
+
 	// Updating interactable objects
 	for (size_t i = 0; i < m_objects.size(); i++)
 		m_objects[i]->update(deltaTime);
@@ -102,17 +119,20 @@ void Map::update(float deltaTime)
 
 void Map::render(Graphics::Renderer& renderer)
 {
-	for (Object* o : m_props)       o->render(renderer);
-	for (Speaker* e : m_objects)    e->render(renderer);
-    for (LightObject* l : m_lights) l->render(renderer);
+	for (Object* o : m_props)           o->render(renderer);
+	for (Speaker* e : m_objects)        e->render(renderer);
+    for (LightObject* l : m_lights)     l->render(renderer);
+    for (StaticObject* e : m_hitboxes)  e->render(renderer); // Should not be visiable at all in release
 
-	// Drawing hitboxes
+	// Drawing hitboxes & lights
     if (m_drawHitboxesAndLights)
     {
         for (StaticObject* e : m_hitboxes)
-            e->render(renderer);
-        for (LightObject* l : m_lights)
-            l->renderD(renderer);
+            e->renderD(renderer);
+        for (LightObject* l : m_lights) {
+            //l->renderD(renderer);
+            Graphics::Debug::PointLight(*l);
+        }
     }
 }
 	
@@ -128,20 +148,29 @@ void Map::debugInitProps()
 
 void Map::debugInitObjects()
 {
+    // Debugging for Sound bug testing
     btVector3 halfextent(1.0, 1.0, 1.0);
     Speaker* box = new Speaker(m_physicsPtr->createBody(Cube({ -25, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->autoPlaySFX(SFX::BOING, 6000.f, 250.f);
+    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 6000.f, 250.f);
     m_objects.push_back(box);
 
     box = new Speaker(m_physicsPtr->createBody(Cube({ -26, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->delayPlayMusic(MUSIC::TEST_MUSIC, 500.f);
+    box->getSoundSource()->delayPlayMusic(Sound::MUSIC::TEST_MUSIC, 500.f);
     m_objects.push_back(box);
 
     box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 3, 74 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->autoPlaySFX(SFX::BOING, 4000.f, 250.f);
+    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 4000.f, 250.f);
     m_objects.push_back(box);
 
     box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 2, 73 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->autoPlaySFX(SFX::BOING, 3500.f, 250.f);
+    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 3500.f, 250.f);
     m_objects.push_back(box);
+
+    // Debugging for Testing model scaling
+    for (int i = 0; i < 12; i++)
+    {
+        if (i == Graphics::ModelID::GROUND) break;
+        box = new Speaker(m_physicsPtr->createBody(Cube({ -200.f + (i * 10.f), 2.f, 123.f }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::ModelID(i));
+        m_objects.push_back(box);
+    }
 }

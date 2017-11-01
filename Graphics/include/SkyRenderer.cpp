@@ -45,24 +45,19 @@ namespace Graphics
 		context->PSSetShaderResources(0, 1, &srv);
 		context->PSSetShaderResources(1, 1, &srv2);
 
-		ID3D11Buffer * buffers[] =
-		{
-			*cam->getBuffer(),
-			sphereTransformBuffer
-		};
+		context->VSSetConstantBuffers(0, 1, *cam->getBuffer());
+		context->VSSetConstantBuffers(4, 1, sphereTransformBuffer);
 
-		context->VSSetConstantBuffers(0, 2, buffers);
-
-		context->PSSetConstantBuffers(2, 1, *sun.getShaderBuffer());
+		context->PSSetConstantBuffers(1, 1, *sun.getShaderBuffer());
 
 
 
-		context->DrawIndexed(skySphere.indexCount, 0, 0);
+		context->DrawIndexed((UINT)skySphere.indexCount, 0, 0);
 	}
 
 	void SkyRenderer::update(ID3D11DeviceContext * context, float deltaTime, Vector3 pos)
 	{
-		float radiansPerSecond = 0.01745 * deltaTime * 0.005f;
+		float radiansPerSecond = 0.01745f * deltaTime * 0.005f;
 
 		sun.update(context, radiansPerSecond, pos);
 

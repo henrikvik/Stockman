@@ -1,9 +1,24 @@
 #include "Player/Player.h"
-#include <AI\EnemyTest.h>
-#include <AI\Trigger.h>
+
 #include <DebugDefines.h>
 #include <Misc\ComboMachine.h>
+
+#include <AI\EnemyTest.h>
+#include <AI\Trigger.h>
+
+#include <Projectile\ProjectileManager.h>
+
+#include <Player\Weapon\WeaponManager.h>
+#include <Player\Weapon\Weapon.h>
+
+#include <Player\Skill\SkillManager.h>
+#include <Player\Skill\Skill.h>
+
+#include <Misc\Sound\NoiseStructs.h>
+#include <Graphics\include\Renderer.h>
+
 #include <Engine\Profiler.h>
+#include <Engine\DebugWindow.h>
 
 using namespace Logic;
 
@@ -12,7 +27,9 @@ btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent, modelID)
 {
-
+    m_weaponManager = newd WeaponManager();
+    m_skillManager = newd SkillManager();
+    m_listenerData = newd Sound::ListenerData();
 }
 
 Player::~Player()
@@ -20,10 +37,10 @@ Player::~Player()
 	clear();
 }
 
-void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime)
+void Player::init(Physics* physics, ProjectileManager* projectileManager)
 {
-	m_weaponManager.init(projectileManager);
-	m_skillManager.init(physics, projectileManager, gameTime);
+	m_weaponManager->init(projectileManager);
+	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
 
 	btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_HEIGHT, PLAYER_SIZE_RADIUS);
@@ -39,15 +56,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
-    info.hp = m_hp;
-   	info.cuttleryAmmo[0] = 0;
-   	info.cuttleryAmmo[1] = 0;
-    info.iceAmmo[0] = 0;
-    info.iceAmmo[1] = 0;
-    info.wave = 0;
-   	info.score = 0;
-   	info.sledge = false;
-	info.cd = 1.0f;
+    currentWeapon = 0;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -55,6 +64,11 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
 
 	m_playerState = PlayerState::STANDING;
 	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
+
+    m_godMode = m_noclip = false;
+
+    registerDebugCmds();
+
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
 	m_moveDir.setZero();
@@ -81,45 +95,77 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager, GameTi
     m_useSkillPrimary = DirectX::Keyboard::Keys::F;
     m_useSkillSecondary = DirectX::Keyboard::Keys::E;
     m_useSkillTertiary = DirectX::Keyboard::Keys::G;
-	m_listenerData.update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
+	m_listenerData->update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
+}
+
+void Player::registerDebugCmds()
+{
+    DebugWindow *win = DebugWindow::getInstance();
+    win->registerCommand("SETMOUSESENS", [&](std::vector<string> &para) -> std::string {
+        try
+        { // Boilerplate code bois
+            m_mouseSens = stof(para[0]);
+        }
+        catch (int)
+        {
+            return "That is not going to work";
+        }
+        return "Mouse sens set";
+    });
+    win->registerCommand("GODMODE", [&](std::vector<string> &para) -> std::string {
+        m_godMode = !m_godMode;
+        return "Godmode updated";
+    });
+    win->registerCommand("NOCLIP", [&](std::vector<string> &para) -> std::string {
+        m_noclip = !m_noclip;
+        if (m_noclip)
+            m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
+        else {
+            m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
+            // reset movement
+            m_moveDir.setZero();
+            m_moveSpeed = 0.f;
+        }
+        return "Noclip updated";
+    });
 }
 
 void Player::clear()
 {
-	m_weaponManager.clear();
-	m_skillManager.clear();
-	
+	m_weaponManager->clear();
+    delete m_weaponManager;
+    delete m_skillManager;
 	delete m_charController;
+    delete m_listenerData;
 }
 
 void Player::reset()
 {
 	getTransform().setOrigin(startPosition);
-	m_weaponManager.reset();
+	m_weaponManager->reset();
 	m_hp = 3;
 }
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-#ifdef GOD_MODE
-	
-#else
-	if (Projectile* p	= dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
-	else if (Trigger* t = dynamic_cast<Trigger*>(&other))	 	{ }														// collision with trigger
-	else if (Enemy *e = dynamic_cast<Enemy*> (&other))
-	{
-		int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
-		e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * stacks); 
-		stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
-		e->damage(2 * stacks); // replace 1 with the player damage when it is better
-	}
-#endif
+    if (!m_godMode)
+    {
+        if (Projectile* p = dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
+        else if (Trigger* t = dynamic_cast<Trigger*>(&other)) {}														// collision with trigger
+        else if (Enemy *e = dynamic_cast<Enemy*> (&other))
+        {
+            int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
+            e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * stacks);
+            stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
+            e->damage(2 * stacks); // replace 1 with the player damage when it is better
+        }
+    }
 }
 
 void Player::onCollision(Projectile& other)
 {
 	if (other.getProjectileData().enemyBullet)
-		takeDamage(other.getProjectileData().damage);
+		takeDamage((int)other.getProjectileData().damage);
 }
 
 void Player::affect(int stacks, Effect const &effect, float deltaTime)
@@ -134,10 +180,21 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
-		Weapon* wp		= m_weaponManager.getCurrentWeaponPrimary();
-		int magSize		= wp->getMagSize();
-		int currentAmmo = wp->getAmmo();
-		wp->setAmmo(currentAmmo + (magSize * WEAPON_AMMO_PACK_MODIFIER));
+        Weapon* wp = nullptr;
+        if(effect.getSpecifics()->ammoType == 0)
+		    wp = m_weaponManager->getFirstWeapon().first;
+        else if(effect.getSpecifics()->ammoType == 1)
+            wp = m_weaponManager->getSecondWeapon().first;
+
+        if (wp)
+        {
+            int magSize = wp->getMagSize();
+            int currentAmmo = wp->getAmmo();
+            if (currentAmmo + magSize > wp->getAmmoCap())
+                wp->setAmmo(wp->getAmmoCap());
+            else
+                wp->setAmmo(currentAmmo + magSize);
+        }
 	}
 }
 
@@ -156,9 +213,9 @@ void Player::updateSound(float deltaTime)
 	// Update sound position
 	btVector3 pos = getPositionBT();
 	btVector3 vel = m_charController->getLinearVelocity();
-	m_soundSource.pos = { pos.x(), pos.y(), pos.z() };
-	m_soundSource.vel = { vel.x(), vel.y(), vel.z() };
-	m_soundSource.update(deltaTime);
+	getSoundSource()->pos = { pos.x(), pos.y(), pos.z() };
+    getSoundSource()->vel = { vel.x(), vel.y(), vel.z() };
+    getSoundSource()->update(deltaTime);
 }
 
 void Player::saveToFile()
@@ -173,11 +230,12 @@ void Player::readFromFile()
 
 void Player::takeDamage(int damage, bool damageThroughProtection)
 {
-#ifndef GOD_MODE
-	if (damageThroughProtection ||
-		getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
-		m_hp -= damage;
-#endif
+    if (!m_godMode)
+    {
+        if (damageThroughProtection ||
+            getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
+            m_hp -= damage;
+    }
 }
 
 int Player::getHP() const
@@ -194,39 +252,8 @@ void Player::updateSpecific(float deltaTime)
 	btVector3 forward	= getForwardBT();
 	btVector3 right		= up.cross(forward);
 	btVector3 actualUp	= right.cross(forward);
-	m_listenerData.update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
+	m_listenerData->update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 
-    //updates hudInfo with the current info
-	info.score = ComboMachine::Get().GetCurrentScore();
-    info.hp = m_hp;
-    info.cuttleryAmmo[0] = m_weaponManager.getfirstWeapon()->getMagAmmo();
-    info.cuttleryAmmo[1] = m_weaponManager.getfirstWeapon()->getAmmo();
-    info.iceAmmo[0] = m_weaponManager.getSecondWeapon()->getMagAmmo();
-    info.iceAmmo[1] = m_weaponManager.getSecondWeapon()->getAmmo();
-    if (m_weaponManager.getCurrentWeaponPrimary()->getMagSize() == 0)
-    {
-        info.sledge  = true;
-    }
-    else
-    {
-        info.sledge = false;
-    }
-
-    // HUD info on the first skill
-    Skill* primary = m_skillManager.getSkill(SkillManager::ID::PRIMARY);
-    if (!primary->getCanUse())
-        info.cd = primary->getCooldown() / primary->getCooldownMax();
-    else
-        info.cd = 1.0f;
-
-    // HUD info on the second skill
-//    Skill* secondary = m_skillManager.getSkill(SkillManager::SKILL_ID::SECONDARY);
-//    if (!secondary->getCanUse())
-//        info.cd = secondary->getCooldown() / secondary->getCooldownMax();
-//    else
-//        info.cd = 1.0f;
-
-    
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
@@ -241,20 +268,19 @@ void Player::updateSpecific(float deltaTime)
 	}
 
 	// TEMP FREE MOVE
-	static bool freeMove = false;
-	if (ks.IsKeyDown(DirectX::Keyboard::N) && !freeMove)
+	if (ks.IsKeyDown(DirectX::Keyboard::N) && !m_noclip)
 	{
 		m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
-		freeMove = true;
+        m_noclip = true;
 		printf("free move activated\n");
 	}
-	else if (ks.IsKeyDown(DirectX::Keyboard::M) && freeMove)	
+	else if (ks.IsKeyDown(DirectX::Keyboard::M) && m_noclip)
 	{
 		m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
 		// reset movement
 		m_moveDir.setZero();
 		m_moveSpeed = 0.f;
-		freeMove = false;
+        m_noclip = false;
 		printf("free move deactivated\n");
 	}
 
@@ -265,7 +291,7 @@ void Player::updateSpecific(float deltaTime)
 
 	// Get movement input
 	moveInput(&ks);
-	if (!freeMove)
+	if (!m_noclip)
 	{
 		if (m_playerState == PlayerState::STANDING)
 			// Move
@@ -293,75 +319,74 @@ void Player::updateSpecific(float deltaTime)
 	//crouch(deltaTime);
 
 	// Weapon swap
-	if (!m_weaponManager.isSwitching())
-	{
-		if (ks.IsKeyDown(m_switchWeaponOne))
-			m_weaponManager.switchWeapon(0);
-
-		if (ks.IsKeyDown(m_switchWeaponTwo))
-			m_weaponManager.switchWeapon(1);
-
-		if (ks.IsKeyDown(m_switchWeaponThree))
-			m_weaponManager.switchWeapon(2);
-	}
+    if (ks.IsKeyDown(m_switchWeaponOne))
+    {
+        m_weaponManager->switchWeapon(0);
+        currentWeapon = 0;
+    }
+		
+    if (ks.IsKeyDown(m_switchWeaponTwo))
+    {
+        m_weaponManager->switchWeapon(1);
+        currentWeapon = 1;
+    }
+		
+    if (ks.IsKeyDown(m_switchWeaponThree))
+    {
+        m_weaponManager->switchWeapon(2);
+        currentWeapon = 2;
+    }
+		
 
 	// Skills
     PROFILE_BEGIN("SkillManager");
     forward = getForwardBT();
 	if (ks.IsKeyDown(m_useSkillPrimary))
-        m_skillManager.use(SkillManager::ID::PRIMARY, forward, *this);
+        m_skillManager->use(SkillManager::ID::PRIMARY, forward, *this);
 	if (ks.IsKeyUp(m_useSkillPrimary))
-        m_skillManager.release(SkillManager::ID::PRIMARY);
+        m_skillManager->release(SkillManager::ID::PRIMARY);
     if (ks.IsKeyDown(m_useSkillSecondary))
-        m_skillManager.use(SkillManager::ID::SECONDARY, forward, *this);
+        m_skillManager->use(SkillManager::ID::SECONDARY, forward, *this);
     if (ks.IsKeyUp(m_useSkillSecondary))
-        m_skillManager.release(SkillManager::ID::SECONDARY);
+        m_skillManager->release(SkillManager::ID::SECONDARY);
     if (ks.IsKeyDown(m_useSkillTertiary))
-        m_skillManager.use(SkillManager::ID::TERTIARY, forward, *this);
+        m_skillManager->use(SkillManager::ID::TERTIARY, forward, *this);
     if (ks.IsKeyUp(m_useSkillTertiary))
-        m_skillManager.release(SkillManager::ID::TERTIARY);
+        m_skillManager->release(SkillManager::ID::TERTIARY);
     PROFILE_END();
 
 	// Check if reloading
-	if (!m_weaponManager.isReloading())
+	if (!m_weaponManager->isReloading())
 	{
 		// Primary and secondary attack
-		if (!m_weaponManager.isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
+		if (!m_weaponManager->isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
 		{
 			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
 			if ((ms.leftButton))
-				m_weaponManager.usePrimary(pos, m_camYaw, m_camPitch, *this);
+				m_weaponManager->usePrimary(pos, m_camYaw, m_camPitch, *this);
 			else if (ms.rightButton)
-				m_weaponManager.useSecondary(pos, m_camYaw, m_camPitch, *this);
+				m_weaponManager->useSecondary(pos, m_camYaw, m_camPitch, *this);
 		}
 
 		// Reload
 		if (ks.IsKeyDown(m_reloadWeapon))
-			m_weaponManager.reloadWeapon();
+			m_weaponManager->reloadWeapon();
 	}
 
     // Update weapon and skills
-    m_weaponManager.update(deltaTime);
-    m_skillManager.update(deltaTime);
+    m_weaponManager->update(deltaTime);
+    m_skillManager->update(deltaTime);
 
-#ifdef GOD_MODE
-	static bool isNum = false;
-	static bool wasNum = false;
-	wasNum = isNum;
-	isNum = ks.NumPad8;
+    if (m_godMode)
+    {
+        static bool isNum = false;
+        static bool wasNum = false;
+        wasNum = isNum;
+        isNum = ks.NumPad8;
 
-	if (isNum && !wasNum)
-		m_hp--;
-#endif
-
-}
-
-//fills the HUD info with wave info
-void Player::updateWaveInfo(int wave, int enemiesRemaining, float timeRemaning)
-{
-    info.wave = wave;
-    info.enemiesRemaining = enemiesRemaining;
-    info.timeRemaining = timeRemaning;
+        if (isNum && !wasNum)
+            m_hp--;
+    }
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
@@ -459,7 +484,6 @@ void Player::move(float deltaTime)
 	if (m_wishJump)
 	{
 		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
-
 		m_wishJump = false;
 	}
 }
@@ -605,7 +629,7 @@ btGhostObject* Player::getGhostObject()
 DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 {
 	// Making memory for a matrix
-	float* m = new float[4 * 16];
+	float* m = newd float[4 * 16];
 
 	// Getting this entity's matrix
 	m_charController->getGhostObject()->getWorldTransform().getOpenGLMatrix((btScalar*)(m));
@@ -627,14 +651,20 @@ void Player::render(Graphics::Renderer & renderer)
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);
 
+    static int lastHP = getHP();
+    if (lastHP != getHP())
+    {
+        lastHP = getHP();
+        renderer.startShake(10., 500.f);
+    }
+
 	// Setting position of updated weapon and skill models
-	m_weaponManager.setWeaponModel(getTransformMatrix(), m_forward);
-	//	m_skillManager.setWeaponModel(getTransformMatrix(), m_forward);
+	m_weaponManager->setWeaponModel(getTransformMatrix(), m_forward);
+	//	m_skillManager->setWeaponModel(getTransformMatrix(), m_forward);
 
 	// Drawing the weapon model
-	m_weaponManager.render(renderer);
-	m_skillManager.render(renderer);
-    renderer.fillHUDInfo(&info);
+	m_weaponManager->render(renderer);
+	m_skillManager->render(renderer);
 }
 
 void Logic::Player::setMaxSpeed(float maxSpeed)
@@ -697,7 +727,53 @@ Player::PlayerState Player::getPlayerState() const
 	return m_playerState;
 }
 
-ListenerData & Logic::Player::getListenerData()
+Sound::ListenerData& Player::getListenerData()
 {
-	return m_listenerData;
+	return *m_listenerData;
+}
+
+SkillManager* Player::getSkillManager()
+{
+    return m_skillManager;
+}
+
+const Weapon* Player::getMainHand() const
+{
+    return m_weaponManager->getActiveWeapon();
+}
+
+const Weapon* Player::getOffHand() const
+{
+    return m_weaponManager->getInactiveWeapon();
+}
+
+const Skill* Player::getSkill(int id) const
+{
+    return m_skillManager->getSkill(id);
+}
+
+bool Player::isUsingMeleeWeapon() const
+{
+    return m_weaponManager->getActiveWeapon()->getAmmoConsumption() == 0;
+}
+
+int Logic::Player::getCurrentWeapon() const
+{
+    return currentWeapon;
+}
+
+void Logic::Player::setCurrentSkills(int first, int second)
+{
+    currentSkills[0] = first;
+    currentSkills[1] = second;
+}
+
+int Logic::Player::getCurrentSkill1() const
+{
+    return currentSkills[1];
+}
+
+int Logic::Player::getCurrentSkill0() const
+{
+    return currentSkills[0];
 }

@@ -9,15 +9,25 @@
 		*/
 #pragma endregion
 
-#include <Graphics\include\Renderer.h>
-#include <Player\Skill\SkillBulletTime.h>
-#include <Player\Skill\SkillGrapplingHook.h>
-#include <Player\Skill\SkillShieldCharge.h>
-#include <Projectile\ProjectileManager.h>
 #include <vector>
+#include <d3d11.h>
+#include <SimpleMath.h>
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
+
+namespace Graphics
+{
+    class Renderer;
+}
 
 namespace Logic
 {
+    class Physics;
+    class Entity;
+    class ProjectileManager;
+    class Skill;
+    enum GrapplingHookState;
+
 	class SkillManager
     {
 	public:
@@ -35,13 +45,19 @@ namespace Logic
             static const int MAX_SKILLS = 3;
         };
 
+        enum SKILL
+        {
+            SKILL_GRAPPLING_HOOK,
+            SKILL_SHIELD_CHARGE,
+            SKILL_BULLET_TIME
+        };
+
 		SkillManager();
 		~SkillManager();
 
-		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
-		void clear();
+		void init(Physics* physics, ProjectileManager* projectileManager);
 
-		void switchToSkill(std::vector<int> skillsToUse);
+		void switchToSkill(std::vector<SKILL> skillsToUse);
 
 		void use(int index, btVector3 forward, Entity& shooter);
 		void release(int index);
@@ -56,6 +72,7 @@ namespace Logic
         bool isLegit(int index) const;
 
 		std::vector<Skill*> m_allSkills;
+        __int16 m_nrOfSkills;
         Skill* m_current[THRESHOLD::MAX_SKILLS];
 	};
 }

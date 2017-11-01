@@ -42,7 +42,6 @@
 #include <btBulletDynamicsCommon.h>
 #include <BulletDynamics\Character\btKinematicCharacterController.h>
 #include <BulletCollision\CollisionDispatch\btGhostObject.h>
-#include <Misc\GameTime.h>
 #include <Engine\Profiler.h>
 
 //#define PHYSICS_GRAVITY 0.00982f
@@ -52,6 +51,11 @@
 #define DEFAULT_R 0 
 #define DEFAULT_S { 0, 0 }
 #define DEFAULT_D { 0, 0 }
+
+namespace Graphics
+{
+    struct RenderDebugInfo;
+}
 
 namespace Logic
 {
@@ -70,24 +74,33 @@ namespace Logic
 	class Physics : public btDiscreteDynamicsWorld
 	{
 	public:
+        enum COL_FLAG {
+            COL_NOTHING     = 0,
+            COL_HITBOX      = 0x1,
+            COL_PLAYER      = 0x2,
+            COL_ENEMY       = 0x4,
+            COL_EN_PROJ     = 0x8,
+            COL_PL_PROJ     = 0x10,
+        }; static const int COL_EVERYTHING = COL_HITBOX | COL_PLAYER | COL_ENEMY | COL_EN_PROJ | COL_PL_PROJ;
+
 		Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overlappingPairCache, btSequentialImpulseConstraintSolver* constraintSolver, btDefaultCollisionConfiguration* collisionConfiguration);
 		~Physics();
 
 		void clear();
 		bool init();
-		void update(GameTime gameTime);
+		void update(float delta);
 
 		const btRigidBody* RayTestOnRigidBodies(Ray& ray);
 		const btVector3 RayTestGetPoint(Ray& ray);
 		const btVector3 RayTestGetNormal(Ray& ray);											
 
 		// Returns a ptr to the created rigidbody
-        btRigidBody* createBody(Shape* shape, float mass, bool isSensor = false);           // More versitile func but more expensive
-		btRigidBody* createBody(Cube& cube, float mass, bool isSensor = false);				// Should only be used for hitboxes on map, nothing else
-		btRigidBody* createBody(Plane& plane, float mass, bool isSensor = false);			// Static infinite plane, keep this temporary
-		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor = false);			// Should be used as often as possible because it needs less processing of collisions
-		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false);		// Should be used for enemies
-		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false);		// Should be used for enemies
+        btRigidBody* createBody(Shape* shape, float mass, bool isSensor = false, int group = COL_FLAG::COL_HITBOX, int mask = COL_EVERYTHING);         // More versitile func but more expensive
+		btRigidBody* createBody(Cube& cube, float mass, bool isSensor = false, int group = COL_FLAG::COL_HITBOX, int mask = COL_EVERYTHING);			// Should only be used for hitboxes on map, nothing else
+		btRigidBody* createBody(Plane& plane, float mass, bool isSensor = false, int group = COL_FLAG::COL_HITBOX, int mask = COL_EVERYTHING);			// Static infinite plane, keep this temporary
+		btRigidBody* createBody(Sphere& sphere, float mass, bool isSensor = false, int group = COL_FLAG::COL_HITBOX, int mask = COL_EVERYTHING);		// Should be used as often as possible because it needs less processing of collisions
+		btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false, int group = COL_FLAG::COL_HITBOX, int mask = COL_EVERYTHING);	// Should be used for enemies
+		btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false, int group = COL_FLAG::COL_HITBOX, int mask = COL_EVERYTHING);		// Should be used for enemies
 		btPairCachingGhostObject* createPlayer(btCapsuleShape* capsule, btVector3 pos);		// Should be used for player
 
 		// Debug Rendering
@@ -102,7 +115,7 @@ namespace Logic
 		btGhostPairCallback* ghostPairCB;
 
 		// Debug Rendering
-		Graphics::RenderDebugInfo renderDebug;
+		Graphics::RenderDebugInfo* renderDebug;
 		void renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body);
 		void renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRigidBody* body);
 		void renderCylinder(Graphics::Renderer& renderer, btCylinderShape* cs, btRigidBody* body);

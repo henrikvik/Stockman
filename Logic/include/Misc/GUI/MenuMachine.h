@@ -39,31 +39,48 @@ namespace Logic
         float  blinkTimer;
         float deleteCharCD;
 		int m_cardUpgrade;
+        std::pair<int, int> m_selectedSkills;
+        void selectSkillButton(int id);
+        bool replaceSkill(int id);
 	public:
-		MenuMachine();
 		MenuMachine(std::string* highScoreNamePTR);
 		~MenuMachine();
 		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout
 		void update(float dt);
-        void render(Graphics::Renderer& renderer);
+		void render(Graphics::Renderer & renderer, std::string highScore[10]);
 		void showMenu(GameState state);		//< Creates a menu layout
 		GameState currentState();
 		void setStateToBe(GameState);
 		GameState getStateToBe();
+		void startGame();
+		void startSettings();
+		void startMainMenu();
+		void quitGame();
+		void writing();
+		void chooseUpgrade1();
+		void chooseUpgrade2();
+		void chooseUpgrade3();
+		void plusSense();
+		void minusSense();
+		void plusMaster();
+		void minusMaster();
+		void plusSFX();
+		void minusSFX();
+		void muteUnmute();
+		void plusFOV();
+		void minusFOV();
+		void windowed();
+		void showHighscore();
 		int getChoiceUpgrade();
+        MenuState* getActiveMenu();
+        std::pair<int, int>* getSkillPick();
 
-		void buttonClick0();
-		void buttonClick1();
-		void buttonClick2();
-		void buttonClick3();
-		void buttonClick4();
 
-		void buttonClick5();
 
-		void buttonClick6();
-
-		void buttonClick7();
+        void buttonSkillPick1();
+        void buttonSkillPick2();
+        void buttonSkillPick3();
 
 	};
 }

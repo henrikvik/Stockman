@@ -105,9 +105,9 @@ PSOutput PS(VSOutput input) {
     lighting = saturate(lighting);
     
     
-    output.backBuffer = float4(lighting, 1); //500~
-    output.glowMap = glowMap.Sample(Sampler, input.uv); //300~
-    output.normalView = float4(input.normalView.xyz, 1); //300~
+    output.backBuffer = float4(lighting, 1);                //500~ MS
+    output.glowMap = glowMap.Sample(Sampler, input.uv);     //300~ MS
+    output.normalView = float4(input.normalView.xyz, 1);    //300~ MS
     
     return output;
 }

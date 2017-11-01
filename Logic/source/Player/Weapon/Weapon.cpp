@@ -1,24 +1,13 @@
 #include "Player/Weapon/Weapon.h"
+#include <Physics\Physics.h>
+#include <Projectile\ProjectileManager.h>
+#include <Projectile\ProjectileStruct.h>
 
 using namespace Logic;
 
-Weapon::Weapon()
+Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime) : Object(modelID)
 {
-	m_weaponID			= -1;
-	m_ammoCap			= -1;
-	m_ammo				= -1;
-	m_magSize			= -1;
-	m_magAmmo			= -1;
-	m_ammoConsumption	= -1;
-	m_attackRate		= -1;
-	m_freeze			= -1;
-	m_reloadTime		= -1;
-}
-
-Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime)
-{
-	m_projectileManager = projectileManager;
 	m_weaponID			= weaponID;
 	m_ammoCap			= ammoCap;
 	m_ammo				= ammo;
@@ -31,10 +20,10 @@ Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, 
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
-	m_projectileData	= projectileData;
+    m_projectileData    = newd ProjectileData(projectileData);
 
-    // Setting model ID
-    this->setModelID(modelID);
+
+    setSpawnFunctions(*projectileManager);
 
 	/////////////////////////////////////////////////////////////
 	// Weapon model - These are the constant matrices that moves the 
@@ -56,10 +45,23 @@ Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, 
 
 }
 
+Weapon::~Weapon()
+{
+    delete m_projectileData;
+}
+
 void Logic::Weapon::reset()
 {
 	m_ammo = m_ammoCap;
 	m_magAmmo = m_magSize;
+}
+
+void Weapon::setSpawnFunctions(ProjectileManager &projManager)
+{
+    SpawnProjectile = [&](ProjectileData& pData, btVector3 position,
+        btVector3 forward, Entity& shooter) -> Projectile* {
+        return projManager.addProjectile(pData, position, forward, shooter);
+    };
 }
 
 void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
@@ -70,7 +72,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 		for (int i = m_projectileCount; i--; )
 		{
 			btVector3 projectileDir = calcSpread(yaw, pitch);
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
+			SpawnProjectile(*m_projectileData, position, projectileDir, shooter);
 		}
 	}
 	else									// No spread
@@ -81,7 +83,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
 			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
 			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
-			m_projectileManager->addProjectile(m_projectileData, position, projectileDir, shooter);
+			SpawnProjectile(*m_projectileData, position, projectileDir, shooter);
 		}
 	}
 }
@@ -136,24 +138,24 @@ void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTrans
 	this->setWorldTranslation(result);
 }
 
-ProjectileData * Weapon::getProjectileData()
+ProjectileData* Weapon::getProjectileData()
 {
-	return &m_projectileData;
+	return m_projectileData;
 }
 
-int Weapon::getAmmoCap() { return m_ammoCap; }
+int Weapon::getAmmoCap() const { return m_ammoCap; }
 
 void Weapon::setAmmoCap(int ammoCap) { m_ammoCap = ammoCap; }
 
-int Weapon::getAmmo() { return m_ammo; }
+int Weapon::getAmmo() const { return m_ammo; }
 
 void Weapon::setAmmo(int ammo) { m_ammo = ammo; }
 
-int Weapon::getMagSize() { return m_magSize; }
+int Weapon::getMagSize() const { return m_magSize; }
 
 void Weapon::setMagSize(int magSize) { m_magSize = magSize; }
 
-int Weapon::getMagAmmo() { return m_magAmmo; }
+int Weapon::getMagAmmo() const { return m_magAmmo; }
 
 void Weapon::removeMagAmmo() { m_magAmmo--; }
 
@@ -165,14 +167,14 @@ void Weapon::removeMagAmmo(int ammo)
 		m_magAmmo -= ammo; 
 }
 
-int Weapon::getAmmoConsumption() { return m_ammoConsumption; }
+int Weapon::getAmmoConsumption() const { return m_ammoConsumption; }
 
-float Weapon::getAttackTimer()
+float Weapon::getAttackTimer() const
 {
 	return (60.f / m_attackRate) * 1000;
 }
 
-float Logic::Weapon::getRealoadTime()
+float Weapon::getRealoadTime() const
 {
 	return m_reloadTime;
 }

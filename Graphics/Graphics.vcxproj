@@ -36,7 +36,9 @@
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
+    <ClCompile Include="include\SnowManager.cpp" />
     <ClCompile Include="include\SSAORenderer.cpp" />
+    <ClCompile Include="include\Utility\DebugDraw.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
     <ClCompile Include="include\Resources\MaterialManager.cpp" />
     <ClCompile Include="include\Resources\Mesh.cpp" />
@@ -70,8 +72,10 @@
     <ClInclude Include="include\Particles\ParticleSystem.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Resources\BRFImportHandler.h" />
+    <ClInclude Include="include\SnowManager.h" />
     <ClInclude Include="include\SSAORenderer.h" />
     <ClInclude Include="include\Utility\Buffer.h" />
+    <ClInclude Include="include\Utility\DebugDraw.h" />
     <ClInclude Include="include\Utility\DepthStencil.h" />
     <ClInclude Include="include\Resources\Importerstructs.h" />
     <ClInclude Include="include\Resources\MaterialManager.h" />
@@ -143,27 +147,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

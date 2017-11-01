@@ -24,8 +24,10 @@ namespace Logic
 		void affect(int stacks, Effect const & effect, float deltaTime);
 
 		ProjectileData& getProjectileData();
+        void setProjectileData(ProjectileData pData);
 
 		void toRemove();
+        void toRemove(bool remove);
 		bool shouldRemove() const;
 
 	private:

@@ -12,19 +12,22 @@
 
 #pragma endregion
 
-#include <Projectile\ProjectileManager.h>
 #include <Entity\Object.h>
-
-#define WEAPON_AMMO_PACK_MODIFIER 2.f
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 namespace Logic
 {
+    class Entity;
+    class Projectile;
+    class ProjectileManager;
+    struct ProjectileData;
+
 	class Weapon : public Object
 	{
 	private:
 		DirectX::SimpleMath::Matrix rot, trans, scale;
-		ProjectileManager* m_projectileManager;
-		ProjectileData m_projectileData;
+		ProjectileData* m_projectileData;
 		int m_weaponID;
 		int m_ammoCap;
 		int m_ammo;
@@ -41,28 +44,37 @@ namespace Logic
 
 		btVector3 calcSpread(float yaw, float pitch);
 
+        std::function<Projectile*(ProjectileData& pData, btVector3 position,
+            btVector3 forward, Entity& shooter)> SpawnProjectile;
+
 	public:
-		Weapon();
-		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
 			int spreadH, int spreadV, float attackRate, float freeze, float reloadTime);
+        ~Weapon();
 		void reset();
+
+        void setSpawnFunctions(ProjectileManager &projManager);
 
 		void use(btVector3 position, float yaw, float pitch, Entity& shooter);
 		void setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		ProjectileData* getProjectileData();
-		int getAmmoCap();
 		void setAmmoCap(int ammoCap);
-		int getAmmo();
+
 		void setAmmo(int ammo);
-		int getMagSize();
 		void setMagSize(int magSize);
-		int getMagAmmo();
 		void removeMagAmmo();
 		void removeMagAmmo(int ammo);
-		int getAmmoConsumption();
-		float getAttackTimer();
-		float getRealoadTime();
+
+		int getAmmoConsumption() const;
+
+		float getAttackTimer() const;
+		float getRealoadTime() const;
+
+        int getAmmoCap() const;
+        int getAmmo() const;
+        int getMagSize() const;
+        int getMagAmmo() const;
 
 		void fillMag();
 	};

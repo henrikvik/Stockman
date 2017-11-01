@@ -22,7 +22,7 @@ DebugWindow::DebugWindow()
 	});
 	registerCommand("HISTORY", [&](std::vector<std::string> &args)->std::string
 	{
-		int first = m_history.size() - 10;
+		int first = (int)m_history.size() - 10;
 		for (int i = first > 0 ? first : 0; i < m_history.size(); i++)
 		{
 			addLog("%3d: %s\n", i, m_history[i]);
@@ -197,7 +197,7 @@ ImGuiTextEditCallback callback = [](ImGuiTextEditCallbackData* data) -> int
 	return temp->TextEditCallback(data);
 };
 
-if (ImGui::InputText("Input", m_inputBuf, ARRAYSIZE(m_inputBuf), ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion |
+if (ImGui::InputText("Input", m_inputBuf, ARRAYSIZE(m_inputBuf), ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackAlways | ImGuiInputTextFlags_CallbackCompletion |
 	ImGuiInputTextFlags_CallbackHistory, callback, (void*)this))
 {
 	char* input_end = m_inputBuf + strlen(m_inputBuf);
@@ -230,7 +230,7 @@ void DebugWindow::doCommand(const char* command_line)
 	// Insert into history. First find match and delete it so it can be pushed to the back. This isn't trying to be smart or optimal.
 	m_historyPos = -1;
 
-	for (int i = m_history.size() - 1; i >= 0; i--)
+	for (int i = (int)m_history.size() - 1; i >= 0; i--)
 	{
 		if (Stricmp(m_history[i], command_line) == 0)
 		{
@@ -282,6 +282,12 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 {
 	switch (data->EventFlag)
 	{
+    // Fuck you Tilde
+    case ImGuiInputTextFlags_CallbackAlways:
+        if (data->Buf[0] == 'Â')        // Same as §
+            data->DeleteChars(0, 2);    // § is two bytes
+        break;
+
 	case ImGuiInputTextFlags_CallbackCompletion:
 	{
 		// Locate beginning of current word
@@ -364,7 +370,7 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 		if (data->EventKey == ImGuiKey_UpArrow)
 		{
 			if (m_historyPos == -1)
-				m_historyPos = m_history.size() - 1;
+				m_historyPos = (int)m_history.size() - 1;
 			else if (m_historyPos > 0)
 				m_historyPos--;
 		}

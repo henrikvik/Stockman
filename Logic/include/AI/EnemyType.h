@@ -2,7 +2,7 @@
 #define ENEMY_TYPE_H
 
 enum ENEMY_TYPE {
-    NECROMANCER
+    NECROMANCER, NECROMANCER_MINION
 };
 
 #endif
