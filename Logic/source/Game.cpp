@@ -9,11 +9,11 @@
 
 using namespace Logic;
 
-const int Game::NUMBER_OF_UNIQUE_CARDS      = 13;
-
-const GameState Game::STATE_START           = gameStateMenuMain;
-const btVector3 Game::PLAYER_START_SCALE    = { 1.5f, 3.0f, 1.5f };
-const btVector3 Game::PLAYER_START_ROTATION = { 0.0f, 0.0f, 0.0f };
+// Game starting static configurations
+const int Game::GAME_START::UNIQUE_CARDS            = 13;
+const GameState Game::GAME_START::STATE             = gameStateMenuMain;
+const btVector3 Game::GAME_START::PLAYER_SCALE      = { 1.5f, 3.0f, 1.5f };
+const btVector3 Game::GAME_START::PLAYER_ROTATION   = { 0.0f, 0.0f, 0.0f };
 
 Game::Game()
 {
@@ -50,7 +50,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 	m_projectileManager = newd ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = newd Player(Graphics::ModelID::CUBE, nullptr, Game::PLAYER_START_SCALE);
+	m_player = newd Player(Graphics::ModelID::CUBE, nullptr, GAME_START::PLAYER_SCALE);
 	m_player->init(m_physics, m_projectileManager);
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
 
@@ -72,7 +72,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 
 	// Initializing Menu's
 	m_menu = newd MenuMachine(m_highScoreManager->getName());
-	m_menu->initialize(Game::STATE_START);
+	m_menu->initialize(GAME_START::STATE);
 
 	// Initializing the Map
 	m_map = newd Map();
@@ -81,7 +81,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 	// Initializing Card Manager
 	m_cardManager = newd CardManager();
 	m_cardManager->init();
-	m_cardManager->createDeck(Game::NUMBER_OF_UNIQUE_CARDS);
+	m_cardManager->createDeck(GAME_START::UNIQUE_CARDS);
 
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
