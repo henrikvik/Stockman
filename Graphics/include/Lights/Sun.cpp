@@ -18,8 +18,8 @@ namespace Graphics
 		matrixData.vp = view * projection;
 
 		viewPort = { 0 };
-		viewPort.Height = height;
-		viewPort.Width = width;
+		viewPort.Height = (float)height;
+		viewPort.Width = (float)width;
 		viewPort.MaxDepth = 1.f;
 	}
 
@@ -36,11 +36,11 @@ namespace Graphics
 #if DAY_NIGHT_ON
 		rotationDeg += rotationAmount;
 #else
-		rotationDeg = PI * 0.25;
+		rotationDeg = (float)PI * 0.25f;
 #endif
 
-		if (rotationDeg >= PI * 0.5)
-			rotationDeg = -PI * 0.5;
+		if (rotationDeg >= (float)PI * 0.5f)
+			rotationDeg = (float)-PI * 0.5f;
 
         DirectX::SimpleMath::Matrix rotation = DirectX::SimpleMath::Matrix::CreateRotationZ(rotationDeg);
 
@@ -52,7 +52,7 @@ namespace Graphics
 
         DirectX::SimpleMath::Vector3 groundDir(1, 0, 0);
 
-		float fade = snap(1.0 - abs(lightDir.Dot(groundDir)), 0, SUNSET_TIME);
+		float fade = snap(1.0f - abs(lightDir.Dot(groundDir)), 0, SUNSET_TIME);
 		shaderData.fade = fade / SUNSET_TIME;
 
 		this->shaderData.pos = shaderData.pos + offset;

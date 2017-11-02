@@ -78,7 +78,7 @@ RangedBehavior::RangedBehavior() :
 
 int RangedBehavior::getDistance() const
 {
-	return m_distance;
+	return (int)m_distance;
 }
 
 void RangedBehavior::updateSpecific(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,

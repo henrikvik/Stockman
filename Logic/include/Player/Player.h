@@ -60,6 +60,9 @@ namespace Logic
 		};
 
 	private:
+        // Special modes (move to other class)
+        bool m_godMode, m_noclip;
+
 		btKinematicCharacterController* m_charController;
 
 		//ActionManager m_actionManager;
@@ -69,6 +72,8 @@ namespace Logic
 
 		// UI States
 		int m_hp;
+        int currentWeapon;
+        int currentSkills[2];
 
 		// Movements
 		PlayerState m_playerState;
@@ -124,14 +129,16 @@ namespace Logic
 
 		// Sound
 		void updateSound(float deltaTime);
-
 	public:
 		Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();
 
+        void registerDebugCmds();
+
 		void init(Physics* physics, ProjectileManager* projectileManager);
 		void clear();
 		void reset();
+        
 
 		void updateSpecific(float deltaTime);
 
@@ -171,13 +178,20 @@ namespace Logic
 		float getMoveSpeed() const;
 		PlayerState getPlayerState() const;
 		Sound::ListenerData& getListenerData();
+        SkillManager* getSkillManager();
 
         const Weapon* getMainHand() const;
         const Weapon* getOffHand() const;
         const Skill* getSkill(int id) const;
         bool isUsingMeleeWeapon() const;
+        int getCurrentWeapon() const;
 
 		static btVector3 startPosition;
+
+        void setCurrentSkills(int first, int second);
+        int getCurrentSkill0() const;
+        int getCurrentSkill1() const;
+
 	};
 
 }

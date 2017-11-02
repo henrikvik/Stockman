@@ -8,7 +8,7 @@
 
 #define SAFE_RELEASE(p) { if ( (p) && (p) != nullptr ) { (p)->Release(); (p) = 0; } }
 
-#define _CRTDBG_MAP_ALLOC
+//#define _CRTDBG_MAP_ALLOC
 #define newd new(_NORMAL_BLOCK, __FILE__, __LINE__)
 
 #define WINDOWED    true

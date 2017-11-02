@@ -11,18 +11,18 @@
 namespace Logic
 {
 
-
     EnemyThreadHandler::EnemyThreadHandler()
     {
-        m_killChildren = false;
-        ZeroMemory(&m_threadRunning, sizeof(m_threadRunning));
-        ZeroMemory(&m_indexRunning, sizeof(m_indexRunning));
         resetThreads();
         initThreads();
     }
 
     void EnemyThreadHandler::initThreads()
     {
+        m_killChildren = false;
+        while (!m_work.empty())
+            m_work.pop();
+
         for (std::thread *&t : threads)
             t = newd std::thread(&EnemyThreadHandler::threadMain, this);
     }
@@ -62,8 +62,6 @@ namespace Logic
 
         for (size_t i = 0; i < enemies.size(); i++) // (!) size can change throughout the loop (!)
             enemies[i]->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
-
-        m_threadRunning[getThreadId(data.index)] = false;
     }
 
     void EnemyThreadHandler::threadMain()
@@ -84,19 +82,5 @@ namespace Logic
     void EnemyThreadHandler::addWork(WorkData data)
     {
         m_work.push(data);
-    }
-
-    int EnemyThreadHandler::getThreadStatus(int i)
-    {
-        int ret = 0, threadId = getThreadId(i);
-
-        if (m_threadRunning[threadId] && m_indexRunning[threadId] == i)
-            ret |= LOCKED & RUNNING;
-        else if (m_threadRunning[threadId])
-            ret |= LOCKED;
-        else
-            ret |= OPEN;
-
-        return ret;
     }
 }

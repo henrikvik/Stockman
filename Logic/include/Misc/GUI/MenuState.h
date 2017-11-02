@@ -52,6 +52,7 @@ namespace Logic
         Graphics::MenuInfo getMenuInfo();
 
         virtual void render() const;
+        Button* getButton(int index);
 	};
 }
 

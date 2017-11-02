@@ -79,7 +79,16 @@ namespace Logic
 		int m_activeOffset;
         bool m_highlighted;
         float m_animationTime, m_start, m_end;
-
+	public:
+		Button();
+		~Button();
+		void initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart,
+			DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width,
+			int textureIndex, std::function<void(void)> callback);
+		void updateOnPress(int posX, int posY);
+        void hoverOver(int posX, int posY);
+		bool animationTransition(float dt, float maxAnimationTime, bool forward);
+		 Graphics::ButtonInfo& getButtonInfo();
 	};
 }
 #endif

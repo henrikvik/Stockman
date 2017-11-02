@@ -1,4 +1,4 @@
-#include "ShaderConstants.hlsli"
+#include "LightCalcInclude.hlsli"
 
 struct VS_IN
 {
@@ -14,25 +14,9 @@ struct PS_IN
     float2 uv : UV;
 };
 
-cbuffer VP : register(b0)
-{
-    float4x4 VP;
-};
-
-cbuffer transform : register(b1)
+cbuffer transform : register(b4)
 {
     float4x4 transform;
-};
-
-cbuffer LightBuffer : register(b2)
-{
-    float4 dirLightPos;
-    float fade;
-}
-
-cbuffer BulletTimeTimer : register(b3)
-{
-    float bulletTimer;
 };
 
 
@@ -43,7 +27,7 @@ PS_IN VS(VS_IN input)
     output.pos = float4(input.pos, 1);
 
     output.pos = mul(transform, output.pos);
-    output.pos = mul(VP, output.pos).xyww;
+    output.pos = mul(ViewProjection, output.pos).xyww;
     output.uv = input.uv;
 
     output.lPos = input.pos;

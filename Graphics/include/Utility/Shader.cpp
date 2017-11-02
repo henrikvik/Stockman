@@ -46,7 +46,7 @@ namespace Graphics
 
 			if (inputDesc.size() > 0)
 			{
-				ThrowIfFailed(device->CreateInputLayout(inputDesc.begin(), inputDesc.size(), vsShader->GetBufferPointer(), vsShader->GetBufferSize(), &inputLayout));
+				ThrowIfFailed(device->CreateInputLayout(inputDesc.begin(), (UINT)inputDesc.size(), vsShader->GetBufferPointer(), vsShader->GetBufferSize(), &inputLayout));
 			}
 		}
 
@@ -77,6 +77,7 @@ namespace Graphics
 	{
 		SAFE_RELEASE(inputLayout);
 		SAFE_RELEASE(vertexShader);
+		SAFE_RELEASE(geometryShader);
 		SAFE_RELEASE(pixelShader);
 	}
 
@@ -84,6 +85,7 @@ namespace Graphics
 	{
 		SAFE_RELEASE(inputLayout);
 		SAFE_RELEASE(vertexShader);
+		SAFE_RELEASE(geometryShader);
 		SAFE_RELEASE(pixelShader);
 
 		inputLayout = nullptr;
@@ -105,7 +107,7 @@ namespace Graphics
 
 			if (inputDesc.size() > 0)
 			{
-				ThrowIfFailed(device->CreateInputLayout(inputDesc.begin(), inputDesc.size(), vsShader->GetBufferPointer(), vsShader->GetBufferSize(), &inputLayout));
+				ThrowIfFailed(device->CreateInputLayout(inputDesc.begin(), (UINT)inputDesc.size(), vsShader->GetBufferPointer(), vsShader->GetBufferSize(), &inputLayout));
 			}
 		}
 

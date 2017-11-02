@@ -39,6 +39,7 @@ namespace Graphics {
 		DirectX::SimpleMath::Vector3 getRight() const;
 		DirectX::SimpleMath::Matrix getView() const;
 		DirectX::SimpleMath::Matrix getProj() const;
+		float getFarPlane() const { return drawDistance; };
 		ConstantBuffer<ShaderValues>* getBuffer();
 		ConstantBuffer<InverseMatrixes>* getInverseBuffer();
 

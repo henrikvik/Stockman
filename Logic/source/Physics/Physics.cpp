@@ -51,7 +51,8 @@ void Physics::clear()
 			delete body->getMotionState();
 		}
 		this->removeCollisionObject(obj);
-		delete shape;
+        if (shape)
+		    delete shape;
 		delete obj;
 	} 
 
@@ -62,15 +63,15 @@ void Physics::clear()
 	delete collisionConfiguration;
 }
 
-void Physics::update(GameTime gameTime)
+void Physics::update(float delta)
 {
 	// Stepping the physics
 	PROFILE_BEGIN("Stepping Physics");
 
-	if (gameTime.dtReal * 0.001f > (1.f / 60.f))
+	if (delta * 0.001f > (1.f / 60.f))
 		this->stepSimulation(1.f / 60.f, 0, 0);
 	else
-		this->stepSimulation(gameTime.dtReal * 0.001f, 0, 0);
+		this->stepSimulation(delta * 0.001f, 0, 0);
 
 	PROFILE_END();
 
@@ -317,7 +318,7 @@ btPairCachingGhostObject* Physics::createPlayer(btCapsuleShape* capsule, btVecto
 	ghostObject->setWorldTransform(transform);
 
 	// Adding to physics world
-	this->addCollisionObject(ghostObject, COL_FLAG::COL_PLAYER, Physics::COL_HITBOX);
+	this->addCollisionObject(ghostObject, COL_FLAG::COL_PLAYER, Physics::COL_EVERYTHING);
 
 	return ghostObject;
 }

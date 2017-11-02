@@ -47,13 +47,19 @@ namespace Logic
             static const int MAX_SKILLS = 3;
         };
 
+        enum SKILL
+        {
+            SKILL_GRAPPLING_HOOK,
+            SKILL_SHIELD_CHARGE,
+            SKILL_BULLET_TIME
+        };
+
 		SkillManager();
 		~SkillManager();
 
 		void init(Physics* physics, ProjectileManager* projectileManager);
-		void clear();
 
-		void switchToSkill(std::vector<int> skillsToUse);
+		void switchToSkill(std::vector<SKILL> skillsToUse);
 
 		void use(int index, btVector3 forward, Entity& shooter);
 		void release(int index);
@@ -68,6 +74,7 @@ namespace Logic
         bool isLegit(int index) const;
 
 		std::vector<Skill*> m_allSkills;
+        __int16 m_nrOfSkills;
         Skill* m_current[THRESHOLD::MAX_SKILLS];
 	};
 }

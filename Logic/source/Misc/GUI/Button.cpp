@@ -93,9 +93,15 @@ bool Button::animationTransition(float dt, float maxAnimationTime, bool forward)
 	return done;
 }
 
-Graphics::ButtonInfo& Button::getButtonInfo()
+Graphics::ButtonInfo* Button::getButtonInfo()
 {
-	return m_buttonInfo;
+	return &m_buttonInfo;
+}
+
+void Button::setStartAndEnd(float start, float end)
+{
+    m_start = start;
+    m_end = end;
 }
 
 void Logic::Button::setState(State state)

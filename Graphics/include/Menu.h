@@ -24,8 +24,8 @@ namespace Graphics
         void loadTextures(ID3D11Device * device, ID3D11DeviceContext * contex);
         
 
-        ID3D11ShaderResourceView * menuTexture[4];
-        ID3D11ShaderResourceView * buttonTexture[3];
+        ID3D11ShaderResourceView * menuTexture[10];
+        ID3D11ShaderResourceView * buttonTexture[10];
         ID3D11Buffer * buttonQuad;
         ID3D11Buffer * menuQuad;
 

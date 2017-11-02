@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
+#include <Graphics\include\Utility\DebugDraw.h>
 
 #include "Profiler.h"
 
@@ -7,9 +8,15 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <iostream>
-#pragma comment (lib, "d3d11.lib")
+#include <Graphics\include\Structs.h>
+
+#include "Engine.h"
+#include "Profiler.h"
 #include "Typing.h"
+
 #include "DebugWindow.h"
+
+#pragma comment (lib, "d3d11.lib")
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -65,9 +72,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-Engine::Engine(HINSTANCE hInstance, int width, int height)
+Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int args)
 {
-	srand(time(NULL));				// Set random seed
+	srand((unsigned int)time(NULL));				// Set random seed
 	this->mHeight = height;
 	this->mWidth = width;
 	this->hInstance = hInstance;
@@ -78,8 +85,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height)
 	this->mMouse = std::make_unique<DirectX::Mouse>();
 	this->mMouse->SetWindow(window);
 
-	this->game.init();
-
+	this->game.init(cmdLine, args);
 }
 
 Engine::~Engine()
@@ -110,9 +116,6 @@ void Engine::initializeWindow()
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.lpszClassName = "Basic test";
 
-
-   
-
 	if (!RegisterClass(&wc))
 	{
 		MessageBox(this->window, "registerClass failed", "Error", MB_OK);
@@ -124,7 +127,7 @@ void Engine::initializeWindow()
 	this->window = CreateWindow(
 		"Basic test",
 		"Stort spel",
-		WS_OVERLAPPEDWINDOW,
+		WS_CAPTION,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		rc.right - rc.left,
@@ -144,7 +147,6 @@ void Engine::initializeWindow()
 
 	ShowWindow(this->window, SW_SHOWDEFAULT);
 	UpdateWindow(this->window);
-
 }
 
 HRESULT Engine::createSwapChain()
@@ -164,7 +166,6 @@ HRESULT Engine::createSwapChain()
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	desc.BufferDesc.RefreshRate.Denominator = 0;
 	desc.BufferDesc.RefreshRate.Numerator = 0;
-
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -255,8 +256,11 @@ int Engine::run()
 
 	g_Profiler = newd Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
+    TbbProfilerObserver observer(g_Profiler);
 
 	DebugWindow * debug = DebugWindow::getInstance();
+
+    Graphics::Debug::Initialize(mDevice);
 
 	while (running)
 	{
@@ -280,7 +284,6 @@ int Engine::run()
             }
 		}
 
-
 		//To enable/disable fullscreen
 		DirectX::Keyboard::State ks = this->mKeyboard->GetState();
 		if (ks.F11)
@@ -297,6 +300,7 @@ int Engine::run()
 
         static bool F2wasPressed = false;
         bool F2keyDown = !F2wasPressed && ks.F2;
+
         F2wasPressed = ks.F2;
 
 		if (F2keyDown)
@@ -316,9 +320,10 @@ int Engine::run()
 		debug->draw("Title?");
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
-		if (!debug->isOpen())
-			game.update(float(deltaTime));
-		PROFILE_END();
+        if (!debug->isOpen())
+            game.update(float(deltaTime));
+        PROFILE_END();
+
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game.render();
@@ -334,6 +339,7 @@ int Engine::run()
 
         ///// USH! /////
 		renderer->updateLight(deltaTime, &cam);
+        renderer->updateShake((float)deltaTime);
         ////////////////
 
         PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
@@ -348,6 +354,7 @@ int Engine::run()
 			g_Profiler->render();
 		}
 
+        Graphics::Debug::Render(&cam);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
 		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
@@ -361,7 +368,8 @@ int Engine::run()
         RenderQueue::get().clearAllQueues();
     }
 
-	g_Profiler->end();
+    Graphics::Debug::Destroy();
+    g_Profiler->end();
 	delete g_Profiler;
 
 	return 0;

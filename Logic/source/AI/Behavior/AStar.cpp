@@ -15,14 +15,14 @@ namespace Logic
         generateNavigationMesh();
         targetIndex = 0;
 
-        for (size_t i = 0; i < navNodes.size(); i++)
-        {
-            navNodes[i].onClosedList = navNodes[i].explored = false;
-            navNodes[i].g = navNodes[i].h = 0;
-            navNodes[i].nodeIndex = i;
-            navNodes[i].parent = NO_PARENT;
-        }
-    }
+	for (size_t i = 0; i < navNodes.size(); i++)
+	{
+		navNodes[i].onClosedList = navNodes[i].explored = false;
+		navNodes[i].g = navNodes[i].h = 0;
+		navNodes[i].nodeIndex = (int)i;
+		navNodes[i].parent = NO_PARENT;
+	}
+}
 
     AStar::~AStar()
     {
@@ -87,8 +87,8 @@ namespace Logic
                 {
                     explore->explored = true;
 
-                    explore->g = f;
-                    explore->h = heuristic(nodes[index], nodes[toIndex]) * 0.1;
+				explore->g = f;
+				explore->h = heuristic(nodes[index], nodes[toIndex]) * 0.1f;
 
                     explore->parent = currentNode->nodeIndex;
                     openList.push(explore);
@@ -178,39 +178,39 @@ namespace Logic
         return navigationMesh.getNodes().size();
     }
 
-    void AStar::generateNavigationMesh()
-    {
-        PASVF pasvf;
-        pasvf.generateNavMesh(navigationMesh, {}, {});
-        navigationMesh.createNodesFromTriangles();
-        // test //
-        /*
-            Basicly, divided by two because there is two triangles per square,
-            then square root because it is a square matrix (rows = columns).
-            Then times two again because one row = number of squares * 2.
-        */
-        const int ROW = std::sqrt(navigationMesh.getNodes().size() / 2) * 2;
-        for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
-        {
-            if ((i + 1) % ROW != 0)
-            {
-                navigationMesh.addEdge(i, i + 1);
-                navigationMesh.addEdge(i + 1, i);
-            }
-
-            if (i < navigationMesh.getNodes().size() - ROW && i % 2 == 0)
-            {
-                // REMOVE THESE COMMENTS AND i % 2 == 0 TO MAKE ART
-            //	navigationMesh.addEdge(i, i + ROW); 
-            //	navigationMesh.addEdge(i + ROW, i);
-
-                if ((i + 1) % ROW != 0)
-                {
-                    navigationMesh.addEdge(i, i + ROW + 1);
-                    navigationMesh.addEdge(i + ROW + 1, i);
-                }
-            }
-        }
+void AStar::generateNavigationMesh()
+{
+	PASVF pasvf;
+	pasvf.generateNavMesh(navigationMesh, {}, {});
+	navigationMesh.createNodesFromTriangles();
+	// test //
+	/*
+		Basicly, divided by two because there is two triangles per square,
+		then square root because it is a square matrix (rows = columns).
+		Then times two again because one row = number of squares * 2.
+	*/
+	const int ROW = (int)std::sqrt(navigationMesh.getNodes().size() / 2) * 2;
+	for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
+	{
+		if ((i + 1) % ROW != 0)
+		{
+			navigationMesh.addEdge((int)i, (int)i + 1);
+			navigationMesh.addEdge((int)i + 1, (int)i);
+		}
+		
+		if (i < navigationMesh.getNodes().size() - ROW && i % 2 == 0)
+		{
+			// REMOVE THESE COMMENTS AND i % 2 == 0 TO MAKE ART
+		//	navigationMesh.addEdge(i, i + ROW); 
+		//	navigationMesh.addEdge(i + ROW, i);
+			
+			if ((i + 1) % ROW != 0)
+			{
+				navigationMesh.addEdge((int)i, (int)i + ROW + 1);
+				navigationMesh.addEdge((int)i + ROW + 1, (int)i);
+			}
+		} 
+	}
 
         navNodes.clear();
         for (size_t i = 0; i < navigationMesh.getNodes().size(); i++)

@@ -5,22 +5,8 @@
 
 using namespace Logic;
 
-Weapon::Weapon()
-{
-	m_weaponID			= -1;
-	m_ammoCap			= -1;
-	m_ammo				= -1;
-	m_magSize			= -1;
-	m_magAmmo			= -1;
-	m_ammoConsumption	= -1;
-	m_attackRate		= -1;
-	m_freeze			= -1;
-	m_reloadTime		= -1;
-    m_projectileData = new ProjectileData();
-}
-
 Weapon::Weapon(Resources::Models::Files modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime)
+	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime) : Object(modelID)
 {
 	m_weaponID			= weaponID;
 	m_ammoCap			= ammoCap;
@@ -34,7 +20,7 @@ Weapon::Weapon(Resources::Models::Files modelID, ProjectileManager* projectileMa
 	m_attackRate		= attackRate;
 	m_freeze			= freeze;
 	m_reloadTime		= reloadTime;
-    m_projectileData    = new ProjectileData(projectileData);
+    m_projectileData    = newd ProjectileData(projectileData);
 
 
     setSpawnFunctions(*projectileManager);

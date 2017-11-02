@@ -33,22 +33,17 @@ namespace Graphics
 		context->PSSetShader(shader, nullptr, 0);
         context->VSSetShaderResources(0, 1, skySphere->getVertexBuffer());
 
-		ID3D11Buffer * buffers[] =
-		{
-			*cam->getBuffer(),
-			sphereTransformBuffer
-		};
+		context->VSSetConstantBuffers(0, 1, *cam->getBuffer());
+		context->VSSetConstantBuffers(4, 1, sphereTransformBuffer);
 
-		context->VSSetConstantBuffers(0, 2, buffers);
-
-		context->PSSetConstantBuffers(2, 1, *sun.getShaderBuffer());
+		context->PSSetConstantBuffers(1, 1, *sun.getShaderBuffer());
 
 		context->Draw(skySphere->getVertexCount(), 0);
 	}
 
 	void SkyRenderer::update(ID3D11DeviceContext * context, float deltaTime, DirectX::SimpleMath::Vector3 pos)
 	{
-		float radiansPerSecond = 0.01745 * deltaTime * 0.005f;
+		float radiansPerSecond = 0.01745f * deltaTime * 0.005f;
 
 		sun.update(context, radiansPerSecond, pos);
 

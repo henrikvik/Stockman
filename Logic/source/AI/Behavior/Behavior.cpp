@@ -2,12 +2,12 @@
 #include <AI\Enemy.h>
 #include <Misc\RandomGenerator.h>
 
-#define SCALAR_DIR 0.5f
+#define SCALAR_DIR 0.8f
 #define SCALAR_ALIGN 1.1f
-#define SCALAR_COHES 0.7f
+#define SCALAR_COHES 0.6f
 #define SCALAR_SEP 2.f
 
-#define MAX_LEN_FOR_SEPERATION 5.f
+#define MAX_LEN_FOR_SEPERATION 15.f
 // this can be changed in the future maybe who knows
 #define CHANGE_NODE_DIST 1.2
 
@@ -62,12 +62,13 @@ namespace Logic
         boidCalculations(in.enemy->getPositionBT(),
             dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
-        dir.setY(-.33f); // my super fix to tower building
-        dir.normalize();
-        dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
+    float y = in.enemy->getRigidBody()->getLinearVelocity().getY();
+    dir.setY(0);
+    dir.normalize();
+    dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
 
-        in.enemy->getRigidBody()->translate(dir);
-    }
+    in.enemy->getRigidBody()->setLinearVelocity({ dir.x() * 100, y, dir.z() * 100 });
+}
 
     void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
         std::vector<Enemy*> const &close, float maxSpeed, float dt)
@@ -86,26 +87,26 @@ namespace Logic
 
             cohes += enemy->getPositionBT();
 
-            temp = pos - enemy->getPositionBT();
-            if (temp.length() < MAX_LEN_FOR_SEPERATION)
-            {
-                sep += temp;
-                totalSep++;
-            }
-        }
+		temp = pos - enemy->getPositionBT();
+		if (temp.length() < MAX_LEN_FOR_SEPERATION)
+		{
+			sep += temp;
+			totalSep++;
+		}
+	}
+	
+	// SEPERATION (Steer away from the group)
+	cohes /= (float)close.size();
+	cohes = cohes - pos;
+	cohes = cohes.normalize();
 
-        // SEPERATION (Steer away from the group)
-        cohes /= close.size();
-        cohes = cohes - pos;
-        cohes = cohes.normalize();
+	// ALIGNMENT (Have same vel as group)
+	align /= (float)close.size();
+	align = align.normalize();
 
-        // ALIGNMENT (Have same vel as group)
-        align /= close.size();
-        align = align.normalize();
-
-        // COHESION (Stay towards group position)
-        sep /= totalSep + 1;
-        sep = sep.normalize();
+	// COHESION (Stay towards group position)
+	sep /= float(totalSep + 1);
+	sep = sep.normalize();
 
         // RET
         dir = dir * SCALAR_DIR + cohes * SCALAR_COHES + align * SCALAR_ALIGN + sep * SCALAR_SEP;
@@ -121,11 +122,11 @@ namespace Logic
         m_root = {type, value, {}, func};
     }
 
-    Behavior::BehaviorNode* Behavior::addNode(BehaviorNode *parent,
-        NodeType type, int value, run func)
-    {
-        int index = parent->children.size();
-        parent->children.push_back({type, value, {}, func});
+Behavior::BehaviorNode* Behavior::addNode(BehaviorNode *parent,
+	NodeType type, int value, run func)
+{
+	int index = (int)parent->children.size();
+	parent->children.push_back({ type, value, {}, func });
 
         if (parent->type == PRIORITY)
         {
@@ -203,6 +204,10 @@ namespace Logic
         return m_pathingType;
     }
 
+void Behavior::setPathingType(PathingType pathingType)
+{
+	m_pathingType = pathingType;
+}
     void Behavior::setPathingType(PathingType pathingType)
     {
         m_pathingType = pathingType;

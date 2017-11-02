@@ -74,13 +74,18 @@ bool MenuState::animationTransition(float dt, float maxAnimationTime, bool forwa
 {
 	bool done = true;
 
-	for (Button &b : m_buttons)
-	{
-		// i dont know how this is suppose to work, the last item in the list is very important
-		done = b.animationTransition(dt, maxAnimationTime, forward);
-	}
+	//for (Button &b : m_buttons)
+	//{
+	//	// i dont know how this is suppose to work, the last item in the list is very important
+	//	done = b.animationTransition(dt, maxAnimationTime, forward);
+	//}
 
 	return done;
+}
+
+Button* MenuState::getButton(int index)
+{
+    return &m_buttons[index];
 }
 
 Graphics::MenuInfo MenuState::getMenuInfo()
@@ -88,7 +93,7 @@ Graphics::MenuInfo MenuState::getMenuInfo()
     m_menu.m_buttons.clear();
     for (Button &b : m_buttons)
     {
-        m_menu.m_buttons.push_back(b.getButtonInfo());
+        m_menu.m_buttons.push_back(*b.getButtonInfo());
     }
     return m_menu;
 }

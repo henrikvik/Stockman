@@ -1,5 +1,7 @@
 #include "Map.h"
 #include <Keyboard.h>
+#include <Graphics\include\Structs.h>
+#include <Graphics\include\Utility\DebugDraw.h>
 
 using namespace Logic;
 
@@ -22,6 +24,13 @@ void Map::add(FrameProp frameProp)
 
 void Map::add(FrameHitbox frameHitbox)
 {
+    if (frameHitbox.modelID == Graphics::GROUND)
+        m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+            Physics::COL_HITBOX,
+            Physics::COL_EVERYTHING),
+            {1, 1.f, 1}));
+
     m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
         Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
         Physics::COL_HITBOX,
@@ -32,7 +41,7 @@ void Map::add(FrameHitbox frameHitbox)
 void Map::init(Physics* physics)
 {
     m_physicsPtr = physics;
-    m_drawHitboxesAndLights = true;
+    m_drawHitboxesAndLights = false;
 
     readFromFile("maya.level");
 	
@@ -45,31 +54,31 @@ void Map::readFromFile(std::string path)
 {
     // Loads hitboxes
     std::vector<FrameHitbox> hitboxes;
-    hitboxes.push_back({ { 0, 0, 0 }, {0, 0, 0}, {500.f, 0.01f, 500.f}, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Resources::Models::UnitCube });
     hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
     hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Resources::Models::UnitCube });
     hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 80, 3, 80 },{ 0, 0, 0 },{ 15, 3, 15 },       Resources::Models::UnitCube });
-    hitboxes.push_back({ { 50, 1, 80 },{ 0, 90, 90 },{ 15, 3, 15 },     Resources::Models::UnitCube });
+    hitboxes.push_back({ { 80, 3, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 50, 1, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
     hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 80, 1, 40 },{ 40, -90, -90 },{ 15, 3, 15 },  Resources::Models::UnitCube });
+    hitboxes.push_back({ { 80, 1, 40 },{ 40, -90, -90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
     hitboxes.push_back({ { 120, 1, 180 },{ 40, 0, -90 },{ 60, 10, 45 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 125, 5, 100 },{ 0, 0, 0 },{ 15, 5, 15 },     Resources::Models::UnitCube });
-    hitboxes.push_back({ { 100, 4, 100 },{ 0, 0, 0 },{ 15, 4, 15 },     Resources::Models::UnitCube });
-    hitboxes.push_back({ { 120, 4, 60 },{ 0, 0, 0 },{ 15, 4, 15 },      Resources::Models::UnitCube });
-    hitboxes.push_back({ { 130, 4, 110 },{ 45, 0, 45 },{ 15, 4, 15 },   Resources::Models::UnitCube });
-    hitboxes.push_back({ { 150, 6, 150 },{ 0, 0, 0 },{ 40, 6, 40 },     Resources::Models::UnitCube });
-    hitboxes.push_back({ { 60, 80, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 },   Resources::Models::UnitCube });
-    hitboxes.push_back({ { 45, 70, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 },   Resources::Models::UnitCube });
-    hitboxes.push_back({ { 60, 50, 60 },{ 0, 0, 0 },{ 10, 2, 10 },      Resources::Models::UnitCube });
-    hitboxes.push_back({ { 80, 42, 80 },{ 0, 0, 0 },{ 15, 3, 15 },      Resources::Models::UnitCube });
-    hitboxes.push_back({ { 50, 40, 80 },{ 0, 90, 90 },{ 15, 3, 15 },    Resources::Models::UnitCube });
-    hitboxes.push_back({ { 125, 35, 100 },{ 0, 0, 0 },{ 15, 5, 15 },    Resources::Models::UnitCube });
-    hitboxes.push_back({ { 100, 40, 100 },{ 0, 0, 0 },{ 15, 4, 15 },    Resources::Models::UnitCube });
-    hitboxes.push_back({ { 120, 50, 60 },{ 0, 0, 0 },{ 15, 4, 15 },     Resources::Models::UnitCube });
-    hitboxes.push_back({ { 130, 40, 110 },{ 45, 0, 45 },{ 15, 4, 15 },  Resources::Models::UnitCube });
-    hitboxes.push_back({ { 150, 60, 150 },{ 0, 0, 0 },{ 40, 6, 40 },    Resources::Models::UnitCube });
-    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 },  Resources::Models::UnitCube });
+    hitboxes.push_back({ { 125, 5, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 100, 4, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 120, 4, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 130, 4, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 150, 6, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 60, 80, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 45, 70, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 60, 50, 60 },{ 0, 0, 0 },{ 10, 2, 10 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 80, 42, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 50, 40, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 125, 35, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 100, 40, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 120, 50, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 130, 40, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 150, 60, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 }, Resources::Models::UnitCube });
 
     // Loads lights
     std::vector<FrameLight> lights;
@@ -120,9 +129,11 @@ void Map::render()
     if (m_drawHitboxesAndLights)
     {
         for (StaticObject* e : m_hitboxes)
-            e->renderD();
-        for (LightObject* l : m_lights)
-            l->renderD();
+            e->renderD(renderer);
+        for (LightObject* l : m_lights) {
+            //l->renderD(renderer);
+            Graphics::Debug::PointLight(*l);
+        }
     }
 }
 	
@@ -138,6 +149,7 @@ void Map::debugInitProps()
 
 void Map::debugInitObjects()
 {
+    // Debugging for Sound bug testing
     btVector3 halfextent(1.0, 1.0, 1.0);
     Speaker* box = new Speaker(m_physicsPtr->createBody(Cube({ -25, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
     box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 6000.f, 250.f);
@@ -154,4 +166,13 @@ void Map::debugInitObjects()
     box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 2, 73 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
     box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 3500.f, 250.f);
     m_objects.push_back(box);
+
+    // Debugging for Testing model scaling
+    for (int i = 0; i < 12; i++)
+    {
+        if (i == Graphics::ModelID::GROUND) break;
+        if (i == Graphics::ModelID::SKY_SPHERE) break;
+        box = new Speaker(m_physicsPtr->createBody(Cube({ -200.f + (i * 10.f), 2.f, 123.f }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::ModelID(i));
+        m_objects.push_back(box);
+    }
 }

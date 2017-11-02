@@ -20,6 +20,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 	m_moveSpeed = moveSpeed;
 	m_enemyType = enemyType;
 	m_bulletTimeMod = 1.f;
+    m_moveSpeedMod = 1.f;
 
 	//animation todo
     enemyRenderInfo.model = modelID;
@@ -72,6 +73,7 @@ void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> co
 
 	m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 
+    m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
 }
 
@@ -94,7 +96,7 @@ void Enemy::damage(float damage)
 
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
 {
-	int flags = effect.getStandards()->flags;
+	auto flags = effect.getStandards()->flags;
 
 	if (flags & Effect::EFFECT_KILL)
 		damage(m_health);
@@ -102,7 +104,8 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 		damage(effect.getModifiers()->modifyDmgTaken * dt);
 	if (flags & Effect::EFFECT_BULLET_TIME)
 		m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
-		
+    if (flags & Effect::EFFECT_IS_FROZEN)
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
 }
 
 float Enemy::getHealth() const
@@ -122,7 +125,7 @@ float Enemy::getBaseDamage() const
 
 float Enemy::getMoveSpeed() const
 {
-	return m_moveSpeed * m_bulletTimeMod;
+	return m_moveSpeed * m_bulletTimeMod * m_moveSpeedMod;
 }
 
 ENEMY_TYPE Enemy::getEnemyType() const
@@ -130,7 +133,7 @@ ENEMY_TYPE Enemy::getEnemyType() const
 	return m_enemyType;
 }
 
-Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed)
+Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale)
 {
 	ProjectileData data;
 
@@ -139,7 +142,7 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
 	data.speed = speed;
     data.ttl = 20000;
     data.gravityModifier = 2.5;
-	data.scale = 1.f;
+	data.scale = scale;
     data.enemyBullet = true;
     data.isSensor = true;
 

@@ -1,9 +1,9 @@
 {
-	"nrOfWaves": "10";
-	"startWave": "0";
-	"timeMul": "1500f";
-	"timeBonus": "3000f";
-	"bossTimeBonus": "3";
+	"nrOfWaves": 10;
+	"startWave": 0;
+	"timeMul": 1500f;
+	"timeBonus": 3000f;
+	"bossTimeBonus": 3;
 	"bossWaves": "9";
 }
 { // 0
@@ -71,37 +71,37 @@
 	"bosses": 0;
 }
 { // 3
-	"enemies" : "0";
+	"enemies" : "0, 0";
 	"triggers" : 0;
 	"bosses": 0;
 }
 { // 4
-	"enemies" : "0";
+	"enemies" : "0, 0";
 	"triggers" : 0;
 	"bosses": 0;
 }
 { // 5
-	"enemies" : "0";
+	"enemies" : "0, 0, 0";
 	"triggers" : 0;
 	"bosses": 0;
 }
 { // 6
-	"enemies" : "0";
+	"enemies" : "0, 0, 0";
 	"triggers" : 0;
 	"bosses": 0;
 }
 { // 7
-	"enemies" : "0";
+	"enemies" : "0, 0, 0, 0";
 	"triggers" : 0;
 	"bosses": 0;
 }
 { // 8
-	"enemies" : "0";
+	"enemies" : "0, 0, 0, 0, 0, 0";
 	"triggers" : 0;
 	"bosses": 0;
 }
 { // 9
-	"enemies" : "0";
+	"enemies" : "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0";
 	"triggers" : 0;
 	"bosses": 0;
 }

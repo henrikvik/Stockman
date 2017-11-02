@@ -58,7 +58,7 @@ void EnemyNecromancer::updateDead(float deltaTime)
 
 void EnemyNecromancer::useAbility(Entity const &target)
 {
-	if (RandomGenerator::singleton().getRandomInt(0, 1000))
+	if (RandomGenerator::singleton().getRandomInt(0, 800))
 	{
 		if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
 		{
