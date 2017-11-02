@@ -1,0 +1,16 @@
+{ // BOUNCE
+	"flags": 129; // 0x1 + 0x80
+	"increaseCooldown" : 0f;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 0;
+}
+{ // AMMO +10
+	"flags": 33; // 0x1 + 0x20
+	"increaseCooldown" : 0f;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 10;
+	"increaseMagSize" : 0;
+}
