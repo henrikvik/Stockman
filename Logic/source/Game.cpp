@@ -133,6 +133,7 @@ void Game::reset()
 {
     m_entityManager.deallocateData();
     m_player->reset();
+    m_projectileManager->removeAllProjectiles();
 
 	ComboMachine::Get().Reset();
 }
@@ -215,6 +216,7 @@ bool Game::updateMenu(float deltaTime)
                     SkillManager::SKILL(selectedSkills->second),
                     SkillManager::SKILL(selectedSkills->first)
                 });
+                m_player->setCurrentSkills(selectedSkills->first, selectedSkills->second);
                
                 // Reset menu stuff
                 selectedSkills->first = -1;
@@ -242,7 +244,7 @@ bool Game::updateMenu(float deltaTime)
 void Game::updateGame(float deltaTime)
 {
    	ComboMachine::Get().Update(deltaTime);
-	m_waveTimeManager.update(deltaTime, m_entityManager);
+    m_waveTimeManager.update(deltaTime, m_entityManager);
 
 	PROFILE_BEGIN("Sound");
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
@@ -289,7 +291,7 @@ void Game::gameOver()
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
 			break;
 		}
 	}

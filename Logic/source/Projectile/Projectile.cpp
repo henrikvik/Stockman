@@ -141,7 +141,8 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
                     dynamic_cast<Enemy*> (&other)->getStatusManager().addStatus(StatusManager::FREEZE, 1, true);
                     
                     if (FUN_MODE)
-                        if ((rand() % 10) == 1)Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
+                        if ((rand() % 100) == 1) 
+                            Graphics::FXSystem->addEffect("IceExplosion", DirectX::XMMatrixTranslationFromVector(getPosition()));
                 }
             }
         }
@@ -161,7 +162,7 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         CallbackData data;
         data.caller = this;
         data.dataPtr = reinterpret_cast<std::intptr_t> (&other);
-        getCallbacks()[ON_COLLISION](data);
+        this->callback(ON_COLLISION, data);
     }
 
 	if (m_pData.type == ProjectileTypeBulletTimeSensor  ||

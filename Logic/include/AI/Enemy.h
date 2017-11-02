@@ -27,7 +27,10 @@ namespace Logic
 	class Enemy : public Entity 
 	{
 		private:
-			// Animation m_animation;
+            // This is used to count how many callbacks is added, 
+            // so this HAS to be ZERO before this is destroyed or
+            // the showcase at PAX East will go bad
+            int m_nrOfCallbacksEntities;
 
 			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
 			float m_bulletTimeMod;									// Variables for effect modifiers
@@ -49,10 +52,14 @@ namespace Logic
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
 
-			Projectile* shoot(btVector3 dir, Graphics::ModelID id, float speed);
+			Projectile* shoot(btVector3 dir, Graphics::ModelID id, float speed, float gravity, float scale);
 
 			// for debugging
 			void debugRendering(Graphics::Renderer &renderer);
+
+            void increaseCallbackEntities();
+            void decreaseCallbackEntities();
+            bool hasCallbackEntities();
 
 			void damage(float damage);
 			void setBehavior(BEHAVIOR_ID id);

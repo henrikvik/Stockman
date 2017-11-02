@@ -59,6 +59,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
+    currentWeapon = 0;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -321,12 +322,24 @@ void Player::updateSpecific(float deltaTime)
 	//crouch(deltaTime);
 
 	// Weapon swap
-	if (ks.IsKeyDown(m_switchWeaponOne))
-		m_weaponManager->switchWeapon(0);
-	if (ks.IsKeyDown(m_switchWeaponTwo))
-		m_weaponManager->switchWeapon(1);
-	if (ks.IsKeyDown(m_switchWeaponThree))
-		m_weaponManager->switchWeapon(2);
+    if (ks.IsKeyDown(m_switchWeaponOne))
+    {
+        m_weaponManager->switchWeapon(0);
+        currentWeapon = 0;
+    }
+		
+    if (ks.IsKeyDown(m_switchWeaponTwo))
+    {
+        m_weaponManager->switchWeapon(1);
+        currentWeapon = 1;
+    }
+		
+    if (ks.IsKeyDown(m_switchWeaponThree))
+    {
+        m_weaponManager->switchWeapon(2);
+        currentWeapon = 2;
+    }
+		
 
 	// Skills
     PROFILE_BEGIN("SkillManager");
@@ -641,6 +654,13 @@ void Player::render(Graphics::Renderer & renderer)
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);
 
+    static int lastHP = getHP();
+    if (lastHP != getHP())
+    {
+        lastHP = getHP();
+        renderer.startShake(10., 500.f);
+    }
+
 	// Setting position of updated weapon and skill models
 	m_weaponManager->setWeaponModel(getTransformMatrix(), m_forward);
 	//	m_skillManager->setWeaponModel(getTransformMatrix(), m_forward);
@@ -737,4 +757,25 @@ const Skill* Player::getSkill(int id) const
 bool Player::isUsingMeleeWeapon() const
 {
     return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().primAmmoConsumption == 0;
+}
+
+int Logic::Player::getCurrentWeapon() const
+{
+    return currentWeapon;
+}
+
+void Logic::Player::setCurrentSkills(int first, int second)
+{
+    currentSkills[0] = first;
+    currentSkills[1] = second;
+}
+
+int Logic::Player::getCurrentSkill1() const
+{
+    return currentSkills[1];
+}
+
+int Logic::Player::getCurrentSkill0() const
+{
+    return currentSkills[0];
 }

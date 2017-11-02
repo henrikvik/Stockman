@@ -76,6 +76,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         body = p->getRigidBody();
         // adding the body to physics world
         m_physPtr->addRigidBody(body);
+        p->getStatusManager().clear();
         
         // isSensor
         if (pData.isSensor)
@@ -145,7 +146,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         p->toRemove(false);
 
         // remove all callbacks from the projectile
-        p->getCallbacks().clear();
+        p->clearCallbacks();
 
         // add to idle stack
         m_projectilesIdle.push_back(p);
@@ -171,6 +172,12 @@ void Logic::ProjectileManager::render(Graphics::Renderer& renderer)
 {
 	for (Projectile* p : m_projectilesActive)
 		p->render(renderer);
+}
+
+void ProjectileManager::removeAllProjectiles()
+{
+    for (size_t i = 0; i < m_projectilesActive.size(); i++)
+        removeProjectile(m_projectilesActive[i], i);
 }
 
 std::vector<Projectile*>& ProjectileManager::getProjectiles()

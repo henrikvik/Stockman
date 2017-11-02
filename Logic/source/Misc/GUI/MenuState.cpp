@@ -45,11 +45,11 @@ bool MenuState::animationTransition(float dt, float maxAnimationTime, bool forwa
 {
 	bool done = true;
 
-	for (Button &b : m_buttons)
-	{
-		// i dont know how this is suppose to work, the last item in the list is very important
-		done = b.animationTransition(dt, maxAnimationTime, forward);
-	}
+	//for (Button &b : m_buttons)
+	//{
+	//	// i dont know how this is suppose to work, the last item in the list is very important
+	//	done = b.animationTransition(dt, maxAnimationTime, forward);
+	//}
 
 	return done;
 }

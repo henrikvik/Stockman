@@ -197,7 +197,7 @@ ImGuiTextEditCallback callback = [](ImGuiTextEditCallbackData* data) -> int
 	return temp->TextEditCallback(data);
 };
 
-if (ImGui::InputText("Input", m_inputBuf, ARRAYSIZE(m_inputBuf), ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion |
+if (ImGui::InputText("Input", m_inputBuf, ARRAYSIZE(m_inputBuf), ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackAlways | ImGuiInputTextFlags_CallbackCompletion |
 	ImGuiInputTextFlags_CallbackHistory, callback, (void*)this))
 {
 	char* input_end = m_inputBuf + strlen(m_inputBuf);
@@ -282,6 +282,12 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 {
 	switch (data->EventFlag)
 	{
+    // Fuck you Tilde
+    case ImGuiInputTextFlags_CallbackAlways:
+        if (data->Buf[0] == 'Â')        // Same as §
+            data->DeleteChars(0, 2);    // § is two bytes
+        break;
+
 	case ImGuiInputTextFlags_CallbackCompletion:
 	{
 		// Locate beginning of current word

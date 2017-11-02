@@ -65,7 +65,7 @@ namespace Logic
 		~EntityManager();
 
         // data handling
-        void deallocateData(); // delete data in vectors
+        void deallocateData(bool forceDestroy = true); // delete data in vectors
 
         // render / updates
 		void render(Graphics::Renderer &renderer);

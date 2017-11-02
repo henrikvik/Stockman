@@ -105,7 +105,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
 
         // Ice
         newd WeaponLoadout{ 
-        /* Primary */       newd Weapon(projectileManager, ProjectileData(1, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 1 }),
+        /* Primary */       newd Weapon(projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 1 }),
         /* Secondary*/      newd Weapon(projectileManager, ProjectileData(1, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), Weapon::WeaponInfo{ 3, 1, 0, 0, 100, 1 }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 200, 100, 100, 1, 10, 3000 }),
         /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.107f, -1.592f, -9.159f)), DirectX::SimpleMath::Matrix::CreateScale(0.197f, 0.199f, 0.097f), -0.4f }) },
