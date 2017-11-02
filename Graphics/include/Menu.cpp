@@ -18,6 +18,7 @@ Graphics::Menu::~Menu()
     SAFE_RELEASE(buttonTexture[1]);
     SAFE_RELEASE(buttonTexture[2]);
     SAFE_RELEASE(buttonTexture[3]);
+    SAFE_RELEASE(buttonTexture[4]);
     SAFE_RELEASE(menuTexture[0]);
     SAFE_RELEASE(menuTexture[1]);
     SAFE_RELEASE(menuTexture[2]);
