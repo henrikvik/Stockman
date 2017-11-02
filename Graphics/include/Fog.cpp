@@ -9,13 +9,13 @@ namespace Graphics
 		, fogDataBuffer(device, CpuAccess::Write, MAX_FOG_SIZE)
 	{
 		//*
-		fogData.push_back({ { -1000, 2,-1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
-		fogData.push_back({ { 1000,  2,-1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
-		fogData.push_back({ { 1000,  2, 1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { -1000, 1,-1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { 1000,  1,-1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { 1000,  1, 1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
 									
-		fogData.push_back({ { 1000,  2,1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
-		fogData.push_back({ { -1000, 2,1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
-		fogData.push_back({ { -1000, 2,-1000 }, { FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { 1000,  1,1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { -1000, 1,1000 },{ FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
+		fogData.push_back({ { -1000, 1,-1000 }, { FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
 		//*/
 
 	}

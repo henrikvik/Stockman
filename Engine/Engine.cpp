@@ -142,6 +142,8 @@ void Engine::initializeWindow()
 		MessageBox(this->window, "window creation failed", "Error", MB_OK);
 	}
 
+    SetWindowLong(window, GWL_STYLE, GetWindowLong(window, GWL_STYLE) & ~WS_SIZEBOX);
+
 	SetWindowPos(GetConsoleWindow(), 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	SetWindowPos(this->window, 0, 100, 150, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 

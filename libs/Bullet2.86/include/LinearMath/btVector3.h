@@ -343,10 +343,8 @@ public:
 		mVec128 = _mm_mul_ps(mVec128, y);
 
         #endif
+#endif
 
-		
-		return *this;
-#else	
 		btScalar l2 = length2();
 		//triNormal.normalize();
 		if (l2 >= SIMD_EPSILON*SIMD_EPSILON)
@@ -358,7 +356,6 @@ public:
 			setValue(1, 0, 0);
 		}
 		return *this;
-#endif
 	}
 
   /**@brief Return a normalized version of this vector */

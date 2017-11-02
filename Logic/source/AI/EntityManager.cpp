@@ -50,6 +50,11 @@ EntityManager::~EntityManager()
     delete m_threadHandler;
 }
 
+void EntityManager::resetTriggers()
+{
+    m_triggerManager.reset();
+}
+
 void EntityManager::allocateData()
 {
     m_enemies.resize(AStar::singleton().getNrOfPolygons());
@@ -70,27 +75,45 @@ void EntityManager::loadDebugCmds()
 #endif
 }
 
-void EntityManager::deallocateData()
+void EntityManager::deallocateData(bool forceDestroy)
 {
+    m_threadHandler->deleteThreads();
     for (std::vector<Enemy*>& list : m_enemies)
     {
-        for (Enemy *enemy : list)
+        for (Enemy *&enemy : list)
         {
-            DeleteBody(*enemy); 
-            delete enemy;
-            enemy = nullptr;
+            if (forceDestroy || !enemy->hasCallbackEntities())
+            {
+                DeleteBody(*enemy);
+                delete enemy;
+                enemy = nullptr;
+            }
+            else {
+                m_deadEnemies.push_back(enemy);
+            }
         }
         list.clear();
     }
 
-    for (Enemy *enemy : m_deadEnemies)
+    // clear out enemies without callbacks in needs to do
+    for (Enemy *&enemy : m_deadEnemies)
     {
-        DeleteBody(*enemy);
-        delete enemy;
+        if (forceDestroy || !enemy->hasCallbackEntities()) 
+        {
+            delete enemy;
+            enemy = nullptr;
+        }
     }
 
+    // copy over old list without destroyed enemies
+    std::vector<Enemy*> oldList = m_deadEnemies;
     m_deadEnemies.clear();
+    for (Enemy *enemy : oldList)
+        if (enemy)
+            m_deadEnemies.push_back(enemy);
+
     m_aliveEnemies = 0;
+    m_threadHandler->initThreads();
 }
 
 void EntityManager::update(Player const &player, float deltaTime)
@@ -107,7 +130,7 @@ void EntityManager::update(Player const &player, float deltaTime)
             {
                 updateEnemies(static_cast<int> (i), player, deltaTime);
                 if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0)
-                    m_threadHandler->addWork({ this, static_cast<int> (i), player });
+                    m_threadHandler->addWork({ this, static_cast<int> (i), &player });
             }
         }
     }
@@ -115,11 +138,12 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
-		m_deadEnemies[i]->updateDead(deltaTime);
+	    //m_deadEnemies[i]->updateDead(deltaTime); -- Delete body right now, maybe later keep the dead bodies, but it is not really important but can be changed
 	}
 
 	m_triggerManager.update(deltaTime);
 }
+
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	bool goalNodeChanged = false;
@@ -156,6 +180,7 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
             flock[flock.size() - 1]
         );
 
+        DeleteBody(*enemy);
         m_deadEnemies.push_back(enemy);
         flock.pop_back();
     }
@@ -198,7 +223,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
 {
     Enemy *enemy;
     int index;
-    btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER));
+    btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/));
     
     // Restrict "tilting" over
     testBody->setAngularFactor(btVector3(0, 1, 0));
@@ -217,7 +242,7 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     }
 
     enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING &~Physics::COL_PLAYER)), 2.f, { 0.f, 3.f, 0.f });
+    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/)), 2.f, { 0.f, 3.f, 0.f });
 
     enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 
@@ -297,7 +322,7 @@ void EntityManager::render(Graphics::Renderer &renderer)
     for (int i = 0; i < m_deadEnemies.size(); ++i)
     {
 #ifndef DISABLE_RENDERING_DEAD_ENEMIES
-        m_deadEnemies[i]->render(renderer);
+     //   m_deadEnemies[i]->render(renderer);
 #endif
     }
 

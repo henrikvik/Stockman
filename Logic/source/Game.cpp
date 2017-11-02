@@ -7,6 +7,8 @@
 #include <Engine\DebugWindow.h> 
 #include <Player\Skill\SkillManager.h>
 
+#include <Misc\CommandsFile.h>
+
 using namespace Logic;
 
 const int Game::NUMBER_OF_UNIQUE_CARDS      = 13;
@@ -47,10 +49,10 @@ void Game::init(LPWSTR *cmdLine, int args)
 	m_physics->init();
 
 	// Initializing Projectile Manager
-	m_projectileManager = new ProjectileManager(m_physics);
+	m_projectileManager = newd ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = new Player(Graphics::ModelID::CUBE, nullptr, Game::PLAYER_START_SCALE);
+	m_player = newd Player(Graphics::ModelID::CUBE, nullptr, Game::PLAYER_START_SCALE);
 	m_player->init(m_physics, m_projectileManager);
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
 
@@ -109,15 +111,20 @@ void Game::init(LPWSTR *cmdLine, int args)
     for (std::string const &cmd : GameCommands[m_gameType])
         if (!cmd.empty())
             win->doCommand(cmd.c_str());
+
+    CommandsFile().doCommandsFromFile();
 #endif
 }
 
 void Game::clear()
 {
 	m_menu->clear();
-	m_projectileManager->clear();
-    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
+    m_projectileManager->clear();
 	Sound::NoiseMachine::Get().clear();
+
+    m_entityManager.resetTriggers();
+    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
+
     Typing::releaseInstance();
 
 	delete m_physics;
@@ -131,8 +138,12 @@ void Game::clear()
 
 void Game::reset()
 {
-    m_entityManager.deallocateData();
+    m_projectileManager->removeAllProjectiles();
     m_player->reset();
+
+    m_entityManager.resetTriggers();
+    m_entityManager.deallocateData();
+    m_waveTimeManager.reset();
 
 	ComboMachine::Get().Reset();
 }
@@ -215,6 +226,7 @@ bool Game::updateMenu(float deltaTime)
                     SkillManager::SKILL(selectedSkills->second),
                     SkillManager::SKILL(selectedSkills->first)
                 });
+                m_player->setCurrentSkills(selectedSkills->first, selectedSkills->second);
                
                 // Reset menu stuff
                 selectedSkills->first = -1;
@@ -242,7 +254,7 @@ bool Game::updateMenu(float deltaTime)
 void Game::updateGame(float deltaTime)
 {
    	ComboMachine::Get().Update(deltaTime);
-	m_waveTimeManager.update(deltaTime, m_entityManager);
+    m_waveTimeManager.update(deltaTime, m_entityManager);
 
 	PROFILE_BEGIN("Sound");
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
@@ -289,7 +301,7 @@ void Game::gameOver()
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
 			break;
 		}
 	}

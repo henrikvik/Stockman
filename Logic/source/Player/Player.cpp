@@ -27,9 +27,9 @@ btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent, modelID)
 {
-    m_weaponManager = new WeaponManager();
-    m_skillManager = new SkillManager();
-    m_listenerData = new Sound::ListenerData();
+    m_weaponManager = newd WeaponManager();
+    m_skillManager = newd SkillManager();
+    m_listenerData = newd Sound::ListenerData();
 }
 
 Player::~Player()
@@ -56,6 +56,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
+    currentWeapon = 0;
 
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
@@ -154,9 +155,9 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
         else if (Enemy *e = dynamic_cast<Enemy*> (&other))
         {
             int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
-            e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * stacks);
+            e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * static_cast<btScalar> (stacks));
             stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
-            e->damage(2 * stacks); // replace 1 with the player damage when it is better
+            e->damage(2.f * stacks); // replace 1 with the player damage when it is better
         }
     }
 }
@@ -318,17 +319,24 @@ void Player::updateSpecific(float deltaTime)
 	//crouch(deltaTime);
 
 	// Weapon swap
-	if (!m_weaponManager->isSwitching())
-	{
-		if (ks.IsKeyDown(m_switchWeaponOne))
-			m_weaponManager->switchWeapon(0);
-
-		if (ks.IsKeyDown(m_switchWeaponTwo))
-			m_weaponManager->switchWeapon(1);
-
-		if (ks.IsKeyDown(m_switchWeaponThree))
-			m_weaponManager->switchWeapon(2);
-	}
+    if (ks.IsKeyDown(m_switchWeaponOne))
+    {
+        m_weaponManager->switchWeapon(0);
+        currentWeapon = 0;
+    }
+		
+    if (ks.IsKeyDown(m_switchWeaponTwo))
+    {
+        m_weaponManager->switchWeapon(1);
+        currentWeapon = 1;
+    }
+		
+    if (ks.IsKeyDown(m_switchWeaponThree))
+    {
+        m_weaponManager->switchWeapon(2);
+        currentWeapon = 2;
+    }
+		
 
 	// Skills
     PROFILE_BEGIN("SkillManager");
@@ -621,7 +629,7 @@ btGhostObject* Player::getGhostObject()
 DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 {
 	// Making memory for a matrix
-	float* m = new float[4 * 16];
+	float* m = newd float[4 * 16];
 
 	// Getting this entity's matrix
 	m_charController->getGhostObject()->getWorldTransform().getOpenGLMatrix((btScalar*)(m));
@@ -642,6 +650,13 @@ void Player::render(Graphics::Renderer & renderer)
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);
+
+    static int lastHP = getHP();
+    if (lastHP != getHP())
+    {
+        lastHP = getHP();
+        renderer.startShake(10., 500.f);
+    }
 
 	// Setting position of updated weapon and skill models
 	m_weaponManager->setWeaponModel(getTransformMatrix(), m_forward);
@@ -740,4 +755,25 @@ const Skill* Player::getSkill(int id) const
 bool Player::isUsingMeleeWeapon() const
 {
     return m_weaponManager->getActiveWeapon()->getAmmoConsumption() == 0;
+}
+
+int Logic::Player::getCurrentWeapon() const
+{
+    return currentWeapon;
+}
+
+void Logic::Player::setCurrentSkills(int first, int second)
+{
+    currentSkills[0] = first;
+    currentSkills[1] = second;
+}
+
+int Logic::Player::getCurrentSkill1() const
+{
+    return currentSkills[1];
+}
+
+int Logic::Player::getCurrentSkill0() const
+{
+    return currentSkills[0];
 }

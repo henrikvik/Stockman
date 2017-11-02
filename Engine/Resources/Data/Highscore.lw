@@ -7,12 +7,12 @@
 	"Score": 1000f;
 }
 {
-	"Player": "Andreas";
-	"Score": 0f;
+	"Player": "Stockman";
+	"Score": 5f;
 }
 {
 	"Player": "Stockman";
-	"Score": 0f;
+	"Score": 5f;
 }
 {
 	"Player": "Stockman";

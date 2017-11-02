@@ -149,11 +149,14 @@ namespace Graphics
         int activeAmmo[2];
         int inactiveAmmo[2];
         bool sledge;
-        float cd;
+        float cd0;
+        float cd1;
         UINT score;
         int wave;
         int enemiesRemaining;
         float timeRemaining;
+        int currentWeapon;
+        int currentSkills[2];
     };
 
 };
