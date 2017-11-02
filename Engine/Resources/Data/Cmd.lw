@@ -1,0 +1,8 @@
+{
+	"cmd" : "
+		'print hello',
+		'setPosition 5 5 5',
+		'KappaKappaKappaKappaKappaKappaKappaKappaKappaKappaKappa',
+		'SilverSpoonManOnTheMoon'
+	";
+}
