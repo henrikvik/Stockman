@@ -269,3 +269,4 @@ imgui.ini
 !/libs/tbb/bin
 
 *highscore.lw
+*/Cmd.lw
