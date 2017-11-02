@@ -1,8 +1,5 @@
 {
 	"cmd" : "
-		'print hello',
-		'setPosition 5 5 5',
-		'KappaKappaKappaKappaKappaKappaKappaKappaKappaKappaKappa',
-		'SilverSpoonManOnTheMoon'
+		'Edit the Cmd.lw file to make commands execute at startup'
 	";
 }
