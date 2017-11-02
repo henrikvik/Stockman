@@ -86,6 +86,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
+    this->mTracker = std::make_unique<DirectX::Keyboard::KeyboardStateTracker>();
 	this->mMouse->SetWindow(window);
 
 	this->game.init(cmdLine, args);
@@ -287,32 +288,29 @@ int Engine::run()
             }
 		}
 
-		//To enable/disable fullscreen
-		DirectX::Keyboard::State ks = this->mKeyboard->GetState();
-		if (ks.F11)
+        auto state = mKeyboard->GetState();
+        mTracker->Update(state);
+
+
+		if (mTracker->pressed.F11)
 		{
 			mSwapChain->SetFullscreenState(!isFullscreen, NULL);
 			this->isFullscreen = !isFullscreen;
 		}
 
-		if (ks.F1)
+		if (mTracker->pressed.F1)
 		{
 			g_Profiler->capture();
 			showProfiler = true;
 		}
 
-        static bool F2wasPressed = false;
-        bool F2keyDown = !F2wasPressed && ks.F2;
-
-        F2wasPressed = ks.F2;
-
-		if (F2keyDown)
+		if (mTracker->pressed.F2)
 		{
             showProfiler = !showProfiler;
 
 		}
 
-        if (ks.Escape && !debug->isOpen())
+        if (state.F10)
             running = false;
 
 		g_Profiler->start();
@@ -334,7 +332,9 @@ int Engine::run()
 		PROFILE_END();
 
 		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
-		if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftControl)) cam.update(oldPos, game.getPlayerForward(), mContext);
+
+		if (state.LeftControl) 
+            cam.update(oldPos, game.getPlayerForward(), mContext);
 		else
 		{
 			oldPos = game.getPlayerPosition();

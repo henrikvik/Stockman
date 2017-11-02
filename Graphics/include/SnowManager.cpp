@@ -39,14 +39,10 @@ namespace Graphics
         static float friction = 0.6f;
 
 		//temp
-		auto ks = DirectX::Keyboard::Get().GetState();
+        static auto ks = DirectX::Keyboard::KeyboardStateTracker();
+        ks.Update(DirectX::Keyboard::Get().GetState());
 
-		static bool isP = false;
-		static bool wasP = false;
-		wasP = isP;
-		isP = ks.P;
-
-		if (!wasP && isP)
+		if (ks.pressed.P)
 		{
 			initializeSnowflakes(camera);
 		}
