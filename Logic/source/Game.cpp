@@ -302,7 +302,7 @@ void Game::gameOver()
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
 			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
-			break;
+			//break;
 		}
 	}
 	reset();
