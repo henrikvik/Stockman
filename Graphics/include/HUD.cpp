@@ -285,7 +285,6 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
     {
         tempInt = 100;
     }
-    printf("%f\n", currentInfo->cd0);
     temp = (std::to_wstring(tempInt));
     temp += L"%";
     sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos0 + offset, DirectX::Colors::Red);
