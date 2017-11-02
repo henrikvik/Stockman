@@ -216,6 +216,10 @@ namespace Graphics
 		writeInstanceData();
 		PROFILE_END();
 
+        PROFILE_BEGIN("FXSystem::update()")
+        FXSystem->update(deviceContext, camera, 0.016f);
+        PROFILE_END();
+
 		PROFILE_BEGIN("drawShadows()");
 
 		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
@@ -252,7 +256,12 @@ namespace Graphics
 		grassTime++;
 
 		drawFoliage(camera);
-		PROFILE_END();
+	
+        PROFILE_BEGIN("FXSystem::renderPrePass()")
+        FXSystem->renderPrePass(deviceContext, camera, states, depthStencil);
+        PROFILE_END();
+        
+        PROFILE_END();
 
 		PROFILE_BEGIN("grid.updateLights()");
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
@@ -265,10 +274,6 @@ namespace Graphics
 		PROFILE_BEGIN("grid.cull()");
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 		PROFILE_END();
-
-        PROFILE_BEGIN("FXSystem::update()")
-        FXSystem->update(deviceContext, camera, 0.016f);
-        PROFILE_END();
 
         PROFILE_BEGIN("FXSystem::render()")
         FXSystem->render(deviceContext, camera, states, *fakeBackBuffer, depthStencil, false);
@@ -734,7 +739,7 @@ namespace Graphics
 	void Renderer::registerDebugFunction()
 	{
 		DebugWindow *debugWindow = DebugWindow::getInstance();
-		debugWindow->registerCommand("GFX_DISABLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_DISABLE_POST_EFFECTS", [&](std::vector<std::string> &args)->std::string
 		{
 			
             enableSSAO = false;
@@ -746,7 +751,7 @@ namespace Graphics
 			return "Post effects off!";
 		});
 
-        debugWindow->registerCommand("GFX_ENABLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
+        debugWindow->registerCommand("GFX_ENABLE_POST_EFFECTS", [&](std::vector<std::string> &args)->std::string
         {
 
             enableSSAO = true;
@@ -758,7 +763,7 @@ namespace Graphics
             return "Post effects on!";
         });
 
-		debugWindow->registerCommand("GFX_TOGGLESSAO", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_TOGGLE_SSAO", [&](std::vector<std::string> &args)->std::string
 		{
             std::string catcher = "";
             try
@@ -786,7 +791,7 @@ namespace Graphics
             return catcher;
 		});
 
-        debugWindow->registerCommand("GFX_TOGGLESNOW", [&](std::vector<std::string> &args)->std::string
+        debugWindow->registerCommand("GFX_TOGGLE_SNOW", [&](std::vector<std::string> &args)->std::string
         {
             std::string catcher = "";
             try
@@ -814,7 +819,7 @@ namespace Graphics
             return catcher;
         });
 
-		debugWindow->registerCommand("GFX_TOGGLEGLOW", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_TOGGLE_GLOW", [&](std::vector<std::string> &args)->std::string
 		{
             std::string catcher = "";
             try
@@ -842,7 +847,7 @@ namespace Graphics
             return catcher;
 		});
 
-		debugWindow->registerCommand("GFX_TOGGLEFOG", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_TOGGLE_FOG", [&](std::vector<std::string> &args)->std::string
 		{
             std::string catcher = "";
             try
@@ -870,7 +875,7 @@ namespace Graphics
             return catcher;
 		});
 
-		debugWindow->registerCommand("GFX_TOGGLEDOF", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_TOGGLE_DOF", [&](std::vector<std::string> &args)->std::string
 		{
             std::string catcher = "";
             try
@@ -898,7 +903,7 @@ namespace Graphics
             return catcher;
 		});
 
-        debugWindow->registerCommand("GFX_TOGGLEDOFSLIDERS", [&](std::vector<std::string> &args)->std::string
+        debugWindow->registerCommand("GFX_TOGGLE_DOF_SLIDERS", [&](std::vector<std::string> &args)->std::string
         {
             std::string catcher = "";
             try
@@ -926,7 +931,7 @@ namespace Graphics
             return catcher;
         });
 
-        debugWindow->registerCommand("GFX_TOGGLEHUD", [&](std::vector<std::string> &args)->std::string
+        debugWindow->registerCommand("GFX_TOGGLE_HUD", [&](std::vector<std::string> &args)->std::string
         {
             std::string catcher = "";
             try
@@ -954,7 +959,7 @@ namespace Graphics
             return catcher;
         });
 
-		debugWindow->registerCommand("GFX_SETFREEZE", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_FREEZE", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 			try
@@ -976,8 +981,7 @@ namespace Graphics
 			return catcher;
 		});
 
-      
-		debugWindow->registerCommand("GFX_SETBURN", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_BURN", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 			try
@@ -999,7 +1003,7 @@ namespace Graphics
 			return catcher;
 		});
 
-		debugWindow->registerCommand("GFX_RELOADFORWARDSHADER", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_RELOAD_FORWARD_SHADER", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 			
@@ -1009,7 +1013,7 @@ namespace Graphics
 			return catcher;
 		});
 
-		debugWindow->registerCommand("GFX_RELOADGLOWSHADERS", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_RELOAD_GLOW_SHADERS", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 
@@ -1018,7 +1022,7 @@ namespace Graphics
 			return catcher;
 		});
 
-		debugWindow->registerCommand("GFX_RELOADSNOWSHADER", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_RELOAD_SNOW_SHADER", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 
@@ -1026,7 +1030,5 @@ namespace Graphics
 
 			return catcher;
 		});
-    
-		
 	}
 }

@@ -165,13 +165,4 @@ void Map::debugInitObjects()
     box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 2, 73 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
     box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 3500.f, 250.f);
     m_objects.push_back(box);
-
-    // Debugging for Testing model scaling
-    for (int i = 0; i < 12; i++)
-    {
-        if (i == Graphics::ModelID::GROUND) break;
-        if (i == Graphics::ModelID::SKY_SPHERE) break;
-        box = new Speaker(m_physicsPtr->createBody(Cube({ -200.f + (i * 10.f), 2.f, 123.f }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::ModelID(i));
-        m_objects.push_back(box);
-    }
 }
