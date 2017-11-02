@@ -303,8 +303,7 @@ namespace Graphics
 		auto samplerWrap = states->LinearWrap();
 		deviceContext->PSSetSamplers(2, 1, &samplerWrap);
 
-		ID3D11SamplerState * samplers[] = { skyRenderer.getSampler() };
-		deviceContext->PSSetSamplers(1, 1, samplers);
+		deviceContext->PSSetSamplers(1, 1, skyRenderer.getSampler());
 
 		ID3D11Buffer *lightBuffs[] =
 		{
@@ -336,20 +335,8 @@ namespace Graphics
 		drawFoliage(camera);
 		renderFoliageQueue.clear();
 		PROFILE_END();
-
-
-        if (enableSnow)
-        {
-            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-            static UINT sampleMask = 0xffffffff;
-            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-            snowManager.drawSnowflakes(deviceContext, camera);
-            deviceContext->GSSetShader(nullptr, nullptr, 0);
-            deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        }
 		
 
-		PROFILE_BEGIN("DebugThings");
 	/*	PROFILE_BEGIN("RenderWater");
 		drawWater(camera);
 		PROFILE_END();*/
@@ -357,12 +344,16 @@ namespace Graphics
 		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
 		skyRenderer.renderSky(deviceContext, camera);
 
+       
+
         ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
 
         deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
 
         ZeroMemory(SRVs, sizeof(SRVs));
         deviceContext->PSSetShaderResources(0, 4, SRVs);
+
+        PROFILE_BEGIN("DebugThings");
 
 		deviceContext->RSSetState(states->CullCounterClockwise());
 		SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
@@ -448,6 +439,33 @@ namespace Graphics
 			PROFILE_END();
 		}
 
+
+        if (enableSnow)
+        {
+            //Needs the light for snowflakes
+            ID3D11ShaderResourceView *SRVs[] = {
+                grid.getOpaqueIndexList()->getSRV(),
+                grid.getOpaqueLightGridSRV(),
+                grid.getLights()->getSRV(),
+            };
+            deviceContext->PSSetShaderResources(0, 3, SRVs);
+
+            auto state = states->DepthDefault();
+            deviceContext->OMSetDepthStencilState(state, 0);
+            auto state2 = states->CullNone();
+            deviceContext->RSSetState(state2);
+            
+            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+            static UINT sampleMask = 0xffffffff;
+            
+            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+            snowManager.drawSnowflakes(deviceContext, camera, backBuffer, &depthStencil, skyRenderer);
+            deviceContext->GSSetShader(nullptr, nullptr, 0);
+            deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            
+            ZeroMemory(SRVs, sizeof(SRVs));
+            deviceContext->PSSetShaderResources(0, 3, SRVs);
+        }
 
 
         PROFILE_BEGIN("HUD");
@@ -710,8 +728,8 @@ namespace Graphics
         BlendState.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
         BlendState.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
         BlendState.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-        BlendState.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_INV_DEST_ALPHA;
-        BlendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+        BlendState.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+        BlendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
         BlendState.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         BlendState.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
