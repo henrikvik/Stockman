@@ -124,14 +124,14 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
         /* Primary */       newd Weapon(projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750.f, 0.f, 1 }),
         /* Secondary*/      newd Weapon(projectileManager, ProjectileData(1, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), Weapon::WeaponInfo{ 3, 1, 0, 0, 100.f, 0.f, 1 }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 200, 100, 100, 1, 10, 3000 }),
-        /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.107f, -1.592f, -9.159f)), DirectX::SimpleMath::Matrix::CreateScale(0.197f, 0.199f, 0.097f), -0.4f }) },
+        /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.2f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(3.1f, -3.9f, -3.3f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), -0.4f }) },
 
         // Sledge/Melee
         newd WeaponLoadout{ 
         /* Primary */       newd Weapon(projectileManager, ProjectileData(1, 2, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 4, 1, 0, 0, 100.f, 200.f, 0 }),
         /* Secondary*/      newd Weapon(projectileManager, ProjectileData(1, 2, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 5, 1, 0, 0, 100.f, 200.f, 0 }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0 }),
-        /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.107f, -1.592f, -9.159f)), DirectX::SimpleMath::Matrix::CreateScale(0.197f, 0.199f, 0.097f), -0.4f }) }
+        /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 3.f, -0.3f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(3.1f, -0.3f, -5.f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), -0.4f }) }
     };
 }
 
