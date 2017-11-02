@@ -171,8 +171,11 @@ void Logic::ProjectileManager::update(float deltaTime)
 
 void Logic::ProjectileManager::render(Graphics::Renderer& renderer)
 {
-	for (Projectile* p : m_projectilesActive)
-		p->render(renderer);
+    for (Projectile* p : m_projectilesActive)
+    {
+        if(p->getProjectileData().shouldRender)
+            p->render(renderer);
+    }
 }
 
 void ProjectileManager::removeAllProjectiles()

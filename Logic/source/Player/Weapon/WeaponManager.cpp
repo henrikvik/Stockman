@@ -76,8 +76,6 @@ void WeaponManager::update(float deltaTime)
 		printf("mag: %d\n", m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo);
 	}
 
-    printf("delta: %f\n", deltaTime);
-    printf("delaytimer: %f\n", m_attackRateTimer);
 	// Attack
     if (m_attackRateTimer > 0.f)
     {
@@ -130,8 +128,8 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
 
         // Sledge/Melee
         newd WeaponLoadout{ 
-        /* Primary */       newd Weapon(projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), Weapon::WeaponInfo{ 4, 1, 0, 0, 100.f, 200.f, 0 }),
-        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), Weapon::WeaponInfo{ 5, 1, 0, 0, 100.f, 200.f, 0 }),
+        /* Primary */       newd Weapon(projectileManager, ProjectileData(1, 2, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 4, 1, 0, 0, 100.f, 200.f, 0 }),
+        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(1, 2, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 5, 1, 0, 0, 100.f, 200.f, 0 }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0 }),
         /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.107f, -1.592f, -9.159f)), DirectX::SimpleMath::Matrix::CreateScale(0.197f, 0.199f, 0.097f), -0.4f }) }
     };
