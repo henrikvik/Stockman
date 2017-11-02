@@ -33,6 +33,7 @@ namespace Logic
             int spreadH;							// Horizontal spread in degrees	
             int spreadV;							// Vertical spread in degrees
             float attackRate;						// Attacks per minute
+            float delayTime;
             float freeze;
         };
 
@@ -57,6 +58,7 @@ namespace Logic
 
 		ProjectileData* getProjectileData();
 		float getAttackTimer();
+        float getDelayTime();
 	};
 }
 

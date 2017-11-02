@@ -250,6 +250,10 @@ void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
 
+    // Update weapon and skills
+    m_weaponManager->update(deltaTime);
+    m_skillManager->update(deltaTime);
+
 	// Updates listener info for sounds
 	btVector3 up		= { 0, 1, 0 };
 	btVector3 forward	= getForwardBT();
@@ -359,26 +363,18 @@ void Player::updateSpecific(float deltaTime)
     PROFILE_END();
 
 	// Check if reloading
-	if (!m_weaponManager->isReloading())
+	if (!m_weaponManager->isReloading() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
 	{
 		// Primary and secondary attack
-		if (!m_weaponManager->isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
-		{
-			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
-			if ((ms.leftButton))
-				m_weaponManager->usePrimary(pos, m_camYaw, m_camPitch, *this);
-			else if (ms.rightButton)
-				m_weaponManager->useSecondary(pos, m_camYaw, m_camPitch, *this);
-		}
+		if ((ms.leftButton))
+			m_weaponManager->tryUsePrimary(getPositionBT() + getForwardBT(), m_camYaw, m_camPitch, *this);
+		else if (ms.rightButton)
+			m_weaponManager->tryUseSecondary(getPositionBT() + getForwardBT(), m_camYaw, m_camPitch, *this);
 
 		// Reload
 		if (ks.IsKeyDown(m_reloadWeapon))
 			m_weaponManager->reloadWeapon();
 	}
-
-    // Update weapon and skills
-    m_weaponManager->update(deltaTime);
-    m_skillManager->update(deltaTime);
 
     if (m_godMode)
     {
@@ -690,6 +686,16 @@ btTransform& Player::getTransform() const
 	return m_charController->getGhostObject()->getWorldTransform();
 }
 
+float Logic::Player::getYaw() const
+{
+    return m_camYaw;
+}
+
+float Logic::Player::getPitch() const
+{
+    return m_camPitch;
+}
+
 float Logic::Player::getMoveSpeed() const
 {
 	return m_moveSpeed;
@@ -710,7 +716,7 @@ btVector3 Player::getForwardBT()
 	return btVector3(m_forward.x, m_forward.y, m_forward.z);
 }
 
-DirectX::SimpleMath::Vector3 Player::getForward()
+DirectX::SimpleMath::Vector3 Player::getForward() const
 {
 	return m_forward;
 }

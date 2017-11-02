@@ -158,7 +158,6 @@ namespace Logic
 
 		btKinematicCharacterController* getCharController();
 		btGhostObject* getGhostObject();
-		virtual DirectX::SimpleMath::Vector3 getPosition() const;
 
 		void setPlayerState(PlayerState playerState);
 
@@ -168,10 +167,13 @@ namespace Logic
 		btVector3 getForwardBT();
 		btVector3 getMoveDirection();
 
+        virtual DirectX::SimpleMath::Vector3 getPosition() const;
 		virtual btVector3 getPositionBT() const;
 		virtual btTransform& getTransform() const;
 
-		DirectX::SimpleMath::Vector3 getForward();
+        float getYaw() const;
+        float getPitch() const;
+		DirectX::SimpleMath::Vector3 getForward() const;
 		DirectX::SimpleMath::Matrix getTransformMatrix() const;
 
 		float getMoveSpeed() const;

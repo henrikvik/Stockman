@@ -79,3 +79,8 @@ float Weapon::getAttackTimer()
 {
 	return (60.f / m_wInfo.attackRate) * 1000;
 }
+
+float Weapon::getDelayTime()
+{
+    return m_wInfo.delayTime;
+}

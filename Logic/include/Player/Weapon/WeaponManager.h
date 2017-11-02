@@ -22,6 +22,7 @@ namespace Graphics
 namespace Logic
 {
     class Entity;
+    class Player;
     class Weapon;
     class AmmoContainer;
     class WeaponModel;
@@ -57,7 +58,10 @@ namespace Logic
 		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		void switchWeapon(int weaponID);
+
+        void tryUsePrimary(btVector3 position, float yaw, float pitch, Player& shooter);
 		void usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter);
+        void tryUseSecondary(btVector3 position, float yaw, float pitch, Player& shooter);
 		void useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter);
 		void reloadWeapon();
 
@@ -78,6 +82,13 @@ namespace Logic
             DONE
         };
 
+        enum WeaponToUse
+        {
+            USE_NOTHING,
+            USE_PRIMARY,
+            USE_SECONDARY
+        };
+
 		void initializeWeapons(ProjectileManager* projectileManager);
 
         std::vector<WeaponLoadout*> m_weaponLoadouts;
@@ -85,8 +96,9 @@ namespace Logic
 
 		// Timers
 		float m_swapWeaponTimer;
-		float m_swapWeaponTimerMax;
-		float m_attackTimer;
+		float m_attackRateTimer;
+        WeaponToUse m_toUse;
+        Player* m_toUseShooter;
 
 		float m_reloadTimer;
 		ReloadingWeapon m_reloadState;
