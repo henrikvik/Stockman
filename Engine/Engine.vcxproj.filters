@@ -71,6 +71,5 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\data\Text.lw" />
-    <Text Include="Resources\Data\Cmd.lw" />
   </ItemGroup>
 </Project>

@@ -230,7 +230,6 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\data\Text.lw" />
-    <Text Include="Resources\Data\Cmd.lw" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

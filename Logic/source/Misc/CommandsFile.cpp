@@ -20,7 +20,11 @@ void CommandsFile::doCommandsFromFile()
     std::string cmd;
 
     std::vector<FileLoader::LoadedStruct> structs;
-    FileLoader::singleton().loadStructsFromFile(structs, "Cmd");
+    FileLoader::singleton().loadStructsFromFile(structs, "Cmd", 0, 0, 0, R"({
+    "cmd" : "
+        'Edit the Cmd.lw file to make commands execute at startup'
+    ";
+})");
 
     istr.str(structs[0].strings["cmd"]);
     int first, last;
