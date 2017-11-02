@@ -225,6 +225,10 @@ namespace Graphics
 		writeInstanceData();
 		PROFILE_END();
 
+        PROFILE_BEGIN("FXSystem::update()")
+        FXSystem->update(deviceContext, camera, 0.016f);
+        PROFILE_END();
+
 		PROFILE_BEGIN("drawShadows()");
 
 		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
@@ -261,7 +265,12 @@ namespace Graphics
 		grassTime++;
 
 		drawFoliage(camera);
-		PROFILE_END();
+	
+        PROFILE_BEGIN("FXSystem::renderPrePass()")
+        FXSystem->renderPrePass(deviceContext, camera, states, depthStencil);
+        PROFILE_END();
+        
+        PROFILE_END();
 
 		PROFILE_BEGIN("grid.updateLights()");
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
@@ -274,10 +283,6 @@ namespace Graphics
 		PROFILE_BEGIN("grid.cull()");
 		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
 		PROFILE_END();
-
-        PROFILE_BEGIN("FXSystem::update()")
-        FXSystem->update(deviceContext, camera, 0.016f);
-        PROFILE_END();
 
         PROFILE_BEGIN("FXSystem::render()")
         FXSystem->render(deviceContext, camera, states, *fakeBackBuffer, depthStencil, false);
