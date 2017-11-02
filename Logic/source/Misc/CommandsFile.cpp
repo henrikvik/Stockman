@@ -30,8 +30,8 @@ void CommandsFile::doCommandsFromFile()
     int first, last;
     while (getline(istr, cmd, ','))
     {
-        first = cmd.find('\'') + 1;
-        last = cmd.find_last_of('\'') - first;
+        first = (int)cmd.find('\'') + 1;
+        last = (int)cmd.find_last_of('\'') - first;
         win->doCommand(cmd.substr(first, last).c_str());
     }
 }

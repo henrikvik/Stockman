@@ -71,7 +71,7 @@ namespace Graphics
 
             
 
-			snowFlakes[i].position += Vector3::Lerp(randWindPrev, randWind, windCounter / windTimer) * deltaTime * 0.01;
+			snowFlakes[i].position += Vector3::Lerp(randWindPrev, randWind, windCounter / windTimer) * deltaTime * 0.01f;
 
 
 
