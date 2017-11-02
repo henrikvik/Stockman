@@ -141,6 +141,9 @@ void Player::clear()
 
 void Player::reset()
 {
+    m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
+    m_moveDir = { 0.f, 0.f, 0.f };
+    m_moveSpeed = 0.f;
 	getTransform().setOrigin(startPosition);
 	m_weaponManager->reset();
 	m_hp = 3;

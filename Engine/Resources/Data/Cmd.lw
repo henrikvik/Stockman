@@ -1,0 +1,5 @@
+{
+    "cmd" : "
+        'Edit the Cmd.lw file to make commands execute at startup'
+    ";
+}
