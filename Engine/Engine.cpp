@@ -323,7 +323,7 @@ int Engine::run()
 		ImGui_ImplDX11_NewFrame();
 		PROFILE_END();
 
-		debug->draw("Title?");
+		debug->draw();
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
         if (!debug->isOpen())
