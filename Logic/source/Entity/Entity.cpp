@@ -67,9 +67,10 @@ bool Entity::hasCallback(EntityEvent entityEvent) const
     return m_callbacks.find(entityEvent) != m_callbacks.end();
 }
 
-void Entity::clearCallbacks()
+void Entity::clearCallbacks(bool callOnDestroy)
 {
-    callback(ON_DESTROY, CallbackData{ this }); // This is a new projectile for the callbacker
+    if (callOnDestroy)
+        callback(ON_DESTROY, CallbackData{ this });
     m_callbacks.clear();
 }
 
