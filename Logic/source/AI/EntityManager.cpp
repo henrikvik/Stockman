@@ -64,7 +64,7 @@ void EntityManager::allocateData()
 void EntityManager::loadDebugCmds()
 {
 #ifdef _DEBUG
-    DebugWindow::getInstance()->registerCommand("SETAI", [&](std::vector<std::string> &para) -> std::string {
+    DebugWindow::getInstance()->registerCommand("LOG_SETAI", [&](std::vector<std::string> &para) -> std::string {
         try {
             m_aiType = static_cast<AIType> (stoi(para[0]));
             return "AI Mode Updated";
