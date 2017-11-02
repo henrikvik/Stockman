@@ -1,4 +1,5 @@
 #include <Misc\FPSRenderer.h>
+#include <Engine\DebugWindow.h>
 #define FPS_STRING L"FPS: "
 using namespace Logic;
 
@@ -12,6 +13,37 @@ FPSRenderer::FPSRenderer()
 	fpsString.font = Graphics::Font::SMALL;
 	fpsString.pos = DirectX::SimpleMath::Vector2{ 5, 5 };
 	fpsString.text = L"Ta inte bort min kod - LW";
+    isActive = true;
+
+    DebugWindow * debug = DebugWindow::getInstance();
+    debug->registerCommand("LOG_TOGGLE_FPS", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            if (args.size() != 0)
+            {
+                isActive = std::stoi(args[0]);
+
+                if (isActive)
+                    catcher = "FPS meter enabled!";
+
+                else
+                    catcher = "FPS meter disabled!";
+            }
+            else
+            {
+                catcher = "missing argument 0 or 1.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Argument must be 0 or 1.";
+        }
+
+        return catcher;
+    });
+
 }
 
 FPSRenderer::~FPSRenderer()
@@ -34,6 +66,6 @@ void FPSRenderer::updateFPS(float deltaTime)
 void FPSRenderer::renderFPS(Graphics::Renderer & renderer)
 {
 	frames++;
-
-	renderer.queueText(&fpsString);
+    if (isActive)
+	    renderer.queueText(&fpsString);
 }
