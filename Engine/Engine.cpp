@@ -93,6 +93,8 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
 
 Engine::~Engine()
 {
+    mSwapChain->SetFullscreenState(false, NULL);
+
 	ImGui_ImplDX11_Shutdown();
 	DebugWindow::releaseInstance();
 	delete this->renderer;
@@ -282,10 +284,6 @@ int Engine::run()
             if (WM_QUIT == msg.message)
             {
                 running = false;
-                if (!isFullscreen)
-                {
-                    mSwapChain->SetFullscreenState(false, NULL);
-                }
             }
 		}
 
@@ -314,8 +312,8 @@ int Engine::run()
 
 		}
 
-		if (ks.Escape && !debug->isOpen())
-			PostQuitMessage(0);
+        if (ks.Escape && !debug->isOpen())
+            running = false;
 
 		g_Profiler->start();
 
@@ -438,6 +436,8 @@ int Engine::run()
 		mSwapChain->Present(0, 0);
 		PROFILE_END();
 		g_Profiler->frame();
+
+
 		
 	}
 
