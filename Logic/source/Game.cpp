@@ -119,9 +119,12 @@ void Game::init(LPWSTR *cmdLine, int args)
 void Game::clear()
 {
 	m_menu->clear();
-	m_projectileManager->clear();
-    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
+    m_projectileManager->clear();
 	Sound::NoiseMachine::Get().clear();
+
+    m_entityManager.resetTriggers();
+    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
+
     Typing::releaseInstance();
 
 	delete m_physics;

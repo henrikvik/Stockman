@@ -1,6 +1,7 @@
 #include "../LightCalcInclude.hlsli"
 
 #define SNOW_RADIUS 50.f
+#define FADE_DIST 30.f
 
 struct Vertex
 {
@@ -19,6 +20,8 @@ Vertex VS(uint vertexId : SV_VertexId)
 struct GS_OUT
 {
     float4 pos : SV_Position;
+    float4 wPos : WORLDPOS;
+    float4 lPos : LIGHTPOS;
     float distance : DISTANCE;
 };
 
@@ -42,32 +45,61 @@ void GS(point Vertex input[1], inout TriangleStream<GS_OUT> output)
 
     float4 positions[3] = 
     { 
-          0, 0, 0, 0,
-          1, 0, 0, 0,
-        0.5, 1, 0, 0
+        -0.5, -0.5, 0, 0,
+         0.5, -0.5, 0, 0,
+           0,  0.5, 0, 0
     };
 
     for (int i = 0; i < 3; i++)
     {
+        positions[i] *= max((hablaPos.distance / SNOW_RADIUS), 0.2f);
         positions[i] = mul(rotation, positions[i]);
     }
 
     float4 temp = float4(input[0].pos, 1);
-    hablaPos.pos = temp.xyzw + positions[0];
-    hablaPos.pos = mul(ViewProjection, hablaPos.pos);
+    hablaPos.wPos = temp.xyzw + positions[0];
+    hablaPos.lPos = mul(lightVP, hablaPos.wPos);
+    hablaPos.pos = mul(ViewProjection, hablaPos.wPos);
     output.Append(hablaPos);
 
-    hablaPos.pos = temp + positions[1];
-    hablaPos.pos = mul(ViewProjection, hablaPos.pos);
+    hablaPos.wPos = temp + positions[1];
+    hablaPos.lPos = mul(lightVP, hablaPos.wPos);
+    hablaPos.pos = mul(ViewProjection, hablaPos.wPos);
     output.Append(hablaPos);
 
-    hablaPos.pos = temp + positions[2];
-    hablaPos.pos = mul(ViewProjection, hablaPos.pos);
+    hablaPos.wPos = temp + positions[2];
+    hablaPos.lPos = mul(lightVP, hablaPos.wPos);
+    hablaPos.pos = mul(ViewProjection, hablaPos.wPos);
     output.Append(hablaPos);
 }
 
 
 float4 PS(GS_OUT input) : SV_TARGET
 {
-	return float4(1.0f, 1.0f, 1.0f, 1 - input.distance / SNOW_RADIUS);
+
+    float shadow = max(calculateShadowValue(input.lPos.xyz, 2), 0.2f);
+
+    uint2 tile = uint2(floor(input.pos.xy / BLOCK_SIZE));
+    uint offset = LightGrid[tile].x;
+    uint count = LightGrid[tile].y;
+
+    float3 lighting = float3(0.5f, 0.5f, 0.5f) * shadow;
+
+    for (uint i = 0; i < count; i++)
+    {
+        uint idx = LightIndexList[offset + i];
+        Light light = Lights[idx];
+
+        float3 posToLight = light.positionWS - input.wPos.xyz;
+
+        float distance = length(posToLight);
+        float3 normalizedLight = posToLight / distance;
+        float attenuation = 1.0f - smoothstep(0, light.range, distance);
+
+        lighting += light.color * attenuation * light.intensity;
+    }
+
+    lighting = saturate(lighting);
+
+    return float4(lighting, (SNOW_RADIUS - input.distance) / FADE_DIST);
 }
