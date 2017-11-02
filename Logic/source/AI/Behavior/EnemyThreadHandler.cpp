@@ -10,13 +10,23 @@ using namespace Logic;
 
 EnemyThreadHandler::EnemyThreadHandler()
 {
+    for (std::thread *&t : threads)
+        t = nullptr;
     resetThreads();
     initThreads();
 }
 
 void EnemyThreadHandler::initThreads()
 {
+    m_killChildren = true;
+
+    for (std::thread *&t : threads)
+        if (t)
+            if (t->joinable())
+                t->join();
+
     m_killChildren = false;
+
     while (!m_work.empty())
         m_work.pop();
 
@@ -81,7 +91,7 @@ void EnemyThreadHandler::threadMain()
         if (haveWork)
             updateEnemiesAndPath(todo);
 
-        std::this_thread::sleep_for(2ns);
+        std::this_thread::sleep_for(1ms);
     }
 }
 

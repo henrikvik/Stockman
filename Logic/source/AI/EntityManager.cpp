@@ -117,7 +117,6 @@ void EntityManager::deallocateData(bool forceDestroy)
             m_deadEnemies.push_back(enemy);
 
     m_aliveEnemies = 0;
-    m_threadHandler->initThreads();
 }
 
 void EntityManager::update(Player const &player, float deltaTime)
