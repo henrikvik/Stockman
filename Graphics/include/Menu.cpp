@@ -18,6 +18,7 @@ Graphics::Menu::~Menu()
     SAFE_RELEASE(buttonTexture[1]);
     SAFE_RELEASE(buttonTexture[2]);
     SAFE_RELEASE(buttonTexture[3]);
+    SAFE_RELEASE(buttonTexture[4]);
     SAFE_RELEASE(menuTexture[0]);
     SAFE_RELEASE(menuTexture[1]);
     SAFE_RELEASE(menuTexture[2]);
@@ -188,7 +189,7 @@ void Graphics::Menu::createVBuffers(ID3D11Device * device)
     D3D11_BUFFER_DESC desc = { 0 };
 
     desc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
-    desc.ByteWidth = 10 * sizeof(TriangleVertex) * 6;
+    desc.ByteWidth = 15 * sizeof(TriangleVertex) * 6;
 
     D3D11_SUBRESOURCE_DATA data = { 0 };
     data.pSysMem = triangleVertices;

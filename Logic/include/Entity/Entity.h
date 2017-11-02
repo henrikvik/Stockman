@@ -63,7 +63,7 @@ namespace Logic
         // use this or buffs
         void addCallback(EntityEvent entityEvent, Callback callback);
         bool hasCallback(EntityEvent entityEvent) const;
-        void clearCallbacks();
+        void clearCallbacks(bool callOnDestroy = false);
 
 		StatusManager& getStatusManager();
 		void setStatusManager(StatusManager& statusManager);
