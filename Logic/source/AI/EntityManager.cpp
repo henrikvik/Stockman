@@ -84,6 +84,8 @@ void EntityManager::deallocateData(bool forceDestroy)
         {
             if (forceDestroy || !enemy->hasCallbackEntities())
             {
+                if (forceDestroy)
+                    enemy->clearCallbacks(false);
                 DeleteBody(*enemy);
                 delete enemy;
                 enemy = nullptr;
@@ -100,6 +102,8 @@ void EntityManager::deallocateData(bool forceDestroy)
     {
         if (forceDestroy || !enemy->hasCallbackEntities()) 
         {
+            if (forceDestroy)
+                enemy->clearCallbacks(false);
             delete enemy;
             enemy = nullptr;
         }
