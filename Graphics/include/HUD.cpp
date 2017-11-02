@@ -280,7 +280,7 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 
 
 
-    int tempInt = (1 - currentInfo->cd0)* 100;
+    int tempInt = (int)(1 - currentInfo->cd0)* 100;
     if (tempInt == 0)
     {
         tempInt = 100;
@@ -289,7 +289,7 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
     temp += L"%";
     sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos0 + offset, DirectX::Colors::Red);
 
-    tempInt = (1 - currentInfo->cd1) * 100;
+    tempInt = (int)(1 - currentInfo->cd1) * 100;
     if (tempInt == 0)
     {
         tempInt = 100;
