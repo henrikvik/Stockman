@@ -13,7 +13,7 @@ static bool FUN_MODE = false;
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 : Entity(body, halfextent, Graphics::ModelID::SPHERE) 
 {
-	m_pData.damage = 1.f;
+	m_pData.damage = 1;
 	m_pData.speed = 0.f;
 	m_pData.gravityModifier = 1.f;
 	m_pData.ttl = 1000.f;
@@ -21,7 +21,7 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 	m_bulletTimeMod = 1.f;
 }
 
-Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, float damage, float speed, float gravityModifer, float ttl)
+Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, int damage, float speed, float gravityModifer, float ttl)
 : Entity(body, halfExtent, Graphics::ModelID::SPHERE)
 {
 	m_pData.damage = damage;

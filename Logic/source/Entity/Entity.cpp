@@ -75,9 +75,16 @@ void Entity::clearCallbacks()
 
 void Entity::callback(EntityEvent entityEvent, CallbackData &data)
 {
-    if (hasCallback(entityEvent))
-        for (Callback &callback : m_callbacks[entityEvent])
-            callback(data);
+    try
+    {
+        if (hasCallback(entityEvent))
+            for (Callback &callback : m_callbacks[entityEvent])
+                callback(data);
+    }
+    catch (std::exception ex)
+    {
+        printf("Callback error (Probably null callback data) \n%s\n", ex.what());
+    }
 }
 
 StatusManager& Entity::getStatusManager()
