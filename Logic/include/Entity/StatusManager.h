@@ -58,6 +58,9 @@ namespace Logic
 		*/
 		int getStacksOfEffectFlag(Effect::EFFECT_FLAG flag) const;
 
+        // Returns true if upgrade is active
+        bool isOwningUpgrade(Upgrade::UPGRADE_FLAG flag);
+
 		// nr of stacks and the effect itself
 		std::vector<std::pair<int, Effect*>> getActiveEffects();
 		// return stack and id of effect
