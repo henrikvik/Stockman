@@ -77,7 +77,6 @@ void EntityManager::loadDebugCmds()
 
 void EntityManager::deallocateData(bool forceDestroy)
 {
-    m_threadHandler->deleteThreads();
     for (std::vector<Enemy*>& list : m_enemies)
     {
         for (Enemy *&enemy : list)
