@@ -37,8 +37,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		break;
 		
 	case WM_KEYUP:
-		if (key == 41)
-			debug->toggleDebugToDraw();
+        if (key == 41)
+        {
+            DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+            debug->toggleDebugToDraw();
+        }
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:

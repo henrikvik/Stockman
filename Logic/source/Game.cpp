@@ -94,7 +94,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 
 #ifdef _DEBUG
     DebugWindow *win = DebugWindow::getInstance();
-    win->registerCommand("SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
+    win->registerCommand("LOG_SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
         try {
             this->m_menu->setStateToBe(static_cast<GameState> (stoi(para[0])));
             return "Menu State set to " + stoi(para[0]);
