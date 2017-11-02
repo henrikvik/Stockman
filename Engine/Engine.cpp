@@ -89,6 +89,38 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
     this->mTracker = std::make_unique<DirectX::Keyboard::KeyboardStateTracker>();
 	this->mMouse->SetWindow(window);
 
+    DebugWindow * debug = DebugWindow::getInstance();
+
+    Graphics::Debug::Initialize(mDevice);
+
+    debug->registerCommand("GAME_SET_FULLSCREEN", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            if (args.size() != 0)
+            {
+                isFullscreen = std::stoi(args[0]);
+
+                if (isFullscreen)
+                    catcher = "Fullscreen enabled!";
+
+                else
+                    catcher = "Fullscreen disabled!";
+            }
+            else
+            {
+                catcher = "missing argument 0 or 1.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Argument must be 0 or 1.";
+        }
+
+        return catcher;
+    });
+
 	this->game.init(cmdLine, args);
 }
 
@@ -266,9 +298,8 @@ int Engine::run()
 	g_Profiler->registerThread("Main Thread");
     TbbProfilerObserver observer(g_Profiler);
 
-	DebugWindow * debug = DebugWindow::getInstance();
+    DebugWindow * debug = DebugWindow::getInstance();
 
-    Graphics::Debug::Initialize(mDevice);
 
 	while (running)
 	{
@@ -291,11 +322,11 @@ int Engine::run()
         auto state = mKeyboard->GetState();
         mTracker->Update(state);
 
-
-		if (mTracker->pressed.F11)
+        static BOOL test = false;
+        mSwapChain->GetFullscreenState(&test, NULL);
+		if (this->isFullscreen != test)
 		{
-			mSwapChain->SetFullscreenState(!isFullscreen, NULL);
-			this->isFullscreen = !isFullscreen;
+			mSwapChain->SetFullscreenState(isFullscreen, NULL);
 		}
 
 		if (mTracker->pressed.F1)

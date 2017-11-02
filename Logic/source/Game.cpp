@@ -112,8 +112,8 @@ void Game::init(LPWSTR *cmdLine, int args)
         if (!cmd.empty())
             win->doCommand(cmd.c_str());
 
-    CommandsFile().doCommandsFromFile();
 #endif
+    CommandsFile().doCommandsFromFile();
 }
 
 void Game::clear()
