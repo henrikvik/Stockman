@@ -33,8 +33,6 @@ StatusManager::StatusManager()
                 flat.increaseAmmoCap = fileStruct.ints.at("increaseAmmoCap");
                 flat.increaseMagSize = fileStruct.ints.at("increaseMagSize");
                 flat.increaseSize = fileStruct.ints.at("increaseSize");
-                if (id >= NR_OF_UPGRADES)
-                    printf("FUUCK");
                 s_upgrades[id].init(flags, id, flat);
                 id++;
             }
