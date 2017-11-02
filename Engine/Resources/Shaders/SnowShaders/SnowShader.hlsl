@@ -25,7 +25,7 @@ struct GS_OUT
     float distance : DISTANCE;
 };
 
-[maxvertexcount(6)]
+[maxvertexcount(3)]
 void GS(point Vertex input[1], inout TriangleStream<GS_OUT> output)
 {
     GS_OUT hablaPos = (GS_OUT)0;
