@@ -52,7 +52,7 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
     // TEMP: ta bort mig
     DebugWindow *debugWindow = DebugWindow::getInstance();
-    debugWindow->registerCommand("FUNMODE", [&](std::vector<std::string> &args) -> std::string
+    debugWindow->registerCommand("GFX_FUNMODE", [&](std::vector<std::string> &args) -> std::string
     {
         FUN_MODE = !FUN_MODE;
 
