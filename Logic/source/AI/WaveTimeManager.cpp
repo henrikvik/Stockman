@@ -4,16 +4,23 @@ using namespace Logic;
 
 WaveTimeManager::WaveTimeManager()
 {
-    m_timeCurrent = 0.f;
-    m_timeRequired = 0.f;
-
-    m_onLastWave = false;
-    m_enraged = false;
+    reset();
 }
 
 
 WaveTimeManager::~WaveTimeManager()
 {
+}
+
+void WaveTimeManager::reset()
+{
+    m_waveCurrent = 0;
+
+    m_timeCurrent = 0.f;
+    m_timeRequired = 0.f;
+
+    m_onLastWave = false;
+    m_enraged = false;
 }
 
 // Returns true if a new wave is going to spawn

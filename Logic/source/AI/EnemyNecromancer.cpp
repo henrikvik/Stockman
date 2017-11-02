@@ -7,9 +7,9 @@
 using namespace Logic;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
-	btRigidBody* body, btVector3 halfExtent)
-	: Enemy(modelID, body, halfExtent, 5, 1, 8, NECROMANCER, 0) {
-	setBehavior(RANGED);
+    btRigidBody* body, btVector3 halfExtent)
+    : Enemy(modelID, body, halfExtent, 5, 1, 8, NECROMANCER, 0) {
+    setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().Kill(getEnemyType());
         SpawnTrigger(2, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY });
@@ -27,11 +27,11 @@ void EnemyNecromancer::clear()
 
 void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-	if (Enemy *e = dynamic_cast<Enemy*>(&other))
-	{
-	}
-	else if (Projectile *pj = dynamic_cast<Projectile*> (&other))
-	{
+    if (Enemy *e = dynamic_cast<Enemy*>(&other))
+    {
+    }
+    else if (Projectile *pj = dynamic_cast<Projectile*> (&other))
+    {
         if (!pj->getProjectileData().enemyBullet)
         {
             damage(pj->getProjectileData().damage * dmgMultiplier);
@@ -39,7 +39,7 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
                 getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
         }
-	}
+    }
 }
 
 void EnemyNecromancer::onCollision(Player &other)
@@ -53,26 +53,24 @@ void EnemyNecromancer::updateSpecific(Player const & player, float deltaTime)
 
 void EnemyNecromancer::updateDead(float deltaTime)
 {
-	Entity::update(deltaTime);
+    Entity::update(deltaTime);
 }
 
 void EnemyNecromancer::useAbility(Entity const &target)
 {
-	if (RandomGenerator::singleton().getRandomInt(0, 800))
-	{
-		if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
-		{
-            Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{0, 80, 0}).normalize(), Graphics::ModelID::SKY_SPHERE, (float)SPEED_AB2, 2.5f, 0.6f);
+    if (RandomGenerator::singleton().getRandomInt(0, 800))
+    {
+        if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
+        {
+            Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), Graphics::ModelID::SKY_SPHERE, (float)SPEED_AB2, 2.5f, 0.6f);
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
-                Entity *entity = reinterpret_cast<Entity*> (data.dataPtr);
-
                 if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
                 {
                     Enemy *e = SpawnEnemy(ENEMY_TYPE::NECROMANCER_MINION, data.caller->getPositionBT(), {});
                     m_spawnedMinions++;
-                    increaseCallbackEntities();
 
-                    e->addCallback(ON_DEATH, [&](CallbackData data) -> void {
+                    increaseCallbackEntities();
+                    e->addCallback(ON_DEATH, [&](CallbackData &data) -> void {
                         m_spawnedMinions--;
                     });
                     e->addCallback(ON_DESTROY, [&](CallbackData data) -> void {
@@ -80,10 +78,10 @@ void EnemyNecromancer::useAbility(Entity const &target)
                     });
                 }
             });
-		}
-		else
-		{
+        }
+        else
+        {
             shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, (float)SPEED_AB1, 1.1f, 0.2f);
-		}
-	}
+        }
+    }
 }
