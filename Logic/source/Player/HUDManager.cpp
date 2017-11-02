@@ -17,6 +17,11 @@ const int HUDManager::CURRENT_AMMO = 0;
 const int HUDManager::TOTAL_AMMO = 1;
 
 
+void Logic::HUDManager::constructHUD(Graphics::HUDInfo * info)
+{
+
+}
+
 HUDManager::HUDManager()
 {
     info = newd Graphics::HUDInfo;
