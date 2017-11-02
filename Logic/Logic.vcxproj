@@ -190,6 +190,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\GameType.h" />
+    <ClInclude Include="include\Misc\Error.h" />
+    <ClInclude Include="include\Misc\NonCopyable.h" />
     <ClInclude Include="include\Player\HUDManager.h" />
     <ClInclude Include="include\AI\EnemyChaser.h" />
     <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
