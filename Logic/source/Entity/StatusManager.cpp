@@ -16,6 +16,29 @@ StatusManager::StatusManager()
     if (!statusesCreated)
     {
         statusesCreated = true;
+        {
+            // CREATE UPGRADES
+            long long flags;
+            Upgrade::FlatUpgrades flat;
+            std::vector<FileLoader::LoadedStruct> loadedUpgrades;
+
+            FileLoader::singleton().loadStructsFromFile(loadedUpgrades, FILE_NAME_UPGRADES);
+            int id = 0;
+
+            for (auto const &fileStruct : loadedUpgrades)
+            {
+                flags = fileStruct.ints.at("flags");
+                flat.increaseCooldown = fileStruct.floats.at("increaseCooldown");
+                flat.increaseDmg = fileStruct.ints.at("increaseDamage");
+                flat.increaseAmmoCap = fileStruct.ints.at("increaseAmmoCap");
+                flat.increaseMagSize = fileStruct.ints.at("increaseMagSize");
+                flat.increaseSize = fileStruct.ints.at("increaseSize");
+                if (id >= NR_OF_UPGRADES)
+                    printf("FUUCK");
+                s_upgrades[id].init(flags, id, flat);
+                id++;
+            }
+        }
 
         {
             // CREATE EFFECTS
@@ -58,28 +81,8 @@ StatusManager::StatusManager()
                 }
 
                 creating.setStandards(standards);
-                s_effects[id++] = creating;
-            }
-        }
-
-        {
-            // CREATE UPGRADES
-            long long flags;
-            Upgrade::FlatUpgrades flat;
-            std::vector<FileLoader::LoadedStruct> loadedUpgrades;
-
-            FileLoader::singleton().loadStructsFromFile(loadedUpgrades, FILE_NAME_UPGRADES);
-            int id = 0;
-
-            for (auto const &fileStruct : loadedUpgrades)
-            {
-                flags                   = fileStruct.ints.at("flags");
-                flat.increaseCooldown   = fileStruct.floats.at("increaseCooldown");
-                flat.increaseDmg        = fileStruct.ints.at("increaseDamage");
-                flat.increaseAmmoCap    = fileStruct.ints.at("increaseAmmoCap");
-                flat.increaseMagSize    = fileStruct.ints.at("increaseMagSize");
-                flat.increaseSize       = fileStruct.ints.at("increaseSize");
-                s_upgrades[id].init(flags, id++, flat);
+                s_effects[id] = creating;
+                id++;
             }
         }
     }
