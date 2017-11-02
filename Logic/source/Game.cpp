@@ -7,6 +7,8 @@
 #include <Engine\DebugWindow.h> 
 #include <Player\Skill\SkillManager.h>
 
+#include <Misc\CommandsFile.h>
+
 using namespace Logic;
 
 const int Game::NUMBER_OF_UNIQUE_CARDS      = 13;
@@ -109,6 +111,8 @@ void Game::init(LPWSTR *cmdLine, int args)
     for (std::string const &cmd : GameCommands[m_gameType])
         if (!cmd.empty())
             win->doCommand(cmd.c_str());
+
+    CommandsFile().doCommandsFromFile();
 #endif
 }
 
