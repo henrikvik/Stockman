@@ -68,7 +68,7 @@ namespace Logic
         void deallocateData(); // delete data in vectors
 
         // render / updates
-		void render();
+		void render() const;
 
 		void update(Player const &player, float deltaTime);
 		void updateEnemies(int index, Player const &player, float deltaTime);

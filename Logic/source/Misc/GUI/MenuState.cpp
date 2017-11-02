@@ -15,31 +15,29 @@ const std::map<int, Resources::Textures::Files> tempTextureLookup =
 {
     {0, Resources::Textures::mainMenuButton},
     {1, Resources::Textures::gameOverMenuButtons},
-    {2, Resources::Textures::SettingsMenuButtons}
+    {2, Resources::Textures::SettingsMenuButtons},
+    {3, Resources::Textures::Color_pick_icons},
+    {4, Resources::Textures::Backbutton}
 };
 
 void MenuState::initialize(std::vector<ButtonStruct> buttonStruct, int background)
 {
 	for (auto const& struc : buttonStruct)
 	{
-        DirectX::SimpleMath::Rectangle screenRect = {
-            (long) struc.xPos, 
-            (long) struc.yPos,
-            (long) struc.width,
-            (long) struc.height
+        FloatRect screenRect = {
+            struc.xPos   / (float)WIN_WIDTH,
+            struc.yPos   / (float)WIN_HEIGHT,
+            struc.width  / (float)WIN_WIDTH,
+            struc.height / (float)WIN_HEIGHT
         };
-        DirectX::SimpleMath::Rectangle inactive = {
-            (long) struc.xTexStart,
-            (long) struc.yTexStart,
-            (long) (struc.xTexEnd - struc.xTexStart),
-            (long) (struc.yTexEnd - struc.yTexStart)
+        FloatRect inactive = {
+            {struc.xTexStart, struc.yTexStart},
+            {struc.xTexEnd,   struc.yTexEnd} 
         };
-        DirectX::SimpleMath::Rectangle active = {
-            (long) struc.xTexStart,
-            (long) (struc.yTexStart + struc.activeOffset),
-            (long) (struc.xTexEnd - struc.xTexStart),
-            (long) (struc.yTexEnd - struc.yTexStart)
-        };
+        FloatRect active = {
+            {struc.xTexStart, struc.yTexStart + struc.activeOffset},
+            {struc.xTexEnd,   struc.yTexEnd   + struc.activeOffset} 
+        };       
 
         Resources::Textures::Files texture = tempTextureLookup.at(struc.texture);
 
@@ -86,16 +84,6 @@ bool MenuState::animationTransition(float dt, float maxAnimationTime, bool forwa
 Button* MenuState::getButton(int index)
 {
     return &m_buttons[index];
-}
-
-Graphics::MenuInfo MenuState::getMenuInfo()
-{
-    m_menu.m_buttons.clear();
-    for (Button &b : m_buttons)
-    {
-        m_menu.m_buttons.push_back(*b.getButtonInfo());
-    }
-    return m_menu;
 }
 
 void Logic::MenuState::render() const

@@ -18,32 +18,35 @@ public:
     void queue(T * info)
     {
         static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
-        static_assert(!std::is_base_of_v<StaticRenderInfo, T>, "T has StaticRenderInfo as base, use queueInstanced instead!");
 
-        QueueContainer<T> * container = getQueueContainer<T>();
-        container->queue(info);
+        if constexpr (std::is_base_of_v<StaticRenderInfo, T>)
+        {
+            InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
+            container->queue((size_t)info->model, info);
+        }
+        else
+        {
+            QueueContainer<T> * container = getQueueContainer<T>();
+            container->queue(info);
+        }
     }
+
     template<typename T>
-    void queueInstanced(T * info)
+    std::conditional_t<std::is_base_of_v<StaticRenderInfo, T>,InstancedQueue<T>,Queue<T>>&
+    getQueue()
     {
         static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
-        static_assert(std::is_base_of_v<StaticRenderInfo, T>, "T does not have StaticRenderInfo as base, use queueInstanced instead!");
 
-        InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
-        container->queue((size_t)info->model, info);
-    }
-
-    template<typename T>
-    Queue<T>& getQueue()
-    {
-        QueueContainer<T> * container = getQueueContainer<T>();
-        return container->instances;
-    }
-    template<typename T>
-    InstancedQueue<T>& getInstancedQueue()
-    {
-        InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
-        return container->instances;
+        if constexpr (std::is_base_of_v<StaticRenderInfo, T>)
+        {
+            InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
+            return container->instances;
+        }
+        else
+        {
+            QueueContainer<T> * container = getQueueContainer<T>();
+            return container->instances;
+        }
     }
 
     void clearAllQueues()

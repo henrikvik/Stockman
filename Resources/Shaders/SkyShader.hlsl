@@ -1,14 +1,7 @@
-#include "ShaderConstants.hlsli"
-
-#define VERTEX_T_SLOT t0
+#define VERTEX_T_SLOT t4
 #include "Vertex.hlsli"
 
-struct VS_IN
-{
-    float3 pos : POSITION;
-    float3 normal : NORMAL;
-    float2 uv : UV;
-};
+#include "LightCalcInclude.hlsli"
 
 struct PS_IN
 {
@@ -17,37 +10,22 @@ struct PS_IN
     float2 uv : UV;
 };
 
-cbuffer VP : register(b0)
-{
-    float4x4 VP;
-};
-
-cbuffer transform : register(b1)
+cbuffer transform : register(b4)
 {
     float4x4 transform;
-};
-
-cbuffer LightBuffer : register(b2)
-{
-    float4 dirLightPos;
-    float fade;
-}
-
-cbuffer BulletTimeTimer : register(b3)
-{
-    float bulletTimer;
 };
 
 
 PS_IN VS(uint vertexId : SV_VertexId)
 {
     Vertex vertex = getVertex(vertexId);
+
     PS_IN output = (PS_IN) 0;
 
     output.pos = float4(vertex.position, 1);
 
     output.pos = mul(transform, output.pos);
-    output.pos = mul(VP, output.pos).xyww;
+    output.pos = mul(ViewProjection, output.pos).xyww;
     output.uv = vertex.uv;
 
     output.lPos = vertex.position;

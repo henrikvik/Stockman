@@ -161,5 +161,5 @@ Behavior* Enemy::getBehavior() const
 
 void Logic::Enemy::render() const
 {
-    RenderQueue::get().queueInstanced(&enemyRenderInfo);
+    RenderQueue::get().queue(&enemyRenderInfo);
 }

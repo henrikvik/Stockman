@@ -49,8 +49,9 @@ namespace Logic
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)> SpawnProjectile;
 
+        PlayerRenderInfo renderInfo;
 	public:
-		Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+		Weapon(Resources::Models::Files modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
 			int spreadH, int spreadV, float attackRate, float freeze, float reloadTime);
         ~Weapon();
 		void reset();
@@ -80,9 +81,7 @@ namespace Logic
 
 		void fillMag();
 
-
-        virtual void render() const;
-        PlayerRenderInfo playerRenderInfo;
+        void render() const;
 	};
 }
 

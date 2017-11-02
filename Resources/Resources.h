@@ -55,6 +55,8 @@ namespace Resources
     {
         enum Files
         {
+            Backbutton,
+            Color_pick_icons,
             crosshair,
             gameOverMenuButtons,
             gameOverTexture,
@@ -66,6 +68,8 @@ namespace Resources
         };
         const std::map<Files, const char *> Paths =
         {
+            {Backbutton, R"(..\Resources\Textures\Backbutton.dds)"},
+            {Color_pick_icons, R"(..\Resources\Textures\Color_pick_icons.dds)"},
             {crosshair, R"(..\Resources\Textures\crosshair.png)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},

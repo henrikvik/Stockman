@@ -83,7 +83,10 @@ void SkillBulletTime::onUpdate(float deltaTime)
 			if (m_stacks != 0)
 				m_sensor->getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, m_stacks);
 		}
-	}
+
+        renderInfo.progress = m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION;
+    }
+
 
 	/*if (m_travelProjectile)
 		if (m_travelProjectile->shouldRemove())
@@ -95,11 +98,10 @@ void SkillBulletTime::onUpdate(float deltaTime)
 	}*/
 }
 
-void SkillBulletTime::render()
+void SkillBulletTime::render() const
 {
     if (m_sensor && m_sensor->getProjectileData().ttl > 0)
     {
-        renderInfo.progress = m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION;
         RenderQueue::get().queue(&renderInfo);
     }
 }

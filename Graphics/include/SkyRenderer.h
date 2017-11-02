@@ -18,7 +18,6 @@ namespace Graphics
 		SkyRenderer(ID3D11Device * device, int shadowRes, HybrisLoader::HybrisLoader & hybrisLoader);
 		~SkyRenderer();
 
-
 		void renderSky(ID3D11DeviceContext * context, Graphics::Camera * cam);
 		void update(ID3D11DeviceContext * context, float deltaTime, DirectX::SimpleMath::Vector3 pos);
 

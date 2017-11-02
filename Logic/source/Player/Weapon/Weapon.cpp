@@ -6,7 +6,7 @@
 using namespace Logic;
 
 Weapon::Weapon(Resources::Models::Files modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime) : Object(modelID)
+	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime)
 {
 	m_weaponID			= weaponID;
 	m_ammoCap			= ammoCap;
@@ -43,9 +43,9 @@ Weapon::Weapon(Resources::Models::Files modelID, ProjectileManager* projectileMa
 
 	rot = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f);
 
-    playerRenderInfo.model = modelID;
-    playerRenderInfo.animationName = "";
-    playerRenderInfo.animationProgress = 0;
+    renderInfo.model = modelID;
+    renderInfo.animationName = "";
+    renderInfo.animationProgress = 0;
 }
 
 Weapon::~Weapon()
@@ -138,7 +138,7 @@ void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTrans
 	// Multiplying all the matrices into one
 	result = rot *trans * scale * camera.Invert() * offset;
 
-    playerRenderInfo.transform = result;    
+    renderInfo.transform = result;    
 }
 
 ProjectileData* Weapon::getProjectileData()
@@ -200,5 +200,5 @@ void Logic::Weapon::fillMag()
 
 void Logic::Weapon::render() const
 {
-    RenderQueue::get().queueInstanced(&playerRenderInfo);
+    RenderQueue::get().queue(&renderInfo);
 }

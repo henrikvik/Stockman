@@ -16,8 +16,8 @@ namespace Hybris
 
         void release();
 
-        T&       operator[](size_t index);
-        T& const operator[](size_t index) const;
+        T &      operator[](size_t index);
+        T const& operator[](size_t index) const;
         List<T>& operator=(List<T> & other);
         List<T>& operator=(std::vector<T> & vector);
     };
@@ -54,7 +54,7 @@ namespace Hybris
     }
 
     template<typename T>
-    T & const List<T>::operator[](size_t index) const
+    T const& List<T>::operator[](size_t index) const
     {
         return data[index];
     }

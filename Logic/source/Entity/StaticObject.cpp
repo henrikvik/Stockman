@@ -43,9 +43,15 @@ StaticObject::StaticObject(Resources::Models::Files modelId, btRigidBody * body,
 
     
 
+    btVector3 scale = body->getCollisionShape()->getLocalScaling();
+
     float worldTransform[4 * 4];
     body->getWorldTransform().getOpenGLMatrix(worldTransform);
-    staticRenderInfo.transform = DirectX::SimpleMath::Matrix(worldTransform);
+    staticRenderInfo.transform = 
+        DirectX::SimpleMath::Matrix::CreateScale(size.x * 2.0f, size.y * 2.0f, size.z * 2.0f) *
+        DirectX::SimpleMath::Matrix(worldTransform);
+
+
     staticRenderInfo.model = modelId;
 }
 
@@ -72,5 +78,5 @@ void StaticObject::renderD()
 
 void Logic::StaticObject::render() const
 {
-    RenderQueue::get().queueInstanced(&staticRenderInfo);
+    RenderQueue::get().queue(&staticRenderInfo);
 }

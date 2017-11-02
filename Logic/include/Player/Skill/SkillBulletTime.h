@@ -54,7 +54,8 @@ namespace Logic
 		void onRelease();
 
 		void onUpdate(float deltaTime);
-		void render();
+		virtual void render() const override;
+
 	};
 }
 #endif

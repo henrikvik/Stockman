@@ -50,10 +50,10 @@ bool Pathing::pathOnLastNode() const
 
 void Pathing::initDebugRendering()
 {
-    m_debugInfo->color = DirectX::SimpleMath::Color(1, 0, 0);
-    m_debugInfo->useDepth = true;
-    m_debugInfo->topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
-    m_debugInfo->points = newd std::vector<DirectX::SimpleMath::Vector3>();
+    m_debugInfo.color = DirectX::SimpleMath::Color(1, 0, 0);
+    m_debugInfo.useDepth = true;
+    m_debugInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+    m_debugInfo.points = newd std::vector<DirectX::SimpleMath::Vector3>();
 }
 
 void Pathing::renderDebugging(DirectX::SimpleMath::Vector3 &start)

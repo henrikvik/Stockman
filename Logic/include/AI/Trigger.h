@@ -44,7 +44,7 @@ namespace Logic
 			void setIsReusable(bool	reusable);
 			void setCooldown(float cooldown);
 
-            virtual void render() const;
+            void render() const;
 
 		private:
 			bool m_remove;

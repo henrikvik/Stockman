@@ -7,7 +7,7 @@
 #include <Engine\DebugWindow.h>
 
 #include <Engine\Profiler.h>
-#include "RenderQueue.h";
+#include "RenderQueue.h"
 
 #include "Particles\ParticleSystem.h"
 
@@ -453,7 +453,7 @@ namespace Graphics
 
 
         PROFILE_BEGIN("HUD");
-        hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
+        //hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
         PROFILE_END();
 
 		PROFILE_BEGIN("DebugInfo");
@@ -585,7 +585,7 @@ namespace Graphics
         deviceContext->VSSetShaderResources(5, 1, staticInstanceBuffer);
 
         UINT instanceOffset = 0;
-        for (auto & pair : RenderQueue::get().getInstancedQueue<StaticRenderInfo>())
+        for (auto & pair : RenderQueue::get().getQueue<StaticRenderInfo>())
         {
             Resources::Models::Files modelId = (Resources::Models::Files)pair.first;
             auto & renderInfos = pair.second;
@@ -714,7 +714,7 @@ namespace Graphics
         void * dest = staticInstanceBuffer.map(deviceContext);
         size_t offset = 0;
 
-        for (auto & model_infos : RenderQueue::get().getInstancedQueue<StaticRenderInfo>())
+        for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
         {
             for (auto & info : model_infos.second)
             {

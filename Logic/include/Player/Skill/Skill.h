@@ -37,7 +37,6 @@ namespace Logic
 		void update(float deltaTime);
 		virtual void onUpdate(float deltaTime) = 0;
 
-		virtual void render() = 0;
 
 		float	getCooldown() const;
 		float	getCooldownMax() const;
@@ -47,6 +46,8 @@ namespace Logic
 
 		void setCooldown(float cooldown);
 		void setCanUse(bool canUse);
+
+        virtual void render() const = 0;
 
 	private:
 		// StatusManager statusManager;

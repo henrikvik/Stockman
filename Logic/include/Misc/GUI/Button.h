@@ -29,21 +29,21 @@ namespace Logic
         enum State { ACTIVE, INACTIVE, HOVER };
 
         Button(Resources::Textures::Files texture, 
-            DirectX::SimpleMath::Rectangle screenRect, 
-            DirectX::SimpleMath::Rectangle inactive, 
+            FloatRect screenRect, 
+            FloatRect inactive, 
             std::function<void(void)> callback);
 
         Button(Resources::Textures::Files texture, 
-            DirectX::SimpleMath::Rectangle screenRect, 
-            DirectX::SimpleMath::Rectangle inactive, 
-            DirectX::SimpleMath::Rectangle active, 
+            FloatRect screenRect, 
+            FloatRect inactive, 
+            FloatRect active, 
             std::function<void(void)> callback);
 
         Button(Resources::Textures::Files texture, 
-            DirectX::SimpleMath::Rectangle screenRect, 
-            DirectX::SimpleMath::Rectangle inactive, 
-            DirectX::SimpleMath::Rectangle active, 
-            DirectX::SimpleMath::Rectangle hover, 
+            FloatRect screenRect, 
+            FloatRect inactive, 
+            FloatRect active, 
+            FloatRect hover, 
             std::function<void(void)> callback);
 
 		~Button();
@@ -53,42 +53,30 @@ namespace Logic
 		void updateOnPress(int posX, int posY);
         void hoverOver(int posX, int posY);
 		bool animationTransition(float dt, float maxAnimationTime, bool forward);
-		 Graphics::ButtonInfo& getButtonInfo();
 
-         void setState(State state);
+        void setState(State state);
 
-        virtual void render() const;
+        void render() const;
 	private:
 		Graphics::ButtonInfo m_buttonInfo;
 
         Resources::Textures::Files texture;
 
-        DirectX::SimpleMath::Rectangle screenRect;
-        DirectX::SimpleMath::Rectangle inactive;
-        DirectX::SimpleMath::Rectangle active;
-        DirectX::SimpleMath::Rectangle hover;
+        FloatRect screenRect;
+        FloatRect inactive;
+        FloatRect active;
+        FloatRect hover;
 		std::function<void(void)> callback;
 
-        DirectX::SimpleMath::Rectangle * textureRect;
+        FloatRect * textureRect;
         State state;
-
 
 		DirectX::SimpleMath::Vector2 m_animationEnd;
 		DirectX::SimpleMath::Vector2 m_animationStart;
 
 		int m_activeOffset;
         bool m_highlighted;
-        float m_animationTime, m_start, m_end;
-	public:
-		Button();
-		~Button();
-		void initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart,
-			DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width,
-			int textureIndex, std::function<void(void)> callback);
-		void updateOnPress(int posX, int posY);
-        void hoverOver(int posX, int posY);
-		bool animationTransition(float dt, float maxAnimationTime, bool forward);
-		 Graphics::ButtonInfo& getButtonInfo();
+        float m_animationTime;
 	};
 }
 #endif

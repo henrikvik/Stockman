@@ -31,7 +31,8 @@ namespace Graphics
 		context->IASetInputLayout(nullptr);		
 		context->VSSetShader(shader, nullptr, 0);
 		context->PSSetShader(shader, nullptr, 0);
-        context->VSSetShaderResources(0, 1, skySphere->getVertexBuffer());
+
+        context->VSSetShaderResources(4, 1, skySphere->getVertexBuffer());
 
 		context->VSSetConstantBuffers(0, 1, *cam->getBuffer());
 		context->VSSetConstantBuffers(4, 1, sphereTransformBuffer);

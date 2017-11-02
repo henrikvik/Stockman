@@ -418,9 +418,9 @@ void Graphics::HUD::createHUDTextures(ID3D11Device * device, ID3D11DeviceContext
 
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("crosshair.png"), nullptr, &hudTextures[0]));
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPBars.dds"), nullptr, &hudTextures[1]));
-    //ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPbarOutline.png"), nullptr, &hudTextures[2]));
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPbarOutline.png"), nullptr, &hudTextures[2]));
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HUDIcons.dds"), nullptr, &hudTextures[3]));
-    //ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("cooldownCircleActive.png"), nullptr, &hudTextures[4]));
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("cooldownCircleActive.png"), nullptr, &hudTextures[4]));
 
   
 }

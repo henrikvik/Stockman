@@ -54,7 +54,7 @@ void TriggerManager::update(float deltaTime)
 }
 
 // Draws all the triggers
-void TriggerManager::render()
+void TriggerManager::render() const
 {
 	for (Trigger* t : m_triggers)
 		t->render();

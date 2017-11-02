@@ -224,24 +224,24 @@ void MenuMachine::render()
     if (m_currentActiveState == gameStateMenuSettings)
     {
         std::wstring tempString = L"";
-        Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
-        DirectX::SimpleMath::Vector2 tempPos;
-        tempPos.x = (float)(tempButton.m_rek.x +tempButton.m_rek.width);
-        tempPos.y = (float)(tempButton.m_rek.y + tempButton.m_rek.height -50);
-        tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
-        if (m_typing)
-        {
-            if (blinkMarker)
-            {
-                tempString += L"|";
-            }
+        //Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
+        //DirectX::SimpleMath::Vector2 tempPos;
+        //tempPos.x = (float)(tempButton.m_rek.x +tempButton.m_rek.width);
+        //tempPos.y = (float)(tempButton.m_rek.y + tempButton.m_rek.height -50);
+        //tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
+        //if (m_typing)
+        //{
+        //    if (blinkMarker)
+        //    {
+        //        tempString += L"|";
+        //    }
 
-        }
+        //}
 
 
         TextRenderInfo text = {};
         text.text = tempString.c_str();
-        text.position = tempPos;
+        text.position = DirectX::SimpleMath::Vector2(0,0);
         text.font = Resources::Fonts::comicsans;
         text.color = DirectX::Colors::White;
 
@@ -432,8 +432,7 @@ void MenuMachine::selectSkillButton(int id)
     Button* button = m_currentActiveMenu->getButton(id);
 
     // Hardcoded "Selected" tex-cords, currently not supported
-    if (replaceSkill(id))   button->setStartAndEnd(1.f * (1.f/3.f), (2.f/3.f));
-    else                    button->setStartAndEnd(0.f, (1.f/3.f));
+
 }
 
 // Returns true if succesful swapping of selected skill, returns false if the selected skill should be reset (if it was already selected, for example)

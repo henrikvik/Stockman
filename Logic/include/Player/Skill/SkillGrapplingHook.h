@@ -38,7 +38,7 @@ namespace Logic
 		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
 		void onUpdate(float deltaTime);
-		void render();
+        virtual void render() const override;
 
 		GrapplingHookState getState() const;
 	private:
@@ -49,7 +49,9 @@ namespace Logic
         bool                            m_goingUp;      //< Direction of the grappling hook
         btVector3                       m_dirToPoint;
 
-		DebugRenderInfo                 renderInfo;	//< Debug drawing the ray
+		DebugRenderInfo                 renderInfo;
+        // Inherited via Skill
+        //< Debug drawing the ray
 	};
 }
 #endif

@@ -9,7 +9,7 @@
 #include "Particle.h"
 #include "../Camera.h"
 #include "../Utility/Buffer.h"
-#include "../Resources/Shader.h"
+#include "../Utility/Shader.h"
 
 namespace Graphics {;
 

@@ -107,43 +107,6 @@ struct Dir
         pad.dec();
         ostream << pad.str() << "}\n";
     }
-
-    void cpp(std::ostream & ostream, Pad & pad)
-    {
-        ostream << pad.str() << "namespace " << path.filename() << "\n";
-        ostream << pad.str() << "{\n";
-        pad.inc();
-
-
-        if (files.size() > 0)
-        {
-            ostream << pad.str() << "char const * Paths[" << files.size() << "] =\n";
-            ostream << pad.str() << "{\n";
-            pad.inc();
-
-            for (auto & file : files)
-            {
-                ostream << pad.str() << "R\"(..\\" << file << ")\"";
-                if (file != files.back())
-                    ostream << ",";
-                ostream << "\n";
-            }
-  
-            pad.dec();
-            ostream << pad.str() << "};\n";
-        }
-
-
-        for (auto & dir : dirs)
-        {
-            if (dir.files.size() > 0 || dir.dirs.size() > 0)
-                dir.cpp(ostream, pad);
-        }
-
-
-        pad.dec();
-        ostream << pad.str() << "}\n";
-    }
 };
 
 void buildModelFileList()
@@ -158,47 +121,11 @@ void buildModelFileList()
     resources.h(hfile, Pad());
     hfile.close();
 
-    /*std::ofstream cppfile("Resources/Resources.cpp", std::ios::trunc);
-    cppfile << "#include \"Resources.h\"\n";
-    resources.cpp(cppfile, Pad());
-    cppfile.close();*/
-
     std::cout << "Done\n";
 }
-
-
-#include <Windows.h>
-struct A
-{
-    A() { OutputDebugString("A CREATED\n"); }
-    ~A() { OutputDebugString("A DESTROYED\n"); }
-    int i = 0;
-};
-
-struct B
-{
-    void a()
-    {
-        static A a;
-        a;
-
-        char s[7];
-        _itoa_s(a.i,s,10);
-        OutputDebugString(s);
-        OutputDebugString("\n");
-        a.i++;
-    }
-};
 
 int main()
 {
     buildModelFileList();
-
-    B a, b, c, d;
-    a.a();
-    b.a();
-    c.a();
-    b.a();
-
     return 0;
 }

@@ -138,10 +138,6 @@ DirectX::SimpleMath::Matrix PhysicsObject::getTransformMatrix() const
 	DirectX::SimpleMath::Matrix transformMatrix(m);
 	// transformMatrix -= DirectX::SimpleMath::Matrix::CreateTranslation({ 0, static_cast<float> (m_halfextent.getY()), 0 });
 
-    // KILL ME NOW
-    if (getModelID() == 10)
-        transformMatrix._42 += 3.0;
-
 	//Find the scaling matrix
 	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);
 

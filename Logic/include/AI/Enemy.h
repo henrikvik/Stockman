@@ -69,7 +69,7 @@ namespace Logic
 			ENEMY_TYPE getEnemyType() const;
 			Behavior* getBehavior() const;
 
-            virtual void render() const;
+            void render() const;
 	};
 }
 

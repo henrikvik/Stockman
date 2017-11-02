@@ -40,5 +40,8 @@ namespace Graphics
 		deviceContext->VSSetShaderResources(0, 1, fogDataBuffer); 
 		deviceContext->PSSetShaderResources(1, 1, &depthMap);
 		deviceContext->Draw((UINT)fogData.size(), 0);
-	}
+
+        ID3D11ShaderResourceView* null = nullptr;
+        deviceContext->PSSetShaderResources(1, 1, &null);
+    }
 }

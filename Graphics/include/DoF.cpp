@@ -119,7 +119,7 @@ namespace Graphics
         context->OMSetRenderTargets(1, *outputBuffer, nullptr);
         context->Draw(6, 0);
         context->OMSetRenderTargets(1, &rtvNULL, nullptr);
-        context->PSSetShaderResources(0, 1, &srvNULL);
+        context->PSSetShaderResources(0, 2, srvNULLAr);
     }
 
     //updates the values that create the circle of confusion

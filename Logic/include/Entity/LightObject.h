@@ -15,8 +15,10 @@ namespace Logic
         ~LightObject();
 
         void renderD();
-        void render();
+        void render() const;
 
+
+        operator LightRenderInfo*() { return &renderInfo; }
     private:
         DebugRenderInfo debugRenderInfo;
         LightRenderInfo renderInfo;

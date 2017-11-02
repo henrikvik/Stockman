@@ -208,8 +208,5 @@ void Behavior::setPathingType(PathingType pathingType)
 {
 	m_pathingType = pathingType;
 }
-    void Behavior::setPathingType(PathingType pathingType)
-    {
-        m_pathingType = pathingType;
-    }
+
 }

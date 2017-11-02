@@ -18,8 +18,7 @@ namespace Logic
 
         void renderD();
 
-        virtual void render() const;
-
+        void render() const;
     private:
         StaticRenderInfo staticRenderInfo;
         DebugRenderInfo debugRenderInfo;

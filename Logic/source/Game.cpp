@@ -62,7 +62,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+			highScore[i] = std::to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
 		}
 		else
 		{
@@ -220,8 +220,6 @@ bool Game::updateMenu(float deltaTime)
                 // Reset menu stuff
                 selectedSkills->first = -1;
                 selectedSkills->second = -1;
-                for (size_t i = 0; i < m_menu->getActiveMenu()->getMenuInfo().m_buttons.size(); i++)
-                    m_menu->getActiveMenu()->getButton(int(i))->setStartAndEnd(0, (1.f/3.f));
 
                 m_menu->setStateToBe(gameStateGame); //change to gameStateGame
             }
@@ -291,19 +289,19 @@ void Game::gameOver()
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+			highScore[i] = std::to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
 			break;
 		}
 	}
 	reset();
 }
 
-void Game::render()
+void Game::render() const
 {
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-        renderGame(renderer);
+        renderGame();
 		break;
 
 	case gameStateGameUpgrade:
@@ -320,13 +318,11 @@ void Game::render()
     m_fpsRenderer.render();
 }
 
-void Game::gameRunTimeRender()
+void Game::renderGame() const
 {
     // Debug Draw physics
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
-        m_physics->render(renderer);
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::CapsLock))
-        renderer.startShake(50.f, 2500.f);
+        m_physics->render();
 
 	PROFILE_BEGIN("Player Render");
 	m_player->render();
@@ -349,7 +345,7 @@ void Game::gameRunTimeRender()
     PROFILE_END();
 }
 
-void Game::renderMenu()
+void Game::renderMenu() const
 {
 	m_menu->render();
 }

@@ -39,7 +39,7 @@ namespace Logic
 		void clear();
 		void reset();
 		void update(float deltaTime);
-		void render();
+		void render() const;
 
 		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 

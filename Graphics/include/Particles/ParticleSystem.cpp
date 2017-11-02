@@ -1,3 +1,4 @@
+#include <tbb\tbb.h>
 #include "ParticleSystem.h"
 
 #include <experimental\filesystem>
@@ -12,7 +13,6 @@
 #include <Engine\Profiler.h>
 #include "../Utility/DebugDraw.h"
 
-#include <tbb\tbb.h>
 
 namespace fs = std::experimental::filesystem;
 using namespace DirectX;

@@ -1,8 +1,7 @@
+#include "Profiler.h"
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
-
-#include "Profiler.h"
 
 #include <Windows.h>
 #include <imgui.h>
@@ -11,7 +10,6 @@
 #include <Graphics\include\Structs.h>
 
 #include "Engine.h"
-#include "Profiler.h"
 #include "Typing.h"
 
 #include "DebugWindow.h"

@@ -17,7 +17,7 @@ namespace HybrisLoader
         int prevKeyFrame = 0;
         int nextKeyFrame = 0;
 
-        for (int i = 0, size = keyFrames.size(); i < size; i++)
+        for (size_t i = 0, size = keyFrames.size(); i < size; i++)
         {
             if (keyFrames[i].timeStamp < timeStamp)
             {

@@ -93,7 +93,7 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 	}
 }
 
-void SkillShieldCharge::render()
+void SkillShieldCharge::render() const
 {
 
 }

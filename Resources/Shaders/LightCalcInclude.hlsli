@@ -1,5 +1,3 @@
-#include "ShaderConstants.hlsli"
-
 //If you want to include this file this is the allocated resources:
 //cbuffer register 0, 1, 2 and 3
 //0: Camera     1: DirectionalLight     2: BulletTime   3: LightVP
@@ -76,6 +74,22 @@ Texture2D normalMap : register(t11);
 Texture2D specularMap : register(t12);
 Texture2D glowMap : register(t13);
 
+
+//makes stuff gray
+float3 adjustSaturation(float3 color, float saturation)
+{
+
+    //Touch these values and yer ded kid. (lower saturation or something)
+	float grey = dot(color, float3(0.3, 0.59, 0.11));
+
+	return lerp(grey, color, saturation);
+}
+
+float3 adjustContrast(float3 color, float contrast, float threshold)
+{
+    return (color - threshold) * max(contrast, 0.f) + threshold;
+}
+
 //Returns the shadow amount of a given position
 float calculateShadowValue(float3 lightPos, int sampleCount = 1)
 {
@@ -119,9 +133,6 @@ float3 getNormalMappedNormal(float3 tangent, float3 biTangent, float3 normal, fl
     //Remove when everything is working
     if (normalSample.x == 0 && normalSample.y == 0 && normalSample.z == 0)
         return normal;
-
-    if (normalSample.x == 1 && normalSample.y == 1 && normalSample.z == 1)
-        normalSample = float3(0, 1, 0);
 
     //To make sure the tangent is perpendicular
     tangent = normalize(tangent - dot(tangent, normalSample) * normalSample);
@@ -228,7 +239,7 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
     float4 lighting = saturate(finalDiffuse + ambient);
     
     lighting.xyz = adjustSaturation(lighting.xyz, bulletTimer);
-    lighting.xyz = adjustContrast(lighting.xyz, 2 - bulletTimer, 0.3);
+    lighting.xyz = adjustContrast(lighting.xyz, 2 - bulletTimer, 0.1);
 
     return lighting;
 }

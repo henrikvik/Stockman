@@ -218,7 +218,17 @@ bool Logic::Projectile::shouldRemove() const
 	return m_remove;
 }
 
+void Logic::Projectile::setWorldTransform(DirectX::SimpleMath::Matrix & worldTransform)
+{
+    renderInfo.transform = worldTransform;
+}
+
+void Logic::Projectile::setModelID(Resources::Models::Files modelId)
+{
+    renderInfo.model = modelId;
+}
+
 void Logic::Projectile::render() const
 {
-    RenderQueue::get().queueInstanced(&renderInfo);
+    RenderQueue::get().queue(&renderInfo);
 }

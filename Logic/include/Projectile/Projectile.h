@@ -30,8 +30,11 @@ namespace Logic
         void toRemove(bool remove);
 		bool shouldRemove() const;
 
+        void setWorldTransform(DirectX::SimpleMath::Matrix & worldTransform);
+        void setModelID(Resources::Models::Files modelId);
 
-        virtual void render() const;
+        void render() const;
+
 
 	private:
         StaticRenderInfo renderInfo;

@@ -4,8 +4,8 @@ using namespace Logic;
 
 Logic::Button::Button(
     Resources::Textures::Files texture,
-    DirectX::SimpleMath::Rectangle screenRect,
-    DirectX::SimpleMath::Rectangle inactive,
+    FloatRect screenRect,
+    FloatRect inactive,
     std::function<void(void)> callback
 )
     : Button(texture, screenRect, inactive, inactive, callback)
@@ -14,9 +14,9 @@ Logic::Button::Button(
 
 Logic::Button::Button(
     Resources::Textures::Files texture, 
-    DirectX::SimpleMath::Rectangle screenRect, 
-    DirectX::SimpleMath::Rectangle inactive,
-    DirectX::SimpleMath::Rectangle active,
+    FloatRect screenRect, 
+    FloatRect inactive,
+    FloatRect active,
     std::function<void(void)> callback
 )
     : Button(texture, screenRect, inactive, active, active, callback)
@@ -25,10 +25,10 @@ Logic::Button::Button(
 
 Logic::Button::Button(
     Resources::Textures::Files texture, 
-    DirectX::SimpleMath::Rectangle screenRect, 
-    DirectX::SimpleMath::Rectangle inactive, 
-    DirectX::SimpleMath::Rectangle active, 
-    DirectX::SimpleMath::Rectangle hover,
+    FloatRect screenRect, 
+    FloatRect inactive, 
+    FloatRect active, 
+    FloatRect hover,
     std::function<void(void)> callback
 )
     : texture(texture)
@@ -39,6 +39,8 @@ Logic::Button::Button(
     , callback(callback)
 {
     textureRect = &inactive;
+    m_animationStart = DirectX::SimpleMath::Vector2(0,0);
+    m_animationEnd   = DirectX::SimpleMath::Vector2(0,0);
 }
 
 Button::~Button()
@@ -47,7 +49,7 @@ Button::~Button()
 
 void Logic::Button::setCallback(std::function<void(void)> callback)
 {
-    callback = callback;
+    this->callback = callback;
 }
 
 void Button::updateOnPress(int posX, int posY)
@@ -87,21 +89,10 @@ bool Button::animationTransition(float dt, float maxAnimationTime, bool forward)
 	else
 		lerpResult = DirectX::SimpleMath::Vector2::Lerp(m_animationEnd, m_animationStart, done ? 1 : m_animationTime);
 	
-    screenRect.x = lerpResult.x;
-    screenRect.y = lerpResult.y;
+    //screenRect.x = lerpResult.x;
+    //screenRect.y = lerpResult.y;
 
 	return done;
-}
-
-Graphics::ButtonInfo* Button::getButtonInfo()
-{
-	return &m_buttonInfo;
-}
-
-void Button::setStartAndEnd(float start, float end)
-{
-    m_start = start;
-    m_end = end;
 }
 
 void Logic::Button::setState(State state)
@@ -127,6 +118,7 @@ void Logic::Button::render() const
     renderInfo.texture = texture;
     renderInfo.screenRect = screenRect;
     renderInfo.textureRect = *textureRect;
+    renderInfo.alpha = 1;
 
     RenderQueue::get().queue(&renderInfo);
 }

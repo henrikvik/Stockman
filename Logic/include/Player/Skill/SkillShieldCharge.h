@@ -33,7 +33,8 @@ namespace Logic
         bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
 		void onUpdate(float deltaTime);
-		void render();
+        virtual void render() const override;
+
 	};
 }
 #endif

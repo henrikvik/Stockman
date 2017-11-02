@@ -121,5 +121,5 @@ void Trigger::setCooldown(float cooldown)
 
 void Logic::Trigger::render() const
 {
-    RenderQueue::get().queueInstanced(&animatedRenderInfo);
+    RenderQueue::get().queue(&animatedRenderInfo);
 }

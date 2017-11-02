@@ -37,7 +37,7 @@ namespace Logic
 				bool reusable = false);
 
 			void update(float deltaTime);
-			void render();
+			void render() const;
 	
 			std::vector<Trigger*>& getTriggers();
 	};

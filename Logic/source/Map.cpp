@@ -129,10 +129,10 @@ void Map::render()
     if (m_drawHitboxesAndLights)
     {
         for (StaticObject* e : m_hitboxes)
-            e->renderD(renderer);
+            e->renderD();
         for (LightObject* l : m_lights) {
-            //l->renderD(renderer);
-            Graphics::Debug::PointLight(*l);
+            //l->renderD(renderer)
+            //Graphics::Debug::PointLight(light);
         }
     }
 }
@@ -172,7 +172,7 @@ void Map::debugInitObjects()
     {
         if (i == Graphics::ModelID::GROUND) break;
         if (i == Graphics::ModelID::SKY_SPHERE) break;
-        box = new Speaker(m_physicsPtr->createBody(Cube({ -200.f + (i * 10.f), 2.f, 123.f }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::ModelID(i));
+        box = new Speaker(m_physicsPtr->createBody(Cube({ -200.f + (i * 10.f), 2.f, 123.f }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
         m_objects.push_back(box);
     }
 }

@@ -55,7 +55,7 @@ void LightObject::renderD()
     RenderQueue::get().queue(&debugRenderInfo);
 }
 
-void LightObject::render() 
+void LightObject::render() const
 { 
     RenderQueue::get().queue(&renderInfo);
 }

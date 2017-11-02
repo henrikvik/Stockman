@@ -288,7 +288,7 @@ int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
     return i;
 }
 
-void EntityManager::render()
+void EntityManager::render() const
 {
     for (int i = 0; i < m_enemies.size(); ++i)
     {

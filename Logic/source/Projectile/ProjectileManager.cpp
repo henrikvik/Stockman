@@ -130,7 +130,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         body->setLinearVelocity({ 0.f, 0.f, 0.f });
         body->setGravity({ 0.f, 0.f, 0.f });
         body->getWorldTransform().setOrigin(PROJECTILE_DEFAULT_POS);
-        p->setWorldTranslation(p->getTransformMatrix());
+        p->setWorldTransform(p->getTransformMatrix());
 
         // reset collision flags
         if (p->getProjectileData().isSensor)
