@@ -152,13 +152,13 @@ Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed, float
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     
     increaseCallbackEntities();
+    pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+        decreaseCallbackEntities();
+    });
     if (hasCallback(ON_DAMAGE_GIVEN))
     {
         pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
             callback(ON_DAMAGE_GIVEN, data);
-        });
-        pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
-            decreaseCallbackEntities();
         });
     }
 	
