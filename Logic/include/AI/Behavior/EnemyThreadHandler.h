@@ -29,6 +29,9 @@ namespace Logic
 
         bool m_killChildren;
         void initThreads();
+        
+        void resetThreads();
+        void deleteThreads();
     public:
         EnemyThreadHandler();
         ~EnemyThreadHandler();
@@ -37,9 +40,6 @@ namespace Logic
         void threadMain();
 
         void addWork(WorkData data);
-
-        void resetThreads();
-        void deleteThreads();
     };
 }
 

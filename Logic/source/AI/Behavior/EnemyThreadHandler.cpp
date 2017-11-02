@@ -48,13 +48,14 @@ void EnemyThreadHandler::resetThreads()
 void EnemyThreadHandler::deleteThreads()
 {
     m_killChildren = true;
-    for (std::thread *t : threads)
+    for (std::thread *&t : threads)
     {
         if (t)
         {
             if (t->joinable())
                 t->join();
             delete t;
+            t = nullptr;
         }
     }
 }
