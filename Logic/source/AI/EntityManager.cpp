@@ -50,6 +50,11 @@ EntityManager::~EntityManager()
     delete m_threadHandler;
 }
 
+void EntityManager::resetTriggers()
+{
+    m_triggerManager.reset();
+}
+
 void EntityManager::allocateData()
 {
     m_enemies.resize(AStar::singleton().getNrOfPolygons());
@@ -59,7 +64,7 @@ void EntityManager::allocateData()
 void EntityManager::loadDebugCmds()
 {
 #ifdef _DEBUG
-    DebugWindow::getInstance()->registerCommand("SETAI", [&](std::vector<std::string> &para) -> std::string {
+    DebugWindow::getInstance()->registerCommand("LOG_SETAI", [&](std::vector<std::string> &para) -> std::string {
         try {
             m_aiType = static_cast<AIType> (stoi(para[0]));
             return "AI Mode Updated";
@@ -75,7 +80,7 @@ void EntityManager::deallocateData(bool forceDestroy)
     m_threadHandler->deleteThreads();
     for (std::vector<Enemy*>& list : m_enemies)
     {
-        for (Enemy *enemy : list)
+        for (Enemy *&enemy : list)
         {
             if (forceDestroy || !enemy->hasCallbackEntities())
             {
@@ -95,7 +100,6 @@ void EntityManager::deallocateData(bool forceDestroy)
     {
         if (forceDestroy || !enemy->hasCallbackEntities()) 
         {
-            DeleteBody(*enemy);
             delete enemy;
             enemy = nullptr;
         }
@@ -134,7 +138,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
-		m_deadEnemies[i]->updateDead(deltaTime);
+	    //m_deadEnemies[i]->updateDead(deltaTime); -- Delete body right now, maybe later keep the dead bodies, but it is not really important but can be changed
 	}
 
 	m_triggerManager.update(deltaTime);
@@ -176,6 +180,7 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
             flock[flock.size() - 1]
         );
 
+        DeleteBody(*enemy);
         m_deadEnemies.push_back(enemy);
         flock.pop_back();
     }

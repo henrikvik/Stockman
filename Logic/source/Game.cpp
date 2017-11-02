@@ -7,6 +7,8 @@
 #include <Engine\DebugWindow.h> 
 #include <Player\Skill\SkillManager.h>
 
+#include <Misc\CommandsFile.h>
+
 using namespace Logic;
 
 const int Game::NUMBER_OF_UNIQUE_CARDS      = 13;
@@ -92,7 +94,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 
 #ifdef _DEBUG
     DebugWindow *win = DebugWindow::getInstance();
-    win->registerCommand("SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
+    win->registerCommand("LOG_SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
         try {
             this->m_menu->setStateToBe(static_cast<GameState> (stoi(para[0])));
             return "Menu State set to " + stoi(para[0]);
@@ -109,15 +111,20 @@ void Game::init(LPWSTR *cmdLine, int args)
     for (std::string const &cmd : GameCommands[m_gameType])
         if (!cmd.empty())
             win->doCommand(cmd.c_str());
+
+    CommandsFile().doCommandsFromFile();
 #endif
 }
 
 void Game::clear()
 {
 	m_menu->clear();
-	m_projectileManager->clear();
-    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
+    m_projectileManager->clear();
 	Sound::NoiseMachine::Get().clear();
+
+    m_entityManager.resetTriggers();
+    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
+
     Typing::releaseInstance();
 
 	delete m_physics;
@@ -131,9 +138,12 @@ void Game::clear()
 
 void Game::reset()
 {
-    m_entityManager.deallocateData();
-    m_player->reset();
     m_projectileManager->removeAllProjectiles();
+    m_player->reset();
+
+    m_entityManager.resetTriggers();
+    m_entityManager.deallocateData();
+    m_waveTimeManager.reset();
 
 	ComboMachine::Get().Reset();
 }

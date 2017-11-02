@@ -63,16 +63,17 @@ struct Light
 StructuredBuffer<uint> LightIndexList : register(t0);
 Texture2D<uint2> LightGrid : register(t1);
 StructuredBuffer<Light> Lights : register(t2);
-
 Texture2D shadowMap : register(t3);
-SamplerState Sampler : register(s0);
-
-SamplerComparisonState cmpSampler : register(s1);
 
 Texture2D diffuseMap : register(t10);
 Texture2D normalMap : register(t11);
 Texture2D specularMap : register(t12);
 Texture2D glowMap : register(t13);
+
+
+SamplerState Sampler : register(s0);
+SamplerComparisonState cmpSampler : register(s1);
+
 
 
 //makes stuff gray

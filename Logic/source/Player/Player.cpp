@@ -104,7 +104,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 void Player::registerDebugCmds()
 {
     DebugWindow *win = DebugWindow::getInstance();
-    win->registerCommand("SETMOUSESENS", [&](std::vector<string> &para) -> std::string {
+    win->registerCommand("LOG_SETMOUSESENS", [&](std::vector<string> &para) -> std::string {
         try
         { // Boilerplate code bois
             m_mouseSens = stof(para[0]);
@@ -115,11 +115,11 @@ void Player::registerDebugCmds()
         }
         return "Mouse sens set";
     });
-    win->registerCommand("GODMODE", [&](std::vector<string> &para) -> std::string {
+    win->registerCommand("LOG_GODMODE", [&](std::vector<string> &para) -> std::string {
         m_godMode = !m_godMode;
         return "Godmode updated";
     });
-    win->registerCommand("NOCLIP", [&](std::vector<string> &para) -> std::string {
+    win->registerCommand("LOG_NOCLIP", [&](std::vector<string> &para) -> std::string {
         m_noclip = !m_noclip;
         if (m_noclip)
             m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
@@ -158,7 +158,7 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
         else if (Enemy *e = dynamic_cast<Enemy*> (&other))
         {
             int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
-            e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * stacks);
+            e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * static_cast<btScalar> (stacks));
             stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
             e->damage(2 * stacks); // replace 1 with the player damage when it is better
         }

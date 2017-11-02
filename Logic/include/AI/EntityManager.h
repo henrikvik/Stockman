@@ -48,7 +48,7 @@ namespace Logic
         AIType m_aiType;
 		float m_deltaTime;
 
-		void allocateData(); // resize enemy vector 
+		void allocateData(); // resize enemy vector
         void loadDebugCmds();
 
         std::function<void(Entity& entity)>                 DeleteBody;
@@ -65,6 +65,7 @@ namespace Logic
 		~EntityManager();
 
         // data handling
+        void resetTriggers();
         void deallocateData(bool forceDestroy = true); // delete data in vectors
 
         // render / updates
