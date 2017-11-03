@@ -42,7 +42,7 @@ void Logic::HUDManager::constructGUIElements()
     //crossbow
     GUIElements[3].alpha = 1;
     GUIElements[3].texture = Resources::Textures::HUDIcons;
-    GUIElements[3].screenRect = FloatRect(740.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+    GUIElements[3].screenRect = FloatRect(740.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[3].textureRect = FloatRect(29.0f / WIN_WIDTH, 384.0f / WIN_HEIGHT, 291.0f / WIN_WIDTH, 291.0f / WIN_HEIGHT);
     
 
@@ -50,7 +50,7 @@ void Logic::HUDManager::constructGUIElements()
     //ice staff
     GUIElements[4].alpha = 1;
     GUIElements[4].texture = Resources::Textures::HUDIcons;
-    GUIElements[4].screenRect = FloatRect(840.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+    GUIElements[4].screenRect = FloatRect(840.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[4].textureRect = FloatRect(339.0f / WIN_WIDTH, 67.0f / WIN_HEIGHT, 286.0f / WIN_WIDTH, 276.0f / WIN_HEIGHT);
 
     
@@ -58,7 +58,7 @@ void Logic::HUDManager::constructGUIElements()
     //sledegehammer
     GUIElements[5].alpha = 1;
     GUIElements[5].texture = Resources::Textures::HUDIcons;
-    GUIElements[5].screenRect = FloatRect(950.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+    GUIElements[5].screenRect = FloatRect(950.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[5].textureRect = FloatRect(639.0f / WIN_WIDTH, 67.0f / WIN_HEIGHT, 286.0f / WIN_WIDTH, 275.0f / WIN_HEIGHT);
 
     
@@ -71,38 +71,38 @@ void Logic::HUDManager::constructGUIElements()
     //skill 1
     GUIElements[6].alpha = 1;
     GUIElements[6].texture = Resources::Textures::HUDIcons;
-    GUIElements[6].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+    GUIElements[6].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[6].textureRect = FloatRect(1000.0f / WIN_WIDTH, 370.0f / WIN_HEIGHT, 309.0f / WIN_WIDTH, 309.0f / WIN_HEIGHT);
 
     //skill 2
     GUIElements[7].alpha = 1;
     GUIElements[7].texture = Resources::Textures::HUDIcons;
-    GUIElements[7].screenRect = FloatRect(1170 / WIN_WIDTH, 530 / WIN_HEIGHT, 100 / WIN_WIDTH, 178 / WIN_HEIGHT);
+    GUIElements[7].screenRect = FloatRect(1170 / WIN_WIDTH, 530 / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.f / WIN_HEIGHT);
     GUIElements[7].textureRect = FloatRect(1354 / WIN_WIDTH, 369 / WIN_HEIGHT, 307 / WIN_WIDTH, 307 / WIN_HEIGHT);
     
     //skill 3
     GUIElements[8].alpha = 1;
     GUIElements[8].texture = Resources::Textures::HUDIcons;
-    GUIElements[8].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+    GUIElements[8].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[8].textureRect = FloatRect(1697.0f / WIN_WIDTH, 374.0f / WIN_HEIGHT, 306.0f / WIN_WIDTH, 306.0f / WIN_HEIGHT);
 
     //skill 1 cd
     GUIElements[9].alpha = 1;
     GUIElements[9].texture = Resources::Textures::HUDIcons;
-    GUIElements[9].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+    GUIElements[9].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[9].textureRect = FloatRect(999.0f / WIN_WIDTH, 46.0f / WIN_HEIGHT, 300.0f / WIN_WIDTH, 300.0f / WIN_HEIGHT);
 
     //skill 2 cd
     GUIElements[10].alpha = 1;
     GUIElements[10].texture = Resources::Textures::HUDIcons;
-    GUIElements[10].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+    GUIElements[10].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[10].textureRect = FloatRect(1351.0f / WIN_WIDTH, 43.0f / WIN_HEIGHT, 302.0f / WIN_WIDTH, 302.0f / WIN_HEIGHT);
 
 
     //skill 3 cd
     GUIElements[11].alpha = 1;
     GUIElements[11].texture = Resources::Textures::HUDIcons;
-    GUIElements[11].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+    GUIElements[11].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[11].textureRect = FloatRect(1695.0f / WIN_WIDTH, 46.0f / WIN_HEIGHT, 303.0f / WIN_WIDTH, 303.0f / WIN_HEIGHT);
 
 
@@ -145,31 +145,31 @@ void Logic::HUDManager::updateGUIElemets()
 
 
     //skills
-    if (skillChoosen == false && info.currentSkills[0] < 0)
+    if (skillChoosen == false)
     {
         
         //skill 1 off cd
         choosenSKills[0].alpha = 1;
         choosenSKills[0].texture = Resources::Textures::HUDIcons;
-        choosenSKills[0].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+        choosenSKills[0].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
         choosenSKills[0].textureRect = GUIElements[6 + info.currentSkills[0]].textureRect;
 
         // skill 1 on cd
         choosenSKills[1].alpha = 1;
         choosenSKills[1].texture = Resources::Textures::HUDIcons;
-        choosenSKills[1].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+        choosenSKills[1].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
         choosenSKills[1].textureRect = GUIElements[6 + info.currentSkills[1]].textureRect;
 
         //skill 2 off cd
         choosenSKills[2].alpha = 1;
         choosenSKills[2].texture = Resources::Textures::HUDIcons;
-        choosenSKills[2].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+        choosenSKills[2].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
         choosenSKills[2].textureRect = GUIElements[9 + info.currentSkills[0]].textureRect;
 
         //skill 2 on cd
         choosenSKills[3].alpha = 1;
         choosenSKills[3].texture = Resources::Textures::HUDIcons;
-        choosenSKills[3].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 100.0f / WIN_WIDTH, 178.0f / WIN_HEIGHT);
+        choosenSKills[3].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
         choosenSKills[3].textureRect = GUIElements[9 + info.currentSkills[1]].textureRect;
 
 
