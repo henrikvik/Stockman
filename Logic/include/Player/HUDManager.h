@@ -40,6 +40,7 @@ namespace Logic
     private:
         GUIInfo info;
         bool skillChoosen;
+        int prevHP;
 
         static const int CURRENT_AMMO, TOTAL_AMMO;
         SpriteRenderInfo GUIElements[NROFICONS];
@@ -49,6 +50,17 @@ namespace Logic
         SpriteRenderInfo choosenSKills[4];
         void constructGUIElements();
         void updateGUIElemets();
+        enum Elemnts
+        {
+            CROSSHAIR,
+            HP_BARBACK,
+            HP_BARFRONT,
+            CROSSBOW,
+            ICESTAFF,
+            SLEDGEHAMMER,
+            SKILL1,
+            SKILL2
+        };
         
     public:
         HUDManager();

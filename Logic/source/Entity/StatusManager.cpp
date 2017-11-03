@@ -108,6 +108,14 @@ int StatusManager::getStacksOfEffectFlag(Effect::EFFECT_FLAG flag) const
 	return stacks;
 }
 
+bool StatusManager::isOwningUpgrade(Upgrade::UPGRADE_FLAG flag)
+{
+    for (StatusManager::UPGRADE_ID upgrade : getActiveUpgrades())
+        if (getUpgrade(upgrade).getTranferEffects() & flag)
+            return true;
+    return false;
+}
+
 void StatusManager::removeEffect(int index)
 {
 	std::swap(m_effectStacks[index], m_effectStacks[m_effectStacks.size() - 1]);

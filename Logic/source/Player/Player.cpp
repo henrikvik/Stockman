@@ -650,7 +650,7 @@ DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 	return scale * transformMatrix;
 }
 
-void Player::render()
+void Player::render() const
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);

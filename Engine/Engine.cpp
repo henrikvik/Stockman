@@ -14,6 +14,7 @@
 
 #include "DebugWindow.h"
 #include <Graphics\include\Device.h>
+#include <Graphics\include\RenderQueue.h>
 
 #pragma comment (lib, "d3d11.lib")
 
@@ -120,11 +121,14 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         return catcher;
     });
 
-	this->game.init(cmdLine, args);
+//    game = new Logic::StateMachine(cmdLine, args);
+    game = new Logic::StateMachine();
 }
 
 Engine::~Engine()
 {
+    delete game;
+    Typing::releaseInstance();
     mSwapChain->SetFullscreenState(false, NULL);
 
 	ImGui_ImplDX11_Shutdown();
@@ -355,22 +359,23 @@ int Engine::run()
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
         if (!debug->isOpen())
-            game.update(float(deltaTime));
+            game->update(float(deltaTime));
         PROFILE_END();
 
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
-		game.render();
+		game->render();
 		PROFILE_END();
 
+        // Debug Lock Screen Position 
 		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
 
 		if (state.LeftControl) 
-            cam.update(oldPos, game.getPlayerForward(), mContext);
+            cam.update(oldPos, game->getState()->getCameraForward(), mContext);
 		else
 		{
-			oldPos = game.getPlayerPosition();
-			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+			oldPos = game->getState()->getCameraPosition();
+			cam.update(game->getState()->getCameraPosition(), game->getState()->getCameraForward(), mContext);
 		}
 
         ///// USH! /////
@@ -401,8 +406,6 @@ int Engine::run()
 		PROFILE_END();
 		g_Profiler->frame();
 
-
-		
         RenderQueue::get().clearAllQueues();
     }
 

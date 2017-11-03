@@ -141,7 +141,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         m_physPtr->removeRigidBody(body);
 
         // dont remove again duh
-        p->toRemove(false);
+        p->setDead(false);
 
         // remove all callbacks from the projectile
         p->clearCallbacks();
@@ -159,7 +159,7 @@ void Logic::ProjectileManager::update(float deltaTime)
 	{
 		Projectile* p = m_projectilesActive[i];
 		p->updateSpecific(deltaTime);
-		if (p->shouldRemove() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
+		if (p->getDead() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
 		{
 			removeProjectile(p, (int)i);
 			i--;

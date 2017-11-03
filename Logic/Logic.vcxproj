@@ -201,6 +201,8 @@
     <ClInclude Include="include\Misc\CommandsFile.h" />
     <ClInclude Include="include\GameType.h" />
     <ClInclude Include="include\Misc\GUI\Sprite.h" />
+    <ClInclude Include="include\Misc\Error.h" />
+    <ClInclude Include="include\Misc\NonCopyable.h" />
     <ClInclude Include="include\Player\HUDManager.h" />
     <ClInclude Include="include\AI\EnemyChaser.h" />
     <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
@@ -234,7 +236,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Logic.h" />
     <ClInclude Include="include\Entity\Object.h" />
     <ClInclude Include="include\Misc\Enums.h" />
@@ -244,7 +245,6 @@
     <ClInclude Include="include\Misc\RenderRegister.h" />
     <ClInclude Include="include\Misc\Sound\NoiseStructs.h" />
     <ClInclude Include="include\Misc\Sound\SoundSource.h" />
-    <ClInclude Include="include\Misc\StateMachine.h" />
     <ClInclude Include="include\Physics\Physics.h" />
     <ClInclude Include="include\Physics\Primitives.h" />
     <ClInclude Include="include\Player\Player.h" />
@@ -268,6 +268,10 @@
     <ClInclude Include="include\Misc\Sound\NoiseMachine.h" />
     <ClInclude Include="include\AI\Behavior\MeleeBehavior.h" />
     <ClInclude Include="include\AI\WaveTimeManager.h" />
+    <ClInclude Include="include\State.h" />
+    <ClInclude Include="include\StateGame.h" />
+    <ClInclude Include="include\StateMachine.h" />
+    <ClInclude Include="include\StateStart.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Misc\GUI\Sprite.cpp" />
@@ -313,7 +317,6 @@
     <ClCompile Include="source\AI\EntityManager.cpp" />
     <ClCompile Include="source\Misc\Card.cpp" />
     <ClCompile Include="source\Misc\CardManager.cpp" />
-    <ClCompile Include="source\Misc\StateMachine.cpp" />
     <ClCompile Include="source\Physics\Physics.cpp" />
     <ClCompile Include="source\Player\Player.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
@@ -324,6 +327,9 @@
     <ClCompile Include="source\Entity\StatusManager.cpp" />
     <ClCompile Include="source\AI\WaveManager.cpp" />
     <ClCompile Include="source\AI\WaveTimeManager.cpp" />
+    <ClCompile Include="source\StateGame.cpp" />
+    <ClCompile Include="source\StateMachine.cpp" />
+    <ClCompile Include="source\StateStart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

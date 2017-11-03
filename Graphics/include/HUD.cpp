@@ -227,6 +227,9 @@ void Graphics::HUD::setHUDTextRenderPos()
 
 void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 {   
+    // No info, exit, avoiding crash
+    if (!currentInfo) return;
+
     //sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
     std::wstring temp = L"";
     if (currentInfo->currentWeapon == 0)

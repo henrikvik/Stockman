@@ -1,4 +1,5 @@
 #include "Map.h"
+#include <Physics/Physics.h>        
 #include <Keyboard.h>
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
@@ -12,45 +13,59 @@ Map::~Map()
 	clear();
 }
 
-void Map::add(FrameLight frameLight)
-{
-    m_lights.push_back(new LightObject(frameLight));
-}
-
-void Map::add(FrameProp frameProp)
-{
-  //  m_objects.push_back(new Object(frameProp.modelID, frameProp.position, frameProp.rotation));
-}
-
-void Map::add(FrameHitbox frameHitbox)
-{
-    if (frameHitbox.modelID == Graphics::GROUND)
-        m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
-            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
-            Physics::COL_HITBOX,
-            Physics::COL_EVERYTHING),
-            {1, 1.f, 1}));
-
-    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
-        Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
-        Physics::COL_HITBOX,
-        Physics::COL_EVERYTHING),
-        frameHitbox.dimensions));
-}
-
+// Saves physics ptr & loads the map
 void Map::init(Physics* physics)
 {
+    // Saves physics pointer
     m_physicsPtr = physics;
-    m_drawHitboxesAndLights = false;
 
-    readFromFile("maya.level");
-	
-    debugInitProps();
-    debugInitObjects();
+    // Disables debug draw as default
+    m_drawDebug = false;
+
+    // Loads map from file (currently only hardcoded)
+    loadMapFromFile("maya.level");
 }
 
-// This could be loaded from level file
-void Map::readFromFile(std::string path)
+// Deallocates all memory
+void Map::clear()
+{
+	for (size_t i = 0; i < m_props.size(); i++)     delete m_props[i];
+	for (size_t i = 0; i < m_hitboxes.size(); i++)  delete m_hitboxes[i];
+    for (size_t i = 0; i < m_lights.size(); i++)    delete m_lights[i];
+
+	m_props.clear();
+	m_hitboxes.clear();
+    m_lights.clear();
+}
+
+// If user holds tab, draw debug info
+void Map::update(float deltaTime)
+{
+    m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
+}
+
+void Map::render() const
+{
+	for (Object* o : m_props)           o->render();
+    for (LightObject* l : m_lights)     l->render();
+    for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
+
+	// Drawing hitboxes debugged & lights
+    if (m_drawDebug)
+    {
+        for (StaticObject* e : m_hitboxes)
+            e->renderD();
+     //   for (LightObject* l : m_lights)
+     //       Graphics::Debug::PointLight(*l);
+    }
+}
+	
+std::vector<StaticObject*>*			Map::getProps()				{ return &m_props;				}
+std::vector<StaticObject*>*			Map::getHitboxes()			{ return &m_hitboxes;			}
+std::vector<LightObject*>*			Map::getLights()            { return &m_lights;             }
+
+// Loads a map from a specific file
+void Map::loadMapFromFile(std::string path)
 {
     // Loads hitboxes
     std::vector<FrameHitbox> hitboxes;
@@ -94,76 +109,26 @@ void Map::readFromFile(std::string path)
     for (size_t i = lights.size(); i--;)    add(lights[i]);
 }
 
-void Map::clear()
+// Adds a pointlight to the map
+void Map::add(FrameLight frameLight)
 {
-	for (size_t i = 0; i < m_props.size(); i++)     delete m_props[i];
-	for (size_t i = 0; i < m_hitboxes.size(); i++)  delete m_hitboxes[i];
-	for (size_t i = 0; i < m_objects.size(); i++)   delete m_objects[i];
-    for (size_t i = 0; i < m_lights.size(); i++)    delete m_lights[i];
-
-	m_props.clear();
-	m_hitboxes.clear();
-	m_objects.clear();
-    m_lights.clear();
+    m_lights.push_back(new LightObject(frameLight));
 }
 
-void Map::update(float deltaTime)
+// Adds a visual prop to the map
+void Map::add(FrameProp frameProp)
 {
-    // If user holds tab, draw debug info
-    m_drawHitboxesAndLights = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
-
-	// Updating interactable objects
-	for (size_t i = 0; i < m_objects.size(); i++)
-		m_objects[i]->update(deltaTime);
+//    m_props.push_back(new StaticObject(frameProp.modelID));
 }
 
-void Map::render()
+// Adds a static hitbox to the map
+void Map::add(FrameHitbox frameHitbox)
 {
-	for (StaticObject* o : m_props)     o->render();
-    for (LightObject* l : m_lights)     l->render();
-#ifdef _DEBUG
-	//for (Speaker* e : m_objects)        e->render();
-    for (StaticObject* e : m_hitboxes)  e->render(); // Should not be visiable at all in release
-#endif
-	// Drawing hitboxes & lights
-    if (m_drawHitboxesAndLights)
-    {
-        for (StaticObject* e : m_hitboxes)
-            e->renderD();
-        for (LightObject* l : m_lights) {
-            //l->renderD(renderer)
-            //Graphics::Debug::PointLight(light);
-        }
-    }
-}
-	
-std::vector<StaticObject*>*			Map::getProps()				{ return &m_props;				}
-std::vector<StaticObject*>*			Map::getHitboxes()			{ return &m_hitboxes;			}
-std::vector<Speaker*>*				Map::getObjects()			{ return &m_objects;			}
-std::vector<LightObject*>*			Map::getLights()            { return &m_lights;             }
-
-void Map::debugInitProps()
-{
-
-}
-
-void Map::debugInitObjects()
-{
-    // Debugging for Sound bug testing
-    btVector3 halfextent(1.0, 1.0, 1.0);
-    Speaker* box = new Speaker(m_physicsPtr->createBody(Cube({ -25, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
-    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 6000.f, 250.f);
-    m_objects.push_back(box);
-
-    box = new Speaker(m_physicsPtr->createBody(Cube({ -26, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
-    box->getSoundSource()->delayPlayMusic(Sound::MUSIC::TEST_MUSIC, 500.f);
-    m_objects.push_back(box);
-
-    box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 3, 74 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
-    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 4000.f, 250.f);
-    m_objects.push_back(box);
-
-    box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 2, 73 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent);
-    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 3500.f, 250.f);
-    m_objects.push_back(box);
+    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+        /* Shape */             Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions),
+        /* Mass */              NULL,
+        /* Sensor */            false,
+        /* Collision Type */    Physics::COL_HITBOX,
+        /* Collides With */     Physics::COL_EVERYTHING),
+        /* Graphical Scaling */ frameHitbox.dimensions));
 }
