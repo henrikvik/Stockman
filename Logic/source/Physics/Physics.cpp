@@ -1,18 +1,17 @@
-#include "Physics\Physics.h"
+#include <Physics\Physics.h>
+#include <Entity\PhysicsObject.h>
 #include <Graphics\include\Renderer.h>
-
+#include <BulletCollision\CollisionDispatch\btGhostObject.h>
 
 using namespace Logic;
-
-#include <libs\Bullet2.86\include\BulletCollision\CollisionDispatch\btGhostObject.h>
 
 Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overlappingPairCache, btSequentialImpulseConstraintSolver* constraintSolver, btDefaultCollisionConfiguration* collisionConfiguration)
 	: btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration)
 {
-	this->dispatcher = dispatcher;
-	this->overlappingPairCache = overlappingPairCache;
-	this->constraintSolver = constraintSolver;
-	this->collisionConfiguration = collisionConfiguration;
+	m_dispatcher = dispatcher;
+	m_overlappingPairCache = overlappingPairCache;
+	m_constraintSolver = constraintSolver;
+	m_collisionConfiguration = collisionConfiguration;
 
 	// Render Debug Construction
     renderDebug = new Graphics::RenderDebugInfo();
@@ -27,7 +26,7 @@ Physics::~Physics()
 	delete renderDebug->points;
 	clear();
     delete renderDebug;
-	delete ghostPairCB;
+	delete m_ghostPairCB;
 }
 
 bool Physics::init()
@@ -35,8 +34,8 @@ bool Physics::init()
 	// World gravity
 	this->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
 	this->setLatencyMotionStateInterpolation(true);
-	ghostPairCB = new btGhostPairCallback();
-	m_broadphasePairCache->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCB);
+	m_ghostPairCB = new btGhostPairCallback();
+	m_broadphasePairCache->getOverlappingPairCache()->setInternalGhostPairCallback(m_ghostPairCB);
 	return true;
 }
 
@@ -59,10 +58,10 @@ void Physics::clear()
 	} 
 
 	// Deleting members
-	delete constraintSolver;
-	delete overlappingPairCache;
-	delete dispatcher;
-	delete collisionConfiguration;
+	delete m_constraintSolver;
+	delete m_overlappingPairCache;
+	delete m_dispatcher;
+	delete m_collisionConfiguration;
 }
 
 void Physics::update(float delta)
@@ -80,10 +79,10 @@ void Physics::update(float delta)
 	PROFILE_BEGIN("Collision Handling");
 
 	// Collisions
-	int numManifolds = dispatcher->getNumManifolds();
+	int numManifolds = m_dispatcher->getNumManifolds();
 	for (int i = 0; i < numManifolds; i++)
 	{
-		btPersistentManifold* contactManifold = dispatcher->getManifoldByIndexInternal(i);
+		btPersistentManifold* contactManifold = m_dispatcher->getManifoldByIndexInternal(i);
 	
 		const btCollisionObject* obA = contactManifold->getBody0();
 		const btCollisionObject* obB = contactManifold->getBody1();
