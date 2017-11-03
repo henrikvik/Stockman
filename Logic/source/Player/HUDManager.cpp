@@ -250,6 +250,7 @@ void Logic::HUDManager::updateGUIElemets()
 
 }
 
+
 HUDManager::HUDManager()
 {
 

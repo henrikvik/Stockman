@@ -15,9 +15,14 @@ public:
     using InstancedQueue = std::unordered_map<size_t, Queue<T>>;
 
     template<typename T>
-    void queue(T * info)
+    inline void queue(T * info)
     {
         static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
+
+        if constexpr (std::is_base_of_v<SpriteRenderInfo, T>)
+        {
+            OutputDebugString(__FILE__);
+        }
 
         if constexpr (std::is_base_of_v<StaticRenderInfo, T>)
         {
@@ -175,5 +180,8 @@ private:
 
     typedef std::unordered_map<std::type_index, QueueContainer_t*> Queues_t;
     Queues_t queues;
+
+
+    std::unordered_map<void*, const char*> QUEUE_BLAME;
 };
 

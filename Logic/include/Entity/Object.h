@@ -1,16 +1,16 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include <Misc/NonCopyable.h>
 
 namespace Logic
 {
-	class Object
+	class Object : public NonCopyable
 	{
 	public:
         Object() {};
         virtual ~Object() {};
-        Object(const Object &other) = delete;
-        Object* operator=(const Object &other) = delete;
+        virtual void render() const = 0;
     };
 }
 

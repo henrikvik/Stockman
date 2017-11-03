@@ -23,6 +23,14 @@ struct FloatRect
 
     DirectX::SimpleMath::Vector2 topLeft;
     DirectX::SimpleMath::Vector2 bottomRight;
+
+    bool contains(float x, float y)
+    {
+        return (
+            topLeft.x < x && x > bottomRight.x &&
+            topLeft.y < y && y > bottomRight.y
+        );
+    }
 };
 
 struct RenderInfo
@@ -55,7 +63,7 @@ struct SpecialEffectRenderInfo : RenderInfo
 
 struct SpriteRenderInfo : RenderInfo
 {
-    Resources::Textures::Files texture;
+    Resources::Textures::Files texture = Resources::Textures::MissingTexture;
     FloatRect screenRect;
     FloatRect textureRect;
     float alpha = 1;

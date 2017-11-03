@@ -294,7 +294,7 @@ GameState MenuMachine::getStateToBe()
 	return m_stateToBe;
 }
 
-int Logic::MenuMachine::getChoiceUpgrade()
+int Logic::MenuMachine::getPickedCard()
 {
 	int choosenUpgrade = -1;
 	if (m_cardUpgrade != -1)

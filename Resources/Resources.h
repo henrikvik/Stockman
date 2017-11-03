@@ -66,6 +66,7 @@ namespace Resources
             HUDIcons,
             mainMenuButton,
             mainmenupicture,
+            MissingTexture,
             SettingsMenuButtons
         };
         const std::map<Files, const char *> Paths =
@@ -79,6 +80,7 @@ namespace Resources
             {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
+            {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"}
         };
     }

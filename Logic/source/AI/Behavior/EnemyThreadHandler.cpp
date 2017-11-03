@@ -11,17 +11,27 @@
 namespace Logic
 {
 
-    EnemyThreadHandler::EnemyThreadHandler()
-    {
-        resetThreads();
-        initThreads();
-    }
+EnemyThreadHandler::EnemyThreadHandler()
+{
+    for (std::thread *&t : threads)
+        t = nullptr;
+    resetThreads();
+    initThreads();
+}
 
-    void EnemyThreadHandler::initThreads()
-    {
-        m_killChildren = false;
-        while (!m_work.empty())
-            m_work.pop();
+void EnemyThreadHandler::initThreads()
+{
+    m_killChildren = true;
+
+    for (std::thread *&t : threads)
+        if (t)
+            if (t->joinable())
+                t->join();
+
+    m_killChildren = false;
+
+    while (!m_work.empty())
+        m_work.pop();
 
         for (std::thread *&t : threads)
             t = newd std::thread(&EnemyThreadHandler::threadMain, this);
@@ -38,24 +48,25 @@ namespace Logic
             t = nullptr;
     }
 
-    void EnemyThreadHandler::deleteThreads()
+void EnemyThreadHandler::deleteThreads()
+{
+    m_killChildren = true;
+    for (std::thread *&t : threads)
     {
-        m_killChildren = true;
-        for (std::thread *t : threads)
+        if (t)
         {
-            if (t)
-            {
-                if (t->joinable())
-                    t->join();
-                delete t;
-            }
+            if (t->joinable())
+                t->join();
+            delete t;
+            t = nullptr;
         }
     }
+}
 
-    void EnemyThreadHandler::updateEnemiesAndPath(WorkData &data)
-    {
-        AStar &aStar = AStar::singleton();
-        aStar.loadTargetIndex(data.player);
+void EnemyThreadHandler::updateEnemiesAndPath(WorkData &data)
+{
+    AStar &aStar = AStar::singleton();
+    aStar.loadTargetIndex(*data.player);
 
         std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(data.index);
         const std::vector<Enemy*> &enemies = data.manager->getAliveEnemies()[data.index];
@@ -64,20 +75,29 @@ namespace Logic
             enemies[i]->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
     }
 
-    void EnemyThreadHandler::threadMain()
+void EnemyThreadHandler::threadMain()
+{
+    while (!m_killChildren)
     {
-        while (!m_killChildren)
+        WorkData todo;
+        bool haveWork = false;
+
         {
             std::lock_guard<std::mutex> lock(m_workMutex);
             if (!m_work.empty())
             {
-                WorkData todo = m_work.front();
+                todo = m_work.front();
                 m_work.pop();
-                updateEnemiesAndPath(todo);
+                haveWork = true;
             }
-            std::this_thread::sleep_for(std::chrono::nanoseconds(2));
         }
+
+        if (haveWork)
+            updateEnemiesAndPath(todo);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+}
 
     void EnemyThreadHandler::addWork(WorkData data)
     {

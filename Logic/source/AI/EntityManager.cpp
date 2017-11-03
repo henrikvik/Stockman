@@ -50,6 +50,11 @@ EntityManager::~EntityManager()
     delete m_threadHandler;
 }
 
+void EntityManager::resetTriggers()
+{
+    m_triggerManager.reset();
+}
+
 void EntityManager::allocateData()
 {
     m_enemies.resize(AStar::singleton().getNrOfPolygons());
@@ -59,7 +64,7 @@ void EntityManager::allocateData()
 void EntityManager::loadDebugCmds()
 {
 #ifdef _DEBUG
-    DebugWindow::getInstance()->registerCommand("SETAI", [&](std::vector<std::string> &para) -> std::string {
+    DebugWindow::getInstance()->registerCommand("LOG_SETAI", [&](std::vector<std::string> &para) -> std::string {
         try {
             m_aiType = static_cast<AIType> (stoi(para[0]));
             return "AI Mode Updated";
@@ -70,29 +75,47 @@ void EntityManager::loadDebugCmds()
 #endif
 }
 
-void EntityManager::deallocateData()
+void EntityManager::deallocateData(bool forceDestroy)
 {
-    m_threadHandler->deleteThreads();
     for (std::vector<Enemy*>& list : m_enemies)
     {
-        for (Enemy *enemy : list)
+        for (Enemy *&enemy : list)
         {
-            DeleteBody(*enemy); 
-            delete enemy;
-            enemy = nullptr;
+            if (forceDestroy || !enemy->hasCallbackEntities())
+            {
+                if (forceDestroy)
+                    enemy->clearCallbacks(false);
+                DeleteBody(*enemy);
+                delete enemy;
+                enemy = nullptr;
+            }
+            else {
+                m_deadEnemies.push_back(enemy);
+            }
         }
         list.clear();
     }
 
-    for (Enemy *enemy : m_deadEnemies)
+    // clear out enemies without callbacks in needs to do
+    for (Enemy *&enemy : m_deadEnemies)
     {
-        DeleteBody(*enemy);
-        delete enemy;
+        if (forceDestroy || !enemy->hasCallbackEntities()) 
+        {
+            if (forceDestroy)
+                enemy->clearCallbacks(false);
+            delete enemy;
+            enemy = nullptr;
+        }
     }
 
+    // copy over old list without destroyed enemies
+    std::vector<Enemy*> oldList = m_deadEnemies;
     m_deadEnemies.clear();
+    for (Enemy *enemy : oldList)
+        if (enemy)
+            m_deadEnemies.push_back(enemy);
+
     m_aliveEnemies = 0;
-    m_threadHandler->initThreads();
 }
 
 void EntityManager::update(Player const &player, float deltaTime)
@@ -109,7 +132,7 @@ void EntityManager::update(Player const &player, float deltaTime)
             {
                 updateEnemies(static_cast<int> (i), player, deltaTime);
                 if ((i + m_frame) % ENEMIES_PATH_UPDATE_PER_FRAME == 0)
-                    m_threadHandler->addWork({ this, static_cast<int> (i), player });
+                    m_threadHandler->addWork({ this, static_cast<int> (i), &player });
             }
         }
     }
@@ -117,11 +140,12 @@ void EntityManager::update(Player const &player, float deltaTime)
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
-		m_deadEnemies[i]->updateDead(deltaTime);
+	    //m_deadEnemies[i]->updateDead(deltaTime); -- Delete body right now, maybe later keep the dead bodies, but it is not really important but can be changed
 	}
 
 	m_triggerManager.update(deltaTime);
 }
+
 void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
 {
 	bool goalNodeChanged = false;
@@ -158,13 +182,9 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
             flock[flock.size() - 1]
         );
 
+        DeleteBody(*enemy);
         m_deadEnemies.push_back(enemy);
         flock.pop_back();
-
-        // nice little death stuff
-        btVector3 oldVel = enemy->getRigidBody()->getLinearVelocity();
-        enemy->getRigidBody()->setLinearVelocity(btVector3());
-        enemy->getRigidBody()->applyCentralForce(oldVel * 1000);
     }
 }
 
@@ -304,7 +324,7 @@ void EntityManager::render() const
     for (int i = 0; i < m_deadEnemies.size(); ++i)
     {
 #ifndef DISABLE_RENDERING_DEAD_ENEMIES
-        m_deadEnemies[i]->render();
+     //   m_deadEnemies[i]->render();
 #endif
     }
 

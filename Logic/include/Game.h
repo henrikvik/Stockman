@@ -42,11 +42,15 @@ namespace Logic
 	class Game
 	{
     private:
-        static std::unordered_map<Game*, bool> GAMES;
-        static const GameState STATE_START;
-        static const btVector3 PLAYER_START_SCALE,
-                               PLAYER_START_ROTATION;
-        static const int NUMBER_OF_UNIQUE_CARDS;
+
+        struct GAME_START
+        {
+            static const GameState  STATE;
+            static const btVector3  PLAYER_SCALE;
+            static const btVector3  PLAYER_ROTATION;
+            static const int        UNIQUE_CARDS;
+        };
+
 	public:
 		Game();
 		Game(const Game& other) = delete;

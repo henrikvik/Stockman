@@ -148,7 +148,7 @@ namespace Logic
 		void affect(int stacks, Effect const &effect, float deltaTime);
 		void upgrade(Upgrade const &upgrade);
 
-		void render(); 
+		void render() const; 
 		void setMaxSpeed(float maxSpeed);
 
 		void saveToFile();
