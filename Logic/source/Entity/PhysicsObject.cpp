@@ -79,7 +79,7 @@ void PhysicsObject::updatePhysics(float deltaTime)
 	setWorldTranslation(getTransformMatrix());
 }
 
-void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, const btRigidBody * collidedWithYour)
+void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint)
 {
 	// Checks if the collision happened on one of the weakpoints
 	bool hit = false;
@@ -89,7 +89,7 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, con
 		{
 			Weakpoint weakPoint = m_weakPoints[i];
 
-			if (collidedWithYour == weakPoint.body)
+			if (weakPoint.body->checkCollideWith(other.getRigidBody()))
 			{
 				onCollision(other, contactPoint, weakPoint.multiplier);
 				hit = true;

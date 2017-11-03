@@ -106,8 +106,8 @@ void Physics::update(float delta)
 
 			if (entityA && entityB)
 			{
-				entityA->collision(*entityB, a, rbodyA);
-				entityB->collision(*entityA, b, rbodyB);
+				entityA->collision(*entityB, a);
+				entityB->collision(*entityA, b);
 			}
 		}
 	}

@@ -128,8 +128,8 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
 
         // Sledge/Melee
         newd WeaponLoadout{ 
-        /* Primary */       newd Weapon(projectileManager, ProjectileData(1, 2, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 4, 1, 0, 0, 100.f, 200.f, 0 }),
-        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(1, 2, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 5, 1, 0, 0, 100.f, 200.f, 0 }),
+        /* Primary */       newd Weapon(projectileManager, ProjectileData(1, 0.4f, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 4, 1, 0, 0, 100.f, 200.f, 0 }),
+        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(1, 0.4f, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 5, 1, 0, 0, 100.f, 200.f, 0 }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0 }),
         /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 3.f, -0.3f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(3.1f, -0.3f, -5.f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), -0.4f }) }
     };

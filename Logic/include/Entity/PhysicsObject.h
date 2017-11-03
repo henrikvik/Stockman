@@ -31,7 +31,7 @@ namespace Logic
 		void destroyBody();
 		void updatePhysics(float deltaTime);
 
-		void collision(PhysicsObject& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
+		void collision(PhysicsObject& other, btVector3 contactPoint);
 		virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier) = 0;
 
         virtual void setHalfExtent(btVector3 halfExtent);
