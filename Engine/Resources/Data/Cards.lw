@@ -7,7 +7,7 @@
 	"xTexEnd" : 0.0f;
 	"yTexEnd" : 0.0f;
 	"isEffect" : 1;
-	"upgradeAmmount" : 1;
+	"upgradeAmount" : 1;
 	"upgrade1" : 32;
 }
 
@@ -20,7 +20,7 @@
 	"xTexEnd" : 0.0f;
 	"yTexEnd" : 0.0f;
 	"isEffect" : 0;
-	"upgradeAmmount" : 1;
+	"upgradeAmount" : 1;
 
 	"upgrade1" : 1;
 }
