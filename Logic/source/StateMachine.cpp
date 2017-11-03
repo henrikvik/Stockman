@@ -67,7 +67,9 @@ void StateMachine::switchState(StateType stateType)
             break;
         }
         m_currentState->setCallBackFunction(SetStateFunction);
+        RenderQueue::get().clearAllQueues();
     }
+    
 }
 
 StateType StateMachine::getCurrentStateType()

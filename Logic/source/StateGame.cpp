@@ -108,6 +108,7 @@ void StateGame::reset()
     m_cardManager->resetDeck();
 
     ComboMachine::Get().Reset();
+   
 }
 
 void StateGame::update(float deltaTime)
@@ -143,7 +144,7 @@ void StateGame::update(float deltaTime)
     PROFILE_END();
 
     PROFILE_BEGIN("HUD");
-//    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
+    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
     PROFILE_END();
 
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))

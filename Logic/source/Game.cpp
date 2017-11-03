@@ -146,6 +146,7 @@ void Game::reset()
     m_cardManager->resetDeck();
 
 	ComboMachine::Get().Reset();
+    RenderQueue::get().clearAllQueues();
 }
 
 void Game::update(float deltaTime)
