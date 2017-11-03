@@ -166,7 +166,11 @@ bool Game::updateMenu(float deltaTime)
     case gameStateGame:
         if (m_menu->getStateToBe() == GameState::gameStateGameUpgrade)
         {
-            m_cardManager->pickThree(false); //get some trigger for injury
+            try {
+                m_cardManager->pickThree(false); //get some trigger for injury
+            } catch (std::runtime_error const &err) {
+                printf("Error with picking: \n%s\n", err.what());
+            }
             m_menu->update(deltaTime);
             break;
         }
@@ -190,29 +194,9 @@ bool Game::updateMenu(float deltaTime)
         break;
     case gameStateGameUpgrade:
         m_menu->update(deltaTime);
-        {
-            if (m_menu->getStateToBe() != GameState::gameStateDefault)
-                break;
-
-            Card temp = m_cardManager->pick(m_menu->getChoiceUpgrade());
-            if (temp.getName().compare("") != 0 && temp.getDescription().compare("") != 0)
-            {
-                //add information to player
+        if (m_menu->getStateToBe() == GameState::gameStateDefault)
+            if (m_cardManager->pickAndApplyCard(*m_player, m_menu->getPickedCard()))
                 m_menu->setStateToBe(gameStateGame); //change to gameStateGame
-
-                for (auto const& ID : temp.getUpgradesID())
-                {
-                    if (temp.getIsEffect())
-                    {
-                        m_player->getStatusManager().addStatus(static_cast<StatusManager::EFFECT_ID>(ID), 1); //edit to how you feel it should be
-                    }
-                    else
-                    {
-                        m_player->getStatusManager().addUpgrade(static_cast<StatusManager::UPGRADE_ID>(ID));
-                    }
-                }
-            }
-        }
         return true;
 
         break;
