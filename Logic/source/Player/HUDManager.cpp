@@ -9,7 +9,7 @@
 
 #include <Misc\ComboMachine.h>
 
-#include <Graphics\include\Structs.h>
+
 
 #include <comdef.h>
 
@@ -29,21 +29,34 @@ void Logic::HUDManager::constructGUIElements()
     GUIElements[0].screenRect = FloatRect({ 0.45f, 0.45f }, { .55f, 0.55f });
     GUIElements[0].textureRect = FloatRect({0.0f, 0.0f}, { 1.f, 1.f });
 
+    float crosshairSize = 50;
+    HUDElements.push_back(Sprite( Sprite::CENTER, Sprite::CENTER, 0, 0, crosshairSize, crosshairSize, Resources::Textures::crosshair, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
+
     GUIElements[1].alpha = 1;
     GUIElements[1].texture = Resources::Textures::HPBars;
     GUIElements[1].screenRect = FloatRect({ 0.0f, 0.7f }, { 0.3f, 0.9f });
     GUIElements[1].textureRect = FloatRect({0.0f, 0.0f}, {0.5f, 0.5f});
+
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.5f }, { 1.f, 1.f })));
+
+
 
     GUIElements[2].alpha = 1;
     GUIElements[2].texture = Resources::Textures::HPBars;
     GUIElements[2].screenRect = FloatRect({ 0.0f, 0.7f }, { 0.3f, 0.9f });
     GUIElements[2].textureRect = FloatRect({ 0.0f, 0.5f }, { 0.5f , 1.0f });
 
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 0.5f })));
+
+
     //crossbow
     GUIElements[3].alpha = 1;
     GUIElements[3].texture = Resources::Textures::HUDIcons;
     GUIElements[3].screenRect = FloatRect(740.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[3].textureRect = FloatRect(29.0f / WIN_WIDTH, 384.0f / WIN_HEIGHT, 291.0f / WIN_WIDTH, 291.0f / WIN_HEIGHT);
+
+    //HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -250, -50, 50, 50, Resources::Textures::HUDIcons, FloatRect({ 29.0f / WIN_WIDTH, 384.0f / WIN_HEIGHT }, { 291.0f / WIN_WIDTH, 291.0f / WIN_HEIGHT })));
+    
     
 
 
@@ -265,10 +278,16 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
 
 void HUDManager::render() const
 {    
-    for (size_t i = 0; i < USEDGUIELEMTS; i++)
+    //for (size_t i = 2; i < USEDGUIELEMTS; i++)
+    //{
+    //    RenderQueue::get().queue(&GUIElements[i]);
+    //}
+    for (auto &sprite : HUDElements)
     {
-        RenderQueue::get().queue(&GUIElements[i]);
+        sprite.render();
     }
+
+
 }
 
 void Logic::HUDManager::reset()

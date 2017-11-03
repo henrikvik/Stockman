@@ -190,6 +190,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\GameType.h" />
+    <ClInclude Include="include\Misc\GUI\Sprite.h" />
     <ClInclude Include="include\Player\HUDManager.h" />
     <ClInclude Include="include\AI\EnemyChaser.h" />
     <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
@@ -259,6 +260,7 @@
     <ClInclude Include="include\AI\WaveTimeManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Misc\GUI\Sprite.cpp" />
     <ClCompile Include="source\Player\HUDManager.cpp" />
     <ClCompile Include="source\AI\Behavior\MeleeBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyChaser.cpp" />

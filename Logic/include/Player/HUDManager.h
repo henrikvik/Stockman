@@ -1,11 +1,10 @@
 #ifndef HUD_MANAGER_H
 #define HUD_MANAGER_H
 #include <Graphics\include\RenderQueue.h>
+#include "../Misc/GUI/Sprite.h"
+#include "../Misc/GUI/Button.h"
 
-namespace Graphics
-{
-    struct HUDInfo;
-}
+
 
 //all possible GUI elemets
 #define NROFICONS 12
@@ -44,6 +43,8 @@ namespace Logic
 
         static const int CURRENT_AMMO, TOTAL_AMMO;
         SpriteRenderInfo GUIElements[NROFICONS];
+        std::vector<Sprite> HUDElements;
+
         //all possible icons for your choosen skills. off cd / on cd
         SpriteRenderInfo choosenSKills[4];
         void constructGUIElements();
