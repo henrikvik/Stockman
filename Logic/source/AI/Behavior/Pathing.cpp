@@ -4,6 +4,7 @@ using namespace Logic;
 Pathing::Pathing()
 {
 	m_currentNode = 0;
+    m_debugInfo.points = nullptr;
 }
 
 Pathing::~Pathing()
