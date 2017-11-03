@@ -101,9 +101,6 @@ void Physics::update(float delta)
 			PhysicsObject* entityA = reinterpret_cast<PhysicsObject*>(obA->getUserPointer());
 			PhysicsObject* entityB = reinterpret_cast<PhysicsObject*>(obB->getUserPointer());
 
-			const btRigidBody* rbodyA = btRigidBody::upcast(obA);
-			const btRigidBody* rbodyB = btRigidBody::upcast(obB);
-
 			if (entityA && entityB)
 			{
 				entityA->collision(*entityB, a);

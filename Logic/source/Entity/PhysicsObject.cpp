@@ -88,7 +88,6 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint)
 		for (int i = 0; i < m_weakPoints.size(); i++)
 		{
 			Weakpoint weakPoint = m_weakPoints[i];
-
 			if (weakPoint.body->checkCollideWith(other.getRigidBody()))
 			{
 				onCollision(other, contactPoint, weakPoint.multiplier);
