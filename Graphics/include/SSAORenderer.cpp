@@ -13,7 +13,7 @@ namespace Graphics
 		ssaoMerger(device, SHADER_PATH("SSAOShaders/SSAOMerger.hlsl"))
 	{
 		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("randomNormals.jpg"), NULL, &randomNormals);
-		states = new DirectX::CommonStates(device);
+		states = newd DirectX::CommonStates(device);
 	}
 
 	SSAORenderer::~SSAORenderer()

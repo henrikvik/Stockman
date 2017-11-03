@@ -1,60 +1,60 @@
 #include <Entity\LightObject.h>
-#include <Graphics\include\Renderer.h>
 
 using namespace Logic;
 
 LightObject::LightObject(FrameLight& frame)
 {
-    color       = frame.color;
-    intensity   = frame.intensity;
-    positionWS  = frame.position;
-    range       = frame.range;
+    renderInfo.color = DirectX::SimpleMath::Color(frame.color.x, frame.color.y, frame.color.z, 1);
+    renderInfo.intensity = frame.intensity;
+    renderInfo.position = frame.position;
+    renderInfo.range = frame.range;
 
     // Render Debug Construction
-    renderDebug.points = new std::vector<DirectX::SimpleMath::Vector3>();
-    renderDebug.color = DirectX::SimpleMath::Color(color);
-    renderDebug.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-    renderDebug.useDepth = true;
+    debugRenderInfo.points = new std::vector<DirectX::SimpleMath::Vector3>();
+    debugRenderInfo.color = DirectX::SimpleMath::Color(renderInfo.color);
+    debugRenderInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+    debugRenderInfo.useDepth = true;
 
     // Box
-    DirectX::SimpleMath::Vector3 pos = positionWS, size(frame.range);
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z + size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z - size.z));
-    renderDebug.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z - size.z));
+    DirectX::SimpleMath::Vector3 pos(renderInfo.position);
+    DirectX::SimpleMath::Vector3 size(frame.range);
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z + size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y + size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y + size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z - size.z));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z - size.z));
 }
 LightObject::~LightObject() 
 {
-    renderDebug.points->clear();
-    delete renderDebug.points;
+    debugRenderInfo.points->clear();
+    delete debugRenderInfo.points;
 }
 
-void LightObject::renderD(Graphics::Renderer& renderer)
+void LightObject::renderD()
 {
-    renderer.queueRenderDebug(&renderDebug);
+    RenderQueue::get().queue(&debugRenderInfo);
 }
 
-void LightObject::render(Graphics::Renderer& renderer) 
+void LightObject::render() const
 { 
-    renderer.queueLight(*this); 
+    RenderQueue::get().queue(&renderInfo);
 }

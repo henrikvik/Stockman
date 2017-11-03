@@ -59,6 +59,9 @@
     <ClInclude Include="DebugWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="newd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Data\Effects.lw" />

@@ -9,9 +9,10 @@
 		*/
 #pragma endregion
 
-#include <vector>
 #include <d3d11.h>
 #include <SimpleMath.h>
+
+#include <vector>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 
@@ -38,7 +39,7 @@ namespace Logic
 		void clear();
 		void reset();
 		void update(float deltaTime);
-		void render(Graphics::Renderer& renderer);
+		void render() const;
 
 		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 

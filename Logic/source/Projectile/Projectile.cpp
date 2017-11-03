@@ -5,9 +5,11 @@
 
 using namespace Logic;
 
-// You need to call the start() function to move it in a direction
-Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
-: Entity(body, halfExtent, pData.meshID)
+// TEMP: ta bort mig
+static bool FUN_MODE = false;
+
+Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
+: Entity(body, halfextent) 
 {
 	m_pData         = pData;
 	m_dead          = false;
@@ -75,6 +77,10 @@ void Projectile::updateSpecific(float deltaTime)
 
     // Reset the bullet time modifier back to normal
     m_bulletTimeMod = 1.f;
+
+    float worldTransform[16];
+    getRigidBody()->getWorldTransform().getOpenGLMatrix(worldTransform);
+    renderInfo.transform = DirectX::SimpleMath::Matrix(worldTransform);
 }
 
 // Handle collisions with different types of classes
@@ -186,6 +192,21 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 
     // No callback should be added
     return false;
+}
+
+void Logic::Projectile::setWorldTransform(DirectX::SimpleMath::Matrix & worldTransform)
+{
+    renderInfo.transform = worldTransform;
+}
+
+void Logic::Projectile::setModelID(Resources::Models::Files modelId)
+{
+    renderInfo.model = modelId;
+}
+
+void Logic::Projectile::render() const
+{
+    RenderQueue::get().queue(&renderInfo);
 }
 
 ProjectileData& Projectile::getProjectileData()             { return m_pData;   }

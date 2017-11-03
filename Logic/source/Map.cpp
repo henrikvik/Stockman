@@ -44,19 +44,19 @@ void Map::update(float deltaTime)
     m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
 }
 
-void Map::render(Graphics::Renderer& renderer)
+void Map::render() const
 {
-	for (Object* o : m_props)           o->render(renderer);
-    for (LightObject* l : m_lights)     l->render(renderer);
-    for (StaticObject* e : m_hitboxes)  e->render(renderer); // Hitboxes should not be visiable at all at release
+	for (Object* o : m_props)           o->render();
+    for (LightObject* l : m_lights)     l->render();
+    for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
 
 	// Drawing hitboxes debugged & lights
     if (m_drawDebug)
     {
         for (StaticObject* e : m_hitboxes)
-            e->renderD(renderer);
-        for (LightObject* l : m_lights)
-            Graphics::Debug::PointLight(*l);
+            e->renderD();
+     //   for (LightObject* l : m_lights)
+     //       Graphics::Debug::PointLight(*l);
     }
 }
 	
@@ -69,31 +69,31 @@ void Map::loadMapFromFile(std::string path)
 {
     // Loads hitboxes
     std::vector<FrameHitbox> hitboxes;
-    hitboxes.push_back({ { 0, -10, 0 },{ 0, 0, 0 },{ 500.f, 10, 500.f }, Graphics::CUBE });
-    hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
-    hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Graphics::CUBE });
-    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
-    hitboxes.push_back({ { 80, 3, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 50, 1, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
-    hitboxes.push_back({ { 80, 1, 40 },{ 40, -90, -90 },{ 15, 3, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 120, 1, 180 },{ 40, 0, -90 },{ 60, 10, 45 }, Graphics::CUBE });
-    hitboxes.push_back({ { 125, 5, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 100, 4, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 120, 4, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 130, 4, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 150, 6, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Graphics::CUBE });
-    hitboxes.push_back({ { 60, 80, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
-    hitboxes.push_back({ { 45, 70, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
-    hitboxes.push_back({ { 60, 50, 60 },{ 0, 0, 0 },{ 10, 2, 10 }, Graphics::CUBE });
-    hitboxes.push_back({ { 80, 42, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 50, 40, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 125, 35, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 100, 40, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 120, 50, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 130, 40, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 150, 60, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Graphics::CUBE });
-    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 }, Graphics::CUBE });
+    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 80, 3, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 50, 1, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 80, 1, 40 },{ 40, -90, -90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 120, 1, 180 },{ 40, 0, -90 },{ 60, 10, 45 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 125, 5, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 100, 4, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 120, 4, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 130, 4, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 150, 6, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 60, 80, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 45, 70, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 60, 50, 60 },{ 0, 0, 0 },{ 10, 2, 10 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 80, 42, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 50, 40, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 125, 35, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 100, 40, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 120, 50, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 130, 40, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 150, 60, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 }, Resources::Models::UnitCube });
 
     // Loads lights
     std::vector<FrameLight> lights;

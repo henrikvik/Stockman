@@ -130,7 +130,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         body->setLinearVelocity({ 0.f, 0.f, 0.f });
         body->setGravity({ 0.f, 0.f, 0.f });
         body->getWorldTransform().setOrigin(PROJECTILE_DEFAULT_POS);
-        p->setWorldTranslation(p->getTransformMatrix());
+        p->setWorldTransform(p->getTransformMatrix());
 
         // reset collision flags
         if (p->getProjectileData().isSensor)
@@ -167,10 +167,10 @@ void Logic::ProjectileManager::update(float deltaTime)
 	}
 }
 
-void Logic::ProjectileManager::render(Graphics::Renderer& renderer)
+void Logic::ProjectileManager::render()
 {
 	for (Projectile* p : m_projectilesActive)
-		p->render(renderer);
+		p->render();
 }
 
 void ProjectileManager::removeAllProjectiles()

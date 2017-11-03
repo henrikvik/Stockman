@@ -1,61 +1,87 @@
 #include <Misc\GUI\Button.h>
 using namespace Logic;
 
-Button::Button()
+
+Logic::Button::Button(
+    float x, float y,
+    float width, float height,
+    Resources::Textures::Files texture,
+    FloatRect inactive,
+    std::function<void(void)> callback
+)
+    : Button(x, y, width, height, texture, inactive, inactive, callback)
 {
+}
+
+Logic::Button::Button(
+    float x, float y,
+    float width, float height,
+    Resources::Textures::Files texture,
+    FloatRect inactive,
+    FloatRect active,
+    std::function<void(void)> callback
+)
+    : Button(x, y, width, height, texture, inactive, active, active, callback)
+{
+}
+
+Logic::Button::Button(
+    float x, float y,
+    float width, float height,
+    Resources::Textures::Files texture,
+    FloatRect inactive, 
+    FloatRect active, 
+    FloatRect hover,
+    std::function<void(void)> callback
+)
+    : inactive(inactive)
+    , active(active)
+    , hover(hover)
+    , callback(callback)
+{
+    m_animationStart = DirectX::SimpleMath::Vector2(0,0);
+    m_animationEnd   = DirectX::SimpleMath::Vector2(0,0);
+
+    FloatRect screenRect = {
+        x / WIN_WIDTH,
+        y / WIN_HEIGHT,
+        width / WIN_WIDTH,
+        height / WIN_HEIGHT
+    };
+
+    state = INACTIVE;
+    renderInfo.texture = texture;
+    renderInfo.screenRect = screenRect;
+    renderInfo.textureRect = inactive;
+    renderInfo.alpha = 1;
 }
 
 Button::~Button()
 {
 }
 
-void Button::initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart, DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width, int textureIndex, std::function<void(void)> callback)
+void Logic::Button::setCallback(std::function<void(void)> callback)
 {
-	m_buttonInfo.m_rek = DirectX::SimpleMath::Rectangle((long)pos.x, (long)pos.y, (long)width, (long)height);
-	m_buttonInfo.m_texCoordStart = texCoordStart;
-	m_buttonInfo.m_texCoordEnd = texCoordEnd;
-	m_buttonInfo.activeoffset = offset;
-	m_buttonInfo.textureIndex = textureIndex;
-
-	m_animationStart = DirectX::SimpleMath::Vector2(pos.x, pos.y);
-	m_animationEnd = DirectX::SimpleMath::Vector2(0 - width, pos.y);
-	m_animationTime = 0;
-	m_start = m_buttonInfo.m_texCoordStart.y;
-	m_end = m_buttonInfo.m_texCoordEnd.y;
-
-	m_callback = callback;
-	m_highlighted = false;
+    this->callback = callback;
 }
 
 void Button::updateOnPress(int posX, int posY)
 {
-	if (m_buttonInfo.m_rek.Contains(posX, posY))
+	if (callback && renderInfo.screenRect.contains(posX / WIN_WIDTH, posY / WIN_HEIGHT))
 	{
-		m_callback();
+        callback();
 	}
 }
 
 void Button::hoverOver(int posX, int posY)
 {
-    if (m_buttonInfo.m_rek.Contains(posX, posY))
+    if (renderInfo.screenRect.contains(posX / WIN_WIDTH, posY / WIN_HEIGHT))
     {
-        if (!m_highlighted)
-        {
-            m_buttonInfo.m_texCoordStart.y -= m_buttonInfo.activeoffset;
-
-			m_buttonInfo.m_texCoordEnd.y = m_buttonInfo.m_texCoordEnd.y - m_buttonInfo.activeoffset;
-            m_highlighted = true;
-        }
-
+        state = HOVER;
     }
     else
     {
-        if (m_highlighted)
-        {
-            m_buttonInfo.m_texCoordStart.y = m_start;
-            m_buttonInfo.m_texCoordEnd.y = m_end;
-			m_highlighted = false;
-        }
+        state = INACTIVE;
     }
 }
 
@@ -76,19 +102,30 @@ bool Button::animationTransition(float dt, float maxAnimationTime, bool forward)
 	else
 		lerpResult = DirectX::SimpleMath::Vector2::Lerp(m_animationEnd, m_animationStart, done ? 1 : m_animationTime);
 	
-	m_buttonInfo.m_rek = DirectX::SimpleMath::Rectangle((long)lerpResult.x, (long)lerpResult.y,
-		m_buttonInfo.m_rek.width, m_buttonInfo.m_rek.height);
+    //screenRect.x = lerpResult.x;
+    //screenRect.y = lerpResult.y;
 
 	return done;
 }
 
-Graphics::ButtonInfo* Button::getButtonInfo()
+void Logic::Button::setState(State state)
 {
-	return &m_buttonInfo;
+    this->state = state;
+    switch (state)
+    {
+    case INACTIVE:
+        renderInfo.textureRect = inactive;
+        break;
+    case ACTIVE:
+        renderInfo.textureRect = active;
+        break;
+    case HOVER:
+        renderInfo.textureRect = hover;
+        break;
+    }
 }
 
-void Button::setStartAndEnd(float start, float end)
+void Logic::Button::render() const
 {
-    m_start = start;
-    m_end = end;
+    RenderQueue::get().queue(&renderInfo);
 }

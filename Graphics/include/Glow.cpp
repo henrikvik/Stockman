@@ -17,7 +17,7 @@ Graphics::Glow::Glow(ID3D11Device * device, ID3D11DeviceContext * context)
 	, glowPass0(device, WIN_WIDTH, WIN_HEIGHT)
 	, glowPass1(device, WIN_WIDTH, WIN_HEIGHT)
 {
-	this->states = new DirectX::CommonStates(device);
+	this->states = newd DirectX::CommonStates(device);
 
 	DebugWindow *debugWindow = DebugWindow::getInstance();
 	createMips(device);

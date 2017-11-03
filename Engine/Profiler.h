@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tbb\tbb.h>
 #include <thread>
 #include <atomic>
 #include <vector>
@@ -10,7 +11,6 @@
 #include <dxgi1_4.h>
 
 #include <imgui.h>
-#include <tbb\tbb.h>
 
 #pragma comment(lib, "dxgi.lib")
 

@@ -1,0 +1,4337 @@
+{
+    "Mesh":
+    {
+        "Vertices": 
+        [
+            {
+                "Position": [-1.24, -0.49, 0.01],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [-0.92, 0.00, 0.38],
+                "Tangent":  [0.38, 0.00, 0.92],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, -0.09],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, 0.01],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [-0.00, 0.00, 1.00],
+                "Tangent":  [1.00, 0.00, 0.00],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, 0.10],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [0.71, 0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, -0.71],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, -0.49, 0.01],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [-0.92, 0.00, 0.38],
+                "Tangent":  [0.38, 0.00, 0.92],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, 0.01],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [-0.00, 0.00, 1.00],
+                "Tangent":  [1.00, 0.00, 0.00],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, -0.49, 0.01],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, 0.10],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [0.71, 0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, -0.71],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, 0.01],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [-0.00, 0.00, 1.00],
+                "Tangent":  [1.00, 0.00, 0.00],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, -0.09],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, -0.49, 0.01],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, 0.01],
+                "Normal":   [0.00, -1.00, 0.00],
+                "Binormal": [-0.00, 0.00, 1.00],
+                "Tangent":  [1.00, 0.00, 0.00],
+                "UV":       [0.00, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, -0.09],
+                "Normal":   [-0.71, 0.03, -0.71],
+                "Binormal": [0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.12, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.16, 0.14, -0.04],
+                "Normal":   [-0.71, -0.01, -0.71],
+                "Binormal": [-0.71, -0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.14, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, -0.12],
+                "Normal":   [-0.71, -0.00, -0.71],
+                "Binormal": [-0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.11, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.16, 0.14, -0.04],
+                "Normal":   [-0.71, -0.01, -0.71],
+                "Binormal": [-0.71, -0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.14, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, -0.09],
+                "Normal":   [-0.71, 0.03, -0.71],
+                "Binormal": [0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.12, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, -0.49, 0.01],
+                "Normal":   [-0.71, 0.03, -0.71],
+                "Binormal": [-0.92, 0.00, 0.38],
+                "Tangent":  [0.38, 0.00, 0.92],
+                "UV":       [0.15, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.16, 0.14, -0.04],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [-0.71, -0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.03, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, 0.10],
+                "Normal":   [-0.70, 0.15, 0.70],
+                "Binormal": [0.71, 0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, -0.71],
+                "UV":       [0.04, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, 0.04],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.05, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, 0.10],
+                "Normal":   [-0.70, 0.15, 0.70],
+                "Binormal": [0.71, 0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, -0.71],
+                "UV":       [0.04, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.16, 0.14, -0.04],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [-0.71, -0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.03, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, -0.49, 0.01],
+                "Normal":   [-0.70, 0.15, 0.70],
+                "Binormal": [-0.92, 0.00, 0.38],
+                "Tangent":  [0.38, 0.00, 0.92],
+                "UV":       [0.01, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, 0.04],
+                "Normal":   [0.71, -0.00, 0.71],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.05, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, -0.49, 0.01],
+                "Normal":   [0.71, 0.00, 0.71],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.08, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.00, 0.14, -0.04],
+                "Normal":   [0.71, -0.00, 0.71],
+                "Binormal": [-0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.08, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, -0.49, 0.01],
+                "Normal":   [0.71, 0.00, 0.71],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.08, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, 0.04],
+                "Normal":   [0.71, -0.00, 0.71],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.05, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, 0.10],
+                "Normal":   [0.71, 0.00, 0.71],
+                "Binormal": [0.71, 0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, -0.71],
+                "UV":       [0.04, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, -0.49, 0.01],
+                "Normal":   [0.70, -0.12, -0.70],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.09, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, -0.12],
+                "Normal":   [0.71, -0.00, -0.71],
+                "Binormal": [-0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.11, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.00, 0.14, -0.04],
+                "Normal":   [0.71, -0.00, -0.71],
+                "Binormal": [-0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.08, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, -0.12],
+                "Normal":   [0.71, -0.00, -0.71],
+                "Binormal": [-0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.11, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, -0.49, 0.01],
+                "Normal":   [0.70, -0.12, -0.70],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.09, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, -0.49, -0.09],
+                "Normal":   [0.70, -0.12, -0.70],
+                "Binormal": [0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.12, 0.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.16, 0.14, -0.04],
+                "Normal":   [-0.71, -0.01, -0.71],
+                "Binormal": [-0.71, -0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.14, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, -0.09],
+                "Normal":   [-0.71, -0.05, -0.71],
+                "Binormal": [-0.92, 0.00, 0.38],
+                "Tangent":  [0.38, 0.00, 0.92],
+                "UV":       [0.12, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, -0.12],
+                "Normal":   [-0.71, -0.00, -0.71],
+                "Binormal": [-0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.11, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, -0.09],
+                "Normal":   [-0.71, -0.05, -0.71],
+                "Binormal": [-0.92, 0.00, 0.38],
+                "Tangent":  [0.38, 0.00, 0.92],
+                "UV":       [0.12, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.16, 0.14, -0.04],
+                "Normal":   [-0.71, -0.01, -0.71],
+                "Binormal": [-0.71, -0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.14, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 0.66, 0.01],
+                "Normal":   [-0.71, -0.05, -0.71],
+                "Binormal": [-0.00, -0.00, -1.00],
+                "Tangent":  [-1.00, 0.00, 0.00],
+                "UV":       [0.16, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 0.66, 0.01],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [-0.00, -0.00, -1.00],
+                "Tangent":  [-1.00, 0.00, 0.00],
+                "UV":       [0.01, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.16, 0.14, -0.04],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [-0.71, -0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.03, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, 0.11],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [0.71, 0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, -0.71],
+                "UV":       [0.04, 0.29],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.16, 0.14, -0.04],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [-0.71, -0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.03, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, 0.04],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.05, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, 0.11],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [0.71, 0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, -0.71],
+                "UV":       [0.04, 0.29],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, 0.11],
+                "Normal":   [0.71, 0.05, 0.71],
+                "Binormal": [0.71, 0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, -0.71],
+                "UV":       [0.04, 0.29],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, 0.04],
+                "Normal":   [0.71, -0.00, 0.71],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.05, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, 0.66, 0.01],
+                "Normal":   [0.71, 0.04, 0.71],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.08, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, 0.04],
+                "Normal":   [0.71, -0.00, 0.71],
+                "Binormal": [0.92, 0.00, -0.38],
+                "Tangent":  [-0.38, 0.00, -0.92],
+                "UV":       [0.05, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.00, 0.14, -0.04],
+                "Normal":   [0.71, -0.00, 0.71],
+                "Binormal": [-0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.08, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, 0.66, 0.01],
+                "Normal":   [0.71, 0.04, 0.71],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.08, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, -0.12],
+                "Normal":   [0.71, -0.00, -0.71],
+                "Binormal": [-0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.11, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, 0.66, 0.01],
+                "Normal":   [0.70, 0.11, -0.70],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.09, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.00, 0.14, -0.04],
+                "Normal":   [0.71, -0.00, -0.71],
+                "Binormal": [-0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.08, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, 0.66, 0.01],
+                "Normal":   [0.70, 0.11, -0.70],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.09, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.08, 0.14, -0.12],
+                "Normal":   [0.71, -0.00, -0.71],
+                "Binormal": [-0.71, 0.00, 0.71],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.11, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, -0.09],
+                "Normal":   [0.70, 0.11, -0.70],
+                "Binormal": [-0.92, 0.00, 0.38],
+                "Tangent":  [0.38, 0.00, 0.92],
+                "UV":       [0.12, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 0.66, 0.01],
+                "Normal":   [-0.71, -0.05, -0.71],
+                "Binormal": [-0.00, -0.00, -1.00],
+                "Tangent":  [-1.00, 0.00, 0.00],
+                "UV":       [0.16, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, -0.08],
+                "Normal":   [-0.71, 0.00, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.13, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, -0.09],
+                "Normal":   [-0.71, -0.05, -0.71],
+                "Binormal": [-0.92, 0.00, 0.38],
+                "Tangent":  [0.38, 0.00, 0.92],
+                "UV":       [0.12, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, -0.08],
+                "Normal":   [-0.71, 0.00, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.13, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 0.66, 0.01],
+                "Normal":   [-0.71, -0.05, -0.71],
+                "Binormal": [-0.00, -0.00, -1.00],
+                "Tangent":  [-1.00, 0.00, 0.00],
+                "UV":       [0.16, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.30, 1.34, 0.01],
+                "Normal":   [-0.71, 0.00, -0.71],
+                "Binormal": [-0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.16, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.30, 1.34, 0.01],
+                "Normal":   [-0.71, 0.00, 0.71],
+                "Binormal": [-0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.00, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 0.66, 0.01],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [-0.00, -0.00, -1.00],
+                "Tangent":  [-1.00, 0.00, 0.00],
+                "UV":       [0.01, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, 0.09],
+                "Normal":   [-0.71, 0.00, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.03, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 0.66, 0.01],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [-0.00, -0.00, -1.00],
+                "Tangent":  [-1.00, 0.00, 0.00],
+                "UV":       [0.01, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, 0.11],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [0.71, 0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, -0.71],
+                "UV":       [0.04, 0.29],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, 0.09],
+                "Normal":   [-0.71, 0.00, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.03, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, 0.66, 0.01],
+                "Normal":   [0.71, 0.04, 0.71],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.08, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, 0.09],
+                "Normal":   [0.71, 0.01, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.03, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, 0.11],
+                "Normal":   [0.71, 0.05, 0.71],
+                "Binormal": [0.71, 0.00, -0.71],
+                "Tangent":  [-0.71, 0.00, -0.71],
+                "UV":       [0.04, 0.29],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, 0.09],
+                "Normal":   [0.71, 0.01, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.03, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, 0.66, 0.01],
+                "Normal":   [0.71, 0.04, 0.71],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.08, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.14, 1.34, 0.01],
+                "Normal":   [0.71, 0.01, 0.71],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.06, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, -0.09],
+                "Normal":   [0.70, 0.11, -0.70],
+                "Binormal": [-0.92, 0.00, 0.38],
+                "Tangent":  [0.38, 0.00, 0.92],
+                "UV":       [0.12, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.14, 1.34, 0.01],
+                "Normal":   [0.71, 0.01, -0.71],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.11, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.05, 0.66, 0.01],
+                "Normal":   [0.70, 0.11, -0.70],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.09, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.14, 1.34, 0.01],
+                "Normal":   [0.71, 0.01, -0.71],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.11, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 0.66, -0.09],
+                "Normal":   [0.70, 0.11, -0.70],
+                "Binormal": [-0.92, 0.00, 0.38],
+                "Tangent":  [0.38, 0.00, 0.92],
+                "UV":       [0.12, 0.28],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, -0.08],
+                "Normal":   [0.71, 0.01, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.13, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 2.19, 0.01],
+                "Normal":   [-0.71, 0.06, -0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, -0.08],
+                "Normal":   [-0.71, 0.00, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.13, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.30, 1.34, 0.01],
+                "Normal":   [-0.71, 0.00, -0.71],
+                "Binormal": [-0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.16, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, -0.08],
+                "Normal":   [-0.71, 0.00, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.13, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 2.19, 0.01],
+                "Normal":   [-0.71, 0.06, -0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, -0.09],
+                "Normal":   [-0.71, 0.06, -0.71],
+                "Binormal": [0.05, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.04, 0.71],
+                "UV":       [0.12, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 2.19, 0.01],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.01, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, 0.09],
+                "Normal":   [-0.71, 0.00, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.03, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, 0.10],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.04, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, 0.09],
+                "Normal":   [-0.71, 0.00, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.03, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 2.19, 0.01],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.01, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.30, 1.34, 0.01],
+                "Normal":   [-0.71, 0.00, 0.71],
+                "Binormal": [-0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.00, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.14, 1.34, 0.01],
+                "Normal":   [0.71, 0.01, 0.71],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.06, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.19, 0.01],
+                "Normal":   [0.71, -0.05, 0.71],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.07, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, 0.09],
+                "Normal":   [0.71, 0.01, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.03, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, 0.10],
+                "Normal":   [0.71, -0.05, 0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.04, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, 0.09],
+                "Normal":   [0.71, 0.01, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.03, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.19, 0.01],
+                "Normal":   [0.71, -0.05, 0.71],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.07, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.22, 1.34, -0.08],
+                "Normal":   [0.71, 0.01, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.13, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, -0.09],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [0.05, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.04, 0.71],
+                "UV":       [0.12, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.14, 1.34, 0.01],
+                "Normal":   [0.71, 0.01, -0.71],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.11, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.14, 1.34, 0.01],
+                "Normal":   [0.71, 0.01, -0.71],
+                "Binormal": [0.04, 1.00, 0.01],
+                "Tangent":  [-0.71, 0.02, 0.71],
+                "UV":       [0.11, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, -0.09],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [0.05, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.04, 0.71],
+                "UV":       [0.12, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.19, 0.01],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.09, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 2.19, 0.01],
+                "Normal":   [-0.71, 0.06, -0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.65, 0.04],
+                "Normal":   [-0.71, 0.05, -0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.15, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, -0.04],
+                "Normal":   [-0.71, 0.05, -0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.12, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 2.19, 0.01],
+                "Normal":   [-0.71, 0.06, -0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, -0.04],
+                "Normal":   [-0.71, 0.05, -0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.12, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, -0.09],
+                "Normal":   [-0.71, 0.06, -0.71],
+                "Binormal": [0.05, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.04, 0.71],
+                "UV":       [0.12, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, 0.10],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.04, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, 0.11],
+                "Normal":   [-0.71, -0.02, 0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.04, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.65, 0.04],
+                "Normal":   [-0.71, -0.02, 0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.01, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, 0.10],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.04, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.65, 0.04],
+                "Normal":   [-0.71, -0.02, 0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.01, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 2.19, 0.01],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.01, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, 0.10],
+                "Normal":   [0.71, -0.05, 0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.04, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.65, 0.04],
+                "Normal":   [0.71, -0.02, 0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.07, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, 0.11],
+                "Normal":   [0.71, -0.02, 0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.04, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.65, 0.04],
+                "Normal":   [0.71, -0.02, 0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.07, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, 0.10],
+                "Normal":   [0.71, -0.05, 0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.04, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.19, 0.01],
+                "Normal":   [0.71, -0.05, 0.71],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.07, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.19, 0.01],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.09, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, -0.04],
+                "Normal":   [0.71, 0.05, -0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.12, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.65, 0.04],
+                "Normal":   [0.71, 0.05, -0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.10, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, -0.04],
+                "Normal":   [0.71, 0.05, -0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.12, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.19, 0.01],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.09, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.19, -0.09],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [0.05, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.04, 0.71],
+                "UV":       [0.12, 0.66],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.36, 4.15, 0.01],
+                "Normal":   [-0.70, -0.12, -0.70],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.96, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.16],
+                "Normal":   [-0.70, -0.15, -0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.83, 0.27],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.31, 3.88, 0.01],
+                "Normal":   [-0.70, -0.15, -0.70],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.92, 0.25],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.16],
+                "Normal":   [-0.70, -0.15, -0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.83, 0.27],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.36, 4.15, 0.01],
+                "Normal":   [-0.70, -0.12, -0.70],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.96, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.15, -0.20],
+                "Normal":   [-0.70, -0.12, -0.70],
+                "Binormal": [0.06, 1.00, -0.06],
+                "Tangent":  [0.70, -0.08, -0.70],
+                "UV":       [0.82, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.15, 0.22],
+                "Normal":   [-0.70, -0.12, 0.70],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.58, 0.40],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.36, 4.15, 0.01],
+                "Normal":   [-0.70, -0.12, 0.70],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.48, 0.43],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.17],
+                "Normal":   [-0.70, -0.15, 0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.60, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.17],
+                "Normal":   [-0.70, -0.15, 0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.60, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.36, 4.15, 0.01],
+                "Normal":   [-0.70, -0.12, 0.70],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.48, 0.43],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.31, 3.88, 0.01],
+                "Normal":   [-0.70, -0.15, 0.70],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.49, 0.23],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.17],
+                "Normal":   [0.70, -0.15, 0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.60, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.94, 4.15, 0.01],
+                "Normal":   [0.70, -0.12, 0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.71, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.15, 0.22],
+                "Normal":   [0.70, -0.12, 0.70],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.58, 0.40],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.94, 4.15, 0.01],
+                "Normal":   [0.70, -0.12, 0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.71, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.17],
+                "Normal":   [0.70, -0.15, 0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.60, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.98, 3.88, 0.01],
+                "Normal":   [0.70, -0.15, 0.70],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.72, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.94, 4.15, 0.01],
+                "Normal":   [0.70, -0.12, -0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.71, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.98, 3.88, 0.01],
+                "Normal":   [0.70, -0.15, -0.70],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.72, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.16],
+                "Normal":   [0.70, -0.15, -0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.83, 0.27],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.94, 4.15, 0.01],
+                "Normal":   [0.70, -0.12, -0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.71, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.16],
+                "Normal":   [0.70, -0.15, -0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.83, 0.27],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.15, -0.20],
+                "Normal":   [0.70, -0.12, -0.70],
+                "Binormal": [0.06, 1.00, -0.06],
+                "Tangent":  [0.70, -0.08, -0.70],
+                "UV":       [0.82, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.36, 4.15, 0.01],
+                "Normal":   [-0.63, 0.44, -0.63],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.96, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.13],
+                "Normal":   [-0.63, 0.44, -0.63],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.80, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.15, -0.20],
+                "Normal":   [-0.63, 0.44, -0.63],
+                "Binormal": [0.06, 1.00, -0.06],
+                "Tangent":  [0.70, -0.08, -0.70],
+                "UV":       [0.82, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.13],
+                "Normal":   [-0.63, 0.44, -0.63],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.80, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.36, 4.15, 0.01],
+                "Normal":   [-0.63, 0.44, -0.63],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.96, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.29, 4.25, 0.01],
+                "Normal":   [-0.63, 0.44, -0.63],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.87, 0.49],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.15],
+                "Normal":   [-0.63, 0.44, 0.63],
+                "Binormal": [0.05, 0.99, -0.11],
+                "Tangent":  [-0.71, -0.04, -0.70],
+                "UV":       [0.62, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.36, 4.15, 0.01],
+                "Normal":   [-0.63, 0.44, 0.63],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.48, 0.43],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.15, 0.22],
+                "Normal":   [-0.63, 0.44, 0.63],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.58, 0.40],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.36, 4.15, 0.01],
+                "Normal":   [-0.63, 0.44, 0.63],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.48, 0.43],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.15],
+                "Normal":   [-0.63, 0.44, 0.63],
+                "Binormal": [0.05, 0.99, -0.11],
+                "Tangent":  [-0.71, -0.04, -0.70],
+                "UV":       [0.62, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.29, 4.25, 0.01],
+                "Normal":   [-0.63, 0.44, 0.63],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.55, 0.50],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.15],
+                "Normal":   [0.63, 0.44, 0.63],
+                "Binormal": [0.05, 0.99, -0.11],
+                "Tangent":  [-0.71, -0.04, -0.70],
+                "UV":       [0.62, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.94, 4.15, 0.01],
+                "Normal":   [0.63, 0.44, 0.63],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.71, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.01, 4.25, 0.01],
+                "Normal":   [0.63, 0.44, 0.63],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.71, 0.44],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.94, 4.15, 0.01],
+                "Normal":   [0.63, 0.44, 0.63],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.71, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.15],
+                "Normal":   [0.63, 0.44, 0.63],
+                "Binormal": [0.05, 0.99, -0.11],
+                "Tangent":  [-0.71, -0.04, -0.70],
+                "UV":       [0.62, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.15, 0.22],
+                "Normal":   [0.63, 0.44, 0.63],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.58, 0.40],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.01, 4.25, 0.01],
+                "Normal":   [0.63, 0.44, -0.63],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.71, 0.44],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.94, 4.15, 0.01],
+                "Normal":   [0.63, 0.44, -0.63],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.71, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.13],
+                "Normal":   [0.63, 0.44, -0.63],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.80, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.94, 4.15, 0.01],
+                "Normal":   [0.63, 0.44, -0.63],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.71, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.15, -0.20],
+                "Normal":   [0.63, 0.44, -0.63],
+                "Binormal": [0.06, 1.00, -0.06],
+                "Tangent":  [0.70, -0.08, -0.70],
+                "UV":       [0.82, 0.39],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.13],
+                "Normal":   [0.63, 0.44, -0.63],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.80, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.29, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.87, 0.49],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.03],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.76, 0.48],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.13],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.80, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.03],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.76, 0.48],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.29, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.87, 0.49],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.19, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.79, 0.50],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.29, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.55, 0.50],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.15],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.05, 0.99, -0.11],
+                "Tangent":  [-0.71, -0.04, -0.70],
+                "UV":       [0.62, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.05],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.65, 0.48],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.29, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.07, 0.99, -0.10],
+                "Tangent":  [-0.71, -0.02, -0.71],
+                "UV":       [0.55, 0.50],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.05],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.65, 0.48],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.19, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.63, 0.50],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.01, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.71, 0.44],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.05],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.65, 0.48],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.15],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.05, 0.99, -0.11],
+                "Tangent":  [-0.71, -0.04, -0.70],
+                "UV":       [0.62, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.05],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.65, 0.48],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.01, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.71, 0.44],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.11, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.71, 0.47],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.03],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.76, 0.48],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.01, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.71, 0.44],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.13],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.80, 0.45],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.01, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.71, 0.44],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.03],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.76, 0.48],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.11, 4.25, 0.01],
+                "Normal":   [0.00, 1.00, 0.00],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.71, 0.47],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.30, 4.43, 0.01],
+                "Normal":   [-0.71, 0.02, -0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.73, 0.76],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.03],
+                "Normal":   [-0.66, -0.38, -0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.68, 0.56],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.19, 4.25, 0.01],
+                "Normal":   [-0.66, -0.38, -0.66],
+                "Binormal": [-0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.73, 0.56],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.30, 4.43, 0.01],
+                "Normal":   [-0.71, 0.02, -0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.73, 0.76],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.43, -0.14],
+                "Normal":   [-0.71, 0.02, -0.71],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.63, 0.76],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.03],
+                "Normal":   [-0.66, -0.38, -0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.68, 0.56],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.05],
+                "Normal":   [-0.66, -0.38, 0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.78, 0.55],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.30, 4.43, 0.01],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.73, 0.76],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.19, 4.25, 0.01],
+                "Normal":   [-0.66, -0.38, 0.66],
+                "Binormal": [-0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.00, 0.71],
+                "UV":       [0.73, 0.56],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.30, 4.43, 0.01],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.73, 0.76],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.05],
+                "Normal":   [-0.66, -0.38, 0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.78, 0.55],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.43, 0.15],
+                "Normal":   [-0.71, 0.02, 0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.84, 0.77],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.11, 4.25, 0.01],
+                "Normal":   [0.66, -0.38, 0.66],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.83, 0.54],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.00, 4.43, 0.01],
+                "Normal":   [0.71, 0.03, 0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.96, 0.79],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.05],
+                "Normal":   [0.66, -0.38, 0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.78, 0.55],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.43, 0.15],
+                "Normal":   [0.71, 0.02, 0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.84, 0.77],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, 0.05],
+                "Normal":   [0.66, -0.38, 0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.78, 0.55],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.00, 4.43, 0.01],
+                "Normal":   [0.71, 0.03, 0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.96, 0.79],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.00, 4.43, 0.01],
+                "Normal":   [0.71, 0.02, -0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.50, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.03],
+                "Normal":   [0.66, -0.38, -0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.68, 0.56],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.43, -0.14],
+                "Normal":   [0.71, 0.02, -0.71],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.63, 0.76],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.25, -0.03],
+                "Normal":   [0.66, -0.38, -0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.68, 0.56],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.00, 4.43, 0.01],
+                "Normal":   [0.71, 0.02, -0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.50, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.11, 4.25, 0.01],
+                "Normal":   [0.66, -0.38, -0.66],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [-0.71, 0.01, 0.71],
+                "UV":       [0.64, 0.55],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.43, -0.14],
+                "Normal":   [-0.71, 0.02, -0.71],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.63, 0.76],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.30, 4.43, 0.01],
+                "Normal":   [-0.71, 0.02, -0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.73, 0.76],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.73, 0.01],
+                "Normal":   [-0.67, 0.32, -0.67],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.73, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.30, 4.43, 0.01],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.73, 0.76],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.43, 0.15],
+                "Normal":   [-0.71, 0.02, 0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.84, 0.77],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.73, 0.01],
+                "Normal":   [-0.67, 0.33, 0.67],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.73, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.43, 0.15],
+                "Normal":   [0.71, 0.02, 0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.84, 0.77],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.00, 4.43, 0.01],
+                "Normal":   [0.71, 0.03, 0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.96, 0.79],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.73, 0.01],
+                "Normal":   [0.67, 0.33, 0.67],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.73, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.00, 4.43, 0.01],
+                "Normal":   [0.71, 0.02, -0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.50, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.43, -0.14],
+                "Normal":   [0.71, 0.02, -0.71],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.63, 0.76],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 4.73, 0.01],
+                "Normal":   [0.67, 0.32, -0.67],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.73, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.11],
+                "Normal":   [0.70, -0.11, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.84, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.03, 3.66, 0.01],
+                "Normal":   [0.70, -0.11, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.99, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.13],
+                "Normal":   [0.70, -0.11, 0.70],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.84, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.03, 3.66, 0.01],
+                "Normal":   [0.70, -0.11, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.99, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.11],
+                "Normal":   [0.70, -0.11, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.84, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.04, 3.55, 0.01],
+                "Normal":   [0.70, -0.11, 0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.95, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.13],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.84, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.27, 3.66, 0.01],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.72, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.11],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.84, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.11],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.84, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.27, 3.66, 0.01],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.72, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 3.55, 0.01],
+                "Normal":   [-0.70, -0.11, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.72, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.27, 3.66, 0.01],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.72, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.10],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.60, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 3.55, 0.01],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.72, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.10],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.60, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.27, 3.66, 0.01],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.72, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.12],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.59, 0.15],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.03, 3.66, 0.01],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.46, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.04, 3.55, 0.01],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.47, 0.03],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.10],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.60, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.03, 3.66, 0.01],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.46, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.10],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.60, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.12],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.59, 0.15],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.31, -0.01],
+                "Normal":   [-0.71, 0.00, -0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.07],
+                "Normal":   [-0.70, 0.09, -0.70],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, -0.10],
+                "Normal":   [-0.71, 0.01, -0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.12, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.07],
+                "Normal":   [-0.70, 0.09, -0.70],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.31, -0.01],
+                "Normal":   [-0.71, 0.00, -0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 3.55, 0.01],
+                "Normal":   [-0.70, 0.09, -0.70],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.15, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 3.55, 0.01],
+                "Normal":   [-0.71, -0.03, 0.71],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.01, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, 0.08],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [0.06, 0.99, -0.15],
+                "Tangent":  [0.71, 0.06, 0.70],
+                "UV":       [0.04, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.09],
+                "Normal":   [-0.71, -0.03, 0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.04, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, 0.08],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [0.06, 0.99, -0.15],
+                "Tangent":  [0.71, 0.06, 0.70],
+                "UV":       [0.04, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 3.55, 0.01],
+                "Normal":   [-0.71, -0.03, 0.71],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.01, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.31, -0.01],
+                "Normal":   [-0.71, 0.02, 0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.01, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, 0.08],
+                "Normal":   [0.71, 0.03, 0.71],
+                "Binormal": [0.06, 0.99, -0.15],
+                "Tangent":  [0.71, 0.06, 0.70],
+                "UV":       [0.04, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 3.55, 0.01],
+                "Normal":   [0.71, -0.03, 0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.07, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.09],
+                "Normal":   [0.71, -0.03, 0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.04, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 3.55, 0.01],
+                "Normal":   [0.71, -0.03, 0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.07, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, 0.08],
+                "Normal":   [0.71, 0.03, 0.71],
+                "Binormal": [0.06, 0.99, -0.15],
+                "Tangent":  [0.71, 0.06, 0.70],
+                "UV":       [0.04, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.31, -0.01],
+                "Normal":   [0.71, 0.02, 0.71],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.07, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, -0.10],
+                "Normal":   [0.71, 0.01, -0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.12, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 3.55, 0.01],
+                "Normal":   [0.70, 0.09, -0.70],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.10, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.31, -0.01],
+                "Normal":   [0.71, 0.00, -0.71],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.09, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 3.55, 0.01],
+                "Normal":   [0.70, 0.09, -0.70],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.10, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, -0.10],
+                "Normal":   [0.71, 0.01, -0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.12, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.07],
+                "Normal":   [0.70, 0.09, -0.70],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 1.00],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.10],
+                "Normal":   [-0.70, -0.10, 0.70],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.21, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.28, 3.88, 0.01],
+                "Normal":   [-0.66, -0.34, 0.66],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.17, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.66, 0.01],
+                "Normal":   [-0.70, -0.10, 0.70],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.18, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.28, 3.88, 0.01],
+                "Normal":   [-0.66, -0.34, 0.66],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.17, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.10],
+                "Normal":   [-0.70, -0.10, 0.70],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.21, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.13],
+                "Normal":   [-0.66, -0.34, 0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.21, 0.99],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.28, 3.88, 0.01],
+                "Normal":   [-0.66, -0.34, -0.66],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.34, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.09],
+                "Normal":   [-0.70, -0.10, -0.70],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.30, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.66, 0.01],
+                "Normal":   [-0.70, -0.10, -0.70],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.33, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.09],
+                "Normal":   [-0.70, -0.10, -0.70],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.30, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.28, 3.88, 0.01],
+                "Normal":   [-0.66, -0.34, -0.66],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.34, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.12],
+                "Normal":   [-0.66, -0.34, -0.66],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.30, 0.99],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.09],
+                "Normal":   [0.70, -0.10, -0.70],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.30, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.02, 3.88, 0.01],
+                "Normal":   [0.66, -0.34, -0.66],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [-0.71, -0.00, 0.71],
+                "UV":       [0.25, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.66, 0.01],
+                "Normal":   [0.70, -0.10, -0.70],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.27, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.02, 3.88, 0.01],
+                "Normal":   [0.66, -0.34, -0.66],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [-0.71, -0.00, 0.71],
+                "UV":       [0.25, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.09],
+                "Normal":   [0.70, -0.10, -0.70],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.30, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.12],
+                "Normal":   [0.66, -0.34, -0.66],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.30, 0.99],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.66, 0.01],
+                "Normal":   [0.70, -0.10, 0.70],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.24, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.02, 3.88, 0.01],
+                "Normal":   [0.66, -0.34, 0.66],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [-0.71, -0.00, 0.71],
+                "UV":       [0.25, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.10],
+                "Normal":   [0.70, -0.10, 0.70],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.21, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.13],
+                "Normal":   [0.66, -0.34, 0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.21, 0.99],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.10],
+                "Normal":   [0.70, -0.10, 0.70],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.21, 0.93],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.02, 3.88, 0.01],
+                "Normal":   [0.66, -0.34, 0.66],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [-0.71, -0.00, 0.71],
+                "UV":       [0.25, 0.98],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.04, 3.55, 0.01],
+                "Normal":   [-0.24, -0.94, -0.24],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.95, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.09],
+                "Normal":   [-0.24, -0.94, -0.24],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.84, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 3.55, 0.01],
+                "Normal":   [-0.24, -0.94, -0.24],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.93, 0.02],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.04, 3.55, 0.01],
+                "Normal":   [-0.24, -0.94, -0.24],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.95, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.11],
+                "Normal":   [-0.24, -0.94, -0.24],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.84, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.09],
+                "Normal":   [-0.24, -0.94, -0.24],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.84, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.03, 3.66, 0.01],
+                "Normal":   [-0.21, 0.95, -0.21],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.99, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.10],
+                "Normal":   [-0.21, 0.95, -0.21],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.84, 0.17],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.13],
+                "Normal":   [-0.21, 0.95, -0.21],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.84, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.10],
+                "Normal":   [-0.21, 0.95, -0.21],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.84, 0.17],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.03, 3.66, 0.01],
+                "Normal":   [-0.21, 0.95, -0.21],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.99, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.66, 0.01],
+                "Normal":   [-0.21, 0.95, -0.21],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.96, 0.18],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.27, 3.66, 0.01],
+                "Normal":   [0.21, 0.95, -0.21],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.72, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.10],
+                "Normal":   [0.21, 0.95, -0.21],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.84, 0.17],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.66, 0.01],
+                "Normal":   [0.21, 0.95, -0.21],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.72, 0.18],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.27, 3.66, 0.01],
+                "Normal":   [0.21, 0.95, -0.21],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.72, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.13],
+                "Normal":   [0.21, 0.95, -0.21],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.84, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, 0.10],
+                "Normal":   [0.21, 0.95, -0.21],
+                "Binormal": [0.00, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.84, 0.17],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 3.55, 0.01],
+                "Normal":   [0.24, -0.94, -0.24],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.72, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.09],
+                "Normal":   [0.24, -0.94, -0.24],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.84, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.11],
+                "Normal":   [0.24, -0.94, -0.24],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.84, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, 0.09],
+                "Normal":   [0.24, -0.94, -0.24],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.84, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 3.55, 0.01],
+                "Normal":   [0.24, -0.94, -0.24],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.72, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 3.55, 0.01],
+                "Normal":   [0.24, -0.94, -0.24],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.72, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.27, 3.66, 0.01],
+                "Normal":   [0.21, 0.95, 0.21],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.72, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.09],
+                "Normal":   [0.21, 0.95, 0.21],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.59, 0.17],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.12],
+                "Normal":   [0.21, 0.95, 0.21],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.59, 0.15],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.09],
+                "Normal":   [0.21, 0.95, 0.21],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.59, 0.17],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.27, 3.66, 0.01],
+                "Normal":   [0.21, 0.95, 0.21],
+                "Binormal": [-0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.72, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.66, 0.01],
+                "Normal":   [0.21, 0.95, 0.21],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.72, 0.18],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 3.55, 0.01],
+                "Normal":   [0.24, -0.94, 0.24],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.72, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.10],
+                "Normal":   [0.24, -0.94, 0.24],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.60, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.07],
+                "Normal":   [0.24, -0.94, 0.24],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.61, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.25, 3.55, 0.01],
+                "Normal":   [0.24, -0.94, 0.24],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.72, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.07],
+                "Normal":   [0.24, -0.94, 0.24],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.61, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 3.55, 0.01],
+                "Normal":   [0.24, -0.94, 0.24],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.72, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.03, 3.66, 0.01],
+                "Normal":   [-0.21, 0.95, 0.21],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.46, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.12],
+                "Normal":   [-0.21, 0.95, 0.21],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.59, 0.15],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.09],
+                "Normal":   [-0.21, 0.95, 0.21],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.59, 0.17],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.03, 3.66, 0.01],
+                "Normal":   [-0.21, 0.95, 0.21],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.46, 0.16],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.66, -0.09],
+                "Normal":   [-0.21, 0.95, 0.21],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.59, 0.17],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.66, 0.01],
+                "Normal":   [-0.21, 0.95, 0.21],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.49, 0.18],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.04, 3.55, 0.01],
+                "Normal":   [-0.24, -0.94, 0.24],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.47, 0.03],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.07],
+                "Normal":   [-0.24, -0.94, 0.24],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.61, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.10],
+                "Normal":   [-0.24, -0.94, 0.24],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.60, 0.06],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.55, -0.07],
+                "Normal":   [-0.24, -0.94, 0.24],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.61, 0.04],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.04, 3.55, 0.01],
+                "Normal":   [-0.24, -0.94, 0.24],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [-0.71, -0.00, -0.71],
+                "UV":       [0.47, 0.03],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 3.55, 0.01],
+                "Normal":   [-0.24, -0.94, 0.24],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.50, 0.02],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.31, 3.88, 0.01],
+                "Normal":   [-0.70, -0.15, 0.70],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.49, 0.23],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.13],
+                "Normal":   [-0.66, -0.34, 0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.61, 0.25],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.17],
+                "Normal":   [-0.70, -0.15, 0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.60, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.13],
+                "Normal":   [-0.66, -0.34, 0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.61, 0.25],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.31, 3.88, 0.01],
+                "Normal":   [-0.70, -0.15, 0.70],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.49, 0.23],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.28, 3.88, 0.01],
+                "Normal":   [-0.66, -0.34, 0.66],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.51, 0.22],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.31, 3.88, 0.01],
+                "Normal":   [-0.70, -0.15, -0.70],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.92, 0.25],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.16],
+                "Normal":   [-0.70, -0.15, -0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.83, 0.27],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.12],
+                "Normal":   [-0.66, -0.34, -0.66],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.83, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.31, 3.88, 0.01],
+                "Normal":   [-0.70, -0.15, -0.70],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [0.71, 0.00, -0.71],
+                "UV":       [0.92, 0.25],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.12],
+                "Normal":   [-0.66, -0.34, -0.66],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.83, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.28, 3.88, 0.01],
+                "Normal":   [-0.66, -0.34, -0.66],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [-0.71, -0.01, 0.71],
+                "UV":       [0.90, 0.24],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.98, 3.88, 0.01],
+                "Normal":   [0.70, -0.15, -0.70],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.72, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.12],
+                "Normal":   [0.66, -0.34, -0.66],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.83, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.16],
+                "Normal":   [0.70, -0.15, -0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.83, 0.27],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, -0.12],
+                "Normal":   [0.66, -0.34, -0.66],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.83, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.98, 3.88, 0.01],
+                "Normal":   [0.70, -0.15, -0.70],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.72, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.02, 3.88, 0.01],
+                "Normal":   [0.66, -0.34, -0.66],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [-0.71, -0.00, 0.71],
+                "UV":       [0.72, 0.25],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.98, 3.88, 0.01],
+                "Normal":   [0.70, -0.15, 0.70],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.72, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.13],
+                "Normal":   [0.66, -0.34, 0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.61, 0.25],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.02, 3.88, 0.01],
+                "Normal":   [0.66, -0.34, 0.66],
+                "Binormal": [0.00, 1.00, 0.00],
+                "Tangent":  [-0.71, -0.00, 0.71],
+                "UV":       [0.72, 0.25],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-0.98, 3.88, 0.01],
+                "Normal":   [0.70, -0.15, 0.70],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.72, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.17],
+                "Normal":   [0.70, -0.15, 0.70],
+                "Binormal": [0.03, 1.00, -0.03],
+                "Tangent":  [0.71, -0.04, -0.71],
+                "UV":       [0.60, 0.26],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.88, 0.13],
+                "Normal":   [0.66, -0.34, 0.66],
+                "Binormal": [-0.05, 1.00, -0.03],
+                "Tangent":  [-0.71, -0.02, 0.71],
+                "UV":       [0.61, 0.25],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.31, -0.01],
+                "Normal":   [-0.71, 0.00, -0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, -0.08],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.12, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.19, 0.01],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, -0.08],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.12, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.31, -0.01],
+                "Normal":   [-0.71, 0.00, -0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, -0.10],
+                "Normal":   [-0.71, 0.01, -0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.12, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, -0.08],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.12, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, -0.10],
+                "Normal":   [0.71, 0.01, -0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.12, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.19, 0.01],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.09, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.19, 0.01],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.09, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, -0.10],
+                "Normal":   [0.71, 0.01, -0.71],
+                "Binormal": [0.09, 0.99, -0.12],
+                "Tangent":  [0.71, 0.02, 0.70],
+                "UV":       [0.12, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.31, -0.01],
+                "Normal":   [0.71, 0.00, -0.71],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.09, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, 0.08],
+                "Normal":   [0.71, 0.03, 0.71],
+                "Binormal": [0.06, 0.99, -0.15],
+                "Tangent":  [0.71, 0.06, 0.70],
+                "UV":       [0.04, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.19, 0.01],
+                "Normal":   [0.70, 0.09, 0.70],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.07, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.31, -0.01],
+                "Normal":   [0.71, 0.02, 0.71],
+                "Binormal": [0.01, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.07, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.19, 0.01],
+                "Normal":   [0.70, 0.09, 0.70],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.07, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, 0.08],
+                "Normal":   [0.71, 0.03, 0.71],
+                "Binormal": [0.06, 0.99, -0.15],
+                "Tangent":  [0.71, 0.06, 0.70],
+                "UV":       [0.04, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, 0.10],
+                "Normal":   [0.70, 0.08, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.04, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, 0.08],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [0.06, 0.99, -0.15],
+                "Tangent":  [0.71, 0.06, 0.70],
+                "UV":       [0.04, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.31, -0.01],
+                "Normal":   [-0.71, 0.02, 0.71],
+                "Binormal": [-0.01, 1.00, 0.01],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.01, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.19, 0.01],
+                "Normal":   [-0.70, 0.09, 0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.01, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.31, 0.08],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [0.06, 0.99, -0.15],
+                "Tangent":  [0.71, 0.06, 0.70],
+                "UV":       [0.04, 0.94],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.19, 0.01],
+                "Normal":   [-0.70, 0.09, 0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.01, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, 0.10],
+                "Normal":   [-0.70, 0.08, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.04, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.19, 0.01],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, -0.05],
+                "Normal":   [-0.71, -0.06, -0.71],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.12, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.98, 0.03],
+                "Normal":   [-0.71, -0.06, -0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.15, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, -0.05],
+                "Normal":   [-0.71, -0.06, -0.71],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.12, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.19, 0.01],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.15, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, -0.08],
+                "Normal":   [-0.70, -0.11, -0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.12, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, -0.05],
+                "Normal":   [0.71, -0.06, -0.71],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.12, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, -0.08],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.12, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.98, 0.03],
+                "Normal":   [0.71, -0.06, -0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.09, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.98, 0.03],
+                "Normal":   [0.71, -0.06, -0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.09, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, -0.08],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.12, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.19, 0.01],
+                "Normal":   [0.70, -0.11, -0.70],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.09, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.98, 0.03],
+                "Normal":   [0.71, 0.04, 0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.07, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, 0.10],
+                "Normal":   [0.70, 0.08, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.04, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, 0.12],
+                "Normal":   [0.71, 0.03, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.04, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, 0.10],
+                "Normal":   [0.70, 0.08, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.04, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.98, 0.03],
+                "Normal":   [0.71, 0.04, 0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.07, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 3.19, 0.01],
+                "Normal":   [0.70, 0.09, 0.70],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.07, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.24, 3.19, 0.01],
+                "Normal":   [-0.70, 0.09, 0.70],
+                "Binormal": [0.00, 1.00, -0.00],
+                "Tangent":  [0.71, 0.00, 0.71],
+                "UV":       [0.01, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.98, 0.03],
+                "Normal":   [-0.71, 0.04, 0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.01, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, 0.10],
+                "Normal":   [-0.70, 0.08, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.04, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 3.19, 0.10],
+                "Normal":   [-0.70, 0.08, 0.70],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [0.71, -0.02, 0.71],
+                "UV":       [0.04, 0.91],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.98, 0.03],
+                "Normal":   [-0.71, 0.04, 0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.01, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, 0.12],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.04, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.98, 0.03],
+                "Normal":   [-0.71, -0.06, -0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.15, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, -0.04],
+                "Normal":   [-0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.77, 0.04],
+                "Normal":   [-0.71, -0.02, -0.71],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.15, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, -0.04],
+                "Normal":   [-0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.98, 0.03],
+                "Normal":   [-0.71, -0.06, -0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.15, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, -0.05],
+                "Normal":   [-0.71, -0.06, -0.71],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.12, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, -0.04],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.98, 0.03],
+                "Normal":   [0.71, -0.06, -0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.09, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.77, 0.04],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.10, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.98, 0.03],
+                "Normal":   [0.71, -0.06, -0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.09, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, -0.04],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, -0.05],
+                "Normal":   [0.71, -0.06, -0.71],
+                "Binormal": [0.01, 1.00, 0.01],
+                "Tangent":  [0.71, -0.01, 0.71],
+                "UV":       [0.12, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.77, 0.04],
+                "Normal":   [0.71, -0.01, 0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.07, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, 0.12],
+                "Normal":   [0.71, 0.03, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.04, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, 0.12],
+                "Normal":   [0.71, -0.01, 0.71],
+                "Binormal": [-0.01, 1.00, 0.00],
+                "Tangent":  [0.71, 0.01, -0.71],
+                "UV":       [0.04, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, 0.12],
+                "Normal":   [0.71, 0.03, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.04, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.77, 0.04],
+                "Normal":   [0.71, -0.01, 0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.07, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.06, 2.98, 0.03],
+                "Normal":   [0.71, 0.04, 0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.07, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, 0.12],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.04, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.77, 0.04],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.01, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, 0.12],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [-0.01, 1.00, 0.00],
+                "Tangent":  [0.71, 0.01, -0.71],
+                "UV":       [0.04, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.77, 0.04],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.01, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.98, 0.12],
+                "Normal":   [-0.71, 0.03, 0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.04, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.98, 0.03],
+                "Normal":   [-0.71, 0.04, 0.71],
+                "Binormal": [-0.06, 0.99, 0.10],
+                "Tangent":  [0.71, -0.03, 0.70],
+                "UV":       [0.01, 0.86],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, 0.12],
+                "Normal":   [0.71, -0.01, 0.71],
+                "Binormal": [-0.01, 1.00, 0.00],
+                "Tangent":  [0.71, 0.01, -0.71],
+                "UV":       [0.04, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, 0.11],
+                "Normal":   [0.71, -0.02, 0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.04, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.77, 0.04],
+                "Normal":   [0.71, -0.01, 0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.07, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, 0.11],
+                "Normal":   [0.71, -0.02, 0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.04, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.65, 0.04],
+                "Normal":   [0.71, -0.02, 0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.07, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.77, 0.04],
+                "Normal":   [0.71, -0.01, 0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.07, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, 0.11],
+                "Normal":   [-0.71, -0.02, 0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.04, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.77, 0.04],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.01, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.65, 0.04],
+                "Normal":   [-0.71, -0.02, 0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.01, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.77, 0.04],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.01, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, 0.11],
+                "Normal":   [-0.71, -0.02, 0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.04, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, 0.12],
+                "Normal":   [-0.71, -0.01, 0.71],
+                "Binormal": [-0.01, 1.00, 0.00],
+                "Tangent":  [0.71, 0.01, -0.71],
+                "UV":       [0.04, 0.81],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.65, 0.04],
+                "Normal":   [-0.71, 0.05, -0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.15, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, -0.04],
+                "Normal":   [-0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, -0.04],
+                "Normal":   [-0.71, 0.05, -0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.12, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, -0.04],
+                "Normal":   [-0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.65, 0.04],
+                "Normal":   [-0.71, 0.05, -0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.15, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.23, 2.77, 0.04],
+                "Normal":   [-0.71, -0.02, -0.71],
+                "Binormal": [-0.05, 1.00, -0.02],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.15, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.77, 0.04],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [-0.05, 1.00, -0.01],
+                "Tangent":  [0.71, 0.02, -0.71],
+                "UV":       [0.10, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.65, 0.04],
+                "Normal":   [0.71, 0.05, -0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.10, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, -0.04],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.07, 2.65, 0.04],
+                "Normal":   [0.71, 0.05, -0.71],
+                "Binormal": [-0.06, 0.99, 0.09],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.10, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.65, -0.04],
+                "Normal":   [0.71, 0.05, -0.71],
+                "Binormal": [0.01, 1.00, 0.02],
+                "Tangent":  [-0.71, 0.02, -0.71],
+                "UV":       [0.12, 0.78],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            },
+            {
+                "Position": [-1.15, 2.77, -0.04],
+                "Normal":   [0.71, -0.02, -0.71],
+                "Binormal": [0.00, 1.00, -0.01],
+                "Tangent":  [0.71, -0.01, -0.71],
+                "UV":       [0.12, 0.80],
+                "JointIds": [0, 0, 0, 0],
+                "Weights":  [-nan(ind), -nan(ind), -nan(ind), -nan(ind)]
+            }
+        ]
+    },
+    "Skeleton":
+    {
+        "Joints": 
+        [
+        ],
+        "Animations": 
+        [
+        ]
+    }
+}

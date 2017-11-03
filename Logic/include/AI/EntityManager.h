@@ -69,7 +69,7 @@ namespace Logic
         void deallocateData(bool forceDestroy = true); // delete data in vectors
 
         // render / updates
-		void render(Graphics::Renderer &renderer);
+		void render() const;
 
 		void update(Player const &player, float deltaTime);
 		void updateEnemies(int index, Player const &player, float deltaTime);

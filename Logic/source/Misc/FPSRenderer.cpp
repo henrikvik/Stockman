@@ -1,6 +1,7 @@
 #include <Misc\FPSRenderer.h>
-#include <Engine\DebugWindow.h>
+#include <string>
 #define FPS_STRING L"FPS: "
+
 using namespace Logic;
 
 FPSRenderer::FPSRenderer()
@@ -9,41 +10,10 @@ FPSRenderer::FPSRenderer()
 	frames = 0;
 	fpsTimer = 0.0f;
 
-	fpsString.color = DirectX::SimpleMath::Color{ 1, 1, 1 };
-	fpsString.font = Graphics::Font::SMALL;
-	fpsString.pos = DirectX::SimpleMath::Vector2{ 5, 5 };
-	fpsString.text = L"Ta inte bort min kod - LW";
-    isActive = true;
-
-    DebugWindow * debug = DebugWindow::getInstance();
-    debug->registerCommand("LOG_TOGGLE_FPS", [&](std::vector<std::string> &args)->std::string
-    {
-        std::string catcher = "";
-        try
-        {
-            if (args.size() != 0)
-            {
-                isActive = std::stoi(args[0]);
-
-                if (isActive)
-                    catcher = "FPS meter enabled!";
-
-                else
-                    catcher = "FPS meter disabled!";
-            }
-            else
-            {
-                catcher = "missing argument 0 or 1.";
-            }
-        }
-        catch (const std::exception&)
-        {
-            catcher = "Argument must be 0 or 1.";
-        }
-
-        return catcher;
-    });
-
+	renderInfo.color = DirectX::SimpleMath::Color{ 1, 1, 1 };
+	renderInfo.font = Resources::Fonts::comicsans;
+	renderInfo.position = DirectX::SimpleMath::Vector2{ 5, 5 };
+	renderInfo.text = L"Ta inte bort min kod - LW";
 }
 
 FPSRenderer::~FPSRenderer()
@@ -52,20 +22,24 @@ FPSRenderer::~FPSRenderer()
 
 void FPSRenderer::updateFPS(float deltaTime)
 {
-	fpsTimer += deltaTime;
+    static size_t avgframesCount = 10;
+    static std::vector<float> fps(avgframesCount);
+    static size_t i = 0;
 
-	if (fpsTimer >= 998.f)
-	{
-		fps = frames;
-		frames = 0;
-		fpsTimer = 0;
-		fpsString.text = FPS_STRING + std::to_wstring(fps);
-	}
+    fps[i] = (1 / (deltaTime / 1000.f));
+    i = ++i % avgframesCount;
+
+    float avgFps = 0;    
+    for (size_t i = 0; i < avgframesCount; i++)
+    {
+        avgFps += fps[i];
+    }
+    avgFps /= avgframesCount;
+
+    renderInfo.text = std::wstring(FPS_STRING + std::to_wstring(avgFps)).c_str();
 }
 
-void FPSRenderer::renderFPS(Graphics::Renderer & renderer)
+void Logic::FPSRenderer::render() const
 {
-	frames++;
-    if (isActive)
-	    renderer.queueText(&fpsString);
+    RenderQueue::get().queue(&renderInfo);
 }

@@ -61,7 +61,7 @@ namespace Graphics {
 
 		InverseMatrixes inverseMatrixes;
 
-		ConstantBuffer<ShaderValues> CameraBuffer;
+		ConstantBuffer<ShaderValues> cameraBuffer;
 		ConstantBuffer<InverseMatrixes> inverseBuffer;
 	};
 }

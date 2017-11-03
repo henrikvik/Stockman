@@ -15,7 +15,6 @@
 #include <Player\Skill\Skill.h>
 
 #include <Misc\Sound\NoiseStructs.h>
-#include <Graphics\include\Renderer.h>
 
 #include <Engine\Profiler.h>
 #include <Engine\DebugWindow.h>
@@ -24,8 +23,8 @@ using namespace Logic;
 
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
-Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
-: Entity(body, halfExtent, modelID)
+Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
+: Entity(body, halfExtent)
 {
     m_weaponManager = newd WeaponManager();
     m_skillManager = newd SkillManager();
@@ -101,7 +100,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 void Player::registerDebugCmds()
 {
     DebugWindow *win = DebugWindow::getInstance();
-    win->registerCommand("LOG_SET_MOUSE_SENSITIVITY", [&](std::vector<string> &para) -> std::string {
+    win->registerCommand("LOG_SET_MOUSE_SENSITIVITY", [&](std::vector<std::string> &para) -> std::string {
         try
         { // Boilerplate code bois
             m_mouseSens = stof(para[0]);
@@ -112,11 +111,11 @@ void Player::registerDebugCmds()
         }
         return "Mouse sens set";
     });
-    win->registerCommand("LOG_GODMODE", [&](std::vector<string> &para) -> std::string {
+    win->registerCommand("LOG_GODMODE", [&](std::vector<std::string> &para) -> std::string {
         m_godMode = !m_godMode;
         return "Godmode updated";
     });
-    win->registerCommand("LOG_NOCLIP", [&](std::vector<string> &para) -> std::string {
+    win->registerCommand("LOG_NOCLIP", [&](std::vector<std::string> &para) -> std::string {
         m_noclip = !m_noclip;
         if (m_noclip)
             m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
@@ -157,7 +156,7 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
             int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
             e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * static_cast<btScalar> (stacks));
             stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
-            e->damage(2 * stacks); // replace 1 with the player damage when it is better
+            e->damage(2.f * stacks); // replace 1 with the player damage when it is better
         }
     }
 }
@@ -651,7 +650,7 @@ DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 	return scale * transformMatrix;
 }
 
-void Player::render(Graphics::Renderer & renderer)
+void Player::render()
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);
@@ -660,7 +659,7 @@ void Player::render(Graphics::Renderer & renderer)
     if (lastHP != getHP())
     {
         lastHP = getHP();
-        renderer.startShake(10., 500.f);
+        //renderer.startShake(10., 500.f);
     }
 
 	// Setting position of updated weapon and skill models
@@ -668,8 +667,8 @@ void Player::render(Graphics::Renderer & renderer)
 	//	m_skillManager->setWeaponModel(getTransformMatrix(), m_forward);
 
 	// Drawing the weapon model
-	m_weaponManager->render(renderer);
-	m_skillManager->render(renderer);
+	m_weaponManager->render();
+	m_skillManager->render();
 }
 
 void Logic::Player::setMaxSpeed(float maxSpeed)

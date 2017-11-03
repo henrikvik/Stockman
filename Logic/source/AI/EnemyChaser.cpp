@@ -8,7 +8,7 @@ const int EnemyChaser::BASE_DAMAGE = 1;
 const float EnemyChaser::MOVE_SPEED = 13;
 
 EnemyChaser::EnemyChaser(btRigidBody* body)
-    : Enemy(Graphics::ModelID::CUBE, body, { 1, 1, 1 }, MAX_HP, BASE_DAMAGE, MOVE_SPEED, NECROMANCER_MINION, 0) // use in para instead note
+    : Enemy(Resources::Models::Files::UnitCube, body, { 1, 1, 1 }, MAX_HP, BASE_DAMAGE, MOVE_SPEED, NECROMANCER_MINION, 0) // use in para instead note
 {
     setBehavior(MELEE);
 }

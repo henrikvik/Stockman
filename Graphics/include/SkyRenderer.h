@@ -1,11 +1,13 @@
 #pragma once
-#include "Resources\Shader.h"
+#include "Utility\Shader.h"
 #include "Utility\ConstantBuffer.h"
+#include "Utility\DepthStencil.h"
 #include "Camera.h"
 #include "Lights\Sun.h"
-#include "Utility\DepthStencil.h"
 #include "Datatypes.h"
 #include "Structs.h"
+#include "HybrisLoader\HybrisLoader.h"
+
 #define SHADOW_MAP_RESOLUTION 2048
 
 namespace Graphics
@@ -13,10 +15,8 @@ namespace Graphics
 	class SkyRenderer
 	{
 	public:
-		SkyRenderer(ID3D11Device * device, int shadowRes);
+		SkyRenderer(ID3D11Device * device, int shadowRes, HybrisLoader::HybrisLoader & hybrisLoader);
 		~SkyRenderer();
-
-		void initialize(ModelInfo info);
 
 		void renderSky(ID3D11DeviceContext * context, Graphics::Camera * cam);
 		void update(ID3D11DeviceContext * context, float deltaTime, DirectX::SimpleMath::Vector3 pos);
@@ -30,7 +30,7 @@ namespace Graphics
 		void drawShadows(ID3D11DeviceContext * context, Graphics::Shader * shader);
 		void clear(ID3D11DeviceContext * context);
 	private:
-		ModelInfo skySphere;
+		HybrisLoader::Mesh * skySphere;
 
 		Shader shader;
 		ID3D11ShaderResourceView * srv;

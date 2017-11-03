@@ -7,23 +7,21 @@ Graphics::Menu::Menu(ID3D11Device * device, ID3D11DeviceContext * contex)
 {
     this->active = MenuInfo();
     this->loaded = false;
-    this->states = new DirectX::CommonStates(device);
+    this->states = newd DirectX::CommonStates(device);
 
     buttonsMaped = false;
     createVBuffers(device);
 }
 Graphics::Menu::~Menu()
 {
-    SAFE_RELEASE(buttonTexture[0]);
-    SAFE_RELEASE(buttonTexture[1]);
-    SAFE_RELEASE(buttonTexture[2]);
-    SAFE_RELEASE(buttonTexture[3]);
-    SAFE_RELEASE(buttonTexture[4]);
-    SAFE_RELEASE(menuTexture[0]);
-    SAFE_RELEASE(menuTexture[1]);
-    SAFE_RELEASE(menuTexture[2]);
-    SAFE_RELEASE(menuTexture[3]);
-    SAFE_RELEASE(menuTexture[4]);
+    //SAFE_RELEASE(buttonTexture[0]);
+    //SAFE_RELEASE(buttonTexture[1]);
+    //SAFE_RELEASE(buttonTexture[2]);
+    //SAFE_RELEASE(buttonTexture[3]);
+    //SAFE_RELEASE(menuTexture[0]);
+    //SAFE_RELEASE(menuTexture[1]);
+    //SAFE_RELEASE(menuTexture[2]);
+    //SAFE_RELEASE(menuTexture[3]);
     SAFE_RELEASE(menuQuad);
     SAFE_RELEASE(buttonQuad);
     delete states;

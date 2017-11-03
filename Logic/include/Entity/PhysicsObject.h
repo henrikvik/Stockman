@@ -1,6 +1,9 @@
 #ifndef PHYSICSOBJECT_H
 #define PHYSICSOBJECT_H
 
+#include <d3d11.h>
+#include <SimpleMath.h>
+
 #include <vector>
 #include <Entity/Object.h>
 #include <btBulletCollisionCommon.h>
@@ -22,7 +25,7 @@ namespace Logic
 		};
 
 
-		PhysicsObject(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID);
+		PhysicsObject(btRigidBody* body, btVector3 halfExtent);
 		PhysicsObject(const PhysicsObject& other) = delete;
 		PhysicsObject* operator=(const PhysicsObject& other) = delete;
 		virtual ~PhysicsObject();

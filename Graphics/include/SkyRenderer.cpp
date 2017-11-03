@@ -4,11 +4,10 @@
 #include "ThrowIfFailed.h"
 #include <Engine\Profiler.h>
 
-using namespace DirectX::SimpleMath;
 namespace Graphics 
 {
-	SkyRenderer::SkyRenderer(ID3D11Device * device, int shadowRes) :
-		shader(device, SHADER_PATH("SkyShader.hlsl"), VERTEX_DESC),
+    SkyRenderer::SkyRenderer(ID3D11Device * device, int shadowRes, HybrisLoader::HybrisLoader & hybrisLoader) :
+		shader(device, Resources::Shaders::SkyShader),
 		sphereTransformBuffer(device),
 		shadowDepthStencil(device, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION),
 		sun(device, shadowRes, shadowRes)
@@ -17,7 +16,7 @@ namespace Graphics
 		ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device, TEXTURE_PATH("skyboxgradient.dds"), nullptr, &srv2));
 		createSampler(device);
 
-		this->skySphere = skySphere;
+		this->skySphere = &hybrisLoader.getModel(Resources::Models::SkySphere)->getMesh();
 	}
 
 	SkyRenderer::~SkyRenderer()
@@ -27,47 +26,35 @@ namespace Graphics
 		SAFE_RELEASE(srv2);
 	}
 
-	void SkyRenderer::initialize(ModelInfo info)
-	{
-		this->skySphere = info;
-	}
-
 	void SkyRenderer::renderSky(ID3D11DeviceContext * context, Graphics::Camera * cam)
 	{
-		static UINT stride = sizeof(Vertex), offset = 0;
-
-		context->IASetInputLayout(shader);
-		context->IASetVertexBuffers(0, 1, &skySphere.vertexBuffer, &stride, &offset);
-		context->IASetIndexBuffer(skySphere.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-		
+		context->IASetInputLayout(nullptr);		
 		context->VSSetShader(shader, nullptr, 0);
 		context->PSSetShader(shader, nullptr, 0);
-		context->PSSetShaderResources(0, 1, &srv);
-		context->PSSetShaderResources(1, 1, &srv2);
+
+        context->VSSetShaderResources(4, 1, skySphere->getVertexBuffer());
 
 		context->VSSetConstantBuffers(0, 1, *cam->getBuffer());
 		context->VSSetConstantBuffers(4, 1, sphereTransformBuffer);
 
 		context->PSSetConstantBuffers(1, 1, *sun.getShaderBuffer());
 
-
-
-		context->DrawIndexed((UINT)skySphere.indexCount, 0, 0);
+		context->Draw(skySphere->getVertexCount(), 0);
 	}
 
-	void SkyRenderer::update(ID3D11DeviceContext * context, float deltaTime, Vector3 pos)
+	void SkyRenderer::update(ID3D11DeviceContext * context, float deltaTime, DirectX::SimpleMath::Vector3 pos)
 	{
 		float radiansPerSecond = 0.01745f * deltaTime * 0.005f;
 
 		sun.update(context, radiansPerSecond, pos);
 
-		Matrix temp = Matrix::CreateTranslation(pos);
+        DirectX::SimpleMath::Matrix temp = DirectX::SimpleMath::Matrix::CreateTranslation(pos);
 
 		D3D11_MAPPED_SUBRESOURCE data = {};
 
 		context->Map(sphereTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 
-		memcpy(data.pData, &temp, sizeof(Matrix));
+		memcpy(data.pData, &temp, sizeof(DirectX::SimpleMath::Matrix));
 
 		context->Unmap(sphereTransformBuffer, 0);
 	}
@@ -77,7 +64,7 @@ namespace Graphics
 
 		PROFILE_BEGIN("SetupShaders");
 		context->RSSetViewports(1, &sun.getViewPort());
-		context->IASetInputLayout(*shader);
+		context->IASetInputLayout(nullptr);
 		context->VSSetShader(*shader, nullptr, 0);
 		context->PSSetShader(nullptr, nullptr, 0);
 		context->OMSetRenderTargets(0, nullptr, shadowDepthStencil);

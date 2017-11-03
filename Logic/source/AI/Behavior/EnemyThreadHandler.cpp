@@ -5,8 +5,11 @@
 #include <AI\Behavior\Behavior.h>
 
 #include <Engine\Profiler.h>
+#include <thread>
+#include <chrono>
 
-using namespace Logic;
+namespace Logic
+{
 
 EnemyThreadHandler::EnemyThreadHandler()
 {
@@ -30,20 +33,20 @@ void EnemyThreadHandler::initThreads()
     while (!m_work.empty())
         m_work.pop();
 
-    for (std::thread *&t : threads)
-        t = newd std::thread(&EnemyThreadHandler::threadMain, this);
-}
+        for (std::thread *&t : threads)
+            t = newd std::thread(&EnemyThreadHandler::threadMain, this);
+    }
 
-EnemyThreadHandler::~EnemyThreadHandler()
-{
-    deleteThreads();
-}
+    EnemyThreadHandler::~EnemyThreadHandler()
+    {
+        deleteThreads();
+    }
 
-void EnemyThreadHandler::resetThreads()
-{
-    for (std::thread *&t : threads)
-        t = nullptr;
-}
+    void EnemyThreadHandler::resetThreads()
+    {
+        for (std::thread *&t : threads)
+            t = nullptr;
+    }
 
 void EnemyThreadHandler::deleteThreads()
 {
@@ -65,12 +68,12 @@ void EnemyThreadHandler::updateEnemiesAndPath(WorkData &data)
     AStar &aStar = AStar::singleton();
     aStar.loadTargetIndex(*data.player);
 
-    std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(data.index);
-    const std::vector<Enemy*> &enemies = data.manager->getAliveEnemies()[data.index];
+        std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(data.index);
+        const std::vector<Enemy*> &enemies = data.manager->getAliveEnemies()[data.index];
 
-    for (size_t i = 0; i < enemies.size(); i++) // (!) size can change throughout the loop (!)
-        enemies[i]->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
-}
+        for (size_t i = 0; i < enemies.size(); i++) // (!) size can change throughout the loop (!)
+            enemies[i]->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
+    }
 
 void EnemyThreadHandler::threadMain()
 {
@@ -92,11 +95,12 @@ void EnemyThreadHandler::threadMain()
         if (haveWork)
             updateEnemiesAndPath(todo);
 
-        std::this_thread::sleep_for(1ms);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
-void EnemyThreadHandler::addWork(WorkData data)
-{
-    m_work.push(data);
+    void EnemyThreadHandler::addWork(WorkData data)
+    {
+        m_work.push(data);
+    }
 }

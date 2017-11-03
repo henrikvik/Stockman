@@ -36,10 +36,10 @@ namespace Logic
 
 		void init(Physics* physics);
 		void clear();
-		void update(float deltaTime);                       //< Can be removed at release, only for toggling debug draw
-		void render(Graphics::Renderer& renderer);
+		void update(float deltaTime);
+		void render();
 
-		std::vector<Object*>*				getProps();
+		std::vector<StaticObject*>*			getProps();
 		std::vector<StaticObject*>*			getHitboxes();
         std::vector<LightObject*>*			getLights();
 

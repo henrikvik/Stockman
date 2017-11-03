@@ -1,14 +1,18 @@
 #include <AI/Trigger.h>
 using namespace Logic;
 
-Trigger::Trigger(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
-: Entity(body, halfExtent, modelID)
+Trigger::Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
+: Entity(body, halfExtent)
 {
 	m_maxCooldown = cooldown;
 	m_cooldown = -1;
 	m_active = true;
 	m_reusable = reusable;
 	m_remove = false;
+
+    animatedRenderInfo.model = modelID;
+    animatedRenderInfo.animationName = "";
+    animatedRenderInfo.animationProgress = 0;
 }
 
 Trigger::~Trigger() { }
@@ -113,4 +117,9 @@ void Trigger::setIsReusable(bool reusable)
 void Trigger::setCooldown(float cooldown) 
 {
 	m_cooldown = cooldown;
+}
+
+void Logic::Trigger::render() const
+{
+    RenderQueue::get().queue(&animatedRenderInfo);
 }

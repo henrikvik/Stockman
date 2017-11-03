@@ -1,6 +1,6 @@
 #pragma once
 #include "Utility\ShaderResource.h"
-#include "Resources\Shader.h"
+#include "Utility\Shader.h"
 #include "Camera.h"
 #include <CommonStates.h>
 #include "Utility\DepthStencil.h"

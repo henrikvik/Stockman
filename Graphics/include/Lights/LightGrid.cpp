@@ -34,7 +34,7 @@ namespace Graphics {
 		SAFE_RELEASE(gradientSRV);
 	}
 
-	void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
+	void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt)
 	{
 		generateFrustumsCPU(camera, device);
 		//
@@ -48,13 +48,13 @@ namespace Graphics {
 		m_Lights = new StructuredBuffer<Light>(device, CpuAccess::Write, MAX_LIGHTS);
 
 		uint32_t initial = 0;
-		m_ResetIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::Read, 1, &initial);
-		m_OpaqueIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::None, 1, &initial);
-		m_TransparentIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::None, 1, &initial);
+		m_ResetIndexCounter = newd StructuredBuffer<uint32_t>(device, CpuAccess::Read, 1, &initial);
+		m_OpaqueIndexCounter = newd StructuredBuffer<uint32_t>(device, CpuAccess::None, 1, &initial);
+		m_TransparentIndexCounter = newd StructuredBuffer<uint32_t>(device, CpuAccess::None, 1, &initial);
 
 		auto count = m_Params.numThreadGroups[0] * m_Params.numThreadGroups[1] * AVG_TILE_LIGHTS;
-		m_OpaqueIndexList = new StructuredBuffer<uint32_t>(device, CpuAccess::None, count, nullptr);
-		m_TransparentIndexList = new StructuredBuffer<uint32_t>(device, CpuAccess::None, count, nullptr);
+		m_OpaqueIndexList = newd StructuredBuffer<uint32_t>(device, CpuAccess::None, count, nullptr);
+		m_TransparentIndexList = newd StructuredBuffer<uint32_t>(device, CpuAccess::None, count, nullptr);
 
 
 #pragma region Light Grid UAVs
@@ -135,7 +135,7 @@ namespace Graphics {
 #pragma endregion
 	}
 
-	void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
+	void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt)
 	{
 		//generateFrustums(camera, device, cxt, shaders);
 		m_ResetIndexCounter->CopyTo(cxt, m_OpaqueIndexCounter);
@@ -310,7 +310,7 @@ namespace Graphics {
 		}
 	}
 
-	void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
+	void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt)
 	{
 		m_Params.numThreads[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
 		m_Params.numThreads[1] = (int)ceil(720 / (float)BLOCK_SIZE);
@@ -337,7 +337,7 @@ namespace Graphics {
 
 		// Frustums
 		auto count = m_Params.numThreads[0] * m_Params.numThreads[1];
-		m_Frustums = new StructuredBuffer<Frustum>(device, CpuAccess::None, count);
+		m_Frustums = newd StructuredBuffer<Frustum>(device, CpuAccess::None, count);
 
 		cxt->CSSetShader(*m_FrustumGeneration, nullptr, 0);
 

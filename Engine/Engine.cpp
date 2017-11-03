@@ -1,8 +1,7 @@
+#include "Profiler.h"
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
-
-#include "Profiler.h"
 
 #include <Windows.h>
 #include <imgui.h>
@@ -11,10 +10,10 @@
 #include <Graphics\include\Structs.h>
 
 #include "Engine.h"
-#include "Profiler.h"
 #include "Typing.h"
 
 #include "DebugWindow.h"
+#include <Graphics\include\Device.h>
 
 #pragma comment (lib, "d3d11.lib")
 
@@ -224,6 +223,9 @@ HRESULT Engine::createSwapChain()
 		NULL,
 		&this->mContext);
 
+    device = mDevice;
+    context = mContext;
+
 	if (SUCCEEDED(hr))
 	{
 		ID3D11Texture2D* backBuffer = nullptr;
@@ -286,7 +288,7 @@ int Engine::run()
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
 
-	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
+	this->renderer = newd Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
 
 	long long start = this->timer();
 	long long prev = start;
@@ -297,7 +299,7 @@ int Engine::run()
 
 	bool running = true;
 
-	g_Profiler = new Profiler(mDevice, mContext);
+	g_Profiler = newd Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
     TbbProfilerObserver observer(g_Profiler);
 
@@ -341,7 +343,6 @@ int Engine::run()
 		if (mTracker->pressed.F2)
 		{
             showProfiler = !showProfiler;
-
 		}
 
         if (state.F10)
@@ -362,7 +363,7 @@ int Engine::run()
 
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
-		game->render(*renderer);
+		game.render();
 		PROFILE_END();
 
         // Debug Lock Screen Position 
@@ -376,64 +377,16 @@ int Engine::run()
 			cam.update(game->getState()->getCameraPosition(), game->getState()->getCameraForward(), mContext);
 		}
 
-		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
-        //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
+        ///// USH! /////
+		renderer->updateLight(deltaTime, &cam);
+        renderer->updateShake((float)deltaTime);
+        ////////////////
 
-        //////////////TEMP/////////////////
-        //Graphics::RenderInfo staticSphere = {
-        //    true, //bool render;
-        //    Graphics::ModelID::WATER, //ModelID meshId;
-        //    0, //int materialId;
-        //    DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-        //};
+        PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
+        renderer->render(&cam);
+        PROFILE_END();
 
-		Graphics::FoliageRenderInfo grass = {
-			true, //bool render;
-			Graphics::ModelID::GRASS, //ModelID meshId;
-			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-		};
-
-		//Graphics::FoliageRenderInfo bush = {
-		//	true, //bool render;
-		//	Graphics::ModelID::BUSH, //ModelID meshId;
-		//	DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-		//};
-
-		//grass.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5);
-		//bush.translation = DirectX::SimpleMath::Matrix::CreateScale(10, 10, 10);//* DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 30, 0 });
-		//staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5) * DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 20, 0 });
-		
-        //Graphics::TextString text{
-        //    L"The hills!",
-        //    DirectX::SimpleMath::Vector2(50, 50),
-        //    DirectX::SimpleMath::Color(DirectX::Colors::Black),
-        //    Graphics::Font::SMALL
-        //};
-
-        
-        ///////////////////////////////////
-
-        if (game->getCurrentStateType() == Logic::Game)
-        {
-			renderer->queueFoliageRender(&grass);
-			// renderer->queueFoliageRender(&bush);
-
-			if (!debug->isOpen())
-			{
-                renderer->updateLight((float)deltaTime, &cam);
-                renderer->updateShake((float)deltaTime);
-            }
-
-            renderer->updateLight((float)deltaTime, &cam);
-
-			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
-            renderer->render(&cam);
-			PROFILE_END();
-        }
-
-		 
 		g_Profiler->poll();
-
 		if (showProfiler) {
 			
 			ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -454,7 +407,8 @@ int Engine::run()
 
 
 		
-	}
+        RenderQueue::get().clearAllQueues();
+    }
 
     Graphics::Debug::Destroy();
     g_Profiler->end();

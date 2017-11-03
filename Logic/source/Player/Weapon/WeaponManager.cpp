@@ -80,9 +80,9 @@ void WeaponManager::update(float deltaTime)
 	}
 }
 
-void WeaponManager::render(Graphics::Renderer& renderer)
+void WeaponManager::render() const
 {
-	m_currentWeapon.first->render(renderer);
+	m_currentWeapon.first->render();
 }
 
 void WeaponManager::initializeWeapons()
@@ -90,12 +90,12 @@ void WeaponManager::initializeWeapons()
 	// Adding all weapons
 	m_allWeapons =
 	{
-		{ newd Weapon(Graphics::ModelID::CROSSBOW, m_projectileManager, ProjectileData(1, 0.2f, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 0, 2000) },		                                    // Gattling prim
-		{ newd Weapon(Graphics::ModelID::CROSSBOW, m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 0, 2000) },		                                    // Gattling sec
-		{ newd Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), 2, 300, 200, 100, 100, 1, 1, 17, 5, 750, 1, 3000) },		// Freeze prim
-		{ newd Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(0, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000) },		                                            // Freeze sec
-		{ newd Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), 4, 0, 0, 0, 0, 0, 1, 0, 0, 50, 0, 2000) },				                                            // Sledge prim
-		{ newd Weapon(Graphics::ModelID::STAFF, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true), 5, 0, 0, 0, 0, 0, 1, 0, 0, 50, 0, 3000) }					                                        // Sledge sec
+		{ newd Weapon(Resources::Models::UnitCube, m_projectileManager, ProjectileData(1, 0.2f, 1, 100, 0.f, 3000, Resources::Models::UnitCube, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 0, 2000) },		                                    // Gattling prim
+		{ newd Weapon(Resources::Models::UnitCube, m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Resources::Models::UnitCube, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 0, 2000) },		                                    // Gattling sec
+		{ newd Weapon(Resources::Models::UnitCube, m_projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true), 2, 300, 200, 100, 100, 1, 1, 17, 5, 750, 1, 3000) },		// Freeze prim
+		{ newd Weapon(Resources::Models::UnitCube, m_projectileManager, ProjectileData(0, 1, 1, 50, 5, 5000, Resources::Models::UnitCube, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000) },		                                            // Freeze sec
+		{ newd Weapon(Resources::Models::UnitCube, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true), 4, 0, 0, 0, 0, 0, 1, 0, 0, 50, 0, 2000) },				                                            // Sledge prim
+		{ newd Weapon(Resources::Models::UnitCube, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true), 5, 0, 0, 0, 0, 0, 1, 0, 0, 50, 0, 3000) }					                                        // Sledge sec
 	};
 }
 

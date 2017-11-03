@@ -1,3 +1,5 @@
+#include <Graphics\include\RenderQueue.h>
+
 #include <Misc\GUI\MenuMachine.h>
 #include <iostream>
 #include <Misc\FileLoader.h>
@@ -216,98 +218,37 @@ void MenuMachine::update(float dt)
 	PROFILE_END();
 }
 
-void MenuMachine::render(Graphics::Renderer &renderer)
+void MenuMachine::render()
 {
 	PROFILE_BEGIN("Menu Render");
     if (m_currentActiveState == gameStateMenuSettings)
     {
         std::wstring tempString = L"";
-        Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
-        DirectX::SimpleMath::Vector2 tempPos;
-        tempPos.x = (float)(tempButton.m_rek.x +tempButton.m_rek.width);
-        tempPos.y = (float)(tempButton.m_rek.y + tempButton.m_rek.height -50);
-        tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
-        if (m_typing)
-        {
-            if (blinkMarker)
-            {
-                tempString += L"|";
-            }
+        //Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
+        //DirectX::SimpleMath::Vector2 tempPos;
+        //tempPos.x = (float)(tempButton.m_rek.x +tempButton.m_rek.width);
+        //tempPos.y = (float)(tempButton.m_rek.y + tempButton.m_rek.height -50);
+        //tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
+        //if (m_typing)
+        //{
+        //    if (blinkMarker)
+        //    {
+        //        tempString += L"|";
+        //    }
 
-        }
-        Graphics::TextString text
-        {
-            tempString.c_str(),
-            tempPos,
-            DirectX::SimpleMath::Color(DirectX::Colors::White),
-            Graphics::Font::SMALL
-        };
-        renderer.queueText(&text);
+        //}
+
+
+        TextRenderInfo text = {};
+        text.text = tempString.c_str();
+        text.position = DirectX::SimpleMath::Vector2(0,0);
+        text.font = Resources::Fonts::comicsans;
+        text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+
+        RenderQueue::get().queue(&text);
     }
-	//if (m_currentActiveState == gameStateHighscore)
-	//{
-	//	std::string tempString = "";
-	//	std::wstring tempWString = L"";
-	//	DirectX::SimpleMath::Vector2 tempPos;
-	//	for (int i = 0; i < 10; i++)
-	//	{
-	//		if (highScore[i].compare("") == 0)
-	//		{
-	//			break;
-	//		}
-	//		else
-	//		{
-	//			tempString += highScore[i] + "\n";
-	//		}
-	//	}
-	//	tempWString.assign(tempString.begin(), tempString.end());
-	//	tempPos.x = 400.0f;
-	//	tempPos.y = 300.0f;
-
-	//	Graphics::TextString text
-	//	{
-	//		tempWString.c_str(),
-	//		tempPos,
-	//		DirectX::SimpleMath::Color(DirectX::Colors::White),
-	//		Graphics::Font::SMALL
-	//	};
-	//	renderer.queueText(&text);
-	//}
-
-	//if (m_currentActiveState == gameStateGameOver)
-	//{
-	//	std::string tempString = "";
-	//	std::wstring tempWString = L"";
-	//	DirectX::SimpleMath::Vector2 tempPos;
-	//	for (int i = 0; i < 10; i++)
-	//	{
-	//		if (highScore[i].compare("") == 0)
-	//		{
-	//			break;
-	//		}
-	//		else
-	//		{
-	//			tempString += highScore[i] + "\n";
-	//		}
-	//	}
-	//	tempWString.assign(tempString.begin(), tempString.end());
-	//	tempPos.x = 400.0f;
-	//	tempPos.y = 300.0f;
-
-	//	Graphics::TextString text
-	//	{
-	//		tempWString.c_str(),
-	//		tempPos,
-	//		DirectX::SimpleMath::Color(DirectX::Colors::White),
-	//		Graphics::Font::SMALL
-	//	};
-	//	renderer.queueText(&text);
-	//}
     
-
-    Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
-
-    renderer.drawMenu(&temp);
+    m_currentActiveMenu->render();
 	PROFILE_END();
 }
 
@@ -491,8 +432,7 @@ void MenuMachine::selectSkillButton(int id)
     Button* button = m_currentActiveMenu->getButton(id);
 
     // Hardcoded "Selected" tex-cords, currently not supported
-    if (replaceSkill(id))   button->setStartAndEnd(1.f * (1.f/3.f), (2.f/3.f));
-    else                    button->setStartAndEnd(0.f, (1.f/3.f));
+
 }
 
 // Returns true if succesful swapping of selected skill, returns false if the selected skill should be reset (if it was already selected, for example)

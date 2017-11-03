@@ -1,8 +1,9 @@
 #pragma once
-#include "Resources\Shader.h"
-#include <Engine\Constants.h>
-#include "Utility\ShaderResource.h"
+#include <vector>
 #include <CommonStates.h>
+#include <Engine\Constants.h>
+#include "Utility\Shader.h"
+#include "Utility\ShaderResource.h"
 #include "Utility\ConstantBuffer.h"
 #include <vector>
 #define MIP_LEVELS 5

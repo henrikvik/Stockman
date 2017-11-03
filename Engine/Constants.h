@@ -15,7 +15,7 @@
 #define WIREFRAME   false
 #define VSYNC		1 //1 == ON, 0 = OFF
 #define FPS_CAP		600000000 // jävla cod töntar
-#define INSTANCE_CAP 300
+//#define INSTANCE_CAP 300
 
 #define D3D_DEBUG_INFO
 
@@ -24,3 +24,4 @@
 #define MODEL_PATH(path)   L"Resources/Models/" path
 #define MODEL_PATH_STR(path)   "Resources/Models/" path
 #define SHADER_PATH(path) L"Resources/Shaders/" path
+#define ANIMATION_PATH(path) "Resources/Animations/" path

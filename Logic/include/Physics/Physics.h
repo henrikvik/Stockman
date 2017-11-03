@@ -34,6 +34,8 @@
 	*/
 #pragma endregion Comment
 
+#include <Graphics\include\RenderQueue.h>
+
 #include <ctime>
 #include <chrono>
 #include <Entity\PhysicsObject.h>
@@ -43,7 +45,6 @@
 #include <BulletDynamics\Character\btKinematicCharacterController.h>
 #include <BulletCollision\CollisionDispatch\btGhostObject.h>
 #include <Engine\Profiler.h>
-
 //#define PHYSICS_GRAVITY 0.00982f
 #define PHYSICS_GRAVITY 9.82f * 2.f
 
@@ -134,8 +135,8 @@ namespace Logic
         btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false, int group = COL_FLAG::COL_HITBOX, int mask = COL_EVERYTHING);		// Should be used for enemies
         btPairCachingGhostObject* createPlayer(btCapsuleShape* capsule, btVector3 pos);
 
-        // Debug Purposes
-        void render(Graphics::Renderer& renderer);
+		// Debug Rendering
+		void render();
 
     private:
         btCollisionDispatcher*                  dispatcher;
@@ -146,15 +147,15 @@ namespace Logic
 
         btRigidBody* initBody(btRigidBody::btRigidBodyConstructionInfo constructionInfo, BodySpecifics specifics);
 
-        // Debug Purposes
-        Graphics::RenderDebugInfo* renderDebug;
-        void renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body);
-        void renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRigidBody* body);
-        void renderCylinder(Graphics::Renderer& renderer, btCylinderShape* cs, btRigidBody* body);
-        void renderCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btRigidBody* body);
-        void renderRectangleAround(Graphics::Renderer& renderer, btVector3 origin, btVector3 half);
-        void renderGhostCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btGhostObject* ghostObject);
-    };
+		// Debug Rendering
+	    DebugRenderInfo debugRenderInfo;
+		void renderCube(btBoxShape* bs, btRigidBody* body);
+		void renderSphere(btSphereShape* ss, btRigidBody* body);
+		void renderCylinder(btCylinderShape* cs, btRigidBody* body);
+		void renderCapsule(btCapsuleShape* cs, btRigidBody* body);
+		void renderRectangleAround(btVector3 origin, btVector3 half);
+		void renderGhostCapsule(btCapsuleShape* cs, btGhostObject* ghostObject);
+	};
 }
 
 

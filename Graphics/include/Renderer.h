@@ -5,13 +5,10 @@
 #include <vector>
 #include <unordered_map>
 #include "Camera.h"
-#include "Structs.h"
 #include "Datatypes.h"
 #include "WICTextureLoader.h"
 #include "Lights\LightGrid.h"
-#include "Resources\ResourceManager.h"
 #include "Utility\DepthStencil.h"
-#include "Resources\ResourceManager.h"
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
@@ -19,12 +16,15 @@
 #include "SkyRenderer.h"
 #include "Menu.h"
 #include "HUD.h"
+#include "HybrisLoader\HybrisLoader.h"
 #include "SSAORenderer.h"
 #include "Fog.H"
 #include "DoF.h"
 #include "SnowManager.h"
 
 #include <SpriteBatch.h>
+
+#include "RenderPass\GUIRenderPass.h"
 
 
 namespace Graphics
@@ -39,12 +39,6 @@ namespace Graphics
 
 
         void render(Camera * camera);
-        void queueRender(RenderInfo * renderInfo);
-		void queueFoliageRender(FoliageRenderInfo * renderInfo);
-		void queueWaterRender(WaterRenderInfo * renderInfo);
-        void queueRenderDebug(RenderDebugInfo * debugInfo);
-        void queueText(TextString * text);
-		void queueLight(Light light);
 		void fillHUDInfo(HUDInfo * info);
 
         void drawMenu(Graphics::MenuInfo * info);
@@ -56,6 +50,10 @@ namespace Graphics
         void updateShake(float deltaTime);
         void startShake(float radius, float duration);
     private:
+        HybrisLoader::HybrisLoader hybrisLoader;
+
+        std::vector<RenderPass*> renderPasses;
+
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;
         std::vector<RenderInfo*> renderQueue;
@@ -79,9 +77,8 @@ namespace Graphics
 
         //ComputeShader lightGridGen; 
 
-        StructuredBuffer<InstanceData> instanceSBuffer;
-        ConstantBuffer<UINT> instanceOffsetBuffer;
-        ResourceManager resourceManager;
+
+//        ResourceManager resourceManager;
         D3D11_VIEWPORT viewPort;
 
         // Lånade Pekareu
@@ -128,7 +125,7 @@ namespace Graphics
        
         void cull();
         void writeInstanceData();
-        void draw();
+        void drawStatic();
 		void clear();
 		void swapBackBuffers();
 		
@@ -155,6 +152,19 @@ namespace Graphics
 
     #pragma endregion
 		Fog fog;
+
+    #pragma region Draw Functions and Buffers
+
+
+        StructuredBuffer<InstanceData> instanceSBuffer;
+        ConstantBuffer<UINT> instanceOffsetBuffer;
+
+        void writeInstanceBuffers();
+        StructuredBuffer<InstanceData> staticInstanceBuffer;
+
+    #pragma endregion
+
+
 
     };
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include "../ThrowIfFailed.h"
 #include <Engine\Constants.h>
+#include "../Device.h"
 
 enum class CpuAccess
 {
@@ -51,6 +52,10 @@ private:
 template<typename T>
 inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess access, size_t count, T * ptr)
 {
+    m_Buffer = nullptr;
+    m_SRV = nullptr;
+    m_UAV = nullptr;
+
     D3D11_BUFFER_DESC desc = {};
     desc.ByteWidth = (UINT)(sizeof(T) * count);
 
@@ -107,7 +112,8 @@ inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess ac
 }
 
 template<typename T>
-inline StructuredBuffer<T>::~StructuredBuffer() {
+inline StructuredBuffer<T>::~StructuredBuffer()
+{
     SAFE_RELEASE(m_Buffer);
     SAFE_RELEASE(m_UAV);
     SAFE_RELEASE(m_SRV);
@@ -139,4 +145,5 @@ inline void StructuredBuffer<T>::write(ID3D11DeviceContext * context, T * data, 
     memcpy(map(context), data, size);
     unmap(context);
 }
+
 #pragma endregion

@@ -32,13 +32,19 @@ namespace Logic
 		void upgrade(Upgrade const &upgrade);
 		void affect(int stacks, Effect const & effect, float deltaTime);
 
+        void setWorldTransform(DirectX::SimpleMath::Matrix & worldTransform);
+        void setModelID(Resources::Models::Files modelId);
+
+        void render() const;
+        
         // Get & Sets
         void setProjectileData(ProjectileData pData);
 		ProjectileData& getProjectileData();
         void setDead(bool dead);
 		bool getDead() const;
 
-	private:        
+	private:          
+        StaticRenderInfo renderInfo;
         ProjectileData m_pData; //< Holds information about this projectile
 		float m_bulletTimeMod;  //< The amount of slowdown from bulletTime, currently affecting this projectile
 		bool m_dead;            //< If this projectile should get removed or not
@@ -50,6 +56,8 @@ namespace Logic
         bool collisionWithTerrain();
         void doCallBack(PhysicsObject& other);
     };
+
+
 }
 
 #endif // !PROJECTILE_H

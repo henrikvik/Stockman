@@ -1,6 +1,6 @@
 #pragma once
 #include "Camera.h"
-#include "Resources\Shader.h"
+#include "Utility\Shader.h"
 #include "Utility\StructuredBuffer.h"
 #include "SkyRenderer.h"
 #include <vector>
