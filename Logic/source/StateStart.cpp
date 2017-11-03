@@ -62,7 +62,7 @@ void StateStart::update(float deltaTime)
 
 void StateStart::render(Graphics::Renderer& renderer)
 {
-    m_menu->render(renderer, m_highScore);
+    m_menu->render(renderer);
 }
 
 DirectX::SimpleMath::Vector3 StateStart::getCameraForward()

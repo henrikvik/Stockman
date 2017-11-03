@@ -72,8 +72,10 @@ namespace Logic
         WaveTimeManager		m_waveTimeManager;
         CardManager*		m_cardManager;
         HighScoreManager*	m_highScoreManager;
+        HUDManager		    m_hudManager;
         GameType            m_gameType;
         FPSRenderer         m_fpsRenderer;
+        MenuMachine*		m_menu;
     };
 }
 
