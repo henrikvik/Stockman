@@ -35,31 +35,23 @@ void Graphics::GUIRenderPass::render()
 
         using namespace DirectX::SimpleMath;
 
-    #define TL_X info->screenRect.topLeft.x
-    #define TL_Y info->screenRect.topLeft.y
-    #define BR_X info->screenRect.bottomRight.x
-    #define BR_Y info->screenRect.bottomRight.y
-        vertices[TL].position = Vector2(TL_X, TL_Y);
-        vertices[TR].position = Vector2(BR_X, TL_Y);
-        vertices[BL].position = Vector2(TL_X, BR_Y);
-        vertices[BR].position = Vector2(BR_X, BR_Y);
-    #undef TL_X
-    #undef TL_Y
-    #undef BR_X
-    #undef BR_Y
+        float TL_X = (info->screenRect.topLeft.x * 2 - 1);
+        float TL_Y = (info->screenRect.topLeft.y * 2 - 1);
+        float BR_X = (info->screenRect.bottomRight.x * 2 - 1);
+        float BR_Y = (info->screenRect.bottomRight.y * 2 - 1);
+        vertices[TL].position = Vector2(TL_X, TL_Y * -1);
+        vertices[TR].position = Vector2(BR_X, TL_Y * -1);
+        vertices[BL].position = Vector2(TL_X, BR_Y * -1);
+        vertices[BR].position = Vector2(BR_X, BR_Y * -1);
 
-    #define TL_X info->textureRect.topLeft.x
-    #define TL_Y info->textureRect.topLeft.y
-    #define BR_X info->textureRect.bottomRight.x
-    #define BR_Y info->textureRect.bottomRight.y
-        vertices[TL].uv = Vector2(TL_X, 1 - TL_Y);
-        vertices[TR].uv = Vector2(BR_X, 1 - TL_Y);
-        vertices[BL].uv = Vector2(TL_X, 1 - BR_Y);
-        vertices[BR].uv = Vector2(BR_X, 1 - BR_Y);
-    #undef TL_X
-    #undef TL_Y
-    #undef BR_X
-    #undef BR_Y
+        float TL_UV_X = info->textureRect.topLeft.x;
+        float TL_UV_Y = info->textureRect.topLeft.y;
+        float BR_UV_X = info->textureRect.bottomRight.x;
+        float BR_UV_Y = info->textureRect.bottomRight.y;
+        vertices[TL].uv = Vector2(TL_UV_X, TL_UV_Y);
+        vertices[TR].uv = Vector2(BR_UV_X, TL_UV_Y);
+        vertices[BL].uv = Vector2(TL_UV_X, BR_UV_Y);
+        vertices[BR].uv = Vector2(BR_UV_X, BR_UV_Y);
 
         vertexBuffer.write(context, vertices.data(), sizeofv(vertices));
         context->Draw(4, 0);

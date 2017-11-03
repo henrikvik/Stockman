@@ -1,4 +1,4 @@
-#include <Graphics\include\Renderer.h>
+#include "Renderer.h"
 #include <stdio.h>
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
@@ -15,7 +15,7 @@
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
-#define USE_OLD_RENDER false
+#define USE_OLD_RENDER true
 
 #if USE_TEMP_CUBE
 #include "TempCube.h"
@@ -473,10 +473,6 @@ namespace Graphics
 
 
 
-        PROFILE_BEGIN("HUD");
-        //hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-        PROFILE_END();
-
 		PROFILE_BEGIN("DebugInfo");
 		renderDebugInfo(camera);
 		PROFILE_END();
@@ -485,6 +481,14 @@ namespace Graphics
 		{
 			startShake(30, 1000);
 		}
+
+
+        PROFILE_BEGIN("RenderPasses");
+        for (auto & renderPass : renderPasses)
+        {
+            renderPass->render();
+        }
+        PROFILE_END();
 	}
     #else
     {
@@ -492,13 +496,6 @@ namespace Graphics
         context->ClearRenderTargetView(backBuffer, clearColor);
         context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1, 0);
         deviceContext->RSSetViewports(1, &viewPort);
-
-        SpriteRenderInfo sprite1 = {};
-        sprite1.texture = Resources::Textures::mainMenuButton;
-        sprite1.screenRect = FloatRect({-0.5, -0.5}, {0.5, 0.5});
-        sprite1.textureRect = FloatRect(0.25, 0.25, 0.5, 0.5);
-
-        RenderQueue::get().queue(&sprite1);
 
         for (auto & renderPass : renderPasses)
         {

@@ -55,7 +55,7 @@ namespace Logic
 
         void update(Player const &player, WaveTimeManager const &timeManager,
             EntityManager const &manager);
-        void render();
+        void render() const;
         void reset();
     };
 }

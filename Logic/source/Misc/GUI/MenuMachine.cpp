@@ -243,7 +243,7 @@ void MenuMachine::render()
         text.text = tempString.c_str();
         text.position = DirectX::SimpleMath::Vector2(0,0);
         text.font = Resources::Fonts::comicsans;
-        text.color = DirectX::Colors::White;
+        text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
 
         RenderQueue::get().queue(&text);
     }

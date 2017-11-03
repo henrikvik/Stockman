@@ -18,7 +18,6 @@ This class creates menus and handles switching between different menu layouts.
 #include <map>
 #include <Misc\Enums.h>
 #include <Misc\GUI\MenuState.h>
-#include <Graphics\include\Renderer.h>
 
 namespace Logic
 {
