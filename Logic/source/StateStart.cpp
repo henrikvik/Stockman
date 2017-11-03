@@ -4,8 +4,6 @@
 #include <DebugDefines.h>
 #include <Engine\DebugWindow.h> 
 
-#include <Graphics\include\Renderer.h> // Remove this when henke's merge is in
-
 using namespace Logic;
 
 StateStart::StateStart()
@@ -28,7 +26,7 @@ StateStart::StateStart()
     {
         if (m_highScoreManager->gethighScore(i).score != -1)
         {
-            m_highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+            m_highScore[i] = std::to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
         }
         else
         {
@@ -60,9 +58,9 @@ void StateStart::update(float deltaTime)
         SetState(StateType::Game);
 }
 
-void StateStart::render(Graphics::Renderer& renderer)
+void StateStart::render() const
 {
-    m_menu->render(renderer);
+    m_menu->render();
 }
 
 DirectX::SimpleMath::Vector3 StateStart::getCameraForward()

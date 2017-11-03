@@ -19,9 +19,6 @@
 #include <Keyboard.h>
 #include <Mouse.h>
 
-// Graphics Includes
-#include <Graphics\include\Renderer.h>
-
 // Engine Includes
 #include <Engine\Profiler.h>
 
@@ -34,7 +31,7 @@ namespace Logic
         ~StateStart();
         void reset();
         void update(float deltaTime);
-        void render(Graphics::Renderer& renderer);
+        void render() const;
 
         DirectX::SimpleMath::Vector3 getCameraForward();
         DirectX::SimpleMath::Vector3 getCameraPosition();

@@ -14,6 +14,7 @@
 
 #include "DebugWindow.h"
 #include <Graphics\include\Device.h>
+#include <Graphics\include\RenderQueue.h>
 
 #pragma comment (lib, "d3d11.lib")
 
@@ -363,7 +364,7 @@ int Engine::run()
 
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
-		game.render();
+		game->render();
 		PROFILE_END();
 
         // Debug Lock Screen Position 
@@ -405,8 +406,6 @@ int Engine::run()
 		PROFILE_END();
 		g_Profiler->frame();
 
-
-		
         RenderQueue::get().clearAllQueues();
     }
 

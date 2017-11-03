@@ -321,7 +321,6 @@
     <ClCompile Include="source\Player\Player.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
     <ClCompile Include="source\Game.cpp" />
-    <ClCompile Include="source\Entity\Object.cpp" />
     <ClCompile Include="source\Player\Weapon\Weapon.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponManager.cpp" />
     <ClCompile Include="source\Entity\Upgrade.cpp" />

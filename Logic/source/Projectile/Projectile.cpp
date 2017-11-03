@@ -8,7 +8,7 @@ using namespace Logic;
 // TEMP: ta bort mig
 static bool FUN_MODE = false;
 
-Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
+Projectile::Projectile(btRigidBody* body, btVector3 halfextent, ProjectileData pData)
 : Entity(body, halfextent) 
 {
 	m_pData         = pData;

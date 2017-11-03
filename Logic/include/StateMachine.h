@@ -16,7 +16,7 @@ namespace Logic
         ~StateMachine();
 
         void update(float deltaTime);
-        void render(Graphics::Renderer& renderer);
+        void render() const;
 
         void switchState(StateType stateType);
         StateType getCurrentStateType();

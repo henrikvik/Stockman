@@ -10,8 +10,6 @@
 #include <Engine\DebugWindow.h> 
 #include <GameType.h>
 
-#include <Graphics\include\Renderer.h> // Remove this when merged with henke's
-
 using namespace Logic;
 
 // Game starting static configurations
@@ -36,7 +34,7 @@ StateGame::StateGame()
     m_projectileManager = newd ProjectileManager(m_physics);
 
     // Initializing Player
-    m_player = newd Player(Graphics::ModelID::CUBE, nullptr, GAME_START::PLAYER_SCALE);
+    m_player = newd Player(Resources::Models::UnitCube, nullptr, GAME_START::PLAYER_SCALE);
     m_player->init(m_physics, m_projectileManager);
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
 
@@ -145,7 +143,7 @@ void StateGame::update(float deltaTime)
     PROFILE_END();
 
     PROFILE_BEGIN("HUD");
-    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
+//    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
     PROFILE_END();
 
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
@@ -161,35 +159,33 @@ void StateGame::update(float deltaTime)
     }
 }
 
-void StateGame::render(Graphics::Renderer& renderer)
+void StateGame::render() const
 {
     // Debug Draw physics
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
-        m_physics->render(renderer);
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::CapsLock))
-        renderer.startShake(50.f, 2500.f);
+        m_physics->render();
 
     PROFILE_BEGIN("Player Render");
-    m_player->render(renderer);
+    m_player->render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render Map");
-    m_map->render(renderer);
+    m_map->render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render Enemies & Triggers");
-    m_entityManager.render(renderer);
+    m_entityManager.render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render Projectiles");
-    m_projectileManager->render(renderer);
+    m_projectileManager->render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    m_hudManager.render(renderer);
+    m_hudManager.render();
     PROFILE_END();
 
-    m_fpsRenderer.renderFPS(renderer);
+    m_fpsRenderer.render();
 }
 
 void StateGame::gameOver()

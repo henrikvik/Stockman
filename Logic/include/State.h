@@ -18,7 +18,7 @@ namespace Logic
         virtual ~State() { }
         virtual void reset() = 0;
         virtual void update(float deltaTime) = 0;
-        virtual void render(Graphics::Renderer& renderer) = 0;
+        virtual void render() const = 0;
 
         virtual DirectX::SimpleMath::Vector3 getCameraForward() = 0;
         virtual DirectX::SimpleMath::Vector3 getCameraPosition() = 0;

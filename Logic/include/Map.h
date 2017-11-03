@@ -37,14 +37,14 @@ namespace Logic
 		void init(Physics* physics);
 		void clear();
 		void update(float deltaTime);
-		void render();
+		void render() const;
 
 		std::vector<StaticObject*>*			getProps();
 		std::vector<StaticObject*>*			getHitboxes();
         std::vector<LightObject*>*			getLights();
 
 	private:
-		std::vector<Object*>				m_props;        //< Visual objects
+		std::vector<StaticObject*>			m_props;        //< Visual objects
 		std::vector<StaticObject*>			m_hitboxes;     //< Non-visual hitboxes
         std::vector<LightObject*>			m_lights;       //< Pointlights
         bool                                m_drawDebug;    //< Toggle for debug-draw

@@ -81,7 +81,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 	m_map->init(m_physics);
 
 	// Initializing Card Manager
-	m_cardManager = newd CardManager(Game::NUMBER_OF_UNIQUE_CARDS);
+	m_cardManager = newd CardManager(GAME_START::UNIQUE_CARDS);
 
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");

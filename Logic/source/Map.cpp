@@ -60,7 +60,7 @@ void Map::render() const
     }
 }
 	
-std::vector<Object*>*				Map::getProps()				{ return &m_props;				}
+std::vector<StaticObject*>*			Map::getProps()				{ return &m_props;				}
 std::vector<StaticObject*>*			Map::getHitboxes()			{ return &m_hitboxes;			}
 std::vector<LightObject*>*			Map::getLights()            { return &m_lights;             }
 
@@ -118,7 +118,7 @@ void Map::add(FrameLight frameLight)
 // Adds a visual prop to the map
 void Map::add(FrameProp frameProp)
 {
-    m_props.push_back(new Object(frameProp.modelID));
+//    m_props.push_back(new StaticObject(frameProp.modelID));
 }
 
 // Adds a static hitbox to the map

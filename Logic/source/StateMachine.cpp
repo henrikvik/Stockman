@@ -36,9 +36,9 @@ void StateMachine::update(float deltaTime)
     m_currentState->update(deltaTime);
 }
 
-void StateMachine::render(Graphics::Renderer& renderer)
+void StateMachine::render() const
 {
-    m_currentState->render(renderer);
+    m_currentState->render();
 }
 
 void StateMachine::switchState(StateType stateType)
