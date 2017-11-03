@@ -59,6 +59,29 @@ StateGame::StateGame()
 
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
+
+    // Sorry Lucas
+//#ifdef _DEBUG
+//    DebugWindow *win = DebugWindow::getInstance();
+//    win->registerCommand("SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
+//        try {
+//            this->m_menu->setStateToBe(static_cast<GameState> (stoi(para[0])));
+//            return "Menu State set to " + stoi(para[0]);
+//        }
+//        catch (std::exception e) {
+//            return "Chaos is a pit.";
+//        }
+//    });
+//
+//    for (int i = 1; i < args; i++) // first arg is name of file
+//        for (std::wstring const &str : GameTypeStr)
+//            if (wcscmp(str.c_str(), cmdLine[i]) == 0)
+//                m_gameType = static_cast<GameType> (i - 1); // offset for filename
+//
+//    for (std::string const &cmd : GameCommands[m_gameType])
+//        if (!cmd.empty())
+//            win->doCommand(cmd.c_str());
+//#endif
 }
 
 StateGame::~StateGame()
