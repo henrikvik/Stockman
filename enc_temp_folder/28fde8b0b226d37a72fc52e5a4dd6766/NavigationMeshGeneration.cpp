@@ -130,7 +130,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
         }
     }
 
-    navigationMesh.
+    printf("Cube dimen: %d,%d,%d\n", cube.getDimensions().x(), cube.getDimensions().y(), cube.getDimensions().z());
 }
 
 DirectX::SimpleMath::Vector3 NavigationMeshGeneration::getNormal(
@@ -141,9 +141,4 @@ DirectX::SimpleMath::Vector3 NavigationMeshGeneration::getNormal(
     else
         return (triangle.vertices[0] - triangle.vertices[1])
             .Cross(triangle.vertices[0] - triangle.vertices[2]);
-}
-
-NavigationMeshGeneration::Triangle NavigationMeshGeneration::toTriangle(Cube &cube)
-{
-    float y;
 }

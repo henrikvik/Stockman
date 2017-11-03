@@ -13,6 +13,7 @@
 
 namespace Logic
 {
+    class Physics;
 	class AStar
 	{
 		public:
@@ -49,6 +50,8 @@ namespace Logic
 			std::string file;
 			std::vector<NavNode> navNodes; //testing
 			NavigationMesh navigationMesh;
+
+            bool renderDebug;
 			int targetIndex; // save the triangle id to share beetwen path loading
 		
 			float heuristic(DirectX::SimpleMath::Vector3 const &from,
@@ -83,7 +86,7 @@ namespace Logic
 			size_t getNrOfPolygons() const;
 
 			// iniate the nodes
-			void generateNavigationMesh();
+			void generateNavigationMesh(Physics &physics);
 	};
 }
 #endif

@@ -51,7 +51,6 @@ namespace Logic
             DirectX::SimpleMath::Vector3 getNormal(
                 Triangle const &triangle,
                 VertexOrder vertexOrder = CLOCKWISE) const;
-            Triangle toTriangle(Cube &cube);
 	};
 }
 
