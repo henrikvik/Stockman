@@ -108,6 +108,7 @@ void StateGame::reset()
     m_cardManager->resetDeck();
 
     ComboMachine::Get().Reset();
+   
 }
 
 void StateGame::update(float deltaTime)
