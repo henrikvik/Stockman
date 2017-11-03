@@ -14,14 +14,14 @@ Graphics::Menu::Menu(ID3D11Device * device, ID3D11DeviceContext * contex)
 }
 Graphics::Menu::~Menu()
 {
-    SAFE_RELEASE(buttonTexture[0]);
-    SAFE_RELEASE(buttonTexture[1]);
-    SAFE_RELEASE(buttonTexture[2]);
-    SAFE_RELEASE(buttonTexture[3]);
-    SAFE_RELEASE(menuTexture[0]);
-    SAFE_RELEASE(menuTexture[1]);
-    SAFE_RELEASE(menuTexture[2]);
-    SAFE_RELEASE(menuTexture[3]);
+    //SAFE_RELEASE(buttonTexture[0]);
+    //SAFE_RELEASE(buttonTexture[1]);
+    //SAFE_RELEASE(buttonTexture[2]);
+    //SAFE_RELEASE(buttonTexture[3]);
+    //SAFE_RELEASE(menuTexture[0]);
+    //SAFE_RELEASE(menuTexture[1]);
+    //SAFE_RELEASE(menuTexture[2]);
+    //SAFE_RELEASE(menuTexture[3]);
     SAFE_RELEASE(menuQuad);
     SAFE_RELEASE(buttonQuad);
     delete states;

@@ -62,8 +62,8 @@ namespace Resources
             crosshair,
             gameOverMenuButtons,
             gameOverTexture,
-            HPbar,
-            HPbarOutline,
+            HPBars,
+            HUDIcons,
             mainMenuButton,
             mainmenupicture,
             SettingsMenuButtons
@@ -75,8 +75,8 @@ namespace Resources
             {crosshair, R"(..\Resources\Textures\crosshair.png)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
-            {HPbar, R"(..\Resources\Textures\HPbar.png)"},
-            {HPbarOutline, R"(..\Resources\Textures\HPbarOutline.png)"},
+            {HPBars, R"(..\Resources\Textures\HPBars.dds)"},
+            {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"}
