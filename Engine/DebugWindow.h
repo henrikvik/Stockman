@@ -71,7 +71,7 @@ public:
 	static void releaseInstance();
 	void clearLog();
 	void addLog(const char* command_line, ...) IM_FMTARGS(2);
-	void draw(const char* title);
+	void draw();
 	void doCommand(const char* command_line);
 	int TextEditCallback(ImGuiTextEditCallbackData* data);
 	void registerCommand(const char* command, CommandFunction function);

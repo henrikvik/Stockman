@@ -9,8 +9,8 @@
 
 using namespace Logic;
 
-Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, float health, float baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId)
-: Entity(body, halfExtent)
+Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId)
+: Entity(body, halfExtent, modelID)
 {
 	m_behavior = nullptr;
 
@@ -21,6 +21,8 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 	m_enemyType = enemyType;
 	m_bulletTimeMod = 1.f;
     m_moveSpeedMod = 1.f;
+
+    m_nrOfCallbacksEntities = 0;
 
 	//animation todo
     enemyRenderInfo.model = modelID;
@@ -82,16 +84,28 @@ void Enemy::debugRendering()
 	m_behavior->getPath().renderDebugging(getPosition());
 }
 
-void Enemy::damage(float damage)
+void Enemy::increaseCallbackEntities()
+{
+    m_nrOfCallbacksEntities++;
+}
+
+void Enemy::decreaseCallbackEntities()
+{
+    m_nrOfCallbacksEntities--;
+}
+
+bool Enemy::hasCallbackEntities()
+{
+    return m_nrOfCallbacksEntities > 0;
+}
+
+void Enemy::damage(int damage)
 {
 	m_health -= damage;
 
-    if (hasCallback(ON_DAMAGE_TAKEN))
-        getCallbacks()[ON_DAMAGE_TAKEN](CallbackData { this, static_cast<int32_t> (damage) });
-
+    callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)
-        if (hasCallback(ON_DEATH))
-            getCallbacks()[ON_DEATH](CallbackData {this, static_cast<int32_t> (damage)});
+        callback(ON_DEATH, CallbackData {this, static_cast<int32_t> (damage)});
 }
 
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
@@ -101,24 +115,24 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 	if (flags & Effect::EFFECT_KILL)
 		damage(m_health);
 	if (flags & Effect::EFFECT_ON_FIRE)
-		damage(effect.getModifiers()->modifyDmgTaken * dt);
+		damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken * dt));
 	if (flags & Effect::EFFECT_BULLET_TIME)
 		m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
     if (flags & Effect::EFFECT_IS_FROZEN)
         m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
 }
 
-float Enemy::getHealth() const
+int Enemy::getHealth() const
 {
 	return m_health;
 }
 
-float Enemy::getMaxHealth() const
+int Enemy::getMaxHealth() const
 {
 	return m_maxHealth;
 }
 
-float Enemy::getBaseDamage() const
+int Enemy::getBaseDamage() const
 {
 	return m_baseDamage;
 }
@@ -148,8 +162,16 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     
+    increaseCallbackEntities();
+    pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+        decreaseCallbackEntities();
+    });
     if (hasCallback(ON_DAMAGE_GIVEN))
-        pj->addCallback(ON_DAMAGE_GIVEN, getCallbacks()[ON_DAMAGE_GIVEN]);
+    {
+        pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
+            callback(ON_DAMAGE_GIVEN, data);
+        });
+    }
 	
     return pj;
 }

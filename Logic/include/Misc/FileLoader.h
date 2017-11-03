@@ -40,7 +40,7 @@ namespace Logic {
 
 		/* @returns: 0 on success, -1 on failure to find file, -2 on failure to read file
 		not exceptions due to various reasons. */
-		int loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, std::string const &fileName, int offset = 0, int fileOffset = 0, int filePadding = 0);
+		int loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, std::string const &fileName, int offset = 0, int fileOffset = 0, int filePadding = 0, const char *defaultContents = nullptr);
 		int saveStructsToFile(std::vector<LoadedStruct> &loadedStructs, std::string const &fileName);
 	};
 }

@@ -96,14 +96,13 @@ namespace Graphics
         ID3D11BlendState *transparencyBlendState;
 
         
-		bool enablePostEffects = true;
-
 		bool enableSSAO = true;
 		bool enableGlow = true;
-		bool enableFog = true;
-		bool enableDOF = true;
+		bool enableFog = false;
+		bool enableDOF = false;
         bool enableCoCWindow = false;
-        bool enableSnow = false;
+        bool enableSnow = true;
+        bool enableHud = true;
 
         Menu menu;
         HUD hud;

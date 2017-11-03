@@ -25,7 +25,7 @@ namespace Graphics
 		ConstantBuffer<Sun::LightValues>*  getShaderBuffer() { return sun.getShaderBuffer(); };
 		D3D11_VIEWPORT getViewPort() { return sun.getViewPort(); };
 		Graphics::DepthStencil * getDepthStencil() { return &this->shadowDepthStencil; };
-		ID3D11SamplerState * getSampler() { return this->shadowSampler; };
+		ID3D11SamplerState ** getSampler() { return &this->shadowSampler; };
 
 		void drawShadows(ID3D11DeviceContext * context, Graphics::Shader * shader);
 		void clear(ID3D11DeviceContext * context);

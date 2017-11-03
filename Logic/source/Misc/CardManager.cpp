@@ -1,107 +1,129 @@
-#include "../Misc/CardManager.h"
-#include <Misc\FileLoader.h>
-#include <algorithm>
-
+#include <Misc/CardManager.h>
+#include <Player/Player.h>
 using namespace Logic;
 
-CardManager::CardManager()
+const int CardManager::HEALTH_PACK = 0;
+const int CardManager::HAND_SIZE   = 3;
+
+CardManager::CardManager(int nrOfEach)
 {
-	for (int i = 0; i < handSize; i++)
-	{
-		m_hand[i] = -1; //is default
-	}
+    m_hand.resize(HAND_SIZE);
+    memset(m_hand.data(), -1, sizeof(m_hand.data()));
+
+    loadDeckFromFile();
+    createDeck(nrOfEach);
 }
 
 CardManager::~CardManager() { }
 
-void CardManager::clear()
+void CardManager::resetDeck()
 {
-	m_cards.clear();
+    for (auto &pair : m_deck)
+        if (pair.first == TAKEN)
+            pair.first = IN_DECK;
 }
 
-void CardManager::init() 
-{
-	std::vector<FileLoader::LoadedStruct> cardFile;
-	FileLoader::singleton().loadStructsFromFile(cardFile, "Cards");
-
-	for (auto const& struc : cardFile)
-	{
-		std::vector<int> upgrades;
-		for (int i = 0; i < struc.ints.at("upgradeAmmount"); i++)
-		{
-			upgrades.push_back(struc.ints.at("upgrade" + std::to_string(i + 1)));
-		}
-
-		DirectX::SimpleMath::Vector2 texStart(struc.floats.at("xTexStart"), struc.floats.at("yTexStart"));
-		DirectX::SimpleMath::Vector2 texEnd(struc.floats.at("xTexEnd"), struc.floats.at("yTexEnd"));;
-		m_cards.push_back(Card(struc.strings.at("cardName"), struc.strings.at("texture"), struc.strings.at("description"), upgrades, texStart, texEnd, struc.ints.at("isEffect"))); //something wrong here
-	}
-}
-
-void CardManager::restart()
-{
-	clear();
-	init();
-}
-
-void Logic::CardManager::createDeck(int nrOfEach)
+void CardManager::createDeck(int nrOfEach)
 {
 	for (int i = 0; i < nrOfEach; i++)
-	{
-		for (int j = 1; j < m_cards.size(); j++)
-		{
-			m_deck.push_back(j);
-		}
-	}
-	shuffle(1);
+		for (int j = 0; j < m_cards.size(); j++)
+            m_deck.push_back({ IN_DECK, j });
 }
 
-void Logic::CardManager::pickThree(bool damaged)
+void CardManager::pickThree(bool damaged)
 {
-	int ammount = handSize;
-	int end = handSize - 1;
-	if (damaged)
-	{
-		m_hand[end] = healthPack;
-		ammount--;
-	}
+    int cardsPicked = 0;
+    int amount = HAND_SIZE;
 
-	for(int i = 0; i < ammount; i++)
-	{
-		m_hand[i] = m_deck.at(i);
-	}
+    if (damaged)
+    {
+        m_hand[HAND_SIZE - 1] = HEALTH_PACK;
+        amount--;
+    }
+    
+    shuffle();
+    for (int i = 0; i < m_deck.size() && cardsPicked < amount; i++)
+        if (m_deck[i].first == IN_DECK)
+            m_hand[cardsPicked++] = i;
+
+    if (cardsPicked < amount)
+        throw std::runtime_error("Not enough cards");
 }
 
-void Logic::CardManager::shuffle(int times)
+void CardManager::shuffle()
 {
-    std::random_device rd;
-    std::mt19937 g(rd());
-	for (int i = 0; i < times; i++)
-	{
-		std::shuffle(m_deck.begin(), m_deck.end(), g);
-	}
+    std::random_shuffle(m_deck.begin(), m_deck.end());
 }
 
-Card Logic::CardManager::pick(int cardIndex)
+Card CardManager::pick(int handIndex)
 {
-	if (cardIndex >= 0)
-	{
-		if (m_hand[cardIndex] != healthPack)
-		{
-			m_deck.erase(m_deck.begin() + cardIndex);
-		}
+    int deckIndex = m_hand[handIndex];
 
-		shuffle(1);
+    if (m_deck[deckIndex].first == IN_DECK)
+        m_deck[deckIndex].first = TAKEN;
 
-		Card choosen = m_cards.at(m_hand[cardIndex]);
+    return m_cards[m_deck[deckIndex].second];
+}
 
-		for (int i = 0; i < handSize; i++)
-		{
-			m_hand[i] = -1; //is default
-		}
-		return choosen;
-	}	
+void CardManager::loadDeckFromFile()
+{
+    std::vector<FileLoader::LoadedStruct> cardFile;
+    FileLoader::singleton().loadStructsFromFile(cardFile, "Cards");
 
-	Card emptyDefault;
-	return emptyDefault;
+    createCard(NEVER_REMOVE, cardFile[0]);
+    for (int i = 1; i < cardFile.size(); i++)
+        createCard(IN_DECK, cardFile[i]);
+}
+
+void CardManager::createCard(CardCondition cond, FileLoader::LoadedStruct const &struc)
+{
+    std::vector<int> statusIds;
+    for (int i = 0; i < struc.ints.at("statusAmount"); i++)
+        statusIds.push_back(struc.ints.at("status" + std::to_string(i)));
+
+    DirectX::SimpleMath::Vector2 texStart(struc.floats.at("xTexStart"),
+        struc.floats.at("yTexStart"));
+    DirectX::SimpleMath::Vector2 texEnd(struc.floats.at("xTexEnd"),
+        struc.floats.at("yTexEnd"));;
+    
+    m_cards.push_back(Card(struc.strings.at("cardName"),
+        struc.strings.at("texture"), struc.strings.at("description"),
+        statusIds, texStart, texEnd, struc.ints.at("statusType"))
+    ); 
+}
+
+bool CardManager::pickAndApplyCard(Player & player, int cardIndex)
+{
+    if (cardIndex >= 0)
+    {
+        Card temp = pick(cardIndex);
+        handleCard(player, temp);
+        return true;
+    }
+    return false;
+}
+
+void CardManager::handleCard(Player &player, Card const &card)
+{
+    //add information to player
+    for (auto const& ID : card.getStatusIds())
+    {
+        switch (card.getStatusType())
+        {
+            case Card::EFFECT:
+                player.getStatusManager().addStatus(
+                    static_cast<StatusManager::EFFECT_ID> (ID),
+                    1, true
+                );
+                break;
+            case Card::UPGRADE:
+                player.getStatusManager().addUpgrade(
+                    static_cast<StatusManager::UPGRADE_ID> (ID)
+                );
+                break;
+            default:
+                throw std::runtime_error("Unsupported card type");
+                break;
+        }
+    }
 }

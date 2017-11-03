@@ -4,7 +4,9 @@
 #include <CommonStates.h>
 #include <Engine\Constants.h>
 #define SNOW_RADIUS 50.f
-#define MAX_SNOW 256
+#define MAX_SNOW 512
+#define PI 3.14159265f
+#define ONE_DEG_IN_RAD 0.01745f
 
 //temp
 #include <Keyboard.h>
@@ -28,18 +30,32 @@ namespace Graphics
 
 	void SnowManager::updateSnow(float deltaTime, Camera * camera, ID3D11DeviceContext * context)
 	{
+        Logic::RandomGenerator & generator = Logic::RandomGenerator::singleton();
+
+        static float windTimer = 5000;
+        static float windCounter = 0;
+        static Vector3 randWindPrev(0, -1, 0);
+        static Vector3 randWind(0, -1, 0);
+        static float friction = 0.6f;
+
 		//temp
-		auto ks = DirectX::Keyboard::Get().GetState();
+        static auto ks = DirectX::Keyboard::KeyboardStateTracker();
+        ks.Update(DirectX::Keyboard::Get().GetState());
 
-		static bool isP = false;
-		static bool wasP = false;
-		wasP = isP;
-		isP = ks.P;
-
-		if (!wasP && isP)
+		if (ks.pressed.P)
 		{
 			initializeSnowflakes(camera);
 		}
+
+        windCounter += deltaTime;
+        if (windTimer <= windCounter)
+        {
+            randWindPrev = randWind;
+            windCounter = 0;
+            randWind.x = generator.getRandomFloat(-1, 1);
+            randWind.z = generator.getRandomFloat(-1, 1);
+            randWind.y = -1;
+        }
 
 		for (int i = 0; i < MAX_SNOW; i++)
 		{
@@ -47,11 +63,17 @@ namespace Graphics
 				moveSnowFlake(camera, i);
 
 			snowFlakes[i].distance = (snowFlakes[i].position - camera->getPos()).Length();
+            snowFlakes[i].randomRot += generator.getRandomFloat(0, ONE_DEG_IN_RAD * 5);
 
-			snowFlakes[i].position += velocities[i] * deltaTime * 0.01f;
+            
+
+			snowFlakes[i].position += Vector3::Lerp(randWindPrev, randWind, windCounter / windTimer) * deltaTime * 0.01f;
+
+
+
 		}
 		
-		snowBuffer.write(context, &snowFlakes[0], snowFlakeCount * sizeof(Vector4));
+		snowBuffer.write(context, &snowFlakes[0], snowFlakeCount * sizeof(SnowFlake));
 
 	}
 
@@ -65,11 +87,10 @@ namespace Graphics
 
 		SnowFlake flake;
 		flake.position = finalPos;
-		flake.randomRot = generator.getRandomFloat(0, 360);
+		flake.randomRot = generator.getRandomFloat(0, PI * 2.f);
 		flake.distance = randVec.Length();
 
 		snowFlakes.push_back(flake);
-		velocities.push_back(Vector3(0, -1, 0));
 
 		snowFlakeCount++;
 	}
@@ -93,18 +114,32 @@ namespace Graphics
 		}
 	}
 
-	void SnowManager::drawSnowflakes(ID3D11DeviceContext * context, Camera * camera)
+	void SnowManager::drawSnowflakes(ID3D11DeviceContext * context, Camera * camera, ID3D11RenderTargetView * target, DepthStencil * depthMap, SkyRenderer& sky)
 	{
 		context->GSSetConstantBuffers(0, 1, *camera->getBuffer());
 		context->VSSetShaderResources(4, 1, snowBuffer);
 
-		context->IASetInputLayout(nullptr);
+        context->PSSetConstantBuffers(1, 1, *sky.getShaderBuffer());
+        context->GSSetConstantBuffers(3, 1, *sky.getLightMatrixBuffer());
+        context->PSSetShaderResources(3, 1, *sky.getDepthStencil());
+        context->OMSetRenderTargets(1, &target, *depthMap);
+
+        context->PSSetSamplers(1, 1, sky.getSampler());
+
+        context->IASetInputLayout(nullptr);
 		context->VSSetShader(snowShader, nullptr, 0);
 		context->PSSetShader(snowShader, nullptr, 0);
 		context->GSSetShader(snowShader, nullptr, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+		
+        context->Draw(snowFlakeCount, 0);
 
-		context->Draw(snowFlakeCount, 0);
+        ID3D11ShaderResourceView * nullSRV = nullptr;
+        ID3D11RenderTargetView * nullRTV = nullptr;
+
+
+        context->OMSetRenderTargets(1, &nullRTV, nullptr);
+        context->PSSetShaderResources(3, 1, &nullSRV);
 	}
 
 	void SnowManager::recompile(ID3D11Device * device)
@@ -115,7 +150,6 @@ namespace Graphics
 	void SnowManager::clearSnow()
 	{
 		snowFlakes.clear();
-		velocities.clear();
 		snowFlakeCount = 0;
 	}
 }

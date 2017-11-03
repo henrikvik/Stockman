@@ -18,6 +18,7 @@ namespace Logic
         virtual ~WaveTimeManager();
 
         bool update(float deltaTime, EntityManager &entityManager);
+        void reset();
 
         int getCurrentWave() const;
         float getTimeCurrent() const;

@@ -59,11 +59,21 @@ int FileLoader::parseString(LoadedStruct &loaded, std::string const &str)
 	return 0;
 }
 
-int FileLoader::loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, std::string const &fileName, int offset, int fileOffset, int filePadding)
+int FileLoader::loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, std::string const &fileName, int offset, int fileOffset, int filePadding, const char *defaultContents)
 {
 	std::ifstream inf(FILE_PATH + fileName + FILE_EXT);
-	if (!inf.is_open())
-		return -1; // see .h for error stuff
+	if (!inf.is_open()) {
+        if (!defaultContents)
+		    return -1; // see .h for error stuff
+
+        std::ofstream out(FILE_PATH + fileName + FILE_EXT);
+        out << defaultContents;
+        out.close();
+
+        inf = std::ifstream(FILE_PATH + fileName + FILE_EXT);
+        if (!inf.is_open())
+            return -1;
+    }
 
 	std::string temp;
 	inf.seekg(1); // first symbol should always be { so that is why. That can be skipped. Better solution would be to find it and use the index, but unnecessary for the moment

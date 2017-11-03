@@ -29,8 +29,15 @@ namespace Logic
 	class Enemy : public Entity
 	{
 		private:
-			
-			float m_health, m_maxHealth, m_baseDamage, m_moveSpeed; // Base
+            // This is used to count how many callbacks is added, 
+            // so this HAS to be ZERO before this is destroyed or
+            // the showcase at PAX East will go bad
+            int m_nrOfCallbacksEntities;
+
+            // base
+            int m_health, m_maxHealth, m_baseDamage;
+            float m_moveSpeed;
+
 			float m_bulletTimeMod;									// Variables for effect modifiers
             float m_moveSpeedMod;
 			ENEMY_TYPE m_enemyType;
@@ -42,7 +49,7 @@ namespace Logic
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE };
 
-			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, float maxHealth, float baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId);
+			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId);
 			virtual ~Enemy();
 
 			virtual void update(Player const &player, float deltaTime,
@@ -58,13 +65,18 @@ namespace Logic
 			// for debugging
 			void debugRendering();
 
-			void damage(float damage);
+            void increaseCallbackEntities();
+            void decreaseCallbackEntities();
+            bool hasCallbackEntities();
+
+			void damage(int damage);
 			void setBehavior(BEHAVIOR_ID id);
 			void setEnemyType(ENEMY_TYPE id);
 
-			float getHealth() const;
-			float getMaxHealth() const;
-			float getBaseDamage() const;
+            int getHealth() const;
+            int getMaxHealth() const;
+            int getBaseDamage() const;
+
 			float getMoveSpeed() const;
 			ENEMY_TYPE getEnemyType() const;
 			Behavior* getBehavior() const;

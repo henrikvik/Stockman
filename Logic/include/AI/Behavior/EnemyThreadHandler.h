@@ -13,13 +13,11 @@ namespace Logic
     class EnemyThreadHandler
     {
     public:
-        // Why locked and running? Locked means i % NR_OF_THREADS is locked
-        // while running means that index i is currently being updated
         struct WorkData
         {
             EntityManager *manager;
             int index;
-            Player const &player;
+            Player const *player;
         };
     private:
         static const int NR_OF_THREADS = 8;
@@ -30,19 +28,18 @@ namespace Logic
         std::thread *threads[NR_OF_THREADS];
 
         bool m_killChildren;
-
+        void initThreads();
+        
+        void resetThreads();
+        void deleteThreads();
     public:
         EnemyThreadHandler();
         ~EnemyThreadHandler();
-        void initThreads();
 
         void updateEnemiesAndPath(WorkData &data);
         void threadMain();
 
         void addWork(WorkData data);
-
-        void resetThreads();
-        void deleteThreads();
     };
 }
 

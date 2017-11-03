@@ -43,4 +43,3 @@ void Logic::FPSRenderer::render() const
 {
     RenderQueue::get().queue(&renderInfo);
 }
-

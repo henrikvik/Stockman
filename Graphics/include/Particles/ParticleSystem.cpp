@@ -138,6 +138,78 @@ ParticleEffect ParticleSystem::getEffect(std::string name)
 
 void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, DirectX::CommonStates * states, ID3D11DepthStencilView * dest_dsv)
 {
+    ID3D11SamplerState *samplers[] = {
+        states->LinearClamp(),
+        states->LinearWrap(),
+        states->PointClamp(),
+        states->PointWrap()
+    };
+    cxt->VSSetSamplers(0, 4, samplers);
+    cxt->PSSetSamplers(0, 4, samplers);
+
+    cxt->PSSetShaderResources(0, (UINT)m_Textures.size(), m_Textures.data());
+
+    // spheres
+    {
+        UINT strides[2] = {
+            (UINT)sizeof(SphereVertex),
+            (UINT)sizeof(GeometryParticleInstance)
+        };
+
+        UINT offsets[2] = {
+            0,
+            0
+        };
+
+        ID3D11Buffer *buffers[] = {
+            *m_SphereVertexBuffer,
+            *m_GeometryInstanceBuffer
+        };
+
+        cxt->IASetInputLayout(*m_GeometryVS);
+        cxt->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+        cxt->IASetIndexBuffer(*m_SphereIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+        cxt->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+        cxt->VSSetShader(*m_GeometryVS, nullptr, 0);
+        auto buf = cam->getBuffer();
+        cxt->VSSetConstantBuffers(0, 1, *buf);
+
+        cxt->OMSetDepthStencilState(states->DepthDefault(), 0);
+        cxt->OMSetRenderTargets(0, nullptr, dest_dsv);
+        cxt->RSSetState(states->CullNone());
+
+        int offset = 0;
+        unsigned int len = 0;
+        int current_material = -1;
+
+        for (int i = 0; i < m_GeometryParticles.size(); i++) {
+            auto &particle = m_GeometryParticles[i];
+
+            // initialize state during first loop
+            if (current_material == -1) {
+                current_material = particle.idx;
+            }
+            // if material changes, flush our built up batching
+            else if (current_material != particle.idx) {
+                cxt->PSSetShader(std::get<1>(m_Materials[current_material]), nullptr, 0);
+                cxt->DrawIndexedInstanced(m_SphereIndices, min(m_Capacity, len), 0, 0, offset);
+
+                current_material = particle.idx;
+                offset = i;
+                len = 0;
+            }
+
+            len++;
+        }
+
+        if (len > 0) {
+            cxt->PSSetShader(std::get<1>(m_Materials[current_material]), nullptr, 0);
+            cxt->DrawIndexedInstanced(m_SphereIndices, min(m_Capacity, len), 0, 0, offset);
+        }
+
+        cxt->RSSetState(states->CullCounterClockwise());
+    }
 }
 
 void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::CommonStates * states, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView * dest_dsv, bool debug)

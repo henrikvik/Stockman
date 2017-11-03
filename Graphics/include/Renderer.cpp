@@ -85,16 +85,7 @@ namespace Graphics
 		//menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
 		createBlendState();
 
-		DebugWindow *debugWindow = DebugWindow::getInstance();
-		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
-		{
-			enableSSAO = false;
-			enableGlow= false;
-			enableDOF = false;
-			enableFog = false;
-
-			return "PostEffect OFF";
-		});
+		
 		registerDebugFunction();
 
 		statusData.burn = 0;
@@ -246,6 +237,10 @@ namespace Graphics
 		//writeInstanceData();
 		//PROFILE_END();
 
+        PROFILE_BEGIN("FXSystem::update()")
+        FXSystem->update(deviceContext, camera, 0.016f);
+        PROFILE_END();
+
 		PROFILE_BEGIN("drawShadows()");
 		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
 		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
@@ -283,8 +278,13 @@ namespace Graphics
 
 		////////////drawFoliage(camera);
 
-		////drawFoliage(camera);
-		PROFILE_END();
+		//drawFoliage(camera);
+	
+        PROFILE_BEGIN("FXSystem::renderPrePass()")
+        FXSystem->renderPrePass(deviceContext, camera, states, depthStencil);
+        PROFILE_END();
+        
+        PROFILE_END();
 
 		PROFILE_BEGIN("grid.updateLights()");
 		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
@@ -297,10 +297,6 @@ namespace Graphics
 		PROFILE_BEGIN("grid.cull()");
 		grid.cull(camera, states, depthStencil, device, deviceContext);
 		PROFILE_END();
-
-        PROFILE_BEGIN("FXSystem::update()")
-        FXSystem->update(deviceContext, camera, 0.016f);
-        PROFILE_END();
 
         PROFILE_BEGIN("FXSystem::render()")
         FXSystem->render(deviceContext, camera, states, *fakeBackBuffer, depthStencil, false);
@@ -324,8 +320,7 @@ namespace Graphics
 		auto samplerWrap = states->LinearWrap();
 		deviceContext->PSSetSamplers(2, 1, &samplerWrap);
 
-		ID3D11SamplerState * samplers[] = { skyRenderer.getSampler() };
-		deviceContext->PSSetSamplers(1, 1, samplers);
+		deviceContext->PSSetSamplers(1, 1, skyRenderer.getSampler());
 
 		ID3D11Buffer *lightBuffs[] =
 		{
@@ -360,18 +355,6 @@ namespace Graphics
 		//////////PROFILE_END();
 
 
-        if (enableSnow)
-        {
-            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-            static UINT sampleMask = 0xffffffff;
-            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-            snowManager.drawSnowflakes(deviceContext, camera);
-            deviceContext->GSSetShader(nullptr, nullptr, 0);
-            deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        }
-		
-
-		PROFILE_BEGIN("DebugThings");
 	/*	PROFILE_BEGIN("RenderWater");
 		drawWater(camera);
 		PROFILE_END();*/
@@ -381,12 +364,16 @@ namespace Graphics
         deviceContext->RSSetState(states->CullCounterClockwise());
         skyRenderer.renderSky(deviceContext, camera);
 
+       
+
         ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
 
         deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
 
         ZeroMemory(SRVs, sizeof(SRVs));
         deviceContext->PSSetShaderResources(0, 4, SRVs);
+
+        PROFILE_BEGIN("DebugThings");
 
 		deviceContext->RSSetState(states->CullCounterClockwise());
 		SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
@@ -405,73 +392,98 @@ namespace Graphics
 
 			///////Post effects
 
-            if (enableDOF)
+        if (enableDOF)
+        {
+            PROFILE_BEGIN("Dof");
+
+            if (enableCoCWindow)
             {
-                PROFILE_BEGIN("Dof");
-
-                if (enableCoCWindow)
-                {
-                    ImGui::Begin("camera stuff");
-                    static float fp = 0.088f;
-                    static float fl = 0.05f;
-                    static float a = 0.12f;
-                    ImGui::SliderFloat("focal Plane", &fp, 0.0001f, .1f);
-                    ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
-                    ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
-                    DoFRenderer.updateCoc(deviceContext, fl, fp, a);
-                    ImGui::End();
-                }
-                DoFRenderer.DoFRender(deviceContext, fakeBackBuffer, &depthStencil, fakeBackBufferSwap, camera);
-                swapBackBuffers();
-                PROFILE_END();
+                ImGui::Begin("camera stuff");
+                static float fp = 0.088f;
+                static float fl = 0.05f;
+                static float a = 0.12f;
+                ImGui::SliderFloat("focal Plane", &fp, 0.0001f, .1f);
+                ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
+                ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
+                DoFRenderer.updateCoc(deviceContext, fl, fp, a);
+                ImGui::End();
             }
+            DoFRenderer.DoFRender(deviceContext, fakeBackBuffer, &depthStencil, fakeBackBufferSwap, camera);
+            swapBackBuffers();
+            PROFILE_END();
+        }
 
-			if (enableGlow)
-			{
-				PROFILE_BEGIN("Glow");
-				glowRenderer.addGlow(deviceContext, *fakeBackBuffer, fakeBackBufferSwap);
-				swapBackBuffers();
-				PROFILE_END();
-			}
+		if (enableGlow)
+		{
+			PROFILE_BEGIN("Glow");
+			glowRenderer.addGlow(deviceContext, *fakeBackBuffer, fakeBackBufferSwap);
+			swapBackBuffers();
+			PROFILE_END();
+		}
 
-			if (enableSSAO)
-			{
-				PROFILE_BEGIN("SSAO");
-				ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, fakeBackBuffer, fakeBackBufferSwap);
-				swapBackBuffers();
-				PROFILE_END();
-			}
+		if (enableSSAO)
+		{
+			PROFILE_BEGIN("SSAO");
+			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, fakeBackBuffer, fakeBackBufferSwap);
+			swapBackBuffers();
+			PROFILE_END();
+		}
 
 			
+        //The last post effect should just write to backbuffer instead of this 
+        //unnecessary draw call
+		static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		static UINT sampleMask = 0xffffffff;
+		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
 
-			static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			static UINT sampleMask = 0xffffffff;
-			deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-
-			PROFILE_BEGIN("DrawToBackBuffer");
-			drawToBackbuffer(*fakeBackBuffer);
-			PROFILE_END();
+		PROFILE_BEGIN("DrawToBackBuffer");
+		drawToBackbuffer(*fakeBackBuffer);
+		PROFILE_END();
 
 
-			if (enableFog)
-			{
-				PROFILE_BEGIN("renderFog()");
-
-				deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-				deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
-				fog.renderFog(deviceContext, backBuffer, depthStencil);
-				PROFILE_END();
-			}
-		}
-
-		else
+		if (enableFog)
 		{
-			PROFILE_BEGIN("DrawToBackBuffer");
-			drawToBackbuffer(*fakeBackBuffer);
+			PROFILE_BEGIN("renderFog()");
+
+			deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
+			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
+			fog.renderFog(deviceContext, backBuffer, depthStencil);
 			PROFILE_END();
 		}
 
+        if (enableSnow)
+        {
+            //Needs the light for snowflakes
+            ID3D11ShaderResourceView *SRVs[] = {
+                grid.getOpaqueIndexList()->getSRV(),
+                grid.getOpaqueLightGridSRV(),
+                grid.getLights()->getSRV(),
+            };
+            deviceContext->PSSetShaderResources(0, 3, SRVs);
 
+            auto state = states->DepthDefault();
+            deviceContext->OMSetDepthStencilState(state, 0);
+            auto state2 = states->CullNone();
+            deviceContext->RSSetState(state2);
+            
+            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+            static UINT sampleMask = 0xffffffff;
+            
+            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+            snowManager.drawSnowflakes(deviceContext, camera, backBuffer, &depthStencil, skyRenderer);
+            deviceContext->GSSetShader(nullptr, nullptr, 0);
+            deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            
+            ZeroMemory(SRVs, sizeof(SRVs));
+            deviceContext->PSSetShaderResources(0, 3, SRVs);
+        }
+
+        if (enableHud)
+        {
+            PROFILE_BEGIN("HUD");
+            hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
+            PROFILE_END();
+        }
 
 		PROFILE_BEGIN("DebugInfo");
 		renderDebugInfo(camera);
@@ -732,8 +744,8 @@ namespace Graphics
         BlendState.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
         BlendState.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
         BlendState.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-        BlendState.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_INV_DEST_ALPHA;
-        BlendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+        BlendState.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+        BlendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
         BlendState.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         BlendState.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
@@ -759,49 +771,227 @@ namespace Graphics
 	void Renderer::registerDebugFunction()
 	{
 		DebugWindow *debugWindow = DebugWindow::getInstance();
-		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_DISABLE_POST_EFFECTS", [&](std::vector<std::string> &args)->std::string
 		{
-			enablePostEffects = !enablePostEffects;
+			
+            enableSSAO = false;
+            enableGlow = false;
+            enableFog = false;
+            enableDOF = false;
+            enableSnow = false;
 
-			return "Post effects toggled!";
+			return "Post effects off!";
 		});
 
-		debugWindow->registerCommand("TOGGLESSAO", [&](std::vector<std::string> &args)->std::string
-		{
-			enableSSAO = !enableSSAO;
-
-			return "Post effects toggled!";
-		});
-
-        debugWindow->registerCommand("TOGGLESNOW", [&](std::vector<std::string> &args)->std::string
+        debugWindow->registerCommand("GFX_ENABLE_POST_EFFECTS", [&](std::vector<std::string> &args)->std::string
         {
-            enableSnow = !enableSnow;
 
-            return "Snow toggled!";
+            enableSSAO = true;
+            enableGlow = true;
+            enableFog = true;
+            enableDOF = true;
+            enableSnow = true;
+
+            return "Post effects on!";
         });
 
-		debugWindow->registerCommand("TOGGLEGLOW", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_SSAO", [&](std::vector<std::string> &args)->std::string
 		{
-			enableGlow = !enableGlow;
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableSSAO = std::stoi(args[0]);
 
-			return "Post effects toggled!";
+                    if (enableSSAO)
+                        catcher = "SSAO enabled!";
+
+                    else
+                        catcher = "SSAO disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
 		});
 
-		debugWindow->registerCommand("TOGGLEFOG", [&](std::vector<std::string> &args)->std::string
-		{
-			enableFog = !enableFog;
+        debugWindow->registerCommand("GFX_SET_SNOW", [&](std::vector<std::string> &args)->std::string
+        {
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableSnow = std::stoi(args[0]);
 
-			return "Post effects toggled!";
+                    if (enableSnow)
+                        catcher = "Snow enabled!";
+
+                    else
+                        catcher = "Snow disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
+        });
+
+		debugWindow->registerCommand("GFX_SET_GLOW", [&](std::vector<std::string> &args)->std::string
+		{
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableGlow = std::stoi(args[0]);
+
+                    if (enableGlow)
+                        catcher = "Glow enabled!";
+
+                    else
+                        catcher = "Glow disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
 		});
 
-		debugWindow->registerCommand("TOGGLEDOF", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_FOG", [&](std::vector<std::string> &args)->std::string
 		{
-			enableDOF = !enableDOF;
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableFog = std::stoi(args[0]);
 
-			return "Post effects toggled!";
+                    if (enableFog)
+                        catcher = "Fog enabled!";
+
+                    else
+                        catcher = "Fog disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
 		});
 
-		debugWindow->registerCommand("SETFREEZE", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_DOF", [&](std::vector<std::string> &args)->std::string
+		{
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableDOF = std::stoi(args[0]);
+
+                    if (enableDOF)
+                        catcher = "Depth of field enabled!";
+
+                    else
+                        catcher = "Depth of field disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
+		});
+
+        debugWindow->registerCommand("GFX_SET_DOF_SLIDERS", [&](std::vector<std::string> &args)->std::string
+        {
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableCoCWindow = std::stoi(args[0]);
+
+                    if (enableCoCWindow)
+                        catcher = "Circle of confusion window enabled!";
+
+                    else
+                        catcher = "Circle of confusion window disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
+        });
+
+        debugWindow->registerCommand("GFX_SET_HUD", [&](std::vector<std::string> &args)->std::string
+        {
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableHud = std::stoi(args[0]);
+
+                    if (enableHud)
+                        catcher = "HUD enabled!";
+
+                    else
+                        catcher = "HUD disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
+        });
+
+		debugWindow->registerCommand("GFX_SET_FREEZE", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 			try
@@ -823,7 +1013,7 @@ namespace Graphics
 			return catcher;
 		});
 
-		debugWindow->registerCommand("SETBURN", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_BURN", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 			try
@@ -845,7 +1035,7 @@ namespace Graphics
 			return catcher;
 		});
 
-		debugWindow->registerCommand("RELOADFORWARDSHADER", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_RELOAD_FORWARD_SHADER", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 			
@@ -855,7 +1045,7 @@ namespace Graphics
 			return catcher;
 		});
 
-		debugWindow->registerCommand("RELOADGLOWSHADERS", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_RELOAD_GLOW_SHADERS", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 
@@ -864,7 +1054,7 @@ namespace Graphics
 			return catcher;
 		});
 
-		debugWindow->registerCommand("RELOADSNOWSHADER", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_RELOAD_SNOW_SHADER", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 
@@ -872,12 +1062,5 @@ namespace Graphics
 
 			return catcher;
 		});
-    
-		debugWindow->registerCommand("ENABLEDOFSLIDERS", [&](std::vector<std::string> &args)->std::string
-        {
-            enableCoCWindow = !enableCoCWindow;
-
-            return "Post effects toggled!";
-        });
 	}
 }

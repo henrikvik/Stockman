@@ -19,7 +19,7 @@ namespace Logic
 
 	struct ProjectileData
 	{
-		float damage;				// Projectile Damage
+		int damage;				// Projectile Damage
 		float scale;				// Scale of the projectile
 		float mass;					// Mass of projectile
 		float speed;				// Bullet speed
@@ -33,8 +33,8 @@ namespace Logic
 		bool isSensor;				// If bullet is sensor or not (collision with other bullet)
 		bool enemyBullet;			// if enemies shot it or a player
 
-		ProjectileData() : damage(1.f), scale(1.f), mass(1.f), speed(1.f), gravityModifier(0.f), ttl(1000), meshID(Resources::Models::UnitCube), materialID(1), type(ProjectileTypeNormal), isSensor(false), enemyBullet(false) {}
-		ProjectileData(float inDamage, float inScale, float inMass, float inSpeed, float inGravityModifier, float inTTL, Resources::Models::Files inMeshID, int inMaterialID, ProjectileType inType = ProjectileTypeNormal, bool inIsSensor = false, bool inEnemyBullet = false) : damage(inDamage), scale(inScale), mass(inMass), speed(inSpeed),
+		ProjectileData() : damage(1), scale(1.f), mass(1.f), speed(1.f), gravityModifier(0.f), ttl(1000), meshID(Resources::Models::UnitCube), materialID(1), type(ProjectileTypeNormal), isSensor(false), enemyBullet(false) {}
+		ProjectileData(int inDamage, float inScale, float inMass, float inSpeed, float inGravityModifier, float inTTL, Resources::Models::Files inMeshID, int inMaterialID, ProjectileType inType = ProjectileTypeNormal, bool inIsSensor = false, bool inEnemyBullet = false) : damage(inDamage), scale(inScale), mass(inMass), speed(inSpeed),
 			gravityModifier(inGravityModifier), ttl(inTTL), meshID(inMeshID), materialID(inMaterialID), type(inType), isSensor(inIsSensor), enemyBullet(inEnemyBullet) {}
 	};
 }
