@@ -46,7 +46,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
 
-	btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_HEIGHT, PLAYER_SIZE_RADIUS);
+	btCapsuleShape* playerShape = new btCapsuleShape(0.5f, 2.f);
 	btPairCachingGhostObject* ghostObject = m_physPtr->createPlayer(playerShape, startPosition);
 	ghostObject->setUserPointer(this);
 
@@ -653,10 +653,32 @@ DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 	return scale * transformMatrix;
 }
 
+DirectX::SimpleMath::Matrix Player::getEyeTransformMatrix() const
+{
+    // Making memory for a matrix
+    float* m = newd float[4 * 16];
+
+    // Getting this entity's matrix
+    btTransform tr = m_charController->getGhostObject()->getWorldTransform();
+    tr.setOrigin(getPositionBT() + btVector3(PLAYER_EYE_OFFSET));
+    tr.getOpenGLMatrix((btScalar*)(m));
+
+    // Translating to DirectX Math and assigning the variables
+    DirectX::SimpleMath::Matrix transformMatrix(m);
+
+    //Find the scaling matrix
+    auto scale = DirectX::SimpleMath::Matrix::CreateScale(PLAYER_SIZE_RADIUS * 2, PLAYER_SIZE_HEIGHT * 2, PLAYER_SIZE_RADIUS * 2);
+
+    // Deleting the old created variables from memory
+    delete m;
+
+    return scale * transformMatrix;
+}
+
 void Player::render(Graphics::Renderer & renderer)
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
-//	Object::render(renderer);
+	//Object::render(renderer);
 
     static int lastHP = getHP();
     if (lastHP != getHP())
@@ -666,7 +688,7 @@ void Player::render(Graphics::Renderer & renderer)
     }
 
 	// Setting position of updated weapon and skill models
-	m_weaponManager->setWeaponModel(getTransformMatrix(), m_forward);
+	m_weaponManager->setWeaponModel(getEyeTransformMatrix(), m_forward);
 	//	m_skillManager->setWeaponModel(getTransformMatrix(), m_forward);
 
 	// Drawing the weapon model
@@ -682,6 +704,11 @@ void Logic::Player::setMaxSpeed(float maxSpeed)
 DirectX::SimpleMath::Vector3 Player::getPosition() const
 {
 	return DirectX::SimpleMath::Vector3(m_charController->getGhostObject()->getWorldTransform().getOrigin());
+}
+
+DirectX::SimpleMath::Vector3 Player::getEyePosition() const
+{
+    return DirectX::SimpleMath::Vector3(m_charController->getGhostObject()->getWorldTransform().getOrigin() + btVector3(PLAYER_EYE_OFFSET));
 }
 
 btVector3 Logic::Player::getPositionBT() const

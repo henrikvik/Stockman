@@ -117,7 +117,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
         /* Primary */       newd Weapon(projectileManager, ProjectileData(1, 0.2f, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 450.f, 0.f, 0 }),
         /* Secondary*/      newd Weapon(projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), Weapon::WeaponInfo{ 1, 18, 15, 10, 100.f, 0.f, 0 }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 60, 60, 30, 30, 1, 6, 2000 }), 
-        /* WeaponModel */   newd WeaponModel(Graphics::ModelID::CROSSBOW, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.107f, -1.592f, -9.159f)), DirectX::SimpleMath::Matrix::CreateScale(0.197f, 0.199f, 0.097f), -0.4f }) },
+        /* WeaponModel */   newd WeaponModel(Graphics::ModelID::CROSSBOW, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.1f, -1.6f, -9.15f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.1f), -0.4f }) },
 
         // Ice
         newd WeaponLoadout{ 

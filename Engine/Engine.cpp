@@ -369,7 +369,7 @@ int Engine::run()
 		else
 		{
 			oldPos = game.getPlayerPosition();
-			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+			cam.update(oldPos, game.getPlayerForward(), mContext);
 		}
 
 		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
