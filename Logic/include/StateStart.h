@@ -33,9 +33,6 @@ namespace Logic
         void update(float deltaTime);
         void render() const;
 
-        DirectX::SimpleMath::Vector3 getCameraForward();
-        DirectX::SimpleMath::Vector3 getCameraPosition();
-
     private:
         std::string			m_highScore[10];
         MenuMachine*		m_menu;

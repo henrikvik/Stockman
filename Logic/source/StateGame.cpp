@@ -193,13 +193,3 @@ void StateGame::gameOver()
     m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
     reset();
 }
-
-DirectX::SimpleMath::Vector3 StateGame::getCameraForward()
-{
-    return m_player->getForward();
-}
-
-DirectX::SimpleMath::Vector3 StateGame::getCameraPosition()
-{
-    return m_player->getPosition();
-}

@@ -20,9 +20,6 @@ namespace Logic
         virtual void update(float deltaTime) = 0;
         virtual void render() const = 0;
 
-        virtual DirectX::SimpleMath::Vector3 getCameraForward() = 0;
-        virtual DirectX::SimpleMath::Vector3 getCameraPosition() = 0;
-
         void setCallBackFunction(std::function<void(StateType)> switchState)
         {
             this->SetState = switchState;

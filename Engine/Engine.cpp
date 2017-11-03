@@ -15,6 +15,7 @@
 #include "DebugWindow.h"
 #include <Graphics\include\Device.h>
 #include <Graphics\include\RenderQueue.h>
+#include <Graphics\include\MainCamera.h>
 
 #pragma comment (lib, "d3d11.lib")
 
@@ -284,12 +285,12 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
-    cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
+	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
+    Global::mainCamera->update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
 
-	this->renderer = newd Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
+	this->renderer = newd Graphics::Renderer(mDevice, mContext, mBackBufferRTV, Global::mainCamera);
 
 	long long start = this->timer();
 	long long prev = start;
@@ -367,24 +368,13 @@ int Engine::run()
 		game->render();
 		PROFILE_END();
 
-        // Debug Lock Screen Position 
-		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
-
-		if (state.LeftControl) 
-            cam.update(oldPos, game->getState()->getCameraForward(), mContext);
-		else
-		{
-			oldPos = game->getState()->getCameraPosition();
-			cam.update(game->getState()->getCameraPosition(), game->getState()->getCameraForward(), mContext);
-		}
-
         ///// USH! /////
-		renderer->updateLight(deltaTime, &cam);
+		renderer->updateLight(deltaTime, Global::mainCamera);
         renderer->updateShake((float)deltaTime);
         ////////////////
 
         PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
-        renderer->render(&cam);
+        renderer->render(Global::mainCamera);
         PROFILE_END();
 
 		g_Profiler->poll();
@@ -395,7 +385,7 @@ int Engine::run()
 			g_Profiler->render();
 		}
 
-        Graphics::Debug::Render(&cam);
+        Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
 		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
@@ -409,6 +399,7 @@ int Engine::run()
         RenderQueue::get().clearAllQueues();
     }
 
+    delete Global::mainCamera;
     Graphics::Debug::Destroy();
     g_Profiler->end();
 	delete g_Profiler;
