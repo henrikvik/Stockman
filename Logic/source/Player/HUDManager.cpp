@@ -37,7 +37,7 @@ void Logic::HUDManager::constructGUIElements()
     GUIElements[1].screenRect = FloatRect({ 0.0f, 0.7f }, { 0.3f, 0.9f });
     GUIElements[1].textureRect = FloatRect({0.0f, 0.0f}, {0.5f, 0.5f});
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.5f }, { 1.f, 1.f })));
+   
 
 
 
@@ -47,7 +47,7 @@ void Logic::HUDManager::constructGUIElements()
     GUIElements[2].textureRect = FloatRect({ 0.0f, 0.5f }, { 0.5f , 1.0f });
 
     HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 0.5f })));
-
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.5f }, { 1.f, 1.f })));
 
     //crossbow
     GUIElements[3].alpha = 1;
@@ -55,7 +55,11 @@ void Logic::HUDManager::constructGUIElements()
     GUIElements[3].screenRect = FloatRect(740.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[3].textureRect = FloatRect(29.0f / WIN_WIDTH, 384.0f / WIN_HEIGHT, 291.0f / WIN_WIDTH, 291.0f / WIN_HEIGHT);
 
-    //HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -250, -50, 50, 50, Resources::Textures::HUDIcons, FloatRect({ 29.0f / WIN_WIDTH, 384.0f / WIN_HEIGHT }, { 291.0f / WIN_WIDTH, 291.0f / WIN_HEIGHT })));
+    float x = 339.0f / WIN_WIDTH;
+    float y = 67.0f / WIN_HEIGHT;
+    float width = 285.0f / WIN_WIDTH;
+    float height = 276.0f / WIN_HEIGHT;
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -250, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, {x + width, y + height })));
     
     
 
