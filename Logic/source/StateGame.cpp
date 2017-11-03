@@ -49,9 +49,7 @@ StateGame::StateGame()
     m_map->init(m_physics);
 
     // Initializing Card Manager
-    m_cardManager = newd CardManager();
-    m_cardManager->init();
-    m_cardManager->createDeck(GAME_START::UNIQUE_CARDS);
+    m_cardManager = newd CardManager(GAME_START::UNIQUE_CARDS);
 
     // Initializing Combo's
     ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
@@ -60,7 +58,7 @@ StateGame::StateGame()
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
 
-    // Sorry Lucas
+    // Sorry Lucas, I broke it
 //#ifdef _DEBUG
 //    DebugWindow *win = DebugWindow::getInstance();
 //    win->registerCommand("SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
@@ -87,8 +85,10 @@ StateGame::StateGame()
 StateGame::~StateGame()
 {
     m_projectileManager->clear();
-    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
     Sound::NoiseMachine::Get().clear();
+
+    m_entityManager.resetTriggers();
+    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
 
     delete m_physics;
     delete m_player;
@@ -100,9 +100,14 @@ StateGame::~StateGame()
 
 void StateGame::reset()
 {
-    m_entityManager.deallocateData();
-    m_player->reset();
     m_projectileManager->removeAllProjectiles();
+    m_player->reset();
+
+    m_entityManager.resetTriggers();
+    m_entityManager.deallocateData();
+    m_waveTimeManager.reset();
+
+    m_cardManager->resetDeck();
 
     ComboMachine::Get().Reset();
 }
@@ -149,7 +154,7 @@ void StateGame::update(float deltaTime)
     if (m_player->getHP() <= 0)
         gameOver();
 
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::F1))
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad1))
     {
         SetState(StateType::Start);
         return;

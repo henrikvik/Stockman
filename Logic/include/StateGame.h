@@ -75,7 +75,6 @@ namespace Logic
         HUDManager		    m_hudManager;
         GameType            m_gameType;
         FPSRenderer         m_fpsRenderer;
-        MenuMachine*		m_menu;
     };
 }
 

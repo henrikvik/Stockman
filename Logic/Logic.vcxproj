@@ -226,7 +226,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Logic.h" />
     <ClInclude Include="include\Entity\Object.h" />
     <ClInclude Include="include\Misc\Enums.h" />
@@ -310,7 +309,6 @@
     <ClCompile Include="source\Physics\Physics.cpp" />
     <ClCompile Include="source\Player\Player.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
-    <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="source\Entity\Object.cpp" />
     <ClCompile Include="source\Player\Weapon\Weapon.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponManager.cpp" />

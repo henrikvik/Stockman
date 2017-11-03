@@ -2,7 +2,7 @@
 #include "Engine.h"
 #include <Windows.h>
 #include <crtdbg.h>
-#include <Game.h>
+#include <StateMachine.h>
 #include "Constants.h"
 #include <Resources\ResourceManager.h>
 
