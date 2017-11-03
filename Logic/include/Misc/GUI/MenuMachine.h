@@ -72,7 +72,7 @@ namespace Logic
 		void minusFOV();
 		void windowed();
 		void showHighscore();
-		int getChoiceUpgrade();
+		int getPickedCard();
         MenuState* getActiveMenu();
         std::pair<int, int>* getSkillPick();
 

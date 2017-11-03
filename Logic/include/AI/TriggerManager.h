@@ -29,6 +29,8 @@ namespace Logic
 			TriggerManager();
 			~TriggerManager();
 
+            void reset();
+
 			void removeTrigger(Trigger* t, int index);
 
 			Trigger* addTrigger(Graphics::ModelID modelID, Cube& cube, float cooldown, Physics& physics,

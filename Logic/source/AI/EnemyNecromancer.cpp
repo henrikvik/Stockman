@@ -3,12 +3,18 @@
 #include <Misc\RandomGenerator.h>
 #include <Projectile\Projectile.h>
 #include <Misc\ComboMachine.h>
-
 using namespace Logic;
+
+const int EnemyNecromancer::SPEED_AB1 = 15,
+          EnemyNecromancer::SPEED_AB2 = 25,
+          EnemyNecromancer::MAX_SPAWNED_MINIONS = 4,
+          EnemyNecromancer::BASE_DAMAGE = 1,
+          EnemyNecromancer::MAX_HP = 4;
+const float EnemyNecromancer::BASE_SPEED = 8.f;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
     btRigidBody* body, btVector3 halfExtent)
-    : Enemy(modelID, body, halfExtent, 5, 1, 8, NECROMANCER, 0) {
+    : Enemy(modelID, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, NECROMANCER, 0) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().Kill(getEnemyType());
@@ -34,7 +40,7 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
     {
         if (!pj->getProjectileData().enemyBullet)
         {
-            damage(pj->getProjectileData().damage * dmgMultiplier);
+            damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
 
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
                 getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
@@ -64,13 +70,12 @@ void EnemyNecromancer::useAbility(Entity const &target)
         {
             Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), Graphics::ModelID::SKY_SPHERE, (float)SPEED_AB2, 2.5f, 0.6f);
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
-                Entity *entity = reinterpret_cast<Entity*> (data.dataPtr);
-                if (entity && m_spawnedMinions < MAX_SPAWNED_MINIONS)
+                if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
                 {
                     Enemy *e = SpawnEnemy(ENEMY_TYPE::NECROMANCER_MINION, data.caller->getPositionBT(), {});
                     m_spawnedMinions++;
-                    increaseCallbackEntities();
 
+                    increaseCallbackEntities();
                     e->addCallback(ON_DEATH, [&](CallbackData &data) -> void {
                         m_spawnedMinions--;
                     });

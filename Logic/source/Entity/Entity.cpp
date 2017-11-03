@@ -67,21 +67,25 @@ bool Entity::hasCallback(EntityEvent entityEvent) const
     return m_callbacks.find(entityEvent) != m_callbacks.end();
 }
 
-void Entity::clearCallbacks()
+void Entity::clearCallbacks(bool callOnDestroy)
 {
-    callback(ON_DESTROY, CallbackData{ this }); // This is a new projectile for the callbacker
-    for (auto callbacks : m_callbacks)
-    {
-        callbacks.second.clear();
-    }
+    if (callOnDestroy)
+        callback(ON_DESTROY, CallbackData{ this });
     m_callbacks.clear();
 }
 
 void Entity::callback(EntityEvent entityEvent, CallbackData &data)
 {
-    if (hasCallback(entityEvent))
-        for (Callback &callback : m_callbacks[entityEvent])
-            callback(data);
+    try
+    {
+        if (hasCallback(entityEvent))
+            for (Callback &callback : m_callbacks[entityEvent])
+                callback(data);
+    }
+    catch (std::exception ex)
+    {
+        printf("Callback error (Probably null callback data) \n%s\n", ex.what());
+    }
 }
 
 StatusManager& Entity::getStatusManager()

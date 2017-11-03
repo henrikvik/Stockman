@@ -21,7 +21,7 @@ Projectile::~Projectile() { }
 // \param statusManager - A statusManager filled with potential buffs & upgrades
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
-    // Set starting velocity
+
 	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
 	
     // Copy all effects & upgrades to projectile

@@ -37,8 +37,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		break;
 		
 	case WM_KEYUP:
-		if (key == 41)
-			debug->toggleDebugToDraw();
+        if (key == 41)
+        {
+            DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+            debug->toggleDebugToDraw();
+        }
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
@@ -83,8 +86,42 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
+    this->mTracker = std::make_unique<DirectX::Keyboard::KeyboardStateTracker>();
 	this->mMouse->SetWindow(window);
 
+    DebugWindow * debug = DebugWindow::getInstance();
+
+    Graphics::Debug::Initialize(mDevice);
+
+    debug->registerCommand("GAME_SET_FULLSCREEN", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            if (args.size() != 0)
+            {
+                isFullscreen = std::stoi(args[0]);
+
+                if (isFullscreen)
+                    catcher = "Fullscreen enabled!";
+
+                else
+                    catcher = "Fullscreen disabled!";
+            }
+            else
+            {
+                catcher = "missing argument 0 or 1.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Argument must be 0 or 1.";
+        }
+
+        return catcher;
+    });
+
+//    game = new Logic::StateMachine(cmdLine, args);
     game = new Logic::StateMachine();
 }
 
@@ -92,6 +129,8 @@ Engine::~Engine()
 {
     delete game;
     Typing::releaseInstance();
+    mSwapChain->SetFullscreenState(false, NULL);
+
 	ImGui_ImplDX11_Shutdown();
 	DebugWindow::releaseInstance();
 	delete this->renderer;
@@ -262,9 +301,8 @@ int Engine::run()
 	g_Profiler->registerThread("Main Thread");
     TbbProfilerObserver observer(g_Profiler);
 
-	DebugWindow * debug = DebugWindow::getInstance();
+    DebugWindow * debug = DebugWindow::getInstance();
 
-    Graphics::Debug::Initialize(mDevice);
 
 	while (running)
 	{
@@ -281,40 +319,33 @@ int Engine::run()
             if (WM_QUIT == msg.message)
             {
                 running = false;
-                if (!isFullscreen)
-                {
-                    mSwapChain->SetFullscreenState(false, NULL);
-                }
             }
 		}
 
-		//To enable/disable fullscreen
-		DirectX::Keyboard::State ks = this->mKeyboard->GetState();
-		if (ks.F11)
+        auto state = mKeyboard->GetState();
+        mTracker->Update(state);
+
+        static BOOL test = false;
+        mSwapChain->GetFullscreenState(&test, NULL);
+		if (this->isFullscreen != test)
 		{
-			mSwapChain->SetFullscreenState(!isFullscreen, NULL);
-			this->isFullscreen = !isFullscreen;
+			mSwapChain->SetFullscreenState(isFullscreen, NULL);
 		}
 
-		if (ks.F1)
+		if (mTracker->pressed.F1)
 		{
 			g_Profiler->capture();
 			showProfiler = true;
 		}
 
-        static bool F2wasPressed = false;
-        bool F2keyDown = !F2wasPressed && ks.F2;
-
-        F2wasPressed = ks.F2;
-
-		if (F2keyDown)
+		if (mTracker->pressed.F2)
 		{
             showProfiler = !showProfiler;
 
 		}
 
-		if (ks.Escape && !debug->isOpen())
-			PostQuitMessage(0);
+        if (state.F10)
+            running = false;
 
 		g_Profiler->start();
 
@@ -322,7 +353,7 @@ int Engine::run()
 		ImGui_ImplDX11_NewFrame();
 		PROFILE_END();
 
-		debug->draw("Title?");
+		debug->draw();
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
         if (!debug->isOpen())
@@ -336,7 +367,9 @@ int Engine::run()
 
         // Debug Lock Screen Position 
 		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
-		if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftControl)) cam.update(oldPos, game->getState()->getCameraForward(), mContext);
+
+		if (state.LeftControl) 
+            cam.update(oldPos, game->getState()->getCameraForward(), mContext);
 		else
 		{
 			oldPos = game->getState()->getCameraPosition();
@@ -418,6 +451,8 @@ int Engine::run()
 		mSwapChain->Present(0, 0);
 		PROFILE_END();
 		g_Profiler->frame();
+
+
 		
 	}
 

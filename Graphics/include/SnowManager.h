@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Resources\Shader.h"
 #include "Utility\StructuredBuffer.h"
+#include "SkyRenderer.h"
 #include <vector>
 
 namespace Graphics 
@@ -14,7 +15,7 @@ namespace Graphics
 
 		void updateSnow(float deltaTime, Camera * camera, ID3D11DeviceContext * context);
 		void initializeSnowflakes(Camera * camera);
-		void drawSnowflakes(ID3D11DeviceContext * context, Camera * camera);
+		void drawSnowflakes(ID3D11DeviceContext * context, Camera * camera, ID3D11RenderTargetView * target, DepthStencil * depthMap, SkyRenderer& sky);
 		void recompile(ID3D11Device * device);
 
 
@@ -32,8 +33,6 @@ namespace Graphics
 
 
 		std::vector<SnowFlake> snowFlakes;
-		std::vector<DirectX::SimpleMath::Vector3> velocities;
-
 		void addRandomSnowFlake(Camera * camera);
 		void moveSnowFlake(Camera * camera, int snowFlake);
 		void clearSnow();

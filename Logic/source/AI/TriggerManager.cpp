@@ -8,9 +8,19 @@ TriggerManager::TriggerManager()
 
 TriggerManager::~TriggerManager()  
 {
-	for (Trigger* trigger : m_triggers)
-		delete trigger;
-	m_triggers.clear();
+    reset();
+}
+
+// it added reset so i can do it beetwen playes :)
+void TriggerManager::reset()
+{
+    for (Trigger* trigger : m_triggers)
+    {
+        m_physicsPtr->removeRigidBody(trigger->getRigidBody());
+        trigger->destroyBody();
+        delete trigger;
+    }
+    m_triggers.clear();
 }
 
 void TriggerManager::removeTrigger(Trigger * t, int index)

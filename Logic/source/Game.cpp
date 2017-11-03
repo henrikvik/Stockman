@@ -7,6 +7,8 @@
 #include <Engine\DebugWindow.h> 
 #include <Player\Skill\SkillManager.h>
 
+#include <Misc\CommandsFile.h>
+
 using namespace Logic;
 
 // Game starting static configurations
@@ -79,9 +81,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 	m_map->init(m_physics);
 
 	// Initializing Card Manager
-	m_cardManager = newd CardManager();
-	m_cardManager->init();
-	m_cardManager->createDeck(GAME_START::UNIQUE_CARDS);
+	m_cardManager = newd CardManager(Game::NUMBER_OF_UNIQUE_CARDS);
 
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
@@ -92,7 +92,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 
 #ifdef _DEBUG
     DebugWindow *win = DebugWindow::getInstance();
-    win->registerCommand("SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
+    win->registerCommand("LOG_SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
         try {
             this->m_menu->setStateToBe(static_cast<GameState> (stoi(para[0])));
             return "Menu State set to " + stoi(para[0]);
@@ -109,15 +109,20 @@ void Game::init(LPWSTR *cmdLine, int args)
     for (std::string const &cmd : GameCommands[m_gameType])
         if (!cmd.empty())
             win->doCommand(cmd.c_str());
+
 #endif
+    CommandsFile().doCommandsFromFile();
 }
 
 void Game::clear()
 {
 	m_menu->clear();
-	m_projectileManager->clear();
-    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
+    m_projectileManager->clear();
 	Sound::NoiseMachine::Get().clear();
+
+    m_entityManager.resetTriggers();
+    m_entityManager.deallocateData(); // Have to deallocate before deleting physics
+
     Typing::releaseInstance();
 
 	delete m_physics;
@@ -131,9 +136,14 @@ void Game::clear()
 
 void Game::reset()
 {
-    m_entityManager.deallocateData();
-    m_player->reset();
     m_projectileManager->removeAllProjectiles();
+    m_player->reset();
+
+    m_entityManager.resetTriggers();
+    m_entityManager.deallocateData();
+    m_waveTimeManager.reset();
+
+    m_cardManager->resetDeck();
 
 	ComboMachine::Get().Reset();
 }
@@ -156,7 +166,11 @@ bool Game::updateMenu(float deltaTime)
     case gameStateGame:
         if (m_menu->getStateToBe() == GameState::gameStateGameUpgrade)
         {
-            m_cardManager->pickThree(false); //get some trigger for injury
+            try {
+                m_cardManager->pickThree(false); //get some trigger for injury
+            } catch (std::runtime_error const &err) {
+                printf("Error with picking: \n%s\n", err.what());
+            }
             m_menu->update(deltaTime);
             break;
         }
@@ -169,40 +183,15 @@ bool Game::updateMenu(float deltaTime)
         {
             DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
             DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
-            if (ks.IsKeyDown(DirectX::Keyboard::U))
-            {
-                m_menu->setStateToBe(gameStateGameUpgrade);
-                m_cardManager->pickThree(false);
-            }
             return true;
         }
 
         break;
     case gameStateGameUpgrade:
         m_menu->update(deltaTime);
-        {
-            if (m_menu->getStateToBe() != GameState::gameStateDefault)
-                break;
-
-            Card temp = m_cardManager->pick(m_menu->getChoiceUpgrade());
-            if (temp.getName().compare("") != 0 && temp.getDescription().compare("") != 0)
-            {
-                //add information to player
+        if (m_menu->getStateToBe() == GameState::gameStateDefault)
+            if (m_cardManager->pickAndApplyCard(*m_player, m_menu->getPickedCard()))
                 m_menu->setStateToBe(gameStateGame); //change to gameStateGame
-
-                for (auto const& ID : temp.getUpgradesID())
-                {
-                    if (temp.getIsEffect())
-                    {
-                        m_player->getStatusManager().addStatus(static_cast<StatusManager::EFFECT_ID>(ID), 1); //edit to how you feel it should be
-                    }
-                    else
-                    {
-                        m_player->getStatusManager().addUpgrade(static_cast<StatusManager::UPGRADE_ID>(ID));
-                    }
-                }
-            }
-        }
         return true;
 
         break;
@@ -244,7 +233,8 @@ bool Game::updateMenu(float deltaTime)
 void Game::updateGame(float deltaTime)
 {
    	ComboMachine::Get().Update(deltaTime);
-    m_waveTimeManager.update(deltaTime, m_entityManager);
+    if(m_waveTimeManager.update(deltaTime, m_entityManager))
+        m_menu->setStateToBe(gameStateGameUpgrade);
 
 	PROFILE_BEGIN("Sound");
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
@@ -292,7 +282,7 @@ void Game::gameOver()
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
 			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
-			break;
+			//break;
 		}
 	}
 	reset();
