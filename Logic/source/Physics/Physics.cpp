@@ -1,7 +1,6 @@
 #include "Physics\Physics.h"
 #include <Graphics\include\Renderer.h>
 
-
 using namespace Logic;
 
 #include <libs\Bullet2.86\include\BulletCollision\CollisionDispatch\btGhostObject.h>
