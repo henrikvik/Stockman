@@ -56,7 +56,7 @@ void StateStart::update(float deltaTime)
     m_fpsRenderer.updateFPS(deltaTime);
     m_menu->update(deltaTime);
 
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::J))
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::F2))
         SetState(StateType::Game);
 }
 

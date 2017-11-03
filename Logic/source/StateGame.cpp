@@ -44,10 +44,6 @@ StateGame::StateGame()
     m_highScoreManager = newd HighScoreManager();
     m_highScoreManager->setName("Stockman");
 
-    // Initializing Menu's
-    m_menu = newd MenuMachine(m_highScoreManager->getName());
-    m_menu->initialize(Logic::gameStateSkillPick);
-
     // Initializing the Map
     m_map = newd Map();
     m_map->init(m_physics);
@@ -67,12 +63,10 @@ StateGame::StateGame()
 
 StateGame::~StateGame()
 {
-    m_menu->clear();
     m_projectileManager->clear();
     m_entityManager.deallocateData(); // Have to deallocate before deleting physics
     Sound::NoiseMachine::Get().clear();
 
-    delete m_menu;
     delete m_physics;
     delete m_player;
     delete m_map;
@@ -98,10 +92,6 @@ void StateGame::update(float deltaTime)
     ComboMachine::Get().Update(deltaTime);
     m_waveTimeManager.update(deltaTime, m_entityManager);
 
-    PROFILE_BEGIN("Menu Machine");
-    m_menu->update(deltaTime);
-    PROFILE_END();
-
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
     PROFILE_END();
@@ -115,8 +105,7 @@ void StateGame::update(float deltaTime)
     PROFILE_END();
 
     PROFILE_BEGIN("AI & Triggers");
-    if (m_gameType != GameType::TESTING_MODE)
-        m_entityManager.update(*m_player, deltaTime);
+    m_entityManager.update(*m_player, deltaTime);
     PROFILE_END();
 
     PROFILE_BEGIN("Map");
@@ -137,7 +126,7 @@ void StateGame::update(float deltaTime)
     if (m_player->getHP() <= 0)
         gameOver();
 
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::H))
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::F1))
     {
         SetState(StateType::Start);
         return;
@@ -151,10 +140,6 @@ void StateGame::render(Graphics::Renderer& renderer)
         m_physics->render(renderer);
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::CapsLock))
         renderer.startShake(50.f, 2500.f);
-
-    PROFILE_BEGIN("Menu Render");
-//    m_menu->render(renderer); should be remade
-    PROFILE_END();
 
     PROFILE_BEGIN("Player Render");
     m_player->render(renderer);
