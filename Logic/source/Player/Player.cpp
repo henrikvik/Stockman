@@ -178,6 +178,11 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 		m_playerState = PlayerState::IN_AIR;
 	}
 
+    if (flags & Effect::EFFECT_MODIFY_HP)
+    {
+        m_hp += static_cast<int> (effect.getModifiers()->modifyHP);
+    }
+
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
         Weapon* wp = nullptr;

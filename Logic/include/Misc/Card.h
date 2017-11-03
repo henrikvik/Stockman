@@ -18,7 +18,7 @@ namespace Logic
 		Card();
 		Card(std::string name, std::string texture, std::string description,
             std::vector<int> m_statusIDs, DirectX::SimpleMath::Vector2 texStart,
-            DirectX::SimpleMath::Vector2 texEnd, bool isEffect);
+            DirectX::SimpleMath::Vector2 texEnd, int statusType);
 		~Card();
 
 		std::string getName() const;

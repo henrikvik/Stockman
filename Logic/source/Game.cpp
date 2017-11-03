@@ -81,9 +81,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 	m_map->init(m_physics);
 
 	// Initializing Card Manager
-	m_cardManager = newd CardManager();
-	m_cardManager->init();
-	m_cardManager->createDeck(Game::NUMBER_OF_UNIQUE_CARDS);
+	m_cardManager = newd CardManager(Game::NUMBER_OF_UNIQUE_CARDS);
 
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
@@ -145,6 +143,8 @@ void Game::reset()
     m_entityManager.deallocateData();
     m_waveTimeManager.reset();
 
+    m_cardManager->resetDeck();
+
 	ComboMachine::Get().Reset();
 }
 
@@ -183,11 +183,6 @@ bool Game::updateMenu(float deltaTime)
         {
             DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
             DirectX::Mouse::Get().SetMode(ks.IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE); // !TEMP!
-            if (ks.IsKeyDown(DirectX::Keyboard::U))
-            {
-                m_menu->setStateToBe(gameStateGameUpgrade);
-                m_cardManager->pickThree(false);
-            }
             return true;
         }
 
@@ -238,7 +233,8 @@ bool Game::updateMenu(float deltaTime)
 void Game::updateGame(float deltaTime)
 {
    	ComboMachine::Get().Update(deltaTime);
-    m_waveTimeManager.update(deltaTime, m_entityManager);
+    if(m_waveTimeManager.update(deltaTime, m_entityManager))
+        m_menu->setStateToBe(gameStateGameUpgrade);
 
 	PROFILE_BEGIN("Sound");
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());

@@ -1,4 +1,4 @@
-#include "../Misc/Card.h"
+#include <Misc/Card.h>
 
 using namespace Logic;
 
@@ -13,10 +13,11 @@ Card::Card()
 }
 
 Card::Card(std::string name, std::string texture, std::string description,
-    std::vector<int> upgradesID, DirectX::SimpleMath::Vector2 texStart,
-    DirectX::SimpleMath::Vector2 texEnd, bool isEffect)
+    std::vector<int> statusIds, DirectX::SimpleMath::Vector2 texStart,
+    DirectX::SimpleMath::Vector2 texEnd, int statusType)
     :   m_name(name), m_texture(texture), m_description(description),
-        m_statusIds(m_statusIds), m_texStart(texStart), m_texEnd(texEnd){
+        m_statusIds(statusIds), m_texStart(texStart), m_texEnd(texEnd),
+        m_statusType(static_cast<StatusType> (statusType)) {
 
 }
 
