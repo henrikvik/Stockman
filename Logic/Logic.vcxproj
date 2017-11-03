@@ -235,7 +235,6 @@
     <ClInclude Include="include\Misc\RenderRegister.h" />
     <ClInclude Include="include\Misc\Sound\NoiseStructs.h" />
     <ClInclude Include="include\Misc\Sound\SoundSource.h" />
-    <ClInclude Include="include\Misc\StateMachine.h" />
     <ClInclude Include="include\Physics\Physics.h" />
     <ClInclude Include="include\Physics\Primitives.h" />
     <ClInclude Include="include\Player\Player.h" />
@@ -262,7 +261,6 @@
     <ClInclude Include="include\State.h" />
     <ClInclude Include="include\StateGame.h" />
     <ClInclude Include="include\StateMachine.h" />
-    <ClInclude Include="include\StatePreMenu.h" />
     <ClInclude Include="include\StateStart.h" />
   </ItemGroup>
   <ItemGroup>

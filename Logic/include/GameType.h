@@ -3,6 +3,13 @@
 
 namespace Logic
 {
+    enum StateType
+    {
+        Nothing = 0,
+        Start = 1,
+        Game = 2
+    };
+
     static const int GAME_TYPES = 4, MAX_COMMANDS = 10;
     enum GameType
     {

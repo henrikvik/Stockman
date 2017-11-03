@@ -85,11 +85,13 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
 	this->mMouse = std::make_unique<DirectX::Mouse>();
 	this->mMouse->SetWindow(window);
 
-	this->game.init(cmdLine, args);
+    game = new Logic::StateMachine();
 }
 
 Engine::~Engine()
 {
+    delete game;
+    Typing::releaseInstance();
 	ImGui_ImplDX11_Shutdown();
 	DebugWindow::releaseInstance();
 	delete this->renderer;
@@ -324,20 +326,21 @@ int Engine::run()
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
         if (!debug->isOpen())
-            game.update(float(deltaTime));
+            game->update(float(deltaTime));
         PROFILE_END();
 
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
-		game.render(*renderer);
+		game->render(*renderer);
 		PROFILE_END();
 
+        // Debug Lock Screen Position 
 		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
-		if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftControl)) cam.update(oldPos, game.getPlayerForward(), mContext);
+		if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftControl)) cam.update(oldPos, game->getState()->getCameraForward(), mContext);
 		else
 		{
-			oldPos = game.getPlayerPosition();
-			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+			oldPos = game->getState()->getCameraPosition();
+			cam.update(game->getState()->getCameraPosition(), game->getState()->getCameraForward(), mContext);
 		}
 
 		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
@@ -356,12 +359,6 @@ int Engine::run()
 			Graphics::ModelID::GRASS, //ModelID meshId;
 			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
 		};
-
-		Graphics::Light light;
-		light.color = DirectX::SimpleMath::Vector3(1, 1, 0);
-		light.positionWS = DirectX::SimpleMath::Vector3(0, 2, 0);
-		light.intensity = 1;
-		light.range = 5;
 
 		//Graphics::FoliageRenderInfo bush = {
 		//	true, //bool render;
@@ -383,15 +380,10 @@ int Engine::run()
         
         ///////////////////////////////////
 
-        if (game.getState() == Logic::gameStateGame)
+        if (game->getCurrentStateType() == Logic::Game)
         {
 			renderer->queueFoliageRender(&grass);
-			//renderer->queueFoliageRender(&bush);
-
-
-			//renderer->queueRender(&staticSphere);
-         // renderer->queueText(&text);
-			renderer->queueLight(light);
+			// renderer->queueFoliageRender(&bush);
 
 			if (!debug->isOpen())
 			{
@@ -399,21 +391,12 @@ int Engine::run()
                 renderer->updateShake((float)deltaTime);
             }
 
+            renderer->updateLight((float)deltaTime, &cam);
+
 			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
             renderer->render(&cam);
 			PROFILE_END();
         }
-
-		if (game.getState() == Logic::gameStateGameUpgrade)
-		{
-            renderer->updateLight((float)deltaTime, &cam);
-
-			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
-			renderer->render(&cam);
-			PROFILE_END();
-
-			game.renderMenu(*renderer);
-		}
 
 		 
 		g_Profiler->poll();

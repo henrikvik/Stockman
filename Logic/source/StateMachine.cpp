@@ -1,3 +1,4 @@
+#include <State.h>
 #include <StateMachine.h>
 #include <StateGame.h>
 #include <StateStart.h>
@@ -6,13 +7,18 @@
 
 using namespace Logic;
 
-#define START_STATE StateType::Game
+#define START_STATE StateType::Start
 #define MAX_STATES 2
 
 StateMachine::StateMachine()
 {
+    // Making a function ptr to switch state inside the active state
+    SetStateFunction = [&](StateType stateType) -> void {
+        switchState(stateType);
+    };
+
     m_currentState = nullptr;
-    setState(START_STATE);
+    this->switchState(START_STATE);
 }
 
 StateMachine::~StateMachine()
@@ -35,11 +41,11 @@ void StateMachine::render(Graphics::Renderer& renderer)
     m_currentState->render(renderer);
 }
 
-void StateMachine::setState(StateType stateType)
+void StateMachine::switchState(StateType stateType)
 {
-    if (stateType == Nothing)           _ERROR(_JUST_FOR_YOU)   return;
-    if (int(stateType) > MAX_STATES)    _ERROR(_INVALID_INDEX)  return;
-    if (int(stateType) < 1)             _ERROR(_INVALID_INDEX)  return;
+    if (stateType == Nothing)           { _ERROR(_JUST_FOR_YOU)   return; }
+    if (int(stateType) > MAX_STATES)    { _ERROR(_INVALID_INDEX)  return; }
+    if (int(stateType) < 1)             { _ERROR(_INVALID_INDEX)  return; }
 
     if (m_currentStateType != stateType)
     {
@@ -60,10 +66,16 @@ void StateMachine::setState(StateType stateType)
             m_currentState = new StateStart();
             break;
         }
+        m_currentState->setCallBackFunction(SetStateFunction);
     }
 }
 
-StateType StateMachine::getCurrentState()
+StateType StateMachine::getCurrentStateType()
 {
     return m_currentStateType;
+}
+
+State* StateMachine::getState()
+{
+    return m_currentState;
 }

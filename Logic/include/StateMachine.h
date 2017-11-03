@@ -3,18 +3,13 @@
 
 #include <Misc\NonCopyable.h>
 #include <Misc\Error.h>
+#include <State.h>
+#include <functional>
 
 namespace Graphics { class Renderer; }
 namespace Logic
 {
-    enum StateType
-    {
-        Nothing     = 0,
-        Start       = 1,
-        Game        = 2
-    };
-
-    class StateMachine : NonCopyable
+    class StateMachine : public NonCopyable
     {
     public:
         StateMachine();
@@ -23,15 +18,15 @@ namespace Logic
         void update(float deltaTime);
         void render(Graphics::Renderer& renderer);
 
-        void setState(StateType stateType);
-        StateType getCurrentState();
+        void switchState(StateType stateType);
+        StateType getCurrentStateType();
+        State* getState();
 
     private:
+        std::function<void(StateType stateType)> SetStateFunction;
         StateType m_currentStateType;
         State* m_currentState;
     };
-
-
 }
 
 #endif // !STATEMACHINE_H
