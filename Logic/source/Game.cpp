@@ -132,6 +132,7 @@ void Game::clear()
 void Game::reset()
 {
     m_entityManager.deallocateData();
+    RenderQueue::get().clearAllQueues();
     m_player->reset();
 
 	ComboMachine::Get().Reset();
