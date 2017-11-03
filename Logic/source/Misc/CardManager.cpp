@@ -5,33 +5,22 @@ using namespace Logic;
 const int CardManager::HEALTH_PACK = 0;
 const int CardManager::HAND_SIZE   = 3;
 
-CardManager::CardManager()
+CardManager::CardManager(int nrOfEach)
 {
     m_hand.resize(HAND_SIZE);
     memset(m_hand.data(), -1, sizeof(m_hand.data()));
+
+    loadDeckFromFile();
+    createDeck(nrOfEach);
 }
 
 CardManager::~CardManager() { }
 
-void CardManager::clear()
+void CardManager::resetDeck()
 {
-    m_deck.clear();
-}
-
-void CardManager::init() 
-{
-	std::vector<FileLoader::LoadedStruct> cardFile;
-	FileLoader::singleton().loadStructsFromFile(cardFile, "Cards");
-
-    createCard(NEVER_REMOVE, cardFile[0]);
-	for (int i = 1; i < cardFile.size(); i++)
-        createCard(IN_DECK, cardFile[i]);
-}
-
-void CardManager::restart()
-{
-	clear();
-	init();
+    for (auto &pair : m_deck)
+        if (pair.first == TAKEN)
+            pair.first = IN_DECK;
 }
 
 void CardManager::createDeck(int nrOfEach)
@@ -76,11 +65,21 @@ Card CardManager::pick(int handIndex)
     return m_cards[m_deck[deckIndex].second];
 }
 
+void CardManager::loadDeckFromFile()
+{
+    std::vector<FileLoader::LoadedStruct> cardFile;
+    FileLoader::singleton().loadStructsFromFile(cardFile, "Cards");
+
+    createCard(NEVER_REMOVE, cardFile[0]);
+    for (int i = 1; i < cardFile.size(); i++)
+        createCard(IN_DECK, cardFile[i]);
+}
+
 void CardManager::createCard(CardCondition cond, FileLoader::LoadedStruct const &struc)
 {
-    std::vector<int> upgrades;
-        for (int i = 0; i < struc.ints.at("upgradeAmount"); i++)
-            upgrades.push_back(struc.ints.at("upgrade" + std::to_string(i + 1)));
+    std::vector<int> statusIds;
+    for (int i = 0; i < struc.ints.at("statusAmount"); i++)
+        statusIds.push_back(struc.ints.at("status" + std::to_string(i)));
 
     DirectX::SimpleMath::Vector2 texStart(struc.floats.at("xTexStart"),
         struc.floats.at("yTexStart"));
@@ -89,7 +88,7 @@ void CardManager::createCard(CardCondition cond, FileLoader::LoadedStruct const 
     
     m_cards.push_back(Card(struc.strings.at("cardName"),
         struc.strings.at("texture"), struc.strings.at("description"),
-        upgrades, texStart, texEnd, struc.ints.at("isEffect"))
+        statusIds, texStart, texEnd, struc.ints.at("statusType"))
     ); 
 }
 
