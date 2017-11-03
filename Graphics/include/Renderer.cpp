@@ -10,10 +10,12 @@
 #include "RenderQueue.h"
 
 #include "Particles\ParticleSystem.h"
+#include "Utility\TextureLoader.h"
 
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
+#define USE_OLD_RENDER false
 
 #if USE_TEMP_CUBE
 #include "TempCube.h"
@@ -56,6 +58,8 @@ namespace Graphics
 		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
         , staticInstanceBuffer(device, CpuAccess::Write, StaticRenderInfo::INSTANCE_CAP)
 	{
+        RenderPass::cStates = new CommonStates(device);
+
 		this->device = device;
 		this->deviceContext = deviceContext;
 		this->backBuffer = backBuffer;
@@ -95,6 +99,16 @@ namespace Graphics
 
 		statusData.burn = 0;
 		statusData.freeze = 0;
+
+
+        TextureLoader::get().loadAll();
+
+
+
+        renderPasses =
+        {
+            new GUIRenderPass(backBuffer)
+        };
     }
 
 
@@ -109,6 +123,12 @@ namespace Graphics
 		SAFE_RELEASE(glowTest);
 //        resourceManager.release();
 
+        for (auto & renderPass : renderPasses)
+        {
+            delete renderPass;
+        }
+
+        delete RenderPass::cStates;
     }
 
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext, Camera * camera)
@@ -169,7 +189,7 @@ namespace Graphics
     }
 
     void Renderer::render(Camera * camera)
-    #if ANIMATION_HIJACK_RENDER
+#if ANIMATION_HIJACK_RENDER
     {
         static Shader shader(device, Resources::Shaders::ForwardPlus);
         static HybrisLoader::Model * model = hybrisLoader.getModel(Resources::Models::Cube);
@@ -205,7 +225,8 @@ namespace Graphics
 
         RenderQueue::get().clearAllQueues();
     }
-    #else
+#else
+    #if USE_OLD_RENDER
 	{
         PROFILE_BEGIN("writeInstanceBuffers()");
         writeInstanceBuffers();
@@ -465,51 +486,27 @@ namespace Graphics
 			startShake(30, 1000);
 		}
 	}
+    #else
+    {
+        static float clearColor[4] = {0,0,0,0};
+        context->ClearRenderTargetView(backBuffer, clearColor);
+        context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1, 0);
+        deviceContext->RSSetViewports(1, &viewPort);
+
+        SpriteRenderInfo sprite1 = {};
+        sprite1.texture = Resources::Textures::mainMenuButton;
+        sprite1.screenRect = FloatRect({-0.5, -0.5}, {0.5, 0.5});
+        sprite1.textureRect = FloatRect(0.25, 0.25, 0.5, 0.5);
+
+        RenderQueue::get().queue(&sprite1);
+
+        for (auto & renderPass : renderPasses)
+        {
+            renderPass->render();
+        }
+    }
     #endif
-
-    void Renderer::queueRender(RenderInfo * renderInfo)
-    {
-    }
-
-	void Renderer::queueFoliageRender(FoliageRenderInfo * renderInfo)
-	{
-		//if (renderFoliageQueue.size() > INSTANCE_CAP)
-		//{
-		//	throw "Foliage renderer exceeded instance cap.";
-		//}
-
-		////renderFoliageQueue.push_back(renderInfo);
-	
-	}
-
-	void Renderer::queueWaterRender(WaterRenderInfo * renderInfo)
-	{
-		//if (renderWaterQueue.size() > INSTANCE_CAP)
-		//{
-		//	throw "Water renderer exceeded instance cap.";
-		//}
-
-		//renderWaterQueue.push_back(renderInfo);
-	}
-
-    void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
-    {
-        //if (debugInfo->points->size() > MAX_DEBUG_POINTS)
-        //{
-        //    throw "vector is bigger than structured buffer";
-        //}
-        ////renderDebugQueue.push_back(debugInfo);
-    }
-
-    void Renderer::queueText(TextString * text)
-    {
-        hud.queueText(text);
-    }
-
-	void Renderer::queueLight(Light light)
-	{
-		lights.push_back(light);
-	}
+#endif
 
     void Renderer::fillHUDInfo(HUDInfo * info)
     {

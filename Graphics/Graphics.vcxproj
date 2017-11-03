@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\Camera.cpp" />
+    <ClCompile Include="include\Device.cpp" />
     <ClCompile Include="include\DoF.cpp" />
     <ClCompile Include="include\Effects\Water.cpp" />
     <ClCompile Include="include\Fog.cpp" />
@@ -37,7 +38,8 @@
     <ClCompile Include="include\Particles\Particle.cpp" />
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
-    <ClCompile Include="include\RenderQueue.cpp" />
+    <ClCompile Include="include\RenderPass\GUIRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\RenderPass.cpp" />
     <ClCompile Include="include\SkyRenderer.cpp" />
     <ClCompile Include="include\SnowManager.cpp" />
     <ClCompile Include="include\SSAORenderer.cpp" />
@@ -46,10 +48,12 @@
     <ClCompile Include="include\Utility\Shader.cpp" />
     <ClCompile Include="include\Utility\ShaderResource.cpp" />
     <ClCompile Include="include\Utility\Texture.cpp" />
+    <ClCompile Include="include\Utility\TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Datatypes.h" />
+    <ClInclude Include="include\Device.h" />
     <ClInclude Include="include\DoF.h" />
     <ClInclude Include="include\Effects\Water.h" />
     <ClInclude Include="include\Fog.H" />
@@ -69,6 +73,8 @@
     <ClInclude Include="include\Particles\ParticleSystem.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\RenderInfo.h" />
+    <ClInclude Include="include\RenderPass\GUIRenderPass.h" />
+    <ClInclude Include="include\RenderPass\RenderPass.h" />
     <ClInclude Include="include\RenderQueue.h" />
     <ClInclude Include="include\SkyRenderer.h" />
     <ClInclude Include="include\SnowManager.h" />
@@ -85,6 +91,7 @@
     <ClInclude Include="include\Utility\sizeofv.h" />
     <ClInclude Include="include\Utility\StructuredBuffer.h" />
     <ClInclude Include="include\Utility\Texture.h" />
+    <ClInclude Include="include\Utility\TextureLoader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

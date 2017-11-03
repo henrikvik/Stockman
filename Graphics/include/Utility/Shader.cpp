@@ -6,6 +6,7 @@
 #include <iostream>
 #include <Windows.h>
 #include <comdef.h>
+#include "../Device.h"
 
 #ifdef _DEBUG
 #define SHADER_COMPILE_FLAGS D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION
@@ -19,6 +20,11 @@ namespace Graphics
 	{
 		return static_cast<ShaderType>(static_cast<size_t>(a) | static_cast<size_t>(b));
 	}
+
+    Shader::Shader(Resources::Shaders::Files shader, ShaderType shaderType)
+        : Shader(device, shader, {}, shaderType)
+    {
+    }
 
     Shader::Shader(ID3D11Device * device, Resources::Shaders::Files shader, std::initializer_list<D3D11_INPUT_ELEMENT_DESC> inputDesc, ShaderType shaderType)
         : Shader(device, _bstr_t(Resources::Shaders::Paths.at(shader)), inputDesc, shaderType)

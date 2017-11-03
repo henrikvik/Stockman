@@ -41,14 +41,16 @@ namespace Resources
             AnimationTest,
             ForwardPlus,
             SimpleForward,
-            SkyShader
+            SkyShader,
+            SpriteShader
         };
         const std::map<Files, const char *> Paths =
         {
             {AnimationTest, R"(..\Resources\Shaders\AnimationTest.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
             {SimpleForward, R"(..\Resources\Shaders\SimpleForward.hlsl)"},
-            {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"}
+            {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
+            {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"}
         };
     }
     namespace Textures
