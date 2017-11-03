@@ -220,8 +220,8 @@ HRESULT Engine::createSwapChain()
 		NULL,
 		&this->mContext);
 
-    device = mDevice;
-    context = mContext;
+    Global::device = mDevice;
+    Global::context = mContext;
 
 	if (SUCCEEDED(hr))
 	{

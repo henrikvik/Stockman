@@ -37,7 +37,7 @@ Texture::Texture(ID3D11Device * device, const char * filePath)
 }
 
 Texture::Texture(const char * filePath)
-    : Texture(device, filePath)
+    : Texture(Global::device, filePath)
 {
 }
 

@@ -6,7 +6,7 @@
 
 Graphics::GUIRenderPass::GUIRenderPass(ID3D11RenderTargetView * renderTarget)
     : spriteShader(Resources::Shaders::SpriteShader)
-    , vertexBuffer(device, CpuAccess::Write, 4)
+    , vertexBuffer(Global::device, CpuAccess::Write, 4)
 {
     this->renderTarget = renderTarget;
 }
@@ -14,24 +14,24 @@ Graphics::GUIRenderPass::GUIRenderPass(ID3D11RenderTargetView * renderTarget)
 void Graphics::GUIRenderPass::render()
 {
     enum { TL, TR, BL, BR};
-    context->IASetInputLayout(nullptr);
-    context->PSSetShader(spriteShader, nullptr, 0);
-    context->VSSetShader(spriteShader, nullptr, 0);
-    context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-    context->RSSetState(cStates->CullNone());
+    Global::context->IASetInputLayout(nullptr);
+    Global::context->PSSetShader(spriteShader, nullptr, 0);
+    Global::context->VSSetShader(spriteShader, nullptr, 0);
+    Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+    Global::context->RSSetState(cStates->CullNone());
 
-    context->VSSetShaderResources(0, 1, vertexBuffer);
+    Global::context->VSSetShaderResources(0, 1, vertexBuffer);
 
     ID3D11SamplerState * linear = cStates->LinearClamp();
-    context->PSSetSamplers(0, 1, &linear);
+    Global::context->PSSetSamplers(0, 1, &linear);
 
-    context->OMSetRenderTargets(1, &renderTarget, nullptr);
-    context->OMSetBlendState(cStates->AlphaBlend(), NULL, -1);
+    Global::context->OMSetRenderTargets(1, &renderTarget, nullptr);
+    Global::context->OMSetBlendState(cStates->AlphaBlend(), NULL, -1);
 
     std::vector<Vertex> vertices(4);
     for (auto & info : RenderQueue::get().getQueue<SpriteRenderInfo>())
     {
-        context->PSSetShaderResources(2, 1, *TextureLoader::get().getTexture(info->texture));
+        Global::context->PSSetShaderResources(2, 1, *TextureLoader::get().getTexture(info->texture));
 
         using namespace DirectX::SimpleMath;
 
@@ -53,8 +53,8 @@ void Graphics::GUIRenderPass::render()
         vertices[BL].uv = Vector2(TL_UV_X, BR_UV_Y);
         vertices[BR].uv = Vector2(BR_UV_X, BR_UV_Y);
 
-        vertexBuffer.write(context, vertices.data(), sizeofv(vertices));
-        context->Draw(4, 0);
+        vertexBuffer.write(Global::context, vertices.data(), sizeofv(vertices));
+        Global::context->Draw(4, 0);
     }
 
     for (auto & info : RenderQueue::get().getQueue<TextRenderInfo>())
