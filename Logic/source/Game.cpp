@@ -341,7 +341,7 @@ void Game::renderGame() const
 	PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    //m_hudManager.render();
+    m_hudManager.render();
     PROFILE_END();
 }
 

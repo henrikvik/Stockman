@@ -15,7 +15,7 @@ using namespace Logic;
 #include <Player\Player.h>
 #include <Projectile\ProjectileManager.h>
 
-#include <Graphics\include\Renderer.h>
+
 #include <Graphics\include\Structs.h>
 #include <Physics\Physics.h>
 #include <Graphics\include\Particles\ParticleSystem.h>

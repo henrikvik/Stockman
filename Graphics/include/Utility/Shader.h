@@ -20,7 +20,7 @@ namespace Graphics
 	public:
 		typedef size_t Flags;
 
-
+        Shader(Resources::Shaders::Files shader, ShaderType shaderType = VS | PS);
         Shader(ID3D11Device * device, Resources::Shaders::Files shader, std::initializer_list<D3D11_INPUT_ELEMENT_DESC> inputDesc = {}, ShaderType shaderType = VS | PS);
         Shader(ID3D11Device * device, LPCWSTR shaderPath, std::initializer_list<D3D11_INPUT_ELEMENT_DESC> inputDesc = {}, ShaderType shaderType = VS | PS);
 		virtual ~Shader();

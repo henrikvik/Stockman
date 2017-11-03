@@ -46,14 +46,12 @@ struct LightRenderInfo : RenderInfo
     float range = 5;
 };
 
-
 struct SpecialEffectRenderInfo : RenderInfo
 {
     enum SpecialEffect { BulletTime };
     SpecialEffect effect;
     float progress = 0;
 };
-
 
 struct SpriteRenderInfo : RenderInfo
 {

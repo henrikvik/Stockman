@@ -24,6 +24,8 @@
 
 #include <SpriteBatch.h>
 
+#include "RenderPass\GUIRenderPass.h"
+
 
 namespace Graphics
 {
@@ -37,12 +39,6 @@ namespace Graphics
 
 
         void render(Camera * camera);
-        void queueRender(RenderInfo * renderInfo);
-		void queueFoliageRender(FoliageRenderInfo * renderInfo);
-		void queueWaterRender(WaterRenderInfo * renderInfo);
-        void queueRenderDebug(RenderDebugInfo * debugInfo);
-        void queueText(TextString * text);
-		void queueLight(Light light);
 		void fillHUDInfo(HUDInfo * info);
 
         void drawMenu(Graphics::MenuInfo * info);
@@ -55,6 +51,8 @@ namespace Graphics
         void startShake(float radius, float duration);
     private:
         HybrisLoader::HybrisLoader hybrisLoader;
+
+        std::vector<RenderPass*> renderPasses;
 
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;
@@ -157,6 +155,7 @@ namespace Graphics
 		Fog fog;
 
     #pragma region Draw Functions and Buffers
+
 
         StructuredBuffer<InstanceData> instanceSBuffer;
         ConstantBuffer<UINT> instanceOffsetBuffer;

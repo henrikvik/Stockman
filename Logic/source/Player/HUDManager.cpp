@@ -26,8 +26,8 @@ void Logic::HUDManager::constructGUIElements()
     //crosshair
     GUIElements[0].alpha = 1;
     GUIElements[0].texture = Resources::Textures::crosshair;
-    GUIElements[0].textureRect = FloatRect({ 0.4f, 0.4f }, { .6f, 0.6f });
-    GUIElements[0].screenRect = FloatRect({0.0f, 0.0f}, { 1.f, 1.f });
+    GUIElements[0].screenRect = FloatRect({ 0.45f, 0.45f }, { .55f, 0.55f });
+    GUIElements[0].textureRect = FloatRect({0.0f, 0.0f}, { 1.f, 1.f });
 
     GUIElements[1].alpha = 1;
     GUIElements[1].texture = Resources::Textures::HPBars;
@@ -263,15 +263,8 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     
 }
 
-void HUDManager::render()
-{
-    
-    TextRenderInfo scoreInfo = {};
-    char scoreStr[128];
-    _bstr_t wstr(_itoa_s(info.score, scoreStr, 10));
-    scoreInfo.text = wstr;
-
-    
+void HUDManager::render() const
+{    
     for (size_t i = 0; i < USEDGUIELEMTS; i++)
     {
         RenderQueue::get().queue(&GUIElements[i]);

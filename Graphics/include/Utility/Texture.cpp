@@ -3,6 +3,7 @@
 #include <WICTextureLoader.h>
 #include <DDSTextureLoader.h>
 #include <comdef.h>
+#include "../Device.h"
 
 Texture::Texture()
 {
@@ -22,8 +23,9 @@ Texture::Texture(ID3D11Device * device, std::vector<uint8_t>& data, bool useDDS)
     }
 }
 
-Texture::Texture(ID3D11Device * device, const char * filePath, bool useDDS)
+Texture::Texture(ID3D11Device * device, const char * filePath)
 {
+    bool useDDS = false;
     if (useDDS)
     {
         ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device, _bstr_t(filePath), &resource, &resourceView));
@@ -32,6 +34,11 @@ Texture::Texture(ID3D11Device * device, const char * filePath, bool useDDS)
     {
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, _bstr_t(filePath), &resource, &resourceView));
     }
+}
+
+Texture::Texture(const char * filePath)
+    : Texture(device, filePath)
+{
 }
 
 Texture::~Texture()

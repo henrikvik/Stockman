@@ -1,6 +1,7 @@
 #pragma once
 #include "../ThrowIfFailed.h"
 #include <Engine\Constants.h>
+#include "../Device.h"
 
 enum class CpuAccess
 {
@@ -144,4 +145,5 @@ inline void StructuredBuffer<T>::write(ID3D11DeviceContext * context, T * data, 
     memcpy(map(context), data, size);
     unmap(context);
 }
+
 #pragma endregion

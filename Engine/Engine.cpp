@@ -13,6 +13,7 @@
 #include "Typing.h"
 
 #include "DebugWindow.h"
+#include <Graphics\include\Device.h>
 
 #pragma comment (lib, "d3d11.lib")
 
@@ -178,6 +179,9 @@ HRESULT Engine::createSwapChain()
 		&this->mDevice,
 		NULL,
 		&this->mContext);
+
+    device = mDevice;
+    context = mContext;
 
 	if (SUCCEEDED(hr))
 	{

@@ -15,7 +15,6 @@
 #include <Player\Skill\Skill.h>
 
 #include <Misc\Sound\NoiseStructs.h>
-#include <Graphics\include\Renderer.h>
 
 #include <Engine\Profiler.h>
 #include <Engine\DebugWindow.h>
