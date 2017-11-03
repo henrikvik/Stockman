@@ -34,12 +34,13 @@ public:
 #pragma endregion
 
 #pragma region Implicit Conversion Operators
-    operator ID3D11Buffer*()               { return m_Buffer;  }
-    operator ID3D11Buffer**()              { return &m_Buffer; }
-    operator ID3D11ShaderResourceView*()   { return m_SRV;     }
-    operator ID3D11ShaderResourceView**()  { return &m_SRV;    }
-    operator ID3D11UnorderedAccessView*()  { return m_UAV;     }
-    operator ID3D11UnorderedAccessView**() { return &m_UAV;    }
+    operator ID3D11Buffer*()              const { return m_Buffer; }
+    operator ID3D11ShaderResourceView*()  const { return m_SRV; }
+    operator ID3D11UnorderedAccessView*() const { return m_UAV; }
+
+    operator ID3D11Buffer*const*()              const { return &m_Buffer; }
+    operator ID3D11ShaderResourceView*const*()  const { return &m_SRV; }
+    operator ID3D11UnorderedAccessView*const*() const { return &m_UAV; }
 #pragma endregion
 
 private:

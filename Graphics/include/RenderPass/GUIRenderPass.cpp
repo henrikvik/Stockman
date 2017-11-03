@@ -6,12 +6,12 @@
 
 Graphics::GUIRenderPass::GUIRenderPass(ID3D11RenderTargetView * renderTarget)
     : spriteShader(Resources::Shaders::SpriteShader)
-    , vertexBuffer(Global::device, CpuAccess::Write, 4)
+    , vertexBuffer(Global::device, CpuAccess::Write, SpriteRenderInfo::INSTANCE_CAP * 4)
 {
     this->renderTarget = renderTarget;
 }
 
-void Graphics::GUIRenderPass::render()
+void Graphics::GUIRenderPass::render() const
 {
     enum { TL, TR, BL, BR};
     Global::context->IASetInputLayout(nullptr);
@@ -29,6 +29,28 @@ void Graphics::GUIRenderPass::render()
     Global::context->OMSetBlendState(cStates->AlphaBlend(), NULL, -1);
 
     std::vector<Vertex> vertices(4);
+    size_t offset = 0;
+    for (auto & info : RenderQueue::get().getQueue<SpriteRenderInfo>())
+    {
+        Global::context->PSSetShaderResources(2, 1, *TextureLoader::get().getTexture(info->texture));
+        Global::context->Draw(4, offset);
+        offset += 4;
+    }
+
+    for (auto & info : RenderQueue::get().getQueue<TextRenderInfo>())
+    {
+    }
+}
+
+void Graphics::GUIRenderPass::update(float deltaTime)
+{
+    enum { TL, TR, BL, BR};
+
+    std::vector<Vertex> vertices(4);
+
+
+    size_t offset = 0;
+    auto ptr = vertexBuffer.map(Global::context);
     for (auto & info : RenderQueue::get().getQueue<SpriteRenderInfo>())
     {
         Global::context->PSSetShaderResources(2, 1, *TextureLoader::get().getTexture(info->texture));
@@ -53,11 +75,8 @@ void Graphics::GUIRenderPass::render()
         vertices[BL].uv = Vector2(TL_UV_X, BR_UV_Y);
         vertices[BR].uv = Vector2(BR_UV_X, BR_UV_Y);
 
-        vertexBuffer.write(Global::context, vertices.data(), sizeofv(vertices));
-        Global::context->Draw(4, 0);
+        memcpy((char*)ptr + offset, vertices.data(), sizeofv(vertices));
+        offset += sizeofv(vertices);
     }
-
-    for (auto & info : RenderQueue::get().getQueue<TextRenderInfo>())
-    {
-    }
+    vertexBuffer.unmap(Global::context);
 }

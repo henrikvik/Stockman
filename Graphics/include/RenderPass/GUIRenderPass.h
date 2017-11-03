@@ -14,10 +14,9 @@ namespace Graphics
     public:
         GUIRenderPass(ID3D11RenderTargetView * renderTarget);
 
-
         // Inherited via RenderPass
-        virtual void render() override;
-
+        virtual void render() const override;
+        virtual void update(float deltaTime) override;
     private:
         Shader spriteShader;
 
@@ -31,5 +30,6 @@ namespace Graphics
         };
 
         StructuredBuffer<Vertex> vertexBuffer;
+
     };
 }

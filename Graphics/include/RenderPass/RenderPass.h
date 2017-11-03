@@ -4,7 +4,7 @@
 class RenderPass
 {
 public:
-    virtual void render() = 0;
-    virtual void update(float deltaTime) {};
+    virtual void render() const = 0;
+    virtual void update(float deltaTime) = 0;
     static DirectX::CommonStates * cStates;
 };

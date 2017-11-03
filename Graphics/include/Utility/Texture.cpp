@@ -23,23 +23,11 @@ Texture::Texture(ID3D11Device * device, std::vector<uint8_t>& data, bool useDDS)
     }
 }
 
-Texture::Texture(ID3D11Device * device, const char * filePath)
+Texture::Texture(const char * filePath)
 {
-    bool useDDS = false;
-    if (useDDS)
-    {
-        ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device, _bstr_t(filePath), &resource, &resourceView));
-    }
-    else
-    {
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, _bstr_t(filePath), &resource, &resourceView));
-    }
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, _bstr_t(filePath), &resource, &resourceView));
 }
 
-Texture::Texture(const char * filePath)
-    : Texture(Global::device, filePath)
-{
-}
 
 Texture::~Texture()
 {
