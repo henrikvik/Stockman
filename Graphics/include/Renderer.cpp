@@ -387,47 +387,49 @@ namespace Graphics
 		auto ks = DirectX::Keyboard::Get().GetState();
 
 		
-		if (enablePostEffects)
-		{
-
-			///////Post effects
-
-        if (enableDOF)
+        bool enablePostEffects = false;
+        if (enablePostEffects)
         {
-            PROFILE_BEGIN("Dof");
 
-            if (enableCoCWindow)
+            ///////Post effects
+
+            if (enableDOF)
             {
-                ImGui::Begin("camera stuff");
-                static float fp = 0.088f;
-                static float fl = 0.05f;
-                static float a = 0.12f;
-                ImGui::SliderFloat("focal Plane", &fp, 0.0001f, .1f);
-                ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
-                ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
-                DoFRenderer.updateCoc(deviceContext, fl, fp, a);
-                ImGui::End();
+                PROFILE_BEGIN("Dof");
+
+                if (enableCoCWindow)
+                {
+                    ImGui::Begin("camera stuff");
+                    static float fp = 0.088f;
+                    static float fl = 0.05f;
+                    static float a = 0.12f;
+                    ImGui::SliderFloat("focal Plane", &fp, 0.0001f, .1f);
+                    ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
+                    ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
+                    DoFRenderer.updateCoc(deviceContext, fl, fp, a);
+                    ImGui::End();
+                }
+                DoFRenderer.DoFRender(deviceContext, fakeBackBuffer, &depthStencil, fakeBackBufferSwap, camera);
+                swapBackBuffers();
+                PROFILE_END();
             }
-            DoFRenderer.DoFRender(deviceContext, fakeBackBuffer, &depthStencil, fakeBackBufferSwap, camera);
-            swapBackBuffers();
-            PROFILE_END();
+
+            if (enableGlow)
+            {
+                PROFILE_BEGIN("Glow");
+                glowRenderer.addGlow(deviceContext, *fakeBackBuffer, fakeBackBufferSwap);
+                swapBackBuffers();
+                PROFILE_END();
+            }
+
+            if (enableSSAO)
+            {
+                PROFILE_BEGIN("SSAO");
+                ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, fakeBackBuffer, fakeBackBufferSwap);
+                swapBackBuffers();
+                PROFILE_END();
+            }
         }
-
-		if (enableGlow)
-		{
-			PROFILE_BEGIN("Glow");
-			glowRenderer.addGlow(deviceContext, *fakeBackBuffer, fakeBackBufferSwap);
-			swapBackBuffers();
-			PROFILE_END();
-		}
-
-		if (enableSSAO)
-		{
-			PROFILE_BEGIN("SSAO");
-			ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, fakeBackBuffer, fakeBackBufferSwap);
-			swapBackBuffers();
-			PROFILE_END();
-		}
 
 			
         //The last post effect should just write to backbuffer instead of this 
@@ -481,7 +483,7 @@ namespace Graphics
         if (enableHud)
         {
             PROFILE_BEGIN("HUD");
-            hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
+            //hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
             PROFILE_END();
         }
 

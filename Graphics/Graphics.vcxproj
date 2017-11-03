@@ -75,6 +75,7 @@
     <ClInclude Include="include\RenderInfo.h" />
     <ClInclude Include="include\RenderPass\GUIRenderPass.h" />
     <ClInclude Include="include\RenderPass\RenderPass.h" />
+    <ClInclude Include="include\Utility\RenderPass.h" />
     <ClInclude Include="include\RenderQueue.h" />
     <ClInclude Include="include\SkyRenderer.h" />
     <ClInclude Include="include\SnowManager.h" />
@@ -156,6 +157,7 @@
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
     <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
@@ -169,6 +171,7 @@
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
     <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -179,6 +182,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
@@ -203,6 +207,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>

@@ -3,44 +3,57 @@ using namespace Logic;
 
 
 Logic::Button::Button(
+    float x, float y,
+    float width, float height,
     Resources::Textures::Files texture,
-    FloatRect screenRect,
     FloatRect inactive,
     std::function<void(void)> callback
 )
-    : Button(texture, screenRect, inactive, inactive, callback)
+    : Button(x, y, width, height, texture, inactive, inactive, callback)
 {
 }
 
 Logic::Button::Button(
-    Resources::Textures::Files texture, 
-    FloatRect screenRect, 
+    float x, float y,
+    float width, float height,
+    Resources::Textures::Files texture,
     FloatRect inactive,
     FloatRect active,
     std::function<void(void)> callback
 )
-    : Button(texture, screenRect, inactive, active, active, callback)
+    : Button(x, y, width, height, texture, inactive, active, active, callback)
 {
 }
 
 Logic::Button::Button(
-    Resources::Textures::Files texture, 
-    FloatRect screenRect, 
+    float x, float y,
+    float width, float height,
+    Resources::Textures::Files texture,
     FloatRect inactive, 
     FloatRect active, 
     FloatRect hover,
     std::function<void(void)> callback
 )
-    : texture(texture)
-    , screenRect(screenRect)
-    , inactive(inactive)
+    : inactive(inactive)
     , active(active)
     , hover(hover)
     , callback(callback)
 {
-    textureRect = &inactive;
     m_animationStart = DirectX::SimpleMath::Vector2(0,0);
     m_animationEnd   = DirectX::SimpleMath::Vector2(0,0);
+
+    FloatRect screenRect = {
+        x / WIN_WIDTH,
+        y / WIN_HEIGHT,
+        width / WIN_WIDTH,
+        height / WIN_HEIGHT
+    };
+
+    state = INACTIVE;
+    renderInfo.texture = texture;
+    renderInfo.screenRect = screenRect;
+    renderInfo.textureRect = inactive;
+    renderInfo.alpha = 1;
 }
 
 Button::~Button()
@@ -54,7 +67,7 @@ void Logic::Button::setCallback(std::function<void(void)> callback)
 
 void Button::updateOnPress(int posX, int posY)
 {
-	if (callback && m_buttonInfo.m_rek.Contains(posX, posY))
+	if (callback && renderInfo.screenRect.contains(posX / WIN_WIDTH, posY / WIN_HEIGHT))
 	{
         callback();
 	}
@@ -62,7 +75,7 @@ void Button::updateOnPress(int posX, int posY)
 
 void Button::hoverOver(int posX, int posY)
 {
-    if (m_buttonInfo.m_rek.Contains(posX, posY))
+    if (renderInfo.screenRect.contains(posX / WIN_WIDTH, posY / WIN_HEIGHT))
     {
         state = HOVER;
     }
@@ -101,24 +114,18 @@ void Logic::Button::setState(State state)
     switch (state)
     {
     case INACTIVE:
-        textureRect = &inactive;
+        renderInfo.textureRect = inactive;
         break;
     case ACTIVE:
-        textureRect = &active;
+        renderInfo.textureRect = active;
         break;
     case HOVER:
-        textureRect = &hover;
+        renderInfo.textureRect = hover;
         break;
     }
 }
 
 void Logic::Button::render() const
 {
-    SpriteRenderInfo renderInfo = {};
-    renderInfo.texture = texture;
-    renderInfo.screenRect = screenRect;
-    renderInfo.textureRect = *textureRect;
-    renderInfo.alpha = 1;
-
     RenderQueue::get().queue(&renderInfo);
 }

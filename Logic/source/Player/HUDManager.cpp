@@ -213,10 +213,6 @@ void Logic::HUDManager::updateGUIElemets()
 
 }
 
-void Logic::HUDManager::constructHUD(Graphics::HUDInfo * info)
-{
-
-}
 
 HUDManager::HUDManager()
 {

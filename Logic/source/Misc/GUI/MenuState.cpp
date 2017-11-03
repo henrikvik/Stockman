@@ -24,12 +24,6 @@ void MenuState::initialize(std::vector<ButtonStruct> buttonStruct, int backgroun
 {
 	for (auto const& struc : buttonStruct)
 	{
-        FloatRect screenRect = {
-            struc.xPos   / (float)WIN_WIDTH,
-            struc.yPos   / (float)WIN_HEIGHT,
-            struc.width  / (float)WIN_WIDTH,
-            struc.height / (float)WIN_HEIGHT
-        };
         FloatRect inactive = {
             {struc.xTexStart, struc.yTexStart},
             {struc.xTexEnd,   struc.yTexEnd} 
@@ -42,8 +36,11 @@ void MenuState::initialize(std::vector<ButtonStruct> buttonStruct, int backgroun
         Resources::Textures::Files texture = tempTextureLookup.at(struc.texture);
 
         m_buttons.emplace_back(
+            struc.xPos,
+            struc.yPos,
+            struc.width,
+            struc.height,
             texture,
-            screenRect,
             inactive, 
             active,
             struc.m_CallBackFunction

@@ -76,6 +76,7 @@
     <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
@@ -84,6 +85,7 @@
     <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
@@ -93,6 +95,7 @@
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
@@ -102,6 +105,7 @@
     <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,6 +116,7 @@
       </AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,6 +138,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       </AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

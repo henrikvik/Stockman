@@ -28,19 +28,25 @@ namespace Logic
 	public:
         enum State { ACTIVE, INACTIVE, HOVER };
 
-        Button(Resources::Textures::Files texture, 
-            FloatRect screenRect, 
+        Button(
+            float x, float y,
+            float width, float height,
+            Resources::Textures::Files texture,
             FloatRect inactive, 
             std::function<void(void)> callback);
 
-        Button(Resources::Textures::Files texture, 
-            FloatRect screenRect, 
+        Button(
+            float x, float y,
+            float width, float height,
+            Resources::Textures::Files texture,
             FloatRect inactive, 
             FloatRect active, 
             std::function<void(void)> callback);
 
-        Button(Resources::Textures::Files texture, 
-            FloatRect screenRect, 
+        Button(
+            float x, float y,
+            float width, float height,
+            Resources::Textures::Files texture,
             FloatRect inactive, 
             FloatRect active, 
             FloatRect hover, 
@@ -58,17 +64,12 @@ namespace Logic
 
         void render() const;
 	private:
-		Graphics::ButtonInfo m_buttonInfo;
-
-        Resources::Textures::Files texture;
-
-        FloatRect screenRect;
+        SpriteRenderInfo renderInfo;
+        
+		std::function<void(void)> callback;
         FloatRect inactive;
         FloatRect active;
         FloatRect hover;
-		std::function<void(void)> callback;
-
-        FloatRect * textureRect;
         State state;
 
 		DirectX::SimpleMath::Vector2 m_animationEnd;

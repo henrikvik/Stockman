@@ -12,9 +12,8 @@ const int EnemyNecromancer::SPEED_AB1 = 15,
           EnemyNecromancer::MAX_HP = 4;
 const float EnemyNecromancer::BASE_SPEED = 8.f;
 
-EnemyNecromancer::EnemyNecromancer(Resources::Models::Files modelID,
-    btRigidBody* body, btVector3 halfExtent)
-    : Enemy(modelID, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, NECROMANCER, 0) {
+EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
+    : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, NECROMANCER, 0) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().Kill(getEnemyType());
