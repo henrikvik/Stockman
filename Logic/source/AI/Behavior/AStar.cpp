@@ -177,7 +177,7 @@ size_t AStar::getNrOfPolygons() const
 
 void AStar::generateNavigationMesh()
 {
-	PASVF pasvf;
+	NavigationMeshGeneration pasvf;
 	pasvf.generateNavMesh(navigationMesh, {}, {});
 	navigationMesh.createNodesFromTriangles();
 	// test //

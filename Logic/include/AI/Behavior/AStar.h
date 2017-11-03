@@ -6,7 +6,7 @@
 #include <queue>
 
 #include "NavigationMesh.h"
-#include "PASVF.h"
+#include "NavigationMeshGeneration.h"
 
 #include <Entity\Entity.h>
 #include <Graphics\include\Renderer.h>
