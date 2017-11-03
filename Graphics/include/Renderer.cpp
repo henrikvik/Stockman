@@ -763,7 +763,7 @@ namespace Graphics
             return "Post effects on!";
         });
 
-		debugWindow->registerCommand("GFX_TOGGLE_SSAO", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_SSAO", [&](std::vector<std::string> &args)->std::string
 		{
             std::string catcher = "";
             try
@@ -791,7 +791,7 @@ namespace Graphics
             return catcher;
 		});
 
-        debugWindow->registerCommand("GFX_TOGGLE_SNOW", [&](std::vector<std::string> &args)->std::string
+        debugWindow->registerCommand("GFX_SET_SNOW", [&](std::vector<std::string> &args)->std::string
         {
             std::string catcher = "";
             try
@@ -819,7 +819,7 @@ namespace Graphics
             return catcher;
         });
 
-		debugWindow->registerCommand("GFX_TOGGLE_GLOW", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_GLOW", [&](std::vector<std::string> &args)->std::string
 		{
             std::string catcher = "";
             try
@@ -847,7 +847,7 @@ namespace Graphics
             return catcher;
 		});
 
-		debugWindow->registerCommand("GFX_TOGGLE_FOG", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_FOG", [&](std::vector<std::string> &args)->std::string
 		{
             std::string catcher = "";
             try
@@ -875,7 +875,7 @@ namespace Graphics
             return catcher;
 		});
 
-		debugWindow->registerCommand("GFX_TOGGLE_DOF", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_DOF", [&](std::vector<std::string> &args)->std::string
 		{
             std::string catcher = "";
             try
@@ -903,7 +903,7 @@ namespace Graphics
             return catcher;
 		});
 
-        debugWindow->registerCommand("GFX_TOGGLE_DOF_SLIDERS", [&](std::vector<std::string> &args)->std::string
+        debugWindow->registerCommand("GFX_SET_DOF_SLIDERS", [&](std::vector<std::string> &args)->std::string
         {
             std::string catcher = "";
             try
@@ -931,7 +931,7 @@ namespace Graphics
             return catcher;
         });
 
-        debugWindow->registerCommand("GFX_TOGGLE_HUD", [&](std::vector<std::string> &args)->std::string
+        debugWindow->registerCommand("GFX_SET_HUD", [&](std::vector<std::string> &args)->std::string
         {
             std::string catcher = "";
             try

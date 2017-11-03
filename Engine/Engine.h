@@ -29,7 +29,8 @@ private:
 	ID3D11RenderTargetView* mBackBufferRTV;
 	std::unique_ptr<DirectX::Keyboard> mKeyboard;
 	std::unique_ptr<DirectX::Mouse> mMouse;
-	bool isFullscreen;
+    std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker> mTracker;
+	BOOL isFullscreen;
 
 	void initializeWindow();
 	HRESULT createSwapChain();

@@ -78,3 +78,15 @@
 	"mHP": 0f;
 	"mMovementSpeed": 15f;
 }
+{ // HEALTH +1
+	"flags": 32;
+	"duration": 0f;
+	"modifiers": 1;
+	"specifics": 0;
+
+	"mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 1f;
+	"mMovementSpeed": 0f;
+}
