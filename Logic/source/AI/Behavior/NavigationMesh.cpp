@@ -23,6 +23,37 @@ void NavigationMesh::addEdge(int from, int to)
 	edges[from].indices.push_back(to);
 }
 
+void NavigationMesh::generateEdges()
+{
+    // simple custom algo
+    // add edge beetwen triangles that shares two vertices
+    // (change to one shared vertex in future to see if it works with the map)
+    int same = 0;
+    for (size_t i = 0; i < triangleList.size(); i++)
+    {
+        for (size_t j = 0; j < triangleList.size() && j != i; j++)
+        {
+            same = 0;
+            for (auto const &vertex : triangleList[i].vertices)
+            {
+                for (auto const &otherV : triangleList[j].vertices)
+                {
+                    if ((vertex - otherV).Length() < EPSILON)
+                    {
+                        if (++same > 1)
+                        {
+                            addEdge(static_cast<int> (i), static_cast<int> (j));
+                            addEdge(static_cast<int> (j), static_cast<int> (i));
+                            break;
+                        }
+                    }
+                }
+                if (same > 1) break;
+            }
+        }
+    }
+}
+
 std::vector<int>& NavigationMesh::getEdges(int from)
 {
 	return edges[from].indices;

@@ -26,6 +26,7 @@ namespace Logic
 
 			void addTriangle(Triangle const &triangle);
 			void addEdge(int from, int to);
+            void generateEdges();
 			std::vector<int>& getEdges(int from);
 			void createNodesFromTriangles();
 			

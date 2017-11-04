@@ -197,29 +197,6 @@ void AStar::generateNavigationMesh(Physics &physics)
         renderDebug = !renderDebug;
         if (!renderDebug) return "AI Debug Disabled";
 
-        const int ROW = (int)std::sqrt(navigationMesh.getNodes().size() / 2) * 2;
-        for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
-        {
-            if ((i + 1) % ROW != 0)
-            {
-                navigationMesh.addEdge((int)i, (int)i + 1);
-                navigationMesh.addEdge((int)i + 1, (int)i);
-            }
-            
-            if (i < navigationMesh.getNodes().size() - ROW && i % 2 == 0)
-            {
-                // REMOVE THESE COMMENTS AND i % 2 == 0 TO MAKE ART
-            //	navigationMesh.addEdge(i, i + ROW); 
-            //	navigationMesh.addEdge(i + ROW, i);
-                
-                if ((i + 1) % ROW != 0)
-                {
-                    navigationMesh.addEdge((int)i, (int)i + ROW + 1);
-                    navigationMesh.addEdge((int)i + ROW + 1, (int)i);
-                }
-            } 
-        }
-
         navNodes.clear();
         for (size_t i = 0; i < navigationMesh.getNodes().size(); i++)
             navNodes.push_back(
