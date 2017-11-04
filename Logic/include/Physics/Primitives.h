@@ -92,6 +92,8 @@ namespace Logic
     ////////////////////////////////////////////////////////////
     //	Creates a simple 3D cube 
     ////////////////////////////////////////////////////////////
+
+    // Dimensions is the HALF SIZE, not the actually size that is why my shit is not working fml fmlfmflfmflfmlfmflmflfmflfml
     class Cube : public Shape
     {
     public:

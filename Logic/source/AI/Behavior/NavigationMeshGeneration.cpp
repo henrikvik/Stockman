@@ -93,18 +93,18 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     Physics &physics)
 {
 #define SIDES 4
-#define MAX_DISTANCE_ON_SIDE 100.f
-    float dimensionIncrease = 10.4f;
+#define MAX_DISTANCE_ON_SIDE 50.f
+    float dimensionIncrease = 1.f;
     float y = 2.f;
-    Cube cube({ 0.f, y, 0.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f });
+    Cube cube({ 0.f, y, 0.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.02f, 0.2f });
 
     float distance = 0;
     bool collided[SIDES] = { false, false, false, false };
 
     std::pair<btVector3, btVector3> bonus[SIDES] = {
-        { { 0.f, 0.f, 0.f },                { dimensionIncrease, 0.f, 0.f } },
-        { { 0.f, 0.f, 0.f },                { 0.f, 0.f, 0 } },
-        { { -0, 0.f, 0.f }, { 0, 0.f, 0.f } },
+        { { dimensionIncrease, 0.f, 0.f  }, { dimensionIncrease, 0.f, 0.f } },
+        { { 0.f, 0.f, dimensionIncrease  }, { 0.f, 0.f, dimensionIncrease } },
+        { { -dimensionIncrease, 0.f, 0.f }, { dimensionIncrease, 0.f, 0.f } },
         { { 0.f, 0.f, -dimensionIncrease }, { 0.f, 0.f, dimensionIncrease } }
     };
 
@@ -118,7 +118,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
             cube.setPos(cube.getPos() + bonus[j].first);
 
             btRigidBody *shape = physics.createBody(cube, 0.f);
-            //physics.removeRigidBody(shape);
+            physics.removeRigidBody(shape);
 
             for (int i = 0; i < physics.getNumCollisionObjects() && !collided[j]; i++)
             {
@@ -145,11 +145,11 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                 physics.contactPairTest(shape, obj, res);
             }
 
-         /*   delete shape->getMotionState();
+            delete shape->getMotionState();
             delete shape->getCollisionShape();
-            delete shape;*/
+            delete shape;
 
-            distance += dimensionIncrease;
+            distance += dimensionIncrease * 2;
         }
     }
     std::pair<Triangle, Triangle> triPair = toTriangle(cube);
@@ -175,15 +175,16 @@ std::pair<NavigationMeshGeneration::Triangle, NavigationMeshGeneration::Triangle
 {
     float y = 0;
     Triangle tri1, tri2;
+    cube.setPos(cube.getPos() - cube.getDimensions());
 
     tri1.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos());
-    tri1.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{0, y, cube.getDimensions().z()});
-    tri1.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());
+    tri1.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{0, y, cube.getDimensions().z() * 2.f});
+    tri1.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions() * 2.f);
 
     tri2.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos());
-    tri2.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{cube.getDimensions().x(), y, 0});
-    tri2.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());
-
+    tri2.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{cube.getDimensions().x() * 2.f, y, 0});
+    tri2.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions() * 2.f);
+     
     return std::pair<Triangle, Triangle>(tri1, tri2);
 }
 

@@ -43,7 +43,6 @@ void NavigationMesh::generateEdges()
                         if (++same > 1)
                         {
                             addEdge(static_cast<int> (i), static_cast<int> (j));
-                            addEdge(static_cast<int> (j), static_cast<int> (i));
                             break;
                         }
                     }

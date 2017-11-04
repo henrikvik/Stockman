@@ -54,7 +54,7 @@ void Map::readFromFile(std::string path)
 {
     // Loads hitboxes
     std::vector<FrameHitbox> hitboxes;
-    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Graphics::GROUND });
+   // hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Graphics::GROUND });
     hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
     hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Graphics::CUBE });
     hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
@@ -78,7 +78,7 @@ void Map::readFromFile(std::string path)
     hitboxes.push_back({ { 120, 50, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
     hitboxes.push_back({ { 130, 40, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Graphics::CUBE });
     hitboxes.push_back({ { 150, 60, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Graphics::CUBE });
-//    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 }, Graphics::CUBE });
+    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 }, Graphics::CUBE });
 
     // Loads lights
     std::vector<FrameLight> lights;
