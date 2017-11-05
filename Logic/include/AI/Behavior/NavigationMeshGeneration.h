@@ -54,6 +54,10 @@ namespace Logic
                 std::vector<NavStaticObject> objects) const;
             void generateNavigationMesh(NavigationMesh &nav, Physics &physics);
 		private:
+            enum CollisionReturn
+            {
+                ON_AXIS, ON_EDGE, ON_VERTEX, PROBLEMS_MY_DUDES
+            };
             struct Growth
             {
                 btVector3 positionChange, dimensionChange; // half size
@@ -82,7 +86,8 @@ namespace Logic
 
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
             NavigationMesh::Triangle toNavTriangle(Triangle const &tri);
-            bool handleCollision(btVector3 collisionPoint, Cube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape);
+            CollisionReturn handleCollision(btVector3 collisionPoint, NavMeshCube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape);
+            void split(std::vector<NavMeshCube> &region, NavMeshCube &cube, btVector3 cubeColPoint, int side);
             void removeRigidBody(btRigidBody *body, Physics &physics);
 
             // true on collision

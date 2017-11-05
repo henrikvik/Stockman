@@ -113,16 +113,16 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     float distance = 0;
 
     // todo clean up + opt
-    Growth growth[SIDES] = {
-        { { - presicion, 0.f, 0.f }, { presicion, 0.f, 0.f } },
-        { { presicion, 0.f, 0.f   }, { presicion, 0.f, 0.f } },
-        { { 0.f, 0.f, - presicion }, { 0.f, 0.f, presicion } },
-        { { 0.f, 0.f, presicion   }, { 0.f, 0.f, presicion } }
+    Growth growth[SIDES] = { // CLOCK WISE, IMPORTANTE
+        { { presicion, 0.f, 0.f   }, { presicion, 0.f, 0.f } }, // X +
+        { { 0.f, 0.f, - presicion }, { 0.f, 0.f, presicion } }, // Z-
+        { { - presicion, 0.f, 0.f }, { presicion, 0.f, 0.f } }, // X-
+        { { 0.f, 0.f, presicion   }, { 0.f, 0.f, presicion } } // Z+
     };
     btVector3 growthNormals[SIDES] = {
-        { - 1.f, 0.f, 0.f },
         {   1.f, 0.f, 0.f },
         {   0.f, 0.f, - 1.f },
+        { - 1.f, 0.f, 0.f },
         {   0.f, 0.f,   1.f }
     };
 
@@ -166,17 +166,19 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                                 if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // only support box shapes at the moment (other shapes can be "converted" to boxes)
                                 {
                                     btVector3 col;
-                                    if (colObj0->getCollisionObject() == obj)
-                                    {
-                                        col = cp.m_localPointA;
-                                    }
-                                    else
-                                    {
-                                        col = cp.m_localPointB;
-                                    }
+                                    if (colObj0->getCollisionObject() == obj) col = cp.m_localPointA;
+                                    else col = cp.m_localPointB;
+
                                     col += staticObj->getRigidBody()->getWorldTransform().getOrigin();
                                     physics.createBody(Sphere(col, { 0, 0, 0 }, 0.1f), 0);
-                                    region.collided[j] = handleCollision(col, cube, staticObj, growth[j], growthNormals[j], bs);
+
+                                    CollisionReturn ret = handleCollision(col, region, staticObj, growth[j], growthNormals[j], bs);
+                                    switch (ret)
+                                    {
+                                    case ON_VERTEX:
+                                            split(regions, region, j);
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -246,15 +248,16 @@ NavigationMesh::Triangle NavigationMeshGeneration::toNavTriangle(Triangle const 
     return { 0, tri.vertices[0], tri.vertices[1], tri.vertices[2] };
 }
 
-bool NavigationMeshGeneration::handleCollision(btVector3 collisionPoint, Cube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape)
+NavigationMeshGeneration::CollisionReturn NavigationMeshGeneration::handleCollision(btVector3 collisionPoint,
+    NavMeshCube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape)
 {
     DirectX::SimpleMath::Quaternion rot = obj->getRotation();
     rot.w = 0; // this is stupid
     if (abs(rot.LengthSquared()) < EPSILON) // base case
     {
-        cube.setDimensions(cube.getDimensions() - growth.dimensionChange);
-        cube.setPos(cube.getPos() - growth.positionChange);
-        return true;
+        cube.cube.setDimensions(cube.cube.getDimensions() - growth.dimensionChange);
+        cube.cube.setPos(cube.cube.getPos() - growth.positionChange);
+        return ON_AXIS;
     }
     
     btVector3 vertex;
@@ -263,22 +266,29 @@ bool NavigationMeshGeneration::handleCollision(btVector3 collisionPoint, Cube &c
     for (int i = 0; i < shape->getNumVertices() && !found; i++)
     {
         shape->getVertex(i, vertex);
-        if (abs((vertex - collisionPoint).length2()) < EPSILON)
+        if (shape->isInside(vertex, btScalar(0.05f)))
             found = true;
     }
 
     if (found) // case b, on vertex
     {
-        cube.setDimensions(cube.getDimensions() - growth.dimensionChange);
-        cube.setPos(cube.getPos() - growth.positionChange);
-        return true;
+        cube.cube.setDimensions(cube.cube.getDimensions() - growth.dimensionChange);
+        cube.cube.setPos(cube.cube.getPos() - growth.positionChange);
+        return ON_VERTEX;
     }
     else // case c, living on the edge. (Collision on edge)
     {
-
+        return ON_EDGE;
     }
 
-    return false;
+    return PROBLEMS_MY_DUDES;
+}
+
+void NavigationMeshGeneration::split(std::vector<NavMeshCube> &regions, NavMeshCube &cube, btVector3 cubeColPoint, int side)
+{
+    NavMeshCube newCube(cube);
+    
+    regions.push_back(cube);
 }
 
 void NavigationMeshGeneration::removeRigidBody(btRigidBody *body, Physics &physics)
