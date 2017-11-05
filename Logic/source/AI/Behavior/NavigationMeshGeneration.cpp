@@ -12,7 +12,7 @@ using namespace Logic;
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
-    presicion = 3.f;
+    presicion = 0.1f;
     DebugWindow::getInstance()->registerCommand("AI_NAV_SET_PRESICION", [&](std::vector<std::string> &para) -> std::string {
         try {
             presicion = std::stof(para.at(0));
@@ -108,7 +108,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     float y = 0.5f;
     std::vector<NavMeshCube> regions;
     regions.push_back(NavMeshCube(Cube({ 0.f, y, 0.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
-    regions.push_back(NavMeshCube(Cube({ 80.f, y, -80.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
+ //   regions.push_back(NavMeshCube(Cube({ 80.f, y, -80.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
 
     float distance = 0;
 
@@ -265,6 +265,17 @@ bool NavigationMeshGeneration::handleCollision(btVector3 collisionPoint, Cube &c
         shape->getVertex(i, vertex);
         if (abs((vertex - collisionPoint).length2()) < EPSILON)
             found = true;
+    }
+
+    if (found) // case b, on vertex
+    {
+        cube.setDimensions(cube.getDimensions() - growth.dimensionChange);
+        cube.setPos(cube.getPos() - growth.positionChange);
+        return true;
+    }
+    else // case c, living on the edge. (Collision on edge)
+    {
+
     }
 
     return false;
