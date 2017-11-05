@@ -85,9 +85,12 @@ namespace Logic
                 VertexOrder vertexOrder = CLOCKWISE) const;
 
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
+            std::pair<Cube, Cube> cutCube(btVector3 const &cutPoint, btVector3 const &planeNormal, Cube const &cube);
             NavigationMesh::Triangle toNavTriangle(Triangle const &tri);
-            CollisionReturn handleCollision(btVector3 collisionPoint, NavMeshCube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape);
-            void split(std::vector<NavMeshCube> &region, NavMeshCube &cube, btVector3 cubeColPoint, int side);
+            CollisionReturn handleCollision(btVector3 collisionPoint, NavMeshCube &cube,
+                StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape);
+            void split(std::vector<NavMeshCube> &region, NavMeshCube &cube,
+                btVector3 const &cubeColPoint, btVector3 const &splitPlaneNormal);
             void removeRigidBody(btRigidBody *body, Physics &physics);
 
             // true on collision

@@ -110,6 +110,7 @@ namespace Logic
 
         void		setDimensions(btVector3 dimensions) { m_dimensions = dimensions; }
         btVector3	getDimensions() const { return m_dimensions; }
+        btVector3&	getDimensionsRef() { return m_dimensions; }
 
     private:
         btVector3	m_dimensions;

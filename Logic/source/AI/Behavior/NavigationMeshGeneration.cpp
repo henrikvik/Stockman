@@ -108,7 +108,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     float y = 0.5f;
     std::vector<NavMeshCube> regions;
     regions.push_back(NavMeshCube(Cube({ 0.f, y, 0.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
- //   regions.push_back(NavMeshCube(Cube({ 80.f, y, -80.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
+    regions.push_back(NavMeshCube(Cube({ 80.f, y, -80.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
 
     float distance = 0;
 
@@ -176,11 +176,16 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                                     switch (ret)
                                     {
                                     case ON_VERTEX:
-                                            split(regions, region, j);
+                                            split(regions, region, col, growthNormals[j + 1 % SIDES]); // clockwise rotation
                                         break;
                                     }
+                                    if (ret != PROBLEMS_MY_DUDES) region.collided[j] = true;
                                 }
                             }
+                        }
+                        else if (region.body->getUserIndex() == -666) // use base class or someting later
+                        {
+                            region.collided[j] = true;
                         }
                         return 0;
                     });
@@ -192,6 +197,8 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
             }
         }
         region.done = true;
+        region.body = physics.createBody(cube, 0.f);
+        region.body->setUserIndex(-666);
     }
 
     for (auto &region : regions)
@@ -201,10 +208,10 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
 
         region.body = physics.createBody(cube, 0.f);
         /* TESTING */
-        assert(abs((triPair.first.vertices[0] - DirectX::SimpleMath::Vector3(region.body->getWorldTransform().getOrigin() - cube.getDimensions())).Length()) < EPSILON);
-        assert(abs(triPair.first.vertices[1].x - (region.body->getWorldTransform().getOrigin().x() + cube.getDimensions().x())) < EPSILON);
-        assert(abs(triPair.first.vertices[1].z - (region.body->getWorldTransform().getOrigin().z() - cube.getDimensions().z())) < EPSILON);
-        assert(abs((triPair.first.vertices[2] - DirectX::SimpleMath::Vector3(region.body->getWorldTransform().getOrigin() + cube.getDimensions())).Length()) < EPSILON);
+      //  assert(abs((triPair.first.vertices[0] - DirectX::SimpleMath::Vector3(region.body->getWorldTransform().getOrigin() - cube.getDimensions())).Length()) < EPSILON);
+      //  assert(abs(triPair.first.vertices[1].x - (region.body->getWorldTransform().getOrigin().x() + cube.getDimensions().x())) < EPSILON);
+      //  assert(abs(triPair.first.vertices[1].z - (region.body->getWorldTransform().getOrigin().z() - cube.getDimensions().z())) < EPSILON);
+      //  assert(abs((triPair.first.vertices[2] - DirectX::SimpleMath::Vector3(region.body->getWorldTransform().getOrigin() + cube.getDimensions())).Length()) < EPSILON);
         /* TESTING */
        // removeRigidBody(region.body, physics);
 
@@ -233,14 +240,41 @@ std::pair<NavigationMeshGeneration::Triangle, NavigationMeshGeneration::Triangle
     Triangle tri1, tri2;
 
     tri1.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos() - cube.getDimensions());
-    tri1.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());
-    tri1.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{cube.getDimensions().x(), y, -cube.getDimensions().z()});
+    tri1.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());
+    tri1.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{cube.getDimensions().x(), y, -cube.getDimensions().z()});
 
     tri2.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos() - cube.getDimensions());
-    tri2.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());
-    tri2.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{-cube.getDimensions().x(), y, cube.getDimensions().z()});
+    tri2.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());
+    tri2.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{-cube.getDimensions().x(), y, cube.getDimensions().z()});
      
     return std::pair<Triangle, Triangle>(tri1, tri2);
+}
+
+std::pair<Cube, Cube> NavigationMeshGeneration::cutCube(btVector3 const &cutPoint, btVector3 const &planeNormal, Cube const &cube)
+{
+    std::pair<Cube, Cube> cubes(cube, cube);
+    Cube &f = cubes.first, &s = cubes.second;
+    btVector3 toPos = (cube.getPos() + cube.getDimensions()) - cutPoint;
+    float distToPlane = abs(toPos.dot(planeNormal) / planeNormal.length2());
+
+    if (planeNormal.x() > 0)
+    {
+        f.getDimensionsRef().setX(f.getDimensionsRef().getX() - distToPlane);
+        s.getDimensionsRef().setX(f.getDimensionsRef().getX() - s.getDimensionsRef().getX());
+
+        f.getPos().setX(f.getPos().getX() * 0.5f - distToPlane);
+        s.getPos().setX(s.getPos().getX() * 0.5f - distToPlane);
+    }
+    else
+    {
+        f.getDimensionsRef().setZ(f.getDimensionsRef().getZ() - distToPlane);
+        s.getDimensionsRef().setZ(f.getDimensionsRef().getZ() - s.getDimensionsRef().getZ());
+
+        f.getPos().setZ(f.getPos().getZ() * 0.5f - distToPlane);
+        s.getPos().setZ(s.getPos().getZ() * 0.5f - distToPlane);
+    }
+
+    return cubes;
 }
 
 NavigationMesh::Triangle NavigationMeshGeneration::toNavTriangle(Triangle const & tri)
@@ -251,12 +285,14 @@ NavigationMesh::Triangle NavigationMeshGeneration::toNavTriangle(Triangle const 
 NavigationMeshGeneration::CollisionReturn NavigationMeshGeneration::handleCollision(btVector3 collisionPoint,
     NavMeshCube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape)
 {
+    cube.cube.setDimensions(cube.cube.getDimensions() - growth.dimensionChange);
+    cube.cube.setPos(cube.cube.getPos() - growth.positionChange);
+
     DirectX::SimpleMath::Quaternion rot = obj->getRotation();
     rot.w = 0; // this is stupid
+
     if (abs(rot.LengthSquared()) < EPSILON) // base case
     {
-        cube.cube.setDimensions(cube.cube.getDimensions() - growth.dimensionChange);
-        cube.cube.setPos(cube.cube.getPos() - growth.positionChange);
         return ON_AXIS;
     }
     
@@ -272,8 +308,6 @@ NavigationMeshGeneration::CollisionReturn NavigationMeshGeneration::handleCollis
 
     if (found) // case b, on vertex
     {
-        cube.cube.setDimensions(cube.cube.getDimensions() - growth.dimensionChange);
-        cube.cube.setPos(cube.cube.getPos() - growth.positionChange);
         return ON_VERTEX;
     }
     else // case c, living on the edge. (Collision on edge)
@@ -284,11 +318,16 @@ NavigationMeshGeneration::CollisionReturn NavigationMeshGeneration::handleCollis
     return PROBLEMS_MY_DUDES;
 }
 
-void NavigationMeshGeneration::split(std::vector<NavMeshCube> &regions, NavMeshCube &cube, btVector3 cubeColPoint, int side)
+void NavigationMeshGeneration::split(std::vector<NavMeshCube> &regions,
+    NavMeshCube &cube, btVector3 const &cubeColPoint, btVector3 const &splitPlaneNormal)
 {
-    NavMeshCube newCube(cube);
+    NavMeshCube cube1(cube);
+    std::pair<Cube, Cube> btCubes = cutCube(cubeColPoint, splitPlaneNormal, cube.cube);
+
+    cube1.cube = btCubes.first;
+    cube.cube = btCubes.second;
     
-    regions.push_back(cube);
+    regions.push_back(cube1);
 }
 
 void NavigationMeshGeneration::removeRigidBody(btRigidBody *body, Physics &physics)
