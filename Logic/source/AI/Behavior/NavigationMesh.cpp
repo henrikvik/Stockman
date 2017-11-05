@@ -129,7 +129,7 @@ int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const &pos) const
 	return -1;
 }
 
-bool Logic::NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const & pos, int index) const
+bool NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const & pos, int index) const
 {
 	Triangle tri = triangleList[index];
 	DirectX::SimpleMath::Vector3 p, q, t;
