@@ -54,6 +54,10 @@ namespace Logic
                 std::vector<NavStaticObject> objects) const;
             void generateNavigationMesh(NavigationMesh &nav, Physics &physics);
 		private:
+            enum GrowthType
+            {
+                X_PLUS, Z_MINUS, X_MINUS, Z_PLUS
+            };
             enum CollisionReturn
             {
                 ON_AXIS, ON_EDGE, ON_VERTEX, PROBLEMS_MY_DUDES

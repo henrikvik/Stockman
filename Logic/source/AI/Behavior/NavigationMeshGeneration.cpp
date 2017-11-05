@@ -109,7 +109,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     std::vector<NavMeshCube> regions;
     regions.reserve(100); // THIS IS A TEMPORARY SOLUTION TO PREVENT MEMORY FOK UPS; MAKE A REAL SOLUTION
     regions.push_back(NavMeshCube(Cube({ 0.f, y, 0.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
-    regions.push_back(NavMeshCube(Cube({ 80.f, y, -80.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
+   // regions.push_back(NavMeshCube(Cube({ 80.f, y, -80.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
 
     float distance = 0;
 
@@ -131,7 +131,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     StaticObject *staticObj;
 
     // first cube
-    for (size_t i = 0; i < regions.size() && i < 10; i++)
+    for (size_t i = 0; i < regions.size() && i < 10; i++) // less than ten to prevent yikes
     {
         printf("Loading.. %d/%d\n", i, regions.size());
         auto &region = regions[i];
@@ -256,24 +256,38 @@ std::pair<Cube, Cube> NavigationMeshGeneration::cutCube(btVector3 const &cutPoin
 {
     std::pair<Cube, Cube> cubes(cube, cube);
     Cube &f = cubes.first, &s = cubes.second;
-    btVector3 toPos = (cube.getPos() + cube.getDimensions()) - cutPoint;
-    float distToPlane = abs(toPos.dot(planeNormal) / planeNormal.length2());
 
-    if (planeNormal.x() > 0)
+    btVector3 end = cube.getPos() + cube.getDimensions();
+    btVector3 toPos = cutPoint - end;
+    btVector3 temp;
+
+    float distToPlane = abs(toPos.dot(planeNormal) / planeNormal.length2()) * 0.5f;
+
+    if (planeNormal.x() != 0)
     {
-        f.getDimensionsRef().setX(f.getDimensionsRef().x() - distToPlane);
-        s.getDimensionsRef().setX(s.getDimensionsRef().x() - f.getDimensionsRef().getX());
+        f.getDimensionsRef().setX(distToPlane);
+        s.getDimensionsRef().setX(s.getDimensionsRef().x() - distToPlane);
 
-        f.getPos().setX(f.getPos().x() - distToPlane);
-        s.getPos().setX(s.getPos().x() + cube.getDimensions().x() - distToPlane);
+        temp = f.getPos();
+        temp.setX(end.x() - distToPlane);
+        f.setPos(temp);
+
+        temp = s.getPos();
+        temp.setX(end.x() - f.getDimensionsRef().x() * 2 - s.getDimensionsRef().x());
+        s.setPos(temp);
     }
     else
     {
-        f.getDimensionsRef().setZ(f.getDimensionsRef().getZ() - distToPlane);
-        s.getDimensionsRef().setZ(s.getDimensionsRef().getZ() - f.getDimensionsRef().getZ());
+        f.getDimensionsRef().setZ(distToPlane);
+        s.getDimensionsRef().setZ(s.getDimensionsRef().z() - distToPlane);
 
-        f.getPos().setZ(f.getPos().z() - distToPlane * 0.5f);
-        s.getPos().setZ(s.getPos().z() + cube.getDimensions().x() - distToPlane * 0.5f);
+        temp = f.getPos();
+        temp.setZ(end.z() - distToPlane);
+        f.setPos(temp);
+
+        temp = s.getPos();
+        temp.setZ(end.z() - f.getDimensionsRef().z() * 2 - s.getDimensionsRef().z());
+        s.setPos(temp);
     }
 
     return cubes;
@@ -325,6 +339,17 @@ void NavigationMeshGeneration::split(std::vector<NavMeshCube> &regions,
 {
     NavMeshCube cube1(cube);
     std::pair<Cube, Cube> btCubes = cutCube(cubeColPoint, splitPlaneNormal, cube.cube);
+
+    if (splitPlaneNormal.x() != 0)
+    {
+        cube.collided[splitPlaneNormal.x() > 0 ? X_PLUS : X_MINUS] = true;
+        cube1.collided[splitPlaneNormal.x() > 0 ? X_MINUS : X_PLUS] = true;
+    }
+    else 
+    {
+        cube.collided[splitPlaneNormal.z() > 0 ? Z_PLUS : Z_MINUS] = true;
+        cube1.collided[splitPlaneNormal.z() > 0 ? Z_MINUS : Z_PLUS] = true;
+    }
 
     cube1.cube = btCubes.first;
     cube1.body = nullptr;
