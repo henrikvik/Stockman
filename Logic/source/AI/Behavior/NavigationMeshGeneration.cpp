@@ -12,7 +12,7 @@ using namespace Logic;
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
-    presicion = 0.1f;
+    presicion = 0.01f;
     DebugWindow::getInstance()->registerCommand("AI_NAV_SET_PRESICION", [&](std::vector<std::string> &para) -> std::string {
         try {
             presicion = std::stof(para.at(0));
@@ -240,6 +240,7 @@ std::pair<NavigationMeshGeneration::Triangle, NavigationMeshGeneration::Triangle
 {
     float y = 0;
     Triangle tri1, tri2;
+    cube.getDimensionsRef().setY(y);
 
     tri1.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos() - cube.getDimensions());
     tri1.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());

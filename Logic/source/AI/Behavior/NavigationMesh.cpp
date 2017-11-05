@@ -1,6 +1,7 @@
 #include <AI\Behavior\NavigationMesh.h>
 #include <Misc\FileLoader.h>
 #define EPSILON 0.0001f
+#define EPSILON_NODE 0.05f
 using namespace Logic;
 
 const DirectX::SimpleMath::Vector3 NavigationMesh::dir = DirectX::SimpleMath::Vector3(0.f, -1.f, 0.f);
@@ -38,7 +39,7 @@ void NavigationMesh::generateEdges()
             {
                 for (auto const &otherV : triangleList[j].vertices)
                 {
-                    if ((vertex - otherV).Length() < EPSILON)
+                    if ((vertex - otherV).Length() <= EPSILON_NODE)
                     {
                         if (++same > 1)
                         {
