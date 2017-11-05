@@ -112,11 +112,18 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
 
     float distance = 0;
 
+    // todo clean up + opt
     Growth growth[SIDES] = {
         { { - presicion, 0.f, 0.f }, { presicion, 0.f, 0.f } },
         { { presicion, 0.f, 0.f   }, { presicion, 0.f, 0.f } },
         { { 0.f, 0.f, - presicion }, { 0.f, 0.f, presicion } },
         { { 0.f, 0.f, presicion   }, { 0.f, 0.f, presicion } }
+    };
+    btVector3 growthNormals[SIDES] = {
+        { - 1.f, 0.f, 0.f },
+        {   1.f, 0.f, 0.f },
+        {   0.f, 0.f, - 1.f },
+        {   0.f, 0.f,   1.f }
     };
 
     btCollisionObject *obj;
@@ -141,6 +148,11 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
 
                     NavContactResult res(
                         [&](btBroadphaseProxy* proxy) -> bool {
+                        if (!proxy->isConvex2d(TRIANGLE_MESH_SHAPE_PROXYTYPE) || !proxy->isConvex(TRIANGLE_MESH_SHAPE_PROXYTYPE))
+                        {
+                            printf("WARNING: NON CONVEX OBJECT!\nNAV MESH GENERATION UNDEFINED BEHAVIOR!\n");
+                            return false;
+                        }
                         return true;
                     },
                         [&](btManifoldPoint& cp,
@@ -148,8 +160,26 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                             const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
                     {
                         if (staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
+                        {
                             if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
-                                region.collided[j] = handleCollision(cube, staticObj, growth[j]);
+                            {
+                                if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // only support box shapes at the moment (other shapes can be "converted" to boxes)
+                                {
+                                    btVector3 col;
+                                    if (colObj0->getCollisionObject() == obj)
+                                    {
+                                        col = cp.m_localPointA;
+                                    }
+                                    else
+                                    {
+                                        col = cp.m_localPointB;
+                                    }
+                                    col += staticObj->getRigidBody()->getWorldTransform().getOrigin();
+                                    physics.createBody(Sphere(col, { 0, 0, 0 }, 0.1f), 0);
+                                    region.collided[j] = handleCollision(col, cube, staticObj, growth[j], growthNormals[j], bs);
+                                }
+                            }
+                        }
                         return 0;
                     });
 
@@ -216,11 +246,28 @@ NavigationMesh::Triangle NavigationMeshGeneration::toNavTriangle(Triangle const 
     return { 0, tri.vertices[0], tri.vertices[1], tri.vertices[2] };
 }
 
-bool NavigationMeshGeneration::handleCollision(Cube &cube, StaticObject *obj, Growth const &growth)
+bool NavigationMeshGeneration::handleCollision(btVector3 collisionPoint, Cube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape)
 {
+    DirectX::SimpleMath::Quaternion rot = obj->getRotation();
+    rot.w = 0; // this is stupid
+    if (abs(rot.LengthSquared()) < EPSILON) // base case
+    {
         cube.setDimensions(cube.getDimensions() - growth.dimensionChange);
         cube.setPos(cube.getPos() - growth.positionChange);
-    return true;
+        return true;
+    }
+    
+    btVector3 vertex;
+    bool found = false;
+
+    for (int i = 0; i < shape->getNumVertices() && !found; i++)
+    {
+        shape->getVertex(i, vertex);
+        if (abs((vertex - collisionPoint).length2()) < EPSILON)
+            found = true;
+    }
+
+    return false;
 }
 
 void NavigationMeshGeneration::removeRigidBody(btRigidBody *body, Physics &physics)
@@ -229,4 +276,17 @@ void NavigationMeshGeneration::removeRigidBody(btRigidBody *body, Physics &physi
     delete body->getMotionState();
     delete body->getCollisionShape();
     delete body;
+}
+
+std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance)
+{
+    bool collision;
+    btVector3 point;
+    btVector3 endPoint = -1.f * (normalIncrease * maxDistance);
+    btRigidBody *body = obj->getRigidBody();
+
+    // THIS IS A TESTING SOLUTION FOR THE MOMENT, CUSTOM
+    btCollisionWorld::ClosestRayResultCallback res(body->getWorldTransform().getOrigin(), endPoint);
+
+    return std::pair<bool, btVector3>(collision, point);
 }

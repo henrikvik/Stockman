@@ -82,8 +82,11 @@ namespace Logic
 
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
             NavigationMesh::Triangle toNavTriangle(Triangle const &tri);
-            bool handleCollision(Cube &cube, StaticObject *obj, Growth const &growth);
+            bool handleCollision(btVector3 collisionPoint, Cube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape);
             void removeRigidBody(btRigidBody *body, Physics &physics);
+
+            // true on collision
+            std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance);
 
             // This is very nice
             class NavContactResult : public btCollisionWorld::ContactResultCallback {
