@@ -223,7 +223,7 @@ void AStar::setupDebugging()
 {
 	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
 	debugDataTri.useDepth = false;
-	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
 	debugDataTri.points = navigationMesh.getRenderDataTri();
 
 	debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);

@@ -12,7 +12,7 @@ using namespace Logic;
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
-    presicion = 0.003f;
+    presicion = 3.f;
     DebugWindow::getInstance()->registerCommand("AI_NAV_SET_PRESICION", [&](std::vector<std::string> &para) -> std::string {
         try {
             presicion = std::stof(para.at(0));
@@ -107,10 +107,10 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
 #define MAX_DISTANCE_ON_SIDE 150.f
     float y = 0.5f;
     std::vector<NavMeshCube> regions;
-    regions.push_back(Cube({ 0.f, y, 0.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f }));
+    regions.push_back(NavMeshCube(Cube({ 0.f, y, 0.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
+    regions.push_back(NavMeshCube(Cube({ 80.f, y, -80.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
 
     float distance = 0;
-    bool collided[SIDES] = { false, false, false, false };
 
     Growth growth[SIDES] = {
         { { - presicion, 0.f, 0.f }, { presicion, 0.f, 0.f } },
@@ -120,57 +120,65 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     };
 
     btCollisionObject *obj;
-    btRigidBody *shape;
     StaticObject *staticObj;
 
     // first cube
-    Cube &cube = regions[0];
-    for (int j = 0; j < SIDES; j++)
+    for (auto &region : regions)
     {
-        distance = 0;
-        while (!collided[j] && distance < MAX_DISTANCE_ON_SIDE)
+        Cube &cube = region.cube;
+        for (int j = 0; j < SIDES; j++)
         {
-            cube.setDimensions(cube.getDimensions() + growth[j].dimensionChange);
-            cube.setPos(cube.getPos() + growth[j].positionChange);
-
-            shape = physics.createBody(cube, 0.f);
-            for (int i = 0; i < physics.getNumCollisionObjects() && !collided[j]; i++)
+            distance = 0;
+            while (!region.collided[j] && distance < MAX_DISTANCE_ON_SIDE)
             {
-                obj = physics.getCollisionObjectArray()[i];
+                cube.setDimensions(cube.getDimensions() + growth[j].dimensionChange);
+                cube.setPos(cube.getPos() + growth[j].positionChange);
 
-                NavContactResult res(
-                    [&](btBroadphaseProxy* proxy) -> bool {
-                    return true;
-                },
-                    [&](btManifoldPoint& cp,
-                        const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-                        const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+                region.body = physics.createBody(cube, 0.f);
+                for (int i = 0; i < physics.getNumCollisionObjects() && !region.collided[j]; i++)
                 {
-                    if (staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
-                        if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
-                            collided[j] = handleCollision(cube, staticObj, growth[j]);
-                    return 0;
-                });
+                    obj = physics.getCollisionObjectArray()[i];
 
-                physics.contactPairTest(shape, obj, res);
+                    NavContactResult res(
+                        [&](btBroadphaseProxy* proxy) -> bool {
+                        return true;
+                    },
+                        [&](btManifoldPoint& cp,
+                            const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                            const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+                    {
+                        if (staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
+                            if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
+                                region.collided[j] = handleCollision(cube, staticObj, growth[j]);
+                        return 0;
+                    });
+
+                    physics.contactPairTest(region.body, obj, res);
+                }
+                removeRigidBody(region.body, physics);
+                distance += presicion * 2;
             }
-            removeRigidBody(shape, physics);
-            distance += presicion * 2;
         }
+        region.done = true;
     }
-    std::pair<Triangle, Triangle> triPair = toTriangle(cube);
 
-    /* TESTING */
-    shape = physics.createBody(cube, 0.f);
-    assert(abs((triPair.first.vertices[0] - DirectX::SimpleMath::Vector3(shape->getWorldTransform().getOrigin() - cube.getDimensions())).Length()) < EPSILON);
-    assert(abs(triPair.first.vertices[1].x - (shape->getWorldTransform().getOrigin().x() + cube.getDimensions().x())) < EPSILON);
-    assert(abs(triPair.first.vertices[1].z - (shape->getWorldTransform().getOrigin().z() - cube.getDimensions().z())) < EPSILON);
-    assert(abs((triPair.first.vertices[2] - DirectX::SimpleMath::Vector3(shape->getWorldTransform().getOrigin() + cube.getDimensions())).Length()) <EPSILON);
-    removeRigidBody(shape, physics);
-    /* TESTING */
+    for (auto &region : regions)
+    {
+        Cube &cube = region.cube;
+        std::pair<Triangle, Triangle> triPair = toTriangle(cube);
 
-    nav.addTriangle(toNavTriangle(triPair.first));
-    nav.addTriangle(toNavTriangle(triPair.second));
+        region.body = physics.createBody(cube, 0.f);
+        /* TESTING */
+        assert(abs((triPair.first.vertices[0] - DirectX::SimpleMath::Vector3(region.body->getWorldTransform().getOrigin() - cube.getDimensions())).Length()) < EPSILON);
+        assert(abs(triPair.first.vertices[1].x - (region.body->getWorldTransform().getOrigin().x() + cube.getDimensions().x())) < EPSILON);
+        assert(abs(triPair.first.vertices[1].z - (region.body->getWorldTransform().getOrigin().z() - cube.getDimensions().z())) < EPSILON);
+        assert(abs((triPair.first.vertices[2] - DirectX::SimpleMath::Vector3(region.body->getWorldTransform().getOrigin() + cube.getDimensions())).Length()) < EPSILON);
+        /* TESTING */
+       // removeRigidBody(region.body, physics);
+
+        nav.addTriangle(toNavTriangle(triPair.first));
+        nav.addTriangle(toNavTriangle(triPair.second));
+    }
 
     nav.createNodesFromTriangles();
     nav.generateEdges();

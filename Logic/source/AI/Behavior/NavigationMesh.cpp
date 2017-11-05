@@ -83,9 +83,14 @@ std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataTri()
 	std::vector<DirectX::SimpleMath::Vector3> *data =
 		new std::vector<DirectX::SimpleMath::Vector3>();
 
-	for (Triangle const &tri : triangleList)
-		for (int i = 0; i < 3; i++)
-			data->push_back(tri.vertices[i]);
+    for (Triangle const &tri : triangleList)
+    {
+        for (int i = 0; i < 3; i++) // List of lines to make a triangle
+        {
+            data->push_back(tri.vertices[i]);
+            data->push_back(tri.vertices[i == 2 ? 0 : i + 1]);
+        }
+    }
 
 	return data;
 }
@@ -112,7 +117,7 @@ const std::vector<NavigationMesh::Edge>& NavigationMesh::getEdges() const
 	return edges;
 }
 
-int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const & pos) const
+int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const &pos) const
 {
 	// ray vs triangle, copied, change to own algo later, ?
 	for (int i = 0; i < triangleList.size(); i++)
@@ -123,6 +128,7 @@ int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const & pos) const
 
 	return -1;
 }
+
 bool Logic::NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const & pos, int index) const
 {
 	Triangle tri = triangleList[index];

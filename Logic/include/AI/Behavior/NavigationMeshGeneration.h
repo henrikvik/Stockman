@@ -60,12 +60,19 @@ namespace Logic
             };
             struct NavMeshCube
             {
-                bool done, collided[SIDES] = { false, false, false, false };
+                bool done, collided[SIDES];
+                btRigidBody *body;
                 Cube cube;
 
                 NavMeshCube(Cube &cube)
                 {
                     this->cube = cube;
+
+                    done = false;
+                    body = nullptr;
+
+                    for (int i = 0; i < SIDES; i++)
+                        collided[i] = false;
                 }
             };
 
