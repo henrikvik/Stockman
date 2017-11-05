@@ -97,6 +97,12 @@ namespace Logic
     class Cube : public Shape
     {
     public:
+        // used for the nav mesh
+        Cube() : Shape(btVector3(), btVector3())
+        {
+
+        }
+
         Cube(btVector3 position, btVector3 rotation, btVector3 dimensions)
             : Shape(position, rotation, ShapeTypeCube) {
             m_dimensions = dimensions;

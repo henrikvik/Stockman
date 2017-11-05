@@ -3,8 +3,8 @@
 
 using namespace Logic;
 
-StaticObject::StaticObject(Graphics::ModelID modelID, btRigidBody * body, btVector3 halfExtent)
-	: PhysicsObject(body, halfExtent, modelID)
+StaticObject::StaticObject(Graphics::ModelID modelID, btRigidBody * body, btVector3 halfExtent, NavigationMeshFlags flags)
+	: PhysicsObject(body, halfExtent, modelID), m_navFlags(flags)
 {
     // Render Debug Construction
     renderDebug = new Graphics::RenderDebugInfo();
@@ -41,7 +41,7 @@ StaticObject::StaticObject(Graphics::ModelID modelID, btRigidBody * body, btVect
     renderDebug->points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z - size.z));
 }
 
-StaticObject::~StaticObject() 
+StaticObject::~StaticObject()
 {
     renderDebug->points->clear();
     delete renderDebug->points;
@@ -61,4 +61,9 @@ void StaticObject::update(float deltaTime)
 void StaticObject::renderD(Graphics::Renderer& renderer)
 {
     renderer.queueRenderDebug(renderDebug);
+}
+
+StaticObject::NavigationMeshFlags StaticObject::getNavFlags() const
+{
+    return m_navFlags;
 }

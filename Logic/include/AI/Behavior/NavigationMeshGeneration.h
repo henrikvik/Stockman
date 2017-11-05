@@ -8,8 +8,10 @@
 #include <Entity\Entity.h>
 #include <cmath>
 #include <Physics\Primitives.h>
+#include <btBulletCollisionCommon.h>
 
 #include <vector>
+#define SIDES 4
 
 namespace Logic
 {
@@ -56,13 +58,25 @@ namespace Logic
             {
                 btVector3 positionChange, dimensionChange; // half size
             };
+            struct NavMeshCube
+            {
+                bool done, collided[SIDES] = { false, false, false, false };
+                Cube cube;
+
+                NavMeshCube(Cube &cube)
+                {
+                    this->cube = cube;
+                }
+            };
 
             DirectX::SimpleMath::Vector3 getNormal(
                 Triangle const &triangle,
                 VertexOrder vertexOrder = CLOCKWISE) const;
+
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
             NavigationMesh::Triangle toNavTriangle(Triangle const &tri);
-            bool handleCollision(Cube &cube, StaticObject const &obj, Growth const &growth);
+            bool handleCollision(Cube &cube, StaticObject *obj, Growth const &growth);
+            void removeRigidBody(btRigidBody *body, Physics &physics);
 
             // This is very nice
             class NavContactResult : public btCollisionWorld::ContactResultCallback {
