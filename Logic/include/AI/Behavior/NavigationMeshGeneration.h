@@ -24,8 +24,11 @@ namespace Logic
     // [2]: http://store.steampowered.com/app/15300/Tom_Clancys_Ghost_Recon/
 
     class Physics;
+    class StaticObject;
 	class NavigationMeshGeneration 
 	{
+        private: //var
+            float presicion;
 		public:
 			enum VertexOrder { CLOCKWISE, COUNTER_CLOCKWISE };
 
@@ -49,11 +52,17 @@ namespace Logic
                 std::vector<NavStaticObject> objects) const;
             void generateNavigationMesh(NavigationMesh &nav, Physics &physics);
 		private:
+            struct Growth
+            {
+                btVector3 positionChange, dimensionChange; // half size
+            };
+
             DirectX::SimpleMath::Vector3 getNormal(
                 Triangle const &triangle,
                 VertexOrder vertexOrder = CLOCKWISE) const;
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
             NavigationMesh::Triangle toNavTriangle(Triangle const &tri);
+            bool handleCollision(Cube &cube, StaticObject const &obj, Growth const &growth);
 
             // This is very nice
             class NavContactResult : public btCollisionWorld::ContactResultCallback {

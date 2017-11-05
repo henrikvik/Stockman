@@ -49,7 +49,9 @@ namespace Logic
 		private:
 			std::string file;
 			std::vector<NavNode> navNodes; //testing
+
 			NavigationMesh navigationMesh;
+            NavigationMeshGeneration generator;
 
             bool renderDebug;
 			int targetIndex; // save the triangle id to share beetwen path loading

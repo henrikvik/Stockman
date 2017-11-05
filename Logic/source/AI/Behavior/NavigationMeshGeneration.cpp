@@ -4,11 +4,21 @@
 #include <Physics\Physics.h>
 #include <Engine\DebugWindow.h>
 #include <Entity\StaticObject.h>
+#include <assert.h>
 
 using namespace Logic;
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
+    presicion = 0.02f;
+    DebugWindow::getInstance()->registerCommand("AI_NAV_SET_PRESICION", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            presicion = std::stof(para.at(0));
+            return "Presicion set to " + para.at(0);
+        } catch (std::exception ex) {
+            return "Set presicion, not GET presicion.";
+        }
+    });
 }
 
 NavigationMeshGeneration::~NavigationMeshGeneration()
@@ -93,31 +103,32 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     Physics &physics)
 {
 #define SIDES 4
-#define MAX_DISTANCE_ON_SIDE 50.f
-    float dimensionIncrease = 1.f;
+#define MAX_DISTANCE_ON_SIDE 150.f
     float y = 2.f;
     Cube cube({ 0.f, y, 0.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.02f, 0.2f });
 
     float distance = 0;
     bool collided[SIDES] = { false, false, false, false };
 
-    std::pair<btVector3, btVector3> bonus[SIDES] = {
-        { { dimensionIncrease, 0.f, 0.f  }, { dimensionIncrease, 0.f, 0.f } },
-        { { 0.f, 0.f, dimensionIncrease  }, { 0.f, 0.f, dimensionIncrease } },
-        { { -dimensionIncrease, 0.f, 0.f }, { dimensionIncrease, 0.f, 0.f } },
-        { { 0.f, 0.f, -dimensionIncrease }, { 0.f, 0.f, dimensionIncrease } }
+    Growth growth[SIDES] = {
+        { { - presicion * 0.5f, 0.f, 0.f }, { presicion, 0.f, 0.f } },
+        { { 0.f, 0.f, - presicion * 0.5f }, { 0.f, 0.f, presicion } },
+        { { presicion * 0.5f, 0.f, 0.f }, { presicion, 0.f, 0.f } },
+        { { 0.f, 0.f, presicion * 0.5f }, { 0.f, 0.f, presicion } }
     };
 
     btCollisionObject *obj;
+    btRigidBody *shape;
+    StaticObject *staticObj;
     for (int j = 0; j < SIDES; j++)
     {
         distance = 0;
         while (!collided[j] && distance < MAX_DISTANCE_ON_SIDE)
         {
-            cube.setDimensions(cube.getDimensions() + bonus[j].second);
-            cube.setPos(cube.getPos() + bonus[j].first);
+            cube.setDimensions(cube.getDimensions() + growth[j].dimensionChange);
+            cube.setPos(cube.getPos() + growth[j].positionChange);
 
-            btRigidBody *shape = physics.createBody(cube, 0.f);
+            shape = physics.createBody(cube, 0.f);
             physics.removeRigidBody(shape);
 
             for (int i = 0; i < physics.getNumCollisionObjects() && !collided[j]; i++)
@@ -132,13 +143,8 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                         const btCollisionObjectWrapper* colObj0, int partId0, int index0,
                         const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
                 {
-                    if (dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
-                    {
-                        collided[j] = true;
-
-                        cube.setDimensions(cube.getDimensions() - bonus[j].second);
-                        cube.setPos(cube.getPos() - bonus[j].first);
-                    }
+                    if (staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
+                        collided[j] = handleCollision(cube, *staticObj, growth[j]);
                     return 0;
                 });
 
@@ -149,13 +155,22 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
             delete shape->getCollisionShape();
             delete shape;
 
-            distance += dimensionIncrease * 2;
+            distance += presicion * 2;
         }
     }
     std::pair<Triangle, Triangle> triPair = toTriangle(cube);
 
+    // for testing
+    shape = physics.createBody(cube, 0.f);
+    // make sure first triangle is correct
+    assert(abs((triPair.first.vertices[0] - DirectX::SimpleMath::Vector3(shape->getWorldTransform().getOrigin() - cube.getDimensions())).Length()) < 0.01f); // EPSILON
+    assert(abs(triPair.first.vertices[1].x - (shape->getWorldTransform().getOrigin().x() + cube.getDimensions().x())) < 0.01f); // EPSILON
+    assert(abs(triPair.first.vertices[1].z - (shape->getWorldTransform().getOrigin().z() - cube.getDimensions().z())) < 0.01f); // EPSILON
+    assert(abs((triPair.first.vertices[2] - DirectX::SimpleMath::Vector3(shape->getWorldTransform().getOrigin() + cube.getDimensions())).Length()) < 0.01f); // EPSILON
+
     nav.addTriangle(toNavTriangle(triPair.first));
     nav.addTriangle(toNavTriangle(triPair.second));
+
     nav.createNodesFromTriangles();
     nav.generateEdges();
 }
@@ -175,15 +190,14 @@ std::pair<NavigationMeshGeneration::Triangle, NavigationMeshGeneration::Triangle
 {
     float y = 0;
     Triangle tri1, tri2;
-    cube.setPos(cube.getPos() - cube.getDimensions());
 
-    tri1.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos());
-    tri1.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{0, y, cube.getDimensions().z() * 2.f});
-    tri1.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions() * 2.f);
+    tri1.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos() - cube.getDimensions());
+    tri1.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());
+    tri1.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{cube.getDimensions().x(), y, -cube.getDimensions().z()});
 
-    tri2.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos());
-    tri2.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{cube.getDimensions().x() * 2.f, y, 0});
-    tri2.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions() * 2.f);
+    tri2.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos() - cube.getDimensions());
+    tri2.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());
+    tri2.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{-cube.getDimensions().x(), y, cube.getDimensions().z()});
      
     return std::pair<Triangle, Triangle>(tri1, tri2);
 }
@@ -191,4 +205,11 @@ std::pair<NavigationMeshGeneration::Triangle, NavigationMeshGeneration::Triangle
 NavigationMesh::Triangle NavigationMeshGeneration::toNavTriangle(Triangle const & tri)
 {
     return { 0, tri.vertices[0], tri.vertices[1], tri.vertices[2] };
+}
+
+bool NavigationMeshGeneration::handleCollision(Cube &cube, StaticObject const &obj, Growth const &growth)
+{
+    cube.setDimensions(cube.getDimensions() - growth.dimensionChange);
+    cube.setPos(cube.getPos() - growth.positionChange);
+    return true;
 }
