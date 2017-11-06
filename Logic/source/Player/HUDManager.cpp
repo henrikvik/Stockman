@@ -30,8 +30,8 @@ void Logic::HUDManager::constructGUIElements()
     HUDElements.push_back(Sprite( Sprite::CENTER, Sprite::CENTER, 0, 0, crosshairSize, crosshairSize, Resources::Textures::crosshair, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
 
     //hpbars
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 0.5f })));
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.5f }, { 1.f, 1.f })));
+   /* HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 0.5f })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.5f }, { 1.f, 1.f })));*/
     
 
     //crossbow
@@ -109,71 +109,18 @@ void Logic::HUDManager::constructGUIElements()
     width = 306.0f / 2048;
     height = 306.0f / 720;
     skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
-
-
-
-    GUIElements[6].alpha = 1;
-    GUIElements[6].texture = Resources::Textures::HUDIcons;
-    GUIElements[6].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
-    GUIElements[6].textureRect = FloatRect(1000.0f / WIN_WIDTH, 370.0f / WIN_HEIGHT, 309.0f / WIN_WIDTH, 309.0f / WIN_HEIGHT);
-
-    //skill 1 cd
-    GUIElements[9].alpha = 1;
-    GUIElements[9].texture = Resources::Textures::HUDIcons;
-    GUIElements[9].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
-    GUIElements[9].textureRect = FloatRect(999.0f / WIN_WIDTH, 46.0f / WIN_HEIGHT, 300.0f / WIN_WIDTH, 300.0f / WIN_HEIGHT);
-
-    //skill 2
-    GUIElements[7].alpha = 1;
-    GUIElements[7].texture = Resources::Textures::HUDIcons;
-    GUIElements[7].screenRect = FloatRect(1170 / WIN_WIDTH, 530 / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.f / WIN_HEIGHT);
-    GUIElements[7].textureRect = FloatRect(1354 / WIN_WIDTH, 369 / WIN_HEIGHT, 307 / WIN_WIDTH, 307 / WIN_HEIGHT);
-
-    //skill 2 cd
-    GUIElements[10].alpha = 1;
-    GUIElements[10].texture = Resources::Textures::HUDIcons;
-    GUIElements[10].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
-    GUIElements[10].textureRect = FloatRect(1351.0f / WIN_WIDTH, 43.0f / WIN_HEIGHT, 302.0f / WIN_WIDTH, 302.0f / WIN_HEIGHT);
-
-
-
-    //skill 3
-    GUIElements[8].alpha = 1;
-    GUIElements[8].texture = Resources::Textures::HUDIcons;
-    GUIElements[8].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
-    GUIElements[8].textureRect = FloatRect(1697.0f / WIN_WIDTH, 374.0f / WIN_HEIGHT, 306.0f / WIN_WIDTH, 306.0f / WIN_HEIGHT);
-    
-
-    //skill 3 cd
-    GUIElements[11].alpha = 1;
-    GUIElements[11].texture = Resources::Textures::HUDIcons;
-    GUIElements[11].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
-    GUIElements[11].textureRect = FloatRect(1695.0f / WIN_WIDTH, 46.0f / WIN_HEIGHT, 303.0f / WIN_WIDTH, 303.0f / WIN_HEIGHT);
-
+ 
 }
 
 //updates the active weapons and cd icons
 void Logic::HUDManager::updateGUIElemets()
 {
     //hp
-    if (prevHP != info.hp)
-    {
-        static float totalLenghtScreen = abs(HUDElements.at(HP_BARFRONT).getScreenRect().bottomRight.x - HUDElements.at(HP_BARFRONT).getScreenRect().topLeft.x);
-        static float totalLenghtTexture = abs(HUDElements.at(HP_BARFRONT).getTextureRect().bottomRight.x - HUDElements.at(HP_BARFRONT).getTextureRect().topLeft.x);
-        HUDElements.at(HP_BARFRONT).moveScreenPos(
-            0.0f,
-            0.0f,
-            -(totalLenghtScreen *  (1.0f / (float)PLAYER_STARTING_HP)),
-            0.0f
-        );
 
-        HUDElements.at(HP_BARFRONT).moveTexturePos(
-            0.0f,
-            0.0f,
-            -(totalLenghtTexture * (1.0f / (float)PLAYER_STARTING_HP)),
-            0.0f
-        );
-        prevHP = info.hp;
+    HPBar.clear();
+    for (size_t i = 0; i < info.hp; i++)
+    {
+        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50 + (i *75), -50, 75, 75, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
     }
     
 
@@ -264,7 +211,6 @@ HUDManager::HUDManager()
     info.inactiveAmmo[0] = 0;
     info.inactiveAmmo[1] = 0;
     info.score = 0;
-    prevHP = 3;
 
     skillChoosen = false;
     constructGUIElements();
@@ -310,8 +256,7 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.enemiesRemaining = (int)entityManager.getNrOfAliveEnemies();
 
 
-   /* info.currentSkills[0] = player.getCurrentSkill0();
-    info.currentSkills[1] = player.getCurrentSkill1();*/
+   
 
 
     //TODO 
@@ -319,15 +264,25 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.currentSkills[0] = 0;
     info.currentSkills[1] = 1;
 
+    /* info.currentSkills[0] = player.getCurrentSkill0();
+    info.currentSkills[1] = player.getCurrentSkill1();*/
+
     this->updateGUIElemets();
     
 }
 
 void HUDManager::render() const
 {    
+    //render icons 
     for (auto &sprite : HUDElements)
     {
         sprite.render();
+    }
+
+    //render hp bars
+    for (auto &bar : HPBar)
+    {
+        bar.render();
     }
 }
 
@@ -347,5 +302,8 @@ void Logic::HUDManager::reset()
     info.score = 0;
 
     skillChoosen = false;
+    HUDElements.clear();
+    skillList.clear();
+    HPBar.clear();
     constructGUIElements();
 }
