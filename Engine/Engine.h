@@ -30,7 +30,6 @@ private:
 	std::unique_ptr<DirectX::Keyboard> mKeyboard;
 	std::unique_ptr<DirectX::Mouse> mMouse;
     std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker> mTracker;
-	BOOL isFullscreen;
 
 	void initializeWindow();
 	HRESULT createSwapChain();

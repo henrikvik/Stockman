@@ -272,7 +272,6 @@ void MenuMachine::render(Graphics::Renderer &renderer, std::string highScore[10]
 			ImGui::Text("Music");
 			ImGui::PushItemWidth(100);
 			ImGui::DragFloat("float##5", setting->getMusicPTR(), 0.01f, 0.0f, 1.0f);
-			ImGui::Checkbox("Mute", setting->getMutePTR());
 
 			ImGui::End();
 		}
