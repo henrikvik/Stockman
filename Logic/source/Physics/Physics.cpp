@@ -1,6 +1,6 @@
 #include "Physics\Physics.h"
 #include <Graphics\include\Renderer.h>
-
+#include <Engine\DebugWindow.h>
 
 using namespace Logic;
 
@@ -32,6 +32,7 @@ Physics::~Physics()
 
 bool Physics::init()
 {
+    registerDebugCommands();
 	// World gravity
 	this->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
 	this->setLatencyMotionStateInterpolation(true);
@@ -112,6 +113,29 @@ void Physics::update(float delta)
 		}
 	}
 	PROFILE_END();
+}
+
+void Physics::registerDebugCommands()
+{
+    DebugWindow *win = DebugWindow::getInstance();
+    win->registerCommand("PHYSICS_ADD_CUBE", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            float x, y, z, width, height, length;
+            x = stof(para.at(0));
+            y = stof(para.at(1));
+            z = stof(para.at(2));
+            width = stof(para.at(3));
+            height = stof(para.at(4));
+            length = stof(para.at(5));
+            Cube cube({ x, y, z }, { 0, 0, 0 }, {width, height, length});
+            createBody(cube, 0);
+            return "Cube created";
+        }
+        catch (std::exception ex)
+        {
+            return "Writing coordinates is tough\n\n\nFor you.";
+        }
+    });
 }
 
 // Returns nullptr if not intersecting, otherwise returns the rigidbody of the hit

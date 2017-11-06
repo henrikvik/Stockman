@@ -184,16 +184,10 @@ size_t AStar::getNrOfPolygons() const
 void AStar::generateNavigationMesh(Physics &physics)
 {
     generator.registerGenerationCommand(navigationMesh, physics);
-    //generator.generateNavigationMesh(navigationMesh, physics);
+   // generator.generateNavigationMesh(navigationMesh, physics);
     generator.generateNavMeshOld(navigationMesh, {}, {});
     DebugWindow::getInstance()->registerCommand("AI_TOGGLE_DEBUG",
         [&](std::vector<std::string> para) -> std::string {
-        // test //
-        /*
-            Basicly, divided by two because there is two triangles per square,
-            then square root because it is a square matrix (rows = columns).
-            Then times two again because one row = number of squares * 2.
-        */
         renderDebug = !renderDebug;
         if (!renderDebug) return "AI Debug Disabled";
 
