@@ -229,6 +229,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
     <None Include="Resources\Data\Enemies\Wave.lw" />
     <None Include="Resources\Data\Highscore.lw" />
     <None Include="Resources\Data\Menu.lw" />
+    <None Include="Resources\Data\Upgrades.lw" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\data\Text.lw" />

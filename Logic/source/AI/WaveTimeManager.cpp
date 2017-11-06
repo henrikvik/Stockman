@@ -4,11 +4,7 @@ using namespace Logic;
 
 WaveTimeManager::WaveTimeManager()
 {
-    m_timeCurrent = 0.f;
-    m_timeRequired = 0.f;
-
-    m_onLastWave = false;
-    m_enraged = false;
+    reset();
 }
 
 
@@ -16,7 +12,19 @@ WaveTimeManager::~WaveTimeManager()
 {
 }
 
-void WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
+void WaveTimeManager::reset()
+{
+    m_waveCurrent = 0;
+
+    m_timeCurrent = 0.f;
+    m_timeRequired = 0.f;
+
+    m_onLastWave = false;
+    m_enraged = false;
+}
+
+// Returns true if a new wave is going to spawn
+bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
 {
     if (!m_onLastWave)
     {
@@ -31,7 +39,7 @@ void WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
             {
                 m_enraged = entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE) > 0;
                 if (!m_enraged) {
-                    entityManager.deleteData();
+                    entityManager.deallocateData(false);
                     entityManager.spawnWave(m_waveCurrent++);
 
                     m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent);
@@ -40,10 +48,14 @@ void WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
                     // If the player have completed all the waves
                     if (m_waveCurrent == entityManager.getWaveManager().getWaveInformation().nrOfWaves)
                         m_onLastWave = true;
+
+                    return m_waveCurrent > 1;
                 }
             }   
         }
     }
+
+    return false;
 }
 
 int WaveTimeManager::getCurrentWave() const

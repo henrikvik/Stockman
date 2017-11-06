@@ -18,10 +18,12 @@ Graphics::Menu::~Menu()
     SAFE_RELEASE(buttonTexture[1]);
     SAFE_RELEASE(buttonTexture[2]);
     SAFE_RELEASE(buttonTexture[3]);
+    SAFE_RELEASE(buttonTexture[4]);
     SAFE_RELEASE(menuTexture[0]);
     SAFE_RELEASE(menuTexture[1]);
     SAFE_RELEASE(menuTexture[2]);
     SAFE_RELEASE(menuTexture[3]);
+    SAFE_RELEASE(menuTexture[4]);
     SAFE_RELEASE(menuQuad);
     SAFE_RELEASE(buttonQuad);
     delete states;
@@ -79,20 +81,22 @@ void Graphics::Menu::loadTextures(ID3D11Device * device, ID3D11DeviceContext * c
     if (loaded == false)
     {
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainmenupicture.dds"), nullptr, &menuTexture[0]));
-        menuTexture[1] = nullptr;
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("Mainmenu.dds"), nullptr, &menuTexture[0]));;
         menuTexture[2] = nullptr;
 
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("SettingsMenuTexture.png"), nullptr, &menuTexture[1]));
         //ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuTexture.png"), nullptr, &menuTexture[2]));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("skillpickbackground.dds"), nullptr, &menuTexture[2]));
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverTexture.png"), nullptr, &menuTexture[3]));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverTexture.dds"), nullptr, &menuTexture[3]));
 
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainMenuButton.png"), nullptr, &buttonTexture[0]));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverMenuButtons.png"), nullptr, &buttonTexture[1]));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("mainmenubuttons.dds"), nullptr, &buttonTexture[0]));
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("gameOverMenuButtons.dds"), nullptr, &buttonTexture[1]));
         ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("SettingsMenuButtons.png"), nullptr, &buttonTexture[2]));
-        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("SkillMenuButtons.dds"), nullptr, &buttonTexture[3]));
-        loaded = true;
+        ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("Color_pick_icons.dds"), nullptr, &buttonTexture[3]));
+		ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("Backbutton.dds"), nullptr, &buttonTexture[4]));
+
+		loaded = true;
     }
 }
 
@@ -104,6 +108,7 @@ void Graphics::Menu::unloadTextures()
         SAFE_RELEASE(buttonTexture[1]);
         SAFE_RELEASE(buttonTexture[2]);
         SAFE_RELEASE(buttonTexture[3]);
+		SAFE_RELEASE(buttonTexture[4]);
         SAFE_RELEASE(menuTexture[0]);
         SAFE_RELEASE(menuTexture[1]);
         SAFE_RELEASE(menuTexture[2]);
@@ -184,7 +189,7 @@ void Graphics::Menu::createVBuffers(ID3D11Device * device)
     D3D11_BUFFER_DESC desc = { 0 };
 
     desc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
-    desc.ByteWidth = 10 * sizeof(TriangleVertex) * 6;
+    desc.ByteWidth = 15 * sizeof(TriangleVertex) * 6;
 
     D3D11_SUBRESOURCE_DATA data = { 0 };
     data.pSysMem = triangleVertices;

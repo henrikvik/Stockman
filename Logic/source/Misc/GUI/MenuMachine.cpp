@@ -390,7 +390,7 @@ GameState MenuMachine::getStateToBe()
 	return m_stateToBe;
 }
 
-int Logic::MenuMachine::getChoiceUpgrade()
+int Logic::MenuMachine::getPickedCard()
 {
 	int choosenUpgrade = -1;
 	if (m_cardUpgrade != -1)
@@ -528,7 +528,7 @@ void MenuMachine::selectSkillButton(int id)
     Button* button = m_currentActiveMenu->getButton(id);
 
     // Hardcoded "Selected" tex-cords, currently not supported
-    if (replaceSkill(id))   button->setStartAndEnd(2.f * (1.f/3.f), 1.f);
+    if (replaceSkill(id))   button->setStartAndEnd(1.f * (1.f/3.f), (2.f/3.f));
     else                    button->setStartAndEnd(0.f, (1.f/3.f));
 }
 

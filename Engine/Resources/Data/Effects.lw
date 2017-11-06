@@ -10,9 +10,13 @@
 }
 { // FREEZE
 	"flags": 4; // 0x4
-	"duration": 2500f;
+	"duration": 5000f;
 	"modifiers": 0;
-	"specifics": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0f;
+	"sFreezing": 0.99f;
+	"sAmmoType": 0f;
 }
 { // JUMP-PAD
 	"flags": 128; // 0x80
@@ -73,4 +77,16 @@
 	"mFirerate": 10f;
 	"mHP": 0f;
 	"mMovementSpeed": 15f;
+}
+{ // HEALTH +1
+	"flags": 32;
+	"duration": 0f;
+	"modifiers": 1;
+	"specifics": 0;
+
+	"mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 1f;
+	"mMovementSpeed": 0f;
 }

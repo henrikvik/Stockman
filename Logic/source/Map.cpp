@@ -1,6 +1,7 @@
 #include "Map.h"
 #include <Keyboard.h>
 #include <Graphics\include\Structs.h>
+#include <Graphics\include\Utility\DebugDraw.h>
 
 using namespace Logic;
 
@@ -23,6 +24,13 @@ void Map::add(FrameProp frameProp)
 
 void Map::add(FrameHitbox frameHitbox)
 {
+    if (frameHitbox.modelID == Graphics::GROUND)
+        m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+            Physics::COL_HITBOX,
+            Physics::COL_EVERYTHING),
+            {1, 1.f, 1}));
+
     m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
         Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
         Physics::COL_HITBOX,
@@ -33,7 +41,7 @@ void Map::add(FrameHitbox frameHitbox)
 void Map::init(Physics* physics)
 {
     m_physicsPtr = physics;
-    m_drawHitboxesAndLights = true;
+    m_drawHitboxesAndLights = false;
 
     readFromFile("maya.level");
 	
@@ -46,7 +54,7 @@ void Map::readFromFile(std::string path)
 {
     // Loads hitboxes
     std::vector<FrameHitbox> hitboxes;
-    hitboxes.push_back({ { 0, 0, 0 }, {0, 0, 0}, {500.f, 0.01f, 500.f}, Graphics::GROUND });
+    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Graphics::GROUND });
     hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
     hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Graphics::CUBE });
     hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
@@ -121,8 +129,10 @@ void Map::render(Graphics::Renderer& renderer)
     {
         for (StaticObject* e : m_hitboxes)
             e->renderD(renderer);
-        for (LightObject* l : m_lights)
-            l->renderD(renderer);
+        for (LightObject* l : m_lights) {
+            //l->renderD(renderer);
+            Graphics::Debug::PointLight(*l);
+        }
     }
 }
 	
@@ -155,12 +165,4 @@ void Map::debugInitObjects()
     box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 2, 73 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
     box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 3500.f, 250.f);
     m_objects.push_back(box);
-
-    // Debugging for Testing model scaling
-    for (int i = 0; i < 12; i++)
-    {
-        if (i == Graphics::ModelID::GROUND) break;
-        box = new Speaker(m_physicsPtr->createBody(Cube({ -200.f + (i * 10.f), 2.f, 123.f }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::ModelID(i));
-        m_objects.push_back(box);
-    }
 }

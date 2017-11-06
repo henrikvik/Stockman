@@ -10,6 +10,7 @@ namespace Logic
 	private:
 		int fps, frames;
 		float fpsTimer;
+        bool isActive;
 		Graphics::TextString fpsString;
 	public:
 		FPSRenderer();

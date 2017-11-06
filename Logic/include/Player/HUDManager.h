@@ -18,6 +18,7 @@ namespace Logic
     private:
         Graphics::HUDInfo *info;
         static const int CURRENT_AMMO, TOTAL_AMMO;
+        void constructHUD(Graphics::HUDInfo *info);
     public:
         HUDManager();
         virtual ~HUDManager();

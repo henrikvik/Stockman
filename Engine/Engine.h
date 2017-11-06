@@ -9,11 +9,10 @@
 class Engine
 {
 public:
-	Engine(HINSTANCE hInstance, int width, int height);
+	Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int args);
 	virtual ~Engine();
 
 	int run();
-
 private:
 	Logic::Game game;
 	HWND window;
@@ -30,7 +29,8 @@ private:
 	ID3D11RenderTargetView* mBackBufferRTV;
 	std::unique_ptr<DirectX::Keyboard> mKeyboard;
 	std::unique_ptr<DirectX::Mouse> mMouse;
-	bool isFullscreen;
+    std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker> mTracker;
+	BOOL isFullscreen;
 
 	void initializeWindow();
 	HRESULT createSwapChain();

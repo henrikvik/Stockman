@@ -1,5 +1,6 @@
 #pragma once
 #include "../ThrowIfFailed.h"
+#include <Engine\Constants.h>
 
 enum class CpuAccess
 {

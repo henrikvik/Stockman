@@ -13,6 +13,7 @@ Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelI
 
 Entity::~Entity() 
 {
+    callback(EntityEvent::ON_DESTROY, CallbackData{this});
     delete m_soundSource;
 }
 
@@ -56,14 +57,35 @@ void Entity::updateSound(float deltaTime)
 	m_soundSource->update(deltaTime);
 }
 
-void Entity::addCallback(Entity::EntityEvent entityEvent, callback callback)
+void Entity::addCallback(Entity::EntityEvent entityEvent, Callback callback)
 {
-    m_callbacks[entityEvent] = callback;
+    m_callbacks[entityEvent].push_back(callback);
 }
 
 bool Entity::hasCallback(EntityEvent entityEvent) const
 {
     return m_callbacks.find(entityEvent) != m_callbacks.end();
+}
+
+void Entity::clearCallbacks(bool callOnDestroy)
+{
+    if (callOnDestroy)
+        callback(ON_DESTROY, CallbackData{ this });
+    m_callbacks.clear();
+}
+
+void Entity::callback(EntityEvent entityEvent, CallbackData &data)
+{
+    try
+    {
+        if (hasCallback(entityEvent))
+            for (Callback &callback : m_callbacks[entityEvent])
+                callback(data);
+    }
+    catch (std::exception ex)
+    {
+        printf("Callback error (Probably null callback data) \n%s\n", ex.what());
+    }
 }
 
 StatusManager& Entity::getStatusManager()
@@ -79,9 +101,4 @@ void Entity::setStatusManager(StatusManager & statusManager)
 Sound::SoundSource* Entity::getSoundSource()
 {
 	return m_soundSource;
-}
-
-std::unordered_map<Entity::EntityEvent, std::function<void (Entity::CallbackData&)>>& Entity::getCallbacks()
-{
-    return m_callbacks;
 }
