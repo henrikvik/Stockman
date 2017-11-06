@@ -75,10 +75,10 @@ void StateMenu::switchState(StateType menuState)
             return;
         }
 
-        m_currentState->SetGameSwitchCallBack(SwitchGameState);
-        m_currentState->SetMenuSwitchCallBack(SwitchMenuState);
-        m_currentState->SetCurrentGameState(GetCurrentGameState);
-        m_currentState->SetCurrentMenuState(GetCurrentMenuState);
+        m_currentState->SetGameSwitchCallBack(SwitchParentGameState);
+        m_currentState->SetMenuSwitchCallBack(SwitchParentMenuState);
+        m_currentState->SetCurrentGameState(GetParentCurrentGameState);
+        m_currentState->SetCurrentMenuState(GetParentCurrentMenuState);
 
         RenderQueue::get().clearAllQueues();
     }

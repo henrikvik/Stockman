@@ -38,19 +38,22 @@ void StateMenuPlaying::update(float deltaTime)
             std::pair<int, int>* selectedSkills = m_menu->getSkillPick();
             if (selectedSkills->first != -1 && selectedSkills->second != -1)
             {
-                StateGamePlaying* playingState = static_cast<StateGamePlaying*>(GetCurrentGameState()->getCurrentState());
-                playingState->getPlayer()->getSkillManager()->switchToSkill(
+                StateGamePlaying* playingState = static_cast<StateGamePlaying*>(GetParentCurrentGameState()->getCurrentState());
+                if (playingState)
                 {
-                    SkillManager::SKILL(selectedSkills->second),
-                    SkillManager::SKILL(selectedSkills->first)
-                });
-                playingState->getPlayer()->setCurrentSkills(selectedSkills->first, selectedSkills->second);
+                    playingState->getPlayer()->getSkillManager()->switchToSkill(
+                    {
+                        SkillManager::SKILL(selectedSkills->second),
+                        SkillManager::SKILL(selectedSkills->first)
+                    });
+                    playingState->getPlayer()->setCurrentSkills(selectedSkills->first, selectedSkills->second);
 
-                // Reset menu stuff
-                selectedSkills->first = -1;
-                selectedSkills->second = -1;
+                    // Reset menu stuff
+                    selectedSkills->first = -1;
+                    selectedSkills->second = -1;
 
-                m_menu->setStateToBe(gameStateGame); //change to gameStateGame
+                    m_menu->setStateToBe(gameStateGame); //change to gameStateGame
+                }
             }
         }
         break;
