@@ -7,13 +7,14 @@
 #include <assert.h>
 #include <Physics\FuncContactResult.h>
 
-#define EPSILON 0.001f
-
 using namespace Logic;
+
+#define EPSILON 0.001f
+const int NavigationMeshGeneration::AI_UID = 1061923;
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
-    precision = 5.05f;
+    precision = .05f;
     maxLength = 150.f;
     baseY = 0.5f;
 
@@ -149,11 +150,11 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     regions.push_back(NavMeshCube(Cube({ 0.f, baseY, 0.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
     regions.push_back(NavMeshCube(Cube({ -80.f, baseY, 80.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
     regions.push_back(NavMeshCube(Cube({ 60.f, baseY, 140.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
-
-    float distance;
+    regions.push_back(NavMeshCube(Cube({ 10.f, baseY, -100.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
 
     btCollisionObject *obj;
     StaticObject *staticObj;
+    float distance;
 
     // first cube
     printf("Buckleup buckero this will take a while! Generating Navigation Mesh...\n");
@@ -161,16 +162,17 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     {
         printf("Loading.. %d/%d\n", static_cast<int> (regionIndex + 1), static_cast<int> (regions.size()));
         auto &region = regions[regionIndex];
-        for (int side = 0; side < SIDES && !region.collided[side]; side++)
+        for (int side = 0; side < SIDES && !region.collided[side] && !region.done; side++)
         {
-            distance = 0;
-            while (!region.collided[side] && distance < maxLength)
+            distance = 0.f;
+            while (!region.collided[side] && distance < maxLength && !region.done)
             {
                 region.cube.setDimensions(region.cube.getDimensions() + growth[side].dimensionChange);
                 region.cube.setPos(region.cube.getPos() + growth[side].positionChange);
 
+                if (region.body) removeRigidBody(region.body, physics);
                 region.body = physics.createBody(region.cube, 0.f);
-                for (int i = 0; i < physics.getNumCollisionObjects() && !region.collided[side]; i++)
+                for (int i = 0; i < physics.getNumCollisionObjects() && !region.collided[side] && !region.done; i++)
                 {
                     obj = physics.getCollisionObjectArray()[i];
 
@@ -199,16 +201,22 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                                     switch (ret)
                                     {
                                     case ON_VERTEX:
-                                            split(regions, physics, region, cp.m_localPointA, growthNormals[side + 1 % SIDES]); // clockwise rotation
+                                            split(regions, physics, region, cp.m_localPointA, growthNormals[(side + 1) % SIDES]); // clockwise rotation
                                         break;
                                     }
                                     if (ret != PROBLEMS_MY_DUDES) region.collided[side] = true;
                                 }
                             }
                         }
-                        else if (obj->getUserIndex() > 0 && &regions[obj->getUserIndex()] != region.buddy) // use base class or someting later
+                        else if (obj->getUserIndex() == AI_UID && &regions[obj->getUserIndex2()] != region.buddy &&
+                            obj->getUserIndex() != regionIndex)
                         {
                             // instead of skipping buddies, couple them or something
+                            if (distance == 0) {
+                                // remove it
+                                region.done = true;
+                            }
+
                             region.cube.setDimensions(region.cube.getDimensions() - growth[side].dimensionChange);
                             region.cube.setPos(region.cube.getPos() - growth[side].positionChange);
                             region.collided[side] = true;
@@ -217,14 +225,12 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                     });
                     physics.contactPairTest(region.body, obj, res);
                 }
-
-                removeRigidBody(region.body, physics);
                 distance += precision * 2;
             }
         }
         region.done = true;
-        region.body = physics.createBody(region.cube, 0.f);
-        region.body->setUserIndex(static_cast<int> (regionIndex));
+        region.body->setUserIndex2(static_cast<int> (regionIndex));
+        region.body->setUserIndex(AI_UID);
     }
 
     for (auto &region : regions)
@@ -232,13 +238,6 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
         Cube &cube = region.cube;
         std::pair<Triangle, Triangle> triPair = toTriangle(cube);
 
-        region.body = physics.createBody(cube, 0.f);
-        /* TESTING */
-      //  assert(abs((triPair.first.vertices[0] - DirectX::SimpleMath::Vector3(region.body->getWorldTransform().getOrigin() - cube.getDimensions())).Length()) < EPSILON);
-      //  assert(abs(triPair.first.vertices[1].x - (region.body->getWorldTransform().getOrigin().x() + cube.getDimensions().x())) < EPSILON);
-      //  assert(abs(triPair.first.vertices[1].z - (region.body->getWorldTransform().getOrigin().z() - cube.getDimensions().z())) < EPSILON);
-      //  assert(abs((triPair.first.vertices[2] - DirectX::SimpleMath::Vector3(region.body->getWorldTransform().getOrigin() + cube.getDimensions())).Length()) < EPSILON);
-        /* TESTING */
         removeRigidBody(region.body, physics);
 
         nav.addTriangle(toNavTriangle(triPair.first));
@@ -366,24 +365,15 @@ void NavigationMeshGeneration::split(std::vector<NavMeshCube> &regions, Physics 
     NavMeshCube cube1(cube);
     std::pair<Cube, Cube> btCubes = cutCube(cubeColPoint, splitPlaneNormal, cube.cube);
 
-    cube1.buddy = &cube;
     cube1.cube = btCubes.first;
-    cube1.body = nullptr;
     cube.cube = btCubes.second;
 
-    if (splitPlaneNormal.z() != 0)
-    {
-        cube1.collided[Z_MINUS] = true;
-        cube.collided[Z_PLUS] = true;
-    }
-    else
-    {
-        cube1.collided[X_MINUS] = true;
-        cube.collided[X_PLUS] = true;
-    }
+    cube1.buddy = &cube;
+    cube.buddy = &cube1;
 
-    cube1.body = physics.createBody(cube.cube, 0.f);
-    cube1.body->setUserIndex(-666);
+    cube1.body = physics.createBody(cube1.cube, 0.f);
+    cube1.body->setUserIndex(AI_UID);
+    cube1.body->setUserIndex2(static_cast<int> (regions.size()));
     
     regions.push_back(cube1);
 }

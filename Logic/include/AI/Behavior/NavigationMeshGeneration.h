@@ -37,6 +37,7 @@ namespace Logic
 	{
         private: //var
             float precision, maxLength, baseY;
+            static const int AI_UID;
 		public:
 			enum VertexOrder { CLOCKWISE, COUNTER_CLOCKWISE };
 
