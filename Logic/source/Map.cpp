@@ -60,6 +60,7 @@ void Map::readFromFile(std::string path)
     std::vector<FrameHitbox> hitboxes;
     hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Graphics::GROUND });
     hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
+    /*
     hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Graphics::CUBE });
     hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
     hitboxes.push_back({ { 80, 3, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Graphics::CUBE });
@@ -92,10 +93,10 @@ void Map::readFromFile(std::string path)
     lights.push_back({ DirectX::SimpleMath::Vector3(35, 2, 35), DirectX::SimpleMath::Vector3(1, 0.25f, 0.5f), 0.75f, 10.f });
     lights.push_back({ DirectX::SimpleMath::Vector3(-23, 3, 74), DirectX::SimpleMath::Vector3(0.75, 0.25f, 0.5f), 0.85f, 10.f });
     lights.push_back({ DirectX::SimpleMath::Vector3(-22, 3, 70), DirectX::SimpleMath::Vector3(1, 0.55f, 0.5f), 0.85f, 10.f });
-
+    */
     // Create everything and save
     for (size_t i = hitboxes.size(); i--;)  add(hitboxes[i]);
-    for (size_t i = lights.size(); i--;)    add(lights[i]);
+ //   for (size_t i = lights.size(); i--;)    add(lights[i]); 
 }
 
 void Map::clear()
