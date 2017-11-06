@@ -20,7 +20,7 @@
 }
 {
 	"Name": "Windowed";
-	"Value": 0f;
+	"Value": 1f;
 }
 {
 	"Name": "Mute";
