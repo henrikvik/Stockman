@@ -11,7 +11,7 @@ FPSRenderer::FPSRenderer()
 	fpsTimer = 0.0f;
 
 	renderInfo.color = DirectX::SimpleMath::Color{ 1, 1, 1 };
-	renderInfo.font = Resources::Fonts::comicsans;
+	renderInfo.font = Resources::Fonts::KG14;
 	renderInfo.position = DirectX::SimpleMath::Vector2{ 5, 5 };
 	renderInfo.text = L"Ta inte bort min kod - LW";
 }
