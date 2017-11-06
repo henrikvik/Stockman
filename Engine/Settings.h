@@ -11,7 +11,6 @@ private:
 	float m_SFX;
 	float m_music;
 	bool m_windowed;
-	bool m_mute;
 public:
 	Settings();
 	~Settings();
@@ -37,9 +36,6 @@ public:
 	bool* getWindowedPTR();
     bool getWindowed();
 	void setWindowed(bool windowed);
-	bool* getMutePTR();
-    bool getMute();
-	void setMute(bool mute);
 };
 
 #endif

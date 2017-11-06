@@ -22,7 +22,3 @@
 	"Name": "Windowed";
 	"Value": 1f;
 }
-{
-	"Name": "Mute";
-	"Value": 0f;
-}

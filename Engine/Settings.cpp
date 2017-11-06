@@ -59,10 +59,6 @@ void Settings::readFromFile()
 		{
 			m_windowed = theSettings.floats.at("Value");
 		}
-		else if (theSettings.strings.at("Name").compare("Mute") == 0)
-		{
-			m_mute = theSettings.floats.at("Value");
-		}
 	}
 }
 
@@ -94,10 +90,6 @@ void Settings::writeToFile()
 
 	tempSave.strings["Name"] = "Windowed";
 	tempSave.floats["Value"] = m_windowed;
-	saveTo.push_back(tempSave);
-
-	tempSave.strings["Name"] = "Mute";
-	tempSave.floats["Value"] = m_mute;
 	saveTo.push_back(tempSave);
 
 	Logic::FileLoader::singleton().saveStructsToFile(saveTo, "Settings");
@@ -192,19 +184,4 @@ bool Settings::getWindowed()
 void Settings::setWindowed(bool windowed)
 {
 	m_windowed = windowed;
-}
-
-bool* Settings::getMutePTR()
-{
-	return &m_mute;
-}
-
-bool Settings::getMute()
-{
-    return m_mute;
-}
-
-void Settings::setMute(bool mute)
-{
-	m_mute = mute;
 }
