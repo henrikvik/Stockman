@@ -17,9 +17,9 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
 	offset.y = 0;
 	offsetBuffer.write(context, &offset, sizeof(DirectX::SimpleMath::Vector2));
     
-   sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshe.spritefont");
+  /* sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshe.spritefont");
    sFont[1] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshelarger.spritefont");
-   sFont[2] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshelargest.spritefont");
+   sFont[2] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshelargest.spritefont");*/
    sBatch = std::make_unique<DirectX::SpriteBatch>(context);
 
    changed = false;

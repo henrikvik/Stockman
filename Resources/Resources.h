@@ -6,13 +6,15 @@ namespace Resources
     {
         enum Files
         {
-            comicsans,
-            morpheus
+            KG14,
+            KG18,
+            KG26
         };
         const std::map<Files, const char *> Paths =
         {
-            {comicsans, R"(..\Resources\Fonts\comicsans.spritefont)"},
-            {morpheus, R"(..\Resources\Fonts\morpheus.spritefont)"}
+            {KG14, R"(..\Resources\Fonts\KG14.spritefont)"},
+            {KG18, R"(..\Resources\Fonts\KG18.spritefont)"},
+            {KG26, R"(..\Resources\Fonts\KG26.spritefont)"}
         };
     }
     namespace Models
