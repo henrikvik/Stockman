@@ -19,11 +19,17 @@ namespace Logic
     // For errors in creating the navigation mesh
     // create a issue on github[1] or contact LW.
     //
-    // Based on the NavMesh generation in series of
-    // games, Tom Clancy's Ghost Recon[2].
+    // Based on PASVF described in the paper
+    // "A growth-based approach to the automatic
+    // generation of navigation meshes" by
+    //                      Hale, David Hunter, Ph.D.
     // 
+    // This algorithm uses bullet physics for collision.
+    // For more information see my book "PASVF with Bullet" [3].
+    //
     // [1]: https://github.com/henrikvik/DV1544-Stort-Spel/issues
-    // [2]: http://store.steampowered.com/app/15300/Tom_Clancys_Ghost_Recon/
+    // [2]: https://pqdtopen.proquest.com/doc/920011245.html?FMT=ABS
+    // [3]: https://goo.gl/dzpBc
 
     class Physics;
     class StaticObject;
