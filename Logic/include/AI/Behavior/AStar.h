@@ -6,13 +6,14 @@
 #include <queue>
 
 #include "NavigationMesh.h"
-#include "PASVF.h"
+#include "NavigationMeshGeneration.h"
 
 #include <Entity\Entity.h>
 #include <Graphics\include\Renderer.h>
 
 namespace Logic
 {
+    class Physics;
 	class AStar
 	{
 		public:
@@ -48,7 +49,11 @@ namespace Logic
 		private:
 			std::string file;
 			std::vector<NavNode> navNodes; //testing
+
 			NavigationMesh navigationMesh;
+            NavigationMeshGeneration generator;
+
+            bool renderDebug;
 			int targetIndex; // save the triangle id to share beetwen path loading
 		
 			float heuristic(DirectX::SimpleMath::Vector3 const &from,
@@ -83,7 +88,7 @@ namespace Logic
 			size_t getNrOfPolygons() const;
 
 			// iniate the nodes
-			void generateNavigationMesh();
+			void generateNavigationMesh(Physics &physics);
 	};
 }
 #endif

@@ -259,7 +259,7 @@ btRigidBody * Physics::createBody(Sphere& sphere, float mass, bool isSensor, int
 	return body;
 }
 
-btRigidBody* Logic::Physics::createBody(Cylinder& cylinder, float mass, bool isSensor, int group, int mask)
+btRigidBody* Physics::createBody(Cylinder& cylinder, float mass, bool isSensor, int group, int mask)
 {
 	// Setting Motions state with position & rotation
 	btQuaternion rotation;
