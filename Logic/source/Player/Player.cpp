@@ -383,16 +383,16 @@ void Player::updateSpecific(float deltaTime)
     m_weaponManager->update(deltaTime);
     m_skillManager->update(deltaTime);
 
-    if (m_godMode)
-    {
+   /* if (m_godMode)
+    {*/
         static bool isNum = false;
         static bool wasNum = false;
         wasNum = isNum;
-        isNum = ks.NumPad8;
+        isNum = ks.NumPad6;
 
         if (isNum && !wasNum)
             m_hp--;
-    }
+    /*}*/
 
     Global::mainCamera->update(getPosition(), m_forward, context);
 }
