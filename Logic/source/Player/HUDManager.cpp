@@ -110,6 +110,10 @@ void Logic::HUDManager::constructGUIElements()
     height = 306.0f / 720;
     skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
  
+    for (size_t i = 0; i < PLAYER_STARTING_HP; i++)
+    {
+        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50 + (i * 75), -50, 75, 75, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
+    }
 }
 
 //updates the active weapons and cd icons
@@ -117,11 +121,15 @@ void Logic::HUDManager::updateGUIElemets()
 {
     //hp
 
-    HPBar.clear();
+    if (HPBar.size() != info.hp && info.hp != 0)
+    {
+        HPBar.pop_back();
+    }
+    /*HPBar.clear();
     for (size_t i = 0; i < info.hp; i++)
     {
         HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50 + (i *75), -50, 75, 75, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
-    }
+    }*/
     
 
     //crossbow
