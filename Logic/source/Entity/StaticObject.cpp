@@ -1,5 +1,4 @@
 #include <Graphics\include\RenderQueue.h>
-
 #include <Entity\StaticObject.h>
 
 using namespace Logic;
@@ -40,18 +39,7 @@ StaticObject::StaticObject(Resources::Models::Files modelId, btRigidBody * body,
     debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x + size.x, pos.y - size.y, pos.z - size.z));
     debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z - size.z));
 
-
-    
-
-    btVector3 scale = body->getCollisionShape()->getLocalScaling();
-
-    float worldTransform[4 * 4];
-    body->getWorldTransform().getOpenGLMatrix(worldTransform);
-    staticRenderInfo.transform = 
-        DirectX::SimpleMath::Matrix::CreateScale(size.x * 2.0f, size.y * 2.0f, size.z * 2.0f) *
-        DirectX::SimpleMath::Matrix(worldTransform);
-
-
+    staticRenderInfo.transform = getTransformMatrix();
     staticRenderInfo.model = modelId;
 }
 

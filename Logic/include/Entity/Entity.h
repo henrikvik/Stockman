@@ -7,6 +7,7 @@
 #include "PhysicsObject.h"
 #include "StatusManager.h"
 #include <AI\EnemyType.h>
+#include <Graphics\include\RenderQueue.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 #include <Misc/Sound/NoiseMachine.h>
@@ -58,6 +59,8 @@ namespace Logic
 		virtual void affect(int stacks, Effect const &effect, float deltaTime) = 0;
 		virtual void upgrade(Upgrade const &upgrade);
 
+        virtual void render() const = 0;
+
         void callback(EntityEvent entityEvent, CallbackData &data);
 
         // Use this to add a callback, use lambda for ez code. Don't hardcode on collision stuff,
@@ -83,16 +86,6 @@ namespace Logic
 		StatusManager m_statusManager;
         // change functions to linked list if many callbacks is wanted, but i don't see it being necessary
         std::unordered_map<EntityEvent, std::vector<Callback>> m_callbacks;
-	};
-
-	/* Temp class cuz the fucking entity is abstract */
-	class Speaker : public Entity
-	{
-	public :
-		Speaker(btRigidBody* body, btVector3 halfExtent)
-			: Entity(body, halfExtent) { }
-		void affect(int stacks, Effect const &effect, float deltaTime) { }
-		void onCollision(PhysicsObject & other, btVector3 contactPoint, float multiplier) { }
 	};
 }
 
