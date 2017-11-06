@@ -36,7 +36,10 @@ void FPSRenderer::updateFPS(float deltaTime)
     }
     avgFps /= avgframesCount;
 
-    renderInfo.text = std::wstring(FPS_STRING + std::to_wstring(avgFps)).c_str();
+    std::wstring FPSString = FPS_STRING + std::to_wstring(avgFps);
+    renderInfo.text = FPSString.c_str();
+    //renderInfo.text = L"cunt ass";
+
 }
 
 void Logic::FPSRenderer::render() const

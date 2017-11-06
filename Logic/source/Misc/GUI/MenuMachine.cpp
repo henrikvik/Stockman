@@ -245,7 +245,7 @@ void MenuMachine::render()
         text.font = Resources::Fonts::KG14;
         text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
 
-        RenderQueue::get().queue(&text);
+        //RenderQueue::get().queue(&text);
     }
     
     m_currentActiveMenu->render();

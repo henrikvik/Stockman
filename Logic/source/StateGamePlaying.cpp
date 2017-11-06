@@ -102,6 +102,7 @@ void StateGamePlaying::reset()
     m_waveTimeManager.reset();
 
     m_cardManager->resetDeck();
+    m_hudManager.reset();
 
     ComboMachine::Get().Reset();
 }
