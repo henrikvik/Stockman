@@ -189,6 +189,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Physics\FuncContactResult.h" />
     <ClInclude Include="include\Misc\CommandsFile.h" />
     <ClInclude Include="include\GameType.h" />
     <ClInclude Include="include\Player\HUDManager.h" />
@@ -203,7 +204,7 @@
     <ClInclude Include="include\AI\Behavior\TestBehavior.h" />
     <ClInclude Include="include\AI\Behavior\Behavior.h" />
     <ClInclude Include="include\AI\Behavior\NavigationMesh.h" />
-    <ClInclude Include="include\AI\Behavior\PASVF.h" />
+    <ClInclude Include="include\AI\Behavior\NavigationMeshGeneration.h" />
     <ClInclude Include="include\DebugDefines.h" />
     <ClInclude Include="include\Misc\ComboMachine.h" />
     <ClInclude Include="include\Misc\FileLoader.h" />
@@ -260,6 +261,7 @@
     <ClInclude Include="include\AI\WaveTimeManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Physics\FuncContactResult.cpp" />
     <ClCompile Include="source\Misc\CommandsFile.cpp" />
     <ClCompile Include="source\Player\HUDManager.cpp" />
     <ClCompile Include="source\AI\Behavior\MeleeBehavior.cpp" />
@@ -274,7 +276,7 @@
     <ClCompile Include="source\AI\Behavior\AStar.cpp" />
     <ClCompile Include="source\AI\Behavior\TestBehavior.cpp" />
     <ClCompile Include="source\AI\Behavior\NavigationMesh.cpp" />
-    <ClCompile Include="source\AI\Behavior\PASVF.cpp" />
+    <ClCompile Include="source\AI\Behavior\NavigationMeshGeneration.cpp" />
     <ClCompile Include="source\Misc\ComboMachine.cpp" />
     <ClCompile Include="source\Entity\PhysicsObject.cpp" />
     <ClCompile Include="source\Entity\StaticObject.cpp" />
