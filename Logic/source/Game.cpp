@@ -78,7 +78,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 
 	// Initializing the Map
 	m_map = newd Map();
-	m_map->init(m_physics);
+	m_map->init(m_physics, "");
 
 	// Initializing Card Manager
 	m_cardManager = newd CardManager(GAME_START::UNIQUE_CARDS);

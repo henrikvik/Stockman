@@ -1,4 +1,4 @@
-#include <StateStart.h>
+#include <StateMenuStart.h>
 
 #include <Engine\Typing.h>
 #include <DebugDefines.h>
@@ -6,13 +6,8 @@
 
 using namespace Logic;
 
-StateStart::StateStart()
+StateMenuStart::StateMenuStart()
 {
-    // Initializing Sound
-    Sound::NoiseMachine::Get().init();
-    Sound::ListenerData listener;
-    Sound::NoiseMachine::Get().update(listener);
-
     // Initializing Highscore Manager
     m_highScoreManager = newd HighScoreManager();
     m_highScoreManager->setName("Stockman");
@@ -35,30 +30,26 @@ StateStart::StateStart()
     }
 }
 
-StateStart::~StateStart()
+StateMenuStart::~StateMenuStart()
 {
     m_menu->clear();
-    Sound::NoiseMachine::Get().clear();
 
     delete m_menu;
     delete m_highScoreManager;
 }
 
-void StateStart::reset()
+void StateMenuStart::reset()
 {
 
 }
 
-void StateStart::update(float deltaTime)
+void StateMenuStart::update(float deltaTime)
 {
     m_fpsRenderer.updateFPS(deltaTime);
     m_menu->update(deltaTime);
-
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad2))
-        SetState(StateType::Game);
 }
 
-void StateStart::render() const
+void StateMenuStart::render() const
 {
     m_menu->render();
 }

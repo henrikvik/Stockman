@@ -270,8 +270,11 @@
     <ClInclude Include="include\AI\WaveTimeManager.h" />
     <ClInclude Include="include\State.h" />
     <ClInclude Include="include\StateGame.h" />
+    <ClInclude Include="include\StateGameCampfire.h" />
+    <ClInclude Include="include\StateGamePlaying.h" />
     <ClInclude Include="include\StateMachine.h" />
-    <ClInclude Include="include\StateStart.h" />
+    <ClInclude Include="include\StateMenu.h" />
+    <ClInclude Include="include\StateMenuStart.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Misc\GUI\Sprite.cpp" />
@@ -328,8 +331,11 @@
     <ClCompile Include="source\AI\WaveManager.cpp" />
     <ClCompile Include="source\AI\WaveTimeManager.cpp" />
     <ClCompile Include="source\StateGame.cpp" />
+    <ClCompile Include="source\StateGameCampfire.cpp" />
+    <ClCompile Include="source\StateGamePlaying.cpp" />
     <ClCompile Include="source\StateMachine.cpp" />
-    <ClCompile Include="source\StateStart.cpp" />
+    <ClCompile Include="source\StateMenu.cpp" />
+    <ClCompile Include="source\StateMenuStart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

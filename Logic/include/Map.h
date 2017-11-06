@@ -34,7 +34,7 @@ namespace Logic
 		Map();
         ~Map();
 
-		void init(Physics* physics);
+		void init(Physics* physics, std::string path);
 		void clear();
 		void update(float deltaTime);
 		void render() const;

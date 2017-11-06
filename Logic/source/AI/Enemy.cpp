@@ -159,7 +159,7 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
     data.gravityModifier = 2.5;
 	data.scale = scale;
     data.enemyBullet = true;
-    data.isSensor = true;
+    data.isSensor = false;
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     

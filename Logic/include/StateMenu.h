@@ -1,5 +1,5 @@
-#ifndef STATEGAME_H
-#define STATEGAME_H
+#ifndef STATEMENU_H
+#define STATEMENU_H
 
 // C++ Includes
 #include <stdio.h>
@@ -10,11 +10,12 @@
 
 namespace Logic
 {
-    class StateGame : public State
+    class StateMenu : public State
     {
     public:
-        StateGame();
-        ~StateGame();
+
+        StateMenu();
+        ~StateMenu();
         void reset();
 
         void update(float deltaTime);
@@ -28,4 +29,4 @@ namespace Logic
     };
 }
 
-#endif // !STATEGAME_H
+#endif // !STATEMENU_H

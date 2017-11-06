@@ -113,6 +113,7 @@ bool StatusManager::isOwningUpgrade(Upgrade::UPGRADE_FLAG flag)
     for (StatusManager::UPGRADE_ID upgrade : getActiveUpgrades())
         if (getUpgrade(upgrade).getTranferEffects() & flag)
             return true;
+
     return false;
 }
 
