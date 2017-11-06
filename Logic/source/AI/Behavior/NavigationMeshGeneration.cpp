@@ -13,7 +13,7 @@ using namespace Logic;
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
-    presicion = 0.05f;
+    presicion = .05f;
     DebugWindow::getInstance()->registerCommand("AI_NAV_SET_PRESICION", [&](std::vector<std::string> &para) -> std::string {
         try {
             presicion = std::stof(para.at(0));
@@ -120,14 +120,14 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     Growth growth[SIDES] = { // CLOCK WISE, IMPORTANTE
         { { presicion, 0.f, 0.f   }, { presicion, 0.f, 0.f } }, // X +
         { { 0.f, 0.f, - presicion }, { 0.f, 0.f, presicion } }, // Z-
-        { { - presicion, 0.f, 0.f }, { presicion, 0.f, 0.f } }, // X-
+        { { - presicion , 0.f, 0.f}, { presicion, 0.f, 0.f } }, // X-
         { { 0.f, 0.f, presicion   }, { 0.f, 0.f, presicion } } // Z+
     };
     btVector3 growthNormals[SIDES] = {
         {   1.f, 0.f, 0.f },
-        {   0.f, 0.f, - 1.f },
+        {   0.f, 0.f, -1.f },
         { - 1.f, 0.f, 0.f },
-        {   0.f, 0.f,   1.f }
+        {   0.f, 0.f, 1.f }
     };
 
     btCollisionObject *obj;
@@ -139,7 +139,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     {
         printf("Loading.. %d/%d\n", static_cast<int> (k), static_cast<int> (regions.size()));
         auto &region = regions[k];
-        for (int j = 0; j < SIDES; j++)
+        for (int j = 0; j < SIDES && !region.collided[j]; j++)
         {
             distance = 0;
             while (!region.collided[j] && distance < MAX_DISTANCE_ON_SIDE)
@@ -165,22 +165,27 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                             const btCollisionObjectWrapper* colObj0, int partId0, int index0,
                             const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
                     {
+                        if (cp.getDistance() > presicion) return 0;
                         if (staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
                         {
                             if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
                             {
                                 if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // only support box shapes at the moment (other shapes can be "converted" to boxes)
                                 {
+                                    physics.createBody(region.cube, 0.f);
+                                    printf("Side: %d, Actual side: %d, x: %f", j, colObj0->getCollisionObject()->getUserIndex(), staticObj->getRigidBody()->getWorldTransform().getOrigin().x());
                                     if (distance < EPSILON)
                                     {
-                                        printf("This is pretty shit bruh\n");
+                                        printf("This is pretty shit bruh Collided with: %f. Side: %d\n", staticObj->getRigidBody()->getWorldTransform().getOrigin().x(), j);
                                     }
                                     btVector3 col;
                                     if (colObj0->getCollisionObject() == obj) col = cp.m_localPointA;
                                     else col = cp.m_localPointB; // i think b is always correct
 
                                     col += staticObj->getRigidBody()->getWorldTransform().getOrigin();
-                                    // physics.createBody(Sphere(col, { 0, 0, 0 }, 0.1f), 0);
+                                    cp.m_localPointA += region.body->getWorldTransform().getOrigin();
+                                    physics.createBody(Sphere(col, { 0, 0, 0 }, 0.1f), 0);
+                                    physics.createBody(Sphere(cp.m_localPointA, { 0, 0, 0 }, 0.1f), 0);
 
                                     CollisionReturn ret = handleCollision(col, region, staticObj, growth[j], growthNormals[j], bs);
                                     switch (ret)
@@ -201,10 +206,12 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                         }
                         return 0;
                     });
-
+                    res.m_closestDistanceThreshold = presicion;
+                    
+                    region.body->setUserIndex(j);
                     physics.contactPairTest(region.body, obj, res);
-
                 }
+
                 removeRigidBody(region.body, physics);
                 distance += presicion * 2;
             }
@@ -226,7 +233,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
       //  assert(abs(triPair.first.vertices[1].z - (region.body->getWorldTransform().getOrigin().z() - cube.getDimensions().z())) < EPSILON);
       //  assert(abs((triPair.first.vertices[2] - DirectX::SimpleMath::Vector3(region.body->getWorldTransform().getOrigin() + cube.getDimensions())).Length()) < EPSILON);
         /* TESTING */
-       // removeRigidBody(region.body, physics);
+        removeRigidBody(region.body, physics);
 
         nav.addTriangle(toNavTriangle(triPair.first));
         nav.addTriangle(toNavTriangle(triPair.second));
