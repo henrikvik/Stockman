@@ -12,7 +12,7 @@ namespace Graphics
     class GUIRenderPass : public RenderPass
     {
     public:
-        GUIRenderPass(ID3D11RenderTargetView * renderTarget);
+        using RenderPass::RenderPass;
 
         // Inherited via RenderPass
         virtual void render() const override;

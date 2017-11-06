@@ -52,7 +52,15 @@ namespace Graphics
     private:
         HybrisLoader::HybrisLoader hybrisLoader;
 
+    #pragma region Render Resources
         std::vector<RenderPass*> renderPasses;
+        ShaderResource colorMap, glowMap, normalMap;
+        
+
+
+
+    #pragma endregion
+
 
         typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
         InstanceQueue_t instanceQueue;

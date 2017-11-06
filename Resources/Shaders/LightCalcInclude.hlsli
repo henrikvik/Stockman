@@ -1,6 +1,6 @@
 //If you want to include this file this is the allocated resources:
 //cbuffer register 0, 1, 2 and 3
-//0: Camera     1: DirectionalLight     2: BulletTime   3: LightVP
+//0: Camera     1: DirectionalLight     2: LightVP
 
 //texture 0, 1, 2, 3, 10, 11, 12 and 13
 //0: LightIndexList     1: LightGrid    2: lights   3: shadowmap

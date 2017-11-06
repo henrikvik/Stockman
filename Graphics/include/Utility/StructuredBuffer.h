@@ -16,6 +16,7 @@ class StructuredBuffer
 {
 public:
 #pragma region Constructors/Destructors
+    StructuredBuffer(CpuAccess access, size_t count, T* ptr = nullptr);
     StructuredBuffer(ID3D11Device *device, CpuAccess access, size_t count, T* ptr = nullptr);
     ~StructuredBuffer();
 #pragma endregion
@@ -50,6 +51,11 @@ private:
 };
 
 #pragma region Constructors/Destructors
+template<typename T>
+StructuredBuffer<T>::StructuredBuffer(CpuAccess access, size_t count, T * ptr)
+    : StructuredBuffer(Global::device, access, count, ptr)
+{
+}
 template<typename T>
 inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess access, size_t count, T * ptr)
 {

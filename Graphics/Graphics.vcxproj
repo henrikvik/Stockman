@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\Camera.cpp" />
+    <ClCompile Include="include\CommonState.cpp" />
     <ClCompile Include="include\Device.cpp" />
     <ClCompile Include="include\DoF.cpp" />
     <ClCompile Include="include\Effects\Water.cpp" />
@@ -38,6 +39,7 @@
     <ClCompile Include="include\Particles\Particle.cpp" />
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
+    <ClCompile Include="include\RenderPass\ForwardPlusRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\GUIRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\RenderPass.cpp" />
     <ClCompile Include="include\SkyRenderer.cpp" />
@@ -73,9 +75,10 @@
     <ClInclude Include="include\Particles\ParticleSystem.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\RenderInfo.h" />
+    <ClInclude Include="include\CommonStates.h" />
+    <ClInclude Include="include\RenderPass\ForwardPlusRenderPass.h" />
     <ClInclude Include="include\RenderPass\GUIRenderPass.h" />
     <ClInclude Include="include\RenderPass\RenderPass.h" />
-    <ClInclude Include="include\Utility\RenderPass.h" />
     <ClInclude Include="include\RenderQueue.h" />
     <ClInclude Include="include\SkyRenderer.h" />
     <ClInclude Include="include\SnowManager.h" />

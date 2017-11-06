@@ -56,9 +56,10 @@ struct LightRenderInfo : RenderInfo
 
 struct SpecialEffectRenderInfo : RenderInfo
 {
-    enum SpecialEffect { BulletTime };
+    enum SpecialEffect { BulletTime, Snow };
     SpecialEffect effect;
     float progress = 0;
+    float duration = 0;
 };
 
 struct SpriteRenderInfo : RenderInfo

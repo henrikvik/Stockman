@@ -11,11 +11,13 @@
 
 #include "Particles\ParticleSystem.h"
 #include "Utility\TextureLoader.h"
+#include "RenderPass\ForwardPlusRenderPass.h"
+#include "CommonStates.h"
 
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
-#define USE_OLD_RENDER true
+#define USE_OLD_RENDER false
 
 #if USE_TEMP_CUBE
 #include "TempCube.h"
@@ -57,8 +59,36 @@ namespace Graphics
 #pragma endregion
 		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
         , staticInstanceBuffer(device, CpuAccess::Write, StaticRenderInfo::INSTANCE_CAP)
+
+    #pragma region Shared Shader Resources
+        , colorMap(WIN_WIDTH, WIN_HEIGHT)
+        , glowMap(WIN_WIDTH, WIN_HEIGHT)
+        , normalMap(WIN_WIDTH, WIN_HEIGHT)
+    #pragma endregion
+
+
 	{
-        RenderPass::cStates = new CommonStates(device);
+        Global::cStates = new CommonStates(device);
+        Global::comparisonSampler = [&](){
+            ID3D11SamplerState * sampler = nullptr;
+            D3D11_SAMPLER_DESC sDesc = {};
+            sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.BorderColor[0] = 1;
+            sDesc.BorderColor[1] = 1;
+            sDesc.BorderColor[2] = 1;
+            sDesc.BorderColor[3] = 1;
+            sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+            sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            sDesc.MaxAnisotropy = 0;
+            sDesc.MinLOD = 0;
+            sDesc.MaxLOD = D3D11_FLOAT32_MAX;
+            sDesc.MipLODBias = 0;
+
+            ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
+            return sampler;        
+        }();
 
 		this->device = device;
 		this->deviceContext = deviceContext;
@@ -98,8 +128,30 @@ namespace Graphics
 
         renderPasses =
         {
-            new GUIRenderPass(backBuffer)
+            newd ForwardPlusRenderPass(
+                {
+                    backBuffer, 
+                    glowMap,
+                    normalMap
+                }, 
+                {
+                    grid.getOpaqueIndexList()->getSRV(),
+                    grid.getOpaqueLightGridSRV(), 
+                    grid.getLights()->getSRV(), 
+                    *skyRenderer.getDepthStencil(),
+                    staticInstanceBuffer
+                },
+                {
+                    Global::mainCamera.getBuffer(),
+                    *skyRenderer.getShaderBuffer(),
+                    *skyRenderer.getLightMatrixBuffer()
+                },
+                depthStencil
+            ),
+            newd GUIRenderPass({backBuffer}),
         };
+
+
     }
 
 
@@ -496,6 +548,10 @@ namespace Graphics
 			startShake(30, 1000);
 		}
 
+        
+        InstanceBuffers::get().writeQueueToBuffer<StaticRenderInfo, StaticInstanceData>();
+
+
 
         PROFILE_BEGIN("RenderPasses");
         for (auto & renderPass : renderPasses)
@@ -507,9 +563,16 @@ namespace Graphics
     #else
     {
         static float clearColor[4] = {0,0,0,0};
-        context->ClearRenderTargetView(backBuffer, clearColor);
-        context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1, 0);
+        Global::context->ClearRenderTargetView(backBuffer, clearColor);
+        Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1, 0);
         deviceContext->RSSetViewports(1, &viewPort);
+
+        writeInstanceBuffers();
+
+        for (auto & renderPass : renderPasses)
+        {
+            renderPass->update(0.016f);
+        }
 
         for (auto & renderPass : renderPasses)
         {
