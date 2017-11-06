@@ -206,8 +206,6 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                         }
                         return 0;
                     });
-                    res.m_closestDistanceThreshold = presicion;
-                    
                     region.body->setUserIndex(j);
                     physics.contactPairTest(region.body, obj, res);
                 }
