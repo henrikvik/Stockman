@@ -19,6 +19,7 @@
 
 #include <Engine\Profiler.h>
 #include <Engine\DebugWindow.h>
+#include <Engine\Settings.h>
 
 using namespace Logic;
 
@@ -39,6 +40,7 @@ Player::~Player()
 
 void Player::init(Physics* physics, ProjectileManager* projectileManager)
 {
+    Settings* setting = Settings::getInstance();
 	m_weaponManager->init(projectileManager);
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
@@ -63,7 +65,6 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_camPitch = 5;
 
 	m_playerState = PlayerState::STANDING;
-	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
 
     m_godMode = m_noclip = false;
 
@@ -101,10 +102,11 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 void Player::registerDebugCmds()
 {
     DebugWindow *win = DebugWindow::getInstance();
+    Settings* setting = Settings::getInstance();
     win->registerCommand("LOG_SET_MOUSE_SENSITIVITY", [&](std::vector<string> &para) -> std::string {
         try
         { // Boilerplate code bois
-            m_mouseSens = stof(para[0]);
+            setting->setMouseSense(stof(para[0]));
         }
         catch (int)
         {
@@ -594,8 +596,9 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-	m_camYaw	+= m_mouseSens * (ms->x * deltaTime);
-	m_camPitch	-= m_mouseSens * (ms->y * deltaTime);
+    Settings* setting = Settings::getInstance();
+	m_camYaw	+= setting->getMouseSense() * (ms->x * deltaTime);
+	m_camPitch	-= setting->getMouseSense() * (ms->y * deltaTime);
 
 	// DirectX calculates position on the full resolution,
 	//  while getWindowMidPoint gets the current window's middle point!!!!!
