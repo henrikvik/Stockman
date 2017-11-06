@@ -144,7 +144,7 @@ void StateGame::update(float deltaTime)
     PROFILE_END();
 
     PROFILE_BEGIN("HUD");
-//    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
+    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
     PROFILE_END();
 
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
@@ -193,14 +193,4 @@ void StateGame::gameOver()
 {
     m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
     reset();
-}
-
-DirectX::SimpleMath::Vector3 StateGame::getCameraForward()
-{
-    return m_player->getForward();
-}
-
-DirectX::SimpleMath::Vector3 StateGame::getCameraPosition()
-{
-    return m_player->getPosition();
 }

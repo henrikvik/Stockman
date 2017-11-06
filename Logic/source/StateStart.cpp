@@ -62,13 +62,3 @@ void StateStart::render() const
 {
     m_menu->render();
 }
-
-DirectX::SimpleMath::Vector3 StateStart::getCameraForward()
-{
-    return DirectX::SimpleMath::Vector3(0, 0, 1);
-}
-
-DirectX::SimpleMath::Vector3 StateStart::getCameraPosition()
-{
-    return DirectX::SimpleMath::Vector3(0, 0, 0);
-}

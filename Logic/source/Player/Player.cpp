@@ -18,6 +18,8 @@
 
 #include <Engine\Profiler.h>
 #include <Engine\DebugWindow.h>
+#include <Graphics\include\MainCamera.h>
+#include <Graphics\include\Device.h>
 
 using namespace Logic;
 
@@ -381,16 +383,18 @@ void Player::updateSpecific(float deltaTime)
     m_weaponManager->update(deltaTime);
     m_skillManager->update(deltaTime);
 
-    if (m_godMode)
-    {
+   /* if (m_godMode)
+    {*/
         static bool isNum = false;
         static bool wasNum = false;
         wasNum = isNum;
-        isNum = ks.NumPad8;
+        isNum = ks.NumPad6;
 
         if (isNum && !wasNum)
             m_hp--;
-    }
+    /*}*/
+
+    Global::mainCamera->update(getPosition(), m_forward, context);
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
@@ -654,13 +658,6 @@ void Player::render() const
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 //	Object::render(renderer);
-
-    static int lastHP = getHP();
-    if (lastHP != getHP())
-    {
-        lastHP = getHP();
-        //renderer.startShake(10., 500.f);
-    }
 
 	// Setting position of updated weapon and skill models
 	m_weaponManager->setWeaponModel(getTransformMatrix(), m_forward);
