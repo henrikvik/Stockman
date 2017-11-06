@@ -264,16 +264,8 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.enemiesRemaining = (int)entityManager.getNrOfAliveEnemies();
 
 
-   
-
-
-    //TODO 
-    //remove when skill pick works again
-    info.currentSkills[0] = 0;
-    info.currentSkills[1] = 1;
-
-    /* info.currentSkills[0] = player.getCurrentSkill0();
-    info.currentSkills[1] = player.getCurrentSkill1();*/
+     info.currentSkills[0] = player.getCurrentSkill0();
+    info.currentSkills[1] = player.getCurrentSkill1();
 
     this->updateGUIElemets();
     
