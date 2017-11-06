@@ -21,6 +21,7 @@ namespace Logic
         void render() const;
 
         void switchState(StateType menuState);
+        State* getCurrentState() { return m_currentState; }
 
     private:
         StateType m_currentStateType;

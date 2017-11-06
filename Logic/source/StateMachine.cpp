@@ -15,12 +15,18 @@ StateMachine::StateMachine()
     // Making a function ptr to switch state inside the active state
     SetGameState = [&](StateType stateType) -> void { m_gameState->switchState(stateType); };
     SetMenuState = [&](StateType stateType) -> void { m_menuState->switchState(stateType); };
+    GetGameState = [&]() -> StateGame* { return m_gameState; };
+    GetMenuState = [&]() -> StateMenu* { return m_menuState; };
    
     // Save function ptr's inside each main state
-    m_gameState->SetMenuSwitchCallBack(SetGameState);
-    m_gameState->SetGameSwitchCallBack(SetMenuState);
-    m_menuState->SetMenuSwitchCallBack(SetGameState);
-    m_menuState->SetGameSwitchCallBack(SetMenuState);
+    m_gameState->SetMenuSwitchCallBack  (SetGameState);
+    m_gameState->SetGameSwitchCallBack  (SetMenuState);
+    m_gameState->SetCurrentGameState    (GetGameState);
+    m_gameState->SetCurrentMenuState    (GetMenuState);
+    m_menuState->SetMenuSwitchCallBack  (SetGameState);
+    m_menuState->SetGameSwitchCallBack  (SetMenuState);
+    m_menuState->SetCurrentGameState    (GetGameState);
+    m_menuState->SetCurrentMenuState    (GetMenuState);
 
     // Setting starting states
     SetMenuState(StateType::Menu_Start);

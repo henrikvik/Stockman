@@ -20,10 +20,12 @@ namespace Logic
         void render() const;
 
     private:
-        std::function<void(StateType stateType)> SetGameState;
-        std::function<void(StateType stateType)> SetMenuState;
-        StateGame* m_gameState;
-        StateMenu* m_menuState;
+        std::function<void(StateType stateType)>    SetGameState;
+        std::function<void(StateType stateType)>    SetMenuState;
+        std::function<StateGame*()>                 GetGameState;
+        std::function<StateMenu*()>                 GetMenuState;
+        StateGame*                                  m_gameState;
+        StateMenu*                                  m_menuState;
     };
 }
 

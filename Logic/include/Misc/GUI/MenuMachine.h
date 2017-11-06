@@ -31,7 +31,6 @@ namespace Logic
 		GameState m_currentActiveState;
 		GameState m_stateToBe;
 		bool m_forward;
-		std::string* m_highScoreNamePTR;
 		std::string m_highScoreName;
 		bool m_typing;
         bool blinkMarker;
@@ -42,7 +41,7 @@ namespace Logic
         void selectSkillButton(int id);
         bool replaceSkill(int id);
 	public:
-		MenuMachine(std::string* highScoreNamePTR);
+		MenuMachine();
 		~MenuMachine();
 		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout

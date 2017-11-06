@@ -108,8 +108,6 @@ void StateGamePlaying::reset()
 
 void StateGamePlaying::update(float deltaTime)
 {
-    DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
-
     m_fpsRenderer.updateFPS(deltaTime);
     ComboMachine::Get().Update(deltaTime);
     m_waveTimeManager.update(deltaTime, m_entityManager);

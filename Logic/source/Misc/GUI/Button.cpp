@@ -67,7 +67,7 @@ void Logic::Button::setCallback(std::function<void(void)> callback)
 
 void Button::updateOnPress(int posX, int posY)
 {
-	if (callback && renderInfo.screenRect.contains(posX / WIN_WIDTH, posY / WIN_HEIGHT))
+	if (callback && renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
 	{
         callback();
 	}

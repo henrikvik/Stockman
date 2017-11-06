@@ -56,6 +56,8 @@ namespace Logic
         void update(float deltaTime);
         void render() const;
 
+        Player* getPlayer() { return m_player; }
+
     private:
         void gameOver();
 

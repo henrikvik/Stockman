@@ -73,7 +73,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 	}
 
 	// Initializing Menu's
-	m_menu = newd MenuMachine(m_highScoreManager->getName());
+	m_menu = newd MenuMachine();
 	m_menu->initialize(GAME_START::STATE);
 
 	// Initializing the Map
