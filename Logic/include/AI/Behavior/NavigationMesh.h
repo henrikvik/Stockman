@@ -20,9 +20,12 @@ namespace Logic
 			};
 
 			NavigationMesh();
-			//NavigationMesh(NavigationMesh const &other);
-			//NavigationMesh* operator=(NavigationMesh const &other);
+			NavigationMesh(NavigationMesh const &other) = delete;
+			NavigationMesh* operator=(NavigationMesh const &other) = delete;
 			~NavigationMesh();
+
+            // only use for debugging, should never be used by normal gameplay
+            void clear();
 
 			void addTriangle(Triangle const &triangle);
 			void addEdge(int from, int to);

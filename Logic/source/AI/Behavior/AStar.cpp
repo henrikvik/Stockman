@@ -184,7 +184,8 @@ size_t AStar::getNrOfPolygons() const
 void AStar::generateNavigationMesh(Physics &physics)
 {
     generator.registerGenerationCommand(navigationMesh, physics);
-    generator.generateNavigationMesh(navigationMesh, physics);
+    //generator.generateNavigationMesh(navigationMesh, physics);
+    generator.generateNavMeshOld(navigationMesh, {}, {});
     DebugWindow::getInstance()->registerCommand("AI_TOGGLE_DEBUG",
         [&](std::vector<std::string> para) -> std::string {
         // test //

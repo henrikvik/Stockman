@@ -5,6 +5,7 @@
 #include <Engine\DebugWindow.h>
 #include <Entity\StaticObject.h>
 #include <assert.h>
+#include <Physics\FuncContactResult.h>
 
 #define EPSILON 0.001f
 
@@ -32,11 +33,13 @@ void NavigationMeshGeneration::registerGenerationCommand(
 {
     DebugWindow::getInstance()->registerCommand("AI_LOAD_NAV_MESH_OLD",
         [&](std::vector<std::string>) -> std::string {
+        nav.clear();
         generateNavMeshOld(nav, {}, {});
         return "Generated Nav Mesh (!OLD, STATIC & DEPREACETED!)";
     });
     DebugWindow::getInstance()->registerCommand("AI_LOAD_NAV_MESH",
         [&](std::vector<std::string>) -> std::string {
+        nav.clear();
         generateNavigationMesh(nav, physics);
         return "Generated Nav Mesh (NOT FULLY IMPLEMENTED!!!!!)";
     });
@@ -131,9 +134,10 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     StaticObject *staticObj;
 
     // first cube
+    printf("Buckleup buckero this will take a while! Generating Navigation Mesh...");
     for (size_t i = 0; i < regions.size() && i < 10; i++) // less than ten to prevent yikes
     {
-        printf("Loading.. %d/%d\n", i, regions.size());
+        printf("Loading.. %d/%d\n", static_cast<int> (i), static_cast<int> (regions.size()));
         auto &region = regions[i];
         for (int j = 0; j < SIDES; j++)
         {
@@ -148,7 +152,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                 {
                     obj = physics.getCollisionObjectArray()[i];
 
-                    NavContactResult res(
+                    FunContactResult res(
                         [&](btBroadphaseProxy* proxy) -> bool {
                         if (!proxy->isConvex2d(TRIANGLE_MESH_SHAPE_PROXYTYPE) || !proxy->isConvex(TRIANGLE_MESH_SHAPE_PROXYTYPE))
                         {

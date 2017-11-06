@@ -14,6 +14,12 @@ NavigationMesh::~NavigationMesh()
 {
 }
 
+void NavigationMesh::clear()
+{
+    triangleList.clear();
+    edges.clear();
+    nodes.clear();
+}
 void NavigationMesh::addTriangle(Triangle const & triangle)
 {
 	triangleList.push_back(triangle);

@@ -105,38 +105,6 @@ namespace Logic
 
             // true on collision
             std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance);
-
-            // This is very nice
-            class NavContactResult : public btCollisionWorld::ContactResultCallback {
-                private:
-                    std::function<bool(btBroadphaseProxy* proxy)> m_needsCollision;
-                    std::function <btScalar(btManifoldPoint& cp,
-                        const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-                        const btCollisionObjectWrapper* colObj1, int partId1, int index1)>
-                        m_singleRes;
-                public:
-                    NavContactResult(
-                        std::function<bool(btBroadphaseProxy* proxy)> needsCollision,
-                        std::function <btScalar(btManifoldPoint& cp,
-                            const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-                            const btCollisionObjectWrapper* colObj1, int partId1, int index1)> singleRes
-                        ) {
-                            m_needsCollision = needsCollision;
-                            m_singleRes = singleRes;
-                        }
-
-                        virtual bool needsCollision(btBroadphaseProxy* proxy) const {
-                            return m_needsCollision(proxy);
-                        }
-
-                        //! Called with each contact for your own processing (e.g. test if contacts fall in within sensor parameters)
-                        virtual btScalar addSingleResult(btManifoldPoint& cp,
-                            const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-                            const btCollisionObjectWrapper* colObj1, int partId1, int index1)
-                        {
-                            return m_singleRes(cp, colObj0, partId0, index0, colObj1, partId1, index1);
-                        }
-            };
 	};
 }
 
