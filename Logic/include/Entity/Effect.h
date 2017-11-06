@@ -32,6 +32,7 @@ namespace Logic
 			EFFECT_CONSTANT_PUSH_BACK	= 0x800,
 			EFFECT_CONSTANT_DAMAGE_ON_CONTACT = 0x1000,
 			EFFECT_BULLET_TIME			= 0x2000,
+            EFFECT_IS_STUNNED           = 0x4000,
 		};
 
 		struct Standards {
