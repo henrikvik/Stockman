@@ -10,7 +10,6 @@
 
 // Misc
 #include <Misc\HighScoreManager.h>
-#include <Misc\Sound\NoiseMachine.h>
 #include <Misc\FPSRenderer.h>
 #include <Misc\GUI\MenuMachine.h>
 
@@ -41,4 +40,4 @@ namespace Logic
     };
 }
 
-#endif // !STATEMENUGAME_H
+#endif // !STATEMENUSTART_H

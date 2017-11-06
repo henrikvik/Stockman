@@ -80,6 +80,9 @@ void StateGame::switchState(StateType gameState)
 
         m_currentState->SetGameSwitchCallBack(SwitchGameState);
         m_currentState->SetMenuSwitchCallBack(SwitchMenuState);
+        m_currentState->SetCurrentGameState(GetCurrentGameState);
+        m_currentState->SetCurrentMenuState(GetCurrentMenuState);
+
         RenderQueue::get().clearAllQueues();
     }
 }

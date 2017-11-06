@@ -14,7 +14,7 @@
 
 using namespace Logic;
 
-MenuMachine::MenuMachine(std::string* highScoreNamePTR)
+MenuMachine::MenuMachine()
 {
 	m_pressed = false;
 	m_currentActiveMenu = nullptr;
@@ -26,8 +26,8 @@ MenuMachine::MenuMachine(std::string* highScoreNamePTR)
     printf("\n *Skipping Menus, Disable in 'Logic/include/DebugDefines.h'\n");
 #endif
 
-	m_highScoreNamePTR = highScoreNamePTR;
-	m_highScoreName = *m_highScoreNamePTR;
+//	m_highScoreNamePTR = highScoreNamePTR;
+//	m_highScoreName = *m_highScoreNamePTR;
 	m_typing = false;
 	m_forward = true;
     blinkTimer = 0.0f;
@@ -203,7 +203,7 @@ void MenuMachine::update(float dt)
 		if (keyboard.IsKeyDown(DirectX::Keyboard::Enter))
 		{
 			m_typing = false;
-			*m_highScoreNamePTR = m_highScoreName;
+		//	*m_highScoreNamePTR = m_highScoreName;
 		}
 		else if (keyboard.IsKeyDown(DirectX::Keyboard::Back) && m_highScoreName != "" && deleteCharCD > 200.0f)
 		{
@@ -332,7 +332,7 @@ void MenuMachine::startMainMenu()
 
 void MenuMachine::quitGame()
 {
-	PostQuitMessage(0); 
+//	PostQuitMessage(0); come on..
 }
 
 void MenuMachine::writing()
@@ -432,7 +432,7 @@ void MenuMachine::selectSkillButton(int id)
     Button* button = m_currentActiveMenu->getButton(id);
 
     // Hardcoded "Selected" tex-cords, currently not supported
-
+    replaceSkill(id);
 }
 
 // Returns true if succesful swapping of selected skill, returns false if the selected skill should be reset (if it was already selected, for example)

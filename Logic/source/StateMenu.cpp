@@ -1,5 +1,6 @@
 #include <StateMenu.h>
 #include <StateMenuStart.h>
+#include <StateMenuPlaying.h>
 
 // Input Singletons
 #include <Keyboard.h>
@@ -62,6 +63,9 @@ void StateMenu::switchState(StateType menuState)
         case StateType::Menu_Start:
             m_currentState = new StateMenuStart();
             break;
+        case StateType::Menu_Playing:
+            m_currentState = new StateMenuPlaying();
+            break;
         }
        
         // Error check
@@ -73,6 +77,9 @@ void StateMenu::switchState(StateType menuState)
 
         m_currentState->SetGameSwitchCallBack(SwitchGameState);
         m_currentState->SetMenuSwitchCallBack(SwitchMenuState);
+        m_currentState->SetCurrentGameState(GetCurrentGameState);
+        m_currentState->SetCurrentMenuState(GetCurrentMenuState);
+
         RenderQueue::get().clearAllQueues();
     }
 }
