@@ -20,14 +20,12 @@ namespace Logic
         virtual void update(float deltaTime) = 0;
         virtual void render() const = 0;
 
-        void setCallBackFunction(std::function<void(StateType)> switchState)
-        {
-            this->SetState = switchState;
-        }
+        void SetGameSwitchCallBack(std::function<void(StateType)> switchState) { SwitchGameState = switchState; }
+        void SetMenuSwitchCallBack(std::function<void(StateType)> switchState) { SwitchMenuState = switchState; }
 
     protected:
-        // This state will be broken after use, so only use at the end of update()
-        std::function<void(StateType)> SetState;
+        std::function<void(StateType)> SwitchMenuState;
+        std::function<void(StateType)> SwitchGameState;
     };
 }
 

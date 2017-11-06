@@ -23,7 +23,6 @@ Projectile::~Projectile() { }
 // \param statusManager - A statusManager filled with potential buffs & upgrades
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
-
 	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
 	
     // Copy all effects & upgrades to projectile
@@ -78,9 +77,8 @@ void Projectile::updateSpecific(float deltaTime)
     // Reset the bullet time modifier back to normal
     m_bulletTimeMod = 1.f;
 
-    float worldTransform[16];
-    getRigidBody()->getWorldTransform().getOpenGLMatrix(worldTransform);
-    renderInfo.transform = DirectX::SimpleMath::Matrix(worldTransform);
+    // Updating transform matrix
+    renderInfo.transform = getTransformMatrix();
 }
 
 // Handle collisions with different types of classes

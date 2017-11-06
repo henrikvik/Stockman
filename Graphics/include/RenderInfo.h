@@ -89,7 +89,7 @@ struct FoliageRenderInfo : StaticRenderInfo
 
 struct AnimatedRenderInfo : StaticRenderInfo
 {
-    const char * animationName = "";
+    const char * animationName = "Rotate";
     float animationProgress = 0;
 };
 

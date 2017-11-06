@@ -26,14 +26,11 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
 	//animation todo
     enemyRenderInfo.model = modelID;
-    enemyRenderInfo.animationName = "";
-    enemyRenderInfo.animationProgress = 0;
-    enemyRenderInfo.freeze = 0;
-    enemyRenderInfo.burn = 0;
-
-    float worldTransform[16];
-    body->getWorldTransform().getOpenGLMatrix(worldTransform);
-    enemyRenderInfo.transform = DirectX::SimpleMath::Matrix(worldTransform);
+//    enemyRenderInfo.animationName = "";
+//    enemyRenderInfo.animationProgress = 0;
+//    enemyRenderInfo.freeze = 0;
+//    enemyRenderInfo.burn = 0;
+    enemyRenderInfo.transform = getTransformMatrix();
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -72,6 +69,10 @@ Enemy::~Enemy() {
 void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
+
+    // Update Render animation and position
+    enemyRenderInfo.transform = getTransformMatrix();
+//    enemyRenderInfo.animationProgress += deltaTime;
 
 	m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 
@@ -158,7 +159,7 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
     data.gravityModifier = 2.5;
 	data.scale = scale;
     data.enemyBullet = true;
-    data.isSensor = true;
+    data.isSensor = false;
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     

@@ -53,7 +53,7 @@ namespace Logic
 			float m_cooldown;
 			float m_maxCooldown;
 
-            AnimatedRenderInfo animatedRenderInfo;
+            StaticRenderInfo animatedRenderInfo;
 	};
 }
 

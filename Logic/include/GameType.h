@@ -6,8 +6,10 @@ namespace Logic
     enum StateType
     {
         Nothing = 0,
-        Start = 1,
-        Game = 2
+        Menu_Start,
+        Menu_Playing,
+        Game_Start, 
+        Game_Playing,
     };
 
     static const int GAME_TYPES = 4, MAX_COMMANDS = 10;

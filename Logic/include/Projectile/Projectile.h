@@ -45,9 +45,9 @@ namespace Logic
 
 	private:          
         StaticRenderInfo renderInfo;
-        ProjectileData m_pData; //< Holds information about this projectile
-		float m_bulletTimeMod;  //< The amount of slowdown from bulletTime, currently affecting this projectile
-		bool m_dead;            //< If this projectile should get removed or not
+        ProjectileData m_pData;         //< Holds information about this projectile
+		float m_bulletTimeMod;          //< The amount of slowdown from bulletTime, currently affecting this projectile
+		bool m_dead;                    //< If this projectile should get removed or not
 
         // Private functions
         bool collisionWithProjectile(Projectile* proj);
