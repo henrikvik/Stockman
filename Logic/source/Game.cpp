@@ -138,6 +138,7 @@ void Game::reset()
 {
     m_projectileManager->removeAllProjectiles();
     m_player->reset();
+    m_hudManager.reset();
 
     m_entityManager.resetTriggers();
     m_entityManager.deallocateData();
