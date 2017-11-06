@@ -26,7 +26,7 @@ namespace Logic
     class StateMenuStart : public State
     {
     public:
-        StateMenuStart();
+        StateMenuStart(StateBuffer* stateBuffer);
         ~StateMenuStart();
         void reset();
         void update(float deltaTime);

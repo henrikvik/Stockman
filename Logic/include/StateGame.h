@@ -10,10 +10,11 @@
 
 namespace Logic
 {
+    class StateBuffer;
     class StateGame : public State
     {
     public:
-        StateGame();
+        StateGame(StateBuffer* stateBuffer);
         ~StateGame();
         void reset();
 

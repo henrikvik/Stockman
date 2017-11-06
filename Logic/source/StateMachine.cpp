@@ -1,4 +1,5 @@
 #include <StateMachine.h>
+#include <StateBuffer.h>
 #include <State.h>
 #include <StateGame.h>
 #include <StateMenu.h>
@@ -9,8 +10,9 @@ using namespace Logic;
 
 StateMachine::StateMachine()
 {
-    m_gameState = new StateGame();
-    m_menuState = new StateMenu();
+    m_stateBuffer = new StateBuffer();
+    m_gameState = new StateGame(m_stateBuffer);
+    m_menuState = new StateMenu(m_stateBuffer);
 
     // Making a function ptr to switch state inside the active state
     SetGameState = [&](StateType stateType) -> void { m_gameState->switchState(stateType); };

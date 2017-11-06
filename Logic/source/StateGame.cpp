@@ -1,4 +1,5 @@
 #include <StateGame.h>
+#include <StateBuffer.h>
 #include <StateGameCampfire.h>
 #include <StateGamePlaying.h>
 
@@ -14,7 +15,8 @@
 
 using namespace Logic;
 
-StateGame::StateGame()
+StateGame::StateGame(StateBuffer* stateBuffer)
+    : State(stateBuffer)
 {
     m_currentState = nullptr;
 }
@@ -64,10 +66,10 @@ void StateGame::switchState(StateType gameState)
         switch (gameState)
         {
         case StateType::Game_Start:
-            m_currentState = new StateGameCampfire();
+            m_currentState = new StateGameCampfire(m_stateBuffer);
             break;
         case StateType::Game_Playing:
-            m_currentState = new StateGamePlaying();
+            m_currentState = new StateGamePlaying(m_stateBuffer);
             break;
         }
 

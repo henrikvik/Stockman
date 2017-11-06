@@ -1,4 +1,6 @@
 #include <StateGameCampfire.h>
+#include <State.h>
+#include <StateBuffer.h>
 #include <Graphics\include\MainCamera.h>
 #include <Graphics\include\Device.h>
 
@@ -14,7 +16,8 @@
 
 using namespace Logic;
 
-StateGameCampfire::StateGameCampfire()
+StateGameCampfire::StateGameCampfire(StateBuffer* stateBuffer)
+    : State(stateBuffer)
 {
     // Initializing Bullet physics
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();				// Configuration

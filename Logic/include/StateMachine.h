@@ -10,6 +10,7 @@ namespace Logic
 {
     class StateGame;
     class StateMenu;
+    class StateBuffer;
     class StateMachine : public NonCopyable
     {
     public:
@@ -26,6 +27,7 @@ namespace Logic
         std::function<StateMenu*()>                 GetMenuState;
         StateGame*                                  m_gameState;
         StateMenu*                                  m_menuState;
+        StateBuffer*                                m_stateBuffer;
     };
 }
 

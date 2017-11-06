@@ -29,7 +29,7 @@ namespace Logic
     class StateGameCampfire : public State
     {
     public:
-        StateGameCampfire();
+        StateGameCampfire(StateBuffer* stateBuffer);
         ~StateGameCampfire();
         void reset();
 

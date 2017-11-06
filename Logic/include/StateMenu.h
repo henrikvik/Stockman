@@ -13,8 +13,7 @@ namespace Logic
     class StateMenu : public State
     {
     public:
-
-        StateMenu();
+        StateMenu(StateBuffer* stateBuffer);
         ~StateMenu();
         void reset();
 

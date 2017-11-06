@@ -1,4 +1,5 @@
 #include <StateMenu.h>
+#include <StateBuffer.h>
 #include <StateMenuStart.h>
 #include <StateMenuPlaying.h>
 
@@ -14,7 +15,8 @@
 
 using namespace Logic;
 
-StateMenu::StateMenu()
+StateMenu::StateMenu(StateBuffer* stateBuffer)
+    : State(stateBuffer)
 {
     m_currentState = nullptr;
 }
@@ -61,10 +63,10 @@ void StateMenu::switchState(StateType menuState)
         switch (menuState)
         {
         case StateType::Menu_Start:
-            m_currentState = new StateMenuStart();
+            m_currentState = new StateMenuStart(m_stateBuffer);
             break;
         case StateType::Menu_Playing:
-            m_currentState = new StateMenuPlaying();
+            m_currentState = new StateMenuPlaying(m_stateBuffer);
             break;
         }
        

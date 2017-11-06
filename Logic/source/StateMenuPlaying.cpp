@@ -1,5 +1,6 @@
 #include <StateMenuPlaying.h>
 #include <StateGame.h>
+#include <StateBuffer.h>
 #include <StateGamePlaying.h>
 #include <Player\Skill\SkillManager.h>
 
@@ -9,11 +10,15 @@
 
 using namespace Logic;
 
-StateMenuPlaying::StateMenuPlaying()
+StateMenuPlaying::StateMenuPlaying(StateBuffer* stateBuffer)
+    : State(stateBuffer)
 {
     // Initializing Menu's
     m_menu = newd MenuMachine();
     m_menu->initialize(Logic::gameStateSkillPick);
+  
+    int testBufferSend = 5;
+    stateBuffer->SendBuffer((void*)&testBufferSend, BufferType::Int, StateType::Menu_Playing, StateType::Game_Playing);
 }
 
 StateMenuPlaying::~StateMenuPlaying()

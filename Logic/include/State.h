@@ -14,9 +14,11 @@ namespace Logic
     class StateMachine;
     class StateGame;
     class StateMenu;
+    class StateBuffer;
     class State : public NonCopyable
     {
     public:
+        State(StateBuffer* stateBuffer) : m_stateBuffer(stateBuffer) { }
         virtual ~State() { }
         virtual void reset() = 0;
         virtual void update(float deltaTime) = 0;
@@ -28,6 +30,7 @@ namespace Logic
         inline void SetCurrentMenuState(std::function<StateMenu*()> menuState)         { GetParentCurrentMenuState    = menuState;    }
 
     protected:
+        StateBuffer* m_stateBuffer;
         std::function<void(StateType)> SwitchParentMenuState;
         std::function<void(StateType)> SwitchParentGameState;
         std::function<StateGame*()> GetParentCurrentGameState;
