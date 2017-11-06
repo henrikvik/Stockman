@@ -39,7 +39,7 @@ void Logic::HUDManager::constructGUIElements()
     float y = 67.0f / 720;
     float width = 285.0f / 2048;
     float height = 276.0f / 720;
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -280, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, {x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -320, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, {x + width, y + height })));
     
     
 
@@ -51,7 +51,7 @@ void Logic::HUDManager::constructGUIElements()
     width = 284.0f / 2048;
     height = 279.0f / 720;
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -200, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -240, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
 
     //sledegehammer
     x = 639.0f / 2048;
@@ -59,36 +59,75 @@ void Logic::HUDManager::constructGUIElements()
     width = 286.0f / 2048;
     height = 275.0f / 720;
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -120, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -160, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
 
 
 
     //creates the difrent skill icons 
 
+    //grappling inactive
+    x = 999.0f / 2048;
+    y = 46.0f / 720;
+    width = 300.0f / 2048;
+    height = 300.0f / 720;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
 
-    //skill 1
+    //charge inacitve
+    x = 1351.f / 2048;
+    y = 43.0f / 720;
+    width = 302.0f / 2048;
+    height = 302.0f / 720;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+
+
+    //bullet time inactive
+    x = 1695.f / 2048;
+    y = 46.0f / 720;
+    width = 303.0f / 2048;
+    height = 303.0f / 720;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+
+
+    //grappling active
+    x = 1000.0f / 2048;
+    y = 370.0f / 720;
+    width = 309.0f / 2048;
+    height = 309.0f / 720;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+
+    //charge active
+    x = 1354.f / 2048;
+    y = 369.0f / 720;
+    width = 307.0f / 2048;
+    height = 307.0f / 720;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+
+
+    //bullet time active
+    x = 1697.f / 2048;
+    y = 374.0f / 720;
+    width = 306.0f / 2048;
+    height = 306.0f / 720;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+
+
+
     GUIElements[6].alpha = 1;
     GUIElements[6].texture = Resources::Textures::HUDIcons;
     GUIElements[6].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[6].textureRect = FloatRect(1000.0f / WIN_WIDTH, 370.0f / WIN_HEIGHT, 309.0f / WIN_WIDTH, 309.0f / WIN_HEIGHT);
-
-    //skill 2
-    GUIElements[7].alpha = 1;
-    GUIElements[7].texture = Resources::Textures::HUDIcons;
-    GUIElements[7].screenRect = FloatRect(1170 / WIN_WIDTH, 530 / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.f / WIN_HEIGHT);
-    GUIElements[7].textureRect = FloatRect(1354 / WIN_WIDTH, 369 / WIN_HEIGHT, 307 / WIN_WIDTH, 307 / WIN_HEIGHT);
-    
-    //skill 3
-    GUIElements[8].alpha = 1;
-    GUIElements[8].texture = Resources::Textures::HUDIcons;
-    GUIElements[8].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
-    GUIElements[8].textureRect = FloatRect(1697.0f / WIN_WIDTH, 374.0f / WIN_HEIGHT, 306.0f / WIN_WIDTH, 306.0f / WIN_HEIGHT);
 
     //skill 1 cd
     GUIElements[9].alpha = 1;
     GUIElements[9].texture = Resources::Textures::HUDIcons;
     GUIElements[9].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[9].textureRect = FloatRect(999.0f / WIN_WIDTH, 46.0f / WIN_HEIGHT, 300.0f / WIN_WIDTH, 300.0f / WIN_HEIGHT);
+
+    //skill 2
+    GUIElements[7].alpha = 1;
+    GUIElements[7].texture = Resources::Textures::HUDIcons;
+    GUIElements[7].screenRect = FloatRect(1170 / WIN_WIDTH, 530 / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.f / WIN_HEIGHT);
+    GUIElements[7].textureRect = FloatRect(1354 / WIN_WIDTH, 369 / WIN_HEIGHT, 307 / WIN_WIDTH, 307 / WIN_HEIGHT);
 
     //skill 2 cd
     GUIElements[10].alpha = 1;
@@ -97,15 +136,19 @@ void Logic::HUDManager::constructGUIElements()
     GUIElements[10].textureRect = FloatRect(1351.0f / WIN_WIDTH, 43.0f / WIN_HEIGHT, 302.0f / WIN_WIDTH, 302.0f / WIN_HEIGHT);
 
 
+
+    //skill 3
+    GUIElements[8].alpha = 1;
+    GUIElements[8].texture = Resources::Textures::HUDIcons;
+    GUIElements[8].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
+    GUIElements[8].textureRect = FloatRect(1697.0f / WIN_WIDTH, 374.0f / WIN_HEIGHT, 306.0f / WIN_WIDTH, 306.0f / WIN_HEIGHT);
+    
+
     //skill 3 cd
     GUIElements[11].alpha = 1;
     GUIElements[11].texture = Resources::Textures::HUDIcons;
     GUIElements[11].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
     GUIElements[11].textureRect = FloatRect(1695.0f / WIN_WIDTH, 46.0f / WIN_HEIGHT, 303.0f / WIN_WIDTH, 303.0f / WIN_HEIGHT);
-
-
-    
-
 
 }
 
@@ -166,56 +209,40 @@ void Logic::HUDManager::updateGUIElemets()
 
 
     //skills
-    if (skillChoosen == false)
+    if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0)
     {
         
-        ////skill 1 off cd
-        //choosenSKills[0].alpha = 1;
-        //choosenSKills[0].texture = Resources::Textures::HUDIcons;
-        //choosenSKills[0].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
-        //choosenSKills[0].textureRect = GUIElements[6 + info.currentSkills[0]].textureRect;
+        HUDElements.push_back(skillList.at(info.currentSkills[0]));
 
-        //// skill 1 on cd
-        //choosenSKills[1].alpha = 1;
-        //choosenSKills[1].texture = Resources::Textures::HUDIcons;
-        //choosenSKills[1].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
-        //choosenSKills[1].textureRect = GUIElements[6 + info.currentSkills[1]].textureRect;
+        skillList.at(info.currentSkills[1]).moveScreenPos(80.0f, 0.0f);
+        skillList.at(3 + info.currentSkills[1]).moveScreenPos(80.0f, 0.0f);
 
-        ////skill 2 off cd
-        //choosenSKills[2].alpha = 1;
-        //choosenSKills[2].texture = Resources::Textures::HUDIcons;
-        //choosenSKills[2].screenRect = FloatRect(1060.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
-        //choosenSKills[2].textureRect = GUIElements[9 + info.currentSkills[0]].textureRect;
-
-        ////skill 2 on cd
-        //choosenSKills[3].alpha = 1;
-        //choosenSKills[3].texture = Resources::Textures::HUDIcons;
-        //choosenSKills[3].screenRect = FloatRect(1170.0f / WIN_WIDTH, 530.0f / WIN_HEIGHT, 178.0f / WIN_WIDTH, 100.0f / WIN_HEIGHT);
-        //choosenSKills[3].textureRect = GUIElements[9 + info.currentSkills[1]].textureRect;
+        HUDElements.push_back(skillList.at(info.currentSkills[1]));
 
 
-        //skillChoosen = true;
+        skillChoosen = true;
     }
     else
     {
-        /*if (1.0f - info.cd[0] < FLT_EPSILON)
+        if (1.0f - info.cd[0] < FLT_EPSILON && info.currentSkills[0] >= 0)
         {
-            GUIElements[6] = choosenSKills[0];
+            HUDElements.at(SKILL1) = skillList.at(3 + info.currentSkills[0]);
         }
-        else
+        else if (info.currentSkills[0] >= 0)
         {
-            GUIElements[6] = choosenSKills[1];
+            HUDElements.at(SKILL1) = skillList.at(info.currentSkills[0]);
         }
 
 
-        if (1.0f - info.cd[1] < FLT_EPSILON)
+        if (1.0f - info.cd[1] < FLT_EPSILON && info.currentSkills[1] >= 0)
         {
-            GUIElements[7] = choosenSKills[2];
+            HUDElements.at(SKILL2) = skillList.at(3 + info.currentSkills[1]);
         }
-        else
+        else if (info.currentSkills[1] >= 0)
         {
-            GUIElements[7] = choosenSKills[3];
-        }*/
+            HUDElements.at(SKILL2) = skillList.at(info.currentSkills[1]);
+        }
+
     }
    
 
@@ -261,26 +288,36 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.sledge = player.isUsingMeleeWeapon();
     info.currentWeapon = player.getCurrentWeapon();
 
-    // HUD info on the first skill
-    const Skill* primary = player.getSkill(SkillManager::ID::PRIMARY);
-    if (!primary->getCanUse())
-        info.cd[0] = primary->getCooldown() / primary->getCooldownMax();
+   
+
+    //skill cooldowns are inverted for some reason 
+    const Skill* secondary = player.getSkill(SkillManager::ID::SECONDARY);
+    if (!secondary->getCanUse())
+        info.cd[0] = secondary->getCooldown() / secondary->getCooldownMax();
     else
         info.cd[0] = 1.0f;
 
-    const Skill* secondary = player.getSkill(SkillManager::ID::SECONDARY);
-    if (!secondary->getCanUse())
-        info.cd[1] = secondary->getCooldown() / secondary->getCooldownMax();
+    const Skill* primary = player.getSkill(SkillManager::ID::PRIMARY);
+    if (!primary->getCanUse())
+        info.cd[1] = primary->getCooldown() / primary->getCooldownMax();
     else
         info.cd[1] = 1.0f;
+
+
 
     info.wave = timeManager.getCurrentWave() + 1;
     info.timeRemaining = (timeManager.getTimeRequired() - timeManager.getTimeCurrent()) * 0.001f;
     info.enemiesRemaining = (int)entityManager.getNrOfAliveEnemies();
 
 
-    info.currentSkills[0] = player.getCurrentSkill0();
-    info.currentSkills[1] = player.getCurrentSkill1();
+   /* info.currentSkills[0] = player.getCurrentSkill0();
+    info.currentSkills[1] = player.getCurrentSkill1();*/
+
+
+    //TODO 
+    //remove when skill pick works again
+    info.currentSkills[0] = 0;
+    info.currentSkills[1] = 1;
 
     this->updateGUIElemets();
     

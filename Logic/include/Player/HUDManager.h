@@ -45,6 +45,7 @@ namespace Logic
         static const int CURRENT_AMMO, TOTAL_AMMO;
         SpriteRenderInfo GUIElements[NROFICONS];
         std::vector<Sprite> HUDElements;
+        std::vector<Sprite> skillList;
 
         //all possible icons for your choosen skills. off cd / on cd
         SpriteRenderInfo choosenSKills[4];
@@ -61,6 +62,7 @@ namespace Logic
             SKILL1,
             SKILL2
         };
+
         
     public:
         HUDManager();
