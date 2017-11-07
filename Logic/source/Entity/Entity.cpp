@@ -37,7 +37,7 @@ void Entity::update(float deltaTime)
 		affect(effectPair.first, *effectPair.second, deltaTime);
 	
 	// Updating buffs duration
-	m_statusManager.update(deltaTime);
+	m_statusManager.update(deltaTime, *this);
 }
 
 void Entity::upgrade(Upgrade const & upgrade) { }
