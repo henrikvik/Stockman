@@ -123,6 +123,7 @@
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /syi "$(SolutionDir)libs\tbb\bin\*.dll" "$(SolutionDir)build\$(Platform)\$(Configuration)\"
@@ -145,6 +146,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /syi "$(SolutionDir)libs\tbb\bin\*.dll" "$(SolutionDir)build\$(Platform)\$(Configuration)\"
@@ -171,6 +173,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /syi "$(SolutionDir)libs\tbb\bin\*.dll" "$(SolutionDir)build\$(Platform)\$(Configuration)\"
@@ -197,6 +200,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /syi "$(SolutionDir)libs\tbb\bin\*.dll" "$(SolutionDir)build\$(Platform)\$(Configuration)\"
