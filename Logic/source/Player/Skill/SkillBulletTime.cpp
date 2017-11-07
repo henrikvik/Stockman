@@ -83,7 +83,10 @@ void SkillBulletTime::onUpdate(float deltaTime)
 				m_sensor->getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, m_stacks);
 		}
 
-        renderInfo.progress = m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION;
+        if (m_sensor)
+            renderInfo.progress = m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION;
+        else
+            renderInfo.progress = 1.f;
     }
 
 
