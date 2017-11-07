@@ -137,7 +137,21 @@ void Player::registerDebugCmds()
     {
         getStatusManager().addStatus(StatusManager::STUN, 1, true);
 
-        return "Player is Stunned";
+        return "Player is stunned";
+    });
+
+    win->registerCommand("LOG_PLAYER_MOVE_FASTER", [&](std::vector<std::string> &args) -> std::string
+    {
+        getStatusManager().addStatus(StatusManager::MOVEMENTSPEED_UP, 1, true);
+
+        return "Player is red so player goes fastah";
+    });
+
+    win->registerCommand("LOG_PLAYER_MOVE_SLOWER", [&](std::vector<std::string> &args) -> std::string
+    {
+        getStatusManager().addStatus(StatusManager::MOVEMENTSPEED_DOWN, 1, true);
+
+        return "Player is not red so player does not go fastah";
     });
 }
 
@@ -184,17 +198,15 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 	long long flags = effect.getStandards()->flags;
     
 
-	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
-	{
-		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * 3, 0.f });
-		m_playerState = PlayerState::IN_AIR;
-	}
-
+    if (flags & Effect::EFFECT_BOUNCE)
+    {
+        m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * 3, 0.f });
+        m_playerState = PlayerState::IN_AIR;
+    }
     if (flags & Effect::EFFECT_MODIFY_HP)
     {
         m_hp += static_cast<int> (effect.getModifiers()->modifyHP);
     }
-
 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
         Weapon* wp = nullptr;
@@ -213,10 +225,33 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
                 wp->setAmmo(currentAmmo + magSize);
         }
 	}
+    if (flags & Effect::EFFECT_ON_FIRE)
+    {
+        takeDamage(static_cast<int> (effect.getModifiers()->modifyDmgTaken * deltaTime));
+    }
+    if (flags & Effect::EFFECT_IS_FROZEN)
+    {
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+    }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
         m_moveSpeedMod = effect.getModifiers()->modifyMovementSpeed;
         m_stunned = true;
+    }
+}
+
+void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
+{
+    long long flags = effect.getStandards()->flags;
+
+    if (flags & Effect::EFFECT_IS_FROZEN)
+    {
+        m_moveSpeedMod = 1;
+    }
+    if (flags & Effect::EFFECT_IS_STUNNED)
+    {
+        m_moveSpeedMod = 1;
+        m_stunned = false;
     }
 }
 
@@ -267,8 +302,6 @@ int Player::getHP() const
 
 void Player::updateSpecific(float deltaTime)
 {
-    m_moveSpeedMod = 1.0f;
-    m_stunned = false;
 	Player::update(deltaTime);
 
 	// Updates listener info for sounds

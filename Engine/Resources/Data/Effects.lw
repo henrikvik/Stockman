@@ -67,7 +67,7 @@
 	"sAmmoType": 0f;
 }
 { // ENRAGE
-	"flags": 200; // 0x8 + 0x40 + 0x80 
+	"flags": 32840; // 0x8 + 0x40 + 0x16000 
 	"duration": 800000f;
 	"modifiers": 1;
 	"specifics": 0;
@@ -101,4 +101,28 @@
 	"mFirerate": 0f;
 	"mHP": 0f;
 	"mMovementSpeed": 0f;
+}
+{ //MOVEMENTSPEED UP
+    "flags" : 32768; // 0x8000
+    "duration" : 20000f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 1.5f;
+}
+{ //MOVEMENTSPEED DOWN
+    "flags" : 32768; // 0x8000
+    "duration" : 20000f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0.5f;
 }

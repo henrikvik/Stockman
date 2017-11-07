@@ -25,7 +25,7 @@ namespace Logic
 			EFFECT_MODIFY_DMG_TAKEN		= 0x10,
 			EFFECT_MODIFY_HP			= 0x20,
 			EFFECT_MODIFY_FIRERATE		= 0x40,
-			EFFECT_MODIFY_MOVEMENTSPEED	= 0x80,
+			EFFECT_BOUNCE	            = 0x80,
 			EFFECT_MODIFY_FREEZING		= 0x100,
 			EFFECT_MODIFY_AMMO	        = 0x200,
 			EFFECT_CONSTANT_INVINC		= 0x400,
@@ -33,6 +33,8 @@ namespace Logic
 			EFFECT_CONSTANT_DAMAGE_ON_CONTACT = 0x1000,
 			EFFECT_BULLET_TIME			= 0x2000,
             EFFECT_IS_STUNNED           = 0x4000,
+            EFFECT_MOVE_FASTER          = 0x8000,
+            EFFECT_MOVE_SLOWER          = 0x10000,
 		};
 
 		struct Standards {

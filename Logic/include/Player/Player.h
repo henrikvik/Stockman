@@ -147,6 +147,7 @@ namespace Logic
 		void onCollision(Projectile& other);
 
 		void affect(int stacks, Effect const &effect, float deltaTime);
+        void onEffectEnd(int stacks, Effect const &effect);
 		void upgrade(Upgrade const &upgrade);
 
 		void render(Graphics::Renderer& renderer); 
