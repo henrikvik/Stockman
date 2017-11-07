@@ -1,6 +1,6 @@
 #include <StateGamePlaying.h>
-#include <State.h>
 #include <StateBuffer.h>
+#include <State.h>
 
 // Input Singletons
 #include <Keyboard.h>
@@ -112,10 +112,6 @@ void StateGamePlaying::reset()
 
 void StateGamePlaying::update(float deltaTime)
 {
-    void* ptr = m_stateBuffer->ReadBuffer(StateType::Game_Playing);
-    if (ptr)
-        printf("YES: %d\n", *static_cast<int*>(ptr));
-
     m_fpsRenderer.updateFPS(deltaTime);
     ComboMachine::Get().Update(deltaTime);
     m_waveTimeManager.update(deltaTime, m_entityManager);
