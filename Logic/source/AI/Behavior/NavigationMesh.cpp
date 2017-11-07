@@ -1,6 +1,7 @@
 #include <AI\Behavior\NavigationMesh.h>
 #include <Misc\FileLoader.h>
 #define EPSILON 0.0001f
+#define EPSILON_NODE 0.05f
 using namespace Logic;
 
 const DirectX::SimpleMath::Vector3 NavigationMesh::dir = DirectX::SimpleMath::Vector3(0.f, -1.f, 0.f);
@@ -13,6 +14,12 @@ NavigationMesh::~NavigationMesh()
 {
 }
 
+void NavigationMesh::clear()
+{
+    triangleList.clear();
+    edges.clear();
+    nodes.clear();
+}
 void NavigationMesh::addTriangle(Triangle const & triangle)
 {
 	triangleList.push_back(triangle);
@@ -21,6 +28,36 @@ void NavigationMesh::addTriangle(Triangle const & triangle)
 void NavigationMesh::addEdge(int from, int to)
 {
 	edges[from].indices.push_back(to);
+}
+
+void NavigationMesh::generateEdges()
+{
+    // simple custom algo
+    // add edge beetwen triangles that shares two vertices
+    // (change to one shared vertex in future to see if it works with the map)
+    int same = 0;
+    for (size_t i = 0; i < triangleList.size(); i++)
+    {
+        for (size_t j = 0; j < triangleList.size() && j != i; j++)
+        {
+            same = 0;
+            for (auto const &vertex : triangleList[i].vertices)
+            {
+                for (auto const &otherV : triangleList[j].vertices)
+                {
+                    if ((vertex - otherV).Length() <= EPSILON_NODE)
+                    {
+                        if (++same > 1)
+                        {
+                            addEdge(static_cast<int> (i), static_cast<int> (j));
+                            break;
+                        }
+                    }
+                }
+                if (same > 1) break;
+            }
+        }
+    }
 }
 
 std::vector<int>& NavigationMesh::getEdges(int from)
@@ -53,9 +90,14 @@ std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataTri()
 	std::vector<DirectX::SimpleMath::Vector3> *data =
 		new std::vector<DirectX::SimpleMath::Vector3>();
 
-	for (Triangle const &tri : triangleList)
-		for (int i = 0; i < 3; i++)
-			data->push_back(tri.vertices[i]);
+    for (Triangle const &tri : triangleList)
+    {
+        for (int i = 0; i < 3; i++) // List of lines to make a triangle
+        {
+            data->push_back(tri.vertices[i]);
+            data->push_back(tri.vertices[i == 2 ? 0 : i + 1]);
+        }
+    }
 
 	return data;
 }
@@ -82,7 +124,7 @@ const std::vector<NavigationMesh::Edge>& NavigationMesh::getEdges() const
 	return edges;
 }
 
-int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const & pos) const
+int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const &pos) const
 {
 	// ray vs triangle, copied, change to own algo later, ?
 	for (int i = 0; i < triangleList.size(); i++)
@@ -93,7 +135,8 @@ int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const & pos) const
 
 	return -1;
 }
-bool Logic::NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const & pos, int index) const
+
+bool NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const & pos, int index) const
 {
 	Triangle tri = triangleList[index];
 	DirectX::SimpleMath::Vector3 p, q, t;
