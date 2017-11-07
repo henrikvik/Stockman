@@ -13,7 +13,8 @@ namespace Graphics
             std::initializer_list<ID3D11RenderTargetView*> targets,
             std::initializer_list<ID3D11ShaderResourceView*> resources = {},
             std::initializer_list<ID3D11Buffer*> buffers = {},
-            ID3D11DepthStencilView * depthStencil = nullptr);
+            ID3D11DepthStencilView * depthStencil = nullptr,
+            std::initializer_list<ID3D11UnorderedAccessView*> uavs = {});
         virtual ~SSAORenderPass();
 
         void render() const;
@@ -27,5 +28,7 @@ namespace Graphics
 
         ShaderResource ssaoOutput;
         ShaderResource ssaoOutputSwap;
+
+        std::vector<ID3D11UnorderedAccessView*> uavs;
     };
 }

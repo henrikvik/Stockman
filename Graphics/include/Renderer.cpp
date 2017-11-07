@@ -53,7 +53,6 @@ namespace Graphics
         , fog(device)
         , menu(device, deviceContext)
         , hud(device, deviceContext)
-        , ssaoRenderer(device)
         , bulletTimeBuffer(device)
         , DoFRenderer(device)
 #pragma region Foliage
@@ -195,8 +194,8 @@ namespace Graphics
                 },
                 depthStencil
             ),
-            newd GlowRenderPass({*fakeBackBufferSwap },{*fakeBackBuffer, glowMap}),
-            newd SSAORenderPass({backBuffer}, {*fakeBackBufferSwap}, {}),
+            newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
+            newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
             newd GUIRenderPass({backBuffer}),
         };
     }
@@ -662,7 +661,8 @@ namespace Graphics
 	void Renderer::clear()
 	{
 		static float clearColor[4] = { 0 };
-		Global::context->ClearRenderTargetView(backBuffer, clearColor);
+        Global::context->ClearRenderTargetView(backBuffer, clearColor);
+        Global::context->ClearRenderTargetView(normalMap, clearColor);
         Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
         Global::context->ClearRenderTargetView(*fakeBackBufferSwap, clearColor);
         Global::context->ClearRenderTargetView(glowMap, clearColor);
