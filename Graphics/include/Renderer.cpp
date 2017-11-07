@@ -17,6 +17,8 @@
 #include "RenderPass\ForwardPlusRenderPass.h"
 #include "RenderPass\DepthRenderPass.h"
 #include "RenderPass\LightCullRenderPass.h"
+#include "RenderPass\ShadowRenderPass.h"
+#include "RenderPass\SkyBoxRenderPass.h"
 
 
 #define USE_TEMP_CUBE false
@@ -40,7 +42,6 @@ namespace Graphics
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
 		, instanceSBuffer(device, CpuAccess::Write, _INSTANCE_CAP)
 		, instanceOffsetBuffer(device)
-		, glowRenderer(device, deviceContext)
 #pragma region RenderDebugInfo
         , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
         , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
@@ -170,6 +171,7 @@ namespace Graphics
                     lightOpaqueGridUAV
                 }
             ),
+            newd SkyBoxRenderPass({ backBuffer },{},{ *sun.getLightDataBuffer() }, depthStencil),
             newd ForwardPlusRenderPass(
                 {
                     backBuffer,
@@ -598,6 +600,13 @@ namespace Graphics
         clear();
         Global::context->RSSetViewports(1, &viewPort);
 
+        StaticRenderInfo infotest;
+        infotest.model = Resources::Models::Staff;
+        infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
+
+        RenderQueue &teststsetes = RenderQueue::get();
+        teststsetes.queue<StaticRenderInfo>(&infotest);
+
         writeInstanceBuffers();
 
         sun.update();
@@ -625,10 +634,8 @@ namespace Graphics
 		static float clearColor[4] = { 0 };
 		Global::context->ClearRenderTargetView(backBuffer, clearColor);
 		Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
-		Global::context->ClearRenderTargetView(glowRenderer, clearColor);
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
-		glowRenderer.clear(Global::context, clearColor);
 	}
 
 	void Renderer::swapBackBuffers()
@@ -1023,14 +1030,14 @@ namespace Graphics
 			return catcher;
 		});
 
-		debugWindow->registerCommand("GFX_RELOAD_GLOW_SHADERS", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
+		//debugWindow->registerCommand("GFX_RELOAD_GLOW_SHADERS", [&](std::vector<std::string> &args)->std::string
+		//{
+		//	std::string catcher = "";
 
-			glowRenderer.recompileGlow(Global::device);
+		//	glowRenderer.recompileGlow(Global::device);
 
-			return catcher;
-		});
+		//	return catcher;
+		//});
 
 		/*debugWindow->registerCommand("GFX_RELOAD_SNOW_SHADER", [&](std::vector<std::string> &args)->std::string
 		{
