@@ -1,4 +1,4 @@
-#include <StateGameCampfire.h>
+#include <StateGameStart.h>
 #include <State.h>
 #include <StateBuffer.h>
 #include <Graphics\include\MainCamera.h>
@@ -16,7 +16,7 @@
 
 using namespace Logic;
 
-StateGameCampfire::StateGameCampfire(StateBuffer* stateBuffer)
+StateGameStart::StateGameStart(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
     // Initializing Bullet physics
@@ -32,18 +32,18 @@ StateGameCampfire::StateGameCampfire(StateBuffer* stateBuffer)
     m_map->init(m_physics, "Campfire.txt");
 }
 
-StateGameCampfire::~StateGameCampfire()
+StateGameStart::~StateGameStart()
 {
     delete m_physics;
     delete m_map;
 }
 
-void StateGameCampfire::reset()
+void StateGameStart::reset()
 {
 
 }
 
-void StateGameCampfire::update(float deltaTime)
+void StateGameStart::update(float deltaTime)
 {
     static DirectX::SimpleMath::Vector3 movingCameraPosition(0, 0, 0);
     static DirectX::SimpleMath::Vector3 movingCameraForward(0, 0, 1);
@@ -59,7 +59,7 @@ void StateGameCampfire::update(float deltaTime)
     PROFILE_END();
 }
 
-void StateGameCampfire::render() const
+void StateGameStart::render() const
 {
     PROFILE_BEGIN("Render Map");
     m_map->render();

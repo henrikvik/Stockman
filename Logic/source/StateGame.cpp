@@ -1,6 +1,6 @@
 #include <StateGame.h>
 #include <StateBuffer.h>
-#include <StateGameCampfire.h>
+#include <StateGameStart.h>
 #include <StateGamePlaying.h>
 
 // Input Singletons
@@ -82,7 +82,7 @@ void StateGame::loadState(StateType gameState)
     switch (gameState)
     {
     case StateType::Game_Start:
-        m_currentState = new StateGameCampfire(m_stateBuffer);
+        m_currentState = new StateGameStart(m_stateBuffer);
         break;
     case StateType::Game_Playing:
         m_currentState = new StateGamePlaying(m_stateBuffer);

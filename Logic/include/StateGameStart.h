@@ -1,5 +1,5 @@
-#ifndef STATEGAMECAMPFIRE_H
-#define STATEGAMECAMPFIRE_H
+#ifndef STATEGAMESTART_H
+#define STATEGAMESTART_H
 
 // C++ Includes
 #include <stdio.h>
@@ -26,11 +26,11 @@
 
 namespace Logic
 {
-    class StateGameCampfire : public State
+    class StateGameStart : public State
     {
     public:
-        StateGameCampfire(StateBuffer* stateBuffer);
-        ~StateGameCampfire();
+        StateGameStart(StateBuffer* stateBuffer);
+        ~StateGameStart();
         void reset();
 
         void update(float deltaTime);
@@ -43,4 +43,4 @@ namespace Logic
     };
 }
 
-#endif // !STATEGAMECAMPFIRE_H
+#endif // !STATEGAMESTART_H
