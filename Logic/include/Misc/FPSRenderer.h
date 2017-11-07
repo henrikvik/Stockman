@@ -9,14 +9,17 @@ namespace Logic
 	private:
 		int fps, frames;
 		float fpsTimer;
-
         TextRenderInfo renderInfo;
+        std::wstring FPSString;
+        
 	public:
 		FPSRenderer();
 		~FPSRenderer();
+        
 
 		void updateFPS(float deltaTime);
         void render() const;
+        TextRenderInfo getTextRenderInfo()const;
 	};
 }
 

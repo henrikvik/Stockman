@@ -73,7 +73,7 @@ void Graphics::GUIRenderPass::render()
         context->Draw(4, 0);
     }
 
-    //textRender();
+    textRender();
 }
 
 //render the queued text
