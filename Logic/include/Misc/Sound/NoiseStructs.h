@@ -6,28 +6,25 @@
 
 namespace Sound
 {
-    enum LOAD_MODE
-    {
-        SAMPLE, STREAM
-    };
+    enum LOAD_MODE { SAMPLE, STREAM };
 
     struct SOUNDSETTINGS
     {
-        static const bool       MUTE_ALL = false;
-        static const LOAD_MODE  SFX_LOAD_MODE = LOAD_MODE::SAMPLE;
-        static const LOAD_MODE  MUSIC_LOAD_MODE = LOAD_MODE::STREAM;
+        static const bool       MUTE_ALL            = false;
+        static const LOAD_MODE  SFX_LOAD_MODE       = LOAD_MODE::SAMPLE;
+        static const LOAD_MODE  MUSIC_LOAD_MODE     = LOAD_MODE::STREAM;
     };
 
     struct THRESHOLD
     {
-        static const int	MAX_CHANNELS = 1;
-        static const int	MAX_GROUPS = 4;
-        static const int	MAX_SFX = 32;
-        static const int	MAX_SONGS = 32;
-        static const int	MUSIC_MIN_DIST = 1;
-        static const int	MUSIC_MAX_DIST = 25;
-        static const int	SFX_MIN_DIST = 1;
-        static const int	SFX_MAX_DIST = 10;
+        static const int	MAX_CHANNELS    = 1;
+        static const int    MAX_GROUPS      = 4;
+        static const int	MAX_SFX         = 32;
+        static const int	MAX_SONGS       = 32;
+        static const int	MUSIC_MIN_DIST  = 1;
+        static const int	MUSIC_MAX_DIST  = 25;
+        static const int	SFX_MIN_DIST    = 1;
+        static const int	SFX_MAX_DIST    = 10;
     };
 
     enum CHANNEL_GROUP
@@ -47,8 +44,9 @@ namespace Sound
     // Put all identifier for music here
     enum MUSIC
     {
-        TEST_MUSIC,
-        ENRAGE
+        MUSIC_MAIN_MENU,
+        MUSIC_CREDITS,
+        MUSIC_IN_GAME,
     };
 
     // Keeps track of everything about a specific sound
@@ -68,10 +66,10 @@ namespace Sound
 
         void update(btVector3 inVelocity, btVector3 inUp, btVector3 inForward, btVector3 inPosition)
         {
-            vel = { inVelocity.x(),	inVelocity.y(), inVelocity.z() };
-            up = { inUp.x(),			inUp.y(),		inUp.z() };
-            forward = { inForward.x(),	inForward.y(),	inForward.z() };
-            pos = { inPosition.x(),	inPosition.y(), inPosition.z() };
+            vel     = { inVelocity.x(),	inVelocity.y(), inVelocity.z()  };
+            up      = { inUp.x(),			inUp.y(),		inUp.z()    };
+            forward = { inForward.x(),	inForward.y(),	inForward.z()   };
+            pos     = { inPosition.x(),	inPosition.y(), inPosition.z()  };
         }
 
         __int8		id;			//< Different id for different players
