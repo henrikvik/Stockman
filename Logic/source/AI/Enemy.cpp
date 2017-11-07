@@ -23,6 +23,7 @@ Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent,
     m_moveSpeedMod = 1.f;
 
     m_nrOfCallbacksEntities = 0;
+    m_stunned = false;
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
