@@ -40,17 +40,15 @@ namespace Resources
     {
         enum Files
         {
-            AnimationTest,
             ForwardPlus,
-            SimpleForward,
+            LightGridCulling,
             SkyShader,
             SpriteShader
         };
         const std::map<Files, const char *> Paths =
         {
-            {AnimationTest, R"(..\Resources\Shaders\AnimationTest.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
-            {SimpleForward, R"(..\Resources\Shaders\SimpleForward.hlsl)"},
+            {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"}
         };

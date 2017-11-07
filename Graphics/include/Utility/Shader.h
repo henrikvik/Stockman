@@ -41,7 +41,8 @@ namespace Graphics
 	class ComputeShader
 	{
 	public:
-		ComputeShader(ID3D11Device * device, LPCWSTR shaderPath);
+        ComputeShader(Resources::Shaders::Files shader);
+        ComputeShader(ID3D11Device * device, LPCWSTR shaderPath);
 		virtual ~ComputeShader();
 		void recompile(ID3D11Device * device, LPCWSTR shaderPath);
 

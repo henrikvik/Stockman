@@ -140,7 +140,12 @@ namespace Graphics
 		}
 	}
 
-	ComputeShader::ComputeShader(ID3D11Device * device, LPCWSTR shaderPath)
+    ComputeShader::ComputeShader(Resources::Shaders::Files shader)
+        : ComputeShader(Global::device, _bstr_t(Resources::Shaders::Paths.at(shader)))
+    {
+    }
+
+    ComputeShader::ComputeShader(ID3D11Device * device, LPCWSTR shaderPath)
 	{
 		ID3DBlob *csShader, *errorMsg;
 

@@ -56,8 +56,6 @@ void Map::render() const
     {
         for (StaticObject* e : m_hitboxes)
             e->renderD();
-     //   for (LightObject* l : m_lights)
-     //       Graphics::Debug::PointLight(*l);
     }
 }
 	
@@ -119,8 +117,8 @@ void Map::loadMapFromFile(std::string path)
     lights.push_back({ DirectX::SimpleMath::Vector3(-22, 3, 70), DirectX::SimpleMath::Vector3(1, 0.55f, 0.5f), 0.85f, 10.f });
 
     // Create everything and save
-    for (size_t i = hitboxes.size(); i--;)  add(hitboxes[i]);
-    for (size_t i = lights.size(); i--;)    add(lights[i]);
+    for (auto & hitbox : hitboxes) add(hitbox);
+    for (auto & light : lights) add(light);
 }
 
 // Adds a pointlight to the map

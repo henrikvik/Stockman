@@ -1,5 +1,4 @@
 #include "../ShaderConstants.hlsli"
-#include "../LightCalcInclude.hlsli"
 
 Texture2D backBuffer : register(t4);
 Texture2D toMerge : register(t5);
@@ -22,18 +21,18 @@ VSOut VS(uint id: SV_VertexID)
 
 float4 PS(VSOut input) : SV_Target0
 {
-    float3 color = backBuffer.Sample(Sampler, input.uv);
-    float3 glowColor = toMerge.Sample(Sampler, input.uv);
+    //float3 color = backBuffer.Sample(Sampler, input.uv);
+    //float3 glowColor = toMerge.Sample(Sampler, input.uv);
 
       
 
-    color = adjustSaturation(color, GLOW_ORIGINAL_SATURATION) * GLOW_ORIGINAL_INTENSITY;
-    glowColor = adjustSaturation(glowColor, GLOW_SATURATION) * GLOW_INTENSITY;
+    //color = adjustSaturation(color, GLOW_ORIGINAL_SATURATION) * GLOW_ORIGINAL_INTENSITY;
+    //glowColor = adjustSaturation(glowColor, GLOW_SATURATION) * GLOW_INTENSITY;
 
 
-    color *= (1 - saturate(glowColor));
+    //color *= (1 - saturate(glowColor));
 
-    color = saturate(color + glowColor);
+    //color = saturate(color + glowColor);
 
-    return float4(color, 1);
+    return float4(1,1,1,1);
 }
