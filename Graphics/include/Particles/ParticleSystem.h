@@ -4,14 +4,11 @@
 #include <d3d11.h>
 
 #include <SimpleMath.h>
-#include <CommonStates.h>
 
 #include "Particle.h"
 #include "../Camera.h"
 #include "../Utility/Buffer.h"
 #include "../Utility/Shader.h"
-#include "../CommonStates.h"
-
 namespace Graphics {;
 
 using namespace DirectX;
@@ -43,8 +40,8 @@ public:
     void addEffect(std::string name, XMMATRIX model);
     ParticleEffect getEffect(std::string name);
 
-	void renderPrePass(ID3D11DeviceContext *cxt, Camera *cam, DirectX::CommonStates *states, ID3D11DepthStencilView *dest_dsv);
-	void render(ID3D11DeviceContext *cxt, Camera *cam, DirectX::CommonStates *states, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView *dest_dsv, bool debug);
+	void renderPrePass(ID3D11DeviceContext *cxt, Camera *cam, ID3D11DepthStencilView *dest_dsv);
+	void render(ID3D11DeviceContext *cxt, Camera *cam, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView *dest_dsv, bool debug);
 	void update(ID3D11DeviceContext *cxt, Camera *cam, float dt);
 
     struct GeometryParticleInstance {

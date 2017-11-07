@@ -2,7 +2,7 @@
 #include <WICTextureLoader.h>
 #include <Engine\Constants.h>
 #include "../Device.h"
-#include "../CommonStates.h"
+#include "../CommonState.h"
 #include "../MainCamera.h"
 
 namespace Graphics {

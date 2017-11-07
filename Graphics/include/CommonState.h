@@ -3,8 +3,10 @@
 #include <CommonStates.h>
 
 
+
 namespace Global
 {
-    extern DirectX::CommonStates * cStates;
+    using namespace DirectX;
+    extern CommonStates * cStates;
     extern ID3D11SamplerState * comparisonSampler;
 }

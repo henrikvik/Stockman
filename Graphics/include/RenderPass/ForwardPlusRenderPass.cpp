@@ -1,6 +1,6 @@
 #include "ForwardPlusRenderPass.h"
 #include "../Device.h"
-#include "../CommonStates.h"
+#include "../CommonState.h"
 #include "../RenderQueue.h"
 #include "../HybrisLoader/HybrisLoader.h"
 

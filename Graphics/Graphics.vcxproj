@@ -79,7 +79,7 @@
     <ClInclude Include="include\Particles\ParticleSystem.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\RenderInfo.h" />
-    <ClInclude Include="include\CommonStates.h" />
+    <ClInclude Include="include\CommonState.h" />
     <ClInclude Include="include\RenderPass\DepthRenderPass.h" />
     <ClInclude Include="include\RenderPass\ForwardPlusRenderPass.h" />
     <ClInclude Include="include\RenderPass\GUIRenderPass.h" />

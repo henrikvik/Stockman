@@ -3,28 +3,31 @@
 #include "../Device.h"
 #include "../Utility/sizeofv.h"
 #include "../Utility/TextureLoader.h"
-#include "../CommonStates.h"
+#include "../CommonState.h"
+#include <comdef.h>
 
 Graphics::GUIRenderPass::GUIRenderPass(std::initializer_list<ID3D11RenderTargetView*> targets, std::initializer_list<ID3D11ShaderResourceView*> resources, std::initializer_list<ID3D11Buffer*> buffers, ID3D11DepthStencilView * depthStencil)
     : RenderPass(targets, resources, buffers, depthStencil)
     , spriteShader(Resources::Shaders::SpriteShader)
     , vertexBuffer(CpuAccess::Write, INSTANCE_CAP(SpriteRenderInfo) * 4)
 {
-    this->renderTarget = renderTarget;
+    this->sBatch = std::make_unique<DirectX::SpriteBatch>(Global::context);
 
-    this->sBatch = std::make_unique<DirectX::SpriteBatch>(context);
-
-    this->sFonts[0] = std::make_unique<DirectX::SpriteFont>(device, convertFontFilePath(Resources::Fonts::KG14).c_str());
-    this->sFonts[1] = std::make_unique<DirectX::SpriteFont>(device, convertFontFilePath(Resources::Fonts::KG18).c_str());
-    this->sFonts[2] = std::make_unique<DirectX::SpriteFont>(device, convertFontFilePath(Resources::Fonts::KG26).c_str());
+    for (auto & font : Resources::Fonts::Paths)
+    {
+        fonts.insert(std::make_pair(
+            font.first, 
+            std::make_unique<DirectX::SpriteFont>(Global::device, _bstr_t(font.second))
+        ));
+    }
 }
 
 Graphics::GUIRenderPass::~GUIRenderPass()
 {
     sBatch.reset();
-    for (size_t i = 0; i < NR_OF_FONTS; i++)
+    for (auto & font : fonts)
     {
-        sFonts[i].reset();
+        font.second.reset();
     }
     
 }
@@ -43,7 +46,7 @@ void Graphics::GUIRenderPass::render() const
     ID3D11SamplerState * linear = Global::cStates->LinearClamp();
     Global::context->PSSetSamplers(0, 1, &linear);
 
-    Global::context->OMSetRenderTargets(1, &renderTarget, nullptr);
+    Global::context->OMSetRenderTargets(targets.size(), targets.data(), depthStencil);
     Global::context->OMSetBlendState(Global::cStates->AlphaBlend(), NULL, -1);
 
     std::vector<Vertex> vertices(4);
@@ -93,8 +96,8 @@ void Graphics::GUIRenderPass::update(float deltaTime)
         vertices[BL].uv = Vector2(TL_UV_X, BR_UV_Y);
         vertices[BR].uv = Vector2(BR_UV_X, BR_UV_Y);
 
-        vertexBuffer.write(context, vertices.data(), sizeofv(vertices));
-        context->Draw(4, 0);
+        vertexBuffer.write(Global::context, vertices.data(), sizeofv(vertices));
+        Global::context->Draw(4, 0);
     }
 
     //textRender();
@@ -108,22 +111,11 @@ void Graphics::GUIRenderPass::textRender()
     {
         if (isDrawableString(info->text))
         {
-            sFonts[info->font]->DrawString(sBatch.get(), info->text, info->position, info->color);
+            fonts.at(info->font)->DrawString(sBatch.get(), info->text, info->position, info->color);
         }
         
     }
     sBatch->End();
-}
-
-std::wstring Graphics::GUIRenderPass::convertFontFilePath(Resources::Fonts::Files input)
-{
-
-    const char* orig = Resources::Fonts::Paths.at(input);
-    size_t size = std::strlen(orig);
-    std::wstring converted;
-    converted.resize(size);
-    std::mbstowcs(&converted[0], orig, size);
-    return converted;
 }
 
 //checks fow unallowed characters that chrashed the text draw

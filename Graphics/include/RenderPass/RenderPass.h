@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include "../RenderQueue.h"
 #include "../Utility/ModelLoader.h"
-#include "../CommonStates.h"
+#include "../CommonState.h"
 
 namespace Graphics
 {

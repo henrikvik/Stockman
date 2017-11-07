@@ -48,7 +48,7 @@ void StateGameCampfire::update(float deltaTime)
     static DirectX::SimpleMath::Vector3 movingCameraPosition(0, 0, 0);
     static DirectX::SimpleMath::Vector3 movingCameraForward(0, 0, 1);
     movingCameraPosition.y += 0.001f * deltaTime;
-    Global::mainCamera->update(movingCameraPosition, movingCameraForward, context);
+    Global::mainCamera->update(movingCameraPosition, movingCameraForward, Global::context);
 
     PROFILE_BEGIN("Physics");
     m_physics->update(deltaTime);
