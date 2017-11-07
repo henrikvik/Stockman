@@ -16,7 +16,7 @@ namespace Hybris
 
         void release();
 
-        T &      operator[](size_t index);
+        T&       operator[](size_t index);
         T const& operator[](size_t index) const;
         List<T>& operator=(List<T> & other);
         List<T>& operator=(std::vector<T> & vector);

@@ -38,6 +38,12 @@ StateMachine::StateMachine()
     Sound::NoiseMachine::Get().init();
     Sound::ListenerData listener;
     Sound::NoiseMachine::Get().update(listener);
+
+
+
+    // afuahsufhaushfu
+    SetMenuState(StateType::Menu_Playing);
+    SetGameState(StateType::Game_Playing);
 }
 
 StateMachine::~StateMachine()

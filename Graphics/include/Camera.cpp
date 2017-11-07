@@ -45,26 +45,7 @@ namespace Graphics
 	//Depricated, use update instead.
 	void Camera::updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext * context)
 	{
-        DirectX::SimpleMath::Matrix newView = DirectX::XMMatrixLookAtRH(pos, target, DirectX::SimpleMath::Vector3(0, 1, 0));
-
-
-		this->view = newView;
-		this->pos = pos;
-
-		values.vP = this->view * this->projection;
-		values.invP = this->projection.Invert();
-		values.view = this->view;
-		values.camPos = DirectX::SimpleMath::Vector4(pos.x, pos.y, pos.z, 1);
-
-		D3D11_MAPPED_SUBRESOURCE data;
-		ZeroMemory(&data, sizeof(data));
-
-		context->Map(this->cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
-
-		memcpy(data.pData, &values, sizeof(ShaderValues));
-
-		context->Unmap(this->cameraBuffer, 0);
-
+        Camera::update(pos, target - pos, context);
 	}
 
 

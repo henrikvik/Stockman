@@ -39,16 +39,15 @@ namespace Graphics {
 
 		//generateFrustums(camera, device, cxt, shaders);
 
-		m_CullGrids = newd ComputeShader(Global::device, SHADER_PATH("LightGridCulling.hlsl"));
-		m_FrustumGeneration = newd ComputeShader(Global::device, SHADER_PATH("LightGridGeneration.hlsl"));
+		m_CullGrids = newd ComputeShader(Resources::Shaders::LightGridCulling);
+        m_FrustumGeneration = nullptr;// newd ComputeShader(Global::device, SHADER_PATH("LightGridGeneration.hlsl"));
 		
 		uint32_t initial = 0;
 		m_ResetIndexCounter = newd StructuredBuffer<uint32_t>(Global::device, CpuAccess::Read, 1, &initial);
 		m_OpaqueIndexCounter = newd StructuredBuffer<uint32_t>(Global::device, CpuAccess::None, 1, &initial);
 		m_TransparentIndexCounter = newd StructuredBuffer<uint32_t>(Global::device, CpuAccess::None, 1, &initial);
 
-		auto count = m_Params.numThreadGroups[0] * m_Params.numThreadGroups[1] * AVG_TILE_LIGHTS;
-		m_TransparentIndexList = newd StructuredBuffer<uint32_t>(Global::device, CpuAccess::None, count, nullptr);
+		m_TransparentIndexList = newd StructuredBuffer<uint32_t>(Global::device, CpuAccess::None, INDEX_LIST_SIZE);
 
 
 #pragma region Light Grid UAVs

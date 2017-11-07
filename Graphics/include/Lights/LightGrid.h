@@ -12,6 +12,8 @@
 
 #define BLOCK_SIZE 16
 
+#define INDEX_LIST_SIZE ((int)ceil(WIN_WIDTH / (float)BLOCK_SIZE) * (int)ceil(WIN_HEIGHT / (float)BLOCK_SIZE) * AVG_TILE_LIGHTS)
+
 namespace Graphics {
 
 	struct Plane {
