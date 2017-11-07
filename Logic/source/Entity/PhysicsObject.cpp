@@ -1,5 +1,6 @@
 #include "../../include/Entity/PhysicsObject.h"
 #include <Physics/Physics.h>
+#include <Player\Player.h>
 
 using namespace Logic;
 
@@ -106,7 +107,11 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, Phy
                 return 0;
             });
 
-            physics.contactPairTest(weakPoint.body, other.getRigidBody(), res);
+            // Special case because player doesn't have a rigidbody
+            if(Player* player = dynamic_cast<Player*>(&other))
+                physics.contactPairTest(weakPoint.body, player->getGhostObject(), res);
+            else
+                physics.contactPairTest(weakPoint.body, other.getRigidBody(), res);
 		}
 	}
 
