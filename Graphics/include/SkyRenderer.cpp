@@ -4,9 +4,10 @@
 #include "ThrowIfFailed.h"
 #include <Engine\Profiler.h>
 
+
 namespace Graphics 
 {
-    SkyRenderer::SkyRenderer(ID3D11Device * device, int shadowRes, HybrisLoader::HybrisLoader & hybrisLoader) :
+    SkyRenderer::SkyRenderer(ID3D11Device * device, int shadowRes) :
 		shader(device, Resources::Shaders::SkyShader),
 		sphereTransformBuffer(device),
 		shadowDepthStencil(device, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION),
@@ -16,7 +17,7 @@ namespace Graphics
 		ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device, TEXTURE_PATH("skyboxgradient.dds"), nullptr, &srv2));
 		createSampler(device);
 
-		this->skySphere = &hybrisLoader.getModel(Resources::Models::SkySphere)->getMesh();
+		this->skySphere = &HybrisLoader::HybrisLoader::get().getModel(Resources::Models::SkySphere)->getMesh();
 	}
 
 	SkyRenderer::~SkyRenderer()

@@ -55,8 +55,8 @@ float4 PS(PS_IN input) : SV_Target0
 
     float3 gradient = lerp(dayDawnGradient, dawnNightGradient, 1 - fade);
 
-    nightGradient = adjustSaturation(nightGradient, bulletTimer);
-    nightGradient = adjustContrast(nightGradient, 2 - bulletTimer, 0.3);
+    //nightGradient = adjustSaturation(nightGradient, bulletTimer);
+    //nightGradient = adjustContrast(nightGradient, 2 - bulletTimer, 0.3);
 
     return float4(nightGradient, 1);
 }

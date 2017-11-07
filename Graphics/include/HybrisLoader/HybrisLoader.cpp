@@ -5,13 +5,19 @@
 
 namespace HybrisLoader
 {
-    HybrisLoader::HybrisLoader(ID3D11Device * device)
+    HybrisLoader::HybrisLoader()
     {
         for (auto & path : Resources::Models::Paths)
         {
             Hybris::File file = loadFile(path.second);
-            models[path.first] = newd Model(device, file);
+            models[path.first] = newd Model(Global::device, file);
         }
+    }
+
+    HybrisLoader & HybrisLoader::get()
+    {
+        static HybrisLoader instance;
+        return instance;
     }
 
     HybrisLoader::~HybrisLoader()

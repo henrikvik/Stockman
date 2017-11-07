@@ -12,7 +12,7 @@
 
 #include <Engine\Profiler.h>
 #include "../Utility/DebugDraw.h"
-
+#include "../CommonState.h"
 
 namespace fs = std::experimental::filesystem;
 using namespace DirectX;
@@ -136,13 +136,13 @@ ParticleEffect ParticleSystem::getEffect(std::string name)
     return *result;
 }
 
-void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, DirectX::CommonStates * states, ID3D11DepthStencilView * dest_dsv)
+void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, ID3D11DepthStencilView * dest_dsv)
 {
     ID3D11SamplerState *samplers[] = {
-        states->LinearClamp(),
-        states->LinearWrap(),
-        states->PointClamp(),
-        states->PointWrap()
+        Global::cStates->LinearClamp(),
+        Global::cStates->LinearWrap(),
+        Global::cStates->PointClamp(),
+        Global::cStates->PointWrap()
     };
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
@@ -175,9 +175,9 @@ void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, Dire
         auto buf = cam->getBuffer();
         cxt->VSSetConstantBuffers(0, 1, *buf);
 
-        cxt->OMSetDepthStencilState(states->DepthDefault(), 0);
+        cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         cxt->OMSetRenderTargets(0, nullptr, dest_dsv);
-        cxt->RSSetState(states->CullNone());
+        cxt->RSSetState(Global::cStates->CullNone());
 
         int offset = 0;
         unsigned int len = 0;
@@ -208,17 +208,17 @@ void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, Dire
             cxt->DrawIndexedInstanced(m_SphereIndices, min(m_Capacity, len), 0, 0, offset);
         }
 
-        cxt->RSSetState(states->CullCounterClockwise());
+        cxt->RSSetState(Global::cStates->CullCounterClockwise());
     }
 }
 
-void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::CommonStates * states, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView * dest_dsv, bool debug)
+void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView * dest_dsv, bool debug)
 {
     ID3D11SamplerState *samplers[] = {
-        states->LinearClamp(),
-        states->LinearWrap(),
-        states->PointClamp(),
-        states->PointWrap()
+        Global::cStates->LinearClamp(),
+        Global::cStates->LinearWrap(),
+        Global::cStates->PointClamp(),
+        Global::cStates->PointWrap()
     };
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
@@ -251,9 +251,9 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
         auto buf = cam->getBuffer();
         cxt->VSSetConstantBuffers(0, 1, *buf);
 
-        cxt->OMSetDepthStencilState(states->DepthDefault(), 0);
+        cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         cxt->OMSetRenderTargets(1, &dest_rtv, dest_dsv);
-        cxt->RSSetState(states->CullNone());
+        cxt->RSSetState(Global::cStates->CullNone());
 
         int offset = 0;
         unsigned int len = 0;
@@ -284,7 +284,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
             cxt->DrawIndexedInstanced(m_SphereIndices, min(m_Capacity, len), 0, 0, offset);
         }
         
-        cxt->RSSetState(states->CullCounterClockwise());
+        cxt->RSSetState(Global::cStates->CullCounterClockwise());
     }
 }
 

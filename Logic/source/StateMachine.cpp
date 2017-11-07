@@ -21,12 +21,12 @@ StateMachine::StateMachine()
     GetMenuState = [&]() -> StateMenu* { return m_menuState; };
    
     // Save function ptr's inside each main state
-    m_gameState->SetMenuSwitchCallBack  (SetGameState);
-    m_gameState->SetGameSwitchCallBack  (SetMenuState);
+    m_gameState->SetMenuSwitchCallBack  (SetMenuState);
+    m_gameState->SetGameSwitchCallBack  (SetGameState);
     m_gameState->SetCurrentGameState    (GetGameState);
     m_gameState->SetCurrentMenuState    (GetMenuState);
-    m_menuState->SetMenuSwitchCallBack  (SetGameState);
-    m_menuState->SetGameSwitchCallBack  (SetMenuState);
+    m_menuState->SetMenuSwitchCallBack  (SetMenuState);
+    m_menuState->SetGameSwitchCallBack  (SetGameState);
     m_menuState->SetCurrentGameState    (GetGameState);
     m_menuState->SetCurrentMenuState    (GetMenuState);
 

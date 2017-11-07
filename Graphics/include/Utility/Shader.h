@@ -25,10 +25,10 @@ namespace Graphics
         Shader(ID3D11Device * device, LPCWSTR shaderPath, std::initializer_list<D3D11_INPUT_ELEMENT_DESC> inputDesc = {}, ShaderType shaderType = VS | PS);
 		virtual ~Shader();
 
-		inline operator ID3D11InputLayout*() { return inputLayout ? inputLayout : throw "Shader has no Input Layout"; }
-		inline operator ID3D11VertexShader*() { return vertexShader ? vertexShader : throw "Shader has no Vertex Shader"; }
-		inline operator ID3D11GeometryShader*() { return geometryShader ? geometryShader : throw "Shader has no Geometry Shader"; }
-		inline operator ID3D11PixelShader*() { return pixelShader ? pixelShader : throw "Shader has no Pixel Shader"; }
+		inline operator ID3D11InputLayout*() const { return inputLayout ? inputLayout : throw "Shader has no Input Layout"; }
+		inline operator ID3D11VertexShader*() const { return vertexShader ? vertexShader : throw "Shader has no Vertex Shader"; }
+		inline operator ID3D11GeometryShader*() const { return geometryShader ? geometryShader : throw "Shader has no Geometry Shader"; }
+		inline operator ID3D11PixelShader*()  const { return pixelShader ? pixelShader : throw "Shader has no Pixel Shader"; }
 
 		void recompile(ID3D11Device * device, LPCWSTR shaderPath, std::initializer_list<D3D11_INPUT_ELEMENT_DESC> inputDesc = {}, ShaderType shaderType = VS | PS);
 	private:

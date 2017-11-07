@@ -51,52 +51,35 @@ namespace Graphics
         void updateShake(float deltaTime);
         void startShake(float radius, float duration);
     private:
-        HybrisLoader::HybrisLoader hybrisLoader;
 
+    #pragma region Shared Shader Resources
         std::vector<RenderPass*> renderPasses;
-
-        typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
-        InstanceQueue_t instanceQueue;
-        std::vector<RenderInfo*> renderQueue;
-		std::vector<FoliageRenderInfo*> renderFoliageQueue;
-		std::vector<WaterRenderInfo*> renderWaterQueue;
-
-
+        ShaderResource colorMap;
+        ShaderResource glowMap;
+        ShaderResource normalMap;
+        DepthStencil shadowMap;
         DepthStencil depthStencil;
+
+        ID3D11ShaderResourceView  * lightOpaqueGridSRV;
+        ID3D11UnorderedAccessView * lightOpaqueGridUAV;
+        StructuredBuffer<uint32_t> lightOpaqueIndexList;
+        StructuredBuffer<Light>    lightsNew;
+
+        ID3D11RenderTargetView * backBuffer;
+
+        ShaderResource* fakeBackBuffer;
+        ShaderResource* fakeBackBufferSwap;
+    #pragma endregion
 
         SkyRenderer skyRenderer;
         Glow glowRenderer;
-
-		LightGrid grid;
-		std::vector<Light> lights;
+        SSAORenderer ssaoRenderer;
         Sun sun;
-
-		DirectX::CommonStates *states;
-
         Shader fullscreenQuad;
         Shader forwardPlus;
 		Shader depthShader;
 
-        //ComputeShader lightGridGen; 
-
-
-//        ResourceManager resourceManager;
         D3D11_VIEWPORT viewPort;
-
-        // Lånade Pekareu
-        ID3D11Device * device;
-        ID3D11DeviceContext * deviceContext;
-        ID3D11RenderTargetView * backBuffer;
-
-
-		SSAORenderer ssaoRenderer;
-        
-
-		ShaderResource* fakeBackBuffer;
-		ShaderResource* fakeBackBufferSwap;
-
-        ID3D11BlendState *transparencyBlendState;
-
         
 		bool enableSSAO = true;
 		bool enableGlow = true;
@@ -124,10 +107,7 @@ namespace Graphics
 			float burn;
 			float freeze;
 		} statusData;
-       
-        void cull();
-        void writeInstanceData();
-        void drawStatic();
+
 		void clear();
 		void swapBackBuffers();
 		
@@ -135,12 +115,11 @@ namespace Graphics
 		 
 		ConstantBuffer <UINT> timeBuffer;
 		UINT grassTime = 0;
-		void drawFoliage(Camera * camera);
 		Shader foliageShader;
 #pragma endregion
 
         void drawToBackbuffer(ID3D11ShaderResourceView * texture);
-        void createBlendState();
+
 		void registerDebugFunction();
 
 

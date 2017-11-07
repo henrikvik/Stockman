@@ -22,7 +22,7 @@ namespace Graphics
 	}
 
     Shader::Shader(Resources::Shaders::Files shader, ShaderType shaderType)
-        : Shader(device, shader, {}, shaderType)
+        : Shader(Global::device, shader, {}, shaderType)
     {
     }
 

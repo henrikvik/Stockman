@@ -15,7 +15,7 @@ namespace Graphics
 	class SkyRenderer
 	{
 	public:
-		SkyRenderer(ID3D11Device * device, int shadowRes, HybrisLoader::HybrisLoader & hybrisLoader);
+		SkyRenderer(ID3D11Device * device, int shadowRes);
 		~SkyRenderer();
 
 		void renderSky(ID3D11DeviceContext * context, Graphics::Camera * cam);
