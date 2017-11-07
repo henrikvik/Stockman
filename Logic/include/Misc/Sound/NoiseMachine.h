@@ -8,13 +8,13 @@
 #include <string>
 #include <btBulletCollisionCommon.h>
 #include <Misc\Sound\NoiseStructs.h>
-#include <Misc\Sound\SoundSource.h>
 
 #define SOUND_SFX_PATH "Resources/Sound/SFX/"
 #define SOUND_MUSIC_PATH "Resources/Sound/Music/"
 
 namespace Sound
 {
+    class SoundSource;
 	class NoiseMachine
 	{
 	public:

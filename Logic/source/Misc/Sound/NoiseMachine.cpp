@@ -17,6 +17,9 @@ void NoiseMachine::init()
 	if (version < FMOD_VERSION)
 		CRASH_EVERYTHING("FMOD lib version %08x doesn't match header version %08x", version, FMOD_VERSION);
 
+    // Disable Logging
+    FMOD::Debug_Initialize(FMOD_DEBUG_LEVEL_NONE);
+
 	// Initialize the FMOD system
 	void* extraDriverData = nullptr;
 	ERRCHECK(m_system->init(THRESHOLD::MAX_CHANNELS, FMOD_INIT_CHANNEL_DISTANCEFILTER, extraDriverData));
