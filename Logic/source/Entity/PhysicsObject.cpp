@@ -1,4 +1,5 @@
 #include "../../include/Entity/PhysicsObject.h"
+#include <Physics/Physics.h>
 
 using namespace Logic;
 
@@ -79,7 +80,7 @@ void PhysicsObject::updatePhysics(float deltaTime)
 	setWorldTranslation(getTransformMatrix());
 }
 
-void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint)
+void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, Physics &physics)
 {
 	// Checks if the collision happened on one of the weakpoints
 	bool hit = false;
@@ -88,11 +89,24 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint)
 		for (int i = 0; i < m_weakPoints.size(); i++)
 		{
 			Weakpoint weakPoint = m_weakPoints[i];
-			if (weakPoint.body->checkCollideWith(other.getRigidBody()))
-			{
-				onCollision(other, contactPoint, weakPoint.multiplier);
-				hit = true;
-			}
+
+            FunContactResult res(
+                [&](btBroadphaseProxy* proxy) -> bool {
+                return true;
+            },
+                [&](btManifoldPoint& cp,
+                    const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                    const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+            {
+                if (cp.getDistance() < 0.05f)
+                {
+                    onCollision(other, contactPoint, weakPoint.multiplier);
+                    hit = true;
+                }
+                return 0;
+            });
+
+            physics.contactPairTest(weakPoint.body, other.getRigidBody(), res);
 		}
 	}
 

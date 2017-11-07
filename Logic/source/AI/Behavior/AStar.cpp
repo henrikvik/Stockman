@@ -46,6 +46,8 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
 {
+    if (navNodes.size() == 0)  // REMOVE THIS UGLY SHIT
+        return {};
 	// Edge cases 
 	if (startIndex == toIndex || startIndex == -1 || toIndex == -1)
 		return {};

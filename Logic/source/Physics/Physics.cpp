@@ -38,6 +38,7 @@ bool Physics::init()
 	this->setLatencyMotionStateInterpolation(true);
 	ghostPairCB = new btGhostPairCallback();
 	m_broadphasePairCache->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCB);
+
 	return true;
 }
 
@@ -104,8 +105,8 @@ void Physics::update(float delta)
 
 			if (entityA && entityB)
 			{
-				entityA->collision(*entityB, a);
-				entityB->collision(*entityA, b);
+				entityA->collision(*entityB, a, *this);
+				entityB->collision(*entityA, b, *this);
 			}
 		}
 	}
