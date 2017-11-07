@@ -31,6 +31,7 @@ namespace Graphics
         template<typename QueueT>
         void drawInstanced(ID3D11ShaderResourceView * instanceBuffer) const;
 
+
     };
 
     template<typename QueueT>

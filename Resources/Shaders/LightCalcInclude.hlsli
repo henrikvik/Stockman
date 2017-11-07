@@ -64,10 +64,10 @@ SamplerState Sampler : register(s0);
 
 SamplerComparisonState cmpSampler : register(s1);
 
-Texture2D diffuseMap : register(t10);
-Texture2D normalMap : register(t11);
-Texture2D specularMap : register(t12);
-Texture2D glowMap : register(t13);
+Texture2D diffuseMap : register(t12);
+Texture2D normalMap : register(t13);
+Texture2D specularMap : register(t14);
+Texture2D glowMap : register(t15);
 
 
 //makes stuff gray

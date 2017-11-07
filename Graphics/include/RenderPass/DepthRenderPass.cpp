@@ -20,6 +20,7 @@ namespace Graphics
         Global::context->VSSetShader(staticDepth, nullptr, 0);
         drawInstanced<StaticRenderInfo>(resources[StaticInstanceBuffer]);
         // TODO add all renderInfos
+
     }
 
     void DepthRenderPass::update(float deltaTime)
