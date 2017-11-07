@@ -9,7 +9,6 @@ class Texture
 public:
     Texture();
     Texture(ID3D11Device * device, std::vector<uint8_t> & data, bool useDDS = false);
-    Texture(ID3D11Device * device, const char * filePath);
     Texture(const char * filePath);
     virtual ~Texture();
 

@@ -29,8 +29,6 @@ namespace Graphics
         ID3D11Buffer * buttonQuad;
         ID3D11Buffer * menuQuad;
 
-        DirectX::CommonStates * states;
-
         Shader shader;
         MenuInfo active;
         bool loaded;

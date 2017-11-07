@@ -24,7 +24,5 @@ namespace Graphics
 		ComputeShader ssaoMerger;
 		ShaderResource normalTexture;
 		ID3D11ShaderResourceView * randomNormals;
-
-		DirectX::CommonStates * states;
 	};
 }

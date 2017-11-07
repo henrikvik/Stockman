@@ -394,7 +394,7 @@ void Player::updateSpecific(float deltaTime)
             m_hp--;
     /*}*/
 
-    Global::mainCamera->update(getPosition(), m_forward, context);
+    Global::mainCamera->update(getPosition(), m_forward, Global::context);
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)

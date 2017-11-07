@@ -1,6 +1,6 @@
 //If you want to include this file this is the allocated resources:
 //cbuffer register 0, 1, 2 and 3
-//0: Camera     1: DirectionalLight     2: BulletTime   3: LightVP
+//0: Camera     1: DirectionalLight     2: LightVP
 
 //texture 0, 1, 2, 3, 10, 11, 12 and 13
 //0: LightIndexList     1: LightGrid    2: lights   3: shadowmap
@@ -30,14 +30,9 @@ cbuffer LightBuffer : register(b1)
     float fade;
 }
 
-//Used by PS
-cbuffer BulletTimeTimer : register(b2)
-{
-    float bulletTimer;
-};
 
 //used by VS
-cbuffer LightMatBuffer : register(b3)
+cbuffer LightMatBuffer : register(b2)
 {
     float4x4 lightVP;
 }
@@ -69,10 +64,10 @@ SamplerState Sampler : register(s0);
 
 SamplerComparisonState cmpSampler : register(s1);
 
-Texture2D diffuseMap : register(t10);
-Texture2D normalMap : register(t11);
-Texture2D specularMap : register(t12);
-Texture2D glowMap : register(t13);
+Texture2D diffuseMap : register(t12);
+Texture2D normalMap : register(t13);
+Texture2D specularMap : register(t14);
+Texture2D glowMap : register(t15);
 
 
 //makes stuff gray
@@ -238,8 +233,5 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
 
     float4 lighting = saturate(finalDiffuse + ambient);
     
-    lighting.xyz = adjustSaturation(lighting.xyz, bulletTimer);
-    lighting.xyz = adjustContrast(lighting.xyz, 2 - bulletTimer, 0.1);
-
     return lighting;
 }

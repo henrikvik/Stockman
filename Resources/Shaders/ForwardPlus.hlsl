@@ -1,10 +1,11 @@
 #include "LightCalcInclude.hlsli"
 
-#define VERTEX_T_SLOT t4
-#include "Vertex.hlsli"
 
-#define INSTANCE_T_SLOT t5
+#define INSTANCE_T_SLOT t10
 #include "Instance.hlsli"
+
+#define VERTEX_T_SLOT t11
+#include "Vertex.hlsli"
 
 
 struct VSOutput

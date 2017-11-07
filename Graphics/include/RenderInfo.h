@@ -30,9 +30,14 @@ struct FloatRect
     }
 };
 
+template<typename T>
+struct InstanceCap { static constexpr size_t value = 300; };
+#define SET_INSTANCE_CAP(info, cap) template<> struct InstanceCap<info> { static constexpr size_t value = cap; };
+#define INSTANCE_CAP(info) InstanceCap<info>::value
+
+
 struct RenderInfo
 {
-    static constexpr size_t INSTANCE_CAP = 3000;
 };
 
 struct DebugRenderInfo : RenderInfo
@@ -45,17 +50,21 @@ struct DebugRenderInfo : RenderInfo
 
 struct LightRenderInfo : RenderInfo
 {
+
     DirectX::SimpleMath::Vector3 position;
     DirectX::SimpleMath::Color color;
     float intensity = 1;
     float range = 5;
 };
 
+SET_INSTANCE_CAP(LightRenderInfo, 128)
+
 struct SpecialEffectRenderInfo : RenderInfo
 {
-    enum SpecialEffect { BulletTime };
+    enum SpecialEffect { BulletTime, Snow };
     SpecialEffect effect;
     float progress = 0;
+    float duration = 0;
 };
 
 struct SpriteRenderInfo : RenderInfo
