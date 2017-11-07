@@ -49,7 +49,7 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
                     if (m_waveCurrent == entityManager.getWaveManager().getWaveInformation().nrOfWaves)
                         m_onLastWave = true;
 
-                    return true;
+                    return m_waveCurrent > 1;
                 }
             }   
         }
