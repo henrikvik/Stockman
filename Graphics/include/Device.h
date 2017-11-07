@@ -6,4 +6,5 @@ namespace Global
 {
     extern ID3D11Device * device;
     extern ID3D11DeviceContext * context;
+    extern void * nulls[32];
 }
