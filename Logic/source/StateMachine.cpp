@@ -54,6 +54,12 @@ StateMachine::~StateMachine()
         m_gameState = nullptr;
     }
 
+    if (m_stateBuffer)
+    {
+        delete m_stateBuffer;
+        m_stateBuffer = nullptr;
+    }
+
     Sound::NoiseMachine::Get().clear();
 }
 
