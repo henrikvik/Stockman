@@ -13,7 +13,8 @@
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
 #include "Glow.h"
-#include "SkyRenderer.h"
+#include "SkyRenderer.h" //Remove this
+#include "Lights\Sun.h"
 #include "Menu.h"
 #include "HUD.h"
 #include "HybrisLoader\HybrisLoader.h"
@@ -25,6 +26,7 @@
 #include <SpriteBatch.h>
 
 #include "RenderPass\GUIRenderPass.h"
+#include "RenderPass\ShadowRenderPass.h"
 
 
 namespace Graphics
@@ -70,10 +72,9 @@ namespace Graphics
         ShaderResource* fakeBackBufferSwap;
     #pragma endregion
 
-        SkyRenderer skyRenderer;
         Glow glowRenderer;
         SSAORenderer ssaoRenderer;
-
+        Sun sun;
         Shader fullscreenQuad;
         Shader forwardPlus;
 		Shader depthShader;

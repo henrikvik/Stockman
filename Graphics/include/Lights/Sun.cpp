@@ -1,14 +1,17 @@
 #include "Sun.h"
 #include <algorithm>
-#define PI 3.14159265
+#include "../Device.h"
+#include "../MainCamera.h"
+#define PI 3.14159265f
+#define ONE_DEG_IN_RAD 0.01745f
 #define SUNSET_TIME 0.5f
 #define DAY_NIGHT_ON false
 
 namespace Graphics
 {
-    Sun::Sun(ID3D11Device * device, int width, int height):
-		matrixBuffer(device),
-		shaderBuffer(device)
+    Sun::Sun():
+		lightMatrixBuffer(Global::device),
+		lightDataBuffer(Global::device)
 	{
 		pos = DirectX::SimpleMath::Vector4(0, 50, 0.5, 1);
 
@@ -16,31 +19,16 @@ namespace Graphics
 		view = DirectX::XMMatrixLookAtRH(pos, DirectX::SimpleMath::Vector3(0, 0, 0), DirectX::SimpleMath::Vector3(0, 1, 0));
 
 		matrixData.vp = view * projection;
-
-		viewPort = { 0 };
-		viewPort.Height = (float)height;
-		viewPort.Width = (float)width;
-		viewPort.MaxDepth = 1.f;
 	}
 
 	Sun::~Sun()
 	{
 	}
 
-	void Sun::update(ID3D11DeviceContext * context, float rotationAmount, DirectX::SimpleMath::Vector3 offset)
+	void Sun::update()
 	{
-		//a little bit temp, might be final
-		static float rotationDeg = 0;
-
-		//Enable to get the day night cycle
-#if DAY_NIGHT_ON
-		rotationDeg += rotationAmount;
-#else
-		rotationDeg = (float)PI * 0.25f;
-#endif
-
-		if (rotationDeg >= (float)PI * 0.5f)
-			rotationDeg = (float)-PI * 0.5f;
+		//a little bit temp, might be final totally final now
+		static float rotationDeg = rotationDeg = PI * 0.25f;
 
         DirectX::SimpleMath::Matrix rotation = DirectX::SimpleMath::Matrix::CreateRotationZ(rotationDeg);
 
@@ -55,18 +43,12 @@ namespace Graphics
 		float fade = snap(1.0f - abs(lightDir.Dot(groundDir)), 0, SUNSET_TIME);
 		shaderData.fade = fade / SUNSET_TIME;
 
-		this->shaderData.pos = shaderData.pos + offset;
-		view = DirectX::XMMatrixLookAtRH(shaderData.pos, offset, DirectX::SimpleMath::Vector3(0, 1, 0));
+		this->shaderData.pos = shaderData.pos + Global::mainCamera->getPos();
+		view = DirectX::XMMatrixLookAtRH(shaderData.pos, Global::mainCamera->getPos(), DirectX::SimpleMath::Vector3(0, 1, 0));
 		matrixData.vp = view * projection;
 
-		shaderBuffer.write(context, &shaderData, sizeof(shaderData));
-		matrixBuffer.write(context, &matrixData, sizeof(matrixData));
-	}
-
-	float Sun::getShadowFade() const
-	{
-		//return shaderData.shadowFade;
-		return 0;
+		lightDataBuffer.write(Global::context, &shaderData, sizeof(shaderData));
+		lightMatrixBuffer.write(Global::context, &matrixData, sizeof(matrixData));
 	}
 
 	float Sun::snap(float value, float minVal, float maxVal)

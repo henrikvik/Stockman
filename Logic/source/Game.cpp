@@ -153,7 +153,7 @@ void Game::reset()
 void Game::update(float deltaTime)
 {
     // Updates FPS at all times
-    m_fpsRenderer.updateFPS(deltaTime);
+    //m_fpsRenderer.updateFPS(deltaTime);
  
     if (updateMenu(deltaTime))
         updateGame(deltaTime);
@@ -307,7 +307,7 @@ void Game::render() const
 		break;
 	}
 
-    m_fpsRenderer.render();
+    //m_fpsRenderer.render();
 }
 
 void Game::renderGame() const

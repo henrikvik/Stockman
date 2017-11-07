@@ -765,6 +765,7 @@ int Logic::Player::getCurrentWeapon() const
 
 void Logic::Player::setCurrentSkills(int first, int second)
 {
+    m_skillManager->switchToSkill({ SkillManager::SKILL(second), SkillManager::SKILL(first) });
     currentSkills[0] = first;
     currentSkills[1] = second;
 }

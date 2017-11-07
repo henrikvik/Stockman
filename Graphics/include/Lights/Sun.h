@@ -27,15 +27,13 @@ namespace Graphics
 			char pad[12];
 		};
 
-		Sun(ID3D11Device* device, int width, int height);
+		Sun();
 		~Sun();
 
-		void update(ID3D11DeviceContext* context, float rotationAmount, DirectX::SimpleMath::Vector3 offset = DirectX::SimpleMath::Vector3(0, 0, 0));
+		void update();
 
-		ConstantBuffer<ShaderMatrix>* getMatrixBuffer() { return &matrixBuffer; };
-		ConstantBuffer<LightValues>* getShaderBuffer() { return &shaderBuffer; };
-		D3D11_VIEWPORT getViewPort() { return viewPort; };
-		float getShadowFade() const;
+		ConstantBuffer<ShaderMatrix>* getLightMatrixBuffer() { return &lightMatrixBuffer; };
+		ConstantBuffer<LightValues>* getLightDataBuffer() { return &lightDataBuffer; };
 
 	private:
 		DirectX::SimpleMath::Matrix view;
@@ -49,10 +47,7 @@ namespace Graphics
 
 		ShaderMatrix matrixData;
 		LightValues shaderData;
-		ConstantBuffer<ShaderMatrix> matrixBuffer;
-		ConstantBuffer<LightValues> shaderBuffer;
-
-		D3D11_VIEWPORT viewPort;
-
+		ConstantBuffer<ShaderMatrix> lightMatrixBuffer;
+		ConstantBuffer<LightValues> lightDataBuffer;
 	};
 }

@@ -20,7 +20,7 @@ namespace Logic
         void update(float deltaTime);
         void render() const;
 
-        void switchState(StateType menuState);
+        void queueState(StateType menuState);
         void loadState(StateType menuState);
         State* getCurrentState() { return m_currentState; }
 
