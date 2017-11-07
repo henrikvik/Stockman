@@ -1,6 +1,7 @@
 #include "ShadowRenderPass.h"
 #include "../Device.h"
 #include <Engine\Constants.h>
+#include "../CommonState.h"
 namespace Graphics
 {
     ShadowRenderPass::ShadowRenderPass(std::initializer_list<ID3D11RenderTargetView*> targets,
@@ -26,9 +27,11 @@ namespace Graphics
 
     void ShadowRenderPass::render() const
     {
+        Global::context->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         Global::context->RSSetViewports(1, &viewport);
         Global::context->IASetInputLayout(nullptr);
         Global::context->VSSetShader(staticForwardPlus, nullptr, 0);
+        Global::context->GSSetShader(nullptr, nullptr, 0);
         Global::context->PSSetShader(nullptr, nullptr, 0);
         Global::context->OMSetRenderTargets(0, nullptr, depthStencil);
         Global::context->VSSetConstantBuffers(0, 1, &buffers[0]);

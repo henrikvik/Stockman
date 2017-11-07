@@ -200,7 +200,9 @@ namespace Graphics
 		delete fakeBackBuffer;
 		delete fakeBackBufferSwap;
         delete FXSystem;
+
         delete Global::cStates;
+        SAFE_RELEASE(Global::comparisonSampler);
 		SAFE_RELEASE(glowTest);
 
         for (auto & renderPass : renderPasses)
