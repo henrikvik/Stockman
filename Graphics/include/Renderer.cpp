@@ -580,30 +580,6 @@ namespace Graphics
 	}
     #else
     {
-        static UINT ticks = 0;
-        ticks++;
-
-        float sin = sinf(ticks / 1000.0f);
-        float cos = cosf(ticks / 1000.0f);
-
-        LightRenderInfo lightInfo;
-        lightInfo.color = DirectX::Colors::Red;
-        lightInfo.intensity = 1;
-        lightInfo.range = 10 + 5 * sin;
-        //lightInfo.position = Global::mainCamera->getPos();
-        lightInfo.position = DirectX::SimpleMath::Vector3(sin, 5 + 2.5 * sin, cos);
-
-        LightRenderInfo lightInfo2;
-        lightInfo2.color = DirectX::Colors::Blue;
-        lightInfo2.intensity = 1;
-        lightInfo2.range = 10 + 5 * sin;
-        lightInfo2.position = Global::mainCamera->getPos();
-
-        RenderQueue::get().queue(&lightInfo);
-        RenderQueue::get().queue(&lightInfo2);
-
-
-        static float clearColor[4] = {0,0,0,0};
         clear();
         Global::context->RSSetViewports(1, &viewPort);
 

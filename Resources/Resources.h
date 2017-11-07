@@ -22,14 +22,14 @@ namespace Resources
         enum Files
         {
             SkySphere,
-            StaffEmbed,
+            Staff,
             Tablet1,
             UnitCube
         };
         const std::map<Files, const char *> Paths =
         {
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
-            {StaffEmbed, R"(..\Resources\Models\StaffEmbed.hyb)"},
+            {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
