@@ -39,7 +39,7 @@ namespace Graphics
         std::unique_ptr<DirectX::SpriteBatch> sBatch;
         std::unordered_map<Resources::Fonts::Files, std::unique_ptr<DirectX::SpriteFont>> fonts;
 
-        void textRender();
+        void textRender() const;
         bool isDrawableString(const wchar_t * text)const;
     };
 }

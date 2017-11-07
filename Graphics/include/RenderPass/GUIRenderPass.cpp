@@ -38,10 +38,9 @@ void Graphics::GUIRenderPass::render() const
     Global::context->IASetInputLayout(nullptr);
     Global::context->PSSetShader(spriteShader, nullptr, 0);
     Global::context->VSSetShader(spriteShader, nullptr, 0);
+
     Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
     Global::context->RSSetState(Global::cStates->CullNone());
-
-    Global::context->VSSetShaderResources(0, 1, vertexBuffer);
 
     ID3D11SamplerState * linear = Global::cStates->LinearClamp();
     Global::context->PSSetSamplers(0, 1, &linear);
@@ -49,18 +48,21 @@ void Graphics::GUIRenderPass::render() const
     Global::context->OMSetRenderTargets(targets.size(), targets.data(), depthStencil);
     Global::context->OMSetBlendState(Global::cStates->AlphaBlend(), NULL, -1);
 
-    std::vector<Vertex> vertices(4);
+    Global::context->VSSetShaderResources(0, 1, vertexBuffer);
     size_t offset = 0;
     for (auto & info : RenderQueue::get().getQueue<SpriteRenderInfo>())
     {
         Global::context->PSSetShaderResources(2, 1, *TextureLoader::get().getTexture(info->texture));
-        Global::context->Draw(4, offset);
+        Global::context->Draw(4, 0);
         offset += 4;
     }
 
-    for (auto & info : RenderQueue::get().getQueue<TextRenderInfo>())
-    {
-    }
+    textRender();
+
+    Global::context->VSSetShaderResources(0, 1, Global::nulls);
+    Global::context->PSSetSamplers(0, 1, Global::nulls);
+    Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);
+    Global::context->OMSetBlendState(Global::cStates->Opaque(), NULL, -1);
 }
 
 void Graphics::GUIRenderPass::update(float deltaTime)
@@ -69,13 +71,10 @@ void Graphics::GUIRenderPass::update(float deltaTime)
 
     std::vector<Vertex> vertices(4);
 
-
     size_t offset = 0;
     auto ptr = vertexBuffer.map(Global::context);
     for (auto & info : RenderQueue::get().getQueue<SpriteRenderInfo>())
     {
-        Global::context->PSSetShaderResources(2, 1, *TextureLoader::get().getTexture(info->texture));
-
         using namespace DirectX::SimpleMath;
 
         float TL_X = (info->screenRect.topLeft.x * 2 - 1);
@@ -96,15 +95,18 @@ void Graphics::GUIRenderPass::update(float deltaTime)
         vertices[BL].uv = Vector2(TL_UV_X, BR_UV_Y);
         vertices[BR].uv = Vector2(BR_UV_X, BR_UV_Y);
 
-        vertexBuffer.write(Global::context, vertices.data(), sizeofv(vertices));
-        Global::context->Draw(4, 0);
+        *ptr++ = vertices[TL];
+        *ptr++ = vertices[TR];
+        *ptr++ = vertices[BL];
+        *ptr++ = vertices[BR];
     }
+    vertexBuffer.unmap(Global::context);
 
-    //textRender();
+    textRender();
 }
 
 //render the queued text
-void Graphics::GUIRenderPass::textRender()
+void Graphics::GUIRenderPass::textRender() const
 {
     sBatch->Begin(DirectX::SpriteSortMode_Deferred);
     for (auto & info : RenderQueue::get().getQueue<TextRenderInfo>())

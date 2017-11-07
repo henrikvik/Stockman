@@ -29,13 +29,15 @@ Texture2D                    spriteTexture : register(t2);
 SamplerState linearSampler : register(s0);
 
 
-Fragment VS(uint vertexId : SV_VertexId)
+Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
 {
-    Vertex vertex = vertexData[vertexId];
+    Vertex vertex = vertexData[vertexId + instanceId];
     Fragment fragment = (Fragment) 0;
 
     fragment.position = float4(vertex.position, 0, 1);
     fragment.uv = vertex.uv;
+
+    fragment.uv.x = vertexId + instanceId;
 
     return fragment;
 }

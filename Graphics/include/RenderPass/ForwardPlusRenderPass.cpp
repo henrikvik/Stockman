@@ -33,6 +33,14 @@ namespace Graphics
 
         drawInstanced<StaticRenderInfo>(resources[4]);
         // TODO add all renderInfos
+
+
+
+        Global::context->PSSetSamplers(0, 3, Global::nulls);
+        Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);
+        Global::context->PSSetShaderResources(0, 4, Global::nulls);
+        Global::context->PSSetConstantBuffers(0, buffers.size(), Global::nulls);
+        Global::context->VSSetConstantBuffers(0, buffers.size(), Global::nulls);
     }
 
     void ForwardPlusRenderPass::update(float deltaTime)
