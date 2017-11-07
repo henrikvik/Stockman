@@ -13,7 +13,6 @@
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
 #include "Glow.h"
-#include "SkyRenderer.h" //Remove this
 #include "Lights\Sun.h"
 #include "Menu.h"
 #include "HUD.h"
@@ -21,7 +20,6 @@
 #include "SSAORenderer.h"
 #include "Fog.H"
 #include "DoF.h"
-#include "SnowManager.h"
 
 #include <SpriteBatch.h>
 
@@ -97,9 +95,6 @@ namespace Graphics
 
         //temp
         ID3D11ShaderResourceView * glowTest;
-
-		SnowManager snowManager;
-
 
 		//superTemp
 		struct StatusData

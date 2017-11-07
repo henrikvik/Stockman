@@ -1,13 +1,12 @@
 #include "ShadowRenderPass.h"
 #include "../Device.h"
 #include <Engine\Constants.h>
-#define SHADOW_RESOLUTION 2048
 namespace Graphics
 {
     ShadowRenderPass::ShadowRenderPass(std::initializer_list<ID3D11RenderTargetView*> targets,
-        std::initializer_list<ID3D11ShaderResourceView*> resources = {},
-        std::initializer_list<ID3D11Buffer*> buffers = {},
-        ID3D11DepthStencilView * depthStencil = nullptr)
+        std::initializer_list<ID3D11ShaderResourceView*> resources,
+        std::initializer_list<ID3D11Buffer*> buffers,
+        ID3D11DepthStencilView * depthStencil)
         : RenderPass(targets, resources, buffers, depthStencil),
         staticForwardPlus(Resources::Shaders::ForwardPlus, ShaderType::VS)
     {

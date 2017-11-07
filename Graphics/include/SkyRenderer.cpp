@@ -11,7 +11,7 @@ namespace Graphics
 		shader(device, Resources::Shaders::SkyShader),
 		sphereTransformBuffer(device),
 		shadowDepthStencil(device, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION),
-		sun(device, shadowRes, shadowRes)
+		sun()
 	{
 		ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device, TEXTURE_PATH("skyBox.dds"), nullptr, &srv));
 		ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device, TEXTURE_PATH("skyboxgradient.dds"), nullptr, &srv2));
@@ -38,7 +38,7 @@ namespace Graphics
 		context->VSSetConstantBuffers(0, 1, *cam->getBuffer());
 		context->VSSetConstantBuffers(4, 1, sphereTransformBuffer);
 
-		context->PSSetConstantBuffers(1, 1, *sun.getShaderBuffer());
+		context->PSSetConstantBuffers(1, 1, *sun.getLightDataBuffer());
 
 		context->Draw(skySphere->getVertexCount(), 0);
 	}
@@ -47,7 +47,7 @@ namespace Graphics
 	{
 		float radiansPerSecond = 0.01745f * deltaTime * 0.005f;
 
-		sun.update(context, radiansPerSecond, pos);
+		sun.update();
 
         DirectX::SimpleMath::Matrix temp = DirectX::SimpleMath::Matrix::CreateTranslation(pos);
 

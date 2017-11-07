@@ -46,8 +46,6 @@
     <ClCompile Include="include\RenderPass\LightCullRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\RenderPass.cpp" />
     <ClCompile Include="include\RenderPass\ShadowRenderPass.cpp" />
-    <ClCompile Include="include\SkyRenderer.cpp" />
-    <ClCompile Include="include\SnowManager.cpp" />
     <ClCompile Include="include\SSAORenderer.cpp" />
     <ClCompile Include="include\Utility\DebugDraw.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
@@ -89,8 +87,6 @@
     <ClInclude Include="include\RenderPass\ShadowRenderPass.h" />
     <ClInclude Include="include\Utility\RenderPass.h" />
     <ClInclude Include="include\RenderQueue.h" />
-    <ClInclude Include="include\SkyRenderer.h" />
-    <ClInclude Include="include\SnowManager.h" />
     <ClInclude Include="include\SSAORenderer.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />

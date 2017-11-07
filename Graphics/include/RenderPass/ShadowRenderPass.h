@@ -1,6 +1,7 @@
 #pragma once
 #include "RenderPass.h"
 #include "../Utility/Shader.h"
+#define SHADOW_RESOLUTION 2048
 
 namespace Graphics {
     class ShadowRenderPass : public RenderPass

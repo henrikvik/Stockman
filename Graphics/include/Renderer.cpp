@@ -55,7 +55,6 @@ namespace Graphics
 #pragma region Foliage
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
-        , snowManager(device)
 
 
 #pragma endregion
@@ -67,7 +66,7 @@ namespace Graphics
         , glowMap(WIN_WIDTH, WIN_HEIGHT)
         , normalMap(WIN_WIDTH, WIN_HEIGHT)
 
-        , shadowMap(Global::device, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
+        , shadowMap(Global::device, SHADOW_RESOLUTION, SHADOW_RESOLUTION)
 
 
         , lightOpaqueIndexList(CpuAccess::None, 1, &zero)
@@ -155,7 +154,7 @@ namespace Graphics
         renderPasses =
         {
             newd DepthRenderPass({}, {staticInstanceBuffer}, {*Global::mainCamera->getBuffer()}, depthStencil),
-            newd ShadowRenderPass({}, {}, {*sun.getLightMatrixBuffer()}, shadowMap),
+            newd ShadowRenderPass({}, { staticInstanceBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
             newd LightCullRenderPass(
                 {},
                 {
@@ -218,14 +217,12 @@ namespace Graphics
 
         //temp
         DirectX::CreateWICTextureFromFile(Global::device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
-		snowManager.initializeSnowflakes(camera);
     }
 
 	void Renderer::updateLight(float deltaTime, Camera * camera)
 	{
 		//Temp or rename function
 		PROFILE_BEGIN("updateSnow()");
-		snowManager.updateSnow(deltaTime, camera, Global::context);
 		PROFILE_END();
 	}
 
@@ -596,8 +593,7 @@ namespace Graphics
     #else
     {
         static float clearColor[4] = {0,0,0,0};
-        Global::context->ClearRenderTargetView(backBuffer, clearColor);
-        Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1, 0);
+        clear();
         Global::context->RSSetViewports(1, &viewPort);
 
         writeInstanceBuffers();
@@ -628,7 +624,6 @@ namespace Graphics
 		Global::context->ClearRenderTargetView(backBuffer, clearColor);
 		Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
 		Global::context->ClearRenderTargetView(glowRenderer, clearColor);
-		Global::context->ClearRenderTargetView(backBuffer, clearColor);
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
 		glowRenderer.clear(Global::context, clearColor);
@@ -1035,13 +1030,13 @@ namespace Graphics
 			return catcher;
 		});
 
-		debugWindow->registerCommand("GFX_RELOAD_SNOW_SHADER", [&](std::vector<std::string> &args)->std::string
+		/*debugWindow->registerCommand("GFX_RELOAD_SNOW_SHADER", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 
 			snowManager.recompile(Global::device);
 
 			return catcher;
-		});
+		});*/
 	}
 }
