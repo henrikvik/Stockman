@@ -44,6 +44,7 @@
     <ClCompile Include="include\RenderPass\GlowRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\GUIRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\LightCullRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\ParticleRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\RenderPass.cpp" />
     <ClCompile Include="include\RenderPass\ShadowRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\SkyBoxRenderPass.cpp" />
@@ -84,6 +85,7 @@
     <ClInclude Include="include\RenderPass\GlowRenderPass.h" />
     <ClInclude Include="include\RenderPass\GUIRenderPass.h" />
     <ClInclude Include="include\RenderPass\LightCullRenderPass.h" />
+    <ClInclude Include="include\RenderPass\ParticleRenderPass.h" />
     <ClInclude Include="include\RenderPass\RenderPass.h" />
     <ClInclude Include="include\RenderPass\ShadowRenderPass.h" />
     <ClInclude Include="include\RenderPass\SkyBoxRenderPass.h" />

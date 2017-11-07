@@ -271,44 +271,22 @@ namespace Graphics
         hud.startShake(radius, duration);
     }
 
-    void Renderer::render(Camera * camera)
-#if ANIMATION_HIJACK_RENDER
+    void Renderer::update(float deltaTime)
     {
-        static Shader shader(device, Resources::Shaders::ForwardPlus);
-        static HybrisLoader::Model * model = hybrisLoader.getModel(Resources::Models::Cube);
-        static float clearColor[4] = {0,0,0,0};
-
-		renderQueue.clear();
-		static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
-		static UINT ticks = 0;
-		ticks++;
-		cam.updateLookAt({ 5 * sinf(ticks * 0.001f), 5 * cosf(ticks * 0.001f), 5 }, { 0,0,0 }, deviceContext);
-
-        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1, 0);
-
-        deviceContext->IASetInputLayout(nullptr);
-        deviceContext->VSSetShader(shader, nullptr, 0);
-        deviceContext->PSSetShader(shader, nullptr, 0);
-
-        deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->RSSetState(states->CullClockwise());
-        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
-
-        deviceContext->VSSetConstantBuffers(0, 1, *camera);
-        deviceContext->PSSetConstantBuffers(0, 1, *camera);
-
-        static ID3D11SamplerState * sampler = states->PointClamp();
-        deviceContext->PSSetSamplers(0, 1, &sampler);
+        // yermp
+        updateShake(deltaTime);
+        //
 
         writeInstanceBuffers();
-
-        drawStatic();
-
-        RenderQueue::get().clearAllQueues();
+        sun.update();
+   
+        for (auto & renderPass : renderPasses)
+        {
+            renderPass->update(deltaTime);
+        }
     }
-#else
+
+    void Renderer::render() const
     #if USE_OLD_RENDER
 	{
         PROFILE_BEGIN("writeInstanceBuffers()");
@@ -636,13 +614,8 @@ namespace Graphics
         RenderQueue &teststsetes = RenderQueue::get();
         teststsetes.queue<StaticRenderInfo>(&infotest);
 
-        writeInstanceBuffers();
-        sun.update();
 
-        for (auto & renderPass : renderPasses)
-        {
-            renderPass->update(0.016f);
-        }
+
 
         for (auto & renderPass : renderPasses)
         {
@@ -651,14 +624,13 @@ namespace Graphics
 
     }
     #endif
-#endif
 
     void Renderer::fillHUDInfo(HUDInfo * info)
     {
         hud.fillHUDInfo(info);
     }
 
-	void Renderer::clear()
+	void Renderer::clear() const
 	{
 		static float clearColor[4] = { 0 };
         Global::context->ClearRenderTargetView(backBuffer, clearColor);

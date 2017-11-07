@@ -35,7 +35,8 @@ namespace Graphics
         void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, Camera * camera);
 
 
-        void render(Camera * camera);
+        void render() const;
+        void update(float deltaTime);
 		void fillHUDInfo(HUDInfo * info);
 
         void drawMenu(Graphics::MenuInfo * info);
@@ -97,7 +98,7 @@ namespace Graphics
 			float freeze;
 		} statusData;
 
-		void clear();
+		void clear() const;
 		void swapBackBuffers();
 		
 #pragma region Foliage
