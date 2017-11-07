@@ -125,9 +125,12 @@ float3 getNormalMappedNormal(float3 tangent, float3 biTangent, float3 normal, fl
 {
     float3 normalSample = normalMap.Sample(Sampler, uv);
 
-    //Remove when everything is working
+    // TODO Remove when everything is working
     if (normalSample.x == 0 && normalSample.y == 0 && normalSample.z == 0)
         return normal;
+    if (normalSample.x == 1 && normalSample.y == 1 && normalSample.z == 1)
+        return normal;
+    ////
 
     //To make sure the tangent is perpendicular
     tangent = normalize(tangent - dot(tangent, normalSample) * normalSample);

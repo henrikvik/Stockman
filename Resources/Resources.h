@@ -40,14 +40,13 @@ namespace Resources
     {
         enum Files
         {
-            AnimationTest,
             ForwardPlus,
             GlowBlurHorizontal,
             GlowBlurVertical,
             GlowDownSampler,
             GlowMerger,
             GlowMipCombinder,
-            SimpleForward,
+            LightGridCulling,
             SkyShader,
             SpriteShader,
             SSAOComputeShader,
@@ -57,14 +56,13 @@ namespace Resources
         };
         const std::map<Files, const char *> Paths =
         {
-            {AnimationTest, R"(..\Resources\Shaders\AnimationTest.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
             {GlowBlurVertical, R"(..\Resources\Shaders\GlowBlurVertical.hlsl)"},
             {GlowDownSampler, R"(..\Resources\Shaders\GlowDownSampler.hlsl)"},
             {GlowMerger, R"(..\Resources\Shaders\GlowMerger.hlsl)"},
             {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
-            {SimpleForward, R"(..\Resources\Shaders\SimpleForward.hlsl)"},
+            {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
             {SSAOComputeShader, R"(..\Resources\Shaders\SSAOComputeShader.hlsl)"},

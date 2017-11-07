@@ -60,6 +60,7 @@ VSOutput VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
 	return output;
 }
 
+
 [earlydepthstencil]
 PSOutput PS(VSOutput input) {
 	PSOutput output;

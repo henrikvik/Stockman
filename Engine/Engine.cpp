@@ -385,7 +385,7 @@ int Engine::run()
 			g_Profiler->render();
 		}
 
-        Graphics::Debug::Render(Global::mainCamera);
+        //Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
 		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();

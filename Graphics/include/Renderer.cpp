@@ -21,6 +21,7 @@
 #include "RenderPass\SkyBoxRenderPass.h"
 #include "RenderPass\GlowRenderPass.h"
 #include "RenderPass\SSAORenderPass.h"
+#include "Utility\DebugDraw.h"
 
 
 #define USE_TEMP_CUBE false
@@ -72,7 +73,7 @@ namespace Graphics
         , shadowMap(Global::device, SHADOW_RESOLUTION, SHADOW_RESOLUTION)
 
 
-        , lightOpaqueIndexList(CpuAccess::None, 1, &zero)
+        , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
         , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
         , sun()
     #pragma endregion
@@ -602,6 +603,29 @@ namespace Graphics
 	}
     #else
     {
+        static UINT ticks = 0;
+        ticks++;
+
+        float sin = sinf(ticks / 1000.0f);
+        float cos = cosf(ticks / 1000.0f);
+
+        LightRenderInfo lightInfo;
+        lightInfo.color = DirectX::Colors::Red;
+        lightInfo.intensity = 1;
+        lightInfo.range = 10 + 5 * sin;
+        //lightInfo.position = Global::mainCamera->getPos();
+        lightInfo.position = DirectX::SimpleMath::Vector3(sin, 5 + 2.5 * sin, cos);
+
+        LightRenderInfo lightInfo2;
+        lightInfo2.color = DirectX::Colors::Blue;
+        lightInfo2.intensity = 1;
+        lightInfo2.range = 10 + 5 * sin;
+        lightInfo2.position = Global::mainCamera->getPos();
+
+        RenderQueue::get().queue(&lightInfo);
+        RenderQueue::get().queue(&lightInfo2);
+
+
         static float clearColor[4] = {0,0,0,0};
         clear();
         Global::context->RSSetViewports(1, &viewPort);
@@ -614,7 +638,6 @@ namespace Graphics
         teststsetes.queue<StaticRenderInfo>(&infotest);
 
         writeInstanceBuffers();
-
         sun.update();
 
         for (auto & renderPass : renderPasses)
@@ -751,13 +774,24 @@ namespace Graphics
             light.range = info->range;
             light.intensity = info->intensity;
             light.color = DirectX::SimpleMath::Vector3(info->color.x, info->color.y, info->color.z);
+
+            light.positionWS = info->position;
             light.positionVS = DirectX::SimpleMath::Vector4::Transform(
                 DirectX::SimpleMath::Vector4(info->position.x, info->position.y, info->position.z, 1.f), 
                 Global::mainCamera->getView()
             );
 
+            Debug::PointLight(light);
             *lightBuffer++ = light;
         }
+
+        for (size_t i = RenderQueue::get().getQueue<LightRenderInfo>().size(); i < INSTANCE_CAP(LightRenderInfo); i++)
+        {
+            Light light;
+            ZeroMemory(&light, sizeof(light));
+            *lightBuffer++ = light;
+        }
+
         lightsNew.unmap(Global::context);
     }
 
