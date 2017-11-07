@@ -41,6 +41,7 @@
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\RenderPass\GUIRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\RenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\ShadowRenderPass.cpp" />
     <ClCompile Include="include\SkyRenderer.cpp" />
     <ClCompile Include="include\SnowManager.cpp" />
     <ClCompile Include="include\SSAORenderer.cpp" />
@@ -77,6 +78,7 @@
     <ClInclude Include="include\RenderInfo.h" />
     <ClInclude Include="include\RenderPass\GUIRenderPass.h" />
     <ClInclude Include="include\RenderPass\RenderPass.h" />
+    <ClInclude Include="include\RenderPass\ShadowRenderPass.h" />
     <ClInclude Include="include\Utility\RenderPass.h" />
     <ClInclude Include="include\RenderQueue.h" />
     <ClInclude Include="include\SkyRenderer.h" />

@@ -28,35 +28,36 @@
 namespace Graphics
 {
 
-	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-		: forwardPlus(device, Resources::Shaders::ForwardPlus)
+    Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
+        : forwardPlus(device, Resources::Shaders::ForwardPlus)
         , hybrisLoader(device)
-		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
-		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
-		, instanceSBuffer(device, CpuAccess::Write, _INSTANCE_CAP)
-		, instanceOffsetBuffer(device)
-		, skyRenderer(device, SHADOW_MAP_RESOLUTION, hybrisLoader)
-		, glowRenderer(device, deviceContext)
+        , fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
+        , depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
+        , instanceSBuffer(device, CpuAccess::Write, _INSTANCE_CAP)
+        , instanceOffsetBuffer(device)
+        , skyRenderer(device, SHADOW_MAP_RESOLUTION, hybrisLoader)
+        , glowRenderer(device, deviceContext)
 #pragma region RenderDebugInfo
-		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
-		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
-		, debugColorBuffer(device)
+        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
+        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
+        , debugColorBuffer(device)
 #pragma endregion
-		, fog(device)
-		, menu(device, deviceContext)
-		, hud(device, deviceContext)
-		, ssaoRenderer(device)
-		, bulletTimeBuffer(device)
-		, DoFRenderer(device)
+        , fog(device)
+        , menu(device, deviceContext)
+        , hud(device, deviceContext)
+        , ssaoRenderer(device)
+        , bulletTimeBuffer(device)
+        , DoFRenderer(device)
 #pragma region Foliage
-		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
-		, timeBuffer(device)
-		, snowManager(device)
+        , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
+        , timeBuffer(device)
+        , snowManager(device)
 
 
 #pragma endregion
-		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
+        , depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
         , staticInstanceBuffer(device, CpuAccess::Write, StaticRenderInfo::INSTANCE_CAP)
+        , sun(WIN_WIDTH, WIN_HEIGHT)
 	{
         RenderPass::cStates = new CommonStates(device);
 

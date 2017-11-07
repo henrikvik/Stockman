@@ -13,7 +13,8 @@
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
 #include "Glow.h"
-#include "SkyRenderer.h"
+#include "SkyRenderer.h" //Remove this
+#include "Lights\Sun.h"
 #include "Menu.h"
 #include "HUD.h"
 #include "HybrisLoader\HybrisLoader.h"
@@ -68,6 +69,7 @@ namespace Graphics
 
 		LightGrid grid;
 		std::vector<Light> lights;
+        Sun sun;
 
 		DirectX::CommonStates *states;
 
