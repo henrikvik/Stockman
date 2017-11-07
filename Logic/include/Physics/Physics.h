@@ -90,6 +90,8 @@ namespace Logic
 		bool init();
 		void update(float delta);
 
+        void registerDebugCommands();
+
 		const btRigidBody* RayTestOnRigidBodies(Ray& ray);
 		const btVector3 RayTestGetPoint(Ray& ray);
 		const btVector3 RayTestGetNormal(Ray& ray);											

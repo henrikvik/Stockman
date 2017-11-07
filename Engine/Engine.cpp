@@ -15,6 +15,7 @@
 #include "Typing.h"
 
 #include "DebugWindow.h"
+#include <Engine\Settings.h>
 
 #pragma comment (lib, "d3d11.lib")
 
@@ -83,7 +84,6 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
 	this->hInstance = hInstance;
 	this->initializeWindow();
 
-	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
     this->mTracker = std::make_unique<DirectX::Keyboard::KeyboardStateTracker>();
@@ -98,11 +98,12 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         std::string catcher = "";
         try
         {
+            Settings* setting = Settings::getInstance();
             if (args.size() != 0)
             {
-                isFullscreen = std::stoi(args[0]);
+                setting->setWindowed(std::stoi(args[0]));
 
-                if (isFullscreen)
+                if (setting->getWindowed())
                     catcher = "Fullscreen enabled!";
 
                 else
@@ -276,9 +277,10 @@ Profiler *g_Profiler;
 
 int Engine::run()
 {
+    Settings* setting = Settings::getInstance();
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
+	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(setting->getFOV()));
     cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
@@ -291,6 +293,8 @@ int Engine::run()
 	long long deltaTime = 0; 
     long long totalTime = 0;
 	bool showProfiler = false;
+
+    DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
 
 	bool running = true;
 
@@ -324,10 +328,14 @@ int Engine::run()
 
         static BOOL test = false;
         mSwapChain->GetFullscreenState(&test, NULL);
-		if (this->isFullscreen != test)
+
+
+		if (setting->getWindowed() != test)
 		{
-			mSwapChain->SetFullscreenState(isFullscreen, NULL);
+			mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
 		}
+
+
 
 		if (mTracker->pressed.F1)
 		{
@@ -338,7 +346,6 @@ int Engine::run()
 		if (mTracker->pressed.F2)
 		{
             showProfiler = !showProfiler;
-
 		}
 
         if (state.F10)
@@ -362,8 +369,6 @@ int Engine::run()
 		game.render(*renderer);
 		PROFILE_END();
 
-		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
-
 		if (state.LeftControl) 
             cam.update(oldPos, game.getPlayerForward(), mContext);
 		else
@@ -372,9 +377,7 @@ int Engine::run()
 			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
 		}
 
-		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
-        //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
-
+#pragma region temp
         //////////////TEMP/////////////////
         //Graphics::RenderInfo staticSphere = {
         //    true, //bool render;
@@ -414,15 +417,12 @@ int Engine::run()
 
         
         ///////////////////////////////////
+#pragma endregion
 
         if (game.getState() == Logic::gameStateGame)
         {
 			renderer->queueFoliageRender(&grass);
-			//renderer->queueFoliageRender(&bush);
 
-
-			//renderer->queueRender(&staticSphere);
-         // renderer->queueText(&text);
 			renderer->queueLight(light);
 
 			if (!debug->isOpen())
