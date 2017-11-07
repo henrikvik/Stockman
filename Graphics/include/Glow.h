@@ -41,7 +41,6 @@ namespace Graphics
 		ShaderResource glowPass0;
 		ShaderResource glowPass1;
 
-		DirectX::CommonStates * states;
 
 		void createMips(ID3D11Device * device);
 		void setMipViewPort(ID3D11DeviceContext * context, int level);

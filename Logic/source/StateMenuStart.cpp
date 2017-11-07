@@ -1,4 +1,5 @@
 #include <StateMenuStart.h>
+#include <StateBuffer.h>
 
 #include <Engine\Typing.h>
 #include <DebugDefines.h>
@@ -6,7 +7,8 @@
 
 using namespace Logic;
 
-StateMenuStart::StateMenuStart()
+StateMenuStart::StateMenuStart(StateBuffer* stateBuffer)
+    : State(stateBuffer)
 {
     // Initializing Highscore Manager
     m_highScoreManager = newd HighScoreManager();
@@ -34,6 +36,11 @@ void StateMenuStart::update(float deltaTime)
 {
     //m_fpsRenderer.updateFPS(deltaTime);
     m_menu->update(deltaTime);
+    if (m_menu->currentState() == gameStateSkillPick)
+    {
+        SwitchParentMenuState(StateType::Menu_Playing);
+        SwitchParentGameState(StateType::Game_Playing);
+    }
 }
 
 void StateMenuStart::render() const

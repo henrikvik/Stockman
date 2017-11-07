@@ -1,4 +1,6 @@
 #include <StateGamePlaying.h>
+#include <State.h>
+#include <StateBuffer.h>
 
 // Input Singletons
 #include <Keyboard.h>
@@ -17,7 +19,8 @@ const int StateGamePlaying::GAME_START::UNIQUE_CARDS = 13;
 const btVector3 StateGamePlaying::GAME_START::PLAYER_SCALE = { 1.5f, 3.0f, 1.5f };
 const btVector3 StateGamePlaying::GAME_START::PLAYER_ROTATION = { 0.0f, 0.0f, 0.0f };
 
-StateGamePlaying::StateGamePlaying()
+StateGamePlaying::StateGamePlaying(StateBuffer* stateBuffer)
+    : State(stateBuffer)
 {
     // Initializing Bullet physics
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();				// Configuration
@@ -109,6 +112,10 @@ void StateGamePlaying::reset()
 
 void StateGamePlaying::update(float deltaTime)
 {
+    void* ptr = m_stateBuffer->ReadBuffer(StateType::Game_Playing);
+    if (ptr)
+        printf("YES: %d\n", *static_cast<int*>(ptr));
+
     m_fpsRenderer.updateFPS(deltaTime);
     OutputDebugStringW(m_fpsRenderer.getTextRenderInfo().text);
 

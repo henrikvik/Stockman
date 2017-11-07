@@ -1,5 +1,6 @@
 #include <StateMenuPlaying.h>
 #include <StateGame.h>
+#include <StateBuffer.h>
 #include <StateGamePlaying.h>
 #include <Player\Skill\SkillManager.h>
 
@@ -9,11 +10,15 @@
 
 using namespace Logic;
 
-StateMenuPlaying::StateMenuPlaying()
+StateMenuPlaying::StateMenuPlaying(StateBuffer* stateBuffer)
+    : State(stateBuffer)
 {
     // Initializing Menu's
     m_menu = newd MenuMachine();
     m_menu->initialize(Logic::gameStateSkillPick);
+  
+    int testBufferSend = 5;
+    stateBuffer->SendBuffer((void*)&testBufferSend, BufferType::Int, StateType::Menu_Playing, StateType::Game_Playing);
 }
 
 StateMenuPlaying::~StateMenuPlaying()
@@ -38,19 +43,22 @@ void StateMenuPlaying::update(float deltaTime)
             std::pair<int, int>* selectedSkills = m_menu->getSkillPick();
             if (selectedSkills->first != -1 && selectedSkills->second != -1)
             {
-                StateGamePlaying* playingState = static_cast<StateGamePlaying*>(GetCurrentGameState()->getCurrentState());
-                playingState->getPlayer()->getSkillManager()->switchToSkill(
+                StateGamePlaying* playingState = static_cast<StateGamePlaying*>(GetParentCurrentGameState()->getCurrentState());
+                if (playingState)
                 {
-                    SkillManager::SKILL(selectedSkills->second),
-                    SkillManager::SKILL(selectedSkills->first)
-                });
-                playingState->getPlayer()->setCurrentSkills(selectedSkills->first, selectedSkills->second);
+                    playingState->getPlayer()->getSkillManager()->switchToSkill(
+                    {
+                        SkillManager::SKILL(selectedSkills->second),
+                        SkillManager::SKILL(selectedSkills->first)
+                    });
+                    playingState->getPlayer()->setCurrentSkills(selectedSkills->first, selectedSkills->second);
 
-                // Reset menu stuff
-                selectedSkills->first = -1;
-                selectedSkills->second = -1;
+                    // Reset menu stuff
+                    selectedSkills->first = -1;
+                    selectedSkills->second = -1;
 
-                m_menu->setStateToBe(gameStateGame); //change to gameStateGame
+                    m_menu->setStateToBe(gameStateGame); //change to gameStateGame
+                }
             }
         }
         break;

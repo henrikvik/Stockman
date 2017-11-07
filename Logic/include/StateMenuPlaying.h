@@ -21,7 +21,7 @@ namespace Logic
     class StateMenuPlaying : public State
     {
     public:
-        StateMenuPlaying();
+        StateMenuPlaying(StateBuffer* stateBuffer);
         ~StateMenuPlaying();
         void reset();
         void update(float deltaTime);

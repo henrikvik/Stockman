@@ -49,7 +49,7 @@ namespace Logic
         };
 
     public:
-        StateGamePlaying();
+        StateGamePlaying(StateBuffer* stateBuffer);
         ~StateGamePlaying();
         void reset();
 

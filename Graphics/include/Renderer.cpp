@@ -11,11 +11,17 @@
 
 #include "Particles\ParticleSystem.h"
 #include "Utility\TextureLoader.h"
+#include "CommonStates.h"
+#include "MainCamera.h"
+
+#include "RenderPass\ForwardPlusRenderPass.h"
+#include "RenderPass\DepthRenderPass.h"
+#include "RenderPass\LightCullRenderPass.h"
 
 
 #define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
-#define USE_OLD_RENDER true
+#define USE_OLD_RENDER false
 
 #if USE_TEMP_CUBE
 #include "TempCube.h"
@@ -27,15 +33,14 @@
 
 namespace Graphics
 {
-
+    uint32_t zero = 0;
 	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
 		: forwardPlus(device, Resources::Shaders::ForwardPlus)
-        , hybrisLoader(device)
 		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
 		, instanceSBuffer(device, CpuAccess::Write, _INSTANCE_CAP)
 		, instanceOffsetBuffer(device)
-		, skyRenderer(device, SHADOW_MAP_RESOLUTION, hybrisLoader)
+		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
 		, glowRenderer(device, deviceContext)
 #pragma region RenderDebugInfo
 		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
@@ -56,12 +61,73 @@ namespace Graphics
 
 #pragma endregion
 		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
-        , staticInstanceBuffer(device, CpuAccess::Write, StaticRenderInfo::INSTANCE_CAP)
-	{
-        RenderPass::cStates = new CommonStates(device);
+        , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
 
-		this->device = device;
-		this->deviceContext = deviceContext;
+    #pragma region Shared Shader Resources
+        , colorMap(WIN_WIDTH, WIN_HEIGHT)
+        , glowMap(WIN_WIDTH, WIN_HEIGHT)
+        , normalMap(WIN_WIDTH, WIN_HEIGHT)
+
+        , shadowMap(Global::device, SHADOW_MAP_RESOLUTION, SHADOW_MAP_RESOLUTION)
+
+
+        , lightOpaqueIndexList(CpuAccess::None, 1, &zero)
+        , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
+
+    #pragma endregion
+
+
+    {
+        Global::cStates = new CommonStates(device);
+        Global::comparisonSampler = [&](){
+            ID3D11SamplerState * sampler = nullptr;
+            D3D11_SAMPLER_DESC sDesc = {};
+            sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.BorderColor[0] = 1;
+            sDesc.BorderColor[1] = 1;
+            sDesc.BorderColor[2] = 1;
+            sDesc.BorderColor[3] = 1;
+            sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+            sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            sDesc.MaxAnisotropy = 0;
+            sDesc.MinLOD = 0;
+            sDesc.MaxLOD = D3D11_FLOAT32_MAX;
+            sDesc.MipLODBias = 0;
+
+            ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
+            return sampler;        
+        }();
+
+        { // CaNCeR!
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.Format = DXGI_FORMAT_R32G32_UINT;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+            desc.Width = (int)ceil(1280 / (float)BLOCK_SIZE);
+            desc.Height = (int)ceil(720 / (float)BLOCK_SIZE);
+            desc.SampleDesc.Count = 1;
+            desc.MipLevels = 1;
+            desc.ArraySize = 1;
+
+            D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+            ZeroMemory(&uavDesc, sizeof(uavDesc));
+            uavDesc.Format = DXGI_FORMAT_R32G32_UINT;
+            uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+
+            D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+            ZeroMemory(&srvDesc, sizeof(srvDesc));
+            srvDesc.Format = DXGI_FORMAT_R32G32_UINT;
+            srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+            srvDesc.Texture2D.MipLevels = 1;
+
+            ID3D11Texture2D *texture;
+            ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
+            ThrowIfFailed(device->CreateUnorderedAccessView(texture, &uavDesc, &lightOpaqueGridUAV));
+            ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &lightOpaqueGridSRV));
+            SAFE_RELEASE(texture);
+        }
+
 		this->backBuffer = backBuffer;
 
 		initialize(device, deviceContext, camera);
@@ -74,16 +140,11 @@ namespace Graphics
 		viewPort.Height = WIN_HEIGHT;
 		viewPort.MaxDepth = 1.0f;
 
-		states = newd DirectX::CommonStates(device);
-		grid.initialize(camera, device, deviceContext);
-
         FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
 
         float temp = 1.f;
         bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
 
-		//menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
-		createBlendState();
 
 		
 		registerDebugFunction();
@@ -96,30 +157,63 @@ namespace Graphics
 
 
 
+
         renderPasses =
         {
-            new GUIRenderPass(backBuffer)
+            newd DepthRenderPass({}, {staticInstanceBuffer}, {*Global::mainCamera->getBuffer()}, depthStencil),
+            newd LightCullRenderPass(
+                {},
+                {
+                    depthStencil,
+                    lightsNew
+                },
+                {
+                    *Global::mainCamera->getBuffer()
+                },
+                nullptr,
+                {
+                    lightOpaqueIndexList,
+                    lightOpaqueGridUAV
+                }
+            ),
+            newd ForwardPlusRenderPass(
+                {
+                    backBuffer,
+                    glowMap,
+                    normalMap
+                },
+                {
+                    lightOpaqueIndexList,
+                    lightOpaqueGridSRV,
+                    lightsNew,
+                    shadowMap,
+                    staticInstanceBuffer
+                },
+                {
+                    *Global::mainCamera->getBuffer(),
+                    *skyRenderer.getShaderBuffer(),
+                    *skyRenderer.getLightMatrixBuffer()
+                },
+                depthStencil
+            ),
+            newd GUIRenderPass({backBuffer}),
         };
     }
 
 
     Renderer::~Renderer()
     {
-		delete states;
 		delete fakeBackBuffer;
 		delete fakeBackBufferSwap;
         delete FXSystem;
-		SAFE_RELEASE(transparencyBlendState);
 
 		SAFE_RELEASE(glowTest);
-//        resourceManager.release();
 
         for (auto & renderPass : renderPasses)
         {
             delete renderPass;
         }
 
-        delete RenderPass::cStates;
     }
 
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext, Camera * camera)
@@ -128,19 +222,19 @@ namespace Graphics
 		//skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
 
         //temp
-        DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
+        DirectX::CreateWICTextureFromFile(Global::device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
 		snowManager.initializeSnowflakes(camera);
     }
 
 	void Renderer::updateLight(float deltaTime, Camera * camera)
 	{
 		PROFILE_BEGIN("UpdateLights()");
-		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
+		skyRenderer.update(Global::context, deltaTime, camera->getPos());
 		PROFILE_END();
 
 		//Temp or rename function
 		PROFILE_BEGIN("updateSnow()");
-		snowManager.updateSnow(deltaTime, camera, deviceContext);
+		snowManager.updateSnow(deltaTime, camera, Global::context);
 		PROFILE_END();
 	}
 
@@ -162,14 +256,14 @@ namespace Graphics
 
         else amount = 0;
 
-        bulletTimeBuffer.write(deviceContext, &amount, sizeof(float));
+        bulletTimeBuffer.write(Global::context, &amount, sizeof(float));
         PROFILE_END();
     }
 
 	void Renderer::updateShake(float deltaTime)
 	{
 		PROFILE_BEGIN("UpdateShake()");
-		hud.updateShake(deviceContext, deltaTime);
+		hud.updateShake(Global::context, deltaTime);
 		PROFILE_END();
 	}
 
@@ -496,6 +590,10 @@ namespace Graphics
 			startShake(30, 1000);
 		}
 
+        
+        InstanceBuffers::get().writeQueueToBuffer<StaticRenderInfo, StaticInstanceData>();
+
+
 
         PROFILE_BEGIN("RenderPasses");
         for (auto & renderPass : renderPasses)
@@ -507,9 +605,16 @@ namespace Graphics
     #else
     {
         static float clearColor[4] = {0,0,0,0};
-        context->ClearRenderTargetView(backBuffer, clearColor);
-        context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1, 0);
-        deviceContext->RSSetViewports(1, &viewPort);
+        Global::context->ClearRenderTargetView(backBuffer, clearColor);
+        Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1, 0);
+        Global::context->RSSetViewports(1, &viewPort);
+
+        writeInstanceBuffers();
+
+        for (auto & renderPass : renderPasses)
+        {
+            renderPass->update(0.016f);
+        }
 
         for (auto & renderPass : renderPasses)
         {
@@ -524,117 +629,16 @@ namespace Graphics
         hud.fillHUDInfo(info);
     }
 
-    void Renderer::cull()
-    {
-        instanceQueue.clear();
-        for (RenderInfo * info : renderQueue)
-        {
-            if (info->render)
-            {
-                instanceQueue[info->meshId].push_back({ 
-					info->translation,
-					info->translation.Invert().Transpose(),
-					this->statusData.freeze,
-					this->statusData.burn
-				});
-            }
-        }
-        renderQueue.clear();
-    }
-
-    void Renderer::writeInstanceData()
-    {
-        InstanceData* ptr = instanceSBuffer.map(deviceContext);
-        for (InstanceQueue_t::value_type & pair : instanceQueue)
-        {
-            void * data = pair.second.data();
-            size_t size = pair.second.size() * sizeof(InstanceData);
-            memcpy(ptr, data, size);
-            ptr = (InstanceData*)((char*)ptr + size);
-        }
-        instanceSBuffer.unmap(deviceContext);
-    }
-
-	void Renderer::drawFoliage(Camera * camera)
-	{
-		timeBuffer.write(deviceContext, &grassTime, sizeof(grassTime));
-
-		deviceContext->VSSetConstantBuffers(4, 1, timeBuffer);
-		deviceContext->RSSetState(states->CullNone());
-		deviceContext->OMSetRenderTargets(1, *fakeBackBuffer, depthStencil);
-
-		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		UINT sampleMask = 0xffffffff;
-		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-
-		for (FoliageRenderInfo * info : renderFoliageQueue)
-		{
-			/*ModelInfo model = resourceManager.getModelInfo(info->meshId);
-
-			static UINT stride = sizeof(Vertex), offset = 0;
-			deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
-			deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-			static ID3D11ShaderResourceView * modelTextures[1] = { nullptr };
-			modelTextures[0] = model.diffuseMap;
-			deviceContext->PSSetShaderResources(10, 1, modelTextures);
-
-			PROFILE_BEGIN("DrawIndexed()");
-			deviceContext->DrawIndexed((UINT)model.indexCount, 0, 0);
-			PROFILE_END();*/
-		}
-
-	}
-
-    void Renderer::drawStatic()
-    {
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->RSSetState(states->CullClockwise());
-        deviceContext->VSSetShaderResources(5, 1, staticInstanceBuffer);
-
-        UINT instanceOffset = 0;
-        for (auto & pair : RenderQueue::get().getQueue<StaticRenderInfo>())
-        {
-            Resources::Models::Files modelId = (Resources::Models::Files)pair.first;
-            auto & renderInfos = pair.second;
-
-            HybrisLoader::Model    * model = hybrisLoader.getModel(modelId);
-            HybrisLoader::Mesh     * mesh = &model->getMesh();
-            HybrisLoader::Material * material = &model->getMaterial();
-            HybrisLoader::Skeleton * skeleton = &model->getSkeleton();
-
-            deviceContext->VSSetShaderResources(4, 1, mesh->getVertexBuffer());
-
-            ID3D11ShaderResourceView * textures[4] =
-            {
-                /*Diffuse */ material->getDiffuse(),
-                /*Normal  */ material->getNormals(),
-                /*Specular*/ material->getSpecular(),
-                /*Glow    */ material->getGlow()
-            };
-            deviceContext->PSSetShaderResources(10, 4, textures);
-
-            deviceContext->DrawInstanced(
-                mesh->getVertexCount(), 
-                renderInfos.size(),
-                0,
-                instanceOffset
-            );
-
-            instanceOffset += renderInfos.size();
-        }
-    }
-
 	void Renderer::clear()
 	{
 		static float clearColor[4] = { 0 };
-		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(*fakeBackBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(glowRenderer, clearColor);
-		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
-		skyRenderer.clear(deviceContext);
-		glowRenderer.clear(deviceContext, clearColor);
+		Global::context->ClearRenderTargetView(backBuffer, clearColor);
+		Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
+		Global::context->ClearRenderTargetView(glowRenderer, clearColor);
+		Global::context->ClearRenderTargetView(backBuffer, clearColor);
+		Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+		skyRenderer.clear(Global::context);
+		glowRenderer.clear(Global::context, clearColor);
 	}
 
 	void Renderer::swapBackBuffers()
@@ -646,34 +650,34 @@ namespace Graphics
 
     void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
     {
-        deviceContext->PSSetShaderResources(0, 1, &texture);
+        Global::context->PSSetShaderResources(0, 1, &texture);
 
         UINT zero = 0;
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+        Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-        deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
+        Global::context->OMSetRenderTargets(1, &backBuffer, nullptr);
 
-        deviceContext->IASetInputLayout(fullscreenQuad);
-        deviceContext->VSSetShader(fullscreenQuad, nullptr, 0);
-        deviceContext->PSSetShader(fullscreenQuad, nullptr, 0);
+        Global::context->IASetInputLayout(fullscreenQuad);
+        Global::context->VSSetShader(fullscreenQuad, nullptr, 0);
+        Global::context->PSSetShader(fullscreenQuad, nullptr, 0);
 
-        static ID3D11SamplerState * pointClamp = states->PointClamp();
-        deviceContext->PSSetSamplers(0, 1, &pointClamp);
+        static ID3D11SamplerState * pointClamp = Global::cStates->PointClamp();
+        Global::context->PSSetSamplers(0, 1, &pointClamp);
 
 		PROFILE_BEGIN("Draw(4, 0)");
-        deviceContext->Draw(4, 0);
+        Global::context->Draw(4, 0);
 		PROFILE_END();
 
         ID3D11ShaderResourceView * srvNull = nullptr;
-        deviceContext->PSSetShaderResources(0, 1, &srvNull);
+        Global::context->PSSetShaderResources(0, 1, &srvNull);
     }
 
     //draws the menu
     void Renderer::drawMenu(Graphics::MenuInfo * info)
     {
-        deviceContext->RSSetViewports(1, &viewPort);
-        menu.drawMenu(device, deviceContext, info, backBuffer, transparencyBlendState);
-        hud.renderText(transparencyBlendState, false);
+        Global::context->RSSetViewports(1, &viewPort);
+        menu.drawMenu(Global::device, Global::context, info, backBuffer, Global::cStates->AlphaBlend());
+        hud.renderText(Global::cStates->AlphaBlend(), false);
 
     }
 
@@ -682,36 +686,36 @@ namespace Graphics
     {
         if (renderDebugQueue.size() == 0) return;
 
-		deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-		deviceContext->VSSetConstantBuffers(0, 1, *camera->getBuffer());
+        Global::context->PSSetConstantBuffers(0, 1, *camera->getBuffer());
+        Global::context->VSSetConstantBuffers(0, 1, *camera->getBuffer());
 
-        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+        Global::context->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
-        deviceContext->VSSetShaderResources(0, 1, debugPointsBuffer);
-        deviceContext->PSSetConstantBuffers(1, 1, debugColorBuffer);
+        Global::context->VSSetShaderResources(0, 1, debugPointsBuffer);
+        Global::context->PSSetConstantBuffers(1, 1, debugColorBuffer);
 
-        deviceContext->IASetInputLayout(nullptr);
-        deviceContext->VSSetShader(debugRender, nullptr, 0);
-        deviceContext->PSSetShader(debugRender, nullptr, 0);
+        Global::context->IASetInputLayout(nullptr);
+        Global::context->VSSetShader(debugRender, nullptr, 0);
+        Global::context->PSSetShader(debugRender, nullptr, 0);
 
 
         for (RenderDebugInfo * info : renderDebugQueue)
         {
             debugPointsBuffer.write(
-                deviceContext,
+                Global::context,
                 info->points->data(),
                 (UINT)(info->points->size() * sizeof(DirectX::SimpleMath::Vector3))
             );
 
             debugColorBuffer.write(
-                deviceContext,
+                Global::context,
                 &info->color,
                 (UINT)sizeof(DirectX::SimpleMath::Color)
             );
 
-            deviceContext->IASetPrimitiveTopology(info->topology);
-            deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
-            deviceContext->Draw((UINT)info->points->size(), 0);
+            Global::context->IASetPrimitiveTopology(info->topology);
+            Global::context->OMSetDepthStencilState(info->useDepth ? Global::cStates->DepthDefault() : Global::cStates->DepthNone(), 0);
+            Global::context->Draw((UINT)info->points->size(), 0);
         }
 
         renderDebugQueue.clear();
@@ -719,55 +723,37 @@ namespace Graphics
 
     void Renderer::writeInstanceBuffers()
     {
-        void * dest = staticInstanceBuffer.map(deviceContext);
-        size_t offset = 0;
-
+        InstanceData * instanceBuffer = staticInstanceBuffer.map(Global::context);
         for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
         {
-            for (auto & info : model_infos.second)
+            for (auto & sinfo : model_infos.second)
             {
                 InstanceData instanceData = {};
-                instanceData.transform = info->transform;
-                instanceData.transformInvT = info->transform.Invert().Transpose();
+                instanceData.transform = sinfo->transform;
+                instanceData.transformInvT = sinfo->transform.Invert().Transpose();
 
-                memcpy((char*)dest + offset, &instanceData, sizeof(instanceData));
-                offset += sizeof(instanceData);
+
+                *instanceBuffer++ = instanceData;
             }
         }
-        staticInstanceBuffer.unmap(deviceContext);
+        staticInstanceBuffer.unmap(Global::context);
+
+        Light * lightBuffer = lightsNew.map(Global::context);
+        for (auto & info : RenderQueue::get().getQueue<LightRenderInfo>())
+        {
+            Light light = {};
+            light.range = info->range;
+            light.intensity = info->intensity;
+            light.color = DirectX::SimpleMath::Vector3(info->color.x, info->color.y, info->color.z);
+            light.positionVS = DirectX::SimpleMath::Vector4::Transform(
+                DirectX::SimpleMath::Vector4(info->position.x, info->position.y, info->position.z, 1.f), 
+                Global::mainCamera->getView()
+            );
+
+            *lightBuffer++ = light;
+        }
+        lightsNew.unmap(Global::context);
     }
-
-	
-    void Renderer::createBlendState()
-    {
-        D3D11_BLEND_DESC BlendState;
-        ZeroMemory(&BlendState, sizeof(D3D11_BLEND_DESC));
-        BlendState.RenderTarget[0].BlendEnable = TRUE;
-        BlendState.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-        BlendState.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-        BlendState.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-        BlendState.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-        BlendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-        BlendState.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-        BlendState.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-
-        ThrowIfFailed(this->device->CreateBlendState(&BlendState, &transparencyBlendState));
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	void Renderer::registerDebugFunction()
@@ -1041,7 +1027,7 @@ namespace Graphics
 		{
 			std::string catcher = "";
 			
-			forwardPlus.recompile(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC);
+			forwardPlus.recompile(Global::device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC);
 
 
 			return catcher;
@@ -1051,7 +1037,7 @@ namespace Graphics
 		{
 			std::string catcher = "";
 
-			glowRenderer.recompileGlow(device);
+			glowRenderer.recompileGlow(Global::device);
 
 			return catcher;
 		});
@@ -1060,7 +1046,7 @@ namespace Graphics
 		{
 			std::string catcher = "";
 
-			snowManager.recompile(device);
+			snowManager.recompile(Global::device);
 
 			return catcher;
 		});

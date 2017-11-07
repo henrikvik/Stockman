@@ -15,11 +15,13 @@ namespace HybrisLoader
     class HybrisLoader
     {
     public:
-        HybrisLoader(ID3D11Device * device);
-        virtual ~HybrisLoader();
+        static HybrisLoader& get();
 
         Model * getModel(Resources::Models::Files fileId) { return models.at(fileId); }
     private:
+        HybrisLoader();
+        virtual ~HybrisLoader();
+
         std::map<Resources::Models::Files, Model*> models;
 
         Hybris::File loadFile(const char * filePath);

@@ -13,8 +13,7 @@ namespace Logic
     class StateMenu : public State
     {
     public:
-
-        StateMenu();
+        StateMenu(StateBuffer* stateBuffer);
         ~StateMenu();
         void reset();
 
@@ -22,9 +21,11 @@ namespace Logic
         void render() const;
 
         void switchState(StateType menuState);
+        void loadState(StateType menuState);
         State* getCurrentState() { return m_currentState; }
 
     private:
+        StateType m_wantToSwitchToType;
         StateType m_currentStateType;
         State* m_currentState;
     };

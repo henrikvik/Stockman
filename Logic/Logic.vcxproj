@@ -269,6 +269,7 @@
     <ClInclude Include="include\AI\Behavior\MeleeBehavior.h" />
     <ClInclude Include="include\AI\WaveTimeManager.h" />
     <ClInclude Include="include\State.h" />
+    <ClInclude Include="include\StateBuffer.h" />
     <ClInclude Include="include\StateGame.h" />
     <ClInclude Include="include\StateGameCampfire.h" />
     <ClInclude Include="include\StateGamePlaying.h" />

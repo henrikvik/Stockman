@@ -17,8 +17,6 @@ namespace Graphics
         void updateCoc(ID3D11DeviceContext *context, float focalLength = 0.066f, float focalPlane = 0.089f, float apature = 0.913f);
 
     private:
-
-        DirectX::CommonStates *states;
         ID3D11Buffer * vertexBuffer;
         //ID3D11SamplerState * samplers[2];
 

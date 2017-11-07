@@ -14,24 +14,27 @@ namespace Logic
     class StateMachine;
     class StateGame;
     class StateMenu;
+    class StateBuffer;
     class State : public NonCopyable
     {
     public:
+        State(StateBuffer* stateBuffer) : m_stateBuffer(stateBuffer) { }
         virtual ~State() { }
         virtual void reset() = 0;
         virtual void update(float deltaTime) = 0;
         virtual void render() const = 0;
 
-        inline void SetGameSwitchCallBack(std::function<void(StateType)> switchState)  { SwitchGameState        = switchState;  }
-        inline void SetMenuSwitchCallBack(std::function<void(StateType)> switchState)  { SwitchMenuState        = switchState;  }
-        inline void SetCurrentGameState(std::function<StateGame*()> gameState)         { GetCurrentGameState    = gameState;    }
-        inline void SetCurrentMenuState(std::function<StateMenu*()> menuState)         { GetCurrentMenuState    = menuState;    }
+        inline void SetGameSwitchCallBack(std::function<void(StateType)> gameSwitch)  { SwitchParentGameState       = gameSwitch;  }
+        inline void SetMenuSwitchCallBack(std::function<void(StateType)> menuSwitch)  { SwitchParentMenuState       = menuSwitch;  }
+        inline void SetCurrentGameState(std::function<StateGame*()> gameState)        { GetParentCurrentGameState   = gameState;   }
+        inline void SetCurrentMenuState(std::function<StateMenu*()> menuState)        { GetParentCurrentMenuState   = menuState;   }
 
     protected:
-        std::function<void(StateType)> SwitchMenuState;
-        std::function<void(StateType)> SwitchGameState;
-        std::function<StateGame*()> GetCurrentGameState;
-        std::function<StateMenu*()> GetCurrentMenuState;
+        StateBuffer* m_stateBuffer;
+        std::function<void(StateType)> SwitchParentMenuState;
+        std::function<void(StateType)> SwitchParentGameState;
+        std::function<StateGame*()> GetParentCurrentGameState;
+        std::function<StateMenu*()> GetParentCurrentMenuState;
     };
 }
 
