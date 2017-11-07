@@ -16,8 +16,7 @@
 #include "Menu.h"
 #include "HUD.h"
 #include "HybrisLoader\HybrisLoader.h"
-#include "SSAORenderer.h"
-#include "Fog.H"
+#include "Fog.h"
 #include "DoF.h"
 
 #include <SpriteBatch.h>
@@ -67,7 +66,6 @@ namespace Graphics
         ShaderResource* fakeBackBuffer;
         ShaderResource* fakeBackBufferSwap;
     #pragma endregion
-        SSAORenderer ssaoRenderer;
         Sun sun;
         Shader fullscreenQuad;
         Shader forwardPlus;

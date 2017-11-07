@@ -47,7 +47,7 @@
     <ClCompile Include="include\RenderPass\RenderPass.cpp" />
     <ClCompile Include="include\RenderPass\ShadowRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\SkyBoxRenderPass.cpp" />
-    <ClCompile Include="include\SSAORenderer.cpp" />
+    <ClCompile Include="include\RenderPass\SSAORenderPass.cpp" />
     <ClCompile Include="include\Utility\DebugDraw.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
     <ClCompile Include="include\Utility\Shader.cpp" />
@@ -87,9 +87,9 @@
     <ClInclude Include="include\RenderPass\RenderPass.h" />
     <ClInclude Include="include\RenderPass\ShadowRenderPass.h" />
     <ClInclude Include="include\RenderPass\SkyBoxRenderPass.h" />
+    <ClInclude Include="include\RenderPass\SSAORenderPass.h" />
     <ClInclude Include="include\Utility\RenderPass.h" />
     <ClInclude Include="include\RenderQueue.h" />
-    <ClInclude Include="include\SSAORenderer.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\ThrowIfFailed.h" />
     <ClInclude Include="include\Utility\Buffer.h" />

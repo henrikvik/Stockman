@@ -49,7 +49,11 @@ namespace Resources
             GlowMipCombinder,
             SimpleForward,
             SkyShader,
-            SpriteShader
+            SpriteShader,
+            SSAOComputeShader,
+            SSAOGaussianBlurHorizontal,
+            SSAOGaussianBlurVertical,
+            SSAOMerger
         };
         const std::map<Files, const char *> Paths =
         {
@@ -62,7 +66,11 @@ namespace Resources
             {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
             {SimpleForward, R"(..\Resources\Shaders\SimpleForward.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
-            {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"}
+            {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
+            {SSAOComputeShader, R"(..\Resources\Shaders\SSAOComputeShader.hlsl)"},
+            {SSAOGaussianBlurHorizontal, R"(..\Resources\Shaders\SSAOGaussianBlurHorizontal.hlsl)"},
+            {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
+            {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
     }
     namespace Textures

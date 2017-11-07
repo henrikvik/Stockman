@@ -103,7 +103,7 @@
     </ClCompile>
     <PostBuildEvent>
       <Command>cd "$(SolutionDir)"
-$(TargetPath)</Command>
+"$(TargetPath)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,7 +115,7 @@ $(TargetPath)</Command>
     </ClCompile>
     <PostBuildEvent>
       <Command>cd "$(SolutionDir)"
-$(TargetPath)</Command>
+"$(TargetPath)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -133,7 +133,7 @@ $(TargetPath)</Command>
     </Link>
     <PostBuildEvent>
       <Command>cd "$(SolutionDir)"
-$(TargetPath)</Command>
+"$(TargetPath)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,7 +151,7 @@ $(TargetPath)</Command>
     </Link>
     <PostBuildEvent>
       <Command>cd "$(SolutionDir)"
-$(TargetPath)</Command>
+"$(TargetPath)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

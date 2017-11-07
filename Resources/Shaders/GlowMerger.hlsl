@@ -1,5 +1,5 @@
-#include "../ShaderConstants.hlsli"
-#include "../LightCalcInclude.hlsli"
+#include "ShaderConstants.hlsli"
+#include "LightCalcInclude.hlsli"
 
 Texture2D backBuffer : register(t4);
 Texture2D toMerge : register(t5);

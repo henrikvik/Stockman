@@ -235,3 +235,5 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
     
     return lighting;
 }
+
+//TODO GÖR EN BÅDA //

@@ -19,6 +19,8 @@
 #include "RenderPass\LightCullRenderPass.h"
 #include "RenderPass\ShadowRenderPass.h"
 #include "RenderPass\SkyBoxRenderPass.h"
+#include "RenderPass\GlowRenderPass.h"
+#include "RenderPass\SSAORenderPass.h"
 
 
 #define USE_TEMP_CUBE false
@@ -171,10 +173,10 @@ namespace Graphics
                     lightOpaqueGridUAV
                 }
             ),
-            newd SkyBoxRenderPass({ backBuffer },{},{ *sun.getLightDataBuffer() }, depthStencil),
+            newd SkyBoxRenderPass({ *fakeBackBuffer },{},{ *sun.getLightDataBuffer() }, depthStencil),
             newd ForwardPlusRenderPass(
                 {
-                    backBuffer,
+                    *fakeBackBuffer,
                     glowMap,
                     normalMap
                 },
@@ -192,6 +194,8 @@ namespace Graphics
                 },
                 depthStencil
             ),
+            newd GlowRenderPass({*fakeBackBufferSwap },{*fakeBackBuffer, glowMap}),
+            newd SSAORenderPass({backBuffer}, {*fakeBackBufferSwap}, {}),
             newd GUIRenderPass({backBuffer}),
         };
     }
@@ -622,6 +626,7 @@ namespace Graphics
         {
             renderPass->render();
         }
+
     }
     #endif
 #endif
@@ -635,7 +640,9 @@ namespace Graphics
 	{
 		static float clearColor[4] = { 0 };
 		Global::context->ClearRenderTargetView(backBuffer, clearColor);
-		Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
+        Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
+        Global::context->ClearRenderTargetView(*fakeBackBufferSwap, clearColor);
+        Global::context->ClearRenderTargetView(glowMap, clearColor);
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
 	}
@@ -809,7 +816,7 @@ namespace Graphics
 
             return catcher;
 		});
-
+        
         debugWindow->registerCommand("GFX_SET_SNOW", [&](std::vector<std::string> &args)->std::string
         {
             std::string catcher = "";

@@ -14,7 +14,7 @@ namespace Graphics {
             std::initializer_list<ID3D11ShaderResourceView*> resources = {},
             std::initializer_list<ID3D11Buffer*> buffers = {},
             ID3D11DepthStencilView * depthStencil = nullptr);
-        ~GlowRenderPass() {};
+        virtual ~GlowRenderPass();
 
         void update(float deltaTime);
         void render() const;
@@ -35,7 +35,7 @@ namespace Graphics {
         ShaderResource glowPass1;
 
 
-        void createMips(ID3D11Device * device);
-        void setMipViewPort(ID3D11DeviceContext * context, int level);
+        void createMips();
+        void setMipViewPort(int level) const;
     };
 }
