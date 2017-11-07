@@ -3,12 +3,13 @@
 #include "../Device.h"
 #include "../Utility/sizeofv.h"
 #include "../Utility/TextureLoader.h"
+#include "../CommonStates.h"
 
-Graphics::GUIRenderPass::GUIRenderPass(ID3D11RenderTargetView * renderTarget)
-    : spriteShader(Resources::Shaders::SpriteShader)
-    , vertexBuffer(Global::device, CpuAccess::Write, SpriteRenderInfo::INSTANCE_CAP * 4)
+Graphics::GUIRenderPass::GUIRenderPass(std::initializer_list<ID3D11RenderTargetView*> targets, std::initializer_list<ID3D11ShaderResourceView*> resources, std::initializer_list<ID3D11Buffer*> buffers, ID3D11DepthStencilView * depthStencil)
+    : RenderPass(targets, resources, buffers, depthStencil)
+    , spriteShader(Resources::Shaders::SpriteShader)
+    , vertexBuffer(CpuAccess::Write, INSTANCE_CAP(SpriteRenderInfo) * 4)
 {
-    this->renderTarget = renderTarget;
 }
 
 void Graphics::GUIRenderPass::render() const
@@ -18,15 +19,15 @@ void Graphics::GUIRenderPass::render() const
     Global::context->PSSetShader(spriteShader, nullptr, 0);
     Global::context->VSSetShader(spriteShader, nullptr, 0);
     Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-    Global::context->RSSetState(cStates->CullNone());
+    Global::context->RSSetState(Global::cStates->CullNone());
 
     Global::context->VSSetShaderResources(0, 1, vertexBuffer);
 
-    ID3D11SamplerState * linear = cStates->LinearClamp();
+    ID3D11SamplerState * linear = Global::cStates->LinearClamp();
     Global::context->PSSetSamplers(0, 1, &linear);
 
     Global::context->OMSetRenderTargets(1, &renderTarget, nullptr);
-    Global::context->OMSetBlendState(cStates->AlphaBlend(), NULL, -1);
+    Global::context->OMSetBlendState(Global::cStates->AlphaBlend(), NULL, -1);
 
     std::vector<Vertex> vertices(4);
     size_t offset = 0;

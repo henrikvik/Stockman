@@ -30,14 +30,9 @@ cbuffer LightBuffer : register(b1)
     float fade;
 }
 
-//Used by PS
-cbuffer BulletTimeTimer : register(b2)
-{
-    float bulletTimer;
-};
 
 //used by VS
-cbuffer LightMatBuffer : register(b3)
+cbuffer LightMatBuffer : register(b2)
 {
     float4x4 lightVP;
 }
@@ -238,8 +233,5 @@ float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2
 
     float4 lighting = saturate(finalDiffuse + ambient);
     
-    lighting.xyz = adjustSaturation(lighting.xyz, bulletTimer);
-    lighting.xyz = adjustContrast(lighting.xyz, 2 - bulletTimer, 0.1);
-
     return lighting;
 }

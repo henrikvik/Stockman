@@ -4,22 +4,26 @@
 
 namespace Graphics
 {
-    class ForwardPlusRenderPass : public RenderPass
+    class DepthRenderPass : public RenderPass
     {
     public:
-        ForwardPlusRenderPass(
+        enum BufferSlots { Camera };
+        enum ResourceSlots { StaticInstanceBuffer };
+
+        DepthRenderPass(
             std::initializer_list<ID3D11RenderTargetView*> targets,
             std::initializer_list<ID3D11ShaderResourceView*> resources = {},
             std::initializer_list<ID3D11Buffer*> buffers = {},
             ID3D11DepthStencilView * depthStencil = nullptr
         );
-        virtual ~ForwardPlusRenderPass() {};
+  
 
         // Inherited via RenderPass
         virtual void render() const override;
         virtual void update(float deltaTime) override;
 
     private:
-        Shader staticForwardPlus;
+        Shader staticDepth;
+
     };
 }

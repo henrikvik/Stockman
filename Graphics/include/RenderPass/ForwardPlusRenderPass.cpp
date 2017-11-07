@@ -1,37 +1,43 @@
 #include "ForwardPlusRenderPass.h"
 #include "../Device.h"
 #include "../CommonStates.h"
+#include "../RenderQueue.h"
+#include "../HybrisLoader/HybrisLoader.h"
 
 namespace Graphics
 {
+    ForwardPlusRenderPass::ForwardPlusRenderPass(std::initializer_list<ID3D11RenderTargetView*> targets, std::initializer_list<ID3D11ShaderResourceView*> resources, std::initializer_list<ID3D11Buffer*> buffers, ID3D11DepthStencilView * depthStencil)
+        : RenderPass(targets, resources, buffers, depthStencil)
+        , staticForwardPlus(Resources::Shaders::ForwardPlus)
+    {
+    }
+
     void ForwardPlusRenderPass::render() const
     {
         Global::context->IASetInputLayout(nullptr);
         Global::context->VSSetShader(staticForwardPlus, nullptr, 0);
         Global::context->PSSetShader(staticForwardPlus, nullptr, 0);
 
-        auto sampler = Global::cStates->LinearClamp();
-        auto samplerWrap = Global::cStates->LinearWrap();
-        Global::context->PSSetSamplers(0, 1, &sampler);
-        Global::context->PSSetSamplers(1, 1, &Global::comparisonSampler);
-        Global::context->PSSetSamplers(2, 1, &samplerWrap);
-
-        Global::context->PSSetShaderResources(0, resources.size(), resources.data());
-
-
-        ID3D11Buffer *lightBuffs[] =
+        ID3D11SamplerState * samplers[] =
         {
-            *skyRenderer.getShaderBuffer(),
-            *skyRenderer.getLightMatrixBuffer()
+            Global::cStates->LinearClamp(),
+            Global::comparisonSampler,
+            Global::cStates->LinearWrap(),
         };
-
-        Global::context->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
-        Global::context->VSSetConstantBuffers(3, 1, &lightBuffs[1]);
+        Global::context->PSSetSamplers(0, 3, samplers);
 
         Global::context->OMSetRenderTargets(targets.size(), targets.data(), depthStencil);
+        Global::context->PSSetShaderResources(0, 4, resources.data());
+        Global::context->PSSetConstantBuffers(0, buffers.size(), buffers.data());
+        Global::context->VSSetConstantBuffers(0, buffers.size(), buffers.data());
+
+        drawInstanced<StaticRenderInfo>(resources[4]);
+        // TODO add all renderInfos
     }
 
     void ForwardPlusRenderPass::update(float deltaTime)
     {
     }
+
+    
 }

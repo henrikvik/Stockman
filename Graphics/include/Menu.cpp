@@ -1,13 +1,13 @@
 #include "Menu.h"
 #include <WICTextureLoader.h>
 #include <Engine\Profiler.h>
+#include "CommonStates.h"
 
 Graphics::Menu::Menu(ID3D11Device * device, ID3D11DeviceContext * contex)
     : shader(device, SHADER_PATH("MenuShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA } })
 {
     this->active = MenuInfo();
     this->loaded = false;
-    this->states = newd DirectX::CommonStates(device);
 
     buttonsMaped = false;
     createVBuffers(device);
@@ -24,7 +24,6 @@ Graphics::Menu::~Menu()
     //SAFE_RELEASE(menuTexture[3]);
     SAFE_RELEASE(menuQuad);
     SAFE_RELEASE(buttonQuad);
-    delete states;
 }
 
 void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * contex, Graphics::MenuInfo * info, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState)
@@ -45,7 +44,7 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
     contex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     contex->VSSetShader(shader, nullptr, 0);
     contex->PSSetShader(shader, nullptr, 0);
-    auto sampler = states->PointWrap();
+    auto sampler =  Global::cStates->PointWrap();
     contex->PSSetSamplers(0, 1, &sampler);
     
 

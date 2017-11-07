@@ -1,6 +1,8 @@
 #include "SSAORenderer.h"
 #include <Engine\Constants.h>
 #include <WICTextureLoader.h>
+#include "CommonStates.h"
+
 namespace Graphics 
 {
 	SSAORenderer::SSAORenderer(ID3D11Device * device):
@@ -13,13 +15,11 @@ namespace Graphics
 		ssaoMerger(device, SHADER_PATH("SSAOShaders/SSAOMerger.hlsl"))
 	{
 		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("randomNormals.jpg"), NULL, &randomNormals);
-		states = newd DirectX::CommonStates(device);
 	}
 
 	SSAORenderer::~SSAORenderer()
 	{
 		SAFE_RELEASE(randomNormals);
-		delete states;
 	}
 
 	void SSAORenderer::renderSSAO(ID3D11DeviceContext * context, Camera * camera, DepthStencil * depthBuffer, ShaderResource * inputBackBuffer, ShaderResource * outputBackBuffer)
@@ -29,8 +29,8 @@ namespace Graphics
 
 		ID3D11SamplerState * samplers[] =
 		{
-			states->PointClamp(),
-			states->PointWrap()
+            Global::cStates->PointClamp(),
+            Global::cStates->PointWrap()
 		};
 		context->CSSetSamplers(0, 2, samplers);
 

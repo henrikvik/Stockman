@@ -106,7 +106,7 @@ private:
         }
         void queue(T * info)
         {
-            if (count() > T::INSTANCE_CAP)
+            if (count() > INSTANCE_CAP(T))
                 throw std::runtime_error("Instance cap exceeded.");
 
             instances.push_back(info);
@@ -132,7 +132,7 @@ private:
         }
         void queue(size_t key, T * info)
         {
-            if (count() > T::INSTANCE_CAP)
+            if (count() > INSTANCE_CAP(T))
                 throw std::runtime_error("Instance cap exceeded.");
 
             instances[key].push_back(info);

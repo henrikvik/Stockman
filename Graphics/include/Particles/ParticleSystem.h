@@ -10,6 +10,7 @@
 #include "../Camera.h"
 #include "../Utility/Buffer.h"
 #include "../Utility/Shader.h"
+#include "../CommonStates.h"
 
 namespace Graphics {;
 
