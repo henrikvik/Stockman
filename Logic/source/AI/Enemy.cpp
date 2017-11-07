@@ -62,7 +62,10 @@ void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> co
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 
-	m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+    if (!m_stunned)
+    {
+        m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+    }
 
     m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
@@ -110,7 +113,10 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
     if (flags & Effect::EFFECT_IS_FROZEN)
         m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
     if (flags & Effect::EFFECT_IS_STUNNED)
+    {
         m_moveSpeedMod *= effect.getModifiers()->modifyMovementSpeed; //mjight need changing
+        m_stunned = true;
+    }
 }
 
 int Enemy::getHealth() const

@@ -41,6 +41,9 @@ namespace Logic
 			ENEMY_TYPE m_enemyType;
 
 			Behavior *m_behavior;
+
+            //status
+            bool m_stunned;
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE };
 
