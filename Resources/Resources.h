@@ -42,6 +42,11 @@ namespace Resources
         {
             AnimationTest,
             ForwardPlus,
+            GlowBlurHorizontal,
+            GlowBlurVertical,
+            GlowDownSampler,
+            GlowMerger,
+            GlowMipCombinder,
             SimpleForward,
             SkyShader,
             SpriteShader
@@ -50,6 +55,11 @@ namespace Resources
         {
             {AnimationTest, R"(..\Resources\Shaders\AnimationTest.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
+            {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
+            {GlowBlurVertical, R"(..\Resources\Shaders\GlowBlurVertical.hlsl)"},
+            {GlowDownSampler, R"(..\Resources\Shaders\GlowDownSampler.hlsl)"},
+            {GlowMerger, R"(..\Resources\Shaders\GlowMerger.hlsl)"},
+            {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
             {SimpleForward, R"(..\Resources\Shaders\SimpleForward.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"}
