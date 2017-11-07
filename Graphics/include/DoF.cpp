@@ -1,4 +1,5 @@
 #include "DoF.h"
+#include "CommonState.h"
 namespace Graphics
 {
     DoF::DoF(ID3D11Device * device):
@@ -13,7 +14,6 @@ namespace Graphics
         glue(device, SHADER_PATH("DoFShaders/Glue.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA } })
     {
 
-        states = new DirectX::CommonStates(device);
         //samplers[0] = states->PointClamp();
         //samplers[1] = states->LinearClamp();
         createFullScreenQuad(device);
@@ -25,7 +25,7 @@ namespace Graphics
         //SAFE_RELEASE(samplers[0]);
         //SAFE_RELEASE(samplers[1]);
         SAFE_RELEASE(vertexBuffer);
-        delete states;
+
     }
 
     void DoF::DoFRender(ID3D11DeviceContext * context, ShaderResource * colorBuffer, DepthStencil * depthBuffer, ShaderResource * outputBuffer, Camera *cam)
@@ -36,8 +36,8 @@ namespace Graphics
             firstTime = false;
         }
         static ID3D11SamplerState * samplers[] = {
-            states->PointClamp(),
-            states->LinearClamp()
+            Global::cStates->PointClamp(),
+            Global::cStates->LinearClamp()
         };
 
         

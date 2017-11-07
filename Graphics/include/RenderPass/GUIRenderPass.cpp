@@ -58,9 +58,6 @@ void Graphics::GUIRenderPass::render() const
         offset += 4;
     }
 
-    for (auto & info : RenderQueue::get().getQueue<TextRenderInfo>())
-    {
-    }
 }
 
 void Graphics::GUIRenderPass::update(float deltaTime)

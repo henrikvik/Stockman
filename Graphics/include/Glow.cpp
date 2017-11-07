@@ -2,6 +2,7 @@
 #include <WICTextureLoader.h>
 #include "ThrowIfFailed.h"
 #include <string>
+#include "CommonState.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <Engine\DebugWindow.h>
@@ -17,7 +18,7 @@ Graphics::Glow::Glow(ID3D11Device * device, ID3D11DeviceContext * context)
 	, glowPass0(device, WIN_WIDTH, WIN_HEIGHT)
 	, glowPass1(device, WIN_WIDTH, WIN_HEIGHT)
 {
-	this->states = newd DirectX::CommonStates(device);
+
 
 	DebugWindow *debugWindow = DebugWindow::getInstance();
 	createMips(device);
@@ -25,7 +26,7 @@ Graphics::Glow::Glow(ID3D11Device * device, ID3D11DeviceContext * context)
 
 Graphics::Glow::~Glow()
 {
-	delete states;
+
 	for (int i = 0; i < MIP_LEVELS; i++)
 	{
 		SAFE_RELEASE(srvs[i]);
@@ -152,7 +153,7 @@ void Graphics::Glow::addGlow(ID3D11DeviceContext * context, ID3D11ShaderResource
 	context->VSSetShader(mipGenerator, nullptr, 0);
 	context->PSSetShader(mipGenerator, nullptr, 0);
 
-	auto sampler = states->LinearWrap();
+	auto sampler = Global::cStates->LinearWrap();
 	context->PSSetSamplers(0, 1, &sampler);
 
 	for (int i = 0; i < MIP_LEVELS - 1; i++)
