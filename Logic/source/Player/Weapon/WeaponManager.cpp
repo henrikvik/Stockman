@@ -116,14 +116,14 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
         newd WeaponLoadout{ 
         /* Primary */       newd Weapon(projectileManager, ProjectileData(1, 0.2f, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 450.f, 0.f, 0 }),
         /* Secondary*/      newd Weapon(projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), Weapon::WeaponInfo{ 1, 18, 15, 10, 100.f, 0.f, 0 }),
-        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 60, 60, 30, 30, 1, 6, 2000 }), 
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 60, 60, 30, 30, 1, 6, 1000 }), 
         /* WeaponModel */   newd WeaponModel(Graphics::ModelID::CROSSBOW, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.1f, -1.6f, -9.15f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.1f), -0.4f }) },
 
         // Ice
         newd WeaponLoadout{ 
         /* Primary */       newd Weapon(projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750.f, 0.f, 1 }),
         /* Secondary*/      newd Weapon(projectileManager, ProjectileData(1, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1), Weapon::WeaponInfo{ 3, 1, 0, 0, 100.f, 0.f, 1 }),
-        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 200, 100, 100, 1, 10, 3000 }),
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 200, 100, 100, 1, 10, 1500 }),
         /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.2f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(3.1f, -3.9f, -3.3f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), -0.4f }) },
 
         // Sledge/Melee
@@ -156,29 +156,31 @@ void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Pl
 {
     if (m_attackRateTimer <= 0.f)
     {
-        if (float delayTime = m_currentWeapon->primary->getDelayTime())
+        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().primAmmoConsumption == 0)
         {
-            m_toUse = USE_PRIMARY;
-            m_toUseShooter = &shooter;
-            m_attackRateTimer = delayTime;
+            if (float delayTime = m_currentWeapon->primary->getDelayTime())
+            {
+                m_toUse = USE_PRIMARY;
+                m_toUseShooter = &shooter;
+                m_attackRateTimer = delayTime;
+            }
+            else
+            {
+                Entity* shooterEntity = &shooter;
+                usePrimary(position, yaw, pitch, *shooterEntity);
+            }
         }
         else
         {
-            Entity* shooterEntity = &shooter;
-            usePrimary(position, yaw, pitch, *shooterEntity);
-        }   
+            reloadWeapon();
+        }
     }
 }
 
 void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-    if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().primAmmoConsumption == 0)
-    {
-        m_currentWeapon->primary->use(position, yaw, pitch, shooter);
-        m_currentWeapon->ammoContainer->removePrimaryAmmo();
-    }
-    else
-        printf("out of ammo\n");
+    m_currentWeapon->primary->use(position, yaw, pitch, shooter);
+    m_currentWeapon->ammoContainer->removePrimaryAmmo();
 
     m_attackRateTimer = m_currentWeapon->primary->getAttackTimer();
 }
@@ -187,29 +189,29 @@ void WeaponManager::tryUseSecondary(btVector3 position, float yaw, float pitch, 
 {
     if (m_attackRateTimer <= 0.f)
     {
-        if (float delayTime = m_currentWeapon->secondary->getDelayTime())
+        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().secAmmoConsumption == 0)
         {
-            m_toUse = USE_SECONDARY;
-            m_toUseShooter = &shooter;
-            m_attackRateTimer = delayTime;
+            if (float delayTime = m_currentWeapon->secondary->getDelayTime())
+            {
+                m_toUse = USE_SECONDARY;
+                m_toUseShooter = &shooter;
+                m_attackRateTimer = delayTime;
+            }
+            else
+            {
+                Entity* shooterEntity = &shooter;
+                useSecondary(position, yaw, pitch, *shooterEntity);
+            }
         }
         else
-        {
-            Entity* shooterEntity = &shooter;
-            useSecondary(position, yaw, pitch, *shooterEntity);
-        }
+            reloadWeapon();
     }
 }
 
 void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-    if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().secAmmoConsumption == 0)
-    {
-        m_currentWeapon->secondary->use(position, yaw, pitch, shooter);
-        m_currentWeapon->ammoContainer->removeSecondaryAmmo();
-    }
-    else
-        printf("out of ammo\n");
+    m_currentWeapon->secondary->use(position, yaw, pitch, shooter);
+    m_currentWeapon->ammoContainer->removeSecondaryAmmo();
 
     m_attackRateTimer = m_currentWeapon->secondary->getAttackTimer();
 }
