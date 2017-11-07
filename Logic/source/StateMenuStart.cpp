@@ -36,6 +36,11 @@ void StateMenuStart::update(float deltaTime)
 {
     m_fpsRenderer.updateFPS(deltaTime);
     m_menu->update(deltaTime);
+    if (m_menu->currentState() == gameStateSkillPick)
+    {
+        SwitchParentMenuState(StateType::Menu_Playing);
+        SwitchParentGameState(StateType::Game_Playing);
+    }
 }
 
 void StateMenuStart::render() const

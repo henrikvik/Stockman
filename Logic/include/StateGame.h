@@ -21,10 +21,12 @@ namespace Logic
         void update(float deltaTime);
         void render() const;
 
-        void switchState(StateType menuState);
+        void switchState(StateType gameState);
+        void loadState(StateType gameState);
         State* getCurrentState() { return m_currentState; }
 
     private:
+        StateType m_wantToSwitchToType;
         StateType m_currentStateType;
         State* m_currentState;
     };
