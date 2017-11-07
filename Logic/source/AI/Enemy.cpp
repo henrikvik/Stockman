@@ -109,6 +109,8 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 		m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
     if (flags & Effect::EFFECT_IS_FROZEN)
         m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+    if (flags & Effect::EFFECT_IS_STUNNED)
+        m_moveSpeedMod *= effect.getModifiers()->modifyMovementSpeed; //mjight need changing
 }
 
 int Enemy::getHealth() const

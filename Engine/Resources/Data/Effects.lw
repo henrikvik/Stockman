@@ -90,3 +90,15 @@
 	"mHP": 1f;
 	"mMovementSpeed": 0f;
 }
+{ //STUN
+    "flags" : 16384; // 0x4000
+    "duration" : 10000f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+}

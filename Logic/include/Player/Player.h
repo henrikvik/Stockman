@@ -79,6 +79,7 @@ namespace Logic
 		float m_moveMaxSpeed;
 		btVector3 m_moveDir; // only 2 dimensional movement direction (x, z)
 		float m_moveSpeed;
+        float m_moveSpeedMod;
 		float m_acceleration;
 		float m_deacceleration;
 		float m_airAcceleration;
@@ -127,6 +128,9 @@ namespace Logic
 
 		// Sound
 		void updateSound(float deltaTime);
+
+        //status
+        bool m_stunned;
 	public:
 		Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();

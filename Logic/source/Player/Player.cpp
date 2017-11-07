@@ -73,6 +73,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
 	m_moveDir.setZero();
 	m_moveSpeed = 0.f;
+    m_moveSpeedMod = 1.0f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_deacceleration = m_acceleration * 0.5f;
 	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
@@ -96,6 +97,8 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
     m_useSkillSecondary = DirectX::Keyboard::Keys::E;
     m_useSkillTertiary = DirectX::Keyboard::Keys::G;
 	m_listenerData->update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
+
+    m_stunned = false;
 }
 
 void Player::registerDebugCmds()
@@ -127,6 +130,13 @@ void Player::registerDebugCmds()
             m_moveSpeed = 0.f;
         }
         return "Noclip updated";
+    });
+
+    win->registerCommand("LOG_PLAYER_STUN", [&](std::vector<std::string> &args) -> std::string
+    {
+        getStatusManager().addStatus(StatusManager::STUN, 1, true);
+
+        return "Player is Stunned";
     });
 }
 
@@ -171,6 +181,7 @@ void Player::onCollision(Projectile& other)
 void Player::affect(int stacks, Effect const &effect, float deltaTime)
 {
 	long long flags = effect.getStandards()->flags;
+    
 
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
 	{
@@ -201,6 +212,11 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
                 wp->setAmmo(currentAmmo + magSize);
         }
 	}
+    if (flags & Effect::EFFECT_IS_STUNNED)
+    {
+        m_moveSpeedMod = effect.getModifiers()->modifyMovementSpeed;
+        m_stunned = true;
+    }
 }
 
 void Player::upgrade(Upgrade const & upgrade)
@@ -250,6 +266,8 @@ int Player::getHP() const
 
 void Player::updateSpecific(float deltaTime)
 {
+    m_moveSpeedMod = 1.0f;
+    m_stunned = false;
 	Player::update(deltaTime);
 
 	// Updates listener info for sounds
@@ -289,10 +307,69 @@ void Player::updateSpecific(float deltaTime)
 		printf("free move deactivated\n");
 	}
 
-	// Movement
-	if (ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
-		mouseMovement(deltaTime, &ms);
-	jump(deltaTime, &ks);
+    //Only allowed if not stunned
+    if (!m_stunned)
+    {
+        // Movement
+        if (ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
+            mouseMovement(deltaTime, &ms);
+        jump(deltaTime, &ks);
+
+        // Weapon swap
+        if (ks.IsKeyDown(m_switchWeaponOne))
+        {
+            m_weaponManager->switchWeapon(0);
+            currentWeapon = 0;
+        }
+
+        if (ks.IsKeyDown(m_switchWeaponTwo))
+        {
+            m_weaponManager->switchWeapon(1);
+            currentWeapon = 1;
+        }
+
+        if (ks.IsKeyDown(m_switchWeaponThree))
+        {
+            m_weaponManager->switchWeapon(2);
+            currentWeapon = 2;
+        }
+
+
+        // Skills
+        PROFILE_BEGIN("SkillManager");
+        forward = getForwardBT();
+        if (ks.IsKeyDown(m_useSkillPrimary))
+            m_skillManager->use(SkillManager::ID::PRIMARY, forward, *this);
+        if (ks.IsKeyUp(m_useSkillPrimary))
+            m_skillManager->release(SkillManager::ID::PRIMARY);
+        if (ks.IsKeyDown(m_useSkillSecondary))
+            m_skillManager->use(SkillManager::ID::SECONDARY, forward, *this);
+        if (ks.IsKeyUp(m_useSkillSecondary))
+            m_skillManager->release(SkillManager::ID::SECONDARY);
+        if (ks.IsKeyDown(m_useSkillTertiary))
+            m_skillManager->use(SkillManager::ID::TERTIARY, forward, *this);
+        if (ks.IsKeyUp(m_useSkillTertiary))
+            m_skillManager->release(SkillManager::ID::TERTIARY);
+        PROFILE_END();
+
+        // Check if reloading and is not stunned
+        if (!m_weaponManager->isReloading())
+        {
+            // Primary and secondary attack
+            if (!m_weaponManager->isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
+            {
+                btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
+                if ((ms.leftButton))
+                    m_weaponManager->usePrimary(pos, m_camYaw, m_camPitch, *this);
+                else if (ms.rightButton)
+                    m_weaponManager->useSecondary(pos, m_camYaw, m_camPitch, *this);
+            }
+
+            // Reload
+            if (ks.IsKeyDown(m_reloadWeapon))
+                m_weaponManager->reloadWeapon();
+        }
+    }
 
 	// Get movement input
 	moveInput(&ks);
@@ -322,61 +399,6 @@ void Player::updateSpecific(float deltaTime)
 	//printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
 
 	//crouch(deltaTime);
-
-	// Weapon swap
-    if (ks.IsKeyDown(m_switchWeaponOne))
-    {
-        m_weaponManager->switchWeapon(0);
-        currentWeapon = 0;
-    }
-		
-    if (ks.IsKeyDown(m_switchWeaponTwo))
-    {
-        m_weaponManager->switchWeapon(1);
-        currentWeapon = 1;
-    }
-		
-    if (ks.IsKeyDown(m_switchWeaponThree))
-    {
-        m_weaponManager->switchWeapon(2);
-        currentWeapon = 2;
-    }
-		
-
-	// Skills
-    PROFILE_BEGIN("SkillManager");
-    forward = getForwardBT();
-	if (ks.IsKeyDown(m_useSkillPrimary))
-        m_skillManager->use(SkillManager::ID::PRIMARY, forward, *this);
-	if (ks.IsKeyUp(m_useSkillPrimary))
-        m_skillManager->release(SkillManager::ID::PRIMARY);
-    if (ks.IsKeyDown(m_useSkillSecondary))
-        m_skillManager->use(SkillManager::ID::SECONDARY, forward, *this);
-    if (ks.IsKeyUp(m_useSkillSecondary))
-        m_skillManager->release(SkillManager::ID::SECONDARY);
-    if (ks.IsKeyDown(m_useSkillTertiary))
-        m_skillManager->use(SkillManager::ID::TERTIARY, forward, *this);
-    if (ks.IsKeyUp(m_useSkillTertiary))
-        m_skillManager->release(SkillManager::ID::TERTIARY);
-    PROFILE_END();
-
-	// Check if reloading
-	if (!m_weaponManager->isReloading())
-	{
-		// Primary and secondary attack
-		if (!m_weaponManager->isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
-		{
-			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
-			if ((ms.leftButton))
-				m_weaponManager->usePrimary(pos, m_camYaw, m_camPitch, *this);
-			else if (ms.rightButton)
-				m_weaponManager->useSecondary(pos, m_camYaw, m_camPitch, *this);
-		}
-
-		// Reload
-		if (ks.IsKeyDown(m_reloadWeapon))
-			m_weaponManager->reloadWeapon();
-	}
 
     // Update weapon and skills
     m_weaponManager->update(deltaTime);
@@ -452,7 +474,7 @@ void Player::moveFree(float deltaTime, DirectX::Keyboard::State * ks)
 void Player::move(float deltaTime)
 {
 	// On ground
-	if (!m_wishJump)
+    if (!m_wishJump)
 	{
 		float friction = (m_moveMaxSpeed * 2 - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_FRICTION; // smooth friction
 		applyFriction(deltaTime, friction > 0.1f ? friction : 0.1f);
@@ -507,7 +529,7 @@ void Player::accelerate(float deltaTime, float acceleration)
 	if (deltaTime * 0.001f > (1.f / 60.f))
 		deltaTime = (1.f / 60.f) * 1000.f;
 
-	m_moveSpeed += acceleration * deltaTime;
+	m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod;
 
 	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;

@@ -35,7 +35,7 @@ void Entity::update(float deltaTime)
 {
 	PhysicsObject::updatePhysics(deltaTime);
 
-	updateSound(deltaTime);
+    updateSound(deltaTime);
 
 	// Checking different buffs
 	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
