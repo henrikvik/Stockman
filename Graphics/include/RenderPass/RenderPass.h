@@ -6,6 +6,7 @@
 #include "../Utility/ModelLoader.h"
 #include "../CommonState.h"
 #include "../Device.h"
+#include "../Utility/ConstantBuffer.h"
 
 namespace Graphics
 {

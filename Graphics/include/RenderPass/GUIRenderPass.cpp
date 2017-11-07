@@ -10,6 +10,7 @@ Graphics::GUIRenderPass::GUIRenderPass(std::initializer_list<ID3D11RenderTargetV
     : RenderPass(targets, resources, buffers, depthStencil)
     , spriteShader(Resources::Shaders::SpriteShader)
     , vertexBuffer(CpuAccess::Write, INSTANCE_CAP(SpriteRenderInfo) * 4)
+    , offsetBuffer(Global::device)
 {
     this->sBatch = std::make_unique<DirectX::SpriteBatch>(Global::context);
 
@@ -49,17 +50,22 @@ void Graphics::GUIRenderPass::render() const
     Global::context->OMSetBlendState(Global::cStates->AlphaBlend(), NULL, -1);
 
     Global::context->VSSetShaderResources(0, 1, vertexBuffer);
-    size_t offset = 0;
+    Global::context->VSSetConstantBuffers(0, 1, offsetBuffer);
+
+
+    UINT offset = 0;
     for (auto & info : RenderQueue::get().getQueue<SpriteRenderInfo>())
     {
         Global::context->PSSetShaderResources(2, 1, *TextureLoader::get().getTexture(info->texture));
-        Global::context->Draw(4, 0);
+        offsetBuffer.write(Global::context, &offset, sizeof(offset));
+        Global::context->Draw(4, offset);
         offset += 4;
     }
 
     textRender();
 
     Global::context->VSSetShaderResources(0, 1, Global::nulls);
+    Global::context->VSSetConstantBuffers(0, 1, Global::nulls);
     Global::context->PSSetSamplers(0, 1, Global::nulls);
     Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);
     Global::context->OMSetBlendState(Global::cStates->Opaque(), NULL, -1);
