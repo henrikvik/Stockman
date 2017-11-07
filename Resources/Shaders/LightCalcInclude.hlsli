@@ -48,8 +48,8 @@ struct Light
 };
 
 #define DAY_COLOR float3(0.1, 0.1, 0.3)//float3(1, 1, 0.8)
-#define DAWN_COLOR float3(0.1, 0.1, 0.3)//float3(2, 0.5, 0)
-#define NIGHT_COLOR float3(0.1, 0.1, 0.3)
+#define DAWN_COLOR DAY_COLOR//float3(2, 0.5, 0)
+#define NIGHT_COLOR DAY_COLOR
 
 #define FREEZE_COLOR float3(0.3, 0.6, 1)
 #define BURN_COLOR float3(1, 0.2, 0)
