@@ -19,6 +19,8 @@
 #include "RenderPass\LightCullRenderPass.h"
 #include "RenderPass\ShadowRenderPass.h"
 #include "RenderPass\SkyBoxRenderPass.h"
+#include "RenderPass\GlowRenderPass.h"
+#include "RenderPass\SSAORenderPass.h"
 #include "Utility\DebugDraw.h"
 
 
@@ -51,7 +53,6 @@ namespace Graphics
         , fog(device)
         , menu(device, deviceContext)
         , hud(device, deviceContext)
-        , ssaoRenderer(device)
         , bulletTimeBuffer(device)
         , DoFRenderer(device)
 #pragma region Foliage
@@ -172,10 +173,10 @@ namespace Graphics
                     lightOpaqueGridUAV
                 }
             ),
-            newd SkyBoxRenderPass({ backBuffer },{},{ *sun.getLightDataBuffer() }, depthStencil),
+            newd SkyBoxRenderPass({ *fakeBackBuffer },{},{ *sun.getLightDataBuffer() }, depthStencil),
             newd ForwardPlusRenderPass(
                 {
-                    backBuffer,
+                    *fakeBackBuffer,
                     glowMap,
                     normalMap
                 },
@@ -193,6 +194,8 @@ namespace Graphics
                 },
                 depthStencil
             ),
+            newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
+            newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
             newd GUIRenderPass({backBuffer}),
         };
     }
@@ -577,30 +580,6 @@ namespace Graphics
 	}
     #else
     {
-        static UINT ticks = 0;
-        ticks++;
-
-        float sin = sinf(ticks / 1000.0f);
-        float cos = cosf(ticks / 1000.0f);
-
-        LightRenderInfo lightInfo;
-        lightInfo.color = DirectX::Colors::Red;
-        lightInfo.intensity = 1;
-        lightInfo.range = 10 + 5 * sin;
-        //lightInfo.position = Global::mainCamera->getPos();
-        lightInfo.position = DirectX::SimpleMath::Vector3(sin, 5 + 2.5 * sin, cos);
-
-        LightRenderInfo lightInfo2;
-        lightInfo2.color = DirectX::Colors::Blue;
-        lightInfo2.intensity = 1;
-        lightInfo2.range = 10 + 5 * sin;
-        lightInfo2.position = Global::mainCamera->getPos();
-
-        RenderQueue::get().queue(&lightInfo);
-        RenderQueue::get().queue(&lightInfo2);
-
-
-        static float clearColor[4] = {0,0,0,0};
         clear();
         Global::context->RSSetViewports(1, &viewPort);
 
@@ -618,6 +597,7 @@ namespace Graphics
         {
             renderPass->render();
         }
+
     }
     #endif
 
@@ -629,8 +609,11 @@ namespace Graphics
 	void Renderer::clear() const
 	{
 		static float clearColor[4] = { 0 };
-		Global::context->ClearRenderTargetView(backBuffer, clearColor);
-		Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
+        Global::context->ClearRenderTargetView(backBuffer, clearColor);
+        Global::context->ClearRenderTargetView(normalMap, clearColor);
+        Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
+        Global::context->ClearRenderTargetView(*fakeBackBufferSwap, clearColor);
+        Global::context->ClearRenderTargetView(glowMap, clearColor);
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
 	}
@@ -815,7 +798,7 @@ namespace Graphics
 
             return catcher;
 		});
-
+        
         debugWindow->registerCommand("GFX_SET_SNOW", [&](std::vector<std::string> &args)->std::string
         {
             std::string catcher = "";

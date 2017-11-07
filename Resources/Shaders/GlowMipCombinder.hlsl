@@ -1,4 +1,4 @@
-#include "../ShaderConstants.hlsli"
+#include "ShaderConstants.hlsli"
 
 
 Texture2D inputTexture : register(t0);

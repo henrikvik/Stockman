@@ -22,14 +22,14 @@ namespace Resources
         enum Files
         {
             SkySphere,
-            StaffEmbed,
+            Staff,
             Tablet1,
             UnitCube
         };
         const std::map<Files, const char *> Paths =
         {
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
-            {StaffEmbed, R"(..\Resources\Models\StaffEmbed.hyb)"},
+            {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
@@ -46,7 +46,11 @@ namespace Resources
             GlowMipCombinder,
             LightGridCulling,
             SkyShader,
-            SpriteShader
+            SpriteShader,
+            SSAOComputeShader,
+            SSAOGaussianBlurHorizontal,
+            SSAOGaussianBlurVertical,
+            SSAOMerger
         };
         const std::map<Files, const char *> Paths =
         {
@@ -58,7 +62,11 @@ namespace Resources
             {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
             {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
-            {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"}
+            {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
+            {SSAOComputeShader, R"(..\Resources\Shaders\SSAOComputeShader.hlsl)"},
+            {SSAOGaussianBlurHorizontal, R"(..\Resources\Shaders\SSAOGaussianBlurHorizontal.hlsl)"},
+            {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
+            {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
     }
     namespace Textures
@@ -76,6 +84,7 @@ namespace Resources
             mainMenuButton,
             mainmenupicture,
             MissingTexture,
+            randomNormals,
             SettingsMenuButtons,
             Spellsheet,
             weaponsheet
@@ -93,6 +102,7 @@ namespace Resources
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
+            {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}

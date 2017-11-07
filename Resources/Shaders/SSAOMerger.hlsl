@@ -1,4 +1,4 @@
-#include "../ShaderConstants.hlsli"
+#include "ShaderConstants.hlsli"
 
 Texture2D backBuffer : register(t0);
 Texture2D occlusionMap : register(t1);
