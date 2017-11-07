@@ -11,10 +11,10 @@ public:
 
     T* map(ID3D11DeviceContext * context);
     void unmap(ID3D11DeviceContext * context);
-    void write(ID3D11DeviceContext * context, T* data, UINT size);
+    void write(ID3D11DeviceContext * context, T* data, UINT size) const;
 
-    operator ID3D11Buffer*() { return cbuffer; }
-    operator ID3D11Buffer**() { return &cbuffer; }
+    operator ID3D11Buffer*() const { return cbuffer; }
+    operator ID3D11Buffer*const*() const { return &cbuffer; }
 
 private:
     ID3D11Buffer * cbuffer;
@@ -53,7 +53,7 @@ inline void ConstantBuffer<T, size>::unmap(ID3D11DeviceContext * context)
 }
 
 template<typename T, size_t size>
-inline void ConstantBuffer<T, size>::write(ID3D11DeviceContext * context, T * data, UINT size)
+inline void ConstantBuffer<T, size>::write(ID3D11DeviceContext * context, T * data, UINT size) const
 {
     D3D11_MAPPED_SUBRESOURCE sub = {};
     context->Map(cbuffer, 0, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, 0, &sub);

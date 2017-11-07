@@ -28,16 +28,19 @@ Texture2D                    spriteTexture : register(t2);
 
 SamplerState linearSampler : register(s0);
 
-
-Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
+cbuffer OffsetBuffer : register(b0)
 {
-    Vertex vertex = vertexData[vertexId + instanceId];
+    uint offset;
+}
+
+
+Fragment VS(uint vertexId : SV_VertexId)
+{
+    Vertex vertex = vertexData[vertexId + offset];
     Fragment fragment = (Fragment) 0;
 
     fragment.position = float4(vertex.position, 0, 1);
     fragment.uv = vertex.uv;
-
-    fragment.uv.x = vertexId + instanceId;
 
     return fragment;
 }
