@@ -28,16 +28,9 @@ void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
-	PhysicsObject::updatePhysics(deltaTime);
-
+    PhysicsObject::updatePhysics(deltaTime);
     updateSound(deltaTime);
-
-	// Checking different buffs
-	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
-		affect(effectPair.first, *effectPair.second, deltaTime);
-	
-	// Updating buffs duration
-	m_statusManager.update(deltaTime, *this);
+    m_statusManager.update(deltaTime, *this);
 }
 
 void Entity::upgrade(Upgrade const & upgrade) { }
