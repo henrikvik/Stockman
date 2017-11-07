@@ -1,17 +1,25 @@
 #pragma once
-
 #include "RenderPass.h"
+#include "../Utility/Shader.h"
 
-class ShadowRenderPass : public RenderPass
-{
-public:
-    ShadowRenderPass(ID3D11DepthStencilView * shadowMap, D3D11_VIEWPORT viewport, ID3D11Buffer * lightMatrixes);
-    virtual ~ShadowRenderPass() {};
+namespace Graphics {
+    class ShadowRenderPass : public RenderPass
+    {
+    public:
+        ShadowRenderPass(
+            std::initializer_list<ID3D11RenderTargetView*> targets,
+            std::initializer_list<ID3D11ShaderResourceView*> resources = {},
+            std::initializer_list<ID3D11Buffer*> buffers = {},
+            ID3D11DepthStencilView * depthStencil = nullptr);
+        virtual ~ShadowRenderPass() {};
 
-    void update(float deltaTime);
-    void render();
+        void update(float deltaTime);
+        void render() const;
 
-private:
+    private:
+        D3D11_VIEWPORT viewport;
+        D3D11_VIEWPORT viewportReset;
+        Shader staticForwardPlus;
 
-
-};
+    };
+}

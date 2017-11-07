@@ -3,9 +3,6 @@
 #define WIN_WIDTH 1280
 #define WIN_HEIGHT 720
 
-#define SHADOW_WIDTH
-#define SHADOW_HEIGHT
-
 #define SAFE_RELEASE(p) { if ( (p) && (p) != nullptr ) { (p)->Release(); (p) = 0; } }
 
 //#define _CRTDBG_MAP_ALLOC

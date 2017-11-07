@@ -26,6 +26,7 @@
 #include <SpriteBatch.h>
 
 #include "RenderPass\GUIRenderPass.h"
+#include "RenderPass\ShadowRenderPass.h"
 
 
 namespace Graphics
@@ -71,7 +72,6 @@ namespace Graphics
         ShaderResource* fakeBackBufferSwap;
     #pragma endregion
 
-        SkyRenderer skyRenderer;
         Glow glowRenderer;
         SSAORenderer ssaoRenderer;
         Sun sun;

@@ -1,5 +1,7 @@
 #include "Sun.h"
 #include <algorithm>
+#include "../Device.h"
+#include "../MainCamera.h"
 #define PI 3.14159265f
 #define ONE_DEG_IN_RAD 0.01745f
 #define SUNSET_TIME 0.5f
@@ -7,7 +9,7 @@
 
 namespace Graphics
 {
-    Sun::Sun(int width, int height):
+    Sun::Sun():
 		lightMatrixBuffer(Global::device),
 		lightDataBuffer(Global::device)
 	{
@@ -17,11 +19,6 @@ namespace Graphics
 		view = DirectX::XMMatrixLookAtRH(pos, DirectX::SimpleMath::Vector3(0, 0, 0), DirectX::SimpleMath::Vector3(0, 1, 0));
 
 		matrixData.vp = view * projection;
-
-		viewPort = { 0 };
-		viewPort.Height = (float)height;
-		viewPort.Width = (float)width;
-		viewPort.MaxDepth = 1.f;
 	}
 
 	Sun::~Sun()
@@ -46,8 +43,8 @@ namespace Graphics
 		float fade = snap(1.0f - abs(lightDir.Dot(groundDir)), 0, SUNSET_TIME);
 		shaderData.fade = fade / SUNSET_TIME;
 
-		this->shaderData.pos = shaderData.pos + campos;
-		view = DirectX::XMMatrixLookAtRH(shaderData.pos, campos, DirectX::SimpleMath::Vector3(0, 1, 0));
+		this->shaderData.pos = shaderData.pos + Global::mainCamera->getPos();
+		view = DirectX::XMMatrixLookAtRH(shaderData.pos, Global::mainCamera->getPos(), DirectX::SimpleMath::Vector3(0, 1, 0));
 		matrixData.vp = view * projection;
 
 		lightDataBuffer.write(Global::context, &shaderData, sizeof(shaderData));

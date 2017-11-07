@@ -40,7 +40,6 @@ namespace Graphics
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
 		, instanceSBuffer(device, CpuAccess::Write, _INSTANCE_CAP)
 		, instanceOffsetBuffer(device)
-		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
 		, glowRenderer(device, deviceContext)
 #pragma region RenderDebugInfo
         , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
@@ -73,7 +72,7 @@ namespace Graphics
 
         , lightOpaqueIndexList(CpuAccess::None, 1, &zero)
         , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
-        , sun(WIN_WIDTH, WIN_HEIGHT)
+        , sun()
     #pragma endregion
 
 
@@ -161,6 +160,7 @@ namespace Graphics
         renderPasses =
         {
             newd DepthRenderPass({}, {staticInstanceBuffer}, {*Global::mainCamera->getBuffer()}, depthStencil),
+            newd ShadowRenderPass({}, {}, {*sun.getLightMatrixBuffer()}, shadowMap),
             newd LightCullRenderPass(
                 {},
                 {
@@ -191,8 +191,8 @@ namespace Graphics
                 },
                 {
                     *Global::mainCamera->getBuffer(),
-                    *skyRenderer.getShaderBuffer(),
-                    *skyRenderer.getLightMatrixBuffer()
+                    *sun.getLightDataBuffer(),
+                    *sun.getLightMatrixBuffer()
                 },
                 depthStencil
             ),
@@ -228,10 +228,6 @@ namespace Graphics
 
 	void Renderer::updateLight(float deltaTime, Camera * camera)
 	{
-		PROFILE_BEGIN("UpdateLights()");
-		skyRenderer.update(Global::context, deltaTime, camera->getPos());
-		PROFILE_END();
-
 		//Temp or rename function
 		PROFILE_BEGIN("updateSnow()");
 		snowManager.updateSnow(deltaTime, camera, Global::context);
@@ -611,6 +607,8 @@ namespace Graphics
 
         writeInstanceBuffers();
 
+        sun.update();
+
         for (auto & renderPass : renderPasses)
         {
             renderPass->update(0.016f);
@@ -636,8 +634,8 @@ namespace Graphics
 		Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
 		Global::context->ClearRenderTargetView(glowRenderer, clearColor);
 		Global::context->ClearRenderTargetView(backBuffer, clearColor);
-		Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
-		skyRenderer.clear(Global::context);
+        Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+        Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
 		glowRenderer.clear(Global::context, clearColor);
 	}
 

@@ -27,14 +27,13 @@ namespace Graphics
 			char pad[12];
 		};
 
-		Sun(int width, int height);
+		Sun();
 		~Sun();
 
 		void update();
 
 		ConstantBuffer<ShaderMatrix>* getLightMatrixBuffer() { return &lightMatrixBuffer; };
 		ConstantBuffer<LightValues>* getLightDataBuffer() { return &lightDataBuffer; };
-		D3D11_VIEWPORT getViewPort() { return viewPort; };
 
 	private:
 		DirectX::SimpleMath::Matrix view;
@@ -50,8 +49,5 @@ namespace Graphics
 		LightValues shaderData;
 		ConstantBuffer<ShaderMatrix> lightMatrixBuffer;
 		ConstantBuffer<LightValues> lightDataBuffer;
-
-		D3D11_VIEWPORT viewPort;
-
 	};
 }
