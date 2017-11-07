@@ -5,6 +5,7 @@
 #include "../RenderQueue.h"
 #include "../Utility/ModelLoader.h"
 #include "../CommonState.h"
+#include "../Device.h"
 
 namespace Graphics
 {
@@ -71,5 +72,10 @@ namespace Graphics
 
             instanceOffset += renderInfos.size();
         }
+
+        Global::context->VSSetShaderResources(10, 1, Global::nulls);
+        Global::context->VSSetShaderResources(11, 1, Global::nulls);
+        Global::context->PSSetShaderResources(12, 4, Global::nulls);
+
     }
 }

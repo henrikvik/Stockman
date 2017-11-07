@@ -170,10 +170,8 @@ namespace Graphics {
 			1
 		);
 
-		ZeroMemory(UAVs, sizeof(UAVs));
-		ZeroMemory(SRVs, sizeof(SRVs));
-		Global::context->CSSetShaderResources(0, 4, SRVs);
-		Global::context->CSSetUnorderedAccessViews(0, 7, UAVs, nullptr);
+		Global::context->CSSetShaderResources(0, 4, Global::nulls);
+		Global::context->CSSetUnorderedAccessViews(0, 7, Global::nulls, nullptr);
 		Global::context->CSSetShader(nullptr, nullptr, 0);
 	}
 
