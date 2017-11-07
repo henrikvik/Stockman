@@ -292,6 +292,8 @@ int Engine::run()
     long long totalTime = 0;
 	bool showProfiler = false;
 
+    DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
+
 	bool running = true;
 
 	g_Profiler = new Profiler(mDevice, mContext);
@@ -338,7 +340,6 @@ int Engine::run()
 		if (mTracker->pressed.F2)
 		{
             showProfiler = !showProfiler;
-
 		}
 
         if (state.F10)
@@ -362,8 +363,6 @@ int Engine::run()
 		game.render(*renderer);
 		PROFILE_END();
 
-		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
-
 		if (state.LeftControl) 
             cam.update(oldPos, game.getPlayerForward(), mContext);
 		else
@@ -372,9 +371,7 @@ int Engine::run()
 			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
 		}
 
-		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
-        //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
-
+#pragma region temp
         //////////////TEMP/////////////////
         //Graphics::RenderInfo staticSphere = {
         //    true, //bool render;
@@ -414,15 +411,12 @@ int Engine::run()
 
         
         ///////////////////////////////////
+#pragma endregion
 
         if (game.getState() == Logic::gameStateGame)
         {
 			renderer->queueFoliageRender(&grass);
-			//renderer->queueFoliageRender(&bush);
 
-
-			//renderer->queueRender(&staticSphere);
-         // renderer->queueText(&text);
 			renderer->queueLight(light);
 
 			if (!debug->isOpen())
