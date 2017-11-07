@@ -101,8 +101,6 @@ void Graphics::GUIRenderPass::update(float deltaTime)
         *ptr++ = vertices[BR];
     }
     vertexBuffer.unmap(Global::context);
-
-    textRender();
 }
 
 //render the queued text
