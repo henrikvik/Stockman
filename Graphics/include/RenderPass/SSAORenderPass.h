@@ -25,7 +25,6 @@ namespace Graphics
         ComputeShader blurVertical;
         ComputeShader ssaoMerger;
 
-        ID3D11ShaderResourceView * randomNormals;
         ShaderResource ssaoOutput;
         ShaderResource ssaoOutputSwap;
     };

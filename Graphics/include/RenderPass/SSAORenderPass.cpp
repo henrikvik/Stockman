@@ -1,4 +1,8 @@
 #include "SSAORenderPass.h"
+#include "../Utility/TextureLoader.h"
+
+#define RANDOMNORMALTEXTURE TextureLoader::get().getTexture(Resources::Textures::randomNormals)
+
 namespace Graphics 
 {
     Graphics::SSAORenderPass::SSAORenderPass(
@@ -10,7 +14,9 @@ namespace Graphics
         ssaoShader(Resources::Shaders::SSAOComputeShader),
         blurHorizontal(Resources::Shaders::SSAOGaussianBlurHorizontal),
         blurVertical(Resources::Shaders::SSAOGaussianBlurVertical),
-        ssaoMerger(Resources::Shaders::SSAOMerger)
+        ssaoMerger(Resources::Shaders::SSAOMerger),
+        ssaoOutput(WIN_WIDTH / 2, WIN_HEIGHT / 2, DXGI_FORMAT_R8_UNORM),
+        ssaoOutputSwap(WIN_WIDTH / 2, WIN_HEIGHT / 2, DXGI_FORMAT_R8_UNORM)
     {
     }
 

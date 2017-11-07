@@ -88,6 +88,7 @@ namespace Resources
             mainMenuButton,
             mainmenupicture,
             MissingTexture,
+            randomNormals,
             SettingsMenuButtons,
             Spellsheet,
             weaponsheet
@@ -105,6 +106,7 @@ namespace Resources
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
+            {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
