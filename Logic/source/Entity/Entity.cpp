@@ -35,6 +35,7 @@ void Entity::update(float deltaTime)
 {
 	PhysicsObject::updatePhysics(deltaTime);
 
+    // Updating positions of sound information
 	updateSound(deltaTime);
 
 	// Checking different buffs

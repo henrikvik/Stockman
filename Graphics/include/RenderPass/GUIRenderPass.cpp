@@ -10,6 +10,23 @@ Graphics::GUIRenderPass::GUIRenderPass(std::initializer_list<ID3D11RenderTargetV
     , spriteShader(Resources::Shaders::SpriteShader)
     , vertexBuffer(CpuAccess::Write, INSTANCE_CAP(SpriteRenderInfo) * 4)
 {
+    this->renderTarget = renderTarget;
+
+    this->sBatch = std::make_unique<DirectX::SpriteBatch>(context);
+
+    this->sFonts[0] = std::make_unique<DirectX::SpriteFont>(device, convertFontFilePath(Resources::Fonts::KG14).c_str());
+    this->sFonts[1] = std::make_unique<DirectX::SpriteFont>(device, convertFontFilePath(Resources::Fonts::KG18).c_str());
+    this->sFonts[2] = std::make_unique<DirectX::SpriteFont>(device, convertFontFilePath(Resources::Fonts::KG26).c_str());
+}
+
+Graphics::GUIRenderPass::~GUIRenderPass()
+{
+    sBatch.reset();
+    for (size_t i = 0; i < NR_OF_FONTS; i++)
+    {
+        sFonts[i].reset();
+    }
+    
 }
 
 void Graphics::GUIRenderPass::render() const
@@ -76,8 +93,48 @@ void Graphics::GUIRenderPass::update(float deltaTime)
         vertices[BL].uv = Vector2(TL_UV_X, BR_UV_Y);
         vertices[BR].uv = Vector2(BR_UV_X, BR_UV_Y);
 
-        memcpy((char*)ptr + offset, vertices.data(), sizeofv(vertices));
-        offset += sizeofv(vertices);
+        vertexBuffer.write(context, vertices.data(), sizeofv(vertices));
+        context->Draw(4, 0);
     }
-    vertexBuffer.unmap(Global::context);
+
+    //textRender();
+}
+
+//render the queued text
+void Graphics::GUIRenderPass::textRender()
+{
+    sBatch->Begin(DirectX::SpriteSortMode_Deferred);
+    for (auto & info : RenderQueue::get().getQueue<TextRenderInfo>())
+    {
+        if (isDrawableString(info->text))
+        {
+            sFonts[info->font]->DrawString(sBatch.get(), info->text, info->position, info->color);
+        }
+        
+    }
+    sBatch->End();
+}
+
+std::wstring Graphics::GUIRenderPass::convertFontFilePath(Resources::Fonts::Files input)
+{
+
+    const char* orig = Resources::Fonts::Paths.at(input);
+    size_t size = std::strlen(orig);
+    std::wstring converted;
+    converted.resize(size);
+    std::mbstowcs(&converted[0], orig, size);
+    return converted;
+}
+
+//checks fow unallowed characters that chrashed the text draw
+bool Graphics::GUIRenderPass::isDrawableString(const wchar_t * text) const
+{
+    for (size_t i = 0; i < std::wcslen(text); i++)
+    {
+        if (text[i] > 127 || text[i] < 32)
+        {
+            return false;
+        }
+    }
+    return true;
 }

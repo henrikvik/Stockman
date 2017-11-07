@@ -2,7 +2,6 @@
 #define STATICOBJECT_H
 
 #include <Graphics\include\RenderQueue.h>
-
 #include <Entity\PhysicsObject.h>
 
 namespace Logic
@@ -17,12 +16,10 @@ namespace Logic
 		void update(float deltaTime);
 
         void renderD();
-
         void render() const;
     private:
         StaticRenderInfo staticRenderInfo;
         DebugRenderInfo debugRenderInfo;
-    
     };
 }
 

@@ -11,8 +11,9 @@ Trigger::Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 
 	m_remove = false;
 
     animatedRenderInfo.model = modelID;
-    animatedRenderInfo.animationName = "";
-    animatedRenderInfo.animationProgress = 0;
+//    animatedRenderInfo.animationName = "Rotation";
+//    animatedRenderInfo.animationProgress = 0;
+    animatedRenderInfo.transform = getTransformMatrix();
 }
 
 Trigger::~Trigger() { }
@@ -22,7 +23,6 @@ void Trigger::addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades
 {
 	for (StatusManager::UPGRADE_ID uID : upgrades)
 		this->getStatusManager().addUpgrade(uID);
-
 }
 
 // Adds a vector of effects for this trigger
@@ -41,6 +41,10 @@ void Trigger::affect(int stacks, Effect const & effect, float deltaTime)
 // Checks if the trigger is non-active, if so, update the cooldown
 void Trigger::updateSpecific(float deltaTime)
 {
+    // Update trigger animation
+//    animatedRenderInfo.animationProgress += deltaTime;
+
+    // Update resuability
 	if (!m_active)
 	{
 		m_cooldown -= deltaTime;
@@ -119,7 +123,7 @@ void Trigger::setCooldown(float cooldown)
 	m_cooldown = cooldown;
 }
 
-void Logic::Trigger::render() const
+void Trigger::render() const
 {
     RenderQueue::get().queue(&animatedRenderInfo);
 }

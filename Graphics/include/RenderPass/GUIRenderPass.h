@@ -5,6 +5,10 @@
 #include "../Utility/Shader.h"
 #include <CommonStates.h>
 #include <SimpleMath.h>
+#include <SpriteFont.h>
+#include <SpriteBatch.h>
+
+#define NR_OF_FONTS 3
 
 namespace Graphics
 {
@@ -36,5 +40,10 @@ namespace Graphics
 
         StructuredBuffer<Vertex> vertexBuffer;
 
+        std::unique_ptr<DirectX::SpriteBatch> sBatch;
+        std::unique_ptr<DirectX::SpriteFont> sFonts[NR_OF_FONTS];
+        void textRender();
+        std::wstring convertFontFilePath(Resources::Fonts::Files input);
+        bool isDrawableString(const wchar_t * text)const;
     };
 }

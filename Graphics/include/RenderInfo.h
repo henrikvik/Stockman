@@ -26,10 +26,7 @@ struct FloatRect
 
     bool contains(float x, float y)
     {
-        return (
-            topLeft.x < x && x > bottomRight.x &&
-            topLeft.y < y && y > bottomRight.y
-        );
+        return (x >= topLeft.x) && (x < bottomRight.x) && (y >= topLeft.y) && (y < bottomRight.y);
     }
 };
 
@@ -98,7 +95,7 @@ struct FoliageRenderInfo : StaticRenderInfo
 
 struct AnimatedRenderInfo : StaticRenderInfo
 {
-    const char * animationName = "";
+    const char * animationName = "Rotate";
     float animationProgress = 0;
 };
 

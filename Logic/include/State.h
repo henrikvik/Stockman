@@ -12,22 +12,29 @@ namespace Graphics { class Renderer; }
 namespace Logic
 {
     class StateMachine;
+    class StateGame;
+    class StateMenu;
+    class StateBuffer;
     class State : public NonCopyable
     {
     public:
+        State(StateBuffer* stateBuffer) : m_stateBuffer(stateBuffer) { }
         virtual ~State() { }
         virtual void reset() = 0;
         virtual void update(float deltaTime) = 0;
         virtual void render() const = 0;
 
-        void setCallBackFunction(std::function<void(StateType)> switchState)
-        {
-            this->SetState = switchState;
-        }
+        inline void SetGameSwitchCallBack(std::function<void(StateType)> switchState)  { SwitchParentGameState        = switchState;  }
+        inline void SetMenuSwitchCallBack(std::function<void(StateType)> switchState)  { SwitchParentMenuState        = switchState;  }
+        inline void SetCurrentGameState(std::function<StateGame*()> gameState)         { GetParentCurrentGameState    = gameState;    }
+        inline void SetCurrentMenuState(std::function<StateMenu*()> menuState)         { GetParentCurrentMenuState    = menuState;    }
 
     protected:
-        // This state will be broken after use, so only use at the end of update()
-        std::function<void(StateType)> SetState;
+        StateBuffer* m_stateBuffer;
+        std::function<void(StateType)> SwitchParentMenuState;
+        std::function<void(StateType)> SwitchParentGameState;
+        std::function<StateGame*()> GetParentCurrentGameState;
+        std::function<StateMenu*()> GetParentCurrentMenuState;
     };
 }
 

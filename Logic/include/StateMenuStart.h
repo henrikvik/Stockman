@@ -1,5 +1,5 @@
-#ifndef STATESTART_H
-#define STATESTART_H
+#ifndef STATEMENUSTART_H
+#define STATEMENUSTART_H
 
 // Include Abstract State
 #include <State.h>
@@ -10,7 +10,6 @@
 
 // Misc
 #include <Misc\HighScoreManager.h>
-#include <Misc\Sound\NoiseMachine.h>
 #include <Misc\FPSRenderer.h>
 #include <Misc\GUI\MenuMachine.h>
 
@@ -24,11 +23,11 @@
 
 namespace Logic
 {
-    class StateStart : public State
+    class StateMenuStart : public State
     {
     public:
-        StateStart();
-        ~StateStart();
+        StateMenuStart(StateBuffer* stateBuffer);
+        ~StateMenuStart();
         void reset();
         void update(float deltaTime);
         void render() const;
@@ -41,4 +40,4 @@ namespace Logic
     };
 }
 
-#endif // !STATEGAME_H
+#endif // !STATEMENUSTART_H

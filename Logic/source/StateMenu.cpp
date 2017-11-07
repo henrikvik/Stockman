@@ -1,7 +1,7 @@
-#include <StateGame.h>
+#include <StateMenu.h>
 #include <StateBuffer.h>
-#include <StateGameCampfire.h>
-#include <StateGamePlaying.h>
+#include <StateMenuStart.h>
+#include <StateMenuPlaying.h>
 
 // Input Singletons
 #include <Keyboard.h>
@@ -15,13 +15,13 @@
 
 using namespace Logic;
 
-StateGame::StateGame(StateBuffer* stateBuffer)
+StateMenu::StateMenu(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
     m_currentState = nullptr;
 }
 
-StateGame::~StateGame()
+StateMenu::~StateMenu()
 {
     if (m_currentState)
     {
@@ -30,49 +30,46 @@ StateGame::~StateGame()
     }
 }
 
-void StateGame::reset()
+void StateMenu::reset()
 {
     if (m_currentState)
         m_currentState->reset();
 }
 
-void StateGame::update(float deltaTime)
+void StateMenu::update(float deltaTime)
 {
     if (m_currentState)
         m_currentState->update(deltaTime);
 }
 
-void StateGame::render() const
+void StateMenu::render() const
 {
     if (m_currentState)
         m_currentState->render();
 }
 
-void StateGame::switchState(StateType gameState)
+void StateMenu::switchState(StateType menuState)
 {
-    if (m_currentStateType != gameState)
+    if (m_currentStateType != menuState)
     {
         // Saving the new state to a variable
-        m_currentStateType = gameState;
+        m_currentStateType = menuState;
 
         // Clear previous state from memory 
-        if (m_currentState)
-            delete m_currentState;
-
-        // Reset currentstate as nullptr
+        delete m_currentState;
         m_currentState = nullptr;
 
         // Load new state to memory
-        switch (gameState)
+        switch (menuState)
         {
-        case StateType::Game_Start:
-            m_currentState = new StateGameCampfire(m_stateBuffer);
+        case StateType::Menu_Start:
+            m_currentState = new StateMenuStart(m_stateBuffer);
             break;
-        case StateType::Game_Playing:
-            m_currentState = new StateGamePlaying(m_stateBuffer);
+        case StateType::Menu_Playing:
+            m_currentState = new StateMenuPlaying(m_stateBuffer);
             break;
         }
-
+       
         // Error check
         if (!m_currentState)
         {

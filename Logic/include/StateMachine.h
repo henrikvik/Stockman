@@ -1,14 +1,16 @@
 #ifndef STATEMACHINE_H
 #define STATEMACHINE_H
 
+#include <functional>
 #include <Misc\NonCopyable.h>
 #include <Misc\Error.h>
-#include <State.h>
-#include <functional>
+#include <GameType.h>
 
-namespace Graphics { class Renderer; }
 namespace Logic
 {
+    class StateGame;
+    class StateMenu;
+    class StateBuffer;
     class StateMachine : public NonCopyable
     {
     public:
@@ -18,14 +20,14 @@ namespace Logic
         void update(float deltaTime);
         void render() const;
 
-        void switchState(StateType stateType);
-        StateType getCurrentStateType();
-        State* getState();
-
     private:
-        std::function<void(StateType stateType)> SetStateFunction;
-        StateType m_currentStateType;
-        State* m_currentState;
+        std::function<void(StateType stateType)>    SetGameState;
+        std::function<void(StateType stateType)>    SetMenuState;
+        std::function<StateGame*()>                 GetGameState;
+        std::function<StateMenu*()>                 GetMenuState;
+        StateGame*                                  m_gameState;
+        StateMenu*                                  m_menuState;
+        StateBuffer*                                m_stateBuffer;
     };
 }
 

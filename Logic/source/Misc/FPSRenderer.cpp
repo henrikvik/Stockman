@@ -11,7 +11,7 @@ FPSRenderer::FPSRenderer()
 	fpsTimer = 0.0f;
 
 	renderInfo.color = DirectX::SimpleMath::Color{ 1, 1, 1 };
-	renderInfo.font = Resources::Fonts::comicsans;
+	renderInfo.font = Resources::Fonts::KG14;
 	renderInfo.position = DirectX::SimpleMath::Vector2{ 5, 5 };
 	renderInfo.text = L"Ta inte bort min kod - LW";
 }
@@ -36,7 +36,10 @@ void FPSRenderer::updateFPS(float deltaTime)
     }
     avgFps /= avgframesCount;
 
-    renderInfo.text = std::wstring(FPS_STRING + std::to_wstring(avgFps)).c_str();
+    std::wstring FPSString = FPS_STRING + std::to_wstring(avgFps);
+    renderInfo.text = FPSString.c_str();
+    //renderInfo.text = L"cunt ass";
+
 }
 
 void Logic::FPSRenderer::render() const
