@@ -206,6 +206,8 @@ namespace Graphics
         delete Global::cStates;
         SAFE_RELEASE(Global::comparisonSampler);
 		SAFE_RELEASE(glowTest);
+        SAFE_RELEASE(lightOpaqueGridUAV);
+        SAFE_RELEASE(lightOpaqueGridSRV);
 
         for (auto & renderPass : renderPasses)
         {
