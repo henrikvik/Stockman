@@ -363,18 +363,16 @@ int Engine::run()
             game->update(float(deltaTime));
         PROFILE_END();
 
-
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game->render();
 		PROFILE_END();
 
-        ///// USH! /////
-		renderer->updateLight(deltaTime, Global::mainCamera);
-        renderer->updateShake((float)deltaTime);
-        ////////////////
+        PROFILE_BEGINC("Renderer::update()", EventColor::Yellow);
+        renderer->update(deltaTime / 1000.f);
+        PROFILE_END();
 
         PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
-        renderer->render(Global::mainCamera);
+        renderer->render();
         PROFILE_END();
 
 		g_Profiler->poll();
