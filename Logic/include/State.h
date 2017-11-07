@@ -24,10 +24,10 @@ namespace Logic
         virtual void update(float deltaTime) = 0;
         virtual void render() const = 0;
 
-        inline void SetGameSwitchCallBack(std::function<void(StateType)> switchState)  { SwitchParentGameState        = switchState;  }
-        inline void SetMenuSwitchCallBack(std::function<void(StateType)> switchState)  { SwitchParentMenuState        = switchState;  }
-        inline void SetCurrentGameState(std::function<StateGame*()> gameState)         { GetParentCurrentGameState    = gameState;    }
-        inline void SetCurrentMenuState(std::function<StateMenu*()> menuState)         { GetParentCurrentMenuState    = menuState;    }
+        inline void SetGameSwitchCallBack(std::function<void(StateType)> gameSwitch)  { SwitchParentGameState       = gameSwitch;  }
+        inline void SetMenuSwitchCallBack(std::function<void(StateType)> menuSwitch)  { SwitchParentMenuState       = menuSwitch;  }
+        inline void SetCurrentGameState(std::function<StateGame*()> gameState)        { GetParentCurrentGameState   = gameState;   }
+        inline void SetCurrentMenuState(std::function<StateMenu*()> menuState)        { GetParentCurrentMenuState   = menuState;   }
 
     protected:
         StateBuffer* m_stateBuffer;
