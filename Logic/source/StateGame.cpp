@@ -38,6 +38,7 @@ void StateGame::reset()
         m_currentState->reset();
 }
 
+// Update the logic inside state, also checking if we should load next state
 void StateGame::update(float deltaTime)
 {
     if (m_currentState)
@@ -47,13 +48,15 @@ void StateGame::update(float deltaTime)
         loadState(m_wantToSwitchToType);
 }
 
+// Render everything in the currently active state
 void StateGame::render() const
 {
     if (m_currentState)
         m_currentState->render();
 }
 
-void StateGame::switchState(StateType gameState)
+// Queuing a new state
+void StateGame::queueState(StateType gameState)
 {
     if (m_currentStateType != gameState &&
         m_wantToSwitchToType != gameState)
@@ -92,6 +95,9 @@ void StateGame::loadState(StateType gameState)
         printf("This state does not exist or is not valid in this type of state-manager.");
         return;
     }
+
+    // Saving new state in stateBuffer
+    m_stateBuffer->currentGameState = m_currentState;
 
     m_currentState->SetGameSwitchCallBack(SwitchParentGameState);
     m_currentState->SetMenuSwitchCallBack(SwitchParentMenuState);

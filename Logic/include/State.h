@@ -14,7 +14,7 @@ namespace Logic
     class StateMachine;
     class StateGame;
     class StateMenu;
-    class StateBuffer;
+    struct StateBuffer;
     class State : public NonCopyable
     {
     public:
