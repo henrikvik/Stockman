@@ -47,7 +47,8 @@ void Graphics::GUIRenderPass::render() const
     Global::context->PSSetSamplers(0, 1, &linear);
 
     Global::context->OMSetRenderTargets(targets.size(), targets.data(), depthStencil);
-    Global::context->OMSetBlendState(Global::cStates->AlphaBlend(), NULL, -1);
+
+    Global::context->OMSetBlendState(Global::cStates->NonPremultiplied(), NULL, -1);
 
     Global::context->VSSetShaderResources(0, 1, vertexBuffer);
     Global::context->VSSetConstantBuffers(0, 1, offsetBuffer);

@@ -71,7 +71,7 @@ namespace Resources
         {
             Backbutton,
             Color_pick_icons,
-            crosshair,
+            Crosshair,
             gameOverMenuButtons,
             gameOverTexture,
             Gamesheet,
@@ -88,7 +88,7 @@ namespace Resources
         {
             {Backbutton, R"(..\Resources\Textures\Backbutton.dds)"},
             {Color_pick_icons, R"(..\Resources\Textures\Color_pick_icons.dds)"},
-            {crosshair, R"(..\Resources\Textures\crosshair.png)"},
+            {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
