@@ -21,7 +21,7 @@ public:
 
         if constexpr (std::is_base_of_v<SpriteRenderInfo, T>)
         {
-            OutputDebugString(__FILE__);
+            //OutputDebugString(__FILE__);
         }
 
         if constexpr (std::is_base_of_v<StaticRenderInfo, T>)

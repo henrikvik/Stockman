@@ -110,6 +110,8 @@ void StateGamePlaying::reset()
 void StateGamePlaying::update(float deltaTime)
 {
     m_fpsRenderer.updateFPS(deltaTime);
+    OutputDebugStringW(m_fpsRenderer.getTextRenderInfo().text);
+
     ComboMachine::Get().Update(deltaTime);
     m_waveTimeManager.update(deltaTime, m_entityManager);
 

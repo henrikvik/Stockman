@@ -32,7 +32,7 @@ void StateMenuStart::reset()
 
 void StateMenuStart::update(float deltaTime)
 {
-    m_fpsRenderer.updateFPS(deltaTime);
+    //m_fpsRenderer.updateFPS(deltaTime);
     m_menu->update(deltaTime);
 }
 
