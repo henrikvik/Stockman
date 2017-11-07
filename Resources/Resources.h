@@ -40,15 +40,27 @@ namespace Resources
     {
         enum Files
         {
+            AnimationTest,
             ForwardPlus,
-            LightGridCulling,
+            GlowBlurHorizontal,
+            GlowBlurVertical,
+            GlowDownSampler,
+            GlowMerger,
+            GlowMipCombinder,
+            SimpleForward,
             SkyShader,
             SpriteShader
         };
         const std::map<Files, const char *> Paths =
         {
+            {AnimationTest, R"(..\Resources\Shaders\AnimationTest.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
-            {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
+            {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
+            {GlowBlurVertical, R"(..\Resources\Shaders\GlowBlurVertical.hlsl)"},
+            {GlowDownSampler, R"(..\Resources\Shaders\GlowDownSampler.hlsl)"},
+            {GlowMerger, R"(..\Resources\Shaders\GlowMerger.hlsl)"},
+            {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
+            {SimpleForward, R"(..\Resources\Shaders\SimpleForward.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"}
         };
@@ -62,12 +74,15 @@ namespace Resources
             crosshair,
             gameOverMenuButtons,
             gameOverTexture,
+            Gamesheet,
             HPBars,
             HUDIcons,
             mainMenuButton,
             mainmenupicture,
             MissingTexture,
-            SettingsMenuButtons
+            SettingsMenuButtons,
+            Spellsheet,
+            weaponsheet
         };
         const std::map<Files, const char *> Paths =
         {
@@ -76,12 +91,15 @@ namespace Resources
             {crosshair, R"(..\Resources\Textures\crosshair.png)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
+            {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
             {HPBars, R"(..\Resources\Textures\HPBars.dds)"},
             {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
-            {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"}
+            {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},
+            {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
+            {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };
     }
 }

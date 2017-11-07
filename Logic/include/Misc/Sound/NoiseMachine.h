@@ -18,6 +18,14 @@ namespace Sound
 	class NoiseMachine
 	{
 	public:
+        struct VOLUME_DEFAULT
+        {
+            static const float  DEFAULT_VOLUME_MASTER;
+            static const float  DEFAULT_VOLUME_SFX;
+            static const float  DEFAULT_VOLUME_AMBIENT;
+            static const float  DEFAULT_VOLUME_MUSIC;
+        };
+
 		static NoiseMachine& Get()
 		{
 			static NoiseMachine noiceMachine;
@@ -54,7 +62,6 @@ namespace Sound
 
 		// Debugging and Errors
 		void CRASH_EVERYTHING(const char *format, ...);
-		void ERRCHECK(FMOD_RESULT result);
 	};
 }
 

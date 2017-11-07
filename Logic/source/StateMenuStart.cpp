@@ -1,6 +1,6 @@
 #include <StateMenuStart.h>
 #include <StateBuffer.h>
-
+#include <Misc\Sound\NoiseMachine.h>
 #include <Engine\Typing.h>
 #include <DebugDefines.h>
 #include <Engine\DebugWindow.h> 
@@ -10,6 +10,8 @@ using namespace Logic;
 StateMenuStart::StateMenuStart(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
+    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_MAIN_MENU, nullptr, true);
+
     // Initializing Highscore Manager
     m_highScoreManager = newd HighScoreManager();
     m_highScoreManager->setName("Stockman");

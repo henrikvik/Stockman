@@ -154,7 +154,7 @@ void Engine::initializeWindow()
 	wc.lpfnWndProc = WndProc;
 	wc.hInstance = this->hInstance;
 	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(0, IDC_ARROW);
+	wc.hCursor = LoadCursorFromFile("../Resources/Cursors/cursor.cur");
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.lpszClassName = "Basic test";
 

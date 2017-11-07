@@ -29,11 +29,6 @@ void Logic::HUDManager::constructGUIElements()
     float crosshairSize = 50;
     HUDElements.push_back(Sprite( Sprite::CENTER, Sprite::CENTER, 0, 0, crosshairSize, crosshairSize, Resources::Textures::crosshair, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
 
-    //hpbars
-   /* HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 0.5f })));
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50, -50, 230, 80, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.5f }, { 1.f, 1.f })));*/
-    
-
     //crossbow
     float x = 339.0f / 2048;
     float y = 67.0f / 720;
@@ -125,12 +120,6 @@ void Logic::HUDManager::updateGUIElemets()
     {
         HPBar.pop_back();
     }
-    /*HPBar.clear();
-    for (size_t i = 0; i < info.hp; i++)
-    {
-        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50 + (i *75), -50, 75, 75, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
-    }*/
-    
 
     //crossbow
     if (info.currentWeapon == 0)
@@ -199,8 +188,6 @@ void Logic::HUDManager::updateGUIElemets()
         }
 
     }
-   
-
 }
 
 

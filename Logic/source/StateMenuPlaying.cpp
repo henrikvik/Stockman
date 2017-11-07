@@ -12,6 +12,8 @@ using namespace Logic;
 StateMenuPlaying::StateMenuPlaying(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
+    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
+
     // Initializing Menu's
     m_menu = newd MenuMachine();
     m_menu->initialize(Logic::gameStateSkillPick);

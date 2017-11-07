@@ -12,7 +12,6 @@
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
-#include "Glow.h"
 #include "Lights\Sun.h"
 #include "Menu.h"
 #include "HUD.h"
@@ -24,7 +23,6 @@
 #include <SpriteBatch.h>
 
 #include "RenderPass\GUIRenderPass.h"
-#include "RenderPass\ShadowRenderPass.h"
 
 
 namespace Graphics
@@ -69,8 +67,6 @@ namespace Graphics
         ShaderResource* fakeBackBuffer;
         ShaderResource* fakeBackBufferSwap;
     #pragma endregion
-
-        Glow glowRenderer;
         SSAORenderer ssaoRenderer;
         Sun sun;
         Shader fullscreenQuad;
