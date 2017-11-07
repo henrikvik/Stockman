@@ -1,7 +1,7 @@
 #include "Menu.h"
 #include <WICTextureLoader.h>
 #include <Engine\Profiler.h>
-#include "CommonStates.h"
+#include "CommonState.h"
 
 Graphics::Menu::Menu(ID3D11Device * device, ID3D11DeviceContext * contex)
     : shader(device, SHADER_PATH("MenuShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA } })

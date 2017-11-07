@@ -15,8 +15,8 @@ StateMachine::StateMachine()
     m_menuState = new StateMenu(m_stateBuffer);
 
     // Making a function ptr to switch state inside the active state
-    SetGameState = [&](StateType stateType) -> void { m_gameState->switchState(stateType); };
-    SetMenuState = [&](StateType stateType) -> void { m_menuState->switchState(stateType); };
+    SetGameState = [&](StateType stateType) -> void { m_gameState->queueState(stateType); };
+    SetMenuState = [&](StateType stateType) -> void { m_menuState->queueState(stateType); };
     GetGameState = [&]() -> StateGame* { return m_gameState; };
     GetMenuState = [&]() -> StateMenu* { return m_menuState; };
    

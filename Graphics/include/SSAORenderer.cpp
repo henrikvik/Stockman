@@ -1,7 +1,7 @@
 #include "SSAORenderer.h"
 #include <Engine\Constants.h>
 #include <WICTextureLoader.h>
-#include "CommonStates.h"
+#include "CommonState.h"
 
 namespace Graphics 
 {

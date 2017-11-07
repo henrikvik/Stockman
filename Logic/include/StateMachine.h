@@ -8,9 +8,10 @@
 
 namespace Logic
 {
+    class State;
     class StateGame;
     class StateMenu;
-    class StateBuffer;
+    struct StateBuffer;
     class StateMachine : public NonCopyable
     {
     public:

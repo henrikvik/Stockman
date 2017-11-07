@@ -145,17 +145,12 @@ namespace Graphics
         bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
 
 
-		
 		registerDebugFunction();
 
 		statusData.burn = 0;
 		statusData.freeze = 0;
 
-
         TextureLoader::get().loadAll();
-
-
-
 
         renderPasses =
         {

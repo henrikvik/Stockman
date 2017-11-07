@@ -100,7 +100,7 @@ void Graphics::GUIRenderPass::update(float deltaTime)
         Global::context->Draw(4, 0);
     }
 
-    //textRender();
+    textRender();
 }
 
 //render the queued text
