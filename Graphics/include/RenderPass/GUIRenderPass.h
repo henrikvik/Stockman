@@ -12,7 +12,6 @@
 
 namespace Graphics
 {
-
     class GUIRenderPass : public RenderPass
     {
     public:
