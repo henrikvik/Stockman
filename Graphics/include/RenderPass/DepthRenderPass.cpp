@@ -10,6 +10,7 @@ namespace Graphics
 
     void DepthRenderPass::render() const
     {
+        Global::context->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         Global::context->IASetInputLayout(nullptr);
         Global::context->PSSetShader(nullptr, nullptr, 0);
 
