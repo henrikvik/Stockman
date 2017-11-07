@@ -19,7 +19,7 @@
 namespace Logic
 {
     class Player;
-	class Projectile : public Entity, public NonCopyable
+	class Projectile : public Entity
 	{
 	public:
 		Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData);
