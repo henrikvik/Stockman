@@ -64,12 +64,15 @@ namespace Resources
             crosshair,
             gameOverMenuButtons,
             gameOverTexture,
+            Gamesheet,
             HPBars,
             HUDIcons,
             mainMenuButton,
             mainmenupicture,
             MissingTexture,
-            SettingsMenuButtons
+            SettingsMenuButtons,
+            Spellsheet,
+            weaponsheet
         };
         const std::map<Files, const char *> Paths =
         {
@@ -78,12 +81,15 @@ namespace Resources
             {crosshair, R"(..\Resources\Textures\crosshair.png)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
+            {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
             {HPBars, R"(..\Resources\Textures\HPBars.dds)"},
             {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
-            {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"}
+            {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},
+            {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
+            {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };
     }
 }
