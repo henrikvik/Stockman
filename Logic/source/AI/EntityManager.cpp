@@ -331,10 +331,7 @@ void EntityManager::render(Graphics::Renderer &renderer)
     }
 
     m_triggerManager.render(renderer);
-
-#ifdef DEBUG_ASTAR
     AStar::singleton().renderNavigationMesh(renderer);
-#endif
 }
 
 const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const
@@ -342,7 +339,7 @@ const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const
     return m_enemies;
 }
 
-const WaveManager& Logic::EntityManager::getWaveManager() const
+const WaveManager& EntityManager::getWaveManager() const
 {
     return m_waveManager;
 }
@@ -359,10 +356,13 @@ void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &p
     SpawnTrigger = [&](int id, btVector3 const &pos, std::vector<int> &effects) -> Trigger* {
         return spawnTrigger(id, pos, effects, physics, &projManager);
     };
+
+    // MOVE THESE TO SEPERATE FUNC
     DeleteBody = [&](Entity& entity) -> void {
         physics.removeRigidBody(entity.getRigidBody());
         for (int i = 0; i < entity.getNumberOfWeakPoints(); i++)
             physics.removeRigidBody(entity.getRigidBodyWeakPoint(i));
         entity.destroyBody();
     };
+    AStar::singleton().generateNavigationMesh(physics);
 }

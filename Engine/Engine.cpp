@@ -15,6 +15,7 @@
 #include "Typing.h"
 
 #include "DebugWindow.h"
+#include <Engine\Settings.h>
 
 #pragma comment (lib, "d3d11.lib")
 
@@ -83,7 +84,6 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
 	this->hInstance = hInstance;
 	this->initializeWindow();
 
-	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
     this->mTracker = std::make_unique<DirectX::Keyboard::KeyboardStateTracker>();
@@ -98,11 +98,12 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         std::string catcher = "";
         try
         {
+            Settings* setting = Settings::getInstance();
             if (args.size() != 0)
             {
-                isFullscreen = std::stoi(args[0]);
+                setting->setWindowed(std::stoi(args[0]));
 
-                if (isFullscreen)
+                if (setting->getWindowed())
                     catcher = "Fullscreen enabled!";
 
                 else
@@ -276,9 +277,10 @@ Profiler *g_Profiler;
 
 int Engine::run()
 {
+    Settings* setting = Settings::getInstance();
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
+	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(setting->getFOV()));
     cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
@@ -324,10 +326,14 @@ int Engine::run()
 
         static BOOL test = false;
         mSwapChain->GetFullscreenState(&test, NULL);
-		if (this->isFullscreen != test)
+
+
+		if (setting->getWindowed() != test)
 		{
-			mSwapChain->SetFullscreenState(isFullscreen, NULL);
+			mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
 		}
+
+
 
 		if (mTracker->pressed.F1)
 		{

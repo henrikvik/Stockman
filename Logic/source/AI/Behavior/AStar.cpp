@@ -1,8 +1,11 @@
 #include <AI/Behavior/AStar.h>
+
 #include <stack>
 #include <stdio.h> // for testing obv
 #include <cmath>
+
 #include <Engine\Profiler.h>
+#include <Engine\DebugWindow.h>
 #define NO_PARENT -1
 using namespace Logic;
 
@@ -11,8 +14,8 @@ AStar::AStar(std::string file)
 	debugDataTri.points = nullptr;
 	debugDataEdges.points = nullptr;
 	// for testing
-	generateNavigationMesh();
 	targetIndex = 0;
+    renderDebug = false;
 
 	for (size_t i = 0; i < navNodes.size(); i++)
 	{
@@ -145,8 +148,11 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 
 void AStar::renderNavigationMesh(Graphics::Renderer & renderer)
 {
-	renderer.queueRenderDebug(&debugDataTri);
-	renderer.queueRenderDebug(&debugDataEdges);
+    if (renderDebug)
+    {
+        renderer.queueRenderDebug(&debugDataTri);
+        renderer.queueRenderDebug(&debugDataEdges);
+    }
 }
 
 void AStar::loadTargetIndex(Entity const & target)
@@ -175,48 +181,26 @@ size_t AStar::getNrOfPolygons() const
 	return navigationMesh.getNodes().size();
 }
 
-void AStar::generateNavigationMesh()
+void AStar::generateNavigationMesh(Physics &physics)
 {
-	PASVF pasvf;
-	pasvf.generateNavMesh(navigationMesh, {}, {});
-	navigationMesh.createNodesFromTriangles();
-	// test //
-	/*
-		Basicly, divided by two because there is two triangles per square,
-		then square root because it is a square matrix (rows = columns).
-		Then times two again because one row = number of squares * 2.
-	*/
-	const int ROW = (int)std::sqrt(navigationMesh.getNodes().size() / 2) * 2;
-	for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
-	{
-		if ((i + 1) % ROW != 0)
-		{
-			navigationMesh.addEdge((int)i, (int)i + 1);
-			navigationMesh.addEdge((int)i + 1, (int)i);
-		}
-		
-		if (i < navigationMesh.getNodes().size() - ROW && i % 2 == 0)
-		{
-			// REMOVE THESE COMMENTS AND i % 2 == 0 TO MAKE ART
-		//	navigationMesh.addEdge(i, i + ROW); 
-		//	navigationMesh.addEdge(i + ROW, i);
-			
-			if ((i + 1) % ROW != 0)
-			{
-				navigationMesh.addEdge((int)i, (int)i + ROW + 1);
-				navigationMesh.addEdge((int)i + ROW + 1, (int)i);
-			}
-		} 
-	}
+    generator.registerGenerationCommand(navigationMesh, physics);
+   // generator.generateNavigationMesh(navigationMesh, physics);
+    generator.generateNavMeshOld(navigationMesh, {}, {});
+    DebugWindow::getInstance()->registerCommand("AI_TOGGLE_DEBUG",
+        [&](std::vector<std::string> para) -> std::string {
+        renderDebug = !renderDebug;
+        if (!renderDebug) return "AI Debug Disabled";
 
-	navNodes.clear();
-	for (size_t i = 0; i < navigationMesh.getNodes().size(); i++)
-		navNodes.push_back(
-			{ false, false, 
-			static_cast<int> (i), -1, 0, 0 }
-		);
+        navNodes.clear();
+        for (size_t i = 0; i < navigationMesh.getNodes().size(); i++)
+            navNodes.push_back(
+                { false, false,
+                static_cast<int> (i), -1, 0, 0 }
+            );
 
-	setupDebugging();
+        setupDebugging();
+        return "AI Debug On";
+    });
 }
 
 float AStar::heuristic(DirectX::SimpleMath::Vector3 const &from,
@@ -234,7 +218,7 @@ void AStar::setupDebugging()
 {
 	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
 	debugDataTri.useDepth = false;
-	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
 	debugDataTri.points = navigationMesh.getRenderDataTri();
 
 	debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);

@@ -42,6 +42,14 @@ namespace Logic
         std::pair<int, int> m_selectedSkills;
         void selectSkillButton(int id);
         bool replaceSkill(int id);
+
+		float m_mouseSense = 0.0f;
+		float m_FOV = 0.0f;
+		float m_masterSound = 0.0f;
+		float m_SFX = 0.0f;
+		float m_music = 0.0f;
+		bool m_windowed = false;
+		bool m_mute = false;
 	public:
 		MenuMachine(std::string* highScoreNamePTR);
 		~MenuMachine();
