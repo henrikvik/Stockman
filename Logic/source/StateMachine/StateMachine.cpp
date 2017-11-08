@@ -1,8 +1,8 @@
-#include <StateMachine.h>
-#include <StateBuffer.h>
+#include <StateMachine/StateMachine.h>
+#include <StateMachine/StateBuffer.h>
 #include <State.h>
-#include <StatePrimary.h>
-#include <StateSecondary.h>
+#include <StateMachine/StatePrimary.h>
+#include <StateMachine/StateSecondary.h>
 #include <Misc\Sound\NoiseMachine.h>
 #include <Keyboard.h>
 
@@ -44,7 +44,7 @@ StateMachine::StateMachine()
     //
     // Fast Skip (Debugging) */
     SetPrimaryState(StateType::State_Playing);
-    SetSecondaryState(StateType::State_InGame_Menu);
+    SetSecondaryState(StateType::State_InGame_Overlay);
 }
 
 StateMachine::~StateMachine()
@@ -85,7 +85,7 @@ void StateMachine::update(float deltaTime)
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad2))
     {
         SetPrimaryState(StateType::State_Playing);
-        SetSecondaryState(StateType::State_InGame_Menu);
+        SetSecondaryState(StateType::State_InGame_Overlay);
         return;
     }
 }

@@ -1,5 +1,5 @@
-#ifndef STATEMENUSTART_H
-#define STATEMENUSTART_H
+#ifndef STATESTART_H
+#define STATESTART_H
 
 // Include Abstract State
 #include <State.h>
@@ -25,11 +25,11 @@ namespace Logic
 {
     class Physics;
     class Map;
-    class StateMenuStart : public State
+    class StateStart : public State
     {
     public:
-        StateMenuStart(StateBuffer* stateBuffer);
-        ~StateMenuStart();
+        StateStart(StateBuffer* stateBuffer);
+        ~StateStart();
         void reset();
         void update(float deltaTime);
         void render() const;
@@ -44,4 +44,4 @@ namespace Logic
     };
 }
 
-#endif // !STATEMENUSTART_H
+#endif // !STATESTART_H

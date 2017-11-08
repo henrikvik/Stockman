@@ -1,7 +1,7 @@
-#include <StateMenuPlaying.h>
-#include <StateBuffer.h>
-#include <StatePrimary.h>
-#include <StateGamePlaying.h>
+#include <StatePlayingOverlay.h>
+#include <StateMachine\StateBuffer.h>
+#include <StateMachine\StatePrimary.h>
+#include <StatePlaying.h>
 
 #include <Engine\Typing.h>
 #include <DebugDefines.h>
@@ -9,7 +9,7 @@
 
 using namespace Logic;
 
-StateMenuPlaying::StateMenuPlaying(StateBuffer* stateBuffer)
+StatePlayingOverlay::StatePlayingOverlay(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
@@ -20,18 +20,18 @@ StateMenuPlaying::StateMenuPlaying(StateBuffer* stateBuffer)
     m_menu->initialize(Logic::gameStateSkillPick);
 }
 
-StateMenuPlaying::~StateMenuPlaying()
+StatePlayingOverlay::~StatePlayingOverlay()
 {
     m_menu->clear();
     delete m_menu;
 }
 
-void StateMenuPlaying::reset()
+void StatePlayingOverlay::reset()
 {
     m_menu->clear();
 }
 
-void StateMenuPlaying::update(float deltaTime)
+void StatePlayingOverlay::update(float deltaTime)
 {
     m_menu->update(deltaTime);
     switch (m_menu->currentState())
@@ -42,7 +42,7 @@ void StateMenuPlaying::update(float deltaTime)
             std::pair<int, int>* selectedSkills = m_menu->getSkillPick();
             if (selectedSkills->first != -1 && selectedSkills->second != -1)
             {
-                StateGamePlaying* game = dynamic_cast<StateGamePlaying*>(m_stateBuffer->currentPrimaryState);
+                StatePlaying* game = dynamic_cast<StatePlaying*>(m_stateBuffer->currentPrimaryState);
                 if (game)
                 {
                     game->getPlayer()->setCurrentSkills(selectedSkills->first, selectedSkills->second);
@@ -63,7 +63,7 @@ void StateMenuPlaying::update(float deltaTime)
     }
 }
 
-void StateMenuPlaying::render() const
+void StatePlayingOverlay::render() const
 {
     m_menu->render();
 }

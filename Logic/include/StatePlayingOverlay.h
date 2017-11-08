@@ -1,5 +1,5 @@
-#ifndef STATEMENUPLAYING_H
-#define STATEMENUPLAYING_H
+#ifndef STATEPlAYINGOVERLAY_H
+#define STATEPlAYINGOVERLAY_H
 
 // Include Abstract State
 #include <State.h>
@@ -18,11 +18,11 @@
 
 namespace Logic
 {
-    class StateMenuPlaying : public State
+    class StatePlayingOverlay : public State
     {
     public:
-        StateMenuPlaying(StateBuffer* stateBuffer);
-        ~StateMenuPlaying();
+        StatePlayingOverlay(StateBuffer* stateBuffer);
+        ~StatePlayingOverlay();
         void reset();
         void update(float deltaTime);
         void render() const;
@@ -32,4 +32,4 @@ namespace Logic
     };
 }
 
-#endif // !STATEMENUPLAYING_H
+#endif // !STATEPlAYINGOVERLAY_H

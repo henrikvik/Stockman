@@ -1,5 +1,5 @@
-#ifndef STATEGAMEPLAYING_H
-#define STATEGAMEPLAYING_H
+#ifndef STATEPLAYING_H
+#define STATEPLAYING_H
 
 // C++ Includes
 #include <stdio.h>
@@ -38,7 +38,7 @@
 
 namespace Logic
 {
-    class StateGamePlaying : public State
+    class StatePlaying : public State
     {
     private:
         struct GAME_START
@@ -49,8 +49,8 @@ namespace Logic
         };
 
     public:
-        StateGamePlaying(StateBuffer* stateBuffer);
-        ~StateGamePlaying();
+        StatePlaying(StateBuffer* stateBuffer);
+        ~StatePlaying();
         void reset();
 
         void update(float deltaTime);
@@ -75,4 +75,4 @@ namespace Logic
     };
 }
 
-#endif // !STATEGAMEPLAYING_H
+#endif // !STATEPLAYING_H

@@ -1,7 +1,6 @@
-#include <StateSecondary.h>
-#include <StateBuffer.h>
-#include <StateMenuStart.h>
-#include <StateMenuPlaying.h>
+#include <StateMachine\StateSecondary.h>
+#include <StateMachine\StateBuffer.h>
+#include <StatePlayingOverlay.h>
 #include <Misc\Sound\NoiseMachine.h>
 
 // Input Singletons
@@ -92,8 +91,8 @@ void StateSecondary::loadState(StateType state)
     // Load new state to memory
     switch (state)
     {
-    case StateType::State_InGame_Menu:
-        m_currentState = new StateMenuPlaying(m_stateBuffer);
+    case StateType::State_InGame_Overlay:
+        m_currentState = new StatePlayingOverlay(m_stateBuffer);
         break;
     }
 

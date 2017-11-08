@@ -1,7 +1,7 @@
-#include <StatePrimary.h>
-#include <StateBuffer.h>
-#include <StateGamePlaying.h>
-#include <StateMenuStart.h>
+#include <StateMachine\StatePrimary.h>
+#include <StateMachine\StateBuffer.h>
+#include <StatePlaying.h>
+#include <StateStart.h>
 
 // Input Singletons
 #include <Keyboard.h>
@@ -92,10 +92,10 @@ void StatePrimary::loadState(StateType state)
     switch (state)
     {
     case StateType::State_Playing:
-        m_currentState = new StateGamePlaying(m_stateBuffer);
+        m_currentState = new StatePlaying(m_stateBuffer);
         break;
     case StateType::State_Start:
-        m_currentState = new StateMenuStart(m_stateBuffer);
+        m_currentState = new StateStart(m_stateBuffer);
         break;
     }
 

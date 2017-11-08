@@ -1,5 +1,5 @@
-#include <StateMenuStart.h>
-#include <StateBuffer.h>
+#include <StateStart.h>
+#include <StateMachine\StateBuffer.h>
 #include <Misc\Sound\NoiseMachine.h>
 #include <Engine\Typing.h>
 #include <DebugDefines.h>
@@ -11,7 +11,7 @@
 
 using namespace Logic;
 
-StateMenuStart::StateMenuStart(StateBuffer* stateBuffer)
+StateStart::StateStart(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
@@ -36,7 +36,7 @@ StateMenuStart::StateMenuStart(StateBuffer* stateBuffer)
     m_menu->initialize(Logic::gameStateMenuMain);
 }
 
-StateMenuStart::~StateMenuStart()
+StateStart::~StateStart()
 {
     m_menu->clear();
 
@@ -46,9 +46,9 @@ StateMenuStart::~StateMenuStart()
     delete m_map;
 }
 
-void StateMenuStart::reset() { }
+void StateStart::reset() { }
 
-void StateMenuStart::update(float deltaTime)
+void StateStart::update(float deltaTime)
 {
     DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_ABSOLUTE);
     static DirectX::SimpleMath::Vector3 movingCameraPosition(0, 0, 0);
@@ -66,14 +66,15 @@ void StateMenuStart::update(float deltaTime)
 
     m_fpsRenderer.updateFPS(deltaTime);
     m_menu->update(deltaTime);
+
     if (m_menu->currentState() == gameStateSkillPick)
     {
         SwitchPrimaryState(StateType::State_Playing);
-        SwitchSecondaryState(StateType::State_InGame_Menu);
+        SwitchSecondaryState(StateType::State_InGame_Overlay);
     }
 }
 
-void StateMenuStart::render() const
+void StateStart::render() const
 {
     PROFILE_BEGIN("Render Map");
     m_map->render();

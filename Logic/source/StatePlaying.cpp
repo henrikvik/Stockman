@@ -1,5 +1,5 @@
-#include <StateGamePlaying.h>
-#include <StateBuffer.h>
+#include <StatePlaying.h>
+#include <StateMachine\StateBuffer.h>
 #include <State.h>
 
 // Input Singletons
@@ -15,11 +15,11 @@
 using namespace Logic;
 
 // Game starting static configurations
-const int StateGamePlaying::GAME_START::UNIQUE_CARDS = 13;
-const btVector3 StateGamePlaying::GAME_START::PLAYER_SCALE = { 1.5f, 3.0f, 1.5f };
-const btVector3 StateGamePlaying::GAME_START::PLAYER_ROTATION = { 0.0f, 0.0f, 0.0f };
+const int StatePlaying::GAME_START::UNIQUE_CARDS = 13;
+const btVector3 StatePlaying::GAME_START::PLAYER_SCALE = { 1.5f, 3.0f, 1.5f };
+const btVector3 StatePlaying::GAME_START::PLAYER_ROTATION = { 0.0f, 0.0f, 0.0f };
 
-StateGamePlaying::StateGamePlaying(StateBuffer* stateBuffer)
+StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
     // Initializing Bullet physics
@@ -80,7 +80,7 @@ StateGamePlaying::StateGamePlaying(StateBuffer* stateBuffer)
     //#endif
 }
 
-StateGamePlaying::~StateGamePlaying()
+StatePlaying::~StatePlaying()
 {
     m_projectileManager->clear();
 
@@ -95,7 +95,7 @@ StateGamePlaying::~StateGamePlaying()
     delete m_projectileManager;
 }
 
-void StateGamePlaying::reset()
+void StatePlaying::reset()
 {
     m_projectileManager->removeAllProjectiles();
     m_player->reset();
@@ -110,7 +110,7 @@ void StateGamePlaying::reset()
     ComboMachine::Get().Reset();
 }
 
-void StateGamePlaying::update(float deltaTime)
+void StatePlaying::update(float deltaTime)
 {
     m_fpsRenderer.updateFPS(deltaTime);
    
@@ -152,7 +152,7 @@ void StateGamePlaying::update(float deltaTime)
         gameOver();
 }
 
-void StateGamePlaying::render() const
+void StatePlaying::render() const
 {
     // Debug Draw physics
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
@@ -181,7 +181,7 @@ void StateGamePlaying::render() const
     m_fpsRenderer.render();
 }
 
-void StateGamePlaying::gameOver()
+void StatePlaying::gameOver()
 {
     m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
     reset();
