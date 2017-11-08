@@ -12,11 +12,12 @@ using namespace Logic;
 #define EPSILON 0.001f
 const int NavigationMeshGeneration::AI_UID = 1061923, NavigationMeshGeneration::NO_ID = -5;
 int NavigationMeshGeneration::COUNTER = 0;
+const btVector3 NavigationMeshGeneration::unitDimension = { 0.2f, 0.2f, 0.2f }; // i know it is not 1, todo
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
     precision = 0.05f;
-    maxLength = 150.f;
+    maxLength = 250.f;
     baseY = 0.5f;
 
     registerSetCommands();
@@ -84,9 +85,7 @@ void NavigationMeshGeneration::registerGenerationCommand(
     });
 }
 
-// TESTING TESTING TESTING DO NOT CALL
-// ACTUALLY I WONT DO PASVF, THE CLASS WILL BE RENAMED IN THE FUTURE I FOUND A SIMPLE, PROLLY WORSE, SOLUTION :<
-// THIS SHOULD ONLY BE CALLED OFFLINE AND THEN SAVED TO A FILE (TODO)
+// This will be removed in the future ;D 
 void NavigationMeshGeneration::generateNavMeshOld(NavigationMesh &nav,
     std::vector<Triangle> terrain,
     std::vector<NavStaticObject> objects) const
@@ -150,7 +149,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     regions.reserve(1500); // THIS IS A TEMPORARY SOLUTION TO PREVENT MEMORY FOK UPS; MAKE A REAL SOLUTION
 
     printf("Seeding area..");
-    seedArea({ -125.f, 0.6f, -135.f }, { 250.f, 0.5f, 300.f }, 50.f, regions, physics);
+    seedArea({ -125.f, 0.6f, -135.f }, { 250.f, 0.5f, 300.f }, 75.f, regions, physics);
     printf("Seeding finished!\n");
 
     btCollisionObject *obj;
@@ -159,8 +158,9 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
 
     // first cube
     printf("Buckleup buckero this will take a while! Generating Navigation Mesh...\n");
-    for (auto &region : regions)
+    for (size_t index = 0; index < regions.size(); index++) // elements is added inside vec
     {
+        auto &region = regions[index];
         printf("Loading.. %f %%\n", static_cast<float> (region.userIndex) / COUNTER * 100.f);
 
         if (isInCollisionArea(region, physics, region.buddyIndex, region.userIndex))
@@ -196,7 +196,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                             const btCollisionObjectWrapper* colObj0, int partId0, int index0,
                             const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
                     {
-                        if (cp.getDistance() > precision) return 0;
+                        if (abs(cp.getDistance()) > precision) return 0;
                         if (staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
                         {
                             if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
@@ -205,6 +205,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                                 {
                                     cp.m_localPointA += region.body->getWorldTransform().getOrigin();
                                     CollisionReturn ret = handleCollision(cp.m_localPointA, region, staticObj, growth[side], growthNormals[side], bs);
+
                                     switch (ret)
                                     {
                                     case ON_VERTEX:
@@ -220,6 +221,8 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                             region.cube.setDimensions(region.cube.getDimensions() - growth[side].dimensionChange);
                             region.cube.setPos(region.cube.getPos() - growth[side].positionChange);
                             region.collided[side] = true;
+                            cp.m_localPointA += region.body->getWorldTransform().getOrigin();
+                            physics.createBody(Sphere(cp.m_localPointA, { 0.f, 0.f, 0.f }, 1.f), 0.f);
                         }
                         return 0;
                     });
