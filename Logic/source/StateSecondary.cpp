@@ -72,16 +72,23 @@ void StateSecondary::loadState(StateType state)
     m_currentStateType = state;
 
     // Clear previous state from memory 
-    delete m_currentState;
+    if (m_currentState)
+        delete m_currentState;
+
+    // Reset currentstate as nullptr
     m_currentState = nullptr;
+
+    // Inactive State
+    if (m_currentStateType == StateType::Nothing)
+    {
+        printf("*~ Inactivated Secondary State.\n");
+        return;
+    }
 
     // Load new state to memory
     switch (state)
     {
-    case StateType::Menu_Start:
-        m_currentState = new StateMenuStart(m_stateBuffer);
-        break;
-    case StateType::Menu_Playing:
+    case StateType::State_InGame_Menu:
         m_currentState = new StateMenuPlaying(m_stateBuffer);
         break;
     }
@@ -89,7 +96,7 @@ void StateSecondary::loadState(StateType state)
     // Error check
     if (!m_currentState)
     {
-        printf("This state does not exist or is not valid in this type of state-manager.");
+        printf("*~ This state does not exist or is not valid in the secondary state.");
         return;
     }
 

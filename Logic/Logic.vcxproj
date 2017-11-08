@@ -279,7 +279,6 @@
     <ClInclude Include="include\State.h" />
     <ClInclude Include="include\StateBuffer.h" />
     <ClInclude Include="include\StatePrimary.h" />
-    <ClInclude Include="include\StateGameStart.h" />
     <ClInclude Include="include\StateGamePlaying.h" />
     <ClInclude Include="include\StateMachine.h" />
     <ClInclude Include="include\StateSecondary.h" />
@@ -354,7 +353,6 @@
     <ClCompile Include="source\AI\WaveManager.cpp" />
     <ClCompile Include="source\AI\WaveTimeManager.cpp" />
     <ClCompile Include="source\StatePrimary.cpp" />
-    <ClCompile Include="source\StateGameStart.cpp" />
     <ClCompile Include="source\StateGamePlaying.cpp" />
     <ClCompile Include="source\StateMachine.cpp" />
     <ClCompile Include="source\StateSecondary.cpp" />

@@ -31,8 +31,8 @@ StateMachine::StateMachine()
     m_stateSecondary->SetFuncGetCurrentSecondary(GetSecondaryState);
 
     // Setting starting states
-    SetPrimaryState(StateType::Game_Start);
-    SetSecondaryState(StateType::Menu_Start);
+    SetPrimaryState(StateType::State_Start);
+    SetSecondaryState(StateType::Nothing);
 
     // Initializing Sound
     Sound::NoiseMachine::Get().init();
@@ -43,8 +43,8 @@ StateMachine::StateMachine()
     //
     //
     // Fast Skip (Debugging) */
-    SetPrimaryState(StateType::Game_Playing);
-    SetSecondaryState(StateType::Menu_Playing);
+    SetPrimaryState(StateType::State_Playing);
+    SetSecondaryState(StateType::State_InGame_Menu);
 }
 
 StateMachine::~StateMachine()
@@ -77,15 +77,15 @@ void StateMachine::update(float deltaTime)
 
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad1))
     {
-        SetPrimaryState(StateType::Game_Start);
-        SetSecondaryState(StateType::Menu_Start);
+        SetPrimaryState(StateType::State_Start);
+        SetSecondaryState(StateType::Nothing);
         return;
     }
 
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad2))
     {
-        SetPrimaryState(StateType::Game_Playing);
-        SetSecondaryState(StateType::Menu_Playing);
+        SetPrimaryState(StateType::State_Playing);
+        SetSecondaryState(StateType::State_InGame_Menu);
         return;
     }
 }

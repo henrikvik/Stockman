@@ -1,7 +1,7 @@
 #include <StatePrimary.h>
 #include <StateBuffer.h>
-#include <StateGameStart.h>
 #include <StateGamePlaying.h>
+#include <StateMenuStart.h>
 
 // Input Singletons
 #include <Keyboard.h>
@@ -78,21 +78,28 @@ void StatePrimary::loadState(StateType state)
     // Reset currentstate as nullptr
     m_currentState = nullptr;
 
+    // Inactive State
+    if (m_currentStateType == StateType::Nothing)
+    {
+        printf("*~ Inactivated Primary State. You should prefer to not run the secondary state solo.\n");
+        return;
+    }
+
     // Load new state to memory
     switch (state)
     {
-    case StateType::Game_Start:
-        m_currentState = new StateGameStart(m_stateBuffer);
-        break;
-    case StateType::Game_Playing:
+    case StateType::State_Playing:
         m_currentState = new StateGamePlaying(m_stateBuffer);
+        break;
+    case StateType::State_Start:
+        m_currentState = new StateMenuStart(m_stateBuffer);
         break;
     }
 
     // Error check
     if (!m_currentState)
     {
-        printf("This state does not exist or is not valid in this type of state-manager.");
+        printf("*~ This state does not exist or is not valid in the primary state.");
         return;
     }
 
