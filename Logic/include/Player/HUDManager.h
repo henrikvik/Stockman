@@ -65,6 +65,7 @@ namespace Logic
             SKILLMASK1,
             SKILLMASK2
         };
+        void renderTextElements();
 
         
     public:

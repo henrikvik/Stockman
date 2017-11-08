@@ -202,18 +202,40 @@ void Logic::HUDManager::updateGUIElemets()
     {
         if (info.currentSkills[0] >= 0 && 1.0f - info.cd[0] > FLT_EPSILON)
         {
-            skillMasks.at(0).setTopYToProcent(1 - info.cd[0], 519.0f / 1024, 0.725000024f);
+            //skillMasks.at(0).setTopYToProcent(1.0f - info.cd[0], 519.0f / 1024, 0.725000024f, 0.794444442f);
+        }
+        else
+        {
+            skillMasks.at(0).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50);
+            float x = 518.0f / 1024;
+            float y = 519.0f / 1024;
+            float width = 503.0f / 1024;
+            float height = 503.f / 1024;
+            skillMasks.at(0).setTexturePos(x, y, x + width, y + height);
         }
         
 
         if (info.currentSkills[1] >= 0 && 1.0f - info.cd[1] > FLT_EPSILON)
         {
-            skillMasks.at(1).setTopYToProcent(1 - info.cd[1], 519.0f / 1024, 0.725000024f);
+            //skillMasks.at(1).setTopYToProcent(1.0f , 519.0f / 1024, 0.725000024f, 0.794444442f);
+        }
+        else
+        {
+            skillMasks.at(1).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -130, -148, 50, 50);
+            float x = 518.0f / 1024;
+            float y = 519.0f / 1024;
+            float width = 503.0f / 1024;
+            float height = 503.f / 1024;
+            skillMasks.at(1).setTexturePos(x, y, x + width, y + height);
         }
 
     }
 }
 
+
+void Logic::HUDManager::renderTextElements()
+{
+}
 
 HUDManager::HUDManager()
 {
@@ -332,5 +354,7 @@ void Logic::HUDManager::reset()
     HUDElements.clear();
     skillList.clear();
     HPBar.clear();
+    skillMasks.clear();
+    staticElements.clear();
     constructGUIElements();
 }

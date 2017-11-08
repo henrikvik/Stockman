@@ -166,10 +166,10 @@ void Sprite::setScreenPos(Points screenpoint, Points spritepoint, float x, float
 }
 
 //used to make the cd mask grow with the cd left
-void Sprite::setTopYToProcent(float procent, float yMaxtexture, float ymaxPos)
+void Sprite::setTopYToProcent(float procent, float yMaxtexture, float ymaxPos,  float yminPos)
 {
-    //sprite.textureRect.topLeft.y = yMaxtexture * procent;
-    //sprite.screenRect.topLeft.y = abs(sprite.screenRect.topLeft.y - sprite.screenRect.bottomRight.y) - ymaxPos * procent;
+    sprite.textureRect.topLeft.y = yMaxtexture * procent;
+    sprite.screenRect.topLeft.y -= abs(ymaxPos - yminPos)*procent;
 }
 
 FloatRect Sprite::getScreenRect() const
