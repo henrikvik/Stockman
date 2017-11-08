@@ -45,7 +45,10 @@ namespace Logic
 
         std::vector<Sprite> HUDElements;
         std::vector<Sprite> skillList;
+        std::vector<Sprite> skillMasks;
         std::vector<Sprite> HPBar;
+        std::vector<Sprite> staticElements;
+
 
 
         void constructGUIElements();

@@ -64,14 +64,14 @@ void Logic::HUDManager::constructGUIElements()
 
     //creates the difrent skill icons 
 
-    //grappling inactive
+    //grappling 
     x = 999.0f / 2048;
     y = 46.0f / 720;
     width = 300.0f / 2048;
     height = 300.0f / 720;
     skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
 
-    //charge inacitve
+    //charge 
     x = 1351.f / 2048;
     y = 43.0f / 720;
     width = 302.0f / 2048;
@@ -79,7 +79,7 @@ void Logic::HUDManager::constructGUIElements()
     skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
 
 
-    //bullet time inactive
+    //bullet time 
     x = 1695.f / 2048;
     y = 46.0f / 720;
     width = 303.0f / 2048;
@@ -87,14 +87,14 @@ void Logic::HUDManager::constructGUIElements()
     skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
 
 
-    //grappling active
+    //skill mask 1
     x = 1000.0f / 2048;
     y = 370.0f / 720;
     width = 309.0f / 2048;
     height = 309.0f / 720;
     skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
 
-    //charge active
+    //skill mask 2
     x = 1354.f / 2048;
     y = 369.0f / 720;
     width = 307.0f / 2048;
@@ -102,17 +102,57 @@ void Logic::HUDManager::constructGUIElements()
     skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
 
 
-    //bullet time active
-    x = 1697.f / 2048;
-    y = 374.0f / 720;
-    width = 306.0f / 2048;
-    height = 306.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    
  
+
+   
+
     for (size_t i = 0; i < PLAYER_STARTING_HP; i++)
     {
-        //HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50 + (i * 75), -50, 75, 75, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
+        x = 26.f / 1024;
+        y = 258.0f / 1024;
+        width = 311.0f / 1024;
+        height = 171.0f / 1024;
+        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, {x + width, y + height })));
+
+        x = 26.f / 1024;
+        y = 454.0f / 1024;
+        width = 311.0f / 1024;
+        height = 171.0f / 1024;
+        staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
     }
+
+
+    //static hud elemets
+
+    //shield thing by hp
+    x = 374.f / 1024;
+    y = 457.0f / 1024;
+    width = 162.0f / 1024;
+    height = 268.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 45, -60, 50, 70, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+    //score banner
+    x = 26.f / 1024;
+    y = 23.0f / 1024;
+    width = 364.0f / 1024;
+    height = 85.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 60, 15, 170, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+    //wave counter
+    x = 26.f / 1024;
+    y = 143.0f / 1024;
+    width = 508.0f / 1024;
+    height = 85.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 505, 15, 200, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+    //wave timer
+    x = 559.f / 1024;
+    y = 143.0f / 1024;
+    width = 161.0f / 1024;
+    height = 85.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 720, 15, 70, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
 }
 
 //updates the active weapons and cd icons
@@ -120,10 +160,10 @@ void Logic::HUDManager::updateGUIElemets()
 {
     //hp
 
-    //if (HPBar.size() != info.hp && info.hp != 0)
-    //{
-    //    HPBar.pop_back();
-    //}
+    if (HPBar.size() != info.hp && info.hp != 0)
+    {
+        HPBar.pop_back();
+    }
 
 
     switch (info.currentWeapon)
@@ -262,11 +302,27 @@ void HUDManager::render() const
         sprite.render();
     }
 
-    //render hp bars
+    //renders skill masks
+    int i = 0;
+    for (auto &sprite : HUDElements)
+    {
+        if (1.0f - info.cd[i] > FLT_EPSILON)
+        {
+            sprite.render();
+        }
+        i++;
+    }
+
+    //render hp bars   
+    for (auto &bar : staticElements)
+    {
+        bar.render();
+    }
     for (auto &bar : HPBar)
     {
         bar.render();
     }
+
 }
 
 void Logic::HUDManager::reset()
