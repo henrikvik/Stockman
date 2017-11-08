@@ -110,6 +110,4 @@ void StatePrimary::loadState(StateType state)
     m_currentState->SetFuncSecondarySwitch(SwitchSecondaryState);
     m_currentState->SetFuncGetCurrentPrimary(GetCurrentPrimaryState);
     m_currentState->SetFuncGetCurrentSecondary(GetCurrentSecondaryState);
-
-    RenderQueue::get().clearAllQueues();
 }

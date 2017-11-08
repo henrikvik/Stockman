@@ -78,6 +78,15 @@ StateGamePlaying::StateGamePlaying(StateBuffer* stateBuffer)
     //        if (!cmd.empty())
     //            win->doCommand(cmd.c_str());
     //#endif
+
+    RenderQueue::get().clearAllQueues();
+
+    //temp? probably
+    static SpecialEffectRenderInfo info;
+    info.type = info.Snow;
+    info.restart = true;
+
+    RenderQueue::get().queue(&info);
 }
 
 StateGamePlaying::~StateGamePlaying()

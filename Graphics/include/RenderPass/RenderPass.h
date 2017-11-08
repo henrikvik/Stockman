@@ -30,6 +30,8 @@ namespace Graphics
         const std::vector<ID3D11Buffer*> buffers;
         ID3D11DepthStencilView * depthStencil;
 
+        bool enabled = true;
+
     protected:
         template<typename QueueT>
         void drawInstanced(ID3D11ShaderResourceView * instanceBuffer) const;

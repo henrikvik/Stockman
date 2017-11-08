@@ -12,7 +12,7 @@ SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, Projectil
     setSpawnFunctions(*projectileManager);
 	//m_travelProjectile = nullptr;
 
-    renderInfo.effect = SpecialEffectRenderInfo::BulletTime;
+    renderInfo.type = SpecialEffectRenderInfo::BulletTime;
     renderInfo.progress = 0;
 }
 

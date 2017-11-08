@@ -145,6 +145,14 @@ void Player::reset()
 	getTransform().setOrigin(startPosition);
 	m_weaponManager->reset();
 	m_hp = 3;
+
+    //temp? probably
+    Global::mainCamera->update(getPosition(), m_forward, Global::context);
+    static SpecialEffectRenderInfo info;
+    info.type = info.Snow;
+    info.restart = true;
+
+    RenderQueue::get().queue(&info);
 }
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)

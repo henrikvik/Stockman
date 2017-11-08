@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include <functional>
 #include <iostream>
+#include <string>
 #pragma region Comment
 
 /*

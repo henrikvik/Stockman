@@ -1,8 +1,8 @@
-#include "../LightCalcInclude.hlsli"
+#include "LightCalcInclude.hlsli"
 
 #define SNOW_RADIUS 50.f
 #define FADE_DIST 30.f
-
+#define SNOW_COLOR float3(0.7f, 0.7f, 0.7f)
 struct Vertex
 {
     float3 pos : POSITION;
@@ -83,7 +83,7 @@ float4 PS(GS_OUT input) : SV_TARGET
     uint offset = LightGrid[tile].x;
     uint count = LightGrid[tile].y;
 
-    float3 lighting = float3(0.5f, 0.5f, 0.5f) * shadow;
+    float3 lighting = SNOW_COLOR * shadow;
 
     for (uint i = 0; i < count; i++)
     {

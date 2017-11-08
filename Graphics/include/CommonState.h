@@ -10,4 +10,5 @@ namespace Global
     extern CommonStates * cStates;
     extern ID3D11SamplerState * comparisonSampler;
     extern ID3D11SamplerState * mirrorSampler;
+    extern ID3D11BlendState * transparencyBlendState;
 }

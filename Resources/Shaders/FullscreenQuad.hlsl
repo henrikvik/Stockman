@@ -14,12 +14,10 @@ VSOut VS(uint id: SV_VertexID)
     return vsout;
 }
 
-Texture2D albedoSpec : register(t0);
-Texture2D normalMat : register(t1);
-Texture2D pos : register(t2);
+Texture2D tex : register(t0);
 SamplerState sState;
 
 float4 PS(VSOut psin) : SV_Target0
 {
-    return float4(albedoSpec.Sample(sState, psin.uv).xyz, 1.f);
+    return float4(tex.Sample(sState, psin.uv).xyz, 1.f);
 };
