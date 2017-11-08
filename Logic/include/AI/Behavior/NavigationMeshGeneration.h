@@ -76,7 +76,7 @@ namespace Logic
             };
             struct NavMeshCube
             {
-                bool done, collided[SIDES];
+                bool done, remove, collided[SIDES];
                 NavMeshCube *buddy;
                 btRigidBody *body;
                 Cube cube;
@@ -85,7 +85,7 @@ namespace Logic
                 {
                     this->cube = cube;
 
-                    done = false;
+                    done = remove = false;
                     body = nullptr;
 
                     for (int i = 0; i < SIDES; i++)

@@ -14,7 +14,7 @@ const int NavigationMeshGeneration::AI_UID = 1061923;
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
-    precision = 3.05f;
+    precision = 0.05f;
     maxLength = 150.f;
     baseY = 0.5f;
 
@@ -146,10 +146,10 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     Physics &physics)
 {
     std::vector<NavMeshCube> regions;
-    regions.reserve(1000); // THIS IS A TEMPORARY SOLUTION TO PREVENT MEMORY FOK UPS; MAKE A REAL SOLUTION
+    regions.reserve(1500); // THIS IS A TEMPORARY SOLUTION TO PREVENT MEMORY FOK UPS; MAKE A REAL SOLUTION
 
     printf("Seeding area..");
-    seedArea({ -125.f, 0, -135.f }, { 250.f, 0.f, 300.f }, 15.f, regions, physics);
+    seedArea({ -125.f, 0.6f, -135.f }, { 250.f, 0.5f, 300.f }, 25.f, regions, physics);
     printf("Seeding finished!");
 
     btCollisionObject *obj;
@@ -158,16 +158,15 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
 
     // first cube
     printf("Buckleup buckero this will take a while! Generating Navigation Mesh...\n");
-    for (size_t regionIndex = 0; regionIndex < regions.size(); regionIndex++) // less than ten to prevent yikes
+    for (size_t regionIndex = 0; regionIndex < regions.size(); regionIndex++)
     {
         printf("Loading.. %d/%d\n", static_cast<int> (regionIndex + 1), static_cast<int> (regions.size()));
-        auto &region = regions[regionIndex];
+        auto &region = regions.at(regionIndex);
 
         if (isInCollisionArea(region, physics))
         {
-            regions.erase(regions.begin() + regionIndex);
-            regionIndex--;
-            continue; // skip this shit (remove later?)
+            region.remove = true;
+            continue;
         }
 
         for (int side = 0; side < SIDES && !region.collided[side] && !region.done; side++)
@@ -243,14 +242,16 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
 
     for (auto &region : regions)
     {
-        Cube &cube = region.cube;
-        std::pair<Triangle, Triangle> triPair = toTriangle(cube);
+        if (!region.remove)
+        {
+            Cube &cube = region.cube;
+            std::pair<Triangle, Triangle> triPair = toTriangle(cube);
 
-        if (region.body) // this check should be unnessecary
             removeRigidBody(region.body, physics);
 
-        nav.addTriangle(toNavTriangle(triPair.first));
-        nav.addTriangle(toNavTriangle(triPair.second));
+            nav.addTriangle(toNavTriangle(triPair.first));
+            nav.addTriangle(toNavTriangle(triPair.second));
+        }
     }
 
     nav.createNodesFromTriangles();
@@ -418,11 +419,15 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
             if (cp.getDistance() > precision) return 0;
 
             if (StaticObject *staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
+            {
                 if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
                     if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // only support box shapes at the moment (other shapes can be "converted" to boxes)
                         collision = true;
+            }
             else if (obj->getUserIndex() == AI_UID)
+            {
                 collision = true;
+            }
             return 0;
         });
         physics.contactPairTest(cube.body, obj, res);
@@ -434,15 +439,16 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
 void NavigationMeshGeneration::seedArea(btVector3 position, btVector3 fullDimension,
     float part, std::vector<NavMeshCube>& regions, Physics &physics)
 {
+    float startZ = position.z();
     btVector3 piece = fullDimension / part;
-    piece.setY(0.f);
 
     for (float partX = 0.f; partX < fullDimension.x(); partX += piece.x())
     {
-        position.setX(position.x() + partX);
+        position.setZ(startZ);
+        position.setX(position.x() + piece.x());
         for (float partZ = 0.f; partZ < fullDimension.z(); partZ += piece.z())
         {
-            position.setZ(position.z() + partZ);
+            position.setZ(position.z() + piece.z());
             NavMeshCube cube(Cube(position, { 0.f, 0.f, 0.f }, piece));
             if (!isInCollisionArea(cube, physics))
             {
