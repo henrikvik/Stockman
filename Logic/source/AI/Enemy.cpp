@@ -2,6 +2,7 @@
 #include <AI\Behavior\TestBehavior.h>
 #include <AI\Behavior\RangedBehavior.h>
 #include <AI\Behavior\MeleeBehavior.h>
+#include <AI\Behavior\BigBadBehavior.h>
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileStruct.h>
@@ -9,7 +10,7 @@
 
 using namespace Logic;
 
-Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId)
+Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId)
 : Entity(body, halfExtent, modelID)
 {
 	m_behavior = nullptr;
@@ -43,13 +44,16 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
         case MELEE:
                 m_behavior = newd MeleeBehavior();
             break;
+        case BOSS_BADDIE:
+                m_behavior = newd BigBadBehavior();
+            break;
 		default:
 				m_behavior = newd TestBehavior();
 			break;
 	}
 }
 
-void Enemy::setEnemyType(ENEMY_TYPE id)
+void Enemy::setEnemyType(EnemyType id)
 {
 	m_enemyType = id;
 }
@@ -64,9 +68,7 @@ void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> co
 	updateSpecific(player, deltaTime);
 
     if (!m_stunned)
-    {
-        m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
-    }
+        m_behavior->update(*this, closeEnemies, player, deltaTime);
 }
 
 void Enemy::debugRendering(Graphics::Renderer & renderer)
@@ -111,20 +113,14 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
     if (flags & Effect::EFFECT_IS_FROZEN)
         m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
     if (flags & Effect::EFFECT_IS_STUNNED)
-    {
         m_stunned = true;
-    }
     if (flags & Effect::EFFECT_MOVE_FASTER)
-    {
        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-    }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
-    {
        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-    }
 }
 
-void Logic::Enemy::onEffectEnd(int stacks, Effect const & effect)
+void Enemy::onEffectEnd(int stacks, Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
 
@@ -174,7 +170,7 @@ float Enemy::getMoveSpeed() const
 	return m_moveSpeed * m_bulletTimeMod * m_moveSpeedMod;
 }
 
-ENEMY_TYPE Enemy::getEnemyType() const
+EnemyType Enemy::getEnemyType() const
 {
 	return m_enemyType;
 }

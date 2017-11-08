@@ -14,7 +14,7 @@ const float EnemyNecromancer::BASE_SPEED = 8.f;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
     btRigidBody* body, btVector3 halfExtent)
-    : Enemy(modelID, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, NECROMANCER, 0) {
+    : Enemy(modelID, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::NECROMANCER, 0) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().Kill(getEnemyType());
@@ -72,7 +72,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
                 {
-                    Enemy *e = SpawnEnemy(ENEMY_TYPE::NECROMANCER_MINION, data.caller->getPositionBT(), {});
+                    Enemy *e = SpawnEnemy(EnemyType::NECROMANCER_MINION, data.caller->getPositionBT(), {});
                     m_spawnedMinions++;
 
                     increaseCallbackEntities();

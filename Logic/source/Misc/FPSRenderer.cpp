@@ -11,7 +11,7 @@ FPSRenderer::FPSRenderer()
 
 	fpsString.color = DirectX::SimpleMath::Color{ 1, 1, 1 };
 	fpsString.font = Graphics::Font::SMALL;
-	fpsString.pos = DirectX::SimpleMath::Vector2{ 5, 5 };
+	fpsString.pos = DirectX::SimpleMath::Vector2{ 995, 5 };
 	fpsString.text = L"Ta inte bort min kod - LW";
     isActive = true;
 

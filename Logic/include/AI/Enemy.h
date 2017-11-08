@@ -38,16 +38,16 @@ namespace Logic
 
 			float m_bulletTimeMod;									// Variables for effect modifiers
             float m_moveSpeedMod;
-			ENEMY_TYPE m_enemyType;
+			EnemyType m_enemyType;
 
 			Behavior *m_behavior;
 
             //status
             bool m_stunned;
 		public:	
-			enum BEHAVIOR_ID { TEST, RANGED, MELEE };
+			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE };
 
-			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId);
+			Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId);
 			virtual ~Enemy();
 
 			virtual void update(Player const &player, float deltaTime,
@@ -70,14 +70,14 @@ namespace Logic
 
 			void damage(int damage);
 			void setBehavior(BEHAVIOR_ID id);
-			void setEnemyType(ENEMY_TYPE id);
+			void setEnemyType(EnemyType id);
 
             int getHealth() const;
             int getMaxHealth() const;
             int getBaseDamage() const;
 
 			float getMoveSpeed() const;
-			ENEMY_TYPE getEnemyType() const;
+            EnemyType getEnemyType() const;
 			Behavior* getBehavior() const;
 	};
 }
