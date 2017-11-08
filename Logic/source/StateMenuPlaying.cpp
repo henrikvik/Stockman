@@ -12,6 +12,7 @@ using namespace Logic;
 StateMenuPlaying::StateMenuPlaying(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
+    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
 
     // Initializing Menu's

@@ -36,6 +36,9 @@ namespace Sound
 		void clear();
 		void update(ListenerData& listener);
 
+        void stopAllGroups();
+        void stopGroup(CHANNEL_GROUP group);
+
 		void playSFX(SFX sfx, SoundSource* soundSource, bool overdrive);
 		void playMusic(MUSIC music, SoundSource* soundSource, bool overdrive);
 

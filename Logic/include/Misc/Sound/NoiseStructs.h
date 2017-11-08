@@ -17,7 +17,7 @@ namespace Sound
 
     struct THRESHOLD
     {
-        static const int	MAX_CHANNELS    = 1;
+        static const int	MAX_CHANNELS    = 32;
         static const int    MAX_GROUPS      = 4;
         static const int	MAX_SFX         = 32;
         static const int	MAX_SONGS       = 32;
@@ -47,6 +47,7 @@ namespace Sound
         MUSIC_MAIN_MENU,
         MUSIC_CREDITS,
         MUSIC_IN_GAME,
+        AMBIENT_STORM
     };
 
     // Keeps track of everything about a specific sound

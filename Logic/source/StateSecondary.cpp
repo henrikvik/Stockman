@@ -2,6 +2,7 @@
 #include <StateBuffer.h>
 #include <StateMenuStart.h>
 #include <StateMenuPlaying.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 // Input Singletons
 #include <Keyboard.h>
@@ -84,6 +85,9 @@ void StateSecondary::loadState(StateType state)
         printf("*~ Inactivated Secondary State.\n");
         return;
     }
+
+    // Stop all music & sfx
+    Sound::NoiseMachine::Get().stopAllGroups();
 
     // Load new state to memory
     switch (state)

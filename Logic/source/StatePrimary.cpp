@@ -85,6 +85,9 @@ void StatePrimary::loadState(StateType state)
         return;
     }
 
+    // Stop all music & sfx
+    Sound::NoiseMachine::Get().stopAllGroups();
+
     // Load new state to memory
     switch (state)
     {

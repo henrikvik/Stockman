@@ -14,6 +14,7 @@ using namespace Logic;
 StateMenuStart::StateMenuStart(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
+    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_MAIN_MENU, nullptr, true);
 
     // Making a small little campfire map to look at
@@ -49,6 +50,7 @@ void StateMenuStart::reset() { }
 
 void StateMenuStart::update(float deltaTime)
 {
+    DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_ABSOLUTE);
     static DirectX::SimpleMath::Vector3 movingCameraPosition(0, 0, 0);
     static DirectX::SimpleMath::Vector3 movingCameraForward(0, 0, 1);
     movingCameraPosition.y += 0.001f * deltaTime;

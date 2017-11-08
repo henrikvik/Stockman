@@ -15,10 +15,10 @@ using namespace Sound;
 #define ERRCHECK(nothing)
 #endif
 
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MASTER     = 0.8f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_AMBIENT    = 0.8f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_SFX        = 0.8f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MUSIC      = 0.1f;
+const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MASTER     = 0.5f;
+const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_AMBIENT    = 0.15f;
+const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_SFX        = 0.5f;
+const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MUSIC      = 1.f;
 
 // Initializes all sound system & sounds into memory
 void NoiseMachine::init()
@@ -72,8 +72,8 @@ void NoiseMachine::init()
     printf("*Sound information*\nNumber of sound drivers: \t%d\nSpeaker Mode: \t\t\t%d\nSpeaker Mode Channels: \t\t%d\nSound Sample Rate: \t\t%d\n", numdrivers, speakermode, speakermodechannels, systemrate);
     printf("\n*Sound usage in bytes*\nSamples: \t\t\t%lld\nStream: \t\t\t%lld\nOther: \t\t\t\t%lld\n", samplebytes, streambytes, otherbytes);
     printf(" \t(Loaded Sound Effects from: \t%s)\n", (SOUNDSETTINGS::SFX_LOAD_MODE) ? "Stream" : "Sample");
-    printf(" \t(Loaded Songs from: \t\t%s)\n", (SOUNDSETTINGS::MUSIC_LOAD_MODE) ? "Stream" : "Sample");
-    printf("\n*Loaded Sounds*\n%d/%d Sound Effects\n%d/%d Songs\n", nrSFX, THRESHOLD::MAX_SFX, nrSongs, THRESHOLD::MAX_SONGS);
+    printf(" \t(Loaded Songs/Ambient from: \t\t%s)\n", (SOUNDSETTINGS::MUSIC_LOAD_MODE) ? "Stream" : "Sample");
+    printf("\n*Loaded Sounds/Ambient*\n%d/%d Sound Effects\n%d/%d Ambient/Songs\n", nrSFX, THRESHOLD::MAX_SFX, nrSongs, THRESHOLD::MAX_SONGS);
 #endif
 }
 
@@ -116,6 +116,18 @@ void NoiseMachine::update(ListenerData& listener)
 
 	// Update the 3D sound engine
 	ERRCHECK(m_system->update());
+}
+
+// Stop all channels in each group
+void NoiseMachine::stopAllGroups()
+{
+    for (int i = 0; i < THRESHOLD::MAX_GROUPS; i++) stopGroup(CHANNEL_GROUP(i));
+}
+
+// Stop a single group of noise
+void NoiseMachine::stopGroup(CHANNEL_GROUP group)
+{
+   m_group[group]->stop();
 }
 
 // Overdrive should be true if global sfx (ex: Button presses)
@@ -205,13 +217,18 @@ void NoiseMachine::initGroups(bool mute)
 int NoiseMachine::initSFX(LOAD_MODE loadMode)
 {
 	// Init all the sfx here
-    int count = 1; // Just for debugging purposes, won't crash anything
     ERRCHECK(createSound(loadMode, SFX::BOING, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the sfx
-	for (int i = 0; i < THRESHOLD::MAX_SFX; i++)
-		if (m_sfx[i])
-			m_sfx[i]->data->set3DMinMaxDistance((float)THRESHOLD::SFX_MIN_DIST, (float)THRESHOLD::SFX_MAX_DIST);
+    int count = 0;
+    for (int i = 0; i < THRESHOLD::MAX_SFX; i++)
+    {
+        if (m_sfx[i])
+        {
+            count++;
+            m_sfx[i]->data->set3DMinMaxDistance((float)THRESHOLD::SFX_MIN_DIST, (float)THRESHOLD::SFX_MAX_DIST);
+        }
+    }
 
     return count;
 }
@@ -220,15 +237,21 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
 int NoiseMachine::initMusic(LOAD_MODE loadMode)
 {
 	// Init all the music here
-    int count = 5; // Just for debugging purposes, won't crash anything
-	ERRCHECK(createSound(loadMode, MUSIC::MUSIC_MAIN_MENU, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 5) ? "stockman.mp3" : "notch.ogg", FMOD_2D));
-    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 5) ? "env.mp3" : "spooky.ogg", FMOD_2D));
-    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_CREDITS, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 100) ? "pranked.ogg" : "lab.mp3", FMOD_2D));
+	ERRCHECK(createSound(loadMode, MUSIC::MUSIC_MAIN_MENU, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 6) ? "stockman.mp3" : "notch.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 6) ? "env.mp3" : "spooky.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_CREDITS, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 100) ? "pranked.ogg" : "lab.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::AMBIENT_STORM, CHANNEL_GROUP::CHANNEL_AMBIENT, "ambient_snow.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
 
 	// Setting the thresholds of where the listener can hear the music
-	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)
-		if (m_music[i])
-			m_music[i]->data->set3DMinMaxDistance((float)THRESHOLD::MUSIC_MIN_DIST, (float)THRESHOLD::MUSIC_MAX_DIST);
+    int count = 0;
+    for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)
+    {
+        if (m_music[i])
+        {
+            count++;
+            m_music[i]->data->set3DMinMaxDistance((float)THRESHOLD::MUSIC_MIN_DIST, (float)THRESHOLD::MUSIC_MAX_DIST);
+        }
+    }
 
     return count;
 }
