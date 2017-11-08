@@ -20,5 +20,5 @@
 }
 {
 	"Name": "Windowed";
-	"Value": 1f;
+	"Value": 0f;
 }

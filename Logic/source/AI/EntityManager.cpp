@@ -37,7 +37,7 @@ EntityManager::EntityManager()
     m_aliveEnemies = 0;
     m_aiType = NORMAL_MODE;
 
-    allocateData();
+    //allocateData(); was here
     loadDebugCmds();
 
     m_waveManager.setName(FILE_ABOUT_WHALES);
@@ -363,4 +363,5 @@ void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &p
         entity.destroyBody();
     };
     AStar::singleton().generateNavigationMesh(physics);
+    allocateData();
 }

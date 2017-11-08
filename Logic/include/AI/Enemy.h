@@ -41,6 +41,9 @@ namespace Logic
 			ENEMY_TYPE m_enemyType;
 
 			Behavior *m_behavior;
+
+            //status
+            bool m_stunned;
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE };
 
@@ -54,6 +57,7 @@ namespace Logic
 			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
+            void onEffectEnd(int stacks, Effect const &effect);
 
 			Projectile* shoot(btVector3 dir, Graphics::ModelID id, float speed, float gravity, float scale);
 
