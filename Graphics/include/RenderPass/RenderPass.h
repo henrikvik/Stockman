@@ -7,6 +7,7 @@
 #include "../CommonState.h"
 #include "../Device.h"
 #include "../Utility/ConstantBuffer.h"
+#include "../Utility/TextureLoader.h"
 
 namespace Graphics
 {
@@ -57,9 +58,9 @@ namespace Graphics
 
             ID3D11ShaderResourceView * textures[4] =
             {
-                /*Diffuse */ material->getDiffuse(),
+                /*Diffuse */ *TextureLoader::get().getTexture(Resources::Textures::Grid), //material->getDiffuse(),
                 /*Normal  */ material->getNormals(),
-                /*Specular*/ material->getSpecular(),
+                /*Specular*/ *TextureLoader::get().getTexture(Resources::Textures::Grid),//material->getSpecular(),
                 /*Glow    */ material->getGlow()
             };
             Global::context->PSSetShaderResources(12, 4, textures);
