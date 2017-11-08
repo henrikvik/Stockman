@@ -9,8 +9,8 @@
 namespace Logic
 {
     class State;
-    class StateGame;
-    class StateMenu;
+    class StatePrimary;
+    class StateSecondary;
     struct StateBuffer;
     class StateMachine : public NonCopyable
     {
@@ -22,12 +22,12 @@ namespace Logic
         void render() const;
 
     private:
-        std::function<void(StateType stateType)>    SetGameState;
-        std::function<void(StateType stateType)>    SetMenuState;
-        std::function<StateGame*()>                 GetGameState;
-        std::function<StateMenu*()>                 GetMenuState;
-        StateGame*                                  m_gameState;
-        StateMenu*                                  m_menuState;
+        std::function<void(StateType stateType)>    SetPrimaryState;
+        std::function<void(StateType stateType)>    SetSecondaryState;
+        std::function<StatePrimary*()>              GetPrimaryState;
+        std::function<StateSecondary*()>            GetSecondaryState;
+        StatePrimary*                               m_statePrimary;
+        StateSecondary*                             m_stateSecondary;
         StateBuffer*                                m_stateBuffer;
     };
 }

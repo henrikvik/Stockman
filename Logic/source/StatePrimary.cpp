@@ -1,4 +1,4 @@
-#include <StateGame.h>
+#include <StatePrimary.h>
 #include <StateBuffer.h>
 #include <StateGameStart.h>
 #include <StateGamePlaying.h>
@@ -15,7 +15,7 @@
 
 using namespace Logic;
 
-StateGame::StateGame(StateBuffer* stateBuffer)
+StatePrimary::StatePrimary(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
     m_wantToSwitchToType = StateType::Nothing;
@@ -23,7 +23,7 @@ StateGame::StateGame(StateBuffer* stateBuffer)
     m_currentState = nullptr;
 }
 
-StateGame::~StateGame()
+StatePrimary::~StatePrimary()
 {
     if (m_currentState)
     {
@@ -32,14 +32,14 @@ StateGame::~StateGame()
     }
 }
 
-void StateGame::reset()
+void StatePrimary::reset()
 {
     if (m_currentState)
         m_currentState->reset();
 }
 
 // Update the logic inside state, also checking if we should load next state
-void StateGame::update(float deltaTime)
+void StatePrimary::update(float deltaTime)
 {
     if (m_currentState)
         m_currentState->update(deltaTime);
@@ -49,27 +49,27 @@ void StateGame::update(float deltaTime)
 }
 
 // Render everything in the currently active state
-void StateGame::render() const
+void StatePrimary::render() const
 {
     if (m_currentState)
         m_currentState->render();
 }
 
 // Queuing a new state
-void StateGame::queueState(StateType gameState)
+void StatePrimary::queueState(StateType state)
 {
-    if (m_currentStateType != gameState &&
-        m_wantToSwitchToType != gameState)
+    if (m_currentStateType != state &&
+        m_wantToSwitchToType != state)
     {
-        m_wantToSwitchToType = gameState;
+        m_wantToSwitchToType = state;
     }
 }
 
-void StateGame::loadState(StateType gameState)
+void StatePrimary::loadState(StateType state)
 {
     // Saving the new state to a variable
-    m_wantToSwitchToType = gameState;
-    m_currentStateType = gameState;
+    m_wantToSwitchToType = state;
+    m_currentStateType = state;
 
     // Clear previous state from memory 
     if (m_currentState)
@@ -79,7 +79,7 @@ void StateGame::loadState(StateType gameState)
     m_currentState = nullptr;
 
     // Load new state to memory
-    switch (gameState)
+    switch (state)
     {
     case StateType::Game_Start:
         m_currentState = new StateGameStart(m_stateBuffer);
@@ -97,12 +97,12 @@ void StateGame::loadState(StateType gameState)
     }
 
     // Saving new state in stateBuffer
-    m_stateBuffer->currentGameState = m_currentState;
+    m_stateBuffer->currentPrimaryState = m_currentState;
 
-    m_currentState->SetGameSwitchCallBack(SwitchParentGameState);
-    m_currentState->SetMenuSwitchCallBack(SwitchParentMenuState);
-    m_currentState->SetCurrentGameState(GetParentCurrentGameState);
-    m_currentState->SetCurrentMenuState(GetParentCurrentMenuState);
+    m_currentState->SetFuncPrimarySwitch(SwitchPrimaryState);
+    m_currentState->SetFuncSecondarySwitch(SwitchSecondaryState);
+    m_currentState->SetFuncGetCurrentPrimary(GetCurrentPrimaryState);
+    m_currentState->SetFuncGetCurrentSecondary(GetCurrentSecondaryState);
 
     RenderQueue::get().clearAllQueues();
 }

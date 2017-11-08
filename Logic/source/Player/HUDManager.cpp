@@ -27,35 +27,38 @@ void Logic::HUDManager::constructGUIElements()
 
 
     float crosshairSize = 50;
-    HUDElements.push_back(Sprite( Sprite::CENTER, Sprite::CENTER, 0, 0, crosshairSize, crosshairSize, Resources::Textures::crosshair, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
+    HUDElements.push_back(Sprite( Sprite::CENTER, Sprite::CENTER, 0, 0, crosshairSize, crosshairSize, Resources::Textures::Crosshair, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
 
     //crossbow
-    float x = 339.0f / 2048;
-    float y = 67.0f / 720;
-    float width = 285.0f / 2048;
-    float height = 276.0f / 720;
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -320, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, {x + width, y + height })));
-    
-    
-
+    float x = 3.0f / 1024;
+    float y = 517.0f / 1024;
+    float width = 503.0f / 1024;
+    float height = 503.0f / 1024;
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, {x + width, y + height })));
 
     //ice staff
 
-    x = 37.0f / 2048;
-    y = 63.0f / 720;
-    width = 284.0f / 2048;
-    height = 279.0f / 720;
+    x = 4.0f / 1024;
+    y = 5.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.0f / 1024;
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -240, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -170, 110, 100, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
 
     //sledegehammer
-    x = 639.0f / 2048;
-    y = 67.0f / 720;
-    width = 286.0f / 2048;
-    height = 275.0f / 720;
+    x = 519.0f / 1024;
+    y = 9.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.f / 1024;
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -160, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -132, -25, 75, 75, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
 
+    //creates the weapon mask
+    x = 518.0f / 1024;
+    y = 5189.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.f / 1024;
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
 
 
     //creates the difrent skill icons 
@@ -107,7 +110,7 @@ void Logic::HUDManager::constructGUIElements()
  
     for (size_t i = 0; i < PLAYER_STARTING_HP; i++)
     {
-        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50 + (i * 75), -50, 75, 75, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
+        //HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50 + (i * 75), -50, 75, 75, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
     }
 }
 
@@ -116,78 +119,78 @@ void Logic::HUDManager::updateGUIElemets()
 {
     //hp
 
-    if (HPBar.size() != info.hp && info.hp != 0)
-    {
-        HPBar.pop_back();
-    }
+    //if (HPBar.size() != info.hp && info.hp != 0)
+    //{
+    //    HPBar.pop_back();
+    //}
 
-    //crossbow
-    if (info.currentWeapon == 0)
-    {
-        HUDElements.at(CROSSBOW).setTexturePos(334.0f / 2048.f, 385.0f / 720.f, 620.0f / 2048.f, 672.0f / 720.f);
-    }
-    else {
-        
-        HUDElements.at(CROSSBOW).setTexturePos(339.0f / 2048.f, 66.0f / 720.f, 624.0f / 2048.f, 342.0f / 720.f);
-    }
-    //ice staff
-    if (info.currentWeapon == 1)
-    {
+    ////crossbow
+    //if (info.currentWeapon == 0)
+    //{
+    //    HUDElements.at(CROSSBOW).setTexturePos(334.0f / 2048.f, 385.0f / 720.f, 620.0f / 2048.f, 672.0f / 720.f);
+    //}
+    //else {
+    //    
+    //    HUDElements.at(CROSSBOW).setTexturePos(339.0f / 2048.f, 66.0f / 720.f, 624.0f / 2048.f, 342.0f / 720.f);
+    //}
+    ////ice staff
+    //if (info.currentWeapon == 1)
+    //{
 
-        HUDElements.at(ICESTAFF).setTexturePos(29.0f / 2048.f, 384.0f / 720.f, 319.0f / 2048.f, 673.0f / 720.f);
-    }
-    else
-    {
-        HUDElements.at(ICESTAFF).setTexturePos(37.0f / 2048.f, 63.0f / 720.f, 320.0f / 2048.f, 341.0f / 720.f);
-    }
+    //    HUDElements.at(ICESTAFF).setTexturePos(29.0f / 2048.f, 384.0f / 720.f, 319.0f / 2048.f, 673.0f / 720.f);
+    //}
+    //else
+    //{
+    //    HUDElements.at(ICESTAFF).setTexturePos(37.0f / 2048.f, 63.0f / 720.f, 320.0f / 2048.f, 341.0f / 720.f);
+    //}
 
-    //sledgehammer
-    if (info.currentWeapon == 2)
-    {
-        HUDElements.at(SLEDGEHAMMER).setTexturePos(635.0f / 2048.f, 387.0f / 720.f, 920.0f / 2048.f, 672.0f / 720.f);
-    }
-    else
-    {
-        HUDElements.at(SLEDGEHAMMER).setTexturePos(639.0f / 2048.f, 67.0f / 720.f, 924.0f / 2048.f, 341.0f / 720.f);
-    }
-
-
-    //skills
-    if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0)
-    {
-        
-        HUDElements.push_back(skillList.at(info.currentSkills[0]));
-
-        skillList.at(info.currentSkills[1]).moveScreenPos(80.0f, 0.0f);
-        skillList.at(3 + info.currentSkills[1]).moveScreenPos(80.0f, 0.0f);
-
-        HUDElements.push_back(skillList.at(info.currentSkills[1]));
+    ////sledgehammer
+    //if (info.currentWeapon == 2)
+    //{
+    //    HUDElements.at(SLEDGEHAMMER).setTexturePos(635.0f / 2048.f, 387.0f / 720.f, 920.0f / 2048.f, 672.0f / 720.f);
+    //}
+    //else
+    //{
+    //    HUDElements.at(SLEDGEHAMMER).setTexturePos(639.0f / 2048.f, 67.0f / 720.f, 924.0f / 2048.f, 341.0f / 720.f);
+    //}
 
 
-        skillChoosen = true;
-    }
-    else
-    {
-        if (1.0f - info.cd[0] < FLT_EPSILON && info.currentSkills[0] >= 0)
-        {
-            HUDElements.at(SKILL1) = skillList.at(3 + info.currentSkills[0]);
-        }
-        else if (info.currentSkills[0] >= 0)
-        {
-            HUDElements.at(SKILL1) = skillList.at(info.currentSkills[0]);
-        }
+    ////skills
+    //if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0)
+    //{
+    //    
+    //    HUDElements.push_back(skillList.at(info.currentSkills[0]));
+
+    //    skillList.at(info.currentSkills[1]).moveScreenPos(80.0f, 0.0f);
+    //    skillList.at(3 + info.currentSkills[1]).moveScreenPos(80.0f, 0.0f);
+
+    //    HUDElements.push_back(skillList.at(info.currentSkills[1]));
 
 
-        if (1.0f - info.cd[1] < FLT_EPSILON && info.currentSkills[1] >= 0)
-        {
-            HUDElements.at(SKILL2) = skillList.at(3 + info.currentSkills[1]);
-        }
-        else if (info.currentSkills[1] >= 0)
-        {
-            HUDElements.at(SKILL2) = skillList.at(info.currentSkills[1]);
-        }
+    //    skillChoosen = true;
+    //}
+    //else
+    //{
+    //    if (1.0f - info.cd[0] < FLT_EPSILON && info.currentSkills[0] >= 0)
+    //    {
+    //        HUDElements.at(SKILL1) = skillList.at(3 + info.currentSkills[0]);
+    //    }
+    //    else if (info.currentSkills[0] >= 0)
+    //    {
+    //        HUDElements.at(SKILL1) = skillList.at(info.currentSkills[0]);
+    //    }
 
-    }
+
+    //    if (1.0f - info.cd[1] < FLT_EPSILON && info.currentSkills[1] >= 0)
+    //    {
+    //        HUDElements.at(SKILL2) = skillList.at(3 + info.currentSkills[1]);
+    //    }
+    //    else if (info.currentSkills[1] >= 0)
+    //    {
+    //        HUDElements.at(SKILL2) = skillList.at(info.currentSkills[1]);
+    //    }
+
+    //}
 }
 
 

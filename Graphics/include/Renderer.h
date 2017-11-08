@@ -16,8 +16,7 @@
 #include "Menu.h"
 #include "HUD.h"
 #include "HybrisLoader\HybrisLoader.h"
-#include "SSAORenderer.h"
-#include "Fog.H"
+#include "Fog.h"
 #include "DoF.h"
 
 #include <SpriteBatch.h>
@@ -36,7 +35,8 @@ namespace Graphics
         void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, Camera * camera);
 
 
-        void render(Camera * camera);
+        void render() const;
+        void update(float deltaTime);
 		void fillHUDInfo(HUDInfo * info);
 
         void drawMenu(Graphics::MenuInfo * info);
@@ -67,7 +67,6 @@ namespace Graphics
         ShaderResource* fakeBackBuffer;
         ShaderResource* fakeBackBufferSwap;
     #pragma endregion
-        SSAORenderer ssaoRenderer;
         Sun sun;
         Shader fullscreenQuad;
         Shader forwardPlus;
@@ -99,7 +98,7 @@ namespace Graphics
 			float freeze;
 		} statusData;
 
-		void clear();
+		void clear() const;
 		void swapBackBuffers();
 		
 #pragma region Foliage

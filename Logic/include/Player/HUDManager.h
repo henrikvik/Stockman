@@ -56,8 +56,11 @@ namespace Logic
             CROSSBOW,
             ICESTAFF,
             SLEDGEHAMMER,
+            WEAPONMASK,
             SKILL1,
-            SKILL2
+            SKILL2,
+            SKILLMASK1,
+            SKILLMASK2
         };
 
         

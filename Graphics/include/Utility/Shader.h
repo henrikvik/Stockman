@@ -47,7 +47,7 @@ namespace Graphics
 		void recompile(ID3D11Device * device, LPCWSTR shaderPath);
 
 		//void setShader(ID3D11DeviceContext * deviceContext);
-		inline operator ID3D11ComputeShader*() { return computeShader; };
+		inline operator ID3D11ComputeShader*() const { return computeShader; };
 	private:
 		ID3D11ComputeShader * computeShader;
 	};

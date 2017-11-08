@@ -1,5 +1,5 @@
-#include "../ShaderConstants.hlsli"
-#include "../LightCalcInclude.hlsli"
+#include "ShaderConstants.hlsli"
+#include "LightCalcInclude.hlsli"
 
 Texture2D backBuffer : register(t4);
 Texture2D toMerge : register(t5);
@@ -25,7 +25,7 @@ float4 PS(VSOut input) : SV_Target0
     float3 color = backBuffer.Sample(Sampler, input.uv);
     float3 glowColor = toMerge.Sample(Sampler, input.uv);
 
-      
+    
 
     color = adjustSaturation(color, GLOW_ORIGINAL_SATURATION) * GLOW_ORIGINAL_INTENSITY;
     glowColor = adjustSaturation(glowColor, GLOW_SATURATION) * GLOW_INTENSITY;

@@ -46,7 +46,11 @@ namespace Resources
             GlowMipCombinder,
             LightGridCulling,
             SkyShader,
-            SpriteShader
+            SpriteShader,
+            SSAOComputeShader,
+            SSAOGaussianBlurHorizontal,
+            SSAOGaussianBlurVertical,
+            SSAOMerger
         };
         const std::map<Files, const char *> Paths =
         {
@@ -58,7 +62,11 @@ namespace Resources
             {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
             {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
-            {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"}
+            {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
+            {SSAOComputeShader, R"(..\Resources\Shaders\SSAOComputeShader.hlsl)"},
+            {SSAOGaussianBlurHorizontal, R"(..\Resources\Shaders\SSAOGaussianBlurHorizontal.hlsl)"},
+            {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
+            {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
     }
     namespace Textures
@@ -67,7 +75,7 @@ namespace Resources
         {
             Backbutton,
             Color_pick_icons,
-            crosshair,
+            Crosshair,
             gameOverMenuButtons,
             gameOverTexture,
             Gamesheet,
@@ -76,6 +84,7 @@ namespace Resources
             mainMenuButton,
             mainmenupicture,
             MissingTexture,
+            randomNormals,
             SettingsMenuButtons,
             Spellsheet,
             weaponsheet
@@ -84,7 +93,7 @@ namespace Resources
         {
             {Backbutton, R"(..\Resources\Textures\Backbutton.dds)"},
             {Color_pick_icons, R"(..\Resources\Textures\Color_pick_icons.dds)"},
-            {crosshair, R"(..\Resources\Textures\crosshair.png)"},
+            {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
@@ -93,6 +102,7 @@ namespace Resources
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
+            {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
