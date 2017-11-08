@@ -17,7 +17,6 @@
 #include "HUD.h"
 #include "HybrisLoader\HybrisLoader.h"
 #include "Fog.h"
-#include "DoF.h"
 
 #include <SpriteBatch.h>
 
@@ -73,23 +72,11 @@ namespace Graphics
 		Shader depthShader;
 
         D3D11_VIEWPORT viewPort;
-        
-		bool enableSSAO = true;
-		bool enableGlow = true;
-		bool enableFog = false;
-		bool enableDOF = false;
-        bool enableCoCWindow = false;
-        bool enableSnow = true;
-        bool enableHud = true;
 
         Menu menu;
         HUD hud;
-        DoF DoFRenderer;
 
         ConstantBuffer<float> bulletTimeBuffer;
-
-        //temp
-        ID3D11ShaderResourceView * glowTest;
 
 		//superTemp
 		struct StatusData
