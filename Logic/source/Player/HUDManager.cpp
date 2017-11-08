@@ -167,17 +167,17 @@ void Logic::HUDManager::updateTextElements()
         text.position = DirectX::SimpleMath::Vector2(1220, 592);
         text.font = Resources::Fonts::KG14;
 
-        HUDText.push_back(text);
+        HUDText.push_back(TextRenderInfo(text));
     }
 
-    if (info.cdInSeconds[0] > 0)
+    if (info.cdInSeconds[1] > 0)
     {
         text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
         text.text = std::to_wstring(info.cdInSeconds[1]).c_str();
         text.position = DirectX::SimpleMath::Vector2(1180, 592);
         text.font = Resources::Fonts::KG14;
 
-        HUDText.push_back(text);
+        HUDText.push_back(TextRenderInfo(text));
     }
     
 
