@@ -18,6 +18,7 @@ namespace HybrisLoader
         static HybrisLoader& get();
 
         Model * getModel(Resources::Models::Files fileId) { return models.at(fileId); }
+        void unloadAll();
     private:
         HybrisLoader();
         virtual ~HybrisLoader();

@@ -233,6 +233,7 @@ namespace Graphics
 
         delete Global::cStates;
         SAFE_RELEASE(Global::comparisonSampler);
+        SAFE_RELEASE(Global::mirrorSampler);
         SAFE_RELEASE(lightOpaqueGridUAV);
         SAFE_RELEASE(lightOpaqueGridSRV);
 
@@ -241,6 +242,8 @@ namespace Graphics
             delete renderPass;
         }
 
+        TextureLoader::get().unloadAll();
+        ModelLoader::get().unloadAll();
     }
 
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext, Camera * camera)

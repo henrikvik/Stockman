@@ -5,6 +5,16 @@
 
 namespace HybrisLoader
 {
+    void HybrisLoader::unloadAll()
+    {
+        for (auto & model : models)
+        {
+            delete model.second;
+        }
+
+        models.clear();
+    }
+
     HybrisLoader::HybrisLoader()
     {
         for (auto & path : Resources::Models::Paths)
@@ -22,11 +32,7 @@ namespace HybrisLoader
 
     HybrisLoader::~HybrisLoader()
     {
-
-        for (auto & model : models)
-        {
-            delete model.second;
-        }
+        unloadAll();
     }
 
     Hybris::File HybrisLoader::loadFile(const char * filePath)
