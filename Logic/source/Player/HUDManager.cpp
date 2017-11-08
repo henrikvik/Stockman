@@ -158,24 +158,30 @@ void Logic::HUDManager::constructGUIElements()
 void Logic::HUDManager::updateTextElements()
 {
     HUDText.clear();
+    liveText.clear();
+    int last = 0;
 
     TextRenderInfo text;
     if (info.cdInSeconds[0] > 0)
     {
         text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
-        text.text = std::to_wstring(info.cdInSeconds[0]).c_str();
-        text.position = DirectX::SimpleMath::Vector2(1220, 592);
-        text.font = Resources::Fonts::KG14;
+        liveText.push_back(std::to_wstring(info.cdInSeconds[0]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(1185, 530);
+        text.font = Resources::Fonts::KG18;
 
         HUDText.push_back(TextRenderInfo(text));
     }
-
+    
     if (info.cdInSeconds[1] > 0)
     {
         text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
-        text.text = std::to_wstring(info.cdInSeconds[1]).c_str();
-        text.position = DirectX::SimpleMath::Vector2(1180, 592);
-        text.font = Resources::Fonts::KG14;
+        liveText.push_back(std::to_wstring(info.cdInSeconds[1]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(1115, 530);
+        text.font = Resources::Fonts::KG18;
 
         HUDText.push_back(TextRenderInfo(text));
     }
@@ -317,17 +323,19 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
         
     else {
         info.cd[0] = 1.0f;
+        info.cdInSeconds[0] = 0;
     }
         
 
     const Skill* primary = player.getSkill(SkillManager::ID::PRIMARY);
     if (!primary->getCanUse()) {
         info.cd[1] = primary->getCooldown() / primary->getCooldownMax();
-        info.cdInSeconds[1] = (secondary->getCooldown() / 1000 ) + 1.f;
+        info.cdInSeconds[1] = (primary->getCooldown() / 1000 ) + 1.f;
     }
         
     else {
         info.cd[1] = 1.0f;
+        info.cdInSeconds[1] = 0;
     }
         
 
