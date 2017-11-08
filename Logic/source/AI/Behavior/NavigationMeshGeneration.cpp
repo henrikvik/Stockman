@@ -161,7 +161,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     printf("Buckleup buckero this will take a while! Generating Navigation Mesh...\n");
     for (auto &region : regions)
     {
-        printf("Loading.. %f\%\n", static_cast<float> (region.userIndex) / COUNTER * 100.f);
+        printf("Loading.. %f %%\n", static_cast<float> (region.userIndex) / COUNTER * 100.f);
 
         if (isInCollisionArea(region, physics, region.buddyIndex, region.userIndex))
         {
@@ -399,7 +399,7 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
     bool collision = false;
     btCollisionObject *obj;
 
-    cube.body = physics.createBody(cube.cube, 0);
+    btRigidBody *temp = physics.createBody(cube.cube, 0);
     for (int i = 0; i < physics.getNumCollisionObjects() && !collision; i++)
     {
         obj = physics.getCollisionObjectArray()[i];
@@ -425,9 +425,9 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
             }
             return 0;
         });
-        physics.contactPairTest(cube.body, obj, res);
+        physics.contactPairTest(temp, obj, res);
     }
-    removeRigidBody(cube.body, physics);
+    removeRigidBody(temp, physics);
     return collision;
 }
 
