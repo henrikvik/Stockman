@@ -43,7 +43,7 @@ void Logic::HUDManager::constructGUIElements()
     width = 503.0f / 1024;
     height = 503.0f / 1024;
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -170, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
 
     //sledegehammer
     x = 519.0f / 1024;
@@ -65,41 +65,41 @@ void Logic::HUDManager::constructGUIElements()
     //creates the difrent skill icons 
 
     //grappling 
-    x = 999.0f / 2048;
-    y = 46.0f / 720;
-    width = 300.0f / 2048;
-    height = 300.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    x = 519.0f / 1024;
+    y = 9.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.f / 1024;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
 
     //charge 
-    x = 1351.f / 2048;
-    y = 43.0f / 720;
-    width = 302.0f / 2048;
-    height = 302.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
-
+    x = 3.0f / 1024;
+    y = 517.0f / 1024;
+    width = 503.0f / 1024; 
+    height = 503.0f / 1024;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
+    
 
     //bullet time 
-    x = 1695.f / 2048;
-    y = 46.0f / 720;
-    width = 303.0f / 2048;
-    height = 303.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    x = 4.0f / 1024;
+    y = 5.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.0f / 1024;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
 
 
     //skill mask 1
-    x = 1000.0f / 2048;
-    y = 370.0f / 720;
-    width = 309.0f / 2048;
-    height = 309.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    x = 518.0f / 1024;
+    y = 519.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.f / 1024;
+    skillMasks.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
 
     //skill mask 2
-    x = 1354.f / 2048;
-    y = 369.0f / 720;
-    width = 307.0f / 2048;
-    height = 307.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    x = 518.0f / 1024;
+    y = 519.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.f / 1024;
+    skillMasks.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -130, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
 
 
     
@@ -165,7 +165,7 @@ void Logic::HUDManager::updateGUIElemets()
         HPBar.pop_back();
     }
 
-
+    //decideds active weapon 
     switch (info.currentWeapon)
     {
         
@@ -176,7 +176,7 @@ void Logic::HUDManager::updateGUIElemets()
         
     case 1:
         //icestaff
-        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -170, 110, 110);
+        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110);
         break;
         
     case 2:
@@ -188,42 +188,30 @@ void Logic::HUDManager::updateGUIElemets()
     }
 
 
-    ////skills
-    //if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0)
-    //{
-    //    
-    //    HUDElements.push_back(skillList.at(info.currentSkills[0]));
+    //skills
+    if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0)
+    {
+        
+        HUDElements.push_back(skillList.at(info.currentSkills[0]));
+        HUDElements.push_back(skillList.at(info.currentSkills[1]));
+        HUDElements.at(SKILL2).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -130, -148, 50, 50);
 
-    //    skillList.at(info.currentSkills[1]).moveScreenPos(80.0f, 0.0f);
-    //    skillList.at(3 + info.currentSkills[1]).moveScreenPos(80.0f, 0.0f);
+        skillChoosen = true;
+    }
+    else
+    {
+        if (info.currentSkills[0] >= 0 && 1.0f - info.cd[0] > FLT_EPSILON)
+        {
+            skillMasks.at(0).setTopYToProcent(1 - info.cd[0], 519.0f / 1024, 0.725000024f);
+        }
+        
 
-    //    HUDElements.push_back(skillList.at(info.currentSkills[1]));
+        if (info.currentSkills[1] >= 0 && 1.0f - info.cd[1] > FLT_EPSILON)
+        {
+            skillMasks.at(1).setTopYToProcent(1 - info.cd[1], 519.0f / 1024, 0.725000024f);
+        }
 
-
-    //    skillChoosen = true;
-    //}
-    //else
-    //{
-    //    if (1.0f - info.cd[0] < FLT_EPSILON && info.currentSkills[0] >= 0)
-    //    {
-    //        HUDElements.at(SKILL1) = skillList.at(3 + info.currentSkills[0]);
-    //    }
-    //    else if (info.currentSkills[0] >= 0)
-    //    {
-    //        HUDElements.at(SKILL1) = skillList.at(info.currentSkills[0]);
-    //    }
-
-
-    //    if (1.0f - info.cd[1] < FLT_EPSILON && info.currentSkills[1] >= 0)
-    //    {
-    //        HUDElements.at(SKILL2) = skillList.at(3 + info.currentSkills[1]);
-    //    }
-    //    else if (info.currentSkills[1] >= 0)
-    //    {
-    //        HUDElements.at(SKILL2) = skillList.at(info.currentSkills[1]);
-    //    }
-
-    //}
+    }
 }
 
 
@@ -304,7 +292,7 @@ void HUDManager::render() const
 
     //renders skill masks
     int i = 0;
-    for (auto &sprite : HUDElements)
+    for (auto &sprite : skillMasks)
     {
         if (1.0f - info.cd[i] > FLT_EPSILON)
         {

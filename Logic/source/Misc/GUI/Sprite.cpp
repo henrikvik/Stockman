@@ -165,6 +165,13 @@ void Sprite::setScreenPos(Points screenpoint, Points spritepoint, float x, float
     sprite.screenRect = FloatRect(x / WIN_WIDTH, y / WIN_HEIGHT, width / WIN_WIDTH, height / WIN_HEIGHT);
 }
 
+//used to make the cd mask grow with the cd left
+void Sprite::setTopYToProcent(float procent, float yMaxtexture, float ymaxPos)
+{
+    //sprite.textureRect.topLeft.y = yMaxtexture * procent;
+    //sprite.screenRect.topLeft.y = abs(sprite.screenRect.topLeft.y - sprite.screenRect.bottomRight.y) - ymaxPos * procent;
+}
+
 FloatRect Sprite::getScreenRect() const
 {
     FloatRect temp = sprite.screenRect;
