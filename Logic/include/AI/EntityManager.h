@@ -29,6 +29,9 @@ namespace Logic
 
 	class EntityManager
 	{
+    typedef std::function<Enemy* (btVector3 const &pos, float scale,
+        std::vector<int> const &effects, Physics &physics)> EnemyFactoryFunc;
+
     public:
         enum AIType {
             NORMAL_MODE, NO_AI_MODE, HARDCORE, DARK_SOULS
@@ -38,7 +41,7 @@ namespace Logic
 
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
-		std::vector<double> time;
+        std::unordered_map<EnemyType, EnemyFactoryFunc> m_enemyFactory;
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
@@ -54,7 +57,7 @@ namespace Logic
         std::function<void(Entity& entity)>                 DeleteBody;
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)>            SpawnProjectile;
-        std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
+        std::function<Enemy*(EnemyType type, btVector3 &pos,
             std::vector<int> effects)>                      SpawnEnemy;
         std::function<Trigger*(int id, btVector3 const &pos,
             std::vector<int> &effects)>                     SpawnTrigger;
@@ -63,6 +66,8 @@ namespace Logic
 		EntityManager(EntityManager const &entityManager) = delete;
 		EntityManager* operator=(EntityManager const &entityManager) = delete;
 		~EntityManager();
+
+        void registerCreationFunctions();
 
         // data handling
         void resetTriggers();
@@ -73,7 +78,6 @@ namespace Logic
 
 		void update(Player const &player, float deltaTime);
 		void updateEnemies(int index, Player const &player, float deltaTime);
-		// statis because threads will use this
 		void updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, int enemyIndex,
             int flockIndex, Player const &player, float deltaTime, bool swapOnNewIndex);
 
@@ -82,13 +86,12 @@ namespace Logic
 
         // spawning
 		void spawnWave(int waveId);
-		Enemy* spawnEnemy(ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
+		Enemy* spawnEnemy(EnemyType id, btVector3 const &pos, std::vector<int> const &effects,
 			Physics &physics, ProjectileManager *projectiles);
 		Trigger* spawnTrigger(int id, btVector3 const &pos, std::vector<int> &effects,
 			Physics &physics, ProjectileManager *projectiles);
 
         // sets & gets
-
         void setSpawnFunctions(ProjectileManager &projManager, Physics &physics);
 
 		size_t getNrOfAliveEnemies() const;

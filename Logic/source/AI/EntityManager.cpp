@@ -50,6 +50,38 @@ EntityManager::~EntityManager()
     delete m_threadHandler;
 }
 
+void EntityManager::registerCreationFunctions()
+{
+    m_enemyFactory[EnemyType::NECROMANCER] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
+    {
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } * btScalar(scale)));
+        btRigidBody *body = physics.createBody(cube, 5);
+        Enemy* enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, body, cube.getDimensionsRef());
+        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+
+        return enemy;
+    };
+    m_enemyFactory[EnemyType::NECROMANCER_MINION] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
+    {
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } *btScalar(scale)));
+        Enemy* enemy = newd EnemyChaser(physics.createBody(cube, 5));
+        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+
+        return enemy;
+    };
+    m_enemyFactory[EnemyType::BOSS_1] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
+    {
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } *btScalar(scale)));
+        btRigidBody *body = physics.createBody(cube, 5);
+        Enemy* enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, body, cube.getDimensionsRef());
+        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+
+        return enemy;
+    };
+}
+
 void EntityManager::resetTriggers()
 {
     m_triggerManager.reset();
@@ -210,53 +242,35 @@ void EntityManager::spawnWave(int waveId)
         pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
             generator.getRandomFloat(-85, 85) };
 
-        SpawnEnemy(static_cast<ENEMY_TYPE> (entity), pos, {});
+        SpawnEnemy(static_cast<EnemyType> (entity), pos, {});
     }
 
     for (WaveManager::Entity e : entities.triggers)
         SpawnTrigger(e.id, { e.x, e.y, e.z }, e.effects);
 
     for (WaveManager::Entity e : entities.bosses)
-        SpawnEnemy(static_cast<ENEMY_TYPE> (e.id), btVector3{ e.x, e.y, e.z }, e.effects);
+        SpawnEnemy(static_cast<EnemyType> (e.id), btVector3{ e.x, e.y, e.z }, e.effects);
 }
 
-Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
+Enemy* EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
     std::vector<int> const &effects, Physics &physics, ProjectileManager *projectiles)
 {
-    Enemy *enemy;
-    int index;
-    btRigidBody *testBody = physics.createBody(Cube({ pos }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 100, false, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/));
-    
-    // Restrict "tilting" over
-    testBody->setAngularFactor(btVector3(0, 1, 0));
-
-    switch (id)
+    try
     {
-    case ENEMY_TYPE::NECROMANCER:
-        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
-        break;
-    case ENEMY_TYPE::NECROMANCER_MINION:
-        enemy = newd EnemyChaser(testBody);
-        break;
-    default:
-        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
-		break;
+        Enemy *enemy = m_enemyFactory.at(id)(pos, 1.f, effects, physics);
+        enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
+
+        int index = AStar::singleton().getIndex(*enemy);
+        m_enemies[index == -1 ? 0 : index].push_back(enemy);
+        m_aliveEnemies++;
+
+        return enemy;
     }
-
-    enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/)), 2.f, { 0.f, 3.f, 0.f });
-
-    enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
-
-#ifdef DEBUG_PATH
-    enemy->getBehavior()->getPath().initDebugRendering(); // todo change to enemy->initDebugPath()
-#endif
-
-    index = AStar::singleton().getIndex(*enemy);
-    m_enemies[index == -1 ? 0 : index].push_back(enemy);
-    m_aliveEnemies++;
-
-    return enemy;
+    catch (std::exception& ex)
+    {
+        printf("Error when creating enemy, reason: %s\n", ex.what());
+    }
+    return nullptr;
 }
 
 Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
@@ -344,7 +358,7 @@ const WaveManager& EntityManager::getWaveManager() const
 
 void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &physics)
 {
-    SpawnEnemy = [&](ENEMY_TYPE type, btVector3 &pos, std::vector<int> effects) -> Enemy* {
+    SpawnEnemy = [&](EnemyType type, btVector3 &pos, std::vector<int> effects) -> Enemy* {
         return spawnEnemy(type, pos, effects, physics, &projManager);
     };
     SpawnProjectile = [&](ProjectileData& pData, btVector3 position,
