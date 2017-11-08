@@ -20,7 +20,7 @@ ProjectileManager::~ProjectileManager()
 
 }
 
-void Logic::ProjectileManager::init()
+void ProjectileManager::init()
 {
     for (size_t i = PROJECTILE_DEFAULT_COUNT; i--;)
     {
@@ -155,7 +155,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
     m_projectilesActive.pop_back();
 }
 
-void Logic::ProjectileManager::update(float deltaTime)
+void ProjectileManager::update(float deltaTime)
 {
 	for (size_t i = 0; i < m_projectilesActive.size(); i++)
 	{
@@ -169,7 +169,7 @@ void Logic::ProjectileManager::update(float deltaTime)
 	}
 }
 
-void Logic::ProjectileManager::render(Graphics::Renderer& renderer)
+void ProjectileManager::render(Graphics::Renderer& renderer)
 {
     for (Projectile* p : m_projectilesActive)
     {

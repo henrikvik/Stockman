@@ -24,7 +24,7 @@ Weapon::~Weapon()
 
 void Weapon::setSpawnFunctions(ProjectileManager &projManager)
 {
-    SpawnProjectile = [&](ProjectileData& pData, btVector3 position,
+    spawnProjectile = [&](ProjectileData& pData, btVector3 position,
         btVector3 forward, Entity& shooter) -> Projectile* {
         return projManager.addProjectile(pData, position, forward, shooter);
     };
@@ -32,13 +32,17 @@ void Weapon::setSpawnFunctions(ProjectileManager &projManager)
 
 void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
+    std::vector<Projectile*> firedProjectiles;
+    firedProjectiles.reserve(m_wInfo.projectileCount);
+
 	// Use weapon
 	if (m_wInfo.spreadH != 0 || m_wInfo.spreadV != 0)	// Spread
 	{
 		for (int i = m_wInfo.projectileCount; i--; )
 		{
 			btVector3 projectileDir = calcSpread(yaw, pitch);
-			SpawnProjectile(*m_projectileData, position, projectileDir, shooter);
+			Projectile* p = spawnProjectile(*m_projectileData, position, projectileDir, shooter);
+            firedProjectiles.push_back(p);
 		}
 	}
 	else									// No spread
@@ -49,9 +53,12 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
 			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
 			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
-			SpawnProjectile(*m_projectileData, position, projectileDir, shooter);
+			Projectile* p = spawnProjectile(*m_projectileData, position, projectileDir, shooter);
+            firedProjectiles.push_back(p);
 		}
 	}
+
+    onUse(firedProjectiles);
 }
 
 btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
@@ -68,6 +75,11 @@ btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 	projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
 
 	return projectileDir;
+}
+
+SpawnProjectile Logic::Weapon::getSpawnProjectileFunc()
+{
+    return spawnProjectile;
 }
 
 ProjectileData* Weapon::getProjectileData()

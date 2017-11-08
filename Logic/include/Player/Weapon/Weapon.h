@@ -15,6 +15,7 @@
 #include <d3d11.h>
 #include <SimpleMath.h>
 #include <btBulletCollisionCommon.h>
+#include <vector>
 
 namespace Logic
 {
@@ -22,6 +23,9 @@ namespace Logic
     class Projectile;
     class ProjectileManager;
     struct ProjectileData;
+
+    typedef std::function<Projectile*(ProjectileData& pData, btVector3 position,
+        btVector3 forward, Entity& shooter)> SpawnProjectile;
 
 	class Weapon
 	{
@@ -44,18 +48,19 @@ namespace Logic
 
 		btVector3 calcSpread(float yaw, float pitch);
 
-        std::function<Projectile*(ProjectileData& pData, btVector3 position,
-            btVector3 forward, Entity& shooter)> SpawnProjectile;
+        SpawnProjectile spawnProjectile;
 
 	public:
 		Weapon();
 		Weapon(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo);
-        ~Weapon();
+        virtual ~Weapon();
 
         void setSpawnFunctions(ProjectileManager &projManager);
 
 		void use(btVector3 position, float yaw, float pitch, Entity& shooter);
+        virtual void onUse(std::vector<Projectile*> &projectiles) {};
 
+        SpawnProjectile getSpawnProjectileFunc();
 		ProjectileData* getProjectileData();
 		float getAttackTimer();
         float getDelayTime();

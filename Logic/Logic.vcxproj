@@ -261,6 +261,7 @@
     <ClInclude Include="include\AI\Behavior\MeleeBehavior.h" />
     <ClInclude Include="include\AI\WaveTimeManager.h" />
     <ClInclude Include="include\Player\Weapon\WeaponModel.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponFreezeGrenade.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Physics\FuncContactResult.cpp" />
@@ -320,6 +321,7 @@
     <ClCompile Include="source\AI\WaveManager.cpp" />
     <ClCompile Include="source\AI\WaveTimeManager.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponModel.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />
