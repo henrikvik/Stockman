@@ -155,6 +155,34 @@ void Logic::HUDManager::constructGUIElements()
 
 }
 
+void Logic::HUDManager::updateTextElements()
+{
+    HUDText.clear();
+
+    TextRenderInfo text;
+    if (info.cdInSeconds[0] > 0)
+    {
+        text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+        text.text = std::to_wstring(info.cdInSeconds[0]).c_str();
+        text.position = DirectX::SimpleMath::Vector2(1220, 592);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(text);
+    }
+
+    if (info.cdInSeconds[0] > 0)
+    {
+        text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+        text.text = std::to_wstring(info.cdInSeconds[1]).c_str();
+        text.position = DirectX::SimpleMath::Vector2(1180, 592);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(text);
+    }
+    
+
+}
+
 //updates the active weapons and cd icons
 void Logic::HUDManager::updateGUIElemets()
 {
@@ -233,8 +261,12 @@ void Logic::HUDManager::updateGUIElemets()
 }
 
 
-void Logic::HUDManager::renderTextElements()
+void Logic::HUDManager::renderTextElements()const
 {
+    for (auto &text : HUDText)
+    {
+        RenderQueue::get().queue(&text);
+    }
 }
 
 HUDManager::HUDManager()
@@ -259,7 +291,6 @@ HUDManager::HUDManager()
 
 HUDManager::~HUDManager()
 {
-    //delete info;
 }
 
 void HUDManager::update(Player const &player, WaveTimeManager const &timeManager,
@@ -279,16 +310,26 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
 
     //skill cooldowns are inverted for some reason 
     const Skill* secondary = player.getSkill(SkillManager::ID::SECONDARY);
-    if (!secondary->getCanUse())
+    if (!secondary->getCanUse()) {
         info.cd[0] = secondary->getCooldown() / secondary->getCooldownMax();
-    else
+        info.cdInSeconds[0] = secondary->getCooldown() / 1000 + 1.f;
+    }
+        
+    else {
         info.cd[0] = 1.0f;
+    }
+        
 
     const Skill* primary = player.getSkill(SkillManager::ID::PRIMARY);
-    if (!primary->getCanUse())
+    if (!primary->getCanUse()) {
         info.cd[1] = primary->getCooldown() / primary->getCooldownMax();
-    else
+        info.cdInSeconds[1] = (secondary->getCooldown() / 1000 ) + 1.f;
+    }
+        
+    else {
         info.cd[1] = 1.0f;
+    }
+        
 
 
 
@@ -301,6 +342,7 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.currentSkills[1] = player.getCurrentSkill1();
 
     this->updateGUIElemets();
+    this->updateTextElements();
     
 }
 
@@ -332,13 +374,15 @@ void HUDManager::render() const
     {
         bar.render();
     }
-
+    renderTextElements();
 }
 
 void Logic::HUDManager::reset()
 {
     info.cd[0] = 1.0f;
     info.cd[1] = 1.0f;
+    info.cdInSeconds[0] = 0;
+    info.cdInSeconds[1] = 0;
     info.currentSkills[0] = -1;
     info.currentSkills[1] = -1;
     info.activeAmmo[0] = 0;
@@ -356,5 +400,6 @@ void Logic::HUDManager::reset()
     HPBar.clear();
     skillMasks.clear();
     staticElements.clear();
+    HUDText.clear();
     constructGUIElements();
 }
