@@ -105,11 +105,10 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 void Player::registerDebugCmds()
 {
     DebugWindow *win = DebugWindow::getInstance();
-    Settings* setting = Settings::getInstance();
     win->registerCommand("LOG_SET_MOUSE_SENSITIVITY", [&](std::vector<string> &para) -> std::string {
         try
         { // Boilerplate code bois
-            setting->setMouseSense(stof(para[0]));
+            Settings::getInstance()->setMouseSense(stof(para[0]));
         }
         catch (int)
         {

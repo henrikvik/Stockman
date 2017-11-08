@@ -33,5 +33,5 @@ private:
 
 	void initializeWindow();
 	HRESULT createSwapChain();
-	long long timer();
+	long long timer(); //A long long timer ago
 };

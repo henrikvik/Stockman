@@ -36,7 +36,8 @@ namespace Logic
 	class NavigationMeshGeneration 
 	{
         private: //var
-            float presicion;
+            float precision, maxLength, baseY;
+            static const int AI_UID;
 		public:
 			enum VertexOrder { CLOCKWISE, COUNTER_CLOCKWISE };
 
@@ -52,6 +53,7 @@ namespace Logic
 			NavigationMeshGeneration();
 			virtual ~NavigationMeshGeneration();
 
+            void registerSetCommands();
             void registerGenerationCommand(NavigationMesh &nav,
                 Physics &physics);
 
@@ -60,9 +62,9 @@ namespace Logic
                 std::vector<NavStaticObject> objects) const;
             void generateNavigationMesh(NavigationMesh &nav, Physics &physics);
 		private:
-            enum GrowthType
+            enum GrowthType // Clockwise
             {
-                X_PLUS, Z_MINUS, X_MINUS, Z_PLUS
+                X_PLUS, Z_PLUS, X_MINUS, Z_MINUS
             };
             enum CollisionReturn
             {
@@ -75,6 +77,7 @@ namespace Logic
             struct NavMeshCube
             {
                 bool done, collided[SIDES];
+                NavMeshCube *buddy;
                 btRigidBody *body;
                 Cube cube;
 
@@ -89,6 +92,8 @@ namespace Logic
                         collided[i] = false;
                 }
             };
+            Growth growth[SIDES];
+            btVector3 growthNormals[SIDES];
 
             DirectX::SimpleMath::Vector3 getNormal(
                 Triangle const &triangle,
@@ -99,7 +104,7 @@ namespace Logic
             NavigationMesh::Triangle toNavTriangle(Triangle const &tri);
             CollisionReturn handleCollision(btVector3 collisionPoint, NavMeshCube &cube,
                 StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape);
-            void split(std::vector<NavMeshCube> &region, NavMeshCube &cube,
+            void split(std::vector<NavMeshCube> &regions, Physics &physics, NavMeshCube &cube,
                 btVector3 const &cubeColPoint, btVector3 const &splitPlaneNormal);
             void removeRigidBody(btRigidBody *body, Physics &physics);
 
