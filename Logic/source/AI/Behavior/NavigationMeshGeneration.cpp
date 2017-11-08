@@ -10,11 +10,12 @@
 using namespace Logic;
 
 #define EPSILON 0.001f
-const int NavigationMeshGeneration::AI_UID = 1061923;
+const int NavigationMeshGeneration::AI_UID = 1061923, NavigationMeshGeneration::NO_ID = -5;
+int NavigationMeshGeneration::COUNTER = 0;
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
-    precision = .05f;
+    precision = 0.05f;
     maxLength = 150.f;
     baseY = 0.5f;
 
@@ -146,11 +147,11 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     Physics &physics)
 {
     std::vector<NavMeshCube> regions;
-    regions.reserve(100); // THIS IS A TEMPORARY SOLUTION TO PREVENT MEMORY FOK UPS; MAKE A REAL SOLUTION
-    regions.push_back(NavMeshCube(Cube({ 0.f, baseY, 0.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
-    regions.push_back(NavMeshCube(Cube({ -80.f, baseY, 80.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
-    regions.push_back(NavMeshCube(Cube({ 60.f, baseY, 140.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
-    regions.push_back(NavMeshCube(Cube({ 10.f, baseY, -100.f }, { 0.f, 0.f, 0.f }, { 0.2f, 0.2f, 0.2f })));
+    regions.reserve(1500); // THIS IS A TEMPORARY SOLUTION TO PREVENT MEMORY FOK UPS; MAKE A REAL SOLUTION
+
+    printf("Seeding area..");
+    seedArea({ -125.f, 0.6f, -135.f }, { 250.f, 0.5f, 300.f }, 50.f, regions, physics);
+    printf("Seeding finished!\n");
 
     btCollisionObject *obj;
     StaticObject *staticObj;
@@ -158,10 +159,16 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
 
     // first cube
     printf("Buckleup buckero this will take a while! Generating Navigation Mesh...\n");
-    for (size_t regionIndex = 0; regionIndex < regions.size() && regionIndex < 10; regionIndex++) // less than ten to prevent yikes
+    for (auto &region : regions)
     {
-        printf("Loading.. %d/%d\n", static_cast<int> (regionIndex + 1), static_cast<int> (regions.size()));
-        auto &region = regions[regionIndex];
+        printf("Loading.. %f %%\n", static_cast<float> (region.userIndex) / COUNTER * 100.f);
+
+        if (isInCollisionArea(region, physics, region.buddyIndex, region.userIndex))
+        {
+            region.remove = true;
+            continue;
+        }
+
         for (int side = 0; side < SIDES && !region.collided[side] && !region.done; side++)
         {
             distance = 0.f;
@@ -201,22 +208,15 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                                     switch (ret)
                                     {
                                     case ON_VERTEX:
-                                            split(regions, physics, region, cp.m_localPointA, growthNormals[(side + 1) % SIDES]); // clockwise rotation
+                                            split(regions, region, physics, cp.m_localPointA, growthNormals[(side + 1) % SIDES]); // clockwise rotation
                                         break;
                                     }
                                     if (ret != PROBLEMS_MY_DUDES) region.collided[side] = true;
                                 }
                             }
                         }
-                        else if (obj->getUserIndex() == AI_UID && &regions[obj->getUserIndex2()] != region.buddy &&
-                            obj->getUserIndex() != regionIndex)
+                        else if (obj->getUserIndex() == AI_UID && obj->getUserIndex2() != region.buddyIndex && obj->getUserIndex() != region.userIndex)
                         {
-                            // instead of skipping buddies, couple them or something
-                            if (distance == 0) {
-                                // remove it
-                                region.done = true;
-                            }
-
                             region.cube.setDimensions(region.cube.getDimensions() - growth[side].dimensionChange);
                             region.cube.setPos(region.cube.getPos() - growth[side].positionChange);
                             region.collided[side] = true;
@@ -229,19 +229,22 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
             }
         }
         region.done = true;
-        region.body->setUserIndex2(static_cast<int> (regionIndex));
+        region.body->setUserIndex2(region.userIndex);
         region.body->setUserIndex(AI_UID);
     }
 
     for (auto &region : regions)
     {
-        Cube &cube = region.cube;
-        std::pair<Triangle, Triangle> triPair = toTriangle(cube);
+        if (!region.remove)
+        {
+            Cube &cube = region.cube;
+            std::pair<Triangle, Triangle> triPair = toTriangle(cube);
 
-        removeRigidBody(region.body, physics);
+            removeRigidBody(region.body, physics);
 
-        nav.addTriangle(toNavTriangle(triPair.first));
-        nav.addTriangle(toNavTriangle(triPair.second));
+            nav.addTriangle(toNavTriangle(triPair.first));
+            nav.addTriangle(toNavTriangle(triPair.second));
+        }
     }
 
     nav.createNodesFromTriangles();
@@ -359,8 +362,8 @@ NavigationMeshGeneration::CollisionReturn NavigationMeshGeneration::handleCollis
     return PROBLEMS_MY_DUDES;
 }
 
-void NavigationMeshGeneration::split(std::vector<NavMeshCube> &regions, Physics &physics,
-    NavMeshCube &cube, btVector3 const &cubeColPoint, btVector3 const &splitPlaneNormal)
+void NavigationMeshGeneration::split(std::vector<NavMeshCube> &regions, NavMeshCube &cube,
+    Physics &physics, btVector3 const &cubeColPoint, btVector3 const &splitPlaneNormal)
 {
     NavMeshCube cube1(cube);
     std::pair<Cube, Cube> btCubes = cutCube(cubeColPoint, splitPlaneNormal, cube.cube);
@@ -368,22 +371,86 @@ void NavigationMeshGeneration::split(std::vector<NavMeshCube> &regions, Physics 
     cube1.cube = btCubes.first;
     cube.cube = btCubes.second;
 
-    cube1.buddy = &cube;
-    cube.buddy = &cube1;
+    cube1.loadIndex();
+
+    cube1.buddyIndex = cube.userIndex;
+    cube.buddyIndex = cube1.userIndex;
 
     cube1.body = physics.createBody(cube1.cube, 0.f);
     cube1.body->setUserIndex(AI_UID);
-    cube1.body->setUserIndex2(static_cast<int> (regions.size()));
+    cube1.body->setUserIndex2(cube1.userIndex);
     
     regions.push_back(cube1);
 }
 
-void NavigationMeshGeneration::removeRigidBody(btRigidBody *body, Physics &physics)
+void NavigationMeshGeneration::removeRigidBody(btRigidBody *&body, Physics &physics)
 {
     physics.removeRigidBody(body);
+
     delete body->getMotionState();
     delete body->getCollisionShape();
     delete body;
+
+    body = nullptr;
+}
+
+bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &physics, int filterId0, int filterId1)
+{
+    bool collision = false;
+    btCollisionObject *obj;
+
+    btRigidBody *temp = physics.createBody(cube.cube, 0);
+    for (int i = 0; i < physics.getNumCollisionObjects() && !collision; i++)
+    {
+        obj = physics.getCollisionObjectArray()[i];
+
+        FunContactResult res([&](btBroadphaseProxy* proxy) -> bool {
+            return true;
+        },
+            [&](btManifoldPoint& cp,
+                const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+        {
+            if (cp.getDistance() > precision) return 0;
+
+            if (StaticObject *staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
+            {
+                if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
+                    if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // only support box shapes at the moment (other shapes can be "converted" to boxes)
+                        collision = true;
+            }
+            else if (obj->getUserIndex() == AI_UID && obj->getUserIndex2() != filterId0 && obj->getUserIndex2() != filterId1)
+            {
+                collision = true;
+            }
+            return 0;
+        });
+        physics.contactPairTest(temp, obj, res);
+    }
+    removeRigidBody(temp, physics);
+    return collision;
+}
+
+void NavigationMeshGeneration::seedArea(btVector3 position, btVector3 fullDimension,
+    float part, std::vector<NavMeshCube>& regions, Physics &physics)
+{
+    float startZ = position.z();
+    btVector3 piece = fullDimension / part;
+
+    for (float partX = 0.f; partX < fullDimension.x(); partX += piece.x())
+    {
+        position.setZ(startZ);
+        position.setX(position.x() + piece.x());
+        for (float partZ = 0.f; partZ < fullDimension.z(); partZ += piece.z())
+        {
+            position.setZ(position.z() + piece.z());
+            NavMeshCube cube(Cube(position, { 0.f, 0.f, 0.f }, piece));
+            if (!isInCollisionArea(cube, physics))
+            {
+                regions.push_back(cube);
+            }
+        }
+    }
 }
 
 std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance)

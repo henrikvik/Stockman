@@ -166,6 +166,9 @@ void Player::registerDebugCmds()
 
         return "I need healing - Genji Shinimada ( + 1 Health given)";
     });
+    win->registerCommand("LOG_PRINT_POS", [&](std::vector<string> &para) -> std::string {
+        return "x: " + to_string((double) getPosition().x) + ", y: " + to_string((double) getPosition().y) + ", z: " + to_string((double) getPosition().z);
+    });
 }
 
 void Player::clear()
