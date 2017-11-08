@@ -1,19 +1,18 @@
 #include "DoFHeader.hlsli"
+struct VSOutput
+{
+    float4 pos : SV_POSITION;
+    float2 uv : TEXCOORD;
+};
 struct PSOutput
 {
     half4 color0 : SV_Target0;
     half4 color1 : SV_Target1;
 };
 
-struct VSOut
+VSOutput VS(uint id: SV_VertexID)
 {
-    float4 pos : SV_POSITION;
-    float2 uv : UV;
-};
-
-VSOut VS(uint id: SV_VertexID)
-{
-    VSOut vsout;
+    VSOutput vsout;
     
 	vsout.uv = float2((id << 1) & 2, id & 2);
 	vsout.pos = float4(vsout.uv * float2(2, -2) + float2(-1, 1), 0, 1);
@@ -25,7 +24,7 @@ VSOut VS(uint id: SV_VertexID)
 
 Texture2D CoCTexture : register(t0);
 
-PSOutput PS(VSOut input) : SV_Target0
+PSOutput PS(VSOutput input) : SV_Target0
 {
     PSOutput output = (PSOutput) 0.0f;
     half4 baseColor = CoCTexture.Sample(linearSampler, input.uv);

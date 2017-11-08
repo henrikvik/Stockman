@@ -43,7 +43,7 @@ void Logic::HUDManager::constructGUIElements()
     width = 503.0f / 1024;
     height = 503.0f / 1024;
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -170, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
 
     //sledegehammer
     x = 519.0f / 1024;
@@ -64,55 +64,95 @@ void Logic::HUDManager::constructGUIElements()
 
     //creates the difrent skill icons 
 
-    //grappling inactive
-    x = 999.0f / 2048;
-    y = 46.0f / 720;
-    width = 300.0f / 2048;
-    height = 300.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    //grappling 
+    x = 519.0f / 1024;
+    y = 9.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.f / 1024;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
 
-    //charge inacitve
-    x = 1351.f / 2048;
-    y = 43.0f / 720;
-    width = 302.0f / 2048;
-    height = 302.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    //charge 
+    x = 3.0f / 1024;
+    y = 517.0f / 1024;
+    width = 503.0f / 1024; 
+    height = 503.0f / 1024;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
+    
 
-
-    //bullet time inactive
-    x = 1695.f / 2048;
-    y = 46.0f / 720;
-    width = 303.0f / 2048;
-    height = 303.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
-
-
-    //grappling active
-    x = 1000.0f / 2048;
-    y = 370.0f / 720;
-    width = 309.0f / 2048;
-    height = 309.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
-
-    //charge active
-    x = 1354.f / 2048;
-    y = 369.0f / 720;
-    width = 307.0f / 2048;
-    height = 307.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    //bullet time 
+    x = 4.0f / 1024;
+    y = 5.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.0f / 1024;
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
 
 
-    //bullet time active
-    x = 1697.f / 2048;
-    y = 374.0f / 720;
-    width = 306.0f / 2048;
-    height = 306.0f / 720;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -80, -50, 75, 75, Resources::Textures::HUDIcons, FloatRect({ x, y }, { x + width, y + height })));
+    //skill mask 1
+    x = 518.0f / 1024;
+    y = 519.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.f / 1024;
+    skillMasks.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
+
+    //skill mask 2
+    x = 518.0f / 1024;
+    y = 519.0f / 1024;
+    width = 503.0f / 1024;
+    height = 503.f / 1024;
+    skillMasks.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -130, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
+
+
+    
  
+
+   
+
     for (size_t i = 0; i < PLAYER_STARTING_HP; i++)
     {
-        //HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 50 + (i * 75), -50, 75, 75, Resources::Textures::HPBars, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
+        x = 26.f / 1024;
+        y = 258.0f / 1024;
+        width = 311.0f / 1024;
+        height = 171.0f / 1024;
+        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, {x + width, y + height })));
+
+        x = 26.f / 1024;
+        y = 454.0f / 1024;
+        width = 311.0f / 1024;
+        height = 171.0f / 1024;
+        staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
     }
+
+
+    //static hud elemets
+
+    //shield thing by hp
+    x = 374.f / 1024;
+    y = 457.0f / 1024;
+    width = 162.0f / 1024;
+    height = 268.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 45, -60, 50, 70, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+    //score banner
+    x = 26.f / 1024;
+    y = 23.0f / 1024;
+    width = 364.0f / 1024;
+    height = 85.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 60, 15, 170, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+    //wave counter
+    x = 26.f / 1024;
+    y = 143.0f / 1024;
+    width = 508.0f / 1024;
+    height = 85.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 505, 15, 200, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+    //wave timer
+    x = 559.f / 1024;
+    y = 143.0f / 1024;
+    width = 161.0f / 1024;
+    height = 85.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 720, 15, 70, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
 }
 
 //updates the active weapons and cd icons
@@ -120,12 +160,12 @@ void Logic::HUDManager::updateGUIElemets()
 {
     //hp
 
-    //if (HPBar.size() != info.hp && info.hp != 0)
-    //{
-    //    HPBar.pop_back();
-    //}
+    if (HPBar.size() != info.hp && info.hp != 0)
+    {
+        HPBar.pop_back();
+    }
 
-
+    //decideds active weapon 
     switch (info.currentWeapon)
     {
         
@@ -136,7 +176,7 @@ void Logic::HUDManager::updateGUIElemets()
         
     case 1:
         //icestaff
-        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -170, 110, 110);
+        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110);
         break;
         
     case 2:
@@ -148,44 +188,54 @@ void Logic::HUDManager::updateGUIElemets()
     }
 
 
-    ////skills
-    //if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0)
-    //{
-    //    
-    //    HUDElements.push_back(skillList.at(info.currentSkills[0]));
+    //skills
+    if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0)
+    {
+        
+        HUDElements.push_back(skillList.at(info.currentSkills[0]));
+        HUDElements.push_back(skillList.at(info.currentSkills[1]));
+        HUDElements.at(SKILL2).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -130, -148, 50, 50);
 
-    //    skillList.at(info.currentSkills[1]).moveScreenPos(80.0f, 0.0f);
-    //    skillList.at(3 + info.currentSkills[1]).moveScreenPos(80.0f, 0.0f);
+        skillChoosen = true;
+    }
+    else
+    {
+        if (info.currentSkills[0] >= 0 && 1.0f - info.cd[0] > FLT_EPSILON)
+        {
+            //skillMasks.at(0).setTopYToProcent(1.0f - info.cd[0], 519.0f / 1024, 0.725000024f, 0.794444442f);
+        }
+        else
+        {
+            skillMasks.at(0).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50);
+            float x = 518.0f / 1024;
+            float y = 519.0f / 1024;
+            float width = 503.0f / 1024;
+            float height = 503.f / 1024;
+            skillMasks.at(0).setTexturePos(x, y, x + width, y + height);
+        }
+        
 
-    //    HUDElements.push_back(skillList.at(info.currentSkills[1]));
+        if (info.currentSkills[1] >= 0 && 1.0f - info.cd[1] > FLT_EPSILON)
+        {
+            //skillMasks.at(1).setTopYToProcent(1.0f , 519.0f / 1024, 0.725000024f, 0.794444442f);
+        }
+        else
+        {
+            skillMasks.at(1).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -130, -148, 50, 50);
+            float x = 518.0f / 1024;
+            float y = 519.0f / 1024;
+            float width = 503.0f / 1024;
+            float height = 503.f / 1024;
+            skillMasks.at(1).setTexturePos(x, y, x + width, y + height);
+        }
 
-
-    //    skillChoosen = true;
-    //}
-    //else
-    //{
-    //    if (1.0f - info.cd[0] < FLT_EPSILON && info.currentSkills[0] >= 0)
-    //    {
-    //        HUDElements.at(SKILL1) = skillList.at(3 + info.currentSkills[0]);
-    //    }
-    //    else if (info.currentSkills[0] >= 0)
-    //    {
-    //        HUDElements.at(SKILL1) = skillList.at(info.currentSkills[0]);
-    //    }
-
-
-    //    if (1.0f - info.cd[1] < FLT_EPSILON && info.currentSkills[1] >= 0)
-    //    {
-    //        HUDElements.at(SKILL2) = skillList.at(3 + info.currentSkills[1]);
-    //    }
-    //    else if (info.currentSkills[1] >= 0)
-    //    {
-    //        HUDElements.at(SKILL2) = skillList.at(info.currentSkills[1]);
-    //    }
-
-    //}
+    }
 }
 
+
+void Logic::HUDManager::renderTextElements()
+{
+}
 
 HUDManager::HUDManager()
 {
@@ -262,11 +312,27 @@ void HUDManager::render() const
         sprite.render();
     }
 
-    //render hp bars
+    //renders skill masks
+    int i = 0;
+    for (auto &sprite : skillMasks)
+    {
+        if (1.0f - info.cd[i] > FLT_EPSILON)
+        {
+            sprite.render();
+        }
+        i++;
+    }
+
+    //render hp bars   
+    for (auto &bar : staticElements)
+    {
+        bar.render();
+    }
     for (auto &bar : HPBar)
     {
         bar.render();
     }
+
 }
 
 void Logic::HUDManager::reset()
@@ -288,5 +354,7 @@ void Logic::HUDManager::reset()
     HUDElements.clear();
     skillList.clear();
     HPBar.clear();
+    skillMasks.clear();
+    staticElements.clear();
     constructGUIElements();
 }
