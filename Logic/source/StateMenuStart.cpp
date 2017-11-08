@@ -40,8 +40,8 @@ void StateMenuStart::update(float deltaTime)
     m_menu->update(deltaTime);
     if (m_menu->currentState() == gameStateSkillPick)
     {
-        SwitchParentMenuState(StateType::Menu_Playing);
-        SwitchParentGameState(StateType::Game_Playing);
+        SwitchSecondaryState(StateType::Menu_Playing);
+        SwitchPrimaryState(StateType::Game_Playing);
     }
 }
 

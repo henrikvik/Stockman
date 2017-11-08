@@ -18,9 +18,9 @@ namespace Logic
     class State;
     struct StateBuffer
     {
-        StateBuffer() : currentGameState(nullptr), currentMenuState(nullptr) { }
-        State* currentGameState;
-        State* currentMenuState;
+        StateBuffer() : currentPrimaryState(nullptr), currentSecondaryState(nullptr) { }
+        State* currentPrimaryState;
+        State* currentSecondaryState;
     };
 }
 

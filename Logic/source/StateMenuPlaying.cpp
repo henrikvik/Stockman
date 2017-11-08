@@ -1,6 +1,6 @@
 #include <StateMenuPlaying.h>
 #include <StateBuffer.h>
-#include <StateGame.h>
+#include <StatePrimary.h>
 #include <StateGamePlaying.h>
 
 #include <Engine\Typing.h>
@@ -41,7 +41,7 @@ void StateMenuPlaying::update(float deltaTime)
             std::pair<int, int>* selectedSkills = m_menu->getSkillPick();
             if (selectedSkills->first != -1 && selectedSkills->second != -1)
             {
-                StateGamePlaying* game = dynamic_cast<StateGamePlaying*>(m_stateBuffer->currentGameState);
+                StateGamePlaying* game = dynamic_cast<StateGamePlaying*>(m_stateBuffer->currentPrimaryState);
                 if (game)
                 {
                     game->getPlayer()->setCurrentSkills(selectedSkills->first, selectedSkills->second);
