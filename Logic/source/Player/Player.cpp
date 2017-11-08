@@ -48,7 +48,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
 
-	btCapsuleShape* playerShape = new btCapsuleShape(0.5f, 2.f);
+	btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_RADIUS, PLAYER_SIZE_HEIGHT);
 	btPairCachingGhostObject* ghostObject = m_physPtr->createPlayer(playerShape, startPosition);
 	ghostObject->setUserPointer(this);
 
@@ -57,7 +57,10 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
     m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
     m_charController->setFallSpeed(1.f);
 	m_physPtr->addAction(m_charController);
+    m_charController->warp(startPosition);
     m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
+
+    
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
