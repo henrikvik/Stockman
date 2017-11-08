@@ -43,7 +43,7 @@ void Logic::HUDManager::constructGUIElements()
     width = 503.0f / 1024;
     height = 503.0f / 1024;
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -170, 110, 100, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -170, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
 
     //sledegehammer
     x = 519.0f / 1024;
@@ -55,10 +55,11 @@ void Logic::HUDManager::constructGUIElements()
 
     //creates the weapon mask
     x = 518.0f / 1024;
-    y = 5189.0f / 1024;
+    y = 519.0f / 1024;
     width = 503.0f / 1024;
     height = 503.f / 1024;
     HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
+    
 
 
     //creates the difrent skill icons 
@@ -124,35 +125,27 @@ void Logic::HUDManager::updateGUIElemets()
     //    HPBar.pop_back();
     //}
 
-    ////crossbow
-    //if (info.currentWeapon == 0)
-    //{
-    //    HUDElements.at(CROSSBOW).setTexturePos(334.0f / 2048.f, 385.0f / 720.f, 620.0f / 2048.f, 672.0f / 720.f);
-    //}
-    //else {
-    //    
-    //    HUDElements.at(CROSSBOW).setTexturePos(339.0f / 2048.f, 66.0f / 720.f, 624.0f / 2048.f, 342.0f / 720.f);
-    //}
-    ////ice staff
-    //if (info.currentWeapon == 1)
-    //{
 
-    //    HUDElements.at(ICESTAFF).setTexturePos(29.0f / 2048.f, 384.0f / 720.f, 319.0f / 2048.f, 673.0f / 720.f);
-    //}
-    //else
-    //{
-    //    HUDElements.at(ICESTAFF).setTexturePos(37.0f / 2048.f, 63.0f / 720.f, 320.0f / 2048.f, 341.0f / 720.f);
-    //}
-
-    ////sledgehammer
-    //if (info.currentWeapon == 2)
-    //{
-    //    HUDElements.at(SLEDGEHAMMER).setTexturePos(635.0f / 2048.f, 387.0f / 720.f, 920.0f / 2048.f, 672.0f / 720.f);
-    //}
-    //else
-    //{
-    //    HUDElements.at(SLEDGEHAMMER).setTexturePos(639.0f / 2048.f, 67.0f / 720.f, 924.0f / 2048.f, 341.0f / 720.f);
-    //}
+    switch (info.currentWeapon)
+    {
+        
+    case 0:
+        //crossbow
+        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110);
+        break;
+        
+    case 1:
+        //icestaff
+        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -170, 110, 110);
+        break;
+        
+    case 2:
+        //sledgehammer
+        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -132, -25, 75, 75);
+        break;
+    default:
+        break;
+    }
 
 
     ////skills
