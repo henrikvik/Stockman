@@ -10,10 +10,13 @@ namespace Logic
     {
     public:
         WeaponMeleeParry();
+        WeaponMeleeParry(ProjectileManager * projectileManager, ProjectileData & projectileData, WeaponInfo wInfo, float knockbackPower);
         virtual ~WeaponMeleeParry();
 
     private:
         void onUse(std::vector<Projectile*> &projectiles);
+
+        float m_knockbackPower;
     };
 }
 

@@ -1,9 +1,13 @@
 #include "Player/Weapon/WeaponManager.h"
 #include <Player\Weapon\Weapon.h>
 #include <Player\Weapon\WeaponFreezeGrenade.h>
+#include <Player\Weapon\WeaponMeleeParry.h>
+
 #include <Player\Player.h>
+
 #include <Graphics\include\Structs.h>
 #include <Projectile\ProjectileStruct.h>
+
 #include <Player\Weapon\AmmoContainer.h>
 #include <Player\Weapon\WeaponModel.h>
 
@@ -122,14 +126,14 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
         // Ice
         newd WeaponLoadout{
         /* Primary */       newd Weapon(projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750.f, 0.f, 1 }),
-        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(0, 1, 1, 50, 5, 5000, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeFreezeGrenade, true), Weapon::WeaponInfo{ 3, 1, 0, 0, 50.f, 0.f, 0 }, ProjectileData(2, 0.2f, 1, 30, 0, 200, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeNormal, true), 8),
+        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(0, 1, 1, 60, 5, 5000, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeFreezeGrenade, true), Weapon::WeaponInfo{ 3, 1, 0, 0, 50.f, 0.f, 0 }, ProjectileData(2, 0.2f, 1, 30, 0, 200, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeNormal, true), 8),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 200, 100, 100, 1, 25, 1500 }),
         /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(-0.6f, -6.6f, 0.3f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.5f, -3.6f, 5.2f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), 1000.f }) },
 
         // Sledge/Melee
         newd WeaponLoadout{ 
         /* Primary */       newd Weapon(projectileManager, ProjectileData(3, 1.f, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 4, 1, 0, 0, 100.f, 200.f, 0 }),
-        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(0, 2.f, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, false), Weapon::WeaponInfo{ 5, 1, 0, 0, 100.f, 0.f, 0 }),
+        /* Secondary*/      newd WeaponMeleeParry(projectileManager, ProjectileData(0, 2.f, 1, 0, 0, 200, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, true), Weapon::WeaponInfo{ 5, 1, 0, 0, 100.f, 0.f, 0 }, 10.f),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0 }),
         /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(-1.7f, 0.2f, 3.2f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(1.3f, -0.2f, 2.f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), 0.f }) }
     };

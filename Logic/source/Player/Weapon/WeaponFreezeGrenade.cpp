@@ -1,4 +1,4 @@
-#include "..\..\..\include\Player\Weapon\WeaponFreezeGrenade.h"
+#include <Player\Weapon\WeaponFreezeGrenade.h>
 #include <Projectile\Projectile.h>
 #include <Projectile\ProjectileStruct.h>
 

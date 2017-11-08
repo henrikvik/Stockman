@@ -262,7 +262,7 @@
     <ClInclude Include="include\AI\WaveTimeManager.h" />
     <ClInclude Include="include\Player\Weapon\WeaponModel.h" />
     <ClInclude Include="include\Player\Weapon\WeaponFreezeGrenade.h" />
-    <ClInclude Include="WeaponMeleeParry.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Physics\FuncContactResult.cpp" />
@@ -323,7 +323,7 @@
     <ClCompile Include="source\AI\WaveTimeManager.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponModel.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />
-    <ClCompile Include="WeaponMeleeParry.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

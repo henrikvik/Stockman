@@ -120,6 +120,10 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
             {
                 m_remove = false;
             }
+            else if (!dynamic_cast<Enemy*> (&other) && m_pData.type == ProjectileTypeMeleeParry)
+            {
+                callback = false;
+            }
             else
             {
                 m_remove = true;
@@ -168,6 +172,8 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 
         if (callback && hasCallback(ON_COLLISION))
         {
+            if (m_pData.type == ProjectileTypeMeleeParry)
+                int i = 0;
             CallbackData data;
             data.caller = dynamic_cast<Entity*>(this);
             data.dataPtr = reinterpret_cast<std::intptr_t> (&other);
