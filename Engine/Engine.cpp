@@ -307,6 +307,7 @@ int Engine::run()
 
     DebugWindow * debug = DebugWindow::getInstance();
 
+    Graphics::Debug::Initialize(mDevice);
 
 	while (running)
 	{
@@ -367,6 +368,9 @@ int Engine::run()
 		game->render();
 		PROFILE_END();
 
+        static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
+        Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);
+        
         PROFILE_BEGINC("Renderer::update()", EventColor::Yellow);
         renderer->update(deltaTime / 1000.f);
         PROFILE_END();
@@ -383,7 +387,7 @@ int Engine::run()
 			g_Profiler->render();
 		}
 
-        //Graphics::Debug::Render(Global::mainCamera);
+        Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
 		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();

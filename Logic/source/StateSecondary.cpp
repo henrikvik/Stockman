@@ -1,4 +1,4 @@
-#include <StateMenu.h>
+#include <StateSecondary.h>
 #include <StateBuffer.h>
 #include <StateMenuStart.h>
 #include <StateMenuPlaying.h>
@@ -15,7 +15,7 @@
 
 using namespace Logic;
 
-StateMenu::StateMenu(StateBuffer* stateBuffer)
+StateSecondary::StateSecondary(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
     m_wantToSwitchToType = StateType::Nothing;
@@ -23,7 +23,7 @@ StateMenu::StateMenu(StateBuffer* stateBuffer)
     m_currentState = nullptr;
 }
 
-StateMenu::~StateMenu()
+StateSecondary::~StateSecondary()
 {
     if (m_currentState)
     {
@@ -32,14 +32,14 @@ StateMenu::~StateMenu()
     }
 }
 
-void StateMenu::reset()
+void StateSecondary::reset()
 {
     if (m_currentState)
         m_currentState->reset();
 }
 
 // Update the logic inside the current state and checking if we should load a new state
-void StateMenu::update(float deltaTime)
+void StateSecondary::update(float deltaTime)
 {
     if (m_currentState)
         m_currentState->update(deltaTime);
@@ -49,39 +49,46 @@ void StateMenu::update(float deltaTime)
 }
 
 // Render the current menu state
-void StateMenu::render() const
+void StateSecondary::render() const
 {
     if (m_currentState)
         m_currentState->render();
 }
 
 // Queing the state to be changed on the next update
-void StateMenu::queueState(StateType menuState)
+void StateSecondary::queueState(StateType state)
 {
-    if (m_currentStateType != menuState && 
-        m_wantToSwitchToType != menuState)
+    if (m_currentStateType != state &&
+        m_wantToSwitchToType != state)
     {
-        m_wantToSwitchToType = menuState;
+        m_wantToSwitchToType = state;
     }
 }
 
-void StateMenu::loadState(StateType menuState)
+void StateSecondary::loadState(StateType state)
 {
     // Saving the new state
-    m_wantToSwitchToType = menuState;
-    m_currentStateType = menuState;
+    m_wantToSwitchToType = state;
+    m_currentStateType = state;
 
     // Clear previous state from memory 
-    delete m_currentState;
+    if (m_currentState)
+        delete m_currentState;
+
+    // Reset currentstate as nullptr
     m_currentState = nullptr;
 
-    // Load new state to memory
-    switch (menuState)
+    // Inactive State
+    if (m_currentStateType == StateType::Nothing)
     {
-    case StateType::Menu_Start:
-        m_currentState = new StateMenuStart(m_stateBuffer);
-        break;
-    case StateType::Menu_Playing:
+        printf("*~ Inactivated Secondary State.\n");
+        return;
+    }
+
+    // Load new state to memory
+    switch (state)
+    {
+    case StateType::State_InGame_Menu:
         m_currentState = new StateMenuPlaying(m_stateBuffer);
         break;
     }
@@ -89,17 +96,17 @@ void StateMenu::loadState(StateType menuState)
     // Error check
     if (!m_currentState)
     {
-        printf("This state does not exist or is not valid in this type of state-manager.");
+        printf("*~ This state does not exist or is not valid in the secondary state.");
         return;
     }
 
     // Saving new state in stateBuffer
-    m_stateBuffer->currentMenuState = m_currentState;
+    m_stateBuffer->currentSecondaryState = m_currentState;
 
-    m_currentState->SetGameSwitchCallBack(SwitchParentGameState);
-    m_currentState->SetMenuSwitchCallBack(SwitchParentMenuState);
-    m_currentState->SetCurrentGameState(GetParentCurrentGameState);
-    m_currentState->SetCurrentMenuState(GetParentCurrentMenuState);
+    m_currentState->SetFuncPrimarySwitch(SwitchPrimaryState);
+    m_currentState->SetFuncSecondarySwitch(SwitchSecondaryState);
+    m_currentState->SetFuncGetCurrentPrimary(GetCurrentPrimaryState);
+    m_currentState->SetFuncGetCurrentSecondary(GetCurrentSecondaryState);
 
     RenderQueue::get().clearAllQueues();
 }

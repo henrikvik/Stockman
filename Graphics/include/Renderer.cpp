@@ -20,6 +20,7 @@
 #include "RenderPass\ShadowRenderPass.h"
 #include "RenderPass\SkyBoxRenderPass.h"
 #include "RenderPass\GlowRenderPass.h"
+#include "RenderPass\ParticleRenderPass.h"
 #include "RenderPass\SSAORenderPass.h"
 #include "Utility\DebugDraw.h"
 
@@ -156,6 +157,7 @@ namespace Graphics
 
         renderPasses =
         {
+            newd ParticleDepthRenderPass(depthStencil),
             newd DepthRenderPass({}, {staticInstanceBuffer}, {*Global::mainCamera->getBuffer()}, depthStencil),
             newd ShadowRenderPass({}, { staticInstanceBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
             newd LightCullRenderPass(
@@ -194,6 +196,7 @@ namespace Graphics
                 },
                 depthStencil
             ),
+            newd ParticleRenderPass({ *fakeBackBuffer }, depthStencil),
             newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
             newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
             newd GUIRenderPass({backBuffer}),
@@ -279,6 +282,8 @@ namespace Graphics
 
         writeInstanceBuffers();
         sun.update();
+
+        FXSystem->update(Global::context, Global::mainCamera, deltaTime);
    
         for (auto & renderPass : renderPasses)
         {

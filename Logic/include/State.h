@@ -12,8 +12,8 @@ namespace Graphics { class Renderer; }
 namespace Logic
 {
     class StateMachine;
-    class StateGame;
-    class StateMenu;
+    class StatePrimary;
+    class StateSecondary;
     struct StateBuffer;
     class State : public NonCopyable
     {
@@ -24,17 +24,17 @@ namespace Logic
         virtual void update(float deltaTime) = 0;
         virtual void render() const = 0;
 
-        inline void SetGameSwitchCallBack(std::function<void(StateType)> gameSwitch)  { SwitchParentGameState       = gameSwitch;  }
-        inline void SetMenuSwitchCallBack(std::function<void(StateType)> menuSwitch)  { SwitchParentMenuState       = menuSwitch;  }
-        inline void SetCurrentGameState(std::function<StateGame*()> gameState)        { GetParentCurrentGameState   = gameState;   }
-        inline void SetCurrentMenuState(std::function<StateMenu*()> menuState)        { GetParentCurrentMenuState   = menuState;   }
+        inline void SetFuncPrimarySwitch(std::function<void(StateType)> gameSwitch)         { SwitchPrimaryState       = gameSwitch;  }
+        inline void SetFuncSecondarySwitch(std::function<void(StateType)> menuSwitch)       { SwitchSecondaryState     = menuSwitch;  }
+        inline void SetFuncGetCurrentPrimary(std::function<StatePrimary*()> gameState)      { GetCurrentPrimaryState   = gameState;   }
+        inline void SetFuncGetCurrentSecondary(std::function<StateSecondary*()> menuState)  { GetCurrentSecondaryState = menuState;   }
 
     protected:
         StateBuffer* m_stateBuffer;
-        std::function<void(StateType)> SwitchParentMenuState;
-        std::function<void(StateType)> SwitchParentGameState;
-        std::function<StateGame*()> GetParentCurrentGameState;
-        std::function<StateMenu*()> GetParentCurrentMenuState;
+        std::function<void(StateType)> SwitchSecondaryState;
+        std::function<void(StateType)> SwitchPrimaryState;
+        std::function<StatePrimary*()> GetCurrentPrimaryState;
+        std::function<StateSecondary*()> GetCurrentSecondaryState;
     };
 }
 

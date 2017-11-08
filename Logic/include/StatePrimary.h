@@ -1,5 +1,5 @@
-#ifndef STATEMENU_H
-#define STATEMENU_H
+#ifndef STATEPRIMARY_H
+#define STATEPRIMARY_H
 
 // C++ Includes
 #include <stdio.h>
@@ -10,18 +10,18 @@
 
 namespace Logic
 {
-    class StateMenu : public State
+    class StatePrimary : public State
     {
     public:
-        StateMenu(StateBuffer* stateBuffer);
-        ~StateMenu();
+        StatePrimary(StateBuffer* stateBuffer);
+        ~StatePrimary();
         void reset();
 
         void update(float deltaTime);
         void render() const;
 
-        void queueState(StateType menuState);
-        void loadState(StateType menuState);
+        void queueState(StateType state);
+        void loadState(StateType state);
         State* getCurrentState() { return m_currentState; }
 
     private:
@@ -31,4 +31,4 @@ namespace Logic
     };
 }
 
-#endif // !STATEMENU_H
+#endif // !STATEPRIMARY_H

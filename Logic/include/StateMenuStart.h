@@ -23,6 +23,8 @@
 
 namespace Logic
 {
+    class Physics;
+    class Map;
     class StateMenuStart : public State
     {
     public:
@@ -37,6 +39,8 @@ namespace Logic
         MenuMachine*		m_menu;
         HighScoreManager*	m_highScoreManager;
         FPSRenderer         m_fpsRenderer;
+        Physics*			m_physics;
+        Map*				m_map;
     };
 }
 
