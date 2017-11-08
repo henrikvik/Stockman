@@ -22,6 +22,7 @@
 #include "RenderPass\GlowRenderPass.h"
 #include "RenderPass\ParticleRenderPass.h"
 #include "RenderPass\SSAORenderPass.h"
+#include "RenderPass\DepthOfFieldRenderPass.h"
 #include "Utility\DebugDraw.h"
 
 
@@ -55,7 +56,6 @@ namespace Graphics
         , menu(device, deviceContext)
         , hud(device, deviceContext)
         , bulletTimeBuffer(device)
-        , DoFRenderer(device)
 #pragma region Foliage
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
@@ -100,6 +100,26 @@ namespace Graphics
 
             ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
             return sampler;        
+        }();
+        Global::mirrorSampler = [&](){
+            ID3D11SamplerState * sampler = nullptr;
+            D3D11_SAMPLER_DESC sDesc = {};
+            sDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.BorderColor[0] = 1;
+            sDesc.BorderColor[1] = 1;
+            sDesc.BorderColor[2] = 1;
+            sDesc.BorderColor[3] = 1;
+            sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+            sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            sDesc.MaxAnisotropy = 0;
+            sDesc.MinLOD = 0;
+            sDesc.MaxLOD = D3D11_FLOAT32_MAX;
+            sDesc.MipLODBias = 0;
+
+            ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
+            return sampler;
         }();
 
         { // CaNCeR!
@@ -198,6 +218,7 @@ namespace Graphics
             ),
             newd ParticleRenderPass({ *fakeBackBuffer }, depthStencil),
             newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
+            newd DepthOfFieldRenderPass({ *fakeBackBufferSwap }, { *fakeBackBuffer, depthStencil }),
             newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
             newd GUIRenderPass({backBuffer}),
         };
@@ -212,7 +233,7 @@ namespace Graphics
 
         delete Global::cStates;
         SAFE_RELEASE(Global::comparisonSampler);
-		SAFE_RELEASE(glowTest);
+        SAFE_RELEASE(Global::mirrorSampler);
         SAFE_RELEASE(lightOpaqueGridUAV);
         SAFE_RELEASE(lightOpaqueGridSRV);
 
@@ -221,15 +242,13 @@ namespace Graphics
             delete renderPass;
         }
 
+        TextureLoader::get().unloadAll();
+        ModelLoader::get().unloadAll();
     }
 
     void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext, Camera * camera)
     {
-        //resourceManager.initialize(gDevice, gDeviceContext);
-		//skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
-
-        //temp
-        DirectX::CreateWICTextureFromFile(Global::device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
+        
     }
 
 	void Renderer::updateLight(float deltaTime, Camera * camera)
@@ -751,31 +770,8 @@ namespace Graphics
 
 	void Renderer::registerDebugFunction()
 	{
-		DebugWindow *debugWindow = DebugWindow::getInstance();
-		debugWindow->registerCommand("GFX_DISABLE_POST_EFFECTS", [&](std::vector<std::string> &args)->std::string
-		{
-			
-            enableSSAO = false;
-            enableGlow = false;
-            enableFog = false;
-            enableDOF = false;
-            enableSnow = false;
-
-			return "Post effects off!";
-		});
-
-        debugWindow->registerCommand("GFX_ENABLE_POST_EFFECTS", [&](std::vector<std::string> &args)->std::string
-        {
-
-            enableSSAO = true;
-            enableGlow = true;
-            enableFog = true;
-            enableDOF = true;
-            enableSnow = true;
-
-            return "Post effects on!";
-        });
-
+		/*DebugWindow *debugWindow = DebugWindow::getInstance();
+		
 		debugWindow->registerCommand("GFX_SET_SSAO", [&](std::vector<std::string> &args)->std::string
 		{
             std::string catcher = "";
@@ -1012,34 +1008,6 @@ namespace Graphics
 			{
 				catcher = "Argument must be float between 1 and 0";
 			}
-
-			return catcher;
-		});
-
-		debugWindow->registerCommand("GFX_RELOAD_FORWARD_SHADER", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-			
-			forwardPlus.recompile(Global::device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC);
-
-
-			return catcher;
-		});
-
-		//debugWindow->registerCommand("GFX_RELOAD_GLOW_SHADERS", [&](std::vector<std::string> &args)->std::string
-		//{
-		//	std::string catcher = "";
-
-		//	glowRenderer.recompileGlow(Global::device);
-
-		//	return catcher;
-		//});
-
-		/*debugWindow->registerCommand("GFX_RELOAD_SNOW_SHADER", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-
-			snowManager.recompile(Global::device);
 
 			return catcher;
 		});*/

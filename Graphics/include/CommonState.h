@@ -9,4 +9,5 @@ namespace Global
     using namespace DirectX;
     extern CommonStates * cStates;
     extern ID3D11SamplerState * comparisonSampler;
+    extern ID3D11SamplerState * mirrorSampler;
 }

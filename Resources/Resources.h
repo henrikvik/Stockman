@@ -38,6 +38,10 @@ namespace Resources
     {
         enum Files
         {
+            DoFBlur1,
+            DoFBlur2,
+            DoFCreateCoC,
+            DoFGlue,
             ForwardPlus,
             GlowBlurHorizontal,
             GlowBlurVertical,
@@ -54,6 +58,10 @@ namespace Resources
         };
         const std::map<Files, const char *> Paths =
         {
+            {DoFBlur1, R"(..\Resources\Shaders\DoFBlur1.hlsl)"},
+            {DoFBlur2, R"(..\Resources\Shaders\DoFBlur2.hlsl)"},
+            {DoFCreateCoC, R"(..\Resources\Shaders\DoFCreateCoC.hlsl)"},
+            {DoFGlue, R"(..\Resources\Shaders\DoFGlue.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
             {GlowBlurVertical, R"(..\Resources\Shaders\GlowBlurVertical.hlsl)"},
@@ -79,6 +87,7 @@ namespace Resources
             gameOverMenuButtons,
             gameOverTexture,
             Gamesheet,
+            Grid,
             HPBars,
             HUDIcons,
             mainMenuButton,
@@ -97,6 +106,7 @@ namespace Resources
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
+            {Grid, R"(..\Resources\Textures\Grid.png)"},
             {HPBars, R"(..\Resources\Textures\HPBars.dds)"},
             {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
