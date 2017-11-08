@@ -8,37 +8,23 @@ namespace Sound
 {
     enum LOAD_MODE { SAMPLE, STREAM };
 
-    struct SOUNDSETTINGS
-    {
-        static const bool       MUTE_ALL            = false;
-        static const LOAD_MODE  SFX_LOAD_MODE       = LOAD_MODE::SAMPLE;
-        static const LOAD_MODE  MUSIC_LOAD_MODE     = LOAD_MODE::STREAM;
-    };
-
-    struct THRESHOLD
-    {
-        static const int	MAX_CHANNELS    = 32;
-        static const int    MAX_GROUPS      = 4;
-        static const int	MAX_SFX         = 32;
-        static const int	MAX_SONGS       = 32;
-        static const int	MUSIC_MIN_DIST  = 1;
-        static const int	MUSIC_MAX_DIST  = 25;
-        static const int	SFX_MIN_DIST    = 1;
-        static const int	SFX_MAX_DIST    = 10;
-    };
-
-    enum CHANNEL_GROUP
-    {
-        CHANNEL_MASTER,
-        CHANNEL_SFX,
-        CHANNEL_MUSIC,
-        CHANNEL_AMBIENT
-    };
-
     // Put all identifier for sfx here
     enum SFX
     {
-        BOING
+        SWOOSH,
+        FOOTSTEP_SMALL,
+        FOOTSTEP_SNOW,
+        JUMP,
+        WEAPON_CUTLERY_PRIMARY,
+        WEAPON_CUTLERY_SECONDARY,
+        WEAPON_ICEGUN_PRIMARY,
+        WEAPON_ICEGUN_SECONDARY,
+        WEAPON_MELEE_PRIMARY,
+        WEAPON_MELEE_SECONDARY,
+        NECROMANCER_DEATH,
+        NECROMANCER_SPAWN,
+        NECROMANCER_SHOOT_PRIMARY,
+        NECROMANCER_SHOOT_SECONDARY
     };
 
     // Put all identifier for music here
@@ -48,6 +34,14 @@ namespace Sound
         MUSIC_CREDITS,
         MUSIC_IN_GAME,
         AMBIENT_STORM
+    };
+
+    enum CHANNEL_GROUP
+    {
+        CHANNEL_MASTER,
+        CHANNEL_SFX,
+        CHANNEL_MUSIC,
+        CHANNEL_AMBIENT
     };
 
     // Keeps track of everything about a specific sound

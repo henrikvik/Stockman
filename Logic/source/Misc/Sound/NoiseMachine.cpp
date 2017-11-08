@@ -15,10 +15,10 @@ using namespace Sound;
 #define ERRCHECK(nothing)
 #endif
 
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MASTER     = 0.5f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_AMBIENT    = 0.15f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_SFX        = 0.5f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MUSIC      = 1.f;
+const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MASTER     = 1.f;
+const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_AMBIENT    = 1.f;
+const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_SFX        = 1.f;
+const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MUSIC      = 0.75f;
 
 // Initializes all sound system & sounds into memory
 void NoiseMachine::init()
@@ -217,7 +217,20 @@ void NoiseMachine::initGroups(bool mute)
 int NoiseMachine::initSFX(LOAD_MODE loadMode)
 {
 	// Init all the sfx here
-    ERRCHECK(createSound(loadMode, SFX::BOING, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::FOOTSTEP_SNOW, CHANNEL_GROUP::CHANNEL_SFX, "Footstep_Snow.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::FOOTSTEP_SMALL, CHANNEL_GROUP::CHANNEL_SFX, "Footstep_Small.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::JUMP, CHANNEL_GROUP::CHANNEL_SFX, "Jump.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_CUTLERY_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Cutlery_1.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_CUTLERY_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Cutlery_2.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_1.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_2.ogg", FMOD_3D_LINEARROLLOFF));
+//    ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
+//    ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::NECROMANCER_DEATH, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Laugh.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::NECROMANCER_SPAWN, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Spawn.ogg", FMOD_3D_LINEARROLLOFF));
+//    ERRCHECK(createSound(loadMode, SFX::NECROMANCER_SHOOT_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
+//    ERRCHECK(createSound(loadMode, SFX::NECROMANCER_SHOOT_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::SWOOSH, CHANNEL_GROUP::CHANNEL_SFX, "Swoosh.ogg", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the sfx
     int count = 0;
@@ -238,7 +251,7 @@ int NoiseMachine::initMusic(LOAD_MODE loadMode)
 {
 	// Init all the music here
 	ERRCHECK(createSound(loadMode, MUSIC::MUSIC_MAIN_MENU, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 6) ? "stockman.mp3" : "notch.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
-    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 6) ? "env.mp3" : "spooky.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 6) ? "env.mp3" : "notch.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::MUSIC_CREDITS, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 100) ? "pranked.ogg" : "lab.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::AMBIENT_STORM, CHANNEL_GROUP::CHANNEL_AMBIENT, "ambient_snow.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
 
