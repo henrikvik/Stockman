@@ -153,6 +153,13 @@ void Player::registerDebugCmds()
 
         return "Player is not red so player does not go fastah";
     });
+
+    win->registerCommand("LOG_PLAYER_ON_FIRE", [&](std::vector<std::string> &args) -> std::string
+    {
+        getStatusManager().addStatus(StatusManager::ON_FIRE, 1);
+
+        return "You sir are on fire";
+    });
 }
 
 void Player::clear()
@@ -225,18 +232,25 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
                 wp->setAmmo(currentAmmo + magSize);
         }
 	}
-    if (flags & Effect::EFFECT_ON_FIRE)
-    {
-        takeDamage(static_cast<int> (effect.getModifiers()->modifyDmgTaken * deltaTime));
-    }
     if (flags & Effect::EFFECT_IS_FROZEN)
     {
         m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
     }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
         m_moveSpeedMod = effect.getModifiers()->modifyMovementSpeed;
         m_stunned = true;
+    }
+    if (flags & Effect::EFFECT_MOVE_FASTER)
+    {
+        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
+    }
+    if (flags & Effect::EFFECT_MOVE_SLOWER)
+    {
+        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
     }
 }
 
@@ -244,6 +258,10 @@ void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
 
+    if (flags & Effect::EFFECT_ON_FIRE)
+    {
+        takeDamage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+    }
     if (flags & Effect::EFFECT_IS_FROZEN)
     {
         m_moveSpeedMod = 1;
@@ -252,6 +270,17 @@ void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
     {
         m_moveSpeedMod = 1;
         m_stunned = false;
+    }
+
+    if (flags & Effect::EFFECT_MOVE_FASTER)
+    {
+        m_moveSpeedMod = 1;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
+    }
+    if (flags & Effect::EFFECT_MOVE_SLOWER)
+    {
+        m_moveSpeedMod = 1;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
     }
 }
 
