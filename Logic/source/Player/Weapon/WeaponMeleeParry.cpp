@@ -29,10 +29,9 @@ void WeaponMeleeParry::onUse(std::vector<Projectile*>& projectiles)
             if (Enemy* enemy = dynamic_cast<Enemy*>(obj))
             {
                 obj->getRigidBody()->setLinearVelocity(btVector3(0.f, 1.f, 0.f) * m_knockbackPower);
-                enemy->getStatusManager().addStatus(StatusManager::EFFECT_ID::STUN, 1); // 10 second stun OP AF
+                enemy->getStatusManager().addStatus(StatusManager::EFFECT_ID::STUN, 1);
             }
 
-            
         });
     }
 }

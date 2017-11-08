@@ -99,7 +99,7 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, Phy
                     const btCollisionObjectWrapper* colObj0, int partId0, int index0,
                     const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
             {
-                if (cp.getDistance() < 0.05f)
+                if (abs(cp.getDistance()) < 0.05f)
                 {
                     onCollision(other, contactPoint, weakPoint.multiplier);
                     hit = true;
