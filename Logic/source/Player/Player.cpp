@@ -243,7 +243,7 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 	}
     if (flags & Effect::EFFECT_IS_FROZEN)
     {
-        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
         m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
     }
     if (flags & Effect::EFFECT_IS_STUNNED)
