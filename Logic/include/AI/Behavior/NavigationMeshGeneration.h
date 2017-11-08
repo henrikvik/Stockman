@@ -21,7 +21,7 @@ namespace Logic
     //
     // Based on PASVF described in the paper
     // "A growth-based approach to the automatic
-    // generation of navigation meshes" by
+    // generation of navigation meshes"[2] by
     //                      Hale, David Hunter, Ph.D.
     // 
     // This algorithm uses bullet physics for collision.
@@ -29,7 +29,9 @@ namespace Logic
     //
     // [1]: https://github.com/henrikvik/DV1544-Stort-Spel/issues
     // [2]: https://pqdtopen.proquest.com/doc/920011245.html?FMT=ABS
+    // [2] (Mirror): https://libres.uncg.edu/ir/uncc/f/Hale_uncc_0694D_10272.pdf
     // [3]: https://goo.gl/dzpBc
+    // (Not ready for production)
 
     class Physics;
     class StaticObject;
@@ -39,6 +41,7 @@ namespace Logic
             float precision, maxLength, baseY;
             static const int AI_UID, NO_ID;
             static int COUNTER;
+            static const btVector3 unitDimension;
 		public:
 			enum VertexOrder { CLOCKWISE, COUNTER_CLOCKWISE };
 
@@ -65,7 +68,7 @@ namespace Logic
 		private:
             enum GrowthType // Clockwise
             {
-                X_PLUS, Z_PLUS, X_MINUS, Z_MINUS
+                X_PLUS, Z_MINUS, X_MINUS, Z_PLUS
             };
             enum CollisionReturn
             {
