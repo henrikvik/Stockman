@@ -67,7 +67,6 @@ namespace Graphics
         ShaderResource* fakeBackBufferSwap;
     #pragma endregion
         Sun sun;
-        Shader fullscreenQuad;
         Shader forwardPlus;
 		Shader depthShader;
 

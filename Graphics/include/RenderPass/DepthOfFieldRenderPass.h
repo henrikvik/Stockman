@@ -2,6 +2,8 @@
 #include "RenderPass.h"
 #include "../Utility/ShaderResource.h"
 #include "../Utility/Shader.h"
+#include "FullScreenPass.h"
+#include <memory>
 
 
 namespace Graphics 
@@ -34,5 +36,7 @@ namespace Graphics
 
         ConstantBuffer<float> cbuffer;
         bool firstTime;
+
+        std::unique_ptr<FullScreenPass> fullscreenPass;
     };
 }

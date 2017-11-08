@@ -1,5 +1,7 @@
 #include "DepthOfFieldRenderPass.h"
 #include "../Device.h"
+#include <Engine\DebugWindow.h>
+
 Graphics::DepthOfFieldRenderPass::DepthOfFieldRenderPass(
     std::initializer_list<ID3D11RenderTargetView*> targets,
     std::initializer_list<ID3D11ShaderResourceView*> resources,
@@ -16,6 +18,36 @@ Graphics::DepthOfFieldRenderPass::DepthOfFieldRenderPass(
     cbuffer(Global::device)
 {
     firstTime = true;
+
+    fullscreenPass = std::make_unique<FullScreenPass>(targets, resources, buffers, depthStencil);
+
+    DebugWindow::getInstance()->registerCommand("GFX_SET_DEPTH_OF_FIELD", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            if (args.size() != 0)
+            {
+                enabled = std::stoi(args[0]);
+
+                if (enabled)
+                    catcher = "Depth of field enabled!";
+
+                else
+                    catcher = "Depth of field disabled!";
+            }
+            else
+            {
+                catcher = "missing argument 0 or 1.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Argument must be 0 or 1.";
+        }
+
+        return catcher;
+    });
 }
 
 void Graphics::DepthOfFieldRenderPass::update(float deltaTime)
@@ -29,6 +61,13 @@ void Graphics::DepthOfFieldRenderPass::update(float deltaTime)
 
 void Graphics::DepthOfFieldRenderPass::render() const
 {
+    if (!enabled)
+    {
+        fullscreenPass->render();
+
+        return;
+    }
+
     Global::context->OMSetBlendState(nullptr, 0, 0xffffffff);
 
     static ID3D11SamplerState * samplers[] = {

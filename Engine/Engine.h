@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <Camera.h>
 #include <Renderer.h>
-#include <StateMachine.h>
+#include <StateMachine/StateMachine.h>
 #include <Keyboard.h>
 #include <Mouse.h>
 

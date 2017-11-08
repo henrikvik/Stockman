@@ -41,6 +41,7 @@
     <ClCompile Include="include\RenderPass\DepthOfFieldRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\DepthRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\ForwardPlusRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\FullScreenPass.cpp" />
     <ClCompile Include="include\RenderPass\GlowRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\GUIRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\LightCullRenderPass.cpp" />
@@ -48,6 +49,7 @@
     <ClCompile Include="include\RenderPass\RenderPass.cpp" />
     <ClCompile Include="include\RenderPass\ShadowRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\SkyBoxRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\SnowRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\SSAORenderPass.cpp" />
     <ClCompile Include="include\Utility\DebugDraw.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
@@ -82,6 +84,7 @@
     <ClInclude Include="include\RenderPass\DepthOfFieldRenderPass.h" />
     <ClInclude Include="include\RenderPass\DepthRenderPass.h" />
     <ClInclude Include="include\RenderPass\ForwardPlusRenderPass.h" />
+    <ClInclude Include="include\RenderPass\FullScreenPass.h" />
     <ClInclude Include="include\RenderPass\GlowRenderPass.h" />
     <ClInclude Include="include\RenderPass\GUIRenderPass.h" />
     <ClInclude Include="include\RenderPass\LightCullRenderPass.h" />
@@ -89,6 +92,7 @@
     <ClInclude Include="include\RenderPass\RenderPass.h" />
     <ClInclude Include="include\RenderPass\ShadowRenderPass.h" />
     <ClInclude Include="include\RenderPass\SkyBoxRenderPass.h" />
+    <ClInclude Include="include\RenderPass\SnowRenderPass.h" />
     <ClInclude Include="include\RenderPass\SSAORenderPass.h" />
     <ClInclude Include="include\Utility\RenderPass.h" />
     <ClInclude Include="include\RenderQueue.h" />
