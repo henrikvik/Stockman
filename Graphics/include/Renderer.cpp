@@ -20,6 +20,7 @@
 #include "RenderPass\ShadowRenderPass.h"
 #include "RenderPass\SkyBoxRenderPass.h"
 #include "RenderPass\GlowRenderPass.h"
+#include "RenderPass\ParticleRenderPass.h"
 #include "RenderPass\SSAORenderPass.h"
 #include "Utility\DebugDraw.h"
 
@@ -100,6 +101,26 @@ namespace Graphics
             ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
             return sampler;        
         }();
+        Global::mirrorSampler = [&](){
+            ID3D11SamplerState * sampler = nullptr;
+            D3D11_SAMPLER_DESC sDesc = {};
+            sDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.BorderColor[0] = 1;
+            sDesc.BorderColor[1] = 1;
+            sDesc.BorderColor[2] = 1;
+            sDesc.BorderColor[3] = 1;
+            sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+            sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            sDesc.MaxAnisotropy = 0;
+            sDesc.MinLOD = 0;
+            sDesc.MaxLOD = D3D11_FLOAT32_MAX;
+            sDesc.MipLODBias = 0;
+
+            ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
+            return sampler;
+        }();
 
         { // CaNCeR!
             D3D11_TEXTURE2D_DESC desc = {};
@@ -156,6 +177,7 @@ namespace Graphics
 
         renderPasses =
         {
+            newd ParticleDepthRenderPass(depthStencil),
             newd DepthRenderPass({}, {staticInstanceBuffer}, {*Global::mainCamera->getBuffer()}, depthStencil),
             newd ShadowRenderPass({}, { staticInstanceBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
             newd LightCullRenderPass(
@@ -194,6 +216,7 @@ namespace Graphics
                 },
                 depthStencil
             ),
+            newd ParticleRenderPass({ *fakeBackBuffer }, depthStencil),
             newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
             newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
             newd GUIRenderPass({backBuffer}),
@@ -279,6 +302,8 @@ namespace Graphics
 
         writeInstanceBuffers();
         sun.update();
+
+        FXSystem->update(Global::context, Global::mainCamera, deltaTime);
    
         for (auto & renderPass : renderPasses)
         {

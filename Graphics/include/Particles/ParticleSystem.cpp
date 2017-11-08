@@ -13,6 +13,7 @@
 #include <Engine\Profiler.h>
 #include "../Utility/DebugDraw.h"
 #include "../CommonState.h"
+#include <Engine\DebugWindow.h>
 
 namespace fs = std::experimental::filesystem;
 using namespace DirectX;
@@ -41,6 +42,7 @@ std::wstring ConvertToWString(const std::string & s)
 namespace Graphics {;
 
 ParticleSystem *FXSystem;
+bool FXEnabled = false;
 
 ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const char * path)
     : m_Capacity(capacity)
@@ -49,6 +51,17 @@ ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const c
     readParticleFile(device, path);
 
     m_GeometryParticles.reserve(capacity);
+
+    DebugWindow::getInstance()->registerCommand("GFX_PARTICLES", [&](std::vector<std::string> &args)->std::string
+    {
+        FXEnabled = !FXEnabled;
+
+        std::string response = "FXEnabled = ";
+        response += FXEnabled ? "true" : "false";
+
+        return response;
+    });
+
 }
 
 ParticleSystem::~ParticleSystem()
@@ -70,6 +83,7 @@ ParticleSystem::~ParticleSystem()
 
 bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Matrix model, float dt)
 {
+    if (!FXEnabled) return false;
     Debug::ParticleFX({ SimpleMath::Vector3::Transform({}, model), *fx });
 
     for (unsigned int i = 0; i < fx->m_Count; i++) {
@@ -77,40 +91,46 @@ bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Mat
 
         fx->m_Age += dt;
 
-        if (fx->m_Age < entry.m_Start || fx->m_Age > entry.m_Start + entry.m_Time)
-            continue;
+        if (fx->m_Age < entry.m_Start || fx->m_Age > entry.m_Start + entry.m_Time) {
+            if (fx->m_Loop) {
+                fx->m_Age = 0.f;
+            }
+            else {
+                continue;
+            }
+        }
 
         switch (entry.m_Type) {
-        case ParticleType::Billboard:
-        {
-        } break;
-        case ParticleType::Geometry: {
-            auto def = &m_GeometryDefinitions[entry.m_DefinitionIdx];
+            case ParticleType::Billboard:
+            {
+            } break;
+            case ParticleType::Geometry: {
+                auto def = &m_GeometryDefinitions[entry.m_DefinitionIdx];
 
-            auto factor = (fx->m_Age - entry.m_Start) / entry.m_Time;
-            auto ease_spawn = GetEaseFunc(entry.m_SpawnEasing);
-            auto spawn = entry.m_Loop ? entry.m_SpawnStart : ease_spawn(entry.m_SpawnStart, entry.m_SpawnEnd, factor);
+                auto factor = (fx->m_Age - entry.m_Start) / entry.m_Time;
+                auto ease_spawn = GetEaseFunc(entry.m_SpawnEasing);
+                auto spawn = entry.m_Loop ? entry.m_SpawnStart : ease_spawn(entry.m_SpawnStart, entry.m_SpawnEnd, factor);
 
-            for (entry.m_SpawnedParticles += spawn * dt; entry.m_SpawnedParticles >= 1.f; entry.m_SpawnedParticles -= 1.f) {
-                GeometryParticle p = {};
-                p.pos = SimpleMath::Vector3::Transform(entry.m_StartPosition.GetPosition(), model);
-                p.velocity = entry.m_StartVelocity.GetVelocity();
-                p.rot = {
-                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
-                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
-                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
-                };
-                p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
-                p.rotprog = RandomFloat(-180, 180);
-                p.def = def;
-                p.idx = def->m_MaterialIdx;
+                for (entry.m_SpawnedParticles += spawn * dt; entry.m_SpawnedParticles >= 1.f; entry.m_SpawnedParticles -= 1.f) {
+                    GeometryParticle p = {};
+                    p.pos = SimpleMath::Vector3::Transform(entry.m_StartPosition.GetPosition(), model);
+                    p.velocity = entry.m_StartVelocity.GetVelocity();
+                    p.rot = {
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
+                    };
+                    p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
+                    p.rotprog = RandomFloat(-180, 180);
+                    p.def = def;
+                    p.idx = def->m_MaterialIdx;
 
 
-                m_GeometryParticles.push_back(p);
-            }
-        } break;
-        case ParticleType::Trail: {
-        } break;
+                    m_GeometryParticles.push_back(p);
+                }
+            } break;
+            case ParticleType::Trail: {
+            } break;
         }
     }
 
@@ -326,7 +346,7 @@ public:
             instance.m_Age = factor;
 
             auto col_start = XMFLOAT4((float*)def.m_ColorStart);
-            auto col_end = XMFLOAT4((float*)def.m_ColorStart);
+            auto col_end = XMFLOAT4((float*)def.m_ColorEnd);
 
             instance.m_Color = ease_color(DirectX::XMLoadFloat4(&col_start), DirectX::XMLoadFloat4(&col_end), factor);
             instance.m_Deform = ease_deform(def.m_DeformStart, def.m_DeformEnd, factor);
@@ -339,6 +359,7 @@ public:
             particle.age += dt;
             particle.rotprog += dt;
 
+            XMStoreFloat3(&particle.velocity, XMLoadFloat3(&particle.velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
             XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
 
             ptr++;
@@ -531,6 +552,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         fread(fx.m_Name, sizeof(char), 16, f);
         fread(&fx.m_Count, sizeof(fx.m_Count), 1, f);
         fread(&fx.m_Time, sizeof(fx.m_Time), 1, f);
+        fread(&fx.m_Loop, sizeof(fx.m_Loop), 1, f);
         
         // default runtime value
         fx.m_Age = 0.f;
