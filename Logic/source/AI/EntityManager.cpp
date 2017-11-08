@@ -37,6 +37,7 @@ EntityManager::EntityManager()
     m_aliveEnemies = 0;
     m_aiType = NORMAL_MODE;
 
+    //allocateData(); was here
     loadDebugCmds();
 
     m_waveManager.setName(FILE_ABOUT_WHALES);

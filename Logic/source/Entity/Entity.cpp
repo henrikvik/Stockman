@@ -28,9 +28,9 @@ void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
-	PhysicsObject::updatePhysics(deltaTime);
-	updateSound(deltaTime);
-	m_statusManager.update(deltaTime, *this);
+    PhysicsObject::updatePhysics(deltaTime);
+    updateSound(deltaTime);
+    m_statusManager.update(deltaTime, *this);
 }
 
 void Entity::upgrade(Upgrade const & upgrade) { }
