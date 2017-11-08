@@ -24,6 +24,7 @@ public:
     void moveScreenPos(float topX, float topY, float bottomX, float bottomY);
     void setTexturePos(float topU, float topV, float bottomU, float bottomV);
     void setScreenPos(Points screenpoint, Points spritepoint, float x, float y, float width, float height);
+    void setTopYToProcent(float procent, float yMax, float ymaxPos, float yminPos);
     FloatRect getScreenRect()const;
     FloatRect getTextureRect()const;
     void render() const;

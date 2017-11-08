@@ -248,7 +248,10 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
     {
         if (damageThroughProtection ||
             getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
+        {
+            getSoundSource()->playSFX(Sound::SFX::NECROMANCER_DEATH);
             m_hp -= damage;
+        }
     }
 }
 
@@ -335,29 +338,31 @@ void Player::updateSpecific(float deltaTime)
 	// Weapon swap
     if (ks.IsKeyDown(m_switchWeaponOne))
     {
+        getSoundSource()->playSFX(Sound::SFX::SWOOSH);
         m_weaponManager->switchWeapon(0);
         currentWeapon = 0;
     }
 		
     if (ks.IsKeyDown(m_switchWeaponTwo))
     {
+        getSoundSource()->playSFX(Sound::SFX::SWOOSH);
         m_weaponManager->switchWeapon(1);
         currentWeapon = 1;
     }
 		
     if (ks.IsKeyDown(m_switchWeaponThree))
     {
+        getSoundSource()->playSFX(Sound::SFX::SWOOSH);
         m_weaponManager->switchWeapon(2);
         currentWeapon = 2;
     }
 		
-
 	// Skills
     PROFILE_BEGIN("SkillManager");
     forward = getForwardBT();
-	if (ks.IsKeyDown(m_useSkillPrimary))
+    if (ks.IsKeyDown(m_useSkillPrimary))
         m_skillManager->use(SkillManager::ID::PRIMARY, forward, *this);
-	if (ks.IsKeyUp(m_useSkillPrimary))
+    if (ks.IsKeyUp(m_useSkillPrimary))
         m_skillManager->release(SkillManager::ID::PRIMARY);
     if (ks.IsKeyDown(m_useSkillSecondary))
         m_skillManager->use(SkillManager::ID::SECONDARY, forward, *this);
@@ -376,10 +381,16 @@ void Player::updateSpecific(float deltaTime)
 		if (!m_weaponManager->isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
 		{
 			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
-			if ((ms.leftButton))
-				m_weaponManager->usePrimary(pos, m_camYaw, m_camPitch, *this);
-			else if (ms.rightButton)
-				m_weaponManager->useSecondary(pos, m_camYaw, m_camPitch, *this);
+            if ((ms.leftButton))
+            {
+                getSoundSource()->playSFX(Sound::SFX::WEAPON_CUTLERY_PRIMARY, 1.f, 0.15f);
+                m_weaponManager->usePrimary(pos, m_camYaw, m_camPitch, *this);
+            }
+            else if (ms.rightButton)
+            {
+                getSoundSource()->playSFX(Sound::SFX::WEAPON_CUTLERY_SECONDARY, 1.f, 0.05f);
+                m_weaponManager->useSecondary(pos, m_camYaw, m_camPitch, *this);
+            }
 		}
 
 		// Reload
@@ -499,6 +510,7 @@ void Player::move(float deltaTime)
 	// Apply jump if player wants to jump
 	if (m_wishJump)
 	{
+        getSoundSource()->playSFX(Sound::SFX::JUMP, 1.f, 0.1f);
 		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
 		m_wishJump = false;
 	}

@@ -28,8 +28,9 @@ void SoundSource::update(float deltaTime)
 	if (autoPlayer)
 	{
 		if (autoPlayer->checkIfPlay(deltaTime))
-		{
+        {
 			noiseMachine->playSFX(autoPlayer->sfx, this, true);
+            channel->setPitch(autoPlayer->pitch.value);
 		}
 	}
 
@@ -53,13 +54,21 @@ void SoundSource::update(float deltaTime)
 // Simply plays a SFX one time
 void SoundSource::playSFX(SFX sfx)
 {
-	noiseMachine->playSFX(sfx, this, false);
+	noiseMachine->playSFX(sfx, this, true);
+}
+
+// Plays a sfx but with a pitch offset
+void SoundSource::playSFX(SFX sfx, float pitch, float pitchOffset)
+{
+    float endPitch = pitch + Logic::RandomGenerator::singleton().getRandomFloat(-pitchOffset, pitchOffset);
+    noiseMachine->playSFX(sfx, this, true);
+    this->channel->setPitch(endPitch);
 }
 
 // Simply plays one song one time
 void SoundSource::playMusic(MUSIC music)
 {
-	noiseMachine->playMusic(music, this, false);
+	noiseMachine->playMusic(music, this, true);
 }
 
 // Plays a SFX but after a specific delay of time in ms
