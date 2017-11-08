@@ -15,7 +15,7 @@
 
 namespace Logic
 {
-	//          Nav Mesh Gen v0.1
+	//          Nav Mesh Gen v0.2
     // For errors in creating the navigation mesh
     // create a issue on github[1] or contact LW.
     //
@@ -76,7 +76,7 @@ namespace Logic
             };
             struct NavMeshCube
             {
-                bool done, collided[SIDES];
+                bool done, remove, collided[SIDES];
                 NavMeshCube *buddy;
                 btRigidBody *body;
                 Cube cube;
@@ -85,7 +85,7 @@ namespace Logic
                 {
                     this->cube = cube;
 
-                    done = false;
+                    done = remove = false;
                     body = nullptr;
 
                     for (int i = 0; i < SIDES; i++)
@@ -106,7 +106,10 @@ namespace Logic
                 StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape);
             void split(std::vector<NavMeshCube> &regions, Physics &physics, NavMeshCube &cube,
                 btVector3 const &cubeColPoint, btVector3 const &splitPlaneNormal);
-            void removeRigidBody(btRigidBody *body, Physics &physics);
+            void removeRigidBody(btRigidBody *&body, Physics &physics);
+
+            bool isInCollisionArea(NavMeshCube &cube, Physics &physics);
+            void seedArea(btVector3 position, btVector3 fullDimension, float part, std::vector<NavMeshCube> &regions, Physics &physics);
 
             // true on collision
             std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance);
