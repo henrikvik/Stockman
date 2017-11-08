@@ -144,21 +144,27 @@ void Player::registerDebugCmds()
     {
         getStatusManager().addStatus(StatusManager::MOVEMENTSPEED_UP, 1, true);
 
-        return "Player is red so player goes fastah";
+        return "Player is red so player goes fastah -Random Ork Warhammer 40K (you go faster)";
     });
 
     win->registerCommand("LOG_PLAYER_MOVE_SLOWER", [&](std::vector<std::string> &args) -> std::string
     {
         getStatusManager().addStatus(StatusManager::MOVEMENTSPEED_DOWN, 1, true);
 
-        return "Player is not red so player does not go fastah";
+        return "Player is not red so player does not go fastah -Random Ork Warhammer 40K (you go slower)";
     });
 
     win->registerCommand("LOG_PLAYER_ON_FIRE", [&](std::vector<std::string> &args) -> std::string
     {
         getStatusManager().addStatus(StatusManager::ON_FIRE, 1);
 
-        return "You sir are on fire";
+        return "You sir are on fire (You will take 1 damage soon)";
+    });
+    win->registerCommand("LOG_PLAYER_HEAL", [&](std::vector<std::string> &args) -> std::string
+    {
+        getStatusManager().addStatus(StatusManager::HEALTH_P1, 1);
+
+        return "I need healing - Genji Shinimada ( + 1 Health given)";
     });
 }
 
