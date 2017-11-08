@@ -8,20 +8,22 @@ namespace Logic
     class WeaponModel : public Object
     {
     public:
-        struct WeaponModelInfo
+        struct WeaponModelAnimationInfo
         {
             DirectX::SimpleMath::Matrix rot, trans, scale;
-            float forwardMultiplier;
+            float swapTimer;
         };
 
         WeaponModel();
-        WeaponModel(Graphics::ModelID modelID, WeaponModelInfo mInfo);
+        WeaponModel(Graphics::ModelID modelID, WeaponModelAnimationInfo mInfo);
         ~WeaponModel();
 
         void update(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
+        const WeaponModelAnimationInfo& getModelInfo() const;
+
     private:
-        WeaponModelInfo m_mInfo;
+        WeaponModelAnimationInfo m_mInfo;
     };
 }
 

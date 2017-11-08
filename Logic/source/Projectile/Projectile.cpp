@@ -100,13 +100,20 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         bool callback = false;
 
         if (Projectile* proj = dynamic_cast<Projectile*> (&other))  // if projectile
+        {
             if (proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
             {
                 getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME,
                     proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
                 callback = true;
             }
+            else if (proj->getProjectileData().type == ProjectileTypeMeleeParry)
+            {
+                m_remove = true;
+                callback = false;
+            }
             else {} // this might seem really pointless, because it is, but if you remove it, it will stop working, so dont touch this godly else
+        }
         else if (!dynamic_cast<Player*>(&other)) // if not player
         {
             if (dynamic_cast<Enemy*> (&other) && getProjectileData().enemyBullet)
@@ -169,6 +176,7 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 
         if (m_pData.type == ProjectileTypeBulletTimeSensor ||
             m_pData.type == ProjectileTypeMelee ||
+            m_pData.type == ProjectileTypeMeleeParry ||
             m_pData.type == ProjectileTypeIce)
             m_remove = false;
 

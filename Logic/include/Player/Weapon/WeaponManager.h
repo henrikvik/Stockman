@@ -95,7 +95,6 @@ namespace Logic
 		WeaponLoadout* m_currentWeapon;
 
 		// Timers
-		float m_swapWeaponTimer;
 		float m_attackRateTimer;
         WeaponToUse m_toUse;
         Player* m_toUseShooter;

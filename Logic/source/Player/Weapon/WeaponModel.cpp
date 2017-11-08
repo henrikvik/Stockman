@@ -7,7 +7,7 @@ WeaponModel::WeaponModel()
 {
 }
 
-WeaponModel::WeaponModel(Graphics::ModelID modelID, WeaponModelInfo mInfo)
+WeaponModel::WeaponModel(Graphics::ModelID modelID, WeaponModelAnimationInfo mInfo)
     : Object(modelID)
 {
     m_mInfo = mInfo;
@@ -20,8 +20,6 @@ WeaponModel::~WeaponModel()
 
 void Logic::WeaponModel::update(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
-    static DirectX::SimpleMath::Matrix camera, result, offset;
-
     /*static float ltrans[3];
     static float lscale[3] = {1, 1, 1};
     static float lrot[3];
@@ -41,13 +39,18 @@ void Logic::WeaponModel::update(DirectX::SimpleMath::Matrix playerTranslation, D
     m_mInfo.rot = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(lrot[0], lrot[1], lrot[2]);*/
 
     // Making a camera matrix and then inverting it 
-    camera = DirectX::XMMatrixLookToRH({ 0, 0, 0 }, playerForward, { 0, 1, 0 });
+    DirectX::SimpleMath::Matrix camera = DirectX::XMMatrixLookToRH({ 0, 0, 0 }, playerForward, { 0, 1, 0 });
 
     // Pushing the model forward in the current view direction
-    offset = (DirectX::SimpleMath::Matrix::CreateTranslation(playerTranslation.Translation() + playerForward * m_mInfo.forwardMultiplier));
+    DirectX::SimpleMath::Matrix offset = (DirectX::SimpleMath::Matrix::CreateTranslation(playerTranslation.Translation() + playerForward));
 
     // Multiplying all the matrices into one
-    result = m_mInfo.rot * m_mInfo.trans * m_mInfo.scale * camera.Invert() * offset;
+    DirectX::SimpleMath::Matrix result = m_mInfo.rot * m_mInfo.trans * m_mInfo.scale * camera.Invert() * offset;
 
     this->setWorldTranslation(result);
+}
+
+const WeaponModel::WeaponModelAnimationInfo& Logic::WeaponModel::getModelInfo() const
+{
+    return m_mInfo;
 }

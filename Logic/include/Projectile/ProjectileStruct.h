@@ -11,11 +11,12 @@ namespace Logic
 		ProjectileTypeNormal,
 		ProjectileTypeGrappling,
 		ProjectileTypeMelee,
+        ProjectileTypeMeleeParry,
 		ProjectileTypeShield,
 		ProjectileTypeBulletTime,
 		ProjectileTypeBulletTimeSensor,
 		ProjectileTypeIce,
-        ProjectileTypeFreezeGrenade,
+        ProjectileTypeFreezeGrenade
 	};
 
 	struct ProjectileData
