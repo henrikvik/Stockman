@@ -349,48 +349,48 @@ int Player::getHP() const
 
 void Player::updateSpecific(float deltaTime)
 {
-	Player::update(deltaTime);
+    Player::update(deltaTime);
 
     // Update weapon and skills
     m_weaponManager->update(deltaTime);
     m_skillManager->update(deltaTime);
 
-	// Updates listener info for sounds
-	btVector3 up		= { 0, 1, 0 };
-	btVector3 forward	= getForwardBT();
-	btVector3 right		= up.cross(forward);
-	btVector3 actualUp	= right.cross(forward);
-	m_listenerData->update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
+    // Updates listener info for sounds
+    btVector3 up = { 0, 1, 0 };
+    btVector3 forward = getForwardBT();
+    btVector3 right = up.cross(forward);
+    btVector3 actualUp = right.cross(forward);
+    m_listenerData->update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 
-	// Get Mouse and Keyboard states for this frame
-	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
-	DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
+    // Get Mouse and Keyboard states for this frame
+    DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
+    DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
-	// Temp for testing
-	if (ks.IsKeyDown(DirectX::Keyboard::B))
-	{
+    // Temp for testing
+    if (ks.IsKeyDown(DirectX::Keyboard::B))
+    {
         m_charController->warp({ 0.f, 0.f, 0.f });
-		m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
-		m_moveDir = { 0.f, 0.f, 0.f };
-		m_moveSpeed = 0.f;
-	}
+        m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
+        m_moveDir = { 0.f, 0.f, 0.f };
+        m_moveSpeed = 0.f;
+    }
 
-	// TEMP FREE MOVE
-	if (ks.IsKeyDown(DirectX::Keyboard::N) && !m_noclip)
-	{
-		m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
+    // TEMP FREE MOVE
+    if (ks.IsKeyDown(DirectX::Keyboard::N) && !m_noclip)
+    {
+        m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
         m_noclip = true;
-		printf("free move activated\n");
-	}
-	else if (ks.IsKeyDown(DirectX::Keyboard::M) && m_noclip)
-	{
-		m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
-		// reset movement
-		m_moveDir.setZero();
-		m_moveSpeed = 0.f;
+        printf("free move activated\n");
+    }
+    else if (ks.IsKeyDown(DirectX::Keyboard::M) && m_noclip)
+    {
+        m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
+        // reset movement
+        m_moveDir.setZero();
+        m_moveSpeed = 0.f;
         m_noclip = false;
-		printf("free move deactivated\n");
-	}
+        printf("free move deactivated\n");
+    }
 
     //Only allowed if not stunned
     if (!m_stunned)
@@ -437,20 +437,21 @@ void Player::updateSpecific(float deltaTime)
             m_skillManager->release(SkillManager::ID::TERTIARY);
         PROFILE_END();
 
-	// Check if reloading
-	if (!m_weaponManager->isReloading() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
-	{
-		// Primary and secondary attack
-		if ((ms.leftButton))
-			m_weaponManager->tryUsePrimary(getPositionBT() + getForwardBT(), m_camYaw, m_camPitch, *this);
-		else if (ms.rightButton)
-			m_weaponManager->tryUseSecondary(getPositionBT() + getForwardBT(), m_camYaw, m_camPitch, *this);
+        // Check if reloading
+        if (!m_weaponManager->isReloading() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
+        {
+            // Primary and secondary attack
+            if ((ms.leftButton))
+                m_weaponManager->tryUsePrimary(getPositionBT() + getForwardBT(), m_camYaw, m_camPitch, *this);
+            else if (ms.rightButton)
+                m_weaponManager->tryUseSecondary(getPositionBT() + getForwardBT(), m_camYaw, m_camPitch, *this);
 
             // Reload
             if (ks.IsKeyDown(m_reloadWeapon))
                 m_weaponManager->reloadWeapon();
         }
     }
+
 
 	// Get movement input
 	moveInput(&ks);
@@ -480,10 +481,6 @@ void Player::updateSpecific(float deltaTime)
 	//printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
 
 	//crouch(deltaTime);
-
-    // Update weapon and skills
-    m_weaponManager->update(deltaTime);
-    m_skillManager->update(deltaTime);
 
     if (m_godMode)
     {
