@@ -29,6 +29,8 @@ namespace Graphics
 
     void Graphics::SSAORenderPass::render() const
     {
+        Global::context->OMSetRenderTargets(0, nullptr, nullptr);
+
         static float clear[4] = { 0 };
         Global::context->ClearUnorderedAccessViewFloat(ssaoOutput, clear);
 
