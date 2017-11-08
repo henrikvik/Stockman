@@ -9,6 +9,7 @@ using namespace Logic;
 #include <AI\Behavior\AStar.h>
 #include <AI\EnemyTest.h>
 #include <AI\EnemyNecromancer.h>
+#include <AI\EnemyBossBaddie.h>
 #include <AI\EnemyChaser.h>
 #include <Misc\ComboMachine.h>
 
@@ -38,6 +39,7 @@ EntityManager::EntityManager()
     m_aiType = NORMAL_MODE;
 
     //allocateData(); was here
+    registerCreationFunctions();
     loadDebugCmds();
 
     m_waveManager.setName(FILE_ABOUT_WHALES);
@@ -72,9 +74,9 @@ void EntityManager::registerCreationFunctions()
     };
     m_enemyFactory[EnemyType::BOSS_1] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } *btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.9f, 4.5f, 1.9f } *btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 5);
-        Enemy* enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, body, cube.getDimensionsRef());
+        Enemy* enemy = newd EnemyBossBaddie(body, cube.getDimensionsRef());
         enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
 
@@ -268,7 +270,7 @@ Enemy* EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
     }
     catch (std::exception& ex)
     {
-        printf("Error when creating enemy, reason: %s\n", ex.what());
+        printf("Error when creating enemy, key: %d, reason: %s\n", static_cast<int> (id), ex.what());
     }
     return nullptr;
 }

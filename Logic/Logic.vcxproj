@@ -190,6 +190,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\AI\Behavior\BigBadBehavior.h" />
+    <ClInclude Include="include\AI\EnemyBossBaddie.h" />
     <ClInclude Include="include\Physics\FuncContactResult.h" />
     <ClInclude Include="include\Misc\CommandsFile.h" />
     <ClInclude Include="include\GameType.h" />
@@ -263,6 +264,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Behavior\BigBadBehavior.cpp" />
+    <ClCompile Include="source\AI\EnemyBossBaddie.cpp" />
     <ClCompile Include="source\Physics\FuncContactResult.cpp" />
     <ClCompile Include="source\Misc\CommandsFile.cpp" />
     <ClCompile Include="source\Player\HUDManager.cpp" />

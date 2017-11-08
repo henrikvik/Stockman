@@ -52,14 +52,16 @@ namespace Logic
 
 			virtual void update(Player const &player, float deltaTime,
 				std::vector<Enemy*> const &closeEnemies);
-			virtual void useAbility(Entity const &target) {};
+            virtual void useAbility(Entity const &target) {};
+            virtual void useAbility(Entity const &target, int phase) { useAbility(target); };
 			virtual void updateDead(float deltaTime) = 0;
 			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
             void onEffectEnd(int stacks, Effect const &effect);
 
-			Projectile* shoot(btVector3 dir, Graphics::ModelID id, float speed, float gravity, float scale);
+			Projectile* shoot(btVector3 dir, Graphics::ModelID id,
+                float speed, float gravity, float scale);
 
 			// for debugging
 			void debugRendering(Graphics::Renderer &renderer);

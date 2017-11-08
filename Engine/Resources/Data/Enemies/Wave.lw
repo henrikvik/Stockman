@@ -7,9 +7,16 @@
 	"bossWaves": "9";
 }
 { // 0
-	"enemies" : "0";
+	"enemies" : "";
+	"bosses": 1;
 	"triggers" : 7;
-	"bosses": 0;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 77.f;
+	"y": 66.f;
+	"z": 0.f;
 }
 {
 	"id": 1;
