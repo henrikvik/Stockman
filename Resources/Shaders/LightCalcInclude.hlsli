@@ -60,7 +60,7 @@ Texture2D<uint2> LightGrid : register(t1);
 StructuredBuffer<Light> Lights : register(t2);
 
 Texture2D shadowMap : register(t3);
-SamplerState Sampler : register(s0);
+SamplerState Sampler : register(s2);
 
 SamplerComparisonState cmpSampler : register(s1);
 
