@@ -18,7 +18,7 @@ namespace Logic {
 		{
 			Enemy *enemy;
 			std::vector<Enemy*> closeEnemies;
-			const Player *target;
+			Player const *target;
 			Behavior *behavior;
 			float deltaTime;
 		};

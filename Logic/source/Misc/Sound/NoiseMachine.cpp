@@ -161,6 +161,7 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
 	// Init all the sfx here
     int count = 1; // Just for debugging purposes, won't crash anything
     ERRCHECK(createSound(loadMode, SFX::BOING, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_1, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability1.mp3", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the sfx
 	for (int i = 0; i < THRESHOLD::MAX_SFX; i++)
@@ -176,7 +177,7 @@ int NoiseMachine::initMusic(LOAD_MODE loadMode)
 	// Init all the music here
     int count = 2; // Just for debugging purposes, won't crash anything
 	ERRCHECK(createSound(loadMode, MUSIC::ENRAGE, CHANNEL_GROUP::CHANNEL_MUSIC, "enrageTimer.mp3", FMOD_3D));
-	ERRCHECK(createSound(loadMode, MUSIC::TEST_MUSIC, CHANNEL_GROUP::CHANNEL_MUSIC, "music.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, MUSIC::TEST_MUSIC, CHANNEL_GROUP::CHANNEL_MUSIC, "music.ogg", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the music
 	for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)

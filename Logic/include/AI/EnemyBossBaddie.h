@@ -9,8 +9,13 @@ namespace Logic
     class EnemyBossBaddie : public Enemy
     {
     private:
-        static const float BASE_SPEED;
-        static const int BASE_DAMAGE, MAX_HP;
+        static const float BASE_SPEED, ABILITY_1_DURATION;
+        static const int BASE_DAMAGE, MAX_HP, ABILITIES = 1;
+
+        bool usingAbility[EnemyBossBaddie::ABILITIES];
+        float abilityTimer[ABILITIES];
+
+        void useAbility1(Entity const &target);
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
         virtual void useAbility(Entity const &target, int phase);

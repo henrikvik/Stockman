@@ -41,7 +41,8 @@ namespace Sound
     // Put all identifier for sfx here
     enum SFX
     {
-        BOING
+        BOING,
+        BOSS_1_ABILITY_1
     };
 
     // Put all identifier for music here
