@@ -366,7 +366,7 @@ void Logic::HUDManager::updateGUIElemets()
 
 
     //skills
-    if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0)
+    if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0 && info.currentSkills[0] <= 2 && info.currentSkills[1] <= 2)
     {
         
         HUDElements.push_back(skillList.at(info.currentSkills[0]));
