@@ -204,7 +204,7 @@ void Logic::HUDManager::updateTextElements()
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 430);
-        text.font = Resources::Fonts::KG18;
+        text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
 
@@ -212,7 +212,7 @@ void Logic::HUDManager::updateTextElements()
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 630);
-        text.font = Resources::Fonts::KG18;
+        text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
     }
@@ -221,17 +221,17 @@ void Logic::HUDManager::updateTextElements()
         liveText.push_back(std::to_wstring(info.activeAmmo[0] + info.activeAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
-        text.position = DirectX::SimpleMath::Vector2(1183, 630);
+        text.position = DirectX::SimpleMath::Vector2(1183, 632);
         
-        text.font = Resources::Fonts::KG18;
+        text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
 
         liveText.push_back(std::to_wstring(info.inactiveAmmo[0] + info.inactiveAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
-        text.position = DirectX::SimpleMath::Vector2(1183, 430);
-        text.font = Resources::Fonts::KG18;
+        text.position = DirectX::SimpleMath::Vector2(1183, 428);
+        text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
     }
