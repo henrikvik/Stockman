@@ -27,6 +27,9 @@ namespace Logic
 			UPGRADE_INCREASE_MAGSIZE	= 0x40,
 			UPGRADE_IS_BOUNCING			= 0x80,
 			UPGRADE_TRANSFERABLE		= 0x100,
+            UPGRADE_CROSSBOW            = 0X200,
+            UPGRADE_ICESTAFF            = 0x400,
+            UPGRADE_SLEDGEHAMMER        = 0x800,
 		};
 
 		struct FlatUpgrades {

@@ -6,11 +6,27 @@
 	"increaseAmmoCap" : 0;
 	"increaseMagSize" : 0;
 }
-{ // AMMO +10
+{ // Damage +1
+	"flags": 522; // 0x1 + 0x2 + 0x8
+	"increaseCooldown" : 0f;
+	"increaseDamage" : 1;
+	"increaseSize" : 1;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 0;
+}
+{ // add ammo cap 20
 	"flags": 33; // 0x1 + 0x20
 	"increaseCooldown" : 0f;
 	"increaseDamage" : 0;
 	"increaseSize" : 0;
-	"increaseAmmoCap" : 10;
+	"increaseAmmoCap" : 20;
 	"increaseMagSize" : 0;
+}
+{ // add mag size 40
+	"flags": 65; // 0x1 + 0x40
+	"increaseCooldown" : 0f;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 40;
 }

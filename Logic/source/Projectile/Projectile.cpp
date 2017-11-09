@@ -181,11 +181,10 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 void Projectile::upgrade(Upgrade const &upgrade)
 {
 	long long flags = upgrade.getTranferEffects();
-
-	if (flags & Upgrade::UPGRADE_INCREASE_DMG)
-	{
-		m_pData.damage = upgrade.getFlatUpgrades().increaseDmg;
-	}
+    if (flags & Upgrade::UPGRADE_INCREASE_DMG)
+    {
+        m_pData.damage += upgrade.getFlatUpgrades().increaseDmg;
+    }
 	if (flags & Upgrade::UPGRADE_IS_BOUNCING)
 	{
 		this->getRigidBody()->setRestitution(1.f);

@@ -35,7 +35,7 @@ namespace Logic
 		};
 
 		enum UPGRADE_ID {
-			BOUNCE, P10_AMMO, LAST_ITEM_IN_UPGRADES
+			BOUNCE, P1_DAMAGE, LAST_ITEM_IN_UPGRADES
 		};
 
 		StatusManager();

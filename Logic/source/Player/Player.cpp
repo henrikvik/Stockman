@@ -169,6 +169,12 @@ void Player::registerDebugCmds()
     win->registerCommand("LOG_PRINT_POS", [&](std::vector<string> &para) -> std::string {
         return "x: " + to_string((double) getPosition().x) + ", y: " + to_string((double) getPosition().y) + ", z: " + to_string((double) getPosition().z);
     });
+    win->registerCommand("BOOST_ALL_DAMAGE", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addUpgrade(StatusManager::P1_DAMAGE);
+
+        return "All weapons do 1 extra damage";
+    });
 }
 
 void Player::clear()
@@ -297,10 +303,16 @@ void Player::upgrade(Upgrade const & upgrade)
 {
 	long long flags = upgrade.getTranferEffects();
 
-	if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
-	{
+    if (flags & Upgrade::UPGRADE_INCREASE_CD)
+    {
 
-	}
+    }if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
+    {
+
+    }if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
+    {
+
+    }
 }
 
 void Player::updateSound(float deltaTime)
