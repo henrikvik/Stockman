@@ -93,9 +93,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_switchWeaponTwo = DirectX::Keyboard::Keys::D2;
 	m_switchWeaponThree = DirectX::Keyboard::Keys::D3;
 	m_reloadWeapon = DirectX::Keyboard::Keys::R;
-    m_useSkillPrimary = DirectX::Keyboard::Keys::F;
+    m_useSkillPrimary = DirectX::Keyboard::Keys::Q;
     m_useSkillSecondary = DirectX::Keyboard::Keys::E;
-    m_useSkillTertiary = DirectX::Keyboard::Keys::G;
+    m_useSkillTertiary = DirectX::Keyboard::Keys::F;
 	m_listenerData->update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 }
 

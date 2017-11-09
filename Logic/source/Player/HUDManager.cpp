@@ -153,6 +153,23 @@ void Logic::HUDManager::constructGUIElements()
     height = 85.0f / 1024;
     staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 720, 15, 70, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
 
+    //hotkey skill 1
+    x = 372.f / 1024;
+    y = 266.0f / 1024;
+    width = 129.0f / 1024;
+    height = 148.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -170, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+    //hotkey skill 2
+    x = 595.f / 1024;
+    y = 266.0f / 1024;
+    width = 129.0f / 1024;
+    height = 148.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+
+
+
 }
 
 void Logic::HUDManager::updateTextElements()
@@ -204,7 +221,7 @@ void Logic::HUDManager::updateTextElements()
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 430);
-        text.font = Resources::Fonts::KG18;
+        text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
 
@@ -212,7 +229,7 @@ void Logic::HUDManager::updateTextElements()
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 630);
-        text.font = Resources::Fonts::KG18;
+        text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
     }
@@ -221,17 +238,17 @@ void Logic::HUDManager::updateTextElements()
         liveText.push_back(std::to_wstring(info.activeAmmo[0] + info.activeAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
-        text.position = DirectX::SimpleMath::Vector2(1183, 630);
+        text.position = DirectX::SimpleMath::Vector2(1183, 632);
         
-        text.font = Resources::Fonts::KG18;
+        text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
 
         liveText.push_back(std::to_wstring(info.inactiveAmmo[0] + info.inactiveAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
-        text.position = DirectX::SimpleMath::Vector2(1183, 430);
-        text.font = Resources::Fonts::KG18;
+        text.position = DirectX::SimpleMath::Vector2(1183, 428);
+        text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
     }
@@ -247,8 +264,71 @@ void Logic::HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
     }
+
+    //time and enrage/ survive
+
+    int minutes = info.timeRemaining / 60;
+    int seconds = info.timeRemaining - (minutes*60);
+    std::wstring timeString = L"";
+    if (seconds < 0)
+    {
+        timeString = L"0:00";
+        liveText.push_back(timeString);
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(735, 15);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(TextRenderInfo(text));
+
+        text.color = DirectX::SimpleMath::Color(0.9f, 0.0f, 0.3f);
+        liveText.push_back(L"ENRAGED!");
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(520, 15);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+    else
+    {
+        if (seconds < 10)
+        {
+            timeString = std::to_wstring(minutes) + L":0" + std::to_wstring(seconds);
+        }
+        else
+        {
+            timeString = std::to_wstring(minutes) + L":" + std::to_wstring(seconds);
+        }
+        liveText.push_back(timeString);
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(735, 15);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(TextRenderInfo(text));
+
+        text.color = DirectX::SimpleMath::Color(0.0f, 0.0f, 0.0f);
+        liveText.push_back(L"SURVIVE");
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(520, 15);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(TextRenderInfo(text));
+
+    }
     
-    
+    //wave counter
+    text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
+    std::wstring wave = std::to_wstring(info.wave);
+    wave += L"/10";
+    liveText.push_back(wave);
+    text.text = liveText.at(last).c_str();
+    text.position = DirectX::SimpleMath::Vector2(660, 15);
+    text.font = Resources::Fonts::KG14;
+
+    HUDText.push_back(TextRenderInfo(text));
 
 }
 
@@ -286,7 +366,7 @@ void Logic::HUDManager::updateGUIElemets()
 
 
     //skills
-    if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0)
+    if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0 && info.currentSkills[0] <= 2 && info.currentSkills[1] <= 2)
     {
         
         HUDElements.push_back(skillList.at(info.currentSkills[0]));
