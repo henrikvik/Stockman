@@ -47,8 +47,12 @@ void WeaponManager::clear()
 
 void WeaponManager::reset()
 {
+    // Reset ammo
 	for (int i = 0; i < m_weaponLoadouts.size(); i++)
         m_weaponLoadouts[i]->ammoContainer->reset();
+
+    // Reset current weapon
+    m_currentWeapon = m_weaponLoadouts[0];
 }
 
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
