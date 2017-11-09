@@ -58,7 +58,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 		}
 	}
 
-    onUse(firedProjectiles);
+    onUse(firedProjectiles, shooter);
 }
 
 btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)

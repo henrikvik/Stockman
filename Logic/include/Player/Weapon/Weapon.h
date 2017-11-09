@@ -58,7 +58,7 @@ namespace Logic
         void setSpawnFunctions(ProjectileManager &projManager);
 
 		void use(btVector3 position, float yaw, float pitch, Entity& shooter);
-        virtual void onUse(std::vector<Projectile*> &projectiles) {};
+        virtual void onUse(std::vector<Projectile*> &projectiles, Entity& shooter) {};
 
         SpawnProjectile getSpawnProjectileFunc();
 		ProjectileData* getProjectileData();

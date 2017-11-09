@@ -23,7 +23,7 @@ WeaponFreezeGrenade::~WeaponFreezeGrenade()
     delete m_freezeData;
 }
 
-void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles)
+void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& shooter)
 {
     for (Projectile* p : projectiles)
     {

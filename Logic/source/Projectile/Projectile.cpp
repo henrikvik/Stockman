@@ -21,17 +21,6 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 	m_bulletTimeMod = 1.f;
 }
 
-Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, int damage, float speed, float gravityModifer, float ttl)
-: Entity(body, halfExtent, Graphics::ModelID::SPHERE)
-{
-	m_pData.damage = damage;
-	m_pData.speed = speed;
-	m_pData.gravityModifier = gravityModifer;
-	m_pData.ttl = ttl;
-	m_remove = false;
-	m_bulletTimeMod = 1.f;
-}
-
 Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
 : Entity(body, halfExtent, Graphics::ModelID::SPHERE)
 {

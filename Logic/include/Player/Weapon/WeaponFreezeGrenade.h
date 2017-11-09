@@ -16,7 +16,7 @@ namespace Logic
         WeaponFreezeGrenade(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo, ProjectileData &freezeData, int splitCount);
         virtual ~WeaponFreezeGrenade();
     private:
-        virtual void onUse(std::vector<Projectile*> &projectiles);
+        virtual void onUse(std::vector<Projectile*> &projectiles, Entity& shooter);
 
         ProjectileData* m_freezeData;
         int m_splitCount;

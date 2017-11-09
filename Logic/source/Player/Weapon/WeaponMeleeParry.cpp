@@ -18,17 +18,21 @@ WeaponMeleeParry::~WeaponMeleeParry()
 {
 }
 
-void WeaponMeleeParry::onUse(std::vector<Projectile*>& projectiles)
+void WeaponMeleeParry::onUse(std::vector<Projectile*>& projectiles, Entity& shooter)
 {
+    static btVector3 pPosition;
     for (Projectile* p : projectiles)
     {
+        pPosition = shooter.getPositionBT();
         p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
-
+            
             PhysicsObject* obj = reinterpret_cast<PhysicsObject*>(data.dataPtr);
+
+            btVector3 knockbackDir = (obj->getPositionBT() - pPosition).normalize();
 
             if (Enemy* enemy = dynamic_cast<Enemy*>(obj))
             {
-                obj->getRigidBody()->setLinearVelocity(btVector3(0.f, 1.f, 0.f) * m_knockbackPower);
+                obj->getRigidBody()->setLinearVelocity(knockbackDir * m_knockbackPower);
                 enemy->getStatusManager().addStatus(StatusManager::EFFECT_ID::STUN, 1);
             }
 

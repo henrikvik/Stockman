@@ -14,7 +14,7 @@ namespace Logic
         virtual ~WeaponMeleeParry();
 
     private:
-        void onUse(std::vector<Projectile*> &projectiles);
+        void onUse(std::vector<Projectile*> &projectiles, Entity& shooter);
 
         float m_knockbackPower;
     };
