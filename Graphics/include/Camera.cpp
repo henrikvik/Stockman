@@ -30,10 +30,12 @@ namespace Graphics
 
 		this->pos = pos;
 
+
 		values.view = this->view;
 		values.vP = this->view * this->projection;
 		values.invP = this->projection.Invert();
 		values.camPos = DirectX::SimpleMath::Vector4(pos.x, pos.y, pos.z, 1);
+        values.forward = DirectX::SimpleMath::Vector4(forward.x, forward.y, forward.z, 0);
 
 		inverseMatrixes.invP = values.invP;
 		inverseMatrixes.invView = view.Invert();

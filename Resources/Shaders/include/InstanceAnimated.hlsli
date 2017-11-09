@@ -3,10 +3,10 @@
 
 struct InstanceAnimated : InstanceStatic
 {
-    float4x4 jointTransforms[32];
+    float4x4 jointTransforms[20];
 };
 
-float4x4 calculateAnimationMatrix(Vertex vertex, InstanceAnimated instance)
+float4x4 calcAnimationMatrix(Vertex vertex, InstanceAnimated instance)
 {
     float4x4 animationMatrix;
 

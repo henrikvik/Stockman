@@ -98,7 +98,7 @@ struct FoliageRenderInfo : StaticRenderInfo
 struct AnimatedRenderInfo : StaticRenderInfo
 {
     const char * animationName = "";
-    float animationProgress = 0;
+    float animationTimeStamp = 0;
 };
 
 struct EnemyRenderInfo : AnimatedRenderInfo

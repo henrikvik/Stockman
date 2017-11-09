@@ -11,7 +11,7 @@ namespace Graphics
 {
     Sun::Sun():
 		lightMatrixBuffer(Global::device),
-		lightDataBuffer(Global::device)
+		globalLightBuffer(Global::device)
 	{
 		pos = DirectX::SimpleMath::Vector4(0, 50, 0.5, 1);
 
@@ -19,6 +19,9 @@ namespace Graphics
 		view = DirectX::XMMatrixLookAtRH(pos, DirectX::SimpleMath::Vector3(0, 0, 0), DirectX::SimpleMath::Vector3(0, 1, 0));
 
 		matrixData.vp = view * projection;
+
+        globalLight.color = DirectX::SimpleMath::Vector3(0.1, 0.1, 0.3);
+        globalLight.ambient = DirectX::SimpleMath::Vector3(0.2, 0.2, 0.2);
 	}
 
 	Sun::~Sun()
@@ -32,22 +35,20 @@ namespace Graphics
 
         DirectX::SimpleMath::Matrix rotation = DirectX::SimpleMath::Matrix::CreateRotationZ(rotationDeg);
 
-		this->shaderData.pos = DirectX::SimpleMath::Vector4::Transform(pos, rotation);
+		this->globalLight.position = DirectX::SimpleMath::Vector4::Transform(pos, rotation);
 
 		//If its nighttime the shadows fade out
-        DirectX::SimpleMath::Vector3 lightDir = -shaderData.pos;
+        DirectX::SimpleMath::Vector3 lightDir = -globalLight.position;
 		lightDir.Normalize();
 
         DirectX::SimpleMath::Vector3 groundDir(1, 0, 0);
 
-		float fade = snap(1.0f - abs(lightDir.Dot(groundDir)), 0, SUNSET_TIME);
-		shaderData.fade = fade / SUNSET_TIME;
 
-		this->shaderData.pos = shaderData.pos + Global::mainCamera->getPos();
-		view = DirectX::XMMatrixLookAtRH(shaderData.pos, Global::mainCamera->getPos(), DirectX::SimpleMath::Vector3(0, 1, 0));
+		this->globalLight.position = globalLight.position + Global::mainCamera->getPos();
+		view = DirectX::XMMatrixLookAtRH(globalLight.position, Global::mainCamera->getPos(), DirectX::SimpleMath::Vector3(0, 1, 0));
 		matrixData.vp = view * projection;
 
-		lightDataBuffer.write(Global::context, &shaderData, sizeof(shaderData));
+        globalLightBuffer.write(Global::context, &globalLight, sizeof(globalLight));
 		lightMatrixBuffer.write(Global::context, &matrixData, sizeof(matrixData));
 	}
 

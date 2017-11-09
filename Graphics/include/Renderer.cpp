@@ -54,7 +54,8 @@ namespace Graphics
 
 #pragma endregion
 		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
-        , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
+        , instanceStaticBuffer(device, CpuAccess::Write, INSTANCE_CAP(InstanceAnimated))
+        , instanceAnimatedBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
 
     #pragma region Shared Shader Resources
         , colorMap(WIN_WIDTH, WIN_HEIGHT)
@@ -112,7 +113,6 @@ namespace Graphics
             ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
             return sampler;
         }();
-
         Global::transparencyBlendState = [&]() {
             ID3D11BlendState * state = nullptr;
             D3D11_BLEND_DESC blendDesc = { 0 };
@@ -192,8 +192,8 @@ namespace Graphics
         renderPasses =
         {
             newd ParticleDepthRenderPass(depthStencil),
-            newd DepthRenderPass({}, {staticInstanceBuffer}, {*Global::mainCamera->getBuffer()}, depthStencil),
-            newd ShadowRenderPass({}, { staticInstanceBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
+            newd DepthRenderPass({}, { instanceStaticBuffer }, {*Global::mainCamera->getBuffer()}, depthStencil),
+            newd ShadowRenderPass({}, { instanceStaticBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
             newd LightCullRenderPass(
                 {},
                 {
@@ -209,7 +209,7 @@ namespace Graphics
                     lightOpaqueGridUAV
                 }
             ),
-            newd SkyBoxRenderPass({ *fakeBackBuffer },{},{ *sun.getLightDataBuffer() }, depthStencil),
+            newd SkyBoxRenderPass({ *fakeBackBuffer },{},{ *sun.getGlobalLightBuffer() }, depthStencil),
             newd ForwardPlusRenderPass(
                 {
                     *fakeBackBuffer,
@@ -221,12 +221,11 @@ namespace Graphics
                     lightOpaqueGridSRV,
                     lightsNew,
                     shadowMap,
-                    staticInstanceBuffer
+                    instanceStaticBuffer
                 },
                 {
                     *Global::mainCamera->getBuffer(),
-                    *sun.getLightDataBuffer(),
-                    *sun.getLightMatrixBuffer()
+                    *sun.getGlobalLightBuffer()
                 },
                 depthStencil
             ),
@@ -234,7 +233,22 @@ namespace Graphics
             newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
             newd DepthOfFieldRenderPass({ *fakeBackBufferSwap }, { *fakeBackBuffer, depthStencil }),
             newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
-            newd SnowRenderPass({ backBuffer },{lightOpaqueIndexList, lightOpaqueGridSRV, lightsNew, shadowMap}, {*sun.getLightMatrixBuffer(), *sun.getLightDataBuffer()}, depthStencil),
+            newd SnowRenderPass(
+                {
+                    backBuffer 
+                },
+                {
+                    lightOpaqueIndexList, 
+                    lightOpaqueGridSRV, 
+                    lightsNew, 
+                    shadowMap
+                }, 
+                {
+                    *sun.getLightMatrixBuffer(),
+                    *sun.getGlobalLightBuffer()
+                },
+                depthStencil
+            ),
             newd GUIRenderPass({backBuffer}),
         };
     }
@@ -285,6 +299,18 @@ namespace Graphics
 
     void Renderer::update(float deltaTime)
     {
+        static StaticRenderInfo infotest;
+        infotest.model = Resources::Models::Staff;
+        infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
+        RenderQueue::get().queue(&infotest);
+
+        static LightRenderInfo lightInfo;
+        lightInfo.color = DirectX::Colors::DodgerBlue;
+        lightInfo.intensity = 1;
+        lightInfo.position = Global::mainCamera->getPos();
+        lightInfo.range = 10;
+        RenderQueue::get().queue(&lightInfo);
+
         writeInstanceBuffers();
         sun.update();
 
@@ -292,7 +318,9 @@ namespace Graphics
    
         for (auto & renderPass : renderPasses)
         {
+            PROFILE_BEGIN(__FUNCSIG__);
             renderPass->update(deltaTime);
+            PROFILE_END();
         }
     }
 
@@ -593,14 +621,6 @@ namespace Graphics
         clear();
         Global::context->RSSetViewports(1, &viewPort);
 
-        StaticRenderInfo infotest;
-        infotest.model = Resources::Models::Staff;
-        infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
-
-        RenderQueue &teststsetes = RenderQueue::get();
-        teststsetes.queue<StaticRenderInfo>(&infotest);
-
-
         for (auto & renderPass : renderPasses)
         {
             renderPass->render();
@@ -631,29 +651,6 @@ namespace Graphics
         fakeBackBuffer->renderTarget = fakeBackBufferSwap->renderTarget;
         fakeBackBufferSwap->renderTarget = temp2;
 	}
-
-    //dopricetad, this is a RenderPass now
-  //  void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
-  //  {
-  //      Global::context->PSSetShaderResources(0, 1, &texture);
-
-  //      UINT zero = 0;
-  //      Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-  //      Global::context->OMSetRenderTargets(1, &backBuffer, nullptr);
-
-  //      Global::context->IASetInputLayout(fullscreenQuad);
-  //      Global::context->VSSetShader(fullscreenQuad, nullptr, 0);
-  //      Global::context->PSSetShader(fullscreenQuad, nullptr, 0);
-
-  //      static ID3D11SamplerState * pointClamp = Global::cStates->PointClamp();
-  //      Global::context->PSSetSamplers(0, 1, &pointClamp);
-
-		//PROFILE_BEGIN("Draw(4, 0)");
-  //      Global::context->Draw(4, 0);
-		//PROFILE_END();
-
-
 
     void Renderer::renderDebugInfo(Camera* camera)
     {
@@ -696,46 +693,73 @@ namespace Graphics
 
     void Renderer::writeInstanceBuffers()
     {
-        InstanceData * instanceBuffer = staticInstanceBuffer.map(Global::context);
-        for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
+        instanceStaticBuffer.write([](InstanceStatic * instanceBuffer)
         {
-            for (auto & sinfo : model_infos.second)
+            for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
             {
-                InstanceData instanceData = {};
-                instanceData.transform = sinfo->transform;
-                instanceData.transformInvT = sinfo->transform.Invert().Transpose();
-
-
-                *instanceBuffer++ = instanceData;
+                for (auto & sinfo : model_infos.second)
+                {
+                    InstanceStatic instance = {};
+                    instance.world = sinfo->transform;
+                    instance.worldInvT = sinfo->transform.Invert().Transpose();
+                    *instanceBuffer++ = instance;
+                }
             }
-        }
-        staticInstanceBuffer.unmap(Global::context);
+        });
 
-        Light * lightBuffer = lightsNew.map(Global::context);
-        for (auto & info : RenderQueue::get().getQueue<LightRenderInfo>())
+        instanceAnimatedBuffer.write([](InstanceAnimated * instanceBuffer)
         {
-            Light light = {};
-            light.range = info->range;
-            light.intensity = info->intensity;
-            light.color = DirectX::SimpleMath::Vector3(info->color.x, info->color.y, info->color.z);
+            for (auto & model_infos : RenderQueue::get().getQueue<AnimatedRenderInfo>())
+            {
+                HybrisLoader::Skeleton * skeleton = &ModelLoader::get().getModel((Resources::Models::Files)model_infos.first)->getSkeleton();
 
-            light.positionWS = info->position;
-            light.positionVS = DirectX::SimpleMath::Vector4::Transform(
-                DirectX::SimpleMath::Vector4(info->position.x, info->position.y, info->position.z, 1.f), 
-                Global::mainCamera->getView()
-            );
+                for (auto & info : model_infos.second)
+                {
+                    InstanceAnimated instance = {};
+                    instance.world = info->transform;
+                    instance.worldInvT = info->transform.Invert().Transpose();
 
-            Debug::PointLight(light);
-            *lightBuffer++ = light;
-        }
+                    if (strlen(info->animationName) != 0)
+                    {
+                        auto jointTransforms = skeleton->evalAnimation(info->animationName, info->animationTimeStamp);
+                        for (size_t i = 0; i < jointTransforms.size(); i++)
+                        {
+                            instance.jointTransforms[i] = jointTransforms[i];
+                        }
+                    }
 
-        for (size_t i = RenderQueue::get().getQueue<LightRenderInfo>().size(); i < INSTANCE_CAP(LightRenderInfo); i++)
+                    *instanceBuffer++ = instance;
+                }
+            }
+        });
+
+        lightsNew.write([](Light * lightBuffer)
         {
-            Light light;
-            ZeroMemory(&light, sizeof(light));
-            *lightBuffer++ = light;
-        }
-        lightsNew.unmap(Global::context);
+            for (auto & info : RenderQueue::get().getQueue<LightRenderInfo>())
+            {
+                Light light = {};
+                light.range = info->range;
+                light.intensity = info->intensity;
+                light.color = DirectX::SimpleMath::Vector3(info->color.x, info->color.y, info->color.z);
+
+                light.position = info->position;
+                light.viewPosition = DirectX::SimpleMath::Vector4::Transform
+                (
+                    DirectX::SimpleMath::Vector4(info->position.x, info->position.y, info->position.z, 1.f), 
+                    Global::mainCamera->getView()
+                );
+
+                Debug::PointLight(light);
+                *lightBuffer++ = light;
+            }
+
+            for (size_t i = RenderQueue::get().getQueue<LightRenderInfo>().size(); i < INSTANCE_CAP(LightRenderInfo); i++)
+            {
+                Light light;
+                ZeroMemory(&light, sizeof(light));
+                *lightBuffer++ = light;
+            }
+        });
     }
 
 

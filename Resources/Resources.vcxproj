@@ -157,12 +157,6 @@
   <ItemGroup>
     <ClCompile Include="ResourceCompiler.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\include\Camera.hlsli" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shaders\ForwardPlus.hlsl" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
