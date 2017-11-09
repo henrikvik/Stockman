@@ -104,8 +104,6 @@ namespace Graphics
 	{
 		DirectX::SimpleMath::Matrix transform;
 		DirectX::SimpleMath::Matrix transformInvT;
-		float freeze;
-		float burn;
 	};
 
 	struct ButtonInfo

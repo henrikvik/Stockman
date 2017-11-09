@@ -32,8 +32,6 @@ namespace Graphics
 
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
         virtual ~Renderer();
-        void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, Camera * camera);
-
 
         void render() const;
         void update(float deltaTime);
@@ -44,9 +42,6 @@ namespace Graphics
 
         //indicates how gray the screen will be
         void setBulletTimeCBuffer(float value);
-
-        void updateShake(float deltaTime);
-        void startShake(float radius, float duration);
     private:
 
     #pragma region Shared Shader Resources
@@ -66,6 +61,13 @@ namespace Graphics
 
         ShaderResource* fakeBackBuffer;
         ShaderResource* fakeBackBufferSwap;
+
+    #pragma region Instance Buffers
+        void writeInstanceBuffers();
+        StructuredBuffer<InstanceData> staticInstanceBuffer;
+    #pragma endregion
+
+
     #pragma endregion
         Sun sun;
         Shader fullscreenQuad;
@@ -82,14 +84,9 @@ namespace Graphics
         bool enableSnow = true;
         bool enableHud = true;
 
-        Menu menu;
-        HUD hud;
         DoF DoFRenderer;
-
         ConstantBuffer<float> bulletTimeBuffer;
 
-        //temp
-        ID3D11ShaderResourceView * glowTest;
 
 		//superTemp
 		struct StatusData
@@ -127,11 +124,8 @@ namespace Graphics
     #pragma region Draw Functions and Buffers
 
 
-        StructuredBuffer<InstanceData> instanceSBuffer;
-        ConstantBuffer<UINT> instanceOffsetBuffer;
 
-        void writeInstanceBuffers();
-        StructuredBuffer<InstanceData> staticInstanceBuffer;
+
 
     #pragma endregion
 

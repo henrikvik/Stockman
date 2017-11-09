@@ -29,6 +29,7 @@ namespace Graphics
 
     void Graphics::SSAORenderPass::render() const
     {
+        PROFILE_BEGIN("SSAO");
         Global::context->OMSetRenderTargets(0, nullptr, nullptr);
 
         static float clear[4] = { 0 };
@@ -83,6 +84,7 @@ namespace Graphics
         Global::context->CSSetShaderResources(1, 1, &srvNULL);
         ID3D11UnorderedAccessView * uavnull = nullptr;
         Global::context->CSSetUnorderedAccessViews(0, 1, &uavnull, nullptr);
+        PROFILE_END();
     }
 
     void Graphics::SSAORenderPass::update(float deltaTime)

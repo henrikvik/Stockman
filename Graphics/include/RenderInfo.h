@@ -83,6 +83,7 @@ struct TextRenderInfo : RenderInfo
     DirectX::SimpleMath::Color color;
 };
 
+
 struct StaticRenderInfo : RenderInfo
 {
     Resources::Models::Files model = Resources::Models::UnitCube;
@@ -95,7 +96,7 @@ struct FoliageRenderInfo : StaticRenderInfo
 
 struct AnimatedRenderInfo : StaticRenderInfo
 {
-    const char * animationName = "Rotate";
+    const char * animationName = "";
     float animationProgress = 0;
 };
 

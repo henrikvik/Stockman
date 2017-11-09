@@ -8,6 +8,7 @@
 #include "../Device.h"
 #include "../Utility/ConstantBuffer.h"
 #include "../Utility/TextureLoader.h"
+#include <Engine\Profiler.h>
 
 namespace Graphics
 {
@@ -44,6 +45,7 @@ namespace Graphics
         Global::context->RSSetState(Global::cStates->CullClockwise());
         Global::context->VSSetShaderResources(10, 1, &instanceBuffer);
 
+        Global::context->PSSetShaderResources(9, 1, *TextureLoader::get().getTexture(Resources::Textures::Grid));
         UINT instanceOffset = 0;
         for (auto & pair : RenderQueue::get().getQueue<QueueT>())
         {
@@ -58,9 +60,9 @@ namespace Graphics
 
             ID3D11ShaderResourceView * textures[4] =
             {
-                /*Diffuse */ *TextureLoader::get().getTexture(Resources::Textures::Grid), //material->getDiffuse(),
+                /*Diffuse */ material->getDiffuse(),
                 /*Normal  */ material->getNormals(),
-                /*Specular*/ *TextureLoader::get().getTexture(Resources::Textures::Grid),//material->getSpecular(),
+                /*Specular*/ material->getSpecular(),
                 /*Glow    */ material->getGlow()
             };
             Global::context->PSSetShaderResources(12, 4, textures);

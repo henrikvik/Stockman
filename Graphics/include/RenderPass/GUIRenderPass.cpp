@@ -37,6 +37,7 @@ Graphics::GUIRenderPass::~GUIRenderPass()
 
 void Graphics::GUIRenderPass::render() const
 {
+    PROFILE_BEGIN("GUI");
     enum { TL, TR, BL, BR};
     Global::context->IASetInputLayout(nullptr);
     Global::context->PSSetShader(spriteShader, nullptr, 0);
@@ -64,7 +65,7 @@ void Graphics::GUIRenderPass::render() const
     {
         Global::context->PSSetShaderResources(2, 1, *TextureLoader::get().getTexture(info->texture));
         offsetBuffer.write(Global::context, &offset, sizeof(offset));
-        Global::context->Draw(4, offset);
+        Global::context->Draw(4, 0);
         offset += 4;
     }
 
@@ -75,6 +76,7 @@ void Graphics::GUIRenderPass::render() const
     Global::context->PSSetSamplers(0, 1, Global::nulls);
     Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);
     Global::context->OMSetBlendState(Global::cStates->Opaque(), NULL, -1);
+    PROFILE_END();
 }
 
 void Graphics::GUIRenderPass::update(float deltaTime)

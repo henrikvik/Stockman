@@ -20,6 +20,7 @@ namespace Graphics
 
     void SkyBoxRenderPass::render() const
     {
+        PROFILE_BEGIN("Sky Box");
         Global::context->RSSetState(Global::cStates->CullCounterClockwise());
 
         Global::context->IASetInputLayout(nullptr);
@@ -38,6 +39,7 @@ namespace Graphics
 
         Global::context->RSSetState(Global::cStates->CullClockwise());
         Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
+        PROFILE_END();
     }
 
     void SkyBoxRenderPass::update(float deltaTime)

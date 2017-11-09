@@ -1,104 +1,110 @@
-#include "LightCalcInclude.hlsli"
+
+#include "include/Camera.hlsli"
+#include "include/LightCalc.hlsli"
+#include "include/Vertex.hlsli"
+#include "include/InstanceStatic.hlsli"
+
+#define USE_GRID_TEXTURE
+
+cbuffer cb0 : register(b0) { Camera camera; };
+cbuffer cb1 : register(b1) { DirectionalLight globalLight; };
+
+SamplerState                     linearClamp     : register(s0);
+SamplerState                     linearWrap      : register(s1);
+SamplerComparisonState           comparison      : register(s2);
+
+StructuredBuffer<uint>           lightIndexList  : register(t0);
+Texture2D<uint2>                 lightGrid       : register(t1);
+StructuredBuffer<Light>          lights          : register(t2);
+Texture2D                        shadowMap       : register(t3);
 
 
-#define INSTANCE_T_SLOT t10
-#include "Instance.hlsli"
+#ifdef USE_GRID_TEXTURE
+Texture2D                        gridTexture     : register(t9);
+#endif
+StructuredBuffer<InstanceStatic> instanceBuffer  : register(t10);
+StructuredBuffer<Vertex>         vertexBuffer    : register(t11);
+Texture2D                        diffuseTexture  : register(t12);
+Texture2D                        normalTexture   : register(t13);
+Texture2D                        specularTexture : register(t14);
+Texture2D                        glowTexture     : register(t15);
 
-#define VERTEX_T_SLOT t11
-#include "Vertex.hlsli"
 
-
-#define USE_GRID_TEXTURE true
-
-struct VSOutput
+struct Fragment
 {
-    float4 pos : SV_POSITION;
-    float4 worldPos : POS;
-    float4 lightPos : LIGHT_POS;
-    float3 normal : NORMAL;
-    float3 normalView : NORMALVIEW;
-    float2 uv : UV;
-    float3 biTangent : BITANGENT;
-    float3 tangent : TANGENT;
-    
-    float2 gridUV : GridUV;
+    float4 ndc        : SV_Position;
+    float4 position   : Position;
 
-    //Change this to struct later
-    float freeze : FREEZE;
-    float burn : BURN;
+    float3 normal     : Normal;
+    float4 normalView : NormalView;
+    float3 binormal   : Binormal;
+    float3 tangent    : Tangent;
+    
+    float2 uv         : UV;
+#ifdef USE_GRID_TEXTURE
+    float2 gridUV     : GridUV;
+#endif
 };
 
-
-struct PSOutput
+struct Targets
 {
-    float4 backBuffer : SV_Target0;
-    float4 glowMap : SV_Target1;
+    float4 color      : SV_Target0;
+    float4 glow       : SV_Target1;
     float4 normalView : SV_Target2;
 };
-#define GET_COL(mat, col) float3(mat[0][col],mat[1][col],mat[2][col])
-#define GET_ROW(mat, row) float3(mat[row][0],mat[row][1],mat[row][2])
-VSOutput VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId) 
+
+Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId) 
 {
-    Vertex vertex = getVertex(vertexId);
-    Instance instance = getInstance(instanceId);
+    Vertex vertex = vertexBuffer[vertexId];
+    InstanceStatic instance = instanceBuffer[instanceId];
+	Fragment fragment;
 
-	VSOutput output;
-
-
-    output.worldPos = mul(instance.world, float4(vertex.position, 1));
-    output.pos = mul(ViewProjection, output.worldPos);
-    output.freeze = instance.freeze;
-    output.burn = instance.burn;
-
-	output.uv = vertex.uv;
+    fragment.position   = mul(instance.world, float4(vertex.position, 1));
+    fragment.ndc        = mul(camera.viewProjection, fragment.position);
     
-    output.normal = mul(instance.worldInvT, float4(vertex.normal, 0));
-    output.normal = normalize(output.normal);
+    fragment.normal     = normalize(mul(instance.world, float4(vertex.normal, 0))).xyz;
+    fragment.binormal   = normalize(mul(instance.world, float4(vertex.binormal, 0))).xyz;
+    fragment.tangent    = normalize(mul(instance.world, float4(vertex.tangent, 0))).xyz;
+    fragment.uv         = vertex.uv;
 
-    output.normalView = normalize(mul(View, float4(output.normal, 0)));
+    fragment.normalView = normalize(mul(camera.view,    float4(fragment.normal, 0)));
 
-    output.lightPos = output.worldPos + float4(output.normal * 0.15f, 0);
-    output.lightPos = mul(lightVP, output.lightPos);
+#ifdef USE_GRID_TEXTURE
+    float3   localPosition = mul(instance.world, float4(vertex.position, 0)).xyz;
+    float3x3 tangentMatrix = float3x3(fragment.tangent, fragment.binormal, fragment.normal);
+    float3   worldTangent  = mul(tangentMatrix, localPosition);
+    fragment.gridUV = worldTangent.xy / 4;
+#endif
 
-    output.biTangent = normalize(mul(instance.world, float4(vertex.binormal, 0)));
-    output.tangent = normalize(mul(instance.world, float4(vertex.tangent, 0)));
-
-
-    float3 localPosition = mul(instance.world, float4(vertex.position, 0));
-    float3x3 tangentMatrix = float3x3(output.tangent, output.biTangent, output.normal);
-    float3 worldTangent = mul(tangentMatrix, localPosition);
-    output.gridUV = worldTangent.xy / 4;
-
-	return output;
+	return fragment;
 }
 
 
 [earlydepthstencil]
-PSOutput PS(VSOutput input) {
-	PSOutput output;
+Targets PS(Fragment fragment) 
+{
+    Targets targets;
+    
+    float3 normal = calcNormal(normalTexture.Sample(linearClamp, fragment.uv).xyz, fragment.normal, fragment.binormal, fragment.tangent);
+    float shadowFactor = calcShadowFactor(comparison, shadowMap, globalLight, 2);
 
+    float3 lightSum = calcDiffuse(globalLight, fragment.position, normal);
 
-    
-//#ifdef USE_GRID_TEXTURE
-    input.uv = input.gridUV;    
-//#endif
+    lightSum += float3(0.2, 0.2, 0.2); // TODO Move ambient to global light
 
-    float3 normal = getNormalMappedNormal(input.tangent, input.biTangent, input.normal, input.uv);
-    float shadow = calculateShadowValue(input.lightPos.xyz, 2);
-    float3 lighting = calculateDiffuseLight(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, shadow);
-    lighting += calculateSpecularity(input.worldPos.xyz, input.lightPos.xyz, input.pos.xyz, input.uv, input.normal, shadow);
-    
-    lighting = calculateStatusEffect(lighting, input.freeze, input.burn);
+    lightSum += calcAllLights(lightIndexList, lightGrid, lights, fragment.ndc, fragment.position, normal);
 
-    lighting = saturate(lighting);
-    lighting += float3(0.2, 0.2, 0.2);
-    
-    output.backBuffer = float4(lighting, 1); //500~
-    output.glowMap = glowMap.Sample(Sampler, input.uv); //300~
-    output.normalView = float4(input.normalView.xyz, 1); //300~
-    
-    
+    float3 color = float3(0, 0, 0);
 
-    
-    return output;
+    #ifdef USE_GRID_TEXTURE
+    color += gridTexture.Sample(linearWrap, fragment.gridUV).xyz;
+    #else
+    color += diffuseTexture.Sample(linearClamp, fragment.uv).xyz;
+    #endif
+
+    targets.color = float4(lightSum * color, 1); //500~
+    targets.glow = glowTexture.Sample(linearClamp, fragment.uv); //300~
+    targets.normalView = fragment.normalView; //300~
+
+    return targets;
 }
