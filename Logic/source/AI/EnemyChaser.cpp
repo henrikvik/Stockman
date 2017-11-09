@@ -11,6 +11,8 @@ EnemyChaser::EnemyChaser(btRigidBody* body)
     : Enemy(Resources::Models::Files::UnitCube, body, { 1, 1, 1 }, MAX_HP, BASE_DAMAGE, MOVE_SPEED, NECROMANCER_MINION, 0) // use in para instead note
 {
     setBehavior(MELEE);
+    getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
+    getSoundSource()->autoPlaySFX(Sound::SFX::FOOTSTEP_SMALL, 150, 75, 1.f, 0.10f);
 }
 
 EnemyChaser::~EnemyChaser()

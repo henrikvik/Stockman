@@ -40,9 +40,6 @@ namespace Graphics
         std::unordered_map<Resources::Fonts::Files, std::unique_ptr<DirectX::SpriteFont>> fonts;
         ConstantBuffer<UINT> offsetBuffer;
 
-        ID3D11BlendState* blendState;
-        void createBlendState();
-
         void textRender() const;
         bool isDrawableString(const wchar_t * text)const;
     };

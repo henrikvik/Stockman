@@ -17,7 +17,6 @@
 #include "HUD.h"
 #include "HybrisLoader\HybrisLoader.h"
 #include "Fog.h"
-#include "DoF.h"
 
 #include <SpriteBatch.h>
 
@@ -70,21 +69,12 @@ namespace Graphics
 
     #pragma endregion
         Sun sun;
-        Shader fullscreenQuad;
         Shader forwardPlus;
 		Shader depthShader;
 
         D3D11_VIEWPORT viewPort;
-        
-		bool enableSSAO = true;
-		bool enableGlow = true;
-		bool enableFog = false;
-		bool enableDOF = false;
-        bool enableCoCWindow = false;
-        bool enableSnow = true;
-        bool enableHud = true;
 
-        DoF DoFRenderer;
+
         ConstantBuffer<float> bulletTimeBuffer;
 
 

@@ -3,6 +3,7 @@
 #include <Misc\RandomGenerator.h>
 #include <Projectile\Projectile.h>
 #include <Misc\ComboMachine.h>
+
 using namespace Logic;
 
 const int EnemyNecromancer::SPEED_AB1 = 15,

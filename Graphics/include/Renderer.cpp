@@ -22,17 +22,14 @@
 #include "RenderPass\GlowRenderPass.h"
 #include "RenderPass\ParticleRenderPass.h"
 #include "RenderPass\SSAORenderPass.h"
+#include "RenderPass\DepthOfFieldRenderPass.h"
+#include "RenderPass\SnowRenderPass.h"
+
 #include "Utility\DebugDraw.h"
 
 
-#define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
 #define USE_OLD_RENDER false
-
-#if USE_TEMP_CUBE
-#include "TempCube.h"
-#endif
-
 
 #define MAX_DEBUG_POINTS 10000
 #define _INSTANCE_CAP 300
@@ -42,7 +39,6 @@ namespace Graphics
     uint32_t zero = 0;
 	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
 		: forwardPlus(device, Resources::Shaders::ForwardPlus)
-		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
 #pragma region RenderDebugInfo
         , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
@@ -51,7 +47,6 @@ namespace Graphics
 #pragma endregion
         , fog(device)
         , bulletTimeBuffer(device)
-        , DoFRenderer(device)
 #pragma region Foliage
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
@@ -118,6 +113,27 @@ namespace Graphics
             return sampler;
         }();
 
+        Global::transparencyBlendState = [&]() {
+            ID3D11BlendState * state = nullptr;
+            D3D11_BLEND_DESC blendDesc = { 0 };
+
+            blendDesc.IndependentBlendEnable = false;
+            blendDesc.AlphaToCoverageEnable = false;
+            blendDesc.RenderTarget[0].BlendEnable = true;
+            blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+            blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+            blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+            blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+            blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+            blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+            blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            //blendDesc.RenderTarget[0].LogicOp = D3D11_LOGIC_OP_CLEAR;
+
+            ThrowIfFailed(device->CreateBlendState(&blendDesc, &state));
+            return state;
+        }();
+
+
         { // CaNCeR!
             D3D11_TEXTURE2D_DESC desc = {};
             desc.Format = DXGI_FORMAT_R32G32_UINT;
@@ -145,6 +161,9 @@ namespace Graphics
             ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &lightOpaqueGridSRV));
             SAFE_RELEASE(texture);
         }
+
+        
+        
 
 		this->backBuffer = backBuffer;
 
@@ -213,7 +232,9 @@ namespace Graphics
             ),
             newd ParticleRenderPass({ *fakeBackBuffer }, depthStencil),
             newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
+            newd DepthOfFieldRenderPass({ *fakeBackBufferSwap }, { *fakeBackBuffer, depthStencil }),
             newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
+            newd SnowRenderPass({ backBuffer },{lightOpaqueIndexList, lightOpaqueGridSRV, lightsNew, shadowMap}, {*sun.getLightMatrixBuffer(), *sun.getLightDataBuffer()}, depthStencil),
             newd GUIRenderPass({backBuffer}),
         };
     }
@@ -227,6 +248,8 @@ namespace Graphics
 
         delete Global::cStates;
         SAFE_RELEASE(Global::comparisonSampler);
+        SAFE_RELEASE(Global::mirrorSampler);
+        SAFE_RELEASE(Global::transparencyBlendState);
         SAFE_RELEASE(lightOpaqueGridUAV);
         SAFE_RELEASE(lightOpaqueGridSRV);
 
@@ -235,8 +258,9 @@ namespace Graphics
             delete renderPass;
         }
 
+        TextureLoader::get().unloadAll();
+        ModelLoader::get().unloadAll();
     }
-
 	//this function is called in SkillBulletTime.cpp
 	void Renderer::setBulletTimeCBuffer(float amount)
 	{
@@ -599,34 +623,37 @@ namespace Graphics
 
 	void Renderer::swapBackBuffers()
 	{
-		ShaderResource * temp = fakeBackBuffer;
-		fakeBackBuffer = fakeBackBufferSwap;
-		fakeBackBufferSwap = temp;
+		ID3D11ShaderResourceView * temp = fakeBackBuffer->shaderResource;
+		fakeBackBuffer->shaderResource = fakeBackBufferSwap->shaderResource;
+		fakeBackBufferSwap->shaderResource = temp;
+
+        ID3D11RenderTargetView * temp2 = fakeBackBuffer->renderTarget;
+        fakeBackBuffer->renderTarget = fakeBackBufferSwap->renderTarget;
+        fakeBackBufferSwap->renderTarget = temp2;
 	}
 
-    void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
-    {
-        Global::context->PSSetShaderResources(0, 1, &texture);
+    //dopricetad, this is a RenderPass now
+  //  void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
+  //  {
+  //      Global::context->PSSetShaderResources(0, 1, &texture);
 
-        UINT zero = 0;
-        Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+  //      UINT zero = 0;
+  //      Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-        Global::context->OMSetRenderTargets(1, &backBuffer, nullptr);
+  //      Global::context->OMSetRenderTargets(1, &backBuffer, nullptr);
 
-        Global::context->IASetInputLayout(fullscreenQuad);
-        Global::context->VSSetShader(fullscreenQuad, nullptr, 0);
-        Global::context->PSSetShader(fullscreenQuad, nullptr, 0);
+  //      Global::context->IASetInputLayout(fullscreenQuad);
+  //      Global::context->VSSetShader(fullscreenQuad, nullptr, 0);
+  //      Global::context->PSSetShader(fullscreenQuad, nullptr, 0);
 
-        static ID3D11SamplerState * pointClamp = Global::cStates->PointClamp();
-        Global::context->PSSetSamplers(0, 1, &pointClamp);
+  //      static ID3D11SamplerState * pointClamp = Global::cStates->PointClamp();
+  //      Global::context->PSSetSamplers(0, 1, &pointClamp);
 
-		PROFILE_BEGIN("Draw(4, 0)");
-        Global::context->Draw(4, 0);
-		PROFILE_END();
+		//PROFILE_BEGIN("Draw(4, 0)");
+  //      Global::context->Draw(4, 0);
+		//PROFILE_END();
 
-        ID3D11ShaderResourceView * srvNull = nullptr;
-        Global::context->PSSetShaderResources(0, 1, &srvNull);
-    }
+
 
     void Renderer::renderDebugInfo(Camera* camera)
     {
@@ -714,31 +741,8 @@ namespace Graphics
 
 	void Renderer::registerDebugFunction()
 	{
-		DebugWindow *debugWindow = DebugWindow::getInstance();
-		debugWindow->registerCommand("GFX_DISABLE_POST_EFFECTS", [&](std::vector<std::string> &args)->std::string
-		{
-			
-            enableSSAO = false;
-            enableGlow = false;
-            enableFog = false;
-            enableDOF = false;
-            enableSnow = false;
-
-			return "Post effects off!";
-		});
-
-        debugWindow->registerCommand("GFX_ENABLE_POST_EFFECTS", [&](std::vector<std::string> &args)->std::string
-        {
-
-            enableSSAO = true;
-            enableGlow = true;
-            enableFog = true;
-            enableDOF = true;
-            enableSnow = true;
-
-            return "Post effects on!";
-        });
-
+		/*DebugWindow *debugWindow = DebugWindow::getInstance();
+		
 		debugWindow->registerCommand("GFX_SET_SSAO", [&](std::vector<std::string> &args)->std::string
 		{
             std::string catcher = "";
@@ -975,34 +979,6 @@ namespace Graphics
 			{
 				catcher = "Argument must be float between 1 and 0";
 			}
-
-			return catcher;
-		});
-
-		debugWindow->registerCommand("GFX_RELOAD_FORWARD_SHADER", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-			
-			forwardPlus.recompile(Global::device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC);
-
-
-			return catcher;
-		});
-
-		//debugWindow->registerCommand("GFX_RELOAD_GLOW_SHADERS", [&](std::vector<std::string> &args)->std::string
-		//{
-		//	std::string catcher = "";
-
-		//	glowRenderer.recompileGlow(Global::device);
-
-		//	return catcher;
-		//});
-
-		/*debugWindow->registerCommand("GFX_RELOAD_SNOW_SHADER", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-
-			snowManager.recompile(Global::device);
 
 			return catcher;
 		});*/

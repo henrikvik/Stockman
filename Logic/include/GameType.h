@@ -8,7 +8,7 @@ namespace Logic
         Nothing = 0,
         State_Start,
         State_Playing,
-        State_InGame_Menu
+        State_InGame_Overlay
     };
 
     static const int GAME_TYPES = 4, MAX_COMMANDS = 10;

@@ -277,13 +277,13 @@
     <ClInclude Include="include\AI\Behavior\MeleeBehavior.h" />
     <ClInclude Include="include\AI\WaveTimeManager.h" />
     <ClInclude Include="include\State.h" />
-    <ClInclude Include="include\StateBuffer.h" />
-    <ClInclude Include="include\StatePrimary.h" />
-    <ClInclude Include="include\StateGamePlaying.h" />
-    <ClInclude Include="include\StateMachine.h" />
-    <ClInclude Include="include\StateSecondary.h" />
-    <ClInclude Include="include\StateMenuPlaying.h" />
-    <ClInclude Include="include\StateMenuStart.h" />
+    <ClInclude Include="include\StateMachine\StateBuffer.h" />
+    <ClInclude Include="include\StateMachine\StatePrimary.h" />
+    <ClInclude Include="include\StatePlaying.h" />
+    <ClInclude Include="include\StateMachine\StateMachine.h" />
+    <ClInclude Include="include\StateMachine\StateSecondary.h" />
+    <ClInclude Include="include\StatePlayingOverlay.h" />
+    <ClInclude Include="include\StateStart.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Player\PlayerController.cpp">
@@ -352,12 +352,12 @@
     <ClCompile Include="source\Entity\StatusManager.cpp" />
     <ClCompile Include="source\AI\WaveManager.cpp" />
     <ClCompile Include="source\AI\WaveTimeManager.cpp" />
-    <ClCompile Include="source\StatePrimary.cpp" />
-    <ClCompile Include="source\StateGamePlaying.cpp" />
-    <ClCompile Include="source\StateMachine.cpp" />
-    <ClCompile Include="source\StateSecondary.cpp" />
-    <ClCompile Include="source\StateMenuPlaying.cpp" />
-    <ClCompile Include="source\StateMenuStart.cpp" />
+    <ClCompile Include="source\StateMachine\StatePrimary.cpp" />
+    <ClCompile Include="source\StatePlaying.cpp" />
+    <ClCompile Include="source\StateMachine\StateMachine.cpp" />
+    <ClCompile Include="source\StateMachine\StateSecondary.cpp" />
+    <ClCompile Include="source\StatePlayingOverlay.cpp" />
+    <ClCompile Include="source\StateStart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

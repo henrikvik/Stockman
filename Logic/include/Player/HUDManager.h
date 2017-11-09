@@ -21,6 +21,7 @@ struct GUIInfo
     int inactiveAmmo[2];
     bool sledge;
     float cd[2];
+    int cdInSeconds[2];
     UINT score;
     int wave;
     int enemiesRemaining;
@@ -45,10 +46,16 @@ namespace Logic
 
         std::vector<Sprite> HUDElements;
         std::vector<Sprite> skillList;
+        std::vector<Sprite> skillMasks;
         std::vector<Sprite> HPBar;
+        std::vector<Sprite> staticElements;
+        std::vector<TextRenderInfo> HUDText;
+        std::vector<std::wstring> liveText;
+
 
 
         void constructGUIElements();
+        void updateTextElements();
         void updateGUIElemets();
         enum Elemnts
         {
@@ -62,6 +69,7 @@ namespace Logic
             SKILLMASK1,
             SKILLMASK2
         };
+        void renderTextElements()const;
 
         
     public:

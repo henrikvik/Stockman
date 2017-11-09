@@ -16,8 +16,10 @@ public:
 	operator ID3D11UnorderedAccessView*() const { return unorderedAccess; }
 	operator ID3D11UnorderedAccessView*const*() const { return &unorderedAccess; }
 
+    ID3D11RenderTargetView * renderTarget;
+    ID3D11ShaderResourceView * shaderResource;
+    ID3D11UnorderedAccessView * unorderedAccess;
+
 private:
-	ID3D11RenderTargetView * renderTarget;
-	ID3D11ShaderResourceView * shaderResource;
-	ID3D11UnorderedAccessView * unorderedAccess;
+	
 };

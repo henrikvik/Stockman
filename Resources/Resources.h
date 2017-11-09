@@ -38,7 +38,12 @@ namespace Resources
     {
         enum Files
         {
+            DoFBlur1,
+            DoFBlur2,
+            DoFCreateCoC,
+            DoFGlue,
             ForwardPlus,
+            FullscreenQuad,
             GlowBlurHorizontal,
             GlowBlurVertical,
             GlowDownSampler,
@@ -46,6 +51,7 @@ namespace Resources
             GlowMipCombinder,
             LightGridCulling,
             SkyShader,
+            SnowShader,
             SpriteShader,
             SSAOComputeShader,
             SSAOGaussianBlurHorizontal,
@@ -54,7 +60,12 @@ namespace Resources
         };
         const std::map<Files, const char *> Paths =
         {
+            {DoFBlur1, R"(..\Resources\Shaders\DoFBlur1.hlsl)"},
+            {DoFBlur2, R"(..\Resources\Shaders\DoFBlur2.hlsl)"},
+            {DoFCreateCoC, R"(..\Resources\Shaders\DoFCreateCoC.hlsl)"},
+            {DoFGlue, R"(..\Resources\Shaders\DoFGlue.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
+            {FullscreenQuad, R"(..\Resources\Shaders\FullscreenQuad.hlsl)"},
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
             {GlowBlurVertical, R"(..\Resources\Shaders\GlowBlurVertical.hlsl)"},
             {GlowDownSampler, R"(..\Resources\Shaders\GlowDownSampler.hlsl)"},
@@ -62,6 +73,7 @@ namespace Resources
             {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
             {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
+            {SnowShader, R"(..\Resources\Shaders\SnowShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
             {SSAOComputeShader, R"(..\Resources\Shaders\SSAOComputeShader.hlsl)"},
             {SSAOGaussianBlurHorizontal, R"(..\Resources\Shaders\SSAOGaussianBlurHorizontal.hlsl)"},

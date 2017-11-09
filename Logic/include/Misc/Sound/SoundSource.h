@@ -43,6 +43,7 @@ namespace Sound
 		void update(float deltaTime);
 
 		void playSFX(SFX sfx);
+        void playSFX(SFX sfx, float pitch, float pitchOffset);
 		void playMusic(MUSIC music);
 		void delayPlaySFX(SFX sfx, float delay);
 		void delayPlayMusic(MUSIC music, float delay);
