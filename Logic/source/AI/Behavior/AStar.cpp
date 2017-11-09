@@ -120,7 +120,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 		currentNode->onClosedList = true;
 	}
 
-	if (!currentNode)
+	if (!currentNode || currentNode->parent == NO_PARENT)
 	{
 		printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
 			"Lukas or something (AStar.cpp:%d)\n", __LINE__);
