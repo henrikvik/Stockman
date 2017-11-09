@@ -5,7 +5,7 @@
 
 using namespace Logic;
 
-#define GRAPPLING_HOOK_CD			50.f		// Cooldown in ms
+#define GRAPPLING_HOOK_CD			3000.f		// Cooldown in ms
 #define GRAPPLING_HOOK_RANGE		100.f		// Range in bulletphysics units (probably meters)
 #define GRAPPLING_HOOK_RANGE_MIN    8.f         // Min range
 #define GRAPPLING_HOOK_POWER		0.0011f	    // The amount of power to reach the max speed

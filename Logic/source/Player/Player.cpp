@@ -314,6 +314,7 @@ void Player::upgrade(Upgrade const & upgrade)
         m_permanentSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
         m_moveMaxSpeed = m_moveMaxSpeed + (PLAYER_MOVEMENT_MAX_SPEED * upgrade.getFlatUpgrades().movementSpeed);
     }
+
 }
 
 void Player::updateSound(float deltaTime)
@@ -356,9 +357,9 @@ void Player::updateSpecific(float deltaTime)
     //TODO LUKAS SWITCH THIS OUT AS PROMISED
     m_permanentSpeedMod = 0;
     m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;;
-    for (auto theUpgrade : getStatusManager().getActiveUpgrades())
+    for (StatusManager::UPGRADE_ID id : getStatusManager().getActiveUpgrades())
     {
-        upgrade(getStatusManager().getUpgrade(theUpgrade));
+        upgrade(getStatusManager().getUpgrade(id));
     }
     //TODO LUKAS SWITCH THIS OUT AS PROMISED
 	Player::update(deltaTime);

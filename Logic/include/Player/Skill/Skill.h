@@ -36,6 +36,7 @@ namespace Logic
 		virtual void onRelease() = 0;
 		
 		void update(float deltaTime);
+        void upgrade(Upgrade const & upgrade);
 		virtual void onUpdate(float deltaTime) = 0;
 
 		virtual void render(Graphics::Renderer& renderer) = 0;
@@ -47,6 +48,7 @@ namespace Logic
 		bool	getCanUse() const;
 
 		void setCooldown(float cooldown);
+        void setCooldownMax(float cooldownMax);
 		void setCanUse(bool canUse);
 
 	private:
