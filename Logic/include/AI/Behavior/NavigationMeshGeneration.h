@@ -81,7 +81,7 @@ namespace Logic
             struct NavMeshCube
             {
                 bool done, remove, collided[SIDES];
-                int userIndex, buddyIndex;
+                int userIndex, buddyIndex, collidedWithIndex[SIDES];
                 btRigidBody *body;
                 Cube cube;
 
@@ -96,7 +96,10 @@ namespace Logic
                     loadIndex();
 
                     for (int i = 0; i < SIDES; i++)
+                    {
                         collided[i] = false;
+                        collidedWithIndex[i] = -1;
+                    }
                 }
 
                 inline void loadIndex()
@@ -113,6 +116,12 @@ namespace Logic
 
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
             std::pair<Cube, Cube> cutCube(btVector3 const &cutPoint, btVector3 const &planeNormal, Cube const &cube);
+
+            void quadMeshToTriangleMesh(std::vector<NavMeshCube> &regions, NavigationMesh &nav, Physics &physics);
+            void growRegion(NavMeshCube &cube, Growth const &growth);
+            void shrinkRegion(NavMeshCube &cube, Growth const &growth);
+            int getRegion(int id, std::vector<NavMeshCube> &region) const;
+            btVector3 getDimension(NavMeshCube &region, int side) const;
 
             NavigationMesh::Triangle toNavTriangle(Triangle const &tri);
             CollisionReturn handleCollision(btVector3 collisionPoint, NavMeshCube &cube,

@@ -161,7 +161,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     for (size_t index = 0; index < regions.size(); index++) // elements is added inside vec
     {
         auto &region = regions[index];
-        printf("Loading.. %f %%\n", static_cast<float> (region.userIndex) / COUNTER * 100.f);
+        //printf("Loading.. %f %%\n", static_cast<float> (region.userIndex) / COUNTER * 100.f);
 
         if (isInCollisionArea(region, physics, region.buddyIndex, region.userIndex))
         {
@@ -174,8 +174,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
             distance = 0.f;
             while (!region.collided[side] && distance < maxLength && !region.done)
             {
-                region.cube.setDimensions(region.cube.getDimensions() + growth[side].dimensionChange);
-                region.cube.setPos(region.cube.getPos() + growth[side].positionChange);
+                growRegion(region, growth[side]);
 
                 if (region.body) removeRigidBody(region.body, physics);
                 region.body = physics.createBody(region.cube, 0.f);
@@ -218,11 +217,9 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                         }
                         else if (obj->getUserIndex() == AI_UID && obj->getUserIndex2() != region.buddyIndex && obj->getUserIndex() != region.userIndex)
                         {
-                            region.cube.setDimensions(region.cube.getDimensions() - growth[side].dimensionChange);
-                            region.cube.setPos(region.cube.getPos() - growth[side].positionChange);
+                            shrinkRegion(region, growth[side]);
                             region.collided[side] = true;
-                            cp.m_localPointA += region.body->getWorldTransform().getOrigin();
-                            physics.createBody(Sphere(cp.m_localPointA, { 0.f, 0.f, 0.f }, 1.f), 0.f);
+                            region.collidedWithIndex[side] = obj->getUserIndex2();
                         }
                         return 0;
                     });
@@ -236,22 +233,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
         region.body->setUserIndex(AI_UID);
     }
 
-    for (auto &region : regions)
-    {
-        if (!region.remove)
-        {
-            Cube &cube = region.cube;
-            std::pair<Triangle, Triangle> triPair = toTriangle(cube);
-
-            removeRigidBody(region.body, physics);
-
-            nav.addTriangle(toNavTriangle(triPair.first));
-            nav.addTriangle(toNavTriangle(triPair.second));
-        }
-    }
-
-    nav.createNodesFromTriangles();
-    nav.generateEdges();
+    quadMeshToTriangleMesh(regions, nav, physics);
     printf("Finished! :D");
 }
 
@@ -273,12 +255,12 @@ std::pair<NavigationMeshGeneration::Triangle, NavigationMeshGeneration::Triangle
     cube.getDimensionsRef().setY(y);
 
     tri1.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos() - cube.getDimensions());
-    tri1.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());
-    tri1.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{cube.getDimensions().x(), y, -cube.getDimensions().z()});
+    tri1.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{ cube.getDimensions().x(), y, -cube.getDimensions().z() });
+    tri1.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{ -cube.getDimensions().x(), y, cube.getDimensions().z() });
 
-    tri2.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos() - cube.getDimensions());
+    tri2.vertices[0] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{ cube.getDimensions().x(), y, -cube.getDimensions().z() });
     tri2.vertices[1] = DirectX::SimpleMath::Vector3(cube.getPos() + cube.getDimensions());
-    tri2.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{-cube.getDimensions().x(), y, cube.getDimensions().z()});
+    tri2.vertices[2] = DirectX::SimpleMath::Vector3(cube.getPos() + btVector3{ -cube.getDimensions().x(), y, cube.getDimensions().z() });
      
     return std::pair<Triangle, Triangle>(tri1, tri2);
 }
@@ -324,6 +306,95 @@ std::pair<Cube, Cube> NavigationMeshGeneration::cutCube(btVector3 const &cutPoin
     return cubes;
 }
 
+void NavigationMeshGeneration::shrinkRegion(NavMeshCube &region, Growth const &growth)
+{
+    region.cube.setDimensions(region.cube.getDimensions() - growth.dimensionChange);
+    region.cube.setPos(region.cube.getPos() - growth.positionChange);
+}
+
+btVector3 NavigationMeshGeneration::getDimension(NavMeshCube &region, int side) const
+{
+    switch (side) // use normals or something instead?
+    {
+        case X_PLUS:
+            return { region.cube.getDimensionsRef().x(), 0.f, 0.f };
+        case X_MINUS:
+            return { -region.cube.getDimensionsRef().x(), 0.f, 0.f };
+        case Z_PLUS:
+            return { 0.f, 0.f, region.cube.getDimensionsRef().z() };
+        case Z_MINUS:
+            return { 0.f, 0.f, -region.cube.getDimensionsRef().z() };
+    }
+    return { 0.f, 0.f, 0.f };
+}
+
+int NavigationMeshGeneration::getRegion(int id, std::vector<NavMeshCube>& regions) const
+{
+    int ret = -1;
+    for (int i = 0; i < regions.size() && ret == -1; i++)
+        if (regions[i].userIndex == id)
+            ret = i;
+    return ret;
+}
+
+void NavigationMeshGeneration::quadMeshToTriangleMesh(std::vector<NavMeshCube> &regions, NavigationMesh &nav, Physics &physics)
+{
+    int index, userId;
+    btVector3 top, bot;
+    bool cutBot;
+    for (auto &region : regions) // two loops, rip
+    {
+        for (int side = 0; side < SIDES; side++) { // badly opt, some sort of unordered map can be used?
+            userId = region.collidedWithIndex[side];
+            if (userId != -1)
+            {
+                index = getRegion(userId, regions);
+                NavMeshCube &other = regions[index];
+                if (index != -1 && !other.remove)
+                {
+                    top = region.cube.getPos() + getDimension(region, (side + 1) % SIDES);
+                    bot = region.cube.getPos() - getDimension(region, (side + 1) % SIDES);
+                    cutBot = bot > region.cube.getPos() + region.cube.getDimensionsRef();
+
+                    if (top < region.cube.getPos() + region.cube.getDimensionsRef())
+                    {
+                        physics.createBody(Sphere(top, { 0.f, 0.f, 0.f }, 1.f), 0);
+                        split(regions, regions[index], physics, top, growthNormals[side - 1 % SIDES]);
+                    }
+                    if (cutBot)
+                    {
+                        physics.createBody(Sphere(bot, { 0.f, 0.f, 0.f }, 1.f), 0);
+                      //  split(regions, regions[index], physics, bot, growthNormals[side + 1 % SIDES]);
+                    }
+                }
+            }
+        }
+    }
+
+    for (auto &region : regions)
+    {
+        if (!region.remove)
+        {
+            Cube &cube = region.cube;
+            std::pair<Triangle, Triangle> triPair = toTriangle(cube);
+
+            removeRigidBody(region.body, physics);
+
+            nav.addTriangle(toNavTriangle(triPair.first));
+            nav.addTriangle(toNavTriangle(triPair.second));
+        }
+    }
+
+    nav.createNodesFromTriangles();
+    nav.generateEdges();
+}
+
+void NavigationMeshGeneration::growRegion(NavMeshCube &region, Growth const &growth)
+{
+    region.cube.setDimensions(region.cube.getDimensions() + growth.dimensionChange);
+    region.cube.setPos(region.cube.getPos() + growth.positionChange);
+}
+
 NavigationMesh::Triangle NavigationMeshGeneration::toNavTriangle(Triangle const & tri)
 {
     return { 0, tri.vertices[0], tri.vertices[1], tri.vertices[2] };
@@ -332,8 +403,7 @@ NavigationMesh::Triangle NavigationMeshGeneration::toNavTriangle(Triangle const 
 NavigationMeshGeneration::CollisionReturn NavigationMeshGeneration::handleCollision(btVector3 collisionPoint,
     NavMeshCube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape)
 {
-    cube.cube.setDimensions(cube.cube.getDimensions() - growth.dimensionChange);
-    cube.cube.setPos(cube.cube.getPos() - growth.positionChange);
+    shrinkRegion(cube, growth);
 
     DirectX::SimpleMath::Quaternion rot = obj->getRotation();
     rot.w = 0; // this is stupid
@@ -354,15 +424,9 @@ NavigationMeshGeneration::CollisionReturn NavigationMeshGeneration::handleCollis
     }
 
     if (found) // case b, on vertex
-    {
         return ON_VERTEX;
-    }
     else // case c, living on the edge. (Collision on edge)
-    {
         return ON_EDGE;
-    }
-
-    return PROBLEMS_MY_DUDES;
 }
 
 void NavigationMeshGeneration::split(std::vector<NavMeshCube> &regions, NavMeshCube &cube,

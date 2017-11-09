@@ -47,7 +47,7 @@ void NavigationMesh::generateEdges()
                 {
                     if ((vertex - otherV).Length() <= EPSILON_NODE)
                     {
-                        if (++same > 0)
+                        if (++same > 1)
                         {
                             addEdge(static_cast<int> (i), static_cast<int> (j));
                             break;
