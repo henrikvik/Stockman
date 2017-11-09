@@ -153,6 +153,23 @@ void Logic::HUDManager::constructGUIElements()
     height = 85.0f / 1024;
     staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 720, 15, 70, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
 
+    //hotkey skill 1
+    x = 372.f / 1024;
+    y = 266.0f / 1024;
+    width = 129.0f / 1024;
+    height = 148.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -170, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+    //hotkey skill 2
+    x = 595.f / 1024;
+    y = 266.0f / 1024;
+    width = 129.0f / 1024;
+    height = 148.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+
+
+
 }
 
 void Logic::HUDManager::updateTextElements()
