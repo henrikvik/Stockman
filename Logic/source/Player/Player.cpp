@@ -1,6 +1,6 @@
 #include "Player/Player.h"
-
 #include <DebugDefines.h>
+
 #include <Misc\ComboMachine.h>
 
 #include <AI\EnemyTest.h>
@@ -23,14 +23,13 @@
 
 using namespace Logic;
 
-btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
-
 Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
 : Entity(body, halfExtent)
 {
     m_weaponManager = newd WeaponManager();
     m_skillManager = newd SkillManager();
     m_listenerData = newd Sound::ListenerData();
+    m_pMovement = newd PlayerMovement();
 }
 
 Player::~Player()
@@ -44,17 +43,6 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
 
-	btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_HEIGHT, PLAYER_SIZE_RADIUS);
-	btPairCachingGhostObject* ghostObject = m_physPtr->createPlayer(playerShape, startPosition);
-	ghostObject->setUserPointer(this);
-
-	m_charController = new btKinematicCharacterController(ghostObject, playerShape, 0.2f, btVector3(0.f, 1.f, 0.f));
-	m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
-    m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
-    m_charController->setFallSpeed(1.f);
-	m_physPtr->addAction(m_charController);
-    m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
-
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
     currentWeapon = 0;
@@ -62,26 +50,6 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	// Default mouse sensetivity, lookAt
 	m_camYaw = 90;
 	m_camPitch = 5;
-
-	m_playerState = PlayerState::STANDING;
-	m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
-
-    m_godMode = m_noclip = false;
-
-    registerDebugCmds();
-
-	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
-	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
-	m_moveDir.setZero();
-	m_moveSpeed = 0.f;
-	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
-	m_deacceleration = m_acceleration * 0.5f;
-	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
-	m_jumpSpeed = PLAYER_JUMP_SPEED;
-	m_wishDir.setZero();
-	m_wishDirForward = 0.f;
-	m_wishDirRight = 0.f;
-	m_wishJump = false;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -96,39 +64,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
     m_useSkillPrimary = DirectX::Keyboard::Keys::F;
     m_useSkillSecondary = DirectX::Keyboard::Keys::E;
     m_useSkillTertiary = DirectX::Keyboard::Keys::G;
-	m_listenerData->update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
-}
-
-void Player::registerDebugCmds()
-{
-    DebugWindow *win = DebugWindow::getInstance();
-    win->registerCommand("LOG_SET_MOUSE_SENSITIVITY", [&](std::vector<std::string> &para) -> std::string {
-        try
-        { // Boilerplate code bois
-            m_mouseSens = stof(para[0]);
-        }
-        catch (int)
-        {
-            return "That is not going to work";
-        }
-        return "Mouse sens set";
-    });
-    win->registerCommand("LOG_GODMODE", [&](std::vector<std::string> &para) -> std::string {
-        m_godMode = !m_godMode;
-        return "Godmode updated";
-    });
-    win->registerCommand("LOG_NOCLIP", [&](std::vector<std::string> &para) -> std::string {
-        m_noclip = !m_noclip;
-        if (m_noclip)
-            m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
-        else {
-            m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
-            // reset movement
-            m_moveDir.setZero();
-            m_moveSpeed = 0.f;
-        }
-        return "Noclip updated";
-    });
+	m_listenerData->update({ 0, 0, 0 }, { 0, 1, 0 }, m_pMovement->getForwardBT(), m_pMovement->getCharController()->getGhostObject()->getWorldTransform().getOrigin());
 }
 
 void Player::clear()
@@ -136,18 +72,18 @@ void Player::clear()
 	m_weaponManager->clear();
     delete m_weaponManager;
     delete m_skillManager;
-	delete m_charController;
     delete m_listenerData;
+    delete m_pMovement;
 }
 
 void Player::reset()
 {
-	getTransform().setOrigin(startPosition);
+    getTransform().setOrigin({0, 6, 0});
 	m_weaponManager->reset();
 	m_hp = 3;
 
     //temp? probably
-    Global::mainCamera->update(getPosition(), m_forward, Global::context);
+    Global::mainCamera->update(getPosition(), DirectX::SimpleMath::Vector3(m_pMovement->getForwardBT()), Global::context);
     static SpecialEffectRenderInfo info;
     info.type = info.Snow;
     info.restart = true;
@@ -157,7 +93,7 @@ void Player::reset()
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-    if (!m_godMode)
+    if (!m_pMovement->getGodMode())
     {
         if (Projectile* p = dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
         else if (Trigger* t = dynamic_cast<Trigger*>(&other)) {}														// collision with trigger
@@ -183,8 +119,7 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 
 	if (flags & Effect::EFFECT_MODIFY_MOVEMENTSPEED)
 	{
-		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * 3, 0.f });
-		m_playerState = PlayerState::IN_AIR;
+        m_pMovement->forceJump();
 	}
 
     if (flags & Effect::EFFECT_MODIFY_HP)
@@ -226,7 +161,7 @@ void Player::updateSound(float deltaTime)
 {
 	// Update sound position
 	btVector3 pos = getPositionBT();
-	btVector3 vel = m_charController->getLinearVelocity();
+	btVector3 vel = m_pMovement->getCharController()->getLinearVelocity();
 	getSoundSource()->pos = { pos.x(), pos.y(), pos.z() };
     getSoundSource()->vel = { vel.x(), vel.y(), vel.z() };
     getSoundSource()->update(deltaTime);
@@ -244,7 +179,7 @@ void Player::readFromFile()
 
 void Player::takeDamage(int damage, bool damageThroughProtection)
 {
-    if (!m_godMode)
+    if (!m_pMovement->getGodMode())
     {
         if (damageThroughProtection ||
             getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
@@ -266,10 +201,10 @@ void Player::updateSpecific(float deltaTime)
 
 	// Updates listener info for sounds
 	btVector3 up		= { 0, 1, 0 };
-	btVector3 forward	= getForwardBT();
+	btVector3 forward	= m_pMovement->getForwardBT();
 	btVector3 right		= up.cross(forward);
 	btVector3 actualUp	= right.cross(forward);
-	m_listenerData->update({ 0, 0, 0 }, actualUp.normalize(), { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
+	m_listenerData->update({ 0, 0, 0 }, actualUp.normalize(), m_pMovement->getForwardBT(), m_pMovement->getCharController()->getGhostObject()->getWorldTransform().getOrigin());
 
 	// Get Mouse and Keyboard states for this frame
 	DirectX::Keyboard::State ks = DirectX::Keyboard::Get().GetState();
@@ -278,62 +213,40 @@ void Player::updateSpecific(float deltaTime)
 	// Temp for testing
 	if (ks.IsKeyDown(DirectX::Keyboard::B))
 	{
-        m_charController->warp({ 0.f, 0.f, 0.f });
-		m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
-		m_moveDir = { 0.f, 0.f, 0.f };
-		m_moveSpeed = 0.f;
+        m_pMovement->warpToOrigin();
 	}
 
 	// TEMP FREE MOVE
-	if (ks.IsKeyDown(DirectX::Keyboard::N) && !m_noclip)
+    if (ks.IsKeyDown(DirectX::Keyboard::N) && !m_pMovement->getNoClip())
 	{
-		m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
-        m_noclip = true;
-		printf("free move activated\n");
+        m_pMovement->activeNoClip();
 	}
-	else if (ks.IsKeyDown(DirectX::Keyboard::M) && m_noclip)
+	else if (ks.IsKeyDown(DirectX::Keyboard::M) && m_pMovement->getNoClip())
 	{
-		m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
-		// reset movement
-		m_moveDir.setZero();
-		m_moveSpeed = 0.f;
-        m_noclip = false;
-		printf("free move deactivated\n");
+        m_pMovement->deactivateNoClip();
 	}
 
 	// Movement
-	if (ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
-		mouseMovement(deltaTime, &ms);
-	jump(deltaTime, &ks);
+    int x = DirectX::Mouse::Get().GetState().x;
+    int y = DirectX::Mouse::Get().GetState().y;
 
-	// Get movement input
-	moveInput(&ks);
-	if (!m_noclip)
-	{
-		if (m_playerState == PlayerState::STANDING)
-			// Move
-			move(deltaTime);
-		else if (m_playerState == PlayerState::IN_AIR)
-			// Move in air
-			airMove(deltaTime);
-	}
-	else
-		moveFree(deltaTime, &ks);
+    if (ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
+        m_pMovement->moveMouse(x, y);
 
-	if (m_charController->onGround())
-	{
-		m_playerState = PlayerState::STANDING;
-		m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
-	}
-	else
-		m_playerState = PlayerState::IN_AIR;
+    if (ks.IsKeyDown(m_jump))
+        m_pMovement->wantToJump();
+    else if (ks.IsKeyUp(m_jump))
+        m_pMovement->doesNotWantToJump();
 
-	// Print player velocity
-	//printf("velocity: %f\n", m_moveSpeed);
-	//printf("%f\n", m_charController->getLinearVelocity().y());
-	//printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
+    // Get movement input
+    int directionFlag = 0;
+    if (ks.IsKeyDown(m_moveLeft))       directionFlag |= DIRECTION_FLAG::DIR_LEFT;
+    if (ks.IsKeyDown(m_moveRight))      directionFlag |= DIRECTION_FLAG::DIR_RIGHT;
+    if (ks.IsKeyDown(m_moveForward))    directionFlag |= DIRECTION_FLAG::DIR_FORWARD;
+    if (ks.IsKeyDown(m_moveBack))       directionFlag |= DIRECTION_FLAG::DIR_BACKWARD;
+    m_pMovement->moveDirection(directionFlag);
 
-	//crouch(deltaTime);
+    m_pMovement->update(deltaTime);
 
 	// Weapon swap
     if (ks.IsKeyDown(m_switchWeaponOne))
@@ -359,7 +272,7 @@ void Player::updateSpecific(float deltaTime)
 		
 	// Skills
     PROFILE_BEGIN("SkillManager");
-    forward = getForwardBT();
+    forward = m_pMovement->getForwardBT();
     if (ks.IsKeyDown(m_useSkillPrimary))
         m_skillManager->use(SkillManager::ID::PRIMARY, forward, *this);
     if (ks.IsKeyUp(m_useSkillPrimary))
@@ -380,7 +293,7 @@ void Player::updateSpecific(float deltaTime)
 		// Primary and secondary attack
 		if (!m_weaponManager->isAttacking() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE) //do i need to exclude more from relative mode?
 		{
-			btVector3 pos = getPositionBT() + btVector3(m_forward.x, m_forward.y, m_forward.z);
+			btVector3 pos = getPositionBT() + m_pMovement->getForwardBT();
             if ((ms.leftButton))
             {
                 getSoundSource()->playSFX(Sound::SFX::WEAPON_CUTLERY_PRIMARY, 1.f, 0.15f);
@@ -413,245 +326,7 @@ void Player::updateSpecific(float deltaTime)
             m_hp--;
     /*}*/
 
-    Global::mainCamera->update(getPosition(), m_forward, Global::context);
-}
-
-void Player::moveInput(DirectX::Keyboard::State * ks)
-{
-	// Reset wish direction
-	m_wishDir.setZero();
-	m_wishDirForward = 0.f;
-	m_wishDirRight = 0.f;
-
-	// Move Left
-	if (ks->IsKeyDown(m_moveLeft))
-	{
-		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross({ 0, 1, 0 }).normalize();
-		m_wishDir += -dir;
-		m_wishDirRight += -1.f;
-	}
-
-	// Move Right
-	if (ks->IsKeyDown(m_moveRight))
-	{
-		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross({ 0, 1, 0 }).normalize();
-		m_wishDir += dir;
-		m_wishDirRight += 1.f;
-	}
-
-	// Move Forward
-	if (ks->IsKeyDown(m_moveForward))
-	{
-		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
-		m_wishDir += dir;
-		m_wishDirForward += 1.f;
-	}
-
-	// Move Back
-	if (ks->IsKeyDown(m_moveBack))
-	{
-		btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
-		m_wishDir += -dir;
-		m_wishDirForward += -1.f;
-	}
-
-	// Normalize movement direction
-	if (!m_wishDir.isZero())
-		m_wishDir = m_wishDir.safeNormalize();
-}
-
-void Player::moveFree(float deltaTime, DirectX::Keyboard::State * ks)
-{
-	if (ks->IsKeyDown(DirectX::Keyboard::Keys::LeftControl)) // down
-		m_wishDir.setY(-0.1f * deltaTime);
-	if (ks->IsKeyDown(DirectX::Keyboard::Keys::Space))		 // up
-		m_wishDir.setY(0.1f * deltaTime);
-
-	// Update pos of player
-    m_charController->warp(getPositionBT() + (m_wishDir * m_moveMaxSpeed * 2.f * deltaTime));
-}
-
-void Player::move(float deltaTime)
-{
-	// On ground
-	if (!m_wishJump)
-	{
-		float friction = (m_moveMaxSpeed * 2 - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_FRICTION; // smooth friction
-		applyFriction(deltaTime, friction > 0.1f ? friction : 0.1f);
-
-		// if player wants to move
-		if (!m_wishDir.isZero())
-		{
-			// Reset movement speed if changing direction
-			if (m_moveDir.dot(m_wishDir) <= 0.f)
-				m_moveSpeed = 0.f;
-
-			// Change move direction
-			m_moveDir = m_wishDir;
-		}
-	}
-	// On ground and about to jump
-	else
-	{
-		m_airAcceleration = (PLAYER_SPEED_LIMIT - m_moveSpeed) * PLAYER_MOVEMENT_AIRACCELERATION;
-		
-		if (!m_wishDir.isZero() && m_moveDir.dot(m_wishDir) <= 0.f)
-			applyAirFriction(deltaTime, PLAYER_AIR_FRICTION * 6.f);		// if trying to move in opposite direction in air apply more friction
-		else
-			applyAirFriction(deltaTime, PLAYER_AIR_FRICTION);
-	}
-
-	// Apply acceleration and move player
-	if(m_wishDir.isZero() || m_wishJump)
-		accelerate(deltaTime, 0.f);
-	else
-		accelerate(deltaTime, m_acceleration);
-
-	// Apply jump if player wants to jump
-	if (m_wishJump)
-	{
-        getSoundSource()->playSFX(Sound::SFX::JUMP, 1.f, 0.1f);
-		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
-		m_wishJump = false;
-	}
-}
-
-void Player::airMove(float deltaTime)
-{
-	applyAirFriction(deltaTime, (m_moveMaxSpeed - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_AIR_FRICTION); // smooth friction
-
-	accelerate(deltaTime, m_airAcceleration);
-
-	m_airAcceleration = 0.f;
-}
-
-void Player::accelerate(float deltaTime, float acceleration)
-{
-	if (deltaTime * 0.001f > (1.f / 60.f))
-		deltaTime = (1.f / 60.f) * 1000.f;
-
-	m_moveSpeed += acceleration * deltaTime;
-
-	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
-		m_moveSpeed = m_moveMaxSpeed;
-
-	// Apply moveDir and moveSpeed to player
-	if(m_playerState != PlayerState::IN_AIR)
-		m_charController->setVelocityForTimeInterval(m_moveDir * m_moveSpeed, deltaTime);
-	else
-		m_charController->setVelocityForTimeInterval(((m_moveDir + btVector3(0.f, m_charController->getLinearVelocity().y(), 0.f)) * m_moveSpeed) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED), deltaTime);
-
-	PROFILE_BEGIN("Stepping player");
-	// Step player
-	m_charController->preStep(m_physPtr);
-	m_charController->playerStep(m_physPtr, deltaTime);
-	PROFILE_END()
-}
-
-void Player::applyFriction(float deltaTime, float friction)
-{
-	float toDrop = m_deacceleration * deltaTime * friction;
-
-	m_moveSpeed -= toDrop;
-	if (m_moveSpeed < 0)
-		m_moveSpeed = 0;
-}
-
-void Player::applyAirFriction(float deltaTime, float friction)
-{
-	btVector3 rightMoveDir = m_moveDir.cross(btVector3(0.f, 1.f, 0.f));
-
-	btVector3 forward = btVector3(m_forward.x, 0.f, m_forward.z).safeNormalize(); // forward vector (look direction)
-
-	float lookMoveAngle = m_moveDir.dot(forward);
-
-	float lookMovedirection = rightMoveDir.dot(forward);
-
-	// if looking backwards compared to move direction
-	if (lookMoveAngle < 0.f)
-	{
-		lookMoveAngle *= -1.f;
-		forward *= -1.f;
-	}
-
-	if (lookMovedirection < 0.f && m_wishDirRight < 0.f)
-	{
-		if (lookMoveAngle > PLAYER_STRAFE_ANGLE)
-			m_moveDir = (m_moveDir + forward) * 0.5f;
-		else
-		{
-			m_airAcceleration = 0.f;
-			applyFriction(deltaTime, friction);
-		}
-	}
-	else if (lookMovedirection > 0.f && m_wishDirRight > 0.f)
-	{
-		if (lookMoveAngle > PLAYER_STRAFE_ANGLE)
-			m_moveDir = (m_moveDir + forward) * 0.5f;
-		else
-		{
-			m_airAcceleration = 0.f;
-			applyFriction(deltaTime, friction);
-		}
-	}
-	else
-	{
-		m_airAcceleration = 0.f;
-		applyFriction(deltaTime, friction);
-	}
-}
-
-
-void Player::jump(float deltaTime, DirectX::Keyboard::State* ks)
-{
-	if (ks->IsKeyDown(m_jump) && !m_wishJump && m_playerState != PlayerState::IN_AIR)
-		m_wishJump = true;
-	else if (ks->IsKeyUp(m_jump))
-		m_wishJump = false;
-}
-
-void Player::crouch(float deltaTime)
-{
-	// crouch
-}
-
-void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
-{
-	m_camYaw	+= m_mouseSens * (ms->x * deltaTime);
-	m_camPitch	-= m_mouseSens * (ms->y * deltaTime);
-
-	// DirectX calculates position on the full resolution,
-	//  while getWindowMidPoint gets the current window's middle point!!!!!
-
-	 // Pitch lock and yaw correction
-	if (m_camPitch > 89)
-		m_camPitch = 89;
-	if (m_camPitch < -89)
-		m_camPitch = -89;
-	if (m_camYaw < 0.f)
-		m_camYaw += 360.f;
-	if (m_camYaw > 360.f)
-		m_camYaw -= 360.f;
-
-	// Reset cursor to mid point of window
-//	SetCursorPos(midPoint.x, midPoint.y);
-
-	// Create forward
-	m_forward.x = cos(DirectX::XMConvertToRadians(m_camPitch)) * cos(DirectX::XMConvertToRadians(m_camYaw));
-	m_forward.y = sin(DirectX::XMConvertToRadians(m_camPitch));
-	m_forward.z = cos(DirectX::XMConvertToRadians(m_camPitch)) * sin(DirectX::XMConvertToRadians(m_camYaw));
-
-	m_forward.Normalize();
-}
-
-btKinematicCharacterController * Logic::Player::getCharController()
-{
-	return m_charController;
-}
-
-btGhostObject* Player::getGhostObject()
-{
-	return m_charController->getGhostObject();
+    Global::mainCamera->update(getPosition(), DirectX::SimpleMath::Vector3(m_pMovement->getForwardBT()), Global::context);
 }
 
 DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
@@ -660,7 +335,7 @@ DirectX::SimpleMath::Matrix Player::getTransformMatrix() const
 	float* m = newd float[4 * 16];
 
 	// Getting this entity's matrix
-	m_charController->getGhostObject()->getWorldTransform().getOpenGLMatrix((btScalar*)(m));
+	m_pMovement->getCharController()->getGhostObject()->getWorldTransform().getOpenGLMatrix((btScalar*)(m));
 
 	// Translating to DirectX Math and assigning the variables
 	DirectX::SimpleMath::Matrix transformMatrix(m);
@@ -680,72 +355,12 @@ void Player::render() const
 //	Object::render(renderer);
 
 	// Setting position of updated weapon and skill models
-	m_weaponManager->setWeaponModel(getTransformMatrix(), m_forward);
+	m_weaponManager->setWeaponModel(getTransformMatrix(), DirectX::SimpleMath::Vector3(m_pMovement->getForwardBT()));
 	//	m_skillManager->setWeaponModel(getTransformMatrix(), m_forward);
 
 	// Drawing the weapon model
 	m_weaponManager->render();
 	m_skillManager->render();
-}
-
-void Logic::Player::setMaxSpeed(float maxSpeed)
-{
-	m_moveMaxSpeed = maxSpeed;
-}
-
-DirectX::SimpleMath::Vector3 Player::getPosition() const
-{
-	return DirectX::SimpleMath::Vector3(m_charController->getGhostObject()->getWorldTransform().getOrigin());
-}
-
-btVector3 Logic::Player::getPositionBT() const
-{
-	return m_charController->getGhostObject()->getWorldTransform().getOrigin();
-}
-
-btTransform& Player::getTransform() const
-{
-	return m_charController->getGhostObject()->getWorldTransform();
-}
-
-float Logic::Player::getMoveSpeed() const
-{
-	return m_moveSpeed;
-}
-
-void Player::setMoveSpeed(float speed)
-{
-	m_moveSpeed = speed;
-}
-
-void Player::setMoveDirection(btVector3 moveDir)
-{
-	m_moveDir = moveDir;
-}
-
-btVector3 Player::getForwardBT()
-{
-	return btVector3(m_forward.x, m_forward.y, m_forward.z);
-}
-
-DirectX::SimpleMath::Vector3 Player::getForward()
-{
-	return m_forward;
-}
-
-btVector3 Player::getMoveDirection()
-{
-	return m_moveDir;
-}
-
-void Player::setPlayerState(PlayerState playerState)
-{
-	m_playerState = playerState;
-}
-
-Player::PlayerState Player::getPlayerState() const
-{
-	return m_playerState;
 }
 
 Sound::ListenerData& Player::getListenerData()
@@ -756,6 +371,11 @@ Sound::ListenerData& Player::getListenerData()
 SkillManager* Player::getSkillManager()
 {
     return m_skillManager;
+}
+
+PlayerMovement * Logic::Player::getPlayerMovement()
+{
+    return m_pMovement;
 }
 
 const Weapon* Player::getMainHand() const
@@ -778,24 +398,24 @@ bool Player::isUsingMeleeWeapon() const
     return m_weaponManager->getActiveWeapon()->getAmmoConsumption() == 0;
 }
 
-int Logic::Player::getCurrentWeapon() const
+int Player::getCurrentWeapon() const
 {
     return currentWeapon;
 }
 
-void Logic::Player::setCurrentSkills(int first, int second)
+void Player::setCurrentSkills(int first, int second)
 {
     m_skillManager->switchToSkill({ SkillManager::SKILL(second), SkillManager::SKILL(first) });
     currentSkills[0] = first;
     currentSkills[1] = second;
 }
 
-int Logic::Player::getCurrentSkill1() const
+int Player::getCurrentSkill1() const
 {
     return currentSkills[1];
 }
 
-int Logic::Player::getCurrentSkill0() const
+int Player::getCurrentSkill0() const
 {
     return currentSkills[0];
 }

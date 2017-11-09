@@ -10,15 +10,16 @@
 		*/
 #pragma endregion
 
-#include <Graphics\include\RenderInfo.h>
+#include "Entity\Entity.h"
+
+#include <Player\PlayerMovement.h>
+
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 #include <Windows.h>
 #include <Keyboard.h>
 #include <Mouse.h>
-
-#include "Entity\Entity.h"
-#include <BulletDynamics\Character\btKinematicCharacterController.h>
-#include <BulletCollision\CollisionDispatch\btGhostObject.h>
 
 #define PLAYER_GRAVITY					9.82f * 2.f * 0.0000015f
 #define PLAYER_SIZE_RADIUS				0.5f
@@ -48,22 +49,10 @@ namespace Logic
     class SkillManager;
     class Skill;
     class ProjectileManager;
-
 	class Player : public Entity
 	{
-	public:
-		enum PlayerState
-		{
-			STANDING,
-			CROUCHING,
-			IN_AIR
-		};
-
 	private:
-        // Special modes (move to other class)
-        bool m_godMode, m_noclip;
-
-		btKinematicCharacterController* m_charController;
+        PlayerMovement* m_pMovement;
 
 		//ActionManager m_actionManager;
 		WeaponManager* m_weaponManager;
@@ -74,22 +63,6 @@ namespace Logic
 		int m_hp;
         int currentWeapon;
         int currentSkills[2];
-
-		// Movements
-		PlayerState m_playerState;
-		DirectX::SimpleMath::Vector3 m_forward;
-		float m_moveMaxSpeed;
-		btVector3 m_moveDir; // only 2 dimensional movement direction (x, z)
-		float m_moveSpeed;
-		float m_acceleration;
-		float m_deacceleration;
-		float m_airAcceleration;
-		float m_jumpSpeed;
-
-		bool m_wishJump;
-		btVector3 m_wishDir;
-		float m_wishDirForward;
-		float m_wishDirRight;
 
 		// Sound
 		Sound::ListenerData* m_listenerData;
@@ -115,31 +88,16 @@ namespace Logic
         DirectX::Keyboard::Keys m_useSkillSecondary;
         DirectX::Keyboard::Keys m_useSkillTertiary;
 
-		// Movement
-		void moveInput(DirectX::Keyboard::State* ks);
-		void moveFree(float deltaTime, DirectX::Keyboard::State* ks);
-		void move(float deltaTime);
-		void airMove(float deltaTime);
-		void accelerate(float deltaTime, float acceleration);
-		void applyFriction(float deltaTime, float friction);
-		void applyAirFriction(float deltaTime, float friction);
-		void jump(float deltaTime, DirectX::Keyboard::State* ks);
-		void crouch(float deltaTime);
-		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
-
 		// Sound
 		void updateSound(float deltaTime);
 	public:
 		Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent);
 		~Player();
 
-        void registerDebugCmds();
-
 		void init(Physics* physics, ProjectileManager* projectileManager);
 		void clear();
 		void reset();
         
-
 		void updateSpecific(float deltaTime);
 
 		void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
@@ -149,7 +107,6 @@ namespace Logic
 		void upgrade(Upgrade const &upgrade);
 
 		void render() const; 
-		void setMaxSpeed(float maxSpeed);
 
 		void saveToFile();
 		void readFromFile();
@@ -157,36 +114,16 @@ namespace Logic
 		void takeDamage(int damage, bool damageThroughProtection = false);
 		int getHP() const;
 
-		btKinematicCharacterController* getCharController();
-		btGhostObject* getGhostObject();
-		virtual DirectX::SimpleMath::Vector3 getPosition() const;
-
-		void setPlayerState(PlayerState playerState);
-
-		void setMoveSpeed(float speed);
-		void setMoveDirection(btVector3 moveDir);
-
-		btVector3 getForwardBT();
-		btVector3 getMoveDirection();
-
-		virtual btVector3 getPositionBT() const;
-		virtual btTransform& getTransform() const;
-
-		DirectX::SimpleMath::Vector3 getForward();
 		DirectX::SimpleMath::Matrix getTransformMatrix() const;
-
-		float getMoveSpeed() const;
-		PlayerState getPlayerState() const;
 		Sound::ListenerData& getListenerData();
         SkillManager* getSkillManager();
+        PlayerMovement* getPlayerMovement();
 
         const Weapon* getMainHand() const;
         const Weapon* getOffHand() const;
         const Skill* getSkill(int id) const;
         bool isUsingMeleeWeapon() const;
         int getCurrentWeapon() const;
-
-		static btVector3 startPosition;
 
         void setCurrentSkills(int first, int second);
         int getCurrentSkill0() const;

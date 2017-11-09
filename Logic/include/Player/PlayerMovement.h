@@ -26,6 +26,11 @@ namespace Logic
             IN_AIR
         };
 
+        PlayerMovement();
+        ~PlayerMovement();
+
+        void init(Physics* physics);
+
         void warpToOrigin();
         void activeNoClip();
         void deactivateNoClip();
@@ -34,13 +39,22 @@ namespace Logic
         void moveMouse(int x, int y);
         void wantToJump();
         void doesNotWantToJump();
-        void moveDirection(DIRECTION_FLAG direction);
+        void moveDirection(int directionflag);
+        void forceJump();
 
         void update(float deltaTime);
 
         btKinematicCharacterController* getCharController();
         btGhostObject* getGhostObject();
         btVector3 getPositionBT() const;
+        btVector3 getForwardBT() const;
+        bool getGodMode();
+        bool getNoClip();
+        float getMoveSpeed();
+        void setMoveSpeed(float moveSpeed);
+        void setMaxSpeed(float maxSpeed);
+        void setMoveDirection(btVector3 direction);
+        void setPlayerState(PlayerState state);
 
     private:
 

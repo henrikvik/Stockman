@@ -21,6 +21,47 @@ using namespace Logic;
 #define PLAYER_AIR_FRICTION				1.f
 #define PLAYER_JUMP_SPEED				0.008f
 
+PlayerMovement::PlayerMovement() { }
+
+PlayerMovement::~PlayerMovement()
+{
+    delete m_charController;
+}
+
+void PlayerMovement::init(Physics* physics)
+{
+    m_physicsPointer = physics;
+
+    btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_HEIGHT, PLAYER_SIZE_RADIUS);
+    btPairCachingGhostObject* ghostObject = m_physicsPointer->createPlayer(playerShape, {0, 6, 0});
+    ghostObject->setUserPointer(this);
+
+    m_charController = new btKinematicCharacterController(ghostObject, playerShape, 0.2f, btVector3(0.f, 1.f, 0.f));
+    m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
+    m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
+    m_charController->setFallSpeed(1.f);
+    m_physicsPointer->addAction(m_charController);
+    m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
+
+    m_playerState = PlayerState::STANDING;
+    m_mouseSens = PLAYER_MOUSE_SENSETIVITY;
+
+    m_godMode = m_noclip = false;
+
+    m_forward = { 0, 0, 1 };
+    m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
+    m_moveDir.setZero();
+    m_moveSpeed = 0.f;
+    m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
+    m_deacceleration = m_acceleration * 0.5f;
+    m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
+    m_jumpSpeed = PLAYER_JUMP_SPEED;
+    m_wishDir.setZero();
+    m_wishDirForward = 0.f;
+    m_wishDirRight = 0.f;
+    m_wishJump = false;
+}
+
 void PlayerMovement::warpToOrigin()
 {
     m_charController->warp({ 0.f, 0.f, 0.f });
@@ -97,35 +138,35 @@ void PlayerMovement::doesNotWantToJump()
     m_wishJump = false;
 }
 
-void PlayerMovement::moveDirection(DIRECTION_FLAG direction)
+void PlayerMovement::moveDirection(int directionflag)
 {
     // Reset from last time
     m_wishDir.setZero();
     m_wishDirForward = 0.f;
     m_wishDirRight = 0.f;
 
-    if (direction & DIR_LEFT)
+    if (directionflag & DIR_LEFT)
     {
         btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross({ 0, 1, 0 }).normalize();
         m_wishDir += -dir;
         m_wishDirRight += -1.f;
     }
 
-    if (direction & DIR_RIGHT)
+    if (directionflag & DIR_RIGHT)
     {
         btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross({ 0, 1, 0 }).normalize();
         m_wishDir += dir;
         m_wishDirRight += 1.f;
     }
 
-    if (direction & DIR_FORWARD)
+    if (directionflag & DIR_FORWARD)
     {
         btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
         m_wishDir += dir;
         m_wishDirForward += 1.f;
     }
 
-    if (direction & DIR_BACKWARD)
+    if (directionflag & DIR_BACKWARD)
     {
         btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
         m_wishDir += -dir;
@@ -134,6 +175,12 @@ void PlayerMovement::moveDirection(DIRECTION_FLAG direction)
 
     if (!m_wishDir.isZero())
         m_wishDir = m_wishDir.normalize();
+}
+
+void PlayerMovement::forceJump()
+{
+    m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
+    m_wishJump = false;
 }
 
 void PlayerMovement::update(float deltaTime)
@@ -199,8 +246,7 @@ void PlayerMovement::move(float deltaTime)
     // Apply jump if player wants to jump
     if (m_wishJump)
     {
-        m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
-        m_wishJump = false;
+        forceJump();
     }
 }
 
@@ -289,3 +335,11 @@ void PlayerMovement::applyAirFriction(float deltaTime, float friction)
 btKinematicCharacterController * PlayerMovement::getCharController() { return m_charController; }
 btGhostObject * PlayerMovement::getGhostObject() { return m_charController->getGhostObject(); }
 btVector3 PlayerMovement::getPositionBT() const { return m_charController->getGhostObject()->getWorldTransform().getOrigin(); }
+btVector3 PlayerMovement::getForwardBT() const { return m_forward; }
+bool PlayerMovement::getGodMode() { return m_godMode; }
+bool PlayerMovement::getNoClip() { return m_noclip; }
+float PlayerMovement::getMoveSpeed() { return m_moveSpeed; }
+void PlayerMovement::setMoveSpeed(float moveSpeed) { m_moveSpeed = moveSpeed; }
+void PlayerMovement::setMaxSpeed(float maxSpeed) { m_moveMaxSpeed = maxSpeed; }
+void PlayerMovement::setMoveDirection(btVector3 direction) { m_moveDir = direction; }
+void PlayerMovement::setPlayerState(PlayerState state) { m_playerState = state; }

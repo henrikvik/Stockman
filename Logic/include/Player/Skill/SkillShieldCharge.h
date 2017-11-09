@@ -17,7 +17,6 @@
 namespace Logic
 {
     class Entity;
-
 	class SkillShieldCharge : public Skill
 	{
 	private:

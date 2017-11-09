@@ -1,5 +1,6 @@
 #include "Player/Skill/SkillGrapplingHook.h"
 #include <Player\Player.h>
+#include <Player\PlayerMovement.h>
 #include <Physics\Physics.h>
 
 using namespace Logic;
@@ -93,9 +94,9 @@ void SkillGrapplingHook::onRelease()
 	}
 	else */ if (Player* player = dynamic_cast<Player*>(m_shooter))
 	{
-		float yVel = player->getCharController()->getLinearVelocity().y();
-        player->getCharController()->setFallSpeed(1.f);
-		player->getCharController()->setLinearVelocity({ 0.f, yVel, 0.f });
+		float yVel = player->getPlayerMovement()->getCharController()->getLinearVelocity().y();
+        player->getPlayerMovement()->getCharController()->setFallSpeed(1.f);
+		player->getPlayerMovement()->getCharController()->setLinearVelocity({ 0.f, yVel, 0.f });
 	}
 
     
@@ -117,31 +118,31 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 		// Setting player movement specific grappling hook variables
 		else if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
-			btGhostObject* ghostObject = player->getGhostObject();
-			btVector3 linearVelocity = player->getCharController()->getLinearVelocity();
+			btGhostObject* ghostObject = player->getPlayerMovement()->getGhostObject();
+			btVector3 linearVelocity = player->getPlayerMovement()->getCharController()->getLinearVelocity();
 			//btVector3 dirToPoint = (m_point - player->getPositionBT()).normalize();
 
             if(m_goingUp)
                m_dirToPoint = (m_point - player->getPositionBT()).normalize();
 
 			// Sets the current movedirection to avoid breaking strafing
-			player->setMoveDirection(btVector3(m_dirToPoint.x(), 0, m_dirToPoint.z()));
+			player->getPlayerMovement()->setMoveDirection(btVector3(m_dirToPoint.x(), 0, m_dirToPoint.z()));
 
 			// Easing to reach the targeted vertical speed
 			if (m_goingUp && m_point.y() > player->getPositionBT().y())
 			{
-                player->getCharController()->setFallSpeed(1.f);
-			    player->getCharController()->setLinearVelocity({ 0.f, linearVelocity.y() + (((m_dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0.f });
+                player->getPlayerMovement()->getCharController()->setFallSpeed(1.f);
+			    player->getPlayerMovement()->getCharController()->setLinearVelocity({ 0.f, linearVelocity.y() + (((m_dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0.f });
 			}
 			else
 			{
                 m_goingUp = false;
-                player->getCharController()->setFallSpeed(0.04f);   // Percentage of fall speed (maybe?)
-				player->getCharController()->setLinearVelocity({ 0.f, linearVelocity.y() + (((m_dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0.f });
+                player->getPlayerMovement()->getCharController()->setFallSpeed(0.04f);   // Percentage of fall speed (maybe?)
+				player->getPlayerMovement()->getCharController()->setLinearVelocity({ 0.f, linearVelocity.y() + (((m_dirToPoint.y()) * GRAPPLING_HOOK_MAX_SPEED_Y) - linearVelocity.y()) * GRAPPLING_HOOK_POWER * deltaTime, 0.f });
 			}
 
 			// Easing to reach the maximum vertical speed
-			player->setMoveSpeed(player->getMoveSpeed() + ((GRAPPLING_HOOK_MAX_SPEED_XZ - player->getMoveSpeed()) * GRAPPLING_HOOK_POWER * deltaTime));
+			player->getPlayerMovement()->setMoveSpeed(player->getPlayerMovement()->getMoveSpeed() + ((GRAPPLING_HOOK_MAX_SPEED_XZ - player->getPlayerMovement()->getMoveSpeed()) * GRAPPLING_HOOK_POWER * deltaTime));
 		}
 		else
 		{

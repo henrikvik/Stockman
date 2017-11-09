@@ -43,7 +43,7 @@ bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 		shooter.getStatusManager().addStatus(StatusManager::EFFECT_ID::SHIELD_CHARGE, 1, true);
 		
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
-			player->setMaxSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
+			player->getPlayerMovement()->setMaxSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
 
         return true;
 	}
@@ -59,11 +59,11 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 	{
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
-			player->setPlayerState(Player::PlayerState::IN_AIR);
+			player->getPlayerMovement()->setPlayerState(PlayerMovement::IN_AIR);
 
 			//Pushes the player forward with a static charge power, charging towards the pre decided vector
-			player->setMoveSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
-			player->setMoveDirection(m_forw);
+			player->getPlayerMovement()->setMoveSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
+			player->getPlayerMovement()->setMoveDirection(m_forw);
 
 			m_time += deltaTime;
 
@@ -82,11 +82,11 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 		{
 			m_time += deltaTime;
 			float power = m_chargePower * ((SLOWDOWN_DURATION - m_time) / SLOWDOWN_DURATION);
-			player->setMoveSpeed(power * PLAYER_MOVEMENT_MAX_SPEED);
+			player->getPlayerMovement()->setMoveSpeed(power * PLAYER_MOVEMENT_MAX_SPEED);
 			if (m_time >= SLOWDOWN_DURATION)
 			{
-				player->setMaxSpeed(PLAYER_MOVEMENT_MAX_SPEED);
-				player->setMoveSpeed(PLAYER_MOVEMENT_MAX_SPEED);
+				player->getPlayerMovement()->setMaxSpeed(PLAYER_MOVEMENT_MAX_SPEED);
+				player->getPlayerMovement()->setMoveSpeed(PLAYER_MOVEMENT_MAX_SPEED);
 				m_slowdown = false;
 			}
 		}
