@@ -69,20 +69,22 @@ void Button::updateOnPress(int posX, int posY)
 {
 	if (callback && renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
 	{
+        setState(ACTIVE);
         callback();
 	}
 }
 
 void Button::hoverOver(int posX, int posY)
 {
-    if (renderInfo.screenRect.contains(posX / WIN_WIDTH, posY / WIN_HEIGHT))
+    if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
     {
-        state = HOVER;
+        setState(HOVER);
     }
     else
     {
-        state = INACTIVE;
+        setState(INACTIVE);
     }
+
 }
 
 bool Button::animationTransition(float dt, float maxAnimationTime, bool forward)

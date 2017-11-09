@@ -15,7 +15,7 @@ using namespace Sound;
 #define ERRCHECK(nothing)
 #endif
 
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MASTER     = 1.f;
+const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MASTER     = 0.1f;
 const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_AMBIENT    = 1.f;
 const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_SFX        = 1.f;
 const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MUSIC      = 0.75f;
