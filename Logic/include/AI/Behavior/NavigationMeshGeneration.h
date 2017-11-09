@@ -39,10 +39,11 @@ namespace Logic
 	class NavigationMeshGeneration 
 	{
         private: //var
-            float precision, maxLength, baseY;
             static const int AI_UID, NO_ID;
             static int COUNTER;
             static const btVector3 unitDimension;
+
+            float precision, maxLength, baseY;
 		public:
 			enum VertexOrder { CLOCKWISE, COUNTER_CLOCKWISE };
 
@@ -82,7 +83,9 @@ namespace Logic
             struct NavMeshCube
             {
                 bool done, remove, collided[SIDES];
-                int userIndex, buddyIndex, collidedWithIndex[SIDES];
+                int userIndex, buddyIndex;
+                std::vector<int> collidedWithIndex[SIDES]; // for the many, not the few
+
                 btRigidBody *body;
                 Cube cube;
 
@@ -97,10 +100,25 @@ namespace Logic
                     loadIndex();
 
                     for (int i = 0; i < SIDES; i++)
-                    {
                         collided[i] = false;
-                        collidedWithIndex[i] = -1;
+                }
+
+                inline void addCollision(int side, int buddyId)
+                {
+                    collidedWithIndex[side].push_back(buddyId);
+                }
+
+                inline int hasCollision(int buddyId)
+                {
+                    for (int side = 0; side < SIDES; side++)
+                    {
+                        for (int index : collidedWithIndex[side])
+                            if (index == buddyId)
+                            {
+                                return side;
+                            }
                     }
+                    return -1;
                 }
 
                 inline void loadIndex()
@@ -108,6 +126,9 @@ namespace Logic
                     userIndex = COUNTER++;
                 }
             };
+
+            std::vector<NavMeshCube> regions;
+
             Growth growth[SIDES];
             btVector3 growthNormals[SIDES];
 
@@ -118,28 +139,33 @@ namespace Logic
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
             std::pair<Cube, Cube> cutCube(btVector3 const &cutPoint, btVector3 const &planeNormal, Cube const &cube);
 
-            void quadMeshToTriangleMesh(std::vector<NavMeshCube> &regions, NavigationMesh &nav, Physics &physics);
+            void quadMeshToTriangleMesh(NavigationMesh &nav, Physics &physics);
             void growRegion(NavMeshCube &cube, Growth const &growth);
             void shrinkRegion(NavMeshCube &cube, Growth const &growth);
-            int getRegion(int id, std::vector<NavMeshCube> &region) const;
+
+            int getRegion(int id) const;
             btVector3 getDimension(NavMeshCube &region, int side) const;
 
             NavigationMesh::Triangle toNavTriangle(Triangle const &tri);
             CollisionReturn handleCollision(btVector3 collisionPoint, NavMeshCube &cube,
                 StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape);
 
-            void split(std::vector<NavMeshCube> &regions, NavMeshCube &cube,
-                Physics &physics, btVector3 const &cubeColPoint, btVector3 const &splitPlaneNormal);
+            void split(NavMeshCube &cube, Physics &physics, btVector3 const &cubeColPoint,
+                btVector3 const &splitPlaneNormal);
             void removeRigidBody(btRigidBody *&body, Physics &physics);
 
+            // if a cube is split to two cubes, then you will have collision to "both" sides,
+            // so add secondIndex if you have collided with first index
+            void addSplitIndices(int firstIndex, int secondIndex);
+
             bool isInCollisionArea(NavMeshCube &cube, Physics &physics, int filterId = NO_ID, int filterId1 = NO_ID);
-            void seedArea(btVector3 position, btVector3 fullDimension, float part, std::vector<NavMeshCube> &regions, Physics &physics);
+            void seedArea(btVector3 position, btVector3 fullDimension, float part, Physics &physics);
 
             // true on collision
             std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance);
 
             // For creating test data
-            void testFunc(std::vector<NavMeshCube> &regions, Physics &physics);
+            void testFunc(Physics &physics);
 	};
 }
 
