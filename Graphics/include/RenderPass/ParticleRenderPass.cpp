@@ -12,7 +12,9 @@ namespace Graphics {
 
     void ParticleRenderPass::render() const
     {
+        PROFILE_BEGIN("Particle");
         FXSystem->render(Global::context, Global::mainCamera, targets[0], depthStencil, false);
+        PROFILE_END();
     }
 
     void ParticleRenderPass::update(float deltaTime)

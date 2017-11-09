@@ -143,7 +143,7 @@ Engine::~Engine()
 
 	//Enable this to get additional information about live objects
     //this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-    this->mDebugDevice->Release();
+    SAFE_RELEASE(mDebugDevice);
 }
 
 void Engine::initializeWindow()
@@ -199,8 +199,9 @@ HRESULT Engine::createSwapChain()
 	DXGI_SWAP_CHAIN_DESC desc;
 	ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	desc.BufferCount = 1;
-	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.BufferCount = 2;
+	desc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+    desc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	desc.OutputWindow = this->window;
 	desc.SampleDesc.Count = 1;
@@ -215,7 +216,11 @@ HRESULT Engine::createSwapChain()
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
+    #ifdef _DEBUG
 		D3D11_CREATE_DEVICE_DEBUG,
+    #else
+        NULL,
+    #endif
 		NULL,
 		NULL,
 		D3D11_SDK_VERSION,
@@ -247,12 +252,15 @@ HRESULT Engine::createSwapChain()
 		backBuffer->Release();
 
 		//Creates a debug device to check for memory leaks etc
+    #ifdef _DEBUG
 		HRESULT hr = this->mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast <void **>(&mDebugDevice));
 		if (FAILED(hr))
 		{
 			MessageBox(0, "debug device creation failed", "error", MB_OK);
 		}
-
+    #else
+        mDebugDevice = nullptr;
+    #endif
 	}
 	else
 	{
@@ -371,7 +379,7 @@ int Engine::run()
         static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
         Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);
         
-        PROFILE_BEGINC("Renderer::update()", EventColor::Yellow);
+        PROFILE_BEGINC("Renderer::update()", EventColor::Pear);
         renderer->update(deltaTime / 1000.f);
         PROFILE_END();
 

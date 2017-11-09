@@ -38,6 +38,7 @@ namespace Graphics
 
     void GlowRenderPass::render() const
     {
+        PROFILE_BEGIN("Glow");
         static float color[4] = { 0, 0, 0, 0 };
         for (int i = 0; i < MIP_LEVELS; i++)
         {
@@ -125,6 +126,7 @@ namespace Graphics
         Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
         Global::context->PSSetShaderResources(4, 1, Global::nulls);
         Global::context->PSSetShaderResources(5, 1, Global::nulls);
+        PROFILE_END();
     }
 
     //Very ugly

@@ -1,6 +1,6 @@
 #include <Player\PlayerMovement.h>
 #include <Engine\Profiler.h>
-#include <Physics\Physics.h>
+//#include <Physics\Physics.h>
 
 using namespace Logic;
 
@@ -79,9 +79,9 @@ void PlayerMovement::moveMouse(int x, int y)
         m_camYaw -= 360.f;
 
     // Create forward
-    m_forward.x = cos(TO_RADIANS(m_camPitch)) * cos(TO_RADIANS(m_camYaw));
-    m_forward.y = sin(TO_RADIANS(m_camPitch));
-    m_forward.z = cos(TO_RADIANS(m_camPitch)) * sin(TO_RADIANS(m_camYaw));
+    m_forward.setX(cos(TO_RADIANS(m_camPitch)) * cos(TO_RADIANS(m_camYaw)));
+    m_forward.setY(sin(TO_RADIANS(m_camPitch)));
+    m_forward.setZ(cos(TO_RADIANS(m_camPitch)) * sin(TO_RADIANS(m_camYaw)));
 
     m_forward.normalize();
 }
@@ -106,28 +106,28 @@ void PlayerMovement::moveDirection(DIRECTION_FLAG direction)
 
     if (direction & DIR_LEFT)
     {
-        btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross({ 0, 1, 0 }).normalize();
+        btVector3 dir = btVector3(m_forward.x(), 0, m_forward.z()).cross({ 0, 1, 0 }).normalize();
         m_wishDir += -dir;
         m_wishDirRight += -1.f;
     }
 
     if (direction & DIR_RIGHT)
     {
-        btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).cross({ 0, 1, 0 }).normalize();
+        btVector3 dir = btVector3(m_forward.x(), 0, m_forward.z()).cross({ 0, 1, 0 }).normalize();
         m_wishDir += dir;
         m_wishDirRight += 1.f;
     }
 
     if (direction & DIR_FORWARD)
     {
-        btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
+        btVector3 dir = btVector3(m_forward.x(), 0, m_forward.z()).normalize();
         m_wishDir += dir;
         m_wishDirForward += 1.f;
     }
 
     if (direction & DIR_BACKWARD)
     {
-        btVector3 dir = btVector3(m_forward.x, 0, m_forward.z).normalize();
+        btVector3 dir = btVector3(m_forward.x(), 0, m_forward.z()).normalize();
         m_wishDir += -dir;
         m_wishDirForward += -1.f;
     }
@@ -231,8 +231,9 @@ void PlayerMovement::accelerate(float deltaTime, float acceleration)
 
     PROFILE_BEGIN("Stepping player");
     // Step player
-    m_charController->preStep(m_physicsPointer);
-    m_charController->playerStep(m_physicsPointer, deltaTime);
+    // TODO What did this do?
+    //m_charController->preStep(m_physicsPointer);
+    //m_charController->playerStep(m_physicsPointer, deltaTime);
     PROFILE_END()
 }
 
@@ -248,7 +249,7 @@ void PlayerMovement::applyFriction(float deltaTime, float friction)
 void PlayerMovement::applyAirFriction(float deltaTime, float friction)
 {
     btVector3 rightMoveDir = m_moveDir.cross(btVector3(0.f, 1.f, 0.f));
-    btVector3 forward = btVector3(m_forward.x, 0.f, m_forward.z).safeNormalize(); // forward vector (look direction)
+    btVector3 forward = btVector3(m_forward.x(), 0.f, m_forward.z()).safeNormalize(); // forward vector (look direction)
     float lookMoveAngle = m_moveDir.dot(forward);
     float lookMovedirection = rightMoveDir.dot(forward);
 

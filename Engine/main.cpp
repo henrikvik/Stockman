@@ -1,3 +1,4 @@
+#define BT_NO_SIMD_OPERATOR_OVERLOADS
 
 #include <Windows.h>
 #include "Engine.h"

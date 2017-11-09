@@ -53,10 +53,6 @@
 #define DEFAULT_S { 0, 0 }
 #define DEFAULT_D { 0, 0 }
 
-namespace Graphics
-{
-    struct RenderDebugInfo;
-}
 
 namespace Logic
 {

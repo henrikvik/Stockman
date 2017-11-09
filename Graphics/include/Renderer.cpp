@@ -40,16 +40,12 @@ namespace Graphics
 	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
 		: forwardPlus(device, Resources::Shaders::ForwardPlus)
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
-		, instanceSBuffer(device, CpuAccess::Write, _INSTANCE_CAP)
-		, instanceOffsetBuffer(device)
 #pragma region RenderDebugInfo
         , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
         , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
         , debugColorBuffer(device)
 #pragma endregion
         , fog(device)
-        , menu(device, deviceContext)
-        , hud(device, deviceContext)
         , bulletTimeBuffer(device)
 #pragma region Foliage
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
@@ -171,7 +167,6 @@ namespace Graphics
 
 		this->backBuffer = backBuffer;
 
-		initialize(device, deviceContext, camera);
 
 		fakeBackBuffer = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
 		fakeBackBufferSwap = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
@@ -266,19 +261,6 @@ namespace Graphics
         TextureLoader::get().unloadAll();
         ModelLoader::get().unloadAll();
     }
-
-    void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext, Camera * camera)
-    {
-        
-    }
-
-	void Renderer::updateLight(float deltaTime, Camera * camera)
-	{
-		//Temp or rename function
-		PROFILE_BEGIN("updateSnow()");
-		PROFILE_END();
-	}
-
 	//this function is called in SkillBulletTime.cpp
 	void Renderer::setBulletTimeCBuffer(float amount)
 	{
@@ -301,25 +283,8 @@ namespace Graphics
         PROFILE_END();
     }
 
-	void Renderer::updateShake(float deltaTime)
-	{
-		PROFILE_BEGIN("UpdateShake()");
-		hud.updateShake(Global::context, deltaTime);
-		PROFILE_END();
-	}
-
-	//Radius is in pixels on screen, duration is in MS
-    void Renderer::startShake(float radius, float duration)
-    {
-        hud.startShake(radius, duration);
-    }
-
     void Renderer::update(float deltaTime)
     {
-        // yermp
-        updateShake(deltaTime);
-        //
-
         writeInstanceBuffers();
         sun.update();
 
@@ -636,8 +601,6 @@ namespace Graphics
         teststsetes.queue<StaticRenderInfo>(&infotest);
 
 
-
-
         for (auto & renderPass : renderPasses)
         {
             renderPass->render();
@@ -645,11 +608,6 @@ namespace Graphics
 
     }
     #endif
-
-    void Renderer::fillHUDInfo(HUDInfo * info)
-    {
-        hud.fillHUDInfo(info);
-    }
 
 	void Renderer::clear() const
 	{
@@ -695,18 +653,6 @@ namespace Graphics
   //      Global::context->Draw(4, 0);
 		//PROFILE_END();
 
-  //      ID3D11ShaderResourceView * srvNull = nullptr;
-  //      Global::context->PSSetShaderResources(0, 1, &srvNull);
-  //  }
-
-    //draws the menu
-    void Renderer::drawMenu(Graphics::MenuInfo * info)
-    {
-        Global::context->RSSetViewports(1, &viewPort);
-        menu.drawMenu(Global::device, Global::context, info, backBuffer, Global::cStates->AlphaBlend());
-        hud.renderText(Global::cStates->AlphaBlend(), false);
-
-    }
 
 
     void Renderer::renderDebugInfo(Camera* camera)
@@ -789,7 +735,6 @@ namespace Graphics
             ZeroMemory(&light, sizeof(light));
             *lightBuffer++ = light;
         }
-
         lightsNew.unmap(Global::context);
     }
 
