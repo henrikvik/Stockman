@@ -5,6 +5,13 @@
 
 using namespace Logic;
 
+#define FREEZE_GRENADE_SPEED_LOW    4.f
+#define FREEZE_GRENADE_SPEED_HIGH   16.f
+#define FREEZE_GRENADE_SPLIT_DIR_LOW 0.8f
+#define FREEZE_GRENADE_SPLIT_DIR_HIGH 1.2f
+#define FREEZE_GRENADE_SPLIT_UPDIR_LOW 2.f
+#define FREEZE_GRENADE_SPLIT_UPDIR_HIGH 4.f
+
 WeaponFreezeGrenade::WeaponFreezeGrenade()
 {
 }
@@ -34,22 +41,33 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
             btVector3 position;
 
             if (dynamic_cast<Entity*>(obj))
-                position = data.caller->getPositionBT()/* + btVector3(0.f, 0.1f, 0.f)*/;
+                position = data.caller->getPositionBT();
             else
                 position = data.caller->getPositionBT() + btVector3(0.f, 1.f, 0.f);
 
+            float dirMod;
+            float upMod;
+
             for (int i = 0; i < m_splitCount; i++)
             {
-                m_freezeData->ttl = RandomGenerator::singleton().getRandomFloat(150.f, 250.f);
-                Projectile* p = getSpawnProjectileFunc()(*m_freezeData, position, btVector3(cos(m_sliceSize * i), 0.f, sin(m_sliceSize * i)), *data.caller);
+                m_freezeData->speed = RandomGenerator::singleton().getRandomFloat(FREEZE_GRENADE_SPEED_LOW, FREEZE_GRENADE_SPEED_HIGH);
+                dirMod = RandomGenerator::singleton().getRandomFloat(FREEZE_GRENADE_SPLIT_DIR_LOW, FREEZE_GRENADE_SPLIT_DIR_HIGH);
+                upMod = RandomGenerator::singleton().getRandomFloat(FREEZE_GRENADE_SPLIT_UPDIR_LOW, FREEZE_GRENADE_SPLIT_UPDIR_HIGH);
+
+                Projectile* p = getSpawnProjectileFunc()(*m_freezeData, position, btVector3(cos(m_sliceSize * i) * dirMod, upMod, sin(m_sliceSize * i) * dirMod).normalize(), *data.caller);
                 p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
 
                     PhysicsObject* obj = reinterpret_cast<PhysicsObject*>(data.dataPtr);
 
+                    float dirMod;
+                    float upMod;
+
                     for (int i = 0; i < m_splitCount; i++)
                     {
-                        m_freezeData->ttl = RandomGenerator::singleton().getRandomInt(150, 250);
-                        Projectile* p = getSpawnProjectileFunc()(*m_freezeData, data.caller->getPositionBT(), btVector3(cos(m_sliceSize * i), 0.f, sin(m_sliceSize * i)), *data.caller);
+                        m_freezeData->speed = RandomGenerator::singleton().getRandomFloat(FREEZE_GRENADE_SPEED_LOW, FREEZE_GRENADE_SPEED_HIGH);
+                        dirMod = RandomGenerator::singleton().getRandomFloat(FREEZE_GRENADE_SPLIT_DIR_LOW, FREEZE_GRENADE_SPLIT_DIR_HIGH);
+                        upMod = RandomGenerator::singleton().getRandomFloat(FREEZE_GRENADE_SPLIT_UPDIR_LOW, FREEZE_GRENADE_SPLIT_UPDIR_HIGH);
+                        Projectile* p = getSpawnProjectileFunc()(*m_freezeData, data.caller->getPositionBT(), btVector3(cos(m_sliceSize * i), upMod, sin(m_sliceSize * i)).normalize(), *data.caller);
                     }
 
                 });
