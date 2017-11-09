@@ -56,7 +56,7 @@ void EnemyBossBaddie::updateDead(float deltaTime)
 
 void EnemyBossBaddie::useAbility1(Entity const &target)
 {
-    //Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_1, const_cast<Entity&> (target).getSoundSource(), true);
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_1, const_cast<Entity&> (target).getSoundSource(), true);
     abilityTimer[0] = ABILITY_1_DURATION;
     usingAbility[0] = true;
 }
