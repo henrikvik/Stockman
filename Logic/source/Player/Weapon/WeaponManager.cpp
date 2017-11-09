@@ -132,7 +132,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
 
         // Sledge/Melee
         newd WeaponLoadout{ 
-        /* Primary */       newd Weapon(projectileManager, ProjectileData(35, 2.f, 1, 0, 0, 100, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, true), Weapon::WeaponInfo{ 4, 1, 0, 0, 400, 200, 0 }),
+        /* Primary */       newd Weapon(projectileManager, ProjectileData(35, 2.f, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 4, 1, 0, 0, 400, 200, 0 }),
         /* Secondary*/      newd WeaponMeleeParry(projectileManager, ProjectileData(0, 2.f, 1, 0, 0, 200, Graphics::ModelID::GRAPPLEPOINT, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, true), Weapon::WeaponInfo{ 5, 1, 0, 0, 50, 0, 0 }, 8.f),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0 }),
         /* WeaponModel */   newd WeaponModel(Graphics::ModelID::STAFF, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(-1.7f, 0.2f, 3.2f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(1.3f, -0.2f, 2.f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), 200.f }) }
