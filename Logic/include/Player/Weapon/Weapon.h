@@ -36,8 +36,8 @@ namespace Logic
             int projectileCount;
             int spreadH;							// Horizontal spread in degrees	
             int spreadV;							// Vertical spread in degrees
-            float attackRate;						// Attacks per minute
-            float delayTime;
+            int attackRate;						    // Attacks per minute (0 = no delay, basically once per frame if no delayTime is set)
+            int delayTime;
             float freeze;
         };
 

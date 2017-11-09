@@ -14,7 +14,7 @@ WeaponFreezeGrenade::WeaponFreezeGrenade(ProjectileManager * projectileManager, 
 {
     m_freezeData = newd ProjectileData(freezeData);
     m_splitCount = splitCount;
-    sliceSize = (2 * 3.14f) / m_splitCount;
+    m_sliceSize = (2 * 3.14f) / m_splitCount;
 }
 
 
@@ -34,21 +34,27 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
             btVector3 position;
 
             if (dynamic_cast<Entity*>(obj))
-                position = data.caller->getPositionBT() + btVector3(0.f, 0.1f, 0.f);
+                position = data.caller->getPositionBT()/* + btVector3(0.f, 0.1f, 0.f)*/;
             else
                 position = data.caller->getPositionBT() + btVector3(0.f, 1.f, 0.f);
 
             for (int i = 0; i < m_splitCount; i++)
             {
-                Projectile* p = getSpawnProjectileFunc()(*m_freezeData, position, btVector3(cos(sliceSize * i), 0.f, sin(sliceSize * i)), *data.caller);
+                m_freezeData->ttl = RandomGenerator::singleton().getRandomFloat(150.f, 250.f);
+                Projectile* p = getSpawnProjectileFunc()(*m_freezeData, position, btVector3(cos(m_sliceSize * i), 0.f, sin(m_sliceSize * i)), *data.caller);
                 p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
-                    
+
                     PhysicsObject* obj = reinterpret_cast<PhysicsObject*>(data.dataPtr);
 
                     for (int i = 0; i < m_splitCount; i++)
-                        Projectile* p = getSpawnProjectileFunc()(*m_freezeData, data.caller->getPositionBT(), btVector3(cos(sliceSize * i), 0.f, sin(sliceSize * i)), *data.caller);
+                    {
+                        m_freezeData->ttl = RandomGenerator::singleton().getRandomInt(150, 250);
+                        Projectile* p = getSpawnProjectileFunc()(*m_freezeData, data.caller->getPositionBT(), btVector3(cos(m_sliceSize * i), 0.f, sin(m_sliceSize * i)), *data.caller);
+                    }
+
                 });
             }
+
         });
     }
 }

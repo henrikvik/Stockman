@@ -89,7 +89,10 @@ ProjectileData* Weapon::getProjectileData()
 
 float Weapon::getAttackTimer()
 {
-	return (60.f / m_wInfo.attackRate) * 1000;
+    if (m_wInfo.attackRate != 0)
+        return (60.f / m_wInfo.attackRate) * 1000;
+    else
+        return 0.f;
 }
 
 float Weapon::getDelayTime()

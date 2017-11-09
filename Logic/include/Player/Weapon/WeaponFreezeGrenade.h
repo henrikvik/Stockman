@@ -20,7 +20,7 @@ namespace Logic
 
         ProjectileData* m_freezeData;
         int m_splitCount;
-        float sliceSize;
+        float m_sliceSize;
     };
 }
 
