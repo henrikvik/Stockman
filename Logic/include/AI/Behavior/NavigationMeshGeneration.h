@@ -32,6 +32,7 @@ namespace Logic
     // [2] (Mirror): https://libres.uncg.edu/ir/uncc/f/Hale_uncc_0694D_10272.pdf
     // [3]: https://goo.gl/dzpBc
     // (Not ready for production)
+    // NP-Hard Problem
 
     class Physics;
     class StaticObject;
@@ -136,6 +137,9 @@ namespace Logic
 
             // true on collision
             std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance);
+
+            // For creating test data
+            void testFunc(std::vector<NavMeshCube> &regions, Physics &physics);
 	};
 }
 

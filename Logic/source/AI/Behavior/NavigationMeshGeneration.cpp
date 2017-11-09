@@ -149,7 +149,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     regions.reserve(1500); // THIS IS A TEMPORARY SOLUTION TO PREVENT MEMORY FOK UPS; MAKE A REAL SOLUTION
 
     printf("Seeding area..");
-    seedArea({ -125.f, 0.6f, -135.f }, { 250.f, 0.5f, 300.f }, 75.f, regions, physics);
+    seedArea({ -125.f, 0.6f, -135.f }, { 250.f, 0.5f, 300.f }, 55.f, regions, physics);
     printf("Seeding finished!\n");
 
     btCollisionObject *obj;
@@ -158,6 +158,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
 
     // first cube
     printf("Buckleup buckero this will take a while! Generating Navigation Mesh...\n");
+//testFunc(regions, physics);
     for (size_t index = 0; index < regions.size(); index++) // elements is added inside vec
     {
         auto &region = regions[index];
@@ -274,7 +275,7 @@ std::pair<Cube, Cube> NavigationMeshGeneration::cutCube(btVector3 const &cutPoin
     btVector3 toPos = cutPoint - end;
     btVector3 temp;
 
-    float distToPlane = abs(toPos.dot(planeNormal) / planeNormal.length2()) * 0.5f;
+    float distToPlane = abs(abs(toPos.dot(planeNormal)) / planeNormal.length2()) * 0.5f;
 
     if (planeNormal.x() != 0)
     {
@@ -359,12 +360,12 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(std::vector<NavMeshCube> &
                     if (top < region.cube.getPos() + region.cube.getDimensionsRef())
                     {
                         physics.createBody(Sphere(top, { 0.f, 0.f, 0.f }, 1.f), 0);
-                        split(regions, regions[index], physics, top, growthNormals[side - 1 % SIDES]);
+                        split(regions, regions[index], physics, top, growthNormals[static_cast<int> (abs(side - 1)) % SIDES]);
                     }
                     if (cutBot)
                     {
                         physics.createBody(Sphere(bot, { 0.f, 0.f, 0.f }, 1.f), 0);
-                      //  split(regions, regions[index], physics, bot, growthNormals[side + 1 % SIDES]);
+                      //  split(regions, regions[index], physics, bot, growthNormals[static_cast<int> (abs(side - 1))]);
                     }
                 }
             }
@@ -378,7 +379,8 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(std::vector<NavMeshCube> &
             Cube &cube = region.cube;
             std::pair<Triangle, Triangle> triPair = toTriangle(cube);
 
-            removeRigidBody(region.body, physics);
+            if (region.body)
+                removeRigidBody(region.body, physics);
 
             nav.addTriangle(toNavTriangle(triPair.first));
             nav.addTriangle(toNavTriangle(triPair.second));
@@ -531,4 +533,11 @@ std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(Stati
     btCollisionWorld::ClosestRayResultCallback res(body->getWorldTransform().getOrigin(), endPoint);
 
     return std::pair<bool, btVector3>(collision, point);
+}
+
+void NavigationMeshGeneration::testFunc(std::vector<NavMeshCube> &regions, Physics &physics)
+{
+    regions.push_back(NavMeshCube(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 25, 0.2f, 25 })));
+    regions.push_back(NavMeshCube(Cube({ 30, 0, 0 }, { 0, 0, 0 }, { 5, 0.2f, 5 })));
+    regions[1].collidedWithIndex[X_PLUS] = regions[0].userIndex;
 }
