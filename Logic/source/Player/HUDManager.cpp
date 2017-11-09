@@ -161,6 +161,7 @@ void Logic::HUDManager::updateTextElements()
     liveText.clear();
     int last = 0;
 
+    //cd 1 text
     TextRenderInfo text;
     text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
     if (info.cdInSeconds[0] > 0)
@@ -174,6 +175,7 @@ void Logic::HUDManager::updateTextElements()
         HUDText.push_back(TextRenderInfo(text));
     }
     
+    //cd 2 text
     if (info.cdInSeconds[1] > 0)
     {
         liveText.push_back(std::to_wstring(info.cdInSeconds[1]));
@@ -185,6 +187,7 @@ void Logic::HUDManager::updateTextElements()
         HUDText.push_back(TextRenderInfo(text));
     }
     
+    //points
     liveText.push_back(std::to_wstring(info.score));
     text.text = liveText.at(last).c_str();
     last++;
@@ -192,6 +195,60 @@ void Logic::HUDManager::updateTextElements()
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
+
+
+    //total ammo of weapon
+    if (info.currentWeapon == 0)
+    {
+        liveText.push_back(std::to_wstring(info.activeAmmo[0] + info.activeAmmo[1]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(1183, 430);
+        text.font = Resources::Fonts::KG18;
+
+        HUDText.push_back(TextRenderInfo(text));
+
+        liveText.push_back(std::to_wstring(info.inactiveAmmo[0] + info.inactiveAmmo[1]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(1183, 630);
+        text.font = Resources::Fonts::KG18;
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+    else
+    {
+        liveText.push_back(std::to_wstring(info.activeAmmo[0] + info.activeAmmo[1]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(1183, 630);
+        
+        text.font = Resources::Fonts::KG18;
+
+        HUDText.push_back(TextRenderInfo(text));
+
+        liveText.push_back(std::to_wstring(info.inactiveAmmo[0] + info.inactiveAmmo[1]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(1183, 430);
+        text.font = Resources::Fonts::KG18;
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+
+    //current ammo in mag of active weapon
+    if (info.currentWeapon != 2)
+    {
+        liveText.push_back(std::to_wstring(info.activeAmmo[0]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(700, 400);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+    
+    
 
 }
 
