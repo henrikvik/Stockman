@@ -264,8 +264,71 @@ void Logic::HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
     }
+
+    //time and enrage/ survive
+
+    int minutes = info.timeRemaining / 60;
+    int seconds = info.timeRemaining - (minutes*60);
+    std::wstring timeString = L"";
+    if (seconds < 0)
+    {
+        timeString = L"0:00";
+        liveText.push_back(timeString);
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(735, 15);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(TextRenderInfo(text));
+
+        text.color = DirectX::SimpleMath::Color(0.9f, 0.0f, 0.3f);
+        liveText.push_back(L"ENRAGED!");
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(520, 15);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+    else
+    {
+        if (seconds < 10)
+        {
+            timeString = std::to_wstring(minutes) + L":0" + std::to_wstring(seconds);
+        }
+        else
+        {
+            timeString = std::to_wstring(minutes) + L":" + std::to_wstring(seconds);
+        }
+        liveText.push_back(timeString);
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(735, 15);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(TextRenderInfo(text));
+
+        text.color = DirectX::SimpleMath::Color(0.0f, 0.0f, 0.0f);
+        liveText.push_back(L"SURVIVE");
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(520, 15);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(TextRenderInfo(text));
+
+    }
     
-    
+    //wave counter
+    text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
+    std::wstring wave = std::to_wstring(info.wave);
+    wave += L"/10";
+    liveText.push_back(wave);
+    text.text = liveText.at(last).c_str();
+    text.position = DirectX::SimpleMath::Vector2(660, 15);
+    text.font = Resources::Fonts::KG14;
+
+    HUDText.push_back(TextRenderInfo(text));
 
 }
 
