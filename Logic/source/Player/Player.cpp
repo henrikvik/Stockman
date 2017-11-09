@@ -175,6 +175,12 @@ void Player::registerDebugCmds()
 
         return "All weapons do 1 extra damage";
     });
+    win->registerCommand("BOOST_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addUpgrade(StatusManager::P20_PERC_MOVEMENTSPEED);
+
+        return "Player is permanently 20 percent faster";
+    });
 }
 
 void Player::clear()
@@ -303,15 +309,10 @@ void Player::upgrade(Upgrade const & upgrade)
 {
 	long long flags = upgrade.getTranferEffects();
 
-    if (flags & Upgrade::UPGRADE_INCREASE_CD)
+    if (flags & Upgrade::UPGRADE_INCREASE_MOVEMENTSPEED)
     {
-
-    }if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
-    {
-
-    }if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
-    {
-
+        m_permanentSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
+        m_moveMaxSpeed = m_moveMaxSpeed + (PLAYER_MOVEMENT_MAX_SPEED * upgrade.getFlatUpgrades().movementSpeed);
     }
 }
 
@@ -352,6 +353,14 @@ int Player::getHP() const
 
 void Player::updateSpecific(float deltaTime)
 {
+    //TODO LUKAS SWITCH THIS OUT AS PROMISED
+    m_permanentSpeedMod = 0;
+    m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;;
+    for (auto theUpgrade : getStatusManager().getActiveUpgrades())
+    {
+        upgrade(getStatusManager().getUpgrade(theUpgrade));
+    }
+    //TODO LUKAS SWITCH THIS OUT AS PROMISED
 	Player::update(deltaTime);
 
 	// Updates listener info for sounds
@@ -613,7 +622,7 @@ void Player::accelerate(float deltaTime, float acceleration)
 	if (deltaTime * 0.001f > (1.f / 60.f))
 		deltaTime = (1.f / 60.f) * 1000.f;
 
-	m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod;
+	m_moveSpeed += (acceleration * deltaTime * m_permanentSpeedMod) + (acceleration * deltaTime * m_moveSpeedMod);
 
 	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;

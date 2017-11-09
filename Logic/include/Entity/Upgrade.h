@@ -21,7 +21,7 @@ namespace Logic
 		enum UPGRADE_FLAG {
 			UPGRADE_IS_WEAPON			= 0x1,
 			UPGRADE_INCREASE_DMG		= 0x2,
-			UPGRADE_INCREASE_CD			= 0x4,
+			UPGRADE_DECREASE_CD			= 0x4,
 			UPGRADE_INCREASE_SIZE		= 0x8,
 			UPGRADE_INCREASE_AMMOCAP	= 0x20,
 			UPGRADE_INCREASE_MAGSIZE	= 0x40,
@@ -30,6 +30,7 @@ namespace Logic
             UPGRADE_CROSSBOW            = 0X200,
             UPGRADE_ICESTAFF            = 0x400,
             UPGRADE_SLEDGEHAMMER        = 0x800,
+            UPGRADE_INCREASE_MOVEMENTSPEED      = 0x1000,
 		};
 
 		struct FlatUpgrades {
@@ -38,6 +39,7 @@ namespace Logic
             int increaseSize;
 			int increaseAmmoCap;
             int increaseMagSize;
+            float movementSpeed;
 		};
 
 		Upgrade();

@@ -35,6 +35,7 @@ StatusManager::StatusManager()
                 flat.increaseAmmoCap = fileStruct.ints.at("increaseAmmoCap");
                 flat.increaseMagSize = fileStruct.ints.at("increaseMagSize");
                 flat.increaseSize = fileStruct.ints.at("increaseSize");
+                flat.movementSpeed = fileStruct.floats.at("movementSpeed");
                 s_upgrades[id].init(flags, id, flat);
                 id++;
             }
