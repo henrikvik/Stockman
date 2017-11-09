@@ -2,6 +2,7 @@
 #define PLAYERCONTROLLER_H
 
 #include <Misc\NonCopyable.h>
+#include <Windows.h>
 #include <Keyboard.h>
 #include <Mouse.h>
 
