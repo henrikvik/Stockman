@@ -34,8 +34,8 @@ void Logic::HUDManager::constructGUIElements()
     float y = 517.0f / 1024;
     float width = 503.0f / 1024;
     float height = 503.0f / 1024;
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, {x + width, y + height })));
-
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, {x + width, y + height })));
+   
     //ice staff
 
     x = 4.0f / 1024;
@@ -43,8 +43,8 @@ void Logic::HUDManager::constructGUIElements()
     width = 503.0f / 1024;
     height = 503.0f / 1024;
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
-
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
+    
     //sledegehammer
     x = 519.0f / 1024;
     y = 9.0f / 1024;
@@ -161,10 +161,11 @@ void Logic::HUDManager::updateTextElements()
     liveText.clear();
     int last = 0;
 
+    //cd 1 text
     TextRenderInfo text;
+    text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
     if (info.cdInSeconds[0] > 0)
     {
-        text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
         liveText.push_back(std::to_wstring(info.cdInSeconds[0]));
         text.text = liveText.at(last).c_str();
         last++;
@@ -174,9 +175,9 @@ void Logic::HUDManager::updateTextElements()
         HUDText.push_back(TextRenderInfo(text));
     }
     
+    //cd 2 text
     if (info.cdInSeconds[1] > 0)
     {
-        text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
         liveText.push_back(std::to_wstring(info.cdInSeconds[1]));
         text.text = liveText.at(last).c_str();
         last++;
@@ -185,6 +186,68 @@ void Logic::HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
     }
+    
+    //points
+    liveText.push_back(std::to_wstring(info.score));
+    text.text = liveText.at(last).c_str();
+    last++;
+    text.position = DirectX::SimpleMath::Vector2(142, 15);
+    text.font = Resources::Fonts::KG14;
+
+    HUDText.push_back(TextRenderInfo(text));
+
+
+    //total ammo of weapon
+    if (info.currentWeapon == 0)
+    {
+        liveText.push_back(std::to_wstring(info.activeAmmo[0] + info.activeAmmo[1]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(1183, 430);
+        text.font = Resources::Fonts::KG18;
+
+        HUDText.push_back(TextRenderInfo(text));
+
+        liveText.push_back(std::to_wstring(info.inactiveAmmo[0] + info.inactiveAmmo[1]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(1183, 630);
+        text.font = Resources::Fonts::KG18;
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+    else
+    {
+        liveText.push_back(std::to_wstring(info.activeAmmo[0] + info.activeAmmo[1]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(1183, 630);
+        
+        text.font = Resources::Fonts::KG18;
+
+        HUDText.push_back(TextRenderInfo(text));
+
+        liveText.push_back(std::to_wstring(info.inactiveAmmo[0] + info.inactiveAmmo[1]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(1183, 430);
+        text.font = Resources::Fonts::KG18;
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+
+    //current ammo in mag of active weapon
+    if (info.currentWeapon != 2)
+    {
+        liveText.push_back(std::to_wstring(info.activeAmmo[0]));
+        text.text = liveText.at(last).c_str();
+        last++;
+        text.position = DirectX::SimpleMath::Vector2(700, 400);
+        text.font = Resources::Fonts::KG14;
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+    
     
 
 }
@@ -205,12 +268,12 @@ void Logic::HUDManager::updateGUIElemets()
         
     case 0:
         //crossbow
-        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110);
+        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110);
         break;
         
     case 1:
         //icestaff
-        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110);
+        HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110);
         break;
         
     case 2:
