@@ -193,6 +193,7 @@
     <ClInclude Include="include\Misc\CommandsFile.h" />
     <ClInclude Include="include\GameType.h" />
     <ClInclude Include="include\Player\HUDManager.h" />
+    <ClInclude Include="include\Player\Weapon\AmmoContainer.h" />
     <ClInclude Include="include\AI\EnemyChaser.h" />
     <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
     <ClInclude Include="include\Entity\LightObject.h" />
@@ -259,11 +260,15 @@
     <ClInclude Include="include\Misc\Sound\NoiseMachine.h" />
     <ClInclude Include="include\AI\Behavior\MeleeBehavior.h" />
     <ClInclude Include="include\AI\WaveTimeManager.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponModel.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponFreezeGrenade.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Physics\FuncContactResult.cpp" />
     <ClCompile Include="source\Misc\CommandsFile.cpp" />
     <ClCompile Include="source\Player\HUDManager.cpp" />
+    <ClCompile Include="source\Player\Weapon\AmmoContainer.cpp" />
     <ClCompile Include="source\AI\Behavior\MeleeBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyChaser.cpp" />
     <ClCompile Include="source\AI\Behavior\EnemyThreadHandler.cpp" />
@@ -316,6 +321,9 @@
     <ClCompile Include="source\Entity\StatusManager.cpp" />
     <ClCompile Include="source\AI\WaveManager.cpp" />
     <ClCompile Include="source\AI\WaveTimeManager.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponModel.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />
