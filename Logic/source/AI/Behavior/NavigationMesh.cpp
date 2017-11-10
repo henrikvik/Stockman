@@ -1,7 +1,7 @@
 #include <AI\Behavior\NavigationMesh.h>
 #include <Misc\FileLoader.h>
 #define EPSILON 0.0001f
-#define EPSILON_NODE 0.05f
+#define EPSILON_NODE 0.2f
 using namespace Logic;
 
 const DirectX::SimpleMath::Vector3 NavigationMesh::dir = DirectX::SimpleMath::Vector3(0.f, -1.f, 0.f);
@@ -106,6 +106,12 @@ std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataEdges()
 {
 	std::vector<DirectX::SimpleMath::Vector3> *data =
 		new std::vector<DirectX::SimpleMath::Vector3>();
+
+    for (auto node : nodes)
+    {
+     //   data->push_back(node + DirectX::SimpleMath::Vector3{ 0, 2.f, 0 });
+    //    data->push_back(node - DirectX::SimpleMath::Vector3{ 0, 2.f, 0 });
+    }
 	
 	for (int j = 0; j < edges.size(); j++)
 	{

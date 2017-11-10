@@ -21,6 +21,7 @@
 #define PLAYER_GRAVITY					9.82f * 2.f * 0.0000015f
 #define PLAYER_SIZE_RADIUS				0.5f
 #define PLAYER_SIZE_HEIGHT				2.f
+#define PLAYER_EYE_OFFSET               {0.f, PLAYER_SIZE_HEIGHT * 0.25f, 0.f}
 #define PLAYER_STARTING_HP				3
 #define PLAYER_MOUSE_SENSETIVITY		0.01f
 #define PLAYER_MOVEMENT_MAX_SPEED		0.015f
@@ -43,6 +44,7 @@ namespace Logic
     class Physics;
     class WeaponManager;
     class Weapon;
+    class AmmoContainer;
     class SkillManager;
     class Skill;
     class ProjectileManager;
@@ -164,7 +166,6 @@ namespace Logic
 
 		btKinematicCharacterController* getCharController();
 		btGhostObject* getGhostObject();
-		virtual DirectX::SimpleMath::Vector3 getPosition() const;
 
 		void setPlayerState(PlayerState playerState);
 
@@ -174,19 +175,24 @@ namespace Logic
 		btVector3 getForwardBT();
 		btVector3 getMoveDirection();
 
+        virtual DirectX::SimpleMath::Vector3 getPosition() const;
+        virtual DirectX::SimpleMath::Vector3 getEyePosition() const;
 		virtual btVector3 getPositionBT() const;
 		virtual btTransform& getTransform() const;
 
-		DirectX::SimpleMath::Vector3 getForward();
+        float getYaw() const;
+        float getPitch() const;
+		DirectX::SimpleMath::Vector3 getForward() const;
 		DirectX::SimpleMath::Matrix getTransformMatrix() const;
+        DirectX::SimpleMath::Matrix getEyeTransformMatrix() const;
 
 		float getMoveSpeed() const;
 		PlayerState getPlayerState() const;
 		Sound::ListenerData& getListenerData();
         SkillManager* getSkillManager();
 
-        const Weapon* getMainHand() const;
-        const Weapon* getOffHand() const;
+        const AmmoContainer& getActiveAmmoContainer() const;
+        const AmmoContainer& getInactiveAmmoContainer() const;
         const Skill* getSkill(int id) const;
         bool isUsingMeleeWeapon() const;
         int getCurrentWeapon() const;

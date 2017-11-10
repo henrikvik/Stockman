@@ -1,3 +1,6 @@
+#ifndef FUN_CONTACT_RESULT_H
+#define FUN_CONTACT_RESULT_H
+
 #include <btBulletCollisionCommon.h>
 #include <functional>
 
@@ -26,3 +29,5 @@ namespace Logic
             const btCollisionObjectWrapper* colObj1, int partId1, int index1);
     };
 };
+
+#endif // !FUN_CONTACT_RESILT_H

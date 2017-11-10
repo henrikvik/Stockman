@@ -15,7 +15,6 @@
 
 #include <Player\Skill\Skill.h>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 
 namespace Graphics
 {

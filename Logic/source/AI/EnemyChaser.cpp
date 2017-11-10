@@ -3,7 +3,7 @@
 #include <Projectile\Projectile.h>
 using namespace Logic;
 
-const int EnemyChaser::MAX_HP = 3;
+const int EnemyChaser::MAX_HP = 25;
 const int EnemyChaser::BASE_DAMAGE = 1;
 const float EnemyChaser::MOVE_SPEED = 13;
 

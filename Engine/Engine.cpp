@@ -374,7 +374,7 @@ int Engine::run()
 		else
 		{
 			oldPos = game.getPlayerPosition();
-			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
+			cam.update(oldPos, game.getPlayerForward(), mContext);
 		}
 
 #pragma region temp

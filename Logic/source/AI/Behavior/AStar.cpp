@@ -46,10 +46,8 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
 {
-    if (navNodes.empty())
-    {
+    if (navNodes.size() == 0)  // REMOVE THIS UGLY SHIT
         return {};
-    }
 	// Edge cases 
 	if (startIndex == toIndex || startIndex == -1 || toIndex == -1)
 		return {};
@@ -122,7 +120,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 		currentNode->onClosedList = true;
 	}
 
-	if (!currentNode)
+	if (!currentNode || currentNode->parent == NO_PARENT)
 	{
 		printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
 			"Lukas or something (AStar.cpp:%d)\n", __LINE__);

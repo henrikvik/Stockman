@@ -5,9 +5,11 @@
 #include <Entity/Object.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include <Physics\FuncContactResult.h>
 
 namespace Logic
 {
+    class Physics;
 	class PhysicsObject : public Object
 	{
 	public:
@@ -31,7 +33,7 @@ namespace Logic
 		void destroyBody();
 		void updatePhysics(float deltaTime);
 
-		void collision(PhysicsObject& other, btVector3 contactPoint, const btRigidBody* collidedWithYour);
+		void collision(PhysicsObject& other, btVector3 contactPoint, Physics &physics);
 		virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier) = 0;
 
         virtual void setHalfExtent(btVector3 halfExtent);
