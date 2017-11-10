@@ -9,7 +9,8 @@
 #include <thread>
 
 // Misc
-#include <Misc\GUI\iMenuMachine.h>
+// #include <Misc\GUI\iMenuMachine.h>
+#include <Misc\GUI\MenuMachine.h>
 
 // DirectX Includes
 #include <Windows.h>
@@ -28,7 +29,7 @@ namespace Logic
         void render() const;
 
     private:
-        iMenuMachine*		m_menu;
+        MenuMachine*		m_menu;
     };
 }
 
