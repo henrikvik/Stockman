@@ -65,7 +65,6 @@ Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
     fragment.viewNormal = normalize(mul(camera.view,    float4(fragment.normal, 0)));
 
     fragment.uv         = vertex.uv;
-    fragment.uv.y = 1 - fragment.uv.y;
 
 #ifdef USE_GRID_TEXTURE
     float3   localPosition = mul(instance.world, float4(vertex.position, 0)).xyz;

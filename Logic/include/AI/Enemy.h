@@ -45,6 +45,7 @@ namespace Logic
 			Behavior *m_behavior;
 
             StaticRenderInfo enemyRenderInfo;
+            LightRenderInfo light;
 
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE };

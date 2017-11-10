@@ -49,7 +49,7 @@ struct Marker {
 };
 
 struct Event {
-	char name[32];
+	char name[128];
 	LARGE_INTEGER start;
 	LARGE_INTEGER end;
 	EventColor color;
