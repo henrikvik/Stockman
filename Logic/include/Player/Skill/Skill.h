@@ -12,6 +12,7 @@
 #include <d3d11.h>
 #include <SimpleMath.h>
 #include <btBulletCollisionCommon.h>
+#include <Entity/StatusManager.h>
 
 namespace Graphics
 {
