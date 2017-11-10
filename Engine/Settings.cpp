@@ -118,7 +118,7 @@ float* Settings::getFOVPTR()
 
 float Settings::getFOV()
 {
-	return m_FOV;
+	return 90; /// GET FOV m_FOV;
 }
 
 void Settings::setFOV(float FOV)

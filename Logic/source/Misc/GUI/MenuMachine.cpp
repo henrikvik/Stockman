@@ -243,15 +243,6 @@ void MenuMachine::render()
         //        tempString += L"|";
         //    }
 
-        }
-        Graphics::TextString text
-        {
-            tempString.c_str(),
-            tempPos,
-            DirectX::SimpleMath::Color(DirectX::Colors::White),
-            Graphics::Font::SMALL
-        };
-        renderer.queueText(&text);
 
         Settings* setting = Settings::getInstance();
 		ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Always);
@@ -288,46 +279,46 @@ void MenuMachine::render()
 		std::string tempString = "";
 		std::wstring tempWString = L"";
 		DirectX::SimpleMath::Vector2 tempPos;
-		for (int i = 0; i < 10; i++)
-		{
-			if (highScore[i].compare("") == 0)
-			{
-				break;
-			}
-			else
-			{
-				tempString += highScore[i] + "\n";
-			}
-		}
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	if (highScore[i].compare("") == 0)
+		//	{
+		//		break;
+		//	}
+		//	else
+		//	{
+		//		tempString += highScore[i] + "\n";
+		//	}
+		//}
 		tempWString.assign(tempString.begin(), tempString.end());
 		tempPos.x = 400.0f;
 		tempPos.y = 300.0f;
 
-		Graphics::TextString text
-		{
-			tempWString.c_str(),
-			tempPos,
-			DirectX::SimpleMath::Color(DirectX::Colors::White),
-			Graphics::Font::SMALL
-		};
-		renderer.queueText(&text);
+		//Graphics::TextString text
+		//{
+		//	tempWString.c_str(),
+		//	tempPos,
+		//	DirectX::SimpleMath::Color(DirectX::Colors::White),
+		//	Graphics::Font::SMALL
+		//};
+		//renderer.queueText(&text);
 	}
 	else if (m_currentActiveState == gameStateGameOver)
 	{
 		std::string tempString = "";
 		std::wstring tempWString = L"";
 		DirectX::SimpleMath::Vector2 tempPos;
-		for (int i = 0; i < 10; i++)
-		{
-			if (highScore[i].compare("") == 0)
-			{
-				break;
-			}
-			else
-			{
-				tempString += highScore[i] + "\n";
-			}
-		}
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	if (highScore[i].compare("") == 0)
+		//	{
+		//		break;
+		//	}
+		//	else
+		//	{
+		//		tempString += highScore[i] + "\n";
+		//	}
+		//}
 		tempWString.assign(tempString.begin(), tempString.end());
 		tempPos.x = 400.0f;
 		tempPos.y = 300.0f;

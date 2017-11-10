@@ -80,7 +80,7 @@ void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> co
     {
         m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
     }
-}
+
     // Update Render animation and position
     enemyRenderInfo.transform = getTransformMatrix();
 //    enemyRenderInfo.animationProgress += deltaTime;
@@ -231,7 +231,7 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
 
 Behavior* Enemy::getBehavior() const
 {
-	return m_behavior;
+	return this->m_behavior;
 }
 
 void Logic::Enemy::render() const

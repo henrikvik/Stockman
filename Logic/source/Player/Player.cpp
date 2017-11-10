@@ -24,6 +24,8 @@
 #include <Graphics\include\MainCamera.h>
 #include <Graphics\include\Device.h>
 
+#include <Engine/Settings.h>
+
 using namespace Logic;
 
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
@@ -174,8 +176,9 @@ void Player::registerDebugCmds()
 
         return "I need healing - Genji Shinimada ( + 1 Health given)";
     });
-    win->registerCommand("LOG_PRINT_POS", [&](std::vector<string> &para) -> std::string {
-        return "x: " + to_string((double) getPosition().x) + ", y: " + to_string((double) getPosition().y) + ", z: " + to_string((double) getPosition().z);
+    win->registerCommand("LOG_PRINT_POS", [&](std::vector<std::string> &para) -> std::string 
+    {
+        return "x: " + std::to_string((double) getPosition().x) + ", y: " + std::to_string((double) getPosition().y) + ", z: " + std::to_string((double) getPosition().z);
     });
 }
 

@@ -4,7 +4,7 @@
 using namespace Logic;
 
 StaticObject::StaticObject(Resources::Models::Files modelID, btRigidBody * body, btVector3 halfExtent, NavigationMeshFlags flags)
-	: PhysicsObject(body, halfExtent, modelID), m_navFlags(flags)
+	: PhysicsObject(body, halfExtent), m_navFlags(flags)
 {
     // Render Debug Construction
     debugRenderInfo.points = newd std::vector<DirectX::SimpleMath::Vector3>();
@@ -40,7 +40,7 @@ StaticObject::StaticObject(Resources::Models::Files modelID, btRigidBody * body,
     debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(pos.x - size.x, pos.y - size.y, pos.z - size.z));
 
     staticRenderInfo.transform = getTransformMatrix();
-    staticRenderInfo.model = modelId;
+    staticRenderInfo.model = modelID;
 }
 
 StaticObject::~StaticObject()

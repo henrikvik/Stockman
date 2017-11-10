@@ -355,7 +355,7 @@ void Physics::render()
 		btCollisionObject* obj = this->getCollisionObjectArray()[i];
 		if (btGhostObject* ghostObject = dynamic_cast<btGhostObject*>(obj))
 		{
-			renderGhostCapsule(renderer, dynamic_cast<btCapsuleShape*>(ghostObject->getCollisionShape()), ghostObject);
+			renderGhostCapsule(dynamic_cast<btCapsuleShape*>(ghostObject->getCollisionShape()), ghostObject);
 		}
 		else
 		{

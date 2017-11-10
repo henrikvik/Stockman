@@ -14,13 +14,6 @@ Map::~Map()
 	clear();
 }
 
-// Saves physics ptr & loads the map
-void Map::init(Physics* physics, std::string path)
-{
-    // Saves physics pointer
-    m_lights.push_back(new LightObject(frameLight));
-}
-
 void Map::add(FrameProp frameProp)
 {
   //  m_objects.push_back(new Object(frameProp.modelID, frameProp.position, frameProp.rotation));
@@ -28,15 +21,15 @@ void Map::add(FrameProp frameProp)
 
 void Map::add(FrameHitbox frameHitbox)
 {
-    if (frameHitbox.modelID == Graphics::GROUND)
-        m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
-            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
-            Physics::COL_HITBOX,
-            Physics::COL_EVERYTHING),
-            {1, 1.f, 1},
-            StaticObject::NavigationMeshFlags::CULL
-        ));
-    else
+    //if (frameHitbox.modelID == Resources::Models::UnitCube)
+    //    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+    //        Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+    //        Physics::COL_HITBOX,
+    //        Physics::COL_EVERYTHING),
+    //        {1, 1.f, 1},
+    //        StaticObject::NavigationMeshFlags::CULL
+    //    ));
+    //else
         m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
             Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
             Physics::COL_HITBOX,
@@ -46,7 +39,7 @@ void Map::add(FrameHitbox frameHitbox)
         ));
 }
 
-void Map::init(Physics* physics)
+void Map::init(Physics* physics, std::string path)
 {
     m_physicsPtr = physics;
 
@@ -55,61 +48,6 @@ void Map::init(Physics* physics)
 
     // Loads map from file (currently only hardcoded)
     loadMapFromFile(path);
-}
-
-// This could be loaded from level file
-void Map::readFromFile(std::string path)
-{
-    // Loads hitboxes
-    std::vector<FrameHitbox> hitboxes;
-    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Graphics::GROUND });
-    hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
-    hitboxes.push_back({ { 60, 0.75, -160 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
-    hitboxes.push_back({ { -160, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
-
-    RandomGenerator &gen = RandomGenerator::singleton();
-    // Insane random map generator, will make unbelievable maps, they look like they are placed by humans but it ACTUALLY CAN YOU BELIEVE IT: RANDOM!?!?!?!?!?!?!?!?!?. This will make Diablo 3 look like a little noob
-    for (int i = 0; i < gen.getRandomInt(4, 13); i++)
-    {
-        hitboxes.push_back({ { gen.getRandomFloat(-150, 150), 0.75, gen.getRandomFloat(-150, 150) },{ 0, 0, 0 },{ gen.getRandomFloat(5, 35), 0.75, gen.getRandomFloat(5, 35) }, Resources::Models::UnitCube });
-    }
-    /*
-    hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Graphics::CUBE });
-    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
-    hitboxes.push_back({ { 80, 3, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 50, 1, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
-    hitboxes.push_back({ { 80, 1, 40 },{ 40, -90, -90 },{ 15, 3, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 120, 1, 180 },{ 40, 0, -90 },{ 60, 10, 45 }, Graphics::CUBE });
-    hitboxes.push_back({ { 125, 5, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 100, 4, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 120, 4, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 130, 4, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 150, 6, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Graphics::CUBE });
-    hitboxes.push_back({ { 60, 80, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
-    hitboxes.push_back({ { 45, 70, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
-    hitboxes.push_back({ { 60, 50, 60 },{ 0, 0, 0 },{ 10, 2, 10 }, Graphics::CUBE });
-    hitboxes.push_back({ { 80, 42, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 50, 40, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 125, 35, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 100, 40, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 120, 50, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 130, 40, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Graphics::CUBE });
-    hitboxes.push_back({ { 150, 60, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Graphics::CUBE });
-    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 }, Graphics::CUBE }); */
-
-    // Loads lights
-    std::vector<FrameLight> lights;
-    lights.push_back({ DirectX::SimpleMath::Vector3(-35, 2, 35), DirectX::SimpleMath::Vector3(1, 1, 0), 0.75f, 10.f });
-    lights.push_back({ DirectX::SimpleMath::Vector3(-35, 2, -35), DirectX::SimpleMath::Vector3(1, 0, 1), 0.75f, 10.f });
-    lights.push_back({ DirectX::SimpleMath::Vector3(35, 2, -35), DirectX::SimpleMath::Vector3(0, 1, 1), 0.75f, 10.f });
-    lights.push_back({ DirectX::SimpleMath::Vector3(35, 2, 35), DirectX::SimpleMath::Vector3(1, 0.25f, 0.5f), 0.75f, 10.f });
-    lights.push_back({ DirectX::SimpleMath::Vector3(-23, 3, 74), DirectX::SimpleMath::Vector3(0.75, 0.25f, 0.5f), 0.85f, 10.f });
-    lights.push_back({ DirectX::SimpleMath::Vector3(-22, 3, 70), DirectX::SimpleMath::Vector3(1, 0.55f, 0.5f), 0.85f, 10.f });
-    
-    // Create everything and save
-    for (size_t i = hitboxes.size(); i--;)  add(hitboxes[i]);
- //   for (size_t i = lights.size(); i--;)    add(lights[i]); 
 }
 
 void Map::clear()
@@ -165,31 +103,41 @@ void Map::loadMapFromFile(std::string path)
 
     // Loads hitboxes
     std::vector<FrameHitbox> hitboxes;
-    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 80, 3, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 50, 1, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 80, 1, 40 },{ 40, -90, -90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 120, 1, 180 },{ 40, 0, -90 },{ 60, 10, 45 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 125, 5, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 100, 4, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 120, 4, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 130, 4, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 150, 6, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 60, 80, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 45, 70, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 60, 50, 60 },{ 0, 0, 0 },{ 10, 2, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 80, 42, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 50, 40, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 125, 35, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 100, 40, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 120, 50, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 130, 40, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 150, 60, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f},    Resources::Models::UnitCube });
+    hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 },   Resources::Models::UnitCube });
+    hitboxes.push_back({ { 60, 0.75, -160 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { -160, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
+
+    RandomGenerator &gen = RandomGenerator::singleton();
+    // Insane random map generator, will make unbelievable maps, they look like they are placed by humans but it ACTUALLY CAN YOU BELIEVE IT: RANDOM!?!?!?!?!?!?!?!?!?. This will make Diablo 3 look like a little noob
+    for (int i = 0; i < gen.getRandomInt(4, 13); i++)
+    {
+        hitboxes.push_back({ { gen.getRandomFloat(-150, 150), 0.75, gen.getRandomFloat(-150, 150) },{ 0, 0, 0 },{ gen.getRandomFloat(5, 35), 0.75, gen.getRandomFloat(5, 35) }, Resources::Models::UnitCube });
+    }
+    /*
+    hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Graphics::CUBE });
+    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
+    hitboxes.push_back({ { 80, 3, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 50, 1, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
+    hitboxes.push_back({ { 80, 1, 40 },{ 40, -90, -90 },{ 15, 3, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 120, 1, 180 },{ 40, 0, -90 },{ 60, 10, 45 }, Graphics::CUBE });
+    hitboxes.push_back({ { 125, 5, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 100, 4, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 120, 4, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 130, 4, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 150, 6, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Graphics::CUBE });
+    hitboxes.push_back({ { 60, 80, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
+    hitboxes.push_back({ { 45, 70, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Graphics::CUBE });
+    hitboxes.push_back({ { 60, 50, 60 },{ 0, 0, 0 },{ 10, 2, 10 }, Graphics::CUBE });
+    hitboxes.push_back({ { 80, 42, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 50, 40, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 125, 35, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 100, 40, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 120, 50, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 130, 40, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Graphics::CUBE });
+    hitboxes.push_back({ { 150, 60, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Graphics::CUBE });
+    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 }, Graphics::CUBE }); */
 
     // Loads lights
     std::vector<FrameLight> lights;
@@ -211,20 +159,20 @@ void Map::add(FrameLight frameLight)
     m_lights.push_back(newd LightObject(frameLight));
 }
 
-// Adds a visual prop to the map
-void Map::add(FrameProp frameProp)
-{
-//    m_props.push_back(newd StaticObject(frameProp.modelID));
-}
-
-// Adds a static hitbox to the map
-void Map::add(FrameHitbox frameHitbox)
-{
-    m_hitboxes.push_back(newd StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
-        /* Shape */             Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions),
-        /* Mass */              NULL,
-        /* Sensor */            false,
-        /* Collision Type */    Physics::COL_HITBOX,
-        /* Collides With */     Physics::COL_EVERYTHING),
-        /* Graphical Scaling */ frameHitbox.dimensions));
-}
+//
+//// Adds a static hitbox to the map
+//void Map::add(FrameHitbox frameHitbox)
+//{
+//    m_hitboxes.push_back(newd StaticObject(
+//        frameHitbox.modelID, 
+//        m_physicsPtr->createBody(
+//            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), /* Shape */             
+//            NULL,                   /* Mass */              
+//            false,                  /* Sensor */            
+//            Physics::COL_HITBOX,    /* Collision Type */    
+//            Physics::COL_EVERYTHING /* Collides With */     
+//        ),
+//        frameHitbox.dimensions, /* Graphical Scaling */ 
+//        StaticObject::NavigationMeshFlags::NO_CULL
+//    ));
+//}

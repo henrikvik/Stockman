@@ -37,7 +37,7 @@ namespace Logic
         bool shouldRender;          // If projectile should render
 
 		ProjectileData() : damage(1), scale(1.f), mass(1.f), speed(1.f), gravityModifier(0.f), ttl(1000), meshID(Resources::Models::UnitCube), materialID(1), type(ProjectileTypeNormal), isSensor(false), enemyBullet(false) {}
-		ProjectileData(int inDamage, float inScale, float inMass, float inSpeed, float inGravityModifier, float inTTL, Graphics::ModelID inMeshID, int inMaterialID, ProjectileType inType = ProjectileTypeNormal, bool inIsSensor = false, bool inEnemyBullet = false, bool inShouldRender = true) : damage(inDamage), scale(inScale), mass(inMass), speed(inSpeed),
+		ProjectileData(int inDamage, float inScale, float inMass, float inSpeed, float inGravityModifier, float inTTL, Resources::Models::Files inMeshID, int inMaterialID, ProjectileType inType = ProjectileTypeNormal, bool inIsSensor = false, bool inEnemyBullet = false, bool inShouldRender = true) : damage(inDamage), scale(inScale), mass(inMass), speed(inSpeed),
 			gravityModifier(inGravityModifier), ttl(inTTL), meshID(inMeshID), materialID(inMaterialID), type(inType), isSensor(inIsSensor), enemyBullet(inEnemyBullet), shouldRender(inShouldRender) {}
 	};
 }

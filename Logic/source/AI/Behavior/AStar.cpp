@@ -8,6 +8,8 @@
 #include <Engine\DebugWindow.h>
 #define NO_PARENT -1
 
+using namespace Logic;
+
 AStar::AStar(std::string file)
 {
 	debugDataTri.points = nullptr;
