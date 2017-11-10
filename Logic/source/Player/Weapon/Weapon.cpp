@@ -200,5 +200,5 @@ void Logic::Weapon::fillMag()
 
 void Logic::Weapon::render() const
 {
-    RenderQueue::get().queue(&renderInfo);
+    RenderQueue::get().queue((StaticRenderInfo*)&renderInfo);
 }
