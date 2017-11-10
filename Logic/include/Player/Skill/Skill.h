@@ -56,6 +56,7 @@ namespace Logic
 		// StatusManager statusManager;
 		float	m_cooldown;
 		float	m_cooldownMax;
+        float   m_cooldownModifer;
 		float	m_duration;
 		float	m_durationMax;
 		bool	m_canUse;

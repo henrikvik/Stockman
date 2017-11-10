@@ -6,6 +6,7 @@ Skill::Skill(float cooldown, float duration)
 {
 	m_cooldownMax = cooldown;
 	m_cooldown = -1.f;
+    m_cooldownModifer = 1.0f;
 	m_durationMax = duration;
 	m_duration = -1.f;
 	m_canUse = true;
@@ -22,7 +23,7 @@ void Skill::use(btVector3 forward, Entity& shooter)
         {
             m_duration = m_durationMax;
             m_active = true;
-            m_cooldown = m_cooldownMax;
+            m_cooldown = m_cooldownMax * m_cooldownModifer;
 
         }
 	}
@@ -51,6 +52,9 @@ void Skill::update(float deltaTime)
 		m_duration -= deltaTime;
 
 	onUpdate(deltaTime);
+    //TODO LUKAS SWITCH THIS OUT AS PROMISED
+    m_cooldownModifer = 1.0f;
+    //TODO LUKAS SWITCH THIS OUT AS PROMISED
 }
 
 void Skill::upgrade(Upgrade const & upgrade)
@@ -58,7 +62,11 @@ void Skill::upgrade(Upgrade const & upgrade)
     long long flags = upgrade.getTranferEffects();
     if (flags & Upgrade::UPGRADE_DECREASE_CD)
     {
-        upgrade.getFlatUpgrades().decreaseCooldown;
+        m_cooldownModifer = m_cooldownModifer - upgrade.getFlatUpgrades().decreaseCooldown;
+        if (m_cooldownModifer < 0)
+        {
+            m_cooldownModifer = 0;
+        }
     }
     else
     {

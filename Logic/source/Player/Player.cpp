@@ -181,6 +181,12 @@ void Player::registerDebugCmds()
 
         return "Player is permanently 20 percent faster";
     });
+    win->registerCommand("DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addUpgrade(StatusManager::M20_PERC_CD);
+
+        return "Player skills take 20% less time to recover";
+    });
 }
 
 void Player::clear()
@@ -316,7 +322,7 @@ void Player::upgrade(Upgrade const & upgrade)
     }
     if (flags & Upgrade::UPGRADE_IS_SKILL)
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 2; i++)
         {
             getSkillManager()->getSkill(i)->upgrade(upgrade);
         }
