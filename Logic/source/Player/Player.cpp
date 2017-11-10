@@ -31,6 +31,8 @@ Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 ha
     m_weaponManager = newd WeaponManager();
     m_skillManager = newd SkillManager();
     m_listenerData = newd Sound::ListenerData();
+    currentSkills[0] = -1;
+    currentSkills[1] = -1;
 }
 
 Player::~Player()
