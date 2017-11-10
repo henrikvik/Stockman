@@ -5,10 +5,10 @@
 using namespace Logic;
 
 const float EnemyBossBaddie::BASE_SPEED = 1.5f, EnemyBossBaddie::ABILITY_1_DURATION = 10000.f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 1000; // though guy, for you
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 10000; // though guy, for you
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
-    : Enemy(Graphics::ModelID::ENEMYGRUNT, body,
+    : Enemy(Resources::Models::UnitCube, body,
     halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0)
 {
     setBehavior(BOSS_BADDIE);
@@ -56,7 +56,7 @@ void EnemyBossBaddie::updateDead(float deltaTime)
 
 void EnemyBossBaddie::useAbility1(Entity const &target)
 {
-    Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_1, const_cast<Entity&> (target).getSoundSource(), true);
+    getSoundSource()->playSFX(Sound::SFX::BOSS_1_ABILITY_1);
     abilityTimer[0] = ABILITY_1_DURATION;
     usingAbility[0] = true;
 }

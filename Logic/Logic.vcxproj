@@ -297,6 +297,8 @@
     <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Behavior\BigBadBehavior.cpp" />
+    <ClCompile Include="source\AI\EnemyBossBaddie.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuFactory.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenu.cpp" />

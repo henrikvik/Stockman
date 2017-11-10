@@ -58,7 +58,7 @@ void EntityManager::registerCreationFunctions()
     {
         Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 5);
-        Enemy* enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, body, cube.getDimensionsRef());
+        Enemy* enemy = newd EnemyNecromancer(body, cube.getDimensionsRef());
         enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
@@ -259,21 +259,8 @@ Enemy* EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
 {
     try
     {
-    case ENEMY_TYPE::NECROMANCER:
-        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
-        break;
-    case ENEMY_TYPE::NECROMANCER_MINION:
-        enemy = newd EnemyChaser(testBody);
-        break;
-    default:
-        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
-		break;
-    }
-
-    enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/)), 2.f, { 0.f, 3.f, 0.f });
-
-    enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
+        Enemy *enemy = m_enemyFactory[id](pos, 1.f, effects, physics);
+        enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 
         int index = AStar::singleton().getIndex(*enemy);
         m_enemies[index == -1 ? 0 : index].push_back(enemy);
