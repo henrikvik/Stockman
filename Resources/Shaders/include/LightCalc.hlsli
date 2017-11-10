@@ -31,7 +31,6 @@ struct Light
     float  intensity;
 };
 
-
 StructuredBuffer<uint>  lightIndexList : register(t0);
 Texture2D<uint2>        lightGrid      : register(t1);
 StructuredBuffer<Light> lights         : register(t2);
@@ -128,7 +127,7 @@ float3 calcLight(Light light, float4 position, float3 normal, float3 viewDir, fl
     float attenuation = 1.0f - smoothstep(0, light.range, distance);
 
     float diffuesFactor = saturate(dot(normal, lightDir));
-    float specularFactor = saturate(pow(dot(normal, halfway), specularExponent));
+    float specularFactor = saturate(pow(saturate(dot(normal, halfway)), specularExponent));
 
     return diffuesFactor * light.color * attenuation * light.intensity
          + specularFactor * light.color * attenuation * light.intensity;

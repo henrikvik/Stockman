@@ -2,6 +2,8 @@
 #include "include/Fragment.hlsli"
 #include "include/LightCalc.hlsli"
 
+#define USE_GRID_TEXTURE
+
 cbuffer cb0 : register(b0) { Camera camera; };
 cbuffer cb1 : register(b1) { DirectionalLight globalLight; };
 
@@ -10,12 +12,14 @@ SamplerState           linearWrap      : register(s1);
 SamplerComparisonState comparison      : register(s2);
 
 Texture2D              shadowMap       : register(t3);
-Texture2D              gridTexture     : register(t9);
+#ifdef USE_GRID_TEXTURE
+Texture2D              gridTexture     : register(t4);
+#endif
+
 Texture2D              diffuseTexture  : register(t12);
 Texture2D              normalTexture   : register(t13);
 Texture2D              specularTexture : register(t14);
 Texture2D              glowTexture     : register(t15);
-
 
 struct Targets
 {
@@ -37,12 +41,11 @@ Targets PS(Fragment fragment)
     float3 lightSum = float3(0,0,0);
     lightSum += calcLight(globalLight, fragment.position, normal, viewDir, specularExponent);
     lightSum += calcAllLights(fragment.ndcPosition, fragment.position, normal, viewDir, specularExponent);
-
-    float3 color = float3(0, 0, 0);
+    
     #ifdef USE_GRID_TEXTURE
-    color += gridTexture.Sample(linearWrap, fragment.gridUV).xyz;
+    float3 color = gridTexture.Sample(linearWrap, fragment.gridUV).xyz;
     #else
-    color += diffuseTexture.Sample(linearClamp, fragment.uv).xyz;
+    float3 color = diffuseTexture.Sample(linearClamp, fragment.uv).xyz;
     #endif
 
     targets.color = float4(lightSum * color, 1); //500~
