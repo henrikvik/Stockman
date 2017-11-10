@@ -21,15 +21,21 @@ namespace Resources
     {
         enum Files
         {
+            Crossbow,
+            Hammer,
             SkySphere,
             Staff,
+            StaticSummon,
             Tablet1,
             UnitCube
         };
         const std::map<Files, const char *> Paths =
         {
+            {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
+            {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
+            {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
@@ -43,6 +49,8 @@ namespace Resources
             DoFCreateCoC,
             DoFGlue,
             ForwardPlus,
+            ForwardPlus_PS,
+            ForwardPlus_VS_Static,
             FullscreenQuad,
             GlowBlurHorizontal,
             GlowBlurVertical,
@@ -65,6 +73,8 @@ namespace Resources
             {DoFCreateCoC, R"(..\Resources\Shaders\DoFCreateCoC.hlsl)"},
             {DoFGlue, R"(..\Resources\Shaders\DoFGlue.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
+            {ForwardPlus_PS, R"(..\Resources\Shaders\ForwardPlus_PS.hlsl)"},
+            {ForwardPlus_VS_Static, R"(..\Resources\Shaders\ForwardPlus_VS_Static.hlsl)"},
             {FullscreenQuad, R"(..\Resources\Shaders\FullscreenQuad.hlsl)"},
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
             {GlowBlurVertical, R"(..\Resources\Shaders\GlowBlurVertical.hlsl)"},
@@ -99,6 +109,8 @@ namespace Resources
             MissingTexture,
             randomNormals,
             SettingsMenuButtons,
+            Skillpickbackground,
+            Skillpicksheet,
             Spellsheet,
             weaponsheet
         };
@@ -118,6 +130,8 @@ namespace Resources
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},
+            {Skillpickbackground, R"(..\Resources\Textures\Skillpickbackground.dds)"},
+            {Skillpicksheet, R"(..\Resources\Textures\Skillpicksheet.dds)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };
