@@ -11,7 +11,6 @@
 #include <Graphics\include\RenderQueue.h>
 
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 
 namespace Graphics
 {

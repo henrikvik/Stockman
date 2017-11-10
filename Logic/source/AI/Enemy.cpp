@@ -23,6 +23,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     m_moveSpeedMod = 1.f;
 
     m_nrOfCallbacksEntities = 0;
+    m_stunned = false;
 
 	//animation todo
     enemyRenderInfo.model = modelID;
@@ -75,11 +76,14 @@ void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> co
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 
+    if (!m_stunned)
+    {
+        m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+    }
+}
     // Update Render animation and position
     enemyRenderInfo.transform = getTransformMatrix();
 //    enemyRenderInfo.animationProgress += deltaTime;
-
-	m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
 
     m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
@@ -119,14 +123,56 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 {
 	auto flags = effect.getStandards()->flags;
 
-	if (flags & Effect::EFFECT_KILL)
-		damage(m_health);
-	if (flags & Effect::EFFECT_ON_FIRE)
-		damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken * dt));
+    if (flags & Effect::EFFECT_MODIFY_HP)
+        m_health += static_cast<int> (effect.getModifiers()->modifyHP);
+    if (flags & Effect::EFFECT_KILL)
+        damage(m_health);
 	if (flags & Effect::EFFECT_BULLET_TIME)
-		m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
+		m_bulletTimeMod = std::pow(effect.getSpecifics()->isBulletTime, stacks);
     if (flags & Effect::EFFECT_IS_FROZEN)
-        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
+    if (flags & Effect::EFFECT_IS_STUNNED)
+    {
+        m_stunned = true;
+    }
+    if (flags & Effect::EFFECT_MOVE_FASTER)
+    {
+       m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+    }
+    if (flags & Effect::EFFECT_MOVE_SLOWER)
+    {
+       m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+    }
+}
+
+void Logic::Enemy::onEffectEnd(int stacks, Effect const & effect)
+{
+    long long flags = effect.getStandards()->flags;
+
+    if (flags & Effect::EFFECT_ON_FIRE)
+    {
+        damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+    }
+    if (flags & Effect::EFFECT_BULLET_TIME)
+    {
+        m_bulletTimeMod = 1.f;
+    }
+    if (flags & Effect::EFFECT_IS_FROZEN)
+    {
+        m_moveSpeedMod = 1.f;
+    }
+    if (flags & Effect::EFFECT_IS_STUNNED)
+    {
+        m_stunned = false;
+    }
+    if (flags & Effect::EFFECT_MOVE_FASTER)
+    {
+        m_moveSpeedMod = 1.f;
+    }
+    if (flags & Effect::EFFECT_MOVE_SLOWER)
+    {
+        m_moveSpeedMod = 1.f;
+    }
 }
 
 int Enemy::getHealth() const

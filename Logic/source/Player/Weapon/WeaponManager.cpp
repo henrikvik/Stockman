@@ -1,7 +1,15 @@
 #include "Player/Weapon/WeaponManager.h"
 #include <Player\Weapon\Weapon.h>
+#include <Player\Weapon\WeaponFreezeGrenade.h>
+#include <Player\Weapon\WeaponMeleeParry.h>
+
+#include <Player\Player.h>
+
 #include <Graphics\include\Structs.h>
 #include <Projectile\ProjectileStruct.h>
+
+#include <Player\Weapon\AmmoContainer.h>
+#include <Player\Weapon\WeaponModel.h>
 
 using namespace Logic;
 
@@ -11,15 +19,13 @@ WeaponManager::~WeaponManager() { clear(); }
 
 void WeaponManager::init(ProjectileManager* projectileManager)
 {
-	m_projectileManager = projectileManager;
-	initializeWeapons();
-	makeWeaponLoadout();
-	m_currentWeapon = m_weaponsLoadouts[0];
+	initializeWeapons(projectileManager);
+	m_currentWeapon = m_weaponLoadouts[0];
 
 	// Timers
-	m_swapWeaponTimerMax = 1000.f;
-	m_swapWeaponTimer = 0.f;
-	m_attackTimer = 0.f;
+	m_attackRateTimer = -1.f;
+    m_toUse = USE_NOTHING;
+    m_toUseShooter = nullptr;
 
 	m_reloadTimer = 0.f;
 	m_reloadState = ReloadingWeapon::IDLE;
@@ -27,24 +33,32 @@ void WeaponManager::init(ProjectileManager* projectileManager)
 
 void WeaponManager::clear()
 {
-    for (Weapon* weapon : m_allWeapons)
-        delete weapon;
-	m_weaponsLoadouts.clear();
-	m_allWeapons.clear();
+    for (WeaponLoadout* weaponLoadout : m_weaponLoadouts)
+    {
+        delete weaponLoadout->primary;
+        delete weaponLoadout->secondary;
+        delete weaponLoadout->ammoContainer;
+        delete weaponLoadout->weaponModel;
+        delete weaponLoadout;
+    }
+        
+	m_weaponLoadouts.clear();
 }
 
-void Logic::WeaponManager::reset()
+void WeaponManager::reset()
 {
-	for (int i = 0; i < m_allWeapons.size(); i++)
-	{
-		m_allWeapons[i]->reset();
-	}
+    // Reset ammo
+	for (int i = 0; i < m_weaponLoadouts.size(); i++)
+        m_weaponLoadouts[i]->ammoContainer->reset();
+
+    // Reset current weapon
+    m_currentWeapon = m_weaponLoadouts[0];
 }
 
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
-	// Updating weapon model
-	m_currentWeapon.first->setWeaponModelFrontOfPlayer(playerTranslation, playerForward);
+    // Updating weapon model
+    m_currentWeapon->weaponModel->update(playerTranslation, playerForward);
 }
 
 void WeaponManager::update(float deltaTime)
@@ -62,61 +76,81 @@ void WeaponManager::update(float deltaTime)
 	}
 	if (m_reloadState == ReloadingWeapon::DONE)
 	{
-		m_currentWeapon.first->fillMag();
+		m_currentWeapon->ammoContainer->fillMag();
 		m_reloadState = ReloadingWeapon::IDLE;
 		printf("adding ammo\n");
-		printf("ammo: %d\n", m_currentWeapon.first->getAmmo());
-		printf("mag: %d\n", m_currentWeapon.first->getMagAmmo());
+		printf("ammo: %d\n", m_currentWeapon->ammoContainer->getAmmoInfo().ammo);
+		printf("mag: %d\n", m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo);
 	}
 
 	// Attack
-	if (m_attackTimer > 0.f)
-		m_attackTimer -= deltaTime;
-	// Weapon swap
-	if (m_swapWeaponTimer > 0.f)
-	{
-		m_swapWeaponTimer -= deltaTime;
-		m_attackTimer = m_swapWeaponTimer;
-	}
+    if (m_attackRateTimer > 0.f)
+    {
+        m_attackRateTimer -= deltaTime;
+
+        if (m_attackRateTimer < 0.f && m_toUse != USE_NOTHING)
+        {
+            if (m_toUse == USE_PRIMARY)
+            {
+                Entity* shooterEntity = m_toUseShooter;
+                usePrimary(m_toUseShooter->getPositionBT() + m_toUseShooter->getForwardBT(), m_toUseShooter->getYaw(), m_toUseShooter->getPitch(), *shooterEntity);
+                m_toUseShooter = nullptr;
+            }
+            else
+            {
+                Entity* shooterEntity = m_toUseShooter;
+                useSecondary(m_toUseShooter->getPositionBT() + m_toUseShooter->getForwardBT(), m_toUseShooter->getYaw(), m_toUseShooter->getPitch(), *shooterEntity);
+                m_toUseShooter = nullptr;
+            }
+
+            m_toUse = USE_NOTHING;
+        }
+    }
+
 }
 
-void WeaponManager::render() const
+void WeaponManager::render()
 {
-	m_currentWeapon.first->render();
+    m_currentWeapon->weaponModel->render();
 }
 
-void WeaponManager::initializeWeapons()
+void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
 {
-	// Adding all weapons
-	m_allWeapons =
-	{
-		{ newd Weapon(Resources::Models::Crossbow, m_projectileManager, ProjectileData(1, 0.2f, 1, 100, 0.f, 3000, Resources::Models::UnitCube, 1), 0, 60, 60, 30, 30, 1, 1, 0, 0, 450, 0, 2000) },		                                    // Gattling prim
-		{ newd Weapon(Resources::Models::Crossbow, m_projectileManager, ProjectileData(1, 0.1f, 1, 100, 0.f, 500, Resources::Models::UnitCube, 1), 1, 60, 60, 8, 8, 6, 18, 15, 10, 100, 0, 2000) },		                                    // Gattling sec
-		{ newd Weapon(Resources::Models::Staff, m_projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true), 2, 300, 200, 100, 100, 1, 1, 17, 5, 750, 1, 3000) },		// Freeze prim
-		{ newd Weapon(Resources::Models::Staff, m_projectileManager, ProjectileData(0, 1, 1, 50, 5, 5000, Resources::Models::UnitCube, 1), 3, 100, 100, 50, 50, 10, 1, 0, 0, 100, 1, 3000) },		                                            // Freeze sec
-		{ newd Weapon(Resources::Models::Hammer, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true), 4, 0, 0, 0, 0, 0, 1, 0, 0, 50, 0, 2000) },				                                            // Sledge prim
-		{ newd Weapon(Resources::Models::Hammer, m_projectileManager, ProjectileData(1, 2, 1, 0, 0, 300, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true), 5, 0, 0, 0, 0, 0, 1, 0, 0, 50, 0, 3000) }					                                        // Sledge sec
-	};
-}
+    // Adding current weapon pairs
+    m_weaponLoadouts =
+    {
+        // Gattling
+        newd WeaponLoadout{
+        /* Primary */       newd Weapon(projectileManager, ProjectileData(25, 0.2f, 1, 100, 0.f, 3000, Graphics::ModelID::CUTTLERY, 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 450, 0, 0 }),
+        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(10, 0.1f, 1, 100, 0.f, 500, Graphics::ModelID::CUTTLERY, 1), Weapon::WeaponInfo{ 1, 18, 15, 10, 100, 0, 0 }),
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 60, 60, 20, 20, 1, 5, 1000 }),
+        /* WeaponModel */   newd WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.05f, 0.12f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.5f, -1.8f, 4.6f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.1f), 800.f }) },
 
-void WeaponManager::makeWeaponLoadout()
-{
-	// Adding current weapon pair
-	m_weaponsLoadouts =
-	{ 
-		{ m_allWeapons[0], m_allWeapons[1] },
-		{ m_allWeapons[2], m_allWeapons[3] },
-		{ m_allWeapons[4], m_allWeapons[5] }
-	};
+        // Ice
+        newd WeaponLoadout{
+        /* Primary */       newd Weapon(projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1 }),
+        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(40, 0.6f, 1, 100, 0, 5000, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeFreezeGrenade, true), Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0 }, ProjectileData(10, 0.2f, 1, 10, 5, 5000, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeNormal, true), 8),
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 300, 100, 100, 1, 25, 1500 }),
+        /* WeaponModel */   newd WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(-0.6f, -6.6f, 0.3f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.5f, -3.6f, 5.2f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), 800.f }) },
+
+        // Sledge/Melee
+        newd WeaponLoadout{ 
+        /* Primary */       newd Weapon(projectileManager, ProjectileData(35, 2.f, 1, 0, 0, 0, Graphics::ModelID::CUBE, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 4, 1, 0, 0, 400, 200, 0 }),
+        /* Secondary*/      newd WeaponMeleeParry(projectileManager, ProjectileData(0, 2.f, 1, 0, 0, 200, Graphics::ModelID::GRAPPLEPOINT, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, true), Weapon::WeaponInfo{ 5, 1, 0, 0, 50, 0, 0 }, 8.f),
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0 }),
+        /* WeaponModel */   newd WeaponModel(Resources::Models::Hammer, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(-1.7f, 0.2f, 3.2f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(1.3f, -0.2f, 2.f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), 200.f }) }
+    };
 }
 
 void WeaponManager::switchWeapon(int index)
 {
 	// Check if swapTimer is active or swapping to same weapon 
-	if (!(m_currentWeapon == m_weaponsLoadouts[index]))
+	if (!(m_currentWeapon == m_weaponLoadouts[index]))
 	{
-		m_currentWeapon = m_weaponsLoadouts[index];
-		m_swapWeaponTimer = m_swapWeaponTimerMax;
+		m_currentWeapon = m_weaponLoadouts[index];
+		m_attackRateTimer = m_currentWeapon->weaponModel->getModelInfo().swapTimer;
+        m_toUse = USE_NOTHING;
+        m_toUseShooter = nullptr;
 
 		m_reloadTimer = 0.f;
 		m_reloadState = ReloadingWeapon::IDLE;
@@ -125,43 +159,75 @@ void WeaponManager::switchWeapon(int index)
 	}
 }
 
+void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Player& shooter)
+{
+    if (m_attackRateTimer <= 0.f)
+    {
+        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().primAmmoConsumption == 0)
+        {
+            if (float delayTime = m_currentWeapon->primary->getDelayTime())
+            {
+                m_toUse = USE_PRIMARY;
+                m_toUseShooter = &shooter;
+                m_attackRateTimer = delayTime;
+            }
+            else
+            {
+                Entity* shooterEntity = &shooter;
+                usePrimary(position, yaw, pitch, *shooterEntity);
+            }
+        }
+        else
+        {
+            reloadWeapon();
+        }
+    }
+}
+
 void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-	if(m_attackTimer <= 0.f)
-	{
-		if (m_currentWeapon.first->getMagAmmo() > 0 || m_currentWeapon.first->getAmmoConsumption() == 0)
-		{
-			m_currentWeapon.first->use(position, yaw, pitch, shooter);
-			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.first->getAmmoConsumption());
-		}
-		else
-			printf("out of ammo\n");
+    m_currentWeapon->primary->use(position, yaw, pitch, shooter);
+    m_currentWeapon->ammoContainer->removePrimaryAmmo();
 
-		m_attackTimer = m_currentWeapon.first->getAttackTimer();
-	}
+    m_attackRateTimer = m_currentWeapon->primary->getAttackTimer();
+}
+
+void WeaponManager::tryUseSecondary(btVector3 position, float yaw, float pitch, Player& shooter)
+{
+    if (m_attackRateTimer <= 0.f)
+    {
+        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().secAmmoConsumption == 0)
+        {
+            if (float delayTime = m_currentWeapon->secondary->getDelayTime())
+            {
+                m_toUse = USE_SECONDARY;
+                m_toUseShooter = &shooter;
+                m_attackRateTimer = delayTime;
+            }
+            else
+            {
+                Entity* shooterEntity = &shooter;
+                useSecondary(position, yaw, pitch, *shooterEntity);
+            }
+        }
+        else
+            reloadWeapon();
+    }
 }
 
 void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-	if (m_attackTimer <= 0.f)
-	{
-		if (m_currentWeapon.first->getMagAmmo() > 0 || m_currentWeapon.second->getAmmoConsumption() == 0)
-		{
-			m_currentWeapon.second->use(position, yaw, pitch, shooter);
-			m_currentWeapon.first->removeMagAmmo(m_currentWeapon.second->getAmmoConsumption());
-		}
-		else
-			printf("out of ammo\n");
+    m_currentWeapon->secondary->use(position, yaw, pitch, shooter);
+    m_currentWeapon->ammoContainer->removeSecondaryAmmo();
 
-		m_attackTimer = m_currentWeapon.second->getAttackTimer();
-	}
+    m_attackRateTimer = m_currentWeapon->secondary->getAttackTimer();
 }
 
 void WeaponManager::reloadWeapon()
 {
-	if (m_reloadTimer <= 0.f && m_currentWeapon.first->getAmmo() > 0 && m_currentWeapon.first->getMagAmmo() < m_currentWeapon.first->getMagSize())
+	if (m_reloadTimer <= 0.f && m_currentWeapon->ammoContainer->getAmmoInfo().ammo > 0 && m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo < m_currentWeapon->ammoContainer->getAmmoInfo().magSize)
 	{
-		m_reloadTimer = m_currentWeapon.first->getRealoadTime();
+        m_reloadTimer = m_currentWeapon->ammoContainer->getAmmoInfo().reloadTime;
 		m_reloadState = ReloadingWeapon::ACTIVE;
 		printf("reloading weapon\n");
 	}
@@ -169,12 +235,12 @@ void WeaponManager::reloadWeapon()
 
 bool WeaponManager::isSwitching()
 {
-	return m_swapWeaponTimer > 0.f;
+    return m_attackRateTimer > 0.f;
 }
 
 bool WeaponManager::isAttacking()
 {
-	return m_attackTimer > 0.f;
+	return m_attackRateTimer > 0.f;
 }
 
 bool WeaponManager::isReloading()
@@ -182,46 +248,36 @@ bool WeaponManager::isReloading()
 	return m_reloadState != ReloadingWeapon::IDLE;
 }
 
-Weapon* WeaponManager::getCurrentWeaponPrimary()
+WeaponManager::WeaponLoadout* WeaponManager::getCurrentWeaponLoadout()
 {
-	return m_currentWeapon.first;
+	return m_currentWeapon;
 }
 
-Weapon* WeaponManager::getCurrentWeaponSecondary()
+WeaponManager::WeaponLoadout* WeaponManager::getWeaponLoadout(int index)
 {
-	return m_currentWeapon.second;
+    return m_weaponLoadouts[index];
 }
 
-std::pair<Weapon*, Weapon*> WeaponManager::getFirstWeapon()
+WeaponManager::WeaponLoadout* WeaponManager::getActiveWeaponLoadout()
 {
-    return m_weaponsLoadouts[0];
-}
-
-std::pair<Weapon*, Weapon*> WeaponManager::getSecondWeapon()
-{
-    return m_weaponsLoadouts[1];
-}
-
-Weapon* Logic::WeaponManager::getActiveWeapon()
-{
-    if (m_weaponsLoadouts[0] == m_currentWeapon)
+    if (m_weaponLoadouts[0] == m_currentWeapon)
     {
-        return m_weaponsLoadouts[0].first;
+        return m_weaponLoadouts[0];
     }
     else
     {
-        return m_weaponsLoadouts[1].first;
+        return m_weaponLoadouts[1];
     } 
 }
 
-Weapon * Logic::WeaponManager::getInactiveWeapon()
+WeaponManager::WeaponLoadout* WeaponManager::getInactiveWeaponLoadout()
 {
-    if (m_weaponsLoadouts[0] != m_currentWeapon)
+    if (m_weaponLoadouts[1] == m_currentWeapon)
     {
-        return m_weaponsLoadouts[0].first;
+        return m_weaponLoadouts[0];
     }
     else
     {
-        return m_weaponsLoadouts[1].first;
+        return m_weaponLoadouts[1];
     };
 }

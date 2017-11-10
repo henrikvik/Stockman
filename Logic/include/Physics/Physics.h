@@ -45,6 +45,9 @@
 #include <BulletDynamics\Character\btKinematicCharacterController.h>
 #include <BulletCollision\CollisionDispatch\btGhostObject.h>
 #include <Engine\Profiler.h>
+#include <functional>
+
+
 //#define PHYSICS_GRAVITY 0.00982f
 #define PHYSICS_GRAVITY 9.82f * 2.f
 
@@ -104,6 +107,7 @@ namespace Logic
         //
         void update(float delta);
 
+        void registerDebugCommands();									
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // Ray Testing * 
         // 

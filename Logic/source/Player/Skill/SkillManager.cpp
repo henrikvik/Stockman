@@ -4,7 +4,9 @@
 #include <Player\Skill\SkillGrapplingHook.h>
 #include <Player\Skill\SkillShieldCharge.h>
 #include <Projectile\ProjectileManager.h>
+#include <Projectile\ProjectileStruct.h>
 #include <Entity\Entity.h>
+#include <Graphics\include\Structs.h>
 
 using namespace Logic;
 

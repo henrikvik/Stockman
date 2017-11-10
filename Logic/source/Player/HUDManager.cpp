@@ -3,6 +3,7 @@
 #include <Player\Skill\Skill.h>
 #include <Player\Skill\SkillManager.h>
 #include <Player\Weapon\Weapon.h>
+#include <Player\Weapon\AmmoContainer.h>
 
 #include <AI\WaveTimeManager.h>
 #include <AI\EntityManager.h>

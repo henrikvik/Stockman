@@ -18,6 +18,7 @@
 
 namespace Logic
 {
+    class Entity;
 	class StatusManager
 	{
 	public:
@@ -29,7 +30,8 @@ namespace Logic
 
 		enum EFFECT_ID {
 			ON_FIRE, FREEZE, BOOST_UP, AMMO_PICK_UP_PRIMARY, AMMO_PICK_UP_SECONDARY,
-            SHIELD_CHARGE, BULLET_TIME, ENRAGE, HEALTH_P1, LAST_ITEM_IN_EFFECTS
+            SHIELD_CHARGE, BULLET_TIME, ENRAGE, HEALTH_P1, STUN, MOVEMENTSPEED_UP, 
+            MOVEMENTSPEED_DOWN, ON_KILL, LAST_ITEM_IN_EFFECTS
 		};
 
 		enum UPGRADE_ID {
@@ -40,7 +42,7 @@ namespace Logic
 		~StatusManager();
 
 		void clear();
-		void update(float deltaTime);
+		void update(float deltaTime, Entity &entity);
 
 		void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, bool resetDuration = false);
 		void removeOneStatus(int statusID);
@@ -55,7 +57,7 @@ namespace Logic
 		this is O(n) BUT it should NEVER be called ONCE PER FRAME
 		use affect() then instead 
 		
-		Don
+		- Donald Trump
 		*/
 		int getStacksOfEffectFlag(Effect::EFFECT_FLAG flag) const;
 
@@ -63,9 +65,10 @@ namespace Logic
         bool isOwningUpgrade(Upgrade::UPGRADE_FLAG flag);
 
 		// nr of stacks and the effect itself
+        // THESE TWO ARE GOING TO BE REMOVED; DO NOT USE THEM
 		std::vector<std::pair<int, Effect*>> getActiveEffects();
-		// return stack and id of effect
 		std::vector<std::pair<int, StatusManager::EFFECT_ID>> getActiveEffectsIDs();
+
 		std::vector<UPGRADE_ID>& getActiveUpgrades();
 	private:
 		static const int NR_OF_EFFECTS = EFFECT_ID::LAST_ITEM_IN_EFFECTS, NR_OF_UPGRADES = UPGRADE_ID::LAST_ITEM_IN_UPGRADES;

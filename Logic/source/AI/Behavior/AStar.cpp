@@ -1,19 +1,20 @@
 #include <AI/Behavior/AStar.h>
+
 #include <stack>
 #include <stdio.h> // for testing obv
 #include <cmath>
+
 #include <Engine\Profiler.h>
+#include <Engine\DebugWindow.h>
 #define NO_PARENT -1
 
-namespace Logic
+AStar::AStar(std::string file)
 {
-    AStar::AStar(std::string file)
-    {
-        debugDataTri.points = nullptr;
-        debugDataEdges.points = nullptr;
-        // for testing
-        generateNavigationMesh();
-        targetIndex = 0;
+	debugDataTri.points = nullptr;
+	debugDataEdges.points = nullptr;
+	// for testing
+	targetIndex = 0;
+    renderDebug = false;
 
 	for (size_t i = 0; i < navNodes.size(); i++)
 	{
@@ -42,11 +43,13 @@ namespace Logic
         return getPath(startIndex, targetIndex);
     }
 
-    std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
-    {
-        // Edge cases 
-        if (startIndex == toIndex || startIndex == -1 || toIndex == -1)
-            return {};
+std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
+{
+    if (navNodes.size() == 0)  // REMOVE THIS UGLY SHIT
+        return {};
+	// Edge cases 
+	if (startIndex == toIndex || startIndex == -1 || toIndex == -1)
+		return {};
 
         // all nodes in navMesh
         const std::vector<DirectX::SimpleMath::Vector3> &nodes = navigationMesh.getNodes();
@@ -116,12 +119,12 @@ namespace Logic
             currentNode->onClosedList = true;
         }
 
-        if (!currentNode)
-        {
-            printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
-                "Lukas or something (AStar.cpp:%d)\n", __LINE__);
-            return {};
-        }
+	if (!currentNode || currentNode->parent == NO_PARENT)
+	{
+		printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
+			"Lukas or something (AStar.cpp:%d)\n", __LINE__);
+		return {};
+	}
 
         return reconstructPath(currentNode, navNodes, toIndex);
     }
@@ -178,49 +181,27 @@ namespace Logic
         return navigationMesh.getNodes().size();
     }
 
-void AStar::generateNavigationMesh()
+void AStar::generateNavigationMesh(Physics &physics)
 {
-	PASVF pasvf;
-	pasvf.generateNavMesh(navigationMesh, {}, {});
-	navigationMesh.createNodesFromTriangles();
-	// test //
-	/*
-		Basicly, divided by two because there is two triangles per square,
-		then square root because it is a square matrix (rows = columns).
-		Then times two again because one row = number of squares * 2.
-	*/
-	const int ROW = (int)std::sqrt(navigationMesh.getNodes().size() / 2) * 2;
-	for (size_t i = 0; i < navigationMesh.getNodes().size() - 1; i++)
-	{
-		if ((i + 1) % ROW != 0)
-		{
-			navigationMesh.addEdge((int)i, (int)i + 1);
-			navigationMesh.addEdge((int)i + 1, (int)i);
-		}
-		
-		if (i < navigationMesh.getNodes().size() - ROW && i % 2 == 0)
-		{
-			// REMOVE THESE COMMENTS AND i % 2 == 0 TO MAKE ART
-		//	navigationMesh.addEdge(i, i + ROW); 
-		//	navigationMesh.addEdge(i + ROW, i);
-			
-			if ((i + 1) % ROW != 0)
-			{
-				navigationMesh.addEdge((int)i, (int)i + ROW + 1);
-				navigationMesh.addEdge((int)i + ROW + 1, (int)i);
-			}
-		} 
-	}
+    generator.registerGenerationCommand(navigationMesh, physics);
+   // generator.generateNavigationMesh(navigationMesh, physics);
+    generator.generateNavMeshOld(navigationMesh, {}, {});
+    DebugWindow::getInstance()->registerCommand("AI_TOGGLE_DEBUG",
+        [&](std::vector<std::string> para) -> std::string {
+        renderDebug = !renderDebug;
+        if (!renderDebug) return "AI Debug Disabled";
 
         navNodes.clear();
         for (size_t i = 0; i < navigationMesh.getNodes().size(); i++)
             navNodes.push_back(
-        {false, false,
-        static_cast<int> (i), -1, 0, 0}
-        );
+                { false, false,
+                static_cast<int> (i), -1, 0, 0 }
+            );
 
         setupDebugging();
-    }
+        return "AI Debug On";
+    });
+}
 
     float AStar::heuristic(DirectX::SimpleMath::Vector3 const &from,
         DirectX::SimpleMath::Vector3 const &to) const
@@ -233,12 +214,12 @@ void AStar::generateNavigationMesh()
 
     }
 
-    void AStar::setupDebugging()
-    {
-        debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
-        debugDataTri.useDepth = false;
-        debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
-        debugDataTri.points = navigationMesh.getRenderDataTri();
+void AStar::setupDebugging()
+{
+	debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
+	debugDataTri.useDepth = false;
+	debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+	debugDataTri.points = navigationMesh.getRenderDataTri();
 
         debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);
         debugDataEdges.useDepth = false;
@@ -256,4 +237,3 @@ void AStar::generateNavigationMesh()
                 que.pop();
         return false;
     }
-}

@@ -9,6 +9,8 @@
 
 #include <Engine\Profiler.h>
 #include <DebugDefines.h>
+#include <Engine\Settings.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 #define TRANSITION_TIME 400
 
@@ -34,6 +36,9 @@ MenuMachine::MenuMachine()
     deleteCharCD = 20.0f;
 	m_cardUpgrade = -1;
     m_selectedSkills = { -1, -1 };
+
+	Settings* setting = Settings::getInstance();
+	setting->readFromFile();
 }
 
 
@@ -43,7 +48,9 @@ MenuMachine::~MenuMachine()
 	{
 		delete a.second;
 	}
-
+	Settings* setting = Settings::getInstance();
+	setting->writeToFile();
+	setting->releaseInstance();
 }
 
 void MenuMachine::initialize(GameState state)
@@ -236,14 +243,94 @@ void MenuMachine::render()
         //        tempString += L"|";
         //    }
 
-        //}
+        }
+        Graphics::TextString text
+        {
+            tempString.c_str(),
+            tempPos,
+            DirectX::SimpleMath::Color(DirectX::Colors::White),
+            Graphics::Font::SMALL
+        };
+        renderer.queueText(&text);
 
+        Settings* setting = Settings::getInstance();
+		ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Always);
+		if (ImGui::Begin("Testing version"))
+		{
+			ImGui::Text("Mouse Sense");
+			ImGui::PushItemWidth(100);
+			ImGui::DragFloat("float##1", setting->getMouseSensePTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::PopItemWidth();
+			ImGui::Text("FOV");
+			ImGui::PushItemWidth(100);
+			ImGui::DragFloat("float##2", setting->getFOVPTR(), 10.0f, 90.0f, 360.0f);
+			ImGui::Checkbox("Windowed", setting->getWindowedPTR());
+			ImGui::Text("Master Sound");
+			ImGui::PushItemWidth(100);
+			ImGui::DragFloat("float##3", setting->getMasterSoundPTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::Text("SFX");
+			ImGui::PushItemWidth(100);
+			ImGui::DragFloat("float##4", setting->getSFXPTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::Text("Music");
+			ImGui::PushItemWidth(100);
+			ImGui::DragFloat("float##5", setting->getMusicPTR(), 0.01f, 0.0f, 1.0f);
 
-        TextRenderInfo text = {};
-        text.text = tempString.c_str();
-        text.position = DirectX::SimpleMath::Vector2(0,0);
-        text.font = Resources::Fonts::KG14;
-        text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+			ImGui::End();
+		}
+
+        Sound::NoiseMachine noise = Sound::NoiseMachine::Get();
+        noise.setGroupVolume(Sound::CHANNEL_MASTER, setting->getMasterSound());
+        noise.setGroupVolume(Sound::CHANNEL_SFX, setting->getSFX());
+        noise.setGroupVolume(Sound::CHANNEL_MUSIC, setting->getMusic());
+    }
+	else if (m_currentActiveState == gameStateHighscore)
+	{
+		std::string tempString = "";
+		std::wstring tempWString = L"";
+		DirectX::SimpleMath::Vector2 tempPos;
+		for (int i = 0; i < 10; i++)
+		{
+			if (highScore[i].compare("") == 0)
+			{
+				break;
+			}
+			else
+			{
+				tempString += highScore[i] + "\n";
+			}
+		}
+		tempWString.assign(tempString.begin(), tempString.end());
+		tempPos.x = 400.0f;
+		tempPos.y = 300.0f;
+
+		Graphics::TextString text
+		{
+			tempWString.c_str(),
+			tempPos,
+			DirectX::SimpleMath::Color(DirectX::Colors::White),
+			Graphics::Font::SMALL
+		};
+		renderer.queueText(&text);
+	}
+	else if (m_currentActiveState == gameStateGameOver)
+	{
+		std::string tempString = "";
+		std::wstring tempWString = L"";
+		DirectX::SimpleMath::Vector2 tempPos;
+		for (int i = 0; i < 10; i++)
+		{
+			if (highScore[i].compare("") == 0)
+			{
+				break;
+			}
+			else
+			{
+				tempString += highScore[i] + "\n";
+			}
+		}
+		tempWString.assign(tempString.begin(), tempString.end());
+		tempPos.x = 400.0f;
+		tempPos.y = 300.0f;
 
         //RenderQueue::get().queue(&text);
     }

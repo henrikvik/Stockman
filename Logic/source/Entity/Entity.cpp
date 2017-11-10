@@ -17,12 +17,7 @@ Entity::~Entity()
     delete m_soundSource;
 }
 
-void Entity::setSpawnFunctions(std::function<Projectile*(ProjectileData& pData,
-    btVector3 position, btVector3 forward, Entity& shooter)> spawnProjectile,
-    std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
-        std::vector<int> effects)> spawnEnemy,
-    std::function<Trigger*(int id, btVector3 const &pos,
-        std::vector<int> &effects)> spawnTrigger)
+void Entity::setSpawnFunctions(ProjectileFunc spawnProjectile, EnemyFunc spawnEnemy, TriggerFunc spawnTrigger)
 {
     SpawnProjectile = spawnProjectile;
     SpawnEnemy = spawnEnemy;
@@ -33,17 +28,9 @@ void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
-	PhysicsObject::updatePhysics(deltaTime);
-
-    // Updating positions of sound information
-	updateSound(deltaTime);
-
-	// Checking different buffs
-	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
-		affect(effectPair.first, *effectPair.second, deltaTime);
-	
-	// Updating buffs duration
-	m_statusManager.update(deltaTime);
+    PhysicsObject::updatePhysics(deltaTime);
+    updateSound(deltaTime);
+    m_statusManager.update(deltaTime, *this);
 }
 
 void Entity::upgrade(Upgrade const & upgrade) { }

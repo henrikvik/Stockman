@@ -1,6 +1,7 @@
 #include "Player/Skill/SkillBulletTime.h"
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
+#include <Projectile\Projectile.h>
 
 using namespace Logic;
 

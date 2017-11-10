@@ -37,7 +37,7 @@ EntityManager::EntityManager()
     m_aliveEnemies = 0;
     m_aiType = NORMAL_MODE;
 
-    allocateData();
+    //allocateData(); was here
     loadDebugCmds();
 
     m_waveManager.setName(FILE_ABOUT_WHALES);
@@ -244,7 +244,9 @@ Enemy* EntityManager::spawnEnemy(ENEMY_TYPE id, btVector3 const &pos,
     }
 
     enemy->setEnemyType(id);
-    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/)), 2.f, { 0.f, 3.f, 0.f });
+    btRigidBody* extraBody = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/));
+    physics.removeRigidBody(extraBody);
+    enemy->addExtraBody(extraBody, 2.f, { 0.f, 3.f, 0.f });
 
     enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 
@@ -329,10 +331,7 @@ void EntityManager::render() const
     }
 
     m_triggerManager.render();
-
-#ifdef DEBUG_ASTAR
     AStar::singleton().renderNavigationMesh();
-#endif
 }
 
 const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const
@@ -340,7 +339,7 @@ const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const
     return m_enemies;
 }
 
-const WaveManager& Logic::EntityManager::getWaveManager() const
+const WaveManager& EntityManager::getWaveManager() const
 {
     return m_waveManager;
 }
@@ -357,10 +356,14 @@ void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &p
     SpawnTrigger = [&](int id, btVector3 const &pos, std::vector<int> &effects) -> Trigger* {
         return spawnTrigger(id, pos, effects, physics, &projManager);
     };
+
+    // MOVE THESE TO SEPERATE FUNC
     DeleteBody = [&](Entity& entity) -> void {
         physics.removeRigidBody(entity.getRigidBody());
         for (int i = 0; i < entity.getNumberOfWeakPoints(); i++)
             physics.removeRigidBody(entity.getRigidBodyWeakPoint(i));
         entity.destroyBody();
     };
+    AStar::singleton().generateNavigationMesh(physics);
+    allocateData();
 }

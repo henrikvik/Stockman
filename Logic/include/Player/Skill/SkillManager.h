@@ -14,7 +14,6 @@
 
 #include <vector>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 
 
 namespace Graphics

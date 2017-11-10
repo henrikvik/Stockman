@@ -349,7 +349,7 @@ DirectX::SimpleMath::Vector3 Game::getPlayerForward()
 
 DirectX::SimpleMath::Vector3 Game::getPlayerPosition()
 {
-	return m_player->getPosition();
+	return m_player->getEyePosition();
 }
 
 int Game::getState() const

@@ -12,7 +12,6 @@
 #include <vector>
 #include <Player\Skill\Skill.h>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 
 #define BULLET_TIME_CD 2500.f
 #define BULLET_TIME_DURATION 5000.f

@@ -9,7 +9,6 @@
 #include <AI\EnemyType.h>
 #include <Graphics\include\RenderQueue.h>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 #include <Misc/Sound/NoiseMachine.h>
 #include <Misc/Sound/SoundSource.h>
 
@@ -27,6 +26,10 @@ namespace Logic
 
 	class Entity : public PhysicsObject
 	{
+    typedef std::function<Projectile*(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)> ProjectileFunc;
+    typedef std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos, std::vector<int> effects)> EnemyFunc;
+    typedef std::function<Trigger*(int id, btVector3 const &pos, std::vector<int> &effects)> TriggerFunc;
+
     public:
         // Use ON_DESTROY to prevent crashes
         enum EntityEvent { ON_DEATH, ON_DAMAGE_TAKEN, ON_DAMAGE_GIVEN, ON_COLLISION, ON_DESTROY };
@@ -47,16 +50,14 @@ namespace Logic
 
 		virtual ~Entity();
 
-        virtual void setSpawnFunctions(std::function<Projectile*(ProjectileData& pData,
-            btVector3 position, btVector3 forward, Entity& shooter)> spawnProjectile,
-            std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos, std::vector<int> effects)> SpawnEnemy,
-            std::function<Trigger*(int id, btVector3 const &pos, std::vector<int> &effects)> spawnTriggery);
+        virtual void setSpawnFunctions(ProjectileFunc spawnProjectile, EnemyFunc SpawnEnemy, TriggerFunc spawnTriggery);
 
 		virtual void clear();
 		virtual void update(float deltaTime);
 		virtual void updateSound(float deltaTime);
 
 		virtual void affect(int stacks, Effect const &effect, float deltaTime) = 0;
+        virtual void onEffectEnd(int stacks, Effect const &effect) {};
 		virtual void upgrade(Upgrade const &upgrade);
 
         virtual void render() const = 0;

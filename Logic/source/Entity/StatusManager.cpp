@@ -1,4 +1,6 @@
 #include <Entity\StatusManager.h>
+#include <Entity\Entity.h>
+
 #include <stdio.h>
 #include <Misc/FileLoader.h>
 
@@ -126,13 +128,22 @@ void StatusManager::removeEffect(int index)
 	m_effectStacksIds.pop_back();
 }
 
-void StatusManager::update(float deltaTime)
+void StatusManager::update(float deltaTime, Entity &entity)
 {
+    // two sep lists maybe is redundant, fix?
+    int id, stacks;
 	for (size_t i = 0; i < m_effectStacks.size(); ++i)
 	{
+        id = static_cast<int> (i);
+        stacks = m_effectStacks[id].stack;
+
+        Effect &effect = s_effects[m_effectStacksIds[id]];
+        entity.affect(stacks, effect, deltaTime);
+
 		if ((m_effectStacks[i].duration -= deltaTime) <= 0)
 		{
-			removeEffect((int)i);
+            entity.onEffectEnd(stacks, effect);
+			removeEffect(id);
 		}
 	}
 }

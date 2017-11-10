@@ -14,7 +14,6 @@
 
 #include <vector>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 
 namespace Graphics
 {
@@ -24,12 +23,28 @@ namespace Graphics
 namespace Logic
 {
     class Entity;
+    class Player;
     class Weapon;
+    class AmmoContainer;
+    class WeaponModel;
     class ProjectileManager;
 
 	class WeaponManager
 	{
-	public:		
+	public:
+        struct WeaponLoadout
+        {
+            Weapon* primary;
+            Weapon* secondary;
+            AmmoContainer* ammoContainer;
+            WeaponModel* weaponModel;
+
+            bool operator==(const WeaponLoadout &other)
+            {
+                return (primary == other.primary && secondary == other.secondary && ammoContainer == other.ammoContainer && weaponModel && other.weaponModel);
+            }
+        };
+
 		WeaponManager();
 		WeaponManager(const WeaponManager& other) = delete;
 		WeaponManager* operator=(const WeaponManager& other) = delete;
@@ -44,7 +59,10 @@ namespace Logic
 		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		void switchWeapon(int weaponID);
+
+        void tryUsePrimary(btVector3 position, float yaw, float pitch, Player& shooter);
 		void usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter);
+        void tryUseSecondary(btVector3 position, float yaw, float pitch, Player& shooter);
 		void useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter);
 		void reloadWeapon();
 
@@ -52,36 +70,35 @@ namespace Logic
 		bool isAttacking();
 		bool isReloading();
 
-		Weapon* getCurrentWeaponPrimary();
-		Weapon* getCurrentWeaponSecondary();
-
-        std::pair<Weapon*, Weapon*> getFirstWeapon();
-        std::pair<Weapon*, Weapon*> getSecondWeapon();
-        Weapon* getActiveWeapon();
-        Weapon* getInactiveWeapon();
+        WeaponLoadout* getCurrentWeaponLoadout();
+        WeaponLoadout* getWeaponLoadout(int index);
+        WeaponLoadout* getActiveWeaponLoadout();
+        WeaponLoadout* getInactiveWeaponLoadout();
 
 	private:
+        enum ReloadingWeapon
+        {
+            IDLE,
+            ACTIVE,
+            DONE
+        };
 
-		enum ReloadingWeapon
-		{
-			IDLE,
-			ACTIVE,
-			DONE
-		};
+        enum WeaponToUse
+        {
+            USE_NOTHING,
+            USE_PRIMARY,
+            USE_SECONDARY
+        };
 
-		void initializeWeapons();
-		void makeWeaponLoadout();
+		void initializeWeapons(ProjectileManager* projectileManager);
 
-		ProjectileManager* m_projectileManager;
-		std::vector<Weapon*> m_allWeapons;
-		std::vector<std::pair<Weapon*, Weapon*>> m_weaponsLoadouts;
-		//std::vector<int> ammoList;
-		std::pair<Weapon*, Weapon*> m_currentWeapon;
+        std::vector<WeaponLoadout*> m_weaponLoadouts;
+		WeaponLoadout* m_currentWeapon;
 
 		// Timers
-		float m_swapWeaponTimer;
-		float m_swapWeaponTimerMax;
-		float m_attackTimer;
+		float m_attackRateTimer;
+        WeaponToUse m_toUse;
+        Player* m_toUseShooter;
 
 		float m_reloadTimer;
 		ReloadingWeapon m_reloadState;

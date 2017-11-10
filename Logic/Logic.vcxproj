@@ -198,6 +198,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Physics\FuncContactResult.h" />
     <ClInclude Include="include\Misc\CommandsFile.h" />
     <ClInclude Include="include\GameType.h" />
     <ClInclude Include="include\Misc\GUI\iMenu.h" />
@@ -208,6 +209,7 @@
     <ClInclude Include="include\Misc\Error.h" />
     <ClInclude Include="include\Misc\NonCopyable.h" />
     <ClInclude Include="include\Player\HUDManager.h" />
+    <ClInclude Include="include\Player\Weapon\AmmoContainer.h" />
     <ClInclude Include="include\AI\EnemyChaser.h" />
     <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
     <ClInclude Include="include\Entity\LightObject.h" />
@@ -219,7 +221,7 @@
     <ClInclude Include="include\AI\Behavior\TestBehavior.h" />
     <ClInclude Include="include\AI\Behavior\Behavior.h" />
     <ClInclude Include="include\AI\Behavior\NavigationMesh.h" />
-    <ClInclude Include="include\AI\Behavior\PASVF.h" />
+    <ClInclude Include="include\AI\Behavior\NavigationMeshGeneration.h" />
     <ClInclude Include="include\DebugDefines.h" />
     <ClInclude Include="include\Misc\ComboMachine.h" />
     <ClInclude Include="include\Misc\FileLoader.h" />
@@ -288,6 +290,9 @@
     <ClInclude Include="include\StateMachine\StateSecondary.h" />
     <ClInclude Include="include\StatePlayingOverlay.h" />
     <ClInclude Include="include\StateStart.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponModel.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponFreezeGrenade.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
@@ -299,8 +304,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\Misc\GUI\Sprite.cpp" />
+    <ClCompile Include="source\Physics\FuncContactResult.cpp" />
     <ClCompile Include="source\Misc\CommandsFile.cpp" />
     <ClCompile Include="source\Player\HUDManager.cpp" />
+    <ClCompile Include="source\Player\Weapon\AmmoContainer.cpp" />
     <ClCompile Include="source\AI\Behavior\MeleeBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyChaser.cpp" />
     <ClCompile Include="source\AI\Behavior\EnemyThreadHandler.cpp" />
@@ -313,7 +320,7 @@
     <ClCompile Include="source\AI\Behavior\AStar.cpp" />
     <ClCompile Include="source\AI\Behavior\TestBehavior.cpp" />
     <ClCompile Include="source\AI\Behavior\NavigationMesh.cpp" />
-    <ClCompile Include="source\AI\Behavior\PASVF.cpp" />
+    <ClCompile Include="source\AI\Behavior\NavigationMeshGeneration.cpp" />
     <ClCompile Include="source\Misc\ComboMachine.cpp" />
     <ClCompile Include="source\Entity\PhysicsObject.cpp" />
     <ClCompile Include="source\Entity\StaticObject.cpp" />
@@ -366,6 +373,9 @@
     <ClCompile Include="source\StateMachine\StateSecondary.cpp" />
     <ClCompile Include="source\StatePlayingOverlay.cpp" />
     <ClCompile Include="source\StateStart.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponModel.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

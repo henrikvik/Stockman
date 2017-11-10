@@ -224,6 +224,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Profiler.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Typing.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -232,12 +233,14 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
     <ClInclude Include="Engine.h" />
     <ClInclude Include="newd.h" />
     <ClInclude Include="Profiler.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="Typing.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Data\Button.lw" />
     <None Include="Resources\Data\Cards.lw" />
     <None Include="Resources\Data\Effects.lw" />
+    <None Include="Resources\Data\Settings.lw" />
     <None Include="Resources\Data\Enemies\Wave.lw" />
     <None Include="Resources\Data\Highscore.lw" />
     <None Include="Resources\Data\Menu.lw" />
