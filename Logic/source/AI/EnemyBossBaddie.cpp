@@ -4,7 +4,7 @@
 #include <Graphics\include\Structs.h>
 using namespace Logic;
 
-const float EnemyBossBaddie::BASE_SPEED = 1.5f, EnemyBossBaddie::ABILITY_1_DURATION = 10000.f;
+const float EnemyBossBaddie::BASE_SPEED = 1.5f;
 const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 10000; // though guy, for you
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
@@ -13,17 +13,41 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
 {
     setBehavior(BOSS_BADDIE);
     getSoundSource()->playMusic(Sound::MUSIC::BOSS_1_MUSIC_1);
-
-    abilityTimer[0] = ABILITY_1_DURATION;
-    usingAbility[0] = false;
+    createAbilities();
 }
 
-void EnemyBossBaddie::useAbility(Entity &target, int phase)
+/*
+
+    THIS METHOD CREATES THE ABILITES; CHANGE THEM HERE!
+
+*/
+void EnemyBossBaddie::createAbilities()
+{
+    AbilityData data;
+
+    data.cooldown = 12500.f; // Ability One Data
+    data.duration = 9000.f;
+    data.randomChanche = 0;
+
+    auto onUse = [&](Player& player, Ability &ability) -> void {
+        player.getSoundSource()->playSFX(Sound::SFX::BOSS_1_ABILITY_1);
+    };
+
+    auto onTick = [&](Player& player, Ability &ability) -> void {
+        btVector3 force = (player.getPositionBT() - getPositionBT()) *
+            (1 + ability.getCurrentDuration() - ability.getData().duration) * 0.00000001f;
+        player.getCharController()->applyImpulse(force);
+    };
+
+    abilities[AbilityId::ONE] = Ability(data, onTick, onUse);
+}
+
+void EnemyBossBaddie::useAbility(Player &target, int phase)
 {
     switch (phase)
     {
         case 0:
-            useAbility1(target);
+            abilities[AbilityId::ONE].useAbility(target);
             break;
         case 1:
             break;
@@ -38,26 +62,12 @@ void EnemyBossBaddie::onCollision(PhysicsObject &other, btVector3 contactPoint, 
 
 void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
 {
-    if (usingAbility[0])
-    {
-        btVector3 force = (player.getPositionBT() - getPositionBT()) * (1 + abilityTimer[0] - ABILITY_1_DURATION) * 0.00000001f;
-        player.getCharController()->applyImpulse(force);
-
-        abilityTimer[0] -= deltaTime;
-        if (abilityTimer[0] < 0)
-            usingAbility[0] = false;
-    }
-    
-    if (!usingAbility[0]) useAbility1(player);
+    // test
+    useAbility(player, 0);
+    for (auto pair : abilities)
+        pair.second.update(deltaTime, player);
 }
 
 void EnemyBossBaddie::updateDead(float deltaTime)
 {
-}
-
-void EnemyBossBaddie::useAbility1(Entity &target)
-{
-    target.getSoundSource()->playSFX(Sound::SFX::BOSS_1_ABILITY_1);
-    abilityTimer[0] = ABILITY_1_DURATION;
-    usingAbility[0] = true;
 }
