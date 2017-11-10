@@ -36,8 +36,6 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 1.0f;
     light.range = 2.f;
-    
-
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -76,7 +74,7 @@ Enemy::~Enemy() {
 		delete m_behavior;
 }
 
-void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
+void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 

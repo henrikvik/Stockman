@@ -3,7 +3,7 @@
 
 #include <Player\Player.h>
 #include <vector>
-#include "Pathing.h"
+#include <AI\Pathing\Pathing.h>
 
 // this class is pretty bloated but it is neccessary, may make it better in future
 
@@ -18,7 +18,7 @@ namespace Logic {
 		{
 			Enemy *enemy;
 			std::vector<Enemy*> closeEnemies;
-			Player const *target;
+			Player *target;
 			Behavior *behavior;
 			float deltaTime;
 		};
@@ -66,9 +66,9 @@ namespace Logic {
 		virtual ~Behavior();
 
 		void update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
-			Player const &player, float deltaTime);
+			Player &player, float deltaTime);
 		virtual void updateSpecific(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
-			Player const &player, float deltaTime) {};
+			Player &player, float deltaTime) {};
 
 		virtual void walkPath(RunIn &runIn);
 		virtual void boidCalculations(btVector3 &pos, btVector3 &dir,

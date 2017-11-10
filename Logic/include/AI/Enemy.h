@@ -47,7 +47,6 @@ namespace Logic
             StaticRenderInfo enemyRenderInfo;
             LightRenderInfo light;
 
-
             //status
             bool m_stunned;
 		public:	
@@ -56,12 +55,14 @@ namespace Logic
 			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId);
 			virtual ~Enemy();
 
-			virtual void update(Player const &player, float deltaTime,
+			virtual void update(Player &player, float deltaTime,
 				std::vector<Enemy*> const &closeEnemies);
-            virtual void useAbility(Entity const &target) {};
-            virtual void useAbility(Entity const &target, int phase) { useAbility(target); };
+
+            virtual void useAbility(Player &target) {};
+            virtual void useAbility(Player &target, int phase) { useAbility(target); };
+
 			virtual void updateDead(float deltaTime) = 0;
-			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
+			virtual void updateSpecific(Player &player, float deltaTime) = 0;
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
             void onEffectEnd(int stacks, Effect const &effect);

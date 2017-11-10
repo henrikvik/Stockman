@@ -198,6 +198,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\Abilities\Ability.h" />
     <ClInclude Include="include\AI\Behavior\BigBadBehavior.h" />
     <ClInclude Include="include\AI\EnemyBossBaddie.h" />
     <ClInclude Include="include\Physics\FuncContactResult.h" />
@@ -217,13 +218,13 @@
     <ClInclude Include="include\Entity\LightObject.h" />
     <ClInclude Include="include\AI\EnemyType.h" />
     <ClInclude Include="include\Misc\FPSRenderer.h" />
-    <ClInclude Include="include\AI\Behavior\Pathing.h" />
+    <ClInclude Include="include\AI\Pathing\Pathing.h" />
     <ClInclude Include="include\AI\EnemyNecromancer.h" />
-    <ClInclude Include="include\AI\Behavior\AStar.h" />
+    <ClInclude Include="include\AI\Pathing\AStar.h" />
     <ClInclude Include="include\AI\Behavior\TestBehavior.h" />
     <ClInclude Include="include\AI\Behavior\Behavior.h" />
-    <ClInclude Include="include\AI\Behavior\NavigationMesh.h" />
-    <ClInclude Include="include\AI\Behavior\NavigationMeshGeneration.h" />
+    <ClInclude Include="include\AI\Pathing\NavigationMesh.h" />
+    <ClInclude Include="include\AI\Pathing\NavigationMeshGeneration.h" />
     <ClInclude Include="include\DebugDefines.h" />
     <ClInclude Include="include\Misc\ComboMachine.h" />
     <ClInclude Include="include\Misc\FileLoader.h" />
@@ -297,6 +298,7 @@
     <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Abilities\Ability.cpp" />
     <ClCompile Include="source\AI\Behavior\BigBadBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyBossBaddie.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
@@ -317,14 +319,14 @@
     <ClCompile Include="source\AI\Behavior\EnemyThreadHandler.cpp" />
     <ClCompile Include="source\Entity\LightObject.cpp" />
     <ClCompile Include="source\Misc\FPSRenderer.cpp" />
-    <ClCompile Include="source\AI\Behavior\Pathing.cpp" />
+    <ClCompile Include="source\AI\Pathing\Pathing.cpp" />
     <ClCompile Include="source\AI\Behavior\Behavior.cpp" />
     <ClCompile Include="source\AI\Behavior\RangedBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyNecromancer.cpp" />
-    <ClCompile Include="source\AI\Behavior\AStar.cpp" />
+    <ClCompile Include="source\AI\Pathing\AStar.cpp" />
     <ClCompile Include="source\AI\Behavior\TestBehavior.cpp" />
-    <ClCompile Include="source\AI\Behavior\NavigationMesh.cpp" />
-    <ClCompile Include="source\AI\Behavior\NavigationMeshGeneration.cpp" />
+    <ClCompile Include="source\AI\Pathing\NavigationMesh.cpp" />
+    <ClCompile Include="source\AI\Pathing\NavigationMeshGeneration.cpp" />
     <ClCompile Include="source\Misc\ComboMachine.cpp" />
     <ClCompile Include="source\Entity\PhysicsObject.cpp" />
     <ClCompile Include="source\Entity\StaticObject.cpp" />

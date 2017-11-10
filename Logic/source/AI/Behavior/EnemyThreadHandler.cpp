@@ -1,7 +1,7 @@
 #include <AI\Behavior\EnemyThreadHandler.h>
 #include <AI\EntityManager.h>
 #include <AI\Enemy.h>
-#include <AI\Behavior\AStar.h>
+#include <AI\Pathing\AStar.h>
 #include <AI\Behavior\Behavior.h>
 
 #include <Engine\Profiler.h>

@@ -111,11 +111,19 @@ void NoiseMachine::clear()
 // Prints out information about the current playing channels (Just for debugging, can be removed, will work without it)
 void NoiseMachine::update(ListenerData& listener)
 {
-	// Sets the new listener "ears"
-	ERRCHECK(m_system->set3DListenerAttributes(listener.id, &listener.pos, &listener.vel, &listener.forward, &listener.up));
+    try
+    {
+        if (listener.pos.x != listener.pos.x) throw std::exception("Nan vec");
+	    // Sets the new listener "ears"
+        ERRCHECK(m_system->set3DListenerAttributes(listener.id, &listener.pos, &listener.vel, &listener.forward, &listener.up));
+	    // Update the 3D sound engine
+	    ERRCHECK(m_system->update());
+    }
+    catch (std::exception const &ex)
+    {
+        printf("Sound error: %s\n", ex.what());
+    }
 
-	// Update the 3D sound engine
-	ERRCHECK(m_system->update());
 }
 
 // Stop all channels in each group
@@ -255,6 +263,7 @@ int NoiseMachine::initMusic(LOAD_MODE loadMode)
     ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 6) ? "env.mp3" : "notch.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::MUSIC_CREDITS, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 100) ? "pranked.ogg" : "lab.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::AMBIENT_STORM, CHANNEL_GROUP::CHANNEL_AMBIENT, "ambient_snow.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::BOSS_1_MUSIC_1, CHANNEL_GROUP::CHANNEL_AMBIENT, "boss1theme1.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
 
 	// Setting the thresholds of where the listener can hear the music
     int count = 0;

@@ -348,7 +348,7 @@ int Engine::run()
 
 		if (setting->getWindowed() != test)
 		{
-			mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
+		//	mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
 		}
 
 

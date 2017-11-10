@@ -15,13 +15,13 @@ namespace Logic
         bool usingAbility[EnemyBossBaddie::ABILITIES];
         float abilityTimer[ABILITIES];
 
-        void useAbility1(Entity const &target);
+        void useAbility1(Entity &target);
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
-        virtual void useAbility(Entity const &target, int phase);
+        virtual void useAbility(Entity &target, int phase);
 
         virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
-        virtual void updateSpecific(Player const &player, float deltaTime);
+        virtual void updateSpecific(Player &player, float deltaTime);
         virtual void updateDead(float deltaTime);
     };
 }

@@ -54,7 +54,7 @@ void EnemyNecromancer::onCollision(Player &other)
 
 }
 
-void EnemyNecromancer::updateSpecific(Player const & player, float deltaTime)
+void EnemyNecromancer::updateSpecific(Player &player, float deltaTime)
 {
 }
 
@@ -63,7 +63,7 @@ void EnemyNecromancer::updateDead(float deltaTime)
     Entity::update(deltaTime);
 }
 
-void EnemyNecromancer::useAbility(Entity const &target)
+void EnemyNecromancer::useAbility(Entity &target)
 {
     if (RandomGenerator::singleton().getRandomInt(0, 800))
     {

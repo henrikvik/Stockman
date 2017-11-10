@@ -34,7 +34,8 @@ namespace Sound
         MUSIC_MAIN_MENU,
         MUSIC_CREDITS,
         MUSIC_IN_GAME,
-        AMBIENT_STORM
+        AMBIENT_STORM,
+        BOSS_1_MUSIC_1
     };
 
     enum CHANNEL_GROUP

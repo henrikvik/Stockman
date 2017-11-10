@@ -76,10 +76,10 @@ namespace Logic
         // render / updates
 		void render() const;
 
-		void update(Player const &player, float deltaTime);
-		void updateEnemies(int index, Player const &player, float deltaTime);
+		void update(Player &player, float deltaTime);
+		void updateEnemies(int index, Player &player, float deltaTime);
 		void updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, int enemyIndex,
-            int flockIndex, Player const &player, float deltaTime, bool swapOnNewIndex);
+            int flockIndex, Player &player, float deltaTime, bool swapOnNewIndex);
 
         // effects
 		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);

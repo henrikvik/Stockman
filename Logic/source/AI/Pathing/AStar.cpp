@@ -1,4 +1,4 @@
-#include <AI/Behavior/AStar.h>
+#include <AI/Pathing/AStar.h>
 
 #include <stack>
 #include <stdio.h> // for testing obv

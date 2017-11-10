@@ -27,7 +27,7 @@ namespace Logic
     {
     }
 
-    void Behavior::update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies, Player const & player, float deltaTime)
+    void Behavior::update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies, Player &player, float deltaTime)
     {
         updateSpecific(enemy, closeEnemies, player, deltaTime);
 

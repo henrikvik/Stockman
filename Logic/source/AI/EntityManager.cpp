@@ -6,7 +6,7 @@ using namespace Logic;
 #define FILE_ABOUT_WHALES "Enemies/Wave"
 
 #include <AI\Behavior\EnemyThreadHandler.h>
-#include <AI\Behavior\AStar.h>
+#include <AI\Pathing\AStar.h>
 #include <AI\EnemyTest.h>
 #include <AI\EnemyNecromancer.h>
 #include <AI\EnemyBossBaddie.h>
@@ -15,7 +15,6 @@ using namespace Logic;
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileManager.h>
-
 
 #include <Graphics\include\Structs.h>
 #include <Physics\Physics.h>
@@ -152,7 +151,7 @@ void EntityManager::deallocateData(bool forceDestroy)
     m_aliveEnemies = 0;
 }
 
-void EntityManager::update(Player const &player, float deltaTime)
+void EntityManager::update(Player &player, float deltaTime)
 {
 	m_frame++;
 	m_deltaTime = deltaTime;
@@ -180,7 +179,7 @@ void EntityManager::update(Player const &player, float deltaTime)
 	m_triggerManager.update(deltaTime);
 }
 
-void EntityManager::updateEnemies(int index, Player const &player, float deltaTime)
+void EntityManager::updateEnemies(int index, Player &player, float deltaTime)
 {
 	bool goalNodeChanged = false;
     std::vector<Enemy*> &enemies = m_enemies[index];
@@ -192,7 +191,7 @@ void EntityManager::updateEnemies(int index, Player const &player, float deltaTi
 }
 
 void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, 
-    int enemyIndex, int flockIndex, Player const &player, float deltaTime, bool swapOnNewIndex)
+    int enemyIndex, int flockIndex, Player &player, float deltaTime, bool swapOnNewIndex)
 {
     enemy->update(player, deltaTime, flock);
 

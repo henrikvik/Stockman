@@ -1,4 +1,4 @@
-#include <AI\Behavior\Pathing.h>
+#include <AI\Pathing\Pathing.h>
 using namespace Logic;
 
 Pathing::Pathing()
