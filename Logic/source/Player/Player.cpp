@@ -416,73 +416,73 @@ void Player::updateSpecific(float deltaTime)
             mouseMovement(deltaTime, &ms);
         jump(deltaTime, &ks);
 
-	// Get movement input
-	moveInput(&ks);
-	if (!m_noclip)
-	{
-		if (m_playerState == PlayerState::STANDING)
-			// Move
-			move(deltaTime);
-		else if (m_playerState == PlayerState::IN_AIR)
-			// Move in air
-			airMove(deltaTime);
-	}
-	else
-		moveFree(deltaTime, &ks);
+	    // Get movement input
+	    moveInput(&ks);
+	    if (!m_noclip)
+	    {
+		    if (m_playerState == PlayerState::STANDING)
+			    // Move
+			    move(deltaTime);
+		    else if (m_playerState == PlayerState::IN_AIR)
+			    // Move in air
+			    airMove(deltaTime);
+	    }
+	    else
+		    moveFree(deltaTime, &ks);
 
-	if (m_charController->onGround())
-	{
-		m_playerState = PlayerState::STANDING;
-		m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
-	}
-	else
-		m_playerState = PlayerState::IN_AIR;
+	    if (m_charController->onGround())
+	    {
+		    m_playerState = PlayerState::STANDING;
+		    m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
+	    }
+	    else
+		    m_playerState = PlayerState::IN_AIR;
 
-	// Print player velocity
-	//printf("velocity: %f\n", m_moveSpeed);
-	//printf("%f\n", m_charController->getLinearVelocity().y());
-	//printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
+	    // Print player velocity
+	    //printf("velocity: %f\n", m_moveSpeed);
+	    //printf("%f\n", m_charController->getLinearVelocity().y());
+	    //printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
 
-	//crouch(deltaTime);
+	    //crouch(deltaTime);
 
-	// Weapon swap
-    if (ks.IsKeyDown(m_switchWeaponOne))
-    {
-        getSoundSource()->playSFX(Sound::SFX::SWOOSH);
-        m_weaponManager->switchWeapon(0);
-        currentWeapon = 0;
-    }
+	    // Weapon swap
+        if (ks.IsKeyDown(m_switchWeaponOne))
+        {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
+            m_weaponManager->switchWeapon(0);
+            currentWeapon = 0;
+        }
 		
-    if (ks.IsKeyDown(m_switchWeaponTwo))
-    {
-        getSoundSource()->playSFX(Sound::SFX::SWOOSH);
-        m_weaponManager->switchWeapon(1);
-        currentWeapon = 1;
-    }
+        if (ks.IsKeyDown(m_switchWeaponTwo))
+        {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
+            m_weaponManager->switchWeapon(1);
+            currentWeapon = 1;
+        }
 		
-    if (ks.IsKeyDown(m_switchWeaponThree))
-    {
-        getSoundSource()->playSFX(Sound::SFX::SWOOSH);
-        m_weaponManager->switchWeapon(2);
-        currentWeapon = 2;
-    }
+        if (ks.IsKeyDown(m_switchWeaponThree))
+        {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
+            m_weaponManager->switchWeapon(2);
+            currentWeapon = 2;
+        }
 		
-	// Skills
-    PROFILE_BEGIN("SkillManager");
-    forward = getForwardBT();
-    if (ks.IsKeyDown(m_useSkillPrimary))
-        m_skillManager->use(SkillManager::ID::PRIMARY, forward, *this);
-    if (ks.IsKeyUp(m_useSkillPrimary))
-        m_skillManager->release(SkillManager::ID::PRIMARY);
-    if (ks.IsKeyDown(m_useSkillSecondary))
-        m_skillManager->use(SkillManager::ID::SECONDARY, forward, *this);
-    if (ks.IsKeyUp(m_useSkillSecondary))
-        m_skillManager->release(SkillManager::ID::SECONDARY);
-    if (ks.IsKeyDown(m_useSkillTertiary))
-        m_skillManager->use(SkillManager::ID::TERTIARY, forward, *this);
-    if (ks.IsKeyUp(m_useSkillTertiary))
-        m_skillManager->release(SkillManager::ID::TERTIARY);
-    PROFILE_END();
+	    // Skills
+        PROFILE_BEGIN("SkillManager");
+        forward = getForwardBT();
+        if (ks.IsKeyDown(m_useSkillPrimary))
+            m_skillManager->use(SkillManager::ID::PRIMARY, forward, *this);
+        if (ks.IsKeyUp(m_useSkillPrimary))
+            m_skillManager->release(SkillManager::ID::PRIMARY);
+        if (ks.IsKeyDown(m_useSkillSecondary))
+            m_skillManager->use(SkillManager::ID::SECONDARY, forward, *this);
+        if (ks.IsKeyUp(m_useSkillSecondary))
+            m_skillManager->release(SkillManager::ID::SECONDARY);
+        if (ks.IsKeyDown(m_useSkillTertiary))
+            m_skillManager->use(SkillManager::ID::TERTIARY, forward, *this);
+        if (ks.IsKeyUp(m_useSkillTertiary))
+            m_skillManager->release(SkillManager::ID::TERTIARY);
+        PROFILE_END();
 
         // Check if reloading
         if (!m_weaponManager->isReloading() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
@@ -499,37 +499,7 @@ void Player::updateSpecific(float deltaTime)
         }
     }
 
-
-	// Get movement input
-	moveInput(&ks);
-	if (!m_noclip)
-	{
-		if (m_playerState == PlayerState::STANDING)
-			// Move
-			move(deltaTime);
-		else if (m_playerState == PlayerState::IN_AIR)
-			// Move in air
-			airMove(deltaTime);
-	}
-	else
-		moveFree(deltaTime, &ks);
-
-	if (m_charController->onGround())
-	{
-		m_playerState = PlayerState::STANDING;
-		m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
-	}
-	else
-		m_playerState = PlayerState::IN_AIR;
-
-	// Print player velocity
-	//printf("velocity: %f\n", m_moveSpeed);
-	//printf("%f\n", m_charController->getLinearVelocity().y());
-	//printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
-
-	//crouch(deltaTime);
-
-   /* if (m_godMode)
+    /* if (m_godMode)
     {*/
         static bool isNum = false;
         static bool wasNum = false;
@@ -540,7 +510,7 @@ void Player::updateSpecific(float deltaTime)
             m_hp--;
     /*}*/
 
-    Global::mainCamera->update(getPosition(), m_forward, Global::context);
+    Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
