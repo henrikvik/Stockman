@@ -34,6 +34,7 @@ namespace Logic
 		void onRelease();
 		void onUpdate(float deltaTime);
 		void render(Graphics::Renderer& renderer);
-	};
+        void onUpgrade(Upgrade const & upgrade);
+    };
 }
 #endif

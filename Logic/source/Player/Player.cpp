@@ -314,6 +314,13 @@ void Player::upgrade(Upgrade const & upgrade)
         m_permanentSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
         m_moveMaxSpeed = m_moveMaxSpeed + (PLAYER_MOVEMENT_MAX_SPEED * upgrade.getFlatUpgrades().movementSpeed);
     }
+    if (flags & Upgrade::UPGRADE_IS_SKILL)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            getSkillManager()->getSkill(i)->upgrade(upgrade);
+        }
+    }
 
 }
 

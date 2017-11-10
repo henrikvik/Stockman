@@ -53,6 +53,19 @@ void Skill::update(float deltaTime)
 	onUpdate(deltaTime);
 }
 
+void Skill::upgrade(Upgrade const & upgrade)
+{
+    long long flags = upgrade.getTranferEffects();
+    if (flags & Upgrade::UPGRADE_DECREASE_CD)
+    {
+        upgrade.getFlatUpgrades().decreaseCooldown;
+    }
+    else
+    {
+        onUpgrade(upgrade);
+    }
+}
+
 float Skill::getCooldown() const		        { return m_cooldown;			}
 float Skill::getCooldownMax() const		        { return m_cooldownMax;			}
 float Skill::getDuration() const		        { return m_duration;			}

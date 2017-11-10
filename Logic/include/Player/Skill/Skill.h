@@ -13,6 +13,7 @@
 #include <SimpleMath.h>
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include <Entity/StatusManager.h>
 
 namespace Graphics
 {
@@ -38,7 +39,7 @@ namespace Logic
 		void update(float deltaTime);
         void upgrade(Upgrade const & upgrade);
 		virtual void onUpdate(float deltaTime) = 0;
-
+        virtual void onUpgrade(Upgrade const & upgrade) = 0;
 		virtual void render(Graphics::Renderer& renderer) = 0;
 
 		float	getCooldown() const;

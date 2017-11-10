@@ -54,7 +54,9 @@ namespace Logic
 		btVector3						m_point;		//< Saved point of intersection of the raytest, will push entity towards this point
         bool                            m_goingUp;      //< Direction of the grappling hook
         btVector3                       m_dirToPoint;
-		Graphics::RenderDebugInfo*		renderDebug;	//< Debug drawing the ray
+		Graphics::RenderDebugInfo*		renderDebug;
+        void onUpgrade(Upgrade const & upgrade);
+        //< Debug drawing the ray
 	};
 }
 #endif
