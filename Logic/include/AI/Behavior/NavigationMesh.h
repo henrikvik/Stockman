@@ -27,8 +27,10 @@ namespace Logic
             // only use for debugging, should never be used by normal gameplay
             void clear();
 
-			void addTriangle(Triangle const &triangle);
-			void addEdge(int from, int to);
+			int addTriangle(Triangle const &triangle);
+            void addEdge(int from, int to);
+            // from <--> to
+            void addDoubleEdge(int from, int to);
             void generateEdges();
 			std::vector<int>& getEdges(int from);
 			void createNodesFromTriangles();

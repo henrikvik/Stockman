@@ -20,14 +20,21 @@ void NavigationMesh::clear()
     edges.clear();
     nodes.clear();
 }
-void NavigationMesh::addTriangle(Triangle const & triangle)
+int NavigationMesh::addTriangle(Triangle const & triangle)
 {
 	triangleList.push_back(triangle);
+    return triangleList.size() - 1;
 }
 
 void NavigationMesh::addEdge(int from, int to)
 {
-	edges[from].indices.push_back(to);
+    edges[from].indices.push_back(to);
+}
+
+void NavigationMesh::addDoubleEdge(int from, int to)
+{
+    edges[from].indices.push_back(to);
+    edges[to].indices.push_back(from);
 }
 
 void NavigationMesh::generateEdges()

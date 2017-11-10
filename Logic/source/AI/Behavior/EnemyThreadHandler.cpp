@@ -92,7 +92,7 @@ void EnemyThreadHandler::threadMain()
         if (haveWork)
             updateEnemiesAndPath(todo);
 
-        std::this_thread::sleep_for(1ms);
+        std::this_thread::sleep_for(200ms);
     }
 }
 
