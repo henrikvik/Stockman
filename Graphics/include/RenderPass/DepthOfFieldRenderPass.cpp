@@ -48,20 +48,20 @@ Graphics::DepthOfFieldRenderPass::DepthOfFieldRenderPass(
 
         return catcher;
     });
+    updateCoc();
 }
 
 void Graphics::DepthOfFieldRenderPass::update(float deltaTime)
 {
     if (firstTime)
     {
-        updateCoc();
         firstTime = false;
     }
 }
 
 void Graphics::DepthOfFieldRenderPass::render() const
 {
-    if (!enabled)
+    if (true /* TODO Fix light loss of data*/)
     {
         fullscreenPass->render();
 

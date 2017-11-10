@@ -96,7 +96,7 @@ void Graphics::Debug::Render(Camera *camera)
     list->PushClipRectFullScreen();
     for (auto light : DebugLights) {
         bool clip = false;
-        auto pos = TransformScreen(vp, light.positionWS, &clip);
+        auto pos = TransformScreen(vp, light.position, &clip);
 
         if (clip) continue;
 

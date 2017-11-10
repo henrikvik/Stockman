@@ -24,12 +24,16 @@ struct DirectionalLight
 
 struct Light
 {
-    float4 positionVS;
-    float3 positionWS;
-    float range;
+    float4 viewPosition;
+    float3 position;
+    float  range;
     float3 color;
-    float intensity;
+    float  intensity;
 };
+
+StructuredBuffer<uint>  lightIndexList : register(t0);
+Texture2D<uint2>        lightGrid      : register(t1);
+StructuredBuffer<Light> lights         : register(t2);
 
 //makes stuff gray
 float3 adjustSaturation(float3 color, float saturation)
@@ -82,87 +86,6 @@ float3 toonify(float3 color, float intensity)
     return color;
 }
 
-
-
-/*
-//Specularity is currently broken. 
-float3 calculateSpecularity(float3 specularColor, float3 wPos, float3 lightPos, float3 NDCPos, float2 uv, float3 normal, float shadowValue = 1)
-{
-    uint2 tile = uint2(floor(NDCPos.xy / BLOCK_SIZE));
-    uint offset = LightGrid[tile].x;
-    uint count = LightGrid[tile].y;
-    
-    float3 dirColor = float3(0.1, 0.1, 0.3); //getCurrentDirColor(1 - fade);
-        
-    float3 posToLightDir = dirLightPos.xyz - wPos.xyz;
-    float3 reflectThingDir = normalize(posToLightDir + (camPos.xyz - wPos.xyz));
-    float3 directionalSpecularity = pow(saturate(dot(normal, reflectThingDir)), 500) * dirColor;
-    
-    directionalSpecularity *= fade * shadowValue;
-
-    float3 pointSpecular = 0;
-
-    for (uint i = 0; i < count; i++)
-    {
-        uint idx = LightIndexList[offset + i];
-        Light light = Lights[idx];
-
-        float3 posToLight = light.positionWS - wPos.xyz;
-        float3 reflectThing = normalize(posToLight + (camPos.xyz - wPos.xyz));
-
-        float distance = length(posToLight);
-        float3 normalizedLight = posToLight / distance;
-        float attenuation = 1.0f - smoothstep(0, light.range, distance);
-
-        pointSpecular += pow(saturate(dot(normal, reflectThing)), 1000) * light.color * attenuation;
-    }
-
-    float3 finalSpecular = saturate(pointSpecular + directionalSpecularity) * specularSample;
-
-    return finalSpecular;
-}
-float4 calculateDiffuseLight(float3 wPos, float3 lightPos, float3 NDCPos, float2 uv, float3 normal, float shadowValue = 1)
-{
-    uint2 tile = uint2(floor(NDCPos.xy / BLOCK_SIZE));
-    uint offset = LightGrid[tile].x;
-    uint count = LightGrid[tile].y;
-
-    float3 dirColor = getCurrentDirColor(1 - fade);
-
-    float4 colorSample = diffuseMap.Sample(Sampler, uv);
-
-    float3 lightDir = normalize(camPos.xyz - dirLightPos.xyz);
-    float diffuseFactor = saturate(dot(normal, normalize(-lightDir)));
-    float3 directionalDiffuse = diffuseFactor * dirColor;
-
-    directionalDiffuse *= fade * shadowValue;
-
-    float3 pointDiffuse = 0;
-
-    for (uint i = 0; i < count; i++)
-    {
-        uint idx = LightIndexList[offset + i];
-        Light light = Lights[idx];
-
-        float3 posToLight = light.positionWS - wPos.xyz;
-
-        float distance = length(posToLight);
-        float3 normalizedLight = posToLight / distance;
-        float attenuation = 1.0f - smoothstep(0, light.range, distance);
-
-        pointDiffuse += saturate(dot(normal, posToLight)) * light.color * attenuation * light.intensity;
-    }
-
-    float4 finalDiffuse = float4(saturate(pointDiffuse + directionalDiffuse).xyz, 1) * colorSample;
-    
-    float4 ambient = float4(0.05, 0.05, 0.05, 1.0) * colorSample;
-
-    float4 lighting = saturate(finalDiffuse + ambient);
-    
-    return lighting;
-}
-*/
-
 float3 calcNormal(float3 mappedNormal, float3 normal, float3 binormal, float3 tangent)
 {
     // TODO Remove when everything is working
@@ -181,31 +104,36 @@ float3 calcNormal(float3 mappedNormal, float3 normal, float3 binormal, float3 ta
     return normalize(mul(mappedNormal, tangentMatrix));
 }
 
-float3 calcDiffuse(DirectionalLight light, float4 position, float3 normal)
+float3 calcLight(DirectionalLight light, float4 position, float3 normal, float3 viewDir, float specularExponent)
 {
-    float3 lightDir = normalize(light.position);
-    return saturate(dot(normal, lightDir)) * GLOBAL_LIGHT_COLOR; // TODO USE light.color
+    float3 lightDir = normalize(light.position.xyz);   
+    float3 halfway = normalize(lightDir + viewDir);
+
+    float diffuesFactor = saturate(dot(normal, lightDir));
+    float specularFactor = saturate(pow(dot(normal, halfway), specularExponent));
+
+    return diffuesFactor * light.color
+         + specularFactor * light.color
+         + light.ambient;
 }
 
-float3 calcDiffuse(Light light, float4 position, float3 normal)
+float3 calcLight(Light light, float4 position, float3 normal, float3 viewDir, float specularExponent)
 {
-    float3 lightDir = light.positionWS - position.xyz;
+    float3 lightDir = light.position.xyz - position.xyz;
+    float distance = length(lightDir); 
+    lightDir = lightDir / distance;
 
-    float distance = length(lightDir);
-    float3 normalizedLight = lightDir / distance;
+    float3 halfway = normalize(lightDir + viewDir);
     float attenuation = 1.0f - smoothstep(0, light.range, distance);
 
-    return saturate(dot(normal, lightDir)) * light.color * attenuation * light.intensity;
+    float diffuesFactor = saturate(dot(normal, lightDir));
+    float specularFactor = saturate(pow(saturate(dot(normal, halfway)), specularExponent));
+
+    return diffuesFactor * light.color * attenuation * light.intensity
+         + specularFactor * light.color * attenuation * light.intensity;
 }
 
-float3 calcAllLights(
-    StructuredBuffer<uint> lightIndexList,
-    Texture2D<uint2> lightGrid,
-    StructuredBuffer<Light> lights,
-    float4 ndcPosition,
-    float4 position, 
-    float3 normal
-)
+float3 calcAllLights(float4 ndcPosition, float4 position, float3 normal, float3 viewDir, float specularExponent)
 {
     float3 lightSum = float3(0, 0, 0);
 
@@ -214,14 +142,8 @@ float3 calcAllLights(
     uint count = lightGrid[tile].y;
     for (uint i = 0; i < count; i++)
     {
-        uint idx = lightIndexList[offset + i];
-        Light light = lights[idx];
-
-        lightSum += calcDiffuse(light, position, normal);
+        lightSum += calcLight(lights[lightIndexList[offset + i]], position, normal, viewDir, specularExponent);
     }
 
     return lightSum;
 }
-
-
-//TODO GÖR EN BÅDA //

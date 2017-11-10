@@ -54,7 +54,8 @@ namespace Graphics
 
 #pragma endregion
 		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
-        , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
+        , instanceStaticBuffer(device, CpuAccess::Write, INSTANCE_CAP(InstanceAnimated))
+        , instanceAnimatedBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
 
     #pragma region Shared Shader Resources
         , colorMap(WIN_WIDTH, WIN_HEIGHT)
@@ -112,7 +113,6 @@ namespace Graphics
             ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
             return sampler;
         }();
-
         Global::transparencyBlendState = [&]() {
             ID3D11BlendState * state = nullptr;
             D3D11_BLEND_DESC blendDesc = { 0 };
@@ -192,8 +192,8 @@ namespace Graphics
         renderPasses =
         {
             newd ParticleDepthRenderPass(depthStencil),
-            newd DepthRenderPass({}, {staticInstanceBuffer}, {*Global::mainCamera->getBuffer()}, depthStencil),
-            newd ShadowRenderPass({}, { staticInstanceBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
+            newd DepthRenderPass({}, { instanceStaticBuffer }, {*Global::mainCamera->getBuffer()}, depthStencil),
+            newd ShadowRenderPass({}, { instanceStaticBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
             newd LightCullRenderPass(
                 {},
                 {
@@ -209,7 +209,7 @@ namespace Graphics
                     lightOpaqueGridUAV
                 }
             ),
-            newd SkyBoxRenderPass({ *fakeBackBuffer },{},{ *sun.getLightDataBuffer() }, depthStencil),
+            newd SkyBoxRenderPass({ *fakeBackBuffer },{},{ *sun.getGlobalLightBuffer() }, depthStencil),
             newd ForwardPlusRenderPass(
                 {
                     *fakeBackBuffer,
@@ -221,12 +221,11 @@ namespace Graphics
                     lightOpaqueGridSRV,
                     lightsNew,
                     shadowMap,
-                    staticInstanceBuffer
+                    instanceStaticBuffer
                 },
                 {
                     *Global::mainCamera->getBuffer(),
-                    *sun.getLightDataBuffer(),
-                    *sun.getLightMatrixBuffer()
+                    *sun.getGlobalLightBuffer()
                 },
                 depthStencil
             ),
@@ -234,7 +233,22 @@ namespace Graphics
             newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
             newd DepthOfFieldRenderPass({ *fakeBackBufferSwap }, { *fakeBackBuffer, depthStencil }),
             newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
-            newd SnowRenderPass({ backBuffer },{lightOpaqueIndexList, lightOpaqueGridSRV, lightsNew, shadowMap}, {*sun.getLightMatrixBuffer(), *sun.getLightDataBuffer()}, depthStencil),
+            newd SnowRenderPass(
+                {
+                    backBuffer 
+                },
+                {
+                    lightOpaqueIndexList, 
+                    lightOpaqueGridSRV, 
+                    lightsNew, 
+                    shadowMap
+                }, 
+                {
+                    *sun.getLightMatrixBuffer(),
+                    *sun.getGlobalLightBuffer()
+                },
+                depthStencil
+            ),
             newd GUIRenderPass({backBuffer}),
         };
     }
@@ -285,6 +299,18 @@ namespace Graphics
 
     void Renderer::update(float deltaTime)
     {
+        static StaticRenderInfo infotest;
+        infotest.model = Resources::Models::Staff;
+        infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
+        RenderQueue::get().queue(&infotest);
+
+        static LightRenderInfo lightInfo;
+        lightInfo.color = DirectX::Colors::DodgerBlue;
+        lightInfo.intensity = 1;
+        lightInfo.position = Global::mainCamera->getPos() + float3(0,0,4);
+        lightInfo.range = 10;
+        RenderQueue::get().queue(&lightInfo);
+
         writeInstanceBuffers();
         sun.update();
 
@@ -292,322 +318,22 @@ namespace Graphics
    
         for (auto & renderPass : renderPasses)
         {
+            PROFILE_BEGIN(__FUNCSIG__);
             renderPass->update(deltaTime);
+            PROFILE_END();
         }
     }
 
     void Renderer::render() const
-    #if USE_OLD_RENDER
-	{
-        PROFILE_BEGIN("writeInstanceBuffers()");
-        writeInstanceBuffers();
-        PROFILE_END();
-
-        menu.unloadTextures();
-
-		PROFILE_BEGIN("clear()");
-		clear();
-		PROFILE_END();
-
-		//PROFILE_BEGIN("Cull()");
-		//cull();
-		//PROFILE_END();
-
-		//PROFILE_BEGIN("WriteInstanceData()");
-		//writeInstanceData();
-		//PROFILE_END();
-
-        PROFILE_BEGIN("FXSystem::update()")
-        FXSystem->update(deviceContext, camera, 0.016f);
-        PROFILE_END();
-
-		PROFILE_BEGIN("drawShadows()");
-		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
-		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
-		skyRenderer.drawShadows(deviceContext, &forwardPlus);
-        drawStatic();
-		PROFILE_END();
-
-
-		PROFILE_BEGIN("depthPass");
-
-		deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-		deviceContext->VSSetConstantBuffers(0, 1, *camera->getBuffer());
-
-		
-
-
-		deviceContext->RSSetViewports(1, &viewPort);
-		deviceContext->RSSetState(states->CullCounterClockwise());
-
-		deviceContext->IASetInputLayout(nullptr);
-		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-
-        deviceContext->PSSetShader(nullptr, nullptr, 0);
-        deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
-
-		drawStatic();
-
-        // FIIIIIX
-		////////////deviceContext->IASetInputLayout(foliageShader);
-		////////////deviceContext->VSSetShader(foliageShader, nullptr, 0);
-		////////////deviceContext->PSSetShader(depthShader, nullptr, 0);
-		////////////
-		//////////////this be no deltatime
-		////////////grassTime++;
-
-		////////////drawFoliage(camera);
-
-		//drawFoliage(camera);
-	
-        PROFILE_BEGIN("FXSystem::renderPrePass()")
-        FXSystem->renderPrePass(deviceContext, camera, states, depthStencil);
-        PROFILE_END();
-        
-        PROFILE_END();
-
-		PROFILE_BEGIN("grid.updateLights()");
-		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-		deviceContext->RSSetState(states->CullCounterClockwise());
-
-		grid.updateLights(deviceContext, camera, lights);
-		lights.clear();
-		PROFILE_END();
-
-		PROFILE_BEGIN("grid.cull()");
-		grid.cull(camera, states, depthStencil, device, deviceContext);
-		PROFILE_END();
-
-        PROFILE_BEGIN("FXSystem::render()")
-        FXSystem->render(deviceContext, camera, states, *fakeBackBuffer, depthStencil, false);
-        PROFILE_END();
-
-		PROFILE_BEGIN("draw()");
-		deviceContext->IASetInputLayout(nullptr);
-		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-		deviceContext->PSSetShader(forwardPlus, nullptr, 0);
-
-		ID3D11ShaderResourceView *SRVs[] = {
-			grid.getOpaqueIndexList()->getSRV(),
-			grid.getOpaqueLightGridSRV(),
-			grid.getLights()->getSRV(),
-			*skyRenderer.getDepthStencil()
-		};
-		auto sampler = states->LinearClamp();
-		deviceContext->PSSetShaderResources(0, 4, SRVs);
-		deviceContext->PSSetSamplers(0, 1, &sampler);
-
-		auto samplerWrap = states->LinearWrap();
-		deviceContext->PSSetSamplers(2, 1, &samplerWrap);
-
-		deviceContext->PSSetSamplers(1, 1, skyRenderer.getSampler());
-
-		ID3D11Buffer *lightBuffs[] =
-		{
-			*skyRenderer.getShaderBuffer(),
-			*skyRenderer.getLightMatrixBuffer()
-		};
-
-		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
-		deviceContext->VSSetConstantBuffers(3, 1, &lightBuffs[1]);
-
-        deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
-
-		ID3D11RenderTargetView * rtvs[] =
-		{
-			*fakeBackBuffer,
-			glowRenderer,
-			*ssaoRenderer.getNormalShaderResource()
-		};
-
-		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
-		
-        drawStatic();
-		PROFILE_END();
-
-        // FIIX
-		//////////PROFILE_BEGIN("RenderFoliage");
-		//////////deviceContext->IASetInputLayout(foliageShader);
-		//////////deviceContext->VSSetShader(foliageShader, nullptr, 0);
-		//////////deviceContext->PSSetShader(foliageShader, nullptr, 0);
-		//////////drawFoliage(camera);
-		//////////renderFoliageQueue.clear();
-		//////////PROFILE_END();
-
-
-	/*	PROFILE_BEGIN("RenderWater");
-		drawWater(camera);
-		PROFILE_END();*/
-
-		//The sky renderer uses the bullet time on register 3
-		deviceContext->PSSetConstantBuffers(3, 1, bulletTimeBuffer);
-        deviceContext->RSSetState(states->CullCounterClockwise());
-        skyRenderer.renderSky(deviceContext, camera);
-
-       
-
-        ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
-
-        deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
-
-        ZeroMemory(SRVs, sizeof(SRVs));
-        deviceContext->PSSetShaderResources(0, 4, SRVs);
-
-        PROFILE_BEGIN("DebugThings");
-
-		deviceContext->RSSetState(states->CullCounterClockwise());
-		SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
-		if ((1 << 15) & tabKeyState)
-		{
-			this->drawToBackbuffer(grid.getDebugSRV());
-		}
-		PROFILE_END();
-
-		//TEEEMP
-		auto ks = DirectX::Keyboard::Get().GetState();
-
-		
-        bool enablePostEffects = false;
-        if (enablePostEffects)
-        {
-
-            ///////Post effects
-
-            if (enableDOF)
-            {
-                PROFILE_BEGIN("Dof");
-
-                if (enableCoCWindow)
-                {
-                    ImGui::Begin("camera stuff");
-                    static float fp = 0.088f;
-                    static float fl = 0.05f;
-                    static float a = 0.12f;
-                    ImGui::SliderFloat("focal Plane", &fp, 0.0001f, .1f);
-                    ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
-                    ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
-                    DoFRenderer.updateCoc(deviceContext, fl, fp, a);
-                    ImGui::End();
-                }
-                DoFRenderer.DoFRender(deviceContext, fakeBackBuffer, &depthStencil, fakeBackBufferSwap, camera);
-                swapBackBuffers();
-                PROFILE_END();
-            }
-
-            if (enableGlow)
-            {
-                PROFILE_BEGIN("Glow");
-                glowRenderer.addGlow(deviceContext, *fakeBackBuffer, fakeBackBufferSwap);
-                swapBackBuffers();
-                PROFILE_END();
-            }
-
-            if (enableSSAO)
-            {
-                PROFILE_BEGIN("SSAO");
-                ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, fakeBackBuffer, fakeBackBufferSwap);
-                swapBackBuffers();
-                PROFILE_END();
-            }
-        }
-
-			
-        //The last post effect should just write to backbuffer instead of this 
-        //unnecessary draw call
-		static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		static UINT sampleMask = 0xffffffff;
-		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-
-		PROFILE_BEGIN("DrawToBackBuffer");
-		drawToBackbuffer(*fakeBackBuffer);
-		PROFILE_END();
-
-
-		if (enableFog)
-		{
-			PROFILE_BEGIN("renderFog()");
-
-			deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-			deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
-			fog.renderFog(deviceContext, backBuffer, depthStencil);
-			PROFILE_END();
-		}
-
-        if (enableSnow)
-        {
-            //Needs the light for snowflakes
-            ID3D11ShaderResourceView *SRVs[] = {
-                grid.getOpaqueIndexList()->getSRV(),
-                grid.getOpaqueLightGridSRV(),
-                grid.getLights()->getSRV(),
-            };
-            deviceContext->PSSetShaderResources(0, 3, SRVs);
-
-            auto state = states->DepthDefault();
-            deviceContext->OMSetDepthStencilState(state, 0);
-            auto state2 = states->CullNone();
-            deviceContext->RSSetState(state2);
-            
-            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-            static UINT sampleMask = 0xffffffff;
-            
-            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-            snowManager.drawSnowflakes(deviceContext, camera, backBuffer, &depthStencil, skyRenderer);
-            deviceContext->GSSetShader(nullptr, nullptr, 0);
-            deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-            
-            ZeroMemory(SRVs, sizeof(SRVs));
-            deviceContext->PSSetShaderResources(0, 3, SRVs);
-        }
-
-        if (enableHud)
-        {
-            PROFILE_BEGIN("HUD");
-            //hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-            PROFILE_END();
-        }
-
-		PROFILE_BEGIN("DebugInfo");
-		renderDebugInfo(camera);
-		PROFILE_END();
-
-		if (ks.G)
-		{
-			startShake(30, 1000);
-		}
-
-        
-        InstanceBuffers::get().writeQueueToBuffer<StaticRenderInfo, StaticInstanceData>();
-
-
-
-        PROFILE_BEGIN("RenderPasses");
-        for (auto & renderPass : renderPasses)
-        {
-            renderPass->render();
-        }
-        PROFILE_END();
-	}
-    #else
     {
         clear();
         Global::context->RSSetViewports(1, &viewPort);
 
-        StaticRenderInfo infotest;
-        infotest.model = Resources::Models::Staff;
-        infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
-
-        RenderQueue &teststsetes = RenderQueue::get();
-        teststsetes.queue<StaticRenderInfo>(&infotest);
-
-
         for (auto & renderPass : renderPasses)
         {
             renderPass->render();
         }
-
     }
-    #endif
 
 	void Renderer::clear() const
 	{
@@ -631,29 +357,6 @@ namespace Graphics
         fakeBackBuffer->renderTarget = fakeBackBufferSwap->renderTarget;
         fakeBackBufferSwap->renderTarget = temp2;
 	}
-
-    //dopricetad, this is a RenderPass now
-  //  void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
-  //  {
-  //      Global::context->PSSetShaderResources(0, 1, &texture);
-
-  //      UINT zero = 0;
-  //      Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-  //      Global::context->OMSetRenderTargets(1, &backBuffer, nullptr);
-
-  //      Global::context->IASetInputLayout(fullscreenQuad);
-  //      Global::context->VSSetShader(fullscreenQuad, nullptr, 0);
-  //      Global::context->PSSetShader(fullscreenQuad, nullptr, 0);
-
-  //      static ID3D11SamplerState * pointClamp = Global::cStates->PointClamp();
-  //      Global::context->PSSetSamplers(0, 1, &pointClamp);
-
-		//PROFILE_BEGIN("Draw(4, 0)");
-  //      Global::context->Draw(4, 0);
-		//PROFILE_END();
-
-
 
     void Renderer::renderDebugInfo(Camera* camera)
     {
@@ -696,46 +399,73 @@ namespace Graphics
 
     void Renderer::writeInstanceBuffers()
     {
-        InstanceData * instanceBuffer = staticInstanceBuffer.map(Global::context);
-        for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
+        instanceStaticBuffer.write([](InstanceStatic * instanceBuffer)
         {
-            for (auto & sinfo : model_infos.second)
+            for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
             {
-                InstanceData instanceData = {};
-                instanceData.transform = sinfo->transform;
-                instanceData.transformInvT = sinfo->transform.Invert().Transpose();
-
-
-                *instanceBuffer++ = instanceData;
+                for (auto & sinfo : model_infos.second)
+                {
+                    InstanceStatic instance = {};
+                    instance.world = sinfo->transform;
+                    instance.worldInvT = sinfo->transform.Invert().Transpose();
+                    *instanceBuffer++ = instance;
+                }
             }
-        }
-        staticInstanceBuffer.unmap(Global::context);
+        });
 
-        Light * lightBuffer = lightsNew.map(Global::context);
-        for (auto & info : RenderQueue::get().getQueue<LightRenderInfo>())
+        instanceAnimatedBuffer.write([](InstanceAnimated * instanceBuffer)
         {
-            Light light = {};
-            light.range = info->range;
-            light.intensity = info->intensity;
-            light.color = DirectX::SimpleMath::Vector3(info->color.x, info->color.y, info->color.z);
+            for (auto & model_infos : RenderQueue::get().getQueue<AnimatedRenderInfo>())
+            {
+                HybrisLoader::Skeleton * skeleton = &ModelLoader::get().getModel((Resources::Models::Files)model_infos.first)->getSkeleton();
 
-            light.positionWS = info->position;
-            light.positionVS = DirectX::SimpleMath::Vector4::Transform(
-                DirectX::SimpleMath::Vector4(info->position.x, info->position.y, info->position.z, 1.f), 
-                Global::mainCamera->getView()
-            );
+                for (auto & info : model_infos.second)
+                {
+                    InstanceAnimated instance = {};
+                    instance.world = info->transform;
+                    instance.worldInvT = info->transform.Invert().Transpose();
 
-            Debug::PointLight(light);
-            *lightBuffer++ = light;
-        }
+                    if (strlen(info->animationName) != 0)
+                    {
+                        auto jointTransforms = skeleton->evalAnimation(info->animationName, info->animationTimeStamp);
+                        for (size_t i = 0; i < jointTransforms.size(); i++)
+                        {
+                            instance.jointTransforms[i] = jointTransforms[i];
+                        }
+                    }
 
-        for (size_t i = RenderQueue::get().getQueue<LightRenderInfo>().size(); i < INSTANCE_CAP(LightRenderInfo); i++)
+                    *instanceBuffer++ = instance;
+                }
+            }
+        });
+
+        lightsNew.write([](Light * lightBuffer)
         {
-            Light light;
-            ZeroMemory(&light, sizeof(light));
-            *lightBuffer++ = light;
-        }
-        lightsNew.unmap(Global::context);
+            for (auto & info : RenderQueue::get().getQueue<LightRenderInfo>())
+            {
+                Light light = {};
+                light.range = info->range;
+                light.intensity = info->intensity;
+                light.color = DirectX::SimpleMath::Vector3(info->color.x, info->color.y, info->color.z);
+
+                light.position = info->position;
+                light.viewPosition = DirectX::SimpleMath::Vector4::Transform
+                (
+                    DirectX::SimpleMath::Vector4(info->position.x, info->position.y, info->position.z, 1.f), 
+                    Global::mainCamera->getView()
+                );
+
+                Debug::PointLight(light);
+                *lightBuffer++ = light;
+            }
+
+            for (size_t i = RenderQueue::get().getQueue<LightRenderInfo>().size(); i < INSTANCE_CAP(LightRenderInfo); i++)
+            {
+                Light light;
+                ZeroMemory(&light, sizeof(light));
+                *lightBuffer++ = light;
+            }
+        });
     }
 
 

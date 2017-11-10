@@ -47,7 +47,6 @@ namespace Graphics
         Global::context->RSSetState(Global::cStates->CullClockwise());
         Global::context->VSSetShaderResources(10, 1, &instanceBuffer);
 
-        Global::context->PSSetShaderResources(9, 1, *TextureLoader::get().getTexture(Resources::Textures::Grid));
         UINT instanceOffset = 0;
         for (auto & pair : RenderQueue::get().getQueue<QueueT>())
         {

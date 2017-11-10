@@ -30,10 +30,11 @@ namespace Graphics
         };
         Global::context->PSSetSamplers(0, 3, samplers);
 
+
+
         Global::context->PSSetShaderResources(0, 4, resources.data());
-
+        Global::context->PSSetShaderResources(9, 1, *TextureLoader::get().getTexture(Resources::Textures::Grid));
         Global::context->OMSetRenderTargets(targets.size(), targets.data(), depthStencil);
-
 
 
         drawInstanced<StaticRenderInfo>(resources[4]);
