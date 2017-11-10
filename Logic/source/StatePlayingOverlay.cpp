@@ -26,40 +26,37 @@ StatePlayingOverlay::~StatePlayingOverlay()
     delete m_menu;
 }
 
-void StatePlayingOverlay::reset()
-{
-    m_menu->clear();
-}
+void StatePlayingOverlay::reset() { }
 
 void StatePlayingOverlay::update(float deltaTime)
 {
     m_menu->update(deltaTime);
     switch (m_menu->currentState())
     {
-        case gameStateSkillPick:
+    case gameStateSkillPick:
+    {
+        DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_ABSOLUTE);
+        std::pair<int, int>* selectedSkills = m_menu->getSkillPick();
+        if (selectedSkills->first != -1 && selectedSkills->second != -1)
         {
-            DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_ABSOLUTE);
-            std::pair<int, int>* selectedSkills = m_menu->getSkillPick();
-            if (selectedSkills->first != -1 && selectedSkills->second != -1)
+            StatePlaying* game = dynamic_cast<StatePlaying*>(m_stateBuffer->currentPrimaryState);
+            if (game)
             {
-                StatePlaying* game = dynamic_cast<StatePlaying*>(m_stateBuffer->currentPrimaryState);
-                if (game)
-                {
-                    game->getPlayer()->setCurrentSkills(selectedSkills->first, selectedSkills->second);
+                game->getPlayer()->setCurrentSkills(selectedSkills->first, selectedSkills->second);
 
-                    // Reset menu stuff
-                    selectedSkills->first = -1;
-                    selectedSkills->second = -1;
+                // Reset menu stuff
+                selectedSkills->first = -1;
+                selectedSkills->second = -1;
 
-                    m_menu->setStateToBe(gameStateGame); //change to gameStateGame
-                }
+                m_menu->setStateToBe(gameStateGame); //change to gameStateGame
             }
         }
-        break;
+    }
+    break;
 
-        default: 
-            DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_RELATIVE);
-            break;
+    default:
+        DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_RELATIVE);
+        break;
     }
 }
 

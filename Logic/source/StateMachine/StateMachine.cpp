@@ -10,9 +10,9 @@ using namespace Logic;
 
 StateMachine::StateMachine()
 {
-    m_stateBuffer = new StateBuffer();
-    m_statePrimary = new StatePrimary(m_stateBuffer);
-    m_stateSecondary = new StateSecondary(m_stateBuffer);
+    m_stateBuffer = newd StateBuffer();
+    m_statePrimary = newd StatePrimary(m_stateBuffer);
+    m_stateSecondary = newd StateSecondary(m_stateBuffer);
 
     // Making a function ptr to switch state inside the active state
     SetPrimaryState = [&](StateType stateType) -> void { m_statePrimary->queueState(stateType); };

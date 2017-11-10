@@ -8,7 +8,7 @@ using namespace Logic;
 Entity::Entity(btRigidBody* body, btVector3 halfextent)
 : PhysicsObject(body, halfextent)
 {
-    m_soundSource = new Sound::SoundSource();
+    m_soundSource = newd Sound::SoundSource();
 }
 
 Entity::~Entity() 

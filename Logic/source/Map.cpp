@@ -124,19 +124,19 @@ void Map::loadMapFromFile(std::string path)
 // Adds a pointlight to the map
 void Map::add(FrameLight frameLight)
 {
-    m_lights.push_back(new LightObject(frameLight));
+    m_lights.push_back(newd LightObject(frameLight));
 }
 
 // Adds a visual prop to the map
 void Map::add(FrameProp frameProp)
 {
-//    m_props.push_back(new StaticObject(frameProp.modelID));
+//    m_props.push_back(newd StaticObject(frameProp.modelID));
 }
 
 // Adds a static hitbox to the map
 void Map::add(FrameHitbox frameHitbox)
 {
-    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+    m_hitboxes.push_back(newd StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
         /* Shape */             Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions),
         /* Mass */              NULL,
         /* Sensor */            false,

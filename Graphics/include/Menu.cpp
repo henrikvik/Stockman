@@ -118,7 +118,7 @@ void Graphics::Menu::unloadTextures()
 void Graphics::Menu::mapButtons(ID3D11DeviceContext * contex, Graphics::MenuInfo * info)
 {
     int buttonIndex = 0;
-    TriangleVertex *triangleVertices = new TriangleVertex[info->m_buttons.size() * 6];
+    TriangleVertex *triangleVertices = newd TriangleVertex[info->m_buttons.size() * 6];
     for (size_t i = 0; i < info->m_buttons.size() * 6; i += 6)
     {
         triangleVertices[i] = { 

@@ -10,7 +10,7 @@ LightObject::LightObject(FrameLight& frame)
     renderInfo.range = frame.range;
 
     // Render Debug Construction
-    debugRenderInfo.points = new std::vector<DirectX::SimpleMath::Vector3>();
+    debugRenderInfo.points = newd std::vector<DirectX::SimpleMath::Vector3>();
     debugRenderInfo.color = DirectX::SimpleMath::Color(renderInfo.color);
     debugRenderInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
     debugRenderInfo.useDepth = true;

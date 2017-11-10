@@ -299,11 +299,11 @@ namespace Graphics
 
     void Renderer::update(float deltaTime)
     {
-        static StaticRenderInfo infotest;
+        /*static StaticRenderInfo infotest;
         infotest.model = Resources::Models::Staff;
         infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
         RenderQueue::get().queue(&infotest);
-
+*/
         static LightRenderInfo lightInfo;
         lightInfo.color = DirectX::Colors::DodgerBlue;
         lightInfo.intensity = 1;

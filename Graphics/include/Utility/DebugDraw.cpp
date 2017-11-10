@@ -10,8 +10,8 @@ static std::vector<Graphics::ParticleEffectInstance> DebugFX;
 static ID3D11ShaderResourceView *DebugLightSprite;
 static ID3D11ShaderResourceView *DebugFXSprite;
 
-static bool DebugDrawFX = true;
-static bool DebugDrawLights = true;
+static bool DebugDrawFX = false;
+static bool DebugDrawLights = false;
 
 static DirectX::SimpleMath::Vector4 TransformScreen(DirectX::SimpleMath::Matrix vp, DirectX::SimpleMath::Vector3 position, bool *clip)
 {
