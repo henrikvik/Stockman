@@ -38,6 +38,7 @@ bool Physics::init()
 	this->setLatencyMotionStateInterpolation(true);
 	ghostPairCB = new btGhostPairCallback();
 	m_broadphasePairCache->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCB);
+
 	return true;
 }
 
@@ -102,13 +103,10 @@ void Physics::update(float delta)
 			PhysicsObject* entityA = reinterpret_cast<PhysicsObject*>(obA->getUserPointer());
 			PhysicsObject* entityB = reinterpret_cast<PhysicsObject*>(obB->getUserPointer());
 
-			const btRigidBody* rbodyA = btRigidBody::upcast(obA);
-			const btRigidBody* rbodyB = btRigidBody::upcast(obB);
-
 			if (entityA && entityB)
 			{
-				entityA->collision(*entityB, a, rbodyA);
-				entityB->collision(*entityA, b, rbodyB);
+				entityA->collision(*entityB, a, *this);
+				entityB->collision(*entityA, b, *this);
 			}
 		}
 	}
@@ -360,7 +358,7 @@ void Physics::render(Graphics::Renderer & renderer)
 		btCollisionObject* obj = this->getCollisionObjectArray()[i];
 		if (btGhostObject* ghostObject = dynamic_cast<btGhostObject*>(obj))
 		{
-		//	renderGhostCapsule(renderer, dynamic_cast<btCapsuleShape*>(ghostObject->getCollisionShape()), ghostObject);
+			renderGhostCapsule(renderer, dynamic_cast<btCapsuleShape*>(ghostObject->getCollisionShape()), ghostObject);
 		}
 		else
 		{

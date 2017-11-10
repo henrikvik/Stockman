@@ -1,4 +1,6 @@
 #include "../../include/Entity/PhysicsObject.h"
+#include <Physics/Physics.h>
+#include <Player\Player.h>
 
 using namespace Logic;
 
@@ -79,7 +81,7 @@ void PhysicsObject::updatePhysics(float deltaTime)
 	setWorldTranslation(getTransformMatrix());
 }
 
-void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, const btRigidBody * collidedWithYour)
+void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, Physics &physics)
 {
 	// Checks if the collision happened on one of the weakpoints
 	bool hit = false;
@@ -89,11 +91,27 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, con
 		{
 			Weakpoint weakPoint = m_weakPoints[i];
 
-			if (collidedWithYour == weakPoint.body)
-			{
-				onCollision(other, contactPoint, weakPoint.multiplier);
-				hit = true;
-			}
+            FunContactResult res(
+                [&](btBroadphaseProxy* proxy) -> bool {
+                return true;
+            },
+                [&](btManifoldPoint& cp,
+                    const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                    const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+            {
+                if (abs(cp.getDistance()) < 0.05f)
+                {
+                    onCollision(other, contactPoint, weakPoint.multiplier);
+                    hit = true;
+                }
+                return 0;
+            });
+
+            // Special case because player doesn't have a rigidbody
+            if(Player* player = dynamic_cast<Player*>(&other))
+                physics.contactPairTest(weakPoint.body, player->getGhostObject(), res);
+            else
+                physics.contactPairTest(weakPoint.body, other.getRigidBody(), res);
 		}
 	}
 

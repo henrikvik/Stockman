@@ -94,7 +94,7 @@
 }
 { //STUN
     "flags" : 16384; // 0x4000
-    "duration" : 10000f;
+    "duration" : 3000f;
     "modifiers": 1;
     "specifics": 0;
 

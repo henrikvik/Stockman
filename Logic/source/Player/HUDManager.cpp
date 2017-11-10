@@ -3,6 +3,7 @@
 #include <Player\Skill\Skill.h>
 #include <Player\Skill\SkillManager.h>
 #include <Player\Weapon\Weapon.h>
+#include <Player\Weapon\AmmoContainer.h>
 
 #include <AI\WaveTimeManager.h>
 #include <AI\EntityManager.h>
@@ -43,10 +44,10 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     //updates hudInfo with the current info
     info->score = ComboMachine::Get().GetCurrentScore();
     info->hp = player.getHP();
-    info->activeAmmo[HUDManager::CURRENT_AMMO] =     player.getMainHand()->getMagAmmo();
-    info->activeAmmo[HUDManager::TOTAL_AMMO] =   player.getMainHand()->getAmmo();
-    info->inactiveAmmo[HUDManager::CURRENT_AMMO] =   player.getOffHand()->getMagAmmo();
-    info->inactiveAmmo[HUDManager::TOTAL_AMMO] = player.getOffHand()->getAmmo();
+    info->activeAmmo[HUDManager::CURRENT_AMMO] =     player.getActiveAmmoContainer().getAmmoInfo().magAmmo;
+    info->activeAmmo[HUDManager::TOTAL_AMMO] = player.getActiveAmmoContainer().getAmmoInfo().ammo;
+    info->inactiveAmmo[HUDManager::CURRENT_AMMO] = player.getInactiveAmmoContainer().getAmmoInfo().magAmmo;
+    info->inactiveAmmo[HUDManager::TOTAL_AMMO] = player.getInactiveAmmoContainer().getAmmoInfo().ammo;
     info->sledge = player.isUsingMeleeWeapon();
     info->currentWeapon = player.getCurrentWeapon();
 

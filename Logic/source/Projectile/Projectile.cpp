@@ -21,17 +21,6 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent)
 	m_bulletTimeMod = 1.f;
 }
 
-Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, int damage, float speed, float gravityModifer, float ttl)
-: Entity(body, halfExtent, Graphics::ModelID::SPHERE)
-{
-	m_pData.damage = damage;
-	m_pData.speed = speed;
-	m_pData.gravityModifier = gravityModifer;
-	m_pData.ttl = ttl;
-	m_remove = false;
-	m_bulletTimeMod = 1.f;
-}
-
 Logic::Projectile::Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData)
 : Entity(body, halfExtent, Graphics::ModelID::SPHERE)
 {
@@ -100,18 +89,29 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         bool callback = false;
 
         if (Projectile* proj = dynamic_cast<Projectile*> (&other))  // if projectile
+        {
             if (proj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
             {
                 getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME,
                     proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
                 callback = true;
             }
+            else if (proj->getProjectileData().type == ProjectileTypeMeleeParry)
+            {
+                m_remove = true;
+                callback = false;
+            }
             else {} // this might seem really pointless, because it is, but if you remove it, it will stop working, so dont touch this godly else
+        }
         else if (!dynamic_cast<Player*>(&other)) // if not player
         {
             if (dynamic_cast<Enemy*> (&other) && getProjectileData().enemyBullet)
             {
                 m_remove = false;
+            }
+            else if (!dynamic_cast<Enemy*> (&other) && m_pData.type == ProjectileTypeMeleeParry)
+            {
+                callback = false;
             }
             else
             {
@@ -161,6 +161,8 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 
         if (callback && hasCallback(ON_COLLISION))
         {
+            if (m_pData.type == ProjectileTypeMeleeParry)
+                int i = 0;
             CallbackData data;
             data.caller = dynamic_cast<Entity*>(this);
             data.dataPtr = reinterpret_cast<std::intptr_t> (&other);
@@ -169,6 +171,7 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 
         if (m_pData.type == ProjectileTypeBulletTimeSensor ||
             m_pData.type == ProjectileTypeMelee ||
+            m_pData.type == ProjectileTypeMeleeParry ||
             m_pData.type == ProjectileTypeIce)
             m_remove = false;
 

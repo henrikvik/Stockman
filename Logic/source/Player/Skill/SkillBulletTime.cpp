@@ -2,6 +2,7 @@
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
 #include <Graphics\include\Renderer.h>
+#include <Projectile\Projectile.h>
 
 using namespace Logic;
 

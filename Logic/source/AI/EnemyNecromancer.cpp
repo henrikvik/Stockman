@@ -9,7 +9,7 @@ const int EnemyNecromancer::SPEED_AB1 = 15,
           EnemyNecromancer::SPEED_AB2 = 25,
           EnemyNecromancer::MAX_SPAWNED_MINIONS = 4,
           EnemyNecromancer::BASE_DAMAGE = 1,
-          EnemyNecromancer::MAX_HP = 4;
+          EnemyNecromancer::MAX_HP = 50;
 const float EnemyNecromancer::BASE_SPEED = 8.f;
 
 EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
