@@ -25,7 +25,12 @@ namespace Sound
         NECROMANCER_SPAWN,
         NECROMANCER_SHOOT_PRIMARY,
         NECROMANCER_SHOOT_SECONDARY,
-        BOSS_1_ABILITY_1
+        BOSS_1_ABILITY_1,
+        BOSS_1_ABILITY_2,
+        BOSS_1_ABILITY_3,
+        BOSS_1_ABILITY_4,
+        BOSS_1_ABILITY_5,
+        BOSS_1_ABILITY_6,
     };
 
     // Put all identifier for music here
@@ -35,7 +40,8 @@ namespace Sound
         MUSIC_CREDITS,
         MUSIC_IN_GAME,
         AMBIENT_STORM,
-        BOSS_1_MUSIC_1
+        BOSS_1_MUSIC_1,
+        BOSS_1_MUSIC_2,
     };
 
     enum CHANNEL_GROUP

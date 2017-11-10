@@ -56,7 +56,10 @@ void EntityManager::registerCreationFunctions()
     m_enemyFactory[EnemyType::NECROMANCER] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
         Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } * btScalar(scale)));
-        btRigidBody *body = physics.createBody(cube, 5);
+        btRigidBody *body = physics.createBody(cube, 100, false,
+            Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        body->setAngularFactor(btVector3(0, 1, 0));
+
         Enemy* enemy = newd EnemyNecromancer(body, cube.getDimensionsRef());
         enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
 
@@ -65,7 +68,11 @@ void EntityManager::registerCreationFunctions()
     m_enemyFactory[EnemyType::NECROMANCER_MINION] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
         Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } *btScalar(scale)));
-        Enemy* enemy = newd EnemyChaser(physics.createBody(cube, 5));
+        btRigidBody *body = physics.createBody(cube, 100, false,
+            Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        body->setAngularFactor(btVector3(0, 1, 0));
+
+        Enemy* enemy = newd EnemyChaser(body);
         enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
 
@@ -74,7 +81,10 @@ void EntityManager::registerCreationFunctions()
     m_enemyFactory[EnemyType::BOSS_1] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
         Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.9f, 4.5f, 1.9f } *btScalar(scale)));
-        btRigidBody *body = physics.createBody(cube, 5);
+        btRigidBody *body = physics.createBody(cube, 100, false,
+            Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        body->setAngularFactor(btVector3(0, 1, 0));
+
         Enemy* enemy = newd EnemyBossBaddie(body, cube.getDimensionsRef());
         enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
@@ -173,7 +183,7 @@ void EntityManager::update(Player &player, float deltaTime)
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
-	    //m_deadEnemies[i]->updateDead(deltaTime); -- Delete body right now, maybe later keep the dead bodies, but it is not really important but can be changed
+	    m_deadEnemies[i]->updateDead(deltaTime); // Delete body right now, maybe later keep the dead bodies, but it is not really important but can be changed
 	}
 
 	m_triggerManager.update(deltaTime);

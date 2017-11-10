@@ -60,7 +60,6 @@ void EnemyNecromancer::updateSpecific(Player &player, float deltaTime)
 
 void EnemyNecromancer::updateDead(float deltaTime)
 {
-    Entity::update(deltaTime);
 }
 
 void EnemyNecromancer::useAbility(Entity &target)

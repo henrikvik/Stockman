@@ -3,6 +3,7 @@
 
 #include <AI\Enemy.h>
 #include <unordered_map>
+#include <string>
 #include <AI\Abilities\Ability.h>
 #include <btBulletCollisionCommon.h>
 
@@ -17,8 +18,12 @@ namespace Logic
         };
         std::unordered_map<AbilityId, Ability> abilities;
 
-        static const float BASE_SPEED;
-        static const int BASE_DAMAGE, MAX_HP, ABILITIES = 1;
+        static const float BASE_SPEED, PROJECTILE_SPEED, ABILITY_1_MOD;
+        static const int BASE_DAMAGE, MAX_HP;
+
+        std::vector<TextRenderInfo> info;
+        std::vector<std::wstring> infoText;
+        float testTime;
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
 

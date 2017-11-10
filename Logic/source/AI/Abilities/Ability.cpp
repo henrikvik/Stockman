@@ -2,6 +2,8 @@
 #include <Misc\RandomGenerator.h>
 using namespace Logic;
 
+const float Ability::GCD = 100.f;
+
 Ability::Ability()
 {
     // dont use, only for init in a map
@@ -37,16 +39,30 @@ void Ability::update(float deltaTime, Player &player)
 
 bool Ability::useAbility(Player &player, bool forceUse)
 {
-    if (forceUse || (canUseAbility() &&
-        RandomGenerator::singleton().getRandomInt(0, data.randomChanche) == 0))
-    {
-        currentCooldown = data.cooldown;
-        currentDuration = data.duration;
-        usingAbility = true;
 
+    if (forceUse)
+    {
         onUse(player, *this);
         return true;
     }
+
+    if (canUseAbility())
+    {
+        if (RandomGenerator::singleton().getRandomInt(0, data.randomChanche) == 0)
+        {
+            currentCooldown = data.cooldown;
+            currentDuration = data.duration;
+            usingAbility = true;
+
+            onUse(player, *this);
+            return true;
+        }
+        else
+        {
+            currentCooldown = GCD;
+        }
+    }
+
     return false;
 }
 

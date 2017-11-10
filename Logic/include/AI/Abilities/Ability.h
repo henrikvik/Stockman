@@ -16,6 +16,7 @@ namespace Logic
     class Ability
     {
         private:
+            static const float GCD;
             bool usingAbility;
             float currentCooldown, currentDuration;
 

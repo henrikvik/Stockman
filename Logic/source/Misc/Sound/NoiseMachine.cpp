@@ -240,6 +240,11 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
 //    ERRCHECK(createSound(loadMode, SFX::NECROMANCER_SHOOT_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "test.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::SWOOSH, CHANNEL_GROUP::CHANNEL_SFX, "Swoosh.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_1, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability1.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_2, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability2.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_3, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability3.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_4, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability4.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_5, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability5.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_6, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability6.mp3", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the sfx
     int count = 0;
@@ -263,7 +268,8 @@ int NoiseMachine::initMusic(LOAD_MODE loadMode)
     ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 6) ? "env.mp3" : "notch.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::MUSIC_CREDITS, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 100) ? "pranked.ogg" : "lab.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::AMBIENT_STORM, CHANNEL_GROUP::CHANNEL_AMBIENT, "ambient_snow.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
-    ERRCHECK(createSound(loadMode, MUSIC::BOSS_1_MUSIC_1, CHANNEL_GROUP::CHANNEL_AMBIENT, "boss1theme1.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::BOSS_1_MUSIC_1, CHANNEL_GROUP::CHANNEL_MUSIC, "boss1theme1.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::BOSS_1_MUSIC_2, CHANNEL_GROUP::CHANNEL_MUSIC, "boss1theme2.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
 
 	// Setting the thresholds of where the listener can hear the music
     int count = 0;
