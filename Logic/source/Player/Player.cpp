@@ -338,7 +338,12 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
     {
         if (damageThroughProtection ||
             getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
+        {
             m_hp -= damage;
+
+            // Add invul time
+            getStatusManager().addStatus(StatusManager::EFFECT_ID::INVULNERABLE, 1);
+        }
     }
 }
 
