@@ -1,23 +1,25 @@
 #ifndef FPS_RENDERER_H
 #define FPS_RENDERER_H
-
-#include <Graphics\include\Renderer.h>
+#include <Graphics\include\RenderQueue.h>
 
 namespace Logic
 {
-	class FPSRenderer
+	class FPSRenderer 
 	{
 	private:
 		int fps, frames;
 		float fpsTimer;
-        bool isActive;
-		Graphics::TextString fpsString;
+        TextRenderInfo renderInfo;
+        std::wstring FPSString;
+        
 	public:
 		FPSRenderer();
 		~FPSRenderer();
+        
 
-		void renderFPS(Graphics::Renderer& renderer);
 		void updateFPS(float deltaTime);
+        void render() const;
+        TextRenderInfo getTextRenderInfo()const;
 	};
 }
 

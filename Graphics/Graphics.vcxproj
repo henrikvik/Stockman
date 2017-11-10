@@ -19,79 +19,96 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\DoF.cpp" />
-    <ClCompile Include="include\Animation\Animation.cpp" />
-    <ClCompile Include="include\Animation\Joint.cpp" />
-    <ClCompile Include="include\Animation\JointTransform.cpp" />
-    <ClCompile Include="include\Animation\KeyFrame.cpp" />
-    <ClCompile Include="include\Animation\Skeleton.cpp" />
     <ClCompile Include="include\Camera.cpp" />
-    <ClCompile Include="include\HUD.cpp" />
+    <ClCompile Include="include\CommonState.cpp" />
+    <ClCompile Include="include\Device.cpp" />
+    <ClCompile Include="include\Effects\Water.cpp" />
     <ClCompile Include="include\Fog.cpp" />
-    <ClCompile Include="include\Lights\Sun.cpp" />
+    <ClCompile Include="include\HUD.cpp" />
+    <ClCompile Include="include\HybrisLoader\Animation.cpp" />
+    <ClCompile Include="include\HybrisLoader\HybrisLoader.cpp" />
+    <ClCompile Include="include\HybrisLoader\Material.cpp" />
+    <ClCompile Include="include\HybrisLoader\Mesh2.cpp" />
+    <ClCompile Include="include\HybrisLoader\Model.cpp" />
+    <ClCompile Include="include\HybrisLoader\Skeleton.cpp" />
     <ClCompile Include="include\Lights\LightGrid.cpp" />
+    <ClCompile Include="include\Lights\Sun.cpp" />
+    <ClCompile Include="include\MainCamera.cpp" />
     <ClCompile Include="include\Menu.cpp" />
-    <ClCompile Include="include\Glow.cpp" />
     <ClCompile Include="include\Particles\Particle.cpp" />
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
-    <ClCompile Include="include\Resources\BRFImportHandler.cpp" />
-    <ClCompile Include="include\SnowManager.cpp" />
-    <ClCompile Include="include\SSAORenderer.cpp" />
+    <ClCompile Include="include\RenderPass\DepthOfFieldRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\DepthRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\ForwardPlusRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\FullScreenPass.cpp" />
+    <ClCompile Include="include\RenderPass\GlowRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\GUIRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\LightCullRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\ParticleRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\RenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\ShadowRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\SkyBoxRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\SnowRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\SSAORenderPass.cpp" />
     <ClCompile Include="include\Utility\DebugDraw.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
-    <ClCompile Include="include\Resources\MaterialManager.cpp" />
-    <ClCompile Include="include\Resources\Mesh.cpp" />
-    <ClCompile Include="include\Resources\MeshManager.cpp" />
-    <ClCompile Include="include\Resources\ResourceManager.cpp" />
-    <ClCompile Include="include\Resources\Shader.cpp" />
+    <ClCompile Include="include\Utility\Shader.cpp" />
     <ClCompile Include="include\Utility\ShaderResource.cpp" />
-    <ClCompile Include="include\Resources\TextureManager.cpp" />
-    <ClCompile Include="include\SkyRenderer.cpp" />
-    <ClCompile Include="include\Effects\Water.cpp" />
+    <ClCompile Include="include\Utility\Texture.cpp" />
+    <ClCompile Include="include\Utility\TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\DoF.h" />
-    <ClInclude Include="include\Animation\AnimatedTestCube.h" />
-    <ClInclude Include="include\Animation\AnimatedVertex.h" />
-    <ClInclude Include="include\Animation\Animation.h" />
-    <ClInclude Include="include\Animation\Joint.h" />
-    <ClInclude Include="include\Animation\JointTransform.h" />
-    <ClInclude Include="include\Animation\KeyFrame.h" />
-    <ClInclude Include="include\Animation\Skeleton.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Datatypes.h" />
-    <ClInclude Include="include\Fog.H" />
-    <ClInclude Include="include\Graphics.h" />
+    <ClInclude Include="include\Device.h" />
+    <ClInclude Include="include\Effects\Water.h" />
+    <ClInclude Include="include\Fog.h" />
+    <ClInclude Include="include\DLL.h" />
     <ClInclude Include="include\HUD.h" />
-    <ClInclude Include="include\Lights\Sun.h" />
+    <ClInclude Include="include\HybrisLoader\Animation.h" />
+    <ClInclude Include="include\HybrisLoader\HybrisLoader.h" />
+    <ClInclude Include="include\HybrisLoader\Material.h" />
+    <ClInclude Include="include\HybrisLoader\Mesh.h" />
+    <ClInclude Include="include\HybrisLoader\Model.h" />
+    <ClInclude Include="include\HybrisLoader\Skeleton.h" />
     <ClInclude Include="include\Lights\LightGrid.h" />
+    <ClInclude Include="include\Lights\Sun.h" />
+    <ClInclude Include="include\MainCamera.h" />
     <ClInclude Include="include\Menu.h" />
-    <ClInclude Include="include\Glow.h" />
     <ClInclude Include="include\Particles\Particle.h" />
     <ClInclude Include="include\Particles\ParticleSystem.h" />
     <ClInclude Include="include\Renderer.h" />
-    <ClInclude Include="include\Resources\BRFImportHandler.h" />
-    <ClInclude Include="include\SnowManager.h" />
-    <ClInclude Include="include\SSAORenderer.h" />
+    <ClInclude Include="include\RenderInfo.h" />
+    <ClInclude Include="include\CommonState.h" />
+    <ClInclude Include="include\RenderPass\DepthOfFieldRenderPass.h" />
+    <ClInclude Include="include\RenderPass\DepthRenderPass.h" />
+    <ClInclude Include="include\RenderPass\ForwardPlusRenderPass.h" />
+    <ClInclude Include="include\RenderPass\FullScreenPass.h" />
+    <ClInclude Include="include\RenderPass\GlowRenderPass.h" />
+    <ClInclude Include="include\RenderPass\GUIRenderPass.h" />
+    <ClInclude Include="include\RenderPass\LightCullRenderPass.h" />
+    <ClInclude Include="include\RenderPass\ParticleRenderPass.h" />
+    <ClInclude Include="include\RenderPass\RenderPass.h" />
+    <ClInclude Include="include\RenderPass\ShadowRenderPass.h" />
+    <ClInclude Include="include\RenderPass\SkyBoxRenderPass.h" />
+    <ClInclude Include="include\RenderPass\SnowRenderPass.h" />
+    <ClInclude Include="include\RenderPass\SSAORenderPass.h" />
+    <ClInclude Include="include\Utility\RenderPass.h" />
+    <ClInclude Include="include\RenderQueue.h" />
+    <ClInclude Include="include\Structs.h" />
+    <ClInclude Include="include\ThrowIfFailed.h" />
     <ClInclude Include="include\Utility\Buffer.h" />
+    <ClInclude Include="include\Utility\ConstantBuffer.h" />
     <ClInclude Include="include\Utility\DebugDraw.h" />
     <ClInclude Include="include\Utility\DepthStencil.h" />
-    <ClInclude Include="include\Resources\Importerstructs.h" />
-    <ClInclude Include="include\Resources\MaterialManager.h" />
-    <ClInclude Include="include\Resources\Mesh.h" />
-    <ClInclude Include="include\Resources\MeshManager.h" />
-    <ClInclude Include="include\Resources\ResourceManager.h" />
-    <ClInclude Include="include\Resources\Shader.h" />
+    <ClInclude Include="include\Utility\ModelLoader.h" />
+    <ClInclude Include="include\Utility\Shader.h" />
     <ClInclude Include="include\Utility\ShaderResource.h" />
-    <ClInclude Include="include\Resources\TextureManager.h" />
-    <ClInclude Include="include\SkyRenderer.h" />
-    <ClInclude Include="include\Structs.h" />
+    <ClInclude Include="include\Utility\sizeofv.h" />
     <ClInclude Include="include\Utility\StructuredBuffer.h" />
-    <ClInclude Include="include\TempCube.h" />
-    <ClInclude Include="include\ThrowIfFailed.h" />
-    <ClInclude Include="include\Utility\ConstantBuffer.h" />
-    <ClInclude Include="include\Effects\Water.h" />
+    <ClInclude Include="include\Utility\Texture.h" />
+    <ClInclude Include="include\Utility\TextureLoader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -147,28 +164,30 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -178,14 +197,22 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <Lib>
+      <AdditionalDependencies>Hybris.lib</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -195,14 +222,22 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <NoEntryPoint>true</NoEntryPoint>
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <Lib>
+      <AdditionalDependencies>Hybris.lib</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -214,6 +249,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -222,8 +258,14 @@
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <Lib>
+      <AdditionalDependencies>Hybris.lib</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -235,6 +277,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -243,8 +286,14 @@
       <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <Lib>
+      <AdditionalDependencies>Hybris.lib</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

@@ -16,7 +16,7 @@ using namespace Logic;
 #include <Player\Player.h>
 #include <Projectile\ProjectileManager.h>
 
-#include <Graphics\include\Renderer.h>
+
 #include <Graphics\include\Structs.h>
 #include <Physics\Physics.h>
 #include <Graphics\include\Particles\ParticleSystem.h>
@@ -259,8 +259,21 @@ Enemy* EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
 {
     try
     {
-        Enemy *enemy = m_enemyFactory.at(id)(pos, 1.f, effects, physics);
-        enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
+    case ENEMY_TYPE::NECROMANCER:
+        enemy = newd EnemyNecromancer(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
+        break;
+    case ENEMY_TYPE::NECROMANCER_MINION:
+        enemy = newd EnemyChaser(testBody);
+        break;
+    default:
+        enemy = newd EnemyTest(Graphics::ModelID::ENEMYGRUNT, testBody, { 0.5f, 0.5f, 0.5f });
+		break;
+    }
+
+    enemy->setEnemyType(id);
+    enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING /*&~Physics::COL_PLAYER*/)), 2.f, { 0.f, 3.f, 0.f });
+
+    enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
 
         int index = AStar::singleton().getIndex(*enemy);
         m_enemies[index == -1 ? 0 : index].push_back(enemy);
@@ -288,14 +301,14 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
     switch (id)
     {
     case 1: // wtf, starts at 1
-        trigger = m_triggerManager.addTrigger(Graphics::ModelID::JUMPPAD,
+        trigger = m_triggerManager.addTrigger(Resources::Models::UnitCube,
             Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
             500.f, physics, {},
             effectsIds,
             true);
         break;
     case 2:
-        trigger = m_triggerManager.addTrigger(Graphics::ModelID::AMMOBOX,
+        trigger = m_triggerManager.addTrigger(Resources::Models::UnitCube,
             Cube(pos, { 0, 0, 0 }, { 1, 0.5, 1 }), 0.f, physics, {},
             effectsIds,
             false);
@@ -324,15 +337,15 @@ int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
     return i;
 }
 
-void EntityManager::render(Graphics::Renderer &renderer)
+void EntityManager::render() const
 {
     for (int i = 0; i < m_enemies.size(); ++i)
     {
         for (Enemy *enemy : m_enemies[i])
         {
-            enemy->render(renderer);
+            enemy->render();
 #ifdef DEBUG_PATH	
-            enemy->debugRendering(renderer);
+            enemy->debugRendering();
 #endif
         }
     }
@@ -340,12 +353,12 @@ void EntityManager::render(Graphics::Renderer &renderer)
     for (int i = 0; i < m_deadEnemies.size(); ++i)
     {
 #ifndef DISABLE_RENDERING_DEAD_ENEMIES
-     //   m_deadEnemies[i]->render(renderer);
+     //   m_deadEnemies[i]->render();
 #endif
     }
 
-    m_triggerManager.render(renderer);
-    AStar::singleton().renderNavigationMesh(renderer);
+    m_triggerManager.render();
+    AStar::singleton().renderNavigationMesh();
 }
 
 const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const

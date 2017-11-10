@@ -52,7 +52,9 @@ void CardManager::pickThree(bool damaged)
 
 void CardManager::shuffle()
 {
-    std::random_shuffle(m_deck.begin(), m_deck.end());
+    static std::random_device rd;
+    static std::mt19937 g(rd());
+    std::shuffle(m_deck.begin(), m_deck.end(), g);
 }
 
 Card CardManager::pick(int handIndex)

@@ -18,7 +18,6 @@ This class creates menus and handles switching between different menu layouts.
 #include <map>
 #include <Misc\Enums.h>
 #include <Misc\GUI\MenuState.h>
-#include <Graphics\include\Renderer.h>
 
 namespace Logic
 {
@@ -32,7 +31,6 @@ namespace Logic
 		GameState m_currentActiveState;
 		GameState m_stateToBe;
 		bool m_forward;
-		std::string* m_highScoreNamePTR;
 		std::string m_highScoreName;
 		bool m_typing;
         bool blinkMarker;
@@ -51,12 +49,12 @@ namespace Logic
 		bool m_windowed = false;
 		bool m_mute = false;
 	public:
-		MenuMachine(std::string* highScoreNamePTR);
+		MenuMachine();
 		~MenuMachine();
 		void initialize(GameState state);	//< Load menu layout from file
 		void clear();						//< Clears current menu layout
 		void update(float dt);
-		void render(Graphics::Renderer & renderer, std::string highScore[10]);
+        void render();
 		void showMenu(GameState state);		//< Creates a menu layout
 		GameState currentState();
 		void setStateToBe(GameState);

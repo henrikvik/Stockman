@@ -10,8 +10,8 @@
 
 using namespace Logic;
 
-Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId)
-: Entity(body, halfExtent, modelID)
+Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId)
+: Entity(body, halfExtent)
 {
 	m_behavior = nullptr;
 
@@ -25,6 +25,19 @@ Enemy::Enemy(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent,
 
     m_nrOfCallbacksEntities = 0;
     m_stunned = false;
+
+	//animation todo
+    enemyRenderInfo.model = modelID;
+//    enemyRenderInfo.animationName = "";
+//    enemyRenderInfo.animationProgress = 0;
+//    enemyRenderInfo.freeze = 0;
+//    enemyRenderInfo.burn = 0;
+    enemyRenderInfo.transform = getTransformMatrix();
+    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
+    light.intensity = 1.0f;
+    light.range = 2.f;
+    
+
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -68,12 +81,22 @@ void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> co
 	updateSpecific(player, deltaTime);
 
     if (!m_stunned)
-        m_behavior->update(*this, closeEnemies, player, deltaTime);
+    {
+        m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+    }
+
+    // Update Render animation and position
+    enemyRenderInfo.transform = getTransformMatrix();
+//    enemyRenderInfo.animationProgress += deltaTime;
+
+    m_moveSpeedMod = 1.f;
+	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
+    light.position = enemyRenderInfo.transform.Translation();
 }
 
-void Enemy::debugRendering(Graphics::Renderer & renderer)
+void Enemy::debugRendering()
 {
-	m_behavior->getPath().renderDebugging(renderer, getPosition());
+	m_behavior->getPath().renderDebugging(getPosition());
 }
 
 void Enemy::increaseCallbackEntities()
@@ -175,7 +198,7 @@ EnemyType Enemy::getEnemyType() const
 	return m_enemyType;
 }
 
-Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed, float gravity, float scale)
+Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale)
 {
 	ProjectileData data;
 
@@ -186,7 +209,7 @@ Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed, float
     data.gravityModifier = 2.5;
 	data.scale = scale;
     data.enemyBullet = true;
-    data.isSensor = true;
+    data.isSensor = false;
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     
@@ -206,5 +229,11 @@ Projectile* Enemy::shoot(btVector3 dir, Graphics::ModelID id, float speed, float
 
 Behavior* Enemy::getBehavior() const
 {
-	return m_behavior;
+	return this->m_behavior;
+}
+
+void Logic::Enemy::render() const
+{
+    RenderQueue::get().queue(&enemyRenderInfo);
+    RenderQueue::get().queue(&light);
 }

@@ -1,12 +1,23 @@
 #ifndef PROJECTILEMANAGER_H
 #define PROJECTILEMANAGER_H
 
-#include <Physics\Physics.h>
-#include <Projectile\Projectile.h>
 #include <vector>
+#include <d3d11.h>
+#include <SimpleMath.h>
+#include <btBulletCollisionCommon.h>
+
+namespace Graphics
+{
+    class Renderer;
+}
 
 namespace Logic
 {
+    class Entity;
+    class Projectile;
+    class Physics;
+    struct ProjectileData;
+
 	class ProjectileManager
 	{
 	public:
@@ -22,7 +33,7 @@ namespace Logic
         void removeAllProjectiles();
 
 		void update(float deltaTime);
-		void render(Graphics::Renderer &renderer);
+		void render();
 
 		std::vector<Projectile*>& getProjectiles();
 

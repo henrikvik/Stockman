@@ -7,8 +7,8 @@
 #include "PhysicsObject.h"
 #include "StatusManager.h"
 #include <AI\EnemyType.h>
+#include <Graphics\include\RenderQueue.h>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 #include <Misc/Sound/NoiseMachine.h>
 #include <Misc/Sound/SoundSource.h>
 
@@ -44,7 +44,7 @@ namespace Logic
         // An unordered map with a list of callbacks
         typedef std::function<void(CallbackData&)> Callback;
 
-		Entity(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID);
+		Entity(btRigidBody* body, btVector3 halfExtent);
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
 
@@ -59,6 +59,8 @@ namespace Logic
 		virtual void affect(int stacks, Effect const &effect, float deltaTime) = 0;
         virtual void onEffectEnd(int stacks, Effect const &effect) {};
 		virtual void upgrade(Upgrade const &upgrade);
+
+        virtual void render() const = 0;
 
         void callback(EntityEvent entityEvent, CallbackData &data);
 
@@ -85,16 +87,6 @@ namespace Logic
 		StatusManager m_statusManager;
         // change functions to linked list if many callbacks is wanted, but i don't see it being necessary
         std::unordered_map<EntityEvent, std::vector<Callback>> m_callbacks;
-	};
-
-	/* Temp class cuz the fucking entity is abstract */
-	class Speaker : public Entity
-	{
-	public :
-		Speaker(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID)
-			: Entity(body, halfExtent, modelID) { }
-		void affect(int stacks, Effect const &effect, float deltaTime) { }
-		void onCollision(PhysicsObject & other, btVector3 contactPoint, float multiplier) { }
 	};
 }
 

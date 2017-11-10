@@ -1,8 +1,10 @@
 #include "../Projectile/ProjectileManager.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <Physics\Physics.h>
+#include <Projectile\Projectile.h>
 
-#define PROJECTILE_DEFAULT_COUNT 50
+#define PROJECTILE_DEFAULT_COUNT 100
 #define PROJECTILE_DEFAULT_POS { 0.f, -100.f, 0.f }
 
 using namespace Logic;
@@ -18,7 +20,7 @@ ProjectileManager::~ProjectileManager()
 
 }
 
-void Logic::ProjectileManager::init()
+void ProjectileManager::init()
 {
     for (size_t i = PROJECTILE_DEFAULT_COUNT; i--;)
     {
@@ -58,7 +60,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
     // creating new projectile if idle stack is empty
     if (m_projectilesIdle.size() == 0)  // it shouldn't get to this, because it will lag in debug mode
     {
-        body = m_physPtr->createBody(Sphere({ position + (forward * 2) }, { 0.f, 0.f, 0.f }, pData.scale), pData.mass, pData.isSensor, 0, 0);
+        body = m_physPtr->createBody(Sphere({ position + forward }, { 0.f, 0.f, 0.f }, pData.scale), pData.mass, pData.isSensor, 0, 0);
         p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, pData);
     }
     // using projectile from idle stack
@@ -86,7 +88,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         body->getCollisionShape()->setLocalScaling({ pData.scale, pData.scale, pData.scale });
         m_physPtr->updateSingleAabb(body);
         // position
-        body->getWorldTransform().setOrigin({ position + (forward * 2) });
+        body->getWorldTransform().setOrigin({ position + forward });
     }
 
     // collision group
@@ -99,8 +101,8 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
 	// Taking the forward vector and getting the pitch and yaw from it
 	float pitch = asin(-forward.getY());
 	float yaw = atan2(forward.getX(), forward.getZ());
-	btQuaternion q(yaw, pitch, 0.f);
-	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), 0.f));
+    float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2 * M_PI); // Random roll rotation
+	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), roll));
 
 	// Set gravity modifier
 	body->setGravity(pData.gravityModifier * m_physPtr->getGravity());
@@ -130,7 +132,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         body->setLinearVelocity({ 0.f, 0.f, 0.f });
         body->setGravity({ 0.f, 0.f, 0.f });
         body->getWorldTransform().setOrigin(PROJECTILE_DEFAULT_POS);
-        p->setWorldTranslation(p->getTransformMatrix());
+        p->setWorldTransform(p->getTransformMatrix());
 
         // reset collision flags
         if (p->getProjectileData().isSensor)
@@ -141,7 +143,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         m_physPtr->removeRigidBody(body);
 
         // dont remove again duh
-        p->toRemove(false);
+        p->setDead(false);
 
         // remove all callbacks from the projectile
         p->clearCallbacks();
@@ -151,15 +153,16 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
     }
     std::swap(m_projectilesActive[index], m_projectilesActive[m_projectilesActive.size() - 1]);
     m_projectilesActive.pop_back();
+
 }
 
-void Logic::ProjectileManager::update(float deltaTime)
+void ProjectileManager::update(float deltaTime)
 {
 	for (size_t i = 0; i < m_projectilesActive.size(); i++)
 	{
 		Projectile* p = m_projectilesActive[i];
 		p->updateSpecific(deltaTime);
-		if (p->shouldRemove() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
+		if (p->getDead() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
 		{
 			removeProjectile(p, (int)i);
 			i--;
@@ -167,10 +170,10 @@ void Logic::ProjectileManager::update(float deltaTime)
 	}
 }
 
-void Logic::ProjectileManager::render(Graphics::Renderer& renderer)
+void Logic::ProjectileManager::render()
 {
 	for (Projectile* p : m_projectilesActive)
-		p->render(renderer);
+		p->render();
 }
 
 void ProjectileManager::removeAllProjectiles()

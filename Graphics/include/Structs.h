@@ -84,8 +84,8 @@ namespace Graphics
 #define MAX_LIGHTS 128
 
 	struct Light {
-		DirectX::SimpleMath::Vector4 positionVS;
-		DirectX::SimpleMath::Vector3 positionWS;
+		DirectX::SimpleMath::Vector4 viewPosition;
+		DirectX::SimpleMath::Vector3 position;
 		float range;
 		DirectX::SimpleMath::Vector3 color;
 		float intensity;
@@ -94,7 +94,7 @@ namespace Graphics
 
 		Light(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 color, float range = 1, float intensity = 1)
 		{
-			positionWS = pos;
+			this->position = pos;
 			this->range = range;
 			this->color = color;
 			this->intensity = intensity;
@@ -102,10 +102,8 @@ namespace Graphics
 	};
 	struct InstanceData
 	{
-		DirectX::SimpleMath::Matrix translation;
-		DirectX::SimpleMath::Matrix invTranspose;
-		float freeze;
-		float burn;
+		DirectX::SimpleMath::Matrix transform;
+		DirectX::SimpleMath::Matrix transformInvT;
 	};
 
 	struct ButtonInfo

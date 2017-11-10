@@ -10,6 +10,7 @@ namespace Logic
     private:
         static const int MAX_HP, BASE_DAMAGE;
         static const float MOVE_SPEED;
+        
     public:
         EnemyChaser(btRigidBody* body);
         ~EnemyChaser();

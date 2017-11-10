@@ -12,7 +12,6 @@
 #include <vector>
 #include <Player\Skill\Skill.h>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 
 #define BULLET_TIME_CD 2500.f
 #define BULLET_TIME_DURATION 5000.f
@@ -43,6 +42,7 @@ namespace Logic
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)> SpawnProjectile;
 
+        SpecialEffectRenderInfo renderInfo;
 	public:
 		SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData);
         ~SkillBulletTime();
@@ -53,7 +53,8 @@ namespace Logic
 		void onRelease();
 
 		void onUpdate(float deltaTime);
-		void render(Graphics::Renderer& renderer);
+		virtual void render() const override;
+
 	};
 }
 #endif

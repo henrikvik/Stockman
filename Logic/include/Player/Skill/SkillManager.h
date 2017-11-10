@@ -9,11 +9,12 @@
 		*/
 #pragma endregion
 
-#include <vector>
 #include <d3d11.h>
 #include <SimpleMath.h>
+
+#include <vector>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
+
 
 namespace Graphics
 {
@@ -63,7 +64,7 @@ namespace Logic
 		void release(int index);
 
 		void update(float deltaTime);
-		void render(Graphics::Renderer& renderer);
+		void render();
 
         Skill* getSkill(int index) const;
 	

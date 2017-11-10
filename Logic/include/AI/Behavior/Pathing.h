@@ -1,14 +1,10 @@
 #ifndef PATHING_H
 #define PATHING_H
 
+#include <Graphics\include\RenderQueue.h>
+
 #include <vector>
 #include <Entity\Entity.h>
-#include <SimpleMath.h>
-
-namespace Graphics
-{
-    struct RenderDebugInfo;
-}
 
 namespace Logic
 {
@@ -19,7 +15,7 @@ namespace Logic
 		std::vector<const DirectX::SimpleMath::Vector3*> m_path;
 		int m_currentNode;
 
-		Graphics::RenderDebugInfo* m_debugInfo;
+		DebugRenderInfo m_debugInfo;
 	public:
 		Pathing();
 		Pathing(Pathing const &other) = delete;
@@ -38,7 +34,7 @@ namespace Logic
 
 		// debugging - move to a debug render class or something maybe ty
 		void initDebugRendering();
-		void renderDebugging(Graphics::Renderer &renderer, DirectX::SimpleMath::Vector3 &startPosition);
+		void renderDebugging(DirectX::SimpleMath::Vector3 &startPosition);
 	};
 }
 

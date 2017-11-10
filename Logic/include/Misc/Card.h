@@ -1,10 +1,12 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include <string>
-#include <vector>
 #include <d3d11.h>
 #include <SimpleMath.h>
+
+#include <string>
+#include <vector>
+
 
 namespace Logic
 {

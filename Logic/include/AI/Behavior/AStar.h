@@ -1,6 +1,8 @@
 #ifndef ASTAR_H
 #define ASTAR_H
 
+#include <Graphics\include\RenderQueue.h>
+
 #include <string>
 #include <vector>
 #include <queue>
@@ -9,7 +11,6 @@
 #include "NavigationMeshGeneration.h"
 
 #include <Entity\Entity.h>
-#include <Graphics\include\Renderer.h>
 
 namespace Logic
 {
@@ -23,7 +24,7 @@ namespace Logic
 			};
 
 			// debugging
-			Graphics::RenderDebugInfo debugDataTri, debugDataEdges;
+			DebugRenderInfo debugDataTri, debugDataEdges;
 
 			// to calc path testing rn
 			struct NavNode
@@ -78,7 +79,7 @@ namespace Logic
 			std::vector<const DirectX::SimpleMath::Vector3*> 
 				reconstructPath(NavNode const *endNode, std::vector<NavNode> const &navNodes, int toIndex);
 
-			void renderNavigationMesh(Graphics::Renderer &renderer);
+			void renderNavigationMesh();
 			// load the target triangle once per frame instead of once per path load
 			void loadTargetIndex(Entity const &target);
 			int getTargetIndex();

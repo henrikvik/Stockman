@@ -1,5 +1,6 @@
 #include <AI\Behavior\NavigationMesh.h>
 #include <Misc\FileLoader.h>
+#include <Engine\newd.h>
 #define EPSILON 0.0001f
 #define EPSILON_NODE 0.2f
 using namespace Logic;
@@ -47,7 +48,7 @@ void NavigationMesh::generateEdges()
                 {
                     if ((vertex - otherV).Length() <= EPSILON_NODE)
                     {
-                        if (++same > 0)
+                        if (++same > 1)
                         {
                             addEdge(static_cast<int> (i), static_cast<int> (j));
                             break;
@@ -88,7 +89,7 @@ const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() cons
 std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataTri() 
 {
 	std::vector<DirectX::SimpleMath::Vector3> *data =
-		new std::vector<DirectX::SimpleMath::Vector3>();
+		newd std::vector<DirectX::SimpleMath::Vector3>();
 
     for (Triangle const &tri : triangleList)
     {
@@ -106,6 +107,12 @@ std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataEdges()
 {
 	std::vector<DirectX::SimpleMath::Vector3> *data =
 		new std::vector<DirectX::SimpleMath::Vector3>();
+
+    for (auto node : nodes)
+    {
+     //   data->push_back(node + DirectX::SimpleMath::Vector3{ 0, 2.f, 0 });
+    //    data->push_back(node - DirectX::SimpleMath::Vector3{ 0, 2.f, 0 });
+    }
 	
 	for (int j = 0; j < edges.size(); j++)
 	{
