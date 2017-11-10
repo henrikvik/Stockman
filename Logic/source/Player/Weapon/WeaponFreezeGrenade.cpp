@@ -2,6 +2,9 @@
 #include <Projectile\Projectile.h>
 #include <Projectile\ProjectileStruct.h>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 
 using namespace Logic;
 
@@ -21,7 +24,7 @@ WeaponFreezeGrenade::WeaponFreezeGrenade(ProjectileManager * projectileManager, 
 {
     m_freezeData = newd ProjectileData(freezeData);
     m_splitCount = splitCount;
-    m_sliceSize = (2 * 3.14f) / m_splitCount;
+    m_sliceSize = (2 * M_PI) / m_splitCount;
 }
 
 

@@ -95,7 +95,7 @@ float Weapon::getAttackTimer()
         return 0.f;
 }
 
-float Weapon::getDelayTime()
+int Weapon::getDelayTime()
 {
     return m_wInfo.delayTime;
 }
