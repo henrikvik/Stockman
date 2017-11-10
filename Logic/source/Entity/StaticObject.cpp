@@ -7,7 +7,7 @@ StaticObject::StaticObject(Resources::Models::Files modelId, btRigidBody * body,
 	: PhysicsObject(body, halfExtent)
 {
     // Render Debug Construction
-    debugRenderInfo.points = new std::vector<DirectX::SimpleMath::Vector3>();
+    debugRenderInfo.points = newd std::vector<DirectX::SimpleMath::Vector3>();
     debugRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1);
     debugRenderInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
     debugRenderInfo.useDepth = true;

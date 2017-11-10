@@ -75,21 +75,21 @@ void SoundSource::playMusic(MUSIC music)
 void SoundSource::delayPlaySFX(SFX sfx, float delay)
 {
 	if (delayPlayer) delete delayPlayer;
-	delayPlayer = new DelayPlayer(0, sfx, delay);
+	delayPlayer = newd DelayPlayer(0, sfx, delay);
 }
 
 // Plays a song but after a specific delay of time in ms
 void SoundSource::delayPlayMusic(MUSIC music, float delay)
 {
 	if (delayPlayer) delete delayPlayer;
-	delayPlayer = new DelayPlayer(1, music, delay);
+	delayPlayer = newd DelayPlayer(1, music, delay);
 }
 
 // Plays a SFX inbetween intervals, example: autoPlaySFX(SFX::BOING, 5000.f, 500.f); - plays the BOING sfx every 5000 ms, with a 500 ms random variation
 void SoundSource::autoPlaySFX(SFX sfx, float timeBetween, float timeOffset, float pitch, float pitchOffset)
 {
 	if (autoPlayer)	delete autoPlayer;
-	autoPlayer = new AutoPlayer(sfx, timeBetween, timeOffset, pitch, pitchOffset);
+	autoPlayer = newd AutoPlayer(sfx, timeBetween, timeOffset, pitch, pitchOffset);
 }
 
 FMOD_VECTOR* SoundSource::getPosition()

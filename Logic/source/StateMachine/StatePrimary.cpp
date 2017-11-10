@@ -92,10 +92,10 @@ void StatePrimary::loadState(StateType state)
     switch (state)
     {
     case StateType::State_Playing:
-        m_currentState = new StatePlaying(m_stateBuffer);
+        m_currentState = newd StatePlaying(m_stateBuffer);
         break;
     case StateType::State_Start:
-        m_currentState = new StateStart(m_stateBuffer);
+        m_currentState = newd StateStart(m_stateBuffer);
         break;
     }
 

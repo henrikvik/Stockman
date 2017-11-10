@@ -1,4 +1,5 @@
 #include "../../include/Entity/PhysicsObject.h"
+#include <Engine\newd.h>
 
 using namespace Logic;
 
@@ -129,7 +130,7 @@ DirectX::SimpleMath::Vector3 PhysicsObject::getScale() const
 DirectX::SimpleMath::Matrix PhysicsObject::getTransformMatrix() const
 {
 	// Making memory for a matrix
-	float* m = new float[4 * 16];
+	float* m = newd float[4 * 16];
 
 	// Getting this entity's matrix
 	m_transform->getOpenGLMatrix((btScalar*)(m));

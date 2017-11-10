@@ -92,7 +92,7 @@ void StateSecondary::loadState(StateType state)
     switch (state)
     {
     case StateType::State_InGame_Overlay:
-        m_currentState = new StatePlayingOverlay(m_stateBuffer);
+        m_currentState = newd StatePlayingOverlay(m_stateBuffer);
         break;
     }
 

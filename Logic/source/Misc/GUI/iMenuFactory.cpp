@@ -9,7 +9,7 @@ using namespace Logic;
 
 iMenu* iMenuFactory::buildMenuStart()
 {
-    iMenu* menu = new iMenu(iMenu::Start);
+    iMenu* menu = newd iMenu(iMenu::Start);
     iMenu::ButtonData btn;
 
     /* Background */
@@ -52,7 +52,7 @@ iMenu * iMenuFactory::buildMenuSettings()
 
 iMenu * iMenuFactory::buildMenuSkill()
 {
-    iMenu* menu = new iMenu(iMenu::Skill);
+    iMenu* menu = newd iMenu(iMenu::Skill);
     iMenu::ButtonData btn;
 
     /* Background */
