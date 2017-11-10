@@ -201,7 +201,7 @@ HRESULT Engine::createSwapChain()
 
 	desc.BufferCount = 2;
 	desc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-    desc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    desc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	desc.OutputWindow = this->window;
 	desc.SampleDesc.Count = 1;
