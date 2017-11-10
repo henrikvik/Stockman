@@ -57,8 +57,7 @@ void WeaponManager::reset()
 
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
-	// Updating weapon model
-	//m_currentWeapon->primary->setWeaponModelFrontOfPlayer(playerTranslation, playerForward);
+    // Updating weapon model
     m_currentWeapon->weaponModel->update(playerTranslation, playerForward);
 }
 
