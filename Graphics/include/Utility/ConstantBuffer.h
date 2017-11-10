@@ -1,12 +1,13 @@
 #pragma once
 #include <d3d11.h>
 #include "../ThrowIfFailed.h"
+#include "../Device.h"
 
 template<typename T, size_t size = 1>
 class ConstantBuffer
 {
 public:
-    ConstantBuffer(ID3D11Device * device);
+    ConstantBuffer(ID3D11Device * device = Global::device);
     ~ConstantBuffer();
 
     T* map(ID3D11DeviceContext * context);
