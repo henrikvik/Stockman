@@ -45,7 +45,7 @@ Weapon::Weapon(Resources::Models::Files modelID, ProjectileManager* projectileMa
 
     renderInfo.model = modelID;
     renderInfo.animationName = "";
-    renderInfo.animationProgress = 0;
+    renderInfo.animationTimeStamp = 0;
 }
 
 Weapon::~Weapon()
@@ -200,5 +200,5 @@ void Logic::Weapon::fillMag()
 
 void Logic::Weapon::render() const
 {
-    RenderQueue::get().queue(&renderInfo);
+    RenderQueue::get().queue((StaticRenderInfo*)&renderInfo);
 }

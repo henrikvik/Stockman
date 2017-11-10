@@ -42,7 +42,7 @@ std::wstring ConvertToWString(const std::string & s)
 namespace Graphics {;
 
 ParticleSystem *FXSystem;
-bool FXEnabled = false;
+bool FXEnabled = true;
 
 ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const char * path)
     : m_Capacity(capacity)

@@ -31,6 +31,11 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 //    enemyRenderInfo.freeze = 0;
 //    enemyRenderInfo.burn = 0;
     enemyRenderInfo.transform = getTransformMatrix();
+    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
+    light.intensity = 1.0f;
+    light.range = 2.f;
+    
+
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -78,6 +83,7 @@ void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> co
 
     m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
+    light.position = enemyRenderInfo.transform.Translation();
 }
 
 void Enemy::debugRendering()
@@ -185,4 +191,5 @@ Behavior* Enemy::getBehavior() const
 void Logic::Enemy::render() const
 {
     RenderQueue::get().queue(&enemyRenderInfo);
+    RenderQueue::get().queue(&light);
 }

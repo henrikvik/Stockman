@@ -10,8 +10,8 @@ static std::vector<Graphics::ParticleEffectInstance> DebugFX;
 static ID3D11ShaderResourceView *DebugLightSprite;
 static ID3D11ShaderResourceView *DebugFXSprite;
 
-static bool DebugDrawFX = true;
-static bool DebugDrawLights = true;
+static bool DebugDrawFX = false;
+static bool DebugDrawLights = false;
 
 static DirectX::SimpleMath::Vector4 TransformScreen(DirectX::SimpleMath::Matrix vp, DirectX::SimpleMath::Vector3 position, bool *clip)
 {
@@ -96,7 +96,7 @@ void Graphics::Debug::Render(Camera *camera)
     list->PushClipRectFullScreen();
     for (auto light : DebugLights) {
         bool clip = false;
-        auto pos = TransformScreen(vp, light.positionWS, &clip);
+        auto pos = TransformScreen(vp, light.position, &clip);
 
         if (clip) continue;
 

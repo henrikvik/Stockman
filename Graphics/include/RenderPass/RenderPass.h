@@ -36,7 +36,7 @@ namespace Graphics
     protected:
         template<typename QueueT>
         void drawInstanced(ID3D11ShaderResourceView * instanceBuffer) const;
-
+        ConstantBuffer<UINT> instanceOffsetBuffer;
 
     };
 
@@ -47,7 +47,8 @@ namespace Graphics
         Global::context->RSSetState(Global::cStates->CullClockwise());
         Global::context->VSSetShaderResources(10, 1, &instanceBuffer);
 
-        Global::context->PSSetShaderResources(9, 1, *TextureLoader::get().getTexture(Resources::Textures::Grid));
+        Global::context->VSSetConstantBuffers(10, 1, instanceOffsetBuffer);
+
         UINT instanceOffset = 0;
         for (auto & pair : RenderQueue::get().getQueue<QueueT>())
         {
@@ -69,14 +70,17 @@ namespace Graphics
             };
             Global::context->PSSetShaderResources(12, 4, textures);
 
+
+
+            instanceOffsetBuffer.write(Global::context, &instanceOffset, sizeof(instanceOffset));
+            instanceOffset += renderInfos.size();
+
             Global::context->DrawInstanced(
                 mesh->getVertexCount(),
                 renderInfos.size(),
-                0,
-                instanceOffset
+                0, 0
             );
 
-            instanceOffset += renderInfos.size();
         }
 
         Global::context->VSSetShaderResources(10, 1, Global::nulls);

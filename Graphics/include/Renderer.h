@@ -62,8 +62,26 @@ namespace Graphics
         ShaderResource* fakeBackBufferSwap;
 
     #pragma region Instance Buffers
+
+        using float4x4 = DirectX::SimpleMath::Matrix;
+        using float4 = DirectX::SimpleMath::Vector4;
+        using float3 = DirectX::SimpleMath::Vector3;
+        using float2 = DirectX::SimpleMath::Vector2;
+
+        struct InstanceStatic
+        {
+            float4x4 world;
+            float4x4 worldInvT;
+        };
+        struct InstanceAnimated : InstanceStatic
+        {
+            float4x4 jointTransforms[20];
+        };
+
+
         void writeInstanceBuffers();
-        StructuredBuffer<InstanceData> staticInstanceBuffer;
+        StructuredBuffer<InstanceStatic> instanceStaticBuffer;
+        StructuredBuffer<InstanceAnimated> instanceAnimatedBuffer;
     #pragma endregion
 
 

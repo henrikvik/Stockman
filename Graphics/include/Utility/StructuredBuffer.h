@@ -2,6 +2,7 @@
 #include "../ThrowIfFailed.h"
 #include <Engine\Constants.h>
 #include "../Device.h"
+#include <functional>
 
 enum class CpuAccess
 {
@@ -26,6 +27,7 @@ public:
     T* map(ID3D11DeviceContext *cxt);
     void unmap(ID3D11DeviceContext *cxt);
     void write(ID3D11DeviceContext * context, T * data, UINT size);
+    void write(std::function<void(T*)> writeFunction);
 #pragma endregion
 
 #pragma region Getters and Setters
@@ -151,6 +153,13 @@ inline void StructuredBuffer<T>::write(ID3D11DeviceContext * context, T * data, 
 {
     memcpy(map(context), data, size);
     unmap(context);
+}
+
+template<typename T>
+inline void StructuredBuffer<T>::write(std::function<void(T*)> writeFunction)
+{
+    writeFunction(map(Global::context));
+    unmap(Global::context);
 }
 
 #pragma endregion
