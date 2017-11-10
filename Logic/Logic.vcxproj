@@ -200,6 +200,10 @@
   <ItemGroup>
     <ClInclude Include="include\Misc\CommandsFile.h" />
     <ClInclude Include="include\GameType.h" />
+    <ClInclude Include="include\Misc\GUI\iMenu.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuAction.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuMachine.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuFactory.h" />
     <ClInclude Include="include\Misc\GUI\Sprite.h" />
     <ClInclude Include="include\Misc\Error.h" />
     <ClInclude Include="include\Misc\NonCopyable.h" />
@@ -286,6 +290,10 @@
     <ClInclude Include="include\StateStart.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
+    <ClCompile Include="source\Misc\GUI\iMenuFactory.cpp" />
+    <ClCompile Include="source\Misc\GUI\iMenu.cpp" />
+    <ClCompile Include="source\Misc\GUI\iMenuMachine.cpp" />
     <ClCompile Include="source\Player\PlayerController.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
