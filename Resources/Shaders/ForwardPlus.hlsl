@@ -17,6 +17,8 @@ Texture2D                        shadowMap       : register(t3);
 #ifdef USE_GRID_TEXTURE
 Texture2D                        gridTexture     : register(t9);
 #endif
+
+cbuffer cb10 : register(b10) { uint instanceOffset; };
 StructuredBuffer<InstanceStatic> instanceBuffer  : register(t10);
 StructuredBuffer<Vertex>         vertexBuffer    : register(t11);
 Texture2D                        diffuseTexture  : register(t12);
@@ -51,7 +53,7 @@ struct Targets
 Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId) 
 {
     Vertex vertex = vertexBuffer[vertexId];
-    InstanceStatic instance = instanceBuffer[instanceId];
+    InstanceStatic instance = instanceBuffer[instanceId + instanceOffset];
 	Fragment fragment;
 
     fragment.position    = mul(instance.world, float4(vertex.position, 1));
@@ -63,6 +65,7 @@ Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
     fragment.viewNormal = normalize(mul(camera.view,    float4(fragment.normal, 0)));
 
     fragment.uv         = vertex.uv;
+    fragment.uv.y = 1 - fragment.uv.y;
 
 #ifdef USE_GRID_TEXTURE
     float3   localPosition = mul(instance.world, float4(vertex.position, 0)).xyz;
