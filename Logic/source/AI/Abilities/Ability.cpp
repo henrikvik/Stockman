@@ -52,7 +52,7 @@ bool Ability::useAbility(Player &player, bool forceUse)
 
 bool Ability::canUseAbility() const
 {
-    return currentCooldown <= 0.f;
+    return currentCooldown <= 0.f && !isUsingAbility();
 }
 
 float Ability::getCurrentCooldown() const

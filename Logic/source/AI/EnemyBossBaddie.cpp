@@ -25,8 +25,8 @@ void EnemyBossBaddie::createAbilities()
 {
     AbilityData data;
 
-    data.cooldown = 12500.f; // Ability One Data
-    data.duration = 9000.f;
+    data.cooldown = 2500.f; // Ability One Data
+    data.duration = 1000.f;
     data.randomChanche = 0;
 
     auto onUse = [&](Player& player, Ability &ability) -> void {
@@ -35,7 +35,7 @@ void EnemyBossBaddie::createAbilities()
 
     auto onTick = [&](Player& player, Ability &ability) -> void {
         btVector3 force = (player.getPositionBT() - getPositionBT()) *
-            (1 + ability.getCurrentDuration() - ability.getData().duration) * 0.00000001f;
+            (1 + ability.getData().duration - ability.getCurrentDuration()) * 0.000001f;
         player.getCharController()->applyImpulse(force);
     };
 
@@ -64,7 +64,7 @@ void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
 {
     // test
     useAbility(player, 0);
-    for (auto pair : abilities)
+    for (auto &pair : abilities)
         pair.second.update(deltaTime, player);
 }
 
