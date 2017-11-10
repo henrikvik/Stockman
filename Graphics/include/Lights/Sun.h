@@ -19,40 +19,34 @@ namespace Graphics
 			DirectX::SimpleMath::Vector4 camPos;
 		};
 
-		struct LightValues
-		{
-			DirectX::SimpleMath::Vector4 pos;
-			//Value from 0 to 1, when it is 1 the shadows are on
-			float fade;
-			char pad[12];
-		};
+        struct DirectionalLight
+        {
+            DirectX::SimpleMath::Vector4 position;
+            DirectX::SimpleMath::Vector3 color;
+            private:float pad1;public:
+            DirectX::SimpleMath::Vector3 ambient;
+            private:float pad2;public:
+        };
 
-		Sun(ID3D11Device* device, int width, int height);
+		Sun();
 		~Sun();
 
-		void update(ID3D11DeviceContext* context, float rotationAmount, DirectX::SimpleMath::Vector3 offset = DirectX::SimpleMath::Vector3(0, 0, 0));
+		void update();
 
-		ConstantBuffer<ShaderMatrix>* getMatrixBuffer() { return &matrixBuffer; };
-		ConstantBuffer<LightValues>* getShaderBuffer() { return &shaderBuffer; };
-		D3D11_VIEWPORT getViewPort() { return viewPort; };
-		float getShadowFade() const;
+		ConstantBuffer<ShaderMatrix>* getLightMatrixBuffer() { return &lightMatrixBuffer; };
+		ConstantBuffer<DirectionalLight>* getGlobalLightBuffer() { return &globalLightBuffer; };
 
 	private:
 		DirectX::SimpleMath::Matrix view;
 		DirectX::SimpleMath::Matrix projection;
 		DirectX::SimpleMath::Vector4 pos;
 
-		
-
 		//Clamp a value between min and max
 		float snap(float value, float min, float max);
 
 		ShaderMatrix matrixData;
-		LightValues shaderData;
-		ConstantBuffer<ShaderMatrix> matrixBuffer;
-		ConstantBuffer<LightValues> shaderBuffer;
-
-		D3D11_VIEWPORT viewPort;
-
+        DirectionalLight globalLight;
+		ConstantBuffer<ShaderMatrix> lightMatrixBuffer;
+		ConstantBuffer<DirectionalLight> globalLightBuffer;
 	};
 }

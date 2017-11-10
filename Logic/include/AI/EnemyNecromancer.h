@@ -10,9 +10,11 @@ namespace Logic
 	{
 		private:
             int m_spawnedMinions;
-			const int SPEED_AB1 = 15, SPEED_AB2 = 25, MAX_SPAWNED_MINIONS = 4;
+            static const float BASE_SPEED;
+            static const int BASE_DAMAGE, MAX_HP;
+			static const int SPEED_AB1, SPEED_AB2, MAX_SPAWNED_MINIONS;
 		public:
-			EnemyNecromancer(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
+			EnemyNecromancer(btRigidBody* body, btVector3 halfExtent);
 			virtual ~EnemyNecromancer();
 
 			virtual void clear();

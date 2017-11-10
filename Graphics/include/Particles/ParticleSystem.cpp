@@ -1,3 +1,4 @@
+#include <tbb\tbb.h>
 #include "ParticleSystem.h"
 
 #include <experimental\filesystem>
@@ -11,10 +12,11 @@
 
 #include <Engine\Profiler.h>
 #include "../Utility/DebugDraw.h"
-
-#include <tbb\tbb.h>
+#include "../CommonState.h"
+#include <Engine\DebugWindow.h>
 
 namespace fs = std::experimental::filesystem;
+using namespace DirectX;
 
 std::wstring ConvertToWString(const std::string & s)
 {
@@ -40,6 +42,7 @@ std::wstring ConvertToWString(const std::string & s)
 namespace Graphics {;
 
 ParticleSystem *FXSystem;
+bool FXEnabled = true;
 
 ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const char * path)
     : m_Capacity(capacity)
@@ -48,6 +51,17 @@ ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const c
     readParticleFile(device, path);
 
     m_GeometryParticles.reserve(capacity);
+
+    DebugWindow::getInstance()->registerCommand("GFX_PARTICLES", [&](std::vector<std::string> &args)->std::string
+    {
+        FXEnabled = !FXEnabled;
+
+        std::string response = "FXEnabled = ";
+        response += FXEnabled ? "true" : "false";
+
+        return response;
+    });
+
 }
 
 ParticleSystem::~ParticleSystem()
@@ -69,6 +83,7 @@ ParticleSystem::~ParticleSystem()
 
 bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Matrix model, float dt)
 {
+    if (!FXEnabled) return false;
     Debug::ParticleFX({ SimpleMath::Vector3::Transform({}, model), *fx });
 
     for (unsigned int i = 0; i < fx->m_Count; i++) {
@@ -76,40 +91,46 @@ bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Mat
 
         fx->m_Age += dt;
 
-        if (fx->m_Age < entry.m_Start || fx->m_Age > entry.m_Start + entry.m_Time)
-            continue;
+        if (fx->m_Age < entry.m_Start || fx->m_Age > entry.m_Start + entry.m_Time) {
+            if (fx->m_Loop) {
+                fx->m_Age = 0.f;
+            }
+            else {
+                continue;
+            }
+        }
 
         switch (entry.m_Type) {
-        case ParticleType::Billboard:
-        {
-        } break;
-        case ParticleType::Geometry: {
-            auto def = &m_GeometryDefinitions[entry.m_DefinitionIdx];
+            case ParticleType::Billboard:
+            {
+            } break;
+            case ParticleType::Geometry: {
+                auto def = &m_GeometryDefinitions[entry.m_DefinitionIdx];
 
-            auto factor = (fx->m_Age - entry.m_Start) / entry.m_Time;
-            auto ease_spawn = GetEaseFunc(entry.m_SpawnEasing);
-            auto spawn = entry.m_Loop ? entry.m_SpawnStart : ease_spawn(entry.m_SpawnStart, entry.m_SpawnEnd, factor);
+                auto factor = (fx->m_Age - entry.m_Start) / entry.m_Time;
+                auto ease_spawn = GetEaseFunc(entry.m_SpawnEasing);
+                auto spawn = entry.m_Loop ? entry.m_SpawnStart : ease_spawn(entry.m_SpawnStart, entry.m_SpawnEnd, factor);
 
-            for (entry.m_SpawnedParticles += spawn * dt; entry.m_SpawnedParticles >= 1.f; entry.m_SpawnedParticles -= 1.f) {
-                GeometryParticle p = {};
-                p.pos = SimpleMath::Vector3::Transform(entry.m_StartPosition.GetPosition(), model);
-                p.velocity = entry.m_StartVelocity.GetVelocity();
-                p.rot = {
-                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
-                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
-                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
-                };
-                p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
-                p.rotprog = RandomFloat(-180, 180);
-                p.def = def;
-                p.idx = def->m_MaterialIdx;
+                for (entry.m_SpawnedParticles += spawn * dt; entry.m_SpawnedParticles >= 1.f; entry.m_SpawnedParticles -= 1.f) {
+                    GeometryParticle p = {};
+                    p.pos = SimpleMath::Vector3::Transform(entry.m_StartPosition.GetPosition(), model);
+                    p.velocity = entry.m_StartVelocity.GetVelocity();
+                    p.rot = {
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
+                    };
+                    p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
+                    p.rotprog = RandomFloat(-180, 180);
+                    p.def = def;
+                    p.idx = def->m_MaterialIdx;
 
 
-                m_GeometryParticles.push_back(p);
-            }
-        } break;
-        case ParticleType::Trail: {
-        } break;
+                    m_GeometryParticles.push_back(p);
+                }
+            } break;
+            case ParticleType::Trail: {
+            } break;
         }
     }
 
@@ -135,17 +156,13 @@ ParticleEffect ParticleSystem::getEffect(std::string name)
     return *result;
 }
 
-void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, DirectX::CommonStates * states, ID3D11DepthStencilView * dest_dsv)
-{
-}
-
-void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::CommonStates * states, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView * dest_dsv, bool debug)
+void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, ID3D11DepthStencilView * dest_dsv)
 {
     ID3D11SamplerState *samplers[] = {
-        states->LinearClamp(),
-        states->LinearWrap(),
-        states->PointClamp(),
-        states->PointWrap()
+        Global::cStates->LinearClamp(),
+        Global::cStates->LinearWrap(),
+        Global::cStates->PointClamp(),
+        Global::cStates->PointWrap()
     };
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
@@ -178,9 +195,85 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
         auto buf = cam->getBuffer();
         cxt->VSSetConstantBuffers(0, 1, *buf);
 
-        cxt->OMSetDepthStencilState(states->DepthDefault(), 0);
+        cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
+        cxt->OMSetRenderTargets(0, nullptr, dest_dsv);
+        cxt->RSSetState(Global::cStates->CullNone());
+
+        int offset = 0;
+        unsigned int len = 0;
+        int current_material = -1;
+
+        for (int i = 0; i < m_GeometryParticles.size(); i++) {
+            auto &particle = m_GeometryParticles[i];
+
+            // initialize state during first loop
+            if (current_material == -1) {
+                current_material = particle.idx;
+            }
+            // if material changes, flush our built up batching
+            else if (current_material != particle.idx) {
+                cxt->PSSetShader(std::get<1>(m_Materials[current_material]), nullptr, 0);
+                cxt->DrawIndexedInstanced(m_SphereIndices, min(m_Capacity, len), 0, 0, offset);
+
+                current_material = particle.idx;
+                offset = i;
+                len = 0;
+            }
+
+            len++;
+        }
+
+        if (len > 0) {
+            cxt->PSSetShader(std::get<1>(m_Materials[current_material]), nullptr, 0);
+            cxt->DrawIndexedInstanced(m_SphereIndices, min(m_Capacity, len), 0, 0, offset);
+        }
+
+        cxt->RSSetState(Global::cStates->CullCounterClockwise());
+    }
+}
+
+void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView * dest_dsv, bool debug)
+{
+    ID3D11SamplerState *samplers[] = {
+        Global::cStates->LinearClamp(),
+        Global::cStates->LinearWrap(),
+        Global::cStates->PointClamp(),
+        Global::cStates->PointWrap()
+    };
+    cxt->VSSetSamplers(0, 4, samplers);
+    cxt->PSSetSamplers(0, 4, samplers);
+
+    cxt->PSSetShaderResources(0, (UINT)m_Textures.size(), m_Textures.data());
+
+    // spheres
+    {
+        UINT strides[2] = {
+            (UINT)sizeof(SphereVertex),
+            (UINT)sizeof(GeometryParticleInstance)
+        };
+
+        UINT offsets[2] = {
+            0,
+            0
+        };
+
+        ID3D11Buffer *buffers[] = {
+            *m_SphereVertexBuffer,
+            *m_GeometryInstanceBuffer
+        };
+
+        cxt->IASetInputLayout(*m_GeometryVS);
+        cxt->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+        cxt->IASetIndexBuffer(*m_SphereIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+        cxt->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+        cxt->VSSetShader(*m_GeometryVS, nullptr, 0);
+        auto buf = cam->getBuffer();
+        cxt->VSSetConstantBuffers(0, 1, *buf);
+
+        cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         cxt->OMSetRenderTargets(1, &dest_rtv, dest_dsv);
-        cxt->RSSetState(states->CullNone());
+        cxt->RSSetState(Global::cStates->CullNone());
 
         int offset = 0;
         unsigned int len = 0;
@@ -211,7 +304,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, DirectX::Com
             cxt->DrawIndexedInstanced(m_SphereIndices, min(m_Capacity, len), 0, 0, offset);
         }
         
-        cxt->RSSetState(states->CullCounterClockwise());
+        cxt->RSSetState(Global::cStates->CullCounterClockwise());
     }
 }
 
@@ -253,7 +346,7 @@ public:
             instance.m_Age = factor;
 
             auto col_start = XMFLOAT4((float*)def.m_ColorStart);
-            auto col_end = XMFLOAT4((float*)def.m_ColorStart);
+            auto col_end = XMFLOAT4((float*)def.m_ColorEnd);
 
             instance.m_Color = ease_color(DirectX::XMLoadFloat4(&col_start), DirectX::XMLoadFloat4(&col_end), factor);
             instance.m_Deform = ease_deform(def.m_DeformStart, def.m_DeformEnd, factor);
@@ -266,6 +359,7 @@ public:
             particle.age += dt;
             particle.rotprog += dt;
 
+            XMStoreFloat3(&particle.velocity, XMLoadFloat3(&particle.velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
             XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
 
             ptr++;
@@ -458,6 +552,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         fread(fx.m_Name, sizeof(char), 16, f);
         fread(&fx.m_Count, sizeof(fx.m_Count), 1, f);
         fread(&fx.m_Time, sizeof(fx.m_Time), 1, f);
+        fread(&fx.m_Loop, sizeof(fx.m_Loop), 1, f);
         
         // default runtime value
         fx.m_Age = 0.f;

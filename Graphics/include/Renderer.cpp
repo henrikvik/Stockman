@@ -1,63 +1,172 @@
-#include <Graphics\include\Renderer.h>
+#include "Renderer.h"
 #include <stdio.h>
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
+#include "Utility\sizeofv.h"
 #include <Keyboard.h>
 #include <Engine\DebugWindow.h>
 
 #include <Engine\Profiler.h>
+#include "RenderQueue.h"
 
 #include "Particles\ParticleSystem.h"
+#include "Utility\TextureLoader.h"
+#include "CommonStates.h"
+#include "MainCamera.h"
+
+#include "RenderPass\ForwardPlusRenderPass.h"
+#include "RenderPass\DepthRenderPass.h"
+#include "RenderPass\LightCullRenderPass.h"
+#include "RenderPass\ShadowRenderPass.h"
+#include "RenderPass\SkyBoxRenderPass.h"
+#include "RenderPass\GlowRenderPass.h"
+#include "RenderPass\ParticleRenderPass.h"
+#include "RenderPass\SSAORenderPass.h"
+#include "RenderPass\DepthOfFieldRenderPass.h"
+#include "RenderPass\SnowRenderPass.h"
+
+#include "Utility\DebugDraw.h"
 
 
-#define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
-
-#if USE_TEMP_CUBE
-#include "TempCube.h"
-#endif
-#if ANIMATION_HIJACK_RENDER
-#include "Animation\AnimatedTestCube.h"
-#endif
+#define USE_OLD_RENDER false
 
 #define MAX_DEBUG_POINTS 10000
+#define _INSTANCE_CAP 300
 
 namespace Graphics
 {
-
+    uint32_t zero = 0;
 	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-		: forwardPlus(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
-		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
+		: forwardPlus(device, Resources::Shaders::ForwardPlus)
 		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
-		, instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
-		, instanceOffsetBuffer(device)
-		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
-		, glowRenderer(device, deviceContext)
 #pragma region RenderDebugInfo
-		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
-		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
-		, debugColorBuffer(device)
+        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
+        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
+        , debugColorBuffer(device)
 #pragma endregion
-		, fog(device)
-		, menu(device, deviceContext)
-		, hud(device, deviceContext)
-		, ssaoRenderer(device)
-		, bulletTimeBuffer(device)
-		, DoFRenderer(device)
+        , fog(device)
+        , bulletTimeBuffer(device)
 #pragma region Foliage
-		, foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
-		, timeBuffer(device)
-		, snowManager(device)
+        , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
+        , timeBuffer(device)
 
 
 #pragma endregion
 		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
-	{
-		this->device = device;
-		this->deviceContext = deviceContext;
+        , instanceStaticBuffer(device, CpuAccess::Write, INSTANCE_CAP(InstanceAnimated))
+        , instanceAnimatedBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
+
+    #pragma region Shared Shader Resources
+        , colorMap(WIN_WIDTH, WIN_HEIGHT)
+        , glowMap(WIN_WIDTH, WIN_HEIGHT)
+        , normalMap(WIN_WIDTH, WIN_HEIGHT)
+
+        , shadowMap(Global::device, SHADOW_RESOLUTION, SHADOW_RESOLUTION)
+
+
+        , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
+        , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
+        , sun()
+    #pragma endregion
+
+
+    {
+        Global::cStates = new CommonStates(device);
+        Global::comparisonSampler = [&](){
+            ID3D11SamplerState * sampler = nullptr;
+            D3D11_SAMPLER_DESC sDesc = {};
+            sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.BorderColor[0] = 1;
+            sDesc.BorderColor[1] = 1;
+            sDesc.BorderColor[2] = 1;
+            sDesc.BorderColor[3] = 1;
+            sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+            sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            sDesc.MaxAnisotropy = 0;
+            sDesc.MinLOD = 0;
+            sDesc.MaxLOD = D3D11_FLOAT32_MAX;
+            sDesc.MipLODBias = 0;
+
+            ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
+            return sampler;        
+        }();
+        Global::mirrorSampler = [&](){
+            ID3D11SamplerState * sampler = nullptr;
+            D3D11_SAMPLER_DESC sDesc = {};
+            sDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.BorderColor[0] = 1;
+            sDesc.BorderColor[1] = 1;
+            sDesc.BorderColor[2] = 1;
+            sDesc.BorderColor[3] = 1;
+            sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+            sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            sDesc.MaxAnisotropy = 0;
+            sDesc.MinLOD = 0;
+            sDesc.MaxLOD = D3D11_FLOAT32_MAX;
+            sDesc.MipLODBias = 0;
+
+            ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
+            return sampler;
+        }();
+        Global::transparencyBlendState = [&]() {
+            ID3D11BlendState * state = nullptr;
+            D3D11_BLEND_DESC blendDesc = { 0 };
+
+            blendDesc.IndependentBlendEnable = false;
+            blendDesc.AlphaToCoverageEnable = false;
+            blendDesc.RenderTarget[0].BlendEnable = true;
+            blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+            blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+            blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+            blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+            blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+            blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+            blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            //blendDesc.RenderTarget[0].LogicOp = D3D11_LOGIC_OP_CLEAR;
+
+            ThrowIfFailed(device->CreateBlendState(&blendDesc, &state));
+            return state;
+        }();
+
+
+        { // CaNCeR!
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.Format = DXGI_FORMAT_R32G32_UINT;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+            desc.Width = (int)ceil(1280 / (float)BLOCK_SIZE);
+            desc.Height = (int)ceil(720 / (float)BLOCK_SIZE);
+            desc.SampleDesc.Count = 1;
+            desc.MipLevels = 1;
+            desc.ArraySize = 1;
+
+            D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+            ZeroMemory(&uavDesc, sizeof(uavDesc));
+            uavDesc.Format = DXGI_FORMAT_R32G32_UINT;
+            uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+
+            D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+            ZeroMemory(&srvDesc, sizeof(srvDesc));
+            srvDesc.Format = DXGI_FORMAT_R32G32_UINT;
+            srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+            srvDesc.Texture2D.MipLevels = 1;
+
+            ID3D11Texture2D *texture;
+            ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
+            ThrowIfFailed(device->CreateUnorderedAccessView(texture, &uavDesc, &lightOpaqueGridUAV));
+            ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &lightOpaqueGridSRV));
+            SAFE_RELEASE(texture);
+        }
+
+        
+        
+
 		this->backBuffer = backBuffer;
 
-		initialize(device, deviceContext, camera);
 
 		fakeBackBuffer = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
 		fakeBackBufferSwap = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
@@ -67,69 +176,105 @@ namespace Graphics
 		viewPort.Height = WIN_HEIGHT;
 		viewPort.MaxDepth = 1.0f;
 
-        states = newd DirectX::CommonStates(device);
-        grid.initialize(camera, device, deviceContext, &resourceManager);
-
         FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
 
         float temp = 1.f;
         bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
 
-		//menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
-		createBlendState();
 
-		DebugWindow *debugWindow = DebugWindow::getInstance();
-		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
-		{
-			enableSSAO = false;
-			enableGlow= false;
-			enableDOF = false;
-			enableFog = false;
-
-			return "PostEffect OFF";
-		});
 		registerDebugFunction();
 
 		statusData.burn = 0;
 		statusData.freeze = 0;
+
+        TextureLoader::get().loadAll();
+
+        renderPasses =
+        {
+            newd ParticleDepthRenderPass(depthStencil),
+            newd DepthRenderPass({}, { instanceStaticBuffer }, {*Global::mainCamera->getBuffer()}, depthStencil),
+            newd ShadowRenderPass({}, { instanceStaticBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
+            newd LightCullRenderPass(
+                {},
+                {
+                    depthStencil,
+                    lightsNew
+                },
+                {
+                    *Global::mainCamera->getBuffer()
+                },
+                nullptr,
+                {
+                    lightOpaqueIndexList,
+                    lightOpaqueGridUAV
+                }
+            ),
+            newd SkyBoxRenderPass({ *fakeBackBuffer },{},{ *sun.getGlobalLightBuffer() }, depthStencil),
+            newd ForwardPlusRenderPass(
+                {
+                    *fakeBackBuffer,
+                    glowMap,
+                    normalMap
+                },
+                {
+                    lightOpaqueIndexList,
+                    lightOpaqueGridSRV,
+                    lightsNew,
+                    shadowMap,
+                    instanceStaticBuffer
+                },
+                {
+                    *Global::mainCamera->getBuffer(),
+                    *sun.getGlobalLightBuffer()
+                },
+                depthStencil
+            ),
+            newd ParticleRenderPass({ *fakeBackBuffer }, depthStencil),
+            newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
+            newd DepthOfFieldRenderPass({ *fakeBackBufferSwap }, { *fakeBackBuffer, depthStencil }),
+            newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
+            newd SnowRenderPass(
+                {
+                    backBuffer 
+                },
+                {
+                    lightOpaqueIndexList, 
+                    lightOpaqueGridSRV, 
+                    lightsNew, 
+                    shadowMap
+                }, 
+                {
+                    *sun.getLightMatrixBuffer(),
+                    *sun.getGlobalLightBuffer()
+                },
+                depthStencil
+            ),
+            newd GUIRenderPass({backBuffer}),
+        };
     }
 
 
     Renderer::~Renderer()
     {
-		delete states;
 		delete fakeBackBuffer;
 		delete fakeBackBufferSwap;
         delete FXSystem;
-		SAFE_RELEASE(transparencyBlendState);
 
-		SAFE_RELEASE(glowTest);
-        resourceManager.release();
+        delete Global::cStates;
+        SAFE_RELEASE(Global::comparisonSampler);
+        SAFE_RELEASE(Global::mirrorSampler);
+        SAFE_RELEASE(Global::transparencyBlendState);
+        SAFE_RELEASE(lightOpaqueGridUAV);
+        SAFE_RELEASE(lightOpaqueGridSRV);
 
+        for (auto & renderPass : renderPasses)
+        {
+            delete renderPass;
+        }
+
+        TextureLoader::get().unloadAll();
+        ModelLoader::get().unloadAll();
     }
-
-    void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext, Camera * camera)
-    {
-        resourceManager.initialize(gDevice, gDeviceContext);
-		skyRenderer.initialize(resourceManager.getModelInfo(SKY_SPHERE));
-
-        //temp
-        DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
-		snowManager.initializeSnowflakes(camera);
-    }
-
-	void Renderer::updateLight(float deltaTime, Camera * camera)
-	{
-		PROFILE_BEGIN("UpdateLights()");
-		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
-		PROFILE_END();
-
-		//Temp or rename function
-		PROFILE_BEGIN("updateSnow()");
-		snowManager.updateSnow(deltaTime, camera, deviceContext);
-		PROFILE_END();
-	}
-
 	//this function is called in SkillBulletTime.cpp
 	void Renderer::setBulletTimeCBuffer(float amount)
 	{
@@ -148,638 +293,383 @@ namespace Graphics
 
         else amount = 0;
 
-        bulletTimeBuffer.write(deviceContext, &amount, sizeof(float));
+        bulletTimeBuffer.write(Global::context, &amount, sizeof(float));
         PROFILE_END();
     }
 
-	void Renderer::updateShake(float deltaTime)
-	{
-		PROFILE_BEGIN("UpdateShake()");
-		hud.updateShake(deviceContext, deltaTime);
-		PROFILE_END();
-	}
-
-	//Radius is in pixels on screen, duration is in MS
-    void Renderer::startShake(float radius, float duration)
+    void Renderer::update(float deltaTime)
     {
-        hud.startShake(radius, duration);
-    }
+        /*static StaticRenderInfo infotest;
+        infotest.model = Resources::Models::Staff;
+        infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
+        RenderQueue::get().queue(&infotest);
+*/
+        static LightRenderInfo lightInfo;
+        lightInfo.color = DirectX::Colors::DodgerBlue;
+        lightInfo.intensity = 1;
+        lightInfo.position = Global::mainCamera->getPos() + float3(0,0,4);
+        lightInfo.range = 10;
+        RenderQueue::get().queue(&lightInfo);
 
-    void Renderer::render(Camera * camera)
-    {
-        menu.unloadTextures();
-#if ANIMATION_HIJACK_RENDER
+        writeInstanceBuffers();
+        sun.update();
 
-        renderQueue.clear();
-        static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
-        static UINT ticks = 0;
-        ticks++;
-        cam.updateLookAt({ 5 * sinf(ticks * 0.001f), 5 * cosf(ticks * 0.001f), 5 }, { 0,0,0 }, deviceContext);
-
-        ID3D11Buffer *cameraBuffer = cam.getBuffer();
-        deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-        deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-
-        static float clearColor[4] = { 0,0,0,1 };
-        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
-
-        deviceContext->RSSetViewports(1, &viewPort);
-
-        static AnimatedTestCube testCube(device);
-        static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"), ANIMATED_VERTEX_DESC);
-
-        deviceContext->IASetInputLayout(testShader);
-        deviceContext->VSSetShader(testShader, nullptr, 0);
-        deviceContext->PSSetShader(testShader, nullptr, 0);
-
-        deviceContext->IASetVertexBuffers(0, 1, testCube, &testCube.stride, &testCube.offset);
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->RSSetState(states->CullNone());
-
-        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
-
-        deviceContext->Draw(testCube.vertexCount, 0);
-
-        auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, testAnimation.getTotalDuration() * ((ticks % 1000) / 1000.f));
-
-        static StructuredBuffer<Matrix> jointBuffer(device, CpuAccess::Write, testSkeleton.getJointCount());
-        Matrix* bufferPtr = jointBuffer.map(deviceContext);
-        memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());
-        jointBuffer.unmap(deviceContext);
-
-        ID3D11ShaderResourceView * jointView = jointBuffer.getSRV();
-        deviceContext->VSSetShaderResources(0, 1, &jointView);
-
-#else
-
-		PROFILE_BEGIN("clear()");
-		clear();
-		PROFILE_END();
-
-		PROFILE_BEGIN("Cull()");
-		cull();
-		PROFILE_END();
-
-		PROFILE_BEGIN("WriteInstanceData()");
-		writeInstanceData();
-		PROFILE_END();
-
-		PROFILE_BEGIN("drawShadows()");
-
-		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
-		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
-		skyRenderer.drawShadows(deviceContext, &forwardPlus);
-		draw();
-		PROFILE_END();
-
-
-		PROFILE_BEGIN("depthPass");
-
-		deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-		deviceContext->VSSetConstantBuffers(0, 1, *camera->getBuffer());
-
-		
-
-
-		deviceContext->RSSetViewports(1, &viewPort);
-		deviceContext->RSSetState(states->CullCounterClockwise());
-
-        deviceContext->IASetInputLayout(forwardPlus);
-        deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-
-        deviceContext->PSSetShader(nullptr, nullptr, 0);
-        deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
-
-        draw();
-
-		deviceContext->IASetInputLayout(foliageShader);
-		deviceContext->VSSetShader(foliageShader, nullptr, 0);
-		deviceContext->PSSetShader(depthShader, nullptr, 0);
-		
-		//this be no deltatime
-		grassTime++;
-
-		drawFoliage(camera);
-		PROFILE_END();
-
-		PROFILE_BEGIN("grid.updateLights()");
-		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-		deviceContext->RSSetState(states->CullCounterClockwise());
-
-		grid.updateLights(deviceContext, camera, lights);
-		lights.clear();
-		PROFILE_END();
-
-		PROFILE_BEGIN("grid.cull()");
-		grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
-		PROFILE_END();
-
-        PROFILE_BEGIN("FXSystem::update()")
-        FXSystem->update(deviceContext, camera, 0.016f);
-        PROFILE_END();
-
-        PROFILE_BEGIN("FXSystem::render()")
-        FXSystem->render(deviceContext, camera, states, *fakeBackBuffer, depthStencil, false);
-        PROFILE_END();
-
-		PROFILE_BEGIN("draw()");
-		deviceContext->IASetInputLayout(forwardPlus);
-		deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-		deviceContext->PSSetShader(forwardPlus, nullptr, 0);
-
-
-
-        ID3D11ShaderResourceView *SRVs[] = {
-            grid.getOpaqueIndexList()->getSRV(),
-            grid.getOpaqueLightGridSRV(),
-            grid.getLights()->getSRV(),
-            *skyRenderer.getDepthStencil()
-        };
-        auto sampler = states->LinearClamp();
-        deviceContext->PSSetShaderResources(0, 4, SRVs);
-        deviceContext->PSSetSamplers(0, 1, &sampler);
-
-		auto samplerWrap = states->LinearWrap();
-		deviceContext->PSSetSamplers(2, 1, &samplerWrap);
-
-		ID3D11SamplerState * samplers[] = { skyRenderer.getSampler() };
-		deviceContext->PSSetSamplers(1, 1, samplers);
-
-		ID3D11Buffer *lightBuffs[] =
-		{
-			*skyRenderer.getShaderBuffer(),
-			*skyRenderer.getLightMatrixBuffer()
-		};
-
-		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
-		deviceContext->VSSetConstantBuffers(3, 1, &lightBuffs[1]);
-
-        deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
-
-		ID3D11RenderTargetView * rtvs[] =
-		{
-			*fakeBackBuffer,
-			glowRenderer,
-			*ssaoRenderer.getNormalShaderResource()
-		};
-
-		deviceContext->OMSetRenderTargets(3, rtvs, depthStencil);
-		
-		draw();
-		PROFILE_END();
-
-		PROFILE_BEGIN("RenderFoliage");
-		deviceContext->IASetInputLayout(foliageShader);
-		deviceContext->VSSetShader(foliageShader, nullptr, 0);
-		deviceContext->PSSetShader(foliageShader, nullptr, 0);
-		drawFoliage(camera);
-		renderFoliageQueue.clear();
-		PROFILE_END();
-
-
-        if (enableSnow)
+        FXSystem->update(Global::context, Global::mainCamera, deltaTime);
+   
+        for (auto & renderPass : renderPasses)
         {
-            static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-            static UINT sampleMask = 0xffffffff;
-            deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-            snowManager.drawSnowflakes(deviceContext, camera);
-            deviceContext->GSSetShader(nullptr, nullptr, 0);
-            deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        }
-		
-
-		PROFILE_BEGIN("DebugThings");
-	/*	PROFILE_BEGIN("RenderWater");
-		drawWater(camera);
-		PROFILE_END();*/
-
-		deviceContext->PSSetConstantBuffers(2, 1, bulletTimeBuffer);
-		skyRenderer.renderSky(deviceContext, camera);
-
-        ID3D11RenderTargetView * rtvNULL[3] = { nullptr };
-
-        deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
-
-        ZeroMemory(SRVs, sizeof(SRVs));
-        deviceContext->PSSetShaderResources(0, 4, SRVs);
-
-		deviceContext->RSSetState(states->CullCounterClockwise());
-		SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
-		if ((1 << 15) & tabKeyState)
-		{
-			this->drawToBackbuffer(grid.getDebugSRV());
-		}
-		PROFILE_END();
-
-
-#endif
-		auto ks = DirectX::Keyboard::Get().GetState();
-
-		
-		if (enablePostEffects)
-		{
-
-			///////Post effects
-
-            if (enableDOF)
-            {
-                PROFILE_BEGIN("Dof");
-
-                if (enableCoCWindow)
-                {
-                    ImGui::Begin("camera stuff");
-                    static float fp = 0.088f;
-                    static float fl = 0.05f;
-                    static float a = 0.12f;
-                    ImGui::SliderFloat("focal Plane", &fp, 0.0001f, .1f);
-                    ImGui::SliderFloat("focal lenght", &fl, 0.001f, 1.0f);
-                    ImGui::SliderFloat("apature", &a, 0.001f, 1.0f);
-                    DoFRenderer.updateCoc(deviceContext, fl, fp, a);
-                    ImGui::End();
-                }
-                DoFRenderer.DoFRender(deviceContext, fakeBackBuffer, &depthStencil, fakeBackBufferSwap, camera);
-                swapBackBuffers();
-                PROFILE_END();
-            }
-
-			if (enableGlow)
-			{
-				PROFILE_BEGIN("Glow");
-				glowRenderer.addGlow(deviceContext, *fakeBackBuffer, fakeBackBufferSwap);
-				swapBackBuffers();
-				PROFILE_END();
-			}
-
-			if (enableSSAO)
-			{
-				PROFILE_BEGIN("SSAO");
-				ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, fakeBackBuffer, fakeBackBufferSwap);
-				swapBackBuffers();
-				PROFILE_END();
-			}
-
-			
-
-			static float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			static UINT sampleMask = 0xffffffff;
-			deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-
-			PROFILE_BEGIN("DrawToBackBuffer");
-			drawToBackbuffer(*fakeBackBuffer);
-			PROFILE_END();
-
-
-			if (enableFog)
-			{
-				PROFILE_BEGIN("renderFog()");
-
-				deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-				deviceContext->PSSetConstantBuffers(1, 1, *camera->getInverseBuffer());
-				fog.renderFog(deviceContext, backBuffer, depthStencil);
-				PROFILE_END();
-			}
-		}
-
-		else
-		{
-			PROFILE_BEGIN("DrawToBackBuffer");
-			drawToBackbuffer(*fakeBackBuffer);
-			PROFILE_END();
-		}
-
-
-
-        PROFILE_BEGIN("HUD");
-        hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
-        PROFILE_END();
-
-		PROFILE_BEGIN("DebugInfo");
-		renderDebugInfo(camera);
-		PROFILE_END();
-	}
-
-
-    void Renderer::queueRender(RenderInfo * renderInfo)
-    {
-        if (renderQueue.size() > INSTANCE_CAP)
-            throw "Renderer Exceeded Instance Cap.";
-
-        renderQueue.push_back(renderInfo);
-    }
-
-	void Renderer::queueFoliageRender(FoliageRenderInfo * renderInfo)
-	{
-		if (renderFoliageQueue.size() > INSTANCE_CAP)
-		{
-			throw "Foliage renderer exceeded instance cap.";
-		}
-
-		renderFoliageQueue.push_back(renderInfo);
-	
-	}
-
-	void Renderer::queueWaterRender(WaterRenderInfo * renderInfo)
-	{
-		if (renderWaterQueue.size() > INSTANCE_CAP)
-		{
-			throw "Water renderer exceeded instance cap.";
-		}
-
-		renderWaterQueue.push_back(renderInfo);
-	}
-
-    void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
-    {
-        if (debugInfo->points->size() > MAX_DEBUG_POINTS)
-        {
-            throw "vector is bigger than structured buffer";
-        }
-        renderDebugQueue.push_back(debugInfo);
-    }
-
-    void Renderer::queueText(TextString * text)
-    {
-        hud.queueText(text);
-    }
-
-	void Renderer::queueLight(Light light)
-	{
-		lights.push_back(light);
-	}
-
-    void Renderer::fillHUDInfo(HUDInfo * info)
-    {
-        hud.fillHUDInfo(info);
-    }
-
-    void Renderer::cull()
-    {
-        instanceQueue.clear();
-        for (RenderInfo * info : renderQueue)
-        {
-            if (info->render)
-            {
-                instanceQueue[info->meshId].push_back({ 
-					info->translation,
-					info->translation.Invert().Transpose(),
-					this->statusData.freeze,
-					this->statusData.burn
-				});
-            }
-        }
-        renderQueue.clear();
-    }
-
-    void Renderer::writeInstanceData()
-    {
-        InstanceData* ptr = instanceSBuffer.map(deviceContext);
-        for (InstanceQueue_t::value_type & pair : instanceQueue)
-        {
-            void * data = pair.second.data();
-            size_t size = pair.second.size() * sizeof(InstanceData);
-            memcpy(ptr, data, size);
-            ptr = (InstanceData*)((char*)ptr + size);
-        }
-        instanceSBuffer.unmap(deviceContext);
-    }
-
-	void Renderer::drawFoliage(Camera * camera)
-	{
-		timeBuffer.write(deviceContext, &grassTime, sizeof(grassTime));
-
-		deviceContext->VSSetConstantBuffers(4, 1, timeBuffer);
-		deviceContext->RSSetState(states->CullNone());
-		deviceContext->OMSetRenderTargets(1, *fakeBackBuffer, depthStencil);
-
-		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		UINT sampleMask = 0xffffffff;
-		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
-
-		for (FoliageRenderInfo * info : renderFoliageQueue)
-		{
-			ModelInfo model = resourceManager.getModelInfo(info->meshId);
-
-			static UINT stride = sizeof(Vertex), offset = 0;
-			deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
-			deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-			static ID3D11ShaderResourceView * modelTextures[1] = { nullptr };
-			modelTextures[0] = model.diffuseMap;
-			deviceContext->PSSetShaderResources(10, 1, modelTextures);
-
-			PROFILE_BEGIN("DrawIndexed()");
-			deviceContext->DrawIndexed((UINT)model.indexCount, 0, 0);
-			PROFILE_END();
-		}
-
-	}
-
-    void Renderer::draw()
-    {
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->VSSetConstantBuffers(4, 1, instanceOffsetBuffer);
-        deviceContext->VSSetShaderResources(20, 1, instanceSBuffer);
-
-
-        UINT instanceOffset = 0;
-        for (InstanceQueue_t::value_type & pair : instanceQueue)
-        {
-			PROFILE_BEGIN("Setup for draw");
-            instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(UINT));
-            instanceOffset += (UINT)pair.second.size();
-
-            ModelInfo model = resourceManager.getModelInfo(pair.first);
-
-            static UINT stride = sizeof(Vertex), offset = 0;
-            deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
-            deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-            static ID3D11ShaderResourceView * modelTextures[4] = { nullptr };
-            modelTextures[0] = model.diffuseMap;
-            modelTextures[1] = model.normalMap;
-            modelTextures[2] = model.specularMap;
-            modelTextures[3] = model.glowMap;
-            deviceContext->PSSetShaderResources(10, 4, modelTextures);
-			PROFILE_END();
-
-			PROFILE_BEGIN("DrawIndexedInstanced()");
-            deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, 0);
-			PROFILE_END();
+            PROFILE_BEGIN(__FUNCSIG__);
+            renderPass->update(deltaTime);
+            PROFILE_END();
         }
     }
 
-	void Renderer::clear()
+    void Renderer::render() const
+    {
+        clear();
+        Global::context->RSSetViewports(1, &viewPort);
+
+        for (auto & renderPass : renderPasses)
+        {
+            renderPass->render();
+        }
+    }
+
+	void Renderer::clear() const
 	{
 		static float clearColor[4] = { 0 };
-		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(*fakeBackBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(glowRenderer, clearColor);
-		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-		deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
-		skyRenderer.clear(deviceContext);
-		glowRenderer.clear(deviceContext, clearColor);
+        Global::context->ClearRenderTargetView(backBuffer, clearColor);
+        Global::context->ClearRenderTargetView(normalMap, clearColor);
+        Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
+        Global::context->ClearRenderTargetView(*fakeBackBufferSwap, clearColor);
+        Global::context->ClearRenderTargetView(glowMap, clearColor);
+        Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+        Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
 	}
 
 	void Renderer::swapBackBuffers()
 	{
-		ShaderResource * temp = fakeBackBuffer;
-		fakeBackBuffer = fakeBackBufferSwap;
-		fakeBackBufferSwap = temp;
+		ID3D11ShaderResourceView * temp = fakeBackBuffer->shaderResource;
+		fakeBackBuffer->shaderResource = fakeBackBufferSwap->shaderResource;
+		fakeBackBufferSwap->shaderResource = temp;
+
+        ID3D11RenderTargetView * temp2 = fakeBackBuffer->renderTarget;
+        fakeBackBuffer->renderTarget = fakeBackBufferSwap->renderTarget;
+        fakeBackBufferSwap->renderTarget = temp2;
 	}
-
-    void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
-    {
-        deviceContext->PSSetShaderResources(0, 1, &texture);
-
-        UINT zero = 0;
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-        deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
-
-        deviceContext->IASetInputLayout(fullscreenQuad);
-        deviceContext->VSSetShader(fullscreenQuad, nullptr, 0);
-        deviceContext->PSSetShader(fullscreenQuad, nullptr, 0);
-
-        static ID3D11SamplerState * pointClamp = states->PointClamp();
-        deviceContext->PSSetSamplers(0, 1, &pointClamp);
-
-		PROFILE_BEGIN("Draw(4, 0)");
-        deviceContext->Draw(4, 0);
-		PROFILE_END();
-
-        ID3D11ShaderResourceView * srvNull = nullptr;
-        deviceContext->PSSetShaderResources(0, 1, &srvNull);
-    }
-
-    //draws the menu
-    void Renderer::drawMenu(Graphics::MenuInfo * info)
-    {
-        deviceContext->RSSetViewports(1, &viewPort);
-        menu.drawMenu(device, deviceContext, info, backBuffer, transparencyBlendState);
-        hud.renderText(transparencyBlendState, false);
-
-    }
-
 
     void Renderer::renderDebugInfo(Camera* camera)
     {
         if (renderDebugQueue.size() == 0) return;
 
-		deviceContext->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-		deviceContext->VSSetConstantBuffers(0, 1, *camera->getBuffer());
+        Global::context->PSSetConstantBuffers(0, 1, *camera->getBuffer());
+        Global::context->VSSetConstantBuffers(0, 1, *camera->getBuffer());
 
-        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
+        Global::context->OMSetRenderTargets(1, &backBuffer, depthStencil);
 
-        deviceContext->VSSetShaderResources(0, 1, debugPointsBuffer);
-        deviceContext->PSSetConstantBuffers(1, 1, debugColorBuffer);
+        Global::context->VSSetShaderResources(0, 1, debugPointsBuffer);
+        Global::context->PSSetConstantBuffers(1, 1, debugColorBuffer);
 
-        deviceContext->IASetInputLayout(nullptr);
-        deviceContext->VSSetShader(debugRender, nullptr, 0);
-        deviceContext->PSSetShader(debugRender, nullptr, 0);
+        Global::context->IASetInputLayout(nullptr);
+        Global::context->VSSetShader(debugRender, nullptr, 0);
+        Global::context->PSSetShader(debugRender, nullptr, 0);
 
 
         for (RenderDebugInfo * info : renderDebugQueue)
         {
             debugPointsBuffer.write(
-                deviceContext,
+                Global::context,
                 info->points->data(),
                 (UINT)(info->points->size() * sizeof(DirectX::SimpleMath::Vector3))
             );
 
             debugColorBuffer.write(
-                deviceContext,
+                Global::context,
                 &info->color,
                 (UINT)sizeof(DirectX::SimpleMath::Color)
             );
 
-            deviceContext->IASetPrimitiveTopology(info->topology);
-            deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
-            deviceContext->Draw((UINT)info->points->size(), 0);
+            Global::context->IASetPrimitiveTopology(info->topology);
+            Global::context->OMSetDepthStencilState(info->useDepth ? Global::cStates->DepthDefault() : Global::cStates->DepthNone(), 0);
+            Global::context->Draw((UINT)info->points->size(), 0);
         }
 
         renderDebugQueue.clear();
     }
 
-
-    void Renderer::createBlendState()
+    void Renderer::writeInstanceBuffers()
     {
-        D3D11_BLEND_DESC BlendState;
-        ZeroMemory(&BlendState, sizeof(D3D11_BLEND_DESC));
-        BlendState.RenderTarget[0].BlendEnable = TRUE;
-        BlendState.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-        BlendState.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-        BlendState.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-        BlendState.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_INV_DEST_ALPHA;
-        BlendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-        BlendState.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-        BlendState.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+        instanceStaticBuffer.write([](InstanceStatic * instanceBuffer)
+        {
+            for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
+            {
+                for (auto & sinfo : model_infos.second)
+                {
+                    InstanceStatic instance = {};
+                    instance.world = sinfo->transform;
+                    instance.worldInvT = sinfo->transform.Invert().Transpose();
+                    *instanceBuffer++ = instance;
+                }
+            }
+        });
 
-        ThrowIfFailed(this->device->CreateBlendState(&BlendState, &transparencyBlendState));
+        instanceAnimatedBuffer.write([](InstanceAnimated * instanceBuffer)
+        {
+            for (auto & model_infos : RenderQueue::get().getQueue<AnimatedRenderInfo>())
+            {
+                HybrisLoader::Skeleton * skeleton = &ModelLoader::get().getModel((Resources::Models::Files)model_infos.first)->getSkeleton();
+
+                for (auto & info : model_infos.second)
+                {
+                    InstanceAnimated instance = {};
+                    instance.world = info->transform;
+                    instance.worldInvT = info->transform.Invert().Transpose();
+
+                    if (strlen(info->animationName) != 0)
+                    {
+                        auto jointTransforms = skeleton->evalAnimation(info->animationName, info->animationTimeStamp);
+                        for (size_t i = 0; i < jointTransforms.size(); i++)
+                        {
+                            instance.jointTransforms[i] = jointTransforms[i];
+                        }
+                    }
+
+                    *instanceBuffer++ = instance;
+                }
+            }
+        });
+
+        lightsNew.write([](Light * lightBuffer)
+        {
+            for (auto & info : RenderQueue::get().getQueue<LightRenderInfo>())
+            {
+                Light light = {};
+                light.range = info->range;
+                light.intensity = info->intensity;
+                light.color = DirectX::SimpleMath::Vector3(info->color.x, info->color.y, info->color.z);
+
+                light.position = info->position;
+                light.viewPosition = DirectX::SimpleMath::Vector4::Transform
+                (
+                    DirectX::SimpleMath::Vector4(info->position.x, info->position.y, info->position.z, 1.f), 
+                    Global::mainCamera->getView()
+                );
+
+                Debug::PointLight(light);
+                *lightBuffer++ = light;
+            }
+
+            for (size_t i = RenderQueue::get().getQueue<LightRenderInfo>().size(); i < INSTANCE_CAP(LightRenderInfo); i++)
+            {
+                Light light;
+                ZeroMemory(&light, sizeof(light));
+                *lightBuffer++ = light;
+            }
+        });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	void Renderer::registerDebugFunction()
 	{
-		DebugWindow *debugWindow = DebugWindow::getInstance();
-		debugWindow->registerCommand("TOGGLEPOSTEFFECTS", [&](std::vector<std::string> &args)->std::string
+		/*DebugWindow *debugWindow = DebugWindow::getInstance();
+		
+		debugWindow->registerCommand("GFX_SET_SSAO", [&](std::vector<std::string> &args)->std::string
 		{
-			enablePostEffects = !enablePostEffects;
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableSSAO = std::stoi(args[0]);
 
-			return "Post effects toggled!";
+                    if (enableSSAO)
+                        catcher = "SSAO enabled!";
+
+                    else
+                        catcher = "SSAO disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
 		});
-
-		debugWindow->registerCommand("TOGGLESSAO", [&](std::vector<std::string> &args)->std::string
-		{
-			enableSSAO = !enableSSAO;
-
-			return "Post effects toggled!";
-		});
-
-        debugWindow->registerCommand("TOGGLESNOW", [&](std::vector<std::string> &args)->std::string
+        
+        debugWindow->registerCommand("GFX_SET_SNOW", [&](std::vector<std::string> &args)->std::string
         {
-            enableSnow = !enableSnow;
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableSnow = std::stoi(args[0]);
 
-            return "Snow toggled!";
+                    if (enableSnow)
+                        catcher = "Snow enabled!";
+
+                    else
+                        catcher = "Snow disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
         });
 
-		debugWindow->registerCommand("TOGGLEGLOW", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_GLOW", [&](std::vector<std::string> &args)->std::string
 		{
-			enableGlow = !enableGlow;
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableGlow = std::stoi(args[0]);
 
-			return "Post effects toggled!";
+                    if (enableGlow)
+                        catcher = "Glow enabled!";
+
+                    else
+                        catcher = "Glow disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
 		});
 
-		debugWindow->registerCommand("TOGGLEFOG", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_FOG", [&](std::vector<std::string> &args)->std::string
 		{
-			enableFog = !enableFog;
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableFog = std::stoi(args[0]);
 
-			return "Post effects toggled!";
+                    if (enableFog)
+                        catcher = "Fog enabled!";
+
+                    else
+                        catcher = "Fog disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
 		});
 
-		debugWindow->registerCommand("TOGGLEDOF", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_DOF", [&](std::vector<std::string> &args)->std::string
 		{
-			enableDOF = !enableDOF;
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableDOF = std::stoi(args[0]);
 
-			return "Post effects toggled!";
+                    if (enableDOF)
+                        catcher = "Depth of field enabled!";
+
+                    else
+                        catcher = "Depth of field disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
 		});
 
-		debugWindow->registerCommand("SETFREEZE", [&](std::vector<std::string> &args)->std::string
+        debugWindow->registerCommand("GFX_SET_DOF_SLIDERS", [&](std::vector<std::string> &args)->std::string
+        {
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableCoCWindow = std::stoi(args[0]);
+
+                    if (enableCoCWindow)
+                        catcher = "Circle of confusion window enabled!";
+
+                    else
+                        catcher = "Circle of confusion window disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
+        });
+
+        debugWindow->registerCommand("GFX_SET_HUD", [&](std::vector<std::string> &args)->std::string
+        {
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enableHud = std::stoi(args[0]);
+
+                    if (enableHud)
+                        catcher = "HUD enabled!";
+
+                    else
+                        catcher = "HUD disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
+        });
+
+		debugWindow->registerCommand("GFX_SET_FREEZE", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 			try
@@ -801,7 +691,7 @@ namespace Graphics
 			return catcher;
 		});
 
-		debugWindow->registerCommand("SETBURN", [&](std::vector<std::string> &args)->std::string
+		debugWindow->registerCommand("GFX_SET_BURN", [&](std::vector<std::string> &args)->std::string
 		{
 			std::string catcher = "";
 			try
@@ -821,41 +711,6 @@ namespace Graphics
 			}
 
 			return catcher;
-		});
-
-		debugWindow->registerCommand("RELOADFORWARDSHADER", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-			
-			forwardPlus.recompile(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC);
-
-
-			return catcher;
-		});
-
-		debugWindow->registerCommand("RELOADGLOWSHADERS", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-
-			glowRenderer.recompileGlow(device);
-
-			return catcher;
-		});
-
-		debugWindow->registerCommand("RELOADSNOWSHADER", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-
-			snowManager.recompile(device);
-
-			return catcher;
-		});
-    
-		debugWindow->registerCommand("ENABLEDOFSLIDERS", [&](std::vector<std::string> &args)->std::string
-        {
-            enableCoCWindow = !enableCoCWindow;
-
-            return "Post effects toggled!";
-        });
+		});*/
 	}
 }

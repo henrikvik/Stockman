@@ -1,6 +1,9 @@
 #ifndef PHYSICSOBJECT_H
 #define PHYSICSOBJECT_H
 
+#include <d3d11.h>
+#include <SimpleMath.h>
+
 #include <vector>
 #include <Entity/Object.h>
 #include <btBulletCollisionCommon.h>
@@ -22,7 +25,7 @@ namespace Logic
 		};
 
 
-		PhysicsObject(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID);
+		PhysicsObject(btRigidBody* body, btVector3 halfExtent);
 		PhysicsObject(const PhysicsObject& other) = delete;
 		PhysicsObject* operator=(const PhysicsObject& other) = delete;
 		virtual ~PhysicsObject();
@@ -49,10 +52,11 @@ namespace Logic
 		int getNumberOfWeakPoints() const;
 		btRigidBody* getRigidBodyWeakPoint(int i);
 
+    protected:
+        btRigidBody* m_body;										//< The main rigidbody of this physics object
+        btTransform* m_transform;									//< Easy acces to the transform
 	private:
 		btVector3 m_halfextent;										//< The scaling for the graphical side
-		btRigidBody* m_body;										//< The main rigidbody of this physics object
-		btTransform* m_transform;									//< Easy acces to the transform
 		std::vector<Weakpoint> m_weakPoints;						//< The "head" for headshots multiplier change this to (std::pair<btRigidBody*, float multiplier) when you got time
 	};
 }

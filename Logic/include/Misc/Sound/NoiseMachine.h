@@ -8,16 +8,44 @@
 #include <string>
 #include <btBulletCollisionCommon.h>
 #include <Misc\Sound\NoiseStructs.h>
-#include <Misc\Sound\SoundSource.h>
 
 #define SOUND_SFX_PATH "Resources/Sound/SFX/"
 #define SOUND_MUSIC_PATH "Resources/Sound/Music/"
 
 namespace Sound
 {
+    class SoundSource;
 	class NoiseMachine
 	{
 	public:
+
+        struct SOUNDSETTINGS
+        {
+            static const bool       MUTE_ALL = false;
+            static const LOAD_MODE  SFX_LOAD_MODE = LOAD_MODE::STREAM;
+            static const LOAD_MODE  MUSIC_LOAD_MODE = LOAD_MODE::STREAM;
+        };
+
+        struct THRESHOLD
+        {
+            static const int	MAX_CHANNELS = 32;
+            static const int    MAX_GROUPS = 4;
+            static const int	MAX_SFX = 64;
+            static const int	MAX_SONGS = 32;
+            static const int	MUSIC_MIN_DIST = 1;
+            static const int	MUSIC_MAX_DIST = 50;
+            static const int	SFX_MIN_DIST = 1;
+            static const int	SFX_MAX_DIST = 250;
+        };
+
+        struct VOLUME_DEFAULT
+        {
+            static const float  DEFAULT_VOLUME_MASTER;
+            static const float  DEFAULT_VOLUME_SFX;
+            static const float  DEFAULT_VOLUME_AMBIENT;
+            static const float  DEFAULT_VOLUME_MUSIC;
+        };
+
 		static NoiseMachine& Get()
 		{
 			static NoiseMachine noiceMachine;
@@ -27,6 +55,9 @@ namespace Sound
 		void init();
 		void clear();
 		void update(ListenerData& listener);
+
+        void stopAllGroups();
+        void stopGroup(CHANNEL_GROUP group);
 
 		void playSFX(SFX sfx, SoundSource* soundSource, bool overdrive);
 		void playMusic(MUSIC music, SoundSource* soundSource, bool overdrive);
@@ -54,7 +85,6 @@ namespace Sound
 
 		// Debugging and Errors
 		void CRASH_EVERYTHING(const char *format, ...);
-		void ERRCHECK(FMOD_RESULT result);
 	};
 }
 

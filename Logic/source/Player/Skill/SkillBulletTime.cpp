@@ -1,7 +1,6 @@
 #include "Player/Skill/SkillBulletTime.h"
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
-#include <Graphics\include\Renderer.h>
 
 using namespace Logic;
 
@@ -12,6 +11,9 @@ SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, Projectil
 	m_sensor = nullptr;
     setSpawnFunctions(*projectileManager);
 	//m_travelProjectile = nullptr;
+
+    renderInfo.type = SpecialEffectRenderInfo::BulletTime;
+    renderInfo.progress = 0;
 }
 
 SkillBulletTime::~SkillBulletTime()
@@ -80,7 +82,13 @@ void SkillBulletTime::onUpdate(float deltaTime)
 			if (m_stacks != 0)
 				m_sensor->getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, m_stacks);
 		}
-	}
+
+        if (m_sensor)
+            renderInfo.progress = m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION;
+        else
+            renderInfo.progress = 1.f;
+    }
+
 
 	/*if (m_travelProjectile)
 		if (m_travelProjectile->shouldRemove())
@@ -92,8 +100,10 @@ void SkillBulletTime::onUpdate(float deltaTime)
 	}*/
 }
 
-void SkillBulletTime::render(Graphics::Renderer& renderer)
+void SkillBulletTime::render() const
 {
-	if (m_sensor && m_sensor->getProjectileData().ttl > 0)
-		renderer.setBulletTimeCBuffer(m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION);
+    if (m_sensor && m_sensor->getProjectileData().ttl > 0)
+    {
+        RenderQueue::get().queue(&renderInfo);
+    }
 }

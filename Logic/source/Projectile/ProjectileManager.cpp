@@ -130,26 +130,27 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         body->setLinearVelocity({ 0.f, 0.f, 0.f });
         body->setGravity({ 0.f, 0.f, 0.f });
         body->getWorldTransform().setOrigin(PROJECTILE_DEFAULT_POS);
-        p->setWorldTranslation(p->getTransformMatrix());
+        p->setWorldTransform(p->getTransformMatrix());
 
         // reset collision flags
         if (p->getProjectileData().isSensor)
-            body->setCollisionFlags(body->getCollisionFlags() &~ btCollisionObject::CF_NO_CONTACT_RESPONSE);
+            body->setCollisionFlags(body->getCollisionFlags() &~btCollisionObject::CF_NO_CONTACT_RESPONSE);
         body->getBroadphaseProxy()->m_collisionFilterGroup = 0;
         body->getBroadphaseProxy()->m_collisionFilterMask = 0;
         // benching body
         m_physPtr->removeRigidBody(body);
 
         // dont remove again duh
-        p->toRemove(false);
+        p->setDead(false);
 
         // remove all callbacks from the projectile
-        p->getCallbacks().clear();
+        p->clearCallbacks();
 
         // add to idle stack
         m_projectilesIdle.push_back(p);
     }
-	m_projectilesActive.erase(m_projectilesActive.begin() + index);
+    std::swap(m_projectilesActive[index], m_projectilesActive[m_projectilesActive.size() - 1]);
+    m_projectilesActive.pop_back();
 }
 
 void Logic::ProjectileManager::update(float deltaTime)
@@ -158,7 +159,7 @@ void Logic::ProjectileManager::update(float deltaTime)
 	{
 		Projectile* p = m_projectilesActive[i];
 		p->updateSpecific(deltaTime);
-		if (p->shouldRemove() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
+		if (p->getDead() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
 		{
 			removeProjectile(p, (int)i);
 			i--;
@@ -166,10 +167,16 @@ void Logic::ProjectileManager::update(float deltaTime)
 	}
 }
 
-void Logic::ProjectileManager::render(Graphics::Renderer& renderer)
+void Logic::ProjectileManager::render()
 {
 	for (Projectile* p : m_projectilesActive)
-		p->render(renderer);
+		p->render();
+}
+
+void ProjectileManager::removeAllProjectiles()
+{
+    while (!m_projectilesActive.empty())
+        removeProjectile(m_projectilesActive[0], 0);
 }
 
 std::vector<Projectile*>& ProjectileManager::getProjectiles()

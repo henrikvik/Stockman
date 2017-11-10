@@ -1,6 +1,8 @@
 #pragma once
 #include "../ThrowIfFailed.h"
 #include <Engine\Constants.h>
+#include "../Device.h"
+#include <functional>
 
 enum class CpuAccess
 {
@@ -15,6 +17,7 @@ class StructuredBuffer
 {
 public:
 #pragma region Constructors/Destructors
+    StructuredBuffer(CpuAccess access, size_t count, T* ptr = nullptr);
     StructuredBuffer(ID3D11Device *device, CpuAccess access, size_t count, T* ptr = nullptr);
     ~StructuredBuffer();
 #pragma endregion
@@ -24,6 +27,7 @@ public:
     T* map(ID3D11DeviceContext *cxt);
     void unmap(ID3D11DeviceContext *cxt);
     void write(ID3D11DeviceContext * context, T * data, UINT size);
+    void write(std::function<void(T*)> writeFunction);
 #pragma endregion
 
 #pragma region Getters and Setters
@@ -33,12 +37,13 @@ public:
 #pragma endregion
 
 #pragma region Implicit Conversion Operators
-    operator ID3D11Buffer*()               { return m_Buffer;  }
-    operator ID3D11Buffer**()              { return &m_Buffer; }
-    operator ID3D11ShaderResourceView*()   { return m_SRV;     }
-    operator ID3D11ShaderResourceView**()  { return &m_SRV;    }
-    operator ID3D11UnorderedAccessView*()  { return m_UAV;     }
-    operator ID3D11UnorderedAccessView**() { return &m_UAV;    }
+    operator ID3D11Buffer*()              const { return m_Buffer; }
+    operator ID3D11ShaderResourceView*()  const { return m_SRV; }
+    operator ID3D11UnorderedAccessView*() const { return m_UAV; }
+
+    operator ID3D11Buffer*const*()              const { return &m_Buffer; }
+    operator ID3D11ShaderResourceView*const*()  const { return &m_SRV; }
+    operator ID3D11UnorderedAccessView*const*() const { return &m_UAV; }
 #pragma endregion
 
 private:
@@ -49,8 +54,17 @@ private:
 
 #pragma region Constructors/Destructors
 template<typename T>
+StructuredBuffer<T>::StructuredBuffer(CpuAccess access, size_t count, T * ptr)
+    : StructuredBuffer(Global::device, access, count, ptr)
+{
+}
+template<typename T>
 inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess access, size_t count, T * ptr)
 {
+    m_Buffer = nullptr;
+    m_SRV = nullptr;
+    m_UAV = nullptr;
+
     D3D11_BUFFER_DESC desc = {};
     desc.ByteWidth = (UINT)(sizeof(T) * count);
 
@@ -107,7 +121,8 @@ inline StructuredBuffer<T>::StructuredBuffer(ID3D11Device * device, CpuAccess ac
 }
 
 template<typename T>
-inline StructuredBuffer<T>::~StructuredBuffer() {
+inline StructuredBuffer<T>::~StructuredBuffer()
+{
     SAFE_RELEASE(m_Buffer);
     SAFE_RELEASE(m_UAV);
     SAFE_RELEASE(m_SRV);
@@ -139,4 +154,12 @@ inline void StructuredBuffer<T>::write(ID3D11DeviceContext * context, T * data, 
     memcpy(map(context), data, size);
     unmap(context);
 }
+
+template<typename T>
+inline void StructuredBuffer<T>::write(std::function<void(T*)> writeFunction)
+{
+    writeFunction(map(Global::context));
+    unmap(Global::context);
+}
+
 #pragma endregion

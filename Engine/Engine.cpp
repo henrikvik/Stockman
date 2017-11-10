@@ -1,8 +1,7 @@
+#include "Profiler.h"
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
-
-#include "Profiler.h"
 
 #include <Windows.h>
 #include <imgui.h>
@@ -11,10 +10,12 @@
 #include <Graphics\include\Structs.h>
 
 #include "Engine.h"
-#include "Profiler.h"
 #include "Typing.h"
 
 #include "DebugWindow.h"
+#include <Graphics\include\Device.h>
+#include <Graphics\include\RenderQueue.h>
+#include <Graphics\include\MainCamera.h>
 
 #pragma comment (lib, "d3d11.lib")
 
@@ -37,8 +38,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		break;
 		
 	case WM_KEYUP:
-		if (key == 41)
-			debug->toggleDebugToDraw();
+        if (key == 41)
+        {
+            DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+            debug->toggleDebugToDraw();
+        }
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
@@ -83,13 +87,51 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
 	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
+    this->mTracker = std::make_unique<DirectX::Keyboard::KeyboardStateTracker>();
 	this->mMouse->SetWindow(window);
 
-	this->game.init(cmdLine, args);
+    DebugWindow * debug = DebugWindow::getInstance();
+
+    Graphics::Debug::Initialize(mDevice);
+
+    debug->registerCommand("GAME_SET_FULLSCREEN", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            if (args.size() != 0)
+            {
+                isFullscreen = std::stoi(args[0]);
+
+                if (isFullscreen)
+                    catcher = "Fullscreen enabled!";
+
+                else
+                    catcher = "Fullscreen disabled!";
+            }
+            else
+            {
+                catcher = "missing argument 0 or 1.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Argument must be 0 or 1.";
+        }
+
+        return catcher;
+    });
+
+//    game = new Logic::StateMachine(cmdLine, args);
+    game = new Logic::StateMachine();
 }
 
 Engine::~Engine()
 {
+    delete game;
+    Typing::releaseInstance();
+    mSwapChain->SetFullscreenState(false, NULL);
+
 	ImGui_ImplDX11_Shutdown();
 	DebugWindow::releaseInstance();
 	delete this->renderer;
@@ -101,7 +143,7 @@ Engine::~Engine()
 
 	//Enable this to get additional information about live objects
     //this->mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-    this->mDebugDevice->Release();
+    SAFE_RELEASE(mDebugDevice);
 }
 
 void Engine::initializeWindow()
@@ -112,7 +154,7 @@ void Engine::initializeWindow()
 	wc.lpfnWndProc = WndProc;
 	wc.hInstance = this->hInstance;
 	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(0, IDC_ARROW);
+	wc.hCursor = LoadCursorFromFile("../Resources/Cursors/cursor.cur");
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.lpszClassName = "Basic test";
 
@@ -142,6 +184,8 @@ void Engine::initializeWindow()
 		MessageBox(this->window, "window creation failed", "Error", MB_OK);
 	}
 
+    SetWindowLong(window, GWL_STYLE, GetWindowLong(window, GWL_STYLE) & ~WS_SIZEBOX);
+
 	SetWindowPos(GetConsoleWindow(), 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	SetWindowPos(this->window, 0, 100, 150, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
@@ -155,8 +199,9 @@ HRESULT Engine::createSwapChain()
 	DXGI_SWAP_CHAIN_DESC desc;
 	ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	desc.BufferCount = 1;
-	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.BufferCount = 2;
+	desc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+    desc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	desc.OutputWindow = this->window;
 	desc.SampleDesc.Count = 1;
@@ -171,7 +216,11 @@ HRESULT Engine::createSwapChain()
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
+    #ifdef _DEBUG
 		D3D11_CREATE_DEVICE_DEBUG,
+    #else
+        NULL,
+    #endif
 		NULL,
 		NULL,
 		D3D11_SDK_VERSION,
@@ -180,6 +229,9 @@ HRESULT Engine::createSwapChain()
 		&this->mDevice,
 		NULL,
 		&this->mContext);
+
+    Global::device = mDevice;
+    Global::context = mContext;
 
 	if (SUCCEEDED(hr))
 	{
@@ -200,12 +252,15 @@ HRESULT Engine::createSwapChain()
 		backBuffer->Release();
 
 		//Creates a debug device to check for memory leaks etc
+    #ifdef _DEBUG
 		HRESULT hr = this->mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast <void **>(&mDebugDevice));
 		if (FAILED(hr))
 		{
 			MessageBox(0, "debug device creation failed", "error", MB_OK);
 		}
-
+    #else
+        mDebugDevice = nullptr;
+    #endif
 	}
 	else
 	{
@@ -238,12 +293,12 @@ int Engine::run()
 {
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Graphics::Camera cam(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
-    cam.update({ 0,0,-15 }, { 0,0,1 }, mContext);
+	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
+    Global::mainCamera->update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
 
-	this->renderer = new Graphics::Renderer(mDevice, mContext, mBackBufferRTV, &cam);
+	this->renderer = newd Graphics::Renderer(mDevice, mContext, mBackBufferRTV, Global::mainCamera);
 
 	long long start = this->timer();
 	long long prev = start;
@@ -254,11 +309,11 @@ int Engine::run()
 
 	bool running = true;
 
-	g_Profiler = new Profiler(mDevice, mContext);
+	g_Profiler = newd Profiler(mDevice, mContext);
 	g_Profiler->registerThread("Main Thread");
     TbbProfilerObserver observer(g_Profiler);
 
-	DebugWindow * debug = DebugWindow::getInstance();
+    DebugWindow * debug = DebugWindow::getInstance();
 
     Graphics::Debug::Initialize(mDevice);
 
@@ -277,40 +332,32 @@ int Engine::run()
             if (WM_QUIT == msg.message)
             {
                 running = false;
-                if (!isFullscreen)
-                {
-                    mSwapChain->SetFullscreenState(false, NULL);
-                }
             }
 		}
 
-		//To enable/disable fullscreen
-		DirectX::Keyboard::State ks = this->mKeyboard->GetState();
-		if (ks.F11)
+        auto state = mKeyboard->GetState();
+        mTracker->Update(state);
+
+        static BOOL test = false;
+        mSwapChain->GetFullscreenState(&test, NULL);
+		if (this->isFullscreen != test)
 		{
-			mSwapChain->SetFullscreenState(!isFullscreen, NULL);
-			this->isFullscreen = !isFullscreen;
+			mSwapChain->SetFullscreenState(isFullscreen, NULL);
 		}
 
-		if (ks.F1)
+		if (mTracker->pressed.F1)
 		{
 			g_Profiler->capture();
 			showProfiler = true;
 		}
 
-        static bool F2wasPressed = false;
-        bool F2keyDown = !F2wasPressed && ks.F2;
-
-        F2wasPressed = ks.F2;
-
-		if (F2keyDown)
+		if (mTracker->pressed.F2)
 		{
             showProfiler = !showProfiler;
-
 		}
 
-		if (ks.Escape && !debug->isOpen())
-			PostQuitMessage(0);
+        if (state.F10)
+            running = false;
 
 		g_Profiler->start();
 
@@ -318,104 +365,31 @@ int Engine::run()
 		ImGui_ImplDX11_NewFrame();
 		PROFILE_END();
 
-		debug->draw("Title?");
+		debug->draw();
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
         if (!debug->isOpen())
-            game.update(float(deltaTime));
+            game->update(float(deltaTime));
         PROFILE_END();
 
-
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
-		game.render(*renderer);
+		game->render();
 		PROFILE_END();
 
-		static DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
-		if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftControl)) cam.update(oldPos, game.getPlayerForward(), mContext);
-		else
-		{
-			oldPos = game.getPlayerPosition();
-			cam.update(game.getPlayerPosition(), game.getPlayerForward(), mContext);
-		}
-
-		//cam.update(DirectX::SimpleMath::Vector3(2, 2, -3), DirectX::SimpleMath::Vector3(-0.5f, -0.5f, 0.5f), mContext);
-        //cam.update({ 0,0,-8 -5*sin(totalTime * 0.001f) }, { 0,0,1 }, mContext);
-
-        //////////////TEMP/////////////////
-        //Graphics::RenderInfo staticSphere = {
-        //    true, //bool render;
-        //    Graphics::ModelID::WATER, //ModelID meshId;
-        //    0, //int materialId;
-        //    DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-        //};
-
-		Graphics::FoliageRenderInfo grass = {
-			true, //bool render;
-			Graphics::ModelID::GRASS, //ModelID meshId;
-			DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-		};
-
-		Graphics::Light light;
-		light.color = DirectX::SimpleMath::Vector3(1, 1, 0);
-		light.positionWS = DirectX::SimpleMath::Vector3(0, 2, 0);
-		light.intensity = 1;
-		light.range = 5;
-
-		//Graphics::FoliageRenderInfo bush = {
-		//	true, //bool render;
-		//	Graphics::ModelID::BUSH, //ModelID meshId;
-		//	DirectX::SimpleMath::Matrix() // DirectX::SimpleMath::Matrix translation;
-		//};
-
-		//grass.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5);
-		//bush.translation = DirectX::SimpleMath::Matrix::CreateScale(10, 10, 10);//* DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 30, 0 });
-		//staticSphere.translation = DirectX::SimpleMath::Matrix::CreateScale(5, 5, 5) * DirectX::SimpleMath::Matrix::CreateTranslation({ 0, 20, 0 });
-		
-        //Graphics::TextString text{
-        //    L"The hills!",
-        //    DirectX::SimpleMath::Vector2(50, 50),
-        //    DirectX::SimpleMath::Color(DirectX::Colors::Black),
-        //    Graphics::Font::SMALL
-        //};
-
+        // ! Reminder !  
+        // Gives a small mem leak, but it's too cool to remove ^.^
+        static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
+        Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);
         
-        ///////////////////////////////////
+        PROFILE_BEGINC("Renderer::update()", EventColor::Pear);
+        renderer->update(deltaTime / 1000.f);
+        PROFILE_END();
 
-        if (game.getState() == Logic::gameStateGame)
-        {
-			renderer->queueFoliageRender(&grass);
-			//renderer->queueFoliageRender(&bush);
+        PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
+        renderer->render();
+        PROFILE_END();
 
-
-			//renderer->queueRender(&staticSphere);
-         // renderer->queueText(&text);
-			renderer->queueLight(light);
-
-			if (!debug->isOpen())
-			{
-                renderer->updateLight((float)deltaTime, &cam);
-                renderer->updateShake((float)deltaTime);
-            }
-
-			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
-            renderer->render(&cam);
-			PROFILE_END();
-        }
-
-		if (game.getState() == Logic::gameStateGameUpgrade)
-		{
-            renderer->updateLight((float)deltaTime, &cam);
-
-			PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
-			renderer->render(&cam);
-			PROFILE_END();
-
-			game.renderMenu(*renderer);
-		}
-
-		 
 		g_Profiler->poll();
-
 		if (showProfiler) {
 			
 			ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -423,7 +397,7 @@ int Engine::run()
 			g_Profiler->render();
 		}
 
-        Graphics::Debug::Render(&cam);
+        Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
 		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
@@ -433,9 +407,11 @@ int Engine::run()
 		mSwapChain->Present(0, 0);
 		PROFILE_END();
 		g_Profiler->frame();
-		
-	}
 
+        RenderQueue::get().clearAllQueues();
+    }
+
+    delete Global::mainCamera;
     Graphics::Debug::Destroy();
     g_Profiler->end();
 	delete g_Profiler;

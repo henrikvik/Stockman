@@ -12,8 +12,10 @@ This class creates buttons.
 
 */
 #pragma endregion Description of class
-#include <d3d11.h>
-#include <SimpleMath.h>
+
+
+#include <Graphics\include\RenderQueue.h>
+
 #include "Mouse.h"
 #include <functional>
 #include <Graphics\include\Structs.h>
@@ -23,27 +25,59 @@ namespace Logic
 {
 	class Button
 	{
-	private:
-		Graphics::ButtonInfo m_buttonInfo;
+	public:
+        enum State { ACTIVE, INACTIVE, HOVER };
 
-		std::function<void(void)> m_callback;
+        Button(
+            float x, float y,
+            float width, float height,
+            Resources::Textures::Files texture,
+            FloatRect inactive, 
+            std::function<void(void)> callback);
+
+        Button(
+            float x, float y,
+            float width, float height,
+            Resources::Textures::Files texture,
+            FloatRect inactive, 
+            FloatRect active, 
+            std::function<void(void)> callback);
+
+        Button(
+            float x, float y,
+            float width, float height,
+            Resources::Textures::Files texture,
+            FloatRect inactive, 
+            FloatRect active, 
+            FloatRect hover, 
+            std::function<void(void)> callback);
+
+		~Button();
+        
+        void setCallback(std::function<void(void)> callback);
+
+		void updateOnPress(int posX, int posY);
+        void hoverOver(int posX, int posY);
+		bool animationTransition(float dt, float maxAnimationTime, bool forward);
+
+        void setState(State state);
+
+        void render() const;
+	private:
+        SpriteRenderInfo renderInfo;
+        
+		std::function<void(void)> callback;
+        FloatRect inactive;
+        FloatRect active;
+        FloatRect hover;
+        State state;
+
 		DirectX::SimpleMath::Vector2 m_animationEnd;
 		DirectX::SimpleMath::Vector2 m_animationStart;
 
 		int m_activeOffset;
         bool m_highlighted;
-        float m_animationTime, m_start, m_end;
-	public:
-		Button();
-		~Button();
-		void initialize(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 texCoordStart,
-			DirectX::SimpleMath::Vector2 texCoordEnd, float offset, float height, float width,
-			int textureIndex, std::function<void(void)> callback);
-		void updateOnPress(int posX, int posY);
-        void hoverOver(int posX, int posY);
-		bool animationTransition(float dt, float maxAnimationTime, bool forward);
-		Graphics::ButtonInfo* getButtonInfo();
-        void setStartAndEnd(float start, float end);
+        float m_animationTime;
 	};
 }
 #endif

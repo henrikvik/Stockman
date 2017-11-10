@@ -1,30 +1,29 @@
 #include "Menu.h"
 #include <WICTextureLoader.h>
 #include <Engine\Profiler.h>
+#include "CommonState.h"
 
 Graphics::Menu::Menu(ID3D11Device * device, ID3D11DeviceContext * contex)
     : shader(device, SHADER_PATH("MenuShader.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA } })
 {
     this->active = MenuInfo();
     this->loaded = false;
-    this->states = new DirectX::CommonStates(device);
 
     buttonsMaped = false;
     createVBuffers(device);
 }
 Graphics::Menu::~Menu()
 {
-    SAFE_RELEASE(buttonTexture[0]);
-    SAFE_RELEASE(buttonTexture[1]);
-    SAFE_RELEASE(buttonTexture[2]);
-    SAFE_RELEASE(buttonTexture[3]);
-    SAFE_RELEASE(menuTexture[0]);
-    SAFE_RELEASE(menuTexture[1]);
-    SAFE_RELEASE(menuTexture[2]);
-    SAFE_RELEASE(menuTexture[3]);
+    //SAFE_RELEASE(buttonTexture[0]);
+    //SAFE_RELEASE(buttonTexture[1]);
+    //SAFE_RELEASE(buttonTexture[2]);
+    //SAFE_RELEASE(buttonTexture[3]);
+    //SAFE_RELEASE(menuTexture[0]);
+    //SAFE_RELEASE(menuTexture[1]);
+    //SAFE_RELEASE(menuTexture[2]);
+    //SAFE_RELEASE(menuTexture[3]);
     SAFE_RELEASE(menuQuad);
     SAFE_RELEASE(buttonQuad);
-    delete states;
 }
 
 void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * contex, Graphics::MenuInfo * info, ID3D11RenderTargetView * backBuffer, ID3D11BlendState * blendState)
@@ -45,7 +44,7 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
     contex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     contex->VSSetShader(shader, nullptr, 0);
     contex->PSSetShader(shader, nullptr, 0);
-    auto sampler = states->PointWrap();
+    auto sampler =  Global::cStates->PointWrap();
     contex->PSSetSamplers(0, 1, &sampler);
     
 
@@ -119,7 +118,7 @@ void Graphics::Menu::unloadTextures()
 void Graphics::Menu::mapButtons(ID3D11DeviceContext * contex, Graphics::MenuInfo * info)
 {
     int buttonIndex = 0;
-    TriangleVertex *triangleVertices = new TriangleVertex[info->m_buttons.size() * 6];
+    TriangleVertex *triangleVertices = newd TriangleVertex[info->m_buttons.size() * 6];
     for (size_t i = 0; i < info->m_buttons.size() * 6; i += 6)
     {
         triangleVertices[i] = { 
@@ -187,7 +186,7 @@ void Graphics::Menu::createVBuffers(ID3D11Device * device)
     D3D11_BUFFER_DESC desc = { 0 };
 
     desc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
-    desc.ByteWidth = 10 * sizeof(TriangleVertex) * 6;
+    desc.ByteWidth = 15 * sizeof(TriangleVertex) * 6;
 
     D3D11_SUBRESOURCE_DATA data = { 0 };
     data.pSysMem = triangleVertices;

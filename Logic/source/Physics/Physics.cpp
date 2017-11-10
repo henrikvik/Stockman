@@ -1,6 +1,4 @@
 #include "Physics\Physics.h"
-#include <Graphics\include\Renderer.h>
-
 
 using namespace Logic;
 
@@ -15,18 +13,16 @@ Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overl
 	this->collisionConfiguration = collisionConfiguration;
 
 	// Render Debug Construction
-    renderDebug = new Graphics::RenderDebugInfo();
-	renderDebug->points = new std::vector<DirectX::SimpleMath::Vector3>();
-	renderDebug->color = DirectX::SimpleMath::Color(1, 1, 1);
-	renderDebug->topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-	renderDebug->useDepth = true;
+	debugRenderInfo.points = newd std::vector<DirectX::SimpleMath::Vector3>();
+	debugRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1);
+	debugRenderInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+	debugRenderInfo.useDepth = true;
 }
 
 Physics::~Physics()
 {
-	delete renderDebug->points;
+	delete debugRenderInfo.points;
 	clear();
-    delete renderDebug;
 	delete ghostPairCB;
 }
 
@@ -35,7 +31,7 @@ bool Physics::init()
 	// World gravity
 	this->setGravity(btVector3(0, -PHYSICS_GRAVITY, 0));
 	this->setLatencyMotionStateInterpolation(true);
-	ghostPairCB = new btGhostPairCallback();
+	ghostPairCB = newd btGhostPairCallback();
 	m_broadphasePairCache->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCB);
 	return true;
 }
@@ -326,10 +322,10 @@ btPairCachingGhostObject* Physics::createPlayer(btCapsuleShape* capsule, btVecto
 }
 
 // Only used for debugging, draws all collision shapes onto screen
-void Physics::render(Graphics::Renderer & renderer)
+void Physics::render()
 {
 	// Clearing last debug draw
-	renderDebug->points->clear();
+	debugRenderInfo.points->clear();
 
 	for (int i = this->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
@@ -348,19 +344,19 @@ void Physics::render(Graphics::Renderer & renderer)
             {
                 // Render Boxes
                 if (btBoxShape* bs = dynamic_cast<btBoxShape*>(shape))
-                    renderCube(renderer, bs, body);
+                    renderCube(bs, body);
 
                 // Render Spheres
                 else if (btSphereShape* ss = dynamic_cast<btSphereShape*>(shape))
-                    renderSphere(renderer, ss, body);
+                    renderSphere(ss, body);
 
                 // Render Cylinders
                 else if (btCylinderShape* cs = dynamic_cast<btCylinderShape*>(shape))
-                    renderCylinder(renderer, cs, body);
+                    renderCylinder(cs, body);
 
                 // Render Capsules
                 else if (btCapsuleShape* cs = dynamic_cast<btCapsuleShape*>(shape))
-                    renderCapsule(renderer, cs, body);
+                    renderCapsule(cs, body);
             }
 		}
 	}
@@ -384,7 +380,7 @@ btRigidBody* Physics::initBody(btRigidBody::btRigidBodyConstructionInfo construc
 }
 
 // Render a debug with help of it's vertices
-void Physics::renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBody* body)
+void Physics::renderCube(btBoxShape* bs, btRigidBody* body)
 {
 	btVector3 vp = { 0, 0, 0 };
 	btVector3 center = body->getWorldTransform().getOrigin();
@@ -395,52 +391,52 @@ void Physics::renderCube(Graphics::Renderer& renderer, btBoxShape* bs, btRigidBo
 	for (int i = 0; i < bs->getNumVertices() - 1; i++)
 	{
 		bs->getVertex(0, vp);
-		renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+        debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 		bs->getVertex(i + 1, vp);
-		renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+        debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 
 		bs->getVertex(bs->getNumVertices() - 1, vp);
-		renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+        debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 		bs->getVertex(i + 1, vp);
-		renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+        debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 	}
 
 
 	// Diagonal right
 	bs->getVertex(5, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 	bs->getVertex(4, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 	bs->getVertex(5, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 	bs->getVertex(1, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 
 	// Diagonal left
 	bs->getVertex(6, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 	bs->getVertex(4, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 	bs->getVertex(6, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 	bs->getVertex(2, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 
 	// Diagonal top
 	bs->getVertex(3, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 	bs->getVertex(1, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 	bs->getVertex(3, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+    debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 	bs->getVertex(2, vp);
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 
-	renderer.queueRenderDebug(renderDebug);
+    RenderQueue::get().queue(&debugRenderInfo);
 }
 
 // Draws a cube around the sphere
-void Physics::renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRigidBody* body)
+void Physics::renderSphere(btSphereShape* ss, btRigidBody* body)
 {
 	btVector3 origin = body->getWorldTransform().getOrigin();
 	btVector3 c;
@@ -448,69 +444,69 @@ void Physics::renderSphere(Graphics::Renderer& renderer, btSphereShape* ss, btRi
 	ss->getBoundingSphere(c, r);
 	r /= 2;
 
-	renderRectangleAround(renderer, origin, {r, r, r});
+	renderRectangleAround(origin, {r, r, r});
 }
 
 // Draws a cube around the cylinder
-void Physics::renderCylinder(Graphics::Renderer & renderer, btCylinderShape * cs, btRigidBody * body)
+void Physics::renderCylinder(btCylinderShape * cs, btRigidBody * body)
 {
 	btVector3 origin = body->getWorldTransform().getOrigin();
 	btVector3 half = cs->getHalfExtentsWithMargin();
 
-	renderRectangleAround(renderer, origin, half);
+	renderRectangleAround(origin, half);
 }
 
 // Draws a cube around the capsule
-void Physics::renderCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btRigidBody* body)
+void Physics::renderCapsule(btCapsuleShape* cs, btRigidBody* body)
 {
 	btVector3 origin = body->getWorldTransform().getOrigin();
 	btVector3 half = cs->getImplicitShapeDimensions();
 
-	renderRectangleAround(renderer, origin, half);
+	renderRectangleAround(origin, half);
 }
 
 // Draws a cube around the capsule
-void Physics::renderGhostCapsule(Graphics::Renderer& renderer, btCapsuleShape* cs, btGhostObject* ghostObject)
+void Physics::renderGhostCapsule(btCapsuleShape* cs, btGhostObject* ghostObject)
 {
 	btVector3 origin = ghostObject->getWorldTransform().getOrigin();
 	btVector3 half = cs->getImplicitShapeDimensions();
 
-	renderRectangleAround(renderer, origin, half);
+	renderRectangleAround(origin, half);
 }
 
-void Physics::renderRectangleAround(Graphics::Renderer& renderer, btVector3 origin, btVector3 half)
+void Physics::renderRectangleAround(btVector3 origin, btVector3 half)
 {
 	// Side Front
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() - half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() - half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() - half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() - half.z()));
 
 	// Side Back
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() - half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() - half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() - half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() - half.z()));
 
 	// Left
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() + half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() + half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() + half.z()));
 
 	// Right
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() - half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() - half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() - half.z()));
-	renderDebug->points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() + half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() + half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() - half.z()));
+	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() - half.z()));
 
-	renderer.queueRenderDebug(renderDebug);
+    RenderQueue::get().queue(&debugRenderInfo);
 }

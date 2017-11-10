@@ -48,7 +48,7 @@ namespace Logic
         AIType m_aiType;
 		float m_deltaTime;
 
-		void allocateData(); // resize enemy vector 
+		void allocateData(); // resize enemy vector
         void loadDebugCmds();
 
         std::function<void(Entity& entity)>                 DeleteBody;
@@ -65,10 +65,11 @@ namespace Logic
 		~EntityManager();
 
         // data handling
-        void deallocateData(); // delete data in vectors
+        void resetTriggers();
+        void deallocateData(bool forceDestroy = true); // delete data in vectors
 
         // render / updates
-		void render(Graphics::Renderer &renderer);
+		void render() const;
 
 		void update(Player const &player, float deltaTime);
 		void updateEnemies(int index, Player const &player, float deltaTime);

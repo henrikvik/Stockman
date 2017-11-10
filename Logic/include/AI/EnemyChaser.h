@@ -8,7 +8,9 @@ namespace Logic
     class EnemyChaser : public Enemy
     {
     private:
-        static const float MAX_HP, BASE_DAMAGE, MOVE_SPEED;
+        static const int MAX_HP, BASE_DAMAGE;
+        static const float MOVE_SPEED;
+        
     public:
         EnemyChaser(btRigidBody* body);
         ~EnemyChaser();

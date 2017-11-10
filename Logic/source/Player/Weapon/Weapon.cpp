@@ -5,8 +5,8 @@
 
 using namespace Logic;
 
-Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
-	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime) : Object(modelID)
+Weapon::Weapon(Resources::Models::Files modelID, ProjectileManager* projectileManager, ProjectileData &projectileData, int weaponID, int ammoCap, int ammo, int magSize, int magAmmo, int ammoConsumption, int projectileCount,
+	int spreadH, int spreadV, float attackRate, float freeze, float reloadTime)
 {
 	m_weaponID			= weaponID;
 	m_ammoCap			= ammoCap;
@@ -43,6 +43,9 @@ Weapon::Weapon(Graphics::ModelID modelID, ProjectileManager* projectileManager, 
 
 	rot = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.15f, 0.15f, 0.05f);
 
+    renderInfo.model = modelID;
+    renderInfo.animationName = "";
+    renderInfo.animationTimeStamp = 0;
 }
 
 Weapon::~Weapon()
@@ -135,7 +138,7 @@ void Weapon::setWeaponModelFrontOfPlayer(DirectX::SimpleMath::Matrix playerTrans
 	// Multiplying all the matrices into one
 	result = rot *trans * scale * camera.Invert() * offset;
 
-	this->setWorldTranslation(result);
+    renderInfo.transform = result;    
 }
 
 ProjectileData* Weapon::getProjectileData()
@@ -193,4 +196,9 @@ void Logic::Weapon::fillMag()
 		m_magAmmo += m_ammo;	// Add rest of ammo to mag
 		m_ammo = 0;				// Remove rest of ammo from total
 	}
+}
+
+void Logic::Weapon::render() const
+{
+    RenderQueue::get().queue((StaticRenderInfo*)&renderInfo);
 }

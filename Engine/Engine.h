@@ -3,8 +3,9 @@
 #include <Windows.h>
 #include <Camera.h>
 #include <Renderer.h>
-#include <Game.h>
-#include "Keyboard.h"
+#include <StateMachine/StateMachine.h>
+#include <Keyboard.h>
+#include <Mouse.h>
 
 class Engine
 {
@@ -14,7 +15,7 @@ public:
 
 	int run();
 private:
-	Logic::Game game;
+	Logic::StateMachine* game;
 	HWND window;
 	int mWidth;
 	int mHeight;
@@ -29,7 +30,8 @@ private:
 	ID3D11RenderTargetView* mBackBufferRTV;
 	std::unique_ptr<DirectX::Keyboard> mKeyboard;
 	std::unique_ptr<DirectX::Mouse> mMouse;
-	bool isFullscreen;
+    std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker> mTracker;
+	BOOL isFullscreen;
 
 	void initializeWindow();
 	HRESULT createSwapChain();

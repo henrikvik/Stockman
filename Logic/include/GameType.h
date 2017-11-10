@@ -3,6 +3,14 @@
 
 namespace Logic
 {
+    enum StateType
+    {
+        Nothing = 0,
+        State_Start,
+        State_Playing,
+        State_InGame_Overlay
+    };
+
     static const int GAME_TYPES = 4, MAX_COMMANDS = 10;
     enum GameType
     {
@@ -20,10 +28,10 @@ namespace Logic
     };
     static const std::string GameCommands[GAME_TYPES][MAX_COMMANDS] =
     {
-        {"GODMODE", "setAI 0", "setGameState 0"},
+        {"LOG_GODMODE", "LOG_setAI 0", "LOG_setGameState 0"},
         {},
-        {"setAI 2"},
-        {"setAI 3"},
+        {"LOG_setAI 2"},
+        {"LOG_setAI 3"},
     };
 };
 
