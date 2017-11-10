@@ -87,7 +87,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
         }
         else
         {
-            //shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, (float)SPEED_AB1, 1.1f, 0.2f);
+            shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, (float)SPEED_AB1, 1.1f, 0.2f);
         }
     }
 }
