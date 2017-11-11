@@ -1,4 +1,4 @@
-#include <AI\Behavior\NavigationMeshGeneration.h>
+#include <AI\Pathing\NavigationMeshGeneration.h>
 #include <stdio.h>
 #include <cmath>
 #include <Physics\Physics.h>

@@ -28,13 +28,14 @@ namespace Logic
         std::thread *threads[NR_OF_THREADS];
 
         bool m_killChildren;
-        void initThreads();
         
         void resetThreads();
         void deleteThreads();
     public:
         EnemyThreadHandler();
         ~EnemyThreadHandler();
+        
+        void initThreads();
 
         void updateEnemiesAndPath(WorkData &data);
         void threadMain();

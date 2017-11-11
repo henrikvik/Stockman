@@ -89,12 +89,7 @@ void EnemyBossBaddie::createAbilities()
                 Resources::Models::UnitCube, PROJECTILE_SPEED, 2.5f, 0.6f);
 
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
-                Enemy *e = SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
-
-                increaseCallbackEntities();
-                e->addCallback(ON_DESTROY, [&](CallbackData data) -> void {
-                    decreaseCallbackEntities();
-                });
+                SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
             });
         }
     };

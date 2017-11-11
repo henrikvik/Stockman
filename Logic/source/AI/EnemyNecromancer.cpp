@@ -11,7 +11,7 @@ const int EnemyNecromancer::SPEED_AB1 = 15,
           EnemyNecromancer::MAX_SPAWNED_MINIONS = 4,
           EnemyNecromancer::BASE_DAMAGE = 1,
           EnemyNecromancer::MAX_HP = 50;
-const float EnemyNecromancer::BASE_SPEED = 8.f;
+const float EnemyNecromancer::BASE_SPEED = 80.f;
 
 EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
     : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP, BASE_DAMAGE,

@@ -1,4 +1,4 @@
-#include <AI\Behavior\NavigationMesh.h>
+#include <AI\Pathing\NavigationMesh.h>
 #include <Misc\FileLoader.h>
 #include <Engine\newd.h>
 #define EPSILON 0.0001f

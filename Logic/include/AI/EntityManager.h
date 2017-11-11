@@ -38,6 +38,7 @@ namespace Logic
         };
 	private:
 		static const int NR_OF_THREADS;
+        static int PATH_UPDATE_DIV;
 
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
@@ -48,6 +49,8 @@ namespace Logic
         EnemyThreadHandler *m_threadHandler; // Just because i want to delete it when i want
 
         int m_frame, m_aliveEnemies;
+        bool m_automaticTesting;
+
         AIType m_aiType;
 		float m_deltaTime;
 
@@ -80,6 +83,7 @@ namespace Logic
 		void updateEnemies(int index, Player &player, float deltaTime);
 		void updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, int enemyIndex,
             int flockIndex, Player &player, float deltaTime, bool swapOnNewIndex);
+        void automaticUpdate(Player &player);
 
         // effects
 		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
