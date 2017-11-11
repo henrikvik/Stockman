@@ -18,7 +18,7 @@ namespace Logic
         };
         std::unordered_map<AbilityId, Ability> abilities;
 
-        static const float BASE_SPEED, PROJECTILE_SPEED, ABILITY_1_MOD;
+        static const float BASE_SPEED, PROJECTILE_SPEED, ABILITY_1_MOD, MELEE_RANGE, MELEE_PUSHBACK;
         static const int BASE_DAMAGE, MAX_HP;
 
         std::vector<TextRenderInfo> info;

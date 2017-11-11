@@ -27,8 +27,8 @@ void Ability::update(float deltaTime, Player &player)
     currentCooldown -= deltaTime; // it keeps counting down, should realistically never get a int underflow
     if (usingAbility)
     {
-        onTick(player, *this);
         currentDuration -= deltaTime;
+        onTick(player, *this);
         if (currentDuration <= 0)
         {
             usingAbility = false;

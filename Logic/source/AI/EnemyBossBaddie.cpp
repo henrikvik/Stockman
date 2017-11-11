@@ -9,8 +9,9 @@
 using namespace Logic;
 
 const float EnemyBossBaddie::BASE_SPEED = 1.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
-            EnemyBossBaddie::ABILITY_1_MOD = 0.05f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 1000; // Big guy, for you
+            EnemyBossBaddie::ABILITY_1_MOD = 0.05f, EnemyBossBaddie::MELEE_RANGE = 20.f,
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.112f;
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 12500; // Big guy, for you
 #define NECRO_COUNT 2
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
@@ -115,8 +116,13 @@ void EnemyBossBaddie::createAbilities()
     auto onTick2 = [&](Player& player, Ability &ability) -> void {
         if (ability.getCurrentDuration() < 0.f)
         {
-            if ((player.getPositionBT() - getPositionBT()).length() < 8.f)
+            btVector3 to = player.getPositionBT() - getPositionBT();
+            if (to.length() < MELEE_RANGE)
+            {
+                Sound::NoiseMachine::Get().playSFX(Sound::SFX::JUMP, nullptr, true);
                 player.takeDamage(1, true); // shield charge wont save ya bitch
+                player.getCharController()->applyImpulse(to.normalize() * MELEE_PUSHBACK);
+            }
         }
     };
 
@@ -166,7 +172,6 @@ void EnemyBossBaddie::onCollision(PhysicsObject &other, btVector3 contactPoint, 
 void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
 {
     // test
-    useAbility(player, 0);
     for (auto &pair : abilities)
         pair.second.update(deltaTime, player);
 }
