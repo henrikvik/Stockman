@@ -245,6 +245,7 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
     ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_4, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability4.mp3", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_5, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability5.mp3", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_6, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability6.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_MELEE_USE, CHANNEL_GROUP::CHANNEL_SFX, "boss1MeleeUse.ogg", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the sfx
     int count = 0;

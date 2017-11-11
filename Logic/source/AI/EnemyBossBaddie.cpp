@@ -10,7 +10,7 @@ using namespace Logic;
 
 const float EnemyBossBaddie::BASE_SPEED = 1.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.05f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 100; // Big guy, for you
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 1000; // Big guy, for you
 #define NECRO_COUNT 2
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
@@ -30,7 +30,7 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     });
 
     // test
-    std::wstring test = L"Created By: Stockman Games Entertainment\n\nProgrammers:\nAndreas Henriksson\nHenrik Vik\nJakob Nyberg\nSimon Fredholm\nLukas Westling\nEmanuel Bjurman\nFelix Kaaman\nJohan\nSimon\n\n\nGraphics: Johan & Simon\n\nTechnical Artists: Johan & Simon\n\nThe Bad Format: .lw\n\nGitmeister: Henrik Vik\n\nThe guy that fixed everyone elses stuff: Henrik Vik\n\nGame Manager & Producer: Henrik Vik\n\nWonderful Music: Banana\n\n\nThank you\nfor playing!\n\n\n\n\n\n\n\n\n\n\nEnemies:\nNecromancer (The annoying dude)\nNecromancer Minion (The dude everyone wants to nerf)\nThe Boss (The boss everyone hates)\nThe Secret boss no one have found\n\nYou still reading this?\nYou can leave now\nPlay a good game\nA Game where the AI doesn't crash all the time\nBye!\nSpecial Thanks to: Henrik Vik!\n\nStockman studio is not responsible for any crashes or bugs that might damage your computer."; // See it in game not here dude :>
+    std::wstring test = L"Created By: Stockman Games Entertainment\n\nProgrammers:\nAndreas Henriksson\nHenrik Vik\nJakob Nyberg\nSimon Fredholm\nLukas Westling\nEmanuel Bjurman\nFelix Kaaman\nJohan & Simon\n\n\nTechnical Artists: Johan & Simon\n\nThe Bad Format: .lw\n\nGitmeister: Henrik Vik\n\nInvestor: Gabe Newell\n\nThe guy that fixed everyone elses stuff: Henrik Vik\n\nGame Manager & Producer: Henrik Vik\n\nWonderful Music: Banana\n\n\nThank you\nfor playing!\n\n\n\n\n\n\n\n\n\n\nEnemies:\nNecromancer (The annoying dude)\nNecromancer Minion (The dude everyone wants to nerf)\nThe Boss (The boss everyone hates)\nThe Secret boss no one have found\n\nYou still reading this?\nYou can leave now\nPlay a good game\nA Game where the AI doesn't crash all the time\nBye!\nSpecial Thanks to: Henrik Vik!\n\nStockman studio is not responsible for any crashes or bugs that might damage your computer."; // See it in game not here dude :>
     std::wstringstream str(test);
     std::wstring temp;
     float x = 300.f, y = 715.5f;
@@ -84,7 +84,7 @@ void EnemyBossBaddie::createAbilities()
     data.duration = 0.f;
     data.randomChanche = 200;
 
-    auto onUse2 = [&](Player& player, Ability &ability) -> void {
+    auto onUse3 = [&](Player& player, Ability &ability) -> void {
         for (int i = 0; i < NECRO_COUNT; i++)
         {
             Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 60.f * i - 30.f, 80, 0 }).normalize(),
@@ -96,15 +96,37 @@ void EnemyBossBaddie::createAbilities()
         }
     };
 
-    auto onTick2 = [&](Player& player, Ability &ability) -> void {
+    auto onTick3 = [&](Player& player, Ability &ability) -> void {
     };
 
-    abilities[AbilityId::TWO] = Ability(data, onTick2, onUse2);
+    abilities[AbilityId::TWO] = Ability(data, onTick3, onUse3);
+
+
+    /* MELEE */
+
+    data.cooldown = 8500.f; // Ability One Data
+    data.duration = 5000.f;
+    data.randomChanche = 0;
+
+    auto onUse2 = [&](Player& player, Ability &ability) -> void {
+        getSoundSource()->playSFX(Sound::SFX::BOSS_1_MELEE_USE);
+    };
+
+    auto onTick2 = [&](Player& player, Ability &ability) -> void {
+        if (ability.getCurrentDuration() < 0.f)
+        {
+            if ((player.getPositionBT() - getPositionBT()).length() < 8.f)
+                player.takeDamage(1, true); // shield charge wont save ya bitch
+        }
+    };
+
+    abilities[AbilityId::MELEE] = Ability(data, onTick2, onUse2);
 }
 
-void EnemyBossBaddie::useAbility(Player & target)
+void EnemyBossBaddie::useAbility(Player &target)
 {
-    // todo melee
+    if (!abilities[AbilityId::MELEE].isUsingAbility())
+        abilities[AbilityId::MELEE].useAbility(target);
 }
 
 void EnemyBossBaddie::useAbility(Player &target, int phase)

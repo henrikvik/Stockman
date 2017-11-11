@@ -14,7 +14,7 @@ namespace Logic
     private:
         enum class AbilityId
         {
-            ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE // TODO: give real names
+            ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, MELEE // TODO: give real names
         };
         std::unordered_map<AbilityId, Ability> abilities;
 

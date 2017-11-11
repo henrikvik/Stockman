@@ -31,6 +31,7 @@ namespace Sound
         BOSS_1_ABILITY_4,
         BOSS_1_ABILITY_5,
         BOSS_1_ABILITY_6,
+        BOSS_1_MELEE_USE,
     };
 
     // Put all identifier for music here
