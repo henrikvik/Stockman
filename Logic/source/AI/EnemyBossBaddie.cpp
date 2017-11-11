@@ -10,7 +10,7 @@ using namespace Logic;
 
 const float EnemyBossBaddie::BASE_SPEED = 1.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.085f, EnemyBossBaddie::MELEE_RANGE = 20.f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.112f;
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.105f;
 const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 15500; // Big guy, for you
 #define NECRO_COUNT 3
 
@@ -73,7 +73,7 @@ void EnemyBossBaddie::createAbilities()
 
     auto onTick = [&](Player& player, Ability &ability) -> void {
         btVector3 force = (getPositionBT() - player.getPositionBT()).normalize() *
-            std::pow((1.01f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
+            std::pow((1.f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
         player.getCharController()->applyImpulse(force);
     };
 
@@ -90,7 +90,7 @@ void EnemyBossBaddie::createAbilities()
         {
             btVector3 to = player.getPositionBT() - getPositionBT();
             float len = to.length();
-            Projectile *pj = shoot((to + btVector3{ 15.f * i - 15.f, 90, 0 }).normalize(),
+            Projectile *pj = shoot((to + btVector3{ 25.f * i - 25.f, 90, 0 }).normalize(),
                 Resources::Models::UnitCube, PROJECTILE_SPEED * len, 2.5f, 0.6f);
 
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
@@ -107,8 +107,8 @@ void EnemyBossBaddie::createAbilities()
 
     /* MELEE */
 
-    data.cooldown = 8500.f; // Ability One Data
-    data.duration = 5000.f;
+    data.cooldown = 7500.f; // Ability One Data
+    data.duration = 4500.f;
     data.randomChanche = 0;
 
     auto onUse2 = [&](Player& player, Ability &ability) -> void {
