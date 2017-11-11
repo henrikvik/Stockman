@@ -8,7 +8,10 @@ const int BigBadBehavior::PHASE_ONE = 0, BigBadBehavior::PHASE_TWO = 1, BigBadBe
 BigBadBehavior::BigBadBehavior() :
     Behavior(PathingType::CHASING)
 {
-    setRoot(NodeType::PRIORITY, 0, nullptr);
+    setRoot(NodeType::PRIORITY, 0, [](RunIn &in) -> bool {
+        in.behavior->walkPath(in);
+        return true;
+    });
     BehaviorNode *parent = getRoot();
 
     // melee

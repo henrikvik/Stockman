@@ -37,7 +37,7 @@ namespace Logic
             NORMAL_MODE, NO_AI_MODE, HARDCORE, DARK_SOULS
         };
 	private:
-		static const int NR_OF_THREADS;
+		static const int NR_OF_THREADS, ENEMY_CAP;
         static int PATH_UPDATE_DIV;
 
 		std::vector<std::vector<Enemy*>> m_enemies;

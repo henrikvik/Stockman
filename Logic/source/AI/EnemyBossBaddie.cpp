@@ -157,7 +157,7 @@ void EnemyBossBaddie::useAbility(Player &target, int phase)
 
 void EnemyBossBaddie::onCollision(PhysicsObject &other, btVector3 contactPoint, float dmgMultiplier)
 {
-    if (Enemy *e = dynamic_cast<Enemy*>(&other))
+if (Player *e = dynamic_cast<Player*>(&other))
     {
     }
     else if (Projectile *pj = dynamic_cast<Projectile*> (&other))

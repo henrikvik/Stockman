@@ -27,7 +27,7 @@ using namespace Logic;
 #include <ctime>
 #include <stdio.h>
 
-const int EntityManager::NR_OF_THREADS = 4;
+const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 65;
 int EntityManager::PATH_UPDATE_DIV = 25;
 
 EntityManager::EntityManager()
@@ -306,6 +306,7 @@ void EntityManager::spawnWave(int waveId)
 Enemy* EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
     std::vector<int> const &effects, Physics &physics, ProjectileManager *projectiles)
 {
+    if (m_aliveEnemies >= ENEMY_CAP) return;
     try
     {
         Enemy *enemy = m_enemyFactory[id](pos, 1.f, effects, physics);
