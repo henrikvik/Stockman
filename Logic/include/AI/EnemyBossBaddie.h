@@ -23,11 +23,14 @@ namespace Logic
 
         std::vector<TextRenderInfo> info;
         std::vector<std::wstring> infoText;
+        TextRenderInfo hpBar; // hp bar in text OMEGALUL
+        std::wstring hp;
 
         float testTime;
         float ability3Offset = 0;
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
+        virtual ~EnemyBossBaddie();
 
         void createAbilities();
         virtual void useAbility(Player &target);
