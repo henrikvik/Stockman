@@ -306,7 +306,7 @@ void EntityManager::spawnWave(int waveId)
 Enemy* EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
     std::vector<int> const &effects, Physics &physics, ProjectileManager *projectiles)
 {
-    if (m_aliveEnemies >= ENEMY_CAP) return;
+    if (m_aliveEnemies >= ENEMY_CAP) return nullptr;
     try
     {
         Enemy *enemy = m_enemyFactory[id](pos, 1.f, effects, physics);

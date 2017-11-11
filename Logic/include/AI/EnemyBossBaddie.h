@@ -23,7 +23,9 @@ namespace Logic
 
         std::vector<TextRenderInfo> info;
         std::vector<std::wstring> infoText;
+
         float testTime;
+        float ability3Offset = 0;
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
 

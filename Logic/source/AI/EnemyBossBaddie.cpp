@@ -11,7 +11,7 @@ using namespace Logic;
 const float EnemyBossBaddie::BASE_SPEED = 1.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.085f, EnemyBossBaddie::MELEE_RANGE = 20.f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.105f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 15500; // Big guy, for you
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 1500; // Big guy, for you
 #define NECRO_COUNT 3
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
@@ -19,6 +19,9 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
         halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0)
 {
     setBehavior(BOSS_BADDIE);
+
+    ability3Offset = 0;
+    getStatusManager().addUpgrade(StatusManager::BOUNCE);
 
     Sound::NoiseMachine::Get().stopAllGroups();
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_1, nullptr, true);
@@ -31,7 +34,7 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     });
 
     // test
-    std::wstring test = L"Created By: Stockman Games Entertainment\n\nProgrammers:\nAndreas Henriksson\nHenrik Vik\nJakob Nyberg\nSimon Fredholm\nLukas Westling\nEmanuel Bjurman\nFelix Kaaman\nJohan & Simon\n\n\nTechnical Artists: Johan & Simon\n\nThe Bad Format: .lw\n\nGitmeister: Henrik Vik\n\nInvestor: Gabe Newell\n\nThe guy that fixed everyone elses stuff: Henrik Vik\n\nGame Manager & Producer: Henrik Vik\n\nWonderful Music: Banana\n\n\nThank you\nfor playing!\n\n\n\n\n\n\n\n\n\n\nEnemies:\nNecromancer (The annoying dude)\nNecromancer Minion (The dude everyone wants to nerf)\nThe Boss (The boss everyone hates)\nThe Secret boss no one have found\n\nYou still reading this?\nYou can leave now\nPlay a good game\nA Game where the AI doesn't crash all the time\nBye!\nSpecial Thanks to: Henrik Vik!\n\nStockman studio is not responsible for any crashes or bugs that might damage your computer."; // See it in game not here dude :>
+    std::wstring test = L"Created By: Stockman Games Entertainment\n\nProgrammers:\nAndreas Henriksson\nHenrik Vik\nJakob Nyberg\nSimon Fredholm\nLukas Westling\nEmanuel Bjurman\nFelix Kaaman\nJohan & Simon\n\n\nTechnical Artists: Johan & Simon\n\nThe Bad Format: .lw\n\nGitmeister: Henrik Vik\n\nInvestor: Gabe Newell\n\nThe guy that fixed everyone elses stuff: Henrik Vik\n\nGame Manager & Producer: Henrik Vik\n\nWonderful Music: Banana\n\n\nThank you\nfor playing!\n\n\n\n\n\n\n\n\n\n\n\n\nEnemies:\nNecromancer (The annoying dude)\nNecromancer Minion (The dude everyone wants to nerf)\nThe Boss (The boss everyone hates)\nTorpedo Ted\nReznor, The Secret boss.\nLarry Koopa\nLemmy Koopa\nMorton Koopa Jr.\nThe Lich King\nDoctor Boom\nGrim Patron\nThe Hogger\nHanzo Mains\nVampires from Castle Wars\nOP Ferie Dragons\nKalphite Queen\nDr Stockman\nMr King Dice\nRace Conditions\nDeadlines\nPlaytesting\nStandup meetings\nMagic numbers\nHealthbars\nWow: Classic Servers\nChimaeron\nIce Poseidon\n\n\n\nGot this far without cheats or crashes? nice.\nSpecial Thanks to: Henrik Vik!\n\n\n\nStockman studio is not responsible for any crashes or bugs that might damage your computer."; // See it in game not here dude :>
     std::wstringstream str(test);
     std::wstring temp;
     float x = 300.f, y = 715.5f;
@@ -85,7 +88,7 @@ void EnemyBossBaddie::createAbilities()
     data.duration = 0.f;
     data.randomChanche = 150;
 
-    auto onUse3 = [&](Player& player, Ability &ability) -> void {
+    auto onUse1 = [&](Player& player, Ability &ability) -> void {
         for (int i = 0; i < NECRO_COUNT; i++)
         {
             btVector3 to = player.getPositionBT() - getPositionBT();
@@ -99,10 +102,10 @@ void EnemyBossBaddie::createAbilities()
         }
     };
 
-    auto onTick3 = [&](Player& player, Ability &ability) -> void {
+    auto onTick1 = [&](Player& player, Ability &ability) -> void {
     };
 
-    abilities[AbilityId::TWO] = Ability(data, onTick3, onUse3);
+    abilities[AbilityId::TWO] = Ability(data, onTick1, onUse1);
 
 
     /* MELEE */
@@ -123,12 +126,35 @@ void EnemyBossBaddie::createAbilities()
             {
                 Sound::NoiseMachine::Get().playSFX(Sound::SFX::JUMP, nullptr, true);
                 player.takeDamage(1, true); // shield charge wont save ya bitch
-                player.getCharController()->applyImpulse(to.normalize() * MELEE_PUSHBACK);
+                player.getCharController()->applyImpulse(to.normalize() * MELEE_PUSHBACK); 
             }
         }
     };
 
     abilities[AbilityId::MELEE] = Ability(data, onTick2, onUse2);
+
+    /* AB 3 */
+
+    data.cooldown = 1700.f; // Ability One Data
+    data.duration = 0.f;
+    data.randomChanche = 0;
+
+    auto onUse3 = [&](Player& player, Ability &ability) -> void {
+        float m_sliceSize = (2.f * 3.14f) / 7.f;
+        btVector3 dir;
+        for (int i = 0; i < 7; i++) // todo def 5
+        {
+            dir = btVector3(cos(m_sliceSize * (i + ability3Offset)), -0.015f, sin(m_sliceSize * (i + ability3Offset)));
+            shoot(dir.normalize(), Resources::Models::Files::SkySphere, PROJECTILE_SPEED, 0.f, 1.6f, false);
+        }
+        ability3Offset += 0.5f;
+    };
+
+    auto onTick3 = [&](Player& player, Ability &ability) -> void {
+        
+    };
+
+    abilities[AbilityId::THREE] = Ability(data, onTick3, onUse3);
 }
 
 void EnemyBossBaddie::useAbility(Player &target)
@@ -149,6 +175,7 @@ void EnemyBossBaddie::useAbility(Player &target, int phase)
             }
             break;
         case 1:
+            abilities[AbilityId::THREE].useAbility(target);
             break;
         case 2:
             break;

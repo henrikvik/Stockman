@@ -67,7 +67,7 @@ namespace Logic
 			virtual void affect(int stacks, Effect const &effect, float dt);
             void onEffectEnd(int stacks, Effect const &effect);
 
-			Projectile* shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale);
+			Projectile* shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale, bool sensor = false);
 
 			// for debugging
 			void debugRendering();

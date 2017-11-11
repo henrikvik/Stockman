@@ -196,18 +196,18 @@ EnemyType Enemy::getEnemyType() const
 	return m_enemyType;
 }
 
-Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale)
+Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale, bool sensor)
 {
 	ProjectileData data;
 
 	data.damage = getBaseDamage();
 	data.meshID = id;
 	data.speed = speed;
-    data.ttl = 20000;
-    data.gravityModifier = 2.5;
+    data.ttl = 10000;
+    data.gravityModifier = gravity;
 	data.scale = scale;
     data.enemyBullet = true;
-    data.isSensor = false;
+    data.isSensor = sensor;
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     
