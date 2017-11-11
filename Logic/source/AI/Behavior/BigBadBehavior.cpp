@@ -21,7 +21,7 @@ BigBadBehavior::BigBadBehavior() :
     });
 
     node = addNode(parent, NodeType::CONDITION, 3, [](RunIn &in) -> bool {
-        return (in.enemy->getHealth() / in.enemy->getMaxHealth()) > 0.77f;
+        return (static_cast<float> (in.enemy->getHealth()) / in.enemy->getMaxHealth()) > 0.70f;
     });
     addNode(node, NodeType::ACTION, 0, [](RunIn &in) -> bool {
         in.enemy->useAbility(*in.target, PHASE_ONE);
@@ -29,7 +29,7 @@ BigBadBehavior::BigBadBehavior() :
     });
 
     node = addNode(parent, NodeType::CONDITION, 2, [](RunIn &in) -> bool {
-        return (in.enemy->getHealth() / in.enemy->getMaxHealth()) > 0.34f;
+        return (in.enemy->getHealth() / in.enemy->getMaxHealth()) > 0.30f;
     });
     addNode(node, NodeType::ACTION, 0, [](RunIn &in) -> bool {
         in.enemy->useAbility(*in.target, PHASE_TWO);

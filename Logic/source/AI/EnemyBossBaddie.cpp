@@ -9,10 +9,10 @@
 using namespace Logic;
 
 const float EnemyBossBaddie::BASE_SPEED = 1.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
-            EnemyBossBaddie::ABILITY_1_MOD = 0.05f, EnemyBossBaddie::MELEE_RANGE = 20.f,
+            EnemyBossBaddie::ABILITY_1_MOD = 0.085f, EnemyBossBaddie::MELEE_RANGE = 20.f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.112f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 12500; // Big guy, for you
-#define NECRO_COUNT 2
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 15500; // Big guy, for you
+#define NECRO_COUNT 3
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     : Enemy(Resources::Models::UnitCube, body,
@@ -81,15 +81,17 @@ void EnemyBossBaddie::createAbilities()
 
     /* ABILITY TWO */
 
-    data.cooldown = 16500.f; // Ability One Data
+    data.cooldown = 13500.f; // Ability One Data
     data.duration = 0.f;
-    data.randomChanche = 200;
+    data.randomChanche = 150;
 
     auto onUse3 = [&](Player& player, Ability &ability) -> void {
         for (int i = 0; i < NECRO_COUNT; i++)
         {
-            Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 60.f * i - 30.f, 80, 0 }).normalize(),
-                Resources::Models::UnitCube, PROJECTILE_SPEED, 2.5f, 0.6f);
+            btVector3 to = player.getPositionBT() - getPositionBT();
+            float len = to.length();
+            Projectile *pj = shoot((to + btVector3{ 15.f * i - 15.f, 90, 0 }).normalize(),
+                Resources::Models::UnitCube, PROJECTILE_SPEED * len, 2.5f, 0.6f);
 
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
@@ -137,6 +139,7 @@ void EnemyBossBaddie::useAbility(Player &target)
 
 void EnemyBossBaddie::useAbility(Player &target, int phase)
 {
+    printf("Phase: %d\n", phase);
     switch (phase)
     {
         case 0:
