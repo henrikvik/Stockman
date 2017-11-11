@@ -126,7 +126,7 @@ void EntityManager::loadDebugCmds()
 
 void EntityManager::deallocateData(bool forceDestroy)
 {
-    m_threadHandler->initThreads();
+    m_threadHandler->initThreads(); // todo: better sol
 
     for (std::vector<Enemy*>& list : m_enemies)
     {
@@ -246,7 +246,7 @@ void EntityManager::automaticUpdate(Player &player)
 {
     // this is for automaticly finding crashes / bugs
     RandomGenerator gen = RandomGenerator::singleton();
-    if (gen.getRandomInt(0, 750) == 0)
+    if (gen.getRandomInt(0, 1250) == 0)
     {
         player.getCharController()->warp(btVector3(
             gen.getRandomFloat(-250.f, 250.f), gen.getRandomFloat(5.f, 40.f), gen.getRandomFloat(-250.f, 250.f)
@@ -262,11 +262,13 @@ void EntityManager::automaticUpdate(Player &player)
         ), {});
     }
 
-    if (gen.getRandomInt(0, 1500) == 0)
+    if (gen.getRandomInt(0, 1900) == 0)
     {
         deallocateData();
         m_aliveEnemies = 0;
     }
+
+    m_threadHandler->addWork(EnemyThreadHandler::WorkData{ this, gen.getRandomInt(0, m_enemies.size() - 1), &player });
 }
 
 void EntityManager::spawnWave(int waveId)

@@ -18,6 +18,8 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
         halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0)
 {
     setBehavior(BOSS_BADDIE);
+
+    Sound::NoiseMachine::Get().stopAllGroups();
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_1, nullptr, true);
     createAbilities();
 
@@ -100,6 +102,11 @@ void EnemyBossBaddie::createAbilities()
     abilities[AbilityId::TWO] = Ability(data, onTick2, onUse2);
 }
 
+void EnemyBossBaddie::useAbility(Player & target)
+{
+    // todo melee
+}
+
 void EnemyBossBaddie::useAbility(Player &target, int phase)
 {
     switch (phase)
@@ -146,10 +153,14 @@ void EnemyBossBaddie::updateDead(float deltaTime)
 {
     // this is for my own amusement, not intended to be in final product or testing :>
     for (auto &info : info)
-    {
         info.position.y -= deltaTime / 70.f;
-        // i know i know
-        if (info.position.y < 750.f && info.position.y > 0.f)
+    renderSpecific(); // testing testing testing
+}
+
+void EnemyBossBaddie::renderSpecific() const
+{
+    // this is only for fun
+    for (auto &info : info)
+        if (info.position.y < 750.f && info.position.y > -50.f)
             RenderQueue::get().queue(&info);
-    }
 }

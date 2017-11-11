@@ -89,6 +89,7 @@ namespace Logic
 			Behavior* getBehavior() const;
 
             void render() const;
+            virtual void renderSpecific() const {};
 	};
 }
 

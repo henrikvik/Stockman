@@ -25,7 +25,7 @@ namespace Logic
 			virtual void updateSpecific(Player &player, float deltaTime);
 			virtual void updateDead(float deltaTime);
 
-			virtual void useAbility(Entity &target);
+			virtual void useAbility(Player &target);
 	};
 }
 

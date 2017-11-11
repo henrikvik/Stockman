@@ -28,11 +28,14 @@ namespace Logic
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
 
         void createAbilities();
+        virtual void useAbility(Player &target);
         virtual void useAbility(Player &target, int phase);
 
         virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
         virtual void updateSpecific(Player &player, float deltaTime);
         virtual void updateDead(float deltaTime);
+
+        virtual void renderSpecific() const;
     };
 }
 
