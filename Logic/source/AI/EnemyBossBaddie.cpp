@@ -8,19 +8,38 @@
 #include <Graphics\include\Structs.h>
 using namespace Logic;
 
+#define AB4_BASESPEED 27.f // for const expr
+#define AB4_PATTERNS 3
+
+#define NECRO_COUNT 3
+
 const float EnemyBossBaddie::BASE_SPEED = 4.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.085f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.105f;
 const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 12000; // Big guy, for you
-#define NECRO_COUNT 3
+
+/*
+    @author Lukas Westling
+
+    General Todo:
+        Fix all the magic numbers (alot of them)
+        Better math and cleaner functions
+        Better code structure
+
+    Don't do any of this if the boss is going to get removed / replaced.
+    This is only a fun weekend project that might stay in the game.
+*/
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     : Enemy(Resources::Models::UnitCube, body,
         halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0)
 {
     setBehavior(BOSS_BADDIE);
+    damage(10000);
 
-    ability3Offset = 0;
+    ab4Speed = AB4_BASESPEED;
+    ab4Pattern = 0;
+    ab4PatternDir = true;
 
     Sound::NoiseMachine::Get().stopAllGroups();
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_1, nullptr, true);
@@ -32,7 +51,16 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
         Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_2, nullptr, true);
     });
 
-    // test
+    forFunTesting();
+}
+
+EnemyBossBaddie::~EnemyBossBaddie()
+{
+    RenderQueue::get().clearAllQueues(); // TEMPORARY SOLUTION, ISSUE: DELETING SOMEONE WITH POINTER TO GRAPHICS DATA AFTER THE QUEUEING!!!
+}
+
+void EnemyBossBaddie::forFunTesting()
+{
     std::wstring test = L"Created By: Stockman Games Entertainment\n\nProgrammers:\nAndreas Henriksson\nHenrik Vik\nJakob Nyberg\nSimon Fredholm\nLukas Westling\nEmanuel Bjurman\nFelix Kaaman\nJohan & Simon\n\nTechnical Artists: Johan & Simon\n\nThe Bad Format: .lw\n\nGitmeister: Henrik Vik\n\nInvestor: Gabe Newell\n\nThe guy that fixed everyone elses stuff: Henrik Vik\n\nGame Manager & Producer: Henrik Vik\n\nWonderful Music: Banana\n\n\nThank you\nfor playing!\n\n\n\n\n\n\n\n\n\n\n\n\nEnemies:\nNecromancer (The annoying dude)\nNecromancer Minion (The dude everyone wants to nerf)\nThe Boss (The boss everyone hates)\nTorpedo Ted\nReznor, The Secret boss.\nLarry Koopa\nLemmy Koopa\nMorton Koopa Jr.\nThe Lich King\nDoctor Boom\nGrim Patron\nThe Hogger\nHanzo Mains\nVampires from Castle Wars\nOP Ferie Dragons\nKalphite Queen\nDr Stockman\nMr King Dice\nRace Conditions\nDeadlines\nPlaytesting\nStandup meetings\nMagic numbers\nHealthbars\nBowser Baloon Minigame from mario party 4 and 3\nWow: Classic Servers\nChimaeron\nMitch McConnell (turtle guy)\nIce Poseidon\nMr Garrison (President Of The United States Of America)\nProfessor Chaos\nKyle Brofloski\nStan Marsh\nRandy Marsh\nHeidi Turner :(\nPasha Biceps\nOlofmeister\nFriberg\nMoonmoon\nTwitch ads every fucking second on the yugioh stream\nH3h3productions\nKennyS\nNaniwa\n\n\nGot this far without cheats or crashes? nice.\nSpecial Thanks to: Henrik Vik!\n\n\n\nStockman studio is not responsible for any crashes or bugs that might damage your computer."; // See it in game not here dude :>
     std::wstringstream str(test);
     std::wstring temp;
@@ -61,11 +89,6 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     hpBar.position = DirectX::SimpleMath::Vector2(250.f, 640.f);
 }
 
-EnemyBossBaddie::~EnemyBossBaddie()
-{
-    RenderQueue::get().clearAllQueues(); // TEMPORARY SOLUTION, ISSUE: DELETING SOMEONE WITH POINTER TO GRAPHICS DATA AFTER THE QUEUEING!!!
-}
-
 /*
 
     THIS METHOD CREATES THE ABILITES; CHANGE THEM HERE!
@@ -76,7 +99,7 @@ void EnemyBossBaddie::createAbilities()
     AbilityData data;
 
     /* ABILITY ONE */
-    data.cooldown = 25000.f; // Ability One Data
+    data.cooldown = 25000.f;
     data.duration = 14500.f;
     data.randomChanche = 50;
 
@@ -94,7 +117,7 @@ void EnemyBossBaddie::createAbilities()
 
     /* ABILITY TWO */
 
-    data.cooldown = 13500.f; // Ability One Data
+    data.cooldown = 13500.f;
     data.duration = 0.f;
     data.randomChanche = 150;
 
@@ -121,7 +144,7 @@ void EnemyBossBaddie::createAbilities()
 
     /* MELEE */
 
-    data.cooldown = 7500.f; // Ability One Data
+    data.cooldown = 7500.f;
     data.duration = 4500.f;
     data.randomChanche = 0;
 
@@ -145,13 +168,16 @@ void EnemyBossBaddie::createAbilities()
     abilities[AbilityId::MELEE] = Ability(data, onTick2, onUse2);
 
     /* AB 3 */
-    data.cooldown = 1000.f; // Ability One Data
+    data.cooldown = 1400.f;
     data.duration = 0.f;
     data.randomChanche = 0;
 
     auto onUse3 = [&](Player& player, Ability &ability) -> void {
-        float m_sliceSize = (1.f * 3.14f) / 4.f;
+        constexpr float m_sliceSize = (1.f * 3.14f) / 4.f;
+
         btVector3 dir = player.getPositionBT() - getPositionBT();
+        dir.setY(-0.0012f);
+
         for (int i = -1; i <= 3; i++) // todo def
         {
             dir += btVector3(cos(m_sliceSize * (i + RandomGenerator::singleton().getRandomFloat(-0.33f, 0.33f))),
@@ -165,6 +191,88 @@ void EnemyBossBaddie::createAbilities()
     };
 
     abilities[AbilityId::THREE] = Ability(data, onTick3, onUse3);
+
+    /*
+    
+        PHASE 3
+    
+    */
+
+    /* AB 4 */
+    data.cooldown = 950.f;
+    data.duration = 0.f;
+    data.randomChanche = 0;
+
+    auto onUse4 = [&](Player& player, Ability &ability) -> void {
+        constexpr float SPEED_PIECE = AB4_BASESPEED / 15.f;
+        ab4Speed += SPEED_PIECE; // faster, stronger
+
+        // handle the patterns
+        if (ab4PatternDir)
+        {
+            ab4Pattern++;
+            if (ab4Pattern >= AB4_PATTERNS - 1) ab4PatternDir = false;
+        }
+        else
+        {
+            ab4Pattern--;
+            if (ab4Pattern <= 0) ab4PatternDir = true;
+        }
+
+        shootAbility4(
+            player,
+            ab4Pattern, 
+            ab4Speed 
+        );
+    };
+
+    auto onTick4 = [&](Player& player, Ability &ability) -> void {
+
+    };
+
+    abilities[AbilityId::FOUR] = Ability(data, onTick4, onUse4);
+
+    /* AB 5 */
+    data.cooldown = 850.f;
+    data.duration = 0.f;
+    data.randomChanche = 0;
+
+    auto onUse5 = [&](Player& player, Ability &ability) -> void {
+        
+    };
+
+    auto onTick5 = [&](Player& player, Ability &ability) -> void {
+
+    };
+
+    abilities[AbilityId::FIVE] = Ability(data, onTick5, onUse5);
+}
+
+void EnemyBossBaddie::shootAbility4(Player const &player, int pattern, float speed)
+{
+    constexpr float rad = 3.14f;
+    constexpr Resources::Models::Files model = Resources::Models::Files::SkySphere;
+
+    btVector3 dir = player.getPositionBT() - getPositionBT();
+    dir.setY(0.f);
+
+    switch (pattern)
+    {
+    case 0:
+        for (int i = -1; i <= 1; i++)
+            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.35f)), model, speed, 0.f, 2.f, true);
+        break;
+    case 1:
+        for (int i = 1; i < 4; i++)
+            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.22f)), model, speed, 0.f, 2.9f, true);
+        for (int i = 1; i < 4; i++)
+            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * -0.22f)), model, speed, 0.f, 2.9f, true);
+        break;
+    case 2:
+        for (int i = -1; i <= 1; i++)
+            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.08f)), model, speed, 0.f, 2.4f, true);
+        break;
+    }
 }
 
 void EnemyBossBaddie::useAbility(Player &target)
@@ -189,6 +297,8 @@ void EnemyBossBaddie::useAbility(Player &target, int phase)
             abilities[AbilityId::TWO].useAbility(target);
             break;
         case 2:
+            abilities[AbilityId::FOUR].useAbility(target);
+            abilities[AbilityId::FIVE].useAbility(target);
             break;
     }
 }
@@ -218,11 +328,11 @@ void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
 
     // HP BAR CHEAT
     hp = L"HP: ";
-    for (int i = 0; i < static_cast<int>((static_cast<float> (getHealth()) / getMaxHealth()) * 10.f); i++)
+    int parts = static_cast<int>((static_cast<float> (getHealth()) / getMaxHealth()) * 10.f);
+    for (int i = 0; i < parts; i++)
         hp += L"I";
+    hp += L" " + std::to_wstring(parts) + L" / 10";
     hpBar.text = hp.c_str();
-
-    RenderQueue::get().queue(&hpBar);
 }
 
 void EnemyBossBaddie::updateDead(float deltaTime)
@@ -230,13 +340,14 @@ void EnemyBossBaddie::updateDead(float deltaTime)
     // this is for my own amusement, not intended to be in final product or testing :>
     for (auto &info : info)
         info.position.y -= deltaTime / 70.f;
-    renderSpecific(); // testing testing testing
-}
 
-void EnemyBossBaddie::renderSpecific() const
-{
     // this is only for fun
     for (auto &info : info)
         if (info.position.y < 750.f && info.position.y > -50.f)
             RenderQueue::get().queue(&info);
+}
+
+void EnemyBossBaddie::renderSpecific() const
+{
+    RenderQueue::get().queue(&hpBar);
 }

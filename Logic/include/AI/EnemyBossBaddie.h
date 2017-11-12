@@ -18,21 +18,29 @@ namespace Logic
         };
         std::unordered_map<AbilityId, Ability> abilities;
 
-        static const float BASE_SPEED, PROJECTILE_SPEED, ABILITY_1_MOD, MELEE_RANGE, MELEE_PUSHBACK;
+        static const float BASE_SPEED, PROJECTILE_SPEED, ABILITY_1_MOD, MELEE_RANGE,
+            MELEE_PUSHBACK;
         static const int BASE_DAMAGE, MAX_HP;
 
+        // AB 4 data -- move to a buff
+        float ab4Speed;
+        int ab4Pattern;
+        bool ab4PatternDir;
+
+        // testing
         std::vector<TextRenderInfo> info;
         std::vector<std::wstring> infoText;
         TextRenderInfo hpBar; // hp bar in text OMEGALUL
         std::wstring hp;
-
-        float testTime;
-        float ability3Offset = 0;
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
         virtual ~EnemyBossBaddie();
 
+        void forFunTesting();
         void createAbilities();
+
+        void shootAbility4(Player const &player, int pattern, float speed);
+
         virtual void useAbility(Player &target);
         virtual void useAbility(Player &target, int phase);
 
