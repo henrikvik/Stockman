@@ -1,15 +1,18 @@
 #include <AI\EnemyBossBaddie.h>
+#include <Player\Player.h>
+
+#include <Projectile\Projectile.h>
+#include <Projectile\ProjectileStruct.h>
 
 #include <Misc\Sound\NoiseMachine.h>
-#include <Player\Player.h>
-#include <Projectile\Projectile.h>
-#include <sstream>
-
 #include <Graphics\include\Structs.h>
+
+#include <sstream>
 using namespace Logic;
 
 #define AB4_BASESPEED 27.f // for const expr
 #define AB4_PATTERNS 3
+#define PI 3.14f
 
 #define NECRO_COUNT 3
 
@@ -35,7 +38,6 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
         halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0)
 {
     setBehavior(BOSS_BADDIE);
-    damage(10000);
 
     ab4Speed = AB4_BASESPEED;
     ab4Pattern = 0;
@@ -173,7 +175,7 @@ void EnemyBossBaddie::createAbilities()
     data.randomChanche = 0;
 
     auto onUse3 = [&](Player& player, Ability &ability) -> void {
-        constexpr float m_sliceSize = (1.f * 3.14f) / 4.f;
+        constexpr float m_sliceSize = PI / 4.f;
 
         btVector3 dir = player.getPositionBT() - getPositionBT();
         dir.setY(-0.0012f);
@@ -204,7 +206,7 @@ void EnemyBossBaddie::createAbilities()
     data.randomChanche = 0;
 
     auto onUse4 = [&](Player& player, Ability &ability) -> void {
-        constexpr float SPEED_PIECE = AB4_BASESPEED / 15.f;
+        constexpr float SPEED_PIECE = AB4_BASESPEED / 22.f;
         ab4Speed += SPEED_PIECE; // faster, stronger
 
         // handle the patterns
@@ -232,13 +234,36 @@ void EnemyBossBaddie::createAbilities()
 
     abilities[AbilityId::FOUR] = Ability(data, onTick4, onUse4);
 
-    /* AB 5 */
-    data.cooldown = 850.f;
+    /* AB 5 So many magic numbers, sorry (TODO) */
+    data.cooldown = 5550.f;
     data.duration = 0.f;
-    data.randomChanche = 0;
+    data.randomChanche = 25;
 
     auto onUse5 = [&](Player& player, Ability &ability) -> void {
-        
+        constexpr float slice = PI * 2.f / 10.f;
+        static float len = 60.f;
+
+        btVector3 playerPos = player.getPositionBT();
+        btVector3 temp;
+        int skip = RandomGenerator::singleton().getRandomInt(0, 9);
+
+        ProjectileData data;
+        data.damage = data.mass = 1;
+        data.scale = 1.5f;
+        data.enemyBullet = data.isSensor = true;
+        data.meshID = Resources::Models::Files::SkySphere;
+        data.speed = 19.f;
+        data.ttl = len * 60.f;
+        data.gravityModifier = 0;
+        data.shouldRender = false;
+
+        for (int i = 0; i < 10; i++)
+        {
+            if (i == skip) continue;
+            
+            temp = playerPos + btVector3(cos(slice * i), 0.f, sin(slice * i)) * len;
+            SpawnProjectile(data, temp, (playerPos - temp).normalize(), *this);
+        }
     };
 
     auto onTick5 = [&](Player& player, Ability &ability) -> void {
@@ -263,9 +288,9 @@ void EnemyBossBaddie::shootAbility4(Player const &player, int pattern, float spe
             shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.35f)), model, speed, 0.f, 2.f, true);
         break;
     case 1:
-        for (int i = 1; i < 4; i++)
+        for (int i = 2; i < 4; i++)
             shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.22f)), model, speed, 0.f, 2.9f, true);
-        for (int i = 1; i < 4; i++)
+        for (int i = 2; i < 4; i++)
             shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * -0.22f)), model, speed, 0.f, 2.9f, true);
         break;
     case 2:
@@ -283,7 +308,6 @@ void EnemyBossBaddie::useAbility(Player &target)
 
 void EnemyBossBaddie::useAbility(Player &target, int phase)
 {
-    printf("Phase: %d\n", phase);
     switch (phase)
     {
         case 0:
