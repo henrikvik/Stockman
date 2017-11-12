@@ -58,6 +58,7 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
 
 EnemyBossBaddie::~EnemyBossBaddie()
 {
+    Sound::NoiseMachine::Get().stopAllGroups();
     RenderQueue::get().clearAllQueues(); // TEMPORARY SOLUTION, ISSUE: DELETING SOMEONE WITH POINTER TO GRAPHICS DATA AFTER THE QUEUEING!!!
 }
 
@@ -235,13 +236,15 @@ void EnemyBossBaddie::createAbilities()
     abilities[AbilityId::FOUR] = Ability(data, onTick4, onUse4);
 
     /* AB 5 So many magic numbers, sorry (TODO) */
-    data.cooldown = 5550.f;
+    data.cooldown = 7550.f;
     data.duration = 0.f;
     data.randomChanche = 25;
 
     auto onUse5 = [&](Player& player, Ability &ability) -> void {
         constexpr float slice = PI * 2.f / 10.f;
         static float len = 60.f;
+
+        Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_5, nullptr, true);
 
         btVector3 playerPos = player.getPositionBT();
         btVector3 temp;
