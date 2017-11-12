@@ -7,7 +7,7 @@
 using namespace Logic;
 
 const int EnemyNecromancer::SPEED_AB1 = 15,
-          EnemyNecromancer::SPEED_AB2 = 25,
+          EnemyNecromancer::SPEED_AB2 = 20,
           EnemyNecromancer::MAX_SPAWNED_MINIONS = 4,
           EnemyNecromancer::BASE_DAMAGE = 1,
           EnemyNecromancer::MAX_HP = 50;
@@ -64,7 +64,7 @@ void EnemyNecromancer::updateDead(float deltaTime)
 
 void EnemyNecromancer::useAbility(Player &target)
 {
-    if (RandomGenerator::singleton().getRandomInt(0, 800))
+    if (RandomGenerator::singleton().getRandomInt(0, 900))
     {
         if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
         {

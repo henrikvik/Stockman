@@ -1,5 +1,5 @@
 {
-	"nrOfWaves": 1;
+	"nrOfWaves": 10;
 	"startWave": 0;
 	"timeMul": 2000f;
 	"timeBonus": 400000000000f;
@@ -7,16 +7,9 @@
 	"bossWaves": "9";
 }
 { // 0
-	"enemies" : "";
-	"bosses": 1;
+	"enemies" : "0";
+	"bosses": 0;
 	"triggers" : 7;
-}
-{ // boss
-	"id": 2;
-	"effects": "";
-	"x": 77.f;
-	"y": 66.f;
-	"z": 0.f;
 }
 {
 	"id": 1;
@@ -103,12 +96,19 @@
 	"bosses": 0;
 }
 { // 8
-	"enemies" : "0, 0, 0, 0, 0, 0";
+	"enemies" : "0, 0, 0, 0, 0, 0, 0";
 	"triggers" : 0;
 	"bosses": 0;
 }
 { // 9
-	"enemies" : "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0";
+	"enemies" : "";
 	"triggers" : 0;
-	"bosses": 0;
+	"bosses": 1;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 77.f;
+	"y": 66.f;
+	"z": 0.f;
 }
