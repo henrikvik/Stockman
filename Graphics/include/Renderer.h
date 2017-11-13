@@ -92,17 +92,6 @@ namespace Graphics
 
         D3D11_VIEWPORT viewPort;
 
-
-        ConstantBuffer<float> bulletTimeBuffer;
-
-
-		//superTemp
-		struct StatusData
-		{
-			float burn;
-			float freeze;
-		} statusData;
-
 		void clear() const;
 		void swapBackBuffers();
 		
