@@ -186,7 +186,7 @@ void Player::registerDebugCmds()
 
         return "All weapons do 1 extra damage";
     });
-    win->registerCommand("BOOST_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
+    /*win->registerCommand("BOOST_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addUpgrade(StatusManager::P20_PERC_MOVEMENTSPEED);
 
@@ -197,7 +197,7 @@ void Player::registerDebugCmds()
         getStatusManager().addUpgrade(StatusManager::M20_PERC_CD);
 
         return "Player skills take 20% less time to recover";
-    });
+    });*/
 }
 
 void Player::clear()
@@ -331,28 +331,27 @@ void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
         m_moveSpeedMod = 1;
         m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
     }
-}
-
-void Player::upgrade(Upgrade const & upgrade)
-{
-	long long flags = upgrade.getTranferEffects();
-
-    if (flags & Upgrade::UPGRADE_INCREASE_MOVEMENTSPEED)
+   /* if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
     {
         m_permanentSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
         m_moveMaxSpeed = m_moveMaxSpeed + (PLAYER_MOVEMENT_MAX_SPEED * upgrade.getFlatUpgrades().movementSpeed);
     }
-    if (flags & Upgrade::UPGRADE_IS_SKILL)
+    if (flags & Effect::EFFECT_IS_SKILL)
     {
         for (int i = 0; i < 2; i++)
         {
             getSkillManager()->getSkill(i)->upgrade(upgrade);
         }
     }
-    if (flags & Upgrade::UPGRADE_IS_WEAPON)
+    if (flags & Effect::EFFECT_IS_WEAPON)
     {
 
-    }
+    }*/
+}
+
+void Player::upgrade(Upgrade const & upgrade)
+{
+	long long flags = upgrade.getTranferEffects();
 
 }
 
