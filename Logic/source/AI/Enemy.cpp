@@ -211,15 +211,18 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     
-    increaseCallbackEntities();
-    pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
-        decreaseCallbackEntities();
-    });
-    if (hasCallback(ON_DAMAGE_GIVEN))
+    if (pj)
     {
-        pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
-            callback(ON_DAMAGE_GIVEN, data);
+        increaseCallbackEntities();
+        pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+            decreaseCallbackEntities();
         });
+        if (hasCallback(ON_DAMAGE_GIVEN))
+        {
+            pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
+                callback(ON_DAMAGE_GIVEN, data);
+            });
+        }
     }
 	
     return pj;

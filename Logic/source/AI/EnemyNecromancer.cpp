@@ -69,24 +69,27 @@ void EnemyNecromancer::useAbility(Player &target)
         if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
         {
             Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), Resources::Models::UnitCube, (float)SPEED_AB2, 2.5f, 0.6f);
-            pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
-                if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
-                {
-                    Enemy *e = SpawnEnemy(EnemyType::NECROMANCER_MINION, data.caller->getPositionBT(), {});
-                    if (e)
+            if (pj)
+            {
+                pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+                    if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
                     {
-                        m_spawnedMinions++;
+                        Enemy *e = SpawnEnemy(EnemyType::NECROMANCER_MINION, data.caller->getPositionBT(), {});
+                        if (e)
+                        {
+                            m_spawnedMinions++;
 
-                        increaseCallbackEntities();
-                        e->addCallback(ON_DEATH, [&](CallbackData &data) -> void {
-                            m_spawnedMinions--;
-                        });
-                        e->addCallback(ON_DESTROY, [&](CallbackData data) -> void {
-                            decreaseCallbackEntities();
-                        });
+                            increaseCallbackEntities();
+                            e->addCallback(ON_DEATH, [&](CallbackData &data) -> void {
+                                m_spawnedMinions--;
+                            });
+                            e->addCallback(ON_DESTROY, [&](CallbackData data) -> void {
+                                decreaseCallbackEntities();
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         else
         {
