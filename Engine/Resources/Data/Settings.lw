@@ -1,22 +1,22 @@
 {
 	"Name": "MouseSense";
-	"Value": 0.01f;
+	"Value": 0f;
 }
 {
 	"Name": "FOV";
-	"Value": 90f;
+	"Value": 0f;
 }
 {
 	"Name": "MasterSound";
-	"Value": 0.51f;
+	"Value": 0f;
 }
 {
 	"Name": "SFX";
-	"Value": 0.61f;
+	"Value": 0f;
 }
 {
 	"Name": "Music";
-	"Value": 0.57f;
+	"Value": 0f;
 }
 {
 	"Name": "Windowed";
