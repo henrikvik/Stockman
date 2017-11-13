@@ -60,6 +60,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
     // creating new projectile if idle stack is empty
     if (m_projectilesIdle.size() == 0)  // it shouldn't get to this, because it will lag in debug mode
     {
+        return nullptr;
         body = m_physPtr->createBody(Sphere({ position + forward }, { 0.f, 0.f, 0.f }, pData.scale), pData.mass, pData.isSensor, 0, 0);
         p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, pData);
     }
