@@ -1,9 +1,12 @@
+#include <State.h>
+
 #include <StateMachine/StateMachine.h>
 #include <StateMachine/StateBuffer.h>
-#include <State.h>
 #include <StateMachine/StatePrimary.h>
 #include <StateMachine/StateSecondary.h>
+
 #include <Misc\Sound\NoiseMachine.h>
+
 #include <Keyboard.h>
 
 using namespace Logic;

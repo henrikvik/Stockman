@@ -117,6 +117,8 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     bool callback = false;
     bool kill = false;
 
+    if (m_pData.enemyBullet) return false; // no enemy <--> enemy pj coll
+
     switch (m_pData.type)
     {
     // Special effects
@@ -177,15 +179,19 @@ bool Projectile::collisionWithPlayer(Player* player)
 bool Projectile::collisionWithProjectile(Projectile* proj)
 {
     bool callback = false;
-    switch (proj->getProjectileData().type)
+
+    if (proj->getProjectileData().enemyBullet != getProjectileData().enemyBullet)
     {
-    case ProjectileTypeBulletTimeSensor:
-        getStatusManager().addStatus(
-            /* Adding Bullet time effect */     StatusManager::BULLET_TIME,
-            /* Number of stacks */              1,
-            /* Reset Duration */                true
-        );
-        break;
+        switch (proj->getProjectileData().type)
+        {
+        case ProjectileTypeBulletTimeSensor:
+            getStatusManager().addStatus(
+                /* Adding Bullet time effect */     StatusManager::BULLET_TIME,
+                /* Number of stacks */              1,
+                /* Reset Duration */                true
+            );
+            break;
+        }
     }
 
     // No callback should be added

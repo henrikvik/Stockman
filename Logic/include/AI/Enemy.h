@@ -40,32 +40,34 @@ namespace Logic
 
 			float m_bulletTimeMod;									// Variables for effect modifiers
             float m_moveSpeedMod;
-			ENEMY_TYPE m_enemyType;
+			EnemyType m_enemyType;
 
 			Behavior *m_behavior;
 
             StaticRenderInfo enemyRenderInfo;
             LightRenderInfo light;
 
-
             //status
             bool m_stunned;
 		public:	
-			enum BEHAVIOR_ID { TEST, RANGED, MELEE };
+			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE };
 
-			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId);
+			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId);
 			virtual ~Enemy();
 
-			virtual void update(Player const &player, float deltaTime,
+			virtual void update(Player &player, float deltaTime,
 				std::vector<Enemy*> const &closeEnemies);
-			virtual void useAbility(Entity const &target) {};
+
+            virtual void useAbility(Player &target) {};
+            virtual void useAbility(Player &target, int phase) { useAbility(target); };
+
 			virtual void updateDead(float deltaTime) = 0;
-			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
+			virtual void updateSpecific(Player &player, float deltaTime) = 0;
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
             void onEffectEnd(int stacks, Effect const &effect);
 
-			Projectile* shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale);
+			Projectile* shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale, bool sensor = false);
 
 			// for debugging
 			void debugRendering();
@@ -76,17 +78,18 @@ namespace Logic
 
 			void damage(int damage);
 			void setBehavior(BEHAVIOR_ID id);
-			void setEnemyType(ENEMY_TYPE id);
+			void setEnemyType(EnemyType id);
 
             int getHealth() const;
             int getMaxHealth() const;
             int getBaseDamage() const;
 
 			float getMoveSpeed() const;
-			ENEMY_TYPE getEnemyType() const;
+            EnemyType getEnemyType() const;
 			Behavior* getBehavior() const;
 
             void render() const;
+            virtual void renderSpecific() const {};
 	};
 }
 

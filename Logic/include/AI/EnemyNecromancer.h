@@ -22,10 +22,10 @@ namespace Logic
 			virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 			virtual void onCollision(Player& other);
 
-			virtual void updateSpecific(Player const &player, float deltaTime);
+			virtual void updateSpecific(Player &player, float deltaTime);
 			virtual void updateDead(float deltaTime);
 
-			virtual void useAbility(Entity const &target);
+			virtual void useAbility(Player &target);
 	};
 }
 

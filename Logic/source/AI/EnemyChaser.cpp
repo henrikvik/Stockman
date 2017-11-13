@@ -8,7 +8,8 @@ const int EnemyChaser::BASE_DAMAGE = 1;
 const float EnemyChaser::MOVE_SPEED = 10;
 
 EnemyChaser::EnemyChaser(btRigidBody* body)
-    : Enemy(Resources::Models::Files::StaticSummon, body, { 1, 1, 1 }, MAX_HP, BASE_DAMAGE, MOVE_SPEED, NECROMANCER_MINION, 0) // use in para instead note
+    : Enemy(Resources::Models::Files::StaticSummon, body, { 1, 1, 1 },
+        MAX_HP, BASE_DAMAGE, MOVE_SPEED, EnemyType::NECROMANCER_MINION, 0) // use in para instead note
 {
     setBehavior(MELEE);
     getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
