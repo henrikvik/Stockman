@@ -447,7 +447,7 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     EntityManager const &entityManager)
 {
     //updates hudInfo with the current info
-    info.score = ComboMachine::Get().GetCurrentScore();
+    info.score = ComboMachine::Get().getCurrentScore();
     info.hp = player.getHP();
     info.activeAmmo[HUDManager::CURRENT_AMMO]   = player.getActiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
     info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().ammo;// TODO GET AMMO

@@ -52,8 +52,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     m_cardManager = newd CardManager(GAME_START::UNIQUE_CARDS);
 
     // Initializing Combo's
-    ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
-    ComboMachine::Get().Reset();
+    ComboMachine::Get().reset();
 
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
@@ -119,14 +118,14 @@ void StatePlaying::reset()
     m_cardManager->resetDeck();
     m_hudManager.reset();
 
-    ComboMachine::Get().Reset();
+    ComboMachine::Get().reset();
 }
 
 void StatePlaying::update(float deltaTime)
 {
     m_fpsRenderer.updateFPS(deltaTime);
    
-    ComboMachine::Get().Update(deltaTime);
+    ComboMachine::Get().update(deltaTime);
     m_waveTimeManager.update(deltaTime, m_entityManager);
 
     PROFILE_BEGIN("Sound");
@@ -195,6 +194,6 @@ void StatePlaying::render() const
 
 void StatePlaying::gameOver()
 {
-    m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
+    m_highScoreManager->addNewHighScore(ComboMachine::Get().getCurrentScore());
     reset();
 }

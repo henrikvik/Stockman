@@ -14,7 +14,7 @@ namespace Logic
 
             int m_spawnedMinions;
             static const float BASE_SPEED;
-            static const int BASE_DAMAGE, MAX_HP;
+            static const int BASE_DAMAGE, MAX_HP, SCORE;
 			static const int SPEED_AB1, SPEED_AB2, MAX_SPAWNED_MINIONS;
 		public:
 			EnemyNecromancer(btRigidBody* body, btVector3 halfExtent);

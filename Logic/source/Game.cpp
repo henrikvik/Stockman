@@ -85,7 +85,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
-	ComboMachine::Get().Reset();
+	ComboMachine::Get().reset();
 
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
@@ -146,7 +146,7 @@ void Game::reset()
 
     m_cardManager->resetDeck();
 
-	ComboMachine::Get().Reset();
+	ComboMachine::Get().reset();
     RenderQueue::get().clearAllQueues();
 }
 
@@ -232,7 +232,7 @@ bool Game::updateMenu(float deltaTime)
 
 void Game::updateGame(float deltaTime)
 {
-   	ComboMachine::Get().Update(deltaTime);
+   	ComboMachine::Get().update(deltaTime);
     if(m_waveTimeManager.update(deltaTime, m_entityManager))
         m_menu->setStateToBe(gameStateGameUpgrade);
 
@@ -274,7 +274,7 @@ void Game::updateGame(float deltaTime)
 
 void Game::gameOver()
 {
-	m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
+	m_highScoreManager->addNewHighScore(ComboMachine::Get().getCurrentScore());
 	m_menu->setStateToBe(GameState::gameStateGameOver);
 
 	for (int i = 0; i < 10; i++)

@@ -10,7 +10,8 @@ const int EnemyNecromancer::SPEED_AB1 = 15,
           EnemyNecromancer::SPEED_AB2 = 20,
           EnemyNecromancer::MAX_SPAWNED_MINIONS = 4,
           EnemyNecromancer::BASE_DAMAGE = 1,
-          EnemyNecromancer::MAX_HP = 50;
+          EnemyNecromancer::MAX_HP = 50,
+          EnemyNecromancer::SCORE = 5;
 const float EnemyNecromancer::BASE_SPEED = 7.5f;
 
 EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
@@ -18,7 +19,7 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
         BASE_SPEED, EnemyType::NECROMANCER, 0) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
-        ComboMachine::Get().Kill(getEnemyType());
+        ComboMachine::Get().kill(SCORE);
         SpawnTrigger(2, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY });
     });
     m_spawnedMinions = 0;
