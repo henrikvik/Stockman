@@ -103,6 +103,9 @@ void EntityManager::allocateData()
 {
     m_enemies.resize(AStar::singleton().getNrOfPolygons());
     m_threadHandler = newd EnemyThreadHandler();
+
+    for (auto &list : m_enemies)
+        list.reserve(ENEMY_CAP);
 }
 
 void EntityManager::loadDebugCmds()
@@ -145,7 +148,7 @@ void EntityManager::deallocateData(bool forceDestroy)
             }
         }
         list.clear();
-        list.reserve(1);
+        list.reserve(ENEMY_CAP);
     }
 
     // clear out enemies without callbacks in needs to do
