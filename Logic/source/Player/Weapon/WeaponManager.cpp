@@ -267,12 +267,12 @@ WeaponManager::WeaponLoadout* WeaponManager::getActiveWeaponLoadout()
     else
     {
         return m_weaponLoadouts[1];
-    } 
+    }
 }
 
 WeaponManager::WeaponLoadout* WeaponManager::getInactiveWeaponLoadout()
 {
-    if (m_weaponLoadouts[1] == m_currentWeapon)
+    if (m_weaponLoadouts[1] == m_currentWeapon || m_weaponLoadouts[2] == m_currentWeapon)
     {
         return m_weaponLoadouts[0];
     }
