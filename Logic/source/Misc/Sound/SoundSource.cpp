@@ -28,8 +28,9 @@ void SoundSource::update(float deltaTime)
 	if (autoPlayer)
 	{
 		if (autoPlayer->checkIfPlay(deltaTime))
-		{
+        {
 			noiseMachine->playSFX(autoPlayer->sfx, this, true);
+            channel->setPitch(autoPlayer->pitch.value);
 		}
 	}
 
@@ -53,34 +54,42 @@ void SoundSource::update(float deltaTime)
 // Simply plays a SFX one time
 void SoundSource::playSFX(SFX sfx)
 {
-	noiseMachine->playSFX(sfx, this, false);
+	noiseMachine->playSFX(sfx, this, true);
+}
+
+// Plays a sfx but with a pitch offset
+void SoundSource::playSFX(SFX sfx, float pitch, float pitchOffset)
+{
+    float endPitch = pitch + Logic::RandomGenerator::singleton().getRandomFloat(-pitchOffset, pitchOffset);
+    noiseMachine->playSFX(sfx, this, true);
+    this->channel->setPitch(endPitch);
 }
 
 // Simply plays one song one time
 void SoundSource::playMusic(MUSIC music)
 {
-	noiseMachine->playMusic(music, this, false);
+	noiseMachine->playMusic(music, this, true);
 }
 
 // Plays a SFX but after a specific delay of time in ms
 void SoundSource::delayPlaySFX(SFX sfx, float delay)
 {
 	if (delayPlayer) delete delayPlayer;
-	delayPlayer = new DelayPlayer(0, sfx, delay);
+	delayPlayer = newd DelayPlayer(0, sfx, delay);
 }
 
 // Plays a song but after a specific delay of time in ms
 void SoundSource::delayPlayMusic(MUSIC music, float delay)
 {
 	if (delayPlayer) delete delayPlayer;
-	delayPlayer = new DelayPlayer(1, music, delay);
+	delayPlayer = newd DelayPlayer(1, music, delay);
 }
 
 // Plays a SFX inbetween intervals, example: autoPlaySFX(SFX::BOING, 5000.f, 500.f); - plays the BOING sfx every 5000 ms, with a 500 ms random variation
 void SoundSource::autoPlaySFX(SFX sfx, float timeBetween, float timeOffset, float pitch, float pitchOffset)
 {
 	if (autoPlayer)	delete autoPlayer;
-	autoPlayer = new AutoPlayer(sfx, timeBetween, timeOffset, pitch, pitchOffset);
+	autoPlayer = newd AutoPlayer(sfx, timeBetween, timeOffset, pitch, pitchOffset);
 }
 
 FMOD_VECTOR* SoundSource::getPosition()

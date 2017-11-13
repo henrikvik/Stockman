@@ -1,3 +1,5 @@
+#include <Graphics\include\RenderQueue.h>
+
 #include <Misc\GUI\MenuState.h>
 using namespace Logic;
 
@@ -9,18 +11,40 @@ MenuState::~MenuState()
 {
 }
 
+const std::map<int, Resources::Textures::Files> tempTextureLookup =
+{
+    {0, Resources::Textures::mainMenuButton},
+    {1, Resources::Textures::gameOverMenuButtons},
+    {2, Resources::Textures::SettingsMenuButtons},
+    {3, Resources::Textures::Color_pick_icons},
+    {4, Resources::Textures::Backbutton}
+};
+
 void MenuState::initialize(std::vector<ButtonStruct> buttonStruct, int background)
 {
-	Button button;
 	for (auto const& struc : buttonStruct)
 	{
-		DirectX::SimpleMath::Vector2 pos(struc.xPos, struc.yPos);
-		DirectX::SimpleMath::Vector2 texCoordStart(struc.xTexStart, struc.yTexStart);
-		DirectX::SimpleMath::Vector2 texCoordEnd(struc.xTexEnd, struc.yTexEnd);
-		
-		button.initialize(pos, texCoordStart, texCoordEnd, struc.activeOffset,
-			struc.height, struc.width, struc.textureIndex, struc.m_CallBackFunction);
-		m_buttons.push_back(button);
+        FloatRect inactive = {
+            {struc.xTexStart, struc.yTexStart},
+            {struc.xTexEnd,   struc.yTexEnd} 
+        };
+        FloatRect active = {
+            {struc.xTexStart, struc.yTexStart + struc.activeOffset},
+            {struc.xTexEnd,   struc.yTexEnd   + struc.activeOffset} 
+        };       
+
+        Resources::Textures::Files texture = tempTextureLookup.at(struc.texture);
+
+        m_buttons.emplace_back(
+            struc.xPos,
+            struc.yPos,
+            struc.width,
+            struc.height,
+            texture,
+            inactive, 
+            active,
+            struc.m_CallBackFunction
+        );
     }
     m_menu.m_menuTexture = background;
 }
@@ -59,13 +83,11 @@ Button* MenuState::getButton(int index)
     return &m_buttons[index];
 }
 
-Graphics::MenuInfo MenuState::getMenuInfo()
+void Logic::MenuState::render() const
 {
-    m_menu.m_buttons.clear();
-    for (Button &b : m_buttons)
+    for (Button const& b : m_buttons)
     {
-        m_menu.m_buttons.push_back(*b.getButtonInfo());
+        b.render();
     }
-    return m_menu;
 }
 

@@ -15,7 +15,8 @@ namespace Graphics {
 			DirectX::SimpleMath::Matrix vP;
 			DirectX::SimpleMath::Matrix invP;
 			DirectX::SimpleMath::Matrix view;
-			DirectX::SimpleMath::Vector4 camPos;
+            DirectX::SimpleMath::Vector4 camPos;
+            DirectX::SimpleMath::Vector4 forward;
 		} values;
 
 		struct InverseMatrixes
@@ -61,7 +62,7 @@ namespace Graphics {
 
 		InverseMatrixes inverseMatrixes;
 
-		ConstantBuffer<ShaderValues> CameraBuffer;
+		ConstantBuffer<ShaderValues> cameraBuffer;
 		ConstantBuffer<InverseMatrixes> inverseBuffer;
 	};
 }

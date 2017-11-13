@@ -3,6 +3,7 @@
 
 #include <d3d11.h>
 #include <SimpleMath.h>
+
 #include <Vector>
 
 // this class should be created offline and loaded with a file

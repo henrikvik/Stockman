@@ -9,7 +9,7 @@ namespace Logic
 	class EnemyTest : public Enemy
 	{
 		public:
-			EnemyTest(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent);
+			EnemyTest(btRigidBody* body, btVector3 halfExtent);
 			virtual ~EnemyTest();
 
 			virtual void clear();

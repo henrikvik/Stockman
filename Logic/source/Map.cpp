@@ -1,7 +1,9 @@
 #include "Map.h"
+#include <Physics/Physics.h>        
 #include <Keyboard.h>
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
+#include <Misc\RandomGenerator.h>
 
 using namespace Logic;
 
@@ -12,11 +14,6 @@ Map::~Map()
 	clear();
 }
 
-void Map::add(FrameLight frameLight)
-{
-    m_lights.push_back(new LightObject(frameLight));
-}
-
 void Map::add(FrameProp frameProp)
 {
   //  m_objects.push_back(new Object(frameProp.modelID, frameProp.position, frameProp.rotation));
@@ -24,15 +21,15 @@ void Map::add(FrameProp frameProp)
 
 void Map::add(FrameHitbox frameHitbox)
 {
-    if (frameHitbox.modelID == Graphics::GROUND)
-        m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
-            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
-            Physics::COL_HITBOX,
-            Physics::COL_EVERYTHING),
-            {1, 1.f, 1},
-            StaticObject::NavigationMeshFlags::CULL
-        ));
-    else
+    //if (frameHitbox.modelID == Resources::Models::UnitCube)
+    //    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+    //        Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+    //        Physics::COL_HITBOX,
+    //        Physics::COL_EVERYTHING),
+    //        {1, 1.f, 1},
+    //        StaticObject::NavigationMeshFlags::CULL
+    //    ));
+    //else
         m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
             Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
             Physics::COL_HITBOX,
@@ -42,32 +39,80 @@ void Map::add(FrameHitbox frameHitbox)
         ));
 }
 
-void Map::init(Physics* physics)
+void Map::init(Physics* physics, std::string path)
 {
     m_physicsPtr = physics;
-    m_drawHitboxesAndLights = false;
 
-    readFromFile("maya.level");
-	
-    debugInitProps();
-    debugInitObjects();
+    // Disables debug draw as default
+    m_drawDebug = false;
+
+    // Loads map from file (currently only hardcoded)
+    loadMapFromFile(path);
 }
 
-// This could be loaded from level file
-void Map::readFromFile(std::string path)
+void Map::clear()
 {
+	for (size_t i = 0; i < m_props.size(); i++)     delete m_props[i];
+	for (size_t i = 0; i < m_hitboxes.size(); i++)  delete m_hitboxes[i];
+    for (size_t i = 0; i < m_lights.size(); i++)    delete m_lights[i];
+
+	m_props.clear();
+	m_hitboxes.clear();
+    m_lights.clear();
+}
+
+// If user holds tab, draw debug info
+void Map::update(float deltaTime)
+{
+    m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
+}
+
+void Map::render() const
+{
+	for (Object* o : m_props)           o->render();
+    for (LightObject* l : m_lights)     l->render();
+    for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
+
+	// Drawing hitboxes debugged & lights
+    if (m_drawDebug)
+    {
+        for (StaticObject* e : m_hitboxes)
+            e->renderD();
+    }
+}
+	
+std::vector<StaticObject*>*			Map::getProps()				{ return &m_props;				}
+std::vector<StaticObject*>*			Map::getHitboxes()			{ return &m_hitboxes;			}
+std::vector<LightObject*>*			Map::getLights()            { return &m_lights;             }
+
+// Loads a map from a specific file
+void Map::loadMapFromFile(std::string path)
+{
+    // Temp campfire map, remove this when an actual campfire is done
+    if (path == "Campfire.txt")
+    {
+        std::vector<FrameHitbox> hitboxes; std::vector<FrameLight> lights; lights.push_back({ DirectX::SimpleMath::Vector3(0, 0, 0), DirectX::SimpleMath::Vector3(1, 0.5, 0.3), 0.75f, 5.f }); lights.push_back({ DirectX::SimpleMath::Vector3(0, 2, 0), DirectX::SimpleMath::Vector3(0.5, 1.0, 0.3), 0.75f, 5.f }); lights.push_back({ DirectX::SimpleMath::Vector3(0, 4, 0), DirectX::SimpleMath::Vector3(0, 0.3, 1.f), 0.75f, 5.f }); lights.push_back({ DirectX::SimpleMath::Vector3(0, 6, 0), DirectX::SimpleMath::Vector3(1.f, 1.f, 1.f), 0.75f, 5.f });
+        for (int i = 0; i < 50; i++) hitboxes.push_back({ { 0, (-5) +  i * 2.f, 3.f },{ (-5) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
+        for (int i = 0; i < 13; i++) hitboxes.push_back({ { 10, (-2) + i * 2.f, 8.f },{ (-10) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
+        for (int i = 0; i < 20; i++) hitboxes.push_back({ { 3, (-2) + i * 2.f, 4.f },{ (-6) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
+        for (int i = 0; i < 22; i++) hitboxes.push_back({ { -3, (-2) + i * 2.f, 4.f },{ (-6) +(i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
+        for (int i = 0; i < 10; i++) hitboxes.push_back({ { -10, (-2) + i * 2.f, 8.f },{ (-10) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
+        for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
+        return;
+    }
+
     // Loads hitboxes
     std::vector<FrameHitbox> hitboxes;
-    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Graphics::GROUND });
-    hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
-    hitboxes.push_back({ { 60, 0.75, -160 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
-    hitboxes.push_back({ { -160, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Graphics::CUBE });
+    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f},    Resources::Models::UnitCube });
+    hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 },   Resources::Models::UnitCube });
+    hitboxes.push_back({ { 60, 0.75, -160 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
+    hitboxes.push_back({ { -160, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
 
     RandomGenerator &gen = RandomGenerator::singleton();
     // Insane random map generator, will make unbelievable maps, they look like they are placed by humans but it ACTUALLY CAN YOU BELIEVE IT: RANDOM!?!?!?!?!?!?!?!?!?. This will make Diablo 3 look like a little noob
     for (int i = 0; i < gen.getRandomInt(4, 13); i++)
     {
-        hitboxes.push_back({ { gen.getRandomFloat(-150, 150), 0.75, gen.getRandomFloat(-150, 150) },{ 0, 0, 0 },{ gen.getRandomFloat(5, 35), 0.75, gen.getRandomFloat(5, 35) }, Graphics::CUBE });
+        hitboxes.push_back({ { gen.getRandomFloat(-150, 150), 0.75, gen.getRandomFloat(-150, 150) },{ 0, 0, 0 },{ gen.getRandomFloat(5, 35), 0.75, gen.getRandomFloat(5, 35) }, Resources::Models::UnitCube });
     }
     /*
     hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Graphics::CUBE });
@@ -102,81 +147,32 @@ void Map::readFromFile(std::string path)
     lights.push_back({ DirectX::SimpleMath::Vector3(35, 2, 35), DirectX::SimpleMath::Vector3(1, 0.25f, 0.5f), 0.75f, 10.f });
     lights.push_back({ DirectX::SimpleMath::Vector3(-23, 3, 74), DirectX::SimpleMath::Vector3(0.75, 0.25f, 0.5f), 0.85f, 10.f });
     lights.push_back({ DirectX::SimpleMath::Vector3(-22, 3, 70), DirectX::SimpleMath::Vector3(1, 0.55f, 0.5f), 0.85f, 10.f });
-    
+
     // Create everything and save
-    for (size_t i = hitboxes.size(); i--;)  add(hitboxes[i]);
- //   for (size_t i = lights.size(); i--;)    add(lights[i]); 
+    for (auto & hitbox : hitboxes) add(hitbox);
+    for (auto & light : lights) add(light);
 }
 
-void Map::clear()
+// Adds a pointlight to the map
+void Map::add(FrameLight frameLight)
 {
-	for (size_t i = 0; i < m_props.size(); i++)     delete m_props[i];
-	for (size_t i = 0; i < m_hitboxes.size(); i++)  delete m_hitboxes[i];
-	for (size_t i = 0; i < m_objects.size(); i++)   delete m_objects[i];
-    for (size_t i = 0; i < m_lights.size(); i++)    delete m_lights[i];
-
-	m_props.clear();
-	m_hitboxes.clear();
-	m_objects.clear();
-    m_lights.clear();
+    m_lights.push_back(newd LightObject(frameLight));
 }
 
-void Map::update(float deltaTime)
-{
-    // If user holds tab, draw debug info
-    m_drawHitboxesAndLights = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
-
-	// Updating interactable objects
-	for (size_t i = 0; i < m_objects.size(); i++)
-		m_objects[i]->update(deltaTime);
-}
-
-void Map::render(Graphics::Renderer& renderer)
-{
-	for (Object* o : m_props)           o->render(renderer);
-	for (Speaker* e : m_objects)        e->render(renderer);
-    for (LightObject* l : m_lights)     l->render(renderer);
-    for (StaticObject* e : m_hitboxes)  e->render(renderer); // Should not be visiable at all in release
-
-	// Drawing hitboxes & lights
-    if (m_drawHitboxesAndLights)
-    {
-        for (StaticObject* e : m_hitboxes)
-            e->renderD(renderer);
-        for (LightObject* l : m_lights) {
-            //l->renderD(renderer);
-            Graphics::Debug::PointLight(*l);
-        }
-    }
-}
-	
-std::vector<Object*>*				Map::getProps()				{ return &m_props;				}
-std::vector<StaticObject*>*			Map::getHitboxes()			{ return &m_hitboxes;			}
-std::vector<Speaker*>*				Map::getObjects()			{ return &m_objects;			}
-std::vector<LightObject*>*			Map::getLights()            { return &m_lights;             }
-
-void Map::debugInitProps()
-{
-
-}
-
-void Map::debugInitObjects()
-{
-    // Debugging for Sound bug testing
-    btVector3 halfextent(1.0, 1.0, 1.0);
-    Speaker* box = new Speaker(m_physicsPtr->createBody(Cube({ -25, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 6000.f, 250.f);
-    m_objects.push_back(box);
-
-    box = new Speaker(m_physicsPtr->createBody(Cube({ -26, 3, 75 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->delayPlayMusic(Sound::MUSIC::TEST_MUSIC, 500.f);
-    m_objects.push_back(box);
-
-    box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 3, 74 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 4000.f, 250.f);
-    m_objects.push_back(box);
-
-    box = new Speaker(m_physicsPtr->createBody(Cube({ -23, 2, 73 }, { 0, 0, 0 }, halfextent), 1.f, false), halfextent, Graphics::CUBE);
-    box->getSoundSource()->autoPlaySFX(Sound::SFX::BOING, 3500.f, 250.f);
-    m_objects.push_back(box);
-}
+//
+//// Adds a static hitbox to the map
+//void Map::add(FrameHitbox frameHitbox)
+//{
+//    m_hitboxes.push_back(newd StaticObject(
+//        frameHitbox.modelID, 
+//        m_physicsPtr->createBody(
+//            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), /* Shape */             
+//            NULL,                   /* Mass */              
+//            false,                  /* Sensor */            
+//            Physics::COL_HITBOX,    /* Collision Type */    
+//            Physics::COL_EVERYTHING /* Collides With */     
+//        ),
+//        frameHitbox.dimensions, /* Graphical Scaling */ 
+//        StaticObject::NavigationMeshFlags::NO_CULL
+//    ));
+//}

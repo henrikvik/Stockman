@@ -1,4 +1,10 @@
 #include "ShaderResource.h"
+#include "../Device.h"
+
+ShaderResource::ShaderResource(UINT width, UINT height, DXGI_FORMAT format)
+    : ShaderResource(Global::device, width, height, format)
+{
+}
 
 ShaderResource::ShaderResource(ID3D11Device * device, UINT width, UINT height, DXGI_FORMAT format)
 {

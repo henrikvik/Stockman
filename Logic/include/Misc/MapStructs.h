@@ -2,6 +2,7 @@
 #define MAPSTRUCTS
 
 #include <btBulletCollisionCommon.h>
+#include <Resources\Resources.h>
 
 namespace Logic
 {
@@ -9,13 +10,13 @@ namespace Logic
         btVector3 position;
         btVector3 rotation;
         btVector3 dimensions;
-        Graphics::ModelID modelID;  // Should get removed at later stage
+        Resources::Models::Files modelID;  // Should get removed at later stage
     };
 
     struct FrameProp {
         btVector3 position;
         btVector3 rotation;
-        Graphics::ModelID modelID;
+        Resources::Models::Files modelID;
     };
 
     struct FrameLight {

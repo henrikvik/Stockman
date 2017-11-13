@@ -1,13 +1,8 @@
 #ifndef STATICOBJECT_H
 #define STATICOBJECT_H
 
+#include <Graphics\include\RenderQueue.h>
 #include <Entity\PhysicsObject.h>
-
-namespace Graphics
-{
-    class Renderer;
-    struct RenderDebugInfo;
-}
 
 namespace Logic
 {
@@ -21,16 +16,20 @@ namespace Logic
             JUMP_TO = 0x2
         };
 
-		StaticObject(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, NavigationMeshFlags flags);
+		StaticObject(Resources::Models::Files modelId, btRigidBody* body, btVector3 halfExtent, NavigationMeshFlags flags);
+
 		virtual ~StaticObject();
 		void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 		void update(float deltaTime);
 
-        void renderD(Graphics::Renderer& renderer);
+
         NavigationMeshFlags getNavFlags() const;
+        void renderD();
+        void render() const;
     private:
-        Graphics::RenderDebugInfo* renderDebug;
         NavigationMeshFlags m_navFlags;
+        StaticRenderInfo staticRenderInfo;
+        DebugRenderInfo debugRenderInfo;
     };
 }
 

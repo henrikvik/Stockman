@@ -3,6 +3,7 @@
 #include <Misc\RandomGenerator.h>
 #include <Projectile\Projectile.h>
 #include <Misc\ComboMachine.h>
+
 using namespace Logic;
 
 const int EnemyNecromancer::SPEED_AB1 = 15,
@@ -12,9 +13,8 @@ const int EnemyNecromancer::SPEED_AB1 = 15,
           EnemyNecromancer::MAX_HP = 50;
 const float EnemyNecromancer::BASE_SPEED = 8.f;
 
-EnemyNecromancer::EnemyNecromancer(Graphics::ModelID modelID,
-    btRigidBody* body, btVector3 halfExtent)
-    : Enemy(modelID, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, NECROMANCER, 0) {
+EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
+    : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, NECROMANCER, 0) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().Kill(getEnemyType());
@@ -68,7 +68,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
     {
         if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
         {
-            Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), Graphics::ModelID::SKY_SPHERE, (float)SPEED_AB2, 2.5f, 0.6f);
+            Projectile *pj = shoot(((target.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), Resources::Models::UnitCube, (float)SPEED_AB2, 2.5f, 0.6f);
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
                 {
@@ -87,7 +87,7 @@ void EnemyNecromancer::useAbility(Entity const &target)
         }
         else
         {
-            //shoot((target.getPositionBT() - getPositionBT()).normalize(), Graphics::ModelID::SKY_SPHERE, (float)SPEED_AB1, 1.1f, 0.2f);
+            shoot((target.getPositionBT() - getPositionBT()).normalize(), Resources::Models::UnitCube, (float)SPEED_AB1, 1.1f, 0.2f);
         }
     }
 }

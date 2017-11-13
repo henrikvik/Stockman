@@ -1,5 +1,6 @@
 #include <AI\Behavior\NavigationMesh.h>
 #include <Misc\FileLoader.h>
+#include <Engine\newd.h>
 #define EPSILON 0.0001f
 #define EPSILON_NODE 0.2f
 using namespace Logic;
@@ -88,7 +89,7 @@ const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() cons
 std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataTri() 
 {
 	std::vector<DirectX::SimpleMath::Vector3> *data =
-		new std::vector<DirectX::SimpleMath::Vector3>();
+		newd std::vector<DirectX::SimpleMath::Vector3>();
 
     for (Triangle const &tri : triangleList)
     {

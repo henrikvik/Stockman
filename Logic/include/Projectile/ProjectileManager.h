@@ -33,7 +33,7 @@ namespace Logic
         void removeAllProjectiles();
 
 		void update(float deltaTime);
-		void render(Graphics::Renderer &renderer);
+		void render();
 
 		std::vector<Projectile*>& getProjectiles();
 
