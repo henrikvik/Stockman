@@ -354,6 +354,9 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
         {
             getSoundSource()->playSFX(Sound::SFX::NECROMANCER_DEATH);
             m_hp -= damage;
+
+            // Add invul time
+            getStatusManager().addStatus(StatusManager::EFFECT_ID::INVULNERABLE, 1);
         }
     }
 }
