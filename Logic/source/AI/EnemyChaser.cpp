@@ -5,7 +5,7 @@ using namespace Logic;
 
 const int EnemyChaser::MAX_HP = 25;
 const int EnemyChaser::BASE_DAMAGE = 1;
-const float EnemyChaser::MOVE_SPEED = 9.f;
+const float EnemyChaser::MOVE_SPEED = 9.5f;
 
 EnemyChaser::EnemyChaser(btRigidBody* body)
     : Enemy(Resources::Models::Files::StaticSummon, body, { 1, 1, 1 },
