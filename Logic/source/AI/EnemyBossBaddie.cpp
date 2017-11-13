@@ -306,7 +306,7 @@ void EnemyBossBaddie::shootAbility4(Player const &player, int pattern, float spe
 
 void EnemyBossBaddie::damage(int damage)
 {
-    Enemy::damage(damage - 5);
+    Enemy::damage(damage - 5); // make buff
 }
 
 void EnemyBossBaddie::useAbility(Player &target)
