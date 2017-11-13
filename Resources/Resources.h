@@ -27,7 +27,8 @@ namespace Resources
             Staff,
             StaticSummon,
             Tablet1,
-            UnitCube
+            UnitCube, 
+            AmmoPackCrossBolt
         };
         const std::map<Files, const char *> Paths =
         {
@@ -37,7 +38,8 @@ namespace Resources
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
-            {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
+            {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"},
+            {AmmoPackCrossBolt, R"(..\Resources\Models\Crossbowbolts.hyb)"}
         };
     }
     namespace Shaders
