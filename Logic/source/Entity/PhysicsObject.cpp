@@ -1,5 +1,6 @@
 #include "../../include/Entity/PhysicsObject.h"
 #include <Physics/Physics.h>
+#include <Projectile\Projectile.h>
 #include <Player\Player.h>
 #include <Engine\newd.h>
 
@@ -83,32 +84,32 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, Phy
 	bool hit = false;
 	if (!m_weakPoints.empty())
 	{
-		for (int i = 0; i < m_weakPoints.size(); i++)
-		{
-			Weakpoint weakPoint = m_weakPoints[i];
-
-            FunContactResult res(
-                [&](btBroadphaseProxy* proxy) -> bool {
-                return true;
-            },
-                [&](btManifoldPoint& cp,
-                    const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-                    const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+        Projectile* projectile = dynamic_cast<Projectile*>(&other);
+        // Check if other == projectile and not melee
+        if (projectile && projectile->getProjectileData().type != ProjectileTypeMelee)
+        {
+            for (int i = 0; i < m_weakPoints.size(); i++)   
             {
-                if (abs(cp.getDistance()) < 0.05f)
-                {
-                    onCollision(other, contactPoint, weakPoint.multiplier);
-                    hit = true;
-                }
-                return 0;
-            });
+                Weakpoint weakPoint = m_weakPoints[i];
 
-            // Special case because player doesn't have a rigidbody
-            if(Player* player = dynamic_cast<Player*>(&other))
-                physics.contactPairTest(weakPoint.body, player->getGhostObject(), res);
-            else
+                FunContactResult res(
+                    [&](btBroadphaseProxy* proxy) -> bool {
+                    return true;
+                },
+                    [&](btManifoldPoint& cp,
+                        const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                        const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+                {
+                    if (cp.getDistance() < 0.05f)
+                    {
+                        onCollision(other, contactPoint, weakPoint.multiplier);
+                        hit = true;
+                    }
+                    return 0;
+                });
                 physics.contactPairTest(weakPoint.body, other.getRigidBody(), res);
-		}
+            }
+        }
 	}
 
 	if (!hit)

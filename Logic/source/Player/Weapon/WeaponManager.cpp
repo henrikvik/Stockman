@@ -122,14 +122,14 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
         // Gattling
         newd WeaponLoadout{
         /* Primary */       newd Weapon(projectileManager, ProjectileData(25, 0.2f, 1, 100, 0.f, 3000, Resources::Models::UnitCube, 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 450, 0, 0 }),
-        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(10, 0.1f, 1, 100, 0.f, 500, Resources::Models::UnitCube, 1), Weapon::WeaponInfo{ 1, 18, 15, 10, 100, 0, 0 }),
+        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(10, 0.1f, 1, 100, 0.f, 500, Resources::Models::UnitCube, 1), Weapon::WeaponInfo{ 1, 36, 15, 10, 100, 0, 0 }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 60, 60, 20, 20, 1, 5, 1000 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.05f, 0.12f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.5f, -1.8f, 4.6f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.1f), 800.f }) },
 
         // Ice
         newd WeaponLoadout{
         /* Primary */       newd Weapon(projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1 }),
-        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(40, 0.6f, 1, 100, 0, 5000, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeFreezeGrenade, true), Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0 }, ProjectileData(10, 0.2f, 1, 10, 5, 5000, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeNormal, true), 8),
+        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(40, 0.6f, 1, 100, 0, 5000, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeFreezeGrenade), Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0 }, ProjectileData(10, 0.2f, 1, 10, 5, 5000, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeNormal), 8),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 300, 100, 100, 1, 25, 1500 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(-0.6f, -6.6f, 0.3f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.5f, -3.6f, 5.2f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), 800.f }) },
 
@@ -267,12 +267,12 @@ WeaponManager::WeaponLoadout* WeaponManager::getActiveWeaponLoadout()
     else
     {
         return m_weaponLoadouts[1];
-    } 
+    }
 }
 
 WeaponManager::WeaponLoadout* WeaponManager::getInactiveWeaponLoadout()
 {
-    if (m_weaponLoadouts[1] == m_currentWeapon)
+    if (m_weaponLoadouts[1] == m_currentWeapon || m_weaponLoadouts[2] == m_currentWeapon)
     {
         return m_weaponLoadouts[0];
     }

@@ -41,24 +41,27 @@ void EnemyNecromancer::createAbilities()
 
     auto onUse1 = [&](Player &player, Ability &ab) -> void {
         Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), Resources::Models::UnitCube, (float)SPEED_AB2, 2.5f, 0.6f);
-        pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
-            if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
-            {
-                Enemy *e = SpawnEnemy(EnemyType::NECROMANCER_MINION, data.caller->getPositionBT(), {});
-                if (e)
-                {
-                    m_spawnedMinions++;
+		if (pj)
+		{
+			pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+				if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
+				{
+					Enemy *e = SpawnEnemy(EnemyType::NECROMANCER_MINION, data.caller->getPositionBT(), {});
+					if (e)
+					{
+						m_spawnedMinions++;
 
-                    increaseCallbackEntities();
-                    e->addCallback(ON_DEATH, [&](CallbackData &data) -> void {
-                        m_spawnedMinions--;
-                    });
-                    e->addCallback(ON_DESTROY, [&](CallbackData data) -> void {
-                        decreaseCallbackEntities();
-                    });
-                }
-            }
-        });
+						increaseCallbackEntities();
+						e->addCallback(ON_DEATH, [&](CallbackData &data) -> void {
+							m_spawnedMinions--;
+						});
+						e->addCallback(ON_DESTROY, [&](CallbackData data) -> void {
+							decreaseCallbackEntities();
+						});
+					}
+				}
+			});
+		}
     };
 
     ab1 = Ability(data, onTick, onUse1);
