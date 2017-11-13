@@ -11,6 +11,8 @@ WeaponModel::WeaponModel(Resources::Models::Files modelID, WeaponModelAnimationI
 {
     m_mInfo = mInfo;
     renderInfo.model = modelID;
+    renderInfo.animationName = "";
+    renderInfo.animationTimeStamp = 0;
 }
 
 
@@ -57,5 +59,5 @@ const WeaponModel::WeaponModelAnimationInfo& Logic::WeaponModel::getModelInfo() 
 
 void WeaponModel::render() const
 {
-    RenderQueue::get().queue(&renderInfo);
+    RenderQueue::get().queue((StaticRenderInfo*)&renderInfo);
 }
