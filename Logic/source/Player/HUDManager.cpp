@@ -415,7 +415,7 @@ void Logic::HUDManager::renderTextElements()const
 {
     for (auto &text : HUDText)
     {
-        RenderQueue::get().queue(&text);
+        RenderQueue::get().queue(text);
     }
 }
 

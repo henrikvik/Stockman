@@ -89,7 +89,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     info.type = info.Snow;
     info.restart = true;
 
-    RenderQueue::get().queue(&info);
+    RenderQueue::get().queue(info);
 }
 
 StatePlaying::~StatePlaying()

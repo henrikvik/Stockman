@@ -108,6 +108,6 @@ void SkillBulletTime::render() const
 {
     if (m_sensor && m_sensor->getProjectileData().ttl > 0)
     {
-        RenderQueue::get().queue(&renderInfo);
+        RenderQueue::get().queue(renderInfo);
     }
 }

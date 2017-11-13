@@ -9,25 +9,20 @@ class RenderQueue
 {
 public:
     template<typename T>
-    using Queue = std::vector<T*>;
+    using Queue = std::vector<T>;
 
     template<typename T>
     using InstancedQueue = std::unordered_map<size_t, Queue<T>>;
 
     template<typename T>
-    inline void queue(T * info)
+    inline void queue(T info)
     {
         static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
-
-        if constexpr (std::is_base_of_v<SpriteRenderInfo, T>)
-        {
-            //OutputDebugString(__FILE__);
-        }
 
         if constexpr (std::is_base_of_v<StaticRenderInfo, T>)
         {
             InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
-            container->queue((size_t)info->model, info);
+            container->queue((size_t)info.model, info);
         }
         else
         {
@@ -104,7 +99,7 @@ private:
         {
             return instances.size();
         }
-        void queue(T * info)
+        void queue(T info)
         {
             if (count() > INSTANCE_CAP(T))
                 throw std::runtime_error("Instance cap exceeded.");
@@ -130,7 +125,7 @@ private:
         {
             return instanceCount;
         }
-        void queue(size_t key, T * info)
+        void queue(size_t key, T info)
         {
             if (count() > INSTANCE_CAP(T))
                 throw std::runtime_error("Instance cap exceeded.");
@@ -180,8 +175,4 @@ private:
 
     typedef std::unordered_map<std::type_index, QueueContainer_t*> Queues_t;
     Queues_t queues;
-
-
-    std::unordered_map<void*, const char*> QUEUE_BLAME;
 };
-

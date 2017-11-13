@@ -32,9 +32,9 @@ void Graphics::SnowRenderPass::update(float deltaTime)
     //If the game restarts or something like that the snowflakes must be reset
     for (auto & info : RenderQueue::get().getQueue<SpecialEffectRenderInfo>())
     {
-        if (info->type == info->Snow)
+        if (info.type == info.Snow)
         {
-            if (info->restart)
+            if (info.restart)
                 initializeSnowflakes();
         }
     }
