@@ -37,6 +37,9 @@ StatusManager::StatusManager()
                 flat.increaseSize = fileStruct.ints.at("increaseSize");
                 s_upgrades[id].init(flags, id, flat);
                 id++;
+
+                if (id > NR_OF_UPGRADES)
+                    throw std::exception("Upgrades added with out a ID, to fix this add the id in the UPGRADE_ID enum in the StatusManager.cpp class");
             }
         }
 
@@ -83,9 +86,15 @@ StatusManager::StatusManager()
                 creating.setStandards(standards);
                 s_effects[id] = creating;
                 id++;
+
+                if (id > NR_OF_EFFECTS)
+                    throw std::exception("Effects added with out a ID, to fix this add the id in the EFFECT_ID enum in the StatusManager.cpp class");
             }
         }
     }
+
+    for (int i = 0; i < NR_OF_UPGRADES; i++)
+        m_upgradeStacks[i] = 0;
 }
 
 StatusManager::~StatusManager() {
@@ -94,7 +103,9 @@ StatusManager::~StatusManager() {
 
 void StatusManager::clear()
 {
-	m_upgrades.clear();
+    for (int i = 0; i < NR_OF_UPGRADES; i++)
+        m_upgradeStacks[i] = 0;
+
 	m_effectStacks.clear();
 	m_effectStacksIds.clear();
 }
@@ -112,9 +123,10 @@ int StatusManager::getStacksOfEffectFlag(Effect::EFFECT_FLAG flag) const
 
 bool StatusManager::isOwningUpgrade(Upgrade::UPGRADE_FLAG flag)
 {
-    for (StatusManager::UPGRADE_ID upgrade : getActiveUpgrades())
-        if (getUpgrade(upgrade).getTranferEffects() & flag)
-            return true;
+    for (int id = 0; id < NR_OF_UPGRADES; id++)
+        if (s_upgrades[id].getTranferEffects() & flag)
+            if (m_upgradeStacks[id] > 0)
+                return true;
 
     return false;
 }
@@ -148,12 +160,23 @@ void StatusManager::update(float deltaTime, Entity &entity)
 	}
 }
 
-void StatusManager::addUpgrade(UPGRADE_ID id) 
+void StatusManager::copyUpgradesFrom(StatusManager &other)
 {
-	m_upgrades.push_back(id);
+    for (int i = 0; i < NR_OF_UPGRADES; i++)
+        m_upgradeStacks[i] = other.m_upgradeStacks[i];
 }
 
-Upgrade & Logic::StatusManager::getUpgrade(UPGRADE_ID id)
+void StatusManager::addUpgrade(UPGRADE_ID id)
+{
+	m_upgradeStacks[id]++;
+}
+
+int StatusManager::getUpgradeStacks(UPGRADE_ID id)
+{
+    return m_upgradeStacks[id];
+}
+
+Upgrade &Logic::StatusManager::getUpgrade(UPGRADE_ID id)
 {
 	return s_upgrades[id];
 }
@@ -250,9 +273,4 @@ std::vector<std::pair<int, StatusManager::EFFECT_ID>> StatusManager::getActiveEf
 		effects[i].second = m_effectStacksIds[i];
 
 	return effects;
-}
-
-std::vector<StatusManager::UPGRADE_ID>& StatusManager::getActiveUpgrades()
-{
-	return m_upgrades;
 }

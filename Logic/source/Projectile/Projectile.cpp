@@ -24,13 +24,7 @@ Projectile::~Projectile() { }
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
 	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
-	
-    // Copy all effects & upgrades to projectile
-    setStatusManager(statusManager);
-
-    // Give this projectile all upgrades
-	for (StatusManager::UPGRADE_ID id : statusManager.getActiveUpgrades())
-		upgrade(statusManager.getUpgrade(id));
+    getStatusManager().copyUpgradesFrom(statusManager);
 }
 
 // How different effects affect projectiles

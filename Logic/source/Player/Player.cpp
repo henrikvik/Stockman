@@ -285,7 +285,7 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     }
 }
 
-void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
+void Player::onEffectEnd(int stacks, Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
 
