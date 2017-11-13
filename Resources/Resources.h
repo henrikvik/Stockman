@@ -44,6 +44,7 @@ namespace Resources
     {
         enum Files
         {
+            BulletTime,
             DoFBlur1,
             DoFBlur2,
             DoFCreateCoC,
@@ -68,6 +69,7 @@ namespace Resources
         };
         const std::map<Files, const char *> Paths =
         {
+            {BulletTime, R"(..\Resources\Shaders\BulletTime.hlsl)"},
             {DoFBlur1, R"(..\Resources\Shaders\DoFBlur1.hlsl)"},
             {DoFBlur2, R"(..\Resources\Shaders\DoFBlur2.hlsl)"},
             {DoFCreateCoC, R"(..\Resources\Shaders\DoFCreateCoC.hlsl)"},

@@ -20,7 +20,6 @@ void Graphics::FullScreenPass::render() const
     auto sampler = Global::cStates->LinearWrap();
     Global::context->PSSetSamplers(0, 1, &sampler);
 
-    //stupid first case
     Global::context->PSSetShaderResources(0, 1, &resources[0]);
     Global::context->OMSetRenderTargets(1, &targets[0], nullptr);
 
