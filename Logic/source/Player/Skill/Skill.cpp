@@ -54,17 +54,14 @@ void Skill::update(float deltaTime)
 		m_duration -= deltaTime;
 
 	onUpdate(deltaTime);
-    //TODO LUKAS SWITCH THIS OUT AS PROMISED
-    m_cooldownModifer = 1.0f;
-    //TODO LUKAS SWITCH THIS OUT AS PROMISED
 }
 
-void Skill::upgrade(Upgrade const & upgrade)
+void Skill::affect(Effect const & effect)
 {
-    long long flags = upgrade.getTranferEffects();
-    if (flags & Upgrade::UPGRADE_DECREASE_CD)
+    long long flags = effect.getStandards()->flags;
+    if (flags & Effect::EFFECT_DECREASE_CD)
     {
-        m_cooldownModifer = m_cooldownModifer - upgrade.getFlatUpgrades().decreaseCooldown;
+        m_cooldownModifer -= effect.getModifiers()->modifySkillCDDecrease;
         if (m_cooldownModifer < 0)
         {
             m_cooldownModifer = 0;
@@ -72,7 +69,7 @@ void Skill::upgrade(Upgrade const & upgrade)
     }
     else
     {
-        onUpgrade(upgrade);
+        onAffect(effect);
     }
 }
 

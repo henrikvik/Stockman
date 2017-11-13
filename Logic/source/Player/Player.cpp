@@ -85,6 +85,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_moveDir.setZero();
 	m_moveSpeed = 0.f;
     m_moveSpeedMod = 1.0f;
+    m_permanentSpeedMod = 0.0f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_deacceleration = m_acceleration * 0.5f;
 	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
@@ -301,6 +302,23 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
         m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
         m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
     }
+
+    if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
+    {
+        m_permanentSpeedMod += effect.getModifiers()->modifyMovementSpeed;
+        m_moveMaxSpeed += PLAYER_MOVEMENT_MAX_SPEED * effect.getModifiers()->modifyMovementSpeed;
+    }
+    if (flags & Effect::EFFECT_IS_SKILL)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            getSkillManager()->getSkill(i)->affect(effect);
+        }
+    }
+    if (flags & Effect::EFFECT_IS_WEAPON)
+    {
+
+    }
 }
 
 void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
@@ -324,28 +342,12 @@ void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
     if (flags & Effect::EFFECT_MOVE_FASTER)
     {
         m_moveSpeedMod = 1;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED + PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
     }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
     {
         m_moveSpeedMod = 1;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
-    }
-   if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
-    {
-        /*m_permanentSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
-        m_moveMaxSpeed = m_moveMaxSpeed + (PLAYER_MOVEMENT_MAX_SPEED * upgrade.getFlatUpgrades().movementSpeed);*/
-    }
-    if (flags & Effect::EFFECT_IS_SKILL)
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            /*getSkillManager()->getSkill(i)->upgrade(upgrade);*/
-        }
-    }
-    if (flags & Effect::EFFECT_IS_WEAPON)
-    {
-
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED + PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
     }
 }
 
@@ -396,8 +398,6 @@ int Player::getHP() const
 void Player::updateSpecific(float deltaTime)
 {
     //TODO LUKAS SWITCH THIS OUT AS PROMISED
-    m_permanentSpeedMod = 0;
-    m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;;
     for (StatusManager::UPGRADE_ID id : getStatusManager().getActiveUpgrades())
     {
         upgrade(getStatusManager().getUpgrade(id));

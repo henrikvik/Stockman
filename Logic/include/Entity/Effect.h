@@ -58,6 +58,9 @@ namespace Logic
 			float	modifyHP;
 			float	modifyFirerate;
 			float	modifyMovementSpeed;
+            int     modifyAmmoCap;
+            int     modifyMagCap;
+            float   modifySkillCDDecrease;
 		};
 
 		struct Specifics {

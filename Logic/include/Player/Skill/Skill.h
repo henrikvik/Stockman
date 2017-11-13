@@ -35,9 +35,9 @@ namespace Logic
 		virtual void onRelease() = 0;
 		
 		void update(float deltaTime);
-        void upgrade(Upgrade const & upgrade);
+        void affect(Effect const & effect);
 		virtual void onUpdate(float deltaTime) = 0;
-        virtual void onUpgrade(Upgrade const & upgrade) = 0;
+        virtual void onAffect(Effect const & effect) = 0;
 
 		float	getCooldown() const;
 		float	getCooldownMax() const;

@@ -66,6 +66,9 @@ StatusManager::StatusManager()
                     modifiers.modifyFirerate = fileStruct.floats.at("mFirerate");
                     modifiers.modifyHP = fileStruct.floats.at("mHP");
                     modifiers.modifyMovementSpeed = fileStruct.floats.at("mMovementSpeed");
+                    modifiers.modifyAmmoCap = fileStruct.ints.at("mAmmoCap");
+                    modifiers.modifyMagCap = fileStruct.ints.at("mMagCap");
+                    modifiers.modifySkillCDDecrease = fileStruct.floats.at("mSkillCDDecrease");
 
                     creating.setModifiers(modifiers);
                 }
