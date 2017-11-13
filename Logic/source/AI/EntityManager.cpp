@@ -108,7 +108,7 @@ void EntityManager::allocateData()
 void EntityManager::loadDebugCmds()
 {
 #ifdef _DEBUG
-    DebugWindow::getInstance()->registerCommand("LOG_SETAI", [&](std::vector<std::string> &para) -> std::string {
+    DebugWindow::getInstance()->registerCommand("AI_SETMODE", [&](std::vector<std::string> &para) -> std::string {
         try {
             m_aiType = static_cast<AIType> (stoi(para[0]));
             return "AI Mode Updated";
@@ -117,7 +117,7 @@ void EntityManager::loadDebugCmds()
         }
     });
 #endif
-    DebugWindow::getInstance()->registerCommand("LOG_AI_AUTOMATIC_TESTING", [&](std::vector<std::string> &para) -> std::string {
+    DebugWindow::getInstance()->registerCommand("AI_AUTOMATIC_TESTING", [&](std::vector<std::string> &para) -> std::string {
         m_automaticTesting = true;
         PATH_UPDATE_DIV = 1;
         return "TESTING ACTIVED (QUIT TO TURN OFF)";
@@ -264,7 +264,7 @@ void EntityManager::automaticUpdate(Player &player)
 
     if (gen.getRandomInt(0, 1900) == 0)
     {
-        deallocateData();
+        deallocateData(false);
         m_aliveEnemies = 0;
     }
 
