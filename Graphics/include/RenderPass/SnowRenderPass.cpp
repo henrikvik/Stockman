@@ -72,7 +72,7 @@ void Graphics::SnowRenderPass::update(float deltaTime)
             moveSnowFlake(i);
 
         snowFlakes[i].distance = (snowFlakes[i].position - Global::mainCamera->getPos()).Length();
-        snowFlakes[i].randomRot += generator.getRandomFloat(0, ONE_DEG_IN_RAD * 5);
+        snowFlakes[i].randomRot += generator.getRandomFloat(0, ONE_DEG_IN_RAD * 5) * deltaTime * 62.5f; //62.5 * 0.016 = 1
 
 
 
