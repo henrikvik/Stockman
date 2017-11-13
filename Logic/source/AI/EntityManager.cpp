@@ -348,7 +348,7 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
             true);
         break;
     case 2:
-        trigger = m_triggerManager.addTrigger((rand() % 2 == 0) ? Resources::Models::AmmoPackCrossBolt : Resources::Models::AmmoPackIceGun,
+        trigger = m_triggerManager.addTrigger(Resources::Models::AmmoPackCrossBolt,
             Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, physics, {},
             effectsIds,
             false);
