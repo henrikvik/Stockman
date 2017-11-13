@@ -198,19 +198,6 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
     return false;
 }
 
-void Projectile::upgrade(Upgrade const &upgrade)
-{
-    long long flags = upgrade.getTranferEffects();
-    if (flags & Upgrade::UPGRADE_INCREASE_DMG)
-    {
-        m_pData.damage += upgrade.getFlatUpgrades().increaseDmg;
-    }
-    if (flags & Upgrade::UPGRADE_IS_BOUNCING)
-    {
-        this->getRigidBody()->setRestitution(1.f);
-    }
-}
-
 void Logic::Projectile::setWorldTransform(DirectX::SimpleMath::Matrix & worldTransform)
 {
     renderInfo.transform = worldTransform;
