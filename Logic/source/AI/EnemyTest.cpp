@@ -4,7 +4,7 @@
 using namespace Logic;
 
 EnemyTest::EnemyTest(btRigidBody* body, btVector3 halfExtent)
-: Enemy(Resources::Models::UnitCube, body, halfExtent, 10, 1, 5, NECROMANCER, 1) { //just test values
+: Enemy(Resources::Models::UnitCube, body, halfExtent, 10, 1, 5, EnemyType::NECROMANCER, 1) { //just test values
 	setBehavior(TEST);
 }
 

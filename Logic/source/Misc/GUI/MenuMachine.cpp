@@ -36,9 +36,6 @@ MenuMachine::MenuMachine()
     deleteCharCD = 20.0f;
 	m_cardUpgrade = -1;
     m_selectedSkills = { -1, -1 };
-
-	Settings* setting = Settings::getInstance();
-	setting->readFromFile();
 }
 
 

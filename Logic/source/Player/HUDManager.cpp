@@ -485,7 +485,7 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
 
 
 
-    info.wave = timeManager.getCurrentWave() + 1;
+    info.wave = timeManager.getCurrentWave();
     info.timeRemaining = (timeManager.getTimeRequired() - timeManager.getTimeCurrent()) * 0.001f;
     info.enemiesRemaining = (int)entityManager.getNrOfAliveEnemies();
 

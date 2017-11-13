@@ -2,6 +2,8 @@
 #include <StateMachine\StateBuffer.h>
 #include <State.h>
 
+#include <Misc\CommandsFile.h>
+
 // Input Singletons
 #include <Keyboard.h>
 #include <Mouse.h>
@@ -56,7 +58,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
 
-    // Sorry Lucas, I broke it
+    // Sorry Lucas, I broke it, Who is lucas?
     //#ifdef _DEBUG
     //    DebugWindow *win = DebugWindow::getInstance();
     //    win->registerCommand("SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
@@ -78,6 +80,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     //        if (!cmd.empty())
     //            win->doCommand(cmd.c_str());
     //#endif
+    CommandsFile().doCommandsFromFile();
 
     RenderQueue::get().clearAllQueues();
 
