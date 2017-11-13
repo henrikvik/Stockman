@@ -24,6 +24,7 @@
 #include "RenderPass\SSAORenderPass.h"
 #include "RenderPass\DepthOfFieldRenderPass.h"
 #include "RenderPass\SnowRenderPass.h"
+#include "RenderPass\BulletTimeRenderPass.h"
 
 #include "Utility\DebugDraw.h"
 
@@ -46,7 +47,6 @@ namespace Graphics
         , debugColorBuffer(device)
 #pragma endregion
         , fog(device)
-        , bulletTimeBuffer(device)
 #pragma region Foliage
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
@@ -178,14 +178,10 @@ namespace Graphics
 
         FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
 
-        float temp = 1.f;
-        bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
+      
 
 
 		registerDebugFunction();
-
-		statusData.burn = 0;
-		statusData.freeze = 0;
 
         TextureLoader::get().loadAll();
 
@@ -232,10 +228,10 @@ namespace Graphics
             newd ParticleRenderPass({ *fakeBackBuffer }, depthStencil),
             newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
             newd DepthOfFieldRenderPass({ *fakeBackBufferSwap }, { *fakeBackBuffer, depthStencil }),
-            newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
+            newd GlowRenderPass({ *fakeBackBuffer },{*fakeBackBufferSwap, glowMap}),
             newd SnowRenderPass(
                 {
-                    backBuffer 
+                    *fakeBackBuffer
                 },
                 {
                     lightOpaqueIndexList, 
@@ -249,6 +245,7 @@ namespace Graphics
                 },
                 depthStencil
             ),
+            newd BulletTimeRenderPass({backBuffer}, {*fakeBackBuffer}),
             newd GUIRenderPass({backBuffer}),
         };
     }
@@ -274,27 +271,6 @@ namespace Graphics
 
         TextureLoader::get().unloadAll();
         ModelLoader::get().unloadAll();
-    }
-	//this function is called in SkillBulletTime.cpp
-	void Renderer::setBulletTimeCBuffer(float amount)
-	{
-		PROFILE_BEGIN("SetBulletTimeCBuffer()");
-		//These two must always add up to one ir i'll have to fix the formula
-		//They represents how long the fade in and fade out are. 
-		static const float TOP_THRESHOLD = 0.9f;
-		static const float BOT_THRESHOLD = 0.1f;
-
-
-        if (amount > TOP_THRESHOLD)
-            amount = (amount - TOP_THRESHOLD) / BOT_THRESHOLD;
-
-        else if (amount < BOT_THRESHOLD)
-            amount = 1 - ((amount) / BOT_THRESHOLD);
-
-        else amount = 0;
-
-        bulletTimeBuffer.write(Global::context, &amount, sizeof(float));
-        PROFILE_END();
     }
 
     void Renderer::update(float deltaTime)
@@ -347,6 +323,7 @@ namespace Graphics
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
 	}
 
+    //no idea if working
 	void Renderer::swapBackBuffers()
 	{
 		ID3D11ShaderResourceView * temp = fakeBackBuffer->shaderResource;
