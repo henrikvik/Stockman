@@ -123,6 +123,10 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         return catcher;
     });
 
+    // load settings before starting
+    Settings* setting = Settings::getInstance();
+    setting->readFromFile();
+
 //    game = new Logic::StateMachine(cmdLine, args);
     game = new Logic::StateMachine();
 }
@@ -348,7 +352,7 @@ int Engine::run()
 
 		if (setting->getWindowed() != test)
 		{
-			mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
+		//	mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
 		}
 
 
