@@ -22,8 +22,11 @@ void EnemyThreadHandler::initThreads()
 
     for (std::thread *&t : threads)
         if (t)
+        {
             if (t->joinable())
                 t->join();
+            delete t;
+        }
 
     m_killChildren = false;
 
