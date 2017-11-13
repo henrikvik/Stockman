@@ -91,12 +91,17 @@ void Map::loadMapFromFile(std::string path)
     // Temp campfire map, remove this when an actual campfire is done
     if (path == "Campfire.txt")
     {
-        std::vector<FrameHitbox> hitboxes; std::vector<FrameLight> lights; lights.push_back({ DirectX::SimpleMath::Vector3(0, 0, 0), DirectX::SimpleMath::Vector3(1, 0.5, 0.3), 0.75f, 5.f }); lights.push_back({ DirectX::SimpleMath::Vector3(0, 2, 0), DirectX::SimpleMath::Vector3(0.5, 1.0, 0.3), 0.75f, 5.f }); lights.push_back({ DirectX::SimpleMath::Vector3(0, 4, 0), DirectX::SimpleMath::Vector3(0, 0.3, 1.f), 0.75f, 5.f }); lights.push_back({ DirectX::SimpleMath::Vector3(0, 6, 0), DirectX::SimpleMath::Vector3(1.f, 1.f, 1.f), 0.75f, 5.f });
-        for (int i = 0; i < 50; i++) hitboxes.push_back({ { 0, (-5) +  i * 2.f, 3.f },{ (-5) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
-        for (int i = 0; i < 13; i++) hitboxes.push_back({ { 10, (-2) + i * 2.f, 8.f },{ (-10) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
-        for (int i = 0; i < 20; i++) hitboxes.push_back({ { 3, (-2) + i * 2.f, 4.f },{ (-6) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
-        for (int i = 0; i < 22; i++) hitboxes.push_back({ { -3, (-2) + i * 2.f, 4.f },{ (-6) +(i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
-        for (int i = 0; i < 10; i++) hitboxes.push_back({ { -10, (-2) + i * 2.f, 8.f },{ (-10) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
+        std::vector<FrameHitbox> hitboxes; 
+        std::vector<FrameLight> lights;
+
+        hitboxes.push_back({ { 0, -10, 0 },{ 0, 0, 0 },{ 500.f, 10, 500.f },    Resources::Models::UnitCube });
+
+        hitboxes.push_back({ { 0, 0.0f, 0 },{ 0, 0, 0 },{ 0.55f, 0.55f, 0.55f },    Resources::Models::UnitCube });
+        hitboxes.push_back({ { 3, 0.0f, 0.5 },{ 0, 0, 0 },{ 1, 0.75, 1 },    Resources::Models::UnitCube });
+        hitboxes.push_back({ { -3, 0.0f, -1 },{ 0, 35, 0 },{ 1, 0.75, 1 },    Resources::Models::UnitCube });
+        hitboxes.push_back({ { 3, 1.0f, 0.5 },{ 0, 35, 0 },{ 1, 1, 1 },    Resources::Models::StaticSummon });
+        hitboxes.push_back({ { -3, 1.0f, -1 },{ 0, 45, 0 },{ 1, 1, 1 },    Resources::Models::StaticSummon });
+
         for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
         return;
     }

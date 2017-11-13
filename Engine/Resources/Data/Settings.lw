@@ -1,18 +1,18 @@
 {
 	"Name": "MouseSense";
-	"Value": 0.01f;
+	"Value": 3.65739e-43f;
 }
 {
 	"Name": "FOV";
-	"Value": 90f;
+	"Value": 3.6714e-43f;
 }
 {
 	"Name": "MasterSound";
-	"Value": 0.51f;
+	"Value": 3.68541e-43f;
 }
 {
 	"Name": "SFX";
-	"Value": 0.61f;
+	"Value": 3.6714e-43f;
 }
 {
 	"Name": "Music";

@@ -387,11 +387,6 @@ int Engine::run()
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game->render();
 		PROFILE_END();
-
-        // ! Reminder !  
-        // Gives a small mem leak, but it's too cool to remove ^.^
-        static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
-        Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);
         
         PROFILE_BEGINC("Renderer::update()", EventColor::Pear);
         renderer->update(deltaTime / 1000.f);

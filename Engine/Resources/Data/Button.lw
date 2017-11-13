@@ -1,57 +1,57 @@
 {
 	"buttonName" : "MenuStartGame";
 	"texture" : 0;
-	"xPos" : 170.0f;
+	"xPos" : 120.0f;
 	"yPos" : 275.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 1.f;
 	"yTexEnd" : 0.125f;
     "activeOffset" : 0.5f;
-	"height" : 28.0f;
-	"width" : 85.0f;
+	"height" : 64.f;
+	"width" : 195.0f;
 	"function" : "buttonClick0";
 }
 {
 	"buttonName" : "MenuStartSettings";
 	"texture" : 0;
-	"xPos" : 155.0f;
-	"yPos" : 340.0f;
+	"xPos" : 120.0f;
+	"yPos" : 339.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.125f;
 	"xTexEnd" : 1.f;
 	"yTexEnd" : 0.25f;
     "activeOffset" : 0.5f;
-	"height" : 25.0f;
-	"width" : 115.0f;
+	"height" : 64.f;
+	"width" : 195.0f;
 	"function" : "buttonClick1";
 }
 {
 	"buttonName" : "MenuStartHighscore";
 	"texture" : 0;
-	"xPos" : 115.0f;
-	"yPos" : 310.0f;
+	"xPos" : 120.0f;
+	"yPos" : 403.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.25f;
 	"xTexEnd" : 1.f;
 	"yTexEnd" : 0.375f;
     "activeOffset" : 0.5f;
-	"height" : 28.0f;
+	"height" : 64.f;
 	"width" : 195.0f;
 	"function" : "buttonClick21";
 }
 {
 	"buttonName" : "MenuQuitGame";
 	"texture" : 0;
-	"xPos" : 185.0f;
-	"yPos" : 370.0f;
+	"xPos" : 120.0f;
+	"yPos" : 467.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.375f;
 	"xTexEnd" : 1.f;
 	"yTexEnd" : 0.5f;
     "activeOffset" : 0.5f;
-	"height" : 28.0f;
-	"width" : 60.0f;
+	"height" : 64.f;
+	"width" : 195.0f;
 	"function" : "buttonClick3";
 }
 {
