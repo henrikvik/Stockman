@@ -96,7 +96,7 @@
 	"bosses": 0;
 }
 { // 8
-	"enemies" : "0, 0, 0, 0, 0, 0, 0";
+	"enemies" : "0, 0, 0, 0, 0, 0";
 	"triggers" : 0;
 	"bosses": 0;
 }
