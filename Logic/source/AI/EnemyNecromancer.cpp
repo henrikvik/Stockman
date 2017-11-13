@@ -113,8 +113,6 @@ void EnemyNecromancer::updateDead(float deltaTime)
 
 void EnemyNecromancer::useAbility(Player &target)
 {
-    if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
-        ab1.useAbility(target);
-    else
-        ab2.useAbility(target);
+    ab1.useAbility(target);
+    ab2.useAbility(target);
 }
