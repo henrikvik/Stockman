@@ -19,7 +19,7 @@ using namespace Logic;
 const float EnemyBossBaddie::BASE_SPEED = 4.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.085f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.105f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 14000; // Big guy, for you
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 11500; // Big guy, for you
 
 /*
     @author Lukas Westling
