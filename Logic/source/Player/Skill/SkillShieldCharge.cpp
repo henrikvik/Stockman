@@ -26,7 +26,6 @@ SkillShieldCharge::~SkillShieldCharge()
 bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
     setCanUse(false);
-    setCooldown(SHIELD_CHARGE_CD);
 
 	if (!m_active)
 	{
@@ -91,6 +90,10 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 			}
 		}
 	}
+}
+
+void SkillShieldCharge::onUpgrade(Upgrade const & upgrade)
+{
 }
 
 void SkillShieldCharge::render() const

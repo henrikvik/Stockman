@@ -53,6 +53,7 @@ namespace Logic
 		void onRelease();
 
 		void onUpdate(float deltaTime);
+        void onUpgrade(Upgrade const & upgrade);
 		virtual void render() const override;
 
 	};

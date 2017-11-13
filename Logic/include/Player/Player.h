@@ -84,6 +84,9 @@ namespace Logic
 		btVector3 m_moveDir; // only 2 dimensional movement direction (x, z)
 		float m_moveSpeed;
         float m_moveSpeedMod;
+        //TODO LUKAS SWITCH THIS OUT AS PROMISED
+        float m_permanentSpeedMod;
+        //TODO LUKAS SWITCH THIS OUT AS PROMISED
 		float m_acceleration;
 		float m_deacceleration;
 		float m_airAcceleration;

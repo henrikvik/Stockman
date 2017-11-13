@@ -25,7 +25,6 @@ SkillBulletTime::~SkillBulletTime()
 bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
     setCanUse(false);
-    setCooldown(BULLET_TIME_CD);
 
 	printf("Bullet Time used.\n");
 	m_sensor = SpawnProjectile(*m_pData, shooter.getPositionBT(), forward, shooter);
@@ -63,6 +62,7 @@ void SkillBulletTime::onRelease() { }
 
 void SkillBulletTime::onUpdate(float deltaTime)
 {
+    
 	if (m_sensor)
 	{
 		if (m_sensor->getProjectileData().ttl < deltaTime)
@@ -99,6 +99,10 @@ void SkillBulletTime::onUpdate(float deltaTime)
 	{
 		m_sensor->getRigidBody()->setWorldTransform(m_travelProjectile->getTransform());
 	}*/
+}
+
+void SkillBulletTime::onUpgrade(Upgrade const & upgrade)
+{
 }
 
 void SkillBulletTime::render() const

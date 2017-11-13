@@ -156,6 +156,10 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 	}
 }
 
+void SkillGrapplingHook::onUpgrade(Upgrade const & upgrade)
+{
+}
+
 void SkillGrapplingHook::render() const
 {
 	// Drawing a ray of the grappling hook for debugging purposes

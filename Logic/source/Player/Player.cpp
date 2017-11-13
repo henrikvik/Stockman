@@ -180,6 +180,24 @@ void Player::registerDebugCmds()
     {
         return "x: " + std::to_string((double) getPosition().x) + ", y: " + std::to_string((double) getPosition().y) + ", z: " + std::to_string((double) getPosition().z);
     });
+    win->registerCommand("BOOST_ALL_DAMAGE", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addUpgrade(StatusManager::P1_DAMAGE);
+
+        return "All weapons do 1 extra damage";
+    });
+    win->registerCommand("BOOST_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_PERC_MOVEMENTSPEED, 1);
+
+        return "Player is permanently 20 percent faster";
+    });
+    win->registerCommand("DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::M20_PERC_CD, 1);
+
+        return "Player skills take 20% less time to recover";
+    });
 }
 
 void Player::clear()
@@ -313,16 +331,28 @@ void Player::onEffectEnd(int stacks, Effect const & effect)
         m_moveSpeedMod = 1;
         m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
     }
+   if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
+    {
+        /*m_permanentSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
+        m_moveMaxSpeed = m_moveMaxSpeed + (PLAYER_MOVEMENT_MAX_SPEED * upgrade.getFlatUpgrades().movementSpeed);*/
+    }
+    if (flags & Effect::EFFECT_IS_SKILL)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            /*getSkillManager()->getSkill(i)->upgrade(upgrade);*/
+        }
+    }
+    if (flags & Effect::EFFECT_IS_WEAPON)
+    {
+
+    }
 }
 
 void Player::upgrade(Upgrade const & upgrade)
 {
 	long long flags = upgrade.getTranferEffects();
 
-	if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
-	{
-
-	}
 }
 
 void Player::updateSound(float deltaTime)
@@ -365,7 +395,15 @@ int Player::getHP() const
 
 void Player::updateSpecific(float deltaTime)
 {
-    Player::update(deltaTime);
+    //TODO LUKAS SWITCH THIS OUT AS PROMISED
+    m_permanentSpeedMod = 0;
+    m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;;
+    for (StatusManager::UPGRADE_ID id : getStatusManager().getActiveUpgrades())
+    {
+        upgrade(getStatusManager().getUpgrade(id));
+    }
+    //TODO LUKAS SWITCH THIS OUT AS PROMISED
+	Player::update(deltaTime);
 
     // Update weapon and skills
     m_weaponManager->update(deltaTime);
@@ -627,7 +665,7 @@ void Player::accelerate(float deltaTime, float acceleration)
 	if (deltaTime * 0.001f > (1.f / 60.f))
 		deltaTime = (1.f / 60.f) * 1000.f;
 
-	m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod;
+	m_moveSpeed += (acceleration * deltaTime * m_permanentSpeedMod) + (acceleration * deltaTime * m_moveSpeedMod);
 
 	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;
