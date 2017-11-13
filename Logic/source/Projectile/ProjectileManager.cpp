@@ -4,7 +4,7 @@
 #include <Physics\Physics.h>
 #include <Projectile\Projectile.h>
 
-#define PROJECTILE_DEFAULT_COUNT 100
+#define PROJECTILE_DEFAULT_COUNT 150
 #define PROJECTILE_DEFAULT_POS { 0.f, -100.f, 0.f }
 
 using namespace Logic;
