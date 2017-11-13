@@ -42,7 +42,8 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 		{
 			btVector3 projectileDir = calcSpread(yaw, pitch);
 			Projectile* p = spawnProjectile(*m_projectileData, position, projectileDir, shooter);
-            firedProjectiles.push_back(p);
+            if (p != nullptr)
+                firedProjectiles.push_back(p);
 		}
 	}
 	else									// No spread
@@ -54,7 +55,8 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
 			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
 			Projectile* p = spawnProjectile(*m_projectileData, position, projectileDir, shooter);
-            firedProjectiles.push_back(p);
+            if (p != nullptr)
+                firedProjectiles.push_back(p);
 		}
 	}
 
