@@ -10,10 +10,17 @@ Trigger::Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 
 	m_reusable = reusable;
 	m_remove = false;
 
+    // Setting up Animation information
     animatedRenderInfo.model = modelID;
 //    animatedRenderInfo.animationName = "Rotation";
 //    animatedRenderInfo.animationProgress = 0;
     animatedRenderInfo.transform = getTransformMatrix();
+    
+    // Setting up Light information
+    light.position = DirectX::SimpleMath::Vector3(body->getWorldTransform().getOrigin());
+    light.color = DirectX::SimpleMath::Vector4(0.3, 0.9, 0.2, 1.f);
+    light.range = 10.f;
+    light.intensity = 1.f;
 }
 
 Trigger::~Trigger() { }
@@ -126,4 +133,5 @@ void Trigger::setCooldown(float cooldown)
 void Trigger::render() const
 {
     RenderQueue::get().queue(&animatedRenderInfo);
+    RenderQueue::get().queue(&light);
 }
