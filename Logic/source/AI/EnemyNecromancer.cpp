@@ -7,14 +7,15 @@
 using namespace Logic;
 
 const int EnemyNecromancer::SPEED_AB1 = 15,
-          EnemyNecromancer::SPEED_AB2 = 25,
+          EnemyNecromancer::SPEED_AB2 = 20,
           EnemyNecromancer::MAX_SPAWNED_MINIONS = 4,
           EnemyNecromancer::BASE_DAMAGE = 1,
           EnemyNecromancer::MAX_HP = 50;
 const float EnemyNecromancer::BASE_SPEED = 8.f;
 
 EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
-    : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, NECROMANCER, 0) {
+    : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP, BASE_DAMAGE,
+        BASE_SPEED, EnemyType::NECROMANCER, 0) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().Kill(getEnemyType());
@@ -53,18 +54,17 @@ void EnemyNecromancer::onCollision(Player &other)
 
 }
 
-void EnemyNecromancer::updateSpecific(Player const & player, float deltaTime)
+void EnemyNecromancer::updateSpecific(Player &player, float deltaTime)
 {
 }
 
 void EnemyNecromancer::updateDead(float deltaTime)
 {
-    Entity::update(deltaTime);
 }
 
-void EnemyNecromancer::useAbility(Entity const &target)
+void EnemyNecromancer::useAbility(Player &target)
 {
-    if (RandomGenerator::singleton().getRandomInt(0, 800))
+    if (RandomGenerator::singleton().getRandomInt(0, 900))
     {
         if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
         {
@@ -72,16 +72,19 @@ void EnemyNecromancer::useAbility(Entity const &target)
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
                 {
-                    Enemy *e = SpawnEnemy(ENEMY_TYPE::NECROMANCER_MINION, data.caller->getPositionBT(), {});
-                    m_spawnedMinions++;
+                    Enemy *e = SpawnEnemy(EnemyType::NECROMANCER_MINION, data.caller->getPositionBT(), {});
+                    if (e)
+                    {
+                        m_spawnedMinions++;
 
-                    increaseCallbackEntities();
-                    e->addCallback(ON_DEATH, [&](CallbackData &data) -> void {
-                        m_spawnedMinions--;
-                    });
-                    e->addCallback(ON_DESTROY, [&](CallbackData data) -> void {
-                        decreaseCallbackEntities();
-                    });
+                        increaseCallbackEntities();
+                        e->addCallback(ON_DEATH, [&](CallbackData &data) -> void {
+                            m_spawnedMinions--;
+                        });
+                        e->addCallback(ON_DESTROY, [&](CallbackData data) -> void {
+                            decreaseCallbackEntities();
+                        });
+                    }
                 }
             });
         }

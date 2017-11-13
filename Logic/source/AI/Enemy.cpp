@@ -2,6 +2,7 @@
 #include <AI\Behavior\TestBehavior.h>
 #include <AI\Behavior\RangedBehavior.h>
 #include <AI\Behavior\MeleeBehavior.h>
+#include <AI\Behavior\BigBadBehavior.h>
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileStruct.h>
@@ -9,7 +10,7 @@
 
 using namespace Logic;
 
-Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId)
+Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId)
 : Entity(body, halfExtent)
 {
 	m_behavior = nullptr;
@@ -35,8 +36,6 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 1.0f;
     light.range = 2.f;
-    
-
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -56,13 +55,16 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
         case MELEE:
                 m_behavior = newd MeleeBehavior();
             break;
+        case BOSS_BADDIE:
+                m_behavior = newd BigBadBehavior();
+            break;
 		default:
 				m_behavior = newd TestBehavior();
 			break;
 	}
 }
 
-void Enemy::setEnemyType(ENEMY_TYPE id)
+void Enemy::setEnemyType(EnemyType id)
 {
 	m_enemyType = id;
 }
@@ -72,7 +74,7 @@ Enemy::~Enemy() {
 		delete m_behavior;
 }
 
-void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
+void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 	updateSpecific(player, deltaTime);
 
@@ -132,20 +134,14 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
     if (flags & Effect::EFFECT_IS_FROZEN)
         m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
     if (flags & Effect::EFFECT_IS_STUNNED)
-    {
         m_stunned = true;
-    }
     if (flags & Effect::EFFECT_MOVE_FASTER)
-    {
        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-    }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
-    {
        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-    }
 }
 
-void Logic::Enemy::onEffectEnd(int stacks, Effect const & effect)
+void Enemy::onEffectEnd(int stacks, Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
 
@@ -195,23 +191,23 @@ float Enemy::getMoveSpeed() const
 	return m_moveSpeed * m_bulletTimeMod * m_moveSpeedMod;
 }
 
-ENEMY_TYPE Enemy::getEnemyType() const
+EnemyType Enemy::getEnemyType() const
 {
 	return m_enemyType;
 }
 
-Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale)
+Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale, bool sensor)
 {
 	ProjectileData data;
 
 	data.damage = getBaseDamage();
 	data.meshID = id;
 	data.speed = speed;
-    data.ttl = 20000;
-    data.gravityModifier = 2.5;
+    data.ttl = 10000;
+    data.gravityModifier = gravity;
 	data.scale = scale;
     data.enemyBullet = true;
-    data.isSensor = false;
+    data.isSensor = sensor;
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     
@@ -234,8 +230,9 @@ Behavior* Enemy::getBehavior() const
 	return this->m_behavior;
 }
 
-void Logic::Enemy::render() const
+void Enemy::render() const
 {
+    renderSpecific();
     RenderQueue::get().queue(&enemyRenderInfo);
     RenderQueue::get().queue(&light);
 }

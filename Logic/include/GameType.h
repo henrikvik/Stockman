@@ -28,10 +28,10 @@ namespace Logic
     };
     static const std::string GameCommands[GAME_TYPES][MAX_COMMANDS] =
     {
-        {"LOG_GODMODE", "LOG_setAI 0", "LOG_setGameState 0"},
+        {"LOG_GODMODE", "AI_SETMODE 0", "LOG_setGameState 0"},
         {},
-        {"LOG_setAI 2"},
-        {"LOG_setAI 3"},
+        {"AI_SETMODE 2"},
+        {"AI_SETMODE 3"},
     };
 };
 
