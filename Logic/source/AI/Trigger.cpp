@@ -18,8 +18,8 @@ Trigger::Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 
     
     // Setting up Light information
     light.position = DirectX::SimpleMath::Vector3(body->getWorldTransform().getOrigin());
-    light.color = DirectX::SimpleMath::Vector4(0.3, 0.9, 0.2, 1.f);
-    light.range = 10.f;
+    light.color = DirectX::SimpleMath::Vector4(1.f, 1.f, 1.f, 1.f);
+    light.range = 1.f;
     light.intensity = 1.f;
 }
 
