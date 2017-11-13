@@ -336,6 +336,10 @@ void Player::upgrade(Upgrade const & upgrade)
             getSkillManager()->getSkill(i)->upgrade(upgrade);
         }
     }
+    if (flags & Upgrade::UPGRADE_IS_WEAPON)
+    {
+
+    }
 
 }
 
