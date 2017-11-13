@@ -33,9 +33,9 @@ EnemyNecromancer::~EnemyNecromancer()
 void EnemyNecromancer::createAbilities()
 {
     AbilityData data;
-    data.cooldown = 1000.f;
+    data.cooldown = 800.f;
     data.duration = 0.f;
-    data.randomChanche = 1;
+    data.randomChanche = 0;
 
     auto onTick = [&](Player &player, Ability &ab) -> void {};
 
