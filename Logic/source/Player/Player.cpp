@@ -198,6 +198,7 @@ void Player::reset()
     m_moveSpeed = 0.f;
 	getTransform().setOrigin(startPosition);
 	m_weaponManager->reset();
+    currentWeapon = 0;
 	m_hp = 3;
 
     //temp? probably

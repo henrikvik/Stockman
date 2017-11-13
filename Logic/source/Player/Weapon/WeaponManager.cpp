@@ -53,6 +53,13 @@ void WeaponManager::reset()
 
     // Reset current weapon
     m_currentWeapon = m_weaponLoadouts[0];
+
+    m_attackRateTimer = 0;
+    m_toUse = USE_NOTHING;
+    m_toUseShooter = nullptr;
+
+    m_reloadTimer = 0.f;
+    m_reloadState = ReloadingWeapon::IDLE;
 }
 
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
