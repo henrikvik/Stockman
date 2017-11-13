@@ -3,6 +3,7 @@
 #include <exception>
 #include <Windows.h>
 #include <stdio.h>
+#include <iostream>
 
 // Helper class for COM exceptions
 class com_exception : public std::exception
@@ -23,10 +24,22 @@ private:
 };
 
 // Helper utility converts D3D API failures into exceptions.
-inline void ThrowIfFailed(HRESULT hr)
+inline void ThrowIfFailedOld(HRESULT hr)
 {
     if (FAILED(hr))
     {
         throw com_exception(hr);
     }
 }
+
+
+#define ThrowWithMessage(hr, file, line) \
+{\
+    if (FAILED(hr))\
+    {\
+        std::cerr << file << line << std::endl;\
+        throw com_exception(hr);\
+    }\
+}\
+
+#define ThrowIfFailed(hr) ThrowWithMessage(hr, __FILE__, __LINE__);

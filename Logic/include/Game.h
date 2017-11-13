@@ -30,7 +30,7 @@
 #include <Mouse.h>
 
 // Graphics Includes
-#include <Graphics\include\Renderer.h>
+
 
 // Engine Includes
 #include <Engine\Profiler.h>
@@ -42,10 +42,15 @@ namespace Logic
 	class Game
 	{
     private:
-        static const GameState STATE_START;
-        static const btVector3 PLAYER_START_SCALE,
-                               PLAYER_START_ROTATION;
-        static const int NUMBER_OF_UNIQUE_CARDS;
+
+        struct GAME_START
+        {
+            static const GameState  STATE;
+            static const btVector3  PLAYER_SCALE;
+            static const btVector3  PLAYER_ROTATION;
+            static const int        UNIQUE_CARDS;
+        };
+
 	public:
 		Game();
 		Game(const Game& other) = delete;
@@ -60,9 +65,9 @@ namespace Logic
         bool updateMenu(float deltaTime);
 		void updateGame(float deltaTime);
 
-		void render(Graphics::Renderer& renderer);
-		void renderGame(Graphics::Renderer& renderer);
-		void renderMenu(Graphics::Renderer& renderer);
+        void render() const;
+		void renderGame() const;
+		void renderMenu() const;
 
 		DirectX::SimpleMath::Vector3 getPlayerForward();
 		DirectX::SimpleMath::Vector3 getPlayerPosition();
@@ -91,7 +96,9 @@ namespace Logic
 
 		// FPS
 		FPSRenderer         m_fpsRenderer;
-	};
+
+        // Inherited via Drawable
+    };
 }
 
 #endif // !GAME_H

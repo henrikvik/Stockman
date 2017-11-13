@@ -16,12 +16,6 @@
 #include <Player\Skill\Skill.h>
 #include <btBulletCollisionCommon.h>
 
-namespace Graphics
-{
-    class Renderer;
-    struct RenderDebugInfo;
-}
-
 namespace Logic
 {
     class Entity;
@@ -43,7 +37,8 @@ namespace Logic
 		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
 		void onUpdate(float deltaTime);
-		void render(Graphics::Renderer& renderer);
+        virtual void render() const override;
+        void onUpgrade(Upgrade const & upgrade);
 
 		GrapplingHookState getState() const;
 	private:
@@ -53,8 +48,9 @@ namespace Logic
 		btVector3						m_point;		//< Saved point of intersection of the raytest, will push entity towards this point
         bool                            m_goingUp;      //< Direction of the grappling hook
         btVector3                       m_dirToPoint;
-		Graphics::RenderDebugInfo*		renderDebug;
-        void onUpgrade(Upgrade const & upgrade);
+
+		DebugRenderInfo                 renderInfo;
+        // Inherited via Skill
         //< Debug drawing the ray
 	};
 }

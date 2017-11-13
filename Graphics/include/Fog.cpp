@@ -26,7 +26,7 @@ namespace Graphics
 
 	void Fog::renderFog(ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, ID3D11ShaderResourceView* depthMap)
 	{
-		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 
@@ -40,5 +40,8 @@ namespace Graphics
 		deviceContext->VSSetShaderResources(0, 1, fogDataBuffer); 
 		deviceContext->PSSetShaderResources(1, 1, &depthMap);
 		deviceContext->Draw((UINT)fogData.size(), 0);
-	}
+
+        ID3D11ShaderResourceView* null = nullptr;
+        deviceContext->PSSetShaderResources(1, 1, &null);
+    }
 }

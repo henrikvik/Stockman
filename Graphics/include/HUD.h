@@ -1,5 +1,5 @@
 #pragma once
-#include "Resources\Shader.h"
+#include "Utility\Shader.h"
 #include <Engine\Constants.h>
 #include "Utility\ShaderResource.h"
 #include "Utility\ConstantBuffer.h"

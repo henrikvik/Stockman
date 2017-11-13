@@ -512,7 +512,7 @@ void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int 
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, col_active);
 
 		float f = 0.5f * temp.factor;
-		ImGui::ButtonEx(evt.name, ImVec2(ToMilliseconds(evt.start, evt.end) * temp.factor, 0));
+		ImGui::ButtonEx(evt.name, ImVec2(max(ToMilliseconds(evt.start, evt.end) * temp.factor, 0.1), 0));
 
 		ImGui::PopStyleColor(3);
 		if (ImGui::IsItemHovered())

@@ -8,9 +8,8 @@
 			DESCRIPTION: This class defines a skill of the system
 		*/
 #pragma endregion
+#include <Graphics\include\RenderQueue.h>
 
-#include <d3d11.h>
-#include <SimpleMath.h>
 #include <btBulletCollisionCommon.h>
 #include <Entity/StatusManager.h>
 
@@ -39,7 +38,6 @@ namespace Logic
         void upgrade(Upgrade const & upgrade);
 		virtual void onUpdate(float deltaTime) = 0;
         virtual void onUpgrade(Upgrade const & upgrade) = 0;
-		virtual void render(Graphics::Renderer& renderer) = 0;
 
 		float	getCooldown() const;
 		float	getCooldownMax() const;
@@ -50,6 +48,8 @@ namespace Logic
 		void setCooldown(float cooldown);
         void setCooldownMax(float cooldownMax);
 		void setCanUse(bool canUse);
+
+        virtual void render() const = 0;
 
 	private:
 		// StatusManager statusManager;

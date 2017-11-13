@@ -1,17 +1,17 @@
 #include <AI\Behavior\EnemyThreadHandler.h>
 #include <AI\EntityManager.h>
 #include <AI\Enemy.h>
-#include <AI\Behavior\AStar.h>
+#include <AI\Pathing\AStar.h>
 #include <AI\Behavior\Behavior.h>
 
 #include <Engine\Profiler.h>
+#include <thread>
+#include <chrono>
 
 using namespace Logic;
 
 EnemyThreadHandler::EnemyThreadHandler()
 {
-    for (std::thread *&t : threads)
-        t = nullptr;
     resetThreads();
     initThreads();
 }
@@ -22,8 +22,11 @@ void EnemyThreadHandler::initThreads()
 
     for (std::thread *&t : threads)
         if (t)
+        {
             if (t->joinable())
                 t->join();
+            delete t;
+        }
 
     m_killChildren = false;
 
@@ -92,11 +95,12 @@ void EnemyThreadHandler::threadMain()
         if (haveWork)
             updateEnemiesAndPath(todo);
 
-        std::this_thread::sleep_for(1ms);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
 void EnemyThreadHandler::addWork(WorkData data)
 {
+    std::lock_guard<std::mutex> lock(m_workMutex);
     m_work.push(data);
 }

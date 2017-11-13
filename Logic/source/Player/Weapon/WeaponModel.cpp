@@ -7,10 +7,10 @@ WeaponModel::WeaponModel()
 {
 }
 
-WeaponModel::WeaponModel(Graphics::ModelID modelID, WeaponModelAnimationInfo mInfo)
-    : Object(modelID)
+WeaponModel::WeaponModel(Resources::Models::Files modelID, WeaponModelAnimationInfo mInfo)
 {
     m_mInfo = mInfo;
+    renderInfo.model = modelID;
 }
 
 
@@ -47,10 +47,15 @@ void Logic::WeaponModel::update(DirectX::SimpleMath::Matrix playerTranslation, D
     // Multiplying all the matrices into one
     DirectX::SimpleMath::Matrix result = m_mInfo.rot * m_mInfo.trans * m_mInfo.scale * camera.Invert() * offset;
 
-    this->setWorldTranslation(result);
+    renderInfo.transform = result;
 }
 
 const WeaponModel::WeaponModelAnimationInfo& Logic::WeaponModel::getModelInfo() const
 {
     return m_mInfo;
+}
+
+void WeaponModel::render() const
+{
+    RenderQueue::get().queue(&renderInfo);
 }

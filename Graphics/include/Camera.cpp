@@ -1,11 +1,10 @@
 #include <Graphics\include\Camera.h>
-using namespace DirectX::SimpleMath;
 
 namespace Graphics
 {
 
 	Camera::Camera(ID3D11Device* device, int width, int height, float drawDistance, float fieldOfView) :
-		CameraBuffer(device),
+		cameraBuffer(device),
 		inverseBuffer(device)
 	{
 		this->fieldOfView = fieldOfView;
@@ -27,45 +26,28 @@ namespace Graphics
 	{
 		forward.Normalize();
 
-		this->view = DirectX::XMMatrixLookToRH(pos, forward, Vector3(0, 1, 0));
+		this->view = DirectX::XMMatrixLookToRH(pos, forward, DirectX::SimpleMath::Vector3(0, 1, 0));
 
 		this->pos = pos;
+
 
 		values.view = this->view;
 		values.vP = this->view * this->projection;
 		values.invP = this->projection.Invert();
-		values.camPos = Vector4(pos.x, pos.y, pos.z, 1);
+		values.camPos = DirectX::SimpleMath::Vector4(pos.x, pos.y, pos.z, 1);
+        values.forward = DirectX::SimpleMath::Vector4(forward.x, forward.y, forward.z, 0);
 
 		inverseMatrixes.invP = values.invP;
 		inverseMatrixes.invView = view.Invert();
 
-		CameraBuffer.write(context, &values, sizeof(ShaderValues));
+		cameraBuffer.write(context, &values, sizeof(ShaderValues));
 		inverseBuffer.write(context, &inverseMatrixes, sizeof(InverseMatrixes));
 	}
 
 	//Depricated, use update instead.
 	void Camera::updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext * context)
 	{
-		Matrix newView = DirectX::XMMatrixLookAtRH(pos, target, Vector3(0, 1, 0));
-
-
-		this->view = newView;
-		this->pos = pos;
-
-		values.vP = this->view * this->projection;
-		values.invP = this->projection.Invert();
-		values.view = this->view;
-		values.camPos = Vector4(pos.x, pos.y, pos.z, 1);
-
-		D3D11_MAPPED_SUBRESOURCE data;
-		ZeroMemory(&data, sizeof(data));
-
-		context->Map(this->CameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
-
-		memcpy(data.pData, &values, sizeof(ShaderValues));
-
-		context->Unmap(this->CameraBuffer, 0);
-
+        Camera::update(pos, target - pos, context);
 	}
 
 
@@ -121,7 +103,7 @@ namespace Graphics
 
 	ConstantBuffer<Camera::ShaderValues>* Camera::getBuffer()
 	{
-		return &this->CameraBuffer;
+		return &this->cameraBuffer;
 	}
 
 	ConstantBuffer<Camera::InverseMatrixes>* Camera::getInverseBuffer()

@@ -42,10 +42,12 @@ void Skill::release()
 
 void Skill::update(float deltaTime)
 {
-	// Reloading
-	if (m_cooldown < 0 && !m_active) 
-		m_canUse = true;
-	else 
+    // Reloading
+    if (m_cooldown <= 0 && !m_active)
+    {
+        m_canUse = true;
+        m_cooldown = 0;
+    }else 
 		m_cooldown -= deltaTime;
 
 	if (m_duration > 0)

@@ -37,7 +37,7 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager)
 	{
 		{ newd SkillGrapplingHook(physics) },
 		{ newd SkillShieldCharge() },
-        { newd SkillBulletTime(projectileManager, ProjectileData(0, 100, 1.f, 0, 0.f, BULLET_TIME_DURATION, Graphics::ModelID::SPHERE, 1, ProjectileType::ProjectileTypeBulletTimeSensor, true)) }
+        { newd SkillBulletTime(projectileManager, ProjectileData(0, 100, 1.f, 0, 0.f, BULLET_TIME_DURATION, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeBulletTimeSensor, true)) }
     };
 
     switchToSkill({ SKILL_SHIELD_CHARGE, SKILL_GRAPPLING_HOOK, SKILL_BULLET_TIME });
@@ -94,10 +94,10 @@ void SkillManager::update(float deltaTime)
 }
 
 // Drawing EVERY skill
-void SkillManager::render(Graphics::Renderer& renderer)
+void SkillManager::render()
 {
     for (size_t i = 0; i < m_nrOfSkills; i++)
-        m_current[i]->render(renderer);
+        m_current[i]->render();
 }
 
 // Returns a pointer to a specific skill in an indexed position (0 - primary, 1 - secondary, 2 - tr)
