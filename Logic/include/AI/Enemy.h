@@ -76,7 +76,7 @@ namespace Logic
             void decreaseCallbackEntities();
             bool hasCallbackEntities();
 
-			void damage(int damage);
+			virtual void damage(int damage);
 			void setBehavior(BEHAVIOR_ID id);
 			void setEnemyType(EnemyType id);
 
