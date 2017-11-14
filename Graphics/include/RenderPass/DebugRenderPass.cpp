@@ -3,7 +3,7 @@
 Graphics::DebugRenderPass::DebugRenderPass(
     std::initializer_list<ID3D11RenderTargetView*> targets,
     std::initializer_list<ID3D11ShaderResourceView*> resources,
-    std::initializer_list<ID3D11Buffer*> buffers, 
+    std::initializer_list<ID3D11Buffer*> buffers,
     ID3D11DepthStencilView * depthStencil
 )
     : RenderPass(targets, resources, buffers, depthStencil)
@@ -45,7 +45,8 @@ void Graphics::DebugRenderPass::update(float deltaTime)
     vertexBuffer.write([](DebugVertex * dest)
     {
         UINT points = 0;
-        for (auto & info : RenderQueue::get().getQueue<DebugRenderInfo>())
+        auto infoQueue = RenderQueue::get().getQueue<DebugRenderInfo>();
+        for (auto & info : infoQueue)
         {
             for (auto & point : *info.points)
             {
@@ -55,6 +56,8 @@ void Graphics::DebugRenderPass::update(float deltaTime)
 
                 *dest++ = vertex;
                 points++;
+
+                if (points > INSTANCE_CAP(DebugRenderInfo)) throw "instance cap exceeded";
             }
         }
     });

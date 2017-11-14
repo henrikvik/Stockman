@@ -77,7 +77,7 @@ iMenu::ButtonData iMenuFactory::buildButton(std::string name)
             btn.texRectHover.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("xTexStart"), button.floats.at("yTexStart") + button.floats.at("activeOffset"));
             btn.texRectHover.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("xTexEnd"), button.floats.at("yTexEnd") + button.floats.at("activeOffset"));
             btn.texRectActive = btn.texRectHover;
-            btn.texture = Resources::Textures::mainMenuText; // Doesn't work right now Resources::Textures::Files(button.ints.at("texture"));
+            btn.texture = Resources::Textures::Mainmenutext; // Doesn't work right now Resources::Textures::Files(button.ints.at("texture"));
         }
     }
     return btn;

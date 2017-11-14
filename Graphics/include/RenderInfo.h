@@ -56,7 +56,7 @@ struct DebugRenderInfo : RenderInfo
     DirectX::SimpleMath::Color color;
     bool useDepth = false;
 };
-SET_INSTANCE_CAP(DebugRenderInfo, 10000)
+SET_INSTANCE_CAP(DebugRenderInfo, 30000)
 
 struct LightRenderInfo : RenderInfo
 {
