@@ -70,6 +70,7 @@ void Graphics::GUIRenderPass::render() const
     textRender();
 
     Global::context->VSSetShaderResources(0, 1, Global::nulls);
+    Global::context->PSSetShaderResources(2, 1, Global::nulls);
     Global::context->VSSetConstantBuffers(0, 1, Global::nulls);
     Global::context->PSSetSamplers(0, 1, Global::nulls);
     Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);

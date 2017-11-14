@@ -4,6 +4,7 @@
 #include "../CommonState.h"
 #include <SimpleMath.h>
 #include <Logic\include\Misc\RandomGenerator.h>
+#include <Engine\DebugWindow.h>
 
 //temp
 #include <Keyboard.h>
@@ -12,6 +13,8 @@
 #define MAX_SNOW 512
 #define PI 3.14159265f
 #define ONE_DEG_IN_RAD 0.01745f
+#define SNOW_SPEED 0.02f
+#define WIND_CHANGE_TIME 5000.f
 
 using namespace DirectX::SimpleMath;
 
@@ -25,6 +28,35 @@ Graphics::SnowRenderPass::SnowRenderPass(
     snowShader(Resources::Shaders::SnowShader, ShaderType::GS | ShaderType::VS | ShaderType::PS)
 {
     snowFlakeCount = 0;
+
+    DebugWindow::getInstance()->registerCommand("GFX_SET_SNOW", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            if (args.size() != 0)
+            {
+                enabled = std::stoi(args[0]);
+
+                if (enabled)
+                    catcher = "Snow enabled!";
+
+                else
+                    catcher = "Snow disabled!";
+            }
+            else
+            {
+                catcher = "missing argument 0 or 1.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Argument must be 0 or 1.";
+        }
+
+        return catcher;
+    });
+
 }
 
 void Graphics::SnowRenderPass::update(float deltaTime)
@@ -41,11 +73,9 @@ void Graphics::SnowRenderPass::update(float deltaTime)
 
     Logic::RandomGenerator & generator = Logic::RandomGenerator::singleton();
 
-    static float windTimer = 5000;
     static float windCounter = 0;
-    static Vector3 randWindPrev(0, -1, 0);
-    static Vector3 randWind(0, -1, 0);
-    static float friction = 0.6f;
+    static Vector3 randWindPrev(0, -SNOW_SPEED, 0);
+    static Vector3 randWind(0, -SNOW_SPEED, 0);
 
     //temp
     static auto ks = DirectX::Keyboard::KeyboardStateTracker();
@@ -57,13 +87,13 @@ void Graphics::SnowRenderPass::update(float deltaTime)
     }
 
     windCounter += deltaTime;
-    if (windTimer <= windCounter)
+    if (WIND_CHANGE_TIME <= windCounter)
     {
         randWindPrev = randWind;
         windCounter = 0;
-        randWind.x = generator.getRandomFloat(-1, 1);
-        randWind.z = generator.getRandomFloat(-1, 1);
-        randWind.y = -1;
+        randWind.x = generator.getRandomFloat(-SNOW_SPEED, SNOW_SPEED);
+        randWind.z = generator.getRandomFloat(-SNOW_SPEED, SNOW_SPEED);
+        randWind.y = -SNOW_SPEED;
     }
 
     for (int i = 0; i < snowFlakeCount; i++)
@@ -76,7 +106,7 @@ void Graphics::SnowRenderPass::update(float deltaTime)
 
 
 
-        snowFlakes[i].position += Vector3::Lerp(randWindPrev, randWind, windCounter / windTimer) * deltaTime * 2;
+        snowFlakes[i].position += Vector3::Lerp(randWindPrev, randWind, windCounter / WIND_CHANGE_TIME) * (deltaTime * 62.5);
     }
 
     if (snowFlakes.data() != NULL)
@@ -86,7 +116,7 @@ void Graphics::SnowRenderPass::update(float deltaTime)
 
 void Graphics::SnowRenderPass::render() const
 {
-    if (snowFlakeCount > 0)
+    if (snowFlakeCount > 0 && enabled)
     {
         Global::context->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         Global::context->RSSetState(Global::cStates->CullNone());

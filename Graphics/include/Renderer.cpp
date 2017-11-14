@@ -39,15 +39,23 @@
 namespace Graphics
 {
     uint32_t zero = 0;
-	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-		: depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
+    Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
+        : depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
+#pragma region RenderDebugInfo
+        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
+        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
+        , debugColorBuffer(device)
+#pragma endregion
         , fog(device)
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
+
+
+#pragma endregion
         , instanceStaticBuffer(device, CpuAccess::Write, INSTANCE_CAP(InstanceAnimated))
         , instanceAnimatedBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
-
-    #pragma region Shared Shader Resources
+        , fakeBuffers(WIN_WIDTH, WIN_HEIGHT)
+#pragma region Shared Shader Resources
         , colorMap(WIN_WIDTH, WIN_HEIGHT)
         , glowMap(WIN_WIDTH, WIN_HEIGHT)
         , normalMap(WIN_WIDTH, WIN_HEIGHT)
@@ -58,12 +66,13 @@ namespace Graphics
         , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
         , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
         , sun()
-    #pragma endregion
+#pragma endregion
 
 
+#pragma region CaNCeR!
     {
         Global::cStates = new CommonStates(device);
-        Global::comparisonSampler = [&](){
+        Global::comparisonSampler = [&]() {
             ID3D11SamplerState * sampler = nullptr;
             D3D11_SAMPLER_DESC sDesc = {};
             sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -81,9 +90,9 @@ namespace Graphics
             sDesc.MipLODBias = 0;
 
             ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
-            return sampler;        
+            return sampler;
         }();
-        Global::mirrorSampler = [&](){
+        Global::mirrorSampler = [&]() {
             ID3D11SamplerState * sampler = nullptr;
             D3D11_SAMPLER_DESC sDesc = {};
             sDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
@@ -152,33 +161,24 @@ namespace Graphics
             SAFE_RELEASE(texture);
         }
 
-        
-        
-
-		this->backBuffer = backBuffer;
+#pragma endregion
 
 
-		fakeBackBuffer = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
-		fakeBackBufferSwap = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
+        this->backBuffer = backBuffer;
 
-		viewPort = { 0 };
-		viewPort.Width = WIN_WIDTH;
-		viewPort.Height = WIN_HEIGHT;
-		viewPort.MaxDepth = 1.0f;
+        viewPort = { 0 };
+        viewPort.Width = WIN_WIDTH;
+        viewPort.Height = WIN_HEIGHT;
+        viewPort.MaxDepth = 1.0f;
 
         FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
-
-      
-
-
-		registerDebugFunction();
 
         TextureLoader::get().loadAll();
 
         renderPasses =
         {
             newd ParticleDepthRenderPass(depthStencil),
-            newd DepthRenderPass({}, { instanceStaticBuffer }, {*Global::mainCamera->getBuffer()}, depthStencil),
+            newd DepthRenderPass({},  { instanceStaticBuffer }, {*Global::mainCamera->getBuffer()}, depthStencil),
             newd ShadowRenderPass({}, { instanceStaticBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
             newd LightCullRenderPass(
                 {},
@@ -195,10 +195,10 @@ namespace Graphics
                     lightOpaqueGridUAV
                 }
             ),
-            newd SkyBoxRenderPass({ *fakeBackBuffer },{},{ *sun.getGlobalLightBuffer() }, depthStencil),
+            newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil),
             newd ForwardPlusRenderPass(
                 {
-                    *fakeBackBuffer,
+                    fakeBuffers,
                     glowMap,
                     normalMap
                 },
@@ -216,7 +216,7 @@ namespace Graphics
                 depthStencil
             ),
             newd ParticleRenderPass(
-                *fakeBackBuffer,
+                fakeBuffers,
                 lightOpaqueGridSRV, 
                 lightOpaqueIndexList, 
                 lightsNew, 
@@ -224,26 +224,26 @@ namespace Graphics
                 *sun.getGlobalLightBuffer(),
                 depthStencil
             ),
-            newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
-            newd DepthOfFieldRenderPass({ *fakeBackBufferSwap }, { *fakeBackBuffer, depthStencil }),
-            newd GlowRenderPass({ *fakeBackBuffer },{*fakeBackBufferSwap, glowMap}),
+            newd SSAORenderPass(&fakeBuffers, {}, { depthStencil, normalMap }, {}, nullptr), //this
+            //newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
+            newd GlowRenderPass(&fakeBuffers, { }, { glowMap}), //and this
             newd SnowRenderPass(
                 {
-                    *fakeBackBuffer
+                    fakeBuffers
                 },
                 {
-                    lightOpaqueIndexList, 
-                    lightOpaqueGridSRV, 
-                    lightsNew, 
+                    lightOpaqueIndexList,
+                    lightOpaqueGridSRV,
+                    lightsNew,
                     shadowMap
-                }, 
+                },
                 {
                     *sun.getLightMatrixBuffer(),
                     *sun.getGlobalLightBuffer()
                 },
                 depthStencil
             ),
-            newd BulletTimeRenderPass({backBuffer}, {*fakeBackBuffer}),
+            newd BulletTimeRenderPass(&fakeBuffers, {backBuffer}),
             newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
             newd GUIRenderPass({backBuffer}),
         };
@@ -252,8 +252,6 @@ namespace Graphics
 
     Renderer::~Renderer()
     {
-		delete fakeBackBuffer;
-		delete fakeBackBufferSwap;
         delete FXSystem;
 
         delete Global::cStates;
@@ -283,7 +281,7 @@ namespace Graphics
         LightRenderInfo lightInfo;
         lightInfo.color = DirectX::Colors::DodgerBlue;
         lightInfo.intensity = 1;
-        lightInfo.position = Global::mainCamera->getPos() + float3(0,0,4);
+        lightInfo.position = Global::mainCamera->getPos() + float3(0, 0, 4);
         lightInfo.range = 10;
 
         QueueRender(lightInfo);
@@ -299,6 +297,8 @@ namespace Graphics
             renderPass->update(deltaTime);
             PROFILE_END();
         }
+
+        fakeBuffers.reset();
     }
 
     void Renderer::render() const
@@ -312,29 +312,55 @@ namespace Graphics
         }
     }
 
-	void Renderer::clear() const
-	{
-		static float clearColor[4] = { 0 };
+    void Renderer::clear() const
+    {
+        static float clearColor[4] = { 0 };
         Global::context->ClearRenderTargetView(backBuffer, clearColor);
         Global::context->ClearRenderTargetView(normalMap, clearColor);
-        Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
-        Global::context->ClearRenderTargetView(*fakeBackBufferSwap, clearColor);
+        fakeBuffers.clear();
         Global::context->ClearRenderTargetView(glowMap, clearColor);
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
-	}
+    }
 
-    //no idea if working
-	void Renderer::swapBackBuffers()
-	{
-		ID3D11ShaderResourceView * temp = fakeBackBuffer->shaderResource;
-		fakeBackBuffer->shaderResource = fakeBackBufferSwap->shaderResource;
-		fakeBackBufferSwap->shaderResource = temp;
+    void Renderer::renderDebugInfo(Camera* camera)
+    {
+        if (renderDebugQueue.size() == 0) return;
 
-        ID3D11RenderTargetView * temp2 = fakeBackBuffer->renderTarget;
-        fakeBackBuffer->renderTarget = fakeBackBufferSwap->renderTarget;
-        fakeBackBufferSwap->renderTarget = temp2;
-	}
+        Global::context->PSSetConstantBuffers(0, 1, *camera->getBuffer());
+        Global::context->VSSetConstantBuffers(0, 1, *camera->getBuffer());
+
+        Global::context->OMSetRenderTargets(1, &backBuffer, depthStencil);
+
+        Global::context->VSSetShaderResources(0, 1, debugPointsBuffer);
+        Global::context->PSSetConstantBuffers(1, 1, debugColorBuffer);
+
+        Global::context->IASetInputLayout(nullptr);
+        Global::context->VSSetShader(debugRender, nullptr, 0);
+        Global::context->PSSetShader(debugRender, nullptr, 0);
+
+
+        for (RenderDebugInfo * info : renderDebugQueue)
+        {
+            debugPointsBuffer.write(
+                Global::context,
+                info->points->data(),
+                (UINT)(info->points->size() * sizeof(DirectX::SimpleMath::Vector3))
+            );
+
+            debugColorBuffer.write(
+                Global::context,
+                &info->color,
+                (UINT)sizeof(DirectX::SimpleMath::Color)
+            );
+
+            Global::context->IASetPrimitiveTopology(info->topology);
+            Global::context->OMSetDepthStencilState(info->useDepth ? Global::cStates->DepthDefault() : Global::cStates->DepthNone(), 0);
+            Global::context->Draw((UINT)info->points->size(), 0);
+        }
+
+        renderDebugQueue.clear();
+    }
 
     void Renderer::writeInstanceBuffers()
     {
@@ -408,248 +434,4 @@ namespace Graphics
     }
 
 
-	void Renderer::registerDebugFunction()
-	{
-		/*DebugWindow *debugWindow = DebugWindow::getInstance();
-		
-		debugWindow->registerCommand("GFX_SET_SSAO", [&](std::vector<std::string> &args)->std::string
-		{
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableSSAO = std::stoi(args[0]);
-
-                    if (enableSSAO)
-                        catcher = "SSAO enabled!";
-
-                    else
-                        catcher = "SSAO disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-		});
-        
-        debugWindow->registerCommand("GFX_SET_SNOW", [&](std::vector<std::string> &args)->std::string
-        {
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableSnow = std::stoi(args[0]);
-
-                    if (enableSnow)
-                        catcher = "Snow enabled!";
-
-                    else
-                        catcher = "Snow disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-        });
-
-		debugWindow->registerCommand("GFX_SET_GLOW", [&](std::vector<std::string> &args)->std::string
-		{
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableGlow = std::stoi(args[0]);
-
-                    if (enableGlow)
-                        catcher = "Glow enabled!";
-
-                    else
-                        catcher = "Glow disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-		});
-
-		debugWindow->registerCommand("GFX_SET_FOG", [&](std::vector<std::string> &args)->std::string
-		{
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableFog = std::stoi(args[0]);
-
-                    if (enableFog)
-                        catcher = "Fog enabled!";
-
-                    else
-                        catcher = "Fog disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-		});
-
-		debugWindow->registerCommand("GFX_SET_DOF", [&](std::vector<std::string> &args)->std::string
-		{
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableDOF = std::stoi(args[0]);
-
-                    if (enableDOF)
-                        catcher = "Depth of field enabled!";
-
-                    else
-                        catcher = "Depth of field disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-		});
-
-        debugWindow->registerCommand("GFX_SET_DOF_SLIDERS", [&](std::vector<std::string> &args)->std::string
-        {
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableCoCWindow = std::stoi(args[0]);
-
-                    if (enableCoCWindow)
-                        catcher = "Circle of confusion window enabled!";
-
-                    else
-                        catcher = "Circle of confusion window disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-        });
-
-        debugWindow->registerCommand("GFX_SET_HUD", [&](std::vector<std::string> &args)->std::string
-        {
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableHud = std::stoi(args[0]);
-
-                    if (enableHud)
-                        catcher = "HUD enabled!";
-
-                    else
-                        catcher = "HUD disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-        });
-
-		debugWindow->registerCommand("GFX_SET_FREEZE", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-			try
-			{
-                if (args.size() != 0)
-                {
-                    this->statusData.freeze = std::stof(args[0]);
-                }
-                else
-                {
-                    return "missing argument freeze amount";
-                }
-			}
-			catch (const std::exception&)
-			{
-				catcher = "Argument must be float between 1 and 0";
-			}
-
-			return catcher;
-		});
-
-		debugWindow->registerCommand("GFX_SET_BURN", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-			try
-			{
-                if (args.size() != 0)
-                {
-                    this->statusData.burn = std::stof(args[0]);
-                }
-                else
-                {
-                    return "missing argument burn amount";
-                }
-			}
-			catch (const std::exception&)
-			{
-				catcher = "Argument must be float between 1 and 0";
-			}
-
-			return catcher;
-		});*/
-	}
 }

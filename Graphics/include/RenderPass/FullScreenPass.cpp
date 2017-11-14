@@ -13,6 +13,11 @@ Graphics::FullScreenPass::FullScreenPass(
 
 void Graphics::FullScreenPass::render() const
 {
+    Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    Global::context->OMSetDepthStencilState(Global::cStates->DepthNone(), 0);
+    Global::context->OMSetBlendState(Global::cStates->Opaque(), 0, -1);
+    Global::context->RSSetState(Global::cStates->CullNone());
+
     Global::context->IASetInputLayout(nullptr);
     Global::context->VSSetShader(fullScreenShader, nullptr, 0);
     Global::context->PSSetShader(fullScreenShader, nullptr, 0);

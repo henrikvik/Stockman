@@ -2,6 +2,7 @@
 
 #include "../Particles/ParticleSystem.h"
 #include "../MainCamera.h"
+#include <Engine\DebugWindow.h>
 
 namespace Graphics {
 
@@ -21,6 +22,7 @@ namespace Graphics {
           m_LightBuffer(lightBuffer),
           m_ShadowMap(shadowMap)
     {
+        
     }
 
     void ParticleRenderPass::render() const
@@ -45,6 +47,7 @@ namespace Graphics {
     ParticleDepthRenderPass::ParticleDepthRenderPass(ID3D11DepthStencilView * depthStencil)
         : RenderPass({}, {}, {}, depthStencil)
     {
+
     }
 
     void ParticleDepthRenderPass::render() const
