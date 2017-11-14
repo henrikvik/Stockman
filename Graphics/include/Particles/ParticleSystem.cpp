@@ -14,6 +14,8 @@
 #include "../Utility/DebugDraw.h"
 #include "../CommonState.h"
 #include <Engine\DebugWindow.h>
+#include "../RenderInfo.h"
+#include "../RenderQueue.h"
 
 namespace fs = std::experimental::filesystem;
 using namespace DirectX;
@@ -315,6 +317,8 @@ public:
     {}
 
     void operator()(const tbb::blocked_range<int>& range) const {
+        using namespace DirectX;
+
         PROFILE_BEGINF("update task (%d)", range.size());
 
         float dt = m_Delta;
@@ -348,7 +352,7 @@ public:
             auto col_start = XMFLOAT4((float*)def.m_ColorStart);
             auto col_end = XMFLOAT4((float*)def.m_ColorEnd);
 
-            instance.m_Color = ease_color(DirectX::XMLoadFloat4(&col_start), DirectX::XMLoadFloat4(&col_end), factor);
+            instance.m_Color = ease_color(XMLoadFloat4(&col_start), XMLoadFloat4(&col_end), factor);
             instance.m_Deform = ease_deform(def.m_DeformStart, def.m_DeformEnd, factor);
             instance.m_DeformSpeed = def.m_DeformSpeed;
             instance.m_NoiseScale = def.m_NoiseScale;
@@ -359,8 +363,34 @@ public:
             particle.age += dt;
             particle.rotprog += dt;
 
+            // TODO: anchoring to emitter/fx. we can add a "parent" field to
+            //       particle instances, and null it every update, while
+            //       setting it in `ProcessFX`
+
             XMStoreFloat3(&particle.velocity, XMLoadFloat3(&particle.velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
             XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
+
+            // TODO: update & queue particle light
+
+            auto ease_light_color = GetEaseFuncV(def.m_LightColorEasing);
+            auto ease_light_radius = GetEaseFunc(def.m_LightRadiusEasing);
+
+            auto light_radius = ease_light_radius(def.m_LightRadiusStart, def.m_LightRadiusEnd, factor);
+            if (light_radius >= FLT_EPSILON) {
+                auto light_col_start = XMFLOAT4((float*)def.m_LightColorStart);
+                auto light_col_end = XMFLOAT4((float*)def.m_LightColorEnd);
+
+                auto light_color = ease_light_color(XMLoadFloat4(&light_col_start), XMLoadFloat4(&light_col_end), factor);
+
+                LightRenderInfo light;
+                light.position = particle.pos;
+                light.range = light_radius;
+                light.intensity = XMVectorGetW(light_color);
+                XMStoreFloat4((XMFLOAT4*)&light.color, light_color);
+
+                RenderQueue::get().queue<LightRenderInfo>(&light);
+            }
+
 
             ptr++;
         }
@@ -574,6 +604,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
             LAZY_READ(m_Start);
             LAZY_READ(m_Time);
             LAZY_READ(m_Loop);
+            LAZY_READ(m_Anchor);
             LAZY_READ(m_StartPosition);
             LAZY_READ(m_StartVelocity);
             LAZY_READ(m_SpawnEasing);

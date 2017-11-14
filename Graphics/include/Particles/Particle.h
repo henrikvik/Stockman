@@ -71,6 +71,12 @@ struct GeometryDefinition {
     ParticleEase m_ColorEasing;
     float        m_ColorStart[4];
     float        m_ColorEnd[4];
+    ParticleEase m_LightColorEasing;
+    float        m_LightColorStart[4];
+    float        m_LightColorEnd[4];
+    ParticleEase m_LightRadiusEasing;
+    float        m_LightRadiusStart;
+    float        m_LightRadiusEnd;
 };
 
 struct ParticleEffectEntry {
@@ -79,7 +85,8 @@ struct ParticleEffectEntry {
     float        m_SpawnedParticles;
     float        m_Start;
     float        m_Time;
-    int32_t      m_Loop;
+    int8_t       m_Loop;
+    int8_t       m_Anchor;
     PosBox       m_StartPosition;
     VelocityBox  m_StartVelocity;
     ParticleEase m_SpawnEasing;
