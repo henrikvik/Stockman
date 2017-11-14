@@ -56,7 +56,22 @@ struct DebugRenderInfo : RenderInfo
     DirectX::SimpleMath::Color color;
     bool useDepth = false;
 };
-SET_INSTANCE_CAP(DebugRenderInfo, 30000)
+SET_INSTANCE_CAP(DebugRenderInfo, 10000)
+
+struct NewDebugRenderInfo : RenderInfo
+{
+    struct Point
+    {
+        DirectX::SimpleMath::Vector3 position;
+        DirectX::SimpleMath::Color color;
+    };
+
+    D3D11_PRIMITIVE_TOPOLOGY topology;
+    DirectX::SimpleMath::Color color;
+    std::vector<Point> * points;
+    bool useDepth;
+};
+SET_INSTANCE_CAP(NewDebugRenderInfo, 10000)
 
 struct LightRenderInfo : RenderInfo
 {
@@ -88,10 +103,10 @@ struct SpriteRenderInfo : RenderInfo
 
 struct TextRenderInfo : RenderInfo
 {
-    Resources::Fonts::Files font;
-    const wchar_t * text = L"";
     DirectX::SimpleMath::Vector2 position;
     DirectX::SimpleMath::Color color;
+    Resources::Fonts::Files font;
+    const wchar_t * text = L"";
 };
 
 
