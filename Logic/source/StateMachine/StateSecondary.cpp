@@ -103,9 +103,6 @@ void StateSecondary::loadState(StateType state)
         return;
     }
 
-    // Saving new state in stateBuffer
-    m_stateBuffer->currentSecondaryState = m_currentState;
-
     m_currentState->SetFuncPrimarySwitch(SwitchPrimaryState);
     m_currentState->SetFuncSecondarySwitch(SwitchSecondaryState);
     m_currentState->SetFuncGetCurrentPrimary(GetCurrentPrimaryState);

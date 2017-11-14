@@ -4,6 +4,7 @@
 #include <Misc\GUI\iMenu.h>
 #include <Misc\NonCopyable.h>
 #include <Misc\FileLoader.h>
+#include <Misc\GUI\iMenuAction.h>
 
 namespace Logic
 {
@@ -20,7 +21,7 @@ namespace Logic
         iMenu* buildMenuHighscore();
         iMenu* buildMenuGameover();
 
-        iMenu::ButtonData buildButton(std::string name);
+        iMenu::ButtonData buildButton(std::string name, ButtonFunc func);
 
     private:
         //Load the lw file information

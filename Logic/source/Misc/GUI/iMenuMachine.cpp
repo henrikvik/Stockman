@@ -1,5 +1,6 @@
 #include <Misc\GUI\iMenuMachine.h>
 #include <Misc\GUI\iMenuFactory.h>
+#include <Misc\GUI\iMenuAction.h>
 #include <Mouse.h>
 #include <Keyboard.h>
 
@@ -9,6 +10,8 @@ iMenuMachine::iMenuMachine()
 {
     m_factory = newd iMenuFactory;
     m_activeMenu = nullptr;
+
+    Action::Get().SetPointer(this);
 }
 
 iMenuMachine::~iMenuMachine()

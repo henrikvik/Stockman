@@ -29,12 +29,13 @@ namespace Logic
         inline void SetFuncGetCurrentPrimary(std::function<StatePrimary*()> gameState)      { GetCurrentPrimaryState   = gameState;   }
         inline void SetFuncGetCurrentSecondary(std::function<StateSecondary*()> menuState)  { GetCurrentSecondaryState = menuState;   }
 
-    protected:
-        StateBuffer* m_stateBuffer;
         std::function<void(StateType)> SwitchSecondaryState;
         std::function<void(StateType)> SwitchPrimaryState;
         std::function<StatePrimary*()> GetCurrentPrimaryState;
         std::function<StateSecondary*()> GetCurrentSecondaryState;
+
+    protected:
+        StateBuffer* m_stateBuffer;
     };
 }
 

@@ -36,8 +36,9 @@ void iMenu::update(int x, int y)
 
 void iMenu::updateClick(int x, int y)
 {
-    for (Button& btn : m_buttons)
-        btn.updateOnPress(x, y);
+    if (DirectX::Mouse::Get().GetState().leftButton)
+        for (Button& btn : m_buttons)
+            btn.updateOnPress(x, y);
 }
 
 void iMenu::updateHover(int x, int y)

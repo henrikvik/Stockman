@@ -39,7 +39,8 @@ void StatePlayingOverlay::update(float deltaTime)
         std::pair<int, int>* selectedSkills = m_menu->getSkillPick();
         if (selectedSkills->first != -1 && selectedSkills->second != -1)
         {
-            StatePlaying* game = dynamic_cast<StatePlaying*>(m_stateBuffer->currentPrimaryState);
+            // Just ignore this for now, menu-machine is getting reworked.
+            StatePlaying* game = (StatePlaying*)((StatePrimary*)m_stateBuffer->currentPrimaryState)->getCurrentState();
             if (game)
             {
                 game->getPlayer()->setCurrentSkills(selectedSkills->first, selectedSkills->second);

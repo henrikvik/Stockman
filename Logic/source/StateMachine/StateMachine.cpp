@@ -6,6 +6,7 @@
 #include <StateMachine/StateSecondary.h>
 
 #include <Misc\Sound\NoiseMachine.h>
+#include <Misc\GUI\iMenuAction.h>
 
 #include <Keyboard.h>
 
@@ -16,6 +17,9 @@ StateMachine::StateMachine()
     m_stateBuffer = newd StateBuffer();
     m_statePrimary = newd StatePrimary(m_stateBuffer);
     m_stateSecondary = newd StateSecondary(m_stateBuffer);
+    m_stateBuffer->currentPrimaryState = m_statePrimary;
+    m_stateBuffer->currentSecondaryState = m_stateSecondary;
+    Action::Get().SetPointer(m_stateBuffer);
 
     // Making a function ptr to switch state inside the active state
     SetPrimaryState = [&](StateType stateType) -> void { m_statePrimary->queueState(stateType); };

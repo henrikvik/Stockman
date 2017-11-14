@@ -1,91 +1,106 @@
 #include <Misc\GUI\iMenuAction.h>
+#include <StateMachine\StateBuffer.h>
+#include <StateMachine\StatePrimary.h>
+#include <StateMachine\StateSecondary.h>
+#include <Misc\GUI\iMenuMachine.h>
+#include <Engine\Settings.h>
+#include <State.h>
 
 using namespace Logic;
 
-void iMenuAction::startGame()
+void ButtonFunction::startGame()
+{
+    if (Action::Get().m_stateBuffer->currentPrimaryState)
+        dynamic_cast<StatePrimary*>(Action::Get().m_stateBuffer->currentPrimaryState)->queueState(StateType::State_Playing);
+    if (Action::Get().m_stateBuffer->currentSecondaryState)
+        dynamic_cast<StateSecondary*>(Action::Get().m_stateBuffer->currentSecondaryState)->queueState(StateType::State_InGame_Overlay);
+}
+
+void ButtonFunction::startSettings()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->swapMenu(iMenu::MenuGroup::Settings);
+}
+
+void ButtonFunction::startMainMenu()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->swapMenu(iMenu::MenuGroup::Start);
+}
+
+void ButtonFunction::quitGame()
+{
+
+}
+
+void ButtonFunction::writing()
 {
 }
 
-void iMenuAction::startSettings()
+void ButtonFunction::chooseUpgrade1()
 {
 }
 
-void iMenuAction::startMainMenu()
+void ButtonFunction::chooseUpgrade2()
 {
 }
 
-void iMenuAction::quitGame()
+void ButtonFunction::chooseUpgrade3()
 {
 }
 
-void iMenuAction::writing()
+void ButtonFunction::chooseSkill1()
 {
 }
 
-void iMenuAction::chooseUpgrade1()
+void ButtonFunction::chooseSkill2()
 {
 }
 
-void iMenuAction::chooseUpgrade2()
+void ButtonFunction::chooseSkill3()
 {
 }
 
-void iMenuAction::chooseUpgrade3()
+void ButtonFunction::plusSense()
 {
 }
 
-void iMenuAction::chooseSkill1()
+void ButtonFunction::minusSense()
 {
 }
 
-void iMenuAction::chooseSkill2()
+void ButtonFunction::plusMaster()
 {
 }
 
-void iMenuAction::chooseSkill3()
+void ButtonFunction::minusMaster()
 {
 }
 
-void iMenuAction::plusSense()
+void ButtonFunction::plusSFX()
 {
 }
 
-void iMenuAction::minusSense()
+void ButtonFunction::minusSFX()
 {
 }
 
-void iMenuAction::plusMaster()
+void ButtonFunction::muteUnmute()
 {
 }
 
-void iMenuAction::minusMaster()
+void ButtonFunction::plusFOV()
 {
 }
 
-void iMenuAction::plusSFX()
+void ButtonFunction::minusFOV()
 {
 }
 
-void iMenuAction::minusSFX()
+void ButtonFunction::windowed()
 {
 }
 
-void iMenuAction::muteUnmute()
-{
-}
-
-void iMenuAction::plusFOV()
-{
-}
-
-void iMenuAction::minusFOV()
-{
-}
-
-void iMenuAction::windowed()
-{
-}
-
-void iMenuAction::showHighscore()
+void ButtonFunction::showHighscore()
 {
 }
