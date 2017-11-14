@@ -12,6 +12,8 @@
 #define MAX_SNOW 512
 #define PI 3.14159265f
 #define ONE_DEG_IN_RAD 0.01745f
+#define SNOW_SPEED 0.02f
+#define WIND_CHANGE_TIME 5000.f
 
 using namespace DirectX::SimpleMath;
 
@@ -41,11 +43,9 @@ void Graphics::SnowRenderPass::update(float deltaTime)
 
     Logic::RandomGenerator & generator = Logic::RandomGenerator::singleton();
 
-    static float windTimer = 5000;
     static float windCounter = 0;
-    static Vector3 randWindPrev(0, -1, 0);
-    static Vector3 randWind(0, -1, 0);
-    static float friction = 0.6f;
+    static Vector3 randWindPrev(0, -SNOW_SPEED, 0);
+    static Vector3 randWind(0, -SNOW_SPEED, 0);
 
     //temp
     static auto ks = DirectX::Keyboard::KeyboardStateTracker();
@@ -57,13 +57,13 @@ void Graphics::SnowRenderPass::update(float deltaTime)
     }
 
     windCounter += deltaTime;
-    if (windTimer <= windCounter)
+    if (WIND_CHANGE_TIME <= windCounter)
     {
         randWindPrev = randWind;
         windCounter = 0;
-        randWind.x = generator.getRandomFloat(-1, 1);
-        randWind.z = generator.getRandomFloat(-1, 1);
-        randWind.y = -1;
+        randWind.x = generator.getRandomFloat(-SNOW_SPEED, SNOW_SPEED);
+        randWind.z = generator.getRandomFloat(-SNOW_SPEED, SNOW_SPEED);
+        randWind.y = -SNOW_SPEED;
     }
 
     for (int i = 0; i < snowFlakeCount; i++)
@@ -76,7 +76,7 @@ void Graphics::SnowRenderPass::update(float deltaTime)
 
 
 
-        snowFlakes[i].position += Vector3::Lerp(randWindPrev, randWind, windCounter / windTimer) * deltaTime * 2;
+        snowFlakes[i].position += Vector3::Lerp(randWindPrev, randWind, windCounter / WIND_CHANGE_TIME) * (deltaTime * 62.5);
     }
 
     if (snowFlakes.data() != NULL)
@@ -119,7 +119,7 @@ void Graphics::SnowRenderPass::render() const
 
 
         Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
-        Global::context->PSSetShaderResources(3, 1, Global::nulls);
+        Global::context->PSSetShaderResources(1, 3, Global::nulls);
         Global::context->GSSetShader(nullptr, nullptr, 0);
     }
 }
