@@ -38,6 +38,7 @@ namespace Graphics
 
 
         drawInstanced<StaticRenderInfo>(resources[4]);
+        //drawInstanced<AnimatedRenderInfo>(resources[5]);
         // TODO add all renderInfos
 
 
