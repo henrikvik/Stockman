@@ -418,6 +418,7 @@ int Engine::run()
         RenderQueue::get().clearAllQueues();
     }
 
+    setting.writeToFile();
     delete Global::mainCamera;
     Graphics::Debug::Destroy();
     g_Profiler->end();

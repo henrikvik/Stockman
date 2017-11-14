@@ -45,8 +45,6 @@ MenuMachine::~MenuMachine()
 	{
 		delete a.second;
 	}
-	Settings setting = Settings::getInstance();
-	setting.writeToFile();
 }
 
 void MenuMachine::initialize(GameState state)
