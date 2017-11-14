@@ -14,6 +14,8 @@
 #include "../Utility/DebugDraw.h"
 #include "../CommonState.h"
 #include <Engine\DebugWindow.h>
+#include "../RenderInfo.h"
+#include "../RenderQueue.h"
 
 namespace fs = std::experimental::filesystem;
 using namespace DirectX;
@@ -37,6 +39,66 @@ std::wstring ConvertToWString(const std::string & s)
     }
 
     return std::wstring(buf.data(), wn);
+}
+
+class ResourcesShaderInclude : public ID3DInclude
+{
+public:
+    ResourcesShaderInclude(const char* shaderDir) :
+        m_ShaderDir(shaderDir)
+    {
+    }
+
+    HRESULT __stdcall Open(
+        D3D_INCLUDE_TYPE IncludeType,
+        LPCSTR pFileName,
+        LPCVOID pParentData,
+        LPCVOID *ppData,
+        UINT *pBytes);
+    
+    HRESULT __stdcall Close(LPCVOID pData);
+
+private:
+    std::string m_ShaderDir;
+};
+
+HRESULT __stdcall ResourcesShaderInclude::Open(
+    D3D_INCLUDE_TYPE IncludeType,
+    LPCSTR pFileName,
+    LPCVOID pParentData,
+    LPCVOID *ppData,
+    UINT *pBytes)
+{
+    std::string finalPath = m_ShaderDir + "\\" + pFileName;
+
+    std::ifstream fileStream(finalPath, std::ios::binary);
+    int fileSize = 0;
+    fileStream.seekg(0, std::ios::end);
+    fileSize = fileStream.tellg();
+    fileStream.seekg(0, std::ios::beg);
+
+    if (fileSize)
+    {
+        char* buf = new char[fileSize];
+        fileStream.read(buf, fileSize);
+
+        *ppData = buf;
+        *pBytes = fileSize;
+    }
+    else
+    {
+        *ppData = nullptr;
+        *pBytes = 0;
+    }
+
+    return S_OK;
+}
+
+HRESULT __stdcall ResourcesShaderInclude::Close(LPCVOID pData)
+{
+    char* buf = (char*)pData;
+    delete[] buf;
+    return S_OK;
 }
 
 namespace Graphics {;
@@ -167,7 +229,7 @@ void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, ID3D
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
 
-    cxt->PSSetShaderResources(0, (UINT)m_Textures.size(), m_Textures.data());
+    cxt->PSSetShaderResources(4, (UINT)m_Textures.size(), m_Textures.data());
 
     // spheres
     {
@@ -232,7 +294,17 @@ void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, ID3D
     }
 }
 
-void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView * dest_dsv, bool debug)
+void ParticleSystem::render(
+    ID3D11DeviceContext *cxt,
+    Camera *cam,
+    ID3D11ShaderResourceView *lightIndexList,
+    ID3D11ShaderResourceView *lightGrid,
+    ID3D11ShaderResourceView *lights,
+    ID3D11Buffer *lightBuffer,
+    ID3D11ShaderResourceView *shadowMap,
+    ID3D11RenderTargetView *dest_rtv, 
+    ID3D11DepthStencilView *dest_dsv,
+    bool debug)
 {
     ID3D11SamplerState *samplers[] = {
         Global::cStates->LinearClamp(),
@@ -243,7 +315,14 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11Render
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
 
-    cxt->PSSetShaderResources(0, (UINT)m_Textures.size(), m_Textures.data());
+    ID3D11ShaderResourceView *lightResources[] = {
+        lightIndexList,
+        lightGrid,
+        lights,
+        shadowMap
+    };
+    cxt->PSSetShaderResources(0, 4, lightResources);
+    cxt->PSSetShaderResources(4, (UINT)m_Textures.size(), m_Textures.data());
 
     // spheres
     {
@@ -257,19 +336,23 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11Render
             0
         };
 
-        ID3D11Buffer *buffers[] = {
+        ID3D11Buffer *vertex_buffers[] = {
             *m_SphereVertexBuffer,
             *m_GeometryInstanceBuffer
         };
 
         cxt->IASetInputLayout(*m_GeometryVS);
-        cxt->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+        cxt->IASetVertexBuffers(0, 2, vertex_buffers, strides, offsets);
         cxt->IASetIndexBuffer(*m_SphereIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
         cxt->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         cxt->VSSetShader(*m_GeometryVS, nullptr, 0);
-        auto buf = cam->getBuffer();
-        cxt->VSSetConstantBuffers(0, 1, *buf);
+        ID3D11Buffer *buffers[] = {
+            *cam->getBuffer(),
+            lightBuffer
+        };
+        cxt->VSSetConstantBuffers(0, 1, buffers);
+        cxt->PSSetConstantBuffers(0, 2, buffers);
 
         cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         cxt->OMSetRenderTargets(1, &dest_rtv, dest_dsv);
@@ -306,6 +389,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11Render
         
         cxt->RSSetState(Global::cStates->CullCounterClockwise());
     }
+    cxt->PSSetShaderResources(0, 4, Global::nulls);
 }
 
 class GeometryParticleUpdater {
@@ -315,6 +399,8 @@ public:
     {}
 
     void operator()(const tbb::blocked_range<int>& range) const {
+        using namespace DirectX;
+
         PROFILE_BEGINF("update task (%d)", range.size());
 
         float dt = m_Delta;
@@ -348,7 +434,7 @@ public:
             auto col_start = XMFLOAT4((float*)def.m_ColorStart);
             auto col_end = XMFLOAT4((float*)def.m_ColorEnd);
 
-            instance.m_Color = ease_color(DirectX::XMLoadFloat4(&col_start), DirectX::XMLoadFloat4(&col_end), factor);
+            instance.m_Color = ease_color(XMLoadFloat4(&col_start), XMLoadFloat4(&col_end), factor);
             instance.m_Deform = ease_deform(def.m_DeformStart, def.m_DeformEnd, factor);
             instance.m_DeformSpeed = def.m_DeformSpeed;
             instance.m_NoiseScale = def.m_NoiseScale;
@@ -359,8 +445,35 @@ public:
             particle.age += dt;
             particle.rotprog += dt;
 
+            // TODO: anchoring to emitter/fx. we can add a "parent" field to
+            //       particle instances, and null it every update, while
+            //       setting it in `ProcessFX`
+
             XMStoreFloat3(&particle.velocity, XMLoadFloat3(&particle.velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
             XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
+
+            // TODO: update & queue particle light
+
+            auto ease_light_color = GetEaseFuncV(def.m_LightColorEasing);
+            auto ease_light_radius = GetEaseFunc(def.m_LightRadiusEasing);
+
+            auto light_radius = ease_light_radius(def.m_LightRadiusStart, def.m_LightRadiusEnd, factor);
+            if (light_radius >= FLT_EPSILON) {
+                auto light_col_start = XMFLOAT4((float*)def.m_LightColorStart);
+                auto light_col_end = XMFLOAT4((float*)def.m_LightColorEnd);
+
+                auto light_color = ease_light_color(XMLoadFloat4(&light_col_start), XMLoadFloat4(&light_col_end), factor);
+
+                LightRenderInfo light;
+                light.position = particle.pos;
+                light.range = light_radius;
+                light.intensity = XMVectorGetW(light_color);
+                XMStoreFloat4((XMFLOAT4*)&light.color, light_color);
+
+                //QueueRender(light);
+                //RenderQueue::get().queue<LightRenderInfo>(&light);
+            }
+
 
             ptr++;
         }
@@ -398,6 +511,89 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
     });
     PROFILE_END();
 
+    std::array<int, 64> deleteList;
+    int deleteSize = 0;
+
+    auto ptr = m_GeometryInstanceBuffer->map(cxt);
+
+    for (int i = 0; i < m_GeometryParticles.size(); i++) {
+        auto &particle = m_GeometryParticles[i];
+        auto def = *particle.def;
+
+        if (particle.age > def.m_Lifetime) {
+            int idx = deleteSize++;;
+            if (idx < 64) {
+                deleteList[idx] = i;
+            }
+            continue;
+        }
+
+        GeometryParticleInstance instance;
+
+        auto factor = particle.age / def.m_Lifetime;
+
+        auto ease_color = GetEaseFuncV(def.m_ColorEasing);
+        auto ease_deform = GetEaseFunc(def.m_DeformEasing);
+        auto ease_size = GetEaseFunc(def.m_SizeEasing);
+
+        auto scale = ease_size(def.m_SizeStart, def.m_SizeEnd, factor);
+
+        instance.m_Model = XMMatrixRotationAxis(XMLoadFloat3(&particle.rot), (particle.rotprog + particle.age) * particle.rotvel)  * XMMatrixScaling(scale, scale, scale) * XMMatrixTranslationFromVector(XMLoadFloat3(&particle.pos));
+        instance.m_Age = factor;
+
+        auto col_start = XMFLOAT4((float*)def.m_ColorStart);
+        auto col_end = XMFLOAT4((float*)def.m_ColorEnd);
+
+        instance.m_Color = ease_color(XMLoadFloat4(&col_start), XMLoadFloat4(&col_end), factor);
+        instance.m_Deform = ease_deform(def.m_DeformStart, def.m_DeformEnd, factor);
+        instance.m_DeformSpeed = def.m_DeformSpeed;
+        instance.m_NoiseScale = def.m_NoiseScale;
+        instance.m_NoiseSpeed = def.m_NoiseSpeed;
+
+        *ptr = instance;
+
+        particle.age += dt;
+        particle.rotprog += dt;
+
+        // TODO: anchoring to emitter/fx. we can add a "parent" field to
+        //       particle instances, and null it every update, while
+        //       setting it in `ProcessFX`
+
+        XMStoreFloat3(&particle.velocity, XMLoadFloat3(&particle.velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
+        XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
+
+        auto ease_light_color = GetEaseFuncV(def.m_LightColorEasing);
+        auto ease_light_radius = GetEaseFunc(def.m_LightRadiusEasing);
+
+        auto light_radius = ease_light_radius(def.m_LightRadiusStart, def.m_LightRadiusEnd, factor);
+        if (light_radius >= FLT_EPSILON) {
+            auto light_col_start = XMFLOAT4((float*)def.m_LightColorStart);
+            auto light_col_end = XMFLOAT4((float*)def.m_LightColorEnd);
+
+            auto light_color = ease_light_color(XMLoadFloat4(&light_col_start), XMLoadFloat4(&light_col_end), factor);
+
+            LightRenderInfo light;
+            light.position = particle.pos;
+            light.range = light_radius;
+            light.intensity = XMVectorGetW(light_color);
+            XMStoreFloat4((XMFLOAT4*)&light.color, light_color);
+
+            QueueRender(light);
+        }
+
+        ptr++;
+    }
+
+    m_GeometryInstanceBuffer->unmap(cxt);
+
+    for (int i = deleteSize - 1; i > 0; i--) {
+        auto idx = deleteList[i];
+        m_GeometryParticles.erase(m_GeometryParticles.begin() + idx);
+    }
+
+
+    // temporarily disable to make implementing serial stuff easier
+    /*
     PROFILE_BEGIN("update particles");
     GeometryParticleInstance *ptr = m_GeometryInstanceBuffer->map(cxt);
     std::array<int, 32> deleteList {-1};
@@ -421,7 +617,7 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
     for (int i = 0; i < sz; i++) {
         auto idx = deleteList.at(i);
         m_GeometryParticles.erase(m_GeometryParticles.begin() + idx);
-    }
+    }*/
 }
 
 void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
@@ -491,11 +687,13 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         ID3DBlob *blob = nullptr, *error = nullptr;
         std::wstring file = ConvertToWString(baseDir + path);
 
+        static ResourcesShaderInclude include("..\\Resources\\Shaders\\");
+
         // TODO: add ifdef for DEBUG compilation flag
         auto res = D3DCompileFromFile(
             file.c_str(),
             nullptr,
-            D3D_COMPILE_STANDARD_FILE_INCLUDE,
+            &include,
             "PS",
             "ps_5_0",
             D3DCOMPILE_DEBUG,
@@ -505,6 +703,8 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         );
 
         if (!SUCCEEDED(res)) {
+            OutputDebugStringA((char*)error->GetBufferPointer());
+
             throw "Failed to compile material shader PS";
         }
 
@@ -514,7 +714,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         res = D3DCompileFromFile(
             file.c_str(),
             nullptr,
-            D3D_COMPILE_STANDARD_FILE_INCLUDE,
+            &include,
             "PS_depth",
             "ps_5_0",
             D3DCOMPILE_DEBUG,
@@ -523,9 +723,8 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
             &error
         );
 
-        char *c;
         if (!SUCCEEDED(res)) {
-            c = (char*)error->GetBufferPointer();
+            OutputDebugStringA((char*)error->GetBufferPointer());
             throw "Failed to compile material shader PS_depth";
         }
 
@@ -574,6 +773,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
             LAZY_READ(m_Start);
             LAZY_READ(m_Time);
             LAZY_READ(m_Loop);
+            LAZY_READ(m_Anchor);
             LAZY_READ(m_StartPosition);
             LAZY_READ(m_StartVelocity);
             LAZY_READ(m_SpawnEasing);

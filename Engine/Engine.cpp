@@ -355,7 +355,8 @@ int Engine::run()
 		//	mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
 		}
 
-
+//        static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
+//        Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);		          Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);
 
 		if (mTracker->pressed.F1)
 		{

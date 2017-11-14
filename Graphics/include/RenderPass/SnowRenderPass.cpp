@@ -119,7 +119,7 @@ void Graphics::SnowRenderPass::render() const
 
 
         Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
-        Global::context->PSSetShaderResources(3, 1, Global::nulls);
+        Global::context->PSSetShaderResources(1, 3, Global::nulls);
         Global::context->GSSetShader(nullptr, nullptr, 0);
     }
 }

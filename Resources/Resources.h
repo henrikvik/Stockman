@@ -111,6 +111,17 @@ namespace Resources
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
             {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
+        namespace include
+        {
+            enum Files
+            {
+                ParticleShared
+            };
+            const std::map<Files, const char *> Paths =
+            {
+                {ParticleShared, R"(..\Resources\Shaders\include\ParticleShared.hlsl)"}
+            };
+        }
     }
     namespace Textures
     {
