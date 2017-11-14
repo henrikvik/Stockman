@@ -12,6 +12,15 @@ iMenuFactory::iMenuFactory()
 
 iMenuFactory::~iMenuFactory() { }
 
+const std::map<int, Resources::Textures::Files> LookUp =
+{
+    { 0, Resources::Textures::mainMenuText },
+    { 1, Resources::Textures::gameOverMenuButtons },
+    { 2, Resources::Textures::SettingsMenuButtons },
+    { 3, Resources::Textures::Color_pick_icons },
+    { 4, Resources::Textures::Backbutton }
+};
+
 iMenu* iMenuFactory::buildMenuStart()
 {
     iMenu* menu = newd iMenu(iMenu::Start);
@@ -56,7 +65,7 @@ iMenuSkillPick * iMenuFactory::buildMenuSkill()
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
     menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
     menu->addButton(buildButton("SkillPickButton3", std::bind(&iMenuSkillPick::pickThree, menu)));
-    menu->addButton(buildButton("MenuStartHighscore", ButtonFunction::confirmSkillPicks));
+    menu->addButton(buildButton("HighscoreStartMenu", ButtonFunction::confirmSkillPicks));
 
     return menu;
 }
@@ -111,7 +120,7 @@ iMenu::ButtonData iMenuFactory::buildButton(std::string name, std::function<void
             btn.texRectHover.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("xTexStart"), button.floats.at("yTexStart") + button.floats.at("activeOffset"));
             btn.texRectHover.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("xTexEnd"), button.floats.at("yTexEnd") + button.floats.at("activeOffset"));
             btn.texRectActive = btn.texRectHover;
-            btn.texture = Resources::Textures::mainMenuText; // Doesn't work right now Resources::Textures::Files(button.ints.at("texture"));
+            btn.texture = LookUp.at(button.ints.at("texture")); 
         }
     }
     return btn;

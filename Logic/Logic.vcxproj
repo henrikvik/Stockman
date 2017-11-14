@@ -230,7 +230,6 @@
     <ClInclude Include="include\Misc\ComboMachine.h" />
     <ClInclude Include="include\Misc\FileLoader.h" />
     <ClInclude Include="include\Misc\GUI\Button.h" />
-    <ClInclude Include="include\Misc\GUI\MenuState.h" />
     <ClInclude Include="include\AI\EnemyTest.h" />
     <ClInclude Include="include\Misc\HighScoreManager.h" />
     <ClInclude Include="include\Entity\Effect.h" />
@@ -249,7 +248,6 @@
     <ClInclude Include="include\Logic.h" />
     <ClInclude Include="include\Entity\Object.h" />
     <ClInclude Include="include\Misc\Enums.h" />
-    <ClInclude Include="include\Misc\GUI\MenuMachine.h" />
     <ClInclude Include="include\Misc\MapStructs.h" />
     <ClInclude Include="include\Misc\RandomGenerator.h" />
     <ClInclude Include="include\Misc\RenderRegister.h" />
@@ -333,7 +331,6 @@
     <ClCompile Include="source\Entity\StaticObject.cpp" />
     <ClCompile Include="source\Misc\FileLoader.cpp" />
     <ClCompile Include="source\Misc\GUI\Button.cpp" />
-    <ClCompile Include="source\Misc\GUI\MenuState.cpp" />
     <ClCompile Include="source\AI\EnemyTest.cpp" />
     <ClCompile Include="source\Misc\HighScoreManager.cpp" />
     <ClCompile Include="source\Entity\Effect.cpp" />
@@ -341,7 +338,6 @@
     <ClCompile Include="source\Map.cpp" />
     <ClCompile Include="source\AI\Trigger.cpp" />
     <ClCompile Include="source\AI\TriggerManager.cpp" />
-    <ClCompile Include="source\Misc\GUI\MenuMachine.cpp" />
     <ClCompile Include="source\Misc\RandomGenerator.cpp" />
     <ClCompile Include="source\Misc\Sound\NoiseMachine.cpp" />
     <ClCompile Include="source\Misc\Sound\SoundSource.cpp" />
