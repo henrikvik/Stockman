@@ -151,7 +151,7 @@ void Enemy::onEffectEnd(int stacks, Effect const & effect)
     }
     if (flags & Effect::EFFECT_BULLET_TIME)
     {
-        m_bulletTimeMod = 1.f;
+        //m_bulletTimeMod = 1.f;
     }
     if (flags & Effect::EFFECT_IS_FROZEN)
     {

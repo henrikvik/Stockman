@@ -136,7 +136,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
         // Ice
         newd WeaponLoadout{
         /* Primary */       newd Weapon(projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1 }),
-        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(40, 0.6f, 1, 100, 0, 5000, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeFreezeGrenade), Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0 }, ProjectileData(10, 0.2f, 1, 10, 5, 5000, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeNormal), 8),
+        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(40, 0.6f, 1, 100, 0, 5000, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeFreezeGrenade), Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0 }, ProjectileData(10, 0.2f, 1, 10, 5, 5000, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIceShard), 8),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 300, 100, 100, 1, 25, 1500 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -2.3f, 0.3f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f }) },
 

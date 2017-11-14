@@ -54,6 +54,15 @@ void Skill::update(float deltaTime)
 	onUpdate(deltaTime);
 }
 
+void Logic::Skill::reset()
+{
+    m_cooldown = 0.f;
+    m_duration = 0.f;
+    m_canUse = true;
+    m_active = false;
+    onReset();
+}
+
 float Skill::getCooldown() const		{ return m_cooldown;			}
 float Skill::getCooldownMax() const		{ return m_cooldownMax;			}
 float Skill::getDuration() const		{ return m_duration;			}

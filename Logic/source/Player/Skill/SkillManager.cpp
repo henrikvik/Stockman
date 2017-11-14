@@ -43,6 +43,15 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager)
     switchToSkill({ SKILL_SHIELD_CHARGE, SKILL_GRAPPLING_HOOK, SKILL_BULLET_TIME });
 }
 
+void Logic::SkillManager::reset()
+{
+    for (Skill* skill : m_allSkills)
+    {
+        if (skill)
+            skill->reset();
+    }
+}
+
 // Switches out currently active skills to a new list of skill, by using the parameter's skill indexes
 void SkillManager::switchToSkill(std::vector<SKILL> skillsToUse)
 {

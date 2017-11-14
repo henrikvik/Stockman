@@ -67,8 +67,8 @@ void Projectile::updateSpecific(float deltaTime)
 	Entity::update(deltaTime);
 
     // Modify the velocity & gravity with the bullet time modifier
-    btVector3 vel = getRigidBody()->getLinearVelocity().normalized();
-    getRigidBody()->setLinearVelocity(vel * m_pData.speed * m_bulletTimeMod);
+    btVector3 dir = getRigidBody()->getLinearVelocity().normalized();
+    getRigidBody()->setLinearVelocity(dir * m_pData.speed * m_bulletTimeMod);
     getRigidBody()->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_bulletTimeMod, 0.f });
     
     // Decrease the lifetime of this bullet
@@ -180,14 +180,14 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 {
     bool callback = false;
 
-    if (proj->getProjectileData().enemyBullet != getProjectileData().enemyBullet)
+    if (1)
     {
         switch (proj->getProjectileData().type)
         {
         case ProjectileTypeBulletTimeSensor:
             getStatusManager().addStatus(
                 /* Adding Bullet time effect */     StatusManager::BULLET_TIME,
-                /* Number of stacks */              1,
+                /* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME),
                 /* Reset Duration */                true
             );
             break;
