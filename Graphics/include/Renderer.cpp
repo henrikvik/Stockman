@@ -40,8 +40,7 @@ namespace Graphics
 {
     uint32_t zero = 0;
     Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-        : forwardPlus(device, Resources::Shaders::ForwardPlus)
-        , depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
+        : depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
 #pragma region RenderDebugInfo
         , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
         , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
@@ -53,7 +52,6 @@ namespace Graphics
 
 
 #pragma endregion
-        , depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
         , instanceStaticBuffer(device, CpuAccess::Write, INSTANCE_CAP(InstanceAnimated))
         , instanceAnimatedBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
         , fakeBuffers(WIN_WIDTH, WIN_HEIGHT)
@@ -238,7 +236,6 @@ namespace Graphics
                 depthStencil
             ),
             newd BulletTimeRenderPass(&fakeBuffers, {backBuffer}),
-            newd BulletTimeRenderPass({backBuffer}, {*fakeBackBuffer}),
             newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
             newd GUIRenderPass({backBuffer}),
         };
@@ -317,18 +314,6 @@ namespace Graphics
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
     }
-
-    //no idea if working
-	void Renderer::swapBackBuffers()
-	{
-		ID3D11ShaderResourceView * temp = fakeBackBuffer->shaderResource;
-		fakeBackBuffer->shaderResource = fakeBackBufferSwap->shaderResource;
-		fakeBackBufferSwap->shaderResource = temp;
-
-        ID3D11RenderTargetView * temp2 = fakeBackBuffer->renderTarget;
-        fakeBackBuffer->renderTarget = fakeBackBufferSwap->renderTarget;
-        fakeBackBufferSwap->renderTarget = temp2;
-	}
 
     void Renderer::renderDebugInfo(Camera* camera)
     {

@@ -35,7 +35,7 @@ namespace Graphics
         void update(float deltaTime);
     private:
 
-    #pragma region Shared Shader Resources
+#pragma region Shared Shader Resources
         std::vector<RenderPass*> renderPasses;
         ShaderResource colorMap;
         ShaderResource glowMap;
@@ -52,7 +52,7 @@ namespace Graphics
 
         PingPongBuffer fakeBuffers;
 
-    #pragma region Instance Buffers
+#pragma region Instance Buffers
         using float4x4 = DirectX::SimpleMath::Matrix;
         using float4 = DirectX::SimpleMath::Vector4;
         using float3 = DirectX::SimpleMath::Vector3;
@@ -90,12 +90,8 @@ namespace Graphics
 		Shader foliageShader;
 #pragma endregion
 
-        void drawToBackbuffer(ID3D11ShaderResourceView * texture);
 
-		void registerDebugFunction();
-
-
-    #pragma region RenderDebugInfo
+#pragma region RenderDebugInfo
 
         Shader debugRender;
         std::vector<RenderDebugInfo*> renderDebugQueue;
@@ -103,16 +99,16 @@ namespace Graphics
         ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
         void renderDebugInfo(Camera* camera);
 
-    #pragma endregion
+#pragma endregion
 		Fog fog;
 
-    #pragma region Draw Functions and Buffers
+#pragma region Draw Functions and Buffers
 
 
 
 
 
-    #pragma endregion
+#pragma endregion
 
 
 
