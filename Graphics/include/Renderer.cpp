@@ -215,7 +215,15 @@ namespace Graphics
                 },
                 depthStencil
             ),
-            newd ParticleRenderPass({ fakeBuffers }, depthStencil),
+            newd ParticleRenderPass(
+                fakeBuffers,
+                lightOpaqueGridSRV, 
+                lightOpaqueIndexList, 
+                lightsNew, 
+                shadowMap, 
+                *sun.getGlobalLightBuffer(),
+                depthStencil
+            ),
             newd SSAORenderPass(&fakeBuffers, {}, { depthStencil, normalMap }, {}, nullptr), //this
             //newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
             newd GlowRenderPass(&fakeBuffers, { }, { glowMap}), //and this
@@ -278,11 +286,11 @@ namespace Graphics
 
         QueueRender(lightInfo);
 
-        writeInstanceBuffers();
-        sun.update();
-
         FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 
+        writeInstanceBuffers();
+        sun.update();
+   
         for (auto & renderPass : renderPasses)
         {
             PROFILE_BEGIN(__FUNCSIG__);

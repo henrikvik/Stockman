@@ -40,9 +40,20 @@ public:
     void addEffect(std::string name, XMMATRIX model);
     ParticleEffect getEffect(std::string name);
 
-	void renderPrePass(ID3D11DeviceContext *cxt, Camera *cam, ID3D11DepthStencilView *dest_dsv);
-	void render(ID3D11DeviceContext *cxt, Camera *cam, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView *dest_dsv, bool debug);
-	void update(ID3D11DeviceContext *cxt, Camera *cam, float dt);
+    void renderPrePass(ID3D11DeviceContext *cxt, Camera *cam, ID3D11DepthStencilView *dest_dsv);
+    void render(
+        ID3D11DeviceContext *cxt,
+        Camera *cam,
+        ID3D11ShaderResourceView *lightIndexList,
+        ID3D11ShaderResourceView *lightGrid,
+        ID3D11ShaderResourceView *lights,
+        ID3D11Buffer *lightBuffer,
+        ID3D11ShaderResourceView *shadowMap,
+        ID3D11RenderTargetView *dest_rtv, 
+        ID3D11DepthStencilView *dest_dsv,
+        bool debug);
+
+    void update(ID3D11DeviceContext *cxt, Camera *cam, float dt);
 
     struct GeometryParticleInstance {
         XMMATRIX m_Model;
