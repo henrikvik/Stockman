@@ -194,6 +194,7 @@ void StatePlaying::render() const
 
 void StatePlaying::gameOver()
 {
-    m_highScoreManager->addNewHighScore(ComboMachine::Get().getCurrentScore());
+    ComboMachine::Get().endCombo();
+    m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
     reset();
 }

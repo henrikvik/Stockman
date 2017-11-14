@@ -54,6 +54,7 @@ void EnemyNecromancer::createAbilities()
 
 						increaseCallbackEntities();
 						e->addCallback(ON_DEATH, [&](CallbackData &data) -> void {
+                            ComboMachine::Get().kill();
 							m_spawnedMinions--;
 						});
 						e->addCallback(ON_DESTROY, [&](CallbackData data) -> void {

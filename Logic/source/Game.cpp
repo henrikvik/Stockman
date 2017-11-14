@@ -274,7 +274,8 @@ void Game::updateGame(float deltaTime)
 
 void Game::gameOver()
 {
-	m_highScoreManager->addNewHighScore(ComboMachine::Get().getCurrentScore());
+    ComboMachine::Get().endCombo();
+	m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
 	m_menu->setStateToBe(GameState::gameStateGameOver);
 
 	for (int i = 0; i < 10; i++)

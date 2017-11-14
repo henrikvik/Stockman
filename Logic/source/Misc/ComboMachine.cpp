@@ -3,25 +3,64 @@
 using namespace Logic;
 
 const int ComboMachine::MAX_COMBO = 16;
-const float ComboMachine::COMBO_TIMER = 8000.f;
+const int ComboMachine::MAX_MULTIKILL = 5;
+const float ComboMachine::COMBO_TIMER = 5000.f;
+const float ComboMachine::MULTIKILL_TIMER = 1000.f;
+
+ComboMachine::ComboMachine()
+{
+    reset();
+}
 
 // Flat reward, no combo involved
 void ComboMachine::reward(int score)
 {
-	m_score += score;
+    m_totalScore += score;
 }
 
 // Gives the player score depending on enemy type
 void ComboMachine::kill(int score)
 {
     m_comboTimer = COMBO_TIMER;
-	m_score += score * m_combo;
+    if (score)
+    {
+        //addScore(score); apparently this doesnt work?
+        // add score to combo
+        m_score += score * m_combo;
+        // increase combo
+        if(m_combo != MAX_COMBO)
+            m_combo++;
+
+        // multikill
+        if (m_multikill != MAX_MULTIKILL)
+        {
+            if (m_multikillTimer > FLT_EPSILON)
+                m_multikill++;
+            m_multikillTimer = MULTIKILL_TIMER;
+        }
+        else
+            m_multikillTimer = 0.f;
+    }
 }
 
 // Needs to be updated because we need to check the combo timer
 void ComboMachine::update(float deltaTime)
 {
-	m_comboTimer -= deltaTime;
+    if (m_multikillTimer > FLT_EPSILON)
+        m_multikillTimer -= deltaTime;
+    else
+        addMultikillScore();
+
+    if (m_comboTimer > FLT_EPSILON)
+        m_comboTimer -= deltaTime;
+    else
+    {
+        reward(m_score);
+        m_comboTimer = 0.f;
+        m_combo = 1;
+        m_multikill = 1;
+        m_score = 0;
+    }  
 }
 
 // Reset all variables, should be called every level-restart
@@ -29,7 +68,15 @@ void ComboMachine::reset()
 {
 	m_comboTimer = 0.f;
 	m_combo = 1;
+    m_multikill = 1;
 	m_score = 0;
+    m_totalScore = 0;
+}
+
+void ComboMachine::endCombo()
+{
+    addMultikillScore();
+    reward(m_score);
 }
 
 // Returns a value between 0-100, representing the time left of combo-timer, where zero is the time when the combo ends
@@ -51,17 +98,35 @@ int ComboMachine::getCurrentScore()
 	return m_score;
 }
 
-// Raises the combo if time between each kill is fast enough
+int ComboMachine::getTotalScore()
+{
+    return m_totalScore;
+}
+
+// Check if combo is still alive
 void ComboMachine::checkCombo()
 {
-	if (m_comboTimer > 0.f)
-	{
-		m_combo++;
-		m_comboTimer = COMBO_TIMER;
-	}
-	else
-	{
-		m_combo = 1;
-		m_comboTimer = COMBO_TIMER;
-	}
+
+}
+
+void ComboMachine::addMultikillScore()
+{
+    m_score *= m_multikill;
+    m_multikill = 1;
+}
+
+void ComboMachine::addScore(int score)
+{
+    m_score += score * m_combo;
+    if (m_combo != MAX_COMBO)
+        m_combo++;
+
+    if (m_multikill != MAX_MULTIKILL)
+    {
+        if (m_multikillTimer > FLT_EPSILON)
+            m_multikill++;
+        m_multikillTimer = MULTIKILL_TIMER;
+    }
+    else
+        m_multikillTimer = 0.f;
 }
