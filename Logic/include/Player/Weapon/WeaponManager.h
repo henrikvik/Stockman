@@ -98,6 +98,7 @@ namespace Logic
             int magSizeModifier;
             int ammoCapModifier;
             float fireRateModifier;
+            float reloadTimeModifier;
             float freezeDurationModifier;
             int fireDamageModifier;
         };

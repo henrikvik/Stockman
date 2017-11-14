@@ -193,23 +193,35 @@ void Player::registerDebugCmds()
 
         return "Player is permanently 20 percent faster";
     });
-    win->registerCommand("DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
+    win->registerCommand("LOG_DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addStatus(StatusManager::M20_PERC_CD, 1);
 
         return "Player skills take 20% less time to recover";
     });
-    win->registerCommand("INCREASE_MAG_SIZE", [&](std::vector<std::string> &args)->std::string
+    win->registerCommand("LOG_INCREASE_MAG_SIZE", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addStatus(StatusManager::P40_MAGSIZE, 1);
 
         return "Mag clip holds 40 more bullets";
     });
-    win->registerCommand("INCREASE_AMMO_CAP", [&](std::vector<std::string> &args)->std::string
+    win->registerCommand("LOG_INCREASE_AMMO_CAP", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addStatus(StatusManager::P20_AMMOCAP, 1);
 
         return "You have bigger ammo bags now, it can hold 20 ammo more";
+    });
+    win->registerCommand("LOG_INCREASE_FIRE_RATE", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_PERC_RATE_OF_FIRE, 1);
+
+        return "You shoot 20% faster";
+    });
+    win->registerCommand("LOG_INCREASE_RELOAD_TIME", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::M20_PERC_RELOAD_SPEED, 1);
+
+        return "You reload 20% faster";
     });
 }
 
@@ -325,25 +337,25 @@ void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
     }
     if (flags & Effect::EFFECT_IS_FROZEN)
     {
-        m_moveSpeedMod = 1.0f;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
+        /*m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
     }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
-        m_moveSpeedMod = 1.0f;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
+        /*m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
         m_stunned = false;
     }
 
     if (flags & Effect::EFFECT_MOVE_FASTER)
     {
-        m_moveSpeedMod = 1.0f;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
+       /* m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
     }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
     {
-        m_moveSpeedMod = 1.0f;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
+       /* m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
     }
 }
 

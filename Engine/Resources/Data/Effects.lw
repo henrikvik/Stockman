@@ -226,7 +226,7 @@
 	"specifics": 0;
 }
 { // INCREASE RATE OF FIRE 
-	"flags": 134217728; // 0x8000000
+	"flags": 134348800; // 0x20000 + 0x8000000
 	"duration" : 0f;
     "modifiers": 1;
     "specifics": 0;
@@ -239,4 +239,19 @@
     "mAmmoCap" : 0;
     "mMagCap" : 0;
     "mSkillCDDecrease" : 0f;
+}
+{ // decrease reload time 
+	"flags": 268566528; // 0x20000 + 0x10000000
+	"duration" : 0f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0.2f;
 }

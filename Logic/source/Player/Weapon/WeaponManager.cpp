@@ -32,6 +32,7 @@ void WeaponManager::init(ProjectileManager* projectileManager)
 
     m_Upgrades.magSizeModifier = 0;
     m_Upgrades.ammoCapModifier = 0;
+    m_Upgrades.reloadTimeModifier = 1.0f;
     m_Upgrades.fireRateModifier = 1.0f;
     m_Upgrades.freezeDurationModifier = 1.0f;
     m_Upgrades.fireDamageModifier = 0.0f;
@@ -150,6 +151,14 @@ void Logic::WeaponManager::affect(Effect const & effect)
     if (flags & Effect::EFFECT_INCREASE_FIRERATE)
     {
         m_Upgrades.fireRateModifier *= 1 - effect.getModifiers()->modifyFirerate;
+    }
+    if (flags & Effect::EFFECT_DECREASE_RELOADTIME)
+    {
+        m_Upgrades.reloadTimeModifier *= 1 - effect.getModifiers()->modifySkillCDDecrease;
+        if (m_Upgrades.reloadTimeModifier < 0)
+        {
+            m_Upgrades.reloadTimeModifier = 0;
+        }
     }
 
 }
@@ -272,7 +281,7 @@ void WeaponManager::reloadWeapon()
 {
 	if (m_reloadTimer <= 0.f && m_currentWeapon->ammoContainer->getAmmoInfo().ammo > 0 && m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo < (m_currentWeapon->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier))
 	{
-        m_reloadTimer = m_currentWeapon->ammoContainer->getAmmoInfo().reloadTime;
+        m_reloadTimer = m_currentWeapon->ammoContainer->getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier;
 		m_reloadState = ReloadingWeapon::ACTIVE;
 		printf("reloading weapon\n");
 	}
