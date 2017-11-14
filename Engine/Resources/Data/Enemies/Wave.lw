@@ -7,7 +7,7 @@
 	"bossWaves": "9";
 }
 { // 0
-	"enemies" : "0";
+	"enemies" : "3";
 	"bosses": 0;
 	"triggers" : 7;
 }

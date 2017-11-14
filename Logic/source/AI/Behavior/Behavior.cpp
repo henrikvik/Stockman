@@ -62,7 +62,7 @@ void Behavior::walkPath(RunIn &in)
         dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
     float y = in.enemy->getRigidBody()->getLinearVelocity().getY();
-    dir.setY(0);
+   // dir.setY(0);
     dir.normalize();
     dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
 
