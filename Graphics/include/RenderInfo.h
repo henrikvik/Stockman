@@ -86,10 +86,11 @@ SET_INSTANCE_CAP(LightRenderInfo, 128)
 
 struct SpecialEffectRenderInfo : RenderInfo
 {
-    enum SpecialEffect { BulletTime, Snow };
+    enum SpecialEffect { BulletTime, Snow, screenShake };
     SpecialEffect type;
     float progress = 0;
     float duration = 0;
+    float radius = 0;
     bool restart = 0;
 };
 
