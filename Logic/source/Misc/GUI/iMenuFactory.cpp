@@ -63,12 +63,18 @@ iMenu * iMenuFactory::buildMenuSkill()
 
 iMenu * iMenuFactory::buildMenuCard()
 {
-    return nullptr;
+    iMenu* menu = newd iMenu(iMenu::Card);
+    iMenu::ButtonData btn;
+
+    // Add background
+    // Add buttons
+
+    return menu;
 }
 
 iMenu * iMenuFactory::buildMenuHighscore()
 {
-    iMenu* menu = newd iMenu(iMenu::Settings);
+    iMenu* menu = newd iMenu(iMenu::Highscore);
     iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::mainmenupicture, 1.f);
@@ -79,7 +85,13 @@ iMenu * iMenuFactory::buildMenuHighscore()
 
 iMenu * iMenuFactory::buildMenuGameover()
 {
-    return nullptr;
+    iMenu* menu = newd iMenu(iMenu::GameOver);
+    iMenu::ButtonData btn;
+
+    // Add background
+    // Add buttons
+
+    return menu;
 }
 
 // Building function, for internal use only

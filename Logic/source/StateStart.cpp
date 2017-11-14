@@ -9,8 +9,6 @@
 #include <Graphics\include\MainCamera.h>
 #include <Graphics\include\Device.h>
 
-#define EDIT_CAMERA_POS false
-
 using namespace Logic;
 
 StateStart::StateStart(StateBuffer* stateBuffer)
@@ -55,24 +53,8 @@ void StateStart::reset() { }
 
 void StateStart::update(float deltaTime)
 {
-    Graphics::FXSystem->processEffect(&m_campfire, DirectX::XMMatrixTranslation(0, 0, 0), deltaTime / 1000.f);
-
     DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_ABSOLUTE);
-    static DirectX::SimpleMath::Vector3 movingCameraPosition(6.941, 5.6, -4.141);
-    static DirectX::SimpleMath::Vector3 movingCameraForward(-0.2, -0.153, 0.258);
-
-#if EDIT_CAMERA_POS
-    // Debugging purposes
-    ImGui::Begin("Camera");
-    ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&movingCameraPosition), -10.f, 10.f, "%.3f");
-    ImGui::SliderFloat3("Forward", reinterpret_cast<float*>(&movingCameraForward), -1.f, 1.f, "%.3f");
-    ImGui::End();
-#else
-    // Moving the camera slightly
-    movingCameraForward.x += (-0.3f - movingCameraForward.x) * 0.00001f * deltaTime;
-#endif
-
-    Global::mainCamera->update(movingCameraPosition, movingCameraForward, Global::context);
+    Graphics::FXSystem->processEffect(&m_campfire, DirectX::XMMatrixTranslation(0, 0, 0), deltaTime / 1000.f);
 
     PROFILE_BEGIN("Physics");
     m_physics->update(deltaTime);
