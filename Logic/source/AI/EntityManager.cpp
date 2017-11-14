@@ -410,17 +410,13 @@ void EntityManager::render() const
         for (Enemy *enemy : m_enemies[i])
         {
             enemy->render();
-#ifdef DEBUG_PATH	
             enemy->debugRendering();
-#endif
         }
     }
 
     for (int i = 0; i < m_deadEnemies.size(); ++i)
     {
-#ifndef DISABLE_RENDERING_DEAD_ENEMIES
      //   m_deadEnemies[i]->render();
-#endif
     }
 
     m_triggerManager.render();

@@ -14,7 +14,6 @@ AStar::AStar(std::string file)
 {
     initDebugRendering();
     initNodes();
-
     generateNodesFromFile();
 }
 

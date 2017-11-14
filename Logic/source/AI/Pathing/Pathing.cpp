@@ -5,6 +5,10 @@ Pathing::Pathing()
 {
 	m_currentNode = 0;
     m_debugInfo.points = nullptr;
+
+#ifdef _DEBUG
+    initDebugRendering();
+#endif
 }
 
 Pathing::~Pathing()

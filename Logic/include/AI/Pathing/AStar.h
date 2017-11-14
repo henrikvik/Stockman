@@ -62,6 +62,9 @@ namespace Logic
 			void generateNodesFromFile();
 			void setupDebugging();
 			bool nodeInQue(int index, std::priority_queue<NavNode*> que) const;
+
+            void initDebugRendering();
+            void initNodes();
 		public:
 			// string for the offline loaded nav mesh
 			AStar(std::string file);
