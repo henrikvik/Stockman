@@ -6,6 +6,7 @@
 #include "../MainCamera.h"
 #include "../CommonState.h"
 #include <comdef.h>
+#define SHAKE_DIRECTION_MULTIPLIER 2.f
 
 Graphics::GUIRenderPass::GUIRenderPass(std::initializer_list<ID3D11RenderTargetView*> targets, std::initializer_list<ID3D11ShaderResourceView*> resources, std::initializer_list<ID3D11Buffer*> buffers, ID3D11DepthStencilView * depthStencil)
     : RenderPass(targets, resources, buffers, depthStencil)
@@ -120,10 +121,13 @@ void Graphics::GUIRenderPass::update(float deltaTime)
 
 void Graphics::GUIRenderPass::updateShake(float deltaTime)
 {
+    using namespace DirectX::SimpleMath;
+
     static float shakeCounter = 0;
     static float shakeDuration = 0;
     static float shakeRadius = 0;
     static bool isShaking = 0;
+    static Vector2 shakeDir;
 
     for (auto & info : RenderQueue::get().getQueue<SpecialEffectRenderInfo>())
     {
@@ -133,6 +137,9 @@ void Graphics::GUIRenderPass::updateShake(float deltaTime)
             shakeDuration = info.duration;
             shakeRadius = info.radius;
             isShaking = true;
+
+            shakeDir = info.direction;
+            shakeDir.Normalize();
         }
     }
 
@@ -142,7 +149,7 @@ void Graphics::GUIRenderPass::updateShake(float deltaTime)
 
         static float angle = 0;
         angle = rand() % 360;
-        positionOffset = DirectX::SimpleMath::Vector2(sin(angle) * currentShakeAmount, cos(angle) * currentShakeAmount);
+        positionOffset = (Vector2(sin(angle), cos(angle)) + (shakeDir * SHAKE_DIRECTION_MULTIPLIER)) * currentShakeAmount;
 
 
 
@@ -150,10 +157,10 @@ void Graphics::GUIRenderPass::updateShake(float deltaTime)
         if (shakeCounter >= shakeDuration)
         {
             isShaking = false;
-            positionOffset = DirectX::SimpleMath::Vector2(0, 0);
+            positionOffset = Vector2(0, 0);
         }
 
-        ndcPositionOffset = DirectX::SimpleMath::Vector2((float)(positionOffset.x * 2.f / WIN_WIDTH), ((WIN_HEIGHT - positionOffset.y) / WIN_HEIGHT) - 1.f);
+        ndcPositionOffset = Vector2((float)(positionOffset.x * 2.f / WIN_WIDTH), ((WIN_HEIGHT - positionOffset.y) / WIN_HEIGHT) - 1.f);
 
         //this ugly
         Global::mainCamera->update(Global::mainCamera->getPos() + ndcPositionOffset * 3.f, Global::mainCamera->getForward(), Global::context);

@@ -88,6 +88,7 @@ struct SpecialEffectRenderInfo : RenderInfo
 {
     enum SpecialEffect { BulletTime, Snow, screenShake };
     SpecialEffect type;
+    DirectX::SimpleMath::Vector2 direction;
     float progress = 0;
     float duration = 0;
     float radius = 0;
