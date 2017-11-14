@@ -85,8 +85,8 @@ struct ParticleEffectEntry {
     float        m_SpawnedParticles;
     float        m_Start;
     float        m_Time;
-    int8_t       m_Loop;
-    int8_t       m_Anchor;
+    int32_t       m_Loop;
+    int32_t       m_Anchor;
     PosBox       m_StartPosition;
     VelocityBox  m_StartVelocity;
     ParticleEase m_SpawnEasing;

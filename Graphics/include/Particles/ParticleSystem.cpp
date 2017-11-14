@@ -71,7 +71,7 @@ HRESULT __stdcall ResourcesShaderInclude::Open(
 {
     std::string finalPath = m_ShaderDir + "\\" + pFileName;
 
-    std::ifstream fileStream(finalPath);
+    std::ifstream fileStream(finalPath, std::ios::binary);
     int fileSize = 0;
     fileStream.seekg(0, std::ios::end);
     fileSize = fileStream.tellg();
@@ -229,7 +229,7 @@ void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, ID3D
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
 
-    cxt->PSSetShaderResources(0, (UINT)m_Textures.size(), m_Textures.data());
+    cxt->PSSetShaderResources(4, (UINT)m_Textures.size(), m_Textures.data());
 
     // spheres
     {
@@ -294,7 +294,17 @@ void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, ID3D
     }
 }
 
-void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView * dest_dsv, bool debug)
+void ParticleSystem::render(
+    ID3D11DeviceContext *cxt,
+    Camera *cam,
+    ID3D11ShaderResourceView *lightIndexList,
+    ID3D11ShaderResourceView *lightGrid,
+    ID3D11ShaderResourceView *lights,
+    ID3D11Buffer *lightBuffer,
+    ID3D11ShaderResourceView *shadowMap,
+    ID3D11RenderTargetView *dest_rtv, 
+    ID3D11DepthStencilView *dest_dsv,
+    bool debug)
 {
     ID3D11SamplerState *samplers[] = {
         Global::cStates->LinearClamp(),
@@ -319,19 +329,23 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11Render
             0
         };
 
-        ID3D11Buffer *buffers[] = {
+        ID3D11Buffer *vertex_buffers[] = {
             *m_SphereVertexBuffer,
             *m_GeometryInstanceBuffer
         };
 
         cxt->IASetInputLayout(*m_GeometryVS);
-        cxt->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+        cxt->IASetVertexBuffers(0, 2, vertex_buffers, strides, offsets);
         cxt->IASetIndexBuffer(*m_SphereIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
         cxt->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         cxt->VSSetShader(*m_GeometryVS, nullptr, 0);
-        auto buf = cam->getBuffer();
-        cxt->VSSetConstantBuffers(0, 1, *buf);
+        ID3D11Buffer *buffers[] = {
+            *cam->getBuffer(),
+            lightBuffer
+        };
+        cxt->VSSetConstantBuffers(0, 1, buffers);
+        cxt->PSSetConstantBuffers(0, 2, buffers);
 
         cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         cxt->OMSetRenderTargets(1, &dest_rtv, dest_dsv);
@@ -368,6 +382,7 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11Render
         
         cxt->RSSetState(Global::cStates->CullCounterClockwise());
     }
+    cxt->PSSetShaderResources(0, 4, Global::nulls);
 }
 
 class GeometryParticleUpdater {
@@ -597,6 +612,8 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         );
 
         if (!SUCCEEDED(res)) {
+            OutputDebugStringA((char*)error->GetBufferPointer());
+
             throw "Failed to compile material shader PS";
         }
 
@@ -615,9 +632,8 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
             &error
         );
 
-        char *c;
         if (!SUCCEEDED(res)) {
-            c = (char*)error->GetBufferPointer();
+            OutputDebugStringA((char*)error->GetBufferPointer());
             throw "Failed to compile material shader PS_depth";
         }
 
