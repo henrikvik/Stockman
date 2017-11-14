@@ -17,33 +17,44 @@ namespace Resources
             {KG26, R"(..\Resources\Fonts\KG26.spritefont)"}
         };
     }
+    namespace Maps
+    {
+        enum Files
+        {
+            Scene
+        };
+        const std::map<Files, const char *> Paths =
+        {
+            {Scene, R"(..\Resources\Maps\Scene.toml)"}
+        };
+    }
     namespace Models
     {
         enum Files
         {
+            Ammocrystal,
+            AmmoPackCrossBolt,
             Crossbow,
+            Crossbowbolts,
             Hammer,
             SkySphere,
             Staff,
             StaticSummon,
             Tablet1,
-            UnitCube,
-            CrossBowProjectile,
-            AmmoPackCrossBolt,
-            AmmoPackIceGun
+            UnitCube
         };
         const std::map<Files, const char *> Paths =
         {
+            {Ammocrystal, R"(..\Resources\Models\Ammocrystal.hyb)"},
+            {AmmoPackCrossBolt, R"(..\Resources\Models\AmmoPackCrossBolt.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
+            {Crossbowbolts, R"(..\Resources\Models\Crossbowbolts.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
-            {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"},
-            {CrossBowProjectile, R"(..\Resources\Models\Crossbowbolts.hyb)"},
-            {AmmoPackCrossBolt, R"(..\Resources\Models\Ammobolts.hyb)"},
-            {AmmoPackIceGun, R"(..\Resources\Models\Ammocrystal.hyb)"}
+            {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
     }
     namespace Shaders
@@ -51,6 +62,7 @@ namespace Resources
         enum Files
         {
             BulletTime,
+            DebugShader,
             DoFBlur1,
             DoFBlur2,
             DoFCreateCoC,
@@ -76,6 +88,7 @@ namespace Resources
         const std::map<Files, const char *> Paths =
         {
             {BulletTime, R"(..\Resources\Shaders\BulletTime.hlsl)"},
+            {DebugShader, R"(..\Resources\Shaders\DebugShader.hlsl)"},
             {DoFBlur1, R"(..\Resources\Shaders\DoFBlur1.hlsl)"},
             {DoFBlur2, R"(..\Resources\Shaders\DoFBlur2.hlsl)"},
             {DoFCreateCoC, R"(..\Resources\Shaders\DoFCreateCoC.hlsl)"},
@@ -113,8 +126,9 @@ namespace Resources
             HPBars,
             HUDIcons,
             mainMenuButton,
+            MainmenuClean,
             mainmenupicture,
-            mainMenuText,
+            Mainmenutext,
             MissingTexture,
             randomNormals,
             SettingsMenuButtons,
@@ -135,8 +149,9 @@ namespace Resources
             {HPBars, R"(..\Resources\Textures\HPBars.dds)"},
             {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
-            {mainMenuText, R"(..\Resources\Textures\Mainmenutext.dds)" },
-            {mainmenupicture, R"(..\Resources\Textures\MainmenuClean.dds)"},
+            {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},
+            {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
+            {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},
