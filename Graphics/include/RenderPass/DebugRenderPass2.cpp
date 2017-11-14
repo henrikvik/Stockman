@@ -10,7 +10,7 @@ Graphics::DebugRenderPass::DebugRenderPass(
     , debugShader(Resources::Shaders::DebugShader)
     , vertexBuffer(CpuAccess::Write, INSTANCE_CAP(DebugRenderInfo))
 {
-    
+
 }
 
 Graphics::DebugRenderPass::~DebugRenderPass()
@@ -27,7 +27,7 @@ void Graphics::DebugRenderPass::render() const
     Global::context->VSSetConstantBuffers(0, 1, buffers.data());
     Global::context->VSSetConstantBuffers(1, 1, offsetBuffer);
     Global::context->VSSetShaderResources(0, 1, vertexBuffer);
-    
+
     UINT offset = 0;
     for (auto & info : RenderQueue::get().getQueue<DebugRenderInfo>())
     {

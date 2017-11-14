@@ -76,12 +76,13 @@ Enemy::~Enemy() {
 
 void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
-	updateSpecific(player, deltaTime);
 
     if (!m_stunned)
     {
         m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
     }
+
+	updateSpecific(player, deltaTime);
 
     // Update Render animation and position
     enemyRenderInfo.transform = getTransformMatrix();
