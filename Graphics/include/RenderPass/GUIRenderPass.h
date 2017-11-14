@@ -42,5 +42,9 @@ namespace Graphics
 
         void textRender() const;
         bool isDrawableString(const wchar_t * text)const;
+        void updateShake(float deltaTime);
+
+        DirectX::SimpleMath::Vector2 ndcPositionOffset;
+        DirectX::SimpleMath::Vector2 positionOffset;
     };
 }

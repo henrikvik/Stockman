@@ -15,6 +15,7 @@
 #include "Lights\Sun.h"
 #include "HybrisLoader\HybrisLoader.h"
 #include "Fog.h"
+#include "Utility\PingPongBuffer.h"
 
 #include <SpriteBatch.h>
 
@@ -34,7 +35,7 @@ namespace Graphics
         void update(float deltaTime);
     private:
 
-    #pragma region Shared Shader Resources
+#pragma region Shared Shader Resources
         std::vector<RenderPass*> renderPasses;
         ShaderResource colorMap;
         ShaderResource glowMap;
@@ -49,10 +50,9 @@ namespace Graphics
 
         ID3D11RenderTargetView * backBuffer;
 
-        ShaderResource* fakeBackBuffer;
-        ShaderResource* fakeBackBufferSwap;
+        PingPongBuffer fakeBuffers;
 
-    #pragma region Instance Buffers
+#pragma region Instance Buffers
         using float4x4 = DirectX::SimpleMath::Matrix;
         using float4 = DirectX::SimpleMath::Vector4;
         using float3 = DirectX::SimpleMath::Vector3;
@@ -90,16 +90,25 @@ namespace Graphics
 		Shader foliageShader;
 #pragma endregion
 
-		void registerDebugFunction();
+
+#pragma region RenderDebugInfo
+
+        Shader debugRender;
+        std::vector<RenderDebugInfo*> renderDebugQueue;
+        StructuredBuffer<DirectX::SimpleMath::Vector3> debugPointsBuffer;
+        ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
+        void renderDebugInfo(Camera* camera);
+
+#pragma endregion
 		Fog fog;
 
-    #pragma region Draw Functions and Buffers
+#pragma region Draw Functions and Buffers
 
 
 
 
 
-    #pragma endregion
+#pragma endregion
 
 
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "RenderPass.h"
 #include "../Utility/Shader.h"
-#include "../Utility/ShaderResource.h"
+#include "../Utility/PingPongBuffer.h"
 
 #define MIP_LEVELS 5
 
@@ -10,6 +10,7 @@ namespace Graphics {
     {
     public:
         GlowRenderPass(
+            PingPongBuffer * backBuffers,
             std::initializer_list<ID3D11RenderTargetView*> targets,
             std::initializer_list<ID3D11ShaderResourceView*> resources = {},
             std::initializer_list<ID3D11Buffer*> buffers = {},
@@ -33,6 +34,8 @@ namespace Graphics {
 
         ShaderResource glowPass0;
         ShaderResource glowPass1;
+
+        PingPongBuffer * backBuffers;
 
 
         void createMips();
