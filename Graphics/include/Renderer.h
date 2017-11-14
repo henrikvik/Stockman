@@ -13,8 +13,6 @@
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
 #include "Lights\Sun.h"
-#include "Menu.h"
-#include "HUD.h"
 #include "HybrisLoader\HybrisLoader.h"
 #include "Fog.h"
 #include "Utility\PingPongBuffer.h"
@@ -55,7 +53,6 @@ namespace Graphics
         PingPongBuffer fakeBuffers;
 
     #pragma region Instance Buffers
-
         using float4x4 = DirectX::SimpleMath::Matrix;
         using float4 = DirectX::SimpleMath::Vector4;
         using float3 = DirectX::SimpleMath::Vector3;
@@ -80,8 +77,6 @@ namespace Graphics
 
     #pragma endregion
         Sun sun;
-        Shader forwardPlus;
-		Shader depthShader;
 
         D3D11_VIEWPORT viewPort;
 
@@ -94,6 +89,10 @@ namespace Graphics
 		UINT grassTime = 0;
 		Shader foliageShader;
 #pragma endregion
+
+        void drawToBackbuffer(ID3D11ShaderResourceView * texture);
+
+		void registerDebugFunction();
 
 
     #pragma region RenderDebugInfo

@@ -415,7 +415,7 @@ void Logic::HUDManager::renderTextElements()const
 {
     for (auto &text : HUDText)
     {
-        RenderQueue::get().queue(&text);
+        QueueRender(text);
     }
 }
 
@@ -449,10 +449,10 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     //updates hudInfo with the current info
     info.score = ComboMachine::Get().GetCurrentScore();
     info.hp = player.getHP();
-    info.activeAmmo[HUDManager::CURRENT_AMMO]   = 8;// TODO GET AMMO
-    info.activeAmmo[HUDManager::TOTAL_AMMO]     = 8;// TODO GET AMMO
-    info.inactiveAmmo[HUDManager::CURRENT_AMMO] = 8;// TODO GET AMMO
-    info.inactiveAmmo[HUDManager::TOTAL_AMMO]   = 8;// TODO GET AMMO
+    info.activeAmmo[HUDManager::CURRENT_AMMO]   = player.getActiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
+    info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().ammo;// TODO GET AMMO
+    info.inactiveAmmo[HUDManager::CURRENT_AMMO] = player.getInactiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
+    info.inactiveAmmo[HUDManager::TOTAL_AMMO]   = player.getInactiveAmmoContainer().getAmmoInfo().ammo;// TODO GET AMMO
     info.sledge = player.isUsingMeleeWeapon();
     info.currentWeapon = player.getCurrentWeapon();
 

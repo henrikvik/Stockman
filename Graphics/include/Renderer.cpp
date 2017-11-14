@@ -25,6 +25,7 @@
 #include "RenderPass\DepthOfFieldRenderPass.h"
 #include "RenderPass\SnowRenderPass.h"
 #include "RenderPass\BulletTimeRenderPass.h"
+#include "RenderPass\DebugRenderPass.h"
 
 #include "Utility\DebugDraw.h"
 
@@ -47,7 +48,6 @@ namespace Graphics
         , debugColorBuffer(device)
 #pragma endregion
         , fog(device)
-#pragma region Foliage
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
 
@@ -238,6 +238,8 @@ namespace Graphics
                 depthStencil
             ),
             newd BulletTimeRenderPass(&fakeBuffers, {backBuffer}),
+            newd BulletTimeRenderPass({backBuffer}, {*fakeBackBuffer}),
+            newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
             newd GUIRenderPass({backBuffer}),
         };
     }
@@ -265,17 +267,19 @@ namespace Graphics
 
     void Renderer::update(float deltaTime)
     {
-        /*static StaticRenderInfo infotest;
+        /*
+        static StaticRenderInfo infotest;
         infotest.model = Resources::Models::Staff;
         infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
-        RenderQueue::get().queue(&infotest);
-*/
-        static LightRenderInfo lightInfo;
+        QueueRender(&infotest);
+        */
+        LightRenderInfo lightInfo;
         lightInfo.color = DirectX::Colors::DodgerBlue;
         lightInfo.intensity = 1;
         lightInfo.position = Global::mainCamera->getPos() + float3(0, 0, 4);
         lightInfo.range = 10;
-        RenderQueue::get().queue(&lightInfo);
+
+        QueueRender(lightInfo);
 
         writeInstanceBuffers();
         sun.update();
@@ -313,6 +317,18 @@ namespace Graphics
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
     }
+
+    //no idea if working
+	void Renderer::swapBackBuffers()
+	{
+		ID3D11ShaderResourceView * temp = fakeBackBuffer->shaderResource;
+		fakeBackBuffer->shaderResource = fakeBackBufferSwap->shaderResource;
+		fakeBackBufferSwap->shaderResource = temp;
+
+        ID3D11RenderTargetView * temp2 = fakeBackBuffer->renderTarget;
+        fakeBackBuffer->renderTarget = fakeBackBufferSwap->renderTarget;
+        fakeBackBufferSwap->renderTarget = temp2;
+	}
 
     void Renderer::renderDebugInfo(Camera* camera)
     {
@@ -362,8 +378,8 @@ namespace Graphics
                 for (auto & sinfo : model_infos.second)
                 {
                     InstanceStatic instance = {};
-                    instance.world = sinfo->transform;
-                    instance.worldInvT = sinfo->transform.Invert().Transpose();
+                    instance.world = sinfo.transform;
+                    instance.worldInvT = sinfo.transform.Invert().Transpose();
                     *instanceBuffer++ = instance;
                 }
             }
@@ -378,12 +394,12 @@ namespace Graphics
                 for (auto & info : model_infos.second)
                 {
                     InstanceAnimated instance = {};
-                    instance.world = info->transform;
-                    instance.worldInvT = info->transform.Invert().Transpose();
+                    instance.world = info.transform;
+                    instance.worldInvT = info.transform.Invert().Transpose();
 
-                    if (strlen(info->animationName) != 0)
+                    if (strlen(info.animationName) != 0)
                     {
-                        auto jointTransforms = skeleton->evalAnimation(info->animationName, info->animationTimeStamp);
+                        auto jointTransforms = skeleton->evalAnimation(info.animationName, info.animationTimeStamp);
                         for (size_t i = 0; i < jointTransforms.size(); i++)
                         {
                             instance.jointTransforms[i] = jointTransforms[i];
@@ -400,14 +416,14 @@ namespace Graphics
             for (auto & info : RenderQueue::get().getQueue<LightRenderInfo>())
             {
                 Light light = {};
-                light.range = info->range;
-                light.intensity = info->intensity;
-                light.color = DirectX::SimpleMath::Vector3(info->color.x, info->color.y, info->color.z);
+                light.range = info.range;
+                light.intensity = info.intensity;
+                light.color = DirectX::SimpleMath::Vector3(info.color.x, info.color.y, info.color.z);
 
-                light.position = info->position;
+                light.position = info.position;
                 light.viewPosition = DirectX::SimpleMath::Vector4::Transform
                 (
-                    DirectX::SimpleMath::Vector4(info->position.x, info->position.y, info->position.z, 1.f),
+                    DirectX::SimpleMath::Vector4(info.position.x, info.position.y, info.position.z, 1.f), 
                     Global::mainCamera->getView()
                 );
 

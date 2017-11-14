@@ -99,12 +99,12 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         std::string catcher = "";
         try
         {
-            Settings* setting = Settings::getInstance();
+            Settings setting = Settings::getInstance();
             if (args.size() != 0)
             {
-                setting->setWindowed(std::stoi(args[0]));
+                setting.setWindowed(std::stoi(args[0]));
 
-                if (setting->getWindowed())
+                if (setting.getWindowed())
                     catcher = "Fullscreen enabled!";
 
                 else
@@ -124,8 +124,8 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
     });
 
     // load settings before starting
-    Settings* setting = Settings::getInstance();
-    setting->readFromFile();
+    Settings setting = Settings::getInstance();
+    setting.readFromFile();
 
 //    game = new Logic::StateMachine(cmdLine, args);
     game = new Logic::StateMachine();
@@ -296,10 +296,10 @@ Profiler *g_Profiler;
 
 int Engine::run()
 {
-    Settings* setting = Settings::getInstance();
+    Settings setting = Settings::getInstance();
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(setting->getFOV()));
+	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(setting.getFOV()));
     Global::mainCamera->update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
@@ -350,7 +350,7 @@ int Engine::run()
         mSwapChain->GetFullscreenState(&test, NULL);
 
 
-		if (setting->getWindowed() != test)
+		if (setting.getWindowed() != test)
 		{
 		//	mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
 		}
@@ -387,11 +387,6 @@ int Engine::run()
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game->render();
 		PROFILE_END();
-
-        // ! Reminder !  
-        // Gives a small mem leak, but it's too cool to remove ^.^
-        static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
-        Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);
         
         PROFILE_BEGINC("Renderer::update()", EventColor::Pear);
         renderer->update(deltaTime / 1000.f);
@@ -423,6 +418,7 @@ int Engine::run()
         RenderQueue::get().clearAllQueues();
     }
 
+    setting.writeToFile();
     delete Global::mainCamera;
     Graphics::Debug::Destroy();
     g_Profiler->end();

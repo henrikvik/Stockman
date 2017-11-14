@@ -201,6 +201,7 @@
     <ClInclude Include="include\AI\Abilities\Ability.h" />
     <ClInclude Include="include\AI\Behavior\BigBadBehavior.h" />
     <ClInclude Include="include\AI\EnemyBossBaddie.h" />
+    <ClInclude Include="include\AI\EnemySoarer.h" />
     <ClInclude Include="include\Physics\FuncContactResult.h" />
     <ClInclude Include="include\Misc\CommandsFile.h" />
     <ClInclude Include="include\GameType.h" />
@@ -301,6 +302,7 @@
     <ClCompile Include="source\AI\Abilities\Ability.cpp" />
     <ClCompile Include="source\AI\Behavior\BigBadBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyBossBaddie.cpp" />
+    <ClCompile Include="source\AI\EnemySoarer.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuFactory.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenu.cpp" />

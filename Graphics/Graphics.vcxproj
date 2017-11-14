@@ -24,7 +24,6 @@
     <ClCompile Include="include\Device.cpp" />
     <ClCompile Include="include\Effects\Water.cpp" />
     <ClCompile Include="include\Fog.cpp" />
-    <ClCompile Include="include\HUD.cpp" />
     <ClCompile Include="include\HybrisLoader\Animation.cpp" />
     <ClCompile Include="include\HybrisLoader\HybrisLoader.cpp" />
     <ClCompile Include="include\HybrisLoader\Material.cpp" />
@@ -34,11 +33,12 @@
     <ClCompile Include="include\Lights\LightGrid.cpp" />
     <ClCompile Include="include\Lights\Sun.cpp" />
     <ClCompile Include="include\MainCamera.cpp" />
-    <ClCompile Include="include\Menu.cpp" />
     <ClCompile Include="include\Particles\Particle.cpp" />
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\RenderPass\BulletTimeRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\DebugRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\DebugRenderPass.h" />
     <ClCompile Include="include\RenderPass\DepthOfFieldRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\DepthRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\ForwardPlusRenderPass.cpp" />
@@ -66,7 +66,6 @@
     <ClInclude Include="include\Effects\Water.h" />
     <ClInclude Include="include\Fog.h" />
     <ClInclude Include="include\DLL.h" />
-    <ClInclude Include="include\HUD.h" />
     <ClInclude Include="include\HybrisLoader\Animation.h" />
     <ClInclude Include="include\HybrisLoader\HybrisLoader.h" />
     <ClInclude Include="include\HybrisLoader\Material.h" />
@@ -76,7 +75,6 @@
     <ClInclude Include="include\Lights\LightGrid.h" />
     <ClInclude Include="include\Lights\Sun.h" />
     <ClInclude Include="include\MainCamera.h" />
-    <ClInclude Include="include\Menu.h" />
     <ClInclude Include="include\Particles\Particle.h" />
     <ClInclude Include="include\Particles\ParticleSystem.h" />
     <ClInclude Include="include\Renderer.h" />

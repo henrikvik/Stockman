@@ -22,10 +22,12 @@ namespace Logic
 
         struct ButtonData
         {
-            FloatRect                   screenRect; // Where the button should be drawn
-            FloatRect                   texRect;    // The texture-coordinates on the button-map
-            Resources::Textures::Files  texture;    // What buttonmap-texture this button is present inside
-            std::function<void(void)>   callback;   // What function this button calls
+            FloatRect                   screenRect;     // Where the button should be drawn
+            FloatRect                   texRectNormal;  // The texture-coordinates on the button-map
+            FloatRect                   texRectHover;   // The texture-coordinates on the button-map
+            FloatRect                   texRectActive;  // The texture-coordinates on the button-map
+            Resources::Textures::Files  texture;        // What buttonmap-texture this button is present inside
+            std::function<void(void)>   callback;       // What function this button calls
         };
 
         iMenu(MenuGroup group);

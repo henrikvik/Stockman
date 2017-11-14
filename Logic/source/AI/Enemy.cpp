@@ -76,12 +76,13 @@ Enemy::~Enemy() {
 
 void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
-	updateSpecific(player, deltaTime);
 
     if (!m_stunned)
     {
         m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
     }
+
+	updateSpecific(player, deltaTime);
 
     // Update Render animation and position
     enemyRenderInfo.transform = getTransformMatrix();
@@ -211,15 +212,18 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     
-    increaseCallbackEntities();
-    pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
-        decreaseCallbackEntities();
-    });
-    if (hasCallback(ON_DAMAGE_GIVEN))
+    if (pj)
     {
-        pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
-            callback(ON_DAMAGE_GIVEN, data);
+        increaseCallbackEntities();
+        pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+            decreaseCallbackEntities();
         });
+        if (hasCallback(ON_DAMAGE_GIVEN))
+        {
+            pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
+                callback(ON_DAMAGE_GIVEN, data);
+            });
+        }
     }
 	
     return pj;
@@ -233,6 +237,6 @@ Behavior* Enemy::getBehavior() const
 void Enemy::render() const
 {
     renderSpecific();
-    RenderQueue::get().queue(&enemyRenderInfo);
-    RenderQueue::get().queue(&light);
+    QueueRender(enemyRenderInfo);
+    QueueRender(light);
 }
