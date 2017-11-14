@@ -85,7 +85,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_moveDir.setZero();
 	m_moveSpeed = 0.f;
     m_moveSpeedMod = 1.0f;
-    m_permanentSpeedMod = 0.0f;
+    m_permanentSpeedMod = 1.0f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_deacceleration = m_acceleration * 0.5f;
 	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
@@ -317,7 +317,7 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     }
     if (flags & Effect::EFFECT_IS_WEAPON)
     {
-
+        m_weaponManager->affect(effect);
     }
 }
 
@@ -342,12 +342,12 @@ void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
     if (flags & Effect::EFFECT_MOVE_FASTER)
     {
         m_moveSpeedMod = 1;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED + PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
     }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
     {
         m_moveSpeedMod = 1;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED + PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
     }
 }
 
@@ -665,7 +665,7 @@ void Player::accelerate(float deltaTime, float acceleration)
 	if (deltaTime * 0.001f > (1.f / 60.f))
 		deltaTime = (1.f / 60.f) * 1000.f;
 
-	m_moveSpeed += (acceleration * deltaTime * m_permanentSpeedMod) + (acceleration * deltaTime * m_moveSpeedMod);
+	m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod * m_permanentSpeedMod;
 
 	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;

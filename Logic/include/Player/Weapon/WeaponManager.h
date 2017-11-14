@@ -15,6 +15,7 @@
 #include <vector>
 #include <btBulletCollisionCommon.h>
 
+
 namespace Graphics
 {
     class Renderer;
@@ -28,6 +29,7 @@ namespace Logic
     class AmmoContainer;
     class WeaponModel;
     class ProjectileManager;
+    class Effect;
 
 	class WeaponManager
 	{
@@ -54,6 +56,7 @@ namespace Logic
 		void clear();
 		void reset();
 		void update(float deltaTime);
+        void affect(Effect const & effect);
 		void render() const;
 
 		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
@@ -90,7 +93,17 @@ namespace Logic
             USE_SECONDARY
         };
 
+        struct Upgrades
+        {
+            int magSizeModifier;
+            int ammoCapModifier;
+            float fireRateModifier;
+            float freezeDurationModifier;
+            int fireDamageModifier;
+        };
 		void initializeWeapons(ProjectileManager* projectileManager);
+
+        Upgrades m_Upgrades;
 
         std::vector<WeaponLoadout*> m_weaponLoadouts;
 		WeaponLoadout* m_currentWeapon;

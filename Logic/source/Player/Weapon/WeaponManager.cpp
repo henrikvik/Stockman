@@ -29,6 +29,12 @@ void WeaponManager::init(ProjectileManager* projectileManager)
 
 	m_reloadTimer = 0.f;
 	m_reloadState = ReloadingWeapon::IDLE;
+
+    m_Upgrades.magSizeModifier = 0;
+    m_Upgrades.ammoCapModifier = 0;
+    m_Upgrades.fireRateModifier = 1.0f;
+    m_Upgrades.freezeDurationModifier = 1.0f;
+    m_Upgrades.fireDamageModifier = 0.0f;
 }
 
 void WeaponManager::clear()
@@ -47,9 +53,10 @@ void WeaponManager::clear()
 
 void WeaponManager::reset()
 {
-    // Reset ammo
-	for (int i = 0; i < m_weaponLoadouts.size(); i++)
-        m_weaponLoadouts[i]->ammoContainer->reset();
+ //   // Reset ammo
+	//for (int i = 0; i < m_weaponLoadouts.size(); i++)
+ //       m_weaponLoadouts[i]->ammoContainer->reset();
+    clear();
 
     // Reset current weapon
     m_currentWeapon = m_weaponLoadouts[0];
@@ -105,6 +112,25 @@ void WeaponManager::update(float deltaTime)
 
             m_toUse = USE_NOTHING;
         }
+    }
+
+}
+
+void Logic::WeaponManager::affect(Effect const & effect)
+{
+    long long flags = effect.getStandards()->flags;
+
+    if(flags & Effect::EFFECT_INCREASE_AMMOCAP)
+    {
+        m_Upgrades.ammoCapModifier = effect.getModifiers()->modifyAmmoCap;
+    }
+    if (flags & Effect::EFFECT_INCREASE_MAGSIZE)
+    {
+        m_Upgrades.magSizeModifier = effect.getModifiers()->modifyMagCap;
+    }
+    if (flags & Effect::EFFECT_INCREASE_FIRERATE)
+    {
+        m_Upgrades.fireRateModifier = effect.getModifiers()->modifyFirerate;
     }
 
 }

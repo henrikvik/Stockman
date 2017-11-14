@@ -45,6 +45,7 @@ namespace Logic
             EFFECT_INCREASE_AMMOCAP             = 0x1000000,
             EFFECT_INCREASE_MAGSIZE             = 0x2000000,
             EFFECT_INCREASE_MOVEMENTSPEED       = 0x4000000,
+            EFFECT_INCREASE_FIRERATE            = 0x8000000,
 		};
 
 		struct Standards {
