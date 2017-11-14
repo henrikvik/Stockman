@@ -503,6 +503,89 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
     });
     PROFILE_END();
 
+    std::array<int, 64> deleteList;
+    int deleteSize = 0;
+
+    auto ptr = m_GeometryInstanceBuffer->map(cxt);
+
+    for (int i = 0; i < m_GeometryParticles.size(); i++) {
+        auto &particle = m_GeometryParticles[i];
+        auto def = *particle.def;
+
+        if (particle.age > def.m_Lifetime) {
+            int idx = deleteSize++;;
+            if (idx < 64) {
+                deleteList[idx] = i;
+            }
+            continue;
+        }
+
+        GeometryParticleInstance instance;
+
+        auto factor = particle.age / def.m_Lifetime;
+
+        auto ease_color = GetEaseFuncV(def.m_ColorEasing);
+        auto ease_deform = GetEaseFunc(def.m_DeformEasing);
+        auto ease_size = GetEaseFunc(def.m_SizeEasing);
+
+        auto scale = ease_size(def.m_SizeStart, def.m_SizeEnd, factor);
+
+        instance.m_Model = XMMatrixRotationAxis(XMLoadFloat3(&particle.rot), (particle.rotprog + particle.age) * particle.rotvel)  * XMMatrixScaling(scale, scale, scale) * XMMatrixTranslationFromVector(XMLoadFloat3(&particle.pos));
+        instance.m_Age = factor;
+
+        auto col_start = XMFLOAT4((float*)def.m_ColorStart);
+        auto col_end = XMFLOAT4((float*)def.m_ColorEnd);
+
+        instance.m_Color = ease_color(XMLoadFloat4(&col_start), XMLoadFloat4(&col_end), factor);
+        instance.m_Deform = ease_deform(def.m_DeformStart, def.m_DeformEnd, factor);
+        instance.m_DeformSpeed = def.m_DeformSpeed;
+        instance.m_NoiseScale = def.m_NoiseScale;
+        instance.m_NoiseSpeed = def.m_NoiseSpeed;
+
+        *ptr = instance;
+
+        particle.age += dt;
+        particle.rotprog += dt;
+
+        // TODO: anchoring to emitter/fx. we can add a "parent" field to
+        //       particle instances, and null it every update, while
+        //       setting it in `ProcessFX`
+
+        XMStoreFloat3(&particle.velocity, XMLoadFloat3(&particle.velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
+        XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
+
+        auto ease_light_color = GetEaseFuncV(def.m_LightColorEasing);
+        auto ease_light_radius = GetEaseFunc(def.m_LightRadiusEasing);
+
+        auto light_radius = ease_light_radius(def.m_LightRadiusStart, def.m_LightRadiusEnd, factor);
+        if (light_radius >= FLT_EPSILON) {
+            auto light_col_start = XMFLOAT4((float*)def.m_LightColorStart);
+            auto light_col_end = XMFLOAT4((float*)def.m_LightColorEnd);
+
+            auto light_color = ease_light_color(XMLoadFloat4(&light_col_start), XMLoadFloat4(&light_col_end), factor);
+
+            LightRenderInfo light;
+            light.position = particle.pos;
+            light.range = light_radius;
+            light.intensity = XMVectorGetW(light_color);
+            XMStoreFloat4((XMFLOAT4*)&light.color, light_color);
+
+            RenderQueue::get().queue<LightRenderInfo>(&light);
+        }
+
+        ptr++;
+    }
+
+    m_GeometryInstanceBuffer->unmap(cxt);
+
+    for (int i = deleteSize - 1; i > 0; i--) {
+        auto idx = deleteList[i];
+        m_GeometryParticles.erase(m_GeometryParticles.begin() + idx);
+    }
+
+
+    // temporarily disable to make implementing serial stuff easier
+    /*
     PROFILE_BEGIN("update particles");
     GeometryParticleInstance *ptr = m_GeometryInstanceBuffer->map(cxt);
     std::array<int, 32> deleteList {-1};
@@ -526,7 +609,7 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
     for (int i = 0; i < sz; i++) {
         auto idx = deleteList.at(i);
         m_GeometryParticles.erase(m_GeometryParticles.begin() + idx);
-    }
+    }*/
 }
 
 void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
