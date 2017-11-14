@@ -12,10 +12,9 @@ using namespace Logic;
 
 AStar::AStar(std::string file)
 {
-    initDebugRendering();
-    initNodes();
-
     generateNodesFromFile();
+
+    initDebugRendering();
 }
 
 AStar::~AStar()
@@ -30,7 +29,7 @@ AStar::~AStar()
 std::vector<const DirectX::SimpleMath::Vector3*>
     AStar::getPath(Entity const &enemy, Entity const &target)
 {
-    DirectX::SimpleMath::Vector3 offset(0, 5, 0);
+    static const DirectX::SimpleMath::Vector3 offset(0, 5, 0);
     int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset);
     int targetIndex = navigationMesh.getIndex(target.getPosition() + offset);
     return getPath(startIndex, targetIndex);
@@ -81,8 +80,8 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
             {
                 explore->explored = true;
 
-            explore->g = f;
-            explore->h = heuristic(nodes[index], nodes[toIndex]) * 0.1f;
+                explore->g = f;
+                explore->h = heuristic(nodes[index], nodes[toIndex]) * 0.1f;
 
                 explore->parent = currentNode->nodeIndex;
                 openList.push(explore);
@@ -187,6 +186,8 @@ void AStar::generateNavigationMesh(Physics &physics)
             return "AI Debug On";
         }
     });
+
+    createNodes();
 }
 
 float AStar::heuristic(DirectX::SimpleMath::Vector3 const &from,
@@ -233,13 +234,18 @@ void AStar::initDebugRendering()
     renderDebug = false;
 }
 
-void AStar::initNodes()
+void AStar::createNodes()
 {
-    for (size_t t = 0; t < navNodes.size(); t++)
+    NavNode node;
+
+    node.onClosedList = node.explored = false;
+    node.g = node.h = 0;
+    node.parent = NO_PARENT;
+
+    navNodes.clear();
+    for (size_t t = 0; t < navigationMesh.getNodes().size(); t++)
     {
-        navNodes[t].onClosedList = navNodes[t].explored = false;
-        navNodes[t].g = navNodes[t].h = 0;
-        navNodes[t].nodeIndex = static_cast<int> (t);
-        navNodes[t].parent = NO_PARENT;
+        node.nodeIndex = static_cast<int> (t);
+        navNodes.push_back(node);
     }
 }
