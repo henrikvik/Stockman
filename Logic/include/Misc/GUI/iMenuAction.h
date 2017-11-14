@@ -42,9 +42,7 @@ namespace Logic
         void chooseUpgrade1();
         void chooseUpgrade2();
         void chooseUpgrade3();
-        void chooseSkill1();
-        void chooseSkill2();
-        void chooseSkill3();
+        void confirmSkillPicks();
         void plusSense();
         void minusSense();
         void plusMaster();

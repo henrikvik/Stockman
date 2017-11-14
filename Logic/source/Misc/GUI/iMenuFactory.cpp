@@ -48,15 +48,15 @@ iMenu * iMenuFactory::buildMenuSettings()
     return menu;
 }
 
-iMenu * iMenuFactory::buildMenuSkill()
+iMenuSkillPick * iMenuFactory::buildMenuSkill()
 {
-    iMenu* menu = newd iMenu(iMenu::Skill);
+    iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
     iMenu::ButtonData btn;
 
-    menu->addBackground(Resources::Textures::mainMenuButton, 1);
-    menu->addButton(buildButton("SkillPickButton1", ButtonFunction::chooseSkill1));
-    menu->addButton(buildButton("SkillPickButton2", ButtonFunction::chooseSkill1));
-    menu->addButton(buildButton("SkillPickButton3", ButtonFunction::chooseSkill1));
+    menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
+    menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
+    menu->addButton(buildButton("SkillPickButton3", std::bind(&iMenuSkillPick::pickThree, menu)));
+    menu->addButton(buildButton("MenuStartHighscore", ButtonFunction::confirmSkillPicks));
 
     return menu;
 }
@@ -95,7 +95,7 @@ iMenu * iMenuFactory::buildMenuGameover()
 }
 
 // Building function, for internal use only
-iMenu::ButtonData iMenuFactory::buildButton(std::string name, ButtonFunc func)
+iMenu::ButtonData iMenuFactory::buildButton(std::string name, std::function<void(void)> func)
 {
     iMenu::ButtonData btn;
     for (auto const& button : buttonFile)

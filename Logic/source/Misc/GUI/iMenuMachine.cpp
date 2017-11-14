@@ -39,11 +39,17 @@ void iMenuMachine::removeActiveMenu()
     }
 }
 
-void iMenuMachine::swapMenu(iMenu::MenuGroup group)
+void iMenuMachine::queueMenu(iMenu::MenuGroup group)
+{
+    if (m_currentMenuType != group)
+        m_queuedMenuType = group;
+}
+
+void iMenuMachine::swapMenu()
 {
     removeActiveMenu();
 
-    switch (group)
+    switch (m_queuedMenuType)
     {
     case iMenu::MenuGroup::Start:       m_activeMenu = m_factory->buildMenuStart();                       break;
     case iMenu::MenuGroup::Settings:    m_activeMenu = m_factory->buildMenuSettings();                    break;
@@ -53,10 +59,18 @@ void iMenuMachine::swapMenu(iMenu::MenuGroup group)
     case iMenu::MenuGroup::GameOver:    m_activeMenu = m_factory->buildMenuGameover();                    break;
     default: printf("This type of menu is not created yet. Check: %s, Line: %d", __FILE__, __LINE__);   break;
     }
+
+    m_currentMenuType = m_queuedMenuType;
 }
 
 void iMenuMachine::update(float deltaTime)
 {
+    if (wantsToSwap())
+    {
+        swapMenu();
+        return;
+    }
+
     static DirectX::SimpleMath::Vector3 movingCameraPosition(0, 0, 0);
     static DirectX::SimpleMath::Vector3 movingCameraForward(0, -1, 0);
     static DirectX::SimpleMath::Vector3 targetCameraPosition(0, 1, 0);
@@ -115,4 +129,9 @@ void iMenuMachine::render() const
 {
     if (m_activeMenu)
         m_activeMenu->render();
+}
+
+bool iMenuMachine::wantsToSwap()
+{
+    return (m_currentMenuType != m_queuedMenuType);
 }

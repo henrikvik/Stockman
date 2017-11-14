@@ -25,7 +25,7 @@
 #include <Misc\ComboMachine.h>
 #include <Misc\Sound\NoiseMachine.h>
 #include <Misc\FPSRenderer.h>
-#include <Misc\GUI\MenuMachine.h>
+#include <Misc\GUI\iMenuMachine.h>
 #include <GameType.h>
 
 // DirectX Includes
@@ -61,6 +61,7 @@ namespace Logic
     private:
         void gameOver();
 
+        iMenuMachine*       m_menu;
         Physics*			m_physics;
         Player*				m_player;
         Map*				m_map;

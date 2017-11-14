@@ -30,12 +30,8 @@ StateMachine::StateMachine()
     // Save function ptr's inside each main state
     m_statePrimary->SetFuncSecondarySwitch      (SetSecondaryState);
     m_statePrimary->SetFuncPrimarySwitch        (SetPrimaryState);
-    m_statePrimary->SetFuncGetCurrentPrimary    (GetPrimaryState);
-    m_statePrimary->SetFuncGetCurrentSecondary  (GetSecondaryState);
     m_stateSecondary->SetFuncSecondarySwitch    (SetSecondaryState);
     m_stateSecondary->SetFuncPrimarySwitch      (SetPrimaryState);
-    m_stateSecondary->SetFuncGetCurrentPrimary  (GetPrimaryState);
-    m_stateSecondary->SetFuncGetCurrentSecondary(GetSecondaryState);
 
     // Setting starting states
     SetPrimaryState(StateType::State_Start);
@@ -51,7 +47,7 @@ StateMachine::StateMachine()
     //
     // Fast Skip (Debugging) */
     SetPrimaryState(StateType::State_Playing);
-    SetSecondaryState(StateType::State_InGame_Overlay);
+    SetSecondaryState(StateType::Nothing);
 }
 
 StateMachine::~StateMachine()
@@ -92,7 +88,7 @@ void StateMachine::update(float deltaTime)
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad2))
     {
         SetPrimaryState(StateType::State_Playing);
-        SetSecondaryState(StateType::State_InGame_Overlay);
+        SetSecondaryState(StateType::Nothing);
         return;
     }
 }

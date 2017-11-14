@@ -108,6 +108,4 @@ void StatePrimary::loadState(StateType state)
 
     m_currentState->SetFuncPrimarySwitch(SwitchPrimaryState);
     m_currentState->SetFuncSecondarySwitch(SwitchSecondaryState);
-    m_currentState->SetFuncGetCurrentPrimary(GetCurrentPrimaryState);
-    m_currentState->SetFuncGetCurrentSecondary(GetCurrentSecondaryState);
 }

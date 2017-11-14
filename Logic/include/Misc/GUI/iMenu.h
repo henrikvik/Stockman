@@ -12,6 +12,7 @@ namespace Logic
     public:
         enum MenuGroup
         {
+            Empty,
             Start,
             Settings,
             Skill,
@@ -40,10 +41,13 @@ namespace Logic
 
         MenuGroup getMenuType() { return m_group; }
 
-    private:
+    protected:
         void updateClick(int x, int y);
         void updateHover(int x, int y);
 
+        bool m_pressed;
+        bool m_drawButtons;
+        bool m_drawMenu;
         MenuGroup m_group;
         std::vector<Button> m_buttons;
         SpriteRenderInfo m_background;

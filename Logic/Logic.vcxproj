@@ -201,6 +201,7 @@
     <ClInclude Include="include\AI\Abilities\Ability.h" />
     <ClInclude Include="include\AI\Behavior\BigBadBehavior.h" />
     <ClInclude Include="include\AI\EnemyBossBaddie.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuSkillPick.h" />
     <ClInclude Include="include\Physics\FuncContactResult.h" />
     <ClInclude Include="include\Misc\CommandsFile.h" />
     <ClInclude Include="include\GameType.h" />
@@ -291,7 +292,6 @@
     <ClInclude Include="include\StatePlaying.h" />
     <ClInclude Include="include\StateMachine\StateMachine.h" />
     <ClInclude Include="include\StateMachine\StateSecondary.h" />
-    <ClInclude Include="include\StatePlayingOverlay.h" />
     <ClInclude Include="include\StateStart.h" />
     <ClInclude Include="include\Player\Weapon\WeaponModel.h" />
     <ClInclude Include="include\Player\Weapon\WeaponFreezeGrenade.h" />
@@ -305,6 +305,7 @@
     <ClCompile Include="source\Misc\GUI\iMenuFactory.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenu.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuMachine.cpp" />
+    <ClCompile Include="source\Misc\GUI\iMenuSkillPick.cpp" />
     <ClCompile Include="source\Player\PlayerController.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -377,7 +378,6 @@
     <ClCompile Include="source\StatePlaying.cpp" />
     <ClCompile Include="source\StateMachine\StateMachine.cpp" />
     <ClCompile Include="source\StateMachine\StateSecondary.cpp" />
-    <ClCompile Include="source\StatePlayingOverlay.cpp" />
     <ClCompile Include="source\StateStart.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponModel.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />

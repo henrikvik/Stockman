@@ -33,7 +33,7 @@ StateStart::StateStart(StateBuffer* stateBuffer)
 
     // Initializing Menu's
     m_menu = newd iMenuMachine();
-    m_menu->swapMenu(iMenu::MenuGroup::Start);
+    m_menu->queueMenu(iMenu::MenuGroup::Start);
 
     // ! Reminder !  
     // Gives a small mem leak as for right now, but it's too cool to remove ^.^

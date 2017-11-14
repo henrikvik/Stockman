@@ -24,6 +24,10 @@ const btVector3 StatePlaying::GAME_START::PLAYER_ROTATION = { 0.0f, 0.0f, 0.0f }
 StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
+    // Starting in game-sounds
+    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
+    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
+
     // Initializing Bullet physics
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();				// Configuration
     btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	// The default collision dispatcher
@@ -54,6 +58,10 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     // Initializing Combo's
     ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
     ComboMachine::Get().Reset();
+
+    // Initializing Menu's
+    m_menu = newd iMenuMachine();
+    m_menu->queueMenu(iMenu::MenuGroup::Skill);
 
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
@@ -99,6 +107,7 @@ StatePlaying::~StatePlaying()
     m_entityManager.resetTriggers();
     m_entityManager.deallocateData(); // Have to deallocate before deleting physics
 
+    delete m_menu;
     delete m_physics;
     delete m_player;
     delete m_map;
@@ -153,6 +162,10 @@ void StatePlaying::update(float deltaTime)
     m_projectileManager->update(deltaTime);
     PROFILE_END();
 
+    PROFILE_BEGIN("In-Game Menu");
+    m_menu->update(deltaTime);
+    PROFILE_END();
+
     PROFILE_BEGIN("HUD");
     m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
     PROFILE_END();
@@ -184,6 +197,10 @@ void StatePlaying::render() const
 
     PROFILE_BEGIN("Render Projectiles");
     m_projectileManager->render();
+    PROFILE_END();
+
+    PROFILE_BEGIN("Render Menu");
+    m_menu->render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
