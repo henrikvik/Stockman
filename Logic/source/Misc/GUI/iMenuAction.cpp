@@ -8,6 +8,7 @@
 
 using namespace Logic;
 
+// Switches both main-states to in-game, will unload & load everything
 void ButtonFunction::startGame()
 {
     if (Action::Get().m_stateBuffer->currentPrimaryState)
@@ -16,18 +17,27 @@ void ButtonFunction::startGame()
         dynamic_cast<StateSecondary*>(Action::Get().m_stateBuffer->currentSecondaryState)->queueState(StateType::State_InGame_Overlay);
 }
 
+// Switches the current menu-machine to settings screen
 void ButtonFunction::startSettings()
 {
     if (Action::Get().m_menuMachine)
         Action::Get().m_menuMachine->swapMenu(iMenu::MenuGroup::Settings);
 }
 
+// Switches the current menu-machine to start screen
 void ButtonFunction::startMainMenu()
 {
     if (Action::Get().m_menuMachine)
         Action::Get().m_menuMachine->swapMenu(iMenu::MenuGroup::Start);
 }
 
+void ButtonFunction::showHighscore()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->swapMenu(iMenu::MenuGroup::Highscore);
+}
+
+// Unloads all program data and quits the game
 void ButtonFunction::quitGame()
 {
 
@@ -98,9 +108,5 @@ void ButtonFunction::minusFOV()
 }
 
 void ButtonFunction::windowed()
-{
-}
-
-void ButtonFunction::showHighscore()
 {
 }

@@ -21,11 +21,9 @@ namespace Logic
         iMenu* buildMenuHighscore();
         iMenu* buildMenuGameover();
 
-        iMenu::ButtonData buildButton(std::string name, ButtonFunc func);
-
     private:
-        //Load the lw file information
         std::vector<FileLoader::LoadedStruct> buttonFile;
+        iMenu::ButtonData buildButton(std::string name, ButtonFunc func);
     };
 }
 

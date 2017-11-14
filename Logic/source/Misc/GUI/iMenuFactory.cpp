@@ -4,11 +4,9 @@
 
 using namespace Logic;
 
-#define SKILL_BTN_WIDTH 250
-#define SKILL_BTN_HEIGHT 250
-
 iMenuFactory::iMenuFactory()
 {
+    // Loads all buttons from Button.lw file (Engine/Resources/Button.lw)
     FileLoader::singleton().loadStructsFromFile(buttonFile, "Button");
 }
 
@@ -30,7 +28,24 @@ iMenu* iMenuFactory::buildMenuStart()
 
 iMenu * iMenuFactory::buildMenuSettings()
 {
-    return nullptr;
+    iMenu* menu = newd iMenu(iMenu::Settings);
+    iMenu::ButtonData btn;
+
+    menu->addBackground(Resources::Textures::mainmenupicture, 1.f);
+    menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
+    menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
+    menu->addButton(buildButton("MenuSettingsSoundMasterMinus", ButtonFunction::minusMaster));
+    menu->addButton(buildButton("MenuSettingsSoundMasterPlus", ButtonFunction::plusMaster));
+    menu->addButton(buildButton("MenuSettingsSoundSFXMinus", ButtonFunction::minusSFX));
+    menu->addButton(buildButton("MenuSettingsSoundSFXPlus", ButtonFunction::plusSFX));
+    menu->addButton(buildButton("MenuSettingsMuteUnmute", ButtonFunction::muteUnmute));
+    menu->addButton(buildButton("MenuSettingsControlsMouseSenseMinus", ButtonFunction::minusSense));
+    menu->addButton(buildButton("MenuSettingsControlsMouseSensePlus", ButtonFunction::plusSense));
+    menu->addButton(buildButton("MenuSettingsVideoFOVMinus", ButtonFunction::minusFOV));
+    menu->addButton(buildButton("MenuSettingsVideoFOVPlus", ButtonFunction::plusFOV));
+    menu->addButton(buildButton("MenuSettingsVideoWindowed", ButtonFunction::windowed));
+
+    return menu;
 }
 
 iMenu * iMenuFactory::buildMenuSkill()
@@ -53,7 +68,13 @@ iMenu * iMenuFactory::buildMenuCard()
 
 iMenu * iMenuFactory::buildMenuHighscore()
 {
-    return nullptr;
+    iMenu* menu = newd iMenu(iMenu::Settings);
+    iMenu::ButtonData btn;
+
+    menu->addBackground(Resources::Textures::mainmenupicture, 1.f);
+    menu->addButton(buildButton("HighscoreStartMenu", ButtonFunction::startMainMenu));
+
+    return menu;
 }
 
 iMenu * iMenuFactory::buildMenuGameover()
@@ -61,12 +82,12 @@ iMenu * iMenuFactory::buildMenuGameover()
     return nullptr;
 }
 
+// Building function, for internal use only
 iMenu::ButtonData iMenuFactory::buildButton(std::string name, ButtonFunc func)
 {
     iMenu::ButtonData btn;
     for (auto const& button : buttonFile)
     {
-        //If it is a button add it into its map
         if (button.strings.find("buttonName") != button.strings.end() &&
             button.strings.at("buttonName") == name)
         {

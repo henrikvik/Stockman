@@ -36,6 +36,7 @@ namespace Logic
         void startGame();
         void startSettings();
         void startMainMenu();
+        void showHighscore();
         void quitGame();
         void writing();
         void chooseUpgrade1();
@@ -54,7 +55,6 @@ namespace Logic
         void plusFOV();
         void minusFOV();
         void windowed();
-        void showHighscore();
     }
 }
 
