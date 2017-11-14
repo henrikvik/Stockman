@@ -37,7 +37,7 @@
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
     <ClCompile Include="include\RenderPass\BulletTimeRenderPass.cpp" />
-    <ClCompile Include="include\RenderPass\DebugRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\DebugRenderPass2.cpp" />
     <ClCompile Include="include\RenderPass\DebugRenderPass.h" />
     <ClCompile Include="include\RenderPass\DepthOfFieldRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\DepthRenderPass.cpp" />
