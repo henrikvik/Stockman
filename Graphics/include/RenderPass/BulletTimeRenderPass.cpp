@@ -22,11 +22,11 @@ void Graphics::BulletTimeRenderPass::update(float deltaTime)
     int queuelength = 0;
     for (auto & info : RenderQueue::get().getQueue<SpecialEffectRenderInfo>())
     {
-        if (info->type == info->BulletTime)
+        if (info.type == info.BulletTime)
         {
-            if (info->progress <= 1.f && info->progress >= 0.f)
+            if (info.progress <= 1.f && info.progress >= 0.f)
             {
-                progress = info->progress;
+                progress = info.progress;
             }
 
             else

@@ -61,12 +61,12 @@ void StaticObject::update(float deltaTime)
 
 void StaticObject::renderD()
 {
-    RenderQueue::get().queue(&debugRenderInfo);
+    QueueRender(debugRenderInfo);
 }
 
 void Logic::StaticObject::render() const
 {
-    RenderQueue::get().queue(&staticRenderInfo);
+    QueueRender(staticRenderInfo);
 }
 
 StaticObject::NavigationMeshFlags StaticObject::getNavFlags() const

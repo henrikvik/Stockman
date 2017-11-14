@@ -237,6 +237,6 @@ Behavior* Enemy::getBehavior() const
 void Enemy::render() const
 {
     renderSpecific();
-    RenderQueue::get().queue(&enemyRenderInfo);
-    RenderQueue::get().queue(&light);
+    QueueRender(enemyRenderInfo);
+    QueueRender(light);
 }

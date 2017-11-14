@@ -27,6 +27,7 @@ struct Pad
 std::set<std::wstring> const whitelist =
 {
     L".hyb",
+    L".toml",
     L".hlsl",
     L".dds",
     L".png",

@@ -48,7 +48,7 @@ void iMenu::updateHover(int x, int y)
 
 void iMenu::render() const
 {
-    RenderQueue::get().queue(&m_background);
+    QueueRender(m_background);
 
     for (const Button& btn : m_buttons)
         btn.render();

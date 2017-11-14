@@ -13,8 +13,6 @@
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
 #include "Lights\Sun.h"
-#include "Menu.h"
-#include "HUD.h"
 #include "HybrisLoader\HybrisLoader.h"
 #include "Fog.h"
 
@@ -34,13 +32,6 @@ namespace Graphics
 
         void render() const;
         void update(float deltaTime);
-		void fillHUDInfo(HUDInfo * info);
-
-        void drawMenu(Graphics::MenuInfo * info);
-        void updateLight(float deltaTime, Camera * camera);
-
-        //indicates how gray the screen will be
-        void setBulletTimeCBuffer(float value);
     private:
 
     #pragma region Shared Shader Resources
@@ -62,7 +53,6 @@ namespace Graphics
         ShaderResource* fakeBackBufferSwap;
 
     #pragma region Instance Buffers
-
         using float4x4 = DirectX::SimpleMath::Matrix;
         using float4 = DirectX::SimpleMath::Vector4;
         using float3 = DirectX::SimpleMath::Vector3;
@@ -87,8 +77,6 @@ namespace Graphics
 
     #pragma endregion
         Sun sun;
-        Shader forwardPlus;
-		Shader depthShader;
 
         D3D11_VIEWPORT viewPort;
 
@@ -102,20 +90,7 @@ namespace Graphics
 		Shader foliageShader;
 #pragma endregion
 
-        void drawToBackbuffer(ID3D11ShaderResourceView * texture);
-
 		void registerDebugFunction();
-
-
-    #pragma region RenderDebugInfo
-
-        Shader debugRender;
-        std::vector<RenderDebugInfo*> renderDebugQueue;
-        StructuredBuffer<DirectX::SimpleMath::Vector3> debugPointsBuffer;
-        ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
-        void renderDebugInfo(Camera* camera);
-
-    #pragma endregion
 		Fog fog;
 
     #pragma region Draw Functions and Buffers

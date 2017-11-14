@@ -205,7 +205,7 @@ void Player::reset()
     info.type = info.Snow;
     info.restart = true;
 
-    RenderQueue::get().queue(&info);
+    QueueRender(info);
 }
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
