@@ -315,7 +315,14 @@ void ParticleSystem::render(
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
 
-    cxt->PSSetShaderResources(0, (UINT)m_Textures.size(), m_Textures.data());
+    ID3D11ShaderResourceView *lightResources[] = {
+        lightIndexList,
+        lightGrid,
+        lights,
+        shadowMap
+    };
+    cxt->PSSetShaderResources(0, 4, lightResources);
+    cxt->PSSetShaderResources(4, (UINT)m_Textures.size(), m_Textures.data());
 
     // spheres
     {
