@@ -455,7 +455,7 @@ void Physics::renderCube(btBoxShape* bs, btRigidBody* body)
 	bs->getVertex(2, vp);
 	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(center) + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(vp), quaternion));
 
-    RenderQueue::get().queue(debugRenderInfo);
+    QueueRender(debugRenderInfo);
 }
 
 // Draws a cube around the sphere
@@ -531,5 +531,5 @@ void Physics::renderRectangleAround(btVector3 origin, btVector3 half)
 	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() + half.x(), origin.y() - half.y(), origin.z() - half.z()));
 	debugRenderInfo.points->push_back(DirectX::SimpleMath::Vector3(origin.x() - half.x(), origin.y() - half.y(), origin.z() - half.z()));
 
-    RenderQueue::get().queue(debugRenderInfo);
+    QueueRender(debugRenderInfo);
 }

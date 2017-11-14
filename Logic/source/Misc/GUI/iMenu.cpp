@@ -51,5 +51,5 @@ void iMenu::render() const
     for (const Button& btn : m_buttons)
         btn.render();
 
-    RenderQueue::get().queue(m_background);
+    QueueRender(m_background);
 }

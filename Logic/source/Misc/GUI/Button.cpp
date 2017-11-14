@@ -129,5 +129,5 @@ void Logic::Button::setState(State state)
 
 void Logic::Button::render() const
 {
-    RenderQueue::get().queue(renderInfo);
+    QueueRender(renderInfo);
 }

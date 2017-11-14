@@ -371,10 +371,10 @@ void EnemyBossBaddie::updateDead(float deltaTime)
     // this is only for fun
     for (auto &info : info)
         if (info.position.y < 750.f && info.position.y > -50.f)
-            RenderQueue::get().queue(info);
+            QueueRender(info);
 }
 
 void EnemyBossBaddie::renderSpecific() const
 {
-    RenderQueue::get().queue(hpBar);
+    QueueRender(hpBar);
 }

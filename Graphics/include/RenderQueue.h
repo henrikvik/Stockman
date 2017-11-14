@@ -15,9 +15,18 @@ public:
     using InstancedQueue = std::unordered_map<size_t, Queue<T>>;
 
     template<typename T>
-    inline void queue(T info)
+    #ifdef _DEBUG
+    void queue(T info, const char * FILE, size_t LINE)
+    #else
+    void queue(T info)
+    #endif
     {
         static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
+
+        #ifdef _DEBUG
+        info.FILE = FILE;
+        info.LINE = LINE;
+        #endif
 
         if constexpr (std::is_base_of_v<StaticRenderInfo, T>)
         {
@@ -30,6 +39,14 @@ public:
             container->queue(info);
         }
     }
+
+    #ifdef _DEBUG
+    template<typename T>
+    void queue(T info)
+    {
+        static_assert(false, "RenderQueue::queue(T info) depricated, use QueueRender(info) macro instead!");
+    }
+    #endif
 
     template<typename T>
     std::conditional_t<std::is_base_of_v<StaticRenderInfo, T>,InstancedQueue<T>,Queue<T>>&
@@ -176,3 +193,9 @@ private:
     typedef std::unordered_map<std::type_index, QueueContainer_t*> Queues_t;
     Queues_t queues;
 };
+
+#ifdef _DEBUG
+#define QueueRender(info) RenderQueue::get().queue(info, __FILE__, __LINE__)
+#else
+#define QueueRender(info) RenderQueue::get().queue(info)
+#endif

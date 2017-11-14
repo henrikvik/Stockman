@@ -51,10 +51,10 @@ LightObject::~LightObject()
 
 void LightObject::renderD()
 {
-    RenderQueue::get().queue(debugRenderInfo);
+    QueueRender(debugRenderInfo);
 }
 
 void LightObject::render() const
 { 
-    RenderQueue::get().queue(renderInfo);
+    QueueRender(renderInfo);
 }

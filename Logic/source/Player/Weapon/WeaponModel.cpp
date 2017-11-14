@@ -57,5 +57,5 @@ const WeaponModel::WeaponModelAnimationInfo& Logic::WeaponModel::getModelInfo() 
 
 void WeaponModel::render() const
 {
-    RenderQueue::get().queue(renderInfo);
+    QueueRender(renderInfo);
 }

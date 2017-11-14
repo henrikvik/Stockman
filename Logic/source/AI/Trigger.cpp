@@ -125,5 +125,5 @@ void Trigger::setCooldown(float cooldown)
 
 void Trigger::render() const
 {
-    RenderQueue::get().queue(animatedRenderInfo);
+    QueueRender(animatedRenderInfo);
 }

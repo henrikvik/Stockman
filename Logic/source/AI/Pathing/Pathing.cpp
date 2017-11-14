@@ -67,6 +67,6 @@ void Pathing::renderDebugging(DirectX::SimpleMath::Vector3 &start)
         for (int i = 0; i < m_path.size(); i++) // this is slow, but debugging should not be when efficiency is required 
             m_debugInfo.points->push_back(*m_path[i]);
 
-        RenderQueue::get().queue(m_debugInfo);
+        QueueRender(m_debugInfo);
     }
 }

@@ -236,7 +236,7 @@ namespace Graphics
                 depthStencil
             ),
             newd BulletTimeRenderPass({backBuffer}, {*fakeBackBuffer}),
-            //newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
+            newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
             newd GUIRenderPass({backBuffer}),
         };
     }
@@ -266,17 +266,19 @@ namespace Graphics
 
     void Renderer::update(float deltaTime)
     {
-        /*static StaticRenderInfo infotest;
+        /*
+        static StaticRenderInfo infotest;
         infotest.model = Resources::Models::Staff;
         infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
-        RenderQueue::get().queue(&infotest);
-*/
+        QueueRender(&infotest);
+        */
         LightRenderInfo lightInfo;
         lightInfo.color = DirectX::Colors::DodgerBlue;
         lightInfo.intensity = 1;
         lightInfo.position = Global::mainCamera->getPos() + float3(0,0,4);
         lightInfo.range = 10;
-        RenderQueue::get().queue(lightInfo);
+
+        QueueRender(lightInfo);
 
         writeInstanceBuffers();
         sun.update();

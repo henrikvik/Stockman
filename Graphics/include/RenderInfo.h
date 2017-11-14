@@ -35,10 +35,19 @@ struct InstanceCap { static constexpr size_t value = 300; };
 #define SET_INSTANCE_CAP(info, cap) template<> struct InstanceCap<info> { static constexpr size_t value = cap; };
 #define INSTANCE_CAP(info) InstanceCap<info>::value
 
+struct DebugBlame
+{
+    const char * FILE = "";
+    size_t LINE = 0;
+};
 
 struct RenderInfo
+#if _DEBUG
+    : DebugBlame
+#endif
 {
 };
+
 
 struct DebugRenderInfo : RenderInfo
 {
