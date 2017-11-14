@@ -4,7 +4,12 @@
 
 Settings::Settings()
 {
-
+    m_mouseSense = 0.01f;
+    m_FOV = 90.f;
+    m_masterSound = 0.1f;;
+    m_SFX = 0.1f;;
+    m_music = 0.1f;
+    m_windowed = false;
 }
 
 Settings::~Settings()
