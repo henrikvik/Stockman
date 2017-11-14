@@ -3,6 +3,7 @@
 #include "RenderPass.h"
 #include "../Utility/Shader.h"
 #include "../Utility/ShaderResource.h"
+#include "../Utility/PingPongBuffer.h"
 
 namespace Graphics 
 {
@@ -10,11 +11,12 @@ namespace Graphics
     {
     public:
         SSAORenderPass(
+            PingPongBuffer* backBuffers,
             std::initializer_list<ID3D11RenderTargetView*> targets,
             std::initializer_list<ID3D11ShaderResourceView*> resources = {},
             std::initializer_list<ID3D11Buffer*> buffers = {},
-            ID3D11DepthStencilView * depthStencil = nullptr,
-            std::initializer_list<ID3D11UnorderedAccessView*> uavs = {});
+            ID3D11DepthStencilView * depthStencil = nullptr
+            );
         virtual ~SSAORenderPass();
 
         void render() const;
@@ -29,6 +31,6 @@ namespace Graphics
         ShaderResource ssaoOutput;
         ShaderResource ssaoOutputSwap;
 
-        std::vector<ID3D11UnorderedAccessView*> uavs;
+        PingPongBuffer* backBuffers;
     };
 }

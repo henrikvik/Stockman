@@ -96,6 +96,7 @@
     <ClInclude Include="include\RenderPass\SkyBoxRenderPass.h" />
     <ClInclude Include="include\RenderPass\SnowRenderPass.h" />
     <ClInclude Include="include\RenderPass\SSAORenderPass.h" />
+    <ClInclude Include="include\Utility\PingPongBuffer.h" />
     <ClInclude Include="include\Utility\RenderPass.h" />
     <ClInclude Include="include\RenderQueue.h" />
     <ClInclude Include="include\Structs.h" />

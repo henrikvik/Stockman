@@ -17,6 +17,7 @@
 #include "HUD.h"
 #include "HybrisLoader\HybrisLoader.h"
 #include "Fog.h"
+#include "Utility\PingPongBuffer.h"
 
 #include <SpriteBatch.h>
 
@@ -34,13 +35,6 @@ namespace Graphics
 
         void render() const;
         void update(float deltaTime);
-		void fillHUDInfo(HUDInfo * info);
-
-        void drawMenu(Graphics::MenuInfo * info);
-        void updateLight(float deltaTime, Camera * camera);
-
-        //indicates how gray the screen will be
-        void setBulletTimeCBuffer(float value);
     private:
 
     #pragma region Shared Shader Resources
@@ -58,8 +52,7 @@ namespace Graphics
 
         ID3D11RenderTargetView * backBuffer;
 
-        ShaderResource* fakeBackBuffer;
-        ShaderResource* fakeBackBufferSwap;
+        PingPongBuffer fakeBuffers;
 
     #pragma region Instance Buffers
 
@@ -101,10 +94,6 @@ namespace Graphics
 		UINT grassTime = 0;
 		Shader foliageShader;
 #pragma endregion
-
-        void drawToBackbuffer(ID3D11ShaderResourceView * texture);
-
-		void registerDebugFunction();
 
 
     #pragma region RenderDebugInfo

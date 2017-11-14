@@ -4,6 +4,7 @@
 #include "../CommonState.h"
 #include <SimpleMath.h>
 #include <Logic\include\Misc\RandomGenerator.h>
+#include <Engine\DebugWindow.h>
 
 //temp
 #include <Keyboard.h>
@@ -27,6 +28,35 @@ Graphics::SnowRenderPass::SnowRenderPass(
     snowShader(Resources::Shaders::SnowShader, ShaderType::GS | ShaderType::VS | ShaderType::PS)
 {
     snowFlakeCount = 0;
+
+    DebugWindow::getInstance()->registerCommand("GFX_SET_SNOW", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            if (args.size() != 0)
+            {
+                enabled = std::stoi(args[0]);
+
+                if (enabled)
+                    catcher = "Snow enabled!";
+
+                else
+                    catcher = "Snow disabled!";
+            }
+            else
+            {
+                catcher = "missing argument 0 or 1.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Argument must be 0 or 1.";
+        }
+
+        return catcher;
+    });
+
 }
 
 void Graphics::SnowRenderPass::update(float deltaTime)
@@ -86,7 +116,7 @@ void Graphics::SnowRenderPass::update(float deltaTime)
 
 void Graphics::SnowRenderPass::render() const
 {
-    if (snowFlakeCount > 0)
+    if (snowFlakeCount > 0 && enabled)
     {
         Global::context->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         Global::context->RSSetState(Global::cStates->CullNone());
