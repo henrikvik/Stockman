@@ -8,6 +8,14 @@
 
 #define EDIT_CAMERA_POS false
 
+#define CAMERA_MOVE_SPEED           0.001f
+#define CAMERA_START_POSITION       DirectX::SimpleMath::Vector3(6.941, 5.6, -4.141)
+#define CAMERA_START_FORWARD        DirectX::SimpleMath::Vector3(-0.2, -0.153, 0.258)
+#define CAMERA_SETTINGS_POSITION    DirectX::SimpleMath::Vector3(5.294, 1.843, -10.0)
+#define CAMERA_SETTINGS_FORWARD     DirectX::SimpleMath::Vector3(0.0, -1.0, 0.0)
+#define CAMERA_HIGHSCORE_POSITION   DirectX::SimpleMath::Vector3(2.471, 1.686, -2.500)
+#define CAMERA_HIGHSCORE_FORWARD    DirectX::SimpleMath::Vector3(1.0, 0.255, 0.828)
+
 using namespace Logic;
 
 iMenuMachine::iMenuMachine()
@@ -61,7 +69,6 @@ void iMenuMachine::update(float deltaTime)
         int y = DirectX::Mouse::Get().GetState().y;
         m_activeMenu->update(x, y);
 
-
         bool shouldModifyCamera = false;
     #if EDIT_CAMERA_POS
         // Debugging purposes
@@ -75,20 +82,20 @@ void iMenuMachine::update(float deltaTime)
         switch (m_activeMenu->getMenuType())
         {
         case iMenu::MenuGroup::Start:
-            targetCameraPosition = DirectX::SimpleMath::Vector3(6.941, 5.6, -4.141);
-            targetCameraForward = DirectX::SimpleMath::Vector3(-0.2, -0.153, 0.258);
+            targetCameraPosition = CAMERA_START_POSITION;
+            targetCameraForward = CAMERA_START_FORWARD;
             shouldModifyCamera = true;
             break;
 
         case iMenu::MenuGroup::Settings:
-            targetCameraPosition = DirectX::SimpleMath::Vector3(5.294, 1.843, -10.0);
-            targetCameraForward = DirectX::SimpleMath::Vector3(0.0, -1.0, 0.0);
+            targetCameraPosition = CAMERA_SETTINGS_POSITION;
+            targetCameraForward = CAMERA_SETTINGS_FORWARD;
             shouldModifyCamera = true;
             break;
 
         case iMenu::MenuGroup::Highscore:
-            targetCameraPosition = DirectX::SimpleMath::Vector3(2.471, 1.686, -2.500);
-            targetCameraForward = DirectX::SimpleMath::Vector3(1.0, 0.255, 0.828);
+            targetCameraPosition = CAMERA_HIGHSCORE_POSITION;
+            targetCameraForward = CAMERA_HIGHSCORE_FORWARD;
             shouldModifyCamera = true;
             break;
         }
@@ -97,8 +104,8 @@ void iMenuMachine::update(float deltaTime)
         // Moving the camera slightly if allowed
         if (shouldModifyCamera)
         {
-            movingCameraPosition += (targetCameraPosition - movingCameraPosition) * 0.001f * deltaTime;
-            movingCameraForward += (targetCameraForward - movingCameraForward) * 0.001f * deltaTime;
+            movingCameraPosition += (targetCameraPosition - movingCameraPosition) * CAMERA_MOVE_SPEED * deltaTime;
+            movingCameraForward += (targetCameraForward - movingCameraForward) * CAMERA_MOVE_SPEED * deltaTime;
             Global::mainCamera->update(movingCameraPosition, movingCameraForward, Global::context);
         }
     }
