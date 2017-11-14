@@ -348,8 +348,8 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
             true);
         break;
     case 2:
-        trigger = m_triggerManager.addTrigger(Resources::Models::UnitCube,
-            Cube(pos, { 0, 0, 0 }, { 1, 0.5, 1 }), 0.f, physics, {},
+        trigger = m_triggerManager.addTrigger(Resources::Models::AmmoPackCrossBolt,
+            Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, physics, {},
             effectsIds,
             false);
         break;

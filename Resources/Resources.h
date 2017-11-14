@@ -27,7 +27,10 @@ namespace Resources
             Staff,
             StaticSummon,
             Tablet1,
-            UnitCube
+            UnitCube,
+            CrossBowProjectile,
+            AmmoPackCrossBolt,
+            AmmoPackIceGun
         };
         const std::map<Files, const char *> Paths =
         {
@@ -37,13 +40,17 @@ namespace Resources
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
-            {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
+            {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"},
+            {CrossBowProjectile, R"(..\Resources\Models\Crossbowbolts.hyb)"},
+            {AmmoPackCrossBolt, R"(..\Resources\Models\Ammobolts.hyb)"},
+            {AmmoPackIceGun, R"(..\Resources\Models\Ammocrystal.hyb)"}
         };
     }
     namespace Shaders
     {
         enum Files
         {
+            BulletTime,
             DoFBlur1,
             DoFBlur2,
             DoFCreateCoC,
@@ -68,6 +75,7 @@ namespace Resources
         };
         const std::map<Files, const char *> Paths =
         {
+            {BulletTime, R"(..\Resources\Shaders\BulletTime.hlsl)"},
             {DoFBlur1, R"(..\Resources\Shaders\DoFBlur1.hlsl)"},
             {DoFBlur2, R"(..\Resources\Shaders\DoFBlur2.hlsl)"},
             {DoFCreateCoC, R"(..\Resources\Shaders\DoFCreateCoC.hlsl)"},
@@ -106,6 +114,7 @@ namespace Resources
             HUDIcons,
             mainMenuButton,
             mainmenupicture,
+            mainMenuText,
             MissingTexture,
             randomNormals,
             SettingsMenuButtons,
@@ -126,7 +135,8 @@ namespace Resources
             {HPBars, R"(..\Resources\Textures\HPBars.dds)"},
             {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
-            {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
+            {mainMenuText, R"(..\Resources\Textures\Mainmenutext.dds)" },
+            {mainmenupicture, R"(..\Resources\Textures\MainmenuClean.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},

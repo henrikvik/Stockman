@@ -155,6 +155,12 @@ void NoiseMachine::playMusic(MUSIC music, SoundSource* soundSource, bool overdri
 // Checks if sound if currently playing and if overdrive should be used
 void NoiseMachine::checkIfPlay(Noise* sound, SoundSource* soundSource, bool overdrive)
 {
+    if (soundSource && !overdrive)
+    {
+        printf("Error: Soundsource can't be null and a overdrive = false!");
+        return;
+    }
+
 	if (overdrive)
 		play(sound, soundSource);
 	else

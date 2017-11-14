@@ -219,3 +219,9 @@
     "mMagCap" : 0;
     "mSkillCDDecrease" : 0.2f;
 }
+{ // INVULNERABLE
+	"flags": 1024; // 0x400
+	"duration": 1000f;
+	"modifiers": 0;
+	"specifics": 0;
+}

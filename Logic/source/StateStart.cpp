@@ -9,6 +9,8 @@
 #include <Graphics\include\MainCamera.h>
 #include <Graphics\include\Device.h>
 
+#define EDIT_CAMERA_POS false
+
 using namespace Logic;
 
 StateStart::StateStart(StateBuffer* stateBuffer)
@@ -32,14 +34,17 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     m_highScoreManager->setName("Stockman");
 
     // Initializing Menu's
-    m_menu = newd MenuMachine();
-    m_menu->initialize(Logic::gameStateMenuMain);
+    m_menu = newd iMenuMachine();
+    m_menu->swapMenu(iMenu::MenuGroup::Start);
+
+    // ! Reminder !  
+    // Gives a small mem leak as for right now, but it's too cool to remove ^.^
+    // Initializing campfire
+    m_campfire = Graphics::FXSystem->getEffect("FireSmoke");
 }
 
 StateStart::~StateStart()
 {
-    m_menu->clear();
-
     delete m_menu;
     delete m_highScoreManager;
     delete m_physics;
@@ -50,10 +55,23 @@ void StateStart::reset() { }
 
 void StateStart::update(float deltaTime)
 {
+    Graphics::FXSystem->processEffect(&m_campfire, DirectX::XMMatrixTranslation(0, 0, 0), deltaTime / 1000.f);
+
     DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_ABSOLUTE);
-    static DirectX::SimpleMath::Vector3 movingCameraPosition(0, 0, 0);
-    static DirectX::SimpleMath::Vector3 movingCameraForward(0, 0, 1);
-    movingCameraPosition.y += 0.001f * deltaTime;
+    static DirectX::SimpleMath::Vector3 movingCameraPosition(6.941, 5.6, -4.141);
+    static DirectX::SimpleMath::Vector3 movingCameraForward(-0.2, -0.153, 0.258);
+
+#if EDIT_CAMERA_POS
+    // Debugging purposes
+    ImGui::Begin("Camera");
+    ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&movingCameraPosition), -10.f, 10.f, "%.3f");
+    ImGui::SliderFloat3("Forward", reinterpret_cast<float*>(&movingCameraForward), -1.f, 1.f, "%.3f");
+    ImGui::End();
+#else
+    // Moving the camera slightly
+    movingCameraForward.x += (-0.3f - movingCameraForward.x) * 0.00001f * deltaTime;
+#endif
+
     Global::mainCamera->update(movingCameraPosition, movingCameraForward, Global::context);
 
     PROFILE_BEGIN("Physics");
@@ -66,12 +84,6 @@ void StateStart::update(float deltaTime)
 
     m_fpsRenderer.updateFPS(deltaTime);
     m_menu->update(deltaTime);
-
-    if (m_menu->currentState() == gameStateSkillPick)
-    {
-        SwitchPrimaryState(StateType::State_Playing);
-        SwitchSecondaryState(StateType::State_InGame_Overlay);
-    }
 }
 
 void StateStart::render() const

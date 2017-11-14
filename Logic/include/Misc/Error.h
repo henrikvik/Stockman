@@ -1,6 +1,8 @@
 #ifndef ERROR_H
 #define ERROR_H
 
+
+
 // Print & Handle Possible Errors
 #define _SAFE_EXECUTION
 
