@@ -11,7 +11,7 @@
 // Misc
 #include <Misc\HighScoreManager.h>
 #include <Misc\FPSRenderer.h>
-#include <Misc\GUI\MenuMachine.h>
+#include <Misc\GUI\iMenuMachine.h>
 
 // DirectX Includes
 #include <Windows.h>
@@ -20,6 +20,9 @@
 
 // Engine Includes
 #include <Engine\Profiler.h>
+
+// Particle
+#include <Graphics\include\Particles\ParticleSystem.h>
 
 namespace Logic
 {
@@ -35,12 +38,13 @@ namespace Logic
         void render() const;
 
     private:
-        std::string			m_highScore[10];
-        MenuMachine*		m_menu;
-        HighScoreManager*	m_highScoreManager;
-        FPSRenderer         m_fpsRenderer;
-        Physics*			m_physics;
-        Map*				m_map;
+        std::string			        m_highScore[10];
+        iMenuMachine*		        m_menu;
+        HighScoreManager*	        m_highScoreManager;
+        FPSRenderer                 m_fpsRenderer;
+        Physics*			        m_physics;
+        Map*				        m_map;
+        Graphics::ParticleEffect    m_campfire;
     };
 }
 

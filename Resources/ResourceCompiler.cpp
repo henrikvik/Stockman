@@ -96,7 +96,7 @@ struct Dir
 
             pad.dec();
             ostream << pad.str() << "};\n";
-
+/*
             ostream << pad.str() << "\n";
             ostream << pad.str() << "Files toEnum(const char * str)\n";
             ostream << pad.str() << "{\n";
@@ -108,7 +108,7 @@ struct Dir
             } 
             ostream << pad.str() << "throw \"Could not find matching enum.\";\n";
             pad.dec();
-            ostream << pad.str() << "}\n";
+            ostream << pad.str() << "}\n";*/
         }
 
         for (auto & dir : dirs) 

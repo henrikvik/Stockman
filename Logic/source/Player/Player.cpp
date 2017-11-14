@@ -47,7 +47,7 @@ Player::~Player()
 
 void Player::init(Physics* physics, ProjectileManager* projectileManager)
 {
-    Settings* setting = Settings::getInstance();
+    Settings setting = Settings::getInstance();
 	m_weaponManager->init(projectileManager);
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
@@ -118,7 +118,7 @@ void Player::registerDebugCmds()
     win->registerCommand("LOG_SET_MOUSE_SENSITIVITY", [&](std::vector<std::string> &para) -> std::string {
         try
         { // Boilerplate code bois
-            Settings::getInstance()->setMouseSense(stof(para[0]));
+            Settings::getInstance().setMouseSense(stof(para[0]));
         }
         catch (int)
         {
@@ -717,9 +717,9 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-    Settings* setting = Settings::getInstance();
-	m_camYaw	+= setting->getMouseSense() * (ms->x * deltaTime);
-	m_camPitch	-= setting->getMouseSense() * (ms->y * deltaTime);
+    Settings setting = Settings::getInstance();
+	m_camYaw	+= setting.getMouseSense() * (ms->x * deltaTime);
+	m_camPitch	-= setting.getMouseSense() * (ms->y * deltaTime);
 
 	// DirectX calculates position on the full resolution,
 	//  while getWindowMidPoint gets the current window's middle point!!!!!

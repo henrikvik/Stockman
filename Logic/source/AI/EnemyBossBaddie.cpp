@@ -19,7 +19,7 @@ using namespace Logic;
 const float EnemyBossBaddie::BASE_SPEED = 4.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.085f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.105f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 16000; // Big guy, for you
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 11500; // Big guy, for you
 
 /*
     @author Lukas Westling
@@ -251,7 +251,8 @@ void EnemyBossBaddie::createAbilities()
         int skip = RandomGenerator::singleton().getRandomInt(0, 9);
 
         ProjectileData data;
-        data.damage = data.mass = 1;
+        data.damage = 1;
+        data.mass = 1.f;
         data.scale = 1.5f;
         data.enemyBullet = data.isSensor = true;
         data.meshID = Resources::Models::Files::SkySphere;
@@ -301,6 +302,12 @@ void EnemyBossBaddie::shootAbility4(Player const &player, int pattern, float spe
             shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.08f)), model, speed, 0.f, 2.4f, true);
         break;
     }
+}
+
+void EnemyBossBaddie::damage(int damage)
+{
+    if (damage > 5)
+        Enemy::damage(damage - 5); // make buff
 }
 
 void EnemyBossBaddie::useAbility(Player &target)
