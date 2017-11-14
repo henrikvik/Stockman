@@ -288,10 +288,10 @@ namespace Graphics
 
         QueueRender(lightInfo);
 
+        FXSystem->update(Global::context, Global::mainCamera, deltaTime);
+
         writeInstanceBuffers();
         sun.update();
-
-        FXSystem->update(Global::context, Global::mainCamera, deltaTime);
    
         for (auto & renderPass : renderPasses)
         {

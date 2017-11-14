@@ -463,7 +463,8 @@ public:
                 light.intensity = XMVectorGetW(light_color);
                 XMStoreFloat4((XMFLOAT4*)&light.color, light_color);
 
-                RenderQueue::get().queue<LightRenderInfo>(&light);
+                //QueueRender(light);
+                //RenderQueue::get().queue<LightRenderInfo>(&light);
             }
 
 
@@ -570,7 +571,7 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
             light.intensity = XMVectorGetW(light_color);
             XMStoreFloat4((XMFLOAT4*)&light.color, light_color);
 
-            RenderQueue::get().queue<LightRenderInfo>(&light);
+            QueueRender(light);
         }
 
         ptr++;
