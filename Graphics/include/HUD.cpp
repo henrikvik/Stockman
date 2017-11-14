@@ -17,9 +17,9 @@ Graphics::HUD::HUD(ID3D11Device * device, ID3D11DeviceContext * context)
 	offset.y = 0;
 	offsetBuffer.write(context, &offset, sizeof(DirectX::SimpleMath::Vector2));
     
-   sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshe.spritefont");
+  /* sFont[0] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshe.spritefont");
    sFont[1] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshelarger.spritefont");
-   sFont[2] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshelargest.spritefont");
+   sFont[2] = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/KGshelargest.spritefont");*/
    sBatch = std::make_unique<DirectX::SpriteBatch>(context);
 
    changed = false;
@@ -182,9 +182,9 @@ void Graphics::HUD::createHUDTextures(ID3D11Device * device, ID3D11DeviceContext
 
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("crosshair.png"), nullptr, &hudTextures[0]));
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPBars.dds"), nullptr, &hudTextures[1]));
-    //ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPbarOutline.png"), nullptr, &hudTextures[2]));
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HPbarOutline.png"), nullptr, &hudTextures[2]));
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("HUDIcons.dds"), nullptr, &hudTextures[3]));
-    //ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("cooldownCircleActive.png"), nullptr, &hudTextures[4]));
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, context, TEXTURE_PATH("cooldownCircleActive.png"), nullptr, &hudTextures[4]));
 
   
 }
@@ -227,6 +227,9 @@ void Graphics::HUD::setHUDTextRenderPos()
 
 void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 {   
+    // No info, exit, avoiding crash
+    if (!currentInfo) return;
+
     //sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
     std::wstring temp = L"";
     if (currentInfo->currentWeapon == 0)

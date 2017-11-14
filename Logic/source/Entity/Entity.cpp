@@ -5,10 +5,10 @@
 
 using namespace Logic;
 
-Entity::Entity(btRigidBody* body, btVector3 halfextent, Graphics::ModelID modelID)
-: PhysicsObject(body, halfextent, modelID)
+Entity::Entity(btRigidBody* body, btVector3 halfextent)
+: PhysicsObject(body, halfextent)
 {
-    m_soundSource = new Sound::SoundSource();
+    m_soundSource = newd Sound::SoundSource();
 }
 
 Entity::~Entity() 
@@ -48,7 +48,7 @@ void Entity::updateSound(float deltaTime)
 void Entity::addCallback(Entity::EntityEvent entityEvent, Callback callback)
 {
     m_callbacks[entityEvent].push_back(callback);
-}
+};
 
 bool Entity::hasCallback(EntityEvent entityEvent) const
 {
@@ -72,7 +72,7 @@ void Entity::callback(EntityEvent entityEvent, CallbackData &data)
     }
     catch (std::exception ex)
     {
-        printf("Callback error (Probably null callback data) \n%s\n", ex.what());
+        printf("Callback error: %s\n", ex.what());
     }
 }
 

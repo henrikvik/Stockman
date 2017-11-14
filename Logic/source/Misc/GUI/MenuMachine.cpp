@@ -1,3 +1,5 @@
+#include <Graphics\include\RenderQueue.h>
+
 #include <Misc\GUI\MenuMachine.h>
 #include <iostream>
 #include <Misc\FileLoader.h>
@@ -14,7 +16,7 @@
 
 using namespace Logic;
 
-MenuMachine::MenuMachine(std::string* highScoreNamePTR)
+MenuMachine::MenuMachine()
 {
 	m_pressed = false;
 	m_currentActiveMenu = nullptr;
@@ -26,17 +28,14 @@ MenuMachine::MenuMachine(std::string* highScoreNamePTR)
     printf("\n *Skipping Menus, Disable in 'Logic/include/DebugDefines.h'\n");
 #endif
 
-	m_highScoreNamePTR = highScoreNamePTR;
-	m_highScoreName = *m_highScoreNamePTR;
+//	m_highScoreNamePTR = highScoreNamePTR;
+//	m_highScoreName = *m_highScoreNamePTR;
 	m_typing = false;
 	m_forward = true;
     blinkTimer = 0.0f;
     deleteCharCD = 20.0f;
 	m_cardUpgrade = -1;
     m_selectedSkills = { -1, -1 };
-
-	Settings* setting = Settings::getInstance();
-	setting->readFromFile();
 }
 
 
@@ -46,9 +45,6 @@ MenuMachine::~MenuMachine()
 	{
 		delete a.second;
 	}
-	Settings* setting = Settings::getInstance();
-	setting->writeToFile();
-	setting->releaseInstance();
 }
 
 void MenuMachine::initialize(GameState state)
@@ -208,7 +204,7 @@ void MenuMachine::update(float dt)
 		if (keyboard.IsKeyDown(DirectX::Keyboard::Enter))
 		{
 			m_typing = false;
-			*m_highScoreNamePTR = m_highScoreName;
+		//	*m_highScoreNamePTR = m_highScoreName;
 		}
 		else if (keyboard.IsKeyDown(DirectX::Keyboard::Back) && m_highScoreName != "" && deleteCharCD > 200.0f)
 		{
@@ -223,127 +219,108 @@ void MenuMachine::update(float dt)
 	PROFILE_END();
 }
 
-void MenuMachine::render(Graphics::Renderer &renderer, std::string highScore[10])
+void MenuMachine::render()
 {
 	PROFILE_BEGIN("Menu Render");
     if (m_currentActiveState == gameStateMenuSettings)
     {
         std::wstring tempString = L"";
-        Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
-        DirectX::SimpleMath::Vector2 tempPos;
-        tempPos.x = (float)(tempButton.m_rek.x +tempButton.m_rek.width);
-        tempPos.y = (float)(tempButton.m_rek.y + tempButton.m_rek.height -50);
-        tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
-        if (m_typing)
-        {
-            if (blinkMarker)
-            {
-                tempString += L"|";
-            }
+        //Graphics::ButtonInfo tempButton = m_currentActiveMenu->getMenuInfo().m_buttons.at(0);
+        //DirectX::SimpleMath::Vector2 tempPos;
+        //tempPos.x = (float)(tempButton.m_rek.x +tempButton.m_rek.width);
+        //tempPos.y = (float)(tempButton.m_rek.y + tempButton.m_rek.height -50);
+        //tempString.assign(m_highScoreName.begin(), m_highScoreName.end());
+        //if (m_typing)
+        //{
+        //    if (blinkMarker)
+        //    {
+        //        tempString += L"|";
+        //    }
 
-        }
-        Graphics::TextString text
-        {
-            tempString.c_str(),
-            tempPos,
-            DirectX::SimpleMath::Color(DirectX::Colors::White),
-            Graphics::Font::SMALL
-        };
-        renderer.queueText(&text);
 
-        Settings* setting = Settings::getInstance();
+        Settings setting = Settings::getInstance();
 		ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Always);
 		if (ImGui::Begin("Testing version"))
 		{
 			ImGui::Text("Mouse Sense");
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("float##1", setting->getMouseSensePTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("float##1", setting.getMouseSensePTR(), 0.01f, 0.0f, 1.0f);
 			ImGui::PopItemWidth();
 			ImGui::Text("FOV");
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("float##2", setting->getFOVPTR(), 10.0f, 90.0f, 360.0f);
-			ImGui::Checkbox("Windowed", setting->getWindowedPTR());
+			ImGui::DragFloat("float##2", setting.getFOVPTR(), 10.0f, 90.0f, 360.0f);
+			ImGui::Checkbox("Windowed", setting.getWindowedPTR());
 			ImGui::Text("Master Sound");
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("float##3", setting->getMasterSoundPTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("float##3", setting.getMasterSoundPTR(), 0.01f, 0.0f, 1.0f);
 			ImGui::Text("SFX");
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("float##4", setting->getSFXPTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("float##4", setting.getSFXPTR(), 0.01f, 0.0f, 1.0f);
 			ImGui::Text("Music");
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("float##5", setting->getMusicPTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("float##5", setting.getMusicPTR(), 0.01f, 0.0f, 1.0f);
 
 			ImGui::End();
 		}
 
         Sound::NoiseMachine noise = Sound::NoiseMachine::Get();
-        noise.setGroupVolume(Sound::CHANNEL_MASTER, setting->getMasterSound());
-        noise.setGroupVolume(Sound::CHANNEL_SFX, setting->getSFX());
-        noise.setGroupVolume(Sound::CHANNEL_MUSIC, setting->getMusic());
+        noise.setGroupVolume(Sound::CHANNEL_MASTER, setting.getMasterSound());
+        noise.setGroupVolume(Sound::CHANNEL_SFX, setting.getSFX());
+        noise.setGroupVolume(Sound::CHANNEL_MUSIC, setting.getMusic());
     }
 	else if (m_currentActiveState == gameStateHighscore)
 	{
 		std::string tempString = "";
 		std::wstring tempWString = L"";
 		DirectX::SimpleMath::Vector2 tempPos;
-		for (int i = 0; i < 10; i++)
-		{
-			if (highScore[i].compare("") == 0)
-			{
-				break;
-			}
-			else
-			{
-				tempString += highScore[i] + "\n";
-			}
-		}
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	if (highScore[i].compare("") == 0)
+		//	{
+		//		break;
+		//	}
+		//	else
+		//	{
+		//		tempString += highScore[i] + "\n";
+		//	}
+		//}
 		tempWString.assign(tempString.begin(), tempString.end());
 		tempPos.x = 400.0f;
 		tempPos.y = 300.0f;
 
-		Graphics::TextString text
-		{
-			tempWString.c_str(),
-			tempPos,
-			DirectX::SimpleMath::Color(DirectX::Colors::White),
-			Graphics::Font::SMALL
-		};
-		renderer.queueText(&text);
+		//Graphics::TextString text
+		//{
+		//	tempWString.c_str(),
+		//	tempPos,
+		//	DirectX::SimpleMath::Color(DirectX::Colors::White),
+		//	Graphics::Font::SMALL
+		//};
+		//renderer.queueText(&text);
 	}
 	else if (m_currentActiveState == gameStateGameOver)
 	{
 		std::string tempString = "";
 		std::wstring tempWString = L"";
 		DirectX::SimpleMath::Vector2 tempPos;
-		for (int i = 0; i < 10; i++)
-		{
-			if (highScore[i].compare("") == 0)
-			{
-				break;
-			}
-			else
-			{
-				tempString += highScore[i] + "\n";
-			}
-		}
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	if (highScore[i].compare("") == 0)
+		//	{
+		//		break;
+		//	}
+		//	else
+		//	{
+		//		tempString += highScore[i] + "\n";
+		//	}
+		//}
 		tempWString.assign(tempString.begin(), tempString.end());
 		tempPos.x = 400.0f;
 		tempPos.y = 300.0f;
 
-		Graphics::TextString text
-		{
-			tempWString.c_str(),
-			tempPos,
-			DirectX::SimpleMath::Color(DirectX::Colors::White),
-			Graphics::Font::SMALL
-		};
-		renderer.queueText(&text);
-	}
+        //RenderQueue::get().queue(&text);
+    }
     
-
-    Graphics::MenuInfo temp = this->m_currentActiveMenu->getMenuInfo();
-
-    renderer.drawMenu(&temp);
+    m_currentActiveMenu->render();
 	PROFILE_END();
 }
 
@@ -427,7 +404,7 @@ void MenuMachine::startMainMenu()
 
 void MenuMachine::quitGame()
 {
-	PostQuitMessage(0); 
+//	PostQuitMessage(0); come on..
 }
 
 void MenuMachine::writing()
@@ -527,8 +504,7 @@ void MenuMachine::selectSkillButton(int id)
     Button* button = m_currentActiveMenu->getButton(id);
 
     // Hardcoded "Selected" tex-cords, currently not supported
-    if (replaceSkill(id))   button->setStartAndEnd(1.f * (1.f/3.f), (2.f/3.f));
-    else                    button->setStartAndEnd(0.f, (1.f/3.f));
+    replaceSkill(id);
 }
 
 // Returns true if succesful swapping of selected skill, returns false if the selected skill should be reset (if it was already selected, for example)

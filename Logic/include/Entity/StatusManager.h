@@ -31,7 +31,7 @@ namespace Logic
 		enum EFFECT_ID {
 			ON_FIRE, FREEZE, BOOST_UP, AMMO_PICK_UP_PRIMARY, AMMO_PICK_UP_SECONDARY,
             SHIELD_CHARGE, BULLET_TIME, ENRAGE, HEALTH_P1, STUN, MOVEMENTSPEED_UP, 
-            MOVEMENTSPEED_DOWN, ON_KILL, LAST_ITEM_IN_EFFECTS
+            MOVEMENTSPEED_DOWN, ON_KILL, INVULNERABLE, LAST_ITEM_IN_EFFECTS
 		};
 
 		enum UPGRADE_ID {
@@ -61,6 +61,10 @@ namespace Logic
 		*/
 		int getStacksOfEffectFlag(Effect::EFFECT_FLAG flag) const;
 
+        // Returns true if upgrade is active
+        bool isOwningUpgrade(Upgrade::UPGRADE_FLAG flag);
+
+		// nr of stacks and the effect itself
         // THESE TWO ARE GOING TO BE REMOVED; DO NOT USE THEM
 		std::vector<std::pair<int, Effect*>> getActiveEffects();
 		std::vector<std::pair<int, StatusManager::EFFECT_ID>> getActiveEffectsIDs();

@@ -19,7 +19,7 @@ namespace Logic
 		}
 
 		void Reward(int score);
-		void Kill(ENEMY_TYPE type);
+		void Kill(EnemyType type);
 		void Update(float deltaTime);
 		void Reset();
 
@@ -31,7 +31,7 @@ namespace Logic
 
 	private:
 		void CheckCombo();
-		int GetReward(ENEMY_TYPE type);
+		int GetReward(EnemyType type);
 
 		float		m_TimeSinceLastKill;
 		int			m_Combo;					

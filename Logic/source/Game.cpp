@@ -11,11 +11,11 @@
 
 using namespace Logic;
 
-const int Game::NUMBER_OF_UNIQUE_CARDS      = 13;
-
-const GameState Game::STATE_START           = gameStateMenuMain;
-const btVector3 Game::PLAYER_START_SCALE    = { 1.5f, 3.0f, 1.5f };
-const btVector3 Game::PLAYER_START_ROTATION = { 0.0f, 0.0f, 0.0f };
+// Game starting static configurations
+const int Game::GAME_START::UNIQUE_CARDS            = 13;
+const GameState Game::GAME_START::STATE             = gameStateMenuMain;
+const btVector3 Game::GAME_START::PLAYER_SCALE      = { 1.5f, 3.0f, 1.5f };
+const btVector3 Game::GAME_START::PLAYER_ROTATION   = { 0.0f, 0.0f, 0.0f };
 
 Game::Game()
 {
@@ -52,7 +52,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 	m_projectileManager = newd ProjectileManager(m_physics);
 
 	// Initializing Player
-	m_player = newd Player(Graphics::ModelID::CUBE, nullptr, Game::PLAYER_START_SCALE);
+	m_player = newd Player(Resources::Models::UnitCube, nullptr, GAME_START::PLAYER_SCALE);
 	m_player->init(m_physics, m_projectileManager);
 	Sound::NoiseMachine::Get().update(m_player->getListenerData());
 
@@ -64,7 +64,7 @@ void Game::init(LPWSTR *cmdLine, int args)
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+			highScore[i] = std::to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
 		}
 		else
 		{
@@ -73,15 +73,15 @@ void Game::init(LPWSTR *cmdLine, int args)
 	}
 
 	// Initializing Menu's
-	m_menu = newd MenuMachine(m_highScoreManager->getName());
-	m_menu->initialize(Game::STATE_START);
+	m_menu = newd MenuMachine();
+	m_menu->initialize(GAME_START::STATE);
 
 	// Initializing the Map
 	m_map = newd Map();
-	m_map->init(m_physics);
+	m_map->init(m_physics, "");
 
 	// Initializing Card Manager
-	m_cardManager = newd CardManager(Game::NUMBER_OF_UNIQUE_CARDS);
+	m_cardManager = newd CardManager(GAME_START::UNIQUE_CARDS);
 
 	// Initializing Combo's
 	ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
@@ -138,6 +138,7 @@ void Game::reset()
 {
     m_projectileManager->removeAllProjectiles();
     m_player->reset();
+    m_hudManager.reset();
 
     m_entityManager.resetTriggers();
     m_entityManager.deallocateData();
@@ -146,12 +147,13 @@ void Game::reset()
     m_cardManager->resetDeck();
 
 	ComboMachine::Get().Reset();
+    RenderQueue::get().clearAllQueues();
 }
 
 void Game::update(float deltaTime)
 {
     // Updates FPS at all times
-    m_fpsRenderer.updateFPS(deltaTime);
+    //m_fpsRenderer.updateFPS(deltaTime);
  
     if (updateMenu(deltaTime))
         updateGame(deltaTime);
@@ -210,8 +212,6 @@ bool Game::updateMenu(float deltaTime)
                 // Reset menu stuff
                 selectedSkills->first = -1;
                 selectedSkills->second = -1;
-                for (size_t i = 0; i < m_menu->getActiveMenu()->getMenuInfo().m_buttons.size(); i++)
-                    m_menu->getActiveMenu()->getButton(int(i))->setStartAndEnd(0, (1.f/3.f));
 
                 m_menu->setStateToBe(gameStateGame); //change to gameStateGame
             }
@@ -281,19 +281,19 @@ void Game::gameOver()
 	{
 		if (m_highScoreManager->gethighScore(i).score != -1)
 		{
-			highScore[i] = to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + to_string(m_highScoreManager->gethighScore(i).score);
+			highScore[i] = std::to_string(i + 1) + ". " + m_highScoreManager->gethighScore(i).name + ": " + std::to_string(m_highScoreManager->gethighScore(i).score);
 			//break;
 		}
 	}
 	reset();
 }
 
-void Game::render(Graphics::Renderer& renderer)
+void Game::render() const
 {
 	switch (m_menu->currentState())
 	{
 	case gameStateGame:
-        renderGame(renderer);
+        renderGame();
 		break;
 
 	case gameStateGameUpgrade:
@@ -303,45 +303,43 @@ void Game::render(Graphics::Renderer& renderer)
 	case gameStateGameOver:
     case gameStateSkillPick:
 	case gameStateHighscore:
-    default: renderMenu(renderer);
+    default: renderMenu();
 		break;
 	}
 
-    m_fpsRenderer.renderFPS(renderer);
+    //m_fpsRenderer.render();
 }
 
-void Game::renderGame(Graphics::Renderer& renderer)
+void Game::renderGame() const
 {
     // Debug Draw physics
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
-        m_physics->render(renderer);
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::CapsLock))
-        renderer.startShake(50.f, 2500.f);
+        m_physics->render();
 
 	PROFILE_BEGIN("Player Render");
-	m_player->render(renderer);
+	m_player->render();
 	PROFILE_END();
 
 	PROFILE_BEGIN("Render Map");
-	m_map->render(renderer);
+	m_map->render();
 	PROFILE_END();
 
 	PROFILE_BEGIN("Render Enemies & Triggers");
-	m_entityManager.render(renderer);
+	m_entityManager.render();
 	PROFILE_END();
 
 	PROFILE_BEGIN("Render Projectiles");
-	m_projectileManager->render(renderer);
+	m_projectileManager->render();
 	PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    m_hudManager.render(renderer);
+    m_hudManager.render();
     PROFILE_END();
 }
 
-void Game::renderMenu(Graphics::Renderer& renderer)
+void Game::renderMenu() const
 {
-	m_menu->render(renderer, highScore);
+	m_menu->render();
 }
 
 DirectX::SimpleMath::Vector3 Game::getPlayerForward()

@@ -3,8 +3,6 @@
 #include <d3d11.h>
 #include <SimpleMath.h>
 
-using namespace std;
-
 #define VERTEX_DESC { \
     { "POSITION",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },  \
     { "NORMAL",     0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },  \
@@ -235,7 +233,7 @@ struct AnimVert
 
 struct Material
 {
-	string materialName;
+	std::string materialName;
 	int materialID;
 	Float3 diffuseValue;
 	Float3 specularValue;
@@ -248,15 +246,15 @@ struct Material
 };
 struct importedMaterial
 {
-	string materialName;
+    std::string materialName;
 	int materialID;
 	Float3 diffuseValue;
 	Float3 specularValue;
 
-	string diffuseTex;
-	string normalTex;
-	string specularTex;
-	string glowTex;
+	std::string diffuseTex;
+	std::string normalTex;
+	std::string specularTex;
+	std::string glowTex;
 };
 
 struct NodeType

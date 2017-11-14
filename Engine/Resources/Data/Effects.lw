@@ -138,3 +138,9 @@
 	"sFreezing": 0.1f;
 	"sAmmoType": 0f;
 }
+{ // INVULNERABLE
+	"flags": 1024; // 0x400
+	"duration": 1000f;
+	"modifiers": 0;
+	"specifics": 0;
+}

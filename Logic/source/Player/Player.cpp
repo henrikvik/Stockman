@@ -16,24 +16,28 @@
 #include <Player\Skill\Skill.h>
 
 #include <Misc\Sound\NoiseStructs.h>
-#include <Graphics\include\Renderer.h>
 #include <Physics\Physics.h>
 #include <Projectile\Projectile.h>
 
 #include <Engine\Profiler.h>
 #include <Engine\DebugWindow.h>
-#include <Engine\Settings.h>
+#include <Graphics\include\MainCamera.h>
+#include <Graphics\include\Device.h>
+
+#include <Engine/Settings.h>
 
 using namespace Logic;
 
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
-Player::Player(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
-: Entity(body, halfExtent, modelID)
+Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
+: Entity(body, halfExtent)
 {
     m_weaponManager = newd WeaponManager();
     m_skillManager = newd SkillManager();
     m_listenerData = newd Sound::ListenerData();
+    currentSkills[0] = -1;
+    currentSkills[1] = -1;
 }
 
 Player::~Player()
@@ -43,7 +47,7 @@ Player::~Player()
 
 void Player::init(Physics* physics, ProjectileManager* projectileManager)
 {
-    Settings* setting = Settings::getInstance();
+    Settings setting = Settings::getInstance();
 	m_weaponManager->init(projectileManager);
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
@@ -100,9 +104,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_switchWeaponTwo = DirectX::Keyboard::Keys::D2;
 	m_switchWeaponThree = DirectX::Keyboard::Keys::D3;
 	m_reloadWeapon = DirectX::Keyboard::Keys::R;
-    m_useSkillPrimary = DirectX::Keyboard::Keys::F;
+    m_useSkillPrimary = DirectX::Keyboard::Keys::Q;
     m_useSkillSecondary = DirectX::Keyboard::Keys::E;
-    m_useSkillTertiary = DirectX::Keyboard::Keys::G;
+    m_useSkillTertiary = DirectX::Keyboard::Keys::F;
 	m_listenerData->update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 
     m_stunned = false;
@@ -111,10 +115,10 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 void Player::registerDebugCmds()
 {
     DebugWindow *win = DebugWindow::getInstance();
-    win->registerCommand("LOG_SET_MOUSE_SENSITIVITY", [&](std::vector<string> &para) -> std::string {
+    win->registerCommand("LOG_SET_MOUSE_SENSITIVITY", [&](std::vector<std::string> &para) -> std::string {
         try
         { // Boilerplate code bois
-            Settings::getInstance()->setMouseSense(stof(para[0]));
+            Settings::getInstance().setMouseSense(stof(para[0]));
         }
         catch (int)
         {
@@ -122,11 +126,11 @@ void Player::registerDebugCmds()
         }
         return "Mouse sens set";
     });
-    win->registerCommand("LOG_GODMODE", [&](std::vector<string> &para) -> std::string {
+    win->registerCommand("LOG_GODMODE", [&](std::vector<std::string> &para) -> std::string {
         m_godMode = !m_godMode;
         return "Godmode updated";
     });
-    win->registerCommand("LOG_NOCLIP", [&](std::vector<string> &para) -> std::string {
+    win->registerCommand("LOG_NOCLIP", [&](std::vector<std::string> &para) -> std::string {
         m_noclip = !m_noclip;
         if (m_noclip)
             m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
@@ -172,8 +176,9 @@ void Player::registerDebugCmds()
 
         return "I need healing - Genji Shinimada ( + 1 Health given)";
     });
-    win->registerCommand("LOG_PRINT_POS", [&](std::vector<string> &para) -> std::string {
-        return "x: " + to_string((double) getPosition().x) + ", y: " + to_string((double) getPosition().y) + ", z: " + to_string((double) getPosition().z);
+    win->registerCommand("LOG_PRINT_POS", [&](std::vector<std::string> &para) -> std::string 
+    {
+        return "x: " + std::to_string((double) getPosition().x) + ", y: " + std::to_string((double) getPosition().y) + ", z: " + std::to_string((double) getPosition().z);
     });
 }
 
@@ -194,6 +199,14 @@ void Player::reset()
 	getTransform().setOrigin(startPosition);
 	m_weaponManager->reset();
 	m_hp = 3;
+
+    //temp? probably
+    Global::mainCamera->update(getPosition(), m_forward, Global::context);
+    static SpecialEffectRenderInfo info;
+    info.type = info.Snow;
+    info.restart = true;
+
+    RenderQueue::get().queue(&info);
 }
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
@@ -207,7 +220,7 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
             int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
             e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * static_cast<btScalar> (stacks));
             stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
-            e->damage(2 * stacks); // replace 1 with the player damage when it is better
+            e->damage(2.f * stacks); // replace 1 with the player damage when it is better
         }
     }
 }
@@ -338,7 +351,13 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
     {
         if (damageThroughProtection ||
             getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_INVINC) == 0)
+        {
+            getSoundSource()->playSFX(Sound::SFX::NECROMANCER_DEATH);
             m_hp -= damage;
+
+            // Add invul time
+            getStatusManager().addStatus(StatusManager::EFFECT_ID::INVULNERABLE, 1);
+        }
     }
 }
 
@@ -400,27 +419,58 @@ void Player::updateSpecific(float deltaTime)
             mouseMovement(deltaTime, &ms);
         jump(deltaTime, &ks);
 
-        // Weapon swap
+	    // Get movement input
+	    moveInput(&ks);
+	    if (!m_noclip)
+	    {
+		    if (m_playerState == PlayerState::STANDING)
+			    // Move
+			    move(deltaTime);
+		    else if (m_playerState == PlayerState::IN_AIR)
+			    // Move in air
+			    airMove(deltaTime);
+	    }
+	    else
+		    moveFree(deltaTime, &ks);
+
+	    if (m_charController->onGround())
+	    {
+		    m_playerState = PlayerState::STANDING;
+		    m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
+	    }
+	    else
+		    m_playerState = PlayerState::IN_AIR;
+
+	    // Print player velocity
+	    //printf("velocity: %f\n", m_moveSpeed);
+	    //printf("%f\n", m_charController->getLinearVelocity().y());
+	    //printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
+
+	    //crouch(deltaTime);
+
+	    // Weapon swap
         if (ks.IsKeyDown(m_switchWeaponOne))
         {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
             m_weaponManager->switchWeapon(0);
             currentWeapon = 0;
         }
-
+		
         if (ks.IsKeyDown(m_switchWeaponTwo))
         {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
             m_weaponManager->switchWeapon(1);
             currentWeapon = 1;
         }
-
+		
         if (ks.IsKeyDown(m_switchWeaponThree))
         {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
             m_weaponManager->switchWeapon(2);
             currentWeapon = 2;
         }
-
-
-        // Skills
+		
+	    // Skills
         PROFILE_BEGIN("SkillManager");
         forward = getForwardBT();
         if (ks.IsKeyDown(m_useSkillPrimary))
@@ -452,46 +502,18 @@ void Player::updateSpecific(float deltaTime)
         }
     }
 
-
-	// Get movement input
-	moveInput(&ks);
-	if (!m_noclip)
-	{
-		if (m_playerState == PlayerState::STANDING)
-			// Move
-			move(deltaTime);
-		else if (m_playerState == PlayerState::IN_AIR)
-			// Move in air
-			airMove(deltaTime);
-	}
-	else
-		moveFree(deltaTime, &ks);
-
-	if (m_charController->onGround())
-	{
-		m_playerState = PlayerState::STANDING;
-		m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
-	}
-	else
-		m_playerState = PlayerState::IN_AIR;
-
-	// Print player velocity
-	//printf("velocity: %f\n", m_moveSpeed);
-	//printf("%f\n", m_charController->getLinearVelocity().y());
-	//printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
-
-	//crouch(deltaTime);
-
-    if (m_godMode)
-    {
+    /* if (m_godMode)
+    {*/
         static bool isNum = false;
         static bool wasNum = false;
         wasNum = isNum;
-        isNum = ks.NumPad8;
+        isNum = ks.NumPad6;
 
         if (isNum && !wasNum)
             m_hp--;
-    }
+    /*}*/
+
+    Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
@@ -588,6 +610,7 @@ void Player::move(float deltaTime)
 	// Apply jump if player wants to jump
 	if (m_wishJump)
 	{
+        getSoundSource()->playSFX(Sound::SFX::JUMP, 1.f, 0.1f);
 		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
 		m_wishJump = false;
 	}
@@ -694,9 +717,9 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-    Settings* setting = Settings::getInstance();
-	m_camYaw	+= setting->getMouseSense() * (ms->x * deltaTime);
-	m_camPitch	-= setting->getMouseSense() * (ms->y * deltaTime);
+    Settings setting = Settings::getInstance();
+	m_camYaw	+= setting.getMouseSense() * (ms->x * deltaTime);
+	m_camPitch	-= setting.getMouseSense() * (ms->y * deltaTime);
 
 	// DirectX calculates position on the full resolution,
 	//  while getWindowMidPoint gets the current window's middle point!!!!!
@@ -774,25 +797,18 @@ DirectX::SimpleMath::Matrix Player::getEyeTransformMatrix() const
     return scale * transformMatrix;
 }
 
-void Player::render(Graphics::Renderer & renderer)
+void Player::render() const
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 	//Object::render(renderer);
-
-    static int lastHP = getHP();
-    if (lastHP != getHP())
-    {
-        lastHP = getHP();
-        renderer.startShake(10., 500.f);
-    }
 
 	// Setting position of updated weapon and skill models
 	m_weaponManager->setWeaponModel(getEyeTransformMatrix(), m_forward);
 	//	m_skillManager->setWeaponModel(getTransformMatrix(), m_forward);
 
 	// Drawing the weapon model
-	m_weaponManager->render(renderer);
-	m_skillManager->render(renderer);
+	m_weaponManager->render();
+	m_skillManager->render();
 }
 
 void Logic::Player::setMaxSpeed(float maxSpeed)
@@ -906,6 +922,7 @@ int Logic::Player::getCurrentWeapon() const
 
 void Logic::Player::setCurrentSkills(int first, int second)
 {
+    m_skillManager->switchToSkill({ SkillManager::SKILL(second), SkillManager::SKILL(first) });
     currentSkills[0] = first;
     currentSkills[1] = second;
 }

@@ -2,11 +2,14 @@
 #include <Misc\FileLoader.h>
 #include <vector>
 
-Settings*Settings::instance = 0;
-
 Settings::Settings()
 {
-
+    m_mouseSense = 0.01f;
+    m_FOV = 90.f;
+    m_masterSound = 0.1f;;
+    m_SFX = 0.1f;;
+    m_music = 0.1f;
+    m_windowed = false;
 }
 
 Settings::~Settings()
@@ -14,18 +17,10 @@ Settings::~Settings()
 	
 }
 
-Settings * Settings::getInstance()
+Settings& Settings::getInstance()
 {
-	if (instance == 0)
-	{
-		instance = new Settings();
-	}
+    static Settings instance;
 	return instance;
-}
-
-void Settings::releaseInstance()
-{
-	delete instance;
 }
 
 void Settings::readFromFile()
@@ -118,7 +113,7 @@ float* Settings::getFOVPTR()
 
 float Settings::getFOV()
 {
-	return m_FOV;
+	return 90; /// GET FOV m_FOV;
 }
 
 void Settings::setFOV(float FOV)

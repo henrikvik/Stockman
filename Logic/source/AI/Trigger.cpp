@@ -1,14 +1,26 @@
 #include <AI/Trigger.h>
 using namespace Logic;
 
-Trigger::Trigger(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
-: Entity(body, halfExtent, modelID)
+Trigger::Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
+: Entity(body, halfExtent)
 {
 	m_maxCooldown = cooldown;
 	m_cooldown = -1;
 	m_active = true;
 	m_reusable = reusable;
 	m_remove = false;
+
+    // Setting up Animation information
+    animatedRenderInfo.model = modelID;
+//    animatedRenderInfo.animationName = "Rotation";
+//    animatedRenderInfo.animationProgress = 0;
+    animatedRenderInfo.transform = getTransformMatrix();
+    
+    // Setting up Light information
+    light.position = DirectX::SimpleMath::Vector3(body->getWorldTransform().getOrigin());
+    light.color = DirectX::SimpleMath::Vector4(1.f, 1.f, 1.f, 1.f);
+    light.range = 1.f;
+    light.intensity = 1.f;
 }
 
 Trigger::~Trigger() { }
@@ -18,7 +30,6 @@ void Trigger::addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades
 {
 	for (StatusManager::UPGRADE_ID uID : upgrades)
 		this->getStatusManager().addUpgrade(uID);
-
 }
 
 // Adds a vector of effects for this trigger
@@ -37,6 +48,10 @@ void Trigger::affect(int stacks, Effect const & effect, float deltaTime)
 // Checks if the trigger is non-active, if so, update the cooldown
 void Trigger::updateSpecific(float deltaTime)
 {
+    // Update trigger animation
+//    animatedRenderInfo.animationProgress += deltaTime;
+
+    // Update resuability
 	if (!m_active)
 	{
 		m_cooldown -= deltaTime;
@@ -113,4 +128,10 @@ void Trigger::setIsReusable(bool reusable)
 void Trigger::setCooldown(float cooldown) 
 {
 	m_cooldown = cooldown;
+}
+
+void Trigger::render() const
+{
+    RenderQueue::get().queue(&animatedRenderInfo);
+    RenderQueue::get().queue(&light);
 }

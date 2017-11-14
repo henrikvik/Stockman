@@ -3,8 +3,9 @@
 #include <Windows.h>
 #include <Camera.h>
 #include <Renderer.h>
-#include <Game.h>
-#include "Keyboard.h"
+#include <StateMachine/StateMachine.h>
+#include <Keyboard.h>
+#include <Mouse.h>
 
 class Engine
 {
@@ -14,7 +15,7 @@ public:
 
 	int run();
 private:
-	Logic::Game game;
+	Logic::StateMachine* game;
 	HWND window;
 	int mWidth;
 	int mHeight;

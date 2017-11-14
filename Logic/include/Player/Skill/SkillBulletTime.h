@@ -42,6 +42,7 @@ namespace Logic
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)> SpawnProjectile;
 
+        SpecialEffectRenderInfo renderInfo;
 	public:
 		SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData);
         ~SkillBulletTime();
@@ -52,7 +53,8 @@ namespace Logic
 		void onRelease();
 
 		void onUpdate(float deltaTime);
-		void render(Graphics::Renderer& renderer);
+		virtual void render() const override;
+
 	};
 }
 #endif

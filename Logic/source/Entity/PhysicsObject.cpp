@@ -1,11 +1,12 @@
 #include "../../include/Entity/PhysicsObject.h"
 #include <Physics/Physics.h>
+#include <Projectile\Projectile.h>
 #include <Player\Player.h>
+#include <Engine\newd.h>
 
 using namespace Logic;
 
-PhysicsObject::PhysicsObject(btRigidBody* body, btVector3 halfExtent, Graphics::ModelID modelID)
-	: Object(modelID)
+PhysicsObject::PhysicsObject(btRigidBody* body, btVector3 halfExtent)
 {
 	if (body)
 	{
@@ -18,9 +19,6 @@ PhysicsObject::PhysicsObject(btRigidBody* body, btVector3 halfExtent, Graphics::
 
 		// Saving ptr to transform
 		m_transform = &m_body->getWorldTransform();
-
-		// Get the new transformation from bulletphysics and putting in graphics (for things that doesn't use the update loop things)
-		setWorldTranslation(getTransformMatrix());
 	}
 }
 
@@ -78,7 +76,6 @@ void PhysicsObject::updatePhysics(float deltaTime)
 	}
 
 	// Get the new transformation from bulletphysics and putting in graphics
-	setWorldTranslation(getTransformMatrix());
 }
 
 void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, Physics &physics)
@@ -87,32 +84,32 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, Phy
 	bool hit = false;
 	if (!m_weakPoints.empty())
 	{
-		for (int i = 0; i < m_weakPoints.size(); i++)
-		{
-			Weakpoint weakPoint = m_weakPoints[i];
-
-            FunContactResult res(
-                [&](btBroadphaseProxy* proxy) -> bool {
-                return true;
-            },
-                [&](btManifoldPoint& cp,
-                    const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-                    const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+        Projectile* projectile = dynamic_cast<Projectile*>(&other);
+        // Check if other == projectile and not melee
+        if (projectile && projectile->getProjectileData().type != ProjectileTypeMelee)
+        {
+            for (int i = 0; i < m_weakPoints.size(); i++)   
             {
-                if (abs(cp.getDistance()) < 0.05f)
-                {
-                    onCollision(other, contactPoint, weakPoint.multiplier);
-                    hit = true;
-                }
-                return 0;
-            });
+                Weakpoint weakPoint = m_weakPoints[i];
 
-            // Special case because player doesn't have a rigidbody
-            if(Player* player = dynamic_cast<Player*>(&other))
-                physics.contactPairTest(weakPoint.body, player->getGhostObject(), res);
-            else
+                FunContactResult res(
+                    [&](btBroadphaseProxy* proxy) -> bool {
+                    return true;
+                },
+                    [&](btManifoldPoint& cp,
+                        const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                        const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+                {
+                    if (cp.getDistance() < 0.05f)
+                    {
+                        onCollision(other, contactPoint, weakPoint.multiplier);
+                        hit = true;
+                    }
+                    return 0;
+                });
                 physics.contactPairTest(weakPoint.body, other.getRigidBody(), res);
-		}
+            }
+        }
 	}
 
 	if (!hit)
@@ -152,18 +149,13 @@ DirectX::SimpleMath::Vector3 PhysicsObject::getScale() const
 DirectX::SimpleMath::Matrix PhysicsObject::getTransformMatrix() const
 {
 	// Making memory for a matrix
-	float* m = new float[4 * 16];
+	float* m = newd float[4 * 16];
 
 	// Getting this entity's matrix
 	m_transform->getOpenGLMatrix((btScalar*)(m));
 
 	// Translating to DirectX Math and assigning the variables
 	DirectX::SimpleMath::Matrix transformMatrix(m);
-	// transformMatrix -= DirectX::SimpleMath::Matrix::CreateTranslation({ 0, static_cast<float> (m_halfextent.getY()), 0 });
-
-    // KILL ME NOW
-    if (getModelID() == 10)
-        transformMatrix._42 += 3.0;
 
 	//Find the scaling matrix
 	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);

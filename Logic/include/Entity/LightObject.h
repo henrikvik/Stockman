@@ -1,23 +1,27 @@
 #ifndef LIGHTOBJECT_H
 #define LIGHTOBJECT_H
 
-#include <Graphics\include\Structs.h>
+#include <Graphics\include\RenderQueue.h>
+
 #include <Misc\MapStructs.h>
 
 namespace Graphics { class Renderer; }
 namespace Logic
 {
-    class LightObject : public Graphics::Light
+    class LightObject
     {
     public:
         LightObject(FrameLight& frameLight);
         ~LightObject();
 
-        void renderD(Graphics::Renderer& renderer);
-        void render(Graphics::Renderer& renderer);
+        void renderD();
+        void render() const;
 
+
+        operator LightRenderInfo*() { return &renderInfo; }
     private:
-        Graphics::RenderDebugInfo renderDebug;
+        DebugRenderInfo debugRenderInfo;
+        LightRenderInfo renderInfo;
     };
 }
 

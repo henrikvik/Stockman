@@ -1,5 +1,5 @@
 #pragma once
-#include "Resources\Shader.h"
+#include "Utility\Shader.h"
 #include <Engine\Constants.h>
 #include "Utility\ShaderResource.h"
 #include <CommonStates.h>
@@ -28,8 +28,6 @@ namespace Graphics
         ID3D11ShaderResourceView * buttonTexture[10];
         ID3D11Buffer * buttonQuad;
         ID3D11Buffer * menuQuad;
-
-        DirectX::CommonStates * states;
 
         Shader shader;
         MenuInfo active;

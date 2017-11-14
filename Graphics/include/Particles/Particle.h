@@ -96,6 +96,7 @@ struct ParticleEffect {
     uint32_t m_Count;
     float    m_Time;
     float    m_Age;
+    bool     m_Loop;
     std::vector<ParticleEffectEntry> m_Entries;
 };
 

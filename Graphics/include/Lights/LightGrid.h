@@ -6,11 +6,13 @@
 #include "../Camera.h"
 #include "../ThrowIfFailed.h"
 #include "../Structs.h"
-#include "../Resources/ResourceManager.h"
-#include "../Resources/Shader.h"
+//#include "../Resources/ResourceManager.h"
+#include "../Utility/Shader.h"
 #include "../Utility/StructuredBuffer.h"
 
 #define BLOCK_SIZE 16
+
+#define INDEX_LIST_SIZE ((int)ceil(WIN_WIDTH / (float)BLOCK_SIZE) * (int)ceil(WIN_HEIGHT / (float)BLOCK_SIZE) * AVG_TILE_LIGHTS)
 
 namespace Graphics {
 
@@ -32,27 +34,28 @@ namespace Graphics {
 		LightGrid();
 		virtual ~LightGrid();
 
-		void initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
-		void cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
-
-		void updateLights(ID3D11DeviceContext * context, Camera * camera, std::vector<Light> lights);
+		void initialize();
+		void cull(
+            ID3D11Buffer * cameraBuffer, 
+            ID3D11ShaderResourceView *depth, 
+            ID3D11ShaderResourceView * lights, 
+            ID3D11UnorderedAccessView * lightOpaqueGrid,
+            ID3D11UnorderedAccessView * lightOpaqueIndexList
+        ) const;
 
 		StructuredBuffer<uint32_t> *getOpaqueIndexCounter() const { return m_OpaqueIndexCounter; }
 		StructuredBuffer<uint32_t> *getTransparentIndexCounter() const { return m_TransparentIndexCounter; }
 
-		StructuredBuffer<uint32_t> *getOpaqueIndexList() const { return m_OpaqueIndexList; }
 		StructuredBuffer<uint32_t> *getTransparentIndexList() const { return m_TransparentIndexList; }
 
 		StructuredBuffer<Frustum> *getFrustums() const { return m_Frustums; }
-		StructuredBuffer<Light> *getLights() const { return m_Lights; }
 
 		// TEMP:
-		ID3D11ShaderResourceView *getOpaqueLightGridSRV() const { return m_OpaqueLightGridSRV; }
 		ID3D11ShaderResourceView *getTransparentLightGridSRV() const { return m_TransparentLightGridSRV; }
 		ID3D11ShaderResourceView *getDebugSRV() const { return m_DebugSRV; }
 	private:
 		void generateFrustumsCPU(Camera *camera, ID3D11Device *device);
-		void generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders);
+		void generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt);
 
 		DispatchParams m_Params;
 		ID3D11Buffer  *m_ParamsBuffer;
@@ -61,17 +64,13 @@ namespace Graphics {
 		StructuredBuffer<uint32_t> *m_OpaqueIndexCounter;
 		StructuredBuffer<uint32_t> *m_TransparentIndexCounter;
 
-		StructuredBuffer<uint32_t> *m_OpaqueIndexList;
 		StructuredBuffer<uint32_t> *m_TransparentIndexList;
 
 		StructuredBuffer<Frustum>  *m_Frustums;
-		StructuredBuffer<Light>    *m_Lights;
 
 		ID3D11UnorderedAccessView *m_DebugUAV;
 		ID3D11ShaderResourceView  *m_DebugSRV;
 
-		ID3D11UnorderedAccessView *m_OpaqueLightGridUAV;
-		ID3D11ShaderResourceView  *m_OpaqueLightGridSRV;
 		ID3D11UnorderedAccessView *m_TransparentLightGridUAV;
 		ID3D11ShaderResourceView  *m_TransparentLightGridSRV;
 

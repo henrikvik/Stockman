@@ -12,8 +12,7 @@
 
 #pragma endregion
 
-#include <d3d11.h>
-#include <SimpleMath.h>
+#include <Graphics\include\RenderQueue.h>
 #include <btBulletCollisionCommon.h>
 #include <vector>
 
@@ -50,6 +49,7 @@ namespace Logic
 
         SpawnProjectile spawnProjectile;
 
+        
 	public:
 		Weapon();
 		Weapon(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo);
@@ -64,7 +64,7 @@ namespace Logic
 		ProjectileData* getProjectileData();
 		float getAttackTimer();
         int getDelayTime();
-	};
+    };
 }
 
 #endif
