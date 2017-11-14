@@ -4,7 +4,7 @@ using namespace Logic;
 
 const int EnemySoarer::HEALTH = 400, EnemySoarer::DAMAGE = 1;
 const float EnemySoarer::SPEED = 15.f, 
-            EnemySoarer::AB1_SPEED = 20.f, EnemySoarer::AB2_SPEED = 15.f, AB2_SPEED_Y = 4.f;
+            EnemySoarer::AB1_SPEED = 20.f, EnemySoarer::AB2_SPEED = 15.f, AB2_SPEED_Y = 2.5f;
 
 EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::StaticSummon, body, halfExtent,
@@ -28,27 +28,19 @@ void EnemySoarer::createAbilities()
 {
     AbilityData data;
     data.cooldown = 12000.f;
-    data.duration = 75000.f;
+    data.duration = 15000.f;
     data.randomChanche = 0;
 
     // ab 2
     ab2 = Ability(data, [&](Player &player, Ability &ab) -> void {
-        // ontick
+        // ontick0
         player.getCharController()->warp(getPositionBT() - btVector3{0, 1, 0} * btScalar(5.f));
         getRigidBody()->setLinearVelocity(dir * btScalar(ab2Speed) + btVector3{ 0, 1, 0 } * btScalar(AB2_SPEED));
 
-        /*
         if (ab.getCurrentDuration() <= 0.f)
         {
-            player.takeDamage(getBaseDamage());
-            player.getCharController()->applyImpulse(
-                btVector3(
-                    RandomGenerator::singleton().getRandomFloat(0, 1.f),
-                    0.f,
-                    RandomGenerator::singleton().getRandomFloat(0, 1.f)
-                ) * btScalar(0.1f)
-            );
-        } */
+            player.resetTargeted();
+        } 
     }, [&](Player &player, Ability &ab) -> void {
         // onuse
         dir = btVector3(RandomGenerator::singleton().getRandomFloat(0.1f, 0.2f),
@@ -56,6 +48,7 @@ void EnemySoarer::createAbilities()
         dir.normalize();
 
         ab2Speed = AB2_SPEED;
+        player.setTargetedBy(this);
     });
 
     // ab 1
@@ -75,7 +68,8 @@ void EnemySoarer::onCollision(PhysicsObject &other, btVector3 contactPoint, floa
 {
     if (Player *player = dynamic_cast<Player*>(&other))
     {
-        ab2.useAbility(*player);
+        if (!player->isTargeted())
+            ab2.useAbility(*player);
     }
     else if (Projectile *pj = dynamic_cast<Projectile*> (&other))
     {
@@ -97,14 +91,14 @@ void EnemySoarer::updateSpecific(Player &player, float deltaTime)
         ab1.update(deltaTime, player);
         btVector3 to = player.getPositionBT() - getPositionBT();
         to.setY(0);
-        if (to.length() > 25.f)
+        if (to.length() > 25.f && !player.isTargeted())
             getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
         else
             getRigidBody()->setGravity(gravity);
     }
     else 
     {
-        ab2Speed += 100.f / deltaTime;
+        ab2Speed += deltaTime * 0.001f;
         ab2.update(deltaTime, player);
     }
 }
