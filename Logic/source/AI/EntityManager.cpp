@@ -139,6 +139,18 @@ void EntityManager::loadDebugCmds()
         PATH_UPDATE_DIV = 1;
         return "TESTING ACTIVED (QUIT TO TURN OFF)";
     });
+    DebugWindow::getInstance()->registerCommand("AI_SPAWN_ENEMY", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            RandomGenerator &generator = RandomGenerator::singleton();
+            btVector3 pos = pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
+                generator.getRandomFloat(-85, 85) };
+            SpawnEnemy(static_cast<EnemyType> (stoi(para[0])), pos, {});
+            return "Enemy spawned";
+        }
+        catch (std::exception e) {
+            return "DOTHRAKI IN THE OPEN FIELD, NED";
+        }
+    });
 }
 
 void EntityManager::deallocateData(bool forceDestroy)
