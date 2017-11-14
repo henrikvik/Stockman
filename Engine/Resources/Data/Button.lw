@@ -349,3 +349,17 @@
 	"width" : 170.666666667f;
 	"function" : "buttonClick10";
 }
+{
+	"buttonName" : "Continue";
+	"texture" : 3;
+	"xPos" : 450.f;
+	"yPos" : 550.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.90f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 1.0f;
+	"activeOffset" : 0.05f;
+	"height" : 200.f;
+	"width" : 400.f;
+	"function" : "buttonClick10";
+}

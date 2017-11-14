@@ -17,7 +17,7 @@ const std::map<int, Resources::Textures::Files> LookUp =
     { 0, Resources::Textures::mainMenuText },
     { 1, Resources::Textures::gameOverMenuButtons },
     { 2, Resources::Textures::SettingsMenuButtons },
-    { 3, Resources::Textures::Color_pick_icons },
+    { 3, Resources::Textures::Skillpicksheet },
     { 4, Resources::Textures::Backbutton }
 };
 
@@ -66,7 +66,7 @@ iMenuSkillPick * iMenuFactory::buildMenuSkill()
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
     menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
     menu->addButton(buildButton("SkillPickButton3", std::bind(&iMenuSkillPick::pickThree, menu)));
-    menu->addButton(buildButton("HighscoreStartMenu", ButtonFunction::confirmSkillPicks));
+    menu->addButton(buildButton("Continue", ButtonFunction::confirmSkillPicks));
 
     return menu;
 }
