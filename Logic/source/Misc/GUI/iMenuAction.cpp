@@ -5,6 +5,7 @@
 #include <StatePlaying.h>
 #include <Misc\GUI\iMenuMachine.h>
 #include <Misc\GUI\iMenuSkillPick.h>
+#include <Engine\Typing.h>
 #include <Engine\Settings.h>
 #include <State.h>
 
@@ -50,6 +51,8 @@ void ButtonFunction::quitGame()
 
 void ButtonFunction::writing()
 {
+    Typing* theChar = Typing::getInstance(); //might need to be deleted
+    char trashThis = theChar->getSymbol();
 }
 
 void ButtonFunction::chooseUpgrade1()
@@ -97,40 +100,59 @@ void ButtonFunction::confirmSkillPicks()
 
 void ButtonFunction::plusSense()
 {
+    Settings settings = Settings::getInstance();
+    settings.setFOV(settings.getFOV() + 0.01f);
 }
 
 void ButtonFunction::minusSense()
 {
+    Settings settings = Settings::getInstance();
+    settings.setFOV(settings.getFOV() - 0.01f);
 }
 
 void ButtonFunction::plusMaster()
 {
+    Settings settings = Settings::getInstance();
+    settings.setMasterSound(settings.getMasterSound() + 0.01f);
 }
 
 void ButtonFunction::minusMaster()
 {
+    Settings settings = Settings::getInstance();
+    settings.setMasterSound(settings.getMasterSound() - 0.01f);
 }
 
 void ButtonFunction::plusSFX()
 {
+    Settings settings = Settings::getInstance();
+    settings.setSFX(settings.getSFX() + 0.05f);
 }
 
 void ButtonFunction::minusSFX()
 {
+    Settings settings = Settings::getInstance();
+    settings.setSFX(settings.getSFX() - 0.05f);
 }
 
 void ButtonFunction::muteUnmute()
 {
+
 }
 
 void ButtonFunction::plusFOV()
 {
+    Settings settings = Settings::getInstance();
+    settings.setFOV(settings.getFOV() + 1);
 }
 
 void ButtonFunction::minusFOV()
 {
+    Settings settings = Settings::getInstance();
+    settings.setFOV(settings.getFOV() - 1);
 }
 
 void ButtonFunction::windowed()
 {
+    Settings settings = Settings::getInstance();
+    settings.setWindowed(!settings.getWindowed());
 }

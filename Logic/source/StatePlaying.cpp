@@ -199,12 +199,12 @@ void StatePlaying::render() const
     m_projectileManager->render();
     PROFILE_END();
 
-    PROFILE_BEGIN("Render Menu");
-    m_menu->render();
-    PROFILE_END();
-
     PROFILE_BEGIN("Render HUD");
     m_hudManager.render();
+    PROFILE_END();
+
+    PROFILE_BEGIN("Render Menu");
+    m_menu->render();
     PROFILE_END();
 
     m_fpsRenderer.render();

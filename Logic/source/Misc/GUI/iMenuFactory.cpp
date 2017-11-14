@@ -62,6 +62,7 @@ iMenuSkillPick * iMenuFactory::buildMenuSkill()
     iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
     iMenu::ButtonData btn;
 
+    menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
     menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
     menu->addButton(buildButton("SkillPickButton3", std::bind(&iMenuSkillPick::pickThree, menu)));
