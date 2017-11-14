@@ -53,10 +53,10 @@ void WeaponManager::clear()
 
 void WeaponManager::reset()
 {
- //   // Reset ammo
-	//for (int i = 0; i < m_weaponLoadouts.size(); i++)
- //       m_weaponLoadouts[i]->ammoContainer->reset();
-    clear();
+    // Reset ammo
+	for (int i = 0; i < m_weaponLoadouts.size(); i++)
+        m_weaponLoadouts[i]->ammoContainer->reset();
+    
 
     // Reset current weapon
     m_currentWeapon = m_weaponLoadouts[0];
@@ -83,7 +83,7 @@ void WeaponManager::update(float deltaTime)
 	}
 	if (m_reloadState == ReloadingWeapon::DONE)
 	{
-		m_currentWeapon->ammoContainer->fillMag();
+		m_currentWeapon->ammoContainer->fillMag(m_Upgrades.magSizeModifier);
 		m_reloadState = ReloadingWeapon::IDLE;
 		printf("adding ammo\n");
 		printf("ammo: %d\n", m_currentWeapon->ammoContainer->getAmmoInfo().ammo);
@@ -120,17 +120,36 @@ void Logic::WeaponManager::affect(Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
 
+
+    if (flags & Effect::EFFECT_MODIFY_AMMO)
+    {
+        WeaponLoadout* wp = nullptr;
+        if (effect.getSpecifics()->ammoType == 0)
+            wp = getWeaponLoadout(0);
+        else if (effect.getSpecifics()->ammoType == 1)
+            wp = getWeaponLoadout(1);
+
+        if (wp)
+        {
+            int magSize = wp->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier;
+            int currentAmmo = wp->ammoContainer->getAmmoInfo().ammo;
+            if ((currentAmmo + magSize) >= (wp->ammoContainer->getAmmoInfo().ammoCap + m_Upgrades.ammoCapModifier))
+                wp->ammoContainer->setAmmo(wp->ammoContainer->getAmmoInfo().ammoCap + m_Upgrades.ammoCapModifier);
+            else
+                wp->ammoContainer->setAmmo(currentAmmo + magSize + m_Upgrades.magSizeModifier);
+        }
+    }
     if(flags & Effect::EFFECT_INCREASE_AMMOCAP)
     {
-        m_Upgrades.ammoCapModifier = effect.getModifiers()->modifyAmmoCap;
+        m_Upgrades.ammoCapModifier += effect.getModifiers()->modifyAmmoCap;
     }
     if (flags & Effect::EFFECT_INCREASE_MAGSIZE)
     {
-        m_Upgrades.magSizeModifier = effect.getModifiers()->modifyMagCap;
+        m_Upgrades.magSizeModifier += effect.getModifiers()->modifyMagCap;
     }
     if (flags & Effect::EFFECT_INCREASE_FIRERATE)
     {
-        m_Upgrades.fireRateModifier = effect.getModifiers()->modifyFirerate;
+        m_Upgrades.fireRateModifier *= 1 - effect.getModifiers()->modifyFirerate;
     }
 
 }
@@ -215,7 +234,7 @@ void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch, Entit
     m_currentWeapon->primary->use(position, yaw, pitch, shooter);
     m_currentWeapon->ammoContainer->removePrimaryAmmo();
 
-    m_attackRateTimer = m_currentWeapon->primary->getAttackTimer();
+    m_attackRateTimer = m_currentWeapon->primary->getAttackTimer(m_Upgrades.fireRateModifier);
 }
 
 void WeaponManager::tryUseSecondary(btVector3 position, float yaw, float pitch, Player& shooter)
@@ -246,12 +265,12 @@ void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Ent
     m_currentWeapon->secondary->use(position, yaw, pitch, shooter);
     m_currentWeapon->ammoContainer->removeSecondaryAmmo();
 
-    m_attackRateTimer = m_currentWeapon->secondary->getAttackTimer();
+    m_attackRateTimer = m_currentWeapon->secondary->getAttackTimer(m_Upgrades.fireRateModifier);
 }
 
 void WeaponManager::reloadWeapon()
 {
-	if (m_reloadTimer <= 0.f && m_currentWeapon->ammoContainer->getAmmoInfo().ammo > 0 && m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo < m_currentWeapon->ammoContainer->getAmmoInfo().magSize)
+	if (m_reloadTimer <= 0.f && m_currentWeapon->ammoContainer->getAmmoInfo().ammo > 0 && m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo < (m_currentWeapon->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier))
 	{
         m_reloadTimer = m_currentWeapon->ammoContainer->getAmmoInfo().reloadTime;
 		m_reloadState = ReloadingWeapon::ACTIVE;

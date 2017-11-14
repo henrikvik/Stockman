@@ -124,6 +124,7 @@ void Enemy::damage(int damage)
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
 {
 	auto flags = effect.getStandards()->flags;
+    m_moveSpeedMod = 1.0f;
 
     if (flags & Effect::EFFECT_MODIFY_HP)
         m_health += static_cast<int> (effect.getModifiers()->modifyHP);
@@ -132,13 +133,13 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 	if (flags & Effect::EFFECT_BULLET_TIME)
 		m_bulletTimeMod = std::pow(effect.getSpecifics()->isBulletTime, stacks);
     if (flags & Effect::EFFECT_IS_FROZEN)
-        m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
     if (flags & Effect::EFFECT_IS_STUNNED)
         m_stunned = true;
     if (flags & Effect::EFFECT_MOVE_FASTER)
-       m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+       m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
     if (flags & Effect::EFFECT_MOVE_SLOWER)
-       m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+       m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
 }
 
 void Enemy::onEffectEnd(int stacks, Effect const & effect)

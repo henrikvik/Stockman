@@ -84,7 +84,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
 	m_moveDir.setZero();
 	m_moveSpeed = 0.f;
-    m_moveSpeedMod = 1.0f;
+    m_moveSpeedMod = 0.0f;
     m_permanentSpeedMod = 1.0f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_deacceleration = m_acceleration * 0.5f;
@@ -181,13 +181,13 @@ void Player::registerDebugCmds()
     {
         return "x: " + std::to_string((double) getPosition().x) + ", y: " + std::to_string((double) getPosition().y) + ", z: " + std::to_string((double) getPosition().z);
     });
-    win->registerCommand("BOOST_ALL_DAMAGE", [&](std::vector<std::string> &args)->std::string
+    win->registerCommand("LOG_INCREASE_ALL_DAMAGE", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addUpgrade(StatusManager::P1_DAMAGE);
 
         return "All weapons do 1 extra damage";
     });
-    win->registerCommand("BOOST_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
+    win->registerCommand("LOG_INCREASE_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addStatus(StatusManager::P20_PERC_MOVEMENTSPEED, 1);
 
@@ -198,6 +198,18 @@ void Player::registerDebugCmds()
         getStatusManager().addStatus(StatusManager::M20_PERC_CD, 1);
 
         return "Player skills take 20% less time to recover";
+    });
+    win->registerCommand("INCREASE_MAG_SIZE", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P40_MAGSIZE, 1);
+
+        return "Mag clip holds 40 more bullets";
+    });
+    win->registerCommand("INCREASE_AMMO_CAP", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_AMMOCAP, 1);
+
+        return "You have bigger ammo bags now, it can hold 20 ammo more";
     });
 }
 
@@ -254,7 +266,8 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 {
 	long long flags = effect.getStandards()->flags;
     
-
+    m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
+    m_moveSpeedMod = 1.0f;
     if (flags & Effect::EFFECT_BOUNCE)
     {
         m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * 3, 0.f });
@@ -264,49 +277,30 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     {
         m_hp += static_cast<int> (effect.getModifiers()->modifyHP);
     }
-	if (flags & Effect::EFFECT_MODIFY_AMMO)
-	{
-        WeaponManager::WeaponLoadout* wp = nullptr;
-        if(effect.getSpecifics()->ammoType == 0)
-		    wp = m_weaponManager->getWeaponLoadout(0);
-        else if(effect.getSpecifics()->ammoType == 1)
-            wp = m_weaponManager->getWeaponLoadout(1);
-
-        if (wp)
-        {
-            int magSize = wp->ammoContainer->getAmmoInfo().magSize;
-            int currentAmmo = wp->ammoContainer->getAmmoInfo().ammo;
-            if ((currentAmmo + magSize) > wp->ammoContainer->getAmmoInfo().ammoCap)
-                wp->ammoContainer->setAmmo(wp->ammoContainer->getAmmoInfo().ammoCap);
-            else
-                wp->ammoContainer->setAmmo(currentAmmo + magSize);
-        }
-	}
     if (flags & Effect::EFFECT_IS_FROZEN)
     {
-        m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveMaxSpeed *= m_moveSpeedMod;
     }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
-        m_moveSpeedMod = effect.getModifiers()->modifyMovementSpeed;
+        m_moveSpeedMod *= effect.getModifiers()->modifyMovementSpeed;
         m_stunned = true;
     }
     if (flags & Effect::EFFECT_MOVE_FASTER)
     {
-        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
+        m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+        m_moveMaxSpeed *= m_moveSpeedMod;
     }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
     {
-        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
+        m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+        m_moveMaxSpeed *= m_moveSpeedMod;
     }
 
     if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
     {
         m_permanentSpeedMod += effect.getModifiers()->modifyMovementSpeed;
-        m_moveMaxSpeed += PLAYER_MOVEMENT_MAX_SPEED * effect.getModifiers()->modifyMovementSpeed;
     }
     if (flags & Effect::EFFECT_IS_SKILL)
     {
@@ -331,22 +325,24 @@ void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
     }
     if (flags & Effect::EFFECT_IS_FROZEN)
     {
-        m_moveSpeedMod = 1;
+        m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
     }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
-        m_moveSpeedMod = 1;
+        m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
         m_stunned = false;
     }
 
     if (flags & Effect::EFFECT_MOVE_FASTER)
     {
-        m_moveSpeedMod = 1;
+        m_moveSpeedMod = 1.0f;
         m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
     }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
     {
-        m_moveSpeedMod = 1;
+        m_moveSpeedMod = 1.0f;
         m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
     }
 }

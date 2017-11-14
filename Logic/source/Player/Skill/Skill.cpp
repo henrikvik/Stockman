@@ -61,7 +61,7 @@ void Skill::affect(Effect const & effect)
     long long flags = effect.getStandards()->flags;
     if (flags & Effect::EFFECT_DECREASE_CD)
     {
-        m_cooldownModifer -= m_cooldownModifer * effect.getModifiers()->modifySkillCDDecrease;
+        m_cooldownModifer *= 1 - effect.getModifiers()->modifySkillCDDecrease;
         if (m_cooldownModifer < 0)
         {
             m_cooldownModifer = 0;

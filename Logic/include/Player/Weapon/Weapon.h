@@ -62,7 +62,7 @@ namespace Logic
 
         SpawnProjectile getSpawnProjectileFunc();
 		ProjectileData* getProjectileData();
-		float getAttackTimer();
+		float getAttackTimer(float modifier);
         int getDelayTime();
     };
 }

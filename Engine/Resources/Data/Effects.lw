@@ -39,7 +39,7 @@
     "mSkillCDDecrease" : 0f;
 }
 { // AMMO_PICK_UP_PRIMARY
-	"flags": 512; // 0x200
+	"flags": 131584; // 0x200 + 0x20000
 	"duration": 0f;
 	"modifiers": 0;
 	"specifics": 1;
@@ -49,7 +49,7 @@
 	"sAmmoType": 0f;
 }
 { // AMMO_PICK_UP_SECONDARY
-	"flags": 512; // 0x200
+	"flags": 131584; // 0x200 + 0x20000
 	"duration": 0f;
 	"modifiers": 0;
 	"specifics": 1;
@@ -224,4 +224,19 @@
 	"duration": 1000f;
 	"modifiers": 0;
 	"specifics": 0;
+}
+{ // INCREASE RATE OF FIRE 
+	"flags": 134217728; // 0x8000000
+	"duration" : 0f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0.2f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 }
