@@ -49,16 +49,18 @@ void StatePlayingOverlay::update(float deltaTime)
                 selectedSkills->first = -1;
                 selectedSkills->second = -1;
 
+                DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_RELATIVE);
                 m_menu->setStateToBe(gameStateGame); //change to gameStateGame
             }
         }
     }
     break;
 
-    default:
-        DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_RELATIVE);
+    default: 
+        DirectX::Mouse::Get().SetMode(DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftAlt) ? DirectX::Mouse::Mode::MODE_ABSOLUTE : DirectX::Mouse::Mode::MODE_RELATIVE);
         break;
     }
+
 }
 
 void StatePlayingOverlay::render() const
