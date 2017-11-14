@@ -13,7 +13,7 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
     setBehavior(MELEE);
     createAbilities();
 
-    getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
+    gravity = getRigidBody()->getGravity();
 
     addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
         getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 1.f);
@@ -91,7 +91,11 @@ void EnemySoarer::updateSpecific(Player &player, float deltaTime)
         ab1.update(deltaTime, player);
         btVector3 to = player.getPositionBT() - getPositionBT();
         to.setY(0);
-        getRigidBody()->setGravity(gravity);
+
+        if (to.length() > 25.f && !player.isTargeted())
+            getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
+        else
+            getRigidBody()->setGravity(gravity);
     }
     else 
     {
