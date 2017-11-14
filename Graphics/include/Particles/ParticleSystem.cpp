@@ -41,6 +41,66 @@ std::wstring ConvertToWString(const std::string & s)
     return std::wstring(buf.data(), wn);
 }
 
+class ResourcesShaderInclude : public ID3DInclude
+{
+public:
+    ResourcesShaderInclude(const char* shaderDir) :
+        m_ShaderDir(shaderDir)
+    {
+    }
+
+    HRESULT __stdcall Open(
+        D3D_INCLUDE_TYPE IncludeType,
+        LPCSTR pFileName,
+        LPCVOID pParentData,
+        LPCVOID *ppData,
+        UINT *pBytes);
+    
+    HRESULT __stdcall Close(LPCVOID pData);
+
+private:
+    std::string m_ShaderDir;
+};
+
+HRESULT __stdcall ResourcesShaderInclude::Open(
+    D3D_INCLUDE_TYPE IncludeType,
+    LPCSTR pFileName,
+    LPCVOID pParentData,
+    LPCVOID *ppData,
+    UINT *pBytes)
+{
+    std::string finalPath = m_ShaderDir + "\\" + pFileName;
+
+    std::ifstream fileStream(finalPath);
+    int fileSize = 0;
+    fileStream.seekg(0, std::ios::end);
+    fileSize = fileStream.tellg();
+    fileStream.seekg(0, std::ios::beg);
+
+    if (fileSize)
+    {
+        char* buf = new char[fileSize];
+        fileStream.read(buf, fileSize);
+
+        *ppData = buf;
+        *pBytes = fileSize;
+    }
+    else
+    {
+        *ppData = nullptr;
+        *pBytes = 0;
+    }
+
+    return S_OK;
+}
+
+HRESULT __stdcall ResourcesShaderInclude::Close(LPCVOID pData)
+{
+    char* buf = (char*)pData;
+    delete[] buf;
+    return S_OK;
+}
+
 namespace Graphics {;
 
 ParticleSystem *FXSystem;
@@ -521,11 +581,13 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         ID3DBlob *blob = nullptr, *error = nullptr;
         std::wstring file = ConvertToWString(baseDir + path);
 
+        static ResourcesShaderInclude include("..\\Resources\\Shaders\\");
+
         // TODO: add ifdef for DEBUG compilation flag
         auto res = D3DCompileFromFile(
             file.c_str(),
             nullptr,
-            D3D_COMPILE_STANDARD_FILE_INCLUDE,
+            &include,
             "PS",
             "ps_5_0",
             D3DCOMPILE_DEBUG,
@@ -544,7 +606,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         res = D3DCompileFromFile(
             file.c_str(),
             nullptr,
-            D3D_COMPILE_STANDARD_FILE_INCLUDE,
+            &include,
             "PS_depth",
             "ps_5_0",
             D3DCOMPILE_DEBUG,
