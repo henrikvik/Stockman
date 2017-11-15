@@ -16,13 +16,13 @@ namespace Logic
         iMenuFactory();
         ~iMenuFactory();
 
-        iMenuIntro*  buildMenuIntro();
-        iMenu*  buildMenuStart();
-        iMenu*  buildMenuSettings();
-        iMenuSkillPick*  buildMenuSkill();
-        iMenu*  buildMenuCard();
-        iMenu*  buildMenuHighscore();
-        iMenu*  buildMenuGameover();
+        iMenuIntro*         buildMenuIntro();
+        iMenu*              buildMenuStart();
+        iMenu*              buildMenuSettings();
+        iMenuSkillPick*     buildMenuSkill();
+        iMenu*              buildMenuCard();
+        iMenu*              buildMenuHighscore();
+        iMenu*              buildMenuGameover();
 
     private:
         std::vector<FileLoader::LoadedStruct> buttonFile;
