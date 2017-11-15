@@ -12,7 +12,7 @@
 using namespace Logic;
 
 // Game starting static configurations
-const int Game::GAME_START::UNIQUE_CARDS            = 13;
+const int Game::GAME_START::UNIQUE_CARDS            = 5;
 const GameState Game::GAME_START::STATE             = gameStateMenuMain;
 const btVector3 Game::GAME_START::PLAYER_SCALE      = { 1.5f, 3.0f, 1.5f };
 const btVector3 Game::GAME_START::PLAYER_ROTATION   = { 0.0f, 0.0f, 0.0f };

@@ -85,6 +85,7 @@ namespace Logic
 		float m_moveSpeed;
         float m_moveSpeedMod;
         float m_permanentSpeedMod;
+        float m_jumpSpeedMod;
 		float m_acceleration;
 		float m_deacceleration;
 		float m_airAcceleration;

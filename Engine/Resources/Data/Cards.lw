@@ -12,10 +12,23 @@
 	"statusType" : 0;
 	"status0" : 8;
 }
-
 {
-	"cardName" : "Ammo";
-	"description" : "+ 10 Ammo clip size in selected weapon";
+	"cardName" : "Damage up";
+	"description" : "Increase all weapons damage";
+	"texture" : "b";
+
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+
+	"statusAmount" : 1;
+	"statusType" : 1;
+	"status0" : 1;
+}
+{
+	"cardName" : "Increase Ammo Cap";
+	"description" : "Increase the total ammo you can hold in your ammo pouch";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;
@@ -25,5 +38,75 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
-	"status0" : 0;
+	"status0" : 13;
+}
+{
+	"cardName" : "Increase Mag Size";
+	"description" : "Increase the total ammo you can hold in your weapon";
+	"texture" : "b";
+
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+
+	"statusAmount" : 1;
+	"statusType" : 0;
+	"status0" : 14;
+}
+{
+	"cardName" : "Increase Movement Speed";
+	"description" : "Increase the total ammo you can hold in your weapon";
+	"texture" : "b";
+
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+
+	"statusAmount" : 1;
+	"statusType" : 0;
+	"status0" : 15;
+}
+{
+	"cardName" : "Decrease Skill Cooldown";
+	"description" : "Decrease the total cooldown on all your current skills";
+	"texture" : "b";
+
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+
+	"statusAmount" : 1;
+	"statusType" : 0;
+	"status0" : 16;
+}
+{
+	"cardName" : "Increase Weapon fire-rate";
+	"description" : "Increase the speed of which you can shoot for all weapons";
+	"texture" : "b";
+
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+
+	"statusAmount" : 1;
+	"statusType" : 0;
+	"status0" : 18;
+}
+{
+	"cardName" : "Decrease Reload Time";
+	"description" : "Decrease the time spent to reload for all weapons";
+	"texture" : "b";
+
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+
+	"statusAmount" : 1;
+	"statusType" : 0;
+	"status0" : 19;
 }

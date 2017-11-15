@@ -84,8 +84,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
 	m_moveDir.setZero();
 	m_moveSpeed = 0.f;
-    m_moveSpeedMod = 0.0f;
+    m_moveSpeedMod = 1.0f;
     m_permanentSpeedMod = 1.0f;
+    m_jumpSpeedMod = 1.0f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_deacceleration = m_acceleration * 0.5f;
 	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
@@ -223,6 +224,12 @@ void Player::registerDebugCmds()
 
         return "You reload 20% faster";
     });
+    win->registerCommand("LOG_INCREASE_JUMP_HEIGHT", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_PERC_JUMP, 1);
+
+        return "You jump 20% higher";
+    });
 }
 
 void Player::clear()
@@ -289,11 +296,6 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     {
         m_hp += static_cast<int> (effect.getModifiers()->modifyHP);
     }
-    if (flags & Effect::EFFECT_IS_FROZEN)
-    {
-        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
-        m_moveMaxSpeed *= m_moveSpeedMod;
-    }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
         m_moveSpeedMod *= effect.getModifiers()->modifyMovementSpeed;
@@ -309,7 +311,11 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
         m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
         m_moveMaxSpeed *= m_moveSpeedMod;
     }
-
+    if (flags & Effect::EFFECT_IS_FROZEN)
+    {
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveMaxSpeed *= m_moveSpeedMod;
+    }
     if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
     {
         m_permanentSpeedMod += effect.getModifiers()->modifyMovementSpeed;
@@ -324,6 +330,10 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     if (flags & Effect::EFFECT_IS_WEAPON)
     {
         m_weaponManager->affect(effect);
+    }
+    if (flags & Effect::EFFECT_INCREASE_JUMPHEIGHT)
+    {
+        m_jumpSpeedMod += effect.getModifiers()->modifyMovementSpeed;
     }
 }
 
@@ -657,7 +667,7 @@ void Player::move(float deltaTime)
 	if (m_wishJump)
 	{
         getSoundSource()->playSFX(Sound::SFX::JUMP, 1.f, 0.1f);
-		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
+		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * m_jumpSpeedMod, 0.f });
 		m_wishJump = false;
 	}
 }
