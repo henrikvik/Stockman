@@ -31,7 +31,7 @@ struct FloatRect
 };
 
 template<typename T>
-struct InstanceCap { static constexpr size_t value = 300; };
+struct InstanceCap { static constexpr size_t value = 1000; };
 #define SET_INSTANCE_CAP(info, cap) template<> struct InstanceCap<info> { static constexpr size_t value = cap; };
 #define INSTANCE_CAP(info) InstanceCap<info>::value
 

@@ -21,10 +21,12 @@ namespace Resources
     {
         enum Files
         {
+            IslandScene,
             Scene
         };
         const std::map<Files, const char *> Paths =
         {
+            {IslandScene, R"(..\Resources\Maps\IslandScene.toml)"},
             {Scene, R"(..\Resources\Maps\Scene.toml)"}
         };
     }
@@ -38,6 +40,7 @@ namespace Resources
             Crossbow,
             CrossBowProjectile,
             Hammer,
+            Island,
             SkySphere,
             Staff,
             StaticSummon,
@@ -52,6 +55,7 @@ namespace Resources
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
             {CrossBowProjectile, R"(..\Resources\Models\CrossBowProjectile.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
+            {Island, R"(..\Resources\Models\Island.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},

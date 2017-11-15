@@ -49,8 +49,8 @@ void Map::init(Physics* physics, std::string path)
     m_drawDebug = false;
 
     // Loads map from file (currently only hardcoded)
-    loadMapFromFile(path);
-    loadMap(Resources::Maps::Scene);
+    //loadMapFromFile(path);
+    loadMap(Resources::Maps::IslandScene);
 }
 
 void Map::clear()
@@ -231,6 +231,32 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
     if (mapTrigger) pushInstances(mapTrigger, triggerInstances);
 
     // TODO USE THIS //    
+
+    for (auto & instance : staticInstances)
+    {
+        if (strcmp(instance.model.c_str(), "Island") == 0)
+        {
+            btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), {150, 1, 150}), 0.f);
+            rb->getWorldTransform().setRotation(instance.rotation);
+            m_hitboxes.push_back(new StaticObject(
+                Resources::Models::Island, 
+                rb,
+                instance.scale,
+                StaticObject::NavigationMeshFlags::NO_CULL
+            ));
+        }
+        else
+        {
+            btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), instance.scale), 0.f);
+            rb->getWorldTransform().setRotation(instance.rotation);
+            m_hitboxes.push_back(new StaticObject(
+                Resources::Models::UnitCube, 
+                rb,
+                instance.scale,
+                StaticObject::NavigationMeshFlags::NO_CULL
+            ));
+        }
+    }
 }
 
 // Adds a pointlight to the map
