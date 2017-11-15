@@ -51,6 +51,19 @@
 	"width" : 256.0f;
 }
 {
+	"buttonName" : "MenuBackGame";
+	"texture" : 5;
+	"xPos" : 90.0f;
+	"yPos" : 495.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.390f;
+	"xTexEnd" : 1.f;
+	"yTexEnd" : 0.505f;
+    "activeOffset" : 0.4905f;
+	"height" : 50.f;
+	"width" : 256.0f;
+}
+{
 	"buttonName" : "MenuSettingsStartMenu";
 	"texture" : 1;
 	"xPos" : 400.0f;

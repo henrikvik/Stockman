@@ -140,6 +140,8 @@ void StatePlaying::update(float deltaTime)
     PROFILE_END();
 
     ComboMachine::Get().Update(deltaTime);
+
+    // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
     {
         m_menu->queueMenu(iMenu::MenuGroup::Card);
@@ -205,7 +207,8 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    m_hudManager.render();
+    if (m_menu->getType() != iMenu::MenuGroup::Skill)
+        m_hudManager.render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render Menu");

@@ -14,11 +14,12 @@ iMenuFactory::~iMenuFactory() { }
 
 const std::map<int, Resources::Textures::Files> LookUp =
 {
-    { 0, Resources::Textures::Mainmenutext },
-    { 1, Resources::Textures::gameOverMenuButtons },
-    { 2, Resources::Textures::SettingsMenuButtons },
-    { 3, Resources::Textures::Skillpicksheet },
-    { 4, Resources::Textures::Backbutton }
+    { 0, Resources::Textures::Mainmenutext },               // - The four selections on the starting screen
+    { 1, Resources::Textures::gameOverMenuButtons },        // OLD - Remove later
+    { 2, Resources::Textures::SettingsMenuButtons },        // OLD - Remove later
+    { 3, Resources::Textures::Skillpicksheet },             // - Skill pick buttons, and continue button
+    { 4, Resources::Textures::Backbutton },                 // OLD - Remove later
+    { 5, Resources::Textures::Highscoretext }               // - Same as MainMenuText but with the "Back Button", that we want
 };
 
 iMenuIntro* iMenuFactory::buildMenuIntro()
@@ -51,10 +52,7 @@ iMenu * iMenuFactory::buildMenuSettings()
     iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::Settings, 1.f);
-    menu->addButton(buildButton("MenuStartGame", ButtonFunction::startGame));
-    menu->addButton(buildButton("MenuStartSettings", ButtonFunction::startSettings));
-    menu->addButton(buildButton("MenuStartHighscore", ButtonFunction::showHighscore));
-    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::startMainMenu));
+    menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
 
     //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
     //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
@@ -104,10 +102,7 @@ iMenu * iMenuFactory::buildMenuHighscore()
     iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::Highscore, 1.f);
-    menu->addButton(buildButton("MenuStartGame", ButtonFunction::startGame));
-    menu->addButton(buildButton("MenuStartSettings", ButtonFunction::startSettings));
-    menu->addButton(buildButton("MenuStartHighscore", ButtonFunction::showHighscore));
-    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::startMainMenu));
+    menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
     
     //menu->addButton(buildButton("HighscoreStartMenu", ButtonFunction::startMainMenu));
 

@@ -14,12 +14,11 @@ namespace Logic
         ~iMenuMachine();
 
         void queueMenu(iMenu::MenuGroup group);
-        void removeActiveMenu();
         void update(float deltaTime);
         void render() const;
 
-        iMenu* getActiveMenu() { return m_activeMenu; }
-        bool wantsToSwap();
+        iMenu* getActiveMenu()              { return m_activeMenu;      }
+        iMenu::MenuGroup getType() const    { return m_currentMenuType; }
 
     private:
         iMenu::MenuGroup m_queuedMenuType;
@@ -27,6 +26,9 @@ namespace Logic
         iMenuFactory* m_factory;
         iMenu* m_activeMenu;
 
+        // For internal use only
+        void removeActiveMenu();
+        bool wantsToSwap();
         void swapMenu();
     };
 }
