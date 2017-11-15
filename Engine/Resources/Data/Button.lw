@@ -332,8 +332,8 @@
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.72f;
 	"xTexEnd" : 1.0f;
-	"yTexEnd" : 0.86f;
+	"yTexEnd" : 0.82f;
 	"activeOffset" : 0.15f;
-	"height" : 200.f;
+	"height" : 100.f;
 	"width" : 400.f;
 }
