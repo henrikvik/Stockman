@@ -146,9 +146,9 @@ void StatePlaying::update(float deltaTime)
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
     {
-        m_menu->queueMenu(iMenu::MenuGroup::Card);
+        /*m_menu->queueMenu(iMenu::MenuGroup::Card);
         m_cardManager->pickThree(m_player->getHP() != 3);
-        DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+        DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);*/
     }
 
     PROFILE_BEGIN("Sound");
