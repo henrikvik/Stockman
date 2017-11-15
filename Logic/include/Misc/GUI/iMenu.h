@@ -12,6 +12,8 @@ namespace Logic
     public:
         enum MenuGroup
         {
+            Empty,
+            Intro,
             Start,
             Settings,
             Skill,
@@ -35,15 +37,18 @@ namespace Logic
 
         void addBackground(Resources::Textures::Files texture, float alpha);
         void addButton(ButtonData btn);
-        void update(int x, int y);
-        void render() const;
+        virtual void update(int x, int y);
+        virtual void render() const;
 
         MenuGroup getMenuType() { return m_group; }
 
-    private:
+    protected:
         void updateClick(int x, int y);
         void updateHover(int x, int y);
 
+        bool m_pressed;
+        bool m_drawButtons;
+        bool m_drawMenu;
         MenuGroup m_group;
         std::vector<Button> m_buttons;
         SpriteRenderInfo m_background;
