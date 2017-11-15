@@ -2,6 +2,7 @@
 #define iMENUSKILLPICK_H
 
 #include <Misc\GUI\iMenu.h>
+#include <Graphics\include\RenderInfo.h>
 
 namespace Logic
 {
@@ -21,8 +22,13 @@ namespace Logic
         int getPrimarySkill();
         int getSecondarySkill();
 
+        void render() const;
+
     private:
-        std::pair<int, int> m_selectedSkills;
+        int                 m_skillPoints;      //< The current number of skill picks available
+        std::wstring        m_skillpointsStr;   //< The current number of skill picks available as a string
+        TextRenderInfo      m_textRenderInfo;   //< The current number of skill picks as a text-renderinfo to get drawn on screen
+        std::pair<int, int> m_selectedSkills;   //< The currently selected skills
     };
 }
 

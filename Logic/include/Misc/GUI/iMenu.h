@@ -13,6 +13,7 @@ namespace Logic
         enum MenuGroup
         {
             Empty,
+            Intro,
             Start,
             Settings,
             Skill,
@@ -36,8 +37,8 @@ namespace Logic
 
         void addBackground(Resources::Textures::Files texture, float alpha);
         void addButton(ButtonData btn);
-        void update(int x, int y);
-        void render() const;
+        virtual void update(int x, int y);
+        virtual void render() const;
 
         MenuGroup getMenuType() { return m_group; }
 

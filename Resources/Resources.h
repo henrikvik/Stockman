@@ -21,29 +21,29 @@ namespace Resources
     {
         enum Files
         {
+            Ammobolts,
+            Ammocrystal,
             Crossbow,
+            Crossbowbolts,
             Hammer,
             SkySphere,
             Staff,
             StaticSummon,
             Tablet1,
-            UnitCube,
-            CrossBowProjectile,
-            AmmoPackCrossBolt,
-            AmmoPackIceGun
+            UnitCube
         };
         const std::map<Files, const char *> Paths =
         {
+            {Ammobolts, R"(..\Resources\Models\Ammobolts.hyb)"},
+            {Ammocrystal, R"(..\Resources\Models\Ammocrystal.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
+            {Crossbowbolts, R"(..\Resources\Models\Crossbowbolts.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
-            {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"},
-            {CrossBowProjectile, R"(..\Resources\Models\Crossbowbolts.hyb)"},
-            {AmmoPackCrossBolt, R"(..\Resources\Models\Ammobolts.hyb)"},
-            {AmmoPackIceGun, R"(..\Resources\Models\Ammocrystal.hyb)"}
+            {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
     }
     namespace Shaders
@@ -110,13 +110,17 @@ namespace Resources
             gameOverTexture,
             Gamesheet,
             Grid,
+            Highscore,
             HPBars,
             HUDIcons,
+            IntroScreen,
             mainMenuButton,
+            MainmenuClean,
             mainmenupicture,
-            mainMenuText,
+            Mainmenutext,
             MissingTexture,
             randomNormals,
+            Settings,
             SettingsMenuButtons,
             Skillpickbackground,
             Skillpicksheet,
@@ -132,13 +136,17 @@ namespace Resources
             {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
             {Grid, R"(..\Resources\Textures\Grid.png)"},
+            {Highscore, R"(..\Resources\Textures\Highscore.dds)"},
             {HPBars, R"(..\Resources\Textures\HPBars.dds)"},
             {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
+            {IntroScreen, R"(..\Resources\Textures\IntroScreen.dds)"},
             {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
-            {mainMenuText, R"(..\Resources\Textures\Mainmenutext.dds)" },
-            {mainmenupicture, R"(..\Resources\Textures\MainmenuClean.dds)"},
+            {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},
+            {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
+            {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
+            {Settings, R"(..\Resources\Textures\Settings.dds)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},
             {Skillpickbackground, R"(..\Resources\Textures\Skillpickbackground.dds)"},
             {Skillpicksheet, R"(..\Resources\Textures\Skillpicksheet.dds)"},

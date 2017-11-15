@@ -5,7 +5,8 @@
 #include <Misc\NonCopyable.h>
 #include <Misc\FileLoader.h>
 #include <Misc\GUI\iMenuAction.h>
-#include <Misc\Gui\iMenuSkillPick.h>
+#include <Misc\GUI\iMenuSkillPick.h>
+#include <Misc\GUI\iMenuIntro.h>
 
 namespace Logic
 {
@@ -15,12 +16,13 @@ namespace Logic
         iMenuFactory();
         ~iMenuFactory();
 
-        iMenu*          buildMenuStart();
-        iMenu*          buildMenuSettings();
-        iMenuSkillPick* buildMenuSkill();
-        iMenu*          buildMenuCard();
-        iMenu*          buildMenuHighscore();
-        iMenu*          buildMenuGameover();
+        iMenuIntro*  buildMenuIntro();
+        iMenu*  buildMenuStart();
+        iMenu*  buildMenuSettings();
+        iMenuSkillPick*  buildMenuSkill();
+        iMenu*  buildMenuCard();
+        iMenu*  buildMenuHighscore();
+        iMenu*  buildMenuGameover();
 
     private:
         std::vector<FileLoader::LoadedStruct> buttonFile;
