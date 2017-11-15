@@ -8,15 +8,15 @@
 }
 {
 	"Name": "MasterSound";
-	"Value": 0.51f;
+	"Value": 0.1f;
 }
 {
 	"Name": "SFX";
-	"Value": 0.61f;
+	"Value": 0.1f;
 }
 {
 	"Name": "Music";
-	"Value": 0.57f;
+	"Value": 0.1f;
 }
 {
 	"Name": "Windowed";

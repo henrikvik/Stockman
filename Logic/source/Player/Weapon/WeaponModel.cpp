@@ -11,8 +11,6 @@ WeaponModel::WeaponModel(Resources::Models::Files modelID, WeaponModelAnimationI
 {
     m_mInfo = mInfo;
     renderInfo.model = modelID;
-    renderInfo.animationName = "";
-    renderInfo.animationTimeStamp = 0;
 }
 
 

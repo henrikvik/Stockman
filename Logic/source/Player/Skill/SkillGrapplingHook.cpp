@@ -163,7 +163,7 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 void SkillGrapplingHook::render() const
 {
 	// Drawing a ray of the grappling hook for debugging purposes
-    RenderQueue::get().queue(&renderInfo);
+    QueueRender(renderInfo);
 }
 
 GrapplingHookState SkillGrapplingHook::getState() const

@@ -70,7 +70,7 @@ Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
     float3   localPosition = mul(instance.world, float4(vertex.position, 0)).xyz;
     float3x3 tangentMatrix = float3x3(fragment.tangent, fragment.binormal, fragment.normal);
     float3   worldTangent  = mul(tangentMatrix, localPosition);
-    fragment.gridUV = worldTangent.xy / 4;
+    fragment.gridUV = worldTangent.xy / 4.f;
 #endif
 
 	return fragment;

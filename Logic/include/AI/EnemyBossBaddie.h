@@ -40,6 +40,7 @@ namespace Logic
         void createAbilities();
 
         void shootAbility4(Player const &player, int pattern, float speed);
+        virtual void damage(int damage);
 
         virtual void useAbility(Player &target);
         virtual void useAbility(Player &target, int phase);

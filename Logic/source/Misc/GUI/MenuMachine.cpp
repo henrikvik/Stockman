@@ -45,9 +45,6 @@ MenuMachine::~MenuMachine()
 	{
 		delete a.second;
 	}
-	Settings* setting = Settings::getInstance();
-	setting->writeToFile();
-	setting->releaseInstance();
 }
 
 void MenuMachine::initialize(GameState state)
@@ -241,35 +238,35 @@ void MenuMachine::render()
         //    }
 
 
-        Settings* setting = Settings::getInstance();
+        Settings setting = Settings::getInstance();
 		ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Always);
 		if (ImGui::Begin("Testing version"))
 		{
 			ImGui::Text("Mouse Sense");
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("float##1", setting->getMouseSensePTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("float##1", setting.getMouseSensePTR(), 0.01f, 0.0f, 1.0f);
 			ImGui::PopItemWidth();
 			ImGui::Text("FOV");
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("float##2", setting->getFOVPTR(), 10.0f, 90.0f, 360.0f);
-			ImGui::Checkbox("Windowed", setting->getWindowedPTR());
+			ImGui::DragFloat("float##2", setting.getFOVPTR(), 10.0f, 90.0f, 360.0f);
+			ImGui::Checkbox("Windowed", setting.getWindowedPTR());
 			ImGui::Text("Master Sound");
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("float##3", setting->getMasterSoundPTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("float##3", setting.getMasterSoundPTR(), 0.01f, 0.0f, 1.0f);
 			ImGui::Text("SFX");
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("float##4", setting->getSFXPTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("float##4", setting.getSFXPTR(), 0.01f, 0.0f, 1.0f);
 			ImGui::Text("Music");
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("float##5", setting->getMusicPTR(), 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("float##5", setting.getMusicPTR(), 0.01f, 0.0f, 1.0f);
 
 			ImGui::End();
 		}
 
         Sound::NoiseMachine noise = Sound::NoiseMachine::Get();
-        noise.setGroupVolume(Sound::CHANNEL_MASTER, setting->getMasterSound());
-        noise.setGroupVolume(Sound::CHANNEL_SFX, setting->getSFX());
-        noise.setGroupVolume(Sound::CHANNEL_MUSIC, setting->getMusic());
+        noise.setGroupVolume(Sound::CHANNEL_MASTER, setting.getMasterSound());
+        noise.setGroupVolume(Sound::CHANNEL_SFX, setting.getSFX());
+        noise.setGroupVolume(Sound::CHANNEL_MUSIC, setting.getMusic());
     }
 	else if (m_currentActiveState == gameStateHighscore)
 	{
@@ -320,7 +317,7 @@ void MenuMachine::render()
 		tempPos.x = 400.0f;
 		tempPos.y = 300.0f;
 
-        //RenderQueue::get().queue(&text);
+        //QueueRender(text);
     }
     
     m_currentActiveMenu->render();

@@ -27,6 +27,7 @@ struct Pad
 std::set<std::wstring> const whitelist =
 {
     L".hyb",
+    L".toml",
     L".hlsl",
     L".dds",
     L".png",
@@ -95,13 +96,25 @@ struct Dir
 
             pad.dec();
             ostream << pad.str() << "};\n";
+/*
+            ostream << pad.str() << "\n";
+            ostream << pad.str() << "Files toEnum(const char * str)\n";
+            ostream << pad.str() << "{\n";
+            pad.inc();
+
+            for (auto & file : files)
+            {
+                ostream << pad.str() << "if (strcmp(str, \"" << file.stem() << "\") == 0) return " << file.stem() << ";\n";
+            } 
+            ostream << pad.str() << "throw \"Could not find matching enum.\";\n";
+            pad.dec();
+            ostream << pad.str() << "}\n";*/
         }
 
-
-        for (auto & dir : dirs)
-        {
-            if (dir.files.size() > 0 || dir.dirs.size() > 0)
-                dir.h(ostream, pad);
+        for (auto & dir : dirs) 
+        { 
+            if (dir.files.size() > 0 || dir.dirs.size() > 0) 
+            { dir.h(ostream, pad); } 
         }
 
         pad.dec();
@@ -114,7 +127,6 @@ void buildModelFileList()
     std::set<fs::path> hybrisFiles;
 
     Dir resources("Resources");
-
     std::ofstream hfile("Resources/Resources.h", std::ios::trunc);
     hfile << "#pragma once\n";
     hfile << "#include <map>\n";
@@ -124,8 +136,11 @@ void buildModelFileList()
     std::cout << "Done\n";
 }
 
+//#include "Resources.h"
 int main()
 {
     buildModelFileList();
+
+    //auto Hammer = Resources::Models::toEnum("Hammer");
     return 0;
 }

@@ -38,6 +38,7 @@ namespace Graphics
 
 
         drawInstanced<StaticRenderInfo>(resources[4]);
+        //drawInstanced<AnimatedRenderInfo>(resources[5]);
         // TODO add all renderInfos
 
 
@@ -45,6 +46,7 @@ namespace Graphics
         Global::context->PSSetSamplers(0, 3, Global::nulls);
         Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);
         Global::context->PSSetShaderResources(0, 4, Global::nulls);
+        Global::context->PSSetShaderResources(9, 1, Global::nulls);
         Global::context->PSSetConstantBuffers(0, buffers.size(), Global::nulls);
         Global::context->VSSetConstantBuffers(0, buffers.size(), Global::nulls);
         PROFILE_END();

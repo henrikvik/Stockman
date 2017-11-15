@@ -55,6 +55,8 @@ namespace Logic
         void add(FrameProp frameProp);
         void add(FrameHitbox frameHitbox);
         void loadMapFromFile(std::string path);
+
+        void loadMap(Resources::Maps::Files map);
 	};
 }
 

@@ -69,7 +69,7 @@ void Graphics::Menu::drawMenu(ID3D11Device * device, ID3D11DeviceContext * conte
         
    
     contex->IASetVertexBuffers(0, 1, &buttonQuad, &stride, &offset);
-    contex->Draw((UINT)info->m_buttons.size() * 6, 0);
+    contex->Draw((UINT)info.m_buttons.size() * 6, 0);
 
 }
 
@@ -118,39 +118,39 @@ void Graphics::Menu::unloadTextures()
 void Graphics::Menu::mapButtons(ID3D11DeviceContext * contex, Graphics::MenuInfo * info)
 {
     int buttonIndex = 0;
-    TriangleVertex *triangleVertices = newd TriangleVertex[info->m_buttons.size() * 6];
-    for (size_t i = 0; i < info->m_buttons.size() * 6; i += 6)
+    TriangleVertex *triangleVertices = newd TriangleVertex[info.m_buttons.size() * 6];
+    for (size_t i = 0; i < info.m_buttons.size() * 6; i += 6)
     {
         triangleVertices[i] = { 
-         2 * ((float)((info->m_buttons.at(buttonIndex).m_rek.x + info->m_buttons.at(buttonIndex).m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)(WIN_HEIGHT - info->m_buttons.at(buttonIndex).m_rek.y - info->m_buttons.at(buttonIndex).m_rek.height) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
-         info->m_buttons.at(buttonIndex).m_texCoordEnd.x, info->m_buttons.at(buttonIndex).m_texCoordEnd.y};
+         2 * ((float)((info.m_buttons.at(buttonIndex).m_rek.x + info.m_buttons.at(buttonIndex).m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)(WIN_HEIGHT - info.m_buttons.at(buttonIndex).m_rek.y - info.m_buttons.at(buttonIndex).m_rek.height) / WIN_HEIGHT) - 1, 0.0f,	//v0 pos
+         info.m_buttons.at(buttonIndex).m_texCoordEnd.x, info.m_buttons.at(buttonIndex).m_texCoordEnd.y};
 
         triangleVertices[i + 1] = { 
-            2 * ((float)(info->m_buttons.at(buttonIndex).m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_buttons.at(buttonIndex).m_rek.y - info->m_buttons.at(buttonIndex).m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,//v1
-            info->m_buttons.at(buttonIndex).m_texCoordStart.x, info->m_buttons.at(buttonIndex).m_texCoordEnd.y
+            2 * ((float)(info.m_buttons.at(buttonIndex).m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info.m_buttons.at(buttonIndex).m_rek.y - info.m_buttons.at(buttonIndex).m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,//v1
+            info.m_buttons.at(buttonIndex).m_texCoordStart.x, info.m_buttons.at(buttonIndex).m_texCoordEnd.y
         };
         triangleVertices[i + 2] = { 
-            2 * ((float)(info->m_buttons.at(buttonIndex).m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_buttons.at(buttonIndex).m_rek.y - info->m_buttons.at(buttonIndex).m_rek.height + info->m_buttons.at(buttonIndex).m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
-            info->m_buttons.at(buttonIndex).m_texCoordStart.x, info->m_buttons.at(buttonIndex).m_texCoordStart.y
+            2 * ((float)(info.m_buttons.at(buttonIndex).m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info.m_buttons.at(buttonIndex).m_rek.y - info.m_buttons.at(buttonIndex).m_rek.height + info.m_buttons.at(buttonIndex).m_rek.height)) / WIN_HEIGHT) - 1, 0.0f, //v2
+            info.m_buttons.at(buttonIndex).m_texCoordStart.x, info.m_buttons.at(buttonIndex).m_texCoordStart.y
         };
         triangleVertices[i + 3] = {
-            2 * ((float)(info->m_buttons.at(buttonIndex).m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info->m_buttons.at(buttonIndex).m_rek.y - info->m_buttons.at(buttonIndex).m_rek.height + info->m_buttons.at(buttonIndex).m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
-            info->m_buttons.at(buttonIndex).m_texCoordStart.x, info->m_buttons.at(buttonIndex).m_texCoordStart.y
+            2 * ((float)(info.m_buttons.at(buttonIndex).m_rek.x) / WIN_WIDTH) - 1 , 2 * ((float)((WIN_HEIGHT - info.m_buttons.at(buttonIndex).m_rek.y - info.m_buttons.at(buttonIndex).m_rek.height + info.m_buttons.at(buttonIndex).m_rek.height)) / WIN_HEIGHT) - 1, 0.0f,	//v2 pos
+            info.m_buttons.at(buttonIndex).m_texCoordStart.x, info.m_buttons.at(buttonIndex).m_texCoordStart.y
         };
         triangleVertices[i + 4] = {
-            2 * ((float)((info->m_buttons.at(buttonIndex).m_rek.x + info->m_buttons.at(buttonIndex).m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info->m_buttons.at(buttonIndex).m_rek.y - info->m_buttons.at(buttonIndex).m_rek.height + info->m_buttons.at(buttonIndex).m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
-            info->m_buttons.at(buttonIndex).m_texCoordEnd.x, info->m_buttons.at(buttonIndex).m_texCoordStart.y,
+            2 * ((float)((info.m_buttons.at(buttonIndex).m_rek.x + info.m_buttons.at(buttonIndex).m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info.m_buttons.at(buttonIndex).m_rek.y - info.m_buttons.at(buttonIndex).m_rek.height + info.m_buttons.at(buttonIndex).m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f,	//v3
+            info.m_buttons.at(buttonIndex).m_texCoordEnd.x, info.m_buttons.at(buttonIndex).m_texCoordStart.y,
         };
         triangleVertices[i + 5] = {
-            2 * ((float)((info->m_buttons.at(buttonIndex).m_rek.x + info->m_buttons.at(buttonIndex).m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info->m_buttons.at(buttonIndex).m_rek.y - info->m_buttons.at(buttonIndex).m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f, //v0
-            info->m_buttons.at(buttonIndex).m_texCoordEnd.x, info->m_buttons.at(buttonIndex).m_texCoordEnd.y,
+            2 * ((float)((info.m_buttons.at(buttonIndex).m_rek.x + info.m_buttons.at(buttonIndex).m_rek.width)) / WIN_WIDTH) - 1, 2 * ((float)((WIN_HEIGHT - info.m_buttons.at(buttonIndex).m_rek.y - info.m_buttons.at(buttonIndex).m_rek.height)) / WIN_HEIGHT) - 1 , 0.0f, //v0
+            info.m_buttons.at(buttonIndex).m_texCoordEnd.x, info.m_buttons.at(buttonIndex).m_texCoordEnd.y,
         };
         buttonIndex++;
     }
 
     D3D11_MAPPED_SUBRESOURCE data = { 0 };
     ThrowIfFailed(contex->Map(buttonQuad, 0, D3D11_MAP_WRITE_DISCARD, 0, &data));
-    memcpy(data.pData, triangleVertices,  info->m_buttons.size() * sizeof(TriangleVertex) * 6);
+    memcpy(data.pData, triangleVertices,  info.m_buttons.size() * sizeof(TriangleVertex) * 6);
     contex->Unmap(buttonQuad, 0);
     delete[] triangleVertices;
 }
