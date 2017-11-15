@@ -64,8 +64,6 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
     m_charController->warp(startPosition);
     m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
 
-    
-
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
     currentWeapon = 0;
@@ -112,6 +110,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_listenerData->update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 
     m_stunned = false;
+    resetTargeted();
 }
 
 void Player::registerDebugCmds()
@@ -256,7 +255,7 @@ void Player::reset()
     info.type = info.Snow;
     info.restart = true;
 
-    RenderQueue::get().queue(&info);
+    QueueRender(info);
 }
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
@@ -337,7 +336,7 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     }
 }
 
-void Logic::Player::onEffectEnd(int stacks, Effect const & effect)
+void Player::onEffectEnd(int stacks, Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
 
@@ -801,7 +800,7 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 	m_forward.Normalize();
 }
 
-btKinematicCharacterController * Logic::Player::getCharController()
+btKinematicCharacterController * Player::getCharController()
 {
 	return m_charController;
 }
@@ -867,7 +866,7 @@ void Player::render() const
 	m_skillManager->render();
 }
 
-void Logic::Player::setMaxSpeed(float maxSpeed)
+void Player::setMaxSpeed(float maxSpeed)
 {
 	m_moveMaxSpeed = maxSpeed;
 }
@@ -882,7 +881,7 @@ DirectX::SimpleMath::Vector3 Player::getEyePosition() const
     return DirectX::SimpleMath::Vector3(m_charController->getGhostObject()->getWorldTransform().getOrigin() + btVector3(PLAYER_EYE_OFFSET));
 }
 
-btVector3 Logic::Player::getPositionBT() const
+btVector3 Player::getPositionBT() const
 {
 	return m_charController->getGhostObject()->getWorldTransform().getOrigin();
 }
@@ -892,17 +891,17 @@ btTransform& Player::getTransform() const
 	return m_charController->getGhostObject()->getWorldTransform();
 }
 
-float Logic::Player::getYaw() const
+float Player::getYaw() const
 {
     return m_camYaw;
 }
 
-float Logic::Player::getPitch() const
+float Player::getPitch() const
 {
     return m_camPitch;
 }
 
-float Logic::Player::getMoveSpeed() const
+float Player::getMoveSpeed() const
 {
 	return m_moveSpeed;
 }
@@ -971,24 +970,39 @@ bool Player::isUsingMeleeWeapon() const
     return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().primAmmoConsumption == 0;
 }
 
-int Logic::Player::getCurrentWeapon() const
+int Player::getCurrentWeapon() const
 {
     return currentWeapon;
 }
 
-void Logic::Player::setCurrentSkills(int first, int second)
+void Player::setCurrentSkills(int first, int second)
 {
     m_skillManager->switchToSkill({ SkillManager::SKILL(second), SkillManager::SKILL(first) });
     currentSkills[0] = first;
     currentSkills[1] = second;
 }
 
-int Logic::Player::getCurrentSkill1() const
+int Player::getCurrentSkill1() const
 {
     return currentSkills[1];
 }
 
-int Logic::Player::getCurrentSkill0() const
+void Player::setTargetedBy(Entity *entity)
+{
+    m_targetedBy = entity;
+}
+
+bool Player::isTargeted()
+{
+    return m_targetedBy;
+}
+
+void Player::resetTargeted()
+{
+    m_targetedBy = nullptr;
+}
+
+int Player::getCurrentSkill0() const
 {
     return currentSkills[0];
 }

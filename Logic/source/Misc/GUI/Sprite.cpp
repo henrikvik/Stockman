@@ -191,5 +191,5 @@ FloatRect Sprite::getTextureRect() const
 
 void Sprite::render() const
 {
-    RenderQueue::get().queue(&sprite);
+    QueueRender(sprite);
 }

@@ -1,58 +1,67 @@
 {
 	"buttonName" : "MenuStartGame";
 	"texture" : 0;
-	"xPos" : 120.0f;
+	"xPos" : 90.0f;
 	"yPos" : 275.0f;
 	"xTexStart" : 0.0f;
-	"yTexStart" : 0.0f;
+	"yTexStart" : 0.05f;
 	"xTexEnd" : 1.f;
-	"yTexEnd" : 0.125f;
-    "activeOffset" : 0.5f;
-	"height" : 64.f;
-	"width" : 195.0f;
-	"function" : "buttonClick0";
+	"yTexEnd" : 0.150f;
+    "activeOffset" : 0.470f;
+	"height" : 50.f;
+	"width" : 256.0f;
 }
 {
 	"buttonName" : "MenuStartSettings";
 	"texture" : 0;
-	"xPos" : 120.0f;
-	"yPos" : 339.0f;
+	"xPos" : 90.0f;
+	"yPos" : 345.0f;
 	"xTexStart" : 0.0f;
-	"yTexStart" : 0.125f;
+	"yTexStart" : 0.150f;
 	"xTexEnd" : 1.f;
-	"yTexEnd" : 0.25f;
-    "activeOffset" : 0.5f;
-	"height" : 64.f;
-	"width" : 195.0f;
-	"function" : "buttonClick1";
+	"yTexEnd" : 0.265f;
+    "activeOffset" : 0.4775f;
+	"height" : 50.f;
+	"width" : 256.0f;
 }
 {
 	"buttonName" : "MenuStartHighscore";
 	"texture" : 0;
-	"xPos" : 120.0f;
-	"yPos" : 403.0f;
+	"xPos" : 90.0f;
+	"yPos" : 425.0f;
 	"xTexStart" : 0.0f;
-	"yTexStart" : 0.25f;
+	"yTexStart" : 0.270f;
 	"xTexEnd" : 1.f;
-	"yTexEnd" : 0.375f;
-    "activeOffset" : 0.5f;
-	"height" : 64.f;
-	"width" : 195.0f;
-	"function" : "buttonClick21";
+	"yTexEnd" : 0.385f;
+    "activeOffset" : 0.4875f;
+	"height" : 50.f;
+	"width" : 256.0f;
 }
 {
 	"buttonName" : "MenuQuitGame";
 	"texture" : 0;
-	"xPos" : 120.0f;
-	"yPos" : 467.0f;
+	"xPos" : 90.0f;
+	"yPos" : 495.0f;
 	"xTexStart" : 0.0f;
-	"yTexStart" : 0.375f;
+	"yTexStart" : 0.390f;
 	"xTexEnd" : 1.f;
-	"yTexEnd" : 0.5f;
-    "activeOffset" : 0.5f;
-	"height" : 64.f;
-	"width" : 195.0f;
-	"function" : "buttonClick3";
+	"yTexEnd" : 0.505f;
+    "activeOffset" : 0.4905f;
+	"height" : 50.f;
+	"width" : 256.0f;
+}
+{
+	"buttonName" : "MenuBackGame";
+	"texture" : 5;
+	"xPos" : 90.0f;
+	"yPos" : 495.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.390f;
+	"xTexEnd" : 1.f;
+	"yTexEnd" : 0.505f;
+    "activeOffset" : 0.4905f;
+	"height" : 50.f;
+	"width" : 256.0f;
 }
 {
 	"buttonName" : "MenuSettingsStartMenu";
@@ -66,7 +75,6 @@
     "activeOffset" : 0.0f;
 	"height" : 100.0f;
 	"width" : 340.0f;
-	"function" : "buttonClick2";
 }
 {
 	"buttonName" : "MenuSettingsSoundMasterMinus";
@@ -80,7 +88,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick13";
 }
 {
 	"buttonName" : "MenuSettingsSoundMasterPlus";
@@ -94,7 +101,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick14";
 }
 
 {
@@ -109,7 +115,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick15";
 }
 {
 	"buttonName" : "MenuSettingsSoundSFXPlus";
@@ -123,7 +128,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick16";
 }
 {
 	"buttonName" : "MenuSettingsMuteUnmute";
@@ -137,7 +141,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick17";
 }
 {
 	"buttonName" : "MenuSettingsControlsMouseSenseMinus";
@@ -151,7 +154,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick11";
 }
 {
 	"buttonName" : "MenuSettingsControlsMouseSensePlus";
@@ -165,7 +167,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick12";
 }
 {
 	"buttonName" : "MenuSettingsVideoFOVMinus";
@@ -179,7 +180,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick18";
 }
 {
 	"buttonName" : "MenuSettingsVideoFOVPlus";
@@ -193,7 +193,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick19";
 }
 {
 	"buttonName" : "MenuSettingsVideoWindowed";
@@ -207,7 +206,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 75.0f;
 	"width" : 75.0f;
-	"function" : "buttonClick20";
 }
 {
 	"buttonName" : "MenuSettingsWriting";
@@ -221,7 +219,6 @@
     "activeOffset" : 0.0f;
 	"height" : 160.0f;
 	"width" : 370.0f;
-	"function" : "buttonClick4";
 }
 {
 	"buttonName" : "GameOverStartMenu";
@@ -235,7 +232,6 @@
     "activeOffset" : 0.0f;
 	"height" : 55.0f;
 	"width" : 170.0f;
-	"function" : "buttonClick0";
 }
 {
 	"buttonName" : "GameOverQuitGame";
@@ -249,7 +245,6 @@
     "activeOffset" : 0.0f;
 	"height" : 50.0f;
 	"width" : 170.0f;
-	"function" : "buttonClick2";
 }
 {
 	"buttonName" : "CardUpgradeChoice1";
@@ -263,7 +258,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 250.0f;
 	"width" : 200.0f;
-	"function" : "buttonClick5";
 }
 {
 	"buttonName" : "CardUpgradeChoice2";
@@ -277,7 +271,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 250.0f;
 	"width" : 200.0f;
-	"function" : "buttonClick6";
 }
 {
 	"buttonName" : "CardUpgradeChoice3";
@@ -291,7 +284,6 @@
 	"activeOffset" : 0.0f;
 	"height" : 250.0f;
 	"width" : 200.0f;
-	"function" : "buttonClick7";
 }
 { 
 	"buttonName" : "HighscoreStartMenu";
@@ -305,47 +297,56 @@
     "activeOffset" : 0.556875f;
 	"height" : 75.0f;
 	"width" : 120.0f;
-	"function" : "buttonClick2";
 }
 {
 	"buttonName" : "SkillPickButton1";
 	"texture" : 3;
-	"xPos" : 200.666666667f;
+	"xPos" : 200.0f;
 	"yPos" : 200.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.0f;
-	"xTexEnd" : 0.3333f;
-	"yTexEnd" : 0.3333f;
-	"activeOffset" : 0.33333f;
+	"xTexEnd" : 0.25f;
+	"yTexEnd" : 0.25f;
+	"activeOffset" : 0.25f;
 	"height" : 170.666666667f;
 	"width" : 170.666666667f;
-	"function" : "buttonClick8";
 }
 {
 	"buttonName" : "SkillPickButton2";
 	"texture" : 3;
-	"xPos" : 560.f;
+	"xPos" : 570.f;
 	"yPos" : 200.0f;
-	"xTexStart" : 0.3333f;
+	"xTexStart" : 0.33f;
 	"yTexStart" : 0.0f;
-	"xTexEnd" : 0.6666f;
-	"yTexEnd" : 0.3333f;
-	"activeOffset" : 0.33333f;
+	"xTexEnd" : 0.66f;
+	"yTexEnd" : 0.25f;
+	"activeOffset" : 0.25f;
 	"height" : 170.666666667f;
 	"width" : 170.666666667f;
-	"function" : "buttonClick9";
 }
 {
 	"buttonName" : "SkillPickButton3";
 	"texture" : 3;
-	"xPos" : 950.0f;
+	"xPos" : 960.0f;
 	"yPos" : 200.0f;
-	"xTexStart" : 0.6666f;
+	"xTexStart" : 0.66f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 1.0f;
-	"yTexEnd" : 0.3333f;
-	"activeOffset" : 0.33333f;
+	"yTexEnd" : 0.25f;
+	"activeOffset" : 0.25f;
 	"height" : 170.666666667f;
 	"width" : 170.666666667f;
-	"function" : "buttonClick10";
+}
+{
+	"buttonName" : "Continue";
+	"texture" : 3;
+	"xPos" : 450.f;
+	"yPos" : 550.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.72f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.82f;
+	"activeOffset" : 0.15f;
+	"height" : 100.f;
+	"width" : 400.f;
 }

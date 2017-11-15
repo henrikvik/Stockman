@@ -8,7 +8,7 @@ namespace Graphics
     {
     public:
         enum BufferSlots { Camera };
-        enum ResourceSlots { StaticInstanceBuffer };
+        enum ResourceSlots { StaticInstanceBuffer, AnimatedInstanceBuffer };
 
         DepthRenderPass(
             std::initializer_list<ID3D11RenderTargetView*> targets,
@@ -23,7 +23,8 @@ namespace Graphics
         virtual void update(float deltaTime) override;
 
     private:
-        Shader staticDepth;
+        Shader depth_vs_static;
+        Shader depth_vs_animated;
 
     };
 }

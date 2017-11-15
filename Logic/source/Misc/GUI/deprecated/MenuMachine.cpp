@@ -1,6 +1,5 @@
 #include <Graphics\include\RenderQueue.h>
 
-#include <Misc\GUI\MenuMachine.h>
 #include <iostream>
 #include <Misc\FileLoader.h>
 
@@ -317,7 +316,7 @@ void MenuMachine::render()
 		tempPos.x = 400.0f;
 		tempPos.y = 300.0f;
 
-        //RenderQueue::get().queue(&text);
+        //QueueRender(text);
     }
     
     m_currentActiveMenu->render();

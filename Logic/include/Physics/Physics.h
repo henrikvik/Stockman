@@ -86,11 +86,11 @@ namespace Logic
         //
         enum COL_FLAG {
             COL_NOTHING = 0,
-            COL_HITBOX = 0x1,
-            COL_PLAYER = 0x2,
-            COL_ENEMY = 0x4,
-            COL_EN_PROJ = 0x8,
-            COL_PL_PROJ = 0x10,
+            COL_HITBOX  = 1 << 0,
+            COL_PLAYER  = 1 << 1,
+            COL_ENEMY   = 1 << 2,
+            COL_EN_PROJ = 1 << 3,
+            COL_PL_PROJ = 1 << 4,
         }; static const int COL_EVERYTHING = COL_HITBOX | COL_PLAYER | COL_ENEMY | COL_EN_PROJ | COL_PL_PROJ;
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 

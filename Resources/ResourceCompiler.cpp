@@ -27,6 +27,7 @@ struct Pad
 std::set<std::wstring> const whitelist =
 {
     L".hyb",
+    L".toml",
     L".hlsl",
     L".dds",
     L".png",
@@ -126,7 +127,6 @@ void buildModelFileList()
     std::set<fs::path> hybrisFiles;
 
     Dir resources("Resources");
-
     std::ofstream hfile("Resources/Resources.h", std::ios::trunc);
     hfile << "#pragma once\n";
     hfile << "#include <map>\n";

@@ -4,13 +4,15 @@
 #include <algorithm>
 
 Graphics::BulletTimeRenderPass::BulletTimeRenderPass(
-    std::initializer_list<ID3D11RenderTargetView*> targets, 
+    PingPongBuffer * backBuffers,
+    std::initializer_list<ID3D11RenderTargetView*> targets,
     std::initializer_list<ID3D11ShaderResourceView*> resources, 
     std::initializer_list<ID3D11Buffer*> buffers, 
     ID3D11DepthStencilView * depthStencil) :
     RenderPass(targets, resources, buffers, depthStencil), 
     bulletTimeBuffer(),
-    shader(Resources::Shaders::BulletTime)
+    shader(Resources::Shaders::BulletTime),
+    backBuffers(backBuffers)
 {
     float temp = 1.f;
     bulletTimeBuffer.write(Global::context, &temp, sizeof(float));
@@ -22,11 +24,11 @@ void Graphics::BulletTimeRenderPass::update(float deltaTime)
     int queuelength = 0;
     for (auto & info : RenderQueue::get().getQueue<SpecialEffectRenderInfo>())
     {
-        if (info->type == info->BulletTime)
+        if (info.type == info.BulletTime)
         {
-            if (info->progress <= 1.f && info->progress >= 0.f)
+            if (info.progress <= 1.f && info.progress >= 0.f)
             {
-                progress = info->progress;
+                progress = info.progress;
             }
 
             else
@@ -64,6 +66,8 @@ void Graphics::BulletTimeRenderPass::update(float deltaTime)
 
 void Graphics::BulletTimeRenderPass::render() const
 {
+    backBuffers->swap();
+
     Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     Global::context->OMSetDepthStencilState(Global::cStates->DepthNone(), 0);
     Global::context->OMSetBlendState(Global::cStates->Opaque(), 0, -1);
@@ -73,7 +77,7 @@ void Graphics::BulletTimeRenderPass::render() const
     Global::context->PSSetShader(shader, nullptr, 0);
 
     Global::context->PSSetConstantBuffers(0, 1, bulletTimeBuffer);
-    Global::context->PSSetShaderResources(0, 1, &resources[0]);
+    Global::context->PSSetShaderResources(0, 1, *backBuffers);
 
     auto steste = Global::cStates->LinearClamp();
     Global::context->PSSetSamplers(0, 1, &steste);

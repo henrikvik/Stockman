@@ -153,8 +153,8 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 
     void AStar::renderNavigationMesh()
     {
-        RenderQueue::get().queue(&debugDataTri);
-        RenderQueue::get().queue(&debugDataEdges);
+        if (debugDataTri.points)   QueueRender(debugDataTri);
+        if (debugDataEdges.points) QueueRender(debugDataEdges);
     }
 
     void AStar::loadTargetIndex(Entity const & target)

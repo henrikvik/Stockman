@@ -214,7 +214,7 @@ void Logic::Projectile::setModelID(Resources::Models::Files modelId)
 
 void Logic::Projectile::render() const
 {
-    RenderQueue::get().queue(&renderInfo);
+    QueueRender(renderInfo);
 }
 
 ProjectileData& Projectile::getProjectileData()             { return m_pData;   }

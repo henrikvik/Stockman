@@ -29,7 +29,7 @@ namespace Graphics
 		this->view = DirectX::XMMatrixLookToRH(pos, forward, DirectX::SimpleMath::Vector3(0, 1, 0));
 
 		this->pos = pos;
-
+        this->forward = forward;
 
 		values.view = this->view;
 		values.vP = this->view * this->projection;
@@ -78,7 +78,7 @@ namespace Graphics
 
 	DirectX::SimpleMath::Vector3 Camera::getForward() const
 	{
-		return this->view.Forward();
+		return this->forward;
 	}
 
 	DirectX::SimpleMath::Vector3 Camera::getUp() const

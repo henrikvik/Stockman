@@ -7,6 +7,8 @@ namespace Graphics {
     class ShadowRenderPass : public RenderPass
     {
     public:
+        enum ResourcesSlots {StaticInstanceBuffer, AnimatedInstanceBuffer};
+
         ShadowRenderPass(
             std::initializer_list<ID3D11RenderTargetView*> targets,
             std::initializer_list<ID3D11ShaderResourceView*> resources = {},
@@ -20,7 +22,8 @@ namespace Graphics {
     private:
         D3D11_VIEWPORT viewport;
         D3D11_VIEWPORT viewportReset;
-        Shader staticForwardPlus;
+        Shader forward_plus_vs_static;
+        Shader forward_plus_vs_animated;
 
     };
 }

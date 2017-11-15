@@ -3,8 +3,10 @@
 #include "../Device.h"
 #include "../Utility/sizeofv.h"
 #include "../Utility/TextureLoader.h"
+#include "../MainCamera.h"
 #include "../CommonState.h"
 #include <comdef.h>
+#define SHAKE_DIRECTION_MULTIPLIER 2.f
 
 Graphics::GUIRenderPass::GUIRenderPass(std::initializer_list<ID3D11RenderTargetView*> targets, std::initializer_list<ID3D11ShaderResourceView*> resources, std::initializer_list<ID3D11Buffer*> buffers, ID3D11DepthStencilView * depthStencil)
     : RenderPass(targets, resources, buffers, depthStencil)
@@ -58,18 +60,23 @@ void Graphics::GUIRenderPass::render() const
     Global::context->VSSetConstantBuffers(0, 1, offsetBuffer);
 
 
+    PROFILE_BEGIN("Sprite");
     UINT offset = 0;
     for (auto & info : RenderQueue::get().getQueue<SpriteRenderInfo>())
     {
-        Global::context->PSSetShaderResources(2, 1, *TextureLoader::get().getTexture(info->texture));
+        Global::context->PSSetShaderResources(2, 1, *TextureLoader::get().getTexture(info.texture));
         offsetBuffer.write(Global::context, &offset, sizeof(offset));
         Global::context->Draw(4, 0);
         offset += 4;
     }
+    PROFILE_END();
 
+    PROFILE_BEGIN("Text");
     textRender();
+    PROFILE_END();
 
     Global::context->VSSetShaderResources(0, 1, Global::nulls);
+    Global::context->PSSetShaderResources(2, 1, Global::nulls);
     Global::context->VSSetConstantBuffers(0, 1, Global::nulls);
     Global::context->PSSetSamplers(0, 1, Global::nulls);
     Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);
@@ -79,6 +86,7 @@ void Graphics::GUIRenderPass::render() const
 
 void Graphics::GUIRenderPass::update(float deltaTime)
 {
+    updateShake(deltaTime);
     enum { TL, TR, BL, BR};
 
     std::vector<Vertex> vertices(4);
@@ -89,19 +97,19 @@ void Graphics::GUIRenderPass::update(float deltaTime)
     {
         using namespace DirectX::SimpleMath;
 
-        float TL_X = (info->screenRect.topLeft.x * 2 - 1);
-        float TL_Y = (info->screenRect.topLeft.y * 2 - 1);
-        float BR_X = (info->screenRect.bottomRight.x * 2 - 1);
-        float BR_Y = (info->screenRect.bottomRight.y * 2 - 1);
-        vertices[TL].position = Vector2(TL_X, TL_Y * -1);
-        vertices[TR].position = Vector2(BR_X, TL_Y * -1);
-        vertices[BL].position = Vector2(TL_X, BR_Y * -1);
-        vertices[BR].position = Vector2(BR_X, BR_Y * -1);
+        float TL_X = (info.screenRect.topLeft.x * 2 - 1);
+        float TL_Y = (info.screenRect.topLeft.y * 2 - 1);
+        float BR_X = (info.screenRect.bottomRight.x * 2 - 1);
+        float BR_Y = (info.screenRect.bottomRight.y * 2 - 1);
+        vertices[TL].position = Vector2(TL_X, TL_Y * -1) + ndcPositionOffset;
+        vertices[TR].position = Vector2(BR_X, TL_Y * -1) + ndcPositionOffset;
+        vertices[BL].position = Vector2(TL_X, BR_Y * -1) + ndcPositionOffset;
+        vertices[BR].position = Vector2(BR_X, BR_Y * -1) + ndcPositionOffset;
 
-        float TL_UV_X = info->textureRect.topLeft.x;
-        float TL_UV_Y = info->textureRect.topLeft.y;
-        float BR_UV_X = info->textureRect.bottomRight.x;
-        float BR_UV_Y = info->textureRect.bottomRight.y;
+        float TL_UV_X = info.textureRect.topLeft.x;
+        float TL_UV_Y = info.textureRect.topLeft.y;
+        float BR_UV_X = info.textureRect.bottomRight.x;
+        float BR_UV_Y = info.textureRect.bottomRight.y;
         vertices[TL].uv = Vector2(TL_UV_X, TL_UV_Y);
         vertices[TR].uv = Vector2(BR_UV_X, TL_UV_Y);
         vertices[BL].uv = Vector2(TL_UV_X, BR_UV_Y);
@@ -115,15 +123,63 @@ void Graphics::GUIRenderPass::update(float deltaTime)
     vertexBuffer.unmap(Global::context);
 }
 
+void Graphics::GUIRenderPass::updateShake(float deltaTime)
+{
+    using namespace DirectX::SimpleMath;
+
+    static float shakeCounter = 0;
+    static float shakeDuration = 0;
+    static float shakeRadius = 0;
+    static bool isShaking = 0;
+    static Vector2 shakeDir;
+
+    for (auto & info : RenderQueue::get().getQueue<SpecialEffectRenderInfo>())
+    {
+        if (info.type == info.screenShake)
+        {
+            shakeCounter = 0;
+            shakeDuration = info.duration;
+            shakeRadius = info.radius;
+            isShaking = true;
+
+            shakeDir = info.direction;
+            shakeDir.Normalize();
+        }
+    }
+
+    if (isShaking)
+    {
+        float currentShakeAmount = shakeRadius * (1 - (shakeCounter / shakeDuration));
+
+        static float angle = 0;
+        angle = rand() % 360;
+        positionOffset = (Vector2(sin(angle), cos(angle)) + (shakeDir * SHAKE_DIRECTION_MULTIPLIER)) * currentShakeAmount;
+
+
+
+        shakeCounter += deltaTime;
+        if (shakeCounter >= shakeDuration)
+        {
+            isShaking = false;
+            positionOffset = Vector2(0, 0);
+        }
+
+        ndcPositionOffset = Vector2((float)(positionOffset.x * 2.f / WIN_WIDTH), ((WIN_HEIGHT - positionOffset.y) / WIN_HEIGHT) - 1.f);
+
+        //this ugly
+        Global::mainCamera->update(Global::mainCamera->getPos() + ndcPositionOffset * 3.f, Global::mainCamera->getForward(), Global::context);
+    }
+}
+
 //render the queued text
 void Graphics::GUIRenderPass::textRender() const
 {
     sBatch->Begin(DirectX::SpriteSortMode_Deferred);
     for (auto & info : RenderQueue::get().getQueue<TextRenderInfo>())
     {
-        if (isDrawableString(info->text))
+        if (isDrawableString(info.text))
         {
-            fonts.at(info->font)->DrawString(sBatch.get(), info->text, info->position, info->color);
+            fonts.at(info.font)->DrawString(sBatch.get(), info.text, info.position + positionOffset, info.color);
         }
         
     }

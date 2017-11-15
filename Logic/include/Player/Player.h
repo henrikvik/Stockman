@@ -72,6 +72,9 @@ namespace Logic
 		SkillManager* m_skillManager;
 		Physics* m_physPtr;
 
+        // AI
+        Entity *m_targetedBy; // entity that "targets" player
+
 		// UI States
 		int m_hp;
         int currentWeapon;
@@ -204,6 +207,10 @@ namespace Logic
         int getCurrentSkill0() const;
         int getCurrentSkill1() const;
 
+        // AI
+        void setTargetedBy(Entity *entity);
+        bool isTargeted();
+        void resetTargeted();
 	};
 
 }

@@ -9,25 +9,29 @@ class RenderQueue
 {
 public:
     template<typename T>
-    using Queue = std::vector<T*>;
+    using Queue = std::vector<T>;
 
     template<typename T>
     using InstancedQueue = std::unordered_map<size_t, Queue<T>>;
 
     template<typename T>
-    inline void queue(T * info)
+    #ifdef _DEBUG
+    void queue(T info, const char * FILE, size_t LINE)
+    #else
+    void queue(T info)
+    #endif
     {
         static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
 
-        if constexpr (std::is_base_of_v<SpriteRenderInfo, T>)
-        {
-            //OutputDebugString(__FILE__);
-        }
+        #ifdef _DEBUG
+        info.FILE = FILE;
+        info.LINE = LINE;
+        #endif
 
         if constexpr (std::is_base_of_v<StaticRenderInfo, T>)
         {
             InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
-            container->queue((size_t)info->model, info);
+            container->queue((size_t)info.model, info);
         }
         else
         {
@@ -35,6 +39,14 @@ public:
             container->queue(info);
         }
     }
+
+    #ifdef _DEBUG
+    template<typename T>
+    void queue(T info)
+    {
+        static_assert(false, "RenderQueue::queue(T info) depricated, use QueueRender(info) macro instead!");
+    }
+    #endif
 
     template<typename T>
     std::conditional_t<std::is_base_of_v<StaticRenderInfo, T>,InstancedQueue<T>,Queue<T>>&
@@ -104,7 +116,7 @@ private:
         {
             return instances.size();
         }
-        void queue(T * info)
+        void queue(T info)
         {
             if (count() > INSTANCE_CAP(T))
                 throw std::runtime_error("Instance cap exceeded.");
@@ -130,7 +142,7 @@ private:
         {
             return instanceCount;
         }
-        void queue(size_t key, T * info)
+        void queue(size_t key, T info)
         {
             if (count() > INSTANCE_CAP(T))
                 throw std::runtime_error("Instance cap exceeded.");
@@ -180,8 +192,10 @@ private:
 
     typedef std::unordered_map<std::type_index, QueueContainer_t*> Queues_t;
     Queues_t queues;
-
-
-    std::unordered_map<void*, const char*> QUEUE_BLAME;
 };
 
+#ifdef _DEBUG
+#define QueueRender(info) RenderQueue::get().queue(info, __FILE__, __LINE__)
+#else
+#define QueueRender(info) RenderQueue::get().queue(info)
+#endif
