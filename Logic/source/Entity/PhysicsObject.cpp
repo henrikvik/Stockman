@@ -149,9 +149,7 @@ DirectX::SimpleMath::Vector3 PhysicsObject::getScale() const
 DirectX::SimpleMath::Matrix PhysicsObject::getTransformMatrix() const
 {
 	// Making memory for a matrix
-	float* m = newd float[4 * 16];
-
-	// Getting this entity's matrix
+	float m[16];
 	m_transform->getOpenGLMatrix((btScalar*)(m));
 
 	// Translating to DirectX Math and assigning the variables
@@ -159,9 +157,6 @@ DirectX::SimpleMath::Matrix PhysicsObject::getTransformMatrix() const
 
 	//Find the scaling matrix
 	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);
-
-	// Deleting the old created variables from memory
-	delete m;
 
 	return scale * transformMatrix;
 }

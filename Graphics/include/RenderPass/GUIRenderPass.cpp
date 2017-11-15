@@ -60,6 +60,7 @@ void Graphics::GUIRenderPass::render() const
     Global::context->VSSetConstantBuffers(0, 1, offsetBuffer);
 
 
+    PROFILE_BEGIN("Sprite");
     UINT offset = 0;
     for (auto & info : RenderQueue::get().getQueue<SpriteRenderInfo>())
     {
@@ -68,8 +69,11 @@ void Graphics::GUIRenderPass::render() const
         Global::context->Draw(4, 0);
         offset += 4;
     }
+    PROFILE_END();
 
+    PROFILE_BEGIN("Text");
     textRender();
+    PROFILE_END();
 
     Global::context->VSSetShaderResources(0, 1, Global::nulls);
     Global::context->PSSetShaderResources(2, 1, Global::nulls);
