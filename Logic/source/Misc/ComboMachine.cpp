@@ -22,11 +22,12 @@ void ComboMachine::reward(int score)
 void ComboMachine::kill(int score)
 {
     m_comboTimer = COMBO_TIMER;
+    m_totalKills++;
     if (score)
     {
         //addScore(score); apparently this doesnt work?
         // add score to combo
-        m_score += score * m_combo;
+        m_comboScore += score * m_combo;
         // increase combo
         if(m_combo != MAX_COMBO)
             m_combo++;
@@ -55,28 +56,34 @@ void ComboMachine::update(float deltaTime)
         m_comboTimer -= deltaTime;
     else
     {
-        reward(m_score);
+        reward(m_comboScore);
         m_comboTimer = 0.f;
         m_combo = 1;
         m_multikill = 1;
-        m_score = 0;
+        m_comboScore = 0;
     }  
 }
 
 // Reset all variables, should be called every level-restart
 void ComboMachine::reset()
 {
+    m_totalKills = 0;
 	m_comboTimer = 0.f;
 	m_combo = 1;
     m_multikill = 1;
-	m_score = 0;
+	m_comboScore = 0;
     m_totalScore = 0;
 }
 
 void ComboMachine::endCombo()
 {
     addMultikillScore();
-    reward(m_score);
+    reward(m_comboScore);
+}
+
+int ComboMachine::getTotalKills()
+{
+    return m_totalKills;
 }
 
 // Returns a value between 0-100, representing the time left of combo-timer, where zero is the time when the combo ends
@@ -93,9 +100,9 @@ int ComboMachine::getCurrentCombo()
 }
 
 // Returns the player's overall score
-int ComboMachine::getCurrentScore()
+int ComboMachine::getComboScore()
 {
-	return m_score;
+	return m_comboScore;
 }
 
 int ComboMachine::getTotalScore()
@@ -111,13 +118,13 @@ void ComboMachine::checkCombo()
 
 void ComboMachine::addMultikillScore()
 {
-    m_score *= m_multikill;
+    m_comboScore *= m_multikill;
     m_multikill = 1;
 }
 
 void ComboMachine::addScore(int score)
 {
-    m_score += score * m_combo;
+    m_comboScore += score * m_combo;
     if (m_combo != MAX_COMBO)
         m_combo++;
 

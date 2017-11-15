@@ -24,9 +24,10 @@ namespace Logic
 
         void endCombo();
 
+        int getTotalKills();
 		int getComboTimer();
 		int getCurrentCombo();
-		int getCurrentScore();
+		int getComboScore();
         int getTotalScore();
 
 	private:
@@ -38,11 +39,12 @@ namespace Logic
         void addMultikillScore();
         void addScore(int score);
 
+        int         m_totalKills;
 		float		m_comboTimer;
         float       m_multikillTimer;
 		int			m_combo;
         int         m_totalScore;
-		int			m_score;
+		int			m_comboScore;
         int         m_multikill;
 	};
 }
