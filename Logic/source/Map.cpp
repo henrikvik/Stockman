@@ -4,6 +4,8 @@
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
 #include <Misc\RandomGenerator.h>
+#include <toml\toml.h>
+#include <fstream>
 
 using namespace Logic;
 
@@ -47,7 +49,8 @@ void Map::init(Physics* physics, std::string path)
     m_drawDebug = false;
 
     // Loads map from file (currently only hardcoded)
-    loadMapFromFile(path);
+    //loadMapFromFile(path);
+    loadMap(Resources::Maps::IslandScene);
 }
 
 void Map::clear()
@@ -156,6 +159,109 @@ void Map::loadMapFromFile(std::string path)
     // Create everything and save
     for (auto & hitbox : hitboxes) add(hitbox);
     for (auto & light : lights) add(light);
+}
+
+void Logic::Map::loadMap(Resources::Maps::Files map)
+{
+    toml::ParseResult mapFile = toml::parseFile(Resources::Maps::Paths.at(map));
+    if (!mapFile.valid()) throw std::runtime_error(mapFile.errorReason);
+
+    toml::Value mapValue = mapFile.value;
+
+    struct Instance
+    {
+        std::string name;
+        std::string model;
+        btVector3 translation = { 0, 0, 0 };
+        btQuaternion rotation = { 0, 0, 0, 1 };
+        btVector3 scale = { 1, 1, 1 };
+    };
+
+    std::vector<Instance> staticInstances;
+    std::vector<Instance> foliageInstances;
+    std::vector<Instance> triggerInstances;
+
+    auto mapStatic = mapValue.find("Static");
+    auto mapFoliage = mapValue.find("Foliage");
+    auto mapTrigger = mapValue.find("Trigger");
+
+    static auto pushInstances = [](toml::Value * src, std::vector<Instance> & dest)
+    {
+        auto vec3 = [](toml::Value const* v) -> btVector3
+        {
+            return
+            {
+                (btScalar)v->find(0)->asNumber(),
+                (btScalar)v->find(1)->asNumber(),
+                (btScalar)v->find(2)->asNumber(),
+            };
+        };
+
+        auto quat = [](toml::Value const* v) -> btQuaternion
+        {
+            return
+            {
+                (btScalar)v->find(0)->asNumber(),
+                (btScalar)v->find(1)->asNumber(),
+                (btScalar)v->find(2)->asNumber(),
+                (btScalar)v->find(3)->asNumber(),
+            };
+        };
+
+        for (auto & tInstance : src->as<toml::Array>())
+        {
+            Instance instance;
+            instance.name = tInstance.get<std::string>("name");
+            instance.model = tInstance.get<std::string>("model");
+
+            toml::Value const* translationValue = tInstance.findChild("translation");
+            toml::Value const* rotationValue = tInstance.findChild("rotation");
+            toml::Value const* scaleValue = tInstance.findChild("scale");
+
+            if (translationValue) { instance.translation = vec3(translationValue); }
+            if (rotationValue) { instance.rotation = quat(rotationValue); }
+            if (scaleValue) { instance.scale = vec3(scaleValue); }
+
+            dest.push_back(instance);
+        }
+    };
+
+    if (mapStatic) pushInstances(mapStatic, staticInstances);
+    if (mapFoliage) pushInstances(mapFoliage, foliageInstances);
+    if (mapTrigger) pushInstances(mapTrigger, triggerInstances);
+
+    // TODO USE THIS //    
+
+    for (auto & instance : staticInstances)
+    {
+        if (strcmp(instance.model.c_str(), "Island") == 0)
+        {
+            btRigidBody *rb = m_physicsPtr->createBody(
+                Cube(instance.translation, btVector3(), {150, 1, 150}),
+                0.f, false,
+                Physics::COL_HITBOX,
+                Physics::COL_EVERYTHING ^ Physics::COL_HITBOX
+            );
+            rb->getWorldTransform().setRotation(instance.rotation);
+            m_hitboxes.push_back(new StaticObject(
+                Resources::Models::Island, 
+                rb,
+                instance.scale,
+                StaticObject::NavigationMeshFlags::CULL
+            ));
+        }
+        else
+        {
+            btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), instance.scale), 0.f, false, Physics::COL_HITBOX, Physics::COL_EVERYTHING ^ Physics::COL_HITBOX);
+            rb->getWorldTransform().setRotation(instance.rotation);
+            m_hitboxes.push_back(new StaticObject(
+                Resources::Models::UnitCube, 
+                rb,
+                instance.scale,
+                StaticObject::NavigationMeshFlags::NO_CULL
+            ));
+        }
+    }
 }
 
 // Adds a pointlight to the map

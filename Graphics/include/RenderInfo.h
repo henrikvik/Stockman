@@ -31,7 +31,7 @@ struct FloatRect
 };
 
 template<typename T>
-struct InstanceCap { static constexpr size_t value = 300; };
+struct InstanceCap { static constexpr size_t value = 1000; };
 #define SET_INSTANCE_CAP(info, cap) template<> struct InstanceCap<info> { static constexpr size_t value = cap; };
 #define INSTANCE_CAP(info) InstanceCap<info>::value
 
@@ -86,10 +86,12 @@ SET_INSTANCE_CAP(LightRenderInfo, 128)
 
 struct SpecialEffectRenderInfo : RenderInfo
 {
-    enum SpecialEffect { BulletTime, Snow };
+    enum SpecialEffect { BulletTime, Snow, screenShake };
     SpecialEffect type;
+    DirectX::SimpleMath::Vector2 direction;
     float progress = 0;
     float duration = 0;
+    float radius = 0;
     bool restart = 0;
 };
 

@@ -1,10 +1,12 @@
 #include "GlowRenderPass.h"
 #include "../Device.h"
 #include "../CommonState.h"
+#include <Engine\DebugWindow.h>
 
 namespace Graphics
 {
     GlowRenderPass::GlowRenderPass(
+        PingPongBuffer * backBuffers,
         std::initializer_list<ID3D11RenderTargetView*> targets,
         std::initializer_list<ID3D11ShaderResourceView*> resources,
         std::initializer_list<ID3D11Buffer*> buffers,
@@ -16,9 +18,38 @@ namespace Graphics
         glow(Resources::Shaders::GlowBlurHorizontal),
         glow2(Resources::Shaders::GlowBlurVertical),
         glowPass0(WIN_WIDTH, WIN_HEIGHT),
-        glowPass1(WIN_WIDTH, WIN_HEIGHT)
+        glowPass1(WIN_WIDTH, WIN_HEIGHT),
+        backBuffers(backBuffers)
     {
         createMips();
+
+        DebugWindow::getInstance()->registerCommand("GFX_SET_GLOW", [&](std::vector<std::string> &args)->std::string
+        {
+            std::string catcher = "";
+            try
+            {
+                if (args.size() != 0)
+                {
+                    enabled = std::stoi(args[0]);
+
+                    if (enabled)
+                        catcher = "Glow enabled!";
+
+                    else
+                        catcher = "Glow disabled!";
+                }
+                else
+                {
+                    catcher = "missing argument 0 or 1.";
+                }
+            }
+            catch (const std::exception&)
+            {
+                catcher = "Argument must be 0 or 1.";
+            }
+
+            return catcher;
+        });
     }
 
     GlowRenderPass::~GlowRenderPass()
@@ -38,7 +69,12 @@ namespace Graphics
 
     void GlowRenderPass::render() const
     {
+        if (!enabled)
+            return;
+
         PROFILE_BEGIN("Glow");
+        backBuffers->swap();
+        
         static float color[4] = { 0, 0, 0, 0 };
         for (int i = 0; i < MIP_LEVELS; i++)
         {
@@ -56,7 +92,7 @@ namespace Graphics
         Global::context->PSSetSamplers(0, 1, &sampler);
 
         //stupid first case
-        Global::context->PSSetShaderResources(0, 1, &resources[1]);
+        Global::context->PSSetShaderResources(0, 1, &resources[0]);
         Global::context->OMSetRenderTargets(1, &rtvs[0], nullptr);
 
         setMipViewPort(0);
@@ -117,9 +153,11 @@ namespace Graphics
         Global::context->PSSetShader(merger, nullptr, 0);
 
 
-        Global::context->PSSetShaderResources(4, 1, &resources[0]);
+        Global::context->PSSetShaderResources(4, 1, *backBuffers);
         Global::context->PSSetShaderResources(5, 1, glowPass1);
-        Global::context->OMSetRenderTargets(1, &targets[0], nullptr);
+        Global::context->OMSetRenderTargets(1, *backBuffers, nullptr);
+
+        Global::context->PSSetSamplers(2, 1, &sampler);
 
         Global::context->Draw(3, 0);
 
@@ -127,6 +165,7 @@ namespace Graphics
         Global::context->PSSetShaderResources(4, 1, Global::nulls);
         Global::context->PSSetShaderResources(5, 1, Global::nulls);
         PROFILE_END();
+
     }
 
     //Very ugly

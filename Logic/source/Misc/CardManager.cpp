@@ -26,7 +26,7 @@ void CardManager::resetDeck()
 void CardManager::createDeck(int nrOfEach)
 {
 	for (int i = 0; i < nrOfEach; i++)
-		for (int j = 0; j < m_cards.size(); j++)
+		for (int j = 1; j < m_cards.size(); j++)
             m_deck.push_back({ IN_DECK, j });
 }
 
@@ -124,7 +124,7 @@ void CardManager::handleCard(Player &player, Card const &card)
                 );
                 break;
             default:
-                throw std::runtime_error("Unsupported card type");
+                printf("Unsupported card type");
                 break;
         }
     }

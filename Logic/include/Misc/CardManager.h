@@ -5,13 +5,14 @@
 #include <vector>
 #include <random>
 
+#include <Misc\NonCopyable.h>
 #include <Misc\FileLoader.h>
 
 namespace Logic
 {
     class Player;
 
-	class CardManager
+	class CardManager : public NonCopyable
 	{
 	public:
         enum CardCondition
@@ -20,8 +21,6 @@ namespace Logic
         };
 
 		CardManager(int nrOfEach = 1);
-		CardManager(const CardManager& other) = delete;
-		CardManager* operator=(const CardManager& other) = delete;
 		~CardManager();
 
 		void resetDeck();

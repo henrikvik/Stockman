@@ -3,6 +3,7 @@
 #include <Engine\DebugWindow.h>
 
 Graphics::DepthOfFieldRenderPass::DepthOfFieldRenderPass(
+    PingPongBuffer* backBuffers,
     std::initializer_list<ID3D11RenderTargetView*> targets,
     std::initializer_list<ID3D11ShaderResourceView*> resources,
     std::initializer_list<ID3D11Buffer*> buffers,
@@ -15,11 +16,11 @@ Graphics::DepthOfFieldRenderPass::DepthOfFieldRenderPass(
     blur1(Resources::Shaders::DoFBlur1),
     blur2(Resources::Shaders::DoFBlur2),
     glue(Resources::Shaders::DoFGlue),
-    cbuffer(Global::device)
+    cbuffer(Global::device),
+    backBuffers(backBuffers)
 {
     firstTime = true;
-
-    fullscreenPass = std::make_unique<FullScreenPass>(targets, resources, buffers, depthStencil);
+    enabled = false;
 
     DebugWindow::getInstance()->registerCommand("GFX_SET_DEPTH_OF_FIELD", [&](std::vector<std::string> &args)->std::string
     {
@@ -63,10 +64,11 @@ void Graphics::DepthOfFieldRenderPass::render() const
 {
     if (true /* TODO Fix light loss of data*/)
     {
-        fullscreenPass->render();
 
         return;
     }
+
+    backBuffers->swap();
 
     Global::context->OMSetBlendState(nullptr, 0, 0xffffffff);
 
@@ -78,8 +80,8 @@ void Graphics::DepthOfFieldRenderPass::render() const
     //calculate CoC pass
     ID3D11ShaderResourceView * srv[] =
     {
-        resources[0], //ColorBuffer
-        resources[1]  //depthBuffer
+        *backBuffers, //ColorBuffer
+        resources[0]  //depthBuffer
     };
     Global::context->PSSetConstantBuffers(0, 1, cbuffer);
     Global::context->VSSetShader(CoCcreation, nullptr, 0);
@@ -132,12 +134,13 @@ void Graphics::DepthOfFieldRenderPass::render() const
     Global::context->PSSetShader(glue, nullptr, 0);
 
 
-    Global::context->OMSetRenderTargets(1, &targets[0], nullptr);
+    Global::context->OMSetRenderTargets(1, *backBuffers, nullptr);
     Global::context->Draw(3, 0);
 
 
     Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
     Global::context->PSSetShaderResources(0, 2, Global::nulls);
+
 }
 
 void Graphics::DepthOfFieldRenderPass::updateCoc(float focalLength, float focalPlane, float apature)

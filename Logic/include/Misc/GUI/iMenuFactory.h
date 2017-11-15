@@ -4,6 +4,9 @@
 #include <Misc\GUI\iMenu.h>
 #include <Misc\NonCopyable.h>
 #include <Misc\FileLoader.h>
+#include <Misc\GUI\iMenuAction.h>
+#include <Misc\GUI\iMenuSkillPick.h>
+#include <Misc\GUI\iMenuIntro.h>
 
 namespace Logic
 {
@@ -13,18 +16,17 @@ namespace Logic
         iMenuFactory();
         ~iMenuFactory();
 
-        iMenu* buildMenuStart();
-        iMenu* buildMenuSettings();
-        iMenu* buildMenuSkill();
-        iMenu* buildMenuCard();
-        iMenu* buildMenuHighscore();
-        iMenu* buildMenuGameover();
-
-        iMenu::ButtonData buildButton(std::string name);
+        iMenuIntro*  buildMenuIntro();
+        iMenu*  buildMenuStart();
+        iMenu*  buildMenuSettings();
+        iMenuSkillPick*  buildMenuSkill();
+        iMenu*  buildMenuCard();
+        iMenu*  buildMenuHighscore();
+        iMenu*  buildMenuGameover();
 
     private:
-        //Load the lw file information
         std::vector<FileLoader::LoadedStruct> buttonFile;
+        iMenu::ButtonData buildButton(std::string name, std::function<void(void)>);
     };
 }
 

@@ -1,8 +1,7 @@
 #pragma once
 #include "RenderPass.h"
-#include "../Utility/ShaderResource.h"
+#include "../Utility/PingPongBuffer.h"
 #include "../Utility/Shader.h"
-#include "FullScreenPass.h"
 #include <memory>
 
 
@@ -12,6 +11,7 @@ namespace Graphics
     {
     public:
         DepthOfFieldRenderPass(
+            PingPongBuffer * backBuffers,
             std::initializer_list<ID3D11RenderTargetView*> targets,
             std::initializer_list<ID3D11ShaderResourceView*> resources = {},
             std::initializer_list<ID3D11Buffer*> buffers = {},
@@ -37,6 +37,6 @@ namespace Graphics
         ConstantBuffer<float> cbuffer;
         bool firstTime;
 
-        std::unique_ptr<FullScreenPass> fullscreenPass;
+        PingPongBuffer * backBuffers;
     };
 }

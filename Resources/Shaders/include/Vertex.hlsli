@@ -1,3 +1,6 @@
+#ifndef VERTEX_HLSLI
+#define VERTEX_HLSLI
+
 struct Vertex
 {
     float3 position;
@@ -8,3 +11,5 @@ struct Vertex
     uint   jointIds[4];
     float  jointWeights[4];
 };
+
+#endif

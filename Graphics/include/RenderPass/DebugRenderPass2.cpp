@@ -32,11 +32,21 @@ void Graphics::DebugRenderPass::render() const
     for (auto & info : RenderQueue::get().getQueue<DebugRenderInfo>())
     {
         offsetBuffer.write(Global::context, &offset, sizeof(offset));
-        offset += info.points->size();
+        offset += (UINT)info.points->size();
 
         Global::context->IASetPrimitiveTopology(info.topology);
         Global::context->OMSetDepthStencilState(info.useDepth ? Global::cStates->DepthDefault() : Global::cStates->DepthNone(), 0);
-        Global::context->Draw(info.points->size(), 0);
+        Global::context->Draw((UINT)info.points->size(), 0);
+    }
+
+    for (auto & info : RenderQueue::get().getQueue<NewDebugRenderInfo>())
+    {
+        offsetBuffer.write(Global::context, &offset, sizeof(offset));
+        offset += (UINT)info.points->size();
+
+        Global::context->IASetPrimitiveTopology(info.topology);
+        Global::context->OMSetDepthStencilState(info.useDepth ? Global::cStates->DepthDefault() : Global::cStates->DepthNone(), 0);
+        Global::context->Draw((UINT)info.points->size(), 0);
     }
 }
 
@@ -57,7 +67,22 @@ void Graphics::DebugRenderPass::update(float deltaTime)
                 *dest++ = vertex;
                 points++;
 
-                if (points > INSTANCE_CAP(DebugRenderInfo)) throw "instance cap exceeded";
+                if (points > INSTANCE_CAP(DebugRenderInfo)) return;
+            }
+        }
+
+        for (auto & info : RenderQueue::get().getQueue<NewDebugRenderInfo>())
+        {
+            for (auto & point : *info.points)
+            {
+                DebugVertex vertex;
+                vertex.position = DirectX::SimpleMath::Vector4(point.position.x, point.position.y, point.position.z, 1);
+                vertex.color = point.color;
+
+                *dest++ = vertex;
+                points++;
+
+                if (points > INSTANCE_CAP(DebugRenderInfo)) return;
             }
         }
     });

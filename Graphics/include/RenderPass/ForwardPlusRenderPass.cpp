@@ -8,7 +8,9 @@ namespace Graphics
 {
     ForwardPlusRenderPass::ForwardPlusRenderPass(std::initializer_list<ID3D11RenderTargetView*> targets, std::initializer_list<ID3D11ShaderResourceView*> resources, std::initializer_list<ID3D11Buffer*> buffers, ID3D11DepthStencilView * depthStencil)
         : RenderPass(targets, resources, buffers, depthStencil)
-        , staticForwardPlus(Resources::Shaders::ForwardPlus)
+        , forward_plus_ps(Resources::Shaders::ForwardPlus_PS, ShaderType::PS)
+        , forward_plus_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS)
+        , forward_plus_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS)
     {
     }
 
@@ -16,10 +18,8 @@ namespace Graphics
     {
         PROFILE_BEGIN("Forward Plus");
         Global::context->IASetInputLayout(nullptr);
-        Global::context->VSSetShader(staticForwardPlus, nullptr, 0);
-        Global::context->PSSetShader(staticForwardPlus, nullptr, 0);
+        Global::context->PSSetShader(forward_plus_ps, nullptr, 0);
 
-        Global::context->PSSetConstantBuffers(0, buffers.size(), buffers.data());
         Global::context->VSSetConstantBuffers(0, buffers.size(), buffers.data());
 
         ID3D11SamplerState * samplers[] =
@@ -28,23 +28,24 @@ namespace Graphics
             Global::cStates->LinearWrap(),
             Global::comparisonSampler,
         };
+        
         Global::context->PSSetSamplers(0, 3, samplers);
-
-
-
+        Global::context->PSSetConstantBuffers(0, buffers.size(), buffers.data());
         Global::context->PSSetShaderResources(0, 4, resources.data());
-        Global::context->PSSetShaderResources(9, 1, *TextureLoader::get().getTexture(Resources::Textures::Grid));
+        Global::context->PSSetShaderResources(4, 1, *TextureLoader::get().getTexture(Resources::Textures::Grid));
+
         Global::context->OMSetRenderTargets(targets.size(), targets.data(), depthStencil);
 
-
+        Global::context->VSSetShader(forward_plus_vs_static, nullptr, 0);
         drawInstanced<StaticRenderInfo>(resources[4]);
-        // TODO add all renderInfos
 
-
-
+        Global::context->VSSetShader(forward_plus_vs_animated, nullptr, 0);
+        drawInstanced<AnimatedRenderInfo>(resources[5]);
+        
         Global::context->PSSetSamplers(0, 3, Global::nulls);
         Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);
         Global::context->PSSetShaderResources(0, 4, Global::nulls);
+        Global::context->PSSetShaderResources(9, 1, Global::nulls);
         Global::context->PSSetConstantBuffers(0, buffers.size(), Global::nulls);
         Global::context->VSSetConstantBuffers(0, buffers.size(), Global::nulls);
         PROFILE_END();

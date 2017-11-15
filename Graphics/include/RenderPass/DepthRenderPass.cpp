@@ -2,9 +2,15 @@
 
 namespace Graphics
 {
-    DepthRenderPass::DepthRenderPass(std::initializer_list<ID3D11RenderTargetView*> targets, std::initializer_list<ID3D11ShaderResourceView*> resources, std::initializer_list<ID3D11Buffer*> buffers, ID3D11DepthStencilView * depthStencil)
+    DepthRenderPass::DepthRenderPass(
+        std::initializer_list<ID3D11RenderTargetView*> targets,
+        std::initializer_list<ID3D11ShaderResourceView*> resources,
+        std::initializer_list<ID3D11Buffer*> buffers,
+        ID3D11DepthStencilView * depthStencil
+    )
         : RenderPass(targets, resources, buffers, depthStencil)
-        , staticDepth(Resources::Shaders::ForwardPlus, ShaderType::VS)
+        , depth_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS)
+        , depth_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS)
     {
     }
 
@@ -18,8 +24,12 @@ namespace Graphics
         Global::context->OMSetRenderTargets(0, nullptr, depthStencil);
         Global::context->VSSetConstantBuffers(0, buffers.size(), buffers.data());
 
-        Global::context->VSSetShader(staticDepth, nullptr, 0);
+        Global::context->VSSetShader(depth_vs_static, nullptr, 0);
         drawInstanced<StaticRenderInfo>(resources[StaticInstanceBuffer]);
+
+        Global::context->VSSetShader(depth_vs_animated, nullptr, 0);
+        drawInstanced<AnimatedRenderInfo>(resources[AnimatedInstanceBuffer]);
+
         // TODO add all renderInfos
 
         Global::context->OMSetRenderTargets(0, nullptr, nullptr);
