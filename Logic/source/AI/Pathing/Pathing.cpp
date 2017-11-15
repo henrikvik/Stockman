@@ -63,6 +63,7 @@ void Pathing::initDebugRendering()
 
 void Pathing::renderDebugging(DirectX::SimpleMath::Vector3 &start)
 {
+    /*
     if (m_debugInfo.points->size() > 1)
     {
         m_debugInfo.points->clear();
@@ -72,5 +73,5 @@ void Pathing::renderDebugging(DirectX::SimpleMath::Vector3 &start)
             m_debugInfo.points->push_back(*m_path[i]);
 
         QueueRender(m_debugInfo);
-    }
+    } */
 }

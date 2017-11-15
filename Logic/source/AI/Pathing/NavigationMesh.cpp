@@ -18,24 +18,24 @@ NavigationMesh::~NavigationMesh()
 void NavigationMesh::clear()
 {
     triangleList.clear();
-    edges.clear();
+    listEdges.clear();
     nodes.clear();
 }
 int NavigationMesh::addTriangle(Triangle const & triangle)
 {
 	triangleList.push_back(triangle);
-    return triangleList.size() - 1;
+    return static_cast<int> (triangleList.size()) - 1;
 }
 
 void NavigationMesh::addEdge(int from, int to)
 {
-    edges[from].indices.push_back(to);
+    listEdges[from].push_back({ to, getNodes()[to] });
 }
 
-void NavigationMesh::addDoubleEdge(int from, int to)
+void NavigationMesh::addDoubleEdge(int from, int to, DirectX::SimpleMath::Vector3 edgeNode)
 {
-    edges[from].indices.push_back(to);
-    edges[to].indices.push_back(from);
+    listEdges[from].push_back({ to, edgeNode });
+    listEdges[to].push_back({ from, edgeNode });
 }
 
 void NavigationMesh::generateEdges()
@@ -68,9 +68,9 @@ void NavigationMesh::generateEdges()
     }
 }
 
-std::vector<int>& NavigationMesh::getEdges(int from)
+NavigationMesh::Edges& NavigationMesh::getEdges(int from)
 {
-	return edges[from].indices;
+	return listEdges[from];
 }
 
 void NavigationMesh::createNodesFromTriangles()
@@ -84,7 +84,7 @@ void NavigationMesh::createNodesFromTriangles()
 			mid += v;
 		mid /= 3; // nr of vertices in tri
 		nodes.push_back(mid);
-		edges.push_back(Edge());
+        listEdges.push_back({});
 	}
 }
 
@@ -121,21 +121,16 @@ std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataEdges()
     //    data->push_back(node - DirectX::SimpleMath::Vector3{ 0, 2.f, 0 });
     }
 	
-	for (int j = 0; j < edges.size(); j++)
+	for (int j = 0; j < listEdges.size(); j++)
 	{
-		for (int i = 0; i < edges[j].indices.size(); i++)
+		for (int i = 0; i < listEdges[j].size(); i++)
 		{
 			data->push_back(nodes[j]);
-			data->push_back(nodes[edges[j].indices[i]]);
+			data->push_back(nodes[listEdges[j][i].index]);
 		}
 	}
 
 	return data;
-}
-
-const std::vector<NavigationMesh::Edge>& NavigationMesh::getEdges() const
-{
-	return edges;
 }
 
 int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const &pos) const

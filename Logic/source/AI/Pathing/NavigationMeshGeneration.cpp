@@ -343,6 +343,16 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(NavigationMesh &nav, Physi
     int index, userId;
     btVector3 top, bot, test;
     bool cutBot;
+
+    for (size_t t = 0; t < regions.size(); t++) // remove bad seeds
+        if (regions[t].remove)
+        {
+            std::swap(regions[t], regions[regions.size() - 1]);
+            regions.pop_back();
+            t--;
+        }
+    
+    /*
     for (auto &region : regions) // two loops, rip
     {
         for (int side = 0; side < SIDES; side++)  // this is just awful, should optimize
@@ -362,26 +372,18 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(NavigationMesh &nav, Physi
                         if (top < regions[index].cube.getPos() + regions[index].cube.getDimensionsRef())
                         {
                             physics.createBody(Sphere(top, { 0.f, 0.f, 0.f }, 1.f), 0);
-                        //    split(regions[index], physics, top, growthNormals[static_cast<int> (abs(side - 1)) % SIDES]);
+                            split(regions[index], physics, top, growthNormals[static_cast<int> (abs(side - 1)) % SIDES]);
                         }
                         if (cutBot)
                         {
                             physics.createBody(Sphere(bot, { 0.f, 0.f, 0.f }, 1.f), 0);
-                            //  split(regions, regions[index], physics, bot, growthNormals[static_cast<int> (abs(side - 1))]);
+                            split(regions[index], physics, bot, growthNormals[static_cast<int> (abs(side + 1)) % SIDES]);
                         }
                     }
                 }
             }
         }
-    }
-
-    for (size_t t = 0; t < regions.size(); t++) // remove bad seeds
-        if (regions[t].remove)
-        {
-            std::swap(regions[t], regions[regions.size() - 1]);
-            regions.pop_back();
-            t--;
-        }
+    } */
 
     for (auto &region : regions) // add remaining to navigation mesh
     {
@@ -397,20 +399,22 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(NavigationMesh &nav, Physi
 
     nav.createNodesFromTriangles();
     
+    int regionIndex;
     for (size_t t = 0; t < regions.size(); t++) // create nodes beetwen them
     {
         auto &region = regions[t];
-        nav.addEdge(t * 2, t * 2 + 1);
+        regionIndex = static_cast<int> (t);
+        nav.addDoubleEdge(t * 2, t * 2 + 1, { 0,0,0 });
 
         for (int i : region.collidedWithIndex[X_MINUS])
-            nav.addDoubleEdge(t * 2, getRegion(i) * 2);
+            createEdgeBeetwen(nav, regionIndex, getRegion(i), X_MINUS);
         for (int i : region.collidedWithIndex[Z_MINUS])
-            nav.addDoubleEdge(t * 2, getRegion(i) * 2);
+            createEdgeBeetwen(nav, regionIndex, getRegion(i), Z_MINUS);
         for (int i : region.collidedWithIndex[X_PLUS])
-            nav.addDoubleEdge(t * 2 + 1, getRegion(i) * 2 + 1);
+            createEdgeBeetwen(nav, regionIndex, getRegion(i), X_PLUS);
         for (int i : region.collidedWithIndex[Z_PLUS])
-            nav.addDoubleEdge(t * 2 + 1, getRegion(i) * 2 + 1);
-    } 
+            createEdgeBeetwen(nav, regionIndex, getRegion(i), Z_PLUS);
+    }  
 }
 
 void NavigationMeshGeneration::growRegion(NavMeshCube &region, Growth const &growth)
@@ -554,6 +558,14 @@ void NavigationMeshGeneration::seedArea(btVector3 position, btVector3 fullDimens
             }
         }
     }
+}
+
+void NavigationMeshGeneration::createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, GrowthType side)
+{
+    if (side == X_MINUS || side == Z_MINUS)
+        nav.addDoubleEdge(r1 * 2 + 1, r2 * 2 + 1, { 0,0,0 });
+    else
+        nav.addDoubleEdge(r1 * 2, r2 * 2, { 0,0,0 });
 }
 
 std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance)

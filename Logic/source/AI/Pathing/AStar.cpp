@@ -67,7 +67,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 
         for (size_t i = 0; i < navigationMesh.getEdges(currentNode->nodeIndex).size(); i++)
         {
-            index = navigationMesh.getEdges(currentNode->nodeIndex)[i];
+            index = navigationMesh.getEdges(currentNode->nodeIndex)[i].index;
             explore = &navNodes[index];
 
             if (index == toIndex) // Node Found

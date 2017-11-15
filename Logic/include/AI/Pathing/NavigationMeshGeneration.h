@@ -161,6 +161,9 @@ namespace Logic
             bool isInCollisionArea(NavMeshCube &cube, Physics &physics, int filterId = NO_ID, int filterId1 = NO_ID);
             void seedArea(btVector3 position, btVector3 fullDimension, float part, Physics &physics);
 
+            // create edges
+            void createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, GrowthType side);
+
             // true on collision
             std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance);
 
