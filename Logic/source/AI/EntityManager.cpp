@@ -379,6 +379,12 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
             effectsIds,
             false);
         break;
+    case 3:
+        trigger = m_triggerManager.addTrigger(Resources::Models::Ammocrystal,
+            Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, physics, {},
+            effectsIds,
+            false);
+        break;
     default:
         trigger = nullptr;
     }
