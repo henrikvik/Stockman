@@ -236,7 +236,12 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
     {
         if (strcmp(instance.model.c_str(), "Island") == 0)
         {
-            btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), {150, 1, 150}), 0.f);
+            btRigidBody *rb = m_physicsPtr->createBody(
+                Cube(instance.translation, btVector3(), {150, 1, 150}),
+                0.f, false,
+                Physics::COL_HITBOX,
+                Physics::COL_EVERYTHING ^ Physics::COL_HITBOX
+            );
             rb->getWorldTransform().setRotation(instance.rotation);
             m_hitboxes.push_back(new StaticObject(
                 Resources::Models::Island, 
@@ -247,7 +252,7 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
         }
         else
         {
-            btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), instance.scale), 0.f);
+            btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), instance.scale), 0.f, false, Physics::COL_HITBOX, Physics::COL_EVERYTHING ^ Physics::COL_HITBOX);
             rb->getWorldTransform().setRotation(instance.rotation);
             m_hitboxes.push_back(new StaticObject(
                 Resources::Models::UnitCube, 
