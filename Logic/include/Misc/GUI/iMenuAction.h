@@ -30,6 +30,7 @@ namespace Logic
     };
 
     typedef void(*ButtonFunc)();
+    void chooseUpgrade(int index);
 
     namespace ButtonFunction
     {

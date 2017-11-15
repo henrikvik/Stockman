@@ -63,7 +63,7 @@ void iMenuMachine::swapMenu()
     case iMenu::MenuGroup::Card:        m_activeMenu = m_factory->buildMenuCard();                        break;
     case iMenu::MenuGroup::Skill:       m_activeMenu = m_factory->buildMenuSkill();                       break;
     case iMenu::MenuGroup::GameOver:    m_activeMenu = m_factory->buildMenuGameover();                    break;
-    default: printf("This type of menu is not created yet. Check: %s, Line: %d", __FILE__, __LINE__);   break;
+    default: break;
     }
 
     m_currentMenuType = m_queuedMenuType;

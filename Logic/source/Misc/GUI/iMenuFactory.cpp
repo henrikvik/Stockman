@@ -91,8 +91,9 @@ iMenu * iMenuFactory::buildMenuCard()
     iMenu* menu = newd iMenu(iMenu::Card);
     iMenu::ButtonData btn;
 
-    // Add background
-    // Add buttons
+    menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));
+    menu->addButton(buildButton("CardUpgradeChoice2", ButtonFunction::chooseUpgrade2));
+    menu->addButton(buildButton("CardUpgradeChoice3", ButtonFunction::chooseUpgrade3));
 
     return menu;
 }

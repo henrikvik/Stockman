@@ -135,8 +135,17 @@ void StatePlaying::update(float deltaTime)
 {
     m_fpsRenderer.updateFPS(deltaTime);
    
+    PROFILE_BEGIN("In-Game Menu");
+    m_menu->update(deltaTime);
+    PROFILE_END();
+
     ComboMachine::Get().Update(deltaTime);
-    m_waveTimeManager.update(deltaTime, m_entityManager);
+    if (m_waveTimeManager.update(deltaTime, m_entityManager))
+    {
+        m_menu->queueMenu(iMenu::MenuGroup::Card);
+        m_cardManager->pickThree(m_player->getHP() != 3);
+        DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+    }
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
@@ -160,10 +169,6 @@ void StatePlaying::update(float deltaTime)
 
     PROFILE_BEGIN("Projectiles");
     m_projectileManager->update(deltaTime);
-    PROFILE_END();
-
-    PROFILE_BEGIN("In-Game Menu");
-    m_menu->update(deltaTime);
     PROFILE_END();
 
     PROFILE_BEGIN("HUD");

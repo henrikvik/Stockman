@@ -57,17 +57,34 @@ void ButtonFunction::writing()
 
 void ButtonFunction::chooseUpgrade1()
 {
-
+    chooseUpgrade(0);
 }
 
 void ButtonFunction::chooseUpgrade2()
 {
-
+    chooseUpgrade(1);
 }
 
 void ButtonFunction::chooseUpgrade3()
 {
+    chooseUpgrade(2);
+}
 
+void Logic::chooseUpgrade(int index)
+{
+    if (StatePrimary* primary = dynamic_cast<StatePrimary*>(Action::Get().m_stateBuffer->currentPrimaryState))
+    {
+        if (StatePlaying* playing = dynamic_cast<StatePlaying*>(primary->getCurrentState()))
+        {
+            if (playing->getCardManager()->pickAndApplyCard(*playing->getPlayer(), index))
+            {
+                Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
+
+                // Enabling mouse movement
+                DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
+            }
+        }
+    }
 }
 
 // Just ignore how ugly this is

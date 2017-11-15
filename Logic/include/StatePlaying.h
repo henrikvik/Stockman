@@ -56,7 +56,9 @@ namespace Logic
         void update(float deltaTime);
         void render() const;
 
-        Player* getPlayer() { return m_player; }
+        // Necessary evil
+        Player* getPlayer()             { return m_player;          }
+        CardManager* getCardManager()   { return m_cardManager;     } 
 
     private:
         void gameOver();
