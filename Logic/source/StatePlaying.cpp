@@ -140,7 +140,7 @@ void StatePlaying::update(float deltaTime)
         return;
     PROFILE_END();
 
-    ComboMachine::Get().Update(deltaTime);
+    ComboMachine::Get().update(deltaTime);
 
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
