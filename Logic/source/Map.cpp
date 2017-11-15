@@ -170,8 +170,8 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
 
     struct Instance
     {
-        Resources::Models::Files model;
         std::string name;
+        std::string model;
         btVector3 translation = { 0, 0, 0 };
         btQuaternion rotation = { 0, 0, 0, 1 };
         btVector3 scale = { 1, 1, 1 };
@@ -187,45 +187,40 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
 
     static auto pushInstances = [](toml::Value * src, std::vector<Instance> & dest)
     {
+        auto vec3 = [](toml::Value const* v) -> btVector3
+        {
+            return
+            {
+                (btScalar)v->find(0)->asNumber(),
+                (btScalar)v->find(1)->asNumber(),
+                (btScalar)v->find(2)->asNumber(),
+            };
+        };
+
+        auto quat = [](toml::Value const* v) -> btQuaternion
+        {
+            return
+            {
+                (btScalar)v->find(0)->asNumber(),
+                (btScalar)v->find(1)->asNumber(),
+                (btScalar)v->find(2)->asNumber(),
+                (btScalar)v->find(3)->asNumber(),
+            };
+        };
+
         for (auto & tInstance : src->as<toml::Array>())
         {
             Instance instance;
             instance.name = tInstance.get<std::string>("name");
-            //TODO instance.model = tInstance.get<std::string>("model");
+            instance.model = tInstance.get<std::string>("model");
 
             toml::Value const* translationValue = tInstance.findChild("translation");
             toml::Value const* rotationValue = tInstance.findChild("rotation");
             toml::Value const* scaleValue = tInstance.findChild("scale");
 
-
-            if (translationValue) 
-            {
-                instance.translation = 
-                {
-                    (btScalar)translationValue->find(0)->asNumber(),
-                    (btScalar)translationValue->find(1)->asNumber(),
-                    (btScalar)translationValue->find(2)->asNumber(),
-                };
-            }
-            if (rotationValue) 
-            {
-                instance.rotation = 
-                {
-                    (btScalar)rotationValue->find(0)->asNumber(),
-                    (btScalar)rotationValue->find(1)->asNumber(),
-                    (btScalar)rotationValue->find(2)->asNumber(),
-                    (btScalar)rotationValue->find(3)->asNumber(),
-                };
-            }
-            if (scaleValue) 
-            {
-                instance.scale = 
-                {
-                    (btScalar)scaleValue->find(0)->asNumber(),
-                    (btScalar)scaleValue->find(1)->asNumber(),
-                    (btScalar)scaleValue->find(2)->asNumber(),
-                };
-            }
+            if (translationValue) { instance.translation = vec3(translationValue); }
+            if (rotationValue) { instance.rotation = quat(rotationValue); }
+            if (scaleValue) { instance.scale = vec3(scaleValue); }
 
             dest.push_back(instance);
         }
