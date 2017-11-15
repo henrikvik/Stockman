@@ -457,15 +457,13 @@ void Player::updateSpecific(float deltaTime)
             m_weaponManager->switchWeapon(0);
             currentWeapon = 0;
         }
-		
-        if (ks.IsKeyDown(m_switchWeaponTwo))
+		else if (ks.IsKeyDown(m_switchWeaponTwo))
         {
             getSoundSource()->playSFX(Sound::SFX::SWOOSH);
             m_weaponManager->switchWeapon(1);
             currentWeapon = 1;
         }
-		
-        if (ks.IsKeyDown(m_switchWeaponThree))
+		else if (ks.IsKeyDown(m_switchWeaponThree))
         {
             getSoundSource()->playSFX(Sound::SFX::SWOOSH);
             m_weaponManager->switchWeapon(2);
