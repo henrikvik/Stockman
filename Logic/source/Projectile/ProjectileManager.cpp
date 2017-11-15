@@ -102,8 +102,8 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
 	// Taking the forward vector and getting the pitch and yaw from it
 	float pitch = asin(-forward.getY());
 	float yaw = atan2(forward.getX(), forward.getZ());
-    float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2 * M_PI); // Random roll rotation
-	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), roll));
+    //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
+	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), 0));
 
 	// Set gravity modifier
 	body->setGravity(pData.gravityModifier * m_physPtr->getGravity());
