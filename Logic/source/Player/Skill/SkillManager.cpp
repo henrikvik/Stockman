@@ -43,7 +43,7 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager)
     switchToSkill({ SKILL_SHIELD_CHARGE, SKILL_GRAPPLING_HOOK, SKILL_BULLET_TIME });
 }
 
-void Logic::SkillManager::reset()
+void SkillManager::reset()
 {
     for (Skill* skill : m_allSkills)
     {

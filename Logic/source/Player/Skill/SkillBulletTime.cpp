@@ -69,7 +69,7 @@ void SkillBulletTime::setSpawnFunctions(ProjectileManager &projManager)
 
 void SkillBulletTime::onRelease() { }
 
-void Logic::SkillBulletTime::onReset()
+void SkillBulletTime::onReset()
 {
     m_sensor = nullptr;
     m_stacks = 0;

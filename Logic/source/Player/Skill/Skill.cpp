@@ -30,9 +30,6 @@ void Skill::release()
 {
 	if (m_active)
 	{
-		// Specific release stuff
-        m_cooldown = m_cooldownMax;
-        m_canUse = false;
         m_active = false;
 		onRelease();
 	}
@@ -54,7 +51,7 @@ void Skill::update(float deltaTime)
 	onUpdate(deltaTime);
 }
 
-void Logic::Skill::reset()
+void Skill::reset()
 {
     m_cooldown = 0.f;
     m_duration = 0.f;
