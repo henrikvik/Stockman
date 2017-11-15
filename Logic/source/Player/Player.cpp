@@ -449,6 +449,8 @@ void Player::updateSpecific(float deltaTime)
 
 	    //crouch(deltaTime);
 
+        
+        static int lastMouseScrollState = 0;
 	    // Weapon swap
         if (ks.IsKeyDown(m_switchWeaponOne))
         {
@@ -468,6 +470,21 @@ void Player::updateSpecific(float deltaTime)
             m_weaponManager->switchWeapon(2);
             currentWeapon = 2;
         }
+        else if (ms.scrollWheelValue > lastMouseScrollState)
+        {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
+            currentWeapon--;
+            currentWeapon = currentWeapon < 0 ? 2 : currentWeapon;
+            m_weaponManager->switchWeapon(currentWeapon);
+        }
+        else if (ms.scrollWheelValue < lastMouseScrollState)
+        {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
+            currentWeapon++;
+            currentWeapon %= 3;
+            m_weaponManager->switchWeapon(currentWeapon);
+        }
+        lastMouseScrollState = ms.scrollWheelValue;
 		
 	    // Skills
         PROFILE_BEGIN("SkillManager");
