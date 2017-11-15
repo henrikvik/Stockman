@@ -4,7 +4,7 @@
 
 using namespace Logic;
 
-iMenu::iMenu(MenuGroup group) : m_group(group) , m_drawButtons(false), m_drawMenu(false), m_pressed(false) { }
+iMenu::iMenu(MenuGroup group) : m_group(group) , m_drawButtons(false), m_drawMenu(false), m_pressed(true) { }
 
 iMenu::~iMenu() { }
 
