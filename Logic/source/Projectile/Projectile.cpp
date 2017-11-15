@@ -59,6 +59,10 @@ void Projectile::upgrade(Upgrade const &upgrade)
     {
         m_body->setRestitution(1.f);
     }
+    if (flags & Upgrade::UPGRADE_BURNING)
+    {
+
+    }
 }
 
 // Specific update loop for projectiles

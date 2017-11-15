@@ -30,6 +30,7 @@ namespace Logic
             UPGRADE_CROSSBOW = 0X200,
             UPGRADE_ICESTAFF = 0x400,
             UPGRADE_SLEDGEHAMMER = 0x800,
+            UPGRADE_BURNING = 0x1000,
 		};
 
 		struct FlatUpgrades {
