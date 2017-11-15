@@ -28,7 +28,8 @@ namespace Logic
 
     private:
         WeaponModelAnimationInfo m_mInfo;
-        PlayerRenderInfo renderInfo;
+        //PlayerRenderInfo renderInfo;
+        StaticRenderInfo renderInfo; // temp
     };
 }
 
