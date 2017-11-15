@@ -349,13 +349,22 @@ int Engine::run()
         static BOOL test = false;
         mSwapChain->GetFullscreenState(&test, NULL);
 
+        //temp
+        SpecialEffectRenderInfo shakeInfo;
+        shakeInfo.type = shakeInfo.screenShake;
+        shakeInfo.duration = 0.5f;
+        shakeInfo.radius = 30;
+
+        if (mTracker->pressed.G)
+            QueueRender(shakeInfo);
 
 		if (setting.getWindowed() != test)
 		{
 		//	mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
 		}
 
-
+        //static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
+        //Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);		          
 
 		if (mTracker->pressed.F1)
 		{

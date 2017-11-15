@@ -316,7 +316,7 @@ void MenuMachine::render()
 		tempPos.x = 400.0f;
 		tempPos.y = 300.0f;
 
-        //RenderQueue::get().queue(&text);
+        //QueueRender(text);
     }
     
     m_currentActiveMenu->render();

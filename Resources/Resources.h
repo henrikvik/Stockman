@@ -17,14 +17,25 @@ namespace Resources
             {KG26, R"(..\Resources\Fonts\KG26.spritefont)"}
         };
     }
+    namespace Maps
+    {
+        enum Files
+        {
+            Scene
+        };
+        const std::map<Files, const char *> Paths =
+        {
+            {Scene, R"(..\Resources\Maps\Scene.toml)"}
+        };
+    }
     namespace Models
     {
         enum Files
         {
-            Ammobolts,
             Ammocrystal,
+            AmmoPackCrossBolt,
             Crossbow,
-            Crossbowbolts,
+            CrossBowProjectile,
             Hammer,
             SkySphere,
             Staff,
@@ -34,10 +45,10 @@ namespace Resources
         };
         const std::map<Files, const char *> Paths =
         {
-            {Ammobolts, R"(..\Resources\Models\Ammobolts.hyb)"},
             {Ammocrystal, R"(..\Resources\Models\Ammocrystal.hyb)"},
+            {AmmoPackCrossBolt, R"(..\Resources\Models\AmmoPackCrossBolt.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
-            {Crossbowbolts, R"(..\Resources\Models\Crossbowbolts.hyb)"},
+            {CrossBowProjectile, R"(..\Resources\Models\CrossBowProjectile.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
@@ -51,6 +62,7 @@ namespace Resources
         enum Files
         {
             BulletTime,
+            DebugShader,
             DoFBlur1,
             DoFBlur2,
             DoFCreateCoC,
@@ -76,6 +88,7 @@ namespace Resources
         const std::map<Files, const char *> Paths =
         {
             {BulletTime, R"(..\Resources\Shaders\BulletTime.hlsl)"},
+            {DebugShader, R"(..\Resources\Shaders\DebugShader.hlsl)"},
             {DoFBlur1, R"(..\Resources\Shaders\DoFBlur1.hlsl)"},
             {DoFBlur2, R"(..\Resources\Shaders\DoFBlur2.hlsl)"},
             {DoFCreateCoC, R"(..\Resources\Shaders\DoFCreateCoC.hlsl)"},
@@ -98,6 +111,17 @@ namespace Resources
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
             {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
+        namespace include
+        {
+            enum Files
+            {
+                ParticleShared
+            };
+            const std::map<Files, const char *> Paths =
+            {
+                {ParticleShared, R"(..\Resources\Shaders\include\ParticleShared.hlsl)"}
+            };
+        }
     }
     namespace Textures
     {

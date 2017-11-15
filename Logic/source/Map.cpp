@@ -4,6 +4,8 @@
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
 #include <Misc\RandomGenerator.h>
+#include <toml\toml.h>
+#include <fstream>
 
 using namespace Logic;
 
@@ -48,6 +50,7 @@ void Map::init(Physics* physics, std::string path)
 
     // Loads map from file (currently only hardcoded)
     loadMapFromFile(path);
+    loadMap(Resources::Maps::Scene);
 }
 
 void Map::clear()
@@ -156,6 +159,78 @@ void Map::loadMapFromFile(std::string path)
     // Create everything and save
     for (auto & hitbox : hitboxes) add(hitbox);
     for (auto & light : lights) add(light);
+}
+
+void Logic::Map::loadMap(Resources::Maps::Files map)
+{
+    toml::ParseResult mapFile = toml::parseFile(Resources::Maps::Paths.at(map));
+    if (!mapFile.valid()) throw std::runtime_error(mapFile.errorReason);
+
+    toml::Value mapValue = mapFile.value;
+
+    struct Instance
+    {
+        std::string name;
+        std::string model;
+        btVector3 translation = { 0, 0, 0 };
+        btQuaternion rotation = { 0, 0, 0, 1 };
+        btVector3 scale = { 1, 1, 1 };
+    };
+
+    std::vector<Instance> staticInstances;
+    std::vector<Instance> foliageInstances;
+    std::vector<Instance> triggerInstances;
+
+    auto mapStatic = mapValue.find("Static");
+    auto mapFoliage = mapValue.find("Foliage");
+    auto mapTrigger = mapValue.find("Trigger");
+
+    static auto pushInstances = [](toml::Value * src, std::vector<Instance> & dest)
+    {
+        auto vec3 = [](toml::Value const* v) -> btVector3
+        {
+            return
+            {
+                (btScalar)v->find(0)->asNumber(),
+                (btScalar)v->find(1)->asNumber(),
+                (btScalar)v->find(2)->asNumber(),
+            };
+        };
+
+        auto quat = [](toml::Value const* v) -> btQuaternion
+        {
+            return
+            {
+                (btScalar)v->find(0)->asNumber(),
+                (btScalar)v->find(1)->asNumber(),
+                (btScalar)v->find(2)->asNumber(),
+                (btScalar)v->find(3)->asNumber(),
+            };
+        };
+
+        for (auto & tInstance : src->as<toml::Array>())
+        {
+            Instance instance;
+            instance.name = tInstance.get<std::string>("name");
+            instance.model = tInstance.get<std::string>("model");
+
+            toml::Value const* translationValue = tInstance.findChild("translation");
+            toml::Value const* rotationValue = tInstance.findChild("rotation");
+            toml::Value const* scaleValue = tInstance.findChild("scale");
+
+            if (translationValue) { instance.translation = vec3(translationValue); }
+            if (rotationValue) { instance.rotation = quat(rotationValue); }
+            if (scaleValue) { instance.scale = vec3(scaleValue); }
+
+            dest.push_back(instance);
+        }
+    };
+
+    if (mapStatic) pushInstances(mapStatic, staticInstances);
+    if (mapFoliage) pushInstances(mapFoliage, foliageInstances);
+    if (mapTrigger) pushInstances(mapTrigger, triggerInstances);
+
+    // TODO USE THIS //    
 }
 
 // Adds a pointlight to the map
