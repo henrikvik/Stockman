@@ -247,7 +247,7 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
                 Resources::Models::Island, 
                 rb,
                 instance.scale,
-                StaticObject::NavigationMeshFlags::NO_CULL
+                StaticObject::NavigationMeshFlags::CULL
             ));
         }
         else
