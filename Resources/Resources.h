@@ -34,6 +34,7 @@ namespace Resources
         {
             Ammocrystal,
             AmmoPackCrossBolt,
+            AnimatedSummonUnit,
             Crossbow,
             CrossBowProjectile,
             Hammer,
@@ -47,6 +48,7 @@ namespace Resources
         {
             {Ammocrystal, R"(..\Resources\Models\Ammocrystal.hyb)"},
             {AmmoPackCrossBolt, R"(..\Resources\Models\AmmoPackCrossBolt.hyb)"},
+            {AnimatedSummonUnit, R"(..\Resources\Models\AnimatedSummonUnit.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
             {CrossBowProjectile, R"(..\Resources\Models\CrossBowProjectile.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
@@ -69,6 +71,7 @@ namespace Resources
             DoFGlue,
             ForwardPlus,
             ForwardPlus_PS,
+            ForwardPlus_VS_Animated,
             ForwardPlus_VS_Static,
             FullscreenQuad,
             GlowBlurHorizontal,
@@ -95,6 +98,7 @@ namespace Resources
             {DoFGlue, R"(..\Resources\Shaders\DoFGlue.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
             {ForwardPlus_PS, R"(..\Resources\Shaders\ForwardPlus_PS.hlsl)"},
+            {ForwardPlus_VS_Animated, R"(..\Resources\Shaders\ForwardPlus_VS_Animated.hlsl)"},
             {ForwardPlus_VS_Static, R"(..\Resources\Shaders\ForwardPlus_VS_Static.hlsl)"},
             {FullscreenQuad, R"(..\Resources\Shaders\FullscreenQuad.hlsl)"},
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
@@ -111,17 +115,6 @@ namespace Resources
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
             {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
-        namespace include
-        {
-            enum Files
-            {
-                ParticleShared
-            };
-            const std::map<Files, const char *> Paths =
-            {
-                {ParticleShared, R"(..\Resources\Shaders\include\ParticleShared.hlsl)"}
-            };
-        }
     }
     namespace Textures
     {

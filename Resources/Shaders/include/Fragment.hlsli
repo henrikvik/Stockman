@@ -1,3 +1,6 @@
+#ifndef FRAGMENT_HLSLI
+#define FRAGMENT_HLSLI
+
 struct Fragment
 {
     float4 ndcPosition : SV_Position;
@@ -11,3 +14,5 @@ struct Fragment
     float2 uv     : UV;
     float2 gridUV : GridUV;
 };
+
+#endif

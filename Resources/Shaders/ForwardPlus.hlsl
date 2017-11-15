@@ -2,7 +2,7 @@
 #include "include/Camera.hlsli"
 #include "include/LightCalc.hlsli"
 #include "include/Vertex.hlsli"
-#include "include/InstanceStatic.hlsli"
+#include "include/StaticInstance.hlsli"
 
 #define USE_GRID_TEXTURE
 
@@ -19,7 +19,7 @@ Texture2D                        gridTexture     : register(t9);
 #endif
 
 cbuffer cb10 : register(b10) { uint instanceOffset; };
-StructuredBuffer<InstanceStatic> instanceBuffer  : register(t10);
+StructuredBuffer<StaticInstance> instanceBuffer  : register(t10);
 StructuredBuffer<Vertex>         vertexBuffer    : register(t11);
 Texture2D                        diffuseTexture  : register(t12);
 Texture2D                        normalTexture   : register(t13);

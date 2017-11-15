@@ -39,21 +39,21 @@
 namespace Graphics
 {
     uint32_t zero = 0;
-    Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
+    Renderer::Renderer(
+        ID3D11Device * device,
+        ID3D11DeviceContext * deviceContext,
+        ID3D11RenderTargetView * backBuffer, 
+        Camera *camera
+    )
         : depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
-#pragma region RenderDebugInfo
-        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
-        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
-        , debugColorBuffer(device)
-#pragma endregion
         , fog(device)
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
 
 
 #pragma endregion
-        , instanceStaticBuffer(device, CpuAccess::Write, INSTANCE_CAP(InstanceAnimated))
-        , instanceAnimatedBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
+        , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
+        , animatedInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
         , fakeBuffers(WIN_WIDTH, WIN_HEIGHT)
 #pragma region Shared Shader Resources
         , colorMap(WIN_WIDTH, WIN_HEIGHT)
@@ -178,8 +178,18 @@ namespace Graphics
         renderPasses =
         {
             newd ParticleDepthRenderPass(depthStencil),
-            newd DepthRenderPass({},  { instanceStaticBuffer }, {*Global::mainCamera->getBuffer()}, depthStencil),
-            newd ShadowRenderPass({}, { instanceStaticBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
+            newd DepthRenderPass(
+                {},
+                { staticInstanceBuffer, animatedInstanceBuffer }, 
+                {*Global::mainCamera->getBuffer()}, 
+                depthStencil
+            ),
+            newd ShadowRenderPass(
+                {}, 
+                { staticInstanceBuffer, animatedInstanceBuffer },
+                {*sun.getLightMatrixBuffer()},
+                shadowMap
+            ),
             newd LightCullRenderPass(
                 {},
                 {
@@ -207,7 +217,8 @@ namespace Graphics
                     lightOpaqueGridSRV,
                     lightsNew,
                     shadowMap,
-                    instanceStaticBuffer
+                    staticInstanceBuffer,
+                    animatedInstanceBuffer
                 },
                 {
                     *Global::mainCamera->getBuffer(),
@@ -226,7 +237,7 @@ namespace Graphics
             ),
             newd SSAORenderPass(&fakeBuffers, {}, { depthStencil, normalMap }, {}, nullptr), //this
             //newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
-            newd GlowRenderPass(&fakeBuffers, { }, { glowMap}), //and this
+            newd GlowRenderPass(&fakeBuffers, {}, { glowMap }), //and this
             newd SnowRenderPass(
                 {
                     fakeBuffers
@@ -281,10 +292,22 @@ namespace Graphics
         LightRenderInfo lightInfo;
         lightInfo.color = DirectX::Colors::DodgerBlue;
         lightInfo.intensity = 1;
-        lightInfo.position = Global::mainCamera->getPos() + float3(0, 0, 4);
+        lightInfo.position = Global::mainCamera->getPos() + SimpleMath::Vector3(0, 0, 0.1);
         lightInfo.range = 10;
-
         QueueRender(lightInfo);
+
+        QueueRender([](float dt) -> AnimatedRenderInfo
+        {
+            static float time = 0;
+            AnimatedRenderInfo info;
+            info.animationName = "Walk";
+            info.animationTimeStamp = time;
+            info.model = Resources::Models::AnimatedSummonUnit;
+            info.transform = SimpleMath::Matrix::CreateTranslation(0, 1, -3);
+            time += dt;
+            if (time > 5) time = 0;
+            return info;
+        }(deltaTime));
 
         FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 
@@ -323,54 +346,16 @@ namespace Graphics
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
     }
 
-    void Renderer::renderDebugInfo(Camera* camera)
-    {
-        if (renderDebugQueue.size() == 0) return;
-
-        Global::context->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-        Global::context->VSSetConstantBuffers(0, 1, *camera->getBuffer());
-
-        Global::context->OMSetRenderTargets(1, &backBuffer, depthStencil);
-
-        Global::context->VSSetShaderResources(0, 1, debugPointsBuffer);
-        Global::context->PSSetConstantBuffers(1, 1, debugColorBuffer);
-
-        Global::context->IASetInputLayout(nullptr);
-        Global::context->VSSetShader(debugRender, nullptr, 0);
-        Global::context->PSSetShader(debugRender, nullptr, 0);
-
-
-        for (RenderDebugInfo * info : renderDebugQueue)
-        {
-            debugPointsBuffer.write(
-                Global::context,
-                info->points->data(),
-                (UINT)(info->points->size() * sizeof(DirectX::SimpleMath::Vector3))
-            );
-
-            debugColorBuffer.write(
-                Global::context,
-                &info->color,
-                (UINT)sizeof(DirectX::SimpleMath::Color)
-            );
-
-            Global::context->IASetPrimitiveTopology(info->topology);
-            Global::context->OMSetDepthStencilState(info->useDepth ? Global::cStates->DepthDefault() : Global::cStates->DepthNone(), 0);
-            Global::context->Draw((UINT)info->points->size(), 0);
-        }
-
-        renderDebugQueue.clear();
-    }
-
     void Renderer::writeInstanceBuffers()
     {
-        instanceStaticBuffer.write([](InstanceStatic * instanceBuffer)
+        staticInstanceBuffer.write([](StaticInstance * instanceBuffer)
         {
+            auto & queue = RenderQueue::get().getQueue<StaticRenderInfo>();
             for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
             {
                 for (auto & sinfo : model_infos.second)
                 {
-                    InstanceStatic instance = {};
+                    StaticInstance instance = {};
                     instance.world = sinfo.transform;
                     instance.worldInvT = sinfo.transform.Invert().Transpose();
                     *instanceBuffer++ = instance;
@@ -378,7 +363,7 @@ namespace Graphics
             }
         });
 
-        instanceAnimatedBuffer.write([](InstanceAnimated * instanceBuffer)
+        animatedInstanceBuffer.write([](AnimatedInstance * instanceBuffer)
         {
             for (auto & model_infos : RenderQueue::get().getQueue<AnimatedRenderInfo>())
             {
@@ -386,7 +371,7 @@ namespace Graphics
 
                 for (auto & info : model_infos.second)
                 {
-                    InstanceAnimated instance = {};
+                    AnimatedInstance instance = {};
                     instance.world = info.transform;
                     instance.worldInvT = info.transform.Invert().Transpose();
 
@@ -397,6 +382,10 @@ namespace Graphics
                         {
                             instance.jointTransforms[i] = jointTransforms[i];
                         }
+                    }
+                    else
+                    {
+                        
                     }
 
                     *instanceBuffer++ = instance;
