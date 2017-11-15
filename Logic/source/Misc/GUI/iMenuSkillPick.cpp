@@ -61,7 +61,7 @@ void iMenuSkillPick::replaceSkill(int id)
 void iMenuSkillPick::render() const
 {
     iMenu::render();
-    RenderQueue::get().queue(&m_textRenderInfo);
+    QueueRender(m_textRenderInfo);
 }
 
 // Callback functions

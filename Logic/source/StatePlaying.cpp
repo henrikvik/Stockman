@@ -137,6 +137,8 @@ void StatePlaying::update(float deltaTime)
    
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
+    if (m_menu->getType() == iMenu::MenuGroup::Skill)   // Quick "temp pause" fix for testing purposes
+        return;
     PROFILE_END();
 
     ComboMachine::Get().Update(deltaTime);

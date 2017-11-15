@@ -65,7 +65,8 @@ void iMenu::updateHover(int x, int y)
 // Render the background at the back and the buttons in front
 void iMenu::render() const
 {
-    QueueRender(m_background);
+    if (m_drawMenu)
+        QueueRender(m_background);
 
     if (m_drawButtons)
         for (const Button& btn : m_buttons)

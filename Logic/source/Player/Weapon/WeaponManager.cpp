@@ -121,8 +121,8 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     {
         // Gattling
         newd WeaponLoadout{
-        /* Primary */       newd Weapon(projectileManager, ProjectileData(25, 0.2f, 1, 100, 0.f, 3000, Resources::Models::Crossbowbolts, 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 450, 0, 0 }),
-        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(10, 0.1f, 1, 100, 0.f, 500, Resources::Models::Crossbowbolts, 1), Weapon::WeaponInfo{ 1, 36, 15, 10, 100, 0, 0 }),
+        /* Primary */       newd Weapon(projectileManager, ProjectileData(25, 0.2f, 1, 100, 0.f, 3000, Resources::Models::CrossBowProjectile, 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 450, 0, 0 }),
+        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(10, 0.1f, 1, 100, 0.f, 500, Resources::Models::CrossBowProjectile, 1), Weapon::WeaponInfo{ 1, 36, 15, 10, 100, 0, 0 }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 60, 60, 20, 20, 1, 5, 1000 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.05f, 0.12f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.5f, -1.8f, 4.6f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.1f), 800.f }) },
 

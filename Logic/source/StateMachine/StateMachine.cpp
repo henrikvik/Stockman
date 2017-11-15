@@ -12,6 +12,8 @@
 
 using namespace Logic;
 
+#define SKIP_MENUS true
+
 StateMachine::StateMachine()
 {
     m_stateBuffer = newd StateBuffer();
@@ -46,8 +48,11 @@ StateMachine::StateMachine()
     //
     //
     // Fast Skip (Debugging) */
+ 
+#if !(SKIP_MENUS)
     SetPrimaryState(StateType::State_Playing);
     SetSecondaryState(StateType::Nothing);
+#endif
 }
 
 StateMachine::~StateMachine()

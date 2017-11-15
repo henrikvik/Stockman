@@ -125,6 +125,12 @@ void iMenuMachine::update(float deltaTime)
             targetCameraForward = CAMERA_HIGHSCORE_FORWARD;
             shouldModifyCamera = true;
             break;
+
+        case iMenu::MenuGroup::Skill:
+            targetCameraPosition = CAMERA_INTRO_POSITION;
+            targetCameraForward = CAMERA_INTRO_FORWARD;
+            shouldModifyCamera = true;
+            break;
         }
     #endif
 
