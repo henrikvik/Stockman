@@ -25,7 +25,8 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
     m_physics->init();
     m_map = newd Map();
-    m_map->init(m_physics, "Campfire.txt");
+    m_map->init(m_physics);
+    m_map->loadStartMenuScene();
 
     // Initializing Highscore Manager
     m_highScoreManager = newd HighScoreManager();

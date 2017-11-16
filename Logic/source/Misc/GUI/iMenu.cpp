@@ -4,9 +4,33 @@
 
 using namespace Logic;
 
-iMenu::iMenu(MenuGroup group) : m_group(group) , m_drawButtons(false), m_drawMenu(false), m_pressed(true) { }
+#define FADING_TIMER 300.f
+
+iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false) { }
 
 iMenu::~iMenu() { }
+
+// Starts the fadein animation, menu can't be removed during this time
+void iMenu::fadeIn()
+{
+    m_fader.startFadeIn(FADING_TIMER);
+    m_isFading = true;
+    m_safeToRemove = false;
+    m_background.alpha = 0.f;
+    for (Button& btn : m_buttons)
+        btn.setAlpha(0.f);
+}
+
+// Starts the fadeout animation, menu can't be removed during this time
+void iMenu::fadeOut()
+{
+    m_fader.startFadeOut(FADING_TIMER);
+    m_isFading = true;
+    m_safeToRemove = false;
+    m_background.alpha = 1.f;
+    for (Button& btn : m_buttons)
+        btn.setAlpha(1.f);
+}
 
 // Adds a texture on as a background, covering the full screen
 void iMenu::addBackground(Resources::Textures::Files texture, float alpha)
@@ -33,10 +57,29 @@ void iMenu::addButton(ButtonData btn)
 }
 
 // Updates the buttons of this menu
-void iMenu::update(int x, int y)
+void iMenu::update(int x, int y, float deltaTime)
 {
-    updateClick(x, y);
-    updateHover(x, y);
+    if (m_isFading)
+    {
+        m_fader.update(deltaTime);
+
+        float currentAlpha = m_fader.getCurrentProcent();
+        m_background.alpha = currentAlpha;
+        for (Button& btn : m_buttons)
+            btn.setAlpha(currentAlpha);
+
+        if (m_fader.m_complete)
+        {
+            m_isFading = false;
+            if (m_fader.m_style == FadeOut)
+                m_safeToRemove = true;
+        }
+    }
+    else
+    {
+        updateClick(x, y);
+        updateHover(x, y);
+    }
 }
 
 // Updates the buttons on-press states of this menu

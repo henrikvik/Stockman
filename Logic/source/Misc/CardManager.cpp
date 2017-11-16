@@ -90,7 +90,7 @@ void CardManager::createCard(CardCondition cond, FileLoader::LoadedStruct const 
     
     m_cards.push_back(Card(struc.strings.at("cardName"),
         struc.strings.at("texture"), struc.strings.at("description"),
-        statusIds, texStart, texEnd, struc.ints.at("statusType"))
+        statusIds, texStart, texEnd, struc.ints.at("statusType"), struc.ints.at("category"))
     ); 
 }
 
