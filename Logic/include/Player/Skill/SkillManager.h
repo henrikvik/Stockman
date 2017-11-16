@@ -57,6 +57,7 @@ namespace Logic
 		~SkillManager();
 
 		void init(Physics* physics, ProjectileManager* projectileManager);
+        void reset();
 
 		void switchToSkill(std::vector<SKILL> skillsToUse);
 

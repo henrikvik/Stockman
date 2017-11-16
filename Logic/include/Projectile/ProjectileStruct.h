@@ -17,6 +17,7 @@ namespace Logic
 		ProjectileTypeBulletTimeSensor,
 		ProjectileTypeIce,
         ProjectileTypeFreezeGrenade,
+        ProjectileTypeIceShard,
         ProjectileTypeFireArrow
 	};
 

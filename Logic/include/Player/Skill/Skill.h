@@ -39,6 +39,9 @@ namespace Logic
 		virtual void onUpdate(float deltaTime) = 0;
         virtual void onAffect(Effect const & effect) = 0;
 
+        void reset();
+        virtual void onReset() {};
+
 		float	getCooldown() const;
 		float	getCooldownMax() const;
 		float	getDuration() const;

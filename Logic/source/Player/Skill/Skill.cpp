@@ -33,8 +33,6 @@ void Skill::release()
 {
 	if (m_active)
 	{
-		// Specific release stuff
-        m_canUse = false;
         m_active = false;
 		onRelease();
 	}
@@ -71,6 +69,15 @@ void Skill::affect(Effect const & effect)
     {
         onAffect(effect);
     }
+}
+
+void Skill::reset()
+{
+    m_cooldown = 0.f;
+    m_duration = 0.f;
+    m_canUse = true;
+    m_active = false;
+    onReset();
 }
 
 float Skill::getCooldown() const		        { return m_cooldown;			}

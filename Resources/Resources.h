@@ -147,6 +147,7 @@ namespace Resources
             Skillpickbackground,
             Skillpicksheet,
             Spellsheet,
+            WaveComplete,
             weaponsheet
         };
         const std::map<Files, const char *> Paths =
@@ -174,6 +175,7 @@ namespace Resources
             {Skillpickbackground, R"(..\Resources\Textures\Skillpickbackground.dds)"},
             {Skillpicksheet, R"(..\Resources\Textures\Skillpicksheet.dds)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
+            {WaveComplete, R"(..\Resources\Textures\WaveComplete.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };
     }

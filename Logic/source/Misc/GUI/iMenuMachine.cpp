@@ -33,6 +33,7 @@ iMenuMachine::iMenuMachine()
 iMenuMachine::~iMenuMachine()
 {
     removeActiveMenu();
+    delete m_factory;
 }
 
 void iMenuMachine::removeActiveMenu()
