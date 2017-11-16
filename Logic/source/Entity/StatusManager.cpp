@@ -195,6 +195,11 @@ void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks)
     addStatus(effectID, nrOfStacks, 0.f, false);
 }
 
+void StatusManager::addStatusResetDuration(StatusManager::EFFECT_ID effectID, int nrOfStacks)
+{
+    addStatus(effectID, nrOfStacks, s_effects[effectID].getStandards()->duration, false);
+}
+
 void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks, float duration, bool add)
 {
     bool found = false;

@@ -48,6 +48,8 @@ namespace Logic
 
         void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks);
         void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, float duration, bool add);
+        void addStatusResetDuration(StatusManager::EFFECT_ID effect_id, int nrOfStacks);
+
 		void removeOneStatus(int statusID);
 		void removeAllStatus(int statusID);
 
