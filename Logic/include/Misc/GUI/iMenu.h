@@ -44,28 +44,33 @@ namespace Logic
         virtual void update(int x, int y, float deltaTime);
         virtual void render() const;
 
-        void setDrawMenu(bool shouldDraw) { m_drawMenu = shouldDraw; }
-        void setDrawButtons(bool shouldDraw) { m_drawButtons = shouldDraw; }
+        void setDrawMenu(bool shouldDraw)       { m_drawMenu    = shouldDraw;   }
+        void setDrawButtons(bool shouldDraw)    { m_drawButtons = shouldDraw;   }
         void setAlpha(float alpha);
 
-        bool getIsFading() { return m_isFading; }
-        bool getIsSafeToRemove() { return m_safeToRemove; }
-        MenuGroup getMenuType() { return m_group; }
+        bool getIsFading()                      { return m_isFading;        }
+        bool getIsSafeToRemove()                { return m_safeToRemove;    }
+        MenuGroup getMenuType()                 { return m_group;           }
 
     protected:
         void updateClick(int x, int y);
         void updateHover(int x, int y);
 
-        Fader m_fader;
-        bool m_safeToRemove;
-        bool m_isFading;
+        // Fading out/in
+        Fader                   m_fader;
+        bool                    m_safeToRemove;
+        bool                    m_isFading;
 
-        bool m_pressed;
-        bool m_drawButtons;
-        bool m_drawMenu;
-        MenuGroup m_group;
-        std::vector<Button> m_buttons;
-        SpriteRenderInfo m_background;
+        // Menu
+        SpriteRenderInfo        m_background;
+        std::vector<Button>     m_buttons;
+        bool                    m_pressed;
+        MenuGroup               m_group;
+        DirectX::Mouse::Mode    m_mouseMode;
+
+        // Hide menu
+        bool                    m_drawButtons;
+        bool                    m_drawMenu;
     };
 }
 

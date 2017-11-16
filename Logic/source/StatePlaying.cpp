@@ -114,7 +114,8 @@ void StatePlaying::update(float deltaTime)
    
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
-    if (m_menu->getType() == iMenu::MenuGroup::Skill)   // Quick "temp pause" fix for testing purposes
+    if (m_menu->getType() == iMenu::MenuGroup::Skill ||
+        m_menu->getType() == iMenu::MenuGroup::GameOver)   // Quick "temp pause" fix for testing purposes
         return;
     PROFILE_END();
 
@@ -125,7 +126,6 @@ void StatePlaying::update(float deltaTime)
     {
         m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
         m_cardManager->pickThree(m_player->getHP() != 3);
-        DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
     }
 
     PROFILE_BEGIN("Sound");
@@ -186,7 +186,8 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    if (m_menu->getType() != iMenu::MenuGroup::Skill)
+    if (m_menu->getType() != iMenu::MenuGroup::Skill && 
+        m_menu->getType() != iMenu::MenuGroup::GameOver)
         m_hudManager.render();
     PROFILE_END();
 
@@ -201,5 +202,6 @@ void StatePlaying::gameOver()
 {
     ComboMachine::Get().endCombo();
     m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
-    reset();
+    m_menu->queueMenu(iMenu::MenuGroup::GameOver);
+    m_menu->setDeathPosition(m_player->getPosition() + DirectX::SimpleMath::Vector3(0, 20, 0));
 }

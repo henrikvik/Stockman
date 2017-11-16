@@ -6,7 +6,7 @@ using namespace Logic;
 
 #define FADING_TIMER 300.f
 
-iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false) { }
+iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
 
 iMenu::~iMenu() { }
 
@@ -55,6 +55,8 @@ void iMenu::addButton(ButtonData btn)
 // Updates the buttons of this menu
 void iMenu::update(int x, int y, float deltaTime)
 {
+    DirectX::Mouse::Get().SetMode(m_mouseMode);
+
     if (m_isFading)
     {
         m_fader.update(deltaTime);

@@ -26,6 +26,7 @@ using namespace Logic;
 
 iMenuMachine::iMenuMachine()
 {
+    m_deathPosition = DirectX::SimpleMath::Vector3(0, 0, 0 );
     m_factory = newd iMenuFactory;
     m_activeMenu = nullptr;
 
@@ -74,7 +75,12 @@ void iMenuMachine::swapMenu()
     default: break;
     }
 
+    // New menu! Fade it in.
     if (m_activeMenu) m_activeMenu->fadeIn();
+
+    // No active menu, unlock mouse.
+    else DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
+
     m_currentMenuType = m_queuedMenuType;
 }
 
@@ -149,6 +155,12 @@ void iMenuMachine::update(float deltaTime)
         case iMenu::MenuGroup::Skill:
             targetCameraPosition = CAMERA_SKILL_POSITION;
             targetCameraForward = CAMERA_SKILL_FORWARD;
+            shouldModifyCamera = true;
+            break;
+
+        case iMenu::MenuGroup::GameOver:
+            targetCameraPosition = m_deathPosition;
+            targetCameraForward = DirectX::SimpleMath::Vector3(0.000, -0.365, 0.023);
             shouldModifyCamera = true;
             break;
         }
