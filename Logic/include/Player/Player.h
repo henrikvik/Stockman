@@ -148,7 +148,6 @@ namespace Logic
 		void init(Physics* physics, ProjectileManager* projectileManager);
 		void clear();
 		void reset();
-        
 
 		void updateSpecific(float deltaTime);
 
@@ -157,7 +156,6 @@ namespace Logic
 
 		void affect(int stacks, Effect const &effect, float deltaTime);
         void onEffectEnd(int stacks, Effect const &effect);
-		void upgrade(Upgrade const &upgrade);
 
 		void render() const; 
 		void setMaxSpeed(float maxSpeed);

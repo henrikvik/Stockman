@@ -190,27 +190,30 @@ const Effect& StatusManager::getEffect(EFFECT_ID id) const
 	return s_effects[id];
 }
 
-void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks, bool resetDuration)
+void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks)
 {
-	bool found = false;
-	for (size_t i = 0; i < m_effectStacksIds.size() && !found; ++i)
-	{
-		if (m_effectStacksIds[i] == effectID)
-		{
-			found = true;
+    addStatus(effectID, nrOfStacks, s_effects[effectID].getStandards()->duration);
+}
 
-			m_effectStacks[i].stack += nrOfStacks;
-			if (resetDuration) m_effectStacks[i].duration =
-				s_effects[effectID].getStandards()->duration;
-		}
-	}
+void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks, float duration)
+{
+    bool found = false;
+    for (size_t i = 0; i < m_effectStacksIds.size() && !found; ++i)
+    {
+        if (m_effectStacksIds[i] == effectID)
+        {
+            found = true;
 
-	if (!found)
-	{
-		m_effectStacks.push_back({ nrOfStacks,
-								s_effects[effectID].getStandards()->duration });
-		m_effectStacksIds.push_back(effectID);
-	}
+            m_effectStacks[i].stack += nrOfStacks;
+            m_effectStacks[i].duration = duration;
+        }
+    }
+
+    if (!found)
+    {
+        m_effectStacks.push_back({ nrOfStacks, duration });
+        m_effectStacksIds.push_back(effectID);
+    }
 }
 
 void StatusManager::removeOneStatus(int statusID)

@@ -370,12 +370,6 @@ void Player::onEffectEnd(int stacks, Effect const & effect)
     }
 }
 
-void Player::upgrade(Upgrade const & upgrade)
-{
-	long long flags = upgrade.getTranferEffects();
-
-}
-
 void Player::updateSound(float deltaTime)
 {
 	// Update sound position
@@ -419,12 +413,6 @@ int Player::getHP() const
 
 void Player::updateSpecific(float deltaTime)
 {
-    //TODO LUKAS SWITCH THIS OUT AS PROMISED
-    for (StatusManager::UPGRADE_ID id : getStatusManager().getActiveUpgrades())
-    {
-        upgrade(getStatusManager().getUpgrade(id));
-    }
-    //TODO LUKAS SWITCH THIS OUT AS PROMISED
 	Player::update(deltaTime);
 
     // Update weapon and skills
