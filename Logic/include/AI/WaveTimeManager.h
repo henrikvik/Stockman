@@ -8,11 +8,12 @@ namespace Logic
     class WaveTimeManager
     {
     private:
+        static const float TRANSITION_TIME;
         float m_timeCurrent;
         float m_timeRequired;
 
         int m_waveCurrent;
-        bool m_onLastWave, m_enraged;
+        bool m_onLastWave, m_enraged, m_onTransition;
     public:
         WaveTimeManager();
         virtual ~WaveTimeManager();
