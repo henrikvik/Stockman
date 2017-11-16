@@ -25,6 +25,7 @@
 
 	"statusAmount" : 1;
 	"statusType" : 1;
+    "category" : 0;
 	"status0" : 1;
 }
 {
@@ -39,6 +40,7 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
+    "category" : 0;
 	"status0" : 13;
 }
 {
@@ -53,6 +55,7 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
+    "category" : 0;
 	"status0" : 14;
 }
 {
@@ -67,6 +70,7 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
+    "category" : 2;
 	"status0" : 15;
 }
 {
@@ -81,6 +85,7 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
+    "category" : 2;
 	"status0" : 16;
 }
 {
@@ -95,6 +100,7 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
+    "category" : 0;
 	"status0" : 18;
 }
 {
@@ -109,6 +115,7 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
+    "category" : 0;
 	"status0" : 19;
 }
 {
@@ -123,6 +130,7 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
+    "category" : 1;
 	"status0" : 20;
 }
 {
@@ -137,5 +145,6 @@
 
 	"statusAmount" : 1;
 	"statusType" : 1;
+    "category" : 0;
 	"status0" : 2;
 }
