@@ -13,7 +13,7 @@
 #include <Player\Skill\Skill.h>
 #include <btBulletCollisionCommon.h>
 
-#define BULLET_TIME_DURATION 5000.f
+#define BULLET_TIME_DURATION 7000.f
 
 namespace Logic
 {

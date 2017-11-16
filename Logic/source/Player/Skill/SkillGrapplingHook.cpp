@@ -4,7 +4,7 @@
 
 using namespace Logic;
 
-#define GRAPPLING_HOOK_CD			8000.f		// Cooldown in ms
+#define GRAPPLING_HOOK_CD			3000.f		// Cooldown in ms
 #define GRAPPLING_HOOK_RANGE		100.f		// Range in bulletphysics units (probably meters)
 #define GRAPPLING_HOOK_RANGE_MIN    8.f         // Min range
 #define GRAPPLING_HOOK_POWER		0.0011f	    // The amount of power to reach the max speed
@@ -99,7 +99,7 @@ void SkillGrapplingHook::onRelease()
 	{
 		float yVel = player->getCharController()->getLinearVelocity().y();
         player->getCharController()->setFallSpeed(1.f);
-		player->getCharController()->setLinearVelocity({ 0.f, yVel, 0.f });
+		player->getCharController()->setLinearVelocity({ 0.f, 1.f, 0.f });
 	}
 
     

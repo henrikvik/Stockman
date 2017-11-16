@@ -128,7 +128,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     {
         // Gattling
         newd WeaponLoadout{
-        /* Primary */       newd Weapon(projectileManager, ProjectileData(25, 1.f, 1, 100, 0.f, 3000, Resources::Models::CrossBowProjectile , 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 200, 0, 0 }),
+        /* Primary */       newd Weapon(projectileManager, ProjectileData(25, 1.f, 1, 100, 0.f, 3000, Resources::Models::CrossBowProjectile , 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 100, 0, 0 }),
         /* Secondary*/      newd Weapon(projectileManager, ProjectileData(10, 0.5f, 1, 100, 0.f, 500, Resources::Models::CrossBowProjectile, 1), Weapon::WeaponInfo{ 1, 36, 15, 4, 100, 0, 0 }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 60, 60, 20, 20, 1, 5, 1000 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -0.8f, 0.3f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f }) },
