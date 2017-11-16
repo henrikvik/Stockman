@@ -10,26 +10,22 @@ iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawMenu
 
 iMenu::~iMenu() { }
 
-// Starts the fadein animation, menu can't be removed during this time
+// Starts the fadeIn animation, menu's can't be changed/removed during this time
 void iMenu::fadeIn()
 {
+    m_isFading      = true;
+    m_safeToRemove  = false;
     m_fader.startFadeIn(FADING_TIMER);
-    m_isFading = true;
-    m_safeToRemove = false;
-    m_background.alpha = 0.f;
-    for (Button& btn : m_buttons)
-        btn.setAlpha(0.f);
+    setAlpha(0.f);
 }
 
-// Starts the fadeout animation, menu can't be removed during this time
+// Starts the fadeOut animation, menu's can't be changed/removed during this time
 void iMenu::fadeOut()
 {
+    m_isFading      = true;
+    m_safeToRemove  = false;
     m_fader.startFadeOut(FADING_TIMER);
-    m_isFading = true;
-    m_safeToRemove = false;
-    m_background.alpha = 1.f;
-    for (Button& btn : m_buttons)
-        btn.setAlpha(1.f);
+    setAlpha(1.f);
 }
 
 // Adds a texture on as a background, covering the full screen
@@ -62,16 +58,12 @@ void iMenu::update(int x, int y, float deltaTime)
     if (m_isFading)
     {
         m_fader.update(deltaTime);
+        setAlpha(m_fader.getCurrentPercentage());
 
-        float currentAlpha = m_fader.getCurrentProcent();
-        m_background.alpha = currentAlpha;
-        for (Button& btn : m_buttons)
-            btn.setAlpha(currentAlpha);
-
-        if (m_fader.m_complete)
+        if (m_fader.complete)
         {
             m_isFading = false;
-            if (m_fader.m_style == FadeOut)
+            if (m_fader.style == Fader::FadeOut)
                 m_safeToRemove = true;
         }
     }
@@ -114,4 +106,12 @@ void iMenu::render() const
     if (m_drawButtons)
         for (const Button& btn : m_buttons)
             btn.render();
+}
+
+// Sets alpha on both menu's and buttons
+void iMenu::setAlpha(float alpha)
+{
+    m_background.alpha = alpha;
+    for (Button& btn : m_buttons)
+        btn.setAlpha(alpha);
 }

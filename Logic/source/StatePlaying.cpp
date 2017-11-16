@@ -66,30 +66,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
 
-    // Sorry Lucas, I broke it, Who is lucas?
-    //#ifdef _DEBUG
-    //    DebugWindow *win = DebugWindow::getInstance();
-    //    win->registerCommand("SETGAMESTATE", [&](std::vector<std::string> &para) -> std::string {
-    //        try {
-    //            this->m_menu->setStateToBe(static_cast<GameState> (stoi(para[0])));
-    //            return "Menu State set to " + stoi(para[0]);
-    //        }
-    //        catch (std::exception e) {
-    //            return "Chaos is a pit.";
-    //        }
-    //    });
-    //
-    //    for (int i = 1; i < args; i++) // first arg is name of file
-    //        for (std::wstring const &str : GameTypeStr)
-    //            if (wcscmp(str.c_str(), cmdLine[i]) == 0)
-    //                m_gameType = static_cast<GameType> (i - 1); // offset for filename
-    //
-    //    for (std::string const &cmd : GameCommands[m_gameType])
-    //        if (!cmd.empty())
-    //            win->doCommand(cmd.c_str());
-    //#endif
     CommandsFile().doCommandsFromFile();
-
     RenderQueue::get().clearAllQueues();
 
     //temp? probably
@@ -146,9 +123,9 @@ void StatePlaying::update(float deltaTime)
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
     {
-        /*m_menu->queueMenu(iMenu::MenuGroup::Card);
+        m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
         m_cardManager->pickThree(m_player->getHP() != 3);
-        DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);*/
+        DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
     }
 
     PROFILE_BEGIN("Sound");

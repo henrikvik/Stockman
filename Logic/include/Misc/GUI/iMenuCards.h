@@ -14,13 +14,12 @@ namespace Logic
         {
             TextRenderInfo title;
             TextRenderInfo description;
-            
         };
 
         iMenuCards(iMenu::MenuGroup group);
         ~iMenuCards();
 
-        void setCardInformation(Card card, int cardIndex);
+        void setCardInformation(std::vector<Card*> cards);
 
         void update(int x, int y, float deltaTime);
         void render() const;
@@ -28,7 +27,8 @@ namespace Logic
     private:
         void buildTextRenderInfo(int index, std::string name, std::string description, Card::CardCategory category);
 
-        CardGraphical card[3];
+        bool            m_renderable;
+        CardGraphical   m_cardGraphic[3];
     };
 }
 

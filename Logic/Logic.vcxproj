@@ -202,6 +202,7 @@
     <ClInclude Include="include\AI\Behavior\BigBadBehavior.h" />
     <ClInclude Include="include\AI\EnemyBossBaddie.h" />
     <ClInclude Include="include\AI\EnemySoarer.h" />
+    <ClInclude Include="include\Misc\Fader.h" />
     <ClInclude Include="include\Misc\GUI\iMenuCards.h" />
     <ClInclude Include="include\Misc\GUI\iMenuIntro.h" />
     <ClInclude Include="include\Misc\GUI\iMenuSkillPick.h" />
@@ -297,6 +298,7 @@
     <ClInclude Include="include\Player\Weapon\WeaponModel.h" />
     <ClInclude Include="include\Player\Weapon\WeaponFreezeGrenade.h" />
     <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
+    <ClInclude Include="include\Misc\StringConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Abilities\Ability.cpp" />
