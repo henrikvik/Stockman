@@ -1,9 +1,10 @@
 #include <AI/Trigger/Trigger.h>
 using namespace Logic;
 
-Trigger::Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)
+Trigger::Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, TriggerType type, float cooldown, bool reusable)
 : Entity(body, halfExtent)
 {
+    m_type = type;
 	m_maxCooldown = cooldown;
 	m_cooldown = -1;
 	m_active = true;
@@ -60,6 +61,8 @@ void Trigger::updateSpecific(float deltaTime)
 			m_active = true;
 		}
 	}
+
+    updateSpecificType(deltaTime);
 }
 
 // Collision with the player, give player the effect
@@ -88,6 +91,11 @@ void Trigger::onCollision(PhysicsObject& other, btVector3 contactPoint, float dm
 			}
 		}
 	}
+}
+
+Trigger::TriggerType Trigger::getType() const
+{
+    return m_type;
 }
 
 bool Trigger::getShouldRemove() const

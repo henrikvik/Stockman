@@ -1,5 +1,7 @@
 #include <AI/Trigger/TriggerManager.h>
 #include <Physics\Physics.h>
+#include <AI\Trigger\TriggerAmmoPickup.h>
+
 using namespace Logic;
 
 TriggerManager::TriggerManager() 
@@ -32,19 +34,46 @@ void TriggerManager::removeTrigger(Trigger * t, int index)
 }
 
 // Adds a trigger, with certain cooldown & buffs, (cooldown is is ms)
-Trigger* TriggerManager::addTrigger(Resources::Models::Files modelID, Cube& cube, float cooldown, Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects, bool reusable)
+Trigger* TriggerManager::addTrigger(Trigger::TriggerType type, btVector3 const &pos, Physics& physics, std::vector<StatusManager::UPGRADE_ID> upgrades, std::vector<StatusManager::EFFECT_ID> effects)
 {
-	this->m_physicsPtr = &physics;
+    m_physicsPtr = &physics; // ?
 
-	Trigger* trigger = newd Trigger(modelID, physics.createBody(cube, TRIGGER_MASS, TRIGGER_IS_SENSOR), cube.getDimensions(), cooldown, reusable);
+    Trigger* trigger = nullptr;
 
-	if (!upgrades.empty())
-		trigger->addUpgrades(upgrades);
+    switch (type)
+    {
+    case Trigger::TriggerType::JUMPPAD:
+        trigger = newd Trigger(Resources::Models::UnitCube, 
+            physics.createBody(Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
+            TRIGGER_MASS, TRIGGER_IS_SENSOR), { 2, 0.1f, 2 },
+            type, 500.f, true);
+        break;
+    case Trigger::TriggerType::AMMO_PICKUP_BOLT:
+        trigger = newd TriggerAmmoPickup(Resources::Models::AmmoPackCrossBolt,
+            physics.createBody(Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            TRIGGER_MASS, TRIGGER_IS_SENSOR), { 1.f, 1.f, 1.f },
+            type, 0.f, false);
+        break;
+    case Trigger::TriggerType::AMMO_PICKUP_CRYSTAL:
+        trigger = newd TriggerAmmoPickup(Resources::Models::Ammocrystal,
+            physics.createBody(Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            TRIGGER_MASS, TRIGGER_IS_SENSOR), { 1.f, 1.f, 1.f },
+            type, 0.f, false);
+        break;
+    default:
+        trigger = nullptr;
+    }
 
-	if (!effects.empty())
-		trigger->addEffects(effects);
+    if (trigger)
+    {
+        if (!upgrades.empty())
+            trigger->addUpgrades(upgrades);
 
-	m_triggers.push_back(trigger);
+        if (!effects.empty())
+            trigger->addEffects(effects);
+
+        m_triggers.push_back(trigger);
+    }
     return trigger;
 }
 
