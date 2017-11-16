@@ -207,20 +207,17 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 {
     bool callback = false;
 
-    if (1)
-    {
-        switch (proj->getProjectileData().type)
-        {
-        case ProjectileTypeBulletTimeSensor:
-            getStatusManager().addStatus(
-                /* Adding Bullet time effect */     StatusManager::BULLET_TIME,
-                /* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME),
-                /* Reset Duration */                true
-            );
-            break;
-        }
-    }
-
+	switch (proj->getProjectileData().type)
+	{
+	case ProjectileTypeBulletTimeSensor:
+	    getStatusManager().addStatus(
+		/* Adding Bullet time effect */     StatusManager::BULLET_TIME,
+		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME),
+		/* Reset Duration */                true
+	    );
+	    break;
+	}
+    
     // No callback should be added
     return false;
 }
