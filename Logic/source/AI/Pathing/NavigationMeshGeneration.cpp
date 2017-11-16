@@ -10,13 +10,16 @@
 using namespace Logic;
 
 #define EPSILON 0.001f
+#define toSimple(vec) {vec.x(), vec.y(), vec.z()}
+
 const int NavigationMeshGeneration::AI_UID = 1061923, NavigationMeshGeneration::NO_ID = -5;
+const float NavigationMeshGeneration::SEED_CUBES = 100.f, NavigationMeshGeneration::PRECISION_BASE = 0.05f;
 int NavigationMeshGeneration::COUNTER = 0;
 const btVector3 NavigationMeshGeneration::unitDimension = { 0.2f, 0.2f, 0.2f }; // i know it is not 1, todo
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
-    precision = 0.05f;
+    precision = PRECISION_BASE;
     maxLength = 250.f;
     baseY = 0.5f;
 
@@ -149,7 +152,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     regions.reserve(1500); // THIS IS A TEMPORARY SOLUTION TO PREVENT MEMORY FOK UPS; MAKE A REAL SOLUTION
 
     printf("Seeding area..");
-    seedArea({ -125.f, 0.6f, -135.f }, { 250.f, 0.5f, 300.f }, 255.f, physics);
+    seedArea({ -125.f, 0.6f, -135.f }, { 250.f, 0.5f, 300.f }, SEED_CUBES, physics);
     printf("Seeding finished!\n");
 
     btCollisionObject *obj;
@@ -558,32 +561,41 @@ void NavigationMeshGeneration::seedArea(btVector3 position, btVector3 fullDimens
 
 void NavigationMeshGeneration::createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, GrowthType side)
 {
-    NavMeshCube &reg1 = regions[getRegion(r1)];
-    NavMeshCube &reg2 = regions[getRegion(r2)];
+    NavMeshCube &reg1 = regions[r1];
+    NavMeshCube &reg2 = regions[r2];
     DirectX::SimpleMath::Vector3 con;
     btVector3 vec1 = reg1.cube.getPos() + getDimension(reg1, side),
-              vec2 = reg2.cube.getPos() + getDimension(reg2, side);
+              vec2 = reg2.cube.getPos() + getDimension(reg2, side + 2 % SIDES);
 
     btVector3 half1 = getDimension(reg1, side + 1 % SIDES),
-              half2 = getDimension(reg2, side + 1 % SIDES);
+              half2 = getDimension(reg2, side + 3 % SIDES);
+
+    btVector3 to = vec2 - vec1;
+    float dot = to.dot(half1);
 
     if (side == X_MINUS || side == Z_MINUS)
     {
-        if ((vec1 - half1).length2() < (vec1 - vec2).length2())
-            nav.addDoubleEdge(r1 * 2 + 1, r2 * 2 + 1, { vec2.x(), vec2.y(), vec2.z() });
+        if (std::abs(dot) <= 1.f)
+            nav.addDoubleEdge(r1 * 2, r2 * 2, toSimple(vec2));
         else
         {
-            /*
-            bool side;
-            side = (vec1 - vec2 + half2).length2() < (vec1 - vec2 + half2).length2();
-            if (side)
-
-            else */
+            if (dot > 0.f)
+                nav.addDoubleEdge(r1 * 2, r2 * 2, toSimple((vec1 + half1 + half2 * btScalar(0.5f))));
+            else
+                nav.addDoubleEdge(r1 * 2, r2 * 2, toSimple((vec1 + half1 - half2 * btScalar(0.5f))));
         }
     }
     else
     {
-        nav.addDoubleEdge(r1 * 2, r2 * 2, { 0,0,0 });
+        if (std::abs(dot) <= 1.f)
+            nav.addDoubleEdge(r1 * 2 + 1, r2 * 2 + 1, toSimple(vec2));
+        else
+        {
+            if (dot > 0.f)
+                nav.addDoubleEdge(r1 * 2 + 1, r2 * 2 + 1, toSimple((vec1 + half1 + half2 * btScalar(0.5f))));
+            else
+                nav.addDoubleEdge(r1 * 2 + 1, r2 * 2 + 1, toSimple((vec1 + half1 - half2 * btScalar(0.5f))));
+        }
     }
 }
 

@@ -49,8 +49,8 @@ void Map::init(Physics* physics, std::string path)
     m_drawDebug = false;
 
     // Loads map from file (currently only hardcoded)
-    //loadMapFromFile(path);
-    loadMap(Resources::Maps::IslandScene);
+    loadMapFromFile(path);
+   // loadMap(Resources::Maps::IslandScene);
 }
 
 void Map::clear()

@@ -40,6 +40,7 @@ namespace Logic
 	{
         private: //var
             static const int AI_UID, NO_ID;
+            static const float SEED_CUBES, PRECISION_BASE;
             static int COUNTER;
             static const btVector3 unitDimension;
 
@@ -154,7 +155,7 @@ namespace Logic
                 btVector3 const &splitPlaneNormal);
             void removeRigidBody(btRigidBody *&body, Physics &physics);
 
-            // if a cube is split to two cubes, then you will have collision to "both" sides,
+            // if a cube is split to two cubes, then you can have collision to "both" sides,
             // so add secondIndex if you have collided with first index
             void addSplitIndices(int firstIndex, int secondIndex);
 
