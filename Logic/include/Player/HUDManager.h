@@ -67,7 +67,7 @@ namespace Logic
             SKILL1,
             SKILL2,
             SKILLMASK1,
-            SKILLMASK2
+            SKILLMASK2,
         };
         void renderTextElements()const;
 
