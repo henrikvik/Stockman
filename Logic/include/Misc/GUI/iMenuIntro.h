@@ -12,7 +12,7 @@ namespace Logic
         iMenuIntro(iMenu::MenuGroup group);
         ~iMenuIntro();
 
-        void update(int x, int y);
+        void update(int x, int y, float deltaTime);
     };
 }
 

@@ -61,8 +61,10 @@ namespace Logic
 		bool animationTransition(float dt, float maxAnimationTime, bool forward);
 
         void setState(State state);
+        void setAlpha(float alpha);
 
         void render() const;
+
 	private:
         SpriteRenderInfo renderInfo;
         

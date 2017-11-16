@@ -127,7 +127,12 @@ void Logic::Button::setState(State state)
     }
 }
 
-void Logic::Button::render() const
+void Button::setAlpha(float alpha)
+{
+    renderInfo.alpha = alpha;
+}
+
+void Button::render() const
 {
     QueueRender(renderInfo);
 }

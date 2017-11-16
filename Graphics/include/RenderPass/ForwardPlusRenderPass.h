@@ -15,6 +15,10 @@ namespace Graphics
         );
         virtual ~ForwardPlusRenderPass() {};
 
+        virtual wchar_t* name() const override {
+            return L"ForwardPlusRenderPass";
+        }
+
         // Inherited via RenderPass
         virtual void render() const override;
         virtual void update(float deltaTime) override;

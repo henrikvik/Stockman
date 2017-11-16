@@ -36,7 +36,9 @@ EntityManager::EntityManager()
     m_frame = 0;
     m_aliveEnemies = 0;
     m_aiType = NORMAL_MODE;
+
     m_automaticTesting = false;
+    m_debugPath = false;
 
     //allocateData(); was here
     registerCreationFunctions();
@@ -142,6 +144,10 @@ void EntityManager::loadDebugCmds()
         m_automaticTesting = true;
         PATH_UPDATE_DIV = 1;
         return "TESTING ACTIVED (QUIT TO TURN OFF)";
+    });
+    DebugWindow::getInstance()->registerCommand("AI_TOGGLE_PATH", [&](std::vector<std::string> &para) -> std::string {
+        m_debugPath = !m_debugPath;
+        return "Path Toggled";
     });
     DebugWindow::getInstance()->registerCommand("AI_SPAWN_ENEMY", [&](std::vector<std::string> &para) -> std::string {
         try {
@@ -390,26 +396,24 @@ int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
 
 void EntityManager::render() const
 {
+    AStar &aStar = AStar::singleton();
     for (int i = 0; i < m_enemies.size(); ++i)
     {
         for (Enemy *enemy : m_enemies[i])
         {
             enemy->render();
-#ifdef DEBUG_PATH	
-            enemy->debugRendering();
-#endif
+            if (m_debugPath)  // should only be if _DEBUG is defined in the future
+                enemy->debugRendering();
         }
     }
 
     for (int i = 0; i < m_deadEnemies.size(); ++i)
     {
-#ifndef DISABLE_RENDERING_DEAD_ENEMIES
-     //   m_deadEnemies[i]->render();
-#endif
+     //   m_deadEnemies[i]->render(); // maybe add later
     }
 
     m_triggerManager.render();
-    AStar::singleton().renderNavigationMesh();
+    aStar.renderNavigationMesh();
 }
 
 const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const
