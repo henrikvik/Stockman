@@ -1,7 +1,7 @@
 #include <Projectile\Projectile.h>
 #include <Player\Player.h>
 #include <AI\Enemy.h>
-#include <AI\Trigger.h>
+#include <AI\Trigger\Trigger.h>
 #include <Physics\Physics.h>
 #define _USE_MATH_DEFINES
 #include <math.h>

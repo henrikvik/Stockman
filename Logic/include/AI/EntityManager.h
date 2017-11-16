@@ -5,7 +5,7 @@
 #include <thread>
 
 #include <AI/WaveManager.h>
-#include <AI/TriggerManager.h>
+#include <AI/Trigger/TriggerManager.h>
 
 #pragma region ClassDesc
 	/*

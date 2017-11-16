@@ -1,4 +1,4 @@
-#include <AI/Trigger.h>
+#include <AI/Trigger/Trigger.h>
 using namespace Logic;
 
 Trigger::Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable)

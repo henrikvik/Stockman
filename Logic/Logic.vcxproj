@@ -237,8 +237,8 @@
     <ClInclude Include="include\Entity\Effect.h" />
     <ClInclude Include="include\AI\Enemy.h" />
     <ClInclude Include="include\AI\EntityManager.h" />
-    <ClInclude Include="include\AI\Trigger.h" />
-    <ClInclude Include="include\AI\TriggerManager.h" />
+    <ClInclude Include="include\AI\Trigger\Trigger.h" />
+    <ClInclude Include="include\AI\Trigger\TriggerManager.h" />
     <ClInclude Include="include\Misc\Card.h" />
     <ClInclude Include="include\Misc\CardManager.h" />
     <ClInclude Include="include\Entity\Entity.h">
@@ -340,8 +340,8 @@
     <ClCompile Include="source\Entity\Effect.cpp" />
     <ClCompile Include="source\AI\Enemy.cpp" />
     <ClCompile Include="source\Map.cpp" />
-    <ClCompile Include="source\AI\Trigger.cpp" />
-    <ClCompile Include="source\AI\TriggerManager.cpp" />
+    <ClCompile Include="source\AI\Trigger\Trigger.cpp" />
+    <ClCompile Include="source\AI\Trigger\TriggerManager.cpp" />
     <ClCompile Include="source\Misc\RandomGenerator.cpp" />
     <ClCompile Include="source\Misc\Sound\NoiseMachine.cpp" />
     <ClCompile Include="source\Misc\Sound\SoundSource.cpp" />

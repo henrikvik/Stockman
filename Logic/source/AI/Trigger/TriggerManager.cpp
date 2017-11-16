@@ -1,4 +1,4 @@
-#include <AI/TriggerManager.h>
+#include <AI/Trigger/TriggerManager.h>
 #include <Physics\Physics.h>
 using namespace Logic;
 
