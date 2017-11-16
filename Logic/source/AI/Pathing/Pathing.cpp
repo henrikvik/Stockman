@@ -5,6 +5,8 @@ Pathing::Pathing()
 {
 	m_currentNode = 0;
     m_debugInfo.points = nullptr;
+
+    initDebugRendering(); // make it only in _DEBUG in the future
 }
 
 Pathing::~Pathing()
@@ -59,7 +61,7 @@ void Pathing::initDebugRendering()
 
 void Pathing::renderDebugging(DirectX::SimpleMath::Vector3 &start)
 {
-    if (m_debugInfo.points->size() > 1)
+    if (!m_path.empty())
     {
         m_debugInfo.points->clear();
         m_debugInfo.points->push_back(start);

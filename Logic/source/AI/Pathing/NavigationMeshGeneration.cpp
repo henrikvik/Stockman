@@ -10,13 +10,16 @@
 using namespace Logic;
 
 #define EPSILON 0.001f
+#define toSimple(vec) {vec.x(), vec.y(), vec.z()}
+
 const int NavigationMeshGeneration::AI_UID = 1061923, NavigationMeshGeneration::NO_ID = -5;
+const float NavigationMeshGeneration::SEED_CUBES = 100.f, NavigationMeshGeneration::PRECISION_BASE = 0.05f;
 int NavigationMeshGeneration::COUNTER = 0;
 const btVector3 NavigationMeshGeneration::unitDimension = { 0.2f, 0.2f, 0.2f }; // i know it is not 1, todo
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
-    precision = 0.05f;
+    precision = PRECISION_BASE;
     maxLength = 250.f;
     baseY = 0.5f;
 
@@ -149,7 +152,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     regions.reserve(1500); // THIS IS A TEMPORARY SOLUTION TO PREVENT MEMORY FOK UPS; MAKE A REAL SOLUTION
 
     printf("Seeding area..");
-    seedArea({ -125.f, 0.6f, -135.f }, { 250.f, 0.5f, 300.f }, 255.f, physics);
+    seedArea({ -125.f, 0.6f, -135.f }, { 250.f, 0.5f, 300.f }, SEED_CUBES, physics);
     printf("Seeding finished!\n");
 
     btCollisionObject *obj;
@@ -177,58 +180,17 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
             {
                 growRegion(region, growth[side]);
 
-                if (region.body) removeRigidBody(region.body, physics);
+                if (region.body) removeRigidBody(region.body);
                 region.body = physics.createBody(region.cube, 0.f);
-                for (int i = 0; i < physics.getNumCollisionObjects() && !region.collided[side] && !region.done; i++)
-                {
-                    obj = physics.getCollisionObjectArray()[i];
+                physics.removeRigidBody(region.body);
+                
+                handlePhysicsCollisionTest(region, physics, side);
+                handleRegionCollisionTest(region, physics, side);
 
-                    FunContactResult res(
-                        [&](btBroadphaseProxy* proxy) -> bool {
-                        if (!proxy->isConvex2d(TRIANGLE_MESH_SHAPE_PROXYTYPE) || !proxy->isConvex(TRIANGLE_MESH_SHAPE_PROXYTYPE))
-                        {
-                            printf("WARNING: NON CONVEX OBJECT!\nNAV MESH GENERATION UNDEFINED BEHAVIOR!\n");
-                            return false;
-                        }
-                        return true;
-                    },
-                        [&](btManifoldPoint& cp,
-                            const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-                            const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
-                    {
-                        if (abs(cp.getDistance()) > precision) return 0;
-                        if (staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
-                        {
-                            if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
-                            {
-                                if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // only support box shapes at the moment (other shapes can be "converted" to boxes)
-                                {
-                                    cp.m_localPointA += region.body->getWorldTransform().getOrigin();
-                                    CollisionReturn ret = handleCollision(cp.m_localPointA, region, staticObj, growth[side], growthNormals[side], bs);
-
-                                    switch (ret)
-                                    {
-                                    case ON_VERTEX:
-                                            split(region, physics, cp.m_localPointA, growthNormals[(side + 1) % SIDES]); // clockwise rotation
-                                        break;
-                                    }
-                                    if (ret != PROBLEMS_MY_DUDES) region.collided[side] = true;
-                                }
-                            }
-                        }
-                        else if (obj->getUserIndex() == AI_UID && obj->getUserIndex2() != region.buddyIndex && obj->getUserIndex() != region.userIndex)
-                        {
-                            shrinkRegion(region, growth[side]);
-                            region.collided[side] = true;
-                            region.addCollision(side, obj->getUserIndex2());
-                        }
-                        return 0;
-                    });
-                    physics.contactPairTest(region.body, obj, res);
-                }
                 distance += precision * 2;
             }
         }
+
         region.done = true;
         region.body->setUserIndex2(region.userIndex);
         region.body->setUserIndex(AI_UID);
@@ -307,6 +269,77 @@ std::pair<Cube, Cube> NavigationMeshGeneration::cutCube(btVector3 const &cutPoin
     return cubes;
 }
 
+void NavigationMeshGeneration::handlePhysicsCollisionTest(NavMeshCube &region, Physics &physics, int side)
+{
+    FunContactResult res(
+        [&](btBroadphaseProxy* proxy) -> bool {
+        if (!proxy->isConvex2d(TRIANGLE_MESH_SHAPE_PROXYTYPE) || !proxy->isConvex(TRIANGLE_MESH_SHAPE_PROXYTYPE))
+        {
+            printf("WARNING: NON CONVEX OBJECT!\nNAV MESH GENERATION UNDEFINED BEHAVIOR!\n");
+            return false;
+        }
+        return true;
+    },
+        [&](btManifoldPoint& cp,
+            const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+            const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+    {
+        if (abs(cp.getDistance()) > precision) return 0;
+        if (StaticObject* staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (colObj1->getCollisionObject()->getUserPointer())))
+        {
+            if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
+            {
+                if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // only support box shapes at the moment (other shapes can be "converted" to boxes)
+                {
+                    cp.m_localPointA += region.body->getWorldTransform().getOrigin();
+                    CollisionReturn ret = handleCollision(cp.m_localPointA, region, staticObj, growth[side], growthNormals[side], bs);
+
+                    switch (ret)
+                    {
+                    case ON_VERTEX:
+                        split(region, physics, cp.m_localPointA, growthNormals[(side + 1) % SIDES]); // clockwise rotation
+                        break;
+                    }
+                    if (ret != PROBLEMS_MY_DUDES) region.collided[side] = true;
+                }
+            }
+        }
+        return 0;
+    });
+
+    for (int i = 0; i < physics.getNumCollisionObjects() && !region.collided[side] && !region.done; i++)
+        physics.contactPairTest(region.body, physics.getCollisionObjectArray()[i], res);
+}
+
+void NavigationMeshGeneration::handleRegionCollisionTest(NavMeshCube &region, Physics &physics, int side)
+{
+    FunContactResult resRegions(
+        [&](btBroadphaseProxy* proxy) -> bool {
+        return true;
+    },
+        [&](btManifoldPoint& cp,
+            const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+            const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+    {
+        if (abs(cp.getDistance()) < precision)
+        {
+            const btCollisionObject *obj = colObj1->getCollisionObject();
+
+            region.collided[side] = true;
+            region.addCollision(side, obj->getUserIndex2());
+        }
+
+        return 0;
+    });
+
+    for (auto &other : regions)
+        if (&other != &region && other.userIndex != region.buddyIndex)
+            physics.contactPairTest(region.body, other.body, resRegions);
+
+    if (region.collided[side]) // can be close to multiple regions
+        shrinkRegion(region, growth[side]);
+}
+
 void NavigationMeshGeneration::shrinkRegion(NavMeshCube &region, Growth const &growth)
 {
     region.cube.setDimensions(region.cube.getDimensions() - growth.dimensionChange);
@@ -343,6 +376,16 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(NavigationMesh &nav, Physi
     int index, userId;
     btVector3 top, bot, test;
     bool cutBot;
+
+    for (size_t t = 0; t < regions.size(); t++) // remove bad seeds
+        if (regions[t].remove)
+        {
+            std::swap(regions[t], regions[regions.size() - 1]);
+            regions.pop_back();
+            t--;
+        }
+    
+    /*
     for (auto &region : regions) // two loops, rip
     {
         for (int side = 0; side < SIDES; side++)  // this is just awful, should optimize
@@ -362,26 +405,18 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(NavigationMesh &nav, Physi
                         if (top < regions[index].cube.getPos() + regions[index].cube.getDimensionsRef())
                         {
                             physics.createBody(Sphere(top, { 0.f, 0.f, 0.f }, 1.f), 0);
-                        //    split(regions[index], physics, top, growthNormals[static_cast<int> (abs(side - 1)) % SIDES]);
+                            split(regions[index], physics, top, growthNormals[static_cast<int> (abs(side - 1)) % SIDES]);
                         }
                         if (cutBot)
                         {
                             physics.createBody(Sphere(bot, { 0.f, 0.f, 0.f }, 1.f), 0);
-                            //  split(regions, regions[index], physics, bot, growthNormals[static_cast<int> (abs(side - 1))]);
+                            split(regions[index], physics, bot, growthNormals[static_cast<int> (abs(side + 1)) % SIDES]);
                         }
                     }
                 }
             }
         }
-    }
-
-    for (size_t t = 0; t < regions.size(); t++) // remove bad seeds
-        if (regions[t].remove)
-        {
-            std::swap(regions[t], regions[regions.size() - 1]);
-            regions.pop_back();
-            t--;
-        }
+    } */
 
     for (auto &region : regions) // add remaining to navigation mesh
     {
@@ -389,7 +424,7 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(NavigationMesh &nav, Physi
         std::pair<Triangle, Triangle> triPair = toTriangle(cube);
 
         if (region.body)
-            removeRigidBody(region.body, physics);
+            removeRigidBody(region.body);
 
         nav.addTriangle(toNavTriangle(triPair.first));
         nav.addTriangle(toNavTriangle(triPair.second));
@@ -397,20 +432,18 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(NavigationMesh &nav, Physi
 
     nav.createNodesFromTriangles();
     
+    int regionIndex, otherIndex;
     for (size_t t = 0; t < regions.size(); t++) // create nodes beetwen them
     {
         auto &region = regions[t];
-        nav.addEdge(t * 2, t * 2 + 1);
+        regionIndex = static_cast<int> (t);
+        nav.addDoubleEdge(t * 2, t * 2 + 1, { 0,0,0 });
 
-        for (int i : region.collidedWithIndex[X_MINUS])
-            nav.addDoubleEdge(t * 2, getRegion(i) * 2);
-        for (int i : region.collidedWithIndex[Z_MINUS])
-            nav.addDoubleEdge(t * 2, getRegion(i) * 2);
-        for (int i : region.collidedWithIndex[X_PLUS])
-            nav.addDoubleEdge(t * 2 + 1, getRegion(i) * 2 + 1);
-        for (int i : region.collidedWithIndex[Z_PLUS])
-            nav.addDoubleEdge(t * 2 + 1, getRegion(i) * 2 + 1);
-    } 
+        for (int side = 0; side < SIDES; side++)
+            for (int id : region.collidedWithIndex[side])
+                if ((otherIndex = getRegion(id)) > -1)
+                    createEdgeBeetwen(nav, regionIndex, otherIndex, static_cast<GrowthType> (side));
+    }  
 }
 
 void NavigationMeshGeneration::growRegion(NavMeshCube &region, Growth const &growth)
@@ -475,10 +508,8 @@ void NavigationMeshGeneration::split(NavMeshCube &cube, Physics &physics, btVect
     regions.push_back(cube1);
 }
 
-void NavigationMeshGeneration::removeRigidBody(btRigidBody *&body, Physics &physics)
+void NavigationMeshGeneration::removeRigidBody(btRigidBody *&body)
 {
-    physics.removeRigidBody(body);
-
     delete body->getMotionState();
     delete body->getCollisionShape();
     delete body;
@@ -503,6 +534,7 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
     btCollisionObject *obj;
 
     btRigidBody *temp = physics.createBody(cube.cube, 0);
+    physics.removeRigidBody(temp);
     for (int i = 0; i < physics.getNumCollisionObjects() && !collision; i++)
     {
         obj = physics.getCollisionObjectArray()[i];
@@ -530,7 +562,7 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
         });
         physics.contactPairTest(temp, obj, res);
     }
-    removeRigidBody(temp, physics);
+    removeRigidBody(temp);
     return collision;
 }
 
@@ -552,6 +584,46 @@ void NavigationMeshGeneration::seedArea(btVector3 position, btVector3 fullDimens
             {
                 regions.push_back(cube);
             }
+        }
+    }
+}
+
+void NavigationMeshGeneration::createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, GrowthType side)
+{
+    NavMeshCube &reg1 = regions[r1];
+    NavMeshCube &reg2 = regions[r2];
+    DirectX::SimpleMath::Vector3 con;
+    btVector3 vec1 = reg1.cube.getPos() + getDimension(reg1, side),
+              vec2 = reg2.cube.getPos() + getDimension(reg2, side + 2 % SIDES);
+
+    btVector3 half1 = getDimension(reg1, side + 1 % SIDES),
+              half2 = getDimension(reg2, side + 3 % SIDES);
+
+    btVector3 to = vec2 - vec1;
+    float dot = to.dot(half1);
+
+    if (side == X_MINUS || side == Z_MINUS)
+    {
+        if (std::abs(dot) <= 1.f)
+            nav.addDoubleEdge(r1 * 2, r2 * 2, toSimple(vec2));
+        else
+        {
+            if (dot > 0.f)
+                nav.addDoubleEdge(r1 * 2, r2 * 2, toSimple((vec1 + half1 + half2 * btScalar(0.5f))));
+            else
+                nav.addDoubleEdge(r1 * 2, r2 * 2, toSimple((vec1 + half1 - half2 * btScalar(0.5f))));
+        }
+    }
+    else
+    {
+        if (std::abs(dot) <= 1.f)
+            nav.addDoubleEdge(r1 * 2 + 1, r2 * 2 + 1, toSimple(vec2));
+        else
+        {
+            if (dot > 0.f)
+                nav.addDoubleEdge(r1 * 2 + 1, r2 * 2 + 1, toSimple((vec1 + half1 + half2 * btScalar(0.5f))));
+            else
+                nav.addDoubleEdge(r1 * 2 + 1, r2 * 2 + 1, toSimple((vec1 + half1 - half2 * btScalar(0.5f))));
         }
     }
 }
