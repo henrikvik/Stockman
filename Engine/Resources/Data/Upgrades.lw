@@ -19,7 +19,16 @@
 { // Burning effect
 	"flags": 4096; // 0x1000
 	"increaseCooldown" : 0f;
-	"increaseDamage" : 1;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 0;
+    "movementSpeed" : 0f;
+}
+{ // Freezing strength
+	"flags": 4096; // 0x1000
+	"increaseCooldown" : 0f;
+	"increaseDamage" : 0;
 	"increaseSize" : 0;
 	"increaseAmmoCap" : 0;
 	"increaseMagSize" : 0;

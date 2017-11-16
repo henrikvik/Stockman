@@ -83,7 +83,7 @@
 	"status0" : 16;
 }
 {
-	"cardName" : "Increase Weapon fire-rate";
+	"cardName" : "Increase Weapon Fire-rate";
 	"description" : "Increase the speed of which you can shoot for all weapons";
 	"texture" : "b";
 
@@ -109,4 +109,32 @@
 	"statusAmount" : 1;
 	"statusType" : 0;
 	"status0" : 19;
+}
+{
+	"cardName" : "Increase Jump Height";
+	"description" : "Increase the jump strength the player has";
+	"texture" : "b";
+
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+
+	"statusAmount" : 1;
+	"statusType" : 0;
+	"status0" : 20;
+}
+{
+	"cardName" : "Crossbow - Fire Damage";
+	"description" : "Crossbow fires fire arows which gives the enemies a damage over time effect (can stack)";
+	"texture" : "b";
+
+	"xTexStart" : 1.0f;
+	"yTexStart" : 1.0f;
+	"xTexEnd" : 0.0f;
+	"yTexEnd" : 0.0f;
+
+	"statusAmount" : 1;
+	"statusType" : 1;
+	"status0" : 2;
 }
