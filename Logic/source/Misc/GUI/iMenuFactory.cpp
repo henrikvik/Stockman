@@ -86,7 +86,7 @@ iMenuSkillPick* iMenuFactory::buildMenuSkill()
 
 iMenu * iMenuFactory::buildMenuCard()
 {
-    iMenu* menu = newd iMenu(iMenu::Card);
+    iMenu* menu = newd iMenu(iMenu::CardSelect);
     iMenu::ButtonData btn;
 
     menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));

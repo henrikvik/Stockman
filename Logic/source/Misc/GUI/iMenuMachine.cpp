@@ -50,7 +50,12 @@ void iMenuMachine::removeActiveMenu()
 void iMenuMachine::queueMenu(iMenu::MenuGroup group)
 {
     if (m_currentMenuType != group)
+    {
         m_queuedMenuType = group;
+        
+        if (m_activeMenu)
+            m_activeMenu->fadeOut();
+    }
 }
 
 void iMenuMachine::swapMenu()
@@ -63,12 +68,13 @@ void iMenuMachine::swapMenu()
     case iMenu::MenuGroup::Start:       m_activeMenu = m_factory->buildMenuStart();                       break;
     case iMenu::MenuGroup::Settings:    m_activeMenu = m_factory->buildMenuSettings();                    break;
     case iMenu::MenuGroup::Highscore:   m_activeMenu = m_factory->buildMenuHighscore();                   break;
-    case iMenu::MenuGroup::Card:        m_activeMenu = m_factory->buildMenuCard();                        break;
+    case iMenu::MenuGroup::CardSelect:  m_activeMenu = m_factory->buildMenuCard();                        break;
     case iMenu::MenuGroup::Skill:       m_activeMenu = m_factory->buildMenuSkill();                       break;
     case iMenu::MenuGroup::GameOver:    m_activeMenu = m_factory->buildMenuGameover();                    break;
     default: break;
     }
 
+    if (m_activeMenu) m_activeMenu->fadeIn();
     m_currentMenuType = m_queuedMenuType;
 }
 
@@ -76,8 +82,19 @@ void iMenuMachine::update(float deltaTime)
 {
     if (wantsToSwap())
     {
-        swapMenu();
-        return;
+        if (m_activeMenu)
+        {
+            if (m_activeMenu->getIsSafeToRemove())
+            {
+                swapMenu();
+                return;
+            }
+        }
+        else
+        {
+            swapMenu();
+            return;
+        }
     }
 
     static DirectX::SimpleMath::Vector3 movingCameraPosition(0, 2, 0);
@@ -89,7 +106,7 @@ void iMenuMachine::update(float deltaTime)
     {
         int x = DirectX::Mouse::Get().GetState().x;
         int y = DirectX::Mouse::Get().GetState().y;
-        m_activeMenu->update(x, y);
+        m_activeMenu->update(x, y, deltaTime);
 
         bool shouldModifyCamera = false;
 

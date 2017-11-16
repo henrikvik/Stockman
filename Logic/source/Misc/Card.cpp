@@ -2,28 +2,17 @@
 
 using namespace Logic;
 
-Card::Card()
-{
-	m_name = "";
-	m_texture = "";
-	m_description = "";
-	m_texStart = DirectX::SimpleMath::Vector2(0.0f,0.0f);
-	m_texEnd = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
-	m_statusType = UPGRADE;
-}
-
 Card::Card(std::string name, std::string texture, std::string description,
     std::vector<int> statusIds, DirectX::SimpleMath::Vector2 texStart,
-    DirectX::SimpleMath::Vector2 texEnd, int statusType)
+    DirectX::SimpleMath::Vector2 texEnd, int statusType, int category)
     :   m_name(name), m_texture(texture), m_description(description),
         m_statusIds(statusIds), m_texStart(texStart), m_texEnd(texEnd),
-        m_statusType(static_cast<StatusType> (statusType)) {
+        m_statusType(static_cast<StatusType> (statusType)), 
+        m_category(static_cast<CardCategory>(category)){
 
 }
 
-Card::~Card() 
-{ 
-}
+Card::~Card() { }
 
 std::string Card::getName() const 
 { 
@@ -55,4 +44,9 @@ DirectX::SimpleMath::Vector2 Logic::Card::getTexEnd() const
 Card::StatusType Card::getStatusType() const
 {
 	return m_statusType;
+}
+
+Card::CardCategory Card::getCategory() const
+{
+    return m_category;
 }
