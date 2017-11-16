@@ -10,7 +10,7 @@
 #include <imgui.h>
 #endif
 
-#define CAMERA_MOVE_SPEED           0.00085f // The speed of the camera movement
+#define CAMERA_MOVE_SPEED           0.00055f // The speed of the camera movement
 #define CAMERA_START_POSITION       DirectX::SimpleMath::Vector3(6.941, 5.6, -4.141)
 #define CAMERA_START_FORWARD        DirectX::SimpleMath::Vector3(-0.2, -0.153, 0.258)
 #define CAMERA_SETTINGS_POSITION    DirectX::SimpleMath::Vector3(5.294, 1.843, -10.0)
