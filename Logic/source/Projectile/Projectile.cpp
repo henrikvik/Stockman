@@ -146,6 +146,7 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     {
     // Special effects
     case ProjectileTypeIce:
+
         enemy->getStatusManager().addStatus(
             /* Adding Freeze effect */          StatusManager::FREEZE,
             /* Number of stacks */              1,
