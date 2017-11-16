@@ -20,6 +20,8 @@ namespace Graphics
         virtual void update(float deltaTime) override;
 
     private:
-        Shader staticForwardPlus;
+        Shader forward_plus_ps;
+        Shader forward_plus_vs_static;
+        Shader forward_plus_vs_animated;
     };
 }

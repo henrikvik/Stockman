@@ -67,7 +67,7 @@ void Graphics::DebugRenderPass::update(float deltaTime)
                 *dest++ = vertex;
                 points++;
 
-                if (points > INSTANCE_CAP(DebugRenderInfo)) throw "instance cap exceeded";
+                if (points > INSTANCE_CAP(DebugRenderInfo)) return;
             }
         }
 
@@ -82,7 +82,7 @@ void Graphics::DebugRenderPass::update(float deltaTime)
                 *dest++ = vertex;
                 points++;
 
-                if (points > INSTANCE_CAP(DebugRenderInfo)) throw "instance cap exceeded";
+                if (points > INSTANCE_CAP(DebugRenderInfo)) return;
             }
         }
     });

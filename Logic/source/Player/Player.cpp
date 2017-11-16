@@ -245,8 +245,9 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     if (flags & Effect::EFFECT_MODIFY_HP)
     {
         m_hp += static_cast<int> (effect.getModifiers()->modifyHP);
+        if (m_hp > 3) m_hp = 3;
     }
-	if (flags & Effect::EFFECT_MODIFY_AMMO)
+ 	if (flags & Effect::EFFECT_MODIFY_AMMO)
 	{
         WeaponManager::WeaponLoadout* wp = nullptr;
         if(effect.getSpecifics()->ammoType == 0)

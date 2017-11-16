@@ -21,10 +21,12 @@ namespace Resources
     {
         enum Files
         {
+            IslandScene,
             Scene
         };
         const std::map<Files, const char *> Paths =
         {
+            {IslandScene, R"(..\Resources\Maps\IslandScene.toml)"},
             {Scene, R"(..\Resources\Maps\Scene.toml)"}
         };
     }
@@ -34,9 +36,11 @@ namespace Resources
         {
             Ammocrystal,
             AmmoPackCrossBolt,
+            AnimatedSummonUnit,
             Crossbow,
             CrossBowProjectile,
             Hammer,
+            Island,
             SkySphere,
             Staff,
             StaticSummon,
@@ -47,9 +51,11 @@ namespace Resources
         {
             {Ammocrystal, R"(..\Resources\Models\Ammocrystal.hyb)"},
             {AmmoPackCrossBolt, R"(..\Resources\Models\AmmoPackCrossBolt.hyb)"},
+            {AnimatedSummonUnit, R"(..\Resources\Models\AnimatedSummonUnit.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
             {CrossBowProjectile, R"(..\Resources\Models\CrossBowProjectile.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
+            {Island, R"(..\Resources\Models\Island.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
@@ -69,6 +75,7 @@ namespace Resources
             DoFGlue,
             ForwardPlus,
             ForwardPlus_PS,
+            ForwardPlus_VS_Animated,
             ForwardPlus_VS_Static,
             FullscreenQuad,
             GlowBlurHorizontal,
@@ -95,6 +102,7 @@ namespace Resources
             {DoFGlue, R"(..\Resources\Shaders\DoFGlue.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
             {ForwardPlus_PS, R"(..\Resources\Shaders\ForwardPlus_PS.hlsl)"},
+            {ForwardPlus_VS_Animated, R"(..\Resources\Shaders\ForwardPlus_VS_Animated.hlsl)"},
             {ForwardPlus_VS_Static, R"(..\Resources\Shaders\ForwardPlus_VS_Static.hlsl)"},
             {FullscreenQuad, R"(..\Resources\Shaders\FullscreenQuad.hlsl)"},
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
@@ -111,17 +119,6 @@ namespace Resources
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
             {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
-        namespace include
-        {
-            enum Files
-            {
-                ParticleShared
-            };
-            const std::map<Files, const char *> Paths =
-            {
-                {ParticleShared, R"(..\Resources\Shaders\include\ParticleShared.hlsl)"}
-            };
-        }
     }
     namespace Textures
     {
@@ -150,6 +147,7 @@ namespace Resources
             Skillpickbackground,
             Skillpicksheet,
             Spellsheet,
+            WaveComplete,
             weaponsheet
         };
         const std::map<Files, const char *> Paths =
@@ -177,6 +175,7 @@ namespace Resources
             {Skillpickbackground, R"(..\Resources\Textures\Skillpickbackground.dds)"},
             {Skillpicksheet, R"(..\Resources\Textures\Skillpicksheet.dds)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
+            {WaveComplete, R"(..\Resources\Textures\WaveComplete.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };
     }
