@@ -63,6 +63,8 @@ void Trigger::updateSpecific(float deltaTime)
 	}
 
     updateSpecificType(deltaTime);
+
+    animatedRenderInfo.transform = getTransformMatrix();
 }
 
 // Collision with the player, give player the effect

@@ -103,7 +103,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
 	float pitch = asin(-forward.getY()) - M_PI * 0.5f;
 	float yaw = atan2(forward.getX(), forward.getZ());
     //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
-	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), 0));
+	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - M_PI, 0));
 
 	// Set gravity modifier
 	body->setGravity(pData.gravityModifier * m_physPtr->getGravity());
