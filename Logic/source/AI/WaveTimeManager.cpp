@@ -19,11 +19,11 @@ void WaveTimeManager::reset()
     m_waveCurrent = 0;
 
     m_timeCurrent = 0.f;
-    m_timeRequired = 0.f;
 
     m_onLastWave = false;
     m_enraged = false;
-    m_onTransition = true;
+
+    startTransition();
 }
 
 // Returns true if a transition is happening
@@ -33,19 +33,22 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
     {
         m_timeCurrent += deltaTime;
 
-        if (m_onTransition && m_timeCurrent > m_timeRequired)
+        if (m_onTransition) 
         {
-            entityManager.deallocateData(false);
-            entityManager.spawnWave(m_waveCurrent++);
+            if (m_timeCurrent > m_timeRequired)
+            {
+                entityManager.deallocateData(false);
+                entityManager.spawnWave(m_waveCurrent++);
 
-            m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent);
-            m_timeCurrent = 0;
+                m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent);
+                m_timeCurrent = 0;
 
-            // If the player have completed all the waves
-            if (m_waveCurrent == entityManager.getWaveManager().getWaveInformation().nrOfWaves)
-                m_onLastWave = true;
+                // If the player have completed all the waves
+                if (m_waveCurrent == entityManager.getWaveManager().getWaveInformation().nrOfWaves)
+                    m_onLastWave = true;
 
-            m_onTransition = false;
+                m_onTransition = false;
+            }
         }
         else
         {
@@ -61,8 +64,7 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
                     if (!m_enraged) {
                         m_onTransition = true;
 
-                        m_timeRequired = TRANSITION_TIME;
-                        m_timeCurrent = 0;
+                        startTransition();
 
                         return true;
                     }
@@ -92,4 +94,20 @@ float WaveTimeManager::getTimeRequired() const
 bool WaveTimeManager::onLastWave() const
 {
     return m_onLastWave;
+}
+
+bool WaveTimeManager::isEnraged() const
+{
+    return m_enraged;
+}
+
+bool WaveTimeManager::isTransitioning() const
+{
+    return m_onTransition;
+}
+
+void WaveTimeManager::startTransition()
+{
+    m_onTransition = true;
+    m_timeRequired = TRANSITION_TIME;
 }

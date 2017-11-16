@@ -19,13 +19,17 @@ namespace Logic
         virtual ~WaveTimeManager();
 
         bool update(float deltaTime, EntityManager &entityManager);
+
         void reset();
+        void startTransition();
 
         int getCurrentWave() const;
         float getTimeCurrent() const;
         float getTimeRequired() const;
 
         bool onLastWave() const;
+        bool isEnraged() const;
+        bool isTransitioning() const;
     };
 };
 
