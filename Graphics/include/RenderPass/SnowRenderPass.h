@@ -16,6 +16,10 @@ namespace Graphics
             ID3D11DepthStencilView * depthStencil = nullptr);
         virtual ~SnowRenderPass() {};
 
+        virtual wchar_t* name() const override {
+            return L"SnowRenderPass";
+        }
+
         void update(float deltaTime);
         void render() const;
 

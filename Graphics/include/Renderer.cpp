@@ -65,8 +65,9 @@ namespace Graphics
 
         , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
         , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
-        , sun()
+        , sun(),
 #pragma endregion
+        DebugAnnotation(nullptr)
 
 
 #pragma region CaNCeR!
@@ -162,7 +163,10 @@ namespace Graphics
         }
 
 #pragma endregion
-
+        HRESULT hr = Global::context->QueryInterface(IID_PPV_ARGS(&DebugAnnotation));
+        if (!SUCCEEDED(hr)) {
+            // failed to aquire debug annotation
+        }
 
         this->backBuffer = backBuffer;
 
@@ -271,6 +275,7 @@ namespace Graphics
         SAFE_RELEASE(Global::transparencyBlendState);
         SAFE_RELEASE(lightOpaqueGridUAV);
         SAFE_RELEASE(lightOpaqueGridSRV);
+        SAFE_RELEASE(DebugAnnotation);
 
         for (auto & renderPass : renderPasses)
         {
@@ -331,7 +336,9 @@ namespace Graphics
 
         for (auto & renderPass : renderPasses)
         {
+            if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
             renderPass->render();
+            if (DebugAnnotation) DebugAnnotation->EndEvent();
         }
     }
 

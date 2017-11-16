@@ -9,6 +9,10 @@ namespace Graphics
         ParticleDepthRenderPass(ID3D11DepthStencilView *depthStencil);
         virtual ~ParticleDepthRenderPass() {};
 
+        virtual wchar_t* name() const override {
+            return L"ParticleDepthRenderPass";
+        }
+
         virtual void render() const override;
         virtual void update(float deltaTime) override;
     };
@@ -25,6 +29,10 @@ namespace Graphics
             ID3D11Buffer *lightBuffer,
             ID3D11DepthStencilView *depthStencil);
         virtual ~ParticleRenderPass() {};
+
+        virtual wchar_t* name() const override {
+            return L"ParticleRenderPass";
+        }
 
         virtual void render() const override;
         virtual void update(float deltaTime) override;
