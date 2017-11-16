@@ -10,6 +10,7 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
+	"category" : 1;
 	"status0" : 8;
 }
 {

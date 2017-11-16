@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+// Why is this a class?
+// There's no functions only get-functions, would be more fitting as a struct
 
 namespace Logic
 {
@@ -17,10 +19,14 @@ namespace Logic
             EFFECT, UPGRADE
         };
 
-		Card();
+        enum CardCategory
+        {
+            ATTACK, DEFENCE, UTILITY
+        };
+
 		Card(std::string name, std::string texture, std::string description,
             std::vector<int> m_statusIDs, DirectX::SimpleMath::Vector2 texStart,
-            DirectX::SimpleMath::Vector2 texEnd, int statusType);
+            DirectX::SimpleMath::Vector2 texEnd, int statusType, int category);
 		~Card();
 
 		std::string getName() const;
@@ -29,6 +35,7 @@ namespace Logic
 
 		const std::vector<int>& getStatusIds() const;
 		StatusType getStatusType() const;
+        CardCategory getCategory() const;
 
 		DirectX::SimpleMath::Vector2 getTexStart() const;
 		DirectX::SimpleMath::Vector2 getTexEnd() const;
@@ -42,6 +49,7 @@ namespace Logic
 		DirectX::SimpleMath::Vector2 m_texStart;
 		DirectX::SimpleMath::Vector2 m_texEnd;
 
+        CardCategory m_category;
         StatusType m_statusType;
 	};
 }

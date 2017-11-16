@@ -11,13 +11,17 @@ namespace Logic
 {
 	class NavigationMesh
 	{
-	public:
+	    public:
+            // Edges: List Of Edge. Edge = a connectionNode and the index it is connected to
+            struct Edge {
+                int index;
+                DirectX::SimpleMath::Vector3 connectionNode;
+            };
+            typedef std::vector<Edge> Edges;
+
 			struct Triangle {
 				int id;
 				DirectX::SimpleMath::Vector3 vertices[3];
-			};
-			struct Edge {
-				std::vector<int> indices;
 			};
 
 			NavigationMesh();
@@ -31,9 +35,10 @@ namespace Logic
 			int addTriangle(Triangle const &triangle);
             void addEdge(int from, int to);
             // from <--> to
-            void addDoubleEdge(int from, int to);
+            void addDoubleEdge(int from, int to, DirectX::SimpleMath::Vector3 edgeNode);
             void generateEdges();
-			std::vector<int>& getEdges(int from);
+
+            Edges& NavigationMesh::getEdges(int from);
 			void createNodesFromTriangles();
 			
 			// returns int of the index that has this pos in it
@@ -43,14 +48,13 @@ namespace Logic
 
 			const std::vector<Triangle>& getList() const;
 			const std::vector<DirectX::SimpleMath::Vector3>& getNodes() const;
+
 			std::vector<DirectX::SimpleMath::Vector3>* getRenderDataTri();
 			std::vector<DirectX::SimpleMath::Vector3>* getRenderDataEdges();
-
-			const std::vector<Edge>& getEdges() const;
 		private:
 			std::vector<Triangle> triangleList;
 			std::vector<DirectX::SimpleMath::Vector3> nodes;
-			std::vector<Edge> edges;
+			std::vector<Edges> listEdges;
 
 			static const DirectX::SimpleMath::Vector3 dir;
 	};

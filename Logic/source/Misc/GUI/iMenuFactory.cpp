@@ -86,7 +86,7 @@ iMenuSkillPick* iMenuFactory::buildMenuSkill()
 
 iMenu * iMenuFactory::buildMenuCard()
 {
-    iMenu* menu = newd iMenu(iMenu::Card);
+    iMenu* menu = newd iMenu(iMenu::CardSelect);
     iMenu::ButtonData btn;
 
     menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));
@@ -114,8 +114,9 @@ iMenu * iMenuFactory::buildMenuGameover()
     iMenu* menu = newd iMenu(iMenu::GameOver);
     iMenu::ButtonData btn;
 
-    // Add background
-    // Add buttons
+    menu->addBackground(Resources::Textures::MainmenuClean, 0.70f);
+    menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
+    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
 
     return menu;
 }
@@ -134,9 +135,14 @@ iMenu::ButtonData iMenuFactory::buildButton(std::string name, std::function<void
             btn.screenRect.bottomRight = DirectX::SimpleMath::Vector2((button.floats.at("width") + button.floats.at("xPos")) / WIN_WIDTH, (button.floats.at("height") + button.floats.at("yPos")) / WIN_WIDTH);
             btn.texRectNormal.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("xTexStart"), button.floats.at("yTexStart"));
             btn.texRectNormal.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("xTexEnd"), button.floats.at("yTexEnd"));
-            btn.texRectHover.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("xTexStart"), button.floats.at("yTexStart") + button.floats.at("activeOffset"));
+            btn.texRectHover.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("hoverXTexStart"), button.floats.at("hoverYTexStart"));
+            btn.texRectHover.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("hoverXTexEnd"), button.floats.at("hoverYTexEnd"));
+            btn.texRectActive.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("activeXTexStart"), button.floats.at("activeYTexStart"));
+            btn.texRectActive.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("activeXTexEnd"), button.floats.at("activeYTexEnd"));
+           
+            /*btn.texRectHover.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("xTexStart"), button.floats.at("yTexStart") + button.floats.at("activeOffset"));
             btn.texRectHover.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("xTexEnd"), button.floats.at("yTexEnd") + button.floats.at("activeOffset"));
-            btn.texRectActive = btn.texRectHover;
+            btn.texRectActive = btn.texRectHover;*/
             btn.texture = LookUp.at(button.ints.at("texture")); 
         }
     }

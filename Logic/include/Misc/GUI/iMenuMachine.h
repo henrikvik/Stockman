@@ -20,7 +20,10 @@ namespace Logic
         iMenu* getActiveMenu()              { return m_activeMenu;      }
         iMenu::MenuGroup getType() const    { return m_currentMenuType; }
 
+        void setDeathPosition(DirectX::SimpleMath::Vector3 position) { m_deathPosition = position; }
+
     private:
+        DirectX::SimpleMath::Vector3 m_deathPosition; // testing a thing
         iMenu::MenuGroup m_queuedMenuType;
         iMenu::MenuGroup m_currentMenuType;
         iMenuFactory* m_factory;

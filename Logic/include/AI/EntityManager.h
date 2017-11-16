@@ -49,7 +49,7 @@ namespace Logic
         EnemyThreadHandler *m_threadHandler; // Just because i want to delete it when i want
 
         int m_frame, m_aliveEnemies;
-        bool m_automaticTesting;
+        bool m_automaticTesting, m_debugPath;
 
         AIType m_aiType;
 		float m_deltaTime;

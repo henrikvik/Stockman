@@ -41,11 +41,11 @@ void StatePrimary::reset()
 // Update the logic inside state, also checking if we should load next state
 void StatePrimary::update(float deltaTime)
 {
-    if (m_currentState)
-        m_currentState->update(deltaTime);
-
     if (m_wantToSwitchToType != m_currentStateType)
         loadState(m_wantToSwitchToType);
+
+    if (m_currentState)
+        m_currentState->update(deltaTime);
 }
 
 // Render everything in the currently active state

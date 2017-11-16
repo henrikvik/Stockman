@@ -14,6 +14,10 @@ namespace Graphics
             ID3D11DepthStencilView * depthStencil = nullptr);
         virtual ~FullScreenPass() {};
 
+        virtual wchar_t* name() const override {
+            return L"FullScreenPass";
+        }
+
         void update(float deltaTime) {};
         void render() const;
 

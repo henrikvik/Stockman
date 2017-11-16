@@ -35,8 +35,8 @@ Logic::Button::Button(
     std::function<void(void)> callback
 )
     : inactive(inactive)
-    , active(active)
-    , hover(hover)
+    , active(hover)
+    , hover(active)
     , callback(callback)
 {
     m_animationStart = DirectX::SimpleMath::Vector2(0,0);
@@ -69,21 +69,33 @@ void Button::updateOnPress(int posX, int posY)
 {
 	if (callback && renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
 	{
-        setState(ACTIVE);
+        if (this->state != ACTIVE)
+        {
+            setState(ACTIVE);
+        }
+        else
+        {
+            setState(INACTIVE);
+        }
+        
         callback();
 	}
 }
 
 void Button::hoverOver(int posX, int posY)
 {
-    if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
+    if (this->state != ACTIVE)
     {
-        setState(HOVER);
+        if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
+        {
+            setState(HOVER);
+        }
+        else
+        {
+            setState(INACTIVE);
+        }
     }
-    else
-    {
-        setState(INACTIVE);
-    }
+   
 
 }
 
@@ -127,7 +139,12 @@ void Logic::Button::setState(State state)
     }
 }
 
-void Logic::Button::render() const
+void Button::setAlpha(float alpha)
+{
+    renderInfo.alpha = alpha;
+}
+
+void Button::render() const
 {
     QueueRender(renderInfo);
 }

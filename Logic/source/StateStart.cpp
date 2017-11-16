@@ -25,7 +25,8 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
     m_physics->init();
     m_map = newd Map();
-    m_map->init(m_physics, "Campfire.txt");
+    m_map->init(m_physics);
+    m_map->loadStartMenuScene();
 
     // Initializing Highscore Manager
     m_highScoreManager = newd HighScoreManager();
@@ -53,7 +54,6 @@ void StateStart::reset() { }
 
 void StateStart::update(float deltaTime)
 {
-    DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_ABSOLUTE);
     Graphics::FXSystem->processEffect(&m_campfire, DirectX::XMMatrixTranslation(0, 0, 0), deltaTime / 1000.f);
 
     PROFILE_BEGIN("Physics");

@@ -4,9 +4,29 @@
 
 using namespace Logic;
 
-iMenu::iMenu(MenuGroup group) : m_group(group) , m_drawButtons(false), m_drawMenu(false), m_pressed(true) { }
+#define FADING_TIMER 300.f
+
+iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
 
 iMenu::~iMenu() { }
+
+// Starts the fadeIn animation, menu's can't be changed/removed during this time
+void iMenu::fadeIn()
+{
+    m_isFading      = true;
+    m_safeToRemove  = false;
+    m_fader.startFadeIn(FADING_TIMER);
+    setAlpha(0.f);
+}
+
+// Starts the fadeOut animation, menu's can't be changed/removed during this time
+void iMenu::fadeOut()
+{
+    m_isFading      = true;
+    m_safeToRemove  = false;
+    m_fader.startFadeOut(FADING_TIMER);
+    setAlpha(1.f);
+}
 
 // Adds a texture on as a background, covering the full screen
 void iMenu::addBackground(Resources::Textures::Files texture, float alpha)
@@ -33,10 +53,27 @@ void iMenu::addButton(ButtonData btn)
 }
 
 // Updates the buttons of this menu
-void iMenu::update(int x, int y)
+void iMenu::update(int x, int y, float deltaTime)
 {
-    updateClick(x, y);
-    updateHover(x, y);
+    DirectX::Mouse::Get().SetMode(m_mouseMode);
+
+    if (m_isFading)
+    {
+        m_fader.update(deltaTime);
+        setAlpha(m_fader.getCurrentPercentage());
+
+        if (m_fader.complete)
+        {
+            m_isFading = false;
+            if (m_fader.style == Fader::FadeOut)
+                m_safeToRemove = true;
+        }
+    }
+    else
+    {
+        updateClick(x, y);
+        updateHover(x, y);
+    }
 }
 
 // Updates the buttons on-press states of this menu
@@ -71,4 +108,12 @@ void iMenu::render() const
     if (m_drawButtons)
         for (const Button& btn : m_buttons)
             btn.render();
+}
+
+// Sets alpha on both menu's and buttons
+void iMenu::setAlpha(float alpha)
+{
+    m_background.alpha = alpha;
+    for (Button& btn : m_buttons)
+        btn.setAlpha(alpha);
 }

@@ -10,7 +10,7 @@ namespace Logic
     {
         private:
             static const int HEALTH, DAMAGE;
-            static const float SPEED, AB1_SPEED, AB2_SPEED, AB2_SPEED_Y;
+            static const float SPEED, AB1_SPEED, HEIGHT_OFFSET;
 
             float ab2Speed;
             btVector3 dir;
