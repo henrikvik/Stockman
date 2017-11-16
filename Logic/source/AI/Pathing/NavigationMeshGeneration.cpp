@@ -180,58 +180,17 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
             {
                 growRegion(region, growth[side]);
 
-                if (region.body) removeRigidBody(region.body, physics);
+                if (region.body) removeRigidBody(region.body);
                 region.body = physics.createBody(region.cube, 0.f);
-                for (int i = 0; i < physics.getNumCollisionObjects() && !region.collided[side] && !region.done; i++)
-                {
-                    obj = physics.getCollisionObjectArray()[i];
+                physics.removeRigidBody(region.body);
+                
+                handlePhysicsCollisionTest(region, physics, side);
+                handleRegionCollisionTest(region, physics, side);
 
-                    FunContactResult res(
-                        [&](btBroadphaseProxy* proxy) -> bool {
-                        if (!proxy->isConvex2d(TRIANGLE_MESH_SHAPE_PROXYTYPE) || !proxy->isConvex(TRIANGLE_MESH_SHAPE_PROXYTYPE))
-                        {
-                            printf("WARNING: NON CONVEX OBJECT!\nNAV MESH GENERATION UNDEFINED BEHAVIOR!\n");
-                            return false;
-                        }
-                        return true;
-                    },
-                        [&](btManifoldPoint& cp,
-                            const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-                            const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
-                    {
-                        if (abs(cp.getDistance()) > precision) return 0;
-                        if (staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer())))
-                        {
-                            if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
-                            {
-                                if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // only support box shapes at the moment (other shapes can be "converted" to boxes)
-                                {
-                                    cp.m_localPointA += region.body->getWorldTransform().getOrigin();
-                                    CollisionReturn ret = handleCollision(cp.m_localPointA, region, staticObj, growth[side], growthNormals[side], bs);
-
-                                    switch (ret)
-                                    {
-                                    case ON_VERTEX:
-                                            split(region, physics, cp.m_localPointA, growthNormals[(side + 1) % SIDES]); // clockwise rotation
-                                        break;
-                                    }
-                                    if (ret != PROBLEMS_MY_DUDES) region.collided[side] = true;
-                                }
-                            }
-                        }
-                        else if (obj->getUserIndex() == AI_UID && obj->getUserIndex2() != region.buddyIndex && obj->getUserIndex() != region.userIndex)
-                        {
-                            shrinkRegion(region, growth[side]);
-                            region.collided[side] = true;
-                            region.addCollision(side, obj->getUserIndex2());
-                        }
-                        return 0;
-                    });
-                    physics.contactPairTest(region.body, obj, res);
-                }
                 distance += precision * 2;
             }
         }
+
         region.done = true;
         region.body->setUserIndex2(region.userIndex);
         region.body->setUserIndex(AI_UID);
@@ -308,6 +267,77 @@ std::pair<Cube, Cube> NavigationMeshGeneration::cutCube(btVector3 const &cutPoin
     }
 
     return cubes;
+}
+
+void NavigationMeshGeneration::handlePhysicsCollisionTest(NavMeshCube &region, Physics &physics, int side)
+{
+    FunContactResult res(
+        [&](btBroadphaseProxy* proxy) -> bool {
+        if (!proxy->isConvex2d(TRIANGLE_MESH_SHAPE_PROXYTYPE) || !proxy->isConvex(TRIANGLE_MESH_SHAPE_PROXYTYPE))
+        {
+            printf("WARNING: NON CONVEX OBJECT!\nNAV MESH GENERATION UNDEFINED BEHAVIOR!\n");
+            return false;
+        }
+        return true;
+    },
+        [&](btManifoldPoint& cp,
+            const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+            const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+    {
+        if (abs(cp.getDistance()) > precision) return 0;
+        if (StaticObject* staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (colObj1->getCollisionObject()->getUserPointer())))
+        {
+            if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))
+            {
+                if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // only support box shapes at the moment (other shapes can be "converted" to boxes)
+                {
+                    cp.m_localPointA += region.body->getWorldTransform().getOrigin();
+                    CollisionReturn ret = handleCollision(cp.m_localPointA, region, staticObj, growth[side], growthNormals[side], bs);
+
+                    switch (ret)
+                    {
+                    case ON_VERTEX:
+                        split(region, physics, cp.m_localPointA, growthNormals[(side + 1) % SIDES]); // clockwise rotation
+                        break;
+                    }
+                    if (ret != PROBLEMS_MY_DUDES) region.collided[side] = true;
+                }
+            }
+        }
+        return 0;
+    });
+
+    for (int i = 0; i < physics.getNumCollisionObjects() && !region.collided[side] && !region.done; i++)
+        physics.contactPairTest(region.body, physics.getCollisionObjectArray()[i], res);
+}
+
+void NavigationMeshGeneration::handleRegionCollisionTest(NavMeshCube &region, Physics &physics, int side)
+{
+    FunContactResult resRegions(
+        [&](btBroadphaseProxy* proxy) -> bool {
+        return true;
+    },
+        [&](btManifoldPoint& cp,
+            const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+            const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+    {
+        if (abs(cp.getDistance()) < precision)
+        {
+            const btCollisionObject *obj = colObj1->getCollisionObject();
+
+            region.collided[side] = true;
+            region.addCollision(side, obj->getUserIndex2());
+        }
+
+        return 0;
+    });
+
+    for (auto &other : regions)
+        if (&other != &region && other.userIndex != region.buddyIndex)
+            physics.contactPairTest(region.body, other.body, resRegions);
+
+    if (region.collided[side]) // can be close to multiple regions
+        shrinkRegion(region, growth[side]);
 }
 
 void NavigationMeshGeneration::shrinkRegion(NavMeshCube &region, Growth const &growth)
@@ -394,7 +424,7 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(NavigationMesh &nav, Physi
         std::pair<Triangle, Triangle> triPair = toTriangle(cube);
 
         if (region.body)
-            removeRigidBody(region.body, physics);
+            removeRigidBody(region.body);
 
         nav.addTriangle(toNavTriangle(triPair.first));
         nav.addTriangle(toNavTriangle(triPair.second));
@@ -478,10 +508,8 @@ void NavigationMeshGeneration::split(NavMeshCube &cube, Physics &physics, btVect
     regions.push_back(cube1);
 }
 
-void NavigationMeshGeneration::removeRigidBody(btRigidBody *&body, Physics &physics)
+void NavigationMeshGeneration::removeRigidBody(btRigidBody *&body)
 {
-    physics.removeRigidBody(body);
-
     delete body->getMotionState();
     delete body->getCollisionShape();
     delete body;
@@ -506,6 +534,7 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
     btCollisionObject *obj;
 
     btRigidBody *temp = physics.createBody(cube.cube, 0);
+    physics.removeRigidBody(temp);
     for (int i = 0; i < physics.getNumCollisionObjects() && !collision; i++)
     {
         obj = physics.getCollisionObjectArray()[i];
@@ -533,7 +562,7 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
         });
         physics.contactPairTest(temp, obj, res);
     }
-    removeRigidBody(temp, physics);
+    removeRigidBody(temp);
     return collision;
 }
 

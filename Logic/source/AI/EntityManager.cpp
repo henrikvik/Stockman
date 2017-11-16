@@ -36,7 +36,9 @@ EntityManager::EntityManager()
     m_frame = 0;
     m_aliveEnemies = 0;
     m_aiType = NORMAL_MODE;
+
     m_automaticTesting = false;
+    m_debugPath = false;
 
     //allocateData(); was here
     registerCreationFunctions();
@@ -138,6 +140,10 @@ void EntityManager::loadDebugCmds()
         m_automaticTesting = true;
         PATH_UPDATE_DIV = 1;
         return "TESTING ACTIVED (QUIT TO TURN OFF)";
+    });
+    DebugWindow::getInstance()->registerCommand("AI_TOGGLE_PATH", [&](std::vector<std::string> &para) -> std::string {
+        m_debugPath = !m_debugPath;
+        return "Path Toggled";
     });
     DebugWindow::getInstance()->registerCommand("AI_SPAWN_ENEMY", [&](std::vector<std::string> &para) -> std::string {
         try {
@@ -411,7 +417,7 @@ void EntityManager::render() const
         for (Enemy *enemy : m_enemies[i])
         {
             enemy->render();
-            if (aStar.isRenderingDebug())  // should only be if _DEBUG is defined in the future
+            if (m_debugPath)  // should only be if _DEBUG is defined in the future
                 enemy->debugRendering();
         }
     }

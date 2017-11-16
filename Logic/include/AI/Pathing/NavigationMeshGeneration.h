@@ -68,6 +68,7 @@ namespace Logic
                 std::vector<Triangle> terrain,
                 std::vector<NavStaticObject> objects) const;
             void generateNavigationMesh(NavigationMesh &nav, Physics &physics);
+
 		private:
             enum GrowthType // Clockwise
             {
@@ -140,6 +141,9 @@ namespace Logic
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
             std::pair<Cube, Cube> cutCube(btVector3 const &cutPoint, btVector3 const &planeNormal, Cube const &cube);
 
+            void handlePhysicsCollisionTest(NavMeshCube &region, Physics &physics, int side);
+            void handleRegionCollisionTest(NavMeshCube &region, Physics &physics, int side);
+
             void quadMeshToTriangleMesh(NavigationMesh &nav, Physics &physics);
             void growRegion(NavMeshCube &cube, Growth const &growth);
             void shrinkRegion(NavMeshCube &cube, Growth const &growth);
@@ -153,7 +157,7 @@ namespace Logic
 
             void split(NavMeshCube &cube, Physics &physics, btVector3 const &cubeColPoint,
                 btVector3 const &splitPlaneNormal);
-            void removeRigidBody(btRigidBody *&body, Physics &physics);
+            void removeRigidBody(btRigidBody *&body);
 
             // if a cube is split to two cubes, then you can have collision to "both" sides,
             // so add secondIndex if you have collided with first index
