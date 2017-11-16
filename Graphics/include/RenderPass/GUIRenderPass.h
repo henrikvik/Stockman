@@ -35,6 +35,7 @@ namespace Graphics
             DirectX::SimpleMath::Vector2 uv;
         };
         StructuredBuffer<Vertex> vertexBuffer;
+        StructuredBuffer<float> alphabuffer;
 
         std::unique_ptr<DirectX::SpriteBatch> sBatch;
         std::unordered_map<Resources::Fonts::Files, std::unique_ptr<DirectX::SpriteFont>> fonts;

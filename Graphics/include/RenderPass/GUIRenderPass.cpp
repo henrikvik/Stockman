@@ -12,6 +12,7 @@ Graphics::GUIRenderPass::GUIRenderPass(std::initializer_list<ID3D11RenderTargetV
     : RenderPass(targets, resources, buffers, depthStencil)
     , spriteShader(Resources::Shaders::SpriteShader)
     , vertexBuffer(CpuAccess::Write, INSTANCE_CAP(SpriteRenderInfo) * 4)
+    , alphabuffer(CpuAccess::Write, sizeof(float) * INSTANCE_CAP(float))
     , offsetBuffer(Global::device)
 {
     this->sBatch = std::make_unique<DirectX::SpriteBatch>(Global::context);
@@ -58,6 +59,7 @@ void Graphics::GUIRenderPass::render() const
 
     Global::context->VSSetShaderResources(0, 1, vertexBuffer);
     Global::context->VSSetConstantBuffers(0, 1, offsetBuffer);
+    Global::context->PSSetShaderResources(1, 1, alphabuffer);
 
 
     PROFILE_BEGIN("Sprite");
@@ -93,6 +95,7 @@ void Graphics::GUIRenderPass::update(float deltaTime)
 
     size_t offset = 0;
     auto ptr = vertexBuffer.map(Global::context);
+    auto alphaptr = alphabuffer.map(Global::context);
     for (auto & info : RenderQueue::get().getQueue<SpriteRenderInfo>())
     {
         using namespace DirectX::SimpleMath;
@@ -119,8 +122,10 @@ void Graphics::GUIRenderPass::update(float deltaTime)
         *ptr++ = vertices[TR];
         *ptr++ = vertices[BL];
         *ptr++ = vertices[BR];
+        *alphaptr++ = info.alpha;
     }
     vertexBuffer.unmap(Global::context);
+    alphabuffer.unmap(Global::context);
 }
 
 void Graphics::GUIRenderPass::updateShake(float deltaTime)
