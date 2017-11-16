@@ -8,35 +8,44 @@ namespace Logic
 {
 	class ComboMachine
 	{
-	public:
-		const int	MAX_COMBO	= 16;
-		const float COMBO_TIMER	= 5000.f;
-
+    public:
 		static ComboMachine& Get()
 		{
 			static ComboMachine combo;
 			return combo;
 		}
 
-		void Reward(int score);
-		void Kill(EnemyType type);
-		void Update(float deltaTime);
-		void Reset();
+        ComboMachine();
 
-		int GetComboTimer();
-		int GetCurrentCombo();
-		int GetCurrentScore();
+		void reward(int score);
+		void kill(int score = 0);
+		void update(float deltaTime);
+		void reset();
 
-		void ReadEnemyBoardFromFile(std::string path);
+        void endCombo();
+
+        int getTotalKills();
+		int getComboTimer();
+		int getCurrentCombo();
+		int getComboScore();
+        int getTotalScore();
 
 	private:
-		void CheckCombo();
-		int GetReward(EnemyType type);
+        static const int MAX_COMBO;
+        static const int MAX_MULTIKILL;
+        static const float COMBO_TIMER;
+        static const float MULTIKILL_TIMER;
+		void checkCombo();
+        void addMultikillScore();
+        void addScore(int score);
 
-		float		m_TimeSinceLastKill;
-		int			m_Combo;					
-		int			m_Score;
-		int			m_Board[40];
+        int         m_totalKills;
+		float		m_comboTimer;
+        float       m_multikillTimer;
+		int			m_combo;
+        int         m_totalScore;
+		int			m_comboScore;
+        int         m_multikill;
 	};
 }
 

@@ -197,6 +197,8 @@ void Player::reset()
     m_moveSpeed = 0.f;
 	getTransform().setOrigin(startPosition);
 	m_weaponManager->reset();
+    m_skillManager->reset();
+    currentWeapon = 0;
 	m_hp = 3;
 
     //temp? probably
@@ -448,6 +450,8 @@ void Player::updateSpecific(float deltaTime)
 
 	    //crouch(deltaTime);
 
+        
+        static int lastMouseScrollState = 0;
 	    // Weapon swap
         if (ks.IsKeyDown(m_switchWeaponOne))
         {
@@ -455,20 +459,33 @@ void Player::updateSpecific(float deltaTime)
             m_weaponManager->switchWeapon(0);
             currentWeapon = 0;
         }
-		
-        if (ks.IsKeyDown(m_switchWeaponTwo))
+		else if (ks.IsKeyDown(m_switchWeaponTwo))
         {
             getSoundSource()->playSFX(Sound::SFX::SWOOSH);
             m_weaponManager->switchWeapon(1);
             currentWeapon = 1;
         }
-		
-        if (ks.IsKeyDown(m_switchWeaponThree))
+		else if (ks.IsKeyDown(m_switchWeaponThree))
         {
             getSoundSource()->playSFX(Sound::SFX::SWOOSH);
             m_weaponManager->switchWeapon(2);
             currentWeapon = 2;
         }
+        else if (ms.scrollWheelValue > lastMouseScrollState)
+        {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
+            currentWeapon--;
+            currentWeapon = currentWeapon < 0 ? 2 : currentWeapon;
+            m_weaponManager->switchWeapon(currentWeapon);
+        }
+        else if (ms.scrollWheelValue < lastMouseScrollState)
+        {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
+            currentWeapon++;
+            currentWeapon %= 3;
+            m_weaponManager->switchWeapon(currentWeapon);
+        }
+        lastMouseScrollState = ms.scrollWheelValue;
 		
 	    // Skills
         PROFILE_BEGIN("SkillManager");
