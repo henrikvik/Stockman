@@ -53,7 +53,7 @@ void Graphics::HUD::drawHUD(ID3D11DeviceContext * context, ID3D11RenderTargetVie
     }
 
 
-    if (!vbCreated && !firstTime && currentInfo->currentSkills[0] >= 0)
+    if (!vbCreated && !firstTime && currentinfo.currentSkills[0] >= 0)
     {
         this->setSkillIcons(context);
         vbCreated = true;
@@ -99,12 +99,12 @@ void Graphics::HUD::fillHUDInfo(HUDInfo * info)
 {
     if (!firstTime)
     {
-        if (prevHP != info->hp || (prevCooldown0 - info->cd0) > 0.001f || (prevCooldown1 - info->cd1) > 0.001f || prevWeapon != info->currentWeapon)
+        if (prevHP != info.hp || (prevCooldown0 - info.cd0) > 0.001f || (prevCooldown1 - info.cd1) > 0.001f || prevWeapon != info.currentWeapon)
         {
             changed = true;
-            prevHP = info->hp;
-            prevWeapon = info->activeAmmo[2];
-            prevCooldown0 = info->cd0;
+            prevHP = info.hp;
+            prevWeapon = info.activeAmmo[2];
+            prevCooldown0 = info.cd0;
         }
     }
     else
@@ -232,34 +232,34 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 
     //sBatch->Begin(DirectX::SpriteSortMode_Deferred, blendState);
     std::wstring temp = L"";
-    if (currentInfo->currentWeapon == 0)
+    if (currentinfo.currentWeapon == 0)
     {
-        temp = std::to_wstring(currentInfo->activeAmmo[0]);
+        temp = std::to_wstring(currentinfo.activeAmmo[0]);
         temp += L"/";
-        temp += std::to_wstring(currentInfo->activeAmmo[1]);
+        temp += std::to_wstring(currentinfo.activeAmmo[1]);
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos1 + offset, DirectX::Colors::Red);
 
-        temp = std::to_wstring(currentInfo->inactiveAmmo[0]);
+        temp = std::to_wstring(currentinfo.inactiveAmmo[0]);
         temp += L"/";
-        temp += std::to_wstring(currentInfo->inactiveAmmo[1]);
+        temp += std::to_wstring(currentinfo.inactiveAmmo[1]);
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
     }
-    else if (currentInfo->currentWeapon == 1)
+    else if (currentinfo.currentWeapon == 1)
     {
         
 
-        temp = std::to_wstring(currentInfo->activeAmmo[0]);
+        temp = std::to_wstring(currentinfo.activeAmmo[0]);
         temp += L"/";
-        temp += std::to_wstring(currentInfo->activeAmmo[1]);
+        temp += std::to_wstring(currentinfo.activeAmmo[1]);
 
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
 
-        temp = std::to_wstring(currentInfo->inactiveAmmo[0]);
+        temp = std::to_wstring(currentinfo.inactiveAmmo[0]);
         temp += L"/";
-        temp += std::to_wstring(currentInfo->inactiveAmmo[1]);
+        temp += std::to_wstring(currentinfo.inactiveAmmo[1]);
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos1 + offset, DirectX::Colors::Red);
 
@@ -267,15 +267,15 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
     }
     else
     {
-        temp = std::to_wstring(currentInfo->activeAmmo[0]);
+        temp = std::to_wstring(currentinfo.activeAmmo[0]);
         temp += L"/";
-        temp += std::to_wstring(currentInfo->activeAmmo[1]);
+        temp += std::to_wstring(currentinfo.activeAmmo[1]);
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos2 + offset, DirectX::Colors::Red);
 
-        temp = std::to_wstring(currentInfo->inactiveAmmo[0]);
+        temp = std::to_wstring(currentinfo.inactiveAmmo[0]);
         temp += L"/";
-        temp += std::to_wstring(currentInfo->inactiveAmmo[1]);
+        temp += std::to_wstring(currentinfo.inactiveAmmo[1]);
 
         sFont[0]->DrawString(sBatch.get(), temp.c_str(), ammoPos1 + offset, DirectX::Colors::Red);
     }
@@ -283,7 +283,7 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
 
 
 
-    int tempInt = int((1 - currentInfo->cd0) * 100);
+    int tempInt = int((1 - currentinfo.cd0) * 100);
     if (tempInt == 0)
     {
         tempInt = 100;
@@ -292,7 +292,7 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
     temp += L"%";
     sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos0 + offset, DirectX::Colors::Red);
 
-    tempInt = int((1 - currentInfo->cd1) * 100);
+    tempInt = int((1 - currentinfo.cd1) * 100);
     if (tempInt == 0)
     {
         tempInt = 100;
@@ -301,7 +301,7 @@ void Graphics::HUD::renderHUDText(ID3D11BlendState * blendState)
     temp += L"%";
     sFont[0]->DrawString(sBatch.get(), temp.c_str(), cdPos1 + offset, DirectX::Colors::Red);
 
-	temp = (std::to_wstring(currentInfo->score));
+	temp = (std::to_wstring(currentinfo.score));
 	temp += L"p";
 	sFont[0]->DrawString(sBatch.get(), temp.c_str(), scorePos + offset, DirectX::Colors::White);
 }
@@ -311,16 +311,16 @@ void Graphics::HUD::updateHUDConstantBuffer(ID3D11DeviceContext * context)
 {
     float temp[6] = { 0.0f };
     //3.0f comes from the max HP of the player
-    temp[0] = 1.0f - (float)(currentInfo->hp / 3.0f);
+    temp[0] = 1.0f - (float)(currentinfo.hp / 3.0f);
 
 
-    if (currentInfo->currentWeapon == 0)
+    if (currentinfo.currentWeapon == 0)
     {
         temp[1] = 0.5f;
         temp[2] = 0.0f;
         temp[3] = 0.0f;
     }
-    else if (currentInfo->currentWeapon == 1)
+    else if (currentinfo.currentWeapon == 1)
     {
         temp[1] = 0.0f;
         temp[2] = 0.5f;
@@ -334,7 +334,7 @@ void Graphics::HUD::updateHUDConstantBuffer(ID3D11DeviceContext * context)
     }
 
 
-    if ((1 -currentInfo->cd0) < 0.001f)
+    if ((1 -currentinfo.cd0) < 0.001f)
     {
         temp[4] = 0.5f;
     }
@@ -343,7 +343,7 @@ void Graphics::HUD::updateHUDConstantBuffer(ID3D11DeviceContext * context)
         temp[4] = 0.0f;
     }
 
-    if ((1 - currentInfo->cd1) < 0.001f)
+    if ((1 - currentinfo.cd1) < 0.001f)
     {
         temp[5] = 0.5f;
     }
@@ -549,8 +549,8 @@ void Graphics::HUD::setSkillIcons(ID3D11DeviceContext *context)
 
     //skill icon 1
 
-    float skillUV0 = 3.f / 6.2f + (1.0f/6.0f * currentInfo->currentSkills[1]);
-    float skillUV1 = 3.f / 6.1f + (1.0f / 6.0f * (currentInfo->currentSkills[1] +1 )) ;
+    float skillUV0 = 3.f / 6.2f + (1.0f/6.0f * currentinfo.currentSkills[1]);
+    float skillUV1 = 3.f / 6.1f + (1.0f / 6.0f * (currentinfo.currentSkills[1] +1 )) ;
 
     GUIquad[36].verts = DirectX::SimpleMath::Vector2{ 0.7f, -.9f };
     GUIquad[36].uv = DirectX::SimpleMath::Vector2{ skillUV0, 0.5f };
@@ -579,8 +579,8 @@ void Graphics::HUD::setSkillIcons(ID3D11DeviceContext *context)
 
     //skill icon 2
 
-    skillUV0 = 3.f / 6.2f + (1.0f / 6.0f) * currentInfo->currentSkills[0];
-    skillUV1 = 3.f / 6.1f + (1.0f / 6.0f) * (currentInfo->currentSkills[0] + 1);
+    skillUV0 = 3.f / 6.2f + (1.0f / 6.0f) * currentinfo.currentSkills[0];
+    skillUV1 = 3.f / 6.1f + (1.0f / 6.0f) * (currentinfo.currentSkills[0] + 1);
 
     GUIquad[42].verts = DirectX::SimpleMath::Vector2{ 0.85f, -.9f };
     GUIquad[42].uv = DirectX::SimpleMath::Vector2{ skillUV0, 0.5f };

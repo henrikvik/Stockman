@@ -31,14 +31,23 @@ struct FloatRect
 };
 
 template<typename T>
-struct InstanceCap { static constexpr size_t value = 300; };
+struct InstanceCap { static constexpr size_t value = 1000; };
 #define SET_INSTANCE_CAP(info, cap) template<> struct InstanceCap<info> { static constexpr size_t value = cap; };
 #define INSTANCE_CAP(info) InstanceCap<info>::value
 
+struct DebugBlame
+{
+    const char * FILE = "";
+    size_t LINE = 0;
+};
 
 struct RenderInfo
+#if _DEBUG
+    : DebugBlame
+#endif
 {
 };
+
 
 struct DebugRenderInfo : RenderInfo
 {
@@ -47,6 +56,22 @@ struct DebugRenderInfo : RenderInfo
     DirectX::SimpleMath::Color color;
     bool useDepth = false;
 };
+SET_INSTANCE_CAP(DebugRenderInfo, 10000)
+
+struct NewDebugRenderInfo : RenderInfo
+{
+    struct Point
+    {
+        DirectX::SimpleMath::Vector3 position;
+        DirectX::SimpleMath::Color color;
+    };
+
+    D3D11_PRIMITIVE_TOPOLOGY topology;
+    DirectX::SimpleMath::Color color;
+    std::vector<Point> * points;
+    bool useDepth;
+};
+SET_INSTANCE_CAP(NewDebugRenderInfo, 10000)
 
 struct LightRenderInfo : RenderInfo
 {
@@ -61,10 +86,12 @@ SET_INSTANCE_CAP(LightRenderInfo, 128)
 
 struct SpecialEffectRenderInfo : RenderInfo
 {
-    enum SpecialEffect { BulletTime, Snow };
+    enum SpecialEffect { BulletTime, Snow, screenShake };
     SpecialEffect type;
+    DirectX::SimpleMath::Vector2 direction;
     float progress = 0;
     float duration = 0;
+    float radius = 0;
     bool restart = 0;
 };
 
@@ -78,10 +105,10 @@ struct SpriteRenderInfo : RenderInfo
 
 struct TextRenderInfo : RenderInfo
 {
-    Resources::Fonts::Files font;
-    const wchar_t * text = L"";
     DirectX::SimpleMath::Vector2 position;
     DirectX::SimpleMath::Color color;
+    Resources::Fonts::Files font;
+    const wchar_t * text = L"";
 };
 
 

@@ -35,6 +35,7 @@ namespace Graphics
             DirectX::SimpleMath::Vector2 uv;
         };
         StructuredBuffer<Vertex> vertexBuffer;
+        StructuredBuffer<float> alphabuffer;
 
         std::unique_ptr<DirectX::SpriteBatch> sBatch;
         std::unordered_map<Resources::Fonts::Files, std::unique_ptr<DirectX::SpriteFont>> fonts;
@@ -42,5 +43,9 @@ namespace Graphics
 
         void textRender() const;
         bool isDrawableString(const wchar_t * text)const;
+        void updateShake(float deltaTime);
+
+        DirectX::SimpleMath::Vector2 ndcPositionOffset;
+        DirectX::SimpleMath::Vector2 positionOffset;
     };
 }

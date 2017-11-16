@@ -26,7 +26,7 @@ void CardManager::resetDeck()
 void CardManager::createDeck(int nrOfEach)
 {
 	for (int i = 0; i < nrOfEach; i++)
-		for (int j = 0; j < m_cards.size(); j++)
+		for (int j = 1; j < m_cards.size(); j++)
             m_deck.push_back({ IN_DECK, j });
 }
 
@@ -117,14 +117,17 @@ void CardManager::handleCard(Player &player, Card const &card)
                     static_cast<StatusManager::EFFECT_ID> (ID),
                     1, true
                 );
+                std::cout << "Effect " << std::to_string(ID);
                 break;
             case Card::UPGRADE:
                 player.getStatusManager().addUpgrade(
                     static_cast<StatusManager::UPGRADE_ID> (ID)
+
                 );
+                std::cout << "Upgrade " << std::to_string(ID);
                 break;
             default:
-                throw std::runtime_error("Unsupported card type");
+                printf("Unsupported card type");
                 break;
         }
     }

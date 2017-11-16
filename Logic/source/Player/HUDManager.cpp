@@ -38,7 +38,6 @@ void Logic::HUDManager::constructGUIElements()
     HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, {x + width, y + height })));
    
     //ice staff
-
     x = 4.0f / 1024;
     y = 5.0f / 1024;
     width = 503.0f / 1024;
@@ -168,8 +167,12 @@ void Logic::HUDManager::constructGUIElements()
     height = 148.0f / 1024;
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
 
-
-
+    //wave complete
+    //x = 0.1;
+    //y = 0.1;
+    //width = 0.9;
+    //height = 0.9;
+    //staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 0, 0, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ x, y }, { x + width, y + height })));
 
 }
 
@@ -218,7 +221,7 @@ void Logic::HUDManager::updateTextElements()
     //total ammo of weapon
     if (info.currentWeapon == 0)
     {
-        liveText.push_back(std::to_wstring(info.activeAmmo[0] + info.activeAmmo[1]));
+        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 430);
@@ -226,7 +229,7 @@ void Logic::HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
 
-        liveText.push_back(std::to_wstring(info.inactiveAmmo[0] + info.inactiveAmmo[1]));
+        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 630);
@@ -236,7 +239,7 @@ void Logic::HUDManager::updateTextElements()
     }
     else
     {
-        liveText.push_back(std::to_wstring(info.activeAmmo[0] + info.activeAmmo[1]));
+        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 632);
@@ -245,7 +248,7 @@ void Logic::HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
 
-        liveText.push_back(std::to_wstring(info.inactiveAmmo[0] + info.inactiveAmmo[1]));
+        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 428);
@@ -415,7 +418,7 @@ void Logic::HUDManager::renderTextElements()const
 {
     for (auto &text : HUDText)
     {
-        RenderQueue::get().queue(&text);
+        QueueRender(text);
     }
 }
 
@@ -447,12 +450,12 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     EntityManager const &entityManager)
 {
     //updates hudInfo with the current info
-    info.score = ComboMachine::Get().GetCurrentScore();
+    info.score = ComboMachine::Get().getTotalScore();
     info.hp = player.getHP();
-    info.activeAmmo[HUDManager::CURRENT_AMMO]   = 8;// TODO GET AMMO
-    info.activeAmmo[HUDManager::TOTAL_AMMO]     = 8;// TODO GET AMMO
-    info.inactiveAmmo[HUDManager::CURRENT_AMMO] = 8;// TODO GET AMMO
-    info.inactiveAmmo[HUDManager::TOTAL_AMMO]   = 8;// TODO GET AMMO
+    info.activeAmmo[HUDManager::CURRENT_AMMO]   = player.getActiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
+    info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().ammo;// TODO GET AMMO
+    info.inactiveAmmo[HUDManager::CURRENT_AMMO] = player.getInactiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
+    info.inactiveAmmo[HUDManager::TOTAL_AMMO]   = player.getInactiveAmmoContainer().getAmmoInfo().ammo;// TODO GET AMMO
     info.sledge = player.isUsingMeleeWeapon();
     info.currentWeapon = player.getCurrentWeapon();
 

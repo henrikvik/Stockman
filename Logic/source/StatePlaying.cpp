@@ -24,6 +24,10 @@ const btVector3 StatePlaying::GAME_START::PLAYER_ROTATION = { 0.0f, 0.0f, 0.0f }
 StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
+    // Starting in game-sounds
+    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
+    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
+
     // Initializing Bullet physics
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();				// Configuration
     btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	// The default collision dispatcher
@@ -52,8 +56,11 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     m_cardManager = newd CardManager(GAME_START::UNIQUE_CARDS);
 
     // Initializing Combo's
-    ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
-    ComboMachine::Get().Reset();
+    ComboMachine::Get().reset();
+
+    // Initializing Menu's
+    m_menu = newd iMenuMachine();
+    m_menu->queueMenu(iMenu::MenuGroup::Skill);
 
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
@@ -89,7 +96,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     info.type = info.Snow;
     info.restart = true;
 
-    RenderQueue::get().queue(&info);
+    QueueRender(info);
 }
 
 StatePlaying::~StatePlaying()
@@ -99,6 +106,7 @@ StatePlaying::~StatePlaying()
     m_entityManager.resetTriggers();
     m_entityManager.deallocateData(); // Have to deallocate before deleting physics
 
+    delete m_menu;
     delete m_physics;
     delete m_player;
     delete m_map;
@@ -119,15 +127,28 @@ void StatePlaying::reset()
     m_cardManager->resetDeck();
     m_hudManager.reset();
 
-    ComboMachine::Get().Reset();
+    ComboMachine::Get().reset();
 }
 
 void StatePlaying::update(float deltaTime)
 {
     m_fpsRenderer.updateFPS(deltaTime);
    
-    ComboMachine::Get().Update(deltaTime);
-    m_waveTimeManager.update(deltaTime, m_entityManager);
+    PROFILE_BEGIN("In-Game Menu");
+    m_menu->update(deltaTime);
+    if (m_menu->getType() == iMenu::MenuGroup::Skill)   // Quick "temp pause" fix for testing purposes
+        return;
+    PROFILE_END();
+
+    ComboMachine::Get().update(deltaTime);
+
+    // Move this somwhere else, don't ruin this class with spagetti & meatballs
+    if (m_waveTimeManager.update(deltaTime, m_entityManager))
+    {
+        m_menu->queueMenu(iMenu::MenuGroup::Card);
+        m_cardManager->pickThree(m_player->getHP() != 3);
+        DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+    }
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
@@ -187,7 +208,12 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    m_hudManager.render();
+    if (m_menu->getType() != iMenu::MenuGroup::Skill)
+        m_hudManager.render();
+    PROFILE_END();
+
+    PROFILE_BEGIN("Render Menu");
+    m_menu->render();
     PROFILE_END();
 
     m_fpsRenderer.render();
@@ -195,6 +221,7 @@ void StatePlaying::render() const
 
 void StatePlaying::gameOver()
 {
-    m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
+    ComboMachine::Get().endCombo();
+    m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
     reset();
 }

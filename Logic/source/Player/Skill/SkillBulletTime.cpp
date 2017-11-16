@@ -5,6 +5,11 @@
 
 using namespace Logic;
 
+#define BULLET_TIME_CD 15000.f
+#define BULLET_TIME_SMOOTHNESS_INTERVAL 20
+#define BULLET_TIME_SLOW_DOWN_DURATION 1000.f
+#define BULLET_TIME_SPEED_UP_DURATION 1000.f
+
 SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData)
 	: Skill(BULLET_TIME_CD, BULLET_TIME_DURATION)
 {
@@ -24,29 +29,33 @@ SkillBulletTime::~SkillBulletTime()
 
 bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
-    setCanUse(false);
-
 	printf("Bullet Time used.\n");
 	m_sensor = SpawnProjectile(*m_pData, shooter.getPositionBT(), forward, shooter);
 
-	btRigidBody* bodySensor = m_sensor->getRigidBody();
+    if (m_sensor)
+    {
+        setCanUse(false);
+        setCooldown(BULLET_TIME_CD);
 
-	slowDownIntervals.clear();
-	speedUpIntervals.clear();
-	for (int i = 1; i < BULLET_TIME_SMOOTHNESS_INTERVAL; i++)
-	{
-		slowDownIntervals.push_back(i * ((BULLET_TIME_SLOW_DOWN_DURATION) / BULLET_TIME_SMOOTHNESS_INTERVAL) + BULLET_TIME_DURATION - BULLET_TIME_SLOW_DOWN_DURATION);
-		speedUpIntervals.push_back(i * (BULLET_TIME_SPEED_UP_DURATION / BULLET_TIME_SMOOTHNESS_INTERVAL));
-	}
+        btRigidBody* bodySensor = m_sensor->getRigidBody();
 
-	m_stacks = 0;
+        slowDownIntervals.clear();
+        speedUpIntervals.clear();
+        for (int i = 1; i < BULLET_TIME_SMOOTHNESS_INTERVAL; i++)
+        {
+            slowDownIntervals.push_back(i * ((BULLET_TIME_SLOW_DOWN_DURATION) / BULLET_TIME_SMOOTHNESS_INTERVAL) + BULLET_TIME_DURATION - BULLET_TIME_SLOW_DOWN_DURATION);
+            speedUpIntervals.push_back(i * (BULLET_TIME_SPEED_UP_DURATION / BULLET_TIME_SMOOTHNESS_INTERVAL));
+        }
 
-    return true;
+        m_stacks = 0;
 
-	/*ProjectileData travelPData = m_projectileData;
-	travelPData.scale = 0.0001f;
-	travelPData.type = ProjectileType::ProjectileTypeBulletTime;
-	m_travelProjectile = m_projectileManager->addProjectile(travelPData, shooter.getPositionBT(), forward, shooter);*/
+        return true;
+
+        /*ProjectileData travelPData = m_projectileData;
+        travelPData.scale = 0.0001f;
+        travelPData.type = ProjectileType::ProjectileTypeBulletTime;
+        m_travelProjectile = m_projectileManager->addProjectile(travelPData, shooter.getPositionBT(), forward, shooter);*/
+    }
 }
 
 void SkillBulletTime::setSpawnFunctions(ProjectileManager &projManager)
@@ -59,6 +68,12 @@ void SkillBulletTime::setSpawnFunctions(ProjectileManager &projManager)
 
 
 void SkillBulletTime::onRelease() { }
+
+void SkillBulletTime::onReset()
+{
+    m_sensor = nullptr;
+    m_stacks = 0;
+}
 
 void SkillBulletTime::onUpdate(float deltaTime)
 {
@@ -101,7 +116,7 @@ void SkillBulletTime::onUpdate(float deltaTime)
 	}*/
 }
 
-void SkillBulletTime::onUpgrade(Upgrade const & upgrade)
+void SkillBulletTime::onAffect(Effect const & effect)
 {
 }
 
@@ -109,6 +124,6 @@ void SkillBulletTime::render() const
 {
     if (m_sensor && m_sensor->getProjectileData().ttl > 0)
     {
-        RenderQueue::get().queue(&renderInfo);
+        QueueRender(renderInfo);
     }
 }

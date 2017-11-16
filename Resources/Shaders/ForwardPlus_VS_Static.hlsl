@@ -1,19 +1,22 @@
 #include "include/Vertex.hlsli"
-#include "include/InstanceStatic.hlsli"
+#include "include/StaticInstance.hlsli"
 #include "include/Fragment.hlsli"
 #include "include/Camera.hlsli"
 
 #define USE_GRID_TEXTURE
 
 cbuffer cb0 : register(b0) { Camera camera; };
-StructuredBuffer<InstanceStatic> instanceBuffer : register(t10);
-StructuredBuffer<Vertex>         vertexBuffer   : register(t11);
+
+cbuffer cb10 : register(b10) { uint instanceOffset; };
+StructuredBuffer<StaticInstance>   instanceBuffer : register(t10);
+StructuredBuffer<Vertex>           vertexBuffer   : register(t11);
 
 Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId) 
 {
     Vertex vertex = vertexBuffer[vertexId];
-    InstanceStatic instance = instanceBuffer[instanceId];
+    StaticInstance   instance = instanceBuffer[instanceId + instanceOffset];
 	Fragment fragment;
+
 
     fragment.position    = mul(instance.world, float4(vertex.position, 1));
     fragment.ndcPosition = mul(camera.viewProjection, fragment.position);
@@ -29,7 +32,7 @@ Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
     float3   localPosition = mul(instance.world, float4(vertex.position, 0)).xyz;
     float3x3 tangentMatrix = float3x3(fragment.tangent, fragment.binormal, fragment.normal);
     float3   worldTangent  = mul(tangentMatrix, localPosition);
-    fragment.gridUV = worldTangent.xy / 4;
+    fragment.gridUV = (worldTangent.xy + float2(1, 1)) / 8;
 #endif
 
 	return fragment;

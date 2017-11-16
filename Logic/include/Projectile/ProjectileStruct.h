@@ -16,7 +16,9 @@ namespace Logic
 		ProjectileTypeBulletTime,
 		ProjectileTypeBulletTimeSensor,
 		ProjectileTypeIce,
-        ProjectileTypeFreezeGrenade
+        ProjectileTypeFreezeGrenade,
+        ProjectileTypeIceShard,
+        ProjectileTypeFireArrow
 	};
 
 	struct ProjectileData

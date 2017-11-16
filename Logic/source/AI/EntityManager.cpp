@@ -8,6 +8,7 @@ using namespace Logic;
 #include <AI\EnemyTest.h>
 #include <AI\EnemyNecromancer.h>
 #include <AI\EnemyBossBaddie.h>
+#include <AI\EnemySoarer.h>
 #include <AI\EnemyChaser.h>
 #include <Misc\ComboMachine.h>
 
@@ -61,34 +62,51 @@ void EntityManager::registerCreationFunctions()
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemyNecromancer(body, cube.getDimensionsRef());
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        physics.removeRigidBody(body);
+        enemy->addExtraBody(body, 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
     m_enemyFactory[EnemyType::NECROMANCER_MINION] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } *btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemyChaser(body);
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
     m_enemyFactory[EnemyType::BOSS_1] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.9f, 4.5f, 1.9f } *btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.9f, 4.5f, 1.9f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemyBossBaddie(body, cube.getDimensionsRef());
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        physics.removeRigidBody(body);
+        enemy->addExtraBody(body, 2.f, { 0.f, 3.f, 0.f });
+
+        return enemy;
+    };
+    m_enemyFactory[EnemyType::FLYING] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
+    {
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.2f, 1.2f, 1.2f } * btScalar(scale)));
+        btRigidBody *body = physics.createBody(cube, 100, false,
+            Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        body->setAngularFactor(btVector3(0, 1, 0));
+
+        Enemy* enemy = newd EnemySoarer(body, cube.getDimensionsRef());
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        physics.removeRigidBody(body);
+        enemy->addExtraBody(body, 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
@@ -124,6 +142,18 @@ void EntityManager::loadDebugCmds()
         m_automaticTesting = true;
         PATH_UPDATE_DIV = 1;
         return "TESTING ACTIVED (QUIT TO TURN OFF)";
+    });
+    DebugWindow::getInstance()->registerCommand("AI_SPAWN_ENEMY", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            RandomGenerator &generator = RandomGenerator::singleton();
+            btVector3 pos = pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
+                generator.getRandomFloat(-85, 85) };
+            SpawnEnemy(static_cast<EnemyType> (stoi(para[0])), pos, {});
+            return "Enemy spawned";
+        }
+        catch (std::exception e) {
+            return "DOTHRAKI IN THE OPEN FIELD, NED";
+        }
     });
 }
 
@@ -348,8 +378,14 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
             true);
         break;
     case 2:
-        trigger = m_triggerManager.addTrigger(Resources::Models::UnitCube,
-            Cube(pos, { 0, 0, 0 }, { 1, 0.5, 1 }), 0.f, physics, {},
+        trigger = m_triggerManager.addTrigger(Resources::Models::AmmoPackCrossBolt,
+            Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, physics, {},
+            effectsIds,
+            false);
+        break;
+    case 3:
+        trigger = m_triggerManager.addTrigger(Resources::Models::Ammocrystal,
+            Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, physics, {},
             effectsIds,
             false);
         break;

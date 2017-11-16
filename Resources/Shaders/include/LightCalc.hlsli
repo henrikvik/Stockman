@@ -104,7 +104,7 @@ float3 calcNormal(float3 mappedNormal, float3 normal, float3 binormal, float3 ta
     return normalize(mul(mappedNormal, tangentMatrix));
 }
 
-float3 calcLight(DirectionalLight light, float4 position, float3 normal, float3 viewDir, float specularExponent)
+float3 calcLight(DirectionalLight light, float3 position, float3 normal, float3 viewDir, float specularExponent)
 {
     float3 lightDir = normalize(light.position.xyz);   
     float3 halfway = normalize(lightDir + viewDir);
@@ -117,7 +117,7 @@ float3 calcLight(DirectionalLight light, float4 position, float3 normal, float3 
          + light.ambient;
 }
 
-float3 calcLight(Light light, float4 position, float3 normal, float3 viewDir, float specularExponent)
+float3 calcLight(Light light, float3 position, float3 normal, float3 viewDir, float specularExponent)
 {
     float3 lightDir = light.position.xyz - position.xyz;
     float distance = length(lightDir); 
@@ -133,7 +133,7 @@ float3 calcLight(Light light, float4 position, float3 normal, float3 viewDir, fl
          + specularFactor * light.color * attenuation * light.intensity;
 }
 
-float3 calcAllLights(float4 ndcPosition, float4 position, float3 normal, float3 viewDir, float specularExponent)
+float3 calcAllLights(float4 ndcPosition, float3 position, float3 normal, float3 viewDir, float specularExponent)
 {
     float3 lightSum = float3(0, 0, 0);
 

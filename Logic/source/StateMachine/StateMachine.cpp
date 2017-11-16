@@ -6,16 +6,22 @@
 #include <StateMachine/StateSecondary.h>
 
 #include <Misc\Sound\NoiseMachine.h>
+#include <Misc\GUI\iMenuAction.h>
 
 #include <Keyboard.h>
 
 using namespace Logic;
+
+#define SKIP_MENUS true
 
 StateMachine::StateMachine()
 {
     m_stateBuffer = newd StateBuffer();
     m_statePrimary = newd StatePrimary(m_stateBuffer);
     m_stateSecondary = newd StateSecondary(m_stateBuffer);
+    m_stateBuffer->currentPrimaryState = m_statePrimary;
+    m_stateBuffer->currentSecondaryState = m_stateSecondary;
+    Action::Get().SetPointer(m_stateBuffer);
 
     // Making a function ptr to switch state inside the active state
     SetPrimaryState = [&](StateType stateType) -> void { m_statePrimary->queueState(stateType); };
@@ -26,12 +32,8 @@ StateMachine::StateMachine()
     // Save function ptr's inside each main state
     m_statePrimary->SetFuncSecondarySwitch      (SetSecondaryState);
     m_statePrimary->SetFuncPrimarySwitch        (SetPrimaryState);
-    m_statePrimary->SetFuncGetCurrentPrimary    (GetPrimaryState);
-    m_statePrimary->SetFuncGetCurrentSecondary  (GetSecondaryState);
     m_stateSecondary->SetFuncSecondarySwitch    (SetSecondaryState);
     m_stateSecondary->SetFuncPrimarySwitch      (SetPrimaryState);
-    m_stateSecondary->SetFuncGetCurrentPrimary  (GetPrimaryState);
-    m_stateSecondary->SetFuncGetCurrentSecondary(GetSecondaryState);
 
     // Setting starting states
     SetPrimaryState(StateType::State_Start);
@@ -46,8 +48,11 @@ StateMachine::StateMachine()
     //
     //
     // Fast Skip (Debugging) */
+ 
+#if !(SKIP_MENUS)
     SetPrimaryState(StateType::State_Playing);
-    SetSecondaryState(StateType::State_InGame_Overlay);
+    SetSecondaryState(StateType::Nothing);
+#endif
 }
 
 StateMachine::~StateMachine()
@@ -88,7 +93,7 @@ void StateMachine::update(float deltaTime)
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad2))
     {
         SetPrimaryState(StateType::State_Playing);
-        SetSecondaryState(StateType::State_InGame_Overlay);
+        SetSecondaryState(StateType::Nothing);
         return;
     }
 }

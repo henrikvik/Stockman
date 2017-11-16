@@ -32,14 +32,17 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     m_highScoreManager->setName("Stockman");
 
     // Initializing Menu's
-    m_menu = newd MenuMachine();
-    m_menu->initialize(Logic::gameStateMenuMain);
+    m_menu = newd iMenuMachine();
+    m_menu->queueMenu(iMenu::MenuGroup::Intro);
+
+    // ! Reminder !  
+    // Gives a small mem leak as for right now, but it's too cool to remove ^.^
+    // Initializing campfire
+    m_campfire = Graphics::FXSystem->getEffect("FireSmoke");
 }
 
 StateStart::~StateStart()
 {
-    m_menu->clear();
-
     delete m_menu;
     delete m_highScoreManager;
     delete m_physics;
@@ -51,10 +54,7 @@ void StateStart::reset() { }
 void StateStart::update(float deltaTime)
 {
     DirectX::Mouse::Get().SetMode(DirectX::Mouse::Mode::MODE_ABSOLUTE);
-    static DirectX::SimpleMath::Vector3 movingCameraPosition(0, 0, 0);
-    static DirectX::SimpleMath::Vector3 movingCameraForward(0, 0, 1);
-    movingCameraPosition.y += 0.001f * deltaTime;
-    Global::mainCamera->update(movingCameraPosition, movingCameraForward, Global::context);
+    Graphics::FXSystem->processEffect(&m_campfire, DirectX::XMMatrixTranslation(0, 0, 0), deltaTime / 1000.f);
 
     PROFILE_BEGIN("Physics");
     m_physics->update(deltaTime);
@@ -66,12 +66,6 @@ void StateStart::update(float deltaTime)
 
     m_fpsRenderer.updateFPS(deltaTime);
     m_menu->update(deltaTime);
-
-    if (m_menu->currentState() == gameStateSkillPick)
-    {
-        SwitchPrimaryState(StateType::State_Playing);
-        SwitchSecondaryState(StateType::State_InGame_Overlay);
-    }
 }
 
 void StateStart::render() const

@@ -4,7 +4,7 @@
 
 using namespace Logic;
 
-#define GRAPPLING_HOOK_CD			2500.f		// Cooldown in ms
+#define GRAPPLING_HOOK_CD			3000.f		// Cooldown in ms
 #define GRAPPLING_HOOK_RANGE		100.f		// Range in bulletphysics units (probably meters)
 #define GRAPPLING_HOOK_RANGE_MIN    8.f         // Min range
 #define GRAPPLING_HOOK_POWER		0.0011f	    // The amount of power to reach the max speed
@@ -85,6 +85,10 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 // On button release
 void SkillGrapplingHook::onRelease()
 {
+    // Specific release stuff
+    setCooldown(GRAPPLING_HOOK_CD);
+    setCanUse(false);
+
 	// If unsuccesful hook, don't put full cooldown
 /*	if (!m_shooter)
 	{
@@ -95,7 +99,7 @@ void SkillGrapplingHook::onRelease()
 	{
 		float yVel = player->getCharController()->getLinearVelocity().y();
         player->getCharController()->setFallSpeed(1.f);
-		player->getCharController()->setLinearVelocity({ 0.f, yVel, 0.f });
+		player->getCharController()->setLinearVelocity({ 0.f, 1.f, 0.f });
 	}
 
     
@@ -113,7 +117,7 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 	{
         // Check if min range
         if ((m_point - m_shooter->getPositionBT()).length() < 8.f)
-            onRelease();
+            release();
 		// Setting player movement specific grappling hook variables
 		else if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
@@ -156,14 +160,14 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 	}
 }
 
-void SkillGrapplingHook::onUpgrade(Upgrade const & upgrade)
+void SkillGrapplingHook::onAffect(Effect const & effect)
 {
 }
 
 void SkillGrapplingHook::render() const
 {
 	// Drawing a ray of the grappling hook for debugging purposes
-    RenderQueue::get().queue(&renderInfo);
+    QueueRender(renderInfo);
 }
 
 GrapplingHookState SkillGrapplingHook::getState() const

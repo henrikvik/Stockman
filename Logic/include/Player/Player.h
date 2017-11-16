@@ -23,7 +23,7 @@
 #define PLAYER_GRAVITY					9.82f * 2.f * 0.0000015f
 #define PLAYER_SIZE_RADIUS				0.5f
 #define PLAYER_SIZE_HEIGHT				2.f
-#define PLAYER_EYE_OFFSET               {0.f, PLAYER_SIZE_HEIGHT * 0.25f, 0.f}
+#define PLAYER_EYE_OFFSET               {0.f, PLAYER_SIZE_HEIGHT * 0.5f, 0.f}
 #define PLAYER_STARTING_HP				3
 #define PLAYER_MOUSE_SENSETIVITY		0.01f
 #define PLAYER_MOVEMENT_MAX_SPEED		0.015f
@@ -72,6 +72,9 @@ namespace Logic
 		SkillManager* m_skillManager;
 		Physics* m_physPtr;
 
+        // AI
+        Entity *m_targetedBy; // entity that "targets" player
+
 		// UI States
 		int m_hp;
         int currentWeapon;
@@ -84,9 +87,8 @@ namespace Logic
 		btVector3 m_moveDir; // only 2 dimensional movement direction (x, z)
 		float m_moveSpeed;
         float m_moveSpeedMod;
-        //TODO LUKAS SWITCH THIS OUT AS PROMISED
         float m_permanentSpeedMod;
-        //TODO LUKAS SWITCH THIS OUT AS PROMISED
+        float m_jumpSpeedMod;
 		float m_acceleration;
 		float m_deacceleration;
 		float m_airAcceleration;
@@ -205,6 +207,10 @@ namespace Logic
         int getCurrentSkill0() const;
         int getCurrentSkill1() const;
 
+        // AI
+        void setTargetedBy(Entity *entity);
+        bool isTargeted();
+        void resetTargeted();
 	};
 
 }

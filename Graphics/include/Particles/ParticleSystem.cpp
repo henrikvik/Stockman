@@ -1,4 +1,5 @@
 #include <tbb\tbb.h>
+
 #include "ParticleSystem.h"
 
 #include <experimental\filesystem>
@@ -14,6 +15,8 @@
 #include "../Utility/DebugDraw.h"
 #include "../CommonState.h"
 #include <Engine\DebugWindow.h>
+#include "../RenderInfo.h"
+#include "../RenderQueue.h"
 
 namespace fs = std::experimental::filesystem;
 using namespace DirectX;
@@ -37,6 +40,66 @@ std::wstring ConvertToWString(const std::string & s)
     }
 
     return std::wstring(buf.data(), wn);
+}
+
+class ResourcesShaderInclude : public ID3DInclude
+{
+public:
+    ResourcesShaderInclude(const char* shaderDir) :
+        m_ShaderDir(shaderDir)
+    {
+    }
+
+    HRESULT __stdcall Open(
+        D3D_INCLUDE_TYPE IncludeType,
+        LPCSTR pFileName,
+        LPCVOID pParentData,
+        LPCVOID *ppData,
+        UINT *pBytes);
+    
+    HRESULT __stdcall Close(LPCVOID pData);
+
+private:
+    std::string m_ShaderDir;
+};
+
+HRESULT __stdcall ResourcesShaderInclude::Open(
+    D3D_INCLUDE_TYPE IncludeType,
+    LPCSTR pFileName,
+    LPCVOID pParentData,
+    LPCVOID *ppData,
+    UINT *pBytes)
+{
+    std::string finalPath = m_ShaderDir + "\\" + pFileName;
+
+    std::ifstream fileStream(finalPath, std::ios::binary);
+    int fileSize = 0;
+    fileStream.seekg(0, std::ios::end);
+    fileSize = fileStream.tellg();
+    fileStream.seekg(0, std::ios::beg);
+
+    if (fileSize)
+    {
+        char* buf = new char[fileSize];
+        fileStream.read(buf, fileSize);
+
+        *ppData = buf;
+        *pBytes = fileSize;
+    }
+    else
+    {
+        *ppData = nullptr;
+        *pBytes = 0;
+    }
+
+    return S_OK;
+}
+
+HRESULT __stdcall ResourcesShaderInclude::Close(LPCVOID pData)
+{
+    char* buf = (char*)pData;
+    delete[] buf;
+    return S_OK;
 }
 
 namespace Graphics {;
@@ -79,6 +142,60 @@ ParticleSystem::~ParticleSystem()
         std::get<0>(mat)->Release();
         std::get<1>(mat)->Release();
     }
+}
+
+bool ParticleSystem::processAnchoredEffect(AnchoredParticleEffect *afx, DirectX::SimpleMath::Vector3 pos, float dt)
+{
+    if (!FXEnabled) return false;
+    Debug::ParticleFX({ pos, afx->m_Effect });
+    afx->m_Anchor = pos;
+
+    auto fx = &afx->m_Effect;
+    for (unsigned int i = 0; i < fx->m_Count; i++) {
+        auto &entry = fx->m_Entries[i];
+
+        fx->m_Age += dt;
+
+        if (fx->m_Age < entry.m_Start || fx->m_Age > entry.m_Start + entry.m_Time) {
+            if (fx->m_Loop) {
+                fx->m_Age = 0.f;
+            }
+            else {
+                continue;
+            }
+        }
+
+        switch (entry.m_Type) {
+            case ParticleType::Geometry: {
+                auto def = &m_GeometryDefinitions[entry.m_DefinitionIdx];
+
+                auto factor = (fx->m_Age - entry.m_Start) / entry.m_Time;
+                auto ease_spawn = GetEaseFunc(entry.m_SpawnEasing);
+                auto spawn = entry.m_Loop ? entry.m_SpawnStart : ease_spawn(entry.m_SpawnStart, entry.m_SpawnEnd, factor);
+
+                for (entry.m_SpawnedParticles += spawn * dt; entry.m_SpawnedParticles >= 1.f; entry.m_SpawnedParticles -= 1.f) {
+                    GeometryParticle p = {};
+                    p.pos = entry.m_StartPosition.GetPosition();
+                    p.velocity = entry.m_StartVelocity.GetVelocity();
+                    p.rot = {
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
+                    };
+                    p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
+                    p.rotprog = RandomFloat(-180, 180);
+                    p.def = def;
+                    p.idx = def->m_MaterialIdx;
+
+                    afx->m_Children.push_back(p);
+                }
+            } break;
+            default:
+                break;
+        }
+    }
+
+    return fx->m_Age > fx->m_Time;
 }
 
 bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Matrix model, float dt)
@@ -167,7 +284,7 @@ void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, ID3D
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
 
-    cxt->PSSetShaderResources(0, (UINT)m_Textures.size(), m_Textures.data());
+    cxt->PSSetShaderResources(4, (UINT)m_Textures.size(), m_Textures.data());
 
     // spheres
     {
@@ -203,8 +320,8 @@ void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, ID3D
         unsigned int len = 0;
         int current_material = -1;
 
-        for (int i = 0; i < m_GeometryParticles.size(); i++) {
-            auto &particle = m_GeometryParticles[i];
+        for (int i = 0; i < m_FrameGeometryParticles.size(); i++) {
+            auto &particle = m_FrameGeometryParticles[i];
 
             // initialize state during first loop
             if (current_material == -1) {
@@ -232,7 +349,17 @@ void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, ID3D
     }
 }
 
-void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11RenderTargetView *dest_rtv, ID3D11DepthStencilView * dest_dsv, bool debug)
+void ParticleSystem::render(
+    ID3D11DeviceContext *cxt,
+    Camera *cam,
+    ID3D11ShaderResourceView *lightIndexList,
+    ID3D11ShaderResourceView *lightGrid,
+    ID3D11ShaderResourceView *lights,
+    ID3D11Buffer *lightBuffer,
+    ID3D11ShaderResourceView *shadowMap,
+    ID3D11RenderTargetView *dest_rtv, 
+    ID3D11DepthStencilView *dest_dsv,
+    bool debug)
 {
     ID3D11SamplerState *samplers[] = {
         Global::cStates->LinearClamp(),
@@ -243,7 +370,14 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11Render
     cxt->VSSetSamplers(0, 4, samplers);
     cxt->PSSetSamplers(0, 4, samplers);
 
-    cxt->PSSetShaderResources(0, (UINT)m_Textures.size(), m_Textures.data());
+    ID3D11ShaderResourceView *lightResources[] = {
+        lightIndexList,
+        lightGrid,
+        lights,
+        shadowMap
+    };
+    cxt->PSSetShaderResources(0, 4, lightResources);
+    cxt->PSSetShaderResources(4, (UINT)m_Textures.size(), m_Textures.data());
 
     // spheres
     {
@@ -257,19 +391,23 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11Render
             0
         };
 
-        ID3D11Buffer *buffers[] = {
+        ID3D11Buffer *vertex_buffers[] = {
             *m_SphereVertexBuffer,
             *m_GeometryInstanceBuffer
         };
 
         cxt->IASetInputLayout(*m_GeometryVS);
-        cxt->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+        cxt->IASetVertexBuffers(0, 2, vertex_buffers, strides, offsets);
         cxt->IASetIndexBuffer(*m_SphereIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
         cxt->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         cxt->VSSetShader(*m_GeometryVS, nullptr, 0);
-        auto buf = cam->getBuffer();
-        cxt->VSSetConstantBuffers(0, 1, *buf);
+        ID3D11Buffer *buffers[] = {
+            *cam->getBuffer(),
+            lightBuffer
+        };
+        cxt->VSSetConstantBuffers(0, 1, buffers);
+        cxt->PSSetConstantBuffers(0, 2, buffers);
 
         cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         cxt->OMSetRenderTargets(1, &dest_rtv, dest_dsv);
@@ -279,8 +417,8 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11Render
         unsigned int len = 0;
         int current_material = -1;
 
-        for (int i = 0; i < m_GeometryParticles.size(); i++) {
-            auto &particle = m_GeometryParticles[i];
+        for (int i = 0; i < m_FrameGeometryParticles.size(); i++) {
+            auto &particle = m_FrameGeometryParticles[i];
 
             // initialize state during first loop
             if (current_material == -1) {
@@ -306,80 +444,104 @@ void ParticleSystem::render(ID3D11DeviceContext *cxt, Camera * cam, ID3D11Render
         
         cxt->RSSetState(Global::cStates->CullCounterClockwise());
     }
+    cxt->PSSetShaderResources(0, 4, Global::nulls);
 }
 
-class GeometryParticleUpdater {
-public:
-    GeometryParticleUpdater(std::vector<GeometryParticle> *particles, tbb::atomic<int> *deleteSize, std::array<int, 32> *deleteList, float delta, ParticleSystem::GeometryParticleInstance *ptr)
-        : m_DeleteSize(deleteSize), m_DeleteList(deleteList), m_Particles(particles), m_Delta(delta), m_Ptr(ptr)
-    {}
+GeometryParticleInstance *ParticleSystem::uploadParticles(std::vector<GeometryParticle> &particles, GeometryParticleInstance *output, GeometryParticleInstance *max)
+{
+    for (int i = 0; i < particles.size(); i++) {
+        auto &particle = particles[i];
+        auto def = *particle.def;
 
-    void operator()(const tbb::blocked_range<int>& range) const {
-        PROFILE_BEGINF("update task (%d)", range.size());
+        GeometryParticleInstance instance;
 
-        float dt = m_Delta;
-        auto ptr = m_Ptr + range.begin();
+        auto factor = particle.age / def.m_Lifetime;
 
-        for (auto it = range.begin(); it != range.end(); ++it) {
-            auto &particle = (*m_Particles)[it];
-            auto def = *particle.def;
+        auto ease_color = GetEaseFuncV(def.m_ColorEasing);
+        auto ease_deform = GetEaseFunc(def.m_DeformEasing);
+        auto ease_size = GetEaseFunc(def.m_SizeEasing);
 
-            if (particle.age > def.m_Lifetime) {
-                int idx = m_DeleteSize->fetch_and_increment();
-                if (idx < 32) {
-                    (*m_DeleteList)[idx] = it;
-                }
-                continue;
-            }
+        auto scale = ease_size(def.m_SizeStart, def.m_SizeEnd, factor);
 
-            ParticleSystem::GeometryParticleInstance instance;
+        instance.m_Model = XMMatrixRotationAxis(
+            XMLoadFloat3(&particle.rot),
+            (particle.rotprog + particle.age) *
+            particle.rotvel) *
+            XMMatrixScaling(scale, scale, scale) *
+            XMMatrixTranslationFromVector(XMLoadFloat3(&particle.pos)
+        );
+        instance.m_Age = factor;
 
-            auto factor = particle.age / def.m_Lifetime;
+        auto col_start = XMFLOAT4((float*)def.m_ColorStart);
+        auto col_end = XMFLOAT4((float*)def.m_ColorEnd);
 
-            auto ease_color = GetEaseFuncV(def.m_ColorEasing);
-            auto ease_deform = GetEaseFunc(def.m_DeformEasing);
-            auto ease_size = GetEaseFunc(def.m_SizeEasing);
+        instance.m_Color = ease_color(XMLoadFloat4(&col_start), XMLoadFloat4(&col_end), factor);
+        instance.m_Deform = ease_deform(def.m_DeformStart, def.m_DeformEnd, factor);
+        instance.m_DeformSpeed = def.m_DeformSpeed;
+        instance.m_NoiseScale = def.m_NoiseScale;
+        instance.m_NoiseSpeed = def.m_NoiseSpeed;
 
-            auto scale = ease_size(def.m_SizeStart, def.m_SizeEnd, factor);
+        *output = instance;
 
-            instance.m_Model = XMMatrixRotationAxis(XMLoadFloat3(&particle.rot), (particle.rotprog + particle.age) * particle.rotvel)  * XMMatrixScaling(scale, scale, scale) * XMMatrixTranslationFromVector(XMLoadFloat3(&particle.pos));
-            instance.m_Age = factor;
+        auto ease_light_color = GetEaseFuncV(def.m_LightColorEasing);
+        auto ease_light_radius = GetEaseFunc(def.m_LightRadiusEasing);
 
-            auto col_start = XMFLOAT4((float*)def.m_ColorStart);
-            auto col_end = XMFLOAT4((float*)def.m_ColorEnd);
+        auto light_radius = ease_light_radius(def.m_LightRadiusStart, def.m_LightRadiusEnd, factor);
+        if (light_radius >=  1000 * FLT_EPSILON) {
+            auto light_col_start = XMFLOAT4((float*)def.m_LightColorStart);
+            auto light_col_end = XMFLOAT4((float*)def.m_LightColorEnd);
 
-            instance.m_Color = ease_color(DirectX::XMLoadFloat4(&col_start), DirectX::XMLoadFloat4(&col_end), factor);
-            instance.m_Deform = ease_deform(def.m_DeformStart, def.m_DeformEnd, factor);
-            instance.m_DeformSpeed = def.m_DeformSpeed;
-            instance.m_NoiseScale = def.m_NoiseScale;
-            instance.m_NoiseSpeed = def.m_NoiseSpeed;
+            auto light_color = ease_light_color(XMLoadFloat4(&light_col_start), XMLoadFloat4(&light_col_end), factor);
 
-            *ptr = instance;
+            LightRenderInfo light;
+            light.position = particle.pos;
+            light.range = light_radius;
+            light.intensity = XMVectorGetW(light_color);
+            XMStoreFloat4((XMFLOAT4*)&light.color, light_color);
 
-            particle.age += dt;
-            particle.rotprog += dt;
-
-            XMStoreFloat3(&particle.velocity, XMLoadFloat3(&particle.velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
-            XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
-
-            ptr++;
+            QueueRender(light);
         }
-        PROFILE_END();
+
+        output++;
     }
-    mutable tbb::atomic<int> *m_DeleteSize;
-    std::array<int, 32> *m_DeleteList;
 
-private:
-    std::vector<GeometryParticle> *m_Particles;
+    return output;
+}
 
-    float m_Delta;
-    ParticleSystem::GeometryParticleInstance *m_Ptr;
-};
+void ParticleSystem::updateParticles(XMVECTOR anchor, std::vector<GeometryParticle> &particles, float dt)
+{
+    int deleteList[32];
+    int deleteSize = 0;
+    for (int i = 0; i < particles.size(); i++) {
+        auto &particle = particles[i];
+        auto def = *particle.def;
+
+        if (particle.age > def.m_Lifetime) {
+            int idx = deleteSize++;;
+            if (idx < 32) {
+                deleteList[idx] = i;
+            }
+            continue;
+        }
+
+        particle.age += dt;
+        particle.rotprog += dt;
+
+        XMStoreFloat3(&particle.velocity, XMLoadFloat3(&particle.velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
+        XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
+    }
+
+    // we defer deletion of particles until the end to not mess up our "hot" loop
+    for (int i = deleteSize - 1; i > 0; i--) {
+        auto idx = deleteList[i];
+        particles.erase(particles.begin() + idx);
+    }
+}
 
 void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
 {
     // process all active effects/emitters (spawns particles)
-    PROFILE_BEGIN("process FX");
+    PROFILE_BEGIN("process managed effects");
     auto it = m_ParticleEffects.begin();
     while (it != m_ParticleEffects.end()) {
         if (processEffect(&it->effect, XMMatrixTranslationFromVector(it->position), dt)) {
@@ -391,37 +553,37 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
     }
     PROFILE_END();
 
-    // sort by material to improve batching
-    PROFILE_BEGIN("sort particles");
-    std::sort(m_GeometryParticles.begin(), m_GeometryParticles.end(), [](GeometryParticle &a, GeometryParticle &b) {
+    // update particles
+    PROFILE_BEGIN("update particles");
+    updateParticles({}, m_GeometryParticles, dt);
+    for (auto fx : m_AnchorParticleEffects) {
+        updateParticles(fx->m_Anchor, fx->m_Children, dt);
+    }
+    PROFILE_END();
+
+    // copy over particles into one big vector for sorting
+    PROFILE_BEGIN("copy particle lists")
+    m_FrameGeometryParticles = m_GeometryParticles;
+    for (auto fx : m_AnchorParticleEffects) {
+        m_FrameGeometryParticles.insert(m_FrameGeometryParticles.end(), fx->m_Children.begin(), fx->m_Children.end());
+    }
+    PROFILE_END();
+
+    // sort by material to improve batching during render
+    PROFILE_BEGIN("material sort");
+    std::sort(m_FrameGeometryParticles.begin(), m_FrameGeometryParticles.end(), [](GeometryParticle &a, GeometryParticle &b) {
         return a.idx < b.idx;
     });
     PROFILE_END();
 
-    PROFILE_BEGIN("update particles");
-    GeometryParticleInstance *ptr = m_GeometryInstanceBuffer->map(cxt);
-    std::array<int, 32> deleteList {-1};
-    tbb::atomic<int> deleteSize = 0;
-    auto updater = GeometryParticleUpdater(&m_GeometryParticles, &deleteSize, &deleteList, dt, ptr);
-    
-    tbb::parallel_for(
-        tbb::blocked_range<int>(0, min((int)m_GeometryParticles.size(), (int)m_Capacity)),
-        updater,
-        tbb::static_partitioner()
-    );
-
+    // upload particle instance data to buffer
+    PROFILE_BEGIN("upload particles");
+    auto base = m_GeometryInstanceBuffer->map(cxt);
+    uploadParticles(m_FrameGeometryParticles, base, base + m_Capacity);
     m_GeometryInstanceBuffer->unmap(cxt);
     PROFILE_END();
 
-    std::sort(deleteList.begin(), deleteList.end(), [](int a, int b) {
-        return a > b;
-    });
-
-    int sz = min(32, deleteSize);
-    for (int i = 0; i < sz; i++) {
-        auto idx = deleteList.at(i);
-        m_GeometryParticles.erase(m_GeometryParticles.begin() + idx);
-    }
+    m_AnchorParticleEffects.clear();
 }
 
 void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
@@ -491,11 +653,13 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         ID3DBlob *blob = nullptr, *error = nullptr;
         std::wstring file = ConvertToWString(baseDir + path);
 
+        static ResourcesShaderInclude include("..\\Resources\\Shaders\\");
+
         // TODO: add ifdef for DEBUG compilation flag
         auto res = D3DCompileFromFile(
             file.c_str(),
             nullptr,
-            D3D_COMPILE_STANDARD_FILE_INCLUDE,
+            &include,
             "PS",
             "ps_5_0",
             D3DCOMPILE_DEBUG,
@@ -505,6 +669,8 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         );
 
         if (!SUCCEEDED(res)) {
+            OutputDebugStringA((char*)error->GetBufferPointer());
+
             throw "Failed to compile material shader PS";
         }
 
@@ -514,7 +680,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         res = D3DCompileFromFile(
             file.c_str(),
             nullptr,
-            D3D_COMPILE_STANDARD_FILE_INCLUDE,
+            &include,
             "PS_depth",
             "ps_5_0",
             D3DCOMPILE_DEBUG,
@@ -523,9 +689,8 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
             &error
         );
 
-        char *c;
         if (!SUCCEEDED(res)) {
-            c = (char*)error->GetBufferPointer();
+            OutputDebugStringA((char*)error->GetBufferPointer());
             throw "Failed to compile material shader PS_depth";
         }
 
@@ -574,6 +739,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
             LAZY_READ(m_Start);
             LAZY_READ(m_Time);
             LAZY_READ(m_Loop);
+            LAZY_READ(m_Anchor);
             LAZY_READ(m_StartPosition);
             LAZY_READ(m_StartVelocity);
             LAZY_READ(m_SpawnEasing);

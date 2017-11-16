@@ -4,7 +4,7 @@
 class Settings
 {
 private:
-	static Settings* instance;
+	static Settings instance;
 	float m_mouseSense;
 	float m_FOV;
 	float m_masterSound;
@@ -14,8 +14,7 @@ private:
 public:
 	Settings();
 	~Settings();
-	static Settings* getInstance();
-	static void releaseInstance();
+	static Settings& getInstance();
 	void readFromFile();
 	void writeToFile();
 	float* getMouseSensePTR();

@@ -45,6 +45,9 @@ namespace Logic
             EFFECT_INCREASE_AMMOCAP             = 0x1000000,
             EFFECT_INCREASE_MAGSIZE             = 0x2000000,
             EFFECT_INCREASE_MOVEMENTSPEED       = 0x4000000,
+            EFFECT_INCREASE_FIRERATE            = 0x8000000,
+            EFFECT_DECREASE_RELOADTIME          = 0x10000000,
+            EFFECT_INCREASE_JUMPHEIGHT         = 0x20000000,
 		};
 
 		struct Standards {
@@ -58,6 +61,9 @@ namespace Logic
 			float	modifyHP;
 			float	modifyFirerate;
 			float	modifyMovementSpeed;
+            int     modifyAmmoCap;
+            int     modifyMagCap;
+            float   modifySkillCDDecrease;
 		};
 
 		struct Specifics {

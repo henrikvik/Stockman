@@ -49,6 +49,7 @@ namespace Logic
 
             //status
             bool m_stunned;
+            float m_fireTimer;
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE };
 
@@ -76,7 +77,7 @@ namespace Logic
             void decreaseCallbackEntities();
             bool hasCallbackEntities();
 
-			void damage(int damage);
+			virtual void damage(int damage);
 			void setBehavior(BEHAVIOR_ID id);
 			void setEnemyType(EnemyType id);
 

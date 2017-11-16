@@ -47,7 +47,7 @@ Player::~Player()
 
 void Player::init(Physics* physics, ProjectileManager* projectileManager)
 {
-    Settings* setting = Settings::getInstance();
+    Settings setting = Settings::getInstance();
 	m_weaponManager->init(projectileManager);
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
@@ -63,8 +63,6 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_physPtr->addAction(m_charController);
     m_charController->warp(startPosition);
     m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
-
-    
 
 	// Stats
 	m_hp = PLAYER_STARTING_HP;
@@ -85,6 +83,8 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_moveDir.setZero();
 	m_moveSpeed = 0.f;
     m_moveSpeedMod = 1.0f;
+    m_permanentSpeedMod = 1.0f;
+    m_jumpSpeedMod = 1.0f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_deacceleration = m_acceleration * 0.5f;
 	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
@@ -110,6 +110,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_listenerData->update({ 0, 0, 0 }, { 0, 1, 0 }, { m_forward.x, m_forward.y, m_forward.z }, m_charController->getGhostObject()->getWorldTransform().getOrigin());
 
     m_stunned = false;
+    resetTargeted();
 }
 
 void Player::registerDebugCmds()
@@ -118,7 +119,7 @@ void Player::registerDebugCmds()
     win->registerCommand("LOG_SET_MOUSE_SENSITIVITY", [&](std::vector<std::string> &para) -> std::string {
         try
         { // Boilerplate code bois
-            Settings::getInstance()->setMouseSense(stof(para[0]));
+            Settings::getInstance().setMouseSense(stof(para[0]));
         }
         catch (int)
         {
@@ -163,13 +164,6 @@ void Player::registerDebugCmds()
 
         return "Player is not red so player does not go fastah -Random Ork Warhammer 40K (you go slower)";
     });
-
-    win->registerCommand("LOG_PLAYER_ON_FIRE", [&](std::vector<std::string> &args) -> std::string
-    {
-        getStatusManager().addStatus(StatusManager::ON_FIRE, 1);
-
-        return "You sir are on fire (You will take 1 damage soon)";
-    });
     win->registerCommand("LOG_PLAYER_HEAL", [&](std::vector<std::string> &args) -> std::string
     {
         getStatusManager().addStatus(StatusManager::HEALTH_P1, 1);
@@ -180,23 +174,59 @@ void Player::registerDebugCmds()
     {
         return "x: " + std::to_string((double) getPosition().x) + ", y: " + std::to_string((double) getPosition().y) + ", z: " + std::to_string((double) getPosition().z);
     });
-    win->registerCommand("BOOST_ALL_DAMAGE", [&](std::vector<std::string> &args)->std::string
+    win->registerCommand("LOG_INCREASE_ALL_DAMAGE", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addUpgrade(StatusManager::P1_DAMAGE);
 
         return "All weapons do 1 extra damage";
     });
-    win->registerCommand("BOOST_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
+    win->registerCommand("LOG_INCREASE_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addStatus(StatusManager::P20_PERC_MOVEMENTSPEED, 1);
 
         return "Player is permanently 20 percent faster";
     });
-    win->registerCommand("DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
+    win->registerCommand("LOG_DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addStatus(StatusManager::M20_PERC_CD, 1);
 
         return "Player skills take 20% less time to recover";
+    });
+    win->registerCommand("LOG_INCREASE_MAG_SIZE", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P40_MAGSIZE, 1);
+
+        return "Mag clip holds 40 more bullets";
+    });
+    win->registerCommand("LOG_INCREASE_AMMO_CAP", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_AMMOCAP, 1);
+
+        return "You have bigger ammo bags now, it can hold 20 ammo more";
+    });
+    win->registerCommand("LOG_INCREASE_FIRE_RATE", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_PERC_RATE_OF_FIRE, 1);
+
+        return "You shoot 20% faster";
+    });
+    win->registerCommand("LOG_INCREASE_RELOAD_TIME", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::M20_PERC_RELOAD_SPEED, 1);
+
+        return "You reload 20% faster";
+    });
+    win->registerCommand("LOG_INCREASE_JUMP_HEIGHT", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_PERC_JUMP, 1);
+
+        return "You jump 20% higher";
+    });
+    win->registerCommand("LOG_PLAYER_SET_BURNING", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
+
+        return "You jump 20% higher";
     });
 }
 
@@ -216,7 +246,13 @@ void Player::reset()
     m_moveSpeed = 0.f;
 	getTransform().setOrigin(startPosition);
 	m_weaponManager->reset();
+    m_skillManager->reset();
+    currentWeapon = 0;
 	m_hp = 3;
+    m_moveSpeedMod = 1.0f;
+    m_permanentSpeedMod = 1.0f;
+    m_jumpSpeedMod = 1.0f;
+    m_stunned = false;
 
     //temp? probably
     Global::mainCamera->update(getPosition(), m_forward, Global::context);
@@ -224,7 +260,7 @@ void Player::reset()
     info.type = info.Snow;
     info.restart = true;
 
-    RenderQueue::get().queue(&info);
+    QueueRender(info);
 }
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
@@ -253,7 +289,8 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 {
 	long long flags = effect.getStandards()->flags;
     
-
+    m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
+    m_moveSpeedMod = 1.0f;
     if (flags & Effect::EFFECT_BOUNCE)
     {
         m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * 3, 0.f });
@@ -262,44 +299,46 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     if (flags & Effect::EFFECT_MODIFY_HP)
     {
         m_hp += static_cast<int> (effect.getModifiers()->modifyHP);
-    }
-	if (flags & Effect::EFFECT_MODIFY_AMMO)
-	{
-        WeaponManager::WeaponLoadout* wp = nullptr;
-        if(effect.getSpecifics()->ammoType == 0)
-		    wp = m_weaponManager->getWeaponLoadout(0);
-        else if(effect.getSpecifics()->ammoType == 1)
-            wp = m_weaponManager->getWeaponLoadout(1);
-
-        if (wp)
-        {
-            int magSize = wp->ammoContainer->getAmmoInfo().magSize;
-            int currentAmmo = wp->ammoContainer->getAmmoInfo().ammo;
-            if ((currentAmmo + magSize) > wp->ammoContainer->getAmmoInfo().ammoCap)
-                wp->ammoContainer->setAmmo(wp->ammoContainer->getAmmoInfo().ammoCap);
-            else
-                wp->ammoContainer->setAmmo(currentAmmo + magSize);
-        }
-	}
-    if (flags & Effect::EFFECT_IS_FROZEN)
-    {
-        m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
+        if (m_hp > 3) m_hp = 3;
     }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
-        m_moveSpeedMod = effect.getModifiers()->modifyMovementSpeed;
+        m_moveSpeedMod *= effect.getModifiers()->modifyMovementSpeed;
         m_stunned = true;
     }
     if (flags & Effect::EFFECT_MOVE_FASTER)
     {
-        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
+        m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+        m_moveMaxSpeed *= m_moveSpeedMod;
     }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
     {
-        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
+        m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+        m_moveMaxSpeed *= m_moveSpeedMod;
+    }
+    if (flags & Effect::EFFECT_IS_FROZEN)
+    {
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveMaxSpeed *= m_moveSpeedMod;
+    }
+    if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
+    {
+        m_permanentSpeedMod += effect.getModifiers()->modifyMovementSpeed;
+    }
+    if (flags & Effect::EFFECT_IS_SKILL)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            getSkillManager()->getSkill(i)->affect(effect);
+        }
+    }
+    if (flags & Effect::EFFECT_IS_WEAPON)
+    {
+        m_weaponManager->affect(effect);
+    }
+    if (flags & Effect::EFFECT_INCREASE_JUMPHEIGHT)
+    {
+        m_jumpSpeedMod += effect.getModifiers()->modifyMovementSpeed;
     }
 }
 
@@ -307,45 +346,27 @@ void Player::onEffectEnd(int stacks, Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
 
-    if (flags & Effect::EFFECT_ON_FIRE)
-    {
-        takeDamage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
-    }
     if (flags & Effect::EFFECT_IS_FROZEN)
     {
-        m_moveSpeedMod = 1;
+        /*m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
     }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
-        m_moveSpeedMod = 1;
+        /*m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
         m_stunned = false;
     }
 
     if (flags & Effect::EFFECT_MOVE_FASTER)
     {
-        m_moveSpeedMod = 1;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
+       /* m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
     }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
     {
-        m_moveSpeedMod = 1;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
-    }
-   if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
-    {
-        /*m_permanentSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
-        m_moveMaxSpeed = m_moveMaxSpeed + (PLAYER_MOVEMENT_MAX_SPEED * upgrade.getFlatUpgrades().movementSpeed);*/
-    }
-    if (flags & Effect::EFFECT_IS_SKILL)
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            /*getSkillManager()->getSkill(i)->upgrade(upgrade);*/
-        }
-    }
-    if (flags & Effect::EFFECT_IS_WEAPON)
-    {
-
+       /* m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
     }
 }
 
@@ -384,6 +405,9 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
         {
             getSoundSource()->playSFX(Sound::SFX::NECROMANCER_DEATH);
             m_hp -= damage;
+
+            // Add invul time
+            getStatusManager().addStatus(StatusManager::EFFECT_ID::INVULNERABLE, 1);
         }
     }
 }
@@ -396,8 +420,6 @@ int Player::getHP() const
 void Player::updateSpecific(float deltaTime)
 {
     //TODO LUKAS SWITCH THIS OUT AS PROMISED
-    m_permanentSpeedMod = 0;
-    m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;;
     for (StatusManager::UPGRADE_ID id : getStatusManager().getActiveUpgrades())
     {
         upgrade(getStatusManager().getUpgrade(id));
@@ -483,6 +505,8 @@ void Player::updateSpecific(float deltaTime)
 
 	    //crouch(deltaTime);
 
+        
+        static int lastMouseScrollState = 0;
 	    // Weapon swap
         if (ks.IsKeyDown(m_switchWeaponOne))
         {
@@ -490,20 +514,33 @@ void Player::updateSpecific(float deltaTime)
             m_weaponManager->switchWeapon(0);
             currentWeapon = 0;
         }
-		
-        if (ks.IsKeyDown(m_switchWeaponTwo))
+		else if (ks.IsKeyDown(m_switchWeaponTwo))
         {
             getSoundSource()->playSFX(Sound::SFX::SWOOSH);
             m_weaponManager->switchWeapon(1);
             currentWeapon = 1;
         }
-		
-        if (ks.IsKeyDown(m_switchWeaponThree))
+		else if (ks.IsKeyDown(m_switchWeaponThree))
         {
             getSoundSource()->playSFX(Sound::SFX::SWOOSH);
             m_weaponManager->switchWeapon(2);
             currentWeapon = 2;
         }
+        else if (ms.scrollWheelValue > lastMouseScrollState)
+        {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
+            currentWeapon--;
+            currentWeapon = currentWeapon < 0 ? 2 : currentWeapon;
+            m_weaponManager->switchWeapon(currentWeapon);
+        }
+        else if (ms.scrollWheelValue < lastMouseScrollState)
+        {
+            getSoundSource()->playSFX(Sound::SFX::SWOOSH);
+            currentWeapon++;
+            currentWeapon %= 3;
+            m_weaponManager->switchWeapon(currentWeapon);
+        }
+        lastMouseScrollState = ms.scrollWheelValue;
 		
 	    // Skills
         PROFILE_BEGIN("SkillManager");
@@ -646,7 +683,7 @@ void Player::move(float deltaTime)
 	if (m_wishJump)
 	{
         getSoundSource()->playSFX(Sound::SFX::JUMP, 1.f, 0.1f);
-		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
+		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * m_jumpSpeedMod, 0.f });
 		m_wishJump = false;
 	}
 }
@@ -665,7 +702,7 @@ void Player::accelerate(float deltaTime, float acceleration)
 	if (deltaTime * 0.001f > (1.f / 60.f))
 		deltaTime = (1.f / 60.f) * 1000.f;
 
-	m_moveSpeed += (acceleration * deltaTime * m_permanentSpeedMod) + (acceleration * deltaTime * m_moveSpeedMod);
+	m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod * m_permanentSpeedMod;
 
 	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;
@@ -752,9 +789,9 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-    Settings* setting = Settings::getInstance();
-	m_camYaw	+= setting->getMouseSense() * (ms->x * deltaTime);
-	m_camPitch	-= setting->getMouseSense() * (ms->y * deltaTime);
+    Settings setting = Settings::getInstance();
+	m_camYaw	+= setting.getMouseSense() * (ms->x * deltaTime);
+	m_camPitch	-= setting.getMouseSense() * (ms->y * deltaTime);
 
 	// DirectX calculates position on the full resolution,
 	//  while getWindowMidPoint gets the current window's middle point!!!!!
@@ -780,7 +817,7 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 	m_forward.Normalize();
 }
 
-btKinematicCharacterController * Logic::Player::getCharController()
+btKinematicCharacterController * Player::getCharController()
 {
 	return m_charController;
 }
@@ -846,7 +883,7 @@ void Player::render() const
 	m_skillManager->render();
 }
 
-void Logic::Player::setMaxSpeed(float maxSpeed)
+void Player::setMaxSpeed(float maxSpeed)
 {
 	m_moveMaxSpeed = maxSpeed;
 }
@@ -861,7 +898,7 @@ DirectX::SimpleMath::Vector3 Player::getEyePosition() const
     return DirectX::SimpleMath::Vector3(m_charController->getGhostObject()->getWorldTransform().getOrigin() + btVector3(PLAYER_EYE_OFFSET));
 }
 
-btVector3 Logic::Player::getPositionBT() const
+btVector3 Player::getPositionBT() const
 {
 	return m_charController->getGhostObject()->getWorldTransform().getOrigin();
 }
@@ -871,17 +908,17 @@ btTransform& Player::getTransform() const
 	return m_charController->getGhostObject()->getWorldTransform();
 }
 
-float Logic::Player::getYaw() const
+float Player::getYaw() const
 {
     return m_camYaw;
 }
 
-float Logic::Player::getPitch() const
+float Player::getPitch() const
 {
     return m_camPitch;
 }
 
-float Logic::Player::getMoveSpeed() const
+float Player::getMoveSpeed() const
 {
 	return m_moveSpeed;
 }
@@ -950,24 +987,39 @@ bool Player::isUsingMeleeWeapon() const
     return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().primAmmoConsumption == 0;
 }
 
-int Logic::Player::getCurrentWeapon() const
+int Player::getCurrentWeapon() const
 {
     return currentWeapon;
 }
 
-void Logic::Player::setCurrentSkills(int first, int second)
+void Player::setCurrentSkills(int first, int second)
 {
     m_skillManager->switchToSkill({ SkillManager::SKILL(second), SkillManager::SKILL(first) });
     currentSkills[0] = first;
     currentSkills[1] = second;
 }
 
-int Logic::Player::getCurrentSkill1() const
+int Player::getCurrentSkill1() const
 {
     return currentSkills[1];
 }
 
-int Logic::Player::getCurrentSkill0() const
+void Player::setTargetedBy(Entity *entity)
+{
+    m_targetedBy = entity;
+}
+
+bool Player::isTargeted()
+{
+    return m_targetedBy;
+}
+
+void Player::resetTargeted()
+{
+    m_targetedBy = nullptr;
+}
+
+int Player::getCurrentSkill0() const
 {
     return currentSkills[0];
 }

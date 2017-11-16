@@ -40,7 +40,7 @@
 //
 //	for (WaterRenderInfo * info : renderWaterQueue)
 //	{
-//		ModelInfo model = resourceManager.getModelInfo(info->meshId);
+//		ModelInfo model = resourceManager.getModelInfo(info.meshId);
 //
 //		static UINT stride = sizeof(Vertex), offset = 0;
 //		deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);

@@ -4,95 +4,141 @@
 
 using namespace Logic;
 
-#define SKILL_BTN_WIDTH 250
-#define SKILL_BTN_HEIGHT 250
+iMenuFactory::iMenuFactory()
+{
+    // Loads all buttons from Button.lw file (Engine/Resources/Button.lw)
+    FileLoader::singleton().loadStructsFromFile(buttonFile, "Button");
+}
+
+iMenuFactory::~iMenuFactory() { }
+
+const std::map<int, Resources::Textures::Files> LookUp =
+{
+    { 0, Resources::Textures::Mainmenutext },               // - The four selections on the starting screen
+    { 1, Resources::Textures::gameOverMenuButtons },        // OLD - Remove later
+    { 2, Resources::Textures::SettingsMenuButtons },        // OLD - Remove later
+    { 3, Resources::Textures::Skillpicksheet },             // - Skill pick buttons, and continue button
+    { 4, Resources::Textures::Backbutton },                 // OLD - Remove later
+    { 5, Resources::Textures::Highscoretext }               // - Same as MainMenuText but with the "Back Button", that we want
+};
+
+iMenuIntro* iMenuFactory::buildMenuIntro()
+{
+    iMenuIntro* menu = newd iMenuIntro(iMenu::Intro);
+    iMenu::ButtonData btn;
+
+    menu->addBackground(Resources::Textures::IntroScreen, 1.f);
+
+    return menu;
+}
 
 iMenu* iMenuFactory::buildMenuStart()
 {
     iMenu* menu = newd iMenu(iMenu::Start);
     iMenu::ButtonData btn;
 
-    /* Background */
-    menu->addBackground(Resources::Textures::mainMenuButton, 0);
-
-    /* Start Button */
-    btn.screenRect = FloatRect(0, 0, 0, 0);
-    btn.texRect = FloatRect(0, 1, 0, 1);
-    btn.texture = Resources::Textures::mainMenuButton;
-    menu->addButton(btn);
-
-    /* Settings Button */
-//    btn.callback = ButtonFunction::startSettings;
-    btn.screenRect = FloatRect(0, 0, 0, 0);
-    btn.texRect = FloatRect(0, 1, 0, 1);
-    btn.texture = Resources::Textures::mainMenuButton;
-    menu->addButton(btn);
-
-    /* Higscore Button */
-//    btn.callback = ButtonFunction::showHighscore;
-    btn.screenRect = FloatRect(0, 0, 0, 0);
-    btn.texRect = FloatRect(0, 1, 0, 1);
-    btn.texture = Resources::Textures::mainMenuButton;
-    menu->addButton(btn);
-
-    /* Exit Button */
-//    btn.callback = ButtonFunction::quitGame;
-    btn.screenRect = FloatRect(0, 0, 0, 0);
-    btn.texRect = FloatRect(0, 1, 0, 1);
-    btn.texture = Resources::Textures::mainMenuButton;
-    menu->addButton(btn);
+    menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
+    menu->addButton(buildButton("MenuStartGame",        ButtonFunction::startGame));
+    menu->addButton(buildButton("MenuStartSettings",    ButtonFunction::showHighscore));
+    menu->addButton(buildButton("MenuStartHighscore",   ButtonFunction::startSettings));
+    menu->addButton(buildButton("MenuQuitGame",         ButtonFunction::quitGame));
 
     return menu;
 }
 
 iMenu * iMenuFactory::buildMenuSettings()
 {
-    return nullptr;
-}
-
-iMenu * iMenuFactory::buildMenuSkill()
-{
-    iMenu* menu = newd iMenu(iMenu::Skill);
+    iMenu* menu = newd iMenu(iMenu::Settings);
     iMenu::ButtonData btn;
 
-    /* Background */
-    menu->addBackground(Resources::Textures::mainMenuButton, 1);
+    menu->addBackground(Resources::Textures::Settings, 1.f);
+    menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
 
-    /* Skill One */
-//    btn.callback = ButtonFunc::chooseSkill1;
-    btn.screenRect = FloatRect(WIN_WIDTH / 2 - WIN_WIDTH / 4 - SKILL_BTN_WIDTH / 2, WIN_HEIGHT / 2 - SKILL_BTN_HEIGHT / 2, SKILL_BTN_WIDTH, SKILL_BTN_HEIGHT);
-    btn.texRect = FloatRect(0, 0, 1.f/3.f, 1.f/3.f);
-    btn.texture = Resources::Textures::Color_pick_icons;
-    menu->addButton(btn);
+    //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
+    //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
+    //menu->addButton(buildButton("MenuSettingsSoundMasterMinus", ButtonFunction::minusMaster));
+    //menu->addButton(buildButton("MenuSettingsSoundMasterPlus", ButtonFunction::plusMaster));
+    //menu->addButton(buildButton("MenuSettingsSoundSFXMinus", ButtonFunction::minusSFX));
+    //menu->addButton(buildButton("MenuSettingsSoundSFXPlus", ButtonFunction::plusSFX));
+    //menu->addButton(buildButton("MenuSettingsMuteUnmute", ButtonFunction::muteUnmute));
+    //menu->addButton(buildButton("MenuSettingsControlsMouseSenseMinus", ButtonFunction::minusSense));
+    //menu->addButton(buildButton("MenuSettingsControlsMouseSensePlus", ButtonFunction::plusSense));
+    //menu->addButton(buildButton("MenuSettingsVideoFOVMinus", ButtonFunction::minusFOV));
+    //menu->addButton(buildButton("MenuSettingsVideoFOVPlus", ButtonFunction::plusFOV));
+    //menu->addButton(buildButton("MenuSettingsVideoWindowed", ButtonFunction::windowed));
 
-    /* Skill Two */
-//    btn.callback = ButtonFunction::chooseSkill2;
-    btn.screenRect = FloatRect(WIN_WIDTH / 2 - SKILL_BTN_WIDTH / 2, WIN_HEIGHT / 2 - SKILL_BTN_HEIGHT / 2, SKILL_BTN_WIDTH, SKILL_BTN_HEIGHT);
-    btn.texRect = FloatRect(1.f/3.f, 0, 1.f / 3.f, 1.f / 3.f);
-    btn.texture = Resources::Textures::Color_pick_icons;
-    menu->addButton(btn);
+    return menu;
+}
 
-    /* Skill Three */
-//    btn.callback = ButtonFunction::chooseSkill3;
-    btn.screenRect = FloatRect(WIN_WIDTH / 2 + WIN_WIDTH / 4 - SKILL_BTN_WIDTH / 2, WIN_HEIGHT / 2 - SKILL_BTN_HEIGHT / 2, SKILL_BTN_WIDTH, SKILL_BTN_HEIGHT);
-    btn.texRect = FloatRect(2.f/3.f, 0, 1.f / 3.f, 1.f / 3.f);
-    btn.texture = Resources::Textures::Color_pick_icons;
-    menu->addButton(btn);
+iMenuSkillPick* iMenuFactory::buildMenuSkill()
+{
+    iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
+    iMenu::ButtonData btn;
+
+    menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
+    menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
+    menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
+    menu->addButton(buildButton("SkillPickButton3", std::bind(&iMenuSkillPick::pickThree, menu)));
+    menu->addButton(buildButton("Continue", ButtonFunction::confirmSkillPicks));
 
     return menu;
 }
 
 iMenu * iMenuFactory::buildMenuCard()
 {
-    return nullptr;
+    iMenu* menu = newd iMenu(iMenu::Card);
+    iMenu::ButtonData btn;
+
+    menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));
+    menu->addButton(buildButton("CardUpgradeChoice2", ButtonFunction::chooseUpgrade2));
+    menu->addButton(buildButton("CardUpgradeChoice3", ButtonFunction::chooseUpgrade3));
+
+    return menu;
 }
 
 iMenu * iMenuFactory::buildMenuHighscore()
 {
-    return nullptr;
+    iMenu* menu = newd iMenu(iMenu::Highscore);
+    iMenu::ButtonData btn;
+
+    menu->addBackground(Resources::Textures::Highscore, 1.f);
+    menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
+    
+    //menu->addButton(buildButton("HighscoreStartMenu", ButtonFunction::startMainMenu));
+
+    return menu;
 }
 
 iMenu * iMenuFactory::buildMenuGameover()
 {
-    return nullptr;
+    iMenu* menu = newd iMenu(iMenu::GameOver);
+    iMenu::ButtonData btn;
+
+    // Add background
+    // Add buttons
+
+    return menu;
+}
+
+// Building function, for internal use only
+iMenu::ButtonData iMenuFactory::buildButton(std::string name, std::function<void(void)> func)
+{
+    iMenu::ButtonData btn;
+    for (auto const& button : buttonFile)
+    {
+        if (button.strings.find("buttonName") != button.strings.end() &&
+            button.strings.at("buttonName") == name)
+        {
+            btn.callback = func;
+            btn.screenRect.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("xPos") / WIN_WIDTH, button.floats.at("yPos") / WIN_WIDTH);
+            btn.screenRect.bottomRight = DirectX::SimpleMath::Vector2((button.floats.at("width") + button.floats.at("xPos")) / WIN_WIDTH, (button.floats.at("height") + button.floats.at("yPos")) / WIN_WIDTH);
+            btn.texRectNormal.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("xTexStart"), button.floats.at("yTexStart"));
+            btn.texRectNormal.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("xTexEnd"), button.floats.at("yTexEnd"));
+            btn.texRectHover.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("xTexStart"), button.floats.at("yTexStart") + button.floats.at("activeOffset"));
+            btn.texRectHover.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("xTexEnd"), button.floats.at("yTexEnd") + button.floats.at("activeOffset"));
+            btn.texRectActive = btn.texRectHover;
+            btn.texture = LookUp.at(button.ints.at("texture")); 
+        }
+    }
+    return btn;
 }

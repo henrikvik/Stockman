@@ -29,6 +29,13 @@ void WeaponManager::init(ProjectileManager* projectileManager)
 
 	m_reloadTimer = 0.f;
 	m_reloadState = ReloadingWeapon::IDLE;
+
+    m_Upgrades.magSizeModifier = 0;
+    m_Upgrades.ammoCapModifier = 0;
+    m_Upgrades.reloadTimeModifier = 1.0f;
+    m_Upgrades.fireRateModifier = 1.0f;
+    m_Upgrades.freezeDurationModifier = 1.0f;
+    m_Upgrades.fireDamageModifier = 0.0f;
 }
 
 void WeaponManager::clear()
@@ -50,9 +57,25 @@ void WeaponManager::reset()
     // Reset ammo
 	for (int i = 0; i < m_weaponLoadouts.size(); i++)
         m_weaponLoadouts[i]->ammoContainer->reset();
+    
 
     // Reset current weapon
     m_currentWeapon = m_weaponLoadouts[0];
+
+    m_attackRateTimer = 0;
+    m_toUse = USE_NOTHING;
+    m_toUseShooter = nullptr;
+
+    m_reloadTimer = 0.f;
+    m_reloadState = ReloadingWeapon::IDLE;
+
+    //reset weapon upgrades
+    m_Upgrades.magSizeModifier = 0;
+    m_Upgrades.ammoCapModifier = 0;
+    m_Upgrades.reloadTimeModifier = 1.0f;
+    m_Upgrades.fireRateModifier = 1.0f;
+    m_Upgrades.freezeDurationModifier = 1.0f;
+    m_Upgrades.fireDamageModifier = 0.0f;
 }
 
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
@@ -76,7 +99,7 @@ void WeaponManager::update(float deltaTime)
 	}
 	if (m_reloadState == ReloadingWeapon::DONE)
 	{
-		m_currentWeapon->ammoContainer->fillMag();
+		m_currentWeapon->ammoContainer->fillMag(m_Upgrades.magSizeModifier);
 		m_reloadState = ReloadingWeapon::IDLE;
 		printf("adding ammo\n");
 		printf("ammo: %d\n", m_currentWeapon->ammoContainer->getAmmoInfo().ammo);
@@ -109,6 +132,52 @@ void WeaponManager::update(float deltaTime)
 
 }
 
+void Logic::WeaponManager::affect(Effect const & effect)
+{
+    long long flags = effect.getStandards()->flags;
+
+
+    if (flags & Effect::EFFECT_MODIFY_AMMO)
+    { 
+        WeaponLoadout* wp = nullptr;
+        if (effect.getSpecifics()->ammoType == 0)
+            wp = getWeaponLoadout(0);
+        else if (effect.getSpecifics()->ammoType == 1)
+            wp = getWeaponLoadout(1);
+
+        if (wp)
+        {
+            int magSize = wp->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier;
+            int currentAmmo = wp->ammoContainer->getAmmoInfo().ammo;
+            if ((currentAmmo + magSize) >= (wp->ammoContainer->getAmmoInfo().ammoCap + m_Upgrades.ammoCapModifier))
+                wp->ammoContainer->setAmmo(wp->ammoContainer->getAmmoInfo().ammoCap + m_Upgrades.ammoCapModifier);
+            else
+                wp->ammoContainer->setAmmo(currentAmmo + magSize + m_Upgrades.magSizeModifier);
+        }
+    }
+    if(flags & Effect::EFFECT_INCREASE_AMMOCAP)
+    {
+        m_Upgrades.ammoCapModifier += effect.getModifiers()->modifyAmmoCap;
+    }
+    if (flags & Effect::EFFECT_INCREASE_MAGSIZE)
+    {
+        m_Upgrades.magSizeModifier += effect.getModifiers()->modifyMagCap;
+    }
+    if (flags & Effect::EFFECT_INCREASE_FIRERATE)
+    {
+        m_Upgrades.fireRateModifier *= 1 - effect.getModifiers()->modifyFirerate;
+    }
+    if (flags & Effect::EFFECT_DECREASE_RELOADTIME)
+    {
+        m_Upgrades.reloadTimeModifier *= 1 - effect.getModifiers()->modifySkillCDDecrease;
+        if (m_Upgrades.reloadTimeModifier < 0)
+        {
+            m_Upgrades.reloadTimeModifier = 0;
+        }
+    }
+
+}
+
 void WeaponManager::render() const
 {
     m_currentWeapon->weaponModel->render();
@@ -121,24 +190,24 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     {
         // Gattling
         newd WeaponLoadout{
-        /* Primary */       newd Weapon(projectileManager, ProjectileData(25, 0.2f, 1, 100, 0.f, 3000, Resources::Models::UnitCube, 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 450, 0, 0 }),
-        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(10, 0.1f, 1, 100, 0.f, 500, Resources::Models::UnitCube, 1), Weapon::WeaponInfo{ 1, 18, 15, 10, 100, 0, 0 }),
+        /* Primary */       newd Weapon(projectileManager, ProjectileData(25, 1.f, 1, 100, 0.f, 3000, Resources::Models::CrossBowProjectile , 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 100, 0, 0 }),
+        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(25, 1.f, 1, 100, 0.f, 1000, Resources::Models::CrossBowProjectile, 1), Weapon::WeaponInfo{ 1, 18, 15, 4, 100, 0, 0 }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 60, 60, 20, 20, 1, 5, 1000 }),
-        /* WeaponModel */   newd WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.05f, 0.12f, 0.05f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.5f, -1.8f, 4.6f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.1f), 800.f }) },
+        /* WeaponModel */   newd WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -0.8f, 0.3f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f }) },
 
         // Ice
         newd WeaponLoadout{
         /* Primary */       newd Weapon(projectileManager, ProjectileData(0, 1, 1, 20, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true), Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1 }),
-        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(40, 0.6f, 1, 100, 0, 5000, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeFreezeGrenade, true), Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0 }, ProjectileData(10, 0.2f, 1, 10, 5, 5000, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeNormal, true), 8),
+        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(40, 1.f, 1, 100, 0, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade), Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0 }, ProjectileData(10, 0.5f, 1, 10, 5, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard), 8),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 300, 100, 100, 1, 25, 1500 }),
-        /* WeaponModel */   newd WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(-0.6f, -6.6f, 0.3f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(2.5f, -3.6f, 5.2f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), 800.f }) },
+        /* WeaponModel */   newd WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -2.3f, 0.3f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f }) },
 
         // Sledge/Melee
         newd WeaponLoadout{ 
         /* Primary */       newd Weapon(projectileManager, ProjectileData(35, 2.f, 1, 0, 0, 0, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 4, 1, 0, 0, 400, 200, 0 }),
         /* Secondary*/      newd WeaponMeleeParry(projectileManager, ProjectileData(0, 2.f, 1, 0, 0, 200, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, true), Weapon::WeaponInfo{ 5, 1, 0, 0, 50, 0, 0 }, 8.f),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0 }),
-        /* WeaponModel */   newd WeaponModel(Resources::Models::Hammer, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(-1.7f, 0.2f, 3.2f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(1.3f, -0.2f, 2.f)), DirectX::SimpleMath::Matrix::CreateScale(0.2f, 0.2f, 0.2f), 200.f }) }
+        /* WeaponModel */   newd WeaponModel(Resources::Models::Hammer, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(1.3f, 0.9f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-0.3f, -1.5f, -0.2f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 200.f }) }
     };
 }
 
@@ -189,7 +258,7 @@ void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch, Entit
     m_currentWeapon->primary->use(position, yaw, pitch, shooter);
     m_currentWeapon->ammoContainer->removePrimaryAmmo();
 
-    m_attackRateTimer = m_currentWeapon->primary->getAttackTimer();
+    m_attackRateTimer = m_currentWeapon->primary->getAttackTimer(m_Upgrades.fireRateModifier);
 }
 
 void WeaponManager::tryUseSecondary(btVector3 position, float yaw, float pitch, Player& shooter)
@@ -220,14 +289,14 @@ void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Ent
     m_currentWeapon->secondary->use(position, yaw, pitch, shooter);
     m_currentWeapon->ammoContainer->removeSecondaryAmmo();
 
-    m_attackRateTimer = m_currentWeapon->secondary->getAttackTimer();
+    m_attackRateTimer = m_currentWeapon->secondary->getAttackTimer(m_Upgrades.fireRateModifier);
 }
 
 void WeaponManager::reloadWeapon()
 {
-	if (m_reloadTimer <= 0.f && m_currentWeapon->ammoContainer->getAmmoInfo().ammo > 0 && m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo < m_currentWeapon->ammoContainer->getAmmoInfo().magSize)
+	if (m_reloadTimer <= 0.f && m_currentWeapon->ammoContainer->getAmmoInfo().ammo > 0 && m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo < (m_currentWeapon->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier))
 	{
-        m_reloadTimer = m_currentWeapon->ammoContainer->getAmmoInfo().reloadTime;
+        m_reloadTimer = m_currentWeapon->ammoContainer->getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier;
 		m_reloadState = ReloadingWeapon::ACTIVE;
 		printf("reloading weapon\n");
 	}
@@ -267,12 +336,12 @@ WeaponManager::WeaponLoadout* WeaponManager::getActiveWeaponLoadout()
     else
     {
         return m_weaponLoadouts[1];
-    } 
+    }
 }
 
 WeaponManager::WeaponLoadout* WeaponManager::getInactiveWeaponLoadout()
 {
-    if (m_weaponLoadouts[1] == m_currentWeapon)
+    if (m_weaponLoadouts[1] == m_currentWeapon || m_weaponLoadouts[2] == m_currentWeapon)
     {
         return m_weaponLoadouts[0];
     }

@@ -1,6 +1,5 @@
 #include <StateMachine\StateSecondary.h>
 #include <StateMachine\StateBuffer.h>
-#include <StatePlayingOverlay.h>
 #include <Misc\Sound\NoiseMachine.h>
 
 // Input Singletons
@@ -92,7 +91,7 @@ void StateSecondary::loadState(StateType state)
     switch (state)
     {
     case StateType::State_InGame_Overlay:
-        m_currentState = newd StatePlayingOverlay(m_stateBuffer);
+
         break;
     }
 
@@ -103,11 +102,6 @@ void StateSecondary::loadState(StateType state)
         return;
     }
 
-    // Saving new state in stateBuffer
-    m_stateBuffer->currentSecondaryState = m_currentState;
-
     m_currentState->SetFuncPrimarySwitch(SwitchPrimaryState);
     m_currentState->SetFuncSecondarySwitch(SwitchSecondaryState);
-    m_currentState->SetFuncGetCurrentPrimary(GetCurrentPrimaryState);
-    m_currentState->SetFuncGetCurrentSecondary(GetCurrentSecondaryState);
 }

@@ -29,7 +29,7 @@ namespace Logic
         void removePrimaryAmmo();
         void removeSecondaryAmmo();
         void setAmmo(int ammo);
-        void fillMag();
+        void fillMag(int modifier);
 
     private:
         AmmoInfo m_aInfo;

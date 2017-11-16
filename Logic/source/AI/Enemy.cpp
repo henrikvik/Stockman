@@ -25,6 +25,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
     m_nrOfCallbacksEntities = 0;
     m_stunned = false;
+    m_fireTimer = 0;
 
 	//animation todo
     enemyRenderInfo.model = modelID;
@@ -76,12 +77,13 @@ Enemy::~Enemy() {
 
 void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
-	updateSpecific(player, deltaTime);
 
     if (!m_stunned)
     {
         m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
     }
+
+	updateSpecific(player, deltaTime);
 
     // Update Render animation and position
     enemyRenderInfo.transform = getTransformMatrix();
@@ -124,21 +126,32 @@ void Enemy::damage(int damage)
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
 {
 	auto flags = effect.getStandards()->flags;
+    m_moveSpeedMod = 1.0f;
 
     if (flags & Effect::EFFECT_MODIFY_HP)
         m_health += static_cast<int> (effect.getModifiers()->modifyHP);
+    if (flags & Effect::EFFECT_ON_FIRE)
+    {
+        m_fireTimer += dt;
+
+        if (m_fireTimer >= 1000.0f)
+        {
+            damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken) * stacks);
+            m_fireTimer -= 1000.0f;
+        }
+    }
     if (flags & Effect::EFFECT_KILL)
         damage(m_health);
 	if (flags & Effect::EFFECT_BULLET_TIME)
 		m_bulletTimeMod = std::pow(effect.getSpecifics()->isBulletTime, stacks);
     if (flags & Effect::EFFECT_IS_FROZEN)
-        m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
     if (flags & Effect::EFFECT_IS_STUNNED)
         m_stunned = true;
     if (flags & Effect::EFFECT_MOVE_FASTER)
-       m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+       m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
     if (flags & Effect::EFFECT_MOVE_SLOWER)
-       m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+       m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
 }
 
 void Enemy::onEffectEnd(int stacks, Effect const & effect)
@@ -147,11 +160,11 @@ void Enemy::onEffectEnd(int stacks, Effect const & effect)
 
     if (flags & Effect::EFFECT_ON_FIRE)
     {
-        damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+        m_fireTimer = 0;
     }
     if (flags & Effect::EFFECT_BULLET_TIME)
     {
-        m_bulletTimeMod = 1.f;
+        //m_bulletTimeMod = 1.f;
     }
     if (flags & Effect::EFFECT_IS_FROZEN)
     {
@@ -211,15 +224,18 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     
-    increaseCallbackEntities();
-    pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
-        decreaseCallbackEntities();
-    });
-    if (hasCallback(ON_DAMAGE_GIVEN))
+    if (pj)
     {
-        pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
-            callback(ON_DAMAGE_GIVEN, data);
+        increaseCallbackEntities();
+        pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+            decreaseCallbackEntities();
         });
+        if (hasCallback(ON_DAMAGE_GIVEN))
+        {
+            pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
+                callback(ON_DAMAGE_GIVEN, data);
+            });
+        }
     }
 	
     return pj;
@@ -233,6 +249,6 @@ Behavior* Enemy::getBehavior() const
 void Enemy::render() const
 {
     renderSpecific();
-    RenderQueue::get().queue(&enemyRenderInfo);
-    RenderQueue::get().queue(&light);
+    QueueRender(enemyRenderInfo);
+    QueueRender(light);
 }

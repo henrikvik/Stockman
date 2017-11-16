@@ -44,7 +44,7 @@ void FPSRenderer::updateFPS(float deltaTime)
 
 void Logic::FPSRenderer::render() const
 {
-    RenderQueue::get().queue(&renderInfo);
+    QueueRender(renderInfo);
 }
 
 TextRenderInfo Logic::FPSRenderer::getTextRenderInfo() const

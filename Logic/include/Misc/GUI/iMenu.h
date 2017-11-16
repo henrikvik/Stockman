@@ -12,6 +12,8 @@ namespace Logic
     public:
         enum MenuGroup
         {
+            Empty,
+            Intro,
             Start,
             Settings,
             Skill,
@@ -22,10 +24,12 @@ namespace Logic
 
         struct ButtonData
         {
-            FloatRect                   screenRect; // Where the button should be drawn
-            FloatRect                   texRect;    // The texture-coordinates on the button-map
-            Resources::Textures::Files  texture;    // What buttonmap-texture this button is present inside
-            std::function<void(void)>   callback;   // What function this button calls
+            FloatRect                   screenRect;     // Where the button should be drawn
+            FloatRect                   texRectNormal;  // The texture-coordinates on the button-map
+            FloatRect                   texRectHover;   // The texture-coordinates on the button-map
+            FloatRect                   texRectActive;  // The texture-coordinates on the button-map
+            Resources::Textures::Files  texture;        // What buttonmap-texture this button is present inside
+            std::function<void(void)>   callback;       // What function this button calls
         };
 
         iMenu(MenuGroup group);
@@ -33,15 +37,18 @@ namespace Logic
 
         void addBackground(Resources::Textures::Files texture, float alpha);
         void addButton(ButtonData btn);
-        void update(int x, int y);
-        void render() const;
+        virtual void update(int x, int y);
+        virtual void render() const;
 
         MenuGroup getMenuType() { return m_group; }
 
-    private:
+    protected:
         void updateClick(int x, int y);
         void updateHover(int x, int y);
 
+        bool m_pressed;
+        bool m_drawButtons;
+        bool m_drawMenu;
         MenuGroup m_group;
         std::vector<Button> m_buttons;
         SpriteRenderInfo m_background;
