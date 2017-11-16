@@ -68,6 +68,14 @@ void WeaponManager::reset()
 
     m_reloadTimer = 0.f;
     m_reloadState = ReloadingWeapon::IDLE;
+
+    //reset weapon upgrades
+    m_Upgrades.magSizeModifier = 0;
+    m_Upgrades.ammoCapModifier = 0;
+    m_Upgrades.reloadTimeModifier = 1.0f;
+    m_Upgrades.fireRateModifier = 1.0f;
+    m_Upgrades.freezeDurationModifier = 1.0f;
+    m_Upgrades.fireDamageModifier = 0.0f;
 }
 
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
@@ -130,7 +138,7 @@ void Logic::WeaponManager::affect(Effect const & effect)
 
 
     if (flags & Effect::EFFECT_MODIFY_AMMO)
-    {
+    { 
         WeaponLoadout* wp = nullptr;
         if (effect.getSpecifics()->ammoType == 0)
             wp = getWeaponLoadout(0);

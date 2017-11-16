@@ -78,6 +78,7 @@ void Skill::reset()
     m_canUse = true;
     m_active = false;
     onReset();
+    m_cooldownModifer = 1.0f;
 }
 
 float Skill::getCooldown() const		        { return m_cooldown;			}
