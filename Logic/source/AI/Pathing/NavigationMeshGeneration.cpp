@@ -399,21 +399,17 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(NavigationMesh &nav, Physi
 
     nav.createNodesFromTriangles();
     
-    int regionIndex;
+    int regionIndex, otherIndex;
     for (size_t t = 0; t < regions.size(); t++) // create nodes beetwen them
     {
         auto &region = regions[t];
         regionIndex = static_cast<int> (t);
         nav.addDoubleEdge(t * 2, t * 2 + 1, { 0,0,0 });
 
-        for (int i : region.collidedWithIndex[X_MINUS])
-            createEdgeBeetwen(nav, regionIndex, getRegion(i), X_MINUS);
-        for (int i : region.collidedWithIndex[Z_MINUS])
-            createEdgeBeetwen(nav, regionIndex, getRegion(i), Z_MINUS);
-        for (int i : region.collidedWithIndex[X_PLUS])
-            createEdgeBeetwen(nav, regionIndex, getRegion(i), X_PLUS);
-        for (int i : region.collidedWithIndex[Z_PLUS])
-            createEdgeBeetwen(nav, regionIndex, getRegion(i), Z_PLUS);
+        for (int side = 0; side < SIDES; side++)
+            for (int id : region.collidedWithIndex[side])
+                if ((otherIndex = getRegion(id)) > -1)
+                    createEdgeBeetwen(nav, regionIndex, otherIndex, static_cast<GrowthType> (side));
     }  
 }
 
@@ -562,10 +558,33 @@ void NavigationMeshGeneration::seedArea(btVector3 position, btVector3 fullDimens
 
 void NavigationMeshGeneration::createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, GrowthType side)
 {
+    NavMeshCube &reg1 = regions[getRegion(r1)];
+    NavMeshCube &reg2 = regions[getRegion(r2)];
+    DirectX::SimpleMath::Vector3 con;
+    btVector3 vec1 = reg1.cube.getPos() + getDimension(reg1, side),
+              vec2 = reg2.cube.getPos() + getDimension(reg2, side);
+
+    btVector3 half1 = getDimension(reg1, side + 1 % SIDES),
+              half2 = getDimension(reg2, side + 1 % SIDES);
+
     if (side == X_MINUS || side == Z_MINUS)
-        nav.addDoubleEdge(r1 * 2 + 1, r2 * 2 + 1, { 0,0,0 });
+    {
+        if ((vec1 - half1).length2() < (vec1 - vec2).length2())
+            nav.addDoubleEdge(r1 * 2 + 1, r2 * 2 + 1, { vec2.x(), vec2.y(), vec2.z() });
+        else
+        {
+            /*
+            bool side;
+            side = (vec1 - vec2 + half2).length2() < (vec1 - vec2 + half2).length2();
+            if (side)
+
+            else */
+        }
+    }
     else
+    {
         nav.addDoubleEdge(r1 * 2, r2 * 2, { 0,0,0 });
+    }
 }
 
 std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance)
