@@ -1,6 +1,7 @@
 #include <Projectile\Projectile.h>
 #include <Player\Player.h>
 #include <AI\Enemy.h>
+#include <AI\Trigger.h>
 #include <Physics\Physics.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -101,6 +102,8 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         cb = collisionWithProjectile(proj);
     else if (Player* player = dynamic_cast<Player*> (&other))
         cb = collisionWithPlayer(player);
+    else if (Trigger* trigger = dynamic_cast<Trigger*> (&other))
+        cb = collisionWithTrigger(trigger);
     else
         cb = collisionWithTerrain();
 
@@ -156,6 +159,20 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
 
     // Always trigger callback
     return callback;
+}
+
+bool Projectile::collisionWithTrigger(Trigger* trigger)
+{
+    bool cb = false;
+
+    switch (m_pData.type)
+    {
+    case ProjectileTypeGrappling:
+        m_dead = true;
+        cb = true;
+    }
+
+    return cb;
 }
 
 // Projectile-Terrain Collisions, returns true if callback should be activated
