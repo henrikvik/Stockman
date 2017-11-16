@@ -1,6 +1,6 @@
 { // ON FIRE
 	"flags": 2; // 0x1
-	"duration": 3000f;
+	"duration": 10000f;
 	"modifiers": 1;
 	"specifics": 0;
 

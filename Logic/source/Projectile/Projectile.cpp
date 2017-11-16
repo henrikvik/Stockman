@@ -61,7 +61,10 @@ void Projectile::upgrade(Upgrade const &upgrade)
     }
     if (flags & Upgrade::UPGRADE_BURNING)
     {
-
+        if (m_pData.type == ProjectileTypeNormal)
+        {
+            m_pData.type = ProjectileTypeFireArrow;
+        }
     }
 }
 
@@ -91,13 +94,21 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
     bool cb = false;
 
     if (Enemy* enemy = dynamic_cast<Enemy*> (&other))
+    {
         cb = collisionWithEnemy(enemy);
+    }
     else if (Projectile* proj = dynamic_cast<Projectile*> (&other))
+    {
         cb = collisionWithProjectile(proj);
+    }
     else if (Player* player = dynamic_cast<Player*> (&other))
+    {
         cb = collisionWithPlayer(player);
+    }
     else
+    {
         cb = collisionWithTerrain();
+    }
 
     // Send back data to listener
     if (cb) doCallBack(other);
@@ -139,13 +150,19 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     case ProjectileTypeMelee:
         break;
 
+    case ProjectileTypeFireArrow:
+        enemy->getStatusManager().addStatus(
+            /* Adding Fire effect */            StatusManager::ON_FIRE,
+            /* Number of stacks */              1,
+            /* Don't reset Duration */          false
+        );
+        break;
     // Trigger all callbacks on other projectiles
     //  And kill them off
     default: 
         callback = true;
         kill = true;
     }
-
     // Set if we should kill it
     m_dead = kill;
 

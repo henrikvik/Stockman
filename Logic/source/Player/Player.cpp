@@ -164,13 +164,6 @@ void Player::registerDebugCmds()
 
         return "Player is not red so player does not go fastah -Random Ork Warhammer 40K (you go slower)";
     });
-
-    win->registerCommand("LOG_PLAYER_ON_FIRE", [&](std::vector<std::string> &args) -> std::string
-    {
-        getStatusManager().addStatus(StatusManager::ON_FIRE, 1);
-
-        return "You sir are on fire (You will take 1 damage soon)";
-    });
     win->registerCommand("LOG_PLAYER_HEAL", [&](std::vector<std::string> &args) -> std::string
     {
         getStatusManager().addStatus(StatusManager::HEALTH_P1, 1);
@@ -229,6 +222,12 @@ void Player::registerDebugCmds()
 
         return "You jump 20% higher";
     });
+    win->registerCommand("LOG_PLAYER_SET_BURNING", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
+
+        return "You jump 20% higher";
+    });
 }
 
 void Player::clear()
@@ -248,6 +247,10 @@ void Player::reset()
 	getTransform().setOrigin(startPosition);
 	m_weaponManager->reset();
 	m_hp = 3;
+    m_moveSpeedMod = 1.0f;
+    m_permanentSpeedMod = 1.0f;
+    m_jumpSpeedMod = 1.0f;
+    m_stunned = false;
 
     //temp? probably
     Global::mainCamera->update(getPosition(), m_forward, Global::context);
@@ -340,10 +343,6 @@ void Player::onEffectEnd(int stacks, Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
 
-    if (flags & Effect::EFFECT_ON_FIRE)
-    {
-        takeDamage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
-    }
     if (flags & Effect::EFFECT_IS_FROZEN)
     {
         /*m_moveSpeedMod = 1.0f;
