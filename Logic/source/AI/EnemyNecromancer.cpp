@@ -20,7 +20,7 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().kill(SCORE);
-        RandomGenerator::singleton().getRandomInt(0, 1) > 0 ? 
+        RandomGenerator::singleton().getRandomInt(0, 1) ? 
             SpawnTrigger(2, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY }) : 
             SpawnTrigger(3, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP_SECONDARY });
     });
