@@ -2,76 +2,138 @@
 
 using namespace Logic;
 
-// Flat reward, no combo involved
-void ComboMachine::Reward(int score)
+const int ComboMachine::MAX_COMBO = 16;
+const int ComboMachine::MAX_MULTIKILL = 5;
+const float ComboMachine::COMBO_TIMER = 5000.f;
+const float ComboMachine::MULTIKILL_TIMER = 1000.f;
+
+ComboMachine::ComboMachine()
 {
-	m_Score += score;
+    reset();
+}
+
+// Flat reward, no combo involved
+void ComboMachine::reward(int score)
+{
+    m_totalScore += score;
 }
 
 // Gives the player score depending on enemy type
-void ComboMachine::Kill(EnemyType type)
+void ComboMachine::kill(int score)
 {
-	CheckCombo();
-	m_Score += GetReward(type) * m_Combo;
+    m_comboTimer = COMBO_TIMER;
+    m_totalKills++;
+    if (score)
+    {
+        //addScore(score); apparently this doesnt work?
+        // add score to combo
+        m_comboScore += score * m_combo;
+        // increase combo
+        if(m_combo != MAX_COMBO)
+            m_combo++;
+
+        // multikill
+        if (m_multikill != MAX_MULTIKILL)
+        {
+            if (m_multikillTimer > FLT_EPSILON)
+                m_multikill++;
+            m_multikillTimer = MULTIKILL_TIMER;
+        }
+        else
+            m_multikillTimer = 0.f;
+    }
 }
 
 // Needs to be updated because we need to check the combo timer
-void ComboMachine::Update(float deltaTime)
+void ComboMachine::update(float deltaTime)
 {
-	m_TimeSinceLastKill -= deltaTime;
+    if (m_multikillTimer > FLT_EPSILON)
+        m_multikillTimer -= deltaTime;
+    else
+        addMultikillScore();
+
+    if (m_comboTimer > FLT_EPSILON)
+        m_comboTimer -= deltaTime;
+    else
+    {
+        reward(m_comboScore);
+        m_comboTimer = 0.f;
+        m_combo = 1;
+        m_multikill = 1;
+        m_comboScore = 0;
+    }  
 }
 
 // Reset all variables, should be called every level-restart
-void ComboMachine::Reset()
+void ComboMachine::reset()
 {
-	m_TimeSinceLastKill = 0.f;
-	m_Combo = 1;
-	m_Score = 0;
+    m_totalKills = 0;
+	m_comboTimer = 0.f;
+	m_combo = 1;
+    m_multikill = 1;
+	m_comboScore = 0;
+    m_totalScore = 0;
+}
+
+void ComboMachine::endCombo()
+{
+    addMultikillScore();
+    reward(m_comboScore);
+}
+
+int ComboMachine::getTotalKills()
+{
+    return m_totalKills;
 }
 
 // Returns a value between 0-100, representing the time left of combo-timer, where zero is the time when the combo ends
-int ComboMachine::GetComboTimer()
+int ComboMachine::getComboTimer()
 {
-	int procent = (int)std::round((m_TimeSinceLastKill / COMBO_TIMER) / 100.f);
+	int procent = (int)std::round((m_comboTimer / COMBO_TIMER) / 100.f);
 	return procent;
 }
 
 // Returns the player's current combo of score
-int ComboMachine::GetCurrentCombo()
+int ComboMachine::getCurrentCombo()
 {
-	return m_Combo;
+	return m_combo;
 }
 
 // Returns the player's overall score
-int ComboMachine::GetCurrentScore()
+int ComboMachine::getComboScore()
 {
-	return m_Score;
+	return m_comboScore;
 }
 
-// Raises the combo if time between each kill is fast enough
-void ComboMachine::CheckCombo()
+int ComboMachine::getTotalScore()
 {
-	if (m_TimeSinceLastKill > 0.f)
-	{
-		m_Combo++;
-		m_TimeSinceLastKill = COMBO_TIMER;
-	}
-	else
-	{
-		m_Combo = 1;
-		m_TimeSinceLastKill = COMBO_TIMER;
-	}
+    return m_totalScore;
 }
 
-// Reads all the rewards from each enemy
-void ComboMachine::ReadEnemyBoardFromFile(std::string path)
+// Check if combo is still alive
+void ComboMachine::checkCombo()
 {
-	for (int i = 0; i < 40; i++)
-		m_Board[i] = 5;
+
 }
 
-// Gets the price on each enemy's EnemyType
-int ComboMachine::GetReward(EnemyType type)
+void ComboMachine::addMultikillScore()
 {
-	return m_Board[static_cast<int> (type)];
+    m_comboScore *= m_multikill;
+    m_multikill = 1;
+}
+
+void ComboMachine::addScore(int score)
+{
+    m_comboScore += score * m_combo;
+    if (m_combo != MAX_COMBO)
+        m_combo++;
+
+    if (m_multikill != MAX_MULTIKILL)
+    {
+        if (m_multikillTimer > FLT_EPSILON)
+            m_multikill++;
+        m_multikillTimer = MULTIKILL_TIMER;
+    }
+    else
+        m_multikillTimer = 0.f;
 }

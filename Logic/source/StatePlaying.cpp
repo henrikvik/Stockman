@@ -56,8 +56,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     m_cardManager = newd CardManager(GAME_START::UNIQUE_CARDS);
 
     // Initializing Combo's
-    ComboMachine::Get().ReadEnemyBoardFromFile("Nothin.");
-    ComboMachine::Get().Reset();
+    ComboMachine::Get().reset();
 
     // Initializing Menu's
     m_menu = newd iMenuMachine();
@@ -128,7 +127,7 @@ void StatePlaying::reset()
     m_cardManager->resetDeck();
     m_hudManager.reset();
 
-    ComboMachine::Get().Reset();
+    ComboMachine::Get().reset();
 }
 
 void StatePlaying::update(float deltaTime)
@@ -141,7 +140,7 @@ void StatePlaying::update(float deltaTime)
         return;
     PROFILE_END();
 
-    ComboMachine::Get().Update(deltaTime);
+    ComboMachine::Get().update(deltaTime);
 
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
@@ -222,6 +221,7 @@ void StatePlaying::render() const
 
 void StatePlaying::gameOver()
 {
-    m_highScoreManager->addNewHighScore(ComboMachine::Get().GetCurrentScore());
+    ComboMachine::Get().endCombo();
+    m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
     reset();
 }

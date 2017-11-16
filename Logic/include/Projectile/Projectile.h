@@ -53,6 +53,7 @@ namespace Logic
         bool collisionWithProjectile(Projectile* proj);
         bool collisionWithPlayer(Player* player);
         bool collisionWithEnemy(Enemy* enemy);
+        bool collisionWithTrigger(Trigger* trigger);
         bool collisionWithTerrain();
         void doCallBack(PhysicsObject& other);
     };
