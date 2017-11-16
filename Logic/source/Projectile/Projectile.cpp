@@ -161,6 +161,7 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     return callback;
 }
 
+// Projectile Trigger Collisions, returns true if callback should be activated
 bool Projectile::collisionWithTrigger(Trigger* trigger)
 {
     bool cb = false;
