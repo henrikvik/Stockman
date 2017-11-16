@@ -40,6 +40,9 @@ namespace Logic
         virtual void update(int x, int y);
         virtual void render() const;
 
+        void setDrawMenu(bool shouldDraw) { m_drawMenu = shouldDraw; }
+        void setDrawButtons(bool shouldDraw) { m_drawButtons = shouldDraw; }
+
         MenuGroup getMenuType() { return m_group; }
 
     protected:

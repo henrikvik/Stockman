@@ -19,6 +19,8 @@
 #define CAMERA_HIGHSCORE_FORWARD    DirectX::SimpleMath::Vector3(1.0, 0.255, 0.828)
 #define CAMERA_INTRO_POSITION       DirectX::SimpleMath::Vector3(8.118, 1.059, -3.047)
 #define CAMERA_INTRO_FORWARD        DirectX::SimpleMath::Vector3(-0.027, 1.000, 0.656)
+#define CAMERA_SKILL_POSITION       DirectX::SimpleMath::Vector3(-10.000, 35.00, 0.000)
+#define CAMERA_SKILL_FORWARD        DirectX::SimpleMath::Vector3(0.000, -0.365, 0.023)
 
 using namespace Logic;
 
@@ -128,8 +130,8 @@ void iMenuMachine::update(float deltaTime)
             break;
 
         case iMenu::MenuGroup::Skill:
-            targetCameraPosition = CAMERA_INTRO_POSITION;
-            targetCameraForward = CAMERA_INTRO_FORWARD;
+            targetCameraPosition = CAMERA_SKILL_POSITION;
+            targetCameraForward = CAMERA_SKILL_FORWARD;
             shouldModifyCamera = true;
             break;
         }
