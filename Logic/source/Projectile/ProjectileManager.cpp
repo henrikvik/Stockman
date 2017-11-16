@@ -61,7 +61,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
     if (m_projectilesIdle.size() == 0)  // it shouldn't get to this, because it will lag in debug mode
     {
         return nullptr;
-        body = m_physPtr->createBody(Sphere({ position + forward }, { 0.f, 0.f, 0.f }, pData.scale), pData.mass, pData.isSensor, 0, 0);
+        body = m_physPtr->createBody(Sphere({ position + forward }, { 0.f, 0.f, 0.f }, pData.scale * 0.5f), pData.mass, pData.isSensor, 0, 0);
         p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, pData);
     }
     // using projectile from idle stack
@@ -86,7 +86,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         // mass
         body->setMassProps(pData.mass, { 0.f, 0.f, 0.f });
         // scale
-        body->getCollisionShape()->setLocalScaling({ pData.scale, pData.scale, pData.scale });
+        body->getCollisionShape()->setLocalScaling({ pData.scale * 0.25f, pData.scale * 0.25f, pData.scale * 0.25f });
         m_physPtr->updateSingleAabb(body);
         // position
         body->getWorldTransform().setOrigin({ position + forward });
@@ -100,7 +100,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         (pData.enemyBullet) ? (Physics::COL_EVERYTHING &~(Physics::COL_ENEMY)) : (Physics::COL_EVERYTHING &~(Physics::COL_PLAYER));
 
 	// Taking the forward vector and getting the pitch and yaw from it
-	float pitch = asin(-forward.getY());
+	float pitch = asin(-forward.getY()) - M_PI * 0.5f;
 	float yaw = atan2(forward.getX(), forward.getZ());
     //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
 	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), 0));

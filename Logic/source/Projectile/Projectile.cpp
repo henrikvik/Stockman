@@ -2,6 +2,8 @@
 #include <Player\Player.h>
 #include <AI\Enemy.h>
 #include <Physics\Physics.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace Logic;
 
@@ -67,9 +69,16 @@ void Projectile::updateSpecific(float deltaTime)
 	Entity::update(deltaTime);
 
     // Modify the velocity & gravity with the bullet time modifier
-    btVector3 dir = getRigidBody()->getLinearVelocity().normalized();
-    getRigidBody()->setLinearVelocity(dir * m_pData.speed * m_bulletTimeMod);
-    getRigidBody()->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_bulletTimeMod, 0.f });
+    btRigidBody* body = getRigidBody();
+    btVector3 dir = body->getLinearVelocity().normalized();
+    body->setLinearVelocity(dir * m_pData.speed * m_bulletTimeMod);
+    body->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_bulletTimeMod, 0.f });
+
+    // Taking the forward vector and getting the pitch and yaw from it
+    float pitch = asin(-dir.getY()) - M_PI * 0.5f;
+    float yaw = atan2(dir.getX(), dir.getZ());
+    //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
+    body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), 0));
     
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;
