@@ -15,6 +15,7 @@ namespace Logic
 
     private:
         btVector3 m_pos;
+        float m_rotation;
     };
 }
 

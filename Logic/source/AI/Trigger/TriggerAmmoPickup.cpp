@@ -5,11 +5,13 @@
 using namespace Logic;
 
 #define TRIGGER_AMMO_PICKUP_BOBBING_OFFSET { 0.f, 0.3f, 0.f }
+#define TRIGGER_AMMO_PICKUP_ROTATION_SPEED 0.002f;
 
 TriggerAmmoPickup::TriggerAmmoPickup(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, TriggerType type, float cooldown, bool reusable)
     : Trigger(modelID, body, halfExtent, type, cooldown, reusable)
 {
     m_pos = getPositionBT();
+    m_rotation = 0;
 }
 
 
@@ -17,12 +19,10 @@ TriggerAmmoPickup::~TriggerAmmoPickup()
 {
 }
 
-void Logic::TriggerAmmoPickup::updateSpecificType(float deltaTime)
+void TriggerAmmoPickup::updateSpecificType(float deltaTime)
 {
-    Entity::update(deltaTime);
-    static float yaw = 0;
-    yaw += deltaTime * 0.001f;
+    m_rotation += deltaTime * TRIGGER_AMMO_PICKUP_ROTATION_SPEED;
     
-    getRigidBody()->getWorldTransform().setRotation(btQuaternion(yaw, 0.f, 0.f));
-    getRigidBody()->getWorldTransform().setOrigin(m_pos + sin(yaw) * btVector3(TRIGGER_AMMO_PICKUP_BOBBING_OFFSET));
+    getRigidBody()->getWorldTransform().setRotation(btQuaternion(m_rotation, 0.f, 0.f));
+    getRigidBody()->getWorldTransform().setOrigin(m_pos + sin(m_rotation) * btVector3(TRIGGER_AMMO_PICKUP_BOBBING_OFFSET));
 }
