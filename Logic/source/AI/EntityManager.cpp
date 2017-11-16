@@ -405,22 +405,24 @@ int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
 
 void EntityManager::render() const
 {
+    AStar &aStar = AStar::singleton();
     for (int i = 0; i < m_enemies.size(); ++i)
     {
         for (Enemy *enemy : m_enemies[i])
         {
             enemy->render();
-            enemy->debugRendering();
+            if (aStar.isRenderingDebug())  // should only be if _DEBUG is defined in the future
+                enemy->debugRendering();
         }
     }
 
     for (int i = 0; i < m_deadEnemies.size(); ++i)
     {
-     //   m_deadEnemies[i]->render();
+     //   m_deadEnemies[i]->render(); // maybe add later
     }
 
     m_triggerManager.render();
-    AStar::singleton().renderNavigationMesh();
+    aStar.renderNavigationMesh();
 }
 
 const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const

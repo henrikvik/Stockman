@@ -31,6 +31,7 @@ namespace Logic
 			{
 				bool onClosedList, explored; // for testing
 				int nodeIndex, parent; // index in nav mesh
+                DirectX::SimpleMath::Vector3 *connectionNode; // pointer to the connection node beetwen this <--> parent, this is a temporary solution  (?)
 				float h, g; // cost to node
 
 				bool operator<(NavNode const &other) const {
@@ -61,6 +62,7 @@ namespace Logic
 				DirectX::SimpleMath::Vector3 const &to) const;
 			void generateNodesFromFile();
 			void setupDebugging();
+
 			bool nodeInQue(int index, std::priority_queue<NavNode*> que) const;
 
             void initDebugRendering();
@@ -87,12 +89,16 @@ namespace Logic
 			void loadTargetIndex(Entity const &target);
 			int getTargetIndex();
 
+            // Mesh stuff
 			int getIndex(Entity const &entity) const;
 			int isEntityOnIndex(Entity const &entity, int index) const;
 			size_t getNrOfPolygons() const;
 
 			// iniate the nodes
 			void generateNavigationMesh(Physics &physics);
+
+            // debugging
+            bool isRenderingDebug() const;
 	};
 }
 #endif

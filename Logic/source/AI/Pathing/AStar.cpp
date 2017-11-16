@@ -57,7 +57,6 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
     NavNode *explore = nullptr;
 
     float f;
-    int index;
 
     while (!openList.empty())
     {
@@ -67,12 +66,13 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 
         for (size_t i = 0; i < navigationMesh.getEdges(currentNode->nodeIndex).size(); i++)
         {
-            index = navigationMesh.getEdges(currentNode->nodeIndex)[i].index;
-            explore = &navNodes[index];
+            NavigationMesh::Edge &edge = navigationMesh.getEdges(currentNode->nodeIndex)[i];
+            explore = &navNodes[edge.index];
 
-            if (index == toIndex) // Node Found
+            if (edge.index == toIndex) // Node Found
             {
                 explore->parent = currentNode->nodeIndex;
+                explore->connectionNode = &edge.connectionNode;
                 return reconstructPath(explore, navNodes, toIndex);
             }
 
@@ -81,9 +81,11 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
                 explore->explored = true;
 
                 explore->g = f;
-                explore->h = heuristic(nodes[index], nodes[toIndex]) * 0.1f;
+                explore->h = heuristic(nodes[edge.index], nodes[toIndex]) * 0.1f;
 
                 explore->parent = currentNode->nodeIndex;
+                explore->connectionNode = &edge.connectionNode;
+
                 openList.push(explore);
             }
             else if (explore->g > f) // If path to explore is LONGER than path to it now then set it again
@@ -93,6 +95,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
                     explore->g = f;
 
                     explore->parent = currentNode->nodeIndex;
+                    explore->connectionNode = &edge.connectionNode;
                 }
                 else // in Closed List
                 {
@@ -101,6 +104,8 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
                     explore->g = f;
 
                     explore->parent = currentNode->nodeIndex;
+                    explore->connectionNode = &edge.connectionNode;
+
                     openList.push(explore);
                 }
             }
@@ -131,6 +136,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
     do
     {
         list.push_back(&(navigationMesh.getNodes()[endNode->nodeIndex]));
+        list.push_back(endNode->connectionNode);
         endNode = &navNodes[endNode->parent];
     }
     while (endNode->parent != NO_PARENT);
@@ -225,6 +231,11 @@ bool AStar::nodeInQue(int index, std::priority_queue<NavNode*> que) const
     return false;
 }
 
+bool AStar::isRenderingDebug() const
+{
+    return renderDebug;
+}
+
 void AStar::initDebugRendering()
 {
     debugDataTri.points = nullptr;
@@ -241,6 +252,7 @@ void AStar::createNodes()
     node.onClosedList = node.explored = false;
     node.g = node.h = 0;
     node.parent = NO_PARENT;
+    node.connectionNode = nullptr;
 
     navNodes.clear();
     for (size_t t = 0; t < navigationMesh.getNodes().size(); t++)
