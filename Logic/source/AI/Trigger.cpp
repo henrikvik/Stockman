@@ -70,8 +70,7 @@ void Trigger::onCollision(PhysicsObject& other, btVector3 contactPoint, float dm
 		if (Player* p = dynamic_cast<Player*>(&other))
 		{
 			// Sending statuses over to player
-			for (StatusManager::UPGRADE_ID u : getStatusManager().getActiveUpgrades())
-				p->getStatusManager().addUpgrade(u);
+            p->getStatusManager().copyUpgradesFrom(getStatusManager());
 			for (std::pair<int, StatusManager::EFFECT_ID> effect : getStatusManager().getActiveEffectsIDs())
 				p->getStatusManager().addStatus(effect.second, effect.first, true);
 
