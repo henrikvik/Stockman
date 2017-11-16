@@ -40,6 +40,7 @@ namespace Logic
 	{
         private: //var
             static const int AI_UID, NO_ID;
+            static const float SEED_CUBES, PRECISION_BASE;
             static int COUNTER;
             static const btVector3 unitDimension;
 
@@ -67,6 +68,7 @@ namespace Logic
                 std::vector<Triangle> terrain,
                 std::vector<NavStaticObject> objects) const;
             void generateNavigationMesh(NavigationMesh &nav, Physics &physics);
+
 		private:
             enum GrowthType // Clockwise
             {
@@ -139,6 +141,9 @@ namespace Logic
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
             std::pair<Cube, Cube> cutCube(btVector3 const &cutPoint, btVector3 const &planeNormal, Cube const &cube);
 
+            void handlePhysicsCollisionTest(NavMeshCube &region, Physics &physics, int side);
+            void handleRegionCollisionTest(NavMeshCube &region, Physics &physics, int side);
+
             void quadMeshToTriangleMesh(NavigationMesh &nav, Physics &physics);
             void growRegion(NavMeshCube &cube, Growth const &growth);
             void shrinkRegion(NavMeshCube &cube, Growth const &growth);
@@ -152,14 +157,17 @@ namespace Logic
 
             void split(NavMeshCube &cube, Physics &physics, btVector3 const &cubeColPoint,
                 btVector3 const &splitPlaneNormal);
-            void removeRigidBody(btRigidBody *&body, Physics &physics);
+            void removeRigidBody(btRigidBody *&body);
 
-            // if a cube is split to two cubes, then you will have collision to "both" sides,
+            // if a cube is split to two cubes, then you can have collision to "both" sides,
             // so add secondIndex if you have collided with first index
             void addSplitIndices(int firstIndex, int secondIndex);
 
             bool isInCollisionArea(NavMeshCube &cube, Physics &physics, int filterId = NO_ID, int filterId1 = NO_ID);
             void seedArea(btVector3 position, btVector3 fullDimension, float part, Physics &physics);
+
+            // create edges
+            void createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, GrowthType side);
 
             // true on collision
             std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance);
