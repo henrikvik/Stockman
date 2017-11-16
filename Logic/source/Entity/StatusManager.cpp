@@ -192,10 +192,10 @@ const Effect& StatusManager::getEffect(EFFECT_ID id) const
 
 void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks)
 {
-    addStatus(effectID, nrOfStacks, s_effects[effectID].getStandards()->duration);
+    addStatus(effectID, nrOfStacks, 0.f, false);
 }
 
-void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks, float duration)
+void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks, float duration, bool add)
 {
     bool found = false;
     for (size_t i = 0; i < m_effectStacksIds.size() && !found; ++i)
@@ -205,7 +205,10 @@ void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks,
             found = true;
 
             m_effectStacks[i].stack += nrOfStacks;
-            m_effectStacks[i].duration = duration;
+            if (add)
+                m_effectStacks[i].duration += duration;
+            else
+                m_effectStacks[i].duration = duration;
         }
     }
 

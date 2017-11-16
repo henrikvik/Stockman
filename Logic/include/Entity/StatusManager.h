@@ -47,7 +47,7 @@ namespace Logic
 		void update(float deltaTime, Entity &entity);
 
         void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks);
-        void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, float duration);
+        void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, float duration, bool add);
 		void removeOneStatus(int statusID);
 		void removeAllStatus(int statusID);
 
