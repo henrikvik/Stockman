@@ -18,6 +18,10 @@ namespace Graphics
             ID3D11DepthStencilView * depthStencil = nullptr);
         virtual ~DepthOfFieldRenderPass() {};
 
+        virtual wchar_t* name() const override {
+            return L"DepthOfFieldRenderPass";
+        }
+
         void update(float deltaTime);
         void render() const;
 

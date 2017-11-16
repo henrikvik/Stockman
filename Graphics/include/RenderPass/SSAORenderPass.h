@@ -19,6 +19,10 @@ namespace Graphics
             );
         virtual ~SSAORenderPass();
 
+        virtual wchar_t* name() const override {
+            return L"SSAORenderPass";
+        }
+
         void render() const;
         void update(float deltaTime);
 
