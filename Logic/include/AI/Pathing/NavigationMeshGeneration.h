@@ -130,6 +130,7 @@ namespace Logic
             };
 
             std::vector<NavMeshCube> regions;
+            std::vector<std::pair<btCollisionObject*, StaticObject*>> physicsObjects;
 
             Growth growth[SIDES];
             btVector3 growthNormals[SIDES];
@@ -141,8 +142,11 @@ namespace Logic
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
             std::pair<Cube, Cube> cutCube(btVector3 const &cutPoint, btVector3 const &planeNormal, Cube const &cube);
 
-            void handlePhysicsCollisionTest(NavMeshCube &region, Physics &physics, int side);
-            void handleRegionCollisionTest(NavMeshCube &region, Physics &physics, int side);
+            // returns true if collision happend
+            void loadPhysicsObjects(Physics &physics);
+            // returns true if collision happend
+            bool handlePhysicsCollisionTest(NavMeshCube &region, Physics &physics, int side);
+            bool handleRegionCollisionTest(NavMeshCube &region, Physics &physics, int side);
 
             void quadMeshToTriangleMesh(NavigationMesh &nav, Physics &physics);
             void growRegion(NavMeshCube &cube, Growth const &growth);

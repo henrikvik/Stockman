@@ -34,7 +34,10 @@ void EnemyThreadHandler::initThreads()
         m_work.pop();
 
     for (std::thread *&t : threads)
+    {
         t = newd std::thread(&EnemyThreadHandler::threadMain, this);
+        SetPriorityClass(t, PROCESS_MODE_BACKGROUND_BEGIN);
+    }
 }
 
 EnemyThreadHandler::~EnemyThreadHandler()
