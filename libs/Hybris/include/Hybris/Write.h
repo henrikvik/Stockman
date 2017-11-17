@@ -24,6 +24,8 @@ namespace Hybris
     void write(std::ofstream & ofile, KeyFrame & keyFrame);
     void write(std::ofstream & ofile, JointTransform & jointTransform);
     void write(std::ofstream & ofile, Joint & joint);
+    void write(std::ofstream & ofile, Hitbox & data);
+    void write(std::ofstream & ofile, FileWithHitbox & data);
 
     void write(std::ofstream & ofile, size_t & size);
     void write(std::ofstream & ofile, time_t & time);
