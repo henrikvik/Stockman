@@ -20,7 +20,7 @@
 	"specifics": 1;
 
 	"sBulletTime": 0f;
-	"sFreezing": 0.95f;
+	"sFreezing": 0.80f;
 	"sAmmoType": 0f;
 }
 { // JUMP-PAD
