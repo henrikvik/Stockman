@@ -9,9 +9,10 @@
 #include <Projectile\Projectile.h>
 
 using namespace Logic;
+const int Enemy::MIN_Y = -80.f;
 
-Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId)
-: Entity(body, halfExtent)
+Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset)
+: Entity(body, halfExtent, modelOffset)
 {
 	m_behavior = nullptr;
 
@@ -85,13 +86,21 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
 	updateSpecific(player, deltaTime);
 
+    // Rotation toward the player
+    btVector3 dir = player.getPositionBT() - getPositionBT();
+    float yaw = atan2(dir.getX(), dir.getZ());
+    m_transform->setRotation(btQuaternion(yaw, 0.f, 0));
+
     // Update Render animation and position
-    enemyRenderInfo.transform = getTransformMatrix();
+    enemyRenderInfo.transform = getModelTransformMatrix();
 //    enemyRenderInfo.animationProgress += deltaTime;
 
     m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
     light.position = enemyRenderInfo.transform.Translation();
+
+    if (getPositionBT().y() < MIN_Y)
+        damage(m_health);
 }
 
 void Enemy::debugRendering()

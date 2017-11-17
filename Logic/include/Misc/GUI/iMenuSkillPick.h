@@ -12,6 +12,8 @@ namespace Logic
         iMenuSkillPick(iMenu::MenuGroup group);
         ~iMenuSkillPick();
 
+        void update(int x, int y, float deltaTime);
+
         void pickOne();
         void pickTwo();
         void pickThree();

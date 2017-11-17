@@ -20,7 +20,8 @@ namespace Logic
             Skill,
             CardSelect,
             Highscore,
-            GameOver
+            GameOver, 
+            Pause
         };
 
         struct ButtonData
