@@ -15,7 +15,7 @@ void iMenuIntro::update(int x, int y, float deltaTime)
     iMenu::update(x, y, deltaTime);
 
     // Lets the player press space to go to the menu
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Space))
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Space) && !m_isFading && !m_safeToRemove)
     {
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Start);
     }

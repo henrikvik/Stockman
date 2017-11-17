@@ -11,12 +11,14 @@ using namespace Logic;
 // TEMP: ta bort mig
 static bool FUN_MODE = false;
 
-Projectile::Projectile(btRigidBody* body, btVector3 halfextent, ProjectileData pData)
-: Entity(body, halfextent) 
+Projectile::Projectile(btRigidBody* body, btVector3 halfextent, btVector3 modelOffset, ProjectileData pData)
+    : Entity(body, halfextent, modelOffset)
 {
+    m_unrotatedMO   = modelOffset;
 	m_pData         = pData;
 	m_dead          = false;
     m_bulletTimeMod = 1.f;
+    m_freezeDuration = 0.0f;
 }
 
 Projectile::~Projectile() { }
@@ -26,14 +28,16 @@ Projectile::~Projectile() { }
 // \param statusManager - A statusManager filled with potential buffs & upgrades
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
-	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
-	
-    // Copy all effects & upgrades to projectile
-    setStatusManager(statusManager);
+    getRigidBody()->setLinearVelocity(forward * m_pData.speed);
+    getStatusManager().copyUpgradesFrom(statusManager);
 
-    // Give this projectile all upgrades
-	for (StatusManager::UPGRADE_ID id : statusManager.getActiveUpgrades())
-		upgrade(statusManager.getUpgrade(id));
+    for (int i = 0; i < StatusManager::LAST_ITEM_IN_UPGRADES; i++)
+    {
+        if (getStatusManager().getUpgradeStacks((StatusManager::UPGRADE_ID)i) > 0)
+        {
+            upgrade(statusManager.getUpgrade((StatusManager::UPGRADE_ID)i));
+        }
+    }
 }
 
 // How different effects affect projectiles
@@ -56,11 +60,25 @@ void Projectile::upgrade(Upgrade const &upgrade)
 
     if (flags & Upgrade::UPGRADE_INCREASE_DMG)
     {
-        m_pData.damage *= upgrade.getFlatUpgrades().increaseDmg;
+        m_pData.damage *= upgrade.getFlatUpgrades().increaseDmg * getStatusManager().getUpgradeStacks(StatusManager::P1_DAMAGE);
     }
     if (flags & Upgrade::UPGRADE_IS_BOUNCING)
     {
         m_body->setRestitution(1.f);
+    }
+    if (flags & Upgrade::UPGRADE_BURNING)
+    {
+        if (m_pData.type == ProjectileTypeNormal)
+        {
+            m_pData.type = ProjectileTypeFireArrow;
+        }
+    }
+    if (flags & Upgrade::UPGRADE_FREEZING)
+    {
+        if (m_pData.type = ProjectileTypeIce)
+        {
+            m_freezeDuration = upgrade.getFlatUpgrades().increaseCooldown * getStatusManager().getUpgradeStacks(StatusManager::FROST_UPGRADE);
+        }
     }
 }
 
@@ -73,13 +91,19 @@ void Projectile::updateSpecific(float deltaTime)
     btRigidBody* body = getRigidBody();
     btVector3 dir = body->getLinearVelocity().normalized();
     body->setLinearVelocity(dir * m_pData.speed * m_bulletTimeMod);
-    body->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_bulletTimeMod, 0.f });
+    body->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * pow(m_bulletTimeMod, 2), 0.f });
 
     // Taking the forward vector and getting the pitch and yaw from it
-    float pitch = asin(-dir.getY()) - M_PI * 0.5f;
+    float pitch = asin(-dir.getY()) - M_PI;
     float yaw = atan2(dir.getX(), dir.getZ());
     //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
-    body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - M_PI, 0));
+    btQuaternion rotation = btQuaternion(yaw, pitch - M_PI, 0);
+    body->getWorldTransform().setRotation(rotation);
+
+    m_unrotatedMO += (btVector3(0.f, 0.f, 0.f) - m_unrotatedMO) * 0.001f * deltaTime;
+
+    // rotate model offset
+    m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
     
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;
@@ -88,7 +112,7 @@ void Projectile::updateSpecific(float deltaTime)
     m_bulletTimeMod = 1.f;
 
     // Updating transform matrix
-    renderInfo.transform = getTransformMatrix();
+    renderInfo.transform = getModelTransformMatrix();
 }
 
 // Handle collisions with different types of classes
@@ -97,15 +121,25 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
     bool cb = false;
 
     if (Enemy* enemy = dynamic_cast<Enemy*> (&other))
+    {
         cb = collisionWithEnemy(enemy);
+    }
     else if (Projectile* proj = dynamic_cast<Projectile*> (&other))
+    {
         cb = collisionWithProjectile(proj);
+    }
     else if (Player* player = dynamic_cast<Player*> (&other))
+    {
         cb = collisionWithPlayer(player);
+    }
     else if (Trigger* trigger = dynamic_cast<Trigger*> (&other))
+    {
         cb = collisionWithTrigger(trigger);
+    }
     else
+    {
         cb = collisionWithTerrain();
+    }
 
     // Send back data to listener
     if (cb) doCallBack(other);
@@ -135,11 +169,22 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     {
     // Special effects
     case ProjectileTypeIce:
-        enemy->getStatusManager().addStatus(
-            /* Adding Freeze effect */          StatusManager::FREEZE,
-            /* Number of stacks */              1,
-            /* Reset Duration */                true
-        );
+        if (m_freezeDuration > 0)
+        {
+            enemy->getStatusManager().addStatus(
+                                                    StatusManager::FREEZE,
+                                                    1,
+                                                    enemy->getStatusManager().getEffect(StatusManager::FREEZE).getStandards()->duration + m_freezeDuration,
+                                                    false
+            );
+        }
+        else
+        {
+            enemy->getStatusManager().addStatusResetDuration(
+                /* Adding Freeze effect */          StatusManager::FREEZE,
+                /* Number of stacks */              1
+            );
+        }
         break;
 
     // These should not get removed on enemy contact
@@ -147,13 +192,18 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     case ProjectileTypeMelee:
         break;
 
+    case ProjectileTypeFireArrow:
+        enemy->getStatusManager().addStatus(
+            /* Adding Fire effect */            StatusManager::ON_FIRE,
+            /* Number of stacks */              getStatusManager().getUpgradeStacks(StatusManager::FIRE_UPGRADE)
+        );
+        break;
     // Trigger all callbacks on other projectiles
     //  And kill them off
     default: 
         callback = true;
         kill = true;
     }
-
     // Set if we should kill it
     m_dead = kill;
 
@@ -210,10 +260,9 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 	switch (proj->getProjectileData().type)
 	{
 	case ProjectileTypeBulletTimeSensor:
-	    getStatusManager().addStatus(
+	    getStatusManager().addStatusResetDuration(
 		/* Adding Bullet time effect */     StatusManager::BULLET_TIME,
-		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME),
-		/* Reset Duration */                true
+		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME)
 	    );
 	    break;
 	}
@@ -222,7 +271,7 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
     return false;
 }
 
-void Logic::Projectile::setWorldTransform(DirectX::SimpleMath::Matrix & worldTransform)
+void Projectile::setWorldTransform(DirectX::SimpleMath::Matrix& worldTransform)
 {
     renderInfo.transform = worldTransform;
 }
@@ -240,4 +289,5 @@ void Logic::Projectile::render() const
 ProjectileData& Projectile::getProjectileData()             { return m_pData;   }
 bool Projectile::getDead() const                            { return m_dead;    }
 void Projectile::setProjectileData(ProjectileData pData)    { m_pData = pData;  }
+void Projectile::setUnrotatedMO(btVector3 modelOffset) { m_unrotatedMO = modelOffset; }
 void Projectile::setDead(bool dead)                         { m_dead = dead;    }

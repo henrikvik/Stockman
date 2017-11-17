@@ -6,7 +6,7 @@
 
 using namespace Logic;
 
-PhysicsObject::PhysicsObject(btRigidBody* body, btVector3 halfExtent)
+PhysicsObject::PhysicsObject(btRigidBody* body, btVector3 halfExtent, btVector3 modelOffset)
 {
 	if (body)
 	{
@@ -16,6 +16,7 @@ PhysicsObject::PhysicsObject(btRigidBody* body, btVector3 halfExtent)
 
 		// Saving halfextent
 		m_halfextent = halfExtent;
+        m_modelOffset = modelOffset;
 
 		// Saving ptr to transform
 		m_transform = &m_body->getWorldTransform();
@@ -116,6 +117,11 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, Phy
 		onCollision(other, contactPoint, 1.f);
 }
 
+void Logic::PhysicsObject::setModelOffset(btVector3 modelOffset)
+{
+    m_modelOffset = modelOffset;
+}
+
 void Logic::PhysicsObject::setHalfExtent(btVector3 halfExtent)
 {
     m_halfextent = halfExtent;
@@ -148,6 +154,9 @@ DirectX::SimpleMath::Vector3 PhysicsObject::getScale() const
 
 DirectX::SimpleMath::Matrix PhysicsObject::getTransformMatrix() const
 {
+    //btVector3 pos = m_transform->getOrigin();
+    //m_transform->setOrigin(pos + m_modelOffset);
+
 	// Making memory for a matrix
 	float m[16];
 	m_transform->getOpenGLMatrix((btScalar*)(m));
@@ -159,6 +168,26 @@ DirectX::SimpleMath::Matrix PhysicsObject::getTransformMatrix() const
 	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);
 
 	return scale * transformMatrix;
+
+    //m_transform->setOrigin(pos);
+}
+
+DirectX::SimpleMath::Matrix PhysicsObject::getModelTransformMatrix() const
+{
+    btTransform trans = btTransform(*m_transform);
+    trans.setOrigin(trans.getOrigin() + m_modelOffset);
+
+    // Making memory for a matrix
+    float m[16];
+    trans.getOpenGLMatrix((btScalar*)(m));
+
+    // Translating to DirectX Math and assigning the variables
+    DirectX::SimpleMath::Matrix transformMatrix(m);
+
+    //Find the scaling matrix
+    auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);
+
+    return scale * transformMatrix;
 }
 
 btRigidBody* PhysicsObject::getRigidBody()

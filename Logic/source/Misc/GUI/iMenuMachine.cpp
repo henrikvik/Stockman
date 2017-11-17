@@ -11,8 +11,8 @@
 #endif
 
 #define CAMERA_MOVE_SPEED           0.00055f // The speed of the camera movement
-#define CAMERA_START_POSITION       DirectX::SimpleMath::Vector3(6.941, 5.6, -4.141)
-#define CAMERA_START_FORWARD        DirectX::SimpleMath::Vector3(-0.2, -0.153, 0.258)
+#define CAMERA_START_POSITION       DirectX::SimpleMath::Vector3(10.00, 7.804, -8.984)
+#define CAMERA_START_FORWARD        DirectX::SimpleMath::Vector3(0.027, -0.192, 0.789)
 #define CAMERA_SETTINGS_POSITION    DirectX::SimpleMath::Vector3(5.294, 1.843, -10.0)
 #define CAMERA_SETTINGS_FORWARD     DirectX::SimpleMath::Vector3(0.0, 1.0, 0.0)
 #define CAMERA_HIGHSCORE_POSITION   DirectX::SimpleMath::Vector3(2.471, 1.686, -2.500)
@@ -58,7 +58,9 @@ void iMenuMachine::queueMenu(iMenu::MenuGroup group)
         m_queuedMenuType = group;
         
         if (m_activeMenu)
+        {
             m_activeMenu->fadeOut();
+        }
     }
 }
 
@@ -75,6 +77,7 @@ void iMenuMachine::swapMenu()
     case iMenu::MenuGroup::CardSelect:  m_activeMenu = m_factory->buildMenuCard();                        break;
     case iMenu::MenuGroup::Skill:       m_activeMenu = m_factory->buildMenuSkill();                       break;
     case iMenu::MenuGroup::GameOver:    m_activeMenu = m_factory->buildMenuGameover();                    break;
+    case iMenu::MenuGroup::Pause:       m_activeMenu = m_factory->buildMenuPause();                       break;
     default: break;
     }
 
@@ -89,6 +92,14 @@ void iMenuMachine::swapMenu()
 
 void iMenuMachine::update(float deltaTime)
 {
+    if (m_activeMenu)
+    {
+        if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Pause && m_activeMenu->getIsFading() && m_activeMenu->getIsSafeToRemove())
+            queueMenu(iMenu::MenuGroup::Empty);
+    }
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Empty)
+        queueMenu(iMenu::MenuGroup::Pause);
+
     if (wantsToSwap())
     {
         if (m_activeMenu)

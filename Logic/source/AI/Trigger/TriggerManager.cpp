@@ -60,6 +60,12 @@ Trigger* TriggerManager::addTrigger(Trigger::TriggerType type, btVector3 const &
             TRIGGER_MASS, TRIGGER_IS_SENSOR), { 1.f, 1.f, 1.f },
             type, 0.f, false);
         break;
+    case Trigger::TriggerType::KILL_DEATH_ZONE: // doesnt work
+        trigger = newd Trigger(Resources::Models::Staff,
+            physics.createBody(Cube(pos, { 0, 0, 0 }, { 900., 51.f, 900.f }),
+                TRIGGER_MASS, TRIGGER_IS_SENSOR), { 1.f, 1.f, 1.f },
+            type, 0.f, true);
+        break;
     default:
         trigger = nullptr;
     }

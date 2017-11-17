@@ -12,6 +12,11 @@ TriggerAmmoPickup::TriggerAmmoPickup(Resources::Models::Files modelID, btRigidBo
 {
     m_pos = getPositionBT();
     m_rotation = 0;
+
+    /*addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
+        data.caller->getRigidBody()->setGravity({ 0.f, 0.f, 0.f });
+        m_pos = getPositionBT();
+    });*/
 }
 
 
@@ -24,5 +29,7 @@ void TriggerAmmoPickup::updateSpecificType(float deltaTime)
     m_rotation += deltaTime * TRIGGER_AMMO_PICKUP_ROTATION_SPEED;
     
     getRigidBody()->getWorldTransform().setRotation(btQuaternion(m_rotation, 0.f, 0.f));
-    getRigidBody()->getWorldTransform().setOrigin(m_pos + sin(m_rotation) * btVector3(TRIGGER_AMMO_PICKUP_BOBBING_OFFSET));
+
+    //if(getRigidBody()->getGravity().y() > FLT_EPSILON)
+        getRigidBody()->getWorldTransform().setOrigin(m_pos + sin(m_rotation) * btVector3(TRIGGER_AMMO_PICKUP_BOBBING_OFFSET));
 }

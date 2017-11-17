@@ -24,7 +24,7 @@ namespace Logic
     struct ProjectileData;
 
     typedef std::function<Projectile*(ProjectileData& pData, btVector3 position,
-        btVector3 forward, Entity& shooter)> SpawnProjectile;
+        btVector3 forward, Entity& shooter, btVector3 modelOffset)> SpawnProjectile;
 
 	class Weapon
 	{
@@ -38,6 +38,7 @@ namespace Logic
             int attackRate;						    // Attacks per minute (0 = no delay, basically once per frame if no delayTime is set)
             int delayTime;
             float freeze;
+            btVector3 projectileOffset;
         };
 
 	private:
@@ -62,7 +63,7 @@ namespace Logic
 
         SpawnProjectile getSpawnProjectileFunc();
 		ProjectileData* getProjectileData();
-		float getAttackTimer();
+		float getAttackTimer(float modifier);
         int getDelayTime();
     };
 }

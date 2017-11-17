@@ -30,8 +30,9 @@ void CardManager::createDeck(int nrOfEach)
             m_deck.push_back({ IN_DECK, j });
 }
 
-void CardManager::pickThree(bool damaged)
+void CardManager::pickThreeCards(bool damaged)
 {
+    currenthand.clear();
     int cardsPicked = 0;
     int amount = HAND_SIZE;
 
@@ -48,6 +49,7 @@ void CardManager::pickThree(bool damaged)
 
     if (cardsPicked < amount)
         throw std::runtime_error("Not enough cards");
+
 }
 
 void CardManager::shuffle()
@@ -65,6 +67,17 @@ Card CardManager::pick(int handIndex)
         m_deck[deckIndex].first = TAKEN;
 
     return m_cards[m_deck[deckIndex].second];
+}
+
+std::vector<Card*> Logic::CardManager::getHand()
+{
+    
+    for (size_t i = 0; i < 3; i++)
+    {
+        currenthand.push_back(&m_cards[m_deck[m_hand.at(i)].second]);
+    }
+    
+    return currenthand;
 }
 
 void CardManager::loadDeckFromFile()
@@ -113,15 +126,18 @@ void CardManager::handleCard(Player &player, Card const &card)
         switch (card.getStatusType())
         {
             case Card::EFFECT:
-                player.getStatusManager().addStatus(
+                player.getStatusManager().addStatusResetDuration(
                     static_cast<StatusManager::EFFECT_ID> (ID),
-                    1, true
+                    1
                 );
+                std::cout << "Effect " << std::to_string(ID);
                 break;
             case Card::UPGRADE:
                 player.getStatusManager().addUpgrade(
                     static_cast<StatusManager::UPGRADE_ID> (ID)
+
                 );
+                std::cout << "Upgrade " << std::to_string(ID);
                 break;
             default:
                 printf("Unsupported card type");

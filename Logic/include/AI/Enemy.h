@@ -29,6 +29,7 @@ namespace Logic
 	class Enemy : public Entity
 	{
 		private:
+            static const int MIN_Y;
             // This is used to count how many callbacks is added, 
             // so this HAS to be ZERO before this is destroyed or
             // the showcase at PAX East will go bad
@@ -49,10 +50,11 @@ namespace Logic
 
             //status
             bool m_stunned;
+            float m_fireTimer;
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE };
 
-			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId);
+			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 			virtual ~Enemy();
 
 			virtual void update(Player &player, float deltaTime,

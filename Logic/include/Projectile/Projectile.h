@@ -22,7 +22,7 @@ namespace Logic
 	class Projectile : public Entity
 	{
 	public:
-		Projectile(btRigidBody* body, btVector3 halfExtent, ProjectileData pData);
+		Projectile(btRigidBody* body, btVector3 halfExtent, btVector3 modelOffset, ProjectileData pData);
 		~Projectile();
 
 		void start(btVector3 forward, StatusManager& statusManager);
@@ -39,6 +39,7 @@ namespace Logic
         
         // Get & Sets
         void setProjectileData(ProjectileData pData);
+        void setUnrotatedMO(btVector3 modelOffset);
 		ProjectileData& getProjectileData();
         void setDead(bool dead);
 		bool getDead() const;
@@ -46,6 +47,7 @@ namespace Logic
 	private:          
         StaticRenderInfo renderInfo;
         ProjectileData m_pData;         //< Holds information about this projectile
+        btVector3 m_unrotatedMO;         //< Unrotated modelOffset
 		float m_bulletTimeMod;          //< The amount of slowdown from bulletTime, currently affecting this projectile
 		bool m_dead;                    //< If this projectile should get removed or not
 
@@ -56,6 +58,9 @@ namespace Logic
         bool collisionWithTrigger(Trigger* trigger);
         bool collisionWithTerrain();
         void doCallBack(PhysicsObject& other);
+
+        //Upgrades
+        float m_freezeDuration;
     };
 
 

@@ -16,6 +16,7 @@ using namespace Logic;
 #define FADING_TIMER_INTRO      1250.f      
 #define FADING_TIMER_GAMEOVER   1500.f
 #define FADING_TIMER_SKILL      800.f
+#define FADING_TIMER_CARD       650.f
 
 #endif
 float getFadingTimer(iMenu::MenuGroup group)
@@ -26,6 +27,7 @@ float getFadingTimer(iMenu::MenuGroup group)
     case iMenu::MenuGroup::Intro:       return FADING_TIMER_INTRO;
     case iMenu::MenuGroup::GameOver:    return FADING_TIMER_GAMEOVER;
     case iMenu::MenuGroup::Skill:       return FADING_TIMER_SKILL;
+    case iMenu::MenuGroup::CardSelect:  return FADING_TIMER_CARD;
     default:                            return DEFAULT_FADING_TIMER;
     }
 #endif

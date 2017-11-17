@@ -1,6 +1,8 @@
 #include <Misc\GUI\iMenuSkillPick.h>
 #include <Graphics\include\RenderQueue.h>
-#include <Misc\StringConverter.h>
+
+#include <Keyboard.h>
+#include <Misc\GUI\iMenuAction.h>
 
 using namespace Logic;
 
@@ -17,6 +19,15 @@ iMenuSkillPick::iMenuSkillPick(iMenu::MenuGroup group) : iMenu(group)
 }
 
 iMenuSkillPick::~iMenuSkillPick() { }
+
+void iMenuSkillPick::update(int x, int y, float deltaTime)
+{
+    iMenu::update(x, y, deltaTime);
+
+    // Confirm with space
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Space) && !m_isFading && !m_safeToRemove)
+        ButtonFunction::confirmSkillPicks();
+}
 
 // Resets stats
 void iMenuSkillPick::resetSkillPicks()

@@ -58,7 +58,7 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
                 dirMod = rng.getRandomFloat(FREEZE_GRENADE_SPLIT_DIR_LOW, FREEZE_GRENADE_SPLIT_DIR_HIGH);
                 upMod = rng.getRandomFloat(FREEZE_GRENADE_SPLIT_UPDIR_LOW, FREEZE_GRENADE_SPLIT_UPDIR_HIGH);
 
-                Projectile* p = getSpawnProjectileFunc()(*m_freezeData, position, btVector3(cos(m_sliceSize * i) * dirMod, upMod, sin(m_sliceSize * i) * dirMod).normalize(), *data.caller);
+                Projectile* p = getSpawnProjectileFunc()(*m_freezeData, position, btVector3(cos(m_sliceSize * i) * dirMod, upMod, sin(m_sliceSize * i) * dirMod).normalize(), *data.caller, { 0.f, 0.f, 0.f });
                 if (p)
                 {
                     p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
@@ -73,7 +73,7 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
                             m_freezeData->speed = rng.getRandomFloat(FREEZE_GRENADE_SPEED_LOW, FREEZE_GRENADE_SPEED_HIGH);
                             dirMod = rng.getRandomFloat(FREEZE_GRENADE_SPLIT_DIR_LOW, FREEZE_GRENADE_SPLIT_DIR_HIGH);
                             upMod = rng.getRandomFloat(FREEZE_GRENADE_SPLIT_UPDIR_LOW, FREEZE_GRENADE_SPLIT_UPDIR_HIGH);
-                            Projectile* p = getSpawnProjectileFunc()(*m_freezeData, data.caller->getPositionBT(), btVector3(cos(m_sliceSize * i), upMod, sin(m_sliceSize * i)).normalize(), *data.caller);
+                            Projectile* p = getSpawnProjectileFunc()(*m_freezeData, data.caller->getPositionBT(), btVector3(cos(m_sliceSize * i), upMod, sin(m_sliceSize * i)).normalize(), *data.caller, { 0.f, 0.f, 0.f });
                         }
 
                     });

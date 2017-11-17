@@ -107,6 +107,7 @@ void SkillGrapplingHook::onRelease()
 	m_state = GrapplingHookStateNothing;
 	m_shooter = nullptr;
 	m_point = { 0, 0, 0 };
+    renderInfo.points->clear();
     renderInfo.color = DirectX::SimpleMath::Color( 1, 0, 0 );
 }
 
@@ -158,6 +159,10 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 		// Setting entity movement specific varialbes
 		//
 	}
+}
+
+void SkillGrapplingHook::onAffect(Effect const & effect)
+{
 }
 
 void SkillGrapplingHook::render() const
