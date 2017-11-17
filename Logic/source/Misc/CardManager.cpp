@@ -113,15 +113,18 @@ void CardManager::handleCard(Player &player, Card const &card)
         switch (card.getStatusType())
         {
             case Card::EFFECT:
-                player.getStatusManager().addStatus(
+                player.getStatusManager().addStatusResetDuration(
                     static_cast<StatusManager::EFFECT_ID> (ID),
-                    1, true
+                    1
                 );
+                std::cout << "Effect " << std::to_string(ID);
                 break;
             case Card::UPGRADE:
                 player.getStatusManager().addUpgrade(
                     static_cast<StatusManager::UPGRADE_ID> (ID)
+
                 );
+                std::cout << "Upgrade " << std::to_string(ID);
                 break;
             default:
                 printf("Unsupported card type");

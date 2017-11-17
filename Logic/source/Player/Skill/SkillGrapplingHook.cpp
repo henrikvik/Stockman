@@ -160,6 +160,10 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 	}
 }
 
+void SkillGrapplingHook::onAffect(Effect const & effect)
+{
+}
+
 void SkillGrapplingHook::render() const
 {
 	// Drawing a ray of the grappling hook for debugging purposes

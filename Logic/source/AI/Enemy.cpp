@@ -25,6 +25,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
     m_nrOfCallbacksEntities = 0;
     m_stunned = false;
+    m_fireTimer = 0;
 
 	//animation todo
     enemyRenderInfo.model = modelID;
@@ -125,21 +126,33 @@ void Enemy::damage(int damage)
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
 {
 	auto flags = effect.getStandards()->flags;
+    m_moveSpeedMod = 1.0f;
 
     if (flags & Effect::EFFECT_MODIFY_HP)
         m_health += static_cast<int> (effect.getModifiers()->modifyHP);
+    if (flags & Effect::EFFECT_ON_FIRE)
+    {
+        m_fireTimer += dt;
+
+        if (m_fireTimer >= 1000.0f)
+        {
+            damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken) * stacks);
+            m_fireTimer -= 1000.0f;
+        }
+    }
     if (flags & Effect::EFFECT_KILL)
         damage(m_health);
 	if (flags & Effect::EFFECT_BULLET_TIME)
 		m_bulletTimeMod = std::pow(effect.getSpecifics()->isBulletTime, stacks);
     if (flags & Effect::EFFECT_IS_FROZEN)
-        m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+        std::cout << std::to_string(m_moveSpeedMod);
     if (flags & Effect::EFFECT_IS_STUNNED)
         m_stunned = true;
     if (flags & Effect::EFFECT_MOVE_FASTER)
-       m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+       m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
     if (flags & Effect::EFFECT_MOVE_SLOWER)
-       m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+       m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
 }
 
 void Enemy::onEffectEnd(int stacks, Effect const & effect)
@@ -148,7 +161,7 @@ void Enemy::onEffectEnd(int stacks, Effect const & effect)
 
     if (flags & Effect::EFFECT_ON_FIRE)
     {
-        damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+        m_fireTimer = 0;
     }
     if (flags & Effect::EFFECT_BULLET_TIME)
     {

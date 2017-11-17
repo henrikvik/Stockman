@@ -83,6 +83,8 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_moveDir.setZero();
 	m_moveSpeed = 0.f;
     m_moveSpeedMod = 1.0f;
+    m_permanentSpeedMod = 1.0f;
+    m_jumpSpeedMod = 1.0f;
 	m_acceleration = PLAYER_MOVEMENT_ACCELERATION;
 	m_deacceleration = m_acceleration * 0.5f;
 	m_airAcceleration = PLAYER_MOVEMENT_AIRACCELERATION;
@@ -144,40 +146,93 @@ void Player::registerDebugCmds()
 
     win->registerCommand("LOG_PLAYER_STUN", [&](std::vector<std::string> &args) -> std::string
     {
-        getStatusManager().addStatus(StatusManager::STUN, 1, true);
+        getStatusManager().addStatusResetDuration(StatusManager::STUN, 1);
 
         return "Player is stunned";
     });
 
     win->registerCommand("LOG_PLAYER_MOVE_FASTER", [&](std::vector<std::string> &args) -> std::string
     {
-        getStatusManager().addStatus(StatusManager::MOVEMENTSPEED_UP, 1, true);
+        getStatusManager().addStatusResetDuration(StatusManager::MOVEMENTSPEED_UP, 1);
 
         return "Player is red so player goes fastah -Random Ork Warhammer 40K (you go faster)";
     });
 
     win->registerCommand("LOG_PLAYER_MOVE_SLOWER", [&](std::vector<std::string> &args) -> std::string
     {
-        getStatusManager().addStatus(StatusManager::MOVEMENTSPEED_DOWN, 1, true);
+        getStatusManager().addStatusResetDuration(StatusManager::MOVEMENTSPEED_DOWN, 1);
 
         return "Player is not red so player does not go fastah -Random Ork Warhammer 40K (you go slower)";
     });
-
-    win->registerCommand("LOG_PLAYER_ON_FIRE", [&](std::vector<std::string> &args) -> std::string
-    {
-        getStatusManager().addStatus(StatusManager::ON_FIRE, 1);
-
-        return "You sir are on fire (You will take 1 damage soon)";
-    });
     win->registerCommand("LOG_PLAYER_HEAL", [&](std::vector<std::string> &args) -> std::string
     {
-        getStatusManager().addStatus(StatusManager::HEALTH_P1, 1);
+        getStatusManager().addStatusResetDuration(StatusManager::HEALTH_P1, 1);
 
         return "I need healing - Genji Shinimada ( + 1 Health given)";
     });
     win->registerCommand("LOG_PRINT_POS", [&](std::vector<std::string> &para) -> std::string 
     {
         return "x: " + std::to_string((double) getPosition().x) + ", y: " + std::to_string((double) getPosition().y) + ", z: " + std::to_string((double) getPosition().z);
+    });
+    win->registerCommand("LOG_INCREASE_ALL_DAMAGE", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addUpgrade(StatusManager::P1_DAMAGE);
+
+        return "All weapons do 1 extra damage";
+    });
+    win->registerCommand("LOG_INCREASE_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_PERC_MOVEMENTSPEED, 1);
+
+        return "Player is permanently 20 percent faster";
+    });
+    win->registerCommand("LOG_DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::M20_PERC_CD, 1);
+
+        return "Player skills take 20% less time to recover";
+    });
+    win->registerCommand("LOG_INCREASE_MAG_SIZE", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P40_MAGSIZE, 1);
+
+        return "Mag clip holds 40 more bullets";
+    });
+    win->registerCommand("LOG_INCREASE_AMMO_CAP", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_AMMOCAP, 1);
+
+        return "You have bigger ammo bags now, it can hold 20 ammo more";
+    });
+    win->registerCommand("LOG_INCREASE_FIRE_RATE", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_PERC_RATE_OF_FIRE, 1);
+
+        return "You shoot 20% faster";
+    });
+    win->registerCommand("LOG_INCREASE_RELOAD_TIME", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::M20_PERC_RELOAD_SPEED, 1);
+
+        return "You reload 20% faster";
+    });
+    win->registerCommand("LOG_INCREASE_JUMP_HEIGHT", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addStatus(StatusManager::P20_PERC_JUMP, 1);
+
+        return "You jump 20% higher";
+    });
+    win->registerCommand("LOG_PLAYER_SET_BURNING", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
+
+        return "Crossbow deals fire damage";
+    });
+    win->registerCommand("LOG_PLAYER_SET_FROST", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addUpgrade(StatusManager::FROST_UPGRADE);
+
+        return "Frost Staff has longer freezing effect";
     });
 }
 
@@ -200,6 +255,10 @@ void Player::reset()
     m_skillManager->reset();
     currentWeapon = 0;
 	m_hp = 3;
+    m_moveSpeedMod = 1.0f;
+    m_permanentSpeedMod = 1.0f;
+    m_jumpSpeedMod = 1.0f;
+    m_stunned = false;
 
     //temp? probably
     Global::mainCamera->update(getPosition(), m_forward, Global::context);
@@ -236,7 +295,8 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 {
 	long long flags = effect.getStandards()->flags;
     
-
+    m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
+    m_moveSpeedMod = 1.0f;
     if (flags & Effect::EFFECT_BOUNCE)
     {
         m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * 3, 0.f });
@@ -247,43 +307,44 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
         m_hp += static_cast<int> (effect.getModifiers()->modifyHP);
         if (m_hp > 3) m_hp = 3;
     }
- 	if (flags & Effect::EFFECT_MODIFY_AMMO)
-	{
-        WeaponManager::WeaponLoadout* wp = nullptr;
-        if(effect.getSpecifics()->ammoType == 0)
-		    wp = m_weaponManager->getWeaponLoadout(0);
-        else if(effect.getSpecifics()->ammoType == 1)
-            wp = m_weaponManager->getWeaponLoadout(1);
-
-        if (wp)
-        {
-            int magSize = wp->ammoContainer->getAmmoInfo().magSize;
-            int currentAmmo = wp->ammoContainer->getAmmoInfo().ammo;
-            if ((currentAmmo + magSize) > wp->ammoContainer->getAmmoInfo().ammoCap)
-                wp->ammoContainer->setAmmo(wp->ammoContainer->getAmmoInfo().ammoCap);
-            else
-                wp->ammoContainer->setAmmo(currentAmmo + magSize);
-        }
-	}
-    if (flags & Effect::EFFECT_IS_FROZEN)
-    {
-        m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
-    }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
-        m_moveSpeedMod = effect.getModifiers()->modifyMovementSpeed;
+        m_moveSpeedMod *= effect.getModifiers()->modifyMovementSpeed;
         m_stunned = true;
     }
     if (flags & Effect::EFFECT_MOVE_FASTER)
     {
-        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
+        m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+        m_moveMaxSpeed *= m_moveSpeedMod;
     }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
     {
-        m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_moveSpeedMod;
+        m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+        m_moveMaxSpeed *= m_moveSpeedMod;
+    }
+    if (flags & Effect::EFFECT_IS_FROZEN)
+    {
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveMaxSpeed *= m_moveSpeedMod;
+    }
+    if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
+    {
+        m_permanentSpeedMod += effect.getModifiers()->modifyMovementSpeed;
+    }
+    if (flags & Effect::EFFECT_IS_SKILL)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            getSkillManager()->getSkill(i)->affect(effect);
+        }
+    }
+    if (flags & Effect::EFFECT_IS_WEAPON)
+    {
+        m_weaponManager->affect(effect);
+    }
+    if (flags & Effect::EFFECT_INCREASE_JUMPHEIGHT)
+    {
+        m_jumpSpeedMod += effect.getModifiers()->modifyMovementSpeed;
     }
 }
 
@@ -291,40 +352,28 @@ void Player::onEffectEnd(int stacks, Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
 
-    if (flags & Effect::EFFECT_ON_FIRE)
-    {
-        takeDamage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
-    }
     if (flags & Effect::EFFECT_IS_FROZEN)
     {
-        m_moveSpeedMod = 1;
+        /*m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
     }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
-        m_moveSpeedMod = 1;
+        /*m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
         m_stunned = false;
     }
 
     if (flags & Effect::EFFECT_MOVE_FASTER)
     {
-        m_moveSpeedMod = 1;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
+       /* m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
     }
     if (flags & Effect::EFFECT_MOVE_SLOWER)
     {
-        m_moveSpeedMod = 1;
-        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
+       /* m_moveSpeedMod = 1.0f;
+        m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
     }
-}
-
-void Player::upgrade(Upgrade const & upgrade)
-{
-	long long flags = upgrade.getTranferEffects();
-
-	if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
-	{
-
-	}
 }
 
 void Player::updateSound(float deltaTime)
@@ -370,7 +419,7 @@ int Player::getHP() const
 
 void Player::updateSpecific(float deltaTime)
 {
-    Player::update(deltaTime);
+	Player::update(deltaTime);
 
     // Update weapon and skills
     m_weaponManager->update(deltaTime);
@@ -628,7 +677,7 @@ void Player::move(float deltaTime)
 	if (m_wishJump)
 	{
         getSoundSource()->playSFX(Sound::SFX::JUMP, 1.f, 0.1f);
-		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED, 0.f });
+		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * m_jumpSpeedMod, 0.f });
 		m_wishJump = false;
 	}
 }
@@ -647,7 +696,7 @@ void Player::accelerate(float deltaTime, float acceleration)
 	if (deltaTime * 0.001f > (1.f / 60.f))
 		deltaTime = (1.f / 60.f) * 1000.f;
 
-	m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod;
+	m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod * m_permanentSpeedMod;
 
 	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
 		m_moveSpeed = m_moveMaxSpeed;

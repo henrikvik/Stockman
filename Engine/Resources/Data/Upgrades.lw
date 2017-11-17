@@ -5,12 +5,32 @@
 	"increaseSize" : 0;
 	"increaseAmmoCap" : 0;
 	"increaseMagSize" : 0;
+    "movementSpeed" : 0f;
 }
-{ // AMMO +10
-	"flags": 33; // 0x1 + 0x20
+{ // Damage +1
+	"flags": 522; // 0x1 + 0x2 + 0x8
+	"increaseCooldown" : 0f;
+	"increaseDamage" : 1;
+	"increaseSize" : 1;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 0;
+    "movementSpeed" : 0f;
+}
+{ // Burning effect
+	"flags": 4096; // 0x1000
 	"increaseCooldown" : 0f;
 	"increaseDamage" : 0;
 	"increaseSize" : 0;
-	"increaseAmmoCap" : 10;
+	"increaseAmmoCap" : 0;
 	"increaseMagSize" : 0;
+    "movementSpeed" : 0f;
+}
+{ // Freezing duration
+	"flags": 8192; // 0x2000
+	"increaseCooldown" : 300f;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 0;
+    "movementSpeed" : 0f;
 }

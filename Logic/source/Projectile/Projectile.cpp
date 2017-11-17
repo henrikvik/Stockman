@@ -12,11 +12,12 @@ using namespace Logic;
 static bool FUN_MODE = false;
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent, ProjectileData pData)
-: Entity(body, halfextent) 
+    : Entity(body, halfextent)
 {
-	m_pData         = pData;
-	m_dead          = false;
+    m_pData = pData;
+    m_dead = false;
     m_bulletTimeMod = 1.f;
+    m_freezeDuration = 0.0f;
 }
 
 Projectile::~Projectile() { }
@@ -26,14 +27,16 @@ Projectile::~Projectile() { }
 // \param statusManager - A statusManager filled with potential buffs & upgrades
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
-	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
-	
-    // Copy all effects & upgrades to projectile
-    setStatusManager(statusManager);
+    getRigidBody()->setLinearVelocity(forward * m_pData.speed);
+    getStatusManager().copyUpgradesFrom(statusManager);
 
-    // Give this projectile all upgrades
-	for (StatusManager::UPGRADE_ID id : statusManager.getActiveUpgrades())
-		upgrade(statusManager.getUpgrade(id));
+    for (int i = 0; i < StatusManager::LAST_ITEM_IN_UPGRADES; i++)
+    {
+        if (getStatusManager().getUpgradeStacks((StatusManager::UPGRADE_ID)i) > 0)
+        {
+            upgrade(statusManager.getUpgrade((StatusManager::UPGRADE_ID)i));
+        }
+    }
 }
 
 // How different effects affect projectiles
@@ -56,11 +59,25 @@ void Projectile::upgrade(Upgrade const &upgrade)
 
     if (flags & Upgrade::UPGRADE_INCREASE_DMG)
     {
-        m_pData.damage *= upgrade.getFlatUpgrades().increaseDmg;
+        m_pData.damage *= upgrade.getFlatUpgrades().increaseDmg * getStatusManager().getUpgradeStacks(StatusManager::P1_DAMAGE);
     }
     if (flags & Upgrade::UPGRADE_IS_BOUNCING)
     {
         m_body->setRestitution(1.f);
+    }
+    if (flags & Upgrade::UPGRADE_BURNING)
+    {
+        if (m_pData.type == ProjectileTypeNormal)
+        {
+            m_pData.type = ProjectileTypeFireArrow;
+        }
+    }
+    if (flags & Upgrade::UPGRADE_FREEZING)
+    {
+        if (m_pData.type = ProjectileTypeIce)
+        {
+            m_freezeDuration = upgrade.getFlatUpgrades().increaseCooldown * getStatusManager().getUpgradeStacks(StatusManager::FROST_UPGRADE);
+        }
     }
 }
 
@@ -97,15 +114,25 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
     bool cb = false;
 
     if (Enemy* enemy = dynamic_cast<Enemy*> (&other))
+    {
         cb = collisionWithEnemy(enemy);
+    }
     else if (Projectile* proj = dynamic_cast<Projectile*> (&other))
+    {
         cb = collisionWithProjectile(proj);
+    }
     else if (Player* player = dynamic_cast<Player*> (&other))
+    {
         cb = collisionWithPlayer(player);
+    }
     else if (Trigger* trigger = dynamic_cast<Trigger*> (&other))
+    {
         cb = collisionWithTrigger(trigger);
+    }
     else
+    {
         cb = collisionWithTerrain();
+    }
 
     // Send back data to listener
     if (cb) doCallBack(other);
@@ -135,11 +162,22 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     {
     // Special effects
     case ProjectileTypeIce:
-        enemy->getStatusManager().addStatus(
-            /* Adding Freeze effect */          StatusManager::FREEZE,
-            /* Number of stacks */              1,
-            /* Reset Duration */                true
-        );
+        if (m_freezeDuration > 0)
+        {
+            enemy->getStatusManager().addStatus(
+                                                    StatusManager::FREEZE,
+                                                    1,
+                                                    enemy->getStatusManager().getEffect(StatusManager::FREEZE).getStandards()->duration + m_freezeDuration,
+                                                    false
+            );
+        }
+        else
+        {
+            enemy->getStatusManager().addStatusResetDuration(
+                /* Adding Freeze effect */          StatusManager::FREEZE,
+                /* Number of stacks */              1
+            );
+        }
         break;
 
     // These should not get removed on enemy contact
@@ -147,13 +185,18 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     case ProjectileTypeMelee:
         break;
 
+    case ProjectileTypeFireArrow:
+        enemy->getStatusManager().addStatus(
+            /* Adding Fire effect */            StatusManager::ON_FIRE,
+            /* Number of stacks */              getStatusManager().getUpgradeStacks(StatusManager::FIRE_UPGRADE)
+        );
+        break;
     // Trigger all callbacks on other projectiles
     //  And kill them off
     default: 
         callback = true;
         kill = true;
     }
-
     // Set if we should kill it
     m_dead = kill;
 
@@ -210,10 +253,9 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 	switch (proj->getProjectileData().type)
 	{
 	case ProjectileTypeBulletTimeSensor:
-	    getStatusManager().addStatus(
+	    getStatusManager().addStatusResetDuration(
 		/* Adding Bullet time effect */     StatusManager::BULLET_TIME,
-		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME),
-		/* Reset Duration */                true
+		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME)
 	    );
 	    break;
 	}
