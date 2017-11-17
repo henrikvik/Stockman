@@ -349,7 +349,7 @@ if (Player *e = dynamic_cast<Player*>(&other))
             damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
 
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-                getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+                getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
         }
     }
 }

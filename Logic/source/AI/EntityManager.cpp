@@ -388,7 +388,7 @@ int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
     for (auto &vec : m_enemies)
         for (auto *enemy : vec)
         {
-            enemy->getStatusManager().addStatus(id, 1, true);
+            enemy->getStatusManager().addStatusResetDuration(id, 1);
             i++;
         }
     return i;
