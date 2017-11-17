@@ -27,7 +27,7 @@ namespace Logic
             UPGRADE_INCREASE_MAGSIZE = 0x40,
             UPGRADE_IS_BOUNCING = 0x80,
             UPGRADE_TRANSFERABLE = 0x100,
-            UPGRADE_CROSSBOW = 0X200,
+            UPGRADE_CROSSBOW = 0x200,
             UPGRADE_ICESTAFF = 0x400,
             UPGRADE_SLEDGEHAMMER = 0x800,
             UPGRADE_BURNING = 0x1000,
@@ -35,7 +35,7 @@ namespace Logic
 		};
 
 		struct FlatUpgrades {
-			float decreaseCooldown;
+			float increaseCooldown;
             int increaseDmg;
             int increaseSize;
 			int increaseAmmoCap;

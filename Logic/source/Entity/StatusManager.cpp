@@ -30,7 +30,7 @@ StatusManager::StatusManager()
             for (auto const &fileStruct : loadedUpgrades)
             {
                 flags = fileStruct.ints.at("flags");
-                flat.decreaseCooldown = fileStruct.floats.at("increaseCooldown");
+                flat.increaseCooldown = fileStruct.floats.at("increaseCooldown");
                 flat.increaseDmg = fileStruct.ints.at("increaseDamage");
                 flat.increaseAmmoCap = fileStruct.ints.at("increaseAmmoCap");
                 flat.increaseMagSize = fileStruct.ints.at("increaseMagSize");

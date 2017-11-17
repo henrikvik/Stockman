@@ -76,7 +76,7 @@ void Projectile::upgrade(Upgrade const &upgrade)
     {
         if (m_pData.type = ProjectileTypeIce)
         {
-            m_freezeDuration = upgrade.getFlatUpgrades().decreaseCooldown * getStatusManager().getUpgradeStacks(StatusManager::FROST_UPGRADE);
+            m_freezeDuration = upgrade.getFlatUpgrades().increaseCooldown * getStatusManager().getUpgradeStacks(StatusManager::FROST_UPGRADE);
         }
     }
 }
