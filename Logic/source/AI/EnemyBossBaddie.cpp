@@ -18,8 +18,8 @@ using namespace Logic;
 
 const float EnemyBossBaddie::BASE_SPEED = 4.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.075f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.65f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 9500; // Big guy, for you
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.20f;
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 14500; // Big guy, for you
 
 /*
     @author Lukas Westling
@@ -312,7 +312,7 @@ void EnemyBossBaddie::damage(int damage)
 
 void EnemyBossBaddie::useAbility(Player &target)
 {
-    if (!abilities[AbilityId::MELEE].isUsingAbility())
+    if (!abilities[AbilityId::ONE].isUsingAbility())
         abilities[AbilityId::MELEE].useAbility(target);
 }
 
