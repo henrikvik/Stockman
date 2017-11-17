@@ -27,7 +27,7 @@ void ComboMachine::kill(int score)
     {
         //addScore(score); apparently this doesnt work?
         // add score to combo
-        m_comboScore += score * m_combo;
+        m_comboScore += score;
         // increase combo
         if(m_combo != MAX_COMBO)
             m_combo++;
@@ -56,7 +56,7 @@ void ComboMachine::update(float deltaTime)
         m_comboTimer -= deltaTime;
     else
     {
-        reward(m_comboScore);
+        reward(m_comboScore * m_combo);
         m_comboTimer = 0.f;
         m_combo = 1;
         m_multikill = 1;
@@ -124,7 +124,7 @@ void ComboMachine::addMultikillScore()
 
 void ComboMachine::addScore(int score)
 {
-    m_comboScore += score * m_combo;
+    m_comboScore += score;
     if (m_combo != MAX_COMBO)
         m_combo++;
 

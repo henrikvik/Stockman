@@ -1,7 +1,7 @@
 #include <Projectile\Projectile.h>
 #include <Player\Player.h>
 #include <AI\Enemy.h>
-#include <AI\Trigger.h>
+#include <AI\Trigger\Trigger.h>
 #include <Physics\Physics.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -96,7 +96,7 @@ void Projectile::updateSpecific(float deltaTime)
     float pitch = asin(-dir.getY()) - M_PI * 0.5f;
     float yaw = atan2(dir.getX(), dir.getZ());
     //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
-    body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), 0));
+    body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - M_PI, 0));
     
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;

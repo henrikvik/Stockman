@@ -50,7 +50,7 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
         const btRigidBody* intersection = m_physicsPtr->RayTestOnRigidBodies(Ray(shooter.getPositionBT(), forward, GRAPPLING_HOOK_RANGE));
         if (intersection)
         {
-            if (Entity* target = static_cast<Entity*>(intersection->getUserPointer()))
+            if (PhysicsObject* target = static_cast<PhysicsObject*>(intersection->getUserPointer()))
             {
                 // Saving the shooter's as an entity
                 m_shooter = &shooter;
@@ -99,7 +99,7 @@ void SkillGrapplingHook::onRelease()
 	{
 		float yVel = player->getCharController()->getLinearVelocity().y();
         player->getCharController()->setFallSpeed(1.f);
-		player->getCharController()->setLinearVelocity({ 0.f, 1.f, 0.f });
+		player->getCharController()->setLinearVelocity({ 0.f, yVel, 0.f });
 	}
 
     

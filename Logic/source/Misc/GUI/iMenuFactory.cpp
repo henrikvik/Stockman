@@ -25,7 +25,6 @@ const std::map<int, Resources::Textures::Files> LookUp =
 iMenuIntro* iMenuFactory::buildMenuIntro()
 {
     iMenuIntro* menu = newd iMenuIntro(iMenu::Intro);
-    iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::IntroScreen, 1.f);
 
@@ -35,7 +34,6 @@ iMenuIntro* iMenuFactory::buildMenuIntro()
 iMenu* iMenuFactory::buildMenuStart()
 {
     iMenu* menu = newd iMenu(iMenu::Start);
-    iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     menu->addButton(buildButton("MenuStartGame",        ButtonFunction::startGame));
@@ -49,7 +47,6 @@ iMenu* iMenuFactory::buildMenuStart()
 iMenu * iMenuFactory::buildMenuSettings()
 {
     iMenu* menu = newd iMenu(iMenu::Settings);
-    iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
@@ -73,7 +70,6 @@ iMenu * iMenuFactory::buildMenuSettings()
 iMenuSkillPick* iMenuFactory::buildMenuSkill()
 {
     iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
-    iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
@@ -87,7 +83,6 @@ iMenuSkillPick* iMenuFactory::buildMenuSkill()
 iMenu * iMenuFactory::buildMenuCard()
 {
     iMenu* menu = newd iMenu(iMenu::CardSelect);
-    iMenu::ButtonData btn;
 
     menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));
     menu->addButton(buildButton("CardUpgradeChoice2", ButtonFunction::chooseUpgrade2));
@@ -99,7 +94,6 @@ iMenu * iMenuFactory::buildMenuCard()
 iMenu * iMenuFactory::buildMenuHighscore()
 {
     iMenu* menu = newd iMenu(iMenu::Highscore);
-    iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
@@ -114,9 +108,15 @@ iMenu * iMenuFactory::buildMenuGameover()
     iMenu* menu = newd iMenu(iMenu::GameOver);
     iMenu::ButtonData btn;
 
-    menu->addBackground(Resources::Textures::MainmenuClean, 0.70f);
-    menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
-    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
+    menu->addBackground(Resources::Textures::Gameover, 1.0f);
+
+    btn = buildButton("MenuStartGame", ButtonFunction::playAgain);
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.15));
+    menu->addButton(btn);
+
+    btn = buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu);
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.05));
+    menu->addButton(btn);
 
     return menu;
 }
