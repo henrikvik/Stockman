@@ -14,7 +14,7 @@ using namespace Logic;
 
 // Give menus their unique timer here in milliseconds
 #define FADING_TIMER_INTRO      1250.f      
-#define FADING_TIMER_GAMEOVER   1000.f
+#define FADING_TIMER_GAMEOVER   1500.f
 #define FADING_TIMER_SKILL      800.f
 
 #endif
@@ -40,18 +40,18 @@ iMenu::~iMenu() { }
 // Starts the fadeIn animation, menu's can't be changed/removed during this time
 void iMenu::fadeIn()
 {
+    m_fader.startFadeIn(m_fadingTimer);
     m_isFading      = true;
     m_safeToRemove  = false;
-    m_fader.startFadeIn(m_fadingTimer);
     setAlpha(0.f);
 }
 
 // Starts the fadeOut animation, menu's can't be changed/removed during this time
 void iMenu::fadeOut()
 {
+    m_fader.startFadeOut(m_fadingTimer);
     m_isFading      = true;
     m_safeToRemove  = false;
-    m_fader.startFadeOut(m_fadingTimer);
     setAlpha(1.f);
 }
 
