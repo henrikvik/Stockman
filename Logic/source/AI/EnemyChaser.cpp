@@ -33,7 +33,7 @@ void EnemyChaser::loadAnimation(Resources::Models::Files model)
 // REMOVE WHEN ALL ENIMES ARE ANIMATED
 void EnemyChaser::updateSpecific(Player & player, float deltaTime)
 {
-    animatedRenderInfo.transform = getTransformMatrix();
+    animatedRenderInfo.transform = getModelTransformMatrix();
     animatedRenderInfo.animationTimeStamp += deltaTime;
     if (animatedRenderInfo.animationTimeStamp > ANI_TIME) animatedRenderInfo.animationTimeStamp = 0.f;
 }
