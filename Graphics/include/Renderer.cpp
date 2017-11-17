@@ -336,9 +336,9 @@ namespace Graphics
 
         for (auto & renderPass : renderPasses)
         {
-            if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
+            //if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
             renderPass->render();
-            if (DebugAnnotation) DebugAnnotation->EndEvent();
+            //if (DebugAnnotation) DebugAnnotation->EndEvent();
         }
     }
 

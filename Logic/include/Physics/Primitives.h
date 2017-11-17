@@ -74,18 +74,6 @@ namespace Logic
             m_position = position;
             m_rotation = rotation;
         }
-        Shape(btVector3 position, btQuaternion rotation, ShapeType type = ShapeTypePoint)
-        {
-            m_position = position;
-            btMatrix3x3 a; a.setRotation(rotation);
-            float x, y, z;
-            a.getEulerZYX(z, y, x);
-            m_rotation.setX(x);
-            m_rotation.setY(y);
-            m_rotation.setZ(z);
-
-        }
-
 
         void		setPos(btVector3 position) { m_position = position; }
         void		setRot(btVector3 rotation) { m_rotation = rotation; }
@@ -121,11 +109,6 @@ namespace Logic
             m_dimensions = dimensions;
         }
 
-        Cube(btVector3 position, btQuaternion rotation, btVector3 dimensions)
-            : Shape(position, rotation, ShapeTypeCube)
-        {
-            m_dimensions = dimensions;
-        }
 
         void		setDimensions(btVector3 dimensions) { m_dimensions = dimensions; }
         btVector3	getDimensions() const { return m_dimensions; }
