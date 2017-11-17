@@ -10,7 +10,7 @@
 { // Damage +1
 	"flags": 522; // 0x1 + 0x2 + 0x8
 	"increaseCooldown" : 0f;
-	"increaseDamage" : 1;
+	"increaseDamage" : 5;
 	"increaseSize" : 1;
 	"increaseAmmoCap" : 0;
 	"increaseMagSize" : 0;
