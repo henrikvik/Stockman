@@ -38,7 +38,7 @@ namespace Graphics
 		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
 		, debugColorBuffer(device)
 #pragma endregion
-		, fog(device)
+		, fog(device, deviceContext)
 		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
         ,menu(device, deviceContext)
         ,hud(device, deviceContext)
@@ -256,17 +256,26 @@ namespace Graphics
 #endif
 
 		///////Post effext
+		
 		PROFILE_BEGIN("Glow");
-		postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+		//postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
 		PROFILE_END();
 
 		PROFILE_BEGIN("SSAO");
-		ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+		//ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
 		PROFILE_END();
-		
+
 		PROFILE_BEGIN("DrawToBackBuffer");
 		drawToBackbuffer(fakeBackBuffer);
 		PROFILE_END();
+
+		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		UINT sampleMask = 0xffffffff;
+		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+		ID3D11Buffer* cambuffer = camera->getBuffer();
+		deviceContext->VSSetConstantBuffers(0, 1, &cambuffer);
+		deviceContext->PSSetConstantBuffers(0, 1 , &cambuffer);
+		fog.renderFog(deviceContext, backBuffer, worldPosMap);
 
 		PROFILE_BEGIN("HUD");
         hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
@@ -275,7 +284,6 @@ namespace Graphics
 		PROFILE_BEGIN("DebugInfo");
 		renderDebugInfo(camera);
 		PROFILE_END();
-		fog.renderFog(deviceContext, backBuffer, worldPosMap);
         drawGUI();
     }
 
