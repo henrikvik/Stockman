@@ -63,8 +63,8 @@ void iMenuCards::buildTextRenderInfo(int index, std::string name, std::string de
 
     // Set positions
     m_cardGraphic[index].title.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2  - 260 + 230 * index, WIN_HEIGHT / 2- 130);
-    m_cardGraphic[index].description.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2 - 320 + 255 * index, WIN_HEIGHT / 2);
-    m_cardGraphic[index].description1.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2 - 320 + 255 * index, WIN_HEIGHT / 2 + 20);
+    m_cardGraphic[index].description.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2 - 320 + 250 * index, WIN_HEIGHT / 2);
+    m_cardGraphic[index].description1.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2 - 320 + 250 * index, WIN_HEIGHT / 2 + 20);
 
     // Set texts
 

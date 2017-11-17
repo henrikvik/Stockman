@@ -123,28 +123,23 @@ void StatePlaying::update(float deltaTime)
 
     ComboMachine::Get().update(deltaTime);
 
+
+    if (fullhack)
+    {
+        static_cast<iMenuCards*>(m_menu->getActiveMenu())->setCardInformation(m_cardManager->getHand());
+        fullhack = false;
+    }
+
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
     {
         m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
         m_cardManager->pickThreeCards(m_player->getHP() != 3);
+
         //TODO temp
-        if (m_menu->getType() == iMenu::CardSelect)
-        {
-            static_cast<iMenuCards*>(m_menu->getActiveMenu())->setCardInformation(m_cardManager->getHand());
-        }
-        
+        fullhack = true;
     }
 
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::U))
-    {
-        m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
-        m_cardManager->pickThreeCards(m_player->getHP() != 3);
-        if (m_menu->getType() == iMenu::CardSelect)
-        {
-            static_cast<iMenuCards*>(m_menu->getActiveMenu())->setCardInformation(m_cardManager->getHand());
-        }
-    }
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());

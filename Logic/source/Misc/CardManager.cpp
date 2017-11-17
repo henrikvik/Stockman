@@ -32,6 +32,7 @@ void CardManager::createDeck(int nrOfEach)
 
 void CardManager::pickThreeCards(bool damaged)
 {
+    currenthand.clear();
     int cardsPicked = 0;
     int amount = HAND_SIZE;
 
