@@ -128,6 +128,12 @@ void StatePlaying::update(float deltaTime)
         m_cardManager->pickThree(m_player->getHP() != 3);
     }
 
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::U))
+    {
+        m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
+        m_cardManager->pickThree(m_player->getHP() != 3);
+    }
+
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
     PROFILE_END();
