@@ -114,8 +114,9 @@ iMenu * iMenuFactory::buildMenuGameover()
     iMenu* menu = newd iMenu(iMenu::GameOver);
     iMenu::ButtonData btn;
 
-    // Add background
-    // Add buttons
+    menu->addBackground(Resources::Textures::MainmenuClean, 0.70f);
+    menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
+    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
 
     return menu;
 }

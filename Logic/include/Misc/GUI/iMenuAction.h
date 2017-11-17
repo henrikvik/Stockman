@@ -38,6 +38,8 @@ namespace Logic
         void startSettings();
         void startMainMenu();
         void showHighscore();
+        void goBackToMainMenu();
+        void playAgain();
         void quitGame();
         void writing();
         void chooseUpgrade1();
