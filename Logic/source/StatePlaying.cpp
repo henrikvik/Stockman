@@ -170,7 +170,8 @@ void StatePlaying::render() const
         m_physics->render();
 
     PROFILE_BEGIN("Player Render");
-    m_player->render();
+    if (m_menu->getType() != iMenu::MenuGroup::GameOver)
+        m_player->render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render Map");
@@ -203,5 +204,5 @@ void StatePlaying::gameOver()
     ComboMachine::Get().endCombo();
     m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
-    m_menu->setDeathPosition(m_player->getPosition() + DirectX::SimpleMath::Vector3(0, 20, 0));
+    m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
 }

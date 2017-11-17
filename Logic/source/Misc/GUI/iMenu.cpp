@@ -4,9 +4,36 @@
 
 using namespace Logic;
 
-#define FADING_TIMER 300.f
+#define DEFAULT_FADING_TIMER     300.f
 
-iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
+// Toggle
+#define USE_UNIQUE_FADING_TIMERS true  
+
+// Gives us the ability to give each menu a different fading time
+#if USE_UNIQUE_FADING_TIMERS
+
+// Give menus their unique timer here in milliseconds
+#define FADING_TIMER_INTRO      1250.f      
+#define FADING_TIMER_GAMEOVER   1000.f
+#define FADING_TIMER_SKILL      800.f
+
+#endif
+float getFadingTimer(iMenu::MenuGroup group)
+{
+#if USE_UNIQUE_FADING_TIMERS
+    switch (group)
+    {
+    case iMenu::MenuGroup::Intro:       return FADING_TIMER_INTRO;
+    case iMenu::MenuGroup::GameOver:    return FADING_TIMER_GAMEOVER;
+    case iMenu::MenuGroup::Skill:       return FADING_TIMER_SKILL;
+    default:                            return DEFAULT_FADING_TIMER;
+    }
+#endif
+    return DEFAULT_FADING_TIMER;
+}
+
+
+iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_fadingTimer(getFadingTimer(group)), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
 
 iMenu::~iMenu() { }
 
@@ -15,7 +42,7 @@ void iMenu::fadeIn()
 {
     m_isFading      = true;
     m_safeToRemove  = false;
-    m_fader.startFadeIn(FADING_TIMER);
+    m_fader.startFadeIn(m_fadingTimer);
     setAlpha(0.f);
 }
 
@@ -24,7 +51,7 @@ void iMenu::fadeOut()
 {
     m_isFading      = true;
     m_safeToRemove  = false;
-    m_fader.startFadeOut(FADING_TIMER);
+    m_fader.startFadeOut(m_fadingTimer);
     setAlpha(1.f);
 }
 

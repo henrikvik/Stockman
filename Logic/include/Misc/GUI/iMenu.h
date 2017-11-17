@@ -60,6 +60,7 @@ namespace Logic
         Fader                   m_fader;
         bool                    m_safeToRemove;
         bool                    m_isFading;
+        float                   m_fadingTimer;
 
         // Menu
         SpriteRenderInfo        m_background;
