@@ -104,6 +104,7 @@ struct ParticleEffect {
     float    m_Time;
     float    m_Age;
     bool     m_Loop;
+    bool     m_Anchor;
     std::vector<ParticleEffectEntry> m_Entries;
 };
 

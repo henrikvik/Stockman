@@ -36,7 +36,9 @@ EntityManager::EntityManager()
     m_frame = 0;
     m_aliveEnemies = 0;
     m_aiType = NORMAL_MODE;
+
     m_automaticTesting = false;
+    m_debugPath = false;
 
     //allocateData(); was here
     registerCreationFunctions();
@@ -62,8 +64,10 @@ void EntityManager::registerCreationFunctions()
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemyNecromancer(body, cube.getDimensionsRef());
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        physics.removeRigidBody(body);
+        enemy->addExtraBody(body, 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
@@ -75,8 +79,6 @@ void EntityManager::registerCreationFunctions()
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemyChaser(body);
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
@@ -88,21 +90,25 @@ void EntityManager::registerCreationFunctions()
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemyBossBaddie(body, cube.getDimensionsRef());
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        physics.removeRigidBody(body);
+        enemy->addExtraBody(body, 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
     m_enemyFactory[EnemyType::FLYING] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.2f, 1.2f, 1.2f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 4.2f, 2.2f, 4.2f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemySoarer(body, cube.getDimensionsRef());
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        physics.removeRigidBody(body);
+        enemy->addExtraBody(body, 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
@@ -138,6 +144,10 @@ void EntityManager::loadDebugCmds()
         m_automaticTesting = true;
         PATH_UPDATE_DIV = 1;
         return "TESTING ACTIVED (QUIT TO TURN OFF)";
+    });
+    DebugWindow::getInstance()->registerCommand("AI_TOGGLE_PATH", [&](std::vector<std::string> &para) -> std::string {
+        m_debugPath = !m_debugPath;
+        return "Path Toggled";
     });
     DebugWindow::getInstance()->registerCommand("AI_SPAWN_ENEMY", [&](std::vector<std::string> &para) -> std::string {
         try {
@@ -362,26 +372,7 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
     effectsIds.reserve(effects.size());
     for (auto const &effect : effects)
         effectsIds.push_back(static_cast<StatusManager::EFFECT_ID> (effect));
-    Trigger *trigger;
-
-    switch (id)
-    {
-    case 1: // wtf, starts at 1
-        trigger = m_triggerManager.addTrigger(Resources::Models::UnitCube,
-            Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
-            500.f, physics, {},
-            effectsIds,
-            true);
-        break;
-    case 2:
-        trigger = m_triggerManager.addTrigger(Resources::Models::AmmoPackCrossBolt,
-            Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, physics, {},
-            effectsIds,
-            false);
-        break;
-    default:
-        trigger = nullptr;
-    }
+    Trigger* trigger = m_triggerManager.addTrigger((Trigger::TriggerType)id, pos, physics, {}, effectsIds);
 
     return trigger;
 }
@@ -405,26 +396,24 @@ int EntityManager::giveEffectToAllEnemies(StatusManager::EFFECT_ID id)
 
 void EntityManager::render() const
 {
+    AStar &aStar = AStar::singleton();
     for (int i = 0; i < m_enemies.size(); ++i)
     {
         for (Enemy *enemy : m_enemies[i])
         {
             enemy->render();
-#ifdef DEBUG_PATH	
-            enemy->debugRendering();
-#endif
+            if (m_debugPath)  // should only be if _DEBUG is defined in the future
+                enemy->debugRendering();
         }
     }
 
     for (int i = 0; i < m_deadEnemies.size(); ++i)
     {
-#ifndef DISABLE_RENDERING_DEAD_ENEMIES
-     //   m_deadEnemies[i]->render();
-#endif
+     //   m_deadEnemies[i]->render(); // maybe add later
     }
 
     m_triggerManager.render();
-    AStar::singleton().renderNavigationMesh();
+    aStar.renderNavigationMesh();
 }
 
 const std::vector<std::vector<Enemy*>>& EntityManager::getAliveEnemies() const

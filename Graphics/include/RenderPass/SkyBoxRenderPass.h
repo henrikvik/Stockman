@@ -16,6 +16,10 @@ namespace Graphics
             ID3D11DepthStencilView * depthStencil = nullptr);
         ~SkyBoxRenderPass() {};
 
+        virtual wchar_t* name() const override {
+            return L"SkyBoxRenderPass";
+        }
+
         virtual void render() const;
         virtual void update(float deltaTime);
 

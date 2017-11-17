@@ -38,7 +38,6 @@ void Logic::HUDManager::constructGUIElements()
     HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, {x + width, y + height })));
    
     //ice staff
-
     x = 4.0f / 1024;
     y = 5.0f / 1024;
     width = 503.0f / 1024;
@@ -168,8 +167,12 @@ void Logic::HUDManager::constructGUIElements()
     height = 148.0f / 1024;
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
 
-
-
+    //wave complete
+    //x = 0.1;
+    //y = 0.1;
+    //width = 0.9;
+    //height = 0.9;
+    //staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 0, 0, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ x, y }, { x + width, y + height })));
 
 }
 
@@ -447,7 +450,7 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     EntityManager const &entityManager)
 {
     //updates hudInfo with the current info
-    info.score = ComboMachine::Get().GetCurrentScore();
+    info.score = ComboMachine::Get().getTotalScore();
     info.hp = player.getHP();
     info.activeAmmo[HUDManager::CURRENT_AMMO]   = player.getActiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
     info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().ammo;// TODO GET AMMO

@@ -14,12 +14,19 @@ using namespace Logic;
 // Switches both main-states to in-game, will unload & load everything
 void ButtonFunction::startGame()
 {
+    // Changes the main state
     if (Action::Get().m_stateBuffer->currentPrimaryState)
         if (StatePrimary* primary = dynamic_cast<StatePrimary*>(Action::Get().m_stateBuffer->currentPrimaryState))
             primary->queueState(StateType::State_Playing);
+    
+    // Disables the secondary state (Not like it's being used, but whatever)
     if (Action::Get().m_stateBuffer->currentSecondaryState)
         if (StateSecondary* secondary = dynamic_cast<StateSecondary*>(Action::Get().m_stateBuffer->currentSecondaryState))
             secondary->queueState(StateType::Nothing);
+
+    // Adding a "fake" static loading screen. Hides current non-pressable buttons.
+    Action::Get().m_menuMachine->getActiveMenu()->addBackground(Resources::Textures::Loadingscreen, 1.f);
+    Action::Get().m_menuMachine->getActiveMenu()->setDrawButtons(false);
 }
 
 // Switches the current menu-machine to settings screen
@@ -47,6 +54,37 @@ void ButtonFunction::showHighscore()
 void ButtonFunction::quitGame()
 {
 
+}
+
+// Switches the program's state and switching to startmenu
+void ButtonFunction::goBackToMainMenu()
+{
+    // Changes the main state
+    if (Action::Get().m_stateBuffer->currentPrimaryState)
+        if (StatePrimary* primary = dynamic_cast<StatePrimary*>(Action::Get().m_stateBuffer->currentPrimaryState))
+            primary->queueState(StateType::State_Start);
+
+    // Disables the secondary state (Not like it's being used, but whatever)
+    if (Action::Get().m_stateBuffer->currentSecondaryState)
+        if (StateSecondary* secondary = dynamic_cast<StateSecondary*>(Action::Get().m_stateBuffer->currentSecondaryState))
+            secondary->queueState(StateType::Nothing);
+}
+
+void ButtonFunction::playAgain()
+{
+    if (StatePrimary* primary = dynamic_cast<StatePrimary*>(Action::Get().m_stateBuffer->currentPrimaryState))
+    {
+        if (StatePlaying* playing = dynamic_cast<StatePlaying*>(primary->getCurrentState()))
+        {
+            // Adding a "fake" static loading screen. Hides current non-pressable buttons.
+            Action::Get().m_menuMachine->getActiveMenu()->addBackground(Resources::Textures::Loadingscreen, 1.f);
+            Action::Get().m_menuMachine->getActiveMenu()->setDrawButtons(false);
+
+            playing->reset();
+
+            Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Skill);
+        }
+    }
 }
 
 void ButtonFunction::writing()
@@ -79,9 +117,6 @@ void Logic::chooseUpgrade(int index)
             if (playing->getCardManager()->pickAndApplyCard(*playing->getPlayer(), index))
             {
                 Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
-
-                // Enabling mouse movement
-                DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
             }
         }
     }
@@ -107,9 +142,6 @@ void ButtonFunction::confirmSkillPicks()
 
                 // Removing active menu
                 Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
-
-                // Enabling mouse movement
-                DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
             }
         }
     }

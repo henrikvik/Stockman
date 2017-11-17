@@ -16,6 +16,7 @@ namespace Logic
 		int m_currentNode;
 
 		DebugRenderInfo m_debugInfo;
+        void initDebugRendering();
 	public:
 		Pathing();
 		Pathing(Pathing const &other) = delete;
@@ -33,7 +34,6 @@ namespace Logic
 		bool pathOnLastNode() const;
 
 		// debugging - move to a debug render class or something maybe ty
-		void initDebugRendering();
 		void renderDebugging(DirectX::SimpleMath::Vector3 &startPosition);
 	};
 }

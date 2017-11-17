@@ -10,6 +10,7 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
+	"category" : 1;
 	"status0" : 8;
 }
 
@@ -25,5 +26,6 @@
 
 	"statusAmount" : 1;
 	"statusType" : 0;
+	"category" : 0;
 	"status0" : 3;
 }

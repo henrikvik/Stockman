@@ -34,6 +34,7 @@ namespace Graphics
         void render() const;
         void update(float deltaTime);
     private:
+        ID3DUserDefinedAnnotation *DebugAnnotation;
 
         #pragma region Shared Shader Resources
         std::vector<RenderPass*> renderPasses;

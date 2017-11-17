@@ -15,6 +15,10 @@ namespace Graphics
             std::initializer_list<ID3D11Buffer*> buffers = {},
             ID3D11DepthStencilView * depthStencil = nullptr);
 
+        virtual wchar_t* name() const override {
+            return L"BulletTimeRenderPass";
+        }
+
         void update(float deltaTime);
         void render() const;
 

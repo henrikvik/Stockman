@@ -7,6 +7,14 @@
 	"yTexStart" : 0.05f;
 	"xTexEnd" : 1.f;
 	"yTexEnd" : 0.150f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" : 0.52f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.620f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" : 0.52f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.620f;
     "activeOffset" : 0.470f;
 	"height" : 50.f;
 	"width" : 256.0f;
@@ -20,6 +28,14 @@
 	"yTexStart" : 0.150f;
 	"xTexEnd" : 1.f;
 	"yTexEnd" : 0.265f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" : 0.6275f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.7425f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" : 0.6275f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.7425f;
     "activeOffset" : 0.4775f;
 	"height" : 50.f;
 	"width" : 256.0f;
@@ -33,6 +49,14 @@
 	"yTexStart" : 0.270f;
 	"xTexEnd" : 1.f;
 	"yTexEnd" : 0.385f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" : 0.7575f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.8725f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" : 0.7575f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.8725f;
     "activeOffset" : 0.4875f;
 	"height" : 50.f;
 	"width" : 256.0f;
@@ -46,6 +70,14 @@
 	"yTexStart" : 0.390f;
 	"xTexEnd" : 1.f;
 	"yTexEnd" : 0.505f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" : 0.8805f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.9955f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" : 0.8805f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.9955f;
     "activeOffset" : 0.4905f;
 	"height" : 50.f;
 	"width" : 256.0f;
@@ -59,6 +91,14 @@
 	"yTexStart" : 0.390f;
 	"xTexEnd" : 1.f;
 	"yTexEnd" : 0.505f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" : 0.8805f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.9955f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" : 0.8805f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.9955f;
     "activeOffset" : 0.4905f;
 	"height" : 50.f;
 	"width" : 256.0f;
@@ -72,154 +112,19 @@
 	"yTexStart" : 0.54375f;
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 0.79375f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" :  0.54375f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.79375f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" :  0.54375f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.79375f;
     "activeOffset" : 0.0f;
 	"height" : 100.0f;
 	"width" : 340.0f;
 }
-{
-	"buttonName" : "MenuSettingsSoundMasterMinus";
-	"texture" : 2;
-	"xPos" : 100.0f;
-	"yPos" : 270.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 75.0f;
-	"width" : 75.0f;
-}
-{
-	"buttonName" : "MenuSettingsSoundMasterPlus";
-	"texture" : 2;
-	"xPos" : 175.0f;
-	"yPos" : 270.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 75.0f;
-	"width" : 75.0f;
-}
 
-{
-	"buttonName" : "MenuSettingsSoundSFXMinus";
-	"texture" : 2;
-	"xPos" : 100.0f;
-	"yPos" : 370.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 75.0f;
-	"width" : 75.0f;
-}
-{
-	"buttonName" : "MenuSettingsSoundSFXPlus";
-	"texture" : 2;
-	"xPos" : 175.0f;
-	"yPos" : 370.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 75.0f;
-	"width" : 75.0f;
-}
-{
-	"buttonName" : "MenuSettingsMuteUnmute";
-	"texture" : 2;
-	"xPos" : 137.5f;
-	"yPos" : 470.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 75.0f;
-	"width" : 75.0f;
-}
-{
-	"buttonName" : "MenuSettingsControlsMouseSenseMinus";
-	"texture" : 2;
-	"xPos" : 250.0f;
-	"yPos" : 270.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 75.0f;
-	"width" : 75.0f;
-}
-{
-	"buttonName" : "MenuSettingsControlsMouseSensePlus";
-	"texture" : 2;
-	"xPos" : 325.0f;
-	"yPos" : 270.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 75.0f;
-	"width" : 75.0f;
-}
-{
-	"buttonName" : "MenuSettingsVideoFOVMinus";
-	"texture" : 2;
-	"xPos" : 400.0f;
-	"yPos" : 270.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 75.0f;
-	"width" : 75.0f;
-}
-{
-	"buttonName" : "MenuSettingsVideoFOVPlus";
-	"texture" : 2;
-	"xPos" : 475.0f;
-	"yPos" : 270.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 75.0f;
-	"width" : 75.0f;
-}
-{
-	"buttonName" : "MenuSettingsVideoWindowed";
-	"texture" : 2;
-	"xPos" : 550.0f;
-	"yPos" : 270.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.5f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 1.0f;
-	"activeOffset" : 0.0f;
-	"height" : 75.0f;
-	"width" : 75.0f;
-}
-{
-	"buttonName" : "MenuSettingsWriting";
-	"texture" : 2;
-	"xPos" : 400.0f;
-	"yPos" : 100.0f;
-	"xTexStart" : 0.0f;
-	"yTexStart" : 0.0f;
-	"xTexEnd" : 1.0f;
-	"yTexEnd" : 0.33333f;
-    "activeOffset" : 0.0f;
-	"height" : 160.0f;
-	"width" : 370.0f;
-}
 {
 	"buttonName" : "GameOverStartMenu";
 	"texture" : 1;
@@ -229,6 +134,14 @@
 	"yTexStart" : 0.125f;
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 0.40625f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" :  0.125f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.40625f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" :  0.125f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.40625f;
     "activeOffset" : 0.0f;
 	"height" : 55.0f;
 	"width" : 170.0f;
@@ -242,6 +155,14 @@
 	"yTexStart" : 0.54375f;
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 0.79375f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" :  0.54375f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.79375f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" :  0.54375f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.79375f;
     "activeOffset" : 0.0f;
 	"height" : 50.0f;
 	"width" : 170.0f;
@@ -255,6 +176,14 @@
 	"yTexStart" : 0.125f;
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 0.40625f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" :  0.125f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.40625f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" :  0.125f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.40625f;
 	"activeOffset" : 0.0f;
 	"height" : 250.0f;
 	"width" : 200.0f;
@@ -268,6 +197,14 @@
 	"yTexStart" : 0.125f;
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 0.40625f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" :  0.125f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.40625f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" :  0.125f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.40625f;
 	"activeOffset" : 0.0f;
 	"height" : 250.0f;
 	"width" : 200.0f;
@@ -281,6 +218,14 @@
 	"yTexStart" : 0.125f;
 	"xTexEnd" : 1.0f;
 	"yTexEnd" : 0.40625f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" :  0.125f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.40625f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" :  0.125f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.40625f;
 	"activeOffset" : 0.0f;
 	"height" : 250.0f;
 	"width" : 200.0f;
@@ -294,6 +239,14 @@
 	"yTexStart" : 0.10890625f;
 	"xTexEnd" : 0.7265625f;
 	"yTexEnd" : 0.40234375f;
+    "hoverXTexStart" : 0.84203f;
+	"hoverYTexStart" :  0.125f;
+	"hoverXTexEnd" : 0.7265625f;
+	"hoverYTexEnd" : 0.96313f;
+    "activeXTexStart" : 0.84203f;
+	"activeYTexStart" :  0.125f;
+	"activeXTexEnd" : 0.7265625f;
+	"activeYTexEnd" : 0.96313f;
     "activeOffset" : 0.556875f;
 	"height" : 75.0f;
 	"width" : 120.0f;
@@ -303,10 +256,18 @@
 	"texture" : 3;
 	"xPos" : 200.0f;
 	"yPos" : 200.0f;
-	"xTexStart" : 0.0f;
+	"xTexStart" : 0.6471f;
 	"yTexStart" : 0.0f;
-	"xTexEnd" : 0.25f;
-	"yTexEnd" : 0.25f;
+	"xTexEnd" : 0.94336f;
+	"yTexEnd" : 0.19531f;
+    "hoverXTexStart" : 0.6471f;
+	"hoverYTexStart" :  0.51758f;
+	"hoverXTexEnd" : 0.94336f;
+	"hoverYTexEnd" : 0.71745f;
+    "activeXTexStart" : 0.6471f;
+	"activeYTexStart" :  0.25846f;
+	"activeXTexEnd" : 0.94336f;
+	"activeYTexEnd" : 0.47656f;
 	"activeOffset" : 0.25f;
 	"height" : 170.666666667f;
 	"width" : 170.666666667f;
@@ -316,10 +277,18 @@
 	"texture" : 3;
 	"xPos" : 570.f;
 	"yPos" : 200.0f;
-	"xTexStart" : 0.33f;
+	"xTexStart" : 0.0f;
 	"yTexStart" : 0.0f;
-	"xTexEnd" : 0.66f;
+	"xTexEnd" : 0.29557f;
 	"yTexEnd" : 0.25f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" :  0.52214f;
+	"hoverXTexEnd" : 0.29557f;
+	"hoverYTexEnd" : 0.7181f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" :  0.25326f;
+	"activeXTexEnd" : 0.29557f;
+	"activeYTexEnd" : 0.48372f;
 	"activeOffset" : 0.25f;
 	"height" : 170.666666667f;
 	"width" : 170.666666667f;
@@ -329,10 +298,18 @@
 	"texture" : 3;
 	"xPos" : 960.0f;
 	"yPos" : 200.0f;
-	"xTexStart" : 0.66f;
+	"xTexStart" : 0.35872f;
 	"yTexStart" : 0.0f;
-	"xTexEnd" : 1.0f;
+	"xTexEnd" : 0.61068ff;
 	"yTexEnd" : 0.25f;
+    "hoverXTexStart" : 0.35872f;
+	"hoverYTexStart" :  0.52669f;
+	"hoverXTexEnd" : 0.61068f;
+	"hoverYTexEnd" : 0.7181f;
+    "activeXTexStart" : 0.35872f;
+	"activeYTexStart" :  0.26628f;
+	"activeXTexEnd" : 0.61068f;
+	"activeYTexEnd" : 0.48242f;
 	"activeOffset" : 0.25f;
 	"height" : 170.666666667f;
 	"width" : 170.666666667f;
@@ -342,10 +319,18 @@
 	"texture" : 3;
 	"xPos" : 450.f;
 	"yPos" : 550.0f;
-	"xTexStart" : 0.0f;
+	"xTexStart" : 0.25391f;
 	"yTexStart" : 0.72f;
-	"xTexEnd" : 1.0f;
+	"xTexEnd" : 0.72005f;
 	"yTexEnd" : 0.82f;
+    "hoverXTexStart" : 0.25391f;
+	"hoverYTexStart" :  0.87f;
+	"hoverXTexEnd" : 0.72005f;
+	"hoverYTexEnd" : 0.97f;
+    "activeXTexStart" : 0.25391f;
+	"activeYTexStart" :  0.87f;
+	"activeXTexEnd" : 0.72005f;
+	"activeYTexEnd" : 0.97f;
 	"activeOffset" : 0.15f;
 	"height" : 100.f;
 	"width" : 400.f;

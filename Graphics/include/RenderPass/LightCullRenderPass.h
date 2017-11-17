@@ -16,6 +16,10 @@ namespace Graphics
             std::initializer_list<ID3D11UnorderedAccessView*> uavs
         );
 
+        virtual wchar_t* name() const override {
+            return L"LightCullRenderPass";
+        }
+
         // Inherited via RenderPass
         virtual void render() const override;
         virtual void update(float deltaTime) override;

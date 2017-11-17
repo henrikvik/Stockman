@@ -34,10 +34,13 @@ namespace Logic
 		Map();
         ~Map();
 
-		void init(Physics* physics, std::string path);
+		void init(Physics* physics);
 		void clear();
 		void update(float deltaTime);
 		void render() const;
+
+        void loadStartMenuScene();
+        void loadMap(Resources::Maps::Files map);
 
 		std::vector<StaticObject*>*			getProps();
 		std::vector<StaticObject*>*			getHitboxes();
@@ -54,9 +57,6 @@ namespace Logic
         void add(FrameLight frameLight);
         void add(FrameProp frameProp);
         void add(FrameHitbox frameHitbox);
-        void loadMapFromFile(std::string path);
-
-        void loadMap(Resources::Maps::Files map);
 	};
 }
 

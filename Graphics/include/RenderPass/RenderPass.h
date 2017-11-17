@@ -26,6 +26,8 @@ namespace Graphics
         virtual void render() const = 0;
         virtual void update(float deltaTime) = 0;
 
+        virtual wchar_t *name() const = 0;
+
         const std::vector<ID3D11RenderTargetView*> targets;
         const std::vector<ID3D11ShaderResourceView*> resources;
         const std::vector<ID3D11Buffer*> buffers;

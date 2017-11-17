@@ -13,11 +13,7 @@
 #include <Player\Skill\Skill.h>
 #include <btBulletCollisionCommon.h>
 
-#define BULLET_TIME_CD 2500.f
-#define BULLET_TIME_DURATION 5000.f
-#define BULLET_TIME_SMOOTHNESS_INTERVAL 20
-#define BULLET_TIME_SLOW_DOWN_DURATION 1000.f
-#define BULLET_TIME_SPEED_UP_DURATION 1000.f
+#define BULLET_TIME_DURATION 7000.f
 
 namespace Logic
 {
@@ -51,6 +47,7 @@ namespace Logic
 
 		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
+        virtual void onReset();
 
 		void onUpdate(float deltaTime);
 		virtual void render() const override;

@@ -79,7 +79,7 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
     if (!m_stunned)
     {
-        m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+        m_behavior->update(*this, closeEnemies, player, deltaTime);
     }
 
 	updateSpecific(player, deltaTime);
@@ -152,7 +152,7 @@ void Enemy::onEffectEnd(int stacks, Effect const & effect)
     }
     if (flags & Effect::EFFECT_BULLET_TIME)
     {
-        m_bulletTimeMod = 1.f;
+        //m_bulletTimeMod = 1.f;
     }
     if (flags & Effect::EFFECT_IS_FROZEN)
     {

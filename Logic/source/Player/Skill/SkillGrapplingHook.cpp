@@ -4,7 +4,7 @@
 
 using namespace Logic;
 
-#define GRAPPLING_HOOK_CD			2500.f		// Cooldown in ms
+#define GRAPPLING_HOOK_CD			3000.f		// Cooldown in ms
 #define GRAPPLING_HOOK_RANGE		100.f		// Range in bulletphysics units (probably meters)
 #define GRAPPLING_HOOK_RANGE_MIN    8.f         // Min range
 #define GRAPPLING_HOOK_POWER		0.0011f	    // The amount of power to reach the max speed
@@ -50,7 +50,7 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
         const btRigidBody* intersection = m_physicsPtr->RayTestOnRigidBodies(Ray(shooter.getPositionBT(), forward, GRAPPLING_HOOK_RANGE));
         if (intersection)
         {
-            if (Entity* target = static_cast<Entity*>(intersection->getUserPointer()))
+            if (PhysicsObject* target = static_cast<PhysicsObject*>(intersection->getUserPointer()))
             {
                 // Saving the shooter's as an entity
                 m_shooter = &shooter;
@@ -85,6 +85,10 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 // On button release
 void SkillGrapplingHook::onRelease()
 {
+    // Specific release stuff
+    setCooldown(GRAPPLING_HOOK_CD);
+    setCanUse(false);
+
 	// If unsuccesful hook, don't put full cooldown
 /*	if (!m_shooter)
 	{
@@ -113,7 +117,7 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 	{
         // Check if min range
         if ((m_point - m_shooter->getPositionBT()).length() < 8.f)
-            onRelease();
+            release();
 		// Setting player movement specific grappling hook variables
 		else if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{

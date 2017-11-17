@@ -36,6 +36,8 @@ namespace Logic
 		void update(float deltaTime);
 		virtual void onUpdate(float deltaTime) = 0;
 
+        void reset();
+        virtual void onReset() {};
 
 		float	getCooldown() const;
 		float	getCooldownMax() const;
