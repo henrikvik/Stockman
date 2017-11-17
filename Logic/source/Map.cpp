@@ -180,7 +180,7 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
                 Cube(instance.translation, btVector3(), {150, 1, 150}),
                 0.f, false,
                 Physics::COL_HITBOX,
-                Physics::COL_EVERYTHING ^ Physics::COL_HITBOX
+                Physics::COL_EVERYTHING
             );
             rb->getWorldTransform().setRotation(instance.rotation);
             m_hitboxes.push_back(new StaticObject(
@@ -192,7 +192,7 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
         }
         else
         {
-            btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), instance.scale), 0.f, false, Physics::COL_HITBOX, Physics::COL_EVERYTHING ^ Physics::COL_HITBOX);
+            btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), instance.scale), 0.f, false, Physics::COL_HITBOX, Physics::COL_EVERYTHING);
             rb->getWorldTransform().setRotation(instance.rotation);
             m_hitboxes.push_back(new StaticObject(
                 Resources::Models::UnitCube, 
