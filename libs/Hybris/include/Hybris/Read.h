@@ -31,7 +31,7 @@ namespace Hybris
     void read(std::ifstream & ifile, Hitbox & data);
     void read(std::ifstream & ifile, FileWithHitbox & data);
 
-    void read(std::ifstream & ifile, size_t & size);
+    //void read(std::ifstream & ifile, size_t & size);
     void read(std::ifstream & ifile, time_t & time);
     void read(std::ifstream & ifile, id_t & id);
     void read(std::ifstream & ifile, count_t & count);

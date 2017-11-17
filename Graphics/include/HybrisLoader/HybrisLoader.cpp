@@ -21,7 +21,7 @@ namespace HybrisLoader
         {
             Hybris::File file = loadFile(path.second);
             Hybris::FileWithHitbox file2 = loadHBFile(path.second);
-            models[path.first] = newd Model(Global::device, file);
+            models[path.first] = newd Model(Global::device, file2);
         }
     }
 
