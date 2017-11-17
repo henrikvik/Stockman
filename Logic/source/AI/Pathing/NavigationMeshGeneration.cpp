@@ -13,9 +13,9 @@ using namespace Logic;
 #define toSimple(vec) {vec.x(), vec.y(), vec.z()}
 
 const int NavigationMeshGeneration::AI_UID = 1061923, NavigationMeshGeneration::NO_ID = -5;
-const float NavigationMeshGeneration::SEED_CUBES = 300.f, NavigationMeshGeneration::PRECISION_BASE = 0.05f;
+const float NavigationMeshGeneration::SEED_CUBES = 300.f, NavigationMeshGeneration::PRECISION_BASE = 0.005f;
 int NavigationMeshGeneration::COUNTER = 0;
-const btVector3 NavigationMeshGeneration::unitDimension = { 1.0f, 0.2f, 1.0f }; // i know it is not 1, todo
+const btVector3 NavigationMeshGeneration::unitDimension = { 3.0f, 0.2f, 3.0f }; // i know it is not 1, todo
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
@@ -154,7 +154,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     regions.reserve(1500); // THIS IS A TEMPORARY SOLUTION TO PREVENT MEMORY FOK UPS; MAKE A REAL SOLUTION
 
     printf("Seeding area..");
-    seedArea({ -50.f, 0.6f, -50.f }, { 100.f, 0.5f, 100.f }, SEED_CUBES, physics);
+    seedArea({ -150.f, 0.6f, -150.f }, { 300.f, 0.5f, 300.f }, SEED_CUBES, physics);
     printf("Seeding finished!\n");
 
     btCollisionObject *obj;
@@ -379,6 +379,9 @@ bool NavigationMeshGeneration::handleRegionCollisionTest(NavMeshCube &region, Ph
     {
         physics.contactPairTest(region.body, regions[i].body, resRegions);
     }
+
+    if (collided) // can be close to multiple regions
+        shrinkRegion(region, growth[side]);
 
     return collided;
 }
