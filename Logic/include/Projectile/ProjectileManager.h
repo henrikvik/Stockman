@@ -1,12 +1,23 @@
 #ifndef PROJECTILEMANAGER_H
 #define PROJECTILEMANAGER_H
 
-#include <Physics\Physics.h>
-#include <Projectile\Projectile.h>
 #include <vector>
+#include <d3d11.h>
+#include <SimpleMath.h>
+#include <btBulletCollisionCommon.h>
+
+namespace Graphics
+{
+    class Renderer;
+}
 
 namespace Logic
 {
+    class Entity;
+    class Projectile;
+    class Physics;
+    struct ProjectileData;
+
 	class ProjectileManager
 	{
 	public:
@@ -15,18 +26,20 @@ namespace Logic
 		ProjectileManager* operator=(const ProjectileManager& other) = delete;
 		~ProjectileManager();
 
+        void init();
 		void clear();
 		Projectile* addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter);
-		void removeProjectile(Projectile* p);
 		void removeProjectile(Projectile* p, int index);
+        void removeAllProjectiles();
 
 		void update(float deltaTime);
-		void render(Graphics::Renderer &renderer);
+		void render();
 
-		std::vector<Projectile*>* getProjectiles();
+		std::vector<Projectile*>& getProjectiles();
 
 	private:
-		std::vector<Projectile*> m_projectiles;
+		std::vector<Projectile*> m_projectilesActive;
+        std::vector<Projectile*> m_projectilesIdle;
 		Physics* m_physPtr;
 	};
 }

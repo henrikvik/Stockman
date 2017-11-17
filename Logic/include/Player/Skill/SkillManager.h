@@ -9,46 +9,73 @@
 		*/
 #pragma endregion
 
-#include <Graphics\include\Renderer.h>
-#include <Player\Skill\SkillBulletTime.h>
-#include <Player\Skill\SkillGrapplingHook.h>
-#include <Player\Skill\SkillShieldCharge.h>
-#include <Projectile\ProjectileManager.h>
-#include <Misc\GameTime.h>
+#include <d3d11.h>
+#include <SimpleMath.h>
+
 #include <vector>
+#include <btBulletCollisionCommon.h>
+
+
+namespace Graphics
+{
+    class Renderer;
+}
 
 namespace Logic
 {
-	class SkillManager
-	{
+    class Physics;
+    class Entity;
+    class ProjectileManager;
+    class Skill;
+    enum GrapplingHookState;
 
+	class SkillManager
+    {
 	public:
+
+        // Easier to understand which is which in "player.cpp"
+        struct ID
+        {
+            static const int PRIMARY = 0;
+            static const int SECONDARY = 1;
+            static const int TERTIARY = 2;
+        };
+
+        struct THRESHOLD
+        {
+            static const int MAX_SKILLS = 3;
+        };
+
+        enum SKILL
+        {
+            SKILL_GRAPPLING_HOOK,
+            SKILL_SHIELD_CHARGE,
+            SKILL_BULLET_TIME
+        };
+
 		SkillManager();
 		~SkillManager();
 
-		void init(Physics* physics, ProjectileManager* projectileManager, GameTime* gameTime);
-		void clear();
+		void init(Physics* physics, ProjectileManager* projectileManager);
+        void reset();
 
-		void switchToSkill(int index);
+		void switchToSkill(std::vector<SKILL> skillsToUse);
 
-		void useSkill(btVector3 forward, Entity& shooter);
-		void releaseSkill();
+		void use(int index, btVector3 forward, Entity& shooter);
+		void release(int index);
 
 		void update(float deltaTime);
-		void render(Graphics::Renderer& renderer);
+		void render();
 
-		bool getCanBeUsed() const;
-
-        Skill* getCurrentSkill() const;
+        Skill* getSkill(int index) const;
 	
 	private:
-		bool m_canBeUsed;
-		GrapplingHookState m_state;
-		ProjectileManager* m_projectileManager;	
-		GameTime* m_gameTime;	
+
+        bool isLegit(int index) const;
 
 		std::vector<Skill*> m_allSkills;
-		Skill* m_currentSkill;
+        __int16 m_nrOfSkills;
+        Skill* m_current[THRESHOLD::MAX_SKILLS];
 	};
 }
 #endif

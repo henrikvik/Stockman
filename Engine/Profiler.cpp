@@ -24,53 +24,53 @@ __declspec(thread) ProfilingThread t_LocalThreadProfiler;
 // color gradients for color enums going from light to dark
 static ImVec4 EVENT_COLORS[] =
 {
-	ImVec4(0.925, 0.616, 0.682, 1.0), // pink/dark
-	ImVec4(0.773, 0.384, 0.467, 1.0),
-	ImVec4(0.616, 0.204, 0.294, 1.0),
-	ImVec4(0.463, 0.078, 0.161, 1.0),
-	ImVec4(0.310, 0.000, 0.067, 1.0),
+	ImVec4(0.925f, 0.616f, 0.682f, 1.0f), // pink/dark
+	ImVec4(0.773f, 0.384f, 0.467f, 1.0f),
+	ImVec4(0.616f, 0.204f, 0.294f, 1.0f),
+	ImVec4(0.463f, 0.078f, 0.161f, 1.0f),
+	ImVec4(0.310f, 0.000f, 0.067f, 1.0f),
 
-	ImVec4(1.000, 0.929, 0.667, 1.0), // pear
-	ImVec4(0.831, 0.745, 0.416, 1.0),
-	ImVec4(0.667, 0.573, 0.224, 1.0),
-	ImVec4(0.502, 0.412, 0.082, 1.0),
-	ImVec4(0.333, 0.263, 0.000, 1.0),
+	ImVec4(1.000f, 0.929f, 0.667f, 1.0f), // pear
+	ImVec4(0.831f, 0.745f, 0.416f, 1.0f),
+	ImVec4(0.667f, 0.573f, 0.224f, 1.0f),
+	ImVec4(0.502f, 0.412f, 0.082f, 1.0f),
+	ImVec4(0.333f, 0.263f, 0.000f, 1.0f),
 
-	ImVec4(0.420, 0.580, 0.624, 1.0), // sea/cyan/blue
-	ImVec4(0.267, 0.463, 0.518, 1.0),
-	ImVec4(0.149, 0.357, 0.416, 1.0),
-	ImVec4(0.059, 0.255, 0.310, 1.0),
-	ImVec4(0.008, 0.165, 0.208, 1.0),
+	ImVec4(0.420f, 0.580f, 0.624f, 1.0f), // sea/cyan/blue
+	ImVec4(0.267f, 0.463f, 0.518f, 1.0f),
+	ImVec4(0.149f, 0.357f, 0.416f, 1.0f),
+	ImVec4(0.059f, 0.255f, 0.310f, 1.0f),
+	ImVec4(0.008f, 0.165f, 0.208f, 1.0f),
 
-	ImVec4(0.467, 0.796, 0.600, 1.0), // grass/green
-	ImVec4(0.278, 0.651, 0.427, 1.0),
-	ImVec4(0.157, 0.533, 0.310, 1.0),
-	ImVec4(0.063, 0.392, 0.196, 1.0),
-	ImVec4(0.000, 0.212, 0.086, 1.0),
+    ImVec4(0.467f, 0.796f, 0.600f, 1.0f), // grass/green
+	ImVec4(0.278f, 0.651f, 0.427f, 1.0f),
+	ImVec4(0.157f, 0.533f, 0.310f, 1.0f),
+	ImVec4(0.063f, 0.392f, 0.196f, 1.0f),
+	ImVec4(0.000f, 0.212f, 0.086f, 1.0f),
 
-	ImVec4(0.855, 0.502, 0.702, 1.0), // pink/bright
-	ImVec4(0.725, 0.310, 0.545, 1.0),
-	ImVec4(0.596, 0.176, 0.416, 1.0),
-	ImVec4(0.439, 0.067, 0.278, 1.0),
-	ImVec4(0.235, 0.000, 0.133, 1.0),
+    ImVec4(0.855f, 0.502f, 0.702f, 1.0f), // pink/bright
+	ImVec4(0.725f, 0.310f, 0.545f, 1.0f),
+	ImVec4(0.596f, 0.176f, 0.416f, 1.0f),
+	ImVec4(0.439f, 0.067f, 0.278f, 1.0f),
+	ImVec4(0.235f, 0.000f, 0.133f, 1.0f),
 
-	ImVec4(0.604, 0.455, 0.792, 1.0), // magenta
-	ImVec4(0.447, 0.302, 0.627, 1.0),
-	ImVec4(0.329, 0.196, 0.494, 1.0),
-	ImVec4(0.220, 0.110, 0.353, 1.0),
-	ImVec4(0.122, 0.051, 0.208, 1.0),
+    ImVec4(0.604f, 0.455f, 0.792f, 1.0f), // magenta
+	ImVec4(0.447f, 0.302f, 0.627f, 1.0f),
+	ImVec4(0.329f, 0.196f, 0.494f, 1.0f),
+	ImVec4(0.220f, 0.110f, 0.353f, 1.0f),
+	ImVec4(0.122f, 0.051f, 0.208f, 1.0f),
 
-	ImVec4(1.000, 0.961, 0.537, 1.0), // dark yellow
-	ImVec4(0.925, 0.882, 0.404, 1.0),
-	ImVec4(0.729, 0.690, 0.251, 1.0),
-	ImVec4(0.522, 0.490, 0.129, 1.0),
-	ImVec4(0.310, 0.286, 0.051, 1.0),
+    ImVec4(1.000f, 0.961f, 0.537f, 1.0f), // dark yellow
+	ImVec4(0.925f, 0.882f, 0.404f, 1.0f),
+	ImVec4(0.729f, 0.690f, 0.251f, 1.0f),
+	ImVec4(0.522f, 0.490f, 0.129f, 1.0f),
+	ImVec4(0.310f, 0.286f, 0.051f, 1.0f),
 
-	ImVec4(1.000, 0.690, 0.639, 1.0), // red
-	ImVec4(0.961, 0.522, 0.451, 1.0),
-	ImVec4(0.827, 0.353, 0.278, 1.0),
-	ImVec4(0.710, 0.224, 0.149, 1.0),
-	ImVec4(0.561, 0.122, 0.051, 1.0),
+    ImVec4(1.000f, 0.690f, 0.639f, 1.0f), // red
+	ImVec4(0.961f, 0.522f, 0.451f, 1.0f),
+	ImVec4(0.827f, 0.353f, 0.278f, 1.0f),
+	ImVec4(0.710f, 0.224f, 0.149f, 1.0f),
+	ImVec4(0.561f, 0.122f, 0.051f, 1.0f),
 };
 
 inline void DrawTextLine(ImDrawList *list, ImVec2 start, ImVec2 end, const char *text, const char *len);
@@ -207,6 +207,34 @@ void Profiler::begin(const char * name, EventColor color)
 	}
 }
 
+void Profiler::beginf(const char * fmt, ...)
+{
+    Thread *thread = t_LocalThreadProfiler.thread;
+    if (thread && t_LocalThreadProfiler.active && m_CaptureThisFrame) {
+        Event ev;
+        ev.color = EventColor::Inherit;
+        va_list args;
+        va_start(args, fmt);
+        vsprintf_s(ev.name, fmt, args);
+        va_end(args);
+        
+        
+        QueryPerformanceCounter(&ev.start);
+
+        if (t_LocalThreadProfiler.level == 0) {
+            thread->events[thread->count++] = ev;
+        }
+        else {
+            ev.parent = t_LocalThreadProfiler.current_idx;
+            thread->events[thread->count++] = ev;
+        }
+
+        t_LocalThreadProfiler.level++;
+        thread->depth = max(thread->depth, t_LocalThreadProfiler.level);
+        t_LocalThreadProfiler.current_idx = thread->count - 1;
+    }
+}
+
 void Profiler::end()
 {
 	Thread *thread = t_LocalThreadProfiler.thread;
@@ -326,18 +354,21 @@ void Profiler::render()
 
 	ImGui::EndChild();
 
-	bool threads_open[16] = {};
+	bool threads_open[16] = { true, false, false, false, false };
 	ImGui::BeginChild("threads", ImVec2(180, 0), true);
 	{
 		for (int i = 0; i < threadCount; i++) {
 			Thread &thread = frame.m_Threads[i];
-			if (ImGui::CollapsingHeader(thread.name)) {
+			if (ImGui::CollapsingHeader(thread.name, "asdasdasd", true, threads_open[i])) {
 				threads_open[i] = true;
 				if (thread.depth > 0) {
-					ImGui::BeginChild(thread.name + 1, ImVec2(0, max(1, (thread.depth - 1) * 19)), true);
+					ImGui::BeginChild(thread.name + 1, ImVec2(0, max(1.f, float(thread.depth - 1) * 19)), true);
 					ImGui::EndChild();
 				}
-			}
+            }
+            else {
+                threads_open[i] = false;
+            }
 		}
 	}
 	ImGui::EndChild();
@@ -360,7 +391,7 @@ void Profiler::render()
 			temp.yoffset = y;
 
 			if (thread.count >= 1) {
-				RenderEventNodes(thread, frame.start, 0, 0, true);
+				RenderEventNodes(thread, frame.start, 0, 0, threads_open[i]);
 			}
 
 			if (threads_open[i])
@@ -382,7 +413,7 @@ void Profiler::render()
 	auto c = min(1000, (int)ceil(dend));
 	for (int i = 0; i < c + 1; i++) {
 		bool special = (i % 5 == 0) || (i == c);
-		float downset = (special ? 10 : 6);
+		float downset = (special ? 10.f : 6.f);
 
 		float f = (i == c) ? dend : (float)i;
 		float w = frameEnd * (f / dend) - scroll;
@@ -429,6 +460,7 @@ void Profiler::render()
 	ImGui::End();
 }
 
+// danger ahead
 void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int depth, bool children)
 {
 	Event *prev = nullptr;
@@ -438,12 +470,12 @@ void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int 
 	int colDepth = 0;
 
 	for (int i = idx; i < thread.count; i++) {
-		Event evt = thread.events[i];
+		Event &evt = thread.events[i];
 		float start = ToMilliseconds(base, evt.start);
 		float end = ToMilliseconds(base, evt.end);
 
 		if (prev) {
-			if (evt.end.QuadPart < prev->end.QuadPart) {
+			if (evt.end.QuadPart <= prev->end.QuadPart) {
 				if (!children) continue;
 				depth += 1;
 				
@@ -454,23 +486,24 @@ void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int 
 				parent = prev;
 				maxEnd = prev->end.QuadPart;
 			}
-			else if (evt.end.QuadPart > maxEnd) {
-				if (depth > 0)
+			else if (evt.end.QuadPart >= maxEnd) {
+				if (depth > 0) {
 					depth--;
+					parent = &thread.events[parent->parent];
+					maxEnd = parent->end.QuadPart;
+				}
 			}
 		}
 
 		ImGui::SetCursorPosX((temp.innerCursor.x - temp.outerCursor.x) + start * temp.factor);
 		ImGui::SetCursorPosY(temp.yoffset + 8 + 19 * depth);
 
-		if (evt.color == EventColor::Inherit && depth == 0) {
-			thread.events[i].color = evt.color = (EventColor)(1 + (i % 4));
-		}
-		else if (evt.color == EventColor::Inherit) {
-			evt.color = parent->color;
+		if (evt.color == EventColor::Inherit) {
+            // TODO: add lazy random color if we dont have a parent
+			evt.color = parent ? parent->color : (EventColor)((i % 4) * 5 + 1 + (depth % 4));
 		}
 		auto col_idx = ((int)evt.color - 1) * 5;
-		auto col = EVENT_COLORS[col_idx + 1 + colDepth % 4];
+		auto col = EVENT_COLORS[col_idx + 1 + (depth) % 4];
 		auto col_hover = EVENT_COLORS[col_idx];
 		auto col_active = EVENT_COLORS[col_idx];
 
@@ -478,8 +511,8 @@ void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int 
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, col_hover);
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, col_active);
 
-		float f = 0.5 * temp.factor;
-		ImGui::ButtonEx(evt.name, ImVec2(ToMilliseconds(evt.start, evt.end) * temp.factor, 0));
+		float f = 0.5f * temp.factor;
+		ImGui::ButtonEx(evt.name, ImVec2(max(ToMilliseconds(evt.start, evt.end) * temp.factor, 0.1), 0));
 
 		ImGui::PopStyleColor(3);
 		if (ImGui::IsItemHovered())
@@ -487,7 +520,7 @@ void Profiler::RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int 
 
 		prev = &thread.events[i];
 		if (evt.end.QuadPart > maxEnd) {
-			parent = prev;
+			//parent = prev;
 			maxEnd = evt.end.QuadPart;
 		}
 	}

@@ -22,7 +22,17 @@ namespace Logic
 		gameStateMenuMain,
 		gameStateMenuSettings,
 		gameStateGameOver,
-		gameStateDefault
+		gameStateDefault,
+		gameStateGameUpgrade,
+        gameStateSkillPick,
+		gameStateHighscore
+	};
+
+	enum CardChoices
+	{
+		choice1,
+		choice2,
+		choice3
 	};
 }
 

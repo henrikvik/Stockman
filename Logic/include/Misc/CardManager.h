@@ -5,32 +5,45 @@
 #include <vector>
 #include <random>
 
+#include <Misc\NonCopyable.h>
+#include <Misc\FileLoader.h>
+
 namespace Logic
 {
-	class CardManager
+    class Player;
+
+	class CardManager : public NonCopyable
 	{
 	public:
-		CardManager();
-		CardManager(const CardManager& other) = delete;
-		CardManager* operator=(const CardManager& other) = delete;
+        enum CardCondition
+        {
+            NEVER_REMOVE, IN_DECK, TAKEN
+        };
+
+		CardManager(int nrOfEach = 1);
 		~CardManager();
 
-		void clear();
-		void init();
-		void restart();
+		void resetDeck();
+
+        // returns true if a card is applied (index >= 0)
+        bool pickAndApplyCard(Player &player, int cardIndex);
+        void handleCard(Player &player, Card const &card);
 
 		void createDeck(int nrOfEach);
 		void pickThree(bool damaged);
-		void shuffle(int times);
 		Card pick(int cardIndex);
-
-		/*Card* getRandomCard();*/
 	private:
-		const int healthPack = 0;
-		static const int handSize = 3;
-		std::vector<Card> m_cards;
-		std::vector<int> m_deck;
-		int m_hand[CardManager::handSize];
+		static const int HEALTH_PACK;
+		static const int HAND_SIZE;
+
+        void loadDeckFromFile();
+        void createCard(CardCondition cond, FileLoader::LoadedStruct const &struc);
+		void shuffle();
+        
+        // int = card index
+        std::vector<int>                            m_hand;
+		std::vector<std::pair<CardCondition, int>>  m_deck;
+        std::vector<Card>                           m_cards;
 	};
 }
 

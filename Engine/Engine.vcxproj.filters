@@ -36,6 +36,12 @@
     <ClCompile Include="Profiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Typing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -47,6 +53,15 @@
     <ClInclude Include="Profiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Typing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="newd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Data\Effects.lw" />
@@ -55,6 +70,7 @@
     <None Include="Resources\Data\Cards.lw" />
     <None Include="Resources\Data\Highscore.lw" />
     <None Include="Resources\Data\Enemies\Wave.lw" />
+    <None Include="Resources\Data\Upgrades.lw" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\data\Text.lw" />

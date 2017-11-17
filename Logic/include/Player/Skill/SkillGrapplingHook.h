@@ -14,17 +14,13 @@
 #pragma endregion
 
 #include <Player\Skill\Skill.h>
-#include <Projectile\ProjectileManager.h>
-#include <Projectile\ProjectileStruct.h>
-
-#define GRAPPLING_HOOK_CD			50.f		// Cooldown in ms
-#define GRAPPLING_HOOK_RANGE		500.f		// Range in bulletphysics units (probably meters)
-#define GRAPPLING_HOOK_POWER		0.00110f	// The amount of power to reach the max speed
-#define GRAPPLING_HOOK_MAX_SPEED_XZ	0.0615f		// The max speed in x & z
-#define GRAPPLING_HOOK_MAX_SPEED_Y	15.f		// The max speed in y
+#include <btBulletCollisionCommon.h>
 
 namespace Logic
 {
+    class Entity;
+    class Physics;
+
 	enum GrapplingHookState
 	{
 		GrapplingHookStateNothing,
@@ -38,10 +34,10 @@ namespace Logic
 		SkillGrapplingHook(Physics* physics);
 		~SkillGrapplingHook();
 
-		void onUse(btVector3 forward, Entity& shooter);
+		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
 		void onUpdate(float deltaTime);
-		void render(Graphics::Renderer& renderer);
+        virtual void render() const override;
 
 		GrapplingHookState getState() const;
 	private:
@@ -49,7 +45,12 @@ namespace Logic
 		GrapplingHookState				m_state;		//< Current state, if the grappling hook is currently pulling or not
 		Entity*							m_shooter;		//< Saved entity after each onUse() call, later, pushes this entity
 		btVector3						m_point;		//< Saved point of intersection of the raytest, will push entity towards this point
-		Graphics::RenderDebugInfo		renderDebug;	//< Debug drawing the ray
+        bool                            m_goingUp;      //< Direction of the grappling hook
+        btVector3                       m_dirToPoint;
+
+		DebugRenderInfo                 renderInfo;
+        // Inherited via Skill
+        //< Debug drawing the ray
 	};
 }
 #endif

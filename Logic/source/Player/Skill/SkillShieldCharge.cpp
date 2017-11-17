@@ -1,10 +1,9 @@
 #include "Player/Skill/SkillShieldCharge.h"
 #include <Player\Player.h>
-#include <iostream>
 
 #define SHIELD_CHARGE_CD 5000.f
 #define SLOWDOWN_DURATION 100.f
-#define SHIELD_CHARGE_DURATION 700.f
+#define SHIELD_CHARGE_DURATION 400.f
 
 using namespace Logic;
 
@@ -16,17 +15,19 @@ SkillShieldCharge::SkillShieldCharge()
 
 	m_time = 0.0f;
 	m_forw = btVector3(0.0f, 0.0f, 0.0f);
-	m_chargePower = 8.f;
-
+	m_chargePower = 5.f;
 }
 
 SkillShieldCharge::~SkillShieldCharge()
 {
-	m_projectileManager = nullptr;
+
 }
 
-void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
+bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
+    setCanUse(false);
+    setCooldown(SHIELD_CHARGE_CD);
+
 	if (!m_active)
 	{
 		//Sets up the shield charge by deciding its movement vector and who is gonna charge
@@ -43,7 +44,11 @@ void SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 		
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 			player->setMaxSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
+
+        return true;
 	}
+
+    return false;
 }
 
 void SkillShieldCharge::onRelease() { }
@@ -54,6 +59,8 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 	{
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
+			player->setPlayerState(Player::PlayerState::IN_AIR);
+
 			//Pushes the player forward with a static charge power, charging towards the pre decided vector
 			player->setMoveSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
 			player->setMoveDirection(m_forw);
@@ -86,7 +93,7 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 	}
 }
 
-void SkillShieldCharge::render(Graphics::Renderer& renderer)
+void SkillShieldCharge::render() const
 {
 
 }

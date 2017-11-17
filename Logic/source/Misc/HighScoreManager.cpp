@@ -11,22 +11,20 @@ HighScoreManager::HighScoreManager()
 		m_highScore[i].score = -1;
 		m_highScore[i].name = "???";
 	}
-	m_score = 0;
 	m_name = "";
 
 	loadFromFile();
 }
-
 
 HighScoreManager::~HighScoreManager()
 {
 	saveToFile();
 }
 
-bool Logic::HighScoreManager::addNewHighScore()
+bool Logic::HighScoreManager::addNewHighScore(int score)
 {
 	highScore newScore;
-	newScore.score = m_score;
+	newScore.score = score;
 	newScore.name = m_name;
 	int ammount = sizeof(m_highScore) / sizeof(highScore);
 	bool isNewHighScore = false;
@@ -55,7 +53,7 @@ void Logic::HighScoreManager::saveToFile()
 	for (int i = 0; i < ammount; i++)
 	{
 		FileLoader::LoadedStruct tempSave;
-		tempSave.floats["Score"] = m_highScore[i].score;
+		tempSave.floats["Score"] = (float)m_highScore[i].score;
 		tempSave.strings["Player"] = m_highScore[i].name;
 		saveTo.push_back(tempSave);
 	}
@@ -70,29 +68,9 @@ void Logic::HighScoreManager::loadFromFile()
 
 	for (auto const& theScore : loadTo)
 	{
-		m_highScore[i].score = theScore.floats.at("Score");
+		m_highScore[i].score = (int)theScore.floats.at("Score");
 		m_highScore[i].name = theScore.strings.at("Player");
 		i++;
-	}
-}
-
-void Logic::HighScoreManager::deadCount()
-{
-	m_killCount++;
-	m_comboCount++;
-	m_score += 1 * m_comboCount;
-	m_comboTimer = 5;
-}
-
-void Logic::HighScoreManager::comboCheck(float dt)
-{
-	if (m_comboTimer > 0)
-	{
-		m_comboTimer = m_comboTimer - dt;
-	}
-	else if(m_comboCount != 0)
-	{
-		m_comboCount = 0;
 	}
 }
 
@@ -101,14 +79,12 @@ void  Logic::HighScoreManager::setName(std::string name)
 	m_name = name;
 }
 
+std::string* Logic::HighScoreManager::getName()
+{
+	return &m_name;
+}
+
 Logic::HighScoreManager::highScore Logic::HighScoreManager::gethighScore(int index)
 {
 	return m_highScore[index];
 }
-
-
-
-
-
-
-

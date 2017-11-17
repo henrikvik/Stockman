@@ -36,11 +36,11 @@ int FileLoader::parseString(LoadedStruct &loaded, std::string const &str)
 	// optimize, but shouldnt be a problem with load on startup and small files
 	while (getline(stringStreamBlock, line, LINE_END))
 	{
-		index = line.find(STRING) + 1; // find beginning of name
+		index = (int)line.find(STRING) + 1; // find beginning of name
 		name = line.substr(index, line.find(STRING, index) - index); // extract name
 
-		index = line.find(LINE_ASSIGN); // find line assignment ':'
-		index = line.find_first_not_of(SPACE, index + 1); // find the data
+		index = (int)line.find(LINE_ASSIGN); // find line assignment ':'
+		index = (int)line.find_first_not_of(SPACE, index + 1); // find the data
 		data = line.substr(index); // substract data
 
 		switch (data[data.size() - 1]) // save data
@@ -59,11 +59,21 @@ int FileLoader::parseString(LoadedStruct &loaded, std::string const &str)
 	return 0;
 }
 
-int FileLoader::loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, std::string const &fileName, int offset, int fileOffset, int filePadding)
+int FileLoader::loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, std::string const &fileName, int offset, int fileOffset, int filePadding, const char *defaultContents)
 {
 	std::ifstream inf(FILE_PATH + fileName + FILE_EXT);
-	if (!inf.is_open())
-		return -1; // see .h for error stuff
+	if (!inf.is_open()) {
+        if (!defaultContents)
+		    return -1; // see .h for error stuff
+
+        std::ofstream out(FILE_PATH + fileName + FILE_EXT);
+        out << defaultContents;
+        out.close();
+
+        inf = std::ifstream(FILE_PATH + fileName + FILE_EXT);
+        if (!inf.is_open())
+            return -1;
+    }
 
 	std::string temp;
 	inf.seekg(1); // first symbol should always be { so that is why. That can be skipped. Better solution would be to find it and use the index, but unnecessary for the moment

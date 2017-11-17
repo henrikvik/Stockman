@@ -1,0 +1,24 @@
+{
+	"Name": "MouseSense";
+	"Value": 0.01f;
+}
+{
+	"Name": "FOV";
+	"Value": 90f;
+}
+{
+	"Name": "MasterSound";
+	"Value": 0.1f;
+}
+{
+	"Name": "SFX";
+	"Value": 0.1f;
+}
+{
+	"Name": "Music";
+	"Value": 0.1f;
+}
+{
+	"Name": "Windowed";
+	"Value": 0f;
+}

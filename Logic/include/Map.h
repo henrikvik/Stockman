@@ -1,43 +1,63 @@
 #ifndef MAP_H
 #define MAP_H
 
+#pragma region Comment
+
+/*
+
+    Description: Container class that carries all non-interactable things on the map
+                    Examples would be: Hitboxes, Visual Models, etc.
+
+                 Classes in this container is not updatable and do not change.
+
+                 Should not be operatated from the outside. 
+                 Only from file.
+
+*/
+
+#pragma endregion Description of class
+
+// Includes
 #include <vector>
-#include <Entity\Object.h>
-#include <Physics\Physics.h>
-#include <Entity\Entity.h>
+#include <Misc\NonCopyable.h>
 #include <Entity/StaticObject.h>
+#include <Entity/LightObject.h>
+#include <Misc\MapStructs.h>
 
 namespace Logic
 {
-	class Map
+    class StaticObject;
+    class Physics;
+	class Map : public NonCopyable
 	{
 	public:
 		Map();
-		Map(const Map& other) = delete;
-		Map* operator=(const Map& other) = delete;
-		~Map();
+        ~Map();
 
 		void init(Physics* physics);
 		void clear();
 		void update(float deltaTime);
-		void render(Graphics::Renderer& renderer);
+		void render() const;
 
-		std::vector<Object*>*				getProps();
+        void loadStartMenuScene();
+        void loadMap(Resources::Maps::Files map);
+
+		std::vector<StaticObject*>*			getProps();
 		std::vector<StaticObject*>*			getHitboxes();
-		std::vector<StaticObject*>*			getObjects();
+        std::vector<LightObject*>*			getLights();
 
 	private:
-		std::vector<Object*>				m_props;
-		std::vector<StaticObject*>			m_hitboxes;
-		std::vector<StaticObject*>			m_objects;
+		std::vector<StaticObject*>			m_props;        //< Visual objects
+		std::vector<StaticObject*>			m_hitboxes;     //< Non-visual hitboxes
+        std::vector<LightObject*>			m_lights;       //< Pointlights
+        bool                                m_drawDebug;    //< Toggle for debug-draw
+        Physics*                            m_physicsPtr;   //< Ptr to physics for creation of hitboxes
 
-		bool m_drawHitboxes;	// debugging purposes
-
-		void initProps();
-		void initHitboxes(Physics* physics);
-		void initObjects(Physics* physics);
+        // Private functions
+        void add(FrameLight frameLight);
+        void add(FrameProp frameProp);
+        void add(FrameHitbox frameHitbox);
 	};
 }
-
 
 #endif // !MAP_H

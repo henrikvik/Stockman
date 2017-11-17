@@ -1,8 +1,11 @@
 #include <Entity\StatusManager.h>
+#include <Entity\Entity.h>
+
 #include <stdio.h>
 #include <Misc/FileLoader.h>
 
-#define FILE_NAME "Effects"
+#define FILE_NAME_EFFECTS "Effects"
+#define FILE_NAME_UPGRADES "Upgrades"
 
 using namespace Logic;
 
@@ -11,68 +14,78 @@ Upgrade StatusManager::s_upgrades[StatusManager::NR_OF_UPGRADES];
  
 StatusManager::StatusManager() 
 { 
-	#ifndef BUFFS_CREATED
-	#define BUFFS_CREATED
-		std::vector<FileLoader::LoadedStruct> loadedEffects;
-		FileLoader::singleton().loadStructsFromFile(loadedEffects, FILE_NAME);
-		Effect::Standards standards;
-		Effect::Modifiers modifiers;
-		Effect::Specifics spec;
-		int id = 0;
+    static bool statusesCreated = false;
+    if (!statusesCreated)
+    {
+        statusesCreated = true;
+        {
+            // CREATE UPGRADES
+            long long flags;
+            Upgrade::FlatUpgrades flat;
+            std::vector<FileLoader::LoadedStruct> loadedUpgrades;
 
-		for (auto const &fileStruct : loadedEffects)
-		{
-			Effect creating;
+            FileLoader::singleton().loadStructsFromFile(loadedUpgrades, FILE_NAME_UPGRADES);
+            int id = 0;
 
-			standards.flags = fileStruct.ints.at("flags");
-			standards.duration = fileStruct.floats.at("duration");
+            for (auto const &fileStruct : loadedUpgrades)
+            {
+                flags = fileStruct.ints.at("flags");
+                flat.increaseCooldown = fileStruct.floats.at("increaseCooldown");
+                flat.increaseDmg = fileStruct.ints.at("increaseDamage");
+                flat.increaseAmmoCap = fileStruct.ints.at("increaseAmmoCap");
+                flat.increaseMagSize = fileStruct.ints.at("increaseMagSize");
+                flat.increaseSize = fileStruct.ints.at("increaseSize");
+                s_upgrades[id].init(flags, id, flat);
+                id++;
+            }
+        }
 
-			if (fileStruct.ints.at("modifiers"))
-			{
-				memset(&modifiers, 0, sizeof(modifiers));
+        {
+            // CREATE EFFECTS
+            std::vector<FileLoader::LoadedStruct> loadedEffects;
+            FileLoader::singleton().loadStructsFromFile(loadedEffects, FILE_NAME_EFFECTS);
+            Effect::Standards standards;
+            Effect::Modifiers modifiers;
+            Effect::Specifics spec;
+            int id = 0;
 
-				modifiers.modifyDmgGiven =		fileStruct.floats.at("mDmgGiven");
-				modifiers.modifyDmgTaken =		fileStruct.floats.at("mDmgTaken");
-				modifiers.modifyFirerate =		fileStruct.floats.at("mFirerate");
-				modifiers.modifyHP =			fileStruct.floats.at("mHP");
-				modifiers.modifyMovementSpeed = fileStruct.floats.at("mMovementSpeed");
+            for (auto const &fileStruct : loadedEffects)
+            {
+                Effect creating;
 
-				creating.setModifiers(modifiers);
-			}
+                standards.flags = fileStruct.ints.at("flags");
+                standards.duration = fileStruct.floats.at("duration");
 
-			if (fileStruct.ints.at("specifics"))
-			{
-				memset(&spec, 0, sizeof(spec));
-			
-				spec.isBulletTime = fileStruct.floats.at("sBulletTime");
-				spec.isFreezing =	fileStruct.floats.at("sFreezing");
+                if (fileStruct.ints.at("modifiers"))
+                {
+                    memset(&modifiers, 0, sizeof(modifiers));
 
-				creating.setSpecifics(spec);
-			}
+                    modifiers.modifyDmgGiven = fileStruct.floats.at("mDmgGiven");
+                    modifiers.modifyDmgTaken = fileStruct.floats.at("mDmgTaken");
+                    modifiers.modifyFirerate = fileStruct.floats.at("mFirerate");
+                    modifiers.modifyHP = fileStruct.floats.at("mHP");
+                    modifiers.modifyMovementSpeed = fileStruct.floats.at("mMovementSpeed");
 
-			creating.setStandards(standards);
-			s_effects[id++] = creating;
-		}
-	#endif // !buffsCreated
+                    creating.setModifiers(modifiers);
+                }
 
-	#ifndef UPGRADES_CREATED
-	#define UPGRADES_CREATED
-	/* THIS IS A TEMPORARY TEST SOLUTION, MOVE TO OTHER CLASS LATER (OR FILE?) */
-			Upgrade upgrade;
-			Upgrade::FlatUpgrades flat;
-			memset(&flat, 0, sizeof(flat));
+                if (fileStruct.ints.at("specifics"))
+                {
+                    memset(&spec, 0, sizeof(spec));
 
-			upgrade.init(Upgrade::UPGRADE_IS_WEAPON | Upgrade::UPGRADE_IS_BOUNCING,
-						 0, flat);
-			s_upgrades[BOUNCE] = upgrade;
-			memset(&flat, 0, sizeof(flat));
+                    spec.isBulletTime = fileStruct.floats.at("sBulletTime");
+                    spec.isFreezing = fileStruct.floats.at("sFreezing");
+                    spec.ammoType = fileStruct.floats.at("sAmmoType");
 
-			flat.increaseAmmoCap = 10;
-			upgrade.init(Upgrade::UPGRADE_IS_WEAPON | Upgrade::UPGRADE_INCREASE_AMMOCAP,
-						0, flat);
-			s_upgrades[P10_AMMO] = upgrade; // FREEZE
-			memset(&flat, 0, sizeof(flat));
-	#endif // !UPGRADES_CREATED
+                    creating.setSpecifics(spec);
+                }
+
+                creating.setStandards(standards);
+                s_effects[id] = creating;
+                id++;
+            }
+        }
+    }
 }
 
 StatusManager::~StatusManager() {
@@ -97,6 +110,15 @@ int StatusManager::getStacksOfEffectFlag(Effect::EFFECT_FLAG flag) const
 	return stacks;
 }
 
+bool StatusManager::isOwningUpgrade(Upgrade::UPGRADE_FLAG flag)
+{
+    for (StatusManager::UPGRADE_ID upgrade : getActiveUpgrades())
+        if (getUpgrade(upgrade).getTranferEffects() & flag)
+            return true;
+
+    return false;
+}
+
 void StatusManager::removeEffect(int index)
 {
 	std::swap(m_effectStacks[index], m_effectStacks[m_effectStacks.size() - 1]);
@@ -106,13 +128,22 @@ void StatusManager::removeEffect(int index)
 	m_effectStacksIds.pop_back();
 }
 
-void StatusManager::update(float deltaTime)
+void StatusManager::update(float deltaTime, Entity &entity)
 {
+    // two sep lists maybe is redundant, fix?
+    int id, stacks;
 	for (size_t i = 0; i < m_effectStacks.size(); ++i)
 	{
+        id = static_cast<int> (i);
+        stacks = m_effectStacks[id].stack;
+
+        Effect &effect = s_effects[m_effectStacksIds[id]];
+        entity.affect(stacks, effect, deltaTime);
+
 		if ((m_effectStacks[i].duration -= deltaTime) <= 0)
 		{
-			removeEffect(i);
+            entity.onEffectEnd(stacks, effect);
+			removeEffect(id);
 		}
 	}
 }
@@ -164,7 +195,7 @@ void StatusManager::removeOneStatus(int statusID)
 		{
 			if (m_effectStacks[i].stack-- <= 0) // no more stacks, then remove the effect
 			{
-				removeEffect(i);
+				removeEffect((int)i);
 			}
 			found = true;
 		}
@@ -178,7 +209,7 @@ void StatusManager::removeAllStatus(int statusID)
 	{
 		if (m_effectStacksIds[i] == statusID)
 		{
-			removeEffect(i);
+			removeEffect((int)i);
 			found = true;
 		}
 	}
@@ -193,7 +224,7 @@ std::vector <std::pair<int, Effect*>>
 
 	// For better ways to do this in the future see
 	// mike acton ty
-	int size = m_effectStacks.size();
+	int size = (int)m_effectStacks.size();
 	std::vector<std::pair<int, Effect*>> actives;
 	actives.resize(size);
 
@@ -210,7 +241,7 @@ std::vector<std::pair<int, StatusManager::EFFECT_ID>> StatusManager::getActiveEf
 {
 	std::vector<std::pair<int, StatusManager::EFFECT_ID>> effects;
 
-	int size = m_effectStacks.size();
+	int size = (int)m_effectStacks.size();
 	effects.resize(size);
 
 	for (size_t i = 0; i < size; ++i)

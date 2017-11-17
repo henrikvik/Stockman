@@ -1,27 +1,18 @@
-#include "../Misc/Card.h"
+#include <Misc/Card.h>
 
 using namespace Logic;
 
-Card::Card()
-{
-	m_name = "";
-	m_description = "";
+Card::Card(std::string name, std::string texture, std::string description,
+    std::vector<int> statusIds, DirectX::SimpleMath::Vector2 texStart,
+    DirectX::SimpleMath::Vector2 texEnd, int statusType, int category)
+    :   m_name(name), m_texture(texture), m_description(description),
+        m_statusIds(statusIds), m_texStart(texStart), m_texEnd(texEnd),
+        m_statusType(static_cast<StatusType> (statusType)), 
+        m_category(static_cast<CardCategory>(category)){
+
 }
 
-Card::Card(std::string name, std::string texture, std::string description, std::vector<int> upgradesID, DirectX::SimpleMath::Vector2 texStart, DirectX::SimpleMath::Vector2 texEnd, bool isEffect)
-{
-	m_name = name;
-	m_texture = texture;
-	m_description = description;
-	m_upgradesID = upgradesID;
-	m_TexStart = texStart;
-	m_TexEnd = texEnd;
-	m_isEffect = isEffect;
-}
-
-Card::~Card() 
-{ 
-}
+Card::~Card() { }
 
 std::string Card::getName() const 
 { 
@@ -35,17 +26,27 @@ std::string Card::getDescription() const
 { 
 	return m_description; 
 }
-const std::vector<int>& Card::getUpgradesID() const
+const std::vector<int>& Card::getStatusIds() const
 { 
-	return m_upgradesID;
+	return m_statusIds;
 }
 
 DirectX::SimpleMath::Vector2 Logic::Card::getTexStart() const
 {
-	return m_TexStart;
+	return m_texStart;
 }
 
 DirectX::SimpleMath::Vector2 Logic::Card::getTexEnd() const
 {
-	return m_TexEnd;
+	return m_texEnd;
+}
+
+Card::StatusType Card::getStatusType() const
+{
+	return m_statusType;
+}
+
+Card::CardCategory Card::getCategory() const
+{
+    return m_category;
 }

@@ -1,152 +1,211 @@
 #include <AI\Behavior\Behavior.h>
 #include <AI\Enemy.h>
 #include <Misc\RandomGenerator.h>
-#define MAX_SPEED 10.f // testing
 
-#define SCALAR_DIR 0.3f
+#define SCALAR_DIR 0.8f
 #define SCALAR_ALIGN 1.1f
-#define SCALAR_COHES 0.8f
-#define SCALAR_SEP 1.2f
+#define SCALAR_COHES 0.6f
+#define SCALAR_SEP 2.f
 
-#define MAX_LEN_FOR_SEPERATION 7.5f
+#define MAX_LEN_FOR_SEPERATION 15.f
+// this can be changed in the future maybe who knows
+#define CHANGE_NODE_DIST 1.2
 
 #include <queue>
 
 using namespace Logic;
 
+
+Behavior::Behavior(PathingType type)
+{
+    m_pathingType = type;
+    m_changedGoalNode = false;
+}
+
 Behavior::~Behavior()
 {
 }
 
-void Behavior::walkPath(SimplePathing pathing, RunIn &in)
+void Behavior::update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies, Player &player, float deltaTime)
 {
-	btVector3 node = pathing.updateAndReturnCurrentNode(*in.enemy, *in.target);
-	btVector3 dir = node - in.enemy->getPositionBT();
-	
-	boidCalculations(in.enemy->getPositionBT(), 
-		dir, in.closeEnemies, MAX_SPEED, in.deltaTime);
+    updateSpecific(enemy, closeEnemies, player, deltaTime);
 
-	in.enemy->getRigidBody()->translate(dir);
+    // this is frame bound, idk how to fix that tho
+    RunIn in{&enemy, closeEnemies, &player, this, deltaTime};
+    runTree(in);
+}
 
-	if ((node - in.enemy->getPositionBT()).length() < 0.3f)
-		pathing.setCurrentNode(pathing.getCurrentNode() + 1);
+void Behavior::walkPath(RunIn &in)
+{
+    btVector3 dir;
+
+    if (m_pathing.pathIsEmpty())
+    {
+        dir = in.target->getPositionBT() - in.enemy->getPositionBT();
+        m_changedGoalNode = true;
+    }
+    else
+    {
+        DirectX::SimpleMath::Vector3 pathNode = m_pathing.getNode();
+        btVector3 node{pathNode.x, pathNode.y, pathNode.z};
+        dir = node - in.enemy->getPositionBT();
+
+        if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST)
+        {
+            if (!m_pathing.pathOnLastNode())
+                m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);
+            m_changedGoalNode = true;
+        }
+    }
+
+    boidCalculations(in.enemy->getPositionBT(),
+        dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
+
+    float y = in.enemy->getRigidBody()->getLinearVelocity().getY();
+   // dir.setY(0);
+    dir.normalize();
+    dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
+
+    in.enemy->getRigidBody()->setLinearVelocity({ dir.x() * 100, y, dir.z() * 100 });
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
-	std::vector<Enemy*> const &close, float maxSpeed, float dt)
+    std::vector<Enemy*> const &close, float maxSpeed, float dt)
 {
-	btVector3 sep, align, cohes;
-	int totalSep = 0;
-	if (close.size() == 0)
-		return; // just move
-	// make the vectors
-	btVector3 temp;
-	for (auto const &enemy : close)
-	{
-		align += enemy->getRigidBody()->getLinearVelocity();
+    btVector3 sep, align, cohes;
+    int totalSep = 0;
+    if (close.size() <= 1)
+    {
+        return;
+    }
+    // make the vectors
+    btVector3 temp;
+    for (auto *enemy : close)
+    {
+        align += enemy->getRigidBody()->getLinearVelocity();
 
-		cohes += enemy->getPositionBT();
+        cohes += enemy->getPositionBT();
 
-		// sep += enemy->getPositionBT() - pos; // to steer away
-		temp = pos - enemy->getPositionBT();
-		if (temp.length() < MAX_LEN_FOR_SEPERATION)
-		{
-			sep += temp;
-			totalSep++;
-		}
-	}
-	
-	// SEPERATION (Steer away from the group)
-	cohes /= close.size();
-	cohes = cohes - pos;
-	cohes = cohes.normalize();
+        temp = pos - enemy->getPositionBT();
+        if (temp.length() < MAX_LEN_FOR_SEPERATION)
+        {
+            sep += temp;
+            totalSep++;
+        }
+    }
 
-	// ALIGNMENT (Have same vel as group)
-	align /= close.size();
-	align = align.normalize();
+    // SEPERATION (Steer away from the group)
+    cohes /= (float)close.size();
+    cohes = cohes - pos;
+    cohes = cohes.normalize();
 
-	// COHESION (Stay towards group position)
-	sep /= totalSep;
-	sep = sep.normalize();
+    // ALIGNMENT (Have same vel as group)
+    align /= (float)close.size();
+    align = align.normalize();
 
-	// RET
-	dir = dir * SCALAR_DIR + cohes * SCALAR_COHES + align * SCALAR_ALIGN + sep * SCALAR_SEP;
-	dir.normalize();
-	dir *= maxSpeed;
-	dir *= dt / 1000.f;
-	dir.setY(0); // right now y should not be changed
+    // COHESION (Stay towards group position)
+    sep /= float(totalSep + 1);
+    sep = sep.normalize();
+
+    // RET
+    dir = dir * SCALAR_DIR + cohes * SCALAR_COHES + align * SCALAR_ALIGN + sep * SCALAR_SEP;
 }
 
 void Behavior::runTree(RunIn &in)
 {
-	runNode(in, m_root);
+    if (m_root.run)
+        m_root.run(in);
+    runNode(in, m_root);
 }
 
 void Behavior::setRoot(NodeType type, int value, run func)
 {
-	m_root = { type, value, {}, func };
+    m_root = {type, value, {}, func};
 }
 
 Behavior::BehaviorNode* Behavior::addNode(BehaviorNode *parent,
-	NodeType type, int value, run func)
+NodeType type, int value, run func)
 {
-	int index = parent->children.size();
-	parent->children.push_back({ type, value, {}, func });
+    int index = (int)parent->children.size();
+    parent->children.push_back({ type, value, {}, func });
 
-	if (parent->type == PRIORITY)
-	{
-		while (index > 0 &&
-			parent->children[index].value > parent->children[index - 1].value)
-		{
-			std::swap(parent->children[index], parent->children[index - 1]);
-			index--; // weird..
-		}
-	}
+    if (parent->type == PRIORITY)
+    {
+        while (index > 0 &&
+            parent->children[index].value > parent->children[index - 1].value)
+        {
+            std::swap(parent->children[index], parent->children[index - 1]);
+            index--; // weird..
+        }
+    }
 
-	return &parent->children[index];
+    return &parent->children[index];
 }
 
 bool Behavior::runNode(RunIn &in, BehaviorNode &node)
 {
-	// Recursive method to run the entire tree, todo: opt
-	int totalWeight = 0, curr = 0, rng;
-	switch (node.type)
-	{
-		case NodeType::ACTION: // Action, just run the node
-			return node.run(in);
-			break;
-		case NodeType::RANDOM: // Random selector, run a random node
-			for (BehaviorNode &n : node.children)
-				totalWeight += n.value;
-			rng = RandomGenerator::singleton().getRandomInt(0, totalWeight);
-			for (BehaviorNode &n : node.children)
-			{
-				curr += n.value;
-				if (rng <= curr)
-					return runNode(in, n);
-			}
-			break;
-		case NodeType::CONDITION: // Run the node, if true run children in seq
-			if (node.run(in))
-				for (BehaviorNode &n : node.children)
-					runNode(in, n);
-			else
-				return false;
-			break;
-		case NodeType::PRIORITY: // run the most priority node, if it failed run next most value etc etc
-			// this is already sorted
-			for (BehaviorNode &n : node.children)
-				if (runNode(in, n))
-					return true;
-			break;
-		case NodeType::SEQUENCE: // run all the nodes
-			for (BehaviorNode &n : node.children)
-				runNode(in, n);
-			break;
-	}
-	return true;
+    // Recursive method to run the entire tree, todo: opt
+    int totalWeight = 0, curr = 0, rng;
+    switch (node.type)
+    {
+    case NodeType::ACTION: // Action, just run the node
+        return node.run(in);
+        break;
+    case NodeType::RANDOM: // Random selector, run a random node
+        for (BehaviorNode &n : node.children)
+            totalWeight += n.value;
+        rng = RandomGenerator::singleton().getRandomInt(0, totalWeight);
+        for (BehaviorNode &n : node.children)
+        {
+            curr += n.value;
+            if (rng <= curr)
+                return runNode(in, n);
+        }
+        break;
+    case NodeType::CONDITION: // Run the node, if true run children in seq
+        if (node.run(in))
+            for (BehaviorNode &n : node.children)
+                runNode(in, n);
+        else
+            return false;
+        break;
+    case NodeType::PRIORITY: // run the most priority node, if it failed run next most value etc etc
+        // this is already sorted
+        for (BehaviorNode &n : node.children)
+            if (runNode(in, n))
+                return true;
+        break;
+    case NodeType::SEQUENCE: // run all the nodes
+        for (BehaviorNode &n : node.children)
+            runNode(in, n);
+        break;
+    }
+    return true;
 }
 
-Behavior::BehaviorNode* Behavior::getRoot() {
-	return &m_root; 
+bool Behavior::isGoalChangedAndSetToFalse()
+{
+    bool nodeChange = m_changedGoalNode;
+    m_changedGoalNode = false;
+    return nodeChange;
+}
+
+Behavior::BehaviorNode* Behavior::getRoot()
+{
+    return &m_root;
+}
+
+Pathing& Behavior::getPath()
+{
+    return m_pathing;
+}
+
+Behavior::PathingType Behavior::getPathingType() const
+{
+    return m_pathingType;
+}
+
+void Behavior::setPathingType(PathingType pathingType)
+{
+	m_pathingType = pathingType;
 }

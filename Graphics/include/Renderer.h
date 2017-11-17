@@ -5,124 +5,82 @@
 #include <vector>
 #include <unordered_map>
 #include "Camera.h"
-#include "Structs.h"
 #include "Datatypes.h"
 #include "WICTextureLoader.h"
 #include "Lights\LightGrid.h"
-#include "Resources\ResourceManager.h"
 #include "Utility\DepthStencil.h"
-#include "Resources\ResourceManager.h"
 #include "Utility\ConstantBuffer.h"
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
-#include "Glow.h";
-#include "SkyRenderer.h"
-#include "Menu.h"
-#include "HUD.h"
-#include "SSAORenderer.h"
-#include "Fog.H"
+#include "Lights\Sun.h"
+#include "HybrisLoader\HybrisLoader.h"
+#include "Fog.h"
+#include "Utility\PingPongBuffer.h"
 
 #include <SpriteBatch.h>
+
+#include "RenderPass\GUIRenderPass.h"
 
 
 namespace Graphics
 {
-    class Renderer
+	class Renderer
     {
     public:
+
         Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera);
-		virtual ~Renderer();
-        void initialize(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext);
+        virtual ~Renderer();
 
-
-        void render(Camera * camera);
-        void queueRender(RenderInfo * renderInfo);
-        void queueRenderDebug(RenderDebugInfo * debugInfo);
-        void queueText(TextString * text);
-        void fillHUDInfo(HUDInfo * info);
-
-        void drawMenu(Graphics::MenuInfo * info);
-		void updateLight(float deltaTime, Camera * camera);
+        void render() const;
+        void update(float deltaTime);
     private:
-        typedef  std::unordered_map<ModelID, std::vector<InstanceData>> InstanceQueue_t;
-        InstanceQueue_t instanceQueue;
-        std::vector<RenderInfo*> renderQueue;
+        ID3DUserDefinedAnnotation *DebugAnnotation;
 
+        #pragma region Shared Shader Resources
+        std::vector<RenderPass*> renderPasses;
+        ShaderResource colorMap;
+        ShaderResource glowMap;
+        ShaderResource normalMap;
+        DepthStencil shadowMap;
         DepthStencil depthStencil;
 
-		SkyRenderer skyRenderer;
-		Glow postProcessor;
+        ID3D11ShaderResourceView  * lightOpaqueGridSRV;
+        ID3D11UnorderedAccessView * lightOpaqueGridUAV;
+        StructuredBuffer<uint32_t> lightOpaqueIndexList;
+        StructuredBuffer<Light>    lightsNew;
 
-		LightGrid grid;
-		DirectX::CommonStates *states;
-
-        Shader fullscreenQuad;
-        Shader forwardPlus;
-
-        //ComputeShader lightGridGen; 
-
-        StructuredBuffer<InstanceData> instanceSBuffer;
-        ConstantBuffer<UINT> instanceOffsetBuffer;
-        ResourceManager resourceManager;
-        D3D11_VIEWPORT viewPort;
-
-        // Lånade Pekare
-        ID3D11Device * device;
-        ID3D11DeviceContext * deviceContext;
         ID3D11RenderTargetView * backBuffer;
 
+        PingPongBuffer fakeBuffers;
+        #pragma endregion
 
-		SSAORenderer ssaoRenderer;
-        
+        #pragma region Instance Buffers
+        void writeInstanceBuffers();
 
-		ShaderResource fakeBackBuffer;
-		ShaderResource fakeBackBufferSwap;
-		ShaderResource glowMap;
+        struct StaticInstance
+        {
+            DirectX::SimpleMath::Matrix world;
+            DirectX::SimpleMath::Matrix worldInvT;
+        };
+        struct AnimatedInstance : StaticInstance
+        {
+            DirectX::SimpleMath::Matrix jointTransforms[20];
+        };
 
-        ID3D11BlendState *transparencyBlendState;
+        StructuredBuffer<StaticInstance> staticInstanceBuffer;
+        StructuredBuffer<AnimatedInstance> animatedInstanceBuffer;
+        #pragma endregion
 
+        Sun sun;
 
-        Menu menu;
-        HUD hud;
+        D3D11_VIEWPORT viewPort;
 
-
-
-
-
-		ID3D11ShaderResourceView * glowTest;
-
-       
-        void cull();
-        void writeInstanceData();
-        void draw();
-        void drawGUI();
+		void clear() const;
 		
 
-
-
-        
-		
-
-        void drawToBackbuffer(ID3D11ShaderResourceView * texture);
-
-        void createBlendState();
-
-
-
-    #pragma region RenderDebugInfo
-
-        Shader debugRender;
-        std::vector<RenderDebugInfo*> renderDebugQueue;
-        StructuredBuffer<DirectX::SimpleMath::Vector3> debugPointsBuffer;
-        ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
-        void renderDebugInfo(Camera* camera);
-
-    #pragma endregion
+		ConstantBuffer <UINT> timeBuffer;
+		UINT grassTime = 0;
+		Shader foliageShader;
 		Fog fog;
-		ShaderResource worldPosMap;
-
-
-
-
     };
 };

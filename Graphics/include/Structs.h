@@ -21,7 +21,17 @@ namespace Graphics
 		ENEMYGRUNT,
 		GRAPPLEPOINT,
 		GRASS,
-		BUSH,
+		SKY_SPHERE,
+		//BUSH,
+		//CLOUDS,
+		//MEGAGRASS,
+		//BUSH,
+		//CLOUDS,
+		//MEGAGRASS,
+		//WATER,
+		GROUND,
+		STAFF,
+
     };
 
 	struct ModelInfo
@@ -32,6 +42,7 @@ namespace Graphics
 		ID3D11ShaderResourceView * diffuseMap;
 		ID3D11ShaderResourceView * normalMap;
 		ID3D11ShaderResourceView * specularMap;
+		ID3D11ShaderResourceView * glowMap;
 	};
 
 	struct RenderInfo
@@ -41,6 +52,24 @@ namespace Graphics
 		int materialId;
 		DirectX::SimpleMath::Matrix translation;
 		bool backFaceCulling = true;
+		float freezeAmount;
+		float burnAmount;
+	};
+
+	struct FoliageRenderInfo
+	{
+		bool render;
+		ModelID meshId;
+		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = false;
+	};
+
+	struct WaterRenderInfo
+	{
+		bool render;
+		ModelID meshId;
+		DirectX::SimpleMath::Matrix translation;
+		bool backFaceCulling = false;
 	};
 
     struct RenderDebugInfo
@@ -51,20 +80,30 @@ namespace Graphics
         D3D11_PRIMITIVE_TOPOLOGY topology;
     };
 
-	// TODO: Change
-#define NUM_LIGHTS 8
+
+#define MAX_LIGHTS 128
 
 	struct Light {
-		DirectX::SimpleMath::Vector4 positionVS;
-		DirectX::SimpleMath::Vector3 positionWS;
+		DirectX::SimpleMath::Vector4 viewPosition;
+		DirectX::SimpleMath::Vector3 position;
 		float range;
 		DirectX::SimpleMath::Vector3 color;
 		float intensity;
+
+		Light(){}
+
+		Light(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 color, float range = 1, float intensity = 1)
+		{
+			this->position = pos;
+			this->range = range;
+			this->color = color;
+			this->intensity = intensity;
+		}
 	};
 	struct InstanceData
 	{
-		DirectX::SimpleMath::Matrix translation;
-		DirectX::SimpleMath::Matrix invTranspose;
+		DirectX::SimpleMath::Matrix transform;
+		DirectX::SimpleMath::Matrix transformInvT;
 	};
 
 	struct ButtonInfo
@@ -91,7 +130,7 @@ namespace Graphics
     enum Font
     {
         SMALL,
-        MEDUIM,
+        MEDIUM,
         LARGE
     };
     struct TextString
@@ -105,14 +144,17 @@ namespace Graphics
     struct HUDInfo
     {
         int hp;
-        int cuttleryAmmo[2];
-        int iceAmmo[2];
+        int activeAmmo[2];
+        int inactiveAmmo[2];
         bool sledge;
-        float cd;
+        float cd0;
+        float cd1;
         UINT score;
         int wave;
         int enemiesRemaining;
         float timeRemaining;
+        int currentWeapon;
+        int currentSkills[2];
     };
 
 };

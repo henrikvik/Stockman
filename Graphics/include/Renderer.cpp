@@ -1,27 +1,56 @@
-#include <Graphics\include\Renderer.h>
+#include "Renderer.h"
 #include <stdio.h>
 #include <Graphics\include\ThrowIfFailed.h>
 #include <Engine\Constants.h>
+#include "Utility\sizeofv.h"
 #include <Keyboard.h>
+#include <Engine\DebugWindow.h>
 
 #include <Engine\Profiler.h>
+#include "RenderQueue.h"
+
+#include "Particles\ParticleSystem.h"
+#include "Utility\TextureLoader.h"
+#include "CommonStates.h"
+#include "MainCamera.h"
+
+#include "RenderPass\ForwardPlusRenderPass.h"
+#include "RenderPass\DepthRenderPass.h"
+#include "RenderPass\LightCullRenderPass.h"
+#include "RenderPass\ShadowRenderPass.h"
+#include "RenderPass\SkyBoxRenderPass.h"
+#include "RenderPass\GlowRenderPass.h"
+#include "RenderPass\ParticleRenderPass.h"
+#include "RenderPass\SSAORenderPass.h"
+#include "RenderPass\DepthOfFieldRenderPass.h"
+#include "RenderPass\SnowRenderPass.h"
+#include "RenderPass\BulletTimeRenderPass.h"
+#include "RenderPass\DebugRenderPass.h"
+
+#include "Utility\DebugDraw.h"
 
 
-#define USE_TEMP_CUBE false
 #define ANIMATION_HIJACK_RENDER false
-
-#if USE_TEMP_CUBE
-#include "TempCube.h"
-#endif
-#if ANIMATION_HIJACK_RENDER
-#include "Animation\AnimatedTestCube.h"
-#endif
+#define USE_OLD_RENDER false
 
 #define MAX_DEBUG_POINTS 10000
+#define _INSTANCE_CAP 300
 
 namespace Graphics
 {
+    uint32_t zero = 0;
+    Renderer::Renderer(
+        ID3D11Device * device,
+        ID3D11DeviceContext * deviceContext,
+        ID3D11RenderTargetView * backBuffer, 
+        Camera *camera
+    )
+        : depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
+        , fog(device)
+        , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
+        , timeBuffer(device)
 
+<<<<<<< HEAD
 	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
 		: forwardPlus(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
 		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
@@ -72,184 +101,140 @@ namespace Graphics
 
 		SAFE_RELEASE(glowTest);
         resourceManager.release();
+=======
+>>>>>>> 88b7d8671fbdcfe863c17e7e07ee6149344d7aff
 
-    }
+#pragma endregion
+        , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
+        , animatedInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
+        , fakeBuffers(WIN_WIDTH, WIN_HEIGHT)
+#pragma region Shared Shader Resources
+        , colorMap(WIN_WIDTH, WIN_HEIGHT)
+        , glowMap(WIN_WIDTH, WIN_HEIGHT)
+        , normalMap(WIN_WIDTH, WIN_HEIGHT)
 
-    void Renderer::initialize(ID3D11Device *gDevice, ID3D11DeviceContext* gDeviceContext)
+        , shadowMap(Global::device, SHADOW_RESOLUTION, SHADOW_RESOLUTION)
+
+
+        , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
+        , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
+        , sun(),
+#pragma endregion
+        DebugAnnotation(nullptr)
+
+
+#pragma region CaNCeR!
     {
-        resourceManager.initialize(gDevice, gDeviceContext);
+        Global::cStates = new CommonStates(device);
+        Global::comparisonSampler = [&]() {
+            ID3D11SamplerState * sampler = nullptr;
+            D3D11_SAMPLER_DESC sDesc = {};
+            sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+            sDesc.BorderColor[0] = 1;
+            sDesc.BorderColor[1] = 1;
+            sDesc.BorderColor[2] = 1;
+            sDesc.BorderColor[3] = 1;
+            sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+            sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            sDesc.MaxAnisotropy = 0;
+            sDesc.MinLOD = 0;
+            sDesc.MaxLOD = D3D11_FLOAT32_MAX;
+            sDesc.MipLODBias = 0;
 
-		//temp
-		DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("glowMapTree.png"), NULL, &glowTest);
+            ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
+            return sampler;
+        }();
+        Global::mirrorSampler = [&]() {
+            ID3D11SamplerState * sampler = nullptr;
+            D3D11_SAMPLER_DESC sDesc = {};
+            sDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+            sDesc.BorderColor[0] = 1;
+            sDesc.BorderColor[1] = 1;
+            sDesc.BorderColor[2] = 1;
+            sDesc.BorderColor[3] = 1;
+            sDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+            sDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            sDesc.MaxAnisotropy = 0;
+            sDesc.MinLOD = 0;
+            sDesc.MaxLOD = D3D11_FLOAT32_MAX;
+            sDesc.MipLODBias = 0;
 
-    }
+            ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
+            return sampler;
+        }();
+        Global::transparencyBlendState = [&]() {
+            ID3D11BlendState * state = nullptr;
+            D3D11_BLEND_DESC blendDesc = { 0 };
 
-	void Renderer::updateLight(float deltaTime, Camera * camera)
-	{
-		skyRenderer.update(deviceContext, deltaTime, camera->getPos());
-	}
+            blendDesc.IndependentBlendEnable = false;
+            blendDesc.AlphaToCoverageEnable = false;
+            blendDesc.RenderTarget[0].BlendEnable = true;
+            blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+            blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+            blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+            blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+            blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+            blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+            blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            //blendDesc.RenderTarget[0].LogicOp = D3D11_LOGIC_OP_CLEAR;
 
-    void Renderer::render(Camera * camera)
-    {
-        menu.unloadTextures();
-#if ANIMATION_HIJACK_RENDER
-
-        renderQueue.clear();
-        static Camera cam(device, WIN_WIDTH, WIN_HEIGHT);
-        static UINT ticks = 0;
-        ticks++;
-        cam.updateLookAt({ 5 * sinf(ticks * 0.001f), 5 * cosf(ticks * 0.001f), 5 }, { 0,0,0 }, deviceContext);
-
-        ID3D11Buffer *cameraBuffer = cam.getBuffer();
-        deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-        deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-
-        static float clearColor[4] = { 0,0,0,1 };
-        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
-
-        deviceContext->RSSetViewports(1, &viewPort);
-
-        static AnimatedTestCube testCube(device);
-        static Shader testShader(device, SHADER_PATH("AnimationTest.hlsl"), ANIMATED_VERTEX_DESC);
-
-        deviceContext->IASetInputLayout(testShader);
-        deviceContext->VSSetShader(testShader, nullptr, 0);
-        deviceContext->PSSetShader(testShader, nullptr, 0);
-
-        deviceContext->IASetVertexBuffers(0, 1, testCube, &testCube.stride, &testCube.offset);
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->RSSetState(states->CullNone());
-
-        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
-
-        deviceContext->Draw(testCube.vertexCount, 0);
-
-        auto jointTransforms = testSkeleton.getJointTransforms(testAnimation, testAnimation.getTotalDuration() * ((ticks % 1000) / 1000.f));
-
-        static StructuredBuffer<Matrix> jointBuffer(device,		CpuAccess::Write, testSkeleton.getJointCount());
-        Matrix* bufferPtr = jointBuffer.map(deviceContext);
-        memcpy(bufferPtr, jointTransforms.data(), sizeof(Matrix) * jointTransforms.size());
-        jointBuffer.unmap(deviceContext);
-
-        ID3D11ShaderResourceView * jointView = jointBuffer.getSRV();
-        deviceContext->VSSetShaderResources(0, 1, &jointView);
-
-#else
-        cull();
-        writeInstanceData();
-
-		deviceContext->OMSetDepthStencilState(states->DepthDefault(), 0);
-		//Drawshadows does not actually draw anything, it just sets up everything for drawing shadows
-		skyRenderer.drawShadows(deviceContext, &forwardPlus);
-		draw();
+            ThrowIfFailed(device->CreateBlendState(&blendDesc, &state));
+            return state;
+        }();
 
 
-		ID3D11Buffer *cameraBuffer = camera->getBuffer();
-		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-		static float clearColor[4] = { 0, 0.5, 0.7, 1 };
-		static float blackClearColor[4] = {0};
-		deviceContext->ClearRenderTargetView(fakeBackBuffer, clearColor);
-		deviceContext->ClearRenderTargetView(glowMap, blackClearColor);
-		deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-        deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+        { // CaNCeR!
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.Format = DXGI_FORMAT_R32G32_UINT;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+            desc.Width = (int)ceil(1280 / (float)BLOCK_SIZE);
+            desc.Height = (int)ceil(720 / (float)BLOCK_SIZE);
+            desc.SampleDesc.Count = 1;
+            desc.MipLevels = 1;
+            desc.ArraySize = 1;
 
+            D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+            ZeroMemory(&uavDesc, sizeof(uavDesc));
+            uavDesc.Format = DXGI_FORMAT_R32G32_UINT;
+            uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 
-		deviceContext->RSSetViewports(1, &viewPort);
-		deviceContext->RSSetState(states->CullCounterClockwise());
+            D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+            ZeroMemory(&srvDesc, sizeof(srvDesc));
+            srvDesc.Format = DXGI_FORMAT_R32G32_UINT;
+            srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+            srvDesc.Texture2D.MipLevels = 1;
 
-        deviceContext->IASetInputLayout(forwardPlus);
-        deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-
-        deviceContext->PSSetShader(nullptr, nullptr, 0);
-        deviceContext->OMSetRenderTargets(0, nullptr, depthStencil);
-
-        draw();
-
-        deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-
-    #pragma region Light Temp
-        static 	float f = 59.42542;
-        f += 0.001f;
-
-        auto lights = grid.getLights();
-
-        Light *ptr = lights->map(deviceContext);
-        for (int i = 0; i < NUM_LIGHTS; i++) {
-            ptr[i].color = DirectX::SimpleMath::Vector3(
-                ((unsigned char)(5 + i * 53 * i + 4)) / 255.f,
-                ((unsigned char)(66 + i * 23 + 4)) / 255.f,
-                ((unsigned char)(11 + i * 455 + 4)) / 255.f
-            );
-            ptr[i].positionWS = (ptr[i].color * 2 - DirectX::SimpleMath::Vector3(1.f)) * 2;
-            ptr[i].positionWS.x = sin(f) * ptr[i].positionWS.x * 8;
-            ptr[i].positionWS.y = 1.f;
-            ptr[i].positionWS.z = cos(f) * ptr[i].positionWS.z * 8;
-
-            //ptr[i].positionWS = DirectX::SimpleMath::Vector3(0.f, 1.f, 1.f - 1 / 8.f - i / 4.f);
-            ptr[i].positionVS = DirectX::SimpleMath::Vector4::Transform(DirectX::SimpleMath::Vector4(ptr[i].positionWS.x, ptr[i].positionWS.y, ptr[i].positionWS.z, 1.f), camera->getView());
-			ptr[i].range = i / 1.f;// 1.f + ((unsigned char)(i * 53 * i + 4)) / 255.f * i;
-            ptr[i].intensity = 1.f;
+            ID3D11Texture2D *texture;
+            ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
+            ThrowIfFailed(device->CreateUnorderedAccessView(texture, &uavDesc, &lightOpaqueGridUAV));
+            ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &lightOpaqueGridSRV));
+            SAFE_RELEASE(texture);
         }
 
-        lights->unmap(deviceContext);
-    #pragma endregion
+#pragma endregion
+        HRESULT hr = Global::context->QueryInterface(IID_PPV_ARGS(&DebugAnnotation));
+        if (!SUCCEEDED(hr)) {
+            // failed to aquire debug annotation
+        }
 
-        grid.cull(camera, states, depthStencil, device, deviceContext, &resourceManager);
+        this->backBuffer = backBuffer;
 
-        deviceContext->IASetInputLayout(forwardPlus);
-        deviceContext->VSSetShader(forwardPlus, nullptr, 0);
-        deviceContext->PSSetShader(forwardPlus, nullptr, 0);
+        viewPort = { 0 };
+        viewPort.Width = WIN_WIDTH;
+        viewPort.Height = WIN_HEIGHT;
+        viewPort.MaxDepth = 1.0f;
 
-		
+        FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
 
-		ID3D11ShaderResourceView *SRVs[] = {
-			grid.getOpaqueIndexList()->getSRV(),
-			grid.getOpaqueLightGridSRV(),
-			grid.getLights()->getSRV(),
-			*skyRenderer.getDepthStencil()
-		};
-		auto sampler = states->LinearClamp();
-		deviceContext->PSSetShaderResources(0, 4, SRVs);
-		deviceContext->PSSetSamplers(0, 1, &sampler);
+        TextureLoader::get().loadAll();
 
-		ID3D11SamplerState * samplers[] = { skyRenderer.getSampler() };
-		deviceContext->PSSetSamplers(1, 1, samplers);
-
-		ID3D11Buffer *lightBuffs[] =
-		{
-			skyRenderer.getShaderBuffer(),
-			skyRenderer.getLightMatrixBuffer()
-		};
-		
-		deviceContext->PSSetConstantBuffers(1, 1, &lightBuffs[0]);
-		deviceContext->VSSetConstantBuffers(2, 1, &lightBuffs[1]);
-
-		ID3D11RenderTargetView * rtvs[] =
-		{
-			fakeBackBuffer,
-			glowMap,
-			*ssaoRenderer.getNormalShaderResource(),
-			worldPosMap
-		};
-
-		deviceContext->OMSetRenderTargets(4, rtvs, depthStencil);
-		
-		draw();
-		skyRenderer.renderSky(deviceContext, camera);
-
-		ID3D11RenderTargetView * rtvNULL[3] = {nullptr};
-
-        deviceContext->OMSetRenderTargets(3, rtvNULL, nullptr);
-
-        ZeroMemory(SRVs, sizeof(SRVs));
-        deviceContext->PSSetShaderResources(0, 4, SRVs);
-
-        deviceContext->RSSetState(states->CullCounterClockwise());
-        SHORT tabKeyState = GetAsyncKeyState(VK_TAB);
-        if ((1 << 15) & tabKeyState)
+        renderPasses =
         {
+<<<<<<< HEAD
             this->drawToBackbuffer(grid.getDebugSRV());
         }
         
@@ -285,227 +270,254 @@ namespace Graphics
 		renderDebugInfo(camera);
 		PROFILE_END();
         drawGUI();
+=======
+            newd ParticleDepthRenderPass(depthStencil),
+            newd DepthRenderPass(
+                {},
+                { staticInstanceBuffer, animatedInstanceBuffer }, 
+                {*Global::mainCamera->getBuffer()}, 
+                depthStencil
+            ),
+            newd ShadowRenderPass(
+                {}, 
+                { staticInstanceBuffer, animatedInstanceBuffer },
+                {*sun.getLightMatrixBuffer()},
+                shadowMap
+            ),
+            newd LightCullRenderPass(
+                {},
+                {
+                    depthStencil,
+                    lightsNew
+                },
+                {
+                    *Global::mainCamera->getBuffer()
+                },
+                nullptr,
+                {
+                    lightOpaqueIndexList,
+                    lightOpaqueGridUAV
+                }
+            ),
+            newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil),
+            newd ForwardPlusRenderPass(
+                {
+                    fakeBuffers,
+                    glowMap,
+                    normalMap
+                },
+                {
+                    lightOpaqueIndexList,
+                    lightOpaqueGridSRV,
+                    lightsNew,
+                    shadowMap,
+                    staticInstanceBuffer,
+                    animatedInstanceBuffer
+                },
+                {
+                    *Global::mainCamera->getBuffer(),
+                    *sun.getGlobalLightBuffer()
+                },
+                depthStencil
+            ),
+            newd ParticleRenderPass(
+                fakeBuffers,
+                lightOpaqueGridSRV, 
+                lightOpaqueIndexList, 
+                lightsNew, 
+                shadowMap, 
+                *sun.getGlobalLightBuffer(),
+                depthStencil
+            ),
+            newd SSAORenderPass(&fakeBuffers, {}, { depthStencil, normalMap }, {}, nullptr), //this
+            //newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
+            newd GlowRenderPass(&fakeBuffers, {}, { glowMap }), //and this
+            newd SnowRenderPass(
+                {
+                    fakeBuffers
+                },
+                {
+                    lightOpaqueIndexList,
+                    lightOpaqueGridSRV,
+                    lightsNew,
+                    shadowMap
+                },
+                {
+                    *sun.getLightMatrixBuffer(),
+                    *sun.getGlobalLightBuffer()
+                },
+                depthStencil
+            ),
+            newd BulletTimeRenderPass(&fakeBuffers, {backBuffer}),
+            newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
+            newd GUIRenderPass({backBuffer}),
+        };
+>>>>>>> 88b7d8671fbdcfe863c17e7e07ee6149344d7aff
     }
 
 
-    void Renderer::queueRender(RenderInfo * renderInfo)
+    Renderer::~Renderer()
     {
-        if (renderQueue.size() > INSTANCE_CAP)
-            throw "Renderer Exceeded Instance Cap.";
+        delete FXSystem;
 
-        renderQueue.push_back(renderInfo);
-    }
+        delete Global::cStates;
+        SAFE_RELEASE(Global::comparisonSampler);
+        SAFE_RELEASE(Global::mirrorSampler);
+        SAFE_RELEASE(Global::transparencyBlendState);
+        SAFE_RELEASE(lightOpaqueGridUAV);
+        SAFE_RELEASE(lightOpaqueGridSRV);
+        SAFE_RELEASE(DebugAnnotation);
 
-    void Renderer::queueRenderDebug(RenderDebugInfo * debugInfo)
-    {
-        if (debugInfo->points->size() > MAX_DEBUG_POINTS)
+        for (auto & renderPass : renderPasses)
         {
-            throw "vector is bigger than structured buffer";
+            delete renderPass;
         }
-        renderDebugQueue.push_back(debugInfo);
+
+        TextureLoader::get().unloadAll();
+        ModelLoader::get().unloadAll();
     }
 
-    void Renderer::queueText(TextString * text)
+    void Renderer::update(float deltaTime)
     {
-        hud.queueText(text);
-    }
+        /*
+        static StaticRenderInfo infotest;
+        infotest.model = Resources::Models::Staff;
+        infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
+        QueueRender(&infotest);
+        */
+        LightRenderInfo lightInfo;
+        lightInfo.color = DirectX::Colors::DodgerBlue;
+        lightInfo.intensity = 1;
+        lightInfo.position = Global::mainCamera->getPos() + SimpleMath::Vector3(0, 0, 0.1);
+        lightInfo.range = 10;
+        QueueRender(lightInfo);
 
-    void Renderer::fillHUDInfo(HUDInfo * info)
-    {
-        hud.fillHUDInfo(info);
-    }
-
-
-    //void Graphics::Renderer::renderMenu(MenuInfo * info)
-    //{
-    //	this->spriteBatch->Begin();
-    //	for (size_t i = 0; i < info->m_buttons.size(); i++)
-    //	{
-    //		/*this->spriteBatch->Draw(info->m_buttons.at(i)->m_texture, info->m_buttons.at(i)->m_rek);*/
-    //	}
-    //	this->spriteBatch->End();
- //  
-    //}
-
-
-
-    void Renderer::cull()
-    {
-        instanceQueue.clear();
-        for (RenderInfo * info : renderQueue)
+        QueueRender([](float dt) -> AnimatedRenderInfo
         {
-            if (info->render)
+            static float time = 0;
+            AnimatedRenderInfo info;
+            info.animationName = "Walk";
+            info.animationTimeStamp = time;
+            info.model = Resources::Models::AnimatedSummonUnit;
+            info.transform = SimpleMath::Matrix::CreateTranslation(0, 1, -3);
+            time += dt;
+            if (time > 5) time = 0;
+            return info;
+        }(deltaTime));
+
+        FXSystem->update(Global::context, Global::mainCamera, deltaTime);
+
+        writeInstanceBuffers();
+        sun.update();
+   
+        for (auto & renderPass : renderPasses)
+        {
+            PROFILE_BEGIN(__FUNCSIG__);
+            renderPass->update(deltaTime);
+            PROFILE_END();
+        }
+
+        fakeBuffers.reset();
+    }
+
+    void Renderer::render() const
+    {
+        clear();
+        Global::context->RSSetViewports(1, &viewPort);
+
+        for (auto & renderPass : renderPasses)
+        {
+            if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
+            renderPass->render();
+            if (DebugAnnotation) DebugAnnotation->EndEvent();
+        }
+    }
+
+    void Renderer::clear() const
+    {
+        static float clearColor[4] = { 0 };
+        Global::context->ClearRenderTargetView(backBuffer, clearColor);
+        Global::context->ClearRenderTargetView(normalMap, clearColor);
+        fakeBuffers.clear();
+        Global::context->ClearRenderTargetView(glowMap, clearColor);
+        Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+        Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
+    }
+
+    void Renderer::writeInstanceBuffers()
+    {
+        staticInstanceBuffer.write([](StaticInstance * instanceBuffer)
+        {
+            auto & queue = RenderQueue::get().getQueue<StaticRenderInfo>();
+            for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
             {
-                instanceQueue[info->meshId].push_back({ 
-					info->translation,
-					info->translation.Invert().Transpose()
-				});
+                for (auto & sinfo : model_infos.second)
+                {
+                    StaticInstance instance = {};
+                    instance.world = sinfo.transform;
+                    instance.worldInvT = sinfo.transform.Invert().Transpose();
+                    *instanceBuffer++ = instance;
+                }
             }
-        }
-        renderQueue.clear();
-    }
+        });
 
-    void Renderer::writeInstanceData()
-    {
-        InstanceData* ptr = instanceSBuffer.map(deviceContext);
-        for (InstanceQueue_t::value_type & pair : instanceQueue)
+        animatedInstanceBuffer.write([](AnimatedInstance * instanceBuffer)
         {
-            void * data = pair.second.data();
-            size_t size = pair.second.size() * sizeof(InstanceData);
-            memcpy(ptr, data, size);
-            ptr = (InstanceData*)((char*)ptr + size);
-        }
-        instanceSBuffer.unmap(deviceContext);
-    }
+            for (auto & model_infos : RenderQueue::get().getQueue<AnimatedRenderInfo>())
+            {
+                HybrisLoader::Skeleton * skeleton = &ModelLoader::get().getModel((Resources::Models::Files)model_infos.first)->getSkeleton();
 
-    void Renderer::draw()
-    {
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        deviceContext->VSSetConstantBuffers(3, 1, instanceOffsetBuffer);
-        deviceContext->VSSetShaderResources(20, 1, instanceSBuffer);
+                for (auto & info : model_infos.second)
+                {
+                    AnimatedInstance instance = {};
+                    instance.world = info.transform;
+                    instance.worldInvT = info.transform.Invert().Transpose();
 
+                    if (strlen(info.animationName) != 0)
+                    {
+                        auto jointTransforms = skeleton->evalAnimation(info.animationName, info.animationTimeStamp);
+                        for (size_t i = 0; i < jointTransforms.size(); i++)
+                        {
+                            instance.jointTransforms[i] = jointTransforms[i];
+                        }
+                    }
+                    else
+                    {
+                        
+                    }
 
-        UINT instanceOffset = 0;
-        for (InstanceQueue_t::value_type & pair : instanceQueue)
+                    *instanceBuffer++ = instance;
+                }
+            }
+        });
+
+        lightsNew.write([](Light * lightBuffer)
         {
-            instanceOffsetBuffer.write(deviceContext, &instanceOffset, sizeof(UINT));
-            instanceOffset += pair.second.size();
+            for (auto & info : RenderQueue::get().getQueue<LightRenderInfo>())
+            {
+                Light light = {};
+                light.range = info.range;
+                light.intensity = info.intensity;
+                light.color = DirectX::SimpleMath::Vector3(info.color.x, info.color.y, info.color.z);
 
-#if USE_TEMP_CUBE
-            static TempCube tempCube(device);
-			ModelInfo model = resourceManager.getModelInfo(CUBE);
+                light.position = info.position;
+                light.viewPosition = DirectX::SimpleMath::Vector4::Transform
+                (
+                    DirectX::SimpleMath::Vector4(info.position.x, info.position.y, info.position.z, 1.f), 
+                    Global::mainCamera->getView()
+                );
 
+                Debug::PointLight(light);
+                *lightBuffer++ = light;
+            }
 
-
-			static UINT stride = sizeof(Vertex), offset = 0;
-			deviceContext->IASetVertexBuffers(0, 1, &tempCube.vertexBuffer, &stride, &offset);
-
-			static ID3D11ShaderResourceView * modelTextures[3] = { nullptr };
-			modelTextures[0] = model.diffuseMap;
-			modelTextures[1] = model.normalMap;
-			modelTextures[2] = model.specularMap;
-			deviceContext->PSSetShaderResources(10, 3, modelTextures);
-
-			deviceContext->DrawInstanced(36, (UINT)pair.second.size(), 0, 0);
-#else
-            ModelInfo model = resourceManager.getModelInfo(pair.first);
-
-            static UINT stride = sizeof(Vertex), offset = 0;
-            deviceContext->IASetVertexBuffers(0, 1, &model.vertexBuffer, &stride, &offset);
-            deviceContext->IASetIndexBuffer(model.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-            static ID3D11ShaderResourceView * modelTextures[4] = { nullptr };
-            modelTextures[0] = model.diffuseMap;
-            modelTextures[1] = model.normalMap;
-            modelTextures[2] = model.specularMap;
-			modelTextures[3] = glowTest;
-            deviceContext->PSSetShaderResources(10, 4, modelTextures);
-
-            deviceContext->DrawIndexedInstanced((UINT)model.indexCount, (UINT)pair.second.size(), 0, 0, 0);
-#endif
-        }
-    }
-
-    void Renderer::drawToBackbuffer(ID3D11ShaderResourceView * texture)
-    {
-        float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        deviceContext->ClearRenderTargetView(backBuffer, clearColor);
-
-        deviceContext->PSSetShaderResources(0, 1, &texture);
-
-        UINT zero = 0;
-        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-        deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
-
-        deviceContext->IASetInputLayout(fullscreenQuad);
-        deviceContext->VSSetShader(fullscreenQuad, nullptr, 0);
-        deviceContext->PSSetShader(fullscreenQuad, nullptr, 0);
-
-        static ID3D11SamplerState * pointClamp = states->PointClamp();
-        deviceContext->PSSetSamplers(0, 1, &pointClamp);
-
-        deviceContext->Draw(4, 0);
-
-        ID3D11ShaderResourceView * srvNull = nullptr;
-        deviceContext->PSSetShaderResources(0, 1, &srvNull);
-    }
-
-    void Renderer::drawGUI()
-    {
-        
-        
-    }
-
-    //draws the menu
-    void Renderer::drawMenu(Graphics::MenuInfo * info)
-    {
-        deviceContext->RSSetViewports(1, &viewPort);
-        menu.drawMenu(device, deviceContext, info, backBuffer, transparencyBlendState);
-
-    }
-
-    //creates a vetrex buffer for the GUI
-    
-
-	
-
-
-    void Renderer::renderDebugInfo(Camera* camera)
-    {
-        if (renderDebugQueue.size() == 0) return;
-
-		ID3D11Buffer *cameraBuffer = camera->getBuffer();
-		deviceContext->PSSetConstantBuffers(0, 1, &cameraBuffer);
-		deviceContext->VSSetConstantBuffers(0, 1, &cameraBuffer);
-
-        deviceContext->OMSetRenderTargets(1, &backBuffer, depthStencil);
-
-        deviceContext->VSSetShaderResources(0, 1, debugPointsBuffer);
-        deviceContext->PSSetConstantBuffers(1, 1, debugColorBuffer);
-
-        deviceContext->IASetInputLayout(nullptr);
-        deviceContext->VSSetShader(debugRender, nullptr, 0);
-        deviceContext->PSSetShader(debugRender, nullptr, 0);
-
-
-		for (RenderDebugInfo * info : renderDebugQueue)
-		{
-			debugPointsBuffer.write(
-				deviceContext,
-				info->points->data(),
-				info->points->size() * sizeof(DirectX::SimpleMath::Vector3)
-			);
-
-			debugColorBuffer.write(
-				deviceContext,
-				&info->color,
-				sizeof(DirectX::SimpleMath::Color)
-			);
-
-			deviceContext->IASetPrimitiveTopology(info->topology);
-			deviceContext->OMSetDepthStencilState(info->useDepth ? states->DepthDefault() : states->DepthNone(), 0);
-			deviceContext->Draw(info->points->size(), 0);
-		}
-
-		renderDebugQueue.clear();
-    }
-
-	
-    void Renderer::createBlendState()
-    {
-        D3D11_BLEND_DESC BlendState;
-        ZeroMemory(&BlendState, sizeof(D3D11_BLEND_DESC));
-        BlendState.RenderTarget[0].BlendEnable = TRUE;
-        BlendState.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-        BlendState.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-        BlendState.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-        BlendState.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_INV_DEST_ALPHA;
-        BlendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-        BlendState.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-        BlendState.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-
-        ThrowIfFailed(this->device->CreateBlendState(&BlendState, &transparencyBlendState));
+            for (size_t i = RenderQueue::get().getQueue<LightRenderInfo>().size(); i < INSTANCE_CAP(LightRenderInfo); i++)
+            {
+                Light light;
+                ZeroMemory(&light, sizeof(light));
+                *lightBuffer++ = light;
+            }
+        });
     }
 
 

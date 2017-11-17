@@ -1,9 +1,10 @@
 #include "AI/EnemyTest.h"
 #include <AI\Behavior\TestBehavior.h>
+#include <Projectile\Projectile.h>
 using namespace Logic;
 
-EnemyTest::EnemyTest(Graphics::ModelID modelID, btRigidBody* body, btVector3 halfExtent)
-: Enemy(modelID, body, halfExtent, 10, 1, 5, 3, 1) { //just test values
+EnemyTest::EnemyTest(btRigidBody* body, btVector3 halfExtent)
+: Enemy(Resources::Models::UnitCube, body, halfExtent, 10, 1, 5, EnemyType::NECROMANCER, 1) { //just test values
 	setBehavior(TEST);
 }
 
@@ -24,13 +25,13 @@ void EnemyTest::onCollision(PhysicsObject& other, btVector3 contactPoint, float 
 			damage(p->getProjectileData().damage);
 
 			// BULLET TIME
-			if (p->getProjectileData().type == ProjectileType::ProjectileTypeBulletTimeSensor)
-				setStatusManager(p->getStatusManager()); // TEMP
+			if (p->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+				getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, p->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
 		}
 	}
 	if (Player *p = dynamic_cast<Player*> (&other))
 	{
-		p->takeDamage(getBaseDamage());
+		p->takeDamage((int)getBaseDamage());
 	}
 }
 

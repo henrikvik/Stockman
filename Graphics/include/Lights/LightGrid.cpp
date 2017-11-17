@@ -1,6 +1,9 @@
 #include "LightGrid.h"
 #include <WICTextureLoader.h>
 #include <Engine\Constants.h>
+#include "../Device.h"
+#include "../CommonState.h"
+#include "../MainCamera.h"
 
 namespace Graphics {
 
@@ -13,10 +16,8 @@ namespace Graphics {
 		delete m_ResetIndexCounter;
 		delete m_OpaqueIndexCounter;
 		delete m_TransparentIndexCounter;
-		delete m_OpaqueIndexList;
 		delete m_TransparentIndexList;
 		delete m_Frustums;
-		delete m_Lights;
 		delete m_CullGrids;
 		delete m_FrustumGeneration;
 
@@ -25,45 +26,28 @@ namespace Graphics {
 		SAFE_RELEASE(m_DebugUAV);
 		SAFE_RELEASE(m_DebugSRV);
 
-		SAFE_RELEASE(m_OpaqueLightGridUAV);
-		SAFE_RELEASE(m_OpaqueLightGridSRV);
-
 		SAFE_RELEASE(m_TransparentLightGridUAV);
 		SAFE_RELEASE(m_TransparentLightGridSRV);
 
 		SAFE_RELEASE(gradientSRV);
 	}
 
-	void LightGrid::initialize(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
+	void LightGrid::initialize()
 	{
-		generateFrustumsCPU(camera, device);
+		generateFrustumsCPU(Global::mainCamera, Global::device);
 		//
 
 		//generateFrustums(camera, device, cxt, shaders);
 
-		m_CullGrids = newd ComputeShader(device, SHADER_PATH("LightGridCulling.hlsl"));
-		m_FrustumGeneration = newd ComputeShader(device, SHADER_PATH("LightGridGeneration.hlsl"));
-		Light lights[NUM_LIGHTS] = {};
-		lights[0].color = DirectX::SimpleMath::Vector3(1, 0, 0);
-		lights[0].positionWS = DirectX::SimpleMath::Vector3(1, 1, 1);
-		lights[0].range = 4.f;
-		lights[1].color = DirectX::SimpleMath::Vector3(0, 1, 0);
-		lights[1].positionWS = DirectX::SimpleMath::Vector3(4, 1, 3);
-		lights[1].range = 4.f;
-		lights[2].color = DirectX::SimpleMath::Vector3(0, 0, 1);
-		lights[2].positionWS = DirectX::SimpleMath::Vector3(1, 1, 4);
-		lights[2].range = 3.f;
-
-		m_Lights = new StructuredBuffer<Light>(device, CpuAccess::Write, NUM_LIGHTS, lights);
-
+		m_CullGrids = newd ComputeShader(Resources::Shaders::LightGridCulling);
+        m_FrustumGeneration = nullptr;// newd ComputeShader(Global::device, SHADER_PATH("LightGridGeneration.hlsl"));
+		
 		uint32_t initial = 0;
-		m_ResetIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::Read, 1, &initial);
-		m_OpaqueIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::None, 1, &initial);
-		m_TransparentIndexCounter = new StructuredBuffer<uint32_t>(device, CpuAccess::None, 1, &initial);
+		m_ResetIndexCounter = newd StructuredBuffer<uint32_t>(Global::device, CpuAccess::Read, 1, &initial);
+		m_OpaqueIndexCounter = newd StructuredBuffer<uint32_t>(Global::device, CpuAccess::None, 1, &initial);
+		m_TransparentIndexCounter = newd StructuredBuffer<uint32_t>(Global::device, CpuAccess::None, 1, &initial);
 
-		auto count = m_Params.numThreadGroups[0] * m_Params.numThreadGroups[1] * AVG_TILE_LIGHTS;
-		m_OpaqueIndexList = new StructuredBuffer<uint32_t>(device, CpuAccess::None, count, nullptr);
-		m_TransparentIndexList = new StructuredBuffer<uint32_t>(device, CpuAccess::None, count, nullptr);
+		m_TransparentIndexList = newd StructuredBuffer<uint32_t>(Global::device, CpuAccess::None, INDEX_LIST_SIZE);
 
 
 #pragma region Light Grid UAVs
@@ -90,15 +74,9 @@ namespace Graphics {
 
 
 			ID3D11Texture2D *texture;
-
-			ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
-			ThrowIfFailed(device->CreateUnorderedAccessView(texture, &uavDesc, &m_OpaqueLightGridUAV));
-			ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &m_OpaqueLightGridSRV));
-			SAFE_RELEASE(texture);
-
-			ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
-			ThrowIfFailed(device->CreateUnorderedAccessView(texture, &uavDesc, &m_TransparentLightGridUAV));
-			ThrowIfFailed(device->CreateShaderResourceView(texture, &srvDesc, &m_TransparentLightGridSRV));
+			ThrowIfFailed(Global::device->CreateTexture2D(&desc, nullptr, &texture));
+			ThrowIfFailed(Global::device->CreateUnorderedAccessView(texture, &uavDesc, &m_TransparentLightGridUAV));
+			ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &srvDesc, &m_TransparentLightGridSRV));
 			SAFE_RELEASE(texture);
 		}
 
@@ -108,7 +86,7 @@ namespace Graphics {
 
 		ID3D11Texture2D *texture;
 
-		ThrowIfFailed(DirectX::CreateWICTextureFromFile(device, TEXTURE_PATH("heatmap.png"), nullptr, &gradientSRV));
+		ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, TEXTURE_PATH("heatmap.png"), nullptr, &gradientSRV));
 
 		{
 			D3D11_TEXTURE2D_DESC desc = {};
@@ -120,7 +98,7 @@ namespace Graphics {
 			desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 			desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 
-			ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
+			ThrowIfFailed(Global::device->CreateTexture2D(&desc, nullptr, &texture));
 		}
 
 		{
@@ -128,7 +106,7 @@ namespace Graphics {
 			desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 			desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 
-			ThrowIfFailed(device->CreateUnorderedAccessView(texture, &desc, &m_DebugUAV));
+			ThrowIfFailed(Global::device->CreateUnorderedAccessView(texture, &desc, &m_DebugUAV));
 		}
 
 		{
@@ -137,59 +115,63 @@ namespace Graphics {
 			desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 			desc.Texture2D.MipLevels = 1;
 
-			ThrowIfFailed(device->CreateShaderResourceView(texture, &desc, &m_DebugSRV));
+			ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &desc, &m_DebugSRV));
 		}
 
 		SAFE_RELEASE(texture);
 #pragma endregion
 	}
 
-	void LightGrid::cull(Camera *camera, DirectX::CommonStates *states, ID3D11ShaderResourceView *depth, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
+	void LightGrid::cull(
+        ID3D11Buffer * cameraBuffer, 
+        ID3D11ShaderResourceView *depth,
+        ID3D11ShaderResourceView * lights,
+        ID3D11UnorderedAccessView * lightOpaqueGrid,
+        ID3D11UnorderedAccessView * lightOpaqueIndexList
+    ) const
 	{
 		//generateFrustums(camera, device, cxt, shaders);
-		m_ResetIndexCounter->CopyTo(cxt, m_OpaqueIndexCounter);
-		m_ResetIndexCounter->CopyTo(cxt, m_TransparentIndexCounter);
+		m_ResetIndexCounter->CopyTo(Global::context, m_OpaqueIndexCounter);
+		m_ResetIndexCounter->CopyTo(Global::context, m_TransparentIndexCounter);
 
-		ID3D11SamplerState *sampler = states->LinearClamp();
+		ID3D11SamplerState *sampler = Global::cStates->LinearClamp();
 		ID3D11Buffer *bufs[] = {
-			camera->getBuffer(),
+            cameraBuffer,
 			m_ParamsBuffer
 		};
 		ID3D11ShaderResourceView *SRVs[] = {
 			depth,
 			m_Frustums->getSRV(),
-			m_Lights->getSRV(),
+            lights,
 			gradientSRV
 		};
 		ID3D11UnorderedAccessView *UAVs[] = {
 			m_OpaqueIndexCounter->getUAV(),
 			m_TransparentIndexCounter->getUAV(),
-			m_OpaqueIndexList->getUAV(),
+            lightOpaqueIndexList,
 			m_TransparentIndexList->getUAV(),
-			m_OpaqueLightGridUAV,
+            lightOpaqueGrid,
 			m_TransparentLightGridUAV,
 			m_DebugUAV
 		};
 
-		cxt->CSSetShader(*m_CullGrids, nullptr, 0);
+		Global::context->CSSetShader(*m_CullGrids, nullptr, 0);
 
 
-		cxt->CSSetSamplers(0, 1, &sampler);
-		cxt->CSSetConstantBuffers(0, 2, bufs);
-		cxt->CSSetShaderResources(0, 4, SRVs);
-		cxt->CSSetUnorderedAccessViews(0, 7, UAVs, nullptr);
+		Global::context->CSSetSamplers(0, 1, &sampler);
+		Global::context->CSSetConstantBuffers(0, 2, bufs);
+		Global::context->CSSetShaderResources(0, 4, SRVs);
+		Global::context->CSSetUnorderedAccessViews(0, 7, UAVs, nullptr);
 
-		cxt->Dispatch(
+        Global::context->Dispatch(
 			m_Params.numThreadGroups[0],
 			m_Params.numThreadGroups[1],
 			1
 		);
 
-		ZeroMemory(UAVs, sizeof(UAVs));
-		ZeroMemory(SRVs, sizeof(SRVs));
-		cxt->CSSetShaderResources(0, 4, SRVs);
-		cxt->CSSetUnorderedAccessViews(0, 7, UAVs, nullptr);
-		cxt->CSSetShader(nullptr, nullptr, 0);
+		Global::context->CSSetShaderResources(0, 4, Global::nulls);
+		Global::context->CSSetUnorderedAccessViews(0, 7, Global::nulls, nullptr);
+		Global::context->CSSetShader(nullptr, nullptr, 0);
 	}
 
 	inline Plane computePlane(DirectX::SimpleMath::Vector3 a, DirectX::SimpleMath::Vector3 b)
@@ -209,12 +191,12 @@ namespace Graphics {
 	{
 		using namespace DirectX::SimpleMath;
 
-		m_Params.numThreads[0] = ceil(1280 / (float)BLOCK_SIZE);
-		m_Params.numThreads[1] = ceil(720 / (float)BLOCK_SIZE);
+		m_Params.numThreads[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
+		m_Params.numThreads[1] = (int)ceil(720 / (float)BLOCK_SIZE);
 		m_Params.numThreads[2] = 1;
 
-		m_Params.numThreadGroups[0] = ceil(m_Params.numThreads[0] / (float)BLOCK_SIZE);
-		m_Params.numThreadGroups[1] = ceil(m_Params.numThreads[1] / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[0] = (int)ceil(m_Params.numThreads[0] / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[1] = (int)ceil(m_Params.numThreads[1] / (float)BLOCK_SIZE);
 		m_Params.numThreadGroups[2] = 1;
 
 
@@ -236,10 +218,10 @@ namespace Graphics {
 						auto threadIdY = (groupY * BLOCK_SIZE + threadY);
 
 						Vector4 corners[] = {
-							Vector4(threadIdX      * BLOCK_SIZE,  threadIdY      * BLOCK_SIZE, 1.f, 1.f),
-							Vector4((threadIdX + 1) * BLOCK_SIZE,  threadIdY      * BLOCK_SIZE, 1.f, 1.f),
-							Vector4(threadIdX      * BLOCK_SIZE, (threadIdY + 1) * BLOCK_SIZE, 1.f, 1.f),
-							Vector4((threadIdX + 1) * BLOCK_SIZE, (threadIdY + 1) * BLOCK_SIZE, 1.f, 1.f)
+							Vector4(float(threadIdX       * BLOCK_SIZE),  float(threadIdY       * BLOCK_SIZE), 1.f, 1.f),
+							Vector4(float((threadIdX + 1) * BLOCK_SIZE),  float(threadIdY       * BLOCK_SIZE), 1.f, 1.f),
+							Vector4(float(threadIdX       * BLOCK_SIZE),  float((threadIdY + 1) * BLOCK_SIZE), 1.f, 1.f),
+							Vector4(float((threadIdX + 1) * BLOCK_SIZE),  float((threadIdY + 1) * BLOCK_SIZE), 1.f, 1.f)
 						};
 
 						Vector3 points[4];
@@ -272,19 +254,19 @@ namespace Graphics {
 		delete[] frustums;
 
 
-		m_Params.numThreadGroups[0] = ceil(1280 / (float)BLOCK_SIZE);
-		m_Params.numThreadGroups[1] = ceil(720 / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[1] = (int)ceil(720 / (float)BLOCK_SIZE);
 		m_Params.numThreadGroups[2] = 1;
 
-		m_Params.numThreads[0] = m_Params.numThreadGroups[0] * BLOCK_SIZE;
-		m_Params.numThreads[1] = m_Params.numThreadGroups[1] * BLOCK_SIZE;
+		m_Params.numThreads[0] = (int)m_Params.numThreadGroups[0] * BLOCK_SIZE;
+		m_Params.numThreads[1] = (int)m_Params.numThreadGroups[1] * BLOCK_SIZE;
 		m_Params.numThreads[2] = 1;
 
 		// Grid params
 		{
 			D3D11_BUFFER_DESC desc = {};
 			desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			desc.ByteWidth = sizeof(DispatchParams);
+			desc.ByteWidth = (UINT)sizeof(DispatchParams);
 			desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			desc.Usage = D3D11_USAGE_DYNAMIC;
 
@@ -295,14 +277,14 @@ namespace Graphics {
 		}
 	}
 
-	void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt, ResourceManager *shaders)
+	void LightGrid::generateFrustums(Camera *camera, ID3D11Device *device, ID3D11DeviceContext *cxt)
 	{
-		m_Params.numThreads[0] = ceil(1280 / (float)BLOCK_SIZE);
-		m_Params.numThreads[1] = ceil(720 / (float)BLOCK_SIZE);
+		m_Params.numThreads[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
+		m_Params.numThreads[1] = (int)ceil(720 / (float)BLOCK_SIZE);
 		m_Params.numThreads[2] = 1;
 
-		m_Params.numThreadGroups[0] = ceil(m_Params.numThreads[0] / (float)BLOCK_SIZE);
-		m_Params.numThreadGroups[1] = ceil(m_Params.numThreads[1] / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[0] = (int)ceil(m_Params.numThreads[0] / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[1] = (int)ceil(m_Params.numThreads[1] / (float)BLOCK_SIZE);
 		m_Params.numThreadGroups[2] = 1;
 
 
@@ -310,7 +292,7 @@ namespace Graphics {
 		{
 			D3D11_BUFFER_DESC desc = {};
 			desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			desc.ByteWidth = sizeof(DispatchParams);
+			desc.ByteWidth = (UINT)sizeof(DispatchParams);
 			desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			desc.Usage = D3D11_USAGE_DYNAMIC;
 
@@ -322,12 +304,12 @@ namespace Graphics {
 
 		// Frustums
 		auto count = m_Params.numThreads[0] * m_Params.numThreads[1];
-		m_Frustums = new StructuredBuffer<Frustum>(device, CpuAccess::None, count);
+		m_Frustums = newd StructuredBuffer<Frustum>(device, CpuAccess::None, count);
 
 		cxt->CSSetShader(*m_FrustumGeneration, nullptr, 0);
 
 		ID3D11Buffer *buffers[] = {
-			camera->getBuffer(),
+			*camera->getBuffer(),
 			m_ParamsBuffer,
 		};
 		cxt->CSSetConstantBuffers(0, 2, buffers);
@@ -340,12 +322,12 @@ namespace Graphics {
 		cxt->CSSetUnorderedAccessViews(0, 1, &reset, 0);
 
 
-		m_Params.numThreadGroups[0] = ceil(1280 / (float)BLOCK_SIZE);
-		m_Params.numThreadGroups[1] = ceil(720 / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[1] = (int)ceil(720 / (float)BLOCK_SIZE);
 		m_Params.numThreadGroups[2] = 1;
 
-		m_Params.numThreads[0] = m_Params.numThreadGroups[0] * BLOCK_SIZE;
-		m_Params.numThreads[1] = m_Params.numThreadGroups[1] * BLOCK_SIZE;
+		m_Params.numThreads[0] = (int)m_Params.numThreadGroups[0] * BLOCK_SIZE;
+		m_Params.numThreads[1] = (int)m_Params.numThreadGroups[1] * BLOCK_SIZE;
 		m_Params.numThreads[2] = 1;
 
 

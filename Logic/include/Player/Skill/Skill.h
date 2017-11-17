@@ -8,12 +8,19 @@
 			DESCRIPTION: This class defines a skill of the system
 		*/
 #pragma endregion
+#include <Graphics\include\RenderQueue.h>
 
-#include <Graphics\include\Renderer.h>
-#include <Entity\Entity.h>
+#include <btBulletCollisionCommon.h>
+
+namespace Graphics
+{
+    class Renderer;
+}
 
 namespace Logic
 {
+    class Entity;
+
 	class Skill
 	{
 	public:
@@ -21,7 +28,7 @@ namespace Logic
 		virtual ~Skill();
 
 		void use(btVector3 forward, Entity& shooter);
-		virtual void onUse(btVector3 forward, Entity& shooter) = 0;
+		virtual bool onUse(btVector3 forward, Entity& shooter) = 0;
 
 		void release();
 		virtual void onRelease() = 0;
@@ -29,7 +36,8 @@ namespace Logic
 		void update(float deltaTime);
 		virtual void onUpdate(float deltaTime) = 0;
 
-		virtual void render(Graphics::Renderer& renderer) = 0;
+        void reset();
+        virtual void onReset() {};
 
 		float	getCooldown() const;
 		float	getCooldownMax() const;
@@ -40,6 +48,8 @@ namespace Logic
 		void setCooldown(float cooldown);
 		void setCanUse(bool canUse);
 
+        virtual void render() const = 0;
+
 	private:
 		// StatusManager statusManager;
 		float	m_cooldown;
@@ -47,6 +57,7 @@ namespace Logic
 		float	m_duration;
 		float	m_durationMax;
 		bool	m_canUse;
+        bool    m_active;
 	};
 }
 #endif
