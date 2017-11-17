@@ -128,7 +128,7 @@ iMenu * iMenuFactory::buildMenuPause()
 
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::unpause));
-    menu->addButton(buildButton("ReturnToMenu", ButtonFunction::startMainMenu));
+    menu->addButton(buildButton("ReturnToMenu", ButtonFunction::goBackToMainMenu));
 
     //menu->addButton(buildButton("HighscoreStartMenu", ButtonFunction::startMainMenu));
 
