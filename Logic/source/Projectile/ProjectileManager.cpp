@@ -32,7 +32,7 @@ void ProjectileManager::init()
 
         body->setGravity({ 0.f, 0.f, 0.f });
 
-        Projectile* p = newd Projectile(body, { 0.f, 0.f, 0.f }, ProjectileData());
+        Projectile* p = newd Projectile(body, { 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f }, ProjectileData());
 
         m_projectilesIdle.push_back(p);
     }
@@ -52,7 +52,7 @@ void ProjectileManager::clear()
     m_projectilesIdle.clear();
 }
 
-Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)
+Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter, btVector3 modelOffset)
 {
     btRigidBody* body;
     Projectile* p;
@@ -61,8 +61,8 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
     if (m_projectilesIdle.size() == 0)  // it shouldn't get to this, because it will lag in debug mode
     {
         return nullptr;
-        body = m_physPtr->createBody(Sphere({ position + forward }, { 0.f, 0.f, 0.f }, pData.scale * 0.5f), pData.mass, pData.isSensor, 0, 0);
-        p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, pData);
+        body = m_physPtr->createBody(Sphere({ position + forward }, { 0.f, 0.f, 0.f }, pData.scale * 0.25f), pData.mass, pData.isSensor, 0, 0);
+        p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, modelOffset, pData);
     }
     // using projectile from idle stack
     else
@@ -73,6 +73,8 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         p->setProjectileData(pData);
         p->setModelID(pData.meshID);
         p->setHalfExtent({ pData.scale, pData.scale, pData.scale });
+        p->setModelOffset(modelOffset);
+        p->setUnrotatedMO(modelOffset);
         // fetching body
         body = p->getRigidBody();
         // adding the body to physics world
@@ -100,7 +102,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         (pData.enemyBullet) ? (Physics::COL_EVERYTHING &~(Physics::COL_ENEMY)) : (Physics::COL_EVERYTHING &~(Physics::COL_PLAYER));
 
 	// Taking the forward vector and getting the pitch and yaw from it
-	float pitch = asin(-forward.getY()) - M_PI * 0.5f;
+	float pitch = asin(-forward.getY()) - M_PI;
 	float yaw = atan2(forward.getX(), forward.getZ());
     //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
 	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - M_PI, 0));
@@ -133,7 +135,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         body->setLinearVelocity({ 0.f, 0.f, 0.f });
         body->setGravity({ 0.f, 0.f, 0.f });
         body->getWorldTransform().setOrigin(PROJECTILE_DEFAULT_POS);
-        p->setWorldTransform(p->getTransformMatrix());
+        //p->setWorldTransform(p->getTransformMatrix());
 
         // reset collision flags
         if (p->getProjectileData().isSensor)

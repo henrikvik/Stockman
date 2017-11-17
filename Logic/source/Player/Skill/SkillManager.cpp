@@ -37,7 +37,7 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager)
 	{
 		{ newd SkillGrapplingHook(physics) },
 		{ newd SkillShieldCharge() },
-        { newd SkillBulletTime(projectileManager, ProjectileData(0, 100, 1.f, 0, 0.f, BULLET_TIME_DURATION, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeBulletTimeSensor, true)) }
+        { newd SkillBulletTime(projectileManager, ProjectileData(0, 400, 1.f, 0, 0.f, BULLET_TIME_DURATION, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeBulletTimeSensor, true)) }
     };
 
     switchToSkill({ SKILL_SHIELD_CHARGE, SKILL_GRAPPLING_HOOK, SKILL_BULLET_TIME });

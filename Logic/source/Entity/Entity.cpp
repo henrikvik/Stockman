@@ -5,8 +5,8 @@
 
 using namespace Logic;
 
-Entity::Entity(btRigidBody* body, btVector3 halfextent)
-: PhysicsObject(body, halfextent)
+Entity::Entity(btRigidBody* body, btVector3 halfextent, btVector3 modelOffset)
+: PhysicsObject(body, halfextent, modelOffset)
 {
     m_soundSource = newd Sound::SoundSource();
 }
