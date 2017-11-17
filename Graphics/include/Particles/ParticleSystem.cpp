@@ -268,6 +268,76 @@ bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Vec
     return fx->m_Age > fx->m_Time;
 }
 
+bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 velocity, float dt)
+{
+    if (!FXEnabled) return false;
+    Debug::ParticleFX({ pos, *fx });
+
+    for (unsigned int i = 0; i < fx->m_Count; i++) {
+        auto &entry = fx->m_Entries[i];
+
+        fx->m_Age += dt;
+
+        if (fx->m_Age < entry.m_Start || fx->m_Age > entry.m_Start + entry.m_Time) {
+            if (fx->m_Loop) {
+                fx->m_Age = 0.f;
+            }
+            else {
+                continue;
+            }
+        }
+
+        if (fx->m_LightRadius != 0.f) {
+            auto col = XMFLOAT4((float*)fx->m_LightColor);
+
+            LightRenderInfo light = {};
+            light.position = pos;
+            light.range = fx->m_LightRadius;
+            light.intensity = col.w;
+            light.color.x = col.x;
+            light.color.y = col.y;
+            light.color.z = col.z;
+
+            QueueRender(light);
+        }
+
+        switch (entry.m_Type) {
+        case ParticleType::Billboard:
+        {
+        } break;
+        case ParticleType::Geometry: {
+            auto def = &m_GeometryDefinitions[entry.m_DefinitionIdx];
+
+            auto factor = (fx->m_Age - entry.m_Start) / entry.m_Time;
+            auto ease_spawn = GetEaseFunc(entry.m_SpawnEasing);
+            auto spawn = entry.m_Loop ? entry.m_SpawnStart : ease_spawn(entry.m_SpawnStart, entry.m_SpawnEnd, factor);
+
+            for (entry.m_SpawnedParticles += spawn * dt; entry.m_SpawnedParticles >= 1.f; entry.m_SpawnedParticles -= 1.f) {
+                GeometryParticle p = {};
+                p.pos = entry.m_StartPosition.GetPosition() + pos;
+                p.velocity = velocity + entry.m_StartVelocity.GetVelocity();
+                p.rot = {
+                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
+                };
+                p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
+                p.rotprog = RandomFloat(-180, 180);
+                p.def = def;
+                p.idx = def->m_MaterialIdx;
+
+
+                m_GeometryParticles.push_back(p);
+            }
+        } break;
+        case ParticleType::Trail: {
+        } break;
+        }
+    }
+
+    return fx->m_Age > fx->m_Time;
+}
+
 void ParticleSystem::addEffect(std::string name, XMVECTOR pos)
 {
     ParticleEffectInstance effect = {

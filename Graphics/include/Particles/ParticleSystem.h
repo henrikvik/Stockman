@@ -86,6 +86,14 @@ public:
     // returns true if the particle effect is over (age > lifetime)
     bool processEffect(ParticleEffect *fx, DirectX::SimpleMath::Vector3 pos, float dt);
 
+    // updates an effect/emitter.
+    //
+    // this will spawn particles that are owned and managed by the particle
+    // system with a given start velocity.
+    //
+    // returns true if the particle effect is over (age > lifetime)
+    bool processEffect(ParticleEffect *fx, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 velocity, float dt);
+
     // adds a static effect/emitter
     //
     // this will add a particle effect/emitter that is owned and managed by
