@@ -117,6 +117,11 @@ void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, Phy
 		onCollision(other, contactPoint, 1.f);
 }
 
+void Logic::PhysicsObject::setModelOffset(btVector3 modelOffset)
+{
+    m_modelOffset = modelOffset;
+}
+
 void Logic::PhysicsObject::setHalfExtent(btVector3 halfExtent)
 {
     m_halfextent = halfExtent;

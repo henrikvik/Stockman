@@ -11,9 +11,10 @@ using namespace Logic;
 // TEMP: ta bort mig
 static bool FUN_MODE = false;
 
-Projectile::Projectile(btRigidBody* body, btVector3 halfextent, ProjectileData pData)
-    : Entity(body, halfextent)
+Projectile::Projectile(btRigidBody* body, btVector3 halfextent, btVector3 modelOffset, ProjectileData pData)
+    : Entity(body, halfextent, modelOffset)
 {
+    m_unrotatedMO   = modelOffset;
 	m_pData         = pData;
 	m_dead          = false;
     m_bulletTimeMod = 1.f;
@@ -76,10 +77,16 @@ void Projectile::updateSpecific(float deltaTime)
     body->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * pow(m_bulletTimeMod, 2), 0.f });
 
     // Taking the forward vector and getting the pitch and yaw from it
-    float pitch = asin(-dir.getY()) - M_PI * 0.5f;
+    float pitch = asin(-dir.getY()) - M_PI;
     float yaw = atan2(dir.getX(), dir.getZ());
     //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
-    body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - M_PI, 0));
+    btQuaternion rotation = btQuaternion(yaw, pitch - M_PI, 0);
+    body->getWorldTransform().setRotation(rotation);
+
+    m_unrotatedMO += (btVector3(0.f, 0.f, 0.f) - m_unrotatedMO) * 0.001f * deltaTime;
+
+    // rotate model offset
+    m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
     
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;
@@ -88,7 +95,7 @@ void Projectile::updateSpecific(float deltaTime)
     m_bulletTimeMod = 1.f;
 
     // Updating transform matrix
-    renderInfo.transform = getTransformMatrix();
+    renderInfo.transform = getModelTransformMatrix();
 }
 
 // Handle collisions with different types of classes
@@ -222,7 +229,7 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
     return false;
 }
 
-void Logic::Projectile::setWorldTransform(DirectX::SimpleMath::Matrix & worldTransform)
+void Projectile::setWorldTransform(DirectX::SimpleMath::Matrix& worldTransform)
 {
     renderInfo.transform = worldTransform;
 }
@@ -240,4 +247,5 @@ void Logic::Projectile::render() const
 ProjectileData& Projectile::getProjectileData()             { return m_pData;   }
 bool Projectile::getDead() const                            { return m_dead;    }
 void Projectile::setProjectileData(ProjectileData pData)    { m_pData = pData;  }
+void Projectile::setUnrotatedMO(btVector3 modelOffset) { m_unrotatedMO = modelOffset; }
 void Projectile::setDead(bool dead)                         { m_dead = dead;    }

@@ -39,6 +39,7 @@ namespace Logic
 		void collision(PhysicsObject& other, btVector3 contactPoint, Physics &physics);
 		virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier) = 0;
 
+        virtual void setModelOffset(btVector3 modelOffset);
         virtual void setHalfExtent(btVector3 halfExtent);
 		virtual btVector3 getHalfExtent() const;
 		virtual btVector3 getPositionBT() const;
@@ -58,9 +59,9 @@ namespace Logic
     protected:
         btRigidBody* m_body;										//< The main rigidbody of this physics object
         btTransform* m_transform;									//< Easy acces to the transform
+        btVector3 m_modelOffset;                                    //< Model offset
 	private:
 		btVector3 m_halfextent;										//< The scaling for the graphical side
-        btVector3 m_modelOffset;                                    //< Model offset
 		std::vector<Weakpoint> m_weakPoints;						//< The "head" for headshots multiplier change this to (std::pair<btRigidBody*, float multiplier) when you got time
 	};
 }
