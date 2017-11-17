@@ -33,10 +33,9 @@ namespace Logic
 
 			void removeTrigger(Trigger* t, int index);
 
-			Trigger* addTrigger(Resources::Models::Files modelID, Cube& cube, float cooldown, Physics& physics,
-				std::vector<StatusManager::UPGRADE_ID> upgrades, 
-				std::vector<StatusManager::EFFECT_ID> effects, 
-				bool reusable = false);
+			Trigger* addTrigger(Trigger::TriggerType type, btVector3 const &pos, Physics& physics,
+                std::vector<StatusManager::UPGRADE_ID> upgrades, 
+                std::vector<StatusManager::EFFECT_ID> effects);
 
 			void update(float deltaTime);
 			void render() const;

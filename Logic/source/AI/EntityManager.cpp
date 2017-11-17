@@ -372,32 +372,7 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
     effectsIds.reserve(effects.size());
     for (auto const &effect : effects)
         effectsIds.push_back(static_cast<StatusManager::EFFECT_ID> (effect));
-    Trigger *trigger;
-
-    switch (id)
-    {
-    case 1: // wtf, starts at 1
-        trigger = m_triggerManager.addTrigger(Resources::Models::UnitCube,
-            Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
-            500.f, physics, {},
-            effectsIds,
-            true);
-        break;
-    case 2:
-        trigger = m_triggerManager.addTrigger(Resources::Models::AmmoPackCrossBolt,
-            Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, physics, {},
-            effectsIds,
-            false);
-        break;
-    case 3:
-        trigger = m_triggerManager.addTrigger(Resources::Models::Ammocrystal,
-            Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, physics, {},
-            effectsIds,
-            false);
-        break;
-    default:
-        trigger = nullptr;
-    }
+    Trigger* trigger = m_triggerManager.addTrigger((Trigger::TriggerType)id, pos, physics, {}, effectsIds);
 
     return trigger;
 }
