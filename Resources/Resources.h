@@ -39,11 +39,13 @@ namespace Resources
             AnimatedSummonUnit,
             Crossbow,
             Crossbowbolt,
+            Crossbowbolts,
             Hammer,
             Island,
             SkySphere,
             Staff,
             StaticSummon,
+            SummonUnit,
             Tablet1,
             UnitCube
         };
@@ -54,11 +56,13 @@ namespace Resources
             {AnimatedSummonUnit, R"(..\Resources\Models\AnimatedSummonUnit.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
             {Crossbowbolt, R"(..\Resources\Models\Crossbowbolt.hyb)"},
+            {Crossbowbolts, R"(..\Resources\Models\Crossbowbolts.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {Island, R"(..\Resources\Models\Island.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
+            {SummonUnit, R"(..\Resources\Models\SummonUnit.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
