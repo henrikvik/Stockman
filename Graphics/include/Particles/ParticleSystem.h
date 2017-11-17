@@ -84,14 +84,14 @@ public:
     // system.
     //
     // returns true if the particle effect is over (age > lifetime)
-    bool processEffect(ParticleEffect *fx, DirectX::SimpleMath::Matrix model, float dt);
+    bool processEffect(ParticleEffect *fx, DirectX::SimpleMath::Vector3 pos, float dt);
 
     // adds a static effect/emitter
     //
     // this will add a particle effect/emitter that is owned and managed by
     // the particle system. this means that it should usually only be called
     // once per "effect" in the game
-    void addEffect(std::string name, XMMATRIX model);
+    void addEffect(std::string name, XMVECTOR pos);
 
     // retrieves a particle effect/emitter from the particle system.
     //
