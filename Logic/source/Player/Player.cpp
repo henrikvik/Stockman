@@ -409,6 +409,12 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
 
             // Add invul time
             getStatusManager().addStatus(StatusManager::EFFECT_ID::INVULNERABLE, 1);
+
+            SpecialEffectRenderInfo shake;
+            shake.duration = 0.5f;
+            shake.radius = 30.0f;
+            shake.type = SpecialEffectRenderInfo::screenShake;
+            QueueRender(shake);
         }
     }
 }

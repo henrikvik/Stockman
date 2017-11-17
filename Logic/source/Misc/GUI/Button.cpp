@@ -144,6 +144,13 @@ void Button::setAlpha(float alpha)
     renderInfo.alpha = alpha;
 }
 
+void Logic::Button::setUVS(FloatRect newUVs)
+{
+    this->inactive = newUVs;
+    this->active = newUVs;
+    this->hover = newUVs;
+}
+
 void Button::render() const
 {
     QueueRender(renderInfo);

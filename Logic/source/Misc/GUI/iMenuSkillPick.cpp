@@ -1,6 +1,6 @@
 #include <Misc\GUI\iMenuSkillPick.h>
 #include <Graphics\include\RenderQueue.h>
-#include <Misc\StringConverter.h>
+
 #include <Keyboard.h>
 #include <Misc\GUI\iMenuAction.h>
 
