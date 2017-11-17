@@ -167,7 +167,7 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
             enemy->getStatusManager().addStatus(
                                                     StatusManager::FREEZE,
                                                     1,
-                                                    enemy->getStatusManager().getEffect(StatusManager::FREEZE).getStandards()->duration,
+                                                    enemy->getStatusManager().getEffect(StatusManager::FREEZE).getStandards()->duration + m_freezeDuration,
                                                     false
             );
         }
@@ -188,7 +188,7 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     case ProjectileTypeFireArrow:
         enemy->getStatusManager().addStatus(
             /* Adding Fire effect */            StatusManager::ON_FIRE,
-            /* Number of stacks */              1
+            /* Number of stacks */              getStatusManager().getUpgradeStacks(StatusManager::FIRE_UPGRADE)
         );
         break;
     // Trigger all callbacks on other projectiles

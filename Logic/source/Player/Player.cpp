@@ -226,7 +226,13 @@ void Player::registerDebugCmds()
     {
         getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
 
-        return "You jump 20% higher";
+        return "Crossbow deals fire damage";
+    });
+    win->registerCommand("LOG_PLAYER_SET_FROST", [&](std::vector<std::string> &args)->std::string
+    {
+        getStatusManager().addUpgrade(StatusManager::FROST_UPGRADE);
+
+        return "Frost Staff has longer freezing effect";
     });
 }
 
