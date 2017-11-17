@@ -13,6 +13,9 @@ struct Fragment
     
     float2 uv     : UV;
     float2 gridUV : GridUV;
+
+    float3 color : Color;
+    bool useGridTexture : UseGridTexture;
 };
 
 #endif
