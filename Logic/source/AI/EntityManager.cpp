@@ -64,8 +64,10 @@ void EntityManager::registerCreationFunctions()
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemyNecromancer(body, cube.getDimensionsRef());
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        physics.removeRigidBody(body);
+        enemy->addExtraBody(body, 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
@@ -77,8 +79,6 @@ void EntityManager::registerCreationFunctions()
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemyChaser(body);
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
@@ -90,21 +90,25 @@ void EntityManager::registerCreationFunctions()
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemyBossBaddie(body, cube.getDimensionsRef());
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        physics.removeRigidBody(body);
+        enemy->addExtraBody(body, 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
     m_enemyFactory[EnemyType::FLYING] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.2f, 1.2f, 1.2f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 4.2f, 2.2f, 4.2f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
         Enemy* enemy = newd EnemySoarer(body, cube.getDimensionsRef());
-        enemy->addExtraBody(physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING)), 2.f, { 0.f, 3.f, 0.f });
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        physics.removeRigidBody(body);
+        enemy->addExtraBody(body, 2.f, { 0.f, 3.f, 0.f });
 
         return enemy;
     };
@@ -368,26 +372,7 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
     effectsIds.reserve(effects.size());
     for (auto const &effect : effects)
         effectsIds.push_back(static_cast<StatusManager::EFFECT_ID> (effect));
-    Trigger *trigger;
-
-    switch (id)
-    {
-    case 1: // wtf, starts at 1
-        trigger = m_triggerManager.addTrigger(Resources::Models::UnitCube,
-            Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
-            500.f, physics, {},
-            effectsIds,
-            true);
-        break;
-    case 2:
-        trigger = m_triggerManager.addTrigger(Resources::Models::AmmoPackCrossBolt,
-            Cube(pos, { 0, 0, 0 }, { 1.f, 1.f, 1.f }), 0.f, physics, {},
-            effectsIds,
-            false);
-        break;
-    default:
-        trigger = nullptr;
-    }
+    Trigger* trigger = m_triggerManager.addTrigger((Trigger::TriggerType)id, pos, physics, {}, effectsIds);
 
     return trigger;
 }

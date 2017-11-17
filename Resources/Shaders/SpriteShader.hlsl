@@ -7,13 +7,14 @@ struct Vertex
 
 struct SpriteData
 {
-    float yes;
+    float aplha;
 };
 
 struct Fragment
 {
     float4 position : SV_Position;
     float2 uv : UV;
+    uint spriteIndex : INDEX;
 };
 
 struct Pixel
@@ -42,6 +43,8 @@ Fragment VS(uint vertexId : SV_VertexId)
     fragment.position = float4(vertex.position, 0, 1);
     fragment.uv = vertex.uv;
 
+    fragment.spriteIndex = offset / 4;
+
     return fragment;
 }
 
@@ -51,5 +54,6 @@ Pixel PS(Fragment fragment)
 
     pixel.color = spriteTexture.Sample(linearSampler, fragment.uv);
 
+    pixel.color = float4(pixel.color.xyz, min(pixel.color.w, spriteData[fragment.spriteIndex].aplha));
     return pixel;
 }

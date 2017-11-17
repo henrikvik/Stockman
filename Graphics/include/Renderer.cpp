@@ -50,6 +50,59 @@ namespace Graphics
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
 
+<<<<<<< HEAD
+	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
+		: forwardPlus(device, SHADER_PATH("ForwardPlus.hlsl"), VERTEX_DESC)
+		, fullscreenQuad(device, SHADER_PATH("FullscreenQuad.hlsl"), { { "POSITION", 0, DXGI_FORMAT_R8_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } })
+		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
+		, instanceSBuffer(device, CpuAccess::Write, INSTANCE_CAP)
+		, instanceOffsetBuffer(device)
+		, skyRenderer(device, SHADOW_MAP_RESOLUTION)
+		, postProcessor(device, deviceContext)
+		, fakeBackBuffer(device, WIN_WIDTH, WIN_HEIGHT)
+		, fakeBackBufferSwap(device, WIN_WIDTH, WIN_HEIGHT)
+		, glowMap(device, WIN_WIDTH, WIN_HEIGHT)
+#pragma region RenderDebugInfo
+		, debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
+		, debugRender(device, SHADER_PATH("DebugRender.hlsl"))
+		, debugColorBuffer(device)
+#pragma endregion
+		, fog(device, deviceContext)
+		, worldPosMap(device, WIN_WIDTH, WIN_HEIGHT)
+        ,menu(device, deviceContext)
+        ,hud(device, deviceContext)
+		,ssaoRenderer(device)
+
+	{
+		this->device = device;
+		this->deviceContext = deviceContext;
+		this->backBuffer = backBuffer;
+		
+		initialize(device, deviceContext);
+
+        viewPort = { 0 };
+        viewPort.Width = WIN_WIDTH;
+        viewPort.Height = WIN_HEIGHT;
+        viewPort.MaxDepth = 1.0f;
+
+		states = new DirectX::CommonStates(device);
+		grid.initialize(camera, device, deviceContext, &resourceManager);
+
+        //menuSprite = std::make_unique<DirectX::SpriteBatch>(deviceContext);
+        createBlendState();
+    }
+
+
+    Renderer::~Renderer()
+    {
+		delete states;
+
+		SAFE_RELEASE(transparencyBlendState);
+
+		SAFE_RELEASE(glowTest);
+        resourceManager.release();
+=======
+>>>>>>> 88b7d8671fbdcfe863c17e7e07ee6149344d7aff
 
 #pragma endregion
         , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
@@ -65,8 +118,9 @@ namespace Graphics
 
         , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
         , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
-        , sun()
+        , sun(),
 #pragma endregion
+        DebugAnnotation(nullptr)
 
 
 #pragma region CaNCeR!
@@ -162,7 +216,10 @@ namespace Graphics
         }
 
 #pragma endregion
-
+        HRESULT hr = Global::context->QueryInterface(IID_PPV_ARGS(&DebugAnnotation));
+        if (!SUCCEEDED(hr)) {
+            // failed to aquire debug annotation
+        }
 
         this->backBuffer = backBuffer;
 
@@ -177,6 +234,43 @@ namespace Graphics
 
         renderPasses =
         {
+<<<<<<< HEAD
+            this->drawToBackbuffer(grid.getDebugSRV());
+        }
+        
+#endif
+
+		///////Post effext
+		
+		PROFILE_BEGIN("Glow");
+		//postProcessor.addGlow(deviceContext, fakeBackBuffer, glowMap, &fakeBackBufferSwap);
+		PROFILE_END();
+
+		PROFILE_BEGIN("SSAO");
+		//ssaoRenderer.renderSSAO(deviceContext, camera, &depthStencil, &fakeBackBufferSwap, &fakeBackBuffer);
+		PROFILE_END();
+
+		PROFILE_BEGIN("DrawToBackBuffer");
+		drawToBackbuffer(fakeBackBuffer);
+		PROFILE_END();
+
+		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		UINT sampleMask = 0xffffffff;
+		deviceContext->OMSetBlendState(transparencyBlendState, blendFactor, sampleMask);
+		ID3D11Buffer* cambuffer = camera->getBuffer();
+		deviceContext->VSSetConstantBuffers(0, 1, &cambuffer);
+		deviceContext->PSSetConstantBuffers(0, 1 , &cambuffer);
+		fog.renderFog(deviceContext, backBuffer, worldPosMap);
+
+		PROFILE_BEGIN("HUD");
+        hud.drawHUD(deviceContext, backBuffer, transparencyBlendState);
+		PROFILE_END();
+
+		PROFILE_BEGIN("DebugInfo");
+		renderDebugInfo(camera);
+		PROFILE_END();
+        drawGUI();
+=======
             newd ParticleDepthRenderPass(depthStencil),
             newd DepthRenderPass(
                 {},
@@ -258,6 +352,7 @@ namespace Graphics
             newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
             newd GUIRenderPass({backBuffer}),
         };
+>>>>>>> 88b7d8671fbdcfe863c17e7e07ee6149344d7aff
     }
 
 
@@ -271,6 +366,7 @@ namespace Graphics
         SAFE_RELEASE(Global::transparencyBlendState);
         SAFE_RELEASE(lightOpaqueGridUAV);
         SAFE_RELEASE(lightOpaqueGridSRV);
+        SAFE_RELEASE(DebugAnnotation);
 
         for (auto & renderPass : renderPasses)
         {
@@ -331,7 +427,9 @@ namespace Graphics
 
         for (auto & renderPass : renderPasses)
         {
+            if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
             renderPass->render();
+            if (DebugAnnotation) DebugAnnotation->EndEvent();
         }
     }
 

@@ -38,7 +38,8 @@ namespace Resources
             AmmoPackCrossBolt,
             AnimatedSummonUnit,
             Crossbow,
-            CrossBowProjectile,
+            Crossbowbolt,
+            Crossbowbolts,
             Hammer,
             Island,
             SkySphere,
@@ -53,7 +54,8 @@ namespace Resources
             {AmmoPackCrossBolt, R"(..\Resources\Models\AmmoPackCrossBolt.hyb)"},
             {AnimatedSummonUnit, R"(..\Resources\Models\AnimatedSummonUnit.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
-            {CrossBowProjectile, R"(..\Resources\Models\CrossBowProjectile.hyb)"},
+            {Crossbowbolt, R"(..\Resources\Models\Crossbowbolt.hyb)"},
+            {Crossbowbolts, R"(..\Resources\Models\Crossbowbolts.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {Island, R"(..\Resources\Models\Island.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
@@ -125,8 +127,8 @@ namespace Resources
         enum Files
         {
             Backbutton,
-            Color_pick_icons,
             Crosshair,
+            Gameover,
             gameOverMenuButtons,
             gameOverTexture,
             Gamesheet,
@@ -136,7 +138,7 @@ namespace Resources
             HPBars,
             HUDIcons,
             IntroScreen,
-            mainMenuButton,
+            Loadingscreen,
             MainmenuClean,
             mainmenupicture,
             Mainmenutext,
@@ -147,13 +149,14 @@ namespace Resources
             Skillpickbackground,
             Skillpicksheet,
             Spellsheet,
+            WaveComplete,
             weaponsheet
         };
         const std::map<Files, const char *> Paths =
         {
             {Backbutton, R"(..\Resources\Textures\Backbutton.dds)"},
-            {Color_pick_icons, R"(..\Resources\Textures\Color_pick_icons.dds)"},
             {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
+            {Gameover, R"(..\Resources\Textures\Gameover.dds)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
@@ -163,7 +166,7 @@ namespace Resources
             {HPBars, R"(..\Resources\Textures\HPBars.dds)"},
             {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
             {IntroScreen, R"(..\Resources\Textures\IntroScreen.dds)"},
-            {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
+            {Loadingscreen, R"(..\Resources\Textures\Loadingscreen.dds)"},
             {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
@@ -174,6 +177,7 @@ namespace Resources
             {Skillpickbackground, R"(..\Resources\Textures\Skillpickbackground.dds)"},
             {Skillpicksheet, R"(..\Resources\Textures\Skillpicksheet.dds)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
+            {WaveComplete, R"(..\Resources\Textures\WaveComplete.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };
     }

@@ -5,6 +5,11 @@
 
 using namespace Logic;
 
+#define BULLET_TIME_CD 15000.f
+#define BULLET_TIME_SMOOTHNESS_INTERVAL 20
+#define BULLET_TIME_SLOW_DOWN_DURATION 1000.f
+#define BULLET_TIME_SPEED_UP_DURATION 1000.f
+
 SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData)
 	: Skill(BULLET_TIME_CD, BULLET_TIME_DURATION)
 {
@@ -63,6 +68,12 @@ void SkillBulletTime::setSpawnFunctions(ProjectileManager &projManager)
 
 
 void SkillBulletTime::onRelease() { }
+
+void SkillBulletTime::onReset()
+{
+    m_sensor = nullptr;
+    m_stacks = 0;
+}
 
 void SkillBulletTime::onUpdate(float deltaTime)
 {

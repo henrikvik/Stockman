@@ -202,6 +202,8 @@
     <ClInclude Include="include\AI\Behavior\BigBadBehavior.h" />
     <ClInclude Include="include\AI\EnemyBossBaddie.h" />
     <ClInclude Include="include\AI\EnemySoarer.h" />
+    <ClInclude Include="include\Misc\Fader.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuCards.h" />
     <ClInclude Include="include\Misc\GUI\iMenuIntro.h" />
     <ClInclude Include="include\Misc\GUI\iMenuSkillPick.h" />
     <ClInclude Include="include\Physics\FuncContactResult.h" />
@@ -237,8 +239,8 @@
     <ClInclude Include="include\Entity\Effect.h" />
     <ClInclude Include="include\AI\Enemy.h" />
     <ClInclude Include="include\AI\EntityManager.h" />
-    <ClInclude Include="include\AI\Trigger.h" />
-    <ClInclude Include="include\AI\TriggerManager.h" />
+    <ClInclude Include="include\AI\Trigger\Trigger.h" />
+    <ClInclude Include="include\AI\Trigger\TriggerManager.h" />
     <ClInclude Include="include\Misc\Card.h" />
     <ClInclude Include="include\Misc\CardManager.h" />
     <ClInclude Include="include\Entity\Entity.h">
@@ -296,6 +298,8 @@
     <ClInclude Include="include\Player\Weapon\WeaponModel.h" />
     <ClInclude Include="include\Player\Weapon\WeaponFreezeGrenade.h" />
     <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
+    <ClInclude Include="include\Misc\StringConverter.h" />
+    <ClInclude Include="include\AI\Trigger\TriggerAmmoPickup.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Abilities\Ability.cpp" />
@@ -303,6 +307,7 @@
     <ClCompile Include="source\AI\EnemyBossBaddie.cpp" />
     <ClCompile Include="source\AI\EnemySoarer.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
+    <ClCompile Include="source\Misc\GUI\iMenuCards.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuFactory.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenu.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuIntro.cpp" />
@@ -340,8 +345,8 @@
     <ClCompile Include="source\Entity\Effect.cpp" />
     <ClCompile Include="source\AI\Enemy.cpp" />
     <ClCompile Include="source\Map.cpp" />
-    <ClCompile Include="source\AI\Trigger.cpp" />
-    <ClCompile Include="source\AI\TriggerManager.cpp" />
+    <ClCompile Include="source\AI\Trigger\Trigger.cpp" />
+    <ClCompile Include="source\AI\Trigger\TriggerManager.cpp" />
     <ClCompile Include="source\Misc\RandomGenerator.cpp" />
     <ClCompile Include="source\Misc\Sound\NoiseMachine.cpp" />
     <ClCompile Include="source\Misc\Sound\SoundSource.cpp" />
@@ -362,12 +367,6 @@
     <ClCompile Include="source\Physics\Physics.cpp" />
     <ClCompile Include="source\Player\Player.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
-    <ClInclude Include="source\Game.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClCompile Include="source\Player\Weapon\Weapon.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponManager.cpp" />
     <ClCompile Include="source\Entity\Upgrade.cpp" />
@@ -382,6 +381,7 @@
     <ClCompile Include="source\Player\Weapon\WeaponModel.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
+    <ClCompile Include="source\AI\Trigger\TriggerAmmoPickup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

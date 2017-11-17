@@ -1,7 +1,10 @@
 #include <Projectile\Projectile.h>
 #include <Player\Player.h>
 #include <AI\Enemy.h>
+#include <AI\Trigger\Trigger.h>
 #include <Physics\Physics.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace Logic;
 
@@ -67,9 +70,16 @@ void Projectile::updateSpecific(float deltaTime)
 	Entity::update(deltaTime);
 
     // Modify the velocity & gravity with the bullet time modifier
-    btVector3 vel = getRigidBody()->getLinearVelocity().normalized();
-    getRigidBody()->setLinearVelocity(vel * m_pData.speed * m_bulletTimeMod);
-    getRigidBody()->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_bulletTimeMod, 0.f });
+    btRigidBody* body = getRigidBody();
+    btVector3 dir = body->getLinearVelocity().normalized();
+    body->setLinearVelocity(dir * m_pData.speed * m_bulletTimeMod);
+    body->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_bulletTimeMod, 0.f });
+
+    // Taking the forward vector and getting the pitch and yaw from it
+    float pitch = asin(-dir.getY()) - M_PI * 0.5f;
+    float yaw = atan2(dir.getX(), dir.getZ());
+    //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
+    body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - M_PI, 0));
     
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;
@@ -92,6 +102,8 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         cb = collisionWithProjectile(proj);
     else if (Player* player = dynamic_cast<Player*> (&other))
         cb = collisionWithPlayer(player);
+    else if (Trigger* trigger = dynamic_cast<Trigger*> (&other))
+        cb = collisionWithTrigger(trigger);
     else
         cb = collisionWithTerrain();
 
@@ -149,6 +161,21 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     return callback;
 }
 
+// Projectile Trigger Collisions, returns true if callback should be activated
+bool Projectile::collisionWithTrigger(Trigger* trigger)
+{
+    bool cb = false;
+
+    switch (m_pData.type)
+    {
+    case ProjectileTypeGrappling:
+        m_dead = true;
+        cb = true;
+    }
+
+    return cb;
+}
+
 // Projectile-Terrain Collisions, returns true if callback should be activated
 bool Projectile::collisionWithTerrain()
 {
@@ -180,20 +207,17 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 {
     bool callback = false;
 
-    if (proj->getProjectileData().enemyBullet != getProjectileData().enemyBullet)
-    {
-        switch (proj->getProjectileData().type)
-        {
-        case ProjectileTypeBulletTimeSensor:
-            getStatusManager().addStatus(
-                /* Adding Bullet time effect */     StatusManager::BULLET_TIME,
-                /* Number of stacks */              1,
-                /* Reset Duration */                true
-            );
-            break;
-        }
-    }
-
+	switch (proj->getProjectileData().type)
+	{
+	case ProjectileTypeBulletTimeSensor:
+	    getStatusManager().addStatus(
+		/* Adding Bullet time effect */     StatusManager::BULLET_TIME,
+		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME),
+		/* Reset Duration */                true
+	    );
+	    break;
+	}
+    
     // No callback should be added
     return false;
 }

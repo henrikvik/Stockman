@@ -11,7 +11,7 @@ namespace Graphics
 	class Fog
 	{
 	public:
-		Fog(ID3D11Device* device);
+		Fog(ID3D11Device* device, ID3D11DeviceContext * deviceContext);
 		~Fog();
 
 		void renderFog(ID3D11DeviceContext* deviceContext, ID3D11RenderTargetView * backBuffer, ID3D11ShaderResourceView* depthMap);

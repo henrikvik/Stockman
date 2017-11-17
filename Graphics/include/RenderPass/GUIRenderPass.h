@@ -23,6 +23,10 @@ namespace Graphics
         );
         virtual ~GUIRenderPass();
 
+        virtual wchar_t* name() const override {
+            return L"GUIRenderPass";
+        }
+
         // Inherited via RenderPass
         virtual void render() const override;
         virtual void update(float deltaTime) override;
@@ -35,6 +39,7 @@ namespace Graphics
             DirectX::SimpleMath::Vector2 uv;
         };
         StructuredBuffer<Vertex> vertexBuffer;
+        StructuredBuffer<float> alphabuffer;
 
         std::unique_ptr<DirectX::SpriteBatch> sBatch;
         std::unordered_map<Resources::Fonts::Files, std::unique_ptr<DirectX::SpriteFont>> fonts;

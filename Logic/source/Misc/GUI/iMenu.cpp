@@ -4,9 +4,56 @@
 
 using namespace Logic;
 
-iMenu::iMenu(MenuGroup group) : m_group(group) , m_drawButtons(false), m_drawMenu(false), m_pressed(true) { }
+#define DEFAULT_FADING_TIMER     300.f
+
+// Toggle
+#define USE_UNIQUE_FADING_TIMERS true  
+
+// Gives us the ability to give each menu a different fading time
+#if USE_UNIQUE_FADING_TIMERS
+
+// Give menus their unique timer here in milliseconds
+#define FADING_TIMER_INTRO      1250.f      
+#define FADING_TIMER_GAMEOVER   1500.f
+#define FADING_TIMER_SKILL      800.f
+
+#endif
+float getFadingTimer(iMenu::MenuGroup group)
+{
+#if USE_UNIQUE_FADING_TIMERS
+    switch (group)
+    {
+    case iMenu::MenuGroup::Intro:       return FADING_TIMER_INTRO;
+    case iMenu::MenuGroup::GameOver:    return FADING_TIMER_GAMEOVER;
+    case iMenu::MenuGroup::Skill:       return FADING_TIMER_SKILL;
+    default:                            return DEFAULT_FADING_TIMER;
+    }
+#endif
+    return DEFAULT_FADING_TIMER;
+}
+
+
+iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_fadingTimer(getFadingTimer(group)), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
 
 iMenu::~iMenu() { }
+
+// Starts the fadeIn animation, menu's can't be changed/removed during this time
+void iMenu::fadeIn()
+{
+    m_fader.startFadeIn(m_fadingTimer);
+    m_isFading      = true;
+    m_safeToRemove  = false;
+    setAlpha(0.f);
+}
+
+// Starts the fadeOut animation, menu's can't be changed/removed during this time
+void iMenu::fadeOut()
+{
+    m_fader.startFadeOut(m_fadingTimer);
+    m_isFading      = true;
+    m_safeToRemove  = false;
+    setAlpha(1.f);
+}
 
 // Adds a texture on as a background, covering the full screen
 void iMenu::addBackground(Resources::Textures::Files texture, float alpha)
@@ -33,10 +80,27 @@ void iMenu::addButton(ButtonData btn)
 }
 
 // Updates the buttons of this menu
-void iMenu::update(int x, int y)
+void iMenu::update(int x, int y, float deltaTime)
 {
-    updateClick(x, y);
-    updateHover(x, y);
+    DirectX::Mouse::Get().SetMode(m_mouseMode);
+
+    if (m_isFading)
+    {
+        m_fader.update(deltaTime);
+        setAlpha(m_fader.getCurrentPercentage());
+
+        if (m_fader.complete)
+        {
+            m_isFading = false;
+            if (m_fader.style == Fader::FadeOut)
+                m_safeToRemove = true;
+        }
+    }
+    else
+    {
+        updateClick(x, y);
+        updateHover(x, y);
+    }
 }
 
 // Updates the buttons on-press states of this menu
@@ -71,4 +135,12 @@ void iMenu::render() const
     if (m_drawButtons)
         for (const Button& btn : m_buttons)
             btn.render();
+}
+
+// Sets alpha on both menu's and buttons
+void iMenu::setAlpha(float alpha)
+{
+    m_background.alpha = alpha;
+    for (Button& btn : m_buttons)
+        btn.setAlpha(alpha);
 }
