@@ -1,6 +1,5 @@
 #include <Misc\GUI\iMenuSkillPick.h>
 #include <Graphics\include\RenderQueue.h>
-#include <Misc\StringConverter.h>
 
 using namespace Logic;
 

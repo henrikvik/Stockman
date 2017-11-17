@@ -1,6 +1,7 @@
 #include <Misc\GUI\iMenuFactory.h>
 #include <Misc\GUI\iMenuAction.h>
 #include <Graphics\include\RenderInfo.h>
+#include "..\..\..\include\Misc\GUI\iMenuCards.h"
 
 using namespace Logic;
 
@@ -15,7 +16,7 @@ iMenuFactory::~iMenuFactory() { }
 const std::map<int, Resources::Textures::Files> LookUp =
 {
     { 0, Resources::Textures::Mainmenutext },               // - The four selections on the starting screen
-    { 1, Resources::Textures::gameOverMenuButtons },        // OLD - Remove later
+    { 1, Resources::Textures::CardBackground },                  // card backgrounds
     { 2, Resources::Textures::SettingsMenuButtons },        // OLD - Remove later
     { 3, Resources::Textures::Skillpicksheet },             // - Skill pick buttons, and continue button
     { 4, Resources::Textures::Backbutton },                 // OLD - Remove later
@@ -86,7 +87,7 @@ iMenuSkillPick* iMenuFactory::buildMenuSkill()
 
 iMenu * iMenuFactory::buildMenuCard()
 {
-    iMenu* menu = newd iMenu(iMenu::CardSelect);
+    iMenu* menu = newd iMenuCards(iMenu::CardSelect);
     iMenu::ButtonData btn;
 
     menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));

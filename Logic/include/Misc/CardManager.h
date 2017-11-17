@@ -30,8 +30,10 @@ namespace Logic
         void handleCard(Player &player, Card const &card);
 
 		void createDeck(int nrOfEach);
-		void pickThree(bool damaged);
+		void pickThreeCards(bool damaged);
 		Card pick(int cardIndex);
+ 
+        std::vector<Card*> getHand();
 	private:
 		static const int HEALTH_PACK;
 		static const int HAND_SIZE;
@@ -44,6 +46,9 @@ namespace Logic
         std::vector<int>                            m_hand;
 		std::vector<std::pair<CardCondition, int>>  m_deck;
         std::vector<Card>                           m_cards;
+
+        //temp
+        std::vector<Card*> currenthand;
 	};
 }
 
