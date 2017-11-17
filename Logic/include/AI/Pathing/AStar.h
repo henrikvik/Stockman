@@ -24,7 +24,7 @@ namespace Logic
 			};
 
 			// debugging
-			DebugRenderInfo debugDataTri, debugDataEdges;
+            NewDebugRenderInfo debugDataTri, debugDataEdges;
 
 			// to calc path testing rn
 			struct NavNode
@@ -55,7 +55,7 @@ namespace Logic
 			NavigationMesh navigationMesh;
             NavigationMeshGeneration generator;
 
-            bool renderDebug;
+            bool renderDebugTri, renderDebugEdges;
 			int targetIndex; // save the triangle id to share beetwen path loading
 		
 			float heuristic(DirectX::SimpleMath::Vector3 const &from,
@@ -98,7 +98,8 @@ namespace Logic
 			void generateNavigationMesh(Physics &physics);
 
             // debugging
-            bool isRenderingDebug() const;
+            bool isRenderingDebugTri() const;
+            bool isRenderingDebugEdges() const;
 	};
 }
 #endif

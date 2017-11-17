@@ -147,11 +147,11 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 
 void AStar::renderNavigationMesh()
 {
-    if (debugDataTri.points)   QueueRender(debugDataTri);
-    if (debugDataEdges.points) QueueRender(debugDataEdges);
+    if (debugDataTri.points && renderDebugTri)      QueueRender(debugDataTri);
+    if (debugDataEdges.points && renderDebugEdges)  QueueRender(debugDataEdges);
 }
 
-void AStar::loadTargetIndex(Entity const & target)
+void AStar::loadTargetIndex(Entity const &target)
 {
     if (targetIndex == -1 || !isEntityOnIndex(target, targetIndex))
         targetIndex = navigationMesh.getIndex(target.getPosition());
@@ -162,12 +162,12 @@ int AStar::getTargetIndex()
     return targetIndex;
 }
 
-int AStar::getIndex(Entity const & entity) const
+int AStar::getIndex(Entity const &entity) const
 {
     return navigationMesh.getIndex(entity.getPosition());
 }
 
-int AStar::isEntityOnIndex(Entity const & entity, int index) const
+int AStar::isEntityOnIndex(Entity const &entity, int index) const
 {
     return navigationMesh.isPosOnIndex(entity.getPosition(), index);
 }
@@ -182,15 +182,28 @@ void AStar::generateNavigationMesh(Physics &physics)
     generator.registerGenerationCommand(navigationMesh, physics);
     //generator.generateNavMeshOld(navigationMesh, {}, {});
     generator.generateNavigationMesh(navigationMesh, physics);
-    DebugWindow::getInstance()->registerCommand("AI_TOGGLE_DEBUG",
-        [&](std::vector<std::string> para) -> std::string {
-        renderDebug = !renderDebug;
 
-        if (!renderDebug) return "AI Debug Disabled";
+    DebugWindow::getInstance()->registerCommand("AI_TOGGLE_DEBUG_TRI",
+        [&](std::vector<std::string> para) -> std::string {
+        renderDebugTri = !renderDebugTri;
+
+        if (!renderDebugTri) return "AI Debug (Triangles) Disabled";
         else
         {
             setupDebugging();
-            return "AI Debug On";
+            return "AI Debug (triangles) On";
+        }
+    });
+
+    DebugWindow::getInstance()->registerCommand("AI_TOGGLE_DEBUG_EDGE",
+        [&](std::vector<std::string> para) -> std::string {
+        renderDebugEdges = !renderDebugEdges;
+
+        if (!renderDebugEdges) return "AI Debug (edges) Disabled";
+        else
+        {
+            setupDebugging();
+            return "AI Debug (edges) On";
         }
     });
 
@@ -213,12 +226,15 @@ void AStar::setupDebugging()
     debugDataTri.color = DirectX::SimpleMath::Color(0, 1, 0);
     debugDataTri.useDepth = false;
     debugDataTri.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-    debugDataTri.points = navigationMesh.getRenderDataTri();
+    debugDataTri.points = reinterpret_cast<std::vector<NewDebugRenderInfo::Point>*>
+        (navigationMesh.getRenderDataTri()); // this is cheesy
+
 
     debugDataEdges.color = DirectX::SimpleMath::Color(0, 0, 1);
     debugDataEdges.useDepth = false;
     debugDataEdges.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-    debugDataEdges.points = navigationMesh.getRenderDataEdges();
+    debugDataEdges.points = reinterpret_cast<std::vector<NewDebugRenderInfo::Point>*>
+        (navigationMesh.getRenderDataEdges()); // this is cheesy;
 }
 
 // this can maybe be optimized record most used functions to see which is needed
@@ -232,9 +248,14 @@ bool AStar::nodeInQue(int index, std::priority_queue<NavNode*> que) const
     return false;
 }
 
-bool AStar::isRenderingDebug() const
+bool AStar::isRenderingDebugTri() const
 {
-    return renderDebug;
+    return renderDebugTri;
+}
+
+bool AStar::isRenderingDebugEdges() const
+{
+    return renderDebugEdges;
 }
 
 void AStar::initDebugRendering()
@@ -243,7 +264,8 @@ void AStar::initDebugRendering()
     debugDataEdges.points = nullptr;
     // for testing
     targetIndex = 0;
-    renderDebug = false;
+    renderDebugTri = false;
+    renderDebugEdges = false;
 }
 
 void AStar::createNodes()

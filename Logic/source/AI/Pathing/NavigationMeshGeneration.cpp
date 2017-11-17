@@ -13,9 +13,9 @@ using namespace Logic;
 #define toSimple(vec) {vec.x(), vec.y(), vec.z()}
 
 const int NavigationMeshGeneration::AI_UID = 1061923, NavigationMeshGeneration::NO_ID = -5;
-const float NavigationMeshGeneration::SEED_CUBES = 70.f, NavigationMeshGeneration::PRECISION_BASE = 0.05f;
+const float NavigationMeshGeneration::SEED_CUBES = 255.f, NavigationMeshGeneration::PRECISION_BASE = 0.05f;
 int NavigationMeshGeneration::COUNTER = 0;
-const btVector3 NavigationMeshGeneration::unitDimension = { 0.2f, 0.2f, 0.2f }; // i know it is not 1, todo
+const btVector3 NavigationMeshGeneration::unitDimension = { 1.f, 0.2f, 1.f }; // i know it is not 1, todo
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
@@ -180,7 +180,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
         {
             distance = 0.f;
             collided = false;
-            while (!region.collided[side] && distance < maxLength && !region.done)
+            while (!collided && distance < maxLength && !region.done)
             {
                 growRegion(region, growth[side]);
 
@@ -285,6 +285,7 @@ void NavigationMeshGeneration::loadPhysicsObjects(Physics &physics)
         if (staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer()))) // it is a static objects
             if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))                          // dont want to cull it
                 if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // and it is box shape
+                    if (bs->getHalfExtentsWithoutMargin().length() > 2)
                         physicsObjects.push_back({ obj, staticObj });
     }
 }
@@ -308,7 +309,7 @@ bool NavigationMeshGeneration::handlePhysicsCollisionTest(NavMeshCube &region, P
             const btCollisionObjectWrapper* colObj0, int partId0, int index0,
             const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
     {
-        if (abs(cp.getDistance()) > precision) return 0;
+        if (abs(cp.getDistance()) <= precision)
         {
             cp.m_localPointA += region.body->getWorldTransform().getOrigin();
             CollisionReturn ret = handleCollision(cp.m_localPointA, region, staticObj, growth[side],
@@ -348,7 +349,7 @@ bool NavigationMeshGeneration::handleRegionCollisionTest(NavMeshCube &region, Ph
             const btCollisionObjectWrapper* colObj0, int partId0, int index0,
             const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
     {
-        if (abs(cp.getDistance()) < precision)
+        if (abs(cp.getDistance()) <= precision)
         {
             const btCollisionObject *obj = colObj1->getCollisionObject();
 
@@ -365,7 +366,7 @@ bool NavigationMeshGeneration::handleRegionCollisionTest(NavMeshCube &region, Ph
             physics.contactPairTest(region.body, other.body, resRegions);
         }
 
-    if (region.collided[side]) // can be close to multiple regions
+    if (collided) // can be close to multiple regions
         shrinkRegion(region, growth[side]);
 
     return collided;
@@ -576,7 +577,7 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
             const btCollisionObjectWrapper* colObj0, int partId0, int index0,
             const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
     {
-        if (cp.getDistance() > precision) return 0;
+        if (std::abs(cp.getDistance()) > precision) return 0;
 
         collision = true;
 
@@ -594,7 +595,7 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
     {
         for (auto &reg : regions)
         {
-            if (!reg.remove && reg.body && &reg != &reg && reg.userIndex != reg.buddyIndex)
+            if (!reg.remove && reg.body && &cube != &reg && reg.userIndex != cube.buddyIndex)
                 physics.contactPairTest(temp, reg.body, res);
             if (collision) break;
         }
@@ -612,7 +613,6 @@ void NavigationMeshGeneration::seedArea(btVector3 position, btVector3 fullDimens
 
     for (float partX = 0.f; partX < fullDimension.x(); partX += piece.x())
     {
-        position.setZ(startZ);
         position.setX(position.x() + piece.x());
         for (float partZ = 0.f; partZ < fullDimension.z(); partZ += piece.z())
         {

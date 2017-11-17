@@ -49,8 +49,10 @@ namespace Logic
 			const std::vector<Triangle>& getList() const;
 			const std::vector<DirectX::SimpleMath::Vector3>& getNodes() const;
 
-			std::vector<DirectX::SimpleMath::Vector3>* getRenderDataTri();
-			std::vector<DirectX::SimpleMath::Vector3>* getRenderDataEdges();
+            std::vector<std::pair<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Color>>* 
+                getRenderDataTri();
+            std::vector<std::pair<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Color>>* 
+                getRenderDataEdges();
 		private:
 			std::vector<Triangle> triangleList;
 			std::vector<DirectX::SimpleMath::Vector3> nodes;

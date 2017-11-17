@@ -6,6 +6,7 @@
 using namespace Logic;
 
 const DirectX::SimpleMath::Vector3 NavigationMesh::dir = DirectX::SimpleMath::Vector3(0.f, -1.f, 0.f);
+typedef std::pair<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Color> Point;
 
 NavigationMesh::NavigationMesh()
 {
@@ -94,27 +95,27 @@ const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() cons
 	return nodes;
 }
 
-std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataTri() 
+std::vector<Point>* NavigationMesh::getRenderDataTri() 
 {
-	std::vector<DirectX::SimpleMath::Vector3> *data =
-		newd std::vector<DirectX::SimpleMath::Vector3>();
+	std::vector<Point> *data = newd std::vector<Point>();
 
-    for (Triangle const &tri : triangleList)
+    for (size_t t = 0; t < triangleList.size(); t++)
     {
         for (int i = 0; i < 3; i++) // List of lines to make a triangle
         {
-            data->push_back(tri.vertices[i]);
-            data->push_back(tri.vertices[i == 2 ? 0 : i + 1]);
+            data->push_back({ triangleList[t].vertices[i], 
+                DirectX::SimpleMath::Color( (t * t) % 255 / 255.f, (t + t) % 255 / 255.f, (t + t * 2) % 255 / 255.f ) });
+            data->push_back({triangleList[t].vertices[i == 2 ? 0 : i + 1], 
+                DirectX::SimpleMath::Color( (t * t) % 255 / 255.f, (t + t) % 255 / 255.f, (t + t * 2) % 255 / 255.f ) });
         }
     }
 
 	return data;
 }
 
-std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataEdges()
+std::vector<Point>* NavigationMesh::getRenderDataEdges()
 {
-	std::vector<DirectX::SimpleMath::Vector3> *data =
-		new std::vector<DirectX::SimpleMath::Vector3>();
+    std::vector<Point> *data = newd std::vector<Point>();
 
     for (auto node : nodes)
     {
@@ -126,8 +127,10 @@ std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataEdges()
 	{
 		for (int i = 0; i < listEdges[j].size(); i++)
 		{
-			data->push_back(nodes[j]);
-			data->push_back(nodes[listEdges[j][i].index]);
+            data->push_back({ nodes[j],                       { 0.f, 0.f, 255.f } });
+            data->push_back({ listEdges[j][i].connectionNode, { 255.f, 0.f, 255.f } });
+            data->push_back({ listEdges[j][i].connectionNode, { 255.f, 0.f, 255.f } });
+            data->push_back({ nodes[listEdges[j][i].index],   { 0.f, 0.f, 255.f } });
 		}
 	}
 
