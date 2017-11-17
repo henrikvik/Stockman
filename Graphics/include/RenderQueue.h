@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <Engine\newd.h>
 #include "RenderInfo.h"
+#include <Engine/Profiler.h>
 
 class RenderQueue
 {
@@ -22,6 +23,7 @@ public:
     #endif
     {
         static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
+        PROFILE_BEGIN("RenderQueue::queue()");
 
         #ifdef _DEBUG
         info.FILE = FILE;
@@ -38,6 +40,7 @@ public:
             QueueContainer<T> * container = getQueueContainer<T>();
             container->queue(info);
         }
+        PROFILE_END();
     }
 
     #ifdef _DEBUG
@@ -54,14 +57,17 @@ public:
     {
         static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
 
+
         if constexpr (std::is_base_of_v<StaticRenderInfo, T>)
         {
             InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
+
             return container->instances;
         }
         else
         {
             QueueContainer<T> * container = getQueueContainer<T>();
+
             return container->instances;
         }
     }

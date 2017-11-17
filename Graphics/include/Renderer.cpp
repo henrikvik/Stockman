@@ -334,9 +334,9 @@ namespace Graphics
 
         for (auto & renderPass : renderPasses)
         {
-            if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
+            //if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
             renderPass->render();
-            if (DebugAnnotation) DebugAnnotation->EndEvent();
+            //if (DebugAnnotation) DebugAnnotation->EndEvent();
         }
     }
 
@@ -363,6 +363,8 @@ namespace Graphics
                     StaticInstance instance = {};
                     instance.world = sinfo.transform;
                     instance.worldInvT = sinfo.transform.Invert().Transpose();
+                    instance.color = sinfo.color;
+                    instance.useGridTexture = sinfo.useGridTexture;
                     *instanceBuffer++ = instance;
                 }
             }
@@ -379,6 +381,8 @@ namespace Graphics
                     AnimatedInstance instance = {};
                     instance.world = info.transform;
                     instance.worldInvT = info.transform.Invert().Transpose();
+                    instance.color = info.color;
+                    instance.useGridTexture = info.useGridTexture;
 
                     if (strlen(info.animationName) != 0)
                     {

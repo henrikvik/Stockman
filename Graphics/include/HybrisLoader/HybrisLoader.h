@@ -26,5 +26,6 @@ namespace HybrisLoader
         std::map<Resources::Models::Files, Model*> models;
 
         Hybris::File loadFile(const char * filePath);
+        Hybris::FileWithHitbox loadHBFile(const char * filePath);
     };
 }

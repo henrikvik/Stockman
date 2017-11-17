@@ -11,13 +11,13 @@ namespace Hybris
         List(List & other);
         virtual ~List();
 
-        size_t size;
+        count_t size;
         T*     data;
 
         void release();
 
-        T&       operator[](size_t index);
-        T const& operator[](size_t index) const;
+        T&       operator[](count_t index);
+        T const& operator[](count_t index) const;
         List<T>& operator=(List<T> & other);
         List<T>& operator=(std::vector<T> & vector);
     };
@@ -48,13 +48,13 @@ namespace Hybris
     }
 
     template<typename T>
-    T & List<T>::operator[](size_t index)
+    T & List<T>::operator[](count_t index)
     {
         return data[index];
     }
 
     template<typename T>
-    T const& List<T>::operator[](size_t index) const
+    T const& List<T>::operator[](count_t index) const
     {
         return data[index];
     }

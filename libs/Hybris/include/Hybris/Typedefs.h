@@ -5,7 +5,7 @@ namespace Hybris
 {
     typedef float time_t;
     typedef int32_t id_t;
-    typedef uint32_t count_t;
+    typedef uint64_t count_t;
     typedef char name_t[128];
     typedef float vector2_t[2];
     typedef float vector3_t[3];
