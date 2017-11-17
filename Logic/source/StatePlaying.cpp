@@ -135,6 +135,7 @@ void StatePlaying::update(float deltaTime)
     {
         m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
         m_cardManager->pickThreeCards(m_player->getHP() != 3);
+        m_projectileManager->removeEnemyProjCallbacks();
 
         //TODO temp
         fullhack = true;

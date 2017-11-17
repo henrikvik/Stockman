@@ -188,6 +188,15 @@ void ProjectileManager::removeAllProjectiles()
         removeProjectile(m_projectilesActive[0], 0);
 }
 
+void Logic::ProjectileManager::removeEnemyProjCallbacks()
+{
+    for (Projectile* p : m_projectilesActive)
+    {
+        if (p->getProjectileData().enemyBullet)
+            p->clearCallbacks(true);
+    }
+}
+
 std::vector<Projectile*>& ProjectileManager::getProjectiles()
 {
 	return m_projectilesActive;
