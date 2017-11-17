@@ -99,7 +99,7 @@ void EntityManager::registerCreationFunctions()
     };
     m_enemyFactory[EnemyType::FLYING] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.2f, 1.2f, 1.2f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 4.2f, 2.2f, 4.2f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
