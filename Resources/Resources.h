@@ -125,8 +125,8 @@ namespace Resources
         enum Files
         {
             Backbutton,
-            Color_pick_icons,
             Crosshair,
+            Gameover,
             gameOverMenuButtons,
             gameOverTexture,
             Gamesheet,
@@ -137,7 +137,6 @@ namespace Resources
             HUDIcons,
             IntroScreen,
             Loadingscreen,
-            mainMenuButton,
             MainmenuClean,
             mainmenupicture,
             Mainmenutext,
@@ -154,8 +153,8 @@ namespace Resources
         const std::map<Files, const char *> Paths =
         {
             {Backbutton, R"(..\Resources\Textures\Backbutton.dds)"},
-            {Color_pick_icons, R"(..\Resources\Textures\Color_pick_icons.dds)"},
             {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
+            {Gameover, R"(..\Resources\Textures\Gameover.dds)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
@@ -166,7 +165,6 @@ namespace Resources
             {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
             {IntroScreen, R"(..\Resources\Textures\IntroScreen.dds)"},
             {Loadingscreen, R"(..\Resources\Textures\Loadingscreen.dds)"},
-            {mainMenuButton, R"(..\Resources\Textures\mainMenuButton.png)"},
             {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},

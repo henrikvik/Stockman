@@ -31,6 +31,12 @@ namespace Logic
             FloatRect                   texRectActive;  // The texture-coordinates on the button-map
             Resources::Textures::Files  texture;        // What buttonmap-texture this button is present inside
             std::function<void(void)>   callback;       // What function this button calls
+
+            void move(DirectX::SimpleMath::Vector2 add)
+            {
+                screenRect.bottomRight   += add;
+                screenRect.topLeft       += add;
+            }
         };
 
         iMenu(MenuGroup group);
@@ -60,6 +66,7 @@ namespace Logic
         Fader                   m_fader;
         bool                    m_safeToRemove;
         bool                    m_isFading;
+        float                   m_fadingTimer;
 
         // Menu
         SpriteRenderInfo        m_background;
