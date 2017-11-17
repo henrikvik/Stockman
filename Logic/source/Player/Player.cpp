@@ -28,6 +28,7 @@
 
 using namespace Logic;
 
+const int Player::MIN_Y = -80.f;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
 Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
@@ -531,6 +532,10 @@ void Player::updateSpecific(float deltaTime)
     /*}*/
 
     Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
+
+    // for handling death
+    if (getPositionBT().y() < MIN_Y)
+        m_hp = 0;
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)

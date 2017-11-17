@@ -9,6 +9,7 @@
 #include <Projectile\Projectile.h>
 
 using namespace Logic;
+const int Enemy::MIN_Y = -80.f;
 
 Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId)
 : Entity(body, halfExtent)
@@ -91,6 +92,9 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
     m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
     light.position = enemyRenderInfo.transform.Translation();
+
+    if (getPositionBT().y() < MIN_Y)
+        damage(m_health);
 }
 
 void Enemy::debugRendering()

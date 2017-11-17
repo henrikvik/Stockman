@@ -28,10 +28,11 @@ namespace Logic
 
             enum TriggerType
             {
-                EMPTY,  // so the list start at 1
+                EMPTY,  // so the list start at 1 (so stupid)
                 JUMPPAD,
                 AMMO_PICKUP_BOLT,
-                AMMO_PICKUP_CRYSTAL
+                AMMO_PICKUP_CRYSTAL,
+                KILL_DEATH_ZONE
             };
 
 			Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, TriggerType type, float cooldown, bool reusable);

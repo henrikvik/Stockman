@@ -62,6 +62,8 @@ namespace Logic
 		};
 
 	private:
+        static const int MIN_Y;
+
         // Special modes (move to other class)
         bool m_godMode, m_noclip;
 
