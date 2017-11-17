@@ -95,7 +95,7 @@ void Map::loadStartMenuScene()
     hitboxes.push_back({ { 0, 0.0f, 0 },{ 0, 0, 0 },{ 0.55f, 0.55f, 0.55f },    Resources::Models::UnitCube });
     hitboxes.push_back({ { 3, 0.0f, 0.5 },{ 0, 0, 0 },{ 1, 0.75, 1 },    Resources::Models::UnitCube });
     hitboxes.push_back({ { -3, 0.0f, -1 },{ 0, 35, 0 },{ 1, 0.75, 1 },    Resources::Models::UnitCube });
-    hitboxes.push_back({ { 3, 1.0f, 0.5 },{ 0, 35, 0 },{ 1, 1, 1 },    Resources::Models::SummonUnit });
+    hitboxes.push_back({ { 3, 1.0f, 0.5 },{ 0, 35, 0 },{ 1, 1, 1 },    Resources::Models::StaticSummon });
     hitboxes.push_back({ { -3, 1.0f, -1 },{ 0, 45, 0 },{ 1, 1, 1 },    Resources::Models::StaticSummon });
 
     for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
