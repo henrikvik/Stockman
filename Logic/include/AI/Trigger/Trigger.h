@@ -3,7 +3,6 @@
 
 #include <Graphics\include\RenderQueue.h>
 
-#include <Player\Player.h>
 #include <Entity\Entity.h>
 
 #pragma region ClassDesc
@@ -22,6 +21,9 @@
 
 namespace Logic
 {
+    class Player;
+    class StaticObject;
+
 	class Trigger : public Entity
 	{
 		public:
@@ -44,6 +46,8 @@ namespace Logic
 			void updateSpecific(float deltaTime);
             virtual void updateSpecificType(float deltaTime) {};
 			void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
+            void onCollisionPlayer(Player& player);
+            void onCollisionTerrain(StaticObject& terrain);
 
             TriggerType getType() const;
 			bool getShouldRemove() const;
