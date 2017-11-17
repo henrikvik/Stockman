@@ -5,7 +5,7 @@
 #include <thread>
 
 #include <AI/WaveManager.h>
-#include <AI/TriggerManager.h>
+#include <AI/Trigger/TriggerManager.h>
 
 #pragma region ClassDesc
 	/*
@@ -26,6 +26,7 @@ namespace Logic
     class Enemy;
     class Renderer;
     class EnemyThreadHandler;
+    enum TriggerType;
 
 	class EntityManager
 	{
@@ -92,8 +93,8 @@ namespace Logic
 		void spawnWave(int waveId);
 		Enemy* spawnEnemy(EnemyType id, btVector3 const &pos, std::vector<int> const &effects,
 			Physics &physics, ProjectileManager *projectiles);
-		Trigger* spawnTrigger(int id, btVector3 const &pos, std::vector<int> &effects,
-			Physics &physics, ProjectileManager *projectiles);
+		Trigger* spawnTrigger(int id, btVector3 const &pos,
+            std::vector<int> &effects, Physics &physics, ProjectileManager *projectiles);
 
         // sets & gets
         void setSpawnFunctions(ProjectileManager &projManager, Physics &physics);

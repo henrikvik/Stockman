@@ -18,14 +18,23 @@
 #pragma endregion
 
 #define TRIGGER_MASS		0.f		// Should always be 0.f, unless debugging
-#define TRIGGER_IS_SENSOR	true	// Should always be false, unless debugging
+#define TRIGGER_IS_SENSOR	true	// Should always be true, unless debugging
 
 namespace Logic
 {
 	class Trigger : public Entity
 	{
 		public:
-			Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, float cooldown, bool reusable);
+
+            enum TriggerType
+            {
+                EMPTY,  // so the list start at 1
+                JUMPPAD,
+                AMMO_PICKUP_BOLT,
+                AMMO_PICKUP_CRYSTAL
+            };
+
+			Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, TriggerType type, float cooldown, bool reusable);
 			virtual ~Trigger();
 
 			void addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades);
@@ -33,8 +42,10 @@ namespace Logic
 			void affect(int stacks, Effect const & effect, float deltaTime);
 
 			void updateSpecific(float deltaTime);
+            virtual void updateSpecificType(float deltaTime) {};
 			void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
 
+            TriggerType getType() const;
 			bool getShouldRemove() const;
 			bool getIsActive() const;
 			bool getIsReusable() const;
@@ -47,6 +58,7 @@ namespace Logic
             void render() const;
 
 		private:
+            TriggerType m_type;
 			bool m_remove;
 			bool m_active;
 			bool m_reusable;

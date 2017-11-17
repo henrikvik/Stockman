@@ -4,7 +4,7 @@
 #include <Misc\ComboMachine.h>
 
 #include <AI\EnemyTest.h>
-#include <AI\Trigger.h>
+#include <AI\Trigger\Trigger.h>
 
 #include <Projectile\ProjectileManager.h>
 
@@ -509,9 +509,9 @@ void Player::updateSpecific(float deltaTime)
         {
             // Primary and secondary attack
             if ((ms.leftButton))
-                m_weaponManager->tryUsePrimary(getPositionBT() + getForwardBT(), m_camYaw, m_camPitch, *this);
+                m_weaponManager->tryUsePrimary(getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
             else if (ms.rightButton)
-                m_weaponManager->tryUseSecondary(getPositionBT() + getForwardBT(), m_camYaw, m_camPitch, *this);
+                m_weaponManager->tryUseSecondary(getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
 
             // Reload
             if (ks.IsKeyDown(m_reloadWeapon))
