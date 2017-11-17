@@ -40,11 +40,13 @@ namespace Resources
             Crossbow,
             Crossbowbolt,
             Crossbowbolts,
+            Firepit,
             Hammer,
             Island,
             SkySphere,
             Staff,
             StaticSummon,
+            SummonUnit,
             Tablet1,
             UnitCube
         };
@@ -56,11 +58,13 @@ namespace Resources
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
             {Crossbowbolt, R"(..\Resources\Models\Crossbowbolt.hyb)"},
             {Crossbowbolts, R"(..\Resources\Models\Crossbowbolts.hyb)"},
+            {Firepit, R"(..\Resources\Models\Firepit.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {Island, R"(..\Resources\Models\Island.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
+            {SummonUnit, R"(..\Resources\Models\SummonUnit.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
@@ -143,6 +147,7 @@ namespace Resources
             mainmenupicture,
             Mainmenutext,
             MissingTexture,
+            Pausetext,
             randomNormals,
             Settings,
             SettingsMenuButtons,
@@ -171,6 +176,7 @@ namespace Resources
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
+            {Pausetext, R"(..\Resources\Textures\Pausetext.dds)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {Settings, R"(..\Resources\Textures\Settings.dds)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},

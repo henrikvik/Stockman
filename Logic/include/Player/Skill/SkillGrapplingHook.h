@@ -38,6 +38,7 @@ namespace Logic
 		void onRelease();
 		void onUpdate(float deltaTime);
         virtual void render() const override;
+        void onAffect(Effect const & effect);
 
 		GrapplingHookState getState() const;
 	private:

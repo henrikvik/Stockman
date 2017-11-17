@@ -221,7 +221,7 @@ void Logic::HUDManager::updateTextElements()
     //total ammo of weapon
     if (info.currentWeapon == 0)
     {
-        liveText.push_back(std::to_wstring(info.activeAmmo[0] + info.activeAmmo[1]));
+        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 430);
@@ -229,7 +229,7 @@ void Logic::HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
 
-        liveText.push_back(std::to_wstring(info.inactiveAmmo[0] + info.inactiveAmmo[1]));
+        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 630);
@@ -239,7 +239,7 @@ void Logic::HUDManager::updateTextElements()
     }
     else
     {
-        liveText.push_back(std::to_wstring(info.activeAmmo[0] + info.activeAmmo[1]));
+        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 632);
@@ -248,7 +248,7 @@ void Logic::HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
 
-        liveText.push_back(std::to_wstring(info.inactiveAmmo[0] + info.inactiveAmmo[1]));
+        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]));
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 428);

@@ -77,6 +77,7 @@ void SkillBulletTime::onReset()
 
 void SkillBulletTime::onUpdate(float deltaTime)
 {
+    
 	if (m_sensor)
 	{
 		if (m_sensor->getProjectileData().ttl < deltaTime)
@@ -113,6 +114,10 @@ void SkillBulletTime::onUpdate(float deltaTime)
 	{
 		m_sensor->getRigidBody()->setWorldTransform(m_travelProjectile->getTransform());
 	}*/
+}
+
+void SkillBulletTime::onAffect(Effect const & effect)
+{
 }
 
 void SkillBulletTime::render() const

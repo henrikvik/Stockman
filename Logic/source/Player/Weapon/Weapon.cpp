@@ -89,10 +89,10 @@ ProjectileData* Weapon::getProjectileData()
 	return m_projectileData;
 }
 
-float Weapon::getAttackTimer()
+float Weapon::getAttackTimer(float modifier)
 {
     if (m_wInfo.attackRate != 0)
-        return (60.f / m_wInfo.attackRate) * 1000;
+       return (60.f / m_wInfo.attackRate) * 1000 * modifier;
     else
         return 0.f;
 }

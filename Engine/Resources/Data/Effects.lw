@@ -1,6 +1,6 @@
 { // ON FIRE
 	"flags": 2; // 0x1
-	"duration": 3000f;
+	"duration": 10000f;
 	"modifiers": 1;
 	"specifics": 0;
 
@@ -9,6 +9,9 @@
 	"mFirerate": 0f;
 	"mHP": 0f;
 	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 }
 { // FREEZE
 	"flags": 4; // 0x4
@@ -17,7 +20,7 @@
 	"specifics": 1;
 
 	"sBulletTime": 0f;
-	"sFreezing": 0.99f;
+	"sFreezing": 0.95f;
 	"sAmmoType": 0f;
 }
 { // JUMP-PAD
@@ -31,9 +34,12 @@
 	"mFirerate": 0f;
 	"mHP": 0f;
 	"mMovementSpeed": 2.f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 }
 { // AMMO_PICK_UP_PRIMARY
-	"flags": 512; // 0x200
+	"flags": 131584; // 0x200 + 0x20000
 	"duration": 0f;
 	"modifiers": 0;
 	"specifics": 1;
@@ -43,7 +49,7 @@
 	"sAmmoType": 0f;
 }
 { // AMMO_PICK_UP_SECONDARY
-	"flags": 512; // 0x200
+	"flags": 131584; // 0x200 + 0x20000
 	"duration": 0f;
 	"modifiers": 0;
 	"specifics": 1;
@@ -79,6 +85,9 @@
 	"mFirerate": 10f;
 	"mHP": 0f;
 	"mMovementSpeed": 2f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 }
 { // HEALTH +1
 	"flags": 32;
@@ -91,6 +100,9 @@
 	"mFirerate": 0f;
 	"mHP": 1f;
 	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 }
 { //STUN
     "flags" : 16384; // 0x4000
@@ -103,6 +115,9 @@
 	"mFirerate": 0f;
 	"mHP": 0f;
 	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 }
 { //MOVEMENTSPEED UP
     "flags" : 32768; // 0x8000
@@ -115,6 +130,9 @@
 	"mFirerate": 0f;
 	"mHP": 0f;
 	"mMovementSpeed": 2.0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 }
 { //MOVEMENTSPEED DOWN
     "flags" : 32768; // 0x8000
@@ -127,6 +145,9 @@
 	"mFirerate": 0f;
 	"mHP": 0f;
 	"mMovementSpeed": 0.5f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 }
 { // ON KILL
 	"flags": 1; // 0x1
@@ -138,9 +159,114 @@
 	"sFreezing": 0.1f;
 	"sAmmoType": 0f;
 }
+{ // add ammo cap 20 permanently
+	"flags": 16908288; // 0x10000 + 0x1000000
+	"duration" : 0f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 20;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}
+{ // add mag size 40 permanently
+	"flags": 33685504; // 0x10000 + 0x1000000
+	"duration" : 0f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 40;
+    "mSkillCDDecrease" : 0f;
+}
+{ // add 20% movement speed permanently
+	"flags": 67108864; // 0x4000000
+	"duration" : 0f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0.2f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}
+{ // decrease skill cd by 20% permanently
+	"flags": 4456448; // 0x40000 +  0x400000
+	"duration" : 0f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0.2f;
+}
 { // INVULNERABLE
 	"flags": 1024; // 0x400
 	"duration": 1000f;
 	"modifiers": 0;
 	"specifics": 0;
+}
+{ // INCREASE RATE OF FIRE 
+	"flags": 134348800; // 0x20000 + 0x8000000
+	"duration" : 0f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0.2f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}
+{ // decrease reload time 
+	"flags": 268566528; // 0x20000 + 0x10000000
+	"duration" : 0f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0.2f;
+}
+{ // increase jump height by 20% 
+	"flags": 536870912; // 0x20000000
+	"duration" : 0f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0.2f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 }
