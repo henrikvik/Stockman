@@ -237,6 +237,7 @@ Behavior* Enemy::getBehavior() const
 void Enemy::render() const
 {
     renderSpecific();
-    QueueRender(enemyRenderInfo);
+    if (getEnemyType() != EnemyType::NECROMANCER_MINION) // nice code here (REPLACE OH MAH GOD)
+        QueueRender(enemyRenderInfo);
     QueueRender(light);
 }
