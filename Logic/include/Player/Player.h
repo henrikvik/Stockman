@@ -62,6 +62,8 @@ namespace Logic
 		};
 
 	private:
+        static const int MIN_Y;
+
         // Special modes (move to other class)
         bool m_godMode, m_noclip;
 
@@ -87,6 +89,8 @@ namespace Logic
 		btVector3 m_moveDir; // only 2 dimensional movement direction (x, z)
 		float m_moveSpeed;
         float m_moveSpeedMod;
+        float m_permanentSpeedMod;
+        float m_jumpSpeedMod;
 		float m_acceleration;
 		float m_deacceleration;
 		float m_airAcceleration;
@@ -146,7 +150,6 @@ namespace Logic
 		void init(Physics* physics, ProjectileManager* projectileManager);
 		void clear();
 		void reset();
-        
 
 		void updateSpecific(float deltaTime);
 
@@ -155,7 +158,6 @@ namespace Logic
 
 		void affect(int stacks, Effect const &effect, float deltaTime);
         void onEffectEnd(int stacks, Effect const &effect);
-		void upgrade(Upgrade const &upgrade);
 
 		void render() const; 
 		void setMaxSpeed(float maxSpeed);

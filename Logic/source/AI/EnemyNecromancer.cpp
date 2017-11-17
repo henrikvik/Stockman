@@ -21,8 +21,8 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().kill(SCORE);
         RandomGenerator::singleton().getRandomInt(0, 1) ? 
-            SpawnTrigger(2, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY }) : 
-            SpawnTrigger(3, getPositionBT(), std::vector<int>{ StatusManager::AMMO_PICK_UP_SECONDARY });
+            SpawnTrigger(2, getPositionBT() - btVector3(0.f, data.caller->getRigidBody()->getCollisionShape()->getLocalScaling().y() * 1.5f, 0.f), std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY }) : 
+            SpawnTrigger(3, getPositionBT() - btVector3(0.f, data.caller->getRigidBody()->getCollisionShape()->getLocalScaling().y() * 1.5f, 0.f), std::vector<int>{ StatusManager::AMMO_PICK_UP_SECONDARY });
     });
     m_spawnedMinions = 0;
 
@@ -95,7 +95,7 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
             damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
 
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-                getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+                getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
         }
     }
 }

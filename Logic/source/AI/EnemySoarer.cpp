@@ -39,7 +39,7 @@ void EnemySoarer::createAbilities()
         // ontick 
     }, [&](Player &player, Ability &ab) -> void {
         // onuse
-        shoot({ 0, -1, 0 }, Resources::Models::Files::CrossBowProjectile, AB1_SPEED, 5.f, 3.5f);
+        shoot({ 0, -1, 0 }, Resources::Models::Files::Crossbowbolt, AB1_SPEED, 5.f, 3.5f);
     });
 }
 
@@ -52,8 +52,8 @@ void EnemySoarer::onCollision(PhysicsObject &other, btVector3 contactPoint, floa
             damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
 
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-                getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME,
-                    pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+                getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME,
+                    pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
         }
     }
 }
@@ -64,6 +64,8 @@ void EnemySoarer::updateSpecific(Player &player, float deltaTime)
     ab1.update(deltaTime, player);
 
     getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
+    if (getPositionBT().y() > HEIGHT_OFFSET) // bad fix but better to just force it right now
+        getRigidBody()->getWorldTransform().getOrigin().setY(HEIGHT_OFFSET);
 }
 
 void EnemySoarer::updateDead(float deltaTime)

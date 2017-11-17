@@ -56,6 +56,13 @@ void ButtonFunction::quitGame()
 
 }
 
+// Just simply removes the current pause menu
+void Logic::ButtonFunction::unpause()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
+}
+
 // Switches the program's state and switching to startmenu
 void ButtonFunction::goBackToMainMenu()
 {

@@ -49,8 +49,6 @@ namespace Graphics
         , fog(device)
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
-
-
 #pragma endregion
         , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
         , animatedInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
@@ -336,9 +334,9 @@ namespace Graphics
 
         for (auto & renderPass : renderPasses)
         {
-            if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
-            renderPass->render();
-            if (DebugAnnotation) DebugAnnotation->EndEvent();
+        //    if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
+              renderPass->render();
+       //     if (DebugAnnotation) DebugAnnotation->EndEvent();
         }
     }
 

@@ -116,7 +116,8 @@ void StatePlaying::update(float deltaTime)
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
     if (m_menu->getType() == iMenu::MenuGroup::Skill ||
-        m_menu->getType() == iMenu::MenuGroup::GameOver)   // Quick "temp pause" fix for testing purposes
+        m_menu->getType() == iMenu::MenuGroup::GameOver ||
+        m_menu->getType() == iMenu::MenuGroup::Pause) // Quick "temp pause" fix for testing purposes
         return;
     PROFILE_END();
 
@@ -187,7 +188,8 @@ void StatePlaying::render() const
         m_physics->render();
 
     PROFILE_BEGIN("Player Render");
-    m_player->render();
+    if (m_menu->getType() != iMenu::MenuGroup::GameOver)
+        m_player->render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render Map");
@@ -204,7 +206,8 @@ void StatePlaying::render() const
 
     PROFILE_BEGIN("Render HUD");
     if (m_menu->getType() != iMenu::MenuGroup::Skill && 
-        m_menu->getType() != iMenu::MenuGroup::GameOver)
+        m_menu->getType() != iMenu::MenuGroup::GameOver &&
+        m_menu->getType() != iMenu::MenuGroup::Pause)
         m_hudManager.render();
     PROFILE_END();
 
@@ -220,5 +223,5 @@ void StatePlaying::gameOver()
     ComboMachine::Get().endCombo();
     m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
-    m_menu->setDeathPosition(m_player->getPosition() + DirectX::SimpleMath::Vector3(0, 20, 0));
+    m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
 }

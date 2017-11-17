@@ -3,7 +3,6 @@
 
 #include <Graphics\include\RenderQueue.h>
 
-#include <Player\Player.h>
 #include <Entity\Entity.h>
 
 #pragma region ClassDesc
@@ -22,16 +21,20 @@
 
 namespace Logic
 {
+    class Player;
+    class StaticObject;
+
 	class Trigger : public Entity
 	{
 		public:
 
             enum TriggerType
             {
-                EMPTY,  // so the list start at 1
+                EMPTY,  // so the list start at 1 (so stupid)
                 JUMPPAD,
                 AMMO_PICKUP_BOLT,
-                AMMO_PICKUP_CRYSTAL
+                AMMO_PICKUP_CRYSTAL,
+                KILL_DEATH_ZONE
             };
 
 			Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, TriggerType type, float cooldown, bool reusable);
@@ -44,6 +47,8 @@ namespace Logic
 			void updateSpecific(float deltaTime);
             virtual void updateSpecificType(float deltaTime) {};
 			void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
+            void onCollisionPlayer(Player& player);
+            void onCollisionTerrain(StaticObject& terrain);
 
             TriggerType getType() const;
 			bool getShouldRemove() const;

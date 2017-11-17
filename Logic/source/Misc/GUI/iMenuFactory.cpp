@@ -20,13 +20,13 @@ const std::map<int, Resources::Textures::Files> LookUp =
     { 2, Resources::Textures::SettingsMenuButtons },        // OLD - Remove later
     { 3, Resources::Textures::Skillpicksheet },             // - Skill pick buttons, and continue button
     { 4, Resources::Textures::Backbutton },                 // OLD - Remove later
-    { 5, Resources::Textures::Highscoretext }               // - Same as MainMenuText but with the "Back Button", that we want
+    { 5, Resources::Textures::Highscoretext },              // - Same as MainMenuText but with the "Back Button", that we want
+    { 6, Resources::Textures::Pausetext }                   // - Same as MainMenuText but with the "Return to Menu", that we want
 };
 
 iMenuIntro* iMenuFactory::buildMenuIntro()
 {
     iMenuIntro* menu = newd iMenuIntro(iMenu::Intro);
-    iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::IntroScreen, 1.f);
 
@@ -36,7 +36,6 @@ iMenuIntro* iMenuFactory::buildMenuIntro()
 iMenu* iMenuFactory::buildMenuStart()
 {
     iMenu* menu = newd iMenu(iMenu::Start);
-    iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     menu->addButton(buildButton("MenuStartGame",        ButtonFunction::startGame));
@@ -50,7 +49,6 @@ iMenu* iMenuFactory::buildMenuStart()
 iMenu * iMenuFactory::buildMenuSettings()
 {
     iMenu* menu = newd iMenu(iMenu::Settings);
-    iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
@@ -74,7 +72,6 @@ iMenu * iMenuFactory::buildMenuSettings()
 iMenuSkillPick* iMenuFactory::buildMenuSkill()
 {
     iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
-    iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
@@ -100,7 +97,6 @@ iMenu * iMenuFactory::buildMenuCard()
 iMenu * iMenuFactory::buildMenuHighscore()
 {
     iMenu* menu = newd iMenu(iMenu::Highscore);
-    iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
@@ -115,9 +111,28 @@ iMenu * iMenuFactory::buildMenuGameover()
     iMenu* menu = newd iMenu(iMenu::GameOver);
     iMenu::ButtonData btn;
 
-    menu->addBackground(Resources::Textures::MainmenuClean, 0.70f);
-    menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
-    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
+    menu->addBackground(Resources::Textures::Gameover, 1.0f);
+
+    btn = buildButton("MenuStartGame", ButtonFunction::playAgain);
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.15));
+    menu->addButton(btn);
+
+    btn = buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu);
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.05));
+    menu->addButton(btn);
+
+    return menu;
+}
+
+iMenu * iMenuFactory::buildMenuPause()
+{
+    iMenu* menu = newd iMenu(iMenu::Pause);
+
+    menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
+    menu->addButton(buildButton("MenuStartGame", ButtonFunction::unpause));
+    menu->addButton(buildButton("ReturnToMenu", ButtonFunction::goBackToMainMenu));
+
+    //menu->addButton(buildButton("HighscoreStartMenu", ButtonFunction::startMainMenu));
 
     return menu;
 }

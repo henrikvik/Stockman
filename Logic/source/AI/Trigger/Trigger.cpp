@@ -1,4 +1,8 @@
 #include <AI/Trigger/Trigger.h>
+
+#include <Player\Player.h>
+#include <Entity\StaticObject.h>
+
 using namespace Logic;
 
 Trigger::Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, TriggerType type, float cooldown, bool reusable)
@@ -37,7 +41,7 @@ void Trigger::addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades
 void Trigger::addEffects(const std::vector<StatusManager::EFFECT_ID>& effects)
 {
 	for (StatusManager::EFFECT_ID eID : effects)
-		this->getStatusManager().addStatus(eID, 1, true);
+		this->getStatusManager().addStatusResetDuration(eID, 1);
 }
 
 // Affects
@@ -72,27 +76,40 @@ void Trigger::onCollision(PhysicsObject& other, btVector3 contactPoint, float dm
 {
 	if (m_active)
 	{
-		if (Player* p = dynamic_cast<Player*>(&other))
-		{
-			// Sending statuses over to player
-			for (StatusManager::UPGRADE_ID u : getStatusManager().getActiveUpgrades())
-				p->getStatusManager().addUpgrade(u);
-			for (std::pair<int, StatusManager::EFFECT_ID> effect : getStatusManager().getActiveEffectsIDs())
-				p->getStatusManager().addStatus(effect.second, effect.first, true);
-
-			if (m_reusable)
-			{
-				// Starting Cooldown
-				m_cooldown = m_maxCooldown;
-				m_active = false;
-			}
-			else
-			{
-				// Remove this trigger
-				m_remove = true;
-			}
-		}
+        if (Player* player = dynamic_cast<Player*>(&other)) { onCollisionPlayer(*player); }
+        else if (StaticObject* terrain = dynamic_cast<StaticObject*>(&other)) { onCollisionTerrain(*terrain); }
 	}
+}
+
+void Trigger::onCollisionPlayer(Player& player)
+{
+    // Sending statuses over to player
+    player.getStatusManager().copyUpgradesFrom(getStatusManager());
+    for (std::pair<int, StatusManager::EFFECT_ID> effect : getStatusManager().getActiveEffectsIDs())
+        player.getStatusManager().addStatus(effect.second, effect.first);
+
+    if (m_reusable)
+    {
+        // Starting Cooldown
+        m_cooldown = m_maxCooldown;
+        m_active = false;
+    }
+    else
+    {
+        // Remove this trigger
+        m_remove = true;
+    }
+}
+
+void Trigger::onCollisionTerrain(StaticObject& terrain)
+{
+    if (hasCallback(ON_COLLISION))
+    {
+        CallbackData data;
+        data.caller = this;
+        data.dataPtr = reinterpret_cast<std::intptr_t> (&terrain);
+        this->callback(ON_COLLISION, data);
+    }
 }
 
 Trigger::TriggerType Trigger::getType() const

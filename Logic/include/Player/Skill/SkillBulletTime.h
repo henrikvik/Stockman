@@ -50,6 +50,7 @@ namespace Logic
         virtual void onReset();
 
 		void onUpdate(float deltaTime);
+        void onAffect(Effect const & effect);
 		virtual void render() const override;
 
 	};

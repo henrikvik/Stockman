@@ -41,6 +41,7 @@ namespace Logic
         void goBackToMainMenu();
         void playAgain();
         void quitGame();
+        void unpause();
         void writing();
         void chooseUpgrade1();
         void chooseUpgrade2();

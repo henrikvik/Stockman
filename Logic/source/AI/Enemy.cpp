@@ -9,9 +9,10 @@
 #include <Projectile\Projectile.h>
 
 using namespace Logic;
+const int Enemy::MIN_Y = -80.f;
 
-Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId)
-: Entity(body, halfExtent)
+Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset)
+: Entity(body, halfExtent, modelOffset)
 {
 	m_behavior = nullptr;
 
@@ -25,6 +26,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
     m_nrOfCallbacksEntities = 0;
     m_stunned = false;
+    m_fireTimer = 0;
 
 	//animation todo
     enemyRenderInfo.model = modelID;
@@ -84,13 +86,21 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
 	updateSpecific(player, deltaTime);
 
+    // Rotation toward the player
+    btVector3 dir = player.getPositionBT() - getPositionBT();
+    float yaw = atan2(dir.getX(), dir.getZ());
+    m_transform->setRotation(btQuaternion(yaw, 0.f, 0));
+
     // Update Render animation and position
-    enemyRenderInfo.transform = getTransformMatrix();
+    enemyRenderInfo.transform = getModelTransformMatrix();
 //    enemyRenderInfo.animationProgress += deltaTime;
 
     m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
     light.position = enemyRenderInfo.transform.Translation();
+
+    if (getPositionBT().y() < MIN_Y)
+        damage(m_health);
 }
 
 void Enemy::debugRendering()
@@ -125,21 +135,33 @@ void Enemy::damage(int damage)
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
 {
 	auto flags = effect.getStandards()->flags;
+    m_moveSpeedMod = 1.0f;
 
     if (flags & Effect::EFFECT_MODIFY_HP)
         m_health += static_cast<int> (effect.getModifiers()->modifyHP);
+    if (flags & Effect::EFFECT_ON_FIRE)
+    {
+        m_fireTimer += dt;
+
+        if (m_fireTimer >= 1000.0f)
+        {
+            damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken) * stacks);
+            m_fireTimer -= 1000.0f;
+        }
+    }
     if (flags & Effect::EFFECT_KILL)
         damage(m_health);
 	if (flags & Effect::EFFECT_BULLET_TIME)
 		m_bulletTimeMod = std::pow(effect.getSpecifics()->isBulletTime, stacks);
     if (flags & Effect::EFFECT_IS_FROZEN)
-        m_moveSpeedMod = std::pow(effect.getSpecifics()->isFreezing, stacks);
+        m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+        std::cout << std::to_string(m_moveSpeedMod);
     if (flags & Effect::EFFECT_IS_STUNNED)
         m_stunned = true;
     if (flags & Effect::EFFECT_MOVE_FASTER)
-       m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+       m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
     if (flags & Effect::EFFECT_MOVE_SLOWER)
-       m_moveSpeedMod = std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+       m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
 }
 
 void Enemy::onEffectEnd(int stacks, Effect const & effect)
@@ -148,7 +170,7 @@ void Enemy::onEffectEnd(int stacks, Effect const & effect)
 
     if (flags & Effect::EFFECT_ON_FIRE)
     {
-        damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+        m_fireTimer = 0;
     }
     if (flags & Effect::EFFECT_BULLET_TIME)
     {
@@ -237,6 +259,7 @@ Behavior* Enemy::getBehavior() const
 void Enemy::render() const
 {
     renderSpecific();
-    QueueRender(enemyRenderInfo);
+    if (getEnemyType() != EnemyType::NECROMANCER_MINION) // nice code here (REPLACE OH MAH GOD)
+        QueueRender(enemyRenderInfo);
     QueueRender(light);
 }
