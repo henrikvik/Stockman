@@ -1,4 +1,5 @@
 #include "Fog.H"
+#include <Graphics\include\Device.h>
 
 namespace Graphics
 {
@@ -18,6 +19,7 @@ namespace Graphics
 		fogData.push_back({ { -1000, 1,-1000 }, { FOG_COLOR,FOG_COLOR,FOG_COLOR, 1 } });
 		//*/
 
+		fogDataBuffer.write(Global::context, fogData.data(), fogData.size() * sizeof(FogData));
 	}
 
 	Fog::~Fog()

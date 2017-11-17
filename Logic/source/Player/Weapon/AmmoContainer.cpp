@@ -48,14 +48,14 @@ void Logic::AmmoContainer::setAmmo(int ammo)
     m_aInfo.ammo = ammo;
 }
 
-void AmmoContainer::fillMag()
+void AmmoContainer::fillMag(int modifier)
 {
-    int toAdd = m_aInfo.magSize - m_aInfo.magAmmo;
+    int toAdd = m_aInfo.magSize + modifier - m_aInfo.magAmmo;
 
     if (m_aInfo.ammo >= toAdd)
     {
         m_aInfo.ammo -= toAdd;		// Remove ammo from total
-        m_aInfo.magAmmo = m_aInfo.magSize;	// Add ammo to mag
+        m_aInfo.magAmmo = m_aInfo.magSize + modifier;	// Add ammo to mag
     }
     else
     {

@@ -49,6 +49,7 @@ namespace Logic
 
             //status
             bool m_stunned;
+            float m_fireTimer;
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE };
 

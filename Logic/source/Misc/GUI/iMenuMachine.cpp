@@ -58,7 +58,9 @@ void iMenuMachine::queueMenu(iMenu::MenuGroup group)
         m_queuedMenuType = group;
         
         if (m_activeMenu)
+        {
             m_activeMenu->fadeOut();
+        }
     }
 }
 
@@ -75,6 +77,7 @@ void iMenuMachine::swapMenu()
     case iMenu::MenuGroup::CardSelect:  m_activeMenu = m_factory->buildMenuCard();                        break;
     case iMenu::MenuGroup::Skill:       m_activeMenu = m_factory->buildMenuSkill();                       break;
     case iMenu::MenuGroup::GameOver:    m_activeMenu = m_factory->buildMenuGameover();                    break;
+    case iMenu::MenuGroup::Pause:       m_activeMenu = m_factory->buildMenuPause();                       break;
     default: break;
     }
 
@@ -89,6 +92,14 @@ void iMenuMachine::swapMenu()
 
 void iMenuMachine::update(float deltaTime)
 {
+    if (m_activeMenu)
+    {
+        if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Pause && m_activeMenu->getIsFading() && m_activeMenu->getIsSafeToRemove())
+            queueMenu(iMenu::MenuGroup::Empty);
+    }
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Empty)
+        queueMenu(iMenu::MenuGroup::Pause);
+
     if (wantsToSwap())
     {
         if (m_activeMenu)
