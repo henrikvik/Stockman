@@ -115,7 +115,8 @@ void StatePlaying::update(float deltaTime)
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
     if (m_menu->getType() == iMenu::MenuGroup::Skill ||
-        m_menu->getType() == iMenu::MenuGroup::GameOver)   // Quick "temp pause" fix for testing purposes
+        m_menu->getType() == iMenu::MenuGroup::GameOver ||
+        m_menu->getType() == iMenu::MenuGroup::Pause) // Quick "temp pause" fix for testing purposes
         return;
     PROFILE_END();
 
@@ -188,7 +189,8 @@ void StatePlaying::render() const
 
     PROFILE_BEGIN("Render HUD");
     if (m_menu->getType() != iMenu::MenuGroup::Skill && 
-        m_menu->getType() != iMenu::MenuGroup::GameOver)
+        m_menu->getType() != iMenu::MenuGroup::GameOver &&
+        m_menu->getType() != iMenu::MenuGroup::Pause)
         m_hudManager.render();
     PROFILE_END();
 
