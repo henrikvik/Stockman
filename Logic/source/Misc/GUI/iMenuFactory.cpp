@@ -111,11 +111,11 @@ iMenu * iMenuFactory::buildMenuGameover()
     menu->addBackground(Resources::Textures::Gameover, 1.0f);
 
     btn = buildButton("MenuStartGame", ButtonFunction::playAgain);
-    btn.move(DirectX::SimpleMath::Vector2(0.315, 0.15));
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.15));
     menu->addButton(btn);
 
     btn = buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu);
-    btn.move(DirectX::SimpleMath::Vector2(0.315, 0.05));
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.05));
     menu->addButton(btn);
 
     return menu;

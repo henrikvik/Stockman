@@ -39,7 +39,7 @@ void EnemySoarer::createAbilities()
         // ontick 
     }, [&](Player &player, Ability &ab) -> void {
         // onuse
-        shoot({ 0, -1, 0 }, Resources::Models::Files::CrossBowProjectile, AB1_SPEED, 5.f, 3.5f);
+        shoot({ 0, -1, 0 }, Resources::Models::Files::Crossbowbolt, AB1_SPEED, 5.f, 3.5f);
     });
 }
 
