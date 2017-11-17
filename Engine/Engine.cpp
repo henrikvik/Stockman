@@ -355,8 +355,10 @@ int Engine::run()
         shakeInfo.duration = 0.5f;
         shakeInfo.radius = 30;
 
+#ifdef _DEBUG
         if (mTracker->pressed.G)
             QueueRender(shakeInfo);
+#endif // _DEBUG
 
 		if (setting.getWindowed() != test)
 		{
@@ -406,12 +408,14 @@ int Engine::run()
         PROFILE_END();
 
 		g_Profiler->poll();
-		if (showProfiler) {
-			
-			ImGui::SetNextWindowPos(ImVec2(0, 0));
-			ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
-			g_Profiler->render();
-		}
+#ifdef _DEBUG
+        if (showProfiler) {
+
+            ImGui::SetNextWindowPos(ImVec2(0, 0));
+            ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
+            g_Profiler->render();
+    }
+#endif // _DEBUG
 
         Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);

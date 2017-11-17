@@ -169,8 +169,10 @@ void StatePlaying::update(float deltaTime)
     m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
     PROFILE_END();
 
+#ifdef _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
         m_player->takeDamage(1, 0);
+#endif // _DEBUG
 
     if (m_player->getHP() <= 0)
         gameOver();
@@ -179,8 +181,10 @@ void StatePlaying::update(float deltaTime)
 void StatePlaying::render() const
 {
     // Debug Draw physics
+#ifdef _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
         m_physics->render();
+#endif // _DEBUG
 
     PROFILE_BEGIN("Player Render");
     if (m_menu->getType() != iMenu::MenuGroup::GameOver)

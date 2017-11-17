@@ -83,6 +83,7 @@ void StateMachine::update(float deltaTime)
     m_statePrimary->update(deltaTime);
     m_stateSecondary->update(deltaTime);
 
+#ifdef _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad1))
     {
         SetPrimaryState(StateType::State_Start);
@@ -96,6 +97,7 @@ void StateMachine::update(float deltaTime)
         SetSecondaryState(StateType::Nothing);
         return;
     }
+#endif // !_DEBUG
 }
 
 void StateMachine::render() const
