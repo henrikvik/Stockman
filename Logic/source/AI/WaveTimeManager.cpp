@@ -110,5 +110,5 @@ void WaveTimeManager::startTransition()
 {
     m_onTransition = true;
     m_timeRequired = TRANSITION_TIME;
-    m_waveCurrent = 0;
+    m_timeCurrent = 0;
 }
