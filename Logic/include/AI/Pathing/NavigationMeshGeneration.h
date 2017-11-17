@@ -130,6 +130,7 @@ namespace Logic
             };
 
             std::vector<NavMeshCube> regions;
+            std::vector<int> regionsFinished;
             std::vector<std::pair<btCollisionObject*, StaticObject*>> physicsObjects;
 
             Growth growth[SIDES];
@@ -140,6 +141,7 @@ namespace Logic
                 VertexOrder vertexOrder = CLOCKWISE) const;
 
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
+            // cube1 = 
             std::pair<Cube, Cube> cutCube(btVector3 const &cutPoint, btVector3 const &planeNormal, Cube const &cube);
 
             // returns true if collision happend
