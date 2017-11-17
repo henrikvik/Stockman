@@ -1,6 +1,7 @@
 #include <StatePlaying.h>
 #include <StateMachine\StateBuffer.h>
 #include <State.h>
+#include "..\include\Misc\GUI\iMenuCards.h"
 
 #include <Misc\CommandsFile.h>
 
@@ -122,12 +123,23 @@ void StatePlaying::update(float deltaTime)
 
     ComboMachine::Get().update(deltaTime);
 
+
+    if (fullhack)
+    {
+        static_cast<iMenuCards*>(m_menu->getActiveMenu())->setCardInformation(m_cardManager->getHand());
+        fullhack = false;
+    }
+
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
     {
         m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
-        m_cardManager->pickThree(m_player->getHP() != 3);
+        m_cardManager->pickThreeCards(m_player->getHP() != 3);
+
+        //TODO temp
+        fullhack = true;
     }
+
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());

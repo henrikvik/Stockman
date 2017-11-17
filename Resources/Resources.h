@@ -133,6 +133,7 @@ namespace Resources
         enum Files
         {
             Backbutton,
+            CardBackground,
             Crosshair,
             Gameover,
             gameOverMenuButtons,
@@ -143,6 +144,7 @@ namespace Resources
             Highscoretext,
             HPBars,
             HUDIcons,
+            iconsheet,
             IntroScreen,
             Loadingscreen,
             MainmenuClean,
@@ -162,6 +164,7 @@ namespace Resources
         const std::map<Files, const char *> Paths =
         {
             {Backbutton, R"(..\Resources\Textures\Backbutton.dds)"},
+            {CardBackground, R"(..\Resources\Textures\CardBackground.dds)"},
             {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
             {Gameover, R"(..\Resources\Textures\Gameover.dds)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
@@ -172,6 +175,7 @@ namespace Resources
             {Highscoretext, R"(..\Resources\Textures\Highscoretext.dds)"},
             {HPBars, R"(..\Resources\Textures\HPBars.dds)"},
             {HUDIcons, R"(..\Resources\Textures\HUDIcons.dds)"},
+            {iconsheet, R"(..\Resources\Textures\iconsheet.dds)"},
             {IntroScreen, R"(..\Resources\Textures\IntroScreen.dds)"},
             {Loadingscreen, R"(..\Resources\Textures\Loadingscreen.dds)"},
             {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},

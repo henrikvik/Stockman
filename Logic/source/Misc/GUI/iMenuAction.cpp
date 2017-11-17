@@ -100,6 +100,7 @@ void ButtonFunction::writing()
     char trashThis = theChar->getSymbol();
 }
 
+
 void ButtonFunction::chooseUpgrade1()
 {
     chooseUpgrade(0);
