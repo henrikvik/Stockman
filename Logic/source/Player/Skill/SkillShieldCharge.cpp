@@ -39,7 +39,7 @@ bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 		m_forw.setY(0);
 		m_forw = m_forw.normalize();
 		m_shooter = &shooter;
-		shooter.getStatusManager().addStatus(StatusManager::EFFECT_ID::SHIELD_CHARGE, 1, true);
+		shooter.getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::SHIELD_CHARGE, 1);
 		
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 			player->setMaxSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);

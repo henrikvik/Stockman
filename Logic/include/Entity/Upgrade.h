@@ -31,6 +31,7 @@ namespace Logic
             UPGRADE_ICESTAFF = 0x400,
             UPGRADE_SLEDGEHAMMER = 0x800,
             UPGRADE_BURNING = 0x1000,
+            UPGRADE_FREEZING = 0x2000,
 		};
 
 		struct FlatUpgrades {

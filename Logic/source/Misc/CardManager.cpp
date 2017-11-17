@@ -113,9 +113,9 @@ void CardManager::handleCard(Player &player, Card const &card)
         switch (card.getStatusType())
         {
             case Card::EFFECT:
-                player.getStatusManager().addStatus(
+                player.getStatusManager().addStatusResetDuration(
                     static_cast<StatusManager::EFFECT_ID> (ID),
-                    1, true
+                    1
                 );
                 std::cout << "Effect " << std::to_string(ID);
                 break;

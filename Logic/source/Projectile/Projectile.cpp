@@ -12,11 +12,12 @@ using namespace Logic;
 static bool FUN_MODE = false;
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent, ProjectileData pData)
-: Entity(body, halfextent) 
+    : Entity(body, halfextent)
 {
-	m_pData         = pData;
-	m_dead          = false;
+    m_pData = pData;
+    m_dead = false;
     m_bulletTimeMod = 1.f;
+    m_freezeDuration = 0.0f;
 }
 
 Projectile::~Projectile() { }
@@ -26,8 +27,16 @@ Projectile::~Projectile() { }
 // \param statusManager - A statusManager filled with potential buffs & upgrades
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
-	getRigidBody()->setLinearVelocity(forward * m_pData.speed);
+    getRigidBody()->setLinearVelocity(forward * m_pData.speed);
     getStatusManager().copyUpgradesFrom(statusManager);
+
+    for (int i = 0; i < StatusManager::LAST_ITEM_IN_UPGRADES; i++)
+    {
+        if (getStatusManager().getUpgradeStacks((StatusManager::UPGRADE_ID)i) > 0)
+        {
+            upgrade(statusManager.getUpgrade((StatusManager::UPGRADE_ID)i));
+        }
+    }
 }
 
 // How different effects affect projectiles
@@ -50,7 +59,7 @@ void Projectile::upgrade(Upgrade const &upgrade)
 
     if (flags & Upgrade::UPGRADE_INCREASE_DMG)
     {
-        m_pData.damage *= upgrade.getFlatUpgrades().increaseDmg;
+        m_pData.damage *= upgrade.getFlatUpgrades().increaseDmg * getStatusManager().getUpgradeStacks(StatusManager::P1_DAMAGE);
     }
     if (flags & Upgrade::UPGRADE_IS_BOUNCING)
     {
@@ -61,6 +70,13 @@ void Projectile::upgrade(Upgrade const &upgrade)
         if (m_pData.type == ProjectileTypeNormal)
         {
             m_pData.type = ProjectileTypeFireArrow;
+        }
+    }
+    if (flags & Upgrade::UPGRADE_FREEZING)
+    {
+        if (m_pData.type = ProjectileTypeIce)
+        {
+            m_freezeDuration = upgrade.getFlatUpgrades().decreaseCooldown * getStatusManager().getUpgradeStacks(StatusManager::FROST_UPGRADE);
         }
     }
 }
@@ -146,12 +162,22 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     {
     // Special effects
     case ProjectileTypeIce:
-
-        enemy->getStatusManager().addStatus(
-            /* Adding Freeze effect */          StatusManager::FREEZE,
-            /* Number of stacks */              1,
-            /* Reset Duration */                true
-        );
+        if (m_freezeDuration > 0)
+        {
+            enemy->getStatusManager().addStatus(
+                                                    StatusManager::FREEZE,
+                                                    1,
+                                                    enemy->getStatusManager().getEffect(StatusManager::FREEZE).getStandards()->duration,
+                                                    false
+            );
+        }
+        else
+        {
+            enemy->getStatusManager().addStatusResetDuration(
+                /* Adding Freeze effect */          StatusManager::FREEZE,
+                /* Number of stacks */              1
+            );
+        }
         break;
 
     // These should not get removed on enemy contact
@@ -162,8 +188,7 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     case ProjectileTypeFireArrow:
         enemy->getStatusManager().addStatus(
             /* Adding Fire effect */            StatusManager::ON_FIRE,
-            /* Number of stacks */              1,
-            /* Don't reset Duration */          false
+            /* Number of stacks */              1
         );
         break;
     // Trigger all callbacks on other projectiles
@@ -228,10 +253,9 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 	switch (proj->getProjectileData().type)
 	{
 	case ProjectileTypeBulletTimeSensor:
-	    getStatusManager().addStatus(
+	    getStatusManager().addStatusResetDuration(
 		/* Adding Bullet time effect */     StatusManager::BULLET_TIME,
-		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME),
-		/* Reset Duration */                true
+		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME)
 	    );
 	    break;
 	}

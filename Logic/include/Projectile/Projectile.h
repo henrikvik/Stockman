@@ -56,6 +56,9 @@ namespace Logic
         bool collisionWithTrigger(Trigger* trigger);
         bool collisionWithTerrain();
         void doCallBack(PhysicsObject& other);
+
+        //Upgrades
+        float m_freezeDuration;
     };
 
 

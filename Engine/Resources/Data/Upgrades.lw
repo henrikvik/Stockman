@@ -25,9 +25,9 @@
 	"increaseMagSize" : 0;
     "movementSpeed" : 0f;
 }
-{ // Freezing strength
-	"flags": 4096; // 0x1000
-	"increaseCooldown" : 0f;
+{ // Freezing duration
+	"flags": 8192; // 0x2000
+	"increaseCooldown" : 0.3f;
 	"increaseDamage" : 0;
 	"increaseSize" : 0;
 	"increaseAmmoCap" : 0;

@@ -36,7 +36,7 @@ void Trigger::addUpgrades(const std::vector<StatusManager::UPGRADE_ID>& upgrades
 void Trigger::addEffects(const std::vector<StatusManager::EFFECT_ID>& effects)
 {
 	for (StatusManager::EFFECT_ID eID : effects)
-		this->getStatusManager().addStatus(eID, 1, true);
+		this->getStatusManager().addStatusResetDuration(eID, 1);
 }
 
 // Affects
@@ -72,7 +72,7 @@ void Trigger::onCollision(PhysicsObject& other, btVector3 contactPoint, float dm
 			// Sending statuses over to player
             p->getStatusManager().copyUpgradesFrom(getStatusManager());
 			for (std::pair<int, StatusManager::EFFECT_ID> effect : getStatusManager().getActiveEffectsIDs())
-				p->getStatusManager().addStatus(effect.second, effect.first, true);
+				p->getStatusManager().addStatus(effect.second, effect.first);
 
 			if (m_reusable)
 			{

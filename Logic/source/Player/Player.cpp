@@ -146,27 +146,27 @@ void Player::registerDebugCmds()
 
     win->registerCommand("LOG_PLAYER_STUN", [&](std::vector<std::string> &args) -> std::string
     {
-        getStatusManager().addStatus(StatusManager::STUN, 1, true);
+        getStatusManager().addStatusResetDuration(StatusManager::STUN, 1);
 
         return "Player is stunned";
     });
 
     win->registerCommand("LOG_PLAYER_MOVE_FASTER", [&](std::vector<std::string> &args) -> std::string
     {
-        getStatusManager().addStatus(StatusManager::MOVEMENTSPEED_UP, 1, true);
+        getStatusManager().addStatusResetDuration(StatusManager::MOVEMENTSPEED_UP, 1);
 
         return "Player is red so player goes fastah -Random Ork Warhammer 40K (you go faster)";
     });
 
     win->registerCommand("LOG_PLAYER_MOVE_SLOWER", [&](std::vector<std::string> &args) -> std::string
     {
-        getStatusManager().addStatus(StatusManager::MOVEMENTSPEED_DOWN, 1, true);
+        getStatusManager().addStatusResetDuration(StatusManager::MOVEMENTSPEED_DOWN, 1);
 
         return "Player is not red so player does not go fastah -Random Ork Warhammer 40K (you go slower)";
     });
     win->registerCommand("LOG_PLAYER_HEAL", [&](std::vector<std::string> &args) -> std::string
     {
-        getStatusManager().addStatus(StatusManager::HEALTH_P1, 1);
+        getStatusManager().addStatusResetDuration(StatusManager::HEALTH_P1, 1);
 
         return "I need healing - Genji Shinimada ( + 1 Health given)";
     });

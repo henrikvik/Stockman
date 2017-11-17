@@ -31,7 +31,7 @@ void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, floa
                 damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
 
                 if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-                    getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+                    getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
             }
         }
         else if (Player *p = dynamic_cast<Player*> (&other))
