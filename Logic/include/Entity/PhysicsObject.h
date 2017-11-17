@@ -27,7 +27,7 @@ namespace Logic
 		};
 
 
-		PhysicsObject(btRigidBody* body, btVector3 halfExtent);
+        PhysicsObject(btRigidBody* body, btVector3 halfExtent, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 		PhysicsObject(const PhysicsObject& other) = delete;
 		PhysicsObject* operator=(const PhysicsObject& other) = delete;
 		virtual ~PhysicsObject();
@@ -47,6 +47,7 @@ namespace Logic
 		DirectX::SimpleMath::Quaternion getRotation() const;
 		DirectX::SimpleMath::Vector3 getScale() const;
 		virtual DirectX::SimpleMath::Matrix getTransformMatrix() const;
+        virtual DirectX::SimpleMath::Matrix getModelTransformMatrix() const;
 
 		btRigidBody* getRigidBody();
 		virtual btTransform& getTransform();
@@ -59,6 +60,7 @@ namespace Logic
         btTransform* m_transform;									//< Easy acces to the transform
 	private:
 		btVector3 m_halfextent;										//< The scaling for the graphical side
+        btVector3 m_modelOffset;                                    //< Model offset
 		std::vector<Weakpoint> m_weakPoints;						//< The "head" for headshots multiplier change this to (std::pair<btRigidBody*, float multiplier) when you got time
 	};
 }

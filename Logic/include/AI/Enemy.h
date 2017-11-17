@@ -52,7 +52,7 @@ namespace Logic
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE };
 
-			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId);
+			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 			virtual ~Enemy();
 
 			virtual void update(Player &player, float deltaTime,

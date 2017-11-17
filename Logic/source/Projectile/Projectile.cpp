@@ -12,7 +12,7 @@ using namespace Logic;
 static bool FUN_MODE = false;
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent, ProjectileData pData)
-: Entity(body, halfextent) 
+    : Entity(body, halfextent)
 {
 	m_pData         = pData;
 	m_dead          = false;
@@ -73,7 +73,7 @@ void Projectile::updateSpecific(float deltaTime)
     btRigidBody* body = getRigidBody();
     btVector3 dir = body->getLinearVelocity().normalized();
     body->setLinearVelocity(dir * m_pData.speed * m_bulletTimeMod);
-    body->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * m_bulletTimeMod, 0.f });
+    body->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * pow(m_bulletTimeMod, 2), 0.f });
 
     // Taking the forward vector and getting the pitch and yaw from it
     float pitch = asin(-dir.getY()) - M_PI * 0.5f;
