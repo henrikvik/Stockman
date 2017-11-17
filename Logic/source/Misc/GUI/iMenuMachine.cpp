@@ -11,8 +11,8 @@
 #endif
 
 #define CAMERA_MOVE_SPEED           0.00055f // The speed of the camera movement
-#define CAMERA_START_POSITION       DirectX::SimpleMath::Vector3(6.941, 5.6, -4.141)
-#define CAMERA_START_FORWARD        DirectX::SimpleMath::Vector3(-0.2, -0.153, 0.258)
+#define CAMERA_START_POSITION       DirectX::SimpleMath::Vector3(10.00, 7.804, -8.984)
+#define CAMERA_START_FORWARD        DirectX::SimpleMath::Vector3(0.027, -0.192, 0.789)
 #define CAMERA_SETTINGS_POSITION    DirectX::SimpleMath::Vector3(5.294, 1.843, -10.0)
 #define CAMERA_SETTINGS_FORWARD     DirectX::SimpleMath::Vector3(0.0, 1.0, 0.0)
 #define CAMERA_HIGHSCORE_POSITION   DirectX::SimpleMath::Vector3(2.471, 1.686, -2.500)
