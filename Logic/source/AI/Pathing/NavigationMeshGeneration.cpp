@@ -13,9 +13,9 @@ using namespace Logic;
 #define toSimple(vec) {vec.x(), vec.y(), vec.z()}
 
 const int NavigationMeshGeneration::AI_UID = 1061923, NavigationMeshGeneration::NO_ID = -5;
-const float NavigationMeshGeneration::SEED_CUBES = 300.f, NavigationMeshGeneration::PRECISION_BASE = 0.01f;
+const float NavigationMeshGeneration::SEED_CUBES = 300.f, NavigationMeshGeneration::PRECISION_BASE = 0.05f;
 int NavigationMeshGeneration::COUNTER = 0;
-const btVector3 NavigationMeshGeneration::unitDimension = { 2.0f, 0.2f, 2.0f }; // i know it is not 1, todo
+const btVector3 NavigationMeshGeneration::unitDimension = { 1.0f, 0.2f, 1.0f }; // i know it is not 1, todo
 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
@@ -197,12 +197,6 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
             }
         }
 
-        // this should not happen!
-        if (isInCollisionArea(region, physics, region.buddyIndex, region.userIndex))
-        {
-            printf("Error in nav generation temporary fixing it!!!!!!");
-            continue;
-        }
         // remove it, if it is too small, a result from splitting a cube
         //if (region.cube.getDimensionsRef().x() >= unitDimension.x() && region.cube.getDimensionsRef().z() >= unitDimension.x()) {
             regionsFinished.push_back(static_cast<int> (index));
@@ -598,7 +592,7 @@ bool NavigationMeshGeneration::isInCollisionArea(NavMeshCube &cube, Physics &phy
             const btCollisionObjectWrapper* colObj0, int partId0, int index0,
             const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
     {
-        if (cp.getDistance() > precision) return 0;
+    //    if (cp.getDistance() > precision) return 0;
 
         collision = true;
 
