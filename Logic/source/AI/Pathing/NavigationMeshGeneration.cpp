@@ -13,7 +13,7 @@ using namespace Logic;
 #define toSimple(vec) {vec.x(), vec.y(), vec.z()}
 
 const int NavigationMeshGeneration::AI_UID = 1061923, NavigationMeshGeneration::NO_ID = -5;
-const float NavigationMeshGeneration::SEED_CUBES = 300.f, NavigationMeshGeneration::PRECISION_BASE = 0.005f;
+const float NavigationMeshGeneration::SEED_CUBES = 300.f, NavigationMeshGeneration::PRECISION_BASE = 0.5f;
 int NavigationMeshGeneration::COUNTER = 0;
 const btVector3 NavigationMeshGeneration::unitDimension = { 3.0f, 0.2f, 3.0f }; // i know it is not 1, todo
 
@@ -356,6 +356,7 @@ bool NavigationMeshGeneration::handlePhysicsCollisionTest(NavMeshCube &region, P
 bool NavigationMeshGeneration::handleRegionCollisionTest(NavMeshCube &region, Physics &physics, int side)
 {
     bool collided = false;
+    int index;
 
     FunContactResult resRegions(
         [&](btBroadphaseProxy* proxy) -> bool {
@@ -370,6 +371,8 @@ bool NavigationMeshGeneration::handleRegionCollisionTest(NavMeshCube &region, Ph
             const btCollisionObject *obj = colObj1->getCollisionObject();
 
             collided = true;
+
+            region.addCollision(side, index); // change to index
         }
 
         return 0;
@@ -377,6 +380,7 @@ bool NavigationMeshGeneration::handleRegionCollisionTest(NavMeshCube &region, Ph
 
     for (int i : regionsFinished)
     {
+        index = i;
         physics.contactPairTest(region.body, regions[i].body, resRegions);
     }
 
@@ -475,17 +479,20 @@ void NavigationMeshGeneration::quadMeshToTriangleMesh(NavigationMesh &nav, Physi
 
     nav.createNodesFromTriangles();
     
-    int regionIndex, otherIndex;
+    int regionIndex;
     for (size_t t = 0; t < regionsFinished.size(); t++) // create nodes beetwen them
     {
         auto &region = regions[t];
         regionIndex = static_cast<int> (t);
-        nav.addDoubleEdge(t * 2, t * 2 + 1, { 0,0,0 });
+        nav.addDoubleEdge(t * 2, t * 2 + 1, toSimple(region.cube.getPos())); // temp solution works only for CUBES DUDE
+        if (region.collidedWithIndex[0].size() > 0 || region.collidedWithIndex[1].size() > 0 || region.collidedWithIndex[2].size() > 0 || region.collidedWithIndex[3].size() > 0)
+        {
+            printf("Wow");
+        }
 
         for (int side = 0; side < SIDES; side++)
             for (int id : region.collidedWithIndex[side])
-                if ((otherIndex = getRegion(id)) > -1)
-                    createEdgeBeetwen(nav, regionIndex, otherIndex, static_cast<GrowthType> (side));
+                createEdgeBeetwen(nav, regionIndex, id, static_cast<GrowthType> (side));
     }  
 }
 
