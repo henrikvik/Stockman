@@ -15,7 +15,7 @@
 
 namespace Logic
 {
-	//          Nav Mesh Gen v0.3
+	//          Nav Mesh Gen v0.4
     // For errors in creating the navigation mesh
     // create a issue on github[1] or contact LW.
     //
