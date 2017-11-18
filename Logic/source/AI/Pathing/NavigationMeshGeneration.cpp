@@ -20,7 +20,7 @@ const btVector3 NavigationMeshGeneration::unitDimension = { 2.0f, 0.2f, 2.0f }; 
 NavigationMeshGeneration::NavigationMeshGeneration()
 {
     precision = PRECISION_BASE;
-    maxLength = 250.f;
+    maxLength = 50.f;
     baseY = 0.5f;
 
     registerSetCommands();
@@ -306,7 +306,7 @@ void NavigationMeshGeneration::loadPhysicsObjects(Physics &physics)
                 {
                     btBoxShape copy = *bs;
                     copy.setLocalScaling({ 1.f, 0.f, 1.f });
-                    if (copy.getHalfExtentsWithoutMargin().length() > 100)
+                    if (copy.getHalfExtentsWithoutMargin().length() > 2)
                         physicsObjects.push_back({ obj, staticObj });
                 }
     }
@@ -654,39 +654,53 @@ void NavigationMeshGeneration::createEdgeBeetwen(NavigationMesh &nav, int r1, in
 {
     NavMeshCube &reg1 = regions[r1];
     NavMeshCube &reg2 = regions[r2];
+
     DirectX::SimpleMath::Vector3 con;
     btVector3 vec1 = reg1.cube.getPos() + getDimension(reg1, side),
               vec2 = reg2.cube.getPos() + getDimension(reg2, (side + 2) % SIDES);
 
-    btVector3 half1 = getDimension(reg1, (side + 1) % SIDES),
-              half2 = getDimension(reg2, (side + 3) % SIDES);
+    btVector3 half1Top = vec1 + getDimension(reg1, (side + 1) % SIDES),
+              half2Top = vec2 + getDimension(reg2, (side + 1) % SIDES);
 
-    btVector3 to = reg2.cube.getPos() - reg1.cube.getPos();
-    float dot = to.dot(half1);
+    btVector3 half1Bot = vec1 + getDimension(reg1, (side + 3) % SIDES),
+              half2Bot = vec2 + getDimension(reg2, (side + 3) % SIDES);
 
-    if (side == X_MINUS || side == Z_MINUS)
+    btVector3 top, bot;
+
+    // calculate mid point, TODO :Refac
+    if (side % 2 == 1)
     {
-        if (std::abs(dot) <= 1.f)
-            nav.addDoubleEdge(triangle1 * 2, triangle2 * 2 + 1, toSimple(vec2));
+        if (half1Top.getX() < half2Top.getX())
+            top = half1Top;
         else
-        {
-            if (dot > 0.f)
-                nav.addDoubleEdge(triangle1 * 2, triangle2 * 2 + 1, toSimple((vec1 + half1 - (half2 - half1).absolute() * btScalar(0.5f))));
-            else
-                nav.addDoubleEdge(triangle1 * 2, triangle2 * 2 + 1, toSimple((vec1 - half1 + (half2 - half1).absolute() * btScalar(0.5f))));
-        }
+            top = half2Top;
+
+        if (half1Bot.getX() > half2Bot.getX())
+            bot = half1Bot;
+        else
+            bot = half2Bot;
     }
     else
     {
-        if (std::abs(dot) <= 1.f)
-            nav.addDoubleEdge(triangle1 * 2 + 1, triangle2 * 2, toSimple(vec2));
+        if (half1Top.getX() < half2Top.getZ())
+            top = half1Top;
         else
-        {
-            if (dot > 0.f)
-                nav.addDoubleEdge(triangle1 * 2 + 1, triangle2 * 2, toSimple((vec1 + half1 - (half2 - half1).absolute() * btScalar(0.5f))));
-            else
-                nav.addDoubleEdge(triangle1 * 2 + 1, triangle2 * 2, toSimple((vec1 - half1 + (half2 - half1).absolute() * btScalar(0.5f))));
-        }
+            top = half2Top;
+
+        if (half1Bot.getX() > half2Bot.getZ())
+            bot = half1Bot;
+        else
+            bot = half2Bot;
+    }
+
+    btVector3 mid = (bot - top) * 0.5f;
+    if (side == X_MINUS || side == Z_MINUS)
+    {
+        nav.addDoubleEdge(triangle1 * 2, triangle2 * 2 + 1, toSimple((top + mid)));
+    }
+    else
+    {
+        nav.addDoubleEdge(triangle1 * 2 + 1, triangle2 * 2, toSimple((top + mid)));
     }
 }
 
