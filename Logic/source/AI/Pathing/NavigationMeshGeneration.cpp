@@ -13,7 +13,7 @@ using namespace Logic;
 #define toSimple(vec) {vec.x(), vec.y(), vec.z()}
 
 const int NavigationMeshGeneration::AI_UID = 1061923, NavigationMeshGeneration::NO_ID = -5;
-const float NavigationMeshGeneration::SEED_CUBES = 300.f, NavigationMeshGeneration::PRECISION_BASE = 0.05f;
+const float NavigationMeshGeneration::SEED_CUBES = 300.f, NavigationMeshGeneration::PRECISION_BASE = 0.01f;
 int NavigationMeshGeneration::COUNTER = 0;
 const btVector3 NavigationMeshGeneration::unitDimension = { 1.0f, 0.2f, 1.0f }; // i know it is not 1, todo
 
@@ -197,19 +197,11 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
             }
         }
 
-        // remove it, if it is too small, a result from splitting a cube
-        //if (region.cube.getDimensionsRef().x() >= unitDimension.x() && region.cube.getDimensionsRef().z() >= unitDimension.x()) {
-            regionsFinished.push_back(static_cast<int> (index));
-            region.done = true;
-            region.body->setUserIndex2(region.userIndex);
-            region.body->setUserIndex(AI_UID);
-            region.finishedIndex = regionsFinished.size() - 1;
-            printf("nt x: %f, z: %f\n", region.cube.getDimensionsRef().x(), region.cube.getDimensionsRef().z());
-            //if (isInCollisionArea(region, physics, region.buddyIndex, region.userIndex)) // rmeove this when finished
-            //{
-            //    printf("WTF");
-            //}
-        //}
+        regionsFinished.push_back(static_cast<int> (index));
+        region.done = true;
+        region.body->setUserIndex2(region.userIndex);
+        region.body->setUserIndex(AI_UID);
+        region.finishedIndex = regionsFinished.size() - 1;
     }
 
     quadMeshToTriangleMesh(nav, physics);

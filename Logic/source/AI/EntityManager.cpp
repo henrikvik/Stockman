@@ -271,13 +271,17 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
     else if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, flockIndex))
     {
         int newIndex = AStar::singleton().getIndex(*enemy);
-        std::swap(
-            flock[enemyIndex],
-            flock[flock.size() - 1]
-        );
-        flock.pop_back();
 
-        m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
+        if (newIndex != -1) // just let him stay for now
+        {
+            std::swap(
+                flock[enemyIndex],
+                flock[flock.size() - 1]
+            );
+            flock.pop_back();
+
+            m_enemies[newIndex].push_back(enemy);
+        }
     }
 }
 

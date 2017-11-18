@@ -12,6 +12,8 @@ using namespace Logic;
 
 AStar::AStar(std::string file)
 {
+    targetOutOfBounds = false;
+
     generateNodesFromFile();
 
     initDebugRendering();
@@ -37,7 +39,8 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
 {
-    // Edge cases 
+
+    // Edge cass 
     if (startIndex == toIndex || startIndex == -1 || toIndex == -1)
         return {};
 
@@ -129,17 +132,17 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int fromIndex)
     return getPath(fromIndex, targetIndex);
 }
 
-std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode const *endNode, std::vector<NavNode> const &navNodes, int toIndex)
+std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode const *endNode,
+    std::vector<NavNode> const &navNodes, int toIndex)
 {
     std::vector<const DirectX::SimpleMath::Vector3*> list;
 
-    do
-    {
+   while (endNode->parent != NO_PARENT) 
+   {
         list.push_back(&(navigationMesh.getNodes()[endNode->nodeIndex]));
         list.push_back(endNode->connectionNode);
         endNode = &navNodes[endNode->parent];
     }
-    while (endNode->parent != NO_PARENT);
 
     std::reverse(list.begin(), list.end());
     return list;
@@ -153,8 +156,18 @@ void AStar::renderNavigationMesh()
 
 void AStar::loadTargetIndex(Entity const &target)
 {
-    if (targetIndex == -1 || !isEntityOnIndex(target, targetIndex))
-        targetIndex = navigationMesh.getIndex(target.getPosition());
+    int newIndex;
+    if (targetOutOfBounds || !isEntityOnIndex(target, targetIndex))
+    {
+        newIndex = navigationMesh.getIndex(target.getPosition());
+        if (newIndex == -1) // if out of bounds use last index
+            targetOutOfBounds = true;
+        else
+        {
+            targetOutOfBounds = false;
+            targetIndex = newIndex;
+        }
+    }
 }
 
 int AStar::getTargetIndex()
