@@ -9,7 +9,7 @@
 
 #define MAX_LEN_FOR_SEPERATION 15.f
 // this can be changed in the future maybe who knows
-#define CHANGE_NODE_DIST 1.2
+#define CHANGE_NODE_DIST 6.f
 
 #include <queue>
 
