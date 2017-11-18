@@ -9,6 +9,7 @@
 #include <chrono>
 
 using namespace Logic;
+const int EnemyThreadHandler::MAX_WORK = 25;
 
 EnemyThreadHandler::EnemyThreadHandler()
 {
@@ -104,6 +105,9 @@ void EnemyThreadHandler::threadMain()
 
 void EnemyThreadHandler::addWork(WorkData data)
 {
-    std::lock_guard<std::mutex> lock(m_workMutex);
-    m_work.push(data);
+    if (m_work.size() < MAX_WORK)
+    {
+        std::lock_guard<std::mutex> lock(m_workMutex);
+        m_work.push(data);
+    }
 }
