@@ -34,6 +34,13 @@ namespace Logic
     // (Not ready for production)
     // NP-Hard Problem
 
+    /*
+    
+        THIS HAS TO BE HEAVILY REFACTORED, IT IS VERY BAD CODE AT THE MOMENT
+        WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+    
+    */
+
     class Physics;
     class StaticObject;
 	class NavigationMeshGeneration 
@@ -84,8 +91,8 @@ namespace Logic
             };
             struct NavMeshCube
             {
-                bool done, remove, collided[SIDES];
-                int userIndex, buddyIndex;
+                bool done, collided[SIDES];
+                int userIndex, buddyIndex, finishedIndex;
                 std::vector<int> collidedWithIndex[SIDES]; // for the many, not the few
 
                 btRigidBody *body;
@@ -95,10 +102,10 @@ namespace Logic
                 {
                     this->cube = cube;
 
-                    done = remove = false;
+                    done = false;
                     body = nullptr;
 
-                    buddyIndex = -1;
+                    buddyIndex = finishedIndex = -1;
                     loadIndex();
 
                     for (int i = 0; i < SIDES; i++)
@@ -173,7 +180,7 @@ namespace Logic
             void seedArea(btVector3 position, btVector3 fullDimension, float part, Physics &physics);
 
             // create edges
-            void createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, GrowthType side);
+            void createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, int triangle1, int triangle2, GrowthType side);
 
             // true on collision
             std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance);

@@ -40,6 +40,7 @@ namespace Logic
 
             Edges& NavigationMesh::getEdges(int from);
 			void createNodesFromTriangles();
+            void reserveEdges(size_t size);
 			
 			// returns int of the index that has this pos in it
 			// (triangleList, getList(), index)

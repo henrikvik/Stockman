@@ -86,8 +86,12 @@ void NavigationMesh::createNodesFromTriangles()
 			mid += v;
 		mid /= 3; // nr of vertices in tri
 		nodes.push_back(mid);
-        listEdges.push_back({});
 	}
+}
+
+void NavigationMesh::reserveEdges(size_t size)
+{
+    listEdges.resize(size);
 }
 
 const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() const 
