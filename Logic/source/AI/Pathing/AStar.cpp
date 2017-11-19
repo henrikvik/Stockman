@@ -137,12 +137,9 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 {
     std::vector<const DirectX::SimpleMath::Vector3*> list;
 
-   while (endNode->parent != NO_PARENT) 
-   {
-        list.push_back(&(navigationMesh.getNodes()[endNode->nodeIndex]));
+    list.push_back(&(navigationMesh.getNodes()[endNode->nodeIndex]));
+    while ((endNode = &navNodes[endNode->parent])->parent != NO_PARENT)
         list.push_back(endNode->connectionNode);
-        endNode = &navNodes[endNode->parent];
-    }
 
     std::reverse(list.begin(), list.end());
     return list;

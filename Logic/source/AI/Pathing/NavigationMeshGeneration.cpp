@@ -668,12 +668,12 @@ void NavigationMeshGeneration::createEdgeBeetwen(NavigationMesh &nav, int r1, in
     }
     else
     {
-        if (half1Top.getX() < half2Top.getZ())
+        if (half1Top.getZ() < half2Top.getZ())
             top = half1Top;
         else
             top = half2Top;
 
-        if (half1Bot.getX() > half2Bot.getZ())
+        if (half1Bot.getZ() > half2Bot.getZ())
             bot = half1Bot;
         else
             bot = half2Bot;
