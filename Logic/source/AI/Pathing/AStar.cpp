@@ -191,7 +191,8 @@ void AStar::generateNavigationMesh(Physics &physics)
 {
     generator.registerGenerationCommand(navigationMesh, physics);
     //generator.generateNavMeshOld(navigationMesh, {}, {});
-    generator.generateNavigationMesh(navigationMesh, physics);
+    //generator.generateNavigationMesh(navigationMesh, physics);
+    navigationMesh.loadFromFile();
 
     DebugWindow::getInstance()->registerCommand("AI_TOGGLE_DEBUG_TRI",
         [&](std::vector<std::string> para) -> std::string {
@@ -234,7 +235,10 @@ void AStar::generateNavigationMesh(Physics &physics)
             success = navigationMesh.loadFromFile(para[0]);
         else
             success = navigationMesh.loadFromFile();
-        return success ? "Navigation mesh saved correctly! :)" : "Wenn du das siehst, fuck";
+
+        if (success)
+            createNodes();
+        return success ? "Navigation mesh loaded correctly! :)" : "Wenn du das siehst, fuck";
     });
 
     createNodes();

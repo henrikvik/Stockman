@@ -13,6 +13,7 @@ namespace Logic
 	{
 	    public:
             static const std::string FILE_NAME;
+            static const int TRI_VERTICES = 3;
 
             // Edges: List Of Edge. Edge = a connectionNode and the index it is connected to
             struct Edge {
@@ -23,7 +24,7 @@ namespace Logic
 
 			struct Triangle {
 				int id;
-				DirectX::SimpleMath::Vector3 vertices[3];
+				DirectX::SimpleMath::Vector3 vertices[TRI_VERTICES];
 			};
 
 			NavigationMesh();

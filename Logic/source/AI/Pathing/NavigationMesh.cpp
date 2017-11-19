@@ -159,7 +159,7 @@ bool NavigationMesh::saveToFile(std::string fileName) const
     for (auto &tri : triangleList)
     {
         FileLoader::LoadedStruct element;
-        element.ints["id"] = tri.id;
+        element.ints["id"] = tri.id; // unused ?
         data.push_back(element);
 
         for (auto &vertex : tri.vertices)
@@ -185,11 +185,10 @@ bool NavigationMesh::saveToFile(std::string fileName) const
         {
             // index connected to
             edgeElement.ints["index"] = edge.index;
-            data.push_back(edgeElement);
-
             // connection
             saveVertex(edgeElement, edge.connectionNode);
-            data.push_back(vertexStruc);
+
+            data.push_back(edgeElement);
         }
     }
 
@@ -198,6 +197,65 @@ bool NavigationMesh::saveToFile(std::string fileName) const
 
 bool NavigationMesh::loadFromFile(std::string fileName)
 {
+    std::vector<FileLoader::LoadedStruct> data;
+    FileLoader::LoadedStruct base, temp;
+    int ret = FileLoader::singleton().loadStructsFromFile(data, fileName);
+    if (ret != 0) return false;
+
+    // base data
+    base = data[0];
+    int triangleSize = base.ints["triangles"];
+    int nodeSize     = base.ints["nodes"];
+    int edgeSize     = base.ints["edges"];
+
+    triangleList.resize(triangleSize);
+    nodes.resize(nodeSize);
+    edgesList.resize(edgeSize);
+
+    int currentLine = 1;
+    // load all triangles (id and three vertices)
+    for (int i = 0; i < triangleSize; i++)
+    {
+        NavigationMesh::Triangle tri;
+        FileLoader::LoadedStruct element = data[currentLine];
+        tri.id = element.ints["id"]; // unused ?
+
+        currentLine++;
+
+        // load the three vertices in the triangle
+        for (int j = 0; j < TRI_VERTICES; j++)
+        {
+            temp = data[j + currentLine];
+            loadVertex(temp, tri.vertices[j]);
+        }
+        currentLine += TRI_VERTICES;
+
+        triangleList[i] = tri;
+    }
+
+    // load the nodes (just a vertex)
+    for (int i = 0; i < nodeSize; i++)
+    {
+        loadVertex(data[i + currentLine], nodes[i]);
+    }
+    currentLine += nodeSize;
+
+    // load the edges, all edges beetwen nodes and a vertex that connects the nodes
+    for (int i = 0; i < edgeSize; i++)
+    {
+        edgesList[i].resize(data[currentLine].ints["edges"]);
+
+        currentLine++;
+        for (int j = 0; j < edgesList[i].size(); j++)
+        {
+            // index connected to
+            edgesList[i][j].index = data[j + currentLine].ints["index"];
+            // connection
+            loadVertex(data[j + currentLine], edgesList[i][j].connectionNode);
+        }
+        currentLine += edgesList[i].size();
+    }
+
     return true;
 }
 
