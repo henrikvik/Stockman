@@ -152,7 +152,7 @@ void EntityManager::loadDebugCmds()
     DebugWindow::getInstance()->registerCommand("AI_SPAWN_ENEMY", [&](std::vector<std::string> &para) -> std::string {
         try {
             RandomGenerator &generator = RandomGenerator::singleton();
-            btVector3 pos = pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
+            btVector3 pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
                 generator.getRandomFloat(-85, 85) };
             SpawnEnemy(static_cast<EnemyType> (stoi(para[0])), pos, {});
             return "Enemy spawned";
