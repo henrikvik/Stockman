@@ -3,15 +3,17 @@
 
 #include <d3d11.h>
 #include <SimpleMath.h>
-
 #include <Vector>
 
-// this class should be created offline and loaded with a file
+#include <Misc\FileLoader.h>
+
 namespace Logic
 {
 	class NavigationMesh
 	{
 	    public:
+            static const std::string FILE_NAME;
+
             // Edges: List Of Edge. Edge = a connectionNode and the index it is connected to
             struct Edge {
                 int index;
@@ -54,12 +56,19 @@ namespace Logic
                 getRenderDataTri();
             std::vector<std::pair<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Color>>* 
                 getRenderDataEdges();
+
+            // saving / loading ret true on success
+            bool saveToFile(std::string fileName = FILE_NAME) const;
+            bool loadFromFile(std::string fileName = FILE_NAME);
 		private:
 			std::vector<Triangle> triangleList;
+			std::vector<Edges>    edgesList;
 			std::vector<DirectX::SimpleMath::Vector3> nodes;
-			std::vector<Edges> listEdges;
 
-			static const DirectX::SimpleMath::Vector3 dir;
+            void saveVertex(FileLoader::LoadedStruct &struc, DirectX::SimpleMath::Vector3 const &vec) const;
+            void loadVertex(FileLoader::LoadedStruct &struc, DirectX::SimpleMath::Vector3 &vec) const;
+
+			static const DirectX::SimpleMath::Vector3 DOWN_Y;
 	};
 }
 

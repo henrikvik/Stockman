@@ -217,6 +217,26 @@ void AStar::generateNavigationMesh(Physics &physics)
         }
     });
 
+    DebugWindow::getInstance()->registerCommand("AI_NAV_SAVE",
+        [&](std::vector<std::string> para) -> std::string {
+        bool success;
+        if (para.size() > 0)
+            success = navigationMesh.saveToFile(para[0]);
+        else
+            success = navigationMesh.saveToFile();
+        return success ? "Navigation mesh saved correctly! :)" : "Wenn du das siehst, fuck";
+    });
+
+    DebugWindow::getInstance()->registerCommand("AI_NAV_LOAD",
+        [&](std::vector<std::string> para) -> std::string {
+        bool success;
+        if (para.size() > 0)
+            success = navigationMesh.loadFromFile(para[0]);
+        else
+            success = navigationMesh.loadFromFile();
+        return success ? "Navigation mesh saved correctly! :)" : "Wenn du das siehst, fuck";
+    });
+
     createNodes();
 }
 

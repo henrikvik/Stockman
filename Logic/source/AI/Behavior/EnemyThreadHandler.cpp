@@ -73,6 +73,7 @@ void EnemyThreadHandler::updateEnemiesAndPath(WorkData &data)
     aStar.loadTargetIndex(*data.player);
     const std::vector<Enemy*> &enemies = data.manager->getAliveEnemies()[data.index];
 
+    // make sure it is still enemies in the node before doing all the calculations
     if (!enemies.empty())
     {
         std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(data.index);
