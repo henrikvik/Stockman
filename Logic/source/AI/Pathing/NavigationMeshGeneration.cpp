@@ -645,11 +645,11 @@ void NavigationMeshGeneration::createEdgeBeetwen(NavigationMesh &nav, int r1, in
     btVector3 vec1 = reg1.cube.getPos() + getDimension(reg1, side),
               vec2 = reg2.cube.getPos() + getDimension(reg2, (side + 2) % SIDES);
 
-    btVector3 half1Top = vec1 + getDimension(reg1, (side + 1) % SIDES),
-              half2Top = vec2 + getDimension(reg2, (side + 1) % SIDES);
+    btVector3 half1Top = vec1 + getDimension(reg1, (side + 1) % SIDES).absolute(),
+              half2Top = vec2 + getDimension(reg2, (side + 1) % SIDES).absolute(); // always top
 
-    btVector3 half1Bot = vec1 + getDimension(reg1, (side + 3) % SIDES),
-              half2Bot = vec2 + getDimension(reg2, (side + 3) % SIDES);
+    btVector3 half1Bot = vec1 + getDimension(reg1, (side + 3) % SIDES).absolute() * -1, // always bot
+              half2Bot = vec2 + getDimension(reg2, (side + 3) % SIDES).absolute() * -1;
 
     btVector3 top, bot;
 
