@@ -14,12 +14,13 @@
 #include <queue>
 
 using namespace Logic;
-
+const float Behavior::STEERING_BASE = 17.5f;
 
 Behavior::Behavior(PathingType type)
 {
     m_pathingType = type;
     m_changedGoalNode = false;
+    m_steeringSpeed = STEERING_BASE;
 }
 
 Behavior::~Behavior()
@@ -61,12 +62,12 @@ void Behavior::walkPath(RunIn &in)
     boidCalculations(in.enemy->getPositionBT(),
         dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
-    float y = in.enemy->getRigidBody()->getLinearVelocity().getY();
-   // dir.setY(0);
     dir.normalize();
-    dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
+    float dt = (in.deltaTime * 0.001f);
 
-    in.enemy->getRigidBody()->setLinearVelocity({ dir.x() * 100, y, dir.z() * 100 });
+    btVector3 vel = in.enemy->getRigidBody()->getLinearVelocity().normalized();
+    btVector3 steeringForce = dt * m_steeringSpeed * (dir - vel);
+    in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() + steeringForce);
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
@@ -208,4 +209,14 @@ Behavior::PathingType Behavior::getPathingType() const
 void Behavior::setPathingType(PathingType pathingType)
 {
 	m_pathingType = pathingType;
+}
+
+float Behavior::getSteeringSpeed() const
+{
+    return m_steeringSpeed;
+}
+
+void Behavior::setSteeringSpeed(float steeringSpeed)
+{
+    m_steeringSpeed = steeringSpeed;
 }

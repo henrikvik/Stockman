@@ -86,8 +86,8 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
 	updateSpecific(player, deltaTime);
 
-    // Rotation toward the player
-    btVector3 dir = player.getPositionBT() - getPositionBT();
+    // Rotation toward their moving direction
+    btVector3 dir = getRigidBody()->getLinearVelocity();
     float yaw = atan2(dir.getX(), dir.getZ());
     m_transform->setRotation(btQuaternion(yaw, 0.f, 0));
 
@@ -155,7 +155,6 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
 		m_bulletTimeMod = std::pow(effect.getSpecifics()->isBulletTime, stacks);
     if (flags & Effect::EFFECT_IS_FROZEN)
         m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
-        std::cout << std::to_string(m_moveSpeedMod);
     if (flags & Effect::EFFECT_IS_STUNNED)
         m_stunned = true;
     if (flags & Effect::EFFECT_MOVE_FASTER)
