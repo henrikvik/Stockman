@@ -14,7 +14,7 @@
 #include <queue>
 
 using namespace Logic;
-const float Behavior::STEERING_BASE = 20.f;
+const float Behavior::STEERING_BASE = 22.5f;
 
 Behavior::Behavior(PathingType type)
 {
@@ -40,7 +40,7 @@ void Behavior::walkPath(RunIn &in)
 {
     btVector3 dir;
 
-    if (m_pathing.pathIsEmpty())
+    if (m_pathing.pathIsEmpty() || m_pathing.pathOnLastNode())
     {
         dir = in.target->getPositionBT() - in.enemy->getPositionBT();
         m_changedGoalNode = true;
