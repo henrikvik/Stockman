@@ -14,7 +14,7 @@
 #include <queue>
 
 using namespace Logic;
-const float Behavior::STEERING_BASE = 17.5f;
+const float Behavior::STEERING_BASE = 20.f;
 
 Behavior::Behavior(PathingType type)
 {
