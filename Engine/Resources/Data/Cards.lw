@@ -14,8 +14,8 @@
 	"status0" : 8;
 }
 {
-	"cardName" : "Damage up";
-	"description" : "Increase all weapons damage";
+	"cardName" : "+Damage";
+	"description" : "Increase all weapon damage";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;
@@ -29,8 +29,8 @@
 	"status0" : 1;
 }
 {
-	"cardName" : "Increase Ammo Cap";
-	"description" : "Increase the total ammo you can hold in your ammo pouch";
+	"cardName" : "+Ammo Cap";
+	"description" : "Increase the ammo cap";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;
@@ -44,8 +44,8 @@
 	"status0" : 13;
 }
 {
-	"cardName" : "Increase Mag Size";
-	"description" : "Increase the total ammo you can hold in your weapon";
+	"cardName" : "+Mag Size";
+	"description" : "Increase the total ammo of your weapon";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;
@@ -59,8 +59,8 @@
 	"status0" : 14;
 }
 {
-	"cardName" : "Increase Movement Speed";
-	"description" : "Increase the total ammo you can hold in your weapon";
+	"cardName" : "+Movement Speed";
+	"description" : "Increase your movment";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;
@@ -74,8 +74,8 @@
 	"status0" : 15;
 }
 {
-	"cardName" : "Decrease Skill Cooldown";
-	"description" : "Decrease the total cooldown on all your current skills";
+	"cardName" : "-Skill CD";
+	"description" : "Decrease cooldown on your skills";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;
@@ -89,8 +89,8 @@
 	"status0" : 16;
 }
 {
-	"cardName" : "Increase Weapon Fire-rate";
-	"description" : "Increase the speed of which you can shoot for all weapons";
+	"cardName" : "+Fire-rate";
+	"description" : "Increase fire rate for all weapons";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;
@@ -104,8 +104,8 @@
 	"status0" : 18;
 }
 {
-	"cardName" : "Decrease Reload Time";
-	"description" : "Decrease the time spent to reload for all weapons";
+	"cardName" : "-Reload";
+	"description" : "Decrease reload time of all weapons";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;
@@ -119,8 +119,8 @@
 	"status0" : 19;
 }
 {
-	"cardName" : "Increase Jump Height";
-	"description" : "Increase the jump strength the player has";
+	"cardName" : "+Jump";
+	"description" : "Increase the jump strength";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;
@@ -134,23 +134,8 @@
 	"status0" : 20;
 }
 {
-	"cardName" : "Crossbow - Fire Damage";
-	"description" : "Crossbow fires fire arows which gives the enemies a damage over time effect (can stack)";
-	"texture" : "b";
-
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
-
-	"statusAmount" : 1;
-	"statusType" : 1;
-    "category" : 0;
-	"status0" : 2;
-}
-{
-	"cardName" : "Frost staff - Freeze Duration";
-	"description" : "Frost Staff freezes enemies for longer";
+	"cardName" : "+Freeze Duration";
+	"description" : "Staff freezes enemies longer";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;

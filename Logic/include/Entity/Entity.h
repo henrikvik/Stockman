@@ -44,7 +44,7 @@ namespace Logic
         // An unordered map with a list of callbacks
         typedef std::function<void(CallbackData&)> Callback;
 
-		Entity(btRigidBody* body, btVector3 halfExtent);
+        Entity(btRigidBody* body, btVector3 halfExtent, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
 

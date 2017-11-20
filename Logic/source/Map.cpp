@@ -63,21 +63,16 @@ void Map::clear()
 // If user holds tab, draw debug info
 void Map::update(float deltaTime)
 {
+#ifdef _DEBUG
     m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
+#endif // _DEBUG
 }
 
 void Map::render() const
 {
-	for (Object* o : m_props)           o->render();
+	for (StaticObject* o : m_props)     o->render();
     for (LightObject* l : m_lights)     l->render();
     for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
-
-	// Drawing hitboxes debugged & lights
-    if (m_drawDebug)
-    {
-        for (StaticObject* e : m_hitboxes)
-            e->renderD();
-    }
 }
 	
 std::vector<StaticObject*>*			Map::getProps()				{ return &m_props;				}
@@ -90,13 +85,14 @@ void Map::loadStartMenuScene()
     std::vector<FrameHitbox> hitboxes;
     std::vector<FrameLight> lights;
 
-    hitboxes.push_back({ { 0, -10, 0 },{ 0, 0, 0 },{ 500.f, 10, 500.f },    Resources::Models::UnitCube });
+    hitboxes.push_back({ { 0, 0.0f, 0 },{ 0, 0, 0 },{ 1.f, 1.f, 1.f },    Resources::Models::MenuScene });
 
-    hitboxes.push_back({ { 0, 0.0f, 0 },{ 0, 0, 0 },{ 0.55f, 0.55f, 0.55f },    Resources::Models::Firepit });
-    hitboxes.push_back({ { 3, 0.0f, 0.5 },{ 0, 0, 0 },{ 1, 0.75, 1 },    Resources::Models::UnitCube });
-    hitboxes.push_back({ { -3, 0.0f, -1 },{ 0, 35, 0 },{ 1, 0.75, 1 },    Resources::Models::UnitCube });
-    hitboxes.push_back({ { 3, 1.0f, 0.5 },{ 0, 35, 0 },{ 1, 1, 1 },    Resources::Models::StaticSummon });
-    hitboxes.push_back({ { -3, 1.0f, -1 },{ 0, 45, 0 },{ 1, 1, 1 },    Resources::Models::StaticSummon });
+    FrameLight light;
+    light.color = DirectX::SimpleMath::Vector3(1, 0.5, 0.3);
+    light.position = DirectX::SimpleMath::Vector3(0, 0, 0);
+    light.intensity = 1;
+    light.range = 10;
+    lights.push_back(light);
 
     for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
 }

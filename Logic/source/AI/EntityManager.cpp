@@ -58,7 +58,7 @@ void EntityManager::registerCreationFunctions()
 {
     m_enemyFactory[EnemyType::NECROMANCER] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.8f, 1.5f, 0.8f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
@@ -73,7 +73,7 @@ void EntityManager::registerCreationFunctions()
     };
     m_enemyFactory[EnemyType::NECROMANCER_MINION] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.5f, 0.5f, 0.5f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.f, 1.f, 0.6f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
@@ -255,18 +255,7 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
 {
     enemy->update(player, deltaTime, flock);
 
-    if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, flockIndex))
-    {
-        int newIndex = AStar::singleton().getIndex(*enemy);
-        std::swap(
-            flock[enemyIndex],
-            flock[flock.size() - 1]
-        );
-        flock.pop_back();
-
-        m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
-    }
-    else if (enemy->getHealth() <= 0)
+    if (enemy->getHealth() <= 0)
     {
         m_aliveEnemies--;
 
@@ -278,6 +267,17 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
         DeleteBody(*enemy);
         m_deadEnemies.push_back(enemy);
         flock.pop_back();
+    }
+    else if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, flockIndex))
+    {
+        int newIndex = AStar::singleton().getIndex(*enemy);
+        std::swap(
+            flock[enemyIndex],
+            flock[flock.size() - 1]
+        );
+        flock.pop_back();
+
+        m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
     }
 }
 

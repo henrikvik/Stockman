@@ -28,9 +28,10 @@ namespace Logic
 
         void init();
 		void clear();
-		Projectile* addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter);
+        Projectile* addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 		void removeProjectile(Projectile* p, int index);
         void removeAllProjectiles();
+        void removeEnemyProjCallbacks();
 
 		void update(float deltaTime);
 		void render();

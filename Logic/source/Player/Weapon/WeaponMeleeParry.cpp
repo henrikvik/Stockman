@@ -33,7 +33,7 @@ void WeaponMeleeParry::onUse(std::vector<Projectile*>& projectiles, Entity& shoo
             if (Enemy* enemy = dynamic_cast<Enemy*>(obj))
             {
                 obj->getRigidBody()->setLinearVelocity(knockbackDir * m_knockbackPower);
-                enemy->getStatusManager().addStatus(StatusManager::EFFECT_ID::STUN, 1);
+                enemy->getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::STUN, 1);
             }
 
         });

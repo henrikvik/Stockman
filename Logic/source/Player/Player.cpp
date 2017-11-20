@@ -28,6 +28,7 @@
 
 using namespace Logic;
 
+const int Player::MIN_Y = -80.f;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
 Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
@@ -408,6 +409,12 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
 
             // Add invul time
             getStatusManager().addStatus(StatusManager::EFFECT_ID::INVULNERABLE, 1);
+
+            SpecialEffectRenderInfo shake;
+            shake.duration = 0.5f;
+            shake.radius = 30.0f;
+            shake.type = SpecialEffectRenderInfo::screenShake;
+            QueueRender(shake);
         }
     }
 }
@@ -437,6 +444,7 @@ void Player::updateSpecific(float deltaTime)
     DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
     // Temp for testing
+#ifdef _DEBUG
     if (ks.IsKeyDown(DirectX::Keyboard::B))
     {
         m_charController->warp({ 0.f, 0.f, 0.f });
@@ -461,6 +469,7 @@ void Player::updateSpecific(float deltaTime)
         m_noclip = false;
         printf("free move deactivated\n");
     }
+#endif // !_DEBUG
 
     //Only allowed if not stunned
     if (!m_stunned)
@@ -568,18 +577,11 @@ void Player::updateSpecific(float deltaTime)
         }
     }
 
-    /* if (m_godMode)
-    {*/
-        static bool isNum = false;
-        static bool wasNum = false;
-        wasNum = isNum;
-        isNum = ks.NumPad6;
-
-        if (isNum && !wasNum)
-            m_hp--;
-    /*}*/
-
     Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
+
+    // for handling death
+    if (getPositionBT().y() < MIN_Y)
+        m_hp = 0;
 }
 
 void Player::moveInput(DirectX::Keyboard::State * ks)
