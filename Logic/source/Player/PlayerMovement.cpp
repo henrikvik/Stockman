@@ -231,7 +231,7 @@ void PlayerMovement::accelerate(float deltaTime, float acceleration)
 
     PROFILE_BEGIN("Stepping player");
     // Step player
-    // TODO What did this do?
+    // TODO What did this do? It moves the player, but this class isn't in use
     //m_charController->preStep(m_physicsPointer);
     //m_charController->playerStep(m_physicsPointer, deltaTime);
     PROFILE_END()
