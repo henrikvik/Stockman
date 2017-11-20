@@ -16,10 +16,6 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
     body->translate({ 0, HEIGHT_OFFSET, 0 });
 
     gravity = getRigidBody()->getGravity();
-
-    addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
-        getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 1.f);
-    });
 }
 
 EnemySoarer::~EnemySoarer()
