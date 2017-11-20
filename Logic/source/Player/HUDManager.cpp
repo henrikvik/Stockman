@@ -341,7 +341,7 @@ void Logic::HUDManager::updateGUIElemets()
 {
     //hp
 
-    if (HPBar.size() != info.hp && info.hp != 0)
+    if (!HPBar.empty() && HPBar.size() > info.hp)
     {
         HPBar.pop_back();
     }

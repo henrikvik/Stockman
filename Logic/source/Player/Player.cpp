@@ -409,6 +409,12 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
 
             // Add invul time
             getStatusManager().addStatus(StatusManager::EFFECT_ID::INVULNERABLE, 1);
+
+            SpecialEffectRenderInfo shake;
+            shake.duration = 0.5f;
+            shake.radius = 30.0f;
+            shake.type = SpecialEffectRenderInfo::screenShake;
+            QueueRender(shake);
         }
     }
 }
@@ -438,6 +444,7 @@ void Player::updateSpecific(float deltaTime)
     DirectX::Mouse::State ms = DirectX::Mouse::Get().GetState();
 
     // Temp for testing
+#ifdef _DEBUG
     if (ks.IsKeyDown(DirectX::Keyboard::B))
     {
         m_charController->warp({ 0.f, 0.f, 0.f });
@@ -462,6 +469,7 @@ void Player::updateSpecific(float deltaTime)
         m_noclip = false;
         printf("free move deactivated\n");
     }
+#endif // !_DEBUG
 
     //Only allowed if not stunned
     if (!m_stunned)
@@ -568,17 +576,6 @@ void Player::updateSpecific(float deltaTime)
                 m_weaponManager->reloadWeapon();
         }
     }
-
-    /* if (m_godMode)
-    {*/
-        static bool isNum = false;
-        static bool wasNum = false;
-        wasNum = isNum;
-        isNum = ks.NumPad6;
-
-        if (isNum && !wasNum)
-            m_hp--;
-    /*}*/
 
     Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
 

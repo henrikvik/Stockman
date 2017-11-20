@@ -1,6 +1,7 @@
 #include <StatePlaying.h>
 #include <StateMachine\StateBuffer.h>
 #include <State.h>
+#include "..\include\Misc\GUI\iMenuCards.h"
 
 #include <Misc\CommandsFile.h>
 
@@ -122,12 +123,24 @@ void StatePlaying::update(float deltaTime)
 
     ComboMachine::Get().update(deltaTime);
 
+
+    if (fullhack)
+    {
+        static_cast<iMenuCards*>(m_menu->getActiveMenu())->setCardInformation(m_cardManager->getHand());
+        fullhack = false;
+    }
+
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
     {
         m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
-        m_cardManager->pickThree(m_player->getHP() != 3);
+        m_cardManager->pickThreeCards(m_player->getHP() != 3);
+        m_projectileManager->removeEnemyProjCallbacks();
+
+        //TODO temp
+        fullhack = true;
     }
+
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
@@ -157,8 +170,10 @@ void StatePlaying::update(float deltaTime)
     m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
     PROFILE_END();
 
+#ifdef _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
         m_player->takeDamage(1, 0);
+#endif // _DEBUG
 
     if (m_player->getHP() <= 0)
         gameOver();
@@ -167,8 +182,10 @@ void StatePlaying::update(float deltaTime)
 void StatePlaying::render() const
 {
     // Debug Draw physics
+#ifdef _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift))
         m_physics->render();
+#endif // _DEBUG
 
     PROFILE_BEGIN("Player Render");
     if (m_menu->getType() != iMenu::MenuGroup::GameOver)

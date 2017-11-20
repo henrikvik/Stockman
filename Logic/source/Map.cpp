@@ -63,21 +63,16 @@ void Map::clear()
 // If user holds tab, draw debug info
 void Map::update(float deltaTime)
 {
+#ifdef _DEBUG
     m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
+#endif // _DEBUG
 }
 
 void Map::render() const
 {
-	for (Object* o : m_props)           o->render();
+	for (StaticObject* o : m_props)     o->render();
     for (LightObject* l : m_lights)     l->render();
     for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
-
-	// Drawing hitboxes debugged & lights
-    if (m_drawDebug)
-    {
-        for (StaticObject* e : m_hitboxes)
-            e->renderD();
-    }
 }
 	
 std::vector<StaticObject*>*			Map::getProps()				{ return &m_props;				}

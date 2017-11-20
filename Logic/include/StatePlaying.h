@@ -47,6 +47,7 @@ namespace Logic
             static const btVector3  PLAYER_ROTATION;
             static const int        UNIQUE_CARDS;
         };
+        bool fullhack = false;
 
     public:
         StatePlaying(StateBuffer* stateBuffer);
