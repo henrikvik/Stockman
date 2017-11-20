@@ -114,7 +114,7 @@ void Projectile::updateSpecific(float deltaTime)
     // Updating transform matrix
     renderInfo.transform = getModelTransformMatrix();
 
-    if (m_pData.hasEffect) {
+    if (m_pData.hasEffect && m_pData.effectActivated) {
         auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, renderInfo.transform);
         auto vel = body->getLinearVelocity();
 

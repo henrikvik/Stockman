@@ -45,6 +45,7 @@ void EnemyNecromancer::createAbilities()
     pdata.effect = necroTrail;
     pdata.hasEffect = true;
     pdata.effectVelocity = false;
+    pdata.effectActivated = true;
 
 
     auto onTick = [&](Player &player, Ability &ab) -> void {};
