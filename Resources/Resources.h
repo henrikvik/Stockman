@@ -16,6 +16,8 @@ namespace Resources
             {KG18, R"(..\Resources\Fonts\KG18.spritefont)"},
             {KG26, R"(..\Resources\Fonts\KG26.spritefont)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Maps
     {
@@ -29,6 +31,8 @@ namespace Resources
             {IslandScene, R"(..\Resources\Maps\IslandScene.toml)"},
             {Scene, R"(..\Resources\Maps\Scene.toml)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Models
     {
@@ -72,6 +76,8 @@ namespace Resources
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Shaders
     {
@@ -131,6 +137,8 @@ namespace Resources
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
             {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Textures
     {
@@ -196,5 +204,7 @@ namespace Resources
             {WaveComplete, R"(..\Resources\Textures\WaveComplete.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };
+        
+        Files toEnum(const char * str);
     }
 }
