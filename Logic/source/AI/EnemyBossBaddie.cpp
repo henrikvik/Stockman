@@ -54,6 +54,10 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     });
 
     forFunTesting();
+
+    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
+    light.intensity = 0.8f;
+    light.range = 10.0f;
 }
 
 EnemyBossBaddie::~EnemyBossBaddie()

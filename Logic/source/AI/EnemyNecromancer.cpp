@@ -27,6 +27,10 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
     m_spawnedMinions = 0;
 
     createAbilities();
+
+    light.color = DirectX::SimpleMath::Color(0.5f, 0.0f, 1.0f);
+    light.intensity = 0.8f;
+    light.range = 7.0f;
 }
 
 EnemyNecromancer::~EnemyNecromancer()

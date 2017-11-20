@@ -46,13 +46,16 @@ namespace Logic
 			Behavior *m_behavior;
 
             StaticRenderInfo enemyRenderInfo;
-            LightRenderInfo light;
-
-            //status
             bool m_stunned;
             float m_fireTimer;
 
             float m_blinkTimer;
+    protected:
+
+        LightRenderInfo light;
+
+            //status
+        
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE };
 

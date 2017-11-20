@@ -37,7 +37,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 //    enemyRenderInfo.burn = 0;
     enemyRenderInfo.transform = getTransformMatrix();
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
-    light.intensity = 1.0f;
+    light.intensity = 0.5f;
     light.range = 2.f;
 }
 
