@@ -36,7 +36,8 @@ namespace Logic
         std::vector<Card*> getHand();
 	private:
 		static const int HEALTH_PACK;
-		static const int HAND_SIZE;
+        static const int HAND_SIZE;
+        static const int NEVER_REMOVE_CARDS;
 
         void loadDeckFromFile();
         void createCard(CardCondition cond, FileLoader::LoadedStruct const &struc);
