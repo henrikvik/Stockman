@@ -152,7 +152,7 @@ void EntityManager::loadDebugCmds()
     DebugWindow::getInstance()->registerCommand("AI_SPAWN_ENEMY", [&](std::vector<std::string> &para) -> std::string {
         try {
             RandomGenerator &generator = RandomGenerator::singleton();
-            btVector3 pos = pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
+            btVector3 pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
                 generator.getRandomFloat(-85, 85) };
             SpawnEnemy(static_cast<EnemyType> (stoi(para[0])), pos, {});
             return "Enemy spawned";
@@ -271,13 +271,17 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
     else if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, flockIndex))
     {
         int newIndex = AStar::singleton().getIndex(*enemy);
-        std::swap(
-            flock[enemyIndex],
-            flock[flock.size() - 1]
-        );
-        flock.pop_back();
 
-        m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
+        if (newIndex != -1) // just let him stay for now
+        {
+            std::swap(
+                flock[enemyIndex],
+                flock[flock.size() - 1]
+            );
+            flock.pop_back();
+
+            m_enemies[newIndex].push_back(enemy);
+        }
     }
 }
 

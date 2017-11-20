@@ -86,8 +86,8 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
 	updateSpecific(player, deltaTime);
 
-    // Rotation toward the player
-    btVector3 dir = player.getPositionBT() - getPositionBT();
+    // Rotation toward their moving direction
+    btVector3 dir = getRigidBody()->getLinearVelocity();
     float yaw = atan2(dir.getX(), dir.getZ());
     m_transform->setRotation(btQuaternion(yaw, 0.f, 0));
 
