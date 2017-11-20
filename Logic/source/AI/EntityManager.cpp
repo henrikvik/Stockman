@@ -78,6 +78,8 @@ void EntityManager::registerCreationFunctions()
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
+        Graphics::FXSystem->addEffect("NecroSummonBoom", { pos.x(), pos.y(), pos.z() });
+
         Enemy* enemy = newd EnemyChaser(body);
 
         return enemy;

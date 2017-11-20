@@ -170,7 +170,7 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
         if (strcmp(instance.model.c_str(), "Island") == 0)
         {
             btRigidBody *rb = m_physicsPtr->createBody(
-                Cube(instance.translation, btVector3(), {150, 1, 150}),
+                Cube(instance.translation, btVector3(), {450, 1, 450}),
                 0.f, false,
                 Physics::COL_HITBOX,
                 Physics::COL_EVERYTHING
