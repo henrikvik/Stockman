@@ -17,9 +17,9 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
 
     gravity = getRigidBody()->getGravity();
 
-    addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
-        getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 1.f);
-    });
+    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
+    light.intensity = 0.8f;
+    light.range = 5.0f;
 }
 
 EnemySoarer::~EnemySoarer()

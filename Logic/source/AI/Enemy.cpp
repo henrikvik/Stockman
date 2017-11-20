@@ -37,7 +37,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 //    enemyRenderInfo.burn = 0;
     enemyRenderInfo.transform = getTransformMatrix();
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
-    light.intensity = 1.0f;
+    light.intensity = 0.5f;
     light.range = 2.f;
 }
 
@@ -139,6 +139,7 @@ void Enemy::damage(int damage)
 {
 	m_health -= damage;
     m_blinkTimer = 100.0f;
+    getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)
@@ -237,6 +238,7 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
 
 	data.damage = getBaseDamage();
 	data.meshID = id;
+    data.shouldRender = true;
 	data.speed = speed;
     data.ttl = 10000;
     data.gravityModifier = gravity;
@@ -263,6 +265,36 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
     return pj;
 }
 
+Projectile * Logic::Enemy::shoot(btVector3 dir, ProjectileData data, float speed, float gravity, float scale, bool sensor)
+{
+    data.damage = getBaseDamage();
+    data.shouldRender = false;
+    data.speed = speed;
+    data.ttl = 10000;
+    data.gravityModifier = gravity;
+    data.scale = scale;
+    data.enemyBullet = true;
+    data.isSensor = sensor;
+
+    Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
+
+    if (pj)
+    {
+        increaseCallbackEntities();
+        pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+            decreaseCallbackEntities();
+        });
+        if (hasCallback(ON_DAMAGE_GIVEN))
+        {
+            pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
+                callback(ON_DAMAGE_GIVEN, data);
+            });
+        }
+    }
+
+    return pj;
+}
+
 Behavior* Enemy::getBehavior() const
 {
 	return this->m_behavior;
@@ -271,7 +303,7 @@ Behavior* Enemy::getBehavior() const
 void Enemy::render() const
 {
     renderSpecific();
-    if (getEnemyType() != EnemyType::NECROMANCER_MINION) // nice code here (REPLACE OH MAH GOD)
+//    if (getEnemyType() != EnemyType::NECROMANCER_MINION) // nice code here (REPLACE OH MAH GOD)
         QueueRender(enemyRenderInfo);
     QueueRender(light);
 }

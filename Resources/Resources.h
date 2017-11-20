@@ -48,7 +48,7 @@ namespace Resources
             SkySphere,
             Staff,
             StaticSummon,
-            SummonUnit,
+            SummonUnitWithAnim,
             Tablet1,
             UnitCube
         };
@@ -68,7 +68,7 @@ namespace Resources
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
-            {SummonUnit, R"(..\Resources\Models\SummonUnit.hyb)"},
+            {SummonUnitWithAnim, R"(..\Resources\Models\SummonUnitWithAnim.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
