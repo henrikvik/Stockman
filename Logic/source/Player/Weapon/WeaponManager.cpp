@@ -149,11 +149,13 @@ void Logic::WeaponManager::affect(Effect const & effect)
         if (wp)
         {
             int magSize = wp->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier;
+            int ammoCap = wp->ammoContainer->getAmmoInfo().ammoCap + m_Upgrades.ammoCapModifier;
             int currentAmmo = wp->ammoContainer->getAmmoInfo().ammo;
-            if ((currentAmmo + magSize) >= (wp->ammoContainer->getAmmoInfo().ammoCap + m_Upgrades.ammoCapModifier))
-                wp->ammoContainer->setAmmo(wp->ammoContainer->getAmmoInfo().ammoCap + m_Upgrades.ammoCapModifier);
+
+            if ((currentAmmo + magSize) >= ammoCap)
+                wp->ammoContainer->setAmmo(ammoCap);
             else
-                wp->ammoContainer->setAmmo(currentAmmo + magSize + m_Upgrades.magSizeModifier);
+                wp->ammoContainer->setAmmo(currentAmmo + magSize);
         }
     }
     if(flags & Effect::EFFECT_INCREASE_AMMOCAP)
