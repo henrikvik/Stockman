@@ -297,7 +297,8 @@ void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Ent
 
 void WeaponManager::reloadWeapon()
 {
-	if (m_reloadTimer <= 0.f && m_currentWeapon->ammoContainer->getAmmoInfo().ammo > 0 && m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo < (m_currentWeapon->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier))
+	if (m_reloadTimer <= 0.f && m_currentWeapon->ammoContainer->getAmmoInfo().ammo > 0 && 
+        m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo < (m_currentWeapon->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier))
 	{
         m_reloadTimer = m_currentWeapon->ammoContainer->getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier;
 		m_reloadState = ReloadingWeapon::ACTIVE;
