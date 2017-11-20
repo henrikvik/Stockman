@@ -134,21 +134,6 @@
 	"status0" : 20;
 }
 {
-	"cardName" : "Crossbow - Fire Damage";
-	"description" : "Crossbow fires fire arows which gives the enemies a damage over time effect (can stack)";
-	"texture" : "b";
-
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
-
-	"statusAmount" : 1;
-	"statusType" : 1;
-    "category" : 0;
-	"status0" : 2;
-}
-{
 	"cardName" : "Frost staff - Freeze Duration";
 	"description" : "Frost Staff freezes enemies for longer";
 	"texture" : "b";
