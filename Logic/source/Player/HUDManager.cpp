@@ -346,6 +346,15 @@ void Logic::HUDManager::updateGUIElemets()
         HPBar.pop_back();
     }
 
+    if (HPBar.size() < info.hp)
+    {
+        float x = 26.f / 1024;
+        float y = 258.0f / 1024;
+        float width = 311.0f / 1024;
+        float height = 171.0f / 1024;
+        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (HPBar.size() * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+    }
+
     //decideds active weapon 
     switch (info.currentWeapon)
     {
