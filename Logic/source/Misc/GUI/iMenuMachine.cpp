@@ -5,7 +5,7 @@
 #include <Mouse.h>
 #include <Keyboard.h>
 
-#define EDIT_CAMERA_POS true       // Editing Mode - For getting camera placements
+#define EDIT_CAMERA_POS false       // Editing Mode - For getting camera placements
 #if EDIT_CAMERA_POS 
 #include <imgui.h>
 #endif
