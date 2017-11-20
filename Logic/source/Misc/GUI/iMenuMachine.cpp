@@ -4,6 +4,7 @@
 #include <Graphics\include\MainCamera.h>
 #include <Mouse.h>
 #include <Keyboard.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 #define EDIT_CAMERA_POS false       // Editing Mode - For getting camera placements
 #if EDIT_CAMERA_POS 
@@ -96,10 +97,16 @@ void iMenuMachine::update(float deltaTime)
     if (m_activeMenu)
     {
         if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Pause && !m_activeMenu->getIsFading())
+        {
+            Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_PRESS, nullptr, true);
             queueMenu(iMenu::MenuGroup::Empty);
+        }
     }
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Empty)
+    {
+        Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_PRESS, nullptr, true);
         queueMenu(iMenu::MenuGroup::Pause);
+    }
 
     if (wantsToSwap())
     {
