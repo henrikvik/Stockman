@@ -229,12 +229,10 @@ void PlayerMovement::accelerate(float deltaTime, float acceleration)
     else
         m_charController->setVelocityForTimeInterval(((m_moveDir + btVector3(0.f, m_charController->getLinearVelocity().y(), 0.f)) * m_moveSpeed) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED), deltaTime);
 
-    PROFILE_BEGIN("Stepping player");
     // Step player
     // TODO What did this do? It moves the player, but this class isn't in use
     //m_charController->preStep(m_physicsPointer);
     //m_charController->playerStep(m_physicsPointer, deltaTime);
-    PROFILE_END()
 }
 
 void PlayerMovement::applyFriction(float deltaTime, float friction)

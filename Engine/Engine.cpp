@@ -408,14 +408,14 @@ int Engine::run()
         PROFILE_END();
 
 		g_Profiler->poll();
-#ifdef _DEBUG
+//#ifdef _DEBUG
         if (showProfiler) {
 
             ImGui::SetNextWindowPos(ImVec2(0, 0));
             ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
             g_Profiler->render();
     }
-#endif // _DEBUG
+//#endif // _DEBUG
 
         Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);

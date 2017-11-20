@@ -40,10 +40,18 @@ void EnemyNecromancer::createAbilities()
     data.duration = 0.f;
     data.randomChanche = 0;
 
+    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
+    ProjectileData pdata;
+    pdata.effect = necroTrail;
+    pdata.hasEffect = true;
+    pdata.effectVelocity = false;
+    pdata.effectActivated = true;
+
+
     auto onTick = [&](Player &player, Ability &ab) -> void {};
 
-    auto onUse1 = [&](Player &player, Ability &ab) -> void {
-        Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), Resources::Models::UnitCube, (float)SPEED_AB2, 2.5f, 0.6f);
+    auto onUse1 = [=](Player &player, Ability &ab) -> void {
+        Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), pdata, (float)SPEED_AB2, 2.5f, 0.6f);
 		if (pj)
 		{
 			pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
