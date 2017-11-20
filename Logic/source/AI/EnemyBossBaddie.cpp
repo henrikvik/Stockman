@@ -102,7 +102,7 @@ void EnemyBossBaddie::createAbilities()
     AbilityData data;
 
     /* ABILITY ONE */
-    data.cooldown = 25000.f;
+    data.cooldown = 2500000000.f;
     data.duration = 14500.f;
     data.randomChanche = 50;
 
@@ -171,7 +171,7 @@ void EnemyBossBaddie::createAbilities()
     abilities[AbilityId::MELEE] = Ability(data, onTick2, onUse2);
 
     /* AB 3 */
-    data.cooldown = 1400.f;
+    data.cooldown = 700.f;
     data.duration = 0.f;
     data.randomChanche = 0;
 
