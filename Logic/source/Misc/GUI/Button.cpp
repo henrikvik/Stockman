@@ -1,4 +1,5 @@
 #include <Misc\GUI\Button.h>
+#include <Misc\Sound\NoiseMachine.h>
 using namespace Logic;
 
 
@@ -69,6 +70,8 @@ void Button::updateOnPress(int posX, int posY)
 {
 	if (callback && renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
 	{
+        Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_PRESS, nullptr, true);
+
         if (this->state != ACTIVE)
         {
             setState(ACTIVE);

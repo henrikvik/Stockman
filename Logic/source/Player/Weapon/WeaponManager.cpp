@@ -2,6 +2,7 @@
 #include <Player\Weapon\Weapon.h>
 #include <Player\Weapon\WeaponFreezeGrenade.h>
 #include <Player\Weapon\WeaponMeleeParry.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 #include <Player\Player.h>
 
@@ -244,6 +245,8 @@ void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Pl
             {
                 Entity* shooterEntity = &shooter;
                 usePrimary(position, yaw, pitch, *shooterEntity);
+
+                Sound::NoiseMachine::Get().playSFX(Sound::SFX::WEAPON_CUTLERY_PRIMARY, nullptr, true);
             }
         }
         else
