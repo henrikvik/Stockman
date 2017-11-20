@@ -55,8 +55,7 @@ void Graphics::DebugRenderPass::update(float deltaTime)
     vertexBuffer.write([](DebugVertex * dest)
     {
         UINT points = 0;
-        auto infoQueue = RenderQueue::get().getQueue<DebugRenderInfo>();
-        for (auto & info : infoQueue)
+        for (auto & info : RenderQueue::get().getQueue<DebugRenderInfo>())
         {
             for (auto & point : *info.points)
             {

@@ -15,8 +15,8 @@
 #define CAMERA_START_FORWARD        DirectX::SimpleMath::Vector3(0.027, -0.192, 0.789)
 #define CAMERA_SETTINGS_POSITION    DirectX::SimpleMath::Vector3(5.294, 1.843, -10.0)
 #define CAMERA_SETTINGS_FORWARD     DirectX::SimpleMath::Vector3(0.0, 1.0, 0.0)
-#define CAMERA_HIGHSCORE_POSITION   DirectX::SimpleMath::Vector3(2.471, 1.686, -2.500)
-#define CAMERA_HIGHSCORE_FORWARD    DirectX::SimpleMath::Vector3(1.0, 0.255, 0.828)
+#define CAMERA_HIGHSCORE_POSITION   DirectX::SimpleMath::Vector3(-2.549, 1.686, -3.125)
+#define CAMERA_HIGHSCORE_FORWARD    DirectX::SimpleMath::Vector3(0.341, 0.012, 0.352)
 #define CAMERA_INTRO_POSITION       DirectX::SimpleMath::Vector3(8.118, 1.059, -3.047)
 #define CAMERA_INTRO_FORWARD        DirectX::SimpleMath::Vector3(-0.027, 1.000, 0.656)
 #define CAMERA_SKILL_POSITION       DirectX::SimpleMath::Vector3(-10.000, 35.00, 0.000)
@@ -94,7 +94,7 @@ void iMenuMachine::update(float deltaTime)
 {
     if (m_activeMenu)
     {
-        if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Pause && m_activeMenu->getIsFading() && m_activeMenu->getIsSafeToRemove())
+        if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Pause && !m_activeMenu->getIsFading())
             queueMenu(iMenu::MenuGroup::Empty);
     }
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Empty)
