@@ -94,7 +94,7 @@ void iMenuMachine::update(float deltaTime)
 {
     if (m_activeMenu)
     {
-        if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Pause && m_activeMenu->getIsFading() && m_activeMenu->getIsSafeToRemove())
+        if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Pause && !m_activeMenu->getIsFading())
             queueMenu(iMenu::MenuGroup::Empty);
     }
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Empty)
