@@ -13,7 +13,7 @@
 #define MAX_SNOW 512
 #define PI 3.14159265f
 #define ONE_DEG_IN_RAD 0.01745f
-#define SNOW_SPEED 0.02f
+#define SNOW_SPEED 0.04f
 #define WIND_CHANGE_TIME 5000.f
 
 using namespace DirectX::SimpleMath;
