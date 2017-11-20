@@ -76,7 +76,7 @@
 	"bosses": 0;
 }
 { // 4
-	"enemies" : " 3,";
+	"enemies" : " 3";
 	"triggers" : 0;
 	"bosses": 1;
 }
