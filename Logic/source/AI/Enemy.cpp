@@ -238,6 +238,7 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
 
 	data.damage = getBaseDamage();
 	data.meshID = id;
+    data.shouldRender = true;
 	data.speed = speed;
     data.ttl = 10000;
     data.gravityModifier = gravity;
@@ -261,6 +262,36 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
         }
     }
 	
+    return pj;
+}
+
+Projectile * Logic::Enemy::shoot(btVector3 dir, ProjectileData data, float speed, float gravity, float scale, bool sensor)
+{
+    data.damage = getBaseDamage();
+    data.shouldRender = false;
+    data.speed = speed;
+    data.ttl = 10000;
+    data.gravityModifier = gravity;
+    data.scale = scale;
+    data.enemyBullet = true;
+    data.isSensor = sensor;
+
+    Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
+
+    if (pj)
+    {
+        increaseCallbackEntities();
+        pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+            decreaseCallbackEntities();
+        });
+        if (hasCallback(ON_DAMAGE_GIVEN))
+        {
+            pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
+                callback(ON_DAMAGE_GIVEN, data);
+            });
+        }
+    }
+
     return pj;
 }
 
