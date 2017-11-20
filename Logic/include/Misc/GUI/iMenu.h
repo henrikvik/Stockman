@@ -21,6 +21,7 @@ namespace Logic
             CardSelect,
             Highscore,
             GameOver, 
+            GameWon,
             Pause
         };
 

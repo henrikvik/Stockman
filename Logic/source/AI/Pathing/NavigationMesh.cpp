@@ -1,11 +1,14 @@
 #include <AI\Pathing\NavigationMesh.h>
-#include <Misc\FileLoader.h>
 #include <Engine\newd.h>
+
 #define EPSILON 0.0001f
 #define EPSILON_NODE 0.2f
+
 using namespace Logic;
 
-const DirectX::SimpleMath::Vector3 NavigationMesh::dir = DirectX::SimpleMath::Vector3(0.f, -1.f, 0.f);
+const DirectX::SimpleMath::Vector3 NavigationMesh::DOWN_Y = DirectX::SimpleMath::Vector3(0.f, -1.f, 0.f);
+const std::string NavigationMesh::FILE_NAME = "Enemies/NavigationMesh";
+typedef std::pair<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Color> Point;
 
 NavigationMesh::NavigationMesh()
 {
@@ -18,7 +21,7 @@ NavigationMesh::~NavigationMesh()
 void NavigationMesh::clear()
 {
     triangleList.clear();
-    listEdges.clear();
+    edgesList.clear();
     nodes.clear();
 }
 int NavigationMesh::addTriangle(Triangle const & triangle)
@@ -29,13 +32,13 @@ int NavigationMesh::addTriangle(Triangle const & triangle)
 
 void NavigationMesh::addEdge(int from, int to)
 {
-    listEdges[from].push_back({ to, getNodes()[to] });
+    edgesList[from].push_back({ to, getNodes()[to] });
 }
 
 void NavigationMesh::addDoubleEdge(int from, int to, DirectX::SimpleMath::Vector3 edgeNode)
 {
-    listEdges[from].push_back({ to, edgeNode });
-    listEdges[to].push_back({ from, edgeNode });
+    edgesList[from].push_back({ to, edgeNode });
+    edgesList[to].push_back({ from, edgeNode });
 }
 
 void NavigationMesh::generateEdges()
@@ -71,7 +74,7 @@ void NavigationMesh::generateEdges()
 
 NavigationMesh::Edges& NavigationMesh::getEdges(int from)
 {
-	return listEdges[from];
+	return edgesList[from];
 }
 
 void NavigationMesh::createNodesFromTriangles()
@@ -85,8 +88,12 @@ void NavigationMesh::createNodesFromTriangles()
 			mid += v;
 		mid /= 3; // nr of vertices in tri
 		nodes.push_back(mid);
-        listEdges.push_back({});
 	}
+}
+
+void NavigationMesh::reserveEdges(size_t size)
+{
+    edgesList.resize(size);
 }
 
 const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() const 
@@ -94,27 +101,27 @@ const std::vector<DirectX::SimpleMath::Vector3>& NavigationMesh::getNodes() cons
 	return nodes;
 }
 
-std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataTri() 
+std::vector<Point>* NavigationMesh::getRenderDataTri() 
 {
-	std::vector<DirectX::SimpleMath::Vector3> *data =
-		newd std::vector<DirectX::SimpleMath::Vector3>();
+	std::vector<Point> *data = newd std::vector<Point>();
 
-    for (Triangle const &tri : triangleList)
+    for (size_t t = 0; t < triangleList.size(); t++)
     {
         for (int i = 0; i < 3; i++) // List of lines to make a triangle
         {
-            data->push_back(tri.vertices[i]);
-            data->push_back(tri.vertices[i == 2 ? 0 : i + 1]);
+            data->push_back({ triangleList[t].vertices[i], 
+                DirectX::SimpleMath::Color( (t * t) % 255 / 255.f, (t + t) % 255 / 255.f, (t + t * 2) % 255 / 255.f ) });
+            data->push_back({triangleList[t].vertices[i == 2 ? 0 : i + 1], 
+                DirectX::SimpleMath::Color( (t * t) % 255 / 255.f, (t + t) % 255 / 255.f, (t + t * 2) % 255 / 255.f ) });
         }
     }
 
 	return data;
 }
 
-std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataEdges()
+std::vector<Point>* NavigationMesh::getRenderDataEdges()
 {
-	std::vector<DirectX::SimpleMath::Vector3> *data =
-		new std::vector<DirectX::SimpleMath::Vector3>();
+    std::vector<Point> *data = newd std::vector<Point>();
 
     for (auto node : nodes)
     {
@@ -122,16 +129,148 @@ std::vector<DirectX::SimpleMath::Vector3>* NavigationMesh::getRenderDataEdges()
     //    data->push_back(node - DirectX::SimpleMath::Vector3{ 0, 2.f, 0 });
     }
 	
-	for (int j = 0; j < listEdges.size(); j++)
+	for (int j = 0; j < edgesList.size(); j++)
 	{
-		for (int i = 0; i < listEdges[j].size(); i++)
+		for (int i = 0; i < edgesList[j].size(); i++)
 		{
-			data->push_back(nodes[j]);
-			data->push_back(nodes[listEdges[j][i].index]);
+            data->push_back({ nodes[j],                       { 0.f, 0.f, 255.f } });
+            data->push_back({ edgesList[j][i].connectionNode, { 255.f, 0.f, 255.f } });
+            data->push_back({ edgesList[j][i].connectionNode, { 255.f, 0.f, 255.f } });
+            data->push_back({ nodes[edgesList[j][i].index],   { 0.f, 0.f, 255.f } });
 		}
 	}
 
 	return data;
+}
+
+bool NavigationMesh::saveToFile(std::string fileName) const
+{
+    std::vector<FileLoader::LoadedStruct> data;
+    FileLoader::LoadedStruct base;
+    FileLoader::LoadedStruct vertexStruc;
+
+    // base data
+    base.ints["triangles"] = triangleList.size();
+    base.ints["nodes"]     = nodes.size();
+    base.ints["edges"]     = edgesList.size();
+
+    data.push_back(base);
+   
+    for (auto &tri : triangleList)
+    {
+        FileLoader::LoadedStruct element;
+        element.ints["id"] = tri.id; // unused ?
+        data.push_back(element);
+
+        for (auto &vertex : tri.vertices)
+        {
+            saveVertex(vertexStruc, vertex);
+            data.push_back(vertexStruc);
+        }
+    }
+
+    for (auto &node : nodes)
+    {
+        saveVertex(vertexStruc, node);
+        data.push_back(vertexStruc);
+    }
+
+    for (auto &edges : edgesList)
+    {
+        FileLoader::LoadedStruct baseElement, edgeElement;
+        baseElement.ints["edges"] = edges.size();
+        data.push_back(baseElement);
+
+        for (auto &edge : edges)
+        {
+            // index connected to
+            edgeElement.ints["index"] = edge.index;
+            // connection
+            saveVertex(edgeElement, edge.connectionNode);
+
+            data.push_back(edgeElement);
+        }
+    }
+
+    return FileLoader::singleton().saveStructsToFile(data, fileName) == 0;
+}
+
+bool NavigationMesh::loadFromFile(std::string fileName)
+{
+    std::vector<FileLoader::LoadedStruct> data;
+    FileLoader::LoadedStruct base, temp;
+    int ret = FileLoader::singleton().loadStructsFromFile(data, fileName);
+    if (ret != 0) return false;
+
+    // base data
+    base = data[0];
+    int triangleSize = base.ints["triangles"];
+    int nodeSize     = base.ints["nodes"];
+    int edgeSize     = base.ints["edges"];
+
+    triangleList.resize(triangleSize);
+    nodes.resize(nodeSize);
+    edgesList.resize(edgeSize);
+
+    int currentLine = 1;
+    // load all triangles (id and three vertices)
+    for (int i = 0; i < triangleSize; i++)
+    {
+        NavigationMesh::Triangle tri;
+        FileLoader::LoadedStruct element = data[currentLine];
+        tri.id = element.ints["id"]; // unused ?
+
+        currentLine++;
+
+        // load the three vertices in the triangle
+        for (int j = 0; j < TRI_VERTICES; j++)
+        {
+            temp = data[j + currentLine];
+            loadVertex(temp, tri.vertices[j]);
+        }
+        currentLine += TRI_VERTICES;
+
+        triangleList[i] = tri;
+    }
+
+    // load the nodes (just a vertex)
+    for (int i = 0; i < nodeSize; i++)
+    {
+        loadVertex(data[i + currentLine], nodes[i]);
+    }
+    currentLine += nodeSize;
+
+    // load the edges, all edges beetwen nodes and a vertex that connects the nodes
+    for (int i = 0; i < edgeSize; i++)
+    {
+        edgesList[i].resize(data[currentLine].ints["edges"]);
+
+        currentLine++;
+        for (int j = 0; j < edgesList[i].size(); j++)
+        {
+            // index connected to
+            edgesList[i][j].index = data[j + currentLine].ints["index"];
+            // connection
+            loadVertex(data[j + currentLine], edgesList[i][j].connectionNode);
+        }
+        currentLine += edgesList[i].size();
+    }
+
+    return true;
+}
+
+void NavigationMesh::saveVertex(FileLoader::LoadedStruct &struc, DirectX::SimpleMath::Vector3 const &vec) const
+{
+    struc.floats["x"] = vec.x;
+    struc.floats["y"] = vec.y;
+    struc.floats["z"] = vec.z;
+}
+
+void NavigationMesh::loadVertex(FileLoader::LoadedStruct &struc, DirectX::SimpleMath::Vector3 &vec) const
+{
+    vec.x = struc.floats["x"];
+    vec.y = struc.floats["y"];
+    vec.z = struc.floats["z"];
 }
 
 int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const &pos) const
@@ -160,7 +299,7 @@ bool NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const & pos, int 
 		tri.vertices[2] - tri.vertices[0];
 
 	// calculating determinant 
-	p = dir.Cross(e2);
+	p = DOWN_Y.Cross(e2);
 
 	//Calculate determinat
 	det = e1.Dot(p);
@@ -182,7 +321,7 @@ bool NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const & pos, int 
 	q = t.Cross(e1);
 
 	//Calculate v parameter
-	v = dir.Dot(q) * invDet;
+	v = DOWN_Y.Dot(q) * invDet;
 
 	//Check for ray hit
 	if (v < 0 || u + v > 1) { return false; }

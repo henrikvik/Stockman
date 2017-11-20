@@ -219,7 +219,7 @@ void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks,
 
     if (!found)
     {
-        m_effectStacks.push_back({ nrOfStacks, duration });
+        m_effectStacks.push_back({ nrOfStacks, s_effects[effectID].getStandards()->duration });
         m_effectStacksIds.push_back(effectID);
     }
 }

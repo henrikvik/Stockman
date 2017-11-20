@@ -24,7 +24,7 @@ namespace Logic
 			};
 
 			// debugging
-			DebugRenderInfo debugDataTri, debugDataEdges;
+            NewDebugRenderInfo debugDataTri, debugDataEdges;
 
 			// to calc path testing rn
 			struct NavNode
@@ -55,8 +55,10 @@ namespace Logic
 			NavigationMesh navigationMesh;
             NavigationMeshGeneration generator;
 
-            bool renderDebug;
+            bool renderDebugTri, renderDebugEdges;
+
 			int targetIndex; // save the triangle id to share beetwen path loading
+            bool targetOutOfBounds;
 		
 			float heuristic(DirectX::SimpleMath::Vector3 const &from,
 				DirectX::SimpleMath::Vector3 const &to) const;
@@ -81,8 +83,8 @@ namespace Logic
 			std::vector<const DirectX::SimpleMath::Vector3*>
 				getPath(int fromIndex);
 
-			std::vector<const DirectX::SimpleMath::Vector3*> 
-				reconstructPath(NavNode const *endNode, std::vector<NavNode> const &navNodes, int toIndex);
+			std::vector<const DirectX::SimpleMath::Vector3*> reconstructPath(NavNode const *endNode,
+                std::vector<NavNode> const &navNodes, int toIndex);
 
 			void renderNavigationMesh();
 			// load the target triangle once per frame instead of once per path load
@@ -98,7 +100,8 @@ namespace Logic
 			void generateNavigationMesh(Physics &physics);
 
             // debugging
-            bool isRenderingDebug() const;
+            bool isRenderingDebugTri() const;
+            bool isRenderingDebugEdges() const;
 	};
 }
 #endif

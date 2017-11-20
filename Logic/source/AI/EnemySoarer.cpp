@@ -31,7 +31,7 @@ void EnemySoarer::createAbilities()
       // ab 1
     AbilityData data;
 
-    data.cooldown = 2000.f;
+    data.cooldown = 1300.f;
     data.duration = 0.f;
     data.randomChanche = 4;
 
@@ -66,6 +66,8 @@ void EnemySoarer::updateSpecific(Player &player, float deltaTime)
     getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
     if (getPositionBT().y() > HEIGHT_OFFSET) // bad fix but better to just force it right now
         getRigidBody()->getWorldTransform().getOrigin().setY(HEIGHT_OFFSET);
+    else if (getPositionBT().y() < HEIGHT_OFFSET * 0.8f)
+        getRigidBody()->setLinearVelocity(getRigidBody()->getLinearVelocity() + btVector3(0.f, 1.f, 0.f));
 }
 
 void EnemySoarer::updateDead(float deltaTime)

@@ -26,6 +26,7 @@ namespace Logic
         int getCurrentWave() const;
         float getTimeCurrent() const;
         float getTimeRequired() const;
+        bool getOnLastWave() const;
 
         bool onLastWave() const;
         bool isEnraged() const;

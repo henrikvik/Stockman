@@ -20,7 +20,7 @@ namespace Logic
             Player const *player;
         };
     private:
-        static const int NR_OF_THREADS = 8;
+        static const int NR_OF_THREADS = 8, MAX_WORK;
 
         std::queue<WorkData> m_work;
         std::mutex m_workMutex;
