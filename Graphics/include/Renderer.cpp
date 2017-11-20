@@ -293,8 +293,8 @@ namespace Graphics
         QueueRender(&infotest);
         */
         LightRenderInfo lightInfo;
-        lightInfo.color = DirectX::Colors::DodgerBlue;
-        lightInfo.intensity = 1;
+        lightInfo.color = DirectX::Colors::WhiteSmoke;
+        lightInfo.intensity = 0.3f;
         lightInfo.position = Global::mainCamera->getPos() + SimpleMath::Vector3(0, 0, 0);
         lightInfo.range = 10;
         QueueRender(lightInfo);
