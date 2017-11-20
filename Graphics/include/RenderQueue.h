@@ -123,7 +123,7 @@ private:
         void queue(T info)
         {
             if (count() > INSTANCE_CAP(T))
-                throw std::runtime_error("Instance cap exceeded.");
+                return;
 
             instances.push_back(info);
         }

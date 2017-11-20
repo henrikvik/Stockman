@@ -594,32 +594,24 @@ GeometryParticleInstance *ParticleSystem::uploadParticles(std::vector<GeometryPa
 
 void ParticleSystem::updateParticles(XMVECTOR anchor, std::vector<GeometryParticle> &particles, float dt)
 {
-    int deleteList[32];
-    int deleteSize = 0;
-    for (int i = 0; i < particles.size(); i++) {
-        auto &particle = particles[i];
-        auto def = *particle.def;
+    auto it = particles.begin();
+    while (it != particles.end()) {
+        auto def = *it->def;
 
-        if (particle.age > def.m_Lifetime) {
-            int idx = deleteSize++;;
-            if (idx < 32) {
-                deleteList[idx] = i;
-            }
+        if (it->age > def.m_Lifetime) {
+            it = particles.erase(it);
             continue;
         }
 
-        particle.age += dt;
-        particle.rotprog += dt;
+        it->age += dt;
+        it->rotprog += dt;
 
-        XMStoreFloat3(&particle.velocity, XMLoadFloat3(&particle.velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
-        XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
+        XMStoreFloat3(&it->velocity, XMLoadFloat3(&it->velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
+        XMStoreFloat3(&it->pos, XMLoadFloat3(&it->pos) + XMLoadFloat3(&it->velocity) * dt);
+
+        it++;
     }
 
-    // we defer deletion of particles until the end to not mess up our "hot" loop
-    for (int i = deleteSize - 1; i > 0; i--) {
-        auto idx = deleteList[i];
-        particles.erase(particles.begin() + idx);
-    }
 }
 
 void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
