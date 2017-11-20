@@ -165,6 +165,8 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
 
     for (auto & instance : staticInstances)
     {
+        if (instance.model == "Stone_Decoration") continue; // edge case
+
         if (strcmp(instance.model.c_str(), "Island") == 0)
         {
             btRigidBody *rb = m_physicsPtr->createBody(
