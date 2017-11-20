@@ -326,7 +326,7 @@ void Logic::HUDManager::updateTextElements()
     //wave counter
     text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
     std::wstring wave = std::to_wstring(info.wave);
-    wave += L"/10";
+    wave += L"/5";
     liveText.push_back(wave);
     text.text = liveText.at(last).c_str();
     text.position = DirectX::SimpleMath::Vector2(660, 15);
