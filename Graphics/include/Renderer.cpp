@@ -295,23 +295,22 @@ namespace Graphics
         LightRenderInfo lightInfo;
         lightInfo.color = DirectX::Colors::DodgerBlue;
         lightInfo.intensity = 1;
-        lightInfo.position = Global::mainCamera->getPos() + SimpleMath::Vector3(0, 0, 0.1);
+        lightInfo.position = Global::mainCamera->getPos() + SimpleMath::Vector3(0, 0, 0);
         lightInfo.range = 10;
         QueueRender(lightInfo);
 
-        QueueRender([](float dt) -> AnimatedRenderInfo
-        {
-            static float time = 0;
-            AnimatedRenderInfo info;
-            info.animationName = "Walk";
-            info.animationTimeStamp = time;
-            info.model = Resources::Models::AnimatedSummonUnit;
-            info.transform = SimpleMath::Matrix::CreateTranslation(0, 1, -3);
-            time += dt;
-            if (time > 5) time = 0;
-            return info;
-        }(deltaTime));
-
+        //QueueRender([](float dt) -> AnimatedRenderInfo
+        //{
+        //    static float time = 0;
+        //    AnimatedRenderInfo info;
+        //    info.animationName = "Walk";
+        //    info.animationTimeStamp = time;
+        //    info.model = Resources::Models::AnimatedSummonUnit;
+        //    info.transform = SimpleMath::Matrix::CreateTranslation(0, 1, -3);
+        //    time += dt;
+        //    if (time > 5) time = 0;
+        //    return info;
+        //}(deltaTime));
         FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 
         writeInstanceBuffers();

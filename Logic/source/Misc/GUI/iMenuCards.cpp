@@ -25,7 +25,6 @@ void iMenuCards::update(int x, int y, float deltaTime)
 
 void iMenuCards::setCardInformation(std::vector<Card*> inCards)
 {
-
     if (inCards.size() != MAX_CARDS) { printf("Please insert the correct number of cards you jackass.\n"); return; }
 
     for (int i = 0; i < inCards.size(); i++)
