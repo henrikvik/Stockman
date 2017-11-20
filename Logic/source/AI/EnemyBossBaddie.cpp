@@ -111,9 +111,9 @@ void EnemyBossBaddie::createAbilities()
     };
 
     auto onTick = [&](Player& player, Ability &ability) -> void {
-    //    btVector3 force = (getPositionBT() - player.getPositionBT()).normalize() *
-    //        std::pow((1.f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
-    //    player.getCharController()->applyImpulse(force);
+        btVector3 force = (getPositionBT() - player.getPositionBT()).normalize() *
+            std::pow((1.f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
+        player.getCharController()->applyImpulse(force);
     };
 
     abilities[AbilityId::ONE] = Ability(data, onTick, onUse);
