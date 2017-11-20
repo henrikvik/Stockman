@@ -24,18 +24,20 @@ EnemyChaser::~EnemyChaser()
 
 void EnemyChaser::loadAnimation(Resources::Models::Files model)
 {
-    animatedRenderInfo.animationName = "Walk";
+ /*   animatedRenderInfo.animationName = "Walk";
     animatedRenderInfo.model = model;
     animatedRenderInfo.animationTimeStamp = 0.f;
     animatedRenderInfo.transform = getTransformMatrix();
+    */
 }
 
 // REMOVE WHEN ALL ENIMES ARE ANIMATED
 void EnemyChaser::updateSpecific(Player & player, float deltaTime)
 {
-    animatedRenderInfo.transform = getModelTransformMatrix();
+/*    animatedRenderInfo.transform = getModelTransformMatrix();
     animatedRenderInfo.animationTimeStamp += deltaTime;
     if (animatedRenderInfo.animationTimeStamp > ANI_TIME) animatedRenderInfo.animationTimeStamp = 0.f;
+    */
 }
 
 void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
@@ -62,5 +64,5 @@ void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, floa
 
 void EnemyChaser::renderSpecific() const
 {
-    QueueRender(animatedRenderInfo);
+   // QueueRender(animatedRenderInfo); 
 }
