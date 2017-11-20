@@ -2,7 +2,7 @@
 #include <AI\EntityManager.h>
 using namespace Logic;
 
-const float WaveTimeManager::TRANSITION_TIME = 10000.f;
+const float WaveTimeManager::TRANSITION_TIME = 5000.f;
 
 WaveTimeManager::WaveTimeManager()
 {

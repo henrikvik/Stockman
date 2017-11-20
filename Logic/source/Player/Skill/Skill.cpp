@@ -1,4 +1,5 @@
 #include "Player/Skill/Skill.h"
+#include <Entity\Entity.h>
 
 using namespace Logic;
 

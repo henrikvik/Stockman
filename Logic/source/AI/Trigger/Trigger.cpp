@@ -2,6 +2,7 @@
 
 #include <Player\Player.h>
 #include <Entity\StaticObject.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 using namespace Logic;
 
@@ -87,6 +88,8 @@ void Trigger::onCollisionPlayer(Player& player)
     player.getStatusManager().copyUpgradesFrom(getStatusManager());
     for (std::pair<int, StatusManager::EFFECT_ID> effect : getStatusManager().getActiveEffectsIDs())
         player.getStatusManager().addStatus(effect.second, effect.first);
+
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::PICKUP, nullptr, true);
 
     if (m_reusable)
     {

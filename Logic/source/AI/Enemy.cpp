@@ -27,6 +27,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     m_nrOfCallbacksEntities = 0;
     m_stunned = false;
     m_fireTimer = 0;
+    m_blinkTimer = -1.0f;
 
 	//animation todo
     enemyRenderInfo.model = modelID;
@@ -101,6 +102,17 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
     if (getPositionBT().y() < MIN_Y)
         damage(m_health);
+
+    if (m_blinkTimer > 0)
+    {
+        enemyRenderInfo.color = DirectX::SimpleMath::Vector3(50.0f, 0.0f, 0.0f);
+        m_blinkTimer -= deltaTime;
+    }
+    else
+    {
+        enemyRenderInfo.color = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+    }
+        
 }
 
 void Enemy::debugRendering()
@@ -126,6 +138,8 @@ bool Enemy::hasCallbackEntities()
 void Enemy::damage(int damage)
 {
 	m_health -= damage;
+    m_blinkTimer = 100.0f;
+    getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)

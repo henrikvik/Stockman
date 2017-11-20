@@ -4,6 +4,7 @@ using namespace Logic;
 
 const int CardManager::HEALTH_PACK = 0;
 const int CardManager::HAND_SIZE   = 3;
+const int CardManager::NEVER_REMOVE_CARDS = 1;
 
 CardManager::CardManager(int nrOfEach)
 {
@@ -25,6 +26,7 @@ void CardManager::resetDeck()
 
 void CardManager::createDeck(int nrOfEach)
 {
+    m_deck.push_back({ NEVER_REMOVE, HEALTH_PACK });
 	for (int i = 0; i < nrOfEach; i++)
 		for (int j = 1; j < m_cards.size(); j++)
             m_deck.push_back({ IN_DECK, j });
@@ -56,7 +58,7 @@ void CardManager::shuffle()
 {
     static std::random_device rd;
     static std::mt19937 g(rd());
-    std::shuffle(m_deck.begin(), m_deck.end(), g);
+    std::shuffle(m_deck.begin() + NEVER_REMOVE_CARDS, m_deck.end(), g);
 }
 
 Card CardManager::pick(int handIndex)

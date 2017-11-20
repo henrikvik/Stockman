@@ -252,6 +252,12 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
     ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_5, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability5.mp3", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_6, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability6.mp3", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::BOSS_1_MELEE_USE, CHANNEL_GROUP::CHANNEL_SFX, "boss1MeleeUse.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::SKILL_BULLETTIME, CHANNEL_GROUP::CHANNEL_SFX, "slowmotion.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::SKILL_CHARGE, CHANNEL_GROUP::CHANNEL_SFX, "shieldcharge.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::HELLO, CHANNEL_GROUP::CHANNEL_SFX, "hello.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_PRESS, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_press.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::PICKUP, CHANNEL_GROUP::CHANNEL_SFX, "pickup.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::START_GAME, CHANNEL_GROUP::CHANNEL_SFX, "start.ogg", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the sfx
     int count = 0;
@@ -272,7 +278,7 @@ int NoiseMachine::initMusic(LOAD_MODE loadMode)
 {
 	// Init all the music here
 	ERRCHECK(createSound(loadMode, MUSIC::MUSIC_MAIN_MENU, CHANNEL_GROUP::CHANNEL_MUSIC, "stockman.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
-    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, "beyond.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 3) ? "beyond.mp3" : "notch.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::MUSIC_CREDITS, CHANNEL_GROUP::CHANNEL_MUSIC, "lab.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::AMBIENT_STORM, CHANNEL_GROUP::CHANNEL_AMBIENT, "ambient_snow.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::BOSS_1_MUSIC_1, CHANNEL_GROUP::CHANNEL_MUSIC, "boss1theme1.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
