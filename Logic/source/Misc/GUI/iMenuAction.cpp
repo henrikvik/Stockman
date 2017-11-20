@@ -8,6 +8,7 @@
 #include <Engine\Typing.h>
 #include <Engine\Settings.h>
 #include <State.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 using namespace Logic;
 
@@ -25,6 +26,7 @@ void ButtonFunction::startGame()
             secondary->queueState(StateType::Nothing);
 
     // Adding a "fake" static loading screen. Hides current non-pressable buttons.
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
     Action::Get().m_menuMachine->getActiveMenu()->addBackground(Resources::Textures::Loadingscreen, 1.f);
     Action::Get().m_menuMachine->getActiveMenu()->setDrawButtons(false);
 }
@@ -53,7 +55,7 @@ void ButtonFunction::showHighscore()
 // Unloads all program data and quits the game
 void ButtonFunction::quitGame()
 {
-
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::HELLO, nullptr, true);
 }
 
 // Just simply removes the current pause menu
@@ -84,6 +86,7 @@ void ButtonFunction::playAgain()
         if (StatePlaying* playing = dynamic_cast<StatePlaying*>(primary->getCurrentState()))
         {
             // Adding a "fake" static loading screen. Hides current non-pressable buttons.
+            Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
             Action::Get().m_menuMachine->getActiveMenu()->addBackground(Resources::Textures::Loadingscreen, 1.f);
             Action::Get().m_menuMachine->getActiveMenu()->setDrawButtons(false);
 

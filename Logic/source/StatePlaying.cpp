@@ -28,6 +28,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     // Starting in game-sounds
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
 
     // Initializing Bullet physics
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();				// Configuration
@@ -132,6 +133,7 @@ void StatePlaying::update(float deltaTime)
     }
 
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
+    if (m_menu->getType() != iMenu::MenuGroup::CardSelect)
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
     {
         m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
