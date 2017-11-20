@@ -102,7 +102,7 @@ void EnemyBossBaddie::createAbilities()
     AbilityData data;
 
     /* ABILITY ONE */
-    data.cooldown = 25000.f;
+    data.cooldown = 2500000000.f;
     data.duration = 14500.f;
     data.randomChanche = 50;
 
@@ -111,9 +111,9 @@ void EnemyBossBaddie::createAbilities()
     };
 
     auto onTick = [&](Player& player, Ability &ability) -> void {
-        btVector3 force = (getPositionBT() - player.getPositionBT()).normalize() *
-            std::pow((1.f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
-        player.getCharController()->applyImpulse(force);
+    //    btVector3 force = (getPositionBT() - player.getPositionBT()).normalize() *
+    //        std::pow((1.f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
+    //    player.getCharController()->applyImpulse(force);
     };
 
     abilities[AbilityId::ONE] = Ability(data, onTick, onUse);
@@ -171,7 +171,7 @@ void EnemyBossBaddie::createAbilities()
     abilities[AbilityId::MELEE] = Ability(data, onTick2, onUse2);
 
     /* AB 3 */
-    data.cooldown = 1400.f;
+    data.cooldown = 700.f;
     data.duration = 0.f;
     data.randomChanche = 0;
 
