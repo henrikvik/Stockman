@@ -67,6 +67,23 @@ void iMenuSkillPick::replaceSkill(int id)
     // Update the text.
     m_skillpointsStr = std::to_wstring(m_skillPoints) + (const wchar_t*)L" Skillpoints";
     m_textRenderInfo.text = m_skillpointsStr.c_str();
+
+    for (size_t i = 0; i < 3; i++)
+    {
+
+         m_buttons.at(i).setState(Button::INACTIVE);
+
+    }
+
+    if (m_selectedSkills.first != -1)
+    {
+        m_buttons.at(m_selectedSkills.first).setState(Button::ACTIVE);
+    }
+
+    if (m_selectedSkills.second != -1)
+    {
+        m_buttons.at(m_selectedSkills.second).setState(Button::ACTIVE);
+    }
 }
 
 // Draws the available skill picks as a text
