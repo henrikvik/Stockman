@@ -77,6 +77,7 @@ void iMenuMachine::swapMenu()
     case iMenu::MenuGroup::CardSelect:  m_activeMenu = m_factory->buildMenuCard();                        break;
     case iMenu::MenuGroup::Skill:       m_activeMenu = m_factory->buildMenuSkill();                       break;
     case iMenu::MenuGroup::GameOver:    m_activeMenu = m_factory->buildMenuGameover();                    break;
+    case iMenu::MenuGroup::GameWon:     m_activeMenu = m_factory->buildGameWon();                         break;
     case iMenu::MenuGroup::Pause:       m_activeMenu = m_factory->buildMenuPause();                       break;
     default: break;
     }

@@ -91,6 +91,11 @@ float WaveTimeManager::getTimeRequired() const
     return m_timeRequired;
 }
 
+bool WaveTimeManager::getOnLastWave() const
+{
+    return m_onLastWave;
+}
+
 bool WaveTimeManager::onLastWave() const
 {
     return m_onLastWave;

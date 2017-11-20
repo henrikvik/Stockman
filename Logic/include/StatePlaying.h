@@ -63,6 +63,7 @@ namespace Logic
 
     private:
         void gameOver();
+        void gameWon();
 
         iMenuMachine*       m_menu;
         Physics*			m_physics;
