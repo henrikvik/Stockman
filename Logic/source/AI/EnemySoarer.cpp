@@ -16,6 +16,10 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
     body->translate({ 0, HEIGHT_OFFSET, 0 });
 
     gravity = getRigidBody()->getGravity();
+
+    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
+    light.intensity = 0.8f;
+    light.range = 5.0f;
 }
 
 EnemySoarer::~EnemySoarer()
@@ -31,11 +35,25 @@ void EnemySoarer::createAbilities()
     data.duration = 0.f;
     data.randomChanche = 4;
 
+    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
+    ProjectileData pdata;
+    pdata.effect = necroTrail;
+    pdata.hasEffect = true;
+    pdata.effectVelocity = false;
+    pdata.effectActivated = true;
+
+
     ab1 = Ability(data, [&](Player &player, Ability &ab) -> void {
         // ontick 
-    }, [&](Player &player, Ability &ab) -> void {
+    }, [=](Player &player, Ability &ab) -> void {
         // onuse
-        shoot({ 0, -1, 0 }, Resources::Models::Files::Crossbowbolt, AB1_SPEED, 5.f, 3.5f);
+        auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, 5.f, 3.5f);
+        if (pj) {
+            pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+                Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
+
+            });
+        }
     });
 }
 

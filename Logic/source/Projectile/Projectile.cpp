@@ -15,10 +15,10 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent, btVector3 modelO
     : Entity(body, halfextent, modelOffset)
 {
     m_unrotatedMO   = modelOffset;
-	m_pData         = pData;
-	m_dead          = false;
-    m_bulletTimeMod = 1.f;
-    m_freezeDuration = 0.0f;
+m_pData = pData;
+m_dead = false;
+m_bulletTimeMod = 1.f;
+m_freezeDuration = 0.0f;
 }
 
 Projectile::~Projectile() { }
@@ -43,14 +43,14 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
 // How different effects affect projectiles
 void Projectile::affect(int stacks, Effect const & effect, float deltaTime)
 {
-	long long flags = effect.getStandards()->flags;
+    long long flags = effect.getStandards()->flags;
 
-	if (flags & Effect::EFFECT_BULLET_TIME)
-	{
+    if (flags & Effect::EFFECT_BULLET_TIME)
+    {
         // Add slowdown on every bullet except itself
         if (m_pData.type != ProjectileTypeBulletTimeSensor)
-		    m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
-	}
+            m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
+    }
 }
 
 // How different upgrade affect projectiles
@@ -85,7 +85,7 @@ void Projectile::upgrade(Upgrade const &upgrade)
 // Specific update loop for projectiles
 void Projectile::updateSpecific(float deltaTime)
 {
-	Entity::update(deltaTime);
+    Entity::update(deltaTime);
 
     // Modify the velocity & gravity with the bullet time modifier
     btRigidBody* body = getRigidBody();
@@ -104,7 +104,7 @@ void Projectile::updateSpecific(float deltaTime)
 
     // rotate model offset
     m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
-    
+
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;
 
@@ -113,6 +113,18 @@ void Projectile::updateSpecific(float deltaTime)
 
     // Updating transform matrix
     renderInfo.transform = getModelTransformMatrix();
+
+    if (m_pData.hasEffect && m_pData.effectActivated) {
+        auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, renderInfo.transform);
+        auto vel = body->getLinearVelocity();
+
+        if (m_pData.effectVelocity) {
+            Graphics::FXSystem->processEffect(&m_pData.effect, pos, {vel.x(), vel.y(), vel.z()}, deltaTime / 1000.f);
+        }
+        else {
+            Graphics::FXSystem->processEffect(&m_pData.effect, pos, deltaTime/1000.f);
+        }
+    }
 }
 
 // Handle collisions with different types of classes
@@ -283,7 +295,8 @@ void Logic::Projectile::setModelID(Resources::Models::Files modelId)
 
 void Logic::Projectile::render() const
 {
-    QueueRender(renderInfo);
+    if (m_pData.shouldRender)
+        QueueRender(renderInfo);
 }
 
 ProjectileData& Projectile::getProjectileData()             { return m_pData;   }

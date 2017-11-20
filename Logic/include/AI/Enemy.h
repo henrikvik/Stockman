@@ -46,13 +46,16 @@ namespace Logic
 			Behavior *m_behavior;
 
             StaticRenderInfo enemyRenderInfo;
-            LightRenderInfo light;
-
-            //status
             bool m_stunned;
             float m_fireTimer;
 
             float m_blinkTimer;
+    protected:
+
+        LightRenderInfo light;
+
+            //status
+        
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE };
 
@@ -71,7 +74,8 @@ namespace Logic
 			virtual void affect(int stacks, Effect const &effect, float dt);
             void onEffectEnd(int stacks, Effect const &effect);
 
-			Projectile* shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale, bool sensor = false);
+            Projectile* shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale, bool sensor = false);
+            Projectile* shoot(btVector3 dir, ProjectileData data, float speed, float gravity, float scale, bool sensor = false);
 
 			// for debugging
 			void debugRendering();
