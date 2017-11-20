@@ -38,9 +38,9 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
             if (m_timeCurrent > m_timeRequired)
             {
                 entityManager.deallocateData(false);
-                entityManager.spawnWave(m_waveCurrent++);
+                entityManager.spawnWave(m_waveCurrent);
 
-                m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent);
+                m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent++);
                 m_timeCurrent = 0;
 
                 // If the player have completed all the waves

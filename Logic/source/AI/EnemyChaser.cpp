@@ -5,7 +5,7 @@ using namespace Logic;
 
 const int EnemyChaser::MAX_HP = 25;
 const int EnemyChaser::BASE_DAMAGE = 1;
-const float EnemyChaser::MOVE_SPEED = 12.f;
+const float EnemyChaser::MOVE_SPEED = 16.9f; //noice!
 #define ANI_TIME 5000.f // this is temp
 
 EnemyChaser::EnemyChaser(btRigidBody* body)
