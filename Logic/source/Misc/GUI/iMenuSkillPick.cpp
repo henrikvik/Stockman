@@ -32,7 +32,7 @@ void iMenuSkillPick::update(int x, int y, float deltaTime)
 // Resets stats
 void iMenuSkillPick::resetSkillPicks()
 {
-    m_skillPoints = 0;
+    m_skillPoints = 2;
     m_selectedSkills = { -1, -1 };
 }
 
