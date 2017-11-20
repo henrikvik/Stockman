@@ -32,7 +32,7 @@ void iMenuSkillPick::update(int x, int y, float deltaTime)
 // Resets stats
 void iMenuSkillPick::resetSkillPicks()
 {
-    m_skillPoints = 2;
+    m_skillPoints = 0;
     m_selectedSkills = { -1, -1 };
 }
 
@@ -60,9 +60,9 @@ void iMenuSkillPick::replaceSkill(int id)
     }
 
     // Count skillpoints
-    m_skillPoints = 2;
-    if (m_selectedSkills.first != -1) m_skillPoints--;
-    if (m_selectedSkills.second != -1) m_skillPoints--;
+    m_skillPoints = 0;
+    if (m_selectedSkills.first == -1) m_skillPoints++;
+    if (m_selectedSkills.second == -1) m_skillPoints++;
 
     // Update the text.
     m_skillpointsStr = std::to_wstring(m_skillPoints) + (const wchar_t*)L" Skillpoints";
