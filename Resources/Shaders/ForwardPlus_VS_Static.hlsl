@@ -35,5 +35,8 @@ Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
     fragment.gridUV = (worldTangent.xy + float2(1, 1)) / 8;
 #endif
 
+    fragment.color = instance.color;
+    fragment.useGridTexture = instance.useGridTexture;
+
 	return fragment;
 }

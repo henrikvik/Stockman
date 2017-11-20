@@ -41,6 +41,10 @@ StaticObject::StaticObject(Resources::Models::Files modelID, btRigidBody * body,
 
     staticRenderInfo.transform = getTransformMatrix();
     staticRenderInfo.model = modelID;
+    staticRenderInfo.color.x = 0.7;
+    staticRenderInfo.color.y = 0.8;
+    staticRenderInfo.color.z = 0.9;
+    staticRenderInfo.useGridTexture = true;
 }
 
 StaticObject::~StaticObject()

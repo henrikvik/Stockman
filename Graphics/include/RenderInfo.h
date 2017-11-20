@@ -116,6 +116,8 @@ struct StaticRenderInfo : RenderInfo
 {
     Resources::Models::Files model = Resources::Models::UnitCube;
     DirectX::SimpleMath::Matrix transform;
+    DirectX::SimpleMath::Vector3 color = DirectX::SimpleMath::Color(1,1,1,1);
+    bool useGridTexture = false;
 };
 
 struct FoliageRenderInfo : StaticRenderInfo

@@ -104,9 +104,11 @@ namespace Logic
         }
 
         Cube(btVector3 position, btVector3 rotation, btVector3 dimensions)
-            : Shape(position, rotation, ShapeTypeCube) {
+            : Shape(position, rotation, ShapeTypeCube) 
+        {
             m_dimensions = dimensions;
         }
+
 
         void		setDimensions(btVector3 dimensions) { m_dimensions = dimensions; }
         btVector3	getDimensions() const { return m_dimensions; }

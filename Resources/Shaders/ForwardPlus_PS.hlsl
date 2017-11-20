@@ -42,13 +42,17 @@ Targets PS(Fragment fragment)
     lightSum += calcLight(globalLight, fragment.position.xyz, normal, viewDir, specularExponent);
     lightSum += calcAllLights(fragment.ndcPosition, fragment.position.xyz, normal, viewDir, specularExponent);
     
-    #ifdef USE_GRID_TEXTURE
-    float3 color = gridTexture.Sample(linearWrap, fragment.gridUV).xyz;
-    #else
-    float3 color = diffuseTexture.Sample(linearClamp, fragment.uv).xyz;
-    #endif
+    float3 color = float3(0, 0, 0);
+    if (fragment.useGridTexture)
+    {
+        color = gridTexture.Sample(linearWrap, fragment.gridUV).xyz;
+    }
+    else
+    {
+        color = diffuseTexture.Sample(linearClamp, fragment.uv).xyz;
+    }
 
-    targets.color = float4(lightSum * color, 1); //500~
+    targets.color = float4(lightSum * color * fragment.color, 1); //500~
     targets.glow = glowTexture.Sample(linearClamp, fragment.uv); //300~
     targets.viewNormal = fragment.viewNormal; //300~
 

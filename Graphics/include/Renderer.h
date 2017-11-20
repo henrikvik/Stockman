@@ -61,6 +61,8 @@ namespace Graphics
         {
             DirectX::SimpleMath::Matrix world;
             DirectX::SimpleMath::Matrix worldInvT;
+            DirectX::SimpleMath::Vector3 color;
+            UINT useGridTexture;
         };
         struct AnimatedInstance : StaticInstance
         {

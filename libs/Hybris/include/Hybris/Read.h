@@ -16,6 +16,7 @@ namespace Hybris
             read(ifile, list.data[i]);
         }
     }
+    
     void read(std::ifstream & ifile, File & file);
     void read(std::ifstream & ifile, Material & material);
     void read(std::ifstream & ifile, Texture & texture);
@@ -27,8 +28,10 @@ namespace Hybris
     void read(std::ifstream & ifile, KeyFrame & keyFrame);
     void read(std::ifstream & ifile, JointTransform & jointTransform);
     void read(std::ifstream & ifile, Joint & joint);
+    void read(std::ifstream & ifile, Hitbox & data);
+    void read(std::ifstream & ifile, FileWithHitbox & data);
 
-    void read(std::ifstream & ifile, size_t & size);
+    //void read(std::ifstream & ifile, size_t & size);
     void read(std::ifstream & ifile, time_t & time);
     void read(std::ifstream & ifile, id_t & id);
     void read(std::ifstream & ifile, count_t & count);

@@ -56,7 +56,7 @@ namespace Hybris
     std::string toString(JointTransform & jointTransform);
     std::string toString(Joint & joint);
 
-    std::string toString(size_t & size);
+    //std::string toString(size_t & size);
     std::string toString(time_t & time);
     std::string toString(id_t & id);
     std::string toString(count_t & count);
