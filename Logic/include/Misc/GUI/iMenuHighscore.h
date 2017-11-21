@@ -14,6 +14,11 @@ namespace Logic
         {
             HighScoreManager::HighScore stats;
 
+            std::wstring name;
+            std::wstring placing;
+            std::wstring score;
+            std::wstring time;
+
             TextRenderInfo              renderInfoName;
             TextRenderInfo              renderInfoPlacing;
             TextRenderInfo              renderInfoScore;
@@ -23,6 +28,8 @@ namespace Logic
         iMenuHighscore(iMenu::MenuGroup group);
         ~iMenuHighscore();
 
+        void clearEntries();
+
         void buildHighscore();
         void buildEntry(int position, HighScoreManager::HighScore stat);
 
@@ -30,7 +37,7 @@ namespace Logic
         void render() const;
 
     private:
-        std::vector<Entry>          m_entry;
+        std::vector<Entry*>         m_entry;
         HighScoreManager            m_highscoreManager;
     };
 }
