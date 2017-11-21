@@ -9,8 +9,10 @@ namespace Logic
         struct AmmoInfo
         {
             // AmmoType ammoType; probably?
-            int ammoCap;
-            int ammo;
+            //int ammoCap;
+            //int ammo;
+            int enhancedAmmoCap;
+            int enhancedAmmo;
             int magSize;
             int magAmmo;
             int primAmmoConsumption;
@@ -26,9 +28,9 @@ namespace Logic
 
         const AmmoContainer::AmmoInfo& getAmmoInfo() const;
 
-        void removePrimaryAmmo();
-        void removeSecondaryAmmo();
-        void setAmmo(int ammo);
+        bool removePrimaryAmmo();
+        bool removeSecondaryAmmo();
+        void setEnhancedAmmo(int ammo);
         void fillMag(int modifier);
 
     private:

@@ -60,6 +60,7 @@ namespace Logic
 
 		void use(btVector3 position, float yaw, float pitch, Entity& shooter);
         virtual void onUse(std::vector<Projectile*> &projectiles, Entity& shooter) {};
+        virtual void useEnhanced(bool shouldUse) {};
 
         SpawnProjectile getSpawnProjectileFunc();
 		ProjectileData* getProjectileData();

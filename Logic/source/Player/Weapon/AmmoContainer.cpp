@@ -18,7 +18,7 @@ AmmoContainer::~AmmoContainer()
 
 void Logic::AmmoContainer::reset()
 {
-    m_aInfo.ammo = m_aInfo.ammoCap;
+    m_aInfo.enhancedAmmo = 0;
     m_aInfo.magAmmo = m_aInfo.magSize;
 }
 
@@ -27,30 +27,57 @@ const AmmoContainer::AmmoInfo& AmmoContainer::getAmmoInfo() const
     return m_aInfo;
 }
 
-void AmmoContainer::removePrimaryAmmo()
+bool AmmoContainer::removePrimaryAmmo()
 {
     if (m_aInfo.primAmmoConsumption > m_aInfo.magAmmo)
         m_aInfo.magAmmo = 0;
     else
         m_aInfo.magAmmo -= m_aInfo.primAmmoConsumption;
+
+    if (m_aInfo.enhancedAmmo > 0)
+    {
+        if (m_aInfo.primAmmoConsumption > m_aInfo.enhancedAmmo)
+            m_aInfo.enhancedAmmo = 0;
+        else
+            m_aInfo.enhancedAmmo -= m_aInfo.primAmmoConsumption;
+
+        return true; // return true if using enhanced ammo
+    }
+    
+    return false; // return false if just using endless ammo
 }
 
-void AmmoContainer::removeSecondaryAmmo()
+bool AmmoContainer::removeSecondaryAmmo()
 {
     if (m_aInfo.secAmmoConsumption > m_aInfo.magAmmo)
         m_aInfo.magAmmo = 0;
     else
         m_aInfo.magAmmo -= m_aInfo.secAmmoConsumption;
+
+    if (m_aInfo.enhancedAmmo > 0)
+    {
+        if (m_aInfo.secAmmoConsumption > m_aInfo.enhancedAmmo)
+            m_aInfo.enhancedAmmo = 0;
+        else
+            m_aInfo.enhancedAmmo -= m_aInfo.secAmmoConsumption;
+
+        return true; // return true if using enhanced ammo
+    }
+
+    return false; // return false if just using endless ammo
 }
 
-void Logic::AmmoContainer::setAmmo(int ammo)
+void Logic::AmmoContainer::setEnhancedAmmo(int ammo)
 {
-    m_aInfo.ammo = ammo;
+    m_aInfo.enhancedAmmo = ammo;
 }
 
 void AmmoContainer::fillMag(int modifier)
 {
-    int toAdd = m_aInfo.magSize + modifier - m_aInfo.magAmmo;
+    m_aInfo.magAmmo = m_aInfo.magSize + modifier;
+
+    // *OLD*
+    /*int toAdd = m_aInfo.magSize + modifier - m_aInfo.magAmmo;
 
     if (m_aInfo.ammo >= toAdd)
     {
@@ -60,6 +87,6 @@ void AmmoContainer::fillMag(int modifier)
     else
     {
         m_aInfo.magAmmo += m_aInfo.ammo;	// Add rest of ammo to mag
-        m_aInfo.ammo = 0;				// Remove rest of ammo from total
-    }
+        m_aInfo.magAmmo = m_aInfo.magSize + modifier;				// Remove rest of ammo from total
+    }*/
 }

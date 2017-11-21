@@ -68,7 +68,7 @@ void Projectile::upgrade(Upgrade const &upgrade)
     }
     if (flags & Upgrade::UPGRADE_BURNING)
     {
-        if (m_pData.type == ProjectileTypeNormal)
+        if (m_pData.type == ProjectileTypeCrossbowFire)
         {
             m_pData.type = ProjectileTypeFireArrow;
         }
