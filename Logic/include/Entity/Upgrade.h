@@ -35,7 +35,8 @@ namespace Logic
             UPGRADE_INCREASE_JUMPHEIGHT = 0x4000,
             UPGRADE_DECREASE_RELOADTIME = 0x8000,
             UPGRADE_INCREASE_FIRERATE = 0x10000,
-            UPGRADE_IS_SKILL = 0x20000
+            UPGRADE_IS_SKILL = 0x20000,
+            UPGRADE_INCREASE_MOVEMENTSPEED = 0x40000,
 		};
 
 		struct FlatUpgrades {

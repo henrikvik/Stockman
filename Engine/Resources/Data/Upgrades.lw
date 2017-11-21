@@ -70,3 +70,30 @@
 	"increaseMagSize" : 0;
     "movementSpeed" : 0f;
 }
+{ // add 30% movement speed permanently
+	"flags": 262144; // 0x40000
+	"increaseCooldown" : 0f;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 0;
+    "movementSpeed" : 0.3f;
+}
+{ // add mag size 40 permanently
+	"flags": 65; // 0x1 + 0x40
+	"increaseCooldown" : 0f;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 40;
+	"increaseMagSize" : 0;
+    "movementSpeed" : 0f;
+}
+{ // add ammo cap 20 permanently
+	"flags": 33; // 0x1 + 0x20
+	"increaseCooldown" : 0f;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 20;
+	"increaseMagSize" : 0;
+    "movementSpeed" : 0.0f;
+}

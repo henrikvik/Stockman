@@ -39,9 +39,9 @@
 	"yTexEnd" : 0.0f;
 
 	"statusAmount" : 1;
-	"statusType" : 0;
+	"statusType" : 1;
     "category" : 0;
-	"status0" : 13;
+	"status0" : 10;
 }
 {
 	"cardName" : "+Mag Size";
@@ -54,9 +54,9 @@
 	"yTexEnd" : 0.0f;
 
 	"statusAmount" : 1;
-	"statusType" : 0;
+	"statusType" : 1;
     "category" : 0;
-	"status0" : 14;
+	"status0" : 9;
 }
 {
 	"cardName" : "+Movement Speed";
@@ -69,9 +69,9 @@
 	"yTexEnd" : 0.0f;
 
 	"statusAmount" : 1;
-	"statusType" : 0;
+	"statusType" : 1;
     "category" : 2;
-	"status0" : 15;
+	"status0" : 8;
 }
 {
 	"cardName" : "-Skill CD";

@@ -201,7 +201,7 @@ void Player::registerDebugCmds()
     });
     win->registerCommand("LOG_INCREASE_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::P20_PERC_MOVEMENTSPEED, 1);
+        getStatusManager().addUpgrade(StatusManager::P20_PERC_MOVEMENTSPEED);
 
         return "Player is permanently 20 percent faster";
     });
@@ -213,13 +213,13 @@ void Player::registerDebugCmds()
     });
     win->registerCommand("LOG_INCREASE_MAG_SIZE", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::P40_MAGSIZE, 1);
+        getStatusManager().addUpgrade(StatusManager::P40_MAGSIZE);
 
         return "Mag clip holds 40 more bullets";
     });
     win->registerCommand("LOG_INCREASE_AMMO_CAP", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::P20_AMMOCAP, 1);
+        getStatusManager().addUpgrade(StatusManager::P20_AMMOCAP);
 
         return "You have bigger ammo bags now, it can hold 20 ammo more";
     });
@@ -346,10 +346,6 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
         m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
         m_moveMaxSpeed *= m_moveSpeedMod;
     }
-    if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
-    {
-        m_permanentSpeedMod += effect.getModifiers()->modifyMovementSpeed;
-    }
     if (flags & Effect::EFFECT_IS_WEAPON)
     {
         m_weaponManager->affect(effect);
@@ -402,6 +398,10 @@ void Player::onUpgradeAdd(int stacks, Upgrade const & upgrade)
         {
             getSkillManager()->getSkill(i)->upgradeAdd(stacks, upgrade);
         }
+    }
+    if (flags & Upgrade::UPGRADE_INCREASE_MOVEMENTSPEED)
+    {
+        m_permanentSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
     }
 }
 

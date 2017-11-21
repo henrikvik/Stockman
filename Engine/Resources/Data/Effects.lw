@@ -159,51 +159,6 @@
 	"sFreezing": 0.1f;
 	"sAmmoType": 0f;
 }
-{ // add ammo cap 20 permanently
-	"flags": 16908288; // 0x10000 + 0x1000000
-	"duration" : 0f;
-    "modifiers": 1;
-    "specifics": 0;
-
-    "mDmgGiven": 0f;
-	"mDmgTaken": 0f;
-	"mFirerate": 0f;
-	"mHP": 0f;
-	"mMovementSpeed": 0f;
-    "mAmmoCap" : 20;
-    "mMagCap" : 0;
-    "mSkillCDDecrease" : 0f;
-}
-{ // add mag size 40 permanently
-	"flags": 33685504; // 0x10000 + 0x1000000
-	"duration" : 0f;
-    "modifiers": 1;
-    "specifics": 0;
-
-    "mDmgGiven": 0f;
-	"mDmgTaken": 0f;
-	"mFirerate": 0f;
-	"mHP": 0f;
-	"mMovementSpeed": 0f;
-    "mAmmoCap" : 0;
-    "mMagCap" : 40;
-    "mSkillCDDecrease" : 0f;
-}
-{ // add 30% movement speed permanently
-	"flags": 67108864; // 0x4000000
-	"duration" : 0f;
-    "modifiers": 1;
-    "specifics": 0;
-
-    "mDmgGiven": 0f;
-	"mDmgTaken": 0f;
-	"mFirerate": 0f;
-	"mHP": 0f;
-	"mMovementSpeed": 0.30f;
-    "mAmmoCap" : 0;
-    "mMagCap" : 0;
-    "mSkillCDDecrease" : 0f;
-}
 { // INVULNERABLE
 	"flags": 1024; // 0x400
 	"duration": 1000f;
