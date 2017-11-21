@@ -93,13 +93,21 @@ iMenu * iMenuFactory::buildMenuCard()
     return menu;
 }
 
-iMenu * iMenuFactory::buildGameWon()
+iMenu * iMenuFactory::buildMenuGameWon()
 {
     iMenu* menu = newd iMenuCards(iMenu::GameWon);
 
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
+
+    return menu;
+}
+
+iMenuLoading* iMenuFactory::buildMenuLoading()
+{
+    iMenuLoading* menu = newd iMenuLoading(iMenu::Loading);
+    menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
 
     return menu;
 }
