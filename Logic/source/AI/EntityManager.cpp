@@ -163,6 +163,15 @@ void EntityManager::loadDebugCmds()
             return "DOTHRAKI IN THE OPEN FIELD, NED";
         }
     });
+    DebugWindow::getInstance()->registerCommand("AI_ADD_EFFECT", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            int i = giveEffectToAllEnemies(static_cast<StatusManager::EFFECT_ID> (std::stoi(para[0])));
+            return "Added effect to " + std::to_string(i) + " enemies";
+        }
+        catch (std::exception e) {
+            return "DOTHRAKI IN THE OPEN FIELD, NED";
+        }
+    });
 }
 
 void EntityManager::deallocateData(bool forceDestroy)
