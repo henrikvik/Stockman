@@ -8,8 +8,27 @@ Card::Card(std::string name, std::string texture, std::string description,
     :   m_name(name), m_texture(texture), m_description(description),
         m_statusIds(statusIds), m_texStart(texStart), m_texEnd(texEnd),
         m_statusType(static_cast<StatusType> (statusType)), 
-        m_category(static_cast<CardCategory>(category)){
+        m_category(static_cast<CardCategory>(category)),
+        m_icon(0.0f, 0.0f, 100.0f, 150.0f, Resources::Textures::iconsheet, FloatRect(texStart, texEnd), 1.0f){
 
+    switch (m_category)
+    {
+    case CardCategory::ATTACK:
+
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect(texStart, texEnd), 1.0f);
+         break;
+    
+    case CardCategory::DEFENCE:
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect(texStart, texEnd), 1.0f);
+        break;
+
+    case CardCategory::UTILITY:
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect(texStart, texEnd), 1.0f);
+        break;
+
+    default:
+        break;
+    }
 }
 
 Card::~Card() { }
@@ -41,9 +60,7 @@ DirectX::SimpleMath::Vector2 Logic::Card::getTexEnd() const
 	return m_texEnd;
 }
 
-void Logic::Card::render() const
-{
-}
+
 
 Card::StatusType Card::getStatusType() const
 {
@@ -53,4 +70,8 @@ Card::StatusType Card::getStatusType() const
 Card::CardCategory Card::getCategory() const
 {
     return m_category;
+}
+
+void Logic::Card::render() const
+{
 }

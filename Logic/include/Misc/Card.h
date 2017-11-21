@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include "../../include/Misc/GUI/Sprite.h"
+
 // Why is this a class?
 // There's no functions only get-functions, would be more fitting as a struct
 
@@ -53,6 +55,17 @@ namespace Logic
 
         CardCategory m_category;
         StatusType m_statusType;
+
+        Sprite m_cardBackground;
+        FloatRect m_inactive;
+        FloatRect m_hover;
+
+        Sprite m_icon;
+
+        std::vector<TextRenderInfo> text;
+        std::vector<std::wstring> livetext;
+        //std::vector<DirectX::SimpleMath::Vector2> textPos
+
 	};
 }
 
