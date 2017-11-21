@@ -32,7 +32,7 @@ namespace Logic
             static const int MIN_Y;
             // This is used to count how many callbacks is added, 
             // so this HAS to be ZERO before this is destroyed or
-            // the showcase at PAX East will go bad
+            // the showcase at PAX East will go PAX South
             int m_nrOfCallbacksEntities;
 
             // base
@@ -50,12 +50,8 @@ namespace Logic
             float m_fireTimer;
 
             float m_blinkTimer;
-    protected:
-
-        LightRenderInfo light;
-
-            //status
-        
+        protected:
+            LightRenderInfo light;
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE };
 
@@ -93,6 +89,8 @@ namespace Logic
             int getBaseDamage() const;
 
 			float getMoveSpeed() const;
+            float getSpeedMod() const;
+
             EnemyType getEnemyType() const;
 			Behavior* getBehavior() const;
 

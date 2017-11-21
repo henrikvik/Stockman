@@ -13,10 +13,10 @@ using namespace Logic;
 #if USE_UNIQUE_FADING_TIMERS
 
 // Give menus their unique timer here in milliseconds
-#define FADING_TIMER_INTRO      1250.f      
+#define FADING_TIMER_INTRO      250.f      
 #define FADING_TIMER_GAMEOVER   1500.f
 #define FADING_TIMER_SKILL      800.f
-#define FADING_TIMER_CARD       650.f
+#define FADING_TIMER_CARD       550.f
 
 #endif
 float getFadingTimer(iMenu::MenuGroup group)
