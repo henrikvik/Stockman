@@ -377,6 +377,11 @@ void Player::onEffectEnd(int stacks, Effect const & effect)
     }
 }
 
+void Logic::Player::onUpgradeAdd(int stacks, Upgrade const & upgrade)
+{
+    long long flags = upgrade.getTranferEffects();
+}
+
 void Player::updateSound(float deltaTime)
 {
 	// Update sound position
