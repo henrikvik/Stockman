@@ -43,3 +43,30 @@
 	"increaseMagSize" : 0;
     "movementSpeed" : 0.45f;
 }
+{ // decrease reload time 
+	"flags": 32769; // 0x1 + 0x8000
+	"increaseCooldown" : 0.33f;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 0;
+    "movementSpeed" : 0f;
+}
+{ // INCREASE RATE OF FIRE 
+	"flags": 65537; // 0x1 + 0x10000
+	"increaseCooldown" : 0.2f;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 0;
+    "movementSpeed" : 0f;
+}
+{ // decrease skill cd by 20% permanently
+	"flags": 131076; // 0x4 + 0x20000
+	"increaseCooldown" : 0.2f;
+	"increaseDamage" : 0;
+	"increaseSize" : 0;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 0;
+    "movementSpeed" : 0f;
+}

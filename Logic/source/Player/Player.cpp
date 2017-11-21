@@ -207,7 +207,7 @@ void Player::registerDebugCmds()
     });
     win->registerCommand("LOG_DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::M20_PERC_CD, 1);
+        getStatusManager().addUpgrade(StatusManager::M20_PERC_CD);
 
         return "Player skills take 20% less time to recover";
     });
@@ -225,13 +225,13 @@ void Player::registerDebugCmds()
     });
     win->registerCommand("LOG_INCREASE_FIRE_RATE", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::P20_PERC_RATE_OF_FIRE, 1);
+        getStatusManager().addUpgrade(StatusManager::P20_PERC_RATE_OF_FIRE);
 
         return "You shoot 20% faster";
     });
     win->registerCommand("LOG_INCREASE_RELOAD_TIME", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::M20_PERC_RELOAD_SPEED, 1);
+        getStatusManager().addUpgrade(StatusManager::M33_PERC_RELOAD_SPEED);
 
         return "You reload 20% faster";
     });
@@ -350,13 +350,6 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     {
         m_permanentSpeedMod += effect.getModifiers()->modifyMovementSpeed;
     }
-    if (flags & Effect::EFFECT_IS_SKILL)
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            getSkillManager()->getSkill(i)->affect(effect);
-        }
-    }
     if (flags & Effect::EFFECT_IS_WEAPON)
     {
         m_weaponManager->affect(effect);
@@ -398,6 +391,17 @@ void Player::onUpgradeAdd(int stacks, Upgrade const & upgrade)
     if (flags & Upgrade::UPGRADE_INCREASE_JUMPHEIGHT)
     {
         m_jumpSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
+    }
+    if (flags & Upgrade::UPGRADE_IS_WEAPON)
+    {
+        m_weaponManager->onUpgradeAdd(stacks, upgrade);
+    }
+    if (flags & Upgrade::UPGRADE_IS_SKILL)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            getSkillManager()->getSkill(i)->upgradeAdd(stacks, upgrade);
+        }
     }
 }
 

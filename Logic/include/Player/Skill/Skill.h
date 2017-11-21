@@ -34,10 +34,10 @@ namespace Logic
 		void release();
 		virtual void onRelease() = 0;
 		
+        void upgradeAdd(int stacks, Upgrade const & upgrade);
 		void update(float deltaTime);
-        void affect(Effect const & effect);
 		virtual void onUpdate(float deltaTime) = 0;
-        virtual void onAffect(Effect const & effect) = 0;
+        virtual void onUpgradeAdd(int stacks, Upgrade const & upgrade) = 0;
 
         void reset();
         virtual void onReset() {};

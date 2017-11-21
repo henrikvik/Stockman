@@ -30,6 +30,7 @@ namespace Logic
     class WeaponModel;
     class ProjectileManager;
     class Effect;
+    class Upgrade;
 
 	class WeaponManager
 	{
@@ -57,6 +58,7 @@ namespace Logic
 		void reset();
 		void update(float deltaTime);
         void affect(Effect const & effect);
+        void onUpgradeAdd(int stacks, Upgrade const & upgrade);
 		void render() const;
 
 		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
