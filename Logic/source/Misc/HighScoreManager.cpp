@@ -3,10 +3,10 @@
 
 using namespace Logic;
 
-static const std::string HIGHSCORE = "Highscore",
-                         SCORE     = "Score", 
-                         NAME      = "Name";
-static const int MAX_HIGHSCORE_SIZE = 10;
+const std::string HighScoreManager::HIGHSCORE = "Highscore",
+                         HighScoreManager:: SCORE     = "Score", 
+                         HighScoreManager::NAME      = "Name";
+const int HighScoreManager::MAX_HIGHSCORE_SIZE = 10;
 
 HighScoreManager::HighScoreManager()
 {
