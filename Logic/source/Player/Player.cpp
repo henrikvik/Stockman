@@ -53,6 +53,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
 
+    // Add default fire dmg
+    getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
+
 	btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_RADIUS, PLAYER_SIZE_HEIGHT);
 	btPairCachingGhostObject* ghostObject = m_physPtr->createPlayer(playerShape, startPosition);
 	ghostObject->setUserPointer(this);
@@ -260,6 +263,9 @@ void Player::reset()
     m_permanentSpeedMod = 1.0f;
     m_jumpSpeedMod = 1.0f;
     m_stunned = false;
+
+    getStatusManager().clear();
+    getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
 
     //temp? probably
     Global::mainCamera->update(getPosition(), m_forward, Global::context);
