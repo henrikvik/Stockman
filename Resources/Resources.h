@@ -198,7 +198,9 @@ namespace Resources
             SSAOComputeShader,
             SSAOGaussianBlurHorizontal,
             SSAOGaussianBlurVertical,
-            SSAOMerger
+            SSAOMerger,
+            TiledDeferredLighting,
+            TiledDeferredPS
         };
         const std::map<Files, const char *> Paths =
         {
@@ -229,7 +231,9 @@ namespace Resources
             {SSAOComputeShader, R"(..\Resources\Shaders\SSAOComputeShader.hlsl)"},
             {SSAOGaussianBlurHorizontal, R"(..\Resources\Shaders\SSAOGaussianBlurHorizontal.hlsl)"},
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
-            {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
+            {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"},
+            {TiledDeferredLighting, R"(..\Resources\Shaders\TiledDeferredLighting.hlsl)"},
+            {TiledDeferredPS, R"(..\Resources\Shaders\TiledDeferredPS.hlsl)"}
         };
         
         Files toEnum(const char * str);

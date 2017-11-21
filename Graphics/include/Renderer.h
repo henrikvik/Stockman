@@ -56,6 +56,14 @@ namespace Graphics
         StructuredBuffer<uint32_t> lightOpaqueIndexList;
         StructuredBuffer<Light>    lightsNew;
 
+        ID3D11ShaderResourceView *m_PositionSRV;
+        ID3D11ShaderResourceView *m_AlbedoSpecularSRV;
+        ID3D11ShaderResourceView *m_NormalSRV;
+
+        ID3D11RenderTargetView *m_PositionRTV;
+        ID3D11RenderTargetView *m_AlbedoSpecularRTV;
+        ID3D11RenderTargetView *m_NormalRTV;
+
         ID3D11RenderTargetView * backBuffer;
 
         PingPongBuffer fakeBuffers;

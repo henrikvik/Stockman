@@ -52,6 +52,9 @@
     <ClCompile Include="include\RenderPass\SkyBoxRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\SnowRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\SSAORenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\TiledDeferredLightingRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\TiledDeferredLightingRenderPass.h" />
+    <ClCompile Include="include\RenderPass\TiledDeferredRenderPass.cpp" />
     <ClCompile Include="include\Utility\DebugDraw.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
     <ClCompile Include="include\Utility\Shader.cpp" />
@@ -94,6 +97,7 @@
     <ClInclude Include="include\RenderPass\SkyBoxRenderPass.h" />
     <ClInclude Include="include\RenderPass\SnowRenderPass.h" />
     <ClInclude Include="include\RenderPass\SSAORenderPass.h" />
+    <ClInclude Include="include\RenderPass\TiledDeferredRenderPass.h" />
     <ClInclude Include="include\Utility\PingPongBuffer.h" />
     <ClInclude Include="include\Utility\RenderPass.h" />
     <ClInclude Include="include\RenderQueue.h" />

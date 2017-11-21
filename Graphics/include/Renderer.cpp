@@ -23,6 +23,8 @@
 #include "RenderPass\ParticleRenderPass.h"
 #include "RenderPass\SSAORenderPass.h"
 #include "RenderPass\DepthOfFieldRenderPass.h"
+#include "RenderPass\TiledDeferredRenderPass.h"
+#include "RenderPass\TiledDeferredLightingRenderPass.h"
 #include "RenderPass\SnowRenderPass.h"
 #include "RenderPass\PostFXRenderPass.h"
 #include "RenderPass\DebugRenderPass.h"
@@ -135,6 +137,39 @@ namespace Graphics
             return state;
         }();
 
+        {
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+            desc.Width = WIN_WIDTH;
+            desc.Height = WIN_HEIGHT;
+            desc.SampleDesc.Count = 1;
+            desc.MipLevels = 1;
+            desc.ArraySize = 1;
+
+
+            ID3D11Texture2D *tex = nullptr;
+
+            desc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+            ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &tex));
+            ThrowIfFailed(device->CreateShaderResourceView(tex, nullptr, &m_PositionSRV));
+            ThrowIfFailed(device->CreateRenderTargetView(tex, nullptr, &m_PositionRTV));
+            SAFE_RELEASE(tex);
+
+            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+            ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &tex));
+            ThrowIfFailed(device->CreateShaderResourceView(tex, nullptr, &m_AlbedoSpecularSRV));
+            ThrowIfFailed(device->CreateRenderTargetView(tex, nullptr, &m_AlbedoSpecularRTV));
+            SAFE_RELEASE(tex);
+
+            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+            ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &tex));
+            ThrowIfFailed(device->CreateShaderResourceView(tex, nullptr, &m_NormalSRV));
+            ThrowIfFailed(device->CreateRenderTargetView(tex, nullptr, &m_NormalRTV));
+            SAFE_RELEASE(tex);
+        }
 
         { // CaNCeR!
             D3D11_TEXTURE2D_DESC desc = {};
@@ -257,7 +292,19 @@ namespace Graphics
                     lightOpaqueGridUAV
                 }
             ),
-            newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil, &sun),
+            //newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil),
+            
+#define TEST
+#ifdef TEST
+            newd TiledDeferredRenderPass(
+                m_PositionRTV,
+                m_AlbedoSpecularRTV,
+                m_NormalRTV,
+                staticInstanceBuffer,
+                animatedInstanceBuffer,
+                depthStencil
+            ),
+#else // TEST
             newd ForwardPlusRenderPass(
                 {
                     fakeBuffers,
@@ -282,7 +329,21 @@ namespace Graphics
                 },
                 depthStencil
             ),
-            newd ParticleRenderPass(
+#endif
+#ifdef TEST
+            newd TiledDeferredLightingRenderPass(
+                backBuffer,
+                m_PositionSRV,
+                m_AlbedoSpecularSRV,
+                m_NormalSRV,
+                lightOpaqueGridSRV,
+                lightOpaqueIndexList,
+                lightsNew,
+                shadowMap,
+                *sun.getGlobalLightBuffer()
+            ),
+#endif
+            /*newd ParticleRenderPass(
                 fakeBuffers,
                 lightOpaqueGridSRV, 
                 lightOpaqueIndexList, 
@@ -312,7 +373,7 @@ namespace Graphics
                     *sun.getGlobalLightBuffer()
                 },
                 depthStencil
-            ),
+            ),*/
             newd PostFXRenderPass(
                 &fakeBuffers,
                 backBuffer,
