@@ -219,7 +219,8 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render Menu");
-    m_menu->render();
+    if (m_menu->getType() != iMenu::CardSelect)
+        m_menu->render();
     PROFILE_END();
 
     m_fpsRenderer.render();

@@ -1,7 +1,7 @@
 {
 	"nrOfWaves": 5;
 	"startWave": 0;
-	"timeMul": 2000f;
+	"timeMul": 200000f;
 	"timeBonus": 50000f;
 	"bossTimeBonus": 60f;
 	"bossWaves": "9";

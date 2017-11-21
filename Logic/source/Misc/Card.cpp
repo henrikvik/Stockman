@@ -41,6 +41,10 @@ DirectX::SimpleMath::Vector2 Logic::Card::getTexEnd() const
 	return m_texEnd;
 }
 
+void Logic::Card::render() const
+{
+}
+
 Card::StatusType Card::getStatusType() const
 {
 	return m_statusType;

@@ -39,6 +39,8 @@ namespace Logic
 
 		DirectX::SimpleMath::Vector2 getTexStart() const;
 		DirectX::SimpleMath::Vector2 getTexEnd() const;
+
+        virtual void render() const;
 	private:
 		std::string m_name;
 		std::string m_texture;
