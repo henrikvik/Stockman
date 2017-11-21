@@ -23,15 +23,13 @@ namespace Resources
     {
         enum Files
         {
-            IslandScene,
-            Scene,
-            StockMan_LvL
+            StockMan_LvL,
+            Test_Map
         };
         const std::map<Files, const char *> Paths =
         {
-            {IslandScene, R"(..\Resources\Maps\IslandScene.toml)"},
-            {Scene, R"(..\Resources\Maps\Scene.toml)"},
-            {StockMan_LvL, R"(..\Resources\Maps\StockMan_LvL.toml)"}
+            {StockMan_LvL, R"(..\Resources\Maps\StockMan_LvL.toml)"},
+            {Test_Map, R"(..\Resources\Maps\Test_Map.toml)"}
         };
         
         Files toEnum(const char * str);
@@ -57,12 +55,14 @@ namespace Resources
             Ground,
             Hammer,
             House1,
+            House2,
             House3,
             Ice,
             Icecickle,
             Jumppad,
             Lamp_Post,
             Log,
+            Lower_Ground,
             Market_Tent,
             MenuScene,
             Rock1,
@@ -99,12 +99,14 @@ namespace Resources
             {Ground, R"(..\Resources\Models\Ground.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {House1, R"(..\Resources\Models\House1.hyb)"},
+            {House2, R"(..\Resources\Models\House2.hyb)"},
             {House3, R"(..\Resources\Models\House3.hyb)"},
             {Ice, R"(..\Resources\Models\Ice.hyb)"},
             {Icecickle, R"(..\Resources\Models\Icecickle.hyb)"},
             {Jumppad, R"(..\Resources\Models\Jumppad.hyb)"},
             {Lamp_Post, R"(..\Resources\Models\Lamp_Post.hyb)"},
             {Log, R"(..\Resources\Models\Log.hyb)"},
+            {Lower_Ground, R"(..\Resources\Models\Lower_Ground.hyb)"},
             {Market_Tent, R"(..\Resources\Models\Market_Tent.hyb)"},
             {MenuScene, R"(..\Resources\Models\MenuScene.hyb)"},
             {Rock1, R"(..\Resources\Models\Rock1.hyb)"},

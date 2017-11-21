@@ -52,7 +52,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     // Initializing the Map
     m_map = newd Map();
     m_map->init(m_physics);
-    m_map->loadMap(Resources::Maps::StockMan_LvL);
+    m_map->loadMap(Resources::Maps::Test_Map);
 
     // Initializing Card Manager
     m_cardManager = newd CardManager(GAME_START::UNIQUE_CARDS);

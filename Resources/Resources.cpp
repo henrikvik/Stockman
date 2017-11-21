@@ -15,9 +15,8 @@ namespace Resources
     {
         Files toEnum(const char * str)
         {
-            if (strcmp(str, "IslandScene") == 0) return IslandScene;
-            if (strcmp(str, "Scene") == 0) return Scene;
             if (strcmp(str, "StockMan_LvL") == 0) return StockMan_LvL;
+            if (strcmp(str, "Test_Map") == 0) return Test_Map;
             throw "Could not find matching enum.";
         }
     }
@@ -42,12 +41,14 @@ namespace Resources
             if (strcmp(str, "Ground") == 0) return Ground;
             if (strcmp(str, "Hammer") == 0) return Hammer;
             if (strcmp(str, "House1") == 0) return House1;
+            if (strcmp(str, "House2") == 0) return House2;
             if (strcmp(str, "House3") == 0) return House3;
             if (strcmp(str, "Ice") == 0) return Ice;
             if (strcmp(str, "Icecickle") == 0) return Icecickle;
             if (strcmp(str, "Jumppad") == 0) return Jumppad;
             if (strcmp(str, "Lamp_Post") == 0) return Lamp_Post;
             if (strcmp(str, "Log") == 0) return Log;
+            if (strcmp(str, "Lower_Ground") == 0) return Lower_Ground;
             if (strcmp(str, "Market_Tent") == 0) return Market_Tent;
             if (strcmp(str, "MenuScene") == 0) return MenuScene;
             if (strcmp(str, "Rock1") == 0) return Rock1;

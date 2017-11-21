@@ -70,9 +70,9 @@ void Map::update(float deltaTime)
 
 void Map::render() const
 {
-	for (StaticObject* o : m_props)     o->render();
-    for (LightObject* l : m_lights)     l->render();
-    for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
+	//for (StaticObject* o : m_props)     o->render();
+ //   for (LightObject* l : m_lights)     l->render();
+ //   for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
 
     for (auto & d : decorations) d.render();
 }
@@ -175,25 +175,15 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
     {
         try
         {
-            DirectX::SimpleMath::Matrix rotation;
-            DirectX::SimpleMath::Quaternion(&instance.rotation[0]).CreateFromRotationMatrix(rotation);
-            DirectX::SimpleMath::Matrix transform = 
-                DirectX::SimpleMath::Matrix::CreateScale(instance.scale[0], instance.scale[1], instance.scale[2]) *
-                rotation *
-                DirectX::SimpleMath::Matrix::CreateTranslation(instance.translation[0], instance.translation[1], instance.translation[2])
-            ;
+            std::cout << "> " <<  instance.model.c_str() << std::endl;
+            DirectX::SimpleMath::Quaternion rotation(instance.rotation[0], instance.rotation[1], instance.rotation[2], instance.rotation[3]);
+            DirectX::SimpleMath::Vector3 scale(instance.scale[0], instance.scale[1], instance.scale[2]);
+            DirectX::SimpleMath::Vector3 translation(instance.translation[0], instance.translation[1], instance.translation[2]);
 
+            auto transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
             Decoration decor(Resources::Models::toEnum(instance.model.c_str()), transform);
             decorations.push_back(decor);
 
-        //    btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), {1,1,1}), 0.f, false, Physics::COL_HITBOX, Physics::COL_EVERYTHING);
-        //rb->getWorldTransform().setRotation(instance.rotation);
-        //m_hitboxes.push_back(new StaticObject(
-        //    Resources::Models::toEnum(instance.model.c_str()), 
-        //    rb,
-        //    instance.scale,
-        //    StaticObject::NavigationMeshFlags::NO_CULL
-        //));
         }
             catch (const char * e)
         {
