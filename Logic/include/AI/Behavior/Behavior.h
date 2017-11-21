@@ -47,7 +47,7 @@ namespace Logic {
 			}
 		};
 	private:
-        static const float STEERING_BASE;
+        static const float STEERING_BASE, STEERING_MOD;
 
 		BehaviorNode m_root;
 		Pathing m_pathing;

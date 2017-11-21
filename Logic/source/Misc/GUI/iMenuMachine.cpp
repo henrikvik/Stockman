@@ -78,8 +78,9 @@ void iMenuMachine::swapMenu()
     case iMenu::MenuGroup::CardSelect:  m_activeMenu = m_factory->buildMenuCard();                        break;
     case iMenu::MenuGroup::Skill:       m_activeMenu = m_factory->buildMenuSkill();                       break;
     case iMenu::MenuGroup::GameOver:    m_activeMenu = m_factory->buildMenuGameover();                    break;
-    case iMenu::MenuGroup::GameWon:     m_activeMenu = m_factory->buildGameWon();                         break;
+    case iMenu::MenuGroup::GameWon:     m_activeMenu = m_factory->buildMenuGameWon();                     break;
     case iMenu::MenuGroup::Pause:       m_activeMenu = m_factory->buildMenuPause();                       break;
+    case iMenu::MenuGroup::Loading:     m_activeMenu = m_factory->buildMenuLoading();                     break;
     default: break;
     }
 
@@ -179,6 +180,12 @@ void iMenuMachine::updateCamera(float deltaTime)
         break;
 
     case iMenu::MenuGroup::Skill:
+        targetCameraPosition = CAMERA_SKILL_POSITION;
+        targetCameraForward = CAMERA_SKILL_FORWARD;
+        shouldModifyCamera = true;
+        break;
+
+    case iMenu::MenuGroup::Loading:
         targetCameraPosition = CAMERA_SKILL_POSITION;
         targetCameraForward = CAMERA_SKILL_FORWARD;
         shouldModifyCamera = true;
