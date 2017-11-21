@@ -22,12 +22,14 @@ namespace Resources
         enum Files
         {
             IslandScene,
-            Scene
+            Scene,
+            Test_Map
         };
         const std::map<Files, const char *> Paths =
         {
             {IslandScene, R"(..\Resources\Maps\IslandScene.toml)"},
-            {Scene, R"(..\Resources\Maps\Scene.toml)"}
+            {Scene, R"(..\Resources\Maps\Scene.toml)"},
+            {Test_Map, R"(..\Resources\Maps\Test_Map.toml)"}
         };
     }
     namespace Models
@@ -37,19 +39,26 @@ namespace Resources
             Ammocrystal,
             AmmoPackCrossBolt,
             AnimatedSummonUnit,
-            Barrel,
             Crossbow,
             Crossbowbolt,
             Crossbowbolts,
             Firepit,
+            Ground,
             Hammer,
-            Island,
+            House1,
+            House2,
+            House3,
+            Lower_Ground,
             MenuScene,
+            Rock1,
+            Rock2,
+            Rock3,
             SkySphere,
             Staff,
             StaticSummon,
             SummonUnitWithAnim,
             Tablet1,
+            Tree,
             UnitCube
         };
         const std::map<Files, const char *> Paths =
@@ -57,19 +66,26 @@ namespace Resources
             {Ammocrystal, R"(..\Resources\Models\Ammocrystal.hyb)"},
             {AmmoPackCrossBolt, R"(..\Resources\Models\AmmoPackCrossBolt.hyb)"},
             {AnimatedSummonUnit, R"(..\Resources\Models\AnimatedSummonUnit.hyb)"},
-            {Barrel, R"(..\Resources\Models\Barrel.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
             {Crossbowbolt, R"(..\Resources\Models\Crossbowbolt.hyb)"},
             {Crossbowbolts, R"(..\Resources\Models\Crossbowbolts.hyb)"},
             {Firepit, R"(..\Resources\Models\Firepit.hyb)"},
+            {Ground, R"(..\Resources\Models\Ground.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
-            {Island, R"(..\Resources\Models\Island.hyb)"},
+            {House1, R"(..\Resources\Models\House1.hyb)"},
+            {House2, R"(..\Resources\Models\House2.hyb)"},
+            {House3, R"(..\Resources\Models\House3.hyb)"},
+            {Lower_Ground, R"(..\Resources\Models\Lower_Ground.hyb)"},
             {MenuScene, R"(..\Resources\Models\MenuScene.hyb)"},
+            {Rock1, R"(..\Resources\Models\Rock1.hyb)"},
+            {Rock2, R"(..\Resources\Models\Rock2.hyb)"},
+            {Rock3, R"(..\Resources\Models\Rock3.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {SummonUnitWithAnim, R"(..\Resources\Models\SummonUnitWithAnim.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
+            {Tree, R"(..\Resources\Models\Tree.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
     }
