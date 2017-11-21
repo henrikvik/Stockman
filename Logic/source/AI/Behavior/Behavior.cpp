@@ -14,7 +14,7 @@
 #include <queue>
 
 using namespace Logic;
-const float Behavior::STEERING_BASE = 22.5f, Behavior::STEERING_MOD = 10;
+const float Behavior::STEERING_BASE = 25.0f, Behavior::STEERING_MOD = 10;
 
 Behavior::Behavior(PathingType type)
 {
@@ -66,7 +66,8 @@ void Behavior::walkPath(RunIn &in)
     float dt = (in.deltaTime * 0.001f);
 
     btVector3 vel = in.enemy->getRigidBody()->getLinearVelocity().normalized();
-    btVector3 steeringForce = dt * m_steeringSpeed * in.enemy->getSpeedMod() * STEERING_MOD * (dir - vel);
+    float mod = in.enemy->getSpeedMod() * STEERING_MOD - STEERING_MOD + 1; // if speedMod = 1 then mod is also 1 (todo: better sol)
+    btVector3 steeringForce = dt * m_steeringSpeed * mod * (dir - vel);
     in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() + steeringForce);
 }
 
