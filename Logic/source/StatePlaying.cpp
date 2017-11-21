@@ -134,7 +134,7 @@ void StatePlaying::update(float deltaTime)
 
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_menu->getType() != iMenu::MenuGroup::CardSelect)
-    if (m_waveTimeManager.update(deltaTime, m_entityManager))
+    if (m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT()))
     {
         m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
         m_cardManager->pickThreeCards(m_player->getHP() != 3);

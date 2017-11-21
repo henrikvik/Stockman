@@ -174,7 +174,12 @@ int AStar::getTargetIndex()
 
 int AStar::getIndex(Entity const &entity) const
 {
-    return navigationMesh.getIndex(entity.getPosition());
+    return getIndex(entity.getPositionBT());
+}
+
+int AStar::getIndex(btVector3 const &vec) const
+{
+    return navigationMesh.getIndex(DirectX::SimpleMath::Vector3(vec));
 }
 
 int AStar::isEntityOnIndex(Entity const &entity, int index) const
