@@ -125,7 +125,6 @@ void StatePlaying::update(float deltaTime)
 
     ComboMachine::Get().update(deltaTime);
 
-
     if (fullhack)
     {
         static_cast<iMenuCards*>(m_menu->getActiveMenu())->setCardInformation(m_cardManager->getHand());
@@ -143,7 +142,6 @@ void StatePlaying::update(float deltaTime)
         //TODO temp
         fullhack = true;
     }
-
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
