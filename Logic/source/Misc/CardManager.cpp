@@ -70,6 +70,7 @@ void Logic::CardManager::pepperCardsForDraw()
         currenthand.push_back(m_cards[m_deck[m_hand.at(i)].second]);
         currenthand.at(i).setIconPos(365.0f + 250 * i, 260.0f, 75, 75);
         currenthand.at(i).setbackgroundPos(290.f + 250 * i, 225.0f, 200, 250);
+        currenthand.at(i).setCardTextPos(308.f + 250.f * i);
     }
 }
 

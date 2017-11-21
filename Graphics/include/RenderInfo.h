@@ -108,7 +108,7 @@ struct TextRenderInfo : RenderInfo
     DirectX::SimpleMath::Vector2 position;
     DirectX::SimpleMath::Color color;
     Resources::Fonts::Files font;
-    const wchar_t * text = L"";
+    std::wstring text = L"";
 };
 
 

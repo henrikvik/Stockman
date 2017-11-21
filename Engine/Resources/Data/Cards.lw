@@ -14,7 +14,7 @@
 	"status0" : 8;
 }
 {
-	"cardName" : "+Damage";
+	"cardName" : "Damage";
 	"description" : "Increase all weapon damage";
 	"texture" : "b";
 
@@ -29,7 +29,7 @@
 	"status0" : 1;
 }
 {
-	"cardName" : "+Ammo Cap";
+	"cardName" : "Ammo Cap";
 	"description" : "Increase the ammo cap";
 	"texture" : "b";
 
@@ -44,7 +44,7 @@
 	"status0" : 13;
 }
 {
-	"cardName" : "+Mag Size";
+	"cardName" : "Mag Size";
 	"description" : "Increase the total ammo of your weapon";
 	"texture" : "b";
 
@@ -59,8 +59,8 @@
 	"status0" : 14;
 }
 {
-	"cardName" : "+Movement Speed";
-	"description" : "Increase your movment";
+	"cardName" : "Run Speed";
+	"description" : "Increase your run speed";
 	"texture" : "b";
 
 	"xTexStart" : 1.0f;
@@ -74,7 +74,7 @@
 	"status0" : 15;
 }
 {
-	"cardName" : "-Skill CD";
+	"cardName" : "Skill CD";
 	"description" : "Decrease cooldown on your skills";
 	"texture" : "b";
 
@@ -89,7 +89,7 @@
 	"status0" : 16;
 }
 {
-	"cardName" : "+Fire-rate";
+	"cardName" : "Fire rate";
 	"description" : "Increase fire rate for all weapons";
 	"texture" : "b";
 
@@ -104,7 +104,7 @@
 	"status0" : 18;
 }
 {
-	"cardName" : "-Reload";
+	"cardName" : "Reload";
 	"description" : "Decrease reload time of all weapons";
 	"texture" : "b";
 
@@ -119,7 +119,7 @@
 	"status0" : 19;
 }
 {
-	"cardName" : "+Jump";
+	"cardName" : "Jump";
 	"description" : "Increase the jump strength";
 	"texture" : "b";
 
@@ -134,7 +134,7 @@
 	"status0" : 20;
 }
 {
-	"cardName" : "+Freeze Duration";
+	"cardName" : "Freeze";
 	"description" : "Staff freezes enemies longer";
 	"texture" : "b";
 

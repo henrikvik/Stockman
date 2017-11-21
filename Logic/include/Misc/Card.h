@@ -37,7 +37,7 @@ namespace Logic
 
         void setIconPos(float x, float y, float width, float height);
         void setbackgroundPos(float x, float y, float width, float height);
-        void setCardTextPos(DirectX::SimpleMath::Vector2 pos);
+        void setCardTextPos(float posX);
 
 		const std::vector<int>& getStatusIds() const;
 		StatusType getStatusType() const;
@@ -67,7 +67,6 @@ namespace Logic
         Sprite m_icon;
 
         std::vector<TextRenderInfo> m_text;
-        std::vector<std::wstring> m_livetext;
         //std::vector<DirectX::SimpleMath::Vector2> textPos
 
 	};

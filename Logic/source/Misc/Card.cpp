@@ -1,4 +1,5 @@
 #include <Misc/Card.h>
+#include <comdef.h>
 
 using namespace Logic;
 
@@ -29,7 +30,10 @@ Card::Card(std::string name, std::string texture, std::string description,
     parseText();
 }
 
-Card::~Card() { }
+Card::~Card() 
+{
+    m_text.clear();
+}
 
 std::string Card::getName() const 
 { 
@@ -56,8 +60,14 @@ void Logic::Card::setbackgroundPos(float x, float y, float width, float height)
     m_cardBackground.setScreenPos(Sprite::TOP_LEFT, Sprite::TOP_LEFT, x, y, width, height);
 }
 
-void Logic::Card::setCardTextPos(DirectX::SimpleMath::Vector2 pos)
+void Logic::Card::setCardTextPos(float posX)
 {
+
+    for (size_t i = 0; i < m_text.size(); i++)
+    {
+        m_text.at(i).position.x += posX;
+    }
+
 }
 
 const std::vector<int>& Card::getStatusIds() const
@@ -98,6 +108,15 @@ void Logic::Card::render() const
     }
 }
 
+//splits the text into smaler lines so they fit the cards
 void Logic::Card::parseText()
 {
+    //title
+    TextRenderInfo temp;
+    temp.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
+    temp.font = Resources::Fonts::KG14;
+    temp.position = DirectX::SimpleMath::Vector2(50.0f, 235.0f);
+    temp.text = std::wstring(m_name.begin(), m_name.end());
+
+    m_text.push_back(TextRenderInfo(temp));
 }
