@@ -57,8 +57,6 @@ namespace Logic
         StatusType m_statusType;
 
         Sprite m_cardBackground;
-        FloatRect m_inactive;
-        FloatRect m_hover;
 
         Sprite m_icon;
 

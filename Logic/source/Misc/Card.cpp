@@ -14,19 +14,15 @@ Card::Card(std::string name, std::string texture, std::string description,
     switch (m_category)
     {
     case CardCategory::ATTACK:
-
-        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect(texStart, texEnd), 1.0f);
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect({ 0.05288f, 0.0f }, { 0.34375f, 1.f }), 1.0f);
          break;
     
     case CardCategory::DEFENCE:
-        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect(texStart, texEnd), 1.0f);
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect({ 0.345352f, 0.0f }, { 0.636217f, 1.f }), 1.0f);
         break;
 
     case CardCategory::UTILITY:
-        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect(texStart, texEnd), 1.0f);
-        break;
-
-    default:
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect({ 0.637820f, 0.0f }, { 0.933493f, 1.f }), 1.0f);
         break;
     }
 }
