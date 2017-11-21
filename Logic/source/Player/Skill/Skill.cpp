@@ -55,12 +55,12 @@ void Skill::update(float deltaTime)
 	onUpdate(deltaTime);
 }
 
-void Skill::affect(Effect const & effect)
+void Skill::upgradeAdd(int stacks, Upgrade const & upgrade)
 {
-    long long flags = effect.getStandards()->flags;
-    if (flags & Effect::EFFECT_DECREASE_CD)
+    long long flags = upgrade.getTranferEffects();
+    if (flags & Upgrade::UPGRADE_DECREASE_CD)
     {
-        m_cooldownModifer *= 1 - effect.getModifiers()->modifySkillCDDecrease;
+        m_cooldownModifer *= 1 - upgrade.getFlatUpgrades().increaseCooldown;
         if (m_cooldownModifer < 0)
         {
             m_cooldownModifer = 0;
@@ -68,7 +68,7 @@ void Skill::affect(Effect const & effect)
     }
     else
     {
-        onAffect(effect);
+        onUpgradeAdd(stacks, upgrade);
     }
 }
 

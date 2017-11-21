@@ -22,7 +22,8 @@ namespace Logic
             Highscore,
             GameOver, 
             GameWon,
-            Pause
+            Pause, 
+            Loading
         };
 
         struct ButtonData

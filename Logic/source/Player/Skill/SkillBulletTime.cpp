@@ -119,7 +119,7 @@ void SkillBulletTime::onUpdate(float deltaTime)
 	}*/
 }
 
-void SkillBulletTime::onAffect(Effect const & effect)
+void SkillBulletTime::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 {
 }
 

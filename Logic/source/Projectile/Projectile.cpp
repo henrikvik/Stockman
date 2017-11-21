@@ -35,7 +35,7 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
     {
         if (getStatusManager().getUpgradeStacks((StatusManager::UPGRADE_ID)i) > 0)
         {
-            upgrade(statusManager.getUpgrade((StatusManager::UPGRADE_ID)i));
+            upgrader(statusManager.getUpgrade((StatusManager::UPGRADE_ID)i));
         }
     }
 }
@@ -54,7 +54,7 @@ void Projectile::affect(int stacks, Effect const & effect, float deltaTime)
 }
 
 // How different upgrade affect projectiles
-void Projectile::upgrade(Upgrade const &upgrade)
+void Projectile::upgrader(Upgrade const &upgrade)
 {
     long long flags = upgrade.getTranferEffects();
 

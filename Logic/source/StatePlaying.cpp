@@ -125,7 +125,6 @@ void StatePlaying::update(float deltaTime)
 
     ComboMachine::Get().update(deltaTime);
 
-
     if (fullhack)
     {
         static_cast<iMenuCards*>(m_menu->getActiveMenu())->setCardInformation(m_cardManager->getHand());
@@ -134,7 +133,7 @@ void StatePlaying::update(float deltaTime)
 
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_menu->getType() != iMenu::MenuGroup::CardSelect)
-    if (m_waveTimeManager.update(deltaTime, m_entityManager))
+    if (m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT()))
     {
         m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
         m_cardManager->pickThreeCards(m_player->getHP() != 3);
@@ -143,7 +142,6 @@ void StatePlaying::update(float deltaTime)
         //TODO temp
         fullhack = true;
     }
-
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
