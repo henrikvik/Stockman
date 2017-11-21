@@ -6,7 +6,7 @@ using namespace Logic;
 const int EnemyChaser::MAX_HP = 25;
 const int EnemyChaser::BASE_DAMAGE = 1;
 const float EnemyChaser::MOVE_SPEED = 16.9f; //noice!
-#define ANI_TIME 5000.f // this is temp
+#define ANI_TIME 5.0f // this is temp
 
 EnemyChaser::EnemyChaser(btRigidBody* body)
     : Enemy(Resources::Models::Files::SummonUnitWithAnim, body, { 1.0f, 1.0f, 1.0f },
@@ -22,24 +22,24 @@ EnemyChaser::EnemyChaser(btRigidBody* body)
 
 EnemyChaser::~EnemyChaser()
 {
+
 }
 
 void EnemyChaser::loadAnimation(Resources::Models::Files model)
 {
- /*   animatedRenderInfo.animationName = "Walk";
+    animatedRenderInfo.animationName = "Walk";
     animatedRenderInfo.model = model;
     animatedRenderInfo.animationTimeStamp = 0.0f;
     animatedRenderInfo.transform = getTransformMatrix();
-    */
 }
 
 // REMOVE WHEN ALL ENIMES ARE ANIMATED
 void EnemyChaser::updateSpecific(Player & player, float deltaTime)
 {
-/*    animatedRenderInfo.transform = getModelTransformMatrix();
-    animatedRenderInfo.animationTimeStamp += deltaTime;
+    animatedRenderInfo.transform = getModelTransformMatrix();
+    animatedRenderInfo.animationTimeStamp += deltaTime / 1000.0f;
     if (animatedRenderInfo.animationTimeStamp > ANI_TIME) animatedRenderInfo.animationTimeStamp = 0.f;
-    */
+    
 }
 
 void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
@@ -66,5 +66,5 @@ void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, floa
 
 void EnemyChaser::renderSpecific() const
 {
-   // QueueRender(animatedRenderInfo); 
+    QueueRender(animatedRenderInfo); 
 }

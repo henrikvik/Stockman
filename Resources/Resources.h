@@ -50,6 +50,7 @@ namespace Resources
             StaticSummon,
             SummonUnitWithAnim,
             Tablet1,
+            Testboxanim,
             UnitCube
         };
         const std::map<Files, const char *> Paths =
@@ -70,6 +71,7 @@ namespace Resources
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {SummonUnitWithAnim, R"(..\Resources\Models\SummonUnitWithAnim.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
+            {Testboxanim, R"(..\Resources\Models\Testboxanim.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
     }
