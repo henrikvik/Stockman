@@ -35,6 +35,9 @@ namespace Logic
 		std::string getTexture() const;
 		std::string getDescription() const;
 
+        void setIconPos(float x, float y, float width, float height);
+        void setbackgroundPos(float x, float y, float width, float height);
+
 		const std::vector<int>& getStatusIds() const;
 		StatusType getStatusType() const;
         CardCategory getCategory() const;

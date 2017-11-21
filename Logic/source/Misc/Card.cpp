@@ -41,6 +41,19 @@ std::string Card::getDescription() const
 { 
 	return m_description; 
 }
+
+//sets the position of the card icon in pixels
+void Logic::Card::setIconPos(float x, float y, float width, float height)
+{
+    m_icon.setScreenPos(Sprite::TOP_LEFT, Sprite::TOP_LEFT, x, y, width, height);
+}
+
+//sets the position of the card background in pixels
+void Logic::Card::setbackgroundPos(float x, float y, float width, float height)
+{
+    m_cardBackground.setScreenPos(Sprite::TOP_LEFT, Sprite::TOP_LEFT, x, y, width, height);
+}
+
 const std::vector<int>& Card::getStatusIds() const
 { 
 	return m_statusIds;
