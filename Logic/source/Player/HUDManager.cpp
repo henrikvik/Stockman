@@ -321,7 +321,6 @@ void HUDManager::updateTextElements()
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
-
     }
     
     //wave counter
@@ -442,8 +441,8 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
         info.cd[0] = secondary->getCooldown() / secondary->getCooldownMax();
         info.cdInSeconds[0] = secondary->getCooldown() / 1000 + 1.f;
     }
-        
-    else {
+    else
+    {
         info.cd[0] = 1.0f;
         info.cdInSeconds[0] = 0;
     }
