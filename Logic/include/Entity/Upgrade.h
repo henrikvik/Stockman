@@ -32,6 +32,7 @@ namespace Logic
             UPGRADE_SLEDGEHAMMER = 0x800,
             UPGRADE_BURNING = 0x1000,
             UPGRADE_FREEZING = 0x2000,
+            UPGRADE_INCREASE_JUMPHEIGHT = 0x4000,
 		};
 
 		struct FlatUpgrades {

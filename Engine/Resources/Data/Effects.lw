@@ -255,18 +255,3 @@
     "mMagCap" : 0;
     "mSkillCDDecrease" : 0.33f;
 }
-{ // increase jump height by 45% 
-	"flags": 536870912; // 0x20000000
-	"duration" : 0f;
-    "modifiers": 1;
-    "specifics": 0;
-
-    "mDmgGiven": 0f;
-	"mDmgTaken": 0f;
-	"mFirerate": 0f;
-	"mHP": 0f;
-	"mMovementSpeed": 0.45f;
-    "mAmmoCap" : 0;
-    "mMagCap" : 0;
-    "mSkillCDDecrease" : 0f;
-}

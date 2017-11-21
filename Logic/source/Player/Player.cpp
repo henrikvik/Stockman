@@ -219,7 +219,7 @@ void Player::registerDebugCmds()
     });
     win->registerCommand("LOG_INCREASE_JUMP_HEIGHT", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::P20_PERC_JUMP, 1);
+        getStatusManager().addUpgrade(StatusManager::P45_PERC_JUMP);
 
         return "You jump 20% higher";
     });
@@ -343,10 +343,6 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     {
         m_weaponManager->affect(effect);
     }
-    if (flags & Effect::EFFECT_INCREASE_JUMPHEIGHT)
-    {
-        m_jumpSpeedMod += effect.getModifiers()->modifyMovementSpeed;
-    }
 }
 
 void Player::onEffectEnd(int stacks, Effect const & effect)
@@ -380,6 +376,11 @@ void Player::onEffectEnd(int stacks, Effect const & effect)
 void Logic::Player::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 {
     long long flags = upgrade.getTranferEffects();
+
+    if (flags & Upgrade::UPGRADE_INCREASE_JUMPHEIGHT)
+    {
+        m_jumpSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
+    }
 }
 
 void Player::updateSound(float deltaTime)
