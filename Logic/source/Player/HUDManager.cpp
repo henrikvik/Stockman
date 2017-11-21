@@ -263,7 +263,7 @@ void Logic::HUDManager::updateTextElements()
         liveText.push_back(std::to_wstring(info.activeAmmo[0]));
         text.text = liveText.at(last).c_str();
         last++;
-        text.position = DirectX::SimpleMath::Vector2(700, 400);
+        text.position = DirectX::SimpleMath::Vector2(750, 400);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
