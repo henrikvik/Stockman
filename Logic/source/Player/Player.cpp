@@ -128,10 +128,12 @@ void Player::registerDebugCmds()
         }
         return "Mouse sens set";
     });
+
     win->registerCommand("LOG_GODMODE", [&](std::vector<std::string> &para) -> std::string {
         m_godMode = !m_godMode;
         return "Godmode updated";
     });
+
     win->registerCommand("LOG_NOCLIP", [&](std::vector<std::string> &para) -> std::string {
         m_noclip = !m_noclip;
         if (m_noclip)
@@ -150,6 +152,22 @@ void Player::registerDebugCmds()
         getStatusManager().addStatusResetDuration(StatusManager::STUN, 1);
 
         return "Player is stunned";
+    });
+
+    win->registerCommand("LOG_ADD_UPGRADE", [&](std::vector<std::string> &args) -> std::string
+    {
+        try
+        {
+            int stacks = 1;
+            if (args.size() > 1)
+                stacks = std::stoi(args[1]);
+            upgrade(static_cast<StatusManager::UPGRADE_ID> (std::stoi(args[0])), stacks);
+            return "Upgrade added";
+        }
+        catch (std::exception const &ex)
+        {
+            return "I have the highground DLC";
+        }
     });
 
     win->registerCommand("LOG_PLAYER_MOVE_FASTER", [&](std::vector<std::string> &args) -> std::string
@@ -373,7 +391,7 @@ void Player::onEffectEnd(int stacks, Effect const & effect)
     }
 }
 
-void Logic::Player::onUpgradeAdd(int stacks, Upgrade const & upgrade)
+void Player::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 {
     long long flags = upgrade.getTranferEffects();
 

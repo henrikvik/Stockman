@@ -50,7 +50,7 @@ namespace Logic
 
 		virtual ~Entity();
 
-        virtual void setSpawnFunctions(ProjectileFunc spawnProjectile, EnemyFunc SpawnEnemy, TriggerFunc spawnTriggery);
+        virtual void setSpawnFunctions(ProjectileFunc spawnProjectile, EnemyFunc SpawnEnemy, TriggerFunc spawnTrigger);
 
 		virtual void clear();
 		virtual void update(float deltaTime);
@@ -58,7 +58,9 @@ namespace Logic
 
 		virtual void affect(int stacks, Effect const &effect, float deltaTime) = 0;
         virtual void onEffectEnd(int stacks, Effect const &effect) {};
-		virtual void upgrade(Upgrade const &upgrade);
+        virtual void onUpgradeAdd(int stacks, Upgrade const &upgrade) {};
+		
+        virtual void upgrade(StatusManager::UPGRADE_ID id, int stacks = 1);
 
         virtual void render() const = 0;
 
