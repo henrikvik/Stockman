@@ -92,7 +92,8 @@ namespace Logic
 			int getTargetIndex();
 
             // Mesh stuff
-			int getIndex(Entity const &entity) const;
+            int getIndex(Entity const &entity) const;
+            int getIndex(btVector3 const &vec) const;
 			int isEntityOnIndex(Entity const &entity, int index) const;
 			size_t getNrOfPolygons() const;
 
