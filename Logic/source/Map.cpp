@@ -73,6 +73,8 @@ void Map::render() const
 	for (StaticObject* o : m_props)     o->render();
     for (LightObject* l : m_lights)     l->render();
     for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
+
+    for (auto & d : decorations) d.render();
 }
 	
 std::vector<StaticObject*>*			Map::getProps()				{ return &m_props;				}
@@ -167,35 +169,35 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
     if (mapTrigger) pushInstances(mapTrigger, triggerInstances);
 
     // TODO USE THIS //    
+    decorations.clear();
 
     for (auto & instance : staticInstances)
     {
-        if (strcmp(instance.model.c_str(), "Island") == 0)
+        try
         {
-            btRigidBody *rb = m_physicsPtr->createBody(
-                Cube(instance.translation, btVector3(), {150, 1, 150}),
-                0.f, false,
-                Physics::COL_HITBOX,
-                Physics::COL_EVERYTHING
-            );
-            rb->getWorldTransform().setRotation(instance.rotation);
-            m_hitboxes.push_back(new StaticObject(
-                Resources::Models::Island, 
-                rb,
-                instance.scale,
-                StaticObject::NavigationMeshFlags::CULL
-            ));
+            DirectX::SimpleMath::Matrix rotation;
+            DirectX::SimpleMath::Quaternion(&instance.rotation[0]).CreateFromRotationMatrix(rotation);
+            DirectX::SimpleMath::Matrix transform = 
+                DirectX::SimpleMath::Matrix::CreateScale(instance.scale[0], instance.scale[1], instance.scale[2]) *
+                rotation *
+                DirectX::SimpleMath::Matrix::CreateTranslation(instance.translation[0], instance.translation[1], instance.translation[2])
+            ;
+
+            Decoration decor(Resources::Models::toEnum(instance.model.c_str()), transform);
+            decorations.push_back(decor);
+
+        //    btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), {1,1,1}), 0.f, false, Physics::COL_HITBOX, Physics::COL_EVERYTHING);
+        //rb->getWorldTransform().setRotation(instance.rotation);
+        //m_hitboxes.push_back(new StaticObject(
+        //    Resources::Models::toEnum(instance.model.c_str()), 
+        //    rb,
+        //    instance.scale,
+        //    StaticObject::NavigationMeshFlags::NO_CULL
+        //));
         }
-        else
+            catch (const char * e)
         {
-            btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), instance.scale), 0.f, false, Physics::COL_HITBOX, Physics::COL_EVERYTHING);
-            rb->getWorldTransform().setRotation(instance.rotation);
-            m_hitboxes.push_back(new StaticObject(
-                Resources::Models::UnitCube, 
-                rb,
-                instance.scale,
-                StaticObject::NavigationMeshFlags::NO_CULL
-            ));
+            std::cerr << "Could not find model " << instance.model << " during map load. Ignoring model." << std::endl;
         }
     }
 }

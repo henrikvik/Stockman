@@ -24,12 +24,14 @@ namespace Resources
         enum Files
         {
             IslandScene,
-            Scene
+            Scene,
+            StockMan_LvL
         };
         const std::map<Files, const char *> Paths =
         {
             {IslandScene, R"(..\Resources\Maps\IslandScene.toml)"},
-            {Scene, R"(..\Resources\Maps\Scene.toml)"}
+            {Scene, R"(..\Resources\Maps\Scene.toml)"},
+            {StockMan_LvL, R"(..\Resources\Maps\StockMan_LvL.toml)"}
         };
         
         Files toEnum(const char * str);
@@ -42,18 +44,40 @@ namespace Resources
             AmmoPackCrossBolt,
             AnimatedSummonUnit,
             Barrel,
+            Crate,
             Crossbow,
             Crossbowbolt,
             Crossbowbolts,
+            Dead_Tree,
+            Fence1,
+            Fence2,
+            FencePost,
             Firepit,
+            GrapplingPoint,
+            Ground,
             Hammer,
-            Island,
+            House1,
+            House3,
+            Ice,
+            Icecickle,
+            Jumppad,
+            Lamp_Post,
+            Log,
+            Market_Tent,
             MenuScene,
+            Rock1,
+            Rock2,
+            Rock3,
             SkySphere,
+            Small_Crate,
+            SnowHeap,
             Staff,
             StaticSummon,
             SummonUnit,
+            Table,
             Tablet1,
+            Tee_Pee,
+            Tree,
             UnitCube
         };
         const std::map<Files, const char *> Paths =
@@ -62,18 +86,40 @@ namespace Resources
             {AmmoPackCrossBolt, R"(..\Resources\Models\AmmoPackCrossBolt.hyb)"},
             {AnimatedSummonUnit, R"(..\Resources\Models\AnimatedSummonUnit.hyb)"},
             {Barrel, R"(..\Resources\Models\Barrel.hyb)"},
+            {Crate, R"(..\Resources\Models\Crate.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
             {Crossbowbolt, R"(..\Resources\Models\Crossbowbolt.hyb)"},
             {Crossbowbolts, R"(..\Resources\Models\Crossbowbolts.hyb)"},
+            {Dead_Tree, R"(..\Resources\Models\Dead_Tree.hyb)"},
+            {Fence1, R"(..\Resources\Models\Fence1.hyb)"},
+            {Fence2, R"(..\Resources\Models\Fence2.hyb)"},
+            {FencePost, R"(..\Resources\Models\FencePost.hyb)"},
             {Firepit, R"(..\Resources\Models\Firepit.hyb)"},
+            {GrapplingPoint, R"(..\Resources\Models\GrapplingPoint.hyb)"},
+            {Ground, R"(..\Resources\Models\Ground.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
-            {Island, R"(..\Resources\Models\Island.hyb)"},
+            {House1, R"(..\Resources\Models\House1.hyb)"},
+            {House3, R"(..\Resources\Models\House3.hyb)"},
+            {Ice, R"(..\Resources\Models\Ice.hyb)"},
+            {Icecickle, R"(..\Resources\Models\Icecickle.hyb)"},
+            {Jumppad, R"(..\Resources\Models\Jumppad.hyb)"},
+            {Lamp_Post, R"(..\Resources\Models\Lamp_Post.hyb)"},
+            {Log, R"(..\Resources\Models\Log.hyb)"},
+            {Market_Tent, R"(..\Resources\Models\Market_Tent.hyb)"},
             {MenuScene, R"(..\Resources\Models\MenuScene.hyb)"},
+            {Rock1, R"(..\Resources\Models\Rock1.hyb)"},
+            {Rock2, R"(..\Resources\Models\Rock2.hyb)"},
+            {Rock3, R"(..\Resources\Models\Rock3.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
+            {Small_Crate, R"(..\Resources\Models\Small_Crate.hyb)"},
+            {SnowHeap, R"(..\Resources\Models\SnowHeap.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {SummonUnit, R"(..\Resources\Models\SummonUnit.hyb)"},
+            {Table, R"(..\Resources\Models\Table.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
+            {Tee_Pee, R"(..\Resources\Models\Tee_Pee.hyb)"},
+            {Tree, R"(..\Resources\Models\Tree.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
         

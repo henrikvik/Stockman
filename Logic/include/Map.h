@@ -26,6 +26,25 @@
 
 namespace Logic
 {
+    class Decoration
+    {
+    public:
+        Decoration(Resources::Models::Files model, DirectX::SimpleMath::Matrix transform)
+        {
+            renderInfo.model = model;
+            renderInfo.transform = transform;
+            renderInfo.color = DirectX::SimpleMath::Vector3( 1, 1, 1);
+            renderInfo.useGridTexture = false;
+        }
+
+        void render() const
+        {
+            QueueRender(renderInfo);
+        }
+    private:
+        StaticRenderInfo renderInfo;
+    };
+
     class StaticObject;
     class Physics;
 	class Map : public NonCopyable
@@ -47,6 +66,7 @@ namespace Logic
         std::vector<LightObject*>*			getLights();
 
 	private:
+        std::vector<Decoration>     decorations;
 		std::vector<StaticObject*>			m_props;        //< Visual objects
 		std::vector<StaticObject*>			m_hitboxes;     //< Non-visual hitboxes
         std::vector<LightObject*>			m_lights;       //< Pointlights
