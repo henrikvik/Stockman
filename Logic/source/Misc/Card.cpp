@@ -18,13 +18,15 @@ Card::Card(std::string name, std::string texture, std::string description,
          break;
     
     case CardCategory::DEFENCE:
-        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect({ 0.345352f, 0.0f }, { 0.636217f, 1.f }), 1.0f);
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect({ 0.355352f, 0.0f }, { 0.636217f, 1.f }), 1.0f);
         break;
 
     case CardCategory::UTILITY:
-        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect({ 0.637820f, 0.0f }, { 0.933493f, 1.f }), 1.0f);
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect({ 0.647820f, 0.0f }, { 0.933493f, 1.f }), 1.0f);
         break;
     }
+
+    parseText();
 }
 
 Card::~Card() { }
@@ -52,6 +54,10 @@ void Logic::Card::setIconPos(float x, float y, float width, float height)
 void Logic::Card::setbackgroundPos(float x, float y, float width, float height)
 {
     m_cardBackground.setScreenPos(Sprite::TOP_LEFT, Sprite::TOP_LEFT, x, y, width, height);
+}
+
+void Logic::Card::setCardTextPos(DirectX::SimpleMath::Vector2 pos)
+{
 }
 
 const std::vector<int>& Card::getStatusIds() const
@@ -82,5 +88,16 @@ Card::CardCategory Card::getCategory() const
 }
 
 void Logic::Card::render() const
+{
+    m_cardBackground.render();
+    m_icon.render();
+
+    for(auto txt: m_text)
+    {
+        QueueRender(txt);
+    }
+}
+
+void Logic::Card::parseText()
 {
 }

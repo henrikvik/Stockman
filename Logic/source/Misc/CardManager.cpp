@@ -64,6 +64,13 @@ void CardManager::shuffle()
 
 void Logic::CardManager::pepperCardsForDraw()
 {
+    currenthand.clear();
+    for (size_t i = 0; i < HAND_SIZE; i++)
+    {
+        currenthand.push_back(m_cards[m_deck[m_hand.at(i)].second]);
+        currenthand.at(i).setIconPos(365.0f + 250 * i, 260.0f, 75, 75);
+        currenthand.at(i).setbackgroundPos(290.f + 250 * i, 225.0f, 200, 250);
+    }
 }
 
 Card CardManager::pick(int handIndex)
@@ -78,20 +85,19 @@ Card CardManager::pick(int handIndex)
 
 std::vector<Card*> Logic::CardManager::getHand()
 {
-    
-    for (size_t i = 0; i < 3; i++)
-    {
-        currenthand.push_back(&m_cards[m_deck[m_hand.at(i)].second]);
-    }
-    
-    return currenthand;
+    //for (size_t i = 0; i < HAND_SIZE; i++)
+    //{
+    //    currenthand.push_back(&m_cards[m_deck[m_hand.at(i)].second]);
+    //}
+    //
+    return std::vector<Card*>();
 }
 
 void Logic::CardManager::render() const
 {
     for (auto cards : currenthand)
     {
-        cards->render();
+        cards.render();
     }
 }
 

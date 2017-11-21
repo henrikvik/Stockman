@@ -51,7 +51,7 @@ namespace Logic
         std::vector<Card>                           m_cards;
 
         //temp
-        std::vector<Card*> currenthand;
+        std::vector<Card> currenthand;
         void pepperCardsForDraw();
 	};
 }
