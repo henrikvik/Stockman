@@ -224,7 +224,12 @@ int Enemy::getBaseDamage() const
 
 float Enemy::getMoveSpeed() const
 {
-	return m_moveSpeed * m_bulletTimeMod * m_moveSpeedMod;
+	return m_moveSpeed * getSpeedMod();
+}
+
+float Enemy::getSpeedMod() const
+{
+    return m_bulletTimeMod * m_moveSpeedMod;
 }
 
 EnemyType Enemy::getEnemyType() const
