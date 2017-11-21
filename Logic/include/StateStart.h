@@ -40,7 +40,6 @@ namespace Logic
     private:
         std::string			        m_highScore[10];
         iMenuMachine*		        m_menu;
-        HighScoreManager*	        m_highScoreManager;
         FPSRenderer                 m_fpsRenderer;
         Physics*			        m_physics;
         Map*				        m_map;
