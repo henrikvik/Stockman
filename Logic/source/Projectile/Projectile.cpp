@@ -15,10 +15,10 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent, btVector3 modelO
     : Entity(body, halfextent, modelOffset)
 {
     m_unrotatedMO   = modelOffset;
-m_pData = pData;
-m_dead = false;
-m_bulletTimeMod = 1.f;
-m_freezeDuration = 0.0f;
+    m_pData = pData;
+    m_dead = false;
+    m_bulletTimeMod = 1.f;
+    m_freezeDuration = 0.0f;
 }
 
 Projectile::~Projectile() { }
@@ -29,6 +29,19 @@ Projectile::~Projectile() { }
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
     getRigidBody()->setLinearVelocity(forward * m_pData.speed);
+
+    btRigidBody* body = getRigidBody();
+    btVector3 dir = body->getLinearVelocity().normalized();
+    // Taking the forward vector and getting the pitch and yaw from it
+    float pitch = asin(-dir.getY()) - M_PI;
+    float yaw = atan2(dir.getX(), dir.getZ());
+    //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
+    btQuaternion rotation = btQuaternion(yaw, pitch - M_PI, 0);
+    body->getWorldTransform().setRotation(rotation);
+
+    // rotate model offset
+    m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
+
     getStatusManager().copyUpgradesFrom(statusManager);
 
     for (int i = 0; i < StatusManager::LAST_ITEM_IN_UPGRADES; i++)
@@ -205,6 +218,8 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
         break;
 
     case ProjectileTypeFireArrow:
+        callback = true;
+        kill = true;
         enemy->getStatusManager().addStatus(
             /* Adding Fire effect */            StatusManager::ON_FIRE,
             /* Number of stacks */              getStatusManager().getUpgradeStacks(StatusManager::FIRE_UPGRADE)

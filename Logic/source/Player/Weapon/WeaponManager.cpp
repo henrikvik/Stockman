@@ -195,8 +195,8 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     {
         // Gattling
         newd WeaponLoadout{
-        /* Primary */       newd WeaponCrossbow(projectileManager, ProjectileData("Icecone", false, false, 25, 1.f, 1, 100, 0.f, 30000, Resources::Models::Crossbowbolt , 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0,{ -0.5f, -0.5f, 0.f } }),
-        /* Secondary*/      newd WeaponCrossbow(projectileManager, ProjectileData("Icecone", false, false, 25, 1.f, 1, 100, 0.f, 1000, Resources::Models::Crossbowbolt, 1), Weapon::WeaponInfo{ 1, 18, 15, 4, 100, 0, 0,{ 0.f, 0.f, 0.f } }),
+        /* Primary */       newd WeaponCrossbow(projectileManager, ProjectileData("Icecone", true, true, 25, 1.f, 1, 100, 0.f, 3000, Resources::Models::Crossbowbolt , 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0,{ -0.5f, -0.5f, 0.f } }),
+        /* Secondary*/      newd WeaponCrossbow(projectileManager, ProjectileData("Icecone", true, true, 25, 1.f, 1, 100, 0.f, 1000, Resources::Models::Crossbowbolt, 1), Weapon::WeaponInfo{ 1, 18, 15, 4, 100, 0, 0,{ 0.f, 0.f, 0.f } }),
         /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30, 1, 5, 1000 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -0.8f, 0.3f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f }) },
 

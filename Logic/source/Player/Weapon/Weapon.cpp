@@ -46,13 +46,10 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
             if (p != nullptr)
                 firedProjectiles.push_back(p);
 
-            // HACK(fkaa): need to get translation, but not set until update..
-            p->updateSpecific(0.16f);
-
             auto speed = DirectX::SimpleMath::Vector3(m_projectileData->speed);
             auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, p->getModelTransformMatrix());
 
-            if (m_projectileData->hasEffect)
+            if (m_projectileData->hasEffect && !m_projectileData->effectActivated)
                 Graphics::FXSystem->processEffect(&m_projectileData->effect, pos, speed * DirectX::SimpleMath::Vector3{ projectileDir.x(), projectileDir.y(), projectileDir.z() }, 0.16f);
         }
 	}
@@ -68,15 +65,11 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
             if (p != nullptr)
                 firedProjectiles.push_back(p);
 
-            // HACK(fkaa): need to get translation, but not set until update..
-            p->updateSpecific(0.16f);
-
             auto speed = DirectX::SimpleMath::Vector3(m_projectileData->speed);
             auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, p->getModelTransformMatrix());
 
-            if (m_projectileData->hasEffect)
+            if (m_projectileData->hasEffect && !m_projectileData->effectActivated)
                 Graphics::FXSystem->processEffect(&m_projectileData->effect, pos, speed * DirectX::SimpleMath::Vector3 { projectileDir.x(), projectileDir.y(), projectileDir.z() }, 0.16f);
-
 		}
 	}
 
