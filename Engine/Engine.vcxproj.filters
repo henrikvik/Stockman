@@ -45,9 +45,6 @@
     <ClCompile Include="Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Resources\Resources.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -81,6 +78,7 @@
     <None Include="Resources\Data\Enemies\Wave.lw" />
     <None Include="Resources\Data\Upgrades.lw" />
     <None Include="Resources\Data\Settings.lw" />
+    <None Include="Resources\Data\Enemies\NavigationMesh.lw" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\data\Text.lw" />

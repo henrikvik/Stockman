@@ -23,7 +23,6 @@ public:
     #endif
     {
         static_assert(std::is_base_of_v<RenderInfo, T>, "T does not have RenderInfo as base, cant be used with RenderQueue!");
-        PROFILE_BEGIN("RenderQueue::queue()");
 
         #ifdef _DEBUG
         info.FILE = FILE;
@@ -40,7 +39,6 @@ public:
             QueueContainer<T> * container = getQueueContainer<T>();
             container->queue(info);
         }
-        PROFILE_END();
     }
 
     #ifdef _DEBUG
@@ -125,7 +123,7 @@ private:
         void queue(T info)
         {
             if (count() > INSTANCE_CAP(T))
-                throw std::runtime_error("Instance cap exceeded.");
+                return;
 
             instances.push_back(info);
         }

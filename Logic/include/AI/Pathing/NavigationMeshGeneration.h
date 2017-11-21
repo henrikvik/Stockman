@@ -15,7 +15,7 @@
 
 namespace Logic
 {
-	//          Nav Mesh Gen v0.3
+	//          Nav Mesh Gen v0.4
     // For errors in creating the navigation mesh
     // create a issue on github[1] or contact LW.
     //
@@ -33,6 +33,13 @@ namespace Logic
     // [3]: https://goo.gl/dzpBc
     // (Not ready for production)
     // NP-Hard Problem
+
+    /*
+    
+        THIS HAS TO BE HEAVILY REFACTORED, IT IS VERY BAD CODE AT THE MOMENT
+        WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP
+    
+    */
 
     class Physics;
     class StaticObject;
@@ -84,8 +91,8 @@ namespace Logic
             };
             struct NavMeshCube
             {
-                bool done, remove, collided[SIDES];
-                int userIndex, buddyIndex;
+                bool done, collided[SIDES];
+                int userIndex, buddyIndex, finishedIndex;
                 std::vector<int> collidedWithIndex[SIDES]; // for the many, not the few
 
                 btRigidBody *body;
@@ -95,10 +102,10 @@ namespace Logic
                 {
                     this->cube = cube;
 
-                    done = remove = false;
+                    done = false;
                     body = nullptr;
 
-                    buddyIndex = -1;
+                    buddyIndex = finishedIndex = -1;
                     loadIndex();
 
                     for (int i = 0; i < SIDES; i++)
@@ -130,6 +137,8 @@ namespace Logic
             };
 
             std::vector<NavMeshCube> regions;
+            std::vector<int> regionsFinished;
+            std::vector<std::pair<btCollisionObject*, StaticObject*>> physicsObjects;
 
             Growth growth[SIDES];
             btVector3 growthNormals[SIDES];
@@ -139,10 +148,14 @@ namespace Logic
                 VertexOrder vertexOrder = CLOCKWISE) const;
 
             std::pair<Triangle, Triangle> toTriangle(Cube &cube);
+            // cube1 = 
             std::pair<Cube, Cube> cutCube(btVector3 const &cutPoint, btVector3 const &planeNormal, Cube const &cube);
 
-            void handlePhysicsCollisionTest(NavMeshCube &region, Physics &physics, int side);
-            void handleRegionCollisionTest(NavMeshCube &region, Physics &physics, int side);
+            // returns true if collision happend
+            void loadPhysicsObjects(Physics &physics);
+            // returns true if collision happend
+            bool handlePhysicsCollisionTest(NavMeshCube &region, Physics &physics, int side);
+            bool handleRegionCollisionTest(NavMeshCube &region, Physics &physics, int side);
 
             void quadMeshToTriangleMesh(NavigationMesh &nav, Physics &physics);
             void growRegion(NavMeshCube &cube, Growth const &growth);
@@ -167,7 +180,7 @@ namespace Logic
             void seedArea(btVector3 position, btVector3 fullDimension, float part, Physics &physics);
 
             // create edges
-            void createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, GrowthType side);
+            void createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, int triangle1, int triangle2, GrowthType side);
 
             // true on collision
             std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance);

@@ -26,6 +26,7 @@ void WaveManager::loadFile()
     m_waveInformation.timeMul   = waveInfo.floats["timeMul"];
     m_waveInformation.timeBonus = waveInfo.floats["timeBonus"];
     m_waveInformation.bossWaves = splitInts(waveInfo.strings["bossWaves"], FILE_DELIM);
+    //TODO
     m_waveInformation.bossTimeBonus = (int)waveInfo.floats["bossTimeBonus"];
 }
 
@@ -55,7 +56,7 @@ WaveManager::EntitiesInWave WaveManager::getEntities(int waveId) const
 		currentWave++;
 	}
 
-	return entities;
+ 	return entities;
 }
 
 void WaveManager::setName(std::string name)

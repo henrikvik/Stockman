@@ -28,6 +28,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     // Starting in game-sounds
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
 
     // Initializing Bullet physics
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();				// Configuration
@@ -117,6 +118,7 @@ void StatePlaying::update(float deltaTime)
     m_menu->update(deltaTime);
     if (m_menu->getType() == iMenu::MenuGroup::Skill ||
         m_menu->getType() == iMenu::MenuGroup::GameOver ||
+        m_menu->getType() == iMenu::MenuGroup::GameWon ||
         m_menu->getType() == iMenu::MenuGroup::Pause) // Quick "temp pause" fix for testing purposes
         return;
     PROFILE_END();
@@ -131,6 +133,7 @@ void StatePlaying::update(float deltaTime)
     }
 
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
+    if (m_menu->getType() != iMenu::MenuGroup::CardSelect)
     if (m_waveTimeManager.update(deltaTime, m_entityManager))
     {
         m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
@@ -177,6 +180,9 @@ void StatePlaying::update(float deltaTime)
 
     if (m_player->getHP() <= 0)
         gameOver();
+
+//    if ((m_waveTimeManager.getOnLastWave() && (m_entityManager.getNrOfAliveEnemies() == 0)) || DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::P))
+//        gameWon();
 }
 
 void StatePlaying::render() const
@@ -207,6 +213,7 @@ void StatePlaying::render() const
     PROFILE_BEGIN("Render HUD");
     if (m_menu->getType() != iMenu::MenuGroup::Skill && 
         m_menu->getType() != iMenu::MenuGroup::GameOver &&
+        m_menu->getType() != iMenu::MenuGroup::GameWon &&
         m_menu->getType() != iMenu::MenuGroup::Pause)
         m_hudManager.render();
     PROFILE_END();
@@ -223,5 +230,13 @@ void StatePlaying::gameOver()
     ComboMachine::Get().endCombo();
     m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
+    m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
+}
+
+void StatePlaying::gameWon()
+{
+    ComboMachine::Get().endCombo();
+    m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
+    m_menu->queueMenu(iMenu::MenuGroup::GameWon);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
 }

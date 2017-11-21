@@ -32,6 +32,12 @@ namespace Sound
         BOSS_1_ABILITY_5,
         BOSS_1_ABILITY_6,
         BOSS_1_MELEE_USE,
+        SKILL_BULLETTIME, 
+        SKILL_CHARGE, 
+        HELLO, 
+        UI_BUTTON_PRESS, 
+        PICKUP, 
+        START_GAME
     };
 
     // Put all identifier for music here

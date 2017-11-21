@@ -78,6 +78,8 @@ void EntityManager::registerCreationFunctions()
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
+        Graphics::FXSystem->addEffect("NecroSummonBoom", { pos.x(), pos.y(), pos.z() });
+
         Enemy* enemy = newd EnemyChaser(body);
 
         return enemy;
@@ -152,10 +154,19 @@ void EntityManager::loadDebugCmds()
     DebugWindow::getInstance()->registerCommand("AI_SPAWN_ENEMY", [&](std::vector<std::string> &para) -> std::string {
         try {
             RandomGenerator &generator = RandomGenerator::singleton();
-            btVector3 pos = pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
+            btVector3 pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
                 generator.getRandomFloat(-85, 85) };
             SpawnEnemy(static_cast<EnemyType> (stoi(para[0])), pos, {});
             return "Enemy spawned";
+        }
+        catch (std::exception e) {
+            return "DOTHRAKI IN THE OPEN FIELD, NED";
+        }
+    });
+    DebugWindow::getInstance()->registerCommand("AI_ADD_EFFECT", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            int i = giveEffectToAllEnemies(static_cast<StatusManager::EFFECT_ID> (std::stoi(para[0])));
+            return "Added effect to " + std::to_string(i) + " enemies";
         }
         catch (std::exception e) {
             return "DOTHRAKI IN THE OPEN FIELD, NED";
@@ -271,13 +282,17 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
     else if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, flockIndex))
     {
         int newIndex = AStar::singleton().getIndex(*enemy);
-        std::swap(
-            flock[enemyIndex],
-            flock[flock.size() - 1]
-        );
-        flock.pop_back();
 
-        m_enemies[newIndex == -1 ? 0 : newIndex].push_back(enemy);
+        if (newIndex != -1) // just let him stay for now
+        {
+            std::swap(
+                flock[enemyIndex],
+                flock[flock.size() - 1]
+            );
+            flock.pop_back();
+
+            m_enemies[newIndex].push_back(enemy);
+        }
     }
 }
 

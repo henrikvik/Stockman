@@ -85,11 +85,29 @@ iMenuSkillPick* iMenuFactory::buildMenuSkill()
 iMenu * iMenuFactory::buildMenuCard()
 {
     iMenu* menu = newd iMenuCards(iMenu::CardSelect);
-    iMenu::ButtonData btn;
 
     menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));
     menu->addButton(buildButton("CardUpgradeChoice2", ButtonFunction::chooseUpgrade2));
     menu->addButton(buildButton("CardUpgradeChoice3", ButtonFunction::chooseUpgrade3));
+
+    return menu;
+}
+
+iMenu * iMenuFactory::buildMenuGameWon()
+{
+    iMenu* menu = newd iMenuCards(iMenu::GameWon);
+
+    menu->addBackground(Resources::Textures::Highscore, 1.f);
+    menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
+    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
+
+    return menu;
+}
+
+iMenuLoading* iMenuFactory::buildMenuLoading()
+{
+    iMenuLoading* menu = newd iMenuLoading(iMenu::Loading);
+    menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
 
     return menu;
 }

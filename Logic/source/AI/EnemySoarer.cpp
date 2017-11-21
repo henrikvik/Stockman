@@ -17,9 +17,9 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
 
     gravity = getRigidBody()->getGravity();
 
-    addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
-        getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 1.f);
-    });
+    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
+    light.intensity = 0.8f;
+    light.range = 5.0f;
 }
 
 EnemySoarer::~EnemySoarer()
@@ -31,15 +31,29 @@ void EnemySoarer::createAbilities()
       // ab 1
     AbilityData data;
 
-    data.cooldown = 2000.f;
+    data.cooldown = 1300.f;
     data.duration = 0.f;
     data.randomChanche = 4;
 
+    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
+    ProjectileData pdata;
+    pdata.effect = necroTrail;
+    pdata.hasEffect = true;
+    pdata.effectVelocity = false;
+    pdata.effectActivated = true;
+
+
     ab1 = Ability(data, [&](Player &player, Ability &ab) -> void {
         // ontick 
-    }, [&](Player &player, Ability &ab) -> void {
+    }, [=](Player &player, Ability &ab) -> void {
         // onuse
-        shoot({ 0, -1, 0 }, Resources::Models::Files::Crossbowbolt, AB1_SPEED, 5.f, 3.5f);
+        auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, 5.f, 3.5f);
+        if (pj) {
+            pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+                Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
+
+            });
+        }
     });
 }
 
@@ -66,6 +80,8 @@ void EnemySoarer::updateSpecific(Player &player, float deltaTime)
     getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
     if (getPositionBT().y() > HEIGHT_OFFSET) // bad fix but better to just force it right now
         getRigidBody()->getWorldTransform().getOrigin().setY(HEIGHT_OFFSET);
+    else if (getPositionBT().y() < HEIGHT_OFFSET * 0.8f)
+        getRigidBody()->setLinearVelocity(getRigidBody()->getLinearVelocity() + btVector3(0.f, 1.f, 0.f));
 }
 
 void EnemySoarer::updateDead(float deltaTime)

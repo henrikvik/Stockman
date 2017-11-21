@@ -10,23 +10,38 @@
 
 #include <Misc\ComboMachine.h>
 
-
-
 #include <comdef.h>
 
 using namespace Logic;
 
-
-
 const int HUDManager::CURRENT_AMMO = 0;
 const int HUDManager::TOTAL_AMMO = 1;
 
+const std::wstring HUDManager::IN_WAVE     = L"KILL!",
+                   HUDManager::BEFORE_WAVE = L"WAITING..",
+                   HUDManager::AFTER_WAVE  = L"ENRAGED!";
+
+HUDManager::HUDManager()
+{
+    ZeroMemory(&info, sizeof(info));
+    info.cd[0] = 1.0f;
+    info.cd[1] = 1.0f;
+    info.currentSkills[0] = -1;
+    info.currentSkills[1] = -1;
+    info.hp = 3;
+
+    skillChoosen = false;
+    constructGUIElements();
+}
+
+HUDManager::~HUDManager()
+{
+}
+
 //constructs the spriteRenderInfos that the hud consists of
-void Logic::HUDManager::constructGUIElements()
+void HUDManager::constructGUIElements()
 {
     //crosshair
-
-
     float crosshairSize = 50;
     HUDElements.push_back(Sprite( Sprite::CENTER, Sprite::CENTER, 0, 0, crosshairSize, crosshairSize, Resources::Textures::Crosshair, FloatRect({ 0.0f, 0.0f }, { 1.f, 1.f })));
 
@@ -59,8 +74,6 @@ void Logic::HUDManager::constructGUIElements()
     width = 503.0f / 1024;
     height = 503.f / 1024;
     HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
-    
-
 
     //creates the difrent skill icons 
 
@@ -86,7 +99,6 @@ void Logic::HUDManager::constructGUIElements()
     height = 503.0f / 1024;
     skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
 
-
     //skill mask 1
     x = 518.0f / 1024;
     y = 519.0f / 1024;
@@ -100,12 +112,6 @@ void Logic::HUDManager::constructGUIElements()
     width = 503.0f / 1024;
     height = 503.f / 1024;
     skillMasks.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -130, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
-
-
-    
- 
-
-   
 
     for (size_t i = 0; i < PLAYER_STARTING_HP; i++)
     {
@@ -121,8 +127,6 @@ void Logic::HUDManager::constructGUIElements()
         height = 171.0f / 1024;
         staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
     }
-
-
     //static hud elemets
 
     //shield thing by hp
@@ -173,10 +177,9 @@ void Logic::HUDManager::constructGUIElements()
     //width = 0.9;
     //height = 0.9;
     //staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 0, 0, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ x, y }, { x + width, y + height })));
-
 }
 
-void Logic::HUDManager::updateTextElements()
+void HUDManager::updateTextElements()
 {
     HUDText.clear();
     liveText.clear();
@@ -216,7 +219,6 @@ void Logic::HUDManager::updateTextElements()
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
-
 
     //total ammo of weapon
     if (info.currentWeapon == 0)
@@ -270,7 +272,6 @@ void Logic::HUDManager::updateTextElements()
     }
 
     //time and enrage/ survive
-
     int minutes = info.timeRemaining / 60;
     int seconds = info.timeRemaining - (minutes*60);
     std::wstring timeString = L"";
@@ -286,7 +287,7 @@ void Logic::HUDManager::updateTextElements()
         HUDText.push_back(TextRenderInfo(text));
 
         text.color = DirectX::SimpleMath::Color(0.9f, 0.0f, 0.3f);
-        liveText.push_back(L"ENRAGED!");
+        liveText.push_back(info.waveText);
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(520, 15);
@@ -313,43 +314,46 @@ void Logic::HUDManager::updateTextElements()
         HUDText.push_back(TextRenderInfo(text));
 
         text.color = DirectX::SimpleMath::Color(0.0f, 0.0f, 0.0f);
-        liveText.push_back(L"SURVIVE");
+        liveText.push_back(info.waveText);
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(520, 15);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
-
     }
     
     //wave counter
     text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
-    std::wstring wave = std::to_wstring(info.wave);
-    wave += L"/5";
-    liveText.push_back(wave);
+    liveText.push_back(std::to_wstring(info.wave) + L"/" + std::to_wstring(info.maxWaves));
     text.text = liveText.at(last).c_str();
     text.position = DirectX::SimpleMath::Vector2(660, 15);
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
-
 }
 
 //updates the active weapons and cd icons
-void Logic::HUDManager::updateGUIElemets()
+void HUDManager::updateGUIElemets()
 {
     //hp
-
     if (!HPBar.empty() && HPBar.size() > info.hp)
     {
         HPBar.pop_back();
     }
 
+    if (HPBar.size() < info.hp)
+    {
+        float x = 26.f / 1024;
+        float y = 258.0f / 1024;
+        float width = 311.0f / 1024;
+        float height = 171.0f / 1024;
+        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (HPBar.size() * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+    }
+
     //decideds active weapon 
     switch (info.currentWeapon)
     {
-        
     case 0:
         //crossbow
         HUDElements.at(WEAPONMASK).setScreenPos(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110);
@@ -367,7 +371,6 @@ void Logic::HUDManager::updateGUIElemets()
     default:
         break;
     }
-
 
     //skills
     if (skillChoosen == false && info.currentSkills[0] >= 0 && info.currentSkills[1] >= 0 && info.currentSkills[0] <= 2 && info.currentSkills[1] <= 2)
@@ -395,7 +398,6 @@ void Logic::HUDManager::updateGUIElemets()
             skillMasks.at(0).setTexturePos(x, y, x + width, y + height);
         }
         
-
         if (info.currentSkills[1] >= 0 && 1.0f - info.cd[1] > FLT_EPSILON)
         {
             //skillMasks.at(1).setTopYToProcent(1.0f , 519.0f / 1024, 0.725000024f, 0.794444442f);
@@ -409,41 +411,15 @@ void Logic::HUDManager::updateGUIElemets()
             float height = 503.f / 1024;
             skillMasks.at(1).setTexturePos(x, y, x + width, y + height);
         }
-
     }
 }
 
-
-void Logic::HUDManager::renderTextElements()const
+void HUDManager::renderTextElements() const
 {
     for (auto &text : HUDText)
     {
         QueueRender(text);
     }
-}
-
-HUDManager::HUDManager()
-{
-
-    info.cd[0] = 1.0f;
-    info.cd[1] = 1.0f;
-    info.currentSkills[0] = -1;
-    info.currentSkills[1] = -1;
-    info.activeAmmo[0] = 0;
-    info.activeAmmo[1] = 0;
-    info.currentWeapon = 0;
-    info.enemiesRemaining = 0;
-    info.hp = 3;
-    info.inactiveAmmo[0] = 0;
-    info.inactiveAmmo[1] = 0;
-    info.score = 0;
-
-    skillChoosen = false;
-    constructGUIElements();
-}
-
-HUDManager::~HUDManager()
-{
 }
 
 void HUDManager::update(Player const &player, WaveTimeManager const &timeManager,
@@ -459,46 +435,46 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.sledge = player.isUsingMeleeWeapon();
     info.currentWeapon = player.getCurrentWeapon();
 
-   
-
     //skill cooldowns are inverted for some reason 
     const Skill* secondary = player.getSkill(SkillManager::ID::SECONDARY);
     if (!secondary->getCanUse()) {
         info.cd[0] = secondary->getCooldown() / secondary->getCooldownMax();
         info.cdInSeconds[0] = secondary->getCooldown() / 1000 + 1.f;
     }
-        
-    else {
+    else
+    {
         info.cd[0] = 1.0f;
         info.cdInSeconds[0] = 0;
     }
         
-
     const Skill* primary = player.getSkill(SkillManager::ID::PRIMARY);
     if (!primary->getCanUse()) {
         info.cd[1] = primary->getCooldown() / primary->getCooldownMax();
         info.cdInSeconds[1] = (primary->getCooldown() / 1000 ) + 1.f;
     }
-        
-    else {
+    else
+    {
         info.cd[1] = 1.0f;
         info.cdInSeconds[1] = 0;
     }
         
-
-
-
     info.wave = timeManager.getCurrentWave();
+    info.maxWaves = entityManager.getWaveManager().getWaveInformation().nrOfWaves;
+    if (timeManager.isEnraged())
+        info.waveText = AFTER_WAVE;
+    else if (timeManager.isTransitioning())
+        info.waveText = BEFORE_WAVE;
+    else
+        info.waveText = IN_WAVE;
+
     info.timeRemaining = (timeManager.getTimeRequired() - timeManager.getTimeCurrent()) * 0.001f;
-    info.enemiesRemaining = (int)entityManager.getNrOfAliveEnemies();
+    info.enemiesRemaining = static_cast<int> (entityManager.getNrOfAliveEnemies());
 
-
-     info.currentSkills[0] = player.getCurrentSkill0();
+    info.currentSkills[0] = player.getCurrentSkill0();
     info.currentSkills[1] = player.getCurrentSkill1();
 
     this->updateGUIElemets();
     this->updateTextElements();
-    
 }
 
 void HUDManager::render() const
@@ -532,7 +508,7 @@ void HUDManager::render() const
     renderTextElements();
 }
 
-void Logic::HUDManager::reset()
+void HUDManager::reset()
 {
     info.cd[0] = 1.0f;
     info.cd[1] = 1.0f;

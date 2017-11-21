@@ -8,25 +8,16 @@
 #include <Engine\Typing.h>
 #include <Engine\Settings.h>
 #include <State.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 using namespace Logic;
 
 // Switches both main-states to in-game, will unload & load everything
 void ButtonFunction::startGame()
 {
-    // Changes the main state
-    if (Action::Get().m_stateBuffer->currentPrimaryState)
-        if (StatePrimary* primary = dynamic_cast<StatePrimary*>(Action::Get().m_stateBuffer->currentPrimaryState))
-            primary->queueState(StateType::State_Playing);
-    
-    // Disables the secondary state (Not like it's being used, but whatever)
-    if (Action::Get().m_stateBuffer->currentSecondaryState)
-        if (StateSecondary* secondary = dynamic_cast<StateSecondary*>(Action::Get().m_stateBuffer->currentSecondaryState))
-            secondary->queueState(StateType::Nothing);
-
-    // Adding a "fake" static loading screen. Hides current non-pressable buttons.
-    Action::Get().m_menuMachine->getActiveMenu()->addBackground(Resources::Textures::Loadingscreen, 1.f);
-    Action::Get().m_menuMachine->getActiveMenu()->setDrawButtons(false);
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Loading);
 }
 
 // Switches the current menu-machine to settings screen
@@ -53,7 +44,7 @@ void ButtonFunction::showHighscore()
 // Unloads all program data and quits the game
 void ButtonFunction::quitGame()
 {
-
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::HELLO, nullptr, true);
 }
 
 // Just simply removes the current pause menu
@@ -84,6 +75,7 @@ void ButtonFunction::playAgain()
         if (StatePlaying* playing = dynamic_cast<StatePlaying*>(primary->getCurrentState()))
         {
             // Adding a "fake" static loading screen. Hides current non-pressable buttons.
+            Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
             Action::Get().m_menuMachine->getActiveMenu()->addBackground(Resources::Textures::Loadingscreen, 1.f);
             Action::Get().m_menuMachine->getActiveMenu()->setDrawButtons(false);
 

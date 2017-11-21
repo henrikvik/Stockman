@@ -4,30 +4,29 @@
 #include "../Misc/GUI/Sprite.h"
 #include "../Misc/GUI/Button.h"
 
-
-
 //all possible GUI elemets
 #define NROFICONS 12
 
 //all gui elemts that should be drawn
 #define USEDGUIELEMTS 8
 
-
-
 struct GUIInfo
 {
     int hp;
     int activeAmmo[2];
     int inactiveAmmo[2];
-    bool sledge;
-    float cd[2];
     int cdInSeconds[2];
-    UINT score;
-    int wave;
+    int wave, maxWaves;
     int enemiesRemaining;
-    float timeRemaining;
     int currentWeapon;
     int currentSkills[2];
+
+    float cd[2];
+    float timeRemaining;
+
+    bool sledge;
+    UINT score;
+    std::wstring waveText;
 };
 
 namespace Logic
@@ -39,6 +38,8 @@ namespace Logic
     class HUDManager
     {
     private:
+        static const std::wstring IN_WAVE, BEFORE_WAVE, AFTER_WAVE;
+
         GUIInfo info;
         bool skillChoosen;
 
@@ -51,8 +52,6 @@ namespace Logic
         std::vector<Sprite> staticElements;
         std::vector<TextRenderInfo> HUDText;
         std::vector<std::wstring> liveText;
-
-
 
         void constructGUIElements();
         void updateTextElements();
@@ -70,8 +69,6 @@ namespace Logic
             SKILLMASK2,
         };
         void renderTextElements()const;
-
-        
     public:
         HUDManager();
         virtual ~HUDManager();

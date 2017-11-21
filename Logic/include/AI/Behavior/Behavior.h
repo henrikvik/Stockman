@@ -47,9 +47,12 @@ namespace Logic {
 			}
 		};
 	private:
+        static const float STEERING_BASE, STEERING_MOD;
+
 		BehaviorNode m_root;
 		Pathing m_pathing;
 		bool m_changedGoalNode;
+        float m_steeringSpeed;
 
 		bool runNode(RunIn &in, BehaviorNode &node);
 	public:
@@ -87,6 +90,9 @@ namespace Logic {
 
 		PathingType getPathingType() const;
 		void setPathingType(PathingType pathingType);
+
+        float getSteeringSpeed() const;
+        void setSteeringSpeed(float steeringSpeed);
 	private:
 		PathingType m_pathingType;
 	};

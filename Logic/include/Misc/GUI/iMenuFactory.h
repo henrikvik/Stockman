@@ -7,6 +7,7 @@
 #include <Misc\GUI\iMenuAction.h>
 #include <Misc\GUI\iMenuSkillPick.h>
 #include <Misc\GUI\iMenuIntro.h>
+#include <Misc\GUI\iMenuLoading.h>
 
 namespace Logic
 {
@@ -24,6 +25,8 @@ namespace Logic
         iMenu*              buildMenuHighscore();
         iMenu*              buildMenuGameover();
         iMenu*              buildMenuPause();
+        iMenu*              buildMenuGameWon();
+        iMenuLoading*       buildMenuLoading();
 
     private:
         std::vector<FileLoader::LoadedStruct> buttonFile;
