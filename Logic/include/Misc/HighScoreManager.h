@@ -35,7 +35,7 @@ namespace Logic
 		void loadFromFile();					//< Load high scores from file 
 
         // highscore
-		bool addNewHighScore(int score);
+		void addNewHighScore(int score);
 
         // sets & gets
 		void setName(std::string name);
