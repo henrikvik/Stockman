@@ -54,6 +54,7 @@ namespace Logic
 		void removeAllStatus(int statusID);
 
         void copyUpgradesFrom(StatusManager &other);
+        /* USE Entity::upgrade instead !! */
 		void addUpgrade(UPGRADE_ID id);
         int getUpgradeStacks(UPGRADE_ID id);
         Upgrade& getUpgrade(UPGRADE_ID id);
