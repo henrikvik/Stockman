@@ -38,7 +38,7 @@ namespace Resources
             if (strcmp(str, "SkySphere") == 0) return SkySphere;
             if (strcmp(str, "Staff") == 0) return Staff;
             if (strcmp(str, "StaticSummon") == 0) return StaticSummon;
-            if (strcmp(str, "SummonUnit") == 0) return SummonUnit;
+            if (strcmp(str, "SummonUnitWithAnim") == 0) return SummonUnitWithAnim;
             if (strcmp(str, "Tablet1") == 0) return Tablet1;
             if (strcmp(str, "UnitCube") == 0) return UnitCube;
             throw "Could not find matching enum.";
