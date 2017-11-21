@@ -149,7 +149,8 @@ void WeaponManager::affect(Effect const & effect)
 
         if (wp)
         {
-            int magSize = wp->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier;
+            // Only add base magsize because we removed ammo
+            int magSize = wp->ammoContainer->getAmmoInfo().magSize;
             int ammoCap = wp->ammoContainer->getAmmoInfo().enhancedAmmoCap + m_Upgrades.ammoCapModifier;
             int currentAmmo = wp->ammoContainer->getAmmoInfo().enhancedAmmo;
 
