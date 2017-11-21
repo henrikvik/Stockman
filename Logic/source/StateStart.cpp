@@ -8,6 +8,7 @@
 #include <Map.h>
 #include <Graphics\include\MainCamera.h>
 #include <Graphics\include\Device.h>
+#include <Misc\Test\TestingWork.h>
 
 using namespace Logic;
 
@@ -35,6 +36,9 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     // Initializing Menu's
     m_menu = newd iMenuMachine();
     m_menu->queueMenu(iMenu::MenuGroup::Intro);
+
+    // for some tests
+    TestingWork work;
 
     // ! Reminder !  
     // Gives a small mem leak as for right now, but it's too cool to remove ^.^

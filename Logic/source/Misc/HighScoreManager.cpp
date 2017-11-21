@@ -21,11 +21,17 @@ HighScoreManager::~HighScoreManager()
 	saveToFile();
 }
 
-bool HighScoreManager::addNewHighScore(int score)
+void HighScoreManager::addNewHighScore(int score)
 {
-    for (int i = 0; i < m_highScores.size() && i < m_maxHighScoreSize; i++)
+    m_highScores.push_back({ score, m_name });
+
+    // basicly bubble sort
+    for (int i = static_cast<int> (m_highScores.size()) - 2; i >= 0; i--)
         if (m_highScores[i].score < score)
-            m_highScores[i] = { score, m_name };
+            std::swap(m_highScores[i], m_highScores[i + 1]);
+
+    if (m_highScores.size() > m_maxHighScoreSize)
+        m_highScores.pop_back();
 }
 
 void HighScoreManager::saveToFile()
@@ -50,7 +56,7 @@ void HighScoreManager::loadFromFile()
 	for (auto const& theScore : loadTo)
         m_highScores.push_back({ theScore.ints.at(SCORE), theScore.strings.at(NAME) });
 
-    if (m_maxHighScoreSize < m_highScores.size()) m_maxHighScoreSize = m_highScores.size();
+    if (m_maxHighScoreSize < m_highScores.size()) m_maxHighScoreSize = static_cast<int> (m_highScores.size());
 }
 
 void HighScoreManager::setName(std::string name)
