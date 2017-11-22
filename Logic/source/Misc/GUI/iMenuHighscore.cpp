@@ -76,7 +76,7 @@ void iMenuHighscore::buildHighscore()
             }
             else
             {
-                buildEntry(0, HigscoreData("Invalid Data"));
+                buildEntry(i, HigscoreData("Invalid Data"));
             }
         }
     }
