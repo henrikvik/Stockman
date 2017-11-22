@@ -42,7 +42,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 		{
 			btVector3 projectileDir = calcSpread(yaw, pitch);
 			Projectile* p = spawnProjectile(m_projectileData, position, projectileDir, shooter, m_wInfo.projectileOffset);
-            if (p != nullptr)
+            if (p)
             {
                 firedProjectiles.push_back(p);
 
@@ -63,7 +63,7 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
 			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
 			Projectile* p = spawnProjectile(m_projectileData, position, projectileDir, shooter, m_wInfo.projectileOffset);
-            if (p != nullptr)
+            if (p)
             {
                 firedProjectiles.push_back(p);
 
