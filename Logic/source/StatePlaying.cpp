@@ -32,10 +32,10 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
 
     // Initializing Bullet physics
-    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();				// Configuration
-    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	// The default collision dispatcher
-    btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								// Detecting aabb-overlapping object pairs
-    btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver();			// Default constraint solver
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();		// Configuration
+    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	                // The default collision dispatcher
+    btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								    // Detecting aabb-overlapping object pairs
+    btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver();		// Default constraint solver
     m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
     m_physics->init();
 
@@ -234,7 +234,7 @@ void StatePlaying::gameOver()
     // Upload score
     ComboMachine::Get().endCombo();
     Network::dbConnect db;
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
@@ -245,7 +245,7 @@ void StatePlaying::gameWon()
     // Upload score
     ComboMachine::Get().endCombo();
     Network::dbConnect db;
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 
     m_menu->queueMenu(iMenu::MenuGroup::GameWon);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());

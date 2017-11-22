@@ -1,23 +1,16 @@
 #include <Misc\Network\dbConnect.h>
-/*
-   
-    Add Score:              http://us-central1-stockman-highscore.cloudfunctions.net/addScore?name=TEST&score=5000&kills=5000&waves=1000&time=1000
-    Get List of Scores:     http://us-central1-stockman-highscore.cloudfunctions.net/getTopScores?count=5
 
-*/
-
-#define GET_TOP_SCORES_ADRESS "http://us-central1-stockman-highscore.cloudfunctions.net/"
-#define ADD_SCORE_ADRESS "http://us-central1-stockman-highscore.cloudfunctions.net/"
+#define DB_ADRESS "http://us-central1-stockman-highscore.cloudfunctions.net/"
 
 using namespace Network;
 
 dbConnect::dbConnect() { }
-
 dbConnect::~dbConnect() { }
 
+// Simply uploads a new score to the database, will be sorted in the database itself
 bool dbConnect::addHighscore(std::string name, int score, int time, int wave, int kills)
 {
-    sf::Http http(ADD_SCORE_ADRESS);
+    sf::Http http(DB_ADRESS);
 
     // Making the arguments for the http post
     std::string scoreStr;
@@ -43,11 +36,11 @@ bool dbConnect::addHighscore(std::string name, int score, int time, int wave, in
     return true;
 }
 
-std::vector<std::vector<std::string>> Network::dbConnect::getHigscoreStats(int count)
+// Returns a 2D Vector containing each player and their stats, need's to be parsed
+std::vector<std::vector<std::string>> dbConnect::getHigscoreStats(int count)
 {
     std::vector<std::vector<std::string>> entries;
     std::vector<std::string> contestants = requestContestants(count);
-
     for (size_t i = 0; i < contestants.size(); i++)
     {
         std::vector<std::string> entry = splitIntoVector(contestants[i], ',');
@@ -57,7 +50,8 @@ std::vector<std::vector<std::string>> Network::dbConnect::getHigscoreStats(int c
     return entries;
 }
 
-std::vector<std::string> Network::dbConnect::requestContestants(int count)
+// For internal use only, returns a vector with one string each, containing all their stats, un-parsed
+std::vector<std::string> dbConnect::requestContestants(int count)
 {
     std::string result = requestHighscoreBody(count);
     std::vector<std::string> contestants = splitIntoVector(result, ';');
@@ -65,9 +59,10 @@ std::vector<std::string> Network::dbConnect::requestContestants(int count)
     return contestants;
 }
 
+// Returns the full response-body from the HTTP-GET call
 std::string dbConnect::requestHighscoreBody(int count)
 {
-    sf::Http http(GET_TOP_SCORES_ADRESS);
+    sf::Http http(DB_ADRESS);
     
     // Setup the request
     sf::Http::Request request;
@@ -84,6 +79,7 @@ std::string dbConnect::requestHighscoreBody(int count)
     return response.getBody();
 }
 
+// For internal use only, because it's confusing, splits a string into a vector with strings, divided by a del
 std::vector<std::string> dbConnect::splitIntoVector(std::string full, char del)
 {
     std::vector<std::string> str;

@@ -4,8 +4,10 @@
 
 using namespace Logic;
 
+// Realtime editing of the colum's and row's positioning
 #define ENTRY_POS_EDIT      false
 
+// Input the varibles gotten from the editing here
 #define ENTRY_POS_X         0.301f
 #define ENTRY_POS_Y         0.167f
 #define ENTRY_POS_Y_OFFSET  0.068f
@@ -14,6 +16,10 @@ using namespace Logic;
 #define COLUMN_4_OFFSET     0.466
 #define COLUMN_5_OFFSET     0.595
 
+// Max length of name that can be outputted on screen, to avoid clustering
+#define MAX_NAME_LENGTH     24
+
+// Coloring of the placing
 #define FIRST_PLACE_COLOR   DirectX::SimpleMath::Color(1, 0.843137, 0, 1)
 #define SECOND_PLACE_COLOR  DirectX::SimpleMath::Color(0.745098, 0.745098, 0.745098, 1)
 #define THIRD_PLACE_COLOR   DirectX::SimpleMath::Color(0.545098, 0.270588, 0.0745098, 1)
@@ -85,11 +91,21 @@ void iMenuHighscore::buildEntry(int position, HigscoreData data)
     // Setup of the entry
     Entry* entry    = newd Entry();
     entry->data     = data;
-    entry->name     = _bstr_t(data.name.c_str());
+    
+    // No clustering in the menu's
+    if (entry->data.name.length() > MAX_NAME_LENGTH)
+    {
+        entry->data.name.resize(MAX_NAME_LENGTH);
+        entry->data.name.shrink_to_fit();
+        entry->data.name += "..";
+    }
+
+    // Filling the wStrings with the data
+    entry->name     = _bstr_t(entry->data.name.c_str());
     entry->placing  = std::to_wstring(position + 1);
-    entry->time     = std::to_wstring(data.time) + L" Seconds";
-    entry->score    = std::to_wstring(data.score) + L" Points";
-    entry->kills    = std::to_wstring(data.kills) + L" Kills";
+    entry->time     = std::to_wstring(entry->data.time) + L" Seconds";
+    entry->score    = std::to_wstring(entry->data.score) + L" Points";
+    entry->kills    = std::to_wstring(entry->data.kills) + L" Kills";
 
     // Entry Placing Render Texture
     if      (position == 0) entry->renderInfoPlacing.color  = FIRST_PLACE_COLOR;
