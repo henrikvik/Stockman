@@ -9,9 +9,9 @@ Graphics::DepthOfFieldRenderPass::DepthOfFieldRenderPass(
     std::initializer_list<ID3D11Buffer*> buffers,
     ID3D11DepthStencilView * depthStencil) :
     RenderPass(targets, resources, buffers, depthStencil),
-    blur1col0(WIN_WIDTH, WIN_HEIGHT),
-    blur1col1(WIN_WIDTH, WIN_HEIGHT),
-    blur2Final(WIN_WIDTH, WIN_HEIGHT),
+    blur1col0(WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_FLOAT),
+    blur1col1(WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_FLOAT),
+    blur2Final(WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_FLOAT),
     CoCcreation(Resources::Shaders::DoFCreateCoC),
     blur1(Resources::Shaders::DoFBlur1),
     blur2(Resources::Shaders::DoFBlur2),
@@ -62,11 +62,6 @@ void Graphics::DepthOfFieldRenderPass::update(float deltaTime)
 
 void Graphics::DepthOfFieldRenderPass::render() const
 {
-    if (true /* TODO Fix light loss of data*/)
-    {
-
-        return;
-    }
 
     backBuffers->swap();
 

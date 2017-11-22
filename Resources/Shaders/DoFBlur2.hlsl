@@ -26,6 +26,7 @@ float4 PS(VSOutput input) : SV_Target0
     half4 baseColor = blurT1.Sample(linearSampler, input.uv);
 
 
+
     half4 color0 = half4(0.0f, 0.0f, 0.0f, baseColor.w);
     half4 color1 = half4(0.0f, 0.0f, 0.0f, baseColor.w);
     half sampelCount0 = 0.0f;

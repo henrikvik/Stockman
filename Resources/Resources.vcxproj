@@ -158,7 +158,6 @@
     <ClCompile Include="ResourceCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Resources.h" />
     <ClInclude Include="Shaders\include\JSONLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
