@@ -78,7 +78,7 @@ StateMachine::~StateMachine()
     Sound::NoiseMachine::Get().clear();
 }
 
-void StateMachine::update(float deltaTime)
+bool StateMachine::update(float deltaTime)
 {
     m_statePrimary->update(deltaTime);
     m_stateSecondary->update(deltaTime);
@@ -98,6 +98,8 @@ void StateMachine::update(float deltaTime)
         return;
     }
 #endif // !_DEBUG
+
+    return m_statePrimary->getShouldQuit();
 }
 
 void StateMachine::render() const
