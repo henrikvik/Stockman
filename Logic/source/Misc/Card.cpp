@@ -125,12 +125,15 @@ void Logic::Card::parseText()
     std::string splitString = m_description;
 
     int pos = 0;
-    do
+   /* do
     {
-        pos = splitString.find(" ");
+        pos = splitString.find(' ', 12);
         splitString = splitString.substr(pos);
 
-    }while (splitString.length() > 12);
+    }while (splitString.length() > 12);*/
+
+    pos = splitString.find(' ', 12);
+    //splitString = splitString.substr(pos);
 
     std::string endPart = m_description.substr(pos);
     splitString = m_description.substr(0, pos);
