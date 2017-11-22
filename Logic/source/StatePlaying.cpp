@@ -137,13 +137,6 @@ void StatePlaying::update(float deltaTime)
 
     }
 
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::U))
-    {
-        m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
-        m_cardManager->pickThreeCards(m_player->getHP() != 3);
-        m_projectileManager->removeEnemyProjCallbacks();
-
-    }
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());

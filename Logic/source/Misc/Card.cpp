@@ -132,7 +132,7 @@ void Logic::Card::parseText()
 
     }while (splitString.length() > 12);*/
 
-    pos = splitString.find(' ', 12);
+    pos = splitString.find(' ', 14);
     //splitString = splitString.substr(pos);
 
     std::string endPart = m_description.substr(pos);
@@ -140,12 +140,12 @@ void Logic::Card::parseText()
 
     //desc part 1
     temp.text = std::wstring(splitString.begin(), splitString.end());
-    temp.position = DirectX::SimpleMath::Vector2(50.0f, 255.0f);
+    temp.position = DirectX::SimpleMath::Vector2(8.0f, 355.0f);
     m_text.push_back(TextRenderInfo(temp));
 
     //desc part 2
     temp.text = std::wstring(endPart.begin(), endPart.end());
-    temp.position = DirectX::SimpleMath::Vector2(50.0f, 265.0f);
+    temp.position = DirectX::SimpleMath::Vector2(4.0f, 375.0f);
     m_text.push_back(TextRenderInfo(temp));
     
 }
