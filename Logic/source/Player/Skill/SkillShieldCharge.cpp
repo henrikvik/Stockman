@@ -94,7 +94,7 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 	}
 }
 
-void Logic::SkillShieldCharge::onAffect(Effect const & effect)
+void Logic::SkillShieldCharge::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 {
 }
 

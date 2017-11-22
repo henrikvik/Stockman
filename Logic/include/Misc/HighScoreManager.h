@@ -14,30 +14,44 @@
 #pragma endregion Description of class
 
 #include <string>
+#include <vector>
 
 namespace Logic
 {
 	class HighScoreManager
 	{
 	public:
-		struct highScore
+		struct HighScore
 		{
 			int score;
 			std::string name;
 		};
+
 		HighScoreManager();
 		~HighScoreManager();
 
-		bool addNewHighScore(int score);
+        // File Handling
 		void saveToFile();						//< Save high scores to file
 		void loadFromFile();					//< Load high scores from file 
-		void setName(std::string name);
-		std::string* getName();
-		highScore gethighScore(int index);
 
+        // highscore
+		void addNewHighScore(int score);
+
+        // sets & gets
+		void setName(std::string name);
+		const std::string& getName() const;
+
+        void setMaxHighScoreSize(int size);
+        int getMaxHighScoreSize() const;
+
+		std::vector<HighScore>& getHighScores();
 	private:
-		std::string m_name;						//< Player name
-		highScore m_highScore[10];				//< List of high scores
+        static const std::string HIGHSCORE, SCORE, NAME;
+        static const int MAX_HIGHSCORE_SIZE;
+
+		std::string m_name; // name of the current player (the name that gets saved to highscore)
+		std::vector<HighScore> m_highScores;
+        int m_maxHighScoreSize;
 	};
 }
 
