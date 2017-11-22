@@ -12,6 +12,7 @@ EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
 {
     setBehavior(STAY);
     createAbilities();
+    m_rotation = 0;
 
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().kill(SCORE);
@@ -30,8 +31,8 @@ void EnemyTotem::createAbilities()
 {
     AbilityData data;
     data.duration = 0.f;
-    data.cooldown = 3500.f;
-    data.randomChanche = 75;
+    data.cooldown = 1000.f;
+    data.randomChanche = 10;
 
     spreadShot = Ability(data, [&](Player &target, Ability &ab) -> void {
 
@@ -45,9 +46,10 @@ void EnemyTotem::createAbilities()
         pData.hasEffect = true;
         pData.effectVelocity = false;
         pData.effectActivated = true;
+        m_rotation += 0.5f;
 
         for (int i = 0; i < BULLET_AMOUNT; i++)
-            shoot(btVector3(std::sin(i * piece), 0.f, std::cos(i * piece)), pData, BULLET_SPEED, 0.f, 4.f);
+            shoot(btVector3(std::sin((i + m_rotation) * piece), 0.f, std::cos((i + m_rotation) * piece)), pData, BULLET_SPEED, 0.f, 7.f);
     });
 }
 

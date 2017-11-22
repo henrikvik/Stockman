@@ -14,6 +14,8 @@ namespace Logic
         static const float BASE_SPEED, BULLET_SPEED;
         static const int BASE_DAMAGE, MAX_HP, SCORE;
         static const int BULLET_AMOUNT;
+
+        float m_rotation;
     public:
         EnemyTotem(btRigidBody* body, btVector3 halfExtent);
         virtual ~EnemyTotem();
