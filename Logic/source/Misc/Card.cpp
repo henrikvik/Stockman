@@ -102,7 +102,7 @@ void Logic::Card::render() const
     m_cardBackground.render();
     m_icon.render();
 
-    for(auto txt: m_text)
+    for(auto &txt: m_text)
     {
         QueueRender(txt);
     }

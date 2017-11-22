@@ -84,16 +84,6 @@ Card CardManager::pick(int handIndex)
     return m_cards[m_deck[deckIndex].second];
 }
 
-std::vector<Card*> Logic::CardManager::getHand()
-{
-    //for (size_t i = 0; i < HAND_SIZE; i++)
-    //{
-    //    currenthand.push_back(&m_cards[m_deck[m_hand.at(i)].second]);
-    //}
-    //
-    return std::vector<Card*>();
-}
-
 void Logic::CardManager::render() const
 {
     for (auto cards : currenthand)

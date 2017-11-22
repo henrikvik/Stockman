@@ -33,7 +33,6 @@ namespace Logic
 		void pickThreeCards(bool damaged);
 		Card pick(int cardIndex);
  
-        std::vector<Card*> getHand();
 
         virtual void render() const;
 	private:
