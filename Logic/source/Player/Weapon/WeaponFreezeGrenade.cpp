@@ -1,6 +1,7 @@
 #include <Player\Weapon\WeaponFreezeGrenade.h>
 #include <Projectile\Projectile.h>
 #include <Projectile\ProjectileStruct.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -35,6 +36,8 @@ WeaponFreezeGrenade::~WeaponFreezeGrenade()
 
 void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& shooter)
 {
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, nullptr, true);
+
     for (Projectile* p : projectiles)
     {
         p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
@@ -82,4 +85,9 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
 
         });
     }
+}
+
+bool Logic::WeaponFreezeGrenade::useEnhanced(bool shouldUse)
+{
+    return shouldUse;
 }

@@ -4,6 +4,7 @@ using namespace Logic;
 
 const int CardManager::HEALTH_PACK = 0;
 const int CardManager::HAND_SIZE   = 3;
+const int CardManager::NEVER_REMOVE_CARDS = 1;
 
 CardManager::CardManager(int nrOfEach)
 {
@@ -25,6 +26,7 @@ void CardManager::resetDeck()
 
 void CardManager::createDeck(int nrOfEach)
 {
+    m_deck.push_back({ NEVER_REMOVE, HEALTH_PACK });
 	for (int i = 0; i < nrOfEach; i++)
 		for (int j = 1; j < m_cards.size(); j++)
             m_deck.push_back({ IN_DECK, j });
@@ -50,13 +52,26 @@ void CardManager::pickThreeCards(bool damaged)
     if (cardsPicked < amount)
         throw std::runtime_error("Not enough cards");
 
+    pepperCardsForDraw();
 }
 
 void CardManager::shuffle()
 {
     static std::random_device rd;
     static std::mt19937 g(rd());
-    std::shuffle(m_deck.begin(), m_deck.end(), g);
+    std::shuffle(m_deck.begin() + NEVER_REMOVE_CARDS, m_deck.end(), g);
+}
+
+void Logic::CardManager::pepperCardsForDraw()
+{
+    currenthand.clear();
+    for (size_t i = 0; i < HAND_SIZE; i++)
+    {
+        currenthand.push_back(m_cards[m_deck[m_hand.at(i)].second]);
+        currenthand.at(i).setIconPos(365.0f + 250 * i, 260.0f, 75, 75);
+        currenthand.at(i).setbackgroundPos(290.f + 250 * i, 225.0f, 200, 250);
+        currenthand.at(i).setCardTextPos(308.f + 250.f * i);
+    }
 }
 
 Card CardManager::pick(int handIndex)
@@ -69,15 +84,12 @@ Card CardManager::pick(int handIndex)
     return m_cards[m_deck[deckIndex].second];
 }
 
-std::vector<Card*> Logic::CardManager::getHand()
+void Logic::CardManager::render() const
 {
-    
-    for (size_t i = 0; i < 3; i++)
+    for (auto cards : currenthand)
     {
-        currenthand.push_back(&m_cards[m_deck[m_hand.at(i)].second]);
+        cards.render();
     }
-    
-    return currenthand;
 }
 
 void CardManager::loadDeckFromFile()
@@ -130,14 +142,9 @@ void CardManager::handleCard(Player &player, Card const &card)
                     static_cast<StatusManager::EFFECT_ID> (ID),
                     1
                 );
-                std::cout << "Effect " << std::to_string(ID);
                 break;
             case Card::UPGRADE:
-                player.getStatusManager().addUpgrade(
-                    static_cast<StatusManager::UPGRADE_ID> (ID)
-
-                );
-                std::cout << "Upgrade " << std::to_string(ID);
+                player.upgrade(static_cast<StatusManager::UPGRADE_ID> (ID));
                 break;
             default:
                 printf("Unsupported card type");

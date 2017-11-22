@@ -20,6 +20,8 @@ namespace Logic
     };
 
     struct FrameLight {
+        FrameLight(DirectX::SimpleMath::Vector3 inPosition, DirectX::SimpleMath::Vector3 inColor, float inIntensity, float inRange) 
+            : position(inPosition), color(inColor), intensity(inIntensity), range(inRange) { }
         DirectX::SimpleMath::Vector3 position;
         DirectX::SimpleMath::Vector3 color;
         float intensity;

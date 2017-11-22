@@ -8,6 +8,7 @@
 #include <Map.h>
 #include <Graphics\include\MainCamera.h>
 #include <Graphics\include\Device.h>
+#include <Misc\Test\TestingWork.h>
 
 using namespace Logic;
 
@@ -28,13 +29,12 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     m_map->init(m_physics);
     m_map->loadStartMenuScene();
 
-    // Initializing Highscore Manager
-    m_highScoreManager = newd HighScoreManager();
-    m_highScoreManager->setName("Stockman");
-
     // Initializing Menu's
     m_menu = newd iMenuMachine();
     m_menu->queueMenu(iMenu::MenuGroup::Intro);
+
+    // for some tests
+    TestingWork work;
 
     // ! Reminder !  
     // Gives a small mem leak as for right now, but it's too cool to remove ^.^
@@ -45,7 +45,6 @@ StateStart::StateStart(StateBuffer* stateBuffer)
 StateStart::~StateStart()
 {
     delete m_menu;
-    delete m_highScoreManager;
     delete m_physics;
     delete m_map;
 }
@@ -54,7 +53,7 @@ void StateStart::reset() { }
 
 void StateStart::update(float deltaTime)
 {
-    Graphics::FXSystem->processEffect(&m_campfire, DirectX::XMMatrixTranslation(0, 0, 0), deltaTime / 1000.f);
+    Graphics::FXSystem->processEffect(&m_campfire, { 0, 0, 0 }, deltaTime / 1000.f);
 
     PROFILE_BEGIN("Physics");
     m_physics->update(deltaTime);

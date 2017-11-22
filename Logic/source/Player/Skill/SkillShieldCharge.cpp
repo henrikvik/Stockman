@@ -29,6 +29,8 @@ bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 
 	if (!m_active)
 	{
+        shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_CHARGE);
+
 		//Sets up the shield charge by deciding its movement vector and who is gonna charge
 		m_time = 0;
 
@@ -92,7 +94,7 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 	}
 }
 
-void Logic::SkillShieldCharge::onAffect(Effect const & effect)
+void Logic::SkillShieldCharge::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 {
 }
 

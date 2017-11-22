@@ -3,6 +3,7 @@
 #include <AI\Behavior\RangedBehavior.h>
 #include <AI\Behavior\MeleeBehavior.h>
 #include <AI\Behavior\BigBadBehavior.h>
+#include <AI\Behavior\StayBehavior.h>
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileStruct.h>
@@ -27,6 +28,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     m_nrOfCallbacksEntities = 0;
     m_stunned = false;
     m_fireTimer = 0;
+    m_blinkTimer = -1.0f;
 
 	//animation todo
     enemyRenderInfo.model = modelID;
@@ -36,7 +38,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 //    enemyRenderInfo.burn = 0;
     enemyRenderInfo.transform = getTransformMatrix();
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
-    light.intensity = 1.0f;
+    light.intensity = 0.5f;
     light.range = 2.f;
 }
 
@@ -59,6 +61,9 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
             break;
         case BOSS_BADDIE:
                 m_behavior = newd BigBadBehavior();
+            break;
+        case STAY:
+            m_behavior = newd StayBehavior();
             break;
 		default:
 				m_behavior = newd TestBehavior();
@@ -86,8 +91,8 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
 	updateSpecific(player, deltaTime);
 
-    // Rotation toward the player
-    btVector3 dir = player.getPositionBT() - getPositionBT();
+    // Rotation toward their moving direction
+    btVector3 dir = getRigidBody()->getLinearVelocity();
     float yaw = atan2(dir.getX(), dir.getZ());
     m_transform->setRotation(btQuaternion(yaw, 0.f, 0));
 
@@ -101,6 +106,17 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
     if (getPositionBT().y() < MIN_Y)
         damage(m_health);
+
+    if (m_blinkTimer > 0)
+    {
+        enemyRenderInfo.color = DirectX::SimpleMath::Vector3(50.0f, 0.0f, 0.0f);
+        m_blinkTimer -= deltaTime;
+    }
+    else
+    {
+        enemyRenderInfo.color = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+    }
+        
 }
 
 void Enemy::debugRendering()
@@ -126,6 +142,8 @@ bool Enemy::hasCallbackEntities()
 void Enemy::damage(int damage)
 {
 	m_health -= damage;
+    m_blinkTimer = 100.0f;
+    getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)
@@ -210,7 +228,12 @@ int Enemy::getBaseDamage() const
 
 float Enemy::getMoveSpeed() const
 {
-	return m_moveSpeed * m_bulletTimeMod * m_moveSpeedMod;
+	return m_moveSpeed * getSpeedMod();
+}
+
+float Enemy::getSpeedMod() const
+{
+    return m_bulletTimeMod * m_moveSpeedMod;
 }
 
 EnemyType Enemy::getEnemyType() const
@@ -224,6 +247,7 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
 
 	data.damage = getBaseDamage();
 	data.meshID = id;
+    data.shouldRender = true;
 	data.speed = speed;
     data.ttl = 10000;
     data.gravityModifier = gravity;
@@ -250,6 +274,36 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
     return pj;
 }
 
+Projectile * Logic::Enemy::shoot(btVector3 dir, ProjectileData data, float speed, float gravity, float scale, bool sensor)
+{
+    data.damage = getBaseDamage();
+    data.shouldRender = false;
+    data.speed = speed;
+    data.ttl = 10000;
+    data.gravityModifier = gravity;
+    data.scale = scale;
+    data.enemyBullet = true;
+    data.isSensor = sensor;
+
+    Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
+
+    if (pj)
+    {
+        increaseCallbackEntities();
+        pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+            decreaseCallbackEntities();
+        });
+        if (hasCallback(ON_DAMAGE_GIVEN))
+        {
+            pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
+                callback(ON_DAMAGE_GIVEN, data);
+            });
+        }
+    }
+
+    return pj;
+}
+
 Behavior* Enemy::getBehavior() const
 {
 	return this->m_behavior;
@@ -258,7 +312,7 @@ Behavior* Enemy::getBehavior() const
 void Enemy::render() const
 {
     renderSpecific();
-    if (getEnemyType() != EnemyType::NECROMANCER_MINION) // nice code here (REPLACE OH MAH GOD)
+//    if (getEnemyType() != EnemyType::NECROMANCER_MINION) // nice code here (REPLACE OH MAH GOD)
         QueueRender(enemyRenderInfo);
     QueueRender(light);
 }

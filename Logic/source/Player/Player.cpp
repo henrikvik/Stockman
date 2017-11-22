@@ -28,7 +28,7 @@
 
 using namespace Logic;
 
-const int Player::MIN_Y = -80.f;
+const int Player::MIN_Y = -80;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
 Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
@@ -52,6 +52,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_weaponManager->init(projectileManager);
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
+
+    // Add default fire dmg
+    getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
 
 	btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_RADIUS, PLAYER_SIZE_HEIGHT);
 	btPairCachingGhostObject* ghostObject = m_physPtr->createPlayer(playerShape, startPosition);
@@ -128,10 +131,12 @@ void Player::registerDebugCmds()
         }
         return "Mouse sens set";
     });
+
     win->registerCommand("LOG_GODMODE", [&](std::vector<std::string> &para) -> std::string {
         m_godMode = !m_godMode;
         return "Godmode updated";
     });
+
     win->registerCommand("LOG_NOCLIP", [&](std::vector<std::string> &para) -> std::string {
         m_noclip = !m_noclip;
         if (m_noclip)
@@ -150,6 +155,22 @@ void Player::registerDebugCmds()
         getStatusManager().addStatusResetDuration(StatusManager::STUN, 1);
 
         return "Player is stunned";
+    });
+
+    win->registerCommand("LOG_ADD_UPGRADE", [&](std::vector<std::string> &args) -> std::string
+    {
+        try
+        {
+            int stacks = 1;
+            if (args.size() > 1)
+                stacks = std::stoi(args[1]);
+            upgrade(static_cast<StatusManager::UPGRADE_ID> (std::stoi(args[0])), stacks);
+            return "Upgrade added";
+        }
+        catch (std::exception const &ex)
+        {
+            return "I have the highground DLC";
+        }
     });
 
     win->registerCommand("LOG_PLAYER_MOVE_FASTER", [&](std::vector<std::string> &args) -> std::string
@@ -183,43 +204,43 @@ void Player::registerDebugCmds()
     });
     win->registerCommand("LOG_INCREASE_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::P20_PERC_MOVEMENTSPEED, 1);
+        getStatusManager().addUpgrade(StatusManager::P20_PERC_MOVEMENTSPEED);
 
         return "Player is permanently 20 percent faster";
     });
     win->registerCommand("LOG_DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::M20_PERC_CD, 1);
+        getStatusManager().addUpgrade(StatusManager::M20_PERC_CD);
 
         return "Player skills take 20% less time to recover";
     });
     win->registerCommand("LOG_INCREASE_MAG_SIZE", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::P40_MAGSIZE, 1);
+        getStatusManager().addUpgrade(StatusManager::P40_MAGSIZE);
 
         return "Mag clip holds 40 more bullets";
     });
     win->registerCommand("LOG_INCREASE_AMMO_CAP", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::P20_AMMOCAP, 1);
+        getStatusManager().addUpgrade(StatusManager::P20_AMMOCAP);
 
         return "You have bigger ammo bags now, it can hold 20 ammo more";
     });
     win->registerCommand("LOG_INCREASE_FIRE_RATE", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::P20_PERC_RATE_OF_FIRE, 1);
+        getStatusManager().addUpgrade(StatusManager::P20_PERC_RATE_OF_FIRE);
 
         return "You shoot 20% faster";
     });
     win->registerCommand("LOG_INCREASE_RELOAD_TIME", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::M20_PERC_RELOAD_SPEED, 1);
+        getStatusManager().addUpgrade(StatusManager::M33_PERC_RELOAD_SPEED);
 
         return "You reload 20% faster";
     });
     win->registerCommand("LOG_INCREASE_JUMP_HEIGHT", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addStatus(StatusManager::P20_PERC_JUMP, 1);
+        getStatusManager().addUpgrade(StatusManager::P45_PERC_JUMP);
 
         return "You jump 20% higher";
     });
@@ -261,6 +282,9 @@ void Player::reset()
     m_jumpSpeedMod = 1.0f;
     m_stunned = false;
 
+    getStatusManager().clear();
+    getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
+
     //temp? probably
     Global::mainCamera->update(getPosition(), m_forward, Global::context);
     static SpecialEffectRenderInfo info;
@@ -281,7 +305,7 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
             int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
             e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * static_cast<btScalar> (stacks));
             stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
-            e->damage(2.f * stacks); // replace 1 with the player damage when it is better
+            e->damage(2 * stacks); // replace 1 with the player damage when it is better
         }
     }
 }
@@ -328,24 +352,9 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
         m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
         m_moveMaxSpeed *= m_moveSpeedMod;
     }
-    if (flags & Effect::EFFECT_INCREASE_MOVEMENTSPEED)
-    {
-        m_permanentSpeedMod += effect.getModifiers()->modifyMovementSpeed;
-    }
-    if (flags & Effect::EFFECT_IS_SKILL)
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            getSkillManager()->getSkill(i)->affect(effect);
-        }
-    }
     if (flags & Effect::EFFECT_IS_WEAPON)
     {
         m_weaponManager->affect(effect);
-    }
-    if (flags & Effect::EFFECT_INCREASE_JUMPHEIGHT)
-    {
-        m_jumpSpeedMod += effect.getModifiers()->modifyMovementSpeed;
     }
 }
 
@@ -374,6 +383,31 @@ void Player::onEffectEnd(int stacks, Effect const & effect)
     {
        /* m_moveSpeedMod = 1.0f;
         m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;*/
+    }
+}
+
+void Player::onUpgradeAdd(int stacks, Upgrade const & upgrade)
+{
+    long long flags = upgrade.getTranferEffects();
+
+    if (flags & Upgrade::UPGRADE_INCREASE_JUMPHEIGHT)
+    {
+        m_jumpSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
+    }
+    if (flags & Upgrade::UPGRADE_IS_WEAPON)
+    {
+        m_weaponManager->onUpgradeAdd(stacks, upgrade);
+    }
+    if (flags & Upgrade::UPGRADE_IS_SKILL)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            getSkillManager()->getSkill(i)->upgradeAdd(stacks, upgrade);
+        }
+    }
+    if (flags & Upgrade::UPGRADE_INCREASE_MOVEMENTSPEED)
+    {
+        m_permanentSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
     }
 }
 
@@ -980,7 +1014,7 @@ const Skill* Player::getSkill(int id) const
 
 bool Player::isUsingMeleeWeapon() const
 {
-    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().primAmmoConsumption == 0;
+    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().ammoConsumption[WEAPON_PRIMARY] == 0;
 }
 
 int Player::getCurrentWeapon() const

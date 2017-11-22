@@ -9,17 +9,18 @@
 
 #define MAX_LEN_FOR_SEPERATION 15.f
 // this can be changed in the future maybe who knows
-#define CHANGE_NODE_DIST 1.2
+#define CHANGE_NODE_DIST 6.f
 
 #include <queue>
 
 using namespace Logic;
-
+const float Behavior::STEERING_BASE = 2.75f, Behavior::STEERING_MOD = 10;
 
 Behavior::Behavior(PathingType type)
 {
     m_pathingType = type;
     m_changedGoalNode = false;
+    m_steeringSpeed = STEERING_BASE;
 }
 
 Behavior::~Behavior()
@@ -39,7 +40,7 @@ void Behavior::walkPath(RunIn &in)
 {
     btVector3 dir;
 
-    if (m_pathing.pathIsEmpty())
+    if (m_pathing.pathIsEmpty() || m_pathing.pathOnLastNode())
     {
         dir = in.target->getPositionBT() - in.enemy->getPositionBT();
         m_changedGoalNode = true;
@@ -61,12 +62,13 @@ void Behavior::walkPath(RunIn &in)
     boidCalculations(in.enemy->getPositionBT(),
         dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
-    float y = in.enemy->getRigidBody()->getLinearVelocity().getY();
-   // dir.setY(0);
     dir.normalize();
-    dir *= in.enemy->getMoveSpeed() * (in.deltaTime * 0.001f);
+    float dt = (in.deltaTime * 0.001f);
 
-    in.enemy->getRigidBody()->setLinearVelocity({ dir.x() * 100, y, dir.z() * 100 });
+    btVector3 vel = in.enemy->getRigidBody()->getLinearVelocity().normalized();
+    float mod = in.enemy->getSpeedMod() * STEERING_MOD;
+    btVector3 steeringForce = dt * m_steeringSpeed * mod * (dir - vel);
+    in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() + steeringForce);
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
@@ -208,4 +210,14 @@ Behavior::PathingType Behavior::getPathingType() const
 void Behavior::setPathingType(PathingType pathingType)
 {
 	m_pathingType = pathingType;
+}
+
+float Behavior::getSteeringSpeed() const
+{
+    return m_steeringSpeed;
+}
+
+void Behavior::setSteeringSpeed(float steeringSpeed)
+{
+    m_steeringSpeed = steeringSpeed;
 }

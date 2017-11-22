@@ -18,6 +18,12 @@
 #include "../RenderInfo.h"
 #include "../RenderQueue.h"
 
+#ifdef _DEBUG
+#define SHADER_COMPILE_FLAGS D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION
+#else
+#define SHADER_COMPILE_FLAGS D3DCOMPILE_OPTIMIZATION_LEVEL3
+#endif
+
 namespace fs = std::experimental::filesystem;
 using namespace DirectX;
 
@@ -198,10 +204,10 @@ bool ParticleSystem::processAnchoredEffect(AnchoredParticleEffect *afx, DirectX:
     return fx->m_Age > fx->m_Time;
 }
 
-bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Matrix model, float dt)
+bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Vector3 pos, float dt)
 {
     if (!FXEnabled) return false;
-    Debug::ParticleFX({ SimpleMath::Vector3::Transform({}, model), *fx });
+    Debug::ParticleFX({ pos, *fx });
 
     for (unsigned int i = 0; i < fx->m_Count; i++) {
         auto &entry = fx->m_Entries[i];
@@ -217,6 +223,20 @@ bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Mat
             }
         }
 
+        if (fx->m_LightRadius != 0.f) {
+            auto col = XMFLOAT4((float*)fx->m_LightColor);
+
+            LightRenderInfo light = {};
+            light.position = pos;
+            light.range = fx->m_LightRadius;
+            light.intensity = col.w;
+            light.color.x = col.x;
+            light.color.y = col.y;
+            light.color.z = col.z;
+
+            QueueRender(light);
+        }
+
         switch (entry.m_Type) {
             case ParticleType::Billboard:
             {
@@ -230,7 +250,7 @@ bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Mat
 
                 for (entry.m_SpawnedParticles += spawn * dt; entry.m_SpawnedParticles >= 1.f; entry.m_SpawnedParticles -= 1.f) {
                     GeometryParticle p = {};
-                    p.pos = SimpleMath::Vector3::Transform(entry.m_StartPosition.GetPosition(), model);
+                    p.pos = entry.m_StartPosition.GetPosition() + pos;
                     p.velocity = entry.m_StartVelocity.GetVelocity();
                     p.rot = {
                         RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
@@ -254,10 +274,80 @@ bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Mat
     return fx->m_Age > fx->m_Time;
 }
 
-void ParticleSystem::addEffect(std::string name, XMMATRIX model)
+bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 velocity, float dt)
+{
+    if (!FXEnabled) return false;
+    Debug::ParticleFX({ pos, *fx });
+
+    for (unsigned int i = 0; i < fx->m_Count; i++) {
+        auto &entry = fx->m_Entries[i];
+
+        fx->m_Age += dt;
+
+        if (fx->m_Age < entry.m_Start || fx->m_Age > entry.m_Start + entry.m_Time) {
+            if (fx->m_Loop) {
+                fx->m_Age = 0.f;
+            }
+            else {
+                continue;
+            }
+        }
+
+        if (fx->m_LightRadius != 0.f) {
+            auto col = XMFLOAT4((float*)fx->m_LightColor);
+
+            LightRenderInfo light = {};
+            light.position = pos;
+            light.range = fx->m_LightRadius;
+            light.intensity = col.w;
+            light.color.x = col.x;
+            light.color.y = col.y;
+            light.color.z = col.z;
+
+            QueueRender(light);
+        }
+
+        switch (entry.m_Type) {
+        case ParticleType::Billboard:
+        {
+        } break;
+        case ParticleType::Geometry: {
+            auto def = &m_GeometryDefinitions[entry.m_DefinitionIdx];
+
+            auto factor = (fx->m_Age - entry.m_Start) / entry.m_Time;
+            auto ease_spawn = GetEaseFunc(entry.m_SpawnEasing);
+            auto spawn = entry.m_Loop ? entry.m_SpawnStart : ease_spawn(entry.m_SpawnStart, entry.m_SpawnEnd, factor);
+
+            for (entry.m_SpawnedParticles += spawn * dt; entry.m_SpawnedParticles >= 1.f; entry.m_SpawnedParticles -= 1.f) {
+                GeometryParticle p = {};
+                p.pos = entry.m_StartPosition.GetPosition() + pos;
+                p.velocity = velocity + entry.m_StartVelocity.GetVelocity();
+                p.rot = {
+                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
+                };
+                p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
+                p.rotprog = RandomFloat(-180, 180);
+                p.def = def;
+                p.idx = def->m_MaterialIdx;
+
+
+                m_GeometryParticles.push_back(p);
+            }
+        } break;
+        case ParticleType::Trail: {
+        } break;
+        }
+    }
+
+    return fx->m_Age > fx->m_Time;
+}
+
+void ParticleSystem::addEffect(std::string name, XMVECTOR pos)
 {
     ParticleEffectInstance effect = {
-        XMVectorAdd({ 0, 0.05f, 0 }, XMVector3Transform({}, model)),
+        pos,
         getEffect(name)
     };
     m_ParticleEffects.push_back(effect);
@@ -409,7 +499,7 @@ void ParticleSystem::render(
         cxt->VSSetConstantBuffers(0, 1, buffers);
         cxt->PSSetConstantBuffers(0, 2, buffers);
 
-        cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
+        cxt->OMSetDepthStencilState(Global::cStates->DepthRead(), 0);
         cxt->OMSetRenderTargets(1, &dest_rtv, dest_dsv);
         cxt->RSSetState(Global::cStates->CullNone());
 
@@ -487,7 +577,7 @@ GeometryParticleInstance *ParticleSystem::uploadParticles(std::vector<GeometryPa
         auto ease_light_radius = GetEaseFunc(def.m_LightRadiusEasing);
 
         auto light_radius = ease_light_radius(def.m_LightRadiusStart, def.m_LightRadiusEnd, factor);
-        if (light_radius >=  1000 * FLT_EPSILON) {
+        if (light_radius >=  0.1f) {
             auto light_col_start = XMFLOAT4((float*)def.m_LightColorStart);
             auto light_col_end = XMFLOAT4((float*)def.m_LightColorEnd);
 
@@ -510,32 +600,24 @@ GeometryParticleInstance *ParticleSystem::uploadParticles(std::vector<GeometryPa
 
 void ParticleSystem::updateParticles(XMVECTOR anchor, std::vector<GeometryParticle> &particles, float dt)
 {
-    int deleteList[32];
-    int deleteSize = 0;
-    for (int i = 0; i < particles.size(); i++) {
-        auto &particle = particles[i];
-        auto def = *particle.def;
+    auto it = particles.begin();
+    while (it != particles.end()) {
+        auto def = *it->def;
 
-        if (particle.age > def.m_Lifetime) {
-            int idx = deleteSize++;;
-            if (idx < 32) {
-                deleteList[idx] = i;
-            }
+        if (it->age > def.m_Lifetime) {
+            it = particles.erase(it);
             continue;
         }
 
-        particle.age += dt;
-        particle.rotprog += dt;
+        it->age += dt;
+        it->rotprog += dt;
 
-        XMStoreFloat3(&particle.velocity, XMLoadFloat3(&particle.velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
-        XMStoreFloat3(&particle.pos, XMLoadFloat3(&particle.pos) + XMLoadFloat3(&particle.velocity) * dt);
+        XMStoreFloat3(&it->velocity, XMLoadFloat3(&it->velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
+        XMStoreFloat3(&it->pos, XMLoadFloat3(&it->pos) + XMLoadFloat3(&it->velocity) * dt);
+
+        it++;
     }
 
-    // we defer deletion of particles until the end to not mess up our "hot" loop
-    for (int i = deleteSize - 1; i > 0; i--) {
-        auto idx = deleteList[i];
-        particles.erase(particles.begin() + idx);
-    }
 }
 
 void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
@@ -544,7 +626,7 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
     PROFILE_BEGIN("process managed effects");
     auto it = m_ParticleEffects.begin();
     while (it != m_ParticleEffects.end()) {
-        if (processEffect(&it->effect, XMMatrixTranslationFromVector(it->position), dt)) {
+        if (processEffect(&it->effect, it->position, dt)) {
             it = m_ParticleEffects.erase(it);
         }
         else {
@@ -627,7 +709,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
 
     // load all textures
     for (unsigned int i = 0; i < texture_count; i++) {
-        char path[128];
+        char path[128] = { 0 };
         fread(path, sizeof(char), 128, f);
 
         ID3D11ShaderResourceView *tex = nullptr;
@@ -645,7 +727,7 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
 
     // load all materials
     for (unsigned int i = 0; i < material_count; i++) {
-        char path[128];
+        char path[128] = { 0 };
         fread(path, sizeof(char), 128, f);
 
         ID3D11PixelShader *ps = nullptr, *psDepth = nullptr;
@@ -655,14 +737,13 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
 
         static ResourcesShaderInclude include("..\\Resources\\Shaders\\");
 
-        // TODO: add ifdef for DEBUG compilation flag
         auto res = D3DCompileFromFile(
             file.c_str(),
             nullptr,
             &include,
             "PS",
             "ps_5_0",
-            D3DCOMPILE_DEBUG,
+            SHADER_COMPILE_FLAGS,
             0,
             &blob,
             &error
@@ -676,14 +757,13 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
 
         device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &ps);
 
-        // TODO: add ifdef for DEBUG compilation flag
         res = D3DCompileFromFile(
             file.c_str(),
             nullptr,
             &include,
             "PS_depth",
             "ps_5_0",
-            D3DCOMPILE_DEBUG,
+            SHADER_COMPILE_FLAGS,
             0,
             &blob,
             &error
@@ -713,16 +793,16 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
 
     // load all particle fx
     for (unsigned int i = 0; i < fx_count; i++) {
-        ParticleEffect fx;
+        ParticleEffect fx = {};
         fread(fx.m_Name, sizeof(char), 16, f);
         fread(&fx.m_Count, sizeof(fx.m_Count), 1, f);
         fread(&fx.m_Time, sizeof(fx.m_Time), 1, f);
         fread(&fx.m_Loop, sizeof(fx.m_Loop), 1, f);
-        
+        fread(&fx.m_LightRadius, sizeof(fx.m_LightRadius), 1, f);
+        fread(&fx.m_LightColor, sizeof(fx.m_LightColor), 1, f);
+
         // default runtime value
         fx.m_Age = 0.f;
-
-        fx.m_Entries.resize(fx.m_Count);
 
         // read all fx entries
         for (unsigned int j = 0; j < fx.m_Count; j++) {

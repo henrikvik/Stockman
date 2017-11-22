@@ -15,8 +15,8 @@ Projectile::Projectile(btRigidBody* body, btVector3 halfextent, btVector3 modelO
     : Entity(body, halfextent, modelOffset)
 {
     m_unrotatedMO   = modelOffset;
-	m_pData         = pData;
-	m_dead          = false;
+    m_pData = pData;
+    m_dead = false;
     m_bulletTimeMod = 1.f;
     m_freezeDuration = 0.0f;
 }
@@ -29,13 +29,26 @@ Projectile::~Projectile() { }
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
     getRigidBody()->setLinearVelocity(forward * m_pData.speed);
+
+    btRigidBody* body = getRigidBody();
+    btVector3 dir = body->getLinearVelocity().normalized();
+    // Taking the forward vector and getting the pitch and yaw from it
+    float pitch = asin(-dir.getY()) - (float)M_PI;
+    float yaw = atan2(dir.getX(), dir.getZ());
+    //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
+    btQuaternion rotation = btQuaternion(yaw, pitch - (float)M_PI, 0);
+    body->getWorldTransform().setRotation(rotation);
+
+    // rotate model offset
+    m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
+
     getStatusManager().copyUpgradesFrom(statusManager);
 
     for (int i = 0; i < StatusManager::LAST_ITEM_IN_UPGRADES; i++)
     {
         if (getStatusManager().getUpgradeStacks((StatusManager::UPGRADE_ID)i) > 0)
         {
-            upgrade(statusManager.getUpgrade((StatusManager::UPGRADE_ID)i));
+            upgrader(statusManager.getUpgrade((StatusManager::UPGRADE_ID)i));
         }
     }
 }
@@ -43,18 +56,18 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
 // How different effects affect projectiles
 void Projectile::affect(int stacks, Effect const & effect, float deltaTime)
 {
-	long long flags = effect.getStandards()->flags;
+    long long flags = effect.getStandards()->flags;
 
-	if (flags & Effect::EFFECT_BULLET_TIME)
-	{
+    if (flags & Effect::EFFECT_BULLET_TIME)
+    {
         // Add slowdown on every bullet except itself
         if (m_pData.type != ProjectileTypeBulletTimeSensor)
-		    m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
-	}
+            m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
+    }
 }
 
 // How different upgrade affect projectiles
-void Projectile::upgrade(Upgrade const &upgrade)
+void Projectile::upgrader(Upgrade const &upgrade)
 {
     long long flags = upgrade.getTranferEffects();
 
@@ -68,7 +81,7 @@ void Projectile::upgrade(Upgrade const &upgrade)
     }
     if (flags & Upgrade::UPGRADE_BURNING)
     {
-        if (m_pData.type == ProjectileTypeNormal)
+        if (m_pData.type == ProjectileTypeCrossbowFire)
         {
             m_pData.type = ProjectileTypeFireArrow;
         }
@@ -85,7 +98,7 @@ void Projectile::upgrade(Upgrade const &upgrade)
 // Specific update loop for projectiles
 void Projectile::updateSpecific(float deltaTime)
 {
-	Entity::update(deltaTime);
+    Entity::update(deltaTime);
 
     // Modify the velocity & gravity with the bullet time modifier
     btRigidBody* body = getRigidBody();
@@ -94,17 +107,17 @@ void Projectile::updateSpecific(float deltaTime)
     body->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * pow(m_bulletTimeMod, 2), 0.f });
 
     // Taking the forward vector and getting the pitch and yaw from it
-    float pitch = asin(-dir.getY()) - M_PI;
+    float pitch = asin(-dir.getY()) - (float)M_PI;
     float yaw = atan2(dir.getX(), dir.getZ());
     //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
-    btQuaternion rotation = btQuaternion(yaw, pitch - M_PI, 0);
+    btQuaternion rotation = btQuaternion(yaw, pitch - (float)M_PI, 0);
     body->getWorldTransform().setRotation(rotation);
 
     m_unrotatedMO += (btVector3(0.f, 0.f, 0.f) - m_unrotatedMO) * 0.001f * deltaTime;
 
     // rotate model offset
     m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
-    
+
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;
 
@@ -113,6 +126,18 @@ void Projectile::updateSpecific(float deltaTime)
 
     // Updating transform matrix
     renderInfo.transform = getModelTransformMatrix();
+
+    if (m_pData.hasEffect && m_pData.effectActivated) {
+        auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, renderInfo.transform);
+        auto vel = body->getLinearVelocity();
+
+        if (m_pData.effectVelocity) {
+            Graphics::FXSystem->processEffect(&m_pData.effect, pos, {vel.x(), vel.y(), vel.z()}, deltaTime / 1000.f);
+        }
+        else {
+            Graphics::FXSystem->processEffect(&m_pData.effect, pos, deltaTime/1000.f);
+        }
+    }
 }
 
 // Handle collisions with different types of classes
@@ -193,6 +218,8 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
         break;
 
     case ProjectileTypeFireArrow:
+        callback = true;
+        kill = true;
         enemy->getStatusManager().addStatus(
             /* Adding Fire effect */            StatusManager::ON_FIRE,
             /* Number of stacks */              getStatusManager().getUpgradeStacks(StatusManager::FIRE_UPGRADE)
@@ -283,7 +310,8 @@ void Logic::Projectile::setModelID(Resources::Models::Files modelId)
 
 void Logic::Projectile::render() const
 {
-    QueueRender(renderInfo);
+    if (m_pData.shouldRender)
+        QueueRender(renderInfo);
 }
 
 ProjectileData& Projectile::getProjectileData()             { return m_pData;   }

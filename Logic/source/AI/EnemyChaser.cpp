@@ -5,17 +5,19 @@ using namespace Logic;
 
 const int EnemyChaser::MAX_HP = 25;
 const int EnemyChaser::BASE_DAMAGE = 1;
-const float EnemyChaser::MOVE_SPEED = 9.5f;
+const float EnemyChaser::MOVE_SPEED = 16.9f; //noice!
 #define ANI_TIME 5000.f // this is temp
 
 EnemyChaser::EnemyChaser(btRigidBody* body)
-    : Enemy(Resources::Models::Files::AnimatedSummonUnit, body, { 0.4f, 0.4f, 0.4f },
+    : Enemy(Resources::Models::Files::SummonUnitWithAnim, body, { 1.0f, 1.0f, 1.0f },
         MAX_HP, BASE_DAMAGE, MOVE_SPEED, EnemyType::NECROMANCER_MINION, 0, { 0.f, -0.8f, 0.f }) // use in para instead note
 {
     setBehavior(MELEE);
     getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
     getSoundSource()->autoPlaySFX(Sound::SFX::FOOTSTEP_SMALL, 150, 75, 1.f, 0.10f);
-    loadAnimation(Resources::Models::Files::AnimatedSummonUnit);
+    loadAnimation(Resources::Models::Files::SummonUnitWithAnim);
+    light.color = DirectX::SimpleMath::Color(0.0f, 0.7f, 1.0f);
+    light.intensity = 0.6f;
 }
 
 EnemyChaser::~EnemyChaser()
@@ -24,18 +26,20 @@ EnemyChaser::~EnemyChaser()
 
 void EnemyChaser::loadAnimation(Resources::Models::Files model)
 {
-    animatedRenderInfo.animationName = "Walk";
+ /*   animatedRenderInfo.animationName = "Walk";
     animatedRenderInfo.model = model;
-    animatedRenderInfo.animationTimeStamp = 0.f;
+    animatedRenderInfo.animationTimeStamp = 0.0f;
     animatedRenderInfo.transform = getTransformMatrix();
+    */
 }
 
 // REMOVE WHEN ALL ENIMES ARE ANIMATED
 void EnemyChaser::updateSpecific(Player & player, float deltaTime)
 {
-    animatedRenderInfo.transform = getModelTransformMatrix();
+/*    animatedRenderInfo.transform = getModelTransformMatrix();
     animatedRenderInfo.animationTimeStamp += deltaTime;
     if (animatedRenderInfo.animationTimeStamp > ANI_TIME) animatedRenderInfo.animationTimeStamp = 0.f;
+    */
 }
 
 void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
@@ -62,5 +66,5 @@ void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, floa
 
 void EnemyChaser::renderSpecific() const
 {
-    QueueRender(animatedRenderInfo);
+   // QueueRender(animatedRenderInfo); 
 }

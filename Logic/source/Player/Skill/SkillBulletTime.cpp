@@ -2,6 +2,7 @@
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
 #include <Projectile\Projectile.h>
+#include <Entity\Entity.h>
 
 using namespace Logic;
 
@@ -32,6 +33,8 @@ bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 	printf("Bullet Time used.\n");
 	m_sensor = SpawnProjectile(*m_pData, shooter.getPositionBT(), forward, shooter);
 
+    shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_BULLETTIME);
+
     if (m_sensor)
     {
         setCanUse(false);
@@ -56,6 +59,8 @@ bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
         travelPData.type = ProjectileType::ProjectileTypeBulletTime;
         m_travelProjectile = m_projectileManager->addProjectile(travelPData, shooter.getPositionBT(), forward, shooter);*/
     }
+
+    return false;
 }
 
 void SkillBulletTime::setSpawnFunctions(ProjectileManager &projManager)
@@ -116,7 +121,7 @@ void SkillBulletTime::onUpdate(float deltaTime)
 	}*/
 }
 
-void SkillBulletTime::onAffect(Effect const & effect)
+void SkillBulletTime::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 {
 }
 

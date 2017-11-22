@@ -32,7 +32,7 @@ void Map::add(FrameHitbox frameHitbox)
     //        StaticObject::NavigationMeshFlags::CULL
     //    ));
     //else
-        m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+        m_hitboxes.push_back(newd StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
             Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
             Physics::COL_HITBOX,
             Physics::COL_EVERYTHING),
@@ -89,12 +89,7 @@ void Map::loadStartMenuScene()
 
     hitboxes.push_back({ { 0, 0.0f, 0 },{ 0, 0, 0 },{ 1.f, 1.f, 1.f },    Resources::Models::MenuScene });
 
-    FrameLight light;
-    light.color = DirectX::SimpleMath::Vector3(1, 0.5, 0.3);
-    light.position = DirectX::SimpleMath::Vector3(0, 0, 0);
-    light.intensity = 1;
-    light.range = 10;
-    lights.push_back(light);
+    add(FrameLight({ 0.f, 0.f, 0.f }, {1.f, 0.5f, 0.3f}, 1.f, 10.f));
 
     for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
 }

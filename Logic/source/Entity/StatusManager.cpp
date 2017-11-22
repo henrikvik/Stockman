@@ -167,7 +167,7 @@ void StatusManager::update(float deltaTime, Entity &entity)
 void StatusManager::copyUpgradesFrom(StatusManager &other)
 {
     for (int i = 0; i < NR_OF_UPGRADES; i++)
-        m_upgradeStacks[i] = other.m_upgradeStacks[i];
+        m_upgradeStacks[i] += other.m_upgradeStacks[i];
 }
 
 void StatusManager::addUpgrade(UPGRADE_ID id)
@@ -219,7 +219,7 @@ void StatusManager::addStatus(StatusManager::EFFECT_ID effectID, int nrOfStacks,
 
     if (!found)
     {
-        m_effectStacks.push_back({ nrOfStacks, duration });
+        m_effectStacks.push_back({ nrOfStacks, s_effects[effectID].getStandards()->duration });
         m_effectStacksIds.push_back(effectID);
     }
 }

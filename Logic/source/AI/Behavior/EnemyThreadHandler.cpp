@@ -9,6 +9,7 @@
 #include <chrono>
 
 using namespace Logic;
+const int EnemyThreadHandler::MAX_WORK = 25;
 
 EnemyThreadHandler::EnemyThreadHandler()
 {
@@ -34,7 +35,10 @@ void EnemyThreadHandler::initThreads()
         m_work.pop();
 
     for (std::thread *&t : threads)
+    {
         t = newd std::thread(&EnemyThreadHandler::threadMain, this);
+        SetPriorityClass(t, PROCESS_MODE_BACKGROUND_BEGIN);
+    }
 }
 
 EnemyThreadHandler::~EnemyThreadHandler()
@@ -67,12 +71,16 @@ void EnemyThreadHandler::updateEnemiesAndPath(WorkData &data)
 {
     AStar &aStar = AStar::singleton();
     aStar.loadTargetIndex(*data.player);
-
-    std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(data.index);
     const std::vector<Enemy*> &enemies = data.manager->getAliveEnemies()[data.index];
 
-    for (size_t i = 0; i < enemies.size(); i++) // (!) size can change throughout the loop (!)
-        enemies[i]->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
+    // make sure it is still enemies in the node before doing all the calculations
+    if (!enemies.empty())
+    {
+        std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(data.index);
+
+        for (size_t i = 0; i < enemies.size(); i++) // (!) size can change throughout the loop (!)
+            enemies[i]->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
+    }
 }
 
 void EnemyThreadHandler::threadMain()
@@ -95,12 +103,15 @@ void EnemyThreadHandler::threadMain()
         if (haveWork)
             updateEnemiesAndPath(todo);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 }
 
 void EnemyThreadHandler::addWork(WorkData data)
 {
-    std::lock_guard<std::mutex> lock(m_workMutex);
-    m_work.push(data);
+    if (m_work.size() < MAX_WORK)
+    {
+        std::lock_guard<std::mutex> lock(m_workMutex);
+        m_work.push(data);
+    }
 }

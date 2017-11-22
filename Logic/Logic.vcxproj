@@ -202,10 +202,14 @@
     <ClInclude Include="include\AI\Behavior\BigBadBehavior.h" />
     <ClInclude Include="include\AI\EnemyBossBaddie.h" />
     <ClInclude Include="include\AI\EnemySoarer.h" />
+    <ClInclude Include="include\AI\EnemyTotem.h" />
     <ClInclude Include="include\Misc\Fader.h" />
     <ClInclude Include="include\Misc\GUI\iMenuCards.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuHighscore.h" />
     <ClInclude Include="include\Misc\GUI\iMenuIntro.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuLoading.h" />
     <ClInclude Include="include\Misc\GUI\iMenuSkillPick.h" />
+    <ClInclude Include="include\Misc\Test\TestingWork.h" />
     <ClInclude Include="include\Physics\FuncContactResult.h" />
     <ClInclude Include="include\Misc\CommandsFile.h" />
     <ClInclude Include="include\GameType.h" />
@@ -300,19 +304,26 @@
     <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
     <ClInclude Include="include\Misc\StringConverter.h" />
     <ClInclude Include="include\AI\Trigger\TriggerAmmoPickup.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponCrossbow.h" />
+    <ClInclude Include="include\AI\Behavior\StayBehavior.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Abilities\Ability.cpp" />
     <ClCompile Include="source\AI\Behavior\BigBadBehavior.cpp" />
+    <ClCompile Include="source\AI\Behavior\StayBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyBossBaddie.cpp" />
     <ClCompile Include="source\AI\EnemySoarer.cpp" />
+    <ClCompile Include="source\AI\EnemyTotem.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuCards.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuFactory.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenu.cpp" />
+    <ClCompile Include="source\Misc\GUI\iMenuHighscore.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuIntro.cpp" />
+    <ClCompile Include="source\Misc\GUI\iMenuLoading.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuMachine.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuSkillPick.cpp" />
+    <ClCompile Include="source\Misc\Test\TestingWork.cpp" />
     <ClCompile Include="source\Player\PlayerController.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -382,6 +393,7 @@
     <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
     <ClCompile Include="source\AI\Trigger\TriggerAmmoPickup.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponCrossbow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

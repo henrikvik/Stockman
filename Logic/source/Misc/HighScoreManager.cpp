@@ -3,15 +3,15 @@
 
 using namespace Logic;
 
+const std::string HighScoreManager::HIGHSCORE = "Highscore",
+                         HighScoreManager:: SCORE     = "Score", 
+                         HighScoreManager::NAME      = "Name";
+const int HighScoreManager::MAX_HIGHSCORE_SIZE = 10;
+
 HighScoreManager::HighScoreManager()
 {
-	int ammount = sizeof(m_highScore) / sizeof(highScore);
-	for (int i = 0; i < ammount; i++)
-	{
-		m_highScore[i].score = -1;
-		m_highScore[i].name = "???";
-	}
 	m_name = "";
+    m_maxHighScoreSize = MAX_HIGHSCORE_SIZE;
 
 	loadFromFile();
 }
@@ -21,70 +21,65 @@ HighScoreManager::~HighScoreManager()
 	saveToFile();
 }
 
-bool Logic::HighScoreManager::addNewHighScore(int score)
+void HighScoreManager::addNewHighScore(int score)
 {
-	highScore newScore;
-	newScore.score = score;
-	newScore.name = m_name;
-	int ammount = sizeof(m_highScore) / sizeof(highScore);
-	bool isNewHighScore = false;
-	for (int i = 0; i < ammount; i++)
-	{
-		if (m_highScore[i].score < newScore.score)
-		{
-			highScore temp;
-			temp = m_highScore[i];
-			m_highScore[i] = newScore;
-			newScore = temp;
-			isNewHighScore = true;
-		}
-		else if (newScore.score == -1)
-		{
-			return isNewHighScore;
-		}
-	}
-	return isNewHighScore;
+    m_highScores.push_back({ score, m_name });
+
+    // basicly bubble sort
+    for (int i = static_cast<int> (m_highScores.size()) - 2; i >= 0; i--)
+        if (m_highScores[i].score < score)
+            std::swap(m_highScores[i], m_highScores[i + 1]);
+
+    if (m_highScores.size() > m_maxHighScoreSize)
+        m_highScores.pop_back();
 }
 
-void Logic::HighScoreManager::saveToFile()
+void HighScoreManager::saveToFile()
 {
-	std::vector<FileLoader::LoadedStruct> saveTo;
-	int ammount = sizeof(m_highScore) / sizeof(highScore);
-	for (int i = 0; i < ammount; i++)
+	std::vector<FileLoader::LoadedStruct> save;
+	FileLoader::LoadedStruct scoreSave;
+	for (auto &score : m_highScores)
 	{
-		FileLoader::LoadedStruct tempSave;
-		tempSave.floats["Score"] = (float)m_highScore[i].score;
-		tempSave.strings["Player"] = m_highScore[i].name;
-		saveTo.push_back(tempSave);
+        scoreSave.ints[SCORE]     = score.score;
+        scoreSave.strings[NAME]   = score.name;
+        save.push_back(scoreSave);
 	}
-	FileLoader::singleton().saveStructsToFile(saveTo, "Highscore");
+	FileLoader::singleton().saveStructsToFile(save, HIGHSCORE);
 }
 
-void Logic::HighScoreManager::loadFromFile()
+void HighScoreManager::loadFromFile()
 {
 	std::vector<FileLoader::LoadedStruct> loadTo;
-	FileLoader::singleton().loadStructsFromFile(loadTo, "Highscore");
-	int i = 0;
+	FileLoader::singleton().loadStructsFromFile(loadTo, HIGHSCORE);
+    m_highScores.clear();
 
 	for (auto const& theScore : loadTo)
-	{
-		m_highScore[i].score = (int)theScore.floats.at("Score");
-		m_highScore[i].name = theScore.strings.at("Player");
-		i++;
-	}
+//        m_highScores.push_back({ theScore.ints.at(SCORE), theScore.strings.at(NAME) });
+
+    if (m_maxHighScoreSize < m_highScores.size()) m_maxHighScoreSize = static_cast<int> (m_highScores.size());
 }
 
-void  Logic::HighScoreManager::setName(std::string name)
+void HighScoreManager::setName(std::string name)
 {
 	m_name = name;
 }
 
-std::string* Logic::HighScoreManager::getName()
+const std::string& HighScoreManager::getName() const
 {
-	return &m_name;
+	return m_name;
 }
 
-Logic::HighScoreManager::highScore Logic::HighScoreManager::gethighScore(int index)
+void HighScoreManager::setMaxHighScoreSize(int size)
 {
-	return m_highScore[index];
+    m_maxHighScoreSize = size;
+}
+
+std::vector<HighScoreManager::HighScore>& HighScoreManager::getHighScores()
+{
+    return m_highScores;
+}
+
+int HighScoreManager::getMaxHighScoreSize() const
+{
+    return m_maxHighScoreSize;
 }

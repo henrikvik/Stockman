@@ -15,8 +15,8 @@ namespace Resources
     {
         Files toEnum(const char * str)
         {
-            if (strcmp(str, "StockMan_LvL") == 0) return StockMan_LvL;
-            if (strcmp(str, "Test_Map") == 0) return Test_Map;
+            if (strcmp(str, "IslandScene") == 0) return IslandScene;
+            if (strcmp(str, "Scene") == 0) return Scene;
             throw "Could not find matching enum.";
         }
     }
@@ -27,43 +27,20 @@ namespace Resources
             if (strcmp(str, "Ammocrystal") == 0) return Ammocrystal;
             if (strcmp(str, "AmmoPackCrossBolt") == 0) return AmmoPackCrossBolt;
             if (strcmp(str, "AnimatedSummonUnit") == 0) return AnimatedSummonUnit;
+            if (strcmp(str, "AnimationTest") == 0) return AnimationTest;
             if (strcmp(str, "Barrel") == 0) return Barrel;
-            if (strcmp(str, "Crate") == 0) return Crate;
             if (strcmp(str, "Crossbow") == 0) return Crossbow;
             if (strcmp(str, "Crossbowbolt") == 0) return Crossbowbolt;
             if (strcmp(str, "Crossbowbolts") == 0) return Crossbowbolts;
-            if (strcmp(str, "Dead_Tree") == 0) return Dead_Tree;
-            if (strcmp(str, "Fence1") == 0) return Fence1;
-            if (strcmp(str, "Fence2") == 0) return Fence2;
-            if (strcmp(str, "FencePost") == 0) return FencePost;
             if (strcmp(str, "Firepit") == 0) return Firepit;
-            if (strcmp(str, "GrapplingPoint") == 0) return GrapplingPoint;
-            if (strcmp(str, "Ground") == 0) return Ground;
             if (strcmp(str, "Hammer") == 0) return Hammer;
-            if (strcmp(str, "House1") == 0) return House1;
-            if (strcmp(str, "House2") == 0) return House2;
-            if (strcmp(str, "House3") == 0) return House3;
-            if (strcmp(str, "Ice") == 0) return Ice;
-            if (strcmp(str, "Icecickle") == 0) return Icecickle;
-            if (strcmp(str, "Jumppad") == 0) return Jumppad;
-            if (strcmp(str, "Lamp_Post") == 0) return Lamp_Post;
-            if (strcmp(str, "Log") == 0) return Log;
-            if (strcmp(str, "Lower_Ground") == 0) return Lower_Ground;
-            if (strcmp(str, "Market_Tent") == 0) return Market_Tent;
+            if (strcmp(str, "Island") == 0) return Island;
             if (strcmp(str, "MenuScene") == 0) return MenuScene;
-            if (strcmp(str, "Rock1") == 0) return Rock1;
-            if (strcmp(str, "Rock2") == 0) return Rock2;
-            if (strcmp(str, "Rock3") == 0) return Rock3;
             if (strcmp(str, "SkySphere") == 0) return SkySphere;
-            if (strcmp(str, "Small_Crate") == 0) return Small_Crate;
-            if (strcmp(str, "SnowHeap") == 0) return SnowHeap;
             if (strcmp(str, "Staff") == 0) return Staff;
             if (strcmp(str, "StaticSummon") == 0) return StaticSummon;
-            if (strcmp(str, "SummonUnit") == 0) return SummonUnit;
-            if (strcmp(str, "Table") == 0) return Table;
+            if (strcmp(str, "SummonUnitWithAnim") == 0) return SummonUnitWithAnim;
             if (strcmp(str, "Tablet1") == 0) return Tablet1;
-            if (strcmp(str, "Tee_Pee") == 0) return Tee_Pee;
-            if (strcmp(str, "Tree") == 0) return Tree;
             if (strcmp(str, "UnitCube") == 0) return UnitCube;
             throw "Could not find matching enum.";
         }
@@ -81,7 +58,6 @@ namespace Resources
             if (strcmp(str, "ForwardPlus") == 0) return ForwardPlus;
             if (strcmp(str, "ForwardPlus_PS") == 0) return ForwardPlus_PS;
             if (strcmp(str, "ForwardPlus_VS_Animated") == 0) return ForwardPlus_VS_Animated;
-            if (strcmp(str, "ForwardPlus_VS_Foliage") == 0) return ForwardPlus_VS_Foliage;
             if (strcmp(str, "ForwardPlus_VS_Static") == 0) return ForwardPlus_VS_Static;
             if (strcmp(str, "FullscreenQuad") == 0) return FullscreenQuad;
             if (strcmp(str, "GlowBlurHorizontal") == 0) return GlowBlurHorizontal;

@@ -2,7 +2,7 @@
 #include <AI\EntityManager.h>
 using namespace Logic;
 
-const float WaveTimeManager::TRANSITION_TIME = 10000.f;
+const float WaveTimeManager::TRANSITION_TIME = 5000.f;
 
 WaveTimeManager::WaveTimeManager()
 {
@@ -27,7 +27,7 @@ void WaveTimeManager::reset()
 }
 
 // Returns true if a transition is happening
-bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
+bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager, btVector3 const &playerPos)
 {
     if (!m_onLastWave)
     {
@@ -38,9 +38,9 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager)
             if (m_timeCurrent > m_timeRequired)
             {
                 entityManager.deallocateData(false);
-                entityManager.spawnWave(m_waveCurrent++);
+                entityManager.spawnWave(m_waveCurrent, playerPos);
 
-                m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent);
+                m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent++);
                 m_timeCurrent = 0;
 
                 // If the player have completed all the waves
@@ -89,6 +89,11 @@ float WaveTimeManager::getTimeCurrent() const
 float WaveTimeManager::getTimeRequired() const
 {
     return m_timeRequired;
+}
+
+bool WaveTimeManager::getOnLastWave() const
+{
+    return m_onLastWave;
 }
 
 bool WaveTimeManager::onLastWave() const

@@ -39,7 +39,9 @@ namespace Logic
         };
 	private:
 		static const int NR_OF_THREADS, ENEMY_CAP;
-        static int PATH_UPDATE_DIV;
+        static int       PATH_UPDATE_DIV;
+        static const btVector3 MIN_SPAWN, MAX_SPAWN; // position of min / max like a cube
+        static const float     INVALID_LENGTH;
 
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
@@ -90,11 +92,13 @@ namespace Logic
 		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
 
         // spawning
-		void spawnWave(int waveId);
+		void spawnWave(int waveId, btVector3 const &playerPos);
 		Enemy* spawnEnemy(EnemyType id, btVector3 const &pos, std::vector<int> const &effects,
 			Physics &physics, ProjectileManager *projectiles);
 		Trigger* spawnTrigger(int id, btVector3 const &pos,
             std::vector<int> &effects, Physics &physics, ProjectileManager *projectiles);
+        // a circle of area enemies can't spawn
+        btVector3 getRandomSpawnLocation(btVector3 const &invalidPoint, float invalidLength);
 
         // sets & gets
         void setSpawnFunctions(ProjectileManager &projManager, Physics &physics);

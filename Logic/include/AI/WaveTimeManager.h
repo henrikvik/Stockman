@@ -1,6 +1,7 @@
 #ifndef WAVE_TIME_MANAGER_H
 #define WAVE_TIME_MANAGER_H
 
+class btVector3;
 namespace Logic
 {
     class EntityManager;
@@ -18,7 +19,7 @@ namespace Logic
         WaveTimeManager();
         virtual ~WaveTimeManager();
 
-        bool update(float deltaTime, EntityManager &entityManager);
+        bool update(float deltaTime, EntityManager &entityManager, btVector3 const &playerPos);
 
         void reset();
         void startTransition();
@@ -26,6 +27,7 @@ namespace Logic
         int getCurrentWave() const;
         float getTimeCurrent() const;
         float getTimeRequired() const;
+        bool getOnLastWave() const;
 
         bool onLastWave() const;
         bool isEnraged() const;
