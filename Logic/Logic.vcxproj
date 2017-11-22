@@ -303,6 +303,7 @@
     <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
     <ClInclude Include="include\Misc\StringConverter.h" />
     <ClInclude Include="include\AI\Trigger\TriggerAmmoPickup.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponCrossbow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AI\Abilities\Ability.cpp" />
@@ -388,6 +389,7 @@
     <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
     <ClCompile Include="source\AI\Trigger\TriggerAmmoPickup.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponCrossbow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

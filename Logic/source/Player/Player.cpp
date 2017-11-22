@@ -28,7 +28,7 @@
 
 using namespace Logic;
 
-const int Player::MIN_Y = -80.f;
+const int Player::MIN_Y = -80;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
 Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
@@ -52,6 +52,9 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_weaponManager->init(projectileManager);
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
+
+    // Add default fire dmg
+    getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
 
 	btCapsuleShape* playerShape = new btCapsuleShape(PLAYER_SIZE_RADIUS, PLAYER_SIZE_HEIGHT);
 	btPairCachingGhostObject* ghostObject = m_physPtr->createPlayer(playerShape, startPosition);
@@ -279,6 +282,9 @@ void Player::reset()
     m_jumpSpeedMod = 1.0f;
     m_stunned = false;
 
+    getStatusManager().clear();
+    getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
+
     //temp? probably
     Global::mainCamera->update(getPosition(), m_forward, Global::context);
     static SpecialEffectRenderInfo info;
@@ -299,7 +305,7 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
             int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
             e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * static_cast<btScalar> (stacks));
             stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
-            e->damage(2.f * stacks); // replace 1 with the player damage when it is better
+            e->damage(2 * stacks); // replace 1 with the player damage when it is better
         }
     }
 }
@@ -1008,7 +1014,7 @@ const Skill* Player::getSkill(int id) const
 
 bool Player::isUsingMeleeWeapon() const
 {
-    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().primAmmoConsumption == 0;
+    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().ammoConsumption[WEAPON_PRIMARY] == 0;
 }
 
 int Player::getCurrentWeapon() const

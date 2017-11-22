@@ -86,3 +86,8 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
         });
     }
 }
+
+bool Logic::WeaponFreezeGrenade::useEnhanced(bool shouldUse)
+{
+    return shouldUse;
+}
