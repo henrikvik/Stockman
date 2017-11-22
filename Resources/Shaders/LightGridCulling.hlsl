@@ -1,11 +1,6 @@
 /*
- *  Author: fkaa
- *
  *  TL;DR: Compute shader used to sort lights into a grid of "bins" for later
  *         use in forward shading to reduce amount of lights per "bin" shaded.
- *
- *  Overview of the sorting/culling technique:
- *    1. TODO
  *
  *  Registers:
  *    Buffers:
@@ -15,22 +10,11 @@
  *      t0: depth texture (Texture2D)
  *      t1: frustums      (StructuredBuffer)
  *      t2: lights        (StructuredBuffer)
- *      t3: debug heatmap (Texture2D)
- *    Samplers:
- *      s0: debug sampler (SamplerState, Linear Clamp)
  *    UAVs:
  *      u0: opaque light index counter      (RWStructuredBuffer<uint>)
- *      u1: transparent light index counter (RWStructuredBuffer<uint>)
- *      u2: opaque light index list         (RWStructuredBuffer<uint>)
- *      u3: transparent light index list    (RWStructuredBuffer<uint>)
- *      u4: opaque light grid               (RWTexture2D<uint2>)
- *      u5: transparent light grid          (RWTexture2D<uint2>)
- *      u6: debug texture                   (RWTexture2D<float4>)
+ *      u1: opaque light index list         (RWStructuredBuffer<uint>)
+ *      u2: opaque light grid               (RWTexture2D<uint2>)
  *
- *
- *  TODO:
- *    - move common forward+ structs and definitions into shared file
- *    - add option to disable debug texture parts to save memory in release
  */
 
 #define BLOCK_SIZE 16
@@ -145,19 +129,8 @@ StructuredBuffer<Frustum> Frustums : register(t1);
 StructuredBuffer<Light>   Lights : register(t2);
 
 globallycoherent RWStructuredBuffer<uint> OpaqueLightIndexCounter : register(u0);
-RWStructuredBuffer<uint> OpaqueLightIndexList : register(u2);
-RWTexture2D<uint2>       OpaqueLightGrid : register(u4);
-
-globallycoherent RWStructuredBuffer<uint> TransparentLightIndexCounter : register(u1);
-RWStructuredBuffer<uint> TransparentLightIndexList : register(u3);
-RWTexture2D<uint2>       TransparentLightGrid : register(u5);
-
-// Debug texture to visualize the frequency of lights per tile (basically a
-// heatmap)
-RWTexture2D<float4> DebugTexture : register(u6);
-
-// Debug gradient whose color indicates frequency of tile lights
-Texture2D DebugGradient : register(t3);
+RWStructuredBuffer<uint> OpaqueLightIndexList : register(u1);
+RWTexture2D<uint2>       OpaqueLightGrid : register(u2);
 
 // Linear Clamp
 SamplerState DebugSampler : register(s0);
@@ -171,44 +144,11 @@ groupshared uint OpaqueLightCount;
 groupshared uint OpaqueLightIndexOffset;
 groupshared uint OpaqueLightList[1024];
 
-groupshared uint TransparentLightCount;
-groupshared uint TransparentLightIndexOffset;
-groupshared uint TransparentLightList[1024];
-
-float4 GetDebugColor(CSInput input, uint count, uint max)
-{
-	int2 coord = input.dispatchThreadID.xy;
-
-	if (input.groupThreadID.x == 0 || input.groupThreadID.y == 0) {
-		return float4(0, 0, 0, 0.9f);
-	}
-	else if (input.groupThreadID.x == 1 || input.groupThreadID.y == 1) {
-		return float4(1, 1, 1, 0.5f);
-	}
-	else if (count > 0) {
-		float norm = (float)count / (float)max;
-		float4 col = DebugGradient.SampleLevel(DebugSampler, float2(norm, 0), 0);
-
-		return col;
-	}
-	else {
-		return float4(0, 0, 0, 1);
-	}
-}
-
 void OpaqueAppendLight(uint lightIndex) {
 	uint index;
 	InterlockedAdd(OpaqueLightCount, 1, index);
 	if (index < 1024) {
 		OpaqueLightList[index] = lightIndex;
-	}
-}
-
-void TransparentAppendLight(uint lightIndex) {
-	uint index;
-	InterlockedAdd(TransparentLightCount, 1, index);
-	if (index < 1024) {
-		TransparentLightList[index] = lightIndex;
 	}
 }
 
@@ -226,7 +166,6 @@ void CS(CSInput input)
 		MaxDepth = 0x0;
 
 		OpaqueLightCount = 0;
-		TransparentLightCount = 0;
 
 		GroupFrustum = Frustums[input.groupID.x + (input.groupID.y * numThreadGroups.x)];
 	}
@@ -251,7 +190,6 @@ void CS(CSInput input)
 	float minDepthVS = ScreenToView(float4(0, 0, minDepth, 1)).z;
 	float maxDepthVS = ScreenToView(float4(0, 0, maxDepth, 1)).z;
 	float nearClipVS = ScreenToView(float4(0, 0, 0, 1)).z;
-	//DebugTexture[coord] = float4(minDepthVS/10.0, maxDepthVS / 10.0, 0., 1.0);
 
 	// TODO: LH/RH?
 	Plane minPlane = { float3(0, 0, -1), -minDepthVS };
@@ -265,8 +203,6 @@ void CS(CSInput input)
 
 		Sphere pointLight = { mul(View, float4(light.positionWS, 1.0)).xyz, light.range };
 		if (SphereInsideFrustum(pointLight, GroupFrustum, nearClipVS, maxDepthVS)) {
-
-			TransparentAppendLight(i);
 
 			if (!SphereInsidePlane(pointLight, minPlane)) {
 				OpaqueAppendLight(i);
@@ -286,12 +222,6 @@ void CS(CSInput input)
 			OpaqueLightIndexOffset,
 			OpaqueLightCount
 			);
-
-		InterlockedAdd(TransparentLightIndexCounter[0], TransparentLightCount, TransparentLightIndexOffset);
-		TransparentLightGrid[input.groupID.xy] = uint2(
-			TransparentLightIndexOffset,
-			TransparentLightCount
-			);
 	}
 
 	// next section transfers our groupshared data to the global UAV, so all our
@@ -302,10 +232,4 @@ void CS(CSInput input)
 	for (i = input.groupIndex; i < OpaqueLightCount; i += BLOCK_SIZE * BLOCK_SIZE) {
 		OpaqueLightIndexList[OpaqueLightIndexOffset + i] = OpaqueLightList[i];
 	}
-
-	for (i = input.groupIndex; i < TransparentLightCount; i += BLOCK_SIZE * BLOCK_SIZE) {
-		TransparentLightIndexList[TransparentLightIndexOffset + i] = TransparentLightList[i];
-	}
-
-	DebugTexture[coord] = GetDebugColor(input, OpaqueLightCount, MAX_LIGHTS);
 }
