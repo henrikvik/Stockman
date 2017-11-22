@@ -112,14 +112,12 @@ iMenuLoading* iMenuFactory::buildMenuLoading()
     return menu;
 }
 
-iMenu * iMenuFactory::buildMenuHighscore()
+iMenuHighscore * iMenuFactory::buildMenuHighscore()
 {
-    iMenu* menu = newd iMenu(iMenu::Highscore);
+    iMenuHighscore* menu = newd iMenuHighscore(iMenu::Highscore);
 
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
-    
-    //menu->addButton(buildButton("HighscoreStartMenu", ButtonFunction::startMainMenu));
 
     return menu;
 }
