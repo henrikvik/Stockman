@@ -5,7 +5,7 @@
 #include <Graphics\include\RenderQueue.h>
 #include <Misc\GUI\Button.h>
 #include <Misc\Fader.h>
-
+#include <Misc\GUI\Slider.h>
 namespace Logic
 {
     class iMenu : public NonCopyable
@@ -42,6 +42,22 @@ namespace Logic
             }
         };
 
+        struct SliderData
+        {
+            FloatRect                   screenRect;     // Where the button should be drawn
+            FloatRect                   texRectNormal;  // The texture-coordinates on the button-map
+            FloatRect                   texRectHover;   // The texture-coordinates on the button-map
+            FloatRect                   texRectActive;  // The texture-coordinates on the button-map
+            Resources::Textures::Files  texture;        // What buttonmap-texture this button is present inside
+            std::function<void(void)>   callback;       // What function this button calls
+
+            void move(DirectX::SimpleMath::Vector2 add)
+            {
+                screenRect.bottomRight += add;
+                screenRect.topLeft += add;
+            }
+        };
+
         iMenu(MenuGroup group);
         ~iMenu();
 
@@ -50,6 +66,7 @@ namespace Logic
 
         void addBackground(Resources::Textures::Files texture, float alpha);
         void addButton(ButtonData btn);
+        void addSlider(SliderData sld);
         virtual void update(int x, int y, float deltaTime);
         virtual void render() const;
 
@@ -74,12 +91,14 @@ namespace Logic
         // Menu
         SpriteRenderInfo        m_background;
         std::vector<Button>     m_buttons;
+        std::vector<Slider>     m_sliders;
         bool                    m_pressed;
         MenuGroup               m_group;
         DirectX::Mouse::Mode    m_mouseMode;
 
         // Hide menu
         bool                    m_drawButtons;
+        bool                    m_drawSliders;
         bool                    m_drawMenu;
     };
 }
