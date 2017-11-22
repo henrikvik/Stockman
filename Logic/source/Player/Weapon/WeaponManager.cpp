@@ -160,27 +160,32 @@ void WeaponManager::affect(Effect const & effect)
                 wp->ammoContainer->setEnhancedAmmo(currentAmmo + magSize);
         }
     }
-    if(flags & Effect::EFFECT_INCREASE_AMMOCAP)
+}
+
+void WeaponManager::onUpgradeAdd(int stacks, Upgrade const & upgrade)
+{
+    long long flags = upgrade.getTranferEffects();
+
+    if (flags & Upgrade::UPGRADE_DECREASE_RELOADTIME)
     {
-        m_Upgrades.ammoCapModifier += effect.getModifiers()->modifyAmmoCap;
-    }
-    if (flags & Effect::EFFECT_INCREASE_MAGSIZE)
-    {
-        m_Upgrades.magSizeModifier += effect.getModifiers()->modifyMagCap;
-    }
-    if (flags & Effect::EFFECT_INCREASE_FIRERATE)
-    {
-        m_Upgrades.fireRateModifier *= 1 - effect.getModifiers()->modifyFirerate;
-    }
-    if (flags & Effect::EFFECT_DECREASE_RELOADTIME)
-    {
-        m_Upgrades.reloadTimeModifier *= 1 - effect.getModifiers()->modifySkillCDDecrease;
+        m_Upgrades.reloadTimeModifier *= 1 - upgrade.getFlatUpgrades().increaseCooldown;
         if (m_Upgrades.reloadTimeModifier < 0)
         {
             m_Upgrades.reloadTimeModifier = 0;
         }
     }
-
+    if (flags & Upgrade::UPGRADE_INCREASE_FIRERATE)
+    {
+        m_Upgrades.fireRateModifier *= 1 - upgrade.getFlatUpgrades().increaseCooldown;
+    }
+    if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
+    {
+        m_Upgrades.magSizeModifier += upgrade.getFlatUpgrades().increaseMagSize;
+    }
+    if (flags & Upgrade::UPGRADE_INCREASE_AMMOCAP)
+    {
+        m_Upgrades.ammoCapModifier += upgrade.getFlatUpgrades().increaseAmmoCap;
+    }
 }
 
 void WeaponManager::render() const

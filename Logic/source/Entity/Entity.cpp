@@ -33,7 +33,11 @@ void Entity::update(float deltaTime)
     m_statusManager.update(deltaTime, *this);
 }
 
-void Entity::upgrade(Upgrade const & upgrade) { }
+void Entity::upgrade(StatusManager::UPGRADE_ID id, int stacks) {
+    onUpgradeAdd(stacks, getStatusManager().getUpgrade(id));
+    for (int i = 0; i < stacks; i++)
+        getStatusManager().addUpgrade(id);
+}
 
 void Entity::updateSound(float deltaTime)
 {
