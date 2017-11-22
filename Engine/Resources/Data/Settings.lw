@@ -1,8 +1,4 @@
 {
-	"Name": "Alias";
-	"Value": "Stockman";
-}
-{
 	"Name": "MouseSense";
 	"Value": 0.01f;
 }

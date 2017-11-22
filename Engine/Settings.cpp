@@ -54,10 +54,10 @@ void Settings::readFromFile()
 		{
 			m_windowed = theSettings.floats.at("Value");
 		}
-        else if (theSettings.strings.at("Name").compare("Alias") == 0)
-        {
-            m_alias = theSettings.strings.at("Value");
-        }
+        //else if (theSettings.strings.at("Name").compare("Alias") == 0)
+        //{
+        //    m_alias = theSettings.strings.at("Value");
+        //}
 	}
 }
 
