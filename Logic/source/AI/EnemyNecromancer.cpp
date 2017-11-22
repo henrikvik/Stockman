@@ -51,7 +51,6 @@ void EnemyNecromancer::createAbilities()
     pdata.effectVelocity = false;
     pdata.effectActivated = true;
 
-
     auto onTick = [&](Player &player, Ability &ab) -> void {};
 
     auto onUse1 = [=](Player &player, Ability &ab) -> void {
