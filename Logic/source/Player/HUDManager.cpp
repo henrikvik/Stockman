@@ -23,7 +23,7 @@ const std::wstring HUDManager::IN_WAVE     = L"KILL!",
 
 HUDManager::HUDManager()
 {
-    ZeroMemory(&info, sizeof(info));
+//    ZeroMemory(&info, sizeof(info)); // Yes, this causes a "fake" memory leaks
     info.cd[0] = 1.0f;
     info.cd[1] = 1.0f;
     info.currentSkills[0] = -1;
