@@ -49,26 +49,34 @@ void iMenuHighscore::buildHighscore()
     Network::dbConnect db;
     std::vector<std::vector<std::string>> entries = db.getHigscoreStats(10);
 
-    // Reverse the list, because we get the lowest score first
-    std::reverse(entries.begin(), entries.end());
-
-    for (size_t i = 0; i < entries.size(); i++)
+    if (!entries.empty())
     {
-        if (entries[i].size() == 5)
+        // Reverse the list, because we get the lowest score first
+        std::reverse(entries.begin(), entries.end());
+
+        // Build the graphical representation of the highscore
+        for (size_t i = 0; i < entries.size(); i++)
         {
-            // Builds an entry of highscore stats
-            HigscoreData data;
-            data.name = entries[i][0];
-            data.score = atoi(entries[i][1].c_str());
-            data.kills = atoi(entries[i][2].c_str());
-            data.wave = atoi(entries[i][3].c_str());
-            data.time = atoi(entries[i][4].c_str());
-            buildEntry(i, data);
+            if (entries[i].size() == 5)
+            {
+                // Builds an entry of highscore stats
+                HigscoreData data;
+                data.name = entries[i][0];
+                data.score = atoi(entries[i][1].c_str());
+                data.kills = atoi(entries[i][2].c_str());
+                data.wave = atoi(entries[i][3].c_str());
+                data.time = atoi(entries[i][4].c_str());
+                buildEntry(i, data);
+            }
+            else
+            {
+                buildEntry(0, HigscoreData("Invalid Data"));
+            }
         }
-        else
-        {
-            buildEntry(0, HigscoreData("Invalid Data"));
-        }
+    }
+    else
+    {
+        buildEntry(0, HigscoreData("No connection to server"));
     }
 }
 
