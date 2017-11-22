@@ -163,7 +163,7 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 	}
 }
 
-void SkillGrapplingHook::onAffect(Effect const & effect)
+void SkillGrapplingHook::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 {
 }
 
