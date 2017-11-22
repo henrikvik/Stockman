@@ -126,22 +126,15 @@ void StatePlaying::update(float deltaTime)
     ComboMachine::Get().update(deltaTime);
 
 
-    if (fullhack)
-    {
-        static_cast<iMenuCards*>(m_menu->getActiveMenu())->setCardInformation(m_cardManager->getHand());
-        fullhack = false;
-    }
 
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     if (m_menu->getType() != iMenu::MenuGroup::CardSelect)
-    if (m_waveTimeManager.update(deltaTime, m_entityManager))
+    if (m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT()))
     {
         m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
         m_cardManager->pickThreeCards(m_player->getHP() != 3);
         m_projectileManager->removeEnemyProjCallbacks();
 
-        //TODO temp
-        fullhack = true;
     }
 
 
@@ -219,7 +212,13 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render Menu");
-    m_menu->render();
+    if (m_menu->getType() != iMenu::CardSelect)
+        m_menu->render();
+    PROFILE_END();
+
+    PROFILE_BEGIN("Render cards");
+    if (m_menu->getType() == iMenu::CardSelect)
+        m_cardManager->render();
     PROFILE_END();
 
     m_fpsRenderer.render();

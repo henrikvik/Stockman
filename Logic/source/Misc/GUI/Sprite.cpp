@@ -64,6 +64,10 @@ Sprite::Sprite(Points screenpoint, Points spritepoint, float x, float y, float w
     sprite.screenRect = FloatRect(x / WIN_WIDTH, y / WIN_HEIGHT, width / WIN_WIDTH, height / WIN_HEIGHT);
 }
 
+Sprite::Sprite()
+{
+}
+
 Sprite::~Sprite()
 {
 }

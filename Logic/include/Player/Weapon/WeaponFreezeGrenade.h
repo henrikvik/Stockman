@@ -17,6 +17,7 @@ namespace Logic
         virtual ~WeaponFreezeGrenade();
     private:
         virtual void onUse(std::vector<Projectile*> &projectiles, Entity& shooter);
+        virtual bool useEnhanced(bool shouldUse);
 
         ProjectileData* m_freezeData;
         int m_splitCount;

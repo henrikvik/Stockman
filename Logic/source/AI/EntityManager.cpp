@@ -1,8 +1,4 @@
 #include <AI/EntityManager.h>
-using namespace Logic;
-
-#define FILE_ABOUT_WHALES "Enemies/Wave"
-
 #include <AI\Behavior\EnemyThreadHandler.h>
 #include <AI\Pathing\AStar.h>
 #include <AI\EnemyTest.h>
@@ -28,7 +24,14 @@ using namespace Logic;
 #include <ctime>
 #include <stdio.h>
 
+using namespace Logic;
+
+#define FILE_ABOUT_WHALES "Enemies/Wave"
+
+const btVector3 EntityManager::MIN_SPAWN = { -300, 10, -300 },
+                EntityManager::MAX_SPAWN = {  300, 25,  300 };
 const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 65;
+const float EntityManager::INVALID_LENGTH = 100.f;
 int EntityManager::PATH_UPDATE_DIV = 25;
 
 EntityManager::EntityManager()
@@ -153,10 +156,9 @@ void EntityManager::loadDebugCmds()
     });
     DebugWindow::getInstance()->registerCommand("AI_SPAWN_ENEMY", [&](std::vector<std::string> &para) -> std::string {
         try {
-            RandomGenerator &generator = RandomGenerator::singleton();
-            btVector3 pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
-                generator.getRandomFloat(-85, 85) };
-            SpawnEnemy(static_cast<EnemyType> (stoi(para[0])), pos, {});
+            int total = para.size() > 1 ? stoi(para[1]) : 1;
+            for (int i = 0; i < total; i++)
+                SpawnEnemy(static_cast<EnemyType> (stoi(para[0])), getRandomSpawnLocation({ 0, 0, 0 }, 0), {});
             return "Enemy spawned";
         }
         catch (std::exception e) {
@@ -325,7 +327,7 @@ void EntityManager::automaticUpdate(Player &player)
     m_threadHandler->addWork(EnemyThreadHandler::WorkData{ this, gen.getRandomInt(0, m_enemies.size() - 1), &player });
 }
 
-void EntityManager::spawnWave(int waveId)
+void EntityManager::spawnWave(int waveId, btVector3 const &playerPos)
 {
     if (m_enemies.empty())
     {
@@ -340,15 +342,7 @@ void EntityManager::spawnWave(int waveId)
     RandomGenerator &generator = RandomGenerator::singleton();
 
     for (int entity : entities.enemies)
-    {
-        // just temp test values as of now, better with no random spawns?
-        // should atleast check if spawn area is a walkable area
-        // using nav mesh that would be easy but not trivial
-        pos = { generator.getRandomFloat(-85, 85), generator.getRandomFloat(10, 25),
-            generator.getRandomFloat(-85, 85) };
-
-        SpawnEnemy(static_cast<EnemyType> (entity), pos, {});
-    }
+        SpawnEnemy(static_cast<EnemyType> (entity), getRandomSpawnLocation(playerPos, INVALID_LENGTH), {});
 
     for (WaveManager::Entity e : entities.triggers)
         SpawnTrigger(e.id, { e.x, e.y, e.z }, e.effects);
@@ -390,6 +384,29 @@ Trigger* EntityManager::spawnTrigger(int id, btVector3 const &pos,
     Trigger* trigger = m_triggerManager.addTrigger((Trigger::TriggerType)id, pos, physics, {}, effectsIds);
 
     return trigger;
+}
+
+btVector3 EntityManager::getRandomSpawnLocation(btVector3 const &invalidPoint, float invalidLength)
+{
+    RandomGenerator &generator = RandomGenerator::singleton();
+    AStar &aStar = AStar::singleton();
+
+    bool found = false;
+    btVector3 point;
+
+    while (!found)
+    {
+        point = btVector3(
+            generator.getRandomFloat(MIN_SPAWN.x(), MAX_SPAWN.x()),
+            generator.getRandomFloat(MIN_SPAWN.y(), MAX_SPAWN.y()),
+            generator.getRandomFloat(MIN_SPAWN.z(), MAX_SPAWN.z())
+        );
+
+        if ((point - invalidPoint).length() > invalidLength && aStar.getIndex(point) != -1)
+            found = true;
+    }
+
+    return point;
 }
 
 size_t EntityManager::getNrOfAliveEnemies() const
@@ -461,6 +478,7 @@ void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &p
             physics.removeRigidBody(entity.getRigidBodyWeakPoint(i));
         entity.destroyBody();
     };
+
     AStar::singleton().generateNavigationMesh(physics);
     allocateData();
 }

@@ -23,7 +23,7 @@ const std::wstring HUDManager::IN_WAVE     = L"KILL!",
 
 HUDManager::HUDManager()
 {
-    ZeroMemory(&info, sizeof(info));
+//    ZeroMemory(&info, sizeof(info)); // Yes, this causes a "fake" memory leaks
     info.cd[0] = 1.0f;
     info.cd[1] = 1.0f;
     info.currentSkills[0] = -1;
@@ -265,7 +265,7 @@ void HUDManager::updateTextElements()
         liveText.push_back(std::to_wstring(info.activeAmmo[0]));
         text.text = liveText.at(last).c_str();
         last++;
-        text.position = DirectX::SimpleMath::Vector2(700, 400);
+        text.position = DirectX::SimpleMath::Vector2(750, 400);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
@@ -429,9 +429,9 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.score = ComboMachine::Get().getTotalScore();
     info.hp = player.getHP();
     info.activeAmmo[HUDManager::CURRENT_AMMO]   = player.getActiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
-    info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().ammo;// TODO GET AMMO
+    info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().enhancedAmmo;// TODO GET AMMO
     info.inactiveAmmo[HUDManager::CURRENT_AMMO] = player.getInactiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
-    info.inactiveAmmo[HUDManager::TOTAL_AMMO]   = player.getInactiveAmmoContainer().getAmmoInfo().ammo;// TODO GET AMMO
+    info.inactiveAmmo[HUDManager::TOTAL_AMMO]   = player.getInactiveAmmoContainer().getAmmoInfo().enhancedAmmo;// TODO GET AMMO
     info.sledge = player.isUsingMeleeWeapon();
     info.currentWeapon = player.getCurrentWeapon();
 

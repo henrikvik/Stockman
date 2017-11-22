@@ -1,5 +1,6 @@
 #include "Player/Weapon/WeaponManager.h"
 #include <Player\Weapon\Weapon.h>
+#include <Player\Weapon\WeaponCrossbow.h>
 #include <Player\Weapon\WeaponFreezeGrenade.h>
 #include <Player\Weapon\WeaponMeleeParry.h>
 #include <Misc\Sound\NoiseMachine.h>
@@ -36,7 +37,7 @@ void WeaponManager::init(ProjectileManager* projectileManager)
     m_Upgrades.reloadTimeModifier = 1.0f;
     m_Upgrades.fireRateModifier = 1.0f;
     m_Upgrades.freezeDurationModifier = 1.0f;
-    m_Upgrades.fireDamageModifier = 0.0f;
+    m_Upgrades.fireDamageModifier = 0;
 }
 
 void WeaponManager::clear()
@@ -76,7 +77,7 @@ void WeaponManager::reset()
     m_Upgrades.reloadTimeModifier = 1.0f;
     m_Upgrades.fireRateModifier = 1.0f;
     m_Upgrades.freezeDurationModifier = 1.0f;
-    m_Upgrades.fireDamageModifier = 0.0f;
+    m_Upgrades.fireDamageModifier = 0;
 }
 
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
@@ -103,7 +104,7 @@ void WeaponManager::update(float deltaTime)
 		m_currentWeapon->ammoContainer->fillMag(m_Upgrades.magSizeModifier);
 		m_reloadState = ReloadingWeapon::IDLE;
 		printf("adding ammo\n");
-		printf("ammo: %d\n", m_currentWeapon->ammoContainer->getAmmoInfo().ammo);
+		printf("ammo: %d\n", m_currentWeapon->ammoContainer->getAmmoInfo().enhancedAmmo);
 		printf("mag: %d\n", m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo);
 	}
 
@@ -133,7 +134,7 @@ void WeaponManager::update(float deltaTime)
 
 }
 
-void Logic::WeaponManager::affect(Effect const & effect)
+void WeaponManager::affect(Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
 
@@ -148,37 +149,43 @@ void Logic::WeaponManager::affect(Effect const & effect)
 
         if (wp)
         {
-            int magSize = wp->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier;
-            int ammoCap = wp->ammoContainer->getAmmoInfo().ammoCap + m_Upgrades.ammoCapModifier;
-            int currentAmmo = wp->ammoContainer->getAmmoInfo().ammo;
+            // Only add base magsize because we removed ammo
+            int magSize = wp->ammoContainer->getAmmoInfo().magSize;
+            int ammoCap = wp->ammoContainer->getAmmoInfo().enhancedAmmoCap + m_Upgrades.ammoCapModifier;
+            int currentAmmo = wp->ammoContainer->getAmmoInfo().enhancedAmmo;
 
             if ((currentAmmo + magSize) >= ammoCap)
-                wp->ammoContainer->setAmmo(ammoCap);
+                wp->ammoContainer->setEnhancedAmmo(ammoCap);
             else
-                wp->ammoContainer->setAmmo(currentAmmo + magSize);
+                wp->ammoContainer->setEnhancedAmmo(currentAmmo + magSize);
         }
     }
-    if(flags & Effect::EFFECT_INCREASE_AMMOCAP)
+}
+
+void WeaponManager::onUpgradeAdd(int stacks, Upgrade const & upgrade)
+{
+    long long flags = upgrade.getTranferEffects();
+
+    if (flags & Upgrade::UPGRADE_DECREASE_RELOADTIME)
     {
-        m_Upgrades.ammoCapModifier += effect.getModifiers()->modifyAmmoCap;
-    }
-    if (flags & Effect::EFFECT_INCREASE_MAGSIZE)
-    {
-        m_Upgrades.magSizeModifier += effect.getModifiers()->modifyMagCap;
-    }
-    if (flags & Effect::EFFECT_INCREASE_FIRERATE)
-    {
-        m_Upgrades.fireRateModifier *= 1 - effect.getModifiers()->modifyFirerate;
-    }
-    if (flags & Effect::EFFECT_DECREASE_RELOADTIME)
-    {
-        m_Upgrades.reloadTimeModifier *= 1 - effect.getModifiers()->modifySkillCDDecrease;
+        m_Upgrades.reloadTimeModifier *= 1 - upgrade.getFlatUpgrades().increaseCooldown;
         if (m_Upgrades.reloadTimeModifier < 0)
         {
             m_Upgrades.reloadTimeModifier = 0;
         }
     }
-
+    if (flags & Upgrade::UPGRADE_INCREASE_FIRERATE)
+    {
+        m_Upgrades.fireRateModifier *= 1 - upgrade.getFlatUpgrades().increaseCooldown;
+    }
+    if (flags & Upgrade::UPGRADE_INCREASE_MAGSIZE)
+    {
+        m_Upgrades.magSizeModifier += upgrade.getFlatUpgrades().increaseMagSize;
+    }
+    if (flags & Upgrade::UPGRADE_INCREASE_AMMOCAP)
+    {
+        m_Upgrades.ammoCapModifier += upgrade.getFlatUpgrades().increaseAmmoCap;
+    }
 }
 
 void WeaponManager::render() const
@@ -193,23 +200,23 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     {
         // Gattling
         newd WeaponLoadout{
-        /* Primary */       newd Weapon(projectileManager, ProjectileData(nullptr, false, false, 25, 1.f, 1, 100, 0.f, 30000, Resources::Models::Crossbowbolt , 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0,{ -0.5f, -0.5f, 0.f } }),
-        /* Secondary*/      newd Weapon(projectileManager, ProjectileData(nullptr, false, false, 25, 1.f, 1, 100, 0.f, 1000, Resources::Models::Crossbowbolt, 1), Weapon::WeaponInfo{ 1, 18, 15, 4, 100, 0, 0,{ 0.f, 0.f, 0.f } }),
-        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 90, 90, 30, 30, 1, 5, 1000 }),
+        /* Primary */       newd WeaponCrossbow(projectileManager, ProjectileData("Icecone", false, true, 25, 1.f, 1, 100, 0.f, 3000, Resources::Models::Crossbowbolt , 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0,{ -0.5f, -0.5f, 0.f } }),
+        /* Secondary*/      newd WeaponCrossbow(projectileManager, ProjectileData("Icecone", false, true, 25, 1.f, 1, 100, 0.f, 1000, Resources::Models::Crossbowbolt, 1), Weapon::WeaponInfo{ 1, 18, 15, 4, 100, 0, 0,{ 0.f, 0.f, 0.f } }),
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30, { 1, 5 }, { 1, 5 }, 1000 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -0.8f, 0.3f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f }) },
 
         // Ice
         newd WeaponLoadout{
         /* Primary */       newd Weapon(projectileManager, ProjectileData("Icecone", true, false, 0, 1, 1, 20, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false), Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1,{ -0.6f, 0.25f, -1.3f } }),
-        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(nullptr, false, false, 40, 1.f, 1, 100, 0, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade), Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0,{ -0.8f, 0.2f, 0.f } }, ProjectileData(nullptr, false, false, 10, 0.5f, 1, 10, 5, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard), 8),
-        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 300, 100, 100, 1, 25, 1500 }),
+        /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(nullptr, false, false, 40, 1.f, 1, 100, 0, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade), Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0,{ -0.8f, 0.2f, 0.f } }, ProjectileData(nullptr, false, false, 25, 0.5f, 1, 10, 5, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard), 8),
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 0, 100, 100, { 1, 0 }, { 0, 25 }, 1500 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -2.3f, 0.3f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f }) },
 
         // Sledge/Melee
         newd WeaponLoadout{
         /* Primary */       newd Weapon(projectileManager, ProjectileData(nullptr, false, false, 35, 8.f, 1, 0, 0, 0, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 4, 1, 0, 0, 400, 200, 0,{ 0.f, 0.f, 0.f } }),
         /* Secondary*/      newd WeaponMeleeParry(projectileManager, ProjectileData(nullptr, false, false, 0, 8.f, 1, 0, 0, 200, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, true), Weapon::WeaponInfo{ 5, 1, 0, 0, 50, 0, 0,{ 0.f, 0.f, 0.f } }, 8.f),
-        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0 }),
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, { 0, 0 }, { 0, 0 }, 0 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Hammer, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(1.3f, 0.9f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-0.3f, -1.5f, -0.2f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 200.f }) }
     };
 }
@@ -235,13 +242,13 @@ void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Pl
 {
     if (m_attackRateTimer <= 0.f)
     {
-        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().primAmmoConsumption == 0)
+        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().ammoConsumption[WEAPON_PRIMARY] == 0)
         {
-            if (float delayTime = m_currentWeapon->primary->getDelayTime())
+            if (int delayTime = m_currentWeapon->primary->getDelayTime())
             {
                 m_toUse = USE_PRIMARY;
                 m_toUseShooter = &shooter;
-                m_attackRateTimer = delayTime;
+                m_attackRateTimer = (float)delayTime;
             }
             else
             {
@@ -260,23 +267,24 @@ void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Pl
 
 void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-    m_currentWeapon->primary->use(position, yaw, pitch, shooter);
-    m_currentWeapon->ammoContainer->removePrimaryAmmo();
-
-    m_attackRateTimer = m_currentWeapon->primary->getAttackTimer(m_Upgrades.fireRateModifier);
+    if (m_currentWeapon->primary->useEnhanced(m_currentWeapon->ammoContainer->removeAmmo(WEAPON_PRIMARY)))
+    {
+        m_currentWeapon->primary->use(position, yaw, pitch, shooter);
+        m_attackRateTimer = m_currentWeapon->primary->getAttackTimer(m_Upgrades.fireRateModifier);
+    }
 }
 
 void WeaponManager::tryUseSecondary(btVector3 position, float yaw, float pitch, Player& shooter)
 {
     if (m_attackRateTimer <= 0.f)
     {
-        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().secAmmoConsumption == 0)
+        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().ammoConsumption[WEAPON_SECONDARY] == 0)
         {
-            if (float delayTime = m_currentWeapon->secondary->getDelayTime())
+            if (int delayTime = m_currentWeapon->secondary->getDelayTime())
             {
                 m_toUse = USE_SECONDARY;
                 m_toUseShooter = &shooter;
-                m_attackRateTimer = delayTime;
+                m_attackRateTimer = (float)delayTime;
             }
             else
             {
@@ -291,15 +299,16 @@ void WeaponManager::tryUseSecondary(btVector3 position, float yaw, float pitch, 
 
 void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-    m_currentWeapon->secondary->use(position, yaw, pitch, shooter);
-    m_currentWeapon->ammoContainer->removeSecondaryAmmo();
-
-    m_attackRateTimer = m_currentWeapon->secondary->getAttackTimer(m_Upgrades.fireRateModifier);
+    if (m_currentWeapon->secondary->useEnhanced(m_currentWeapon->ammoContainer->removeAmmo(WEAPON_SECONDARY)))
+    {
+        m_currentWeapon->secondary->use(position, yaw, pitch, shooter);
+        m_attackRateTimer = m_currentWeapon->secondary->getAttackTimer(m_Upgrades.fireRateModifier);
+    }
 }
 
 void WeaponManager::reloadWeapon()
 {
-	if (m_reloadTimer <= 0.f && m_currentWeapon->ammoContainer->getAmmoInfo().ammo > 0 && 
+	if (m_reloadTimer <= 0.f &&
         m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo < (m_currentWeapon->ammoContainer->getAmmoInfo().magSize + m_Upgrades.magSizeModifier))
 	{
         m_reloadTimer = m_currentWeapon->ammoContainer->getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier;

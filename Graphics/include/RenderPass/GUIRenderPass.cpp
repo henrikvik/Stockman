@@ -184,7 +184,7 @@ void Graphics::GUIRenderPass::textRender() const
     {
         if (isDrawableString(info.text))
         {
-            fonts.at(info.font)->DrawString(sBatch.get(), info.text, info.position + positionOffset, info.color);
+            fonts.at(info.font)->DrawString(sBatch.get(), info.text.c_str(), info.position + positionOffset, info.color);
         }
         
     }
@@ -192,9 +192,9 @@ void Graphics::GUIRenderPass::textRender() const
 }
 
 //checks fow unallowed characters that chrashed the text draw
-bool Graphics::GUIRenderPass::isDrawableString(const wchar_t * text) const
+bool Graphics::GUIRenderPass::isDrawableString(std::wstring text) const
 {
-    for (size_t i = 0; i < std::wcslen(text); i++)
+    for (size_t i = 0; i < text.length(); i++)
     {
         if (text[i] > 127 || text[i] < 32)
         {
