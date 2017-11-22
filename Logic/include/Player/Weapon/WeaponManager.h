@@ -62,10 +62,8 @@ namespace Logic
 
 		void switchWeapon(int weaponID);
 
-        void tryUsePrimary(btVector3 position, float yaw, float pitch, Player& shooter);
-		void usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter);
-        void tryUseSecondary(btVector3 position, float yaw, float pitch, Player& shooter);
-		void useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter);
+        void tryAttack(int attackMode, btVector3 position, float yaw, float pitch, Player& shooter);
+		void attack(int attackMode, btVector3 position, float yaw, float pitch, Entity& shooter);
 		void reloadWeapon();
 
 		bool isSwitching();

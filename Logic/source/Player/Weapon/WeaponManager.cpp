@@ -109,19 +109,14 @@ void WeaponManager::update(float deltaTime)
 
         if (m_attackRateTimer < 0.f && m_toUse != USE_NOTHING)
         {
-            if (m_toUse == USE_PRIMARY)
-            {
-                Entity* shooterEntity = m_toUseShooter;
-                usePrimary(m_toUseShooter->getPositionBT() + m_toUseShooter->getForwardBT(), m_toUseShooter->getYaw(), m_toUseShooter->getPitch(), *shooterEntity);
-                m_toUseShooter = nullptr;
-            }
-            else
-            {
-                Entity* shooterEntity = m_toUseShooter;
-                useSecondary(m_toUseShooter->getPositionBT() + m_toUseShooter->getForwardBT(), m_toUseShooter->getYaw(), m_toUseShooter->getPitch(), *shooterEntity);
-                m_toUseShooter = nullptr;
-            }
+            Entity* shooterEntity = m_toUseShooter;
 
+            if (m_toUse == USE_PRIMARY)
+                attack(WEAPON_PRIMARY, m_toUseShooter->getPositionBT() + m_toUseShooter->getForwardBT(), m_toUseShooter->getYaw(), m_toUseShooter->getPitch(), *shooterEntity);
+            else
+                attack(WEAPON_SECONDARY, m_toUseShooter->getPositionBT() + m_toUseShooter->getForwardBT(), m_toUseShooter->getYaw(), m_toUseShooter->getPitch(), *shooterEntity);
+
+            m_toUseShooter = nullptr;
             m_toUse = USE_NOTHING;
         }
     }
@@ -259,13 +254,13 @@ void WeaponManager::switchWeapon(int index)
 	}
 }
 
-void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Player& shooter)
+void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, float pitch, Player& shooter)
 {
     if (m_attackRateTimer <= 0.f)
     {
-        if (m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer.getAmmoInfo().ammoConsumption[WEAPON_PRIMARY] == 0)
+        if (m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer.getAmmoInfo().ammoConsumption[attackMode] == 0)
         {
-            if (int delayTime = m_currentWeapon->weapon[WEAPON_PRIMARY]->getDelayTime())
+            if (int delayTime = m_currentWeapon->weapon[attackMode]->getDelayTime())
             {
                 m_toUse = USE_PRIMARY;
                 m_toUseShooter = &shooter;
@@ -274,7 +269,7 @@ void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Pl
             else
             {
                 Entity* shooterEntity = &shooter;
-                usePrimary(position, yaw, pitch, *shooterEntity);
+                attack(attackMode, position, yaw, pitch, *shooterEntity);
 
                 Sound::NoiseMachine::Get().playSFX(Sound::SFX::WEAPON_CUTLERY_PRIMARY, nullptr, true);
             }
@@ -286,44 +281,12 @@ void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Pl
     }
 }
 
-void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter)
+void WeaponManager::attack(int attackMode, btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-    if (m_currentWeapon->weapon[WEAPON_PRIMARY]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(WEAPON_PRIMARY)))
+    if (m_currentWeapon->weapon[attackMode]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(attackMode)))
     {
-        m_currentWeapon->weapon[WEAPON_PRIMARY]->use(position, yaw, pitch, shooter);
-        m_attackRateTimer = m_currentWeapon->weapon[WEAPON_PRIMARY]->getAttackTimer(m_Upgrades.fireRateModifier);
-    }
-}
-
-void WeaponManager::tryUseSecondary(btVector3 position, float yaw, float pitch, Player& shooter)
-{
-    if (m_attackRateTimer <= 0.f)
-    {
-        if (m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer.getAmmoInfo().ammoConsumption[WEAPON_SECONDARY] == 0)
-        {
-            if (int delayTime = m_currentWeapon->weapon[WEAPON_SECONDARY]->getDelayTime())
-            {
-                m_toUse = USE_SECONDARY;
-                m_toUseShooter = &shooter;
-                m_attackRateTimer = (float)delayTime;
-            }
-            else
-            {
-                Entity* shooterEntity = &shooter;
-                useSecondary(position, yaw, pitch, *shooterEntity);
-            }
-        }
-        else
-            reloadWeapon();
-    }
-}
-
-void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter)
-{
-    if (m_currentWeapon->weapon[WEAPON_SECONDARY]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(WEAPON_SECONDARY)))
-    {
-        m_currentWeapon->weapon[WEAPON_SECONDARY]->use(position, yaw, pitch, shooter);
-        m_attackRateTimer = m_currentWeapon->weapon[WEAPON_SECONDARY]->getAttackTimer(m_Upgrades.fireRateModifier);
+        m_currentWeapon->weapon[attackMode]->use(position, yaw, pitch, shooter);
+        m_attackRateTimer = m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier);
     }
 }
 

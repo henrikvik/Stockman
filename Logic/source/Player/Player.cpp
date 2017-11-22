@@ -609,9 +609,9 @@ void Player::updateSpecific(float deltaTime)
         {
             // Primary and secondary attack
             if ((ms.leftButton))
-                m_weaponManager->tryUsePrimary(getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
+                m_weaponManager->tryAttack(WEAPON_PRIMARY, getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
             else if (ms.rightButton)
-                m_weaponManager->tryUseSecondary(getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
+                m_weaponManager->tryAttack(WEAPON_SECONDARY, getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
 
             // Reload
             if (ks.IsKeyDown(m_reloadWeapon))
