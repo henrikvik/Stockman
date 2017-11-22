@@ -167,7 +167,7 @@ void StatusManager::update(float deltaTime, Entity &entity)
 void StatusManager::copyUpgradesFrom(StatusManager &other)
 {
     for (int i = 0; i < NR_OF_UPGRADES; i++)
-        m_upgradeStacks[i] = other.m_upgradeStacks[i];
+        m_upgradeStacks[i] += other.m_upgradeStacks[i];
 }
 
 void StatusManager::addUpgrade(UPGRADE_ID id)
