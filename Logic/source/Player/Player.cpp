@@ -48,7 +48,7 @@ Player::~Player()
 
 void Player::init(Physics* physics, ProjectileManager* projectileManager)
 {
-    Settings setting = Settings::getInstance();
+    Settings& setting = Settings::getInstance();
 	m_weaponManager->init(projectileManager);
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
@@ -813,7 +813,7 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-    Settings setting = Settings::getInstance();
+    Settings& setting = Settings::getInstance();
 	m_camYaw	+= setting.getMouseSense() * (ms->x * deltaTime);
 	m_camPitch	-= setting.getMouseSense() * (ms->y * deltaTime);
 
