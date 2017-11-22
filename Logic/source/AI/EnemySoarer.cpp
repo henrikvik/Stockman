@@ -47,7 +47,7 @@ void EnemySoarer::createAbilities()
         // ontick 
     }, [=](Player &player, Ability &ab) -> void {
         // onuse
-        auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, 6.f, 4.5f);
+        auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, 6.f, 5.5f);
         if (pj) {
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
