@@ -7,13 +7,13 @@ using namespace Logic;
 
 Weapon::Weapon()
 {
-    m_projectileData = new ProjectileData();
+    m_projectileData = newd ProjectileData();
 }
 
 Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo)
 {
     m_wInfo = wInfo;
-    m_projectileData = new ProjectileData(projectileData);
+    m_projectileData = newd ProjectileData(projectileData);
 
     setSpawnFunctions(*projectileManager);
 }
