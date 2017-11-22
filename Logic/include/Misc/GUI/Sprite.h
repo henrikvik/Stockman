@@ -16,6 +16,7 @@ public:
     };
     Sprite(float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha = 1);
     Sprite(Points screenpoint, Points spritepoint, float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha = 1);
+    Sprite();
     ~Sprite();
 
     void moveTexturePos(float u, float v);

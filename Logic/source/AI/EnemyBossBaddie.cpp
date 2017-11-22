@@ -20,7 +20,7 @@ using namespace Logic;
 const float EnemyBossBaddie::BASE_SPEED = 21.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.075f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.3f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 18500, EnemyBossBaddie::SCORE = 10000; // Big guy, for you
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 1000000, EnemyBossBaddie::SCORE = 10000; // Big guy, for you
 
 /*
     @author Lukas Westling
@@ -127,9 +127,9 @@ void EnemyBossBaddie::createAbilities()
 
     /* ABILITY TWO */
 
-    data.cooldown = 13500.f;
+    data.cooldown = 15000.f;
     data.duration = 0.f;
-    data.randomChanche = 150;
+    data.randomChanche = 200;
 
     auto onUse1 = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_2, nullptr, true);

@@ -1,11 +1,11 @@
 { // ON FIRE
 	"flags": 2; // 0x1
-	"duration": 10000f;
+	"duration": 5000f;
 	"modifiers": 1;
 	"specifics": 0;
 
 	"mDmgGiven": 0f;
-	"mDmgTaken": 1f;
+	"mDmgTaken": 2f;
 	"mFirerate": 0f;
 	"mHP": 0f;
 	"mMovementSpeed": 0f;

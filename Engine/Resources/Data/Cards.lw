@@ -3,10 +3,10 @@
 	"description" : "Regain all your health";
 	"texture" : "b";
 
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.244f;
+	"yTexStart" : 0.0058f;
+	"xTexEnd" : 0.482f;
+	"yTexEnd" : 0.2968f;
 
 	"statusAmount" : 1;
 	"statusType" : 0;
@@ -14,14 +14,14 @@
 	"status0" : 8;
 }
 {
-	"cardName" : "+Damage";
+	"cardName" : "Damage";
 	"description" : "Increase all weapon damage";
 	"texture" : "b";
 
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.3564f;
+	"xTexEnd" : 0.2438f;
+	"yTexEnd" : 0.5908f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
@@ -29,14 +29,14 @@
 	"status0" : 1;
 }
 {
-	"cardName" : "+Ammo Cap";
+	"cardName" : "Ammo Cap";
 	"description" : "Increase the ammo cap";
 	"texture" : "b";
 
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.734f;
+	"yTexStart" : 0.363f;
+	"xTexEnd" : 0.972f;
+	"yTexEnd" : 0.601f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
@@ -44,14 +44,14 @@
 	"status0" : 10;
 }
 {
-	"cardName" : "+Mag Size";
-	"description" : "Increase the total ammo of your weapon";
+	"cardName" : "Mag Size";
+	"description" : "Increase the total ammo of your weapons";
 	"texture" : "b";
 
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.6572f;
+	"xTexEnd" : 0.2382f;
+	"yTexEnd" : 0.8955f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
@@ -59,14 +59,14 @@
 	"status0" : 9;
 }
 {
-	"cardName" : "+Movement Speed";
-	"description" : "Increase your movment";
+	"cardName" : "Run Speed";
+	"description" : "Increase your run speed";
 	"texture" : "b";
 
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.480f;
+	"yTexStart" : 0.6552f;
+	"xTexEnd" : 0.71875f;
+	"yTexEnd" : 0.89355f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
@@ -74,14 +74,14 @@
 	"status0" : 8;
 }
 {
-	"cardName" : "-Skill CD";
+	"cardName" : "Skill CD";
 	"description" : "Decrease cooldown on your skills";
 	"texture" : "b";
 
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.7607f;
+	"yTexStart" : 0.067f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.3056f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
@@ -89,14 +89,14 @@
 	"status0" : 7;
 }
 {
-	"cardName" : "+Fire-rate";
+	"cardName" : "Fire rate";
 	"description" : "Increase fire rate for all weapons";
 	"texture" : "b";
 
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.4785f;
+	"yTexStart" : 0.3574f;
+	"xTexEnd" : 0.7167f;
+	"yTexEnd" : 0.5957f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
@@ -104,14 +104,14 @@
 	"status0" : 6;
 }
 {
-	"cardName" : "-Reload";
+	"cardName" : "Reload";
 	"description" : "Decrease reload time of all weapons";
 	"texture" : "b";
 
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.480f;
+	"yTexStart" : 0.6552f;
+	"xTexEnd" : 0.71875f;
+	"yTexEnd" : 0.89355f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
@@ -119,14 +119,14 @@
 	"status0" : 5;
 }
 {
-	"cardName" : "+Jump";
+	"cardName" : "Jump";
 	"description" : "Increase the jump strength";
 	"texture" : "b";
 
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.7216f;
+	"yTexStart" : 0.6611f;
+	"xTexEnd" : 0.95996f;
+	"yTexEnd" : 0.89941f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
@@ -134,14 +134,14 @@
 	"status0" : 4;
 }
 {
-	"cardName" : "+Freeze Duration";
+	"cardName" : "Freeze";
 	"description" : "Staff freezes enemies longer";
 	"texture" : "b";
 
-	"xTexStart" : 1.0f;
-	"yTexStart" : 1.0f;
-	"xTexEnd" : 0.0f;
-	"yTexEnd" : 0.0f;
+	"xTexStart" : 0.0058f;
+	"yTexStart" : 0.032f;
+	"xTexEnd" : 0.244f;
+	"yTexEnd" : 0.270f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
