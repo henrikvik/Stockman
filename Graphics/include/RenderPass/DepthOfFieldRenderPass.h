@@ -40,6 +40,7 @@ namespace Graphics
 
         ConstantBuffer<float> cbuffer;
         bool firstTime;
+        bool run;
 
         PingPongBuffer * backBuffers;
     };
