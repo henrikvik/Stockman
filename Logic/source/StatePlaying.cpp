@@ -1,9 +1,8 @@
 #include <StatePlaying.h>
 #include <StateMachine\StateBuffer.h>
 #include <State.h>
-#include "..\include\Misc\GUI\iMenuCards.h"
+#include <Misc\GUI\iMenuCards.h>
 #include <Misc\Network\dbConnect.h>
-
 #include <Misc\CommandsFile.h>
 
 // Input Singletons
@@ -227,13 +226,12 @@ void StatePlaying::render() const
     m_fpsRenderer.render();
 }
 
-#include <Engine\Settings.h>
 void StatePlaying::gameOver()
 {
     // Upload score
     ComboMachine::Get().endCombo();
     Network::dbConnect db;
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    db.addHighscore("Stockman Himself", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
@@ -244,7 +242,7 @@ void StatePlaying::gameWon()
     // Upload score
     ComboMachine::Get().endCombo();
     Network::dbConnect db;
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    db.addHighscore("Stockman Himself", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 
     m_menu->queueMenu(iMenu::MenuGroup::GameWon);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
