@@ -64,6 +64,8 @@ namespace Logic
         void gameOver();
         void gameWon();
 
+        float m_playTime;
+
         iMenuMachine*       m_menu;
         Physics*			m_physics;
         Player*				m_player;

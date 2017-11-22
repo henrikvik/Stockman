@@ -73,6 +73,8 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     info.type = info.Snow;
     info.restart = true;
 
+    m_playTime = 0;
+
     QueueRender(info);
 }
 
@@ -93,6 +95,8 @@ StatePlaying::~StatePlaying()
 
 void StatePlaying::reset()
 {
+    m_playTime = 0;
+
     m_projectileManager->removeAllProjectiles();
     m_player->reset();
 
@@ -139,6 +143,8 @@ void StatePlaying::update(float deltaTime)
         //TODO temp
         fullhack = true;
     }
+
+    m_playTime++;
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
@@ -228,7 +234,7 @@ void StatePlaying::gameOver()
     // Upload score
     ComboMachine::Get().endCombo();
     Network::dbConnect db;
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), 0, 0, 0);
+    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
@@ -239,7 +245,7 @@ void StatePlaying::gameWon()
     // Upload score
     ComboMachine::Get().endCombo();
     Network::dbConnect db;
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), 0, 0, 0);
+    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 
     m_menu->queueMenu(iMenu::MenuGroup::GameWon);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
