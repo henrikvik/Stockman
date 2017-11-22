@@ -34,6 +34,8 @@ namespace Logic
 		Card pick(int cardIndex);
  
         std::vector<Card*> getHand();
+
+        virtual void render() const;
 	private:
 		static const int HEALTH_PACK;
         static const int HAND_SIZE;
@@ -49,7 +51,8 @@ namespace Logic
         std::vector<Card>                           m_cards;
 
         //temp
-        std::vector<Card*> currenthand;
+        std::vector<Card> currenthand;
+        void pepperCardsForDraw();
 	};
 }
 
