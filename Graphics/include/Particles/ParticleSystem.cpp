@@ -499,7 +499,7 @@ void ParticleSystem::render(
         cxt->VSSetConstantBuffers(0, 1, buffers);
         cxt->PSSetConstantBuffers(0, 2, buffers);
 
-        cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
+        cxt->OMSetDepthStencilState(Global::cStates->DepthRead(), 0);
         cxt->OMSetRenderTargets(1, &dest_rtv, dest_dsv);
         cxt->RSSetState(Global::cStates->CullNone());
 
