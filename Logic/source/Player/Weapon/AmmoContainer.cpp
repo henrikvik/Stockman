@@ -34,12 +34,12 @@ bool AmmoContainer::removePrimaryAmmo()
     else
         m_aInfo.magAmmo -= m_aInfo.primAmmoConsumption;
 
-    if (m_aInfo.enhancedAmmo > 0)
+    if (m_aInfo.primEnhancedAmmoConsumption != 0 && m_aInfo.enhancedAmmo > 0)
     {
-        if (m_aInfo.primAmmoConsumption > m_aInfo.enhancedAmmo)
+        if (m_aInfo.primEnhancedAmmoConsumption > m_aInfo.enhancedAmmo)
             m_aInfo.enhancedAmmo = 0;
         else
-            m_aInfo.enhancedAmmo -= m_aInfo.primAmmoConsumption;
+            m_aInfo.enhancedAmmo -= m_aInfo.primEnhancedAmmoConsumption;
 
         return true; // return true if using enhanced ammo
     }
@@ -54,12 +54,12 @@ bool AmmoContainer::removeSecondaryAmmo()
     else
         m_aInfo.magAmmo -= m_aInfo.secAmmoConsumption;
 
-    if (m_aInfo.enhancedAmmo > 0)
+    if (m_aInfo.secEnhancedAmmoConsumption != 0 && m_aInfo.enhancedAmmo > 0)
     {
-        if (m_aInfo.secAmmoConsumption > m_aInfo.enhancedAmmo)
+        if (m_aInfo.secEnhancedAmmoConsumption > m_aInfo.enhancedAmmo)
             m_aInfo.enhancedAmmo = 0;
         else
-            m_aInfo.enhancedAmmo -= m_aInfo.secAmmoConsumption;
+            m_aInfo.enhancedAmmo -= m_aInfo.secEnhancedAmmoConsumption;
 
         return true; // return true if using enhanced ammo
     }

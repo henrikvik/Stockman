@@ -11,7 +11,7 @@ namespace Logic
         WeaponCrossbow(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo);
         virtual ~WeaponCrossbow();
 
-        virtual void useEnhanced(bool shouldUse);
+        virtual bool useEnhanced(bool shouldUse);
     };
 }
 

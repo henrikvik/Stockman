@@ -16,7 +16,9 @@ namespace Logic
             int magSize;
             int magAmmo;
             int primAmmoConsumption;
+            int primEnhancedAmmoConsumption;
             int secAmmoConsumption;
+            int secEnhancedAmmoConsumption;
             float reloadTime;
         };
 

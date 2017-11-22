@@ -13,7 +13,7 @@ WeaponCrossbow::~WeaponCrossbow()
 {
 }
 
-void WeaponCrossbow::useEnhanced(bool shouldUse)
+bool WeaponCrossbow::useEnhanced(bool shouldUse)
 {
     getProjectileData()->hasEffect = shouldUse;
 
@@ -21,4 +21,6 @@ void WeaponCrossbow::useEnhanced(bool shouldUse)
         getProjectileData()->type = ProjectileTypeCrossbowFire;
     else
         getProjectileData()->type = ProjectileTypeNormal;
+
+    return true;
 }
