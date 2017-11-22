@@ -48,10 +48,24 @@ void ButtonFunction::quitGame()
 }
 
 // Just simply removes the current pause menu
-void Logic::ButtonFunction::unpause()
+void ButtonFunction::unpause()
 {
     if (Action::Get().m_menuMachine)
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
+}
+
+// Goes to the gameoverhighscore screen
+void ButtonFunction::goToGameOverHighscore()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::HighscoreGameOver);
+}
+
+// Goes back to gameover state
+void ButtonFunction::goToGameOver()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::GameOver);
 }
 
 // Switches the program's state and switching to startmenu
