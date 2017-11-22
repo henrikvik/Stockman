@@ -41,7 +41,7 @@ namespace Graphics
         drawInstanced<StaticRenderInfo>(resources[4]);
 
         Global::context->VSSetShader(forward_plus_vs_animated, nullptr, 0);
-        drawInstanced<AnimatedRenderInfo>(resources[5]);
+        drawInstancedAnimated<AnimatedRenderInfo>(resources[5], resources[6]);
         
         Global::context->PSSetSamplers(0, 3, Global::nulls);
         Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);

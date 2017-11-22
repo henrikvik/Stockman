@@ -36,10 +36,11 @@ namespace Graphics
         bool enabled = true;
 
     protected:
+        ConstantBuffer<UINT> instanceOffsetBuffer;
         template<typename QueueT>
         void drawInstanced(ID3D11ShaderResourceView * instanceBuffer) const;
-        ConstantBuffer<UINT> instanceOffsetBuffer;
-
+        template<typename QueueT>
+        void drawInstancedAnimated(ID3D11ShaderResourceView * instanceBuffer, ID3D11ShaderResourceView * jointsBuffer) const;
     };
 
     template<typename QueueT>
@@ -47,8 +48,8 @@ namespace Graphics
     {
         Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         Global::context->RSSetState(Global::cStates->CullClockwise());
-        Global::context->VSSetShaderResources(10, 1, &instanceBuffer);
 
+        Global::context->VSSetShaderResources(10, 1, &instanceBuffer);
         Global::context->VSSetConstantBuffers(10, 1, instanceOffsetBuffer);
 
         UINT instanceOffset = 0;
@@ -72,8 +73,6 @@ namespace Graphics
             };
             Global::context->PSSetShaderResources(12, 4, textures);
 
-
-
             instanceOffsetBuffer.write(Global::context, &instanceOffset, sizeof(instanceOffset));
             instanceOffset += renderInfos.size();
 
@@ -85,9 +84,15 @@ namespace Graphics
 
         }
 
-        Global::context->VSSetShaderResources(10, 1, Global::nulls);
-        Global::context->VSSetShaderResources(11, 1, Global::nulls);
+        Global::context->VSSetShaderResources(10, 2, Global::nulls);
         Global::context->PSSetShaderResources(12, 4, Global::nulls);
+    }
 
+    template<typename QueueT>
+    void RenderPass::drawInstancedAnimated(ID3D11ShaderResourceView * instanceBuffer, ID3D11ShaderResourceView * jointsBuffer) const
+    {
+        Global::context->VSSetShaderResources(9, 1, &jointsBuffer);
+        drawInstanced<QueueT>(instanceBuffer);
+        Global::context->VSSetShaderResources(9, 1, Global::nulls);
     }
 }
