@@ -124,6 +124,7 @@ void StatePlaying::update(float deltaTime)
         return;
     PROFILE_END();
 
+    m_playTime += deltaTime;
     ComboMachine::Get().update(deltaTime);
 
     if (fullhack)
@@ -143,8 +144,6 @@ void StatePlaying::update(float deltaTime)
         //TODO temp
         fullhack = true;
     }
-
-    m_playTime++;
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());

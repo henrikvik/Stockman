@@ -1,6 +1,6 @@
 #include <Misc\GUI\iMenuHighscore.h>
-#include <comdef.h>
 #include <Misc\Network\dbConnect.h>
+#include <comdef.h> // For use of _bstr_t
 
 using namespace Logic;
 
