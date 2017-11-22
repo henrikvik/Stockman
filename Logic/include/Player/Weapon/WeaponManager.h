@@ -15,6 +15,8 @@
 #include <vector>
 #include <btBulletCollisionCommon.h>
 
+#define WEAPON_PRIMARY 0
+#define WEAPON_SECONDARY 1
 
 namespace Graphics
 {

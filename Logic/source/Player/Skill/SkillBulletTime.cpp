@@ -59,6 +59,8 @@ bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
         travelPData.type = ProjectileType::ProjectileTypeBulletTime;
         m_travelProjectile = m_projectileManager->addProjectile(travelPData, shooter.getPositionBT(), forward, shooter);*/
     }
+
+    return false;
 }
 
 void SkillBulletTime::setSpawnFunctions(ProjectileManager &projManager)

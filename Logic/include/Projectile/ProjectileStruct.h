@@ -11,6 +11,7 @@ namespace Logic
 	enum ProjectileType
 	{
 		ProjectileTypeNormal,
+        ProjectileTypeCrossbowFire,
 		ProjectileTypeGrappling,
 		ProjectileTypeMelee,
         ProjectileTypeMeleeParry,
