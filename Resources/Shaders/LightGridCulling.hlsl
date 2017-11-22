@@ -129,8 +129,8 @@ StructuredBuffer<Frustum> Frustums : register(t1);
 StructuredBuffer<Light>   Lights : register(t2);
 
 globallycoherent RWStructuredBuffer<uint> OpaqueLightIndexCounter : register(u0);
-RWStructuredBuffer<uint> OpaqueLightIndexList : register(u2);
-RWTexture2D<uint2>       OpaqueLightGrid : register(u4);
+RWStructuredBuffer<uint> OpaqueLightIndexList : register(u1);
+RWTexture2D<uint2>       OpaqueLightGrid : register(u2);
 
 // Linear Clamp
 SamplerState DebugSampler : register(s0);
