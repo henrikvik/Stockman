@@ -33,10 +33,10 @@ void Projectile::start(btVector3 forward, StatusManager& statusManager)
     btRigidBody* body = getRigidBody();
     btVector3 dir = body->getLinearVelocity().normalized();
     // Taking the forward vector and getting the pitch and yaw from it
-    float pitch = asin(-dir.getY()) - M_PI;
+    float pitch = asin(-dir.getY()) - (float)M_PI;
     float yaw = atan2(dir.getX(), dir.getZ());
     //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
-    btQuaternion rotation = btQuaternion(yaw, pitch - M_PI, 0);
+    btQuaternion rotation = btQuaternion(yaw, pitch - (float)M_PI, 0);
     body->getWorldTransform().setRotation(rotation);
 
     // rotate model offset
@@ -107,10 +107,10 @@ void Projectile::updateSpecific(float deltaTime)
     body->setGravity({ 0, -PHYSICS_GRAVITY * m_pData.gravityModifier * pow(m_bulletTimeMod, 2), 0.f });
 
     // Taking the forward vector and getting the pitch and yaw from it
-    float pitch = asin(-dir.getY()) - M_PI;
+    float pitch = asin(-dir.getY()) - (float)M_PI;
     float yaw = atan2(dir.getX(), dir.getZ());
     //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
-    btQuaternion rotation = btQuaternion(yaw, pitch - M_PI, 0);
+    btQuaternion rotation = btQuaternion(yaw, pitch - (float)M_PI, 0);
     body->getWorldTransform().setRotation(rotation);
 
     m_unrotatedMO += (btVector3(0.f, 0.f, 0.f) - m_unrotatedMO) * 0.001f * deltaTime;

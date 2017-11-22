@@ -37,7 +37,7 @@ void WeaponManager::init(ProjectileManager* projectileManager)
     m_Upgrades.reloadTimeModifier = 1.0f;
     m_Upgrades.fireRateModifier = 1.0f;
     m_Upgrades.freezeDurationModifier = 1.0f;
-    m_Upgrades.fireDamageModifier = 0.0f;
+    m_Upgrades.fireDamageModifier = 0;
 }
 
 void WeaponManager::clear()
@@ -77,7 +77,7 @@ void WeaponManager::reset()
     m_Upgrades.reloadTimeModifier = 1.0f;
     m_Upgrades.fireRateModifier = 1.0f;
     m_Upgrades.freezeDurationModifier = 1.0f;
-    m_Upgrades.fireDamageModifier = 0.0f;
+    m_Upgrades.fireDamageModifier = 0;
 }
 
 void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
@@ -244,11 +244,11 @@ void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Pl
     {
         if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().primAmmoConsumption == 0)
         {
-            if (float delayTime = m_currentWeapon->primary->getDelayTime())
+            if (int delayTime = m_currentWeapon->primary->getDelayTime())
             {
                 m_toUse = USE_PRIMARY;
                 m_toUseShooter = &shooter;
-                m_attackRateTimer = delayTime;
+                m_attackRateTimer = (float)delayTime;
             }
             else
             {
@@ -280,11 +280,11 @@ void WeaponManager::tryUseSecondary(btVector3 position, float yaw, float pitch, 
     {
         if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().secAmmoConsumption == 0)
         {
-            if (float delayTime = m_currentWeapon->secondary->getDelayTime())
+            if (int delayTime = m_currentWeapon->secondary->getDelayTime())
             {
                 m_toUse = USE_SECONDARY;
                 m_toUseShooter = &shooter;
-                m_attackRateTimer = delayTime;
+                m_attackRateTimer = (float)delayTime;
             }
             else
             {
