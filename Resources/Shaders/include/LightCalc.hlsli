@@ -49,10 +49,12 @@ float3 adjustContrast(float3 color, float contrast, float threshold)
 }
 
 //Returns the shadow amount of a given position
-float calcShadowFactor(SamplerComparisonState comparisonSampler, Texture2D shadowMap, DirectionalLight light, int sampleCount)
+float calcShadowFactor(SamplerComparisonState comparisonSampler, Texture2D shadowMap, float3 lightPos)
 {
-    light.position.x = (light.position.x * 0.5f) + 0.5f;
-    light.position.y = (light.position.y * -0.5f) + 0.5f;
+    int sampleCount = 2;
+
+    lightPos.x = (lightPos.x * 0.5f) + 0.5f;
+    lightPos.y = (lightPos.y * -0.5f) + 0.5f;
 
     float addedShadow = 0;
 
@@ -62,7 +64,7 @@ float calcShadowFactor(SamplerComparisonState comparisonSampler, Texture2D shado
         [unroll]
         for (int x = -sampleCount; x <= sampleCount; x += 1)
         {
-            addedShadow += shadowMap.SampleCmp(comparisonSampler, light.position.xy, light.position.z, int2(x, y)).r;
+            addedShadow += shadowMap.SampleCmp(comparisonSampler, lightPos.xy, lightPos.z, int2(x, y)).r;
         }
     }
 
