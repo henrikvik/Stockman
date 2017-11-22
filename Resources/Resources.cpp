@@ -27,6 +27,7 @@ namespace Resources
             if (strcmp(str, "Ammocrystal") == 0) return Ammocrystal;
             if (strcmp(str, "AmmoPackCrossBolt") == 0) return AmmoPackCrossBolt;
             if (strcmp(str, "AnimatedSummonUnit") == 0) return AnimatedSummonUnit;
+            if (strcmp(str, "AnimationTest") == 0) return AnimationTest;
             if (strcmp(str, "Barrel") == 0) return Barrel;
             if (strcmp(str, "Crossbow") == 0) return Crossbow;
             if (strcmp(str, "Crossbowbolt") == 0) return Crossbowbolt;
@@ -57,7 +58,6 @@ namespace Resources
             if (strcmp(str, "ForwardPlus") == 0) return ForwardPlus;
             if (strcmp(str, "ForwardPlus_PS") == 0) return ForwardPlus_PS;
             if (strcmp(str, "ForwardPlus_VS_Animated") == 0) return ForwardPlus_VS_Animated;
-            if (strcmp(str, "ForwardPlus_VS_Foliage") == 0) return ForwardPlus_VS_Foliage;
             if (strcmp(str, "ForwardPlus_VS_Static") == 0) return ForwardPlus_VS_Static;
             if (strcmp(str, "FullscreenQuad") == 0) return FullscreenQuad;
             if (strcmp(str, "GlowBlurHorizontal") == 0) return GlowBlurHorizontal;
