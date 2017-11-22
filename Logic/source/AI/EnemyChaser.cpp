@@ -1,6 +1,7 @@
 #include <AI\EnemyChaser.h>
 #include <Player\Player.h>
 #include <Projectile\Projectile.h>
+#include <Misc\ComboMachine.h>
 using namespace Logic;
 
 const int EnemyChaser::MAX_HP = 25;

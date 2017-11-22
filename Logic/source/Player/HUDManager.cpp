@@ -220,6 +220,22 @@ void HUDManager::updateTextElements()
 
     HUDText.push_back(TextRenderInfo(text));
 
+    liveText.push_back(std::to_wstring(info.scoreCombo));
+    text.text = liveText.at(last).c_str();
+    last++;
+    text.position = DirectX::SimpleMath::Vector2(142, 45);
+    text.font = Resources::Fonts::KG14;
+
+    HUDText.push_back(TextRenderInfo(text));
+
+    liveText.push_back(std::to_wstring(info.scoreMul) + L"X");
+    text.text = liveText.at(last).c_str();
+    last++;
+    text.position = DirectX::SimpleMath::Vector2(110, 45);
+    text.font = Resources::Fonts::KG14;
+
+    HUDText.push_back(TextRenderInfo(text));
+
     //total ammo of weapon
     if (info.currentWeapon == 0)
     {
@@ -427,6 +443,8 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
 {
     //updates hudInfo with the current info
     info.score = ComboMachine::Get().getTotalScore();
+    info.scoreCombo = ComboMachine::Get().getComboScore();
+    info.scoreMul = ComboMachine::Get().getCurrentCombo();
     info.hp = player.getHP();
     info.activeAmmo[HUDManager::CURRENT_AMMO]   = player.getActiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
     info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().enhancedAmmo;// TODO GET AMMO
@@ -524,6 +542,8 @@ void HUDManager::reset()
     info.inactiveAmmo[0] = 0;
     info.inactiveAmmo[1] = 0;
     info.score = 0;
+    info.scoreCombo = 0;
+    info.scoreMul = 0;
 
     skillChoosen = false;
     HUDElements.clear();
