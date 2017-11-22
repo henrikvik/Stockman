@@ -3,7 +3,7 @@
 
 #include <Misc\GUI\iMenu.h>
 #include <Graphics\include\RenderInfo.h>
-#include <Misc\Network\Receiver.h>
+#include <Misc\Network\dbConnect.h>
 
 namespace Logic
 {

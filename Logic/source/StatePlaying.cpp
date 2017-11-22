@@ -2,6 +2,7 @@
 #include <StateMachine\StateBuffer.h>
 #include <State.h>
 #include "..\include\Misc\GUI\iMenuCards.h"
+#include <Misc\Network\dbConnect.h>
 
 #include <Misc\CommandsFile.h>
 
@@ -46,10 +47,6 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     m_player->init(m_physics, m_projectileManager);
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
 
-    // Initializing Highscore Manager
-    m_highScoreManager = newd HighScoreManager();
-    m_highScoreManager->setName("Stockman");
-
     // Initializing the Map
     m_map = newd Map();
     m_map->init(m_physics);
@@ -91,7 +88,6 @@ StatePlaying::~StatePlaying()
     delete m_player;
     delete m_map;
     delete m_cardManager;
-    delete m_highScoreManager;
     delete m_projectileManager;
 }
 
@@ -226,18 +222,25 @@ void StatePlaying::render() const
     m_fpsRenderer.render();
 }
 
+#include <Engine\Settings.h>
 void StatePlaying::gameOver()
 {
+    // Upload score
     ComboMachine::Get().endCombo();
-    m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
+    Network::dbConnect db;
+    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), 0, 0, 0);
+
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
 }
 
 void StatePlaying::gameWon()
 {
+    // Upload score
     ComboMachine::Get().endCombo();
-    m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
+    Network::dbConnect db;
+    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), 0, 0, 0);
+
     m_menu->queueMenu(iMenu::MenuGroup::GameWon);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
 }

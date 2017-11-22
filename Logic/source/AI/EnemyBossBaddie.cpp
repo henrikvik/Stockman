@@ -6,6 +6,7 @@
 
 #include <Misc\Sound\NoiseMachine.h>
 #include <Graphics\include\Structs.h>
+#include <Misc\ComboMachine.h>
 
 #include <sstream>
 using namespace Logic;
@@ -19,7 +20,7 @@ using namespace Logic;
 const float EnemyBossBaddie::BASE_SPEED = 21.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.075f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.3f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 18500; // Big guy, for you
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 18500, EnemyBossBaddie::SCORE = 10000; // Big guy, for you
 
 /*
     @author Lukas Westling
@@ -49,6 +50,7 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     
     addCallback(ON_DEATH, [&](CallbackData &data)
     {
+        ComboMachine::Get().kill(SCORE);
         Sound::NoiseMachine::Get().stopAllGroups();
         Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_2, nullptr, true);
     });

@@ -1,17 +1,18 @@
-#ifndef REQUESTER_H
-#define REQUESTER_H
+#ifndef dbCONNECT_H
+#define dbCONNECT_H
 
 #include <Misc\NonCopyable.h>
 #include <SFML\Network.hpp>
 
 namespace Network
 {
-    class Receiver : public NonCopyable
+    class dbConnect : public NonCopyable
     {
     public:
-        Receiver();
-        ~Receiver();
+        dbConnect();
+        ~dbConnect();
 
+        bool addHighscore(std::string name, int score, int time, int wave, int kills);
         std::vector<std::vector<std::string>> getHigscoreStats(int count);
     
     private:
@@ -23,4 +24,4 @@ namespace Network
 
 }
 
-#endif // !REQUESTER_H
+#endif // !dbCONNECT_H

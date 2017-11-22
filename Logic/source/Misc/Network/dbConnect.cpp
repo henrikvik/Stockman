@@ -1,4 +1,4 @@
-#include <Misc\Network\Receiver.h>
+#include <Misc\Network\dbConnect.h>
 /*
    
     Add Score:              http://us-central1-stockman-highscore.cloudfunctions.net/addScore?name=TEST&score=5000&kills=5000&waves=1000&time=1000
@@ -7,28 +7,43 @@
 */
 
 #define GET_TOP_SCORES_ADRESS "http://us-central1-stockman-highscore.cloudfunctions.net/"
+#define ADD_SCORE_ADRESS "http://us-central1-stockman-highscore.cloudfunctions.net/"
 
 using namespace Network;
 
-Receiver::Receiver() 
+dbConnect::dbConnect() { }
+
+dbConnect::~dbConnect() { }
+
+bool dbConnect::addHighscore(std::string name, int score, int time, int wave, int kills)
 {
-    //std::vector<std::vector<std::string>> contestants = getHigscoreStats(10);
+    sf::Http http(ADD_SCORE_ADRESS);
 
+    // Making the arguments for the http post
+    std::string scoreStr;
+    scoreStr += "name=" + name;
+    scoreStr += "&score=" + std::to_string(score);
+    scoreStr += "&kills=" + std::to_string(kills);
+    scoreStr += "&waves=" + std::to_string(wave);
+    scoreStr += "&time=" + std::to_string(time);
 
-    //printf("\n\n************************\nParsed from database request:");
-    //for (size_t i = 0; i < contestants.size(); i++)
-    //{
-    //    printf("\nPlace: %d", i);
-    //    for (size_t j = 0; j < contestants[i].size(); j++)
-    //    {
-    //        printf(" *-. %s", contestants[i][j].c_str());
-    //    }
-    //}
+    // Setup the request
+    sf::Http::Request request;
+    request.setMethod(sf::Http::Request::Post);
+    request.setUri("/addScore?" + scoreStr);
+    request.setHttpVersion(1, 1); // HTTP 1.1
+    request.setField("From", "me");
+    request.setField("Content-Type", "application/x-www-form-urlencoded");
+
+    // Send the request
+    sf::Http::Response response = http.sendRequest(request);
+    printf("Resonse from server: %s\n", response.getBody().c_str());
+
+    // Return the response as a string
+    return true;
 }
 
-Receiver::~Receiver() { }
-
-std::vector<std::vector<std::string>> Network::Receiver::getHigscoreStats(int count)
+std::vector<std::vector<std::string>> Network::dbConnect::getHigscoreStats(int count)
 {
     std::vector<std::vector<std::string>> entries;
     std::vector<std::string> contestants = requestContestants(count);
@@ -42,7 +57,7 @@ std::vector<std::vector<std::string>> Network::Receiver::getHigscoreStats(int co
     return entries;
 }
 
-std::vector<std::string> Network::Receiver::requestContestants(int count)
+std::vector<std::string> Network::dbConnect::requestContestants(int count)
 {
     std::string result = requestHighscoreBody(count);
     std::vector<std::string> contestants = splitIntoVector(result, ';');
@@ -50,7 +65,7 @@ std::vector<std::string> Network::Receiver::requestContestants(int count)
     return contestants;
 }
 
-std::string Receiver::requestHighscoreBody(int count)
+std::string dbConnect::requestHighscoreBody(int count)
 {
     sf::Http http(GET_TOP_SCORES_ADRESS);
     
@@ -69,7 +84,7 @@ std::string Receiver::requestHighscoreBody(int count)
     return response.getBody();
 }
 
-std::vector<std::string> Receiver::splitIntoVector(std::string full, char del)
+std::vector<std::string> dbConnect::splitIntoVector(std::string full, char del)
 {
     std::vector<std::string> str;
 

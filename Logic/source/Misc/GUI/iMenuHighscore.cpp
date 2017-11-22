@@ -1,6 +1,6 @@
 #include <Misc\GUI\iMenuHighscore.h>
 #include <comdef.h>
-#include <Misc\Network\Receiver.h>
+#include <Misc\Network\dbConnect.h>
 
 using namespace Logic;
 
@@ -46,8 +46,8 @@ void iMenuHighscore::buildHighscore()
     clearEntries();
     
     // Get the highscores from the database
-    Network::Receiver reciever;
-    std::vector<std::vector<std::string>> entries = reciever.getHigscoreStats(10);
+    Network::dbConnect db;
+    std::vector<std::vector<std::string>> entries = db.getHigscoreStats(10);
 
     // Reverse the list, because we get the lowest score first
     std::reverse(entries.begin(), entries.end());
