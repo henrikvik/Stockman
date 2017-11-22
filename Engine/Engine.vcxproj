@@ -73,8 +73,8 @@
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\</IntDir>
     <TargetName>$(SolutionName)</TargetName>
-    <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(SolutionDir)libs\libs\SFML\include\32;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\SFML\libs\32;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
@@ -82,8 +82,8 @@
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\</IntDir>
     <TargetName>$(SolutionName)</TargetName>
-    <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(SolutionDir)libs\libs\SFML\include\32;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\SFML\libs\32;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
@@ -91,8 +91,8 @@
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\</IntDir>
     <TargetName>$(SolutionName)</TargetName>
-    <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(SolutionDir)libs\libs\SFML\include\64;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\SFML\libs\64;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
@@ -101,8 +101,8 @@
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\temp\</IntDir>
     <TargetName>$(SolutionName)</TargetName>
-    <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)Logic\include;$(SolutionDir)Graphics\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\imgui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(SolutionDir)libs\libs\SFML\include\64;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\SFML\libs\64;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)libs\ImGui;$(SourcePath)</SourcePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
@@ -122,7 +122,7 @@
       <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
-      <AdditionalDependencies>fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-system-d.lib;sfml-network-d.lib;fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
@@ -145,7 +145,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
-      <AdditionalDependencies>fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-system-d.lib;sfml-network-d.lib;fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
@@ -172,7 +172,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
-      <AdditionalDependencies>fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-system.lib;sfml-network.lib;fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
@@ -199,7 +199,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
-      <AdditionalDependencies>fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-system.lib;sfml-network.lib;fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>

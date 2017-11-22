@@ -2,17 +2,26 @@
 #define iMENUHIGHSCORE_H
 
 #include <Misc\GUI\iMenu.h>
-#include <Misc\HighScoreManager.h>
 #include <Graphics\include\RenderInfo.h>
+#include <Misc\Network\Receiver.h>
 
 namespace Logic
 {
     class iMenuHighscore : public iMenu
     {
     public:
+        struct HigscoreData
+        {
+            int         score;
+            int         time;
+            int         wave;
+            int         kills;
+            std::string name;
+        };
+
         struct Entry
         {
-            HighScoreManager::HighScore stats;
+            HigscoreData data;
 
             std::wstring name;
             std::wstring placing;
@@ -31,14 +40,13 @@ namespace Logic
         void clearEntries();
 
         void buildHighscore();
-        void buildEntry(int position, HighScoreManager::HighScore stat);
+        void buildEntry(int position, HigscoreData data);
 
         void update(int x, int y, float deltaTime);
         void render() const;
 
     private:
         std::vector<Entry*>         m_entry;
-        HighScoreManager            m_highscoreManager;
     };
 }
 

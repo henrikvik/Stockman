@@ -1,5 +1,6 @@
 #include <Misc\GUI\iMenuHighscore.h>
 #include <comdef.h>
+#include <Misc\Network\Receiver.h>
 
 using namespace Logic;
 
@@ -41,26 +42,42 @@ void iMenuHighscore::clearEntries()
 void iMenuHighscore::buildHighscore()
 {
     clearEntries();
-    std::vector<HighScoreManager::HighScore> entries = m_highscoreManager.getHighScores();
+    
+    Network::Receiver reciever;
+    std::vector<std::vector<std::string>> entries = reciever.getHigscoreStats(10);
+
     for (size_t i = 0; i < entries.size(); i++)
-        buildEntry(i, entries[i]);
+    {
+        // Safety check
+        if (entries[i][0].empty() || entries[i][1].empty() || entries[i][2].empty() || entries[i][3].empty() || entries[i][4].empty())
+            break;
+
+        HigscoreData data;
+        data.name   = entries[i][0];
+        data.score  = atoi(entries[i][1].c_str());
+        data.kills  = atoi(entries[i][2].c_str());
+        data.wave   = atoi(entries[i][3].c_str());
+        data.time   = atoi(entries[i][4].c_str());
+
+        buildEntry(i, data);
+    }
 }
 
-void iMenuHighscore::buildEntry(int position, HighScoreManager::HighScore stat)
+void iMenuHighscore::buildEntry(int position, HigscoreData data)
 {
     // Setup of the entry
     Entry* entry    = newd Entry();
-    entry->stats    = stat;
-    entry->name = L"Stockman sucks";// _bstr_t(stat.name.c_str());
+    entry->data     = data;
+    entry->name     = _bstr_t(data.name.c_str());
     entry->placing  = std::to_wstring(position + 1);
-    entry->time     = std::to_wstring(9999) + L" Seconds";
-    entry->score    = std::to_wstring(stat.score) + L" Points";
+    entry->time     = std::to_wstring(data.time) + L" Seconds";
+    entry->score    = std::to_wstring(data.score) + L" Points";
 
     // Entry Placing Render Texture
     if      (position == 0) entry->renderInfoPlacing.color  = FIRST_PLACE_COLOR;
     else if (position == 1) entry->renderInfoPlacing.color  = SECOND_PLACE_COLOR;
     else if (position == 2) entry->renderInfoPlacing.color  = THIRD_PLACE_COLOR;
-    else                    entry->renderInfoName.color     = OTHER_PLACE_COLOR;
+    else                    entry->renderInfoPlacing.color  = OTHER_PLACE_COLOR;
     entry->renderInfoPlacing.font       = Resources::Fonts::KG18;
     entry->renderInfoPlacing.position   = DirectX::SimpleMath::Vector2(ENTRY_POS_X * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
     entry->renderInfoPlacing.text       = entry->placing.c_str();
