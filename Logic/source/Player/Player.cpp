@@ -28,6 +28,14 @@
 
 using namespace Logic;
 
+#define PLAYER_MOVEMENT_ACCELERATION	0.0002f
+#define PLAYER_MOVEMENT_AIRACCELERATION	0.005f
+#define PLAYER_MOVEMENT_AIRSTRAFE_SPEED 0.004f
+#define PLAYER_SPEED_LIMIT				0.04f
+#define PLAYER_STRAFE_ANGLE				0.95f
+#define PLAYER_FRICTION					20.f
+#define PLAYER_AIR_FRICTION				1.f
+
 const int Player::MIN_Y = -80;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
