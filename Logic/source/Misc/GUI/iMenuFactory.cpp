@@ -122,6 +122,16 @@ iMenuHighscore * iMenuFactory::buildMenuHighscore()
     return menu;
 }
 
+iMenuHighscore * iMenuFactory::buildMenuHighscoreGameOver()
+{
+    iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreGameOver);
+
+    menu->addBackground(Resources::Textures::Highscore, 1.f);
+    menu->addButton(buildButton("MenuBackGame", ButtonFunction::goToGameOver));
+
+    return menu;
+}
+
 iMenu * iMenuFactory::buildMenuGameover()
 {
     iMenu* menu = newd iMenu(iMenu::GameOver);
@@ -130,7 +140,11 @@ iMenu * iMenuFactory::buildMenuGameover()
     menu->addBackground(Resources::Textures::Gameover, 1.0f);
 
     btn = buildButton("MenuStartGame", ButtonFunction::playAgain);
-    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.15));
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.10));
+    menu->addButton(btn);
+
+    btn = buildButton("MenuStartSettings", ButtonFunction::goToGameOverHighscore);
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.10));
     menu->addButton(btn);
 
     btn = buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu);

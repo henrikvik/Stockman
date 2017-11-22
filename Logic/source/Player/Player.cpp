@@ -820,8 +820,8 @@ void Player::crouch(float deltaTime)
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
     Settings setting = Settings::getInstance();
-	m_camYaw	+= setting.getMouseSense() * (ms->x * deltaTime);
-	m_camPitch	-= setting.getMouseSense() * (ms->y * deltaTime);
+	m_camYaw	+= setting.getMouseSense() * ms->x;
+	m_camPitch	-= setting.getMouseSense() * ms->y;
 
 	// DirectX calculates position on the full resolution,
 	//  while getWindowMidPoint gets the current window's middle point!!!!!

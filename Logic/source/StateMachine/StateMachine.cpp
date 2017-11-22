@@ -88,14 +88,14 @@ bool StateMachine::update(float deltaTime)
     {
         SetPrimaryState(StateType::State_Start);
         SetSecondaryState(StateType::Nothing);
-        return;
+        return false;
     }
 
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad2))
     {
         SetPrimaryState(StateType::State_Playing);
         SetSecondaryState(StateType::Nothing);
-        return;
+        return false;
     }
 #endif // !_DEBUG
 

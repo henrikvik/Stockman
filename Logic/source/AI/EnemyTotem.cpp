@@ -29,6 +29,8 @@ EnemyTotem::~EnemyTotem()
 
 void EnemyTotem::createAbilities()
 {
+    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
+
     AbilityData data;
     data.duration = 0.f;
     data.cooldown = 1000.f;
@@ -38,7 +40,6 @@ void EnemyTotem::createAbilities()
 
     }, [&](Player &target, Ability &ab) -> void {
         constexpr float piece = 3.14 * 2 / BULLET_AMOUNT;
-        static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
 
         ProjectileData pData;
         

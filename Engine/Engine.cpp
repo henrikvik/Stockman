@@ -123,6 +123,30 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         return catcher;
     });
 
+    debug->registerCommand("CHANGE_NAME", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            Settings setting = Settings::getInstance();
+            if (args.size() != 0)
+            {
+                setting.setAlias(args[0]);
+                catcher = "Named have been changed!";
+            }
+            else
+            {
+                catcher = "Please add your new alias too.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Are you stupid?";
+        }
+
+        return catcher;
+    });
+
     // load settings before starting
     Settings setting = Settings::getInstance();
     setting.readFromFile();
