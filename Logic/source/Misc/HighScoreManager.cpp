@@ -53,8 +53,8 @@ void HighScoreManager::loadFromFile()
 	FileLoader::singleton().loadStructsFromFile(loadTo, HIGHSCORE);
     m_highScores.clear();
 
-	for (auto const& theScore : loadTo)
-        m_highScores.push_back({ theScore.ints.at(SCORE), theScore.strings.at(NAME) });
+//	for (auto const& theScore : loadTo)
+//        m_highScores.push_back({ theScore.ints.at(SCORE), theScore.strings.at(NAME) });
 
     if (m_maxHighScoreSize < m_highScores.size()) m_maxHighScoreSize = static_cast<int> (m_highScores.size());
 }
