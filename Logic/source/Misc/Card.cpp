@@ -119,4 +119,30 @@ void Logic::Card::parseText()
     temp.text = std::wstring(m_name.begin(), m_name.end());
 
     m_text.push_back(TextRenderInfo(temp));
+
+
+    //description
+    std::string splitString = m_description;
+
+    int pos = 0;
+    do
+    {
+        pos = splitString.find(" ");
+        splitString = splitString.substr(pos);
+
+    }while (splitString.length() > 12);
+
+    std::string endPart = m_description.substr(pos);
+    splitString = m_description.substr(0, pos);
+
+    //desc part 1
+    temp.text = std::wstring(splitString.begin(), splitString.end());
+    temp.position = DirectX::SimpleMath::Vector2(50.0f, 255.0f);
+    m_text.push_back(TextRenderInfo(temp));
+
+    //desc part 2
+    temp.text = std::wstring(endPart.begin(), endPart.end());
+    temp.position = DirectX::SimpleMath::Vector2(50.0f, 265.0f);
+    m_text.push_back(TextRenderInfo(temp));
+    
 }
