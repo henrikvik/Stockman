@@ -18,7 +18,7 @@ namespace Logic
         StateMachine();
         ~StateMachine();
 
-        void update(float deltaTime);
+        bool update(float deltaTime);
         void render() const;
 
     private:
