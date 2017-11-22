@@ -7,20 +7,19 @@ using namespace Logic;
 
 Weapon::Weapon()
 {
-    m_projectileData = newd ProjectileData();
+    m_projectileData = ProjectileData();
 }
 
-Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo)
+Weapon::Weapon(ProjectileManager* projectileManager, ProjectileData& projectileData, WeaponInfo wInfo)
 {
     m_wInfo = wInfo;
-    m_projectileData = newd ProjectileData(projectileData);
+    m_projectileData = projectileData;
 
     setSpawnFunctions(*projectileManager);
 }
 
 Weapon::~Weapon()
 {
-    delete m_projectileData;
 }
 
 void Weapon::setSpawnFunctions(ProjectileManager &projManager)
@@ -42,15 +41,15 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 		for (int i = m_wInfo.projectileCount; i--; )
 		{
 			btVector3 projectileDir = calcSpread(yaw, pitch);
-			Projectile* p = spawnProjectile(*m_projectileData, position, projectileDir, shooter, m_wInfo.projectileOffset);
+			Projectile* p = spawnProjectile(m_projectileData, position, projectileDir, shooter, m_wInfo.projectileOffset);
             if (p != nullptr)
                 firedProjectiles.push_back(p);
 
-            auto speed = DirectX::SimpleMath::Vector3(m_projectileData->speed);
+            auto speed = DirectX::SimpleMath::Vector3(m_projectileData.speed);
             auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, p->getModelTransformMatrix());
 
-            if (m_projectileData->hasEffect && !m_projectileData->effectActivated)
-                Graphics::FXSystem->processEffect(&m_projectileData->effect, pos, speed * DirectX::SimpleMath::Vector3{ projectileDir.x(), projectileDir.y(), projectileDir.z() }, 0.16f);
+            if (m_projectileData.hasEffect && !m_projectileData.effectActivated)
+                Graphics::FXSystem->processEffect(&m_projectileData.effect, pos, speed * DirectX::SimpleMath::Vector3{ projectileDir.x(), projectileDir.y(), projectileDir.z() }, 0.16f);
         }
 	}
 	else									// No spread
@@ -61,15 +60,15 @@ void Weapon::use(btVector3 position, float yaw, float pitch, Entity& shooter)
 			projectileDir.setX(cos(DirectX::XMConvertToRadians(pitch)) * cos(DirectX::XMConvertToRadians(yaw)));
 			projectileDir.setY(sin(DirectX::XMConvertToRadians(pitch)));
 			projectileDir.setZ(cos(DirectX::XMConvertToRadians(pitch)) * sin(DirectX::XMConvertToRadians(yaw)));
-			Projectile* p = spawnProjectile(*m_projectileData, position, projectileDir, shooter, m_wInfo.projectileOffset);
+			Projectile* p = spawnProjectile(m_projectileData, position, projectileDir, shooter, m_wInfo.projectileOffset);
             if (p != nullptr)
                 firedProjectiles.push_back(p);
 
-            auto speed = DirectX::SimpleMath::Vector3(m_projectileData->speed);
+            auto speed = DirectX::SimpleMath::Vector3(m_projectileData.speed);
             auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, p->getModelTransformMatrix());
 
-            if (m_projectileData->hasEffect && !m_projectileData->effectActivated)
-                Graphics::FXSystem->processEffect(&m_projectileData->effect, pos, speed * DirectX::SimpleMath::Vector3 { projectileDir.x(), projectileDir.y(), projectileDir.z() }, 0.16f);
+            if (m_projectileData.hasEffect && !m_projectileData.effectActivated)
+                Graphics::FXSystem->processEffect(&m_projectileData.effect, pos, speed * DirectX::SimpleMath::Vector3 { projectileDir.x(), projectileDir.y(), projectileDir.z() }, 0.16f);
 		}
 	}
 
@@ -97,7 +96,7 @@ SpawnProjectile Logic::Weapon::getSpawnProjectileFunc()
     return spawnProjectile;
 }
 
-ProjectileData* Weapon::getProjectileData()
+ProjectileData& Weapon::getProjectileData()
 {
 	return m_projectileData;
 }

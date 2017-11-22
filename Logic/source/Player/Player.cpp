@@ -1007,12 +1007,12 @@ SkillManager* Player::getSkillManager()
 }
 const AmmoContainer& Player::getActiveAmmoContainer() const
 {
-    return *m_weaponManager->getActiveWeaponLoadout()->ammoContainer;
+    return m_weaponManager->getActiveWeaponLoadout()->ammoContainer;
 }
 
 const AmmoContainer& Player::getInactiveAmmoContainer() const
 {
-    return *m_weaponManager->getInactiveWeaponLoadout()->ammoContainer;
+    return m_weaponManager->getInactiveWeaponLoadout()->ammoContainer;
 }
 
 const Skill* Player::getSkill(int id) const
@@ -1022,7 +1022,7 @@ const Skill* Player::getSkill(int id) const
 
 bool Player::isUsingMeleeWeapon() const
 {
-    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().ammoConsumption[WEAPON_PRIMARY] == 0;
+    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer.getAmmoInfo().ammoConsumption[WEAPON_PRIMARY] == 0;
 }
 
 int Player::getCurrentWeapon() const

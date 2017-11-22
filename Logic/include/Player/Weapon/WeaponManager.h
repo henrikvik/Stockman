@@ -15,6 +15,9 @@
 #include <vector>
 #include <btBulletCollisionCommon.h>
 
+#include <Player\Weapon\AmmoContainer.h>
+#include <Player\Weapon\WeaponModel.h>
+
 #define WEAPON_PRIMARY 0
 #define WEAPON_SECONDARY 1
 
@@ -28,8 +31,6 @@ namespace Logic
     class Entity;
     class Player;
     class Weapon;
-    class AmmoContainer;
-    class WeaponModel;
     class ProjectileManager;
     class Effect;
     class Upgrade;
@@ -39,15 +40,9 @@ namespace Logic
 	public:
         struct WeaponLoadout
         {
-            Weapon* primary;
-            Weapon* secondary;
-            AmmoContainer* ammoContainer;
-            WeaponModel* weaponModel;
-
-            bool operator==(const WeaponLoadout &other)
-            {
-                return (primary == other.primary && secondary == other.secondary && ammoContainer == other.ammoContainer && weaponModel && other.weaponModel);
-            }
+            Weapon* weapon[2];
+            AmmoContainer ammoContainer;
+            WeaponModel weaponModel;
         };
 
 		WeaponManager();
@@ -110,7 +105,7 @@ namespace Logic
 
         Upgrades m_Upgrades;
 
-        std::vector<WeaponLoadout*> m_weaponLoadouts;
+        std::vector<WeaponLoadout> m_weaponLoadouts;
 		WeaponLoadout* m_currentWeapon;
 
 		// Timers
