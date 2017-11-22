@@ -12,6 +12,9 @@ namespace Logic
     public:
         struct HigscoreData
         {
+            HigscoreData() : name(""), score(0), time(0), wave(0), kills(0) { }
+            HigscoreData(std::string msg) : name(msg), score(0), time(0), wave(0), kills(0) { }
+
             int         score;
             int         time;
             int         wave;
@@ -27,11 +30,13 @@ namespace Logic
             std::wstring placing;
             std::wstring score;
             std::wstring time;
+            std::wstring kills;
 
             TextRenderInfo              renderInfoName;
             TextRenderInfo              renderInfoPlacing;
             TextRenderInfo              renderInfoScore;
             TextRenderInfo              renderInfoTime;
+            TextRenderInfo              renderInfoKills;
         };
 
         iMenuHighscore(iMenu::MenuGroup group);
@@ -46,7 +51,8 @@ namespace Logic
         void render() const;
 
     private:
-        std::vector<Entry*>         m_entry;
+        bool                m_requestDone;
+        std::vector<Entry*> m_entry;
     };
 }
 

@@ -119,6 +119,7 @@ void StatePlaying::update(float deltaTime)
     if (m_menu->getType() == iMenu::MenuGroup::Skill ||
         m_menu->getType() == iMenu::MenuGroup::GameOver ||
         m_menu->getType() == iMenu::MenuGroup::GameWon ||
+        m_menu->getType() == iMenu::MenuGroup::HighscoreGameOver ||
         m_menu->getType() == iMenu::MenuGroup::Pause) // Quick "temp pause" fix for testing purposes
         return;
     PROFILE_END();
@@ -171,6 +172,7 @@ void StatePlaying::update(float deltaTime)
     m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
     PROFILE_END();
 
+#define _DEBUG
 #ifdef _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
         m_player->takeDamage(1, 0);
@@ -212,6 +214,7 @@ void StatePlaying::render() const
     if (m_menu->getType() != iMenu::MenuGroup::Skill && 
         m_menu->getType() != iMenu::MenuGroup::GameOver &&
         m_menu->getType() != iMenu::MenuGroup::GameWon &&
+        m_menu->getType() != iMenu::MenuGroup::HighscoreGameOver &&
         m_menu->getType() != iMenu::MenuGroup::Pause)
         m_hudManager.render();
     PROFILE_END();

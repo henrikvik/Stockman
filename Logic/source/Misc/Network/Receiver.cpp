@@ -74,7 +74,11 @@ std::vector<std::string> Receiver::splitIntoVector(std::string full, char del)
     std::vector<std::string> str;
 
     for (size_t p = 0, q = 0; p != full.npos; p = q)
-        str.push_back((full.substr(p + (p != 0), (q = full.find(del, p + 1)) - p - (p != 0))));
+    {
+        std::string result = (full.substr(p + (p != 0), (q = full.find(del, p + 1)) - p - (p != 0)));
+        if (!result.empty())
+            str.push_back(result);
+    }
 
     return str;
 }

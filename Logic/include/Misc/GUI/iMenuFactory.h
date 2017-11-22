@@ -24,6 +24,7 @@ namespace Logic
         iMenuSkillPick*     buildMenuSkill();
         iMenu*              buildMenuCard();
         iMenuHighscore*     buildMenuHighscore();
+        iMenuHighscore*     buildMenuHighscoreGameOver();
         iMenu*              buildMenuGameover();
         iMenu*              buildMenuPause();
         iMenu*              buildMenuGameWon();
