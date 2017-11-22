@@ -8,17 +8,12 @@ namespace Logic
     public:
         struct AmmoInfo
         {
-            // AmmoType ammoType; probably?
-            //int ammoCap;
-            //int ammo;
             int enhancedAmmoCap;
             int enhancedAmmo;
             int magSize;
             int magAmmo;
-            int primAmmoConsumption;
-            int primEnhancedAmmoConsumption;
-            int secAmmoConsumption;
-            int secEnhancedAmmoConsumption;
+            int ammoConsumption[2];
+            int enhancedAmmoConsumption[2];
             float reloadTime;
         };
 
@@ -30,8 +25,7 @@ namespace Logic
 
         const AmmoContainer::AmmoInfo& getAmmoInfo() const;
 
-        bool removePrimaryAmmo();
-        bool removeSecondaryAmmo();
+        bool removeAmmo(int weapon);
         void setEnhancedAmmo(int ammo);
         void fillMag(int modifier);
 

@@ -1014,7 +1014,7 @@ const Skill* Player::getSkill(int id) const
 
 bool Player::isUsingMeleeWeapon() const
 {
-    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().primAmmoConsumption == 0;
+    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().ammoConsumption[WEAPON_PRIMARY] == 0;
 }
 
 int Player::getCurrentWeapon() const

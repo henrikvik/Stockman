@@ -202,21 +202,21 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
         newd WeaponLoadout{
         /* Primary */       newd WeaponCrossbow(projectileManager, ProjectileData("Icecone", false, true, 25, 1.f, 1, 100, 0.f, 3000, Resources::Models::Crossbowbolt , 1), Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0,{ -0.5f, -0.5f, 0.f } }),
         /* Secondary*/      newd WeaponCrossbow(projectileManager, ProjectileData("Icecone", false, true, 25, 1.f, 1, 100, 0.f, 1000, Resources::Models::Crossbowbolt, 1), Weapon::WeaponInfo{ 1, 18, 15, 4, 100, 0, 0,{ 0.f, 0.f, 0.f } }),
-        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30, 1, 1, 5, 5, 1000 }),
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30, { 1, 5 }, { 1, 5 }, 1000 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -0.8f, 0.3f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f }) },
 
         // Ice
         newd WeaponLoadout{
         /* Primary */       newd Weapon(projectileManager, ProjectileData("Icecone", true, false, 0, 1, 1, 20, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false), Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1,{ -0.6f, 0.25f, -1.3f } }),
         /* Secondary*/      newd WeaponFreezeGrenade(projectileManager, ProjectileData(nullptr, false, false, 40, 1.f, 1, 100, 0, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade), Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0,{ -0.8f, 0.2f, 0.f } }, ProjectileData(nullptr, false, false, 25, 0.5f, 1, 10, 5, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard), 8),
-        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 0, 100, 100, 1, 0, 0, 25, 1500 }),
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 300, 0, 100, 100, { 1, 0 }, { 0, 25 }, 1500 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -2.3f, 0.3f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f }) },
 
         // Sledge/Melee
         newd WeaponLoadout{
         /* Primary */       newd Weapon(projectileManager, ProjectileData(nullptr, false, false, 35, 8.f, 1, 0, 0, 0, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false), Weapon::WeaponInfo{ 4, 1, 0, 0, 400, 200, 0,{ 0.f, 0.f, 0.f } }),
         /* Secondary*/      newd WeaponMeleeParry(projectileManager, ProjectileData(nullptr, false, false, 0, 8.f, 1, 0, 0, 200, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, true), Weapon::WeaponInfo{ 5, 1, 0, 0, 50, 0, 0,{ 0.f, 0.f, 0.f } }, 8.f),
-        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }),
+        /* AmmoContainer */ newd AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, { 0, 0 }, { 0, 0 }, 0 }),
         /* WeaponModel */   newd WeaponModel(Resources::Models::Hammer, WeaponModel::WeaponModelAnimationInfo{ DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(1.3f, 0.9f, 0.f), DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-0.3f, -1.5f, -0.2f)), DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 200.f }) }
     };
 }
@@ -242,7 +242,7 @@ void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Pl
 {
     if (m_attackRateTimer <= 0.f)
     {
-        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().primAmmoConsumption == 0)
+        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().ammoConsumption[WEAPON_PRIMARY] == 0)
         {
             if (int delayTime = m_currentWeapon->primary->getDelayTime())
             {
@@ -267,7 +267,7 @@ void WeaponManager::tryUsePrimary(btVector3 position, float yaw, float pitch, Pl
 
 void WeaponManager::usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-    if (m_currentWeapon->primary->useEnhanced(m_currentWeapon->ammoContainer->removePrimaryAmmo()))
+    if (m_currentWeapon->primary->useEnhanced(m_currentWeapon->ammoContainer->removeAmmo(WEAPON_PRIMARY)))
     {
         m_currentWeapon->primary->use(position, yaw, pitch, shooter);
         m_attackRateTimer = m_currentWeapon->primary->getAttackTimer(m_Upgrades.fireRateModifier);
@@ -278,7 +278,7 @@ void WeaponManager::tryUseSecondary(btVector3 position, float yaw, float pitch, 
 {
     if (m_attackRateTimer <= 0.f)
     {
-        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().secAmmoConsumption == 0)
+        if (m_currentWeapon->ammoContainer->getAmmoInfo().magAmmo > 0 || m_currentWeapon->ammoContainer->getAmmoInfo().ammoConsumption[WEAPON_SECONDARY] == 0)
         {
             if (int delayTime = m_currentWeapon->secondary->getDelayTime())
             {
@@ -299,7 +299,7 @@ void WeaponManager::tryUseSecondary(btVector3 position, float yaw, float pitch, 
 
 void WeaponManager::useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-    if (m_currentWeapon->secondary->useEnhanced(m_currentWeapon->ammoContainer->removeSecondaryAmmo()))
+    if (m_currentWeapon->secondary->useEnhanced(m_currentWeapon->ammoContainer->removeAmmo(WEAPON_SECONDARY)))
     {
         m_currentWeapon->secondary->use(position, yaw, pitch, shooter);
         m_attackRateTimer = m_currentWeapon->secondary->getAttackTimer(m_Upgrades.fireRateModifier);
