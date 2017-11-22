@@ -32,7 +32,7 @@ void Map::add(FrameHitbox frameHitbox)
     //        StaticObject::NavigationMeshFlags::CULL
     //    ));
     //else
-        m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+        m_hitboxes.push_back(newd StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
             Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
             Physics::COL_HITBOX,
             Physics::COL_EVERYTHING),
@@ -176,7 +176,7 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
                 Physics::COL_EVERYTHING
             );
             rb->getWorldTransform().setRotation(instance.rotation);
-            m_hitboxes.push_back(new StaticObject(
+            m_hitboxes.push_back(newd StaticObject(
                 Resources::Models::Island, 
                 rb,
                 instance.scale,
@@ -187,7 +187,7 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
         {
             btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), instance.scale), 0.f, false, Physics::COL_HITBOX, Physics::COL_EVERYTHING);
             rb->getWorldTransform().setRotation(instance.rotation);
-            m_hitboxes.push_back(new StaticObject(
+            m_hitboxes.push_back(newd StaticObject(
                 Resources::Models::UnitCube, 
                 rb,
                 instance.scale,
