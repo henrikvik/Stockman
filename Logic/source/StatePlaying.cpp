@@ -1,8 +1,8 @@
 #include <StatePlaying.h>
 #include <StateMachine\StateBuffer.h>
 #include <State.h>
-#include "..\include\Misc\GUI\iMenuCards.h"
-
+#include <Misc\GUI\iMenuCards.h>
+#include <Misc\Network\dbConnect.h>
 #include <Misc\CommandsFile.h>
 
 // Input Singletons
@@ -31,10 +31,10 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
 
     // Initializing Bullet physics
-    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();				// Configuration
-    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	// The default collision dispatcher
-    btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								// Detecting aabb-overlapping object pairs
-    btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver();			// Default constraint solver
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();		// Configuration
+    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	                // The default collision dispatcher
+    btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								    // Detecting aabb-overlapping object pairs
+    btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver();		// Default constraint solver
     m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
     m_physics->init();
 
@@ -45,10 +45,6 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     m_player = newd Player(Resources::Models::UnitCube, nullptr, GAME_START::PLAYER_SCALE);
     m_player->init(m_physics, m_projectileManager);
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
-
-    // Initializing Highscore Manager
-    m_highScoreManager = newd HighScoreManager();
-    m_highScoreManager->setName("Stockman");
 
     // Initializing the Map
     m_map = newd Map();
@@ -76,6 +72,8 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     info.type = info.Snow;
     info.restart = true;
 
+    m_playTime = 0;
+
     QueueRender(info);
 }
 
@@ -91,12 +89,13 @@ StatePlaying::~StatePlaying()
     delete m_player;
     delete m_map;
     delete m_cardManager;
-    delete m_highScoreManager;
     delete m_projectileManager;
 }
 
 void StatePlaying::reset()
 {
+    m_playTime = 0;
+
     m_projectileManager->removeAllProjectiles();
     m_player->reset();
 
@@ -119,10 +118,12 @@ void StatePlaying::update(float deltaTime)
     if (m_menu->getType() == iMenu::MenuGroup::Skill ||
         m_menu->getType() == iMenu::MenuGroup::GameOver ||
         m_menu->getType() == iMenu::MenuGroup::GameWon ||
+        m_menu->getType() == iMenu::MenuGroup::HighscoreGameOver ||
         m_menu->getType() == iMenu::MenuGroup::Pause) // Quick "temp pause" fix for testing purposes
         return;
     PROFILE_END();
 
+    m_playTime += deltaTime;
     ComboMachine::Get().update(deltaTime);
 
 
@@ -166,6 +167,7 @@ void StatePlaying::update(float deltaTime)
     m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
     PROFILE_END();
 
+#define _DEBUG
 #ifdef _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
         m_player->takeDamage(1, 0);
@@ -207,6 +209,7 @@ void StatePlaying::render() const
     if (m_menu->getType() != iMenu::MenuGroup::Skill && 
         m_menu->getType() != iMenu::MenuGroup::GameOver &&
         m_menu->getType() != iMenu::MenuGroup::GameWon &&
+        m_menu->getType() != iMenu::MenuGroup::HighscoreGameOver &&
         m_menu->getType() != iMenu::MenuGroup::Pause)
         m_hudManager.render();
     PROFILE_END();
@@ -226,16 +229,28 @@ void StatePlaying::render() const
 
 void StatePlaying::gameOver()
 {
+    // Upload score
     ComboMachine::Get().endCombo();
-    m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
+    Network::dbConnect db;
+
+    // don't u dare
+    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+
+    // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
 }
 
 void StatePlaying::gameWon()
 {
+    // Upload score
     ComboMachine::Get().endCombo();
-    m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
+    Network::dbConnect db;
+
+    // don't u dare
+    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+
+    // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameWon);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
 }

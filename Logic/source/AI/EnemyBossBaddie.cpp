@@ -6,6 +6,7 @@
 
 #include <Misc\Sound\NoiseMachine.h>
 #include <Graphics\include\Structs.h>
+#include <Misc\ComboMachine.h>
 
 #include <sstream>
 using namespace Logic;
@@ -49,6 +50,7 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     
     addCallback(ON_DEATH, [&](CallbackData &data)
     {
+        ComboMachine::Get().kill(SCORE);
         Sound::NoiseMachine::Get().stopAllGroups();
         Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_2, nullptr, true);
     });

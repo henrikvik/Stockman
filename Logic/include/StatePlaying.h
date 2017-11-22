@@ -21,7 +21,6 @@
 
 // Misc
 #include <Misc\CardManager.h>
-#include <Misc\HighScoreManager.h>
 #include <Misc\ComboMachine.h>
 #include <Misc\Sound\NoiseMachine.h>
 #include <Misc\FPSRenderer.h>
@@ -64,6 +63,8 @@ namespace Logic
         void gameOver();
         void gameWon();
 
+        float m_playTime;
+
         iMenuMachine*       m_menu;
         Physics*			m_physics;
         Player*				m_player;
@@ -72,7 +73,6 @@ namespace Logic
         EntityManager		m_entityManager;
         WaveTimeManager		m_waveTimeManager;
         CardManager*		m_cardManager;
-        HighScoreManager*	m_highScoreManager;
         HUDManager		    m_hudManager;
         GameType            m_gameType;
         FPSRenderer         m_fpsRenderer;

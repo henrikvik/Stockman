@@ -9,7 +9,7 @@ namespace Logic
     class EnemySoarer : public Enemy
     {
         private:
-            static const int HEALTH, DAMAGE;
+            static const int HEALTH, DAMAGE, SCORE;
             static const float SPEED, AB1_SPEED, HEIGHT_OFFSET;
 
             float ab2Speed;
