@@ -53,7 +53,7 @@ namespace Logic
         protected:
             LightRenderInfo light;
 		public:	
-			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE };
+			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE, STAY };
 
 			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 			virtual ~Enemy();

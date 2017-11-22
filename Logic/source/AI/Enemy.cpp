@@ -3,6 +3,7 @@
 #include <AI\Behavior\RangedBehavior.h>
 #include <AI\Behavior\MeleeBehavior.h>
 #include <AI\Behavior\BigBadBehavior.h>
+#include <AI\Behavior\StayBehavior.h>
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileStruct.h>
@@ -60,6 +61,9 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
             break;
         case BOSS_BADDIE:
                 m_behavior = newd BigBadBehavior();
+            break;
+        case STAY:
+            m_behavior = newd StayBehavior();
             break;
 		default:
 				m_behavior = newd TestBehavior();
