@@ -9,12 +9,11 @@ namespace Logic
     class EnemyTotem : public Enemy
     {
     private:
-        Ability shoot;
+        Ability spreadShot;
 
-        int m_spawnedMinions;
-        static const float BASE_SPEED;
+        static const float BASE_SPEED, BULLET_SPEED;
         static const int BASE_DAMAGE, MAX_HP, SCORE;
-        static const int SPEED_SHOOT, MAX_SPAWNED_MINIONS;
+        static const int BULLET_AMOUNT;
     public:
         EnemyTotem(btRigidBody* body, btVector3 halfExtent);
         virtual ~EnemyTotem();
