@@ -11,7 +11,7 @@
 
 // Debugging purposes
 #include <DebugDefines.h>
-#include <Engine\Typing.h>
+#include <Engine\Settings.h>
 #include <Engine\DebugWindow.h> 
 #include <GameType.h>
 
@@ -232,11 +232,7 @@ void StatePlaying::render() const
 void StatePlaying::gameOver()
 {
     // Upload score
-    ComboMachine::Get().endCombo();
-    Network::dbConnect db;
-
-    // don't u dare
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    addHighscore();
 
     // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
@@ -246,13 +242,24 @@ void StatePlaying::gameOver()
 void StatePlaying::gameWon()
 {
     // Upload score
-    ComboMachine::Get().endCombo();
-    Network::dbConnect db;
-
-    // don't u dare
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    addHighscore();
 
     // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameWon);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
+}
+
+void StatePlaying::addHighscore()
+{
+    ComboMachine::Get().endCombo();
+    Network::dbConnect db;
+    std::string name = Settings::getInstance().getName();
+    if (name.empty()) name = "Stockman";
+
+    if (db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills()))
+        printf("Highscore added.\n");
+    else
+    {
+        printf("Database could not be reached, your score have been removed, sorry :'(\n");
+    }
 }

@@ -2,8 +2,9 @@
 #include <Keyboard.h>
 #include <Misc\GUI\iMenuAction.h>
 #include <Misc\GUI\iMenuMachine.h>
+#include <Engine\Settings.h>
 
-#define QUICK_INTO_GAME true
+#define QUICK_INTO_GAME false
 #if QUICK_INTO_GAME
 #include <State.h>
 #include <StateMachine\StateBuffer.h>
@@ -26,7 +27,9 @@ void iMenuIntro::update(int x, int y, float deltaTime)
     // Lets the player press space to go to the menu
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Space) && !m_isFading && !m_safeToRemove)
     {
-        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Start);
+        std::string name = Settings::getInstance().getName();
+        if (name.empty())   Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::FirstTime);
+        else                Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Start);
 
         #if QUICK_INTO_GAME
         printf("Skipping menu's, disable this is: %s", __FILE__);

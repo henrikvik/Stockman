@@ -72,6 +72,7 @@ void iMenuMachine::swapMenu()
     switch (m_queuedMenuType)
     {
     case iMenu::MenuGroup::Intro:               m_activeMenu = m_factory->buildMenuIntro();                       break;
+    case iMenu::MenuGroup::FirstTime:           m_activeMenu = m_factory->buildMenuFirstTime();                   break;
     case iMenu::MenuGroup::Start:               m_activeMenu = m_factory->buildMenuStart();                       break;
     case iMenu::MenuGroup::Settings:            m_activeMenu = m_factory->buildMenuSettings();                    break;
     case iMenu::MenuGroup::HighscoreStartMenu:  m_activeMenu = m_factory->buildMenuHighscore();                   break;
@@ -157,6 +158,7 @@ void iMenuMachine::updateCamera(float deltaTime)
     switch (m_activeMenu->getMenuType())
     {
 
+    case iMenu::MenuGroup::FirstTime:
     case iMenu::MenuGroup::Intro:
         targetCameraPosition = CAMERA_INTRO_POSITION;
         targetCameraForward = CAMERA_INTRO_FORWARD;
