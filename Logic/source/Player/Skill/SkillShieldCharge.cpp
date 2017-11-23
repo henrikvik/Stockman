@@ -61,6 +61,7 @@ bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
             shake.direction = { 0.f, -1.f, 0.f };
             shake.radius = 20.0f;
             shake.type = SpecialEffectRenderInfo::screenShake;
+            shake.affectEveryThing = false;
             QueueRender(shake);
         }
 
