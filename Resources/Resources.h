@@ -25,12 +25,18 @@ namespace Resources
         {
             StockMan_LvL,
             Stock_Map_V1,
+            Stock_Map_V1_Old,
+            Stock_Map_V1_V2_old,
+            Stock_Map_V1__,
             Test_Map
         };
         const std::map<Files, const char *> Paths =
         {
             {StockMan_LvL, R"(..\Resources\Maps\StockMan_LvL.toml)"},
             {Stock_Map_V1, R"(..\Resources\Maps\Stock_Map_V1.toml)"},
+            {Stock_Map_V1_Old, R"(..\Resources\Maps\Stock_Map_V1_Old.toml)"},
+            {Stock_Map_V1_V2_old, R"(..\Resources\Maps\Stock_Map_V1_V2_old.toml)"},
+            {Stock_Map_V1__, R"(..\Resources\Maps\Stock_Map_V1__.toml)"},
             {Test_Map, R"(..\Resources\Maps\Test_Map.toml)"}
         };
         
@@ -60,6 +66,7 @@ namespace Resources
             Ground,
             Hammer,
             House1,
+            House1old,
             House2,
             House3,
             Ice,
@@ -76,9 +83,12 @@ namespace Resources
             Rock3,
             SkySphere,
             Small_Crate,
+            Snow,
             SnowHeap,
+            Snow_Heap,
             Staff,
             StaticSummon,
+            Stone_Decoration,
             SummonUnitWithAnim,
             Table,
             Tablet1,
@@ -108,6 +118,7 @@ namespace Resources
             {Ground, R"(..\Resources\Models\Ground.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {House1, R"(..\Resources\Models\House1.hyb)"},
+            {House1old, R"(..\Resources\Models\House1old.hyb)"},
             {House2, R"(..\Resources\Models\House2.hyb)"},
             {House3, R"(..\Resources\Models\House3.hyb)"},
             {Ice, R"(..\Resources\Models\Ice.hyb)"},
@@ -124,9 +135,12 @@ namespace Resources
             {Rock3, R"(..\Resources\Models\Rock3.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Small_Crate, R"(..\Resources\Models\Small_Crate.hyb)"},
+            {Snow, R"(..\Resources\Models\Snow.hyb)"},
             {SnowHeap, R"(..\Resources\Models\SnowHeap.hyb)"},
+            {Snow_Heap, R"(..\Resources\Models\Snow_Heap.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
+            {Stone_Decoration, R"(..\Resources\Models\Stone_Decoration.hyb)"},
             {SummonUnitWithAnim, R"(..\Resources\Models\SummonUnitWithAnim.hyb)"},
             {Table, R"(..\Resources\Models\Table.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},

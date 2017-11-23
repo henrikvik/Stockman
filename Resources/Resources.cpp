@@ -17,6 +17,9 @@ namespace Resources
         {
             if (strcmp(str, "StockMan_LvL") == 0) return StockMan_LvL;
             if (strcmp(str, "Stock_Map_V1") == 0) return Stock_Map_V1;
+            if (strcmp(str, "Stock_Map_V1_Old") == 0) return Stock_Map_V1_Old;
+            if (strcmp(str, "Stock_Map_V1_V2_old") == 0) return Stock_Map_V1_V2_old;
+            if (strcmp(str, "Stock_Map_V1__") == 0) return Stock_Map_V1__;
             if (strcmp(str, "Test_Map") == 0) return Test_Map;
             throw "Could not find matching enum.";
         }
@@ -45,6 +48,7 @@ namespace Resources
             if (strcmp(str, "Ground") == 0) return Ground;
             if (strcmp(str, "Hammer") == 0) return Hammer;
             if (strcmp(str, "House1") == 0) return House1;
+            if (strcmp(str, "House1old") == 0) return House1old;
             if (strcmp(str, "House2") == 0) return House2;
             if (strcmp(str, "House3") == 0) return House3;
             if (strcmp(str, "Ice") == 0) return Ice;
@@ -61,9 +65,12 @@ namespace Resources
             if (strcmp(str, "Rock3") == 0) return Rock3;
             if (strcmp(str, "SkySphere") == 0) return SkySphere;
             if (strcmp(str, "Small_Crate") == 0) return Small_Crate;
+            if (strcmp(str, "Snow") == 0) return Snow;
             if (strcmp(str, "SnowHeap") == 0) return SnowHeap;
+            if (strcmp(str, "Snow_Heap") == 0) return Snow_Heap;
             if (strcmp(str, "Staff") == 0) return Staff;
             if (strcmp(str, "StaticSummon") == 0) return StaticSummon;
+            if (strcmp(str, "Stone_Decoration") == 0) return Stone_Decoration;
             if (strcmp(str, "SummonUnitWithAnim") == 0) return SummonUnitWithAnim;
             if (strcmp(str, "Table") == 0) return Table;
             if (strcmp(str, "Tablet1") == 0) return Tablet1;

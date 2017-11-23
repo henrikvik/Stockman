@@ -56,7 +56,7 @@ struct DebugRenderInfo : RenderInfo
     DirectX::SimpleMath::Color color;
     bool useDepth = false;
 };
-SET_INSTANCE_CAP(DebugRenderInfo, 10000)
+SET_INSTANCE_CAP(DebugRenderInfo, 100000)
 
 struct NewDebugRenderInfo : RenderInfo
 {
@@ -71,7 +71,7 @@ struct NewDebugRenderInfo : RenderInfo
     std::vector<Point> * points;
     bool useDepth;
 };
-SET_INSTANCE_CAP(NewDebugRenderInfo, 10000)
+SET_INSTANCE_CAP(NewDebugRenderInfo, 100000)
 
 struct LightRenderInfo : RenderInfo
 {
