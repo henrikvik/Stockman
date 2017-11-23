@@ -62,6 +62,7 @@ namespace Logic
     private:
         void gameOver();
         void gameWon();
+        void addHighscore();
 
         float m_playTime;
 

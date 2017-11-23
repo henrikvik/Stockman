@@ -232,13 +232,7 @@ void StatePlaying::render() const
 void StatePlaying::gameOver()
 {
     // Upload score
-    ComboMachine::Get().endCombo();
-    Network::dbConnect db;
-
-    // Gets the name from file and adds score to database
-    std::string name = Settings::getInstance().getName();
-    if (name.empty()) name = "Stockman";
-    db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    addHighscore();
 
     // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
@@ -248,15 +242,24 @@ void StatePlaying::gameOver()
 void StatePlaying::gameWon()
 {
     // Upload score
-    ComboMachine::Get().endCombo();
-    Network::dbConnect db;
-
-    // Gets the name from file and adds score to database
-    std::string name = Settings::getInstance().getName();
-    if (name.empty()) name = "Stockman";
-    db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    addHighscore();
 
     // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameWon);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
+}
+
+void StatePlaying::addHighscore()
+{
+    ComboMachine::Get().endCombo();
+    Network::dbConnect db;
+    std::string name = Settings::getInstance().getName();
+    if (name.empty()) name = "Stockman";
+
+    if (db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills()))
+        printf("Highscore added.\n");
+    else
+    {
+        printf("Database could not be reached, your score have been removed, sorry :'(\n");
+    }
 }

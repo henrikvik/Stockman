@@ -99,7 +99,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         std::string catcher = "";
         try
         {
-            Settings setting = Settings::getInstance();
+            Settings& setting = Settings::getInstance();
             if (args.size() != 0)
             {
                 setting.setWindowed(std::stoi(args[0]));
@@ -321,7 +321,6 @@ Profiler *g_Profiler;
 int Engine::run()
 {
     Settings& setting = Settings::getInstance();
-
 	MSG msg = { 0 };
 	this->createSwapChain();
 	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, setting.getFOV());
@@ -376,18 +375,22 @@ int Engine::run()
 
         //temp
         SpecialEffectRenderInfo shakeInfo;
-        shakeInfo.type = shakeInfo.screenShake;
-        shakeInfo.duration = 0.5f;
-        shakeInfo.radius = 30;
+        shakeInfo.type = shakeInfo.screenBounce;
+        shakeInfo.duration = 0.2f;
+        shakeInfo.radius = 160.0f;
+        shakeInfo.bounceMax = 15.0f;
+        shakeInfo.direction = DirectX::SimpleMath::Vector2(0.0f, 1.0f);
+        shakeInfo.affectEveryThing = false;
 
 #ifdef _DEBUG
         if (mTracker->pressed.G)
             QueueRender(shakeInfo);
 #endif // _DEBUG
-
-		if (setting.getWindowed() != test)
+        Settings& setting = Settings::getInstance();
+        bool i = setting.getWindowed();
+		if ( i != test)
 		{
-		//	mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
+			mSwapChain->SetFullscreenState(setting.getWindowed(), NULL);
 		}
 
         //static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");

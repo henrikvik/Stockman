@@ -58,7 +58,7 @@ Player::~Player()
 
 void Player::init(Physics* physics, ProjectileManager* projectileManager)
 {
-    Settings setting = Settings::getInstance();
+    Settings& setting = Settings::getInstance();
 	m_weaponManager->init(projectileManager);
 	m_skillManager->init(physics, projectileManager);
 	m_physPtr = physics;
@@ -108,6 +108,8 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_wishDirRight = 0.f;
 	m_wishJump = false;
     m_firstJump = true;
+
+    m_wasInAir = false;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -459,6 +461,7 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
             shake.duration = 0.5f;
             shake.radius = 30.0f;
             shake.type = SpecialEffectRenderInfo::screenShake;
+            shake.affectEveryThing = true;
             QueueRender(shake);
         }
     }
@@ -540,11 +543,26 @@ void Player::updateSpecific(float deltaTime)
 
 	    if (m_charController->onGround())
 	    {
+            if (m_wasInAir)
+            {
+                SpecialEffectRenderInfo shake;
+                shake.type = SpecialEffectRenderInfo::screenShake;
+                shake.duration = 0.14f;
+                shake.radius = 7.0f;
+                shake.affectEveryThing = false;
+                shake.direction = DirectX::SimpleMath::Vector2(0.5f, 1.0f);
+                QueueRender(shake);
+                m_wasInAir = false;
+            }
 		    m_playerState = PlayerState::STANDING;
 		    m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
 	    }
-	    else
-		    m_playerState = PlayerState::IN_AIR;
+        else 
+        {
+            m_playerState = PlayerState::IN_AIR;
+            m_wasInAir = true;
+        }
+		    
 
 	    // Print player velocity
 	    //printf("velocity: %f\n", m_moveSpeed);
@@ -828,8 +846,17 @@ void Player::applyAirFriction(float deltaTime, float friction)
 
 void Player::jump(float deltaTime, DirectX::Keyboard::State* ks)
 {
-	if (ks->IsKeyDown(m_jump) && !m_wishJump && m_playerState != PlayerState::IN_AIR)
-		m_wishJump = true;
+    if (ks->IsKeyDown(m_jump) && !m_wishJump && m_playerState != PlayerState::IN_AIR) {
+        SpecialEffectRenderInfo bounceInfo;
+        bounceInfo.type = bounceInfo.screenBounce;
+        bounceInfo.duration = 0.17f;
+        bounceInfo.radius = 140.0f;
+        bounceInfo.bounceMax = 5.0f;
+        bounceInfo.direction = DirectX::SimpleMath::Vector2(0.0f, 1.0f);
+        bounceInfo.affectEveryThing = false;
+        QueueRender(bounceInfo);
+        m_wishJump = true;
+    }	
 	else if (ks->IsKeyUp(m_jump))
 		m_wishJump = false;
 }
@@ -841,7 +868,7 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-    Settings setting = Settings::getInstance();
+    Settings& setting = Settings::getInstance();
 	m_camYaw	+= setting.getMouseSense() * ms->x;
 	m_camPitch	-= setting.getMouseSense() * ms->y;
 
