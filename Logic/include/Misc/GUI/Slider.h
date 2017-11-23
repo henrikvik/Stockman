@@ -29,11 +29,18 @@ namespace Logic
             Resources::Textures::Files texture,
             FloatRect inactive,
             FloatRect active,
-            FloatRect hover
+            FloatRect hover,
+            float min,
+            float max,
+            float* value, 
+            float minValue,
+            float maxValue
+
         );
         ~Slider();
 
         void updateOnPress(int posX, int posY);
+        void updateOnRelease(int posX, int posY);
         void hoverOver(int posX, int posY);
         bool animationTransition(float dt, float maxAnimationTime, bool forward);
 
@@ -50,7 +57,9 @@ namespace Logic
         FloatRect active;
         FloatRect hover;
         State state;
-        float m_y, m_height, m_width;
+        float m_y, m_height, m_width, m_min, m_max, m_minValue, m_maxValue;
+
+        float* m_value;
 
         DirectX::SimpleMath::Vector2 m_animationEnd;
         DirectX::SimpleMath::Vector2 m_animationStart;
@@ -58,7 +67,6 @@ namespace Logic
         int m_activeOffset;
         bool m_highlighted;
         float m_animationTime;
-
     };
 }
 #pragma endregion

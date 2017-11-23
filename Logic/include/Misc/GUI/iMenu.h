@@ -49,7 +49,12 @@ namespace Logic
             FloatRect                   texRectHover;   // The texture-coordinates on the button-map
             FloatRect                   texRectActive;  // The texture-coordinates on the button-map
             Resources::Textures::Files  texture;        // What buttonmap-texture this button is present inside
-            std::function<void(void)>   callback;       // What function this button calls
+            float                       min;            // Minimum x position
+            float                       max;            // Maximum x position
+            float *                     value;
+            float                       minValue;
+            float                       maxValue;
+            //std::function<void(void)>   callback;       // What function this button calls
 
             void move(DirectX::SimpleMath::Vector2 add)
             {
