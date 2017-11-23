@@ -30,7 +30,7 @@ Slider::Slider(
     m_value = value;
     float X = x;
     X = (((*m_value - m_minValue) / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min - (m_width * 0.5f);
-   /* *m_value = m_minValue + (m_maxValue - m_minValue) * ((x - m_min) / (m_max - m_min));*/
+
     FloatRect screenRect = {
         X  / WIN_WIDTH,
         y / WIN_HEIGHT,
