@@ -86,13 +86,15 @@ SET_INSTANCE_CAP(LightRenderInfo, 128)
 
 struct SpecialEffectRenderInfo : RenderInfo
 {
-    enum SpecialEffect { BulletTime, Snow, screenShake, DoF };
+    enum SpecialEffect { BulletTime, Snow, screenShake, DoF, screenBounce };
     SpecialEffect type;
     DirectX::SimpleMath::Vector2 direction;
     float progress = 0;
     float duration = 0;
     float radius = 0;
+    float bounceMax = 0;
     bool restart = 0;
+    bool affectEveryThing = 0;
 };
 
 struct SpriteRenderInfo : RenderInfo
@@ -101,6 +103,7 @@ struct SpriteRenderInfo : RenderInfo
     FloatRect screenRect;
     FloatRect textureRect;
     float alpha = 1;
+    bool isMoveable = 0;
 };
 
 struct TextRenderInfo : RenderInfo
@@ -109,6 +112,7 @@ struct TextRenderInfo : RenderInfo
     DirectX::SimpleMath::Color color;
     Resources::Fonts::Files font;
     std::wstring text = L"";
+    bool isMoveable = 0;
 };
 
 

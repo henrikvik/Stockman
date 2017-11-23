@@ -167,37 +167,37 @@ void ButtonFunction::confirmSkillPicks()
 
 void ButtonFunction::plusSense()
 {
-    Settings settings = Settings::getInstance();
+    Settings& settings = Settings::getInstance();
     settings.setFOV(settings.getFOV() + 0.01f);
 }
 
 void ButtonFunction::minusSense()
 {
-    Settings settings = Settings::getInstance();
+    Settings& settings = Settings::getInstance();
     settings.setFOV(settings.getFOV() - 0.01f);
 }
 
 void ButtonFunction::plusMaster()
 {
-    Settings settings = Settings::getInstance();
+    Settings& settings = Settings::getInstance();
     settings.setMasterSound(settings.getMasterSound() + 0.01f);
 }
 
 void ButtonFunction::minusMaster()
 {
-    Settings settings = Settings::getInstance();
+    Settings& settings = Settings::getInstance();
     settings.setMasterSound(settings.getMasterSound() - 0.01f);
 }
 
 void ButtonFunction::plusSFX()
 {
-    Settings settings = Settings::getInstance();
+    Settings& settings = Settings::getInstance();
     settings.setSFX(settings.getSFX() + 0.05f);
 }
 
 void ButtonFunction::minusSFX()
 {
-    Settings settings = Settings::getInstance();
+    Settings& settings = Settings::getInstance();
     settings.setSFX(settings.getSFX() - 0.05f);
 }
 
@@ -208,18 +208,18 @@ void ButtonFunction::muteUnmute()
 
 void ButtonFunction::plusFOV()
 {
-    Settings settings = Settings::getInstance();
+    Settings& settings = Settings::getInstance();
     settings.setFOV(settings.getFOV() + 1);
 }
 
 void ButtonFunction::minusFOV()
 {
-    Settings settings = Settings::getInstance();
+    Settings& settings = Settings::getInstance();
     settings.setFOV(settings.getFOV() - 1);
 }
 
 void ButtonFunction::windowed()
 {
-    Settings settings = Settings::getInstance();
+    Settings& settings = Settings::getInstance();
     settings.setWindowed(!settings.getWindowed());
 }

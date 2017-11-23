@@ -1,22 +1,23 @@
 #include <Misc\GUI\Sprite.h>
 #include <Engine\Constants.h>
 
-Sprite::Sprite(float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha)
+Sprite::Sprite(float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha, bool isMoveable)
 {
     sprite.alpha = alpha;
     sprite.texture = texture;
     sprite.textureRect = uvs;
+    sprite.isMoveable = isMoveable;
 
     sprite.screenRect = FloatRect(x / WIN_WIDTH, y / WIN_HEIGHT, width / WIN_WIDTH, height / WIN_HEIGHT);
 
 }
 
-Sprite::Sprite(Points screenpoint, Points spritepoint, float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha)
+Sprite::Sprite(Points screenpoint, Points spritepoint, float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha, bool isMoveable)
 {
     sprite.alpha = alpha;
     sprite.texture = texture;
     sprite.textureRect = uvs;
-
+    sprite.isMoveable = isMoveable;
 
     switch (screenpoint)
     {

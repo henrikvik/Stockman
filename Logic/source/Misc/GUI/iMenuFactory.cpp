@@ -2,6 +2,7 @@
 #include <Misc\GUI\iMenuAction.h>
 #include <Graphics\include\RenderInfo.h>
 #include "..\..\..\include\Misc\GUI\iMenuCards.h"
+#include <Engine\Settings.h>
 
 using namespace Logic;
 
@@ -9,6 +10,8 @@ iMenuFactory::iMenuFactory()
 {
     // Loads all buttons from Button.lw file (Engine/Resources/Button.lw)
     FileLoader::singleton().loadStructsFromFile(buttonFile, "Button");
+
+    FileLoader::singleton().loadStructsFromFile(sliderFile, "Slider");
 }
 
 iMenuFactory::~iMenuFactory() { }
@@ -57,6 +60,8 @@ iMenu * iMenuFactory::buildMenuSettings()
 
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
+    Settings& setting = Settings::getInstance();
+    menu->addSlider(buildSlider("MenuTest", setting.getFOVPTR(), 90.0f, 180.0f));
 
     //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
     //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
@@ -206,4 +211,31 @@ iMenu::ButtonData iMenuFactory::buildButton(std::string name, std::function<void
         }
     }
     return btn;
+}
+
+iMenu::SliderData iMenuFactory::buildSlider(std::string name, float* value, float minValue, float maxValue)
+{
+    iMenu::SliderData sld;
+    for (auto const& slider : sliderFile)
+    {
+        if (slider.strings.find("sliderName") != slider.strings.end() &&
+            slider.strings.at("sliderName") == name)
+        {
+            sld.screenRect.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("xPos") / WIN_WIDTH, slider.floats.at("yPos") / WIN_WIDTH);
+            sld.screenRect.bottomRight = DirectX::SimpleMath::Vector2((slider.floats.at("width") + slider.floats.at("xPos")) / WIN_WIDTH, (slider.floats.at("height") + slider.floats.at("yPos")) / WIN_WIDTH);
+            sld.texRectNormal.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("xTexStart"), slider.floats.at("yTexStart"));
+            sld.texRectNormal.bottomRight = DirectX::SimpleMath::Vector2(slider.floats.at("xTexEnd"), slider.floats.at("yTexEnd"));
+            sld.texRectHover.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("hoverXTexStart"), slider.floats.at("hoverYTexStart"));
+            sld.texRectHover.bottomRight = DirectX::SimpleMath::Vector2(slider.floats.at("hoverXTexEnd"), slider.floats.at("hoverYTexEnd"));
+            sld.texRectActive.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("activeXTexStart"), slider.floats.at("activeYTexStart"));
+            sld.texRectActive.bottomRight = DirectX::SimpleMath::Vector2(slider.floats.at("activeXTexEnd"), slider.floats.at("activeYTexEnd"));
+            sld.texture = LookUp.at(slider.ints.at("texture"));
+            sld.min = slider.floats.at("min");
+            sld.max = slider.floats.at("max");
+            sld.value = value;
+            sld.minValue = minValue;
+            sld.maxValue = maxValue;
+        }
+    }
+    return sld;
 }
