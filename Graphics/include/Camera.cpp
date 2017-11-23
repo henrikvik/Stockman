@@ -50,6 +50,11 @@ namespace Graphics
         Camera::update(pos, target - pos, context);
 	}
 
+    bool Camera::insideFrustrum(DirectX::SimpleMath::Vector3 point)
+    {
+        return true;
+    }
+
 
 	void Camera::setPos(DirectX::SimpleMath::Vector3 pos)
 	{

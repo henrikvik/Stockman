@@ -46,6 +46,8 @@ namespace Graphics {
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
         void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
+
+        bool insideFrustrum(DirectX::SimpleMath::Vector3 point);
 	private:
 		DirectX::SimpleMath::Vector3 pos;
 		DirectX::SimpleMath::Vector3 forward;

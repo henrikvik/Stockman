@@ -5,6 +5,7 @@
 #include <Engine\newd.h>
 #include "RenderInfo.h"
 #include <Engine/Profiler.h>
+#include "MainCamera.h"
 
 class RenderQueue
 {
@@ -29,8 +30,15 @@ public:
         info.LINE = LINE;
         #endif
 
+
+
         if constexpr (std::is_base_of_v<StaticRenderInfo, T>)
         {
+            if (Global::mainCamera->insideFrustrum(info.transform.Translation()))
+            {
+                info.color = DirectX::SimpleMath::Vector3(0, 1, 0);
+            }
+
             InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
             container->queue((size_t)info.model, info);
         }
