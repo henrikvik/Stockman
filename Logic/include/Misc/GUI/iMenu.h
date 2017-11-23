@@ -57,6 +57,7 @@ namespace Logic
             float *                     value;
             float                       minValue;
             float                       maxValue;
+            float                       delimeter;
             //std::function<void(void)>   callback;       // What function this button calls
 
             void move(DirectX::SimpleMath::Vector2 add)

@@ -34,7 +34,8 @@ namespace Logic
             float max,
             float* value, 
             float minValue,
-            float maxValue
+            float maxValue,
+            float delimiter
 
         );
         ~Slider();
@@ -57,7 +58,7 @@ namespace Logic
         FloatRect active;
         FloatRect hover;
         State state;
-        float m_y, m_height, m_width, m_min, m_max, m_minValue, m_maxValue;
+        float m_y, m_height, m_width, m_min, m_max, m_minValue, m_maxValue, m_delimiter;
 
         float* m_value;
 

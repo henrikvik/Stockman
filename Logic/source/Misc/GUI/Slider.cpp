@@ -13,7 +13,8 @@ Slider::Slider(
     float max,
     float* value,
     float minValue,
-    float maxValue) : inactive(inactive), active(active), hover(active)
+    float maxValue,
+    float delimiter) : inactive(inactive), active(active), hover(active)
 {
     m_animationStart = DirectX::SimpleMath::Vector2(0, 0);
     m_animationEnd = DirectX::SimpleMath::Vector2(0, 0);
@@ -24,6 +25,7 @@ Slider::Slider(
     m_max = max;
     m_minValue = minValue;
     m_maxValue = maxValue;
+    m_delimiter = delimiter;
 
     m_value = value;
     float X = x;

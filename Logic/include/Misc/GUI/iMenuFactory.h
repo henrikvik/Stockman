@@ -37,7 +37,7 @@ namespace Logic
         std::vector<FileLoader::LoadedStruct> buttonFile;
         std::vector<FileLoader::LoadedStruct> sliderFile;
         iMenu::ButtonData buildButton(std::string name, std::function<void(void)>);
-        iMenu::SliderData buildSlider(std::string name, float* value, float minValue, float maxValue);
+        iMenu::SliderData buildSlider(std::string name, float* value, float minValue, float maxValue, float delimiter);
     };
 }
 
