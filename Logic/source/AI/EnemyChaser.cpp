@@ -37,7 +37,7 @@ void EnemyChaser::loadAnimation(Resources::Models::Files model)
 void EnemyChaser::updateSpecific(Player & player, float deltaTime)
 {
     animatedRenderInfo.transform = getModelTransformMatrix();
-    animatedRenderInfo.animationTimeStamp += deltaTime / 1000.0f;
+    animatedRenderInfo.animationTimeStamp += deltaTime / 100.0f;
     if (animatedRenderInfo.animationTimeStamp > ANI_TIME) animatedRenderInfo.animationTimeStamp = 0.f;
     
 }

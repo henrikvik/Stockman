@@ -45,12 +45,12 @@ namespace Resources
             Hammer,
             Island,
             MenuScene,
+            Necromancer,
             SkySphere,
             Staff,
             StaticSummon,
             SummonUnitWithAnim,
             Tablet1,
-            Testboxanim,
             UnitCube
         };
         const std::map<Files, const char *> Paths =
@@ -66,12 +66,12 @@ namespace Resources
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {Island, R"(..\Resources\Models\Island.hyb)"},
             {MenuScene, R"(..\Resources\Models\MenuScene.hyb)"},
+            {Necromancer, R"(..\Resources\Models\Necromancer.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {SummonUnitWithAnim, R"(..\Resources\Models\SummonUnitWithAnim.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
-            {Testboxanim, R"(..\Resources\Models\Testboxanim.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
     }

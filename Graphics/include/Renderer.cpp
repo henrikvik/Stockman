@@ -299,7 +299,7 @@ namespace Graphics
         lightInfo.range = 10;
         QueueRender(lightInfo);
 
-        QueueRender([](float dt) -> AnimatedRenderInfo
+       /* QueueRender([](float dt) -> AnimatedRenderInfo
         {
             static float time = 0;
             AnimatedRenderInfo info;
@@ -310,7 +310,7 @@ namespace Graphics
             time += dt;
             if (time > 5) time = 0;
             return info;
-        }(deltaTime));
+        }(deltaTime));*/
         FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 
         writeInstanceBuffers();
