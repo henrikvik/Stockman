@@ -8,13 +8,24 @@ Slider::Slider(
     Resources::Textures::Files texture, 
     FloatRect inactive, 
     FloatRect active, 
-    FloatRect hover) : inactive(inactive), active(active), hover(active)
+    FloatRect hover,
+    float min,
+    float max,
+    float* value,
+    float minValue,
+    float maxValue) : inactive(inactive), active(active), hover(active)
 {
     m_animationStart = DirectX::SimpleMath::Vector2(0, 0);
     m_animationEnd = DirectX::SimpleMath::Vector2(0, 0);
     m_y = y;
     m_width = width;
     m_height = height;
+    m_min = min;
+    m_max = max;
+    m_minValue = minValue;
+    m_maxValue = maxValue;
+
+    m_value = value;
     FloatRect screenRect = {
         x / WIN_WIDTH,
         y / WIN_HEIGHT,
@@ -35,7 +46,7 @@ Slider::~Slider()
 
 void Slider::updateOnPress(int posX, int posY)
 {
-    if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
+    if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
     {
         if (this->state != ACTIVE)
         {
@@ -44,18 +55,44 @@ void Slider::updateOnPress(int posX, int posY)
         }
         else if (this->state == ACTIVE)
         {
-            FloatRect screenRect = {
-                float(posX) / WIN_WIDTH,
-                m_y / WIN_HEIGHT,
-                m_width / WIN_WIDTH,
-                m_height / WIN_HEIGHT
+
+            float posx = float(posX);
+
+            if (posx < m_min)
+            {
+                posx = m_min;
+            }
+            else if (posx > m_max)
+            {
+                posx = m_max;
+            }
+
+            float perc = (posx - m_min) / (m_max - m_min);
+            float valPerc = 1 / (m_maxValue - m_minValue) * perc;
+
+             FloatRect screenRect = {
+                 (posx - (m_width * 0.5f)) / WIN_WIDTH,
+                 m_y / WIN_HEIGHT,
+                 m_width / WIN_WIDTH,
+                 m_height / WIN_HEIGHT
             };
-            renderInfo.screenRect = screenRect;
+             
+
+             
+             renderInfo.screenRect = screenRect;
         }
-        else
-        {
-            setState(INACTIVE);
-        }
+    }
+    else
+    {
+        setState(INACTIVE);
+    }
+}
+
+void Logic::Slider::updateOnRelease(int posX, int posY)
+{
+    if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
+    {
+        setState(Slider::INACTIVE);
     }
 }
 
