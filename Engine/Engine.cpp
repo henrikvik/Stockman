@@ -375,10 +375,12 @@ int Engine::run()
 
         //temp
         SpecialEffectRenderInfo shakeInfo;
-        shakeInfo.type = shakeInfo.screenShake;
+        shakeInfo.type = shakeInfo.screenBounce;
         shakeInfo.duration = 0.5f;
-        shakeInfo.radius = 30;
+        shakeInfo.radius = 30.0f;
+        shakeInfo.bounceMax = 100.0f;
         shakeInfo.direction = DirectX::SimpleMath::Vector2(0.0f, 1.0f);
+        shakeInfo.affectEveryThing = false;
 
 #ifdef _DEBUG
         if (mTracker->pressed.G)

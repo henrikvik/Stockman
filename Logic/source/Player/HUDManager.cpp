@@ -50,7 +50,7 @@ void HUDManager::constructGUIElements()
     float y = 517.0f / 1024;
     float width = 503.0f / 1024;
     float height = 503.0f / 1024;
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, {x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -175, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, {x + width, y + height }), 1.0f, true));
    
     //ice staff
     x = 4.0f / 1024;
@@ -58,7 +58,7 @@ void HUDManager::constructGUIElements()
     width = 503.0f / 1024;
     height = 503.0f / 1024;
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
     
     //sledegehammer
     x = 519.0f / 1024;
@@ -66,14 +66,14 @@ void HUDManager::constructGUIElements()
     width = 503.0f / 1024;
     height = 503.f / 1024;
 
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -132, -25, 75, 75, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -132, -25, 75, 75, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //creates the weapon mask
     x = 518.0f / 1024;
     y = 519.0f / 1024;
     width = 503.0f / 1024;
     height = 503.f / 1024;
-    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height })));
+    HUDElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -65, -60, 110, 110, Resources::Textures::weaponsheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //creates the difrent skill icons 
 
@@ -82,14 +82,14 @@ void HUDManager::constructGUIElements()
     y = 9.0f / 1024;
     width = 503.0f / 1024;
     height = 503.f / 1024;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //charge 
     x = 3.0f / 1024;
     y = 517.0f / 1024;
     width = 503.0f / 1024; 
     height = 503.0f / 1024;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
     
 
     //bullet time 
@@ -97,21 +97,21 @@ void HUDManager::constructGUIElements()
     y = 5.0f / 1024;
     width = 503.0f / 1024;
     height = 503.0f / 1024;
-    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
+    skillList.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //skill mask 1
     x = 518.0f / 1024;
     y = 519.0f / 1024;
     width = 503.0f / 1024;
     height = 503.f / 1024;
-    skillMasks.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
+    skillMasks.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -60, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //skill mask 2
     x = 518.0f / 1024;
     y = 519.0f / 1024;
     width = 503.0f / 1024;
     height = 503.f / 1024;
-    skillMasks.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -130, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height })));
+    skillMasks.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -130, -148, 50, 50, Resources::Textures::Spellsheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     for (size_t i = 0; i < PLAYER_STARTING_HP; i++)
     {
@@ -119,13 +119,13 @@ void HUDManager::constructGUIElements()
         y = 258.0f / 1024;
         width = 311.0f / 1024;
         height = 171.0f / 1024;
-        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, {x + width, y + height })));
+        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, {x + width, y + height }), 1.0f, true));
 
         x = 26.f / 1024;
         y = 454.0f / 1024;
         width = 311.0f / 1024;
         height = 171.0f / 1024;
-        staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+        staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
     }
     //static hud elemets
 
@@ -134,7 +134,7 @@ void HUDManager::constructGUIElements()
     y = 457.0f / 1024;
     width = 162.0f / 1024;
     height = 268.0f / 1024;
-    staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 45, -60, 50, 70, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+    staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 45, -60, 50, 70, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //score banner
     x = 26.f / 1024;
@@ -162,14 +162,14 @@ void HUDManager::constructGUIElements()
     y = 266.0f / 1024;
     width = 129.0f / 1024;
     height = 148.0f / 1024;
-    staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -170, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+    staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -170, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //hotkey skill 2
     x = 595.f / 1024;
     y = 266.0f / 1024;
     width = 129.0f / 1024;
     height = 148.0f / 1024;
-    staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+    staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //wave complete
     //x = 0.1;
@@ -196,6 +196,8 @@ void HUDManager::updateTextElements()
         text.position = DirectX::SimpleMath::Vector2(1185, 530);
         text.font = Resources::Fonts::KG18;
 
+        text.isMoveable = true;
+
         HUDText.push_back(TextRenderInfo(text));
     }
     
@@ -208,6 +210,8 @@ void HUDManager::updateTextElements()
         text.position = DirectX::SimpleMath::Vector2(1115, 530);
         text.font = Resources::Fonts::KG18;
 
+
+
         HUDText.push_back(TextRenderInfo(text));
     }
     
@@ -219,6 +223,8 @@ void HUDManager::updateTextElements()
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
+
+    text.isMoveable = false;
 
     liveText.push_back(std::to_wstring(info.scoreCombo));
     text.text = liveText.at(last).c_str();
@@ -244,6 +250,7 @@ void HUDManager::updateTextElements()
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 430);
         text.font = Resources::Fonts::KG14;
+        text.isMoveable = true;
 
         HUDText.push_back(TextRenderInfo(text));
 
@@ -261,7 +268,8 @@ void HUDManager::updateTextElements()
         text.text = liveText.at(last).c_str();
         last++;
         text.position = DirectX::SimpleMath::Vector2(1183, 632);
-        
+        text.isMoveable = true;
+
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
@@ -284,6 +292,7 @@ void HUDManager::updateTextElements()
         text.position = DirectX::SimpleMath::Vector2(750, 400);
         text.font = Resources::Fonts::KG14;
 
+        text.isMoveable = false;
         HUDText.push_back(TextRenderInfo(text));
     }
 
@@ -291,6 +300,7 @@ void HUDManager::updateTextElements()
     int minutes = info.timeRemaining / 60;
     int seconds = info.timeRemaining - (minutes*60);
     std::wstring timeString = L"";
+    text.isMoveable = false;
     if (seconds < 0)
     {
         timeString = L"0:00";
@@ -364,7 +374,7 @@ void HUDManager::updateGUIElemets()
         float y = 258.0f / 1024;
         float width = 311.0f / 1024;
         float height = 171.0f / 1024;
-        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (HPBar.size() * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (HPBar.size() * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
     }
 
     //decideds active weapon 

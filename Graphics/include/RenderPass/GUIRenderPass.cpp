@@ -24,7 +24,7 @@ Graphics::GUIRenderPass::GUIRenderPass(std::initializer_list<ID3D11RenderTargetV
             std::make_unique<DirectX::SpriteFont>(Global::device, _bstr_t(font.second))
         ));
     }
-
+    affectEverything = false;
 }
 
 Graphics::GUIRenderPass::~GUIRenderPass()
@@ -89,6 +89,7 @@ void Graphics::GUIRenderPass::render() const
 void Graphics::GUIRenderPass::update(float deltaTime)
 {
     updateShake(deltaTime);
+    updateBounce(deltaTime);
     enum { TL, TR, BL, BR};
 
     std::vector<Vertex> vertices(4);
@@ -104,10 +105,22 @@ void Graphics::GUIRenderPass::update(float deltaTime)
         float TL_Y = (info.screenRect.topLeft.y * 2 - 1);
         float BR_X = (info.screenRect.bottomRight.x * 2 - 1);
         float BR_Y = (info.screenRect.bottomRight.y * 2 - 1);
-        vertices[TL].position = Vector2(TL_X, TL_Y * -1) + ndcPositionOffset;
-        vertices[TR].position = Vector2(BR_X, TL_Y * -1) + ndcPositionOffset;
-        vertices[BL].position = Vector2(TL_X, BR_Y * -1) + ndcPositionOffset;
-        vertices[BR].position = Vector2(BR_X, BR_Y * -1) + ndcPositionOffset;
+
+        if (info.isMoveable || affectEverything)
+        {
+            vertices[TL].position = Vector2(TL_X, TL_Y * -1) + ndcPositionOffset;
+            vertices[TR].position = Vector2(BR_X, TL_Y * -1) + ndcPositionOffset;
+            vertices[BL].position = Vector2(TL_X, BR_Y * -1) + ndcPositionOffset;
+            vertices[BR].position = Vector2(BR_X, BR_Y * -1) + ndcPositionOffset;
+        }
+        else
+        {
+            vertices[TL].position = Vector2(TL_X, TL_Y * -1);
+            vertices[TR].position = Vector2(BR_X, TL_Y * -1);
+            vertices[BL].position = Vector2(TL_X, BR_Y * -1);
+            vertices[BR].position = Vector2(BR_X, BR_Y * -1);
+        }
+       
 
         float TL_UV_X = info.textureRect.topLeft.x;
         float TL_UV_Y = info.textureRect.topLeft.y;
@@ -149,6 +162,8 @@ void Graphics::GUIRenderPass::updateShake(float deltaTime)
 
             shakeDir = info.direction;
             shakeDir.Normalize();
+
+            affectEverything = info.affectEveryThing;
         }
     }
 
@@ -178,6 +193,62 @@ void Graphics::GUIRenderPass::updateShake(float deltaTime)
 
 void Graphics::GUIRenderPass::updateBounce(float deltaTime)
 {
+    static float bDuration = 0.0f;
+    static float bTime = 0.0f;
+    static float bHeight = 0.0f;
+    static float bMax = 0.0f;
+    static DirectX::SimpleMath::Vector2 direction(0.0f, 0.0f);
+    static bool isBouncing = false;
+    static bool complete = false;
+
+    for (auto & info : RenderQueue::get().getQueue<SpecialEffectRenderInfo>())
+    {
+        if (info.type == SpecialEffectRenderInfo::screenBounce)
+        {
+            bTime = 0.0f;
+            bDuration = info.duration;
+            bHeight = info.radius;
+            direction = info.direction;
+            direction.Normalize();
+            isBouncing = true;
+            bMax = info.bounceMax * direction.y;
+            affectEverything = info.affectEveryThing;
+        }
+    }
+
+    if (isBouncing)
+    {
+        bTime += deltaTime;
+        if (bTime < bDuration)
+        {
+            /*positionOffset = DirectX::SimpleMath::Vector2(direction.x * bHeight * bTime, direction.y * bHeight * bTime);
+            ndcPositionOffset = DirectX::SimpleMath::Vector2((float)(positionOffset.x * 2.f / WIN_WIDTH), ((WIN_HEIGHT - positionOffset.y) / WIN_HEIGHT) - 1.f);*/
+
+            if (positionOffset.y < bMax && complete == false)
+            {
+                positionOffset.y += direction.y * bHeight * deltaTime;
+            }
+            else if (complete)
+            {
+                positionOffset.y -= direction.y * bHeight * deltaTime;
+            }
+            else
+            {
+                complete = true;
+            }
+
+            
+            ndcPositionOffset = DirectX::SimpleMath::Vector2((float)(positionOffset.x * 2.f / WIN_WIDTH), ((WIN_HEIGHT - positionOffset.y) / WIN_HEIGHT) - 1.f);
+        }
+        else
+        {
+            isBouncing = false;
+            complete = false;
+            positionOffset = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
+            ndcPositionOffset = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
+        }
+    }
+
 }
 
 //render the queued text
@@ -188,7 +259,15 @@ void Graphics::GUIRenderPass::textRender() const
     {
         if (isDrawableString(info.text))
         {
-            fonts.at(info.font)->DrawString(sBatch.get(), info.text.c_str(), info.position + positionOffset, info.color);
+            if (info.isMoveable || affectEverything)
+            {
+                fonts.at(info.font)->DrawString(sBatch.get(), info.text.c_str(), info.position + positionOffset, info.color);
+            }
+            else 
+            {
+                fonts.at(info.font)->DrawString(sBatch.get(), info.text.c_str(), info.position, info.color);
+            }
+            
         }
         
     }

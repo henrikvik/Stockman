@@ -52,5 +52,6 @@ namespace Graphics
 
         DirectX::SimpleMath::Vector2 ndcPositionOffset;
         DirectX::SimpleMath::Vector2 positionOffset;
+        bool affectEverything;
     };
 }

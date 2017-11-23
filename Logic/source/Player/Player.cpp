@@ -456,6 +456,7 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
             shake.duration = 0.5f;
             shake.radius = 30.0f;
             shake.type = SpecialEffectRenderInfo::screenShake;
+            shake.affectEveryThing = true;
             QueueRender(shake);
         }
     }
