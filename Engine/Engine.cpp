@@ -378,6 +378,7 @@ int Engine::run()
         shakeInfo.type = shakeInfo.screenShake;
         shakeInfo.duration = 0.5f;
         shakeInfo.radius = 30;
+        shakeInfo.direction = DirectX::SimpleMath::Vector2(0.0f, 1.0f);
 
 #ifdef _DEBUG
         if (mTracker->pressed.G)

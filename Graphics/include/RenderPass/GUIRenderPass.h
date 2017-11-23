@@ -48,6 +48,7 @@ namespace Graphics
         void textRender() const;
         bool isDrawableString(std::wstring text)const;
         void updateShake(float deltaTime);
+        void updateBounce(float deltaTime);
 
         DirectX::SimpleMath::Vector2 ndcPositionOffset;
         DirectX::SimpleMath::Vector2 positionOffset;

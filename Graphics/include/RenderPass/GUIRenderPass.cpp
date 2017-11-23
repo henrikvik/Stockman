@@ -176,6 +176,10 @@ void Graphics::GUIRenderPass::updateShake(float deltaTime)
     }
 }
 
+void Graphics::GUIRenderPass::updateBounce(float deltaTime)
+{
+}
+
 //render the queued text
 void Graphics::GUIRenderPass::textRender() const
 {

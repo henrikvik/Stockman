@@ -17,9 +17,9 @@ using namespace Logic;
 const int HUDManager::CURRENT_AMMO = 0;
 const int HUDManager::TOTAL_AMMO = 1;
 
-const std::wstring HUDManager::IN_WAVE     = L"MURDER!",
-                   HUDManager::BEFORE_WAVE = L"WAITING",
-                   HUDManager::AFTER_WAVE  = L"ENRAGED!";
+const std::wstring HUDManager::IN_WAVE     = L"MURDER",
+                   HUDManager::BEFORE_WAVE = L"PREPARE",
+                   HUDManager::AFTER_WAVE  = L"ENRAGED";
 
 HUDManager::HUDManager()
 {

@@ -1,6 +1,6 @@
 {
 	"Name": "MouseSense";
-	"Value": 0.01f;
+	"Value": 0.1f;
 }
 {
 	"Name": "FOV";
