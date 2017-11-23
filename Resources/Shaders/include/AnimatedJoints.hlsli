@@ -2,7 +2,7 @@
 
 struct AnimatedJoints
 {
-    float4x4 jointTransforms[20];
+    float4x4 jointTransforms[32];
 };
 
 float4x4 calcAnimationMatrix(Vertex vertex, StructuredBuffer<AnimatedJoints> instances, uint instanceId)
