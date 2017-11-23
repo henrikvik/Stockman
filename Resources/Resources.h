@@ -16,21 +16,23 @@ namespace Resources
             {KG18, R"(..\Resources\Fonts\KG18.spritefont)"},
             {KG26, R"(..\Resources\Fonts\KG26.spritefont)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Maps
     {
         enum Files
         {
             IslandScene,
-            Scene,
-            Test_Map
+            Scene
         };
         const std::map<Files, const char *> Paths =
         {
             {IslandScene, R"(..\Resources\Maps\IslandScene.toml)"},
-            {Scene, R"(..\Resources\Maps\Scene.toml)"},
-            {Test_Map, R"(..\Resources\Maps\Test_Map.toml)"}
+            {Scene, R"(..\Resources\Maps\Scene.toml)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Models
     {
@@ -39,26 +41,20 @@ namespace Resources
             Ammocrystal,
             AmmoPackCrossBolt,
             AnimatedSummonUnit,
+            AnimationTest,
+            Barrel,
             Crossbow,
             Crossbowbolt,
             Crossbowbolts,
             Firepit,
-            Ground,
             Hammer,
-            House1,
-            House2,
-            House3,
-            Lower_Ground,
+            Island,
             MenuScene,
-            Rock1,
-            Rock2,
-            Rock3,
             SkySphere,
             Staff,
             StaticSummon,
             SummonUnitWithAnim,
             Tablet1,
-            Tree,
             UnitCube
         };
         const std::map<Files, const char *> Paths =
@@ -66,28 +62,24 @@ namespace Resources
             {Ammocrystal, R"(..\Resources\Models\Ammocrystal.hyb)"},
             {AmmoPackCrossBolt, R"(..\Resources\Models\AmmoPackCrossBolt.hyb)"},
             {AnimatedSummonUnit, R"(..\Resources\Models\AnimatedSummonUnit.hyb)"},
+            {AnimationTest, R"(..\Resources\Models\AnimationTest.hyb)"},
+            {Barrel, R"(..\Resources\Models\Barrel.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
             {Crossbowbolt, R"(..\Resources\Models\Crossbowbolt.hyb)"},
             {Crossbowbolts, R"(..\Resources\Models\Crossbowbolts.hyb)"},
             {Firepit, R"(..\Resources\Models\Firepit.hyb)"},
-            {Ground, R"(..\Resources\Models\Ground.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
-            {House1, R"(..\Resources\Models\House1.hyb)"},
-            {House2, R"(..\Resources\Models\House2.hyb)"},
-            {House3, R"(..\Resources\Models\House3.hyb)"},
-            {Lower_Ground, R"(..\Resources\Models\Lower_Ground.hyb)"},
+            {Island, R"(..\Resources\Models\Island.hyb)"},
             {MenuScene, R"(..\Resources\Models\MenuScene.hyb)"},
-            {Rock1, R"(..\Resources\Models\Rock1.hyb)"},
-            {Rock2, R"(..\Resources\Models\Rock2.hyb)"},
-            {Rock3, R"(..\Resources\Models\Rock3.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {SummonUnitWithAnim, R"(..\Resources\Models\SummonUnitWithAnim.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
-            {Tree, R"(..\Resources\Models\Tree.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Shaders
     {
@@ -102,7 +94,6 @@ namespace Resources
             ForwardPlus,
             ForwardPlus_PS,
             ForwardPlus_VS_Animated,
-            ForwardPlus_VS_Foliage,
             ForwardPlus_VS_Static,
             FullscreenQuad,
             GlowBlurHorizontal,
@@ -130,7 +121,6 @@ namespace Resources
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
             {ForwardPlus_PS, R"(..\Resources\Shaders\ForwardPlus_PS.hlsl)"},
             {ForwardPlus_VS_Animated, R"(..\Resources\Shaders\ForwardPlus_VS_Animated.hlsl)"},
-            {ForwardPlus_VS_Foliage, R"(..\Resources\Shaders\ForwardPlus_VS_Foliage.hlsl)"},
             {ForwardPlus_VS_Static, R"(..\Resources\Shaders\ForwardPlus_VS_Static.hlsl)"},
             {FullscreenQuad, R"(..\Resources\Shaders\FullscreenQuad.hlsl)"},
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
@@ -147,6 +137,8 @@ namespace Resources
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
             {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Textures
     {
@@ -212,5 +204,7 @@ namespace Resources
             {WaveComplete, R"(..\Resources\Textures\WaveComplete.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };
+        
+        Files toEnum(const char * str);
     }
 }

@@ -1,6 +1,5 @@
 #include <Misc\GUI\iMenuCards.h>
 #include <Misc\Card.h>
-#include <Misc\StringConverter.h>
 
 using namespace Logic;
 

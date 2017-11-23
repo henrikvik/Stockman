@@ -3,6 +3,15 @@
 #include <Misc\GUI\iMenuAction.h>
 #include <Misc\GUI\iMenuMachine.h>
 
+#define QUICK_INTO_GAME true
+#if QUICK_INTO_GAME
+#include <State.h>
+#include <StateMachine\StateBuffer.h>
+#include <StateMachine\StatePrimary.h>
+#include <StateMachine\StateSecondary.h>
+#include <StatePlaying.h>
+#endif
+
 using namespace Logic;
 
 iMenuIntro::iMenuIntro(iMenu::MenuGroup group)
@@ -18,5 +27,11 @@ void iMenuIntro::update(int x, int y, float deltaTime)
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Space) && !m_isFading && !m_safeToRemove)
     {
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Start);
+
+        #if QUICK_INTO_GAME
+        printf("Skipping menu's, disable this is: %s", __FILE__);
+        if (Action::Get().m_stateBuffer->currentPrimaryState) if (StatePrimary* primary = dynamic_cast<StatePrimary*>(Action::Get().m_stateBuffer->currentPrimaryState))primary->queueState(StateType::State_Playing);
+        if (Action::Get().m_stateBuffer->currentSecondaryState) if (StateSecondary* secondary = dynamic_cast<StateSecondary*>(Action::Get().m_stateBuffer->currentSecondaryState))secondary->queueState(StateType::Nothing);
+        #endif
     }
 }

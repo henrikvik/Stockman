@@ -4,7 +4,7 @@
 
 Settings::Settings()
 {
-    m_mouseSense = 0.01f;
+    m_mouseSense = 0.1f;
     m_FOV = 90.f;
     m_masterSound = 0.1f;;
     m_SFX = 0.1f;;
@@ -54,6 +54,10 @@ void Settings::readFromFile()
 		{
 			m_windowed = theSettings.floats.at("Value");
 		}
+        //else if (theSettings.strings.at("Name").compare("Alias") == 0)
+        //{
+        //    m_alias = theSettings.strings.at("Value");
+        //}
 	}
 }
 
@@ -179,4 +183,14 @@ bool Settings::getWindowed()
 void Settings::setWindowed(bool windowed)
 {
 	m_windowed = windowed;
+}
+
+std::string Settings::getAlias()
+{
+    return m_alias;
+}
+
+void Settings::setAlias(std::string alias)
+{
+    m_alias = alias;
 }

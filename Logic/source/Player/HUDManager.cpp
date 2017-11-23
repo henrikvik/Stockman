@@ -17,13 +17,13 @@ using namespace Logic;
 const int HUDManager::CURRENT_AMMO = 0;
 const int HUDManager::TOTAL_AMMO = 1;
 
-const std::wstring HUDManager::IN_WAVE     = L"KILL!",
-                   HUDManager::BEFORE_WAVE = L"WAITING..",
+const std::wstring HUDManager::IN_WAVE     = L"MURDER!",
+                   HUDManager::BEFORE_WAVE = L"WAITING",
                    HUDManager::AFTER_WAVE  = L"ENRAGED!";
 
 HUDManager::HUDManager()
 {
-    ZeroMemory(&info, sizeof(info));
+//    ZeroMemory(&info, sizeof(info)); // Yes, this causes a "fake" memory leaks
     info.cd[0] = 1.0f;
     info.cd[1] = 1.0f;
     info.currentSkills[0] = -1;
@@ -220,6 +220,22 @@ void HUDManager::updateTextElements()
 
     HUDText.push_back(TextRenderInfo(text));
 
+    liveText.push_back(std::to_wstring(info.scoreCombo));
+    text.text = liveText.at(last).c_str();
+    last++;
+    text.position = DirectX::SimpleMath::Vector2(142, 45);
+    text.font = Resources::Fonts::KG14;
+
+    HUDText.push_back(TextRenderInfo(text));
+
+    liveText.push_back(std::to_wstring(info.scoreMul) + L"X");
+    text.text = liveText.at(last).c_str();
+    last++;
+    text.position = DirectX::SimpleMath::Vector2(110, 45);
+    text.font = Resources::Fonts::KG14;
+
+    HUDText.push_back(TextRenderInfo(text));
+
     //total ammo of weapon
     if (info.currentWeapon == 0)
     {
@@ -265,7 +281,7 @@ void HUDManager::updateTextElements()
         liveText.push_back(std::to_wstring(info.activeAmmo[0]));
         text.text = liveText.at(last).c_str();
         last++;
-        text.position = DirectX::SimpleMath::Vector2(700, 400);
+        text.position = DirectX::SimpleMath::Vector2(750, 400);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
@@ -427,11 +443,13 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
 {
     //updates hudInfo with the current info
     info.score = ComboMachine::Get().getTotalScore();
+    info.scoreCombo = ComboMachine::Get().getComboScore();
+    info.scoreMul = ComboMachine::Get().getCurrentCombo();
     info.hp = player.getHP();
     info.activeAmmo[HUDManager::CURRENT_AMMO]   = player.getActiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
-    info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().ammo;// TODO GET AMMO
+    info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().enhancedAmmo;// TODO GET AMMO
     info.inactiveAmmo[HUDManager::CURRENT_AMMO] = player.getInactiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
-    info.inactiveAmmo[HUDManager::TOTAL_AMMO]   = player.getInactiveAmmoContainer().getAmmoInfo().ammo;// TODO GET AMMO
+    info.inactiveAmmo[HUDManager::TOTAL_AMMO]   = player.getInactiveAmmoContainer().getAmmoInfo().enhancedAmmo;// TODO GET AMMO
     info.sledge = player.isUsingMeleeWeapon();
     info.currentWeapon = player.getCurrentWeapon();
 
@@ -524,6 +542,8 @@ void HUDManager::reset()
     info.inactiveAmmo[0] = 0;
     info.inactiveAmmo[1] = 0;
     info.score = 0;
+    info.scoreCombo = 0;
+    info.scoreMul = 0;
 
     skillChoosen = false;
     HUDElements.clear();

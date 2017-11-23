@@ -86,7 +86,7 @@ SET_INSTANCE_CAP(LightRenderInfo, 128)
 
 struct SpecialEffectRenderInfo : RenderInfo
 {
-    enum SpecialEffect { BulletTime, Snow, screenShake };
+    enum SpecialEffect { BulletTime, Snow, screenShake, DoF };
     SpecialEffect type;
     DirectX::SimpleMath::Vector2 direction;
     float progress = 0;
@@ -108,7 +108,7 @@ struct TextRenderInfo : RenderInfo
     DirectX::SimpleMath::Vector2 position;
     DirectX::SimpleMath::Color color;
     Resources::Fonts::Files font;
-    const wchar_t * text = L"";
+    std::wstring text = L"";
 };
 
 

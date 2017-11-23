@@ -52,6 +52,7 @@ void CardManager::pickThreeCards(bool damaged)
     if (cardsPicked < amount)
         throw std::runtime_error("Not enough cards");
 
+    pepperCardsForDraw();
 }
 
 void CardManager::shuffle()
@@ -59,6 +60,18 @@ void CardManager::shuffle()
     static std::random_device rd;
     static std::mt19937 g(rd());
     std::shuffle(m_deck.begin() + NEVER_REMOVE_CARDS, m_deck.end(), g);
+}
+
+void Logic::CardManager::pepperCardsForDraw()
+{
+    currenthand.clear();
+    for (size_t i = 0; i < HAND_SIZE; i++)
+    {
+        currenthand.push_back(m_cards[m_deck[m_hand.at(i)].second]);
+        currenthand.at(i).setIconPos(365.0f + 250 * i, 260.0f, 75, 75);
+        currenthand.at(i).setbackgroundPos(290.f + 250 * i, 225.0f, 200, 250);
+        currenthand.at(i).setCardTextPos(308.f + 250.f * i);
+    }
 }
 
 Card CardManager::pick(int handIndex)
@@ -71,15 +84,12 @@ Card CardManager::pick(int handIndex)
     return m_cards[m_deck[deckIndex].second];
 }
 
-std::vector<Card*> Logic::CardManager::getHand()
+void Logic::CardManager::render() const
 {
-    
-    for (size_t i = 0; i < 3; i++)
+    for (auto cards : currenthand)
     {
-        currenthand.push_back(&m_cards[m_deck[m_hand.at(i)].second]);
+        cards.render();
     }
-    
-    return currenthand;
 }
 
 void CardManager::loadDeckFromFile()
