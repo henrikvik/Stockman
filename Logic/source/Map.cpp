@@ -185,32 +185,42 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
             Resources::Models::Files model = Resources::Models::toEnum(instance.model.c_str());
             std::cout << "> " <<  instance.model.c_str() << std::endl;
 
-            if (model != Resources::Models::House1
-             && model != Resources::Models::House2
-             && model != Resources::Models::House3) continue;
+            /*if (model != Resources::Models::House1
+                && model != Resources::Models::Ground
+                && model != Resources::Models::Tree
+                && model != Resources::Models::House2
+                && model != Resources::Models::House3) continue;*/
 
             DirectX::SimpleMath::Quaternion rotation(instance.rotation[0], instance.rotation[1], instance.rotation[2], instance.rotation[3]);
             DirectX::SimpleMath::Vector3 scale(instance.scale[0], instance.scale[1], instance.scale[2]);
             DirectX::SimpleMath::Vector3 translation(instance.translation[0], instance.translation[1], instance.translation[2]);
 
-            DirectX::SimpleMath::Matrix transform = DirectX::XMMatrixAffineTransformation({1,1,1}, {}, rotation, translation);
-            Decoration decor(model, transform);
+            DirectX::SimpleMath::Matrix instance_transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
+            Decoration decor(model, instance_transform);
             decorations.push_back(decor);
 
-            btTransform instance_transform(instance.rotation, instance.translation);
             auto hitboxes = ModelLoader::get().getModel(model)->getHitboxes();
             for (auto & hitbox : *hitboxes)
             {
                 btRigidBody * body = m_physicsPtr->createHitbox(
                     toVec3(hitbox.position),
                     toQuat(hitbox.rotation),
-                    toVec3(hitbox.halfSize),
+                    toVec3(hitbox.halfSize) * instance.scale,
                     false,
                     Physics::COL_HITBOX,
                     Physics::COL_EVERYTHING ^ Physics::COL_HITBOX
                 );
 
-                body->setWorldTransform(instance_transform * body->getWorldTransform());
+                float t[16]; body->getWorldTransform().getOpenGLMatrix(t);
+                DirectX::SimpleMath::Matrix hitbox_transform(t);
+
+                hitbox_transform = hitbox_transform * instance_transform;
+                DirectX::SimpleMath::Quaternion rot;
+                DirectX::SimpleMath::Vector3 pos, scale;
+                hitbox_transform.Decompose(scale, rot, pos);
+                btTransform new_transform(toQuat(rot), {pos.x, pos.y, pos.z});
+
+                body->setWorldTransform(new_transform);
             }
         }
         catch (const char * e)

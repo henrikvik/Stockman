@@ -34,7 +34,7 @@ namespace Logic
             renderInfo.model = model;
             renderInfo.transform = transform;
             renderInfo.color = DirectX::SimpleMath::Vector3( 1, 1, 1);
-            renderInfo.useGridTexture = true;
+            renderInfo.useGridTexture = false;
         }
 
         void render() const
