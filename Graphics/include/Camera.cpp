@@ -7,10 +7,11 @@ namespace Graphics
 		cameraBuffer(device),
 		inverseBuffer(device)
 	{
-		this->fieldOfView = fieldOfView;
+		this->fieldOfView = DirectX::XMConvertToRadians(fieldOfView);
 		this->drawDistance = drawDistance;
+        this->aspectRatio = float(width) / height;
 
-		this->projection = DirectX::XMMatrixPerspectiveFovRH(fieldOfView, float(width) / height, 0.1f, drawDistance);
+		this->projection = DirectX::XMMatrixPerspectiveFovRH(this->fieldOfView, aspectRatio, 0.1f, drawDistance);
 
 		values.vP = this->projection * this->view;
 		values.view = this->view;
@@ -25,7 +26,6 @@ namespace Graphics
 	void Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context)
 	{
 		forward.Normalize();
-
 		this->view = DirectX::XMMatrixLookToRH(pos, forward, DirectX::SimpleMath::Vector3(0, 1, 0));
 
 		this->pos = pos;
@@ -50,6 +50,11 @@ namespace Graphics
         Camera::update(pos, target - pos, context);
 	}
 
+    void Camera::updateFOV(float fieldOfView)
+    {
+        this->fieldOfView = DirectX::XMConvertToRadians(fieldOfView);
+        this->projection = DirectX::XMMatrixPerspectiveFovRH(this->fieldOfView, aspectRatio, 0.1f, drawDistance);
+    }
 
 	void Camera::setPos(DirectX::SimpleMath::Vector3 pos)
 	{

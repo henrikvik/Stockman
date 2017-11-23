@@ -86,7 +86,7 @@ void iMenu::addSlider(SliderData sld)
     Slider temp(sld.screenRect.topLeft.x * WIN_WIDTH, sld.screenRect.topLeft.y * WIN_WIDTH,
         (sld.screenRect.bottomRight.x - sld.screenRect.topLeft.x) * WIN_WIDTH,
         (sld.screenRect.bottomRight.y - sld.screenRect.topLeft.y) * WIN_WIDTH,
-        sld.texture, sld.texRectNormal, sld.texRectHover, sld.texRectActive, sld.min, sld.max, sld.value, sld.minValue, sld.maxValue);
+        sld.texture, sld.texRectNormal, sld.texRectHover, sld.texRectActive, sld.min, sld.max, sld.value, sld.minValue, sld.maxValue, sld.delimeter);
 
     m_sliders.push_back(temp);
     m_drawSliders = true;

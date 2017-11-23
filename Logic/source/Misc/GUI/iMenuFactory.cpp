@@ -61,7 +61,7 @@ iMenu * iMenuFactory::buildMenuSettings()
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
     Settings& setting = Settings::getInstance();
-    menu->addSlider(buildSlider("MenuTest", setting.getFOVPTR(), 90.0f, 180.0f));
+    menu->addSlider(buildSlider("MenuTest", setting.getFOVPTR(), 90.0f, 180.0f, 1.0f));
 
     //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
     //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
@@ -213,7 +213,7 @@ iMenu::ButtonData iMenuFactory::buildButton(std::string name, std::function<void
     return btn;
 }
 
-iMenu::SliderData iMenuFactory::buildSlider(std::string name, float* value, float minValue, float maxValue)
+iMenu::SliderData iMenuFactory::buildSlider(std::string name, float* value, float minValue, float maxValue, float delimiter)
 {
     iMenu::SliderData sld;
     for (auto const& slider : sliderFile)
@@ -235,6 +235,7 @@ iMenu::SliderData iMenuFactory::buildSlider(std::string name, float* value, floa
             sld.value = value;
             sld.minValue = minValue;
             sld.maxValue = maxValue;
+            sld.delimeter = delimiter;
         }
     }
     return sld;

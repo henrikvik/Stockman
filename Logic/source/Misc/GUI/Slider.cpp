@@ -13,7 +13,8 @@ Slider::Slider(
     float max,
     float* value,
     float minValue,
-    float maxValue) : inactive(inactive), active(active), hover(active)
+    float maxValue,
+    float delimiter) : inactive(inactive), active(active), hover(active)
 {
     m_animationStart = DirectX::SimpleMath::Vector2(0, 0);
     m_animationEnd = DirectX::SimpleMath::Vector2(0, 0);
@@ -24,11 +25,12 @@ Slider::Slider(
     m_max = max;
     m_minValue = minValue;
     m_maxValue = maxValue;
+    m_delimiter = delimiter;
 
     m_value = value;
     float X = x;
     X = (((*m_value - m_minValue) / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min - (m_width * 0.5f);
-   /* *m_value = m_minValue + (m_maxValue - m_minValue) * ((x - m_min) / (m_max - m_min));*/
+
     FloatRect screenRect = {
         X  / WIN_WIDTH,
         y / WIN_HEIGHT,
@@ -70,15 +72,23 @@ void Slider::updateOnPress(int posX, int posY)
                 posx = m_max;
             }
 
-            *m_value = m_minValue + (m_maxValue - m_minValue) * ((posx - m_min) / (m_max - m_min));
-           /* float flooredFinalValue = floorf(finalValue);
+            *m_value = (m_maxValue - m_minValue) * ((posx - m_min) / (m_max - m_min));
 
-            if (finalValue - flooredFinalValue >= 0.5f)
+            if (m_delimiter == 1.0f)
             {
-                flooredFinalValue++;
+                float flooredFinalValue = floorf(*m_value);
+
+                if (*m_value - flooredFinalValue >= 0.5f)
+                {
+                    flooredFinalValue++;
+                }
+
+                posx = ((flooredFinalValue / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min;
+
+                *m_value = flooredFinalValue;
             }
 
-            posx = ((flooredFinalValue / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min;*/
+            *m_value += m_minValue;
 
              FloatRect screenRect = {
                  (posx - (m_width * 0.5f)) / WIN_WIDTH,
