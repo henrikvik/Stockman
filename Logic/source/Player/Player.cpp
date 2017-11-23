@@ -723,6 +723,10 @@ void Player::move(float deltaTime)
 			// Change move direction
 			m_moveDir = m_wishDir;
 		}
+        else if (m_moveSpeed < FLT_EPSILON)
+        {
+            m_moveDir = { 0.f, 0.f, 0.f };
+        }
 	}
 	// On ground and about to jump
 	else
