@@ -27,9 +27,14 @@ const std::map<int, Resources::Textures::Files> LookUp =
 iMenuIntro* iMenuFactory::buildMenuIntro()
 {
     iMenuIntro* menu = newd iMenuIntro(iMenu::Intro);
-
     menu->addBackground(Resources::Textures::IntroScreen, 1.f);
+    return menu;
+}
 
+iMenuFirstTime * iMenuFactory::buildMenuFirstTime()
+{
+    iMenuFirstTime* menu = newd iMenuFirstTime(iMenu::FirstTime);
+    menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     return menu;
 }
 
@@ -104,9 +109,17 @@ iMenu * iMenuFactory::buildMenuGameWon()
     return menu;
 }
 
-iMenuLoading* iMenuFactory::buildMenuLoading()
+iMenuLoadingPre* iMenuFactory::buildMenuLoadingPre()
 {
-    iMenuLoading* menu = newd iMenuLoading(iMenu::Loading);
+    iMenuLoadingPre* menu = newd iMenuLoadingPre(iMenu::LoadingPre);
+    menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
+
+    return menu;
+}
+
+iMenuLoadingPost* iMenuFactory::buildMenuLoadingPost()
+{
+    iMenuLoadingPost* menu = newd iMenuLoadingPost(iMenu::LoadingPost);
     menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
 
     return menu;
@@ -114,7 +127,7 @@ iMenuLoading* iMenuFactory::buildMenuLoading()
 
 iMenuHighscore * iMenuFactory::buildMenuHighscore()
 {
-    iMenuHighscore* menu = newd iMenuHighscore(iMenu::Highscore);
+    iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreStartMenu);
 
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));

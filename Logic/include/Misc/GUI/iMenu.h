@@ -14,17 +14,19 @@ namespace Logic
         enum MenuGroup
         {
             Empty,
+            FirstTime,
             Intro,
             Start,
             Settings,
             Skill,
             CardSelect,
-            Highscore,
+            HighscoreStartMenu,
             HighscoreGameOver,
             GameOver, 
             GameWon,
             Pause, 
-            Loading
+            LoadingPre,
+            LoadingPost
         };
 
         struct ButtonData
@@ -46,8 +48,8 @@ namespace Logic
         iMenu(MenuGroup group);
         ~iMenu();
 
-        void fadeIn();
-        void fadeOut();
+        virtual void fadeIn();
+        virtual void fadeOut();
 
         void addBackground(Resources::Textures::Files texture, float alpha);
         void addButton(ButtonData btn);

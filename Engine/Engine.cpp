@@ -131,7 +131,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
             Settings setting = Settings::getInstance();
             if (args.size() != 0)
             {
-                setting.setAlias(args[0]);
+                setting.setName(args[0]);
                 catcher = "Named have been changed!";
             }
             else
@@ -148,7 +148,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
     });
 
     // load settings before starting
-    Settings setting = Settings::getInstance();
+    Settings& setting = Settings::getInstance();
     setting.readFromFile();
 
 //    game = new Logic::StateMachine(cmdLine, args);
@@ -320,7 +320,8 @@ Profiler *g_Profiler;
 
 int Engine::run()
 {
-    Settings setting = Settings::getInstance();
+    Settings& setting = Settings::getInstance();
+
 	MSG msg = { 0 };
 	this->createSwapChain();
 	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, setting.getFOV());

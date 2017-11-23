@@ -11,7 +11,7 @@
 
 // Debugging purposes
 #include <DebugDefines.h>
-#include <Engine\Typing.h>
+#include <Engine\Settings.h>
 #include <Engine\DebugWindow.h> 
 #include <GameType.h>
 
@@ -59,7 +59,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
 
     // Initializing Menu's
     m_menu = newd iMenuMachine();
-    m_menu->queueMenu(iMenu::MenuGroup::Skill);
+    m_menu->queueMenu(iMenu::MenuGroup::LoadingPost);
 
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
@@ -116,6 +116,7 @@ void StatePlaying::update(float deltaTime)
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
     if (m_menu->getType() == iMenu::MenuGroup::Skill ||
+        m_menu->getType() == iMenu::MenuGroup::LoadingPost ||
         m_menu->getType() == iMenu::MenuGroup::GameOver ||
         m_menu->getType() == iMenu::MenuGroup::GameWon ||
         m_menu->getType() == iMenu::MenuGroup::HighscoreGameOver ||
@@ -206,7 +207,8 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    if (m_menu->getType() != iMenu::MenuGroup::Skill && 
+    if (m_menu->getType() != iMenu::MenuGroup::Skill &&
+        m_menu->getType() != iMenu::MenuGroup::LoadingPost &&
         m_menu->getType() != iMenu::MenuGroup::GameOver &&
         m_menu->getType() != iMenu::MenuGroup::GameWon &&
         m_menu->getType() != iMenu::MenuGroup::HighscoreGameOver &&
@@ -233,8 +235,10 @@ void StatePlaying::gameOver()
     ComboMachine::Get().endCombo();
     Network::dbConnect db;
 
-    // don't u dare
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    // Gets the name from file and adds score to database
+    std::string name = Settings::getInstance().getName();
+    if (name.empty()) name = "Stockman";
+    db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 
     // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
@@ -247,8 +251,10 @@ void StatePlaying::gameWon()
     ComboMachine::Get().endCombo();
     Network::dbConnect db;
 
-    // don't u dare
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    // Gets the name from file and adds score to database
+    std::string name = Settings::getInstance().getName();
+    if (name.empty()) name = "Stockman";
+    db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 
     // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameWon);

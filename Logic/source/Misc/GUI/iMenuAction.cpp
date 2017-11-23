@@ -17,7 +17,7 @@ void ButtonFunction::startGame()
 {
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
     if (Action::Get().m_menuMachine)
-        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Loading);
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::LoadingPre);
 }
 
 // Switches the current menu-machine to settings screen
@@ -38,7 +38,7 @@ void ButtonFunction::startMainMenu()
 void ButtonFunction::showHighscore()
 {
     if (Action::Get().m_menuMachine)
-        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Highscore);
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::HighscoreStartMenu);
 }
 
 // Unloads all program data and quits the game
