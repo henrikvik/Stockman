@@ -101,7 +101,8 @@ void SkillGrapplingHook::onRelease()
 	{
 		float yVel = player->getCharController()->getLinearVelocity().y();
         player->getCharController()->setFallSpeed(1.f);
-		player->getCharController()->setLinearVelocity({ 0.f, yVel, 0.f });
+		//player->getCharController()->setLinearVelocity({ 0.f, yVel * 25, 0.f });
+        player->getCharController()->jump({ 0.f, yVel * 0.1f, 0.f });
 	}
 
     
@@ -126,6 +127,7 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 		{
 			btGhostObject* ghostObject = player->getGhostObject();
 			btVector3 linearVelocity = player->getCharController()->getLinearVelocity();
+            //printf("%f\n", linearVelocity.y());
 			//btVector3 dirToPoint = (m_point - player->getPositionBT()).normalize();
 
             if(m_goingUp)
