@@ -59,7 +59,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
 
     // Initializing Menu's
     m_menu = newd iMenuMachine();
-    m_menu->queueMenu(iMenu::MenuGroup::Skill);
+    m_menu->queueMenu(iMenu::MenuGroup::LoadingPost);
 
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
@@ -116,6 +116,7 @@ void StatePlaying::update(float deltaTime)
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
     if (m_menu->getType() == iMenu::MenuGroup::Skill ||
+        m_menu->getType() == iMenu::MenuGroup::LoadingPost ||
         m_menu->getType() == iMenu::MenuGroup::GameOver ||
         m_menu->getType() == iMenu::MenuGroup::GameWon ||
         m_menu->getType() == iMenu::MenuGroup::HighscoreGameOver ||
@@ -206,7 +207,8 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    if (m_menu->getType() != iMenu::MenuGroup::Skill && 
+    if (m_menu->getType() != iMenu::MenuGroup::Skill &&
+        m_menu->getType() != iMenu::MenuGroup::LoadingPost &&
         m_menu->getType() != iMenu::MenuGroup::GameOver &&
         m_menu->getType() != iMenu::MenuGroup::GameWon &&
         m_menu->getType() != iMenu::MenuGroup::HighscoreGameOver &&

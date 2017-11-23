@@ -28,6 +28,14 @@
 
 using namespace Logic;
 
+#define PLAYER_MOVEMENT_ACCELERATION	0.0002f
+#define PLAYER_MOVEMENT_AIRACCELERATION	0.005f
+#define PLAYER_MOVEMENT_AIRSTRAFE_SPEED 0.004f
+#define PLAYER_SPEED_LIMIT				0.04f
+#define PLAYER_STRAFE_ANGLE				0.95f
+#define PLAYER_FRICTION					20.f
+#define PLAYER_AIR_FRICTION				1.f
+
 const int Player::MIN_Y = -80;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
@@ -601,9 +609,9 @@ void Player::updateSpecific(float deltaTime)
         {
             // Primary and secondary attack
             if ((ms.leftButton))
-                m_weaponManager->tryUsePrimary(getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
+                m_weaponManager->tryAttack(WEAPON_PRIMARY, getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
             else if (ms.rightButton)
-                m_weaponManager->tryUseSecondary(getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
+                m_weaponManager->tryAttack(WEAPON_SECONDARY, getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
 
             // Reload
             if (ks.IsKeyDown(m_reloadWeapon))
@@ -999,12 +1007,12 @@ SkillManager* Player::getSkillManager()
 }
 const AmmoContainer& Player::getActiveAmmoContainer() const
 {
-    return *m_weaponManager->getActiveWeaponLoadout()->ammoContainer;
+    return m_weaponManager->getActiveWeaponLoadout()->ammoContainer;
 }
 
 const AmmoContainer& Player::getInactiveAmmoContainer() const
 {
-    return *m_weaponManager->getInactiveWeaponLoadout()->ammoContainer;
+    return m_weaponManager->getInactiveWeaponLoadout()->ammoContainer;
 }
 
 const Skill* Player::getSkill(int id) const
@@ -1014,7 +1022,7 @@ const Skill* Player::getSkill(int id) const
 
 bool Player::isUsingMeleeWeapon() const
 {
-    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer->getAmmoInfo().ammoConsumption[WEAPON_PRIMARY] == 0;
+    return m_weaponManager->getCurrentWeaponLoadout()->ammoContainer.getAmmoInfo().ammoConsumption[WEAPON_PRIMARY] == 0;
 }
 
 int Player::getCurrentWeapon() const

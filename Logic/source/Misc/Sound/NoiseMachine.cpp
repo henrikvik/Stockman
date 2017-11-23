@@ -3,7 +3,7 @@
 
 using namespace Sound;
 
-#define DEBUG_WRITE_INITIALIZING    // Print info about initializing
+// #define DEBUG_WRITE_INITIALIZING    // Print info about initializing
 // #define DEBUG_WRITE_LOGGING      // Write in output log at exit
 #define DEBUG_WRITE_ERRORS          // Write potential errors in console
 
