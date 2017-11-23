@@ -94,6 +94,8 @@ namespace Logic
 		float m_wishDirForward;
 		float m_wishDirRight;
 
+        bool m_wasInAir;
+
 		// Sound
 		Sound::ListenerData* m_listenerData;
 
