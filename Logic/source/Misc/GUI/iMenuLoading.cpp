@@ -9,8 +9,12 @@
 
 using namespace Logic;
 
-#define AFTER_COMPLETION_TEXT_FADE_TIME 3000.f  // The time to fade-in the "Press Space to Continue" text
-#define EXTRA_LOADING_SCREEN_TIME       250.f  // Extra timer for the loading screen (Yes, I know, cancer)
+#define POST_LOAD_MESSAGE               L"Press Space to Continue"  // Will fade in, after the loading is completed
+#define POST_LOAD_MESSAGE_POS_X         0.2  
+#define POST_LOAD_MESSAGE_POS_Y         0.9  
+#define POST_LOAD_MESSAGE_FADE_TIME     3000.f                      // The time to fade-in the "Press Space to Continue" text
+
+#define EXTRA_LOADING_SCREEN_TIME       250.f                       // Extra timer for the loading screen (Yes, I know, cancer)
 
 /**************************************
 ** Loading Screen
@@ -53,12 +57,12 @@ iMenuLoadingPost::iMenuLoadingPost(iMenu::MenuGroup group) : iMenu(group)
 {
     m_firstTimeHighDelta        = false;
     m_startTextFade             = false;
-    m_string                    = L"Press Space to Continue";
+    m_string                    = POST_LOAD_MESSAGE;
 
     // Setup of the textrenderinfo object
     m_textRenderInfo.color      = DirectX::SimpleMath::Color(0, 0, 0, 0);
     m_textRenderInfo.font       = Resources::Fonts::KG26;
-    m_textRenderInfo.position   = DirectX::SimpleMath::Vector2(0.2 * WIN_WIDTH, 0.9 * WIN_HEIGHT);
+    m_textRenderInfo.position   = DirectX::SimpleMath::Vector2(POST_LOAD_MESSAGE_POS_X * WIN_WIDTH, POST_LOAD_MESSAGE_POS_Y * WIN_HEIGHT);
     m_textRenderInfo.text       = m_string.c_str();
 }
 
@@ -88,7 +92,7 @@ void iMenuLoadingPost::update(int x, int y, float deltaTime)
 
     // Starts the fadeIn effect of the text
     if (!m_startTextFade)
-        m_textFader.startFadeIn(AFTER_COMPLETION_TEXT_FADE_TIME);
+        m_textFader.startFadeIn(POST_LOAD_MESSAGE_FADE_TIME);
     m_startTextFade = true;
 
     // Setting the text alpha
