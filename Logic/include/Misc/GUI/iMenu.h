@@ -20,6 +20,7 @@ namespace Logic
             Skill,
             CardSelect,
             Highscore,
+            HighscoreGameOver,
             GameOver, 
             GameWon,
             Pause, 

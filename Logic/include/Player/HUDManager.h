@@ -25,7 +25,7 @@ struct GUIInfo
     float timeRemaining;
 
     bool sledge;
-    UINT score;
+    UINT score, scoreCombo, scoreMul;
     std::wstring waveText;
 };
 

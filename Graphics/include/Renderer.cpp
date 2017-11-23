@@ -240,7 +240,7 @@ namespace Graphics
                 depthStencil
             ),
             newd SSAORenderPass(&fakeBuffers, {}, { depthStencil, normalMap }, {}, nullptr), //this
-            //newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
+            newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
             newd GlowRenderPass(&fakeBuffers, {}, { glowMap }), //and this
             newd SnowRenderPass(
                 {

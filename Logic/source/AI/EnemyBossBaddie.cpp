@@ -6,6 +6,7 @@
 
 #include <Misc\Sound\NoiseMachine.h>
 #include <Graphics\include\Structs.h>
+#include <Misc\ComboMachine.h>
 
 #include <sstream>
 using namespace Logic;
@@ -19,7 +20,7 @@ using namespace Logic;
 const float EnemyBossBaddie::BASE_SPEED = 21.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.075f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.3f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 1000000; // Big guy, for you
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 1000000, EnemyBossBaddie::SCORE = 10000;// Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
     @author Lukas Westling
@@ -49,6 +50,7 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     
     addCallback(ON_DEATH, [&](CallbackData &data)
     {
+        ComboMachine::Get().kill(SCORE);
         Sound::NoiseMachine::Get().stopAllGroups();
         Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_2, nullptr, true);
     });
@@ -68,7 +70,7 @@ EnemyBossBaddie::~EnemyBossBaddie()
 
 void EnemyBossBaddie::forFunTesting()
 {
-    std::wstring test = L"Created By: Stockman Games Entertainment\n\nProgrammers:\nAndreas Henriksson\nHenrik Vik\nJakob Nyberg\nSimon Fredholm\nLukas Westling\nEmanuel Bjurman\nFelix Kaaman\nJohan Ottosson \n Simon Sandberg\n\nTechnical Artists: Johan Ottosson \n  Simon Sandberg\n\nThe Bad Format: .lw\n\nGitmeister: Henrik Vik\n\nInvestor: Gabe Newell\n\nThe guy that fixed everyone elses stuff: Henrik Vik\n\nGame Manager & Producer: Henrik Vik\n\nWonderful Music: Banana\n\n\nThank you\nfor playing!\n\n\n\n\n\n\n\n\n\n\n\n\nEnemies:\nNecromancer (The annoying dude)\nNecromancer Minion (The dude everyone wants to nerf)\nThe Boss (The boss everyone hates)\nTorpedo Ted\nReznor, The Secret boss.\nLarry Koopa\nLemmy Koopa\nMorton Koopa Jr.\nThe Lich King\nDoctor Boom\nGrim Patron\nThe Hogger\nHanzo Mains\nVampires from Castle Wars\nOP Ferie Dragons\nKalphite Queen\nDr Stockman\nMr King Dice\nRace Conditions\nDeadlines\nPlaytesting\nStandup meetings\nMagic numbers\nHealthbars\nBowser Baloon Minigame from mario party 4 and 3\nWow: Classic Servers\nChimaeron\nMitch McConnell (turtle guy)\nIce Poseidon\nMr Garrison (President Of The United States Of America)\nProfessor Chaos\nKyle Brofloski\nStan Marsh\nRandy Marsh\nHeidi Turner :(\nPasha Biceps\nOlofmeister\nFriberg\nMoonmoon\nTwitch ads every fucking second on the yugioh stream\nH3h3productions\nKennyS\nNaniwa\n\n\nGot this far without cheats or crashes? nice.\nSpecial Thanks to: Henrik Vik!\n\n\n\nStockman studio is not responsible for any crashes or bugs that might damage your computer."; // See it in game not here dude :>
+    std::wstring test = L"Created By: Stockman Games Entertainment\n\nProgrammers:\nAndreas Henriksson\nHenrik Vik\nJakob Nyberg\nSimon Fredholm\nLukas Westling\nEmanuel Bjurman\nFelix Kaaman\nJohan Ottosson \n Simon Sandberg\n\nTechnical Artists:\nJohan Ottosson\nSimon Sandberg\n\nThe Bad Format: .lw\n\nGitmeister: Henrik Vik\n\nInvestor: Gabe Newell\n\nThe guy that fixed everyone elses stuff: Henrik Vik\n\nGame Manager & Producer: Henrik Vik\n\nWonderful Music: Banana\n\n\nThank you\nfor playing!\n\n\n\n\n\n\n\n\n\n\n\n\nEnemies:\nNecromancer (The annoying dude)\nNecromancer Minion (The dude everyone wants to nerf)\nThe Boss (The boss everyone hates)\nTorpedo Ted\nReznor, The Secret boss.\nLarry Koopa\nLemmy Koopa\nA nice cup of fuck you to the man himself: Ajit Pai!\nMorton Koopa Jr.\nThe Lich King\nDoctor Boom\nGrim Patron\nThe Hogger\nHanzo Mains\nVampires from Castle Wars\nOP Ferie Dragons\nKalphite Queen\nDr Stockman\nMr King Dice\nRace Conditions\nDeadlines\nPlaytesting\nStandup meetings\nMagic numbers\nHealthbars\nBowser Baloon Minigame from mario party 4 and 3\nWow: Classic Servers\nChimaeron\nMitch McConnell (turtle guy)\nIce Poseidon\nMr Garrison (President Of The United States Of America)\nProfessor Chaos\nKyle Brofloski\nStan Marsh\nRandy Marsh\nHeidi Turner :(\nPasha Biceps\nOlofmeister\nFriberg\nMoonmoon\nTwitch ads every fucking second on the yugioh stream\nH3h3productions\nKennyS\nNaniwa\n\n\nGot this far without cheats or crashes? nice.\nSpecial Thanks to: Henrik Vik!\n\n\n\nStockman studio is not responsible for any crashes or bugs that might damage your computer."; // See it in game not here dude :>
     std::wstringstream str(test);
     std::wstring temp;
     float x = 300.f, y = 715.5f;
