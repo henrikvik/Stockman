@@ -21,6 +21,8 @@ namespace Graphics
         Global::context->IASetInputLayout(nullptr);
         Global::context->PSSetShader(nullptr, nullptr, 0);
 
+        Global::context->RSSetState(Global::cStates->CullClockwise());
+
         Global::context->OMSetRenderTargets(0, nullptr, depthStencil);
         Global::context->VSSetConstantBuffers(0, buffers.size(), buffers.data());
 

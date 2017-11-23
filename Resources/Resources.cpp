@@ -101,6 +101,7 @@ namespace Resources
             if (strcmp(str, "GlowMerger") == 0) return GlowMerger;
             if (strcmp(str, "GlowMipCombinder") == 0) return GlowMipCombinder;
             if (strcmp(str, "LightGridCulling") == 0) return LightGridCulling;
+            if (strcmp(str, "Moon") == 0) return Moon;
             if (strcmp(str, "SkyShader") == 0) return SkyShader;
             if (strcmp(str, "SnowShader") == 0) return SnowShader;
             if (strcmp(str, "SpriteShader") == 0) return SpriteShader;
@@ -134,6 +135,7 @@ namespace Resources
             if (strcmp(str, "mainmenupicture") == 0) return mainmenupicture;
             if (strcmp(str, "Mainmenutext") == 0) return Mainmenutext;
             if (strcmp(str, "MissingTexture") == 0) return MissingTexture;
+            if (strcmp(str, "Moon_Thinking") == 0) return Moon_Thinking;
             if (strcmp(str, "Pausetext") == 0) return Pausetext;
             if (strcmp(str, "randomNormals") == 0) return randomNormals;
             if (strcmp(str, "Settings") == 0) return Settings;

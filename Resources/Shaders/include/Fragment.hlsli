@@ -5,6 +5,7 @@ struct Fragment
 {
     float4 ndcPosition : SV_Position;
     float4 position    : Position;
+    float4 lightPos    : Light;
 
     float3 normal     : Normal;
     float3 binormal   : Binormal;
