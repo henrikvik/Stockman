@@ -45,6 +45,10 @@ void ButtonFunction::showHighscore()
 void ButtonFunction::quitGame()
 {
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::HELLO, nullptr, true);
+
+    if (Action::Get().m_stateBuffer->currentPrimaryState)
+        if (StatePrimary* primary = dynamic_cast<StatePrimary*>(Action::Get().m_stateBuffer->currentPrimaryState))
+            primary->setQuit();
 }
 
 // Just simply removes the current pause menu

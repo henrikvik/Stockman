@@ -21,6 +21,7 @@ Graphics::DepthOfFieldRenderPass::DepthOfFieldRenderPass(
 {
     firstTime = true;
     enabled = false;
+    run = false;
 
     DebugWindow::getInstance()->registerCommand("GFX_SET_DEPTH_OF_FIELD", [&](std::vector<std::string> &args)->std::string
     {
@@ -58,83 +59,102 @@ void Graphics::DepthOfFieldRenderPass::update(float deltaTime)
     {
         firstTime = false;
     }
+    int inQueue = 0;
+    for (auto & info : RenderQueue::get().getQueue<SpecialEffectRenderInfo>())
+    {
+        if (info.type == info.DoF)
+        {
+            inQueue++;
+        }
+    }
+
+    if (inQueue > 0)
+    {
+        run = true;
+    }
+    else
+    {
+        run = false;
+    }
 }
 
 void Graphics::DepthOfFieldRenderPass::render() const
 {
-
-    backBuffers->swap();
-
-    Global::context->OMSetBlendState(nullptr, 0, 0xffffffff);
-
-    static ID3D11SamplerState * samplers[] = {
-        Global::cStates->PointClamp(),
-        Global::cStates->LinearClamp()
-    };
-
-    //calculate CoC pass
-    ID3D11ShaderResourceView * srv[] =
+    if (run)
     {
-        *backBuffers, //ColorBuffer
-        resources[0]  //depthBuffer
-    };
-    Global::context->PSSetConstantBuffers(0, 1, cbuffer);
-    Global::context->VSSetShader(CoCcreation, nullptr, 0);
-    Global::context->PSSetShader(CoCcreation, nullptr, 0);
+        backBuffers->swap();
 
-    Global::context->PSSetSamplers(0, 2, samplers);
-    Global::context->PSSetShaderResources(0, 2, srv);
+        Global::context->OMSetBlendState(nullptr, 0, 0xffffffff);
 
-    Global::context->OMSetRenderTargets(1, blur2Final, nullptr);
-    Global::context->Draw(3, 0);
+        static ID3D11SamplerState * samplers[] = {
+            Global::cStates->PointClamp(),
+            Global::cStates->LinearClamp()
+        };
 
-    Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
+        //calculate CoC pass
+        ID3D11ShaderResourceView * srv[] =
+        {
+            *backBuffers, //ColorBuffer
+            resources[0]  //depthBuffer
+        };
+        Global::context->PSSetConstantBuffers(0, 1, cbuffer);
+        Global::context->VSSetShader(CoCcreation, nullptr, 0);
+        Global::context->PSSetShader(CoCcreation, nullptr, 0);
 
-    //blur pass 1
-    Global::context->PSSetShaderResources(0, 1, blur2Final);
+        Global::context->PSSetSamplers(0, 2, samplers);
+        Global::context->PSSetShaderResources(0, 2, srv);
 
+        Global::context->OMSetRenderTargets(1, blur2Final, nullptr);
+        Global::context->Draw(3, 0);
 
-    Global::context->PSSetShader(blur1, nullptr, 0);
+        Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
 
-
-    ID3D11RenderTargetView * rtv[] =
-    {
-        blur1col0,
-        blur1col1
-    };
-    Global::context->OMSetRenderTargets(2, rtv, nullptr);
-
-    Global::context->Draw(3, 0);
-
-
-    Global::context->PSSetShaderResources(0, 1, Global::nulls);
-
-    Global::context->OMSetRenderTargets(2, Global::nulls, nullptr);
+        //blur pass 1
+        Global::context->PSSetShaderResources(0, 1, blur2Final);
 
 
-    //blur pass 2
-    Global::context->PSSetShaderResources(0, 1, blur1col0);
-    Global::context->PSSetShaderResources(1, 1, blur1col1);
-
-    Global::context->PSSetShader(blur2, nullptr, 0);
-    Global::context->OMSetRenderTargets(1, blur2Final, nullptr);
-
-    Global::context->Draw(3, 0);
-    Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
-
-    Global::context->PSSetShaderResources(0, 2, Global::nulls);
-
-    //glue pass
-    Global::context->PSSetShaderResources(0, 1, blur2Final);
-    Global::context->PSSetShader(glue, nullptr, 0);
+        Global::context->PSSetShader(blur1, nullptr, 0);
 
 
-    Global::context->OMSetRenderTargets(1, *backBuffers, nullptr);
-    Global::context->Draw(3, 0);
+        ID3D11RenderTargetView * rtv[] =
+        {
+            blur1col0,
+            blur1col1
+        };
+        Global::context->OMSetRenderTargets(2, rtv, nullptr);
+
+        Global::context->Draw(3, 0);
 
 
-    Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
-    Global::context->PSSetShaderResources(0, 2, Global::nulls);
+        Global::context->PSSetShaderResources(0, 1, Global::nulls);
+
+        Global::context->OMSetRenderTargets(2, Global::nulls, nullptr);
+
+
+        //blur pass 2
+        Global::context->PSSetShaderResources(0, 1, blur1col0);
+        Global::context->PSSetShaderResources(1, 1, blur1col1);
+
+        Global::context->PSSetShader(blur2, nullptr, 0);
+        Global::context->OMSetRenderTargets(1, blur2Final, nullptr);
+
+        Global::context->Draw(3, 0);
+        Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
+
+        Global::context->PSSetShaderResources(0, 2, Global::nulls);
+
+        //glue pass
+        Global::context->PSSetShaderResources(0, 1, blur2Final);
+        Global::context->PSSetShader(glue, nullptr, 0);
+
+
+        Global::context->OMSetRenderTargets(1, *backBuffers, nullptr);
+        Global::context->Draw(3, 0);
+
+
+        Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
+        Global::context->PSSetShaderResources(0, 2, Global::nulls);
+    }
 
 }
 

@@ -416,7 +416,8 @@ int Engine::run()
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
         if (!debug->isOpen())
-            game->update(float(deltaTime));
+            if (game->update(float(deltaTime)))
+                running = false;
         PROFILE_END();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);

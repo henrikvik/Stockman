@@ -16,12 +16,13 @@
 #include <btBulletCollisionCommon.h>
 #include <vector>
 
+#include <Projectile\ProjectileStruct.h>
+
 namespace Logic
 {
     class Entity;
     class Projectile;
     class ProjectileManager;
-    struct ProjectileData;
 
     typedef std::function<Projectile*(ProjectileData& pData, btVector3 position,
         btVector3 forward, Entity& shooter, btVector3 modelOffset)> SpawnProjectile;
@@ -42,7 +43,7 @@ namespace Logic
         };
 
 	private:
-		ProjectileData* m_projectileData;
+		ProjectileData m_projectileData;
 
         WeaponInfo m_wInfo;
 
@@ -53,7 +54,7 @@ namespace Logic
         
 	public:
 		Weapon();
-		Weapon(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo);
+		Weapon(ProjectileManager* projectileManager, ProjectileData& projectileData, WeaponInfo wInfo);
         virtual ~Weapon();
 
         void setSpawnFunctions(ProjectileManager &projManager);
@@ -63,7 +64,7 @@ namespace Logic
         virtual bool useEnhanced(bool shouldUse) { return true; };
 
         SpawnProjectile getSpawnProjectileFunc();
-		ProjectileData* getProjectileData();
+		ProjectileData& getProjectileData();
 		float getAttackTimer(float modifier);
         int getDelayTime();
     };
