@@ -26,8 +26,11 @@ Slider::Slider(
     m_maxValue = maxValue;
 
     m_value = value;
+    float X = x;
+    X = (((*m_value - m_minValue) / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min - (m_width * 0.5f);
+   /* *m_value = m_minValue + (m_maxValue - m_minValue) * ((x - m_min) / (m_max - m_min));*/
     FloatRect screenRect = {
-        x / WIN_WIDTH,
+        X  / WIN_WIDTH,
         y / WIN_HEIGHT,
         width / WIN_WIDTH,
         height / WIN_HEIGHT
@@ -67,8 +70,15 @@ void Slider::updateOnPress(int posX, int posY)
                 posx = m_max;
             }
 
-            float perc = (posx - m_min) / (m_max - m_min);
-            float valPerc = 1 / (m_maxValue - m_minValue) * perc;
+            *m_value = m_minValue + (m_maxValue - m_minValue) * ((posx - m_min) / (m_max - m_min));
+           /* float flooredFinalValue = floorf(finalValue);
+
+            if (finalValue - flooredFinalValue >= 0.5f)
+            {
+                flooredFinalValue++;
+            }
+
+            posx = ((flooredFinalValue / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min;*/
 
              FloatRect screenRect = {
                  (posx - (m_width * 0.5f)) / WIN_WIDTH,
