@@ -20,7 +20,7 @@ namespace Logic
 
         static const float BASE_SPEED, PROJECTILE_SPEED, ABILITY_1_MOD, MELEE_RANGE,
             MELEE_PUSHBACK;
-        static const int BASE_DAMAGE, MAX_HP;
+        static const int BASE_DAMAGE, MAX_HP, SCORE;
 
         // AB 4 data -- move to a buff
         float ab4Speed;

@@ -540,6 +540,8 @@ void ParticleSystem::render(
 GeometryParticleInstance *ParticleSystem::uploadParticles(std::vector<GeometryParticle> &particles, GeometryParticleInstance *output, GeometryParticleInstance *max)
 {
     for (int i = 0; i < particles.size(); i++) {
+        if (output >= max) return nullptr;
+
         auto &particle = particles[i];
         auto def = *particle.def;
 
