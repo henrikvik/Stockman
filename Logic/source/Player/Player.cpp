@@ -106,6 +106,8 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_wishDirRight = 0.f;
 	m_wishJump = false;
 
+    m_wasInAir = false;
+
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
 	m_moveRight = DirectX::Keyboard::Keys::D;
@@ -538,11 +540,25 @@ void Player::updateSpecific(float deltaTime)
 
 	    if (m_charController->onGround())
 	    {
+            if (m_wasInAir)
+            {
+                SpecialEffectRenderInfo shake;
+                shake.type = SpecialEffectRenderInfo::screenShake;
+                shake.duration = 0.1f;
+                shake.radius = 5.0f;
+                shake.affectEveryThing = false;
+                QueueRender(shake);
+                m_wasInAir = false;
+            }
 		    m_playerState = PlayerState::STANDING;
 		    m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
 	    }
-	    else
-		    m_playerState = PlayerState::IN_AIR;
+        else 
+        {
+            m_playerState = PlayerState::IN_AIR;
+            m_wasInAir = true;
+        }
+		    
 
 	    // Print player velocity
 	    //printf("velocity: %f\n", m_moveSpeed);
