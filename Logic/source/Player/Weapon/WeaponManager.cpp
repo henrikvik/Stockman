@@ -74,10 +74,10 @@ void WeaponManager::reset()
     m_Upgrades.fireDamageModifier = 0;
 }
 
-void WeaponManager::setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
+void WeaponManager::setWeaponModel(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
     // Updating weapon model
-    m_currentWeapon->weaponModel.update(playerTranslation, playerForward);
+    m_currentWeapon->weaponModel.update(deltaTime, playerTranslation, playerForward);
 }
 
 void WeaponManager::update(float deltaTime)
