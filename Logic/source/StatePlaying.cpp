@@ -11,7 +11,7 @@
 
 // Debugging purposes
 #include <DebugDefines.h>
-#include <Engine\Typing.h>
+#include <Engine\Settings.h>
 #include <Engine\DebugWindow.h> 
 #include <GameType.h>
 
@@ -235,8 +235,10 @@ void StatePlaying::gameOver()
     ComboMachine::Get().endCombo();
     Network::dbConnect db;
 
-    // don't u dare
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    // Gets the name from file and adds score to database
+    std::string name = Settings::getInstance().getName();
+    if (name.empty()) name = "Stockman";
+    db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 
     // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
@@ -249,8 +251,10 @@ void StatePlaying::gameWon()
     ComboMachine::Get().endCombo();
     Network::dbConnect db;
 
-    // don't u dare
-    db.addHighscore("Stockman", ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+    // Gets the name from file and adds score to database
+    std::string name = Settings::getInstance().getName();
+    if (name.empty()) name = "Stockman";
+    db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 
     // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameWon);

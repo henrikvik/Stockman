@@ -9,6 +9,7 @@
 #include <Misc\GUI\iMenuIntro.h>
 #include <Misc\GUI\iMenuLoading.h>
 #include <Misc\GUI\iMenuHighscore.h>
+#include <Misc\GUI\iMenuFirstTime.h>
 
 namespace Logic
 {
@@ -19,6 +20,7 @@ namespace Logic
         ~iMenuFactory();
 
         iMenuIntro*         buildMenuIntro();
+        iMenuFirstTime*     buildMenuFirstTime();
         iMenu*              buildMenuStart();
         iMenu*              buildMenuSettings();
         iMenuSkillPick*     buildMenuSkill();
