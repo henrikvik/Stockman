@@ -38,8 +38,8 @@ Targets PS(Fragment fragment)
     float shadowFactor = calcShadowFactor(comparison, shadowMap, fragment.lightPos);
     float3 viewDir = normalize(camera.position.xyz - fragment.position.xyz);
 
-    float3 lightSum = float3(0,0,0);
-    lightSum += calcLight(globalLight, fragment.position.xyz, normal, viewDir, specularExponent);
+    float3 lightSum = globalLight.ambient;
+    lightSum += shadowFactor * calcLight(globalLight, fragment.position.xyz, normal, viewDir, specularExponent);
     lightSum += calcAllLights(fragment.ndcPosition, fragment.position.xyz, normal, viewDir, specularExponent);
     
     float3 color = float3(0, 0, 0);
@@ -52,7 +52,7 @@ Targets PS(Fragment fragment)
         color = diffuseTexture.Sample(linearClamp, fragment.uv).xyz;
     }
 
-    targets.color = float4(shadowFactor * lightSum * color * fragment.color, 1); //500~
+    targets.color = float4(lightSum * color * fragment.color, 1); //500~
     targets.glow = glowTexture.Sample(linearClamp, fragment.uv); //300~
     targets.viewNormal = fragment.viewNormal; //300~
 
