@@ -32,9 +32,11 @@ using namespace Logic;
 #define PLAYER_MOVEMENT_AIRACCELERATION	0.005f
 #define PLAYER_MOVEMENT_AIRSTRAFE_SPEED 0.004f
 #define PLAYER_SPEED_LIMIT				0.04f
-#define PLAYER_STRAFE_ANGLE				0.95f
+#define PLAYER_STRAFE_ANGLE				0.92f
 #define PLAYER_FRICTION					20.f
+#define PLAYER_FRICTION_MIN             0.1f
 #define PLAYER_AIR_FRICTION				1.f
+#define PLAYER_JUMP_SPEED				0.008f
 
 const int Player::MIN_Y = -80;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
@@ -105,6 +107,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 	m_wishDirForward = 0.f;
 	m_wishDirRight = 0.f;
 	m_wishJump = false;
+    m_firstJump = true;
 
 	// Default controlls
 	m_moveLeft = DirectX::Keyboard::Keys::A;
@@ -619,6 +622,9 @@ void Player::updateSpecific(float deltaTime)
         }
     }
 
+    // step player
+    stepPlayer(deltaTime);
+
     Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
 
     // for handling death
@@ -686,8 +692,9 @@ void Player::move(float deltaTime)
 	// On ground
     if (!m_wishJump)
 	{
+        m_firstJump = true;
 		float friction = (m_moveMaxSpeed * 2 - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_FRICTION; // smooth friction
-		applyFriction(deltaTime, friction > 0.1f ? friction : 0.1f);
+		applyFriction(deltaTime, friction > PLAYER_FRICTION_MIN ? friction : PLAYER_FRICTION_MIN);
 
 		// if player wants to move
 		if (!m_wishDir.isZero())
@@ -703,16 +710,21 @@ void Player::move(float deltaTime)
 	// On ground and about to jump
 	else
 	{
-		m_airAcceleration = (PLAYER_SPEED_LIMIT - m_moveSpeed) * PLAYER_MOVEMENT_AIRACCELERATION;
-		
-		if (!m_wishDir.isZero() && m_moveDir.dot(m_wishDir) <= 0.f)
-			applyAirFriction(deltaTime, PLAYER_AIR_FRICTION * 6.f);		// if trying to move in opposite direction in air apply more friction
-		else
-			applyAirFriction(deltaTime, PLAYER_AIR_FRICTION);
+        m_airAcceleration = (PLAYER_SPEED_LIMIT - m_moveSpeed) * PLAYER_MOVEMENT_AIRACCELERATION;
+
+        if (!m_firstJump) // first jump no friction
+        {
+            if (!m_wishDir.isZero() && m_moveDir.dot(m_wishDir) <= 0.f)
+                applyAirFriction(deltaTime, PLAYER_AIR_FRICTION * 6.f);		// if trying to move in opposite direction in air apply more friction
+            else
+                applyAirFriction(deltaTime, PLAYER_AIR_FRICTION);
+        }
 	}
 
 	// Apply acceleration and move player
-	if(m_wishDir.isZero() || m_wishJump)
+    if (m_wishJump && m_firstJump) // first jump accel
+        accelerate(deltaTime, m_airAcceleration);
+    else if (m_wishDir.isZero() || m_wishJump)
 		accelerate(deltaTime, 0.f);
 	else
 		accelerate(deltaTime, m_acceleration);
@@ -720,6 +732,7 @@ void Player::move(float deltaTime)
 	// Apply jump if player wants to jump
 	if (m_wishJump)
 	{
+        m_firstJump = false;
         getSoundSource()->playSFX(Sound::SFX::JUMP, 1.f, 0.1f);
 		m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * m_jumpSpeedMod, 0.f });
 		m_wishJump = false;
@@ -737,25 +750,26 @@ void Player::airMove(float deltaTime)
 
 void Player::accelerate(float deltaTime, float acceleration)
 {
-	if (deltaTime * 0.001f > (1.f / 60.f))
-		deltaTime = (1.f / 60.f) * 1000.f;
+	if (m_wishJump || m_moveSpeed < m_moveMaxSpeed)
+        m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod * m_permanentSpeedMod;
+}
 
-	m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod * m_permanentSpeedMod;
+void Player::stepPlayer(float deltaTime)
+{
+    if (deltaTime * 0.001f > (1.f / 60.f))
+        deltaTime = (1.f / 60.f) * 1000.f;
 
-	if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
-		m_moveSpeed = m_moveMaxSpeed;
+    // Apply moveDir and moveSpeed to player
+    if (m_playerState != PlayerState::IN_AIR)
+        m_charController->setVelocityForTimeInterval(m_moveDir * m_moveSpeed, deltaTime);
+    else
+        m_charController->setVelocityForTimeInterval(((m_moveDir + btVector3(0.f, m_charController->getLinearVelocity().y(), 0.f)) * m_moveSpeed) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED), deltaTime);
 
-	// Apply moveDir and moveSpeed to player
-	if(m_playerState != PlayerState::IN_AIR)
-		m_charController->setVelocityForTimeInterval(m_moveDir * m_moveSpeed, deltaTime);
-	else
-		m_charController->setVelocityForTimeInterval(((m_moveDir + btVector3(0.f, m_charController->getLinearVelocity().y(), 0.f)) * m_moveSpeed) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED), deltaTime);
-
-	PROFILE_BEGIN("Stepping player");
-	// Step player
-	m_charController->preStep(m_physPtr);
-	m_charController->playerStep(m_physPtr, deltaTime);
-	PROFILE_END()
+    PROFILE_BEGIN("Stepping player");
+    // Step player
+    m_charController->preStep(m_physPtr);
+    m_charController->playerStep(m_physPtr, deltaTime);
+    PROFILE_END()
 }
 
 void Player::applyFriction(float deltaTime, float friction)

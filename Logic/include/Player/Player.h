@@ -27,7 +27,6 @@
 #define PLAYER_STARTING_HP				3
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
 #define PLAYER_MOVEMENT_MAX_SPEED		0.015f
-#define PLAYER_JUMP_SPEED				0.008f
 
 namespace Sound
 {
@@ -90,6 +89,7 @@ namespace Logic
 		float m_jumpSpeed;
 
 		bool m_wishJump;
+        bool m_firstJump;
 		btVector3 m_wishDir;
 		float m_wishDirForward;
 		float m_wishDirRight;
@@ -128,6 +128,9 @@ namespace Logic
 		void jump(float deltaTime, DirectX::Keyboard::State* ks);
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
+
+        // Player step
+        void stepPlayer(float deltaTime);
 
 		// Sound
 		void updateSound(float deltaTime);

@@ -46,6 +46,7 @@ namespace Graphics {
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
         void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
+        void updateFOV(float fieldOfView);
 	private:
 		DirectX::SimpleMath::Vector3 pos;
 		DirectX::SimpleMath::Vector3 forward;
@@ -55,6 +56,7 @@ namespace Graphics {
 		float drawDistance;
 		float fieldOfView;
 		float fadeStart;
+        float aspectRatio;
 
 		DirectX::SimpleMath::Matrix view;
 		DirectX::SimpleMath::Matrix projection;
