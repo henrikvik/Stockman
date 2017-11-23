@@ -18,6 +18,12 @@
 #include "../RenderInfo.h"
 #include "../RenderQueue.h"
 
+#ifdef _DEBUG
+#define SHADER_COMPILE_FLAGS D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION
+#else
+#define SHADER_COMPILE_FLAGS D3DCOMPILE_OPTIMIZATION_LEVEL3
+#endif
+
 namespace fs = std::experimental::filesystem;
 using namespace DirectX;
 
@@ -493,7 +499,7 @@ void ParticleSystem::render(
         cxt->VSSetConstantBuffers(0, 1, buffers);
         cxt->PSSetConstantBuffers(0, 2, buffers);
 
-        cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
+        cxt->OMSetDepthStencilState(Global::cStates->DepthRead(), 0);
         cxt->OMSetRenderTargets(1, &dest_rtv, dest_dsv);
         cxt->RSSetState(Global::cStates->CullNone());
 
@@ -534,6 +540,8 @@ void ParticleSystem::render(
 GeometryParticleInstance *ParticleSystem::uploadParticles(std::vector<GeometryParticle> &particles, GeometryParticleInstance *output, GeometryParticleInstance *max)
 {
     for (int i = 0; i < particles.size(); i++) {
+        if (output >= max) return nullptr;
+
         auto &particle = particles[i];
         auto def = *particle.def;
 
@@ -731,14 +739,13 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
 
         static ResourcesShaderInclude include("..\\Resources\\Shaders\\");
 
-        // TODO: add ifdef for DEBUG compilation flag
         auto res = D3DCompileFromFile(
             file.c_str(),
             nullptr,
             &include,
             "PS",
             "ps_5_0",
-            D3DCOMPILE_DEBUG,
+            SHADER_COMPILE_FLAGS,
             0,
             &blob,
             &error
@@ -752,14 +759,13 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
 
         device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &ps);
 
-        // TODO: add ifdef for DEBUG compilation flag
         res = D3DCompileFromFile(
             file.c_str(),
             nullptr,
             &include,
             "PS_depth",
             "ps_5_0",
-            D3DCOMPILE_DEBUG,
+            SHADER_COMPILE_FLAGS,
             0,
             &blob,
             &error

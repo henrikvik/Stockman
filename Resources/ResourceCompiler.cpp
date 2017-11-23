@@ -2,6 +2,7 @@
 #include <iostream>
 #include <set>
 #include <fstream>
+#include <unordered_map>
 
 namespace fs = std::experimental::filesystem;
 
@@ -96,19 +97,9 @@ struct Dir
 
             pad.dec();
             ostream << pad.str() << "};\n";
-/*
-            ostream << pad.str() << "\n";
-            ostream << pad.str() << "Files toEnum(const char * str)\n";
-            ostream << pad.str() << "{\n";
-            pad.inc();
 
-            for (auto & file : files)
-            {
-                ostream << pad.str() << "if (strcmp(str, \"" << file.stem() << "\") == 0) return " << file.stem() << ";\n";
-            } 
-            ostream << pad.str() << "throw \"Could not find matching enum.\";\n";
-            pad.dec();
-            ostream << pad.str() << "}\n";*/
+            ostream << pad.str() << "\n";
+            ostream << pad.str() << "Files toEnum(const char * str);\n";
         }
 
         for (auto & dir : dirs) 
@@ -120,6 +111,38 @@ struct Dir
         pad.dec();
         ostream << pad.str() << "}\n";
     }
+
+    void cpp(std::ostream & ostream, Pad & pad)
+    {
+        ostream << pad.str() << "namespace " << path.filename() << "\n";
+        ostream << pad.str() << "{\n";
+        pad.inc();
+
+        if (files.size() > 0)
+        {
+            ostream << pad.str() << "Files toEnum(const char * str)\n";
+            ostream << pad.str() << "{\n";
+            pad.inc();
+
+            for (auto & file : files)
+            {
+            ostream << pad.str() << "if (strcmp(str, \"" << file.stem() << "\") == 0) return " << file.stem() << ";\n";
+            } 
+            ostream << pad.str() << "throw \"Could not find matching enum.\";\n";
+            pad.dec();
+            ostream << pad.str() << "}\n";
+        }
+
+        for (auto & dir : dirs) 
+        { 
+            if (dir.files.size() > 0 || dir.dirs.size() > 0) 
+            { dir.cpp(ostream, pad); } 
+        }
+
+        pad.dec();
+        ostream << pad.str() << "}\n";
+    }
+
 };
 
 void buildModelFileList()
@@ -133,14 +156,17 @@ void buildModelFileList()
     resources.h(hfile, Pad());
     hfile.close();
 
+    std::ofstream cppfile("Resources/Resources.cpp", std::ios::trunc);
+    cppfile << "#include \"Resources.h\"\n";
+    resources.cpp(cppfile, Pad());
+    cppfile.close();
+
+
     std::cout << "Done\n";
 }
 
-//#include "Resources.h"
 int main()
 {
     buildModelFileList();
-
-    //auto Hammer = Resources::Models::toEnum("Hammer");
     return 0;
 }

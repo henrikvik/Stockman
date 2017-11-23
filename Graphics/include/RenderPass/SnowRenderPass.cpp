@@ -9,12 +9,12 @@
 //temp
 #include <Keyboard.h>
 
-#define SNOW_RADIUS 50.f
-#define MAX_SNOW 512
+#define SNOW_RADIUS 65.f
+#define MAX_SNOW 1024
 #define PI 3.14159265f
 #define ONE_DEG_IN_RAD 0.01745f
-#define SNOW_SPEED 0.04f
-#define WIND_CHANGE_TIME 5000.f
+#define SNOW_SPEED 0.26f
+#define WIND_CHANGE_TIME 5.5f
 
 using namespace DirectX::SimpleMath;
 

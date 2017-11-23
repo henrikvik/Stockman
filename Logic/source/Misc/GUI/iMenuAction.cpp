@@ -17,7 +17,7 @@ void ButtonFunction::startGame()
 {
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
     if (Action::Get().m_menuMachine)
-        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Loading);
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::LoadingPre);
 }
 
 // Switches the current menu-machine to settings screen
@@ -38,20 +38,38 @@ void ButtonFunction::startMainMenu()
 void ButtonFunction::showHighscore()
 {
     if (Action::Get().m_menuMachine)
-        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Highscore);
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::HighscoreStartMenu);
 }
 
 // Unloads all program data and quits the game
 void ButtonFunction::quitGame()
 {
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::HELLO, nullptr, true);
+
+    if (Action::Get().m_stateBuffer->currentPrimaryState)
+        if (StatePrimary* primary = dynamic_cast<StatePrimary*>(Action::Get().m_stateBuffer->currentPrimaryState))
+            primary->setQuit();
 }
 
 // Just simply removes the current pause menu
-void Logic::ButtonFunction::unpause()
+void ButtonFunction::unpause()
 {
     if (Action::Get().m_menuMachine)
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
+}
+
+// Goes to the gameoverhighscore screen
+void ButtonFunction::goToGameOverHighscore()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::HighscoreGameOver);
+}
+
+// Goes back to gameover state
+void ButtonFunction::goToGameOver()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::GameOver);
 }
 
 // Switches the program's state and switching to startmenu

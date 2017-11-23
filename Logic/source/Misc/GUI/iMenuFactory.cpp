@@ -30,9 +30,14 @@ const std::map<int, Resources::Textures::Files> LookUp =
 iMenuIntro* iMenuFactory::buildMenuIntro()
 {
     iMenuIntro* menu = newd iMenuIntro(iMenu::Intro);
-
     menu->addBackground(Resources::Textures::IntroScreen, 1.f);
+    return menu;
+}
 
+iMenuFirstTime * iMenuFactory::buildMenuFirstTime()
+{
+    iMenuFirstTime* menu = newd iMenuFirstTime(iMenu::FirstTime);
+    menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     return menu;
 }
 
@@ -109,22 +114,38 @@ iMenu * iMenuFactory::buildMenuGameWon()
     return menu;
 }
 
-iMenuLoading* iMenuFactory::buildMenuLoading()
+iMenuLoadingPre* iMenuFactory::buildMenuLoadingPre()
 {
-    iMenuLoading* menu = newd iMenuLoading(iMenu::Loading);
+    iMenuLoadingPre* menu = newd iMenuLoadingPre(iMenu::LoadingPre);
     menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
 
     return menu;
 }
 
-iMenu * iMenuFactory::buildMenuHighscore()
+iMenuLoadingPost* iMenuFactory::buildMenuLoadingPost()
 {
-    iMenu* menu = newd iMenu(iMenu::Highscore);
+    iMenuLoadingPost* menu = newd iMenuLoadingPost(iMenu::LoadingPost);
+    menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
+
+    return menu;
+}
+
+iMenuHighscore * iMenuFactory::buildMenuHighscore()
+{
+    iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreStartMenu);
 
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
-    
-    //menu->addButton(buildButton("HighscoreStartMenu", ButtonFunction::startMainMenu));
+
+    return menu;
+}
+
+iMenuHighscore * iMenuFactory::buildMenuHighscoreGameOver()
+{
+    iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreGameOver);
+
+    menu->addBackground(Resources::Textures::Highscore, 1.f);
+    menu->addButton(buildButton("MenuBackGame", ButtonFunction::goToGameOver));
 
     return menu;
 }
@@ -137,7 +158,11 @@ iMenu * iMenuFactory::buildMenuGameover()
     menu->addBackground(Resources::Textures::Gameover, 1.0f);
 
     btn = buildButton("MenuStartGame", ButtonFunction::playAgain);
-    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.15));
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.10));
+    menu->addButton(btn);
+
+    btn = buildButton("MenuStartSettings", ButtonFunction::goToGameOverHighscore);
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.10));
     menu->addButton(btn);
 
     btn = buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu);

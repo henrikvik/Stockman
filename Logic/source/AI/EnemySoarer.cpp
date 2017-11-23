@@ -1,9 +1,10 @@
 #include <AI\EnemySoarer.h>
 #include <Projectile\Projectile.h>
+#include <Misc\ComboMachine.h>
 using namespace Logic;
 
-const int EnemySoarer::HEALTH = 400, EnemySoarer::DAMAGE = 1;
-const float EnemySoarer::SPEED = 15.f, 
+const int EnemySoarer::HEALTH = 400, EnemySoarer::DAMAGE = 1, EnemySoarer::SCORE = 100;
+const float EnemySoarer::SPEED = 18.f, 
             EnemySoarer::AB1_SPEED = 20.f,
             EnemySoarer::HEIGHT_OFFSET = 20.f;
 
@@ -11,6 +12,10 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::StaticSummon, body, halfExtent,
             HEALTH, DAMAGE, SPEED, EnemyType::FLYING, 0) 
 {
+    addCallback(ON_DEATH, [&](CallbackData data) -> void {
+        ComboMachine::Get().kill(SCORE);
+    });
+
     setBehavior(MELEE);
     createAbilities();
     body->translate({ 0, HEIGHT_OFFSET, 0 });
@@ -47,7 +52,7 @@ void EnemySoarer::createAbilities()
         // ontick 
     }, [=](Player &player, Ability &ab) -> void {
         // onuse
-        auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, 5.f, 3.5f);
+        auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, 6.f, 5.5f);
         if (pj) {
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());

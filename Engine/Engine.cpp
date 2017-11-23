@@ -123,6 +123,30 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         return catcher;
     });
 
+    debug->registerCommand("CHANGE_NAME", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            Settings setting = Settings::getInstance();
+            if (args.size() != 0)
+            {
+                setting.setName(args[0]);
+                catcher = "Named have been changed!";
+            }
+            else
+            {
+                catcher = "Please add your new alias too.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Are you stupid?";
+        }
+
+        return catcher;
+    });
+
     // load settings before starting
     Settings& setting = Settings::getInstance();
     setting.readFromFile();
@@ -393,7 +417,8 @@ int Engine::run()
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
         if (!debug->isOpen())
-            game->update(float(deltaTime));
+            if (game->update(float(deltaTime)))
+                running = false;
         PROFILE_END();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);

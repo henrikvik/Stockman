@@ -52,6 +52,7 @@ namespace Graphics
 #pragma endregion
         , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
         , animatedInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
+        , animatedJointsBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
         , fakeBuffers(WIN_WIDTH, WIN_HEIGHT)
 #pragma region Shared Shader Resources
         , colorMap(WIN_WIDTH, WIN_HEIGHT)
@@ -220,7 +221,8 @@ namespace Graphics
                     lightsNew,
                     shadowMap,
                     staticInstanceBuffer,
-                    animatedInstanceBuffer
+                    animatedInstanceBuffer,
+                    animatedJointsBuffer,
                 },
                 {
                     *Global::mainCamera->getBuffer(),
@@ -238,7 +240,7 @@ namespace Graphics
                 depthStencil
             ),
             newd SSAORenderPass(&fakeBuffers, {}, { depthStencil, normalMap }, {}, nullptr), //this
-            //newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
+            newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
             newd GlowRenderPass(&fakeBuffers, {}, { glowMap }), //and this
             newd SnowRenderPass(
                 {
@@ -299,18 +301,18 @@ namespace Graphics
         lightInfo.range = 10;
         QueueRender(lightInfo);
 
-        //QueueRender([](float dt) -> AnimatedRenderInfo
-        //{
-        //    static float time = 0;
-        //    AnimatedRenderInfo info;
-        //    info.animationName = "Walk";
-        //    info.animationTimeStamp = time;
-        //    info.model = Resources::Models::AnimatedSummonUnit;
-        //    info.transform = SimpleMath::Matrix::CreateTranslation(0, 1, -3);
-        //    time += dt;
-        //    if (time > 5) time = 0;
-        //    return info;
-        //}(deltaTime));
+        QueueRender([](float dt) -> AnimatedRenderInfo
+        {
+            static float time = 0;
+            AnimatedRenderInfo info;
+            info.animationName = "Test";
+            info.animationTimeStamp = time;
+            info.model = Resources::Models::AnimationTest;
+            info.transform = SimpleMath::Matrix::CreateTranslation(0, 1, -3);
+            time += dt;
+            if (time > 5) time = 0;
+            return info;
+        }(deltaTime));
         FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 
         writeInstanceBuffers();
@@ -369,37 +371,40 @@ namespace Graphics
             }
         });
 
-        animatedInstanceBuffer.write([](AnimatedInstance * instanceBuffer)
         {
+            auto instanceBuffer = animatedInstanceBuffer.map();
+            auto jointsBuffer   = animatedJointsBuffer.map();
+
             for (auto & model_infos : RenderQueue::get().getQueue<AnimatedRenderInfo>())
             {
                 HybrisLoader::Skeleton * skeleton = &ModelLoader::get().getModel((Resources::Models::Files)model_infos.first)->getSkeleton();
 
                 for (auto & info : model_infos.second)
                 {
-                    AnimatedInstance instance = {};
+                    StaticInstance instance = {};
                     instance.world = info.transform;
                     instance.worldInvT = info.transform.Invert().Transpose();
                     instance.color = info.color;
                     instance.useGridTexture = info.useGridTexture;
 
+                    AnimatedJoints joints;
                     if (strlen(info.animationName) != 0)
                     {
                         auto jointTransforms = skeleton->evalAnimation(info.animationName, info.animationTimeStamp);
                         for (size_t i = 0; i < jointTransforms.size(); i++)
                         {
-                            instance.jointTransforms[i] = jointTransforms[i];
+                            joints.jointTransforms[i] = jointTransforms[i];
                         }
-                    }
-                    else
-                    {
-                        
                     }
 
                     *instanceBuffer++ = instance;
+                    *jointsBuffer++ = joints;
                 }
             }
-        });
+
+            animatedInstanceBuffer.unmap();
+            animatedJointsBuffer.unmap();
+        }
 
         lightsNew.write([](Light * lightBuffer)
         {

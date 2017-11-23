@@ -8,6 +8,8 @@
 #include <Misc\GUI\iMenuSkillPick.h>
 #include <Misc\GUI\iMenuIntro.h>
 #include <Misc\GUI\iMenuLoading.h>
+#include <Misc\GUI\iMenuHighscore.h>
+#include <Misc\GUI\iMenuFirstTime.h>
 
 namespace Logic
 {
@@ -18,15 +20,18 @@ namespace Logic
         ~iMenuFactory();
 
         iMenuIntro*         buildMenuIntro();
+        iMenuFirstTime*     buildMenuFirstTime();
         iMenu*              buildMenuStart();
         iMenu*              buildMenuSettings();
         iMenuSkillPick*     buildMenuSkill();
         iMenu*              buildMenuCard();
-        iMenu*              buildMenuHighscore();
+        iMenuHighscore*     buildMenuHighscore();
+        iMenuHighscore*     buildMenuHighscoreGameOver();
         iMenu*              buildMenuGameover();
         iMenu*              buildMenuPause();
         iMenu*              buildMenuGameWon();
-        iMenuLoading*       buildMenuLoading();
+        iMenuLoadingPre*    buildMenuLoadingPre();
+        iMenuLoadingPost*   buildMenuLoadingPost();
 
     private:
         std::vector<FileLoader::LoadedStruct> buttonFile;

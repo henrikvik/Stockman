@@ -78,7 +78,7 @@ StateMachine::~StateMachine()
     Sound::NoiseMachine::Get().clear();
 }
 
-void StateMachine::update(float deltaTime)
+bool StateMachine::update(float deltaTime)
 {
     m_statePrimary->update(deltaTime);
     m_stateSecondary->update(deltaTime);
@@ -88,16 +88,18 @@ void StateMachine::update(float deltaTime)
     {
         SetPrimaryState(StateType::State_Start);
         SetSecondaryState(StateType::Nothing);
-        return;
+        return false;
     }
 
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad2))
     {
         SetPrimaryState(StateType::State_Playing);
         SetSecondaryState(StateType::Nothing);
-        return;
+        return false;
     }
 #endif // !_DEBUG
+
+    return m_statePrimary->getShouldQuit();
 }
 
 void StateMachine::render() const
