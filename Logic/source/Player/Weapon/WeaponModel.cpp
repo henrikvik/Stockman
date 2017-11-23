@@ -44,13 +44,13 @@ void WeaponModel::update(float deltaTime, DirectX::SimpleMath::Matrix playerTran
     DirectX::SimpleMath::Matrix temp = m_current;
     m_current += (result - m_current);
 
-    // Easing in X axis
-    m_current._41 = temp._41;
-    m_current._41 += (result._41 - m_current._41) * 0.80;
+    //// Easing in X axis
+    //m_current._41 = temp._41;
+    //m_current._41 += (result._41 - m_current._41) * 0.80;
 
-    // Easing in Z axis
-    m_current._43 = temp._43;
-    m_current._43 += (result._43 - m_current._43) * 0.80;
+    //// Easing in Z axis
+    //m_current._43 = temp._43;
+    //m_current._43 += (result._43 - m_current._43) * 0.80;
 
     // Easing in Y axis
     m_current._42 = temp._42;
