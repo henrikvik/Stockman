@@ -544,9 +544,10 @@ void Player::updateSpecific(float deltaTime)
             {
                 SpecialEffectRenderInfo shake;
                 shake.type = SpecialEffectRenderInfo::screenShake;
-                shake.duration = 0.1f;
-                shake.radius = 5.0f;
+                shake.duration = 0.14f;
+                shake.radius = 7.0f;
                 shake.affectEveryThing = false;
+                shake.direction = DirectX::SimpleMath::Vector2(0.5f, 1.0f);
                 QueueRender(shake);
                 m_wasInAir = false;
             }
