@@ -621,6 +621,8 @@ void Player::updateSpecific(float deltaTime)
 
     Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
 
+    m_weaponManager->setWeaponModel(deltaTime, getEyeTransformMatrix(), m_forward);
+
     // for handling death
     if (getPositionBT().y() < MIN_Y)
         m_hp = 0;
@@ -911,10 +913,6 @@ void Player::render() const
 {
 	// Drawing the actual player model (can be deleted later, cuz we don't need it, unless we expand to multiplayer)
 	//Object::render(renderer);
-
-	// Setting position of updated weapon and skill models
-	m_weaponManager->setWeaponModel(getEyeTransformMatrix(), m_forward);
-	//	m_skillManager->setWeaponModel(getTransformMatrix(), m_forward);
 
 	// Drawing the weapon model
 	m_weaponManager->render();
