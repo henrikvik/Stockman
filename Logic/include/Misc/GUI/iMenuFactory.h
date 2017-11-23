@@ -28,7 +28,8 @@ namespace Logic
         iMenu*              buildMenuGameover();
         iMenu*              buildMenuPause();
         iMenu*              buildMenuGameWon();
-        iMenuLoading*       buildMenuLoading();
+        iMenuLoadingPre*    buildMenuLoadingPre();
+        iMenuLoadingPost*   buildMenuLoadingPost();
 
     private:
         std::vector<FileLoader::LoadedStruct> buttonFile;
