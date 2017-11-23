@@ -102,32 +102,11 @@ scale = [1.564312, 1.564312, 1.564312]
 translation = [-1.874115, 15.213452, -36.999409]
 
 [[Static]]
-model = "Tee_Pee"
-name = "Tee_Pee3"
-rotation = [0.025944, -0.869325, -0.143843, -0.472133]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [105.631387, 60.109558, 105.716331]
-
-[[Static]]
 model = "Market_Tent"
 name = "Market_Tent1"
 rotation = [0.000000, 0.559819, 0.000000, 0.828615]
 scale = [1.564312, 1.564312, 1.564312]
 translation = [-41.044092, 5.597728, -11.250344]
-
-[[Static]]
-model = "Tee_Pee"
-name = "Tee_Pee2"
-rotation = [-0.000000, 0.288258, 0.000000, -0.957553]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [32.212445, 44.166567, 148.751204]
-
-[[Static]]
-model = "Tee_Pee"
-name = "Tee_Pee1"
-rotation = [-0.000000, -0.924052, 0.000000, -0.382266]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [76.514279, 35.558963, 85.481425]
 
 [[Static]]
 model = "Rock2"
@@ -160,8 +139,8 @@ translation = [-71.805857, 8.831637, -7.977654]
 [[Static]]
 model = "Tree"
 name = "Tree1"
-scale = [2.346554, 2.346554, 2.346554]
-translation = [-24.281382, 12.611068, -5.066421]
+scale = [2.595788, 2.595788, 2.595788]
+translation = [-24.281382, 13.478006, -5.066421]
 
 [[Static]]
 model = "Log"
@@ -209,7 +188,7 @@ model = "Tree"
 name = "Tree40"
 rotation = [0.000000, -0.224215, 0.000000, 0.974540]
 scale = [1.826932, 1.826932, 1.826932]
-translation = [-28.160315, 9.806004, -117.124376]
+translation = [-30.855837, 9.806004, -122.128881]
 
 [[Static]]
 model = "Tree"
@@ -244,7 +223,7 @@ model = "Tree"
 name = "Tree36"
 rotation = [0.000000, -0.224215, 0.000000, 0.974540]
 scale = [1.703584, 1.703584, 1.703584]
-translation = [-7.324306, 9.469301, -122.219867]
+translation = [-5.858520, 9.469301, -125.236725]
 
 [[Static]]
 model = "Tree"
@@ -706,9 +685,9 @@ translation = [63.328032, 3.214792, -111.018355]
 [[Static]]
 model = "Rock2"
 name = "Rock26"
-rotation = [-0.100195, 0.931411, 0.349847, 0.006384]
+rotation = [0.157531, 0.558724, 0.812066, 0.059660]
 scale = [1.790560, 1.259948, 1.697850]
-translation = [64.507740, 6.166335, -109.088304]
+translation = [64.158707, 5.573083, -109.089274]
 
 [[Static]]
 model = "Rock1"
@@ -722,7 +701,7 @@ model = "Rock1"
 name = "Rock28"
 rotation = [0.000000, -0.999953, 0.000000, 0.009653]
 scale = [2.273051, 2.273051, 2.273051]
-translation = [66.719229, 6.033948, -107.448610]
+translation = [66.094349, 4.565754, -107.436544]
 
 [[Static]]
 model = "Rock1"
@@ -747,14 +726,14 @@ translation = [-13.382725, 0.722077, 135.925444]
 [[Static]]
 model = "Log"
 name = "Log24"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
+rotation = [0.002870, -0.213549, 0.974175, 0.073288]
 scale = [1.564312, 1.564312, 1.564312]
 translation = [-11.300055, 0.742763, 134.805361]
 
 [[Static]]
 model = "Log"
 name = "Log25"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
+rotation = [0.000000, 0.265569, 0.000000, 0.964092]
 scale = [1.564312, 1.564312, 1.564312]
 translation = [-9.200163, 0.709966, 133.572444]
 
@@ -907,118 +886,6 @@ translation = [7.963021, 5.597728, 151.245792]
 
 [[Static]]
 model = "Log"
-name = "Log47"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [4.644439, -4.813887, 167.990765]
-
-[[Static]]
-model = "Log"
-name = "Log48"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [6.727109, -4.793200, 166.870682]
-
-[[Static]]
-model = "Log"
-name = "Log49"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-5.688541, -4.793200, 145.724474]
-
-[[Static]]
-model = "Log"
-name = "Log50"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-7.771211, -4.813887, 146.844556]
-
-[[Static]]
-model = "Log"
-name = "Log51"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-7.877037, -4.845185, 132.795592]
-
-[[Static]]
-model = "Log"
-name = "Log52"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-1.622753, -4.852729, 143.337313]
-
-[[Static]]
-model = "Log"
-name = "Log53"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-3.588649, -4.825997, 144.491556]
-
-[[Static]]
-model = "Log"
-name = "Log54"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-14.025495, -4.806343, 136.302836]
-
-[[Static]]
-model = "Log"
-name = "Log55"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-11.942825, -4.785656, 135.182753]
-
-[[Static]]
-model = "Log"
-name = "Log56"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-9.842933, -4.818453, 133.949836]
-
-[[Static]]
-model = "Log"
-name = "Log57"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [2.572717, -4.818453, 155.096045]
-
-[[Static]]
-model = "Log"
-name = "Log58"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [0.472825, -4.785656, 156.328962]
-
-[[Static]]
-model = "Log"
-name = "Log59"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-1.609845, -4.806343, 157.449044]
-
-[[Static]]
-model = "Log"
-name = "Log60"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [8.827001, -4.825997, 165.637765]
-
-[[Static]]
-model = "Log"
-name = "Log61"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [10.792897, -4.852729, 164.483521]
-
-[[Static]]
-model = "Log"
-name = "Log62"
-rotation = [0.002834, -0.213545, 0.974246, 0.072362]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [4.538613, -4.845185, 153.941801]
-
-[[Static]]
-model = "Log"
 name = "Log63"
 rotation = [0.689547, 0.156602, -0.156602, 0.689547]
 scale = [1.564312, 1.564312, 1.564312]
@@ -1032,74 +899,11 @@ scale = [1.564312, 1.564312, 1.564312]
 translation = [-9.728912, 6.851251, 127.164267]
 
 [[Static]]
-model = "Fence2"
-name = "Fence39"
-rotation = [-0.000000, 0.999425, 0.000000, -0.033907]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-50.026646, 2.370161, 126.912137]
-
-[[Static]]
 model = "Fence1"
 name = "Fence15"
 rotation = [0.000000, -0.996622, 0.000000, 0.082122]
 scale = [1.564312, 1.564312, 1.564312]
 translation = [-4.416291, 3.201058, -83.359935]
-
-[[Static]]
-model = "Fence2"
-name = "Fence36"
-rotation = [0.000000, 0.742809, 0.000000, 0.669503]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-41.474589, 2.370161, 134.560834]
-
-[[Static]]
-model = "Fence2"
-name = "Fence48"
-rotation = [0.000000, 0.995810, 0.000000, 0.091445]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-23.093602, 2.370161, 129.414482]
-
-[[Static]]
-model = "Fence2"
-name = "Fence51"
-rotation = [0.000000, 0.583474, 0.000000, 0.812132]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-11.058664, 2.370161, 144.585337]
-
-[[Static]]
-model = "Fence2"
-name = "Fence32"
-rotation = [-0.001138, 0.703635, 0.710561, -0.000013]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-79.094782, 2.293881, 200.476162]
-
-[[Static]]
-model = "Fence2"
-name = "Fence31"
-rotation = [-0.008099, 0.737636, 0.675150, -0.000155]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-82.983292, 2.399970, 203.344083]
-
-[[Static]]
-model = "Fence2"
-name = "Fence30"
-rotation = [-0.082466, 0.706216, 0.703074, -0.012072]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-84.506935, 2.427990, 207.924725]
-
-[[Static]]
-model = "Fence2"
-name = "Fence29"
-rotation = [-0.023479, -0.795102, 0.061661, -0.602876]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-83.903603, 2.496949, 212.631319]
-
-[[Static]]
-model = "Fence2"
-name = "Fence28"
-rotation = [-0.010490, -0.865953, 0.029595, -0.499138]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-81.852591, 2.567969, 217.323476]
 
 [[Static]]
 model = "Rock2"
@@ -1122,20 +926,6 @@ scale = [1.000000, 0.724304, 1.000000]
 translation = [38.784603, 2.702229, 104.618670]
 
 [[Static]]
-model = "Fence2"
-name = "Fence50"
-rotation = [0.000000, 0.985981, 0.000000, 0.166855]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-32.735566, 2.370161, 126.611700]
-
-[[Static]]
-model = "Fence2"
-name = "Fence49"
-rotation = [0.000000, 0.985981, 0.000000, 0.166855]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-28.004841, 2.370161, 128.260044]
-
-[[Static]]
 model = "Fence1"
 name = "Fence3"
 rotation = [0.000000, 0.135989, 0.000000, 0.990710]
@@ -1156,51 +946,16 @@ scale = [1.564312, 1.564312, 1.564312]
 translation = [-43.500451, 3.093706, -47.802409]
 
 [[Static]]
-model = "Fence2"
-name = "Fence38"
-rotation = [-0.000000, 0.999425, 0.000000, -0.033907]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-44.783940, 2.370161, 126.555995]
-
-[[Static]]
-model = "Fence2"
-name = "Fence37"
-rotation = [0.000000, 0.742809, 0.000000, 0.669503]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-42.023935, 2.370161, 129.283224]
-
-[[Static]]
 model = "Fence_Post"
 name = "Fence_Post1"
 scale = [1.564312, 1.564312, 1.564312]
-translation = [-63.886794, 3.093706, 7.912704]
+translation = [-66.649641, 3.093706, 8.466588]
 
 [[Static]]
 model = "Rock3"
 name = "Rock12"
 rotation = [0.000000, 0.967388, 0.000000, 0.253301]
 translation = [36.137405, 3.211661, 103.948509]
-
-[[Static]]
-model = "Fence2"
-name = "Fence63"
-rotation = [0.000000, -0.496709, 0.000000, 0.867917]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [3.769724, 2.222120, 340.707886]
-
-[[Static]]
-model = "Fence2"
-name = "Fence71"
-rotation = [0.000000, -0.496709, 0.000000, 0.867917]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [5.519349, 2.222120, 357.183360]
-
-[[Static]]
-model = "Fence2"
-name = "Fence70"
-rotation = [0.000000, -0.496709, 0.000000, 0.867917]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [2.899781, 2.222120, 352.624771]
 
 [[Static]]
 model = "House2"
@@ -1238,13 +993,6 @@ scale = [1.564312, 1.564312, 1.564312]
 translation = [-22.383553, 3.201058, -103.112997]
 
 [[Static]]
-model = "Fence2"
-name = "Fence19"
-rotation = [0.000000, -0.347026, 0.000000, 0.937855]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-62.604136, 2.370161, 204.344340]
-
-[[Static]]
 model = "Fence1"
 name = "Fence10"
 rotation = [0.000000, -0.558670, 0.000000, 0.829390]
@@ -1263,63 +1011,7 @@ model = "Fence_Post"
 name = "Fence_Post6"
 rotation = [0.000000, -0.004627, 0.000000, 0.999989]
 scale = [1.564312, 1.564312, 1.564312]
-translation = [14.394216, 2.639505, 167.983862]
-
-[[Static]]
-model = "Fence2"
-name = "Fence61"
-rotation = [0.000000, -0.476322, 0.000000, 0.879271]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-1.095803, 2.222120, 332.204946]
-
-[[Static]]
-model = "Fence2"
-name = "Fence60"
-rotation = [0.000000, -0.476322, 0.000000, 0.879271]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-3.689194, 2.222120, 327.913528]
-
-[[Static]]
-model = "Fence2"
-name = "Fence62"
-rotation = [0.000000, -0.476322, 0.000000, 0.879271]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [1.284913, 2.222120, 336.097991]
-
-[[Static]]
-model = "Fence2"
-name = "Fence64"
-rotation = [0.000000, -0.496709, 0.000000, 0.867917]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [6.255756, 2.222120, 344.939293]
-
-[[Static]]
-model = "Fence2"
-name = "Fence58"
-rotation = [0.000000, -0.476322, 0.000000, 0.879271]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-12.223437, 2.222120, 327.224239]
-
-[[Static]]
-model = "Fence2"
-name = "Fence57"
-rotation = [0.000000, -0.476322, 0.000000, 0.879271]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-15.092783, 2.222120, 322.824191]
-
-[[Static]]
-model = "Fence2"
-name = "Fence67"
-rotation = [0.000000, 0.194669, 0.000000, 0.980869]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-31.297793, 2.222120, 326.657195]
-
-[[Static]]
-model = "Fence2"
-name = "Fence59"
-rotation = [0.000000, 0.265573, 0.000000, 0.964091]
-scale = [2.224843, 1.564312, 1.564312]
-translation = [-7.918500, 2.222120, 327.672632]
+translation = [14.198474, 2.639505, 167.756022]
 
 [[Static]]
 model = "Rock1"
@@ -1327,12 +1019,6 @@ name = "Rock15"
 rotation = [0.000000, 0.326018, 0.000000, 0.945364]
 scale = [1.000000, 1.266913, 2.023467]
 translation = [105.901948, 3.573528, 34.117584]
-
-[[Static]]
-model = "Fence2"
-name = "Fence33"
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-73.993824, 2.082600, 199.691009]
 
 [[Static]]
 model = "Fence1"
@@ -1347,13 +1033,6 @@ name = "Fence5"
 rotation = [0.000000, 0.100867, 0.000000, 0.994900]
 scale = [1.564312, 1.564312, 1.564312]
 translation = [-27.200950, 3.149320, -105.577517]
-
-[[Static]]
-model = "Fence2"
-name = "Fence56"
-rotation = [0.000000, -0.476322, 0.000000, 0.879271]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-19.772302, 2.222120, 329.882004]
 
 [[Static]]
 model = "Fence1"
@@ -1374,7 +1053,7 @@ model = "Fence_Post"
 name = "Fence_Post3"
 rotation = [0.000000, -0.153147, 0.000000, 0.988203]
 scale = [1.564312, 1.564312, 1.564312]
-translation = [-28.089057, 3.093706, -66.181362]
+translation = [-28.674160, 3.093706, -66.214559]
 
 [[Static]]
 model = "Fence2"
@@ -1382,20 +1061,6 @@ name = "Fence54"
 rotation = [-0.047569, -0.000460, -0.159683, 0.986021]
 scale = [1.564312, 1.564312, 1.564312]
 translation = [3.704484, 1.472018, 150.448915]
-
-[[Static]]
-model = "Fence2"
-name = "Fence53"
-rotation = [0.000000, 0.750748, 0.000000, 0.660588]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-11.143244, 2.370161, 134.122998]
-
-[[Static]]
-model = "Fence2"
-name = "Fence52"
-rotation = [0.000000, 0.750748, 0.000000, 0.660588]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-10.468445, 2.370161, 139.382977]
 
 [[Static]]
 model = "Rock1"
@@ -1412,20 +1077,6 @@ scale = [1.000000, 1.177942, 2.023467]
 translation = [100.923179, 3.178299, 30.597170]
 
 [[Static]]
-model = "Fence2"
-name = "Fence69"
-rotation = [0.000000, -0.977734, 0.000000, 0.209849]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-10.182079, 2.222120, 316.141456]
-
-[[Static]]
-model = "Fence2"
-name = "Fence68"
-rotation = [0.000000, -0.926887, 0.000000, 0.375340]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-14.349585, 2.222120, 318.736576]
-
-[[Static]]
 model = "Fence1"
 name = "Fence72"
 rotation = [0.000000, 0.176736, 0.000000, 0.984258]
@@ -1440,123 +1091,11 @@ scale = [1.564312, 1.564312, 1.564312]
 translation = [-13.061152, 12.233896, 129.221936]
 
 [[Static]]
-model = "Fence2"
-name = "Fence55"
-rotation = [0.000000, -0.476322, 0.000000, 0.879271]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-22.641648, 2.222120, 325.481956]
-
-[[Static]]
-model = "Fence2"
-name = "Fence45"
-rotation = [0.000000, 0.742809, 0.000000, 0.669503]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-21.003046, 2.370161, 142.982494]
-
-[[Static]]
 model = "Fence_Post"
 name = "Fence_Post4"
 rotation = [0.000000, -0.198896, 0.000000, 0.980021]
 scale = [1.564312, 1.564312, 1.564312]
-translation = [-4.172347, 3.093706, -60.544729]
-
-[[Static]]
-model = "Fence2"
-name = "Fence44"
-rotation = [-0.000006, -0.708492, 0.705719, -0.000000]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-53.775054, 2.424857, 144.026003]
-
-[[Static]]
-model = "Fence2"
-name = "Fence43"
-rotation = [-0.006782, -0.810589, 0.585576, -0.000112]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-56.414065, 2.433214, 141.203412]
-
-[[Static]]
-model = "Fence2"
-name = "Fence42"
-rotation = [-0.006782, -0.810589, 0.585576, -0.000112]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-57.025598, 2.417607, 136.080510]
-
-[[Static]]
-model = "Fence2"
-name = "Fence41"
-rotation = [-0.006782, -0.810589, 0.585576, -0.000112]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-57.639257, 2.401946, 130.939799]
-
-[[Static]]
-model = "Fence2"
-name = "Fence40"
-rotation = [-0.000307, 0.988737, -0.006322, -0.149527]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-55.146175, 2.370874, 127.702444]
-
-[[Static]]
-model = "Fence2"
-name = "Fence25"
-rotation = [-0.000582, -0.998478, 0.004955, -0.054928]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-70.097225, 2.569744, 224.983325]
-
-[[Static]]
-model = "Fence2"
-name = "Fence24"
-rotation = [0.002768, -0.972238, -0.000671, 0.233978]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-65.281665, 2.484470, 224.039833]
-
-[[Static]]
-model = "Fence2"
-name = "Fence23"
-rotation = [0.005987, -0.919607, -0.003787, 0.392776]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-61.352886, 2.368107, 221.049445]
-
-[[Static]]
-model = "Fence2"
-name = "Fence35"
-rotation = [0.000000, 0.742809, 0.000000, 0.669503]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-40.936666, 2.370161, 139.728701]
-
-[[Static]]
-model = "Fence2"
-name = "Fence22"
-rotation = [0.000000, -0.863845, 0.000000, 0.503757]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-58.677157, 2.370161, 217.173502]
-
-[[Static]]
-model = "Fence2"
-name = "Fence21"
-rotation = [0.000000, -0.705782, 0.000000, 0.708429]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-57.538200, 2.370161, 212.387219]
-
-[[Static]]
-model = "Fence2"
-name = "Fence20"
-rotation = [0.000000, -0.431590, 0.000000, 0.902070]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-59.156496, 2.370161, 207.939622]
-
-[[Static]]
-model = "Fence2"
-name = "Fence46"
-rotation = [0.000000, 0.679026, 0.000000, 0.734114]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-21.243254, 2.370161, 137.824778]
-
-[[Static]]
-model = "Fence2"
-name = "Fence34"
-rotation = [0.000000, 0.043873, 0.000000, 0.999037]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-43.309215, 2.370161, 142.224224]
+translation = [-4.411627, 3.093706, -59.979509]
 
 [[Static]]
 model = "Fence1"
@@ -1564,13 +1103,6 @@ name = "Fence18"
 rotation = [0.000000, 0.176736, 0.000000, 0.984258]
 scale = [1.564312, 1.564312, 1.564312]
 translation = [-15.523023, 8.368858, -94.977315]
-
-[[Static]]
-model = "Fence2"
-name = "Fence26"
-rotation = [-0.014283, -0.958482, 0.188949, -0.213086]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-74.562669, 1.886191, 223.822195]
 
 [[Static]]
 model = "Fence1"
@@ -1585,13 +1117,6 @@ name = "Fence8"
 rotation = [0.000000, -0.558670, 0.000000, 0.829390]
 scale = [1.564312, 1.564312, 1.564312]
 translation = [-14.534692, 3.201058, -99.192552]
-
-[[Static]]
-model = "Fence2"
-name = "Fence47"
-rotation = [0.000000, 0.679026, 0.000000, 0.734114]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-20.847958, 2.370161, 132.762367]
 
 [[Static]]
 model = "Fence1"
@@ -1615,29 +1140,2280 @@ scale = [1.000000, 1.000000, 2.023467]
 translation = [94.999092, 3.594580, 50.711364]
 
 [[Static]]
-model = "Fence2"
-name = "Fence66"
-rotation = [0.000000, 0.194669, 0.000000, 0.980869]
-scale = [1.564312, 1.564312, 1.564312]
-translation = [-26.538473, 2.222120, 324.690611]
-
-[[Static]]
 model = "Fence_Post"
 name = "Fence_Post5"
 rotation = [0.000000, 0.308067, 0.000000, 0.951365]
 scale = [1.564312, 1.564312, 1.564312]
-translation = [-10.842055, 3.093706, 140.507268]
+translation = [-10.481132, 3.093706, 141.006127]
 
 [[Static]]
-model = "Fence2"
-name = "Fence65"
-rotation = [0.000000, -0.961009, 0.000000, 0.276516]
-scale = [2.048338, 1.564312, 1.564312]
-translation = [4.998396, 2.222120, 348.587650]
+model = "Tree"
+name = "Tree52"
+scale = [1.923814, 1.923814, 1.923814]
+translation = [82.872260, 9.972017, -3.161220]
 
 [[Static]]
-model = "Fence2"
-name = "Fence27"
-rotation = [-0.005170, -0.931998, 0.016160, -0.362067]
+model = "Tree"
+name = "Tree53"
+scale = [1.964720, 1.964720, 1.964720]
+translation = [40.080849, 10.538239, -0.227569]
+
+[[Static]]
+model = "Tree"
+name = "Tree54"
+scale = [2.158004, 2.158004, 2.158004]
+translation = [40.155223, 11.457651, 26.501494]
+
+[[Static]]
+model = "Tree"
+name = "Tree55"
+scale = [2.277014, 2.277014, 2.277014]
+translation = [75.072660, 11.928081, 17.457280]
+
+[[Static]]
+model = "Tree"
+name = "Tree56"
+scale = [1.529813, 1.529813, 1.529813]
+translation = [68.485641, 8.505990, -17.728009]
+
+[[Static]]
+model = "Tree"
+name = "Tree57"
+scale = [1.759081, 1.759081, 1.759081]
+translation = [59.475526, 9.539719, 12.583318]
+
+[[Static]]
+model = "Tree"
+name = "Tree58"
+scale = [2.104224, 2.104224, 2.104224]
+translation = [51.102024, 11.777979, -6.577957]
+
+[[Static]]
+model = "Tree"
+name = "Tree59"
+rotation = [0.000000, 0.082301, 0.000000, 0.996607]
+scale = [1.181968, 1.181968, 1.181968]
+translation = [12.745480, 7.206118, -77.288030]
+
+[[Static]]
+model = "Tree"
+name = "Tree60"
+rotation = [0.000000, 0.082301, 0.000000, 0.996607]
+scale = [1.759558, 1.759558, 1.759558]
+translation = [32.387984, 9.374132, -73.262383]
+
+[[Static]]
+model = "Fence1"
+name = "Fence84"
+rotation = [0.000000, 0.340373, 0.000000, 0.940291]
+scale = [2.012779, 1.564312, 1.564312]
+translation = [-61.866179, 3.201058, -48.754051]
+
+[[Static]]
+model = "Rock3"
+name = "Rock30"
+rotation = [-0.040366, -0.493280, -0.022923, 0.868631]
+scale = [1.910051, 1.370651, 2.144620]
+translation = [23.570846, 40.978007, -37.046487]
+
+[[Static]]
+model = "Tree"
+name = "Tree61"
+scale = [1.764765, 1.764765, 1.764765]
+translation = [-34.908558, 9.620327, 59.640470]
+
+[[Static]]
+model = "Tree"
+name = "Tree62"
+scale = [1.399255, 1.399255, 1.399255]
+translation = [-37.067057, 8.418740, 47.313587]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap29"
+rotation = [0.000000, -0.370312, 0.000000, 0.928908]
+scale = [3.562245, 3.553468, 1.742992]
+translation = [103.381951, 2.335988, 34.071833]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap32"
+rotation = [0.000000, 0.473529, 0.000000, 0.880778]
+scale = [2.978565, 4.182098, 1.742992]
+translation = [-22.123846, 2.335988, 98.251445]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap33"
+rotation = [0.000000, 0.473529, 0.000000, 0.880778]
+scale = [5.096085, 4.182098, 1.742992]
+translation = [-24.316922, 2.335988, 101.568251]
+
+[[Static]]
+model = "Grappling_Point"
+name = "Grappling_Point1"
 scale = [1.564312, 1.564312, 1.564312]
-translation = [-78.777839, 2.605192, 221.071451]
+translation = [-1.349235, 20.431376, -9.484983]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel32"
+rotation = [0.000000, -0.397330, 0.000000, 0.917676]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-62.392365, 3.201900, -43.493352]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel13"
+rotation = [0.000000, 0.518985, 0.000000, 0.854783]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-22.723283, 3.162393, 111.623859]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel14"
+rotation = [0.000000, 0.518985, 0.000000, 0.854783]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-23.540464, 5.340431, 111.198976]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel15"
+rotation = [0.000000, 0.518985, 0.000000, 0.854783]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-24.854147, 5.340431, 110.430853]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap23"
+rotation = [0.000000, -0.821104, 0.000000, 0.570778]
+scale = [1.213835, 3.299644, 2.188800]
+translation = [26.041714, 2.545963, -8.803056]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle28"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.223168, 2.223168, 2.223168]
+translation = [-3.140204, 17.980425, 30.254050]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle27"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.223168, 2.223168, 2.223168]
+translation = [-19.877722, 9.663277, 28.690085]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle34"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.464638, 2.464638, 2.464638]
+translation = [31.118052, 7.064772, -5.127213]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle55"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.579731, 1.579731, 1.579731]
+translation = [-15.415997, 10.425134, 129.432884]
+
+[[Static]]
+model = "Grappling_Point"
+name = "Grappling_Point4"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [56.342735, 69.315370, -16.247533]
+
+[[Static]]
+model = "Grappling_Point"
+name = "Grappling_Point3"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [33.510773, 22.902730, 47.059246]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel17"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-9.564256, 3.201900, -9.727608]
+
+[[Static]]
+model = "Crate"
+name = "Crate6"
+rotation = [0.000000, -0.131564, 0.000000, 0.991308]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-12.462780, 2.883937, 5.033382]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post10"
+rotation = [0.000000, 0.995992, 0.000000, 0.089442]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [8.307694, 5.877426, 170.991239]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap27"
+rotation = [0.000000, -0.745768, 0.000000, 0.666205]
+scale = [3.562245, 2.148350, 1.742992]
+translation = [-67.099168, 2.335988, -8.530020]
+
+[[Static]]
+model = "Crate"
+name = "Crate5"
+rotation = [0.000000, 0.547944, 0.000000, 0.836515]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-18.195568, 2.845865, 114.100482]
+
+[[Static]]
+model = "Grappling_Point"
+name = "Grappling_Point6"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-53.147738, 26.508429, 74.183614]
+
+[[Static]]
+model = "Grappling_Point"
+name = "Grappling_Point5"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [21.683899, 16.147666, -92.606909]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle33"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.568305, 1.568305, 1.568305]
+translation = [26.175282, 7.700204, 20.518452]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle31"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.479851, 2.479851, 2.479851]
+translation = [25.101123, 9.676012, 30.177075]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle32"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.568305, 1.568305, 1.568305]
+translation = [26.629848, 7.470207, 20.995793]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle30"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.479851, 2.479851, 2.479851]
+translation = [12.431201, 7.264018, 16.872361]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle29"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [3.039966, 3.039966, 3.039966]
+translation = [11.802266, 6.877536, 16.211915]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel12"
+rotation = [0.000000, 0.518985, 0.000000, 0.854783]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-24.036966, 3.162393, 110.855736]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel11"
+rotation = [0.000000, 0.518985, 0.000000, 0.854783]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-25.346170, 3.162393, 110.003989]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel10"
+rotation = [0.000000, 0.518985, 0.000000, 0.854783]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-26.681522, 3.162393, 109.309690]
+
+[[Static]]
+model = "Snow"
+name = "Snow24"
+rotation = [-0.425401, 0.882879, 0.062686, -0.188755]
+scale = [0.656070, 1.000000, 1.206906]
+translation = [-25.652794, 21.486070, 103.587198]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel34"
+rotation = [0.000000, -0.397330, 0.000000, 0.917676]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-63.069619, 3.201900, -46.179623]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle10"
+scale = [2.339269, 2.339269, 2.339269]
+translation = [-23.309623, 25.015656, -30.199660]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle22"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.131762, 1.131762, 1.131762]
+translation = [-41.676735, 7.528045, 20.787646]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle48"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.164432, 2.164432, 2.164432]
+translation = [-8.560456, 9.534958, 102.431026]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle8"
+scale = [2.693774, 2.693774, 2.693774]
+translation = [-27.757990, 18.003192, -43.846848]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle7"
+scale = [2.339269, 2.339269, 2.339269]
+translation = [-27.611941, 18.159499, -44.917854]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle23"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.661258, 1.661258, 1.661258]
+translation = [-39.763716, 7.259343, 38.065157]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle25"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [3.064390, 3.064390, 3.064390]
+translation = [-16.857658, 10.352124, 47.284380]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle24"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.661258, 1.661258, 1.661258]
+translation = [-17.917990, 10.982889, 47.187055]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle38"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.464638, 2.464638, 2.464638]
+translation = [47.274870, 27.183698, -47.777200]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle37"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.464638, 2.464638, 2.464638]
+translation = [44.633092, 28.411611, -45.261465]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle41"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [4.743495, 4.743495, 4.743495]
+translation = [41.834829, 28.361162, -44.101472]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle40"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [5.920662, 5.920662, 5.920662]
+translation = [40.154498, 26.756871, -50.772160]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle44"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [3.883164, 3.883164, 3.883164]
+translation = [59.611519, 7.314449, -110.017823]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle43"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [3.883164, 3.883164, 3.883164]
+translation = [42.998148, 27.065038, -49.262359]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle42"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [4.743495, 4.743495, 4.743495]
+translation = [45.270761, 25.926408, -53.562223]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap16"
+rotation = [0.000000, 0.022104, 0.000000, 0.999756]
+scale = [1.893443, 4.153487, 3.449209]
+translation = [-19.980205, 2.545963, 37.661206]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap17"
+rotation = [0.000000, 0.022104, 0.000000, 0.999756]
+scale = [1.484760, 3.256993, 2.704727]
+translation = [-19.610119, 2.545963, 33.796432]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap18"
+rotation = [0.000000, -0.031987, 0.000000, 0.999488]
+scale = [2.251334, 4.938563, 3.182944]
+translation = [-7.198135, 2.545963, 38.531782]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle53"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.263730, 1.263730, 1.263730]
+translation = [-11.066749, 10.630223, 127.778443]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle52"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.709653, 1.709653, 1.709653]
+translation = [-23.978568, 18.071001, 113.746501]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap7"
+rotation = [0.000000, -0.272076, 0.000000, 0.962276]
+scale = [7.324889, 3.166189, 3.171738]
+translation = [51.939618, 1.803875, -50.300493]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle51"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.709653, 1.709653, 1.709653]
+translation = [-26.603255, 10.872545, 95.962575]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle50"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.709653, 1.709653, 1.709653]
+translation = [-12.541119, 10.872545, 96.973498]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle49"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.164432, 2.164432, 2.164432]
+translation = [-11.807008, 10.625785, 97.372633]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap3"
+rotation = [0.000000, 0.273074, 0.000000, 0.961993]
+scale = [4.302923, 4.410351, 2.330985]
+translation = [22.084076, 2.632122, -48.290891]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle46"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.948630, 1.948630, 1.948630]
+translation = [-13.299673, 6.742493, -95.385356]
+
+[[Static]]
+model = "Crate"
+name = "Crate10"
+rotation = [0.000000, -0.131564, 0.000000, 0.991308]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-12.210220, 4.476829, 4.098649]
+
+[[Static]]
+model = "Crate"
+name = "Crate8"
+rotation = [0.000000, -0.131564, 0.000000, 0.991308]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-11.433358, 2.883937, 1.223462]
+
+[[Static]]
+model = "Crate"
+name = "Crate7"
+rotation = [0.000000, -0.131564, 0.000000, 0.991308]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-11.941573, 2.883937, 3.104380]
+
+[[Static]]
+model = "Crate"
+name = "Crate9"
+rotation = [0.000000, -0.131564, 0.000000, 0.991308]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-11.702004, 4.476829, 2.217731]
+
+[[Static]]
+model = "Snow"
+name = "Snow16"
+rotation = [0.060729, -0.100173, -0.380302, 0.917414]
+scale = [0.970820, 1.000000, 2.217339]
+translation = [3.870564, 23.074365, -35.591819]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel35"
+rotation = [0.000000, -0.397330, 0.000000, 0.917676]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-61.976191, 3.201900, -47.205604]
+
+[[Static]]
+model = "Crate"
+name = "Crate12"
+rotation = [0.000000, -0.397826, 0.000000, 0.917461]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-60.672011, 2.897674, -48.245201]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle11"
+scale = [2.339269, 2.339269, 2.339269]
+translation = [-65.037124, 7.778041, -35.965732]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle13"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [4.073793, 4.073793, 4.073793]
+translation = [-82.938141, 12.972660, -50.629565]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle16"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [3.536262, 3.536262, 3.536262]
+translation = [-80.259504, 10.984789, -31.095121]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle12"
+scale = [2.339269, 2.339269, 2.339269]
+translation = [-56.130761, 7.266263, -46.632760]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle36"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.464638, 2.464638, 2.464638]
+translation = [20.894809, 7.475054, -22.655779]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle15"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [3.083234, 3.083234, 3.083234]
+translation = [-77.384888, 14.461226, -39.271946]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle39"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.464638, 2.464638, 2.464638]
+translation = [36.113554, 30.048128, -46.924016]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap26"
+rotation = [0.000000, -0.745768, 0.000000, 0.666205]
+scale = [3.562245, 2.148350, 1.742992]
+translation = [-67.172891, 2.335988, -4.600263]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle18"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.421249, 1.421249, 1.421249]
+translation = [-78.998459, 7.541544, -7.850723]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle17"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.421249, 1.421249, 1.421249]
+translation = [-78.210220, 7.541544, -8.601354]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle21"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.661258, 1.661258, 1.661258]
+translation = [-41.201432, 7.259343, 20.335020]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle20"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.661258, 1.661258, 1.661258]
+translation = [-70.125405, 11.489169, -17.597472]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle19"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.661258, 1.661258, 1.661258]
+translation = [-66.441176, 7.344802, 2.115134]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap21"
+rotation = [0.000000, -0.600866, 0.000000, 0.799350]
+scale = [0.947383, 2.078196, 2.949553]
+translation = [23.085017, 2.339379, 32.368798]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap6"
+rotation = [0.000000, 0.328849, 0.000000, 0.944383]
+scale = [4.302923, 4.410351, 3.449209]
+translation = [32.787709, 2.632122, -30.629265]
+
+[[Static]]
+model = "Snow"
+name = "Snow3"
+rotation = [-0.075600, 0.130649, -0.314929, 0.937035]
+scale = [0.771692, 1.000000, 1.813816]
+translation = [23.916318, 10.811014, 21.900061]
+
+[[Static]]
+model = "Snow"
+name = "Snow8"
+rotation = [0.230463, -0.385034, -0.301330, 0.841330]
+scale = [0.771692, 1.000000, 1.813816]
+translation = [-38.860943, 10.673281, 33.673520]
+
+[[Static]]
+model = "Snow"
+name = "Snow7"
+rotation = [-0.351407, 0.930461, 0.039286, 0.095982]
+scale = [0.771692, 1.000000, 1.813816]
+translation = [-44.557224, 10.633214, 28.056880]
+
+[[Static]]
+model = "Snow"
+name = "Snow4"
+rotation = [-0.319872, 0.946746, -0.027327, -0.024635]
+scale = [0.771692, 1.000000, 1.813816]
+translation = [16.555202, 10.845111, 23.943131]
+
+[[Static]]
+model = "Snow"
+name = "Snow6"
+rotation = [-0.367947, 0.611746, -0.262028, 0.649402]
+scale = [0.771692, 1.000000, 1.813816]
+translation = [27.235286, 10.769814, -17.807262]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap12"
+rotation = [0.000000, -0.183195, 0.000000, 0.983077]
+scale = [7.324889, 15.083635, 6.851689]
+translation = [82.559697, 38.508463, -60.307057]
+
+[[Static]]
+model = "Small_Crate"
+name = "Small_Crate8"
+rotation = [0.000000, -0.108286, 0.000000, 0.994120]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-63.343985, 4.579354, -45.483848]
+
+[[Static]]
+model = "Snow"
+name = "Snow19"
+rotation = [-0.247232, 0.455092, 0.263442, -0.813859]
+scale = [1.183842, 1.000000, 2.217339]
+translation = [-71.748403, 12.838522, -37.155800]
+
+[[Static]]
+model = "Small_Crate"
+name = "Small_Crate7"
+rotation = [0.000000, -0.108286, 0.000000, 0.994120]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-44.159168, 4.213508, -10.605568]
+
+[[Static]]
+model = "Small_Crate"
+name = "Small_Crate6"
+rotation = [0.000000, 0.612907, 0.000000, 0.790155]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-7.351865, 4.247994, 6.147608]
+
+[[Static]]
+model = "Small_Crate"
+name = "Small_Crate5"
+rotation = [0.000000, 0.612907, 0.000000, 0.790155]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-6.437343, 4.247994, 2.585778]
+
+[[Static]]
+model = "Snow"
+name = "Snow1"
+rotation = [0.047876, -0.083000, -0.315890, 0.943945]
+scale = [0.771692, 1.000000, 1.813816]
+translation = [-67.893453, 10.682987, -7.025517]
+
+[[Static]]
+model = "Crate"
+name = "Crate13"
+rotation = [0.000000, -0.397826, 0.000000, 0.917461]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-60.672011, 4.513246, -48.245201]
+
+[[Static]]
+model = "Crate"
+name = "Crate11"
+rotation = [0.000000, -0.131564, 0.000000, 0.991308]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-45.063912, 2.897674, -6.796497]
+
+[[Static]]
+model = "Snow"
+name = "Snow5"
+rotation = [-0.407457, 0.880889, 0.054832, -0.234536]
+scale = [0.771692, 1.000000, 1.813816]
+translation = [24.664799, 10.764622, -10.450887]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle45"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [3.242094, 3.242094, 3.242094]
+translation = [60.501673, 8.694398, -106.730533]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle47"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.035386, 1.035386, 1.035386]
+translation = [-17.487029, 6.905150, -93.496475]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap24"
+rotation = [0.000000, -0.821104, 0.000000, 0.570778]
+scale = [2.359781, 3.299644, 1.742992]
+translation = [-28.030362, 2.545963, -35.987999]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap28"
+rotation = [0.000000, -0.638857, 0.000000, 0.769325]
+scale = [3.562245, 4.182098, 1.742992]
+translation = [105.852815, 2.335988, 38.161050]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap31"
+rotation = [0.000000, -0.139120, 0.000000, 0.990276]
+scale = [2.978565, 4.182098, 1.742992]
+translation = [-16.796495, 2.335988, 97.798887]
+
+[[Static]]
+model = "Snow"
+name = "Snow23"
+rotation = [-0.333065, 0.492279, -0.331141, 0.732854]
+scale = [0.656070, 1.000000, 1.206906]
+translation = [-22.926932, 21.653314, 99.291339]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel29"
+rotation = [0.000000, -0.175023, 0.000000, 0.984564]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-38.907710, 3.201900, -7.452084]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel27"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-8.093529, 7.529517, -10.789554]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel26"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-8.675933, 5.393226, -11.369147]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel25"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-7.484684, 5.393226, -10.653270]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel24"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-8.614108, 5.393226, -9.994568]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel23"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-7.032654, 3.201900, -9.884002]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel21"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-8.232767, 3.201900, -12.039974]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel22"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-7.032654, 3.201900, -11.424385]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel20"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-8.232767, 3.201900, -9.234182]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel19"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-8.232767, 3.201900, -10.600374]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel18"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-9.564256, 3.201900, -11.250689]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel28"
+rotation = [0.000000, -0.175023, 0.000000, 0.984564]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-39.448499, 3.201900, -5.979090]
+
+[[Static]]
+model = "Snow"
+name = "Snow14"
+rotation = [-0.383578, 0.923025, 0.013869, 0.026451]
+scale = [0.970820, 1.000000, 2.217339]
+translation = [-25.035551, 23.122102, -41.662417]
+
+[[Static]]
+model = "Snow"
+name = "Snow13"
+rotation = [0.060729, -0.100173, -0.380302, 0.917414]
+scale = [0.970820, 1.000000, 2.217339]
+translation = [-17.573575, 23.109088, -39.919141]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle35"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.464638, 2.464638, 2.464638]
+translation = [30.529618, 7.475054, -5.745128]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle9"
+scale = [2.339269, 2.339269, 2.339269]
+translation = [-29.996106, 9.600185, -35.799853]
+
+[[Static]]
+model = "Snow"
+name = "Snow15"
+rotation = [-0.383578, 0.923025, 0.013869, 0.026451]
+scale = [0.970820, 1.000000, 2.217339]
+translation = [-3.657159, 23.040408, -37.446055]
+
+[[Static]]
+model = "Snow"
+name = "Snow20"
+rotation = [-0.247232, 0.455092, 0.263442, -0.813859]
+scale = [0.635264, 1.000000, 1.049025]
+translation = [-60.065091, 9.964870, -46.615428]
+
+[[Static]]
+model = "Snow"
+name = "Snow12"
+rotation = [-0.022951, 0.043641, 0.381098, -0.923219]
+scale = [0.578376, 1.000000, 1.206906]
+translation = [-11.425245, 21.798514, 43.099708]
+
+[[Static]]
+model = "Snow"
+name = "Snow11"
+rotation = [-0.381499, 0.924264, 0.010999, 0.008580]
+scale = [0.656070, 1.000000, 1.206906]
+translation = [-16.292069, 21.820992, 42.644883]
+
+[[Static]]
+model = "Snow"
+name = "Snow10"
+rotation = [-0.440633, 0.710765, -0.239727, 0.493140]
+scale = [0.970820, 1.000000, 2.217339]
+translation = [-13.491200, 22.888115, 32.442030]
+
+[[Static]]
+model = "Snow"
+name = "Snow9"
+rotation = [0.446733, -0.776266, -0.198804, 0.397890]
+scale = [0.970820, 1.000000, 2.217339]
+translation = [-13.429097, 22.859779, 40.552118]
+
+[[Static]]
+model = "Grappling_Point"
+name = "Grappling_Point2"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-1.349235, 22.902730, 119.646564]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post13"
+rotation = [-0.000000, 0.737205, 0.000000, -0.675669]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [10.273890, 6.136514, 22.286569]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post14"
+rotation = [-0.078817, 0.732172, -0.085995, -0.671057]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [89.204462, 5.553646, 30.051576]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post11"
+rotation = [0.000000, -0.757089, 0.000000, 0.653312]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [8.182357, 6.136514, 85.060534]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap4"
+rotation = [0.000000, -0.327068, 0.000000, 0.945001]
+scale = [4.302923, 4.410351, 2.330985]
+translation = [32.358786, 2.632122, -46.692556]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap14"
+rotation = [0.000000, -0.348023, 0.000000, 0.937486]
+scale = [1.893443, 2.698872, 3.449209]
+translation = [-39.953188, 2.545963, 36.215799]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap13"
+rotation = [0.000000, -0.103163, 0.000000, 0.994664]
+scale = [4.302923, 4.410351, 3.449209]
+translation = [0.883285, 2.632122, -43.491139]
+
+[[Static]]
+model = "Snow"
+name = "Snow2"
+rotation = [-0.317767, 0.947610, 0.027697, 0.017103]
+scale = [0.771692, 1.000000, 1.813816]
+translation = [-75.649036, 10.714145, -8.502043]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel31"
+rotation = [0.000000, -0.175023, 0.000000, 0.984564]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-63.676058, 3.201900, -44.744564]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post4"
+rotation = [0.000000, 0.998412, 0.000000, 0.056329]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-4.306724, 6.136514, -62.520928]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel30"
+rotation = [0.000000, -0.175023, 0.000000, 0.984564]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-38.344429, 3.201900, -8.986341]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post3"
+rotation = [-0.000000, 0.778149, 0.000000, -0.628079]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [57.812999, 6.136514, -116.859199]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post2"
+rotation = [-0.000000, 0.977217, 0.000000, -0.212243]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-26.033923, 6.136514, -108.704532]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap9"
+rotation = [0.000000, -0.334727, 0.000000, 0.942315]
+scale = [7.324889, 7.301221, 4.509045]
+translation = [64.796961, 2.261059, -47.070297]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap10"
+rotation = [0.000000, -0.183195, 0.000000, 0.983077]
+scale = [7.324889, 7.301221, 4.509045]
+translation = [78.750860, 2.261059, -30.472576]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap15"
+rotation = [0.000000, -0.348023, 0.000000, 0.937486]
+scale = [1.893443, 2.698872, 3.449209]
+translation = [-37.835815, 2.545963, 34.154620]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap5"
+rotation = [0.000000, -0.537709, 0.000000, 0.843130]
+scale = [4.302923, 4.410351, 2.330985]
+translation = [35.493737, 2.632122, -42.651095]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post12"
+rotation = [-0.000000, -0.689713, 0.000000, -0.724083]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-3.868518, 6.136514, 57.783717]
+
+[[Static]]
+model = "Table"
+name = "Table1"
+rotation = [0.000000, -0.785506, 0.000000, 0.618855]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-6.998094, 3.043160, 4.284920]
+
+[[Static]]
+model = "Table"
+name = "Table4"
+rotation = [-0.000000, -0.881990, 0.000000, -0.471269]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [4.426147, 2.845426, 150.417300]
+
+[[Static]]
+model = "Crate"
+name = "Crate4"
+rotation = [0.000000, 0.477567, 0.000000, 0.878595]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-19.753998, 2.845865, 113.090485]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post17"
+rotation = [0.000000, -0.999729, 0.000000, 0.023289]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [38.336380, 6.136514, 54.339150]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle54"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.263730, 1.263730, 1.263730]
+translation = [-10.764378, 10.630223, 128.362096]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle14"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [1.924186, 1.924186, 1.924186]
+translation = [-86.046284, 12.703510, -47.669717]
+
+[[Static]]
+model = "Small_Crate"
+name = "Small_Crate2"
+rotation = [0.000000, 0.309717, 0.000000, 0.950829]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [4.709791, 4.034350, 152.036465]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post1"
+rotation = [-0.000000, 0.992075, 0.000000, -0.125644]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-17.084722, 6.136514, -111.022061]
+
+[[Static]]
+model = "Grappling_Point"
+name = "Grappling_Point7"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [44.367499, 22.902730, 128.026403]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post16"
+rotation = [0.000000, 0.974464, 0.000000, 0.224545]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-55.908505, 6.136514, 9.201502]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle6"
+scale = [2.339269, 2.339269, 2.339269]
+translation = [-13.303118, 18.159499, -44.917854]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle5"
+scale = [2.339269, 2.339269, 2.339269]
+translation = [8.743439, 18.159499, -44.917854]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle4"
+scale = [2.339269, 2.339269, 2.339269]
+translation = [6.239319, 9.470043, -28.833866]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle3"
+scale = [2.881494, 2.881494, 2.881494]
+translation = [-6.632776, 10.401641, -27.982576]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle2"
+scale = [2.301344, 2.301344, 2.301344]
+translation = [-5.921408, 9.521657, -44.274242]
+
+[[Static]]
+model = "Snow"
+name = "Snow21"
+rotation = [-0.396892, 0.914350, 0.008842, 0.079765]
+scale = [0.970820, 1.000000, 2.217339]
+translation = [-22.090575, 22.985699, 102.607237]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle26"
+rotation = [0.000000, -0.393942, 0.000000, 0.919135]
+scale = [2.223168, 2.223168, 2.223168]
+translation = [-4.047206, 10.681635, 35.085138]
+
+[[Static]]
+model = "Icecickle"
+name = "Icecickle1"
+scale = [2.301344, 2.301344, 2.301344]
+translation = [-13.582879, 9.521657, -46.820851]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap30"
+rotation = [0.000000, -0.289699, 0.000000, 0.957118]
+scale = [2.978565, 4.182098, 1.742992]
+translation = [-13.209883, 2.335988, 100.002272]
+
+[[Static]]
+model = "Snow"
+name = "Snow18"
+rotation = [0.424732, -0.665427, 0.266907, -0.552784]
+scale = [0.649179, 1.000000, 2.109074]
+translation = [-7.946669, 21.629057, -40.863815]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap11"
+rotation = [0.000000, -0.183195, 0.000000, 0.983077]
+scale = [7.324889, 15.083635, 6.851689]
+translation = [88.665093, 41.140291, -56.150132]
+
+[[Static]]
+model = "Snow"
+name = "Snow17"
+rotation = [0.447939, -0.801699, -0.173733, 0.355593]
+scale = [0.649179, 1.000000, 2.109074]
+translation = [-8.951442, 21.649358, -35.794697]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel1"
+rotation = [0.000000, 0.310793, 0.000000, 0.950478]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [1.654027, 2.906945, 135.671438]
+
+[[Static]]
+model = "Small_Crate"
+name = "Small_Crate1"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [11.460052, 3.869983, 152.170053]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post8"
+rotation = [0.000000, 0.259212, 0.000000, 0.965821]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-53.021922, 6.136514, -45.441554]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post7"
+rotation = [0.000000, -0.109179, 0.000000, 0.994022]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-16.897477, 6.136514, -30.713741]
+
+[[Static]]
+model = "Table"
+name = "Table3"
+rotation = [-0.000000, -0.881990, 0.000000, -0.471269]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [0.739515, 2.845426, 143.831721]
+
+[[Static]]
+model = "Table"
+name = "Table2"
+rotation = [-0.000000, -0.577838, 0.000000, -0.816151]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-44.056043, 3.043160, -10.112526]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post15"
+rotation = [-0.021702, -0.837078, -0.033293, 0.545638]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [83.690809, 6.102906, 48.012864]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel3"
+rotation = [0.000000, 0.310793, 0.000000, 0.950478]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [3.507707, 2.906945, 138.202868]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel2"
+rotation = [0.000000, 0.310793, 0.000000, 0.950478]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [2.565331, 2.906945, 136.915937]
+
+[[Static]]
+model = "Snow"
+name = "Snow22"
+rotation = [-0.171809, 0.264760, 0.371906, -0.872966]
+scale = [0.970820, 1.000000, 2.217339]
+translation = [-15.669202, 23.152959, 106.785708]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel5"
+rotation = [0.000000, 0.310793, 0.000000, 0.950478]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [5.958706, 2.906945, 168.281545]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel4"
+rotation = [0.000000, 0.310793, 0.000000, 0.950478]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [4.466070, 2.906945, 139.511633]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel16"
+rotation = [0.000000, 0.518985, 0.000000, 0.854783]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-26.163352, 5.340431, 109.579106]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel8"
+rotation = [0.000000, 0.310793, 0.000000, 0.950478]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [4.497092, 5.091826, 166.285530]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel9"
+rotation = [0.000000, 0.310793, 0.000000, 0.950478]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [5.461931, 5.091826, 167.603137]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap22"
+rotation = [0.000000, -0.821104, 0.000000, 0.570778]
+scale = [1.504202, 3.299644, 4.169154]
+translation = [22.533632, 2.545963, -9.514956]
+
+[[Static]]
+model = "Crate"
+name = "Crate1"
+rotation = [0.000000, 0.286702, 0.000000, 0.958020]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [12.459069, 2.796620, 153.791538]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel33"
+rotation = [0.000000, -0.397330, 0.000000, 0.917676]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-61.357059, 3.201900, -42.192104]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap25"
+rotation = [0.000000, -0.821104, 0.000000, 0.570778]
+scale = [2.359781, 4.026068, 3.373366]
+translation = [-25.263933, 2.545963, -35.693937]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap8"
+rotation = [0.000000, -0.272076, 0.000000, 0.962276]
+scale = [7.324889, 7.301221, 4.509045]
+translation = [53.750056, 2.261059, -53.246122]
+
+[[Static]]
+model = "Small_Crate"
+name = "Small_Crate4"
+rotation = [0.000000, 0.309717, 0.000000, 0.950829]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-0.461878, 4.034350, 143.084501]
+
+[[Static]]
+model = "Small_Crate"
+name = "Small_Crate3"
+rotation = [0.000000, 0.309717, 0.000000, 0.950829]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [0.555122, 4.034350, 144.479953]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post6"
+rotation = [0.000000, 0.198407, 0.000000, 0.980120]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-13.313987, 6.136514, -78.537302]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post5"
+rotation = [-0.000000, 0.995708, 0.000000, -0.092552]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-14.101011, 6.136514, -64.496877]
+
+[[Static]]
+model = "Lamp_Post"
+name = "Lamp_Post9"
+rotation = [0.000000, 0.259212, 0.000000, 0.965821]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-14.713573, 6.136514, 115.260139]
+
+[[Static]]
+model = "Crate"
+name = "Crate3"
+rotation = [0.000000, 0.241124, 0.000000, 0.970494]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [12.458056, 4.359040, 153.789997]
+
+[[Static]]
+model = "Crate"
+name = "Crate2"
+rotation = [0.000000, 0.286702, 0.000000, 0.958020]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [11.414916, 2.796620, 152.203248]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel7"
+rotation = [0.000000, 0.310793, 0.000000, 0.950478]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [3.994153, 2.906945, 165.598704]
+
+[[Static]]
+model = "Barrel"
+name = "Barrel6"
+rotation = [0.000000, 0.310793, 0.000000, 0.950478]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [4.958991, 2.906945, 166.916311]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap19"
+rotation = [0.000000, -0.031987, 0.000000, 0.999488]
+scale = [1.504202, 3.299644, 2.126647]
+translation = [-6.946340, 2.545963, 34.601968]
+
+[[Static]]
+model = "Snow_Heap"
+name = "Snow_Heap20"
+rotation = [0.000000, -0.600866, 0.000000, 0.799350]
+scale = [1.504202, 3.299644, 4.683135]
+translation = [22.671096, 2.545963, 30.938121]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration3"
+rotation = [0.000000, -0.093962, 0.000000, 0.995576]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-9.625720, 2.029560, -37.510300]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration2"
+rotation = [0.000000, -0.233303, 0.000000, 0.972404]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-12.321758, 2.029560, -38.883004]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration4"
+rotation = [0.000000, 0.279341, 0.000000, 0.960192]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-13.129541, 2.029560, -35.012368]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration1"
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-8.108912, 2.029560, -38.883004]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration33"
+rotation = [-0.000000, -0.743819, 0.000000, -0.668381]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [2.587354, 1.882371, 39.499969]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration32"
+rotation = [-0.000000, -0.226609, 0.000000, -0.973986]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [8.529963, 1.882371, 38.992615]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration31"
+rotation = [-0.000000, 0.673894, 0.000000, -0.738828]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [-13.330634, 1.882371, 113.787474]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration30"
+rotation = [-0.000000, 0.250281, 0.000000, -0.968173]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [-15.388900, 1.882371, 126.692897]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration29"
+rotation = [-0.000000, 0.283948, 0.000000, -0.958840]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [-11.346781, 1.882371, 111.614871]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration28"
+rotation = [-0.000000, 0.468680, 0.000000, -0.883368]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [-0.169787, 1.882371, 97.961303]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration27"
+rotation = [-0.000000, 0.576835, 0.000000, -0.816861]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [-0.951529, 1.882371, 101.345527]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration25"
+rotation = [-0.000000, -0.132809, 0.000000, -0.991142]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [3.182917, 1.882371, 67.290515]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration24"
+rotation = [-0.000000, -0.521866, 0.000000, -0.853027]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [14.346376, 1.882371, 58.616642]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration23"
+rotation = [-0.000000, -0.382264, 0.000000, -0.924053]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [-0.954909, 1.882371, 63.485591]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration22"
+rotation = [-0.000000, -0.180315, 0.000000, -0.983609]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [35.585605, 1.882371, 50.558681]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration21"
+rotation = [-0.000000, 0.381589, 0.000000, -0.924332]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [41.787256, 1.882371, 51.037204]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration20"
+rotation = [-0.000000, 0.538230, 0.000000, -0.842798]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [74.684920, 1.882371, 39.483929]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration19"
+rotation = [-0.000000, 0.653233, 0.000000, -0.757157]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [65.037228, 1.882371, 47.592187]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration18"
+rotation = [-0.000000, 0.653233, 0.000000, -0.757157]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [92.009870, 1.882371, 43.595570]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration17"
+rotation = [-0.000000, 0.347300, 0.000000, -0.937754]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [91.699067, 1.882371, 36.913683]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration16"
+rotation = [-0.000000, -0.040884, 0.000000, -0.999164]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [84.955859, 1.882371, 41.939177]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration15"
+rotation = [-0.000000, 0.258893, 0.000000, -0.965906]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-30.098209, 2.029560, -47.005257]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration14"
+rotation = [-0.000000, 0.647607, 0.000000, -0.761975]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-30.503506, 2.029560, -43.833087]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration26"
+rotation = [-0.000000, 0.102061, 0.000000, -0.994778]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [3.033550, 1.882371, 82.128932]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration35"
+rotation = [-0.000000, -0.886553, 0.000000, -0.462628]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [4.945121, 1.882371, 52.539260]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration34"
+rotation = [-0.000000, -0.991613, 0.000000, -0.129245]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [3.896575, 1.882371, 27.678168]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration36"
+rotation = [-0.000000, -0.090792, 0.000000, -0.995870]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [50.900244, 1.882371, 41.880962]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration6"
+rotation = [0.000000, 0.421896, 0.000000, 0.906644]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [15.040736, 2.029560, -19.646335]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration5"
+rotation = [0.000000, 0.421896, 0.000000, 0.906644]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-9.966766, 2.029560, -34.821304]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration13"
+rotation = [-0.000000, 0.927949, 0.000000, -0.372708]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-69.002556, 2.029560, -19.149292]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration12"
+rotation = [-0.000000, 0.927949, 0.000000, -0.372708]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-34.369191, 2.029560, 21.332965]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration9"
+rotation = [0.000000, 0.171221, 0.000000, 0.985233]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [15.616805, 2.029560, 11.837132]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration8"
+rotation = [0.000000, -0.209434, 0.000000, 0.977823]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [18.510650, 2.029560, 11.005529]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration7"
+rotation = [0.000000, -0.209434, 0.000000, 0.977823]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [13.889929, 2.029560, -16.859318]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration11"
+rotation = [0.000000, 0.753700, 0.000000, 0.657218]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-32.851479, 2.029560, 22.865392]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration10"
+rotation = [0.000000, 0.171221, 0.000000, 0.985233]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-9.273219, 2.029560, 27.369422]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration42"
+rotation = [-0.000000, 0.195817, 0.000000, -0.980640]
+scale = [2.792217, 2.792217, 2.792217]
+translation = [18.299460, 1.882371, 46.032031]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration41"
+rotation = [0.000000, -0.997237, 0.000000, 0.074283]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-9.212391, 2.029560, -59.250954]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration40"
+rotation = [0.000000, -0.775386, 0.000000, 0.631488]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-8.460172, 2.029560, -50.436591]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration39"
+rotation = [0.000000, -0.597105, 0.000000, 0.802163]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-10.135172, 2.029560, -73.473939]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration38"
+rotation = [0.000000, -0.941256, 0.000000, 0.337693]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-8.698893, 2.029560, -79.601761]
+
+[[Static]]
+model = "Stone_Decoration"
+name = "Stone_Decoration37"
+rotation = [0.000000, -0.400714, 0.000000, 0.916203]
+scale = [2.085854, 2.085854, 2.085854]
+translation = [-6.010379, 2.029560, -65.798443]
+
+[[Static]]
+model = "Log"
+name = "Log65"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-17.691934, -23.842670, 129.722219]
+
+[[Static]]
+model = "Log"
+name = "Log66"
+rotation = [0.024250, 0.081714, 0.993953, 0.069220]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-15.617741, -23.813406, 128.602137]
+
+[[Static]]
+model = "Log"
+name = "Log67"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-13.509372, -23.854781, 127.369220]
+
+[[Static]]
+model = "Log"
+name = "Log68"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-11.543476, -23.881512, 126.214976]
+
+[[Static]]
+model = "Log"
+name = "Log69"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-5.466342, -16.896799, 134.705543]
+
+[[Static]]
+model = "Log"
+name = "Log70"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-7.432238, -16.870067, 135.859787]
+
+[[Static]]
+model = "Log"
+name = "Log71"
+rotation = [0.024250, 0.081714, 0.993953, 0.069220]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-9.526729, -16.840791, 137.092704]
+
+[[Static]]
+model = "Log"
+name = "Log72"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-11.614800, -16.857956, 138.212786]
+
+[[Static]]
+model = "Log"
+name = "Log73"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [0.644106, -9.873795, 143.242656]
+
+[[Static]]
+model = "Log"
+name = "Log74"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-1.321790, -9.847063, 144.396899]
+
+[[Static]]
+model = "Log"
+name = "Log75"
+rotation = [0.024250, 0.081714, 0.993953, 0.069220]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-3.402327, -9.829952, 145.629817]
+
+[[Static]]
+model = "Log"
+name = "Log76"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-5.504352, -9.834952, 146.749899]
+
+[[Static]]
+model = "Log"
+name = "Log77"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [6.923028, -2.657157, 152.015148]
+
+[[Static]]
+model = "Log"
+name = "Log78"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [4.957132, -2.630426, 153.169391]
+
+[[Static]]
+model = "Log"
+name = "Log79"
+rotation = [0.024250, 0.081714, 0.993953, 0.069220]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [2.890933, -2.625815, 154.402309]
+
+[[Static]]
+model = "Log"
+name = "Log80"
+rotation = [0.023943, 0.081738, 0.994019, 0.068345]
+scale = [1.564312, 1.564312, 1.564312]
+translation = [0.774570, -2.618315, 155.522391]
+
+[[Static]]
+model = "Tee_Pee"
+name = "Tee_Pee3"
+rotation = [0.000000, -0.996108, 0.000000, 0.088144]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [100.786626, 64.231660, -85.702360]
+
+[[Static]]
+model = "Tee_Pee"
+name = "Tee_Pee2"
+rotation = [-0.000000, -0.991345, 0.000000, -0.131284]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [75.424878, 39.307509, -99.445829]
+
+[[Static]]
+model = "Tee_Pee"
+name = "Tee_Pee1"
+rotation = [0.000000, -0.271743, 0.000000, 0.962370]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [30.240283, 48.013941, -36.099459]
+
+[[Static]]
+model = "Fence2"
+name = "Fence85"
+rotation = [0.000000, 0.048039, 0.000000, 0.998845]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [1.508912, 3.062136, -84.243240]
+
+[[Static]]
+model = "Fence2"
+name = "Fence86"
+rotation = [0.000000, -0.043036, 0.000000, 0.999074]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [6.718260, 3.062136, -84.249217]
+
+[[Static]]
+model = "Fence2"
+name = "Fence87"
+rotation = [0.000000, -0.111929, 0.000000, 0.993716]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [11.906327, 3.062136, -83.485384]
+
+[[Static]]
+model = "Fence2"
+name = "Fence88"
+rotation = [0.000000, -0.111929, 0.000000, 0.993716]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [16.886983, 3.062136, -82.348955]
+
+[[Static]]
+model = "Fence2"
+name = "Fence89"
+rotation = [0.015692, -0.047347, -0.170182, 0.984149]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [21.553618, 2.153548, -81.570790]
+
+[[Static]]
+model = "Fence2"
+name = "Fence90"
+rotation = [-0.041540, -0.192919, 0.186550, 0.962422]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [27.480952, 1.992963, -80.288142]
+
+[[Static]]
+model = "Fence2"
+name = "Fence91"
+rotation = [0.000000, -0.037605, 0.000000, 0.999293]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [31.946059, 3.062136, -79.213673]
+
+[[Static]]
+model = "Fence2"
+name = "Fence92"
+rotation = [0.000000, -0.037605, 0.000000, 0.999293]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [36.977813, 3.062136, -78.834429]
+
+[[Static]]
+model = "Fence2"
+name = "Fence93"
+rotation = [0.000000, -0.079678, 0.000000, 0.996821]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [41.978692, 3.062136, -78.225333]
+
+[[Static]]
+model = "Fence2"
+name = "Fence94"
+rotation = [0.000000, -0.079678, 0.000000, 0.996821]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [47.088913, 3.062136, -77.403135]
+
+[[Static]]
+model = "Fence2"
+name = "Fence95"
+rotation = [0.000000, 0.605433, 0.000000, 0.795896]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-4.245631, 3.062136, -47.242758]
+
+[[Static]]
+model = "Fence2"
+name = "Fence96"
+rotation = [0.000000, 0.823884, 0.000000, 0.566758]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-4.325651, 3.062136, -52.168981]
+
+[[Static]]
+model = "Fence2"
+name = "Fence97"
+rotation = [0.000000, 0.648964, 0.000000, 0.760819]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-4.914381, 3.062136, -57.118406]
+
+[[Static]]
+model = "Fence2"
+name = "Fence98"
+rotation = [0.000000, 0.708524, 0.000000, 0.705687]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-13.494624, 3.062136, -49.075159]
+
+[[Static]]
+model = "Fence2"
+name = "Fence99"
+rotation = [0.000000, 0.790229, 0.000000, 0.612812]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-14.034816, 3.062136, -53.972247]
+
+[[Static]]
+model = "Fence2"
+name = "Fence100"
+rotation = [0.000000, 0.714264, 0.000000, 0.699876]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-14.783811, 3.062136, -58.998804]
+
+[[Static]]
+model = "Fence2"
+name = "Fence101"
+rotation = [0.000000, 0.999652, 0.000000, 0.026361]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-17.086583, 3.062136, -61.864993]
+
+[[Static]]
+model = "Fence2"
+name = "Fence102"
+rotation = [0.000000, 0.989314, 0.000000, 0.145800]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-21.931005, 3.062136, -62.769123]
+
+[[Static]]
+model = "Fence2"
+name = "Fence103"
+rotation = [0.000000, 0.959257, 0.000000, 0.282536]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-26.532697, 3.062136, -64.852769]
+
+[[Static]]
+model = "Fence2"
+name = "Fence104"
+rotation = [0.000000, 0.115152, 0.000000, 0.993348]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-35.653392, 3.062136, -48.797174]
+
+[[Static]]
+model = "Fence2"
+name = "Fence105"
+rotation = [0.000000, 0.720528, 0.000000, 0.693425]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-33.101701, 3.062136, -51.694334]
+
+[[Static]]
+model = "Fence2"
+name = "Fence106"
+rotation = [0.000000, 0.750320, 0.000000, 0.661075]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-33.426733, 3.062136, -56.929659]
+
+[[Static]]
+model = "Fence2"
+name = "Fence107"
+rotation = [0.000000, 0.746152, 0.000000, 0.665776]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-34.074848, 3.062136, -62.034049]
+
+[[Static]]
+model = "Fence2"
+name = "Fence108"
+rotation = [0.000000, 0.999942, 0.000000, 0.010772]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-36.620959, 3.062136, -64.940724]
+
+[[Static]]
+model = "Fence2"
+name = "Fence109"
+rotation = [0.000000, 0.999942, 0.000000, 0.010772]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-41.927299, 3.062136, -65.055064]
+
+[[Static]]
+model = "Fence2"
+name = "Fence110"
+rotation = [-0.000000, 0.994021, 0.000000, -0.109186]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-46.820401, 3.062136, -64.699857]
+
+[[Static]]
+model = "Fence2"
+name = "Fence111"
+rotation = [-0.000000, 0.680412, 0.000000, -0.732830]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-49.482838, 3.062136, -61.828151]
+
+[[Static]]
+model = "Fence2"
+name = "Fence112"
+rotation = [-0.000000, 0.717452, 0.000000, -0.696608]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-49.351814, 3.062136, -56.795012]
+
+[[Static]]
+model = "Fence2"
+name = "Fence113"
+rotation = [-0.000000, 0.646047, 0.000000, -0.763298]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-49.051002, 3.062136, -51.615405]
+
+[[Static]]
+model = "Fence2"
+name = "Fence114"
+rotation = [-0.000000, 0.092694, 0.000000, -0.995695]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-46.198328, 3.062136, -48.354940]
+
+[[Static]]
+model = "Fence2"
+name = "Fence115"
+rotation = [-0.000000, 0.428636, 0.000000, -0.903477]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-55.728842, 3.062136, 13.704262]
+
+[[Static]]
+model = "Fence2"
+name = "Fence116"
+rotation = [-0.000000, 0.529651, 0.000000, -0.848216]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-52.841165, 3.062136, 17.950153]
+
+[[Static]]
+model = "Fence2"
+name = "Fence117"
+rotation = [-0.000000, 0.680071, 0.000000, -0.733146]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-51.512384, 3.062136, 22.890276]
+
+[[Static]]
+model = "Fence2"
+name = "Fence118"
+rotation = [-0.000000, 0.801663, 0.000000, -0.597777]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-52.139166, 3.062136, 27.967984]
+
+[[Static]]
+model = "Fence2"
+name = "Fence119"
+rotation = [-0.000000, 0.899618, 0.000000, -0.436678]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-54.245581, 3.062136, 32.430035]
+
+[[Static]]
+model = "Fence2"
+name = "Fence120"
+rotation = [-0.000000, 0.991389, 0.000000, -0.130952]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-58.367966, 3.062136, 35.216216]
+
+[[Static]]
+model = "Fence2"
+name = "Fence121"
+rotation = [0.000000, 0.999454, 0.000000, 0.033052]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-63.494447, 3.062136, 35.809680]
+
+[[Static]]
+model = "Fence2"
+name = "Fence122"
+rotation = [0.000000, 0.974094, 0.000000, 0.226143]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-68.222118, 3.062136, 34.663855]
+
+[[Static]]
+model = "Fence2"
+name = "Fence123"
+rotation = [0.054390, 0.938431, 0.076740, 0.332415]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-72.224594, 2.125787, 32.036215]
+
+[[Static]]
+model = "Fence2"
+name = "Fence124"
+rotation = [0.000000, 0.781622, 0.000000, 0.623752]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-74.819289, 3.062136, 27.429840]
+
+[[Static]]
+model = "Fence2"
+name = "Fence125"
+rotation = [0.000000, 0.707568, 0.000000, 0.706646]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-75.431598, 3.062136, 22.788320]
+
+[[Static]]
+model = "Fence2"
+name = "Fence126"
+rotation = [0.000000, 0.585769, 0.000000, 0.810478]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-74.782000, 3.062136, 17.839394]
+
+[[Static]]
+model = "Fence2"
+name = "Fence127"
+rotation = [0.000000, 0.496057, 0.000000, 0.868290]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-73.025870, 3.062136, 13.324546]
+
+[[Static]]
+model = "Fence2"
+name = "Fence128"
+rotation = [0.000000, 0.237168, 0.000000, 0.971469]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-69.355118, 3.062136, 9.807505]
+
+[[Static]]
+model = "Fence2"
+name = "Fence129"
+rotation = [0.000000, 0.213025, 0.000000, 0.977047]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-23.398321, 3.062136, 134.967198]
+
+[[Static]]
+model = "Fence2"
+name = "Fence130"
+rotation = [0.000000, 0.123681, 0.000000, 0.992322]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-18.661041, 3.062136, 133.042723]
+
+[[Static]]
+model = "Fence2"
+name = "Fence131"
+rotation = [0.000000, -0.474102, 0.000000, 0.880470]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-14.912672, 2.847031, 134.379502]
+
+[[Static]]
+model = "Fence2"
+name = "Fence132"
+rotation = [0.000000, -0.483468, 0.000000, 0.875362]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-12.082700, 2.847031, 138.671683]
+
+[[Static]]
+model = "Fence2"
+name = "Fence133"
+rotation = [0.000000, -0.474102, 0.000000, 0.880470]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-7.702614, 2.847031, 130.842825]
+
+[[Static]]
+model = "Fence2"
+name = "Fence134"
+rotation = [0.000000, -0.474102, 0.000000, 0.880470]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [-4.901423, 2.847031, 135.091354]
+
+[[Static]]
+model = "Fence2"
+name = "Fence135"
+rotation = [0.000000, 0.319271, 0.000000, 0.947663]
+scale = [1.946993, 1.564000, 1.564000]
+translation = [-1.116610, 2.847031, 135.678770]
+
+[[Static]]
+model = "Fence2"
+name = "Fence136"
+rotation = [0.000000, -0.474102, 0.000000, 0.880470]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [3.288086, 2.847031, 135.505297]
+
+[[Static]]
+model = "Fence2"
+name = "Fence137"
+rotation = [0.000000, -0.498804, 0.000000, 0.866715]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [6.147988, 2.847031, 140.044286]
+
+[[Static]]
+model = "Fence2"
+name = "Fence138"
+rotation = [0.000000, -0.479625, 0.000000, 0.877473]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [8.880130, 2.847031, 144.619456]
+
+[[Static]]
+model = "Fence2"
+name = "Fence139"
+rotation = [0.000000, -0.479625, 0.000000, 0.877473]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [11.365790, 2.847031, 148.494519]
+
+[[Static]]
+model = "Fence2"
+name = "Fence140"
+rotation = [0.000000, -0.558814, 0.000000, 0.829293]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [13.725435, 2.847031, 153.027314]
+
+[[Static]]
+model = "Fence2"
+name = "Fence141"
+rotation = [0.000000, -0.964539, 0.000000, 0.263942]
+scale = [1.946993, 1.564000, 1.564000]
+translation = [12.206430, 2.847031, 156.902413]
+
+[[Static]]
+model = "Fence2"
+name = "Fence142"
+rotation = [0.000000, -0.474977, 0.000000, 0.879998]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [10.183264, 2.847031, 160.566220]
+
+[[Static]]
+model = "Fence2"
+name = "Fence143"
+rotation = [0.000000, -0.505330, 0.000000, 0.862926]
+scale = [1.564000, 1.564000, 1.564000]
+translation = [12.776405, 2.847031, 165.238565]
+
+[[Trigger]]
+model = "Jump_Pad"
+name = "Jump_Pad2"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-19.170260, 2.317099, -15.581791]
+
+[[Trigger]]
+model = "Jump_Pad"
+name = "Jump_Pad3"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [-64.528206, 2.317099, 22.126248]
+
+[[Trigger]]
+model = "Jump_Pad"
+name = "Jump_Pad5"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [22.928277, 43.043050, -36.159255]
+
+[[Trigger]]
+model = "Jump_Pad"
+name = "Jump_Pad4"
+scale = [1.564312, 1.564312, 1.564312]
+translation = [52.325566, 2.317099, -19.882651]

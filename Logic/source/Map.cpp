@@ -6,6 +6,7 @@
 #include <Misc\RandomGenerator.h>
 #include <toml\toml.h>
 #include <fstream>
+#include <Graphics/include/Utility/ModelLoader.h>
 
 using namespace Logic;
 
@@ -70,9 +71,9 @@ void Map::update(float deltaTime)
 
 void Map::render() const
 {
-	//for (StaticObject* o : m_props)     o->render();
- //   for (LightObject* l : m_lights)     l->render();
- //   for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
+    for (StaticObject* o : m_props)     o->render();
+    for (LightObject* l : m_lights)     l->render();
+    for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
 
     for (auto & d : decorations) d.render();
 }
@@ -91,7 +92,8 @@ void Map::loadStartMenuScene()
 
     add(FrameLight({ 0.f, 0.f, 0.f }, {1.f, 0.5f, 0.3f}, 1.f, 10.f));
 
-    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
+    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
+    for (size_t i = lights.size(); i--;) add(lights[i]);
 }
 
 void Logic::Map::loadMap(Resources::Maps::Files map)
@@ -162,25 +164,56 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
     if (mapStatic) pushInstances(mapStatic, staticInstances);
     if (mapFoliage) pushInstances(mapFoliage, foliageInstances);
     if (mapTrigger) pushInstances(mapTrigger, triggerInstances);
-
     // TODO USE THIS //    
+
     decorations.clear();
+
+    auto toVec3 = [](DirectX::SimpleMath::Vector3 & vec) -> btVector3
+    {
+        return {vec.x, vec.y, vec.z};
+    };
+
+    auto toQuat = [](DirectX::SimpleMath::Quaternion & vec) -> btQuaternion
+    {
+        return {vec.x, vec.y, vec.z, vec.w};
+    };
 
     for (auto & instance : staticInstances)
     {
         try
         {
+            Resources::Models::Files model = Resources::Models::toEnum(instance.model.c_str());
             std::cout << "> " <<  instance.model.c_str() << std::endl;
+
+            if (model != Resources::Models::House1
+             && model != Resources::Models::House2
+             && model != Resources::Models::House3) continue;
+
             DirectX::SimpleMath::Quaternion rotation(instance.rotation[0], instance.rotation[1], instance.rotation[2], instance.rotation[3]);
             DirectX::SimpleMath::Vector3 scale(instance.scale[0], instance.scale[1], instance.scale[2]);
             DirectX::SimpleMath::Vector3 translation(instance.translation[0], instance.translation[1], instance.translation[2]);
 
-            auto transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
-            Decoration decor(Resources::Models::toEnum(instance.model.c_str()), transform);
+            DirectX::SimpleMath::Matrix transform = DirectX::XMMatrixAffineTransformation({1,1,1}, {}, rotation, translation);
+            Decoration decor(model, transform);
             decorations.push_back(decor);
 
+            btTransform instance_transform(instance.rotation, instance.translation);
+            auto hitboxes = ModelLoader::get().getModel(model)->getHitboxes();
+            for (auto & hitbox : *hitboxes)
+            {
+                btRigidBody * body = m_physicsPtr->createHitbox(
+                    toVec3(hitbox.position),
+                    toQuat(hitbox.rotation),
+                    toVec3(hitbox.halfSize),
+                    false,
+                    Physics::COL_HITBOX,
+                    Physics::COL_EVERYTHING ^ Physics::COL_HITBOX
+                );
+
+                body->setWorldTransform(instance_transform * body->getWorldTransform());
+            }
         }
-            catch (const char * e)
+        catch (const char * e)
         {
             std::cerr << "Could not find model " << instance.model << " during map load. Ignoring model." << std::endl;
         }

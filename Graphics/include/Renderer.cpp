@@ -371,7 +371,7 @@ namespace Graphics
             }
         });
 
-        {
+        { // Animation Buffers
             auto instanceBuffer = animatedInstanceBuffer.map();
             auto jointsBuffer   = animatedJointsBuffer.map();
 
@@ -400,7 +400,7 @@ namespace Graphics
                     *instanceBuffer++ = instance;
                     *jointsBuffer++ = joints;
                 }
-            }
+            } // Animation Buffers
 
             animatedInstanceBuffer.unmap();
             animatedJointsBuffer.unmap();

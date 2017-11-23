@@ -14,6 +14,13 @@ namespace HybrisLoader
     class Model
     {
     public:
+        struct Hitbox
+        {
+            DirectX::SimpleMath::Vector3 position;
+            DirectX::SimpleMath::Quaternion rotation;
+            DirectX::SimpleMath::Vector3 halfSize;
+        };
+
         Model(ID3D11Device * device, Hybris::FileWithHitbox & file);
         
         size_t getVertexCount()  { return mesh.getVertexCount(); }
@@ -28,13 +35,9 @@ namespace HybrisLoader
         Mesh & getMesh() { return mesh; }
         Material & getMaterial() { return material; }
         Skeleton & getSkeleton() { return skeleton; }
+        std::vector<Hitbox> * getHitboxes() { return &hitboxes; }
 
-        struct Hitbox
-        {
-            DirectX::SimpleMath::Vector3 position;
-            DirectX::SimpleMath::Quaternion rotation;
-            DirectX::SimpleMath::Vector3 halfSize;
-        };
+
 
     private:
         Mesh mesh;

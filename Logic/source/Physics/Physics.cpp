@@ -344,6 +344,26 @@ btPairCachingGhostObject* Physics::createPlayer(btCapsuleShape* capsule, btVecto
 	return ghostObject;
 }
 
+btRigidBody * Logic::Physics::createHitbox(btVector3 position, btQuaternion rotation, btVector3 halfSize, bool isSensor, int group, int mask)
+{
+    // Setting Motions state with position & rotation
+    btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, position));
+
+    // Creating the specific shape
+    btCollisionShape* shape = new btBoxShape(halfSize);
+
+    // Creating the actual body
+    btRigidBody::btRigidBodyConstructionInfo constructionInfo(0, motionState, shape);
+    BodySpecifics specifics(DEFAULT_R, DEFAULT_F, DEFAULT_S, DEFAULT_D, isSensor);
+    btRigidBody* body = initBody(constructionInfo, specifics);
+    shape->setUserPointer(body);
+
+    // Adding body to the world
+    this->addRigidBody(body, group, mask);
+
+    return body;
+}
+
 // Only used for debugging, draws all collision shapes onto screen
 void Physics::render()
 {
