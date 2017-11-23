@@ -815,8 +815,17 @@ void Player::applyAirFriction(float deltaTime, float friction)
 
 void Player::jump(float deltaTime, DirectX::Keyboard::State* ks)
 {
-	if (ks->IsKeyDown(m_jump) && !m_wishJump && m_playerState != PlayerState::IN_AIR)
-		m_wishJump = true;
+    if (ks->IsKeyDown(m_jump) && !m_wishJump && m_playerState != PlayerState::IN_AIR) {
+        SpecialEffectRenderInfo bounceInfo;
+        bounceInfo.type = bounceInfo.screenBounce;
+        bounceInfo.duration = 0.17f;
+        bounceInfo.radius = 140.0f;
+        bounceInfo.bounceMax = 5.0f;
+        bounceInfo.direction = DirectX::SimpleMath::Vector2(0.0f, 1.0f);
+        bounceInfo.affectEveryThing = false;
+        QueueRender(bounceInfo);
+        m_wishJump = true;
+    }	
 	else if (ks->IsKeyUp(m_jump))
 		m_wishJump = false;
 }

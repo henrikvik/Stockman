@@ -1,4 +1,8 @@
 {
+	"Name": "PlayerName";
+	"Value": "Ipren";
+}
+{
 	"Name": "MouseSense";
 	"Value": 0.1f;
 }
