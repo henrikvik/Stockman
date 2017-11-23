@@ -25,6 +25,8 @@ namespace Logic
 		btVector3 m_forw;
 		Entity *m_shooter;
 		float m_chargePower;
+        float m_fovM;               // FOV multiplier for display-effect
+        float m_oldSpeed;
 	public:
 		SkillShieldCharge();
 		~SkillShieldCharge();
