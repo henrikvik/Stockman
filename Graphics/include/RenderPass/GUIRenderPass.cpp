@@ -187,7 +187,11 @@ void Graphics::GUIRenderPass::updateShake(float deltaTime)
         ndcPositionOffset = Vector2((float)(positionOffset.x * 2.f / WIN_WIDTH), ((WIN_HEIGHT - positionOffset.y) / WIN_HEIGHT) - 1.f);
 
         //this ugly
-        Global::mainCamera->update(Global::mainCamera->getPos() + ndcPositionOffset * 3.f, Global::mainCamera->getForward(), Global::context);
+        if (affectEverything)
+        {
+            Global::mainCamera->update(Global::mainCamera->getPos() + ndcPositionOffset * 3.f, Global::mainCamera->getForward(), Global::context);
+        }
+        
     }
 }
 

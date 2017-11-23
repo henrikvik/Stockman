@@ -58,7 +58,7 @@ namespace Logic
         void onUpgradeAdd(int stacks, Upgrade const & upgrade);
 		void render() const;
 
-		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
+		void setWeaponModel(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		void switchWeapon(int weaponID);
 
