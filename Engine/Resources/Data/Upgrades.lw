@@ -84,8 +84,8 @@
 	"increaseCooldown" : 0f;
 	"increaseDamage" : 0;
 	"increaseSize" : 0;
-	"increaseAmmoCap" : 40;
-	"increaseMagSize" : 0;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 40;
     "movementSpeed" : 0f;
 }
 { // add ammo cap 20 permanently
