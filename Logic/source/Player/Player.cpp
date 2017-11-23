@@ -552,7 +552,6 @@ void Player::updateSpecific(float deltaTime)
 	    //printf("%f	x: %f	z: %f\n", m_moveSpeed, m_moveDir.x(), m_moveDir.z());
 
 	    //crouch(deltaTime);
-
         
         static int lastMouseScrollState = 0;
 	    // Weapon swap
@@ -750,8 +749,9 @@ void Player::airMove(float deltaTime)
 
 void Player::accelerate(float deltaTime, float acceleration)
 {
-	if (m_wishJump || m_moveSpeed < m_moveMaxSpeed)
-        m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod * m_permanentSpeedMod;
+    m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod * m_permanentSpeedMod;
+    if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
+        m_moveSpeed = m_moveMaxSpeed;
 }
 
 void Player::stepPlayer(float deltaTime)
