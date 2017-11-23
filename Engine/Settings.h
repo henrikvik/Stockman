@@ -13,7 +13,7 @@ private:
 	float m_SFX;
 	float m_music;
 	bool m_windowed;
-    std::string m_alias;
+    std::string m_name;
 public:
 	Settings();
 	~Settings();
@@ -38,8 +38,8 @@ public:
 	bool* getWindowedPTR();
     bool getWindowed();
 	void setWindowed(bool windowed);
-    std::string getAlias();
-    void setAlias(std::string alias);
+    std::string getName();
+    void setName(std::string name);
 };
 
 #endif

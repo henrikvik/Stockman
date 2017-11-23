@@ -14,6 +14,7 @@ namespace Logic
         enum MenuGroup
         {
             Empty,
+            FirstTime,
             Intro,
             Start,
             Settings,

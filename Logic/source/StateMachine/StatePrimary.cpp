@@ -111,12 +111,12 @@ void StatePrimary::loadState(StateType state)
     m_currentState->SetFuncSecondarySwitch(SwitchSecondaryState);
 }
 
-bool Logic::StatePrimary::getShouldQuit() const
+bool StatePrimary::getShouldQuit() const
 {
     return m_quit;
 }
 
-void Logic::StatePrimary::setQuit()
+void StatePrimary::setQuit()
 {
     m_quit = true;
 }

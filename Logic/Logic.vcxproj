@@ -205,6 +205,7 @@
     <ClInclude Include="include\AI\EnemyTotem.h" />
     <ClInclude Include="include\Misc\Fader.h" />
     <ClInclude Include="include\Misc\GUI\iMenuCards.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuFirstTime.h" />
     <ClInclude Include="include\Misc\GUI\iMenuHighscore.h" />
     <ClInclude Include="include\Misc\GUI\iMenuIntro.h" />
     <ClInclude Include="include\Misc\GUI\iMenuLoading.h" />
@@ -318,6 +319,7 @@
     <ClCompile Include="source\Misc\GUI\iMenuCards.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuFactory.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenu.cpp" />
+    <ClCompile Include="source\Misc\GUI\iMenuFirstTime.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuHighscore.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuIntro.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuLoading.cpp" />

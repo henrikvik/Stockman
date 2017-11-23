@@ -30,10 +30,9 @@ bool dbConnect::addHighscore(std::string name, int score, int time, int wave, in
 
     // Send the request
     sf::Http::Response response = http.sendRequest(request);
-    printf("Resonse from server: %s\n", response.getBody().c_str());
 
-    // Return the response as a string
-    return true;
+    // Return the true if the request was accepted
+    return (response.getStatus() == sf::Http::Response::Ok);
 }
 
 // Returns a 2D Vector containing each player and their stats, need's to be parsed

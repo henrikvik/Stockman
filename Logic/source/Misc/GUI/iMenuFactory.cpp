@@ -27,9 +27,14 @@ const std::map<int, Resources::Textures::Files> LookUp =
 iMenuIntro* iMenuFactory::buildMenuIntro()
 {
     iMenuIntro* menu = newd iMenuIntro(iMenu::Intro);
-
     menu->addBackground(Resources::Textures::IntroScreen, 1.f);
+    return menu;
+}
 
+iMenuFirstTime * iMenuFactory::buildMenuFirstTime()
+{
+    iMenuFirstTime* menu = newd iMenuFirstTime(iMenu::FirstTime);
+    menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     return menu;
 }
 
