@@ -137,6 +137,11 @@ void StatePlaying::update(float deltaTime)
         m_cardManager->pickThreeCards(m_player->getHP() != 3);
         m_projectileManager->removeEnemyProjCallbacks();
 
+        SpecialEffectRenderInfo fultAF;
+        fultAF.type = SpecialEffectRenderInfo::Snow;
+        fultAF.restart = true;
+        QueueRender(fultAF);
+
     }
 
 
