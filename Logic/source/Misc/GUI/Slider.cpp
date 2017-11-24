@@ -25,7 +25,8 @@ Slider::Slider(
     m_max = max;
     m_minValue = minValue;
     m_maxValue = maxValue;
-    m_delimiter = delimiter;
+    m_delimiter = 1 / delimiter;
+    m_tempValue = 0;
 
     m_value = value;
     float X = x;
@@ -72,25 +73,17 @@ void Slider::updateOnPress(int posX, int posY)
                 posx = m_max;
             }
 
-            *m_value = (m_maxValue - m_minValue) * ((posx - m_min) / (m_max - m_min));
+            m_tempValue = (m_maxValue - m_minValue) * ((posx - m_min) / (m_max - m_min));
 
-            if (m_delimiter == 1.0f)
-            {
-                float flooredFinalValue = floorf(*m_value);
+            float flooredFinalValue = floorf(m_delimiter * m_tempValue + 0.5f) / m_delimiter;
+           
+            posx = ((flooredFinalValue / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min;
+           
+            m_tempValue = flooredFinalValue;
 
-                if (*m_value - flooredFinalValue >= 0.5f)
-                {
-                    flooredFinalValue++;
-                }
+            m_tempValue += m_minValue;
 
-                posx = ((flooredFinalValue / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min;
-
-                *m_value = flooredFinalValue;
-            }
-
-            *m_value += m_minValue;
-
-             FloatRect screenRect = {
+            FloatRect screenRect = {
                  (posx - (m_width * 0.5f)) / WIN_WIDTH,
                  m_y / WIN_HEIGHT,
                  m_width / WIN_WIDTH,
@@ -112,6 +105,7 @@ void Logic::Slider::updateOnRelease(int posX, int posY)
 {
     if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
     {
+        *m_value = m_tempValue;
         setState(Slider::INACTIVE);
     }
 }
