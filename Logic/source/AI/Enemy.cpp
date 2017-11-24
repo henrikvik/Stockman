@@ -40,6 +40,11 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 0.5f;
     light.range = 2.f;
+
+    addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
+        m_blinkTimer = 100.0f;
+        getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
+    });
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -142,8 +147,6 @@ bool Enemy::hasCallbackEntities()
 void Enemy::damage(int damage)
 {
 	m_health -= damage;
-    m_blinkTimer = 100.0f;
-    getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)

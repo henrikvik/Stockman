@@ -19,7 +19,7 @@ namespace Logic
         virtual void onUse(std::vector<Projectile*> &projectiles, Entity& shooter);
         virtual bool useEnhanced(bool shouldUse);
 
-        ProjectileData* m_freezeData;
+        ProjectileData m_freezeData;
         int m_splitCount;
         float m_sliceSize;
     };

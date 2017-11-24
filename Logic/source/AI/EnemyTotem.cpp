@@ -3,15 +3,16 @@
 #include <Misc\ComboMachine.h>
 using namespace Logic;
 
-const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 45.f;
+const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 50.f;
 const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 500, EnemyTotem::SCORE = 25;
-const int EnemyTotem::BULLET_AMOUNT = 6;
+const int EnemyTotem::BULLET_AMOUNT = 8;
 
 EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
     : Enemy(Resources::Models::Files::StaticSummon, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::TOTEM, 0, btVector3(0, 0, 0))
 {
     setBehavior(STAY);
     createAbilities();
+    m_rotation = 0;
 
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().kill(SCORE);
@@ -28,16 +29,17 @@ EnemyTotem::~EnemyTotem()
 
 void EnemyTotem::createAbilities()
 {
+    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
+
     AbilityData data;
     data.duration = 0.f;
-    data.cooldown = 4500.f;
-    data.randomChanche = 75;
+    data.cooldown = 1000.f;
+    data.randomChanche = 10;
 
     spreadShot = Ability(data, [&](Player &target, Ability &ab) -> void {
 
     }, [&](Player &target, Ability &ab) -> void {
         constexpr float piece = 3.14 * 2 / BULLET_AMOUNT;
-        static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
 
         ProjectileData pData;
         
@@ -45,9 +47,10 @@ void EnemyTotem::createAbilities()
         pData.hasEffect = true;
         pData.effectVelocity = false;
         pData.effectActivated = true;
+        m_rotation += 0.5f;
 
         for (int i = 0; i < BULLET_AMOUNT; i++)
-            shoot(btVector3(std::sin(i * piece), 0.f, std::cos(i * piece)), pData, BULLET_SPEED, 0.f, 4.f);
+            shoot(btVector3(std::sin((i + m_rotation) * piece), 0.f, std::cos((i + m_rotation) * piece)), pData, BULLET_SPEED, 0.f, 7.f);
     });
 }
 

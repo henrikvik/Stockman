@@ -34,6 +34,8 @@ namespace Graphics
         Global::context->IASetInputLayout(nullptr);
         Global::context->GSSetShader(nullptr, nullptr, 0);
         Global::context->PSSetShader(nullptr, nullptr, 0);
+        
+        Global::context->RSSetState(Global::cStates->CullCounterClockwise());
         Global::context->OMSetRenderTargets(0, nullptr, depthStencil);
         Global::context->VSSetConstantBuffers(0, 1, &buffers[0]);
 
@@ -46,6 +48,7 @@ namespace Graphics
 
         //reset
         Global::context->RSSetViewports(1, &viewportReset);
+        Global::context->RSSetState(Global::cStates->CullClockwise());
         Global::context->OMSetRenderTargets(0, nullptr, nullptr);
         PROFILE_END();
     }

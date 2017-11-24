@@ -71,16 +71,19 @@ void iMenuMachine::swapMenu()
 
     switch (m_queuedMenuType)
     {
-    case iMenu::MenuGroup::Intro:       m_activeMenu = m_factory->buildMenuIntro();                       break;
-    case iMenu::MenuGroup::Start:       m_activeMenu = m_factory->buildMenuStart();                       break;
-    case iMenu::MenuGroup::Settings:    m_activeMenu = m_factory->buildMenuSettings();                    break;
-    case iMenu::MenuGroup::Highscore:   m_activeMenu = m_factory->buildMenuHighscore();                   break;
-    case iMenu::MenuGroup::CardSelect:  m_activeMenu = m_factory->buildMenuCard();                        break;
-    case iMenu::MenuGroup::Skill:       m_activeMenu = m_factory->buildMenuSkill();                       break;
-    case iMenu::MenuGroup::GameOver:    m_activeMenu = m_factory->buildMenuGameover();                    break;
-    case iMenu::MenuGroup::GameWon:     m_activeMenu = m_factory->buildMenuGameWon();                     break;
-    case iMenu::MenuGroup::Pause:       m_activeMenu = m_factory->buildMenuPause();                       break;
-    case iMenu::MenuGroup::Loading:     m_activeMenu = m_factory->buildMenuLoading();                     break;
+    case iMenu::MenuGroup::Intro:               m_activeMenu = m_factory->buildMenuIntro();                       break;
+    case iMenu::MenuGroup::FirstTime:           m_activeMenu = m_factory->buildMenuFirstTime();                   break;
+    case iMenu::MenuGroup::Start:               m_activeMenu = m_factory->buildMenuStart();                       break;
+    case iMenu::MenuGroup::Settings:            m_activeMenu = m_factory->buildMenuSettings();                    break;
+    case iMenu::MenuGroup::HighscoreStartMenu:  m_activeMenu = m_factory->buildMenuHighscore();                   break;
+    case iMenu::MenuGroup::CardSelect:          m_activeMenu = m_factory->buildMenuCard();                        break;
+    case iMenu::MenuGroup::Skill:               m_activeMenu = m_factory->buildMenuSkill();                       break;
+    case iMenu::MenuGroup::GameOver:            m_activeMenu = m_factory->buildMenuGameover();                    break;
+    case iMenu::MenuGroup::GameWon:             m_activeMenu = m_factory->buildMenuGameWon();                     break;
+    case iMenu::MenuGroup::Pause:               m_activeMenu = m_factory->buildMenuPause();                       break;
+    case iMenu::MenuGroup::LoadingPre:          m_activeMenu = m_factory->buildMenuLoadingPre();                  break;
+    case iMenu::MenuGroup::LoadingPost:         m_activeMenu = m_factory->buildMenuLoadingPost();                 break;
+    case iMenu::MenuGroup::HighscoreGameOver:   m_activeMenu = m_factory->buildMenuHighscoreGameOver();           break;
     default: break;
     }
 
@@ -155,6 +158,7 @@ void iMenuMachine::updateCamera(float deltaTime)
     switch (m_activeMenu->getMenuType())
     {
 
+    case iMenu::MenuGroup::FirstTime:
     case iMenu::MenuGroup::Intro:
         targetCameraPosition = CAMERA_INTRO_POSITION;
         targetCameraForward = CAMERA_INTRO_FORWARD;
@@ -173,19 +177,15 @@ void iMenuMachine::updateCamera(float deltaTime)
         shouldModifyCamera = true;
         break;
 
-    case iMenu::MenuGroup::Highscore:
+    case iMenu::MenuGroup::HighscoreStartMenu:
         targetCameraPosition = CAMERA_HIGHSCORE_POSITION;
         targetCameraForward = CAMERA_HIGHSCORE_FORWARD;
         shouldModifyCamera = true;
         break;
 
+    case iMenu::MenuGroup::LoadingPre:
+    case iMenu::MenuGroup::LoadingPost:
     case iMenu::MenuGroup::Skill:
-        targetCameraPosition = CAMERA_SKILL_POSITION;
-        targetCameraForward = CAMERA_SKILL_FORWARD;
-        shouldModifyCamera = true;
-        break;
-
-    case iMenu::MenuGroup::Loading:
         targetCameraPosition = CAMERA_SKILL_POSITION;
         targetCameraForward = CAMERA_SKILL_FORWARD;
         shouldModifyCamera = true;

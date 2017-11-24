@@ -271,3 +271,6 @@ imgui.ini
 *highscore.lw
 */Cmd.lw
 Cmd.lw
+/Engine/Resources/Data/Settings.lw
+*/Settings.lw
+Settings.lw
