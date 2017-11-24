@@ -15,10 +15,22 @@ namespace Resources
     {
         Files toEnum(const char * str)
         {
-            if (strcmp(str, "StockMan_LvL") == 0) return StockMan_LvL;
-            if (strcmp(str, "Stock_Map_V1") == 0) return Stock_Map_V1;
-            if (strcmp(str, "Test_Map") == 0) return Test_Map;
+            if (strcmp(str, "Stock_Map") == 0) return Stock_Map;
+            if (strcmp(str, "Stock_Map_") == 0) return Stock_Map_;
+            if (strcmp(str, "Stock_Map_V1__") == 0) return Stock_Map_V1__;
             throw "Could not find matching enum.";
+        }
+        namespace OLD
+        {
+            Files toEnum(const char * str)
+            {
+                if (strcmp(str, "StockMan_LvL") == 0) return StockMan_LvL;
+                if (strcmp(str, "Stock_Map_V1_Old") == 0) return Stock_Map_V1_Old;
+                if (strcmp(str, "Stock_Map_V1_V2_old") == 0) return Stock_Map_V1_V2_old;
+                if (strcmp(str, "Stock_Map_V1__") == 0) return Stock_Map_V1__;
+                if (strcmp(str, "Test_Map") == 0) return Test_Map;
+                throw "Could not find matching enum.";
+            }
         }
     }
     namespace Models
@@ -30,6 +42,7 @@ namespace Resources
             if (strcmp(str, "AnimatedSummonUnit") == 0) return AnimatedSummonUnit;
             if (strcmp(str, "AnimationTest") == 0) return AnimationTest;
             if (strcmp(str, "Barrel") == 0) return Barrel;
+            if (strcmp(str, "Bridge") == 0) return Bridge;
             if (strcmp(str, "Crate") == 0) return Crate;
             if (strcmp(str, "Crossbow") == 0) return Crossbow;
             if (strcmp(str, "Crossbowbolt") == 0) return Crossbowbolt;
@@ -45,6 +58,7 @@ namespace Resources
             if (strcmp(str, "Ground") == 0) return Ground;
             if (strcmp(str, "Hammer") == 0) return Hammer;
             if (strcmp(str, "House1") == 0) return House1;
+            if (strcmp(str, "House1old") == 0) return House1old;
             if (strcmp(str, "House2") == 0) return House2;
             if (strcmp(str, "House3") == 0) return House3;
             if (strcmp(str, "Ice") == 0) return Ice;
@@ -53,7 +67,7 @@ namespace Resources
             if (strcmp(str, "Jump_Pad") == 0) return Jump_Pad;
             if (strcmp(str, "Lamp_Post") == 0) return Lamp_Post;
             if (strcmp(str, "Log") == 0) return Log;
-            if (strcmp(str, "Lower_Ground") == 0) return Lower_Ground;
+            if (strcmp(str, "Lower_Island") == 0) return Lower_Island;
             if (strcmp(str, "Market_Tent") == 0) return Market_Tent;
             if (strcmp(str, "MenuScene") == 0) return MenuScene;
             if (strcmp(str, "Rock1") == 0) return Rock1;
@@ -61,9 +75,12 @@ namespace Resources
             if (strcmp(str, "Rock3") == 0) return Rock3;
             if (strcmp(str, "SkySphere") == 0) return SkySphere;
             if (strcmp(str, "Small_Crate") == 0) return Small_Crate;
+            if (strcmp(str, "Snow") == 0) return Snow;
             if (strcmp(str, "SnowHeap") == 0) return SnowHeap;
+            if (strcmp(str, "Snow_Heap") == 0) return Snow_Heap;
             if (strcmp(str, "Staff") == 0) return Staff;
             if (strcmp(str, "StaticSummon") == 0) return StaticSummon;
+            if (strcmp(str, "Stone_Decoration") == 0) return Stone_Decoration;
             if (strcmp(str, "SummonUnitWithAnim") == 0) return SummonUnitWithAnim;
             if (strcmp(str, "Table") == 0) return Table;
             if (strcmp(str, "Tablet1") == 0) return Tablet1;
