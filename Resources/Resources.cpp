@@ -16,7 +16,15 @@ namespace Resources
         Files toEnum(const char * str)
         {
             if (strcmp(str, "StockMan_LvL") == 0) return StockMan_LvL;
-            if (strcmp(str, "Stock_Map_V1") == 0) return Stock_Map_V1;
+            if (strcmp(str, "Stock_Map") == 0) return Stock_Map;
+            if (strcmp(str, "Stock_Map_") == 0) return Stock_Map_;
+            if (strcmp(str, "Stock_Map_1222") == 0) return Stock_Map_1222;
+            if (strcmp(str, "Stock_Map_V1_Old") == 0) return Stock_Map_V1_Old;
+            if (strcmp(str, "Stock_Map_V1_V2_old") == 0) return Stock_Map_V1_V2_old;
+            if (strcmp(str, "Stock_Map_V1__") == 0) return Stock_Map_V1__;
+            if (strcmp(str, "Stock_Map_V1______") == 0) return Stock_Map_V1______;
+            if (strcmp(str, "Stock_Map_V4") == 0) return Stock_Map_V4;
+            if (strcmp(str, "Stock_Map_V5") == 0) return Stock_Map_V5;
             if (strcmp(str, "Test_Map") == 0) return Test_Map;
             throw "Could not find matching enum.";
         }
@@ -43,6 +51,7 @@ namespace Resources
             if (strcmp(str, "Firepit") == 0) return Firepit;
             if (strcmp(str, "GrapplingPoint") == 0) return GrapplingPoint;
             if (strcmp(str, "Grappling_Point") == 0) return Grappling_Point;
+            if (strcmp(str, "Grass1") == 0) return Grass1;
             if (strcmp(str, "Ground") == 0) return Ground;
             if (strcmp(str, "Hammer") == 0) return Hammer;
             if (strcmp(str, "House1") == 0) return House1;
@@ -63,9 +72,10 @@ namespace Resources
             if (strcmp(str, "Rock3") == 0) return Rock3;
             if (strcmp(str, "SkySphere") == 0) return SkySphere;
             if (strcmp(str, "Small_Crate") == 0) return Small_Crate;
-            if (strcmp(str, "Snow") == 0) return Snow;
             if (strcmp(str, "SnowHeap") == 0) return SnowHeap;
+            if (strcmp(str, "Snow_") == 0) return Snow_;
             if (strcmp(str, "Snow_Heap") == 0) return Snow_Heap;
+            if (strcmp(str, "Snow__") == 0) return Snow__;
             if (strcmp(str, "Staff") == 0) return Staff;
             if (strcmp(str, "StaticSummon") == 0) return StaticSummon;
             if (strcmp(str, "Stone_Decoration") == 0) return Stone_Decoration;
