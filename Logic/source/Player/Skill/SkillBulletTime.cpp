@@ -33,7 +33,8 @@ bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 	printf("Bullet Time used.\n");
 	m_sensor = SpawnProjectile(*m_pData, shooter.getPositionBT(), forward, shooter);
 
-    shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_BULLETTIME);
+    shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_BULLETTIME_HEART);
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::SKILL_BULLETTIME_TIME, nullptr, true);
 
     if (m_sensor)
     {
