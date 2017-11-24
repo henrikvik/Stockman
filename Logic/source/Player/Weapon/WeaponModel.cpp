@@ -4,7 +4,7 @@
 using namespace Logic;
 
 #define VERTICAL_POSITION_OFFSET_EASING 0.045f
-#define HEIGHT_POSITION_OFFSET_EASING   0.035f
+#define HEIGHT_POSITION_OFFSET_EASING   0.040f
 
 WeaponModel::WeaponModel() { }
 
