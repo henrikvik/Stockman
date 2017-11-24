@@ -28,6 +28,7 @@ Projectile::~Projectile() { }
 // \param statusManager - A statusManager filled with potential buffs & upgrades
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
+    lightRenderInfo = m_pData.lightInfo;
     getRigidBody()->setLinearVelocity(forward * m_pData.speed);
 
     btRigidBody* body = getRigidBody();
@@ -124,13 +125,15 @@ void Projectile::updateSpecific(float deltaTime)
     // Reset the bullet time modifier back to normal
     m_bulletTimeMod = 1.f;
 
-    // Updating transform matrix
+    // Updating transform matrix for both the light and the model
     renderInfo.transform = getModelTransformMatrix();
+    lightRenderInfo.position = DirectX::SimpleMath::Vector3(renderInfo.transform._41, renderInfo.transform._42, renderInfo.transform._43);
 
     if (m_pData.hasEffect && m_pData.effectActivated) {
         auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, renderInfo.transform);
         auto vel = body->getLinearVelocity();
-
+        lightRenderInfo.color = DirectX::SimpleMath::Color(1, 0.3, 0.1, 1); // SORRY, REMOVE THIS
+        lightRenderInfo.range = 6.f;                                        // SORRY, REMOVE THIS
         if (m_pData.effectVelocity) {
             Graphics::FXSystem->processEffect(&m_pData.effect, pos, {vel.x(), vel.y(), vel.z()}, deltaTime / 1000.f);
         }
@@ -311,7 +314,10 @@ void Logic::Projectile::setModelID(Resources::Models::Files modelId)
 void Logic::Projectile::render() const
 {
     if (m_pData.shouldRender)
+    {
         QueueRender(renderInfo);
+    }
+    QueueRender(lightRenderInfo);
 }
 
 ProjectileData& Projectile::getProjectileData()             { return m_pData;   }

@@ -75,6 +75,8 @@ SET_INSTANCE_CAP(NewDebugRenderInfo, 10000)
 
 struct LightRenderInfo : RenderInfo
 {
+    LightRenderInfo() : position(DirectX::SimpleMath::Vector3(0, 0, 0)), color(DirectX::SimpleMath::Color(1, 1, 1, 1)), intensity(1.f), range(3.f) { }
+    LightRenderInfo(DirectX::SimpleMath::Color inColor, float inIntensity, float inRange) : position(DirectX::SimpleMath::Vector3(0, 0, 0)), color(inColor), intensity(inIntensity), range(inRange) { }
 
     DirectX::SimpleMath::Vector3 position;
     DirectX::SimpleMath::Color color;
