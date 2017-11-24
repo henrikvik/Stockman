@@ -23,39 +23,18 @@ namespace Resources
     {
         enum Files
         {
-            Stock_Map,
-            Stock_Map_,
-            Stock_Map_V1__
+            StockMan_LvL,
+            Stock_Map_V1,
+            Test_Map
         };
         const std::map<Files, const char *> Paths =
         {
-            {Stock_Map, R"(..\Resources\Maps\Stock_Map.toml)"},
-            {Stock_Map_, R"(..\Resources\Maps\Stock_Map_.toml)"},
-            {Stock_Map_V1__, R"(..\Resources\Maps\Stock_Map_V1__.toml)"}
+            {StockMan_LvL, R"(..\Resources\Maps\StockMan_LvL.toml)"},
+            {Stock_Map_V1, R"(..\Resources\Maps\Stock_Map_V1.toml)"},
+            {Test_Map, R"(..\Resources\Maps\Test_Map.toml)"}
         };
         
         Files toEnum(const char * str);
-        namespace OLD
-        {
-            enum Files
-            {
-                StockMan_LvL,
-                Stock_Map_V1_Old,
-                Stock_Map_V1_V2_old,
-                Stock_Map_V1__,
-                Test_Map
-            };
-            const std::map<Files, const char *> Paths =
-            {
-                {StockMan_LvL, R"(..\Resources\Maps\OLD\StockMan_LvL.toml)"},
-                {Stock_Map_V1_Old, R"(..\Resources\Maps\OLD\Stock_Map_V1_Old.toml)"},
-                {Stock_Map_V1_V2_old, R"(..\Resources\Maps\OLD\Stock_Map_V1_V2_old.toml)"},
-                {Stock_Map_V1__, R"(..\Resources\Maps\OLD\Stock_Map_V1__.toml)"},
-                {Test_Map, R"(..\Resources\Maps\OLD\Test_Map.toml)"}
-            };
-            
-            Files toEnum(const char * str);
-        }
     }
     namespace Models
     {
@@ -189,6 +168,7 @@ namespace Resources
             GlowMerger,
             GlowMipCombinder,
             LightGridCulling,
+            Moon,
             SkyShader,
             SnowShader,
             SpriteShader,
@@ -216,6 +196,7 @@ namespace Resources
             {GlowMerger, R"(..\Resources\Shaders\GlowMerger.hlsl)"},
             {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
             {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
+            {Moon, R"(..\Resources\Shaders\Moon.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SnowShader, R"(..\Resources\Shaders\SnowShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
@@ -250,6 +231,7 @@ namespace Resources
             mainmenupicture,
             Mainmenutext,
             MissingTexture,
+            Moon_Thinking,
             Pausetext,
             randomNormals,
             Settings,
@@ -281,6 +263,7 @@ namespace Resources
             {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
+            {Moon_Thinking, R"(..\Resources\Textures\Moon_Thinking.png)"},
             {Pausetext, R"(..\Resources\Textures\Pausetext.dds)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {Settings, R"(..\Resources\Textures\Settings.dds)"},
