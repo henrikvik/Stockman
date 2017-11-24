@@ -34,6 +34,9 @@ iMenuMachine::iMenuMachine()
     m_factory = newd iMenuFactory;
     m_activeMenu = nullptr;
 
+    m_queuedMenuType = iMenu::MenuGroup::Empty;
+    m_currentMenuType = iMenu::MenuGroup::Empty;
+
     Action::Get().SetPointer(this);
 }
 

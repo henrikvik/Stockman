@@ -44,7 +44,7 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
     if (m_state == GrapplingHookStatePulling)
         return false;
 
-    shooter.getSoundSource()->playSFX(Sound::SFX::WEAPON_CUTLERY_SECONDARY);
+    shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_GRAPPLING);
 
     if (abs(forward.dot({ 0.f, 1.f, 0.f })) > GRAPPLING_HOOK_NON_HOOK_ANGLE)
     {
