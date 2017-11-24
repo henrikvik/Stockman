@@ -194,7 +194,20 @@ FloatRect Sprite::getTextureRect() const
     return sprite.textureRect;
 }
 
+void Sprite::setAlpha(float alpha)
+{
+    this->sprite.alpha = alpha;
+}
+
+float Sprite::getAlpha() const
+{
+    return this->sprite.alpha;
+}
+
 void Sprite::render() const
 {
-    QueueRender(sprite);
+    if (this->sprite.alpha > FLT_EPSILON)
+    {
+        QueueRender(sprite);
+    }
 }
