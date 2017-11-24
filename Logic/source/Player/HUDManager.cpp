@@ -172,12 +172,6 @@ void HUDManager::constructGUIElements()
     height = 148.0f / 1024;
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
-    //wave complete
-    //x = 0.1;
-    //y = 0.1;
-    //width = 0.9;
-    //height = 0.9;
-    //staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 0, 0, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ x, y }, { x + width, y + height })));
 
     staticElements.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -150, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 1.0f, false));
 }
