@@ -52,6 +52,8 @@ Targets PS(Fragment fragment)
         color = diffuseTexture.Sample(linearClamp, fragment.uv).xyz;
     }
 
+	clip(diffuseTexture.Sample(linearClamp, fragment.uv).a - 0.5);
+
     targets.color = float4(lightSum * color * fragment.color, 1); //500~
     targets.glow = glowTexture.Sample(linearClamp, fragment.uv); //300~
     targets.viewNormal = fragment.viewNormal; //300~

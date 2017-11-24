@@ -1,7 +1,7 @@
 {
 	"buttonName" : "MenuStartGame";
 	"texture" : 0;
-	"xPos" : 90.0f;
+	"xPos" : 115.0f;
 	"yPos" : 275.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.05f;
@@ -16,14 +16,14 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.620f;
     "activeOffset" : 0.470f;
-	"height" : 50.f;
-	"width" : 256.0f;
+	"height" : 25.f;
+	"width" : 200.0f;
 }
 {
 	"buttonName" : "MenuStartSettings";
 	"texture" : 0;
-	"xPos" : 90.0f;
-	"yPos" : 345.0f;
+	"xPos" : 115.0f;
+	"yPos" : 320.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.150f;
 	"xTexEnd" : 1.f;
@@ -37,14 +37,14 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.7425f;
     "activeOffset" : 0.4775f;
-	"height" : 50.f;
-	"width" : 256.0f;
+	"height" : 25.f;
+	"width" : 200.0f;
 }
 {
 	"buttonName" : "MenuStartHighscore";
 	"texture" : 0;
-	"xPos" : 90.0f;
-	"yPos" : 425.0f;
+	"xPos" : 115.0f;
+	"yPos" : 365.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.270f;
 	"xTexEnd" : 1.f;
@@ -58,14 +58,14 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.8725f;
     "activeOffset" : 0.4875f;
-	"height" : 50.f;
-	"width" : 256.0f;
+	"height" : 25.f;
+	"width" : 200.0f;
 }
 {
 	"buttonName" : "MenuQuitGame";
 	"texture" : 0;
-	"xPos" : 90.0f;
-	"yPos" : 495.0f;
+	"xPos" : 115.0f;
+	"yPos" : 410.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.390f;
 	"xTexEnd" : 1.f;
@@ -79,8 +79,8 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.9955f;
     "activeOffset" : 0.4905f;
-	"height" : 50.f;
-	"width" : 256.0f;
+	"height" : 25.f;
+	"width" : 200.0f;
 }
 {
 	"buttonName" : "MenuBackGame";

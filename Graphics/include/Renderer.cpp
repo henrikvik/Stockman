@@ -321,12 +321,20 @@ namespace Graphics
             return info;
         }(deltaTime));*/
 
+		QueueRender([]()
+		{
+			StaticRenderInfo info;
+			info.model = Resources::Models::UnitCube;
+			info.transform = SimpleMath::Matrix::CreateTranslation(0, -1, 0) * SimpleMath::Matrix::CreateScale(1000, 1, 1000);
+			info.useGridTexture = true;
+			return info;
+		}());
 
         QueueRender([]()
         {
             FoliageRenderInfo info;
-            info.model = Resources::Models::Necromancer;
-            info.transform = SimpleMath::Matrix::CreateTranslation(0, 1, -3);
+            info.model = Resources::Models::Grass;
+            info.transform = SimpleMath::Matrix::CreateTranslation(0, 0, -3);
             info.color = DirectX::SimpleMath::Vector3(1,1,1);
             info.useGridTexture = false;
             return info;
