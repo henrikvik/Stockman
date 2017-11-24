@@ -34,6 +34,8 @@ namespace Graphics
         Global::context->PSSetShaderResources(0, 4, resources.data());
         Global::context->PSSetShaderResources(4, 1, *TextureLoader::get().getTexture(Resources::Textures::Grid));
 
+        Global::context->RSSetState(Global::cStates->CullClockwise());
+
         Global::context->OMSetDepthStencilState(Global::cStates->DepthRead(), 0x0);
         Global::context->OMSetRenderTargets(targets.size(), targets.data(), depthStencil);
 
