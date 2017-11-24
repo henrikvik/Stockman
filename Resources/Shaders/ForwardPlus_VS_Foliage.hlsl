@@ -17,10 +17,10 @@ Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
     Vertex vertex = vertexBuffer[vertexId];
     StaticInstance instance = instanceBuffer[instanceId + instanceOffset];
 	Fragment fragment;
-
+    //keeep
 	float3 position = vertex.position;
-    float sx = sin(position.x + vertex.uv.x * 5 + grassTime * 0.018);
-    float sy = cos(position.y + pow(vertex.uv.y, 2) * 5 + grassTime * 0.018);
+    float sx = sin(position.x + vertex.uv.x * 5 + grassTime);
+    float sy = cos(position.y + pow(vertex.uv.y, 2) * 5 + grassTime);
 	position.x += 0.1 * sx *sy* position.y * 2;
 	position.z += 0.05 * sy*sx*sy * position.y * 2;
 

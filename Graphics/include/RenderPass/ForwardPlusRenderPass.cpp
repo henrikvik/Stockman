@@ -11,6 +11,7 @@ namespace Graphics
         , forward_plus_ps(Resources::Shaders::ForwardPlus_PS, ShaderType::PS)
         , forward_plus_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS)
         , forward_plus_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS)
+        , forward_plus_vs_foliage(Resources::Shaders::ForwardPlus_VS_Foliage, ShaderType::VS)
     {
     }
 
@@ -36,11 +37,18 @@ namespace Graphics
 
         Global::context->OMSetRenderTargets(targets.size(), targets.data(), depthStencil);
 
+        Global::context->RSSetState(Global::cStates->CullClockwise());
         Global::context->VSSetShader(forward_plus_vs_static, nullptr, 0);
         drawInstanced<StaticRenderInfo>(resources[4]);
 
         Global::context->VSSetShader(forward_plus_vs_animated, nullptr, 0);
         drawInstanced<AnimatedRenderInfo>(resources[5]);
+
+        Global::context->RSSetState(Global::cStates->CullNone());
+        Global::context->VSSetConstantBuffers(1, 1, &buffers[2]);
+        Global::context->VSSetShader(forward_plus_vs_foliage, nullptr, 0);
+        drawInstanced<FoliageRenderInfo>(resources[6]);
+
         
         Global::context->PSSetSamplers(0, 3, Global::nulls);
         Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);

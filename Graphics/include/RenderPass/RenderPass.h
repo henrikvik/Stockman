@@ -46,7 +46,6 @@ namespace Graphics
     void RenderPass::drawInstanced(ID3D11ShaderResourceView * instanceBuffer) const
     {
         Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        Global::context->RSSetState(Global::cStates->CullClockwise());
         Global::context->VSSetShaderResources(10, 1, &instanceBuffer);
 
         Global::context->VSSetConstantBuffers(10, 1, instanceOffsetBuffer);
