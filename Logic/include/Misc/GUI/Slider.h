@@ -58,7 +58,7 @@ namespace Logic
         FloatRect active;
         FloatRect hover;
         State state;
-        float m_y, m_height, m_width, m_min, m_max, m_minValue, m_maxValue, m_delimiter;
+        float m_y, m_height, m_width, m_min, m_max, m_minValue, m_maxValue, m_delimiter, m_tempValue;
 
         float* m_value;
 
