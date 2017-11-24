@@ -146,6 +146,8 @@ bool Enemy::hasCallbackEntities()
 
 void Enemy::damage(int damage)
 {
+    if (damage == 0) return;
+
 	m_health -= damage;
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
