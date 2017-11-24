@@ -73,6 +73,39 @@
 { // boss
 	"id": 2;
 	"effects": "";
+	"x": 47.f;
+	"y": 66.f;
+	"z": 0.f;
+}
+{ // Special
+	"enemies" : "4,4,4,4,4,4,4";
+	"triggers" : 0;
+	"bosses": 4;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 57.f;
+	"y": 66.f;
+	"z": 0.f;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 67.f;
+	"y": 66.f;
+	"z": 0.f;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 77.f;
+	"y": 66.f;
+	"z": 0.f;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
 	"x": 77.f;
 	"y": 66.f;
 	"z": 0.f;
