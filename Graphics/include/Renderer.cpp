@@ -64,7 +64,7 @@ namespace Graphics
 
         , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
         , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
-        , sun(),
+        , sun(shadowMap),
 #pragma endregion
         DebugAnnotation(nullptr)
 
@@ -208,7 +208,7 @@ namespace Graphics
                     lightOpaqueGridUAV
                 }
             ),
-            newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil),
+            newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil, &sun),
             newd ForwardPlusRenderPass(
                 {
                     fakeBuffers,
@@ -226,7 +226,8 @@ namespace Graphics
                 },
                 {
                     *Global::mainCamera->getBuffer(),
-                    *sun.getGlobalLightBuffer()
+                    *sun.getGlobalLightBuffer(),
+                    *sun.getLightMatrixBuffer()
                 },
                 depthStencil
             ),
@@ -335,9 +336,9 @@ namespace Graphics
 
         for (auto & renderPass : renderPasses)
         {
-        //    if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
+            if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
               renderPass->render();
-       //     if (DebugAnnotation) DebugAnnotation->EndEvent();
+            if (DebugAnnotation) DebugAnnotation->EndEvent();
         }
     }
 

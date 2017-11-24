@@ -61,7 +61,11 @@ iMenu * iMenuFactory::buildMenuSettings()
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
     Settings& setting = Settings::getInstance();
-    menu->addSlider(buildSlider("MenuTest", setting.getFOVPTR(), 90.0f, 180.0f, 1.0f));
+    menu->addSlider(buildSlider("MouseSlider", setting.getMouseSensePTR(), 0.01f, 0.5f, 0.01f));
+    menu->addSlider(buildSlider("MasterSlider", setting.getMasterSoundPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("MusicSlider", setting.getMusicPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("SFXSlider", setting.getSFXPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("FOVSlider", setting.getFOVPTR(), 90.0f, 180.0f, 1.0f));
 
     //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
     //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
