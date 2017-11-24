@@ -35,7 +35,7 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager, btVe
     {
         m_timeCurrent += deltaTime;
 
-
+        //ohhhboy this is stupid
         if (!m_delay && m_spawn)
         {
             entityManager.deallocateData(false);
