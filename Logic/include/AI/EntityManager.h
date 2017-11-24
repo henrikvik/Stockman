@@ -35,7 +35,7 @@ namespace Logic
 
     public:
         enum AIType {
-            NORMAL_MODE, NO_AI_MODE, HARDCORE, DARK_SOULS
+            NORMAL_MODE, NO_AI_MODE, HARDCORE
         };
 	private:
 		static const int NR_OF_THREADS, ENEMY_CAP;
