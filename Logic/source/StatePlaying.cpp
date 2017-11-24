@@ -187,7 +187,7 @@ void StatePlaying::update(float deltaTime)
     PROFILE_END();
 
     PROFILE_BEGIN("HUD");
-    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
+    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
     PROFILE_END();
 
 #define _DEBUG

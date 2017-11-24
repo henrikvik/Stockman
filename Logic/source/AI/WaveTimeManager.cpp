@@ -22,6 +22,7 @@ void WaveTimeManager::reset()
 
     m_onLastWave = false;
     m_enraged = false;
+    m_firstWave = true;
 
     startTransition();
 }
@@ -65,6 +66,8 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager, btVe
                         m_onTransition = true;
 
                         startTransition();
+                        if (m_firstWave)
+                             m_firstWave = false;
 
                         return true;
                     }
@@ -109,6 +112,11 @@ bool WaveTimeManager::isEnraged() const
 bool WaveTimeManager::isTransitioning() const
 {
     return m_onTransition;
+}
+
+bool Logic::WaveTimeManager::getFirstWave() const
+{
+    return m_firstWave;
 }
 
 void WaveTimeManager::startTransition()

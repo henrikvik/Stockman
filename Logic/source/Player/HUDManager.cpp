@@ -32,6 +32,7 @@ HUDManager::HUDManager()
 
     skillChoosen = false;
     constructGUIElements();
+    showWaveCleared = false;
 }
 
 HUDManager::~HUDManager()
@@ -177,6 +178,8 @@ void HUDManager::constructGUIElements()
     //width = 0.9;
     //height = 0.9;
     //staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 0, 0, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ x, y }, { x + width, y + height })));
+
+    staticElements.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -150, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 1.0f, false));
 }
 
 void HUDManager::updateTextElements()
@@ -438,6 +441,7 @@ void HUDManager::updateGUIElemets()
             skillMasks.at(1).setTexturePos(x, y, x + width, y + height);
         }
     }
+   
 }
 
 void HUDManager::renderTextElements() const
@@ -449,7 +453,7 @@ void HUDManager::renderTextElements() const
 }
 
 void HUDManager::update(Player const &player, WaveTimeManager const &timeManager,
-    EntityManager const &entityManager)
+    EntityManager const &entityManager, float dt)
 {
     //updates hudInfo with the current info
     info.score = ComboMachine::Get().getTotalScore();
@@ -503,6 +507,19 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
 
     this->updateGUIElemets();
     this->updateTextElements();
+
+    this->showWaveCleared = timeManager.isTransitioning();
+    static float alpha = 0.0f;
+    if (showWaveCleared && timeManager.getFirstWave() == false)
+    {
+        alpha += dt * 0.002f;
+       staticElements.at(staticElements.size()-1).setAlpha(alpha);
+    }
+    else
+    {
+        alpha = 0.0f;
+        staticElements.at(staticElements.size()- 1).setAlpha(alpha);
+    }
 }
 
 void HUDManager::render() const

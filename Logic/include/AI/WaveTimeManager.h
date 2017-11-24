@@ -14,7 +14,7 @@ namespace Logic
         float m_timeRequired;
 
         int m_waveCurrent;
-        bool m_onLastWave, m_enraged, m_onTransition;
+        bool m_onLastWave, m_enraged, m_onTransition, m_firstWave;
     public:
         WaveTimeManager();
         virtual ~WaveTimeManager();
@@ -32,6 +32,7 @@ namespace Logic
         bool onLastWave() const;
         bool isEnraged() const;
         bool isTransitioning() const;
+        bool getFirstWave() const;
     };
 };
 
