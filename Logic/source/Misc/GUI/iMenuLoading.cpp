@@ -71,6 +71,7 @@ iMenuLoadingPost::~iMenuLoadingPost() { }
 // Overwritten, to avoid the actual fade-in of this screen
 void iMenuLoadingPost::fadeIn()
 {
+    m_queingNext    = false;
     m_isFading      = false;
     m_safeToRemove  = false;
     setAlpha(1.f);
@@ -101,8 +102,11 @@ void iMenuLoadingPost::update(int x, int y, float deltaTime)
     m_textRenderInfo.color = DirectX::SimpleMath::Color(alpha, alpha, alpha, alpha);
 
     // Press space to continue into the game
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Space))
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Space) && !m_queingNext)
+    {
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Skill);
+        m_queingNext = true;
+    }
 }
 
 void iMenuLoadingPost::render() const
