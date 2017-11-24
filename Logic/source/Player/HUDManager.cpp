@@ -567,6 +567,7 @@ void HUDManager::reset()
     info.scoreMul = 0;
 
     skillChoosen = false;
+    
     HUDElements.clear();
     skillList.clear();
     HPBar.clear();

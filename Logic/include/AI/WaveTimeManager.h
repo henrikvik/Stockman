@@ -14,7 +14,7 @@ namespace Logic
         float m_timeRequired;
 
         int m_waveCurrent;
-        bool m_onLastWave, m_enraged, m_onTransition, m_firstWave;
+        bool m_onLastWave, m_enraged, m_onTransition, m_firstWave, m_delay, m_spawn;
     public:
         WaveTimeManager();
         virtual ~WaveTimeManager();

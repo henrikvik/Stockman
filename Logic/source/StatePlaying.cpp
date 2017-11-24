@@ -154,13 +154,12 @@ void StatePlaying::update(float deltaTime)
                 fultAF.restart = true;
                 QueueRender(fultAF);
                 wasTransitioning = false;
-               
+
             }
             frst = false;
             wasTransitioning = false;
         }
     }
-
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());

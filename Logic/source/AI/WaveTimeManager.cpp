@@ -23,6 +23,7 @@ void WaveTimeManager::reset()
     m_onLastWave = false;
     m_enraged = false;
     m_firstWave = true;
+    m_delay = false;
 
     startTransition();
 }
@@ -34,23 +35,34 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager, btVe
     {
         m_timeCurrent += deltaTime;
 
+
+        if (!m_delay && m_spawn)
+        {
+            entityManager.deallocateData(false);
+            entityManager.spawnWave(m_waveCurrent -1 , playerPos);
+            m_spawn = false;
+        }
+        else
+            m_delay = false;
+
         if (m_onTransition) 
         {
             if (m_timeCurrent > m_timeRequired)
             {
-                entityManager.deallocateData(false);
-                entityManager.spawnWave(m_waveCurrent, playerPos);
 
+                m_spawn = true;
                 m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent++);
                 m_timeCurrent = 0;
 
                 // If the player have completed all the waves
                 if (m_waveCurrent == entityManager.getWaveManager().getWaveInformation().nrOfWaves)
                     m_onLastWave = true;
-
+                
                 m_onTransition = false;
+                
             }
-        }
+
+        }   
         else
         {
             if (entityManager.getNrOfAliveEnemies() == 0 || m_timeCurrent > m_timeRequired)
@@ -69,9 +81,11 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager, btVe
                         if (m_firstWave)
                              m_firstWave = false;
 
+                        m_delay = true;
                         return true;
                     }
                 }
+                
             }
         }
     }
