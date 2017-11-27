@@ -270,8 +270,6 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
             {
                 Entity* shooterEntity = &shooter;
                 attack(attackMode, position, yaw, pitch, *shooterEntity);
-
-                Sound::NoiseMachine::Get().playSFX(Sound::SFX::WEAPON_CUTLERY_PRIMARY, nullptr, true);
             }
         }
         else

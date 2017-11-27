@@ -60,6 +60,7 @@ void EnemyNecromancer::createAbilities()
 			pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
 				if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
 				{
+                    pj->getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
 					Enemy *e = SpawnEnemy(EnemyType::NECROMANCER_MINION, data.caller->getPositionBT(), {});
 					if (e)
 					{

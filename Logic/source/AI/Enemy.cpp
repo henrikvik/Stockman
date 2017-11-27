@@ -45,6 +45,11 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
         m_blinkTimer = 100.0f;
         getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
     });
+
+    addCallback(ON_DEATH, [&](CallbackData &data)
+    {
+        getSoundSource()->playSFX(Sound::SFX::ENEMY_DEATH, 1.f, 0.25f);
+    });
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
