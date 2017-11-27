@@ -1,7 +1,6 @@
 #include <AI\EnemyNecromancer.h>
 #include <AI\Behavior\RangedBehavior.h>
 #include <Misc\RandomGenerator.h>
-#include <Projectile\Projectile.h>
 #include <Misc\ComboMachine.h>
 
 using namespace Logic;
@@ -39,10 +38,11 @@ EnemyNecromancer::~EnemyNecromancer()
 
 void EnemyNecromancer::createAbilities()
 {
+    // AB 1: Summon necromancer
     AbilityData data;
-    data.cooldown = 800.f;
+    data.cooldown = 1300.f;
     data.duration = 0.f;
-    data.randomChanche = 0;
+    data.randomChanche = 10;
 
     static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
     ProjectileData pdata;
@@ -53,7 +53,7 @@ void EnemyNecromancer::createAbilities()
 
     auto onTick = [&](Player &player, Ability &ab) -> void {};
 
-    auto onUse1 = [=](Player &player, Ability &ab) -> void {
+    auto onUse = [=](Player &player, Ability &ab) -> void {
         Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), pdata, (float)SPEED_AB2, 2.5f, 0.6f);
 		if (pj)
 		{
@@ -79,15 +79,41 @@ void EnemyNecromancer::createAbilities()
 		}
     };
 
-    ab1 = Ability(data, onTick, onUse1);
+    ab1 = Ability(data, onTick, onUse);
     
-    data.cooldown = 700.f;
-    data.randomChanche = 7;
+    // AB 2: Ice Lance
+    data.duration = 5000.f;
+    data.cooldown = 7000.f;
+    data.randomChanche = 5;
+
+    ab2ProjData.meshID = Resources::Models::Ammocrystal;
+    ab2ProjData.speed = 1.f;
+    ab2ProjData.gravityModifier = 0.f;
+    ab2ProjData.enemyBullet = true;
+    ab2ProjData.damage = getBaseDamage();
+    ab2ProjData.scale = 1.5f;
+
     auto onUse2 = [&](Player &player, Ability &ab) -> void {
-        shoot((player.getPositionBT() - getPositionBT()).normalize(), Resources::Models::UnitCube, (float)SPEED_AB1, 0.02f, 0.2f);
+        increaseCallbackEntities();
+        ab2Projectile = SpawnProjectile(ab2ProjData, getPositionBT(), { 0.f, 0.f, 0.f }, *this);
+
+        if (!ab2Projectile) ab.cancel();
+        ab2Projectile->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+            ab.cancel();
+            decreaseCallbackEntities();
+        });
+    };
+    auto onTick2 = [&](Player &player, Ability &ab) -> void {
+        ab2Projectile->getRigidBody()->getWorldTransform().setOrigin(getPositionBT() +
+            btVector3(2.5f, 7.f, 0.f) * btScalar((1.02f - (ab.getCurrentDuration() / ab.getData().duration))));
+
+        if (ab.getCurrentDuration() <= 0.f)
+        {
+            ab2Projectile->start((player.getPositionBT() - getPositionBT()).normalized(), getStatusManager());
+        }
     };
 
-    ab2 = Ability(data, onTick, onUse2);
+    ab2 = Ability(data, onTick2, onUse2);
 }
 
 void EnemyNecromancer::clear()
@@ -128,6 +154,6 @@ void EnemyNecromancer::updateDead(float deltaTime)
 
 void EnemyNecromancer::useAbility(Player &target)
 {
-    ab1.useAbility(target);
+    if (m_spawnedMinions < MAX_SPAWNED_MINIONS) ab1.useAbility(target);
     ab2.useAbility(target);
 }
