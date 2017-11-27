@@ -207,7 +207,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // **Ice**
     // #######
     /* Primary */       wl.weapon[0] = newd Weapon(projectileManager,
-                                    ProjectileData("Icecone", true, false, 1, 3, 1, 30, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false),
+                                    ProjectileData("Icecone", true, false, 0, 3, 1, 30, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false),
                                     Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1,{ -0.6f, 0.25f, -1.3f } });
     /* Secondary */     wl.weapon[1] = newd WeaponFreezeGrenade(projectileManager,
                                     ProjectileData("NecroProjTrail", false, true, 0, 1.f, 1, 50, 5.f, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade, false, false, false),

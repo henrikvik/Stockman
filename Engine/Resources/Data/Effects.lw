@@ -14,10 +14,19 @@
     "mSkillCDDecrease" : 0f;
 }
 { // FREEZE
-	"flags": 4; // 0x4
+	"flags": 262148; // 0x4 + 0x40000
 	"duration": 5000f;
-	"modifiers": 0;
+	"modifiers": 1;
 	"specifics": 1;
+
+	"mDmgGiven": 0f;
+	"mDmgTaken": 5f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 
 	"sBulletTime": 0f;
 	"sFreezing": 0.80f;
