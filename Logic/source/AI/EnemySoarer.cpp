@@ -8,7 +8,7 @@ const int EnemySoarer::HEALTH = 400, EnemySoarer::DAMAGE = 1, EnemySoarer::SCORE
 const float EnemySoarer::SPEED = 22.5f,
             EnemySoarer::STEERING_MOD = 1.35f,
             EnemySoarer::AB1_SPEED = 25.f,
-            EnemySoarer::AB1_SCALE = 6.5f,
+            EnemySoarer::AB1_SCALE = 8.f,
             EnemySoarer::AB1_GRAVITY = 6.f,
             EnemySoarer::HEIGHT_OFFSET = 20.f;
 

@@ -4,6 +4,8 @@
 using namespace Logic;
 
 const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 55.f;
+const float EnemyTotem::AB_SCALE = 8.5f, EnemyTotem::AB_ROTATION = 0.25f;
+
 const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 550, EnemyTotem::SCORE = 50;
 const int EnemyTotem::BULLET_AMOUNT = 10;
 
@@ -47,10 +49,13 @@ void EnemyTotem::createAbilities()
         pData.hasEffect = true;
         pData.effectVelocity = false;
         pData.effectActivated = true;
-        m_rotation += 0.25f;
+        m_rotation += AB_ROTATION;
 
         for (int i = 0; i < BULLET_AMOUNT; i++)
-            shoot(btVector3(std::sin((i + m_rotation) * piece), 0.f, std::cos((i + m_rotation) * piece)), pData, BULLET_SPEED, 0.f, 8.5f);
+        {
+            shoot(btVector3(std::sin((i + m_rotation) * piece), 0.f,
+                std::cos((i + m_rotation) * piece)), pData, BULLET_SPEED, 0.f, AB_SCALE);
+        }
     });
 }
 
