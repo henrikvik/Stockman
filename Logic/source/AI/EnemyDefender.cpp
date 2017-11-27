@@ -3,8 +3,8 @@
 #include <Projectile\Projectile.h>
 using namespace Logic;
 
-const float EnemyDefender::BASE_SPEED = 6.5f;
-const float EnemyDefender::MELEE_DISTANCE = 25.f,
+const float EnemyDefender::BASE_SPEED = 9.f;
+const float EnemyDefender::MELEE_DISTANCE = 35.f,
             EnemyDefender::PROJECTILE_SPEED = 115.f;
 
 const int   EnemyDefender::BASE_DAMAGE = 1,
@@ -77,7 +77,7 @@ void EnemyDefender::createAbilities()
         if ((player.getPositionBT() - getPositionBT()).length() <= MELEE_DISTANCE &&
             ab.getCurrentDuration() <= 0.f)
         {
-            player.takeDamage(1);
+            player.takeDamage(getBaseDamage());
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
 
