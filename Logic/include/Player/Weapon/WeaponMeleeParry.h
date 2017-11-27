@@ -21,7 +21,3 @@ namespace Logic
 }
 
 #endif // !WEAPONMELEEPARRY_H
-
-
-
-

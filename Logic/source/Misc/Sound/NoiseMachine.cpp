@@ -123,7 +123,6 @@ void NoiseMachine::update(ListenerData& listener)
     {
         printf("Sound error: %s\n", ex.what());
     }
-
 }
 
 // Stop all channels in each group
@@ -258,6 +257,8 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
     ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_PRESS, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_press.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::PICKUP, CHANNEL_GROUP::CHANNEL_SFX, "pickup.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::START_GAME, CHANNEL_GROUP::CHANNEL_SFX, "start.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_DEATH, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Death.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_HIT, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Hit.ogg", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the sfx
     int count = 0;
