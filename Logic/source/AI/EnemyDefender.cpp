@@ -3,19 +3,21 @@
 #include <Projectile\Projectile.h>
 using namespace Logic;
 
-const float EnemyDefender::BASE_SPEED = 4.5f;
-const float EnemyDefender::MELEE_DISTANCE = 9.f,
+const float EnemyDefender::BASE_SPEED = 6.5f;
+const float EnemyDefender::MELEE_DISTANCE = 25.f,
             EnemyDefender::PROJECTILE_SPEED = 115.f;
 
 const int   EnemyDefender::BASE_DAMAGE = 1,
             EnemyDefender::MAX_HP = 50,
             EnemyDefender::SCORE = 75,
-            EnemyDefender::PROJECTILES = 10;
+            EnemyDefender::PROJECTILES = 20;
 
 EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP,
         BASE_DAMAGE, BASE_SPEED, EnemyType::BULLET_SPONGE, 0) {
     setBehavior(MELEE);
+
+    m_defenseTime = 0.f;
 
     light.color = DirectX::SimpleMath::Color(0.7f, 0.0f, 1.0f);
     light.intensity = 1.8f;
@@ -45,6 +47,7 @@ void EnemyDefender::onSpawn()
     pdata.meshID = Resources::Models::Ammocrystal;
     pdata.speed = PROJECTILE_SPEED;
     pdata.scale = 3.f;
+    pdata.isSensor = true;
 
     Projectile *pj;
     for (int i = 0; i < PROJECTILES; i++)
@@ -66,6 +69,19 @@ void EnemyDefender::onSpawn()
 
 void EnemyDefender::createAbilities()
 {
+    AbilityData data;
+    data.duration = 1250.f;
+    data.randomChanche = 0;
+    data.cooldown = 1500.f;
+    m_melee = Ability(data, [&](Player &player, Ability &ab) -> void { // ontick
+        if ((player.getPositionBT() - getPositionBT()).length() <= MELEE_DISTANCE &&
+            ab.getCurrentDuration() <= 0.f)
+        {
+            player.takeDamage(1);
+        }
+    }, [&](Player &player, Ability &ab) -> void { // on use
+
+    });
 }
 
 void EnemyDefender::clear()
@@ -92,9 +108,11 @@ void EnemyDefender::onCollision(PhysicsObject &other, btVector3 contactPoint, fl
                     (def->getPositionBT() - getPositionBT() + getRigidBody()->getLinearVelocity()).normalized(),
                     getStatusManager()
                 );
-                def->getProjectileData().ttl = 2500;
+                def->getProjectileData().ttl = 0;
                 m_projectiles.pop_back();
                 decreaseCallbackEntities();
+
+                pj->getRigidBody()->setLinearVelocity(- pj->getRigidBody()->getLinearVelocity());
             }
         }
     }
@@ -103,12 +121,16 @@ void EnemyDefender::onCollision(PhysicsObject &other, btVector3 contactPoint, fl
 void EnemyDefender::updateSpecific(Player &player, float deltaTime)
 {
     RandomGenerator &rng = RandomGenerator::singleton();
-    printf("Size: %d\n", m_projectiles.size());
-    for (auto *pj : m_projectiles)
+    m_defenseTime += deltaTime * 0.005f;
+
+    for (int i = 0; i < m_projectiles.size(); i++)
     {
-        pj->getRigidBody()->getWorldTransform().setOrigin(getPositionBT() +
-            btVector3(rng.getRandomFloat(-5.f, 5.f), rng.getRandomFloat(-getHalfExtent().y(), getHalfExtent().y()), rng.getRandomFloat(-5.f, 5.f))
-        );
+        m_projectiles[i]->getRigidBody()->getWorldTransform().setOrigin(getPositionBT() +
+        btVector3(
+            std::cos(m_defenseTime + i) * getHalfExtent().x() * 2,
+            (i - std::floor(PROJECTILES / 2)) * 0.8f,
+            std::sin(m_defenseTime + i) * getHalfExtent().z() * 2
+        ));
     }
 }
 
@@ -118,4 +140,6 @@ void EnemyDefender::updateDead(float deltaTime)
 
 void EnemyDefender::useAbility(Player &target)
 {
+    if ((target.getPositionBT() - getPositionBT()).length() <= MELEE_DISTANCE)
+        m_melee.useAbility(target);
 }

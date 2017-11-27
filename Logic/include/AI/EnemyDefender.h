@@ -12,7 +12,8 @@ namespace Logic
         Ability m_melee;
         std::vector<Projectile*> m_projectiles;
 
-        int m_spawnedMinions;
+        float m_defenseTime;
+
         static const float BASE_SPEED;
         static const int BASE_DAMAGE, MAX_HP, SCORE, PROJECTILES;
         static const float MELEE_DISTANCE, PROJECTILE_SPEED;
