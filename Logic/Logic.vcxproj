@@ -221,7 +221,6 @@
     <ClInclude Include="include\Misc\GUI\iMenuMachine.h" />
     <ClInclude Include="include\Misc\GUI\iMenuFactory.h" />
     <ClInclude Include="include\Misc\GUI\Sprite.h" />
-    <ClInclude Include="include\Misc\Error.h" />
     <ClInclude Include="include\Misc\NonCopyable.h" />
     <ClInclude Include="include\Player\HUDManager.h" />
     <ClInclude Include="include\Player\Weapon\AmmoContainer.h" />
@@ -242,7 +241,6 @@
     <ClInclude Include="include\Misc\FileLoader.h" />
     <ClInclude Include="include\Misc\GUI\Button.h" />
     <ClInclude Include="include\AI\EnemyTest.h" />
-    <ClInclude Include="include\Misc\HighScoreManager.h" />
     <ClInclude Include="include\Entity\Effect.h" />
     <ClInclude Include="include\AI\Enemy.h" />
     <ClInclude Include="include\AI\EntityManager.h" />
@@ -258,7 +256,6 @@
     </ClInclude>
     <ClInclude Include="include\Logic.h" />
     <ClInclude Include="include\Entity\Object.h" />
-    <ClInclude Include="include\Misc\Enums.h" />
     <ClInclude Include="include\Misc\MapStructs.h" />
     <ClInclude Include="include\Misc\RandomGenerator.h" />
     <ClInclude Include="include\Misc\RenderRegister.h" />
@@ -357,7 +354,6 @@
     <ClCompile Include="source\Misc\FileLoader.cpp" />
     <ClCompile Include="source\Misc\GUI\Button.cpp" />
     <ClCompile Include="source\AI\EnemyTest.cpp" />
-    <ClCompile Include="source\Misc\HighScoreManager.cpp" />
     <ClCompile Include="source\Entity\Effect.cpp" />
     <ClCompile Include="source\AI\Enemy.cpp" />
     <ClCompile Include="source\Map.cpp" />

@@ -53,6 +53,8 @@ namespace Logic
         std::vector<TextRenderInfo> HUDText;
         std::vector<std::wstring> liveText;
 
+        bool showWaveCleared;
+
         void constructGUIElements();
         void updateTextElements();
         void updateGUIElemets();
@@ -74,7 +76,7 @@ namespace Logic
         virtual ~HUDManager();
 
         void update(Player const &player, WaveTimeManager const &timeManager,
-            EntityManager const &manager);
+            EntityManager const &manager, float dt);
         void render() const;
         void reset();
     };

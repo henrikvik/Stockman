@@ -2,6 +2,7 @@
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
 #include <Projectile\Projectile.h>
+#include <Misc\RandomGenerator.h>
 
 using namespace Logic;
 

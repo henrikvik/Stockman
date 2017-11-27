@@ -130,20 +130,36 @@ void StatePlaying::update(float deltaTime)
 
 
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
+    //the spagetti is (expand)ing (dong)
+    static bool wasTransitioning = false;
+    static bool frst = true;
     if (m_menu->getType() != iMenu::MenuGroup::CardSelect)
-    if (m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT()))
     {
-        m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
-        m_cardManager->pickThreeCards(m_player->getHP() != 3);
-        m_projectileManager->removeEnemyProjCallbacks();
+        m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
+        if (m_waveTimeManager.isTransitioning())
+        {
+            wasTransitioning = true;
+        }
 
-        SpecialEffectRenderInfo fultAF;
-        fultAF.type = SpecialEffectRenderInfo::Snow;
-        fultAF.restart = true;
-        QueueRender(fultAF);
+        if (wasTransitioning == true && m_waveTimeManager.isTransitioning() == false)
+        {
+            if (!frst)
+            {
+                m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
+                m_cardManager->pickThreeCards(m_player->getHP() != 3);
+                m_projectileManager->removeEnemyProjCallbacks();
 
+                SpecialEffectRenderInfo fultAF;
+                fultAF.type = SpecialEffectRenderInfo::Snow;
+                fultAF.restart = true;
+                QueueRender(fultAF);
+                wasTransitioning = false;
+
+            }
+            frst = false;
+            wasTransitioning = false;
+        }
     }
-
 
     PROFILE_BEGIN("Sound");
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
@@ -170,7 +186,7 @@ void StatePlaying::update(float deltaTime)
     PROFILE_END();
 
     PROFILE_BEGIN("HUD");
-    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
+    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
     PROFILE_END();
 
 #define _DEBUG

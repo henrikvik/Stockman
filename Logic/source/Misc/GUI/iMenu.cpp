@@ -34,7 +34,6 @@ float getFadingTimer(iMenu::MenuGroup group)
     return DEFAULT_FADING_TIMER;
 }
 
-
 iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawSliders(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_fadingTimer(getFadingTimer(group)), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
 
 iMenu::~iMenu() { }

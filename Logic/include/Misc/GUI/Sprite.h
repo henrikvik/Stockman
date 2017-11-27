@@ -28,6 +28,8 @@ public:
     void setTopYToProcent(float procent, float yMax, float ymaxPos, float yminPos);
     FloatRect getScreenRect()const;
     FloatRect getTextureRect()const;
+    void setAlpha(float alpha);
+    float getAlpha()const;
     void render() const;
 private:
     SpriteRenderInfo sprite;

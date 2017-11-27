@@ -191,10 +191,10 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // **Crossbow**
     // ############
     /* Primary */       wl.weapon[0] = newd WeaponCrossbow(projectileManager,
-                                    ProjectileData("Icecone", false, true, 25, 1.f, 1, 100, 0.f, 3000, Resources::Models::Crossbowbolt, 1),
+                                    ProjectileData("Icecone", false, true, 25, 1.5f, 1, 90, 0.10f, 3000, LightRenderInfo(DirectX::SimpleMath::Color(1, 0.8, 1, 1), .25f, 3.f), Resources::Models::Crossbowbolt, 1),
                                     Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0,{ -0.5f, -0.5f, 0.f } });
     /* Secondary */     wl.weapon[1] = newd WeaponCrossbow(projectileManager,
-                                    ProjectileData("Icecone", false, true, 25, 1.f, 1, 100, 0.f, 1000, Resources::Models::Crossbowbolt, 1),
+                                    ProjectileData("Icecone", false, true, 15, 1.5f, 1, 70, 0.10f, 1500, LightRenderInfo(DirectX::SimpleMath::Color(0.9, 0.5, 1, 1), .25f, 1.5f), Resources::Models::Crossbowbolt, 1),
                                     Weapon::WeaponInfo{ 1, 18, 15, 4, 100, 0, 0,{ 0.f, 0.f, 0.f } });
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30,{ 1, 5 },{ 1, 5 }, 1000 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{
@@ -207,12 +207,12 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // **Ice**
     // #######
     /* Primary */       wl.weapon[0] = newd Weapon(projectileManager,
-                                    ProjectileData("Icecone", true, false, 1, 3, 1, 30, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false),
+                                    ProjectileData("Icecone", true, false, 1, 3, 1, 30, 0, 675, LightRenderInfo(DirectX::SimpleMath::Color(1, 1, 1, 0.05), .05f, 8.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false),
                                     Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1,{ -0.6f, 0.25f, -1.3f } });
     /* Secondary */     wl.weapon[1] = newd WeaponFreezeGrenade(projectileManager,
-                                    ProjectileData(nullptr, false, false, 40, 1.f, 1, 100, 0, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade),
+                                    ProjectileData(nullptr, false, false, 50, 1.f, 1, 100, 0, 5000, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.25f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade),
                                     Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0,{ -0.8f, 0.2f, 0.f } },
-                                    ProjectileData(nullptr, false, false, 25, 0.5f, 1, 10, 5, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard), 8);
+                                    ProjectileData(nullptr, false, false, 75, 0.5f, 1, 100, 10, 5000, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.05f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard), 8);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 300, 0, 100, 100,{ 1, 0 },{ 0, 25 }, 1500 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.f),
@@ -224,10 +224,10 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // **Melee**
     // #########
     /* Primary */       wl.weapon[0] = newd Weapon(projectileManager,
-                                    ProjectileData(nullptr, false, false, 35, 8.f, 1, 0, 0, 0, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false),
-                                    Weapon::WeaponInfo{ 4, 1, 0, 0, 400, 200, 0,{ 0.f, 0.f, 0.f } });
+                                    ProjectileData(nullptr, false, false, 250, 15.f, 1, 0, 0, 100, LightRenderInfo(DirectX::SimpleMath::Color(0.85, 0.3, 0.4, 1), 0.85f, 10.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false),
+                                    Weapon::WeaponInfo{ 4, 1, 0, 0, 100, 200, 0,{ 0.f, 0.f, 0.f } });
     /* Secondary */     wl.weapon[1] = newd WeaponMeleeParry(projectileManager,
-                                    ProjectileData(nullptr, false, false, 0, 8.f, 1, 0, 0, 200, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, true),
+                                    ProjectileData(nullptr, false, false, 0, 12.5f, 1, 0, 0, 500, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.8, 0.6, 1), 0.85f, 15.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, false),
                                     Weapon::WeaponInfo{ 5, 1, 0, 0, 50, 0, 0,{ 0.f, 0.f, 0.f } }, 8.f);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0,{ 0, 0 },{ 0, 0 }, 0 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Hammer, WeaponModel::WeaponModelAnimationInfo{
