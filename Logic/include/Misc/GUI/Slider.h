@@ -70,6 +70,9 @@ namespace Logic
         int m_activeOffset;
         bool m_highlighted;
         float m_animationTime;
+
+        std::wstring m_textInput;
+        TextRenderInfo m_textRenderInfo;
     };
 }
 #pragma endregion

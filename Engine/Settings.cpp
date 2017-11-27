@@ -43,6 +43,10 @@ void Settings::readFromFile()
 		{
 			m_masterSound = theSettings.floats.at("Value");
 		}
+        else if (theSettings.strings.at("Name").compare("Ambience") == 0)
+        {
+            m_ambience = theSettings.floats.at("Value");
+        }
 		else if (theSettings.strings.at("Name").compare("SFX") == 0)
 		{
 			m_SFX = theSettings.floats.at("Value");
@@ -84,6 +88,10 @@ void Settings::writeToFile()
 	tempSave.strings["Name"] = "MasterSound";
 	tempSave.floats["Value"] = m_masterSound;
 	saveTo.push_back(tempSave);
+
+    tempSave.strings["Name"] = "Ambience";
+    tempSave.floats["Value"] = m_ambience;
+    saveTo.push_back(tempSave);
 
 	tempSave.strings["Name"] = "SFX";
 	tempSave.floats["Value"] = m_SFX;
@@ -144,6 +152,21 @@ float Settings::getMasterSound()
 void Settings::setMasterSound(float masterSound)
 {
 	m_masterSound = masterSound;
+}
+
+float * Settings::getAmbiencePTR()
+{
+    return &m_ambience;
+}
+
+float Settings::getAmbience()
+{
+    return m_ambience;
+}
+
+void Settings::setAmbience(float ambience)
+{
+    m_ambience = ambience;
 }
 
 float* Settings::getSFXPTR()

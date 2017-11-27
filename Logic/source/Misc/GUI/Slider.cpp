@@ -30,14 +30,15 @@ Slider::Slider(
     m_minValue = minValue;
     m_maxValue = maxValue;
     m_delimiter = 1 / delimiter;
-    m_tempValue = 0;
+    m_value = value;
+    m_tempValue = *m_value;
 
     m_value = value;
     float X = x;
-    X = (((*m_value - m_minValue) / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min - (m_width * 0.5f);
+    X = (((*m_value - m_minValue) / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min;
 
     FloatRect screenRect = {
-        X  / WIN_WIDTH,
+        (X - (m_width * 0.5f)) / WIN_WIDTH,
         y / WIN_HEIGHT,
         width / WIN_WIDTH,
         height / WIN_HEIGHT
@@ -48,6 +49,27 @@ Slider::Slider(
     renderInfo.screenRect = screenRect;
     renderInfo.textureRect = inactive;
     renderInfo.alpha = 1;
+
+    m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+    m_textRenderInfo.font = Resources::Fonts::KG18;
+    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(X - (m_width * 0.05f), m_y - (m_height * 0.55f));
+
+    if (m_name.compare("FOVSlider") == 0)
+    {
+        int test = *m_value;
+        m_textInput = std::to_wstring(test);
+    }
+    else if (m_name.compare("MouseSlider") == 0)
+    {
+        int test = m_tempValue * 100;
+        m_textInput = std::to_wstring(test);
+    }
+    else
+    {
+        int test = m_tempValue * 100;
+        m_textInput = std::to_wstring(test) + (const wchar_t*)L" %";
+    }
+    m_textRenderInfo.text = m_textInput.c_str();
 }
 
 Slider::~Slider()
@@ -97,6 +119,25 @@ void Slider::updateOnPress(int posX, int posY)
 
              
              renderInfo.screenRect = screenRect;
+             m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+             m_textRenderInfo.font = Resources::Fonts::KG18;
+             m_textRenderInfo.position = DirectX::SimpleMath::Vector2(posx - (m_width * 0.05f), int(m_y - (m_height * 0.55f)));
+             if (m_name.compare("FOVSlider") == 0)
+             {
+                 int test = m_tempValue;
+                 m_textInput = std::to_wstring(test);
+             }
+             else if (m_name.compare("MouseSlider") == 0)
+             {
+                 int test = m_tempValue * 100;
+                 m_textInput = std::to_wstring(test);
+             }
+             else
+             {
+                 int test = m_tempValue * 100;
+                 m_textInput = std::to_wstring(test) + (const wchar_t*)L" %";
+             }
+             m_textRenderInfo.text = m_textInput.c_str();
         }
     }
     else
@@ -123,6 +164,10 @@ void Logic::Slider::updateOnRelease(int posX, int posY)
         else if (m_name.compare("MusicSlider") == 0)
         {
             Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MUSIC, m_tempValue);
+        }
+        else if (m_name.compare("AmbienceSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_AMBIENT, m_tempValue);
         }
         else if (m_name.compare("SFXSlider") == 0)
         {
@@ -183,4 +228,5 @@ void Slider::setUVS(FloatRect newUVs)
 void Slider::render() const
 {
     QueueRender(renderInfo);
+    QueueRender(m_textRenderInfo);
 }
