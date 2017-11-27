@@ -36,7 +36,7 @@ void EnemyTotem::createAbilities()
     AbilityData data;
     data.duration = 0.f;
     data.cooldown = 650.f;
-    data.randomChanche = 7;
+    data.randomChanche = 4;
 
     spreadShot = Ability(data, [&](Player &target, Ability &ab) -> void {
 
