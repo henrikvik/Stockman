@@ -1,5 +1,5 @@
 {
-	"nrOfWaves": 10;
+	"nrOfWaves": 11;
 	"startWave": 0;
 	"timeMul": 1000f;
 	"timeBonus": 20000f;
@@ -12,7 +12,7 @@
 	"triggers" : 0;
 }
 { // 1
-	"enemies" : "3,3,3,3,3,2,2,2,2,2";
+	"enemies" : "3,3,3,3,3,3,4,4,4,4,4,4,0,0";
 	"triggers" : 0;
 	"bosses": 0;
 }
