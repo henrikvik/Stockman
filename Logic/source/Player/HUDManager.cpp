@@ -207,8 +207,6 @@ void HUDManager::updateTextElements()
         text.position = DirectX::SimpleMath::Vector2(1115, 530);
         text.font = Resources::Fonts::KG18;
 
-
-
         HUDText.push_back(TextRenderInfo(text));
     }
     

@@ -34,6 +34,8 @@ namespace Logic
             bool useAbility(Player &player, bool forceUse = false);
             bool canUseAbility() const;
 
+            void cancel();
+
             float getCurrentCooldown() const;
             float getCurrentDuration() const;
             bool isUsingAbility() const;

@@ -27,12 +27,13 @@
 
 using namespace Logic;
 
-#define FILE_ABOUT_WHALES "Enemies/Wave"
-
 const btVector3 EntityManager::MIN_SPAWN = { -300, 10, -300 },
                 EntityManager::MAX_SPAWN = {  300, 25,  300 };
+const std::string EntityManager::WAVE_FILES[MODES] = { "Enemies/Wave", "Enemies/Wave", "Enemies/WavesHeroic"};
+
 const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 65;
 const float EntityManager::INVALID_LENGTH = 100.f;
+
 int EntityManager::PATH_UPDATE_DIV = 25;
 
 EntityManager::EntityManager()
@@ -48,7 +49,7 @@ EntityManager::EntityManager()
     registerCreationFunctions();
     loadDebugCmds();
 
-    m_waveManager.setName(FILE_ABOUT_WHALES);
+    m_waveManager.setName(WAVE_FILES[m_aiType]);
     m_waveManager.loadFile();
 }
 
@@ -85,6 +86,18 @@ void EntityManager::registerCreationFunctions()
         Graphics::FXSystem->addEffect("NecroSummonBoom", { pos.x(), pos.y(), pos.z() });
 
         Enemy* enemy = newd EnemyChaser(body);
+
+        return enemy;
+    };
+    m_enemyFactory[EnemyType::BULLET_SPONGE] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
+    {
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 2.f, 6.f, 2.f } * btScalar(scale)));
+        btRigidBody *body = physics.createBody(cube, 100, false,
+            Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        body->setAngularFactor(btVector3(0, 1, 0));
+
+        Enemy* enemy = newd EnemyChaser(body);
+        enemy->setHalfExtent({ 2.f, 6.f, 2.f });
 
         return enemy;
     };
@@ -151,16 +164,22 @@ void EntityManager::allocateData()
 
 void EntityManager::loadDebugCmds()
 {
-#ifdef _DEBUG
     DebugWindow::getInstance()->registerCommand("AI_SETMODE", [&](std::vector<std::string> &para) -> std::string {
         try {
+            int mode = stoi(para[0]);
+            if (mode >= MODES) throw "rip";
+
             m_aiType = static_cast<AIType> (stoi(para[0]));
+
+            m_waveManager.setName(WAVE_FILES[m_aiType]);
+            m_waveManager.loadFile();
+
             return "AI Mode Updated";
         } catch (std::exception e) {
             return "No, Chaos is a ladder.";
         }
     });
-#endif
+
     DebugWindow::getInstance()->registerCommand("AI_AUTOMATIC_TESTING", [&](std::vector<std::string> &para) -> std::string {
         m_automaticTesting = true;
         PATH_UPDATE_DIV = 1;

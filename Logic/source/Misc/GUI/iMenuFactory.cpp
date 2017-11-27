@@ -86,7 +86,7 @@ iMenu * iMenuFactory::buildMenuSettings()
 iMenuSkillPick* iMenuFactory::buildMenuSkill()
 {
     iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
-
+   
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
     menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
@@ -109,7 +109,7 @@ iMenu * iMenuFactory::buildMenuCard()
 
 iMenu * iMenuFactory::buildMenuGameWon()
 {
-    iMenu* menu = newd iMenuCards(iMenu::GameWon);
+    iMenu* menu = newd iMenu(iMenu::GameWon);
 
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
@@ -225,6 +225,7 @@ iMenu::SliderData iMenuFactory::buildSlider(std::string name, float* value, floa
         if (slider.strings.find("sliderName") != slider.strings.end() &&
             slider.strings.at("sliderName") == name)
         {
+            sld.name = name;
             sld.screenRect.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("xPos") / WIN_WIDTH, slider.floats.at("yPos") / WIN_WIDTH);
             sld.screenRect.bottomRight = DirectX::SimpleMath::Vector2((slider.floats.at("width") + slider.floats.at("xPos")) / WIN_WIDTH, (slider.floats.at("height") + slider.floats.at("yPos")) / WIN_WIDTH);
             sld.texRectNormal.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("xTexStart"), slider.floats.at("yTexStart"));
