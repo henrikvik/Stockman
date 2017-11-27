@@ -16,8 +16,8 @@ EnemyChaser::EnemyChaser(btRigidBody* body)
     getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
     getSoundSource()->autoPlaySFX(Sound::SFX::FOOTSTEP_SMALL, 150, 75, 1.f, 0.10f);
     loadAnimation(Resources::Models::Files::SummonUnitWithAnim);
-    light.color = DirectX::SimpleMath::Color(0.0f, 0.7f, 1.0f);
-    light.intensity = 0.6f;
+    //light.color = DirectX::SimpleMath::Color(0.0f, 0.7f, 1.0f);
+   // light.intensity = 0.6f;
 }
 
 EnemyChaser::~EnemyChaser()
