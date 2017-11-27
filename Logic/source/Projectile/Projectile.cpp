@@ -119,6 +119,10 @@ void Projectile::updateSpecific(float deltaTime)
     // rotate model offset
     m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
 
+    // Damage fall-off, based on ttl
+    if (m_pData.dmgFallOff)
+        m_pData.damage -= m_pData.damage * (deltaTime / m_pData.ttl);
+
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;
 
