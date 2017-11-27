@@ -4,6 +4,7 @@
 #include <AI\Enemy.h>
 #include <Player\Player.h>
 #include <AI\Abilities\Ability.h>
+#include <Projectile\Projectile.h>
 
 namespace Logic
 {
@@ -11,6 +12,9 @@ namespace Logic
 	{
 		private:
             Ability ab1, ab2;
+
+            Projectile *ab2Projectile;
+            ProjectileData ab2ProjData;
 
             int m_spawnedMinions;
             static const float BASE_SPEED;

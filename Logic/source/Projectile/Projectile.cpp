@@ -119,8 +119,15 @@ void Projectile::updateSpecific(float deltaTime)
     // rotate model offset
     m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
 
+    // Damage fall-off, based on ttl
+    if (m_pData.dmgFallOff)
+        m_pData.damage -= m_pData.damage * (deltaTime / m_pData.ttl);
+
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;
+
+    if (m_pData.ttl < 0.f && m_pData.type != ProjectileTypeFreezeExplosion)
+        m_dead = true;
 
     // Reset the bullet time modifier back to normal
     m_bulletTimeMod = 1.f;
@@ -214,14 +221,9 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
             );
         }
         break;
-
-    // These should not get removed on enemy contact
-    case ProjectileTypeBulletTimeSensor:
-        break;
-    case ProjectileTypeMelee:
+    case ProjectileTypeFreezeExplosion:
         callback = true;
         break;
-
     case ProjectileTypeFireArrow:
         callback = true;
         kill = true;
@@ -229,6 +231,12 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
             /* Adding Fire effect */            StatusManager::ON_FIRE,
             /* Number of stacks */              getStatusManager().getUpgradeStacks(StatusManager::FIRE_UPGRADE)
         );
+        break;
+    // These should not get removed on enemy contact
+    case ProjectileTypeBulletTimeSensor:
+        break;
+    case ProjectileTypeMelee:
+        callback = true;
         break;
     // Trigger all callbacks on other projectiles
     //  And kill them off

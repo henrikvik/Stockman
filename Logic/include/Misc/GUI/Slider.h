@@ -24,6 +24,7 @@ namespace Logic
         enum State { ACTIVE, INACTIVE, HOVER };
 
         Slider(
+            std::string name,
             float x, float y,
             float width, float height,
             Resources::Textures::Files texture,
@@ -58,6 +59,7 @@ namespace Logic
         FloatRect active;
         FloatRect hover;
         State state;
+        std::string m_name;
         float m_y, m_height, m_width, m_min, m_max, m_minValue, m_maxValue, m_delimiter, m_tempValue;
 
         float* m_value;
@@ -68,6 +70,9 @@ namespace Logic
         int m_activeOffset;
         bool m_highlighted;
         float m_animationTime;
+
+        std::wstring m_textInput;
+        TextRenderInfo m_textRenderInfo;
     };
 }
 #pragma endregion

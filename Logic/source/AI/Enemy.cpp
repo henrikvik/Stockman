@@ -181,6 +181,17 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
             m_fireTimer -= 1000.0f;
         }
     }
+    if (flags & Effect::EFFECT_FREEZE_DMG)
+    {
+        m_fireTimer += dt;
+
+        if (m_fireTimer >= 1000.0f)
+        {
+            damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+
+            m_fireTimer -= 1000.0f;
+        }
+    }
     if (flags & Effect::EFFECT_KILL)
         damage(m_health);
 	if (flags & Effect::EFFECT_BULLET_TIME)
