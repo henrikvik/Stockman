@@ -14,7 +14,7 @@ const int   EnemyDefender::BASE_DAMAGE = 1,
 
 EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP,
-        BASE_DAMAGE, BASE_SPEED, EnemyType::BULLET_SPONGE, 0) {
+        BASE_DAMAGE, BASE_SPEED, EnemyType::DEFENDER, 0) {
     setBehavior(MELEE);
 
     m_defenseTime = 0.f;
