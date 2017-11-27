@@ -146,6 +146,7 @@ bool Enemy::hasCallbackEntities()
 
 void Enemy::damage(int damage)
 {
+    printf("dmg: %d\n", damage);
     if (damage == 0) return;
 
 	m_health -= damage;

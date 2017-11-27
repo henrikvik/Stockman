@@ -194,7 +194,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     ProjectileData("Icecone", false, true, 25, 1.5f, 1, 90, 0.10f, 3000, LightRenderInfo(DirectX::SimpleMath::Color(1, 0.8, 1, 1), .25f, 3.f), Resources::Models::Crossbowbolt, 1),
                                     Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0,{ -0.5f, -0.5f, 0.f } });
     /* Secondary */     wl.weapon[1] = newd WeaponCrossbow(projectileManager,
-                                    ProjectileData("Icecone", false, true, 25, 1.5f, 1, 70, 0.10f, 2000, LightRenderInfo(DirectX::SimpleMath::Color(0.9, 0.5, 1, 1), .25f, 1.5f), Resources::Models::Crossbowbolt, 1, ProjectileType::ProjectileTypeNormal, false, false, true, true),
+                                    ProjectileData("Icecone", false, true, 20, 1.5f, 1, 70, 0.10f, 1500, LightRenderInfo(DirectX::SimpleMath::Color(0.9, 0.5, 1, 1), .25f, 1.5f), Resources::Models::Crossbowbolt, 1, ProjectileType::ProjectileTypeNormal, false, false, true, true),
                                     Weapon::WeaponInfo{ 1, 18, 15, 4, 50, 0, 0,{ -0.5f, -0.5f, 0.f } });
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30,{ 1, 10 },{ 1, 10 }, 1000 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{
@@ -211,7 +211,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1,{ -0.6f, 0.25f, -1.3f } });
     /* Secondary */     wl.weapon[1] = newd WeaponFreezeGrenade(projectileManager,
                                     ProjectileData("NecroProjTrail", false, true, 0, 1.f, 1, 50, 5.f, 5000, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.25f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade, false, false, false),
-                                    Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0,{ -0.8f, 0.2f, 0.f } },
+                                    Weapon::WeaponInfo{ 3, 1, 0, 0, 30, 0, 0,{ -0.8f, 0.2f, 0.f } },
                                     ProjectileData("NecroProjTrail", false, true, 0, 1.f, 1, 10, 5.f, 5000, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.05f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard, false, false, false),
                                     ProjectileData(nullptr, false, false, 100, 25, 1, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.05f, 5.f), Resources::Models::UnitCube, 1, ProjectileTypeFreezeExplosion, true, false, false),
                                     8);
