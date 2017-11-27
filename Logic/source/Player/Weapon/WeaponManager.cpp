@@ -194,9 +194,9 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     ProjectileData("Icecone", false, true, 25, 1.5f, 1, 90, 0.10f, 3000, LightRenderInfo(DirectX::SimpleMath::Color(1, 0.8, 1, 1), .25f, 3.f), Resources::Models::Crossbowbolt, 1),
                                     Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0,{ -0.5f, -0.5f, 0.f } });
     /* Secondary */     wl.weapon[1] = newd WeaponCrossbow(projectileManager,
-                                    ProjectileData("Icecone", false, true, 15, 1.5f, 1, 70, 0.10f, 1500, LightRenderInfo(DirectX::SimpleMath::Color(0.9, 0.5, 1, 1), .25f, 1.5f), Resources::Models::Crossbowbolt, 1),
-                                    Weapon::WeaponInfo{ 1, 18, 15, 4, 100, 0, 0,{ 0.f, 0.f, 0.f } });
-    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30,{ 1, 5 },{ 1, 5 }, 1000 });
+                                    ProjectileData("Icecone", false, true, 20, 1.5f, 1, 70, 0.10f, 1500, LightRenderInfo(DirectX::SimpleMath::Color(0.9, 0.5, 1, 1), .25f, 1.5f), Resources::Models::Crossbowbolt, 1, ProjectileType::ProjectileTypeNormal, false, false, true, true),
+                                    Weapon::WeaponInfo{ 1, 18, 15, 4, 50, 0, 0,{ -0.5f, -0.5f, 0.f } });
+    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30,{ 1, 10 },{ 1, 10 }, 1000 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -0.8f, 0.3f)),
@@ -207,13 +207,15 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // **Ice**
     // #######
     /* Primary */       wl.weapon[0] = newd Weapon(projectileManager,
-                                    ProjectileData("Icecone", true, false, 1, 3, 1, 30, 0, 675, LightRenderInfo(DirectX::SimpleMath::Color(1, 1, 1, 0.05), .05f, 8.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false),
+                                    ProjectileData("Icecone", true, false, 0, 3, 1, 30, 0, 675, LightRenderInfo(DirectX::SimpleMath::Color(1, 1, 1, 0.05), .05f, 8.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false),
                                     Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1,{ -0.6f, 0.25f, -1.3f } });
     /* Secondary */     wl.weapon[1] = newd WeaponFreezeGrenade(projectileManager,
-                                    ProjectileData(nullptr, false, false, 50, 1.f, 1, 100, 0, 5000, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.25f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade),
-                                    Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0,{ -0.8f, 0.2f, 0.f } },
-                                    ProjectileData(nullptr, false, false, 75, 0.5f, 1, 100, 10, 5000, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.05f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard), 8);
-    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 300, 0, 100, 100,{ 1, 0 },{ 0, 25 }, 1500 });
+                                    ProjectileData("NecroProjTrail", false, true, 0, 1.f, 1, 50, 5.f, 5000, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.25f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade, false, false, false),
+                                    Weapon::WeaponInfo{ 3, 1, 0, 0, 30, 0, 0,{ -0.8f, 0.2f, 0.f } },
+                                    ProjectileData("NecroProjTrail", false, true, 0, 1.f, 1, 10, 5.f, 5000, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.05f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard, false, false, false),
+                                    ProjectileData(nullptr, false, false, 100, 25, 1, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.05f, 5.f), Resources::Models::UnitCube, 1, ProjectileTypeFreezeExplosion, true, false, false),
+                                    8);
+    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 300, 0, 100, 100,{ 1, 25 },{ 1, 25 }, 1500 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -2.3f, 0.3f)),
@@ -283,11 +285,9 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
 
 void WeaponManager::attack(int attackMode, btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-    if (m_currentWeapon->weapon[attackMode]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(attackMode)))
-    {
-        m_currentWeapon->weapon[attackMode]->use(position, yaw, pitch, shooter);
-        m_attackRateTimer = m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier);
-    }
+    m_currentWeapon->weapon[attackMode]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(attackMode));
+    m_currentWeapon->weapon[attackMode]->use(position, yaw, pitch, shooter);
+    m_attackRateTimer = m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier);
 }
 
 void WeaponManager::reloadWeapon()
