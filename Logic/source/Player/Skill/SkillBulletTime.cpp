@@ -6,7 +6,7 @@
 
 using namespace Logic;
 
-#define BULLET_TIME_CD 15000.f
+#define BULLET_TIME_CD 13500.f
 #define BULLET_TIME_SMOOTHNESS_INTERVAL 20
 #define BULLET_TIME_SLOW_DOWN_DURATION 1000.f
 #define BULLET_TIME_SPEED_UP_DURATION 1000.f
@@ -30,10 +30,10 @@ SkillBulletTime::~SkillBulletTime()
 
 bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
-	printf("Bullet Time used.\n");
 	m_sensor = SpawnProjectile(*m_pData, shooter.getPositionBT(), forward, shooter);
 
-    shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_BULLETTIME);
+    shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_BULLETTIME_HEART);
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::SKILL_BULLETTIME_TIME, nullptr, true);
 
     if (m_sensor)
     {

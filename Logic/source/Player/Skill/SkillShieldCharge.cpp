@@ -3,7 +3,7 @@
 #include <Engine\Settings.h>
 #include <Graphics\include\MainCamera.h>
 
-#define SHIELD_CHARGE_CD                        5000.f
+#define SHIELD_CHARGE_CD                        4250.f
 #define SLOWDOWN_DURATION                       150.f
 #define SHIELD_CHARGE_DURATION                  500.f
 #define SHIELD_CHARGE_FOV_INCREASE_SPEED        0.002f

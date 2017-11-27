@@ -1,8 +1,11 @@
 #include <Misc\GUI\Slider.h>
 #include <Misc\Sound\NoiseMachine.h>
+#include <Graphics\include\MainCamera.h>
+#include <Misc\Sound\NoiseMachine.h>
 using namespace Logic;
 
 Slider::Slider(
+    std::string name,
     float x, float y, 
     float width, float height, 
     Resources::Textures::Files texture, 
@@ -16,6 +19,7 @@ Slider::Slider(
     float maxValue,
     float delimiter) : inactive(inactive), active(active), hover(active)
 {
+    m_name = name;
     m_animationStart = DirectX::SimpleMath::Vector2(0, 0);
     m_animationEnd = DirectX::SimpleMath::Vector2(0, 0);
     m_y = y;
@@ -25,7 +29,8 @@ Slider::Slider(
     m_max = max;
     m_minValue = minValue;
     m_maxValue = maxValue;
-    m_delimiter = delimiter;
+    m_delimiter = 1 / delimiter;
+    m_tempValue = 0;
 
     m_value = value;
     float X = x;
@@ -72,25 +77,17 @@ void Slider::updateOnPress(int posX, int posY)
                 posx = m_max;
             }
 
-            *m_value = (m_maxValue - m_minValue) * ((posx - m_min) / (m_max - m_min));
+            m_tempValue = (m_maxValue - m_minValue) * ((posx - m_min) / (m_max - m_min));
 
-            if (m_delimiter == 1.0f)
-            {
-                float flooredFinalValue = floorf(*m_value);
+            float flooredFinalValue = floorf(m_delimiter * m_tempValue + 0.5f) / m_delimiter;
+           
+            posx = ((flooredFinalValue / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min;
+           
+            m_tempValue = flooredFinalValue;
 
-                if (*m_value - flooredFinalValue >= 0.5f)
-                {
-                    flooredFinalValue++;
-                }
+            m_tempValue += m_minValue;
 
-                posx = ((flooredFinalValue / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min;
-
-                *m_value = flooredFinalValue;
-            }
-
-            *m_value += m_minValue;
-
-             FloatRect screenRect = {
+            FloatRect screenRect = {
                  (posx - (m_width * 0.5f)) / WIN_WIDTH,
                  m_y / WIN_HEIGHT,
                  m_width / WIN_WIDTH,
@@ -112,7 +109,25 @@ void Logic::Slider::updateOnRelease(int posX, int posY)
 {
     if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
     {
+        *m_value = m_tempValue;
         setState(Slider::INACTIVE);
+
+        if (m_name.compare("FOVSlider") == 0)
+        {
+            Global::mainCamera->updateFOV(m_tempValue);
+        }
+        else if (m_name.compare("MasterSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MASTER, m_tempValue);
+        }
+        else if (m_name.compare("MusicSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MUSIC, m_tempValue);
+        }
+        else if (m_name.compare("SFXSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_SFX, m_tempValue);
+        }
     }
 }
 

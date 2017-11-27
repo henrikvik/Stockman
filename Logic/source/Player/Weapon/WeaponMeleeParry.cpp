@@ -20,6 +20,8 @@ WeaponMeleeParry::~WeaponMeleeParry()
 
 void WeaponMeleeParry::onUse(std::vector<Projectile*>& projectiles, Entity& shooter)
 {
+    shooter.getSoundSource()->playSFX(Sound::SFX::WEAPON_MELEE_SECONDARY);
+
     static btVector3 pPosition;
     for (Projectile* p : projectiles)
     {

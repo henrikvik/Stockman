@@ -61,7 +61,11 @@ iMenu * iMenuFactory::buildMenuSettings()
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
     Settings& setting = Settings::getInstance();
-    menu->addSlider(buildSlider("MenuTest", setting.getFOVPTR(), 90.0f, 180.0f, 1.0f));
+    menu->addSlider(buildSlider("MouseSlider", setting.getMouseSensePTR(), 0.01f, 0.5f, 0.01f));
+    menu->addSlider(buildSlider("MasterSlider", setting.getMasterSoundPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("MusicSlider", setting.getMusicPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("SFXSlider", setting.getSFXPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("FOVSlider", setting.getFOVPTR(), 90.0f, 180.0f, 1.0f));
 
     //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
     //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
@@ -82,7 +86,7 @@ iMenu * iMenuFactory::buildMenuSettings()
 iMenuSkillPick* iMenuFactory::buildMenuSkill()
 {
     iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
-
+   
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
     menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
@@ -105,7 +109,7 @@ iMenu * iMenuFactory::buildMenuCard()
 
 iMenu * iMenuFactory::buildMenuGameWon()
 {
-    iMenu* menu = newd iMenuCards(iMenu::GameWon);
+    iMenu* menu = newd iMenu(iMenu::GameWon);
 
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
@@ -221,6 +225,7 @@ iMenu::SliderData iMenuFactory::buildSlider(std::string name, float* value, floa
         if (slider.strings.find("sliderName") != slider.strings.end() &&
             slider.strings.at("sliderName") == name)
         {
+            sld.name = name;
             sld.screenRect.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("xPos") / WIN_WIDTH, slider.floats.at("yPos") / WIN_WIDTH);
             sld.screenRect.bottomRight = DirectX::SimpleMath::Vector2((slider.floats.at("width") + slider.floats.at("xPos")) / WIN_WIDTH, (slider.floats.at("height") + slider.floats.at("yPos")) / WIN_WIDTH);
             sld.texRectNormal.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("xTexStart"), slider.floats.at("yTexStart"));

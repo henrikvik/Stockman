@@ -34,7 +34,6 @@ float getFadingTimer(iMenu::MenuGroup group)
     return DEFAULT_FADING_TIMER;
 }
 
-
 iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawSliders(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_fadingTimer(getFadingTimer(group)), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
 
 iMenu::~iMenu() { }
@@ -83,7 +82,7 @@ void iMenu::addButton(ButtonData btn)
 
 void iMenu::addSlider(SliderData sld)
 {
-    Slider temp(sld.screenRect.topLeft.x * WIN_WIDTH, sld.screenRect.topLeft.y * WIN_WIDTH,
+    Slider temp(sld.name, sld.screenRect.topLeft.x * WIN_WIDTH, sld.screenRect.topLeft.y * WIN_WIDTH,
         (sld.screenRect.bottomRight.x - sld.screenRect.topLeft.x) * WIN_WIDTH,
         (sld.screenRect.bottomRight.y - sld.screenRect.topLeft.y) * WIN_WIDTH,
         sld.texture, sld.texRectNormal, sld.texRectHover, sld.texRectActive, sld.min, sld.max, sld.value, sld.minValue, sld.maxValue, sld.delimeter);

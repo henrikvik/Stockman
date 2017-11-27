@@ -6,6 +6,7 @@
 #define USE_GRID_TEXTURE
 
 cbuffer cb0 : register(b0) { Camera camera; };
+cbuffer LightBuffer : register(b2) { float4x4 LightProjection; };
 
 cbuffer cb10 : register(b10) { uint instanceOffset; };
 StructuredBuffer<StaticInstance> instanceBuffer : register(t10);
@@ -19,7 +20,8 @@ Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
 
     fragment.position    = mul(instance.world, float4(vertex.position, 1));
     fragment.ndcPosition = mul(camera.viewProjection, fragment.position);
-    
+    fragment.lightPos    = mul(LightProjection, fragment.position);
+
     fragment.normal     = normalize(mul(instance.world, float4(vertex.normal,   0))).xyz;
     fragment.binormal   = normalize(mul(instance.world, float4(vertex.binormal, 0))).xyz;
     fragment.tangent    = normalize(mul(instance.world, float4(vertex.tangent,  0))).xyz;
