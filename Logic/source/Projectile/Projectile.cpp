@@ -217,7 +217,9 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
 
     // These should not get removed on enemy contact
     case ProjectileTypeBulletTimeSensor:
+        break;
     case ProjectileTypeMelee:
+        callback = true;
         break;
 
     case ProjectileTypeFireArrow:
