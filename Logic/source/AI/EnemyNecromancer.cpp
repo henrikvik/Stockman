@@ -57,7 +57,7 @@ void EnemyNecromancer::createAbilities()
         Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), pdata, (float)SPEED_AB2, 2.5f, 0.6f);
 		if (pj)
 		{
-			pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+			pj->addCallback(ON_COLLISION, [=](CallbackData &data) -> void {
 				if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
 				{
                     pj->getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
