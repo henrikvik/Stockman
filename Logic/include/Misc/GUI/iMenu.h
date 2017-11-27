@@ -47,6 +47,7 @@ namespace Logic
 
         struct SliderData
         {
+            std::string                 name;
             FloatRect                   screenRect;     // Where the button should be drawn
             FloatRect                   texRectNormal;  // The texture-coordinates on the button-map
             FloatRect                   texRectHover;   // The texture-coordinates on the button-map

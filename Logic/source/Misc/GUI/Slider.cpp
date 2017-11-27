@@ -1,8 +1,11 @@
 #include <Misc\GUI\Slider.h>
 #include <Misc\Sound\NoiseMachine.h>
+#include <Graphics\include\MainCamera.h>
+#include <Misc\Sound\NoiseMachine.h>
 using namespace Logic;
 
 Slider::Slider(
+    std::string name,
     float x, float y, 
     float width, float height, 
     Resources::Textures::Files texture, 
@@ -16,6 +19,7 @@ Slider::Slider(
     float maxValue,
     float delimiter) : inactive(inactive), active(active), hover(active)
 {
+    m_name = name;
     m_animationStart = DirectX::SimpleMath::Vector2(0, 0);
     m_animationEnd = DirectX::SimpleMath::Vector2(0, 0);
     m_y = y;
@@ -107,6 +111,23 @@ void Logic::Slider::updateOnRelease(int posX, int posY)
     {
         *m_value = m_tempValue;
         setState(Slider::INACTIVE);
+
+        if (m_name.compare("FOVSlider") == 0)
+        {
+            Global::mainCamera->updateFOV(m_tempValue);
+        }
+        else if (m_name.compare("MasterSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MASTER, m_tempValue);
+        }
+        else if (m_name.compare("MusicSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MUSIC, m_tempValue);
+        }
+        else if (m_name.compare("SFXSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_SFX, m_tempValue);
+        }
     }
 }
 
