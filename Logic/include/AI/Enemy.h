@@ -67,6 +67,8 @@ namespace Logic
 			virtual void updateDead(float deltaTime) = 0;
 			virtual void updateSpecific(Player &player, float deltaTime) = 0;
 
+            virtual void onSpawn() {};
+
 			virtual void affect(int stacks, Effect const &effect, float dt);
             void onEffectEnd(int stacks, Effect const &effect);
 

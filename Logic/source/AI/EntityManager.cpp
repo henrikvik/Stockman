@@ -7,6 +7,7 @@
 #include <AI\EnemySoarer.h>
 #include <AI\EnemyChaser.h>
 #include <AI\EnemyTotem.h>
+#include <AI\EnemyDefender.h>
 #include <Misc\ComboMachine.h>
 
 #include <Player\Player.h>
@@ -91,13 +92,12 @@ void EntityManager::registerCreationFunctions()
     };
     m_enemyFactory[EnemyType::BULLET_SPONGE] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 2.f, 6.f, 2.f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.3f, 3.f, 1.3f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
-        Enemy* enemy = newd EnemyChaser(body);
-        enemy->setHalfExtent({ 2.f, 6.f, 2.f });
+        Enemy* enemy = newd EnemyDefender(body, cube.getDimensionsRef());
 
         return enemy;
     };
@@ -394,6 +394,7 @@ Enemy* EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
     {
         Enemy *enemy = m_enemyFactory[id](pos, 1.f, effects, physics);
         enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
+        enemy->onSpawn();
 
         int index = AStar::singleton().getIndex(*enemy);
         m_enemies[index == -1 ? 0 : index].push_back(enemy);

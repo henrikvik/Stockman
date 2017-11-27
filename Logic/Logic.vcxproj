@@ -201,6 +201,7 @@
     <ClInclude Include="include\AI\Abilities\Ability.h" />
     <ClInclude Include="include\AI\Behavior\BigBadBehavior.h" />
     <ClInclude Include="include\AI\EnemyBossBaddie.h" />
+    <ClInclude Include="include\AI\EnemyDefender.h" />
     <ClInclude Include="include\AI\EnemySoarer.h" />
     <ClInclude Include="include\AI\EnemyTotem.h" />
     <ClInclude Include="include\Misc\Fader.h" />
@@ -311,6 +312,7 @@
     <ClCompile Include="source\AI\Behavior\BigBadBehavior.cpp" />
     <ClCompile Include="source\AI\Behavior\StayBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyBossBaddie.cpp" />
+    <ClCompile Include="source\AI\EnemyDefender.cpp" />
     <ClCompile Include="source\AI\EnemySoarer.cpp" />
     <ClCompile Include="source\AI\EnemyTotem.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />

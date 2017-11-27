@@ -3,22 +3,30 @@
 #include <Projectile\Projectile.h>
 using namespace Logic;
 
-const float EnemyDefender::BASE_SPEED = 5.f;
-const float EnemyDefender::MELEE_DISTANCE = 5.f;
+const float EnemyDefender::BASE_SPEED = 4.5f;
+const float EnemyDefender::MELEE_DISTANCE = 9.f,
+            EnemyDefender::PROJECTILE_SPEED = 115.f;
 
 const int   EnemyDefender::BASE_DAMAGE = 1,
             EnemyDefender::MAX_HP = 50,
             EnemyDefender::SCORE = 75,
-            EnemyDefender::PROJECTILES = 20;
+            EnemyDefender::PROJECTILES = 10;
 
 EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
-    : Enemy(Resources::Models::Barrel, body, halfExtent, MAX_HP,
-        BASE_DAMAGE, BASE_SPEED, EnemyType::BULLET_SPONGE, 0, btVector3()) {
+    : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP,
+        BASE_DAMAGE, BASE_SPEED, EnemyType::BULLET_SPONGE, 0) {
     setBehavior(MELEE);
-    init();
+
+    light.color = DirectX::SimpleMath::Color(0.7f, 0.0f, 1.0f);
+    light.intensity = 1.8f;
+    light.range = 20.0f;
 }
 
-void EnemyDefender::init()
+EnemyDefender::~EnemyDefender()
+{
+}
+
+void EnemyDefender::onSpawn()
 {
     m_projectiles.reserve(PROJECTILES);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
@@ -34,22 +42,26 @@ void EnemyDefender::init()
     pdata.damage = 0;
     pdata.enemyBullet = true;
     pdata.ttl = 999999; // is destroyed manually
+    pdata.meshID = Resources::Models::Ammocrystal;
+    pdata.speed = PROJECTILE_SPEED;
+    pdata.scale = 3.f;
 
     Projectile *pj;
-
     for (int i = 0; i < PROJECTILES; i++)
     {
-        pj = SpawnProjectile(pdata, getPositionBT() +
-            btVector3(rng.getRandomFloat(-5.f, 5.f), 0.f, 0.f), btVector3(), *this);
-        pj->addCallback(ON_COLLISION, [](CallbackData &data) -> void {
-            dynamic_cast<Projectile*> (data.caller)->setDead(true);
-        });
-        m_projectiles.push_back(pj);
-    }
-}
+        pj = SpawnProjectile(
+            pdata, getPositionBT() +
+            btVector3(rng.getRandomFloat(-5.f, 5.f), rng.getRandomFloat(-4.0f, 5.f), rng.getRandomFloat(-5.f, 5.f)),
+            btVector3(0.f, 0.f, 0.f),
+            *this
+        );
 
-EnemyDefender::~EnemyDefender()
-{
+        if (pj)
+        {
+            m_projectiles.push_back(pj);
+            increaseCallbackEntities();
+        }
+    }
 }
 
 void EnemyDefender::createAbilities()
@@ -60,22 +72,50 @@ void EnemyDefender::clear()
 {
 }
 
-void EnemyDefender::onCollision(PhysicsObject & other, btVector3 contactPoint, float dmgMultiplier)
+void EnemyDefender::onCollision(PhysicsObject &other, btVector3 contactPoint, float dmgMultiplier)
 {
+    if (Projectile *pj = dynamic_cast<Projectile*> (&other))
+    {
+        if (!pj->getProjectileData().enemyBullet)
+        {
+            if (m_projectiles.empty())
+            {
+                damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
+
+                if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
+                    getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
+            }
+            else
+            {
+                Projectile *def = m_projectiles[m_projectiles.size() - 1];
+                def->start(
+                    (def->getPositionBT() - getPositionBT() + getRigidBody()->getLinearVelocity()).normalized(),
+                    getStatusManager()
+                );
+                def->getProjectileData().ttl = 2500;
+                m_projectiles.pop_back();
+                decreaseCallbackEntities();
+            }
+        }
+    }
 }
 
-void EnemyDefender::onCollision(Player & other)
+void EnemyDefender::updateSpecific(Player &player, float deltaTime)
 {
-}
-
-void EnemyDefender::updateSpecific(Player & player, float deltaTime)
-{
+    RandomGenerator &rng = RandomGenerator::singleton();
+    printf("Size: %d\n", m_projectiles.size());
+    for (auto *pj : m_projectiles)
+    {
+        pj->getRigidBody()->getWorldTransform().setOrigin(getPositionBT() +
+            btVector3(rng.getRandomFloat(-5.f, 5.f), rng.getRandomFloat(-getHalfExtent().y(), getHalfExtent().y()), rng.getRandomFloat(-5.f, 5.f))
+        );
+    }
 }
 
 void EnemyDefender::updateDead(float deltaTime)
 {
 }
 
-void EnemyDefender::useAbility(Player & target)
+void EnemyDefender::useAbility(Player &target)
 {
 }
