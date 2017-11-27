@@ -254,8 +254,8 @@
 {
 	"buttonName" : "SkillPickButton1";
 	"texture" : 3;
-	"xPos" : 200.0f;
-	"yPos" : 200.0f;
+	"xPos" : 150.0f;
+	"yPos" : 280.0f;
 	"xTexStart" : 0.6471f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.94336f;
@@ -275,8 +275,8 @@
 {
 	"buttonName" : "SkillPickButton2";
 	"texture" : 3;
-	"xPos" : 570.f;
-	"yPos" : 200.0f;
+	"xPos" : 150.f;
+	"yPos" : 460.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.29557f;
@@ -296,8 +296,8 @@
 {
 	"buttonName" : "SkillPickButton3";
 	"texture" : 3;
-	"xPos" : 960.0f;
-	"yPos" : 200.0f;
+	"xPos" : 150.0f;
+	"yPos" : 150.0f;
 	"xTexStart" : 0.35872f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.61068ff;
@@ -317,7 +317,7 @@
 {
 	"buttonName" : "Continue";
 	"texture" : 3;
-	"xPos" : 450.f;
+	"xPos" : 800.f;
 	"yPos" : 550.0f;
 	"xTexStart" : 0.25391f;
 	"yTexStart" : 0.72f;
@@ -332,8 +332,8 @@
 	"activeXTexEnd" : 0.72005f;
 	"activeYTexEnd" : 0.97f;
 	"activeOffset" : 0.15f;
-	"height" : 100.f;
-	"width" : 400.f;
+	"height" : 50.f;
+	"width" : 250.f;
 }
 {
 	"buttonName" : "ReturnToMenu";
