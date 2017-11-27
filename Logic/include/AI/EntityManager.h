@@ -35,13 +35,16 @@ namespace Logic
 
     public:
         enum AIType {
-            NORMAL_MODE, NO_AI_MODE, HARDCORE, DARK_SOULS
+            NORMAL_MODE, NO_AI_MODE, HARDCORE, MODES
         };
 	private:
-		static const int NR_OF_THREADS, ENEMY_CAP;
-        static int       PATH_UPDATE_DIV;
-        static const btVector3 MIN_SPAWN, MAX_SPAWN; // position of min / max like a cube
+        static const btVector3   MIN_SPAWN, MAX_SPAWN; // position of min / max like a cube
+        static const std::string WAVE_FILES[MODES];
+
+		static const int       NR_OF_THREADS, ENEMY_CAP;
         static const float     INVALID_LENGTH;
+
+        static int             PATH_UPDATE_DIV;
 
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;

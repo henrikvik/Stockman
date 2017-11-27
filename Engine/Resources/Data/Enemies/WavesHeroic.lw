@@ -1,0 +1,112 @@
+{
+	"nrOfWaves": 10;
+	"startWave": 0;
+	"timeMul": 1000f;
+	"timeBonus": 20000f;
+	"bossTimeBonus": 30f;
+	"bossWaves": "9";
+}
+{ // 0
+	"enemies" : "0,0,0,0,0,0,0,0,3,3,3";
+	"bosses": 0;
+	"triggers" : 0;
+}
+{ // 1
+	"enemies" : "3,3,3,3,3,2,2,2,2,2";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 2
+	"enemies" : "0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 3
+	"enemies" : "0,0,0,0,0,0,0,0,0,0,0,0,0,0";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 4
+	"enemies" : "3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 5
+	"enemies" : "0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,4,4";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 6
+	"enemies" : "0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,4,4";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 7
+	"enemies" : "3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 8
+	"enemies" : "0,0,0,0,0,0,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4";
+	"triggers" : 0;
+	"bosses": 1;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 77.f;
+	"y": 66.f;
+	"z": 0.f;
+}
+{ // 9
+	"enemies" : "";
+	"triggers" : 0;
+	"bosses": 2;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 77.f;
+	"y": 66.f;
+	"z": 0.f;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 47.f;
+	"y": 66.f;
+	"z": 0.f;
+}
+{ // Special
+	"enemies" : "4,4,4,4,4,4,4";
+	"triggers" : 0;
+	"bosses": 4;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 57.f;
+	"y": 66.f;
+	"z": 0.f;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 67.f;
+	"y": 66.f;
+	"z": 0.f;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 77.f;
+	"y": 66.f;
+	"z": 0.f;
+}
+{ // boss
+	"id": 2;
+	"effects": "";
+	"x": 77.f;
+	"y": 66.f;
+	"z": 0.f;
+}
