@@ -89,6 +89,18 @@ void EntityManager::registerCreationFunctions()
 
         return enemy;
     };
+    m_enemyFactory[EnemyType::BULLET_SPONGE] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
+    {
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 2.f, 6.f, 2.f } * btScalar(scale)));
+        btRigidBody *body = physics.createBody(cube, 100, false,
+            Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        body->setAngularFactor(btVector3(0, 1, 0));
+
+        Enemy* enemy = newd EnemyChaser(body);
+        enemy->setHalfExtent({ 2.f, 6.f, 2.f });
+
+        return enemy;
+    };
     m_enemyFactory[EnemyType::BOSS_1] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
         Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.9f, 4.5f, 1.9f } * btScalar(scale)));
