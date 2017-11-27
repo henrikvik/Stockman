@@ -295,6 +295,9 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME)
 	    );
 	    break;
+    case ProjectileTypeMeleeParry:
+        m_dead = true;
+        break;
 	}
     
     // No callback should be added
