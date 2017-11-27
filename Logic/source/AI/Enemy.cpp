@@ -43,7 +43,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
     addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
         m_blinkTimer = 100.0f;
-        getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
+        getSoundSource()->playSFX(Sound::SFX::ENEMY_HIT, 1.f, 0.2f);
     });
 
     addCallback(ON_DEATH, [&](CallbackData &data)
