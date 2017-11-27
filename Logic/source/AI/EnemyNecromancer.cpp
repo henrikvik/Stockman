@@ -83,11 +83,12 @@ void EnemyNecromancer::createAbilities()
     
     // AB 2: Ice Lance
     data.duration = 5000.f;
-    data.cooldown = 7000.f;
+    data.cooldown = 6000.f;
     data.randomChanche = 5;
 
     ab2ProjData.meshID = Resources::Models::Ammocrystal;
-    ab2ProjData.speed = 1.f;
+    ab2ProjData.speed = 110.f;
+    ab2ProjData.ttl = 25000.f;
     ab2ProjData.gravityModifier = 0.f;
     ab2ProjData.enemyBullet = true;
     ab2ProjData.damage = getBaseDamage();
@@ -105,11 +106,11 @@ void EnemyNecromancer::createAbilities()
     };
     auto onTick2 = [&](Player &player, Ability &ab) -> void {
         ab2Projectile->getRigidBody()->getWorldTransform().setOrigin(getPositionBT() +
-            btVector3(2.5f, 7.f, 0.f) * btScalar((1.02f - (ab.getCurrentDuration() / ab.getData().duration))));
+            btVector3(2.5f, 4.f, 0.f) * btScalar((1.02f - (ab.getCurrentDuration() / ab.getData().duration))));
 
         if (ab.getCurrentDuration() <= 0.f)
         {
-            ab2Projectile->start((player.getPositionBT() - getPositionBT()).normalized(), getStatusManager());
+            ab2Projectile->start((player.getPositionBT() - ab2Projectile->getPositionBT()).normalized(), getStatusManager());
         }
     };
 
