@@ -195,8 +195,8 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0,{ -0.5f, -0.5f, 0.f } });
     /* Secondary */     wl.weapon[1] = newd WeaponCrossbow(projectileManager,
                                     ProjectileData("Icecone", false, true, 25, 1.5f, 1, 70, 0.10f, 2000, LightRenderInfo(DirectX::SimpleMath::Color(0.9, 0.5, 1, 1), .25f, 1.5f), Resources::Models::Crossbowbolt, 1, ProjectileType::ProjectileTypeNormal, false, false, true, true),
-                                    Weapon::WeaponInfo{ 1, 18, 15, 4, 50, 0, 0,{ 0.f, 0.f, 0.f } });
-    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30,{ 1, 5 },{ 1, 5 }, 1000 });
+                                    Weapon::WeaponInfo{ 1, 18, 15, 4, 50, 0, 0,{ -0.5f, -0.5f, 0.f } });
+    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30,{ 1, 10 },{ 1, 10 }, 1000 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -0.8f, 0.3f)),
@@ -285,11 +285,9 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
 
 void WeaponManager::attack(int attackMode, btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-    if (m_currentWeapon->weapon[attackMode]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(attackMode)))
-    {
-        m_currentWeapon->weapon[attackMode]->use(position, yaw, pitch, shooter);
-        m_attackRateTimer = m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier);
-    }
+    m_currentWeapon->weapon[attackMode]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(attackMode));
+    m_currentWeapon->weapon[attackMode]->use(position, yaw, pitch, shooter);
+    m_attackRateTimer = m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier);
 }
 
 void WeaponManager::reloadWeapon()

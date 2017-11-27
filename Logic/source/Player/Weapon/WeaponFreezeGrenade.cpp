@@ -129,5 +129,5 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
 
 bool WeaponFreezeGrenade::useEnhanced(bool shouldUse)
 {
-    return true;
+    return shouldUse;
 }
