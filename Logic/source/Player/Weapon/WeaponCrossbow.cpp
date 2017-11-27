@@ -26,5 +26,5 @@ bool WeaponCrossbow::useEnhanced(bool shouldUse)
     else
         getProjectileData().type = ProjectileTypeNormal;
 
-    return true;
+    return shouldUse;
 }
