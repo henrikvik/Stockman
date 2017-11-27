@@ -99,10 +99,13 @@ void EnemyNecromancer::createAbilities()
         ab2Projectile = SpawnProjectile(ab2ProjData, getPositionBT(), { 0.f, 0.f, 0.f }, *this);
 
         if (!ab2Projectile) ab.cancel();
-        ab2Projectile->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
-            ab.cancel();
-            decreaseCallbackEntities();
-        });
+        else
+        {
+            ab2Projectile->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+                ab.cancel();
+                decreaseCallbackEntities();
+            });
+        }
     };
     auto onTick2 = [&](Player &player, Ability &ab) -> void {
         ab2Projectile->getRigidBody()->getWorldTransform().setOrigin(getPositionBT() +
