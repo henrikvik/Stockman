@@ -57,9 +57,10 @@ void EnemyNecromancer::createAbilities()
         Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), pdata, (float)SPEED_AB2, 2.5f, 0.6f);
 		if (pj)
 		{
-			pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+			pj->addCallback(ON_COLLISION, [=](CallbackData &data) -> void {
 				if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
 				{
+                    pj->getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
 					Enemy *e = SpawnEnemy(EnemyType::NECROMANCER_MINION, data.caller->getPositionBT(), {});
 					if (e)
 					{
@@ -99,10 +100,13 @@ void EnemyNecromancer::createAbilities()
         ab2Projectile = SpawnProjectile(ab2ProjData, getPositionBT(), { 0.f, 0.f, 0.f }, *this);
 
         if (!ab2Projectile) ab.cancel();
-        ab2Projectile->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
-            ab.cancel();
-            decreaseCallbackEntities();
-        });
+        else
+        {
+            ab2Projectile->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+                ab.cancel();
+                decreaseCallbackEntities();
+            });
+        }
     };
     auto onTick2 = [&](Player &player, Ability &ab) -> void {
         ab2Projectile->getRigidBody()->getWorldTransform().setOrigin(getPositionBT() +

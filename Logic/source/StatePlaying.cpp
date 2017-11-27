@@ -115,12 +115,7 @@ void StatePlaying::update(float deltaTime)
    
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
-    if (m_menu->getType() == iMenu::MenuGroup::Skill ||
-        m_menu->getType() == iMenu::MenuGroup::LoadingPost ||
-        m_menu->getType() == iMenu::MenuGroup::GameOver ||
-        m_menu->getType() == iMenu::MenuGroup::GameWon ||
-        m_menu->getType() == iMenu::MenuGroup::HighscoreGameOver ||
-        m_menu->getType() == iMenu::MenuGroup::Pause) // Quick "temp pause" fix for testing purposes
+    if (m_menu->getType() != iMenu::Empty) // Quick "temp pause" fix for testing purposes
         return;
     PROFILE_END();
 
@@ -133,7 +128,7 @@ void StatePlaying::update(float deltaTime)
     //the spagetti is (expand)ing (dong)
     static bool wasTransitioning = false;
     static bool frst = true;
-    if (m_menu->getType() != iMenu::MenuGroup::CardSelect)
+    if (m_menu->getType() != iMenu::CardSelect)
     {
         m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
         if (m_waveTimeManager.isTransitioning())
@@ -145,7 +140,7 @@ void StatePlaying::update(float deltaTime)
         {
             if (!frst)
             {
-                m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
+                m_menu->queueMenu(iMenu::CardSelect);
                 m_cardManager->pickThreeCards(m_player->getHP() != 3);
                 m_projectileManager->removeEnemyProjCallbacks();
 
@@ -211,7 +206,7 @@ void StatePlaying::render() const
 #endif // _DEBUG
 
     PROFILE_BEGIN("Player Render");
-    if (m_menu->getType() != iMenu::MenuGroup::GameOver)
+    if (m_menu->getType() != iMenu::GameOver)
         m_player->render();
     PROFILE_END();
 
@@ -228,12 +223,8 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    if (m_menu->getType() != iMenu::MenuGroup::Skill &&
-        m_menu->getType() != iMenu::MenuGroup::LoadingPost &&
-        m_menu->getType() != iMenu::MenuGroup::GameOver &&
-        m_menu->getType() != iMenu::MenuGroup::GameWon &&
-        m_menu->getType() != iMenu::MenuGroup::HighscoreGameOver &&
-        m_menu->getType() != iMenu::MenuGroup::Pause)
+    if (m_menu->getType() == iMenu::Empty ||
+        m_menu->getType() == iMenu::CardSelect)
         m_hudManager.render();
     PROFILE_END();
 

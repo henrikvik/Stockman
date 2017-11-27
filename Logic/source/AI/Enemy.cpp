@@ -43,7 +43,12 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
     addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
         m_blinkTimer = 100.0f;
-        getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
+        getSoundSource()->playSFX(Sound::SFX::ENEMY_HIT, 1.f, 0.2f);
+    });
+
+    addCallback(ON_DEATH, [&](CallbackData &data)
+    {
+        getSoundSource()->playSFX(Sound::SFX::ENEMY_DEATH, 1.f, 0.25f);
     });
 }
 
@@ -169,6 +174,17 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
         if (m_fireTimer >= 1000.0f)
         {
             damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken) * stacks);
+            m_fireTimer -= 1000.0f;
+        }
+    }
+    if (flags & Effect::EFFECT_FREEZE_DMG)
+    {
+        m_fireTimer += dt;
+
+        if (m_fireTimer >= 1000.0f)
+        {
+            damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+
             m_fireTimer -= 1000.0f;
         }
     }
