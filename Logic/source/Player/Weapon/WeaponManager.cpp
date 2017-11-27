@@ -210,10 +210,12 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     ProjectileData("Icecone", true, false, 1, 3, 1, 30, 0, 675, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false),
                                     Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1,{ -0.6f, 0.25f, -1.3f } });
     /* Secondary */     wl.weapon[1] = newd WeaponFreezeGrenade(projectileManager,
-                                    ProjectileData(nullptr, false, false, 40, 1.f, 1, 100, 0, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade),
+                                    ProjectileData("NecroProjTrail", false, true, 0, 1.f, 1, 50, 5.f, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade, false, false, false),
                                     Weapon::WeaponInfo{ 3, 1, 0, 0, 50, 0, 0,{ -0.8f, 0.2f, 0.f } },
-                                    ProjectileData(nullptr, false, false, 25, 0.5f, 1, 10, 5, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard), 8);
-    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 300, 0, 100, 100,{ 1, 0 },{ 0, 25 }, 1500 });
+                                    ProjectileData("NecroProjTrail", false, true, 0, 1.f, 1, 10, 5.f, 5000, Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard, false, false, false),
+                                    ProjectileData(nullptr, false, false, 100, 25, 1, 0, 0, 0, Resources::Models::UnitCube, 1, ProjectileTypeFreezeExplosion, true, false, false),
+                                    8);
+    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 300, 0, 100, 100,{ 1, 25 },{ 1, 25 }, 1500 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -2.3f, 0.3f)),

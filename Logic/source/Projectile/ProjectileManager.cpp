@@ -168,7 +168,7 @@ void ProjectileManager::update(float deltaTime)
 	{
 		Projectile* p = m_projectilesActive[i];
 		p->updateSpecific(deltaTime);
-		if (p->getDead() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
+		if (p->getDead())		// Check remove flag and ttl
 		{
 			removeProjectile(p, (int)i);
 			i--;

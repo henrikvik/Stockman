@@ -13,13 +13,14 @@ namespace Logic
     {
     public:
         WeaponFreezeGrenade();
-        WeaponFreezeGrenade(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo, ProjectileData &freezeData, int splitCount);
+        WeaponFreezeGrenade(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo, ProjectileData &freezeData, ProjectileData& explosionData, int splitCount);
         virtual ~WeaponFreezeGrenade();
     private:
         virtual void onUse(std::vector<Projectile*> &projectiles, Entity& shooter);
         virtual bool useEnhanced(bool shouldUse);
 
         ProjectileData m_freezeData;
+        ProjectileData m_explosionData;
         int m_splitCount;
         float m_sliceSize;
     };
