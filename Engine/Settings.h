@@ -10,6 +10,7 @@ private:
 	float m_mouseSense;
 	float m_FOV;
 	float m_masterSound;
+    float m_ambience;
 	float m_SFX;
 	float m_music;
 	bool m_windowed;
@@ -29,6 +30,9 @@ public:
 	float* getMasterSoundPTR();
     float getMasterSound();
 	void setMasterSound(float masterSound);
+    float* getAmbiencePTR();
+    float getAmbience();
+    void setAmbience(float ambience);
 	float* getSFXPTR();
     float getSFX();
 	void setSFX(float SFX);

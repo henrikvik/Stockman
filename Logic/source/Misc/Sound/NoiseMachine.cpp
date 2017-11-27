@@ -1,5 +1,6 @@
 #include <Misc\Sound\NoiseMachine.h>
 #include <Misc\Sound\SoundSource.h>
+#include <Engine\Settings.h>
 
 using namespace Sound;
 
@@ -14,11 +15,6 @@ using namespace Sound;
 #else
 #define ERRCHECK(nothing)
 #endif
-
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MASTER     = 0.25f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_AMBIENT    = 0.60f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_SFX        = 1.f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MUSIC      = 0.85f;
 
 // Initializes all sound system & sounds into memory
 void NoiseMachine::init()
@@ -219,11 +215,12 @@ void NoiseMachine::initGroups(bool mute)
     if (mute) for (int i = 0; i < THRESHOLD::MAX_GROUPS; i++) m_group[i]->setVolume(NULL);
     else
     {
+        Settings& setting = Settings::getInstance();
         // Otherwise, set default volumes
-        m_group[CHANNEL_GROUP::CHANNEL_MASTER]->setVolume(NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MASTER);
-        m_group[CHANNEL_GROUP::CHANNEL_AMBIENT]->setVolume(NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_AMBIENT);
-        m_group[CHANNEL_GROUP::CHANNEL_MUSIC]->setVolume(NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MUSIC);
-        m_group[CHANNEL_GROUP::CHANNEL_SFX]->setVolume(NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_SFX);
+        m_group[CHANNEL_GROUP::CHANNEL_MASTER]->setVolume(setting.getMasterSound());
+        m_group[CHANNEL_GROUP::CHANNEL_AMBIENT]->setVolume(setting.getAmbience());
+        m_group[CHANNEL_GROUP::CHANNEL_MUSIC]->setVolume(setting.getMusic());
+        m_group[CHANNEL_GROUP::CHANNEL_SFX]->setVolume(setting.getSFX());
     }
 }
 
