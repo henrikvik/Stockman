@@ -61,7 +61,7 @@ Slider::Slider(
     }
     else if (m_name.compare("MouseSlider") == 0)
     {
-        int test = m_tempValue * 100;
+        int test = m_tempValue * 1000;
         m_textInput = std::to_wstring(test);
     }
     else
@@ -129,7 +129,7 @@ void Slider::updateOnPress(int posX, int posY)
              }
              else if (m_name.compare("MouseSlider") == 0)
              {
-                 int test = m_tempValue * 100;
+                 int test = m_tempValue * 1000;
                  m_textInput = std::to_wstring(test);
              }
              else
