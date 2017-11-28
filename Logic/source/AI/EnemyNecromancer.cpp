@@ -5,7 +5,7 @@
 
 using namespace Logic;
 
-const int EnemyNecromancer::SPEED_AB1 = 15,
+const int EnemyNecromancer::SPEED_AB1 = 125,
           EnemyNecromancer::SPEED_AB2 = 20,
           EnemyNecromancer::MAX_SPAWNED_MINIONS = 4,
           EnemyNecromancer::BASE_DAMAGE = 1,
@@ -57,10 +57,10 @@ void EnemyNecromancer::createAbilities()
         Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), pdata, (float)SPEED_AB2, 2.5f, 0.6f);
 		if (pj)
 		{
-			pj->addCallback(ON_COLLISION, [=](CallbackData &data) -> void {
+			pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
 				if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
 				{
-                    pj->getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
+                    data.caller->getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
 					Enemy *e = SpawnEnemy(EnemyType::NECROMANCER_MINION, data.caller->getPositionBT(), {});
 					if (e)
 					{
@@ -88,7 +88,7 @@ void EnemyNecromancer::createAbilities()
     data.randomChanche = 5;
 
     ab2ProjData.meshID = Resources::Models::Ammocrystal;
-    ab2ProjData.speed = 110.f;
+    ab2ProjData.speed = SPEED_AB1;
     ab2ProjData.ttl = 25000.f;
     ab2ProjData.gravityModifier = 0.f;
     ab2ProjData.enemyBullet = true;

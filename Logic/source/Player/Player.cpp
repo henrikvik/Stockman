@@ -38,7 +38,7 @@ using namespace Logic;
 #define PLAYER_AIR_FRICTION				1.f
 #define PLAYER_JUMP_SPEED				0.008f
 
-const int Player::MIN_Y = -80;
+const int Player::MIN_Y = -80, Player::MAX_HP = 3;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
 Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
@@ -470,6 +470,11 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
 int Player::getHP() const
 {
 	return m_hp;
+}
+
+int Player::getMaxHP() const
+{
+    return MAX_HP;
 }
 
 void Player::updateSpecific(float deltaTime)

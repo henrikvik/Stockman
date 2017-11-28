@@ -54,7 +54,7 @@ namespace Logic
 		};
 
 	private:
-        static const int MIN_Y;
+        static const int MIN_Y, MAX_HP;
 
         // Special modes (move to other class)
         bool m_godMode, m_noclip;
@@ -166,7 +166,8 @@ namespace Logic
 		void readFromFile();
 
 		void takeDamage(int damage, bool damageThroughProtection = false);
-		int getHP() const;
+        int getHP() const;
+        int getMaxHP() const;
 
 		btKinematicCharacterController* getCharController();
 		btGhostObject* getGhostObject();

@@ -64,8 +64,11 @@ iMenu * iMenuFactory::buildMenuSettings()
     menu->addSlider(buildSlider("MouseSlider", setting.getMouseSensePTR(), 0.001f, 0.05f, 0.01f));
     menu->addSlider(buildSlider("MasterSlider", setting.getMasterSoundPTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("MusicSlider", setting.getMusicPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("AmbienceSlider", setting.getAmbiencePTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("SFXSlider", setting.getSFXPTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("FOVSlider", setting.getFOVPTR(), 90.0f, 180.0f, 1.0f));
+
+    menu->addButton(buildButton("MenuSettingsVideoWindowed", ButtonFunction::windowed));
 
     //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
     //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
@@ -78,7 +81,6 @@ iMenu * iMenuFactory::buildMenuSettings()
     //menu->addButton(buildButton("MenuSettingsControlsMouseSensePlus", ButtonFunction::plusSense));
     //menu->addButton(buildButton("MenuSettingsVideoFOVMinus", ButtonFunction::minusFOV));
     //menu->addButton(buildButton("MenuSettingsVideoFOVPlus", ButtonFunction::plusFOV));
-    //menu->addButton(buildButton("MenuSettingsVideoWindowed", ButtonFunction::windowed));
 
     return menu;
 }
