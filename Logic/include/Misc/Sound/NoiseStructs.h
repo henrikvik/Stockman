@@ -46,7 +46,8 @@ namespace Sound
         HELLO, 
         UI_BUTTON_PRESS,
         UI_BUTTON_HOVER,
-        PICKUP, 
+        TRIGGER_PICKUP, 
+        TRIGGER_JUMPPAD,
         START_GAME, 
         UPGRADE_UNLOCKED
     };

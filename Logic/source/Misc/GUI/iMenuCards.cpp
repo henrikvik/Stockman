@@ -21,7 +21,7 @@ iMenuCards::iMenuCards(iMenu::MenuGroup group)
         512.f   / WIN_WIDTH,
         128.f   / WIN_HEIGHT
     });
-    m_spriteRenderInfo.textureRect = FloatRect({ 0.0f, 0.0f }, { 1.0f, 0.33f });
+    m_spriteRenderInfo.textureRect = FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f });
 
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::UPGRADE_UNLOCKED, nullptr, true);
 }
