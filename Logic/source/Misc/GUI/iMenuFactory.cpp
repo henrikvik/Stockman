@@ -98,9 +98,9 @@ iMenuSkillPick* iMenuFactory::buildMenuSkill()
     return menu;
 }
 
-iMenu * iMenuFactory::buildMenuCard()
+iMenuCards * iMenuFactory::buildMenuCard()
 {
-    iMenu* menu = newd iMenuCards(iMenu::CardSelect);
+    iMenuCards* menu = newd iMenuCards(iMenu::CardSelect);
 
     menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));
     menu->addButton(buildButton("CardUpgradeChoice2", ButtonFunction::chooseUpgrade2));

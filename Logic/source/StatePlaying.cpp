@@ -128,6 +128,16 @@ void StatePlaying::update(float deltaTime)
     {
         bool newWave = m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
 
+        // TEmp for tesing
+        static bool oneTime = false;
+        if (m_waveTimeManager.onFirstWave() && !oneTime)
+        {
+            m_menu->queueMenu(iMenu::CardSelect);
+            m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
+            m_projectileManager->removeEnemyProjCallbacks();
+            oneTime = true;
+        }
+
         if (newWave)
         {
             m_menu->queueMenu(iMenu::CardSelect);
@@ -214,8 +224,7 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render Menu");
-    if (m_menu->getType() != iMenu::CardSelect)
-        m_menu->render();
+    m_menu->render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render cards");

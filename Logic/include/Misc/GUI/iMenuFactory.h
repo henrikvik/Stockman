@@ -10,6 +10,7 @@
 #include <Misc\GUI\iMenuLoading.h>
 #include <Misc\GUI\iMenuHighscore.h>
 #include <Misc\GUI\iMenuFirstTime.h>
+#include <Misc\GUI\iMenuCards.h>
 
 namespace Logic
 {
@@ -24,7 +25,7 @@ namespace Logic
         iMenu*              buildMenuStart();
         iMenu*              buildMenuSettings();
         iMenuSkillPick*     buildMenuSkill();
-        iMenu*              buildMenuCard();
+        iMenuCards*         buildMenuCard();
         iMenuHighscore*     buildMenuHighscore();
         iMenuHighscore*     buildMenuHighscoreGameOver();
         iMenu*              buildMenuGameover();
