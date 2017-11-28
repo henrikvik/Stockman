@@ -14,12 +14,16 @@ namespace Logic
         float m_timeRequired;
 
         int m_waveCurrent;
-        bool m_onLastWave, m_enraged, m_onTransition, m_firstWave, m_delay, m_spawn;
+        bool m_onLastWave, m_enraged, m_onTransition;
     public:
         WaveTimeManager();
         virtual ~WaveTimeManager();
 
         bool update(float deltaTime, EntityManager &entityManager, btVector3 const &playerPos);
+        bool updateInTransition(EntityManager &entityManager, btVector3 const &playerPos);
+        bool updateInWave(EntityManager &entityManager);
+
+        void startNextWave(EntityManager &entityManager, btVector3 const &playerPos);
 
         void reset();
         void startTransition();
@@ -30,9 +34,9 @@ namespace Logic
         bool getOnLastWave() const;
 
         bool onLastWave() const;
+        bool onFirstWave() const;
         bool isEnraged() const;
         bool isTransitioning() const;
-        bool getFirstWave() const;
     };
 };
 

@@ -101,7 +101,7 @@
 	"bosses": 0;
 }
 { // 9
-	"enemies" : "";
+	"enemies" : "5, 5, 5";
 	"triggers" : 0;
 	"bosses": 1;
 }
