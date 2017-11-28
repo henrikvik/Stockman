@@ -33,9 +33,11 @@ namespace Resources
             if (strcmp(str, "Crossbowbolt") == 0) return Crossbowbolt;
             if (strcmp(str, "Crossbowbolts") == 0) return Crossbowbolts;
             if (strcmp(str, "Firepit") == 0) return Firepit;
+            if (strcmp(str, "Grass") == 0) return Grass;
             if (strcmp(str, "Hammer") == 0) return Hammer;
             if (strcmp(str, "Island") == 0) return Island;
             if (strcmp(str, "MenuScene") == 0) return MenuScene;
+            if (strcmp(str, "Necromancer") == 0) return Necromancer;
             if (strcmp(str, "SkySphere") == 0) return SkySphere;
             if (strcmp(str, "Staff") == 0) return Staff;
             if (strcmp(str, "StaticSummon") == 0) return StaticSummon;
@@ -58,6 +60,7 @@ namespace Resources
             if (strcmp(str, "ForwardPlus") == 0) return ForwardPlus;
             if (strcmp(str, "ForwardPlus_PS") == 0) return ForwardPlus_PS;
             if (strcmp(str, "ForwardPlus_VS_Animated") == 0) return ForwardPlus_VS_Animated;
+            if (strcmp(str, "ForwardPlus_VS_Foliage") == 0) return ForwardPlus_VS_Foliage;
             if (strcmp(str, "ForwardPlus_VS_Static") == 0) return ForwardPlus_VS_Static;
             if (strcmp(str, "FullscreenQuad") == 0) return FullscreenQuad;
             if (strcmp(str, "GlowBlurHorizontal") == 0) return GlowBlurHorizontal;
@@ -96,7 +99,6 @@ namespace Resources
             if (strcmp(str, "IntroScreen") == 0) return IntroScreen;
             if (strcmp(str, "Loadingscreen") == 0) return Loadingscreen;
             if (strcmp(str, "MainmenuClean") == 0) return MainmenuClean;
-            if (strcmp(str, "mainmenupicture") == 0) return mainmenupicture;
             if (strcmp(str, "Mainmenutext") == 0) return Mainmenutext;
             if (strcmp(str, "MissingTexture") == 0) return MissingTexture;
             if (strcmp(str, "Moon_Thinking") == 0) return Moon_Thinking;
