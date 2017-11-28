@@ -26,10 +26,7 @@ HWND *Engine::g_window = nullptr;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	//if (
 	ImGui_ImplDX11_WndProcHandler(hwnd, msg, wparam, lparam);
-		//)
-		//return true;
 	Typing* theChar = Typing::getInstance(); //might need to be deleted
 	DebugWindow * debug = DebugWindow::getInstance();
 	int key = MapVirtualKey((int)wparam, 0);
@@ -55,8 +52,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
 		break;
-
-	case WM_ACTIVATEAPP:
+    case WM_KILLFOCUS:
+        if (Engine::g_window) // make sure window is created
+        {
+            DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+            printf("loss");
+        }
+        break;
+    case WM_ACTIVATEAPP:
 	case WM_INPUT:
 	case WM_MOUSEMOVE:
 	case WM_LBUTTONDOWN:
