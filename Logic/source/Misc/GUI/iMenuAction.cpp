@@ -15,7 +15,6 @@ using namespace Logic;
 // Switches both main-states to in-game, will unload & load everything
 void ButtonFunction::startGame()
 {
-    Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
     if (Action::Get().m_menuMachine)
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::LoadingPre);
 }

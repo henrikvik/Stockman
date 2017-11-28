@@ -44,7 +44,8 @@ namespace Sound
         SKILL_BULLETTIME_TIME,
         SKILL_CHARGE, 
         HELLO, 
-        UI_BUTTON_PRESS, 
+        UI_BUTTON_PRESS,
+        UI_BUTTON_HOVER,
         PICKUP, 
         START_GAME, 
         UPGRADE_UNLOCKED

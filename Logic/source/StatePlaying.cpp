@@ -28,7 +28,6 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     // Starting in game-sounds
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
-    Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
 
     // Initializing Bullet physics
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();		// Configuration
