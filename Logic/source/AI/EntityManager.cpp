@@ -179,7 +179,6 @@ void EntityManager::loadDebugCmds()
             return "No, Chaos is a ladder.";
         }
     });
-
     DebugWindow::getInstance()->registerCommand("AI_AUTOMATIC_TESTING", [&](std::vector<std::string> &para) -> std::string {
         m_automaticTesting = true;
         PATH_UPDATE_DIV = 1;

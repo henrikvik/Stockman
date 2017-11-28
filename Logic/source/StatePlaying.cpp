@@ -122,37 +122,22 @@ void StatePlaying::update(float deltaTime)
     m_playTime += deltaTime;
     ComboMachine::Get().update(deltaTime);
 
-
-
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     //the spagetti is (expand)ing (dong)
-    static bool wasTransitioning = false;
-    static bool frst = true;
     if (m_menu->getType() != iMenu::CardSelect)
     {
-        m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
-        if (m_waveTimeManager.isTransitioning())
+        bool newWave = m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
+
+        if (newWave)
         {
-            wasTransitioning = true;
-        }
+            m_menu->queueMenu(iMenu::CardSelect);
+            m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
+            m_projectileManager->removeEnemyProjCallbacks();
 
-        if (wasTransitioning == true && m_waveTimeManager.isTransitioning() == false)
-        {
-            if (!frst)
-            {
-                m_menu->queueMenu(iMenu::CardSelect);
-                m_cardManager->pickThreeCards(m_player->getHP() != 3);
-                m_projectileManager->removeEnemyProjCallbacks();
-
-                SpecialEffectRenderInfo fultAF;
-                fultAF.type = SpecialEffectRenderInfo::Snow;
-                fultAF.restart = true;
-                QueueRender(fultAF);
-                wasTransitioning = false;
-
-            }
-            frst = false;
-            wasTransitioning = false;
+            SpecialEffectRenderInfo fultAF;
+            fultAF.type = SpecialEffectRenderInfo::Snow;
+            fultAF.restart = true;
+            QueueRender(fultAF);
         }
     }
 

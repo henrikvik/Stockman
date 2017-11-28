@@ -500,12 +500,11 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     this->updateGUIElemets();
     this->updateTextElements();
 
-    this->showWaveCleared = timeManager.isTransitioning();
     static float alpha = 0.0f;
-    if (showWaveCleared && timeManager.getFirstWave() == false)
+    if (timeManager.isTransitioning() && !timeManager.onFirstWave())
     {
         alpha += dt * 0.002f;
-       staticElements.at(staticElements.size()-1).setAlpha(alpha);
+        staticElements.at(staticElements.size()-1).setAlpha(alpha);
     }
     else
     {

@@ -155,8 +155,6 @@ void Enemy::damage(int damage)
 {
     if (damage == 0) return;
 
-    printf("Damage: %d", damage);
-
 	m_health -= damage;
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
