@@ -52,7 +52,7 @@ Slider::Slider(
 
     m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
     m_textRenderInfo.font = Resources::Fonts::KG18;
-    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(X - (m_width * 0.05f), m_y - (m_height * 0.55f));
+    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 10.0f, m_y);
 
     if (m_name.compare("FOVSlider") == 0)
     {
@@ -121,7 +121,7 @@ void Slider::updateOnPress(int posX, int posY)
              renderInfo.screenRect = screenRect;
              m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
              m_textRenderInfo.font = Resources::Fonts::KG18;
-             m_textRenderInfo.position = DirectX::SimpleMath::Vector2(posx - (m_width * 0.05f), int(m_y - (m_height * 0.55f)));
+             m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 10.0f, m_y);
              if (m_name.compare("FOVSlider") == 0)
              {
                  int test = m_tempValue;
