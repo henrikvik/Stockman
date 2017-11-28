@@ -4,10 +4,10 @@
 using namespace Logic;
 
 const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 55.f;
-const float EnemyTotem::AB_SCALE = 8.5f, EnemyTotem::AB_ROTATION = 0.25f;
+const float EnemyTotem::AB_SCALE = 8.5f, EnemyTotem::AB_ROTATION = 0.2f;
 
 const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 550, EnemyTotem::SCORE = 50;
-const int EnemyTotem::BULLET_AMOUNT = 10;
+const int EnemyTotem::BULLET_AMOUNT = 9;
 
 EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
     : Enemy(Resources::Models::Files::StaticSummon, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::TOTEM, 0, btVector3(0, 0, 0))
@@ -35,8 +35,8 @@ void EnemyTotem::createAbilities()
 
     AbilityData data;
     data.duration = 0.f;
-    data.cooldown = 650.f;
-    data.randomChanche = 4;
+    data.cooldown = 500.f;
+    data.randomChanche = 2;
 
     spreadShot = Ability(data, [&](Player &target, Ability &ab) -> void {
 
