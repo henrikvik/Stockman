@@ -41,13 +41,13 @@ WeaponFreezeGrenade::~WeaponFreezeGrenade()
 
 void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& shooter)
 {
-    shooter.getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, 1.f, 0.05f);
+    shooter.getSoundSource()->playSFX(Sound::SFX::WEAPON_MAGIC_1, 1.f, 0.05f);
 
     for (Projectile* p : projectiles)
     {
         p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
 
-            data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, 1.f, 0.15f);
+            data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_MAGIC_2, 1.f, 0.15f);
             
             // explosion projectile
             m_explosionData.scale = FREEZE_GRENADE_EXPLOSION_SCALE;
@@ -57,7 +57,7 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
             {
                 explosion->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
 
-                    data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.25f);
+                    data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.33f);
 
                     // Graphical explosion - particle
                     Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
@@ -101,8 +101,6 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
                 {
                     p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
 
-                        data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, 1.f, 0.15f);
-
                         // explosion projectile
                         m_explosionData.scale = FREEZE_GRENADE_SPLIT_EXPLOSION_SCALE;
                         Projectile* explosion = getSpawnProjectileFunc()(m_explosionData, data.caller->getPositionBT(), { 0.f, 0.f, 0.f }, *data.caller, { 0.f, 0.f, 0.f });
@@ -112,7 +110,7 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
                             
                             explosion->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
 
-                                data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.25f);
+                                data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.33f);
 
                                 // Graphical explosion - particle
                                 Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());

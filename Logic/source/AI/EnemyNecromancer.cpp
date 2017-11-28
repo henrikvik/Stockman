@@ -27,6 +27,7 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
 
     createAbilities();
 
+    getSoundSource()->autoPlaySFX(Sound::SFX::ENEMY_AMBIENT_2, 6500, 500, 1.f, 0.10f);
     light.color = DirectX::SimpleMath::Color(0.5f, 0.0f, 1.0f);
     light.intensity = 0.8f;
     light.range = 7.0f;
