@@ -59,10 +59,11 @@ void EnemySoarer::createAbilities()
     }, [=](Player &player, Ability &ab) -> void {
         // onuse
         auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, AB1_GRAVITY, AB1_SCALE);
+        getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_PRIMARY, 1.f, 0.15f);
         if (pj) {
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+                data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.15);
                 Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
-
             });
         }
     });
