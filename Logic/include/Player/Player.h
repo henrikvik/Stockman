@@ -131,6 +131,8 @@ namespace Logic
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
+        DirectX::SimpleMath::Vector2 getWindowMidPoint();
+
         // Player step
         void stepPlayer(float deltaTime);
 

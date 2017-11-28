@@ -1,8 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <Camera.h>
-#include <Renderer.h>
+#include <Graphics\include\Renderer.h>
 #include <StateMachine/StateMachine.h>
 #include <Keyboard.h>
 #include <Mouse.h>
@@ -14,6 +13,7 @@ public:
 	virtual ~Engine();
 
 	int run();
+    static HWND *g_window; // just awful
 private:
 	Logic::StateMachine* game;
 	HWND window;

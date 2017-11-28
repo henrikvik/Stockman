@@ -25,6 +25,7 @@
 #include <Graphics\include\Device.h>
 
 #include <Engine/Settings.h>
+#include <Engine/Engine.h>
 
 using namespace Logic;
 
@@ -879,10 +880,23 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-    Settings& setting = Settings::getInstance();
-    std::cout << ms->x << "\n";
-	m_camYaw	+= setting.getMouseSense() * ms->x * deltaTime;
-    m_camPitch -= setting.getMouseSense() * ms->y * deltaTime;
+    if (ms->positionMode == DirectX::Mouse::MODE_RELATIVE)
+    {
+        Settings& setting = Settings::getInstance();
+
+        // so bad lol
+        POINT mousePos;
+        GetCursorPos(&mousePos);
+        auto vec2 = getWindowMidPoint();
+
+        int xDiff = mousePos.x - vec2.x;
+        int yDiff = mousePos.y - vec2.y;
+
+        m_camYaw += setting.getMouseSense() * xDiff;
+        m_camPitch -= setting.getMouseSense() * yDiff;
+
+        SetCursorPos(vec2.x, vec2.y);
+    }
 
 	// DirectX calculates position on the full resolution,
 	//  while getWindowMidPoint gets the current window's middle point!!!!!
@@ -907,6 +921,15 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 
 	m_forward.Normalize();
 }
+
+DirectX::SimpleMath::Vector2 Player::getWindowMidPoint()
+{
+    RECT rect;
+    GetWindowRect(*Engine::g_window, &rect);
+
+    return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
+}
+
 
 btKinematicCharacterController * Player::getCharController()
 {
