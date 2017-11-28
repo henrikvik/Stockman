@@ -108,6 +108,7 @@ namespace Resources
             GlowMipCombinder,
             LightGridCulling,
             Moon,
+            ParticlePlane,
             SkyShader,
             SnowShader,
             SpriteShader,
@@ -137,6 +138,7 @@ namespace Resources
             {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
             {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
             {Moon, R"(..\Resources\Shaders\Moon.hlsl)"},
+            {ParticlePlane, R"(..\Resources\Shaders\ParticlePlane.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SnowShader, R"(..\Resources\Shaders\SnowShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
@@ -155,6 +157,7 @@ namespace Resources
             Backbutton,
             CardBackground,
             Crosshair,
+            Diffusemoon,
             Gameover,
             gameOverMenuButtons,
             Gamesheet,
@@ -169,7 +172,6 @@ namespace Resources
             MainmenuClean,
             Mainmenutext,
             MissingTexture,
-            Moon_Thinking,
             Pausetext,
             randomNormals,
             Settings,
@@ -177,6 +179,7 @@ namespace Resources
             Skillpickbackground,
             Skillpicksheet,
             Spellsheet,
+            TextSkillPick,
             WaveComplete,
             weaponsheet
         };
@@ -185,6 +188,7 @@ namespace Resources
             {Backbutton, R"(..\Resources\Textures\Backbutton.dds)"},
             {CardBackground, R"(..\Resources\Textures\CardBackground.dds)"},
             {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
+            {Diffusemoon, R"(..\Resources\Textures\Diffusemoon.dds)"},
             {Gameover, R"(..\Resources\Textures\Gameover.dds)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
@@ -199,7 +203,6 @@ namespace Resources
             {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
-            {Moon_Thinking, R"(..\Resources\Textures\Moon_Thinking.png)"},
             {Pausetext, R"(..\Resources\Textures\Pausetext.dds)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {Settings, R"(..\Resources\Textures\Settings.dds)"},
@@ -207,6 +210,7 @@ namespace Resources
             {Skillpickbackground, R"(..\Resources\Textures\Skillpickbackground.dds)"},
             {Skillpicksheet, R"(..\Resources\Textures\Skillpicksheet.dds)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
+            {TextSkillPick, R"(..\Resources\Textures\TextSkillPick.dds)"},
             {WaveComplete, R"(..\Resources\Textures\WaveComplete.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };

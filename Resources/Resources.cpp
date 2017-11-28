@@ -70,6 +70,7 @@ namespace Resources
             if (strcmp(str, "GlowMipCombinder") == 0) return GlowMipCombinder;
             if (strcmp(str, "LightGridCulling") == 0) return LightGridCulling;
             if (strcmp(str, "Moon") == 0) return Moon;
+            if (strcmp(str, "ParticlePlane") == 0) return ParticlePlane;
             if (strcmp(str, "SkyShader") == 0) return SkyShader;
             if (strcmp(str, "SnowShader") == 0) return SnowShader;
             if (strcmp(str, "SpriteShader") == 0) return SpriteShader;
@@ -87,6 +88,7 @@ namespace Resources
             if (strcmp(str, "Backbutton") == 0) return Backbutton;
             if (strcmp(str, "CardBackground") == 0) return CardBackground;
             if (strcmp(str, "Crosshair") == 0) return Crosshair;
+            if (strcmp(str, "Diffusemoon") == 0) return Diffusemoon;
             if (strcmp(str, "Gameover") == 0) return Gameover;
             if (strcmp(str, "gameOverMenuButtons") == 0) return gameOverMenuButtons;
             if (strcmp(str, "Gamesheet") == 0) return Gamesheet;
@@ -101,7 +103,6 @@ namespace Resources
             if (strcmp(str, "MainmenuClean") == 0) return MainmenuClean;
             if (strcmp(str, "Mainmenutext") == 0) return Mainmenutext;
             if (strcmp(str, "MissingTexture") == 0) return MissingTexture;
-            if (strcmp(str, "Moon_Thinking") == 0) return Moon_Thinking;
             if (strcmp(str, "Pausetext") == 0) return Pausetext;
             if (strcmp(str, "randomNormals") == 0) return randomNormals;
             if (strcmp(str, "Settings") == 0) return Settings;
@@ -109,6 +110,7 @@ namespace Resources
             if (strcmp(str, "Skillpickbackground") == 0) return Skillpickbackground;
             if (strcmp(str, "Skillpicksheet") == 0) return Skillpicksheet;
             if (strcmp(str, "Spellsheet") == 0) return Spellsheet;
+            if (strcmp(str, "TextSkillPick") == 0) return TextSkillPick;
             if (strcmp(str, "WaveComplete") == 0) return WaveComplete;
             if (strcmp(str, "weaponsheet") == 0) return weaponsheet;
             throw "Could not find matching enum.";

@@ -16,6 +16,18 @@ iMenuSkillPick::iMenuSkillPick(iMenu::MenuGroup group) : iMenu(group)
     m_textRenderInfo.position = DirectX::SimpleMath::Vector2(0.01 * WIN_WIDTH, 0.28 * WIN_HEIGHT);
     m_skillpointsStr = std::to_wstring(m_skillPoints) + (const wchar_t*)L" Skillpoints";
     m_textRenderInfo.text = m_skillpointsStr.c_str();
+
+    m_spriteRenderInfo.alpha = 1.f;
+    m_spriteRenderInfo.isMoveable = true;
+    m_spriteRenderInfo.texture = Resources::Textures::TextSkillPick;
+    m_spriteRenderInfo.screenRect = FloatRect({
+        0.307f,
+        0.104f,
+        1024.f / WIN_WIDTH,
+        1024.f / WIN_HEIGHT
+    });
+    m_spriteRenderInfo.textureRect = FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f });
+
 }
 
 iMenuSkillPick::~iMenuSkillPick() { }
@@ -91,6 +103,7 @@ void iMenuSkillPick::render() const
 {
     iMenu::render();
     QueueRender(m_textRenderInfo);
+    QueueRender(m_spriteRenderInfo);
 }
 
 // Callback functions
