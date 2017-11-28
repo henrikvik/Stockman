@@ -257,6 +257,11 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
     ERRCHECK(createSound(loadMode, SFX::START_GAME, CHANNEL_GROUP::CHANNEL_SFX, "start.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::ENEMY_DEATH, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Death.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::ENEMY_HIT, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Hit.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_AMBIENT_1, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Ambient_1.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_AMBIENT_2, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Ambient_2.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_MAGIC_1, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Magic_1.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_MAGIC_2, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Magic_2.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UPGRADE_UNLOCKED, CHANNEL_GROUP::CHANNEL_SFX, "Upgrade_Unlocked.ogg", FMOD_3D_LINEARROLLOFF));
 
 	// Setting the thresholds of where the listener can hear the sfx
     int count = 0;

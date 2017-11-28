@@ -1,5 +1,6 @@
 #include <Misc\GUI\iMenuCards.h>
 #include <Misc\Card.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 using namespace Logic;
 
@@ -20,7 +21,9 @@ iMenuCards::iMenuCards(iMenu::MenuGroup group)
         512.f   / WIN_WIDTH,
         128.f   / WIN_HEIGHT
     });
-    m_spriteRenderInfo.textureRect = FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f });
+    m_spriteRenderInfo.textureRect = FloatRect({ 0.0f, 0.0f }, { 1.0f, 0.33f });
+
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::UPGRADE_UNLOCKED, nullptr, true);
 }
 
 iMenuCards::~iMenuCards() { }

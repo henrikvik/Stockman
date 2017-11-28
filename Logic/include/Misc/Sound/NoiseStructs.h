@@ -15,6 +15,8 @@ namespace Sound
         FOOTSTEP_SMALL,
         FOOTSTEP_SNOW,
         JUMP,
+        WEAPON_MAGIC_1,
+        WEAPON_MAGIC_2,
         WEAPON_CUTLERY_PRIMARY,
         WEAPON_CUTLERY_SECONDARY,
         WEAPON_ICEGUN_PRIMARY,
@@ -22,6 +24,8 @@ namespace Sound
         WEAPON_ICEGUN_THIRD,
         WEAPON_MELEE_PRIMARY,
         WEAPON_MELEE_SECONDARY,
+        ENEMY_AMBIENT_1,
+        ENEMY_AMBIENT_2,
         ENEMY_DEATH,
         ENEMY_HIT,
         NECROMANCER_DEATH,
@@ -42,7 +46,8 @@ namespace Sound
         HELLO, 
         UI_BUTTON_PRESS, 
         PICKUP, 
-        START_GAME
+        START_GAME, 
+        UPGRADE_UNLOCKED
     };
 
     // Put all identifier for music here

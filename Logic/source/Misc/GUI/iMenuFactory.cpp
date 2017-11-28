@@ -88,7 +88,6 @@ iMenu * iMenuFactory::buildMenuSettings()
 iMenuSkillPick* iMenuFactory::buildMenuSkill()
 {
     iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
-   
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
     menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
@@ -101,7 +100,6 @@ iMenuSkillPick* iMenuFactory::buildMenuSkill()
 iMenuCards * iMenuFactory::buildMenuCard()
 {
     iMenuCards* menu = newd iMenuCards(iMenu::CardSelect);
-
     menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));
     menu->addButton(buildButton("CardUpgradeChoice2", ButtonFunction::chooseUpgrade2));
     menu->addButton(buildButton("CardUpgradeChoice3", ButtonFunction::chooseUpgrade3));
@@ -112,7 +110,6 @@ iMenuCards * iMenuFactory::buildMenuCard()
 iMenu * iMenuFactory::buildMenuGameWon()
 {
     iMenu* menu = newd iMenu(iMenu::GameWon);
-
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
@@ -139,7 +136,6 @@ iMenuLoadingPost* iMenuFactory::buildMenuLoadingPost()
 iMenuHighscore * iMenuFactory::buildMenuHighscore()
 {
     iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreStartMenu);
-
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
 
@@ -149,7 +145,6 @@ iMenuHighscore * iMenuFactory::buildMenuHighscore()
 iMenuHighscore * iMenuFactory::buildMenuHighscoreGameOver()
 {
     iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreGameOver);
-
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::goToGameOver));
 
