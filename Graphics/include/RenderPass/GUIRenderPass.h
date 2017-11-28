@@ -46,10 +46,12 @@ namespace Graphics
         ConstantBuffer<UINT> offsetBuffer;
 
         void textRender() const;
-        bool isDrawableString(const wchar_t * text)const;
+        bool isDrawableString(std::wstring text)const;
         void updateShake(float deltaTime);
+        void updateBounce(float deltaTime);
 
         DirectX::SimpleMath::Vector2 ndcPositionOffset;
         DirectX::SimpleMath::Vector2 positionOffset;
+        bool affectEverything;
     };
 }

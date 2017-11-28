@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <Misc\NonCopyable.h>
-#include <Misc\Error.h>
 #include <GameType.h>
 
 namespace Logic
@@ -18,7 +17,7 @@ namespace Logic
         StateMachine();
         ~StateMachine();
 
-        void update(float deltaTime);
+        bool update(float deltaTime);
         void render() const;
 
     private:

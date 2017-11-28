@@ -75,6 +75,8 @@ SET_INSTANCE_CAP(NewDebugRenderInfo, 10000)
 
 struct LightRenderInfo : RenderInfo
 {
+    LightRenderInfo() : position(DirectX::SimpleMath::Vector3(0, 0, 0)), color(DirectX::SimpleMath::Color(1, 1, 1, 1)), intensity(1.f), range(3.f) { }
+    LightRenderInfo(DirectX::SimpleMath::Color inColor, float inIntensity, float inRange) : position(DirectX::SimpleMath::Vector3(0, 0, 0)), color(inColor), intensity(inIntensity), range(inRange) { }
 
     DirectX::SimpleMath::Vector3 position;
     DirectX::SimpleMath::Color color;
@@ -86,13 +88,15 @@ SET_INSTANCE_CAP(LightRenderInfo, 128)
 
 struct SpecialEffectRenderInfo : RenderInfo
 {
-    enum SpecialEffect { BulletTime, Snow, screenShake };
+    enum SpecialEffect { BulletTime, Snow, screenShake, DoF, screenBounce };
     SpecialEffect type;
     DirectX::SimpleMath::Vector2 direction;
     float progress = 0;
     float duration = 0;
     float radius = 0;
+    float bounceMax = 0;
     bool restart = 0;
+    bool affectEveryThing = 0;
 };
 
 struct SpriteRenderInfo : RenderInfo
@@ -101,6 +105,7 @@ struct SpriteRenderInfo : RenderInfo
     FloatRect screenRect;
     FloatRect textureRect;
     float alpha = 1;
+    bool isMoveable = 0;
 };
 
 struct TextRenderInfo : RenderInfo
@@ -108,7 +113,8 @@ struct TextRenderInfo : RenderInfo
     DirectX::SimpleMath::Vector2 position;
     DirectX::SimpleMath::Color color;
     Resources::Fonts::Files font;
-    const wchar_t * text = L"";
+    std::wstring text = L"";
+    bool isMoveable = 0;
 };
 
 

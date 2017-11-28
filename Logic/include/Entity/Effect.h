@@ -35,7 +35,8 @@ namespace Logic
             EFFECT_IS_STUNNED = 0x4000,
             EFFECT_MOVE_FASTER = 0x8000,
             EFFECT_MOVE_SLOWER = 0x10000,
-            EFFECT_IS_WEAPON = 0x20000
+            EFFECT_IS_WEAPON = 0x20000,
+            EFFECT_FREEZE_DMG = 0x40000
         };
 
         struct Standards {

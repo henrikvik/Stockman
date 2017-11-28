@@ -4,7 +4,7 @@
 
 using namespace Logic;
 
-#define GRAPPLING_HOOK_CD			3000.f		// Cooldown in ms
+#define GRAPPLING_HOOK_CD			2250.f		// Cooldown in ms
 #define GRAPPLING_HOOK_RANGE		100.f		// Range in bulletphysics units (probably meters)
 #define GRAPPLING_HOOK_RANGE_MIN    8.f         // Min range
 #define GRAPPLING_HOOK_POWER		0.0011f	    // The amount of power to reach the max speed
@@ -44,7 +44,7 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
     if (m_state == GrapplingHookStatePulling)
         return false;
 
-    shooter.getSoundSource()->playSFX(Sound::SFX::WEAPON_CUTLERY_SECONDARY);
+    shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_GRAPPLING);
 
     if (abs(forward.dot({ 0.f, 1.f, 0.f })) > GRAPPLING_HOOK_NON_HOOK_ANGLE)
     {
@@ -101,7 +101,8 @@ void SkillGrapplingHook::onRelease()
 	{
 		float yVel = player->getCharController()->getLinearVelocity().y();
         player->getCharController()->setFallSpeed(1.f);
-		player->getCharController()->setLinearVelocity({ 0.f, yVel, 0.f });
+		//player->getCharController()->setLinearVelocity({ 0.f, yVel * 25, 0.f });
+        player->getCharController()->jump({ 0.f, yVel * 0.1f, 0.f });
 	}
 
     
@@ -126,6 +127,7 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 		{
 			btGhostObject* ghostObject = player->getGhostObject();
 			btVector3 linearVelocity = player->getCharController()->getLinearVelocity();
+            //printf("%f\n", linearVelocity.y());
 			//btVector3 dirToPoint = (m_point - player->getPositionBT()).normalize();
 
             if(m_goingUp)

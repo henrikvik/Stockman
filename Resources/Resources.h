@@ -16,6 +16,8 @@ namespace Resources
             {KG18, R"(..\Resources\Fonts\KG18.spritefont)"},
             {KG26, R"(..\Resources\Fonts\KG26.spritefont)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Maps
     {
@@ -29,6 +31,8 @@ namespace Resources
             {IslandScene, R"(..\Resources\Maps\IslandScene.toml)"},
             {Scene, R"(..\Resources\Maps\Scene.toml)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Models
     {
@@ -37,6 +41,7 @@ namespace Resources
             Ammocrystal,
             AmmoPackCrossBolt,
             AnimatedSummonUnit,
+            AnimationTest,
             Barrel,
             Crossbow,
             Crossbowbolt,
@@ -59,6 +64,7 @@ namespace Resources
             {Ammocrystal, R"(..\Resources\Models\Ammocrystal.hyb)"},
             {AmmoPackCrossBolt, R"(..\Resources\Models\AmmoPackCrossBolt.hyb)"},
             {AnimatedSummonUnit, R"(..\Resources\Models\AnimatedSummonUnit.hyb)"},
+            {AnimationTest, R"(..\Resources\Models\AnimationTest.hyb)"},
             {Barrel, R"(..\Resources\Models\Barrel.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
             {Crossbowbolt, R"(..\Resources\Models\Crossbowbolt.hyb)"},
@@ -76,6 +82,8 @@ namespace Resources
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Shaders
     {
@@ -90,7 +98,6 @@ namespace Resources
             ForwardPlus,
             ForwardPlus_PS,
             ForwardPlus_VS_Animated,
-            ForwardPlus_VS_Foliage,
             ForwardPlus_VS_Static,
             FullscreenQuad,
             GlowBlurHorizontal,
@@ -99,6 +106,7 @@ namespace Resources
             GlowMerger,
             GlowMipCombinder,
             LightGridCulling,
+            Moon,
             SkyShader,
             SnowShader,
             SpriteShader,
@@ -118,7 +126,6 @@ namespace Resources
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
             {ForwardPlus_PS, R"(..\Resources\Shaders\ForwardPlus_PS.hlsl)"},
             {ForwardPlus_VS_Animated, R"(..\Resources\Shaders\ForwardPlus_VS_Animated.hlsl)"},
-            {ForwardPlus_VS_Foliage, R"(..\Resources\Shaders\ForwardPlus_VS_Foliage.hlsl)"},
             {ForwardPlus_VS_Static, R"(..\Resources\Shaders\ForwardPlus_VS_Static.hlsl)"},
             {FullscreenQuad, R"(..\Resources\Shaders\FullscreenQuad.hlsl)"},
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
@@ -127,6 +134,7 @@ namespace Resources
             {GlowMerger, R"(..\Resources\Shaders\GlowMerger.hlsl)"},
             {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
             {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
+            {Moon, R"(..\Resources\Shaders\Moon.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SnowShader, R"(..\Resources\Shaders\SnowShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
@@ -135,6 +143,8 @@ namespace Resources
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
             {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
+        
+        Files toEnum(const char * str);
     }
     namespace Textures
     {
@@ -145,7 +155,6 @@ namespace Resources
             Crosshair,
             Gameover,
             gameOverMenuButtons,
-            gameOverTexture,
             Gamesheet,
             Grid,
             Highscore,
@@ -158,6 +167,7 @@ namespace Resources
             MainmenuClean,
             Mainmenutext,
             MissingTexture,
+            Moon_Thinking,
             Pausetext,
             randomNormals,
             Settings,
@@ -175,7 +185,6 @@ namespace Resources
             {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
             {Gameover, R"(..\Resources\Textures\Gameover.dds)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
-            {gameOverTexture, R"(..\Resources\Textures\gameOverTexture.png)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
             {Grid, R"(..\Resources\Textures\Grid.png)"},
             {Highscore, R"(..\Resources\Textures\Highscore.dds)"},
@@ -188,6 +197,7 @@ namespace Resources
             {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
+            {Moon_Thinking, R"(..\Resources\Textures\Moon_Thinking.png)"},
             {Pausetext, R"(..\Resources\Textures\Pausetext.dds)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {Settings, R"(..\Resources\Textures\Settings.dds)"},
@@ -198,5 +208,7 @@ namespace Resources
             {WaveComplete, R"(..\Resources\Textures\WaveComplete.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };
+        
+        Files toEnum(const char * str);
     }
 }

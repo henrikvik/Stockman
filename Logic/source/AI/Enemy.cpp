@@ -3,6 +3,7 @@
 #include <AI\Behavior\RangedBehavior.h>
 #include <AI\Behavior\MeleeBehavior.h>
 #include <AI\Behavior\BigBadBehavior.h>
+#include <AI\Behavior\StayBehavior.h>
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileStruct.h>
@@ -36,9 +37,21 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 //    enemyRenderInfo.freeze = 0;
 //    enemyRenderInfo.burn = 0;
     enemyRenderInfo.transform = getTransformMatrix();
-    //light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
-    //light.intensity = 0.5f;
-    //light.range = 2.f;
+    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
+    light.intensity = 0.5f;
+    light.range = 2.f;
+
+    body->setGravity({ 0.f, -9.82f * 7.f, 0.f });
+
+    addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
+        m_blinkTimer = 100.0f;
+        getSoundSource()->playSFX(Sound::SFX::ENEMY_HIT, 1.f, 0.2f);
+    });
+
+    addCallback(ON_DEATH, [&](CallbackData &data)
+    {
+        getSoundSource()->playSFX(Sound::SFX::ENEMY_DEATH, 1.f, 0.25f);
+    });
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -60,6 +73,9 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
             break;
         case BOSS_BADDIE:
                 m_behavior = newd BigBadBehavior();
+            break;
+        case STAY:
+            m_behavior = newd StayBehavior();
             break;
 		default:
 				m_behavior = newd TestBehavior();
@@ -137,6 +153,8 @@ bool Enemy::hasCallbackEntities()
 
 void Enemy::damage(int damage)
 {
+    if (damage == 0) return;
+
 	m_health -= damage;
     m_blinkTimer = 100.0f;
     getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
@@ -160,6 +178,17 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
         if (m_fireTimer >= 1000.0f)
         {
             damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken) * stacks);
+            m_fireTimer -= 1000.0f;
+        }
+    }
+    if (flags & Effect::EFFECT_FREEZE_DMG)
+    {
+        m_fireTimer += dt;
+
+        if (m_fireTimer >= 1000.0f)
+        {
+            damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+
             m_fireTimer -= 1000.0f;
         }
     }

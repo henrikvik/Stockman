@@ -64,7 +64,7 @@ namespace Graphics
             DirectX::SimpleMath::Vector3 color;
             UINT useGridTexture;
         };
-        struct AnimatedInstance : StaticInstance
+        struct AnimatedJoints
         {
             DirectX::SimpleMath::Matrix jointTransforms[20];
         };
@@ -74,7 +74,8 @@ namespace Graphics
         StructuredBuffer<StaticInstance> foliageInstanceBuffer;
 
         StructuredBuffer<StaticInstance> staticInstanceBuffer;
-        StructuredBuffer<AnimatedInstance> animatedInstanceBuffer;
+        StructuredBuffer<StaticInstance> animatedInstanceBuffer;
+        StructuredBuffer<AnimatedJoints> animatedJointsBuffer;
         #pragma endregion
 
         Sun sun;

@@ -35,6 +35,9 @@ namespace Graphics
         Global::context->PSSetShaderResources(0, 4, resources.data());
         Global::context->PSSetShaderResources(4, 1, *TextureLoader::get().getTexture(Resources::Textures::Grid));
 
+        Global::context->RSSetState(Global::cStates->CullClockwise());
+
+        Global::context->OMSetDepthStencilState(Global::cStates->DepthRead(), 0x0);
         Global::context->OMSetRenderTargets(targets.size(), targets.data(), depthStencil);
 
         Global::context->RSSetState(Global::cStates->CullClockwise());
@@ -42,13 +45,14 @@ namespace Graphics
         drawInstanced<StaticRenderInfo>(resources[4]);
 
         Global::context->VSSetShader(forward_plus_vs_animated, nullptr, 0);
-        drawInstanced<AnimatedRenderInfo>(resources[5]);
 
         Global::context->RSSetState(Global::cStates->CullNone());
         Global::context->VSSetConstantBuffers(1, 1, &buffers[2]);
         Global::context->VSSetShader(forward_plus_vs_foliage, nullptr, 0);
-        drawInstanced<FoliageRenderInfo>(resources[6]);
+        drawInstanced<FoliageRenderInfo>(resources[7]);
 
+        
+        drawInstancedAnimated<AnimatedRenderInfo>(resources[5], resources[6]);
         
         Global::context->PSSetSamplers(0, 3, Global::nulls);
         Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);

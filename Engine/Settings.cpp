@@ -4,12 +4,13 @@
 
 Settings::Settings()
 {
-    m_mouseSense = 0.01f;
+    m_mouseSense = 0.1f;
     m_FOV = 90.f;
     m_masterSound = 0.1f;;
     m_SFX = 0.1f;;
     m_music = 0.1f;
     m_windowed = false;
+    m_name = "";
 }
 
 Settings::~Settings()
@@ -42,6 +43,10 @@ void Settings::readFromFile()
 		{
 			m_masterSound = theSettings.floats.at("Value");
 		}
+        else if (theSettings.strings.at("Name").compare("Ambience") == 0)
+        {
+            m_ambience = theSettings.floats.at("Value");
+        }
 		else if (theSettings.strings.at("Name").compare("SFX") == 0)
 		{
 			m_SFX = theSettings.floats.at("Value");
@@ -54,6 +59,10 @@ void Settings::readFromFile()
 		{
 			m_windowed = theSettings.floats.at("Value");
 		}
+        else if (theSettings.strings.at("Name").compare("PlayerName") == 0)
+        {
+            m_name = theSettings.strings.at("Value");
+        }
 	}
 }
 
@@ -62,6 +71,11 @@ void Settings::writeToFile()
 	std::vector<Logic::FileLoader::LoadedStruct> saveTo;
 	int i = 0;
 	Logic::FileLoader::LoadedStruct tempSave;
+    Logic::FileLoader::LoadedStruct playerSave;
+
+    playerSave.strings["Name"] = "PlayerName";
+    playerSave.strings["Value"] = m_name;
+    saveTo.push_back(playerSave);
 
 	tempSave.strings["Name"] = "MouseSense";
 	tempSave.floats["Value"] = m_mouseSense;
@@ -74,6 +88,10 @@ void Settings::writeToFile()
 	tempSave.strings["Name"] = "MasterSound";
 	tempSave.floats["Value"] = m_masterSound;
 	saveTo.push_back(tempSave);
+
+    tempSave.strings["Name"] = "Ambience";
+    tempSave.floats["Value"] = m_ambience;
+    saveTo.push_back(tempSave);
 
 	tempSave.strings["Name"] = "SFX";
 	tempSave.floats["Value"] = m_SFX;
@@ -113,7 +131,7 @@ float* Settings::getFOVPTR()
 
 float Settings::getFOV()
 {
-	return 90; /// GET FOV m_FOV;
+	return m_FOV;
 }
 
 void Settings::setFOV(float FOV)
@@ -134,6 +152,21 @@ float Settings::getMasterSound()
 void Settings::setMasterSound(float masterSound)
 {
 	m_masterSound = masterSound;
+}
+
+float * Settings::getAmbiencePTR()
+{
+    return &m_ambience;
+}
+
+float Settings::getAmbience()
+{
+    return m_ambience;
+}
+
+void Settings::setAmbience(float ambience)
+{
+    m_ambience = ambience;
 }
 
 float* Settings::getSFXPTR()
@@ -179,4 +212,14 @@ bool Settings::getWindowed()
 void Settings::setWindowed(bool windowed)
 {
 	m_windowed = windowed;
+}
+
+std::string Settings::getName()
+{
+    return m_name;
+}
+
+void Settings::setName(std::string name)
+{
+    m_name = name;
 }

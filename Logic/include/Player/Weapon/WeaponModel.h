@@ -20,13 +20,14 @@ namespace Logic
         WeaponModel(Resources::Models::Files modelID, WeaponModelAnimationInfo mInfo);
         ~WeaponModel();
 
-        void update(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
+        void update(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
         const WeaponModelAnimationInfo& getModelInfo() const;
 
         void render() const;
 
     private:
+        DirectX::SimpleMath::Matrix m_current;
         WeaponModelAnimationInfo m_mInfo;
         //PlayerRenderInfo renderInfo;
         StaticRenderInfo renderInfo; // temp

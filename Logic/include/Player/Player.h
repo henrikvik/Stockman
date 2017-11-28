@@ -25,16 +25,8 @@
 #define PLAYER_SIZE_HEIGHT				2.f
 #define PLAYER_EYE_OFFSET               {0.f, PLAYER_SIZE_HEIGHT * 0.5f, 0.f}
 #define PLAYER_STARTING_HP				3
-#define PLAYER_MOUSE_SENSETIVITY		0.01f
+#define PLAYER_MOUSE_SENSETIVITY		0.1f
 #define PLAYER_MOVEMENT_MAX_SPEED		0.015f
-#define PLAYER_MOVEMENT_ACCELERATION	0.0002f
-#define PLAYER_MOVEMENT_AIRACCELERATION	0.005f
-#define PLAYER_MOVEMENT_AIRSTRAFE_SPEED 0.004f
-#define PLAYER_SPEED_LIMIT				0.04f
-#define PLAYER_STRAFE_ANGLE				0.95f
-#define PLAYER_FRICTION					20.f
-#define PLAYER_AIR_FRICTION				1.f
-#define PLAYER_JUMP_SPEED				0.008f
 
 namespace Sound
 {
@@ -97,9 +89,12 @@ namespace Logic
 		float m_jumpSpeed;
 
 		bool m_wishJump;
+        bool m_firstJump;
 		btVector3 m_wishDir;
 		float m_wishDirForward;
 		float m_wishDirRight;
+
+        bool m_wasInAir;
 
 		// Sound
 		Sound::ListenerData* m_listenerData;
@@ -135,6 +130,9 @@ namespace Logic
 		void jump(float deltaTime, DirectX::Keyboard::State* ks);
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
+
+        // Player step
+        void stepPlayer(float deltaTime);
 
 		// Sound
 		void updateSound(float deltaTime);

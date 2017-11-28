@@ -11,6 +11,7 @@ namespace Logic
 	enum ProjectileType
 	{
 		ProjectileTypeNormal,
+        ProjectileTypeCrossbowFire,
 		ProjectileTypeGrappling,
 		ProjectileTypeMelee,
         ProjectileTypeMeleeParry,
@@ -19,6 +20,7 @@ namespace Logic
 		ProjectileTypeBulletTimeSensor,
 		ProjectileTypeIce,
         ProjectileTypeFreezeGrenade,
+        ProjectileTypeFreezeExplosion,
         ProjectileTypeIceShard,
         ProjectileTypeFireArrow
 	};
@@ -34,6 +36,8 @@ namespace Logic
 		float gravityModifier;		// How fast the bullet falls to the ground
 		float ttl;					// Time to live in milisec
 
+        LightRenderInfo lightInfo;
+
 		ProjectileType type;
 		Resources::Models::Files meshID;
 		int materialID;
@@ -46,10 +50,11 @@ namespace Logic
 		bool isSensor;				// If bullet is sensor or not (collision with other bullet)
 		bool enemyBullet;			// if enemies shot it or a player
         bool shouldRender;          // If projectile should render
+        bool dmgFallOff;
 
-        ProjectileData() : hasEffect(false), effectActivated(false), effectVelocity(false), effect({}), damage(1), scale(1.f), mass(1.f), speed(1.f), gravityModifier(0.f), ttl(1000), meshID(Resources::Models::UnitCube), materialID(1), type(ProjectileTypeNormal), isSensor(false), enemyBullet(false) {}
-		ProjectileData(const char *fx, bool effectVelocity, bool effectActivated, int inDamage, float inScale, float inMass, float inSpeed, float inGravityModifier, float inTTL, Resources::Models::Files inMeshID, int inMaterialID, ProjectileType inType = ProjectileTypeNormal, bool inIsSensor = false, bool inEnemyBullet = false, bool inShouldRender = true) : damage(inDamage), scale(inScale), mass(inMass), speed(inSpeed),
-			effectVelocity(effectVelocity), effectActivated(effectActivated), gravityModifier(inGravityModifier), ttl(inTTL), meshID(inMeshID), materialID(inMaterialID), type(inType), isSensor(inIsSensor), enemyBullet(inEnemyBullet), shouldRender(inShouldRender)
+        ProjectileData() : hasEffect(false), effectActivated(false), effectVelocity(false), effect({}), damage(1), scale(1.f), mass(1.f), speed(1.f), gravityModifier(0.f), ttl(1000), meshID(Resources::Models::UnitCube), materialID(1), type(ProjectileTypeNormal), isSensor(false), enemyBullet(false), dmgFallOff(false) {}
+		ProjectileData(const char *fx, bool effectVelocity, bool effectActivated, int inDamage, float inScale, float inMass, float inSpeed, float inGravityModifier, float inTTL, LightRenderInfo inLightInfo, Resources::Models::Files inMeshID, int inMaterialID, ProjectileType inType = ProjectileTypeNormal, bool inIsSensor = false, bool inEnemyBullet = false, bool inShouldRender = true, bool inDmgFallOff = false) : damage(inDamage), scale(inScale), mass(inMass), speed(inSpeed), lightInfo(inLightInfo),
+			effectVelocity(effectVelocity), effectActivated(effectActivated), gravityModifier(inGravityModifier), ttl(inTTL), meshID(inMeshID), materialID(inMaterialID), type(inType), isSensor(inIsSensor), enemyBullet(inEnemyBullet), shouldRender(inShouldRender), dmgFallOff(inDmgFallOff)
         {
             if (fx) {
                 hasEffect = true;

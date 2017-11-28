@@ -53,6 +53,7 @@ namespace Graphics
         , foliageInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(FoliageRenderInfo))
         , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
         , animatedInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
+        , animatedJointsBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
         , fakeBuffers(WIN_WIDTH, WIN_HEIGHT)
 #pragma region Shared Shader Resources
         , colorMap(WIN_WIDTH, WIN_HEIGHT)
@@ -64,7 +65,7 @@ namespace Graphics
 
         , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
         , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
-        , sun(),
+        , sun(shadowMap),
 #pragma endregion
         DebugAnnotation(nullptr)
 
@@ -175,7 +176,7 @@ namespace Graphics
         viewPort.Height = WIN_HEIGHT;
         viewPort.MaxDepth = 1.0f;
 
-        FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
+        FXSystem = newd ParticleSystem(device, 4096, "Resources/Particles/base.part");
 
         TextureLoader::get().loadAll();
 
@@ -209,7 +210,7 @@ namespace Graphics
                     lightOpaqueGridUAV
                 }
             ),
-            newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil),
+            newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil, &sun),
             newd ForwardPlusRenderPass(
                 {
                     fakeBuffers,
@@ -223,11 +224,13 @@ namespace Graphics
                     shadowMap,
                     staticInstanceBuffer,
                     animatedInstanceBuffer,
+                    animatedJointsBuffer,
                     foliageInstanceBuffer
                 },
                 {
                     *Global::mainCamera->getBuffer(),
                     *sun.getGlobalLightBuffer(),
+                    *sun.getLightMatrixBuffer(),
                     grassTimeBuffer
                 },
                 depthStencil
@@ -242,7 +245,7 @@ namespace Graphics
                 depthStencil
             ),
             newd SSAORenderPass(&fakeBuffers, {}, { depthStencil, normalMap }, {}, nullptr), //this
-            //newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
+            newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
             newd GlowRenderPass(&fakeBuffers, {}, { glowMap }), //and this
             newd SnowRenderPass(
                 {
@@ -362,9 +365,9 @@ namespace Graphics
 
         for (auto & renderPass : renderPasses)
         {
-        //    if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
+            if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
               renderPass->render();
-       //     if (DebugAnnotation) DebugAnnotation->EndEvent();
+            if (DebugAnnotation) DebugAnnotation->EndEvent();
         }
     }
 
@@ -414,37 +417,40 @@ namespace Graphics
             }
         });
 
-        animatedInstanceBuffer.write([](AnimatedInstance * instanceBuffer)
         {
+            auto instanceBuffer = animatedInstanceBuffer.map();
+            auto jointsBuffer   = animatedJointsBuffer.map();
+
             for (auto & model_infos : RenderQueue::get().getQueue<AnimatedRenderInfo>())
             {
                 HybrisLoader::Skeleton * skeleton = &ModelLoader::get().getModel((Resources::Models::Files)model_infos.first)->getSkeleton();
 
                 for (auto & info : model_infos.second)
                 {
-                    AnimatedInstance instance = {};
+                    StaticInstance instance = {};
                     instance.world = info.transform;
                     instance.worldInvT = info.transform.Invert().Transpose();
                     instance.color = info.color;
                     instance.useGridTexture = info.useGridTexture;
 
+                    AnimatedJoints joints;
                     if (strlen(info.animationName) != 0)
                     {
                         auto jointTransforms = skeleton->evalAnimation(info.animationName, info.animationTimeStamp);
                         for (size_t i = 0; i < jointTransforms.size(); i++)
                         {
-                            instance.jointTransforms[i] = jointTransforms[i];
+                            joints.jointTransforms[i] = jointTransforms[i];
                         }
-                    }
-                    else
-                    {
-                        
                     }
 
                     *instanceBuffer++ = instance;
+                    *jointsBuffer++ = joints;
                 }
             }
-        });
+
+            animatedInstanceBuffer.unmap();
+            animatedJointsBuffer.unmap();
+        }
 
         lightsNew.write([](Light * lightBuffer)
         {

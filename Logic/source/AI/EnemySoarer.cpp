@@ -1,16 +1,25 @@
 #include <AI\EnemySoarer.h>
 #include <Projectile\Projectile.h>
+#include <Misc\ComboMachine.h>
+#include <AI\Behavior\Behavior.h>
 using namespace Logic;
 
-const int EnemySoarer::HEALTH = 400, EnemySoarer::DAMAGE = 1;
-const float EnemySoarer::SPEED = 15.f, 
-            EnemySoarer::AB1_SPEED = 20.f,
+const int EnemySoarer::HEALTH = 400, EnemySoarer::DAMAGE = 1, EnemySoarer::SCORE = 100;
+const float EnemySoarer::SPEED = 22.5f,
+            EnemySoarer::STEERING_MOD = 1.35f,
+            EnemySoarer::AB1_SPEED = 25.f,
+            EnemySoarer::AB1_SCALE = 8.f,
+            EnemySoarer::AB1_GRAVITY = 6.f,
             EnemySoarer::HEIGHT_OFFSET = 20.f;
 
 EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::StaticSummon, body, halfExtent,
             HEALTH, DAMAGE, SPEED, EnemyType::FLYING, 0) 
 {
+    addCallback(ON_DEATH, [&](CallbackData data) -> void {
+        ComboMachine::Get().kill(SCORE);
+    });
+
     setBehavior(MELEE);
     createAbilities();
     body->translate({ 0, HEIGHT_OFFSET, 0 });
@@ -20,6 +29,8 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 0.8f;
     light.range = 5.0f;
+
+    getBehavior()->setSteeringSpeed(getBehavior()->getSteeringSpeed() * STEERING_MOD);
 }
 
 EnemySoarer::~EnemySoarer()
@@ -31,9 +42,9 @@ void EnemySoarer::createAbilities()
       // ab 1
     AbilityData data;
 
-    data.cooldown = 1300.f;
+    data.cooldown = 1100.f;
     data.duration = 0.f;
-    data.randomChanche = 4;
+    data.randomChanche = 3;
 
     static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
     ProjectileData pdata;
@@ -47,7 +58,7 @@ void EnemySoarer::createAbilities()
         // ontick 
     }, [=](Player &player, Ability &ab) -> void {
         // onuse
-        auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, 5.f, 3.5f);
+        auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, AB1_GRAVITY, AB1_SCALE);
         if (pj) {
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());

@@ -21,6 +21,7 @@
 #pragma comment (lib, "d3d11.lib")
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+bool settingsFullScreenOverRide = false; 
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -47,6 +48,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
+        if (wparam == VK_RETURN)
+            if ((HIWORD(lparam) & KF_ALTDOWN))
+                settingsFullScreenOverRide = !settingsFullScreenOverRide;
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
 		break;
@@ -99,7 +103,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         std::string catcher = "";
         try
         {
-            Settings setting = Settings::getInstance();
+            Settings& setting = Settings::getInstance();
             if (args.size() != 0)
             {
                 setting.setWindowed(std::stoi(args[0]));
@@ -123,8 +127,32 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         return catcher;
     });
 
+    debug->registerCommand("CHANGE_NAME", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            Settings setting = Settings::getInstance();
+            if (args.size() != 0)
+            {
+                setting.setName(args[0]);
+                catcher = "Named have been changed!";
+            }
+            else
+            {
+                catcher = "Please add your new alias too.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Are you stupid?";
+        }
+
+        return catcher;
+    });
+
     // load settings before starting
-    Settings setting = Settings::getInstance();
+    Settings& setting = Settings::getInstance();
     setting.readFromFile();
 
 //    game = new Logic::StateMachine(cmdLine, args);
@@ -296,10 +324,10 @@ Profiler *g_Profiler;
 
 int Engine::run()
 {
-    Settings setting = Settings::getInstance();
+    Settings& setting = Settings::getInstance();
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(setting.getFOV()));
+	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, setting.getFOV());
     Global::mainCamera->update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
@@ -351,19 +379,24 @@ int Engine::run()
 
         //temp
         SpecialEffectRenderInfo shakeInfo;
-        shakeInfo.type = shakeInfo.screenShake;
-        shakeInfo.duration = 0.5f;
-        shakeInfo.radius = 30;
+        shakeInfo.type = shakeInfo.screenBounce;
+        shakeInfo.duration = 0.2f;
+        shakeInfo.radius = 160.0f;
+        shakeInfo.bounceMax = 15.0f;
+        shakeInfo.direction = DirectX::SimpleMath::Vector2(0.0f, 1.0f);
+        shakeInfo.affectEveryThing = false;
 
 #ifdef _DEBUG
         if (mTracker->pressed.G)
             QueueRender(shakeInfo);
 #endif // _DEBUG
-
-		if (setting.getWindowed() != test)
+        Settings& setting = Settings::getInstance();
+		if (setting.getWindowed() != test && settingsFullScreenOverRide == false)
 		{
-		//	mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
+			mSwapChain->SetFullscreenState(setting.getWindowed(), NULL);
 		}
+
+
 
         //static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
         //Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);		          
@@ -392,7 +425,8 @@ int Engine::run()
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
         if (!debug->isOpen())
-            game->update(float(deltaTime));
+            if (game->update(float(deltaTime)))
+                running = false;
         PROFILE_END();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);

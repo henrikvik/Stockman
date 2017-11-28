@@ -1,8 +1,8 @@
 #include <StatePlaying.h>
 #include <StateMachine\StateBuffer.h>
 #include <State.h>
-#include "..\include\Misc\GUI\iMenuCards.h"
-
+#include <Misc\GUI\iMenuCards.h>
+#include <Misc\Network\dbConnect.h>
 #include <Misc\CommandsFile.h>
 
 // Input Singletons
@@ -11,7 +11,7 @@
 
 // Debugging purposes
 #include <DebugDefines.h>
-#include <Engine\Typing.h>
+#include <Engine\Settings.h>
 #include <Engine\DebugWindow.h> 
 #include <GameType.h>
 
@@ -31,10 +31,10 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
 
     // Initializing Bullet physics
-    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();				// Configuration
-    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	// The default collision dispatcher
-    btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								// Detecting aabb-overlapping object pairs
-    btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver();			// Default constraint solver
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();		// Configuration
+    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	                // The default collision dispatcher
+    btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();								    // Detecting aabb-overlapping object pairs
+    btSequentialImpulseConstraintSolver* constraintSolver = new btSequentialImpulseConstraintSolver();		// Default constraint solver
     m_physics = new Physics(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
     m_physics->init();
 
@@ -45,10 +45,6 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     m_player = newd Player(Resources::Models::UnitCube, nullptr, GAME_START::PLAYER_SCALE);
     m_player->init(m_physics, m_projectileManager);
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
-
-    // Initializing Highscore Manager
-    m_highScoreManager = newd HighScoreManager();
-    m_highScoreManager->setName("Stockman");
 
     // Initializing the Map
     m_map = newd Map();
@@ -63,7 +59,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
 
     // Initializing Menu's
     m_menu = newd iMenuMachine();
-    m_menu->queueMenu(iMenu::MenuGroup::Skill);
+    m_menu->queueMenu(iMenu::MenuGroup::LoadingPost);
 
     // Loading func
     m_entityManager.setSpawnFunctions(*m_projectileManager, *m_physics);
@@ -75,6 +71,8 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     static SpecialEffectRenderInfo info;
     info.type = info.Snow;
     info.restart = true;
+
+    m_playTime = 0;
 
     QueueRender(info);
 }
@@ -91,12 +89,13 @@ StatePlaying::~StatePlaying()
     delete m_player;
     delete m_map;
     delete m_cardManager;
-    delete m_highScoreManager;
     delete m_projectileManager;
 }
 
 void StatePlaying::reset()
 {
+    m_playTime = 0;
+
     m_projectileManager->removeAllProjectiles();
     m_player->reset();
 
@@ -116,31 +115,45 @@ void StatePlaying::update(float deltaTime)
    
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
-    if (m_menu->getType() == iMenu::MenuGroup::Skill ||
-        m_menu->getType() == iMenu::MenuGroup::GameOver ||
-        m_menu->getType() == iMenu::MenuGroup::GameWon ||
-        m_menu->getType() == iMenu::MenuGroup::Pause) // Quick "temp pause" fix for testing purposes
+    if (m_menu->getType() != iMenu::Empty) // Quick "temp pause" fix for testing purposes
         return;
     PROFILE_END();
 
+    m_playTime += deltaTime;
     ComboMachine::Get().update(deltaTime);
 
-    if (fullhack)
-    {
-        static_cast<iMenuCards*>(m_menu->getActiveMenu())->setCardInformation(m_cardManager->getHand());
-        fullhack = false;
-    }
+
 
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
-    if (m_menu->getType() != iMenu::MenuGroup::CardSelect)
-    if (m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT()))
+    //the spagetti is (expand)ing (dong)
+    static bool wasTransitioning = false;
+    static bool frst = true;
+    if (m_menu->getType() != iMenu::CardSelect)
     {
-        m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
-        m_cardManager->pickThreeCards(m_player->getHP() != 3);
-        m_projectileManager->removeEnemyProjCallbacks();
+        m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
+        if (m_waveTimeManager.isTransitioning())
+        {
+            wasTransitioning = true;
+        }
 
-        //TODO temp
-        fullhack = true;
+        if (wasTransitioning == true && m_waveTimeManager.isTransitioning() == false)
+        {
+            if (!frst)
+            {
+                m_menu->queueMenu(iMenu::CardSelect);
+                m_cardManager->pickThreeCards(m_player->getHP() != 3);
+                m_projectileManager->removeEnemyProjCallbacks();
+
+                SpecialEffectRenderInfo fultAF;
+                fultAF.type = SpecialEffectRenderInfo::Snow;
+                fultAF.restart = true;
+                QueueRender(fultAF);
+                wasTransitioning = false;
+
+            }
+            frst = false;
+            wasTransitioning = false;
+        }
     }
 
     PROFILE_BEGIN("Sound");
@@ -168,9 +181,10 @@ void StatePlaying::update(float deltaTime)
     PROFILE_END();
 
     PROFILE_BEGIN("HUD");
-    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager);
+    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
     PROFILE_END();
 
+#define _DEBUG
 #ifdef _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
         m_player->takeDamage(1, 0);
@@ -192,7 +206,7 @@ void StatePlaying::render() const
 #endif // _DEBUG
 
     PROFILE_BEGIN("Player Render");
-    if (m_menu->getType() != iMenu::MenuGroup::GameOver)
+    if (m_menu->getType() != iMenu::GameOver)
         m_player->render();
     PROFILE_END();
 
@@ -209,15 +223,19 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    if (m_menu->getType() != iMenu::MenuGroup::Skill && 
-        m_menu->getType() != iMenu::MenuGroup::GameOver &&
-        m_menu->getType() != iMenu::MenuGroup::GameWon &&
-        m_menu->getType() != iMenu::MenuGroup::Pause)
+    if (m_menu->getType() == iMenu::Empty ||
+        m_menu->getType() == iMenu::CardSelect)
         m_hudManager.render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render Menu");
-    m_menu->render();
+    if (m_menu->getType() != iMenu::CardSelect)
+        m_menu->render();
+    PROFILE_END();
+
+    PROFILE_BEGIN("Render cards");
+    if (m_menu->getType() == iMenu::CardSelect)
+        m_cardManager->render();
     PROFILE_END();
 
     m_fpsRenderer.render();
@@ -225,16 +243,35 @@ void StatePlaying::render() const
 
 void StatePlaying::gameOver()
 {
-    ComboMachine::Get().endCombo();
-    m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
+    // Upload score
+    addHighscore();
+
+    // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
 }
 
 void StatePlaying::gameWon()
 {
-    ComboMachine::Get().endCombo();
-    m_highScoreManager->addNewHighScore(ComboMachine::Get().getTotalScore());
+    // Upload score
+    addHighscore();
+
+    // Queue Death Screen
     m_menu->queueMenu(iMenu::MenuGroup::GameWon);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
+}
+
+void StatePlaying::addHighscore()
+{
+    ComboMachine::Get().endCombo();
+    Network::dbConnect db;
+    std::string name = Settings::getInstance().getName();
+    if (name.empty()) name = "Stockman";
+
+    if (db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills()))
+        printf("Highscore added.\n");
+    else
+    {
+        printf("Database could not be reached, your score have been removed, sorry :'(\n");
+    }
 }

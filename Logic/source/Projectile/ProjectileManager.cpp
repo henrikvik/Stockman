@@ -99,7 +99,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         (pData.enemyBullet) ? (Physics::COL_EN_PROJ) : (Physics::COL_PL_PROJ);
     // collision mask
     body->getBroadphaseProxy()->m_collisionFilterMask = 
-        (pData.enemyBullet) ? (Physics::COL_EVERYTHING &~(Physics::COL_ENEMY)) : (Physics::COL_EVERYTHING &~(Physics::COL_PLAYER));
+        (pData.enemyBullet) ? (Physics::COL_EVERYTHING &~ (Physics::COL_ENEMY | Physics::COL_EN_PROJ)) : (Physics::COL_EVERYTHING &~(Physics::COL_PLAYER | Physics::COL_PL_PROJ));
 
 	// Taking the forward vector and getting the pitch and yaw from it
 	float pitch = asin(-forward.getY()) - M_PI;
@@ -115,7 +115,6 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
 
 	// Add to active-list
 	m_projectilesActive.push_back(p);
-
 	return p;
 }
 
@@ -154,12 +153,13 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         // clear uppgrades and effects on projectile
         p->getStatusManager().clear();
 
+        p->getProjectileData().hasEffect = false;
+
         // add to idle stack
         m_projectilesIdle.push_back(p);
     }
     std::swap(m_projectilesActive[index], m_projectilesActive[m_projectilesActive.size() - 1]);
     m_projectilesActive.pop_back();
-
 }
 
 void ProjectileManager::update(float deltaTime)
@@ -168,7 +168,7 @@ void ProjectileManager::update(float deltaTime)
 	{
 		Projectile* p = m_projectilesActive[i];
 		p->updateSpecific(deltaTime);
-		if (p->getDead() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
+		if (p->getDead())		// Check remove flag and ttl
 		{
 			removeProjectile(p, (int)i);
 			i--;

@@ -15,6 +15,11 @@
 #include <vector>
 #include <btBulletCollisionCommon.h>
 
+#include <Player\Weapon\AmmoContainer.h>
+#include <Player\Weapon\WeaponModel.h>
+
+#define WEAPON_PRIMARY 0
+#define WEAPON_SECONDARY 1
 
 namespace Graphics
 {
@@ -26,8 +31,6 @@ namespace Logic
     class Entity;
     class Player;
     class Weapon;
-    class AmmoContainer;
-    class WeaponModel;
     class ProjectileManager;
     class Effect;
     class Upgrade;
@@ -37,15 +40,9 @@ namespace Logic
 	public:
         struct WeaponLoadout
         {
-            Weapon* primary;
-            Weapon* secondary;
-            AmmoContainer* ammoContainer;
-            WeaponModel* weaponModel;
-
-            bool operator==(const WeaponLoadout &other)
-            {
-                return (primary == other.primary && secondary == other.secondary && ammoContainer == other.ammoContainer && weaponModel && other.weaponModel);
-            }
+            Weapon* weapon[2];
+            AmmoContainer ammoContainer;
+            WeaponModel weaponModel;
         };
 
 		WeaponManager();
@@ -61,14 +58,12 @@ namespace Logic
         void onUpgradeAdd(int stacks, Upgrade const & upgrade);
 		void render() const;
 
-		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
+		void setWeaponModel(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		void switchWeapon(int weaponID);
 
-        void tryUsePrimary(btVector3 position, float yaw, float pitch, Player& shooter);
-		void usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter);
-        void tryUseSecondary(btVector3 position, float yaw, float pitch, Player& shooter);
-		void useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter);
+        void tryAttack(int attackMode, btVector3 position, float yaw, float pitch, Player& shooter);
+		void attack(int attackMode, btVector3 position, float yaw, float pitch, Entity& shooter);
 		void reloadWeapon();
 
 		bool isSwitching();
@@ -108,7 +103,7 @@ namespace Logic
 
         Upgrades m_Upgrades;
 
-        std::vector<WeaponLoadout*> m_weaponLoadouts;
+        std::vector<WeaponLoadout> m_weaponLoadouts;
 		WeaponLoadout* m_currentWeapon;
 
 		// Timers

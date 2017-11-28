@@ -29,10 +29,6 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     m_map->init(m_physics);
     m_map->loadStartMenuScene();
 
-    // Initializing Highscore Manager
-    m_highScoreManager = newd HighScoreManager();
-    m_highScoreManager->setName("Stockman");
-
     // Initializing Menu's
     m_menu = newd iMenuMachine();
     m_menu->queueMenu(iMenu::MenuGroup::Intro);
@@ -49,7 +45,6 @@ StateStart::StateStart(StateBuffer* stateBuffer)
 StateStart::~StateStart()
 {
     delete m_menu;
-    delete m_highScoreManager;
     delete m_physics;
     delete m_map;
 }
@@ -59,6 +54,11 @@ void StateStart::reset() { }
 void StateStart::update(float deltaTime)
 {
     Graphics::FXSystem->processEffect(&m_campfire, { 0, 0, 0 }, deltaTime / 1000.f);
+
+    //temp 
+    SpecialEffectRenderInfo info;
+    info.type = SpecialEffectRenderInfo::DoF;
+    QueueRender(info);
 
     PROFILE_BEGIN("Physics");
     m_physics->update(deltaTime);

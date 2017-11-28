@@ -14,9 +14,9 @@ using namespace Logic;
 
 // Give menus their unique timer here in milliseconds
 #define FADING_TIMER_INTRO      250.f      
-#define FADING_TIMER_GAMEOVER   1500.f
+#define FADING_TIMER_GAMEOVER   1000.f
 #define FADING_TIMER_SKILL      800.f
-#define FADING_TIMER_CARD       550.f
+#define FADING_TIMER_CARD       500.f
 
 #endif
 float getFadingTimer(iMenu::MenuGroup group)
@@ -34,8 +34,7 @@ float getFadingTimer(iMenu::MenuGroup group)
     return DEFAULT_FADING_TIMER;
 }
 
-
-iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_fadingTimer(getFadingTimer(group)), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
+iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawSliders(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_fadingTimer(getFadingTimer(group)), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
 
 iMenu::~iMenu() { }
 
@@ -81,6 +80,17 @@ void iMenu::addButton(ButtonData btn)
     m_drawButtons = true;
 }
 
+void iMenu::addSlider(SliderData sld)
+{
+    Slider temp(sld.name, sld.screenRect.topLeft.x * WIN_WIDTH, sld.screenRect.topLeft.y * WIN_WIDTH,
+        (sld.screenRect.bottomRight.x - sld.screenRect.topLeft.x) * WIN_WIDTH,
+        (sld.screenRect.bottomRight.y - sld.screenRect.topLeft.y) * WIN_WIDTH,
+        sld.texture, sld.texRectNormal, sld.texRectHover, sld.texRectActive, sld.min, sld.max, sld.value, sld.minValue, sld.maxValue, sld.delimeter);
+
+    m_sliders.push_back(temp);
+    m_drawSliders = true;
+}
+
 // Updates the buttons of this menu
 void iMenu::update(int x, int y, float deltaTime)
 {
@@ -109,14 +119,22 @@ void iMenu::update(int x, int y, float deltaTime)
 void iMenu::updateClick(int x, int y)
 {
     bool clickWasPressed = DirectX::Mouse::Get().GetState().leftButton;
-    if (clickWasPressed && !m_pressed)
+    if (clickWasPressed)
     {
-        m_pressed = true;
-        for (Button& btn : m_buttons)
-            btn.updateOnPress(x, y);
+        if (!m_pressed)
+        {
+            m_pressed = true;
+            for (Button& btn : m_buttons)
+                btn.updateOnPress(x, y);
+        }
+
+        for (Slider& sld : m_sliders)
+            sld.updateOnPress(x, y);
     }
     else if (!clickWasPressed && m_pressed)
     {
+        for (Slider& sld : m_sliders)
+            sld.updateOnRelease(x, y);
         m_pressed = false;
     }
 }
@@ -126,6 +144,9 @@ void iMenu::updateHover(int x, int y)
 {
     for (Button& btn : m_buttons)
         btn.hoverOver(x, y);
+
+    for (Slider& sld : m_sliders)
+        sld.hoverOver(x, y);
 }
 
 // Render the background at the back and the buttons in front
@@ -137,6 +158,10 @@ void iMenu::render() const
     if (m_drawButtons)
         for (const Button& btn : m_buttons)
             btn.render();
+
+    if (m_drawSliders)
+        for (const Slider& sld : m_sliders)
+            sld.render();
 }
 
 // Sets alpha on both menu's and buttons
@@ -145,4 +170,7 @@ void iMenu::setAlpha(float alpha)
     m_background.alpha = alpha;
     for (Button& btn : m_buttons)
         btn.setAlpha(alpha);
+
+    for (Slider& sld : m_sliders)
+        sld.setAlpha(alpha);
 }

@@ -1,6 +1,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <string>
+
 class Settings
 {
 private:
@@ -8,9 +10,11 @@ private:
 	float m_mouseSense;
 	float m_FOV;
 	float m_masterSound;
+    float m_ambience;
 	float m_SFX;
 	float m_music;
 	bool m_windowed;
+    std::string m_name;
 public:
 	Settings();
 	~Settings();
@@ -26,6 +30,9 @@ public:
 	float* getMasterSoundPTR();
     float getMasterSound();
 	void setMasterSound(float masterSound);
+    float* getAmbiencePTR();
+    float getAmbience();
+    void setAmbience(float ambience);
 	float* getSFXPTR();
     float getSFX();
 	void setSFX(float SFX);
@@ -35,6 +42,8 @@ public:
 	bool* getWindowedPTR();
     bool getWindowed();
 	void setWindowed(bool windowed);
+    std::string getName();
+    void setName(std::string name);
 };
 
 #endif
