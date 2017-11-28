@@ -185,7 +185,8 @@ namespace Graphics
             newd ParticleDepthRenderPass(depthStencil),
             newd DepthRenderPass(
                 {},
-                { staticInstanceBuffer, animatedInstanceBuffer }, 
+                { staticInstanceBuffer, animatedInstanceBuffer, animatedJointsBuffer,
+                foliageInstanceBuffer },
                 {*Global::mainCamera->getBuffer(), grassTimeBuffer },
                 depthStencil
             ),
