@@ -8,8 +8,8 @@
 #include <Engine\DebugWindow.h>
 
 using namespace Logic;
-const int AStar::NULL_NODE = NULL_NODE;
-const DirectX::SimpleMath::Vector3 AStar::OFFSET = DirectX::SimpleMath::Vector3(0, 5, 0);
+const int AStar::NULL_NODE = -1;
+const DirectX::SimpleMath::Vector3 AStar::OFFSET = DirectX::SimpleMath::Vector3(0.f, 10.f, 0.f);
 
 AStar::AStar(std::string file)
 {
@@ -136,7 +136,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 {
     std::vector<const DirectX::SimpleMath::Vector3*> list;
 
-    list.push_back(endNode->connectionNode);
+    list.push_back(&(navigationMesh.getNodes()[endNode->nodeIndex]));
     while ((endNode = &navNodes[endNode->parent])->parent != NULL_NODE)
         list.push_back(endNode->connectionNode);
 
@@ -155,9 +155,11 @@ void AStar::loadTargetIndex(Entity const &target)
     int newIndex;
     if (targetOutOfBounds || !isEntityOnIndex(target, targetIndex))
     {
-        newIndex = navigationMesh.getIndex(target.getPosition());
+        newIndex = navigationMesh.getIndex(target.getPosition() + OFFSET);
         if (newIndex == NULL_NODE) // if out of bounds use last index
+        {
             targetOutOfBounds = true;
+        }
         else
         {
             targetOutOfBounds = false;
@@ -178,12 +180,12 @@ int AStar::getIndex(Entity const &entity) const
 
 int AStar::getIndex(btVector3 const &vec) const
 {
-    return navigationMesh.getIndex(DirectX::SimpleMath::Vector3(vec));
+    return navigationMesh.getIndex(DirectX::SimpleMath::Vector3(vec) + OFFSET);
 }
 
 int AStar::isEntityOnIndex(Entity const &entity, int index) const
 {
-    return navigationMesh.isPosOnIndex(entity.getPosition(), index);
+    return navigationMesh.isPosOnIndex(entity.getPosition() + OFFSET, index);
 }
 
 size_t AStar::getNrOfPolygons() const
