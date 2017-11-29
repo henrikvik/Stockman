@@ -543,10 +543,10 @@ void HUDManager::render() const
         bar.render();
     }
 
-    for (auto &wave : waveSprites)
+    /*for (auto &wave : waveSprites)
     {
         wave.render();
-    }
+    }*/
     renderTextElements();
 }
 

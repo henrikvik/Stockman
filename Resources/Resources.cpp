@@ -52,6 +52,7 @@ namespace Resources
             if (strcmp(str, "Firepit") == 0) return Firepit;
             if (strcmp(str, "GrapplingPoint") == 0) return GrapplingPoint;
             if (strcmp(str, "Grappling_Point") == 0) return Grappling_Point;
+            if (strcmp(str, "Grass") == 0) return Grass;
             if (strcmp(str, "Grass1") == 0) return Grass1;
             if (strcmp(str, "Ground") == 0) return Ground;
             if (strcmp(str, "Hammer") == 0) return Hammer;
@@ -68,10 +69,10 @@ namespace Resources
             if (strcmp(str, "Lower_Island") == 0) return Lower_Island;
             if (strcmp(str, "Market_Tent") == 0) return Market_Tent;
             if (strcmp(str, "MenuScene") == 0) return MenuScene;
+            if (strcmp(str, "Necromancer") == 0) return Necromancer;
             if (strcmp(str, "Rock1") == 0) return Rock1;
             if (strcmp(str, "Rock2") == 0) return Rock2;
             if (strcmp(str, "Rock3") == 0) return Rock3;
-            if (strcmp(str, "Necromancer") == 0) return Necromancer;
             if (strcmp(str, "SkySphere") == 0) return SkySphere;
             if (strcmp(str, "Small_Crate") == 0) return Small_Crate;
             if (strcmp(str, "SnowHeap") == 0) return SnowHeap;
@@ -149,6 +150,7 @@ namespace Resources
             if (strcmp(str, "Pausetext") == 0) return Pausetext;
             if (strcmp(str, "randomNormals") == 0) return randomNormals;
             if (strcmp(str, "Settings") == 0) return Settings;
+            if (strcmp(str, "SettingsButtons") == 0) return SettingsButtons;
             if (strcmp(str, "SettingsMenuButtons") == 0) return SettingsMenuButtons;
             if (strcmp(str, "Skillpickbackground") == 0) return Skillpickbackground;
             if (strcmp(str, "Skillpicksheet") == 0) return Skillpicksheet;
