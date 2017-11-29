@@ -49,7 +49,8 @@ namespace Sound
         TRIGGER_PICKUP, 
         TRIGGER_JUMPPAD,
         START_GAME, 
-        UPGRADE_UNLOCKED
+        UPGRADE_UNLOCKED, 
+        CAMPFIRE
     };
 
     // Put all identifier for music here

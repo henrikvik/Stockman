@@ -26,6 +26,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
     // Starting in game-sounds
+    Sound::NoiseMachine::Get().stopGroup(Sound::CHANNEL_SFX);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
 
