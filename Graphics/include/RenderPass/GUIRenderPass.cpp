@@ -190,7 +190,7 @@ void Graphics::GUIRenderPass::updateShake(float deltaTime)
         if (affectEverything)
         {
             //this ugly
-            Global::mainCamera->update(Global::mainCamera->getPos() + ndcPositionOffset * 3.f, Global::mainCamera->getForward(), Global::context);
+            //Global::mainCamera->update(Global::mainCamera->getPos() + ndcPositionOffset * 0.5f, Global::mainCamera->getForward(), Global::context);
         }
         
     }
