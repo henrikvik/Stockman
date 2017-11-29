@@ -91,11 +91,7 @@ void EnemySoarer::updateSpecific(Player &player, float deltaTime)
     ab1.useAbility(player); // move to use ability and make seperate behavior tree
     ab1.update(deltaTime, player);
 
-    getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
-    if (getPositionBT().y() > HEIGHT_OFFSET + player.getPositionBT().y()) // bad fix but better to just force it right now
-        getRigidBody()->getWorldTransform().getOrigin().setY(HEIGHT_OFFSET);
-    else if (getPositionBT().y() < (HEIGHT_OFFSET + player.getPositionBT().y())* 0.8f)
-        getRigidBody()->setLinearVelocity(getRigidBody()->getLinearVelocity() + btVector3(0.f, 1.f, 0.f));
+    handleFlying(player);
 }
 
 void EnemySoarer::updateDead(float deltaTime)
@@ -104,4 +100,17 @@ void EnemySoarer::updateDead(float deltaTime)
 
 void EnemySoarer::useAbility(Player &target)
 {
+}
+
+void EnemySoarer::handleFlying(Player const &target)
+{
+    getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
+    auto vel = getRigidBody()->getLinearVelocity();
+
+    if (getPositionBT().y() > HEIGHT_OFFSET + target.getPositionBT().y()) // bad fix but better to just force it right now
+        vel.setY(-0.2f);
+    else if (getPositionBT().y() < (HEIGHT_OFFSET + target.getPositionBT().y()) * 0.9f)
+        vel.setY(0.2f);
+
+    getRigidBody()->setLinearVelocity(vel);
 }
