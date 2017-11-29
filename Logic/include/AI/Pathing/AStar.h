@@ -60,6 +60,7 @@ namespace Logic
             bool renderDebugTri, renderDebugEdges;
 
 			int targetIndex; // save the triangle id to share beetwen path loading
+            DirectX::SimpleMath::Vector3 lastTargetPosition;
             bool targetOutOfBounds;
 		
 			float heuristic(DirectX::SimpleMath::Vector3 const &from,

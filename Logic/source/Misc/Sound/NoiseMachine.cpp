@@ -161,14 +161,10 @@ void NoiseMachine::checkIfPlay(Noise* sound, SoundSource* soundSource, bool over
 	else
 	{
 		// Checking if channel is currently playing something
-		bool playing = false;
+		static bool playing = false;
 		if (soundSource->channel)
 		{
-			FMOD_RESULT result = soundSource->channel->isPlaying(&playing);
-			if ((result != FMOD_OK) && (result != FMOD_ERR_INVALID_HANDLE) && (result != FMOD_ERR_CHANNEL_STOLEN))
-			{
-				ERRCHECK(result);
-			}
+			soundSource->channel->isPlaying(&playing);
 		}
 
 		// If not playing sound, play sound
