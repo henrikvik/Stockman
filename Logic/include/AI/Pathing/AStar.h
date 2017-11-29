@@ -42,13 +42,14 @@ namespace Logic
 				}
 			};
 
-			// singleton for the moment
 			static AStar& singleton()
 			{
 				static AStar aStar("");
 				return aStar;
 			}
 		private:
+            static const int NULL_NODE;
+
 			std::string file;
 			std::vector<NavNode> navNodes; //testing
 

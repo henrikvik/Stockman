@@ -6,9 +6,9 @@
 
 #include <Engine\Profiler.h>
 #include <Engine\DebugWindow.h>
-#define NO_PARENT -1
 
 using namespace Logic;
+const int AStar::NULL_NODE = NULL_NODE;
 
 AStar::AStar(std::string file)
 {
@@ -39,9 +39,8 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
 {
-
     // Edge cass 
-    if (startIndex == toIndex || startIndex == -1 || toIndex == -1)
+    if (startIndex == toIndex || startIndex == NULL_NODE || toIndex == NULL_NODE)
         return {};
 
     // all nodes in navMesh
@@ -117,7 +116,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
         currentNode->onClosedList = true;
     }
 
-    if (!currentNode || currentNode->parent == NO_PARENT)
+    if (!currentNode || currentNode->parent == NULL_NODE)
     {
         printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
             "Lukas or something (AStar.cpp:%d)\n", __LINE__);
@@ -138,7 +137,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
     std::vector<const DirectX::SimpleMath::Vector3*> list;
 
     list.push_back(&(navigationMesh.getNodes()[endNode->nodeIndex]));
-    while ((endNode = &navNodes[endNode->parent])->parent != NO_PARENT)
+    while ((endNode = &navNodes[endNode->parent])->parent != NULL_NODE)
         list.push_back(endNode->connectionNode);
 
     std::reverse(list.begin(), list.end());
@@ -157,7 +156,7 @@ void AStar::loadTargetIndex(Entity const &target)
     if (targetOutOfBounds || !isEntityOnIndex(target, targetIndex))
     {
         newIndex = navigationMesh.getIndex(target.getPosition());
-        if (newIndex == -1) // if out of bounds use last index
+        if (newIndex == NULL_NODE) // if out of bounds use last index
             targetOutOfBounds = true;
         else
         {
@@ -195,8 +194,6 @@ size_t AStar::getNrOfPolygons() const
 void AStar::generateNavigationMesh(Physics &physics)
 {
     generator.registerGenerationCommand(navigationMesh, physics);
-    //generator.generateNavMeshOld(navigationMesh, {}, {});
-    //generator.generateNavigationMesh(navigationMesh, physics);
     navigationMesh.loadFromFile();
 
     DebugWindow::getInstance()->registerCommand("AI_TOGGLE_DEBUG_TRI",
@@ -313,7 +310,7 @@ void AStar::createNodes()
 
     node.onClosedList = node.explored = false;
     node.g = node.h = 0;
-    node.parent = NO_PARENT;
+    node.parent = NULL_NODE;
     node.connectionNode = nullptr;
 
     navNodes.clear();
