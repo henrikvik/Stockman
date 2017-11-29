@@ -369,6 +369,8 @@ void EntityManager::spawnWave(int waveId, btVector3 const &playerPos)
         return;
     }
 
+    Sound::NoiseMachine::Get().playSFX(Sound::WAVE_START, nullptr, true);
+
     WaveManager::EntitiesInWave entities = m_waveManager.getEntities(waveId);
     m_frame = 0;
 

@@ -6,6 +6,7 @@
 #include <Misc\RandomGenerator.h>
 #include <toml\toml.h>
 #include <fstream>
+#include <Misc\Sound\SoundSource.h>
 #include <Graphics/include/Utility/ModelLoader.h>
 
 using namespace Logic;
@@ -91,9 +92,13 @@ void Map::loadStartMenuScene()
     hitboxes.push_back({ { 0, 0.0f, 0 },{ 0, 0, 0 },{ 1.f, 1.f, 1.f },    Resources::Models::MenuScene });
 
     add(FrameLight({ 0.f, 0.f, 0.f }, {1.f, 0.5f, 0.3f}, 1.f, 10.f));
+    
+    Sound::SoundSource campfire;
+    campfire.pos = { 0, 0, 0 };
+    campfire.vel = { 0, 0, 0 };
+    campfire.playSFX(Sound::SFX::CAMPFIRE);
 
-    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
-    for (size_t i = lights.size(); i--;) add(lights[i]);
+    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
 }
 
 void Logic::Map::loadMap(Resources::Maps::Files map)
