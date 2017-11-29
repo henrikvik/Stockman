@@ -79,7 +79,7 @@ void EntityManager::registerCreationFunctions()
     };
     m_enemyFactory[EnemyType::NECROMANCER_MINION] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.f, 1.f, 0.6f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.f, 1.3f, 0.8f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
