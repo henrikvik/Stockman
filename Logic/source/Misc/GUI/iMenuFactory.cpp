@@ -68,7 +68,8 @@ iMenu * iMenuFactory::buildMenuSettings()
     menu->addSlider(buildSlider("SFXSlider", setting.getSFXPTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("FOVSlider", setting.getFOVPTR(), 90.0f, 180.0f, 1.0f));
 
-    menu->addButton(buildButton("MenuSettingsVideoWindowed", ButtonFunction::windowed));
+    menu->addButton(buildButton("MenuSettingsVideoWindowedLeft", ButtonFunction::windowed));
+    menu->addButton(buildButton("MenuSettingsVideoWindowedRight", ButtonFunction::windowed));
 
     //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
     //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
