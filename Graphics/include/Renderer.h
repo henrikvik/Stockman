@@ -69,6 +69,10 @@ namespace Graphics
             DirectX::SimpleMath::Matrix jointTransforms[32];
         };
 
+        float grassTime;
+        ConstantBuffer<float> grassTimeBuffer;
+        StructuredBuffer<StaticInstance> foliageInstanceBuffer;
+
         StructuredBuffer<StaticInstance> staticInstanceBuffer;
         StructuredBuffer<StaticInstance> animatedInstanceBuffer;
         StructuredBuffer<AnimatedJoints> animatedJointsBuffer;
@@ -82,7 +86,6 @@ namespace Graphics
 		
 
 		ConstantBuffer <UINT> timeBuffer;
-		UINT grassTime = 0;
 		Shader foliageShader;
 		Fog fog;
     };

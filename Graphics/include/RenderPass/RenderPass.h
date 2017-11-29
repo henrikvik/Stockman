@@ -47,6 +47,8 @@ namespace Graphics
     void RenderPass::drawInstanced(ID3D11ShaderResourceView * instanceBuffer) const
     {
         Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        Global::context->RSSetState(Global::cStates->CullClockwise());
+        Global::context->VSSetShaderResources(10, 1, &instanceBuffer);
 
         Global::context->VSSetShaderResources(10, 1, &instanceBuffer);
         Global::context->VSSetConstantBuffers(10, 1, instanceOffsetBuffer);
@@ -71,6 +73,8 @@ namespace Graphics
                 /*Glow    */ material->getGlow()
             };
             Global::context->PSSetShaderResources(12, 4, textures);
+
+
 
             instanceOffsetBuffer.write(Global::context, &instanceOffset, sizeof(instanceOffset));
             instanceOffset += renderInfos.size();
