@@ -34,7 +34,7 @@ float4 PS(PSInput input) : SV_Target0
 
 void PS_depth(PSInput input)
 {
-    float noise = Noise.SampleLevel(Sampler, input.noisescale*input.uv + float2(0, input.noisespeed), 0).g;
+    float noise = Noise.SampleLevel(Sampler, input.noisescale*input.uv + float2(0, input.age * input.noisespeed), 0).g;
     float cap = 1 - input.age;
 
     clip(
