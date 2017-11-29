@@ -96,8 +96,7 @@ namespace Graphics
 
         if (update_frustrum)
         {
-            using namespace DirectX::SimpleMath;
-            
+            using namespace DirectX::SimpleMath;            
             enum Planes { NEAR_, FAR_, LEFT_, RIGHT_, TOP_, BOT_ };
             frustrum_planes[NEAR_]  = {{ 0, 0, 1}, -1};
             frustrum_planes[FAR_]   = {{ 0, 0,-1}, -1};
@@ -112,6 +111,7 @@ namespace Graphics
                 plane.transform(ndc_to_world);
             }
 
+            #ifdef _DEBUG
             auto draw_square = [&](Vector3 top_left, Vector3 top_right, Vector3 bot_left, Vector3 bot_right, Color color)
             {
                 debug_points.emplace_back(top_left, color);
@@ -136,21 +136,13 @@ namespace Graphics
                 debug_points.emplace_back(position, color);
                 debug_points.emplace_back(position + plane.normal, color);
             };
-
-            Color colors[] =
-            {
-                {0, 0, 1},
-                {0, 1, 0},
-                {0, 1, 1},
-                {1, 0, 0},
-                {1, 0, 1},
-                {1, 1, 0}
-            };
+            Color colors[] = {{0, 0, 1},{0, 1, 0},{0, 1, 1},{1, 0, 0},{1, 0, 1},{1, 1, 0}};
             debug_points.clear();
             for (size_t i = 0; i < 6; i++)
             {
                 draw_plane(frustrum_planes[i], colors[i]);
             }
+            #endif
         }
     }
 
