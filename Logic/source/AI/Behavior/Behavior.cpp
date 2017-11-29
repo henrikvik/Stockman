@@ -9,12 +9,12 @@
 
 #define MAX_LEN_FOR_SEPERATION 15.f
 // this can be changed in the future maybe who knows
-#define CHANGE_NODE_DIST 8.f
+#define CHANGE_NODE_DIST 5.f
 
 #include <queue>
 
 using namespace Logic;
-const float Behavior::STEERING_BASE = 3.f, Behavior::STEERING_MOD = 10;
+const float Behavior::STEERING_BASE = 3.f, Behavior::STEERING_MOD = 30;
 
 Behavior::Behavior(PathingType type)
 {
@@ -57,7 +57,10 @@ void Behavior::walkPath(RunIn &in)
         btVector3 node{pathNode.x, pathNode.y, pathNode.z};
         dir = node - in.enemy->getPositionBT();
 
-        if ((node - in.enemy->getPositionBT()).length() < CHANGE_NODE_DIST)
+        btVector3 diff = dir;
+        diff.setY(0);
+
+        if (diff.length() < CHANGE_NODE_DIST)
         {
             if (!m_pathing.pathOnLastNode())
                 m_pathing.setCurrentNode(m_pathing.getCurrentNode() + 1);

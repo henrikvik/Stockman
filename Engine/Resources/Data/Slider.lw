@@ -2,7 +2,7 @@
 	"sliderName" : "FOVSlider";
 	"texture" : 0;
 	"xPos" : 578.0f;
-	"yPos" : 550.0f;
+	"yPos" : 415.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.05f;
 	"xTexEnd" : 1.f;
@@ -16,16 +16,16 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.620f;
     "activeOffset" : 0.470f;
-	"height" : 50.f;
-	"width" : 256.0f;
-    "min" : 578.0f;
-    "max" : 1133.0f;
+	"height" : 40.f;
+	"width" : 25.0f;
+    "min" : 739.0f;
+    "max" : 1046.0f;
 }
 {
 	"sliderName" : "SFXSlider";
 	"texture" : 0;
 	"xPos" : 578.0f;
-	"yPos" : 450.0f;
+	"yPos" : 315.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.05f;
 	"xTexEnd" : 1.f;
@@ -39,16 +39,16 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.620f;
     "activeOffset" : 0.470f;
-	"height" : 50.f;
-	"width" : 256.0f;
-    "min" : 578.0f;
-    "max" : 1133.0f;
+	"height" : 25.f;
+	"width" : 25.0f;
+    "min" : 739.0f;
+    "max" : 1046.0f;
 }
 {
 	"sliderName" : "AmbienceSlider";
 	"texture" : 0;
 	"xPos" : 578.0f;
-	"yPos" : 365.0f;
+	"yPos" : 264.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.05f;
 	"xTexEnd" : 1.f;
@@ -62,16 +62,16 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.620f;
     "activeOffset" : 0.470f;
-	"height" : 50.f;
-	"width" : 256.0f;
-    "min" : 578.0f;
-    "max" : 1133.0f;
+	"height" : 25.f;
+	"width" : 25.0f;
+    "min" : 739.0f;
+    "max" : 1046.0f;
 }
 {
 	"sliderName" : "MusicSlider";
 	"texture" : 0;
 	"xPos" : 578.0f;
-	"yPos" : 275.0f;
+	"yPos" : 288.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.05f;
 	"xTexEnd" : 1.f;
@@ -85,16 +85,16 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.620f;
     "activeOffset" : 0.470f;
-	"height" : 50.f;
-	"width" : 256.0f;
-    "min" : 578.0f;
-    "max" : 1133.0f;
+	"height" : 25.f;
+	"width" : 25.0f;
+    "min" : 739.0f;
+    "max" : 1046.0f;
 }
 {
 	"sliderName" : "MasterSlider";
 	"texture" : 0;
 	"xPos" : 578.0f;
-	"yPos" : 200.0f;
+	"yPos" : 238.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.05f;
 	"xTexEnd" : 1.f;
@@ -108,16 +108,16 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.620f;
     "activeOffset" : 0.470f;
-	"height" : 50.f;
-	"width" : 256.0f;
-    "min" : 578.0f;
-    "max" : 1133.0f;
+	"height" : 25.f;
+	"width" : 25.0f;
+    "min" : 739.0f;
+    "max" : 1046.0f;
 }
 {
 	"sliderName" : "MouseSlider";
 	"texture" : 0;
 	"xPos" : 578.0f;
-	"yPos" : 125.0f;
+	"yPos" : 360.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.05f;
 	"xTexEnd" : 1.f;
@@ -131,8 +131,8 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.620f;
     "activeOffset" : 0.470f;
-	"height" : 50.f;
-	"width" : 256.0f;
-    "min" : 578.0f;
-    "max" : 1133.0f;
+	"height" : 40.f;
+	"width" : 25.0f;
+    "min" : 739.0f;
+    "max" : 1046.0f;
 }

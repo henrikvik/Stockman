@@ -16,6 +16,14 @@
 #define SNOW_SPEED 0.26f
 #define WIND_CHANGE_TIME 5.5f
 
+float getRandomFloat(float from, float to)
+{
+    // f is [0, 1]
+    float f = static_cast<float> (rand()) / static_cast<float> (RAND_MAX);
+    // return [from, to]
+    return (f * std::abs(to - from)) + from;
+}
+
 using namespace DirectX::SimpleMath;
 
 Graphics::SnowRenderPass::SnowRenderPass(
@@ -96,6 +104,8 @@ void Graphics::SnowRenderPass::update(float deltaTime)
         randWind.y = -SNOW_SPEED;
     }
 
+
+
     for (int i = 0; i < snowFlakeCount; i++)
     {
         if ((snowFlakes[i].position - Global::mainCamera->getPos()).Length() > SNOW_RADIUS)
@@ -174,10 +184,13 @@ void Graphics::SnowRenderPass::addRandomSnowFlake()
 
 void Graphics::SnowRenderPass::moveSnowFlake(int snowFlake)
 {
-    Vector3 posToCam = Global::mainCamera->getPos() - snowFlakes[snowFlake].position;
-    posToCam.Normalize();
+    Vector3 randVec(getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS));
 
-    snowFlakes[snowFlake].position = Global::mainCamera->getPos() + (posToCam * SNOW_RADIUS);
+    Vector3 finalPos = Global::mainCamera->getPos() + randVec;
+
+    snowFlakes[snowFlake].position = Global::mainCamera->getPos() + finalPos;
+    snowFlakes[snowFlake].randomRot = getRandomFloat(0, PI * 2.f);
+    snowFlakes[snowFlake].distance = randVec.Length();
 }
 
 void Graphics::SnowRenderPass::clearSnow()

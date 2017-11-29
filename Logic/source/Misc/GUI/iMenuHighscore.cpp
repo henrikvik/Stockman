@@ -8,13 +8,13 @@ using namespace Logic;
 #define ENTRY_POS_EDIT      false
 
 // Input the varibles gotten from the editing here
-#define ENTRY_POS_X         0.301f
-#define ENTRY_POS_Y         0.167f
-#define ENTRY_POS_Y_OFFSET  0.068f
-#define COLUMN_2_OFFSET     0.074
-#define COLUMN_3_OFFSET     0.299
-#define COLUMN_4_OFFSET     0.466
-#define COLUMN_5_OFFSET     0.595
+#define ENTRY_POS_X         0.308f
+#define ENTRY_POS_Y         0.231f
+#define ENTRY_POS_Y_OFFSET  0.071f
+#define COLUMN_2_OFFSET     0.104f
+#define COLUMN_3_OFFSET     0.316f
+#define COLUMN_4_OFFSET     0.444f
+#define COLUMN_5_OFFSET     0.570f
 
 // Max length of name that can be outputted on screen, to avoid clustering
 #define MAX_NAME_LENGTH     24
@@ -22,7 +22,7 @@ using namespace Logic;
 // Coloring of the placing
 #define FIRST_PLACE_COLOR   DirectX::SimpleMath::Color(1, 0.843137, 0, 1)
 #define SECOND_PLACE_COLOR  DirectX::SimpleMath::Color(0.745098, 0.745098, 0.745098, 1)
-#define THIRD_PLACE_COLOR   DirectX::SimpleMath::Color(0.545098, 0.270588, 0.0745098, 1)
+#define THIRD_PLACE_COLOR   DirectX::SimpleMath::Color(0.3984375, 0.18359375, 0.12890625, 1)
 #define OTHER_PLACE_COLOR   DirectX::SimpleMath::Color(1, 1, 1, 1)
 
 iMenuHighscore::iMenuHighscore(iMenu::MenuGroup group)
@@ -112,31 +112,31 @@ void iMenuHighscore::buildEntry(int position, HigscoreData data)
     else if (position == 1) entry->renderInfoPlacing.color  = SECOND_PLACE_COLOR;
     else if (position == 2) entry->renderInfoPlacing.color  = THIRD_PLACE_COLOR;
     else                    entry->renderInfoPlacing.color  = OTHER_PLACE_COLOR;
-    entry->renderInfoPlacing.font       = Resources::Fonts::KG18;
+    entry->renderInfoPlacing.font       = Resources::Fonts::nordic;
     entry->renderInfoPlacing.position   = DirectX::SimpleMath::Vector2(ENTRY_POS_X * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
     entry->renderInfoPlacing.text       = entry->placing.c_str();
    
     // Entry Name Render Texture
     entry->renderInfoName.color         = OTHER_PLACE_COLOR;
-    entry->renderInfoName.font          = Resources::Fonts::KG18;
+    entry->renderInfoName.font          = Resources::Fonts::nordic;
     entry->renderInfoName.position      = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_2_OFFSET) * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
     entry->renderInfoName.text          = entry->name.c_str();
 
     // Entry Score Render Texture
     entry->renderInfoScore.color        = OTHER_PLACE_COLOR;
-    entry->renderInfoScore.font         = Resources::Fonts::KG18;
+    entry->renderInfoScore.font         = Resources::Fonts::nordic;
     entry->renderInfoScore.position     = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_3_OFFSET)* WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
     entry->renderInfoScore.text         = entry->score.c_str();
 
     // Entry Time Render Texture
     entry->renderInfoTime.color         = OTHER_PLACE_COLOR;
-    entry->renderInfoTime.font          = Resources::Fonts::KG18;
+    entry->renderInfoTime.font          = Resources::Fonts::nordic;
     entry->renderInfoTime.position      = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_4_OFFSET) * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
     entry->renderInfoTime.text          = entry->time.c_str();
 
     // Entry Time Render Texture
     entry->renderInfoKills.color        = OTHER_PLACE_COLOR;
-    entry->renderInfoKills.font         = Resources::Fonts::KG18;
+    entry->renderInfoKills.font         = Resources::Fonts::nordic;
     entry->renderInfoKills.position     = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_5_OFFSET) * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
     entry->renderInfoKills.text         = entry->kills.c_str();
 
@@ -163,13 +163,13 @@ void iMenuHighscore::update(int x, int y, float deltaTime)
         ImGui::DragFloat("Col 5 Offset", &col5, 0.0001f, 0, 1);
         ImGui::End();
     }
-    for (size_t i = 0; i < entries.size(); i++)
+    for (size_t i = 0; i < m_entry.size(); i++)
     {
-        m_entry[i].renderInfoPlacing.position = DirectX::SimpleMath::Vector2(posx * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
-        m_entry[i].renderInfoName.position = DirectX::SimpleMath::Vector2((posx + col2) * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
-        m_entry[i].renderInfoScore.position = DirectX::SimpleMath::Vector2((posx + col3) * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
-        m_entry[i].renderInfoTime.position = DirectX::SimpleMath::Vector2((posx + col4) * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
-        m_entry[i].renderInfoKills.position = DirectX::SimpleMath::Vector2((posx + col5) * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
+        m_entry[i]->renderInfoPlacing.position = DirectX::SimpleMath::Vector2(posx * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
+        m_entry[i]->renderInfoName.position = DirectX::SimpleMath::Vector2((posx + col2) * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
+        m_entry[i]->renderInfoScore.position = DirectX::SimpleMath::Vector2((posx + col3) * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
+        m_entry[i]->renderInfoTime.position = DirectX::SimpleMath::Vector2((posx + col4) * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
+        m_entry[i]->renderInfoKills.position = DirectX::SimpleMath::Vector2((posx + col5) * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
     }
 
 #endif

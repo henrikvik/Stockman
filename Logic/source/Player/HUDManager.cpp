@@ -171,6 +171,9 @@ void HUDManager::constructGUIElements()
     width = 129.0f / 1024;
     height = 148.0f / 1024;
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
+
+
+    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, 0, WIN_WIDTH, WIN_HEIGHT, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 1.0f, false));
 }
 
 void HUDManager::updateTextElements()
@@ -539,6 +542,11 @@ void HUDManager::render() const
     {
         bar.render();
     }
+
+    /*for (auto &wave : waveSprites)
+    {
+        wave.render();
+    }*/
     renderTextElements();
 }
 
