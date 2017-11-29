@@ -501,14 +501,28 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     this->updateTextElements();
 
     static float alpha = 0.0f;
+    static float prevTime = 0.0f;
     if (timeManager.isTransitioning() && !timeManager.onFirstWave())
     {
-        if (alpha < 1.0f)
+        if (info.timeRemaining - prevTime < FLT_EPSILON)
         {
-            alpha += dt * 0.002f;
+            if (alpha < 1.0f)
+            {
+                alpha += dt * 0.002f;
+            }
+
+            staticElements.at(staticElements.size() - 1).setAlpha(alpha);
         }
-        
-        staticElements.at(staticElements.size()-1).setAlpha(alpha);
+        else
+        {
+            if (alpha > 0.0f)
+            {
+                alpha -= dt * 0.002f;
+            }
+
+            staticElements.at(staticElements.size() - 1).setAlpha(alpha);
+        }
+        prevTime = info.timeRemaining;
     }
     else
     {
