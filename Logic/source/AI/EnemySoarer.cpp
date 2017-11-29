@@ -47,7 +47,7 @@ void EnemySoarer::createAbilities()
     data.duration = 0.f;
     data.randomChanche = 3;
 
-    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
+    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("DamageProjTrail");
     ProjectileData pdata;
     pdata.effect = necroTrail;
     pdata.hasEffect = true;
@@ -63,8 +63,9 @@ void EnemySoarer::createAbilities()
         getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_PRIMARY, 1.f, 0.15f);
         if (pj) {
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+                Graphics::FXSystem->addEffect("DamageBoom", data.caller->getPosition());
+
                 data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, 1.f, 0.15);
-                Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
             });
         }
     });
