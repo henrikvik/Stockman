@@ -11,7 +11,7 @@ const float EnemyChaser::MOVE_SPEED = 16.9f; //noice!
 
 EnemyChaser::EnemyChaser(btRigidBody* body)
     : Enemy(Resources::Models::Files::SummonUnitWithAnim, body, { 1.0f, 1.0f, 1.0f },
-        MAX_HP, BASE_DAMAGE, MOVE_SPEED, EnemyType::NECROMANCER_MINION, 0, { 0.f, -0.8f, 0.f }) // use in para instead note
+        MAX_HP, BASE_DAMAGE, MOVE_SPEED, EnemyType::NECROMANCER_MINION, 0, { 0.f, 0.1f, 0.f }) // use in para instead note
 {
     setBehavior(MELEE);
     getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
