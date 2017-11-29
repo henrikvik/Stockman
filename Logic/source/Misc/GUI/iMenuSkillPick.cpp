@@ -152,7 +152,7 @@ void iMenuSkillPick::replaceSkill(int id)
 void iMenuSkillPick::render() const
 {
     iMenu::render();
-    QueueRender(m_textRenderInfo);
+    if (m_skillPoints != 0) QueueRender(m_textRenderInfo);
     if (m_skillPoints == 0) QueueRender(m_textReadyInfo);
     if (m_buttons[0].getState() == Button::State::HOVER) QueueRender(m_grapplingHook);
     if (m_buttons[1].getState() == Button::State::HOVER) QueueRender(m_spriteRenderInfo1);
