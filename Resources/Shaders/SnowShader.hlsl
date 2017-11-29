@@ -28,8 +28,8 @@ struct GS_OUT
 [maxvertexcount(3)]
 void GS(point Vertex input[1], inout TriangleStream<GS_OUT> output)
 {
-    GS_OUT hablaPos = (GS_OUT)0;
-    hablaPos.distance = input[0].distance;
+    GS_OUT snow = (GS_OUT)0;
+    snow.distance = input[0].distance;
 
     float rot = input[0].rot;
     float4x4 rotation = 
@@ -52,25 +52,25 @@ void GS(point Vertex input[1], inout TriangleStream<GS_OUT> output)
 
     for (int i = 0; i < 3; i++)
     {
-        positions[i] *= max((hablaPos.distance / SNOW_RADIUS), 0.2f);
+        positions[i] *= max((snow.distance / SNOW_RADIUS), 0.2f);
         positions[i] = mul(rotation, positions[i]);
     }
 
     float4 temp = float4(input[0].pos, 1);
-    hablaPos.wPos = temp.xyzw + positions[0];
-    hablaPos.lPos = mul(lightVP, hablaPos.wPos);
-    hablaPos.pos = mul(ViewProjection, hablaPos.wPos);
-    output.Append(hablaPos);
+    snow.wPos = temp.xyzw + positions[0];
+    snow.lPos = mul(lightVP, snow.wPos);
+    snow.pos = mul(ViewProjection, snow.wPos);
+    output.Append(snow);
 
-    hablaPos.wPos = temp + positions[1];
-    hablaPos.lPos = mul(lightVP, hablaPos.wPos);
-    hablaPos.pos = mul(ViewProjection, hablaPos.wPos);
-    output.Append(hablaPos);
+    snow.wPos = temp + positions[1];
+    snow.lPos = mul(lightVP, snow.wPos);
+    snow.pos = mul(ViewProjection, snow.wPos);
+    output.Append(snow);
 
-    hablaPos.wPos = temp + positions[2];
-    hablaPos.lPos = mul(lightVP, hablaPos.wPos);
-    hablaPos.pos = mul(ViewProjection, hablaPos.wPos);
-    output.Append(hablaPos);
+    snow.wPos = temp + positions[2];
+    snow.lPos = mul(lightVP, snow.wPos);
+    snow.pos = mul(ViewProjection, snow.wPos);
+    output.Append(snow);
 }
 
 

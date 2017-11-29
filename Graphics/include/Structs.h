@@ -56,13 +56,7 @@ namespace Graphics
 		float burnAmount;
 	};
 
-	struct FoliageRenderInfo
-	{
-		bool render;
-		ModelID meshId;
-		DirectX::SimpleMath::Matrix translation;
-		bool backFaceCulling = false;
-	};
+
 
 	struct WaterRenderInfo
 	{

@@ -52,6 +52,7 @@ namespace Logic
         std::vector<Sprite> staticElements;
         std::vector<TextRenderInfo> HUDText;
         std::vector<std::wstring> liveText;
+        std::vector<Sprite> waveSprites;
 
         bool showWaveCleared;
 

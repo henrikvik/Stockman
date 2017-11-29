@@ -17,12 +17,15 @@ namespace Logic
         virtual ~WeaponFreezeGrenade();
     private:
         virtual void onUse(std::vector<Projectile*> &projectiles, Entity& shooter);
+        void doExplosionCallback(Entity::CallbackData &data);
+        void doExplosionCallbackEnhanced(Entity::CallbackData &data);
         virtual bool useEnhanced(bool shouldUse);
 
         ProjectileData m_freezeData;
         ProjectileData m_explosionData;
         int m_splitCount;
         float m_sliceSize;
+        bool m_enhanced;
     };
 }
 

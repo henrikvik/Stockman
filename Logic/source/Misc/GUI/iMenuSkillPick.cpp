@@ -11,11 +11,45 @@ iMenuSkillPick::iMenuSkillPick(iMenu::MenuGroup group) : iMenu(group)
     resetSkillPicks();
 
     // Setup of the textrenderinfo object
-    m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
-    m_textRenderInfo.font = Resources::Fonts::KG18;
-    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(0.01 * WIN_WIDTH, 0.28 * WIN_HEIGHT);
+    m_textRenderInfo.color = DirectX::SimpleMath::Color(0.3984375, 0.18359375, 0.12890625, 1);
+    m_textRenderInfo.font = Resources::Fonts::nordic;
+    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(0.35 * WIN_WIDTH, 0.15 * WIN_HEIGHT);
     m_skillpointsStr = std::to_wstring(m_skillPoints) + (const wchar_t*)L" Skillpoints";
     m_textRenderInfo.text = m_skillpointsStr.c_str();
+
+    m_grapplingHook.alpha = 1.f;
+    m_grapplingHook.isMoveable = true;
+    m_grapplingHook.texture = Resources::Textures::TextSkillPick;
+    m_grapplingHook.screenRect = FloatRect({
+        700.0f / WIN_WIDTH,
+        160.0f / WIN_HEIGHT,
+        400.0f / WIN_WIDTH,
+        300.0f / WIN_HEIGHT,
+    });
+    m_grapplingHook.textureRect = FloatRect({ 0.0f, 0.0f }, { 0.37109375f, 0.3125f });
+
+    m_spriteRenderInfo1.alpha = 1.f;
+    m_spriteRenderInfo1.isMoveable = true;
+    m_spriteRenderInfo1.texture = Resources::Textures::TextSkillPick;
+    m_spriteRenderInfo1.screenRect = FloatRect({
+        700.0f / WIN_WIDTH,
+        160.0f / WIN_HEIGHT,
+        400.0f / WIN_WIDTH,
+        300.0f / WIN_HEIGHT,
+    });
+    m_spriteRenderInfo1.textureRect = FloatRect({ 0.0f, 0.3125f }, { 0.37109375f, 0.64453125f });
+
+    m_spriteRenderInfo2.alpha = 1.f;
+    m_spriteRenderInfo2.isMoveable = true;
+    m_spriteRenderInfo2.texture = Resources::Textures::TextSkillPick;
+    m_spriteRenderInfo2.screenRect = FloatRect({
+        700.0f / WIN_WIDTH,
+        160.0f / WIN_HEIGHT,
+        400.0f / WIN_WIDTH,
+        300.0f / WIN_HEIGHT,
+    });
+    m_spriteRenderInfo2.textureRect = FloatRect({ 0.0f, 0.64453125f }, { 0.37109375f, 1.0f });
+
 }
 
 iMenuSkillPick::~iMenuSkillPick() { }
@@ -88,6 +122,10 @@ void iMenuSkillPick::replaceSkill(int id)
 void iMenuSkillPick::render() const
 {
     iMenu::render();
+    QueueRender(m_textRenderInfo);
+    //QueueRender(m_grapplingHook);
+    QueueRender(m_spriteRenderInfo1);
+   // QueueRender(m_spriteRenderInfo2);
 }
 
 // Callback functions

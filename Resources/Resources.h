@@ -8,13 +8,15 @@ namespace Resources
         {
             KG14,
             KG18,
-            KG26
+            KG26,
+            nordic
         };
         const std::map<Files, const char *> Paths =
         {
             {KG14, R"(..\Resources\Fonts\KG14.spritefont)"},
             {KG18, R"(..\Resources\Fonts\KG18.spritefont)"},
-            {KG26, R"(..\Resources\Fonts\KG26.spritefont)"}
+            {KG26, R"(..\Resources\Fonts\KG26.spritefont)"},
+            {nordic, R"(..\Resources\Fonts\nordic.spritefont)"}
         };
         
         Files toEnum(const char * str);
@@ -74,6 +76,7 @@ namespace Resources
             Firepit,
             GrapplingPoint,
             Grappling_Point,
+            Grass,
             Grass1,
             Ground,
             Hammer,
@@ -90,6 +93,7 @@ namespace Resources
             Lower_Island,
             Market_Tent,
             MenuScene,
+            Necromancer,
             Rock1,
             Rock2,
             Rock3,
@@ -129,6 +133,7 @@ namespace Resources
             {Firepit, R"(..\Resources\Models\Firepit.hyb)"},
             {GrapplingPoint, R"(..\Resources\Models\GrapplingPoint.hyb)"},
             {Grappling_Point, R"(..\Resources\Models\Grappling_Point.hyb)"},
+            {Grass, R"(..\Resources\Models\Grass.hyb)"},
             {Grass1, R"(..\Resources\Models\Grass1.hyb)"},
             {Ground, R"(..\Resources\Models\Ground.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
@@ -145,6 +150,7 @@ namespace Resources
             {Lower_Island, R"(..\Resources\Models\Lower_Island.hyb)"},
             {Market_Tent, R"(..\Resources\Models\Market_Tent.hyb)"},
             {MenuScene, R"(..\Resources\Models\MenuScene.hyb)"},
+            {Necromancer, R"(..\Resources\Models\Necromancer.hyb)"},
             {Rock1, R"(..\Resources\Models\Rock1.hyb)"},
             {Rock2, R"(..\Resources\Models\Rock2.hyb)"},
             {Rock3, R"(..\Resources\Models\Rock3.hyb)"},
@@ -180,6 +186,7 @@ namespace Resources
             ForwardPlus,
             ForwardPlus_PS,
             ForwardPlus_VS_Animated,
+            ForwardPlus_VS_Foliage,
             ForwardPlus_VS_Static,
             FullscreenQuad,
             GlowBlurHorizontal,
@@ -189,6 +196,7 @@ namespace Resources
             GlowMipCombinder,
             LightGridCulling,
             Moon,
+            ParticlePlane,
             SkyShader,
             SnowShader,
             SpriteShader,
@@ -208,6 +216,7 @@ namespace Resources
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
             {ForwardPlus_PS, R"(..\Resources\Shaders\ForwardPlus_PS.hlsl)"},
             {ForwardPlus_VS_Animated, R"(..\Resources\Shaders\ForwardPlus_VS_Animated.hlsl)"},
+            {ForwardPlus_VS_Foliage, R"(..\Resources\Shaders\ForwardPlus_VS_Foliage.hlsl)"},
             {ForwardPlus_VS_Static, R"(..\Resources\Shaders\ForwardPlus_VS_Static.hlsl)"},
             {FullscreenQuad, R"(..\Resources\Shaders\FullscreenQuad.hlsl)"},
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
@@ -217,6 +226,7 @@ namespace Resources
             {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
             {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
             {Moon, R"(..\Resources\Shaders\Moon.hlsl)"},
+            {ParticlePlane, R"(..\Resources\Shaders\ParticlePlane.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SnowShader, R"(..\Resources\Shaders\SnowShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
@@ -235,6 +245,7 @@ namespace Resources
             Backbutton,
             CardBackground,
             Crosshair,
+            Diffusemoon,
             Gameover,
             gameOverMenuButtons,
             Gamesheet,
@@ -247,17 +258,17 @@ namespace Resources
             IntroScreen,
             Loadingscreen,
             MainmenuClean,
-            mainmenupicture,
             Mainmenutext,
             MissingTexture,
-            Moon_Thinking,
             Pausetext,
             randomNormals,
             Settings,
+            SettingsButtons,
             SettingsMenuButtons,
             Skillpickbackground,
             Skillpicksheet,
             Spellsheet,
+            TextSkillPick,
             WaveComplete,
             weaponsheet
         };
@@ -266,6 +277,7 @@ namespace Resources
             {Backbutton, R"(..\Resources\Textures\Backbutton.dds)"},
             {CardBackground, R"(..\Resources\Textures\CardBackground.dds)"},
             {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
+            {Diffusemoon, R"(..\Resources\Textures\Diffusemoon.dds)"},
             {Gameover, R"(..\Resources\Textures\Gameover.dds)"},
             {gameOverMenuButtons, R"(..\Resources\Textures\gameOverMenuButtons.png)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
@@ -278,17 +290,17 @@ namespace Resources
             {IntroScreen, R"(..\Resources\Textures\IntroScreen.dds)"},
             {Loadingscreen, R"(..\Resources\Textures\Loadingscreen.dds)"},
             {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},
-            {mainmenupicture, R"(..\Resources\Textures\mainmenupicture.dds)"},
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
-            {Moon_Thinking, R"(..\Resources\Textures\Moon_Thinking.png)"},
             {Pausetext, R"(..\Resources\Textures\Pausetext.dds)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {Settings, R"(..\Resources\Textures\Settings.dds)"},
+            {SettingsButtons, R"(..\Resources\Textures\SettingsButtons.dds)"},
             {SettingsMenuButtons, R"(..\Resources\Textures\SettingsMenuButtons.png)"},
             {Skillpickbackground, R"(..\Resources\Textures\Skillpickbackground.dds)"},
             {Skillpicksheet, R"(..\Resources\Textures\Skillpicksheet.dds)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
+            {TextSkillPick, R"(..\Resources\Textures\TextSkillPick.dds)"},
             {WaveComplete, R"(..\Resources\Textures\WaveComplete.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };

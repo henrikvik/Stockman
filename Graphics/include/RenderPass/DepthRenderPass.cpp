@@ -30,7 +30,7 @@ namespace Graphics
         drawInstanced<StaticRenderInfo>(resources[StaticInstanceBuffer]);
 
         Global::context->VSSetShader(depth_vs_animated, nullptr, 0);
-        drawInstanced<AnimatedRenderInfo>(resources[AnimatedInstanceBuffer]);
+        drawInstancedAnimated<AnimatedRenderInfo>(resources[AnimatedInstanceBuffer], resources[AnimatedInstanceBuffer + 1]);
 
         // TODO add all renderInfos
 
