@@ -60,9 +60,7 @@ namespace Graphics
             HybrisLoader::Model    * model = ModelLoader::get().getModel(modelId);
             HybrisLoader::Mesh     * mesh = &model->getMesh();
             HybrisLoader::Material * material = &model->getMaterial();
-
-            Global::context->VSSetShaderResources(11, 1, mesh->getVertexBuffer());
-
+            
             ID3D11ShaderResourceView * textures[4] =
             {
                 /*Diffuse */ material->getDiffuse(),
@@ -75,6 +73,8 @@ namespace Graphics
             instanceOffsetBuffer.write(Global::context, &instanceOffset, sizeof(instanceOffset));
             instanceOffset += renderInfos.size();
 
+            UINT zero = 0;
+            Global::context->IASetVertexBuffers(0, 1, mesh->getVertexBuffer(), &HybrisLoader::Vertex::STRIDE, &zero);
             Global::context->DrawInstanced(
                 mesh->getVertexCount(),
                 renderInfos.size(),
