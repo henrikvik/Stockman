@@ -1,7 +1,6 @@
 #include <Misc\GUI\Slider.h>
 #include <Misc\Sound\NoiseMachine.h>
 #include <Graphics\include\MainCamera.h>
-#include <Misc\Sound\NoiseMachine.h>
 using namespace Logic;
 
 Slider::Slider(
@@ -33,6 +32,7 @@ Slider::Slider(
     m_value = value;
 
     m_value = value;
+    m_tempValue = *m_value;
 
     if (*m_value > maxValue)
     {
@@ -158,29 +158,7 @@ void Logic::Slider::updateOnRelease(int posX, int posY)
 {
     if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
     {
-        *m_value = m_tempValue;
         setState(Slider::INACTIVE);
-
-        if (m_name.compare("FOVSlider") == 0)
-        {
-            Global::mainCamera->updateFOV(m_tempValue);
-        }
-        else if (m_name.compare("MasterSlider") == 0)
-        {
-            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MASTER, m_tempValue);
-        }
-        else if (m_name.compare("MusicSlider") == 0)
-        {
-            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MUSIC, m_tempValue);
-        }
-        else if (m_name.compare("AmbienceSlider") == 0)
-        {
-            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_AMBIENT, m_tempValue);
-        }
-        else if (m_name.compare("SFXSlider") == 0)
-        {
-            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_SFX, m_tempValue);
-        }
     }
 }
 
@@ -237,4 +215,19 @@ void Slider::render() const
 {
     QueueRender(renderInfo);
     QueueRender(m_textRenderInfo);
+}
+
+std::string Logic::Slider::getName()
+{
+    return m_name;
+}
+
+float Logic::Slider::getValue()
+{
+    return *m_value;
+}
+
+void Logic::Slider::confirm()
+{
+    *m_value = m_tempValue;
 }

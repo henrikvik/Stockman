@@ -54,9 +54,9 @@ iMenu* iMenuFactory::buildMenuStart()
     return menu;
 }
 
-iMenu * iMenuFactory::buildMenuSettings()
+iMenuSettings* iMenuFactory::buildMenuSettings()
 {
-    iMenu* menu = newd iMenu(iMenu::Settings);
+    iMenuSettings* menu = newd iMenuSettings(iMenu::Settings);
 
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));

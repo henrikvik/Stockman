@@ -65,6 +65,7 @@ namespace Graphics
 
     void Camera::updateFOV(float fieldOfView)
     {
+        std::cout << fieldOfView;
         field_of_view = DirectX::XMConvertToRadians(fieldOfView);
         projection = DirectX::XMMatrixPerspectiveFovRH(field_of_view, aspect_ratio, near_distance, far_distance);
     }

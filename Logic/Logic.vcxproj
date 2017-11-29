@@ -210,6 +210,7 @@
     <ClInclude Include="include\Misc\GUI\iMenuHighscore.h" />
     <ClInclude Include="include\Misc\GUI\iMenuIntro.h" />
     <ClInclude Include="include\Misc\GUI\iMenuLoading.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuSettings.h" />
     <ClInclude Include="include\Misc\GUI\iMenuSkillPick.h" />
     <ClInclude Include="include\Misc\GUI\Slider.h" />
     <ClInclude Include="include\Misc\Network\dbConnect.h" />
@@ -326,6 +327,7 @@
     <ClCompile Include="source\Misc\GUI\iMenuIntro.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuLoading.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuMachine.cpp" />
+    <ClCompile Include="source\Misc\GUI\iMenuSettings.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuSkillPick.cpp" />
     <ClCompile Include="source\Misc\Network\dbConnect.cpp" />
     <ClCompile Include="source\Misc\GUI\Slider.cpp" />
