@@ -62,6 +62,7 @@ struct NewDebugRenderInfo : RenderInfo
 {
     struct Point
     {
+        Point(DirectX::SimpleMath::Vector3 position, DirectX::SimpleMath::Color color) : position(position), color(color) {}
         DirectX::SimpleMath::Vector3 position;
         DirectX::SimpleMath::Color color;
     };
@@ -118,6 +119,7 @@ struct StaticRenderInfo : RenderInfo
     DirectX::SimpleMath::Matrix transform;
     DirectX::SimpleMath::Vector3 color = DirectX::SimpleMath::Color(1,1,1,1);
     bool useGridTexture = false;
+    float cull_radius = 1.0;
 };
 
 struct FoliageRenderInfo : StaticRenderInfo

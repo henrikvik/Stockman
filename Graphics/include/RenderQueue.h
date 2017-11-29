@@ -34,13 +34,11 @@ public:
 
         if constexpr (std::is_base_of_v<StaticRenderInfo, T>)
         {
-            if (Global::mainCamera->insideFrustrum(info.transform.Translation()))
+            if (Global::mainCamera->inside_frustrum(info.transform.Translation(), info.cull_radius))
             {
-                info.color = DirectX::SimpleMath::Vector3(0, 1, 0);
+                InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
+                container->queue((size_t)info.model, info);
             }
-
-            InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
-            container->queue((size_t)info.model, info);
         }
         else
         {
