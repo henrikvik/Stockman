@@ -433,6 +433,8 @@ int Engine::run()
                 running = false;
         PROFILE_END();
 
+        Global::mainCamera->render();
+
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game->render();
 		PROFILE_END();

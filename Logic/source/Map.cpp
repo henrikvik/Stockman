@@ -6,6 +6,7 @@
 #include <Misc\RandomGenerator.h>
 #include <toml\toml.h>
 #include <fstream>
+#include <Graphics/include/Utility/ModelLoader.h>
 
 using namespace Logic;
 
@@ -70,9 +71,11 @@ void Map::update(float deltaTime)
 
 void Map::render() const
 {
-	for (StaticObject* o : m_props)     o->render();
+    for (StaticObject* o : m_props)     o->render();
     for (LightObject* l : m_lights)     l->render();
     for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
+
+    for (auto & d : decorations) d.render();
 }
 	
 std::vector<StaticObject*>*			Map::getProps()				{ return &m_props;				}
@@ -89,7 +92,8 @@ void Map::loadStartMenuScene()
 
     add(FrameLight({ 0.f, 0.f, 0.f }, {1.f, 0.5f, 0.3f}, 1.f, 10.f));
 
-    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
+    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
+    for (size_t i = lights.size(); i--;) add(lights[i]);
 }
 
 void Logic::Map::loadMap(Resources::Maps::Files map)
@@ -160,39 +164,70 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
     if (mapStatic) pushInstances(mapStatic, staticInstances);
     if (mapFoliage) pushInstances(mapFoliage, foliageInstances);
     if (mapTrigger) pushInstances(mapTrigger, triggerInstances);
-
     // TODO USE THIS //    
+
+    decorations.clear();
+
+    auto toVec3 = [](DirectX::SimpleMath::Vector3 & vec) -> btVector3
+    {
+        return {vec.x, vec.y, vec.z};
+    };
+
+    auto toQuat = [](DirectX::SimpleMath::Quaternion & vec) -> btQuaternion
+    {
+        return {vec.x, vec.y, vec.z, vec.w};
+    };
 
     for (auto & instance : staticInstances)
     {
-        if (instance.model == "Stone_Decoration") continue; // edge case
+        try
+        {
+            Resources::Models::Files model = Resources::Models::toEnum(instance.model.c_str());
+            std::cout << "> " <<  instance.model.c_str() << std::endl;
 
-        if (strcmp(instance.model.c_str(), "Island") == 0)
-        {
-            btRigidBody *rb = m_physicsPtr->createBody(
-                Cube(instance.translation, btVector3(), {450, 1, 450}),
-                0.f, false,
-                Physics::COL_HITBOX,
-                Physics::COL_EVERYTHING
-            );
-            rb->getWorldTransform().setRotation(instance.rotation);
-            m_hitboxes.push_back(newd StaticObject(
-                Resources::Models::Island, 
-                rb,
-                instance.scale,
-                StaticObject::NavigationMeshFlags::CULL
-            ));
+            /*if (model != Resources::Models::House1
+                && model != Resources::Models::Ground
+                && model != Resources::Models::Tree
+                && model != Resources::Models::House2
+                && model != Resources::Models::House3) continue;*/
+
+            DirectX::SimpleMath::Quaternion rotation(instance.rotation[0], instance.rotation[1], instance.rotation[2], instance.rotation[3]);
+            DirectX::SimpleMath::Vector3 scale(instance.scale[0], instance.scale[1], instance.scale[2]);
+            DirectX::SimpleMath::Vector3 translation(instance.translation[0], instance.translation[1], instance.translation[2]);
+
+            DirectX::SimpleMath::Matrix instance_transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
+            HybrisLoader::Model::BoundingBox bounding_box = ModelLoader::get().getModel(model)->get_bounding_box();
+
+            bounding_box.apply_scale(scale);
+            Decoration decor(model, instance_transform, bounding_box.sphere_radius());
+            decorations.push_back(decor);
+
+            for (auto & hitbox : *ModelLoader::get().getModel(model)->getHitboxes())
+            {
+                btRigidBody * body = m_physicsPtr->createHitbox(
+                    toVec3(hitbox.position),
+                    toQuat(hitbox.rotation),
+                    toVec3(hitbox.halfSize) * instance.scale,
+                    false,
+                    Physics::COL_HITBOX,
+                    Physics::COL_EVERYTHING ^ Physics::COL_HITBOX
+                );
+
+                float t[16]; body->getWorldTransform().getOpenGLMatrix(t);
+                DirectX::SimpleMath::Matrix hitbox_transform(t);
+
+                hitbox_transform = hitbox_transform * instance_transform;
+                DirectX::SimpleMath::Quaternion rot;
+                DirectX::SimpleMath::Vector3 pos, scale;
+                hitbox_transform.Decompose(scale, rot, pos);
+                btTransform new_transform(toQuat(rot), {pos.x, pos.y, pos.z});
+
+                body->setWorldTransform(new_transform);
+            }
         }
-        else
+        catch (const char * e)
         {
-            btRigidBody *rb = m_physicsPtr->createBody(Cube(instance.translation, btVector3(), instance.scale), 0.f, false, Physics::COL_HITBOX, Physics::COL_EVERYTHING);
-            rb->getWorldTransform().setRotation(instance.rotation);
-            m_hitboxes.push_back(newd StaticObject(
-                Resources::Models::UnitCube, 
-                rb,
-                instance.scale,
-                StaticObject::NavigationMeshFlags::NO_CULL
-            ));
+            std::cerr << "Could not find model " << instance.model << " during map load. Ignoring model." << std::endl;
         }
     }
 }

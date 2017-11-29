@@ -56,12 +56,13 @@ struct DebugRenderInfo : RenderInfo
     DirectX::SimpleMath::Color color;
     bool useDepth = false;
 };
-SET_INSTANCE_CAP(DebugRenderInfo, 10000)
+SET_INSTANCE_CAP(DebugRenderInfo, 100000)
 
 struct NewDebugRenderInfo : RenderInfo
 {
     struct Point
     {
+        Point(DirectX::SimpleMath::Vector3 position, DirectX::SimpleMath::Color color) : position(position), color(color) {}
         DirectX::SimpleMath::Vector3 position;
         DirectX::SimpleMath::Color color;
     };
@@ -71,7 +72,7 @@ struct NewDebugRenderInfo : RenderInfo
     std::vector<Point> * points;
     bool useDepth;
 };
-SET_INSTANCE_CAP(NewDebugRenderInfo, 10000)
+SET_INSTANCE_CAP(NewDebugRenderInfo, 100000)
 
 struct LightRenderInfo : RenderInfo
 {
@@ -124,6 +125,7 @@ struct StaticRenderInfo : RenderInfo
     DirectX::SimpleMath::Matrix transform;
     DirectX::SimpleMath::Vector3 color = DirectX::SimpleMath::Color(1,1,1,1);
     bool useGridTexture = false;
+    float cull_radius = 1.0;
 };
 
 struct FoliageRenderInfo : StaticRenderInfo
