@@ -32,7 +32,7 @@ const btVector3 EntityManager::MIN_SPAWN = { -100, 10, -100 },
                 EntityManager::MAX_SPAWN = {  100, 25,  100 };
 const std::string EntityManager::WAVE_FILES[MODES] = { "Enemies/Wave", "Enemies/Wave", "Enemies/WavesHeroic"};
 
-const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 100;
+const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 300;
 const float EntityManager::INVALID_LENGTH = 100.f;
 
 int EntityManager::PATH_UPDATE_DIV = 5;
@@ -79,7 +79,7 @@ void EntityManager::registerCreationFunctions()
     };
     m_enemyFactory[EnemyType::NECROMANCER_MINION] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.f, 1.f, 0.6f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.f, 1.3f, 0.8f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));

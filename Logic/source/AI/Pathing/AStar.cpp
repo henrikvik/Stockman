@@ -153,6 +153,12 @@ void AStar::renderNavigationMesh()
 void AStar::loadTargetIndex(Entity const &target)
 {
     int newIndex;
+    auto &targetPos = target.getPosition();
+
+    if ((lastTargetPosition - targetPos).LengthSquared() < 1.f)
+        return;
+    lastTargetPosition = targetPos;
+
     if (targetOutOfBounds || !isEntityOnIndex(target, targetIndex))
     {
         newIndex = navigationMesh.getIndex(target.getPosition() + OFFSET);
