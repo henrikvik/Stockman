@@ -104,9 +104,7 @@ void iMenuSkillPick::replaceSkill(int id)
 
     for (size_t i = 0; i < 3; i++)
     {
-
          m_buttons.at(i).setState(Button::INACTIVE);
-
     }
 
     if (m_selectedSkills.first != -1)

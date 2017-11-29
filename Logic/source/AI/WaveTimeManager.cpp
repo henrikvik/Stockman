@@ -1,29 +1,50 @@
 #include <AI\WaveTimeManager.h>
 #include <AI\EntityManager.h>
+#include <Engine\DebugWindow.h>
 using namespace Logic;
 
 const float WaveTimeManager::TRANSITION_TIME = 5000.f;
 
 WaveTimeManager::WaveTimeManager()
 {
+    DebugWindow::getInstance()->registerCommand("SET_WAVE", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            m_waveCurrent = stoi(para[0]);
+            return "Wowie";
+        }
+        catch (std::exception &ex)
+        {
+            return "Bigger failure than Ajit Pai";
+        }
+    });
     reset();
 }
-
 
 WaveTimeManager::~WaveTimeManager()
 {
 }
 
+void WaveTimeManager::startNextWave(EntityManager &entityManager, btVector3 const &playerPos)
+{
+    entityManager.spawnWave(m_waveCurrent, playerPos);
+
+    m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent++);
+    m_timeCurrent = 0;
+
+    // If the player have completed all the waves
+    if (m_waveCurrent == entityManager.getWaveManager().getWaveInformation().nrOfWaves)
+        m_onLastWave = true;
+
+    m_onTransition = false;
+}
+
 void WaveTimeManager::reset()
 {
     m_waveCurrent = 0;
-
     m_timeCurrent = 0.f;
 
     m_onLastWave = false;
     m_enraged = false;
-    m_firstWave = true;
-    m_delay = false;
 
     startTransition();
 }
@@ -31,61 +52,42 @@ void WaveTimeManager::reset()
 // Returns true if a transition is happening
 bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager, btVector3 const &playerPos)
 {
-    if (!m_onLastWave)
-    {
-        m_timeCurrent += deltaTime;
+    m_timeCurrent += deltaTime;
 
-        //ohhhboy this is stupid
-        if (!m_delay && m_spawn)
+    if (m_onTransition) 
+    {
+        return updateInTransition(entityManager, playerPos);
+    }   
+    else
+    {
+        return updateInWave(entityManager);
+    }
+}
+
+bool WaveTimeManager::updateInTransition(EntityManager &entityManager, btVector3 const &playerPos)
+{
+    if (m_timeCurrent < m_timeRequired) return false;
+
+    startNextWave(entityManager, playerPos);
+    return false; // temp
+}
+
+bool WaveTimeManager::updateInWave(EntityManager &entityManager)
+{
+    int aliveEnemies = entityManager.getNrOfAliveEnemies();
+    if (aliveEnemies <= 0 || m_timeCurrent > m_timeRequired)
+    {
+        if (m_enraged && aliveEnemies > 0)
         {
-            entityManager.deallocateData(false);
-            entityManager.spawnWave(m_waveCurrent -1 , playerPos);
-            m_spawn = false;
+            // do something fun
         }
         else
-            m_delay = false;
-
-        if (m_onTransition) 
         {
-            if (m_timeCurrent > m_timeRequired)
-            {
+            m_enraged = (entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE) > 0);
+            if (!m_enraged && !m_onLastWave) {
+                startTransition();
 
-                m_spawn = true;
-                m_timeRequired = entityManager.getWaveManager().getTimeForWave(m_waveCurrent++);
-                m_timeCurrent = 0;
-
-                // If the player have completed all the waves
-                if (m_waveCurrent == entityManager.getWaveManager().getWaveInformation().nrOfWaves)
-                    m_onLastWave = true;
-                
-                m_onTransition = false;
-                
-            }
-
-        }   
-        else
-        {
-            if (entityManager.getNrOfAliveEnemies() == 0 || m_timeCurrent > m_timeRequired)
-            {
-                if (m_enraged && entityManager.getNrOfAliveEnemies() > 0)
-                {
-                    // do something fun
-                }
-                else
-                {
-                    m_enraged = entityManager.giveEffectToAllEnemies(StatusManager::EFFECT_ID::ENRAGE) > 0;
-                    if (!m_enraged) {
-                        m_onTransition = true;
-
-                        startTransition();
-                        if (m_firstWave)
-                             m_firstWave = false;
-
-                        m_delay = true;
-                        return true;
-                    }
-                }
-                
+                return true;
             }
         }
     }
@@ -118,6 +120,11 @@ bool WaveTimeManager::onLastWave() const
     return m_onLastWave;
 }
 
+bool WaveTimeManager::onFirstWave() const
+{
+    return getCurrentWave() == 0 && isTransitioning();
+}
+
 bool WaveTimeManager::isEnraged() const
 {
     return m_enraged;
@@ -126,11 +133,6 @@ bool WaveTimeManager::isEnraged() const
 bool WaveTimeManager::isTransitioning() const
 {
     return m_onTransition;
-}
-
-bool Logic::WaveTimeManager::getFirstWave() const
-{
-    return m_firstWave;
 }
 
 void WaveTimeManager::startTransition()

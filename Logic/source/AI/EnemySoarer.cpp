@@ -5,11 +5,11 @@
 using namespace Logic;
 
 const int EnemySoarer::HEALTH = 400, EnemySoarer::DAMAGE = 1, EnemySoarer::SCORE = 100;
-const float EnemySoarer::SPEED = 22.5f,
-            EnemySoarer::STEERING_MOD = 1.35f,
+const float EnemySoarer::SPEED = 23.5f,
+            EnemySoarer::STEERING_MOD = 1.4f,
             EnemySoarer::AB1_SPEED = 25.f,
-            EnemySoarer::AB1_SCALE = 8.f,
-            EnemySoarer::AB1_GRAVITY = 6.f,
+            EnemySoarer::AB1_SCALE = 8.5f,
+            EnemySoarer::AB1_GRAVITY = 6.5f,
             EnemySoarer::HEIGHT_OFFSET = 20.f;
 
 EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
@@ -26,6 +26,7 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
 
     gravity = getRigidBody()->getGravity();
 
+    getSoundSource()->autoPlaySFX(Sound::SFX::ENEMY_AMBIENT_1, 6500, 500, 1.f, 0.10f);
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 0.8f;
     light.range = 5.0f;
@@ -59,10 +60,11 @@ void EnemySoarer::createAbilities()
     }, [=](Player &player, Ability &ab) -> void {
         // onuse
         auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, AB1_GRAVITY, AB1_SCALE);
+        getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_PRIMARY, 1.f, 0.15f);
         if (pj) {
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+                data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, 1.f, 0.15);
                 Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
-
             });
         }
     });

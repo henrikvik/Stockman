@@ -3,14 +3,14 @@
 #include <Projectile\Projectile.h>
 using namespace Logic;
 
-const float EnemyDefender::BASE_SPEED = 9.f;
+const float EnemyDefender::BASE_SPEED = 14.5f;
 const float EnemyDefender::MELEE_DISTANCE = 35.f,
             EnemyDefender::PROJECTILE_SPEED = 115.f;
 
 const int   EnemyDefender::BASE_DAMAGE = 1,
-            EnemyDefender::MAX_HP = 50,
-            EnemyDefender::SCORE = 75,
-            EnemyDefender::PROJECTILES = 20;
+            EnemyDefender::MAX_HP = 100,
+            EnemyDefender::SCORE = 100,
+            EnemyDefender::PROJECTILES = 22;
 
 EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP,

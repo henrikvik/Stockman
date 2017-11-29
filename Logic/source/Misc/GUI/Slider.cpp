@@ -61,7 +61,7 @@ Slider::Slider(
     }
     else
     {
-        int test = m_tempValue * 100;
+        int test = m_tempValue * 1000;
         m_textInput = std::to_wstring(test);
     }
     m_textRenderInfo.text = m_textInput.c_str();

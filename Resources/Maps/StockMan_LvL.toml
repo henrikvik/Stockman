@@ -284,25 +284,25 @@ translation = [22.922095, -0.011476, -51.594574]
 [[Foliage]]
 model = "Grass2"
 name = "polySurface503"
-translation = [40.388512, 0.000000, -42.241488]
+translation = [40.388512, -0.045804, -42.241488]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface504"
 rotation = [0.000000, -0.855086, 0.000000, 0.518486]
-translation = [40.117248, -0.011476, -46.822422]
+translation = [40.117248, -0.057280, -46.822422]
 
 [[Foliage]]
 model = "Grass2"
 name = "polySurface505"
 rotation = [0.000000, -0.003867, 0.000000, 0.999993]
-translation = [53.783969, 0.000000, -32.899164]
+translation = [53.783969, -0.690871, -32.899164]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface506"
 rotation = [0.000000, -0.855086, 0.000000, 0.518486]
-translation = [53.512705, -0.011476, -37.480097]
+translation = [53.512705, -0.702347, -37.480097]
 
 [[Foliage]]
 model = "Grass1"
@@ -821,45 +821,45 @@ translation = [37.128627, -0.018560, 25.455282]
 model = "Grass1"
 name = "polySurface603"
 rotation = [0.000000, -0.383784, 0.000000, 0.923423]
-translation = [36.987223, -0.665762, -13.241719]
+translation = [36.987223, -0.637008, -13.241719]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface604"
-translation = [37.205470, -0.665762, -11.932756]
+translation = [37.205470, -0.637008, -11.932756]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface605"
 rotation = [0.000000, -0.327826, 0.000000, 0.944738]
-translation = [36.543698, -0.665762, -12.789706]
+translation = [36.543698, -0.637008, -12.789706]
 
 [[Foliage]]
 model = "Grass2"
 name = "polySurface606"
-translation = [37.128627, -0.654286, -7.721151]
+translation = [37.128627, -0.625533, -7.721151]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface607"
 rotation = [0.000000, -0.383784, 0.000000, 0.923423]
-translation = [24.215150, -0.030035, -8.207315]
+translation = [24.215150, -0.226727, -8.207315]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface608"
-translation = [24.433398, -0.030035, -6.898352]
+translation = [24.433398, -0.226727, -6.898352]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface609"
-translation = [23.771625, -0.030035, -7.755301]
+translation = [23.771625, -0.226727, -7.755301]
 
 [[Foliage]]
 model = "Grass2"
 name = "polySurface610"
 rotation = [0.000000, -0.327826, 0.000000, 0.944738]
-translation = [24.356555, -0.018560, -2.686746]
+translation = [24.356555, -0.215251, -2.686746]
 
 [[Foliage]]
 model = "Grass1"
@@ -993,22 +993,22 @@ translation = [31.803765, -0.018560, -50.224984]
 model = "Grass1"
 name = "polySurface635"
 rotation = [0.000000, -0.383784, 0.000000, 0.923423]
-translation = [50.441441, -0.030035, -43.592534]
+translation = [50.441441, -0.376861, -43.592534]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface636"
-translation = [50.659689, -0.030035, -42.283571]
+translation = [50.659689, -0.376861, -42.283571]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface637"
-translation = [49.997917, -0.030035, -43.140520]
+translation = [49.997917, -0.376861, -43.140520]
 
 [[Foliage]]
 model = "Grass2"
 name = "polySurface638"
-translation = [50.582846, -0.018560, -38.071966]
+translation = [50.582846, -0.365385, -38.071966]
 
 [[Foliage]]
 model = "Grass1"
@@ -1242,13 +1242,13 @@ translation = [-58.692150, -0.011476, 38.119034]
 model = "Grass1"
 name = "polySurface677"
 rotation = [-0.000000, -0.958506, 0.000000, -0.285073]
-translation = [-58.126042, -0.011476, -12.306304]
+translation = [-58.126042, -0.628231, -12.306304]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface678"
 rotation = [0.000000, -0.903342, 0.000000, 0.428922]
-translation = [-58.692150, -0.011476, -12.119193]
+translation = [-58.692150, -0.628231, -12.119193]
 
 [[Foliage]]
 model = "Grass1"
@@ -1406,23 +1406,116 @@ translation = [9.350884, -0.047392, -24.436210]
 model = "Grass1"
 name = "polySurface712"
 rotation = [0.000000, -0.383784, 0.000000, 0.923423]
-translation = [-16.525252, -0.047392, -24.888223]
+translation = [-16.525252, -0.872951, -23.685811]
 
 [[Foliage]]
 model = "Grass2"
 name = "polySurface713"
-translation = [-16.383847, -0.035917, -19.367655]
+translation = [-16.383847, -0.737747, -18.165243]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface714"
-translation = [-16.307004, -0.047392, -23.579260]
+translation = [-16.307004, -0.563254, -22.376848]
 
 [[Foliage]]
 model = "Grass1"
 name = "polySurface715"
 rotation = [0.000000, -0.327826, 0.000000, 0.944738]
-translation = [-16.968777, -0.047392, -24.436210]
+translation = [-16.968777, -0.811533, -23.233797]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface718"
+translation = [-66.308087, -0.011476, 50.980270]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface719"
+rotation = [0.000000, -0.383784, 0.000000, 0.923423]
+translation = [-65.864563, -0.011476, 50.528257]
+
+[[Foliage]]
+model = "Grass2"
+name = "polySurface720"
+translation = [-65.723158, 0.000000, 56.048825]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface721"
+translation = [-65.646315, -0.011476, 51.837220]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface722"
+translation = [-78.329596, -0.011476, 38.684330]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface723"
+rotation = [0.000000, -0.383784, 0.000000, 0.923423]
+translation = [-77.886071, -0.011476, 38.232317]
+
+[[Foliage]]
+model = "Grass2"
+name = "polySurface724"
+translation = [-77.744666, 0.000000, 43.752885]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface725"
+translation = [-77.667823, -0.011476, 39.541280]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface726"
+translation = [-75.010196, -0.011476, 23.757453]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface727"
+rotation = [0.000000, -0.383784, 0.000000, 0.923423]
+translation = [-74.566671, -0.011476, 23.305439]
+
+[[Foliage]]
+model = "Grass2"
+name = "polySurface728"
+translation = [-74.425266, 0.000000, 28.826007]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface729"
+translation = [-74.348423, -0.011476, 24.614402]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface730"
+translation = [-57.616047, -0.011476, 23.757453]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface731"
+rotation = [0.000000, -0.383784, 0.000000, 0.923423]
+translation = [-57.172522, -0.011476, 23.305439]
+
+[[Foliage]]
+model = "Grass2"
+name = "polySurface732"
+translation = [-57.031117, 0.000000, 28.826007]
+
+[[Foliage]]
+model = "Grass1"
+name = "polySurface733"
+translation = [-56.954275, -0.011476, 24.614402]
+
+[[Static]]
+model = "Ground"
+name = "polySurface1"
+scale = [1.000000, 1.639878, 1.000000]
+
+[[Static]]
+model = "Lower_Island"
+name = "polySurface2"
 
 [[Static]]
 model = "Lamp_Post"
@@ -1449,21 +1542,15 @@ translation = [73.778222, 12.704032, -48.599493]
 model = "Rock1"
 name = "pCube3"
 rotation = [0.000000, -0.219409, 0.000000, 0.975633]
-scale = [14.191012, 22.251347, 16.924960]
-translation = [62.715794, 5.146361, -61.310634]
 
 [[Static]]
 model = "Rock1"
 name = "pCube4"
 rotation = [0.000000, 0.352186, 0.000000, 0.935930]
-scale = [14.191012, 22.251347, 16.924960]
-translation = [53.903797, 5.146361, -39.986191]
 
 [[Static]]
 model = "Rock2"
 name = "pCylinder1"
-scale = [5.743511, 3.212574, 8.960283]
-translation = [58.272954, 14.374833, -51.150104]
 
 [[Static]]
 model = "House3"
@@ -1496,9 +1583,6 @@ translation = [24.939749, -0.681523, 60.742739]
 [[Static]]
 model = "House2"
 name = "polySurface361"
-rotation = [-0.000000, -0.642179, 0.000000, -0.766555]
-scale = [0.900454, 0.900454, 0.900454]
-translation = [28.863488, -0.681523, -2.753856]
 
 [[Static]]
 model = "House1"
@@ -1518,15 +1602,11 @@ translation = [14.069426, -0.742613, 14.695036]
 model = "Rock1"
 name = "pCube5"
 rotation = [0.000000, 0.861232, 0.000000, 0.508212]
-scale = [15.912122, 24.950028, 18.977647]
-translation = [31.684753, 10.324477, -28.274286]
 
 [[Static]]
 model = "Rock3"
 name = "pCube6"
 rotation = [-0.177218, -0.492333, -0.103144, 0.845909]
-scale = [8.247980, 8.247980, 11.982188]
-translation = [45.628204, 15.252159, -35.007507]
 
 [[Static]]
 model = "Fence1"
@@ -1565,69 +1645,59 @@ translation = [10.448289, -1.538861, -36.018391]
 [[Static]]
 model = "Tree"
 name = "pCylinder2"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [51.198110, 4.250624, -75.330169]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder3"
 rotation = [0.000000, 0.955122, 0.000000, 0.296211]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [38.130038, 4.250624, -73.128211]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder4"
 rotation = [0.000000, -0.862012, 0.000000, 0.506887]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [30.002414, 4.250624, -78.939969]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder5"
 rotation = [0.000000, 0.315998, 0.000000, 0.948760]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [15.257788, 4.250624, -84.407410]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder6"
 rotation = [0.000000, -0.873807, 0.000000, 0.486272]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [11.839000, 4.250624, -40.166467]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder7"
 rotation = [0.000000, 0.301595, 0.000000, 0.953436]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-4.970400, 4.250624, -45.125949]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder8"
 rotation = [0.000000, -0.788174, 0.000000, 0.615452]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [15.444814, 4.250624, -51.264369]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder9"
 rotation = [0.000000, -0.331834, 0.000000, 0.943338]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [34.143355, 4.250624, -49.382581]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder10"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-20.632732, 4.250624, -46.337143]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder11"
 rotation = [0.000000, 0.251254, 0.000000, 0.967921]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-20.632732, 4.250624, -79.429429]
 
 [[Static]]
@@ -1808,6 +1878,27 @@ name = "polySurface377"
 rotation = [0.000000, -1.000000, 0.000000, 0.000745]
 scale = [0.287668, 0.287668, 0.287668]
 translation = [-18.900404, -1.608884, -23.206480]
+
+[[Static]]
+model = "FencePost"
+name = "polySurface379"
+translation = [22.147833, 0.000000, 16.691116]
+
+[[Static]]
+model = "FencePost"
+name = "polySurface380"
+translation = [11.575628, 0.000000, 17.840489]
+
+[[Static]]
+model = "FencePost"
+name = "polySurface447"
+rotation = [0.000000, 0.532731, 0.000000, 0.846285]
+translation = [63.882830, 0.000000, -139.370967]
+
+[[Static]]
+model = "FencePost"
+name = "polySurface693"
+translation = [-96.830475, 0.000000, 26.249628]
 
 [[Static]]
 model = "Market_Tent"
@@ -2314,7 +2405,6 @@ translation = [11.462577, -0.313369, 83.998493]
 model = "Tree"
 name = "pCylinder40"
 rotation = [0.000000, 0.786127, 0.000000, 0.618065]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [51.198110, 4.250624, 29.876205]
 
 [[Static]]
@@ -2327,126 +2417,107 @@ translation = [44.507320, 0.000000, 21.981806]
 model = "Tree"
 name = "pCylinder42"
 rotation = [0.000000, 0.487683, 0.000000, 0.873021]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [35.949197, 4.250624, 88.152783]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder43"
 rotation = [0.000000, 0.614813, 0.000000, 0.788673]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [56.484921, 4.250624, 62.783986]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder44"
 rotation = [0.000000, 0.487683, 0.000000, 0.873021]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [1.553231, 4.250624, 57.309723]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder45"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [19.856680, 4.250624, 62.295342]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder46"
 rotation = [0.000000, 0.426904, 0.000000, 0.904297]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [5.415452, 4.250624, 72.326511]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder47"
 rotation = [0.000000, 0.487683, 0.000000, 0.873021]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-10.179522, 4.250624, 66.401376]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder48"
-scale = [0.365587, 4.589475, 0.365587]
-translation = [-7.418908, 4.250624, 72.593373]
+translation = [-10.179522, 4.250624, 78.502527]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder49"
 rotation = [0.000000, 0.487683, 0.000000, 0.873021]
-scale = [0.365587, 4.589475, 0.365587]
-translation = [-1.359653, 4.250624, 75.651613]
+translation = [0.104328, 4.250624, 84.543990]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder50"
 rotation = [0.000000, 0.487683, 0.000000, 0.873021]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-40.171875, 4.250624, 84.543990]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder51"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-19.503920, 4.250624, 93.678635]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder52"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-48.918089, 4.250624, 93.678635]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder53"
 rotation = [0.000000, 0.487683, 0.000000, 0.873021]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-48.918089, 4.250624, 61.522811]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder54"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-23.769970, 4.250624, 61.522811]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder55"
 rotation = [0.000000, 0.426904, 0.000000, 0.904297]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-34.082138, 4.250624, 66.887087]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder56"
 rotation = [0.000000, 0.426904, 0.000000, 0.904297]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-34.082138, 4.250624, 51.318683]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder57"
 rotation = [0.000000, 0.426904, 0.000000, 0.904297]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-8.586087, 4.250624, 51.318683]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder58"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [14.516657, 4.250624, 51.318683]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder59"
 rotation = [0.000000, 0.487683, 0.000000, 0.873021]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [32.142703, 4.250624, 41.418331]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder60"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [36.654317, 4.250624, 20.871442]
 
 [[Static]]
@@ -2481,68 +2552,58 @@ translation = [26.472668, 0.000000, 50.693994]
 [[Static]]
 model = "Tree"
 name = "pCylinder66"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [76.842046, 4.250624, 29.876205]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder67"
 rotation = [0.000000, -0.309034, 0.000000, 0.951051]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [72.573784, 4.250624, 39.491726]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder68"
 rotation = [0.000000, -0.236960, 0.000000, 0.971519]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [53.936780, 4.250624, 46.294631]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder69"
 rotation = [0.000000, 0.778044, 0.000000, 0.628210]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [53.936780, 4.250624, 17.509501]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder70"
 rotation = [0.000000, 0.165304, 0.000000, 0.986243]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [73.439551, 4.250624, 17.509501]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder71"
 rotation = [0.000000, -0.190768, 0.000000, 0.981635]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [73.439551, 4.250624, -0.746701]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder72"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [59.546190, 4.250624, 4.740689]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder73"
 rotation = [0.000000, 0.487683, 0.000000, 0.873021]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [59.546190, 4.250624, -13.765363]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder74"
-scale = [0.365587, 4.589475, 0.365587]
 translation = [45.907205, 4.250624, -13.765363]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder75"
 rotation = [0.000000, 0.426904, 0.000000, 0.904297]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [45.907205, 4.250624, 2.580816]
 
 [[Static]]
@@ -2944,520 +3005,6 @@ scale = [0.100635, 0.331103, 0.100635]
 translation = [14.441182, 5.022101, -20.316941]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube45"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-5.237149, 0.000000, 26.856850]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube46"
-rotation = [-0.000015, 0.005639, -0.007029, 0.999959]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-3.338280, 0.000000, 27.990936]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube47"
-rotation = [-0.000015, 0.005639, -0.007029, 0.999959]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-4.878670, 0.000000, 28.186710]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube48"
-rotation = [-0.000017, -0.249089, -0.007025, 0.968455]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-3.598606, 0.000000, 26.465850]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube49"
-rotation = [-0.000019, 0.364587, -0.007035, 0.931143]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-5.368212, 0.000000, 25.464921]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube50"
-rotation = [-0.000019, 0.364587, -0.007035, 0.931143]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-6.363622, 0.000000, 27.794481]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube51"
-rotation = [0.000000, 0.694135, 0.000000, 0.719845]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-6.795325, 0.000000, 26.636745]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube52"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [3.236977, 0.000000, -23.446268]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube53"
-rotation = [0.000000, 0.359332, 0.000000, 0.933210]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [1.752024, 0.000000, -23.838497]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube54"
-rotation = [0.000000, 0.694135, 0.000000, 0.719845]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [1.320321, 0.000000, -24.996233]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube55"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [2.878498, 0.000000, -24.776129]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube56"
-rotation = [0.000000, 0.359332, 0.000000, 0.933210]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [2.747435, 0.000000, -26.168057]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube57"
-rotation = [0.000000, -0.254547, 0.000000, 0.967060]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [4.517041, 0.000000, -25.167128]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube58"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [4.777367, 0.000000, -23.642043]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube59"
-rotation = [0.000000, -0.731899, 0.000000, 0.681413]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [4.083006, 0.000000, -27.322333]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube60"
-rotation = [0.000000, -0.438163, 0.000000, 0.898896]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [2.598053, 0.000000, -27.714562]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube61"
-rotation = [0.000000, -0.053861, 0.000000, 0.998548]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [2.166350, 0.000000, -28.872298]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube62"
-rotation = [0.000000, -0.731899, 0.000000, 0.681413]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [3.724526, 0.000000, -28.652194]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube63"
-rotation = [0.000000, -0.438163, 0.000000, 0.898896]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [3.593464, 0.000000, -30.044122]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube64"
-rotation = [0.000000, -0.881242, 0.000000, 0.472664]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [5.363070, 0.000000, -29.043193]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube65"
-rotation = [0.000000, -0.731899, 0.000000, 0.681413]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [5.623395, 0.000000, -27.518108]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube66"
-rotation = [0.000000, 0.694135, 0.000000, 0.719845]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-25.548054, 0.000000, -26.997300]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube67"
-rotation = [0.000000, 0.129952, 0.000000, 0.991520]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-24.082782, 0.000000, -26.997300]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube68"
-rotation = [0.000000, 0.397447, 0.000000, 0.917625]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-25.023527, 0.000000, -25.603032]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube69"
-rotation = [0.000000, 0.621007, 0.000000, 0.783805]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-23.640124, 0.000000, -25.603032]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube70"
-rotation = [-0.000015, 0.005639, -0.007029, 0.999959]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [18.150652, 0.000000, 17.003994]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube71"
-rotation = [-0.000015, 0.005639, -0.007029, 0.999959]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [16.610263, 0.000000, 16.621949]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube72"
-rotation = [-0.000019, 0.364587, -0.007035, 0.931143]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [15.125310, 0.000000, 16.229720]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube73"
-rotation = [-0.000017, -0.249089, -0.007025, 0.968455]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [17.890327, 0.000000, 15.604401]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube74"
-rotation = [-0.000019, 0.364587, -0.007035, 0.931143]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [16.120721, 0.000000, 13.900160]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube75"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [16.251783, 0.000000, 15.292088]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube76"
-rotation = [0.000000, 0.694135, 0.000000, 0.719845]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [14.693607, 0.000000, 15.071984]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube77"
-rotation = [-0.000017, -0.249089, -0.007025, 0.968455]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [13.968219, 0.000000, -6.013574]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube78"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [11.650091, 0.000000, -6.325887]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube79"
-rotation = [-0.000019, 0.364587, -0.007035, 0.931143]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [13.060907, 0.000000, -6.935229]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube80"
-rotation = [0.000000, 0.694135, 0.000000, 0.719845]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [14.394479, 0.000000, -7.206458]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube82"
-rotation = [-0.000015, 0.005639, -0.007029, 0.999959]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [12.354204, 0.000000, -5.502330]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube83"
-rotation = [-0.000015, 0.005639, -0.007029, 0.999959]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [13.548960, 0.000000, -4.613981]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube84"
-rotation = [0.000000, 0.359332, 0.000000, 0.933210]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [1.604414, 0.000000, -20.858294]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube85"
-rotation = [0.000000, 0.475963, 0.000000, 0.879465]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [0.707753, 0.000000, -22.650879]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube86"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [2.878498, 0.000000, -21.428124]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube87"
-rotation = [0.000000, 0.359332, 0.000000, 0.933210]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [2.012899, 0.000000, -22.334248]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube88"
-rotation = [0.000000, -0.254547, 0.000000, 0.967060]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [4.226701, 0.000000, -22.205725]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube89"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [5.286668, 0.000000, -21.188255]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube90"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [3.969406, 0.000000, -20.642954]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube91"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-43.115844, 0.000000, -19.352510]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube92"
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-42.419746, 0.000000, -20.562606]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube93"
-rotation = [0.000000, -0.677014, 0.000000, 0.735971]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-41.198615, 0.000000, -20.415292]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube94"
-rotation = [0.000000, -0.677014, 0.000000, 0.735971]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-41.747370, 0.000000, -19.116663]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube95"
-rotation = [0.000000, -0.677014, 0.000000, 0.735971]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-40.779832, 0.000000, -18.806939]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube96"
-rotation = [0.000000, -0.677014, 0.000000, 0.735971]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-42.407914, 0.000000, -18.018665]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube97"
-rotation = [0.000000, -0.677014, 0.000000, 0.735971]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-41.154981, 0.000000, -17.802838]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube98"
-rotation = [0.000000, -0.677014, 0.000000, 0.735971]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-49.039721, 0.000000, -3.053651]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube99"
-rotation = [0.000000, -0.147859, 0.000000, 0.989008]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-51.118379, 0.000000, -3.053651]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube100"
-rotation = [0.000000, -0.147859, 0.000000, 0.989008]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-49.969552, 0.000000, -3.053651]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube101"
-rotation = [0.000000, 0.160709, 0.000000, 0.987002]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-49.969552, 0.000000, -4.314230]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube102"
-rotation = [0.000000, 0.281188, 0.000000, 0.959653]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-51.110298, 0.000000, -4.188618]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube103"
-rotation = [0.000000, -0.728274, 0.000000, 0.685287]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-48.756801, 0.000000, -4.188618]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube104"
-rotation = [0.000000, -0.413213, 0.000000, 0.910634]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-49.332319, 0.000000, -5.168930]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube105"
-rotation = [0.000000, -0.700800, 0.000000, 0.713358]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-50.796798, 0.000000, -5.489428]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube106"
-rotation = [0.000049, 0.772794, -0.007013, 0.634618]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-21.963666, 0.000000, 24.589996]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube107"
-rotation = [-0.000045, 0.604443, -0.007049, 0.796617]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-23.522287, 0.000000, 24.589996]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube108"
-rotation = [-0.000015, 0.092467, -0.007030, 0.995691]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-23.522287, 0.000000, 23.112901]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube109"
-rotation = [-0.000206, 0.688074, -0.007117, 0.725606]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-22.044902, 0.000000, 23.112901]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube110"
-rotation = [-0.000016, 0.190357, -0.007032, 0.981690]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-23.196876, 0.000000, 21.693357]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube111"
-rotation = [0.000000, 0.833839, 0.000000, 0.552008]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [16.111076, 0.000000, -21.052308]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube112"
-rotation = [0.000000, 0.374263, 0.000000, 0.927322]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [16.348782, 0.000000, -22.494791]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube113"
-rotation = [0.000000, 0.525128, 0.000000, 0.851023]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [16.348782, 0.000000, -24.072285]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube114"
-rotation = [0.000000, 0.694135, 0.000000, 0.719845]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [17.444971, 0.000000, -23.916599]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube115"
-rotation = [0.000000, 0.921729, 0.000000, 0.387835]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [17.182976, 0.000000, -21.586483]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube116"
-rotation = [0.000000, 0.694135, 0.000000, 0.719845]
-scale = [1.739655, 0.318455, 1.327643]
-translation = [-8.793837, -0.044643, -30.420092]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube117"
-rotation = [0.000000, -0.037273, 0.000000, 0.999305]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-9.208087, 0.000000, -32.213086]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube118"
-rotation = [0.000000, -0.037273, 0.000000, 0.999305]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-10.050742, 0.000000, -31.248196]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube119"
-rotation = [0.000000, -0.037273, 0.000000, 0.999305]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-10.050742, 0.000000, -30.313113]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube120"
-rotation = [0.000000, -0.037273, 0.000000, 0.999305]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-10.561596, 0.000000, -32.252885]
-
-[[Static]]
 model = "Barrel"
 name = "polySurface422"
 rotation = [0.000000, 0.249535, 0.000000, 0.968366]
@@ -3690,55 +3237,6 @@ scale = [40.515892, 0.278852, 12.091102]
 translation = [49.156913, -1.396972, -52.224970]
 
 [[Static]]
-model = "Ice"
-name = "pCube124"
-rotation = [0.000000, -0.158157, 0.000000, 0.987414]
-scale = [29.162594, 0.278852, 14.552710]
-translation = [16.862596, -1.396972, -63.562036]
-
-[[Static]]
-model = "Ice"
-name = "pCube125"
-rotation = [0.000000, 0.159983, 0.000000, 0.987120]
-scale = [43.423550, 0.278852, 12.118735]
-translation = [-14.739771, -1.396972, -61.690690]
-
-[[Static]]
-model = "Ice"
-name = "pCube126"
-rotation = [0.000000, 0.325192, 0.000000, 0.945648]
-scale = [47.822374, 0.278852, 18.261706]
-translation = [-48.374591, -1.396972, -38.771825]
-
-[[Static]]
-model = "Ice"
-name = "pCube127"
-rotation = [0.000000, 0.273340, 0.000000, 0.961917]
-scale = [19.046998, 0.278852, 23.213664]
-translation = [-73.138235, -1.396972, -20.425871]
-
-[[Static]]
-model = "Ice"
-name = "pCube128"
-rotation = [0.000000, -0.109428, 0.000000, 0.993995]
-scale = [0.956380, 3.502915, 15.667112]
-translation = [-84.381887, -3.271288, -19.449520]
-
-[[Static]]
-model = "Ice"
-name = "pCube129"
-rotation = [-0.118718, -0.126855, 0.637006, 0.751024]
-scale = [17.177408, 0.278852, 8.810214]
-translation = [57.801938, 6.623614, -50.358113]
-
-[[Static]]
-model = "Ice"
-name = "pCube130"
-rotation = [0.000000, -0.109428, 0.000000, 0.993995]
-scale = [0.956380, 29.431877, 15.667112]
-translation = [-85.298048, -16.071354, -19.449520]
-
-[[Static]]
 model = "Lamp_Post"
 name = "pCube131"
 rotation = [-0.000000, 0.425663, 0.000000, -0.904882]
@@ -3852,21 +3350,18 @@ translation = [-93.025720, 0.019822, -2.671284]
 model = "Tree"
 name = "pCylinder138"
 rotation = [0.000000, 0.838128, 0.000000, 0.545474]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-78.736767, 4.250624, 18.406722]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder139"
 rotation = [0.000000, 0.487683, 0.000000, 0.873021]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-77.658253, 4.250624, -1.380755]
 
 [[Static]]
 model = "Tree"
 name = "pCylinder140"
 rotation = [0.000000, 0.852520, 0.000000, 0.522694]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-65.722012, 4.250624, 5.969147]
 
 [[Static]]
@@ -3885,428 +3380,105 @@ translation = [-47.470859, -1.217069, -35.640125]
 model = "Tree"
 name = "pCylinder143"
 rotation = [0.000000, -0.862012, 0.000000, 0.506887]
-scale = [0.365587, 4.589475, 0.365587]
 translation = [-4.780168, 4.250624, -77.313473]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube139"
-rotation = [0.000000, 0.639669, 0.000000, 0.768651]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-33.518954, 0.000000, -12.029265]
+model = "SnowHeap"
+name = "pCube199"
+rotation = [-0.013400, 0.281890, -0.021899, 0.959103]
+scale = [11.848626, 3.922613, 3.886038]
+translation = [28.271513, -0.005520, -35.284376]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube140"
-rotation = [0.000000, 0.535889, 0.000000, 0.844289]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-32.474682, 0.000000, -13.216883]
+model = "SnowHeap"
+name = "pCube200"
+rotation = [-0.021828, -0.519443, -0.008874, 0.854180]
+scale = [9.900932, 3.277808, 3.247246]
+translation = [40.081314, -0.377348, -32.721001]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube141"
-rotation = [0.000000, 0.196717, 0.000000, 0.980460]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-30.989730, 0.000000, -12.824654]
+model = "SnowHeap"
+name = "pCube201"
+rotation = [-0.016687, -0.425621, -0.011926, 0.904669]
+scale = [9.900932, 3.277808, 3.247246]
+translation = [48.992758, -0.767074, -35.425680]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube142"
-rotation = [0.000000, 0.196717, 0.000000, 0.980460]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-29.449340, 0.000000, -13.020428]
+model = "SnowHeap"
+name = "pCube202"
+rotation = [-0.021828, -0.519443, -0.008874, 0.854180]
+scale = [8.755453, 3.337480, 8.521157]
+translation = [51.546594, -0.228495, -19.967789]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube143"
-rotation = [0.000000, 0.535889, 0.000000, 0.844289]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-32.213808, 0.000000, -11.712634]
+model = "SnowHeap"
+name = "pCube204"
+rotation = [0.000043, -0.519500, 0.004425, 0.854459]
+scale = [3.803266, 3.272745, 5.235275]
+translation = [-43.615813, -0.309596, 34.795886]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube144"
-rotation = [0.000000, 0.196717, 0.000000, 0.980460]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-31.348209, 0.000000, -10.806510]
+model = "SnowHeap"
+name = "pCube205"
+rotation = [0.000043, -0.519500, 0.004425, 0.854459]
+scale = [11.492714, 6.703924, 10.723991]
+translation = [-66.197489, 0.236369, -8.753034]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube145"
-rotation = [0.000000, 0.535889, 0.000000, 0.844289]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-32.622293, 0.000000, -10.236680]
+model = "SnowHeap"
+name = "pCube206"
+rotation = [0.000043, -0.519500, 0.004425, 0.854459]
+scale = [14.421572, 4.338298, 6.380604]
+translation = [24.180054, 0.188503, -23.523661]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube146"
-rotation = [0.000000, -0.059336, 0.000000, 0.998238]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-30.000005, 0.000000, -11.584111]
+model = "SnowHeap"
+name = "pCube207"
+rotation = [0.114407, -0.786099, -0.607096, 0.019834]
+scale = [9.900932, 3.277808, 3.247246]
+translation = [56.581118, -0.684318, -63.900203]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube147"
-rotation = [0.000000, 0.196717, 0.000000, 0.980460]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-30.257301, 0.000000, -10.021339]
+model = "SnowHeap"
+name = "pCube208"
+rotation = [-0.035746, -0.230251, 0.031839, 0.971953]
+scale = [8.896209, 3.216208, 5.734056]
+translation = [64.147171, -0.150929, -27.060237]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube148"
-rotation = [0.000000, 0.196717, 0.000000, 0.980460]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-28.940039, 0.000000, -10.566641]
+model = "SnowHeap"
+name = "pCube209"
+rotation = [-0.021828, -0.519443, -0.008874, 0.854180]
+scale = [6.086474, 2.320095, 5.923599]
+translation = [49.072362, 0.100477, 30.564431]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube149"
-rotation = [0.000000, -0.021703, 0.000000, 0.999764]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-27.258995, 0.000000, -13.216883]
+model = "SnowHeap"
+name = "pCube210"
+rotation = [-0.021828, -0.519443, -0.008874, 0.854180]
+scale = [6.086474, 2.320095, 5.923599]
+translation = [18.467082, 0.190573, 46.429291]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube150"
-rotation = [0.000000, 0.106599, 0.000000, 0.994302]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-28.303267, 0.000000, -12.029265]
+model = "SnowHeap"
+name = "pCube211"
+rotation = [-0.021828, -0.519443, -0.008874, 0.854180]
+scale = [6.086474, 2.320095, 4.359289]
+translation = [-42.392087, -0.115115, 75.966387]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube151"
-rotation = [0.000000, -0.021703, 0.000000, 0.999764]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-26.998121, 0.000000, -11.712634]
+model = "SnowHeap"
+name = "pCube212"
+rotation = [-0.021422, -0.230729, 0.002260, 0.972780]
+scale = [8.959732, 6.867674, 8.243602]
+translation = [57.888425, -0.747952, -31.286094]
 
 [[Static]]
-model = "Stone_Decoration"
-name = "pCube152"
-rotation = [0.000000, -0.021703, 0.000000, 0.999764]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-27.406606, 0.000000, -10.236680]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube153"
-rotation = [0.000000, -0.379501, 0.000000, 0.925191]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-26.132522, 0.000000, -10.806510]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube154"
-rotation = [0.000000, -0.379501, 0.000000, 0.925191]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-25.774043, 0.000000, -12.824654]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube155"
-rotation = [0.000000, -0.379501, 0.000000, 0.925191]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-24.233653, 0.000000, -13.020428]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube156"
-rotation = [0.000000, -0.602505, 0.000000, 0.798115]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-24.784318, 0.000000, -11.584111]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube157"
-rotation = [0.000000, -0.379501, 0.000000, 0.925191]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-25.041614, 0.000000, -10.021339]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube158"
-rotation = [0.000000, -0.379501, 0.000000, 0.925191]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-23.724352, 0.000000, -10.566641]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube159"
-rotation = [0.000000, -0.021703, 0.000000, 0.999764]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-10.139577, 0.000000, -10.101335]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube160"
-rotation = [0.000000, 0.106599, 0.000000, 0.994302]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-11.183849, 0.000000, -8.913717]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube161"
-rotation = [0.000000, -0.021703, 0.000000, 0.999764]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-9.878703, 0.000000, -8.597086]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube162"
-rotation = [0.000000, -0.021703, 0.000000, 0.999764]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-10.287188, 0.000000, -7.121132]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube163"
-rotation = [0.000000, -0.379501, 0.000000, 0.925191]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-9.013104, 0.000000, -7.690962]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube164"
-rotation = [0.000000, -0.379501, 0.000000, 0.925191]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-8.654625, 0.000000, -9.709106]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube165"
-rotation = [0.000000, -0.379501, 0.000000, 0.925191]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-7.114235, 0.000000, -9.904881]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube166"
-rotation = [0.000000, -0.602505, 0.000000, 0.798115]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-7.664900, 0.000000, -8.468563]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube167"
-rotation = [0.000000, -0.379501, 0.000000, 0.925191]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-7.922196, 0.000000, -6.905791]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube168"
-rotation = [0.000000, -0.379501, 0.000000, 0.925191]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-6.604934, 0.000000, -7.451093]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube169"
-rotation = [0.000000, -0.617601, 0.000000, 0.786492]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-0.978855, 0.000000, 12.711929]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube170"
-rotation = [0.000000, -0.511716, 0.000000, 0.859154]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-2.023127, 0.000000, 13.899547]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube171"
-rotation = [0.000000, -0.617601, 0.000000, 0.786492]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-0.717980, -0.010734, 14.216178]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube172"
-rotation = [0.000000, -0.617601, 0.000000, 0.786492]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-1.126466, 0.000000, 15.692132]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube173"
-rotation = [0.000000, -0.858963, 0.000000, 0.512038]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [0.147618, 0.000000, 15.122302]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube174"
-rotation = [0.000000, -0.858963, 0.000000, 0.512038]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [0.506098, 0.000000, 13.104158]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube175"
-rotation = [0.000000, -0.858963, 0.000000, 0.512038]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [2.046487, 0.000000, 12.908384]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube176"
-rotation = [0.000000, -0.961007, 0.000000, 0.276526]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [1.495822, 0.000000, 14.344701]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube177"
-rotation = [0.000000, -0.858963, 0.000000, 0.512038]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [1.238526, 0.000000, 15.907473]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube178"
-rotation = [0.000000, -0.858963, 0.000000, 0.512038]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [2.555789, 0.000000, 15.362172]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube179"
-rotation = [0.000000, -0.617601, 0.000000, 0.786492]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-17.100627, 0.000000, 16.385786]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube180"
-rotation = [0.000000, -0.511716, 0.000000, 0.859154]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-18.144898, 0.000000, 17.573404]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube181"
-rotation = [0.000000, -0.617601, 0.000000, 0.786492]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-16.839752, 0.000000, 17.890035]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube182"
-rotation = [0.000000, -0.617601, 0.000000, 0.786492]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-17.248238, 0.000000, 19.365989]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube183"
-rotation = [0.000000, -0.858963, 0.000000, 0.512038]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-15.974154, 0.000000, 18.796159]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube184"
-rotation = [0.000000, -0.858963, 0.000000, 0.512038]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-15.615674, 0.000000, 16.778015]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube185"
-rotation = [0.000000, -0.858963, 0.000000, 0.512038]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-14.075284, 0.000000, 16.582240]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube186"
-rotation = [0.000000, -0.961007, 0.000000, 0.276526]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-14.625950, 0.000000, 18.018558]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube187"
-rotation = [0.000000, -0.858963, 0.000000, 0.512038]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-14.883245, 0.000000, 19.581330]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube188"
-rotation = [0.000000, -0.858963, 0.000000, 0.512038]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-13.565983, 0.000000, 19.036028]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube189"
-rotation = [0.000000, 0.654938, 0.000000, 0.755683]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-35.270434, 0.000000, 7.048178]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube190"
-rotation = [0.000000, 0.746381, 0.000000, 0.665519]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-36.314706, 0.000000, 8.235797]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube191"
-rotation = [0.000000, 0.654938, 0.000000, 0.755683]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-35.009559, 0.000000, 8.552428]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube192"
-rotation = [0.000000, 0.654938, 0.000000, 0.755683]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-35.418045, 0.000000, 10.028381]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube193"
-rotation = [0.000000, 0.339654, 0.000000, 0.940551]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-34.143961, 0.000000, 9.458551]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube194"
-rotation = [0.000000, 0.339654, 0.000000, 0.940551]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-33.785481, 0.000000, 7.440408]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube195"
-rotation = [0.000000, 0.339654, 0.000000, 0.940551]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-32.245092, 0.000000, 7.244633]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube196"
-rotation = [0.000000, 0.089051, 0.000000, 0.996027]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-32.795757, 0.000000, 8.680950]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube197"
-rotation = [0.000000, 0.339654, 0.000000, 0.940551]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-33.053053, 0.000000, 10.243722]
-
-[[Static]]
-model = "Stone_Decoration"
-name = "pCube198"
-rotation = [0.000000, 0.339654, 0.000000, 0.940551]
-scale = [1.310334, 0.239865, 1.000000]
-translation = [-31.735790, 0.000000, 9.698421]
+model = "SnowHeap"
+name = "pCube213"
+rotation = [0.000023, -0.021154, 0.004443, 0.999766]
+scale = [11.051383, 3.272745, 3.692171]
+translation = [-4.939333, -0.210461, -23.273115]
 
 [[Static]]
 model = "Log"
@@ -4379,8 +3551,160 @@ scale = [0.492631, 0.492631, 0.492631]
 translation = [-21.106291, -3.548394, -55.390620]
 
 [[Static]]
-model = "Island"
-name = "MapBase_MK4:IslandGround1_polySurface1"
+model = "Snow"
+name = "pCube215"
+rotation = [-0.071816, -0.121994, 0.322193, 0.936030]
+scale = [5.291430, 0.162500, 11.133056]
+translation = [-27.635372, 5.527596, 31.175243]
+
+[[Static]]
+model = "Snow"
+name = "pCube216"
+rotation = [-0.327089, -0.944300, 0.025200, -0.026005]
+scale = [5.291430, 0.162500, 11.133056]
+translation = [-22.460925, 5.550921, 32.481064]
+
+[[Static]]
+model = "Snow"
+name = "pCube220"
+rotation = [-0.328175, -0.943599, 0.033608, -0.028158]
+scale = [5.291430, 0.162500, 11.133056]
+translation = [16.597147, 5.573849, 24.904995]
+
+[[Static]]
+model = "Snow"
+name = "pCube221"
+rotation = [0.079388, 0.130233, -0.321387, -0.934584]
+scale = [5.291430, 0.162500, 11.133056]
+translation = [11.711875, 5.581766, 23.367233]
+
+[[Static]]
+model = "Snow"
+name = "pCube222"
+rotation = [-0.407977, -0.715243, -0.208232, -0.527846]
+scale = [5.291430, 0.162500, 11.133056]
+translation = [21.366664, 5.592212, -2.170214]
+
+[[Static]]
+model = "Snow"
+name = "pCube223"
+rotation = [0.419748, 0.336547, -0.781118, -0.316863]
+scale = [5.291430, 0.162500, 11.133056]
+translation = [22.105202, 5.607811, -7.363735]
+
+[[Static]]
+model = "Snow"
+name = "pCube224"
+rotation = [-0.327152, -0.695744, -0.629414, -0.112912]
+scale = [8.055773, 0.203701, 13.955761]
+translation = [-45.451250, 6.951346, -24.240310]
+
+[[Static]]
+model = "Snow"
+name = "pCube225"
+rotation = [-0.343961, -0.685180, -0.629872, -0.124420]
+scale = [4.538534, 0.114763, 6.391214]
+translation = [-37.441387, 5.171753, -29.652172]
+
+[[Static]]
+model = "Snow"
+name = "pCube226"
+rotation = [0.062337, -0.044827, -0.375932, -0.923461]
+scale = [7.327999, 0.114763, 13.698942]
+translation = [-5.885076, 13.400194, -28.531740]
+
+[[Static]]
+model = "Snow"
+name = "pCube227"
+rotation = [0.062337, -0.044827, -0.375932, -0.923461]
+scale = [6.866479, 0.114763, 13.698942]
+translation = [8.388054, 13.454258, -25.724339]
+
+[[Static]]
+model = "Snow"
+name = "pCube228"
+rotation = [0.447583, 0.343826, -0.746782, -0.351808]
+scale = [4.871450, 0.085169, 15.998154]
+translation = [5.055857, 12.578146, -28.132959]
+
+[[Static]]
+model = "Snow"
+name = "pCube229"
+rotation = [-0.422827, -0.095800, -0.728822, -0.529961]
+scale = [4.871450, 0.085169, 15.998154]
+translation = [4.507250, 12.560940, -24.919092]
+
+[[Static]]
+model = "Snow"
+name = "pCube230"
+rotation = [0.382137, 0.916137, 0.118720, 0.023890]
+scale = [6.866479, 0.114763, 13.698942]
+translation = [-1.176760, 13.520863, -27.509956]
+
+[[Static]]
+model = "Snow"
+name = "pCube231"
+rotation = [0.382137, 0.916137, 0.118720, 0.023890]
+scale = [6.866479, 0.114763, 13.698942]
+translation = [13.257638, 13.470596, -24.957986]
+
+[[Static]]
+model = "Snow"
+name = "pCube232"
+rotation = [0.428045, 0.110656, -0.723361, -0.530360]
+scale = [6.866479, 0.114763, 13.698942]
+translation = [-6.945633, 13.519206, 32.078454]
+
+[[Static]]
+model = "Snow"
+name = "pCube233"
+rotation = [0.447670, 0.360879, 0.739918, 0.349112]
+scale = [6.866479, 0.114763, 13.698942]
+translation = [-6.211495, 13.399192, 36.910610]
+
+[[Static]]
+model = "Snow"
+name = "pCube234"
+rotation = [0.044705, -0.039276, 0.386103, 0.920534]
+scale = [4.747518, 0.042151, 6.257435]
+translation = [-7.188818, 12.589781, 39.288493]
+
+[[Static]]
+model = "Snow"
+name = "pCube235"
+rotation = [0.383346, 0.912253, -0.141881, -0.026667]
+scale = [4.747518, 0.042151, 6.257435]
+translation = [-3.988481, 12.608670, 38.732736]
+
+[[Static]]
+model = "GrapplingPoint"
+name = "GrapplingPoint2"
+translation = [18.222697, 11.876792, 8.876610]
+
+[[Static]]
+model = "GrapplingPoint"
+name = "GrapplingPoint3"
+translation = [-28.967105, 11.876792, -13.913414]
+
+[[Static]]
+model = "GrapplingPoint"
+name = "GrapplingPoint4"
+translation = [-28.967105, 11.876792, 43.118858]
+
+[[Static]]
+model = "GrapplingPoint"
+name = "GrapplingPoint5"
+translation = [7.042159, 11.876792, 62.762053]
+
+[[Static]]
+model = "GrapplingPoint"
+name = "GrapplingPoint6"
+translation = [37.892770, 11.876792, 39.165045]
+
+[[Static]]
+model = "GrapplingPoint"
+name = "GrapplingPoint7"
+translation = [4.896196, 11.876792, -60.467762]
 
 [[Trigger]]
 model = "Jumppad"

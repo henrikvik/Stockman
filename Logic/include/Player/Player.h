@@ -54,7 +54,7 @@ namespace Logic
 		};
 
 	private:
-        static const int MIN_Y;
+        static const int MIN_Y, MAX_HP;
 
         // Special modes (move to other class)
         bool m_godMode, m_noclip;
@@ -131,6 +131,8 @@ namespace Logic
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
+        DirectX::SimpleMath::Vector2 getWindowMidPoint();
+
         // Player step
         void stepPlayer(float deltaTime);
 
@@ -166,7 +168,8 @@ namespace Logic
 		void readFromFile();
 
 		void takeDamage(int damage, bool damageThroughProtection = false);
-		int getHP() const;
+        int getHP() const;
+        int getMaxHP() const;
 
 		btKinematicCharacterController* getCharController();
 		btGhostObject* getGhostObject();

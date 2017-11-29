@@ -5,7 +5,7 @@
 
 using namespace Logic;
 
-const int EnemyNecromancer::SPEED_AB1 = 15,
+const int EnemyNecromancer::SPEED_AB1 = 125,
           EnemyNecromancer::SPEED_AB2 = 20,
           EnemyNecromancer::MAX_SPAWNED_MINIONS = 4,
           EnemyNecromancer::BASE_DAMAGE = 1,
@@ -27,6 +27,7 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
 
     createAbilities();
 
+    getSoundSource()->autoPlaySFX(Sound::SFX::ENEMY_AMBIENT_2, 6500, 500, 1.f, 0.10f);
     light.color = DirectX::SimpleMath::Color(0.5f, 0.0f, 1.0f);
     light.intensity = 0.8f;
     light.range = 7.0f;
@@ -88,7 +89,7 @@ void EnemyNecromancer::createAbilities()
     data.randomChanche = 5;
 
     ab2ProjData.meshID = Resources::Models::Ammocrystal;
-    ab2ProjData.speed = 110.f;
+    ab2ProjData.speed = SPEED_AB1;
     ab2ProjData.ttl = 25000.f;
     ab2ProjData.gravityModifier = 0.f;
     ab2ProjData.enemyBullet = true;

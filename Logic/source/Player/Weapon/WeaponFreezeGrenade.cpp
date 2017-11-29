@@ -3,6 +3,7 @@
 #include <Projectile\ProjectileStruct.h>
 #include <Misc\Sound\NoiseMachine.h>
 #include <AI\Enemy.h>
+#include <Entity\Entity.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -40,11 +41,13 @@ WeaponFreezeGrenade::~WeaponFreezeGrenade()
 
 void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& shooter)
 {
-    Sound::NoiseMachine::Get().playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, nullptr, true);
+    shooter.getSoundSource()->playSFX(Sound::SFX::WEAPON_MAGIC_1, 1.f, 0.05f);
 
     for (Projectile* p : projectiles)
     {
         p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
+
+            data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_MAGIC_2, 1.f, 0.15f);
             
             // explosion projectile
             m_explosionData.scale = FREEZE_GRENADE_EXPLOSION_SCALE;
@@ -53,6 +56,9 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
             if (explosion)
             {
                 explosion->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
+
+                    data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.33f);
+
                     // Graphical explosion - particle
                     Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
                     if (Projectile* p = dynamic_cast<Projectile*>(data.caller))
@@ -103,6 +109,9 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
                         {
                             
                             explosion->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
+
+                                data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.33f);
+
                                 // Graphical explosion - particle
                                 Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
                                 if (Projectile* p = dynamic_cast<Projectile*>(data.caller))

@@ -500,18 +500,18 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     this->updateGUIElemets();
     this->updateTextElements();
 
-    this->showWaveCleared = timeManager.isTransitioning();
-    static float alpha = 0.0f;
-    if (showWaveCleared && timeManager.getFirstWave() == false)
-    {
-        alpha += dt * 0.002f;
-       waveSprites.at(0).setAlpha(alpha);
-    }
-    else
-    {
-        alpha = 0.0f;
-        waveSprites.at(0).setAlpha(alpha);
-    }
+    // No.
+    //static float alpha = 0.0f;
+    //if (timeManager.isTransitioning() && !timeManager.onFirstWave())
+    //{
+    //    alpha += dt * 0.002f;
+    //    staticElements.at(staticElements.size()-1).setAlpha(alpha);
+    //}
+    //else
+    //{
+    //    alpha = 0.0f;
+    //    staticElements.at(staticElements.size()- 1).setAlpha(alpha);
+    //}
 }
 
 void HUDManager::render() const
