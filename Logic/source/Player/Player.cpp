@@ -476,9 +476,8 @@ void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
 
-    // Update weapon and skills
+    // Update weapon
     m_weaponManager->update(deltaTime);
-    m_skillManager->update(deltaTime);
 
     // Updates listener info for sounds
     btVector3 up = { 0, 1, 0 };
@@ -622,6 +621,8 @@ void Player::updateSpecific(float deltaTime)
             m_skillManager->use(SkillManager::ID::TERTIARY, forward, *this);
         if (ks.IsKeyUp(m_useSkillTertiary))
             m_skillManager->release(SkillManager::ID::TERTIARY);
+
+        m_skillManager->update(deltaTime);
         PROFILE_END();
 
         // Check if reloading
