@@ -130,7 +130,7 @@ namespace Graphics
             };
             auto draw_plane = [&](Plane & plane, Color color)
             {
-                Vector3 offset = plane.normal * 0.01f;
+                Vector3 offset = -plane.normal * 0.05f;
                 draw_square(plane.top_left + offset, plane.top_right + offset, plane.bot_left + offset, plane.bot_right + offset, color);
 
                 debug_points.emplace_back(position, color);
