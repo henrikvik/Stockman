@@ -647,7 +647,8 @@ void Player::updateSpecific(float deltaTime)
     }
 
     // step player
-    stepPlayer(deltaTime);
+    if(!m_noclip)
+        stepPlayer(deltaTime);
 
     Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
 
