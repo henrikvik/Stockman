@@ -13,7 +13,7 @@ static const float gaussianFilter[KERNELSIZE] =
     0,	0.00621,	0.987581,	0.00621,	0
 };
 
-#define GLOW_INTENSITY 0.5f
+#define GLOW_INTENSITY 1.f
 
 //Darkens ENTIRE SCENE exept for glowing area
 #define GLOW_ORIGINAL_INTENSITY 1.f
