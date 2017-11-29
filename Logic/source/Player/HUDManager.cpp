@@ -173,7 +173,7 @@ void HUDManager::constructGUIElements()
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
 
-    staticElements.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -150, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 1.0f, false));
+    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, 0, WIN_WIDTH, WIN_HEIGHT, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 1.0f, false));
 }
 
 void HUDManager::updateTextElements()
@@ -505,12 +505,12 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     if (showWaveCleared && timeManager.getFirstWave() == false)
     {
         alpha += dt * 0.002f;
-       staticElements.at(staticElements.size()-1).setAlpha(alpha);
+       waveSprites.at(0).setAlpha(alpha);
     }
     else
     {
         alpha = 0.0f;
-        staticElements.at(staticElements.size()- 1).setAlpha(alpha);
+        waveSprites.at(0).setAlpha(alpha);
     }
 }
 
@@ -541,6 +541,11 @@ void HUDManager::render() const
     for (auto &bar : HPBar)
     {
         bar.render();
+    }
+
+    for (auto &wave : waveSprites)
+    {
+        wave.render();
     }
     renderTextElements();
 }

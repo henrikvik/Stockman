@@ -66,7 +66,7 @@ iMenu * iMenuFactory::buildMenuSettings()
     menu->addSlider(buildSlider("MusicSlider", setting.getMusicPTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("AmbienceSlider", setting.getAmbiencePTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("SFXSlider", setting.getSFXPTR(), 0.0f, 1.0f, 0.01f));
-    menu->addSlider(buildSlider("FOVSlider", setting.getFOVPTR(), 90.0f, 180.0f, 1.0f));
+    menu->addSlider(buildSlider("FOVSlider", setting.getFOVPTR(), 60.0f, 120.0f, 1.0f));
 
     menu->addButton(buildButton("MenuSettingsVideoWindowedLeft", ButtonFunction::windowed));
     menu->addButton(buildButton("MenuSettingsVideoWindowedRight", ButtonFunction::windowed));
@@ -169,7 +169,7 @@ iMenu * iMenuFactory::buildMenuGameover()
     menu->addButton(btn);
 
     btn = buildButton("MenuStartSettings", ButtonFunction::goToGameOverHighscore);
-    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.10));
+    btn.move(DirectX::SimpleMath::Vector2(0.333, 0.09));
     menu->addButton(btn);
 
     btn = buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu);

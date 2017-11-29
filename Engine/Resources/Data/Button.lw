@@ -101,7 +101,7 @@
 	"activeYTexEnd" : 0.9955f;
     "activeOffset" : 0.4905f;
 	"height" : 50.f;
-	"width" : 256.0f;
+	"width" : 200.0f;
 }
 {
 	"buttonName" : "MenuSettingsStartMenu";
@@ -282,13 +282,13 @@
 	"xTexEnd" : 0.234375f;
 	"yTexEnd" : 0.1920572916666667f;
     "hoverXTexStart" : 0.046875f;
-	"hoverYTexStart" :  0.2962239583333333f;
+	"hoverYTexStart" : 0.537109375f;
 	"hoverXTexEnd" : 0.234375f;
-	"hoverYTexEnd" : 0.4524739583333333f;
+	"hoverYTexEnd" : 0.693359375f;
     "activeXTexStart" : 0.046875f;
-	"activeYTexStart" :  0.537109375f;
+	"activeYTexStart" :  0.2962239583333333f;
 	"activeXTexEnd" : 0.234375f;
-	"activeYTexEnd" : 0.693359375f;
+	"activeYTexEnd" : 0.4524739583333333f;
 	"activeOffset" : 0.25f;
 	"height" : 110.0f;
 	"width" : 110.0f;
@@ -320,17 +320,17 @@
 	"xPos" : 800.f;
 	"yPos" : 550.0f;
 	"xTexStart" : 0.25391f;
-	"yTexStart" : 0.7389322916666667f;
+	"yTexStart" : 0.8658854166666667f;
 	"xTexEnd" : 0.72005f;
-	"yTexEnd" : 0.8430989583333333f;
+	"yTexEnd" : 0.96484375f;
     "hoverXTexStart" : 0.25391f;
-	"hoverYTexStart" :  0.873854166666667f;
+	"hoverYTexStart" : 0.7421875f;
 	"hoverXTexEnd" : 0.72005f;
-	"hoverYTexEnd" : 0.972796875f;
+	"hoverYTexEnd" : 0.8411458333333333f; 
 	"activeXTexStart"  : 0.25391f;
-	"activeYTexStart" :  0.7389322916666667f;
+	"activeYTexStart" :  0.8658854166666667f;
 	"activeXTexEnd" : 0.72005f;
-	"activeYTexEnd" :0.8430989583333333f;
+	"activeYTexEnd" : 0.96484375f;
 	"activeOffset" : 0.0f;
 	"height" : 50.f;
 	"width" : 250.f;
@@ -354,7 +354,7 @@
 	"activeYTexEnd" : 0.9955f;
     "activeOffset" : 0.4905f;
 	"height" : 50.f;
-	"width" : 256.0f;
+	"width" : 170.0f;
 }
 {
 	"buttonName" : "MenuSettingsVideoWindowedLeft";

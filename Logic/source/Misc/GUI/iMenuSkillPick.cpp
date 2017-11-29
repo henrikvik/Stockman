@@ -11,9 +11,9 @@ iMenuSkillPick::iMenuSkillPick(iMenu::MenuGroup group) : iMenu(group)
     resetSkillPicks();
 
     // Setup of the textrenderinfo object
-    m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+    m_textRenderInfo.color = DirectX::SimpleMath::Color(0.3984375, 0.18359375, 0.12890625, 1);
     m_textRenderInfo.font = Resources::Fonts::nordic;
-    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(0.01 * WIN_WIDTH, 0.28 * WIN_HEIGHT);
+    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(0.35 * WIN_WIDTH, 0.15 * WIN_HEIGHT);
     m_skillpointsStr = std::to_wstring(m_skillPoints) + (const wchar_t*)L" Skillpoints";
     m_textRenderInfo.text = m_skillpointsStr.c_str();
 
