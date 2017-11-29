@@ -107,7 +107,7 @@
 	"mDmgGiven": 0f;
 	"mDmgTaken": 0f;
 	"mFirerate": 0f;
-	"mHP": 1f;
+	"mHP": 2f;
 	"mMovementSpeed": 0f;
     "mAmmoCap" : 0;
     "mMagCap" : 0;
