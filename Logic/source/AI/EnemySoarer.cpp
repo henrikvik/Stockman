@@ -91,9 +91,9 @@ void EnemySoarer::updateSpecific(Player &player, float deltaTime)
     ab1.update(deltaTime, player);
 
     getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
-    if (getPositionBT().y() > HEIGHT_OFFSET + player.getPositionBT().y) // bad fix but better to just force it right now
+    if (getPositionBT().y() > HEIGHT_OFFSET + player.getPositionBT().y()) // bad fix but better to just force it right now
         getRigidBody()->getWorldTransform().getOrigin().setY(HEIGHT_OFFSET);
-    else if (getPositionBT().y() < (HEIGHT_OFFSET + player.getPositionBT().y)* 0.8f)
+    else if (getPositionBT().y() < (HEIGHT_OFFSET + player.getPositionBT().y())* 0.8f)
         getRigidBody()->setLinearVelocity(getRigidBody()->getLinearVelocity() + btVector3(0.f, 1.f, 0.f));
 }
 
