@@ -9,23 +9,20 @@ namespace Graphics
         cameraBuffer(device),
         inverseBuffer(device)
     {
-        this->near_distance = 0.1f;
-        float aspect_ratio = float(width) / height;
+        near_distance = 0.1f;
+        far_distance = drawDistance;
+        aspect_ratio = float(width) / height;
+        field_of_view = DirectX::XMConvertToRadians(fieldOfView);
 
-        this->fieldOfView = DirectX::XMConvertToRadians(fieldOfView);
-        this->far_distance = drawDistance;
+        projection = DirectX::XMMatrixPerspectiveFovRH(field_of_view, aspect_ratio, near_distance, far_distance);
 
-        this->projection = DirectX::XMMatrixPerspectiveFovRH(this->fieldOfView, aspect_ratio, near_distance, far_distance);
-
-        values.vP = this->projection * this->view;
+        values.vP   = this->projection * this->view;
         values.view = this->view;
         values.invP = this->projection.Invert();
 
-        float fovtan = 2 * tan(fieldOfView * 0.5f);
-        near_height = fovtan * near_distance;
-        near_width = near_height * aspect_ratio;
-        far_height = fovtan * far_distance;
-        far_width = far_height * aspect_ratio;
+        debug_info.points = &debug_points;
+        debug_info.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+        debug_info.useDepth = true;
     }
 
     Camera::~Camera()
@@ -33,21 +30,22 @@ namespace Graphics
 
     }
 
-    void Camera::update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context)
+    void Camera::update(DirectX::SimpleMath::Vector3 new_position, DirectX::SimpleMath::Vector3 new_forward, ID3D11DeviceContext* context)
     {
         forward.Normalize();
         DirectX::SimpleMath::Vector3 local_up(0, 1, 0);
-        this->view = DirectX::XMMatrixLookToRH(pos, forward, local_up);
 
-        this->position = pos;
-        this->forward = view.Forward();
-        this->right = view.Right();
-        this->up = view.Up();
+        view = DirectX::XMMatrixLookToRH(new_position, new_forward, local_up);
+
+        position = new_position;
+        forward = view.Forward();
+        right = view.Right();
+        up = view.Up();
 
         values.view = this->view;
         values.vP = this->view * this->projection;
         values.invP = this->projection.Invert();
-        values.camPos = DirectX::SimpleMath::Vector4(pos.x, pos.y, pos.z, 1);
+        values.camPos = DirectX::SimpleMath::Vector4(position.x, position.y, position.z, 1);
         values.forward = DirectX::SimpleMath::Vector4(forward.x, forward.y, forward.z, 0);
 
         inverseMatrixes.invP = values.invP;
@@ -55,10 +53,6 @@ namespace Graphics
 
         cameraBuffer.write(context, &values, sizeof(ShaderValues));
         inverseBuffer.write(context, &inverseMatrixes, sizeof(InverseMatrixes));
-
-        debug_info.points = &debug_points;
-        debug_info.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-        debug_info.useDepth = true;
 
         calc_frustrum_planes();
     }
@@ -71,8 +65,8 @@ namespace Graphics
 
     void Camera::updateFOV(float fieldOfView)
     {
-        this->fieldOfView = DirectX::XMConvertToRadians(fieldOfView);
-        this->projection = DirectX::XMMatrixPerspectiveFovRH(this->fieldOfView, aspectRatio, 0.1f, drawDistance);
+        field_of_view = DirectX::XMConvertToRadians(fieldOfView);
+        projection = DirectX::XMMatrixPerspectiveFovRH(field_of_view, aspect_ratio, near_distance, far_distance);
     }
 
     bool Camera::inside_frustrum(DirectX::SimpleMath::Vector3 point, float radius)

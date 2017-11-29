@@ -24,7 +24,6 @@ namespace Graphics {
 		{
 			DirectX::SimpleMath::Matrix invView;
 			DirectX::SimpleMath::Matrix invP;
-
 		};
 
 
@@ -45,9 +44,6 @@ namespace Graphics {
         void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
 
         bool inside_frustrum(DirectX::SimpleMath::Vector3 point, float radius = 1.0f);
-
-
-
         void render() const;
         void updateFOV(float fieldOfView);
 	private:
@@ -56,17 +52,10 @@ namespace Graphics {
 		DirectX::SimpleMath::Vector3 forward;
 		DirectX::SimpleMath::Vector3 right;
 
-        float far_height;
-        float far_width;
         float far_distance;
-
-        float near_height;
-        float near_width;
         float near_distance;
-
-		float fieldOfView;
-		float fadeStart;
-        float aspectRatio;
+		float field_of_view;
+        float aspect_ratio;
 
 		DirectX::SimpleMath::Matrix view;
 		DirectX::SimpleMath::Matrix projection;
