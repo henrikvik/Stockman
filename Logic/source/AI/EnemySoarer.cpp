@@ -26,6 +26,7 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
 
     gravity = getRigidBody()->getGravity();
 
+    getSoundSource()->autoPlaySFX(Sound::SFX::ENEMY_AMBIENT_1, 6500, 500, 1.f, 0.10f);
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 0.8f;
     light.range = 5.0f;
@@ -46,7 +47,7 @@ void EnemySoarer::createAbilities()
     data.duration = 0.f;
     data.randomChanche = 3;
 
-    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
+    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("DamageProjTrail");
     ProjectileData pdata;
     pdata.effect = necroTrail;
     pdata.hasEffect = true;
@@ -59,10 +60,12 @@ void EnemySoarer::createAbilities()
     }, [=](Player &player, Ability &ab) -> void {
         // onuse
         auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, AB1_GRAVITY, AB1_SCALE);
+        getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_PRIMARY, 1.f, 0.15f);
         if (pj) {
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
-                Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
+                Graphics::FXSystem->addEffect("DamageBoom", data.caller->getPosition());
 
+                data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, 1.f, 0.15);
             });
         }
     });

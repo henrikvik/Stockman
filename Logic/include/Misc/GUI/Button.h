@@ -81,6 +81,7 @@ namespace Logic
 		int m_activeOffset;
         bool m_highlighted;
         float m_animationTime;
+        bool m_hovered;
 	};
 }
 #endif

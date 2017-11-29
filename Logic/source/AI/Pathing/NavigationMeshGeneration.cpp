@@ -154,7 +154,7 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
     regions.clear();
 
     printf("Seeding area..");
-    seedArea({ -150.f, 0.6f, -150.f }, { 300.f, 0.5f, 300.f }, SEED_CUBES, physics);
+    seedArea({ -150.f, 4.f, -150.f }, { 300.f, 0.2f, 300.f }, SEED_CUBES, physics);
     printf("Seeding finished!\n");
 
     btCollisionObject *obj;

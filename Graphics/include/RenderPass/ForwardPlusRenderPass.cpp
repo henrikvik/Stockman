@@ -11,6 +11,7 @@ namespace Graphics
         , forward_plus_ps(Resources::Shaders::ForwardPlus_PS, ShaderType::PS)
         , forward_plus_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
         , forward_plus_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
+        , forward_plus_vs_foliage(Resources::Shaders::ForwardPlus_VS_Foliage, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
     {
     }
 
@@ -42,10 +43,17 @@ namespace Graphics
         Global::context->VSSetShader(forward_plus_vs_static, nullptr, 0);
         drawInstanced<StaticRenderInfo>(resources[4]);
 
+
         Global::context->IASetInputLayout(forward_plus_vs_animated);
         Global::context->VSSetShader(forward_plus_vs_animated, nullptr, 0);
         drawInstancedAnimated<AnimatedRenderInfo>(resources[5], resources[6]);
-        
+
+        Global::context->RSSetState(Global::cStates->CullNone());
+        Global::context->VSSetConstantBuffers(1, 1, &buffers[2]);
+        Global::context->IASetInputLayout(forward_plus_vs_foliage);
+        Global::context->VSSetShader(forward_plus_vs_foliage, nullptr, 0);
+        drawInstanced<FoliageRenderInfo>(resources[7]);
+
         Global::context->PSSetSamplers(0, 3, Global::nulls);
         Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);
         Global::context->PSSetShaderResources(0, 4, Global::nulls);
