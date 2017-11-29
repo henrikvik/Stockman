@@ -37,6 +37,7 @@ namespace Logic
 		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
 		void onUpdate(float deltaTime);
+        virtual void onReset();
         virtual void render() const override;
         void onUpgradeAdd(int stacks, Upgrade const & upgrade);
 
@@ -48,6 +49,7 @@ namespace Logic
 		btVector3						m_point;		//< Saved point of intersection of the raytest, will push entity towards this point
         bool                            m_goingUp;      //< Direction of the grappling hook
         btVector3                       m_dirToPoint;
+        float                           m_maxVelY;
 
 		DebugRenderInfo                 renderInfo;
         // Inherited via Skill
