@@ -42,13 +42,15 @@ namespace Logic
 				}
 			};
 
-			// singleton for the moment
 			static AStar& singleton()
 			{
 				static AStar aStar("");
 				return aStar;
 			}
 		private:
+            static const int NULL_NODE;
+            static const DirectX::SimpleMath::Vector3 OFFSET;
+
 			std::string file;
 			std::vector<NavNode> navNodes; //testing
 

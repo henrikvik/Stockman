@@ -54,7 +54,8 @@ void WeaponModel::update(float deltaTime, DirectX::SimpleMath::Matrix playerTran
 
     // Easing in Y axis
     m_current._42 = temp._42;
-    m_current._42 += (result._42 - m_current._42) * HEIGHT_POSITION_OFFSET_EASING * deltaTime;
+    float easingVariable = min((HEIGHT_POSITION_OFFSET_EASING * deltaTime), 1.f);
+    m_current._42 += (result._42 - m_current._42) * easingVariable;
 
     renderInfo.transform = m_current;
 }

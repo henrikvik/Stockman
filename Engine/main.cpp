@@ -5,10 +5,9 @@
 #include "Constants.h"
 #include <iostream>
 
-
 #define _CRTDBG_MAP_ALLOC  
 #include <stdlib.h>  
-#include <crtdbg.h>  
+#include <crtdbg.h>
 
 // int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -17,13 +16,12 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCm
     int r = 0;
     try
     {
-    int args;
-    LPWSTR *cmd = CommandLineToArgvW(GetCommandLineW(), &args);
-	Engine engine(hInstance, WIN_WIDTH, WIN_HEIGHT, cmd, args);
-    LocalFree(cmd);
-    
-   
-         r = engine.run();
+        int args;
+        LPWSTR *cmd = CommandLineToArgvW(GetCommandLineW(), &args);
+        Engine engine(hInstance, WIN_WIDTH, WIN_HEIGHT, cmd, args);
+        LocalFree(cmd);
+
+        r = engine.run();
     }
     catch (const com_exception& e)
     {

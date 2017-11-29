@@ -25,6 +25,7 @@
 #include <Graphics\include\Device.h>
 
 #include <Engine/Settings.h>
+#include <Engine/Engine.h>
 
 using namespace Logic;
 
@@ -38,7 +39,7 @@ using namespace Logic;
 #define PLAYER_AIR_FRICTION				1.f
 #define PLAYER_JUMP_SPEED				0.008f
 
-const int Player::MIN_Y = -80;
+const int Player::MIN_Y = -80, Player::MAX_HP = 3;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
 Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
@@ -472,6 +473,11 @@ int Player::getHP() const
 	return m_hp;
 }
 
+int Player::getMaxHP() const
+{
+    return MAX_HP;
+}
+
 void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
@@ -875,9 +881,23 @@ void Player::crouch(float deltaTime)
 
 void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 {
-    Settings& setting = Settings::getInstance();
-	m_camYaw	+= setting.getMouseSense() * ms->x;
-	m_camPitch	-= setting.getMouseSense() * ms->y;
+    if (ms->positionMode == DirectX::Mouse::MODE_RELATIVE)
+    {
+        Settings& setting = Settings::getInstance();
+
+        // so bad lol
+        POINT mousePos;
+        GetCursorPos(&mousePos);
+        auto vec2 = getWindowMidPoint();
+
+        int xDiff = mousePos.x - vec2.x;
+        int yDiff = mousePos.y - vec2.y;
+
+        m_camYaw += setting.getMouseSense() * xDiff;
+        m_camPitch -= setting.getMouseSense() * yDiff;
+
+        SetCursorPos(vec2.x, vec2.y);
+    }
 
 	// DirectX calculates position on the full resolution,
 	//  while getWindowMidPoint gets the current window's middle point!!!!!
@@ -902,6 +922,15 @@ void Player::mouseMovement(float deltaTime, DirectX::Mouse::State * ms)
 
 	m_forward.Normalize();
 }
+
+DirectX::SimpleMath::Vector2 Player::getWindowMidPoint()
+{
+    RECT rect;
+    GetWindowRect(*Engine::g_window, &rect);
+
+    return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
+}
+
 
 btKinematicCharacterController * Player::getCharController()
 {

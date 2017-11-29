@@ -201,6 +201,7 @@
     <ClInclude Include="include\AI\Abilities\Ability.h" />
     <ClInclude Include="include\AI\Behavior\BigBadBehavior.h" />
     <ClInclude Include="include\AI\EnemyBossBaddie.h" />
+    <ClInclude Include="include\AI\EnemyDefender.h" />
     <ClInclude Include="include\AI\EnemySoarer.h" />
     <ClInclude Include="include\AI\EnemyTotem.h" />
     <ClInclude Include="include\Misc\Fader.h" />
@@ -278,7 +279,9 @@
     <ClInclude Include="include\Player\Skill\SkillManager.h" />
     <ClInclude Include="include\Player\Skill\SkillShieldCharge.h" />
     <ClInclude Include="include\Player\Weapon\Weapon.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponFreezeGun.h" />
     <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponMeleeSwing.h" />
     <ClInclude Include="include\Projectile\ProjectileManager.h" />
     <ClInclude Include="include\Projectile\Projectile.h" />
     <ClInclude Include="include\Projectile\ProjectileStruct.h" />
@@ -311,6 +314,7 @@
     <ClCompile Include="source\AI\Behavior\BigBadBehavior.cpp" />
     <ClCompile Include="source\AI\Behavior\StayBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyBossBaddie.cpp" />
+    <ClCompile Include="source\AI\EnemyDefender.cpp" />
     <ClCompile Include="source\AI\EnemySoarer.cpp" />
     <ClCompile Include="source\AI\EnemyTotem.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
@@ -371,6 +375,8 @@
     <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />
     <ClCompile Include="source\Player\Skill\SkillManager.cpp" />
     <ClCompile Include="source\Player\Skill\SkillShieldCharge.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponFreezeGun.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponMeleeSwing.cpp" />
     <ClCompile Include="source\Projectile\Projectile.cpp" />
     <ClCompile Include="source\Projectile\ProjectileManager.cpp" />
     <ClCompile Include="source\AI\EntityManager.cpp" />

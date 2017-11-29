@@ -2,7 +2,9 @@
 #include <Player\Weapon\Weapon.h>
 #include <Player\Weapon\WeaponCrossbow.h>
 #include <Player\Weapon\WeaponFreezeGrenade.h>
+#include <Player\Weapon\WeaponFreezeGun.h>
 #include <Player\Weapon\WeaponMeleeParry.h>
+#include <Player\Weapon\WeaponMeleeSwing.h>
 #include <Misc\Sound\NoiseMachine.h>
 
 #include <Player\Player.h>
@@ -206,7 +208,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // #######
     // **Ice**
     // #######
-    /* Primary */       wl.weapon[0] = newd Weapon(projectileManager,
+    /* Primary */       wl.weapon[0] = newd WeaponFreezeGun(projectileManager,
                                     ProjectileData("Icecone", true, false, 0, 3, 1, 30, 0, 675, LightRenderInfo(DirectX::SimpleMath::Color(1, 1, 1, 0.05), .05f, 8.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false),
                                     Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1,{ -0.6f, 0.25f, -1.3f } });
     /* Secondary */     wl.weapon[1] = newd WeaponFreezeGrenade(projectileManager,
@@ -225,12 +227,12 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // #########
     // **Melee**
     // #########
-    /* Primary */       wl.weapon[0] = newd Weapon(projectileManager,
-                                    ProjectileData(nullptr, false, false, 250, 15.f, 1, 0, 0, 100, LightRenderInfo(DirectX::SimpleMath::Color(0.85, 0.3, 0.4, 1), 0.85f, 10.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false),
-                                    Weapon::WeaponInfo{ 4, 1, 0, 0, 100, 200, 0,{ 0.f, 0.f, 0.f } });
+    /* Primary */       wl.weapon[0] = newd WeaponMeleeSwing(projectileManager,
+                                    ProjectileData("Icecone", true, false, 35, 30.f, 1, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.85, 0.3, 0.4, 1), 0.85f, 10.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false),
+                                    Weapon::WeaponInfo{ 4, 1, 0, 0, 125, 25, 0,{ 0.f, 0.f, 0.f } }, 22.5f);
     /* Secondary */     wl.weapon[1] = newd WeaponMeleeParry(projectileManager,
-                                    ProjectileData(nullptr, false, false, 0, 12.5f, 1, 0, 0, 500, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.8, 0.6, 1), 0.85f, 15.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, false),
-                                    Weapon::WeaponInfo{ 5, 1, 0, 0, 50, 0, 0,{ 0.f, 0.f, 0.f } }, 8.f);
+                                    ProjectileData(nullptr, false, false, 0, 30.f, 1, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.8, 0.6, 1), 0.85f, 15.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, false),
+                                    Weapon::WeaponInfo{ 5, 1, 0, 0, 100, 0, 0,{ 0.f, 0.f, 0.f } }, 15.f);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0,{ 0, 0 },{ 0, 0 }, 0 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Hammer, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(1.3f, 0.9f, 0.f),
@@ -272,8 +274,6 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
             {
                 Entity* shooterEntity = &shooter;
                 attack(attackMode, position, yaw, pitch, *shooterEntity);
-
-                Sound::NoiseMachine::Get().playSFX(Sound::SFX::WEAPON_CUTLERY_PRIMARY, nullptr, true);
             }
         }
         else

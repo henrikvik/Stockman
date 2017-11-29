@@ -1,5 +1,5 @@
-#ifndef WEAPONFREEZEGUN_H
-#define WEAPONFREEZEGUN_H
+#ifndef WEAPONFREEZEGRENADE_H
+#define WEAPONFREEZEGRENADE_H
 
 #include <Player\Weapon\Weapon.h>
 #include <vector>
@@ -26,4 +26,4 @@ namespace Logic
     };
 }
 
-#endif
+#endif //!WEAPONFREEZEGRENADE_H

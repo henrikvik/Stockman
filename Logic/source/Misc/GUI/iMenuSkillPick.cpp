@@ -70,9 +70,7 @@ void iMenuSkillPick::replaceSkill(int id)
 
     for (size_t i = 0; i < 3; i++)
     {
-
          m_buttons.at(i).setState(Button::INACTIVE);
-
     }
 
     if (m_selectedSkills.first != -1)
@@ -90,7 +88,6 @@ void iMenuSkillPick::replaceSkill(int id)
 void iMenuSkillPick::render() const
 {
     iMenu::render();
-    QueueRender(m_textRenderInfo);
 }
 
 // Callback functions

@@ -26,9 +26,9 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
     // Starting in game-sounds
+    Sound::NoiseMachine::Get().stopGroup(Sound::CHANNEL_SFX);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
-    Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
 
     // Initializing Bullet physics
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();		// Configuration
@@ -49,7 +49,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     // Initializing the Map
     m_map = newd Map();
     m_map->init(m_physics);
-    m_map->loadMap(Resources::Maps::IslandScene);
+    m_map->loadMap(Resources::Maps::Stock_Map);
 
     // Initializing Card Manager
     m_cardManager = newd CardManager(GAME_START::UNIQUE_CARDS);
@@ -115,49 +115,29 @@ void StatePlaying::update(float deltaTime)
    
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
-    if (m_menu->getType() == iMenu::MenuGroup::Skill ||
-        m_menu->getType() == iMenu::MenuGroup::LoadingPost ||
-        m_menu->getType() == iMenu::MenuGroup::GameOver ||
-        m_menu->getType() == iMenu::MenuGroup::GameWon ||
-        m_menu->getType() == iMenu::MenuGroup::HighscoreGameOver ||
-        m_menu->getType() == iMenu::MenuGroup::Pause) // Quick "temp pause" fix for testing purposes
+    if (m_menu->getType() != iMenu::Empty) // Quick "temp pause" fix for testing purposes
         return;
     PROFILE_END();
 
     m_playTime += deltaTime;
     ComboMachine::Get().update(deltaTime);
 
-
-
     // Move this somwhere else, don't ruin this class with spagetti & meatballs
     //the spagetti is (expand)ing (dong)
-    static bool wasTransitioning = false;
-    static bool frst = true;
-    if (m_menu->getType() != iMenu::MenuGroup::CardSelect)
+    if (m_menu->getType() != iMenu::CardSelect)
     {
-        m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
-        if (m_waveTimeManager.isTransitioning())
+        bool newWave = m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
+
+        if (newWave)
         {
-            wasTransitioning = true;
-        }
+            m_menu->queueMenu(iMenu::CardSelect);
+            m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
+            m_projectileManager->removeEnemyProjCallbacks();
 
-        if (wasTransitioning == true && m_waveTimeManager.isTransitioning() == false)
-        {
-            if (!frst)
-            {
-                m_menu->queueMenu(iMenu::MenuGroup::CardSelect);
-                m_cardManager->pickThreeCards(m_player->getHP() != 3);
-                m_projectileManager->removeEnemyProjCallbacks();
-
-                SpecialEffectRenderInfo fultAF;
-                fultAF.type = SpecialEffectRenderInfo::Snow;
-                fultAF.restart = true;
-                QueueRender(fultAF);
-                wasTransitioning = false;
-
-            }
-            frst = false;
-            wasTransitioning = false;
+            SpecialEffectRenderInfo fultAF;
+            fultAF.type = SpecialEffectRenderInfo::Snow;
+            fultAF.restart = true;
+            QueueRender(fultAF);
         }
     }
 
@@ -211,7 +191,7 @@ void StatePlaying::render() const
 #endif // _DEBUG
 
     PROFILE_BEGIN("Player Render");
-    if (m_menu->getType() != iMenu::MenuGroup::GameOver)
+    if (m_menu->getType() != iMenu::GameOver)
         m_player->render();
     PROFILE_END();
 
@@ -228,18 +208,13 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render HUD");
-    if (m_menu->getType() != iMenu::MenuGroup::Skill &&
-        m_menu->getType() != iMenu::MenuGroup::LoadingPost &&
-        m_menu->getType() != iMenu::MenuGroup::GameOver &&
-        m_menu->getType() != iMenu::MenuGroup::GameWon &&
-        m_menu->getType() != iMenu::MenuGroup::HighscoreGameOver &&
-        m_menu->getType() != iMenu::MenuGroup::Pause)
+    if (m_menu->getType() == iMenu::Empty ||
+        m_menu->getType() == iMenu::CardSelect)
         m_hudManager.render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render Menu");
-    if (m_menu->getType() != iMenu::CardSelect)
-        m_menu->render();
+    m_menu->render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render cards");
@@ -256,6 +231,7 @@ void StatePlaying::gameOver()
     addHighscore();
 
     // Queue Death Screen
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_DEAD, nullptr, true);
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
 }

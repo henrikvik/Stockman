@@ -1,5 +1,6 @@
 #include <Misc\Sound\NoiseMachine.h>
 #include <Misc\Sound\SoundSource.h>
+#include <Engine\Settings.h>
 
 using namespace Sound;
 
@@ -14,11 +15,6 @@ using namespace Sound;
 #else
 #define ERRCHECK(nothing)
 #endif
-
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MASTER     = 0.25f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_AMBIENT    = 0.60f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_SFX        = 1.f;
-const float NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MUSIC      = 0.85f;
 
 // Initializes all sound system & sounds into memory
 void NoiseMachine::init()
@@ -123,7 +119,6 @@ void NoiseMachine::update(ListenerData& listener)
     {
         printf("Sound error: %s\n", ex.what());
     }
-
 }
 
 // Stop all channels in each group
@@ -219,11 +214,12 @@ void NoiseMachine::initGroups(bool mute)
     if (mute) for (int i = 0; i < THRESHOLD::MAX_GROUPS; i++) m_group[i]->setVolume(NULL);
     else
     {
+        Settings& setting = Settings::getInstance();
         // Otherwise, set default volumes
-        m_group[CHANNEL_GROUP::CHANNEL_MASTER]->setVolume(NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MASTER);
-        m_group[CHANNEL_GROUP::CHANNEL_AMBIENT]->setVolume(NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_AMBIENT);
-        m_group[CHANNEL_GROUP::CHANNEL_MUSIC]->setVolume(NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_MUSIC);
-        m_group[CHANNEL_GROUP::CHANNEL_SFX]->setVolume(NoiseMachine::VOLUME_DEFAULT::DEFAULT_VOLUME_SFX);
+        m_group[CHANNEL_GROUP::CHANNEL_MASTER]->setVolume(setting.getMasterSound());
+        m_group[CHANNEL_GROUP::CHANNEL_AMBIENT]->setVolume(setting.getAmbience());
+        m_group[CHANNEL_GROUP::CHANNEL_MUSIC]->setVolume(setting.getMusic());
+        m_group[CHANNEL_GROUP::CHANNEL_SFX]->setVolume(setting.getSFX());
     }
 }
 
@@ -233,13 +229,14 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
 	// Init all the sfx here
     ERRCHECK(createSound(loadMode, SFX::FOOTSTEP_SNOW, CHANNEL_GROUP::CHANNEL_SFX, "Footstep_Snow.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::FOOTSTEP_SMALL, CHANNEL_GROUP::CHANNEL_SFX, "Footstep_Small.ogg", FMOD_3D_LINEARROLLOFF));
-    ERRCHECK(createSound(loadMode, SFX::JUMP, CHANNEL_GROUP::CHANNEL_SFX, "Jump.ogg", FMOD_3D_LINEARROLLOFF));
-    ERRCHECK(createSound(loadMode, SFX::WEAPON_CUTLERY_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Cutlery_1.ogg", FMOD_3D_LINEARROLLOFF));
-    ERRCHECK(createSound(loadMode, SFX::WEAPON_CUTLERY_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Cutlery_2.ogg", FMOD_3D_LINEARROLLOFF));
-    ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_1.ogg", FMOD_3D_LINEARROLLOFF));
-    ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_2.ogg", FMOD_3D_LINEARROLLOFF));
-    ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Melee_Swing.ogg", FMOD_3D_LINEARROLLOFF));
-    ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Melee_Parry.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::JUMP, CHANNEL_GROUP::CHANNEL_SFX, "Jump.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_CUTLERY_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Cutlery_1.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_CUTLERY_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Cutlery_2.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_1.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_2.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_THIRD, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_3.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Melee_Swing.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Melee_Parry.ogg", FMOD_2D));
     ERRCHECK(createSound(loadMode, SFX::NECROMANCER_DEATH, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Laugh.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::NECROMANCER_SPAWN, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Spawn.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::SWOOSH, CHANNEL_GROUP::CHANNEL_SFX, "Swoosh.ogg", FMOD_3D_LINEARROLLOFF));
@@ -256,8 +253,22 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
     ERRCHECK(createSound(loadMode, SFX::SKILL_CHARGE, CHANNEL_GROUP::CHANNEL_SFX, "Skill_SheildCharge.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::HELLO, CHANNEL_GROUP::CHANNEL_SFX, "hello.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_PRESS, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_press.ogg", FMOD_3D_LINEARROLLOFF));
-    ERRCHECK(createSound(loadMode, SFX::PICKUP, CHANNEL_GROUP::CHANNEL_SFX, "pickup.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_HOVER, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_hover.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::TRIGGER_PICKUP, CHANNEL_GROUP::CHANNEL_SFX, "Trigger_Pickup.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::TRIGGER_JUMPPAD, CHANNEL_GROUP::CHANNEL_SFX, "Trigger_Jumppad.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::START_GAME, CHANNEL_GROUP::CHANNEL_SFX, "start.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_DEATH, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Death.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_HIT, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Hit.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_AMBIENT_1, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Ambient_1.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_AMBIENT_2, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Ambient_2.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_MAGIC_1, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Magic_1.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_MAGIC_2, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Magic_2.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UPGRADE_UNLOCKED, CHANNEL_GROUP::CHANNEL_SFX, "Upgrade_Unlocked.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::CAMPFIRE, CHANNEL_GROUP::CHANNEL_SFX, "Campfire.ogg", FMOD_3D_LINEARROLLOFF | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_START, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Start.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_END, CHANNEL_GROUP::CHANNEL_SFX, "Wave_End.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_CARD, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Card.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_DEAD, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Dead.ogg", FMOD_2D));
 
 	// Setting the thresholds of where the listener can hear the sfx
     int count = 0;
@@ -270,7 +281,7 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
         }
     }
 
-    return count;
+    return count; 
 }
 
 // Initialize all music pieces
@@ -278,7 +289,7 @@ int NoiseMachine::initMusic(LOAD_MODE loadMode)
 {
 	// Init all the music here
 	ERRCHECK(createSound(loadMode, MUSIC::MUSIC_MAIN_MENU, CHANNEL_GROUP::CHANNEL_MUSIC, "stockman.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
-    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, (rand() % 3) ? "beyond.mp3" : "notch.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, "beyond.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::MUSIC_CREDITS, CHANNEL_GROUP::CHANNEL_MUSIC, "lab.mp3", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::AMBIENT_STORM, CHANNEL_GROUP::CHANNEL_AMBIENT, "ambient_snow.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
     ERRCHECK(createSound(loadMode, MUSIC::BOSS_1_MUSIC_1, CHANNEL_GROUP::CHANNEL_MUSIC, "boss1theme1.mp3", FMOD_2D | FMOD_LOOP_NORMAL));

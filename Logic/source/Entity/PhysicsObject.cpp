@@ -65,12 +65,14 @@ void PhysicsObject::updatePhysics(float deltaTime)
 	// Updating the positions of the weakpoints
 	if (!m_weakPoints.empty())
 	{
+        float n[16];
+        m_transform->getOpenGLMatrix((btScalar*)(&n));
+
 		for (int i = 0; i < m_weakPoints.size(); i++)
 		{
 			Weakpoint weakPoint = m_weakPoints[i];
 
-			float n[16];
-			m_transform->getOpenGLMatrix((btScalar*)(&n));
+			
 			weakPoint.body->getWorldTransform().setFromOpenGLMatrix((btScalar*)(&n));
 			weakPoint.body->getWorldTransform().setOrigin(m_transform->getOrigin() + btVector3(n[4] * weakPoint.offset.x(), n[5] * weakPoint.offset.y(), n[6] * weakPoint.offset.z()));
 		}

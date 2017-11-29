@@ -61,11 +61,14 @@ iMenu * iMenuFactory::buildMenuSettings()
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
     Settings& setting = Settings::getInstance();
-    menu->addSlider(buildSlider("MouseSlider", setting.getMouseSensePTR(), 0.01f, 0.5f, 0.01f));
+    menu->addSlider(buildSlider("MouseSlider", setting.getMouseSensePTR(), 0.001f, 0.05f, 0.001f));
     menu->addSlider(buildSlider("MasterSlider", setting.getMasterSoundPTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("MusicSlider", setting.getMusicPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("AmbienceSlider", setting.getAmbiencePTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("SFXSlider", setting.getSFXPTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("FOVSlider", setting.getFOVPTR(), 90.0f, 180.0f, 1.0f));
+
+    menu->addButton(buildButton("MenuSettingsVideoWindowed", ButtonFunction::windowed));
 
     //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
     //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
@@ -78,7 +81,6 @@ iMenu * iMenuFactory::buildMenuSettings()
     //menu->addButton(buildButton("MenuSettingsControlsMouseSensePlus", ButtonFunction::plusSense));
     //menu->addButton(buildButton("MenuSettingsVideoFOVMinus", ButtonFunction::minusFOV));
     //menu->addButton(buildButton("MenuSettingsVideoFOVPlus", ButtonFunction::plusFOV));
-    //menu->addButton(buildButton("MenuSettingsVideoWindowed", ButtonFunction::windowed));
 
     return menu;
 }
@@ -86,7 +88,6 @@ iMenu * iMenuFactory::buildMenuSettings()
 iMenuSkillPick* iMenuFactory::buildMenuSkill()
 {
     iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
-   
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
     menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
@@ -96,10 +97,9 @@ iMenuSkillPick* iMenuFactory::buildMenuSkill()
     return menu;
 }
 
-iMenu * iMenuFactory::buildMenuCard()
+iMenuCards * iMenuFactory::buildMenuCard()
 {
-    iMenu* menu = newd iMenuCards(iMenu::CardSelect);
-
+    iMenuCards* menu = newd iMenuCards(iMenu::CardSelect);
     menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));
     menu->addButton(buildButton("CardUpgradeChoice2", ButtonFunction::chooseUpgrade2));
     menu->addButton(buildButton("CardUpgradeChoice3", ButtonFunction::chooseUpgrade3));
@@ -110,7 +110,6 @@ iMenu * iMenuFactory::buildMenuCard()
 iMenu * iMenuFactory::buildMenuGameWon()
 {
     iMenu* menu = newd iMenu(iMenu::GameWon);
-
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
@@ -137,7 +136,6 @@ iMenuLoadingPost* iMenuFactory::buildMenuLoadingPost()
 iMenuHighscore * iMenuFactory::buildMenuHighscore()
 {
     iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreStartMenu);
-
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
 
@@ -147,7 +145,6 @@ iMenuHighscore * iMenuFactory::buildMenuHighscore()
 iMenuHighscore * iMenuFactory::buildMenuHighscoreGameOver()
 {
     iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreGameOver);
-
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::goToGameOver));
 
