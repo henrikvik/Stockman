@@ -49,6 +49,7 @@ namespace Logic
 			}
 		private:
             static const int NULL_NODE;
+            static const DirectX::SimpleMath::Vector3 OFFSET;
 
 			std::string file;
 			std::vector<NavNode> navNodes; //testing

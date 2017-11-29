@@ -9,6 +9,7 @@
 
 using namespace Logic;
 const int AStar::NULL_NODE = NULL_NODE;
+const DirectX::SimpleMath::Vector3 AStar::OFFSET = DirectX::SimpleMath::Vector3(0, 5, 0);
 
 AStar::AStar(std::string file)
 {
@@ -31,9 +32,8 @@ AStar::~AStar()
 std::vector<const DirectX::SimpleMath::Vector3*>
     AStar::getPath(Entity const &enemy, Entity const &target)
 {
-    static const DirectX::SimpleMath::Vector3 offset(0, 5, 0);
-    int startIndex = navigationMesh.getIndex(enemy.getPosition() + offset);
-    int targetIndex = navigationMesh.getIndex(target.getPosition() + offset);
+    int startIndex = navigationMesh.getIndex(enemy.getPosition() + OFFSET);
+    int targetIndex = navigationMesh.getIndex(target.getPosition() + OFFSET);
     return getPath(startIndex, targetIndex);
 }
 
@@ -136,7 +136,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::reconstructPath(NavNode 
 {
     std::vector<const DirectX::SimpleMath::Vector3*> list;
 
-    list.push_back(&(navigationMesh.getNodes()[endNode->nodeIndex]));
+    list.push_back(endNode->connectionNode);
     while ((endNode = &navNodes[endNode->parent])->parent != NULL_NODE)
         list.push_back(endNode->connectionNode);
 

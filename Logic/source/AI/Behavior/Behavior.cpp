@@ -9,12 +9,12 @@
 
 #define MAX_LEN_FOR_SEPERATION 15.f
 // this can be changed in the future maybe who knows
-#define CHANGE_NODE_DIST 6.f
+#define CHANGE_NODE_DIST 8.f
 
 #include <queue>
 
 using namespace Logic;
-const float Behavior::STEERING_BASE = 2.75f, Behavior::STEERING_MOD = 10;
+const float Behavior::STEERING_BASE = 3.f, Behavior::STEERING_MOD = 10;
 
 Behavior::Behavior(PathingType type)
 {
@@ -39,14 +39,20 @@ void Behavior::update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies, Pla
 void Behavior::walkPath(RunIn &in)
 {
     btVector3 dir;
+    btVector3 vel = in.enemy->getRigidBody()->getLinearVelocity().normalized();
+
+    float moveMod = 1.f;
+    bool pursuitPlayer;
 
     if (m_pathing.pathIsEmpty() || m_pathing.pathOnLastNode())
     {
+        pursuitPlayer = true;
         dir = in.target->getPositionBT() - in.enemy->getPositionBT();
         m_changedGoalNode = true;
     }
     else
     {
+        pursuitPlayer = false;
         DirectX::SimpleMath::Vector3 pathNode = m_pathing.getNode();
         btVector3 node{pathNode.x, pathNode.y, pathNode.z};
         dir = node - in.enemy->getPositionBT();
@@ -65,10 +71,13 @@ void Behavior::walkPath(RunIn &in)
     dir.normalize();
     float dt = (in.deltaTime * 0.001f);
 
-    btVector3 vel = in.enemy->getRigidBody()->getLinearVelocity().normalized();
     float mod = in.enemy->getSpeedMod() * STEERING_MOD;
     btVector3 steeringForce = dt * m_steeringSpeed * mod * (dir - vel);
-    in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() + steeringForce);
+
+    if (pursuitPlayer && vel.dot(dir) < 0.7f)
+        moveMod = 0.1f;
+
+    in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() * moveMod + steeringForce);
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,

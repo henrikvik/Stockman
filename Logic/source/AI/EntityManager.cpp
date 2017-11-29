@@ -35,7 +35,7 @@ const std::string EntityManager::WAVE_FILES[MODES] = { "Enemies/Wave", "Enemies/
 const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 65;
 const float EntityManager::INVALID_LENGTH = 100.f;
 
-int EntityManager::PATH_UPDATE_DIV = 25;
+int EntityManager::PATH_UPDATE_DIV = 5;
 
 EntityManager::EntityManager()
 {
