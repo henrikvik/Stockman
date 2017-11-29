@@ -32,7 +32,7 @@ const btVector3 EntityManager::MIN_SPAWN = { -300, 10, -300 },
                 EntityManager::MAX_SPAWN = {  300, 25,  300 };
 const std::string EntityManager::WAVE_FILES[MODES] = { "Enemies/Wave", "Enemies/Wave", "Enemies/WavesHeroic"};
 
-const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 65;
+const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 100;
 const float EntityManager::INVALID_LENGTH = 100.f;
 
 int EntityManager::PATH_UPDATE_DIV = 5;
