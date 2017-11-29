@@ -38,11 +38,24 @@ namespace HybrisLoader
         std::vector<Hitbox> * getHitboxes() { return &hitboxes; }
 
 
+        struct BoundingBox
+        {
+            DirectX::SimpleMath::Vector3 min;
+            DirectX::SimpleMath::Vector3 max;
 
+            virtual const float sphere_radius() const noexcept final
+            {
+                return (max - min).Length() * 0.5f;
+            }
+        };
+        BoundingBox get_bounding_box() { return bounding_box; }
+        
     private:
         Mesh mesh;
         Material material;
         Skeleton skeleton;
         std::vector<Hitbox> hitboxes;
+        BoundingBox bounding_box;
+
     };
 }
