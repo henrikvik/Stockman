@@ -135,6 +135,8 @@ namespace Logic
         btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false, int group = COL_FLAG::COL_HITBOX, int mask = COL_EVERYTHING);		// Should be used for enemies
         btPairCachingGhostObject* createPlayer(btCapsuleShape* capsule, btVector3 pos);
 
+        btRigidBody* createHitbox(btVector3 position, btQuaternion rotation, btVector3 halfSize, bool isSensor, int group, int mask);
+
 		// Debug Rendering
 		void render();
 
