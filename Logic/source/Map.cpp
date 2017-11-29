@@ -210,7 +210,7 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
                     toVec3(hitbox.halfSize) * instance.scale,
                     false,
                     Physics::COL_HITBOX,
-                    Physics::COL_EVERYTHING ^ Physics::COL_HITBOX
+                    Physics::COL_EVERYTHING /* ^ Physics::COL_HITBOX not needed, it ignores itself when overlapping cuz they are static */
                 );
 
                 float t[16]; body->getWorldTransform().getOpenGLMatrix(t);

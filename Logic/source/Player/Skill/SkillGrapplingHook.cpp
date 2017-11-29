@@ -52,33 +52,30 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
         const btRigidBody* intersection = m_physicsPtr->RayTestOnRigidBodies(Ray(shooter.getPositionBT(), forward, GRAPPLING_HOOK_RANGE));
         if (intersection)
         {
-            if (PhysicsObject* target = static_cast<PhysicsObject*>(intersection->getUserPointer()))
-            {
-                // Saving the shooter's as an entity
-                m_shooter = &shooter;
+            // Saving the shooter's as an entity
+            m_shooter = &shooter;
 
-                // The entity is now pulling the grappling hook
-                m_state = GrapplingHookStatePulling;
+            // The entity is now pulling the grappling hook
+            m_state = GrapplingHookStatePulling;
 
-                // Saving ray to intersection surface
-                Ray ray(shooter.getPositionBT(), forward, GRAPPLING_HOOK_RANGE);
-                m_point = m_physicsPtr->RayTestGetPoint(ray);
+            // Saving ray to intersection surface
+            Ray ray(shooter.getPositionBT(), forward, GRAPPLING_HOOK_RANGE);
+            m_point = m_physicsPtr->RayTestGetPoint(ray);
 
-                // Drawing the ray
-                renderInfo.points->clear();
-                renderInfo.color = DirectX::SimpleMath::Color(1, 1, 1);
-                renderInfo.points->push_back(DirectX::SimpleMath::Vector3(ray.getStart()));
-                renderInfo.points->push_back(DirectX::SimpleMath::Vector3(m_point));
+            // Drawing the ray
+            renderInfo.points->clear();
+            renderInfo.color = DirectX::SimpleMath::Color(1, 1, 1);
+            renderInfo.points->push_back(DirectX::SimpleMath::Vector3(ray.getStart()));
+            renderInfo.points->push_back(DirectX::SimpleMath::Vector3(m_point));
 
-                if (m_point.y() < shooter.getPositionBT().y())
-                    m_goingUp = false;
-                else
-                    m_goingUp = true;
+            if (m_point.y() < shooter.getPositionBT().y())
+                m_goingUp = false;
+            else
+                m_goingUp = true;
 
-                m_dirToPoint = (m_point - shooter.getPositionBT()).normalize();
+            m_dirToPoint = (m_point - shooter.getPositionBT()).normalize();
 
-                return true;
-            }
+            return true;
         }
     }
     return false;
