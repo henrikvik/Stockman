@@ -60,7 +60,7 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
                     data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.33f);
 
                     // Graphical explosion - particle
-                    Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
+                    Graphics::FXSystem->addEffect("IceExplosion", data.caller->getPosition());
                     if (Projectile* p = dynamic_cast<Projectile*>(data.caller))
                         p->getProjectileData().type = ProjectileTypeNormal;
 
@@ -113,7 +113,7 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
                                 data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.33f);
 
                                 // Graphical explosion - particle
-                                Graphics::FXSystem->addEffect("NecroSummonBoom", data.caller->getPosition());
+                                Graphics::FXSystem->addEffect("IceExplosion", data.caller->getPosition());
                                 if (Projectile* p = dynamic_cast<Projectile*>(data.caller))
                                     p->getProjectileData().type = ProjectileTypeNormal;
 
