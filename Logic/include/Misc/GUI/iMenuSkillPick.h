@@ -27,7 +27,10 @@ namespace Logic
         void render() const;
 
     private:
-        SpriteRenderInfo    m_spriteRenderInfo;
+        SpriteRenderInfo    m_grapplingHook;
+        SpriteRenderInfo    m_spriteRenderInfo1;
+        SpriteRenderInfo    m_spriteRenderInfo2;
+
         int                 m_skillPoints;      //< The current number of skill picks available
         std::wstring        m_skillpointsStr;   //< The current number of skill picks available as a string, apperantly needs to be kept in memory?
         TextRenderInfo      m_textRenderInfo;   //< The current number of skill picks as a text-renderinfo to get drawn on screen

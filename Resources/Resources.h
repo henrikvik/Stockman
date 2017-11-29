@@ -8,13 +8,15 @@ namespace Resources
         {
             KG14,
             KG18,
-            KG26
+            KG26,
+            nordic
         };
         const std::map<Files, const char *> Paths =
         {
             {KG14, R"(..\Resources\Fonts\KG14.spritefont)"},
             {KG18, R"(..\Resources\Fonts\KG18.spritefont)"},
-            {KG26, R"(..\Resources\Fonts\KG26.spritefont)"}
+            {KG26, R"(..\Resources\Fonts\KG26.spritefont)"},
+            {nordic, R"(..\Resources\Fonts\nordic.spritefont)"}
         };
         
         Files toEnum(const char * str);
