@@ -196,7 +196,7 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
             DirectX::SimpleMath::Vector3 translation(instance.translation[0], instance.translation[1], instance.translation[2]);
 
             DirectX::SimpleMath::Matrix instance_transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
-            Decoration decor(model, instance_transform);
+            Decoration decor(model, instance_transform, ModelLoader::get().getModel(model)->get_bounding_box().sphere_radius());
             decorations.push_back(decor);
 
             auto hitboxes = ModelLoader::get().getModel(model)->getHitboxes();
