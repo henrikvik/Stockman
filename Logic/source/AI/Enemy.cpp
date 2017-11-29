@@ -153,7 +153,7 @@ bool Enemy::hasCallbackEntities()
 
 void Enemy::damage(int damage)
 {
-    if (damage == 0) return;
+    if (damage <= 0) return;
 
 	m_health -= damage;
     m_blinkTimer = 100.0f;
