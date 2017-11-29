@@ -31,7 +31,7 @@ EnemyTotem::~EnemyTotem()
 
 void EnemyTotem::createAbilities()
 {
-    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
+    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("DamageProjTrail");
 
     AbilityData data;
     data.duration = 0.f;
