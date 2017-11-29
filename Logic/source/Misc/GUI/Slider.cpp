@@ -59,15 +59,10 @@ Slider::Slider(
         int test = *m_value;
         m_textInput = std::to_wstring(test);
     }
-    else if (m_name.compare("MouseSlider") == 0)
-    {
-        int test = m_tempValue * 100;
-        m_textInput = std::to_wstring(test);
-    }
     else
     {
         int test = m_tempValue * 100;
-        m_textInput = std::to_wstring(test) + (const wchar_t*)L" %";
+        m_textInput = std::to_wstring(test);
     }
     m_textRenderInfo.text = m_textInput.c_str();
 }
@@ -121,21 +116,16 @@ void Slider::updateOnPress(int posX, int posY)
              renderInfo.screenRect = screenRect;
              m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
              m_textRenderInfo.font = Resources::Fonts::KG18;
-             m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 10.0f, m_y);
+             m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 10.0f, m_y );
              if (m_name.compare("FOVSlider") == 0)
              {
                  int test = m_tempValue;
                  m_textInput = std::to_wstring(test);
              }
-             else if (m_name.compare("MouseSlider") == 0)
-             {
-                 int test = m_tempValue * 100;
-                 m_textInput = std::to_wstring(test);
-             }
              else
              {
                  int test = m_tempValue * 100;
-                 m_textInput = std::to_wstring(test) + (const wchar_t*)L" %";
+                 m_textInput = std::to_wstring(test);
              }
              m_textRenderInfo.text = m_textInput.c_str();
         }
