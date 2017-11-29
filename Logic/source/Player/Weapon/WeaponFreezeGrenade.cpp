@@ -100,7 +100,7 @@ void WeaponFreezeGrenade::doExplosionCallback(Entity::CallbackData &data)
     }
 }
 
-void Logic::WeaponFreezeGrenade::doExplosionCallbackEnhanced(Entity::CallbackData & data)
+void WeaponFreezeGrenade::doExplosionCallbackEnhanced(Entity::CallbackData & data)
 {
     // cascade
     PhysicsObject* obj = reinterpret_cast<PhysicsObject*>(data.dataPtr);
