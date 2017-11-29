@@ -59,8 +59,8 @@ Slider::Slider(
     renderInfo.alpha = 1;
 
     m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
-    m_textRenderInfo.font = Resources::Fonts::KG18;
-    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 10.0f, m_y);
+    m_textRenderInfo.font = Resources::Fonts::KG14;
+    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 20.0f, m_y);
 
     if (m_name.compare("FOVSlider") == 0)
     {
