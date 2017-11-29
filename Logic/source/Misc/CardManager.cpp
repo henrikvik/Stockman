@@ -13,6 +13,8 @@ CardManager::CardManager(int nrOfEach)
 
     loadDeckFromFile();
     createDeck(nrOfEach);
+
+    state = CardState::STILL;
 }
 
 CardManager::~CardManager() { }
@@ -53,6 +55,7 @@ void CardManager::pickThreeCards(bool damaged)
         throw std::runtime_error("Not enough cards");
 
     pepperCardsForDraw();
+    state = CardState::IN_TRANS;
 }
 
 void CardManager::shuffle()
@@ -92,6 +95,42 @@ void Logic::CardManager::render() const
     }
 }
 
+void Logic::CardManager::update(float dt)
+{
+    static float alpha = 0.0f;
+    if (currenthand.size() > 0)
+    {
+        switch (state)
+        {
+        case CardState::IN_TRANS:
+            alpha += dt * 0.002f;
+            if (alpha > 1.0f)
+            {
+                state = CardState::STILL;
+            }
+            for (auto &card : currenthand)
+            {
+                
+                card.setAlpha(alpha);
+            }
+            break;
+        case CardState::STILL:
+            break;
+        case CardState::OUT_TRANS:
+            alpha -= dt * 0.002f;
+            if (alpha < 0.0f)
+            {
+                state = CardState::STILL;
+            }
+            for (auto &card : currenthand)
+            {
+                card.setAlpha(alpha);
+            }
+            break;
+        }
+    }
+}
+
 void CardManager::loadDeckFromFile()
 {
     std::vector<FileLoader::LoadedStruct> cardFile;
@@ -125,6 +164,7 @@ bool CardManager::pickAndApplyCard(Player & player, int cardIndex)
     {
         Card temp = pick(cardIndex);
         handleCard(player, temp);
+        state = CardState::OUT_TRANS;
         return true;
     }
     return false;

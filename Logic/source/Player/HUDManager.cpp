@@ -173,7 +173,7 @@ void HUDManager::constructGUIElements()
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
 
-    staticElements.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -150, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 1.0f, false));
+    staticElements.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 1.0f, false));
 }
 
 void HUDManager::updateTextElements()
@@ -503,12 +503,20 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     static float alpha = 0.0f;
     if (timeManager.isTransitioning() && !timeManager.onFirstWave())
     {
-        alpha += dt * 0.002f;
+        if (alpha < 1.0f)
+        {
+            alpha += dt * 0.002f;
+        }
+        
         staticElements.at(staticElements.size()-1).setAlpha(alpha);
     }
     else
     {
-        alpha = 0.0f;
+        if (alpha > 0.0f)
+        {
+            alpha -= dt * 0.002f;
+        }
+        
         staticElements.at(staticElements.size()- 1).setAlpha(alpha);
     }
 }

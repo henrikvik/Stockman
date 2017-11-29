@@ -112,6 +112,14 @@ void StatePlaying::reset()
 void StatePlaying::update(float deltaTime)
 {
     m_fpsRenderer.updateFPS(deltaTime);
+    PROFILE_BEGIN("cards");
+    m_cardManager->update(deltaTime);
+    PROFILE_END();
+
+
+    PROFILE_BEGIN("HUD");
+    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
+    PROFILE_END();
    
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
@@ -119,55 +127,56 @@ void StatePlaying::update(float deltaTime)
         return;
     PROFILE_END();
 
-    m_playTime += deltaTime;
-    ComboMachine::Get().update(deltaTime);
+        m_playTime += deltaTime;
+        ComboMachine::Get().update(deltaTime);
 
-    // Move this somwhere else, don't ruin this class with spagetti & meatballs
-    //the spagetti is (expand)ing (dong)
-    if (m_menu->getType() != iMenu::CardSelect)
-    {
-        bool newWave = m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
-
-        if (newWave)
+        // Move this somwhere else, don't ruin this class with spagetti & meatballs
+        //the spagetti is (expand)ing (dong)
+        if (m_menu->getType() != iMenu::CardSelect)
         {
-            m_menu->queueMenu(iMenu::CardSelect);
-            m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
-            m_projectileManager->removeEnemyProjCallbacks();
+            bool newWave = m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
 
-            SpecialEffectRenderInfo fultAF;
-            fultAF.type = SpecialEffectRenderInfo::Snow;
-            fultAF.restart = true;
-            QueueRender(fultAF);
+            if (newWave)
+            {
+                m_menu->queueMenu(iMenu::CardSelect);
+                m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
+                m_projectileManager->removeEnemyProjCallbacks();
+
+                SpecialEffectRenderInfo fultAF;
+                fultAF.type = SpecialEffectRenderInfo::Snow;
+                fultAF.restart = true;
+                QueueRender(fultAF);
+
+            }
         }
-    }
 
-    PROFILE_BEGIN("Sound");
-    Sound::NoiseMachine::Get().update(m_player->getListenerData());
-    PROFILE_END();
 
-    PROFILE_BEGIN("Player");
-    m_player->updateSpecific(deltaTime);
-    PROFILE_END();
 
-    PROFILE_BEGIN("Physics");
-    m_physics->update(deltaTime);
-    PROFILE_END();
+        PROFILE_BEGIN("Sound");
+        Sound::NoiseMachine::Get().update(m_player->getListenerData());
+        PROFILE_END();
 
-    PROFILE_BEGIN("AI & Triggers");
-    m_entityManager.update(*m_player, deltaTime);
-    PROFILE_END();
+        PROFILE_BEGIN("Player");
+        m_player->updateSpecific(deltaTime);
+        PROFILE_END();
 
-    PROFILE_BEGIN("Map");
-    m_map->update(deltaTime);
-    PROFILE_END();
+        PROFILE_BEGIN("Physics");
+        m_physics->update(deltaTime);
+        PROFILE_END();
 
-    PROFILE_BEGIN("Projectiles");
-    m_projectileManager->update(deltaTime);
-    PROFILE_END();
+        PROFILE_BEGIN("AI & Triggers");
+        m_entityManager.update(*m_player, deltaTime);
+        PROFILE_END();
 
-    PROFILE_BEGIN("HUD");
-    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
-    PROFILE_END();
+        PROFILE_BEGIN("Map");
+        m_map->update(deltaTime);
+        PROFILE_END();
+
+        PROFILE_BEGIN("Projectiles");
+        m_projectileManager->update(deltaTime);
+        PROFILE_END();
+
+
 
 #define _DEBUG
 #ifdef _DEBUG

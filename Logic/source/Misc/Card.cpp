@@ -97,15 +97,25 @@ Card::CardCategory Card::getCategory() const
     return m_category;
 }
 
+void Logic::Card::setAlpha(float alpha)
+{
+    m_cardBackground.setAlpha(alpha);
+    m_icon.setAlpha(alpha);
+}
+
 void Logic::Card::render() const
 {
     m_cardBackground.render();
     m_icon.render();
 
-    for(auto &txt: m_text)
+    if (1.0f - m_cardBackground.getAlpha() < FLT_EPSILON)
     {
-        QueueRender(txt);
+        for (auto &txt : m_text)
+        {
+            QueueRender(txt);
+        }
     }
+    
 }
 
 //splits the text into smaler lines so they fit the cards
