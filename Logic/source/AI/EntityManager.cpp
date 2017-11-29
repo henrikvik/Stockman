@@ -28,14 +28,14 @@
 
 using namespace Logic;
 
-const btVector3 EntityManager::MIN_SPAWN = { -300, 10, -300 },
-                EntityManager::MAX_SPAWN = {  300, 25,  300 };
+const btVector3 EntityManager::MIN_SPAWN = { -100, 10, -100 },
+                EntityManager::MAX_SPAWN = {  100, 25,  100 };
 const std::string EntityManager::WAVE_FILES[MODES] = { "Enemies/Wave", "Enemies/Wave", "Enemies/WavesHeroic"};
 
-const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 65;
+const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 100;
 const float EntityManager::INVALID_LENGTH = 100.f;
 
-int EntityManager::PATH_UPDATE_DIV = 25;
+int EntityManager::PATH_UPDATE_DIV = 5;
 
 EntityManager::EntityManager()
 {
@@ -64,7 +64,7 @@ void EntityManager::registerCreationFunctions()
 {
     m_enemyFactory[EnemyType::NECROMANCER] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.8f, 1.5f, 0.8f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.0f, 1.0f, 1.0f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
@@ -368,6 +368,8 @@ void EntityManager::spawnWave(int waveId, btVector3 const &playerPos)
         printf("This will crash, data is not allocated, call allocateData() before spawning");
         return;
     }
+
+    Sound::NoiseMachine::Get().playSFX(Sound::WAVE_START, nullptr, true);
 
     WaveManager::EntitiesInWave entities = m_waveManager.getEntities(waveId);
     m_frame = 0;

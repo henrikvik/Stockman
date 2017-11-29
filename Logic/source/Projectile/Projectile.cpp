@@ -221,9 +221,11 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
             );
         }
         break;
+
     case ProjectileTypeFreezeExplosion:
         callback = true;
         break;
+
     case ProjectileTypeFireArrow:
         callback = true;
         kill = true;
@@ -232,12 +234,14 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
             /* Number of stacks */              getStatusManager().getUpgradeStacks(StatusManager::FIRE_UPGRADE)
         );
         break;
-    // These should not get removed on enemy contact
+
     case ProjectileTypeBulletTimeSensor:
         break;
+
     case ProjectileTypeMelee:
         callback = true;
         break;
+
     // Trigger all callbacks on other projectiles
     //  And kill them off
     default: 

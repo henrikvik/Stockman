@@ -3,6 +3,7 @@
 #include <Misc\GUI\iMenuAction.h>
 #include <Misc\GUI\iMenuMachine.h>
 #include <Engine\Settings.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 #define QUICK_INTO_GAME false
 #if QUICK_INTO_GAME
@@ -27,6 +28,8 @@ void iMenuIntro::update(int x, int y, float deltaTime)
     // Lets the player press space to go to the menu
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Space) && !m_isFading && !m_safeToRemove)
     {
+        Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_PRESS, nullptr, true);
+
         std::string name = Settings::getInstance().getName();
         if (name.empty())   Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::FirstTime);
         else                Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Start);

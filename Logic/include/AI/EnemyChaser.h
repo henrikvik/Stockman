@@ -10,7 +10,7 @@ namespace Logic
     private:
         static const int MAX_HP, BASE_DAMAGE;
         static const float MOVE_SPEED;
-//        AnimatedRenderInfo animatedRenderInfo;
+        AnimatedRenderInfo animatedRenderInfo;
     public:
         EnemyChaser(btRigidBody* body);
         ~EnemyChaser();

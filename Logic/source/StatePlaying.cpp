@@ -26,9 +26,9 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
     // Starting in game-sounds
+    Sound::NoiseMachine::Get().stopGroup(Sound::CHANNEL_SFX);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
-    Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
 
     // Initializing Bullet physics
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();		// Configuration
@@ -214,8 +214,7 @@ void StatePlaying::render() const
     PROFILE_END();
 
     PROFILE_BEGIN("Render Menu");
-    if (m_menu->getType() != iMenu::CardSelect)
-        m_menu->render();
+    m_menu->render();
     PROFILE_END();
 
     PROFILE_BEGIN("Render cards");
@@ -232,6 +231,7 @@ void StatePlaying::gameOver()
     addHighscore();
 
     // Queue Death Screen
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_DEAD, nullptr, true);
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
 }

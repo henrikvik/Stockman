@@ -14,7 +14,7 @@ const int EnemyNecromancer::SPEED_AB1 = 125,
 const float EnemyNecromancer::BASE_SPEED = 7.5f;
 
 EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
-    : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP, BASE_DAMAGE,
+    : Enemy(Resources::Models::Necromancer, body, halfExtent, MAX_HP, BASE_DAMAGE,
         BASE_SPEED, EnemyType::NECROMANCER, 0) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
@@ -27,6 +27,7 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
 
     createAbilities();
 
+    getSoundSource()->autoPlaySFX(Sound::SFX::ENEMY_AMBIENT_2, 6500, 500, 1.f, 0.10f);
     light.color = DirectX::SimpleMath::Color(0.5f, 0.0f, 1.0f);
     light.intensity = 0.8f;
     light.range = 7.0f;
