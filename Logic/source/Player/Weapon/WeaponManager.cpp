@@ -215,9 +215,9 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     ProjectileData("NecroProjTrail", false, true, 0, 1.f, 1, 50, 5.f, 5000, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.25f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade, false, false, false),
                                     Weapon::WeaponInfo{ 3, 1, 0, 0, 30, 0, 0,{ -0.8f, 0.2f, 0.f } },
                                     ProjectileData("NecroProjTrail", false, true, 0, 1.f, 1, 10, 5.f, 5000, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.05f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard, false, false, false),
-                                    ProjectileData(nullptr, false, false, 100, 25, 1, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.05f, 5.f), Resources::Models::UnitCube, 1, ProjectileTypeFreezeExplosion, true, false, false),
+                                    ProjectileData(nullptr, false, false, 50, 1, 1, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.4, 1, 1), 0.05f, 5.f), Resources::Models::UnitCube, 1, ProjectileTypeFreezeExplosion, true, false, false),
                                     8);
-    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 300, 0, 100, 100,{ 1, 25 },{ 1, 25 }, 1500 });
+    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 300, 0, 100, 100,{ 1, 25 },{ 0, 25 }, 1500 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -2.3f, 0.3f)),
