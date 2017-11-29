@@ -50,7 +50,11 @@ namespace Sound
         TRIGGER_JUMPPAD,
         START_GAME, 
         UPGRADE_UNLOCKED, 
-        CAMPFIRE
+        CAMPFIRE, 
+        WAVE_START,
+        WAVE_END, 
+        WAVE_CARD, 
+        WAVE_DEAD
     };
 
     // Put all identifier for music here

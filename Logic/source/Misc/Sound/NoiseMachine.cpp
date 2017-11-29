@@ -265,6 +265,10 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
     ERRCHECK(createSound(loadMode, SFX::WEAPON_MAGIC_2, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Magic_2.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::UPGRADE_UNLOCKED, CHANNEL_GROUP::CHANNEL_SFX, "Upgrade_Unlocked.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::CAMPFIRE, CHANNEL_GROUP::CHANNEL_SFX, "Campfire.ogg", FMOD_3D_LINEARROLLOFF | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_START, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Start.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_END, CHANNEL_GROUP::CHANNEL_SFX, "Wave_End.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_CARD, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Card.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_DEAD, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Dead.ogg", FMOD_2D));
 
 	// Setting the thresholds of where the listener can hear the sfx
     int count = 0;

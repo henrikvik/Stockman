@@ -24,6 +24,7 @@ iMenuCards::iMenuCards(iMenu::MenuGroup group)
     m_spriteRenderInfo.textureRect = FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f });
 
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::UPGRADE_UNLOCKED, nullptr, true);
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_END, nullptr, true);
 }
 
 iMenuCards::~iMenuCards() { }
