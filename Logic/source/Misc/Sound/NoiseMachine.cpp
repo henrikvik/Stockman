@@ -281,7 +281,7 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
         }
     }
 
-    return count;
+    return count; 
 }
 
 // Initialize all music pieces

@@ -44,7 +44,7 @@ float4 PS(PS_IN input) : SV_Target0
     float3 nightGradient = lerp(Base.xyz, Top.xyz, input.lPos.y);
     
     float3 sphereDir = normalize(input.lPos);
-    float angle = dot(sphereDir, AngleSize.xyz);
+    float angle = saturate(dot(sphereDir, AngleSize.xyz));
     angle = pow(angle, 16);
     float3 moonColor = float3(0.4f, 0.35f, 0.25f);
 
