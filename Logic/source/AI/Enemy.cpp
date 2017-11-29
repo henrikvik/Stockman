@@ -41,9 +41,16 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     light.intensity = 0.5f;
     light.range = 2.f;
 
+    body->setGravity({ 0.f, -9.82f * 7.f, 0.f });
+
     addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
         m_blinkTimer = 100.0f;
-        getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
+        getSoundSource()->playSFX(Sound::SFX::ENEMY_HIT, 1.f, 0.2f);
+    });
+
+    addCallback(ON_DEATH, [&](CallbackData &data)
+    {
+        getSoundSource()->playSFX(Sound::SFX::ENEMY_DEATH, 1.f, 0.25f);
     });
 }
 
@@ -146,6 +153,8 @@ bool Enemy::hasCallbackEntities()
 
 void Enemy::damage(int damage)
 {
+    if (damage == 0) return;
+
 	m_health -= damage;
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
@@ -167,6 +176,17 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
         if (m_fireTimer >= 1000.0f)
         {
             damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken) * stacks);
+            m_fireTimer -= 1000.0f;
+        }
+    }
+    if (flags & Effect::EFFECT_FREEZE_DMG)
+    {
+        m_fireTimer += dt;
+
+        if (m_fireTimer >= 1000.0f)
+        {
+            damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+
             m_fireTimer -= 1000.0f;
         }
     }

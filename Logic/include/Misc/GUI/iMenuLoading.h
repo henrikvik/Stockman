@@ -48,6 +48,7 @@ namespace Logic
         void render() const;
     
     private:
+        bool                m_queingNext;
         bool                m_firstTimeHighDelta;
         bool                m_startTextFade;    // If we've started to fade-in the text or not
         std::wstring        m_string;           // The "Press Space to Continue" text 

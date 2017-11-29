@@ -12,10 +12,10 @@ namespace Graphics
         this->near_distance = 0.1f;
         float aspect_ratio = float(width) / height;
 
-        this->fieldOfView = fieldOfView;
+        this->fieldOfView = DirectX::XMConvertToRadians(fieldOfView);
         this->far_distance = drawDistance;
 
-        this->projection = DirectX::XMMatrixPerspectiveFovRH(fieldOfView, aspect_ratio, near_distance, far_distance);
+        this->projection = DirectX::XMMatrixPerspectiveFovRH(this->fieldOfView, aspect_ratio, near_distance, far_distance);
 
         values.vP = this->projection * this->view;
         values.view = this->view;
@@ -68,10 +68,16 @@ namespace Graphics
         Camera::update(pos, target - pos, context);
     }
 
+
+    void Camera::updateFOV(float fieldOfView)
+    {
+        this->fieldOfView = DirectX::XMConvertToRadians(fieldOfView);
+        this->projection = DirectX::XMMatrixPerspectiveFovRH(this->fieldOfView, aspectRatio, 0.1f, drawDistance);
+    }
+
     bool Camera::inside_frustrum(DirectX::SimpleMath::Vector3 point, float radius)
     {
         bool inside_frustrum = true;
-
         for (size_t i = 0; i < 6 && inside_frustrum; i++)
         {
             inside_frustrum = frustrum_planes[i].distance(point) + radius > 0;

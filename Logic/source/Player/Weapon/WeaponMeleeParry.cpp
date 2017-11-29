@@ -20,6 +20,8 @@ WeaponMeleeParry::~WeaponMeleeParry()
 
 void WeaponMeleeParry::onUse(std::vector<Projectile*>& projectiles, Entity& shooter)
 {
+    shooter.getSoundSource()->playSFX(Sound::SFX::WEAPON_MELEE_SECONDARY);
+
     static btVector3 pPosition;
     for (Projectile* p : projectiles)
     {
@@ -28,7 +30,7 @@ void WeaponMeleeParry::onUse(std::vector<Projectile*>& projectiles, Entity& shoo
             
             PhysicsObject* obj = reinterpret_cast<PhysicsObject*>(data.dataPtr);
 
-            btVector3 knockbackDir = (obj->getPositionBT() - pPosition).normalize();
+            btVector3 knockbackDir = (obj->getPositionBT() - pPosition).normalize() + btVector3(0, 1, 0);
 
             if (Enemy* enemy = dynamic_cast<Enemy*>(obj))
             {

@@ -49,6 +49,7 @@ namespace Graphics {
 
 
         void render() const;
+        void updateFOV(float fieldOfView);
 	private:
 		DirectX::SimpleMath::Vector3 position;
 		DirectX::SimpleMath::Vector3 up;
@@ -65,6 +66,7 @@ namespace Graphics {
 
 		float fieldOfView;
 		float fadeStart;
+        float aspectRatio;
 
 		DirectX::SimpleMath::Matrix view;
 		DirectX::SimpleMath::Matrix projection;

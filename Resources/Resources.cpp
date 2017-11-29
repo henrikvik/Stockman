@@ -129,7 +129,6 @@ namespace Resources
             if (strcmp(str, "Crosshair") == 0) return Crosshair;
             if (strcmp(str, "Gameover") == 0) return Gameover;
             if (strcmp(str, "gameOverMenuButtons") == 0) return gameOverMenuButtons;
-            if (strcmp(str, "gameOverTexture") == 0) return gameOverTexture;
             if (strcmp(str, "Gamesheet") == 0) return Gamesheet;
             if (strcmp(str, "Grid") == 0) return Grid;
             if (strcmp(str, "Highscore") == 0) return Highscore;

@@ -2,6 +2,7 @@
 #include <Misc\GUI\iMenuAction.h>
 #include <Graphics\include\RenderInfo.h>
 #include "..\..\..\include\Misc\GUI\iMenuCards.h"
+#include <Engine\Settings.h>
 
 using namespace Logic;
 
@@ -9,6 +10,8 @@ iMenuFactory::iMenuFactory()
 {
     // Loads all buttons from Button.lw file (Engine/Resources/Button.lw)
     FileLoader::singleton().loadStructsFromFile(buttonFile, "Button");
+
+    FileLoader::singleton().loadStructsFromFile(sliderFile, "Slider");
 }
 
 iMenuFactory::~iMenuFactory() { }
@@ -57,6 +60,15 @@ iMenu * iMenuFactory::buildMenuSettings()
 
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
+    Settings& setting = Settings::getInstance();
+    menu->addSlider(buildSlider("MouseSlider", setting.getMouseSensePTR(), 0.001f, 0.05f, 0.001f));
+    menu->addSlider(buildSlider("MasterSlider", setting.getMasterSoundPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("MusicSlider", setting.getMusicPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("AmbienceSlider", setting.getAmbiencePTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("SFXSlider", setting.getSFXPTR(), 0.0f, 1.0f, 0.01f));
+    menu->addSlider(buildSlider("FOVSlider", setting.getFOVPTR(), 90.0f, 180.0f, 1.0f));
+
+    menu->addButton(buildButton("MenuSettingsVideoWindowed", ButtonFunction::windowed));
 
     //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
     //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
@@ -69,7 +81,6 @@ iMenu * iMenuFactory::buildMenuSettings()
     //menu->addButton(buildButton("MenuSettingsControlsMouseSensePlus", ButtonFunction::plusSense));
     //menu->addButton(buildButton("MenuSettingsVideoFOVMinus", ButtonFunction::minusFOV));
     //menu->addButton(buildButton("MenuSettingsVideoFOVPlus", ButtonFunction::plusFOV));
-    //menu->addButton(buildButton("MenuSettingsVideoWindowed", ButtonFunction::windowed));
 
     return menu;
 }
@@ -77,7 +88,7 @@ iMenu * iMenuFactory::buildMenuSettings()
 iMenuSkillPick* iMenuFactory::buildMenuSkill()
 {
     iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
-
+   
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
     menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
@@ -100,7 +111,7 @@ iMenu * iMenuFactory::buildMenuCard()
 
 iMenu * iMenuFactory::buildMenuGameWon()
 {
-    iMenu* menu = newd iMenuCards(iMenu::GameWon);
+    iMenu* menu = newd iMenu(iMenu::GameWon);
 
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
@@ -206,4 +217,33 @@ iMenu::ButtonData iMenuFactory::buildButton(std::string name, std::function<void
         }
     }
     return btn;
+}
+
+iMenu::SliderData iMenuFactory::buildSlider(std::string name, float* value, float minValue, float maxValue, float delimiter)
+{
+    iMenu::SliderData sld;
+    for (auto const& slider : sliderFile)
+    {
+        if (slider.strings.find("sliderName") != slider.strings.end() &&
+            slider.strings.at("sliderName") == name)
+        {
+            sld.name = name;
+            sld.screenRect.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("xPos") / WIN_WIDTH, slider.floats.at("yPos") / WIN_WIDTH);
+            sld.screenRect.bottomRight = DirectX::SimpleMath::Vector2((slider.floats.at("width") + slider.floats.at("xPos")) / WIN_WIDTH, (slider.floats.at("height") + slider.floats.at("yPos")) / WIN_WIDTH);
+            sld.texRectNormal.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("xTexStart"), slider.floats.at("yTexStart"));
+            sld.texRectNormal.bottomRight = DirectX::SimpleMath::Vector2(slider.floats.at("xTexEnd"), slider.floats.at("yTexEnd"));
+            sld.texRectHover.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("hoverXTexStart"), slider.floats.at("hoverYTexStart"));
+            sld.texRectHover.bottomRight = DirectX::SimpleMath::Vector2(slider.floats.at("hoverXTexEnd"), slider.floats.at("hoverYTexEnd"));
+            sld.texRectActive.topLeft = DirectX::SimpleMath::Vector2(slider.floats.at("activeXTexStart"), slider.floats.at("activeYTexStart"));
+            sld.texRectActive.bottomRight = DirectX::SimpleMath::Vector2(slider.floats.at("activeXTexEnd"), slider.floats.at("activeYTexEnd"));
+            sld.texture = LookUp.at(slider.ints.at("texture"));
+            sld.min = slider.floats.at("min");
+            sld.max = slider.floats.at("max");
+            sld.value = value;
+            sld.minValue = minValue;
+            sld.maxValue = maxValue;
+            sld.delimeter = delimiter;
+        }
+    }
+    return sld;
 }

@@ -174,7 +174,7 @@ namespace Graphics
         viewPort.Height = WIN_HEIGHT;
         viewPort.MaxDepth = 1.0f;
 
-        FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
+        FXSystem = newd ParticleSystem(device, 4096, "Resources/Particles/base.part");
 
         TextureLoader::get().loadAll();
 
