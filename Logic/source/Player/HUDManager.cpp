@@ -171,9 +171,6 @@ void HUDManager::constructGUIElements()
     width = 129.0f / 1024;
     height = 148.0f / 1024;
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
-
-
-    staticElements.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 512.f, 128.0f, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 1.0f, false));
 }
 
 void HUDManager::updateTextElements()
@@ -500,39 +497,18 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     this->updateGUIElemets();
     this->updateTextElements();
 
-    static float alpha = 0.0f;
-    static float prevTime = 0.0f;
-    if (timeManager.isTransitioning() && !timeManager.onFirstWave())
-    {
-        if (info.timeRemaining - prevTime < FLT_EPSILON)
-        {
-            if (alpha < 1.0f)
-            {
-                alpha += dt * 0.002f;
-            }
-
-            staticElements.at(staticElements.size() - 1).setAlpha(alpha);
-        }
-        else
-        {
-            if (alpha > 0.0f)
-            {
-                alpha -= dt * 0.002f;
-            }
-
-            staticElements.at(staticElements.size() - 1).setAlpha(alpha);
-        }
-        prevTime = info.timeRemaining;
-    }
-    else
-    {
-        if (alpha > 0.0f)
-        {
-            alpha -= dt * 0.002f;
-        }
-        
-        staticElements.at(staticElements.size()- 1).setAlpha(alpha);
-    }
+    // No.
+    //static float alpha = 0.0f;
+    //if (timeManager.isTransitioning() && !timeManager.onFirstWave())
+    //{
+    //    alpha += dt * 0.002f;
+    //    staticElements.at(staticElements.size()-1).setAlpha(alpha);
+    //}
+    //else
+    //{
+    //    alpha = 0.0f;
+    //    staticElements.at(staticElements.size()- 1).setAlpha(alpha);
+    //}
 }
 
 void HUDManager::render() const

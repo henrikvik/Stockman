@@ -5,6 +5,7 @@
 #include <Engine\newd.h>
 #include "RenderInfo.h"
 #include <Engine/Profiler.h>
+#include "MainCamera.h"
 
 class RenderQueue
 {
@@ -29,10 +30,15 @@ public:
         info.LINE = LINE;
         #endif
 
+
+
         if constexpr (std::is_base_of_v<StaticRenderInfo, T>)
         {
-            InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
-            container->queue((size_t)info.model, info);
+            if (Global::mainCamera->inside_frustrum(info.transform.Translation(), info.cull_radius))
+            {
+                InstancedQueueContainer<T> * container = getInstancedQueueContainer<T>();
+                container->queue((size_t)info.model, info);
+            }
         }
         else
         {

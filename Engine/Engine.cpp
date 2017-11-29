@@ -56,7 +56,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         if (Engine::g_window) // make sure window is created
         {
             DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
-            printf("loss");
         }
         break;
     case WM_ACTIVATEAPP:
@@ -433,6 +432,8 @@ int Engine::run()
             if (game->update(float(deltaTime)))
                 running = false;
         PROFILE_END();
+
+        Global::mainCamera->render();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game->render();

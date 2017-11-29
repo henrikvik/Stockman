@@ -15,7 +15,6 @@ using namespace Logic;
 // Switches both main-states to in-game, will unload & load everything
 void ButtonFunction::startGame()
 {
-    Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
     if (Action::Get().m_menuMachine)
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::LoadingPre);
 }
@@ -134,6 +133,7 @@ void Logic::chooseUpgrade(int index)
         {
             if (playing->getCardManager()->pickAndApplyCard(*playing->getPlayer(), index))
             {
+                Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_CARD, nullptr, true);
                 Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
             }
         }
@@ -159,6 +159,7 @@ void ButtonFunction::confirmSkillPicks()
                 playing->getPlayer()->setCurrentSkills(primary, secondary);
 
                 // Removing active menu
+                Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_CARD, nullptr, true);
                 Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
             }
         }

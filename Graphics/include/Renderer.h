@@ -66,7 +66,7 @@ namespace Graphics
         };
         struct AnimatedJoints
         {
-            DirectX::SimpleMath::Matrix jointTransforms[20];
+            DirectX::SimpleMath::Matrix jointTransforms[32];
         };
 
         StructuredBuffer<StaticInstance> staticInstanceBuffer;
