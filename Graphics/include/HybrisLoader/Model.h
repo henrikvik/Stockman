@@ -43,6 +43,12 @@ namespace HybrisLoader
             DirectX::SimpleMath::Vector3 min;
             DirectX::SimpleMath::Vector3 max;
 
+            void apply_scale(DirectX::SimpleMath::Vector3 & scale)
+            {
+                min *= scale;
+                max *= scale;
+            }
+
             virtual const float sphere_radius() const noexcept final
             {
                 return (max - min).Length() * 0.5f;

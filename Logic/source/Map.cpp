@@ -196,11 +196,13 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
             DirectX::SimpleMath::Vector3 translation(instance.translation[0], instance.translation[1], instance.translation[2]);
 
             DirectX::SimpleMath::Matrix instance_transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
-            Decoration decor(model, instance_transform, ModelLoader::get().getModel(model)->get_bounding_box().sphere_radius());
+            HybrisLoader::Model::BoundingBox bounding_box = ModelLoader::get().getModel(model)->get_bounding_box();
+
+            bounding_box.apply_scale(scale);
+            Decoration decor(model, instance_transform, bounding_box.sphere_radius());
             decorations.push_back(decor);
 
-            auto hitboxes = ModelLoader::get().getModel(model)->getHitboxes();
-            for (auto & hitbox : *hitboxes)
+            for (auto & hitbox : *ModelLoader::get().getModel(model)->getHitboxes())
             {
                 btRigidBody * body = m_physicsPtr->createHitbox(
                     toVec3(hitbox.position),
