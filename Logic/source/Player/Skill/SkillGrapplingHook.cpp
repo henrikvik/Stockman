@@ -80,9 +80,6 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 
                     m_maxVelY = m_dirToPoint.y() * GRAPPLING_HOOK_MAX_SPEED_Y;
 
-                    //if (Player* p = dynamic_cast<Player*>(&shooter))
-                        //p->getCharController()->setLinearVelocity({ 0.f, 0.f, 0.f });
-
                     // Drawing the ray
                     renderInfo.points->clear();
                     renderInfo.color = DirectX::SimpleMath::Color(1, 1, 1);
@@ -116,7 +113,6 @@ void SkillGrapplingHook::onRelease()
 	else */ if (Player* player = dynamic_cast<Player*>(m_shooter))
 	{
 		float yVel = player->getCharController()->getLinearVelocity().y();
-        //player->getCharController()->setFallSpeed(1.f);
         if (m_dirToPoint.y() > 0.f)
             player->getCharController()->jump({ 0.f, yVel, 0.f });
 	}
@@ -141,7 +137,6 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
         if ((m_point - m_shooter->getPositionBT()).length() < GRAPPLING_HOOK_RANGE_MIN)
         {
             release();
-            printf("range release\n");
         }
 		// Setting player movement specific grappling hook variables
 		else if (Player* player = dynamic_cast<Player*>(m_shooter))
@@ -162,16 +157,9 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 
 			// Easing to reach the targeted vertical speed
 			if (m_goingUp && (m_point.y() > player->getPositionBT().y()))
-			{
-                //player->getCharController()->setFallSpeed(1.f);
                 player->getCharController()->jump({ 0.f, m_maxVelY * (GRAPPLING_HOOK_DIR_Y_RANGE - m_dirToPoint.y() * GRAPPLING_HOOK_DIR_Y_MULTIPLIER) * GRAPPLING_HOOK_POWER_Y, 0.f });
-			}
 			else
-			{
                 m_goingUp = false;
-                //player->getCharController()->setFallSpeed(0.04f);   // Percentage of fall speed (maybe?)
-                //player->getCharController()->setLinearVelocity({ 0.f, linearVelocity.y() + (abs(m_maxVelY) - abs(linearVelocity.y())) * m_dirToPoint.y() * GRAPPLING_HOOK_POWER_Y * deltaTime, 0.f });
-			}
 
 			// Easing to reach the maximum vertical speed
 			player->setMoveSpeed(player->getMoveSpeed() + ((GRAPPLING_HOOK_MAX_SPEED_XZ - player->getMoveSpeed()) * GRAPPLING_HOOK_POWER_XZ * deltaTime));
