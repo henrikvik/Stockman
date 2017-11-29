@@ -63,6 +63,7 @@ namespace Logic
         void setState(State state);
         void setAlpha(float alpha);
         void setUVS(FloatRect newUVs);
+        State getState() const { return state; }
 
         void render() const;
 
