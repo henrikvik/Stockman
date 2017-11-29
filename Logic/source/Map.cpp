@@ -212,6 +212,8 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
                     Physics::COL_HITBOX,
                     Physics::COL_EVERYTHING /* ^ Physics::COL_HITBOX not needed, it ignores itself when overlapping cuz they are static */
                 );
+                StaticObject *obj = new StaticObject(Resources::Models::UnitCube, body, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL);
+                body->setUserPointer(obj);
 
                 float t[16]; body->getWorldTransform().getOpenGLMatrix(t);
                 DirectX::SimpleMath::Matrix hitbox_transform(t);
