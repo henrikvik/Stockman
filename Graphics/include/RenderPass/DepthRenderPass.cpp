@@ -9,8 +9,8 @@ namespace Graphics
         ID3D11DepthStencilView * depthStencil
     )
         : RenderPass(targets, resources, buffers, depthStencil)
-        , depth_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS)
-        , depth_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS)
+        , depth_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
+        , depth_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
     {
     }
 
@@ -26,9 +26,11 @@ namespace Graphics
         Global::context->OMSetRenderTargets(0, nullptr, depthStencil);
         Global::context->VSSetConstantBuffers(0, buffers.size(), buffers.data());
 
+        Global::context->IASetInputLayout(depth_vs_static);
         Global::context->VSSetShader(depth_vs_static, nullptr, 0);
         drawInstanced<StaticRenderInfo>(resources[StaticInstanceBuffer]);
 
+        Global::context->IASetInputLayout(depth_vs_animated);
         Global::context->VSSetShader(depth_vs_animated, nullptr, 0);
         drawInstancedAnimated<AnimatedRenderInfo>(resources[AnimatedInstanceBuffer], resources[AnimatedInstanceBuffer + 1]);
 
