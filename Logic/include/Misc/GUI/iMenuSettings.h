@@ -12,9 +12,10 @@ namespace Logic
         void update(int x, int y, float deltaTime);
         void render() const;
     private:
-        bool currentWindowed;
-    protected:
-        void confirm();
+        TextRenderInfo m_textRenderInfoWindow;
+        TextRenderInfo m_textRenderInfoDOF;
+        TextRenderInfo m_textRenderInfoSSAO;
+        TextRenderInfo m_textRenderInfoFog;
     };
 }
 #endif

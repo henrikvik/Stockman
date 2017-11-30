@@ -128,8 +128,8 @@ void Slider::updateOnPress(int posX, int posY)
              
              renderInfo.screenRect = screenRect;
              m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
-             m_textRenderInfo.font = Resources::Fonts::KG18;
-             m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 10.0f, m_y );
+             m_textRenderInfo.font = Resources::Fonts::KG14;
+             m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 20.0f, m_y);
              if (m_name.compare("FOVSlider") == 0)
              {
                  int test = m_tempValue;
@@ -159,6 +159,29 @@ void Logic::Slider::updateOnRelease(int posX, int posY)
     if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
     {
         setState(Slider::INACTIVE);
+        *m_value = m_tempValue;
+
+        if (m_name.compare("FOVSlider") == 0)
+        {
+            Global::mainCamera->updateFOV(*m_value);
+            std::cout << "Entered FOV";
+        }
+        else if (m_name.compare("MasterSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MASTER, *m_value);
+        }
+        else if (m_name.compare("MusicSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MUSIC, *m_value);
+        }
+        else if (m_name.compare("AmbienceSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_AMBIENT, *m_value);
+        }
+        else if (m_name.compare("SFXSlider") == 0)
+        {
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_SFX, *m_value);
+        }
     }
 }
 
@@ -215,19 +238,4 @@ void Slider::render() const
 {
     QueueRender(renderInfo);
     QueueRender(m_textRenderInfo);
-}
-
-std::string Logic::Slider::getName()
-{
-    return m_name;
-}
-
-float Logic::Slider::getValue()
-{
-    return *m_value;
-}
-
-void Logic::Slider::confirm()
-{
-    *m_value = m_tempValue;
 }

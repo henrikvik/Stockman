@@ -70,6 +70,12 @@ iMenuSettings* iMenuFactory::buildMenuSettings()
 
     menu->addButton(buildButton("MenuSettingsVideoWindowedLeft", ButtonFunction::windowed));
     menu->addButton(buildButton("MenuSettingsVideoWindowedRight", ButtonFunction::windowed));
+    menu->addButton(buildButton("MenuSettingsVideoDOFLeft", ButtonFunction::DOF));
+    menu->addButton(buildButton("MenuSettingsVideoDOFRight", ButtonFunction::DOF));
+    menu->addButton(buildButton("MenuSettingsVideoSSAOLeft", ButtonFunction::SSAO));
+    menu->addButton(buildButton("MenuSettingsVideoSSAORight", ButtonFunction::SSAO));
+    menu->addButton(buildButton("MenuSettingsVideoFogLeft", ButtonFunction::fog));
+    menu->addButton(buildButton("MenuSettingsVideoFogRight", ButtonFunction::fog));
 
     //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
     //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));

@@ -52,11 +52,6 @@ namespace Logic
 
         void render() const;
 
-        void confirm();
-
-        std::string getName();
-        float getValue();
-
     private:
         SpriteRenderInfo renderInfo;
 
