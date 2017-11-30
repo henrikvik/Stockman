@@ -54,9 +54,9 @@ iMenu* iMenuFactory::buildMenuStart()
     return menu;
 }
 
-iMenu * iMenuFactory::buildMenuSettings()
+iMenuSettings* iMenuFactory::buildMenuSettings()
 {
-    iMenu* menu = newd iMenu(iMenu::Settings);
+    iMenuSettings* menu = newd iMenuSettings(iMenu::Settings);
 
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
@@ -69,6 +69,12 @@ iMenu * iMenuFactory::buildMenuSettings()
     menu->addSlider(buildSlider("FOVSlider", setting.getFOVPTR(), 60.0f, 120.0f, 1.0f));
     menu->addButton(buildButton("MenuSettingsVideoWindowedLeft", ButtonFunction::windowed));
     menu->addButton(buildButton("MenuSettingsVideoWindowedRight", ButtonFunction::windowed));
+    menu->addButton(buildButton("MenuSettingsVideoDOFLeft", ButtonFunction::DOF));
+    menu->addButton(buildButton("MenuSettingsVideoDOFRight", ButtonFunction::DOF));
+    menu->addButton(buildButton("MenuSettingsVideoSSAOLeft", ButtonFunction::SSAO));
+    menu->addButton(buildButton("MenuSettingsVideoSSAORight", ButtonFunction::SSAO));
+    menu->addButton(buildButton("MenuSettingsVideoFogLeft", ButtonFunction::fog));
+    menu->addButton(buildButton("MenuSettingsVideoFogRight", ButtonFunction::fog));
 
     return menu;
 }

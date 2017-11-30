@@ -375,6 +375,8 @@ int Engine::run()
             }
 		}
 
+        if (!running) break;
+
         auto state = mKeyboard->GetState();
         mTracker->Update(state);
 
