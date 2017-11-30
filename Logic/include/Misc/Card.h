@@ -42,6 +42,7 @@ namespace Logic
 		const std::vector<int>& getStatusIds() const;
 		StatusType getStatusType() const;
         CardCategory getCategory() const;
+        void setAlpha(float alpha);
 
 		DirectX::SimpleMath::Vector2 getTexStart() const;
 		DirectX::SimpleMath::Vector2 getTexEnd() const;
