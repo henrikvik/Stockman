@@ -36,7 +36,7 @@
     <ClCompile Include="include\Particles\Particle.cpp" />
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
-    <ClCompile Include="include\RenderPass\BulletTimeRenderPass.cpp" />
+    <ClCompile Include="include\RenderPass\PostFXRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\DebugRenderPass2.cpp" />
     <ClCompile Include="include\RenderPass\DebugRenderPass.h" />
     <ClCompile Include="include\RenderPass\DepthOfFieldRenderPass.cpp" />
@@ -80,7 +80,7 @@
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\RenderInfo.h" />
     <ClInclude Include="include\CommonState.h" />
-    <ClInclude Include="include\RenderPass\BulletTimeRenderPass.h" />
+    <ClInclude Include="include\RenderPass\PostFXRenderPass.h" />
     <ClInclude Include="include\RenderPass\DepthOfFieldRenderPass.h" />
     <ClInclude Include="include\RenderPass\DepthRenderPass.h" />
     <ClInclude Include="include\RenderPass\ForwardPlusRenderPass.h" />

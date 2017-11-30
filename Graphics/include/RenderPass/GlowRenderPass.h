@@ -3,7 +3,7 @@
 #include "../Utility/Shader.h"
 #include "../Utility/PingPongBuffer.h"
 
-#define MIP_LEVELS 5
+#define MIP_LEVELS 4
 
 namespace Graphics {
     class GlowRenderPass : public RenderPass
@@ -11,10 +11,10 @@ namespace Graphics {
     public:
         GlowRenderPass(
             PingPongBuffer * backBuffers,
-            std::initializer_list<ID3D11RenderTargetView*> targets,
-            std::initializer_list<ID3D11ShaderResourceView*> resources = {},
-            std::initializer_list<ID3D11Buffer*> buffers = {},
-            ID3D11DepthStencilView * depthStencil = nullptr);
+            ID3D11ShaderResourceView *bloomSRV,
+            std::vector<ID3D11ShaderResourceView *> bloomSRVChain,
+            std::vector<ID3D11RenderTargetView *> bloomRTVChain
+        );
         virtual ~GlowRenderPass();
 
         virtual wchar_t* name() const override {
@@ -25,22 +25,19 @@ namespace Graphics {
         void render() const;
 
     private:
-        Shader glow;
-        Shader glow2;
-        Shader merger;
-        Shader mipGenerator;
-        Shader mipCombinder;
+        Shader m_KawaseDualFilterDownsample;
+        Shader m_KawaseDualFilterUpsample;
+        Shader m_GaussianHorizontal;
+        Shader m_GaussianVertical;
 
-        ID3D11ShaderResourceView * srvs[MIP_LEVELS];
-        ID3D11RenderTargetView * rtvs[MIP_LEVELS];
+        ID3D11ShaderResourceView *m_BloomSRV;
+        std::vector<ID3D11ShaderResourceView *> m_BloomSRVMipChain;
+        std::vector<ID3D11RenderTargetView *> m_BloomRTVMipChain;
 
-        ID3D11ShaderResourceView * srvAllMips;
+        ID3D11ShaderResourceView *m_BlurTempSRV;
+        ID3D11RenderTargetView *m_BlurTempRTV;
 
-        ShaderResource glowPass0;
-        ShaderResource glowPass1;
-
-        PingPongBuffer * backBuffers;
-
+        PingPongBuffer *backBuffers;
 
         void createMips();
         void setMipViewPort(int level) const;

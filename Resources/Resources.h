@@ -177,7 +177,6 @@ namespace Resources
     {
         enum Files
         {
-            BulletTime,
             DebugShader,
             DoFBlur1,
             DoFBlur2,
@@ -192,11 +191,13 @@ namespace Resources
             GlowBlurHorizontal,
             GlowBlurVertical,
             GlowDownSampler,
-            GlowMerger,
-            GlowMipCombinder,
+            KawaseDualFilterDownsample,
+            KawaseDualFilterUpsample,
+            KawaseDualFilterVS,
             LightGridCulling,
             Moon,
             ParticlePlane,
+            PostFX,
             SkyShader,
             SnowShader,
             SpriteShader,
@@ -207,7 +208,6 @@ namespace Resources
         };
         const std::map<Files, const char *> Paths =
         {
-            {BulletTime, R"(..\Resources\Shaders\BulletTime.hlsl)"},
             {DebugShader, R"(..\Resources\Shaders\DebugShader.hlsl)"},
             {DoFBlur1, R"(..\Resources\Shaders\DoFBlur1.hlsl)"},
             {DoFBlur2, R"(..\Resources\Shaders\DoFBlur2.hlsl)"},
@@ -222,11 +222,13 @@ namespace Resources
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
             {GlowBlurVertical, R"(..\Resources\Shaders\GlowBlurVertical.hlsl)"},
             {GlowDownSampler, R"(..\Resources\Shaders\GlowDownSampler.hlsl)"},
-            {GlowMerger, R"(..\Resources\Shaders\GlowMerger.hlsl)"},
-            {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
+            {KawaseDualFilterDownsample, R"(..\Resources\Shaders\KawaseDualFilterDownsample.hlsl)"},
+            {KawaseDualFilterUpsample, R"(..\Resources\Shaders\KawaseDualFilterUpsample.hlsl)"},
+            {KawaseDualFilterVS, R"(..\Resources\Shaders\KawaseDualFilterVS.hlsl)"},
             {LightGridCulling, R"(..\Resources\Shaders\LightGridCulling.hlsl)"},
             {Moon, R"(..\Resources\Shaders\Moon.hlsl)"},
             {ParticlePlane, R"(..\Resources\Shaders\ParticlePlane.hlsl)"},
+            {PostFX, R"(..\Resources\Shaders\PostFX.hlsl)"},
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SnowShader, R"(..\Resources\Shaders\SnowShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},

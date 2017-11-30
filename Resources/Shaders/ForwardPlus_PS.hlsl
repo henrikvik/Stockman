@@ -55,7 +55,16 @@ Targets PS(Fragment fragment)
 	//clip(diffuseTexture.Sample(linearClamp, fragment.uv).a - 0.5.);
 
     targets.color = float4(lightSum * color * fragment.color, 1); //500~
-    targets.glow = glowTexture.Sample(linearClamp, fragment.uv); //300~
+
+    float3 glow = targets.color.rgb + 1.7 * glowTexture.Sample(linearClamp, fragment.uv);
+    float luminance = dot(float3(0.2126, 0.7152, 0.0722), glow);
+    if (luminance > 1.0) {
+        targets.glow = float4(glow, 0);
+    }
+    else {
+        targets.glow = float4(0, 0, 0, 0);
+    }
+    //targets.glow = targets.color + glowTexture.Sample(linearClamp, fragment.uv); //300~
     targets.viewNormal = fragment.viewNormal; //300~
 
     return targets;
