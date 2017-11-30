@@ -39,7 +39,7 @@ float4 PS(VSOut input) : SV_Target0
     color = adjustSaturation(color, GLOW_ORIGINAL_SATURATION) * GLOW_ORIGINAL_INTENSITY;
     glow = adjustSaturation(glow, GLOW_SATURATION) * GLOW_INTENSITY;
 
-    color = color + color * glow * 4;
+    color = color + color * glow * 7;
 
     color = adjustContrast(color, 2 - BulletTimeProgress, 0.3f);
     color = adjustSaturation(color, BulletTimeProgress);

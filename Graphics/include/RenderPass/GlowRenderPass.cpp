@@ -17,12 +17,8 @@ namespace Graphics
         m_BloomRTVMipChain(bloomRTVChain),
         m_KawaseDualFilterDownsample(Resources::Shaders::KawaseDualFilterDownsample, ShaderType::PS),
         m_KawaseDualFilterUpsample(Resources::Shaders::KawaseDualFilterUpsample, ShaderType::PS),
-        mipCombinder(Resources::Shaders::GlowMipCombinder),
-        mipGenerator(Resources::Shaders::GlowDownSampler),
-        glow(Resources::Shaders::GlowBlurHorizontal),
-        glow2(Resources::Shaders::GlowBlurVertical),
-        glowPass0(WIN_WIDTH, WIN_HEIGHT),
-        glowPass1(WIN_WIDTH, WIN_HEIGHT),
+        m_GaussianHorizontal(Resources::Shaders::GlowBlurHorizontal),
+        m_GaussianVertical(Resources::Shaders::GlowBlurVertical),
         backBuffers(backBuffers)
     {
         createMips();
@@ -58,7 +54,8 @@ namespace Graphics
 
     GlowRenderPass::~GlowRenderPass()
     {
-        SAFE_RELEASE(srvAllMips);
+        SAFE_RELEASE(m_BlurTempSRV);
+        SAFE_RELEASE(m_BlurTempRTV);
     }
 
     void GlowRenderPass::update(float deltaTime)
@@ -67,40 +64,16 @@ namespace Graphics
 
     void GlowRenderPass::render() const
     {
-
-
-
-
-
-
-
-        // TODOOOOOOOOOOOOOOOOO:
-        //
-        // ändra offset i pixel shader för kawase dual filter
-
-
-
-
-
-
-
-
-
         if (!enabled)
             return;
 
         PROFILE_BEGIN("Glow");
         backBuffers->swap();
         
-
-
         Global::context->RSSetState(Global::cStates->CullNone());
         Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         Global::context->IASetInputLayout(nullptr);
-        Global::context->VSSetShader(mipGenerator, nullptr, 0);
-        Global::context->PSSetShader(m_KawaseDualFilterDownsample, nullptr, 0);
-
         auto sampler = Global::cStates->LinearClamp();
         Global::context->PSSetSamplers(0, 1, &sampler);
 
@@ -135,9 +108,9 @@ namespace Graphics
         setMipViewPort(MIP_LEVELS - 1);
 
         Global::context->IASetInputLayout(nullptr);
-        Global::context->VSSetShader(glow, nullptr, 0);
-        Global::context->PSSetShader(glow, nullptr, 0);
-        Global::context->OMSetRenderTargets(1, &glowtempRTV, nullptr);
+        Global::context->VSSetShader(m_GaussianHorizontal, nullptr, 0);
+        Global::context->PSSetShader(m_GaussianHorizontal, nullptr, 0);
+        Global::context->OMSetRenderTargets(1, &m_BlurTempRTV, nullptr);
         Global::context->PSSetShaderResources(0, 1, &m_BloomSRVMipChain.back());
         Global::context->Draw(3, 0);
 
@@ -145,67 +118,22 @@ namespace Graphics
         Global::context->PSSetShaderResources(0, 1, Global::nulls);
 
         Global::context->OMSetRenderTargets(1, &m_BloomRTVMipChain.back(), nullptr);
-        Global::context->PSSetShaderResources(0, 1, &glowtempSRV);
+        Global::context->PSSetShaderResources(0, 1, &m_BlurTempSRV);
 
-        Global::context->VSSetShader(glow2, nullptr, 0);
-        Global::context->PSSetShader(glow2, nullptr, 0);
+        Global::context->VSSetShader(m_GaussianVertical, nullptr, 0);
+        Global::context->PSSetShader(m_GaussianVertical, nullptr, 0);
         Global::context->Draw(3, 0);
 
         Global::context->OMSetRenderTargets(0, nullptr, nullptr);
         Global::context->PSSetShaderResources(0, 1, Global::nulls);
 
-
-        Global::context->PSSetShader(m_KawaseDualFilterUpsample, nullptr, 0);
-        /*for (int i = m_BloomRTVMipChain.size() - 1; i > 1; i--)
-        {
-            Global::context->PSSetShaderResources(0, 1, &m_BloomSRVMipChain[i]);
-            Global::context->OMSetRenderTargets(1, &m_BloomRTVMipChain[i - 1], nullptr);
-
-            setMipViewPort(i - 1);
-
-            Global::context->Draw(3, 0);
-
-            Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
-            Global::context->PSSetShaderResources(0, 1, Global::nulls);
-        }*/
-
         setMipViewPort(0);
-
-        /*Global::context->PSSetShader(mipCombinder, nullptr, 0);
-        Global::context->OMSetRenderTargets(1, &m_BloomRTVMipChain[0], nullptr);
-        Global::context->PSSetShaderResources(0, 1, &m_BloomSRV);
-
-        Global::context->Draw(3, 0);
-
-        Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
-        Global::context->PSSetShaderResources(0, 1, Global::nulls);
-        //First pass
-
-
-        Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
-        Global::context->PSSetShaderResources(0, 1, Global::nulls);*/
-
-
-
-/*        Global::context->VSSetShader(merger, nullptr, 0);
-        Global::context->PSSetShader(merger, nullptr, 0);
-
-
-        Global::context->PSSetShaderResources(4, 1, *backBuffers);
-        Global::context->PSSetShaderResources(5, 1, &m_BloomSRV);
-        Global::context->OMSetRenderTargets(1, *backBuffers, nullptr);
-
-        Global::context->PSSetSamplers(2, 1, &sampler);
-
-        Global::context->Draw(3, 0);*/
 
         Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
         Global::context->PSSetShaderResources(4, 1, Global::nulls);
         Global::context->PSSetShaderResources(5, 1, Global::nulls);
-        static float color[4] = { 0, 0, 0, 0 };
 
         PROFILE_END();
-
     }
 
     //Very ugly
@@ -244,8 +172,8 @@ namespace Graphics
         resourceDesc.Texture2D.MostDetailedMip = 0;
         renderDesc.Texture2D.MipSlice = 0;
 
-        ThrowIfFailed(Global::device->CreateRenderTargetView(texture, &renderDesc, &glowtempRTV));
-        ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &glowtempSRV));
+        ThrowIfFailed(Global::device->CreateRenderTargetView(texture, &renderDesc, &m_BlurTempRTV));
+        ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_BlurTempSRV));
         SAFE_RELEASE(texture);
 
     }

@@ -177,7 +177,6 @@ namespace Resources
     {
         enum Files
         {
-            BulletTime,
             DebugShader,
             DoFBlur1,
             DoFBlur2,
@@ -192,7 +191,6 @@ namespace Resources
             GlowBlurHorizontal,
             GlowBlurVertical,
             GlowDownSampler,
-            GlowMipCombinder,
             KawaseDualFilterDownsample,
             KawaseDualFilterUpsample,
             KawaseDualFilterVS,
@@ -210,7 +208,6 @@ namespace Resources
         };
         const std::map<Files, const char *> Paths =
         {
-            {BulletTime, R"(..\Resources\Shaders\BulletTime.hlsl)"},
             {DebugShader, R"(..\Resources\Shaders\DebugShader.hlsl)"},
             {DoFBlur1, R"(..\Resources\Shaders\DoFBlur1.hlsl)"},
             {DoFBlur2, R"(..\Resources\Shaders\DoFBlur2.hlsl)"},
@@ -225,7 +222,6 @@ namespace Resources
             {GlowBlurHorizontal, R"(..\Resources\Shaders\GlowBlurHorizontal.hlsl)"},
             {GlowBlurVertical, R"(..\Resources\Shaders\GlowBlurVertical.hlsl)"},
             {GlowDownSampler, R"(..\Resources\Shaders\GlowDownSampler.hlsl)"},
-            {GlowMipCombinder, R"(..\Resources\Shaders\GlowMipCombinder.hlsl)"},
             {KawaseDualFilterDownsample, R"(..\Resources\Shaders\KawaseDualFilterDownsample.hlsl)"},
             {KawaseDualFilterUpsample, R"(..\Resources\Shaders\KawaseDualFilterUpsample.hlsl)"},
             {KawaseDualFilterVS, R"(..\Resources\Shaders\KawaseDualFilterVS.hlsl)"},

@@ -27,24 +27,17 @@ namespace Graphics {
     private:
         Shader m_KawaseDualFilterDownsample;
         Shader m_KawaseDualFilterUpsample;
-        Shader glow;
-        Shader glow2;
-        Shader mipGenerator;
-        Shader mipCombinder;
+        Shader m_GaussianHorizontal;
+        Shader m_GaussianVertical;
 
         ID3D11ShaderResourceView *m_BloomSRV;
         std::vector<ID3D11ShaderResourceView *> m_BloomSRVMipChain;
         std::vector<ID3D11RenderTargetView *> m_BloomRTVMipChain;
 
-        ID3D11ShaderResourceView *glowtempSRV;
-        ID3D11RenderTargetView * glowtempRTV;
-        ID3D11ShaderResourceView * srvAllMips;
+        ID3D11ShaderResourceView *m_BlurTempSRV;
+        ID3D11RenderTargetView *m_BlurTempRTV;
 
-        ShaderResource glowPass0;
-        ShaderResource glowPass1;
-
-        PingPongBuffer * backBuffers;
-
+        PingPongBuffer *backBuffers;
 
         void createMips();
         void setMipViewPort(int level) const;

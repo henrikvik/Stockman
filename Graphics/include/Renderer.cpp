@@ -204,7 +204,6 @@ namespace Graphics
             resourceDesc.Texture2D.MostDetailedMip = 1;
             renderDesc.Texture2D.MipSlice = 0;
             ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_BloomSRV));
-            //ThrowIfFailed(Global::device->CreateRenderTargetView(texture, &renderDesc, &m_BloomRTV));
 
             SAFE_RELEASE(texture);
         }
