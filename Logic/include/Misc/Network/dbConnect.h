@@ -12,7 +12,7 @@ namespace Network
         dbConnect();
         ~dbConnect();
 
-        bool addHighscore(std::string name, int score, int time, int wave, int kills);
+        static bool addHighscore(std::string name, int score, int time, int wave, int kills);
         std::vector<std::vector<std::string>> getHigscoreStats(int count);
   
     private:

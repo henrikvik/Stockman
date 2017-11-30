@@ -263,10 +263,8 @@ void StatePlaying::addHighscore()
     std::string name = Settings::getInstance().getName();
     if (name.empty()) name = "Stockman";
 
-    if (db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills()))
-        printf("Highscore added.\n");
-    else
-    {
-        printf("Database could not be reached, your score have been removed, sorry :'(\n");
-    }
+    if (highscoreThread.joinable())
+        highscoreThread.join();
+
+    highscoreThread = std::thread(Network::dbConnect::addHighscore, name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 }
