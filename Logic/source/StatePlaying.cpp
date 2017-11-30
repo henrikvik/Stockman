@@ -209,7 +209,8 @@ void StatePlaying::render() const
 
     PROFILE_BEGIN("Render HUD");
     if (m_menu->getType() == iMenu::Empty ||
-        m_menu->getType() == iMenu::CardSelect)
+        m_menu->getType() == iMenu::CardSelect ||
+        m_menu->getType() == iMenu::Controls)
         m_hudManager.render();
     PROFILE_END();
 

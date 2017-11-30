@@ -5,6 +5,10 @@
 #include <Mouse.h>
 #include <Keyboard.h>
 #include <Misc\Sound\NoiseMachine.h>
+#include <Engine\Profiler.h>
+
+#define PAUSE_BUTTON                DirectX::Keyboard::Keyboard::Escape
+#define CONTROLS_BUTTON             DirectX::Keyboard::Keyboard::F1
 
 #define EDIT_CAMERA_POS false       // Editing Mode - For getting camera placements
 #if EDIT_CAMERA_POS 
@@ -55,15 +59,24 @@ void iMenuMachine::removeActiveMenu()
     }
 }
 
+void iMenuMachine::queueMenuWithSound(iMenu::MenuGroup group)
+{
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_PRESS, nullptr, true);
+    queueMenu(group);
+}
+
 void iMenuMachine::queueMenu(iMenu::MenuGroup group)
 {
     if (m_currentMenuType != group)
     {
-        m_queuedMenuType = group;
-        
-        if (m_activeMenu)
+        if (m_queuedMenuType != group)
         {
-            m_activeMenu->fadeOut();
+            m_queuedMenuType = group;
+
+            if (m_activeMenu)
+            {
+                m_activeMenu->fadeOut();
+            }
         }
     }
 }
@@ -84,6 +97,7 @@ void iMenuMachine::swapMenu()
     case iMenu::MenuGroup::GameOver:            m_activeMenu = m_factory->buildMenuGameover();                    break;
     case iMenu::MenuGroup::GameWon:             m_activeMenu = m_factory->buildMenuGameWon();                     break;
     case iMenu::MenuGroup::Pause:               m_activeMenu = m_factory->buildMenuPause();                       break;
+    case iMenu::MenuGroup::Controls:            m_activeMenu = m_factory->buildMenuControls();                    break;
     case iMenu::MenuGroup::LoadingPre:          m_activeMenu = m_factory->buildMenuLoadingPre();                  break;
     case iMenu::MenuGroup::LoadingPost:         m_activeMenu = m_factory->buildMenuLoadingPost();                 break;
     case iMenu::MenuGroup::HighscoreGameOver:   m_activeMenu = m_factory->buildMenuHighscoreGameOver();           break;
@@ -101,19 +115,16 @@ void iMenuMachine::swapMenu()
 
 void iMenuMachine::update(float deltaTime)
 {
+    // The in-game pause menu
     if (m_activeMenu)
-    {
-        if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Pause && !m_activeMenu->getIsFading())
-        {
-            Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_PRESS, nullptr, true);
-            queueMenu(iMenu::MenuGroup::Empty);
-        }
-    }
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Keyboard::Escape) && m_currentMenuType == iMenu::Empty)
-    {
-        Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_PRESS, nullptr, true);
-        queueMenu(iMenu::MenuGroup::Pause);
-    }
+        if (DirectX::Keyboard::Get().GetState().IsKeyDown(PAUSE_BUTTON) && m_currentMenuType == iMenu::Pause && !m_activeMenu->getIsFading())
+            queueMenuWithSound(iMenu::MenuGroup::Empty);
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(PAUSE_BUTTON) && m_currentMenuType == iMenu::Empty)
+        queueMenuWithSound(iMenu::MenuGroup::Pause);
+
+    // The controls menu
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(CONTROLS_BUTTON) && m_currentMenuType == iMenu::Empty)
+        queueMenuWithSound(iMenu::MenuGroup::Controls);
 
     if (wantsToSwap())
     {
@@ -134,10 +145,15 @@ void iMenuMachine::update(float deltaTime)
 
     if (m_activeMenu)
     {
+        PROFILE_BEGIN("Menu Update");
         int x = DirectX::Mouse::Get().GetState().x;
         int y = DirectX::Mouse::Get().GetState().y;
         m_activeMenu->update(x, y, deltaTime);
+        PROFILE_END();
+
+        PROFILE_BEGIN("Camera Swoosh");
         updateCamera(deltaTime);
+        PROFILE_END();
     }
 }
 
