@@ -193,11 +193,11 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // **Crossbow**
     // ############
     /* Primary */       wl.weapon[0] = newd WeaponCrossbow(projectileManager,
-                                    ProjectileData("Icecone", false, true, 25, 1.5f, 1, 90, 0.10f, 3000, LightRenderInfo(DirectX::SimpleMath::Color(1, 0.8, 1, 1), .25f, 3.f), Resources::Models::Crossbowbolt, 1),
+                                    ProjectileData("Icecone", false, true, 25, 1.5f, 1, 90, 0.1f, 3000, LightRenderInfo(DirectX::SimpleMath::Color(1, 0.8, 1, 1), .25f, 3.f), Resources::Models::Crossbowbolt, 1, ProjectileTypeNormal, false, false, true, false, { 0.f, -0.4f, 0.f }),
                                     Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0, { -0.5f, -0.5f, 0.f } });
     /* Secondary */     wl.weapon[1] = newd WeaponCrossbow(projectileManager,
-                                    ProjectileData("Icecone", false, true, 20, 1.5f, 1, 70, 0.10f, 1500, LightRenderInfo(DirectX::SimpleMath::Color(0.9, 0.5, 1, 1), .25f, 1.5f), Resources::Models::Crossbowbolt, 1, ProjectileType::ProjectileTypeNormal, false, false, true, true),
-                                    Weapon::WeaponInfo{ 1, 18, 15, 4, 50, 0, 0, { -0.5f, -0.5f, 0.f } });
+                                    ProjectileData("Icecone", false, true, 20, 1.5f, 1, 70, 0.1f, 1500, LightRenderInfo(DirectX::SimpleMath::Color(0.9, 0.5, 1, 1), .25f, 1.5f), Resources::Models::Crossbowbolt, 1, ProjectileType::ProjectileTypeNormal, true, false, true, true, { 0.f, -0.4f, 0.f }),
+                                    Weapon::WeaponInfo{ 1, 18, 0, 0, 50, 0, 0, { -0.5f, -0.5f, 0.f } });
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 90, 0, 30, 30,{ 1, 10 },{ 1, 10 }, 1000 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f),

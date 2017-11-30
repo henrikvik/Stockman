@@ -12,9 +12,9 @@ using namespace Logic;
 static bool FUN_MODE = false;
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent, btVector3 modelOffset, ProjectileData pData)
-    : Entity(body, halfextent, modelOffset)
+    : Entity(body, halfextent, pData.modelOffset)
 {
-    m_unrotatedMO   = modelOffset;
+    m_unrotatedMO = modelOffset;
     m_pData = pData;
     m_dead = false;
     m_bulletTimeMod = 1.f;
@@ -114,7 +114,7 @@ void Projectile::updateSpecific(float deltaTime)
     btQuaternion rotation = btQuaternion(yaw, pitch - (float)M_PI, 0);
     body->getWorldTransform().setRotation(rotation);
 
-    m_unrotatedMO += (btVector3(0.f, 0.f, 0.f) - m_unrotatedMO) * 0.001f * deltaTime;
+    m_unrotatedMO += (m_pData.modelOffset - m_unrotatedMO) * 0.001f * deltaTime;
 
     // rotate model offset
     m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
