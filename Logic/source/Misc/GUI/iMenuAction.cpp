@@ -224,3 +224,21 @@ void ButtonFunction::windowed()
     Settings& settings = Settings::getInstance();
     settings.setWindowed(!settings.getWindowed());
 }
+
+void ButtonFunction::DOF()
+{
+    Settings& settings = Settings::getInstance();
+    settings.setDOF(!settings.getDOF());
+}
+
+void ButtonFunction::SSAO()
+{
+    Settings& settings = Settings::getInstance();
+    settings.setSSAO(!settings.getSSAO());
+}
+
+void ButtonFunction::fog()
+{
+    Settings& settings = Settings::getInstance();
+    settings.setFog(!settings.getFog());
+}

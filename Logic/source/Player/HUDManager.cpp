@@ -179,17 +179,13 @@ void HUDManager::constructGUIElements()
 void HUDManager::updateTextElements()
 {
     HUDText.clear();
-    liveText.clear();
-    int last = 0;
 
     //cd 1 text
     TextRenderInfo text;
     text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
     if (info.cdInSeconds[0] > 0)
     {
-        liveText.push_back(std::to_wstring(info.cdInSeconds[0]));
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = std::to_wstring(info.cdInSeconds[0]);
         text.position = DirectX::SimpleMath::Vector2(1185, 530);
         text.font = Resources::Fonts::KG18;
 
@@ -201,9 +197,7 @@ void HUDManager::updateTextElements()
     //cd 2 text
     if (info.cdInSeconds[1] > 0)
     {
-        liveText.push_back(std::to_wstring(info.cdInSeconds[1]));
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = std::to_wstring(info.cdInSeconds[1]);
         text.position = DirectX::SimpleMath::Vector2(1115, 530);
         text.font = Resources::Fonts::KG18;
 
@@ -211,9 +205,7 @@ void HUDManager::updateTextElements()
     }
     
     //points
-    liveText.push_back(std::to_wstring(info.score));
-    text.text = liveText.at(last).c_str();
-    last++;
+    text.text = std::to_wstring(info.score);
     text.position = DirectX::SimpleMath::Vector2(142, 15);
     text.font = Resources::Fonts::KG14;
 
@@ -221,17 +213,14 @@ void HUDManager::updateTextElements()
 
     text.isMoveable = false;
 
-    liveText.push_back(std::to_wstring(info.scoreCombo));
-    text.text = liveText.at(last).c_str();
-    last++;
+    text.text = std::to_wstring(info.scoreCombo);
     text.position = DirectX::SimpleMath::Vector2(142, 45);
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
 
-    liveText.push_back(std::to_wstring(info.scoreMul) + L"X");
-    text.text = liveText.at(last).c_str();
-    last++;
+
+    text.text = (std::to_wstring(info.scoreMul) + L"X");
     text.position = DirectX::SimpleMath::Vector2(110, 45);
     text.font = Resources::Fonts::KG14;
 
@@ -240,18 +229,14 @@ void HUDManager::updateTextElements()
     //total ammo of weapon
     if (info.currentWeapon == 0)
     {
-        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]));
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]);
         text.position = DirectX::SimpleMath::Vector2(1183, 430);
         text.font = Resources::Fonts::KG14;
         text.isMoveable = true;
 
         HUDText.push_back(TextRenderInfo(text));
 
-        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]));
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]);
         text.position = DirectX::SimpleMath::Vector2(1183, 630);
         text.font = Resources::Fonts::KG14;
 
@@ -259,9 +244,7 @@ void HUDManager::updateTextElements()
     }
     else
     {
-        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]));
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]);
         text.position = DirectX::SimpleMath::Vector2(1183, 632);
         text.isMoveable = true;
 
@@ -269,9 +252,7 @@ void HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
 
-        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]));
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]);
         text.position = DirectX::SimpleMath::Vector2(1183, 428);
         text.font = Resources::Fonts::KG14;
 
@@ -281,9 +262,7 @@ void HUDManager::updateTextElements()
     //current ammo in mag of active weapon
     if (info.currentWeapon != 2)
     {
-        liveText.push_back(std::to_wstring(info.activeAmmo[0]));
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = std::to_wstring(info.activeAmmo[0]);
         text.position = DirectX::SimpleMath::Vector2(750, 400);
         text.font = Resources::Fonts::KG14;
 
@@ -299,18 +278,14 @@ void HUDManager::updateTextElements()
     if (seconds < 0)
     {
         timeString = L"0:00";
-        liveText.push_back(timeString);
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = timeString;
         text.position = DirectX::SimpleMath::Vector2(735, 15);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
 
         text.color = DirectX::SimpleMath::Color(0.9f, 0.0f, 0.3f);
-        liveText.push_back(info.waveText);
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = info.waveText;
         text.position = DirectX::SimpleMath::Vector2(520, 15);
         text.font = Resources::Fonts::KG14;
 
@@ -326,18 +301,14 @@ void HUDManager::updateTextElements()
         {
             timeString = std::to_wstring(minutes) + L":" + std::to_wstring(seconds);
         }
-        liveText.push_back(timeString);
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = timeString;
         text.position = DirectX::SimpleMath::Vector2(735, 15);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
 
         text.color = DirectX::SimpleMath::Color(0.0f, 0.0f, 0.0f);
-        liveText.push_back(info.waveText);
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = info.waveText;
         text.position = DirectX::SimpleMath::Vector2(520, 15);
         text.font = Resources::Fonts::KG14;
 
@@ -346,8 +317,7 @@ void HUDManager::updateTextElements()
     
     //wave counter
     text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
-    liveText.push_back(std::to_wstring(info.wave) + L"/" + std::to_wstring(info.maxWaves));
-    text.text = liveText.at(last).c_str();
+    text.text = std::to_wstring(info.wave) + L"/" + std::to_wstring(info.maxWaves);
     text.position = DirectX::SimpleMath::Vector2(660, 15);
     text.font = Resources::Fonts::KG14;
 

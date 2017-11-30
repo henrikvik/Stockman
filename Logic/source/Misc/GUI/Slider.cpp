@@ -1,7 +1,6 @@
 #include <Misc\GUI\Slider.h>
 #include <Misc\Sound\NoiseMachine.h>
 #include <Graphics\include\MainCamera.h>
-#include <Misc\Sound\NoiseMachine.h>
 using namespace Logic;
 
 Slider::Slider(
@@ -33,6 +32,7 @@ Slider::Slider(
     m_value = value;
 
     m_value = value;
+    m_tempValue = *m_value;
 
     if (*m_value > maxValue)
     {
@@ -128,8 +128,8 @@ void Slider::updateOnPress(int posX, int posY)
              
              renderInfo.screenRect = screenRect;
              m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
-             m_textRenderInfo.font = Resources::Fonts::KG18;
-             m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 10.0f, m_y );
+             m_textRenderInfo.font = Resources::Fonts::KG14;
+             m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 20.0f, m_y);
              if (m_name.compare("FOVSlider") == 0)
              {
                  int test = m_tempValue;
@@ -158,28 +158,29 @@ void Logic::Slider::updateOnRelease(int posX, int posY)
 {
     if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
     {
-        *m_value = m_tempValue;
         setState(Slider::INACTIVE);
+        *m_value = m_tempValue;
 
         if (m_name.compare("FOVSlider") == 0)
         {
-            Global::mainCamera->updateFOV(m_tempValue);
+            Global::mainCamera->updateFOV(*m_value);
+            std::cout << "Entered FOV";
         }
         else if (m_name.compare("MasterSlider") == 0)
         {
-            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MASTER, m_tempValue);
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MASTER, *m_value);
         }
         else if (m_name.compare("MusicSlider") == 0)
         {
-            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MUSIC, m_tempValue);
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_MUSIC, *m_value);
         }
         else if (m_name.compare("AmbienceSlider") == 0)
         {
-            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_AMBIENT, m_tempValue);
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_AMBIENT, *m_value);
         }
         else if (m_name.compare("SFXSlider") == 0)
         {
-            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_SFX, m_tempValue);
+            Sound::NoiseMachine::Get().setGroupVolume(Sound::CHANNEL_GROUP::CHANNEL_SFX, *m_value);
         }
     }
 }
