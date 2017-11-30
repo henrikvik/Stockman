@@ -76,6 +76,7 @@ namespace Logic {
 		virtual void walkPath(RunIn &runIn);
 		virtual void boidCalculations(btVector3 &pos, btVector3 &dir,
 			std::vector<Enemy*> const &close, float maxSpeed, float dt);
+        virtual void calculateVelocityAndSteering(btVector3 &dir, RunIn &in, bool pursuitPlayer);
 
 		void runTree(RunIn &in);
 		
