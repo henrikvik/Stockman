@@ -30,6 +30,7 @@ namespace Logic
             virtual void updateDead(float deltaTime);
 
             virtual void useAbility(Player &target);
+            virtual void handleFlying(Player const &target);
     };
 }
 

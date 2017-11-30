@@ -3,7 +3,7 @@
 #include <Misc\ComboMachine.h>
 using namespace Logic;
 
-const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 55.f;
+const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 45.f;
 const float EnemyTotem::AB_SCALE = 8.5f, EnemyTotem::AB_ROTATION = 0.2f;
 
 const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 550, EnemyTotem::SCORE = 50;
@@ -14,6 +14,7 @@ EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
 {
     setBehavior(STAY);
     createAbilities();
+    getStatusManager().addUpgrade(StatusManager::BOUNCE);
     m_rotation = 0;
 
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
@@ -35,8 +36,8 @@ void EnemyTotem::createAbilities()
 
     AbilityData data;
     data.duration = 0.f;
-    data.cooldown = 500.f;
-    data.randomChanche = 2;
+    data.cooldown = 1350.f;
+    data.randomChanche = 9;
 
     spreadShot = Ability(data, [&](Player &target, Ability &ab) -> void {
 
@@ -53,8 +54,12 @@ void EnemyTotem::createAbilities()
 
         for (int i = 0; i < BULLET_AMOUNT; i++)
         {
-            shoot(btVector3(std::sin((i + m_rotation) * piece), 0.f,
+            // shoot the projectile and make it bounce
+            Projectile *pj = shoot(btVector3(std::sin((i + m_rotation) * piece), 0.f,
                 std::cos((i + m_rotation) * piece)), pData, BULLET_SPEED, 0.f, AB_SCALE);
+            
+            if (pj)
+                pj->getRigidBody()->setRestitution(btScalar(20.f));
         }
     });
 }

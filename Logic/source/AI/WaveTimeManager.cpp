@@ -1,6 +1,9 @@
 #include <AI\WaveTimeManager.h>
 #include <AI\EntityManager.h>
+
+#include <Keyboard.h>
 #include <Engine\DebugWindow.h>
+
 using namespace Logic;
 
 const float WaveTimeManager::TRANSITION_TIME = 5000.f;
@@ -66,7 +69,11 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager, btVe
 
 bool WaveTimeManager::updateInTransition(EntityManager &entityManager, btVector3 const &playerPos)
 {
-    if (m_timeCurrent < m_timeRequired) return false;
+    if (!DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::G)
+        && m_timeCurrent < m_timeRequired)
+    {
+        return false;
+    }
 
     startNextWave(entityManager, playerPos);
     return false; // temp
