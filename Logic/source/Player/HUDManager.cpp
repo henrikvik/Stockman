@@ -325,6 +325,19 @@ void HUDManager::updateTextElements()
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
+
+
+    //next wave text
+    if (1.0f - waveSprites.at(0).getAlpha() < FLT_EPSILON)
+    {
+        text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
+        text.font = Resources::Fonts::KG26;
+        text.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2.0f + 100, WIN_HEIGHT / 2.0f - 225);
+        text.text = std::to_wstring(info.wave);
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+   
 }
 
 //updates the active weapons and cd icons
