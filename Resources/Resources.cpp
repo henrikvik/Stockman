@@ -95,7 +95,6 @@ namespace Resources
     {
         Files toEnum(const char * str)
         {
-            if (strcmp(str, "BulletTime") == 0) return BulletTime;
             if (strcmp(str, "DebugShader") == 0) return DebugShader;
             if (strcmp(str, "DoFBlur1") == 0) return DoFBlur1;
             if (strcmp(str, "DoFBlur2") == 0) return DoFBlur2;
@@ -110,11 +109,13 @@ namespace Resources
             if (strcmp(str, "GlowBlurHorizontal") == 0) return GlowBlurHorizontal;
             if (strcmp(str, "GlowBlurVertical") == 0) return GlowBlurVertical;
             if (strcmp(str, "GlowDownSampler") == 0) return GlowDownSampler;
-            if (strcmp(str, "GlowMerger") == 0) return GlowMerger;
-            if (strcmp(str, "GlowMipCombinder") == 0) return GlowMipCombinder;
+            if (strcmp(str, "KawaseDualFilterDownsample") == 0) return KawaseDualFilterDownsample;
+            if (strcmp(str, "KawaseDualFilterUpsample") == 0) return KawaseDualFilterUpsample;
+            if (strcmp(str, "KawaseDualFilterVS") == 0) return KawaseDualFilterVS;
             if (strcmp(str, "LightGridCulling") == 0) return LightGridCulling;
             if (strcmp(str, "Moon") == 0) return Moon;
             if (strcmp(str, "ParticlePlane") == 0) return ParticlePlane;
+            if (strcmp(str, "PostFX") == 0) return PostFX;
             if (strcmp(str, "SkyShader") == 0) return SkyShader;
             if (strcmp(str, "SnowShader") == 0) return SnowShader;
             if (strcmp(str, "SpriteShader") == 0) return SpriteShader;

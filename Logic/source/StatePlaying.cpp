@@ -155,8 +155,6 @@ void StatePlaying::update(float deltaTime)
             }
         }
 
-
-
         PROFILE_BEGIN("Sound");
         Sound::NoiseMachine::Get().update(m_player->getListenerData());
         PROFILE_END();
@@ -181,10 +179,8 @@ void StatePlaying::update(float deltaTime)
         m_projectileManager->update(deltaTime);
         PROFILE_END();
 
-
-
 #define _DEBUG
-#ifdef _DEBUG
+#ifdef  _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
         m_player->takeDamage(1, 0);
 #endif // _DEBUG

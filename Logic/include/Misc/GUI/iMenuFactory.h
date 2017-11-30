@@ -12,6 +12,7 @@
 #include <Misc\GUI\iMenuFirstTime.h>
 #include <Misc\GUI\iMenuCards.h>
 #include <Misc\GUI\iMenuControls.h>
+#include <Misc\GUI\iMenuSettings.h>
 
 namespace Logic
 {
@@ -24,7 +25,7 @@ namespace Logic
         iMenuIntro*         buildMenuIntro();
         iMenuFirstTime*     buildMenuFirstTime();
         iMenu*              buildMenuStart();
-        iMenu*              buildMenuSettings();
+        iMenuSettings*      buildMenuSettings();
         iMenuSkillPick*     buildMenuSkill();
         iMenuCards*         buildMenuCard();
         iMenuHighscore*     buildMenuHighscore();
