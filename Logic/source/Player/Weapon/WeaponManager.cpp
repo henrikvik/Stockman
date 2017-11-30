@@ -202,7 +202,8 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -0.8f, 0.3f)),
-        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f });
+        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 
+        /* Reload time */           800.f });
     m_weaponLoadouts.push_back(wl);
 
     // #######
@@ -221,7 +222,8 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.2f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -2.3f, 0.3f)),
-        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 800.f });
+        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f),
+        /* Reload time */           800.f });
     m_weaponLoadouts.push_back(wl);
 
     // #########
@@ -229,15 +231,16 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // #########
     /* Primary */       wl.weapon[0] = newd WeaponMeleeSwing(projectileManager,
                                     ProjectileData("Icecone", true, false, 35, 30.f, 1, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.85, 0.3, 0.4, 1), 0.85f, 10.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false),
-                                    Weapon::WeaponInfo{ 4, 1, 0, 0, 125, 25, 0,{ 0.f, 0.f, 0.f } }, 22.5f);
+                                    Weapon::WeaponInfo{ 4, 1, 0, 0, 90, 225, 0,{ 0.f, 0.f, 0.f } }, 10.f);
     /* Secondary */     wl.weapon[1] = newd WeaponMeleeParry(projectileManager,
                                     ProjectileData(nullptr, false, false, 0, 30.f, 1, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15, 0.8, 0.6, 1), 0.85f, 15.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, false),
-                                    Weapon::WeaponInfo{ 5, 1, 0, 0, 100, 0, 0,{ 0.f, 0.f, 0.f } }, 15.f);
+                                    Weapon::WeaponInfo{ 5, 1, 0, 0, 100, 0, 0,{ 0.f, 0.f, 0.f } }, 22.5f);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, { 0, 0 }, { 0, 0 }, 0 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Hammer, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(1.3f, 0.9f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-0.3f, -1.5f, -0.2f)),
-        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 200.f });
+        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f),
+        /* Reload time */           0.f });
     m_weaponLoadouts.push_back(wl);
 }
 

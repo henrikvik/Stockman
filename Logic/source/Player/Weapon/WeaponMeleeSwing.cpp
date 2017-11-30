@@ -16,12 +16,12 @@ WeaponMeleeSwing::~WeaponMeleeSwing() { }
 
 void WeaponMeleeSwing::onUse(std::vector<Projectile*>& projectiles, Entity& shooter)
 {
-    SpecialEffectRenderInfo shake;
+    /*SpecialEffectRenderInfo shake;
     shake.duration = 0.25f;
     shake.radius = 25.0f;
     shake.type = SpecialEffectRenderInfo::screenShake;
     shake.affectEveryThing = true;
-    QueueRender(shake);
+    QueueRender(shake);*/
 
     shooter.getSoundSource()->playSFX(Sound::SFX::WEAPON_MELEE_PRIMARY);
 

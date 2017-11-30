@@ -20,12 +20,12 @@ WeaponMeleeParry::~WeaponMeleeParry()
 
 void WeaponMeleeParry::onUse(std::vector<Projectile*>& projectiles, Entity& shooter)
 {
-    SpecialEffectRenderInfo shake;
+    /*SpecialEffectRenderInfo shake;
     shake.duration = 0.05f;
     shake.radius = 2.5f;
     shake.type = SpecialEffectRenderInfo::screenShake;
     shake.affectEveryThing = true;
-    QueueRender(shake);
+    QueueRender(shake);*/
 
     shooter.getSoundSource()->playSFX(Sound::SFX::WEAPON_MELEE_SECONDARY);
 
