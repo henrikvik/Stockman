@@ -121,7 +121,7 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
     if (m_blinkTimer > 0)
     {
-        enemyRenderInfo.color = DirectX::SimpleMath::Vector3(50.0f, 0.0f, 0.0f);
+        enemyRenderInfo.color = DirectX::SimpleMath::Vector3(10.0f, 0.0f, 0.0f);
         m_blinkTimer -= deltaTime;
     }
     else

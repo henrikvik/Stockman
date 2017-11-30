@@ -345,7 +345,6 @@ namespace Graphics
         SAFE_RELEASE(DebugAnnotation);
         
         SAFE_RELEASE(m_BloomSRV);
-        SAFE_RELEASE(m_BloomRTV);
 
         for (auto srv : m_BloomSRVMipChain)
         {

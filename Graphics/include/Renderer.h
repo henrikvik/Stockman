@@ -46,7 +46,6 @@ namespace Graphics
 
 
         ID3D11ShaderResourceView *m_BloomSRV;
-        ID3D11RenderTargetView *m_BloomRTV;
         std::vector<ID3D11ShaderResourceView *> m_BloomSRVMipChain;
         std::vector<ID3D11RenderTargetView *> m_BloomRTVMipChain;
 
