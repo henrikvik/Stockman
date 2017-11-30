@@ -279,6 +279,14 @@ bool Projectile::collisionWithTerrain()
     if (m_pData.isSensor)
         m_dead = false;
 
+    // Special cases
+    switch (m_pData.type)
+    {
+    case ProjectileTypeNormal:
+    case ProjectileTypeCrossbowFire:
+        m_dead = true;
+    }
+
     // Don't remove if bouncing upgraded
     if (getStatusManager().isOwningUpgrade(Upgrade::UPGRADE_FLAG::UPGRADE_IS_BOUNCING))
         m_dead = false;
