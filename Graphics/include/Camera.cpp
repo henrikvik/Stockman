@@ -32,15 +32,14 @@ namespace Graphics
 
     void Camera::update(DirectX::SimpleMath::Vector3 new_position, DirectX::SimpleMath::Vector3 new_forward, ID3D11DeviceContext* context)
     {
-        forward.Normalize();
+        new_forward.Normalize();
+        
         DirectX::SimpleMath::Vector3 local_up(0, 1, 0);
 
         view = DirectX::XMMatrixLookToRH(new_position, new_forward, local_up);
 
         position = new_position;
-        forward = view.Forward();
-        right = view.Right();
-        up = view.Up();
+        forward = new_forward;
 
         values.view = this->view;
         values.vP = this->view * this->projection;
@@ -89,7 +88,7 @@ namespace Graphics
     {
         static auto ks = DirectX::Keyboard::KeyboardStateTracker();
         ks.Update(DirectX::Keyboard::Get().GetState());
-        static bool update_frustrum = false;
+        static bool update_frustrum = true;
         static bool o_was_pressed = false;
         update_frustrum = ks.pressed.O && !o_was_pressed ? !update_frustrum : update_frustrum;
         o_was_pressed = ks.pressed.O;
@@ -154,16 +153,6 @@ namespace Graphics
     DirectX::SimpleMath::Vector3 Camera::getForward() const
     {
         return this->forward;
-    }
-
-    DirectX::SimpleMath::Vector3 Camera::getUp() const
-    {
-        return this->view.Up();
-    }
-
-    DirectX::SimpleMath::Vector3 Camera::getRight() const
-    {
-        return this->view.Right();
     }
 
     DirectX::SimpleMath::Matrix Camera::getView() const
