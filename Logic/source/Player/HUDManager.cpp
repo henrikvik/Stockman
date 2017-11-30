@@ -21,6 +21,8 @@ const std::wstring HUDManager::IN_WAVE     = L"MURDER",
                    HUDManager::BEFORE_WAVE = L"PREPARE",
                    HUDManager::AFTER_WAVE  = L"ENRAGED";
 
+const float HUDManager::WAVE_SLIDE_TIME = 5000.0f;
+
 HUDManager::HUDManager()
 {
 //    ZeroMemory(&info, sizeof(info)); // Yes, this causes a "fake" memory leaks
@@ -33,6 +35,7 @@ HUDManager::HUDManager()
     skillChoosen = false;
     constructGUIElements();
     showWaveCleared = false;
+    nextWaveSlideTimer = 5000.0f;
 }
 
 HUDManager::~HUDManager()
@@ -173,7 +176,7 @@ void HUDManager::constructGUIElements()
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
 
-    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, 0, WIN_WIDTH, WIN_HEIGHT, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 1.0f, false));
+    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 400, 100, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
 }
 
 void HUDManager::updateTextElements()
@@ -457,9 +460,38 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     if (timeManager.isEnraged())
         info.waveText = AFTER_WAVE;
     else if (timeManager.isTransitioning())
+    {
         info.waveText = BEFORE_WAVE;
-    else
+        nextWaveSlideTimer = WAVE_SLIDE_TIME;
+    }
+    else {
         info.waveText = IN_WAVE;
+        static float alpha = 0.0f;
+        if (nextWaveSlideTimer > 0.0f)
+        {
+            nextWaveSlideTimer -= dt;
+
+            if (nextWaveSlideTimer > WAVE_SLIDE_TIME / 2.0f)
+            {
+                if (alpha < 1.0f)
+                {
+                    alpha += dt *0.002f;
+                }
+                waveSprites.at(0).setAlpha(alpha);
+            }
+            else
+            {
+                if (alpha > 0.0f)
+                {
+                    alpha -= dt *0.002f;
+                }
+                waveSprites.at(0).setAlpha(alpha);
+            }
+        }
+        
+    }
+
+        
 
     info.timeRemaining = (timeManager.getTimeRequired() - timeManager.getTimeCurrent()) * 0.001f;
     info.enemiesRemaining = static_cast<int> (entityManager.getNrOfAliveEnemies());
@@ -470,18 +502,6 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     this->updateGUIElemets();
     this->updateTextElements();
 
-    // No.
-    //static float alpha = 0.0f;
-    //if (timeManager.isTransitioning() && !timeManager.onFirstWave())
-    //{
-    //    alpha += dt * 0.002f;
-    //    staticElements.at(staticElements.size()-1).setAlpha(alpha);
-    //}
-    //else
-    //{
-    //    alpha = 0.0f;
-    //    staticElements.at(staticElements.size()- 1).setAlpha(alpha);
-    //}
 }
 
 void HUDManager::render() const
@@ -513,10 +533,10 @@ void HUDManager::render() const
         bar.render();
     }
 
-    /*for (auto &wave : waveSprites)
+    for (auto &wave : waveSprites)
     {
         wave.render();
-    }*/
+    }
     renderTextElements();
 }
 
@@ -548,4 +568,5 @@ void HUDManager::reset()
     staticElements.clear();
     HUDText.clear();
     constructGUIElements();
+    waveSprites.clear();
 }

@@ -146,12 +146,6 @@ void StatePlaying::update(float deltaTime)
                 m_menu->queueMenu(iMenu::CardSelect);
                 m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
                 m_projectileManager->removeEnemyProjCallbacks();
-
-                SpecialEffectRenderInfo fultAF;
-                fultAF.type = SpecialEffectRenderInfo::Snow;
-                fultAF.restart = true;
-                QueueRender(fultAF);
-
             }
         }
 
