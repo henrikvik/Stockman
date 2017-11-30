@@ -42,6 +42,5 @@ namespace Graphics
         void moveSnowFlake(int snowFlake);
         void clearSnow();
         void initializeSnowflakes();
-
     };
 }
