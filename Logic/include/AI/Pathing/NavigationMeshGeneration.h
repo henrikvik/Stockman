@@ -166,7 +166,7 @@ namespace Logic
 
             NavigationMesh::Triangle toNavTriangle(Triangle const &tri);
             CollisionReturn handleCollision(btVector3 collisionPoint, NavMeshCube &cube,
-                StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape);
+                StaticObject *obj, Growth const &growth, btVector3 growthNormal, btRigidBody const *body);
 
             void split(NavMeshCube &cube, Physics &physics, btVector3 const &cubeColPoint,
                 btVector3 const &splitPlaneNormal);
@@ -181,9 +181,6 @@ namespace Logic
 
             // create edges
             void createEdgeBeetwen(NavigationMesh &nav, int r1, int r2, int triangle1, int triangle2, GrowthType side);
-
-            // true on collision
-            std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance);
 
             // For creating test data
             void testFunc(Physics &physics);

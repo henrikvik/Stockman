@@ -1,17 +1,24 @@
 #include "Map.h"
-#include <Physics/Physics.h>        
+
 #include <Keyboard.h>
+#include <fstream>
+#include <toml\toml.h>
+#include <memory>
+
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
-#include <Misc\RandomGenerator.h>
-#include <toml\toml.h>
-#include <fstream>
-#include <Misc\Sound\SoundSource.h>
 #include <Graphics/include/Utility/ModelLoader.h>
+
+#include <Physics/Physics.h>        
+#include <Misc\RandomGenerator.h>
+#include <Misc\Sound\SoundSource.h>
 
 using namespace Logic;
 
-Map::Map() { }
+Map::Map() {
+    m_mapObject = std::make_unique<StaticObject*>(new StaticObject(Resources::Models::UnitCube,
+        nullptr, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL));
+}
 
 Map::~Map() 
 {
@@ -216,8 +223,7 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
                     Physics::COL_HITBOX,
                     Physics::COL_EVERYTHING /* ^ Physics::COL_HITBOX not needed, it ignores itself when overlapping cuz they are static */
                 );
-                StaticObject *obj = new StaticObject(Resources::Models::UnitCube, body, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL);
-                body->setUserPointer(obj);
+                body->setUserPointer(*m_mapObject);
 
                 float t[16]; body->getWorldTransform().getOpenGLMatrix(t);
                 DirectX::SimpleMath::Matrix hitbox_transform(t);

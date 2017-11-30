@@ -12,9 +12,9 @@ using namespace Logic;
 static bool FUN_MODE = false;
 
 Projectile::Projectile(btRigidBody* body, btVector3 halfextent, btVector3 modelOffset, ProjectileData pData)
-    : Entity(body, halfextent, modelOffset)
+    : Entity(body, halfextent, pData.modelOffset)
 {
-    m_unrotatedMO   = modelOffset;
+    m_unrotatedMO = modelOffset;
     m_pData = pData;
     m_dead = false;
     m_bulletTimeMod = 1.f;
@@ -82,10 +82,7 @@ void Projectile::upgrader(Upgrade const &upgrade)
     }
     if (flags & Upgrade::UPGRADE_BURNING)
     {
-        if (m_pData.type == ProjectileTypeCrossbowFire)
-        {
-            m_pData.type = ProjectileTypeFireArrow;
-        }
+
     }
     if (flags & Upgrade::UPGRADE_FREEZING)
     {
@@ -114,7 +111,7 @@ void Projectile::updateSpecific(float deltaTime)
     btQuaternion rotation = btQuaternion(yaw, pitch - (float)M_PI, 0);
     body->getWorldTransform().setRotation(rotation);
 
-    m_unrotatedMO += (btVector3(0.f, 0.f, 0.f) - m_unrotatedMO) * 0.001f * deltaTime;
+    m_unrotatedMO += (m_pData.modelOffset - m_unrotatedMO) * 0.001f * deltaTime;
 
     // rotate model offset
     m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
@@ -278,6 +275,14 @@ bool Projectile::collisionWithTerrain()
     // Don't remove if sensor
     if (m_pData.isSensor)
         m_dead = false;
+
+    // Special cases
+    switch (m_pData.type)
+    {
+    case ProjectileTypeNormal:
+    case ProjectileTypeFireArrow:
+        m_dead = true;
+    }
 
     // Don't remove if bouncing upgraded
     if (getStatusManager().isOwningUpgrade(Upgrade::UPGRADE_FLAG::UPGRADE_IS_BOUNCING))
