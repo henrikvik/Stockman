@@ -12,11 +12,9 @@ cbuffer LightBuffer : register(b2) { float4x4 LightProjection; };
 cbuffer cb10 : register(b10) { uint instanceOffset; };
 StructuredBuffer<AnimatedJoints> jointsBuffer   : register(t9);
 StructuredBuffer<StaticInstance> instanceBuffer : register(t10);
-StructuredBuffer<Vertex>         vertexBuffer   : register(t11);
 
-Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId) 
+Fragment VS(Vertex vertex, uint instanceId : SV_InstanceId) 
 {
-    Vertex vertex = vertexBuffer[vertexId];
     StaticInstance instance = instanceBuffer[instanceId + instanceOffset];
 	Fragment fragment;
 

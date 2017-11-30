@@ -16,7 +16,7 @@ namespace Graphics
         ID3D11DepthStencilView * depthStencil,
         Sun *sun) :
         RenderPass(targets, resources, buffers, depthStencil),
-        skyShader(Resources::Shaders::SkyShader),
+        skyShader(Resources::Shaders::SkyShader, ShaderType::VS | ShaderType::PS, HybrisLoader::Vertex::INPUT_DESC),
         m_MoonShader(Resources::Shaders::Moon),
         sphereTransformBuffer(Global::device),
         m_Colors({
@@ -51,11 +51,10 @@ namespace Graphics
         PROFILE_BEGIN("Sky Box");
         cxt->RSSetState(Global::cStates->CullCounterClockwise());
 
-        cxt->IASetInputLayout(nullptr);
+        cxt->IASetInputLayout(skyShader);
         cxt->VSSetShader(skyShader, nullptr, 0);
         cxt->PSSetShader(skyShader, nullptr, 0);
 
-        cxt->VSSetShaderResources(4, 1, skySphere->getVertexBuffer());
 
         cxt->VSSetConstantBuffers(0, 1, *Global::mainCamera->getBuffer());
         cxt->VSSetConstantBuffers(4, 1, sphereTransformBuffer);
@@ -64,6 +63,9 @@ namespace Graphics
         cxt->PSSetConstantBuffers(5, 1, m_SkyColors);
         cxt->OMSetRenderTargets(1, &targets[0], depthStencil);
 
+        UINT offsets[] = {0};
+        UINT strides[] = {HybrisLoader::Vertex::STRIDE};
+        cxt->IASetVertexBuffers(0, 1, skySphere->getVertexBuffer(), strides, offsets);
         cxt->Draw(skySphere->getVertexCount(), 0);
 
     
