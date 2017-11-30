@@ -6,8 +6,10 @@
 #include <Misc\GUI\Button.h>
 #include <Misc\Fader.h>
 #include <Misc\GUI\Slider.h>
+
 namespace Logic
 {
+    class iMenuFX;
     class iMenu : public NonCopyable
     {
     public:
@@ -74,6 +76,7 @@ namespace Logic
         virtual void fadeIn();
         virtual void fadeOut();
 
+        void addEffect(iMenuFX* effect);
         void addBackground(Resources::Textures::Files texture, float alpha);
         void addButton(ButtonData btn);
         void addSlider(SliderData sld);
@@ -97,6 +100,9 @@ namespace Logic
         bool                    m_safeToRemove;
         bool                    m_isFading;
         float                   m_fadingTimer;
+
+        // GUI effects
+        iMenuFX*                m_effect;
 
         // Menu
         SpriteRenderInfo        m_background;

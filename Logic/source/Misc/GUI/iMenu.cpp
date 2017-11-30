@@ -1,6 +1,7 @@
 #include <Misc\GUI\iMenu.h>
 #include <Graphics\include\RenderQueue.h>
 #include <Engine\Constants.h>
+#include <Misc\GUI\iMenuFX.h>
 
 using namespace Logic;
 
@@ -34,9 +35,9 @@ float getFadingTimer(iMenu::MenuGroup group)
     return DEFAULT_FADING_TIMER;
 }
 
-iMenu::iMenu(MenuGroup group) : m_group(group), m_drawButtons(false), m_drawSliders(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_fadingTimer(getFadingTimer(group)), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
+iMenu::iMenu(MenuGroup group) : m_group(group), m_effect(nullptr), m_drawButtons(false), m_drawSliders(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_fadingTimer(getFadingTimer(group)), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
 
-iMenu::~iMenu() { }
+iMenu::~iMenu() { if (m_effect) delete m_effect; }
 
 // Starts the fadeIn animation, menu's can't be changed/removed during this time
 void iMenu::fadeIn()
@@ -54,6 +55,18 @@ void iMenu::fadeOut()
     m_isFading      = true;
     m_safeToRemove  = false;
     setAlpha(1.f);
+}
+
+// Adds a special effect to this menu
+void iMenu::addEffect(iMenuFX* effect)
+{
+    if (m_effect)
+    {
+        delete m_effect;
+        m_effect = nullptr;
+    }
+
+    m_effect = effect;
 }
 
 // Adds a texture on as a background, covering the full screen
@@ -96,6 +109,9 @@ void iMenu::update(int x, int y, float deltaTime)
 {
     DirectX::Mouse::Get().SetMode(m_mouseMode);
 
+    if (m_effect)
+        m_effect->update(deltaTime);
+
     if (m_isFading)
     {
         m_fader.update(deltaTime);
@@ -123,6 +139,9 @@ void iMenu::updateClick(int x, int y)
     {
         if (!m_pressed)
         {
+            if (m_effect)
+                m_effect->press(float(x), float(y));
+
             m_pressed = true;
             for (Button& btn : m_buttons)
                 btn.updateOnPress(x, y);
@@ -162,6 +181,9 @@ void iMenu::render() const
     if (m_drawSliders)
         for (const Slider& sld : m_sliders)
             sld.render();
+
+    if (m_effect)
+        m_effect->render();
 }
 
 // Sets alpha on both menu's and buttons
