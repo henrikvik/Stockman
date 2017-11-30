@@ -32,10 +32,10 @@ void WeaponMeleeSwing::onUse(std::vector<Projectile*>& projectiles, Entity& shoo
         p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
 
             PhysicsObject* obj = reinterpret_cast<PhysicsObject*>(data.dataPtr);
-            btVector3 knockbackDir = (obj->getPositionBT() - pPosition).normalize() + btVector3(0, 1, 0);
 
             if (Enemy* enemy = dynamic_cast<Enemy*>(obj))
             {
+                btVector3 knockbackDir = (obj->getPositionBT() - pPosition).normalize() + btVector3(0, 1, 0);
                 obj->getRigidBody()->setLinearVelocity(knockbackDir * m_knockbackPower);
                 enemy->getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::STUN, 1);
             }

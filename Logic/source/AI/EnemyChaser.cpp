@@ -18,7 +18,8 @@ EnemyChaser::EnemyChaser(btRigidBody* body)
     getSoundSource()->autoPlaySFX(Sound::SFX::FOOTSTEP_SMALL, 333, 10, 1.f, 0.15f);
     loadAnimation(Resources::Models::Files::SummonUnitWithAnim);
     light.color = DirectX::SimpleMath::Color(0.0f, 0.7f, 1.0f);
-    light.intensity = 0.6f;
+    light.intensity = 1.f;
+    light.range = 3.f;
 }
 
 EnemyChaser::~EnemyChaser()

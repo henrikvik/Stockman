@@ -48,6 +48,7 @@ void EnemyDefender::onSpawn()
     pdata.speed = PROJECTILE_SPEED;
     pdata.scale = 3.f;
     pdata.isSensor = true;
+    pdata.type = ProjectileTypeDefenderShield;
 
     Projectile *pj;
     for (int i = 0; i < PROJECTILES; i++)
