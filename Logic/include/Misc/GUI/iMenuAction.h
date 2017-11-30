@@ -59,6 +59,9 @@ namespace Logic
         void plusFOV();
         void minusFOV();
         void windowed();
+        void DOF();
+        void SSAO();
+        void fog();
     }
 }
 
