@@ -65,6 +65,7 @@ namespace Logic
         void addHighscore();
 
         float m_playTime;
+        std::thread highscoreThread;
 
         iMenuMachine*       m_menu;
         Physics*			m_physics;
