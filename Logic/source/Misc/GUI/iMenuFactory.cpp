@@ -106,7 +106,7 @@ iMenu * iMenuFactory::buildMenuGameWon()
 iMenuControls * iMenuFactory::buildMenuControls()
 {
     iMenuControls* menu = newd iMenuControls(iMenu::Controls);
-    menu->addEffect((iMenuFX*)(newd iMenuFX_Dust()));
+    menu->addEffect(newd iMenuFX_Dust());
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     return menu;
 }
@@ -114,7 +114,7 @@ iMenuControls * iMenuFactory::buildMenuControls()
 iMenuLoadingPre* iMenuFactory::buildMenuLoadingPre()
 {
     iMenuLoadingPre* menu = newd iMenuLoadingPre(iMenu::LoadingPre);
-    menu->addEffect((iMenuFX*)(newd iMenuFX_Dust()));
+    menu->addEffect(newd iMenuFX_Dust());
     menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
     return menu;
 }
@@ -122,7 +122,7 @@ iMenuLoadingPre* iMenuFactory::buildMenuLoadingPre()
 iMenuLoadingPost* iMenuFactory::buildMenuLoadingPost()
 {
     iMenuLoadingPost* menu = newd iMenuLoadingPost(iMenu::LoadingPost);
-    menu->addEffect((iMenuFX*)(newd iMenuFX_Dust()));
+    menu->addEffect(newd iMenuFX_Dust());
     menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
     return menu;
 }
