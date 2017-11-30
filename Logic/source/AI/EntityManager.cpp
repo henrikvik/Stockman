@@ -64,16 +64,16 @@ void EntityManager::registerCreationFunctions()
 {
     m_enemyFactory[EnemyType::NECROMANCER] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.0f, 1.0f, 1.0f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.9f, 1.9f, 0.9f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
-        Enemy* enemy = newd EnemyNecromancer(body, cube.getDimensionsRef());
-        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+        Enemy* enemy = newd EnemyNecromancer(body, { 1.f, 1.f, 1.f });
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 0.5f, 1.f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         physics.removeRigidBody(body);
-        enemy->addExtraBody(body, 2.f, { 0.f, 3.f, 0.f });
+        enemy->addExtraBody(body, 2.f, { 0.f, 1.5f, 0.f });
 
         return enemy;
     };
