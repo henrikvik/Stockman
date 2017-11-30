@@ -11,6 +11,7 @@
 #include <Misc\GUI\iMenuHighscore.h>
 #include <Misc\GUI\iMenuFirstTime.h>
 #include <Misc\GUI\iMenuCards.h>
+#include <Misc\GUI\iMenuControls.h>
 #include <Misc\GUI\iMenuSettings.h>
 
 namespace Logic
@@ -32,6 +33,7 @@ namespace Logic
         iMenu*              buildMenuGameover();
         iMenu*              buildMenuPause();
         iMenu*              buildMenuGameWon();
+        iMenuControls*      buildMenuControls();
         iMenuLoadingPre*    buildMenuLoadingPre();
         iMenuLoadingPost*   buildMenuLoadingPost();
 

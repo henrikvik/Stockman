@@ -98,7 +98,7 @@ void Map::loadStartMenuScene()
     campfire.vel = { 0, 0, 0 };
     campfire.playSFX(Sound::SFX::CAMPFIRE);
 
-    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
+    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
 }
 
 void Logic::Map::loadMap(Resources::Maps::Files map)
@@ -188,7 +188,6 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
         try
         {
             Resources::Models::Files model = Resources::Models::toEnum(instance.model.c_str());
-            std::cout << "> " <<  instance.model.c_str() << std::endl;
 
             /*if (model != Resources::Models::House1
                 && model != Resources::Models::Ground

@@ -7,7 +7,8 @@ Graphics::DepthOfFieldRenderPass::DepthOfFieldRenderPass(
     std::initializer_list<ID3D11RenderTargetView*> targets,
     std::initializer_list<ID3D11ShaderResourceView*> resources,
     std::initializer_list<ID3D11Buffer*> buffers,
-    ID3D11DepthStencilView * depthStencil) :
+    ID3D11DepthStencilView * depthStencil
+) :
     RenderPass(targets, resources, buffers, depthStencil),
     blur1col0(WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_FLOAT),
     blur1col1(WIN_WIDTH, WIN_HEIGHT, DXGI_FORMAT_R16G16B16A16_FLOAT),

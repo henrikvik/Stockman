@@ -16,6 +16,7 @@ namespace Logic
         iMenuMachine();
         ~iMenuMachine();
 
+        void queueMenuWithSound(iMenu::MenuGroup group);
         void queueMenu(iMenu::MenuGroup group);
         void update(float deltaTime);
         void updateCamera(float deltaTime);

@@ -246,7 +246,7 @@ namespace Graphics
                 depthStencil
             ),
             newd SSAORenderPass(&fakeBuffers, {}, { depthStencil, normalMap }, {}, nullptr), //this
-            newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
+            //newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
             newd GlowRenderPass(&fakeBuffers, {}, { glowMap }), //and this
             newd SnowRenderPass(
                 {
@@ -325,24 +325,24 @@ namespace Graphics
             return info;
         }(deltaTime));*/
 
-		QueueRender([]()
-		{
-			StaticRenderInfo info;
-			info.model = Resources::Models::UnitCube;
-			info.transform = SimpleMath::Matrix::CreateTranslation(0, -1, 0) * SimpleMath::Matrix::CreateScale(1000, 1, 1000);
-			info.useGridTexture = true;
-			return info;
-		}());
+		//QueueRender([]()
+		//{
+		//	StaticRenderInfo info;
+		//	info.model = Resources::Models::UnitCube;
+		//	info.transform = SimpleMath::Matrix::CreateTranslation(0, -1, 0) * SimpleMath::Matrix::CreateScale(1000, 1, 1000);
+		//	info.useGridTexture = true;
+		//	return info;
+		//}());
 
-        QueueRender([]()
-        {
-            FoliageRenderInfo info;
-            info.model = Resources::Models::Grass;
-            info.transform = SimpleMath::Matrix::CreateTranslation(0, 0, -3);
-            info.color = DirectX::SimpleMath::Vector3(1,1,1);
-            info.useGridTexture = false;
-            return info;
-        }());
+  //      QueueRender([]()
+  //      {
+  //          FoliageRenderInfo info;
+  //          info.model = Resources::Models::Grass;
+  //          info.transform = SimpleMath::Matrix::CreateTranslation(0, 0, -3);
+  //          info.color = DirectX::SimpleMath::Vector3(1,1,1);
+  //          info.useGridTexture = false;
+  //          return info;
+  //      }());
 
         FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 

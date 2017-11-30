@@ -9,8 +9,8 @@ namespace Graphics
         std::initializer_list<ID3D11Buffer*> buffers,
         ID3D11DepthStencilView * depthStencil)
         : RenderPass(targets, resources, buffers, depthStencil)
-        , forward_plus_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS)
-        , forward_plus_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS)
+        , forward_plus_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
+        , forward_plus_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
     {
         viewport = { 0 };
         viewport.Height = SHADOW_RESOLUTION;
@@ -39,9 +39,11 @@ namespace Graphics
         Global::context->OMSetRenderTargets(0, nullptr, depthStencil);
         Global::context->VSSetConstantBuffers(0, 1, &buffers[0]);
 
+        Global::context->IASetInputLayout(forward_plus_vs_static);
         Global::context->VSSetShader(forward_plus_vs_static, nullptr, 0);
         drawInstanced<StaticRenderInfo>(resources[StaticInstanceBuffer]);
         
+        Global::context->IASetInputLayout(forward_plus_vs_animated);
         Global::context->VSSetShader(forward_plus_vs_animated, nullptr, 0);
         drawInstanced<AnimatedRenderInfo>(resources[AnimatedInstanceBuffer]);
 

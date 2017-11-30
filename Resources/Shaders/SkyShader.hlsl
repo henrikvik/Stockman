@@ -1,5 +1,4 @@
-#define VERTEX_T_SLOT t4
-#include "Vertex.hlsli"
+#include "include/Vertex.hlsli"
 
 #include "LightCalcInclude.hlsli"
 
@@ -22,10 +21,8 @@ cbuffer SkyColors : register(b5)
     float4 AngleSize;
 }
 
-PS_IN VS(uint vertexId : SV_VertexId)
+PS_IN VS(Vertex vertex)
 {
-    Vertex vertex = getVertex(vertexId);
-
     PS_IN output = (PS_IN) 0;
 
     output.pos = float4(vertex.position, 1);

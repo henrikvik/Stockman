@@ -3,7 +3,6 @@
 #include "../MainCamera.h"
 #include "../CommonState.h"
 #include <SimpleMath.h>
-#include <Logic\include\Misc\RandomGenerator.h>
 #include <Engine\DebugWindow.h>
 
 //temp
@@ -79,8 +78,6 @@ void Graphics::SnowRenderPass::update(float deltaTime)
         }
     }
 
-    Logic::RandomGenerator & generator = Logic::RandomGenerator::singleton();
-
     static float windCounter = 0;
     static Vector3 randWindPrev(0, -SNOW_SPEED, 0);
     static Vector3 randWind(0, -SNOW_SPEED, 0);
@@ -99,8 +96,8 @@ void Graphics::SnowRenderPass::update(float deltaTime)
     {
         randWindPrev = randWind;
         windCounter = 0;
-        randWind.x = generator.getRandomFloat(-SNOW_SPEED, SNOW_SPEED);
-        randWind.z = generator.getRandomFloat(-SNOW_SPEED, SNOW_SPEED);
+        randWind.x = getRandomFloat(-SNOW_SPEED, SNOW_SPEED);
+        randWind.z = getRandomFloat(-SNOW_SPEED, SNOW_SPEED);
         randWind.y = -SNOW_SPEED;
     }
 
@@ -112,7 +109,7 @@ void Graphics::SnowRenderPass::update(float deltaTime)
             moveSnowFlake(i);
 
         snowFlakes[i].distance = (snowFlakes[i].position - Global::mainCamera->getPos()).Length();
-        snowFlakes[i].randomRot += generator.getRandomFloat(0, ONE_DEG_IN_RAD * 5) * deltaTime * 62.5f; //62.5 * 0.016 = 1
+        snowFlakes[i].randomRot += getRandomFloat(0, ONE_DEG_IN_RAD * 5) * deltaTime * 62.5f; //62.5 * 0.016 = 1
 
 
 
@@ -166,15 +163,13 @@ void Graphics::SnowRenderPass::render() const
 
 void Graphics::SnowRenderPass::addRandomSnowFlake()
 {
-    Logic::RandomGenerator & generator = Logic::RandomGenerator::singleton();
-
-    Vector3 randVec(generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS));
+    Vector3 randVec(getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS));
 
     Vector3 finalPos = Global::mainCamera->getPos() + randVec;
 
     SnowFlake flake;
     flake.position = finalPos;
-    flake.randomRot = generator.getRandomFloat(0, PI * 2.f);
+    flake.randomRot = getRandomFloat(0, PI * 2.f);
     flake.distance = randVec.Length();
 
     snowFlakes.push_back(flake);
@@ -188,7 +183,7 @@ void Graphics::SnowRenderPass::moveSnowFlake(int snowFlake)
 
     Vector3 finalPos = Global::mainCamera->getPos() + randVec;
 
-    snowFlakes[snowFlake].position = Global::mainCamera->getPos() + finalPos;
+    snowFlakes[snowFlake].position = finalPos;
     snowFlakes[snowFlake].randomRot = getRandomFloat(0, PI * 2.f);
     snowFlakes[snowFlake].distance = randVec.Length();
 }
