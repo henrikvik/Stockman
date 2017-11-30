@@ -111,9 +111,16 @@ iMenuCards * iMenuFactory::buildMenuCard()
 iMenu * iMenuFactory::buildMenuGameWon()
 {
     iMenu* menu = newd iMenu(iMenu::GameWon);
-    menu->addBackground(Resources::Textures::Highscore, 1.f);
-    menu->addButton(buildButton("MenuStartGame", ButtonFunction::playAgain));
-    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
+    menu->addBackground(Resources::Textures::Gameover, 1.f);
+
+    return menu;
+}
+
+
+iMenuControls * iMenuFactory::buildMenuControls()
+{
+    iMenuControls* menu = newd iMenuControls(iMenu::Controls);
+    menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
 
     return menu;
 }
