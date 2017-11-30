@@ -183,7 +183,7 @@ void Graphics::SnowRenderPass::moveSnowFlake(int snowFlake)
 
     Vector3 finalPos = Global::mainCamera->getPos() + randVec;
 
-    snowFlakes[snowFlake].position = Global::mainCamera->getPos() + finalPos;
+    snowFlakes[snowFlake].position = finalPos;
     snowFlakes[snowFlake].randomRot = getRandomFloat(0, PI * 2.f);
     snowFlakes[snowFlake].distance = randVec.Length();
 }
