@@ -208,6 +208,7 @@
     <ClInclude Include="include\Misc\GUI\iMenuCards.h" />
     <ClInclude Include="include\Misc\GUI\iMenuControls.h" />
     <ClInclude Include="include\Misc\GUI\iMenuFirstTime.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuFX.h" />
     <ClInclude Include="include\Misc\GUI\iMenuHighscore.h" />
     <ClInclude Include="include\Misc\GUI\iMenuIntro.h" />
     <ClInclude Include="include\Misc\GUI\iMenuLoading.h" />
@@ -312,6 +313,7 @@
     <ClInclude Include="include\AI\Behavior\StayBehavior.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Misc\GUI\iMenuFX.cpp" />
     <ClCompile Include="source\AI\Abilities\Ability.cpp" />
     <ClCompile Include="source\AI\Behavior\BigBadBehavior.cpp" />
     <ClCompile Include="source\AI\Behavior\StayBehavior.cpp" />
