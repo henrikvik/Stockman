@@ -8,7 +8,7 @@
 #define SCALAR_SEP 2.f
 
 #define MAX_LEN_FOR_SEPERATION 15.f
-#define MIN_LEN_FOR_SPEEDUP_SQUARED 350.f
+#define MIN_LEN_FOR_SPEEDUP_SQUARED 2500.f 
 // this can be changed in the future maybe who knows
 #define CHANGE_NODE_DIST 5.f
 
