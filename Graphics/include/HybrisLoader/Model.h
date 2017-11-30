@@ -25,7 +25,7 @@ namespace HybrisLoader
         
         size_t getVertexCount()  { return mesh.getVertexCount(); }
 
-        StructuredBuffer<Vertex> & getVertexBuffer() { return mesh.getVertexBuffer(); }
+        Buffer<Vertex> & getVertexBuffer() { return mesh.getVertexBuffer(); }
         
         std::vector<DirectX::SimpleMath::Matrix> getJointTransforms() { return skeleton.getJointTransforms(); }
         std::vector<DirectX::SimpleMath::Matrix> evalAnimation(const char * animationName, float timeStamp) { return skeleton.evalAnimation(animationName, timeStamp); };

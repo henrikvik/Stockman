@@ -15,12 +15,12 @@ iMenuCards::iMenuCards(iMenu::MenuGroup group)
     m_spriteRenderInfo.alpha = 0.f;
     m_spriteRenderInfo.isMoveable = true;
     m_spriteRenderInfo.texture = Resources::Textures::WaveComplete;
-    m_spriteRenderInfo.screenRect = FloatRect({
-        0.307f,
-        0.104f,
-        512.f   / WIN_WIDTH,
-        128.f   / WIN_HEIGHT
-    });
+    m_spriteRenderInfo.screenRect = FloatRect(
+    { 0.0f,
+        0.0f },
+        { 1.f,
+        1.f }
+    );
     m_spriteRenderInfo.textureRect = FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f });
 
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::UPGRADE_UNLOCKED, nullptr, true);
@@ -105,21 +105,21 @@ void iMenuCards::buildTextRenderInfo(int index, std::string name, std::string de
 
 void iMenuCards::buildCardTexture(int index, Card::CardCategory category)
 {
-    switch (category)
-    {
-    case Logic::Card::ATTACK:
-        this->m_buttons.at(index).setUVS(FloatRect{ { 0.05288f, 0.0f },{ 0.34375f, 1.f } });
-       
-        break;
-    case Logic::Card::DEFENCE:
-        this->m_buttons.at(index).setUVS(FloatRect{ { 0.345352f, 0.0f },{ 0.636217f, 1.f } });
-        break;
-    case Logic::Card::UTILITY:
-        this->m_buttons.at(index).setUVS(FloatRect{ { 0.637820f, 0.0f },{ 0.933493f, 1.f } });
-        break;
-    default:
-        break;
-    }
-    
+    //switch (category)
+    //{
+    //case Logic::Card::ATTACK:
+    //    this->m_buttons.at(index).setUVS(FloatRect{ { 0.05288f, 0.0f },{ 0.34375f, 1.f } });
+    //   
+    //    break;
+    //case Logic::Card::DEFENCE:
+    //    this->m_buttons.at(index).setUVS(FloatRect{ { 0.345352f, 0.0f },{ 0.636217f, 1.f } });
+    //    break;
+    //case Logic::Card::UTILITY:
+    //    this->m_buttons.at(index).setUVS(FloatRect{ { 0.637820f, 0.0f },{ 0.933493f, 1.f } });
+    //    break;
+    //default:
+    //    break;
+    //}
+    //
 
 }

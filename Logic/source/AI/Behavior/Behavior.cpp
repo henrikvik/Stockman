@@ -78,7 +78,7 @@ void Behavior::walkPath(RunIn &in)
     btVector3 steeringForce = dt * m_steeringSpeed * mod * (dir - vel);
 
     if (pursuitPlayer && vel.dot(dir) < 0.7f)
-        moveMod = 0.1f;
+        moveMod = 0.15f;
 
     in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() * moveMod + steeringForce);
 }

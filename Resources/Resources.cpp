@@ -129,18 +129,14 @@ namespace Resources
     {
         Files toEnum(const char * str)
         {
-            if (strcmp(str, "Backbutton") == 0) return Backbutton;
             if (strcmp(str, "CardBackground") == 0) return CardBackground;
             if (strcmp(str, "Crosshair") == 0) return Crosshair;
             if (strcmp(str, "Diffusemoon") == 0) return Diffusemoon;
             if (strcmp(str, "Gameover") == 0) return Gameover;
-            if (strcmp(str, "gameOverMenuButtons") == 0) return gameOverMenuButtons;
             if (strcmp(str, "Gamesheet") == 0) return Gamesheet;
             if (strcmp(str, "Grid") == 0) return Grid;
             if (strcmp(str, "Highscore") == 0) return Highscore;
             if (strcmp(str, "Highscoretext") == 0) return Highscoretext;
-            if (strcmp(str, "HPBars") == 0) return HPBars;
-            if (strcmp(str, "HUDIcons") == 0) return HUDIcons;
             if (strcmp(str, "iconsheet") == 0) return iconsheet;
             if (strcmp(str, "IntroScreen") == 0) return IntroScreen;
             if (strcmp(str, "Loadingscreen") == 0) return Loadingscreen;
@@ -151,7 +147,6 @@ namespace Resources
             if (strcmp(str, "randomNormals") == 0) return randomNormals;
             if (strcmp(str, "Settings") == 0) return Settings;
             if (strcmp(str, "SettingsButtons") == 0) return SettingsButtons;
-            if (strcmp(str, "SettingsMenuButtons") == 0) return SettingsMenuButtons;
             if (strcmp(str, "Skillpickbackground") == 0) return Skillpickbackground;
             if (strcmp(str, "Skillpicksheet") == 0) return Skillpicksheet;
             if (strcmp(str, "Spellsheet") == 0) return Spellsheet;
