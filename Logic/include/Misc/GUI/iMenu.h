@@ -24,7 +24,8 @@ namespace Logic
             HighscoreGameOver,
             GameOver, 
             GameWon,
-            Pause, 
+            Pause,
+            Controls,
             LoadingPre,
             LoadingPost
         };

@@ -10,6 +10,9 @@ namespace HybrisLoader
 {
     struct Vertex
     {
+        static const std::initializer_list<D3D11_INPUT_ELEMENT_DESC> INPUT_DESC;
+        static const UINT STRIDE;
+
         using Vector2 = DirectX::SimpleMath::Vector2;
         using Vector3 = DirectX::SimpleMath::Vector3;
 
@@ -21,8 +24,8 @@ namespace HybrisLoader
         Vector3  tangent;
         Vector2  uv;
 
-        uint32_t jointIds[4];
-        float    jointWeights[4];
+        uint8_t jointIds[4];
+        float   jointWeights[4];
     };
 
     class Mesh
@@ -33,9 +36,9 @@ namespace HybrisLoader
 
         size_t getVertexCount() { return vertexCount; }
         
-        StructuredBuffer<Vertex> & getVertexBuffer() { return *vertexBuffer; }
+        Buffer<Vertex> & getVertexBuffer() { return *vertexBuffer; }
     private:
         size_t vertexCount;
-        StructuredBuffer<Vertex> * vertexBuffer;
+        Buffer<Vertex> * vertexBuffer;
     };
 }

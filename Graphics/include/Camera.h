@@ -32,8 +32,6 @@ namespace Graphics {
 
 		DirectX::SimpleMath::Vector3 getPos() const;
 		DirectX::SimpleMath::Vector3 getForward() const;
-		DirectX::SimpleMath::Vector3 getUp() const;
-		DirectX::SimpleMath::Vector3 getRight() const;
 		DirectX::SimpleMath::Matrix getView() const;
 		DirectX::SimpleMath::Matrix getProj() const;
 		float getFarPlane() const { return far_distance; };
@@ -48,9 +46,7 @@ namespace Graphics {
         void updateFOV(float fieldOfView);
 	private:
 		DirectX::SimpleMath::Vector3 position;
-		DirectX::SimpleMath::Vector3 up;
 		DirectX::SimpleMath::Vector3 forward;
-		DirectX::SimpleMath::Vector3 right;
 
         float far_distance;
         float near_distance;

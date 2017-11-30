@@ -31,9 +31,17 @@ Slider::Slider(
     m_maxValue = maxValue;
     m_delimiter = 1 / delimiter;
     m_value = value;
-    m_tempValue = *m_value;
 
     m_value = value;
+
+    if (*m_value > maxValue)
+    {
+        *m_value = maxValue;
+    }
+    else if (*m_value < minValue)
+    {
+        *m_value = minValue;
+    }
     float X = x;
     X = (((*m_value - m_minValue) / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min;
 
@@ -51,17 +59,22 @@ Slider::Slider(
     renderInfo.alpha = 1;
 
     m_textRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
-    m_textRenderInfo.font = Resources::Fonts::KG18;
-    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 10.0f, m_y);
+    m_textRenderInfo.font = Resources::Fonts::KG14;
+    m_textRenderInfo.position = DirectX::SimpleMath::Vector2(m_max + 20.0f, m_y);
 
     if (m_name.compare("FOVSlider") == 0)
     {
         int test = *m_value;
         m_textInput = std::to_wstring(test);
     }
+    else if (m_name.compare("MouseSlider") == 0)
+    {
+        int test = *m_value * 1000;
+        m_textInput = std::to_wstring(test);
+    }
     else
     {
-        int test = m_tempValue * 1000;
+        int test = *m_value * 100;
         m_textInput = std::to_wstring(test);
     }
     m_textRenderInfo.text = m_textInput.c_str();
@@ -120,6 +133,11 @@ void Slider::updateOnPress(int posX, int posY)
              if (m_name.compare("FOVSlider") == 0)
              {
                  int test = m_tempValue;
+                 m_textInput = std::to_wstring(test);
+             }
+             else if (m_name.compare("MouseSlider") == 0)
+             {
+                 int test = m_tempValue * 1000;
                  m_textInput = std::to_wstring(test);
              }
              else
