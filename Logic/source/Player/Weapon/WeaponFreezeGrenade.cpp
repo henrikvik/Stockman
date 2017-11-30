@@ -89,10 +89,9 @@ void WeaponFreezeGrenade::doExplosionCallback(Entity::CallbackData &data)
 
             PhysicsObject* obj = reinterpret_cast<PhysicsObject*>(data.dataPtr);
 
-            btVector3 knockbackDir = (obj->getPositionBT() - data.caller->getPositionBT()).normalize();
-
             if (Enemy* enemy = dynamic_cast<Enemy*>(obj))
             {
+                btVector3 knockbackDir = (obj->getPositionBT() - data.caller->getPositionBT()).normalize();
                 obj->getRigidBody()->setLinearVelocity(knockbackDir * 8.f);
                 enemy->getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::STUN, 1);
             }
@@ -145,10 +144,9 @@ void WeaponFreezeGrenade::doExplosionCallbackEnhanced(Entity::CallbackData & dat
 
                         PhysicsObject* obj = reinterpret_cast<PhysicsObject*>(data.dataPtr);
 
-                        btVector3 knockbackDir = (obj->getPositionBT() - data.caller->getPositionBT()).normalize();
-
                         if (Enemy* enemy = dynamic_cast<Enemy*>(obj))
                         {
+                            btVector3 knockbackDir = (obj->getPositionBT() - data.caller->getPositionBT()).normalize();
                             obj->getRigidBody()->setLinearVelocity(knockbackDir * 8.f);
                             enemy->getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::STUN, 1);
                         }
