@@ -3,7 +3,7 @@
 #include "../Utility/Shader.h"
 #include "../Utility/PingPongBuffer.h"
 
-#define MIP_LEVELS 5
+#define MIP_LEVELS 4
 
 namespace Graphics {
     class GlowRenderPass : public RenderPass
@@ -25,6 +25,8 @@ namespace Graphics {
         void render() const;
 
     private:
+        Shader m_KawaseDualFilterDownsample;
+        Shader m_KawaseDualFilterUpsample;
         Shader glow;
         Shader glow2;
         Shader merger;
@@ -34,6 +36,8 @@ namespace Graphics {
         ID3D11ShaderResourceView * srvs[MIP_LEVELS];
         ID3D11RenderTargetView * rtvs[MIP_LEVELS];
 
+        ID3D11ShaderResourceView *glowtempSRV;
+        ID3D11RenderTargetView * glowtempRTV;
         ID3D11ShaderResourceView * srvAllMips;
 
         ShaderResource glowPass0;

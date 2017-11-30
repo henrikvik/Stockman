@@ -112,6 +112,9 @@ namespace Resources
             if (strcmp(str, "GlowDownSampler") == 0) return GlowDownSampler;
             if (strcmp(str, "GlowMerger") == 0) return GlowMerger;
             if (strcmp(str, "GlowMipCombinder") == 0) return GlowMipCombinder;
+            if (strcmp(str, "KawaseDualFilterDownsample") == 0) return KawaseDualFilterDownsample;
+            if (strcmp(str, "KawaseDualFilterUpsample") == 0) return KawaseDualFilterUpsample;
+            if (strcmp(str, "KawaseDualFilterVS") == 0) return KawaseDualFilterVS;
             if (strcmp(str, "LightGridCulling") == 0) return LightGridCulling;
             if (strcmp(str, "Moon") == 0) return Moon;
             if (strcmp(str, "ParticlePlane") == 0) return ParticlePlane;
