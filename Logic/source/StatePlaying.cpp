@@ -90,6 +90,11 @@ StatePlaying::~StatePlaying()
     delete m_map;
     delete m_cardManager;
     delete m_projectileManager;
+
+    if (highscoreThread.joinable())
+    {
+        highscoreThread.join();
+    }
 }
 
 void StatePlaying::reset()
