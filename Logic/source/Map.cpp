@@ -98,7 +98,7 @@ void Map::loadStartMenuScene()
     campfire.vel = { 0, 0, 0 };
     campfire.playSFX(Sound::SFX::CAMPFIRE);
 
-    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
+    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
 }
 
 void Logic::Map::loadMap(Resources::Maps::Files map)

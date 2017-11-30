@@ -67,21 +67,8 @@ iMenu * iMenuFactory::buildMenuSettings()
     menu->addSlider(buildSlider("AmbienceSlider", setting.getAmbiencePTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("SFXSlider", setting.getSFXPTR(), 0.0f, 1.0f, 0.01f));
     menu->addSlider(buildSlider("FOVSlider", setting.getFOVPTR(), 60.0f, 120.0f, 1.0f));
-
     menu->addButton(buildButton("MenuSettingsVideoWindowedLeft", ButtonFunction::windowed));
     menu->addButton(buildButton("MenuSettingsVideoWindowedRight", ButtonFunction::windowed));
-
-    //menu->addButton(buildButton("MenuSettingsWriting", ButtonFunction::writing));
-    //menu->addButton(buildButton("MenuSettingsStartMenu", ButtonFunction::startMainMenu));
-    //menu->addButton(buildButton("MenuSettingsSoundMasterMinus", ButtonFunction::minusMaster));
-    //menu->addButton(buildButton("MenuSettingsSoundMasterPlus", ButtonFunction::plusMaster));
-    //menu->addButton(buildButton("MenuSettingsSoundSFXMinus", ButtonFunction::minusSFX));
-    //menu->addButton(buildButton("MenuSettingsSoundSFXPlus", ButtonFunction::plusSFX));
-    //menu->addButton(buildButton("MenuSettingsMuteUnmute", ButtonFunction::muteUnmute));
-    //menu->addButton(buildButton("MenuSettingsControlsMouseSenseMinus", ButtonFunction::minusSense));
-    //menu->addButton(buildButton("MenuSettingsControlsMouseSensePlus", ButtonFunction::plusSense));
-    //menu->addButton(buildButton("MenuSettingsVideoFOVMinus", ButtonFunction::minusFOV));
-    //menu->addButton(buildButton("MenuSettingsVideoFOVPlus", ButtonFunction::plusFOV));
 
     return menu;
 }
@@ -104,7 +91,6 @@ iMenuCards * iMenuFactory::buildMenuCard()
     menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));
     menu->addButton(buildButton("CardUpgradeChoice2", ButtonFunction::chooseUpgrade2));
     menu->addButton(buildButton("CardUpgradeChoice3", ButtonFunction::chooseUpgrade3));
-
     return menu;
 }
 
@@ -112,16 +98,13 @@ iMenu * iMenuFactory::buildMenuGameWon()
 {
     iMenu* menu = newd iMenu(iMenu::GameWon);
     menu->addBackground(Resources::Textures::Gameover, 1.f);
-
     return menu;
 }
-
 
 iMenuControls * iMenuFactory::buildMenuControls()
 {
     iMenuControls* menu = newd iMenuControls(iMenu::Controls);
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
-
     return menu;
 }
 
@@ -129,7 +112,6 @@ iMenuLoadingPre* iMenuFactory::buildMenuLoadingPre()
 {
     iMenuLoadingPre* menu = newd iMenuLoadingPre(iMenu::LoadingPre);
     menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
-
     return menu;
 }
 
@@ -137,7 +119,6 @@ iMenuLoadingPost* iMenuFactory::buildMenuLoadingPost()
 {
     iMenuLoadingPost* menu = newd iMenuLoadingPost(iMenu::LoadingPost);
     menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
-
     return menu;
 }
 
@@ -146,7 +127,6 @@ iMenuHighscore * iMenuFactory::buildMenuHighscore()
     iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreStartMenu);
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
-
     return menu;
 }
 
@@ -155,7 +135,6 @@ iMenuHighscore * iMenuFactory::buildMenuHighscoreGameOver()
     iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreGameOver);
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::goToGameOver));
-
     return menu;
 }
 
@@ -184,13 +163,9 @@ iMenu * iMenuFactory::buildMenuGameover()
 iMenu * iMenuFactory::buildMenuPause()
 {
     iMenu* menu = newd iMenu(iMenu::Pause);
-
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::unpause));
     menu->addButton(buildButton("ReturnToMenu", ButtonFunction::goBackToMainMenu));
-
-    //menu->addButton(buildButton("HighscoreStartMenu", ButtonFunction::startMainMenu));
-
     return menu;
 }
 
@@ -212,10 +187,6 @@ iMenu::ButtonData iMenuFactory::buildButton(std::string name, std::function<void
             btn.texRectHover.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("hoverXTexEnd"), button.floats.at("hoverYTexEnd"));
             btn.texRectActive.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("activeXTexStart"), button.floats.at("activeYTexStart"));
             btn.texRectActive.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("activeXTexEnd"), button.floats.at("activeYTexEnd"));
-           
-            /*btn.texRectHover.topLeft = DirectX::SimpleMath::Vector2(button.floats.at("xTexStart"), button.floats.at("yTexStart") + button.floats.at("activeOffset"));
-            btn.texRectHover.bottomRight = DirectX::SimpleMath::Vector2(button.floats.at("xTexEnd"), button.floats.at("yTexEnd") + button.floats.at("activeOffset"));
-            btn.texRectActive = btn.texRectHover;*/
             btn.texture = LookUp.at(button.ints.at("texture")); 
         }
     }
