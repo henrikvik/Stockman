@@ -282,7 +282,7 @@ namespace Resources
             {Loadingscreen, R"(..\Resources\Textures\Loadingscreen.dds)"},
             {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
-            {MissingTexture, R"(..\Resources\Textures\MissingTexture.png)"},
+            {MissingTexture, R"(..\Resources\Textures\MissingTexture.dds)"},
             {Pausetext, R"(..\Resources\Textures\Pausetext.dds)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.dds)"},
             {Settings, R"(..\Resources\Textures\Settings.dds)"},
