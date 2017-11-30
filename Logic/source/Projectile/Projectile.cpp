@@ -82,10 +82,7 @@ void Projectile::upgrader(Upgrade const &upgrade)
     }
     if (flags & Upgrade::UPGRADE_BURNING)
     {
-        if (m_pData.type == ProjectileTypeCrossbowFire)
-        {
-            m_pData.type = ProjectileTypeFireArrow;
-        }
+
     }
     if (flags & Upgrade::UPGRADE_FREEZING)
     {
@@ -283,7 +280,7 @@ bool Projectile::collisionWithTerrain()
     switch (m_pData.type)
     {
     case ProjectileTypeNormal:
-    case ProjectileTypeCrossbowFire:
+    case ProjectileTypeFireArrow:
         m_dead = true;
     }
 
