@@ -11,10 +11,10 @@ namespace Graphics {
     public:
         GlowRenderPass(
             PingPongBuffer * backBuffers,
-            std::initializer_list<ID3D11RenderTargetView*> targets,
-            std::initializer_list<ID3D11ShaderResourceView*> resources = {},
-            std::initializer_list<ID3D11Buffer*> buffers = {},
-            ID3D11DepthStencilView * depthStencil = nullptr);
+            ID3D11ShaderResourceView *bloomSRV,
+            std::vector<ID3D11ShaderResourceView *> bloomSRVChain,
+            std::vector<ID3D11RenderTargetView *> bloomRTVChain
+        );
         virtual ~GlowRenderPass();
 
         virtual wchar_t* name() const override {
@@ -29,12 +29,12 @@ namespace Graphics {
         Shader m_KawaseDualFilterUpsample;
         Shader glow;
         Shader glow2;
-        Shader merger;
         Shader mipGenerator;
         Shader mipCombinder;
 
-        ID3D11ShaderResourceView * srvs[MIP_LEVELS];
-        ID3D11RenderTargetView * rtvs[MIP_LEVELS];
+        ID3D11ShaderResourceView *m_BloomSRV;
+        std::vector<ID3D11ShaderResourceView *> m_BloomSRVMipChain;
+        std::vector<ID3D11RenderTargetView *> m_BloomRTVMipChain;
 
         ID3D11ShaderResourceView *glowtempSRV;
         ID3D11RenderTargetView * glowtempRTV;

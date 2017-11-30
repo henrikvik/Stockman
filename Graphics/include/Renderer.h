@@ -44,6 +44,12 @@ namespace Graphics
         DepthStencil shadowMap;
         DepthStencil depthStencil;
 
+
+        ID3D11ShaderResourceView *m_BloomSRV;
+        ID3D11RenderTargetView *m_BloomRTV;
+        std::vector<ID3D11ShaderResourceView *> m_BloomSRVMipChain;
+        std::vector<ID3D11RenderTargetView *> m_BloomRTVMipChain;
+
         ID3D11ShaderResourceView  * lightOpaqueGridSRV;
         ID3D11UnorderedAccessView * lightOpaqueGridUAV;
         StructuredBuffer<uint32_t> lightOpaqueIndexList;

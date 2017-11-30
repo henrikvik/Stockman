@@ -27,7 +27,7 @@ PSOutput PS(VSOutput input)
 {
     PSOutput output;
 
-    output.Output = DualFilterDownsample(input.uv, float2(0.5, 0.5) / float2(1280, 720));
+    output.Output = DualFilterDownsample(input.uv, float2(1, 1) / float2(1280, 720));
 
     return output;
 }
