@@ -39,7 +39,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     enemyRenderInfo.transform = getTransformMatrix();
     //light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
    // light.intensity = 0.5f;
-   // light.range = 2.f;
+    //light.range = 3.f;
 
     body->setGravity({ 0.f, -9.82f * 7.f, 0.f });
 
