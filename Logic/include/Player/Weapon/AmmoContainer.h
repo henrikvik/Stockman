@@ -27,7 +27,7 @@ namespace Logic
 
         bool removeAmmo(int weapon);
         void setEnhancedAmmo(int ammo);
-        void fillMag(int modifier);
+        void fillMag(float modifier);
 
     private:
         AmmoInfo m_aInfo;

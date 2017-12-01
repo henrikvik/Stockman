@@ -31,16 +31,16 @@ StatusManager::StatusManager()
             {
                 flags = fileStruct.ints.at("flags");
                 flat.increaseCooldown = fileStruct.floats.at("increaseCooldown");
-                flat.increaseDmg = fileStruct.ints.at("increaseDamage");
+                flat.increaseDmg = fileStruct.floats.at("increaseDamage");
                 flat.increaseAmmoCap = fileStruct.ints.at("increaseAmmoCap");
-                flat.increaseMagSize = fileStruct.ints.at("increaseMagSize");
+                flat.increaseMagSize = fileStruct.floats.at("increaseMagSize");
                 flat.increaseSize = fileStruct.ints.at("increaseSize");
                 flat.movementSpeed = fileStruct.floats.at("movementSpeed");
                 s_upgrades[id].init(flags, id, flat);
                 id++;
 
                 if (id > NR_OF_UPGRADES)
-                    throw std::exception("Upgrades added with out a ID, to fix this add the id in the UPGRADE_ID enum in the StatusManager.cpp class");
+                    throw std::exception("Upgrades added without an ID, to fix this add the ID in the UPGRADE_ID enum in the StatusManager.cpp class");
             }
         }
 

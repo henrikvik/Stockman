@@ -41,10 +41,10 @@ namespace Logic
 
 		struct FlatUpgrades {
 			float increaseCooldown;
-            int increaseDmg;
+            float increaseDmg;
             int increaseSize;
 			int increaseAmmoCap;
-            int increaseMagSize;
+            float increaseMagSize;
             float movementSpeed;
 		};
 
