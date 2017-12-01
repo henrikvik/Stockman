@@ -92,7 +92,7 @@ namespace Logic
 
         struct Upgrades
         {
-            int magSizeModifier;
+            float magSizeModifier;
             int ammoCapModifier;
             float fireRateModifier;
             float reloadTimeModifier;

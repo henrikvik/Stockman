@@ -22,7 +22,7 @@ bool WeaponCrossbow::useEnhanced(bool shouldUse)
     getProjectileData().hasEffect = shouldUse;
 
     if (shouldUse)
-        getProjectileData().type = ProjectileTypeCrossbowFire;
+        getProjectileData().type = ProjectileTypeFireArrow;
     else
         getProjectileData().type = ProjectileTypeNormal;
 

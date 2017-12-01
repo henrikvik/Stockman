@@ -11,7 +11,8 @@ namespace Graphics
         PostFXRenderPass(
             PingPongBuffer *backBuffers,
             ID3D11RenderTargetView *target,
-            ID3D11ShaderResourceView *bloomSRV
+            ID3D11ShaderResourceView *bloomSRV,
+            ID3D11ShaderResourceView *ssaoMap
         );
 
         virtual wchar_t* name() const override {
@@ -30,6 +31,7 @@ namespace Graphics
         ConstantBuffer<float> m_BulletTimeBuffer;
 
         ID3D11ShaderResourceView *m_BloomSRV;
+        ID3D11ShaderResourceView *ssaoMap;
         ID3D11RenderTargetView *m_Target;
     };
 }

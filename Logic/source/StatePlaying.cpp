@@ -1,9 +1,10 @@
 #include <StatePlaying.h>
 #include <StateMachine\StateBuffer.h>
 #include <State.h>
-#include <Misc\GUI\iMenuCards.h>
+#include <Misc\GUI\Specific\iMenuCards.h>
 #include <Misc\Network\dbConnect.h>
 #include <Misc\CommandsFile.h>
+
 
 // Input Singletons
 #include <Keyboard.h>
@@ -27,6 +28,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
 {
     // Starting in game-sounds
     Sound::NoiseMachine::Get().stopGroup(Sound::CHANNEL_SFX);
+    Sound::NoiseMachine::Get().loadPlaySounds();
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
 
@@ -67,14 +69,8 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     CommandsFile().doCommandsFromFile();
     RenderQueue::get().clearAllQueues();
 
-    //temp? probably
-    static SpecialEffectRenderInfo info;
-    info.type = info.Snow;
-    info.restart = true;
+    
 
-    m_playTime = 0;
-
-    QueueRender(info);
 }
 
 StatePlaying::~StatePlaying()
@@ -95,6 +91,7 @@ StatePlaying::~StatePlaying()
     {
         highscoreThread.join();
     }
+    Sound::NoiseMachine::Get().clearCurrent();
 }
 
 void StatePlaying::reset()
@@ -146,16 +143,8 @@ void StatePlaying::update(float deltaTime)
                 m_menu->queueMenu(iMenu::CardSelect);
                 m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
                 m_projectileManager->removeEnemyProjCallbacks();
-
-                SpecialEffectRenderInfo fultAF;
-                fultAF.type = SpecialEffectRenderInfo::Snow;
-                fultAF.restart = true;
-                QueueRender(fultAF);
-
             }
         }
-
-
 
         PROFILE_BEGIN("Sound");
         Sound::NoiseMachine::Get().update(m_player->getListenerData());
@@ -181,10 +170,8 @@ void StatePlaying::update(float deltaTime)
         m_projectileManager->update(deltaTime);
         PROFILE_END();
 
-
-
 #define _DEBUG
-#ifdef _DEBUG
+#ifdef  _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
         m_player->takeDamage(1, 0);
 #endif // _DEBUG

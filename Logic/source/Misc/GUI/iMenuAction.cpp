@@ -4,11 +4,12 @@
 #include <StateMachine\StateSecondary.h>
 #include <StatePlaying.h>
 #include <Misc\GUI\iMenuMachine.h>
-#include <Misc\GUI\iMenuSkillPick.h>
+#include <Misc\GUI\Specific\iMenuSkillPick.h>
 #include <Engine\Typing.h>
 #include <Engine\Settings.h>
 #include <State.h>
 #include <Misc\Sound\NoiseMachine.h>
+#include <Engine/Engine.h>
 
 using namespace Logic;
 
@@ -135,6 +136,13 @@ void Logic::chooseUpgrade(int index)
             {
                 Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_CARD, nullptr, true);
                 Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
+                
+
+                RECT rect;
+                GetWindowRect(*Engine::g_window, &rect);
+
+                DirectX::SimpleMath::Vector2 vec = DirectX::SimpleMath::Vector2((rect.left + rect.right* 0.5f), (rect.top + rect.bottom* 0.5f));
+                SetCursorPos(vec.x, vec.y);
             }
         }
     }

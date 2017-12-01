@@ -9,6 +9,7 @@ const float EnemyDefender::MELEE_DISTANCE = 35.f,
 
 const int   EnemyDefender::BASE_DAMAGE = 1,
             EnemyDefender::MAX_HP = 100,
+            EnemyDefender::MAX_DEF_HP = 4,
             EnemyDefender::SCORE = 100,
             EnemyDefender::PROJECTILES = 22;
 
@@ -18,6 +19,7 @@ EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     setBehavior(MELEE);
 
     m_defenseTime = 0.f;
+    m_defenseHealth = MAX_DEF_HP;
 
     light.color = DirectX::SimpleMath::Color(0.7f, 0.0f, 1.0f);
     light.intensity = 1.8f;
@@ -48,6 +50,7 @@ void EnemyDefender::onSpawn()
     pdata.speed = PROJECTILE_SPEED;
     pdata.scale = 3.f;
     pdata.isSensor = true;
+    pdata.type = ProjectileTypeDefenderShield;
 
     Projectile *pj;
     for (int i = 0; i < PROJECTILES; i++)
@@ -94,28 +97,45 @@ void EnemyDefender::onCollision(PhysicsObject &other, btVector3 contactPoint, fl
     {
         if (!pj->getProjectileData().enemyBullet)
         {
-            if (m_projectiles.empty())
+            if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
             {
-                damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
-
-                if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-                    getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
+                getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
             }
             else
             {
-                Projectile *def = m_projectiles[m_projectiles.size() - 1];
-                def->start(
-                    (def->getPositionBT() - getPositionBT() + getRigidBody()->getLinearVelocity()).normalized(),
-                    getStatusManager()
-                );
-                def->getProjectileData().ttl = 0;
-                m_projectiles.pop_back();
-                decreaseCallbackEntities();
-
-                pj->getRigidBody()->setLinearVelocity(- pj->getRigidBody()->getLinearVelocity());
+                if (m_projectiles.empty())
+                {
+                    damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
+                }
+                else
+                {
+                    onDefenseCollision(pj);
+                }
             }
         }
     }
+}
+
+// called when a projectile collision happens if the defender still have defense
+void EnemyDefender::onDefenseCollision(Projectile * pj)
+{
+    m_defenseHealth--;
+
+    if (m_defenseHealth <= 0)
+    {
+        Projectile *def = m_projectiles[m_projectiles.size() - 1];
+        def->start(
+            (def->getPositionBT() - getPositionBT() + getRigidBody()->getLinearVelocity()).normalized(),
+            getStatusManager()
+        );
+        def->getProjectileData().ttl = 0;
+        m_projectiles.pop_back();
+        decreaseCallbackEntities();
+
+        m_defenseHealth = MAX_DEF_HP;
+    }
+
+    pj->setDead(true);
 }
 
 void EnemyDefender::updateSpecific(Player &player, float deltaTime)

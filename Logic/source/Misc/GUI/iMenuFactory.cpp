@@ -1,8 +1,8 @@
 #include <Misc\GUI\iMenuFactory.h>
 #include <Misc\GUI\iMenuAction.h>
 #include <Graphics\include\RenderInfo.h>
-#include "..\..\..\include\Misc\GUI\iMenuCards.h"
 #include <Engine\Settings.h>
+#include <Misc\GUI\iMenuFX.h>
 
 using namespace Logic;
 
@@ -83,6 +83,7 @@ iMenuSettings* iMenuFactory::buildMenuSettings()
 iMenuSkillPick* iMenuFactory::buildMenuSkill()
 {
     iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
+    menu->addEffect((iMenuFX*)(newd iMenuFX_Dust()));
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
     menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
@@ -111,6 +112,7 @@ iMenu * iMenuFactory::buildMenuGameWon()
 iMenuControls * iMenuFactory::buildMenuControls()
 {
     iMenuControls* menu = newd iMenuControls(iMenu::Controls);
+    menu->addEffect(newd iMenuFX_Dust());
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     return menu;
 }
@@ -118,6 +120,7 @@ iMenuControls * iMenuFactory::buildMenuControls()
 iMenuLoadingPre* iMenuFactory::buildMenuLoadingPre()
 {
     iMenuLoadingPre* menu = newd iMenuLoadingPre(iMenu::LoadingPre);
+    menu->addEffect(newd iMenuFX_Dust());
     menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
     return menu;
 }
@@ -125,6 +128,7 @@ iMenuLoadingPre* iMenuFactory::buildMenuLoadingPre()
 iMenuLoadingPost* iMenuFactory::buildMenuLoadingPost()
 {
     iMenuLoadingPost* menu = newd iMenuLoadingPost(iMenu::LoadingPost);
+    menu->addEffect(newd iMenuFX_Dust());
     menu->addBackground(Resources::Textures::Loadingscreen, 1.f);
     return menu;
 }
@@ -145,9 +149,9 @@ iMenuHighscore * iMenuFactory::buildMenuHighscoreGameOver()
     return menu;
 }
 
-iMenu * iMenuFactory::buildMenuGameover()
+iMenuGameOver * iMenuFactory::buildMenuGameover()
 {
-    iMenu* menu = newd iMenu(iMenu::GameOver);
+    iMenuGameOver* menu = newd iMenuGameOver(iMenu::GameOver);
     iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::Gameover, 1.0f);
@@ -164,6 +168,12 @@ iMenu * iMenuFactory::buildMenuGameover()
     btn.move(DirectX::SimpleMath::Vector2(0.333, 0.05));
     menu->addButton(btn);
 
+    return menu;
+}
+
+iMenuCinematic * iMenuFactory::buildMenuCinematic()
+{
+    iMenuCinematic* menu = newd iMenuCinematic(iMenu::Cinematic);
     return menu;
 }
 

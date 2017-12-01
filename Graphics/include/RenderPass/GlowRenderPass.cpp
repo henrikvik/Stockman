@@ -6,7 +6,6 @@
 namespace Graphics
 {
     GlowRenderPass::GlowRenderPass(
-        PingPongBuffer * backBuffers,
         ID3D11ShaderResourceView *bloomSRV,
         std::vector<ID3D11ShaderResourceView *> bloomSRVChain,
         std::vector<ID3D11RenderTargetView *> bloomRTVChain
@@ -18,8 +17,7 @@ namespace Graphics
         m_KawaseDualFilterDownsample(Resources::Shaders::KawaseDualFilterDownsample, ShaderType::PS),
         m_KawaseDualFilterUpsample(Resources::Shaders::KawaseDualFilterUpsample, ShaderType::PS),
         m_GaussianHorizontal(Resources::Shaders::GlowBlurHorizontal),
-        m_GaussianVertical(Resources::Shaders::GlowBlurVertical),
-        backBuffers(backBuffers)
+        m_GaussianVertical(Resources::Shaders::GlowBlurVertical)
     {
         createMips();
 
@@ -68,12 +66,14 @@ namespace Graphics
             return;
 
         PROFILE_BEGIN("Glow");
-        backBuffers->swap();
         
         Global::context->RSSetState(Global::cStates->CullNone());
         Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         Global::context->IASetInputLayout(nullptr);
+        Global::context->VSSetShader(m_GaussianHorizontal, nullptr, 0);
+        Global::context->PSSetShader(m_KawaseDualFilterDownsample, nullptr, 0);
+        
         auto sampler = Global::cStates->LinearClamp();
         Global::context->PSSetSamplers(0, 1, &sampler);
 

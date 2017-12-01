@@ -45,6 +45,8 @@ namespace Logic
 
         static const int CURRENT_AMMO, TOTAL_AMMO;
 
+        static const float WAVE_SLIDE_TIME;
+
         std::vector<Sprite> HUDElements;
         std::vector<Sprite> skillList;
         std::vector<Sprite> skillMasks;
@@ -54,6 +56,7 @@ namespace Logic
         std::vector<Sprite> waveSprites;
 
         bool showWaveCleared;
+        float nextWaveSlideTimer;
 
         void constructGUIElements();
         void updateTextElements();
