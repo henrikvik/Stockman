@@ -12,10 +12,10 @@ iMenuGameOver::iMenuGameOver(iMenu::MenuGroup group)
     : iMenu(group) 
 {
     int score = ComboMachine::Get().getTotalScore();
-    m_pointsStr = L"Score: " + std::to_wstring(score);
+    m_pointsStr = L"SCORE: " + std::to_wstring(score);
 
     m_textPointsInfo.color = DirectX::SimpleMath::Color(0.f, 0.f, 0.f, 0.f);
-    m_textPointsInfo.font = Resources::Fonts::KG18;
+    m_textPointsInfo.font = Resources::Fonts::KG14;
     m_textPointsInfo.isMoveable = true;
     m_textPointsInfo.position = DirectX::SimpleMath::Vector2(10.f, 10.f);
     m_textPointsInfo.text = m_pointsStr.c_str();
