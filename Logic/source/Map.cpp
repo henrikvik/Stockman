@@ -11,6 +11,8 @@
 
 using namespace Logic;
 
+#define AI_BOX_ID_MIN 30
+
 Map::Map() { }
 
 Map::~Map() 
@@ -101,7 +103,8 @@ void Map::loadStartMenuScene()
     for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
 }
 
-void Logic::Map::loadMap(Resources::Maps::Files map)
+// this method is very bad
+void Map::loadMap(Resources::Maps::Files map)
 {
     toml::ParseResult mapFile = toml::parseFile(Resources::Maps::Paths.at(map));
     if (!mapFile.valid()) throw std::runtime_error(mapFile.errorReason);
@@ -183,17 +186,16 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
         return {vec.x, vec.y, vec.z, vec.w};
     };
 
+    // this is a temporary solution
+    bool groundModel = false, aiCollBox = false;
+    int aiBoxCounter;
+
     for (auto & instance : staticInstances)
     {
         try
         {
             Resources::Models::Files model = Resources::Models::toEnum(instance.model.c_str());
-
-            /*if (model != Resources::Models::House1
-                && model != Resources::Models::Ground
-                && model != Resources::Models::Tree
-                && model != Resources::Models::House2
-                && model != Resources::Models::House3) continue;*/
+            groundModel = model == Resources::Models::Ground;
 
             DirectX::SimpleMath::Quaternion rotation(instance.rotation[0], instance.rotation[1], instance.rotation[2], instance.rotation[3]);
             DirectX::SimpleMath::Vector3 scale(instance.scale[0], instance.scale[1], instance.scale[2]);
@@ -206,16 +208,27 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
             Decoration decor(model, instance_transform, bounding_box.sphere_radius());
             decorations.push_back(decor);
 
+            if (aiBoxCounter > 0)
+                printf("AI:%d\n", aiBoxCounter);
+            aiBoxCounter = 0;
             for (auto & hitbox : *ModelLoader::get().getModel(model)->getHitboxes())
             {
+                if (groundModel)
+                {
+                    aiBoxCounter++;
+                    if (aiBoxCounter > AI_BOX_ID_MIN) aiCollBox = true;
+                }
+
                 btRigidBody * body = m_physicsPtr->createHitbox(
                     toVec3(hitbox.position),
                     toQuat(hitbox.rotation),
                     toVec3(hitbox.halfSize) * instance.scale,
                     false,
                     Physics::COL_HITBOX,
-                    Physics::COL_EVERYTHING /* ^ Physics::COL_HITBOX not needed, it ignores itself when overlapping cuz they are static */
+                    aiCollBox ? Physics::COL_NOTHING : Physics::COL_EVERYTHING
                 );
+                aiCollBox = false;
+
                 StaticObject *obj = new StaticObject(Resources::Models::UnitCube, body, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL);
                 body->setUserPointer(obj);
 
