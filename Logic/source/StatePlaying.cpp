@@ -69,6 +69,16 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     CommandsFile().doCommandsFromFile();
     RenderQueue::get().clearAllQueues();
 
+    //temp? probably NOT
+    static SpecialEffectRenderInfo info;
+    info.type = info.Snow;
+    info.restart = true;
+    
+    m_playTime = 0;
+    
+
+    QueueRender(info);
+
 }
 
 StatePlaying::~StatePlaying()
