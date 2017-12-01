@@ -29,21 +29,6 @@
 	"status0" : 1;
 }
 {
-	"cardName" : "Ammo Cap";
-	"description" : "Increase the ammo cap";
-	"texture" : "b";
-
-	"xTexStart" : 0.734f;
-	"yTexStart" : 0.363f;
-	"xTexEnd" : 0.972f;
-	"yTexEnd" : 0.601f;
-
-	"statusAmount" : 1;
-	"statusType" : 1;
-    "category" : 0;
-	"status0" : 10;
-}
-{
 	"cardName" : "Mag Size";
 	"description" : "Increase the total ammo of your weapons";
 	"texture" : "b";
@@ -132,19 +117,4 @@
 	"statusType" : 1;
     "category" : 1;
 	"status0" : 4;
-}
-{
-	"cardName" : "Freeze";
-	"description" : "Staff freezes enemies longer";
-	"texture" : "b";
-
-	"xTexStart" : 0.0058f;
-	"yTexStart" : 0.032f;
-	"xTexEnd" : 0.244f;
-	"yTexEnd" : 0.270f;
-
-	"statusAmount" : 1;
-	"statusType" : 1;
-    "category" : 0;
-	"status0" : 3;
 }
