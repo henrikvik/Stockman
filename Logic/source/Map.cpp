@@ -6,6 +6,7 @@
 #include <Misc\RandomGenerator.h>
 #include <toml\toml.h>
 #include <fstream>
+#include <Misc\Sound\SoundSource.h>
 #include <Graphics/include/Utility/ModelLoader.h>
 
 using namespace Logic;
@@ -91,9 +92,13 @@ void Map::loadStartMenuScene()
     hitboxes.push_back({ { 0, 0.0f, 0 },{ 0, 0, 0 },{ 1.f, 1.f, 1.f },    Resources::Models::MenuScene });
 
     add(FrameLight({ 0.f, 0.f, 0.f }, {1.f, 0.5f, 0.3f}, 1.f, 10.f));
+    
+    Sound::SoundSource campfire;
+    campfire.pos = { 0, 0, 0 };
+    campfire.vel = { 0, 0, 0 };
+    campfire.playSFX(Sound::SFX::CAMPFIRE);
 
-    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
-    for (size_t i = lights.size(); i--;) add(lights[i]);
+    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
 }
 
 void Logic::Map::loadMap(Resources::Maps::Files map)
@@ -183,7 +188,6 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
         try
         {
             Resources::Models::Files model = Resources::Models::toEnum(instance.model.c_str());
-            std::cout << "> " <<  instance.model.c_str() << std::endl;
 
             /*if (model != Resources::Models::House1
                 && model != Resources::Models::Ground
@@ -196,11 +200,13 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
             DirectX::SimpleMath::Vector3 translation(instance.translation[0], instance.translation[1], instance.translation[2]);
 
             DirectX::SimpleMath::Matrix instance_transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
-            Decoration decor(model, instance_transform);
+            HybrisLoader::Model::BoundingBox bounding_box = ModelLoader::get().getModel(model)->get_bounding_box();
+
+            bounding_box.apply_scale(scale);
+            Decoration decor(model, instance_transform, bounding_box.sphere_radius());
             decorations.push_back(decor);
 
-            auto hitboxes = ModelLoader::get().getModel(model)->getHitboxes();
-            for (auto & hitbox : *hitboxes)
+            for (auto & hitbox : *ModelLoader::get().getModel(model)->getHitboxes())
             {
                 btRigidBody * body = m_physicsPtr->createHitbox(
                     toVec3(hitbox.position),
@@ -208,8 +214,10 @@ void Logic::Map::loadMap(Resources::Maps::Files map)
                     toVec3(hitbox.halfSize) * instance.scale,
                     false,
                     Physics::COL_HITBOX,
-                    Physics::COL_EVERYTHING ^ Physics::COL_HITBOX
+                    Physics::COL_EVERYTHING /* ^ Physics::COL_HITBOX not needed, it ignores itself when overlapping cuz they are static */
                 );
+                StaticObject *obj = new StaticObject(Resources::Models::UnitCube, body, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL);
+                body->setUserPointer(obj);
 
                 float t[16]; body->getWorldTransform().getOpenGLMatrix(t);
                 DirectX::SimpleMath::Matrix hitbox_transform(t);

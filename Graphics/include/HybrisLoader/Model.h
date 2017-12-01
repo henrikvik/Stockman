@@ -25,7 +25,7 @@ namespace HybrisLoader
         
         size_t getVertexCount()  { return mesh.getVertexCount(); }
 
-        StructuredBuffer<Vertex> & getVertexBuffer() { return mesh.getVertexBuffer(); }
+        Buffer<Vertex> & getVertexBuffer() { return mesh.getVertexBuffer(); }
         
         std::vector<DirectX::SimpleMath::Matrix> getJointTransforms() { return skeleton.getJointTransforms(); }
         std::vector<DirectX::SimpleMath::Matrix> evalAnimation(const char * animationName, float timeStamp) { return skeleton.evalAnimation(animationName, timeStamp); };
@@ -38,11 +38,30 @@ namespace HybrisLoader
         std::vector<Hitbox> * getHitboxes() { return &hitboxes; }
 
 
+        struct BoundingBox
+        {
+            DirectX::SimpleMath::Vector3 min;
+            DirectX::SimpleMath::Vector3 max;
 
+            void apply_scale(DirectX::SimpleMath::Vector3 & scale)
+            {
+                min *= scale;
+                max *= scale;
+            }
+
+            virtual const float sphere_radius() const noexcept final
+            {
+                return (max - min).Length() * 0.5f;
+            }
+        };
+        BoundingBox get_bounding_box() { return bounding_box; }
+        
     private:
         Mesh mesh;
         Material material;
         Skeleton skeleton;
         std::vector<Hitbox> hitboxes;
+        BoundingBox bounding_box;
+
     };
 }

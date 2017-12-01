@@ -31,7 +31,7 @@ struct FloatRect
 };
 
 template<typename T>
-struct InstanceCap { static constexpr size_t value = 1000; };
+struct InstanceCap { static constexpr size_t value = 1500; };
 #define SET_INSTANCE_CAP(info, cap) template<> struct InstanceCap<info> { static constexpr size_t value = cap; };
 #define INSTANCE_CAP(info) InstanceCap<info>::value
 
@@ -62,6 +62,7 @@ struct NewDebugRenderInfo : RenderInfo
 {
     struct Point
     {
+        Point(DirectX::SimpleMath::Vector3 position, DirectX::SimpleMath::Color color) : position(position), color(color) {}
         DirectX::SimpleMath::Vector3 position;
         DirectX::SimpleMath::Color color;
     };
@@ -75,6 +76,8 @@ SET_INSTANCE_CAP(NewDebugRenderInfo, 100000)
 
 struct LightRenderInfo : RenderInfo
 {
+    LightRenderInfo() : position(DirectX::SimpleMath::Vector3(0, 0, 0)), color(DirectX::SimpleMath::Color(1, 1, 1, 1)), intensity(1.f), range(3.f) { }
+    LightRenderInfo(DirectX::SimpleMath::Color inColor, float inIntensity, float inRange) : position(DirectX::SimpleMath::Vector3(0, 0, 0)), color(inColor), intensity(inIntensity), range(inRange) { }
 
     DirectX::SimpleMath::Vector3 position;
     DirectX::SimpleMath::Color color;
@@ -86,13 +89,15 @@ SET_INSTANCE_CAP(LightRenderInfo, 128)
 
 struct SpecialEffectRenderInfo : RenderInfo
 {
-    enum SpecialEffect { BulletTime, Snow, screenShake, DoF };
+    enum SpecialEffect { BulletTime, Snow, screenShake, DoF, screenBounce };
     SpecialEffect type;
     DirectX::SimpleMath::Vector2 direction;
     float progress = 0;
     float duration = 0;
     float radius = 0;
+    float bounceMax = 0;
     bool restart = 0;
+    bool affectEveryThing = 0;
 };
 
 struct SpriteRenderInfo : RenderInfo
@@ -101,6 +106,7 @@ struct SpriteRenderInfo : RenderInfo
     FloatRect screenRect;
     FloatRect textureRect;
     float alpha = 1;
+    bool isMoveable = 0;
 };
 
 struct TextRenderInfo : RenderInfo
@@ -109,6 +115,7 @@ struct TextRenderInfo : RenderInfo
     DirectX::SimpleMath::Color color;
     Resources::Fonts::Files font;
     std::wstring text = L"";
+    bool isMoveable = 0;
 };
 
 
@@ -118,6 +125,7 @@ struct StaticRenderInfo : RenderInfo
     DirectX::SimpleMath::Matrix transform;
     DirectX::SimpleMath::Vector3 color = DirectX::SimpleMath::Color(1,1,1,1);
     bool useGridTexture = false;
+    float cull_radius = 1.0;
 };
 
 struct FoliageRenderInfo : StaticRenderInfo

@@ -63,6 +63,7 @@ namespace Logic
         void setState(State state);
         void setAlpha(float alpha);
         void setUVS(FloatRect newUVs);
+        State getState() const { return state; }
 
         void render() const;
 
@@ -81,6 +82,7 @@ namespace Logic
 		int m_activeOffset;
         bool m_highlighted;
         float m_animationTime;
+        bool m_hovered;
 	};
 }
 #endif

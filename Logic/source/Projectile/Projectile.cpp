@@ -28,6 +28,7 @@ Projectile::~Projectile() { }
 // \param statusManager - A statusManager filled with potential buffs & upgrades
 void Projectile::start(btVector3 forward, StatusManager& statusManager)
 {
+    lightRenderInfo = m_pData.lightInfo;
     getRigidBody()->setLinearVelocity(forward * m_pData.speed);
 
     btRigidBody* body = getRigidBody();
@@ -118,19 +119,28 @@ void Projectile::updateSpecific(float deltaTime)
     // rotate model offset
     m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
 
+    // Damage fall-off, based on ttl
+    if (m_pData.dmgFallOff)
+        m_pData.damage -= m_pData.damage * (deltaTime / m_pData.ttl);
+
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;
+
+    if (m_pData.ttl < 0.f && m_pData.type != ProjectileTypeFreezeExplosion)
+        m_dead = true;
 
     // Reset the bullet time modifier back to normal
     m_bulletTimeMod = 1.f;
 
-    // Updating transform matrix
+    // Updating transform matrix for both the light and the model
     renderInfo.transform = getModelTransformMatrix();
+    lightRenderInfo.position = DirectX::SimpleMath::Vector3(renderInfo.transform._41, renderInfo.transform._42, renderInfo.transform._43);
 
     if (m_pData.hasEffect && m_pData.effectActivated) {
         auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, renderInfo.transform);
         auto vel = body->getLinearVelocity();
-
+        lightRenderInfo.color = DirectX::SimpleMath::Color(1, 0.3, 0.1, 1); // SORRY, REMOVE THIS
+        lightRenderInfo.range = 6.f;                                        // SORRY, REMOVE THIS
         if (m_pData.effectVelocity) {
             Graphics::FXSystem->processEffect(&m_pData.effect, pos, {vel.x(), vel.y(), vel.z()}, deltaTime / 1000.f);
         }
@@ -212,9 +222,8 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
         }
         break;
 
-    // These should not get removed on enemy contact
-    case ProjectileTypeBulletTimeSensor:
-    case ProjectileTypeMelee:
+    case ProjectileTypeFreezeExplosion:
+        callback = true;
         break;
 
     case ProjectileTypeFireArrow:
@@ -225,6 +234,14 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
             /* Number of stacks */              getStatusManager().getUpgradeStacks(StatusManager::FIRE_UPGRADE)
         );
         break;
+
+    case ProjectileTypeBulletTimeSensor:
+        break;
+
+    case ProjectileTypeMelee:
+        callback = true;
+        break;
+
     // Trigger all callbacks on other projectiles
     //  And kill them off
     default: 
@@ -292,6 +309,9 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME)
 	    );
 	    break;
+    case ProjectileTypeMeleeParry:
+        m_dead = true;
+        break;
 	}
     
     // No callback should be added
@@ -311,7 +331,10 @@ void Logic::Projectile::setModelID(Resources::Models::Files modelId)
 void Logic::Projectile::render() const
 {
     if (m_pData.shouldRender)
+    {
         QueueRender(renderInfo);
+    }
+    QueueRender(lightRenderInfo);
 }
 
 ProjectileData& Projectile::getProjectileData()             { return m_pData;   }

@@ -1,5 +1,6 @@
 #include <AI\Abilities\Ability.h>
 #include <Misc\RandomGenerator.h>
+#include "..\..\..\include\AI\Abilities\Ability.h"
 using namespace Logic;
 
 const float Ability::GCD = 100.f;
@@ -31,8 +32,7 @@ void Ability::update(float deltaTime, Player &player)
         onTick(player, *this);
         if (currentDuration <= 0)
         {
-            usingAbility = false;
-            currentDuration = 0.f;
+            cancel();
         }
     }
 }
@@ -69,6 +69,12 @@ bool Ability::useAbility(Player &player, bool forceUse)
 bool Ability::canUseAbility() const
 {
     return currentCooldown <= 0.f && !isUsingAbility();
+}
+
+void Ability::cancel()
+{
+    usingAbility = false;
+    currentDuration = 0.f;
 }
 
 float Ability::getCurrentCooldown() const

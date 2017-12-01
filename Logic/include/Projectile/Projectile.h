@@ -45,6 +45,7 @@ namespace Logic
 		bool getDead() const;
 
 	private:          
+        LightRenderInfo lightRenderInfo;
         StaticRenderInfo renderInfo;
         ProjectileData m_pData;         //< Holds information about this projectile
         btVector3 m_unrotatedMO;         //< Unrotated modelOffset

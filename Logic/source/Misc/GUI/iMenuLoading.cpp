@@ -24,6 +24,9 @@ iMenuLoadingPre::iMenuLoadingPre(iMenu::MenuGroup group) : iMenu(group)
 {
     m_started               = false;
     m_extraLoadingTime      = EXTRA_LOADING_SCREEN_TIME;
+
+    // Plays game start sound
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
 }
 
 iMenuLoadingPre::~iMenuLoadingPre() { }
@@ -71,6 +74,7 @@ iMenuLoadingPost::~iMenuLoadingPost() { }
 // Overwritten, to avoid the actual fade-in of this screen
 void iMenuLoadingPost::fadeIn()
 {
+    m_queingNext    = false;
     m_isFading      = false;
     m_safeToRemove  = false;
     setAlpha(1.f);
@@ -101,8 +105,12 @@ void iMenuLoadingPost::update(int x, int y, float deltaTime)
     m_textRenderInfo.color = DirectX::SimpleMath::Color(alpha, alpha, alpha, alpha);
 
     // Press space to continue into the game
-    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Space))
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Space) && !m_queingNext)
+    {    
+        Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_PRESS, nullptr, true);
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Skill);
+        m_queingNext = true;
+    }
 }
 
 void iMenuLoadingPost::render() const

@@ -1,12 +1,11 @@
 #include <AI\EnemyNecromancer.h>
 #include <AI\Behavior\RangedBehavior.h>
 #include <Misc\RandomGenerator.h>
-#include <Projectile\Projectile.h>
 #include <Misc\ComboMachine.h>
 
 using namespace Logic;
 
-const int EnemyNecromancer::SPEED_AB1 = 15,
+const int EnemyNecromancer::SPEED_AB1 = 125,
           EnemyNecromancer::SPEED_AB2 = 20,
           EnemyNecromancer::MAX_SPAWNED_MINIONS = 4,
           EnemyNecromancer::BASE_DAMAGE = 1,
@@ -15,7 +14,7 @@ const int EnemyNecromancer::SPEED_AB1 = 15,
 const float EnemyNecromancer::BASE_SPEED = 7.5f;
 
 EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
-    : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP, BASE_DAMAGE,
+    : Enemy(Resources::Models::Necromancer, body, halfExtent, MAX_HP, BASE_DAMAGE,
         BASE_SPEED, EnemyType::NECROMANCER, 0) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
@@ -28,6 +27,7 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
 
     createAbilities();
 
+    getSoundSource()->autoPlaySFX(Sound::SFX::ENEMY_AMBIENT_2, 6500, 500, 1.f, 0.10f);
     light.color = DirectX::SimpleMath::Color(0.5f, 0.0f, 1.0f);
     light.intensity = 0.8f;
     light.range = 7.0f;
@@ -39,10 +39,11 @@ EnemyNecromancer::~EnemyNecromancer()
 
 void EnemyNecromancer::createAbilities()
 {
+    // AB 1: Summon necromancer
     AbilityData data;
-    data.cooldown = 800.f;
+    data.cooldown = 1300.f;
     data.duration = 0.f;
-    data.randomChanche = 0;
+    data.randomChanche = 10;
 
     static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
     ProjectileData pdata;
@@ -53,13 +54,14 @@ void EnemyNecromancer::createAbilities()
 
     auto onTick = [&](Player &player, Ability &ab) -> void {};
 
-    auto onUse1 = [=](Player &player, Ability &ab) -> void {
+    auto onUse = [=](Player &player, Ability &ab) -> void {
         Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), pdata, (float)SPEED_AB2, 2.5f, 0.6f);
 		if (pj)
 		{
 			pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
 				if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
 				{
+                    data.caller->getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
 					Enemy *e = SpawnEnemy(EnemyType::NECROMANCER_MINION, data.caller->getPositionBT(), {});
 					if (e)
 					{
@@ -79,15 +81,45 @@ void EnemyNecromancer::createAbilities()
 		}
     };
 
-    ab1 = Ability(data, onTick, onUse1);
+    ab1 = Ability(data, onTick, onUse);
     
-    data.cooldown = 700.f;
-    data.randomChanche = 7;
+    // AB 2: Ice Lance
+    data.duration = 5000.f;
+    data.cooldown = 6000.f;
+    data.randomChanche = 5;
+
+    ab2ProjData.meshID = Resources::Models::Ammocrystal;
+    ab2ProjData.speed = SPEED_AB1;
+    ab2ProjData.ttl = 25000.f;
+    ab2ProjData.gravityModifier = 0.f;
+    ab2ProjData.enemyBullet = true;
+    ab2ProjData.damage = getBaseDamage();
+    ab2ProjData.scale = 1.5f;
+
     auto onUse2 = [&](Player &player, Ability &ab) -> void {
-        shoot((player.getPositionBT() - getPositionBT()).normalize(), Resources::Models::UnitCube, (float)SPEED_AB1, 0.02f, 0.2f);
+        increaseCallbackEntities();
+        ab2Projectile = SpawnProjectile(ab2ProjData, getPositionBT(), { 0.f, 0.f, 0.f }, *this);
+
+        if (!ab2Projectile) ab.cancel();
+        else
+        {
+            ab2Projectile->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+                ab.cancel();
+                decreaseCallbackEntities();
+            });
+        }
+    };
+    auto onTick2 = [&](Player &player, Ability &ab) -> void {
+        ab2Projectile->getRigidBody()->getWorldTransform().setOrigin(getPositionBT() +
+            btVector3(2.5f, 4.f, 0.f) * btScalar((1.02f - (ab.getCurrentDuration() / ab.getData().duration))));
+
+        if (ab.getCurrentDuration() <= 0.f)
+        {
+            ab2Projectile->start((player.getPositionBT() - ab2Projectile->getPositionBT()).normalized(), getStatusManager());
+        }
     };
 
-    ab2 = Ability(data, onTick, onUse2);
+    ab2 = Ability(data, onTick2, onUse2);
 }
 
 void EnemyNecromancer::clear()
@@ -128,6 +160,6 @@ void EnemyNecromancer::updateDead(float deltaTime)
 
 void EnemyNecromancer::useAbility(Player &target)
 {
-    ab1.useAbility(target);
+    if (m_spawnedMinions < MAX_SPAWNED_MINIONS) ab1.useAbility(target);
     ab2.useAbility(target);
 }

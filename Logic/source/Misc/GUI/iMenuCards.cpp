@@ -1,5 +1,6 @@
 #include <Misc\GUI\iMenuCards.h>
 #include <Misc\Card.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 using namespace Logic;
 
@@ -10,6 +11,20 @@ iMenuCards::iMenuCards(iMenu::MenuGroup group)
 { 
     m_renderable = false;
    
+    // Setup of the "round complete" sprite
+    m_spriteRenderInfo.alpha = 0.f;
+    m_spriteRenderInfo.isMoveable = true;
+    m_spriteRenderInfo.texture = Resources::Textures::WaveComplete;
+    m_spriteRenderInfo.screenRect = FloatRect({
+        0.307f,
+        0.104f,
+        512.f   / WIN_WIDTH,
+        128.f   / WIN_HEIGHT
+    });
+    m_spriteRenderInfo.textureRect = FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f });
+
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::UPGRADE_UNLOCKED, nullptr, true);
+    Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_END, nullptr, true);
 }
 
 iMenuCards::~iMenuCards() { }
@@ -18,8 +33,7 @@ void iMenuCards::update(int x, int y, float deltaTime)
 {
     iMenu::update(x, y, deltaTime);
 
-    // Card animations
-    // here?
+    m_spriteRenderInfo.alpha = m_fader.getCurrentPercentage();
 }
 
 void iMenuCards::setCardInformation(std::vector<Card*> inCards)
@@ -38,17 +52,20 @@ void iMenuCards::setCardInformation(std::vector<Card*> inCards)
 
 void iMenuCards::render() const
 {
-    iMenu::render();
-    // We only render if the cards have been created
-    if (m_renderable)
-    {
-        for (int i = 0; i < MAX_CARDS; i++)
-        {
-            QueueRender(m_cardGraphic[i].title);
-            QueueRender(m_cardGraphic[i].description);
-            QueueRender(m_cardGraphic[i].description1);
-        }
-    }
+    //// We only render if the cards have been created
+    //if (m_renderable)
+    //{
+    //    for (int i = 0; i < MAX_CARDS; i++)
+    //    {
+    //        QueueRender(m_cardGraphic[i].title);
+    //        QueueRender(m_cardGraphic[i].description);
+    //        QueueRender(m_cardGraphic[i].description1);
+    //    }
+    //}
+
+    // For some unkown reason, UI is taking care of this instead. Ok.
+
+    QueueRender(m_spriteRenderInfo);
 }
 
 void iMenuCards::buildTextRenderInfo(int index, std::string name, std::string description, Card::CardCategory category)
@@ -86,7 +103,7 @@ void iMenuCards::buildTextRenderInfo(int index, std::string name, std::string de
     m_cardGraphic[index].description1.color = DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 0.9f);
 }
 
-void Logic::iMenuCards::buildCardTexture(int index, Card::CardCategory category)
+void iMenuCards::buildCardTexture(int index, Card::CardCategory category)
 {
     switch (category)
     {

@@ -47,6 +47,7 @@ namespace Graphics
     void RenderPass::drawInstanced(ID3D11ShaderResourceView * instanceBuffer) const
     {
         Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        Global::context->VSSetShaderResources(10, 1, &instanceBuffer);
 
         Global::context->VSSetShaderResources(10, 1, &instanceBuffer);
         Global::context->VSSetConstantBuffers(10, 1, instanceOffsetBuffer);
@@ -60,9 +61,7 @@ namespace Graphics
             HybrisLoader::Model    * model = ModelLoader::get().getModel(modelId);
             HybrisLoader::Mesh     * mesh = &model->getMesh();
             HybrisLoader::Material * material = &model->getMaterial();
-
-            Global::context->VSSetShaderResources(11, 1, mesh->getVertexBuffer());
-
+            
             ID3D11ShaderResourceView * textures[4] =
             {
                 /*Diffuse */ material->getDiffuse(),
@@ -72,9 +71,13 @@ namespace Graphics
             };
             Global::context->PSSetShaderResources(12, 4, textures);
 
+
+
             instanceOffsetBuffer.write(Global::context, &instanceOffset, sizeof(instanceOffset));
             instanceOffset += renderInfos.size();
 
+            UINT zero = 0;
+            Global::context->IASetVertexBuffers(0, 1, mesh->getVertexBuffer(), &HybrisLoader::Vertex::STRIDE, &zero);
             Global::context->DrawInstanced(
                 mesh->getVertexCount(),
                 renderInfos.size(),

@@ -69,15 +69,14 @@ void EnemyThreadHandler::deleteThreads()
 
 void EnemyThreadHandler::updateEnemiesAndPath(WorkData &data)
 {
-    AStar &aStar = AStar::singleton();
-    aStar.loadTargetIndex(*data.player);
     const std::vector<Enemy*> &enemies = data.manager->getAliveEnemies()[data.index];
-
     // make sure it is still enemies in the node before doing all the calculations
     if (!enemies.empty())
     {
-        std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(data.index);
+        AStar &aStar = AStar::singleton();
+        aStar.loadTargetIndex(*data.player);
 
+        std::vector<const DirectX::SimpleMath::Vector3*> path = aStar.getPath(data.index);
         for (size_t i = 0; i < enemies.size(); i++) // (!) size can change throughout the loop (!)
             enemies[i]->getBehavior()->getPath().setPath(path); // TODO: enemy->setPath
     }

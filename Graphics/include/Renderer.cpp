@@ -50,6 +50,7 @@ namespace Graphics
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
 #pragma endregion
+        , foliageInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(FoliageRenderInfo))
         , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
         , animatedInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
         , animatedJointsBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
@@ -71,6 +72,7 @@ namespace Graphics
 
 #pragma region CaNCeR!
     {
+        grassTime = 0;
         Global::cStates = new CommonStates(device);
         Global::comparisonSampler = [&]() {
             ID3D11SamplerState * sampler = nullptr;
@@ -174,7 +176,7 @@ namespace Graphics
         viewPort.Height = WIN_HEIGHT;
         viewPort.MaxDepth = 1.0f;
 
-        FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
+        FXSystem = newd ParticleSystem(device, 4096, "Resources/Particles/base.part");
 
         TextureLoader::get().loadAll();
 
@@ -183,14 +185,15 @@ namespace Graphics
             newd ParticleDepthRenderPass(depthStencil),
             newd DepthRenderPass(
                 {},
-                { staticInstanceBuffer, animatedInstanceBuffer }, 
-                {*Global::mainCamera->getBuffer()}, 
+                { staticInstanceBuffer, animatedInstanceBuffer, animatedJointsBuffer,
+                foliageInstanceBuffer },
+                {*Global::mainCamera->getBuffer(), grassTimeBuffer },
                 depthStencil
             ),
             newd ShadowRenderPass(
                 {}, 
                 { staticInstanceBuffer, animatedInstanceBuffer },
-                {*sun.getLightMatrixBuffer()},
+                {*sun.getLightMatrixBuffer(), grassTimeBuffer },
                 shadowMap
             ),
             newd LightCullRenderPass(
@@ -223,11 +226,13 @@ namespace Graphics
                     staticInstanceBuffer,
                     animatedInstanceBuffer,
                     animatedJointsBuffer,
+                    foliageInstanceBuffer
                 },
                 {
                     *Global::mainCamera->getBuffer(),
                     *sun.getGlobalLightBuffer(),
-                    *sun.getLightMatrixBuffer()
+                    *sun.getLightMatrixBuffer(),
+                    grassTimeBuffer
                 },
                 depthStencil
             ),
@@ -289,12 +294,17 @@ namespace Graphics
 
     void Renderer::update(float deltaTime)
     {
+        grassTime += deltaTime;
+        grassTimeBuffer.write(Global::context, &grassTime, sizeof(grassTime));
+        
         /*
         static StaticRenderInfo infotest;
         infotest.model = Resources::Models::Staff;
         infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
         QueueRender(&infotest);
         */
+
+        
         LightRenderInfo lightInfo;
         lightInfo.color = DirectX::Colors::WhiteSmoke;
         lightInfo.intensity = 0.3f;
@@ -302,18 +312,38 @@ namespace Graphics
         lightInfo.range = 10;
         QueueRender(lightInfo);
 
-        QueueRender([](float dt) -> AnimatedRenderInfo
+        /*QueueRender([](float dt) -> AnimatedRenderInfo
         {
             static float time = 0;
             AnimatedRenderInfo info;
-            info.animationName = "Test";
+            info.animationName = "Walk";
             info.animationTimeStamp = time;
-            info.model = Resources::Models::AnimationTest;
-            info.transform = SimpleMath::Matrix::CreateTranslation(0, 1, -3);
+            info.model = Resources::Models::SummonUnitWithAnim;
+            info.transform = SimpleMath::Matrix::CreateTranslation(0, 1, -3) * SimpleMath::Matrix::CreateScale(5.0f);
             time += dt;
             if (time > 5) time = 0;
             return info;
-        }(deltaTime));
+        }(deltaTime));*/
+
+		QueueRender([]()
+		{
+			StaticRenderInfo info;
+			info.model = Resources::Models::UnitCube;
+			info.transform = SimpleMath::Matrix::CreateTranslation(0, -1, 0) * SimpleMath::Matrix::CreateScale(1000, 1, 1000);
+			info.useGridTexture = true;
+			return info;
+		}());
+
+        QueueRender([]()
+        {
+            FoliageRenderInfo info;
+            info.model = Resources::Models::Grass;
+            info.transform = SimpleMath::Matrix::CreateTranslation(0, 0, -3);
+            info.color = DirectX::SimpleMath::Vector3(1,1,1);
+            info.useGridTexture = false;
+            return info;
+        }());
+
         FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 
         writeInstanceBuffers();
@@ -355,6 +385,22 @@ namespace Graphics
 
     void Renderer::writeInstanceBuffers()
     {
+        foliageInstanceBuffer.write([](StaticInstance * instanceBuffer)
+        {
+            for (auto & model_infos : RenderQueue::get().getQueue<FoliageRenderInfo>())
+            {
+                for (auto & sinfo : model_infos.second)
+                {
+                    StaticInstance instance = {};
+                    instance.world = sinfo.transform;
+                    instance.worldInvT = sinfo.transform.Invert().Transpose();
+                    instance.color = sinfo.color;
+                    instance.useGridTexture = sinfo.useGridTexture;
+                    *instanceBuffer++ = instance;
+                }
+            }
+        });
+
         staticInstanceBuffer.write([](StaticInstance * instanceBuffer)
         {
             auto & queue = RenderQueue::get().getQueue<StaticRenderInfo>();

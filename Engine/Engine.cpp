@@ -21,13 +21,12 @@
 #pragma comment (lib, "d3d11.lib")
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+bool settingsFullScreenOverRide = false;
+HWND *Engine::g_window = nullptr;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	//if (
 	ImGui_ImplDX11_WndProcHandler(hwnd, msg, wparam, lparam);
-		//)
-		//return true;
 	Typing* theChar = Typing::getInstance(); //might need to be deleted
 	DebugWindow * debug = DebugWindow::getInstance();
 	int key = MapVirtualKey((int)wparam, 0);
@@ -47,11 +46,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
+        if (wparam == VK_RETURN)
+            if ((HIWORD(lparam) & KF_ALTDOWN))
+                settingsFullScreenOverRide = !settingsFullScreenOverRide;
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
 		break;
-
-	case WM_ACTIVATEAPP:
+    case WM_KILLFOCUS:
+        if (Engine::g_window) // make sure window is created
+        {
+            DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+        }
+        break;
+    case WM_ACTIVATEAPP:
 	case WM_INPUT:
 	case WM_MOUSEMOVE:
 	case WM_LBUTTONDOWN:
@@ -89,6 +96,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
 	this->mMouse = std::make_unique<DirectX::Mouse>();
     this->mTracker = std::make_unique<DirectX::Keyboard::KeyboardStateTracker>();
 	this->mMouse->SetWindow(window);
+    Engine::g_window = &window;
 
     DebugWindow * debug = DebugWindow::getInstance();
 
@@ -99,7 +107,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         std::string catcher = "";
         try
         {
-            Settings setting = Settings::getInstance();
+            Settings& setting = Settings::getInstance();
             if (args.size() != 0)
             {
                 setting.setWindowed(std::stoi(args[0]));
@@ -321,10 +329,9 @@ Profiler *g_Profiler;
 int Engine::run()
 {
     Settings& setting = Settings::getInstance();
-
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(setting.getFOV()));
+	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, setting.getFOV());
     Global::mainCamera->update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
@@ -376,19 +383,24 @@ int Engine::run()
 
         //temp
         SpecialEffectRenderInfo shakeInfo;
-        shakeInfo.type = shakeInfo.screenShake;
-        shakeInfo.duration = 0.5f;
-        shakeInfo.radius = 30;
+        shakeInfo.type = shakeInfo.screenBounce;
+        shakeInfo.duration = 0.2f;
+        shakeInfo.radius = 160.0f;
+        shakeInfo.bounceMax = 15.0f;
+        shakeInfo.direction = DirectX::SimpleMath::Vector2(0.0f, 1.0f);
+        shakeInfo.affectEveryThing = false;
 
 #ifdef _DEBUG
         if (mTracker->pressed.G)
             QueueRender(shakeInfo);
 #endif // _DEBUG
-
-		if (setting.getWindowed() != test)
+        Settings& setting = Settings::getInstance();
+		if (setting.getWindowed() != test && settingsFullScreenOverRide == false)
 		{
-		//	mSwapChain->SetFullscreenState(setting->getWindowed(), NULL);
+			mSwapChain->SetFullscreenState(setting.getWindowed(), NULL);
 		}
+
+
 
         //static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
         //Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);		          
@@ -420,6 +432,8 @@ int Engine::run()
             if (game->update(float(deltaTime)))
                 running = false;
         PROFILE_END();
+
+        Global::mainCamera->render();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game->render();

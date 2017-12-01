@@ -29,12 +29,13 @@ namespace Logic
     class Decoration
     {
     public:
-        Decoration(Resources::Models::Files model, DirectX::SimpleMath::Matrix transform)
+        Decoration(Resources::Models::Files model, DirectX::SimpleMath::Matrix transform, float cull_radius)
         {
             renderInfo.model = model;
             renderInfo.transform = transform;
             renderInfo.color = DirectX::SimpleMath::Vector3( 1, 1, 1);
             renderInfo.useGridTexture = false;
+            renderInfo.cull_radius = cull_radius;
         }
 
         void render() const

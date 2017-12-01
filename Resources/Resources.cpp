@@ -8,6 +8,7 @@ namespace Resources
             if (strcmp(str, "KG14") == 0) return KG14;
             if (strcmp(str, "KG18") == 0) return KG18;
             if (strcmp(str, "KG26") == 0) return KG26;
+            if (strcmp(str, "nordic") == 0) return nordic;
             throw "Could not find matching enum.";
         }
     }
@@ -53,6 +54,7 @@ namespace Resources
             if (strcmp(str, "Firepit") == 0) return Firepit;
             if (strcmp(str, "GrapplingPoint") == 0) return GrapplingPoint;
             if (strcmp(str, "Grappling_Point") == 0) return Grappling_Point;
+            if (strcmp(str, "Grass") == 0) return Grass;
             if (strcmp(str, "Grass1") == 0) return Grass1;
             if (strcmp(str, "Ground") == 0) return Ground;
             if (strcmp(str, "Hammer") == 0) return Hammer;
@@ -70,6 +72,7 @@ namespace Resources
             if (strcmp(str, "Market_Tent") == 0) return Market_Tent;
             if (strcmp(str, "MenuScene") == 0) return MenuScene;
             if (strcmp(str, "Mountain") == 0) return Mountain;
+            if (strcmp(str, "Necromancer") == 0) return Necromancer;
             if (strcmp(str, "Rock1") == 0) return Rock1;
             if (strcmp(str, "Rock2") == 0) return Rock2;
             if (strcmp(str, "Rock3") == 0) return Rock3;
@@ -106,6 +109,7 @@ namespace Resources
             if (strcmp(str, "ForwardPlus") == 0) return ForwardPlus;
             if (strcmp(str, "ForwardPlus_PS") == 0) return ForwardPlus_PS;
             if (strcmp(str, "ForwardPlus_VS_Animated") == 0) return ForwardPlus_VS_Animated;
+            if (strcmp(str, "ForwardPlus_VS_Foliage") == 0) return ForwardPlus_VS_Foliage;
             if (strcmp(str, "ForwardPlus_VS_Static") == 0) return ForwardPlus_VS_Static;
             if (strcmp(str, "FullscreenQuad") == 0) return FullscreenQuad;
             if (strcmp(str, "GlowBlurHorizontal") == 0) return GlowBlurHorizontal;
@@ -115,6 +119,7 @@ namespace Resources
             if (strcmp(str, "GlowMipCombinder") == 0) return GlowMipCombinder;
             if (strcmp(str, "LightGridCulling") == 0) return LightGridCulling;
             if (strcmp(str, "Moon") == 0) return Moon;
+            if (strcmp(str, "ParticlePlane") == 0) return ParticlePlane;
             if (strcmp(str, "SkyShader") == 0) return SkyShader;
             if (strcmp(str, "SnowShader") == 0) return SnowShader;
             if (strcmp(str, "SpriteShader") == 0) return SpriteShader;
@@ -132,9 +137,9 @@ namespace Resources
             if (strcmp(str, "Backbutton") == 0) return Backbutton;
             if (strcmp(str, "CardBackground") == 0) return CardBackground;
             if (strcmp(str, "Crosshair") == 0) return Crosshair;
+            if (strcmp(str, "Diffusemoon") == 0) return Diffusemoon;
             if (strcmp(str, "Gameover") == 0) return Gameover;
             if (strcmp(str, "gameOverMenuButtons") == 0) return gameOverMenuButtons;
-            if (strcmp(str, "gameOverTexture") == 0) return gameOverTexture;
             if (strcmp(str, "Gamesheet") == 0) return Gamesheet;
             if (strcmp(str, "Grid") == 0) return Grid;
             if (strcmp(str, "Highscore") == 0) return Highscore;
@@ -145,17 +150,17 @@ namespace Resources
             if (strcmp(str, "IntroScreen") == 0) return IntroScreen;
             if (strcmp(str, "Loadingscreen") == 0) return Loadingscreen;
             if (strcmp(str, "MainmenuClean") == 0) return MainmenuClean;
-            if (strcmp(str, "mainmenupicture") == 0) return mainmenupicture;
             if (strcmp(str, "Mainmenutext") == 0) return Mainmenutext;
             if (strcmp(str, "MissingTexture") == 0) return MissingTexture;
-            if (strcmp(str, "Moon_Thinking") == 0) return Moon_Thinking;
             if (strcmp(str, "Pausetext") == 0) return Pausetext;
             if (strcmp(str, "randomNormals") == 0) return randomNormals;
             if (strcmp(str, "Settings") == 0) return Settings;
+            if (strcmp(str, "SettingsButtons") == 0) return SettingsButtons;
             if (strcmp(str, "SettingsMenuButtons") == 0) return SettingsMenuButtons;
             if (strcmp(str, "Skillpickbackground") == 0) return Skillpickbackground;
             if (strcmp(str, "Skillpicksheet") == 0) return Skillpicksheet;
             if (strcmp(str, "Spellsheet") == 0) return Spellsheet;
+            if (strcmp(str, "TextSkillPick") == 0) return TextSkillPick;
             if (strcmp(str, "WaveComplete") == 0) return WaveComplete;
             if (strcmp(str, "weaponsheet") == 0) return weaponsheet;
             throw "Could not find matching enum.";

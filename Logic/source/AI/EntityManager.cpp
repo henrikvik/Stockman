@@ -7,6 +7,7 @@
 #include <AI\EnemySoarer.h>
 #include <AI\EnemyChaser.h>
 #include <AI\EnemyTotem.h>
+#include <AI\EnemyDefender.h>
 #include <Misc\ComboMachine.h>
 
 #include <Player\Player.h>
@@ -27,13 +28,14 @@
 
 using namespace Logic;
 
-#define FILE_ABOUT_WHALES "Enemies/Wave"
+const btVector3 EntityManager::MIN_SPAWN = { -100, 10, -100 },
+                EntityManager::MAX_SPAWN = {  100, 25,  100 };
+const std::string EntityManager::WAVE_FILES[MODES] = { "Enemies/Wave", "Enemies/Wave", "Enemies/WavesHeroic"};
 
-const btVector3 EntityManager::MIN_SPAWN = { -300, 10, -300 },
-                EntityManager::MAX_SPAWN = {  300, 25,  300 };
-const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 65;
+const int EntityManager::NR_OF_THREADS = 4, EntityManager::ENEMY_CAP = 300;
 const float EntityManager::INVALID_LENGTH = 100.f;
-int EntityManager::PATH_UPDATE_DIV = 25;
+
+int EntityManager::PATH_UPDATE_DIV = 5;
 
 EntityManager::EntityManager()
 {
@@ -48,7 +50,7 @@ EntityManager::EntityManager()
     registerCreationFunctions();
     loadDebugCmds();
 
-    m_waveManager.setName(FILE_ABOUT_WHALES);
+    m_waveManager.setName(WAVE_FILES[m_aiType]);
     m_waveManager.loadFile();
 }
 
@@ -62,7 +64,7 @@ void EntityManager::registerCreationFunctions()
 {
     m_enemyFactory[EnemyType::NECROMANCER] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 0.8f, 1.5f, 0.8f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.0f, 1.0f, 1.0f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
@@ -77,7 +79,7 @@ void EntityManager::registerCreationFunctions()
     };
     m_enemyFactory[EnemyType::NECROMANCER_MINION] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.f, 1.f, 0.6f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.f, 1.3f, 0.8f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
@@ -85,6 +87,17 @@ void EntityManager::registerCreationFunctions()
         Graphics::FXSystem->addEffect("NecroSummonBoom", { pos.x(), pos.y(), pos.z() });
 
         Enemy* enemy = newd EnemyChaser(body);
+
+        return enemy;
+    };
+    m_enemyFactory[EnemyType::DEFENDER] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
+    {
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.3f, 3.f, 1.3f } * btScalar(scale)));
+        btRigidBody *body = physics.createBody(cube, 100, false,
+            Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
+        body->setAngularFactor(btVector3(0, 1, 0));
+
+        Enemy* enemy = newd EnemyDefender(body, cube.getDimensionsRef());
 
         return enemy;
     };
@@ -151,16 +164,21 @@ void EntityManager::allocateData()
 
 void EntityManager::loadDebugCmds()
 {
-#ifdef _DEBUG
     DebugWindow::getInstance()->registerCommand("AI_SETMODE", [&](std::vector<std::string> &para) -> std::string {
         try {
+            int mode = stoi(para[0]);
+            if (mode >= MODES) throw "rip";
+
             m_aiType = static_cast<AIType> (stoi(para[0]));
+
+            m_waveManager.setName(WAVE_FILES[m_aiType]);
+            m_waveManager.loadFile();
+
             return "AI Mode Updated";
         } catch (std::exception e) {
             return "No, Chaos is a ladder.";
         }
     });
-#endif
     DebugWindow::getInstance()->registerCommand("AI_AUTOMATIC_TESTING", [&](std::vector<std::string> &para) -> std::string {
         m_automaticTesting = true;
         PATH_UPDATE_DIV = 1;
@@ -351,6 +369,8 @@ void EntityManager::spawnWave(int waveId, btVector3 const &playerPos)
         return;
     }
 
+    Sound::NoiseMachine::Get().playSFX(Sound::WAVE_START, nullptr, true);
+
     WaveManager::EntitiesInWave entities = m_waveManager.getEntities(waveId);
     m_frame = 0;
 
@@ -375,6 +395,7 @@ Enemy* EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
     {
         Enemy *enemy = m_enemyFactory[id](pos, 1.f, effects, physics);
         enemy->setSpawnFunctions(SpawnProjectile, SpawnEnemy, SpawnTrigger);
+        enemy->onSpawn();
 
         int index = AStar::singleton().getIndex(*enemy);
         m_enemies[index == -1 ? 0 : index].push_back(enemy);

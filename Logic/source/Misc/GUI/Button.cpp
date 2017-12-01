@@ -55,6 +55,7 @@ Logic::Button::Button(
     renderInfo.screenRect = screenRect;
     renderInfo.textureRect = inactive;
     renderInfo.alpha = 1;
+    m_hovered = false;
 }
 
 Button::~Button()
@@ -71,7 +72,6 @@ void Button::updateOnPress(int posX, int posY)
 	if (callback && renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
 	{
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_PRESS, nullptr, true);
-
         if (this->state != ACTIVE)
         {
             setState(ACTIVE);
@@ -80,8 +80,8 @@ void Button::updateOnPress(int posX, int posY)
         {
             setState(INACTIVE);
         }
-        
         callback();
+        
 	}
 }
 
@@ -91,11 +91,17 @@ void Button::hoverOver(int posX, int posY)
     {
         if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
         {
-            setState(HOVER);
+            if (!m_hovered)
+            {
+                Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_HOVER, nullptr, true);
+                setState(HOVER);
+                m_hovered = true;
+            }
         }
         else
         {
             setState(INACTIVE);
+            m_hovered = false;
         }
     }
    

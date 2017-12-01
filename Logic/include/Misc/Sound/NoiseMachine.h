@@ -28,7 +28,7 @@ namespace Sound
 
         struct THRESHOLD
         {
-            static const int	MAX_CHANNELS = 32;
+            static const int	MAX_CHANNELS = 252;
             static const int    MAX_GROUPS = 4;
             static const int	MAX_SFX = 64;
             static const int	MAX_SONGS = 32;

@@ -42,13 +42,15 @@ namespace Logic
 				}
 			};
 
-			// singleton for the moment
 			static AStar& singleton()
 			{
 				static AStar aStar("");
 				return aStar;
 			}
 		private:
+            static const int NULL_NODE;
+            static const DirectX::SimpleMath::Vector3 OFFSET;
+
 			std::string file;
 			std::vector<NavNode> navNodes; //testing
 
@@ -58,6 +60,7 @@ namespace Logic
             bool renderDebugTri, renderDebugEdges;
 
 			int targetIndex; // save the triangle id to share beetwen path loading
+            DirectX::SimpleMath::Vector3 lastTargetPosition;
             bool targetOutOfBounds;
 		
 			float heuristic(DirectX::SimpleMath::Vector3 const &from,

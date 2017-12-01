@@ -1,5 +1,4 @@
-#define VERTEX_T_SLOT t4
-#include "Vertex.hlsli"
+#include "include/Vertex.hlsli"
 
 #include "LightCalcInclude.hlsli"
 
@@ -22,10 +21,8 @@ cbuffer SkyColors : register(b5)
     float4 AngleSize;
 }
 
-PS_IN VS(uint vertexId : SV_VertexId)
+PS_IN VS(Vertex vertex)
 {
-    Vertex vertex = getVertex(vertexId);
-
     PS_IN output = (PS_IN) 0;
 
     output.pos = float4(vertex.position, 1);
@@ -44,7 +41,7 @@ float4 PS(PS_IN input) : SV_Target0
     float3 nightGradient = lerp(Base.xyz, Top.xyz, input.lPos.y);
     
     float3 sphereDir = normalize(input.lPos);
-    float angle = dot(sphereDir, AngleSize.xyz);
+    float angle = saturate(dot(sphereDir, AngleSize.xyz));
     angle = pow(angle, 16);
     float3 moonColor = float3(0.4f, 0.35f, 0.25f);
 

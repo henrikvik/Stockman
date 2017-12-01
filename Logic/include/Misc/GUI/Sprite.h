@@ -14,8 +14,8 @@ public:
         CENTER
         
     };
-    Sprite(float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha = 1);
-    Sprite(Points screenpoint, Points spritepoint, float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha = 1);
+    Sprite(float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha = 1, bool isMoveable = false);
+    Sprite(Points screenpoint, Points spritepoint, float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha = 1, bool isMoveable = false);
     Sprite();
     ~Sprite();
 
@@ -28,6 +28,8 @@ public:
     void setTopYToProcent(float procent, float yMax, float ymaxPos, float yminPos);
     FloatRect getScreenRect()const;
     FloatRect getTextureRect()const;
+    void setAlpha(float alpha);
+    float getAlpha()const;
     void render() const;
 private:
     SpriteRenderInfo sprite;

@@ -27,7 +27,6 @@
 #define PLAYER_STARTING_HP				3
 #define PLAYER_MOUSE_SENSETIVITY		0.1f
 #define PLAYER_MOVEMENT_MAX_SPEED		0.015f
-#define PLAYER_JUMP_SPEED				0.008f
 
 namespace Sound
 {
@@ -55,7 +54,7 @@ namespace Logic
 		};
 
 	private:
-        static const int MIN_Y;
+        static const int MIN_Y, MAX_HP;
 
         // Special modes (move to other class)
         bool m_godMode, m_noclip;
@@ -90,9 +89,12 @@ namespace Logic
 		float m_jumpSpeed;
 
 		bool m_wishJump;
+        bool m_firstJump;
 		btVector3 m_wishDir;
 		float m_wishDirForward;
 		float m_wishDirRight;
+
+        bool m_wasInAir;
 
 		// Sound
 		Sound::ListenerData* m_listenerData;
@@ -129,6 +131,11 @@ namespace Logic
 		void crouch(float deltaTime);
 		void mouseMovement(float deltaTime, DirectX::Mouse::State* ms);
 
+        DirectX::SimpleMath::Vector2 getWindowMidPoint();
+
+        // Player step
+        void stepPlayer(float deltaTime);
+
 		// Sound
 		void updateSound(float deltaTime);
 
@@ -161,7 +168,8 @@ namespace Logic
 		void readFromFile();
 
 		void takeDamage(int damage, bool damageThroughProtection = false);
-		int getHP() const;
+        int getHP() const;
+        int getMaxHP() const;
 
 		btKinematicCharacterController* getCharController();
 		btGhostObject* getGhostObject();

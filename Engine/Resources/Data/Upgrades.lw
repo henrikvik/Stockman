@@ -54,46 +54,46 @@
 }
 { // INCREASE RATE OF FIRE 
 	"flags": 65537; // 0x1 + 0x10000
-	"increaseCooldown" : 0.2f;
+	"increaseCooldown" : 0.25f;
 	"increaseDamage" : 0;
 	"increaseSize" : 0;
 	"increaseAmmoCap" : 0;
 	"increaseMagSize" : 0;
     "movementSpeed" : 0f;
 }
-{ // decrease skill cd by 20% permanently
+{ // decrease skill cd by 35% permanently
 	"flags": 131076; // 0x4 + 0x20000
-	"increaseCooldown" : 0.2f;
+	"increaseCooldown" : 0.35f;
 	"increaseDamage" : 0;
 	"increaseSize" : 0;
 	"increaseAmmoCap" : 0;
 	"increaseMagSize" : 0;
     "movementSpeed" : 0f;
 }
-{ // add 30% movement speed permanently
+{ // add 35% movement speed permanently
 	"flags": 262144; // 0x40000
 	"increaseCooldown" : 0f;
 	"increaseDamage" : 0;
 	"increaseSize" : 0;
 	"increaseAmmoCap" : 0;
 	"increaseMagSize" : 0;
-    "movementSpeed" : 0.3f;
+    "movementSpeed" : 0.35f;
 }
-{ // add mag size 40 permanently
+{ // add mag size 30 permanently
 	"flags": 65; // 0x1 + 0x40
 	"increaseCooldown" : 0f;
 	"increaseDamage" : 0;
 	"increaseSize" : 0;
-	"increaseAmmoCap" : 40;
-	"increaseMagSize" : 0;
+	"increaseAmmoCap" : 0;
+	"increaseMagSize" : 30;
     "movementSpeed" : 0f;
 }
-{ // add ammo cap 20 permanently
+{ // add ammo cap 250 permanently
 	"flags": 33; // 0x1 + 0x20
 	"increaseCooldown" : 0f;
 	"increaseDamage" : 0;
 	"increaseSize" : 0;
-	"increaseAmmoCap" : 20;
+	"increaseAmmoCap" : 250;
 	"increaseMagSize" : 0;
-    "movementSpeed" : 0.0f;
+    "movementSpeed" : 0f;
 }
