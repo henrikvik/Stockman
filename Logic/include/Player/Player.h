@@ -209,6 +209,7 @@ namespace Logic
         void setCurrentSkills(int first, int second);
         int getCurrentSkill0() const;
         int getCurrentSkill1() const;
+        bool getReloding() const;
 
         // AI
         void setTargetedBy(Entity *entity);
