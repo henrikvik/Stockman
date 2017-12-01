@@ -927,7 +927,7 @@ DirectX::SimpleMath::Vector2 Player::getWindowMidPoint()
     RECT rect;
     GetWindowRect(*Engine::g_window, &rect);
 
-    return DirectX::SimpleMath::Vector2((rect.left + rect.right) * 0.5f, (rect.top + rect.bottom) * 0.5f); // Returns mid point for window
+    return DirectX::SimpleMath::Vector2((rect.left + rect.right* 0.5f) , (rect.top + rect.bottom* 0.5f) ); // Returns mid point for window
 }
 
 

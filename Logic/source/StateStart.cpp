@@ -15,6 +15,7 @@ using namespace Logic;
 StateStart::StateStart(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
+    Sound::NoiseMachine::Get().loadMenuSounds();
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_MAIN_MENU, nullptr, true);
 
@@ -40,6 +41,8 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     // Gives a small mem leak as for right now, but it's too cool to remove ^.^
     // Initializing campfire
     m_campfire = Graphics::FXSystem->getEffect("FireSmoke");
+
+    
 }
 
 StateStart::~StateStart()
@@ -47,6 +50,7 @@ StateStart::~StateStart()
     delete m_menu;
     delete m_physics;
     delete m_map;
+    Sound::NoiseMachine::Get().clearCurrent();
 }
 
 void StateStart::reset() { }

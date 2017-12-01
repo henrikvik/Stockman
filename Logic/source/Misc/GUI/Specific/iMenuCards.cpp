@@ -39,19 +39,6 @@ void iMenuCards::update(int x, int y, float deltaTime)
 
 void iMenuCards::render() const
 {
-    //// We only render if the cards have been created
-    //if (m_renderable)
-    //{
-    //    for (int i = 0; i < MAX_CARDS; i++)
-    //    {
-    //        QueueRender(m_cardGraphic[i].title);
-    //        QueueRender(m_cardGraphic[i].description);
-    //        QueueRender(m_cardGraphic[i].description1);
-    //    }
-    //}
-
-    // For some unkown reason, UI is taking care of this instead. Ok.
-
     QueueRender(m_spriteRenderInfo);
 }
 
