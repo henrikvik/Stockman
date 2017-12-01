@@ -657,6 +657,8 @@ void Player::updateSpecific(float deltaTime)
             m_skillManager->release(SkillManager::ID::TERTIARY);
         PROFILE_END();
 
+        m_weaponManager->getWeaponLoadout(2)->weapon[0]->update(deltaTime);
+
         // Check if reloading
         if (!m_weaponManager->isReloading() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
         {

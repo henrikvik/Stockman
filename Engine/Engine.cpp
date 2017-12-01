@@ -378,6 +378,11 @@ int Engine::run()
         if (!running) break;
 
         auto state = mKeyboard->GetState();
+
+        bool ASDASD = state.LeftAlt;
+            ShowCursor(true);
+        DirectX::Mouse::Get().SetMode(ASDASD ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE);
+
         mTracker->Update(state);
 
         static BOOL test = false;

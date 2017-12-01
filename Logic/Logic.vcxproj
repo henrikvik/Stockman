@@ -276,7 +276,6 @@ xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
     <ClInclude Include="include\Entity\Object.h" />
     <ClInclude Include="include\Misc\MapStructs.h" />
     <ClInclude Include="include\Misc\RandomGenerator.h" />
-    <ClInclude Include="include\Misc\RenderRegister.h" />
     <ClInclude Include="include\Misc\Sound\NoiseStructs.h" />
     <ClInclude Include="include\Misc\Sound\SoundSource.h" />
     <ClInclude Include="include\Physics\Physics.h" />
@@ -299,6 +298,7 @@ xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
     <ClInclude Include="include\Player\Weapon\Weapon.h" />
     <ClInclude Include="include\Player\Weapon\WeaponAnimation.h" />
     <ClInclude Include="include\Player\Weapon\WeaponFreezeGun.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponLightbow.h" />
     <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
     <ClInclude Include="include\Player\Weapon\WeaponMeleeSwing.h" />
     <ClInclude Include="include\Projectile\ProjectileManager.h" />
@@ -406,6 +406,7 @@ xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
     <ClCompile Include="source\Player\Weapon\ModelAnimation.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponAnimation.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponFreezeGun.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponLightbow.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponMeleeSwing.cpp" />
     <ClCompile Include="source\Projectile\Projectile.cpp" />
     <ClCompile Include="source\Projectile\ProjectileManager.cpp" />
@@ -431,10 +432,6 @@ xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
     <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
     <ClCompile Include="source\AI\Trigger\TriggerAmmoPickup.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponCrossbow.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="include\Player\Skill\gitinclude.txt" />
-    <Text Include="source\Player\Skill\gitinclude.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

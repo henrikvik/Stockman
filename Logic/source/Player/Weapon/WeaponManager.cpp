@@ -6,6 +6,7 @@
 #include <Player\Weapon\WeaponMeleeParry.h>
 #include <Player\Weapon\WeaponMeleeSwing.h>
 #include <Player\Weapon\WeaponAnimation.h>
+#include <Player\Weapon\WeaponLightbow.h>
 #include <Misc\Sound\NoiseMachine.h>
 
 #include <Player\Player.h>
@@ -246,7 +247,16 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     /* WeaponModel */   wl.weaponModel = newd WeaponSledgeHammerAnimation(Resources::Models::Hammer, ModelAnimation::AnimationFrame{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(1.3f, 0.9f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-0.3f, -1.5f, -0.2f)),
-        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 1.f });
+        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 1.f });;
+
+    /* Primary */       auto w = newd WeaponLightbow(projectileManager,
+        ProjectileData(nullptr, false, true, 25, 1.5f, 1, 4.5f, 0.1f, 3000, LightRenderInfo(DirectX::SimpleMath::Color(1, 0.8, 1, 1), .25f, 3.f), Resources::Models::Crossbowbolt, 1, ProjectileTypeNormal, true, false, true, false, { 0.f, -0.4f, 0.f }),
+        Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0,{ -0.5f, -0.5f, 0.f } });
+
+    wl.weapon[0] = w;
+    /* Secondary */     //wl.weapon[1] = wl.weapon[0];
+    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 999, 0, 30, 30,{ 1, 10 },{ 1, 10 }, 1000 });
+
     m_weaponLoadouts.push_back(wl);
 }
 

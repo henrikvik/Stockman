@@ -158,7 +158,7 @@ void WeaponModel::update(float deltaTime, DirectX::SimpleMath::Matrix playerTran
     animation(deltaTime);
 }
 
-const WeaponModel::WeaponModelAnimationInfo& Logic::WeaponModel::getModelInfo() const
+WeaponModel::WeaponModelAnimationInfo& Logic::WeaponModel::getModelInfo()
 {
     return m_mInfo;
 }

@@ -61,6 +61,7 @@ namespace Logic
         void setSpawnFunctions(ProjectileManager &projManager);
 
 		void use(btVector3 position, float yaw, float pitch, Entity& shooter);
+        virtual void update(float dt) {}
         virtual void onUse(std::vector<Projectile*> &projectiles, Entity& shooter) {};
         virtual bool useEnhanced(bool shouldUse) { return true; };
 
