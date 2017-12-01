@@ -1,7 +1,6 @@
 #include <Misc\GUI\iMenuFactory.h>
 #include <Misc\GUI\iMenuAction.h>
 #include <Graphics\include\RenderInfo.h>
-#include "..\..\..\include\Misc\GUI\iMenuCards.h"
 #include <Engine\Settings.h>
 #include <Misc\GUI\iMenuFX.h>
 
@@ -149,9 +148,9 @@ iMenuHighscore * iMenuFactory::buildMenuHighscoreGameOver()
     return menu;
 }
 
-iMenu * iMenuFactory::buildMenuGameover()
+iMenuGameOver * iMenuFactory::buildMenuGameover()
 {
-    iMenu* menu = newd iMenu(iMenu::GameOver);
+    iMenuGameOver* menu = newd iMenuGameOver(iMenu::GameOver);
     iMenu::ButtonData btn;
 
     menu->addBackground(Resources::Textures::Gameover, 1.0f);

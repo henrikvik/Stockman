@@ -573,6 +573,8 @@ void HUDManager::reset()
     info.scoreMul = 0;
 
     skillChoosen = false;
+    showWaveCleared = false;
+    nextWaveSlideTimer = 5000.0f;
     
     HUDElements.clear();
     skillList.clear();
@@ -580,6 +582,7 @@ void HUDManager::reset()
     skillMasks.clear();
     staticElements.clear();
     HUDText.clear();
-    constructGUIElements();
     waveSprites.clear();
+    constructGUIElements();
+   
 }
