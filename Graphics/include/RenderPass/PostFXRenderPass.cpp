@@ -9,14 +9,16 @@ namespace Graphics
     PostFXRenderPass::PostFXRenderPass(
         PingPongBuffer *backBuffers,
         ID3D11RenderTargetView *target,
-        ID3D11ShaderResourceView *bloomSRV
+        ID3D11ShaderResourceView *bloomSRV,
+        ID3D11ShaderResourceView *ssaoMap
     ) :
         RenderPass({}, {}, {}, nullptr),
         m_BloomSRV(bloomSRV),
         m_Target(target),
         m_BulletTimeBuffer(),
         m_PostFXShader(Resources::Shaders::PostFX),
-        backBuffers(backBuffers)
+        backBuffers(backBuffers),
+        ssaoMap(ssaoMap)
     {
         float temp = 1.f;
         m_BulletTimeBuffer.write(Global::context, &temp, sizeof(float));
@@ -70,6 +72,7 @@ namespace Graphics
 
     void PostFXRenderPass::render() const
     {
+        
         backBuffers->swap();
 
         Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -83,6 +86,7 @@ namespace Graphics
         Global::context->PSSetConstantBuffers(0, 1, m_BulletTimeBuffer);
         Global::context->PSSetShaderResources(0, 1, *backBuffers);
         Global::context->PSSetShaderResources(1, 1, &m_BloomSRV);
+        Global::context->PSSetShaderResources(2, 1, &ssaoMap);
 
         auto sampler = Global::cStates->LinearClamp();
         Global::context->PSSetSamplers(0, 1, &sampler);

@@ -11,9 +11,9 @@ namespace Graphics
     {
     public:
         SSAORenderPass(
-            PingPongBuffer* backBuffers,
             std::initializer_list<ID3D11RenderTargetView*> targets,
             std::initializer_list<ID3D11ShaderResourceView*> resources = {},
+            std::initializer_list<ID3D11UnorderedAccessView*> uavs = {},
             std::initializer_list<ID3D11Buffer*> buffers = {},
             ID3D11DepthStencilView * depthStencil = nullptr
             );
@@ -32,9 +32,8 @@ namespace Graphics
         ComputeShader blurVertical;
         ComputeShader ssaoMerger;
 
-        ShaderResource ssaoOutput;
         ShaderResource ssaoOutputSwap;
 
-        PingPongBuffer* backBuffers;
+        std::vector<ID3D11UnorderedAccessView*> uavs;
     };
 }
