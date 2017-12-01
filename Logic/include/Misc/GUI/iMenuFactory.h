@@ -5,14 +5,15 @@
 #include <Misc\NonCopyable.h>
 #include <Misc\FileLoader.h>
 #include <Misc\GUI\iMenuAction.h>
-#include <Misc\GUI\iMenuSkillPick.h>
-#include <Misc\GUI\iMenuIntro.h>
-#include <Misc\GUI\iMenuLoading.h>
-#include <Misc\GUI\iMenuHighscore.h>
-#include <Misc\GUI\iMenuFirstTime.h>
-#include <Misc\GUI\iMenuCards.h>
-#include <Misc\GUI\iMenuControls.h>
-#include <Misc\GUI\iMenuSettings.h>
+#include <Misc\GUI\Specific\iMenuSkillPick.h>
+#include <Misc\GUI\Specific\iMenuIntro.h>
+#include <Misc\GUI\Specific\iMenuLoading.h>
+#include <Misc\GUI\Specific\iMenuHighscore.h>
+#include <Misc\GUI\Specific\iMenuFirstTime.h>
+#include <Misc\GUI\Specific\iMenuCards.h>
+#include <Misc\GUI\Specific\iMenuControls.h>
+#include <Misc\GUI\Specific\iMenuSettings.h>
+#include <Misc\GUI\Specific\iMenuGameOver.h>
 
 namespace Logic
 {
@@ -30,7 +31,7 @@ namespace Logic
         iMenuCards*         buildMenuCard();
         iMenuHighscore*     buildMenuHighscore();
         iMenuHighscore*     buildMenuHighscoreGameOver();
-        iMenu*              buildMenuGameover();
+        iMenuGameOver*      buildMenuGameover();
         iMenu*              buildMenuPause();
         iMenu*              buildMenuGameWon();
         iMenuControls*      buildMenuControls();
