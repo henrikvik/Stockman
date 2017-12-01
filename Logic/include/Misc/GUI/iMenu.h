@@ -117,6 +117,8 @@ namespace Logic
         bool                    m_drawButtons;
         bool                    m_drawSliders;
         bool                    m_drawMenu;
+
+        Slider*                  m_sld;
     };
 }
 

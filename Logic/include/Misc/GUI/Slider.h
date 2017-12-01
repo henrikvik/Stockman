@@ -41,7 +41,7 @@ namespace Logic
         );
         ~Slider();
 
-        void updateOnPress(int posX, int posY);
+        bool updateOnPress(int posX, int posY);
         void updateOnRelease(int posX, int posY);
         void hoverOver(int posX, int posY);
         bool animationTransition(float dt, float maxAnimationTime, bool forward);

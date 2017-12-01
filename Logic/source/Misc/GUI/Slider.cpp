@@ -87,7 +87,7 @@ Slider::~Slider()
 {
 }
 
-void Slider::updateOnPress(int posX, int posY)
+bool Slider::updateOnPress(int posX, int posY)
 {
     if (renderInfo.screenRect.contains((float(posX) + m_width) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
     {
@@ -149,11 +149,14 @@ void Slider::updateOnPress(int posX, int posY)
                  m_textInput = std::to_wstring(test);
              }
              m_textRenderInfo.text = m_textInput.c_str();
+
+             return true;
         }
     }
     else
     {
         setState(INACTIVE);
+        return false;
     }
 }
 

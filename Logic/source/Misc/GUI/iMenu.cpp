@@ -35,7 +35,10 @@ float getFadingTimer(iMenu::MenuGroup group)
     return DEFAULT_FADING_TIMER;
 }
 
-iMenu::iMenu(MenuGroup group) : m_group(group), m_effect(nullptr), m_drawButtons(false), m_drawSliders(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_fadingTimer(getFadingTimer(group)), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) { }
+iMenu::iMenu(MenuGroup group) : m_group(group), m_effect(nullptr), m_drawButtons(false), m_drawSliders(false), m_drawMenu(false), m_pressed(true), m_safeToRemove(false), m_isFading(false), m_fadingTimer(getFadingTimer(group)), m_mouseMode(DirectX::Mouse::MODE_ABSOLUTE) 
+{ 
+    m_sld = nullptr;
+}
 
 iMenu::~iMenu() { if (m_effect) delete m_effect; }
 
@@ -147,13 +150,30 @@ void iMenu::updateClick(int x, int y)
                 btn.updateOnPress(x, y);
         }
 
-        for (Slider& sld : m_sliders)
-            sld.updateOnPress(x, y);
+        if (m_sld == nullptr)
+        {
+            for (Slider& sld : m_sliders)
+            {
+                if (sld.updateOnPress(x, y))
+                {
+                    m_sld = &sld;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            m_sld->updateOnPress(x, y);
+        }
     }
     else if (!clickWasPressed && m_pressed)
     {
-        for (Slider& sld : m_sliders)
-            sld.updateOnRelease(x, y);
+
+        if (m_sld != nullptr)
+        {
+            m_sld->updateOnRelease(x, y);
+            m_sld = nullptr;
+        }
         m_pressed = false;
     }
 }
