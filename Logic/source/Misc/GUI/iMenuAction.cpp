@@ -4,7 +4,7 @@
 #include <StateMachine\StateSecondary.h>
 #include <StatePlaying.h>
 #include <Misc\GUI\iMenuMachine.h>
-#include <Misc\GUI\iMenuSkillPick.h>
+#include <Misc\GUI\Specific\iMenuSkillPick.h>
 #include <Engine\Typing.h>
 #include <Engine\Settings.h>
 #include <State.h>
