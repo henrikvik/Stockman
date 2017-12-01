@@ -38,7 +38,7 @@ HUDManager::HUDManager()
     showWaveCleared = false;
     nextWaveSlideTimer = WAVE_SLIDE_TIME;
     enrageSlideTimer = ENRAGE_SLIDE_TIME;
-    bool wasEnraged = false;
+    wasEnraged = false;
 }
 
 HUDManager::~HUDManager()
@@ -623,7 +623,7 @@ void HUDManager::reset()
 
     skillChoosen = false;
     showWaveCleared = false;
-    bool wasEnraged = false;
+    wasEnraged = false;
     nextWaveSlideTimer = WAVE_SLIDE_TIME;
     enrageSlideTimer = ENRAGE_SLIDE_TIME;
     
@@ -635,6 +635,7 @@ void HUDManager::reset()
     staticElements.clear();
     HUDText.clear();
     waveSprites.clear();
+
     constructGUIElements();
    
 }

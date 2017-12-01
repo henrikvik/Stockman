@@ -291,6 +291,8 @@ void Player::reset()
     m_skillManager->reset();
     currentWeapon = 0;
 	m_hp = 3;
+    currentSkills[0] = -1;;
+    currentSkills[1] = -1;
     m_moveSpeedMod = 1.0f;
     m_permanentSpeedMod = 1.0f;
     m_jumpSpeedMod = 1.0f;
