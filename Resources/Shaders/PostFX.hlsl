@@ -24,6 +24,7 @@ cbuffer FXConstants : register(b0)
 
 Texture2D Backbuffer : register(t0);
 Texture2D GlowTexture : register(t1);
+Texture2D SSSAOTexture : register(t2);
 
 SamplerState LinearClamp : register(s0);
 
@@ -35,6 +36,8 @@ float4 PS(VSOut input) : SV_Target0
     glow += 0.4 * GlowTexture.SampleLevel(LinearClamp, input.uv, 0).rgb;
     glow += 0.1 * GlowTexture.SampleLevel(LinearClamp, input.uv, 1).rgb;
     glow += 0.5 * GlowTexture.SampleLevel(LinearClamp, input.uv, 2).rgb;
+
+    color = color.rgb * SSSAOTexture.Sample(LinearClamp, input.uv).r;
 
     color = adjustSaturation(color, GLOW_ORIGINAL_SATURATION) * GLOW_ORIGINAL_INTENSITY;
     glow = adjustSaturation(glow, GLOW_SATURATION) * GLOW_INTENSITY;
