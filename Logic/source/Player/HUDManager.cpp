@@ -337,6 +337,17 @@ void HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
     }
+
+
+    //enmeies remaining text
+    if (info.enemiesRemaining > 0)
+    {
+        text.font = Resources::Fonts::KG14;
+        text.position = DirectX::SimpleMath::Vector2(510, 44);
+        text.text = L"ENEMIES REMAINING:" + std::to_wstring(info.enemiesRemaining);
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
    
 }
 
