@@ -1,7 +1,7 @@
 #include <StatePlaying.h>
 #include <StateMachine\StateBuffer.h>
 #include <State.h>
-#include <Misc\GUI\iMenuCards.h>
+#include <Misc\GUI\Specific\iMenuCards.h>
 #include <Misc\Network\dbConnect.h>
 #include <Misc\CommandsFile.h>
 

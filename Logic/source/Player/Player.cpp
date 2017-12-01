@@ -210,17 +210,17 @@ void Player::registerDebugCmds()
     {
         return "x: " + std::to_string((double) getPosition().x) + ", y: " + std::to_string((double) getPosition().y) + ", z: " + std::to_string((double) getPosition().z);
     });
-    win->registerCommand("LOG_INCREASE_ALL_DAMAGE", [&](std::vector<std::string> &args)->std::string
+    win->registerCommand("LOG_INCREASE_DAMAGE", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addUpgrade(StatusManager::P1_DAMAGE);
 
-        return "All weapons do 1 extra damage";
+        return "20% extra damage";
     });
     win->registerCommand("LOG_INCREASE_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addUpgrade(StatusManager::P20_PERC_MOVEMENTSPEED);
 
-        return "Player is permanently 20 percent faster";
+        return "Player is permanently 20% faster";
     });
     win->registerCommand("LOG_DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
     {
@@ -256,7 +256,7 @@ void Player::registerDebugCmds()
     {
         getStatusManager().addUpgrade(StatusManager::P45_PERC_JUMP);
 
-        return "You jump 20% higher";
+        return "You jump 45% higher";
     });
     win->registerCommand("LOG_PLAYER_SET_BURNING", [&](std::vector<std::string> &args)->std::string
     {
@@ -334,8 +334,6 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
 {
 	long long flags = effect.getStandards()->flags;
     
-    m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED * m_permanentSpeedMod;
-    m_moveSpeedMod = 1.0f;
     if (flags & Effect::EFFECT_BOUNCE)
     {
         m_charController->jump({ 0.f, PLAYER_JUMP_SPEED * 3, 0.f });
@@ -348,10 +346,10 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     }
     if (flags & Effect::EFFECT_IS_STUNNED)
     {
-        m_moveSpeedMod *= effect.getModifiers()->modifyMovementSpeed;
+        //m_moveSpeedMod *= effect.getModifiers()->modifyMovementSpeed;
         m_stunned = true;
     }
-    if (flags & Effect::EFFECT_MOVE_FASTER)
+    /*if (flags & Effect::EFFECT_MOVE_FASTER)
     {
         m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
         m_moveMaxSpeed *= m_moveSpeedMod;
@@ -365,7 +363,7 @@ void Player::affect(int stacks, Effect const &effect, float deltaTime)
     {
         m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
         m_moveMaxSpeed *= m_moveSpeedMod;
-    }
+    }*/
     if (flags & Effect::EFFECT_IS_WEAPON)
     {
         m_weaponManager->affect(effect);
@@ -720,7 +718,7 @@ void Player::move(float deltaTime)
     if (!m_wishJump)
 	{
         m_firstJump = true;
-		float friction = (m_moveMaxSpeed * 2 - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_FRICTION; // smooth friction
+		float friction = (m_moveMaxSpeed * m_permanentSpeedMod * 2 - (m_moveMaxSpeed * m_permanentSpeedMod - m_moveSpeed)) * PLAYER_FRICTION; // smooth friction
 		applyFriction(deltaTime, friction > PLAYER_FRICTION_MIN ? friction : PLAYER_FRICTION_MIN);
 
 		// if player wants to move
@@ -772,7 +770,7 @@ void Player::move(float deltaTime)
 
 void Player::airMove(float deltaTime)
 {
-	applyAirFriction(deltaTime, (m_moveMaxSpeed - (m_moveMaxSpeed - m_moveSpeed)) * PLAYER_AIR_FRICTION); // smooth friction
+	applyAirFriction(deltaTime, (m_moveMaxSpeed * m_permanentSpeedMod - (m_moveMaxSpeed * m_permanentSpeedMod - m_moveSpeed)) * PLAYER_AIR_FRICTION); // smooth friction
 
 	accelerate(deltaTime, m_airAcceleration);
 
@@ -782,8 +780,8 @@ void Player::airMove(float deltaTime)
 void Player::accelerate(float deltaTime, float acceleration)
 {
     m_moveSpeed += acceleration * deltaTime * m_moveSpeedMod * m_permanentSpeedMod;
-    if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > m_moveMaxSpeed)
-        m_moveSpeed = m_moveMaxSpeed;
+    if (m_playerState != PlayerState::IN_AIR && !m_wishJump && m_moveSpeed > (m_moveMaxSpeed * m_permanentSpeedMod))
+        m_moveSpeed = m_moveMaxSpeed * m_permanentSpeedMod;
 }
 
 void Player::stepPlayer(float deltaTime)

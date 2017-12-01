@@ -52,9 +52,9 @@ void Logic::AmmoContainer::setEnhancedAmmo(int ammo)
     m_aInfo.enhancedAmmo = ammo;
 }
 
-void AmmoContainer::fillMag(int modifier)
+void AmmoContainer::fillMag(float modifier)
 {
-    m_aInfo.magAmmo = m_aInfo.magSize + modifier;
+    m_aInfo.magAmmo = static_cast<int>(m_aInfo.magSize * modifier);
 
     // *OLD*
     /*int toAdd = m_aInfo.magSize + modifier - m_aInfo.magAmmo;

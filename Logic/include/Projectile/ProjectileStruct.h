@@ -29,7 +29,7 @@ namespace Logic
 
 	struct ProjectileData
 	{
-		int damage;				// Projectile Damage
+		float damage;				// Projectile Damage
 		float scale;				// Scale of the projectile
 		float mass;					// Mass of projectile
 		float speed;				// Bullet speed
@@ -54,10 +54,10 @@ namespace Logic
 
         btVector3 modelOffset;
 
-        ProjectileData() : hasEffect(false), effectActivated(false), effectVelocity(false), effect({}), damage(1), scale(1.f),
+        ProjectileData() : hasEffect(false), effectActivated(false), effectVelocity(false), effect({}), damage(1.f), scale(1.f),
             mass(1.f), speed(1.f), gravityModifier(0.f), ttl(1000), meshID(Resources::Models::UnitCube), materialID(1),
             type(ProjectileTypeNormal), isSensor(false), enemyBullet(false), dmgFallOff(false), modelOffset({ 0.f, 0.f, 0.f }) {}
-        ProjectileData(const char *fx, bool effectVelocity, bool effectActivated, int inDamage, float inScale,
+        ProjectileData(const char *fx, bool effectVelocity, bool effectActivated, float inDamage, float inScale,
             float inMass, float inSpeed, float inGravityModifier, float inTTL, LightRenderInfo inLightInfo,
             Resources::Models::Files inMeshID, int inMaterialID, ProjectileType inType = ProjectileTypeNormal,
             bool inIsSensor = false, bool inEnemyBullet = false, bool inShouldRender = true, bool inDmgFallOff = false, btVector3 inModelOffset = { 0.f, 0.f, 0.f })
