@@ -271,12 +271,25 @@ void HUDManager::updateTextElements()
     //current ammo in mag of active weapon
     if (info.currentWeapon != 2)
     {
-        text.text = std::to_wstring(info.activeAmmo[0]);
-        text.position = DirectX::SimpleMath::Vector2(750, 400);
-        text.font = Resources::Fonts::KG14;
+        if (info.isReloding)
+        {
+            text.text = L"RELOADING";
+            text.position = DirectX::SimpleMath::Vector2(750, 400);
+            text.font = Resources::Fonts::KG14;
 
-        text.isMoveable = false;
-        HUDText.push_back(TextRenderInfo(text));
+            text.isMoveable = false;
+            HUDText.push_back(TextRenderInfo(text));
+        }
+        else
+        {
+            text.text = std::to_wstring(info.activeAmmo[0]);
+            text.position = DirectX::SimpleMath::Vector2(750, 400);
+            text.font = Resources::Fonts::KG14;
+
+            text.isMoveable = false;
+            HUDText.push_back(TextRenderInfo(text));
+        }
+        
     }
 
     //time and enrage/ survive
@@ -463,6 +476,8 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.inactiveAmmo[HUDManager::TOTAL_AMMO]   = player.getInactiveAmmoContainer().getAmmoInfo().enhancedAmmo;// TODO GET AMMO
     info.sledge = player.isUsingMeleeWeapon();
     info.currentWeapon = player.getCurrentWeapon();
+    info.isReloding = player.getReloding();
+
 
     //skill cooldowns are inverted for some reason 
     const Skill* secondary = player.getSkill(SkillManager::ID::SECONDARY);
