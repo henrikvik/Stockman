@@ -25,6 +25,7 @@ namespace Resources
             if (strcmp(str, "Stock_Map_V1______") == 0) return Stock_Map_V1______;
             if (strcmp(str, "Stock_Map_V4") == 0) return Stock_Map_V4;
             if (strcmp(str, "Stock_Map_V5") == 0) return Stock_Map_V5;
+            if (strcmp(str, "Stock_Map_V6") == 0) return Stock_Map_V6;
             if (strcmp(str, "Test_Map") == 0) return Test_Map;
             throw "Could not find matching enum.";
         }
@@ -44,6 +45,7 @@ namespace Resources
             if (strcmp(str, "Crossbowbolt") == 0) return Crossbowbolt;
             if (strcmp(str, "Crossbowbolts") == 0) return Crossbowbolts;
             if (strcmp(str, "Dead_Tree") == 0) return Dead_Tree;
+            if (strcmp(str, "Docks") == 0) return Docks;
             if (strcmp(str, "Fence1") == 0) return Fence1;
             if (strcmp(str, "Fence2") == 0) return Fence2;
             if (strcmp(str, "FencePost") == 0) return FencePost;
@@ -67,11 +69,13 @@ namespace Resources
             if (strcmp(str, "Lower_Island") == 0) return Lower_Island;
             if (strcmp(str, "Market_Tent") == 0) return Market_Tent;
             if (strcmp(str, "MenuScene") == 0) return MenuScene;
+            if (strcmp(str, "Mountain") == 0) return Mountain;
             if (strcmp(str, "Rock1") == 0) return Rock1;
             if (strcmp(str, "Rock2") == 0) return Rock2;
             if (strcmp(str, "Rock3") == 0) return Rock3;
             if (strcmp(str, "SkySphere") == 0) return SkySphere;
             if (strcmp(str, "Small_Crate") == 0) return Small_Crate;
+            if (strcmp(str, "Snow") == 0) return Snow;
             if (strcmp(str, "SnowHeap") == 0) return SnowHeap;
             if (strcmp(str, "Snow_") == 0) return Snow_;
             if (strcmp(str, "Snow_Heap") == 0) return Snow_Heap;
@@ -83,6 +87,7 @@ namespace Resources
             if (strcmp(str, "Table") == 0) return Table;
             if (strcmp(str, "Tablet1") == 0) return Tablet1;
             if (strcmp(str, "Tee_Pee") == 0) return Tee_Pee;
+            if (strcmp(str, "Tomb_Stone") == 0) return Tomb_Stone;
             if (strcmp(str, "Tree") == 0) return Tree;
             if (strcmp(str, "UnitCube") == 0) return UnitCube;
             throw "Could not find matching enum.";

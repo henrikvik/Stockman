@@ -33,6 +33,7 @@ namespace Resources
             Stock_Map_V1______,
             Stock_Map_V4,
             Stock_Map_V5,
+            Stock_Map_V6,
             Test_Map
         };
         const std::map<Files, const char *> Paths =
@@ -47,6 +48,7 @@ namespace Resources
             {Stock_Map_V1______, R"(..\Resources\Maps\Stock_Map_V1______.toml)"},
             {Stock_Map_V4, R"(..\Resources\Maps\Stock_Map_V4.toml)"},
             {Stock_Map_V5, R"(..\Resources\Maps\Stock_Map_V5.toml)"},
+            {Stock_Map_V6, R"(..\Resources\Maps\Stock_Map_V6.toml)"},
             {Test_Map, R"(..\Resources\Maps\Test_Map.toml)"}
         };
         
@@ -67,6 +69,7 @@ namespace Resources
             Crossbowbolt,
             Crossbowbolts,
             Dead_Tree,
+            Docks,
             Fence1,
             Fence2,
             FencePost,
@@ -90,11 +93,13 @@ namespace Resources
             Lower_Island,
             Market_Tent,
             MenuScene,
+            Mountain,
             Rock1,
             Rock2,
             Rock3,
             SkySphere,
             Small_Crate,
+            Snow,
             SnowHeap,
             Snow_,
             Snow_Heap,
@@ -106,6 +111,7 @@ namespace Resources
             Table,
             Tablet1,
             Tee_Pee,
+            Tomb_Stone,
             Tree,
             UnitCube
         };
@@ -122,6 +128,7 @@ namespace Resources
             {Crossbowbolt, R"(..\Resources\Models\Crossbowbolt.hyb)"},
             {Crossbowbolts, R"(..\Resources\Models\Crossbowbolts.hyb)"},
             {Dead_Tree, R"(..\Resources\Models\Dead_Tree.hyb)"},
+            {Docks, R"(..\Resources\Models\Docks.hyb)"},
             {Fence1, R"(..\Resources\Models\Fence1.hyb)"},
             {Fence2, R"(..\Resources\Models\Fence2.hyb)"},
             {FencePost, R"(..\Resources\Models\FencePost.hyb)"},
@@ -145,11 +152,13 @@ namespace Resources
             {Lower_Island, R"(..\Resources\Models\Lower_Island.hyb)"},
             {Market_Tent, R"(..\Resources\Models\Market_Tent.hyb)"},
             {MenuScene, R"(..\Resources\Models\MenuScene.hyb)"},
+            {Mountain, R"(..\Resources\Models\Mountain.hyb)"},
             {Rock1, R"(..\Resources\Models\Rock1.hyb)"},
             {Rock2, R"(..\Resources\Models\Rock2.hyb)"},
             {Rock3, R"(..\Resources\Models\Rock3.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Small_Crate, R"(..\Resources\Models\Small_Crate.hyb)"},
+            {Snow, R"(..\Resources\Models\Snow.hyb)"},
             {SnowHeap, R"(..\Resources\Models\SnowHeap.hyb)"},
             {Snow_, R"(..\Resources\Models\Snow_.hyb)"},
             {Snow_Heap, R"(..\Resources\Models\Snow_Heap.hyb)"},
@@ -161,6 +170,7 @@ namespace Resources
             {Table, R"(..\Resources\Models\Table.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {Tee_Pee, R"(..\Resources\Models\Tee_Pee.hyb)"},
+            {Tomb_Stone, R"(..\Resources\Models\Tomb_Stone.hyb)"},
             {Tree, R"(..\Resources\Models\Tree.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
