@@ -43,6 +43,8 @@ namespace Graphics
         ShaderResource normalMap;
         DepthStencil shadowMap;
         DepthStencil depthStencil;
+        ShaderResource ssaoOutput;
+
 
 
         ID3D11ShaderResourceView *m_BloomSRV;

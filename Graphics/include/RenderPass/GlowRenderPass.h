@@ -10,7 +10,6 @@ namespace Graphics {
     {
     public:
         GlowRenderPass(
-            PingPongBuffer * backBuffers,
             ID3D11ShaderResourceView *bloomSRV,
             std::vector<ID3D11ShaderResourceView *> bloomSRVChain,
             std::vector<ID3D11RenderTargetView *> bloomRTVChain
@@ -36,8 +35,6 @@ namespace Graphics {
 
         ID3D11ShaderResourceView *m_BlurTempSRV;
         ID3D11RenderTargetView *m_BlurTempRTV;
-
-        PingPongBuffer *backBuffers;
 
         void createMips();
         void setMipViewPort(int level) const;
