@@ -51,8 +51,8 @@ void NoiseMachine::init()
 
 	// Initialize sounds
 	initGroups(SOUNDSETTINGS::MUTE_ALL);
-    int nrSFX = initSFX(SOUNDSETTINGS::SFX_LOAD_MODE);    
-    int nrSongs = initMusic (SOUNDSETTINGS::MUSIC_LOAD_MODE);
+    //int nrSFX = initSFX(SOUNDSETTINGS::SFX_LOAD_MODE);    
+    //int nrSongs = initMusic (SOUNDSETTINGS::MUSIC_LOAD_MODE);
 
     // Print information about noisemachine
 #ifdef DEBUG_WRITE_INITIALIZING
@@ -104,6 +104,31 @@ void NoiseMachine::clear()
 	m_system = nullptr;
 }
 
+void Sound::NoiseMachine::clearCurrent()
+{
+    // Release sounds
+    for (int i = 0; i < THRESHOLD::MAX_SFX; i++)
+    {
+        if (m_sfx[i] != nullptr)
+        {
+            ERRCHECK(m_sfx[i]->data->release());
+            delete m_sfx[i];
+            m_sfx[i] = nullptr;
+        }
+    }
+
+    // Release music
+    for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)
+    {
+        if (m_music[i] != nullptr)
+        {
+            ERRCHECK(m_music[i]->data->release());
+            delete m_music[i];
+            m_music[i] = nullptr;
+        }
+    }
+}
+
 // Prints out information about the current playing channels (Just for debugging, can be removed, will work without it)
 void NoiseMachine::update(ListenerData& listener)
 {
@@ -120,6 +145,8 @@ void NoiseMachine::update(ListenerData& listener)
         printf("Sound error: %s\n", ex.what());
     }
 }
+
+
 
 // Stop all channels in each group
 void NoiseMachine::stopAllGroups()
@@ -303,6 +330,139 @@ int NoiseMachine::initMusic(LOAD_MODE loadMode)
     }
 
     return count;
+}
+
+int Sound::NoiseMachine::loadMenuSounds()
+{
+    LOAD_MODE loadMode = SOUNDSETTINGS::MUSIC_LOAD_MODE;
+    int totalCount = 0;
+    // Init all the music here
+    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_MAIN_MENU, CHANNEL_GROUP::CHANNEL_MUSIC, "stockman.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::AMBIENT_STORM, CHANNEL_GROUP::CHANNEL_AMBIENT, "ambient_snow.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+
+
+    // Setting the thresholds of where the listener can hear the music
+    int count = 0;
+    for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)
+    {
+        if (m_music[i])
+        {
+            count++;
+            m_music[i]->data->set3DMinMaxDistance((float)THRESHOLD::MUSIC_MIN_DIST, (float)THRESHOLD::MUSIC_MAX_DIST);
+        }
+    }
+
+    totalCount += count;
+
+    loadMode = SOUNDSETTINGS::SFX_LOAD_MODE;
+    // Init all the sfx here
+    ERRCHECK(createSound(loadMode, SFX::HELLO, CHANNEL_GROUP::CHANNEL_SFX, "hello.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_PRESS, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_press.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_HOVER, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_hover.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::START_GAME, CHANNEL_GROUP::CHANNEL_SFX, "start.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::CAMPFIRE, CHANNEL_GROUP::CHANNEL_SFX, "Campfire.ogg", FMOD_3D_LINEARROLLOFF | FMOD_LOOP_NORMAL));
+
+    // Setting the thresholds of where the listener can hear the sfx
+    count = 0;
+    for (int i = 0; i < THRESHOLD::MAX_SFX; i++)
+    {
+        if (m_sfx[i])
+        {
+            count++;
+            m_sfx[i]->data->set3DMinMaxDistance((float)THRESHOLD::SFX_MIN_DIST, (float)THRESHOLD::SFX_MAX_DIST);
+        }
+    }
+
+    totalCount += count;
+
+
+    return totalCount;
+}
+
+int Sound::NoiseMachine::loadPlaySounds()
+{
+
+    LOAD_MODE loadMode = SOUNDSETTINGS::MUSIC_LOAD_MODE;
+    int totalCount = 0;
+    // Init all the music here
+    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_IN_GAME, CHANNEL_GROUP::CHANNEL_MUSIC, "beyond.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::MUSIC_CREDITS, CHANNEL_GROUP::CHANNEL_MUSIC, "lab.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::AMBIENT_STORM, CHANNEL_GROUP::CHANNEL_AMBIENT, "ambient_snow.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::BOSS_1_MUSIC_1, CHANNEL_GROUP::CHANNEL_MUSIC, "boss1theme1.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, MUSIC::BOSS_1_MUSIC_2, CHANNEL_GROUP::CHANNEL_MUSIC, "boss1theme2.ogg", FMOD_2D | FMOD_LOOP_NORMAL));
+
+
+    // Setting the thresholds of where the listener can hear the music
+    int count = 0;
+    for (int i = 0; i < THRESHOLD::MAX_SONGS; i++)
+    {
+        if (m_music[i])
+        {
+            count++;
+            m_music[i]->data->set3DMinMaxDistance((float)THRESHOLD::MUSIC_MIN_DIST, (float)THRESHOLD::MUSIC_MAX_DIST);
+        }
+    }
+
+    totalCount += count;
+    loadMode = SOUNDSETTINGS::SFX_LOAD_MODE;
+
+    // Init all the sfx here
+    ERRCHECK(createSound(loadMode, SFX::FOOTSTEP_SNOW, CHANNEL_GROUP::CHANNEL_SFX, "Footstep_Snow.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::FOOTSTEP_SMALL, CHANNEL_GROUP::CHANNEL_SFX, "Footstep_Small.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::JUMP, CHANNEL_GROUP::CHANNEL_SFX, "Jump.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_CUTLERY_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Cutlery_1.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_CUTLERY_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Cutlery_2.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_1.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_2.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_THIRD, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_3.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Melee_Swing.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Melee_Parry.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::NECROMANCER_DEATH, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Laugh.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::NECROMANCER_SPAWN, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Spawn.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::SWOOSH, CHANNEL_GROUP::CHANNEL_SFX, "Swoosh.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_1, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability1.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_2, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability2.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_3, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability3.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_4, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability4.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_5, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability5.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_ABILITY_6, CHANNEL_GROUP::CHANNEL_SFX, "boss1Ability6.mp3", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::BOSS_1_MELEE_USE, CHANNEL_GROUP::CHANNEL_SFX, "boss1MeleeUse.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::SKILL_GRAPPLING, CHANNEL_GROUP::CHANNEL_SFX, "Skill_Grappling.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::SKILL_BULLETTIME_HEART, CHANNEL_GROUP::CHANNEL_SFX, "Skill_BulletTime_Heart.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::SKILL_BULLETTIME_TIME, CHANNEL_GROUP::CHANNEL_SFX, "Skill_BulletTime_Time.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::SKILL_CHARGE, CHANNEL_GROUP::CHANNEL_SFX, "Skill_SheildCharge.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_PRESS, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_press.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_HOVER, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_hover.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::TRIGGER_PICKUP, CHANNEL_GROUP::CHANNEL_SFX, "Trigger_Pickup.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::TRIGGER_JUMPPAD, CHANNEL_GROUP::CHANNEL_SFX, "Trigger_Jumppad.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_DEATH, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Death.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_HIT, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Hit.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_AMBIENT_1, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Ambient_1.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::ENEMY_AMBIENT_2, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Ambient_2.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_MAGIC_1, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Magic_1.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_MAGIC_2, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Magic_2.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UPGRADE_UNLOCKED, CHANNEL_GROUP::CHANNEL_SFX, "Upgrade_Unlocked.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::CAMPFIRE, CHANNEL_GROUP::CHANNEL_SFX, "Campfire.ogg", FMOD_3D_LINEARROLLOFF | FMOD_LOOP_NORMAL));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_START, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Start.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_END, CHANNEL_GROUP::CHANNEL_SFX, "Wave_End.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_CARD, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Card.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WAVE_DEAD, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Dead.ogg", FMOD_2D));
+
+    // Setting the thresholds of where the listener can hear the sfx
+    count = 0;
+    for (int i = 0; i < THRESHOLD::MAX_SFX; i++)
+    {
+        if (m_sfx[i])
+        {
+            count++;
+            m_sfx[i]->data->set3DMinMaxDistance((float)THRESHOLD::SFX_MIN_DIST, (float)THRESHOLD::SFX_MAX_DIST);
+        }
+    }
+
+    totalCount += count;
+
+
+    return totalCount;
 }
 
 // Allocates a specific sound effect into memory or stream

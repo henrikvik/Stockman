@@ -5,6 +5,7 @@
 #include <Misc\Network\dbConnect.h>
 #include <Misc\CommandsFile.h>
 
+
 // Input Singletons
 #include <Keyboard.h>
 #include <Mouse.h>
@@ -27,6 +28,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
 {
     // Starting in game-sounds
     Sound::NoiseMachine::Get().stopGroup(Sound::CHANNEL_SFX);
+    Sound::NoiseMachine::Get().loadPlaySounds();
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
 
@@ -67,14 +69,8 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     CommandsFile().doCommandsFromFile();
     RenderQueue::get().clearAllQueues();
 
-    //temp? probably
-    static SpecialEffectRenderInfo info;
-    info.type = info.Snow;
-    info.restart = true;
+    
 
-    m_playTime = 0;
-
-    QueueRender(info);
 }
 
 StatePlaying::~StatePlaying()
@@ -95,6 +91,7 @@ StatePlaying::~StatePlaying()
     {
         highscoreThread.join();
     }
+    Sound::NoiseMachine::Get().clearCurrent();
 }
 
 void StatePlaying::reset()
