@@ -3,6 +3,14 @@
 
 #include <Misc\GUI\iMenu.h>
 
+/*
+
+    Only for getting better footages for the trailer.
+    So yeah, it's lots of shit code. Without comments.
+    Is not interfering with the rest of the program at all.
+
+*/
+
 namespace Logic
 {
     class iMenuCinematic : public iMenu

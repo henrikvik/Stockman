@@ -179,7 +179,7 @@ void StatePlaying::update(float deltaTime)
         m_player->takeDamage(1, 0);
 #endif // _DEBUG
 
-    if (m_player->getHP() <= 0 && m_menu->getType())
+    if (m_player->getHP() <= 0)
         gameOver();
 
 //    if ((m_waveTimeManager.getOnLastWave() && (m_entityManager.getNrOfAliveEnemies() == 0)) || DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::P))
