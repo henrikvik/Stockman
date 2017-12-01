@@ -61,7 +61,8 @@ namespace Graphics
         , normalMap(WIN_WIDTH, WIN_HEIGHT)
 
         , shadowMap(Global::device, SHADOW_RESOLUTION, SHADOW_RESOLUTION)
-
+        , ssaoOutput(WIN_WIDTH / 2, WIN_HEIGHT / 2, DXGI_FORMAT_R8_UNORM)
+        
 
         , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
         , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
@@ -290,17 +291,8 @@ namespace Graphics
                 *sun.getGlobalLightBuffer(),
                 depthStencil
             ),
-            newd SSAORenderPass(&fakeBuffers, {}, { depthStencil, normalMap }, {}, nullptr), //this
-            //newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
+            newd SSAORenderPass({}, { depthStencil, normalMap, ssaoOutput }, {ssaoOutput}, {}, nullptr),
             newd GlowRenderPass(
-                &fakeBuffers,
-                m_BloomSRV,
-                m_BloomSRVMipChain,
-                m_BloomRTVMipChain
-            ), //and this
-            //newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
-            newd GlowRenderPass(
-                &fakeBuffers,
                 m_BloomSRV,
                 m_BloomSRVMipChain,
                 m_BloomRTVMipChain
@@ -324,7 +316,8 @@ namespace Graphics
             newd PostFXRenderPass(
                 &fakeBuffers,
                 backBuffer,
-                m_BloomSRV
+                m_BloomSRV,
+                ssaoOutput
             ),
             newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
             newd GUIRenderPass({backBuffer}),
@@ -448,9 +441,11 @@ namespace Graphics
     void Renderer::clear() const
     {
         static float clearColor[4] = { 0 };
+        static float white[4] = { 1 };
         Global::context->ClearRenderTargetView(backBuffer, clearColor);
         Global::context->ClearRenderTargetView(normalMap, clearColor);
         //fakeBuffers.clear();
+        Global::context->ClearUnorderedAccessViewFloat(ssaoOutput, white);
         Global::context->ClearRenderTargetView(glowMap, clearColor);
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
