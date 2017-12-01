@@ -328,7 +328,7 @@ void HUDManager::updateTextElements()
 
 
     //next wave text
-    if (1.0f - waveSprites.at(0).getAlpha() < FLT_EPSILON)
+    if (waveSprites.size() && 1.0f - waveSprites.at(0).getAlpha() < FLT_EPSILON)
     {
         text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
         text.font = Resources::Fonts::KG26;
@@ -573,6 +573,8 @@ void HUDManager::reset()
     info.scoreMul = 0;
 
     skillChoosen = false;
+    showWaveCleared = false;
+    nextWaveSlideTimer = 5000.0f;
     
     HUDElements.clear();
     skillList.clear();
@@ -580,6 +582,7 @@ void HUDManager::reset()
     skillMasks.clear();
     staticElements.clear();
     HUDText.clear();
-    constructGUIElements();
     waveSprites.clear();
+    constructGUIElements();
+   
 }
