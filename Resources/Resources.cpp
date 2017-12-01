@@ -36,7 +36,6 @@ namespace Resources
         {
             if (strcmp(str, "Ammocrystal") == 0) return Ammocrystal;
             if (strcmp(str, "AmmoPackCrossBolt") == 0) return AmmoPackCrossBolt;
-            if (strcmp(str, "AnimatedSummonUnit") == 0) return AnimatedSummonUnit;
             if (strcmp(str, "AnimationTest") == 0) return AnimationTest;
             if (strcmp(str, "Barrel") == 0) return Barrel;
             if (strcmp(str, "Bridge") == 0) return Bridge;
@@ -57,12 +56,10 @@ namespace Resources
             if (strcmp(str, "Ground") == 0) return Ground;
             if (strcmp(str, "Hammer") == 0) return Hammer;
             if (strcmp(str, "House1") == 0) return House1;
-            if (strcmp(str, "House1old") == 0) return House1old;
             if (strcmp(str, "House2") == 0) return House2;
             if (strcmp(str, "House3") == 0) return House3;
             if (strcmp(str, "Ice") == 0) return Ice;
             if (strcmp(str, "Icecickle") == 0) return Icecickle;
-            if (strcmp(str, "Jumppad") == 0) return Jumppad;
             if (strcmp(str, "Jump_Pad") == 0) return Jump_Pad;
             if (strcmp(str, "Lamp_Post") == 0) return Lamp_Post;
             if (strcmp(str, "Log") == 0) return Log;
