@@ -16,8 +16,11 @@ Slider::Slider(
     float* value,
     float minValue,
     float maxValue,
-    float delimiter) : inactive(inactive), active(active), hover(active)
+    float delimiter)
 {
+    m_inactive = FloatRect(inactive);
+    m_active = FloatRect(active);
+    m_hover = FloatRect(hover);
     m_name = name;
     m_animationStart = DirectX::SimpleMath::Vector2(0, 0);
     m_animationEnd = DirectX::SimpleMath::Vector2(0, 0);
@@ -46,7 +49,7 @@ Slider::Slider(
     X = (((*m_value - m_minValue) / (m_maxValue - m_minValue)) * (m_max - m_min)) + m_min;
 
     FloatRect screenRect = {
-        (X - (m_width * 0.5f)) / WIN_WIDTH,
+        (X + (m_width * 0.5f)) / WIN_WIDTH,
         y / WIN_HEIGHT,
         width / WIN_WIDTH,
         height / WIN_HEIGHT
@@ -69,12 +72,12 @@ Slider::Slider(
     }
     else if (m_name.compare("MouseSlider") == 0)
     {
-        int test = *m_value * 1000;
+        int test = (*m_value + 0.000001) * 1000;
         m_textInput = std::to_wstring(test);
     }
     else
     {
-        int test = *m_value * 100;
+        int test = (*m_value + 0.000001) * 100;
         m_textInput = std::to_wstring(test);
     }
     m_textRenderInfo.text = m_textInput.c_str();
@@ -86,7 +89,7 @@ Slider::~Slider()
 
 void Slider::updateOnPress(int posX, int posY)
 {
-    if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
+    if (renderInfo.screenRect.contains((float(posX) + m_width) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
     {
         if (this->state != ACTIVE)
         {
@@ -118,7 +121,7 @@ void Slider::updateOnPress(int posX, int posY)
             m_tempValue += m_minValue;
 
             FloatRect screenRect = {
-                 (posx - (m_width * 0.5f)) / WIN_WIDTH,
+                (posx + (m_width * 0.5f)) / WIN_WIDTH,
                  m_y / WIN_HEIGHT,
                  m_width / WIN_WIDTH,
                  m_height / WIN_HEIGHT
@@ -137,12 +140,12 @@ void Slider::updateOnPress(int posX, int posY)
              }
              else if (m_name.compare("MouseSlider") == 0)
              {
-                 int test = m_tempValue * 1000;
+                 int test = (m_tempValue + 0.000001) * 1000;
                  m_textInput = std::to_wstring(test);
              }
              else
              {
-                 int test = m_tempValue * 100;
+                 int test = (m_tempValue + 0.000001) * 100;
                  m_textInput = std::to_wstring(test);
              }
              m_textRenderInfo.text = m_textInput.c_str();
@@ -156,7 +159,7 @@ void Slider::updateOnPress(int posX, int posY)
 
 void Logic::Slider::updateOnRelease(int posX, int posY)
 {
-    if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
+    if (renderInfo.screenRect.contains((float(posX) + m_width) / WIN_WIDTH, float(posY) / WIN_HEIGHT) || this->state == ACTIVE)
     {
         setState(Slider::INACTIVE);
         *m_value = m_tempValue;
@@ -211,13 +214,13 @@ void Slider::setState(State state)
     switch (state)
     {
     case INACTIVE:
-        renderInfo.textureRect = inactive;
+        renderInfo.textureRect = m_inactive;
         break;
     case ACTIVE:
-        renderInfo.textureRect = active;
+        renderInfo.textureRect = m_active;
         break;
     case HOVER:
-        renderInfo.textureRect = hover;
+        renderInfo.textureRect = m_hover;
         break;
     }
 }
@@ -229,9 +232,9 @@ void Slider::setAlpha(float alpha)
 
 void Slider::setUVS(FloatRect newUVs)
 {
-    this->inactive = newUVs;
-    this->active = newUVs;
-    this->hover = newUVs;
+    m_inactive = newUVs;
+    m_active = newUVs;
+    m_hover = newUVs;
 }
 
 void Slider::render() const

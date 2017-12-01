@@ -359,8 +359,8 @@
 {
 	"buttonName" : "MenuSettingsVideoWindowedLeft";
 	"texture" : 7;
-	"xPos" : 630.0f;
-	"yPos" : 130.0f;
+	"xPos" : 730.0f;
+	"yPos" : 142.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 1.f;
@@ -374,15 +374,15 @@
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.5f;
     "activeOffset" : 0.0f;
-	"height" : 16.f;
-	"width" : 32.0f;
+	"height" : 32.f;
+	"width" : 64.0f;
 }
 
 {
 	"buttonName" : "MenuSettingsVideoWindowedRight";
 	"texture" : 7;
-	"xPos" : 920.0f;
-	"yPos" : 130.0f;
+	"xPos" : 1018.0f;
+	"yPos" : 142.0f;
 	"xTexStart" : 1.0f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.f;
@@ -396,14 +396,14 @@
 	"activeXTexEnd" : 0.f;
 	"activeYTexEnd" : 0.5f;
     "activeOffset" : 0.0f;
-	"height" : 16.f;
-	"width" : 32.0f;
+	"height" : 32.f;
+	"width" : 64.0f;
 }
 {
 	"buttonName" : "MenuSettingsVideoDOFLeft";
 	"texture" : 7;
 	"xPos" : 800.0f;
-	"yPos" : 495.0f;
+	"yPos" : 502.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 1.f;
@@ -424,7 +424,7 @@
 	"buttonName" : "MenuSettingsVideoDOFRight";
 	"texture" : 7;
 	"xPos" : 953.0f;
-	"yPos" : 495.0f;
+	"yPos" : 502.0f;
 	"xTexStart" : 1.0f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.f;
@@ -445,7 +445,7 @@
 	"buttonName" : "MenuSettingsVideoSSAOLeft";
 	"texture" : 7;
 	"xPos" : 800.0f;
-	"yPos" : 520.0f;
+	"yPos" : 527.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 1.f;
@@ -466,7 +466,7 @@
 	"buttonName" : "MenuSettingsVideoSSAORight";
 	"texture" : 7;
 	"xPos" : 953.0f;
-	"yPos" : 520.0f;
+	"yPos" : 527.0f;
 	"xTexStart" : 1.0f;
 	"yTexStart" : 0.0f;
 	"xTexEnd" : 0.f;
