@@ -17,6 +17,7 @@ namespace Logic
     private:
         std::wstring m_pointsStr;
         TextRenderInfo m_textPointsInfo;
+        SpriteRenderInfo m_scoreTexture;
     };
 }
 
