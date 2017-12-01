@@ -13,9 +13,10 @@ namespace Logic
         std::vector<Projectile*> m_projectiles;
 
         float m_defenseTime;
+        int m_defenseHealth;
 
         static const float BASE_SPEED;
-        static const int BASE_DAMAGE, MAX_HP, SCORE, PROJECTILES;
+        static const int BASE_DAMAGE, MAX_HP, MAX_DEF_HP, SCORE, PROJECTILES;
         static const float MELEE_DISTANCE, PROJECTILE_SPEED;
     public:
         EnemyDefender(btRigidBody* body, btVector3 halfExtent);
@@ -27,6 +28,7 @@ namespace Logic
         virtual void clear();
 
         virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
+        virtual void onDefenseCollision(Projectile *pj);
 
         virtual void updateSpecific(Player &player, float deltaTime);
         virtual void updateDead(float deltaTime);

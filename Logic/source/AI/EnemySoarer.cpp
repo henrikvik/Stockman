@@ -10,7 +10,7 @@ const float EnemySoarer::SPEED = 23.5f,
             EnemySoarer::AB1_SPEED = 25.f,
             EnemySoarer::AB1_SCALE = 13.f,
             EnemySoarer::AB1_GRAVITY = 6.5f,
-            EnemySoarer::HEIGHT_OFFSET = 20.f;
+            EnemySoarer::HEIGHT_OFFSET = 15.f;
 
 EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::StaticSummon, body, halfExtent,
