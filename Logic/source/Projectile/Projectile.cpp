@@ -8,6 +8,8 @@
 
 using namespace Logic;
 
+#define PROJECTILE_DMG_FALLOFF_EXPONENT 0.95f
+
 // TEMP: ta bort mig
 static bool FUN_MODE = false;
 
@@ -117,8 +119,11 @@ void Projectile::updateSpecific(float deltaTime)
     m_modelOffset = m_unrotatedMO.rotate(rotation.getAxis(), rotation.getAngle());
 
     // Damage fall-off, based on ttl
-    if (m_pData.dmgFallOff)
-        m_pData.damage -= m_pData.damage * (deltaTime / m_pData.ttl);
+    if (m_pData.dmgFallOff && deltaTime < m_pData.ttl)
+    {
+        m_pData.damage -= m_pData.damage * pow((deltaTime / m_pData.ttl), PROJECTILE_DMG_FALLOFF_EXPONENT);
+        if (m_pData.damage < 1.f) m_pData.damage = 1.f;
+    }
 
     // Decrease the lifetime of this bullet
     m_pData.ttl -= deltaTime * m_bulletTimeMod;
@@ -136,7 +141,7 @@ void Projectile::updateSpecific(float deltaTime)
     if (m_pData.hasEffect && m_pData.effectActivated) {
         auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, renderInfo.transform);
         auto vel = body->getLinearVelocity();
-        lightRenderInfo.color = DirectX::SimpleMath::Color(1, 0.3, 0.1, 1); // SORRY, REMOVE THIS
+        lightRenderInfo.color = DirectX::SimpleMath::Color(1.f, 0.3f, 0.1f, 1.f); // SORRY, REMOVE THIS
         lightRenderInfo.range = 6.f;                                        // SORRY, REMOVE THIS
         if (m_pData.effectVelocity) {
             Graphics::FXSystem->processEffect(&m_pData.effect, pos, {vel.x(), vel.y(), vel.z()}, deltaTime / 1000.f);
