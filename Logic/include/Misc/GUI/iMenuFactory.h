@@ -14,6 +14,7 @@
 #include <Misc\GUI\Specific\iMenuControls.h>
 #include <Misc\GUI\Specific\iMenuSettings.h>
 #include <Misc\GUI\Specific\iMenuGameOver.h>
+#include <Misc\GUI\Specific\iMenuCinematic.h>
 
 namespace Logic
 {
@@ -37,6 +38,7 @@ namespace Logic
         iMenuControls*      buildMenuControls();
         iMenuLoadingPre*    buildMenuLoadingPre();
         iMenuLoadingPost*   buildMenuLoadingPost();
+        iMenuCinematic*     buildMenuCinematic();
 
     private:
         std::vector<FileLoader::LoadedStruct> buttonFile;

@@ -170,6 +170,12 @@ iMenuGameOver * iMenuFactory::buildMenuGameover()
     return menu;
 }
 
+iMenuCinematic * iMenuFactory::buildMenuCinematic()
+{
+    iMenuCinematic* menu = newd iMenuCinematic(iMenu::Cinematic);
+    return menu;
+}
+
 iMenu * iMenuFactory::buildMenuPause()
 {
     iMenu* menu = newd iMenu(iMenu::Pause);
