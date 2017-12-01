@@ -31,7 +31,7 @@ void WeaponManager::init(ProjectileManager* projectileManager)
 	m_reloadTimer = 0.f;
 	m_reloadState = ReloadingWeapon::IDLE;
 
-    m_Upgrades.magSizeModifier = 0;
+    m_Upgrades.magSizeModifier = 1.f;
     m_Upgrades.ammoCapModifier = 0;
     m_Upgrades.reloadTimeModifier = 1.0f;
     m_Upgrades.fireRateModifier = 1.0f;
@@ -68,7 +68,7 @@ void WeaponManager::reset()
     m_reloadState = ReloadingWeapon::IDLE;
 
     //reset weapon upgrades
-    m_Upgrades.magSizeModifier = 0;
+    m_Upgrades.magSizeModifier = 1.f;
     m_Upgrades.ammoCapModifier = 0;
     m_Upgrades.reloadTimeModifier = 1.0f;
     m_Upgrades.fireRateModifier = 1.0f;
@@ -296,7 +296,7 @@ void WeaponManager::attack(int attackMode, btVector3 position, float yaw, float 
 void WeaponManager::reloadWeapon()
 {
 	if (m_reloadTimer <= 0.f &&
-        m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo < (m_currentWeapon->ammoContainer.getAmmoInfo().magSize + m_Upgrades.magSizeModifier))
+        m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo < static_cast<int>(m_currentWeapon->ammoContainer.getAmmoInfo().magSize * m_Upgrades.magSizeModifier))
 	{
         m_reloadTimer = m_currentWeapon->ammoContainer.getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier;
 		m_reloadState = ReloadingWeapon::ACTIVE;

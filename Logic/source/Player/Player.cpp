@@ -210,17 +210,17 @@ void Player::registerDebugCmds()
     {
         return "x: " + std::to_string((double) getPosition().x) + ", y: " + std::to_string((double) getPosition().y) + ", z: " + std::to_string((double) getPosition().z);
     });
-    win->registerCommand("LOG_INCREASE_ALL_DAMAGE", [&](std::vector<std::string> &args)->std::string
+    win->registerCommand("LOG_INCREASE_DAMAGE", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addUpgrade(StatusManager::P1_DAMAGE);
 
-        return "All weapons do 1 extra damage";
+        return "20% extra damage";
     });
     win->registerCommand("LOG_INCREASE_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
     {
         getStatusManager().addUpgrade(StatusManager::P20_PERC_MOVEMENTSPEED);
 
-        return "Player is permanently 20 percent faster";
+        return "Player is permanently 20% faster";
     });
     win->registerCommand("LOG_DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
     {
@@ -256,7 +256,7 @@ void Player::registerDebugCmds()
     {
         getStatusManager().addUpgrade(StatusManager::P45_PERC_JUMP);
 
-        return "You jump 20% higher";
+        return "You jump 45% higher";
     });
     win->registerCommand("LOG_PLAYER_SET_BURNING", [&](std::vector<std::string> &args)->std::string
     {

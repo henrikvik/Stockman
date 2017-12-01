@@ -76,7 +76,7 @@ void Projectile::upgrader(Upgrade const &upgrade)
 
     if (flags & Upgrade::UPGRADE_INCREASE_DMG)
     {
-        m_pData.damage *= upgrade.getFlatUpgrades().increaseDmg * getStatusManager().getUpgradeStacks(StatusManager::P1_DAMAGE);
+        m_pData.damage += m_pData.damage * upgrade.getFlatUpgrades().increaseDmg * getStatusManager().getUpgradeStacks(StatusManager::P1_DAMAGE);
     }
     if (flags & Upgrade::UPGRADE_IS_BOUNCING)
     {
