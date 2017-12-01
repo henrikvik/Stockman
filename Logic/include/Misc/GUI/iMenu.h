@@ -29,7 +29,8 @@ namespace Logic
             Pause,
             Controls,
             LoadingPre,
-            LoadingPost
+            LoadingPost, 
+            Cinematic
         };
 
         struct ButtonData

@@ -206,6 +206,7 @@
     <ClInclude Include="include\AI\EnemyTotem.h" />
     <ClInclude Include="include\Misc\Fader.h" />
     <ClInclude Include="include\Misc\GUI\Specific\iMenuCards.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuCinematic.h" />
     <ClInclude Include="include\Misc\GUI\Specific\iMenuControls.h" />
     <ClInclude Include="include\Misc\GUI\Specific\iMenuFirstTime.h" />
     <ClInclude Include="include\Misc\GUI\iMenuFX.h" />
@@ -324,6 +325,7 @@
     <ClCompile Include="source\AI\EnemyTotem.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
     <ClCompile Include="source\Misc\GUI\Specific\iMenuCards.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuCinematic.cpp" />
     <ClCompile Include="source\Misc\GUI\Specific\iMenuControls.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuFactory.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenu.cpp" />
