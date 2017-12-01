@@ -280,7 +280,7 @@ namespace Resources
             {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.dds)"},
-            {particle, R"(..\Resources\Textures\particle.dds)"},
+            {particle, R"(..\Resources\Textures\particle.png)"},
             {Pausetext, R"(..\Resources\Textures\Pausetext.dds)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.dds)"},
             {Settings, R"(..\Resources\Textures\Settings.dds)"},
