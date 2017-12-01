@@ -22,6 +22,7 @@ const std::wstring HUDManager::IN_WAVE     = L"MURDER",
                    HUDManager::AFTER_WAVE  = L"ENRAGED";
 
 const float HUDManager::WAVE_SLIDE_TIME = 5000.0f;
+const float HUDManager::ENRAGE_SLIDE_TIME = 3000.0f;
 
 HUDManager::HUDManager()
 {
@@ -35,7 +36,9 @@ HUDManager::HUDManager()
     skillChoosen = false;
     constructGUIElements();
     showWaveCleared = false;
-    nextWaveSlideTimer = 5000.0f;
+    nextWaveSlideTimer = WAVE_SLIDE_TIME;
+    enrageSlideTimer = ENRAGE_SLIDE_TIME;
+    bool wasEnraged = false;
 }
 
 HUDManager::~HUDManager()
@@ -175,7 +178,10 @@ void HUDManager::constructGUIElements()
     height = 148.0f / 1024;
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
+    //next wave
+    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 400, 100, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
 
+    //enrage
     waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 400, 100, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
 }
 
@@ -328,7 +334,7 @@ void HUDManager::updateTextElements()
 
 
     //next wave text
-    if (waveSprites.size() && 1.0f - waveSprites.at(0).getAlpha() < FLT_EPSILON)
+    if (waveSprites.size() && 1.0f - waveSprites.at(WaveMessages::NEXTWAVE).getAlpha() < FLT_EPSILON)
     {
         text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
         text.font = Resources::Fonts::KG26;
@@ -430,6 +436,8 @@ void HUDManager::updateGUIElemets()
             skillMasks.at(1).setTexturePos(x, y, x + width, y + height);
         }
     }
+
+
    
 }
 
@@ -482,11 +490,41 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.wave = timeManager.getCurrentWave();
     info.maxWaves = entityManager.getWaveManager().getWaveInformation().nrOfWaves;
     if (timeManager.isEnraged())
+    {
         info.waveText = AFTER_WAVE;
+        if (wasEnraged == false)
+        {
+            enrageSlideTimer = ENRAGE_SLIDE_TIME;
+            wasEnraged = true;
+        }
+        static float alpha1 = 0.0f;
+        if (enrageSlideTimer > 0.0f)
+        {
+            enrageSlideTimer -= dt;
+
+            if (enrageSlideTimer > ENRAGE_SLIDE_TIME / 2.0f)
+            {
+                if (alpha1 < 1.0f)
+                {
+                    alpha1 += dt *0.002f;
+                }
+                waveSprites.at(WaveMessages::ENRAGE).setAlpha(alpha1);
+            }
+            else
+            {
+                if (alpha1 > 0.0f)
+                {
+                    alpha1 -= dt *0.002f;
+                }
+                waveSprites.at(WaveMessages::ENRAGE).setAlpha(alpha1);
+            }
+        }
+    }
     else if (timeManager.isTransitioning())
     {
         info.waveText = BEFORE_WAVE;
         nextWaveSlideTimer = WAVE_SLIDE_TIME;
+        wasEnraged = false;
     }
     else {
         info.waveText = IN_WAVE;
@@ -501,7 +539,7 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
                 {
                     alpha += dt *0.002f;
                 }
-                waveSprites.at(0).setAlpha(alpha);
+                waveSprites.at(WaveMessages::NEXTWAVE).setAlpha(alpha);
             }
             else
             {
@@ -509,10 +547,10 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
                 {
                     alpha -= dt *0.002f;
                 }
-                waveSprites.at(0).setAlpha(alpha);
+                waveSprites.at(WaveMessages::NEXTWAVE).setAlpha(alpha);
             }
         }
-        
+        wasEnraged = false;
     }
 
         
@@ -585,7 +623,10 @@ void HUDManager::reset()
 
     skillChoosen = false;
     showWaveCleared = false;
-    nextWaveSlideTimer = 5000.0f;
+    bool wasEnraged = false;
+    nextWaveSlideTimer = WAVE_SLIDE_TIME;
+    enrageSlideTimer = ENRAGE_SLIDE_TIME;
+    
     
     HUDElements.clear();
     skillList.clear();

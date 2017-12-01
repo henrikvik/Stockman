@@ -45,7 +45,7 @@ namespace Logic
 
         static const int CURRENT_AMMO, TOTAL_AMMO;
 
-        static const float WAVE_SLIDE_TIME;
+        static const float WAVE_SLIDE_TIME, ENRAGE_SLIDE_TIME;
 
         std::vector<Sprite> HUDElements;
         std::vector<Sprite> skillList;
@@ -57,6 +57,8 @@ namespace Logic
 
         bool showWaveCleared;
         float nextWaveSlideTimer;
+        float enrageSlideTimer;
+        bool wasEnraged;
 
         void constructGUIElements();
         void updateTextElements();
@@ -72,6 +74,11 @@ namespace Logic
             SKILL2,
             SKILLMASK1,
             SKILLMASK2,
+        };
+        enum WaveMessages
+        {
+            NEXTWAVE,
+            ENRAGE
         };
         void renderTextElements()const;
     public:
