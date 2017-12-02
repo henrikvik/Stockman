@@ -86,6 +86,7 @@ namespace Logic
 		float m_acceleration;
 		float m_deacceleration;
 		float m_airAcceleration;
+        float m_airContactAngle;
 		float m_jumpSpeed;
 
 		bool m_wishJump;

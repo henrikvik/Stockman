@@ -37,6 +37,7 @@ using namespace Logic;
 #define PLAYER_FRICTION					20.f
 #define PLAYER_FRICTION_MIN             0.1f
 #define PLAYER_AIR_FRICTION				1.f
+#define PLAYER_AIR_FRICTION_CONTACT     0.6f
 #define PLAYER_JUMP_SPEED				0.008f
 
 const int Player::MIN_Y = -80, Player::MAX_HP = 3;
@@ -321,6 +322,20 @@ void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmg
             stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
             e->damage(25 * stacks); // replace 1 with the player damage when it is better
         }
+        else
+        {
+            // collision with map while in air adds some friction to the player
+            if (!m_charController->onGround())
+            {
+                btVector3 collDir = contactPoint - getPositionBT();
+                collDir.setY(0.f);
+                collDir.normalize();
+
+                m_airContactAngle = collDir.dot(m_moveDir);
+                if (m_airContactAngle < 0.f)
+                    m_airContactAngle = 0.f;
+            }
+        }
     }
 }
 
@@ -540,6 +555,9 @@ void Player::updateSpecific(float deltaTime)
 		    else if (m_playerState == PlayerState::IN_AIR)
 			    // Move in air
 			    airMove(deltaTime);
+
+            // Reset contactangle after it has been used in move functions
+            m_airContactAngle = 0.f;
 	    }
 	    else
 		    moveFree(deltaTime, &ks);
@@ -770,6 +788,7 @@ void Player::move(float deltaTime)
 
 void Player::airMove(float deltaTime)
 {
+    applyFriction(deltaTime, m_airContactAngle * PLAYER_AIR_FRICTION_CONTACT);
 	applyAirFriction(deltaTime, (m_moveMaxSpeed * m_permanentSpeedMod - (m_moveMaxSpeed * m_permanentSpeedMod - m_moveSpeed)) * PLAYER_AIR_FRICTION); // smooth friction
 
 	accelerate(deltaTime, m_airAcceleration);
