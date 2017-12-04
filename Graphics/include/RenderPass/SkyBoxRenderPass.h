@@ -40,7 +40,8 @@ namespace Graphics
 
         SkyParams m_Colors;
         ConstantBuffer<SkyParams> m_SkyColors;
-        
+
+        ID3D11BlendState* m_BlendState;
         ID3D11ShaderResourceView *m_MoonTexture;
         Shader m_MoonShader;
         Shader skyShader;

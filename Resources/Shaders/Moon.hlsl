@@ -25,7 +25,7 @@ VSOut VS(uint id: SV_VertexID)
     float4 p = mul(View, float4(vsout.pos.xyz * AngleSize.w, 1.f));
     //p.w = 1.f;
     //vsout.pos = p;
-    vsout.pos = mul(camera.viewProjection, p.xyzw);
+    vsout.pos = mul(camera.viewProjection, p.xyzw).xyww;
     //vsout.pos.z = 1.f;
     //vsout.pos.w = 1.f;
 
@@ -39,7 +39,7 @@ float4 PS(VSOut input) : SV_Target0
 {
     float4 col = MoonTexture.Sample(LinearClamp, input.uv);
     
-    clip(col.a - 0.5);
+    //clip(col.a - 0.5);
 
     return col;
 }

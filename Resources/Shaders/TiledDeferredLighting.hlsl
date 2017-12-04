@@ -30,20 +30,49 @@ VSOutput VS(uint id: SV_VertexID)
     return vsout;
 }
 
-float4 PS(VSOutput input) : SV_Target0
+struct Targets {
+    float4 Backbuffer : SV_Target0;
+    float4 Glow : SV_Target1;
+};
+
+Targets PS(VSOutput input)
 {
+    Targets targets;
+
     int2 uv = int2(input.position.xy);
 
     float3 position = Position.Load(int3(uv, 0)).xyz;
     float3 normal = Normal.Load(int3(uv, 0)).xyz;
     float4 albedoSpecular = AlbedoSpecular.Load(int3(uv, 0));
 
-    float shadowFactor = calcShadowFactor(ComparisonSampler, ShadowMap, globalLight, 2);
-    float3 viewDir = normalize(camera.position.xyz - input.position.xyz);
+    float shadowFactor = calcShadowFactor(ComparisonSampler, ShadowMap, mul(camera.shadowProj, float4(position, 1.0)).xyz);
+    float3 viewDir = normalize(camera.position.xyz - position.xyz);
 
-    float3 lightSum = float3(0, 0, 0);
-    lightSum += calcLight(globalLight, position, normal, viewDir, albedoSpecular.w);
+    float3 lightSum = globalLight.ambient;
+    lightSum += shadowFactor * calcLight(globalLight, position, normal, viewDir, albedoSpecular.w);
     lightSum += calcAllLights(input.position, position, normal, viewDir, albedoSpecular.w);
 
-    return float4(lightSum * albedoSpecular.rgb, 1);
+    float3 color = float3(0, 0, 0);
+    //if (fragment.useGridTexture)
+    {
+    //    color = gridTexture.Sample(linearWrap, fragment.gridUV).xyz;
+    }
+    //else
+    {
+        color = albedoSpecular.xyz;
+    }
+
+    //clip(diffuseTexture.Sample(linearClamp, fragment.uv).a - 0.5.);
+    targets.Backbuffer = float4(lightSum * color, 1);
+
+    float3 glow = targets.Backbuffer.rgb;
+    float luminance = dot(float3(0.2126, 0.7152, 0.0722), glow);
+    if (luminance > 1.0) {
+        targets.Glow = float4(glow, 0);
+    }
+    else {
+        targets.Glow = float4(0, 0, 0, 0);
+    }
+
+    return targets;
 }

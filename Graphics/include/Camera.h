@@ -16,6 +16,7 @@ namespace Graphics {
 			DirectX::SimpleMath::Matrix vP;
 			DirectX::SimpleMath::Matrix invP;
 			DirectX::SimpleMath::Matrix view;
+			DirectX::SimpleMath::Matrix shadow;
             DirectX::SimpleMath::Vector4 camPos;
             DirectX::SimpleMath::Vector4 forward;
 		} values;
@@ -40,6 +41,7 @@ namespace Graphics {
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);
         void updateLookAt(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 target, ID3D11DeviceContext* context);
+        void setShadowDir(DirectX::SimpleMath::Matrix dir) { values.shadow = dir; }
 
         bool inside_frustrum(DirectX::SimpleMath::Vector3 point, float radius = 1.0f);
         void render() const;

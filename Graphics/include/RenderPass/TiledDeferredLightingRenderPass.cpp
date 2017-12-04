@@ -6,6 +6,7 @@ namespace Graphics {
 
 TiledDeferredLightingRenderPass::TiledDeferredLightingRenderPass(
     ID3D11RenderTargetView   *output,
+    ID3D11RenderTargetView   *glow,
     ID3D11ShaderResourceView *position,
     ID3D11ShaderResourceView *albedoSpec,
     ID3D11ShaderResourceView *normal,
@@ -13,11 +14,13 @@ TiledDeferredLightingRenderPass::TiledDeferredLightingRenderPass(
     ID3D11ShaderResourceView *lightIndexList,
     ID3D11ShaderResourceView *lights,
     ID3D11ShaderResourceView *shadowMap,
-    ID3D11Buffer *lightBuffer
+    ID3D11Buffer *lightBuffer,
+    ID3D11DepthStencilView *depthDSV
 )
-    : m_Output(output), m_AlbedoSpec(albedoSpec), m_Normal(normal), m_Position(position),
+    : m_Output(output), m_Glow(glow), m_AlbedoSpec(albedoSpec), m_Normal(normal), m_Position(position),
       m_LightGrid(lightGrid), m_LightIndexList(lightIndexList), m_Lights(lights),
-      m_ShadowMap(shadowMap), m_LightBuffer(lightBuffer), RenderPass({}, {}, {}, nullptr),
+      m_ShadowMap(shadowMap), m_LightBuffer(lightBuffer), m_DepthDSV(depthDSV),
+      RenderPass({}, {}, {}, nullptr),
       m_TiledDeferredLightingVS(Resources::Shaders::TiledDeferredLighting, ShaderType::VS),
       m_TiledDeferredLightingPS(Resources::Shaders::TiledDeferredLighting, ShaderType::PS)
 {
@@ -35,6 +38,7 @@ void TiledDeferredLightingRenderPass::render() const
     ID3D11SamplerState *samplers[] = {
         Global::cStates->LinearClamp(),
         Global::cStates->LinearWrap(),
+        Global::comparisonSampler,
     };
 
     ID3D11Buffer *buffers[] = {
@@ -42,7 +46,7 @@ void TiledDeferredLightingRenderPass::render() const
         m_LightBuffer
     };
     cxt->PSSetConstantBuffers(0, 2, buffers);
-    cxt->PSSetSamplers(0, 2, samplers);
+    cxt->PSSetSamplers(0, 3, samplers);
     ID3D11ShaderResourceView *views[] = {
         m_LightIndexList,
         m_LightGrid,
@@ -54,7 +58,12 @@ void TiledDeferredLightingRenderPass::render() const
     };
     cxt->PSSetShaderResources(0, 7, views);
     cxt->RSSetState(Global::cStates->CullNone());
-    cxt->OMSetRenderTargets(1, &m_Output, nullptr);
+    //cxt->OMSetDepthStencilState(Global::cStates->DepthNone(), 0x0);
+    ID3D11RenderTargetView *outputs[] = {
+        m_Output,
+        m_Glow
+    };
+    cxt->OMSetRenderTargets(2, outputs, nullptr);
 
     cxt->Draw(3, 0);
 

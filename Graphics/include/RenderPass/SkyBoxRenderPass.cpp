@@ -29,6 +29,21 @@ namespace Graphics
     {
         this->skySphere = &HybrisLoader::HybrisLoader::get().getModel(Resources::Models::SkySphere)->getMesh();
         DirectX::CreateWICTextureFromFile(Global::device, L"../Resources/Textures/Diffusemoon.dds", nullptr, &m_MoonTexture);
+
+        D3D11_BLEND_DESC desc = {};
+
+        desc.RenderTarget[0].BlendEnable = TRUE;
+        desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+        desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+        desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+        desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+        desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+        desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+        desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+
+        ThrowIfFailed(Global::device->CreateBlendState(&desc, &m_BlendState));
+
         DebugWindow::getInstance()->registerCommand("GFX_DEBUG_SKYBOX", [&](std::vector<std::string> &args)->std::string
         {
             DebugSkyBox = !DebugSkyBox;
@@ -79,8 +94,8 @@ namespace Graphics
         cxt->PSSetShaderResources(0, 1, &m_MoonTexture);
         cxt->PSSetSamplers(0, 1, &sampler);
 
-        float BLEND[4] = { 0.f, 0.f, 0.f, 1.f };
-        cxt->OMSetBlendState(Global::cStates->AlphaBlend(), BLEND, 0xffffffff);
+        float BLEND[4] = { 1.f, 1.f, 1.f, 1.f };
+        cxt->OMSetBlendState(m_BlendState, BLEND, 0xffffffff);
 
         cxt->RSSetState(Global::cStates->CullNone());
         cxt->OMSetDepthStencilState(Global::cStates->DepthRead(), 0x0);

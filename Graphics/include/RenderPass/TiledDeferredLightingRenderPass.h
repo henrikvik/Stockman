@@ -9,6 +9,7 @@ namespace Graphics
     public:
         TiledDeferredLightingRenderPass(
             ID3D11RenderTargetView   *output,
+            ID3D11RenderTargetView   *glow,
             ID3D11ShaderResourceView *position,
             ID3D11ShaderResourceView *albedoSpec,
             ID3D11ShaderResourceView *normal,
@@ -16,7 +17,8 @@ namespace Graphics
             ID3D11ShaderResourceView *lightIndexList,
             ID3D11ShaderResourceView *lights,
             ID3D11ShaderResourceView *shadowMap,
-            ID3D11Buffer *lightBuffer
+            ID3D11Buffer *lightBuffer,
+            ID3D11DepthStencilView *depthDSV
         );
         virtual ~TiledDeferredLightingRenderPass() {};
 
@@ -30,6 +32,7 @@ namespace Graphics
 
     private:
         ID3D11RenderTargetView *m_Output;
+        ID3D11RenderTargetView *m_Glow;
 
         ID3D11ShaderResourceView *m_AlbedoSpec;
         ID3D11ShaderResourceView *m_Normal;
@@ -42,6 +45,8 @@ namespace Graphics
         ID3D11ShaderResourceView *m_ShadowMap;
 
         ID3D11Buffer *m_LightBuffer;
+
+        ID3D11DepthStencilView *m_DepthDSV;
 
         Shader m_TiledDeferredLightingVS;
         Shader m_TiledDeferredLightingPS;

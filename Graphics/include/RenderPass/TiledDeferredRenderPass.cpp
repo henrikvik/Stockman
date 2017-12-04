@@ -15,8 +15,8 @@ namespace Graphics {
         : m_Position(position), m_AlbedoSpec(albedoSpec), m_Normal(normal), m_StaticBuffer(staticBuffer),
          m_AnimatedBuffer(animatedBuffer), m_Depth(depth),
          m_TiledDeferredPS(Resources::Shaders::TiledDeferredPS, ShaderType::PS),
-         m_TiledDeferredVS(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS),
-         m_TiledDeferredVSAnimated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS),
+         m_TiledDeferredVS(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC),
+         m_TiledDeferredVSAnimated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC),
         RenderPass({}, {}, {}, nullptr)
 {
 }
@@ -40,9 +40,10 @@ namespace Graphics {
         {
             Global::cStates->LinearClamp(),
             Global::cStates->LinearWrap(),
+            Global::comparisonSampler,
         };
 
-        cxt->PSSetSamplers(0, 2, samplers);
+        Global::context->PSSetSamplers(0, 3, samplers);
         cxt->PSSetShaderResources(4, 1, *TextureLoader::get().getTexture(Resources::Textures::Grid));
 
         cxt->RSSetState(Global::cStates->CullClockwise());
@@ -52,15 +53,18 @@ namespace Graphics {
             m_AlbedoSpec,
             m_Normal
         };
+        cxt->OMSetDepthStencilState(Global::cStates->DepthRead(), 0x0);
         cxt->OMSetRenderTargets(3, views, m_Depth);
 
+        cxt->IASetInputLayout(m_TiledDeferredVS);
         cxt->VSSetShader(m_TiledDeferredVS, nullptr, 0);
         drawInstanced<StaticRenderInfo>(m_StaticBuffer);
 
+        cxt->IASetInputLayout(m_TiledDeferredVSAnimated);
         cxt->VSSetShader(m_TiledDeferredVSAnimated, nullptr, 0);
         drawInstanced<AnimatedRenderInfo>(m_AnimatedBuffer);
 
-        cxt->PSSetSamplers(0, 3, Global::nulls);
+        cxt->PSSetSamplers(0, 4, Global::nulls);
         cxt->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);
         cxt->PSSetShaderResources(0, 4, Global::nulls);
         cxt->PSSetShaderResources(9, 1, Global::nulls);

@@ -156,7 +156,7 @@ namespace Graphics
             ThrowIfFailed(device->CreateRenderTargetView(tex, nullptr, &m_PositionRTV));
             SAFE_RELEASE(tex);
 
-            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+            desc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 
             ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &tex));
             ThrowIfFailed(device->CreateShaderResourceView(tex, nullptr, &m_AlbedoSpecularSRV));
@@ -292,10 +292,6 @@ namespace Graphics
                     lightOpaqueGridUAV
                 }
             ),
-            //newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil),
-            
-#define TEST
-#ifdef TEST
             newd TiledDeferredRenderPass(
                 m_PositionRTV,
                 m_AlbedoSpecularRTV,
@@ -304,7 +300,7 @@ namespace Graphics
                 animatedInstanceBuffer,
                 depthStencil
             ),
-#else // TEST
+#if 0 // TEST
             newd ForwardPlusRenderPass(
                 {
                     fakeBuffers,
@@ -330,9 +326,9 @@ namespace Graphics
                 depthStencil
             ),
 #endif
-#ifdef TEST
             newd TiledDeferredLightingRenderPass(
-                backBuffer,
+                fakeBuffers,
+                m_BloomRTVMipChain[0],
                 m_PositionSRV,
                 m_AlbedoSpecularSRV,
                 m_NormalSRV,
@@ -340,10 +336,11 @@ namespace Graphics
                 lightOpaqueIndexList,
                 lightsNew,
                 shadowMap,
-                *sun.getGlobalLightBuffer()
+                *sun.getGlobalLightBuffer(),
+                depthStencil
             ),
-#endif
-            /*newd ParticleRenderPass(
+            newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil, &sun),
+            newd ParticleRenderPass(
                 fakeBuffers,
                 lightOpaqueGridSRV, 
                 lightOpaqueIndexList, 
@@ -352,7 +349,7 @@ namespace Graphics
                 *sun.getGlobalLightBuffer(),
                 depthStencil
             ),
-            newd SSAORenderPass({}, { depthStencil, normalMap, ssaoOutput }, {ssaoOutput}, {}, nullptr),
+            //newd SSAORenderPass({}, { depthStencil, normalMap, ssaoOutput }, {ssaoOutput}, {}, nullptr),
             newd GlowRenderPass(
                 m_BloomSRV,
                 m_BloomSRVMipChain,
@@ -373,7 +370,7 @@ namespace Graphics
                     *sun.getGlobalLightBuffer()
                 },
                 depthStencil
-            ),*/
+            ),
             newd PostFXRenderPass(
                 &fakeBuffers,
                 backBuffer,

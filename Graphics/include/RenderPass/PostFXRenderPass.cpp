@@ -90,6 +90,7 @@ namespace Graphics
 
         auto sampler = Global::cStates->LinearClamp();
         Global::context->PSSetSamplers(0, 1, &sampler);
+        Global::context->RSSetState(Global::cStates->CullNone());
         Global::context->OMSetRenderTargets(1, &m_Target, nullptr);
 
         Global::context->Draw(3, 0);
