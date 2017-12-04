@@ -4,7 +4,7 @@
 
 using namespace Logic;
 
-#define GRAPPLING_HOOK_CD			    2250.f		// Cooldown in ms
+#define GRAPPLING_HOOK_CD			    3000.f		// Cooldown in ms
 #define GRAPPLING_HOOK_RANGE		    100.f		// Range in bulletphysics units (probably meters)
 #define GRAPPLING_HOOK_RANGE_MIN        8.f         // Min range
 #define GRAPPLING_HOOK_POWER_XZ		    0.0011f	    // The amount of power to reach the max speed (xz)
@@ -45,15 +45,12 @@ SkillGrapplingHook::~SkillGrapplingHook()
 // When the grappling hook is used, send out a ray to the targeted surface and save variables
 bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 {
-    if (m_state == GrapplingHookStatePulling)
-        return false;
-
     if (abs(forward.dot({ 0.f, 1.f, 0.f })) > GRAPPLING_HOOK_NON_HOOK_ANGLE)
     {
         // Saving ray to intersection surface
         Ray ray(shooter.getPositionBT(), forward, GRAPPLING_HOOK_RANGE);
         btVector3 hookPoint = m_physicsPtr->RayTestGetPoint(ray);
-        
+
         if (abs((hookPoint - shooter.getPositionBT()).length()) > GRAPPLING_HOOK_RANGE_MIN &&
             !(dynamic_cast<Player*>(&shooter)->getCharController()->onGround() && hookPoint.y() < shooter.getPositionBT().y()))
         {
@@ -65,9 +62,6 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
                 {
                     // Saving the shooter's as an entity
                     m_shooter = &shooter;
-
-                    // The entity is now pulling the grappling hook
-                    m_state = GrapplingHookStatePulling;
 
                     m_point = hookPoint;
 
@@ -100,38 +94,32 @@ bool SkillGrapplingHook::onUse(btVector3 forward, Entity& shooter)
 // On button release
 void SkillGrapplingHook::onRelease()
 {
-    // Specific release stuff
-    setCooldown(GRAPPLING_HOOK_CD);
-    setCanUse(false);
+    if (isActive())
+    {
+        // Specific release stuff
+        setActive(false);
 
-	// If unsuccesful hook, don't put full cooldown
-/*	if (!m_shooter)
-	{
-		setCooldown(GRAPPLING_HOOK_CD);
-		setCanUse(true);
-	}
-	else */ if (Player* player = dynamic_cast<Player*>(m_shooter))
-	{
-		float yVel = player->getCharController()->getLinearVelocity().y();
-        if (m_dirToPoint.y() > 0.f)
-            player->getCharController()->jump({ 0.f, yVel, 0.f });
-	}
+        if (Player* player = dynamic_cast<Player*>(m_shooter))
+        {
+            float yVel = player->getCharController()->getLinearVelocity().y();
+            if (m_dirToPoint.y() > 0.f)
+                player->getCharController()->jump({ 0.f, yVel, 0.f });
+        }
 
-    
-	// Set to defaults
-	m_state = GrapplingHookStateNothing;
-	m_shooter = nullptr;
-	m_point = { 0, 0, 0 };
-    m_dirToPoint = { 0, 0, 0 };
-    m_maxVelY = 0.f;
-    renderInfo.points->clear();
-    renderInfo.color = DirectX::SimpleMath::Color( 1, 0, 0 );
+        // Set to defaults
+        m_shooter = nullptr;
+        m_point = { 0, 0, 0 };
+        m_dirToPoint = { 0, 0, 0 };
+        m_maxVelY = 0.f;
+        renderInfo.points->clear();
+        renderInfo.color = DirectX::SimpleMath::Color(1, 0, 0);
+    }
 }
 
 // Moving the entity the grappling hook is active to the targeted point
 void SkillGrapplingHook::onUpdate(float deltaTime)
 {
-	if (m_shooter && m_state == GrapplingHookStatePulling)
+	if (isActive() && m_shooter)
 	{
         // Check if min range
         if ((m_point - m_shooter->getPositionBT()).length() < GRAPPLING_HOOK_RANGE_MIN)
@@ -179,7 +167,6 @@ void SkillGrapplingHook::onUpdate(float deltaTime)
 
 void SkillGrapplingHook::onReset()
 {
-    m_state = GrapplingHookStateNothing;
     m_shooter = nullptr;
     m_point = { 0, 0, 0 };
     m_maxVelY = 0.f;
@@ -195,10 +182,5 @@ void SkillGrapplingHook::render() const
 {
 	// Drawing a ray of the grappling hook for debugging purposes
     QueueRender(renderInfo);
-}
-
-GrapplingHookState SkillGrapplingHook::getState() const
-{
-	return m_state;
 }
 
