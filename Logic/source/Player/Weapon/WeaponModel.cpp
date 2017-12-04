@@ -30,7 +30,11 @@ void WeaponModel::update(float deltaTime, DirectX::SimpleMath::Matrix playerTran
 
     ImGui::End();
 
-    */
+    m_mInfo.trans = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(ltrans));
+    
+    //// Scaling the model by making it thinner and longer
+    m_mInfo.scale = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3(lscale));
+    m_mInfo.rot = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(lrot[0], lrot[1], lrot[2]);*/
 
     // Making a camera matrix and then inverting it 
     DirectX::SimpleMath::Matrix camera = DirectX::XMMatrixLookToRH({ 0, 0, 0 }, playerForward, { 0, 1, 0 });
@@ -54,7 +58,7 @@ void WeaponModel::update(float deltaTime, DirectX::SimpleMath::Matrix playerTran
 
     // Easing in Y axis
     m_current._42 = temp._42;
-    float easingVariable = min((HEIGHT_POSITION_OFFSET_EASING * deltaTime), 1.f);
+    float easingVariable = min((HEIGHT_POSITION_OFFSET_EASING / sqrt(m_mInfo.scale._22) * deltaTime), 1.f);
     m_current._42 += (result._42 - m_current._42) * easingVariable;
 
     renderInfo.transform = m_current;

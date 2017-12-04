@@ -24,7 +24,7 @@
 #include "RenderPass\SSAORenderPass.h"
 #include "RenderPass\DepthOfFieldRenderPass.h"
 #include "RenderPass\SnowRenderPass.h"
-#include "RenderPass\BulletTimeRenderPass.h"
+#include "RenderPass\PostFXRenderPass.h"
 #include "RenderPass\DebugRenderPass.h"
 
 #include "Utility\DebugDraw.h"
@@ -61,7 +61,8 @@ namespace Graphics
         , normalMap(WIN_WIDTH, WIN_HEIGHT)
 
         , shadowMap(Global::device, SHADOW_RESOLUTION, SHADOW_RESOLUTION)
-
+        , ssaoOutput(WIN_WIDTH / 2, WIN_HEIGHT / 2, DXGI_FORMAT_R8_UNORM)
+        
 
         , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
         , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
@@ -163,6 +164,51 @@ namespace Graphics
             SAFE_RELEASE(texture);
         }
 
+        {
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+            desc.Width = WIN_WIDTH;
+            desc.Height = WIN_HEIGHT;
+            desc.SampleDesc.Count = 1;
+            desc.MipLevels = 4;
+            desc.ArraySize = 1;
+
+            ID3D11Texture2D *texture = nullptr;
+            ThrowIfFailed(Global::device->CreateTexture2D(&desc, nullptr, &texture));
+
+            D3D11_RENDER_TARGET_VIEW_DESC renderDesc = {};
+            renderDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+            renderDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+
+            D3D11_SHADER_RESOURCE_VIEW_DESC resourceDesc = {};
+            resourceDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+            resourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+            resourceDesc.Texture2D.MipLevels = 1;
+
+            for (int i = 0; i < MIP_LEVELS; i++)
+            {
+                resourceDesc.Texture2D.MostDetailedMip = i;
+                renderDesc.Texture2D.MipSlice = i;
+
+                ID3D11ShaderResourceView *srv = nullptr;
+                ID3D11RenderTargetView *rtv = nullptr;
+
+                ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &srv));
+                ThrowIfFailed(Global::device->CreateRenderTargetView(texture, &renderDesc, &rtv));
+
+                m_BloomRTVMipChain.push_back(rtv);
+                m_BloomSRVMipChain.push_back(srv);
+            }
+
+            resourceDesc.Texture2D.MipLevels = -1;
+            resourceDesc.Texture2D.MostDetailedMip = 1;
+            renderDesc.Texture2D.MipSlice = 0;
+            ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_BloomSRV));
+
+            SAFE_RELEASE(texture);
+        }
+
 #pragma endregion
         HRESULT hr = Global::context->QueryInterface(IID_PPV_ARGS(&DebugAnnotation));
         if (!SUCCEEDED(hr)) {
@@ -215,7 +261,7 @@ namespace Graphics
             newd ForwardPlusRenderPass(
                 {
                     fakeBuffers,
-                    glowMap,
+                    m_BloomRTVMipChain[0],
                     normalMap
                 },
                 {
@@ -245,9 +291,12 @@ namespace Graphics
                 *sun.getGlobalLightBuffer(),
                 depthStencil
             ),
-            newd SSAORenderPass(&fakeBuffers, {}, { depthStencil, normalMap }, {}, nullptr), //this
-            newd DepthOfFieldRenderPass(&fakeBuffers, {}, { depthStencil }), //this
-            newd GlowRenderPass(&fakeBuffers, {}, { glowMap }), //and this
+            newd SSAORenderPass({}, { depthStencil, normalMap, ssaoOutput }, {ssaoOutput}, {}, nullptr),
+            newd GlowRenderPass(
+                m_BloomSRV,
+                m_BloomSRVMipChain,
+                m_BloomRTVMipChain
+            ),
             newd SnowRenderPass(
                 {
                     fakeBuffers
@@ -264,7 +313,12 @@ namespace Graphics
                 },
                 depthStencil
             ),
-            newd BulletTimeRenderPass(&fakeBuffers, {backBuffer}),
+            newd PostFXRenderPass(
+                &fakeBuffers,
+                backBuffer,
+                m_BloomSRV,
+                ssaoOutput
+            ),
             newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
             newd GUIRenderPass({backBuffer}),
         };
@@ -282,6 +336,18 @@ namespace Graphics
         SAFE_RELEASE(lightOpaqueGridUAV);
         SAFE_RELEASE(lightOpaqueGridSRV);
         SAFE_RELEASE(DebugAnnotation);
+        
+        SAFE_RELEASE(m_BloomSRV);
+
+        for (auto srv : m_BloomSRVMipChain)
+        {
+            SAFE_RELEASE(srv);
+        }
+
+        for (auto rtv : m_BloomRTVMipChain)
+        {
+            SAFE_RELEASE(rtv);
+        }
 
         for (auto & renderPass : renderPasses)
         {
@@ -325,24 +391,24 @@ namespace Graphics
             return info;
         }(deltaTime));*/
 
-		QueueRender([]()
-		{
-			StaticRenderInfo info;
-			info.model = Resources::Models::UnitCube;
-			info.transform = SimpleMath::Matrix::CreateTranslation(0, -1, 0) * SimpleMath::Matrix::CreateScale(1000, 1, 1000);
-			info.useGridTexture = true;
-			return info;
-		}());
+		//QueueRender([]()
+		//{
+		//	StaticRenderInfo info;
+		//	info.model = Resources::Models::UnitCube;
+		//	info.transform = SimpleMath::Matrix::CreateTranslation(0, -1, 0) * SimpleMath::Matrix::CreateScale(1000, 1, 1000);
+		//	info.useGridTexture = true;
+		//	return info;
+		//}());
 
-        QueueRender([]()
-        {
-            FoliageRenderInfo info;
-            info.model = Resources::Models::Grass;
-            info.transform = SimpleMath::Matrix::CreateTranslation(0, 0, -3);
-            info.color = DirectX::SimpleMath::Vector3(1,1,1);
-            info.useGridTexture = false;
-            return info;
-        }());
+  //      QueueRender([]()
+  //      {
+  //          FoliageRenderInfo info;
+  //          info.model = Resources::Models::Grass;
+  //          info.transform = SimpleMath::Matrix::CreateTranslation(0, 0, -3);
+  //          info.color = DirectX::SimpleMath::Vector3(1,1,1);
+  //          info.useGridTexture = false;
+  //          return info;
+  //      }());
 
         FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 
@@ -375,12 +441,18 @@ namespace Graphics
     void Renderer::clear() const
     {
         static float clearColor[4] = { 0 };
+        static float white[4] = { 1 };
         Global::context->ClearRenderTargetView(backBuffer, clearColor);
         Global::context->ClearRenderTargetView(normalMap, clearColor);
-        fakeBuffers.clear();
+        //fakeBuffers.clear();
+        Global::context->ClearUnorderedAccessViewFloat(ssaoOutput, white);
         Global::context->ClearRenderTargetView(glowMap, clearColor);
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
+        for (auto rtv : m_BloomRTVMipChain)
+        {
+            Global::context->ClearRenderTargetView(rtv, clearColor);
+        }
     }
 
     void Renderer::writeInstanceBuffers()

@@ -75,6 +75,8 @@ namespace Logic
         WeaponLoadout* getActiveWeaponLoadout();
         WeaponLoadout* getInactiveWeaponLoadout();
 
+        int getAmmoPickedUp();
+
 	private:
         enum ReloadingWeapon
         {
@@ -92,7 +94,7 @@ namespace Logic
 
         struct Upgrades
         {
-            int magSizeModifier;
+            float magSizeModifier;
             int ammoCapModifier;
             float fireRateModifier;
             float reloadTimeModifier;
@@ -113,6 +115,8 @@ namespace Logic
 
 		float m_reloadTimer;
 		ReloadingWeapon m_reloadState;
+
+        int m_ammoPickedUp;
 	};
 }
 #endif

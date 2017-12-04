@@ -36,12 +36,14 @@ namespace Logic
     {
         void startGame();
         void startSettings();
+        void startSettingsPause();
         void startMainMenu();
         void showHighscore();
         void goBackToMainMenu();
         void playAgain();
         void quitGame();
         void unpause();
+        void pause();
         void goToGameOver();
         void goToGameOverHighscore();
         void writing();
@@ -59,6 +61,9 @@ namespace Logic
         void plusFOV();
         void minusFOV();
         void windowed();
+        void DOF();
+        void SSAO();
+        void fog();
     }
 }
 

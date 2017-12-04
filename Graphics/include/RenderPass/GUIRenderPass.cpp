@@ -189,8 +189,9 @@ void Graphics::GUIRenderPass::updateShake(float deltaTime)
        
         if (affectEverything)
         {
-            //this ugly
-            Global::mainCamera->update(Global::mainCamera->getPos() + ndcPositionOffset * 3.f, Global::mainCamera->getForward(), Global::context);
+            Vector3 forward = Global::mainCamera->getForward();
+            //this very ugly
+            Global::mainCamera->update(Global::mainCamera->getPos() + ndcPositionOffset * 3.f, forward, Global::context);
         }
         
     }

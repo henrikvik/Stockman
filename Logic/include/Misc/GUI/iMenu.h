@@ -6,8 +6,10 @@
 #include <Misc\GUI\Button.h>
 #include <Misc\Fader.h>
 #include <Misc\GUI\Slider.h>
+
 namespace Logic
 {
+    class iMenuFX;
     class iMenu : public NonCopyable
     {
     public:
@@ -17,16 +19,19 @@ namespace Logic
             FirstTime,
             Intro,
             Start,
-            Settings,
+            SettingsStart,
+            SettingsPause,
             Skill,
             CardSelect,
             HighscoreStartMenu,
             HighscoreGameOver,
             GameOver, 
             GameWon,
-            Pause, 
+            Pause,
+            Controls,
             LoadingPre,
-            LoadingPost
+            LoadingPost, 
+            Cinematic
         };
 
         struct ButtonData
@@ -70,15 +75,20 @@ namespace Logic
         iMenu(MenuGroup group);
         ~iMenu();
 
+        void removeButtons();
+        void removeSliders();
+
         virtual void fadeIn();
         virtual void fadeOut();
 
+        void addEffect(iMenuFX* effect);
         void addBackground(Resources::Textures::Files texture, float alpha);
         void addButton(ButtonData btn);
         void addSlider(SliderData sld);
         virtual void update(int x, int y, float deltaTime);
         virtual void render() const;
 
+        void setGroup(iMenu::MenuGroup group)   { m_group       = group;        }
         void setDrawMenu(bool shouldDraw)       { m_drawMenu    = shouldDraw;   }
         void setDrawButtons(bool shouldDraw)    { m_drawButtons = shouldDraw;   }
         void setAlpha(float alpha);
@@ -97,6 +107,9 @@ namespace Logic
         bool                    m_isFading;
         float                   m_fadingTimer;
 
+        // GUI effects
+        iMenuFX*                m_effect;
+
         // Menu
         SpriteRenderInfo        m_background;
         std::vector<Button>     m_buttons;
@@ -109,6 +122,8 @@ namespace Logic
         bool                    m_drawButtons;
         bool                    m_drawSliders;
         bool                    m_drawMenu;
+
+        Slider*                  m_sld;
     };
 }
 

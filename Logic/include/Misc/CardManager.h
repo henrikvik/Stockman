@@ -20,6 +20,11 @@ namespace Logic
             NEVER_REMOVE, IN_DECK, TAKEN
         };
 
+        enum CardState
+        {
+            IN_TRANS, STILL, OUT_TRANS
+        };
+
 		CardManager(int nrOfEach = 1);
 		~CardManager();
 
@@ -35,6 +40,7 @@ namespace Logic
  
 
         virtual void render() const;
+        virtual void update(float dt);
 	private:
 		static const int HEALTH_PACK;
         static const int HAND_SIZE;
@@ -52,6 +58,8 @@ namespace Logic
         //temp
         std::vector<Card> currenthand;
         void pepperCardsForDraw();
+
+        CardState state;
 	};
 }
 

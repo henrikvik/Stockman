@@ -4,11 +4,12 @@
 #include <StateMachine\StateSecondary.h>
 #include <StatePlaying.h>
 #include <Misc\GUI\iMenuMachine.h>
-#include <Misc\GUI\iMenuSkillPick.h>
+#include <Misc\GUI\Specific\iMenuSkillPick.h>
 #include <Engine\Typing.h>
 #include <Engine\Settings.h>
 #include <State.h>
 #include <Misc\Sound\NoiseMachine.h>
+#include <Engine/Engine.h>
 
 using namespace Logic;
 
@@ -23,7 +24,14 @@ void ButtonFunction::startGame()
 void ButtonFunction::startSettings()
 {
     if (Action::Get().m_menuMachine)
-        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Settings);
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::SettingsStart);
+}
+
+// Switches the current menu-machine to settings screen
+void ButtonFunction::startSettingsPause()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::SettingsPause);
 }
 
 // Switches the current menu-machine to start screen
@@ -55,6 +63,13 @@ void ButtonFunction::unpause()
 {
     if (Action::Get().m_menuMachine)
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
+}
+
+// Just simply removes the current pause menu
+void ButtonFunction::pause()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Pause);
 }
 
 // Goes to the gameoverhighscore screen
@@ -135,6 +150,13 @@ void Logic::chooseUpgrade(int index)
             {
                 Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_CARD, nullptr, true);
                 Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
+                
+
+                RECT rect;
+                GetWindowRect(*Engine::g_window, &rect);
+
+                DirectX::SimpleMath::Vector2 vec = DirectX::SimpleMath::Vector2((rect.left + rect.right* 0.5f), (rect.top + rect.bottom* 0.5f));
+                SetCursorPos(vec.x, vec.y);
             }
         }
     }
@@ -223,4 +245,22 @@ void ButtonFunction::windowed()
 {
     Settings& settings = Settings::getInstance();
     settings.setWindowed(!settings.getWindowed());
+}
+
+void ButtonFunction::DOF()
+{
+    Settings& settings = Settings::getInstance();
+    settings.setDOF(!settings.getDOF());
+}
+
+void ButtonFunction::SSAO()
+{
+    Settings& settings = Settings::getInstance();
+    settings.setSSAO(!settings.getSSAO());
+}
+
+void ButtonFunction::fog()
+{
+    Settings& settings = Settings::getInstance();
+    settings.setFog(!settings.getFog());
 }

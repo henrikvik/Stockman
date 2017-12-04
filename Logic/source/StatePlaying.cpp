@@ -1,9 +1,10 @@
 #include <StatePlaying.h>
 #include <StateMachine\StateBuffer.h>
 #include <State.h>
-#include <Misc\GUI\iMenuCards.h>
+#include <Misc\GUI\Specific\iMenuCards.h>
 #include <Misc\Network\dbConnect.h>
 #include <Misc\CommandsFile.h>
+
 
 // Input Singletons
 #include <Keyboard.h>
@@ -27,6 +28,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
 {
     // Starting in game-sounds
     Sound::NoiseMachine::Get().stopGroup(Sound::CHANNEL_SFX);
+    Sound::NoiseMachine::Get().loadPlaySounds();
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_IN_GAME, nullptr, true);
 
@@ -67,14 +69,16 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     CommandsFile().doCommandsFromFile();
     RenderQueue::get().clearAllQueues();
 
-    //temp? probably
+    //temp? probably NOT
     static SpecialEffectRenderInfo info;
     info.type = info.Snow;
     info.restart = true;
-
+    
     m_playTime = 0;
+    
 
     QueueRender(info);
+
 }
 
 StatePlaying::~StatePlaying()
@@ -90,6 +94,12 @@ StatePlaying::~StatePlaying()
     delete m_map;
     delete m_cardManager;
     delete m_projectileManager;
+
+    if (highscoreThread.joinable())
+    {
+        highscoreThread.join();
+    }
+    Sound::NoiseMachine::Get().clearCurrent();
 }
 
 void StatePlaying::reset()
@@ -112,6 +122,14 @@ void StatePlaying::reset()
 void StatePlaying::update(float deltaTime)
 {
     m_fpsRenderer.updateFPS(deltaTime);
+    PROFILE_BEGIN("cards");
+    m_cardManager->update(deltaTime);
+    PROFILE_END();
+
+
+    PROFILE_BEGIN("HUD");
+    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
+    PROFILE_END();
    
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
@@ -119,58 +137,49 @@ void StatePlaying::update(float deltaTime)
         return;
     PROFILE_END();
 
-    m_playTime += deltaTime;
-    ComboMachine::Get().update(deltaTime);
+        m_playTime += deltaTime;
+        ComboMachine::Get().update(deltaTime);
 
-    // Move this somwhere else, don't ruin this class with spagetti & meatballs
-    //the spagetti is (expand)ing (dong)
-    if (m_menu->getType() != iMenu::CardSelect)
-    {
-        bool newWave = m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
-
-        if (newWave)
+        // Move this somwhere else, don't ruin this class with spagetti & meatballs
+        //the spagetti is (expand)ing (dong)
+        if (m_menu->getType() != iMenu::CardSelect)
         {
-            m_menu->queueMenu(iMenu::CardSelect);
-            m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
-            m_projectileManager->removeEnemyProjCallbacks();
+            bool newWave = m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
 
-            SpecialEffectRenderInfo fultAF;
-            fultAF.type = SpecialEffectRenderInfo::Snow;
-            fultAF.restart = true;
-            QueueRender(fultAF);
+            if (newWave)
+            {
+                m_menu->queueMenu(iMenu::CardSelect);
+                m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
+                m_projectileManager->removeEnemyProjCallbacks();
+            }
         }
-    }
 
-    PROFILE_BEGIN("Sound");
-    Sound::NoiseMachine::Get().update(m_player->getListenerData());
-    PROFILE_END();
+        PROFILE_BEGIN("Sound");
+        Sound::NoiseMachine::Get().update(m_player->getListenerData());
+        PROFILE_END();
 
-    PROFILE_BEGIN("Player");
-    m_player->updateSpecific(deltaTime);
-    PROFILE_END();
+        PROFILE_BEGIN("Player");
+        m_player->updateSpecific(deltaTime);
+        PROFILE_END();
 
-    PROFILE_BEGIN("Physics");
-    m_physics->update(deltaTime);
-    PROFILE_END();
+        PROFILE_BEGIN("Physics");
+        m_physics->update(deltaTime);
+        PROFILE_END();
 
-    PROFILE_BEGIN("AI & Triggers");
-    m_entityManager.update(*m_player, deltaTime);
-    PROFILE_END();
+        PROFILE_BEGIN("AI & Triggers");
+        m_entityManager.update(*m_player, deltaTime);
+        PROFILE_END();
 
-    PROFILE_BEGIN("Map");
-    m_map->update(deltaTime);
-    PROFILE_END();
+        PROFILE_BEGIN("Map");
+        m_map->update(deltaTime);
+        PROFILE_END();
 
-    PROFILE_BEGIN("Projectiles");
-    m_projectileManager->update(deltaTime);
-    PROFILE_END();
-
-    PROFILE_BEGIN("HUD");
-    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
-    PROFILE_END();
+        PROFILE_BEGIN("Projectiles");
+        m_projectileManager->update(deltaTime);
+        PROFILE_END();
 
 #define _DEBUG
-#ifdef _DEBUG
+#ifdef  _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
         m_player->takeDamage(1, 0);
 #endif // _DEBUG
@@ -179,7 +188,7 @@ void StatePlaying::update(float deltaTime)
         gameOver();
 
 //    if ((m_waveTimeManager.getOnLastWave() && (m_entityManager.getNrOfAliveEnemies() == 0)) || DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::P))
-//        gameWon();
+//         ();
 }
 
 void StatePlaying::render() const
@@ -209,7 +218,8 @@ void StatePlaying::render() const
 
     PROFILE_BEGIN("Render HUD");
     if (m_menu->getType() == iMenu::Empty ||
-        m_menu->getType() == iMenu::CardSelect)
+        m_menu->getType() == iMenu::CardSelect ||
+        m_menu->getType() == iMenu::Controls)
         m_hudManager.render();
     PROFILE_END();
 
@@ -234,6 +244,8 @@ void StatePlaying::gameOver()
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_DEAD, nullptr, true);
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
+    m_hudManager.reset();
+
 }
 
 void StatePlaying::gameWon()
@@ -253,10 +265,8 @@ void StatePlaying::addHighscore()
     std::string name = Settings::getInstance().getName();
     if (name.empty()) name = "Stockman";
 
-    if (db.addHighscore(name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills()))
-        printf("Highscore added.\n");
-    else
-    {
-        printf("Database could not be reached, your score have been removed, sorry :'(\n");
-    }
+    if (highscoreThread.joinable())
+        highscoreThread.join();
+
+    highscoreThread = std::thread(Network::dbConnect::addHighscore, name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 }

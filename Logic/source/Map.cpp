@@ -1,19 +1,27 @@
 #include "Map.h"
-#include <Physics/Physics.h>        
+
 #include <Keyboard.h>
+#include <fstream>
+#include <toml\toml.h>
+#include <memory>
+
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
-#include <Misc\RandomGenerator.h>
-#include <toml\toml.h>
-#include <fstream>
-#include <Misc\Sound\SoundSource.h>
 #include <Graphics/include/Utility/ModelLoader.h>
+
+#include <Physics/Physics.h>        
+#include <Misc\RandomGenerator.h>
+#include <Misc\Sound\SoundSource.h>
 
 using namespace Logic;
 
 #define AI_BOX_ID_MIN 30
 
 Map::Map() { }
+Map::Map() {
+    m_mapObject = std::make_unique<StaticObject*>(new StaticObject(Resources::Models::UnitCube,
+        nullptr, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL));
+}
 
 Map::~Map() 
 {
@@ -100,7 +108,12 @@ void Map::loadStartMenuScene()
     campfire.vel = { 0, 0, 0 };
     campfire.playSFX(Sound::SFX::CAMPFIRE);
 
-    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
+    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
+
+    SpecialEffectRenderInfo info;
+    info.type = SpecialEffectRenderInfo::Snow;
+    info.restart = true;
+    QueueRender(info);
 }
 
 // this method is very bad
@@ -228,9 +241,7 @@ void Map::loadMap(Resources::Maps::Files map)
                     aiCollBox ? Physics::COL_NOTHING : Physics::COL_EVERYTHING
                 );
                 aiCollBox = false;
-
-                StaticObject *obj = new StaticObject(Resources::Models::UnitCube, body, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL);
-                body->setUserPointer(obj);
+                body->setUserPointer(*m_mapObject);
 
                 float t[16]; body->getWorldTransform().getOpenGLMatrix(t);
                 DirectX::SimpleMath::Matrix hitbox_transform(t);

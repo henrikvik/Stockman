@@ -8,9 +8,9 @@
 namespace Graphics 
 {
     Graphics::SSAORenderPass::SSAORenderPass(
-        PingPongBuffer* backBuffers,
         std::initializer_list<ID3D11RenderTargetView*> targets,
         std::initializer_list<ID3D11ShaderResourceView*> resources,
+        std::initializer_list<ID3D11UnorderedAccessView*> uavs,
         std::initializer_list<ID3D11Buffer*> buffers,
         ID3D11DepthStencilView * depthStencil) :
         RenderPass(targets, resources, buffers, depthStencil),
@@ -18,9 +18,8 @@ namespace Graphics
         blurHorizontal(Resources::Shaders::SSAOGaussianBlurHorizontal),
         blurVertical(Resources::Shaders::SSAOGaussianBlurVertical),
         ssaoMerger(Resources::Shaders::SSAOMerger),
-        ssaoOutput(WIN_WIDTH / 2, WIN_HEIGHT / 2, DXGI_FORMAT_R8_UNORM),
         ssaoOutputSwap(WIN_WIDTH / 2, WIN_HEIGHT / 2, DXGI_FORMAT_R8_UNORM),
-        backBuffers(backBuffers)
+        uavs(uavs)
     {
         DebugWindow::getInstance()->registerCommand("GFX_SET_SSAO", [&](std::vector<std::string> &args)->std::string
         {
@@ -61,13 +60,9 @@ namespace Graphics
             return;
 
         PROFILE_BEGIN("SSAO");
-        backBuffers->swap();
 
 
         Global::context->OMSetRenderTargets(0, nullptr, nullptr);
-
-        static float clear[4] = { 0 };
-        Global::context->ClearUnorderedAccessViewFloat(ssaoOutput, clear);
 
         ID3D11SamplerState * samplers[] =
         {
@@ -85,7 +80,7 @@ namespace Graphics
         };
 
         Global::context->CSSetShaderResources(0, 3, srvs);
-        Global::context->CSSetUnorderedAccessViews(0, 1, ssaoOutput, nullptr);
+        Global::context->CSSetUnorderedAccessViews(0, 1, &uavs[0], nullptr);
         Global::context->CSSetConstantBuffers(0, 1, *Global::mainCamera->getInverseBuffer());
         Global::context->Dispatch(40, 23, 1);
 
@@ -94,28 +89,19 @@ namespace Graphics
         //blur the occlusion map in two passes
         Global::context->CSSetShader(blurHorizontal, nullptr, 0);
         Global::context->CSSetUnorderedAccessViews(0, 1, ssaoOutputSwap, nullptr);
-        Global::context->CSSetShaderResources(0, 1, ssaoOutput);
+        Global::context->CSSetShaderResources(0, 1, &resources[2]);
         Global::context->Dispatch(40, 23, 1);
 
         Global::context->CSSetShaderResources(0, 1, Global::nulls);
 
         Global::context->CSSetShader(blurVertical, nullptr, 0);
-        Global::context->CSSetUnorderedAccessViews(0, 1, ssaoOutput, nullptr);
+        Global::context->CSSetUnorderedAccessViews(0, 1, &uavs[0], nullptr);
         Global::context->CSSetShaderResources(0, 1, ssaoOutputSwap);
         Global::context->Dispatch(40, 23, 1);
-
-        //Merge the blurred occlusion map with back buffer
-        Global::context->CSSetShader(ssaoMerger, nullptr, 0);
-        Global::context->CSSetUnorderedAccessViews(0, 1, *backBuffers, nullptr);
-        Global::context->CSSetShaderResources(0, 1, *backBuffers);
-        Global::context->CSSetShaderResources(1, 1, ssaoOutput);
-        Global::context->Dispatch(80, 45, 1);
-
 
         Global::context->CSSetShaderResources(0, 2, Global::nulls);
         Global::context->CSSetUnorderedAccessViews(0, 1, Global::nulls, nullptr);
         PROFILE_END();
-
     }
 
     void Graphics::SSAORenderPass::update(float deltaTime)

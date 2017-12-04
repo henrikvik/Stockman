@@ -54,7 +54,11 @@ namespace Sound
 
 		void init();
 		void clear();
+        void clearCurrent();
 		void update(ListenerData& listener);
+
+        int loadMenuSounds();
+        int loadPlaySounds();
 
         void stopAllGroups();
         void stopGroup(CHANNEL_GROUP group);

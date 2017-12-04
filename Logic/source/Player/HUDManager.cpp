@@ -21,18 +21,41 @@ const std::wstring HUDManager::IN_WAVE     = L"MURDER",
                    HUDManager::BEFORE_WAVE = L"PREPARE",
                    HUDManager::AFTER_WAVE  = L"ENRAGED";
 
+const float HUDManager::WAVE_SLIDE_TIME = 5000.0f;
+const float HUDManager::ENRAGE_SLIDE_TIME = 3000.0f;
+const float HUDManager::PICKEUP_MESSAGE_TIMER = 2000.0f;
+
 HUDManager::HUDManager()
 {
 //    ZeroMemory(&info, sizeof(info)); // Yes, this causes a "fake" memory leaks
     info.cd[0] = 1.0f;
     info.cd[1] = 1.0f;
+    info.cdInSeconds[0] = 0;
+    info.cdInSeconds[1] = 0;
     info.currentSkills[0] = -1;
     info.currentSkills[1] = -1;
+    info.activeAmmo[0] = 0;
+    info.activeAmmo[1] = 0;
+    info.currentWeapon = 0;
+    info.enemiesRemaining = 0;
     info.hp = 3;
+    info.inactiveAmmo[0] = 0;
+    info.inactiveAmmo[1] = 0;
+    info.score = 0;
+    info.scoreCombo = 0;
+    info.scoreMul = 0;
+    crossBowTimer = -1.0f;
+    staffTimer = -1.0f;
 
     skillChoosen = false;
     constructGUIElements();
     showWaveCleared = false;
+    nextWaveSlideTimer = WAVE_SLIDE_TIME;
+    enrageSlideTimer = ENRAGE_SLIDE_TIME;
+    wasEnraged = false;
+
+    crossBowTimer = -1.0f;
+    staffTimer = -1.0f;
 }
 
 HUDManager::~HUDManager()
@@ -172,24 +195,23 @@ void HUDManager::constructGUIElements()
     height = 148.0f / 1024;
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
+    //next wave
+    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 400, 100, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
 
-    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, 0, WIN_WIDTH, WIN_HEIGHT, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 1.0f, false));
+    //enrage
+    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 400, 100, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
 }
 
 void HUDManager::updateTextElements()
 {
     HUDText.clear();
-    liveText.clear();
-    int last = 0;
 
     //cd 1 text
     TextRenderInfo text;
     text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
     if (info.cdInSeconds[0] > 0)
     {
-        liveText.push_back(std::to_wstring(info.cdInSeconds[0]));
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = std::to_wstring(info.cdInSeconds[0]);
         text.position = DirectX::SimpleMath::Vector2(1185, 530);
         text.font = Resources::Fonts::KG18;
 
@@ -201,37 +223,30 @@ void HUDManager::updateTextElements()
     //cd 2 text
     if (info.cdInSeconds[1] > 0)
     {
-        liveText.push_back(std::to_wstring(info.cdInSeconds[1]));
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = std::to_wstring(info.cdInSeconds[1]);
         text.position = DirectX::SimpleMath::Vector2(1115, 530);
         text.font = Resources::Fonts::KG18;
-
+        text.isMoveable = true;
         HUDText.push_back(TextRenderInfo(text));
     }
     
     //points
-    liveText.push_back(std::to_wstring(info.score));
-    text.text = liveText.at(last).c_str();
-    last++;
+    text.text = std::to_wstring(info.score);
     text.position = DirectX::SimpleMath::Vector2(142, 15);
     text.font = Resources::Fonts::KG14;
-
+    text.isMoveable = false;
     HUDText.push_back(TextRenderInfo(text));
 
     text.isMoveable = false;
 
-    liveText.push_back(std::to_wstring(info.scoreCombo));
-    text.text = liveText.at(last).c_str();
-    last++;
+    text.text = std::to_wstring(info.scoreCombo);
     text.position = DirectX::SimpleMath::Vector2(142, 45);
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
 
-    liveText.push_back(std::to_wstring(info.scoreMul) + L"X");
-    text.text = liveText.at(last).c_str();
-    last++;
+
+    text.text = (std::to_wstring(info.scoreMul) + L"X");
     text.position = DirectX::SimpleMath::Vector2(110, 45);
     text.font = Resources::Fonts::KG14;
 
@@ -240,55 +255,79 @@ void HUDManager::updateTextElements()
     //total ammo of weapon
     if (info.currentWeapon == 0)
     {
-        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]));
-        text.text = liveText.at(last).c_str();
-        last++;
-        text.position = DirectX::SimpleMath::Vector2(1183, 430);
-        text.font = Resources::Fonts::KG14;
-        text.isMoveable = true;
+        if (info.activeAmmo[1] > 0)
+        {
+            text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]);
+            text.position = DirectX::SimpleMath::Vector2(1183, 430);
+            text.font = Resources::Fonts::KG14;
+            text.isMoveable = true;
 
-        HUDText.push_back(TextRenderInfo(text));
-
-        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]));
-        text.text = liveText.at(last).c_str();
-        last++;
-        text.position = DirectX::SimpleMath::Vector2(1183, 630);
-        text.font = Resources::Fonts::KG14;
-
-        HUDText.push_back(TextRenderInfo(text));
+            HUDText.push_back(TextRenderInfo(text));
+        }
+        
+        if (info.inactiveAmmo[1] > 0)
+        {
+            text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]);
+            text.position = DirectX::SimpleMath::Vector2(1183, 630);
+            text.font = Resources::Fonts::KG14;
+            text.isMoveable = true;
+            HUDText.push_back(TextRenderInfo(text));
+        }
+      
     }
     else
     {
-        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]));
-        text.text = liveText.at(last).c_str();
-        last++;
-        text.position = DirectX::SimpleMath::Vector2(1183, 632);
-        text.isMoveable = true;
+        if (info.activeAmmo[1] > 0)
+        {
+            text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]);
+            text.position = DirectX::SimpleMath::Vector2(1183, 632);
+            text.isMoveable = true;
+            text.font = Resources::Fonts::KG14;
+            HUDText.push_back(TextRenderInfo(text));
+        }
 
-        text.font = Resources::Fonts::KG14;
+        if (info.inactiveAmmo[1] > 0)
+        {
+            text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]);
+            text.position = DirectX::SimpleMath::Vector2(1183, 428);
+            text.font = Resources::Fonts::KG14;
+            text.isMoveable = true;
+            HUDText.push_back(TextRenderInfo(text));
+        }
 
-        HUDText.push_back(TextRenderInfo(text));
-
-        liveText.push_back(std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]));
-        text.text = liveText.at(last).c_str();
-        last++;
-        text.position = DirectX::SimpleMath::Vector2(1183, 428);
-        text.font = Resources::Fonts::KG14;
-
-        HUDText.push_back(TextRenderInfo(text));
     }
 
     //current ammo in mag of active weapon
     if (info.currentWeapon != 2)
     {
-        liveText.push_back(std::to_wstring(info.activeAmmo[0]));
-        text.text = liveText.at(last).c_str();
-        last++;
-        text.position = DirectX::SimpleMath::Vector2(750, 400);
-        text.font = Resources::Fonts::KG14;
+        if (info.isReloding)
+        {
+            text.text = L"RELOADING";
+            text.position = DirectX::SimpleMath::Vector2(750, 400);
+            text.font = Resources::Fonts::KG14;
 
-        text.isMoveable = false;
-        HUDText.push_back(TextRenderInfo(text));
+            text.isMoveable = false;
+            HUDText.push_back(TextRenderInfo(text));
+        }
+        else
+        {
+            if (info.activeAmmo[1] > 0)
+            {
+                text.color = DirectX::SimpleMath::Color(0.545f, 0.000f, 0.000f);
+            }
+            else
+            {
+                text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+            }
+
+            text.text = std::to_wstring(info.activeAmmo[0]);
+            text.position = DirectX::SimpleMath::Vector2(750, 400);
+            text.font = Resources::Fonts::KG14;
+
+            text.isMoveable = false;
+            HUDText.push_back(TextRenderInfo(text));
+        }
+        
     }
 
     //time and enrage/ survive
@@ -296,21 +335,18 @@ void HUDManager::updateTextElements()
     int seconds = info.timeRemaining - (minutes*60);
     std::wstring timeString = L"";
     text.isMoveable = false;
+    text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
     if (seconds < 0)
     {
         timeString = L"0:00";
-        liveText.push_back(timeString);
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = timeString;
         text.position = DirectX::SimpleMath::Vector2(735, 15);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
 
-        text.color = DirectX::SimpleMath::Color(0.9f, 0.0f, 0.3f);
-        liveText.push_back(info.waveText);
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.color = DirectX::SimpleMath::Color(0.545f, 0.000f, 0.000f);
+        text.text = info.waveText;
         text.position = DirectX::SimpleMath::Vector2(520, 15);
         text.font = Resources::Fonts::KG14;
 
@@ -326,18 +362,14 @@ void HUDManager::updateTextElements()
         {
             timeString = std::to_wstring(minutes) + L":" + std::to_wstring(seconds);
         }
-        liveText.push_back(timeString);
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = timeString;
         text.position = DirectX::SimpleMath::Vector2(735, 15);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
 
         text.color = DirectX::SimpleMath::Color(0.0f, 0.0f, 0.0f);
-        liveText.push_back(info.waveText);
-        text.text = liveText.at(last).c_str();
-        last++;
+        text.text = info.waveText;
         text.position = DirectX::SimpleMath::Vector2(520, 15);
         text.font = Resources::Fonts::KG14;
 
@@ -346,12 +378,52 @@ void HUDManager::updateTextElements()
     
     //wave counter
     text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
-    liveText.push_back(std::to_wstring(info.wave) + L"/" + std::to_wstring(info.maxWaves));
-    text.text = liveText.at(last).c_str();
+    text.text = std::to_wstring(info.wave) + L"/" + std::to_wstring(info.maxWaves);
     text.position = DirectX::SimpleMath::Vector2(660, 15);
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
+
+
+    //next wave text
+    if (waveSprites.size() && 1.0f - waveSprites.at(WaveMessages::NEXTWAVE).getAlpha() < FLT_EPSILON)
+    {
+        text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
+        text.font = Resources::Fonts::KG26;
+        text.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2.0f + 100, WIN_HEIGHT / 2.0f - 225);
+        text.text = std::to_wstring(info.wave);
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+
+
+    //enmeies remaining text
+    if (info.enemiesRemaining > 0)
+    {
+        text.font = Resources::Fonts::KG14;
+        text.position = DirectX::SimpleMath::Vector2(1050, 15);
+        text.text = L"ENEMIES REMAINING:" + std::to_wstring(info.enemiesRemaining);
+
+        HUDText.push_back(TextRenderInfo(text));
+    }
+
+    //pickup message
+    if (crossBowTimer > 0.0f)
+    {
+        text.font = Resources::Fonts::KG14;
+        text.position = DirectX::SimpleMath::Vector2(515, 470);
+        text.text = L"ENHANCED CROSSBOW AMMO PICKED UP";
+        HUDText.push_back(TextRenderInfo(text));
+    }
+   
+    if (staffTimer > 0.0f)
+    {
+        text.font = Resources::Fonts::KG14;
+        text.position = DirectX::SimpleMath::Vector2(515, 490);
+        text.text = L"ENHANCED STAFF AMMO PICKED UP";
+        HUDText.push_back(TextRenderInfo(text));
+    }
+
 }
 
 //updates the active weapons and cd icons
@@ -433,6 +505,8 @@ void HUDManager::updateGUIElemets()
             skillMasks.at(1).setTexturePos(x, y, x + width, y + height);
         }
     }
+
+
    
 }
 
@@ -444,7 +518,7 @@ void HUDManager::renderTextElements() const
     }
 }
 
-void HUDManager::update(Player const &player, WaveTimeManager const &timeManager,
+void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
     EntityManager const &entityManager, float dt)
 {
     //updates hudInfo with the current info
@@ -458,26 +532,45 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.inactiveAmmo[HUDManager::TOTAL_AMMO]   = player.getInactiveAmmoContainer().getAmmoInfo().enhancedAmmo;// TODO GET AMMO
     info.sledge = player.isUsingMeleeWeapon();
     info.currentWeapon = player.getCurrentWeapon();
+    info.isReloding = player.getReloding();
+    info.ammoPickedUp = player.getAmmoPickedUp();
+
 
     //skill cooldowns are inverted for some reason 
     const Skill* secondary = player.getSkill(SkillManager::ID::SECONDARY);
-    if (!secondary->getCanUse()) {
-        info.cd[0] = secondary->getCooldown() / secondary->getCooldownMax();
-        info.cdInSeconds[0] = secondary->getCooldown() / 1000 + 1.f;
+
+    // skill is active
+    if (secondary->isActive())
+    {
+        info.cd[0] = 0.f;
+        info.cdInSeconds[0] = 0;
     }
+    // skill is not active and on cooldown
+    else if (!secondary->getCanUse()) 
+    {
+        info.cd[0] = secondary->getCooldown() / secondary->getCooldownMax();
+        info.cdInSeconds[0] = secondary->getCooldown() / 1000 + 1.f;   
+    }
+    // skill is ready to use again
     else
     {
         info.cd[0] = 1.0f;
         info.cdInSeconds[0] = 0;
     }
-        
+    
     const Skill* primary = player.getSkill(SkillManager::ID::PRIMARY);
-    if (!primary->getCanUse()) {
-        info.cd[1] = primary->getCooldown() / primary->getCooldownMax();
-        info.cdInSeconds[1] = (primary->getCooldown() / 1000 ) + 1.f;
+    // skill is active
+    if (primary->isActive()) {
+        info.cd[1] = 0.f;
+        info.cdInSeconds[1] = 0;
     }
-    else
-    {
+    // skill is not active and on cooldown
+    else if (!primary->getCanUse()) {
+        info.cd[1] = primary->getCooldown() / primary->getCooldownMax();
+        info.cdInSeconds[1] = primary->getCooldown() / 1000 + 1.f;
+    }
+    // skill is ready to use again
+    else {
         info.cd[1] = 1.0f;
         info.cdInSeconds[1] = 0;
     }
@@ -485,11 +578,70 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.wave = timeManager.getCurrentWave();
     info.maxWaves = entityManager.getWaveManager().getWaveInformation().nrOfWaves;
     if (timeManager.isEnraged())
+    {
         info.waveText = AFTER_WAVE;
+        if (wasEnraged == false)
+        {
+            enrageSlideTimer = ENRAGE_SLIDE_TIME;
+            wasEnraged = true;
+        }
+        static float alpha1 = 0.0f;
+        if (enrageSlideTimer > 0.0f)
+        {
+            enrageSlideTimer -= dt;
+
+            if (enrageSlideTimer > ENRAGE_SLIDE_TIME / 2.0f)
+            {
+                if (alpha1 < 1.0f)
+                {
+                    alpha1 += dt *0.002f;
+                }
+                waveSprites.at(WaveMessages::ENRAGE).setAlpha(alpha1);
+            }
+            else
+            {
+                if (alpha1 > 0.0f)
+                {
+                    alpha1 -= dt *0.002f;
+                }
+                waveSprites.at(WaveMessages::ENRAGE).setAlpha(alpha1);
+            }
+        }
+    }
     else if (timeManager.isTransitioning())
+    {
         info.waveText = BEFORE_WAVE;
-    else
+        nextWaveSlideTimer = WAVE_SLIDE_TIME;
+        wasEnraged = false;
+    }
+    else {
         info.waveText = IN_WAVE;
+        static float alpha = 0.0f;
+        if (nextWaveSlideTimer > 0.0f)
+        {
+            nextWaveSlideTimer -= dt;
+
+            if (nextWaveSlideTimer > WAVE_SLIDE_TIME / 2.0f)
+            {
+                if (alpha < 1.0f)
+                {
+                    alpha += dt *0.002f;
+                }
+                waveSprites.at(WaveMessages::NEXTWAVE).setAlpha(alpha);
+            }
+            else
+            {
+                if (alpha > 0.0f)
+                {
+                    alpha -= dt *0.002f;
+                }
+                waveSprites.at(WaveMessages::NEXTWAVE).setAlpha(alpha);
+            }
+        }
+        wasEnraged = false;
+    }
+
+        
 
     info.timeRemaining = (timeManager.getTimeRequired() - timeManager.getTimeCurrent()) * 0.001f;
     info.enemiesRemaining = static_cast<int> (entityManager.getNrOfAliveEnemies());
@@ -497,21 +649,27 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.currentSkills[0] = player.getCurrentSkill0();
     info.currentSkills[1] = player.getCurrentSkill1();
 
+    if (crossBowTimer > 0.0f)
+        crossBowTimer -= dt;
+ 
+    if (staffTimer > 0.0f)
+        staffTimer -= dt;
+
+    if (info.ammoPickedUp != 0 && info.ammoPickedUp < 3)
+    {
+        if (info.ammoPickedUp == 1)
+        {
+            crossBowTimer = PICKEUP_MESSAGE_TIMER;
+        }
+        else
+        {
+            staffTimer = PICKEUP_MESSAGE_TIMER;
+        }
+    }
+
     this->updateGUIElemets();
     this->updateTextElements();
 
-    // No.
-    //static float alpha = 0.0f;
-    //if (timeManager.isTransitioning() && !timeManager.onFirstWave())
-    //{
-    //    alpha += dt * 0.002f;
-    //    staticElements.at(staticElements.size()-1).setAlpha(alpha);
-    //}
-    //else
-    //{
-    //    alpha = 0.0f;
-    //    staticElements.at(staticElements.size()- 1).setAlpha(alpha);
-    //}
 }
 
 void HUDManager::render() const
@@ -543,10 +701,10 @@ void HUDManager::render() const
         bar.render();
     }
 
-    /*for (auto &wave : waveSprites)
+    for (auto &wave : waveSprites)
     {
         wave.render();
-    }*/
+    }
     renderTextElements();
 }
 
@@ -568,8 +726,15 @@ void HUDManager::reset()
     info.score = 0;
     info.scoreCombo = 0;
     info.scoreMul = 0;
+    crossBowTimer = -1.0f;
+    staffTimer = -1.0f;
 
     skillChoosen = false;
+    showWaveCleared = false;
+    wasEnraged = false;
+    nextWaveSlideTimer = WAVE_SLIDE_TIME;
+    enrageSlideTimer = ENRAGE_SLIDE_TIME;
+    
     
     HUDElements.clear();
     skillList.clear();
@@ -577,5 +742,8 @@ void HUDManager::reset()
     skillMasks.clear();
     staticElements.clear();
     HUDText.clear();
+    waveSprites.clear();
+
     constructGUIElements();
+   
 }

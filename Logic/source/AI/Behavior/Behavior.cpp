@@ -8,6 +8,7 @@
 #define SCALAR_SEP 2.f
 
 #define MAX_LEN_FOR_SEPERATION 15.f
+#define MIN_LEN_FOR_SPEEDUP_SQUARED 2500.f 
 // this can be changed in the future maybe who knows
 #define CHANGE_NODE_DIST 5.f
 
@@ -39,9 +40,7 @@ void Behavior::update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies, Pla
 void Behavior::walkPath(RunIn &in)
 {
     btVector3 dir;
-    btVector3 vel = in.enemy->getRigidBody()->getLinearVelocity().normalized();
 
-    float moveMod = 1.f;
     bool pursuitPlayer;
 
     if (m_pathing.pathIsEmpty() || m_pathing.pathOnLastNode())
@@ -72,15 +71,7 @@ void Behavior::walkPath(RunIn &in)
         dir, in.closeEnemies, in.enemy->getMoveSpeed(), in.deltaTime);
 
     dir.normalize();
-    float dt = (in.deltaTime * 0.001f);
-
-    float mod = in.enemy->getSpeedMod() * STEERING_MOD;
-    btVector3 steeringForce = dt * m_steeringSpeed * mod * (dir - vel);
-
-    if (pursuitPlayer && vel.dot(dir) < 0.7f)
-        moveMod = 0.15f;
-
-    in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() * moveMod + steeringForce);
+    calculateVelocityAndSteering(dir, in, pursuitPlayer);
 }
 
 void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
@@ -123,6 +114,27 @@ void Behavior::boidCalculations(btVector3 &pos, btVector3 &dir,
 
     // RET
     dir = dir * SCALAR_DIR + cohes * SCALAR_COHES + align * SCALAR_ALIGN + sep * SCALAR_SEP;
+}
+
+void Behavior::calculateVelocityAndSteering(btVector3 &dir, RunIn &in, bool pursuitPlayer)
+{
+    btVector3 vel = in.enemy->getRigidBody()->getLinearVelocity().normalized();
+
+    float moveMod = 1.f;
+    float noEnemyLeftBehindMod = 1.f;
+
+    float dt = (in.deltaTime * 0.001f);
+    float mod = in.enemy->getSpeedMod() * STEERING_MOD;
+
+    if ((in.enemy->getPositionBT() - in.target->getPositionBT()).length2() > MIN_LEN_FOR_SPEEDUP_SQUARED)
+        noEnemyLeftBehindMod = 5.f;
+    if (pursuitPlayer && vel.dot(dir) < 0.7f)
+        moveMod = 0.15f;
+
+    // calculate steering force with steeringSpeed, normal mod, special mod, and the normal reynold calc
+    btVector3 steeringForce = dt * m_steeringSpeed * mod * noEnemyLeftBehindMod * (dir - vel);
+    // calculate linear velocity
+    in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() * moveMod * noEnemyLeftBehindMod + steeringForce);
 }
 
 void Behavior::runTree(RunIn &in)

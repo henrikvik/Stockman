@@ -41,7 +41,7 @@ namespace Logic
         );
         ~Slider();
 
-        void updateOnPress(int posX, int posY);
+        bool updateOnPress(int posX, int posY);
         void updateOnRelease(int posX, int posY);
         void hoverOver(int posX, int posY);
         bool animationTransition(float dt, float maxAnimationTime, bool forward);
@@ -55,9 +55,9 @@ namespace Logic
     private:
         SpriteRenderInfo renderInfo;
 
-        FloatRect inactive;
-        FloatRect active;
-        FloatRect hover;
+        FloatRect m_inactive;
+        FloatRect m_active;
+        FloatRect m_hover;
         State state;
         std::string m_name;
         float m_y, m_height, m_width, m_min, m_max, m_minValue, m_maxValue, m_delimiter, m_tempValue;

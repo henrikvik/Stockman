@@ -43,6 +43,13 @@ namespace Graphics
         ShaderResource normalMap;
         DepthStencil shadowMap;
         DepthStencil depthStencil;
+        ShaderResource ssaoOutput;
+
+
+
+        ID3D11ShaderResourceView *m_BloomSRV;
+        std::vector<ID3D11ShaderResourceView *> m_BloomSRVMipChain;
+        std::vector<ID3D11RenderTargetView *> m_BloomRTVMipChain;
 
         ID3D11ShaderResourceView  * lightOpaqueGridSRV;
         ID3D11UnorderedAccessView * lightOpaqueGridUAV;

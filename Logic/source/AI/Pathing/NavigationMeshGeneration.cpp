@@ -295,7 +295,7 @@ void NavigationMeshGeneration::loadPhysicsObjects(Physics &physics)
         obj = physics.getCollisionObjectArray()[i];
         if (staticObj = dynamic_cast<StaticObject*> (reinterpret_cast<PhysicsObject*> (obj->getUserPointer()))) // it is a static objects
             if (!(staticObj->getNavFlags() & StaticObject::NavigationMeshFlags::CULL))                          // dont want to cull it
-                if (btBoxShape* bs = dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape())) // and it is box shape
+                if (btBoxShape* bs = dynamic_cast<btBoxShape*>(obj->getCollisionShape())) // and it is box shape
                 {
                     btBoxShape copy = *bs;
                     copy.setLocalScaling({ 1.f, 0.f, 1.f });
@@ -308,7 +308,6 @@ void NavigationMeshGeneration::loadPhysicsObjects(Physics &physics)
 bool NavigationMeshGeneration::handlePhysicsCollisionTest(NavMeshCube &region, Physics &physics, int side)
 {
     StaticObject *staticObj;
-    btCollisionObject *obj;
     bool collided = false;
 
     FunContactResult res(
@@ -328,7 +327,7 @@ bool NavigationMeshGeneration::handlePhysicsCollisionTest(NavMeshCube &region, P
         {
             cp.m_localPointA += region.body->getWorldTransform().getOrigin();
             CollisionReturn ret = handleCollision(cp.m_localPointA, region, staticObj, growth[side],
-                growthNormals[side], dynamic_cast<btBoxShape*>(staticObj->getRigidBody()->getCollisionShape()));
+                growthNormals[side], dynamic_cast<const btRigidBody*> (colObj1->getCollisionObject()));
 
             switch (ret)
             {
@@ -504,14 +503,15 @@ NavigationMesh::Triangle NavigationMeshGeneration::toNavTriangle(Triangle const 
 }
 
 NavigationMeshGeneration::CollisionReturn NavigationMeshGeneration::handleCollision(btVector3 collisionPoint,
-    NavMeshCube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btBoxShape *shape)
+    NavMeshCube &cube, StaticObject *obj, Growth const &growth, btVector3 growthNormal, btRigidBody const *body)
 {
+    auto shape = dynamic_cast<const btBoxShape*>(body->getCollisionShape());
     shrinkRegion(cube, growth);
 
-    DirectX::SimpleMath::Quaternion rot = obj->getRotation();
-    rot.w = 0; // this is stupid
+    auto rot = body->getWorldTransform().getRotation();
+    rot.setW(0); // this is stupid
 
-    if (rot.LengthSquared() < EPSILON) // base case
+    if (rot.length2() < EPSILON) // base case
     {
         return ON_AXIS;
     }
@@ -695,19 +695,6 @@ void NavigationMeshGeneration::createEdgeBeetwen(NavigationMesh &nav, int r1, in
     {
         nav.addDoubleEdge(triangle1 * 2 + 1, triangle2 * 2, toSimple((top + mid)));
     }
-}
-
-std::pair<bool, btVector3> NavigationMeshGeneration::rayTestCollisionPoint(StaticObject *obj, btRigidBody *reg, Physics &physics, btVector3 &normalIncrease, float maxDistance)
-{
-    bool collision;
-    btVector3 point;
-    btVector3 endPoint = -1.f * (normalIncrease * maxDistance);
-    btRigidBody *body = obj->getRigidBody();
-
-    // THIS IS A TESTING SOLUTION FOR THE MOMENT, CUSTOM
-    btCollisionWorld::ClosestRayResultCallback res(body->getWorldTransform().getOrigin(), endPoint);
-
-    return std::pair<bool, btVector3>(collision, point);
 }
 
 void NavigationMeshGeneration::testFunc(Physics &physics)
