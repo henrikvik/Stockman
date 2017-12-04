@@ -19,7 +19,8 @@ namespace Logic
             FirstTime,
             Intro,
             Start,
-            Settings,
+            SettingsStart,
+            SettingsPause,
             Skill,
             CardSelect,
             HighscoreStartMenu,
@@ -74,6 +75,9 @@ namespace Logic
         iMenu(MenuGroup group);
         ~iMenu();
 
+        void removeButtons();
+        void removeSliders();
+
         virtual void fadeIn();
         virtual void fadeOut();
 
@@ -84,6 +88,7 @@ namespace Logic
         virtual void update(int x, int y, float deltaTime);
         virtual void render() const;
 
+        void setGroup(iMenu::MenuGroup group)   { m_group       = group;        }
         void setDrawMenu(bool shouldDraw)       { m_drawMenu    = shouldDraw;   }
         void setDrawButtons(bool shouldDraw)    { m_drawButtons = shouldDraw;   }
         void setAlpha(float alpha);

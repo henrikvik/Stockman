@@ -91,7 +91,8 @@ void iMenuMachine::swapMenu()
     case iMenu::MenuGroup::Intro:               m_activeMenu = m_factory->buildMenuIntro();             break;
     case iMenu::MenuGroup::FirstTime:           m_activeMenu = m_factory->buildMenuFirstTime();         break;
     case iMenu::MenuGroup::Start:               m_activeMenu = m_factory->buildMenuStart();             break;
-    case iMenu::MenuGroup::Settings:            m_activeMenu = m_factory->buildMenuSettings();          break;
+    case iMenu::MenuGroup::SettingsStart:       m_activeMenu = m_factory->buildMenuSettings();          break;
+    case iMenu::MenuGroup::SettingsPause:       m_activeMenu = m_factory->buildMenuPauseSettings();     break;
     case iMenu::MenuGroup::HighscoreStartMenu:  m_activeMenu = m_factory->buildMenuHighscore();         break;
     case iMenu::MenuGroup::CardSelect:          m_activeMenu = m_factory->buildMenuCard();              break;
     case iMenu::MenuGroup::Skill:               m_activeMenu = m_factory->buildMenuSkill();             break;
@@ -204,7 +205,7 @@ void iMenuMachine::updateCamera(float deltaTime)
         shouldModifyCamera = true;
         break;
 
-    case iMenu::MenuGroup::Settings:
+    case iMenu::MenuGroup::SettingsStart:
         targetCameraPosition = CAMERA_SETTINGS_POSITION;
         targetCameraForward = CAMERA_SETTINGS_FORWARD;
         shouldModifyCamera = true;

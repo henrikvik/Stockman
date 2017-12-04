@@ -57,10 +57,10 @@ iMenu* iMenuFactory::buildMenuStart()
 
 iMenuSettings* iMenuFactory::buildMenuSettings()
 {
-    iMenuSettings* menu = newd iMenuSettings(iMenu::Settings);
+    iMenuSettings* menu = newd iMenuSettings(iMenu::SettingsStart);
 
     menu->addBackground(Resources::Textures::Settings, 1.f);
-    menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
+    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::startMainMenu));
     Settings& setting = Settings::getInstance();
     menu->addSlider(buildSlider("MouseSlider", setting.getMouseSensePTR(), 0.001f, 0.05f, 0.001f));
     menu->addSlider(buildSlider("MasterSlider", setting.getMasterSoundPTR(), 0.0f, 1.0f, 0.01f));
@@ -76,6 +76,17 @@ iMenuSettings* iMenuFactory::buildMenuSettings()
     menu->addButton(buildButton("MenuSettingsVideoSSAORight", ButtonFunction::SSAO));
     menu->addButton(buildButton("MenuSettingsVideoFogLeft", ButtonFunction::fog));
     menu->addButton(buildButton("MenuSettingsVideoFogRight", ButtonFunction::fog));
+
+    return menu;
+}
+
+iMenuSettings * iMenuFactory::buildMenuPauseSettings()
+{
+    iMenuSettings* menu = buildMenuSettings();
+    
+    menu->setGroup(iMenu::MenuGroup::SettingsPause);
+    menu->removeButtons();
+    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::pause));
 
     return menu;
 }
@@ -182,7 +193,8 @@ iMenu * iMenuFactory::buildMenuPause()
     iMenu* menu = newd iMenu(iMenu::Pause);
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::unpause));
-    menu->addButton(buildButton("ReturnToMenu", ButtonFunction::goBackToMainMenu));
+    menu->addButton(buildButton("MenuStartHighscore", ButtonFunction::startSettingsPause));
+    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
     return menu;
 }
 

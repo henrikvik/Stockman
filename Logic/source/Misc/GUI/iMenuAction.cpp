@@ -24,7 +24,14 @@ void ButtonFunction::startGame()
 void ButtonFunction::startSettings()
 {
     if (Action::Get().m_menuMachine)
-        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Settings);
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::SettingsStart);
+}
+
+// Switches the current menu-machine to settings screen
+void ButtonFunction::startSettingsPause()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::SettingsPause);
 }
 
 // Switches the current menu-machine to start screen
@@ -56,6 +63,13 @@ void ButtonFunction::unpause()
 {
     if (Action::Get().m_menuMachine)
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Empty);
+}
+
+// Just simply removes the current pause menu
+void ButtonFunction::pause()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Pause);
 }
 
 // Goes to the gameoverhighscore screen

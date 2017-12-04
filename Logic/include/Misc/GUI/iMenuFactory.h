@@ -28,6 +28,7 @@ namespace Logic
         iMenuFirstTime*     buildMenuFirstTime();
         iMenu*              buildMenuStart();
         iMenuSettings*      buildMenuSettings();
+        iMenuSettings*      buildMenuPauseSettings();
         iMenuSkillPick*     buildMenuSkill();
         iMenuCards*         buildMenuCard();
         iMenuHighscore*     buildMenuHighscore();

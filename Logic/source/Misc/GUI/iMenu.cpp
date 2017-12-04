@@ -42,6 +42,16 @@ iMenu::iMenu(MenuGroup group) : m_group(group), m_effect(nullptr), m_drawButtons
 
 iMenu::~iMenu() { if (m_effect) delete m_effect; }
 
+void iMenu::removeButtons()
+{
+    m_buttons.clear();
+}
+
+void iMenu::removeSliders()
+{
+    m_sliders.clear();
+}
+
 // Starts the fadeIn animation, menu's can't be changed/removed during this time
 void iMenu::fadeIn()
 {
