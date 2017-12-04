@@ -17,14 +17,6 @@ namespace Resources
         Files toEnum(const char * str)
         {
             if (strcmp(str, "Stock_Map") == 0) return Stock_Map;
-            if (strcmp(str, "Stock_Map_") == 0) return Stock_Map_;
-            if (strcmp(str, "Stock_Map_1222") == 0) return Stock_Map_1222;
-            if (strcmp(str, "Stock_Map_V1_Old") == 0) return Stock_Map_V1_Old;
-            if (strcmp(str, "Stock_Map_V1_V2_old") == 0) return Stock_Map_V1_V2_old;
-            if (strcmp(str, "Stock_Map_V1__") == 0) return Stock_Map_V1__;
-            if (strcmp(str, "Stock_Map_V1______") == 0) return Stock_Map_V1______;
-            if (strcmp(str, "Stock_Map_V4") == 0) return Stock_Map_V4;
-            if (strcmp(str, "Stock_Map_V5") == 0) return Stock_Map_V5;
             if (strcmp(str, "Test_Map") == 0) return Test_Map;
             throw "Could not find matching enum.";
         }

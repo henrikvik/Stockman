@@ -17,7 +17,6 @@ using namespace Logic;
 
 #define AI_BOX_ID_MIN 30
 
-Map::Map() { }
 Map::Map() {
     m_mapObject = std::make_unique<StaticObject*>(new StaticObject(Resources::Models::UnitCube,
         nullptr, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL));
