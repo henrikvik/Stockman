@@ -23,15 +23,29 @@ const std::wstring HUDManager::IN_WAVE     = L"MURDER",
 
 const float HUDManager::WAVE_SLIDE_TIME = 5000.0f;
 const float HUDManager::ENRAGE_SLIDE_TIME = 3000.0f;
+const float HUDManager::PICKEUP_MESSAGE_TIMER = 4000.0f;
 
 HUDManager::HUDManager()
 {
 //    ZeroMemory(&info, sizeof(info)); // Yes, this causes a "fake" memory leaks
     info.cd[0] = 1.0f;
     info.cd[1] = 1.0f;
+    info.cdInSeconds[0] = 0;
+    info.cdInSeconds[1] = 0;
     info.currentSkills[0] = -1;
     info.currentSkills[1] = -1;
+    info.activeAmmo[0] = 0;
+    info.activeAmmo[1] = 0;
+    info.currentWeapon = 0;
+    info.enemiesRemaining = 0;
     info.hp = 3;
+    info.inactiveAmmo[0] = 0;
+    info.inactiveAmmo[1] = 0;
+    info.score = 0;
+    info.scoreCombo = 0;
+    info.scoreMul = 0;
+    crossBowTimer = -1.0f;
+    staffTimer = -1.0f;
 
     skillChoosen = false;
     constructGUIElements();
@@ -39,6 +53,9 @@ HUDManager::HUDManager()
     nextWaveSlideTimer = WAVE_SLIDE_TIME;
     enrageSlideTimer = ENRAGE_SLIDE_TIME;
     wasEnraged = false;
+
+    crossBowTimer = -1.0f;
+    staffTimer = -1.0f;
 }
 
 HUDManager::~HUDManager()
@@ -369,19 +386,22 @@ void HUDManager::updateTextElements()
     }
 
     //pickup message
-
-    if (info.ammoPickedUp != 0 && info.ammoPickedUp < 3)
+    if (crossBowTimer > 0.0f)
     {
-        if (info.ammoPickedUp == 1)
-        {
-
-        }
-        else
-        {
-
-        }
+        text.font = Resources::Fonts::KG14;
+        text.position = DirectX::SimpleMath::Vector2(515, 470);
+        text.text = L"ENHANCED CROSSBOW AMMO PICKED UP";
+        HUDText.push_back(TextRenderInfo(text));
     }
    
+    if (staffTimer > 0.0f)
+    {
+        text.font = Resources::Fonts::KG14;
+        text.position = DirectX::SimpleMath::Vector2(515, 490);
+        text.text = L"ENHANCED STAFF AMMO PICKED UP";
+        HUDText.push_back(TextRenderInfo(text));
+    }
+
 }
 
 //updates the active weapons and cd icons
@@ -476,7 +496,7 @@ void HUDManager::renderTextElements() const
     }
 }
 
-void HUDManager::update(Player const &player, WaveTimeManager const &timeManager,
+void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
     EntityManager const &entityManager, float dt)
 {
     //updates hudInfo with the current info
@@ -591,6 +611,24 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.currentSkills[0] = player.getCurrentSkill0();
     info.currentSkills[1] = player.getCurrentSkill1();
 
+    if (crossBowTimer > 0.0f)
+        crossBowTimer -= dt;
+ 
+    if (staffTimer > 0.0f)
+        staffTimer -= dt;
+
+    if (info.ammoPickedUp != 0 && info.ammoPickedUp < 3)
+    {
+        if (info.ammoPickedUp == 1)
+        {
+            crossBowTimer = PICKEUP_MESSAGE_TIMER;
+        }
+        else
+        {
+            staffTimer = PICKEUP_MESSAGE_TIMER;
+        }
+    }
+
     this->updateGUIElemets();
     this->updateTextElements();
 
@@ -650,6 +688,8 @@ void HUDManager::reset()
     info.score = 0;
     info.scoreCombo = 0;
     info.scoreMul = 0;
+    crossBowTimer = -1.0f;
+    staffTimer = -1.0f;
 
     skillChoosen = false;
     showWaveCleared = false;
