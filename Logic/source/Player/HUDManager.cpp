@@ -299,6 +299,15 @@ void HUDManager::updateTextElements()
         }
         else
         {
+            if (info.activeAmmo[1] > 0)
+            {
+                text.color = DirectX::SimpleMath::Color(0.9f, 0.0f, 0.3f);
+            }
+            else
+            {
+                text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+            }
+
             text.text = std::to_wstring(info.activeAmmo[0]);
             text.position = DirectX::SimpleMath::Vector2(750, 400);
             text.font = Resources::Fonts::KG14;
@@ -314,6 +323,7 @@ void HUDManager::updateTextElements()
     int seconds = info.timeRemaining - (minutes*60);
     std::wstring timeString = L"";
     text.isMoveable = false;
+    text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
     if (seconds < 0)
     {
         timeString = L"0:00";
