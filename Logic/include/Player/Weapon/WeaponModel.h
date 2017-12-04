@@ -23,6 +23,7 @@ namespace Logic
         // Fake animations
         virtual void startShootAnimation();
         virtual void startReloadAnimation();
+        virtual void animation(float deltaTime);
 
         void update(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
@@ -31,8 +32,12 @@ namespace Logic
         void render() const;
 
     private:
+        // Fake animation
+        DirectX::SimpleMath::Matrix m_animationTarget;
+        DirectX::SimpleMath::Matrix m_animationCurrent;
+        float m_animationTimer;
+
         DirectX::SimpleMath::Matrix m_current;
-        DirectX::SimpleMath::Matrix m_animation;
         WeaponModelAnimationInfo m_mInfo;
         //PlayerRenderInfo renderInfo;
         StaticRenderInfo renderInfo; // temp
