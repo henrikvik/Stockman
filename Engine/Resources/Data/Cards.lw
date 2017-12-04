@@ -128,7 +128,7 @@
 }
 {
 	"cardName" : "Bounce";
-	"description" : "Increase the jump strength";
+	"description" : "Projectiles bounces of surfaces";
 	"texture" : "b";
 
 	"xTexStart" : 0.7216f;
