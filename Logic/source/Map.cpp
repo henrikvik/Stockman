@@ -106,6 +106,11 @@ void Map::loadStartMenuScene()
     campfire.playSFX(Sound::SFX::CAMPFIRE);
 
     for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
+
+    SpecialEffectRenderInfo info;
+    info.type = SpecialEffectRenderInfo::Snow;
+    info.restart = true;
+    QueueRender(info);
 }
 
 void Logic::Map::loadMap(Resources::Maps::Files map)
