@@ -99,9 +99,6 @@ void WeaponManager::update(float deltaTime)
 	{
 		m_currentWeapon->ammoContainer.fillMag(m_Upgrades.magSizeModifier);
 		m_reloadState = ReloadingWeapon::IDLE;
-		printf("adding ammo\n");
-		printf("ammo: %d\n", m_currentWeapon->ammoContainer.getAmmoInfo().enhancedAmmo);
-		printf("mag: %d\n", m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo);
 	}
 
 	// Attack
@@ -256,8 +253,7 @@ void WeaponManager::switchWeapon(int index)
 
 		m_reloadTimer = 0.f;
 		m_reloadState = ReloadingWeapon::IDLE;
-
-		printf("switch weapon %d\n", index);
+        m_currentWeapon->weaponModel.startSwapToAnimation(0.25f);
 	}
 }
 
@@ -272,6 +268,7 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
                 m_toUse = USE_PRIMARY;
                 m_toUseShooter = &shooter;
                 m_attackRateTimer = (float)delayTime;
+                m_currentWeapon->weaponModel.startWindupAnimation(1.f, delayTime);
             }
             else
             {
@@ -288,7 +285,7 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
 
 void WeaponManager::attack(int attackMode, btVector3 position, float yaw, float pitch, Entity& shooter)
 {
-    m_currentWeapon->weaponModel.startShootAnimation();
+    m_currentWeapon->weaponModel.startShootAnimation(0.125f, m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier), m_currentWeapon->weapon[attackMode]->getDelayTime());
     m_currentWeapon->weapon[attackMode]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(attackMode));
     m_currentWeapon->weapon[attackMode]->use(position, yaw, pitch, shooter);
     m_attackRateTimer = m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier);
@@ -299,10 +296,10 @@ void WeaponManager::reloadWeapon()
 	if (m_reloadTimer <= 0.f &&
         m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo < static_cast<int>(m_currentWeapon->ammoContainer.getAmmoInfo().magSize * m_Upgrades.magSizeModifier))
 	{
-        m_currentWeapon->weaponModel.startReloadAnimation();
+        Sound::NoiseMachine::Get().playSFX(Sound::WEAPON_RELOAD, nullptr, true);
+        m_currentWeapon->weaponModel.startReloadAnimation(0.75f, m_currentWeapon->ammoContainer.getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier);
         m_reloadTimer = m_currentWeapon->ammoContainer.getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier;
 		m_reloadState = ReloadingWeapon::ACTIVE;
-		printf("reloading weapon\n");
 	}
 }
 

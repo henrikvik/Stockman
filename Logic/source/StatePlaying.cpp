@@ -4,6 +4,7 @@
 #include <Misc\GUI\Specific\iMenuCards.h>
 #include <Misc\Network\dbConnect.h>
 #include <Misc\CommandsFile.h>
+#include <Player\Weapon\WeaponModel.h>
 
 
 // Input Singletons
