@@ -96,7 +96,7 @@ btVector3 Logic::Weapon::calcSpread(float yaw, float pitch)
 	return projectileDir;
 }
 
-SpawnProjectile Logic::Weapon::getSpawnProjectileFunc()
+SpawnProjectile Weapon::getSpawnProjectileFunc()
 {
     return spawnProjectile;
 }

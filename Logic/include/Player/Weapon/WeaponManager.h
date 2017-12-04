@@ -85,9 +85,9 @@ namespace Logic
 
         enum WeaponToUse
         {
-            USE_NOTHING,
             USE_PRIMARY,
-            USE_SECONDARY
+            USE_SECONDARY, 
+            USE_NOTHING
         };
 
         struct Upgrades

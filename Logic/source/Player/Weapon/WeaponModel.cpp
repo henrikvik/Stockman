@@ -9,10 +9,11 @@ using namespace Logic;
 
 WeaponModel::WeaponModel() { }
 
-WeaponModel::WeaponModel(Resources::Models::Files modelID, WeaponModelAnimationInfo mInfo)
+WeaponModel::WeaponModel(Resources::Models::Files modelID, WeaponModelAnimationInfo mInfo, AnimationType animationType)
 {
-    m_mInfo = mInfo;
-    renderInfo.model = modelID;
+    // Model information
+    m_mInfo                 = mInfo;
+    renderInfo.model        = modelID;
 
     // Animation
     m_animationCurrent      = m_mInfo.trans;
@@ -20,6 +21,7 @@ WeaponModel::WeaponModel(Resources::Models::Files modelID, WeaponModelAnimationI
     m_animationCurrentRot   = m_mInfo.rot;
     m_animationTargetRot    = m_mInfo.rot;
     m_animationTimer        = 0.f;
+    m_animationType         = animationType;
 }
 
 WeaponModel::~WeaponModel() { }
@@ -40,42 +42,72 @@ void WeaponModel::startSwapToAnimation(float holsterAmount)
 void WeaponModel::startWindupAnimation(float backPower, float delayTimer)
 {
     m_animationTarget = m_mInfo.trans;
-    m_animationTarget._41 += backPower;
-    m_animationTarget._43 += backPower * 0.75;
-
-    DirectX::SimpleMath::Matrix rotationMatrix = m_mInfo.rot;
-    float angle = 45.f * 3.14 / 180.f;
-    rotationMatrix._11 += cos(angle);
-    rotationMatrix._12 += sin(angle);
-    rotationMatrix._21 += -sin(angle);
-    rotationMatrix._22 += cos(angle);
-    m_animationTargetRot = rotationMatrix;
-
     m_animationTimer = delayTimer;
+
+    if (m_animationType == Hammer)
+    {
+        m_animationTarget._41 += backPower;
+        m_animationTarget._43 += backPower * 0.75;
+
+        DirectX::SimpleMath::Matrix rotationMatrix = m_mInfo.rot;
+        float angle = 45.f * 3.14 / 180.f;
+        rotationMatrix._11 += cos(angle);
+        rotationMatrix._12 += sin(angle);
+        rotationMatrix._21 += -sin(angle);
+        rotationMatrix._22 += cos(angle);
+        m_animationTargetRot = rotationMatrix;
+    }
 }
 
 // Starts the shooting animation for this weapon model
 // \param backpower The amount of power the model should knock back, default = 0.25
 // \param attackTimer The fire rate of this weapon in milliseconds to avoid overlapping animations, default = 75.f
-void WeaponModel::startShootAnimation(float backPower, float attackTimer, bool tilt)
+void WeaponModel::startShootAnimation(float backPower, float attackTimer, bool primary)
 {
     m_animationTarget = m_mInfo.trans;
     m_animationTargetRot = m_mInfo.rot;
-    m_animationTarget._43 += backPower;
     m_animationTimer = attackTimer * 0.5f;
 
-    if (tilt)
+    if (m_animationType == Hammer)
     {
+        if (!primary) 
+        {
+            m_animationTarget._41 -= 0.1f;
+            m_animationTarget._42 += 0.5f;
+            m_animationTarget._43 += 0.3f;
+        }
+        else
+        {
+            m_animationTarget._43 += backPower;
+            m_animationTarget._41 += 0.6f;
+            m_animationTarget._43 += 1.f;
+            m_animationTarget._42 += 0.6f;
+
+            DirectX::SimpleMath::Matrix rotationMatrix;
+            DirectX::SimpleMath::Matrix x = rotationMatrix.CreateRotationX((0.f * 3.14) / 180.f);
+            DirectX::SimpleMath::Matrix y = rotationMatrix.CreateRotationY((105.f * 3.14) / 180.f);
+            DirectX::SimpleMath::Matrix z = rotationMatrix.CreateRotationZ((287.f * 3.14) / 180.f);
+
+            m_animationTargetRot = z * y * x;
+        }
+    }
+    else if (m_animationType == Ice)
+    {
+        if (primary)
+        {
+            m_animationTarget._43 -= backPower * 0.1;
+        }
+        else
+        {
+            m_animationTarget._43 += backPower * 1.5;
+        }
+    }
+    else
+    {
+        m_animationTarget._43 += backPower;
         m_animationTarget._41 += 0.6f;
         m_animationTarget._43 += 1.f;
         m_animationTarget._42 += 0.6f;
-
-        DirectX::SimpleMath::Matrix rotationMatrix;
-        DirectX::SimpleMath::Matrix x = rotationMatrix.CreateRotationX((0.f * 3.14) / 180.f);
-        DirectX::SimpleMath::Matrix y = rotationMatrix.CreateRotationY((105.f   * 3.14) / 180.f);
-        DirectX::SimpleMath::Matrix z = rotationMatrix.CreateRotationZ((287.f * 3.14) / 180.f);
-
-        m_animationTargetRot = z * y * x;
     }
 }
 
