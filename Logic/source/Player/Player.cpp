@@ -37,7 +37,7 @@ using namespace Logic;
 #define PLAYER_FRICTION					20.f
 #define PLAYER_FRICTION_MIN             0.1f
 #define PLAYER_AIR_FRICTION				1.f
-#define PLAYER_AIR_FRICTION_CONTACT     0.6f
+#define PLAYER_AIR_FRICTION_CONTACT     1.5f
 #define PLAYER_JUMP_SPEED				0.008f
 
 const int Player::MIN_Y = -80, Player::MAX_HP = 3;
@@ -311,30 +311,28 @@ void Player::reset()
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-    if (!m_godMode)
+    if (Projectile* p = dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
+    else if (Trigger* t = dynamic_cast<Trigger*>(&other)) {}														// collision with trigger
+    else if (Enemy *e = dynamic_cast<Enemy*> (&other))
     {
-        if (Projectile* p = dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
-        else if (Trigger* t = dynamic_cast<Trigger*>(&other)) {}														// collision with trigger
-        else if (Enemy *e = dynamic_cast<Enemy*> (&other))
+        int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
+        e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * static_cast<btScalar> (stacks));
+        stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
+        e->damage(25 * stacks); // replace 1 with the player damage when it is better
+    }
+    else
+    {
+        // collision with map while in air adds some friction to the player
+        if (m_playerState == PlayerState::IN_AIR)
         {
-            int stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_PUSH_BACK);
-            e->getRigidBody()->applyCentralForce((getPositionBT() - e->getPositionBT()).normalize() * static_cast<btScalar> (stacks));
-            stacks = getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_CONSTANT_DAMAGE_ON_CONTACT);
-            e->damage(25 * stacks); // replace 1 with the player damage when it is better
-        }
-        else
-        {
-            // collision with map while in air adds some friction to the player
-            if (!m_charController->onGround())
-            {
-                btVector3 collDir = contactPoint - getPositionBT();
-                collDir.setY(0.f);
-                collDir.normalize();
+            btVector3 collDir = contactPoint - getPositionBT();
+            collDir.setY(0.f);
+            collDir.normalize();
 
-                m_airContactAngle = collDir.dot(m_moveDir);
-                if (m_airContactAngle < 0.f)
-                    m_airContactAngle = 0.f;
-            }
+            m_airContactAngle = collDir.dot(m_moveDir);
+            if (m_airContactAngle < 0.f)
+                m_airContactAngle = 0.f;
+            printf("%f\n", m_airContactAngle);
         }
     }
 }
@@ -584,7 +582,7 @@ void Player::updateSpecific(float deltaTime)
             m_wasInAir = true;
         }
 		    
-
+        
 	    // Print player velocity
 	    //printf("velocity: %f\n", m_moveSpeed);
 	    //printf("%f\n", m_charController->getLinearVelocity().y());
