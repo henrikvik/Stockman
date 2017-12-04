@@ -244,6 +244,8 @@ void StatePlaying::gameOver()
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_DEAD, nullptr, true);
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
+    m_hudManager.reset();
+
 }
 
 void StatePlaying::gameWon()

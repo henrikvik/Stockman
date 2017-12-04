@@ -291,6 +291,8 @@ void Player::reset()
     m_skillManager->reset();
     currentWeapon = 0;
 	m_hp = 3;
+    currentSkills[0] = -1;;
+    currentSkills[1] = -1;
     m_moveSpeedMod = 1.0f;
     m_permanentSpeedMod = 1.0f;
     m_jumpSpeedMod = 1.0f;
@@ -1112,6 +1114,11 @@ void Player::setCurrentSkills(int first, int second)
 int Player::getCurrentSkill1() const
 {
     return currentSkills[1];
+}
+
+bool Logic::Player::getReloding() const
+{
+    return m_weaponManager->isReloading();;
 }
 
 void Player::setTargetedBy(Entity *entity)
