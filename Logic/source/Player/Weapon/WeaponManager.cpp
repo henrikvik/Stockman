@@ -288,6 +288,7 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
 
 void WeaponManager::attack(int attackMode, btVector3 position, float yaw, float pitch, Entity& shooter)
 {
+    m_currentWeapon->weaponModel.startShootAnimation();
     m_currentWeapon->weapon[attackMode]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(attackMode));
     m_currentWeapon->weapon[attackMode]->use(position, yaw, pitch, shooter);
     m_attackRateTimer = m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier);
@@ -298,6 +299,7 @@ void WeaponManager::reloadWeapon()
 	if (m_reloadTimer <= 0.f &&
         m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo < static_cast<int>(m_currentWeapon->ammoContainer.getAmmoInfo().magSize * m_Upgrades.magSizeModifier))
 	{
+        m_currentWeapon->weaponModel.startReloadAnimation();
         m_reloadTimer = m_currentWeapon->ammoContainer.getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier;
 		m_reloadState = ReloadingWeapon::ACTIVE;
 		printf("reloading weapon\n");
