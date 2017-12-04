@@ -525,3 +525,25 @@
 	"height" : 16.f;
 	"width" : 32.0f;
 }
+
+{
+	"buttonName" : "Retry";
+	"texture" : 0;
+	"xPos" : 115.0f;
+	"yPos" : 320.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.05f;
+	"xTexEnd" : 1.f;
+	"yTexEnd" : 0.150f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" : 0.52f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.620f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" : 0.52f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.620f;
+    "activeOffset" : 0.470f;
+	"height" : 25.f;
+	"width" : 200.0f;
+}
