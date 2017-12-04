@@ -105,9 +105,6 @@ void WeaponModel::startShootAnimation(float backPower, float attackTimer, bool p
     else
     {
         m_animationTarget._43 += backPower;
-        m_animationTarget._41 += 0.6f;
-        m_animationTarget._43 += 1.f;
-        m_animationTarget._42 += 0.6f;
     }
 }
 
