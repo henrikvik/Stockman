@@ -189,8 +189,15 @@ void NavigationMeshGeneration::generateNavigationMesh(NavigationMesh &nav,
                     physics.removeRigidBody(region.body);
 
                     collided = handleRegionCollisionTest(region, physics, side);
-                    if (!collided) collided = handlePhysicsCollisionTest(region, physics, side);
-                    if (collided) region.collided[side] = true;
+                    if (!collided)
+                    {
+                        collided = handlePhysicsCollisionTest(region, physics, side);
+                    }
+                    else 
+                    {
+                        region.collided[side] = true;
+                        distance += 10; // test to reduce super long boxes
+                    }
 
                     distance += precision * 2;
                 }

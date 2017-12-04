@@ -93,7 +93,7 @@ namespace Logic
                 std::vector<NavNode> const &navNodes, int toIndex);
 
 			void renderNavigationMesh();
-            void editNavigationMesh();
+            void editNavigationMesh(btVector3 &pos, btVector3 &forward);
 			// load the target triangle once per frame instead of once per path load
 			void loadTargetIndex(Entity const &target);
 			int getTargetIndex();

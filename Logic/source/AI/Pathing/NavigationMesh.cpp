@@ -30,6 +30,7 @@ int NavigationMesh::addTriangle(Triangle const & triangle)
     return static_cast<int> (triangleList.size()) - 1;
 }
 
+// dont use
 void NavigationMesh::removeTriangle(int index)
 {
     triangleList.erase(triangleList.begin() + index);
@@ -39,7 +40,12 @@ void NavigationMesh::removeTriangle(int index)
     // remove edges
     for (auto &edges : edgesList) {
         for (int i = 0; i < edges.size(); i++) {
-            if (edges[i].index == index) edges.erase(edges.begin() + i);
+            if (edges[i].index == index)
+            {
+                std::swap(edges[i], edges[edges.size() - 1]);
+                edges.pop_back();
+                i--;
+            }
         }
     }
 }
@@ -136,12 +142,6 @@ std::vector<Point>* NavigationMesh::getRenderDataTri()
 std::vector<Point>* NavigationMesh::getRenderDataEdges()
 {
     std::vector<Point> *data = newd std::vector<Point>();
-
-    for (auto node : nodes)
-    {
-     //   data->push_back(node + DirectX::SimpleMath::Vector3{ 0, 2.f, 0 });
-    //    data->push_back(node - DirectX::SimpleMath::Vector3{ 0, 2.f, 0 });
-    }
 	
 	for (int j = 0; j < edgesList.size(); j++)
 	{

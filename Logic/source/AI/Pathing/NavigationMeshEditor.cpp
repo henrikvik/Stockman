@@ -19,38 +19,20 @@ NavigationMeshEditor::~NavigationMeshEditor()
 {
 }
 
-bool NavigationMeshEditor::editNavigationMesh(NavigationMesh &mesh)
+bool NavigationMeshEditor::editNavigationMesh(NavigationMesh &mesh, btVector3 &pos, btVector3 &forward)
 {
     using namespace DirectX::SimpleMath;
-    // dont look this is awful
-    // globals...
-    Graphics::Camera *camera = Global::mainCamera;
     auto &mouseState = DirectX::Mouse::Get().GetState();
-    auto &pos = camera->getPos();
-    auto &forward = camera->getForward();
-
-    // Mouse Picking copied from my proj
-    Vector4 mouseRay(mouseState.x * 2 / static_cast<float> (WIN_WIDTH) - 1,
-        1 - (mouseState.y * 2 / static_cast<float> (WIN_HEIGHT)),
-        -1.f, 0.f); //w = 0, is ray, z = 1 because pointing away from screen
-    Vector4 mouseOrigin(0, 0, 0, 1); // w = 1 because is POINT
-
-    mouseRay.x /= camera->getProj()._11;
-    mouseRay.y /= camera->getProj()._22; //Inverse perspective
-    mouseRay = Vector4::Transform(mouseRay, camera->getView().Invert());
-    mouseOrigin = Vector4::Transform(mouseOrigin, camera->getView().Invert());
-    mouseRay.Normalize();
 
     // todo delay
     if (mouseState.leftButton) {
-        int index = mesh.getIndex({ mouseOrigin.x, mouseOrigin.y, mouseOrigin.z }, { mouseRay.x, mouseRay.y, mouseRay.z });
+        int index = mesh.getIndex(Vector3(pos), Vector3(forward));
 
         ray.points->clear();
-        ray.points->push_back(Vector3(mouseOrigin.x, mouseOrigin.y, mouseOrigin.z));
-        ray.points->push_back(Vector3(mouseOrigin.x, mouseOrigin.y, mouseOrigin.z) + Vector3(mouseRay.x, mouseRay.y, mouseRay.z) * 150.f);
+        ray.points->push_back(Vector3(pos));
+        ray.points->push_back(Vector3(pos) + Vector3(forward) * 250.f);
 
         if (index > -1) {
-            printf("Remove: %d\n", index);
             mesh.removeTriangle(index);
             return true;
         }

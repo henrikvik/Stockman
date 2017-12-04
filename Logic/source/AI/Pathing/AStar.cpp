@@ -150,9 +150,9 @@ void AStar::renderNavigationMesh()
     if (debugDataEdges.points && renderDebugEdges)  QueueRender(debugDataEdges);
 }
 
-void AStar::editNavigationMesh()
+void AStar::editNavigationMesh(btVector3 &pos, btVector3 &forward)
 {
-    if (editor.editNavigationMesh(navigationMesh))
+    if (editor.editNavigationMesh(navigationMesh, pos, forward))
     {
         if (renderDebugTri || renderDebugEdges)
         {

@@ -274,7 +274,7 @@ void EntityManager::update(Player &player, float deltaTime)
 {
     // SPEC: remove before release?
     if (m_editing) {
-        AStar::singleton().editNavigationMesh();
+        AStar::singleton().editNavigationMesh(player.getPositionBT(), player.getForwardBT());
         return; // no updating in edit mode
     }
 
