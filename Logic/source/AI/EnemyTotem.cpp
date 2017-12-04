@@ -44,6 +44,8 @@ void EnemyTotem::createAbilities()
     }, [&](Player &target, Ability &ab) -> void {
         constexpr float piece = 3.14 * 2 / BULLET_AMOUNT;
 
+        getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, 1.f, 0.15);
+
         ProjectileData pData;
         
         pData.effect = necroTrail;

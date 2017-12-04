@@ -101,9 +101,6 @@ void WeaponManager::update(float deltaTime)
 	{
 		m_currentWeapon->ammoContainer.fillMag(m_Upgrades.magSizeModifier);
 		m_reloadState = ReloadingWeapon::IDLE;
-		printf("adding ammo\n");
-		printf("ammo: %d\n", m_currentWeapon->ammoContainer.getAmmoInfo().enhancedAmmo);
-		printf("mag: %d\n", m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo);
 	}
 
 	// Attack
@@ -222,17 +219,17 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     ProjectileData("Icecone", true, false, 0, 3.f, 1.f, 30.f, 0, 675.f, LightRenderInfo(DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 0.05f), .05f, 8.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeIce, true, false, false),
                                     Weapon::WeaponInfo{ 2, 1, 17, 5, 750, 0, 1,{ -0.6f, 0.25f, -1.3f } });
     /* Secondary */     wl.weapon[1] = newd WeaponFreezeGrenade(projectileManager,
-                                    ProjectileData("IceTrail", false, true, 0, 1.f, 1.f, 50.f, 5.f, 5000.f, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.4f, 1.f, 1.f), 0.25f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade, false, false, false),
+                                    ProjectileData("IceTrail", false, true, 0, 1.f, 1.f, 50.f, 5.f, 5000.f, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.4f, 1.f, 1.f), 0.10f, 3.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeFreezeGrenade, false, false, false),
                                     Weapon::WeaponInfo{ 3, 1, 0, 0, 30, 0, 0,{ -0.8f, 0.2f, 0.f } },
-                                    ProjectileData("IceTrail", false, true, 0, 1.f, 1.f, 10.f, 5.f, 5000.f, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.4f, 1.f, 1.f), 0.05f, 5.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard, false, false, false),
-                                    ProjectileData(nullptr, false, false, 50, 1.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.4f, 1.f, 1.f), 0.05f, 5.f), Resources::Models::UnitCube, 1, ProjectileTypeFreezeExplosion, true, false, false),
+                                    ProjectileData("IceTrail", false, true, 0, 1.f, 1.f, 10.f, 5.f, 5000.f, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.4f, 1.f, 1.f), 0.01f, 1.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard, false, false, false),
+                                    ProjectileData(nullptr, false, false, 50, 1.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.4f, 1.f, 1.f), 0.01f, 1.f), Resources::Models::UnitCube, 1, ProjectileTypeFreezeExplosion, true, false, false),
                                     8);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 999, 0, 100, 100, { 1, 25 }, { 0, 25 }, 1500 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.1f, 0.015f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.7f, -2.2f, 1.3f)),
         /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(0.5f, 0.5f, 0.5f),
-        /* Reload time */           800.f });
+        /* Reload time */           800.f }, WeaponModel::AnimationType::Ice);
     m_weaponLoadouts.push_back(wl);
 
     // #########
@@ -249,7 +246,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(1.3f, 0.9f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-0.3f, -1.5f, -0.2f)),
         /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f),
-        /* Reload time */           0.f });
+        /* Reload time */           0.f }, WeaponModel::AnimationType::Hammer);
     m_weaponLoadouts.push_back(wl);
 }
 
@@ -265,8 +262,7 @@ void WeaponManager::switchWeapon(int index)
 
 		m_reloadTimer = 0.f;
 		m_reloadState = ReloadingWeapon::IDLE;
-
-		printf("switch weapon %d\n", index);
+        m_currentWeapon->weaponModel.startSwapToAnimation(0.25f);
 	}
 }
 
@@ -278,9 +274,10 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
         {
             if (int delayTime = m_currentWeapon->weapon[attackMode]->getDelayTime())
             {
-                m_toUse = USE_PRIMARY;
+                m_toUse = WeaponToUse(attackMode);
                 m_toUseShooter = &shooter;
                 m_attackRateTimer = (float)delayTime;
+                m_currentWeapon->weaponModel.startWindupAnimation(1.f, delayTime);
             }
             else
             {
@@ -297,6 +294,9 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
 
 void WeaponManager::attack(int attackMode, btVector3 position, float yaw, float pitch, Entity& shooter)
 {
+    bool primary = false;
+    if (attackMode == WeaponToUse::USE_PRIMARY) primary = true;
+    m_currentWeapon->weaponModel.startShootAnimation(0.125f, m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier), primary);
     m_currentWeapon->weapon[attackMode]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(attackMode));
     m_currentWeapon->weapon[attackMode]->use(position, yaw, pitch, shooter);
     m_attackRateTimer = m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier);
@@ -307,9 +307,10 @@ void WeaponManager::reloadWeapon()
 	if (m_reloadTimer <= 0.f &&
         m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo < static_cast<int>(m_currentWeapon->ammoContainer.getAmmoInfo().magSize * m_Upgrades.magSizeModifier))
 	{
+        Sound::NoiseMachine::Get().playSFX(Sound::WEAPON_RELOAD, nullptr, true);
+        m_currentWeapon->weaponModel.startReloadAnimation(0.75f, m_currentWeapon->ammoContainer.getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier);
         m_reloadTimer = m_currentWeapon->ammoContainer.getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier;
 		m_reloadState = ReloadingWeapon::ACTIVE;
-		printf("reloading weapon\n");
 	}
 }
 
