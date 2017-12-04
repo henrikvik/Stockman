@@ -47,10 +47,12 @@ namespace Logic
 		float	getDuration() const;
 		float	getDurationMax() const;
 		bool	getCanUse() const;
+        bool    isActive() const;
 
 		void setCooldown(float cooldown);
         void setCooldownMax(float cooldownMax);
 		void setCanUse(bool canUse);
+        void setActive(bool active);
 
         virtual void render() const = 0;
 

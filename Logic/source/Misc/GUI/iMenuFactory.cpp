@@ -193,6 +193,7 @@ iMenu * iMenuFactory::buildMenuPause()
     iMenu* menu = newd iMenu(iMenu::Pause);
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::unpause));
+    menu->addButton(buildButton("Retry", ButtonFunction::playAgain));
     menu->addButton(buildButton("MenuStartHighscore", ButtonFunction::startSettingsPause));
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
     return menu;

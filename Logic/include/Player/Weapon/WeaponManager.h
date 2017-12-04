@@ -75,6 +75,8 @@ namespace Logic
         WeaponLoadout* getActiveWeaponLoadout();
         WeaponLoadout* getInactiveWeaponLoadout();
 
+        int getAmmoPickedUp();
+
 	private:
         enum ReloadingWeapon
         {
@@ -113,6 +115,8 @@ namespace Logic
 
 		float m_reloadTimer;
 		ReloadingWeapon m_reloadState;
+
+        int m_ammoPickedUp;
 	};
 }
 #endif

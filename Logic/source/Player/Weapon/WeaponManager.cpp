@@ -37,6 +37,8 @@ void WeaponManager::init(ProjectileManager* projectileManager)
     m_Upgrades.fireRateModifier = 1.0f;
     m_Upgrades.freezeDurationModifier = 1.0f;
     m_Upgrades.fireDamageModifier = 0;
+
+    m_ammoPickedUp = 0;
 }
 
 void WeaponManager::clear()
@@ -120,6 +122,7 @@ void WeaponManager::update(float deltaTime)
         }
     }
 
+    
 }
 
 void WeaponManager::affect(Effect const & effect)
@@ -131,9 +134,15 @@ void WeaponManager::affect(Effect const & effect)
     { 
         WeaponLoadout* wp = nullptr;
         if (effect.getSpecifics()->ammoType == 0)
+        {
             wp = getWeaponLoadout(0);
+            m_ammoPickedUp = 1;
+        }
         else if (effect.getSpecifics()->ammoType == 1)
+        {
             wp = getWeaponLoadout(1);
+            m_ammoPickedUp = 2;
+        }
 
         if (wp)
         {
@@ -352,4 +361,11 @@ WeaponManager::WeaponLoadout* WeaponManager::getInactiveWeaponLoadout()
     {
         return &m_weaponLoadouts[1];
     };
+}
+
+int Logic::WeaponManager::getAmmoPickedUp()
+{
+    int temp = m_ammoPickedUp;
+    m_ammoPickedUp = 0;
+    return temp;
 }

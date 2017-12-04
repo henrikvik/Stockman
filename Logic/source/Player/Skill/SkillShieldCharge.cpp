@@ -3,7 +3,7 @@
 #include <Engine\Settings.h>
 #include <Graphics\include\MainCamera.h>
 
-#define SHIELD_CHARGE_CD                        4250.f
+#define SHIELD_CHARGE_CD                        3000.f
 #define SLOWDOWN_DURATION                       150.f
 #define SHIELD_CHARGE_DURATION                  500.f
 #define SHIELD_CHARGE_FOV_INCREASE_SPEED        0.002f
@@ -16,7 +16,6 @@ using namespace Logic;
 SkillShieldCharge::SkillShieldCharge()
 : Skill(SHIELD_CHARGE_CD, SHIELD_CHARGE_DURATION)
 {
-	m_active = false;
 	m_slowdown = false;
 
 	m_time = 0.0f;
@@ -33,49 +32,41 @@ SkillShieldCharge::~SkillShieldCharge()
 
 bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
 {
-    setCanUse(false);
+    shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_CHARGE);
 
-	if (!m_active)
-	{
-        shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_CHARGE);
+    //Sets up the shield charge by deciding its movement vector and who is gonna charge
+    m_time = 0;
 
-		//Sets up the shield charge by deciding its movement vector and who is gonna charge
-		m_time = 0;
+    m_slowdown = false;
 
-		m_active = true;
-		m_slowdown = false;
+    m_forw = forward;
+    m_forw.setY(0);
+    m_forw = m_forw.normalize();
+    m_shooter = &shooter;
+    shooter.getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::SHIELD_CHARGE, 1);
 
-		m_forw = forward;
-		m_forw.setY(0);
-		m_forw = m_forw.normalize();
-		m_shooter = &shooter;
-		shooter.getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::SHIELD_CHARGE, 1);
-		
-        if (Player* player = dynamic_cast<Player*>(m_shooter))
-        {
-            m_oldSpeed = player->getMoveSpeed();
-            player->setMaxSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
+    if (Player* player = dynamic_cast<Player*>(m_shooter))
+    {
+        m_oldSpeed = player->getMoveSpeed();
+        player->setMaxSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
 
-            SpecialEffectRenderInfo shake;
-            shake.duration = SHIELD_CHARGE_DURATION * 0.001f;
-            shake.direction = { 0.f, -1.f, 0.f };
-            shake.radius = 20.0f;
-            shake.type = SpecialEffectRenderInfo::screenShake;
-            shake.affectEveryThing = false;
-            QueueRender(shake);
-        }
+        SpecialEffectRenderInfo shake;
+        shake.duration = SHIELD_CHARGE_DURATION * 0.001f;
+        shake.direction = { 0.f, -1.f, 0.f };
+        shake.radius = 20.0f;
+        shake.type = SpecialEffectRenderInfo::screenShake;
+        shake.affectEveryThing = false;
+        QueueRender(shake);
+    }
 
-        return true;
-	}
-
-    return false;
+    return true;
 }
 
 void SkillShieldCharge::onRelease() { }
 
 void SkillShieldCharge::onUpdate(float deltaTime)
 {
-	if (m_active)
+	if (isActive())
 	{
 		if (Player* player = dynamic_cast<Player*>(m_shooter))
 		{
@@ -94,8 +85,8 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 			if (m_time >= SHIELD_CHARGE_DURATION)
 			{
 				// When the duration of the skill is up the current charge is put to the max character speed
+                setActive(false);
 				m_slowdown = true;
-				m_active = false;
 				m_time = 0;
 			}
 		}
@@ -124,7 +115,7 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 	}
 }
 
-void Logic::SkillShieldCharge::onUpgradeAdd(int stacks, Upgrade const & upgrade)
+void SkillShieldCharge::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 {
 }
 
