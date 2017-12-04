@@ -9,10 +9,9 @@ using namespace Logic;
 
 NavigationMeshEditor::NavigationMeshEditor()
 {
-    ray.color = DirectX::SimpleMath::Color ( 0, 0, 0 );
+    ray.color = DirectX::SimpleMath::Color ( 0.5f, 0.5f, 0.5f );
     ray.points = new std::vector<DirectX::SimpleMath::Vector3>();
-    ray.points->resize(2);
-    ray.topology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+    ray.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
     ray.useDepth = false;
 }
 
@@ -33,19 +32,22 @@ bool NavigationMeshEditor::editNavigationMesh(NavigationMesh &mesh)
     // Mouse Picking copied from my proj
     Vector4 mouseRay(mouseState.x * 2 / static_cast<float> (WIN_WIDTH) - 1,
         1 - (mouseState.y * 2 / static_cast<float> (WIN_HEIGHT)),
-        1.f, 0.f); //w = 0, is ray, z = 1 because pointing away from screen
+        -1.f, 0.f); //w = 0, is ray, z = 1 because pointing away from screen
     Vector4 mouseOrigin(0, 0, 0, 1); // w = 1 because is POINT
 
     mouseRay.x /= camera->getProj()._11;
     mouseRay.y /= camera->getProj()._22; //Inverse perspective
     mouseRay = Vector4::Transform(mouseRay, camera->getView().Invert());
     mouseOrigin = Vector4::Transform(mouseOrigin, camera->getView().Invert());
+    mouseRay.Normalize();
 
     // todo delay
-    if (!mouseState.leftButton && lastState.leftButton) {
+    if (mouseState.leftButton) {
         int index = mesh.getIndex({ mouseOrigin.x, mouseOrigin.y, mouseOrigin.z }, { mouseRay.x, mouseRay.y, mouseRay.z });
-        ray.points[0] = { mouseOrigin.x, mouseOrigin.y, mouseOrigin.z };
-        ray.points[1] = Vector3(mouseOrigin.x, mouseOrigin.y, mouseOrigin.z) + Vector3(mouseRay.x, mouseRay.y, mouseRay.z) * 150.f;
+
+        ray.points->clear();
+        ray.points->push_back(Vector3(mouseOrigin.x, mouseOrigin.y, mouseOrigin.z));
+        ray.points->push_back(Vector3(mouseOrigin.x, mouseOrigin.y, mouseOrigin.z) + Vector3(mouseRay.x, mouseRay.y, mouseRay.z) * 150.f);
 
         if (index > -1) {
             printf("Remove: %d\n", index);
