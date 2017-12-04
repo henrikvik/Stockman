@@ -40,7 +40,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
 {
     // Edge cass 
-    if (startIndex == toIndex || startIndex == NULL_NODE || toIndex == NULL_NODE)
+  //  if (startIndex == toIndex || startIndex == NULL_NODE || toIndex == NULL_NODE)
         return {};
 
     // all nodes in navMesh
