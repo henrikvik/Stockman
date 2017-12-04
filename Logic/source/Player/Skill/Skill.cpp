@@ -24,25 +24,37 @@ void Skill::use(btVector3 forward, Entity& shooter)
         {
             m_duration = m_durationMax;
             m_active = true;
+            m_canUse = false;
             m_cooldown = m_cooldownMax * m_cooldownModifer;
-
         }
 	}
 }
 
 void Skill::release()
 {
-	if (m_active)
-	{
-        m_active = false;
-		onRelease();
-	}
+	onRelease();
 }
 
 void Skill::update(float deltaTime)
 {
     // Reloading
-    if (m_cooldown <= 0 && !m_active)
+    if (m_active)
+    {
+        m_duration -= deltaTime;
+    }
+    else
+    {
+        if (m_cooldown < FLT_EPSILON)
+        {
+            m_canUse = true;
+            m_cooldown = 0;
+        }
+        else
+            m_cooldown -= deltaTime;
+
+    }
+
+    /*if (m_cooldown <= 0 && !m_active)
     {
         m_canUse = true;
         m_cooldown = 0;
@@ -50,7 +62,7 @@ void Skill::update(float deltaTime)
 		m_cooldown -= deltaTime;
 
 	if (m_duration > 0)
-		m_duration -= deltaTime;
+		m_duration -= deltaTime;*/
 
 	onUpdate(deltaTime);
 }
@@ -87,6 +99,8 @@ float Skill::getCooldownMax() const		        { return m_cooldownMax;			}
 float Skill::getDuration() const		        { return m_duration;			}
 float Skill::getDurationMax() const		        { return m_durationMax;			}
 bool Skill::getCanUse() const			        { return m_canUse;				}
+bool Skill::isActive() const                   { return m_active;              }
 void Skill::setCooldown(float cooldown)         { this->m_cooldown = cooldown;  }
 void Skill::setCooldownMax(float cooldownMax)   { this->m_cooldownMax = cooldownMax; }
 void Skill::setCanUse(bool canUse)		        { this->m_canUse = canUse;		}
+void Skill::setActive(bool active)              { this->m_active = active;      }

@@ -481,23 +481,39 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
 
     //skill cooldowns are inverted for some reason 
     const Skill* secondary = player.getSkill(SkillManager::ID::SECONDARY);
-    if (!secondary->getCanUse()) {
-        info.cd[0] = secondary->getCooldown() / secondary->getCooldownMax();
-        info.cdInSeconds[0] = secondary->getCooldown() / 1000 + 1.f;
+
+    // skill is active
+    if (secondary->isActive())
+    {
+        info.cd[0] = 0.f;
+        info.cdInSeconds[0] = 0;
     }
+    // skill is not active and on cooldown
+    else if (!secondary->getCanUse()) 
+    {
+        info.cd[0] = secondary->getCooldown() / secondary->getCooldownMax();
+        info.cdInSeconds[0] = secondary->getCooldown() / 1000 + 1.f;   
+    }
+    // skill is ready to use again
     else
     {
         info.cd[0] = 1.0f;
         info.cdInSeconds[0] = 0;
     }
-        
+    
     const Skill* primary = player.getSkill(SkillManager::ID::PRIMARY);
-    if (!primary->getCanUse()) {
-        info.cd[1] = primary->getCooldown() / primary->getCooldownMax();
-        info.cdInSeconds[1] = (primary->getCooldown() / 1000 ) + 1.f;
+    // skill is active
+    if (primary->isActive()) {
+        info.cd[1] = 0.f;
+        info.cdInSeconds[1] = 0;
     }
-    else
-    {
+    // skill is not active and on cooldown
+    else if (!primary->getCanUse()) {
+        info.cd[1] = primary->getCooldown() / primary->getCooldownMax();
+        info.cdInSeconds[1] = primary->getCooldown() / 1000 + 1.f;
+    }
+    // skill is ready to use again
+    else {
         info.cd[1] = 1.0f;
         info.cdInSeconds[1] = 0;
     }

@@ -6,7 +6,7 @@
 
 using namespace Logic;
 
-#define BULLET_TIME_CD 13500.f
+#define BULLET_TIME_CD 10000.f
 #define BULLET_TIME_SMOOTHNESS_INTERVAL 20
 #define BULLET_TIME_SLOW_DOWN_DURATION 1000.f
 #define BULLET_TIME_SPEED_UP_DURATION 1000.f
@@ -32,13 +32,10 @@ bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
 	m_sensor = SpawnProjectile(*m_pData, shooter.getPositionBT(), forward, shooter);
 
-    shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_BULLETTIME_HEART);
-    Sound::NoiseMachine::Get().playSFX(Sound::SFX::SKILL_BULLETTIME_TIME, nullptr, true);
-
     if (m_sensor)
     {
-        setCanUse(false);
-        setCooldown(BULLET_TIME_CD);
+        shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_BULLETTIME_HEART);
+        Sound::NoiseMachine::Get().playSFX(Sound::SFX::SKILL_BULLETTIME_TIME, nullptr, true);
 
         btRigidBody* bodySensor = m_sensor->getRigidBody();
 
@@ -82,13 +79,13 @@ void SkillBulletTime::onReset()
 
 void SkillBulletTime::onUpdate(float deltaTime)
 {
-    
 	if (m_sensor)
 	{
-		if (m_sensor->getProjectileData().ttl < deltaTime)
-			m_sensor = nullptr;
+        if (m_sensor->getProjectileData().ttl < deltaTime)
+            m_sensor = nullptr;
 		else
 		{
+            setCanUse(false);
 			if (!slowDownIntervals.empty() && slowDownIntervals.back() > getDuration())
 			{
 				m_stacks++;
@@ -109,6 +106,8 @@ void SkillBulletTime::onUpdate(float deltaTime)
         else
             renderInfo.progress = 1.f;
     }
+    else
+        setActive(false);
 
 
 	/*if (m_travelProjectile)
