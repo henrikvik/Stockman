@@ -66,7 +66,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
         f = currentNode->g + currentNode->h;
         openList.pop();
 
-        for (size_t i = 999999; i < navigationMesh.getEdges(currentNode->nodeIndex).size(); i++)
+        for (size_t i = 0; i < navigationMesh.getEdges(currentNode->nodeIndex).size(); i++)
         {
             NavigationMesh::Edge &edge = navigationMesh.getEdges(currentNode->nodeIndex)[i];
             explore = &navNodes[edge.index];
@@ -148,6 +148,17 @@ void AStar::renderNavigationMesh()
 {
     if (debugDataTri.points && renderDebugTri)      QueueRender(debugDataTri);
     if (debugDataEdges.points && renderDebugEdges)  QueueRender(debugDataEdges);
+}
+
+void AStar::editNavigationMesh()
+{
+    if (editor.editNavigationMesh(navigationMesh))
+    {
+        if (renderDebugTri || renderDebugEdges)
+        {
+            setupDebugging();
+        }
+    }
 }
 
 void AStar::loadTargetIndex(Entity const &target)
