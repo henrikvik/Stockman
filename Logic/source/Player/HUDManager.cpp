@@ -255,34 +255,46 @@ void HUDManager::updateTextElements()
     //total ammo of weapon
     if (info.currentWeapon == 0)
     {
-        text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]);
-        text.position = DirectX::SimpleMath::Vector2(1183, 430);
-        text.font = Resources::Fonts::KG14;
-        text.isMoveable = true;
+        if (info.activeAmmo[1] > 0)
+        {
+            text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]);
+            text.position = DirectX::SimpleMath::Vector2(1183, 430);
+            text.font = Resources::Fonts::KG14;
+            text.isMoveable = true;
 
-        HUDText.push_back(TextRenderInfo(text));
-
-        text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]);
-        text.position = DirectX::SimpleMath::Vector2(1183, 630);
-        text.font = Resources::Fonts::KG14;
-
-        HUDText.push_back(TextRenderInfo(text));
+            HUDText.push_back(TextRenderInfo(text));
+        }
+        
+        if (info.inactiveAmmo[1] > 0)
+        {
+            text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]);
+            text.position = DirectX::SimpleMath::Vector2(1183, 630);
+            text.font = Resources::Fonts::KG14;
+            text.isMoveable = true;
+            HUDText.push_back(TextRenderInfo(text));
+        }
+      
     }
     else
     {
-        text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]);
-        text.position = DirectX::SimpleMath::Vector2(1183, 632);
-        text.isMoveable = true;
+        if (info.activeAmmo[1] > 0)
+        {
+            text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.activeAmmo[1]);
+            text.position = DirectX::SimpleMath::Vector2(1183, 632);
+            text.isMoveable = true;
+            text.font = Resources::Fonts::KG14;
+            HUDText.push_back(TextRenderInfo(text));
+        }
 
-        text.font = Resources::Fonts::KG14;
+        if (info.inactiveAmmo[1] > 0)
+        {
+            text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]);
+            text.position = DirectX::SimpleMath::Vector2(1183, 428);
+            text.font = Resources::Fonts::KG14;
+            text.isMoveable = true;
+            HUDText.push_back(TextRenderInfo(text));
+        }
 
-        HUDText.push_back(TextRenderInfo(text));
-
-        text.text = std::to_wstring(/*info.activeAmmo[0] +*/ info.inactiveAmmo[1]);
-        text.position = DirectX::SimpleMath::Vector2(1183, 428);
-        text.font = Resources::Fonts::KG14;
-
-        HUDText.push_back(TextRenderInfo(text));
     }
 
     //current ammo in mag of active weapon
