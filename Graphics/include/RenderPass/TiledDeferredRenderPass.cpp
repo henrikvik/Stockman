@@ -35,6 +35,7 @@ namespace Graphics {
         cxt->PSSetShader(m_TiledDeferredPS, nullptr, 0);
 
         cxt->VSSetConstantBuffers(0, 1, *Global::mainCamera->getBuffer());
+        cxt->PSSetConstantBuffers(0, 1, *Global::mainCamera->getBuffer());
 
         ID3D11SamplerState * samplers[] =
         {

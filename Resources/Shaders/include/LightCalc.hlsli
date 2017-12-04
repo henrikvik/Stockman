@@ -84,7 +84,7 @@ float3 toonify(float3 color, float intensity)
         color = 0.35 * color;
     else
         color = 0.1 * color;
-    
+
     return color;
 }
 
@@ -108,7 +108,7 @@ float3 calcNormal(float3 mappedNormal, float3 normal, float3 binormal, float3 ta
 
 float3 calcLight(DirectionalLight light, float3 position, float3 normal, float3 viewDir, float specularExponent)
 {
-    float3 lightDir = normalize(light.position.xyz);   
+    float3 lightDir = normalize(light.position.xyz);
     float3 halfway = normalize(lightDir + viewDir);
 
     float diffuesFactor = saturate(dot(normal, lightDir));
@@ -120,8 +120,8 @@ float3 calcLight(DirectionalLight light, float3 position, float3 normal, float3 
 
 float3 calcLight(Light light, float3 position, float3 normal, float3 viewDir, float specularExponent)
 {
-    float3 lightDir = light.position.xyz - position.xyz;
-    float distance = length(lightDir); 
+    float3 lightDir = light.viewPosition.xyz - position.xyz;
+    float distance = length(lightDir);
     lightDir = lightDir / distance;
 
     float3 halfway = normalize(lightDir + viewDir);
@@ -131,7 +131,7 @@ float3 calcLight(Light light, float3 position, float3 normal, float3 viewDir, fl
     float specularFactor = saturate(pow(dot(normal, halfway), specularExponent));
 
     return diffuesFactor * light.color * attenuation * light.intensity;
-       //  + specularFactor * light.color * attenuation * light.intensity;
+    //  + specularFactor * light.color * attenuation * light.intensity;
 }
 
 float3 calcAllLights(float4 ndcPosition, float3 position, float3 normal, float3 viewDir, float specularExponent)

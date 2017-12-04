@@ -21,6 +21,7 @@
 #include "RenderPass\SkyBoxRenderPass.h"
 #include "RenderPass\GlowRenderPass.h"
 #include "RenderPass\ParticleRenderPass.h"
+#include "RenderPass\AORenderPass.h"
 #include "RenderPass\SSAORenderPass.h"
 #include "RenderPass\DepthOfFieldRenderPass.h"
 #include "RenderPass\TiledDeferredRenderPass.h"
@@ -169,6 +170,13 @@ namespace Graphics
             ThrowIfFailed(device->CreateShaderResourceView(tex, nullptr, &m_NormalSRV));
             ThrowIfFailed(device->CreateRenderTargetView(tex, nullptr, &m_NormalRTV));
             SAFE_RELEASE(tex);
+
+            desc.Format = DXGI_FORMAT_R8_UNORM;
+
+            ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &tex));
+            ThrowIfFailed(device->CreateShaderResourceView(tex, nullptr, &m_SSAOSRV));
+            ThrowIfFailed(device->CreateRenderTargetView(tex, nullptr, &m_SSAORTV));
+            SAFE_RELEASE(tex);
         }
 
         { // CaNCeR!
@@ -272,7 +280,7 @@ namespace Graphics
                 depthStencil
             ),
             newd ShadowRenderPass(
-                {}, 
+                {},
                 { staticInstanceBuffer, animatedInstanceBuffer },
                 {*sun.getLightMatrixBuffer(), grassTimeBuffer },
                 shadowMap
@@ -326,17 +334,24 @@ namespace Graphics
                 depthStencil
             ),
 #endif
+            newd AORenderPass(
+                m_SSAORTV,
+                m_PositionSRV,
+                m_NormalSRV
+            ),
             newd TiledDeferredLightingRenderPass(
                 fakeBuffers,
                 m_BloomRTVMipChain[0],
                 m_PositionSRV,
                 m_AlbedoSpecularSRV,
                 m_NormalSRV,
+                m_SSAOSRV,
                 lightOpaqueGridSRV,
                 lightOpaqueIndexList,
                 lightsNew,
                 shadowMap,
                 *sun.getGlobalLightBuffer(),
+                *sun.getLightMatrixBuffer(),
                 depthStencil
             ),
             newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil, &sun),
@@ -349,6 +364,7 @@ namespace Graphics
                 *sun.getGlobalLightBuffer(),
                 depthStencil
             ),
+
             //newd SSAORenderPass({}, { depthStencil, normalMap, ssaoOutput }, {ssaoOutput}, {}, nullptr),
             newd GlowRenderPass(
                 m_BloomSRV,
@@ -503,7 +519,7 @@ namespace Graphics
         Global::context->ClearRenderTargetView(backBuffer, clearColor);
         Global::context->ClearRenderTargetView(normalMap, clearColor);
         //fakeBuffers.clear();
-        Global::context->ClearUnorderedAccessViewFloat(ssaoOutput, white);
+        Global::context->ClearRenderTargetView(m_SSAORTV, white);
         Global::context->ClearRenderTargetView(glowMap, clearColor);
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);

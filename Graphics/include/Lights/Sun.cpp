@@ -86,7 +86,9 @@ namespace Graphics
         this->globalLight.ambient = ambient;
         //this->globalLight.position = globalLight.position + Global::mainCamera->getPos();
         //view = DirectX::XMMatrixLookAtRH(globalLight.position, Global::mainCamera->getPos(), DirectX::SimpleMath::Vector3(0, 1, 0));
+        DirectX::XMMATRIX inv = Global::mainCamera->getView().Invert();
         matrixData.vp = view * proj;
+        matrixData.mInvP = inv * view * proj;
         Global::mainCamera->setShadowDir(matrixData.vp);
 
         globalLightBuffer.write(Global::context, &globalLight, sizeof(globalLight));

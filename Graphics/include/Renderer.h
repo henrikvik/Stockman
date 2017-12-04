@@ -64,6 +64,9 @@ namespace Graphics
         ID3D11RenderTargetView *m_AlbedoSpecularRTV;
         ID3D11RenderTargetView *m_NormalRTV;
 
+        ID3D11ShaderResourceView *m_SSAOSRV;
+        ID3D11RenderTargetView *m_SSAORTV;
+
         ID3D11RenderTargetView * backBuffer;
 
         PingPongBuffer fakeBuffers;

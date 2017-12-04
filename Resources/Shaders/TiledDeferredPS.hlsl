@@ -2,6 +2,8 @@
 #include "include/Fragment.hlsli"
 #include "include/LightCalc.hlsli"
 
+cbuffer cb0 : register(b0) { Camera camera; };
+
 #define USE_GRID_TEXTURE
 
 SamplerState           linearClamp     : register(s0);
@@ -38,9 +40,12 @@ RenderTargets PS(Fragment fragment)
     float3 normal = calcNormal(normalTexture.Sample(linearClamp, fragment.uv).xyz, fragment.normal, fragment.binormal, fragment.tangent);
     float3 glow = glowTexture.Sample(linearClamp, fragment.uv).xyz;
 
-    targets.Position = float4(fragment.position);
+    targets.Position = mul(camera.view, float4(fragment.position));
     targets.AlbedoSpecular = float4(albedo + glow * 7, specular);
-    targets.Normal = float4(normal, 0.0);
+    
+    normal = mul(camera.view, float4(normal, 0.0));
+    normal = normalize(normal);
+    targets.Normal = float4(normal * 0.5 + 0.5, 0);
 
     return targets;
 }

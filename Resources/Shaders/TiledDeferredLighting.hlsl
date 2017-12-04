@@ -3,6 +3,12 @@
 
 cbuffer cb0 : register(b0) { Camera camera; };
 cbuffer cb1 : register(b1) { DirectionalLight globalLight; };
+cbuffer ShadowBuffer : register(b2)
+{
+    float4x4 ShadowVP;
+    float4x4 InvShadowVP;
+};
+
 
 SamplerState           LinearClamp       : register(s0);
 SamplerState           LinearWrap        : register(s1);
@@ -12,7 +18,7 @@ Texture2D              Position          : register(t3);
 Texture2D              AlbedoSpecular    : register(t4);
 Texture2D              Normal            : register(t5);
 Texture2D              ShadowMap         : register(t6);
-Texture2D              GlowTexture       : register(t7);
+Texture2D              AO                : register(t7);
 
 struct VSOutput
 {
@@ -44,11 +50,12 @@ Targets PS(VSOutput input)
     float3 position = Position.Load(int3(uv, 0)).xyz;
     float3 normal = Normal.Load(int3(uv, 0)).xyz;
     float4 albedoSpecular = AlbedoSpecular.Load(int3(uv, 0));
+    float ao = AO.Load(int3(uv, 0)).r;
 
-    float shadowFactor = calcShadowFactor(ComparisonSampler, ShadowMap, mul(camera.shadowProj, float4(position, 1.0)).xyz);
+    float shadowFactor = calcShadowFactor(ComparisonSampler, ShadowMap, mul(InvShadowVP, float4(position, 1.0)).xyz);
     float3 viewDir = normalize(camera.position.xyz - position.xyz);
 
-    float3 lightSum = globalLight.ambient;
+    float3 lightSum = ao * globalLight.ambient;
     lightSum += shadowFactor * calcLight(globalLight, position, normal, viewDir, albedoSpecular.w);
     lightSum += calcAllLights(input.position, position, normal, viewDir, albedoSpecular.w);
 
@@ -74,5 +81,6 @@ Targets PS(VSOutput input)
         targets.Glow = float4(0, 0, 0, 0);
     }
 
+    targets.Backbuffer = float4(ao, ao, ao, 1);
     return targets;
 }
