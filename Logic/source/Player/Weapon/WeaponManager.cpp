@@ -109,7 +109,7 @@ void WeaponManager::update(float deltaTime)
     {
         m_attackRateTimer -= deltaTime;
 
-        if (m_attackRateTimer < 0.f && m_toUse != USE_NOTHING)
+        if (m_attackRateTimer < FLT_EPSILON && m_toUse != USE_NOTHING)
         {
             Entity* shooterEntity = m_toUseShooter;
 
