@@ -35,7 +35,10 @@ namespace Logic
             // only use for debugging, should never be used by normal gameplay
             void clear();
 
-			int addTriangle(Triangle const &triangle);
+            int addTriangle(Triangle const &triangle);
+            // dont use
+            void removeTriangle(int index);
+
             void addEdge(int from, int to);
             // from <--> to
             void addDoubleEdge(int from, int to, DirectX::SimpleMath::Vector3 edgeNode);
@@ -47,8 +50,8 @@ namespace Logic
 			
 			// returns int of the index that has this pos in it
 			// (triangleList, getList(), index)
-			int getIndex(DirectX::SimpleMath::Vector3 const &pos) const;
-			bool isPosOnIndex(DirectX::SimpleMath::Vector3 const &pos, int index) const;
+			int getIndex(DirectX::SimpleMath::Vector3 const &pos, DirectX::SimpleMath::Vector3 const &dir = DOWN_Y) const;
+			bool isPosOnIndex(DirectX::SimpleMath::Vector3 const &pos, int index, DirectX::SimpleMath::Vector3 const &dir = DOWN_Y) const;
 
 			const std::vector<Triangle>& getList() const;
 			const std::vector<DirectX::SimpleMath::Vector3>& getNodes() const;

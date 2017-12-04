@@ -204,6 +204,7 @@
     <ClInclude Include="include\AI\EnemyDefender.h" />
     <ClInclude Include="include\AI\EnemySoarer.h" />
     <ClInclude Include="include\AI\EnemyTotem.h" />
+    <ClInclude Include="include\AI\Pathing\NavigationMeshEditor.h" />
     <ClInclude Include="include\Misc\Fader.h" />
     <ClInclude Include="include\Misc\GUI\Specific\iMenuCards.h" />
     <ClInclude Include="include\Misc\GUI\Specific\iMenuCinematic.h" />
@@ -323,6 +324,7 @@
     <ClCompile Include="source\AI\EnemyDefender.cpp" />
     <ClCompile Include="source\AI\EnemySoarer.cpp" />
     <ClCompile Include="source\AI\EnemyTotem.cpp" />
+    <ClCompile Include="source\AI\Pathing\NavigationMeshEditor.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
     <ClCompile Include="source\Misc\GUI\Specific\iMenuCards.cpp" />
     <ClCompile Include="source\Misc\GUI\Specific\iMenuCinematic.cpp" />

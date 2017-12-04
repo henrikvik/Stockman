@@ -45,7 +45,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 
     // all nodes in navMesh
     const std::vector<DirectX::SimpleMath::Vector3> &nodes = navigationMesh.getNodes();
-    std::vector<AStar::NavNode> navNodes = this->navNodes;
+    std::vector<AStar::NavNode> navAINodes = this->navNodes;
 
     // openlist and a test offset
     auto comp = [](NavNode *fir, NavNode *sec) { return *fir > *sec; };
@@ -148,6 +148,17 @@ void AStar::renderNavigationMesh()
 {
     if (debugDataTri.points && renderDebugTri)      QueueRender(debugDataTri);
     if (debugDataEdges.points && renderDebugEdges)  QueueRender(debugDataEdges);
+}
+
+void AStar::editNavigationMesh(btVector3 &pos, btVector3 &forward)
+{
+    if (editor.editNavigationMesh(navigationMesh, pos, forward))
+    {
+        if (renderDebugTri || renderDebugEdges)
+        {
+            setupDebugging();
+        }
+    }
 }
 
 void AStar::loadTargetIndex(Entity const &target)

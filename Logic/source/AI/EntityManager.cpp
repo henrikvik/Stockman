@@ -45,6 +45,7 @@ EntityManager::EntityManager()
 
     m_automaticTesting = false;
     m_debugPath = false;
+    m_editing = false;
 
     //allocateData(); was here
     registerCreationFunctions();
@@ -208,6 +209,19 @@ void EntityManager::loadDebugCmds()
             return "DOTHRAKI IN THE OPEN FIELD, NED";
         }
     });
+    DebugWindow::getInstance()->registerCommand("AI_TOGGLE_EDITING",
+        [&](std::vector<std::string> para) -> std::string {
+        m_editing = !m_editing;
+        if (!m_editing) {
+            deallocateData();
+            allocateData();
+            return "No longer editing";
+        }
+        else
+        {
+            return "Eiditing started";
+        }
+    });
 }
 
 void EntityManager::deallocateData(bool forceDestroy)
@@ -258,6 +272,12 @@ void EntityManager::deallocateData(bool forceDestroy)
 
 void EntityManager::update(Player &player, float deltaTime)
 {
+    // SPEC: remove before release?
+    if (m_editing) {
+        AStar::singleton().editNavigationMesh(player.getPositionBT(), player.getForwardBT());
+        return; // no updating in edit mode
+    }
+
 	m_frame++;
 	m_deltaTime = deltaTime;
 	
@@ -391,6 +411,8 @@ Enemy* EntityManager::spawnEnemy(EnemyType id, btVector3 const &pos,
     std::vector<int> const &effects, Physics &physics, ProjectileManager *projectiles)
 {
     if (m_aliveEnemies >= ENEMY_CAP) return nullptr;
+    if (m_editing) return nullptr;
+
     try
     {
         Enemy *enemy = m_enemyFactory[id](pos, 1.f, effects, physics);
@@ -448,6 +470,7 @@ btVector3 EntityManager::getRandomSpawnLocation(btVector3 const &invalidPoint, f
 
 size_t EntityManager::getNrOfAliveEnemies() const
 {
+    if (m_editing || m_automaticTesting) return 1; // ye i know
     return m_aliveEnemies;
 }
 

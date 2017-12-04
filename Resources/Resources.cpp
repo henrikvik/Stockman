@@ -63,6 +63,9 @@ namespace Resources
             if (strcmp(str, "Rock3") == 0) return Rock3;
             if (strcmp(str, "SkySphere") == 0) return SkySphere;
             if (strcmp(str, "Small_Crate") == 0) return Small_Crate;
+            if (strcmp(str, "Snow") == 0) return Snow;
+            if (strcmp(str, "SnowHeap") == 0) return SnowHeap;
+            if (strcmp(str, "Snow_") == 0) return Snow_;
             if (strcmp(str, "Snow_Heap") == 0) return Snow_Heap;
             if (strcmp(str, "Spear") == 0) return Spear;
             if (strcmp(str, "Staff") == 0) return Staff;

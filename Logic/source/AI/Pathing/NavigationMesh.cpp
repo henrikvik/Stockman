@@ -30,6 +30,37 @@ int NavigationMesh::addTriangle(Triangle const & triangle)
     return static_cast<int> (triangleList.size()) - 1;
 }
 
+// dont use
+void NavigationMesh::removeTriangle(int index)
+{
+    std::swap(triangleList[index], triangleList[triangleList.size() - 1]);
+    triangleList.pop_back();
+
+    std::swap(edgesList[index], edgesList[edgesList.size() - 1]);
+    edgesList.pop_back();
+
+    std::swap(nodes[index], nodes[nodes.size() - 1]);
+    nodes.pop_back();
+
+    // THIS IS VERY SLOW, BUT WHATEVER; THAT IS NOT IMPORTANT WHEN EDITING
+    // remove edges
+    for (auto &edges : edgesList) {
+        for (int i = 0; i < edges.size(); i++) {
+            if (edges[i].index == index)
+            {
+                printf("REmoved edge: %d\n", i);
+                std::swap(edges[i], edges[edges.size() - 1]);
+                edges.pop_back();
+                i--;
+            }
+            else if (edges[i].index == edgesList.size()) // change index due to swap
+            {
+                edges[i].index = index;
+            }
+        }
+    }
+}
+
 void NavigationMesh::addEdge(int from, int to)
 {
     edgesList[from].push_back({ to, getNodes()[to] });
@@ -122,12 +153,6 @@ std::vector<Point>* NavigationMesh::getRenderDataTri()
 std::vector<Point>* NavigationMesh::getRenderDataEdges()
 {
     std::vector<Point> *data = newd std::vector<Point>();
-
-    for (auto node : nodes)
-    {
-     //   data->push_back(node + DirectX::SimpleMath::Vector3{ 0, 2.f, 0 });
-    //    data->push_back(node - DirectX::SimpleMath::Vector3{ 0, 2.f, 0 });
-    }
 	
 	for (int j = 0; j < edgesList.size(); j++)
 	{
@@ -273,19 +298,19 @@ void NavigationMesh::loadVertex(FileLoader::LoadedStruct &struc, DirectX::Simple
     vec.z = struc.floats["z"];
 }
 
-int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const &pos) const
+int NavigationMesh::getIndex(DirectX::SimpleMath::Vector3 const &pos, DirectX::SimpleMath::Vector3 const &dir) const
 {
 	// ray vs triangle, copied, change to own algo later, ?
 	for (int i = 0; i < triangleList.size(); i++)
 	{
-		if (isPosOnIndex(pos, i))
+		if (isPosOnIndex(pos, i, dir))
 			return i;
 	}
 
 	return -1;
 }
 
-bool NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const & pos, int index) const
+bool NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const &pos, int index, DirectX::SimpleMath::Vector3 const &dir) const
 {
 	Triangle tri = triangleList[index];
 	DirectX::SimpleMath::Vector3 p, q, t;
@@ -299,7 +324,7 @@ bool NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const & pos, int 
 		tri.vertices[2] - tri.vertices[0];
 
 	// calculating determinant 
-	p = DOWN_Y.Cross(e2);
+	p = dir.Cross(e2);
 
 	//Calculate determinat
 	det = e1.Dot(p);
@@ -321,7 +346,7 @@ bool NavigationMesh::isPosOnIndex(DirectX::SimpleMath::Vector3 const & pos, int 
 	q = t.Cross(e1);
 
 	//Calculate v parameter
-	v = DOWN_Y.Dot(q) * invDet;
+	v = dir.Dot(q) * invDet;
 
 	//Check for ray hit
 	if (v < 0 || u + v > 1) { return false; }
