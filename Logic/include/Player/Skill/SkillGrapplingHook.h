@@ -21,12 +21,6 @@ namespace Logic
     class Entity;
     class Physics;
 
-	enum GrapplingHookState
-	{
-		GrapplingHookStateNothing,
-		GrapplingHookStatePulling
-	};
-
 	class Player;
 	class SkillGrapplingHook : public Skill
 	{
@@ -41,10 +35,8 @@ namespace Logic
         virtual void render() const override;
         void onUpgradeAdd(int stacks, Upgrade const & upgrade);
 
-		GrapplingHookState getState() const;
 	private:
 		Physics*						m_physicsPtr;	//< Just a pointer to the physics to be able to raycast
-		GrapplingHookState				m_state;		//< Current state, if the grappling hook is currently pulling or not
 		Entity*							m_shooter;		//< Saved entity after each onUse() call, later, pushes this entity
 		btVector3						m_point;		//< Saved point of intersection of the raytest, will push entity towards this point
         bool                            m_goingUp;      //< Direction of the grappling hook

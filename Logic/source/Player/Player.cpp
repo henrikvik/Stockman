@@ -627,8 +627,6 @@ void Player::updateSpecific(float deltaTime)
             m_skillManager->use(SkillManager::ID::TERTIARY, forward, *this);
         if (ks.IsKeyUp(m_useSkillTertiary))
             m_skillManager->release(SkillManager::ID::TERTIARY);
-
-        m_skillManager->update(deltaTime);
         PROFILE_END();
 
         // Check if reloading
@@ -645,6 +643,9 @@ void Player::updateSpecific(float deltaTime)
                 m_weaponManager->reloadWeapon();
         }
     }
+
+    // update SkillManager
+    m_skillManager->update(deltaTime);
 
     // step player
     if(!m_noclip)
