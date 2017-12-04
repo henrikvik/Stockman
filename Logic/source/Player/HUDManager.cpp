@@ -23,7 +23,7 @@ const std::wstring HUDManager::IN_WAVE     = L"MURDER",
 
 const float HUDManager::WAVE_SLIDE_TIME = 5000.0f;
 const float HUDManager::ENRAGE_SLIDE_TIME = 3000.0f;
-const float HUDManager::PICKEUP_MESSAGE_TIMER = 4000.0f;
+const float HUDManager::PICKEUP_MESSAGE_TIMER = 2000.0f;
 
 HUDManager::HUDManager()
 {
@@ -301,7 +301,7 @@ void HUDManager::updateTextElements()
         {
             if (info.activeAmmo[1] > 0)
             {
-                text.color = DirectX::SimpleMath::Color(0.9f, 0.0f, 0.3f);
+                text.color = DirectX::SimpleMath::Color(0.545f, 0.000f, 0.000f);
             }
             else
             {
@@ -333,7 +333,7 @@ void HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
 
-        text.color = DirectX::SimpleMath::Color(0.9f, 0.0f, 0.3f);
+        text.color = DirectX::SimpleMath::Color(0.545f, 0.000f, 0.000f);
         text.text = info.waveText;
         text.position = DirectX::SimpleMath::Vector2(520, 15);
         text.font = Resources::Fonts::KG14;
