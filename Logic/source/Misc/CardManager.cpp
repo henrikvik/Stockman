@@ -13,6 +13,7 @@ CardManager::CardManager(int nrOfEach)
 
     loadDeckFromFile();
     createDeck(nrOfEach);
+    shuffle();
 
     state = CardState::STILL;
 }
@@ -21,6 +22,7 @@ CardManager::~CardManager() { }
 
 void CardManager::resetDeck()
 {
+    shuffle();
     for (auto &pair : m_deck)
         if (pair.first == TAKEN)
             pair.first = IN_DECK;
@@ -29,8 +31,8 @@ void CardManager::resetDeck()
 void CardManager::createDeck(int nrOfEach)
 {
     m_deck.push_back({ NEVER_REMOVE, HEALTH_PACK });
-	for (int i = 0; i < nrOfEach; i++)
-		for (int j = 1; j < m_cards.size(); j++)
+    for (int j = 1; j < m_cards.size(); j++)
+        for (int i = 0; i < m_cards.at(j).getNumberOf(); i++)
             m_deck.push_back({ IN_DECK, j });
 }
 
@@ -45,11 +47,26 @@ void CardManager::pickThreeCards(bool damaged)
         m_hand[HAND_SIZE - 1] = HEALTH_PACK;
         amount--;
     }
-    
-    shuffle();
+
     for (int i = 0; i < m_deck.size() && cardsPicked < amount; i++)
+    {
         if (m_deck[i].first == IN_DECK)
-            m_hand[cardsPicked++] = i;
+        {
+            bool found = true;
+            for (int j = 0; j < amount; j++)
+            {
+                if (m_hand[j] != -1 && m_deck[m_hand[j]].second == m_deck[i].second)
+                {
+                    found = false;
+                }
+            }
+
+            if (found)
+            {
+                m_hand[cardsPicked++] = i;
+            }
+        }
+    }
 
     if (cardsPicked < amount)
         throw std::runtime_error("Not enough cards");
@@ -83,6 +100,11 @@ Card CardManager::pick(int handIndex)
 
     if (m_deck[deckIndex].first == IN_DECK)
         m_deck[deckIndex].first = TAKEN;
+
+    for (int i = 0; i < m_hand.size(); i++)
+    {
+        m_hand.at(i) = -1;
+    }
 
     return m_cards[m_deck[deckIndex].second];
 }
@@ -154,7 +176,7 @@ void CardManager::createCard(CardCondition cond, FileLoader::LoadedStruct const 
     
     m_cards.push_back(Card(struc.strings.at("cardName"),
         struc.strings.at("texture"), struc.strings.at("description"),
-        statusIds, texStart, texEnd, struc.ints.at("statusType"), struc.ints.at("category"))
+        statusIds, texStart, texEnd, struc.ints.at("statusType"), struc.ints.at("category"), struc.ints.at("numberOf"))
     ); 
 }
 
