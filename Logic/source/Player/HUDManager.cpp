@@ -367,6 +367,20 @@ void HUDManager::updateTextElements()
 
         HUDText.push_back(TextRenderInfo(text));
     }
+
+    //pickup message
+
+    if (info.ammoPickedUp != 0 && info.ammoPickedUp < 3)
+    {
+        if (info.ammoPickedUp == 1)
+        {
+
+        }
+        else
+        {
+
+        }
+    }
    
 }
 
@@ -477,6 +491,7 @@ void HUDManager::update(Player const &player, WaveTimeManager const &timeManager
     info.sledge = player.isUsingMeleeWeapon();
     info.currentWeapon = player.getCurrentWeapon();
     info.isReloding = player.getReloding();
+    info.ammoPickedUp = player.getAmmoPickedUp();
 
 
     //skill cooldowns are inverted for some reason 

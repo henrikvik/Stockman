@@ -1121,6 +1121,11 @@ bool Logic::Player::getReloding() const
     return m_weaponManager->isReloading();;
 }
 
+int Logic::Player::getAmmoPickedUp()
+{
+    return m_weaponManager->getAmmoPickedUp();;
+}
+
 void Player::setTargetedBy(Entity *entity)
 {
     m_targetedBy = entity;
