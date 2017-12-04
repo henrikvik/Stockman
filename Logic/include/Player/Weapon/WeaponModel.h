@@ -21,8 +21,8 @@ namespace Logic
         ~WeaponModel();
 
         // Fake animations
-        virtual void startShootAnimation();
-        virtual void startReloadAnimation();
+        virtual void startShootAnimation(float backPower = 0.25f, float attackTimer = 75.f);
+        virtual void startReloadAnimation(float holsterAmount = 0.75f, float reloadTimer = 1000.f);
         virtual void animation(float deltaTime);
 
         void update(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
