@@ -20,6 +20,7 @@ struct GUIInfo
     int enemiesRemaining;
     int currentWeapon;
     int currentSkills[2];
+    int ammoPickedUp;
 
     float cd[2];
     float timeRemaining;
@@ -45,7 +46,7 @@ namespace Logic
 
         static const int CURRENT_AMMO, TOTAL_AMMO;
 
-        static const float WAVE_SLIDE_TIME, ENRAGE_SLIDE_TIME;
+        static const float WAVE_SLIDE_TIME, ENRAGE_SLIDE_TIME, PICKEUP_MESSAGE_TIMER;
 
         std::vector<Sprite> HUDElements;
         std::vector<Sprite> skillList;
@@ -59,6 +60,9 @@ namespace Logic
         float nextWaveSlideTimer;
         float enrageSlideTimer;
         bool wasEnraged;
+
+        float crossBowTimer;
+        float staffTimer;
 
         void constructGUIElements();
         void updateTextElements();
@@ -85,7 +89,7 @@ namespace Logic
         HUDManager();
         virtual ~HUDManager();
 
-        void update(Player const &player, WaveTimeManager const &timeManager,
+        void update(Player &player, WaveTimeManager const &timeManager,
             EntityManager const &manager, float dt);
         void render() const;
         void reset();
