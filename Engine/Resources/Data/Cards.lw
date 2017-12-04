@@ -12,6 +12,7 @@
 	"statusType" : 0;
 	"category" : 1;
 	"status0" : 8;
+    "numberOf" : 1;
 }
 {
 	"cardName" : "Damage";
@@ -27,6 +28,7 @@
 	"statusType" : 1;
     "category" : 0;
 	"status0" : 1;
+    "numberOf" : 5;
 }
 {
 	"cardName" : "Mag Size";
@@ -42,6 +44,7 @@
 	"statusType" : 1;
     "category" : 0;
 	"status0" : 9;
+    "numberOf" : 5;
 }
 {
 	"cardName" : "Run Speed";
@@ -57,6 +60,7 @@
 	"statusType" : 1;
     "category" : 2;
 	"status0" : 8;
+    "numberOf" : 5;
 }
 {
 	"cardName" : "Skill CD";
@@ -72,6 +76,7 @@
 	"statusType" : 1;
     "category" : 2;
 	"status0" : 7;
+    "numberOf" : 3;
 }
 {
 	"cardName" : "Fire rate";
@@ -87,6 +92,7 @@
 	"statusType" : 1;
     "category" : 0;
 	"status0" : 6;
+    "numberOf" : 3;
 }
 {
 	"cardName" : "Reload";
@@ -102,6 +108,7 @@
 	"statusType" : 1;
     "category" : 0;
 	"status0" : 5;
+    "numberOf" : 3;
 }
 {
 	"cardName" : "Jump";
@@ -117,4 +124,21 @@
 	"statusType" : 1;
     "category" : 1;
 	"status0" : 4;
+    "numberOf" : 5;
+}
+{
+	"cardName" : "Bounce";
+	"description" : "Increase the jump strength";
+	"texture" : "b";
+
+	"xTexStart" : 0.7216f;
+	"yTexStart" : 0.6611f;
+	"xTexEnd" : 0.95996f;
+	"yTexEnd" : 0.89941f;
+
+	"statusAmount" : 1;
+	"statusType" : 1;
+    "category" : 1;
+	"status0" : 0;
+    "numberOf" : 1;
 }
