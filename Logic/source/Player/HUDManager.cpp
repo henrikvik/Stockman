@@ -226,7 +226,7 @@ void HUDManager::updateTextElements()
         text.text = std::to_wstring(info.cdInSeconds[1]);
         text.position = DirectX::SimpleMath::Vector2(1115, 530);
         text.font = Resources::Fonts::KG18;
-
+        text.isMoveable = true;
         HUDText.push_back(TextRenderInfo(text));
     }
     
@@ -234,7 +234,7 @@ void HUDManager::updateTextElements()
     text.text = std::to_wstring(info.score);
     text.position = DirectX::SimpleMath::Vector2(142, 15);
     text.font = Resources::Fonts::KG14;
-
+    text.isMoveable = false;
     HUDText.push_back(TextRenderInfo(text));
 
     text.isMoveable = false;
