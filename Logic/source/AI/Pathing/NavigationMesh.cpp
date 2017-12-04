@@ -33,18 +33,29 @@ int NavigationMesh::addTriangle(Triangle const & triangle)
 // dont use
 void NavigationMesh::removeTriangle(int index)
 {
-    triangleList.erase(triangleList.begin() + index);
-    edgesList.erase(edgesList.begin() + index);
-    nodes.erase(nodes.begin() + index);
+    std::swap(triangleList[index], triangleList[triangleList.size() - 1]);
+    triangleList.pop_back();
 
+    std::swap(edgesList[index], edgesList[edgesList.size() - 1]);
+    edgesList.pop_back();
+
+    std::swap(nodes[index], nodes[nodes.size() - 1]);
+    nodes.pop_back();
+
+    // THIS IS VERY SLOW, BUT WHATEVER; THAT IS NOT IMPORTANT WHEN EDITING
     // remove edges
     for (auto &edges : edgesList) {
         for (int i = 0; i < edges.size(); i++) {
             if (edges[i].index == index)
             {
+                printf("REmoved edge: %d\n", i);
                 std::swap(edges[i], edges[edges.size() - 1]);
                 edges.pop_back();
                 i--;
+            }
+            else if (edges[i].index == edgesList.size()) // change index due to swap
+            {
+                edges[i].index = index;
             }
         }
     }
