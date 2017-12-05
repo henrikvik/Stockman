@@ -220,8 +220,6 @@ void Map::loadMap(Resources::Maps::Files map)
             Decoration decor(model, instance_transform, bounding_box.sphere_radius());
             decorations.push_back(decor);
 
-            if (aiBoxCounter > 0)
-                printf("AI:%d\n", aiBoxCounter);
             aiBoxCounter = 0;
             for (auto & hitbox : *ModelLoader::get().getModel(model)->getHitboxes())
             {
