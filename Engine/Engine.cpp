@@ -20,6 +20,7 @@
 
 #pragma comment (lib, "d3d11.lib")
 
+
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 bool settingsFullScreenOverRide = false;
 HWND *Engine::g_window = nullptr;
