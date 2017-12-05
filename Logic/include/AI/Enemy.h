@@ -45,7 +45,9 @@ namespace Logic
 
 			Behavior *m_behavior;
 
-            StaticRenderInfo enemyRenderInfo;
+            AnimatedRenderInfo enemyRenderInfo;
+            float maxAnimationTime;
+
             bool m_stunned;
             float m_fireTimer;
 
@@ -58,8 +60,12 @@ namespace Logic
 			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 			virtual ~Enemy();
 
+            virtual void playAnimation(std::string animationName, float endAnimationTime, float startAnimationTime = 0);
+            virtual void onAnimationEnd(std::string animationName) {};
+
 			virtual void update(Player &player, float deltaTime,
 				std::vector<Enemy*> const &closeEnemies);
+            virtual void updateAnimation(float deltaTime);
 
             virtual void useAbility(Player &target) {};
             virtual void useAbility(Player &target, int phase) { useAbility(target); };

@@ -26,23 +26,19 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     m_moveSpeedMod = 1.f;
 
     m_nrOfCallbacksEntities = 0;
+
     m_stunned = false;
-    m_fireTimer = 0;
+    m_fireTimer = 0.f;
     m_blinkTimer = -1.0f;
 
-	//animation todo
     enemyRenderInfo.model = modelID;
-//    enemyRenderInfo.animationName = "";
-//    enemyRenderInfo.animationProgress = 0;
-//    enemyRenderInfo.freeze = 0;
-//    enemyRenderInfo.burn = 0;
+    enemyRenderInfo.animationName = "";
+    enemyRenderInfo.animationTimeStamp = 0;
     enemyRenderInfo.transform = getTransformMatrix();
-    //light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
-   // light.intensity = 0.5f;
-    //light.range = 3.f;
+
+    maxAnimationTime = 0.f;
 
     body->setGravity({ 0.f, -9.82f * 7.f, 0.f });
-
     addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
         m_blinkTimer = 100.0f;
         getSoundSource()->playSFX(Sound::SFX::ENEMY_HIT, 1.f, 0.2f);
@@ -93,6 +89,13 @@ Enemy::~Enemy() {
 		delete m_behavior;
 }
 
+void Enemy::playAnimation(std::string animationName, float endAnimationTime, float startAnimationTime)
+{
+    enemyRenderInfo.animationName = animationName.c_str();
+    enemyRenderInfo.animationTimeStamp = startAnimationTime;
+    maxAnimationTime = endAnimationTime;
+}
+
 void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 
@@ -108,9 +111,8 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
     float yaw = atan2(dir.getX(), dir.getZ());
     m_transform->setRotation(btQuaternion(yaw, 0.f, 0));
 
-    // Update Render animation and position
-    enemyRenderInfo.transform = getModelTransformMatrix();
-//    enemyRenderInfo.animationProgress += deltaTime;
+    // Update animation and position
+    updateAnimation(deltaTime);
 
     m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
@@ -128,7 +130,17 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
     {
         enemyRenderInfo.color = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
     }
-        
+}
+
+void Enemy::updateAnimation(float deltaTime)
+{
+    enemyRenderInfo.transform = getModelTransformMatrix();
+    enemyRenderInfo.animationTimeStamp += deltaTime / 100.0f;
+    if (enemyRenderInfo.animationTimeStamp > maxAnimationTime)
+    {
+        enemyRenderInfo.animationTimeStamp = 0.f;
+        onAnimationEnd(enemyRenderInfo.animationName);
+    }
 }
 
 void Enemy::debugRendering()
@@ -160,7 +172,9 @@ void Enemy::damage(int damage)
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)
-        callback(ON_DEATH, CallbackData {this, static_cast<int32_t> (damage)});
+    {
+        callback(ON_DEATH, CallbackData{ this, static_cast<int32_t> (damage) });
+    }
 }
 
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
@@ -336,7 +350,6 @@ Behavior* Enemy::getBehavior() const
 void Enemy::render() const
 {
     renderSpecific();
-    if (getEnemyType() != EnemyType::NECROMANCER_MINION) // nice code here (REPLACE OH MAH GOD)
-        QueueRender(enemyRenderInfo);
+    QueueRender(enemyRenderInfo);
     QueueRender(light);
 }

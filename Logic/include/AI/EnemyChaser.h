@@ -15,15 +15,10 @@ namespace Logic
         EnemyChaser(btRigidBody* body);
         ~EnemyChaser();
 
-        // replace later
-        void loadAnimation(Resources::Models::Files model);
-
         virtual void updateDead(float deltaTime) {};
         virtual void updateSpecific(Player &player, float deltaTime);
         virtual void onCollision(PhysicsObject& other, btVector3 contactPoint,
             float dmgMultiplier);
-
-        virtual void renderSpecific() const;
     };
 }
 
