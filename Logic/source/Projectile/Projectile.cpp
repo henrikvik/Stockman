@@ -291,7 +291,9 @@ bool Projectile::collisionWithTerrain()
 
     // Don't remove if bouncing upgraded
     if (getStatusManager().isOwningUpgrade(Upgrade::UPGRADE_FLAG::UPGRADE_IS_BOUNCING))
+    {
         m_dead = false;
+    }
 
     // Always trigger callback
     return true;

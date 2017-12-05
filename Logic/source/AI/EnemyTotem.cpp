@@ -6,7 +6,7 @@ using namespace Logic;
 const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 21.f;
 const float EnemyTotem::AB_SCALE = 8.5f, EnemyTotem::AB_ROTATION = 0.2f;
 
-const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 600, EnemyTotem::SCORE = 200;
+const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 150, EnemyTotem::SCORE = 250;
 const int EnemyTotem::BULLET_AMOUNT = 9;
 
 EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
@@ -24,10 +24,6 @@ EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
             std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY 
         });
     });
-
-    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 1.0f);
-    light.intensity = 1.0f;
-    light.range = 15.0f;
 }
 
 EnemyTotem::~EnemyTotem()
