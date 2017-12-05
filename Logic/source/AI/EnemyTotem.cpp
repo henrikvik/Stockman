@@ -24,6 +24,10 @@ EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
             std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY 
         });
     });
+
+    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 1.0f);
+    light.intensity = 1.0f;
+    light.range = 15.0f;
 }
 
 EnemyTotem::~EnemyTotem()
