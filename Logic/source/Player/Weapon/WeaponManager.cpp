@@ -47,6 +47,7 @@ void WeaponManager::clear()
     {
         delete weaponLoadout.weapon[WEAPON_PRIMARY];
         delete weaponLoadout.weapon[WEAPON_SECONDARY];
+        delete weaponLoadout.weaponModel;
     }
         
 	m_weaponLoadouts.clear();
@@ -81,7 +82,7 @@ void WeaponManager::reset()
 void WeaponManager::setWeaponModel(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward)
 {
     // Updating weapon model
-    m_currentWeapon->weaponModel.update(deltaTime, playerTranslation, playerForward);
+    m_currentWeapon->weaponModel->update(deltaTime, playerTranslation, playerForward);
 }
 
 void WeaponManager::update(float deltaTime)
@@ -187,7 +188,7 @@ void WeaponManager::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 
 void WeaponManager::render() const
 {
-    m_currentWeapon->weaponModel.render();
+    m_currentWeapon->weaponModel->render();
 }
 
 void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
@@ -205,7 +206,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     ProjectileData("Icecone", false, true, 20.f, 1.5f, 1.f, 70.f, 0.1f, 1500.f, LightRenderInfo(DirectX::SimpleMath::Color(0.9f, 0.5f, 1.f, 1.f), .25f, 1.5f), Resources::Models::Crossbowbolt, 1, ProjectileType::ProjectileTypeNormal, true, false, true, true, { 0.f, -0.4f, 0.f }),
                                     Weapon::WeaponInfo{ 1, 18, 15, 4, 50, 0, 0, { -0.5f, -0.5f, 0.f } });
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 999, 0, 30, 30,{ 1, 10 },{ 1, 10 }, 1000 });
-    /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{
+    /* WeaponModel */   wl.weaponModel = new WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -0.8f, 0.3f)),
         /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 
@@ -225,7 +226,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     ProjectileData(nullptr, false, false, 50, 1.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.4f, 1.f, 1.f), 0.01f, 1.f), Resources::Models::UnitCube, 1, ProjectileTypeFreezeExplosion, true, false, false),
                                     8);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 999, 0, 100, 100, { 1, 25 }, { 0, 25 }, 1500 });
-    /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{
+    /* WeaponModel */   wl.weaponModel = new WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.1f, 0.015f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.7f, -2.2f, 1.3f)),
         /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(0.5f, 0.5f, 0.5f),
@@ -242,7 +243,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     ProjectileData(nullptr, false, false, 0, 30.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.8f, 0.6f, 1.f), 0.85f, 15.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, false),
                                     Weapon::WeaponInfo{ 5, 1, 0, 0, 100, 0, 0,{ 0.f, 0.f, 0.f } }, 22.5f);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, { 0, 0 }, { 0, 0 }, 0 });
-    /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Hammer, WeaponModel::WeaponModelAnimationInfo{
+    /* WeaponModel */   wl.weaponModel = new WeaponModel(Resources::Models::Hammer, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(1.3f, 0.9f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-0.3f, -1.5f, -0.2f)),
         /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f),
@@ -256,13 +257,13 @@ void WeaponManager::switchWeapon(int index)
 	if (!(m_currentWeapon == &m_weaponLoadouts[index]))
 	{
 		m_currentWeapon = &m_weaponLoadouts[index];
-		m_attackRateTimer = m_currentWeapon->weaponModel.getModelInfo().swapTimer;
+		m_attackRateTimer = m_currentWeapon->weaponModel->getModelInfo().swapTimer;
         m_toUse = USE_NOTHING;
         m_toUseShooter = nullptr;
 
 		m_reloadTimer = 0.f;
 		m_reloadState = ReloadingWeapon::IDLE;
-        m_currentWeapon->weaponModel.startSwapToAnimation(0.25f);
+        m_currentWeapon->weaponModel->startSwapToAnimation(0.25f);
 	}
 }
 
@@ -277,7 +278,7 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
                 m_toUse = WeaponToUse(attackMode);
                 m_toUseShooter = &shooter;
                 m_attackRateTimer = (float)delayTime;
-                m_currentWeapon->weaponModel.startWindupAnimation(1.f, delayTime);
+                m_currentWeapon->weaponModel->startWindupAnimation(1.f, delayTime);
             }
             else
             {
@@ -296,7 +297,7 @@ void WeaponManager::attack(int attackMode, btVector3 position, float yaw, float 
 {
     bool primary = false;
     if (attackMode == WeaponToUse::USE_PRIMARY) primary = true;
-    m_currentWeapon->weaponModel.startShootAnimation(0.125f, m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier), primary);
+    m_currentWeapon->weaponModel->startShootAnimation(0.125f, m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier), primary);
     m_currentWeapon->weapon[attackMode]->useEnhanced(m_currentWeapon->ammoContainer.removeAmmo(attackMode));
     m_currentWeapon->weapon[attackMode]->use(position, yaw, pitch, shooter);
     m_attackRateTimer = m_currentWeapon->weapon[attackMode]->getAttackTimer(m_Upgrades.fireRateModifier);
@@ -308,7 +309,7 @@ void WeaponManager::reloadWeapon()
         m_currentWeapon->ammoContainer.getAmmoInfo().magAmmo < static_cast<int>(m_currentWeapon->ammoContainer.getAmmoInfo().magSize * m_Upgrades.magSizeModifier))
 	{
         Sound::NoiseMachine::Get().playSFX(Sound::WEAPON_RELOAD, nullptr, true);
-        m_currentWeapon->weaponModel.startReloadAnimation(0.75f, m_currentWeapon->ammoContainer.getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier);
+        m_currentWeapon->weaponModel->startReloadAnimation(0.75f, m_currentWeapon->ammoContainer.getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier);
         m_reloadTimer = m_currentWeapon->ammoContainer.getAmmoInfo().reloadTime * m_Upgrades.reloadTimeModifier;
 		m_reloadState = ReloadingWeapon::ACTIVE;
 	}

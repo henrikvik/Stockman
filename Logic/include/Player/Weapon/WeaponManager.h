@@ -42,7 +42,7 @@ namespace Logic
         {
             Weapon* weapon[2];
             AmmoContainer ammoContainer;
-            WeaponModel weaponModel;
+            WeaponModel* weaponModel;
         };
 
 		WeaponManager();
