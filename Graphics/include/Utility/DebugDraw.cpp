@@ -83,7 +83,7 @@ void Graphics::Debug::PointLight(Light light)
     DebugLights.push_back(light);
 }
 
-void Graphics::Debug::Render(Camera *camera)
+void GRAPHICS_API Graphics::Debug::Render(Camera *camera)
 {
     using namespace DirectX::SimpleMath;
     
