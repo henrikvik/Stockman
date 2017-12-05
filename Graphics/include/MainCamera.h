@@ -4,5 +4,5 @@
 
 namespace Global
 {
-    extern Graphics::Camera * mainCamera;
+    extern GRAPHICS_API Graphics::Camera * mainCamera;
 }

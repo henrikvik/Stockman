@@ -110,7 +110,7 @@ HRESULT __stdcall ResourcesShaderInclude::Close(LPCVOID pData)
 
 namespace Graphics {;
 
-ParticleSystem *FXSystem;
+GRAPHICS_API ParticleSystem *FXSystem;
 bool FXEnabled = true;
 
 ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const char * path)

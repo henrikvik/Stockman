@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../export.h"
 #include "Utility\ConstantBuffer.h"
 #include "RenderInfo.h"
 
@@ -9,7 +9,7 @@
 #include <SimpleMath.h>
 
 namespace Graphics {
-	class Camera
+	class GRAPHICS_API Camera
 	{
 	public:
 		struct ShaderValues {

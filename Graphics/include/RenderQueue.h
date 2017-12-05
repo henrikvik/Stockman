@@ -6,8 +6,9 @@
 #include "RenderInfo.h"
 #include <DebugWindow/Profiler.h>
 #include "MainCamera.h"
+#include "../export.h"
 
-class RenderQueue
+class GRAPHICS_API RenderQueue
 {
 public:
     template<typename T>

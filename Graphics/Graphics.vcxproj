@@ -67,7 +67,6 @@
     <ClInclude Include="include\Device.h" />
     <ClInclude Include="include\Effects\Water.h" />
     <ClInclude Include="include\Fog.h" />
-    <ClInclude Include="include\DLL.h" />
     <ClInclude Include="include\HybrisLoader\Animation.h" />
     <ClInclude Include="include\HybrisLoader\HybrisLoader.h" />
     <ClInclude Include="include\HybrisLoader\Material.h" />
