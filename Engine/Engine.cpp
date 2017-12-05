@@ -19,7 +19,7 @@
 #include <Engine\Settings.h>
 
 #pragma comment (lib, "d3d11.lib")
-
+#pragma comment (lib, "d3dcompiler.lib")
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 bool settingsFullScreenOverRide = false;
@@ -459,7 +459,8 @@ int Engine::run()
     }
 //#endif // _DEBUG
 
-        Graphics::Debug::Render(Global::mainCamera);
+// TODO FIX IMGUI
+//        Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
 		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
