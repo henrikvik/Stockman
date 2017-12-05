@@ -128,6 +128,7 @@ namespace Resources
         Files toEnum(const char * str)
         {
             if (strcmp(str, "CardBackground") == 0) return CardBackground;
+            if (strcmp(str, "controlscheme") == 0) return controlscheme;
             if (strcmp(str, "Crosshair") == 0) return Crosshair;
             if (strcmp(str, "Diffusemoon") == 0) return Diffusemoon;
             if (strcmp(str, "Enraged") == 0) return Enraged;

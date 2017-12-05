@@ -236,6 +236,7 @@ namespace Resources
         enum Files
         {
             CardBackground,
+            controlscheme,
             Crosshair,
             Diffusemoon,
             Enraged,
@@ -267,6 +268,7 @@ namespace Resources
         const std::map<Files, const char *> Paths =
         {
             {CardBackground, R"(..\Resources\Textures\CardBackground.dds)"},
+            {controlscheme, R"(..\Resources\Textures\controlscheme.dds)"},
             {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
             {Diffusemoon, R"(..\Resources\Textures\Diffusemoon.dds)"},
             {Enraged, R"(..\Resources\Textures\Enraged.dds)"},
