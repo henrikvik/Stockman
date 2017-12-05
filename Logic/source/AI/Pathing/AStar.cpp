@@ -40,7 +40,7 @@ std::vector<const DirectX::SimpleMath::Vector3*>
 std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, int toIndex)
 {
     // Edge cass 
-  //  if (startIndex == toIndex || startIndex == NULL_NODE || toIndex == NULL_NODE)
+    if (startIndex == toIndex || startIndex == NULL_NODE || toIndex == NULL_NODE)
         return {};
 
     // all nodes in navMesh
@@ -66,9 +66,8 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
         f = currentNode->g + currentNode->h;
         openList.pop();
 
-        for (size_t i = 0; i < navigationMesh.getEdges(currentNode->nodeIndex).size(); i++)
+        for (NavigationMesh::Edge &edge : navigationMesh.getEdges(currentNode->nodeIndex))
         {
-            NavigationMesh::Edge &edge = navigationMesh.getEdges(currentNode->nodeIndex)[i];
             explore = &navNodes[edge.index];
 
             if (edge.index == toIndex) // Node Found
@@ -118,8 +117,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 
     if (!currentNode || currentNode->parent == NULL_NODE)
     {
-        printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
-            "Lukas or something (AStar.cpp:%d)\n", __LINE__);
+        printf("Major Warning: Can't connect node %d to %d, please report this bug! (AStar.cpp:%d)\n", startIndex, toIndex, __LINE__);
         return {};
     }
 
