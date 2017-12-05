@@ -6,6 +6,7 @@
 #include <string>
 #include <AI\Abilities\Ability.h>
 #include <btBulletCollisionCommon.h>
+#include "../../include/Misc/GUI/Sprite.h"
 
 namespace Logic
 {
@@ -30,8 +31,10 @@ namespace Logic
         // testing
         std::vector<TextRenderInfo> info;
         std::vector<std::wstring> infoText;
-        TextRenderInfo hpBar; // hp bar in text OMEGALUL
-        std::wstring hp;
+        //TextRenderInfo hpBar; // hp bar in text OMEGALUL
+        //std::wstring hp;
+        Sprite hpBar;
+        Sprite hpBarOutline;
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
         virtual ~EnemyBossBaddie();
