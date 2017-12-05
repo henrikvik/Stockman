@@ -2,6 +2,7 @@
 
 using namespace Logic;
 
+#define PRINT_DEBUG                     false
 #define ANIMATION_SPEED                 0.020f
 #define HEIGHT_POSITION_OFFSET_EASING   0.038f
 
@@ -25,11 +26,15 @@ void ModelAnimation::addAnimation(float totalDuration, std::queue<AnimationFrame
 {
     if (m_animation.initialize(totalDuration, frames))
     {
+        #if PRINT_DEBUG
         printf("Started an animation for %f seconds with %d frames.\n", totalDuration, frames.size());
+        #endif
     }
     else
     {
+#       if PRINT_DEBUG
         printf("Could not start animation.\n");
+        #endif
     }
 }
 

@@ -309,7 +309,7 @@
     <ClInclude Include="include\StateMachine\StateMachine.h" />
     <ClInclude Include="include\StateMachine\StateSecondary.h" />
     <ClInclude Include="include\StateStart.h" />
-    <ClInclude Include="include\Player\Weapon\WeaponModel.h" />
+    <ClInclude Include="include\Player\Weapon\depricated\WeaponModel.h" />
     <ClInclude Include="include\Player\Weapon\WeaponFreezeGrenade.h" />
     <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
     <ClInclude Include="include\AI\Trigger\TriggerAmmoPickup.h" />
@@ -410,7 +410,7 @@
     <ClCompile Include="source\StateMachine\StateMachine.cpp" />
     <ClCompile Include="source\StateMachine\StateSecondary.cpp" />
     <ClCompile Include="source\StateStart.cpp" />
-    <ClCompile Include="source\Player\Weapon\WeaponModel.cpp" />
+    <ClCompile Include="source\Player\Weapon\depricated\WeaponModel.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
     <ClCompile Include="source\AI\Trigger\TriggerAmmoPickup.cpp" />
