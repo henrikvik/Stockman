@@ -160,7 +160,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
     setting.readFromFile();
 
 //    game = new Logic::StateMachine(cmdLine, args);
-    game = new Logic::StateMachine();
+    game = newd Logic::StateMachine();
 }
 
 Engine::~Engine()

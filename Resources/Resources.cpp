@@ -17,8 +17,16 @@ namespace Resources
         Files toEnum(const char * str)
         {
             if (strcmp(str, "Stock_Map") == 0) return Stock_Map;
-            if (strcmp(str, "Test_Map") == 0) return Test_Map;
             throw "Could not find matching enum.";
+        }
+        namespace OLD
+        {
+            Files toEnum(const char * str)
+            {
+                if (strcmp(str, "Stock_Map_V6") == 0) return Stock_Map_V6;
+                if (strcmp(str, "Test_Map") == 0) return Test_Map;
+                throw "Could not find matching enum.";
+            }
         }
     }
     namespace Models
@@ -44,6 +52,7 @@ namespace Resources
             if (strcmp(str, "Firepit") == 0) return Firepit;
             if (strcmp(str, "Grappling_Point") == 0) return Grappling_Point;
             if (strcmp(str, "Ground") == 0) return Ground;
+            if (strcmp(str, "Ground_Old") == 0) return Ground_Old;
             if (strcmp(str, "Hammer") == 0) return Hammer;
             if (strcmp(str, "House1") == 0) return House1;
             if (strcmp(str, "House2") == 0) return House2;
@@ -64,8 +73,6 @@ namespace Resources
             if (strcmp(str, "SkySphere") == 0) return SkySphere;
             if (strcmp(str, "Small_Crate") == 0) return Small_Crate;
             if (strcmp(str, "Snow") == 0) return Snow;
-            if (strcmp(str, "SnowHeap") == 0) return SnowHeap;
-            if (strcmp(str, "Snow_") == 0) return Snow_;
             if (strcmp(str, "Snow_Heap") == 0) return Snow_Heap;
             if (strcmp(str, "Spear") == 0) return Spear;
             if (strcmp(str, "Staff") == 0) return Staff;
@@ -123,6 +130,7 @@ namespace Resources
             if (strcmp(str, "CardBackground") == 0) return CardBackground;
             if (strcmp(str, "Crosshair") == 0) return Crosshair;
             if (strcmp(str, "Diffusemoon") == 0) return Diffusemoon;
+            if (strcmp(str, "Enraged") == 0) return Enraged;
             if (strcmp(str, "Gameover") == 0) return Gameover;
             if (strcmp(str, "Gamesheet") == 0) return Gamesheet;
             if (strcmp(str, "Grid") == 0) return Grid;
@@ -143,6 +151,7 @@ namespace Resources
             if (strcmp(str, "Skillpicksheet") == 0) return Skillpicksheet;
             if (strcmp(str, "Spellsheet") == 0) return Spellsheet;
             if (strcmp(str, "TextSkillPick") == 0) return TextSkillPick;
+            if (strcmp(str, "wavebegins") == 0) return wavebegins;
             if (strcmp(str, "WaveComplete") == 0) return WaveComplete;
             if (strcmp(str, "weaponsheet") == 0) return weaponsheet;
             throw "Could not find matching enum.";

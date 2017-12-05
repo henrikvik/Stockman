@@ -102,7 +102,7 @@ namespace Graphics {
 
 
 		auto count = m_Params.numThreads[0] * m_Params.numThreads[1];
-		auto frustums = new Frustum[count];
+		auto frustums = newd Frustum[count];
 
 		auto invProj = camera->getProj().Invert();
 

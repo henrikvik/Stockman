@@ -86,7 +86,7 @@ HRESULT __stdcall ResourcesShaderInclude::Open(
 
     if (fileSize)
     {
-        char* buf = new char[fileSize];
+        char* buf = newd char[fileSize];
         fileStream.read(buf, fileSize);
 
         *ppData = buf;
