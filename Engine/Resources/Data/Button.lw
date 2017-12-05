@@ -532,9 +532,9 @@
 	"xPos" : 115.0f;
 	"yPos" : 320.0f;
 	"xTexStart" : 0.0f;
-	"yTexStart" : 0.05f;
+	"yTexStart" : 0.0316f;
 	"xTexEnd" : 1.f;
-	"yTexEnd" : 0.150f;
+	"yTexEnd" : 0.128910f;
     "hoverXTexStart" : 0.0f;
 	"hoverYTexStart" : 0.52f;
 	"hoverXTexEnd" : 1.f;
