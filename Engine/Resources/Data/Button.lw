@@ -532,9 +532,9 @@
 	"xPos" : 115.0f;
 	"yPos" : 320.0f;
 	"xTexStart" : 0.0f;
-	"yTexStart" : 0.2460f;
+	"yTexStart" : 0.15234f;
 	"xTexEnd" : 1.f;
-	"yTexEnd" : 0.128910f;
+	"yTexEnd" : 0.24805f;
     "hoverXTexStart" : 0.0f;
 	"hoverYTexStart" : 0.63672f;
 	"hoverXTexEnd" : 1.f;
@@ -552,7 +552,7 @@
 	"buttonName" : "Retry";
 	"texture" : 2;
 	"xPos" : 115.0f;
-	"yPos" : 320.0f;
+	"yPos" : 275.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.0316f;
 	"xTexEnd" : 1.f;
