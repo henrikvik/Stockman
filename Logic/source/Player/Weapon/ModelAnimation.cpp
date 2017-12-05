@@ -227,16 +227,17 @@ void WeaponAnimation::startShootAnimation(float attackTimer, bool primary)
 
 void WeaponAnimation::update(float dt, DirectX::SimpleMath::Matrix offsetTranslation, DirectX::SimpleMath::Vector3 offsetForward)
 {
+    // Enhanced Easing
     if (m_isEnhanced)
     {
-        m_enhancedColorTarget = m_enhancedColorDefault;
+        m_enhancedColorTarget     = m_enhancedColorDefault;
         m_enhancedScaleTarget._11 = 1.10f;
         m_enhancedScaleTarget._22 = 1.10f;
         m_enhancedScaleTarget._33 = 1.10f;
     }
     else
     {
-        m_enhancedColorTarget = DirectX::SimpleMath::Vector3(1, 1, 1);
+        m_enhancedColorTarget     = DirectX::SimpleMath::Vector3(1, 1, 1);
         m_enhancedScaleTarget._11 = 1.f;
         m_enhancedScaleTarget._22 = 1.f;
         m_enhancedScaleTarget._33 = 1.f;
@@ -244,10 +245,11 @@ void WeaponAnimation::update(float dt, DirectX::SimpleMath::Matrix offsetTransla
 
     ModelAnimation::update(dt, offsetTranslation, offsetForward);
 
+    // Enhanced Easing
     m_enhancedColorCurrent += (m_enhancedColorTarget - m_enhancedColorCurrent) * ANIMATION_SPEED * dt;
     m_enhancedScaleCurrent += (m_enhancedScaleTarget - m_enhancedScaleCurrent) * ANIMATION_SPEED * dt;
-    m_model.color = m_enhancedColorCurrent;
-    m_model.transform = m_enhancedScaleCurrent * m_model.transform;
+    m_model.color           = m_enhancedColorCurrent;
+    m_model.transform       = m_enhancedScaleCurrent * m_model.transform;
 }
 
 /*************************
