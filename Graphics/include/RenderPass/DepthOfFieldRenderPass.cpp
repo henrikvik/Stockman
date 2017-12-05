@@ -1,6 +1,6 @@
 #include "DepthOfFieldRenderPass.h"
 #include "../Device.h"
-#include <Engine\DebugWindow.h>
+#include <DebugWindow\DebugWindow.h>
 
 Graphics::DepthOfFieldRenderPass::DepthOfFieldRenderPass(
     PingPongBuffer* backBuffers,

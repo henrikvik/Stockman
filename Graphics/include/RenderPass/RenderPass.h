@@ -8,7 +8,7 @@
 #include "../Device.h"
 #include "../Utility/ConstantBuffer.h"
 #include "../Utility/TextureLoader.h"
-#include <Engine\Profiler.h>
+#include <DebugWindow\Profiler.h>
 
 namespace Graphics
 {

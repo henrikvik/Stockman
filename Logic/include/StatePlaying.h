@@ -33,7 +33,7 @@
 #include <Mouse.h>
 
 // Engine Includes
-#include <Engine\Profiler.h>
+#include <DebugWindow\Profiler.h>
 
 namespace Logic
 {

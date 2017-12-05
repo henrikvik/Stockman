@@ -3,7 +3,7 @@
 #include "../MainCamera.h"
 #include "../CommonState.h"
 #include <SimpleMath.h>
-#include <Engine\DebugWindow.h>
+#include <DebugWindow\DebugWindow.h>
 
 //temp
 #include <Keyboard.h>

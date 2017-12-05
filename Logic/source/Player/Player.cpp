@@ -19,8 +19,8 @@
 #include <Physics\Physics.h>
 #include <Projectile\Projectile.h>
 
-#include <Engine\Profiler.h>
-#include <Engine\DebugWindow.h>
+#include <DebugWindow\Profiler.h>
+#include <DebugWindow\DebugWindow.h>
 #include <Graphics\include\MainCamera.h>
 #include <Graphics\include\Device.h>
 

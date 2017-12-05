@@ -4,7 +4,7 @@
 #include <type_traits>
 #include <Engine\newd.h>
 #include "RenderInfo.h"
-#include <Engine/Profiler.h>
+#include <DebugWindow/Profiler.h>
 #include "MainCamera.h"
 
 class RenderQueue

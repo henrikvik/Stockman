@@ -1,4 +1,4 @@
-#include "Profiler.h"
+#include <DebugWindow/Profiler.h>
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
@@ -12,7 +12,7 @@
 #include "Engine.h"
 #include "Typing.h"
 
-#include "DebugWindow.h"
+#include <DebugWindow/DebugWindow.h>
 #include <Graphics\include\Device.h>
 #include <Graphics\include\RenderQueue.h>
 #include <Graphics\include\MainCamera.h>
@@ -324,7 +324,6 @@ long long Engine::timer()
 	}
 }
 
-Profiler *g_Profiler;
 
 int Engine::run()
 {
