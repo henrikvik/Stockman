@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="include\Camera.cpp" />
     <ClCompile Include="include\CommonState.cpp" />
     <ClCompile Include="include\Device.cpp" />
@@ -60,6 +61,7 @@
     <ClCompile Include="include\Utility\TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="export.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Datatypes.h" />
     <ClInclude Include="include\Device.h" />
@@ -110,6 +112,7 @@
     <ClInclude Include="include\Utility\StructuredBuffer.h" />
     <ClInclude Include="include\Utility\Texture.h" />
     <ClInclude Include="include\Utility\TextureLoader.h" />
+    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -119,26 +122,26 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -164,46 +167,47 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <LibraryPath>$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <LibraryPath>$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <LibraryPath>$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\BRFImporter\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\DirectXTK\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <LibraryPath>$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GRAPHICSDLL_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WINDOWS;_USRDLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
-      <NoEntryPoint>true</NoEntryPoint>
-      <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <NoEntryPoint>false</NoEntryPoint>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;DebugWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -220,15 +224,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT;DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GRAPHICSDLL_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WINDOWS;_USRDLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
-      <NoEntryPoint>true</NoEntryPoint>
-      <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <NoEntryPoint>false</NoEntryPoint>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;DebugWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -247,7 +252,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GRAPHICSDLL_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -255,8 +260,9 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <NoEntryPoint>true</NoEntryPoint>
-      <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <NoEntryPoint>false</NoEntryPoint>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;DebugWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -275,7 +281,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions);DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GRAPHICSDLL_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -283,8 +289,9 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <NoEntryPoint>true</NoEntryPoint>
-      <AdditionalDependencies>vcruntimed.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <NoEntryPoint>false</NoEntryPoint>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;DebugWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
