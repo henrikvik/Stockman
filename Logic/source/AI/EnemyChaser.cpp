@@ -19,6 +19,8 @@ EnemyChaser::EnemyChaser(btRigidBody* body)
     light.intensity = 1.f;
     light.range = 3.f;
 
+    // plays animation walk for 5 seconds, an optional parameter
+    // is available for starting "mid" animation
     playAnimation("walk", 5.f);
 }
 
