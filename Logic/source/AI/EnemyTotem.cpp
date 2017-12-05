@@ -3,10 +3,10 @@
 #include <Misc\ComboMachine.h>
 using namespace Logic;
 
-const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 25.f;
+const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 21.f;
 const float EnemyTotem::AB_SCALE = 8.5f, EnemyTotem::AB_ROTATION = 0.2f;
 
-const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 600, EnemyTotem::SCORE = 50;
+const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 600, EnemyTotem::SCORE = 200;
 const int EnemyTotem::BULLET_AMOUNT = 9;
 
 EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
@@ -36,8 +36,8 @@ void EnemyTotem::createAbilities()
 
     AbilityData data;
     data.duration = 0.f;
-    data.cooldown = 2000.f;
-    data.randomChanche = 18;
+    data.cooldown = 3500.f;
+    data.randomChanche = 12;
 
     spreadShot = Ability(data, [&](Player &target, Ability &ab) -> void {
 
