@@ -38,6 +38,7 @@ using namespace Logic;
 #define PLAYER_FRICTION_MIN             0.1f
 #define PLAYER_AIR_FRICTION				1.f
 #define PLAYER_JUMP_SPEED				0.008f
+#define PLAYER_MAX_MOVE                 30.f
 
 const int Player::MIN_Y = -80, Player::MAX_HP = 3;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
@@ -93,6 +94,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 
     registerDebugCmds();
 
+    m_lastPos = getPositionBT();
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
 	m_moveDir.setZero();
@@ -286,7 +288,8 @@ void Player::reset()
     m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
     m_moveDir = { 0.f, 0.f, 0.f };
     m_moveSpeed = 0.f;
-	getTransform().setOrigin(startPosition);
+	m_charController->warp(startPosition);
+    m_lastPos = getPositionBT();
 	m_weaponManager->reset();
     m_skillManager->reset();
     currentWeapon = 0;
@@ -312,13 +315,6 @@ void Player::reset()
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-    if (Skill* grappling = m_skillManager->getActiveSkill(SkillManager::SKILL_GRAPPLING_HOOK))
-    {
-        btVector3 dir = contactPoint - getPositionBT();
-        dir.normalize();
-        if (dir.dot(btVector3(0.f, 1.f, 0.f)) > 0.5f)
-            grappling->release();
-    }
     if (Projectile* p = dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
     else if (Trigger* t = dynamic_cast<Trigger*>(&other)) {}														// collision with trigger
     else if (Enemy *e = dynamic_cast<Enemy*> (&other))
@@ -651,8 +647,10 @@ void Player::updateSpecific(float deltaTime)
     // update SkillManager
     m_skillManager->update(deltaTime);
 
+    // saving position from last frame
+    m_lastPos = getPositionBT();
     // step player
-    if(!m_noclip)
+    if (!m_noclip)
         stepPlayer(deltaTime);
 
     Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
@@ -806,7 +804,13 @@ void Player::stepPlayer(float deltaTime)
     // Step player
     m_charController->preStep(m_physPtr);
     m_charController->playerStep(m_physPtr, deltaTime);
-    PROFILE_END()
+    PROFILE_END();
+
+    // if new position is totally fucked for some reason, reset to last position
+    if (abs(m_lastPos.x() - getPositionBT().x()) > PLAYER_MAX_MOVE ||
+        abs(m_lastPos.y() - getPositionBT().y()) > PLAYER_MAX_MOVE ||
+        abs(m_lastPos.z() - getPositionBT().z()) > PLAYER_MAX_MOVE)
+        m_charController->warp(m_lastPos);
 }
 
 void Player::applyFriction(float deltaTime, float friction)
