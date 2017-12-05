@@ -25,16 +25,29 @@ namespace Resources
     {
         enum Files
         {
-            Stock_Map,
-            Test_Map
+            Stock_Map
         };
         const std::map<Files, const char *> Paths =
         {
-            {Stock_Map, R"(..\Resources\Maps\Stock_Map.toml)"},
-            {Test_Map, R"(..\Resources\Maps\Test_Map.toml)"}
+            {Stock_Map, R"(..\Resources\Maps\Stock_Map.toml)"}
         };
         
         Files toEnum(const char * str);
+        namespace OLD
+        {
+            enum Files
+            {
+                Stock_Map_V6,
+                Test_Map
+            };
+            const std::map<Files, const char *> Paths =
+            {
+                {Stock_Map_V6, R"(..\Resources\Maps\OLD\Stock_Map_V6.toml)"},
+                {Test_Map, R"(..\Resources\Maps\OLD\Test_Map.toml)"}
+            };
+            
+            Files toEnum(const char * str);
+        }
     }
     namespace Models
     {
@@ -59,6 +72,7 @@ namespace Resources
             Firepit,
             Grappling_Point,
             Ground,
+            Ground_Old,
             Hammer,
             House1,
             House2,
@@ -79,8 +93,6 @@ namespace Resources
             SkySphere,
             Small_Crate,
             Snow,
-            SnowHeap,
-            Snow_,
             Snow_Heap,
             Spear,
             Staff,
@@ -115,6 +127,7 @@ namespace Resources
             {Firepit, R"(..\Resources\Models\Firepit.hyb)"},
             {Grappling_Point, R"(..\Resources\Models\Grappling_Point.hyb)"},
             {Ground, R"(..\Resources\Models\Ground.hyb)"},
+            {Ground_Old, R"(..\Resources\Models\Ground_Old.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {House1, R"(..\Resources\Models\House1.hyb)"},
             {House2, R"(..\Resources\Models\House2.hyb)"},
@@ -129,12 +142,12 @@ namespace Resources
             {MenuScene, R"(..\Resources\Models\MenuScene.hyb)"},
             {Mountain, R"(..\Resources\Models\Mountain.hyb)"},
             {Necromancer, R"(..\Resources\Models\Necromancer.hyb)"},
-            {Mountain, R"(..\Resources\Models\Mountain.hyb)"},
             {Rock1, R"(..\Resources\Models\Rock1.hyb)"},
             {Rock2, R"(..\Resources\Models\Rock2.hyb)"},
             {Rock3, R"(..\Resources\Models\Rock3.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Small_Crate, R"(..\Resources\Models\Small_Crate.hyb)"},
+            {Snow, R"(..\Resources\Models\Snow.hyb)"},
             {Snow_Heap, R"(..\Resources\Models\Snow_Heap.hyb)"},
             {Spear, R"(..\Resources\Models\Spear.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
@@ -225,6 +238,7 @@ namespace Resources
             CardBackground,
             Crosshair,
             Diffusemoon,
+            Enraged,
             Gameover,
             Gamesheet,
             Grid,
@@ -245,6 +259,7 @@ namespace Resources
             Skillpicksheet,
             Spellsheet,
             TextSkillPick,
+            wavebegins,
             WaveComplete,
             weaponsheet
         };
@@ -253,6 +268,7 @@ namespace Resources
             {CardBackground, R"(..\Resources\Textures\CardBackground.dds)"},
             {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
             {Diffusemoon, R"(..\Resources\Textures\Diffusemoon.dds)"},
+            {Enraged, R"(..\Resources\Textures\Enraged.dds)"},
             {Gameover, R"(..\Resources\Textures\Gameover.dds)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
             {Grid, R"(..\Resources\Textures\Grid.png)"},
@@ -273,6 +289,7 @@ namespace Resources
             {Skillpicksheet, R"(..\Resources\Textures\Skillpicksheet.dds)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
             {TextSkillPick, R"(..\Resources\Textures\TextSkillPick.dds)"},
+            {wavebegins, R"(..\Resources\Textures\wavebegins.dds)"},
             {WaveComplete, R"(..\Resources\Textures\WaveComplete.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };

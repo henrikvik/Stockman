@@ -19,7 +19,7 @@ using namespace Logic;
 
 const float EnemyBossBaddie::BASE_SPEED = 21.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.075f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.3f;
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.3f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
 const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 250000, EnemyBossBaddie::SCORE = 250000;// Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
@@ -36,7 +36,9 @@ const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 250000, En
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     : Enemy(Resources::Models::UnitCube, body,
-        halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0)
+        halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0),
+    hpBarOutline(400.0f, 70.0f, TOTAL_HP_BAR, 25.0f, Resources::Textures::Gamesheet, FloatRect({0.0459f, 0.87012f}, {0.95508f, 0.95801f})),
+    hpBar(400.0f, 70.0f, TOTAL_HP_BAR, 25.0f, Resources::Textures::Gamesheet, FloatRect({0.04688f, 0.76855f}, {0.9541f, 0.85645f}))
 {
     setBehavior(BOSS_BADDIE);
 
@@ -60,6 +62,8 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 0.8f;
     light.range = 10.0f;
+
+
 }
 
 EnemyBossBaddie::~EnemyBossBaddie()
@@ -93,9 +97,9 @@ void EnemyBossBaddie::forFunTesting()
     }
 
     // hp awfulness
-    hpBar.color = DirectX::SimpleMath::Color{ 1.f, 0.2f, 0.2f };
+    /*hpBar.color = DirectX::SimpleMath::Color{ 1.f, 0.2f, 0.2f };
     hpBar.font = Resources::Fonts::KG26;
-    hpBar.position = DirectX::SimpleMath::Vector2(250.f, 640.f);
+    hpBar.position = DirectX::SimpleMath::Vector2(250.f, 640.f);*/
 }
 
 /*
@@ -368,12 +372,17 @@ void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
         pair.second.update(deltaTime, player);
 
     // HP BAR CHEAT
-    hp = L"HP: ";
+    /*hp = L"HP: ";
     int parts = static_cast<int>((static_cast<float> (getHealth()) / getMaxHealth()) * 10.f);
     for (int i = 0; i < parts; i++)
         hp += L"I";
     hp += L" " + std::to_wstring(parts) + L" / 10";
-    hpBar.text = hp.c_str();
+    hpBar.text = hp.c_str();*/
+
+    //hp bar
+
+    float healthleft = float(getHealth()) / float(getMaxHealth());
+    hpBar.setScreenPos(Sprite::Points::TOP_LEFT, Sprite::Points::TOP_LEFT, 400.f, 70.f, healthleft * TOTAL_HP_BAR, 25.f);
 }
 
 void EnemyBossBaddie::updateDead(float deltaTime)
@@ -390,5 +399,7 @@ void EnemyBossBaddie::updateDead(float deltaTime)
 
 void EnemyBossBaddie::renderSpecific() const
 {
-    QueueRender(hpBar);
+   /* QueueRender(hpBar);*/
+    hpBarOutline.render();
+    hpBar.render();
 }
