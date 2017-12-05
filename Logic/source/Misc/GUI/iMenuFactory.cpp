@@ -167,7 +167,7 @@ iMenuGameOver * iMenuFactory::buildMenuGameover()
 
     menu->addBackground(Resources::Textures::Gameover, 1.0f);
 
-    btn = buildButton("MenuStartGame", ButtonFunction::playAgain);
+    btn = buildButton("Retry", ButtonFunction::playAgain);
     btn.move(DirectX::SimpleMath::Vector2(0.333, 0.10));
     menu->addButton(btn);
 
@@ -193,7 +193,7 @@ iMenu * iMenuFactory::buildMenuPause()
     iMenu* menu = newd iMenu(iMenu::Pause);
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::unpause));
-    menu->addButton(buildButton("Retry", ButtonFunction::playAgain));
+    menu->addButton(buildButton("Restart", ButtonFunction::playAgain));
     menu->addButton(buildButton("MenuStartHighscore", ButtonFunction::startSettingsPause));
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
     return menu;
