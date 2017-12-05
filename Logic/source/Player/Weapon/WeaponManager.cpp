@@ -276,8 +276,8 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
             {
                 m_toUse = WeaponToUse(attackMode);
                 m_toUseShooter = &shooter;
-                m_attackRateTimer = (float)delayTime;
-                m_currentWeapon->weaponModel.startWindupAnimation(1.f, delayTime);
+                m_attackRateTimer = (float)delayTime * m_Upgrades.fireRateModifier;
+                m_currentWeapon->weaponModel.startWindupAnimation(1.f, delayTime * m_Upgrades.fireRateModifier);
             }
             else
             {
