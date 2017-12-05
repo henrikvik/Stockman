@@ -224,7 +224,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     ProjectileData("IceTrail", false, true, 0, 1.f, 1.f, 10.f, 5.f, 5000.f, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.4f, 1.f, 1.f), 0.01f, 1.f), Resources::Models::Ammocrystal, 1, ProjectileType::ProjectileTypeIceShard, false, false, false),
                                     ProjectileData(nullptr, false, false, 50, 1.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.4f, 1.f, 1.f), 0.01f, 1.f), Resources::Models::UnitCube, 1, ProjectileTypeFreezeExplosion, true, false, false),
                                     8);
-    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 999, 999, 100, 100, { 1, 25 }, { 0, 25 }, 1500 });
+    /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 999, 0, 100, 100, { 1, 25 }, { 0, 25 }, 1500 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Staff, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.1f, 0.015f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.7f, -2.2f, 1.3f)),
