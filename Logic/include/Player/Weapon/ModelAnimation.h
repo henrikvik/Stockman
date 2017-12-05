@@ -23,7 +23,7 @@ namespace Logic
         struct Animation
         {
             Animation();
-            bool initialize(float totalTime, std::queue<AnimationFrame> frames);
+            bool initialize(float totalTime, std::queue<AnimationFrame> inFrames);
             void update(float dt);
             AnimationFrame getCurrentFrame();
 
@@ -53,9 +53,18 @@ namespace Logic
     class WeaponAnimation : public ModelAnimation
     {
     public:
-
         WeaponAnimation(Resources::Models::Files modelID, AnimationFrame defaultFrame);
-        void startReloadingAnimation(float reloadTime);
+        virtual void startReloadingAnimation(float reloadTime);
+        virtual void startSwapToAnimation(float swaptimer);
+        virtual void startWindupAnimation(float delayTimer);
+        virtual void startShootAnimation(float attackTimer, bool primary);
+    };
+
+    class WeaponSledgeHammerAnimation : public WeaponAnimation
+    {
+    public:
+        WeaponSledgeHammerAnimation(Resources::Models::Files modelID, AnimationFrame defaultFrame);
+        void startShootAnimation(float attackTimer, bool primary);
     };
 }
 
