@@ -247,24 +247,26 @@ bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Vec
                 auto factor = (fx->m_Age - entry.m_Start) / entry.m_Time;
                 auto ease_spawn = GetEaseFunc(entry.m_SpawnEasing);
 
-                if (entry.m_SpawnStart <= 0.01f && entry.m_SpawnEnd <= 0.01f && entry.m_SpawnedParticles <= 0.01f) {
-                    GeometryParticle p = {};
-                    p.pos = entry.m_StartPosition.GetPosition() + pos;
-                    p.velocity = entry.m_StartVelocity.GetVelocity();
-                    p.rot = {
-                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
-                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
-                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
-                    };
-                    p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
-                    p.rotprog = RandomFloat(-180, 180);
-                    p.def = def;
-                    p.idx = def->m_MaterialIdx;
+                if (entry.m_SpawnStart <= 0.f && entry.m_SpawnEnd <= 0.f) {
+                    if (entry.m_SpawnedParticles <= 0.f) {
+                        GeometryParticle p = {};
+                        p.pos = entry.m_StartPosition.GetPosition() + pos;
+                        p.velocity = entry.m_StartVelocity.GetVelocity();
+                        p.rot = {
+                            RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                            RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                            RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
+                        };
+                        p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
+                        p.rotprog = RandomFloat(-180, 180);
+                        p.def = def;
+                        p.idx = def->m_MaterialIdx;
 
 
-                    m_GeometryParticles.push_back(p);
+                        m_GeometryParticles.push_back(p);
 
-                    entry.m_SpawnedParticles += 1.f;
+                        entry.m_SpawnedParticles += 1.f;
+                    }
                 }
                 else {
                     auto spawn = entry.m_Loop ? entry.m_SpawnStart : ease_spawn(entry.m_SpawnStart, entry.m_SpawnEnd, factor);
@@ -340,24 +342,26 @@ bool ParticleSystem::processEffect(ParticleEffect * fx, DirectX::SimpleMath::Vec
             auto ease_spawn = GetEaseFunc(entry.m_SpawnEasing);
             auto spawn = entry.m_Loop ? entry.m_SpawnStart : ease_spawn(entry.m_SpawnStart, entry.m_SpawnEnd, factor);
 
-            if (entry.m_SpawnStart <= 0.01f && entry.m_SpawnEnd <= 0.01f && entry.m_SpawnedParticles <= 0.01f) {
-                GeometryParticle p = {};
-                p.pos = entry.m_StartPosition.GetPosition() + pos;
-                p.velocity = velocity + entry.m_StartVelocity.GetVelocity();
-                p.rot = {
-                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
-                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
-                    RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
-                };
-                p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
-                p.rotprog = RandomFloat(-180, 180);
-                p.def = def;
-                p.idx = def->m_MaterialIdx;
+            if (entry.m_SpawnStart <= 0.01f && entry.m_SpawnEnd <= 0.01f) {
+                if (entry.m_SpawnedParticles <= 0.f) {
+                    GeometryParticle p = {};
+                    p.pos = entry.m_StartPosition.GetPosition() + pos;
+                    p.velocity = velocity + entry.m_StartVelocity.GetVelocity();
+                    p.rot = {
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax),
+                        RandomFloat(entry.m_RotLimitMin, entry.m_RotLimitMax)
+                    };
+                    p.rotvel = RandomFloat(entry.m_RotSpeedMin, entry.m_RotSpeedMax);
+                    p.rotprog = RandomFloat(-180, 180);
+                    p.def = def;
+                    p.idx = def->m_MaterialIdx;
 
 
-                m_GeometryParticles.push_back(p);
+                    m_GeometryParticles.push_back(p);
 
-                entry.m_SpawnedParticles += 1.f;
+                    entry.m_SpawnedParticles += 1.f;
+                }
             }
             else {
                 for (entry.m_SpawnedParticles += spawn * dt; entry.m_SpawnedParticles >= 1.f; entry.m_SpawnedParticles -= 1.f) {
