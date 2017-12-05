@@ -231,7 +231,7 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     case ProjectileTypeFireArrow:
         callback = true;
         kill = true;
-        enemy->getStatusManager().addStatus(
+        enemy->getStatusManager().addStatusResetDuration(
             /* Adding Fire effect */            StatusManager::ON_FIRE,
             /* Number of stacks */              getStatusManager().getUpgradeStacks(StatusManager::FIRE_UPGRADE)
         );
