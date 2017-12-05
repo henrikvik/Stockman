@@ -24,7 +24,7 @@ namespace Logic
         {
             Animation();
             bool initialize(float totalTime, std::queue<AnimationFrame> inFrames);
-            void update(float dt);
+            virtual void update(float dt);
             AnimationFrame getCurrentFrame();
 
             bool                        done;               //< If this animation is completed
@@ -37,16 +37,16 @@ namespace Logic
         ~ModelAnimation();
 
         void addAnimation(float totalDuration, std::queue<AnimationFrame> frames);
-        void update(float dt, DirectX::SimpleMath::Matrix offsetTranslation, DirectX::SimpleMath::Vector3 offsetForward);
+        virtual void update(float dt, DirectX::SimpleMath::Matrix offsetTranslation, DirectX::SimpleMath::Vector3 offsetForward);
         void render() const;
 
     protected:
         AnimationFrame      m_frameDefault;
         AnimationFrame      m_frameActive;
         AnimationFrame      m_frameTarget;
+        StaticRenderInfo    m_model;
 
     private:
-        StaticRenderInfo    m_model;
         Animation           m_animation;
     };
 
@@ -58,12 +58,29 @@ namespace Logic
         virtual void startSwapToAnimation(float swaptimer);
         virtual void startWindupAnimation(float delayTimer);
         virtual void startShootAnimation(float attackTimer, bool primary);
+        void update(float dt, DirectX::SimpleMath::Matrix offsetTranslation, DirectX::SimpleMath::Vector3 offsetForward);
+        void setIsEnhanced(bool enhanced) { m_isEnhanced = enhanced; }
+
+    protected:
+        DirectX::SimpleMath::Matrix     m_enhancedScaleCurrent;
+        DirectX::SimpleMath::Matrix     m_enhancedScaleTarget;
+        DirectX::SimpleMath::Vector3    m_enhancedColorDefault;
+        DirectX::SimpleMath::Vector3    m_enhancedColorCurrent;
+        DirectX::SimpleMath::Vector3    m_enhancedColorTarget;
+        bool                            m_isEnhanced;
     };
 
     class WeaponSledgeHammerAnimation : public WeaponAnimation
     {
     public:
         WeaponSledgeHammerAnimation(Resources::Models::Files modelID, AnimationFrame defaultFrame);
+        void startShootAnimation(float attackTimer, bool primary);
+    };
+
+    class WeaponFreezeGunAnimation : public WeaponAnimation
+    {
+    public:
+        WeaponFreezeGunAnimation(Resources::Models::Files modelID, AnimationFrame defaultFrame);
         void startShootAnimation(float attackTimer, bool primary);
     };
 }

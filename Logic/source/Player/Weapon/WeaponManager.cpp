@@ -87,7 +87,7 @@ void WeaponManager::setWeaponModel(float deltaTime, DirectX::SimpleMath::Matrix 
 
 void WeaponManager::update(float deltaTime)
 {
-	// Timers / cooldowns
+    // Timers / cooldowns
 
 	// Reload
 	if (m_reloadTimer > 0.f)
@@ -123,13 +123,12 @@ void WeaponManager::update(float deltaTime)
         }
     }
 
-    
+    m_currentWeapon->weaponModel->setIsEnhanced(m_currentWeapon->ammoContainer.getIsEnhanced());
 }
 
 void WeaponManager::affect(Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
-
 
     if (flags & Effect::EFFECT_MODIFY_AMMO)
     { 
@@ -225,7 +224,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     ProjectileData(nullptr, false, false, 50, 1.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.4f, 1.f, 1.f), 0.01f, 1.f), Resources::Models::UnitCube, 1, ProjectileTypeFreezeExplosion, true, false, false),
                                     8);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 999, 0, 100, 100, { 1, 25 }, { 0, 25 }, 1500 });
-    /* WeaponModel */   wl.weaponModel = newd WeaponAnimation(Resources::Models::Staff, ModelAnimation::AnimationFrame{
+    /* WeaponModel */   wl.weaponModel = newd WeaponFreezeGunAnimation(Resources::Models::Staff, ModelAnimation::AnimationFrame{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.1f, 0.015f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.7f, -2.2f, 1.3f)),
         /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(0.5f, 0.5f, 0.5f) });

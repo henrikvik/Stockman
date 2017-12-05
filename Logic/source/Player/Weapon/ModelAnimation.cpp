@@ -3,8 +3,18 @@
 using namespace Logic;
 
 #define PRINT_DEBUG                     false
+#define EDIT_VARIABLES                  false
 #define ANIMATION_SPEED                 0.020f
 #define HEIGHT_POSITION_OFFSET_EASING   0.038f
+
+#if EDIT_VARIABLES
+    float var_1 = 0;
+    float var_2 = 0;
+    float var_3 = 0;
+    float rot_1 = 90;
+    float rot_2 = 90;
+    float rot_3 = 90;
+#endif
 
 ModelAnimation::ModelAnimation(Resources::Models::Files modelID, AnimationFrame defaultFrame)
 {
@@ -59,6 +69,17 @@ void ModelAnimation::update(float dt, DirectX::SimpleMath::Matrix offsetTranslat
     if (!m_animation.done)  m_frameTarget = m_animation.getCurrentFrame();
     else                    m_frameTarget = m_frameDefault;
 
+#if EDIT_VARIABLES
+    ImGui::Begin("Edit");
+    ImGui::DragFloat("Var_1", &var_1, 0.01f, -5.f, 10.f, "%.4f");
+    ImGui::DragFloat("Var_2", &var_2, 0.01f, -5.f, 10.f, "%.4f");
+    ImGui::DragFloat("Var_3", &var_3, 0.01f, -5.f, 10.f, "%.4f");
+    ImGui::DragFloat("Rot_1", &rot_1, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("Rot_2", &rot_2, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("Rot_3", &rot_3, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::End();
+#endif
+
     // Easing to the targeted frame
     m_frameActive.easeTo(dt, m_frameTarget);
 }
@@ -97,6 +118,9 @@ bool ModelAnimation::Animation::initialize(float totalTime, std::queue<Animation
 {
     if (!inFrames.empty())
     {
+        while (!frames.empty())
+            frames.pop();
+        
         done = false;
         timer = 0.f;
         timeBetweenFrames = totalTime / inFrames.size();
@@ -136,7 +160,13 @@ ModelAnimation::AnimationFrame ModelAnimation::Animation::getCurrentFrame()
 *************************/
 
 WeaponAnimation::WeaponAnimation(Resources::Models::Files modelID, AnimationFrame defaultFrame)
- : ModelAnimation(modelID, defaultFrame) { }
+ : ModelAnimation(modelID, defaultFrame) 
+{
+    m_enhancedColorDefault  = DirectX::SimpleMath::Vector3(1, 0.6, 0.8);
+    m_enhancedColorCurrent  = DirectX::SimpleMath::Vector3(1, 1, 1);
+    m_enhancedColorTarget   = DirectX::SimpleMath::Vector3(1, 1, 1);
+    m_isEnhanced            = false;
+}
 
 void WeaponAnimation::startReloadingAnimation(float reloadTime)
 {
@@ -195,12 +225,40 @@ void WeaponAnimation::startShootAnimation(float attackTimer, bool primary)
     addAnimation(attackTimer, frames);
 }
 
+void WeaponAnimation::update(float dt, DirectX::SimpleMath::Matrix offsetTranslation, DirectX::SimpleMath::Vector3 offsetForward)
+{
+    if (m_isEnhanced)
+    {
+        m_enhancedColorTarget = m_enhancedColorDefault;
+        m_enhancedScaleTarget._11 = 1.10f;
+        m_enhancedScaleTarget._22 = 1.10f;
+        m_enhancedScaleTarget._33 = 1.10f;
+    }
+    else
+    {
+        m_enhancedColorTarget = DirectX::SimpleMath::Vector3(1, 1, 1);
+        m_enhancedScaleTarget._11 = 1.f;
+        m_enhancedScaleTarget._22 = 1.f;
+        m_enhancedScaleTarget._33 = 1.f;
+    }
+
+    ModelAnimation::update(dt, offsetTranslation, offsetForward);
+
+    m_enhancedColorCurrent += (m_enhancedColorTarget - m_enhancedColorCurrent) * ANIMATION_SPEED * dt;
+    m_enhancedScaleCurrent += (m_enhancedScaleTarget - m_enhancedScaleCurrent) * ANIMATION_SPEED * dt;
+    m_model.color = m_enhancedColorCurrent;
+    m_model.transform = m_enhancedScaleCurrent * m_model.transform;
+}
+
 /*************************
 * Sledge Hammer Animation*
 *************************/
 
 WeaponSledgeHammerAnimation::WeaponSledgeHammerAnimation(Resources::Models::Files modelID, AnimationFrame defaultFrame)
-    : WeaponAnimation(modelID, defaultFrame) { }
+    : WeaponAnimation(modelID, defaultFrame) 
+{
+    m_enhancedColorDefault = DirectX::SimpleMath::Vector3(0.6, 0.8, 1.f);
+}
 
 void WeaponSledgeHammerAnimation::startShootAnimation(float attackTimer, bool primary)
 {
@@ -218,7 +276,7 @@ void WeaponSledgeHammerAnimation::startShootAnimation(float attackTimer, bool pr
     }
     else
     {
-        // Sledge First Frame
+        // Sledge Hammer
         AnimationFrame frame = m_frameDefault;
         frame.translation._41 += 0.6f;
         frame.translation._42 += 0.6f;
@@ -232,4 +290,53 @@ void WeaponSledgeHammerAnimation::startShootAnimation(float attackTimer, bool pr
     }
 
     addAnimation(halfAttackTimer, frames);
+}
+
+/*************************
+* Freeze Gun Animation   *
+*************************/
+
+WeaponFreezeGunAnimation::WeaponFreezeGunAnimation(Resources::Models::Files modelID, AnimationFrame defaultFrame)
+    : WeaponAnimation(modelID, defaultFrame) 
+{
+    m_enhancedColorDefault = DirectX::SimpleMath::Vector3(0.6, 1.0, 0.7);
+}
+
+void WeaponFreezeGunAnimation::startShootAnimation(float attackTimer, bool primary)
+{
+    if (!primary)
+    {
+        std::queue<AnimationFrame> frames;
+
+        // Freeze Bomb
+        AnimationFrame frame = m_frameDefault;
+        frame.translation._42 -= 0.50f;
+        frame.translation._43 += 0.50f;
+        frames.push(frame);
+
+        frame = m_frameDefault;
+        frame.translation._42 -= 0.55f;
+        frame.translation._43 += 0.50f;
+        frames.push(frame);
+
+        addAnimation(attackTimer / 2.5f, frames);
+    }
+    else
+    {
+        // Freeze Spray
+        std::queue<AnimationFrame> frames;
+
+        AnimationFrame frame = m_frameDefault;
+        frame.translation._42 += 0.13;
+        frame.translation._43 += 0.09;
+        DirectX::SimpleMath::Matrix rotationMatrix;
+        DirectX::SimpleMath::Matrix x = rotationMatrix.CreateRotationX((344.8f * 3.14) / 180.f);
+        DirectX::SimpleMath::Matrix y = rotationMatrix.CreateRotationY((27.f * 3.14) / 180.f);
+        DirectX::SimpleMath::Matrix z = rotationMatrix.CreateRotationZ((0.0 * 3.14) / 180.f);
+        frame.rotation = z * y * x;
+        frames.push(frame);
+        m_frameActive = frame;
+
+        addAnimation(attackTimer, frames);
+    }
 }
