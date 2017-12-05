@@ -16,7 +16,7 @@
 #include <btBulletCollisionCommon.h>
 
 #include <Player\Weapon\AmmoContainer.h>
-#include <Player\Weapon\WeaponModel.h>
+#include <Player\Weapon\ModelAnimation.h>
 
 #define WEAPON_PRIMARY 0
 #define WEAPON_SECONDARY 1
@@ -42,7 +42,7 @@ namespace Logic
         {
             Weapon* weapon[2];
             AmmoContainer ammoContainer;
-            WeaponModel* weaponModel;
+            WeaponAnimation* weaponModel;
         };
 
 		WeaponManager();

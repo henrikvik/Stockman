@@ -284,6 +284,7 @@
     <ClInclude Include="include\Player\Skill\SkillGrapplingHook.h" />
     <ClInclude Include="include\Player\Skill\SkillManager.h" />
     <ClInclude Include="include\Player\Skill\SkillShieldCharge.h" />
+    <ClInclude Include="include\Player\Weapon\ModelAnimation.h" />
     <ClInclude Include="include\Player\Weapon\Weapon.h" />
     <ClInclude Include="include\Player\Weapon\WeaponFreezeGun.h" />
     <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
@@ -387,6 +388,7 @@
     <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />
     <ClCompile Include="source\Player\Skill\SkillManager.cpp" />
     <ClCompile Include="source\Player\Skill\SkillShieldCharge.cpp" />
+    <ClCompile Include="source\Player\Weapon\ModelAnimation.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponFreezeGun.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponMeleeSwing.cpp" />
     <ClCompile Include="source\Projectile\Projectile.cpp" />

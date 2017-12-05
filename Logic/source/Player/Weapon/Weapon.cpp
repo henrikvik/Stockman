@@ -118,3 +118,8 @@ int Weapon::getDelayTime()
 {
     return m_wInfo.delayTime;
 }
+
+float Weapon::getSwapTimer()
+{
+    return m_wInfo.swapTimer;
+}
