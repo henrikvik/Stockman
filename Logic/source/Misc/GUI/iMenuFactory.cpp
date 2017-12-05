@@ -20,7 +20,7 @@ const std::map<int, Resources::Textures::Files> LookUp =
 {
     { 0, Resources::Textures::Mainmenutext },               // - The four selections on the starting screen
     { 1, Resources::Textures::CardBackground },                  // card backgrounds
-    //{ 2, Resources::Textures::SettingsMenuButtons },        // OLD - Remove later
+    { 2, Resources::Textures::Retrytextsheet },        // OLD - Remove later
     { 3, Resources::Textures::Skillpicksheet },             // - Skill pick buttons, and continue button
     //{ 4, Resources::Textures::Backbutton },                 // OLD - Remove later
     { 5, Resources::Textures::Highscoretext },              // - Same as MainMenuText but with the "Back Button", that we want

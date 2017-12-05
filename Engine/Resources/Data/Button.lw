@@ -528,7 +528,7 @@
 
 {
 	"buttonName" : "Retry";
-	"texture" : 0;
+	"texture" : 2;
 	"xPos" : 115.0f;
 	"yPos" : 320.0f;
 	"xTexStart" : 0.0f;

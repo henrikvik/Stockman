@@ -145,6 +145,7 @@ namespace Resources
             if (strcmp(str, "particle") == 0) return particle;
             if (strcmp(str, "Pausetext") == 0) return Pausetext;
             if (strcmp(str, "randomNormals") == 0) return randomNormals;
+            if (strcmp(str, "Retrytextsheet") == 0) return Retrytextsheet;
             if (strcmp(str, "Settings") == 0) return Settings;
             if (strcmp(str, "SettingsButtons") == 0) return SettingsButtons;
             if (strcmp(str, "Skillpickbackground") == 0) return Skillpickbackground;
