@@ -17,16 +17,34 @@
 #endif
 
 #define CAMERA_MOVE_SPEED           0.00055f // The speed of the camera movement
-#define CAMERA_START_POSITION       DirectX::SimpleMath::Vector3(10.00, 7.804, -8.984)
-#define CAMERA_START_FORWARD        DirectX::SimpleMath::Vector3(0.027, -0.192, 0.789)
-#define CAMERA_SETTINGS_POSITION    DirectX::SimpleMath::Vector3(5.294, 1.843, -10.0)
-#define CAMERA_SETTINGS_FORWARD     DirectX::SimpleMath::Vector3(0.0, 1.0, 0.0)
-#define CAMERA_HIGHSCORE_POSITION   DirectX::SimpleMath::Vector3(-2.549, 1.686, -3.125)
-#define CAMERA_HIGHSCORE_FORWARD    DirectX::SimpleMath::Vector3(0.341, 0.012, 0.352)
-#define CAMERA_INTRO_POSITION       DirectX::SimpleMath::Vector3(8.118, 1.059, -3.047)
-#define CAMERA_INTRO_FORWARD        DirectX::SimpleMath::Vector3(-0.027, 1.000, 0.656)
+#define CAMERA_START_POSITION       DirectX::SimpleMath::Vector3(-18.627, 32.353, -140.265)
+#define CAMERA_START_FORWARD        DirectX::SimpleMath::Vector3(0.506, -0.231, 0.99)
+#define CAMERA_SETTINGS_POSITION    DirectX::SimpleMath::Vector3(-77.451, 45.00, -54.600)
+#define CAMERA_SETTINGS_FORWARD     DirectX::SimpleMath::Vector3(0.624, -0.286, 0.203)
+#define CAMERA_HIGHSCORE_POSITION   DirectX::SimpleMath::Vector3(20.588, 40.197, -99.609)
+#define CAMERA_HIGHSCORE_FORWARD    DirectX::SimpleMath::Vector3(0.608, -0.294, 0.383)
+#define CAMERA_INTRO_POSITION       DirectX::SimpleMath::Vector3(-18.627, 36.275, -140.265)
+#define CAMERA_INTRO_FORWARD        DirectX::SimpleMath::Vector3(0.506, 0.99f, 0.99f)
 #define CAMERA_SKILL_POSITION       DirectX::SimpleMath::Vector3(-10.000, 35.00, 0.000)
 #define CAMERA_SKILL_FORWARD        DirectX::SimpleMath::Vector3(0.000, -0.365, 0.023)
+
+
+/* 
+
+    Campfire Map Camera Positions
+
+    DirectX::SimpleMath::Vector3(10.00, 7.804, -8.984)
+    DirectX::SimpleMath::Vector3(0.027, -0.192, 0.789)
+    DirectX::SimpleMath::Vector3(5.294, 1.843, -10.0)
+    DirectX::SimpleMath::Vector3(0.0, 1.0, 0.0)
+    DirectX::SimpleMath::Vector3(-2.549, 1.686, -3.125)
+    DirectX::SimpleMath::Vector3(0.341, 0.012, 0.352)
+    DirectX::SimpleMath::Vector3(8.118, 1.059, -3.047)
+    DirectX::SimpleMath::Vector3(-0.027, 1.000, 0.656)
+    DirectX::SimpleMath::Vector3(-10.000, 35.00, 0.000)
+    DirectX::SimpleMath::Vector3(0.000, -0.365, 0.023)
+
+*/
 
 using namespace Logic;
 
@@ -184,7 +202,7 @@ void iMenuMachine::updateCamera(float deltaTime)
     // Debugging purposes
 #if EDIT_CAMERA_POS
     ImGui::Begin("Camera");
-    ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&targetCameraPosition), -10.f, 10.f, "%.3f");
+    ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&targetCameraPosition), -250.f, 250.f, "%.3f");
     ImGui::SliderFloat3("Forward", reinterpret_cast<float*>(&targetCameraForward), -1.f, 1.f, "%.3f");
     shouldModifyCamera = true;
     ImGui::End();
