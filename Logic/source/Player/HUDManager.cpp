@@ -196,10 +196,10 @@ void HUDManager::constructGUIElements()
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //next wave
-    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 400, 100, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
+    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 450, 220, Resources::Textures::wavebegins, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
 
     //enrage
-    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 400, 100, Resources::Textures::WaveComplete, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
+    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 450, 220, Resources::Textures::Enraged, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
 }
 
 void HUDManager::updateTextElements()
@@ -377,6 +377,7 @@ void HUDManager::updateTextElements()
     }
     
     //wave counter
+    
     text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
     text.text = std::to_wstring(info.wave) + L"/" + std::to_wstring(info.maxWaves);
     text.position = DirectX::SimpleMath::Vector2(660, 15);
@@ -388,9 +389,9 @@ void HUDManager::updateTextElements()
     //next wave text
     if (waveSprites.size() && 1.0f - waveSprites.at(WaveMessages::NEXTWAVE).getAlpha() < FLT_EPSILON)
     {
-        text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
+        text.color = DirectX::SimpleMath::Color(0.38671875f, 0.1796875f, 0.125f);
         text.font = Resources::Fonts::KG26;
-        text.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2.0f + 100, WIN_HEIGHT / 2.0f - 225);
+        text.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2.0f - 24, WIN_HEIGHT / 2.0f - 225);
         text.text = std::to_wstring(info.wave);
 
         HUDText.push_back(TextRenderInfo(text));
@@ -400,6 +401,7 @@ void HUDManager::updateTextElements()
     //enmeies remaining text
     if (info.enemiesRemaining > 0)
     {
+        text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
         text.font = Resources::Fonts::KG14;
         text.position = DirectX::SimpleMath::Vector2(1050, 15);
         text.text = L"ENEMIES REMAINING:" + std::to_wstring(info.enemiesRemaining);
@@ -410,6 +412,7 @@ void HUDManager::updateTextElements()
     //pickup message
     if (crossBowTimer > 0.0f)
     {
+        text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
         text.font = Resources::Fonts::KG14;
         text.position = DirectX::SimpleMath::Vector2(515, 470);
         text.text = L"ENHANCED CROSSBOW AMMO PICKED UP";
@@ -418,6 +421,7 @@ void HUDManager::updateTextElements()
    
     if (staffTimer > 0.0f)
     {
+        text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
         text.font = Resources::Fonts::KG14;
         text.position = DirectX::SimpleMath::Vector2(515, 490);
         text.text = L"ENHANCED STAFF AMMO PICKED UP";
