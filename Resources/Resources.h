@@ -62,6 +62,7 @@ namespace Resources
             AmmoPackCrossBolt,
             AnimationTest,
             Barrel,
+            Bone,
             Bridge,
             Crate,
             Crossbow,
@@ -107,6 +108,7 @@ namespace Resources
             Table,
             Tablet1,
             Tee_Pee,
+            TotemWithAnimation,
             Tree,
             UnitCube
         };
@@ -116,6 +118,7 @@ namespace Resources
             {AmmoPackCrossBolt, R"(..\Resources\Models\AmmoPackCrossBolt.hyb)"},
             {AnimationTest, R"(..\Resources\Models\AnimationTest.hyb)"},
             {Barrel, R"(..\Resources\Models\Barrel.hyb)"},
+            {Bone, R"(..\Resources\Models\Bone.hyb)"},
             {Bridge, R"(..\Resources\Models\Bridge.hyb)"},
             {Crate, R"(..\Resources\Models\Crate.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},
@@ -161,6 +164,7 @@ namespace Resources
             {Table, R"(..\Resources\Models\Table.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {Tee_Pee, R"(..\Resources\Models\Tee_Pee.hyb)"},
+            {TotemWithAnimation, R"(..\Resources\Models\TotemWithAnimation.hyb)"},
             {Tree, R"(..\Resources\Models\Tree.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
