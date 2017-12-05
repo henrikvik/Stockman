@@ -4,8 +4,8 @@
 #include <AI\Behavior\Behavior.h>
 using namespace Logic;
 
-const int EnemySoarer::HEALTH = 400, EnemySoarer::DAMAGE = 1, EnemySoarer::SCORE = 100;
-const float EnemySoarer::SPEED = 23.5f,
+const int EnemySoarer::HEALTH = 375, EnemySoarer::DAMAGE = 1, EnemySoarer::SCORE = 150;
+const float EnemySoarer::SPEED = 20.f,
             EnemySoarer::STEERING_MOD = 1.4f,
             EnemySoarer::AB1_SPEED = 25.f,
             EnemySoarer::AB1_SCALE = 13.f,
