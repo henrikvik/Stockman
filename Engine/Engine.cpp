@@ -407,13 +407,13 @@ int Engine::run()
         //static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
         //Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);		          
 
-		if (mTracker->pressed.F1)
+		if (mTracker->pressed.F2)
 		{
 			g_Profiler->capture();
 			showProfiler = true;
 		}
 
-		if (mTracker->pressed.F2)
+		if (mTracker->pressed.F3)
 		{
             showProfiler = !showProfiler;
 		}
