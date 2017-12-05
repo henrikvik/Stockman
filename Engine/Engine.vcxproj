@@ -216,24 +216,16 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\libs\ImGui\imgui.cpp" />
-    <ClCompile Include="..\libs\ImGui\imgui_demo.cpp" />
-    <ClCompile Include="..\libs\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="..\libs\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\Resources\Resources.cpp" />
-    <ClCompile Include="DebugWindow.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Typing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
-    <ClInclude Include="DebugWindow.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="newd.h" />
-    <ClInclude Include="Profiler.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Typing.h" />
   </ItemGroup>
