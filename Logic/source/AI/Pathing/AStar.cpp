@@ -45,7 +45,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 
     // all nodes in navMesh
     const std::vector<DirectX::SimpleMath::Vector3> &nodes = navigationMesh.getNodes();
-    std::vector<AStar::NavNode> navAINodes = this->navNodes;
+    std::vector<AStar::NavNode> navNodes = this->navNodes;
 
     // openlist and a test offset
     auto comp = [](NavNode *fir, NavNode *sec) { return *fir > *sec; };
