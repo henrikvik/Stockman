@@ -212,61 +212,61 @@ void Player::registerDebugCmds()
     });
     win->registerCommand("LOG_INCREASE_DAMAGE", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P1_DAMAGE);
+        upgrade(StatusManager::P1_DAMAGE);
 
         return "20% extra damage";
     });
     win->registerCommand("LOG_INCREASE_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P20_PERC_MOVEMENTSPEED);
+        upgrade(StatusManager::P20_PERC_MOVEMENTSPEED);
 
         return "Player is permanently 20% faster";
     });
     win->registerCommand("LOG_DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::M20_PERC_CD);
+        upgrade(StatusManager::M20_PERC_CD);
 
         return "Player skills take 20% less time to recover";
     });
     win->registerCommand("LOG_INCREASE_MAG_SIZE", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P40_MAGSIZE);
+        upgrade(StatusManager::P40_MAGSIZE);
 
         return "Mag clip holds 40 more bullets";
     });
     win->registerCommand("LOG_INCREASE_AMMO_CAP", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P20_AMMOCAP);
+        upgrade(StatusManager::P20_AMMOCAP);
 
         return "You have bigger ammo bags now, it can hold 20 ammo more";
     });
     win->registerCommand("LOG_INCREASE_FIRE_RATE", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P20_PERC_RATE_OF_FIRE);
+        upgrade(StatusManager::P20_PERC_RATE_OF_FIRE);
 
         return "You shoot 20% faster";
     });
     win->registerCommand("LOG_INCREASE_RELOAD_TIME", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::M33_PERC_RELOAD_SPEED);
+        upgrade(StatusManager::M33_PERC_RELOAD_SPEED);
 
         return "You reload 20% faster";
     });
     win->registerCommand("LOG_INCREASE_JUMP_HEIGHT", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P45_PERC_JUMP);
+        upgrade(StatusManager::P45_PERC_JUMP);
 
         return "You jump 45% higher";
     });
     win->registerCommand("LOG_PLAYER_SET_BURNING", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
+        upgrade(StatusManager::FIRE_UPGRADE);
 
         return "Crossbow deals fire damage";
     });
     win->registerCommand("LOG_PLAYER_SET_FROST", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::FROST_UPGRADE);
+        upgrade(StatusManager::FROST_UPGRADE);
 
         return "Frost Staff has longer freezing effect";
     });
