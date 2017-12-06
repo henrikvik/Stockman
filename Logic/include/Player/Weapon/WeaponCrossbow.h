@@ -8,10 +8,14 @@ namespace Logic
     class WeaponCrossbow : public Weapon
     {
     public:
-        WeaponCrossbow(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo);
+        WeaponCrossbow(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo, float baseDmg, float fireDmg);
         virtual ~WeaponCrossbow();
 
         virtual bool useEnhanced(bool shouldUse);
+
+    private:
+        float m_baseDmg;
+        float m_fireDmg;
     };
 }
 

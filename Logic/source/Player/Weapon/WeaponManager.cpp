@@ -200,10 +200,12 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // ############
     /* Primary */       wl.weapon[0] = newd WeaponCrossbow(projectileManager,
                                     ProjectileData("Icecone", false, true, 25.f, 1.5f, 1.f, 90.f, 0.1f, 3000.f, LightRenderInfo(DirectX::SimpleMath::Color(1.f, 0.8f, 1.f, 1.f), .25f, 3.f), Resources::Models::Crossbowbolt, 1, ProjectileTypeNormal, true, false, true, false, { 0.f, -0.4f, 0.f }),
-                                    Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0, { -0.5f, -0.5f, 0.f } });
+                                    Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0, { -0.5f, -0.5f, 0.f } },
+                                    25.f, 35.f);
     /* Secondary */     wl.weapon[1] = newd WeaponCrossbow(projectileManager,
                                     ProjectileData("Icecone", false, true, 20.f, 1.5f, 1.f, 70.f, 0.1f, 1500.f, LightRenderInfo(DirectX::SimpleMath::Color(0.9f, 0.5f, 1.f, 1.f), .25f, 1.5f), Resources::Models::Crossbowbolt, 1, ProjectileType::ProjectileTypeNormal, true, false, true, true, { 0.f, -0.4f, 0.f }),
-                                    Weapon::WeaponInfo{ 1, 18, 15, 4, 50, 0, 0, { -0.5f, -0.5f, 0.f } });
+                                    Weapon::WeaponInfo{ 1, 18, 15, 4, 50, 0, 0, { -0.5f, -0.5f, 0.f } },
+                                    20.f, 25.f);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 999, 0, 30, 30,{ 1, 10 },{ 1, 10 }, 1000 });
     /* WeaponModel */   wl.weaponModel = WeaponModel(Resources::Models::Crossbow, WeaponModel::WeaponModelAnimationInfo{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f),
