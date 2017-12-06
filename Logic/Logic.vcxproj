@@ -284,7 +284,9 @@
     <ClInclude Include="include\Player\Skill\SkillGrapplingHook.h" />
     <ClInclude Include="include\Player\Skill\SkillManager.h" />
     <ClInclude Include="include\Player\Skill\SkillShieldCharge.h" />
+    <ClInclude Include="include\Player\Weapon\ModelAnimation.h" />
     <ClInclude Include="include\Player\Weapon\Weapon.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponAnimation.h" />
     <ClInclude Include="include\Player\Weapon\WeaponFreezeGun.h" />
     <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
     <ClInclude Include="include\Player\Weapon\WeaponMeleeSwing.h" />
@@ -308,7 +310,7 @@
     <ClInclude Include="include\StateMachine\StateMachine.h" />
     <ClInclude Include="include\StateMachine\StateSecondary.h" />
     <ClInclude Include="include\StateStart.h" />
-    <ClInclude Include="include\Player\Weapon\WeaponModel.h" />
+    <ClInclude Include="include\Player\Weapon\depricated\WeaponModel.h" />
     <ClInclude Include="include\Player\Weapon\WeaponFreezeGrenade.h" />
     <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
     <ClInclude Include="include\AI\Trigger\TriggerAmmoPickup.h" />
@@ -387,6 +389,8 @@
     <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />
     <ClCompile Include="source\Player\Skill\SkillManager.cpp" />
     <ClCompile Include="source\Player\Skill\SkillShieldCharge.cpp" />
+    <ClCompile Include="source\Player\Weapon\ModelAnimation.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponAnimation.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponFreezeGun.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponMeleeSwing.cpp" />
     <ClCompile Include="source\Projectile\Projectile.cpp" />
@@ -408,7 +412,7 @@
     <ClCompile Include="source\StateMachine\StateMachine.cpp" />
     <ClCompile Include="source\StateMachine\StateSecondary.cpp" />
     <ClCompile Include="source\StateStart.cpp" />
-    <ClCompile Include="source\Player\Weapon\WeaponModel.cpp" />
+    <ClCompile Include="source\Player\Weapon\depricated\WeaponModel.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
     <ClCompile Include="source\AI\Trigger\TriggerAmmoPickup.cpp" />

@@ -17,7 +17,7 @@ using namespace Logic;
 #define COLUMN_5_OFFSET     0.570f
 
 // Max length of name that can be outputted on screen, to avoid clustering
-#define MAX_NAME_LENGTH     24
+#define MAX_NAME_LENGTH     12
 
 // Coloring of the placing
 #define FIRST_PLACE_COLOR   DirectX::SimpleMath::Color(1, 0.843137, 0, 1)

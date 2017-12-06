@@ -43,9 +43,9 @@ Trigger* TriggerManager::addTrigger(Trigger::TriggerType type, btVector3 const &
     switch (type)
     {
     case Trigger::TriggerType::JUMPPAD:
-        trigger = newd Trigger(Resources::Models::UnitCube, 
+        trigger = newd Trigger(Resources::Models::Jump_Pad, 
             physics.createBody(Cube(pos, { 0, 0, 0 }, { 2, 0.1f, 2 }),
-            TRIGGER_MASS, TRIGGER_IS_SENSOR), { 2, 0.1f, 2 },
+            TRIGGER_MASS, TRIGGER_IS_SENSOR), { 0.5, 0.5, 0.5f },
             type, 500.f, true);
         break;
     case Trigger::TriggerType::AMMO_PICKUP_BOLT:
