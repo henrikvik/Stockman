@@ -24,8 +24,8 @@ EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     m_defenseHealth = MAX_DEF_HP;
 
     light.color = DirectX::SimpleMath::Color(0.7f, 0.0f, 1.0f);
-    light.intensity = 1.8f;
-    light.range = 20.0f;
+    light.intensity = 0.6f;
+    light.range = 15.0f;
 }
 
 EnemyDefender::~EnemyDefender()

@@ -633,6 +633,7 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
         info.waveText = BEFORE_WAVE;
         nextWaveSlideTimer = WAVE_SLIDE_TIME;
         wasEnraged = false;
+        waveSprites.at(WaveMessages::ENRAGE).setAlpha(0.0f);
     }
     else {
         info.waveText = IN_WAVE;
@@ -659,6 +660,7 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
             }
         }
         wasEnraged = false;
+        waveSprites.at(WaveMessages::ENRAGE).setAlpha(0.0f);
     }
 
         

@@ -130,8 +130,8 @@ float3 calcLight(Light light, float3 position, float3 normal, float3 viewDir, fl
     float diffuesFactor = saturate(dot(normal, lightDir));
     float specularFactor = saturate(pow(dot(normal, halfway), specularExponent));
 
-    return diffuesFactor * light.color * attenuation * light.intensity;
-       //  + specularFactor * light.color * attenuation * light.intensity;
+    return diffuesFactor * light.color * attenuation * light.intensity
+         + specularFactor * light.color * attenuation * light.intensity;
 }
 
 float3 calcAllLights(float4 ndcPosition, float3 position, float3 normal, float3 viewDir, float specularExponent)
