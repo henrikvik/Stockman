@@ -138,7 +138,6 @@ namespace Resources
             if (strcmp(str, "Gamesheet") == 0) return Gamesheet;
             if (strcmp(str, "Grid") == 0) return Grid;
             if (strcmp(str, "Highscore") == 0) return Highscore;
-            if (strcmp(str, "Highscoretext") == 0) return Highscoretext;
             if (strcmp(str, "iconsheet") == 0) return iconsheet;
             if (strcmp(str, "IntroScreen") == 0) return IntroScreen;
             if (strcmp(str, "Loadingscreen") == 0) return Loadingscreen;
@@ -146,7 +145,6 @@ namespace Resources
             if (strcmp(str, "Mainmenutext") == 0) return Mainmenutext;
             if (strcmp(str, "MissingTexture") == 0) return MissingTexture;
             if (strcmp(str, "particle") == 0) return particle;
-            if (strcmp(str, "Pausetext") == 0) return Pausetext;
             if (strcmp(str, "randomNormals") == 0) return randomNormals;
             if (strcmp(str, "Retrytextsheet") == 0) return Retrytextsheet;
             if (strcmp(str, "Settings") == 0) return Settings;
