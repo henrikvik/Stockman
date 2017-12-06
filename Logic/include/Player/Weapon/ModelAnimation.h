@@ -16,6 +16,7 @@ namespace Logic
             DirectX::SimpleMath::Matrix rotation;
             DirectX::SimpleMath::Matrix translation;
             DirectX::SimpleMath::Matrix scale;
+            float easingModifier;
 
             void easeTo(float dt, const AnimationFrame& other);
         };

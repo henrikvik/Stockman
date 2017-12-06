@@ -4,16 +4,23 @@ using namespace Logic;
 
 #define PRINT_DEBUG                     false
 #define EDIT_VARIABLES                  false
-#define ANIMATION_SPEED                 0.020f
+#define ANIMATION_SPEED                 0.015f
 #define HEIGHT_POSITION_OFFSET_EASING   0.038f
 
 #if EDIT_VARIABLES
     float var_1 = 0;
     float var_2 = 0;
-    float var_3 = 0;
-    float rot_1 = 90;
-    float rot_2 = 90;
-    float rot_3 = 90;
+    int var_3 = 0;
+    float var_4 = 0.f;
+    float rot_11 = 90;
+    float rot_12 = 90;
+    float rot_13 = 90;
+    float rot_21 = 90;
+    float rot_22 = 90;
+    float rot_23 = 90;
+    float rot_31 = 90;
+    float rot_32 = 90;
+    float rot_33 = 90;
 #endif
 
 ModelAnimation::ModelAnimation(Resources::Models::Files modelID, AnimationFrame defaultFrame)
@@ -71,12 +78,19 @@ void ModelAnimation::update(float dt, DirectX::SimpleMath::Matrix offsetTranslat
 
 #if EDIT_VARIABLES
     ImGui::Begin("Edit");
-    ImGui::DragFloat("Var_1", &var_1, 0.01f, -5.f, 10.f, "%.4f");
-    ImGui::DragFloat("Var_2", &var_2, 0.01f, -5.f, 10.f, "%.4f");
-    ImGui::DragFloat("Var_3", &var_3, 0.01f, -5.f, 10.f, "%.4f");
-    ImGui::DragFloat("Rot_1", &rot_1, 0.1f, 0.f, 360.f, "%.4f");
-    ImGui::DragFloat("Rot_2", &rot_2, 0.1f, 0.f, 360.f, "%.4f");
-    ImGui::DragFloat("Rot_3", &rot_3, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("Pos", &var_1, 0.01f, 0.f, 20.f, "%.4f");
+    ImGui::DragFloat("Easing Start", &var_4, 0.001f, 0.f, 1.0f, "%.6f");
+    ImGui::DragFloat("Easing Mod", &var_2, 0.0001f, 0.f, 1.0f, "%.6f");
+    ImGui::DragInt("Times", &var_3, 1.f, 0.f, 20.f, "%.0f");
+    ImGui::DragFloat("LEFT Rot_11", &rot_11, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("LEFT Rot_12", &rot_12, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("LEFT Rot_13", &rot_13, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("RIGHT Rot_21", &rot_21, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("RIGHT Rot_22", &rot_22, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("RIGHT Rot_23", &rot_23, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("CLOSE Rot_31", &rot_31, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("CLOSE Rot_32", &rot_32, 0.1f, 0.f, 360.f, "%.4f");
+    ImGui::DragFloat("CLOSE Rot_33", &rot_33, 0.1f, 0.f, 360.f, "%.4f");
     ImGui::End();
 #endif
 
@@ -96,9 +110,9 @@ void ModelAnimation::render() const
 // Eases this animationframe to another
 void ModelAnimation::AnimationFrame::easeTo(float dt, const AnimationFrame & other)
 {
-    rotation    += (other.rotation - rotation)          * ANIMATION_SPEED * dt;
-    translation += (other.translation - translation)    * ANIMATION_SPEED * dt;
-    scale       += (other.scale - scale)                * ANIMATION_SPEED * dt;
+    rotation    += (other.rotation - rotation)          * ANIMATION_SPEED * other.easingModifier * dt;
+    translation += (other.translation - translation)    * ANIMATION_SPEED * other.easingModifier * dt;
+    scale       += (other.scale - scale)                * ANIMATION_SPEED * other.easingModifier * dt;
 }
 
 /*************************
@@ -312,16 +326,11 @@ void WeaponFreezeGunAnimation::startShootAnimation(float attackTimer, bool prima
 
         // Freeze Bomb
         AnimationFrame frame = m_frameDefault;
-        frame.translation._42 -= 0.50f;
-        frame.translation._43 += 0.50f;
+        frame.translation._42 -= 0.20f;
+        frame.translation._43 += 0.25f;
         frames.push(frame);
 
-        frame = m_frameDefault;
-        frame.translation._42 -= 0.55f;
-        frame.translation._43 += 0.50f;
-        frames.push(frame);
-
-        addAnimation(attackTimer / 2.5f, frames);
+        addAnimation(attackTimer, frames);
     }
     else
     {

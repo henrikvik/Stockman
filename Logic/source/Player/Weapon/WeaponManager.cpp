@@ -208,7 +208,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     /* WeaponModel */   wl.weaponModel = newd WeaponAnimation(Resources::Models::Crossbow, ModelAnimation::AnimationFrame{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.8f, -0.8f, 0.3f)),
-        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f) });
+        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f) , 1.f });
     m_weaponLoadouts.push_back(wl);
 
     // #######
@@ -227,7 +227,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     /* WeaponModel */   wl.weaponModel = newd WeaponFreezeGunAnimation(Resources::Models::Staff, ModelAnimation::AnimationFrame{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, -0.1f, 0.015f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.7f, -2.2f, 1.3f)),
-        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(0.5f, 0.5f, 0.5f) });
+        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(0.5f, 0.5f, 0.5f), 1.f });
     m_weaponLoadouts.push_back(wl);
 
     // #########
@@ -243,7 +243,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     /* WeaponModel */   wl.weaponModel = newd WeaponSledgeHammerAnimation(Resources::Models::Hammer, ModelAnimation::AnimationFrame{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(1.3f, 0.9f, 0.f),
         /* Model position */        DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-0.3f, -1.5f, -0.2f)),
-        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f) });
+        /* Model scale */           DirectX::SimpleMath::Matrix::CreateScale(1.f, 1.f, 1.f), 1.f });
     m_weaponLoadouts.push_back(wl);
 }
 

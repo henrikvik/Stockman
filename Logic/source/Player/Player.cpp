@@ -648,11 +648,6 @@ void Player::updateSpecific(float deltaTime)
         }
     }
 
-    //if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::U))
-    //{
-    //    m_weaponManager->tryAttack(WEAPON_PRIMARY, getPositionBT() + btVector3(PLAYER_EYE_OFFSET) + getForwardBT(), m_camYaw, m_camPitch, *this);
-    //}
-
     // update SkillManager
     m_skillManager->update(deltaTime);
 
