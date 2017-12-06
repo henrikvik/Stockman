@@ -18,9 +18,9 @@ using namespace Logic;
 #define NECRO_COUNT 3
 
 const float EnemyBossBaddie::BASE_SPEED = 21.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
-            EnemyBossBaddie::ABILITY_1_MOD = 0.075f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.3f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 250000, EnemyBossBaddie::SCORE = 250000;// Big guy, for you. well memed // Big guy, for you. well memed
+            EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.5f,
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.13f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 41337, EnemyBossBaddie::SCORE = 25000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
     @author Lukas Westling
@@ -62,8 +62,6 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 0.8f;
     light.range = 10.0f;
-
-
 }
 
 EnemyBossBaddie::~EnemyBossBaddie()
@@ -121,10 +119,9 @@ void EnemyBossBaddie::createAbilities()
     };
 
     auto onTick = [&](Player& player, Ability &ability) -> void {
-        /*
-        btVector3 force = (getPositionBT() - player.getPositionBT()).normalize() *
+        btVector3 force = (player.getPositionBT() - getPositionBT()).normalized() *
             std::pow((1.f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
-        player.getCharController()->applyImpulse(force); */
+        getRigidBody()->setLinearVelocity(getRigidBody()->getLinearVelocity() + force);
     };
 
     abilities[AbilityId::ONE] = Ability(data, onTick, onUse);
@@ -173,8 +170,9 @@ void EnemyBossBaddie::createAbilities()
             if (to.length() < MELEE_RANGE)
             {
                 Sound::NoiseMachine::Get().playSFX(Sound::SFX::JUMP, nullptr, true);
-                player.takeDamage(1, true); // shield charge wont save ya bitch
-                player.getCharController()->applyImpulse(to.normalize() * MELEE_PUSHBACK); 
+                player.takeDamage(1, true); // shield charge wont save ya
+                to.setY(0);
+                player.getCharController()->applyImpulse(to.normalized() * MELEE_PUSHBACK); 
             }
         }
     };
@@ -359,6 +357,7 @@ if (Player *e = dynamic_cast<Player*>(&other))
         {
             damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
 
+            getStatusManager().removeAllStatus(StatusManager::STUN);
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
                 getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
         }
@@ -367,20 +366,10 @@ if (Player *e = dynamic_cast<Player*>(&other))
 
 void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
 {
-    // test
     for (auto &pair : abilities)
         pair.second.update(deltaTime, player);
 
-    // HP BAR CHEAT
-    /*hp = L"HP: ";
-    int parts = static_cast<int>((static_cast<float> (getHealth()) / getMaxHealth()) * 10.f);
-    for (int i = 0; i < parts; i++)
-        hp += L"I";
-    hp += L" " + std::to_wstring(parts) + L" / 10";
-    hpBar.text = hp.c_str();*/
-
     //hp bar
-
     float healthleft = float(getHealth()) / float(getMaxHealth());
     hpBar.setScreenPos(Sprite::Points::TOP_LEFT, Sprite::Points::TOP_LEFT, 400.f, 70.f, healthleft * TOTAL_HP_BAR, 25.f);
 }

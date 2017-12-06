@@ -9,6 +9,7 @@ namespace Resources
             if (strcmp(str, "KG18") == 0) return KG18;
             if (strcmp(str, "KG26") == 0) return KG26;
             if (strcmp(str, "nordic") == 0) return nordic;
+            if (strcmp(str, "nordic25") == 0) return nordic25;
             throw "Could not find matching enum.";
         }
     }
@@ -38,6 +39,7 @@ namespace Resources
             if (strcmp(str, "AnimatedSummonUnit") == 0) return AnimatedSummonUnit;
             if (strcmp(str, "AnimationTest") == 0) return AnimationTest;
             if (strcmp(str, "Barrel") == 0) return Barrel;
+            if (strcmp(str, "Bone") == 0) return Bone;
             if (strcmp(str, "Border_Walls") == 0) return Border_Walls;
             if (strcmp(str, "Bridge") == 0) return Bridge;
             if (strcmp(str, "Crate") == 0) return Crate;
@@ -83,6 +85,7 @@ namespace Resources
             if (strcmp(str, "Tablet1") == 0) return Tablet1;
             if (strcmp(str, "Tee_Pee") == 0) return Tee_Pee;
             if (strcmp(str, "Tomb_Stone") == 0) return Tomb_Stone;
+            if (strcmp(str, "TotemWithAnimation") == 0) return TotemWithAnimation;
             if (strcmp(str, "Tree") == 0) return Tree;
             if (strcmp(str, "UnitCube") == 0) return UnitCube;
             throw "Could not find matching enum.";
@@ -128,6 +131,7 @@ namespace Resources
         Files toEnum(const char * str)
         {
             if (strcmp(str, "CardBackground") == 0) return CardBackground;
+            if (strcmp(str, "controlscheme") == 0) return controlscheme;
             if (strcmp(str, "Crosshair") == 0) return Crosshair;
             if (strcmp(str, "Diffusemoon") == 0) return Diffusemoon;
             if (strcmp(str, "Enraged") == 0) return Enraged;
@@ -145,6 +149,7 @@ namespace Resources
             if (strcmp(str, "particle") == 0) return particle;
             if (strcmp(str, "Pausetext") == 0) return Pausetext;
             if (strcmp(str, "randomNormals") == 0) return randomNormals;
+            if (strcmp(str, "Retrytextsheet") == 0) return Retrytextsheet;
             if (strcmp(str, "Settings") == 0) return Settings;
             if (strcmp(str, "SettingsButtons") == 0) return SettingsButtons;
             if (strcmp(str, "Skillpickbackground") == 0) return Skillpickbackground;

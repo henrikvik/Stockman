@@ -200,10 +200,12 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // ############
     /* Primary */       wl.weapon[0] = newd WeaponCrossbow(projectileManager,
                                     ProjectileData("Icecone", false, true, 25.f, 1.5f, 1.f, 90.f, 0.1f, 3000.f, LightRenderInfo(DirectX::SimpleMath::Color(1.f, 0.8f, 1.f, 1.f), .25f, 3.f), Resources::Models::Crossbowbolt, 1, ProjectileTypeNormal, true, false, true, false, { 0.f, -0.4f, 0.f }),
-                                    Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0, { -0.5f, -0.5f, 0.f }, 800.f });
+                                    Weapon::WeaponInfo{ 0, 1, 0, 0, 300, 0, 0, { -0.5f, -0.5f, 0.f }, 800.f }, 
+                                    25.f, 35.f);
     /* Secondary */     wl.weapon[1] = newd WeaponCrossbow(projectileManager,
                                     ProjectileData("Icecone", false, true, 20.f, 1.5f, 1.f, 70.f, 0.1f, 1500.f, LightRenderInfo(DirectX::SimpleMath::Color(0.9f, 0.5f, 1.f, 1.f), .25f, 1.5f), Resources::Models::Crossbowbolt, 1, ProjectileType::ProjectileTypeNormal, true, false, true, true, { 0.f, -0.4f, 0.f }),
-                                    Weapon::WeaponInfo{ 1, 18, 15, 4, 50, 0, 0, { -0.5f, -0.5f, 0.f }, 800.f });
+                                    Weapon::WeaponInfo{ 1, 18, 15, 4, 50, 0, 0, { -0.5f, -0.5f, 0.f }, 800.f }, 
+                                    25.f, 35.f);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 999, 0, 30, 30,{ 1, 10 },{ 1, 10 }, 1000 });
     /* WeaponModel */   wl.weaponModel = newd WeaponAnimation(Resources::Models::Crossbow, ModelAnimation::AnimationFrame{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.f, 0.f, 0.f),
@@ -234,7 +236,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // **Melee**
     // #########
     /* Primary */       wl.weapon[0] = newd WeaponMeleeSwing(projectileManager,
-                                    ProjectileData("Icecone", true, false, 35, 30.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.85f, 0.3f, 0.4f, 1.f), 0.85f, 10.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false),
+                                    ProjectileData("Icecone", true, false, 100, 30.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.85f, 0.3f, 0.4f, 1.f), 0.85f, 10.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false),
                                     Weapon::WeaponInfo{ 4, 1, 0, 0, 90, 225, 0,{ 0.f, 0.f, 0.f }, 0.f }, 10.f);
     /* Secondary */     wl.weapon[1] = newd WeaponMeleeParry(projectileManager,
                                     ProjectileData(nullptr, false, false, 0, 30.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.8f, 0.6f, 1.f), 0.85f, 15.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, false),
@@ -274,7 +276,7 @@ void WeaponManager::tryAttack(int attackMode, btVector3 position, float yaw, flo
             {
                 m_toUse = WeaponToUse(attackMode);
                 m_toUseShooter = &shooter;
-                m_attackRateTimer = (float)delayTime;
+                m_attackRateTimer = (float)delayTime * m_Upgrades.fireRateModifier;;
                 m_currentWeapon->weaponModel->startWindupAnimation(delayTime);
             }
             else

@@ -142,6 +142,7 @@ bool WaveTimeManager::isTransitioning() const
     return m_onTransition;
 }
 
+
 void WaveTimeManager::startTransition()
 {
     m_onTransition = true;

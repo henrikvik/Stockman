@@ -17,7 +17,7 @@ namespace Logic
 
         static const float BASE_SPEED;
         static const int BASE_DAMAGE, MAX_HP, MAX_DEF_HP, SCORE, PROJECTILES;
-        static const float MELEE_DISTANCE, PROJECTILE_SPEED;
+        static const float MELEE_DISTANCE, PROJECTILE_SPEED, THROW_STRENGTH;
     public:
         EnemyDefender(btRigidBody* body, btVector3 halfExtent);
         virtual ~EnemyDefender();

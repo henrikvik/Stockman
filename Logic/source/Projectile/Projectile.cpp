@@ -231,7 +231,7 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
     case ProjectileTypeFireArrow:
         callback = true;
         kill = true;
-        enemy->getStatusManager().addStatus(
+        enemy->getStatusManager().addStatusResetDuration(
             /* Adding Fire effect */            StatusManager::ON_FIRE,
             /* Number of stacks */              getStatusManager().getUpgradeStacks(StatusManager::FIRE_UPGRADE)
         );
@@ -291,7 +291,9 @@ bool Projectile::collisionWithTerrain()
 
     // Don't remove if bouncing upgraded
     if (getStatusManager().isOwningUpgrade(Upgrade::UPGRADE_FLAG::UPGRADE_IS_BOUNCING))
+    {
         m_dead = false;
+    }
 
     // Always trigger callback
     return true;
