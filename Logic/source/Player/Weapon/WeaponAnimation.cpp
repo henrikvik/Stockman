@@ -3,12 +3,12 @@
 using namespace Logic;
 
 /* ENHANCED OPTIONS */
-#define ENHANCED_ANIMATION_SPEED    0.0001f         // The easing amount it takes for the enhanced effect to accur
-#define NOT_ENHANCED_COLOR          1.0, 1.0, 1.0   // Not enhanced color
-#define DEFAULT_ENHANCED_COLOR      1.0, 0.7, 0.9   // Crossbow
-#define SLEDGE_ENHANCED_COLOR       0.6, 0.8, 1.f   // Sledge Hammer
-#define FREEZE_ENHANCED_COLOR       0.6, 1.0, 0.7   // Freeze Gun
-#define ENHANCED_SCALE              1.10f           // The scaling of the weapon when enhanced, default 1.0f 
+#define ENHANCED_ANIMATION_SPEED    0.0015f         // The easing amount it takes for the enhanced effect to accur
+#define NOT_ENHANCED_COLOR          1.0, 1.0, 1.0   // NOT enhanced color
+#define DEFAULT_ENHANCED_COLOR      1.0, 0.90, 0.95   // ~Crossbow
+#define SLEDGE_ENHANCED_COLOR       0.6, 0.8, 1.f   // ~Sledge Hammer
+#define FREEZE_ENHANCED_COLOR       0.85, 1.0, 0.95   // ~Freeze Gun
+#define ENHANCED_SCALE              1.125f          // The scaling of the weapon when enhanced, default 1.0f 
 
 /* ANIMATION OFFSETS */
 #define RELOAD_TILT                 0.75f           // The amount of tilt to the right when reloading
