@@ -122,7 +122,7 @@
       <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
-      <AdditionalDependencies>ImGui.lib;Singeltons.lib;sfml-system-d.lib;sfml-network-d.lib;fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ImGui.lib;Singletons.lib;sfml-system-d.lib;sfml-network-d.lib;fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
@@ -145,7 +145,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
-      <AdditionalDependencies>ImGui.lib;Singeltons.lib;sfml-system-d.lib;sfml-network-d.lib;fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ImGui.lib;Singletons.lib;sfml-system-d.lib;sfml-network-d.lib;fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
@@ -172,7 +172,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
-      <AdditionalDependencies>ImGui.lib;Singeltons.lib;sfml-system.lib;sfml-network.lib;fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ImGui.lib;Singletons.lib;sfml-system.lib;sfml-network.lib;fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
@@ -199,7 +199,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
-      <AdditionalDependencies>ImGui.lib;Singeltons.lib;sfml-system.lib;sfml-network.lib;fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ImGui.lib;Singletons.lib;sfml-system.lib;sfml-network.lib;fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
