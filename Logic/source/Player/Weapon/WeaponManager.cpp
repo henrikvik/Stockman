@@ -237,7 +237,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
     // **Melee**
     // #########
     /* Primary */       wl.weapon[0] = newd WeaponMeleeSwing(projectileManager,
-                                    ProjectileData(nullptr, true, false, 150, 30.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.85f, 0.3f, 0.4f, 1.f), 0.85f, 10.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false),
+                                    ProjectileData(nullptr, true, false, 200, 30.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.85f, 0.3f, 0.4f, 1.f), 0.85f, 10.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMelee, true, false, false),
                                     Weapon::WeaponInfo{ 4, 1, 0, 0, 90, 150, 0,{ 0.f, 0.f, 0.f }, 10.f }, 10.f);
     /* Secondary */     wl.weapon[1] = newd WeaponMeleeParry(projectileManager,
                                     ProjectileData(nullptr, false, false, 0, 30.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.8f, 0.6f, 1.f), 0.85f, 15.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, false),
