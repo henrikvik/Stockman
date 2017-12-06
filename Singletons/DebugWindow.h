@@ -7,6 +7,7 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include "dll\Singletons.h"
 #pragma region Comment
 
 /*
@@ -19,8 +20,11 @@ returns strings for some kind of input into the system. Make sure to always use 
 
 */
 
+
 #pragma endregion Description of class
-class DebugWindow
+
+#define RegisterCommand(cmd, ...) DebugWindow::getInstance()->registerCommand(cmd, [&](std::vector<std::string> &args)->std::string __VA_ARGS__);
+class Singletons_API DebugWindow
 {
 private:
 	//https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp my information to make this shit
@@ -35,7 +39,6 @@ private:
 
 	bool isDrawing = false;
 
-	static DebugWindow*				instance;
 
 	static int Stricmp(const char* str1, const char* str2) 
 	{
@@ -79,4 +82,5 @@ public:
 	void toggleDebugToDraw() { isDrawing = !isDrawing; }
 	bool isOpen() const { return isDrawing; }
 };
+
 #endif

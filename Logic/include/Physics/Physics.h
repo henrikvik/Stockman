@@ -44,7 +44,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <BulletDynamics\Character\btKinematicCharacterController.h>
 #include <BulletCollision\CollisionDispatch\btGhostObject.h>
-#include <Engine\Profiler.h>
+#include <Singletons\Profiler.h>
 #include <functional>
 
 

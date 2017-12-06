@@ -21,10 +21,10 @@
 
 #include "RenderPass\GUIRenderPass.h"
 
-
+#include "../export.h"
 namespace Graphics
 {
-	class Renderer
+	class GRAPHICS_API Renderer
     {
     public:
 
