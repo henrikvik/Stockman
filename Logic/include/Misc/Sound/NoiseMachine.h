@@ -34,8 +34,8 @@ namespace Sound
             static const int	MAX_SONGS = 32;
             static const int	MUSIC_MIN_DIST = 1;
             static const int	MUSIC_MAX_DIST = 50;
-            static const int	SFX_MIN_DIST = 1;
-            static const int	SFX_MAX_DIST = 250;
+            static const int	SFX_MIN_DIST;
+            static const int	SFX_MAX_DIST;
         };
 
         struct VOLUME_DEFAULT

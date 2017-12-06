@@ -11,10 +11,10 @@
 #include <WICTextureLoader.h>
 #include <d3dcompiler.h>
 
-#include <Engine\Profiler.h>
+#include <Singletons\Profiler.h>
 #include "../Utility/DebugDraw.h"
 #include "../CommonState.h"
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 #include "../RenderInfo.h"
 #include "../RenderQueue.h"
 
@@ -110,7 +110,7 @@ HRESULT __stdcall ResourcesShaderInclude::Close(LPCVOID pData)
 
 namespace Graphics {;
 
-ParticleSystem *FXSystem;
+GRAPHICS_API ParticleSystem *FXSystem;
 bool FXEnabled = true;
 
 ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const char * path)

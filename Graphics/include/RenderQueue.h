@@ -4,10 +4,11 @@
 #include <type_traits>
 #include <Engine\newd.h>
 #include "RenderInfo.h"
-#include <Engine/Profiler.h>
+#include <Singletons/Profiler.h>
 #include "MainCamera.h"
+#include "../export.h"
 
-class RenderQueue
+class GRAPHICS_API RenderQueue
 {
 public:
     template<typename T>
