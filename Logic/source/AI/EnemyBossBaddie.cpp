@@ -19,7 +19,7 @@ using namespace Logic;
 
 const float EnemyBossBaddie::BASE_SPEED = 21.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.075f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.3f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.15f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
 const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 51337, EnemyBossBaddie::SCORE = 250000;// Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
@@ -62,8 +62,6 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 0.8f;
     light.range = 10.0f;
-
-
 }
 
 EnemyBossBaddie::~EnemyBossBaddie()
@@ -173,8 +171,9 @@ void EnemyBossBaddie::createAbilities()
             if (to.length() < MELEE_RANGE)
             {
                 Sound::NoiseMachine::Get().playSFX(Sound::SFX::JUMP, nullptr, true);
-                player.takeDamage(1, true); // shield charge wont save ya bitch
-                player.getCharController()->applyImpulse(to.normalize() * MELEE_PUSHBACK); 
+                player.takeDamage(1, true); // shield charge wont save ya
+                to.setY(0);
+                player.getCharController()->applyImpulse(to.normalized() * MELEE_PUSHBACK); 
             }
         }
     };
@@ -359,6 +358,7 @@ if (Player *e = dynamic_cast<Player*>(&other))
         {
             damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
 
+            getStatusManager().removeAllStatus(StatusManager::STUN);
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
                 getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
         }

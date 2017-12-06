@@ -96,7 +96,7 @@ Enemy::~Enemy() {
 void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 
-    if (!m_stunned)
+    if (!m_stunned || getEnemyType() == EnemyType::BOSS_1) // quick fix
     {
         m_behavior->update(*this, closeEnemies, player, deltaTime);
     }
