@@ -17,6 +17,10 @@ EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
     getStatusManager().addUpgrade(StatusManager::BOUNCE);
     m_rotation = 0;
 
+    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 1.0f);
+    light.intensity = 1.0f;
+    light.range = 15.0f;
+
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().kill(SCORE);
         SpawnTrigger(2, getPositionBT() - btVector3(
