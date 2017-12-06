@@ -110,6 +110,12 @@ int ComboMachine::getTotalScore()
     return m_totalScore;
 }
 
+void Logic::ComboMachine::addTimeBonus(float timeLeft)
+{
+    int timeScore = timeLeft * 0.001f;
+    this->m_totalScore += timeScore * 200;
+}
+
 // Check if combo is still alive
 void ComboMachine::checkCombo()
 {
