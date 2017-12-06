@@ -138,6 +138,7 @@ namespace Resources
             if (strcmp(str, "Gamesheet") == 0) return Gamesheet;
             if (strcmp(str, "Grid") == 0) return Grid;
             if (strcmp(str, "Highscore") == 0) return Highscore;
+            if (strcmp(str, "Highscoretext") == 0) return Highscoretext;
             if (strcmp(str, "iconsheet") == 0) return iconsheet;
             if (strcmp(str, "IntroScreen") == 0) return IntroScreen;
             if (strcmp(str, "Loadingscreen") == 0) return Loadingscreen;

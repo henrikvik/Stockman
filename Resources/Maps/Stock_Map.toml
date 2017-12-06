@@ -299,170 +299,6 @@ name = "GrassG3"
 scale = [1.065828, 1.065828, 1.065828]
 translation = [0.000000, 2.318751, -71.242537]
 
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG46"
-translation = [-24.179353, 2.210505, -68.697694]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG47"
-translation = [-24.179353, 2.210505, -55.727057]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG48"
-translation = [-49.237911, 2.210505, -55.727057]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG49"
-translation = [-49.237911, 2.210505, -88.083101]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG50"
-rotation = [0.000000, 0.339760, 0.000000, 0.940512]
-translation = [20.046892, 2.210505, -103.170118]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG51"
-rotation = [0.000000, 0.339760, 0.000000, 0.940512]
-translation = [32.852231, 2.210505, -114.656589]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG52"
-rotation = [0.000000, 0.772486, 0.000000, 0.635032]
-translation = [45.048851, 2.210505, -114.656589]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG53"
-rotation = [0.000000, 0.772486, 0.000000, 0.635032]
-translation = [36.107453, 2.210505, -70.403012]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG54"
-rotation = [0.000000, 0.977570, 0.000000, 0.210612]
-translation = [36.107453, 2.210505, -59.705763]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG55"
-rotation = [-0.000000, 0.716140, 0.000000, -0.697956]
-translation = [43.192905, 2.210505, -11.482685]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG56"
-rotation = [-0.000000, 0.716140, 0.000000, -0.697956]
-translation = [61.424101, 2.210505, -1.932231]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG57"
-rotation = [-0.000000, 0.716140, 0.000000, -0.697956]
-translation = [88.366844, 2.210505, -1.932231]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG58"
-rotation = [-0.000000, 0.087516, 0.000000, -0.996163]
-translation = [88.366844, 2.210505, 20.528012]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG59"
-rotation = [-0.000000, 0.087516, 0.000000, -0.996163]
-translation = [102.607346, 2.210505, 29.036862]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG60"
-rotation = [-0.000000, 0.087516, 0.000000, -0.996163]
-translation = [90.292350, 2.210505, 29.733083]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG61"
-rotation = [-0.000000, 0.087516, 0.000000, -0.996163]
-translation = [94.867060, 2.210505, 36.826377]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG62"
-rotation = [-0.000000, -0.799365, 0.000000, -0.600846]
-translation = [96.613871, 2.210505, 37.594931]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG63"
-rotation = [-0.000000, -0.944493, 0.000000, -0.328531]
-translation = [96.613871, 2.210505, 39.695132]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG64"
-rotation = [-0.000000, -0.944493, 0.000000, -0.328531]
-translation = [76.440242, 2.210505, 85.084206]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG65"
-rotation = [-0.000000, -0.534358, 0.000000, -0.845258]
-translation = [60.868957, 2.210505, 85.084206]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG66"
-rotation = [-0.000000, -0.534358, 0.000000, -0.845258]
-translation = [26.261920, 2.210505, 89.346573]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG67"
-rotation = [-0.000000, -0.919860, 0.000000, -0.392246]
-translation = [37.689524, 2.210505, 96.347728]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG68"
-rotation = [-0.000000, -0.919860, 0.000000, -0.392246]
-translation = [-7.836921, 2.210505, 96.347728]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG69"
-rotation = [0.000000, -0.900609, 0.000000, 0.434630]
-translation = [-9.621994, 2.210505, 65.450509]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG70"
-rotation = [0.000000, -0.451951, 0.000000, 0.892043]
-translation = [-47.943923, 2.210505, 55.515108]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG71"
-rotation = [0.000000, 0.093609, 0.000000, 0.995609]
-translation = [-94.306275, 2.210505, 7.509805]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG72"
-rotation = [0.000000, -0.464677, 0.000000, 0.885480]
-translation = [-88.669676, 2.210505, -24.309723]
-
-[[Foliage]]
-model = "GrassG1"
-name = "GrassG73"
-rotation = [0.000000, 0.720309, 0.000000, 0.693653]
-translation = [-2.318198, 2.210505, -113.815638]
-
 [[Static]]
 model = "Ground"
 name = "Ground2"
@@ -1575,28 +1411,28 @@ model = "Icecickle"
 name = "Icecickle38"
 rotation = [0.000000, -0.393942, 0.000000, 0.919135]
 scale = [2.464638, 2.464638, 2.464638]
-translation = [47.274870, 27.183698, -47.777200]
+translation = [47.274870, 24.717013, -47.777200]
 
 [[Static]]
 model = "Icecickle"
 name = "Icecickle37"
 rotation = [0.000000, -0.393942, 0.000000, 0.919135]
 scale = [2.464638, 2.464638, 2.464638]
-translation = [44.633092, 28.411611, -45.261465]
+translation = [44.633092, 26.024987, -45.261465]
 
 [[Static]]
 model = "Icecickle"
 name = "Icecickle41"
 rotation = [0.000000, -0.393942, 0.000000, 0.919135]
 scale = [4.743495, 4.743495, 4.743495]
-translation = [41.834829, 28.361162, -44.101472]
+translation = [41.834829, 25.744655, -44.101472]
 
 [[Static]]
 model = "Icecickle"
 name = "Icecickle40"
 rotation = [0.000000, -0.393942, 0.000000, 0.919135]
 scale = [5.920662, 5.920662, 5.920662]
-translation = [40.154498, 26.756871, -50.772160]
+translation = [40.154498, 24.076235, -50.772160]
 
 [[Static]]
 model = "Icecickle"
@@ -1610,14 +1446,14 @@ model = "Icecickle"
 name = "Icecickle43"
 rotation = [0.000000, -0.393942, 0.000000, 0.919135]
 scale = [3.883164, 3.883164, 3.883164]
-translation = [42.998148, 27.065038, -49.262359]
+translation = [42.998148, 24.534461, -49.262359]
 
 [[Static]]
 model = "Icecickle"
 name = "Icecickle42"
 rotation = [0.000000, -0.393942, 0.000000, 0.919135]
 scale = [4.743495, 4.743495, 4.743495]
-translation = [45.270761, 25.926408, -53.562223]
+translation = [45.270761, 22.943499, -53.562223]
 
 [[Static]]
 model = "Snow_Heap"
@@ -1769,7 +1605,7 @@ model = "Icecickle"
 name = "Icecickle39"
 rotation = [0.000000, -0.393942, 0.000000, 0.919135]
 scale = [2.464638, 2.464638, 2.464638]
-translation = [36.113554, 30.048128, -46.924016]
+translation = [36.113554, 27.468715, -46.924016]
 
 [[Static]]
 model = "Snow_Heap"
