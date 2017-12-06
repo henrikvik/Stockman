@@ -5,9 +5,9 @@ using namespace Logic;
 /* ENHANCED OPTIONS */
 #define ENHANCED_ANIMATION_SPEED    0.0015f         // The easing amount it takes for the enhanced effect to accur
 #define NOT_ENHANCED_COLOR          1.0, 1.0, 1.0   // NOT enhanced color
-#define DEFAULT_ENHANCED_COLOR      1.0, 0.90, 0.95   // ~Crossbow
+#define DEFAULT_ENHANCED_COLOR      1.0, 0.90, 0.95 // ~Crossbow
 #define SLEDGE_ENHANCED_COLOR       0.6, 0.8, 1.f   // ~Sledge Hammer
-#define FREEZE_ENHANCED_COLOR       0.85, 1.0, 0.95   // ~Freeze Gun
+#define FREEZE_ENHANCED_COLOR       0.85, 1.0, 0.95 // ~Freeze Gun
 #define ENHANCED_SCALE              1.125f          // The scaling of the weapon when enhanced, default 1.0f 
 
 /* ANIMATION OFFSETS */
