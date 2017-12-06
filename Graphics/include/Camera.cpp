@@ -1,7 +1,7 @@
 #include <Graphics\include\Camera.h>
 #include "RenderQueue.h"
-#include <Keyboard.h>
 #include <iterator>
+#include <Singletons\DebugWindow.h>
 
 namespace Graphics
 {
@@ -9,6 +9,13 @@ namespace Graphics
         cameraBuffer(device),
         inverseBuffer(device)
     {
+        update_frustrum = true;
+        RegisterCommand("GFX_TOGGLE_FRUSTRUM_UPDATE",
+        {
+            update_frustrum = !update_frustrum;
+            return std::string("Frustrum update was turned ") + (update_frustrum ? "on" : "off");
+        });
+
         near_distance = 0.1f;
         far_distance = drawDistance;
         aspect_ratio = float(width) / height;
@@ -86,13 +93,6 @@ namespace Graphics
 
     void Camera::calc_frustrum_planes()
     {
-        static auto ks = DirectX::Keyboard::KeyboardStateTracker();
-        ks.Update(DirectX::Keyboard::Get().GetState());
-        static bool update_frustrum = true;
-        static bool o_was_pressed = false;
-        update_frustrum = ks.pressed.O && !o_was_pressed ? !update_frustrum : update_frustrum;
-        o_was_pressed = ks.pressed.O;
-
         if (update_frustrum)
         {
             using namespace DirectX::SimpleMath;            
@@ -105,10 +105,7 @@ namespace Graphics
             frustrum_planes[BOT_]   = {{ 0, 1, 0}, -1, { 0, 0, 1}};
                                                
             Matrix ndc_to_world = projection.Invert() * view.Invert();
-            for (auto & plane : frustrum_planes)
-            {
-                plane.transform(ndc_to_world);
-            }
+            for (auto & plane : frustrum_planes) { plane.transform(ndc_to_world); }
 
             #ifdef _DEBUG
             auto draw_square = [&](Vector3 top_left, Vector3 top_right, Vector3 bot_left, Vector3 bot_right, Color color)

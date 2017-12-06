@@ -21,17 +21,17 @@
 }
 {
 	"buttonName" : "MenuStartGameHeroic";
-	"texture" : 0;
+	"texture" : 2;
 	"xPos" : 115.0f;
 	"yPos" : 320.0f;
 	"xTexStart" : 0.0f;
-	"yTexStart" : 0.05f;
+	"yTexStart" : 0.38867f;
 	"xTexEnd" : 1.f;
-	"yTexEnd" : 0.150f;
+	"yTexEnd" : 0.48438f;
     "hoverXTexStart" : 0.0f;
-	"hoverYTexStart" : 0.52f;
+	"hoverYTexStart" : 0.87305f;
 	"hoverXTexEnd" : 1.f;
-	"hoverYTexEnd" : 0.620f;
+	"hoverYTexEnd" : 0.96875f;
     "activeXTexStart" : 0.0f;
 	"activeYTexStart" : 0.52f;
 	"activeXTexEnd" : 1.f;

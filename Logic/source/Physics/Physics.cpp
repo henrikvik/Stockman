@@ -1,5 +1,5 @@
 #include "Physics\Physics.h"
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
 using namespace Logic;
 

@@ -5,17 +5,18 @@
 #include "../Particles/ParticleSystem.h"
 
 #include <SimpleMath.h>
+#include "../../export.h"
 
 namespace Graphics {
 namespace Debug {
 
-void Initialize(ID3D11Device *device);
-void Destroy();
+void GRAPHICS_API Initialize(ID3D11Device *device);
+void GRAPHICS_API Destroy();
 void Text(DirectX::SimpleMath::Vector3 pos, const char *str);
 
 void ParticleFX(ParticleEffectInstance fx);
 void PointLight(Light light);
-void Render(Camera *camera);
+void GRAPHICS_API Render(Camera *camera);
 
 }
 }

@@ -21,8 +21,8 @@
 #include <DebugDefines.h>
 #include <Misc\RandomGenerator.h>
 
-#include <Engine\DebugWindow.h>
-#include <Engine\Profiler.h>
+#include <Singletons\DebugWindow.h>
+#include <Singletons\Profiler.h>
 
 #include <ctime>
 #include <stdio.h>

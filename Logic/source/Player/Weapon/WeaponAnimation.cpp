@@ -195,6 +195,6 @@ void WeaponFreezeGunAnimation::startShootAnimation(float attackTimer, bool prima
         frames.push(frame);
         m_frameActive = frame;
 
-        addAnimation(attackTimer, frames);
+        addAnimation(attackTimer * 1.5f, frames);
     }
 }

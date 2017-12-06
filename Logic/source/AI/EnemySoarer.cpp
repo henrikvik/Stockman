@@ -64,8 +64,6 @@ void EnemySoarer::createAbilities()
         if (pj) {
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 Graphics::FXSystem->addEffect("DamageBoom", data.caller->getPosition());
-
-                data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, 1.f, 0.15);
             });
         }
     });

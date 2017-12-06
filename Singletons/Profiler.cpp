@@ -10,7 +10,10 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
-#include "Constants.h"
+#include <Engine\Constants.h>
+
+Profiler * Profiler::profiler = nullptr;
+
 
 #define PROFILE_GPU_START_INDEX 0
 #define PROFILE_GPU_START_WORK_INDEX 1
