@@ -50,6 +50,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
     addCallback(ON_DEATH, [&](CallbackData &data)
     {
+        Graphics::FXSystem->addEffect("DeathEffect", data.caller->getPosition());
         getSoundSource()->playSFX(Sound::SFX::ENEMY_DEATH, 1.f, 0.25f);
     });
 }
