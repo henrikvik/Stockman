@@ -13,7 +13,6 @@ CardManager::CardManager(int nrOfEach)
 
     loadDeckFromFile();
     createDeck(nrOfEach);
-    shuffle();
 
     state = CardState::STILL;
 }
@@ -22,7 +21,6 @@ CardManager::~CardManager() { }
 
 void CardManager::resetDeck()
 {
-    shuffle();
     for (auto &pair : m_deck)
         if (pair.first == TAKEN)
             pair.first = IN_DECK;
