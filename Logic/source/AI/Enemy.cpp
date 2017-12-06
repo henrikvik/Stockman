@@ -41,7 +41,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
    // light.intensity = 0.5f;
     //light.range = 3.f;
 
-    body->setGravity({ 0.f, -9.82f * 7.f, 0.f });
+    body->setGravity({ 0.f, -9.82f * 10.f, 0.f });
 
     addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
         m_blinkTimer = 100.0f;
@@ -96,9 +96,17 @@ Enemy::~Enemy() {
 void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 
-    if (!m_stunned)
+    if (!m_stunned || getEnemyType() == EnemyType::BOSS_1) // quick fix
     {
         m_behavior->update(*this, closeEnemies, player, deltaTime);
+
+        // THIS IS A TEMPORARY FIX TO HANDLE BS
+        if (getPositionBT().getY() < 0.5f) {
+            getRigidBody()->setGravity({ 0.f, 9.82f * 20.f, 0.f });
+        }
+        else {
+            getRigidBody()->setGravity({ 0.f, -9.82f * 10.f, 0.f });
+        }
     }
 
 	updateSpecific(player, deltaTime);

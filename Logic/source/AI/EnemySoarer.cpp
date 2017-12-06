@@ -107,10 +107,10 @@ void EnemySoarer::handleFlying(Player const &target)
     getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
     auto vel = getRigidBody()->getLinearVelocity();
 
-    if (getPositionBT().y() > HEIGHT_OFFSET + target.getPositionBT().y()) // bad fix but better to just force it right now
-        vel.setY(-0.2f);
+    if (getPositionBT().y() > HEIGHT_OFFSET + target.getPositionBT().y())
+        vel.setY(-0.25f);
     else if (getPositionBT().y() < (HEIGHT_OFFSET + target.getPositionBT().y()) * 0.9f)
-        vel.setY(0.2f);
+        vel.setY(0.25f);
 
     getRigidBody()->setLinearVelocity(vel);
 }
