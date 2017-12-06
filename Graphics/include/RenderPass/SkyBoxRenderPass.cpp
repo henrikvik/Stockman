@@ -20,9 +20,9 @@ namespace Graphics
         m_MoonShader(Resources::Shaders::Moon),
         sphereTransformBuffer(Global::device),
         m_Colors({
-            DirectX::SimpleMath::Vector4 { 0.f, 0.f, 0.05f, 0.f },
-            DirectX::SimpleMath::Vector4{0.f, 0.1f, 0.3f, 0.f} ,
-            DirectX::SimpleMath::Vector4(0.f, 0.f, 0.f, 0.1f)
+            DirectX::SimpleMath::Vector4 { 75.0f/256.0f, 97.0f/256.0f, 199.0f/250.0f, 0.f },
+            DirectX::SimpleMath::Vector4{ 13.0f / 256.0f, 17.0f / 256.0f, 79.0f / 250.0f, 0.f} ,
+            DirectX::SimpleMath::Vector4(0.f, 0.f, 0.f, 0.25f)
         }),
         m_SkyColors(Global::device),
         m_Sun(sun)
@@ -113,6 +113,7 @@ namespace Graphics
         m_Colors.angleSize.x = dir.x;
         m_Colors.angleSize.y = dir.y;
         m_Colors.angleSize.z = dir.z;
+
         auto view = Matrix::CreateBillboard(Vector3(dir), Vector3(0.f), Vector3::UnitY) * Matrix::CreateTranslation(Global::mainCamera->getPos());
 
         m_Colors.view = view;

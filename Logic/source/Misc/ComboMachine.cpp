@@ -2,6 +2,9 @@
 
 using namespace Logic;
 
+#define COMBO_MULTIKILL_SCORE       1000
+#define COMBO_TIME_SCORE_MULTIPLIER 200
+
 const int ComboMachine::MAX_COMBO = 16;
 const int ComboMachine::MAX_MULTIKILL = 5;
 const float ComboMachine::COMBO_TIMER = 5000.f;
@@ -49,7 +52,7 @@ void ComboMachine::update(float deltaTime)
 {
     if (m_multikillTimer > FLT_EPSILON)
         m_multikillTimer -= deltaTime;
-    else
+    else if(m_multikill > 1)
         addMultikillScore();
 
     if (m_comboTimer > FLT_EPSILON)
@@ -58,7 +61,7 @@ void ComboMachine::update(float deltaTime)
     {
         reward(m_comboScore * m_combo);
         m_comboTimer = 0.f;
-        m_combo = 1;
+        m_combo = 0;
         m_multikill = 1;
         m_comboScore = 0;
     }  
@@ -69,7 +72,7 @@ void ComboMachine::reset()
 {
     m_totalKills = 0;
 	m_comboTimer = 0.f;
-	m_combo = 1;
+	m_combo = 0;
     m_multikill = 1;
 	m_comboScore = 0;
     m_totalScore = 0;
@@ -110,6 +113,12 @@ int ComboMachine::getTotalScore()
     return m_totalScore;
 }
 
+void ComboMachine::addTimeBonus(float timeLeft)
+{
+    int timeScore = timeLeft * 0.001f;
+    m_totalScore += timeScore * COMBO_TIME_SCORE_MULTIPLIER;
+}
+
 // Check if combo is still alive
 void ComboMachine::checkCombo()
 {
@@ -118,7 +127,7 @@ void ComboMachine::checkCombo()
 
 void ComboMachine::addMultikillScore()
 {
-    m_comboScore *= m_multikill;
+    m_comboScore += m_multikill * COMBO_MULTIKILL_SCORE;
     m_multikill = 1;
 }
 

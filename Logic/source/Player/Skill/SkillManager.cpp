@@ -117,6 +117,20 @@ Skill* SkillManager::getSkill(int index) const
     return m_current[index];
 }
 
+// Returns a pointer to specified skill if the skill is in current skill-loadout
+Skill* SkillManager::getActiveSkill(SKILL skill) const
+{
+    Skill* toLookFor = m_allSkills[skill];
+
+    for (size_t i = 0; i < m_nrOfSkills; i++)
+    {
+        if (m_current[i] == toLookFor)
+            return m_current[i];
+    }
+
+    return nullptr;
+}
+
 // If the index parameter is inbetween the valid variables
 bool SkillManager::isLegit(int index) const
 {

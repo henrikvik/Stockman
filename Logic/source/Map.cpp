@@ -18,7 +18,7 @@ using namespace Logic;
 #define AI_BOX_ID_MIN 30
 
 Map::Map() {
-    m_mapObject = std::make_unique<StaticObject*>(new StaticObject(Resources::Models::UnitCube,
+    m_mapObject = std::make_unique<StaticObject*>(newd StaticObject(Resources::Models::UnitCube,
         nullptr, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL));
 }
 
@@ -200,7 +200,7 @@ void Map::loadMap(Resources::Maps::Files map)
 
     // this is a temporary solution
     bool groundModel = false, aiCollBox = false;
-    int aiBoxCounter;
+    int aiBoxCounter = 0;
 
     for (auto & instance : staticInstances)
     {

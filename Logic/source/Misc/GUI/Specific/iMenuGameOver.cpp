@@ -17,7 +17,7 @@ iMenuGameOver::iMenuGameOver(iMenu::MenuGroup group)
     m_textPointsInfo.color = DirectX::SimpleMath::Color(0.f, 0.f, 0.f, 0.f);
     m_textPointsInfo.font = Resources::Fonts::KG14;
     m_textPointsInfo.isMoveable = true;
-    m_textPointsInfo.position = DirectX::SimpleMath::Vector2(142, 11);
+    m_textPointsInfo.position = DirectX::SimpleMath::Vector2(142, 14);
     m_textPointsInfo.text = m_pointsStr.c_str();
 
     m_scoreTexture.alpha = 0.f;

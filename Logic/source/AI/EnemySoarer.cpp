@@ -4,8 +4,8 @@
 #include <AI\Behavior\Behavior.h>
 using namespace Logic;
 
-const int EnemySoarer::HEALTH = 400, EnemySoarer::DAMAGE = 1, EnemySoarer::SCORE = 100;
-const float EnemySoarer::SPEED = 23.5f,
+const int EnemySoarer::HEALTH = 375, EnemySoarer::DAMAGE = 1, EnemySoarer::SCORE = 150;
+const float EnemySoarer::SPEED = 20.f,
             EnemySoarer::STEERING_MOD = 1.4f,
             EnemySoarer::AB1_SPEED = 25.f,
             EnemySoarer::AB1_SCALE = 13.f,
@@ -107,10 +107,10 @@ void EnemySoarer::handleFlying(Player const &target)
     getRigidBody()->setGravity(btVector3(0.f, 0.f, 0.f));
     auto vel = getRigidBody()->getLinearVelocity();
 
-    if (getPositionBT().y() > HEIGHT_OFFSET + target.getPositionBT().y()) // bad fix but better to just force it right now
-        vel.setY(-0.2f);
+    if (getPositionBT().y() > HEIGHT_OFFSET + target.getPositionBT().y())
+        vel.setY(-0.25f);
     else if (getPositionBT().y() < (HEIGHT_OFFSET + target.getPositionBT().y()) * 0.9f)
-        vel.setY(0.2f);
+        vel.setY(0.25f);
 
     getRigidBody()->setLinearVelocity(vel);
 }

@@ -10,7 +10,7 @@ using namespace Logic;
 NavigationMeshEditor::NavigationMeshEditor()
 {
     ray.color = DirectX::SimpleMath::Color ( 0.5f, 0.5f, 0.5f );
-    ray.points = new std::vector<DirectX::SimpleMath::Vector3>();
+    ray.points = newd std::vector<DirectX::SimpleMath::Vector3>();
     ray.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
     ray.useDepth = false;
 }

@@ -6,6 +6,7 @@
 #include <string>
 #include <AI\Abilities\Ability.h>
 #include <btBulletCollisionCommon.h>
+#include "../../include/Misc/GUI/Sprite.h"
 
 namespace Logic
 {
@@ -19,7 +20,7 @@ namespace Logic
         std::unordered_map<AbilityId, Ability> abilities;
 
         static const float BASE_SPEED, PROJECTILE_SPEED, ABILITY_1_MOD, MELEE_RANGE,
-            MELEE_PUSHBACK;
+            MELEE_PUSHBACK, TOTAL_HP_BAR;
         static const int BASE_DAMAGE, MAX_HP, SCORE;
 
         // AB 4 data -- move to a buff
@@ -30,8 +31,10 @@ namespace Logic
         // testing
         std::vector<TextRenderInfo> info;
         std::vector<std::wstring> infoText;
-        TextRenderInfo hpBar; // hp bar in text OMEGALUL
-        std::wstring hp;
+        //TextRenderInfo hpBar; // hp bar in text OMEGALUL
+        //std::wstring hp;
+        Sprite hpBar;
+        Sprite hpBarOutline;
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
         virtual ~EnemyBossBaddie();
