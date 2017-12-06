@@ -276,11 +276,11 @@ void Player::registerDebugCmds()
     {
         try {
             m_weaponManager->getWeaponLoadout(stoi(para[0]))->ammoContainer.setEnhancedAmmo(stoi(para[1]));
-            return "Wowie";
+            return "Added ammo";
         }
         catch (std::exception &ex)
         {
-            return "Bigger failure than Ajit Pai";
+            return "That didn't work";
         }
     });
 }
