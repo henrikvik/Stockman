@@ -154,10 +154,10 @@ void HUDManager::constructGUIElements()
     //static hud elemets
 
     // hp icon
-    x = 783.0f / 1024;
-    y = 830.0f / 1024;
-    width = 117.0f / 1024;
-    height = 110.0f / 1024;
+    x = 505.0f / 1024;
+    y = 491.0f / 1024;
+    width = 106.0f / 1024;
+    height = 106.0f / 1024;
     staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 45, -60, 30, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //score banner
