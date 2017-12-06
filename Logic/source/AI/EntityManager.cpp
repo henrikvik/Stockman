@@ -9,6 +9,7 @@
 #include <AI\EnemyTotem.h>
 #include <AI\EnemyDefender.h>
 #include <Misc\ComboMachine.h>
+#include "../../include/Misc/GUI/iMenuAction.h"
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileManager.h>
@@ -41,7 +42,16 @@ EntityManager::EntityManager()
 {
     m_frame = 0;
     m_aliveEnemies = 0;
-    m_aiType = NORMAL_MODE;
+
+    if (Action::Get().m_heroic)
+    {
+        m_aiType = HARDCORE;
+    }
+    else
+    {
+        m_aiType = NORMAL_MODE;
+    }
+   
 
     m_automaticTesting = false;
     m_debugPath = false;

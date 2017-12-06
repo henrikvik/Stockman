@@ -48,6 +48,7 @@ iMenu* iMenuFactory::buildMenuStart()
 
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     menu->addButton(buildButton("MenuStartGame",        ButtonFunction::startGame));
+    menu->addButton(buildButton("MenuStartGameHeroic",  ButtonFunction::startGameHeroic));
     menu->addButton(buildButton("MenuStartSettings",    ButtonFunction::showHighscore));
     menu->addButton(buildButton("MenuStartHighscore",   ButtonFunction::startSettings));
     menu->addButton(buildButton("MenuQuitGame",         ButtonFunction::quitGame));
