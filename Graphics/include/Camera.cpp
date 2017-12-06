@@ -78,7 +78,7 @@ namespace Graphics
     bool Camera::inside_frustrum(DirectX::SimpleMath::Vector3 point, float radius)
     {
         bool inside_frustrum = true;
-        for (size_t i = 0; i < 6 && inside_frustrum; i++)
+        for (size_t i = 0; i < 5 && inside_frustrum; i++)
         {
             inside_frustrum = frustrum_planes[i].distance(point) + radius > 0;
         }
@@ -96,13 +96,13 @@ namespace Graphics
         if (update_frustrum)
         {
             using namespace DirectX::SimpleMath;            
-            enum Planes { NEAR_, FAR_, LEFT_, RIGHT_, TOP_, BOT_ };
+            enum Planes { NEAR_, FAR_, LEFT_, RIGHT_, BOT_, TOP_ };
             frustrum_planes[NEAR_]  = {{ 0, 0, 1}, -1};
             frustrum_planes[FAR_]   = {{ 0, 0,-1}, -1};
             frustrum_planes[LEFT_]  = {{ 1, 0, 0}, -1};
             frustrum_planes[RIGHT_] = {{-1, 0, 0}, -1};
-            frustrum_planes[TOP_]   = {{ 0,-1, 0}, -1, { 0, 0, 1}};
             frustrum_planes[BOT_]   = {{ 0, 1, 0}, -1, { 0, 0, 1}};
+            frustrum_planes[TOP_]   = {{ 0,-1, 0}, -1, { 0, 0, 1}};
                                                
             Matrix ndc_to_world = projection.Invert() * view.Invert();
             for (auto & plane : frustrum_planes) { plane.transform(ndc_to_world); }
