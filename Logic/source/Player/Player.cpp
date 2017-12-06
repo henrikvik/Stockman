@@ -272,6 +272,17 @@ void Player::registerDebugCmds()
 
         return "Frost Staff has longer freezing effect";
     });
+    win->registerCommand("LOG_GIVE_ENHANCE_AMMO", [&](std::vector<std::string> &para)->std::string
+    {
+        try {
+            m_weaponManager->getWeaponLoadout(stoi(para[0]))->ammoContainer.setEnhancedAmmo(stoi(para[1]));
+            return "Wowie";
+        }
+        catch (std::exception &ex)
+        {
+            return "Bigger failure than Ajit Pai";
+        }
+    });
 }
 
 void Player::clear()
