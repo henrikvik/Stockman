@@ -4,9 +4,11 @@
 
 using namespace Logic;
 
-WeaponCrossbow::WeaponCrossbow(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo)
+WeaponCrossbow::WeaponCrossbow(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo, float baseDmg, float fireDmg)
     : Weapon(projectileManager, projectileData, wInfo)
 {
+    m_baseDmg = baseDmg;
+    m_fireDmg = fireDmg;
 }
 
 
@@ -21,10 +23,17 @@ bool WeaponCrossbow::useEnhanced(bool shouldUse)
 
     getProjectileData().hasEffect = shouldUse;
 
+    ProjectileData& pData = getProjectileData();
     if (shouldUse)
-        getProjectileData().type = ProjectileTypeFireArrow;
+    {
+        pData.damage = m_fireDmg;
+        pData.type = ProjectileTypeFireArrow;
+    }
     else
-        getProjectileData().type = ProjectileTypeNormal;
+    {
+        pData.damage = m_baseDmg;
+        pData.type = ProjectileTypeNormal;
+    }
 
     return shouldUse;
 }
