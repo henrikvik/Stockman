@@ -18,9 +18,9 @@ using namespace Logic;
 #define NECRO_COUNT 3
 
 const float EnemyBossBaddie::BASE_SPEED = 21.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
-            EnemyBossBaddie::ABILITY_1_MOD = 0.075f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
+            EnemyBossBaddie::ABILITY_1_MOD = 0.65f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.15f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 51337, EnemyBossBaddie::SCORE = 250000;// Big guy, for you. well memed // Big guy, for you. well memed
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 51337, EnemyBossBaddie::SCORE = 250000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
     @author Lukas Westling
@@ -119,10 +119,9 @@ void EnemyBossBaddie::createAbilities()
     };
 
     auto onTick = [&](Player& player, Ability &ability) -> void {
-        /*
-        btVector3 force = (getPositionBT() - player.getPositionBT()).normalize() *
+        btVector3 force = (player.getPositionBT() - getPositionBT()).normalized() *
             std::pow((1.f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
-        player.getCharController()->applyImpulse(force); */
+        getRigidBody()->applyCentralForce(force);
     };
 
     abilities[AbilityId::ONE] = Ability(data, onTick, onUse);
@@ -367,20 +366,10 @@ if (Player *e = dynamic_cast<Player*>(&other))
 
 void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
 {
-    // test
     for (auto &pair : abilities)
         pair.second.update(deltaTime, player);
 
-    // HP BAR CHEAT
-    /*hp = L"HP: ";
-    int parts = static_cast<int>((static_cast<float> (getHealth()) / getMaxHealth()) * 10.f);
-    for (int i = 0; i < parts; i++)
-        hp += L"I";
-    hp += L" " + std::to_wstring(parts) + L" / 10";
-    hpBar.text = hp.c_str();*/
-
     //hp bar
-
     float healthleft = float(getHealth()) / float(getMaxHealth());
     hpBar.setScreenPos(Sprite::Points::TOP_LEFT, Sprite::Points::TOP_LEFT, 400.f, 70.f, healthleft * TOTAL_HP_BAR, 25.f);
 }
