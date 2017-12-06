@@ -18,7 +18,7 @@ using namespace Logic;
 #define NECRO_COUNT 3
 
 const float EnemyBossBaddie::BASE_SPEED = 21.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
-            EnemyBossBaddie::ABILITY_1_MOD = 0.65f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
+            EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.15f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
 const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 51337, EnemyBossBaddie::SCORE = 250000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
@@ -121,7 +121,7 @@ void EnemyBossBaddie::createAbilities()
     auto onTick = [&](Player& player, Ability &ability) -> void {
         btVector3 force = (player.getPositionBT() - getPositionBT()).normalized() *
             std::pow((1.f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
-        getRigidBody()->applyCentralForce(force);
+        getRigidBody()->setLinearVelocity(getRigidBody()->getLinearVelocity() + force);
     };
 
     abilities[AbilityId::ONE] = Ability(data, onTick, onUse);
