@@ -4,9 +4,9 @@
 using namespace Logic;
 
 const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 21.f;
-const float EnemyTotem::AB_SCALE = 8.5f, EnemyTotem::AB_ROTATION = 0.2f;
+const float EnemyTotem::AB_SCALE = 8.5f, EnemyTotem::AB_ROTATION = 0.75f;
 
-const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 150, EnemyTotem::SCORE = 250;
+const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 200, EnemyTotem::SCORE = 250;
 const int EnemyTotem::BULLET_AMOUNT = 9;
 
 EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
@@ -16,6 +16,10 @@ EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
     createAbilities();
     getStatusManager().addUpgrade(StatusManager::BOUNCE);
     m_rotation = 0;
+
+    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 1.0f);
+    light.intensity = 1.0f;
+    light.range = 15.0f;
 
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().kill(SCORE);
@@ -36,33 +40,28 @@ void EnemyTotem::createAbilities()
 
     AbilityData data;
     data.duration = 0.f;
-    data.cooldown = 3500.f;
-    data.randomChanche = 12;
+    data.cooldown = 300.f;
+    data.randomChanche = 1;
 
     spreadShot = Ability(data, [&](Player &target, Ability &ab) -> void {
 
     }, [&](Player &target, Ability &ab) -> void {
         constexpr float piece = 3.14 * 2 / BULLET_AMOUNT;
-
         getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_SECONDARY, 1.f, 0.15);
 
         ProjectileData pData;
-        
         pData.effect = necroTrail;
         pData.hasEffect = true;
         pData.effectVelocity = false;
         pData.effectActivated = true;
         m_rotation += AB_ROTATION;
 
-        for (int i = 0; i < BULLET_AMOUNT; i++)
-        {
-            // shoot the projectile and make it bounce
-            Projectile *pj = shoot(btVector3(std::sin((i + m_rotation) * piece), 0.f,
-                std::cos((i + m_rotation) * piece)), pData, BULLET_SPEED, 0.f, AB_SCALE);
-            
-            if (pj)
-                pj->getRigidBody()->setRestitution(btScalar(20.f));
-        }
+        // shoot the projectile and make it bounce
+        Projectile *pj = shoot(btVector3(std::sin((m_rotation) * piece), 0.f,
+            std::cos((m_rotation) * piece)), pData, BULLET_SPEED, 0.f, AB_SCALE);
+        
+        if (pj)
+            pj->getRigidBody()->setRestitution(btScalar(20.f));
     });
 }
 

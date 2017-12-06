@@ -139,47 +139,47 @@ void HUDManager::constructGUIElements()
 
     for (size_t i = 0; i < PLAYER_STARTING_HP; i++)
     {
-        x = 26.f / 1024;
-        y = 258.0f / 1024;
-        width = 311.0f / 1024;
-        height = 171.0f / 1024;
-        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, {x + width, y + height }), 1.0f, true));
+        x = 20.0 / 1024;
+        y = 450.0f / 1024;
+        width = 170.0f / 1024;
+        height = 180.0f / 1024;
+        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 85 + (i * 25), -55, 35, 40, Resources::Textures::Gamesheet, FloatRect({ x, y }, {x + width, y + height }), 1.0f, true));
 
-        x = 26.f / 1024;
-        y = 454.0f / 1024;
-        width = 311.0f / 1024;
-        height = 171.0f / 1024;
-        staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (i * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
+        x = 260.0f / 1024;
+        y = 450.0f / 1024;
+        width = 170.0f / 1024;
+        height = 180.0f / 1024;
+        staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 85 + (i * 25), -55, 35, 40, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
     }
     //static hud elemets
 
-    //shield thing by hp
-    x = 374.f / 1024;
-    y = 457.0f / 1024;
-    width = 162.0f / 1024;
-    height = 268.0f / 1024;
-    staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 45, -60, 50, 70, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
+    // hp icon
+    x = 505.0f / 1024;
+    y = 491.0f / 1024;
+    width = 106.0f / 1024;
+    height = 106.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 45, -60, 30, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
     //score banner
     x = 26.f / 1024;
     y = 23.0f / 1024;
     width = 364.0f / 1024;
-    height = 85.0f / 1024;
-    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 60, 15, 170, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+    height = 90.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 60, 25, 180, 40, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
+	//remaining enemies
+	x = 26.f / 1024;
+	y = 23.0f / 1024;
+	width = 364.0f / 1024;
+	height = 90.0f / 1024;
+	staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 1050, 25, 180, 40, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
 
     //wave counter
-    x = 26.f / 1024;
-    y = 143.0f / 1024;
-    width = 508.0f / 1024;
-    height = 85.0f / 1024;
-    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 505, 15, 200, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
-
-    //wave timer
-    x = 559.f / 1024;
-    y = 143.0f / 1024;
-    width = 161.0f / 1024;
-    height = 85.0f / 1024;
-    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 720, 15, 70, 30, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+    x = 30.0f / 1024;
+    y = 140.0f / 1024;
+    width = 575.0f / 1024;
+    height = 90.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 505, 25, 340, 40, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
 
     //hotkey skill 1
     x = 372.f / 1024;
@@ -213,7 +213,7 @@ void HUDManager::updateTextElements()
     {
         text.text = std::to_wstring(info.cdInSeconds[0]);
         text.position = DirectX::SimpleMath::Vector2(1185, 530);
-        text.font = Resources::Fonts::KG18;
+        text.font = Resources::Fonts::KG14;
 
         text.isMoveable = true;
 
@@ -231,8 +231,8 @@ void HUDManager::updateTextElements()
     }
     
     //points
-    text.text = std::to_wstring(info.score);
-    text.position = DirectX::SimpleMath::Vector2(142, 15);
+    text.text = L"Score: " + std::to_wstring(info.score);
+    text.position = DirectX::SimpleMath::Vector2(80, 35);
     text.font = Resources::Fonts::KG14;
     text.isMoveable = false;
     HUDText.push_back(TextRenderInfo(text));
@@ -240,14 +240,14 @@ void HUDManager::updateTextElements()
     text.isMoveable = false;
 
     text.text = std::to_wstring(info.scoreCombo);
-    text.position = DirectX::SimpleMath::Vector2(142, 45);
+    text.position = DirectX::SimpleMath::Vector2(230, 35);
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
 
 
     text.text = (std::to_wstring(info.scoreMul) + L"X");
-    text.position = DirectX::SimpleMath::Vector2(110, 45);
+    text.position = DirectX::SimpleMath::Vector2(205, 35);
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
@@ -303,7 +303,7 @@ void HUDManager::updateTextElements()
         if (info.isReloding)
         {
             text.text = L"RELOADING";
-            text.position = DirectX::SimpleMath::Vector2(750, 400);
+            text.position = DirectX::SimpleMath::Vector2(680, 380);
             text.font = Resources::Fonts::KG14;
 
             text.isMoveable = false;
@@ -321,7 +321,7 @@ void HUDManager::updateTextElements()
             }
 
             text.text = std::to_wstring(info.activeAmmo[0]);
-            text.position = DirectX::SimpleMath::Vector2(750, 400);
+            text.position = DirectX::SimpleMath::Vector2(680, 380);
             text.font = Resources::Fonts::KG14;
 
             text.isMoveable = false;
@@ -340,14 +340,14 @@ void HUDManager::updateTextElements()
     {
         timeString = L"0:00";
         text.text = timeString;
-        text.position = DirectX::SimpleMath::Vector2(735, 15);
+        text.position = DirectX::SimpleMath::Vector2(790, 30);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
 
-        text.color = DirectX::SimpleMath::Color(0.545f, 0.000f, 0.000f);
+        text.color = DirectX::SimpleMath::Color(0.9f, 0.9f, 0.9f);
         text.text = info.waveText;
-        text.position = DirectX::SimpleMath::Vector2(520, 15);
+        text.position = DirectX::SimpleMath::Vector2(550, 30);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
@@ -363,24 +363,23 @@ void HUDManager::updateTextElements()
             timeString = std::to_wstring(minutes) + L":" + std::to_wstring(seconds);
         }
         text.text = timeString;
-        text.position = DirectX::SimpleMath::Vector2(735, 15);
+        text.position = DirectX::SimpleMath::Vector2(790, 30);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
 
-        text.color = DirectX::SimpleMath::Color(0.0f, 0.0f, 0.0f);
+        text.color = DirectX::SimpleMath::Color(0.9f, 0.9f, 0.9f);
         text.text = info.waveText;
-        text.position = DirectX::SimpleMath::Vector2(520, 15);
+        text.position = DirectX::SimpleMath::Vector2(550, 30);
         text.font = Resources::Fonts::KG14;
 
         HUDText.push_back(TextRenderInfo(text));
     }
     
     //wave counter
-    
     text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
-    text.text = std::to_wstring(info.wave) + L"/" + std::to_wstring(info.maxWaves);
-    text.position = DirectX::SimpleMath::Vector2(660, 15);
+    text.text = L"Wave: " + std::to_wstring(info.wave) + L"/" + std::to_wstring(info.maxWaves);
+    text.position = DirectX::SimpleMath::Vector2(680, 30);
     text.font = Resources::Fonts::KG14;
 
     HUDText.push_back(TextRenderInfo(text));
@@ -403,8 +402,8 @@ void HUDManager::updateTextElements()
     {
         text.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
         text.font = Resources::Fonts::KG14;
-        text.position = DirectX::SimpleMath::Vector2(1050, 15);
-        text.text = L"ENEMIES REMAINING:" + std::to_wstring(info.enemiesRemaining);
+        text.position = DirectX::SimpleMath::Vector2(1060, 35);
+        text.text = L"REMAINING: " + std::to_wstring(info.enemiesRemaining);
 
         HUDText.push_back(TextRenderInfo(text));
     }
@@ -441,12 +440,12 @@ void HUDManager::updateGUIElemets()
 
     if (HPBar.size() < info.hp)
     {
-        float x = 26.f / 1024;
-        float y = 258.0f / 1024;
-        float width = 311.0f / 1024;
-        float height = 171.0f / 1024;
-        HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 100 + (HPBar.size() * 45), -90, 40, 35, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
-    }
+		float x = 20.0 / 1024;
+		float y = 450.0f / 1024;
+		float width = 170.0f / 1024;
+		float height = 180.0f / 1024;
+		HPBar.push_back(Sprite(Sprite::BOTTOM_LEFT, Sprite::BOTTOM_LEFT, 85 + (HPBar.size() * 25), -55, 35, 40, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
+	}
 
     //decideds active weapon 
     switch (info.currentWeapon)

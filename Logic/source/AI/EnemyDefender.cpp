@@ -4,8 +4,9 @@
 using namespace Logic;
 
 const float EnemyDefender::BASE_SPEED = 14.5f;
-const float EnemyDefender::MELEE_DISTANCE = 35.f,
-            EnemyDefender::PROJECTILE_SPEED = 115.f;
+const float EnemyDefender::MELEE_DISTANCE = 10.f,
+            EnemyDefender::PROJECTILE_SPEED = 115.f,
+            EnemyDefender::THROW_STRENGTH = 0.05f;
 
 const int   EnemyDefender::BASE_DAMAGE = 1,
             EnemyDefender::MAX_HP = 100,
@@ -17,6 +18,7 @@ EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP,
         BASE_DAMAGE, BASE_SPEED, EnemyType::DEFENDER, 0) {
     setBehavior(MELEE);
+    createAbilities();
 
     m_defenseTime = 0.f;
     m_defenseHealth = MAX_DEF_HP;
@@ -46,9 +48,9 @@ void EnemyDefender::onSpawn()
     pdata.damage = 0;
     pdata.enemyBullet = true;
     pdata.ttl = 999999; // is destroyed manually
-    pdata.meshID = Resources::Models::Ammocrystal;
+    pdata.meshID = Resources::Models::Bone;
     pdata.speed = PROJECTILE_SPEED;
-    pdata.scale = 3.f;
+    pdata.scale = 1.f;
     pdata.isSensor = true;
     pdata.type = ProjectileTypeDefenderShield;
 
@@ -73,14 +75,19 @@ void EnemyDefender::onSpawn()
 void EnemyDefender::createAbilities()
 {
     AbilityData data;
-    data.duration = 1250.f;
+    data.duration = 2550.f;
     data.randomChanche = 0;
     data.cooldown = 1500.f;
     m_melee = Ability(data, [&](Player &player, Ability &ab) -> void { // ontick
-        if ((player.getPositionBT() - getPositionBT()).length() <= MELEE_DISTANCE &&
-            ab.getCurrentDuration() <= 0.f)
+        if (ab.getCurrentDuration() <= 0.f && 
+            (player.getPositionBT() - getPositionBT()).length() <= MELEE_DISTANCE)
         {
             player.takeDamage(getBaseDamage());
+
+            btVector3 diff = player.getPositionBT() - getPositionBT();
+            diff.setY(0);
+            player.getCharController()->applyImpulse(diff.normalized() * THROW_STRENGTH);
+            player.getStatusManager().addStatus(StatusManager::SHIELD_CHARGE, 1); // test
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
 
@@ -152,6 +159,8 @@ void EnemyDefender::updateSpecific(Player &player, float deltaTime)
             std::sin(m_defenseTime + i) * getHalfExtent().z() * 2
         ));
     }
+
+    m_melee.update(deltaTime, player);
 }
 
 void EnemyDefender::updateDead(float deltaTime)

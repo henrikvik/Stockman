@@ -58,7 +58,7 @@ void ComboMachine::update(float deltaTime)
     {
         reward(m_comboScore * m_combo);
         m_comboTimer = 0.f;
-        m_combo = 1;
+        m_combo = 0;
         m_multikill = 1;
         m_comboScore = 0;
     }  
@@ -69,7 +69,7 @@ void ComboMachine::reset()
 {
     m_totalKills = 0;
 	m_comboTimer = 0.f;
-	m_combo = 1;
+	m_combo = 0;
     m_multikill = 1;
 	m_comboScore = 0;
     m_totalScore = 0;

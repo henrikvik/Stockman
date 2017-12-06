@@ -20,7 +20,7 @@ const std::map<int, Resources::Textures::Files> LookUp =
 {
     { 0, Resources::Textures::Mainmenutext },               // - The four selections on the starting screen
     { 1, Resources::Textures::CardBackground },                  // card backgrounds
-    //{ 2, Resources::Textures::SettingsMenuButtons },        // OLD - Remove later
+    { 2, Resources::Textures::Retrytextsheet },        // OLD - Remove later
     { 3, Resources::Textures::Skillpicksheet },             // - Skill pick buttons, and continue button
     //{ 4, Resources::Textures::Backbutton },                 // OLD - Remove later
     { 5, Resources::Textures::Highscoretext },              // - Same as MainMenuText but with the "Back Button", that we want
@@ -124,7 +124,7 @@ iMenuControls * iMenuFactory::buildMenuControls()
 {
     iMenuControls* menu = newd iMenuControls(iMenu::Controls);
     menu->addEffect(newd iMenuFX_Dust());
-    menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
+    menu->addBackground(Resources::Textures::controlscheme, 1.f);
     return menu;
 }
 
@@ -167,7 +167,7 @@ iMenuGameOver * iMenuFactory::buildMenuGameover()
 
     menu->addBackground(Resources::Textures::Gameover, 1.0f);
 
-    btn = buildButton("MenuStartGame", ButtonFunction::playAgain);
+    btn = buildButton("Retry", ButtonFunction::playAgain);
     btn.move(DirectX::SimpleMath::Vector2(0.333, 0.10));
     menu->addButton(btn);
 
@@ -193,7 +193,7 @@ iMenu * iMenuFactory::buildMenuPause()
     iMenu* menu = newd iMenu(iMenu::Pause);
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     menu->addButton(buildButton("MenuStartGame", ButtonFunction::unpause));
-    menu->addButton(buildButton("Retry", ButtonFunction::playAgain));
+    menu->addButton(buildButton("Restart", ButtonFunction::playAgain));
     menu->addButton(buildButton("MenuStartHighscore", ButtonFunction::startSettingsPause));
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
     return menu;

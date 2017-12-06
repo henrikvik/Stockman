@@ -75,6 +75,7 @@ namespace Logic
         int currentSkills[2];
 
 		// Movements
+        btVector3 m_lastPos;
 		PlayerState m_playerState;
 		DirectX::SimpleMath::Vector3 m_forward;
 		float m_moveMaxSpeed;
