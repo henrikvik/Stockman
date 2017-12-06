@@ -387,7 +387,7 @@ void HUDManager::updateTextElements()
 
 
     //next wave text
-    if (waveSprites.size() && 1.0f - waveSprites.at(WaveMessages::NEXTWAVE).getAlpha() < FLT_EPSILON)
+    if (waveSprites.size() && 0.5f - waveSprites.at(WaveMessages::NEXTWAVE).getAlpha() < FLT_EPSILON)
     {
         text.color = DirectX::SimpleMath::Color(0.38671875f, 0.1796875f, 0.125f);
         text.font = Resources::Fonts::nordic25;
