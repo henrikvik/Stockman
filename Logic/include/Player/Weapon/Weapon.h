@@ -40,6 +40,7 @@ namespace Logic
             int delayTime;
             float freeze;
             btVector3 projectileOffset;
+            float swapTimer;
         };
 
 	private:
@@ -67,6 +68,7 @@ namespace Logic
 		ProjectileData& getProjectileData();
 		float getAttackTimer(float modifier);
         int getDelayTime();
+        float getSwapTimer();
     };
 }
 

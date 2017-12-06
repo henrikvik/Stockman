@@ -28,7 +28,8 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     m_physics->init();
     m_map = newd Map();
     m_map->init(m_physics);
-    m_map->loadStartMenuScene();
+//    m_map->loadStartMenuScene();
+    m_map->loadMap(Resources::Maps::Files::Stock_Map);
 
     // Initializing Menu's
     m_menu = newd iMenuMachine();
@@ -40,9 +41,7 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     // ! Reminder !  
     // Gives a small mem leak as for right now, but it's too cool to remove ^.^
     // Initializing campfire
-    m_campfire = Graphics::FXSystem->getEffect("FireSmoke");
-
-    
+    m_campfire = Graphics::FXSystem->getEffect("FireSmoke");  
 }
 
 StateStart::~StateStart()

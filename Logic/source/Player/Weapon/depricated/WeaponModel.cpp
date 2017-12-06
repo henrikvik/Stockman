@@ -1,4 +1,4 @@
-#include <Player\Weapon\WeaponModel.h>
+#include <Player\Weapon\depricated\WeaponModel.h>
 #include <Keyboard.h>
 #include <imgui.h>
 
