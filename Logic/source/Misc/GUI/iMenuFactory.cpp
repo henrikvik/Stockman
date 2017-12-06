@@ -124,7 +124,7 @@ iMenuControls * iMenuFactory::buildMenuControls()
 {
     iMenuControls* menu = newd iMenuControls(iMenu::Controls);
     menu->addEffect(newd iMenuFX_Dust());
-    menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
+    menu->addBackground(Resources::Textures::controlscheme, 1.f);
     return menu;
 }
 
