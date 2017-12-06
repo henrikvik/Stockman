@@ -157,7 +157,6 @@ void Enemy::damage(int damage)
 
 	m_health -= damage;
     m_blinkTimer = 100.0f;
-    getSoundSource()->playSFX(Sound::SFX::JUMP, 8.5f, 2.f);
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)

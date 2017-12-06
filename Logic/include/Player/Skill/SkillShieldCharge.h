@@ -20,7 +20,7 @@ namespace Logic
 	class SkillShieldCharge : public Skill
 	{
 	private:
-		bool m_active, m_slowdown;
+		bool m_slowdown;
 		float m_time;
 		btVector3 m_forw;
 		Entity *m_shooter;

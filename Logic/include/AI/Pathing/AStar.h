@@ -9,12 +9,14 @@
 
 #include "NavigationMesh.h"
 #include "NavigationMeshGeneration.h"
+#include "NavigationMeshEditor.h"
 
 #include <Entity\Entity.h>
 
 namespace Logic
 {
     class Physics;
+    // Should be called navigation mesh handler, or something, AStar is not a good name for this component 
 	class AStar
 	{
 		public:
@@ -56,6 +58,7 @@ namespace Logic
 
 			NavigationMesh navigationMesh;
             NavigationMeshGeneration generator;
+            NavigationMeshEditor editor;
 
             bool renderDebugTri, renderDebugEdges;
 
@@ -90,6 +93,7 @@ namespace Logic
                 std::vector<NavNode> const &navNodes, int toIndex);
 
 			void renderNavigationMesh();
+            void editNavigationMesh(btVector3 &pos, btVector3 &forward);
 			// load the target triangle once per frame instead of once per path load
 			void loadTargetIndex(Entity const &target);
 			int getTargetIndex();

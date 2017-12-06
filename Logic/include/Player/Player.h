@@ -75,6 +75,7 @@ namespace Logic
         int currentSkills[2];
 
 		// Movements
+        btVector3 m_lastPos;
 		PlayerState m_playerState;
 		DirectX::SimpleMath::Vector3 m_forward;
 		float m_moveMaxSpeed;
@@ -210,6 +211,7 @@ namespace Logic
         int getCurrentSkill0() const;
         int getCurrentSkill1() const;
         bool getReloding() const;
+        int getAmmoPickedUp();
 
         // AI
         void setTargetedBy(Entity *entity);

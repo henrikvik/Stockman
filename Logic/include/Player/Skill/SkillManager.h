@@ -68,6 +68,7 @@ namespace Logic
 		void render();
 
         Skill* getSkill(int index) const;
+        Skill* getActiveSkill(SKILL skill) const;
 	
 	private:
 

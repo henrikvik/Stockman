@@ -127,7 +127,7 @@ void Behavior::calculateVelocityAndSteering(btVector3 &dir, RunIn &in, bool purs
     float mod = in.enemy->getSpeedMod() * STEERING_MOD;
 
     if ((in.enemy->getPositionBT() - in.target->getPositionBT()).length2() > MIN_LEN_FOR_SPEEDUP_SQUARED)
-        noEnemyLeftBehindMod = 5.f;
+        noEnemyLeftBehindMod = 1.2f;
     if (pursuitPlayer && vel.dot(dir) < 0.7f)
         moveMod = 0.15f;
 

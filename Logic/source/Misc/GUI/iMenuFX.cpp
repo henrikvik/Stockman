@@ -2,6 +2,7 @@
 #include <Graphics\include\RenderQueue.h>
 #include <Graphics\include\Structs.h>
 #include <Misc\RandomGenerator.h>
+#include <Misc\Sound\NoiseMachine.h>
 
 using namespace Logic;
 
@@ -77,6 +78,8 @@ iMenuFX_Dust::~iMenuFX_Dust()
 
 void iMenuFX_Dust::press(float x, float y)
 {
+    Sound::NoiseMachine::Get().playSFX(Sound::UI_SAND_FX, nullptr, true);
+
     for (int i = 8; --i;)
         m_pixels.push_back(Pixel(x / WIN_WIDTH, y / WIN_HEIGHT));
 }

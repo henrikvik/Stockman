@@ -4,6 +4,7 @@
 #include <Misc\GUI\Specific\iMenuCards.h>
 #include <Misc\Network\dbConnect.h>
 #include <Misc\CommandsFile.h>
+#include <Player\Weapon\WeaponModel.h>
 
 
 // Input Singletons
@@ -150,7 +151,7 @@ void StatePlaying::update(float deltaTime)
             {
                 m_menu->queueMenu(iMenu::CardSelect);
                 m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
-                m_projectileManager->removeEnemyProjCallbacks();
+                m_projectileManager->removeAllProjectiles();
             }
         }
 

@@ -260,6 +260,7 @@ int NoiseMachine::initSFX(LOAD_MODE loadMode)
     ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_THIRD, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_3.ogg", FMOD_2D));
     ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Melee_Swing.ogg", FMOD_2D));
     ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Melee_Parry.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_RELOAD, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Reload.ogg", FMOD_2D));
     ERRCHECK(createSound(loadMode, SFX::NECROMANCER_DEATH, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Laugh.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::NECROMANCER_SPAWN, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Spawn.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::SWOOSH, CHANNEL_GROUP::CHANNEL_SFX, "Swoosh.ogg", FMOD_3D_LINEARROLLOFF));
@@ -359,6 +360,7 @@ int Sound::NoiseMachine::loadMenuSounds()
     ERRCHECK(createSound(loadMode, SFX::HELLO, CHANNEL_GROUP::CHANNEL_SFX, "hello.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_PRESS, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_press.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_HOVER, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_hover.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UI_SAND_FX, CHANNEL_GROUP::CHANNEL_SFX, "ui_dust_fx.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::START_GAME, CHANNEL_GROUP::CHANNEL_SFX, "start.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::CAMPFIRE, CHANNEL_GROUP::CHANNEL_SFX, "Campfire.ogg", FMOD_3D_LINEARROLLOFF | FMOD_LOOP_NORMAL));
 
@@ -417,6 +419,7 @@ int Sound::NoiseMachine::loadPlaySounds()
     ERRCHECK(createSound(loadMode, SFX::WEAPON_ICEGUN_THIRD, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Ice_3.ogg", FMOD_2D));
     ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_PRIMARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Melee_Swing.ogg", FMOD_2D));
     ERRCHECK(createSound(loadMode, SFX::WEAPON_MELEE_SECONDARY, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Melee_Parry.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::WEAPON_RELOAD, CHANNEL_GROUP::CHANNEL_SFX, "Weapon_Reload.ogg", FMOD_2D));
     ERRCHECK(createSound(loadMode, SFX::NECROMANCER_DEATH, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Laugh.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::NECROMANCER_SPAWN, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Spawn.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::SWOOSH, CHANNEL_GROUP::CHANNEL_SFX, "Swoosh.ogg", FMOD_3D_LINEARROLLOFF));
@@ -433,6 +436,7 @@ int Sound::NoiseMachine::loadPlaySounds()
     ERRCHECK(createSound(loadMode, SFX::SKILL_CHARGE, CHANNEL_GROUP::CHANNEL_SFX, "Skill_SheildCharge.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_PRESS, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_press.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::UI_BUTTON_HOVER, CHANNEL_GROUP::CHANNEL_SFX, "ui_button_hover.ogg", FMOD_3D_LINEARROLLOFF));
+    ERRCHECK(createSound(loadMode, SFX::UI_SAND_FX, CHANNEL_GROUP::CHANNEL_SFX, "ui_dust_fx.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::TRIGGER_PICKUP, CHANNEL_GROUP::CHANNEL_SFX, "Trigger_Pickup.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::TRIGGER_JUMPPAD, CHANNEL_GROUP::CHANNEL_SFX, "Trigger_Jumppad.ogg", FMOD_3D_LINEARROLLOFF));
     ERRCHECK(createSound(loadMode, SFX::ENEMY_DEATH, CHANNEL_GROUP::CHANNEL_SFX, "Enemy_Death.ogg", FMOD_3D_LINEARROLLOFF));

@@ -5,11 +5,12 @@ using namespace Logic;
 
 Card::Card(std::string name, std::string texture, std::string description,
     std::vector<int> statusIds, DirectX::SimpleMath::Vector2 texStart,
-    DirectX::SimpleMath::Vector2 texEnd, int statusType, int category)
+    DirectX::SimpleMath::Vector2 texEnd, int statusType, int category, int numberOf)
     :   m_name(name), m_texture(texture), m_description(description),
         m_statusIds(statusIds), m_texStart(texStart), m_texEnd(texEnd),
         m_statusType(static_cast<StatusType> (statusType)), 
         m_category(static_cast<CardCategory>(category)),
+        m_numberOf(numberOf),
         m_icon(0.0f, 0.0f, 100.0f, 150.0f, Resources::Textures::iconsheet, FloatRect(texStart, texEnd), 1.0f){
 
     switch (m_category)
@@ -101,6 +102,11 @@ void Logic::Card::setAlpha(float alpha)
 {
     m_cardBackground.setAlpha(alpha);
     m_icon.setAlpha(alpha);
+}
+
+int Logic::Card::getNumberOf()
+{
+    return m_numberOf;
 }
 
 void Logic::Card::render() const

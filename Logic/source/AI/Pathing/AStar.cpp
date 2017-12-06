@@ -66,9 +66,8 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
         f = currentNode->g + currentNode->h;
         openList.pop();
 
-        for (size_t i = 0; i < navigationMesh.getEdges(currentNode->nodeIndex).size(); i++)
+        for (NavigationMesh::Edge &edge : navigationMesh.getEdges(currentNode->nodeIndex))
         {
-            NavigationMesh::Edge &edge = navigationMesh.getEdges(currentNode->nodeIndex)[i];
             explore = &navNodes[edge.index];
 
             if (edge.index == toIndex) // Node Found
@@ -118,8 +117,7 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
 
     if (!currentNode || currentNode->parent == NULL_NODE)
     {
-        printf("Major Warning: A* can't find path, enemy or player is in a bad location!\nContact"
-            "Lukas or something (AStar.cpp:%d)\n", __LINE__);
+        printf("Major Warning: Can't connect node %d to %d, please report this bug! (AStar.cpp:%d)\n", startIndex, toIndex, __LINE__);
         return {};
     }
 
@@ -148,6 +146,17 @@ void AStar::renderNavigationMesh()
 {
     if (debugDataTri.points && renderDebugTri)      QueueRender(debugDataTri);
     if (debugDataEdges.points && renderDebugEdges)  QueueRender(debugDataEdges);
+}
+
+void AStar::editNavigationMesh(btVector3 &pos, btVector3 &forward)
+{
+    if (editor.editNavigationMesh(navigationMesh, pos, forward))
+    {
+        if (renderDebugTri || renderDebugEdges)
+        {
+            setupDebugging();
+        }
+    }
 }
 
 void AStar::loadTargetIndex(Entity const &target)
