@@ -167,12 +167,6 @@ void HUDManager::constructGUIElements()
     height = 90.0f / 1024;
     staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 60, 25, 180, 40, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
 
-	//remaining enemies
-	x = 26.f / 1024;
-	y = 23.0f / 1024;
-	width = 364.0f / 1024;
-	height = 90.0f / 1024;
-	staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 1050, 25, 180, 40, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
 
     //wave counter
     x = 30.0f / 1024;
@@ -195,11 +189,18 @@ void HUDManager::constructGUIElements()
     height = 148.0f / 1024;
     staticElements.push_back(Sprite(Sprite::BOTTOM_RIGHT, Sprite::BOTTOM_RIGHT, -50, -136, 20, 20, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 1.0f, true));
 
+    //remaining enemies
+    x = 26.f / 1024;
+    y = 23.0f / 1024;
+    width = 364.0f / 1024;
+    height = 90.0f / 1024;
+    staticElements.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 1050, 25, 180, 40, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height })));
+
     //next wave
-    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 450, 220, Resources::Textures::wavebegins, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
+    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 450, 200, Resources::Textures::wavebegins, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
 
     //enrage
-    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 450, 220, Resources::Textures::Enraged, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
+    waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 450, 200, Resources::Textures::Enraged, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
 }
 
 void HUDManager::updateTextElements()
@@ -389,8 +390,8 @@ void HUDManager::updateTextElements()
     if (waveSprites.size() && 1.0f - waveSprites.at(WaveMessages::NEXTWAVE).getAlpha() < FLT_EPSILON)
     {
         text.color = DirectX::SimpleMath::Color(0.38671875f, 0.1796875f, 0.125f);
-        text.font = Resources::Fonts::KG26;
-        text.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2.0f - 24, WIN_HEIGHT / 2.0f - 225);
+        text.font = Resources::Fonts::nordic25;
+        text.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2.0f - 24, WIN_HEIGHT / 2.0f - 222);
         text.text = std::to_wstring(info.wave);
 
         HUDText.push_back(TextRenderInfo(text));
@@ -509,6 +510,14 @@ void HUDManager::updateGUIElemets()
         }
     }
 
+    if (info.enemiesRemaining == 0)
+    {
+        staticElements.at(staticElements.size() - 1).setAlpha(0.0f);
+    }
+    else
+    {
+        staticElements.at(staticElements.size() - 1).setAlpha(1.0f);
+    }
 
    
 }
