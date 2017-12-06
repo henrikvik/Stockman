@@ -4,9 +4,9 @@
 #include <Engine\Constants.h>
 #include "Utility\sizeofv.h"
 #include <Keyboard.h>
-#include <Singeltons\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
-#include <Singeltons\Profiler.h>
+#include <Singletons\Profiler.h>
 #include "RenderQueue.h"
 
 #include "Particles\ParticleSystem.h"

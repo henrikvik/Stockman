@@ -5,7 +5,7 @@
 #include <Mouse.h>
 #include <Keyboard.h>
 #include <Misc\Sound\NoiseMachine.h>
-#include <Singeltons\Profiler.h>
+#include <Singletons\Profiler.h>
 
 #define PAUSE_BUTTON                DirectX::Keyboard::Keyboard::Escape
 #define CONTROLS_BUTTON             DirectX::Keyboard::Keyboard::F1

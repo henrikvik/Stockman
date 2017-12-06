@@ -11,10 +11,10 @@
 #include <WICTextureLoader.h>
 #include <d3dcompiler.h>
 
-#include <Singeltons\Profiler.h>
+#include <Singletons\Profiler.h>
 #include "../Utility/DebugDraw.h"
 #include "../CommonState.h"
-#include <Singeltons\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 #include "../RenderInfo.h"
 #include "../RenderQueue.h"
 

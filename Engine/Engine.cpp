@@ -1,4 +1,4 @@
-#include <Singeltons/Profiler.h>
+#include <Singletons/Profiler.h>
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
@@ -12,7 +12,7 @@
 #include "Engine.h"
 #include "Typing.h"
 
-#include <Singeltons/DebugWindow.h>
+#include <Singletons/DebugWindow.h>
 #include <Graphics\include\Device.h>
 #include <Graphics\include\RenderQueue.h>
 #include <Graphics\include\MainCamera.h>

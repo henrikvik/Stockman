@@ -206,7 +206,7 @@
     <Link>
       <NoEntryPoint>false</NoEntryPoint>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singeltons.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singletons.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -232,7 +232,7 @@
     <Link>
       <NoEntryPoint>false</NoEntryPoint>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singeltons.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singletons.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -261,7 +261,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <NoEntryPoint>false</NoEntryPoint>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singeltons.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singletons.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -290,7 +290,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <NoEntryPoint>false</NoEntryPoint>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singeltons.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singletons.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>

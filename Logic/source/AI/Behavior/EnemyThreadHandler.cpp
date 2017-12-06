@@ -4,7 +4,7 @@
 #include <AI\Pathing\AStar.h>
 #include <AI\Behavior\Behavior.h>
 
-#include <Singeltons\Profiler.h>
+#include <Singletons\Profiler.h>
 #include <thread>
 #include <chrono>
 

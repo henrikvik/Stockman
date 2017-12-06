@@ -2,7 +2,7 @@
 
 #include "../Particles/ParticleSystem.h"
 #include "../MainCamera.h"
-#include <Singeltons\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
 namespace Graphics {
 

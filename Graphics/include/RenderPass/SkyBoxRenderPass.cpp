@@ -3,7 +3,7 @@
 #include "../MainCamera.h"
 #include "../CommonState.h"
 #include <WICTextureLoader.h>
-#include <Singeltons\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
 namespace Graphics
 {

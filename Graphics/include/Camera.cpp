@@ -1,7 +1,7 @@
 #include <Graphics\include\Camera.h>
 #include "RenderQueue.h"
 #include <iterator>
-#include <Singeltons\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
 namespace Graphics
 {

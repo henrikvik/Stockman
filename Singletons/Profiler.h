@@ -11,7 +11,7 @@
 #include <dxgi1_4.h>
 
 #include <imgui.h>
-#include "dll/Singeltons.h"
+#include "dll/Singletons.h"
 
 #pragma comment(lib, "dxgi.lib")
 
@@ -102,7 +102,7 @@ struct ProfilingThread {
 	bool active;
 };
 
-class SINGELTONS_API Profiler
+class Singletons_API Profiler
 {
 public:
 	Profiler(ID3D11Device *device, ID3D11DeviceContext *cxt);

@@ -7,7 +7,7 @@
 #include <functional>
 #include <iostream>
 #include <string>
-#include "dll\Singeltons.h"
+#include "dll\Singletons.h"
 #pragma region Comment
 
 /*
@@ -24,7 +24,7 @@ returns strings for some kind of input into the system. Make sure to always use 
 #pragma endregion Description of class
 
 #define RegisterCommand(cmd, ...) DebugWindow::getInstance()->registerCommand(cmd, [&](std::vector<std::string> &args)->std::string __VA_ARGS__);
-class SINGELTONS_API DebugWindow
+class Singletons_API DebugWindow
 {
 private:
 	//https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp my information to make this shit
