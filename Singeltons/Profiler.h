@@ -11,6 +11,7 @@
 #include <dxgi1_4.h>
 
 #include <imgui.h>
+#include "dll/Singeltons.h"
 
 #pragma comment(lib, "dxgi.lib")
 
@@ -26,10 +27,11 @@
 // we use pre-processor macros to invoke the profiler, because it's much
 // simpler to replace a macro with an empty body compared to if-deffing out a
 // class method body
+#define g_Profiler               Profiler::get()
 #define PROFILE_BEGINC(msg, col) g_Profiler->begin(msg, col);
 #define PROFILE_BEGINF(msg, ...) g_Profiler->beginf(msg, __VA_ARGS__);
-#define PROFILE_BEGIN(msg) g_Profiler->begin(msg);
-#define PROFILE_END() g_Profiler->end();
+#define PROFILE_BEGIN(msg)       g_Profiler->begin(msg);
+#define PROFILE_END()            g_Profiler->end();
 
 enum class EventColor {
 	Inherit = 0,
@@ -100,11 +102,21 @@ struct ProfilingThread {
 	bool active;
 };
 
-class Profiler
+class SINGELTONS_API Profiler
 {
 public:
 	Profiler(ID3D11Device *device, ID3D11DeviceContext *cxt);
 	~Profiler();
+
+    static Profiler * profiler;
+    static void set(Profiler * new_profiler)
+    {
+        profiler = new_profiler;
+    }
+    static Profiler* get()
+    {
+        return profiler;
+    }
 
 	void start();
 	void frame();
@@ -177,7 +189,6 @@ private:
 	ID3D11DeviceContext *m_Context;
 };
 
-extern Profiler *g_Profiler;
 
 class ScopedProfile {
 public:

@@ -6,8 +6,6 @@
 
 #define ARRAYSIZE(ARR) ((int)(sizeof(ARR)/sizeof(*ARR)))
 
-DebugWindow* DebugWindow::instance = 0;
-
 DebugWindow::DebugWindow()
 {
     clearLog();
@@ -39,16 +37,13 @@ DebugWindow::~DebugWindow()
 
 DebugWindow * DebugWindow::getInstance()
 {
-    if (instance == 0)
-    {
-        instance = new DebugWindow();
-    }
-    return instance;
+    static DebugWindow instance;
+    return &instance;
 }
 
 void DebugWindow::releaseInstance()
 {
-    delete instance;
+
 }
 
 void DebugWindow::clearLog()

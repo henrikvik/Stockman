@@ -12,7 +12,8 @@
 
 #include <Engine\Constants.h>
 
-Profiler *g_Profiler;
+Profiler * Profiler::profiler = nullptr;
+
 
 #define PROFILE_GPU_START_INDEX 0
 #define PROFILE_GPU_START_WORK_INDEX 1
