@@ -20,7 +20,10 @@ returns strings for some kind of input into the system. Make sure to always use 
 
 */
 
+
 #pragma endregion Description of class
+
+#define RegisterCommand(cmd, ...) DebugWindow::getInstance()->registerCommand(cmd, [&](std::vector<std::string> &args)->std::string __VA_ARGS__);
 class SINGELTONS_API DebugWindow
 {
 private:
