@@ -16,15 +16,15 @@ Card::Card(std::string name, std::string texture, std::string description,
     switch (m_category)
     {
     case CardCategory::ATTACK:
-        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect({ 0.05288f, 0.0f }, { 0.34375f, 1.f }), 1.0f);
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 300.0f, Resources::Textures::CardBackground, FloatRect({ 0.05288f, 0.0f }, { 0.34375f, 1.f }), 1.0f);
          break;
     
     case CardCategory::DEFENCE:
-        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect({ 0.355352f, 0.0f }, { 0.636217f, 1.f }), 1.0f);
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 300.0f, Resources::Textures::CardBackground, FloatRect({ 0.355352f, 0.0f }, { 0.636217f, 1.f }), 1.0f);
         break;
 
     case CardCategory::UTILITY:
-        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 250.0f, Resources::Textures::CardBackground, FloatRect({ 0.647820f, 0.0f }, { 0.933493f, 1.f }), 1.0f);
+        m_cardBackground = Sprite(0.0f, 0.0f, 200.0f, 300.0f, Resources::Textures::CardBackground, FloatRect({ 0.647820f, 0.0f }, { 0.933493f, 1.f }), 1.0f);
         break;
     }
 
@@ -129,8 +129,8 @@ void Logic::Card::parseText()
 {
     //title
     TextRenderInfo temp;
-    temp.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
-    temp.font = Resources::Fonts::KG14;
+    temp.color = DirectX::SimpleMath::Color(0.38671875f, 0.1796875f, 0.125f);
+    temp.font = Resources::Fonts::nordic;
     temp.position = DirectX::SimpleMath::Vector2(50.0f, 235.0f);
     temp.text = std::wstring(m_name.begin(), m_name.end());
 
