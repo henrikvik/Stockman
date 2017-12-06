@@ -621,11 +621,6 @@ GeometryParticleInstance *ParticleSystem::uploadParticles(std::vector<GeometryPa
         instance.m_DeformSpeed = def.m_DeformSpeed;
         instance.m_NoiseScale = def.m_NoiseScale;
         instance.m_NoiseSpeed = def.m_NoiseSpeed;
-        if (i == 0) {
-            printf("particle.age: %f\n", particle.age);
-            printf("def.lifetime: %f\n", def.m_Lifetime);
-            printf("factor: %f\n", factor);
-        }
         *output = instance;
 
         auto ease_light_color = GetEaseFuncV(def.m_LightColorEasing);
