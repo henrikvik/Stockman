@@ -39,6 +39,8 @@ void CardManager::createDeck(int nrOfEach)
 void CardManager::pickThreeCards(bool damaged)
 {
     currenthand.clear();
+    shuffle();
+
     int cardsPicked = 0;
     int amount = HAND_SIZE;
 
@@ -101,8 +103,6 @@ Card CardManager::pick(int handIndex)
     if (m_deck[deckIndex].first == IN_DECK)
         m_deck[deckIndex].first = TAKEN;
 
-    //temp fix
-    shuffle();
     for (int i = 0; i < m_hand.size(); i++)
     {
         m_hand.at(i) = -1;
