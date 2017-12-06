@@ -52,7 +52,7 @@ void ComboMachine::update(float deltaTime)
 {
     if (m_multikillTimer > FLT_EPSILON)
         m_multikillTimer -= deltaTime;
-    else
+    else if(m_multikill > 1)
         addMultikillScore();
 
     if (m_comboTimer > FLT_EPSILON)
