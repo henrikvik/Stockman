@@ -18,7 +18,7 @@ using namespace Logic;
 #define NECRO_COUNT 3
 
 const float EnemyBossBaddie::BASE_SPEED = 21.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
-            EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 27.5f,
+            EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.5f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.15f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
 const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 51337, EnemyBossBaddie::SCORE = 25000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
