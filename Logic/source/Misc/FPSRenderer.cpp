@@ -1,5 +1,5 @@
 #include <Misc\FPSRenderer.h>
-#include <DebugWindow\DebugWindow.h>
+#include <Singeltons\DebugWindow.h>
 #include <string>
 #define FPS_STRING L"FPS: "
 

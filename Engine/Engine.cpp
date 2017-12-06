@@ -1,4 +1,4 @@
-#include <DebugWindow/Profiler.h>
+#include <Singeltons/Profiler.h>
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
@@ -12,7 +12,7 @@
 #include "Engine.h"
 #include "Typing.h"
 
-#include <DebugWindow/DebugWindow.h>
+#include <Singeltons/DebugWindow.h>
 #include <Graphics\include\Device.h>
 #include <Graphics\include\RenderQueue.h>
 #include <Graphics\include\MainCamera.h>
@@ -349,7 +349,7 @@ int Engine::run()
 
 	bool running = true;
 
-	g_Profiler = newd Profiler(mDevice, mContext);
+	Profiler::set(newd Profiler(mDevice, mContext));
 	g_Profiler->registerThread("Main Thread");
     TbbProfilerObserver observer(g_Profiler);
 

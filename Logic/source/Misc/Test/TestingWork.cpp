@@ -1,5 +1,5 @@
 #include <Misc\Test\TestingWork.h>
-#include <DebugWindow\DebugWindow.h>
+#include <Singeltons\DebugWindow.h>
 
 // using namespace Logic;
 

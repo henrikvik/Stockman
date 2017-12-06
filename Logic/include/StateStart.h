@@ -18,7 +18,7 @@
 #include <Mouse.h>
 
 // Engine Includes
-#include <DebugWindow\Profiler.h>
+#include <Singeltons\Profiler.h>
 
 // Particle
 #include <Graphics\include\Particles\ParticleSystem.h>

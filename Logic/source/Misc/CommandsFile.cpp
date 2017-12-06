@@ -1,7 +1,7 @@
 #include <Misc/CommandsFile.h>
 #include <Misc/FileLoader.h>
 #include <sstream>
-#include <DebugWindow/DebugWindow.h>
+#include <Singeltons/DebugWindow.h>
 using namespace Logic;
 
 CommandsFile::CommandsFile()

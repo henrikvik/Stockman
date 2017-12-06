@@ -167,30 +167,30 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
-    <LibraryPath>$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
-    <LibraryPath>$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
-    <LibraryPath>$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)ImGui;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
-    <LibraryPath>$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(SolutionDir)libs\tbb\lib;$(SolutionDir)libs\DirectXTK\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\Hybris\bin\$(PlatformShortName)\$(Configuration);$(SolutionDir)libs\ImGui\bin\$(PlatformShortName)-$(Configuration);$(SolutionDir)DebugWindow\bin\$(PlatformShortName)-$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -206,7 +206,7 @@
     <Link>
       <NoEntryPoint>false</NoEntryPoint>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;DebugWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singeltons.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -232,7 +232,7 @@
     <Link>
       <NoEntryPoint>false</NoEntryPoint>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;DebugWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singeltons.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -261,7 +261,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <NoEntryPoint>false</NoEntryPoint>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;DebugWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singeltons.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -290,7 +290,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <NoEntryPoint>false</NoEntryPoint>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;DebugWindow.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTK.lib;Hybris.lib;ImGui.lib;Singeltons.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>

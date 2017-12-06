@@ -10,7 +10,7 @@
 // Debugging purposes
 #include <DebugDefines.h>
 #include <Engine\Typing.h>
-#include <DebugWindow\DebugWindow.h> 
+#include <Singeltons\DebugWindow.h> 
 #include <GameType.h>
 
 using namespace Logic;

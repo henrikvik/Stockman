@@ -2,7 +2,7 @@
 #include <AI\EntityManager.h>
 
 #include <Keyboard.h>
-#include <DebugWindow\DebugWindow.h>
+#include <Singeltons\DebugWindow.h>
 
 using namespace Logic;
 

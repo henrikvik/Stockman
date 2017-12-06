@@ -1,5 +1,5 @@
 #include <Player\PlayerMovement.h>
-#include <DebugWindow\Profiler.h>
+#include <Singeltons\Profiler.h>
 //#include <Physics\Physics.h>
 
 using namespace Logic;

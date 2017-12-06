@@ -2,12 +2,12 @@
 #include <algorithm>
 #include "../Device.h"
 #include "../MainCamera.h"
-#include <DebugWindow\DebugWindow.h>
+#include <Singeltons\DebugWindow.h>
 #define PI 3.14159265f
 #define ONE_DEG_IN_RAD 0.01745f
 #define SUNSET_TIME 0.5f
 #define DAY_NIGHT_ON false
-#include <DebugWindow\DebugWindow.h>
+#include <Singeltons\DebugWindow.h>
 
 static bool DebugShadowConstants = false;
 namespace Graphics

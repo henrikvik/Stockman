@@ -3,7 +3,7 @@
 #include <WICTextureLoader.h>
 #include <imgui.h>
 #include "Buffer.h"
-#include <DebugWindow\DebugWindow.h>
+#include <Singeltons\DebugWindow.h>
 
 static std::vector<Graphics::Light> DebugLights;
 static std::vector<Graphics::ParticleEffectInstance> DebugFX;

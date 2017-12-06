@@ -14,7 +14,7 @@
 // Debugging purposes
 #include <DebugDefines.h>
 #include <Engine\Settings.h>
-#include <DebugWindow\DebugWindow.h> 
+#include <Singeltons\DebugWindow.h> 
 #include <GameType.h>
 
 using namespace Logic;

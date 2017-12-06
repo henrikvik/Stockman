@@ -3,7 +3,7 @@
 #include <Misc\Sound\NoiseMachine.h>
 #include <Engine\Typing.h>
 #include <DebugDefines.h>
-#include <DebugWindow\DebugWindow.h> 
+#include <Singeltons\DebugWindow.h> 
 #include <Physics\Physics.h>
 #include <Map.h>
 #include <Graphics\include\MainCamera.h>

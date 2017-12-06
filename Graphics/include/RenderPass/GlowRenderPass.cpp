@@ -1,7 +1,7 @@
 #include "GlowRenderPass.h"
 #include "../Device.h"
 #include "../CommonState.h"
-#include <DebugWindow\DebugWindow.h>
+#include <Singeltons\DebugWindow.h>
 
 namespace Graphics
 {

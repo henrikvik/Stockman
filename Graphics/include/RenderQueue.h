@@ -4,7 +4,7 @@
 #include <type_traits>
 #include <Engine\newd.h>
 #include "RenderInfo.h"
-#include <DebugWindow/Profiler.h>
+#include <Singeltons/Profiler.h>
 #include "MainCamera.h"
 #include "../export.h"
 

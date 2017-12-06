@@ -4,8 +4,8 @@
 #include <stdio.h> // for testing obv
 #include <cmath>
 
-#include <DebugWindow\Profiler.h>
-#include <DebugWindow\DebugWindow.h>
+#include <Singeltons\Profiler.h>
+#include <Singeltons\DebugWindow.h>
 
 using namespace Logic;
 const int AStar::NULL_NODE = -1;

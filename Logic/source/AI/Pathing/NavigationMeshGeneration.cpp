@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <cmath>
 #include <Physics\Physics.h>
-#include <DebugWindow\DebugWindow.h>
+#include <Singeltons\DebugWindow.h>
 #include <Entity\StaticObject.h>
 #include <assert.h>
 #include <Physics\FuncContactResult.h>

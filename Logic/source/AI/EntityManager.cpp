@@ -20,8 +20,8 @@
 #include <DebugDefines.h>
 #include <Misc\RandomGenerator.h>
 
-#include <DebugWindow\DebugWindow.h>
-#include <DebugWindow\Profiler.h>
+#include <Singeltons\DebugWindow.h>
+#include <Singeltons\Profiler.h>
 
 #include <ctime>
 #include <stdio.h>
