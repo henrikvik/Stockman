@@ -61,6 +61,7 @@ void EnemyTotem::createAbilities()
             // shoot the projectile and make it bounce
             Projectile *pj = shoot(btVector3(std::sin((i + m_rotation) * piece), 0.f,
                 std::cos((i + m_rotation) * piece)), pData, BULLET_SPEED, 0.f, AB_SCALE);
+            pj->getProjectileData().ttl = 2750.f;
 
             if (pj)
                 pj->getRigidBody()->setRestitution(btScalar(20.f));
