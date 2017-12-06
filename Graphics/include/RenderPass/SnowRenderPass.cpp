@@ -83,13 +83,6 @@ void Graphics::SnowRenderPass::update(float deltaTime)
     static Vector3 randWind(0, -SNOW_SPEED, 0);
 
     //temp
-    static auto ks = DirectX::Keyboard::KeyboardStateTracker();
-    ks.Update(DirectX::Keyboard::Get().GetState());
-
-    if (ks.pressed.P)
-    {
-        initializeSnowflakes();
-    }
 
     windCounter += deltaTime;
     if (WIND_CHANGE_TIME <= windCounter)

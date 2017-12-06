@@ -86,12 +86,7 @@ namespace Graphics
 
     void Camera::calc_frustrum_planes()
     {
-        static auto ks = DirectX::Keyboard::KeyboardStateTracker();
-        ks.Update(DirectX::Keyboard::Get().GetState());
         static bool update_frustrum = true;
-        static bool o_was_pressed = false;
-        update_frustrum = ks.pressed.O && !o_was_pressed ? !update_frustrum : update_frustrum;
-        o_was_pressed = ks.pressed.O;
 
         if (update_frustrum)
         {
