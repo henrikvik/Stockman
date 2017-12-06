@@ -20,8 +20,8 @@ namespace Graphics
         m_MoonShader(Resources::Shaders::Moon),
         sphereTransformBuffer(Global::device),
         m_Colors({
-            DirectX::SimpleMath::Vector4 { 75.0f/256.0f, 97.0f/256.0f, 199.0f/250.0f, 0.f },
-            DirectX::SimpleMath::Vector4{ 13.0f / 256.0f, 17.0f / 256.0f, 79.0f / 250.0f, 0.f} ,
+            DirectX::SimpleMath::Vector4 { 43 / 255.f, 53 / 255.f, 104 / 255.f, 0.f },
+            DirectX::SimpleMath::Vector4 { 13 / 255.f, 17 / 255.f, 81 / 255.f, 0.f} ,
             DirectX::SimpleMath::Vector4(0.f, 0.f, 0.f, 0.25f)
         }),
         m_SkyColors(Global::device),

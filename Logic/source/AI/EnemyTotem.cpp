@@ -4,7 +4,7 @@
 using namespace Logic;
 
 const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 18.5f;
-const float EnemyTotem::AB_SCALE = 8.5f, EnemyTotem::AB_ROTATION = 0.25f;
+const float EnemyTotem::AB_SCALE = 3.5f, EnemyTotem::AB_ROTATION = 0.25f;
 
 const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 150, EnemyTotem::SCORE = 250;
 const int EnemyTotem::BULLET_AMOUNT = 9;
@@ -17,8 +17,8 @@ EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
     getStatusManager().addUpgrade(StatusManager::BOUNCE);
     m_rotation = 0;
 
-    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 1.0f);
-    light.intensity = 1.0f;
+    light.color = DirectX::SimpleMath::Color(0.1f, 0.9f, 0.2f);
+    light.intensity = 0.8f;
     light.range = 15.0f;
 
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
@@ -36,7 +36,7 @@ EnemyTotem::~EnemyTotem()
 
 void EnemyTotem::createAbilities()
 {
-    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("DamageProjTrail");
+    static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
 
     AbilityData data;
     data.duration = 0.f;

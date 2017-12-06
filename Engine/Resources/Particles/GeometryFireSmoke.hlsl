@@ -34,7 +34,7 @@ float4 PS(PSInput input) : SV_Target0
     float3 diffuse = ((innerFactor * lerp(inner, innerEnd, falloff - 0.49)) + (outerFactor * lerp(outerEnd, outer, 1- pow(input.deform, 8))));
 
     float3 viewDir = normalize(camera.position - input.worldPos);
-    float3 lights = float3(0, 0, 0);
+    float3 lights = globalLight.ambient;
     lights += calcLight(globalLight, input.worldPos, input.normal, viewDir, 0.1);
     lights += calcAllLights(input.position, input.worldPos, input.normal, viewDir, 0.1);
 
@@ -50,5 +50,5 @@ void PS_depth(PSInput input)
         saturate(
             step(0.13, (noise*cap*0.95))
         ) - 0.005
-    );
+    );;
 }
