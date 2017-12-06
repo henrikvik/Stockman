@@ -45,6 +45,7 @@ namespace Graphics {
         void render() const;
         void updateFOV(float fieldOfView);
 	private:
+        bool update_frustrum;
 		DirectX::SimpleMath::Vector3 position;
 		DirectX::SimpleMath::Vector3 forward;
 

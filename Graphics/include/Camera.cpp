@@ -9,6 +9,13 @@ namespace Graphics
         cameraBuffer(device),
         inverseBuffer(device)
     {
+        update_frustrum = true;
+        RegisterCommand("GFX_TOGGLE_FRUSTRUM_UPDATE",
+        {
+            update_frustrum = !update_frustrum;
+            return std::string("Frustrum update was turned ") + (update_frustrum ? "on" : "off");
+        });
+
         near_distance = 0.1f;
         far_distance = drawDistance;
         aspect_ratio = float(width) / height;
@@ -86,14 +93,6 @@ namespace Graphics
 
     void Camera::calc_frustrum_planes()
     {
-        static bool update_frustrum = true;
-
-        RegisterCommand("GFX_TOGGLE_FRUSTRUM_UPDATE",
-        {
-            update_frustrum = !update_frustrum;
-            return std::string("Frustrum update was turned ") + (update_frustrum ? "on" : "off");
-        });
-
         if (update_frustrum)
         {
             using namespace DirectX::SimpleMath;            
