@@ -391,7 +391,15 @@ void HUDManager::updateTextElements()
     {
         text.color = DirectX::SimpleMath::Color(0.38671875f, 0.1796875f, 0.125f);
         text.font = Resources::Fonts::nordic25;
-        text.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2.0f - 24, WIN_HEIGHT / 2.0f - 222);
+        if (info.wave == 10)
+        {
+            text.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2.0f - 24, WIN_HEIGHT / 2.0f - 222);
+        }
+        else
+        {
+            text.position = DirectX::SimpleMath::Vector2(WIN_WIDTH / 2.0f - 15, WIN_HEIGHT / 2.0f - 222);
+        }
+        
         text.text = std::to_wstring(info.wave);
 
         HUDText.push_back(TextRenderInfo(text));
