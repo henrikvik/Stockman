@@ -9,14 +9,16 @@ namespace Resources
             KG14,
             KG18,
             KG26,
-            nordic
+            nordic,
+            nordic25
         };
         const std::map<Files, const char *> Paths =
         {
             {KG14, R"(..\Resources\Fonts\KG14.spritefont)"},
             {KG18, R"(..\Resources\Fonts\KG18.spritefont)"},
             {KG26, R"(..\Resources\Fonts\KG26.spritefont)"},
-            {nordic, R"(..\Resources\Fonts\nordic.spritefont)"}
+            {nordic, R"(..\Resources\Fonts\nordic.spritefont)"},
+            {nordic25, R"(..\Resources\Fonts\nordic25.spritefont)"}
         };
         
         Files toEnum(const char * str);
@@ -58,8 +60,8 @@ namespace Resources
             AnimatedSummonUnit,
             AnimationTest,
             Barrel,
-            Border_Walls,
             Bone,
+            Border_Walls,
             Bridge,
             Crate,
             Crossbow,
@@ -115,8 +117,8 @@ namespace Resources
             {AnimatedSummonUnit, R"(..\Resources\Models\AnimatedSummonUnit.hyb)"},
             {AnimationTest, R"(..\Resources\Models\AnimationTest.hyb)"},
             {Barrel, R"(..\Resources\Models\Barrel.hyb)"},
-            {Border_Walls, R"(..\Resources\Models\Border_Walls.hyb)"},
             {Bone, R"(..\Resources\Models\Bone.hyb)"},
+            {Border_Walls, R"(..\Resources\Models\Border_Walls.hyb)"},
             {Bridge, R"(..\Resources\Models\Bridge.hyb)"},
             {Crate, R"(..\Resources\Models\Crate.hyb)"},
             {Crossbow, R"(..\Resources\Models\Crossbow.hyb)"},

@@ -9,6 +9,7 @@ namespace Resources
             if (strcmp(str, "KG18") == 0) return KG18;
             if (strcmp(str, "KG26") == 0) return KG26;
             if (strcmp(str, "nordic") == 0) return nordic;
+            if (strcmp(str, "nordic25") == 0) return nordic25;
             throw "Could not find matching enum.";
         }
     }
@@ -38,8 +39,8 @@ namespace Resources
             if (strcmp(str, "AnimatedSummonUnit") == 0) return AnimatedSummonUnit;
             if (strcmp(str, "AnimationTest") == 0) return AnimationTest;
             if (strcmp(str, "Barrel") == 0) return Barrel;
-            if (strcmp(str, "Border_Walls") == 0) return Border_Walls;
             if (strcmp(str, "Bone") == 0) return Bone;
+            if (strcmp(str, "Border_Walls") == 0) return Border_Walls;
             if (strcmp(str, "Bridge") == 0) return Bridge;
             if (strcmp(str, "Crate") == 0) return Crate;
             if (strcmp(str, "Crossbow") == 0) return Crossbow;
@@ -83,8 +84,8 @@ namespace Resources
             if (strcmp(str, "Table") == 0) return Table;
             if (strcmp(str, "Tablet1") == 0) return Tablet1;
             if (strcmp(str, "Tee_Pee") == 0) return Tee_Pee;
-            if (strcmp(str, "TotemWithAnimation") == 0) return TotemWithAnimation;
             if (strcmp(str, "Tomb_Stone") == 0) return Tomb_Stone;
+            if (strcmp(str, "TotemWithAnimation") == 0) return TotemWithAnimation;
             if (strcmp(str, "Tree") == 0) return Tree;
             if (strcmp(str, "UnitCube") == 0) return UnitCube;
             throw "Could not find matching enum.";
