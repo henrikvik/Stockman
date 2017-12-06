@@ -14,9 +14,7 @@
 
 #include <vector>
 #include <btBulletCollisionCommon.h>
-
 #include <Player\Weapon\AmmoContainer.h>
-#include <Player\Weapon\ModelAnimation.h>
 
 #define WEAPON_PRIMARY 0
 #define WEAPON_SECONDARY 1
@@ -34,6 +32,7 @@ namespace Logic
     class ProjectileManager;
     class Effect;
     class Upgrade;
+    class WeaponAnimation;
 
 	class WeaponManager
 	{

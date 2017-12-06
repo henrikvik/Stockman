@@ -5,6 +5,7 @@
 #include <Player\Weapon\WeaponFreezeGun.h>
 #include <Player\Weapon\WeaponMeleeParry.h>
 #include <Player\Weapon\WeaponMeleeSwing.h>
+#include <Player\Weapon\WeaponAnimation.h>
 #include <Misc\Sound\NoiseMachine.h>
 
 #include <Player\Player.h>
