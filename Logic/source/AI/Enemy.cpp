@@ -50,6 +50,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
     addCallback(ON_DEATH, [&](CallbackData &data)
     {
+        Graphics::FXSystem->addEffect("DeathEffect", data.caller->getPosition());
         getSoundSource()->playSFX(Sound::SFX::ENEMY_DEATH, 1.f, 0.25f);
     });
 }
@@ -124,7 +125,7 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
     light.position = enemyRenderInfo.transform.Translation();
 
-    if (getPositionBT().y() < MIN_Y)
+    if (getPositionBT().length2() > 62500.f)
         damage(m_health);
 
     if (m_blinkTimer > 0)

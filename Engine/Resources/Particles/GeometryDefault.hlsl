@@ -25,7 +25,7 @@ float4 PS(PSInput input) : SV_Target0
     float3 diffuse = input.color.xyz;
 
     float3 viewDir = normalize(camera.position - input.worldPos);
-    float3 lights = GLOBAL_LIGHT_COLOR;
+    float3 lights = globalLight.ambient;
     lights += calcLight(globalLight, input.worldPos, input.normal, viewDir, 0.1);
     lights += calcAllLights(input.position, input.worldPos, input.normal, viewDir, 0.1);
 
@@ -41,5 +41,5 @@ void PS_depth(PSInput input)
         saturate(
             step(0.13, (noise*cap*0.95))
         ) - 0.005
-    );
+    );;
 }
