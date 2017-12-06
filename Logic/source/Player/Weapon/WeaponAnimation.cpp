@@ -174,10 +174,10 @@ void WeaponFreezeGunAnimation::startShootAnimation(float attackTimer, bool prima
         // Freeze Bomb
         AnimationFrame frame = m_frameDefault;
         frame.translation._42 -= 0.20f;
-        frame.translation._43 += 0.25f;
+        frame.translation._43 -= 0.25f;
         frames.push(frame);
 
-        addAnimation(attackTimer, frames);
+        addAnimation(attackTimer / 2.f, frames);
     }
     else
     {
