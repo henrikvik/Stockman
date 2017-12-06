@@ -33,9 +33,9 @@
 	"hoverXTexEnd" : 1.f;
 	"hoverYTexEnd" : 0.96875f;
     "activeXTexStart" : 0.0f;
-	"activeYTexStart" : 0.52f;
+	"activeYTexStart" : 0.87305f;
 	"activeXTexEnd" : 1.f;
-	"activeYTexEnd" : 0.620f;
+	"activeYTexEnd" : 0.96875f;
     "activeOffset" : 0.470f;
 	"height" : 25.f;
 	"width" : 200.0f;
