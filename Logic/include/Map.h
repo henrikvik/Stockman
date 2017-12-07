@@ -45,7 +45,25 @@ namespace Logic
     private:
         StaticRenderInfo renderInfo;
     };
+	class Foliage
+	{
+	public:
+		Foliage(Resources::Models::Files model, DirectX::SimpleMath::Matrix transform, float cull_radius)
+		{
+			renderInfo.model = model;
+			renderInfo.transform = transform;
+			renderInfo.color = DirectX::SimpleMath::Vector3(1, 1, 1);
+			renderInfo.useGridTexture = false;
+			renderInfo.cull_radius = cull_radius;
+		}
 
+		void render() const
+		{
+			QueueRender(renderInfo);
+		}
+	private:
+		FoliageRenderInfo renderInfo;
+	};
     class StaticObject;
     class Physics;
 	class Map : public NonCopyable
@@ -68,6 +86,7 @@ namespace Logic
 
 	private:
         std::vector<Decoration>     decorations;
+		std::vector<Foliage>        foliages;
 		std::vector<StaticObject*>			m_props;        //< Visual objects
 		std::vector<StaticObject*>			m_hitboxes;     //< Non-visual hitboxes
         std::vector<LightObject*>			m_lights;       //< Pointlights
