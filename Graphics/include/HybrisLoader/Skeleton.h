@@ -4,6 +4,7 @@
 #include <SimpleMath.h>
 #include <map>
 
+#include "../../export.h"
 #include "Animation.h"
 
 namespace HybrisLoader
@@ -17,7 +18,7 @@ namespace HybrisLoader
     private:
     };
 
-    class Skeleton
+    class GRAPHICS_API Skeleton
     {
     public:
         Skeleton(Hybris::Skeleton & skeleton);

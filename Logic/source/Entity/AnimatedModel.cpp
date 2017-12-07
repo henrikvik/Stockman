@@ -1,6 +1,5 @@
-#include "../../include/Entity/AnimatedModel.h"
+#include <Entity/AnimatedModel.h>
 #include <Graphics\include\RenderQueue.h>
-#include "..\..\include\Entity\AnimatedModel.h"
 
 AnimatedModel::AnimatedModel(Resources::Models::Files modelId, const char * start_animation)
 {
@@ -12,17 +11,21 @@ AnimatedModel::AnimatedModel(Resources::Models::Files modelId, const char * star
     renderInfo.cull_radius = model->get_bounding_box().sphere_radius();
     renderInfo.useGridTexture = false;
     renderInfo.joint_transforms = &joint_transforms;
+    joint_transforms.resize(32);
 
     frame_progress = 0.0f;
     frame_duration = 1.0f / 30.0f;
 
     animation_next     = "";
     animation_current  = start_animation;
+    if (animation_current.length() == 0) return;
     animation_duration = skeleton->getAnimationDuration(animation_current.c_str());
 }
 
 void AnimatedModel::update(float delta_ms)
 {
+    if (animation_current.length() == 0) return;
+
     frame_progress += delta_ms / 1000.0f;
 
     if (frame_progress < frame_duration) return;
@@ -53,13 +56,19 @@ void AnimatedModel::render() const
     QueueRender(renderInfo);
 }
 
-void AnimatedModel::set_next(const char * animation, std::function<void(void)> start_callback)
+void AnimatedModel::set_color(DirectX::SimpleMath::Vector3 const &color)
 {
+    renderInfo.color = color;
+}
+
+void AnimatedModel::set_next(const char *animation, std::function<void(void)> start_callback)
+{
+    if (animation_current.empty()) animation_current = animation_next; // tmep fix
     animation_next = animation;
     animation_callback = start_callback;
 }
 
-void AnimatedModel::set_transform(btTransform & transform, btVector3 & scale)
+void AnimatedModel::set_transform(btTransform &transform, btVector3 scale)
 {
     float m[16];
     transform.getOpenGLMatrix(m);

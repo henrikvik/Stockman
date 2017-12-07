@@ -61,9 +61,6 @@ namespace Logic
 			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 			virtual ~Enemy();
 
-            virtual void playAnimation(std::string animationName, float endAnimationTime, float startAnimationTime = 0);
-            virtual void onAnimationEnd(std::string animationName) {};
-
 			virtual void update(Player &player, float deltaTime,
 				std::vector<Enemy*> const &closeEnemies);
             virtual void updateAnimation(float deltaTime);
@@ -102,6 +99,8 @@ namespace Logic
 
             EnemyType getEnemyType() const;
 			Behavior* getBehavior() const;
+
+            AnimatedModel& getAnimatedModel();
 
             void render() const;
             virtual void renderSpecific() const {};

@@ -13,7 +13,7 @@ using namespace Logic;
 const int Enemy::MIN_Y = -80.f;
 
 Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset)
-: Entity(body, halfExtent, modelOffset)
+: Entity(body, halfExtent, modelOffset), animatedModel(modelID, "")
 {
 	m_behavior = nullptr;
 
@@ -30,12 +30,6 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     m_stunned = false;
     m_fireTimer = 0.f;
     m_blinkTimer = -1.0f;
-
-    enemyRenderInfo.model = modelID;
-    enemyRenderInfo.animationName = "";
-    enemyRenderInfo.animationTimeStamp = 0;
-    enemyRenderInfo.transform = getTransformMatrix();
-    enemyRenderInfo.
 
     maxAnimationTime = 0.f;
 
@@ -92,17 +86,10 @@ Enemy::~Enemy() {
 		delete m_behavior;
 }
 
-void Enemy::playAnimation(std::string animationName, float endAnimationTime, float startAnimationTime)
-{
-    enemyRenderInfo.animationName = animationName.c_str();
-    enemyRenderInfo.animationTimeStamp = startAnimationTime;
-    maxAnimationTime = endAnimationTime;
-}
-
 void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
-    animatedModel.update(deltaTime);
 
+    // update behavior
     if (!m_stunned || getEnemyType() == EnemyType::BOSS_1) // quick fix
     {
         m_behavior->update(*this, closeEnemies, player, deltaTime);
@@ -116,6 +103,7 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
         }
     }
 
+    // update specifc
 	updateSpecific(player, deltaTime);
 
     // Rotation toward their moving direction
@@ -128,31 +116,28 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
     m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
-    light.position = enemyRenderInfo.transform.Translation();
+    light.position = getPosition();
 
+    // out of bounds insta kill
     if (getPositionBT().y() < MIN_Y || getPositionBT().length2() > 62500.f)
         damage(m_health);
 
+    // blinking when damaged
     if (m_blinkTimer > 0)
     {
-        enemyRenderInfo.color = DirectX::SimpleMath::Vector3(10.0f, 0.0f, 0.0f);
+        animatedModel.set_color(DirectX::SimpleMath::Vector3(10.0f, 0.0f, 0.0f));
         m_blinkTimer -= deltaTime;
     }
     else
     {
-        enemyRenderInfo.color = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+        animatedModel.set_color(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f));
     }
 }
 
 void Enemy::updateAnimation(float deltaTime)
 {
-    enemyRenderInfo.transform = getModelTransformMatrix();
-    enemyRenderInfo.animationTimeStamp += deltaTime / 100.0f;
-    if (enemyRenderInfo.animationTimeStamp > maxAnimationTime)
-    {
-        enemyRenderInfo.animationTimeStamp = 0.f;
-        onAnimationEnd(enemyRenderInfo.animationName);
-    }
+    animatedModel.set_transform(getRigidBody()->getWorldTransform());
+    animatedModel.update(deltaTime);
 }
 
 void Enemy::debugRendering()
@@ -357,6 +342,11 @@ Projectile * Logic::Enemy::shoot(btVector3 dir, ProjectileData data, float speed
 Behavior* Enemy::getBehavior() const
 {
 	return this->m_behavior;
+}
+
+AnimatedModel &Logic::Enemy::getAnimatedModel()
+{
+    return animatedModel;
 }
 
 void Enemy::render() const

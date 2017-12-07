@@ -12,9 +12,9 @@ public:
     void update(float delta_ms);
     void render() const;
 
+    void set_color(DirectX::SimpleMath::Vector3 const &color);
     void set_next(const char * animation, std::function<void(void)> start_callback = nullptr);
-    void set_transform(btTransform & transform, btVector3 & scale = {1,1,1});
-
+    void set_transform(btTransform &transform, btVector3 scale = {1.f, 1.f, 1.f});
 private:
     using Matrix = DirectX::SimpleMath::Matrix;
     using Vector3 = DirectX::SimpleMath::Vector3;
