@@ -16,6 +16,7 @@ using namespace Logic;
 
 const int HUDManager::CURRENT_AMMO = 0;
 const int HUDManager::TOTAL_AMMO = 1;
+const float HUDManager::COMBO_BAR_WIDTH = 100.9f;
 
 const std::wstring HUDManager::IN_WAVE     = L"MURDER",
                    HUDManager::BEFORE_WAVE = L"PREPARE",
@@ -46,6 +47,8 @@ HUDManager::HUDManager()
     info.scoreMul = 0;
     crossBowTimer = -1.0f;
     staffTimer = -1.0f;
+
+    info.comboTimeRemaining = 0.0f;
 
     skillChoosen = false;
     constructGUIElements();
@@ -201,6 +204,21 @@ void HUDManager::constructGUIElements()
 
     //enrage
     waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 450, 200, Resources::Textures::Enraged, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
+
+
+
+    //combo bar
+    x = 821.f / 1024;
+    y = 73.0f / 1024;
+    width = 134.0f / 1024;
+    height = 28.0f / 1024;
+    comboBar.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 70, 78, 100, 8, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 0.0f, false));
+
+    x = 821.0f / 1024;
+    y = 44.0f / 1024;
+    width = 134.0f / 1024;
+    height = 28.0f / 1024;
+    comboBar.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 70, 78, 100, 8, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 0.0f, false));
 }
 
 void HUDManager::updateTextElements()
@@ -527,6 +545,8 @@ void HUDManager::updateGUIElemets()
         staticElements.at(staticElements.size() - 1).setAlpha(1.0f);
     }
 
+
+    comboBar.at(comboBar.size() - 1).setScreenPos(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 70, 78, ((float)(info.comboTimeRemaining) /100.0f) * COMBO_BAR_WIDTH, 8);
    
 }
 
@@ -545,6 +565,7 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
     info.score = ComboMachine::Get().getTotalScore();
     info.scoreCombo = ComboMachine::Get().getComboScore();
     info.scoreMul = ComboMachine::Get().getCurrentCombo();
+    info.comboTimeRemaining = ComboMachine::Get().getComboTimer();
     info.hp = player.getHP();
     info.activeAmmo[HUDManager::CURRENT_AMMO]   = player.getActiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
     info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().enhancedAmmo;// TODO GET AMMO
@@ -688,6 +709,20 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
             staffTimer = PICKEUP_MESSAGE_TIMER;
         }
     }
+    if (info.comboTimeRemaining == 0)
+    {
+        for (auto &bar : comboBar)
+        {
+            bar.setAlpha(0.0f);
+        }
+    }
+    else
+    {
+        for (auto &bar : comboBar)
+        {
+            bar.setAlpha(1.0f);
+        }
+    }
 
     this->updateGUIElemets();
     this->updateTextElements();
@@ -715,6 +750,10 @@ void HUDManager::render() const
 
     //render hp bars   
     for (auto &bar : staticElements)
+    {
+        bar.render();
+    }
+    for (auto &bar : comboBar)
     {
         bar.render();
     }
