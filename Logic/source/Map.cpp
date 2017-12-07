@@ -109,7 +109,7 @@ void Map::loadStartMenuScene()
 
     for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
 
-    SpecialEffectRenderInfo info;
+    SpecialEffectRenderInfo info = {};
     info.type = SpecialEffectRenderInfo::Snow;
     info.restart = true;
     QueueRender(info);
