@@ -7,7 +7,14 @@ namespace Graphics {
     class ShadowRenderPass : public RenderPass
     {
     public:
-        enum ResourcesSlots {StaticInstanceBuffer, AnimatedInstanceBuffer};
+        enum ResourcesSlots {
+            staticInstanceBuffer, 
+            animatedInstanceBuffer, 
+            animatedJointsBuffer,
+            foliageInstanceBuffer,
+            newAnimatedInstanceBuffer,
+            newAnimatedJointsBuffer,
+        };
 
         ShadowRenderPass(
             std::initializer_list<ID3D11RenderTargetView*> targets,

@@ -138,6 +138,11 @@ struct AnimatedRenderInfo : StaticRenderInfo
     float animationTimeStamp = 0;
 };
 
+struct NewAnimatedRenderInfo : StaticRenderInfo
+{
+    std::vector<DirectX::SimpleMath::Matrix> * joint_transforms;
+};
+
 struct EnemyRenderInfo : AnimatedRenderInfo
 {
     float freeze = 0;
