@@ -59,7 +59,7 @@ void StateStart::update(float deltaTime)
     Graphics::FXSystem->processEffect(&m_campfire, { 0, 0, 0 }, deltaTime / 1000.f);
 
     //temp 
-    SpecialEffectRenderInfo info;
+    SpecialEffectRenderInfo info = {};
     info.type = SpecialEffectRenderInfo::DoF;
     QueueRender(info);
 

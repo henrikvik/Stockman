@@ -97,6 +97,8 @@ namespace Logic
 
         bool m_wasInAir;
 
+        float m_DamageTintTimer;
+
 		// Sound
 		Sound::ListenerData* m_listenerData;
 
