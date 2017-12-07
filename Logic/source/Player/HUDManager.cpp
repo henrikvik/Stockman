@@ -232,7 +232,7 @@ void HUDManager::updateTextElements()
     {
         text.text = std::to_wstring(info.cdInSeconds[0]);
         text.position = DirectX::SimpleMath::Vector2(1185, 530);
-        text.font = Resources::Fonts::KG14;
+        text.font = Resources::Fonts::KG18;
 
         text.isMoveable = true;
 
