@@ -316,7 +316,7 @@ void EnemyBossBaddie::shootAbility4(Player const &player, int pattern, float spe
 void EnemyBossBaddie::damage(int damage)
 {
     float damageCalc = std::floor(damage * 0.75f) - 5;
-    if (damageCalc > 5)
+    if (damageCalc > 0)
         Enemy::damage(damageCalc);
 }
 
