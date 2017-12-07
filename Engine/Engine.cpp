@@ -247,8 +247,8 @@ HRESULT Engine::createSwapChain()
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	desc.BufferDesc.RefreshRate.Denominator = 0;
-	desc.BufferDesc.RefreshRate.Numerator = 0;
+	desc.BufferDesc.RefreshRate.Denominator = 1;
+	desc.BufferDesc.RefreshRate.Numerator = 60;
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -467,7 +467,7 @@ int Engine::run()
 		PROFILE_END();
 
 		PROFILE_BEGINC("IDXGISwapChain::Present()", EventColor::Cyan);
-		mSwapChain->Present(0, 0);
+		mSwapChain->Present(1, 0);
 		PROFILE_END();
 		g_Profiler->frame();
 
