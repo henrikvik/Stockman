@@ -41,18 +41,18 @@ namespace Graphics
 
         Global::context->IASetInputLayout(forward_plus_vs_static);
         Global::context->VSSetShader(forward_plus_vs_static, nullptr, 0);
-        drawInstanced<StaticRenderInfo>(resources[4]);
-
+        drawInstanced<StaticRenderInfo>(resources[staticInstanceBuffer]);
 
         Global::context->IASetInputLayout(forward_plus_vs_animated);
         Global::context->VSSetShader(forward_plus_vs_animated, nullptr, 0);
-        drawInstancedAnimated<AnimatedRenderInfo>(resources[5], resources[6]);
+        drawInstancedAnimated<AnimatedRenderInfo>(resources[animatedInstanceBuffer], resources[animatedJointsBuffer]);
+        drawInstancedAnimated<NewAnimatedRenderInfo>(resources[newAnimatedInstanceBuffer], resources[newAnimatedJointsBuffer]);
 
         Global::context->RSSetState(Global::cStates->CullNone());
         Global::context->VSSetConstantBuffers(1, 1, &buffers[2]);
         Global::context->IASetInputLayout(forward_plus_vs_foliage);
         Global::context->VSSetShader(forward_plus_vs_foliage, nullptr, 0);
-        drawInstanced<FoliageRenderInfo>(resources[7]);
+        drawInstanced<FoliageRenderInfo>(resources[foliageInstanceBuffer]);
 
         Global::context->PSSetSamplers(0, 3, Global::nulls);
         Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);

@@ -213,6 +213,7 @@ xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
     <ClInclude Include="include\AI\EnemySoarer.h" />
     <ClInclude Include="include\AI\EnemyTotem.h" />
     <ClInclude Include="include\AI\Pathing\NavigationMeshEditor.h" />
+    <ClInclude Include="include\Entity\AnimatedModel.h" />
     <ClInclude Include="include\Misc\Fader.h" />
     <ClInclude Include="include\Misc\GUI\Specific\iMenuCards.h" />
     <ClInclude Include="include\Misc\GUI\Specific\iMenuCinematic.h" />
@@ -326,6 +327,7 @@ xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
     <ClInclude Include="include\AI\Behavior\StayBehavior.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Entity\AnimatedModel.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuFX.cpp" />
     <ClCompile Include="source\AI\Abilities\Ability.cpp" />
     <ClCompile Include="source\AI\Behavior\BigBadBehavior.cpp" />
