@@ -49,6 +49,10 @@ bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 
         m_stacks = 0;
 
+        m_sensor->addCallback(Entity::ON_DESTROY, [&](Entity::CallbackData &data) -> void {
+            m_sensor = nullptr;
+        });
+
         return true;
 
         /*ProjectileData travelPData = m_projectileData;
@@ -81,33 +85,28 @@ void SkillBulletTime::onUpdate(float deltaTime)
 {
 	if (m_sensor)
 	{
-        if (m_sensor->getProjectileData().ttl < deltaTime)
-            m_sensor = nullptr;
-		else
-		{
-            setCanUse(false);
-			if (!slowDownIntervals.empty() && slowDownIntervals.back() > getDuration())
-			{
-				m_stacks++;
-				slowDownIntervals.pop_back();
-			}
-			else if (!speedUpIntervals.empty() && speedUpIntervals.back() > getDuration())
-			{
-				m_stacks--;
-				speedUpIntervals.pop_back();
-			}
+        setCanUse(false);
+        if (!slowDownIntervals.empty() && slowDownIntervals.back() > getDuration())
+        {
+            m_stacks++;
+            slowDownIntervals.pop_back();
+        }
+        else if (!speedUpIntervals.empty() && speedUpIntervals.back() > getDuration())
+        {
+            m_stacks--;
+            speedUpIntervals.pop_back();
+        }
 
-			if (m_stacks != 0)
-				m_sensor->getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, m_stacks);
-		}
+        if (m_stacks != 0)
+            m_sensor->getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, m_stacks);
 
-        if (m_sensor)
-            renderInfo.progress = m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION;
-        else
-            renderInfo.progress = 1.f;
+        renderInfo.progress = m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION;
     }
     else
+    {
         setActive(false);
+        renderInfo.progress = 1.f;
+    }
 
 
 	/*if (m_travelProjectile)
