@@ -21,7 +21,7 @@ const float EnemyBossBaddie::BASE_SPEED = 20.f, EnemyBossBaddie::PROJECTILE_SPEE
             EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.2f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
             EnemyBossBaddie::PROJECTILE_SCALE = 8.f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 31337, EnemyBossBaddie::SCORE = 25000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 31337, EnemyBossBaddie::SCORE = 150000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
     @author Lukas Westling
@@ -111,18 +111,17 @@ void EnemyBossBaddie::createAbilities()
     AbilityData data;
 
     /* ABILITY ONE */
-    data.cooldown = 25000.f;
-    data.duration = 14500.f;
-    data.randomChanche = 50;
+    data.cooldown = 15000.f;
+    data.duration = 5000.f;
+    data.randomChanche = 25;
 
     auto onUse = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_1, nullptr, true);
     };
 
     auto onTick = [&](Player& player, Ability &ability) -> void {
-        btVector3 force = (player.getPositionBT() - getPositionBT()).normalized() *
-            std::pow((1.f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
-        getRigidBody()->setLinearVelocity(getRigidBody()->getLinearVelocity() + force);
+        if (ability.getCurrentDuration() <= 0.f)
+            getRigidBody()->getWorldTransform().setOrigin(player.getPositionBT() + btVector3(0.f, 100.f, 0.f));
     };
 
     abilities[AbilityId::ONE] = Ability(data, onTick, onUse);
@@ -350,10 +349,7 @@ void EnemyBossBaddie::useAbility(Player &target, int phase)
 
 void EnemyBossBaddie::onCollision(PhysicsObject &other, btVector3 contactPoint, float dmgMultiplier)
 {
-if (Player *e = dynamic_cast<Player*>(&other))
-    {
-    }
-    else if (Projectile *pj = dynamic_cast<Projectile*> (&other))
+    if (Projectile *pj = dynamic_cast<Projectile*> (&other))
     {
         if (!pj->getProjectileData().enemyBullet)
         {
