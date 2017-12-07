@@ -56,7 +56,8 @@ namespace Sound
         WAVE_START,
         WAVE_END, 
         WAVE_CARD, 
-        WAVE_DEAD
+        WAVE_DEAD, 
+        COMBO_DONE
     };
 
     // Put all identifier for music here
