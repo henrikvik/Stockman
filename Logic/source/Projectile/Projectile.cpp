@@ -185,7 +185,7 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 // Call back to listener with a ptr to the collided physics object
 void Projectile::doCallBack(PhysicsObject& other)
 {
-    if (hasCallback(ON_COLLISION))
+    if (hasCallback(ON_COLLISION) && m_pData.type != ProjectileTypeNoCallback)
     {
         CallbackData data;
         data.caller = this;
@@ -277,6 +277,8 @@ bool Projectile::collisionWithTerrain()
 {
     m_dead = true;
 
+    bool callback = true;
+
     // Don't remove if sensor
     if (m_pData.isSensor)
         m_dead = false;
@@ -296,7 +298,7 @@ bool Projectile::collisionWithTerrain()
     }
 
     // Always trigger callback
-    return true;
+    return callback;
 }
 
 // Projectile-Player Collisions, returns true if callback should be activated
@@ -327,7 +329,7 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 	}
     
     // No callback should be added
-    return false;
+    return callback;
 }
 
 void Projectile::setWorldTransform(DirectX::SimpleMath::Matrix& worldTransform)

@@ -72,18 +72,23 @@ void WeaponFreezeGrenade::doExplosionCallback(Entity::CallbackData &data)
 {
     data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_MAGIC_2, 1.f, 0.15f);
 
+    // only one callback
+    dynamic_cast<Projectile*>(data.caller)->getProjectileData().type = ProjectileTypeNoCallback;
+    
     // explosion projectile
     m_explosionData.scale = FREEZE_GRENADE_EXPLOSION_SCALE;
     Projectile* explosion = getSpawnProjectileFunc()(m_explosionData, data.caller->getPositionBT(), { 0.f, 0.f, 0.f }, *data.caller, { 0.f, 0.f, 0.f });
 
     if (explosion)
     {
+        // Graphical explosion - particle
+        Graphics::FXSystem->addEffect("IceExplosion", data.caller->getPosition());
+
+        // callback
         explosion->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
 
             data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.33f);
-
-            // Graphical explosion - particle
-            Graphics::FXSystem->addEffect("IceExplosion", data.caller->getPosition());
+            
             if (Projectile* p = dynamic_cast<Projectile*>(data.caller))
                 p->getProjectileData().type = ProjectileTypeNormal;
 
@@ -99,7 +104,7 @@ void WeaponFreezeGrenade::doExplosionCallback(Entity::CallbackData &data)
     }
 }
 
-void WeaponFreezeGrenade::doExplosionCallbackEnhanced(Entity::CallbackData & data)
+void WeaponFreezeGrenade::doExplosionCallbackEnhanced(Entity::CallbackData &data)
 {
     // cascade
     PhysicsObject* obj = reinterpret_cast<PhysicsObject*>(data.dataPtr);
@@ -125,6 +130,8 @@ void WeaponFreezeGrenade::doExplosionCallbackEnhanced(Entity::CallbackData & dat
         if (p)
         {
             p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
+                // only one callback
+                dynamic_cast<Projectile*>(data.caller)->getProjectileData().type = ProjectileTypeNoCallback;
 
                 // explosion projectile
                 m_explosionData.scale = FREEZE_GRENADE_SPLIT_EXPLOSION_SCALE;
@@ -132,13 +139,14 @@ void WeaponFreezeGrenade::doExplosionCallbackEnhanced(Entity::CallbackData & dat
 
                 if (explosion)
                 {
+                    // Graphical explosion - particle
+                    Graphics::FXSystem->addEffect("IceExplosion", data.caller->getPosition());
 
+                    //explosion callback
                     explosion->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
 
                         data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_THIRD, 1.f, 0.33f);
 
-                        // Graphical explosion - particle
-                        Graphics::FXSystem->addEffect("IceExplosion", data.caller->getPosition());
                         if (Projectile* p = dynamic_cast<Projectile*>(data.caller))
                             p->getProjectileData().type = ProjectileTypeNormal;
 
