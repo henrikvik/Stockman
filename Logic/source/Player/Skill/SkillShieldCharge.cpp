@@ -50,7 +50,7 @@ bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
         m_oldSpeed = player->getMoveSpeed();
         player->setMaxSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
 
-        SpecialEffectRenderInfo shake;
+        SpecialEffectRenderInfo shake = {};
         shake.duration = SHIELD_CHARGE_DURATION * 0.001f;
         shake.direction = { 0.f, -1.f, 0.f };
         shake.radius = 20.0f;

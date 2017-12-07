@@ -20,6 +20,7 @@ VSOut VS(uint id: SV_VertexID)
 cbuffer FXConstants : register(b0)
 {
     float BulletTimeProgress;
+    float DamageTint;
 }
 
 Texture2D Backbuffer : register(t0);
@@ -46,6 +47,9 @@ float4 PS(VSOut input) : SV_Target0
 
     color = adjustContrast(color, 2 - BulletTimeProgress, 0.3f);
     color = adjustSaturation(color, BulletTimeProgress);
+
+    float dist = distance(input.uv, float2(0.5, 0.5));
+    color.r += DamageTint * 1.2 * dist;
 
     return float4(saturate(color), 1);
 }
