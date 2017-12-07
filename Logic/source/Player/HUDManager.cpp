@@ -4,6 +4,7 @@
 #include <Player\Skill\SkillManager.h>
 #include <Player\Weapon\Weapon.h>
 #include <Player\Weapon\AmmoContainer.h>
+#include <Misc\GUI\iMenuFX.h>
 
 #include <AI\WaveTimeManager.h>
 #include <AI\EntityManager.h>
@@ -59,10 +60,17 @@ HUDManager::HUDManager()
 
     crossBowTimer = -1.0f;
     staffTimer = -1.0f;
+
+    effects.push_back(new iMenuFX_Combo());
+    effects.push_back(new iMenuFX_NewScore());
 }
 
 HUDManager::~HUDManager()
 {
+    for (size_t i = 0; i < effects.size(); i++)
+        delete effects[i];
+
+    effects.clear();
 }
 
 //constructs the spriteRenderInfos that the hud consists of
@@ -562,9 +570,7 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
     EntityManager const &entityManager, float dt)
 {
     //updates hudInfo with the current info
-    info.score = ComboMachine::Get().getTotalScore();
     info.scoreCombo = ComboMachine::Get().getComboScore();
-    info.scoreMul = ComboMachine::Get().getCurrentCombo();
     info.comboTimeRemaining = ComboMachine::Get().getComboTimer();
     info.hp = player.getHP();
     info.activeAmmo[HUDManager::CURRENT_AMMO]   = player.getActiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
@@ -576,6 +582,24 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
     info.isReloding = player.getReloding();
     info.ammoPickedUp = player.getAmmoPickedUp();
 
+    // Saves the last known combo to make the combo special effect 
+    static int lastScoreMul = 0;
+    info.scoreMul = ComboMachine::Get().getCurrentCombo();
+    if (lastScoreMul != info.scoreMul)
+    {
+        if (lastScoreMul < info.scoreMul)
+            effects[0]->press(208, 44);
+        lastScoreMul = info.scoreMul;
+    }
+
+    static int lastScore = 0;
+    info.score = ComboMachine::Get().getTotalScore();
+    if (lastScore != info.score)
+    {
+        if (lastScore < info.score)
+            effects[1]->press(160, 44);
+        lastScore = info.score;
+    }
 
     //skill cooldowns are inverted for some reason 
     const Skill* secondary = player.getSkill(SkillManager::ID::SECONDARY);
@@ -684,8 +708,6 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
         waveSprites.at(WaveMessages::ENRAGE).setAlpha(0.0f);
     }
 
-        
-
     info.timeRemaining = (timeManager.getTimeRequired() - timeManager.getTimeCurrent()) * 0.001f;
     info.enemiesRemaining = static_cast<int> (entityManager.getNrOfAliveEnemies());
 
@@ -727,6 +749,8 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
     this->updateGUIElemets();
     this->updateTextElements();
 
+    for (iMenuFX* fx : effects)
+        fx->update(dt);
 }
 
 void HUDManager::render() const
@@ -767,6 +791,9 @@ void HUDManager::render() const
         wave.render();
     }
     renderTextElements();
+
+    for (const iMenuFX* fx : effects)
+        fx->render();
 }
 
 void HUDManager::reset()

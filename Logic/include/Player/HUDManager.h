@@ -38,6 +38,7 @@ namespace Logic
     class Player;
     class WaveTimeManager;
     class EntityManager;
+    class iMenuFX;
 
     class HUDManager
     {
@@ -60,6 +61,7 @@ namespace Logic
         std::vector<Sprite> staticElements;
         std::vector<TextRenderInfo> HUDText;
         std::vector<Sprite> waveSprites;
+        std::vector<iMenuFX*> effects;
 
         bool showWaveCleared;
         float nextWaveSlideTimer;

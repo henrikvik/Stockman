@@ -9,7 +9,7 @@ using namespace Logic;
 /********************************
       Simple Particle Class.    *
 *********************************/
-Pixel::Pixel(float inX, float inY)
+Pixel::Pixel(float inX, float inY, Resources::Textures::Files texture, float lifeTimeMin, float lifeTimeMax, float sizeMin, float sizeMax)
 {
     remove = false;
 
@@ -18,17 +18,17 @@ Pixel::Pixel(float inX, float inY)
 
     gravity = 0.f;
     age = 0.f;
-    lifeTime = RandomGenerator::singleton().getRandomFloat(50.f, 300.f);
+    lifeTime = RandomGenerator::singleton().getRandomFloat(lifeTimeMin, lifeTimeMax);
     speed = RandomGenerator::singleton().getRandomFloat(0.000200f, 0.000400f);
 
     direction = ((rand() % 360) + 1) * 3.14 / 180.f;
 
-    float size = RandomGenerator::singleton().getRandomFloat(4.f, 8.f);
+    float size = RandomGenerator::singleton().getRandomFloat(sizeMin, sizeMax);
     renderInfo.screenRect = FloatRect(posX, posY, size / WIN_WIDTH, size / WIN_HEIGHT);
 
     renderInfo.alpha = 1.f;
     renderInfo.isMoveable = true;
-    renderInfo.texture = Resources::Textures::particle;
+    renderInfo.texture = texture;
     renderInfo.textureRect = FloatRect(0, 0, 1, 1);
 }
 
@@ -66,36 +66,64 @@ void Pixel::render() const
     QueueRender(renderInfo);
 }
 
+/*********************************
+ Abstract Particle Menu Class    *
+*********************************/
+
+void iMenuFX_Particles::update(float dt)
+{
+    for (size_t i = 0; i < m_pixels.size(); i++)
+    {
+        m_pixels[i].update(dt);
+        if (m_pixels[i].remove)
+            m_pixels.erase(m_pixels.begin() + i);
+    }
+}
+
+void iMenuFX_Particles::render() const
+{
+    for (const Pixel& p : m_pixels)
+        p.render();
+}
+
 /********************************
     Dust Effect on the book.    *
 *********************************/
-iMenuFX_Dust::iMenuFX_Dust() { }
-
-iMenuFX_Dust::~iMenuFX_Dust()
-{
-    m_pixels.clear();
-}
+iMenuFX_Dust::iMenuFX_Dust() { m_type = FX_Dust; }
+iMenuFX_Dust::~iMenuFX_Dust() { m_pixels.clear(); }
 
 void iMenuFX_Dust::press(float x, float y)
 {
     Sound::NoiseMachine::Get().playSFX(Sound::UI_SAND_FX, nullptr, true);
 
     for (int i = 8; --i;)
-        m_pixels.push_back(Pixel(x / WIN_WIDTH, y / WIN_HEIGHT));
+        m_pixels.push_back(Pixel(x / WIN_WIDTH, y / WIN_HEIGHT, Resources::Textures::particle, 50.f, 300.f, 4.f, 8.f));
 }
 
-void iMenuFX_Dust::update(float deltaTime)
+/********************************
+    Cute Combo Explosion.       *
+*********************************/
+iMenuFX_Combo::iMenuFX_Combo() { m_type = FX_Combo; }
+iMenuFX_Combo::~iMenuFX_Combo() { m_pixels.clear(); }
+
+void iMenuFX_Combo::press(float x, float y)
 {
-    for (size_t i = 0; i < m_pixels.size(); i++)
-    {
-        m_pixels[i].update(deltaTime);
-        if (m_pixels[i].remove)
-            m_pixels.erase(m_pixels.begin() + i);
-    }
+    Sound::NoiseMachine::Get().playSFX(Sound::UI_SAND_FX, nullptr, true);
+
+    for (int i = 10; --i;)
+        m_pixels.push_back(Pixel(x / WIN_WIDTH, y / WIN_HEIGHT, Resources::Textures::particle_white, 50.f, 300.f, 2.f, 7.f));
 }
 
-void iMenuFX_Dust::render() const
+/********************************
+    Cute Combo-OVER Explosion.  *
+*********************************/
+iMenuFX_NewScore::iMenuFX_NewScore() { m_type = FX_NewScore; }
+iMenuFX_NewScore::~iMenuFX_NewScore() { m_pixels.clear(); }
+
+void iMenuFX_NewScore::press(float x, float y)
 {
-    for (const Pixel& p : m_pixels)
-        p.render();
+    Sound::NoiseMachine::Get().playSFX(Sound::COMBO_DONE, nullptr, true);
+
+    for (int i = 25; --i;)
+        m_pixels.push_back(Pixel(x / WIN_WIDTH, y / WIN_HEIGHT, Resources::Textures::particle_white, 50.f, 500.f, 5.f, 12.f));
 }
