@@ -1,5 +1,6 @@
 #include "../../include/Entity/AnimatedModel.h"
 #include <Graphics\include\RenderQueue.h>
+#include "..\..\include\Entity\AnimatedModel.h"
 
 AnimatedModel::AnimatedModel(Resources::Models::Files modelId, const char * start_animation)
 {
@@ -56,4 +57,11 @@ void AnimatedModel::set_next(const char * animation, std::function<void(void)> s
 {
     animation_next = animation;
     animation_callback = start_callback;
+}
+
+void AnimatedModel::set_transform(btTransform & transform, btVector3 & scale)
+{
+    float m[16];
+    transform.getOpenGLMatrix(m);
+    renderInfo.transform = Matrix(m) * Matrix::CreateScale(scale.getX(), scale.getY(), scale.getZ());
 }
