@@ -4,6 +4,7 @@
 #include <Graphics\include\RenderQueue.h>
 
 #include <Entity\Entity.h>
+#include <Entity\AnimatedModel.h>
 #include <AI\EnemyType.h>
 
 #pragma region Comment
@@ -45,7 +46,7 @@ namespace Logic
 
 			Behavior *m_behavior;
 
-            AnimatedRenderInfo enemyRenderInfo;
+            AnimatedModel animatedModel;
             float maxAnimationTime;
 
             bool m_stunned;

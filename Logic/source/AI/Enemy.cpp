@@ -35,6 +35,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     enemyRenderInfo.animationName = "";
     enemyRenderInfo.animationTimeStamp = 0;
     enemyRenderInfo.transform = getTransformMatrix();
+    enemyRenderInfo.
 
     maxAnimationTime = 0.f;
 
@@ -100,6 +101,7 @@ void Enemy::playAnimation(std::string animationName, float endAnimationTime, flo
 
 void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
+    animatedModel.update(deltaTime);
 
     if (!m_stunned || getEnemyType() == EnemyType::BOSS_1) // quick fix
     {
@@ -360,6 +362,6 @@ Behavior* Enemy::getBehavior() const
 void Enemy::render() const
 {
     renderSpecific();
-    QueueRender(enemyRenderInfo);
+    animatedModel.render();
     QueueRender(light);
 }
