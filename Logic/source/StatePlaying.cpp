@@ -69,7 +69,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     RenderQueue::get().clearAllQueues();
 
     //temp? probably NOT
-    static SpecialEffectRenderInfo info;
+    static SpecialEffectRenderInfo info = {};
     info.type = info.Snow;
     info.restart = true;
     
@@ -219,8 +219,7 @@ void StatePlaying::render() const
 
     PROFILE_BEGIN("Render HUD");
     if (m_menu->getType() == iMenu::Empty ||
-        m_menu->getType() == iMenu::CardSelect ||
-        m_menu->getType() == iMenu::Controls)
+        m_menu->getType() == iMenu::CardSelect)
         m_hudManager.render();
     PROFILE_END();
 

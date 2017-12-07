@@ -454,6 +454,7 @@ int Sound::NoiseMachine::loadPlaySounds()
     ERRCHECK(createSound(loadMode, SFX::WAVE_END, CHANNEL_GROUP::CHANNEL_SFX, "Wave_End.ogg", FMOD_2D));
     ERRCHECK(createSound(loadMode, SFX::WAVE_CARD, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Card.ogg", FMOD_2D));
     ERRCHECK(createSound(loadMode, SFX::WAVE_DEAD, CHANNEL_GROUP::CHANNEL_SFX, "Wave_Dead.ogg", FMOD_2D));
+    ERRCHECK(createSound(loadMode, SFX::COMBO_DONE, CHANNEL_GROUP::CHANNEL_SFX, "Combo_Done.ogg", FMOD_2D));
 
     // Setting the thresholds of where the listener can hear the sfx
     count = 0;

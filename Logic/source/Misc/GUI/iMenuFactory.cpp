@@ -24,7 +24,7 @@ const std::map<int, Resources::Textures::Files> LookUp =
     { 3, Resources::Textures::Skillpicksheet },             // - Skill pick buttons, and continue button
     //{ 4, Resources::Textures::Backbutton },                 // OLD - Remove later
     { 5, Resources::Textures::Highscoretext },              // - Same as MainMenuText but with the "Back Button", that we want
-    { 6, Resources::Textures::Pausetext },                   // - Same as MainMenuText but with the "Return to Menu", that we want
+   // { 6, Resources::Textures::Pausetext },                   // - Same as MainMenuText but with the "Return to Menu", that we want
     { 7, Resources::Textures::SettingsButtons}
 };
 
@@ -38,6 +38,7 @@ iMenuIntro* iMenuFactory::buildMenuIntro()
 iMenuFirstTime * iMenuFactory::buildMenuFirstTime()
 {
     iMenuFirstTime* menu = newd iMenuFirstTime(iMenu::FirstTime);
+    menu->addEffect(newd iMenuFX_Combo());
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
     return menu;
 }
@@ -47,6 +48,7 @@ iMenu* iMenuFactory::buildMenuStart()
     iMenu* menu = newd iMenu(iMenu::Start);
 
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
+    menu->addEffect(newd iMenuFX_Combo());
     menu->addButton(buildButton("MenuStartGame",        ButtonFunction::startGame));
     menu->addButton(buildButton("MenuStartGameHeroic",  ButtonFunction::startGameHeroic));
     menu->addButton(buildButton("MenuStartSettings",    ButtonFunction::showHighscore));
@@ -61,6 +63,7 @@ iMenuSettings* iMenuFactory::buildMenuSettings()
     iMenuSettings* menu = newd iMenuSettings(iMenu::SettingsStart);
 
     menu->addBackground(Resources::Textures::Settings, 1.f);
+    menu->addEffect(newd iMenuFX_Combo());
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::startMainMenu));
     Settings& setting = Settings::getInstance();
     menu->addSlider(buildSlider("MouseSlider", setting.getMouseSensePTR(), 0.001f, 0.2f, 0.001f));
@@ -86,6 +89,7 @@ iMenuSettings * iMenuFactory::buildMenuPauseSettings()
     iMenuSettings* menu = buildMenuSettings();
     
     menu->setGroup(iMenu::MenuGroup::SettingsPause);
+    menu->addEffect(newd iMenuFX_Combo());
     menu->removeButtons();
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::pause));
 
@@ -95,7 +99,7 @@ iMenuSettings * iMenuFactory::buildMenuPauseSettings()
 iMenuSkillPick* iMenuFactory::buildMenuSkill()
 {
     iMenuSkillPick* menu = newd iMenuSkillPick(iMenu::Skill);
-    menu->addEffect((iMenuFX*)(newd iMenuFX_Dust()));
+    menu->addEffect(newd iMenuFX_Dust());
     menu->addBackground(Resources::Textures::Skillpickbackground, 1.f);
     menu->addButton(buildButton("SkillPickButton1", std::bind(&iMenuSkillPick::pickOne, menu)));
     menu->addButton(buildButton("SkillPickButton2", std::bind(&iMenuSkillPick::pickTwo, menu)));
@@ -108,6 +112,7 @@ iMenuSkillPick* iMenuFactory::buildMenuSkill()
 iMenuCards * iMenuFactory::buildMenuCard()
 {
     iMenuCards* menu = newd iMenuCards(iMenu::CardSelect);
+    menu->addEffect(newd iMenuFX_Dust());
     menu->addButton(buildButton("CardUpgradeChoice1", ButtonFunction::chooseUpgrade1));
     menu->addButton(buildButton("CardUpgradeChoice2", ButtonFunction::chooseUpgrade2));
     menu->addButton(buildButton("CardUpgradeChoice3", ButtonFunction::chooseUpgrade3));
@@ -117,6 +122,7 @@ iMenuCards * iMenuFactory::buildMenuCard()
 iMenu * iMenuFactory::buildMenuGameWon()
 {
     iMenu* menu = newd iMenu(iMenu::GameWon);
+    menu->addEffect(newd iMenuFX_Combo());
     menu->addBackground(Resources::Textures::Gameover, 1.f);
     return menu;
 }
@@ -148,6 +154,7 @@ iMenuLoadingPost* iMenuFactory::buildMenuLoadingPost()
 iMenuHighscore * iMenuFactory::buildMenuHighscore()
 {
     iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreStartMenu);
+    menu->addEffect(newd iMenuFX_Combo());
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
     return menu;
@@ -156,6 +163,7 @@ iMenuHighscore * iMenuFactory::buildMenuHighscore()
 iMenuHighscore * iMenuFactory::buildMenuHighscoreGameOver()
 {
     iMenuHighscore* menu = newd iMenuHighscore(iMenu::HighscoreGameOver);
+    menu->addEffect(newd iMenuFX_Combo());
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::goToGameOver));
     return menu;
@@ -166,6 +174,7 @@ iMenuGameOver * iMenuFactory::buildMenuGameover()
     iMenuGameOver* menu = newd iMenuGameOver(iMenu::GameOver);
     iMenu::ButtonData btn;
 
+    menu->addEffect(newd iMenuFX_Combo());
     menu->addBackground(Resources::Textures::Gameover, 1.0f);
 
     btn = buildButton("Retry", ButtonFunction::playAgain);
@@ -193,7 +202,8 @@ iMenu * iMenuFactory::buildMenuPause()
 {
     iMenu* menu = newd iMenu(iMenu::Pause);
     menu->addBackground(Resources::Textures::MainmenuClean, 1.f);
-    menu->addButton(buildButton("MenuStartGame", ButtonFunction::unpause));
+    menu->addEffect(newd iMenuFX_Combo());
+    menu->addButton(buildButton("ResumeGame", ButtonFunction::unpause));
     menu->addButton(buildButton("Restart", ButtonFunction::playAgain));
     menu->addButton(buildButton("MenuStartHighscore", ButtonFunction::startSettingsPause));
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));

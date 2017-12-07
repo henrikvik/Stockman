@@ -50,7 +50,7 @@ bool SkillShieldCharge::onUse(btVector3 forward, Entity& shooter)
         m_oldSpeed = player->getMoveSpeed();
         player->setMaxSpeed(m_chargePower * PLAYER_MOVEMENT_MAX_SPEED);
 
-        SpecialEffectRenderInfo shake;
+        SpecialEffectRenderInfo shake = {};
         shake.duration = SHIELD_CHARGE_DURATION * 0.001f;
         shake.direction = { 0.f, -1.f, 0.f };
         shake.radius = 20.0f;
@@ -81,6 +81,13 @@ void SkillShieldCharge::onUpdate(float deltaTime)
             Global::mainCamera->updateFOV(m_fovM * Settings::getInstance().getFOV());
 
 			m_time += deltaTime;
+
+
+            SpecialEffectRenderInfo tint = {};
+            tint.type = SpecialEffectRenderInfo::Tint;
+            tint.color = DirectX::SimpleMath::Vector3(0, 1, 0);
+            tint.progress = 1.f - m_time / (float)SHIELD_CHARGE_DURATION;
+            QueueRender(tint);
 
 			if (m_time >= SHIELD_CHARGE_DURATION)
 			{

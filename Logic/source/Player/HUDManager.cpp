@@ -4,6 +4,7 @@
 #include <Player\Skill\SkillManager.h>
 #include <Player\Weapon\Weapon.h>
 #include <Player\Weapon\AmmoContainer.h>
+#include <Misc\GUI\iMenuFX.h>
 
 #include <AI\WaveTimeManager.h>
 #include <AI\EntityManager.h>
@@ -16,6 +17,7 @@ using namespace Logic;
 
 const int HUDManager::CURRENT_AMMO = 0;
 const int HUDManager::TOTAL_AMMO = 1;
+const float HUDManager::COMBO_BAR_WIDTH = 100.9f;
 
 const std::wstring HUDManager::IN_WAVE     = L"MURDER",
                    HUDManager::BEFORE_WAVE = L"PREPARE",
@@ -47,6 +49,8 @@ HUDManager::HUDManager()
     crossBowTimer = -1.0f;
     staffTimer = -1.0f;
 
+    info.comboTimeRemaining = 0.0f;
+
     skillChoosen = false;
     constructGUIElements();
     showWaveCleared = false;
@@ -56,10 +60,17 @@ HUDManager::HUDManager()
 
     crossBowTimer = -1.0f;
     staffTimer = -1.0f;
+
+    effects.push_back(new iMenuFX_Combo());
+    effects.push_back(new iMenuFX_NewScore());
 }
 
 HUDManager::~HUDManager()
 {
+    for (size_t i = 0; i < effects.size(); i++)
+        delete effects[i];
+
+    effects.clear();
 }
 
 //constructs the spriteRenderInfos that the hud consists of
@@ -201,6 +212,21 @@ void HUDManager::constructGUIElements()
 
     //enrage
     waveSprites.push_back(Sprite(Sprite::CENTER, Sprite::CENTER, 0, -200, 450, 200, Resources::Textures::Enraged, FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }), 0.0f, false));
+
+
+
+    //combo bar
+    x = 821.f / 1024;
+    y = 73.0f / 1024;
+    width = 134.0f / 1024;
+    height = 28.0f / 1024;
+    comboBar.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 70, 78, 100, 8, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 0.0f, false));
+
+    x = 821.0f / 1024;
+    y = 44.0f / 1024;
+    width = 134.0f / 1024;
+    height = 28.0f / 1024;
+    comboBar.push_back(Sprite(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 70, 78, 100, 8, Resources::Textures::Gamesheet, FloatRect({ x, y }, { x + width, y + height }), 0.0f, false));
 }
 
 void HUDManager::updateTextElements()
@@ -214,7 +240,7 @@ void HUDManager::updateTextElements()
     {
         text.text = std::to_wstring(info.cdInSeconds[0]);
         text.position = DirectX::SimpleMath::Vector2(1185, 530);
-        text.font = Resources::Fonts::KG14;
+        text.font = Resources::Fonts::KG18;
 
         text.isMoveable = true;
 
@@ -527,6 +553,8 @@ void HUDManager::updateGUIElemets()
         staticElements.at(staticElements.size() - 1).setAlpha(1.0f);
     }
 
+
+    comboBar.at(comboBar.size() - 1).setScreenPos(Sprite::TOP_LEFT, Sprite::TOP_LEFT, 70, 78, ((float)(info.comboTimeRemaining) /100.0f) * COMBO_BAR_WIDTH, 8);
    
 }
 
@@ -542,9 +570,8 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
     EntityManager const &entityManager, float dt)
 {
     //updates hudInfo with the current info
-    info.score = ComboMachine::Get().getTotalScore();
     info.scoreCombo = ComboMachine::Get().getComboScore();
-    info.scoreMul = ComboMachine::Get().getCurrentCombo();
+    info.comboTimeRemaining = ComboMachine::Get().getComboTimer();
     info.hp = player.getHP();
     info.activeAmmo[HUDManager::CURRENT_AMMO]   = player.getActiveAmmoContainer().getAmmoInfo().magAmmo;// TODO GET AMMO
     info.activeAmmo[HUDManager::TOTAL_AMMO]     = player.getActiveAmmoContainer().getAmmoInfo().enhancedAmmo;// TODO GET AMMO
@@ -555,6 +582,24 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
     info.isReloding = player.getReloding();
     info.ammoPickedUp = player.getAmmoPickedUp();
 
+    // Saves the last known combo to make the combo special effect 
+    static int lastScoreMul = 0;
+    info.scoreMul = ComboMachine::Get().getCurrentCombo();
+    if (lastScoreMul != info.scoreMul)
+    {
+        if (lastScoreMul < info.scoreMul)
+            effects[0]->press(208, 44);
+        lastScoreMul = info.scoreMul;
+    }
+
+    static int lastScore = 0;
+    info.score = ComboMachine::Get().getTotalScore();
+    if (lastScore != info.score)
+    {
+        if (lastScore < info.score)
+            effects[1]->press(160, 44);
+        lastScore = info.score;
+    }
 
     //skill cooldowns are inverted for some reason 
     const Skill* secondary = player.getSkill(SkillManager::ID::SECONDARY);
@@ -663,8 +708,6 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
         waveSprites.at(WaveMessages::ENRAGE).setAlpha(0.0f);
     }
 
-        
-
     info.timeRemaining = (timeManager.getTimeRequired() - timeManager.getTimeCurrent()) * 0.001f;
     info.enemiesRemaining = static_cast<int> (entityManager.getNrOfAliveEnemies());
 
@@ -688,10 +731,26 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
             staffTimer = PICKEUP_MESSAGE_TIMER;
         }
     }
+    if (info.comboTimeRemaining == 0)
+    {
+        for (auto &bar : comboBar)
+        {
+            bar.setAlpha(0.0f);
+        }
+    }
+    else
+    {
+        for (auto &bar : comboBar)
+        {
+            bar.setAlpha(1.0f);
+        }
+    }
 
     this->updateGUIElemets();
     this->updateTextElements();
 
+    for (iMenuFX* fx : effects)
+        fx->update(dt);
 }
 
 void HUDManager::render() const
@@ -718,6 +777,10 @@ void HUDManager::render() const
     {
         bar.render();
     }
+    for (auto &bar : comboBar)
+    {
+        bar.render();
+    }
     for (auto &bar : HPBar)
     {
         bar.render();
@@ -728,6 +791,9 @@ void HUDManager::render() const
         wave.render();
     }
     renderTextElements();
+
+    for (const iMenuFX* fx : effects)
+        fx->render();
 }
 
 void HUDManager::reset()

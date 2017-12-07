@@ -26,9 +26,16 @@ namespace Graphics
 
 
     private:
+        struct PostFXConstants {
+            float m_BulletTime;
+            float _padding[3];
+            DirectX::SimpleMath::Vector3 m_Tint;
+            float m_TintProgress;
+        } m_Constants;
+
         Shader m_PostFXShader;
-        PingPongBuffer * backBuffers;
-        ConstantBuffer<float> m_BulletTimeBuffer;
+        PingPongBuffer *backBuffers;
+        ConstantBuffer<PostFXConstants> m_ConstantsBuffer;
 
         ID3D11ShaderResourceView *m_BloomSRV;
         ID3D11ShaderResourceView *ssaoMap;

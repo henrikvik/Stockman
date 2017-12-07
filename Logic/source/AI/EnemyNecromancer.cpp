@@ -19,9 +19,13 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().kill(SCORE);
-        RandomGenerator::singleton().getRandomInt(0, 1) ? 
-            SpawnTrigger(2, getPositionBT() - btVector3(0.f, data.caller->getRigidBody()->getCollisionShape()->getLocalScaling().y() * 1.5f, 0.f), std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY }) : 
-            SpawnTrigger(3, getPositionBT() - btVector3(0.f, data.caller->getRigidBody()->getCollisionShape()->getLocalScaling().y() * 1.5f, 0.f), std::vector<int>{ StatusManager::AMMO_PICK_UP_SECONDARY });
+        if (RandomGenerator::singleton().getRandomInt(0, 1)) {
+            RandomGenerator::singleton().getRandomInt(0, 1) ?
+                SpawnTrigger(2, getPositionBT() - btVector3(0.f, data.caller->getRigidBody()->getCollisionShape()->getLocalScaling().y() * 1.5f, 0.f), std::vector<int>{ StatusManager::AMMO_PICK_UP_PRIMARY }) :
+                SpawnTrigger(3, getPositionBT() - btVector3(0.f, data.caller->getRigidBody()->getCollisionShape()->getLocalScaling().y() * 1.5f, 0.f), std::vector<int>{ StatusManager::AMMO_PICK_UP_SECONDARY });
+        }
+
+        
     });
     m_spawnedMinions = 0;
 
@@ -58,7 +62,7 @@ void EnemyNecromancer::createAbilities()
         Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), pdata, (float)SPEED_AB2, 2.5f, 0.6f);
 		if (pj)
 		{
-			pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+			pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
 				if (m_spawnedMinions < MAX_SPAWNED_MINIONS)
 				{
                     data.caller->getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);

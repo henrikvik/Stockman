@@ -7,6 +7,19 @@ namespace Graphics
     class ForwardPlusRenderPass : public RenderPass
     {
     public:
+        enum ResourceNames {
+            lightOpaqueIndexList,
+            lightOpaqueGridSRV,
+            lightsNew,
+            shadowMap,
+            staticInstanceBuffer,
+            animatedInstanceBuffer,
+            animatedJointsBuffer,
+            foliageInstanceBuffer,
+            newAnimatedInstanceBuffer,
+            newAnimatedJointsBuffer,
+        };
+
         ForwardPlusRenderPass(
             std::initializer_list<ID3D11RenderTargetView*> targets,
             std::initializer_list<ID3D11ShaderResourceView*> resources = {},

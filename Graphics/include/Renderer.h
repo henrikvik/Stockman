@@ -83,6 +83,9 @@ namespace Graphics
         StructuredBuffer<StaticInstance> staticInstanceBuffer;
         StructuredBuffer<StaticInstance> animatedInstanceBuffer;
         StructuredBuffer<AnimatedJoints> animatedJointsBuffer;
+
+        StructuredBuffer<StaticInstance> newAnimatedInstanceBuffer;
+        StructuredBuffer<AnimatedJoints> newAnimatedJointsBuffer;
         #pragma endregion
 
         Sun sun;

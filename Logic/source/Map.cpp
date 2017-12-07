@@ -99,7 +99,7 @@ void Map::loadStartMenuScene()
     std::vector<FrameHitbox> hitboxes;
     std::vector<FrameLight> lights;
 
-    hitboxes.push_back({ { 0, 0.0f, 0 },{ 0, 0, 0 },{ 1.f, 1.f, 1.f },    Resources::Models::MenuScene });
+    //hitboxes.push_back({ { 0, 0.0f, 0 },{ 0, 0, 0 },{ 1.f, 1.f, 1.f },    Resources::Models::MenuScene });
 
     add(FrameLight({ 0.f, 0.f, 0.f }, {1.f, 0.5f, 0.3f}, 1.f, 10.f));
     
@@ -110,7 +110,7 @@ void Map::loadStartMenuScene()
 
     for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
 
-    SpecialEffectRenderInfo info;
+    SpecialEffectRenderInfo info = {};
     info.type = SpecialEffectRenderInfo::Snow;
     info.restart = true;
     QueueRender(info);
@@ -281,6 +281,10 @@ void Map::loadMap(Resources::Maps::Files map)
 			 std::cerr << "Could not find model " << instance.model << " during map load. Ignoring model." << std::endl;
 		 }
 	}
+    SpecialEffectRenderInfo info;
+    info.type = SpecialEffectRenderInfo::Snow;
+    info.restart = true;
+    QueueRender(info);
 }
 
 // Adds a pointlight to the map

@@ -8,7 +8,14 @@ namespace Graphics
     {
     public:
         enum BufferSlots { Camera };
-        enum ResourceSlots { StaticInstanceBuffer, AnimatedInstanceBuffer };
+        enum ResourceSlots { 
+            staticInstanceBuffer, 
+            animatedInstanceBuffer, 
+            animatedJointsBuffer,
+            foliageInstanceBuffer,
+            newAnimatedInstanceBuffer,
+            newAnimatedJointsBuffer,
+        };
 
         DepthRenderPass(
             std::initializer_list<ID3D11RenderTargetView*> targets,

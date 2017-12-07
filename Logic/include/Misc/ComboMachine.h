@@ -30,6 +30,8 @@ namespace Logic
 		int getComboScore();
         int getTotalScore();
         void addTimeBonus(float timeLeft);
+        float getmaxComboTimer()const;
+
 
 	private:
         static const int MAX_COMBO;

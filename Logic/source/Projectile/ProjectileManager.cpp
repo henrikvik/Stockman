@@ -128,6 +128,9 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
     }
     else
     {
+        // remove all callbacks from the projectile
+        p->clearCallbacks(true);
+
         btRigidBody* body = p->getRigidBody();
 
         // reset stuff
@@ -146,9 +149,6 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
 
         // dont remove again duh
         p->setDead(false);
-
-        // remove all callbacks from the projectile
-        p->clearCallbacks();
 
         // clear uppgrades and effects on projectile
         p->getStatusManager().clear();
