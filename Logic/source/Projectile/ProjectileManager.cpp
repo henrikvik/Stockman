@@ -115,6 +115,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
 
 	// Add to active-list
 	m_projectilesActive.push_back(p);
+    printf("%d\n", m_projectilesActive.size());
 	return p;
 }
 
@@ -160,6 +161,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
     }
     std::swap(m_projectilesActive[index], m_projectilesActive[m_projectilesActive.size() - 1]);
     m_projectilesActive.pop_back();
+    printf("%d\n", m_projectilesActive.size());
 }
 
 void ProjectileManager::update(float deltaTime)
