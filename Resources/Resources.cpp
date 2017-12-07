@@ -66,7 +66,6 @@ namespace Resources
             if (strcmp(str, "Log") == 0) return Log;
             if (strcmp(str, "Lower_Island") == 0) return Lower_Island;
             if (strcmp(str, "Market_Tent") == 0) return Market_Tent;
-            if (strcmp(str, "MenuScene") == 0) return MenuScene;
             if (strcmp(str, "Mountain") == 0) return Mountain;
             if (strcmp(str, "Necromancer") == 0) return Necromancer;
             if (strcmp(str, "Rock1") == 0) return Rock1;
@@ -147,7 +146,6 @@ namespace Resources
             if (strcmp(str, "Mainmenutext") == 0) return Mainmenutext;
             if (strcmp(str, "MissingTexture") == 0) return MissingTexture;
             if (strcmp(str, "particle") == 0) return particle;
-            if (strcmp(str, "Pausetext") == 0) return Pausetext;
             if (strcmp(str, "randomNormals") == 0) return randomNormals;
             if (strcmp(str, "Retrytextsheet") == 0) return Retrytextsheet;
             if (strcmp(str, "Settings") == 0) return Settings;
