@@ -17,10 +17,11 @@ using namespace Logic;
 
 #define NECRO_COUNT 3
 
-const float EnemyBossBaddie::BASE_SPEED = 21.5f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
-            EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.5f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.13f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 41337, EnemyBossBaddie::SCORE = 25000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
+const float EnemyBossBaddie::BASE_SPEED = 20.f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
+            EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.f,
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.2f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
+            EnemyBossBaddie::PROJECTILE_SCALE = 8.f;
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 31337, EnemyBossBaddie::SCORE = 150000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
     @author Lukas Westling
@@ -110,18 +111,17 @@ void EnemyBossBaddie::createAbilities()
     AbilityData data;
 
     /* ABILITY ONE */
-    data.cooldown = 25000.f;
-    data.duration = 14500.f;
-    data.randomChanche = 50;
+    data.cooldown = 15000.f;
+    data.duration = 5000.f;
+    data.randomChanche = 25;
 
     auto onUse = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_1, nullptr, true);
     };
 
     auto onTick = [&](Player& player, Ability &ability) -> void {
-        btVector3 force = (player.getPositionBT() - getPositionBT()).normalized() *
-            std::pow((1.f - (ability.getCurrentDuration() / ability.getData().duration)), 3) * ABILITY_1_MOD;
-        getRigidBody()->setLinearVelocity(getRigidBody()->getLinearVelocity() + force);
+        if (ability.getCurrentDuration() <= 0.f)
+            getRigidBody()->getWorldTransform().setOrigin(player.getPositionBT() + btVector3(0.f, 100.f, 0.f));
     };
 
     abilities[AbilityId::ONE] = Ability(data, onTick, onUse);
@@ -170,7 +170,7 @@ void EnemyBossBaddie::createAbilities()
             if (to.length() < MELEE_RANGE)
             {
                 Sound::NoiseMachine::Get().playSFX(Sound::SFX::JUMP, nullptr, true);
-                player.takeDamage(1, true); // shield charge wont save ya
+                player.takeDamage(2, true); // shield charge wont save ya
                 to.setY(0);
                 player.getCharController()->applyImpulse(to.normalized() * MELEE_PUSHBACK); 
             }
@@ -194,7 +194,7 @@ void EnemyBossBaddie::createAbilities()
         {
             dir += btVector3(cos(m_sliceSize * (i + RandomGenerator::singleton().getRandomFloat(-0.33f, 0.33f))),
                 0.f, sin(m_sliceSize * (i + RandomGenerator::singleton().getRandomFloat(-0.33f, 0.33f))));
-            shoot(dir.normalize(), Resources::Models::Files::SkySphere, PROJECTILE_SPEED, 0.f, 1.6f, true);
+            shoot(dir.normalize(), Resources::Models::Files::SkySphere, PROJECTILE_SPEED, 0.f, PROJECTILE_SCALE, true);
         }
     };
 
@@ -262,7 +262,7 @@ void EnemyBossBaddie::createAbilities()
         ProjectileData data;
         data.damage = 1;
         data.mass = 1.f;
-        data.scale = 1.5f;
+        data.scale = PROJECTILE_SCALE;
         data.enemyBullet = data.isSensor = true;
         data.meshID = Resources::Models::Files::SkySphere;
         data.speed = 19.f;
@@ -298,25 +298,26 @@ void EnemyBossBaddie::shootAbility4(Player const &player, int pattern, float spe
     {
     case 0:
         for (int i = -1; i <= 1; i++)
-            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.35f)), model, speed, 0.f, 2.f, true);
+            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.35f)), model, speed, 0.f, PROJECTILE_SCALE, true);
         break;
     case 1:
         for (int i = 2; i < 4; i++)
-            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.22f)), model, speed, 0.f, 2.9f, true);
+            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.22f)), model, speed, 0.f, PROJECTILE_SCALE, true);
         for (int i = 2; i < 4; i++)
-            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * -0.22f)), model, speed, 0.f, 2.9f, true);
+            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * -0.22f)), model, speed, 0.f, PROJECTILE_SCALE, true);
         break;
     case 2:
         for (int i = -1; i <= 1; i++)
-            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.08f)), model, speed, 0.f, 2.4f, true);
+            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.08f)), model, speed, 0.f, PROJECTILE_SCALE, true);
         break;
     }
 }
 
 void EnemyBossBaddie::damage(int damage)
 {
-    if (damage > 5)
-        Enemy::damage(damage - 5); // make buff
+    float damageCalc = std::floor(damage * 0.75f) - 5;
+    if (damageCalc > 0)
+        Enemy::damage(damageCalc);
 }
 
 void EnemyBossBaddie::useAbility(Player &target)
@@ -348,10 +349,7 @@ void EnemyBossBaddie::useAbility(Player &target, int phase)
 
 void EnemyBossBaddie::onCollision(PhysicsObject &other, btVector3 contactPoint, float dmgMultiplier)
 {
-if (Player *e = dynamic_cast<Player*>(&other))
-    {
-    }
-    else if (Projectile *pj = dynamic_cast<Projectile*> (&other))
+    if (Projectile *pj = dynamic_cast<Projectile*> (&other))
     {
         if (!pj->getProjectileData().enemyBullet)
         {
