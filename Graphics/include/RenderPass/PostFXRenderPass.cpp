@@ -19,10 +19,7 @@ namespace Graphics
         m_PostFXShader(Resources::Shaders::PostFX),
         backBuffers(backBuffers),
         ssaoMap(ssaoMap),
-        m_Constants({
-            0.f,
-            0.f
-        })
+        m_Constants({})
     {
         m_ConstantsBuffer.write(Global::context, &m_Constants, sizeof(m_Constants));
     }
@@ -32,11 +29,13 @@ namespace Graphics
         m_Constants = {};
 
         for (auto & info : RenderQueue::get().getQueue<SpecialEffectRenderInfo>()) {
-            if (info.type == info.DamageTint) {
+            if (info.type == info.Tint) {
+                m_Constants.m_Tint += info.color;
+
                 if (info.progress <= 1.f && info.progress >= 0.f) {
-                    m_Constants.m_DamageTint = info.progress;
+                    m_Constants.m_TintProgress = info.progress;
                 } else {
-                    m_Constants.m_DamageTint = 0;
+                    m_Constants.m_TintProgress = 0;
                 }
             }
 
