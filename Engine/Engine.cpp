@@ -1,4 +1,4 @@
-#include "Profiler.h"
+#include <Singletons/Profiler.h>
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
@@ -12,13 +12,14 @@
 #include "Engine.h"
 #include "Typing.h"
 
-#include "DebugWindow.h"
+#include <Singletons/DebugWindow.h>
 #include <Graphics\include\Device.h>
 #include <Graphics\include\RenderQueue.h>
 #include <Graphics\include\MainCamera.h>
 #include <Engine\Settings.h>
 
 #pragma comment (lib, "d3d11.lib")
+#pragma comment (lib, "d3dcompiler.lib")
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 bool settingsFullScreenOverRide = false;
@@ -160,7 +161,7 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
     setting.readFromFile();
 
 //    game = new Logic::StateMachine(cmdLine, args);
-    game = new Logic::StateMachine();
+    game = newd Logic::StateMachine();
 }
 
 Engine::~Engine()
@@ -246,8 +247,8 @@ HRESULT Engine::createSwapChain()
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	desc.BufferDesc.RefreshRate.Denominator = 0;
-	desc.BufferDesc.RefreshRate.Numerator = 0;
+	desc.BufferDesc.RefreshRate.Denominator = 1;
+	desc.BufferDesc.RefreshRate.Numerator = 60;
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -324,7 +325,6 @@ long long Engine::timer()
 	}
 }
 
-Profiler *g_Profiler;
 
 int Engine::run()
 {
@@ -349,7 +349,7 @@ int Engine::run()
 
 	bool running = true;
 
-	g_Profiler = newd Profiler(mDevice, mContext);
+	Profiler::set(newd Profiler(mDevice, mContext));
 	g_Profiler->registerThread("Main Thread");
     TbbProfilerObserver observer(g_Profiler);
 
@@ -459,14 +459,15 @@ int Engine::run()
     }
 //#endif // _DEBUG
 
-        Graphics::Debug::Render(Global::mainCamera);
+// TODO FIX IMGUI
+//        Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
 		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
 		PROFILE_END();
 
 		PROFILE_BEGINC("IDXGISwapChain::Present()", EventColor::Cyan);
-		mSwapChain->Present(0, 0);
+		mSwapChain->Present(1, 0);
 		PROFILE_END();
 		g_Profiler->frame();
 

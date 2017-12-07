@@ -27,6 +27,7 @@ namespace Logic
         
         StateBuffer* m_stateBuffer;
         iMenuMachine* m_menuMachine;
+        bool m_heroic;
     };
 
     typedef void(*ButtonFunc)();
@@ -35,6 +36,7 @@ namespace Logic
     namespace ButtonFunction
     {
         void startGame();
+        void startGameHeroic();
         void startSettings();
         void startSettingsPause();
         void startMainMenu();

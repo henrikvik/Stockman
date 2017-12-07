@@ -28,11 +28,12 @@ namespace Graphics
 
         Global::context->IASetInputLayout(depth_vs_static);
         Global::context->VSSetShader(depth_vs_static, nullptr, 0);
-        drawInstanced<StaticRenderInfo>(resources[StaticInstanceBuffer]);
+        drawInstanced<StaticRenderInfo>(resources[staticInstanceBuffer]);
 
         Global::context->IASetInputLayout(depth_vs_animated);
         Global::context->VSSetShader(depth_vs_animated, nullptr, 0);
-        drawInstancedAnimated<AnimatedRenderInfo>(resources[AnimatedInstanceBuffer], resources[AnimatedInstanceBuffer + 1]);
+        drawInstancedAnimated<AnimatedRenderInfo>(resources[animatedInstanceBuffer], resources[animatedJointsBuffer]);
+        drawInstancedAnimated<NewAnimatedRenderInfo>(resources[newAnimatedInstanceBuffer], resources[newAnimatedJointsBuffer]);
 
         // TODO add all renderInfos
 

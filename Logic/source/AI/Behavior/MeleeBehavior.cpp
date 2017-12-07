@@ -1,4 +1,5 @@
-#include <AI\Behavior\MeleeBehavior.h> 
+#include <AI\Behavior\MeleeBehavior.h>
+#include <AI\Enemy.h>
 namespace Logic
 {
     MeleeBehavior::MeleeBehavior() : Behavior(PathingType::CHASING)
@@ -7,6 +8,7 @@ namespace Logic
         addNode(getRoot(), NodeType::ACTION, 0, [](RunIn &in) -> bool
         {
             in.behavior->walkPath(in);
+            in.enemy->useAbility(*in.target);
             return true;
         });
     }

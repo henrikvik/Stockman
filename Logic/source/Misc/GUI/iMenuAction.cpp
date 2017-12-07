@@ -18,6 +18,16 @@ void ButtonFunction::startGame()
 {
     if (Action::Get().m_menuMachine)
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::LoadingPre);
+
+}
+
+void ButtonFunction::startGameHeroic()
+{
+    if (Action::Get().m_menuMachine)
+    {
+        Action::Get().m_heroic = true;
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::LoadingPre);
+    }
 }
 
 // Switches the current menu-machine to settings screen
@@ -98,6 +108,8 @@ void ButtonFunction::goBackToMainMenu()
     if (Action::Get().m_stateBuffer->currentSecondaryState)
         if (StateSecondary* secondary = dynamic_cast<StateSecondary*>(Action::Get().m_stateBuffer->currentSecondaryState))
             secondary->queueState(StateType::Nothing);
+
+    Action::Get().m_heroic = false;
 }
 
 void ButtonFunction::playAgain()

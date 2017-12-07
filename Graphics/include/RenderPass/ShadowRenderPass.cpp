@@ -41,11 +41,12 @@ namespace Graphics
 
         Global::context->IASetInputLayout(forward_plus_vs_static);
         Global::context->VSSetShader(forward_plus_vs_static, nullptr, 0);
-        drawInstanced<StaticRenderInfo>(resources[StaticInstanceBuffer]);
+        drawInstanced<StaticRenderInfo>(resources[staticInstanceBuffer]);
         
         Global::context->IASetInputLayout(forward_plus_vs_animated);
         Global::context->VSSetShader(forward_plus_vs_animated, nullptr, 0);
-        drawInstanced<AnimatedRenderInfo>(resources[AnimatedInstanceBuffer]);
+        drawInstancedAnimated<AnimatedRenderInfo>(resources[animatedInstanceBuffer], resources[animatedJointsBuffer]);
+        drawInstancedAnimated<NewAnimatedRenderInfo>(resources[newAnimatedInstanceBuffer], resources[newAnimatedJointsBuffer]);
 
 
         //reset

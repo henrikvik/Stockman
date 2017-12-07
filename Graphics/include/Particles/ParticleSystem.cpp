@@ -11,17 +11,17 @@
 #include <WICTextureLoader.h>
 #include <d3dcompiler.h>
 
-#include <Engine\Profiler.h>
+#include <Singletons\Profiler.h>
 #include "../Utility/DebugDraw.h"
 #include "../CommonState.h"
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 #include "../RenderInfo.h"
 #include "../RenderQueue.h"
 
 #ifdef _DEBUG
 #define SHADER_COMPILE_FLAGS D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION
 #else
-#define SHADER_COMPILE_FLAGS D3DCOMPILE_OPTIMIZATION_LEVEL3
+#define SHADER_COMPILE_FLAGS D3DCOMPILE_DEBUG
 #endif
 
 namespace fs = std::experimental::filesystem;
@@ -86,7 +86,7 @@ HRESULT __stdcall ResourcesShaderInclude::Open(
 
     if (fileSize)
     {
-        char* buf = new char[fileSize];
+        char* buf = newd char[fileSize];
         fileStream.read(buf, fileSize);
 
         *ppData = buf;
@@ -110,7 +110,7 @@ HRESULT __stdcall ResourcesShaderInclude::Close(LPCVOID pData)
 
 namespace Graphics {;
 
-ParticleSystem *FXSystem;
+GRAPHICS_API ParticleSystem *FXSystem;
 bool FXEnabled = true;
 
 ParticleSystem::ParticleSystem(ID3D11Device * device, uint32_t capacity, const char * path)
@@ -597,6 +597,7 @@ GeometryParticleInstance *ParticleSystem::uploadParticles(std::vector<GeometryPa
 
         auto factor = particle.age / def.m_Lifetime;
 
+
         auto ease_color = GetEaseFuncV(def.m_ColorEasing);
         auto ease_deform = GetEaseFunc(def.m_DeformEasing);
         auto ease_size = GetEaseFunc(def.m_SizeEasing);
@@ -620,7 +621,6 @@ GeometryParticleInstance *ParticleSystem::uploadParticles(std::vector<GeometryPa
         instance.m_DeformSpeed = def.m_DeformSpeed;
         instance.m_NoiseScale = def.m_NoiseScale;
         instance.m_NoiseSpeed = def.m_NoiseSpeed;
-
         *output = instance;
 
         auto ease_light_color = GetEaseFuncV(def.m_LightColorEasing);
@@ -654,13 +654,13 @@ void ParticleSystem::updateParticles(XMVECTOR anchor, std::vector<GeometryPartic
     while (it != particles.end()) {
         auto def = *it->def;
 
+        it->age += dt;
+        it->rotprog += dt;
+
         if (it->age > def.m_Lifetime) {
             it = particles.erase(it);
             continue;
         }
-
-        it->age += dt;
-        it->rotprog += dt;
 
         XMStoreFloat3(&it->velocity, XMLoadFloat3(&it->velocity) + XMVECTOR { 0, def.m_Gravity, 0 } * dt);
         XMStoreFloat3(&it->pos, XMLoadFloat3(&it->pos) + XMLoadFloat3(&it->velocity) * dt);

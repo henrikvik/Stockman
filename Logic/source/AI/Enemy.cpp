@@ -38,7 +38,8 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
     maxAnimationTime = 0.f;
 
-    body->setGravity({ 0.f, -9.82f * 7.f, 0.f });
+    body->setGravity({ 0.f, -9.82f * 10.f, 0.f });
+
     addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
         m_blinkTimer = 100.0f;
         getSoundSource()->playSFX(Sound::SFX::ENEMY_HIT, 1.f, 0.2f);
@@ -46,6 +47,7 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
     addCallback(ON_DEATH, [&](CallbackData &data)
     {
+        Graphics::FXSystem->addEffect("DeathEffect", data.caller->getPosition());
         getSoundSource()->playSFX(Sound::SFX::ENEMY_DEATH, 1.f, 0.25f);
     });
 }
@@ -99,9 +101,17 @@ void Enemy::playAnimation(std::string animationName, float endAnimationTime, flo
 void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 
-    if (!m_stunned)
+    if (!m_stunned || getEnemyType() == EnemyType::BOSS_1) // quick fix
     {
         m_behavior->update(*this, closeEnemies, player, deltaTime);
+
+        // THIS IS A TEMPORARY FIX TO HANDLE BS
+        if (getPositionBT().getY() < 0.5f) {
+            getRigidBody()->setGravity({ 0.f, 9.82f * 20.f, 0.f });
+        }
+        else {
+            getRigidBody()->setGravity({ 0.f, -9.82f * 10.f, 0.f });
+        }
     }
 
 	updateSpecific(player, deltaTime);
@@ -118,7 +128,7 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
     light.position = enemyRenderInfo.transform.Translation();
 
-    if (getPositionBT().y() < MIN_Y)
+    if (getPositionBT().y() < MIN_Y || getPositionBT().length2() > 62500.f)
         damage(m_health);
 
     if (m_blinkTimer > 0)

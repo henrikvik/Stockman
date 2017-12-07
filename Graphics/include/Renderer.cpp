@@ -4,9 +4,9 @@
 #include <Engine\Constants.h>
 #include "Utility\sizeofv.h"
 #include <Keyboard.h>
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
-#include <Engine\Profiler.h>
+#include <Singletons\Profiler.h>
 #include "RenderQueue.h"
 
 #include "Particles\ParticleSystem.h"
@@ -51,9 +51,15 @@ namespace Graphics
         , timeBuffer(device)
 #pragma endregion
         , foliageInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(FoliageRenderInfo))
-        , staticInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
+        , staticInstanceBuffer( device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
+
         , animatedInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
-        , animatedJointsBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
+        , animatedJointsBuffer(  device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
+
+        , newAnimatedInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(NewAnimatedRenderInfo))
+        , newAnimatedJointsBuffer(  device, CpuAccess::Write, INSTANCE_CAP(NewAnimatedRenderInfo))
+
+
         , fakeBuffers(WIN_WIDTH, WIN_HEIGHT)
 #pragma region Shared Shader Resources
         , colorMap(WIN_WIDTH, WIN_HEIGHT)
@@ -231,14 +237,27 @@ namespace Graphics
             newd ParticleDepthRenderPass(depthStencil),
             newd DepthRenderPass(
                 {},
-                { staticInstanceBuffer, animatedInstanceBuffer, animatedJointsBuffer,
-                foliageInstanceBuffer },
+                { 
+                    staticInstanceBuffer, 
+                    animatedInstanceBuffer, 
+                    animatedJointsBuffer,
+                    foliageInstanceBuffer,
+                    newAnimatedInstanceBuffer,
+                    newAnimatedJointsBuffer,
+                },
                 {*Global::mainCamera->getBuffer(), grassTimeBuffer },
                 depthStencil
             ),
             newd ShadowRenderPass(
                 {}, 
-                { staticInstanceBuffer, animatedInstanceBuffer },
+                { 
+                    staticInstanceBuffer, 
+                    animatedInstanceBuffer, 
+                    animatedJointsBuffer,
+                    foliageInstanceBuffer,
+                    newAnimatedInstanceBuffer,
+                    newAnimatedJointsBuffer,
+                },
                 {*sun.getLightMatrixBuffer(), grassTimeBuffer },
                 shadowMap
             ),
@@ -272,7 +291,9 @@ namespace Graphics
                     staticInstanceBuffer,
                     animatedInstanceBuffer,
                     animatedJointsBuffer,
-                    foliageInstanceBuffer
+                    foliageInstanceBuffer,
+                    newAnimatedInstanceBuffer,
+                    newAnimatedJointsBuffer,
                 },
                 {
                     *Global::mainCamera->getBuffer(),
@@ -520,6 +541,37 @@ namespace Graphics
                     *jointsBuffer++ = joints;
                 }
             } // Animation Buffers
+
+            animatedInstanceBuffer.unmap();
+            animatedJointsBuffer.unmap();
+        }
+
+        { // New Animation Buffers
+            auto instanceBuffer = animatedInstanceBuffer.map();
+            auto jointsBuffer   = animatedJointsBuffer.map();
+
+            for (auto & model_infos : RenderQueue::get().getQueue<NewAnimatedRenderInfo>())
+            {
+                HybrisLoader::Skeleton * skeleton = &ModelLoader::get().getModel((Resources::Models::Files)model_infos.first)->getSkeleton();
+
+                for (auto & info : model_infos.second)
+                {
+                    StaticInstance instance = {};
+                    instance.world = info.transform;
+                    instance.worldInvT = info.transform.Invert().Transpose();
+                    instance.color = info.color;
+                    instance.useGridTexture = info.useGridTexture;
+
+                    AnimatedJoints joints;
+                    for (size_t i = 0; i < info.joint_transforms->size(); i++)
+                    {
+                        joints.jointTransforms[i] = info.joint_transforms->at(i);
+                    }
+
+                    *instanceBuffer++ = instance;
+                    *jointsBuffer++ = joints;
+                }
+            } // New Animation Buffers
 
             animatedInstanceBuffer.unmap();
             animatedJointsBuffer.unmap();

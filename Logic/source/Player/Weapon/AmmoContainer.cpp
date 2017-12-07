@@ -47,9 +47,14 @@ bool AmmoContainer::removeAmmo(int weapon)
     return false; // return false if just using endless ammo
 }
 
-void Logic::AmmoContainer::setEnhancedAmmo(int ammo)
+void AmmoContainer::setEnhancedAmmo(int ammo)
 {
     m_aInfo.enhancedAmmo = ammo;
+}
+
+bool AmmoContainer::getIsEnhanced()
+{
+    return (m_aInfo.enhancedAmmo != 0);
 }
 
 void AmmoContainer::fillMag(float modifier)

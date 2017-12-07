@@ -13,7 +13,6 @@ CardManager::CardManager(int nrOfEach)
 
     loadDeckFromFile();
     createDeck(nrOfEach);
-    shuffle();
 
     state = CardState::STILL;
 }
@@ -22,7 +21,6 @@ CardManager::~CardManager() { }
 
 void CardManager::resetDeck()
 {
-    shuffle();
     for (auto &pair : m_deck)
         if (pair.first == TAKEN)
             pair.first = IN_DECK;
@@ -39,6 +37,8 @@ void CardManager::createDeck(int nrOfEach)
 void CardManager::pickThreeCards(bool damaged)
 {
     currenthand.clear();
+    shuffle();
+
     int cardsPicked = 0;
     int amount = HAND_SIZE;
 

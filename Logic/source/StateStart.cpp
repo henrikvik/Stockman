@@ -3,7 +3,7 @@
 #include <Misc\Sound\NoiseMachine.h>
 #include <Engine\Typing.h>
 #include <DebugDefines.h>
-#include <Engine\DebugWindow.h> 
+#include <Singletons\DebugWindow.h> 
 #include <Physics\Physics.h>
 #include <Map.h>
 #include <Graphics\include\MainCamera.h>
@@ -28,7 +28,8 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     m_physics->init();
     m_map = newd Map();
     m_map->init(m_physics);
-    m_map->loadStartMenuScene();
+//    m_map->loadStartMenuScene();
+    m_map->loadMap(Resources::Maps::Files::Stock_Map);
 
     // Initializing Menu's
     m_menu = newd iMenuMachine();
@@ -40,9 +41,7 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     // ! Reminder !  
     // Gives a small mem leak as for right now, but it's too cool to remove ^.^
     // Initializing campfire
-    m_campfire = Graphics::FXSystem->getEffect("FireSmoke");
-
-    
+    m_campfire = Graphics::FXSystem->getEffect("FireSmoke");  
 }
 
 StateStart::~StateStart()
@@ -60,7 +59,7 @@ void StateStart::update(float deltaTime)
     Graphics::FXSystem->processEffect(&m_campfire, { 0, 0, 0 }, deltaTime / 1000.f);
 
     //temp 
-    SpecialEffectRenderInfo info;
+    SpecialEffectRenderInfo info = {};
     info.type = SpecialEffectRenderInfo::DoF;
     QueueRender(info);
 

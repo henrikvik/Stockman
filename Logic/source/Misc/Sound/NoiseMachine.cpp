@@ -4,6 +4,9 @@
 
 using namespace Sound;
 
+const int NoiseMachine::THRESHOLD::SFX_MIN_DIST = 1;
+const int NoiseMachine::THRESHOLD::SFX_MAX_DIST = 50;
+
 // #define DEBUG_WRITE_INITIALIZING    // Print info about initializing
 // #define DEBUG_WRITE_LOGGING      // Write in output log at exit
 #define DEBUG_WRITE_ERRORS          // Write potential errors in console

@@ -148,7 +148,7 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         p->setDead(false);
 
         // remove all callbacks from the projectile
-        p->clearCallbacks();
+        p->clearCallbacks(true);
 
         // clear uppgrades and effects on projectile
         p->getStatusManager().clear();

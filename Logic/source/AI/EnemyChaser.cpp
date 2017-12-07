@@ -22,6 +22,10 @@ EnemyChaser::EnemyChaser(btRigidBody* body)
     // plays animation walk for 5 seconds, an optional parameter
     // is available for starting "mid" animation
     playAnimation("walk", 5.f);
+    loadAnimation(Resources::Models::Files::SummonUnitWithAnim);
+    light.color = DirectX::SimpleMath::Color(0.1f, 0.7f, 0.4f);
+    light.intensity = 0.4f;
+    light.range = 5.f;
 }
 
 EnemyChaser::~EnemyChaser()

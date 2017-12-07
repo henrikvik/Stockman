@@ -9,14 +9,16 @@ namespace Resources
             KG14,
             KG18,
             KG26,
-            nordic
+            nordic,
+            nordic25
         };
         const std::map<Files, const char *> Paths =
         {
             {KG14, R"(..\Resources\Fonts\KG14.spritefont)"},
             {KG18, R"(..\Resources\Fonts\KG18.spritefont)"},
             {KG26, R"(..\Resources\Fonts\KG26.spritefont)"},
-            {nordic, R"(..\Resources\Fonts\nordic.spritefont)"}
+            {nordic, R"(..\Resources\Fonts\nordic.spritefont)"},
+            {nordic25, R"(..\Resources\Fonts\nordic25.spritefont)"}
         };
         
         Files toEnum(const char * str);
@@ -25,16 +27,29 @@ namespace Resources
     {
         enum Files
         {
-            Stock_Map,
-            Test_Map
+            Stock_Map
         };
         const std::map<Files, const char *> Paths =
         {
-            {Stock_Map, R"(..\Resources\Maps\Stock_Map.toml)"},
-            {Test_Map, R"(..\Resources\Maps\Test_Map.toml)"}
+            {Stock_Map, R"(..\Resources\Maps\Stock_Map.toml)"}
         };
         
         Files toEnum(const char * str);
+        namespace OLD
+        {
+            enum Files
+            {
+                Stock_Map_V6,
+                Test_Map
+            };
+            const std::map<Files, const char *> Paths =
+            {
+                {Stock_Map_V6, R"(..\Resources\Maps\OLD\Stock_Map_V6.toml)"},
+                {Test_Map, R"(..\Resources\Maps\OLD\Test_Map.toml)"}
+            };
+            
+            Files toEnum(const char * str);
+        }
     }
     namespace Models
     {
@@ -45,6 +60,7 @@ namespace Resources
             AnimatedSummonUnit,
             AnimationTest,
             Barrel,
+            Bone,
             Border_Walls,
             Bridge,
             Crate,
@@ -59,6 +75,7 @@ namespace Resources
             Firepit,
             Grappling_Point,
             Ground,
+            Ground_Old,
             Hammer,
             House1,
             House2,
@@ -70,7 +87,6 @@ namespace Resources
             Log,
             Lower_Island,
             Market_Tent,
-            MenuScene,
             Mountain,
             Necromancer,
             Rock1,
@@ -79,8 +95,6 @@ namespace Resources
             SkySphere,
             Small_Crate,
             Snow,
-            SnowHeap,
-            Snow_,
             Snow_Heap,
             Spear,
             Staff,
@@ -91,6 +105,7 @@ namespace Resources
             Tablet1,
             Tee_Pee,
             Tomb_Stone,
+            TotemWithAnimation,
             Tree,
             UnitCube
         };
@@ -101,6 +116,7 @@ namespace Resources
             {AnimatedSummonUnit, R"(..\Resources\Models\AnimatedSummonUnit.hyb)"},
             {AnimationTest, R"(..\Resources\Models\AnimationTest.hyb)"},
             {Barrel, R"(..\Resources\Models\Barrel.hyb)"},
+            {Bone, R"(..\Resources\Models\Bone.hyb)"},
             {Border_Walls, R"(..\Resources\Models\Border_Walls.hyb)"},
             {Bridge, R"(..\Resources\Models\Bridge.hyb)"},
             {Crate, R"(..\Resources\Models\Crate.hyb)"},
@@ -115,6 +131,7 @@ namespace Resources
             {Firepit, R"(..\Resources\Models\Firepit.hyb)"},
             {Grappling_Point, R"(..\Resources\Models\Grappling_Point.hyb)"},
             {Ground, R"(..\Resources\Models\Ground.hyb)"},
+            {Ground_Old, R"(..\Resources\Models\Ground_Old.hyb)"},
             {Hammer, R"(..\Resources\Models\Hammer.hyb)"},
             {House1, R"(..\Resources\Models\House1.hyb)"},
             {House2, R"(..\Resources\Models\House2.hyb)"},
@@ -126,15 +143,14 @@ namespace Resources
             {Log, R"(..\Resources\Models\Log.hyb)"},
             {Lower_Island, R"(..\Resources\Models\Lower_Island.hyb)"},
             {Market_Tent, R"(..\Resources\Models\Market_Tent.hyb)"},
-            {MenuScene, R"(..\Resources\Models\MenuScene.hyb)"},
             {Mountain, R"(..\Resources\Models\Mountain.hyb)"},
             {Necromancer, R"(..\Resources\Models\Necromancer.hyb)"},
-            {Mountain, R"(..\Resources\Models\Mountain.hyb)"},
             {Rock1, R"(..\Resources\Models\Rock1.hyb)"},
             {Rock2, R"(..\Resources\Models\Rock2.hyb)"},
             {Rock3, R"(..\Resources\Models\Rock3.hyb)"},
             {SkySphere, R"(..\Resources\Models\SkySphere.hyb)"},
             {Small_Crate, R"(..\Resources\Models\Small_Crate.hyb)"},
+            {Snow, R"(..\Resources\Models\Snow.hyb)"},
             {Snow_Heap, R"(..\Resources\Models\Snow_Heap.hyb)"},
             {Spear, R"(..\Resources\Models\Spear.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
@@ -145,6 +161,7 @@ namespace Resources
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {Tee_Pee, R"(..\Resources\Models\Tee_Pee.hyb)"},
             {Tomb_Stone, R"(..\Resources\Models\Tomb_Stone.hyb)"},
+            {TotemWithAnimation, R"(..\Resources\Models\TotemWithAnimation.hyb)"},
             {Tree, R"(..\Resources\Models\Tree.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
         };
@@ -223,8 +240,10 @@ namespace Resources
         enum Files
         {
             CardBackground,
+            controlscheme,
             Crosshair,
             Diffusemoon,
+            Enraged,
             Gameover,
             Gamesheet,
             Grid,
@@ -237,22 +256,25 @@ namespace Resources
             Mainmenutext,
             MissingTexture,
             particle,
-            Pausetext,
             randomNormals,
+            Retrytextsheet,
             Settings,
             SettingsButtons,
             Skillpickbackground,
             Skillpicksheet,
             Spellsheet,
             TextSkillPick,
+            wavebegins,
             WaveComplete,
             weaponsheet
         };
         const std::map<Files, const char *> Paths =
         {
             {CardBackground, R"(..\Resources\Textures\CardBackground.dds)"},
+            {controlscheme, R"(..\Resources\Textures\controlscheme.dds)"},
             {Crosshair, R"(..\Resources\Textures\Crosshair.dds)"},
             {Diffusemoon, R"(..\Resources\Textures\Diffusemoon.dds)"},
+            {Enraged, R"(..\Resources\Textures\Enraged.dds)"},
             {Gameover, R"(..\Resources\Textures\Gameover.dds)"},
             {Gamesheet, R"(..\Resources\Textures\Gamesheet.dds)"},
             {Grid, R"(..\Resources\Textures\Grid.png)"},
@@ -265,14 +287,15 @@ namespace Resources
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.dds)"},
             {particle, R"(..\Resources\Textures\particle.png)"},
-            {Pausetext, R"(..\Resources\Textures\Pausetext.dds)"},
             {randomNormals, R"(..\Resources\Textures\randomNormals.dds)"},
+            {Retrytextsheet, R"(..\Resources\Textures\Retrytextsheet.dds)"},
             {Settings, R"(..\Resources\Textures\Settings.dds)"},
             {SettingsButtons, R"(..\Resources\Textures\SettingsButtons.dds)"},
             {Skillpickbackground, R"(..\Resources\Textures\Skillpickbackground.dds)"},
             {Skillpicksheet, R"(..\Resources\Textures\Skillpicksheet.dds)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
             {TextSkillPick, R"(..\Resources\Textures\TextSkillPick.dds)"},
+            {wavebegins, R"(..\Resources\Textures\wavebegins.dds)"},
             {WaveComplete, R"(..\Resources\Textures\WaveComplete.dds)"},
             {weaponsheet, R"(..\Resources\Textures\weaponsheet.dds)"}
         };

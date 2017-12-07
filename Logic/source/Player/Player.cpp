@@ -19,8 +19,8 @@
 #include <Physics\Physics.h>
 #include <Projectile\Projectile.h>
 
-#include <Engine\Profiler.h>
-#include <Engine\DebugWindow.h>
+#include <Singletons\Profiler.h>
+#include <Singletons\DebugWindow.h>
 #include <Graphics\include\MainCamera.h>
 #include <Graphics\include\Device.h>
 
@@ -38,12 +38,14 @@ using namespace Logic;
 #define PLAYER_FRICTION_MIN             0.1f
 #define PLAYER_AIR_FRICTION				1.f
 #define PLAYER_JUMP_SPEED				0.008f
+#define PLAYER_MAX_MOVE                 30.f
 
 const int Player::MIN_Y = -80, Player::MAX_HP = 3;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
 Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
-: Entity(body, halfExtent)
+    : Entity(body, halfExtent),
+      m_DamageTintTimer(0.f)
 {
     m_weaponManager = newd WeaponManager();
     m_skillManager = newd SkillManager();
@@ -93,6 +95,7 @@ void Player::init(Physics* physics, ProjectileManager* projectileManager)
 
     registerDebugCmds();
 
+    m_lastPos = getPositionBT();
 	m_forward = DirectX::SimpleMath::Vector3(0, 0, 1);
 	m_moveMaxSpeed = PLAYER_MOVEMENT_MAX_SPEED;
 	m_moveDir.setZero();
@@ -212,63 +215,74 @@ void Player::registerDebugCmds()
     });
     win->registerCommand("LOG_INCREASE_DAMAGE", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P1_DAMAGE);
+        upgrade(StatusManager::P1_DAMAGE);
 
         return "20% extra damage";
     });
     win->registerCommand("LOG_INCREASE_MOVEMENT_SPEED", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P20_PERC_MOVEMENTSPEED);
+        upgrade(StatusManager::P20_PERC_MOVEMENTSPEED);
 
         return "Player is permanently 20% faster";
     });
     win->registerCommand("LOG_DECREASE_SKILL_CD", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::M20_PERC_CD);
+        upgrade(StatusManager::M20_PERC_CD);
 
         return "Player skills take 20% less time to recover";
     });
     win->registerCommand("LOG_INCREASE_MAG_SIZE", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P40_MAGSIZE);
+        upgrade(StatusManager::P40_MAGSIZE);
 
         return "Mag clip holds 40 more bullets";
     });
     win->registerCommand("LOG_INCREASE_AMMO_CAP", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P20_AMMOCAP);
+        upgrade(StatusManager::P20_AMMOCAP);
 
         return "You have bigger ammo bags now, it can hold 20 ammo more";
     });
     win->registerCommand("LOG_INCREASE_FIRE_RATE", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P20_PERC_RATE_OF_FIRE);
+        upgrade(StatusManager::P20_PERC_RATE_OF_FIRE);
 
         return "You shoot 20% faster";
     });
     win->registerCommand("LOG_INCREASE_RELOAD_TIME", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::M33_PERC_RELOAD_SPEED);
+        upgrade(StatusManager::M33_PERC_RELOAD_SPEED);
 
         return "You reload 20% faster";
     });
     win->registerCommand("LOG_INCREASE_JUMP_HEIGHT", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::P45_PERC_JUMP);
+        upgrade(StatusManager::P45_PERC_JUMP);
 
         return "You jump 45% higher";
     });
     win->registerCommand("LOG_PLAYER_SET_BURNING", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
+        upgrade(StatusManager::FIRE_UPGRADE);
 
         return "Crossbow deals fire damage";
     });
     win->registerCommand("LOG_PLAYER_SET_FROST", [&](std::vector<std::string> &args)->std::string
     {
-        getStatusManager().addUpgrade(StatusManager::FROST_UPGRADE);
+        upgrade(StatusManager::FROST_UPGRADE);
 
         return "Frost Staff has longer freezing effect";
+    });
+    win->registerCommand("LOG_GIVE_ENHANCE_AMMO", [&](std::vector<std::string> &para)->std::string
+    {
+        try {
+            m_weaponManager->getWeaponLoadout(stoi(para[0]))->ammoContainer.setEnhancedAmmo(stoi(para[1]));
+            return "Added ammo";
+        }
+        catch (std::exception &ex)
+        {
+            return "That didn't work";
+        }
     });
 }
 
@@ -286,7 +300,8 @@ void Player::reset()
     m_charController->setLinearVelocity({ 0.f, 0.f, 0.f });
     m_moveDir = { 0.f, 0.f, 0.f };
     m_moveSpeed = 0.f;
-	getTransform().setOrigin(startPosition);
+	m_charController->warp(startPosition);
+    m_lastPos = getPositionBT();
 	m_weaponManager->reset();
     m_skillManager->reset();
     currentWeapon = 0;
@@ -297,13 +312,14 @@ void Player::reset()
     m_permanentSpeedMod = 1.0f;
     m_jumpSpeedMod = 1.0f;
     m_stunned = false;
+    m_DamageTintTimer = 0.f;
 
     getStatusManager().clear();
     getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
 
     //temp? probably
     Global::mainCamera->update(getPosition(), m_forward, Global::context);
-    static SpecialEffectRenderInfo info;
+    static SpecialEffectRenderInfo info = {};
     info.type = info.Snow;
     info.restart = true;
 
@@ -312,13 +328,6 @@ void Player::reset()
 
 void Player::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
 {
-    if (Skill* grappling = m_skillManager->getActiveSkill(SkillManager::SKILL_GRAPPLING_HOOK))
-    {
-        btVector3 dir = contactPoint - getPositionBT();
-        dir.normalize();
-        if (dir.dot(btVector3(0.f, 1.f, 0.f)) > 0.5f)
-            grappling->release();
-    }
     if (Projectile* p = dynamic_cast<Projectile*>(&other))	onCollision(*p);										// collision with projectile
     else if (Trigger* t = dynamic_cast<Trigger*>(&other)) {}														// collision with trigger
     else if (Enemy *e = dynamic_cast<Enemy*> (&other))
@@ -462,12 +471,14 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
             // Add invul time
             getStatusManager().addStatus(StatusManager::EFFECT_ID::INVULNERABLE, 1);
             
-            SpecialEffectRenderInfo shake;
+            SpecialEffectRenderInfo shake = {};
             shake.duration = 0.5f;
             shake.radius = 30.0f;
             shake.type = SpecialEffectRenderInfo::screenShake;
             shake.affectEveryThing = true;
             QueueRender(shake);
+
+            m_DamageTintTimer += 1.f;
         }
     }
 }
@@ -485,6 +496,14 @@ int Player::getMaxHP() const
 void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
+
+    m_DamageTintTimer -= deltaTime / 1000.f;
+    if (m_DamageTintTimer < 0.f) m_DamageTintTimer = 0.f;
+
+    SpecialEffectRenderInfo tint = {};
+    tint.type = SpecialEffectRenderInfo::DamageTint;
+    tint.progress = m_DamageTintTimer;
+    QueueRender(tint);
 
     // Update weapon
     m_weaponManager->update(deltaTime);
@@ -554,7 +573,7 @@ void Player::updateSpecific(float deltaTime)
 	    {
             if (m_wasInAir)
             {
-                SpecialEffectRenderInfo shake;
+                SpecialEffectRenderInfo shake = {};
                 shake.type = SpecialEffectRenderInfo::screenShake;
                 shake.duration = 0.14f;
                 shake.radius = 7.0f;
@@ -651,8 +670,10 @@ void Player::updateSpecific(float deltaTime)
     // update SkillManager
     m_skillManager->update(deltaTime);
 
+    // saving position from last frame
+    m_lastPos = getPositionBT();
     // step player
-    if(!m_noclip)
+    if (!m_noclip)
         stepPlayer(deltaTime);
 
     Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
@@ -806,7 +827,13 @@ void Player::stepPlayer(float deltaTime)
     // Step player
     m_charController->preStep(m_physPtr);
     m_charController->playerStep(m_physPtr, deltaTime);
-    PROFILE_END()
+    PROFILE_END();
+
+    // if new position is totally fucked for some reason, reset to last position
+    if (abs(m_lastPos.x() - getPositionBT().x()) > PLAYER_MAX_MOVE ||
+        abs(m_lastPos.y() - getPositionBT().y()) > PLAYER_MAX_MOVE ||
+        abs(m_lastPos.z() - getPositionBT().z()) > PLAYER_MAX_MOVE)
+        m_charController->warp(m_lastPos);
 }
 
 void Player::applyFriction(float deltaTime, float friction)
@@ -934,7 +961,7 @@ DirectX::SimpleMath::Vector2 Player::getWindowMidPoint()
     RECT rect;
     GetWindowRect(*Engine::g_window, &rect);
 
-    return DirectX::SimpleMath::Vector2((rect.left + rect.right* 0.5f) , (rect.top + rect.bottom* 0.5f) ); // Returns mid point for window
+    return DirectX::SimpleMath::Vector2(std::floor((rect.left + rect.right * 0.5f)), std::floor((rect.top + rect.bottom * 0.5f))); // Returns mid point for window
 }
 
 

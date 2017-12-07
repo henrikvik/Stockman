@@ -1,6 +1,6 @@
 #pragma once
 #include <d3d11.h>
-
+#include "../export.h"
 
 namespace Global
 {
@@ -16,7 +16,7 @@ namespace Global
 #undef MAKE_OPERATOR
     };
 
-    extern ID3D11Device * device;
-    extern ID3D11DeviceContext * context;
+    extern GRAPHICS_API ID3D11Device * device;
+    extern GRAPHICS_API ID3D11DeviceContext * context;
     extern Nulls nulls;
 }

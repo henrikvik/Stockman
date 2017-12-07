@@ -3,7 +3,7 @@
 #include "../MainCamera.h"
 #include "../CommonState.h"
 #include <WICTextureLoader.h>
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
 namespace Graphics
 {
@@ -20,9 +20,9 @@ namespace Graphics
         m_MoonShader(Resources::Shaders::Moon),
         sphereTransformBuffer(Global::device),
         m_Colors({
-            DirectX::SimpleMath::Vector4 { 0.f, 0.f, 0.05f, 0.f },
-            DirectX::SimpleMath::Vector4{0.f, 0.1f, 0.3f, 0.f} ,
-            DirectX::SimpleMath::Vector4(0.f, 0.f, 0.f, 0.1f)
+            DirectX::SimpleMath::Vector4 { 43 / 255.f, 53 / 255.f, 104 / 255.f, 0.f },
+            DirectX::SimpleMath::Vector4 { 13 / 255.f, 17 / 255.f, 81 / 255.f, 0.f} ,
+            DirectX::SimpleMath::Vector4(0.f, 0.f, 0.f, 0.25f)
         }),
         m_SkyColors(Global::device),
         m_Sun(sun)
@@ -113,6 +113,7 @@ namespace Graphics
         m_Colors.angleSize.x = dir.x;
         m_Colors.angleSize.y = dir.y;
         m_Colors.angleSize.z = dir.z;
+
         auto view = Matrix::CreateBillboard(Vector3(dir), Vector3(0.f), Vector3::UnitY) * Matrix::CreateTranslation(Global::mainCamera->getPos());
 
         m_Colors.view = view;

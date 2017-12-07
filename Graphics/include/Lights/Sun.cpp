@@ -2,12 +2,12 @@
 #include <algorithm>
 #include "../Device.h"
 #include "../MainCamera.h"
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 #define PI 3.14159265f
 #define ONE_DEG_IN_RAD 0.01745f
 #define SUNSET_TIME 0.5f
 #define DAY_NIGHT_ON false
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
 static bool DebugShadowConstants = false;
 namespace Graphics
@@ -46,8 +46,8 @@ namespace Graphics
     {
         static DirectX::SimpleMath::Vector4 basepos(45.f, 14.f, 43.f, 1.f);
         static DirectX::SimpleMath::Vector3 lightdir(0.310f, 0.906f, 0.288f);
-        static DirectX::SimpleMath::Vector3 lightcolor(0.1, 0.1, 0.3);
-        static DirectX::SimpleMath::Vector3 ambient(0.2, 0.2, 0.2);
+        static DirectX::SimpleMath::Vector3 lightcolor(15 / 255.f, 15 / 255.f, 39 / 255.f);
+        static DirectX::SimpleMath::Vector3 ambient(33 / 255.f, 33 / 255.f, 44 / 255.f);
         static float nearPlane = 9.f;
         static float farPlane = 201.f;
         static float distance = 84.1f;

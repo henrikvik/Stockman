@@ -93,7 +93,7 @@
 	"mDmgTaken": 0f;
 	"mFirerate": 10f;
 	"mHP": 0f;
-	"mMovementSpeed": 2f;
+	"mMovementSpeed": 1.75f;
     "mAmmoCap" : 0;
     "mMagCap" : 0;
     "mSkillCDDecrease" : 0f;

@@ -2,7 +2,7 @@
 #include <AI\EntityManager.h>
 
 #include <Keyboard.h>
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
 using namespace Logic;
 
@@ -141,6 +141,7 @@ bool WaveTimeManager::isTransitioning() const
 {
     return m_onTransition;
 }
+
 
 void WaveTimeManager::startTransition()
 {

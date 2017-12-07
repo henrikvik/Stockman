@@ -4,8 +4,6 @@
 #include <Misc\GUI\Specific\iMenuCards.h>
 #include <Misc\Network\dbConnect.h>
 #include <Misc\CommandsFile.h>
-#include <Player\Weapon\WeaponModel.h>
-
 
 // Input Singletons
 #include <Keyboard.h>
@@ -14,7 +12,7 @@
 // Debugging purposes
 #include <DebugDefines.h>
 #include <Engine\Settings.h>
-#include <Engine\DebugWindow.h> 
+#include <Singletons\DebugWindow.h> 
 #include <GameType.h>
 
 using namespace Logic;
@@ -71,7 +69,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     RenderQueue::get().clearAllQueues();
 
     //temp? probably NOT
-    static SpecialEffectRenderInfo info;
+    static SpecialEffectRenderInfo info = {};
     info.type = info.Snow;
     info.restart = true;
     
@@ -145,13 +143,15 @@ void StatePlaying::update(float deltaTime)
         //the spagetti is (expand)ing (dong)
         if (m_menu->getType() != iMenu::CardSelect)
         {
+            float tempTime = m_waveTimeManager.getTimeCurrent();
             bool newWave = m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
 
             if (newWave)
             {
+                ComboMachine::Get().addTimeBonus(tempTime);
                 m_menu->queueMenu(iMenu::CardSelect);
                 m_cardManager->pickThreeCards(m_player->getHP() != m_player->getMaxHP());
-                m_projectileManager->removeEnemyProjCallbacks();
+                m_projectileManager->removeAllProjectiles();
             }
         }
 
