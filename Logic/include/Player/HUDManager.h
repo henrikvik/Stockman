@@ -51,6 +51,7 @@ namespace Logic
 
         static const float WAVE_SLIDE_TIME, ENRAGE_SLIDE_TIME, PICKEUP_MESSAGE_TIMER, COMBO_BAR_WIDTH;
 
+
         std::vector<Sprite> HUDElements;
         std::vector<Sprite> skillList;
         std::vector<Sprite> skillMasks;
