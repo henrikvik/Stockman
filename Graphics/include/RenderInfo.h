@@ -89,9 +89,10 @@ SET_INSTANCE_CAP(LightRenderInfo, 128)
 
 struct SpecialEffectRenderInfo : RenderInfo
 {
-    enum SpecialEffect { BulletTime, Snow, screenShake, DoF, screenBounce, DamageTint };
+    enum SpecialEffect { BulletTime, Snow, screenShake, DoF, screenBounce, Tint };
     SpecialEffect type;
     DirectX::SimpleMath::Vector2 direction;
+    DirectX::SimpleMath::Vector3 color;
     float progress = 0;
     float duration = 0;
     float radius = 0;

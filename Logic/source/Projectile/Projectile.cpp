@@ -185,7 +185,7 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
 // Call back to listener with a ptr to the collided physics object
 void Projectile::doCallBack(PhysicsObject& other)
 {
-    if (hasCallback(ON_COLLISION) && m_pData.type != ProjectileTypeNoCallback)
+    if (hasCallback(ON_COLLISION))
     {
         CallbackData data;
         data.caller = this;

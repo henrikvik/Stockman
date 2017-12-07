@@ -50,7 +50,7 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
     {
         for (Projectile* p : projectiles)
         {
-            p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
+            p->addCallback(Entity::ON_DESTROY, [&](Entity::CallbackData &data) -> void {
                 doExplosionCallback(data);
                 doExplosionCallbackEnhanced(data);
             });
@@ -60,7 +60,7 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
     {
         for (Projectile* p : projectiles)
         {
-            p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
+            p->addCallback(Entity::ON_DESTROY, [&](Entity::CallbackData &data) -> void {
                 doExplosionCallback(data);
             });
         }
@@ -71,9 +71,6 @@ void WeaponFreezeGrenade::onUse(std::vector<Projectile*> &projectiles, Entity& s
 void WeaponFreezeGrenade::doExplosionCallback(Entity::CallbackData &data)
 {
     data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_MAGIC_2, 1.f, 0.15f);
-
-    // only one callback
-    dynamic_cast<Projectile*>(data.caller)->getProjectileData().type = ProjectileTypeNoCallback;
     
     // explosion projectile
     m_explosionData.scale = FREEZE_GRENADE_EXPLOSION_SCALE;
@@ -129,10 +126,7 @@ void WeaponFreezeGrenade::doExplosionCallbackEnhanced(Entity::CallbackData &data
         Projectile* p = getSpawnProjectileFunc()(m_freezeData, position, btVector3(cos(m_sliceSize * i) * dirMod, upMod, sin(m_sliceSize * i) * dirMod).normalize(), *data.caller, { 0.f, 0.f, 0.f });
         if (p)
         {
-            p->addCallback(Entity::ON_COLLISION, [&](Entity::CallbackData &data) -> void {
-                // only one callback
-                dynamic_cast<Projectile*>(data.caller)->getProjectileData().type = ProjectileTypeNoCallback;
-
+            p->addCallback(Entity::ON_DESTROY, [&](Entity::CallbackData &data) -> void {
                 // explosion projectile
                 m_explosionData.scale = FREEZE_GRENADE_SPLIT_EXPLOSION_SCALE;
                 Projectile* explosion = getSpawnProjectileFunc()(m_explosionData, data.caller->getPositionBT(), { 0.f, 0.f, 0.f }, *data.caller, { 0.f, 0.f, 0.f });
