@@ -28,7 +28,9 @@ namespace Graphics
     private:
         struct PostFXConstants {
             float m_BulletTime;
-            float m_DamageTint;
+            float _padding[3];
+            DirectX::SimpleMath::Vector3 m_Tint;
+            float m_TintProgress;
         } m_Constants;
 
         Shader m_PostFXShader;

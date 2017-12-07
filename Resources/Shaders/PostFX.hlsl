@@ -10,17 +10,17 @@ struct VSOut
 VSOut VS(uint id: SV_VertexID)
 {
     VSOut vsout;
-    
-	vsout.uv = float2((id << 1) & 2, id & 2);
-	vsout.pos = float4(vsout.uv * float2(2, -2) + float2(-1, 1), 0, 1);
+
+    vsout.uv = float2((id << 1) & 2, id & 2);
+    vsout.pos = float4(vsout.uv * float2(2, -2) + float2(-1, 1), 0, 1);
 
     return vsout;
 }
 
 cbuffer FXConstants : register(b0)
 {
-    float BulletTimeProgress;
-    float DamageTint;
+    float4 BulletTimeProgress;
+    float4 Tint;
 }
 
 Texture2D Backbuffer : register(t0);
@@ -45,11 +45,11 @@ float4 PS(VSOut input) : SV_Target0
 
     color = color + color * glow * 7;
 
-    color = adjustContrast(color, 2 - BulletTimeProgress, 0.3f);
-    color = adjustSaturation(color, BulletTimeProgress);
+    color = adjustContrast(color, 2 - BulletTimeProgress.x, 0.3f);
+    color = adjustSaturation(color, BulletTimeProgress.x);
 
     float dist = distance(input.uv, float2(0.5, 0.5));
-    color.r += DamageTint * 1.2 * dist;
+    color += Tint.rgb * 1.2 * dist * Tint.a;
 
     return float4(saturate(color), 1);
 }

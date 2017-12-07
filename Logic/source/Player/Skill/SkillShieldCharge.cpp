@@ -82,6 +82,13 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 
 			m_time += deltaTime;
 
+
+            SpecialEffectRenderInfo tint = {};
+            tint.type = SpecialEffectRenderInfo::Tint;
+            tint.color = DirectX::SimpleMath::Vector3(0, 1, 0);
+            tint.progress = 1.f - m_time / (float)SHIELD_CHARGE_DURATION;
+            QueueRender(tint);
+
 			if (m_time >= SHIELD_CHARGE_DURATION)
 			{
 				// When the duration of the skill is up the current charge is put to the max character speed

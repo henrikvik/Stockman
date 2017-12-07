@@ -501,7 +501,8 @@ void Player::updateSpecific(float deltaTime)
     if (m_DamageTintTimer < 0.f) m_DamageTintTimer = 0.f;
 
     SpecialEffectRenderInfo tint = {};
-    tint.type = SpecialEffectRenderInfo::DamageTint;
+    tint.type = SpecialEffectRenderInfo::Tint;
+    tint.color = DirectX::SimpleMath::Vector3(1, 0, 0);
     tint.progress = m_DamageTintTimer;
     QueueRender(tint);
 
