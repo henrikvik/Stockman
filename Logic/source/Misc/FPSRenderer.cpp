@@ -34,7 +34,7 @@ FPSRenderer::~FPSRenderer()
 
 }
 
-
+// if deltaTime == 0, bad stuff happens
 void FPSRenderer::updateFPS(float deltaTime)
 {
     static size_t avgframesCount = 250;
@@ -50,13 +50,14 @@ void FPSRenderer::updateFPS(float deltaTime)
     for (size_t i = 0; i < avgframesCount; i++)
     {
         avgFps += fps[i];
+
         minFps = min(minFps, fps[i]);
         maxFps = max(maxFps, fps[i]);
     }
     avgFps /= avgframesCount;
 
     int intFps = avgFps;
-    FPSString = FPS_STRING + std::to_wstring(intFps);
+    FPSString = intFps < 0 ? L"FPS > 1000" : FPS_STRING + std::to_wstring(intFps);
     renderInfo.text = FPSString.c_str();
 
     if (FPSGraph) {
