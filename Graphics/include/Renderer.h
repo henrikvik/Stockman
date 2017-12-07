@@ -21,10 +21,10 @@
 
 #include "RenderPass\GUIRenderPass.h"
 
-
+#include "../export.h"
 namespace Graphics
 {
-	class Renderer
+	class GRAPHICS_API Renderer
     {
     public:
 
@@ -83,6 +83,9 @@ namespace Graphics
         StructuredBuffer<StaticInstance> staticInstanceBuffer;
         StructuredBuffer<StaticInstance> animatedInstanceBuffer;
         StructuredBuffer<AnimatedJoints> animatedJointsBuffer;
+
+        StructuredBuffer<StaticInstance> newAnimatedInstanceBuffer;
+        StructuredBuffer<AnimatedJoints> newAnimatedJointsBuffer;
         #pragma endregion
 
         Sun sun;

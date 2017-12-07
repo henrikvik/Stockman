@@ -19,8 +19,8 @@
 #include <Physics\Physics.h>
 #include <Projectile\Projectile.h>
 
-#include <Engine\Profiler.h>
-#include <Engine\DebugWindow.h>
+#include <Singletons\Profiler.h>
+#include <Singletons\DebugWindow.h>
 #include <Graphics\include\MainCamera.h>
 #include <Graphics\include\Device.h>
 
@@ -44,7 +44,8 @@ const int Player::MIN_Y = -80, Player::MAX_HP = 3;
 btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
 Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
-: Entity(body, halfExtent)
+    : Entity(body, halfExtent),
+      m_DamageTintTimer(0.f)
 {
     m_weaponManager = newd WeaponManager();
     m_skillManager = newd SkillManager();
@@ -272,6 +273,17 @@ void Player::registerDebugCmds()
 
         return "Frost Staff has longer freezing effect";
     });
+    win->registerCommand("LOG_GIVE_ENHANCE_AMMO", [&](std::vector<std::string> &para)->std::string
+    {
+        try {
+            m_weaponManager->getWeaponLoadout(stoi(para[0]))->ammoContainer.setEnhancedAmmo(stoi(para[1]));
+            return "Added ammo";
+        }
+        catch (std::exception &ex)
+        {
+            return "That didn't work";
+        }
+    });
 }
 
 void Player::clear()
@@ -300,13 +312,14 @@ void Player::reset()
     m_permanentSpeedMod = 1.0f;
     m_jumpSpeedMod = 1.0f;
     m_stunned = false;
+    m_DamageTintTimer = 0.f;
 
     getStatusManager().clear();
     getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
 
     //temp? probably
     Global::mainCamera->update(getPosition(), m_forward, Global::context);
-    static SpecialEffectRenderInfo info;
+    static SpecialEffectRenderInfo info = {};
     info.type = info.Snow;
     info.restart = true;
 
@@ -458,12 +471,14 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
             // Add invul time
             getStatusManager().addStatus(StatusManager::EFFECT_ID::INVULNERABLE, 1);
             
-            SpecialEffectRenderInfo shake;
+            SpecialEffectRenderInfo shake = {};
             shake.duration = 0.5f;
             shake.radius = 30.0f;
             shake.type = SpecialEffectRenderInfo::screenShake;
             shake.affectEveryThing = true;
             QueueRender(shake);
+
+            m_DamageTintTimer += 1.f;
         }
     }
 }
@@ -481,6 +496,15 @@ int Player::getMaxHP() const
 void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
+
+    m_DamageTintTimer -= deltaTime / 1000.f;
+    if (m_DamageTintTimer < 0.f) m_DamageTintTimer = 0.f;
+
+    SpecialEffectRenderInfo tint = {};
+    tint.type = SpecialEffectRenderInfo::Tint;
+    tint.color = DirectX::SimpleMath::Vector3(1, 0, 0);
+    tint.progress = m_DamageTintTimer;
+    QueueRender(tint);
 
     // Update weapon
     m_weaponManager->update(deltaTime);
@@ -550,7 +574,7 @@ void Player::updateSpecific(float deltaTime)
 	    {
             if (m_wasInAir)
             {
-                SpecialEffectRenderInfo shake;
+                SpecialEffectRenderInfo shake = {};
                 shake.type = SpecialEffectRenderInfo::screenShake;
                 shake.duration = 0.14f;
                 shake.radius = 7.0f;
@@ -938,7 +962,7 @@ DirectX::SimpleMath::Vector2 Player::getWindowMidPoint()
     RECT rect;
     GetWindowRect(*Engine::g_window, &rect);
 
-    return DirectX::SimpleMath::Vector2((rect.left + rect.right* 0.5f) , (rect.top + rect.bottom* 0.5f) ); // Returns mid point for window
+    return DirectX::SimpleMath::Vector2(std::floor((rect.left + rect.right * 0.5f)), std::floor((rect.top + rect.bottom * 0.5f))); // Returns mid point for window
 }
 
 

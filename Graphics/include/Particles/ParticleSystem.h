@@ -9,6 +9,7 @@
 #include "../Camera.h"
 #include "../Utility/Buffer.h"
 #include "../Utility/Shader.h"
+#include "../../export.h"
 
 namespace Graphics {;
 
@@ -64,7 +65,7 @@ struct GeometryParticleInstance {
     float m_NoiseSpeed;
 };
 
-class ParticleSystem {
+class GRAPHICS_API ParticleSystem {
 public:
     ParticleSystem(ID3D11Device *device, uint32_t capacity, const char *path);
     virtual ~ParticleSystem();
@@ -164,6 +165,6 @@ private:
 };
 
 // global variable for particle system. constructed and destroyed by renderer.
-extern ParticleSystem *FXSystem;
+extern GRAPHICS_API ParticleSystem *FXSystem;
 
 }

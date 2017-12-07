@@ -10,7 +10,6 @@
 #include <State.h>
 #include <Misc\Sound\NoiseMachine.h>
 #include <Engine/Engine.h>
-#include <Engine\DebugWindow.h>
 
 using namespace Logic;
 

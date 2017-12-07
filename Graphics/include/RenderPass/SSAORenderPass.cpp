@@ -1,7 +1,7 @@
 #include "SSAORenderPass.h"
 #include "../Utility/TextureLoader.h"
 #include "../MainCamera.h"
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
 #define RANDOMNORMALTEXTURE TextureLoader::get().getTexture(Resources::Textures::randomNormals)
 

@@ -12,7 +12,7 @@
 namespace HybrisLoader
 {
 
-    class HybrisLoader
+    class GRAPHICS_API HybrisLoader
     {
     public:
         static HybrisLoader& get();

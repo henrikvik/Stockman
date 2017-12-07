@@ -3,7 +3,7 @@
 #include <Misc\Sound\NoiseMachine.h>
 #include <Engine\Typing.h>
 #include <DebugDefines.h>
-#include <Engine\DebugWindow.h> 
+#include <Singletons\DebugWindow.h> 
 #include <Physics\Physics.h>
 #include <Map.h>
 #include <Graphics\include\MainCamera.h>
@@ -59,7 +59,7 @@ void StateStart::update(float deltaTime)
     Graphics::FXSystem->processEffect(&m_campfire, { 0, 0, 0 }, deltaTime / 1000.f);
 
     //temp 
-    SpecialEffectRenderInfo info;
+    SpecialEffectRenderInfo info = {};
     info.type = SpecialEffectRenderInfo::DoF;
     QueueRender(info);
 

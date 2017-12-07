@@ -12,7 +12,7 @@
 // Debugging purposes
 #include <DebugDefines.h>
 #include <Engine\Settings.h>
-#include <Engine\DebugWindow.h> 
+#include <Singletons\DebugWindow.h> 
 #include <GameType.h>
 
 using namespace Logic;
@@ -69,7 +69,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     RenderQueue::get().clearAllQueues();
 
     //temp? probably NOT
-    static SpecialEffectRenderInfo info;
+    static SpecialEffectRenderInfo info = {};
     info.type = info.Snow;
     info.restart = true;
     

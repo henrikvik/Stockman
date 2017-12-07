@@ -66,7 +66,6 @@ namespace Resources
             if (strcmp(str, "Log") == 0) return Log;
             if (strcmp(str, "Lower_Island") == 0) return Lower_Island;
             if (strcmp(str, "Market_Tent") == 0) return Market_Tent;
-            if (strcmp(str, "MenuScene") == 0) return MenuScene;
             if (strcmp(str, "Mountain") == 0) return Mountain;
             if (strcmp(str, "Necromancer") == 0) return Necromancer;
             if (strcmp(str, "Rock1") == 0) return Rock1;

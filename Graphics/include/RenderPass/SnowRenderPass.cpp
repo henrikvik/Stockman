@@ -3,7 +3,7 @@
 #include "../MainCamera.h"
 #include "../CommonState.h"
 #include <SimpleMath.h>
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
 //temp
 #include <Keyboard.h>
@@ -36,34 +36,17 @@ Graphics::SnowRenderPass::SnowRenderPass(
 {
     snowFlakeCount = 0;
 
-    DebugWindow::getInstance()->registerCommand("GFX_SET_SNOW", [&](std::vector<std::string> &args)->std::string
+    RegisterCommand("GFX_RESTART_SNOW",
     {
-        std::string catcher = "";
-        try
-        {
-            if (args.size() != 0)
-            {
-                enabled = std::stoi(args[0]);
-
-                if (enabled)
-                    catcher = "Snow enabled!";
-
-                else
-                    catcher = "Snow disabled!";
-            }
-            else
-            {
-                catcher = "missing argument 0 or 1.";
-            }
-        }
-        catch (const std::exception&)
-        {
-            catcher = "Argument must be 0 or 1.";
-        }
-
-        return catcher;
+        initializeSnowflakes();
+        return "Snow restarted!";
     });
 
+    RegisterCommand("GFX_TOGGLE_SNOW",
+    {
+        enabled = !enabled;
+        return std::string("Snow ") + (enabled ? "enabled!" : "disabled!");
+    });
 }
 
 void Graphics::SnowRenderPass::update(float deltaTime)
@@ -82,14 +65,6 @@ void Graphics::SnowRenderPass::update(float deltaTime)
     static Vector3 randWindPrev(0, -SNOW_SPEED, 0);
     static Vector3 randWind(0, -SNOW_SPEED, 0);
 
-    //temp
-    static auto ks = DirectX::Keyboard::KeyboardStateTracker();
-    ks.Update(DirectX::Keyboard::Get().GetState());
-
-    if (ks.pressed.P)
-    {
-        initializeSnowflakes();
-    }
 
     windCounter += deltaTime;
     if (WIND_CHANGE_TIME <= windCounter)
