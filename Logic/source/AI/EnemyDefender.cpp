@@ -15,13 +15,15 @@ const int   EnemyDefender::BASE_DAMAGE = 1,
             EnemyDefender::PROJECTILES = 22;
 
 EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
-    : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP,
+    : Enemy(Resources::Models::Grunt, body, halfExtent, MAX_HP,
         BASE_DAMAGE, BASE_SPEED, EnemyType::DEFENDER, 0) {
     setBehavior(MELEE);
     createAbilities();
 
     m_defenseTime = 0.f;
     m_defenseHealth = MAX_DEF_HP;
+
+    getAnimatedModel().set_next("Run_Grunt");
 
     light.color = DirectX::SimpleMath::Color(0.7f, 0.0f, 1.0f);
     light.intensity = 0.6f;
@@ -94,7 +96,7 @@ void EnemyDefender::createAbilities()
             player.getStatusManager().addStatus(StatusManager::SHIELD_CHARGE, 1); // test
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
-
+        getAnimatedModel().set_next("Attack_Grunt");
     });
 }
 
