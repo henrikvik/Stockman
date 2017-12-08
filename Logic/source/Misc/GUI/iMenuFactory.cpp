@@ -198,6 +198,14 @@ iMenuCinematic * iMenuFactory::buildMenuCinematic()
     return menu;
 }
 
+
+iMenuCredits * iMenuFactory::buildMenuCredits()
+{
+    iMenuCredits* menu = newd iMenuCredits(iMenu::Credits);
+    return menu;
+}
+
+
 iMenu * iMenuFactory::buildMenuPause()
 {
     iMenu* menu = newd iMenu(iMenu::Pause);

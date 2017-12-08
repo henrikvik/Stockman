@@ -28,18 +28,12 @@ namespace Logic
         int ab4Pattern;
         bool ab4PatternDir;
 
-        // testing
-        std::vector<TextRenderInfo> info;
-        std::vector<std::wstring> infoText;
-        //TextRenderInfo hpBar; // hp bar in text OMEGALUL
-        //std::wstring hp;
         Sprite hpBar;
         Sprite hpBarOutline;
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
         virtual ~EnemyBossBaddie();
 
-        void forFunTesting();
         void createAbilities();
 
         void shootAbility4(Player const &player, int pattern, float speed);
