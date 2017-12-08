@@ -39,7 +39,8 @@ namespace Graphics
 		deviceContext->PSSetConstantBuffers(1, 1, &invBuffer);
 
 		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+		auto sampler = Global::cStates->LinearClamp();
+		Global::context->PSSetSamplers(0, 1, &sampler);
 		deviceContext->OMSetRenderTargets(1, &backBuffer, nullptr);
 		static float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		static UINT sampleMask = 0xffffffff;
@@ -55,5 +56,7 @@ namespace Graphics
 
         ID3D11ShaderResourceView* null = nullptr;
         deviceContext->PSSetShaderResources(1, 1, &null);
+
+		Global::context->OMSetBlendState(Global::cStates->Opaque(), blendFactor, sampleMask);
     }
 }

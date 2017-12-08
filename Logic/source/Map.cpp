@@ -273,8 +273,8 @@ void Map::loadMap(Resources::Maps::Files map)
 			 HybrisLoader::Model::BoundingBox bounding_box = ModelLoader::get().getModel(model)->get_bounding_box();
 
 			 bounding_box.apply_scale(scale);
-			 Decoration decor(model, instance_transform, bounding_box.sphere_radius());
-			 decorations.push_back(decor);
+			 Foliage decor(model, instance_transform, bounding_box.sphere_radius());
+			 foliages.push_back(decor);
 		 }
 		 catch (const char * e)
 		 {
