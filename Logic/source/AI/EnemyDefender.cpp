@@ -16,7 +16,7 @@ const int   EnemyDefender::BASE_DAMAGE = 1,
 
 EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::Grunt, body, halfExtent, MAX_HP,
-        BASE_DAMAGE, BASE_SPEED, EnemyType::DEFENDER, 0, { 0.f, -2.9f, -0.2f }) {
+        BASE_DAMAGE, BASE_SPEED, EnemyType::DEFENDER, 0, { 0.4f, -2.4f, -0.2f }) {
     setBehavior(MELEE);
     createAbilities();
 

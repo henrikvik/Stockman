@@ -72,9 +72,8 @@ void PhysicsObject::updatePhysics(float deltaTime)
 		{
 			Weakpoint weakPoint = m_weakPoints[i];
 
-			
 			weakPoint.body->getWorldTransform().setFromOpenGLMatrix((btScalar*)(&n));
-			weakPoint.body->getWorldTransform().setOrigin(m_transform->getOrigin() + btVector3(n[4] * weakPoint.offset.x(), n[5] * weakPoint.offset.y(), n[6] * weakPoint.offset.z()));
+            weakPoint.body->getWorldTransform().setOrigin(m_transform->getOrigin() + weakPoint.offset.rotate(m_transform->getRotation().getAxis(), m_transform->getRotation().getAngle()));
 		}
 	}
 
