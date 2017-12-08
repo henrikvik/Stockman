@@ -45,7 +45,9 @@ btVector3 Player::startPosition = btVector3(0.f, 6.f, 0.f);
 
 Player::Player(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent)
     : Entity(body, halfExtent),
-      m_DamageTintTimer(0.f)
+      m_damageTintTimer(0.f),
+      m_upgradeTintTimer(0.f),
+      m_pickupTintTimer(0.f)
 {
     m_weaponManager = newd WeaponManager();
     m_skillManager = newd SkillManager();
@@ -213,6 +215,10 @@ void Player::registerDebugCmds()
     {
         return "x: " + std::to_string((double) getPosition().x) + ", y: " + std::to_string((double) getPosition().y) + ", z: " + std::to_string((double) getPosition().z);
     });
+    win->registerCommand("LOG_PRINT_PHYSICS_VELOCITY", [&](std::vector<std::string> &para) -> std::string
+    {
+        return "x: " + std::to_string((double)m_charController->getLinearVelocity().x()) + ", y: " + std::to_string((double)m_charController->getLinearVelocity().y()) + ", z: " + std::to_string((double)m_charController->getLinearVelocity().z());
+    });
     win->registerCommand("LOG_INCREASE_DAMAGE", [&](std::vector<std::string> &args)->std::string
     {
         upgrade(StatusManager::P1_DAMAGE);
@@ -312,7 +318,9 @@ void Player::reset()
     m_permanentSpeedMod = 1.0f;
     m_jumpSpeedMod = 1.0f;
     m_stunned = false;
-    m_DamageTintTimer = 0.f;
+    m_damageTintTimer = 0.f;
+    m_upgradeTintTimer = 0.f;
+    m_pickupTintTimer = 0.f;
 
     getStatusManager().clear();
     getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
@@ -417,6 +425,8 @@ void Player::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 {
     long long flags = upgrade.getTranferEffects();
 
+    m_upgradeTintTimer += 1.f;
+
     if (flags & Upgrade::UPGRADE_INCREASE_JUMPHEIGHT)
     {
         m_jumpSpeedMod += upgrade.getFlatUpgrades().movementSpeed;
@@ -478,7 +488,7 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
             shake.affectEveryThing = true;
             QueueRender(shake);
 
-            m_DamageTintTimer += 1.f;
+            m_damageTintTimer += 1.f;
         }
     }
 }
@@ -497,14 +507,8 @@ void Player::updateSpecific(float deltaTime)
 {
 	Player::update(deltaTime);
 
-    m_DamageTintTimer -= deltaTime / 1000.f;
-    if (m_DamageTintTimer < 0.f) m_DamageTintTimer = 0.f;
-
-    SpecialEffectRenderInfo tint = {};
-    tint.type = SpecialEffectRenderInfo::Tint;
-    tint.color = DirectX::SimpleMath::Vector3(1, 0, 0);
-    tint.progress = m_DamageTintTimer;
-    QueueRender(tint);
+    // Updating screen tint
+    updateScreenTint(deltaTime);
 
     // Update weapon
     m_weaponManager->update(deltaTime);
@@ -965,6 +969,40 @@ DirectX::SimpleMath::Vector2 Player::getWindowMidPoint()
     return DirectX::SimpleMath::Vector2(std::floor((rect.left + rect.right * 0.5f)), std::floor((rect.top + rect.bottom * 0.5f))); // Returns mid point for window
 }
 
+void Player::updateScreenTint(float deltaTime)
+{
+    m_damageTintTimer -= deltaTime / 1000.f;
+    if (m_damageTintTimer < 0.f) m_damageTintTimer = 0.f;
+
+    m_upgradeTintTimer -= deltaTime / 1000.f;
+    if (m_upgradeTintTimer < 0.f) m_upgradeTintTimer = 0.f;
+
+    m_pickupTintTimer -= deltaTime / 1000.f;
+    if (m_pickupTintTimer < 0.f) m_pickupTintTimer = 0.f;
+
+    SpecialEffectRenderInfo tint = {};
+    if (m_damageTintTimer > 0.f)
+    {
+        tint.type = SpecialEffectRenderInfo::Tint;
+        tint.color = DirectX::SimpleMath::Vector3(1, 0, 0);
+        tint.progress = m_damageTintTimer;
+        QueueRender(tint);
+    }
+    else if(m_upgradeTintTimer > 0.f)
+    {
+        tint.type = SpecialEffectRenderInfo::Tint;
+        tint.color = DirectX::SimpleMath::Vector3(1, 1, 1);
+        tint.progress = m_upgradeTintTimer;
+        QueueRender(tint);
+    }
+    else if (m_pickupTintTimer > 0.f)
+    {
+        tint.type = SpecialEffectRenderInfo::Tint;
+        tint.color = DirectX::SimpleMath::Vector3(1, 1, 1);
+        tint.progress = m_pickupTintTimer;
+        QueueRender(tint);
+    }
+}
 
 btKinematicCharacterController * Player::getCharController()
 {
@@ -1157,6 +1195,11 @@ bool Logic::Player::getReloding() const
 int Logic::Player::getAmmoPickedUp()
 {
     return m_weaponManager->getAmmoPickedUp();;
+}
+
+void Logic::Player::setPickupTintTimer(float time)
+{
+    m_pickupTintTimer = time;
 }
 
 void Player::setTargetedBy(Entity *entity)

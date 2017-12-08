@@ -25,6 +25,9 @@ struct GUIInfo
     float cd[2];
     float timeRemaining;
 
+    int comboTimeRemaining;
+
+
     bool sledge, isReloding;
     UINT score, scoreCombo, scoreMul;
     std::wstring waveText;
@@ -35,6 +38,7 @@ namespace Logic
     class Player;
     class WaveTimeManager;
     class EntityManager;
+    class iMenuFX;
 
     class HUDManager
     {
@@ -46,15 +50,18 @@ namespace Logic
 
         static const int CURRENT_AMMO, TOTAL_AMMO;
 
-        static const float WAVE_SLIDE_TIME, ENRAGE_SLIDE_TIME, PICKEUP_MESSAGE_TIMER;
+        static const float WAVE_SLIDE_TIME, ENRAGE_SLIDE_TIME, PICKEUP_MESSAGE_TIMER, COMBO_BAR_WIDTH;
+
 
         std::vector<Sprite> HUDElements;
         std::vector<Sprite> skillList;
         std::vector<Sprite> skillMasks;
         std::vector<Sprite> HPBar;
+        std::vector<Sprite> comboBar;
         std::vector<Sprite> staticElements;
         std::vector<TextRenderInfo> HUDText;
         std::vector<Sprite> waveSprites;
+        std::vector<iMenuFX*> effects;
 
         bool showWaveCleared;
         float nextWaveSlideTimer;
@@ -77,7 +84,7 @@ namespace Logic
             SKILL1,
             SKILL2,
             SKILLMASK1,
-            SKILLMASK2,
+            SKILLMASK2
         };
         enum WaveMessages
         {

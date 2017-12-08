@@ -92,7 +92,7 @@ int ComboMachine::getTotalKills()
 // Returns a value between 0-100, representing the time left of combo-timer, where zero is the time when the combo ends
 int ComboMachine::getComboTimer()
 {
-	int procent = (int)std::round((m_comboTimer / COMBO_TIMER) / 100.f);
+	int procent = (int)std::round((m_comboTimer / COMBO_TIMER) * 100.f);
 	return procent;
 }
 
@@ -117,6 +117,11 @@ void ComboMachine::addTimeBonus(float timeLeft)
 {
     int timeScore = timeLeft * 0.001f;
     m_totalScore += timeScore * COMBO_TIME_SCORE_MULTIPLIER;
+}
+
+float Logic::ComboMachine::getmaxComboTimer() const
+{
+    return COMBO_TIMER;
 }
 
 // Check if combo is still alive

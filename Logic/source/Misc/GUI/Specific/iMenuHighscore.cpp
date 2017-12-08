@@ -103,9 +103,9 @@ void iMenuHighscore::buildEntry(int position, HigscoreData data)
     // Filling the wStrings with the data
     entry->name     = _bstr_t(entry->data.name.c_str());
     entry->placing  = std::to_wstring(position + 1);
-    entry->time     = std::to_wstring(entry->data.time) + L" Seconds";
-    entry->score    = std::to_wstring(entry->data.score) + L" Points";
-    entry->kills    = std::to_wstring(entry->data.kills) + L" Kills";
+    entry->time     = std::to_wstring(entry->data.time) + L"";
+    entry->score    = std::to_wstring(entry->data.score) + L"";
+    entry->kills    = std::to_wstring(entry->data.kills) + L"";
 
     // Entry Placing Render Texture
     if      (position == 0) entry->renderInfoPlacing.color  = FIRST_PLACE_COLOR;

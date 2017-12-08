@@ -17,11 +17,11 @@ using namespace Logic;
 
 #define NECRO_COUNT 3
 
-const float EnemyBossBaddie::BASE_SPEED = 20.f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
+const float EnemyBossBaddie::BASE_SPEED = 19.f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.2f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
-            EnemyBossBaddie::PROJECTILE_SCALE = 8.f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 31337, EnemyBossBaddie::SCORE = 150000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.17f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
+            EnemyBossBaddie::PROJECTILE_SCALE = 7.5f;
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 27500, EnemyBossBaddie::SCORE = 175000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
     @author Lukas Westling
@@ -47,8 +47,8 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     ab4Pattern = 0;
     ab4PatternDir = true;
 
-    Sound::NoiseMachine::Get().stopAllGroups();
-    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_1, nullptr, true);
+//    Sound::NoiseMachine::Get().stopAllGroups();
+//    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_1, nullptr, true);
     createAbilities();
     
     addCallback(ON_DEATH, [&](CallbackData &data)
@@ -57,8 +57,6 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
         Sound::NoiseMachine::Get().stopAllGroups();
         Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_2, nullptr, true);
     });
-
-    forFunTesting();
 
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 0.8f;
@@ -71,36 +69,6 @@ EnemyBossBaddie::~EnemyBossBaddie()
     RenderQueue::get().clearAllQueues(); // TEMPORARY SOLUTION, ISSUE: DELETING SOMEONE WITH POINTER TO GRAPHICS DATA AFTER THE QUEUEING!!!
 }
 
-void EnemyBossBaddie::forFunTesting()
-{
-    std::wstring test = L"Created By: Stockman Games Entertainment\n\nProgrammers:\nAndreas Henriksson\nHenrik Vik\nJakob Nyberg\nSimon Fredholm\nLukas Westling\nEmanuel Bjurman\nFelix Kaaman\nJohan Ottosson \n Simon Sandberg\n\nTechnical Artists:\nJohan Ottosson\nSimon Sandberg\n\nThe Bad Format: .lw\n\nGitmeister: Henrik Vik\n\nInvestor: Gabe Newell\n\nThe guy that fixed everyone elses stuff: Henrik Vik\n\nGame Manager & Producer: Henrik Vik\n\nWonderful Music: Banana\n\n\nThank you\nfor playing!\n\n\n\n\n\n\n\n\n\n\n\n\nEnemies:\nNecromancer (The annoying dude)\nNecromancer Minion (The dude everyone wants to nerf)\nThe Boss (The boss everyone hates)\nTorpedo Ted\nReznor, The Secret boss.\nLarry Koopa\nLemmy Koopa\nA nice cup of fuck you to the man himself: Ajit Pai!\nMorton Koopa Jr.\nThe Lich King\nDoctor Boom\nGrim Patron\nThe Hogger\nHanzo Mains\nVampires from Castle Wars\nOP Ferie Dragons\nKalphite Queen\nDr Stockman\nMr King Dice\nRace Conditions\nDeadlines\nPlaytesting\nStandup meetings\nMagic numbers\nHealthbars\nBowser Baloon Minigame from mario party 4 and 3\nWow: Classic Servers\nChimaeron\nMitch McConnell (turtle guy)\nIce Poseidon\nMr Garrison (President Of The United States Of America)\nProfessor Chaos\nKyle Brofloski\nStan Marsh\nRandy Marsh\nHeidi Turner :(\nPasha Biceps\nOlofmeister\nFriberg\nMoonmoon\nTwitch ads every fucking second on the yugioh stream\nH3h3productions\nKennyS\nNaniwa\n\n\nGot this far without cheats or crashes? nice.\nSpecial Thanks to: Henrik Vik!\n\n\n\nStockman studio is not responsible for any crashes or bugs that might damage your computer."; // See it in game not here dude :>
-    std::wstringstream str(test);
-    std::wstring temp;
-    float x = 300.f, y = 715.5f;
-    infoText.reserve(150);
-    while (getline(str, temp, L'\n'))
-    {
-        if (!temp.empty())
-        {
-            infoText.push_back(temp);
-
-            TextRenderInfo info;
-            info.color = DirectX::SimpleMath::Color(1.f, 1.f, 1.f);
-            info.font = Resources::Fonts::KG26; // ofc, KG26 everyone knows that
-            info.text = infoText[infoText.size() - 1].c_str();
-            info.position = DirectX::SimpleMath::Vector2(x, y);
-            this->info.push_back(info);
-        }
-
-        y += 40;
-    }
-
-    // hp awfulness
-    /*hpBar.color = DirectX::SimpleMath::Color{ 1.f, 0.2f, 0.2f };
-    hpBar.font = Resources::Fonts::KG26;
-    hpBar.position = DirectX::SimpleMath::Vector2(250.f, 640.f);*/
-}
-
 /*
 
     THIS METHOD CREATES THE ABILITES; CHANGE THEM HERE!
@@ -111,9 +79,9 @@ void EnemyBossBaddie::createAbilities()
     AbilityData data;
 
     /* ABILITY ONE */
-    data.cooldown = 15000.f;
+    data.cooldown = 13000.f;
     data.duration = 5000.f;
-    data.randomChanche = 25;
+    data.randomChanche = 20;
 
     auto onUse = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_1, nullptr, true);
@@ -328,13 +296,11 @@ void EnemyBossBaddie::useAbility(Player &target)
 
 void EnemyBossBaddie::useAbility(Player &target, int phase)
 {
+    abilities[AbilityId::ONE].useAbility(target);
     switch (phase)
     {
         case 0:
-            if (!abilities[AbilityId::ONE].useAbility(target))
-            {
-                abilities[AbilityId::TWO].useAbility(target);
-            }
+            abilities[AbilityId::TWO].useAbility(target);
             break;
         case 1:
             abilities[AbilityId::THREE].useAbility(target);
@@ -370,18 +336,19 @@ void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
     //hp bar
     float healthleft = float(getHealth()) / float(getMaxHealth());
     hpBar.setScreenPos(Sprite::Points::TOP_LEFT, Sprite::Points::TOP_LEFT, 400.f, 70.f, healthleft * TOTAL_HP_BAR, 25.f);
+
+    // prevent falling off
+    if (getPositionBT().getY() < 0.5f) {
+        getRigidBody()->setGravity({ 0.f, 9.82f * 25.f, 0.f });
+    }
+    else {
+        getRigidBody()->setGravity({ 0.f, -9.82f * 10.f, 0.f });
+    }
 }
 
 void EnemyBossBaddie::updateDead(float deltaTime)
 {
-    // this is for my own amusement, not intended to be in final product or testing :>
-    for (auto &info : info)
-        info.position.y -= deltaTime / 70.f;
 
-    // this is only for fun
-    for (auto &info : info)
-        if (info.position.y < 750.f && info.position.y > -50.f)
-            QueueRender(info);
 }
 
 void EnemyBossBaddie::renderSpecific() const
