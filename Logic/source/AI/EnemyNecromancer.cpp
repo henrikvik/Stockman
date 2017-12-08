@@ -14,7 +14,7 @@ const int EnemyNecromancer::SPEED_AB1 = 125,
 const float EnemyNecromancer::BASE_SPEED = 7.5f;
 
 EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
-    : Enemy(Resources::Models::Necromancer, body, halfExtent, MAX_HP, BASE_DAMAGE,
+    : Enemy(Resources::Models::SummonUnitWithAnim, body, halfExtent, MAX_HP, BASE_DAMAGE,
         BASE_SPEED, EnemyType::NECROMANCER, 0, { 0.f, -1.9f, 0.f }) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {

@@ -80,7 +80,7 @@ void EntityManager::registerCreationFunctions()
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
-        Enemy* enemy = newd EnemyNecromancer(body, { 1.f, 1.f, 1.f });
+        Enemy* enemy = newd EnemyNecromancer(body, { 1.f, 5.f, 1.f });
         body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 0.5f, 1.f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         physics.removeRigidBody(body);
@@ -138,13 +138,7 @@ void EntityManager::registerCreationFunctions()
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
-        Enemy* enemy = newd EnemySoarer(body, { 0.7f, 0.7f, 0.7f });
-        /*body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
-        physics.removeRigidBody(body);
-        enemy->addExtraBody(body, 4.f, { 0.f, 3.f, 0.f });*/
-
-        return enemy;
+        return newd EnemySoarer(body, { 0.7f, 0.7f, 0.7f });
     };
     m_enemyFactory[EnemyType::TOTEM] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
@@ -157,7 +151,7 @@ void EntityManager::registerCreationFunctions()
         body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         physics.removeRigidBody(body);
-        enemy->addExtraBody(body, 4.f, { 0.f, 3.f, 0.f });
+        enemy->addExtraBody(body, 4.f, { 0.f, 4.f, 0.f });
 
         return enemy;
     };
