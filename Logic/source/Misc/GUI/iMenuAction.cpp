@@ -58,6 +58,12 @@ void ButtonFunction::showHighscore()
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::HighscoreStartMenu);
 }
 
+void ButtonFunction::showCredits()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::Credits);
+}
+
 // Unloads all program data and quits the game
 void ButtonFunction::quitGame()
 {

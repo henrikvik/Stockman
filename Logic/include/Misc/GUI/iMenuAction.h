@@ -66,6 +66,7 @@ namespace Logic
         void DOF();
         void SSAO();
         void fog();
+        void showCredits();
     }
 }
 
