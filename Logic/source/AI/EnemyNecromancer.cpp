@@ -45,9 +45,9 @@ void EnemyNecromancer::createAbilities()
 {
     // AB 1: Summon necromancer
     AbilityData data;
-    data.cooldown = 2850.f;
+    data.cooldown = 8000.f;
     data.duration = 0.f;
-    data.randomChanche = 10;
+    data.randomChanche = 15;
 
     static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
     ProjectileData pdata;

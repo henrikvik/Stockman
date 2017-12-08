@@ -53,6 +53,7 @@ iMenu* iMenuFactory::buildMenuStart()
     menu->addButton(buildButton("MenuStartGameHeroic",  ButtonFunction::startGameHeroic));
     menu->addButton(buildButton("MenuStartSettings",    ButtonFunction::showHighscore));
     menu->addButton(buildButton("MenuStartHighscore",   ButtonFunction::startSettings));
+    menu->addButton(buildButton("MenuCredits",          ButtonFunction::showCredits));
     menu->addButton(buildButton("MenuQuitGame",         ButtonFunction::quitGame));
 
     return menu;
@@ -197,6 +198,15 @@ iMenuCinematic * iMenuFactory::buildMenuCinematic()
     iMenuCinematic* menu = newd iMenuCinematic(iMenu::Cinematic);
     return menu;
 }
+
+
+iMenuCredits * iMenuFactory::buildMenuCredits()
+{
+    iMenuCredits* menu = newd iMenuCredits(iMenu::Credits);
+    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::startMainMenu));
+    return menu;
+}
+
 
 iMenu * iMenuFactory::buildMenuPause()
 {
