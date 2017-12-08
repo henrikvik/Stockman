@@ -96,7 +96,6 @@ void EnemyDefender::createAbilities()
             player.getStatusManager().addStatus(StatusManager::SHIELD_CHARGE, 1); // test
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
-        printf("Use ab");
         getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
             getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() * 1000.f / (ab.getCurrentDuration()) - 0.169f); // noise
             getAnimatedModel().set_next("Run_Grunt", [&]() -> void {
