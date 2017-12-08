@@ -18,5 +18,6 @@ void iMenuCredits::update(int x, int y, float deltaTime)
 
 void iMenuCredits::render() const
 {
+    iMenu::render();
     credits.render();
 }
