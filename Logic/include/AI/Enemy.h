@@ -29,7 +29,7 @@ namespace Logic
 	class Enemy : public Entity
 	{
 		private:
-            static const int MIN_Y;
+            static const int MIN_Y, MAX_TARGET_Y;
             // This is used to count how many callbacks is added, 
             // so this HAS to be ZERO before this is destroyed or
             // the showcase at PAX East will go PAX South

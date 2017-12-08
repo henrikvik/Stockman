@@ -370,6 +370,14 @@ void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
     //hp bar
     float healthleft = float(getHealth()) / float(getMaxHealth());
     hpBar.setScreenPos(Sprite::Points::TOP_LEFT, Sprite::Points::TOP_LEFT, 400.f, 70.f, healthleft * TOTAL_HP_BAR, 25.f);
+
+    // prevent falling off
+    if (getPositionBT().getY() < 0.5f) {
+        getRigidBody()->setGravity({ 0.f, 9.82f * 25.f, 0.f });
+    }
+    else {
+        getRigidBody()->setGravity({ 0.f, -9.82f * 10.f, 0.f });
+    }
 }
 
 void EnemyBossBaddie::updateDead(float deltaTime)

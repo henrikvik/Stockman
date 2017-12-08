@@ -3,6 +3,7 @@
 #include <Misc\RandomGenerator.h>
 
 using namespace Logic;
+const float RangedBehavior::FLEE_MOD = 2.25f;
 
 RangedBehavior::RangedBehavior() :
 	Behavior(PathingType::CHASING)
@@ -18,27 +19,6 @@ RangedBehavior::RangedBehavior() :
 		boids is more important. But the infractstructure is here.
 	*/
 
-	// STAY ?
-	BehaviorNode *stay = addNode(getRoot(), NodeType::RANDOM, 0, [](RunIn& in) -> bool {
-		return true;
-	});
-
-	
-	// SHOOT !
-	addNode(stay, NodeType::ACTION, 9999, [](RunIn& in) -> bool {
-		if (RandomGenerator::singleton().getRandomInt(0,
-			RangedBehavior::ABILITY_CHANCHE) == 0)
-			in.enemy->useAbility(*in.target);
-
-		return true;
-	});
-
-	// jump
-	addNode(stay, NodeType::ACTION, 1, [](RunIn& in) -> bool {
-	//	in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
-		return true;
-	});
-
 	// WALK TOWARDS ?
 	BehaviorNode *walkTowards = addNode(getRoot(), NodeType::CONDITION, 1,
 		[](RunIn& in) -> bool {
@@ -52,9 +32,10 @@ RangedBehavior::RangedBehavior() :
 	addNode(walkTowards, NodeType::ACTION, 1,
 		[](RunIn& in) -> bool {
 			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
-			if (RandomGenerator::singleton().getRandomInt(0, RangedBehavior::ABILITY_CHANCHE) == 0)
-				in.enemy->useAbility(*in.target);
+
+            in.enemy->useAbility(*in.target);
 			behavior->walkPath(in);
+
 			return true;
 		}
 	);
@@ -62,23 +43,25 @@ RangedBehavior::RangedBehavior() :
 	// omg 
 	BehaviorNode *flee = addNode(getRoot(), NodeType::CONDITION, 2,
 		[](RunIn& in) -> bool {
-			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
+            RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
 			return (in.enemy->getPosition() - in.target->getPosition()).Length()
-				< behavior->getDistance() * 0.2f;
+				< behavior->getDistance();
 		}
 	);
 
 	addNode(flee, NodeType::ACTION, 0, [](RunIn& in) -> bool {
-			RangedBehavior *behavior = dynamic_cast<RangedBehavior*>(in.behavior);
-			in.enemy->getRigidBody()->applyCentralForce({ 0, 8888, 0 });
+            in.enemy->useAbility(*in.target);
+            btVector3 dir = (in.enemy->getPositionBT() - in.target->getPositionBT());
+            dir.setY(0);
+            in.enemy->getRigidBody()->setLinearVelocity(dir.normalized() * in.enemy->getMoveSpeed() * FLEE_MOD);
 			return true;
 		}
 	);
 }
 
-int RangedBehavior::getDistance() const
+float RangedBehavior::getDistance() const
 {
-	return (int)m_distance;
+	return m_distance;
 }
 
 void RangedBehavior::updateSpecific(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
