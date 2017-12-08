@@ -31,7 +31,8 @@ namespace Logic
             Controls,
             LoadingPre,
             LoadingPost, 
-            Cinematic
+            Cinematic,
+            Credits
         };
 
         struct ButtonData
