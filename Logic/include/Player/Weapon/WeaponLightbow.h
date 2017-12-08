@@ -26,6 +26,7 @@ namespace Logic
         virtual void onUse(std::vector<Projectile*> &projectiles, Entity& shooter);
 
         int m_CurrentIdx;
+        int m_SelectedLight;
         std::vector<LightDef> m_LightDefs;
         std::vector<LightEntry> m_Entries;
     };

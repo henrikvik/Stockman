@@ -5,7 +5,14 @@
 #include "Buffer.h"
 #include <Singletons\DebugWindow.h>
 
+struct TextElement {
+    DirectX::SimpleMath::Vector3 pos;
+    ImU32 color;
+    std::string text;
+};
+
 static std::vector<Graphics::Light> DebugLights;
+static std::vector<TextElement> DebugText;
 static std::vector<Graphics::ParticleEffectInstance> DebugFX;
 static ID3D11ShaderResourceView *DebugLightSprite;
 static ID3D11ShaderResourceView *DebugFXSprite;
@@ -65,8 +72,9 @@ void Graphics::Debug::Destroy()
     SAFE_RELEASE(DebugFXSprite);
 }
 
-void Graphics::Debug::Text(DirectX::SimpleMath::Vector3 pos, const char * str)
+void Graphics::Debug::Text(DirectX::SimpleMath::Vector3 pos, ImColor color, std::string text)
 {
+    DebugText.push_back({ pos, color, text });
 }
 
 void Graphics::Debug::ParticleFX(ParticleEffectInstance fx)
@@ -107,6 +115,18 @@ void GRAPHICS_API Graphics::Debug::Render(Camera *camera)
         list->AddRect(ImVec2(pos.x-14, pos.y-14), ImVec2(pos.x+13, pos.y+13), ImColor(light.color.x, light.color.y, light.color.z), 3.5f);
     }
 
+    for (auto e : DebugText) {
+        bool clip = false;
+        auto pos = TransformScreen(vp, e.pos, &clip);
+
+        if (clip) continue;
+
+        pos.x = roundf(pos.x);
+        pos.y = roundf(pos.y);
+
+        list->AddText(ImVec2(pos.x, pos.y), e.color, e.text.c_str(), e.text.c_str() + e.text.size());
+    }
+
     for (auto fx : DebugFX) {
         bool clip = false;
         auto pos = TransformScreen(vp, fx.position, &clip);
@@ -129,5 +149,6 @@ void GRAPHICS_API Graphics::Debug::Render(Camera *camera)
     ImGui::End();
 
     DebugLights.clear();
+    DebugText.clear();
     DebugFX.clear();
 }
