@@ -97,7 +97,9 @@ namespace Logic
 
         bool m_wasInAir;
 
-        float m_DamageTintTimer;
+        float m_damageTintTimer;
+        float m_upgradeTintTimer;
+        float m_pickupTintTimer;
 
 		// Sound
 		Sound::ListenerData* m_listenerData;
@@ -138,6 +140,8 @@ namespace Logic
 
         // Player step
         void stepPlayer(float deltaTime);
+
+        void updateScreenTint(float deltaTime);
 
 		// Sound
 		void updateSound(float deltaTime);
@@ -214,6 +218,7 @@ namespace Logic
         int getCurrentSkill1() const;
         bool getReloding() const;
         int getAmmoPickedUp();
+        void setPickupTintTimer(float time);
 
         // AI
         void setTargetedBy(Entity *entity);
