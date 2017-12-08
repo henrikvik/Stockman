@@ -102,6 +102,13 @@ void ButtonFunction::goToGameOver()
         Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::GameOver);
 }
 
+// Goes back to gamewon state
+void ButtonFunction::gotoGameWon()
+{
+    if (Action::Get().m_menuMachine)
+        Action::Get().m_menuMachine->queueMenu(iMenu::MenuGroup::GameWon);
+}
+
 // Switches the program's state and switching to startmenu
 void ButtonFunction::goBackToMainMenu()
 {

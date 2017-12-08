@@ -129,12 +129,12 @@ void Logic::Card::parseText()
 {
     //title
     TextRenderInfo temp;
-    temp.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f);
-    temp.font = Resources::Fonts::KG14;
-    temp.position = DirectX::SimpleMath::Vector2(50.0f, 235.0f);
-    temp.text = std::wstring(m_name.begin(), m_name.end());
+    temp.color = DirectX::SimpleMath::Color(0.2578125f, 0.203125f, 0.16015625f);
+    temp.font = Resources::Fonts::nordic14;
+    temp.position = DirectX::SimpleMath::Vector2(50.0f, 250.0f);
+    //temp.text = std::wstring(m_name.begin(), m_name.end());
 
-    m_text.push_back(TextRenderInfo(temp));
+   // m_text.push_back(TextRenderInfo(temp));
 
 
     //description
@@ -156,12 +156,12 @@ void Logic::Card::parseText()
 
     //desc part 1
     temp.text = std::wstring(splitString.begin(), splitString.end());
-    temp.position = DirectX::SimpleMath::Vector2(8.0f, 355.0f);
+    temp.position = DirectX::SimpleMath::Vector2(8.0f, 375);
     m_text.push_back(TextRenderInfo(temp));
 
     //desc part 2
     temp.text = std::wstring(endPart.begin(), endPart.end());
-    temp.position = DirectX::SimpleMath::Vector2(4.0f, 375.0f);
+    temp.position = DirectX::SimpleMath::Vector2(4.0f, 395.0f);
     m_text.push_back(TextRenderInfo(temp));
     
 }

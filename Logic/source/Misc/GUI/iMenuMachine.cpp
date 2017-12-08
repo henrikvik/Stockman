@@ -27,7 +27,10 @@
 #define CAMERA_INTRO_FORWARD        DirectX::SimpleMath::Vector3(0.506, 0.99f, 0.99f)
 #define CAMERA_SKILL_POSITION       DirectX::SimpleMath::Vector3(-10.000, 35.00, 0.000)
 #define CAMERA_SKILL_FORWARD        DirectX::SimpleMath::Vector3(0.000, -0.365, 0.023)
-
+#define CAMERA_CREDITS_POSITION     DirectX::SimpleMath::Vector3(-130.392, 2.941, 9.766)
+#define CAMERA_CREDITS_FORWARD      DirectX::SimpleMath::Vector3(0.247, 0.694, -0.234)
+#define CAMERA_GAMEWON_POSITION       DirectX::SimpleMath::Vector3(-10.000, 70.00, 0.000)
+#define CAMERA_GAMEWON_FORWARD        DirectX::SimpleMath::Vector3(0.000, -0.365, 0.023)
 /* 
 
     Campfire Map Camera Positions
@@ -212,6 +215,7 @@ void iMenuMachine::updateCamera(float deltaTime)
     {
     case iMenu::MenuGroup::FirstTime:
     case iMenu::MenuGroup::Intro:
+    case iMenu::MenuGroup::Credits:
         targetCameraPosition = CAMERA_INTRO_POSITION;
         targetCameraForward = CAMERA_INTRO_FORWARD;
         shouldModifyCamera = true;
@@ -222,7 +226,7 @@ void iMenuMachine::updateCamera(float deltaTime)
         targetCameraForward = CAMERA_START_FORWARD;
         shouldModifyCamera = true;
         break;
-
+    
     case iMenu::MenuGroup::SettingsStart:
         targetCameraPosition = CAMERA_SETTINGS_POSITION;
         targetCameraForward = CAMERA_SETTINGS_FORWARD;
@@ -253,6 +257,12 @@ void iMenuMachine::updateCamera(float deltaTime)
             movingCameraForward = m_deathForward;
             m_resetDeathPositionAndForward = false;
         }
+        break;
+
+    case iMenu::MenuGroup::GameWon:
+        targetCameraPosition = CAMERA_GAMEWON_POSITION;
+        targetCameraForward = CAMERA_GAMEWON_FORWARD;
+        shouldModifyCamera = true;
         break;
 
     case iMenu::MenuGroup::Cinematic:

@@ -53,6 +53,7 @@ namespace Graphics
 
 
         Global::context->RSSetState(Global::cStates->CullNone());
+        Global::context->VSSetConstantBuffers(1, 1, &buffers[3]);
         Global::context->IASetInputLayout(forward_plus_vs_foliage);
         Global::context->VSSetShader(forward_plus_vs_foliage, nullptr, 0);
         drawInstanced<FoliageRenderInfo>(resources[foliageInstanceBuffer]);

@@ -48,6 +48,7 @@ namespace Logic
         void pause();
         void goToGameOver();
         void goToGameOverHighscore();
+        void gotoGameWon();
         void writing();
         void chooseUpgrade1();
         void chooseUpgrade2();

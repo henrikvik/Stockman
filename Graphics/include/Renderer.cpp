@@ -26,6 +26,8 @@
 #include "RenderPass\SnowRenderPass.h"
 #include "RenderPass\PostFXRenderPass.h"
 #include "RenderPass\DebugRenderPass.h"
+#include "RenderPass\FogRenderPass.h"
+
 
 #include "Utility\DebugDraw.h"
 
@@ -232,77 +234,78 @@ namespace Graphics
 
         TextureLoader::get().loadAll();
 
-        renderPasses =
-        {
-            newd ParticleDepthRenderPass(depthStencil),
-            newd DepthRenderPass(
-                {},
-                { 
-                    staticInstanceBuffer, 
-                    animatedInstanceBuffer, 
-                    animatedJointsBuffer,
-                    foliageInstanceBuffer,
-                    newAnimatedInstanceBuffer,
-                    newAnimatedJointsBuffer,
-                },
-                {*Global::mainCamera->getBuffer(), grassTimeBuffer },
-                depthStencil
-            ),
-            newd ShadowRenderPass(
-                {}, 
-                { 
-                    staticInstanceBuffer, 
-                    animatedInstanceBuffer, 
-                    animatedJointsBuffer,
-                    foliageInstanceBuffer,
-                    newAnimatedInstanceBuffer,
-                    newAnimatedJointsBuffer,
-                },
-                {*sun.getLightMatrixBuffer(), grassTimeBuffer },
-                shadowMap
-            ),
-            newd LightCullRenderPass(
-                {},
-                {
-                    depthStencil,
-                    lightsNew
-                },
-                {
-                    *Global::mainCamera->getBuffer()
-                },
-                nullptr,
-                {
-                    lightOpaqueIndexList,
-                    lightOpaqueGridUAV
-                }
-            ),
-            newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil, &sun),
-            newd ForwardPlusRenderPass(
-                {
-                    fakeBuffers,
-                    m_BloomRTVMipChain[0],
-                    normalMap
-                },
-                {
-                    lightOpaqueIndexList,
-                    lightOpaqueGridSRV,
-                    lightsNew,
-                    shadowMap,
-                    staticInstanceBuffer,
-                    animatedInstanceBuffer,
-                    animatedJointsBuffer,
-                    foliageInstanceBuffer,
-                    newAnimatedInstanceBuffer,
-                    newAnimatedJointsBuffer,
-                },
-                {
-                    *Global::mainCamera->getBuffer(),
-                    *sun.getGlobalLightBuffer(),
-                    *sun.getLightMatrixBuffer(),
-                    grassTimeBuffer
-                },
-                depthStencil
-            ),
+		renderPasses =
+		{
+			newd ParticleDepthRenderPass(depthStencil),
+			newd DepthRenderPass(
+				{},
+				{
+					staticInstanceBuffer,
+					animatedInstanceBuffer,
+					animatedJointsBuffer,
+					foliageInstanceBuffer,
+					newAnimatedInstanceBuffer,
+					newAnimatedJointsBuffer,
+				},
+				{*Global::mainCamera->getBuffer(), grassTimeBuffer },
+				depthStencil
+			),
+			newd ShadowRenderPass(
+				{},
+				{
+					staticInstanceBuffer,
+					animatedInstanceBuffer,
+					animatedJointsBuffer,
+					foliageInstanceBuffer,
+					newAnimatedInstanceBuffer,
+					newAnimatedJointsBuffer,
+				},
+				{*sun.getLightMatrixBuffer(), grassTimeBuffer },
+				shadowMap
+			),
+			newd LightCullRenderPass(
+				{},
+				{
+					depthStencil,
+					lightsNew
+				},
+				{
+					*Global::mainCamera->getBuffer()
+				},
+				nullptr,
+				{
+					lightOpaqueIndexList,
+					lightOpaqueGridUAV
+				}
+			),
+			newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil, &sun),
+			newd ForwardPlusRenderPass(
+				{
+					fakeBuffers,
+					m_BloomRTVMipChain[0],
+					normalMap
+				},
+				{
+					lightOpaqueIndexList,
+					lightOpaqueGridSRV,
+					lightsNew,
+					shadowMap,
+					staticInstanceBuffer,
+					animatedInstanceBuffer,
+					animatedJointsBuffer,
+					foliageInstanceBuffer,
+					newAnimatedInstanceBuffer,
+					newAnimatedJointsBuffer,
+				},
+				{
+					*Global::mainCamera->getBuffer(),
+					*sun.getGlobalLightBuffer(),
+					*sun.getLightMatrixBuffer(),
+					grassTimeBuffer
+				},
+				depthStencil
+			),
+			newd FogRenderPass({fakeBuffers}, {depthStencil}, {}, nullptr),
             newd ParticleRenderPass(
                 fakeBuffers,
                 lightOpaqueGridSRV, 

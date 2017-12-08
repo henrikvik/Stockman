@@ -15,6 +15,8 @@
 #include <Singletons\DebugWindow.h> 
 #include <GameType.h>
 
+#include <toml\toml.h>
+
 using namespace Logic;
 
 // Game starting static configurations
@@ -22,8 +24,41 @@ const int StatePlaying::GAME_START::UNIQUE_CARDS = 13;
 const btVector3 StatePlaying::GAME_START::PLAYER_SCALE = { 1.5f, 3.0f, 1.5f };
 const btVector3 StatePlaying::GAME_START::PLAYER_ROTATION = { 0.0f, 0.0f, 0.0f };
 
+static void FillLightVec(std::vector<LightRenderInfo> &lights, std::string path)
+{
+    auto val = toml::parseFile(path).value;
+
+    for (auto light : val.find("lights")->as<toml::Array>()) {
+        auto position = light["position"].as<toml::Array>();
+        auto col = light["color"].as<toml::Array>();
+        auto radius = light["range"].asNumber();
+        auto intensity = light["intensity"].asNumber();
+
+        LightRenderInfo info = {};
+        info.position.x = position[0].asNumber();
+        info.position.y = position[1].asNumber();
+        info.position.z = position[2].asNumber();
+        info.color.x = col[0].asNumber();
+        info.color.y = col[1].asNumber();
+        info.color.z = col[2].asNumber();
+        info.range = radius;
+        info.intensity = intensity;
+
+        lights.push_back(info);
+    }
+}
+
+static void SubmitLights(std::vector<LightRenderInfo> &lights)
+{
+    for (auto light : lights) {
+        QueueRender(light);
+    }
+}
+
 StatePlaying::StatePlaying(StateBuffer* stateBuffer)
-    : State(stateBuffer)
+    : State(stateBuffer),
+      m_ChristmasLightTimer(1.5f),
+      m_ChristmasPatternIndex(0)
 {
     // Starting in game-sounds
     Sound::NoiseMachine::Get().stopGroup(Sound::CHANNEL_SFX);
@@ -46,6 +81,23 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     m_player = newd Player(Resources::Models::UnitCube, nullptr, GAME_START::PLAYER_SCALE);
     m_player->init(m_physics, m_projectileManager);
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
+
+    // static map lights
+    FillLightVec(m_MapLights, "../Resources/Maps/lights.toml");
+    FillLightVec(m_RedBulbs, "../Resources/Maps/r.toml");
+    FillLightVec(m_GreenBulbs, "../Resources/Maps/g.toml");
+    FillLightVec(m_BlueBulbs, "../Resources/Maps/b.toml");
+
+    //                                       bgr
+    m_ChristmasLightPattern.push_back(0b00000000);
+    m_ChristmasLightPattern.push_back(0b00000001);
+    m_ChristmasLightPattern.push_back(0b00000010);
+    m_ChristmasLightPattern.push_back(0b00000100);
+    m_ChristmasLightPattern.push_back(0b00000001);
+    m_ChristmasLightPattern.push_back(0b00000011);
+    m_ChristmasLightPattern.push_back(0b00000111);
+    m_ChristmasLightPattern.push_back(0b00000110);
+    m_ChristmasLightPattern.push_back(0b00000100);
 
     // Initializing the Map
     m_map = newd Map();
@@ -120,6 +172,21 @@ void StatePlaying::reset()
 
 void StatePlaying::update(float deltaTime)
 {
+    m_ChristmasLightTimer += deltaTime / 1000.f;
+    if (m_ChristmasLightTimer > 1.5f) {
+        m_ChristmasLightTimer = 0.f;
+        m_ChristmasPatternIndex = (m_ChristmasPatternIndex + 1) % m_ChristmasLightPattern.size();
+    }
+
+    auto pattern = m_ChristmasLightPattern[m_ChristmasPatternIndex];
+
+    if (pattern & 0x1)
+        SubmitLights(m_RedBulbs);
+    if (pattern & 0x2)
+        SubmitLights(m_GreenBulbs);
+    if (pattern & 0x4)
+        SubmitLights(m_BlueBulbs);
+
     m_fpsRenderer.updateFPS(deltaTime);
     PROFILE_BEGIN("cards");
     m_cardManager->update(deltaTime);
@@ -245,7 +312,6 @@ void StatePlaying::gameOver()
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
     m_hudManager.reset();
-
 }
 
 void StatePlaying::gameWon()
@@ -254,7 +320,7 @@ void StatePlaying::gameWon()
     addHighscore();
 
     reset();
-    m_menu->queueMenu(iMenu::MenuGroup::Credits);
+    m_menu->queueMenu(iMenu::MenuGroup::GameWon);
 }
 
 void StatePlaying::addHighscore()
