@@ -10,6 +10,7 @@ namespace Resources
             KG18,
             KG26,
             nordic,
+            nordic14,
             nordic25
         };
         const std::map<Files, const char *> Paths =
@@ -18,6 +19,7 @@ namespace Resources
             {KG18, R"(..\Resources\Fonts\KG18.spritefont)"},
             {KG26, R"(..\Resources\Fonts\KG26.spritefont)"},
             {nordic, R"(..\Resources\Fonts\nordic.spritefont)"},
+            {nordic14, R"(..\Resources\Fonts\nordic14.spritefont)"},
             {nordic25, R"(..\Resources\Fonts\nordic25.spritefont)"}
         };
         

@@ -9,6 +9,7 @@ namespace Resources
             if (strcmp(str, "KG18") == 0) return KG18;
             if (strcmp(str, "KG26") == 0) return KG26;
             if (strcmp(str, "nordic") == 0) return nordic;
+            if (strcmp(str, "nordic14") == 0) return nordic14;
             if (strcmp(str, "nordic25") == 0) return nordic25;
             throw "Could not find matching enum.";
         }
