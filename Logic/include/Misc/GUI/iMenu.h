@@ -32,7 +32,8 @@ namespace Logic
             LoadingPre,
             LoadingPost, 
             Cinematic,
-            Credits
+            Credits, 
+            CreditsGameWon
         };
 
         struct ButtonData

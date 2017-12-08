@@ -85,7 +85,7 @@ struct LightRenderInfo : RenderInfo
     float range = 5;
 };
 
-SET_INSTANCE_CAP(LightRenderInfo, 128)
+SET_INSTANCE_CAP(LightRenderInfo, 254)
 
 struct SpecialEffectRenderInfo : RenderInfo
 {

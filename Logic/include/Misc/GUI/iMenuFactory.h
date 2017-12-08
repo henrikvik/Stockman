@@ -36,12 +36,13 @@ namespace Logic
         iMenuHighscore*     buildMenuHighscoreGameOver();
         iMenuGameOver*      buildMenuGameover();
         iMenu*              buildMenuPause();
-        iMenu*              buildMenuGameWon();
+        iMenuCredits*       buildMenuGameWon();
         iMenuControls*      buildMenuControls();
         iMenuLoadingPre*    buildMenuLoadingPre();
         iMenuLoadingPost*   buildMenuLoadingPost();
         iMenuCinematic*     buildMenuCinematic();
         iMenuCredits*       buildMenuCredits();
+
     private:
         std::vector<FileLoader::LoadedStruct> buttonFile;
         std::vector<FileLoader::LoadedStruct> sliderFile;

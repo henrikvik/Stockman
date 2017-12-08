@@ -245,7 +245,6 @@ void StatePlaying::gameOver()
     m_menu->queueMenu(iMenu::MenuGroup::GameOver);
     m_menu->startDeathAnimation(m_player->getPosition(), m_player->getForward());
     m_hudManager.reset();
-
 }
 
 void StatePlaying::gameWon()
@@ -254,7 +253,7 @@ void StatePlaying::gameWon()
     addHighscore();
 
     reset();
-    m_menu->queueMenu(iMenu::MenuGroup::Credits);
+    m_menu->queueMenu(iMenu::MenuGroup::GameWon);
 }
 
 void StatePlaying::addHighscore()

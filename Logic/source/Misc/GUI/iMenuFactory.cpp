@@ -120,11 +120,16 @@ iMenuCards * iMenuFactory::buildMenuCard()
     return menu;
 }
 
-iMenu * iMenuFactory::buildMenuGameWon()
+iMenuCredits* iMenuFactory::buildMenuGameWon()
 {
-    iMenu* menu = newd iMenu(iMenu::GameWon);
+    iMenuCredits* menu = newd iMenuCredits(iMenu::GameWon);
+
     menu->addEffect(newd iMenuFX_Combo());
-    menu->addBackground(Resources::Textures::Gameover, 1.f);
+
+    menu->addButton(buildButton("Retry", ButtonFunction::playAgain));
+    menu->addButton(buildButton("MenuStartSettings", ButtonFunction::goToGameOverHighscore));
+    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu));
+
     return menu;
 }
 
@@ -199,14 +204,12 @@ iMenuCinematic * iMenuFactory::buildMenuCinematic()
     return menu;
 }
 
-
 iMenuCredits * iMenuFactory::buildMenuCredits()
 {
     iMenuCredits* menu = newd iMenuCredits(iMenu::Credits);
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::startMainMenu));
     return menu;
 }
-
 
 iMenu * iMenuFactory::buildMenuPause()
 {
