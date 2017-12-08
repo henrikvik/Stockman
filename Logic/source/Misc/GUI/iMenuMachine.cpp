@@ -28,7 +28,6 @@
 #define CAMERA_SKILL_POSITION       DirectX::SimpleMath::Vector3(-10.000, 35.00, 0.000)
 #define CAMERA_SKILL_FORWARD        DirectX::SimpleMath::Vector3(0.000, -0.365, 0.023)
 
-
 /* 
 
     Campfire Map Camera Positions
@@ -122,6 +121,7 @@ void iMenuMachine::swapMenu()
     case iMenu::MenuGroup::LoadingPost:         m_activeMenu = m_factory->buildMenuLoadingPost();       break;
     case iMenu::MenuGroup::HighscoreGameOver:   m_activeMenu = m_factory->buildMenuHighscoreGameOver(); break;
     case iMenu::MenuGroup::Cinematic:           m_activeMenu = m_factory->buildMenuCinematic();         break;
+    case iMenu::MenuGroup::Credits:             m_activeMenu = m_factory->buildMenuCredits();           break;
     default: break;
     }
 
