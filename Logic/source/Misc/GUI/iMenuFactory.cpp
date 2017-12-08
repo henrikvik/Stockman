@@ -202,6 +202,7 @@ iMenuCinematic * iMenuFactory::buildMenuCinematic()
 iMenuCredits * iMenuFactory::buildMenuCredits()
 {
     iMenuCredits* menu = newd iMenuCredits(iMenu::Credits);
+    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::startMainMenu));
     return menu;
 }
 
