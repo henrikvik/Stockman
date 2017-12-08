@@ -3,7 +3,7 @@
 #include <Misc\RandomGenerator.h>
 
 using namespace Logic;
-const float RangedBehavior::FLEE_MOD = 2.25f;
+const float RangedBehavior::FLEE_MOD = 1.33f;
 
 RangedBehavior::RangedBehavior() :
 	Behavior(PathingType::CHASING)
