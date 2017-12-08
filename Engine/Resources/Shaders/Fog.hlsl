@@ -111,9 +111,10 @@ float4 PS (VSOut psIn) : SV_Target
 
 	float f = saturate(exp2(-g));
 
-	float fogDepth = clamp(min(saturate(1 - worldPos.y), saturate(playerDistance / TRAD)), 0, 0.8);
+	float fogDepth = clamp(min(saturate(3 - worldPos.y), saturate(playerDistance / TRAD)), 0, 0.8);
 
 	psIn.color.rgb = psIn.color.rgb * f + fogColor.rgb * (1.0 - f);
+
 
 	return float4(psIn.color.rgb, fogDepth);
 }
