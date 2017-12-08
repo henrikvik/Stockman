@@ -1,6 +1,4 @@
 #include <Player\Weapon\WeaponFreezeGun.h>
-#include <Projectile\Projectile.h>
-#include <AI\Enemy.h>
 
 using namespace Logic;
 
