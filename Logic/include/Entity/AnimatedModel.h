@@ -15,6 +15,9 @@ public:
     void set_color(DirectX::SimpleMath::Vector3 const &color);
     void set_next(const char * animation, std::function<void(void)> start_callback = nullptr);
     void set_transform(DirectX::SimpleMath::Matrix &transform);
+    void set_delta_multiplier(float scl);
+
+    float get_animation_time() const;
 private:
     using Matrix = DirectX::SimpleMath::Matrix;
     using Vector3 = DirectX::SimpleMath::Vector3;
@@ -29,6 +32,7 @@ private:
     float frame_duration;
     float animation_progress;
     float animation_duration;
+    float delta_scl;
 
     std::string animation_current;
     std::string animation_next;

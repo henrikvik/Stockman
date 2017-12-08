@@ -18,11 +18,13 @@ AnimatedModel::AnimatedModel(Resources::Models::Files modelId, const char * star
     animation_next     = start_animation;
     animation_current  = "";
     animation_duration = 0;
+
+    delta_scl = 1.f;
 }
 
 void AnimatedModel::update(float delta_ms)
 {
-    frame_progress += delta_ms / 1000.0f;
+    frame_progress += delta_ms * delta_scl / 1000.0f;
 
     if (frame_progress < frame_duration) return;
 
@@ -74,4 +76,14 @@ void AnimatedModel::set_next(const char *animation, std::function<void(void)> st
 void AnimatedModel::set_transform(DirectX::SimpleMath::Matrix &transform)
 {
     renderInfo.transform = transform;
+}
+
+void AnimatedModel::set_delta_multiplier(float scl)
+{
+    this->delta_scl = scl;
+}
+
+float AnimatedModel::get_animation_time() const
+{
+    return animation_duration;
 }

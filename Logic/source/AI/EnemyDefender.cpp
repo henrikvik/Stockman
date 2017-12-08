@@ -3,8 +3,8 @@
 #include <Projectile\Projectile.h>
 using namespace Logic;
 
-const float EnemyDefender::BASE_SPEED = 1.f;
-const float EnemyDefender::MELEE_DISTANCE = 10.f,
+const float EnemyDefender::BASE_SPEED = 14.5f;
+const float EnemyDefender::MELEE_DISTANCE = 20.f,
             EnemyDefender::PROJECTILE_SPEED = 115.f,
             EnemyDefender::THROW_STRENGTH = 0.05f;
 
@@ -81,7 +81,7 @@ void EnemyDefender::onSpawn()
 void EnemyDefender::createAbilities()
 {
     AbilityData data;
-    data.duration = 2550.f;
+    data.duration = 5000.f;
     data.randomChanche = 0;
     data.cooldown = 1500.f;
     m_melee = Ability(data, [&](Player &player, Ability &ab) -> void { // ontick
@@ -96,7 +96,10 @@ void EnemyDefender::createAbilities()
             player.getStatusManager().addStatus(StatusManager::SHIELD_CHARGE, 1); // test
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
-        getAnimatedModel().set_next("Attack_Grunt");
+        getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
+            getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() / (ab.getData().duration - ab.getCurrentDuration()));
+            getAnimatedModel().set_next("Run_Grunt");
+        });
     });
 }
 
