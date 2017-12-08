@@ -83,7 +83,7 @@ void EnemyDefender::createAbilities()
     AbilityData data;
     data.duration = 3000.f;
     data.randomChanche = 0;
-    data.cooldown = 1500.f;
+    data.cooldown = 3500.f;
     m_melee = Ability(data, [&](Player &player, Ability &ab) -> void { // ontick
         if (ab.getCurrentDuration() <= 0.f && 
             (player.getPositionBT() - getPositionBT()).length() <= MELEE_DISTANCE)
@@ -96,9 +96,8 @@ void EnemyDefender::createAbilities()
             player.getStatusManager().addStatus(StatusManager::SHIELD_CHARGE, 1); // test
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
+        printf("Use ab");
         getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
-            printf("Start ani, total: %f, current: %f, ani_time: %f\n", ab.getData().duration, ab.getCurrentDuration(),
-                getAnimatedModel().get_animation_time());
             getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() * 1000.f / (ab.getCurrentDuration()) - 0.169f); // noise
             getAnimatedModel().set_next("Run_Grunt", [&]() -> void {
                 getAnimatedModel().set_delta_multiplier(1.f);
