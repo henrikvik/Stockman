@@ -468,6 +468,7 @@ int Engine::run()
 //        Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
 		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
+        Graphics::Debug::Render(Global::mainCamera);
 		ImGui::Render();
 		PROFILE_END();
 

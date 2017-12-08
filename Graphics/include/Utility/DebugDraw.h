@@ -4,9 +4,8 @@
 #include "../Camera.h"
 #include "../Particles/ParticleSystem.h"
 
-#include "../DLL.h"
-
 #include <SimpleMath.h>
+#include <imgui.h>
 #include "../../export.h"
 
 namespace Graphics {

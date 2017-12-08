@@ -23,8 +23,6 @@ WeaponLightbow::~WeaponLightbow()
 
 void WeaponLightbow::addLight(int idx, Entity::CallbackData &data)
 {
-    printf("%d\n", idx);
-
     auto pos = data.caller->getPosition();
     m_Entries.push_back(LightEntry{
         { pos.x, pos.y, pos.z },
@@ -51,7 +49,8 @@ void WeaponLightbow::update(float dt) {
             root["lights"].push(val);
         }
 
-        root.write(&std::cout);
+        std::ofstream lightfile("lights.toml");
+        root.write(&lightfile);
     }
 
     if (!m_LightDefs.empty())
@@ -64,7 +63,10 @@ void WeaponLightbow::update(float dt) {
     ImGui::Separator();
 
     ImGui::DragInt("Selected Light", &m_SelectedLight, 1.f, 0, m_Entries.size() - 1);
-    if (m_SelectedLight > 0 && m_SelectedLight < m_Entries.size()) {
+    if (!m_Entries.empty() && m_SelectedLight >= 0 && m_SelectedLight < m_Entries.size()) {
+        if (ImGui::Button("Delete")) {
+            m_Entries.erase(m_Entries.begin() + m_SelectedLight);
+        }
         ImGui::DragInt("type", &m_Entries[m_SelectedLight].idx, 1.f, 0, m_LightDefs.size() - 1);
         ImGui::DragFloat3("position", m_Entries[m_SelectedLight].pos);
     }
@@ -112,10 +114,11 @@ void WeaponLightbow::onUse(std::vector<Projectile*> &projectiles, Entity& shoote
     auto idx = m_CurrentIdx;
     auto sz = m_LightDefs.size();
 
+    printf("shot light!\n");
     if (sz > 0) {
         for (auto proj : projectiles) {
             proj->addCallback(Entity::ON_COLLISION, [=](Entity::CallbackData &data) -> void {
-                printf("Added light!\n");
+                printf("  Added light!\n");
                 addLight(idx, data);
             });
         }
