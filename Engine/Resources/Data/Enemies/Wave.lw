@@ -68,42 +68,42 @@
 	"z": -103.511787f;
 }
 { // 1
-	"enemies" : "0";
+	"enemies" : "0, 1, 1, 1, 1, 1, 1, 1, 1";
 	"triggers" : 0;
 	"bosses": 0;
 }
 { // 2
-	"enemies" : "3";
-	"triggers" : 0;
-	"bosses": 0;
-}
-{ // 3
-	"enemies" : "3, 4";
-	"triggers" : 0;
-	"bosses": 0;
-}
-{ // 4
-	"enemies" : "0, 4";
-	"triggers" : 0;
-	"bosses": 0;
-}
-{ // 5
-	"enemies" : "5";
-	"triggers" : 0;
-	"bosses": 0;
-}
-{ // 6
-	"enemies" : "3, 0";
-	"triggers" : 0;
-	"bosses": 0;
-}
-{ // 7
 	"enemies" : "3, 3, 3";
 	"triggers" : 0;
 	"bosses": 0;
 }
+{ // 3
+	"enemies" : "3, 3, 3, 3, 4";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 4
+	"enemies" : "0, 0, 0, 3, 3, 4, 4";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 5
+	"enemies" : "5, 5, 5";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 6
+	"enemies" : "0, 0, 0, 0, 3, 3, 5, 5, 5";
+	"triggers" : 0;
+	"bosses": 0;
+}
+{ // 7
+	"enemies" : "0, 0, 3, 3, 3, 3, 3, 4, 4, 5, 5";
+	"triggers" : 0;
+	"bosses": 0;
+}
 { // 8
-	"enemies" : "0, 5, 3";
+	"enemies" : "0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 4, 4, 5, 5";
 	"triggers" : 0;
 	"bosses": 0;
 }

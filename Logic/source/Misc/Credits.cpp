@@ -4,7 +4,7 @@ using namespace Logic;
 
 Credits::Credits()
 {
-    std::wstring test = L"Created By: Stockman Games Entertainment\n\nProgrammers:\nAndreas Henriksson\nHenrik Vik\nJakob Nyberg\nSimon Fredholm\nLukas Westling\nEmanuel Bjurman\nFelix Kaaman\nJohan Ottosson\nSimon Sandberg\n\nTechnical Artists:\nJohan Ottosson\nSimon Sandberg\n\nMusic:\nBanana (INSERT REAL NAME)\n"; // See it in game not here dude :>
+    std::wstring test = L"Created By: Stockman Games Entertainment\n\nProgrammers:\nAndreas Eriksson\nHenrik Vik\nJakob Nyberg\nSimon Fredholm\nLukas Westling\nEmanuel Bjurman\nFelix Kaaman\nJohan Ottosson\nSimon Sandberg\nMarkus Werdien\n\nTechnical Artists:\nJohan Ottosson\nSimon Sandberg\n\nMusic:\nKalle Edlund\n"; // See it in game not here dude :>
     std::wstringstream str(test);
     std::wstring temp;
 

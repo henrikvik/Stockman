@@ -53,6 +53,7 @@ iMenu* iMenuFactory::buildMenuStart()
     menu->addButton(buildButton("MenuStartGameHeroic",  ButtonFunction::startGameHeroic));
     menu->addButton(buildButton("MenuStartSettings",    ButtonFunction::showHighscore));
     menu->addButton(buildButton("MenuStartHighscore",   ButtonFunction::startSettings));
+    menu->addButton(buildButton("MenuCredits",          ButtonFunction::showCredits));
     menu->addButton(buildButton("MenuQuitGame",         ButtonFunction::quitGame));
 
     return menu;
