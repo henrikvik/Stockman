@@ -421,15 +421,15 @@ namespace Graphics
 		//	return info;
 		//}());
 
-  //      QueueRender([]()
-  //      {
-  //          FoliageRenderInfo info;
-  //          info.model = Resources::Models::Grass;
-  //          info.transform = SimpleMath::Matrix::CreateTranslation(0, 0, -3);
-  //          info.color = DirectX::SimpleMath::Vector3(1,1,1);
-  //          info.useGridTexture = false;
-  //          return info;
-  //      }());
+        QueueRender([]()
+        {
+            StaticRenderInfo info;
+            info.model = Resources::Models::Tree;
+            info.transform = SimpleMath::Matrix::CreateTranslation(0, 5, -3);
+            info.color = DirectX::SimpleMath::Vector3(1,1,1);
+            info.useGridTexture = false;
+            return info;
+        }());
 
         FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 
@@ -547,8 +547,8 @@ namespace Graphics
         }
 
         { // New Animation Buffers
-            auto instanceBuffer = animatedInstanceBuffer.map();
-            auto jointsBuffer   = animatedJointsBuffer.map();
+            auto instanceBuffer = newAnimatedInstanceBuffer.map();
+            auto jointsBuffer   = newAnimatedJointsBuffer.map();
 
             for (auto & model_infos : RenderQueue::get().getQueue<NewAnimatedRenderInfo>())
             {

@@ -19,6 +19,13 @@ namespace Graphics
             newAnimatedInstanceBuffer,
             newAnimatedJointsBuffer,
         };
+        enum BufferSlots
+        {
+            cameraBuffer,
+            globalLightBuffer,
+            lightMatrixBuffer,
+            grassTimeBuffer
+        };
 
         ForwardPlusRenderPass(
             std::initializer_list<ID3D11RenderTargetView*> targets,
