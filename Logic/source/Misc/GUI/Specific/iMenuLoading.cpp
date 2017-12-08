@@ -64,7 +64,7 @@ iMenuLoadingPost::iMenuLoadingPost(iMenu::MenuGroup group) : iMenu(group)
 
     // Setup of the textrenderinfo object
     m_textRenderInfo.color      = DirectX::SimpleMath::Color(0, 0, 0, 0);
-    m_textRenderInfo.font       = Resources::Fonts::KG26;
+    m_textRenderInfo.font       = Resources::Fonts::nordic25;
     m_textRenderInfo.position   = DirectX::SimpleMath::Vector2(POST_LOAD_MESSAGE_POS_X * WIN_WIDTH, POST_LOAD_MESSAGE_POS_Y * WIN_HEIGHT);
     m_textRenderInfo.text       = m_string.c_str();
 }
