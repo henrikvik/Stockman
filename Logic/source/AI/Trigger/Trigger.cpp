@@ -92,10 +92,10 @@ void Trigger::onCollisionPlayer(Player& player)
     // Plays unique sound effect
     switch (m_type)
     {
-        case TriggerType::JUMPPAD:              Sound::NoiseMachine::Get().playSFX(Sound::SFX::TRIGGER_JUMPPAD, nullptr, true); break;
-        case TriggerType::AMMO_PICKUP_BOLT:     Sound::NoiseMachine::Get().playSFX(Sound::SFX::TRIGGER_PICKUP, nullptr, true);  break;
-        case TriggerType::AMMO_PICKUP_CRYSTAL:  Sound::NoiseMachine::Get().playSFX(Sound::SFX::TRIGGER_PICKUP, nullptr, true);  break;
-        case TriggerType::KILL_DEATH_ZONE:      Sound::NoiseMachine::Get().playSFX(Sound::SFX::HELLO, nullptr, true);           break;
+        case TriggerType::JUMPPAD:              Sound::NoiseMachine::Get().playSFX(Sound::SFX::TRIGGER_JUMPPAD, nullptr, true);                                 break;
+        case TriggerType::AMMO_PICKUP_BOLT:     Sound::NoiseMachine::Get().playSFX(Sound::SFX::TRIGGER_PICKUP, nullptr, true); player.setPickupTintTimer(0.2f); break;
+        case TriggerType::AMMO_PICKUP_CRYSTAL:  Sound::NoiseMachine::Get().playSFX(Sound::SFX::TRIGGER_PICKUP, nullptr, true); player.setPickupTintTimer(0.2f); break;
+        case TriggerType::KILL_DEATH_ZONE:      Sound::NoiseMachine::Get().playSFX(Sound::SFX::HELLO, nullptr, true);                                           break;
     }
 
     if (m_reusable)
