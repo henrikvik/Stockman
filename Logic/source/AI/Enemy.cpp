@@ -14,7 +14,7 @@ const int Enemy::MIN_Y = -80.f;
 const float Enemy::MAX_TARGET_Y = 4.4;
 
 Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset)
-: Entity(body, halfExtent, modelOffset)
+: Entity(body, halfExtent, modelOffset), animatedModel(modelID, "")
 {
 	m_behavior = nullptr;
 
@@ -27,20 +27,12 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     m_moveSpeedMod = 1.f;
 
     m_nrOfCallbacksEntities = 0;
+
     m_stunned = false;
-    m_fireTimer = 0;
+    m_fireTimer = 0.f;
     m_blinkTimer = -1.0f;
 
-	//animation todo
-    enemyRenderInfo.model = modelID;
-//    enemyRenderInfo.animationName = "";
-//    enemyRenderInfo.animationProgress = 0;
-//    enemyRenderInfo.freeze = 0;
-//    enemyRenderInfo.burn = 0;
-    enemyRenderInfo.transform = getTransformMatrix();
-    //light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
-   // light.intensity = 0.5f;
-    //light.range = 3.f;
+    maxAnimationTime = 0.f;
 
     addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
         m_blinkTimer = 100.0f;
@@ -96,6 +88,7 @@ Enemy::~Enemy() {
 void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
 
+    // update behavior
     if (!m_stunned || getEnemyType() == EnemyType::BOSS_1) // quick fix
     {
         m_behavior->update(*this, closeEnemies, player, deltaTime);
@@ -110,6 +103,7 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
         getRigidBody()->setGravity({ 0.f, -9.82f * 3.f, 0.f });
     }
 
+    // update specifc
 	updateSpecific(player, deltaTime);
 
     // Rotation toward their moving direction
@@ -117,27 +111,33 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
     float yaw = atan2(dir.getX(), dir.getZ());
     m_transform->setRotation(btQuaternion(yaw, 0.f, 0));
 
-    // Update Render animation and position
-    enemyRenderInfo.transform = getModelTransformMatrix();
-//    enemyRenderInfo.animationProgress += deltaTime;
+    // Update animation and position
+    updateAnimation(deltaTime);
 
     m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
-    light.position = enemyRenderInfo.transform.Translation();
+    light.position = getPosition();
 
+    // out of bounds insta kill
     if (getPositionBT().y() < MIN_Y || getPositionBT().length2() > 62500.f)
         damage(m_health);
 
+    // blinking when damaged
     if (m_blinkTimer > 0)
     {
-        enemyRenderInfo.color = DirectX::SimpleMath::Vector3(10.0f, 0.0f, 0.0f);
+        animatedModel.set_color(DirectX::SimpleMath::Vector3(10.0f, 0.0f, 0.0f));
         m_blinkTimer -= deltaTime;
     }
     else
     {
-        enemyRenderInfo.color = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+        animatedModel.set_color(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f));
     }
-        
+}
+
+void Enemy::updateAnimation(float deltaTime)
+{
+    animatedModel.set_transform(getModelTransformMatrix());
+    animatedModel.update(deltaTime);
 }
 
 void Enemy::debugRendering()
@@ -169,7 +169,9 @@ void Enemy::damage(int damage)
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)
-        callback(ON_DEATH, CallbackData {this, static_cast<int32_t> (damage)});
+    {
+        callback(ON_DEATH, CallbackData{ this, static_cast<int32_t> (damage) });
+    }
 }
 
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
@@ -342,10 +344,14 @@ Behavior* Enemy::getBehavior() const
 	return this->m_behavior;
 }
 
+AnimatedModel &Logic::Enemy::getAnimatedModel()
+{
+    return animatedModel;
+}
+
 void Enemy::render() const
 {
     renderSpecific();
-    if (getEnemyType() != EnemyType::NECROMANCER_MINION) // nice code here (REPLACE OH MAH GOD)
-        QueueRender(enemyRenderInfo);
+    animatedModel.render();
     QueueRender(light);
 }

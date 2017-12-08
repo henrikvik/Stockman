@@ -4,7 +4,7 @@
 using namespace Logic;
 
 const float EnemyDefender::BASE_SPEED = 14.5f;
-const float EnemyDefender::MELEE_DISTANCE = 10.f,
+const float EnemyDefender::MELEE_DISTANCE = 20.f,
             EnemyDefender::PROJECTILE_SPEED = 115.f,
             EnemyDefender::THROW_STRENGTH = 0.05f;
 
@@ -15,13 +15,15 @@ const int   EnemyDefender::BASE_DAMAGE = 1,
             EnemyDefender::PROJECTILES = 22;
 
 EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
-    : Enemy(Resources::Models::UnitCube, body, halfExtent, MAX_HP,
-        BASE_DAMAGE, BASE_SPEED, EnemyType::DEFENDER, 0) {
+    : Enemy(Resources::Models::Grunt, body, halfExtent, MAX_HP,
+        BASE_DAMAGE, BASE_SPEED, EnemyType::DEFENDER, 0, { 0.4f, -2.4f, -0.2f }) {
     setBehavior(MELEE);
     createAbilities();
 
     m_defenseTime = 0.f;
     m_defenseHealth = MAX_DEF_HP;
+
+    getAnimatedModel().set_next("Run_Grunt");
 
     light.color = DirectX::SimpleMath::Color(0.7f, 0.0f, 1.0f);
     light.intensity = 0.6f;
@@ -79,9 +81,9 @@ void EnemyDefender::onSpawn()
 void EnemyDefender::createAbilities()
 {
     AbilityData data;
-    data.duration = 2550.f;
+    data.duration = 3000.f;
     data.randomChanche = 0;
-    data.cooldown = 1500.f;
+    data.cooldown = 3500.f;
     m_melee = Ability(data, [&](Player &player, Ability &ab) -> void { // ontick
         if (ab.getCurrentDuration() <= 0.f && 
             (player.getPositionBT() - getPositionBT()).length() <= MELEE_DISTANCE)
@@ -94,7 +96,12 @@ void EnemyDefender::createAbilities()
             player.getStatusManager().addStatus(StatusManager::SHIELD_CHARGE, 1); // test
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
-
+        getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
+            getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() * 1000.f / (ab.getCurrentDuration()) - 0.169f); // noise
+            getAnimatedModel().set_next("Run_Grunt", [&]() -> void {
+                getAnimatedModel().set_delta_multiplier(1.f);
+            });
+        });
     });
 }
 

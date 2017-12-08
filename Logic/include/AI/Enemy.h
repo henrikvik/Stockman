@@ -4,6 +4,7 @@
 #include <Graphics\include\RenderQueue.h>
 
 #include <Entity\Entity.h>
+#include <Entity\AnimatedModel.h>
 #include <AI\EnemyType.h>
 
 #pragma region Comment
@@ -46,7 +47,9 @@ namespace Logic
 
 			Behavior *m_behavior;
 
-            StaticRenderInfo enemyRenderInfo;
+            AnimatedModel animatedModel;
+            float maxAnimationTime;
+
             bool m_stunned;
             float m_fireTimer;
 
@@ -61,6 +64,7 @@ namespace Logic
 
 			virtual void update(Player &player, float deltaTime,
 				std::vector<Enemy*> const &closeEnemies);
+            virtual void updateAnimation(float deltaTime);
 
             virtual void useAbility(Player &target) {};
             virtual void useAbility(Player &target, int phase) { useAbility(target); };
@@ -96,6 +100,8 @@ namespace Logic
 
             EnemyType getEnemyType() const;
 			Behavior* getBehavior() const;
+
+            AnimatedModel& getAnimatedModel();
 
             void render() const;
             virtual void renderSpecific() const {};

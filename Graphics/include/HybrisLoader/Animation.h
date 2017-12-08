@@ -1,5 +1,6 @@
 #pragma once
 #include <Hybris\Hybris.h>
+#include "../../export.h"
 #include <d3d11.h>
 #include <SimpleMath.h>
 #include <map>
@@ -35,7 +36,7 @@ namespace HybrisLoader
         std::vector<JointTransform> jointTransforms;
     };
 
-    class Animation
+    class GRAPHICS_API Animation
     {
     public:
         Animation(Hybris::Animation & animation);

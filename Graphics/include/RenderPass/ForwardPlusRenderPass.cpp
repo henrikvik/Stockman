@@ -31,13 +31,16 @@ namespace Graphics
         
         Global::context->PSSetSamplers(0, 3, samplers);
         Global::context->PSSetConstantBuffers(0, buffers.size(), buffers.data());
+        Global::context->VSSetConstantBuffers(0, buffers.size(), buffers.data());
         Global::context->PSSetShaderResources(0, 4, resources.data());
         Global::context->PSSetShaderResources(4, 1, *TextureLoader::get().getTexture(Resources::Textures::Grid));
 
         Global::context->RSSetState(Global::cStates->CullClockwise());
-
         Global::context->OMSetDepthStencilState(Global::cStates->DepthRead(), 0x0);
         Global::context->OMSetRenderTargets(targets.size(), targets.data(), depthStencil);
+
+
+
 
         Global::context->IASetInputLayout(forward_plus_vs_static);
         Global::context->VSSetShader(forward_plus_vs_static, nullptr, 0);
@@ -48,11 +51,13 @@ namespace Graphics
         drawInstancedAnimated<AnimatedRenderInfo>(resources[animatedInstanceBuffer], resources[animatedJointsBuffer]);
         drawInstancedAnimated<NewAnimatedRenderInfo>(resources[newAnimatedInstanceBuffer], resources[newAnimatedJointsBuffer]);
 
+
         Global::context->RSSetState(Global::cStates->CullNone());
         Global::context->VSSetConstantBuffers(1, 1, &buffers[3]);
         Global::context->IASetInputLayout(forward_plus_vs_foliage);
         Global::context->VSSetShader(forward_plus_vs_foliage, nullptr, 0);
         drawInstanced<FoliageRenderInfo>(resources[foliageInstanceBuffer]);
+
 
         Global::context->PSSetSamplers(0, 3, Global::nulls);
         Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);

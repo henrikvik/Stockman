@@ -11,6 +11,7 @@ namespace Graphics
         : RenderPass(targets, resources, buffers, depthStencil)
         , depth_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
         , depth_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
+        , depth_vs_foliage(Resources::Shaders::ForwardPlus_VS_Foliage, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
     {
     }
 
@@ -34,6 +35,12 @@ namespace Graphics
         Global::context->VSSetShader(depth_vs_animated, nullptr, 0);
         drawInstancedAnimated<AnimatedRenderInfo>(resources[animatedInstanceBuffer], resources[animatedJointsBuffer]);
         drawInstancedAnimated<NewAnimatedRenderInfo>(resources[newAnimatedInstanceBuffer], resources[newAnimatedJointsBuffer]);
+
+        Global::context->RSSetState(Global::cStates->CullNone());
+        Global::context->IASetInputLayout(depth_vs_foliage);
+        Global::context->VSSetShader(depth_vs_foliage, nullptr, 0);
+        Global::context->VSSetConstantBuffers(3, 1, &buffers[1]);
+        drawInstanced<FoliageRenderInfo>(resources[foliageInstanceBuffer]);
 
         // TODO add all renderInfos
 

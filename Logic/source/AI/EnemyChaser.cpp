@@ -7,7 +7,6 @@ using namespace Logic;
 const int EnemyChaser::MAX_HP = 25;
 const int EnemyChaser::BASE_DAMAGE = 1;
 const float EnemyChaser::MOVE_SPEED = 16.9f; //noice!
-#define ANI_TIME 5.0f // this is temp
 
 EnemyChaser::EnemyChaser(btRigidBody* body)
     : Enemy(Resources::Models::Files::SummonUnitWithAnim, body, { 1.0f, 1.0f, 1.0f },
@@ -16,7 +15,12 @@ EnemyChaser::EnemyChaser(btRigidBody* body)
     setBehavior(MELEE);
     getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
     getSoundSource()->autoPlaySFX(Sound::SFX::FOOTSTEP_SMALL, 333, 10, 1.f, 0.15f);
-    loadAnimation(Resources::Models::Files::SummonUnitWithAnim);
+    light.color = DirectX::SimpleMath::Color(0.0f, 0.7f, 1.0f);
+    light.intensity = 1.f;
+    light.range = 3.f;
+
+    getAnimatedModel().set_next("Walk");
+
     light.color = DirectX::SimpleMath::Color(0.1f, 0.7f, 0.4f);
     light.intensity = 0.4f;
     light.range = 5.f;
@@ -27,21 +31,8 @@ EnemyChaser::~EnemyChaser()
 
 }
 
-void EnemyChaser::loadAnimation(Resources::Models::Files model)
-{
-    animatedRenderInfo.animationName = "Walk";
-    animatedRenderInfo.model = model;
-    animatedRenderInfo.animationTimeStamp = 0.0f;
-    animatedRenderInfo.transform = getTransformMatrix();
-}
-
-// REMOVE WHEN ALL ENIMES ARE ANIMATED
 void EnemyChaser::updateSpecific(Player & player, float deltaTime)
 {
-    animatedRenderInfo.transform = getModelTransformMatrix();
-    animatedRenderInfo.animationTimeStamp += deltaTime / 100.0f;
-    if (animatedRenderInfo.animationTimeStamp > ANI_TIME) animatedRenderInfo.animationTimeStamp = 0.f;
-    
 }
 
 void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier)
@@ -64,9 +55,4 @@ void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, floa
             damage(getHealth());
         }
     }
-}
-
-void EnemyChaser::renderSpecific() const
-{
-    QueueRender(animatedRenderInfo); 
 }

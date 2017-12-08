@@ -13,7 +13,7 @@ const float EnemySoarer::SPEED = 20.f,
             EnemySoarer::HEIGHT_OFFSET = 15.f;
 
 EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
-    : Enemy(Resources::Models::StaticSummon, body, halfExtent,
+    : Enemy(Resources::Models::Gyro_Bomber, body, halfExtent,
             HEALTH, DAMAGE, SPEED, EnemyType::FLYING, 0) 
 {
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
@@ -32,6 +32,8 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
     light.range = 5.0f;
 
     getBehavior()->setSteeringSpeed(getBehavior()->getSteeringSpeed() * STEERING_MOD);
+
+    getAnimatedModel().set_next("Fly_Baked_F");
 }
 
 EnemySoarer::~EnemySoarer()

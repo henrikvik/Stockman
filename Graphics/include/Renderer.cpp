@@ -550,8 +550,8 @@ namespace Graphics
         }
 
         { // New Animation Buffers
-            auto instanceBuffer = animatedInstanceBuffer.map();
-            auto jointsBuffer   = animatedJointsBuffer.map();
+            auto instanceBuffer = newAnimatedInstanceBuffer.map();
+            auto jointsBuffer   = newAnimatedJointsBuffer.map();
 
             for (auto & model_infos : RenderQueue::get().getQueue<NewAnimatedRenderInfo>())
             {
@@ -576,8 +576,8 @@ namespace Graphics
                 }
             } // New Animation Buffers
 
-            animatedInstanceBuffer.unmap();
-            animatedJointsBuffer.unmap();
+            newAnimatedInstanceBuffer.unmap();
+            newAnimatedJointsBuffer.unmap();
         }
 
         lightsNew.write([](Light * lightBuffer)

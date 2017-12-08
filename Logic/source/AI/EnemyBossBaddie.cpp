@@ -36,8 +36,8 @@ const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 27500, Ene
 */
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
-    : Enemy(Resources::Models::UnitCube, body,
-        halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0),
+    : Enemy(Resources::Models::Grunt, body,
+        halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0, { 0.55f, -3.5f, -0.2f }),
     hpBarOutline(400.0f, 70.0f, TOTAL_HP_BAR, 25.0f, Resources::Textures::Gamesheet, FloatRect({0.0459f, 0.87012f}, {0.95508f, 0.95801f})),
     hpBar(400.0f, 70.0f, TOTAL_HP_BAR, 25.0f, Resources::Textures::Gamesheet, FloatRect({0.04688f, 0.76855f}, {0.9541f, 0.85645f}))
 {
@@ -47,9 +47,10 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     ab4Pattern = 0;
     ab4PatternDir = true;
 
-//    Sound::NoiseMachine::Get().stopAllGroups();
-//    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_1, nullptr, true);
+    Sound::NoiseMachine::Get().stopAllGroups();
+    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_1, nullptr, true);
     createAbilities();
+    getAnimatedModel().set_next("Run_Grunt");
     
     addCallback(ON_DEATH, [&](CallbackData &data)
     {
@@ -129,6 +130,12 @@ void EnemyBossBaddie::createAbilities()
 
     auto onUse2 = [&](Player& player, Ability &ability) -> void {
         getSoundSource()->playSFX(Sound::SFX::BOSS_1_MELEE_USE);
+        getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
+            getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() * 1000.f / (ability.getCurrentDuration()) - 0.169f); // noise
+            getAnimatedModel().set_next("Run_Grunt", [&]() -> void {
+                getAnimatedModel().set_delta_multiplier(1.f);
+            });
+        });
     };
 
     auto onTick2 = [&](Player& player, Ability &ability) -> void {
