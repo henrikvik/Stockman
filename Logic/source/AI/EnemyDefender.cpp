@@ -81,9 +81,9 @@ void EnemyDefender::onSpawn()
 void EnemyDefender::createAbilities()
 {
     AbilityData data;
-    data.duration = 5000.f;
+    data.duration = 3000.f;
     data.randomChanche = 0;
-    data.cooldown = 1500.f;
+    data.cooldown = 3500.f;
     m_melee = Ability(data, [&](Player &player, Ability &ab) -> void { // ontick
         if (ab.getCurrentDuration() <= 0.f && 
             (player.getPositionBT() - getPositionBT()).length() <= MELEE_DISTANCE)
@@ -97,8 +97,10 @@ void EnemyDefender::createAbilities()
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
         getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
-            getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() / (ab.getData().duration - ab.getCurrentDuration()));
-            getAnimatedModel().set_next("Run_Grunt");
+            getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() * 1000.f / (ab.getCurrentDuration()) - 0.169f); // noise
+            getAnimatedModel().set_next("Run_Grunt", [&]() -> void {
+                getAnimatedModel().set_delta_multiplier(1.f);
+            });
         });
     });
 }
