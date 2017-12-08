@@ -213,6 +213,10 @@ void Player::registerDebugCmds()
     {
         return "x: " + std::to_string((double) getPosition().x) + ", y: " + std::to_string((double) getPosition().y) + ", z: " + std::to_string((double) getPosition().z);
     });
+    win->registerCommand("LOG_PRINT_PHYSICS_VELOCITY", [&](std::vector<std::string> &para) -> std::string
+    {
+        return "x: " + std::to_string((double)m_charController->getLinearVelocity().x()) + ", y: " + std::to_string((double)m_charController->getLinearVelocity().y()) + ", z: " + std::to_string((double)m_charController->getLinearVelocity().z());
+    });
     win->registerCommand("LOG_INCREASE_DAMAGE", [&](std::vector<std::string> &args)->std::string
     {
         upgrade(StatusManager::P1_DAMAGE);
