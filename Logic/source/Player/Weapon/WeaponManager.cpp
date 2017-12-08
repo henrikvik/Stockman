@@ -241,7 +241,7 @@ void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)
                                     Weapon::WeaponInfo{ 4, 1, 0, 0, 90, 150, 0,{ 0.f, 0.f, 0.f }, 10.f }, 10.f);
     /* Secondary */     wl.weapon[1] = newd WeaponMeleeParry(projectileManager,
                                     ProjectileData(nullptr, false, false, 0, 30.f, 1.f, 0, 0, 0, LightRenderInfo(DirectX::SimpleMath::Color(0.15f, 0.8f, 0.6f, 1.f), 0.85f, 15.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeMeleeParry, true, false, false),
-                                    Weapon::WeaponInfo{ 5, 1, 0, 0, 100, 0, 0,{ 0.f, 0.f, 0.f }, 0.f }, 42.5f);
+                                    Weapon::WeaponInfo{ 5, 1, 0, 0, 100, 0, 0,{ 0.f, 0.f, 0.f }, 0.f }, 22.5f);
     /* Ammo */          wl.ammoContainer = AmmoContainer(AmmoContainer::AmmoInfo{ 0, 0, 0, 0, { 0, 0 }, { 0, 0 }, 0 });
     /* WeaponModel */   wl.weaponModel = newd WeaponSledgeHammerAnimation(Resources::Models::Hammer, ModelAnimation::AnimationFrame{
         /* Model rotation */        DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(1.3f, 0.9f, 0.f),
