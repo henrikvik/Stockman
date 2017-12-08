@@ -328,12 +328,6 @@ translation = [-49.237911, 2.210505, -88.083101]
 
 [[Foliage]]
 model = "GrassG1"
-name = "GrassG50"
-rotation = [0.000000, 0.339760, 0.000000, 0.940512]
-translation = [20.046892, 2.210505, -103.170118]
-
-[[Foliage]]
-model = "GrassG1"
 name = "GrassG51"
 rotation = [0.000000, 0.339760, 0.000000, 0.940512]
 translation = [32.852231, 2.210505, -114.656589]
@@ -473,7 +467,7 @@ translation = [-2.318198, 2.210505, -113.815638]
 [[Foliage]]
 model = "Bush"
 name = "Bush1"
-translation = [0, 5, 0]
+translation = [5.073307, 1.757658, -70.164375]
 
 [[Foliage]]
 model = "Bush"
@@ -536,7 +530,7 @@ model = "Bush"
 name = "Bush10"
 rotation = [0.000000, -0.231767, 0.000000, 0.972771]
 scale = [1.311670, 1.311670, 1.311670]
-translation = [-62.210539, 1.666285, 36.642440]
+translation = [-63.062771, 1.666285, 38.329406]
 
 [[Foliage]]
 model = "Bush"
@@ -685,12 +679,6 @@ name = "House11"
 rotation = [0.000000, -0.083780, 0.000000, 0.996484]
 scale = [1.564312, 1.564312, 1.564312]
 translation = [-71.805857, 8.831637, -7.977654]
-
-[[Static]]
-model = "Tree"
-name = "Tree1"
-scale = [2.595788, 2.595788, 2.595788]
-translation = [-24.281382, 13.478006, -5.066421]
 
 [[Static]]
 model = "Log"
@@ -3354,6 +3342,59 @@ name = "Cloud9"
 rotation = [0.000000, 0.735631, 0.000000, 0.677383]
 scale = [1.336638, 1.336638, 1.336638]
 translation = [22.770618, 90.910755, 142.415911]
+
+[[Static]]
+model = "Present2"
+name = "Present2_"
+rotation = [0.000000, -0.216197, 0.000000, 0.976350]
+translation = [-23.196196, 2.465833, 0.000000]
+
+[[Static]]
+model = "Present1"
+name = "Present1_"
+translation = [-22.864683, 2.458301, -1.371989]
+
+[[Static]]
+model = "Present1"
+name = "Present1_1"
+rotation = [0.000000, -0.185340, 0.000000, 0.982675]
+translation = [-23.759203, 2.458301, -2.506356]
+
+[[Static]]
+model = "Present1"
+name = "Present1_2"
+rotation = [0.000000, -0.409895, 0.000000, 0.912133]
+translation = [-26.498282, 2.458301, -2.145256]
+
+[[Static]]
+model = "Present1"
+name = "Present1_3"
+rotation = [0.000000, -0.073555, 0.000000, 0.997291]
+translation = [-25.329425, 2.458301, 0.852486]
+
+[[Static]]
+model = "Present2"
+name = "Present2_1"
+rotation = [0.000000, -0.645892, 0.000000, 0.763429]
+translation = [-23.960335, 2.465833, 1.190702]
+
+[[Static]]
+model = "Present2"
+name = "Present2_2"
+rotation = [0.000000, -0.736993, 0.000000, 0.675900]
+translation = [-27.294654, 2.465833, -1.029149]
+
+[[Static]]
+model = "Present2"
+name = "Present2_3"
+rotation = [0.000000, -0.585009, 0.000000, 0.811027]
+translation = [-25.224989, 2.465833, -2.955196]
+
+[[Static]]
+model = "Christmas_Tree"
+name = "Christmas_Tree"
+scale = [1.764259, 1.764259, 1.764259]
+translation = [-25.074467, 9.582038, -0.748653]
 
 [[Trigger]]
 model = "Jump_Pad"

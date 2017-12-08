@@ -43,6 +43,7 @@ namespace Resources
             if (strcmp(str, "Border_Walls") == 0) return Border_Walls;
             if (strcmp(str, "Bridge") == 0) return Bridge;
             if (strcmp(str, "Bush") == 0) return Bush;
+            if (strcmp(str, "Christmas_Tree") == 0) return Christmas_Tree;
             if (strcmp(str, "Cloud") == 0) return Cloud;
             if (strcmp(str, "Crate") == 0) return Crate;
             if (strcmp(str, "Crossbow") == 0) return Crossbow;
@@ -56,6 +57,8 @@ namespace Resources
             if (strcmp(str, "Firepit") == 0) return Firepit;
             if (strcmp(str, "Fire_Pit") == 0) return Fire_Pit;
             if (strcmp(str, "Grappling_Point") == 0) return Grappling_Point;
+            if (strcmp(str, "GrassG1") == 0) return GrassG1;
+            if (strcmp(str, "GrassG2") == 0) return GrassG2;
             if (strcmp(str, "Ground") == 0) return Ground;
             if (strcmp(str, "Ground_Old") == 0) return Ground_Old;
             if (strcmp(str, "Hammer") == 0) return Hammer;
@@ -71,6 +74,8 @@ namespace Resources
             if (strcmp(str, "Market_Tent") == 0) return Market_Tent;
             if (strcmp(str, "Mountain") == 0) return Mountain;
             if (strcmp(str, "Necromancer") == 0) return Necromancer;
+            if (strcmp(str, "Present1") == 0) return Present1;
+            if (strcmp(str, "Present2") == 0) return Present2;
             if (strcmp(str, "Rock1") == 0) return Rock1;
             if (strcmp(str, "Rock2") == 0) return Rock2;
             if (strcmp(str, "Rock3") == 0) return Rock3;
