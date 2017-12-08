@@ -86,6 +86,7 @@ void Map::render() const
     for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
 
     for (auto & d : decorations) d.render();
+	for (auto & f : foliages) f.render();
 }
 	
 std::vector<StaticObject*>*			Map::getProps()				{ return &m_props;				}
@@ -187,6 +188,7 @@ void Map::loadMap(Resources::Maps::Files map)
     // TODO USE THIS //    
 
     decorations.clear();
+	foliages.clear();
 
     auto toVec3 = [](DirectX::SimpleMath::Vector3 & vec) -> btVector3
     {
@@ -257,6 +259,28 @@ void Map::loadMap(Resources::Maps::Files map)
             std::cerr << "Could not find model " << instance.model << " during map load. Ignoring model." << std::endl;
         }
     }
+	for (auto & instance : foliageInstances)
+	{
+		 try
+         {
+			 Resources::Models::Files model = Resources::Models::toEnum(instance.model.c_str());
+
+			 DirectX::SimpleMath::Quaternion rotation(instance.rotation[0], instance.rotation[1], instance.rotation[2], instance.rotation[3]);
+			 DirectX::SimpleMath::Vector3 scale(instance.scale[0], instance.scale[1], instance.scale[2]);
+			 DirectX::SimpleMath::Vector3 translation(instance.translation[0], instance.translation[1], instance.translation[2]);
+
+			 DirectX::SimpleMath::Matrix instance_transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
+			 HybrisLoader::Model::BoundingBox bounding_box = ModelLoader::get().getModel(model)->get_bounding_box();
+
+			 bounding_box.apply_scale(scale);
+			 Decoration decor(model, instance_transform, bounding_box.sphere_radius());
+			 decorations.push_back(decor);
+		 }
+		 catch (const char * e)
+		 {
+			 std::cerr << "Could not find model " << instance.model << " during map load. Ignoring model." << std::endl;
+		 }
+	}
     SpecialEffectRenderInfo info;
     info.type = SpecialEffectRenderInfo::Snow;
     info.restart = true;

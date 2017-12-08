@@ -421,15 +421,15 @@ namespace Graphics
 		//	return info;
 		//}());
 
-  //      QueueRender([]()
-  //      {
-  //          FoliageRenderInfo info;
-  //          info.model = Resources::Models::Grass;
-  //          info.transform = SimpleMath::Matrix::CreateTranslation(0, 0, -3);
-  //          info.color = DirectX::SimpleMath::Vector3(1,1,1);
-  //          info.useGridTexture = false;
-  //          return info;
-  //      }());
+        QueueRender([]()
+        {
+            FoliageRenderInfo info;
+            info.model = Resources::Models::Tree;
+            info.transform = SimpleMath::Matrix::CreateTranslation(0, 5, -3);
+            info.color = DirectX::SimpleMath::Vector3(1,1,1);
+            info.useGridTexture = false;
+            return info;
+        }());
 
         FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 

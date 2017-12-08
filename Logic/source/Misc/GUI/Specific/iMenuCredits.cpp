@@ -6,7 +6,9 @@
 using namespace Logic;
 
 iMenuCredits::iMenuCredits(iMenu::MenuGroup group)
-    : iMenu(group) {  }
+    : iMenu(group) { 
+    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_CREDITS, nullptr, true);
+}
 
 iMenuCredits::~iMenuCredits() { }
 
