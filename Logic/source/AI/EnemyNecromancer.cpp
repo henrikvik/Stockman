@@ -45,9 +45,9 @@ void EnemyNecromancer::createAbilities()
 {
     // AB 1: Summon necromancer
     AbilityData data;
-    data.cooldown = 1300.f;
+    data.cooldown = 8000.f;
     data.duration = 0.f;
-    data.randomChanche = 10;
+    data.randomChanche = 15;
 
     static Graphics::ParticleEffect necroTrail = Graphics::FXSystem->getEffect("NecroProjTrail");
     ProjectileData pdata;
@@ -89,7 +89,7 @@ void EnemyNecromancer::createAbilities()
     
     // AB 2: Ice Lance
     data.duration = 5000.f;
-    data.cooldown = 6000.f;
+    data.cooldown = 8000.f;
     data.randomChanche = 5;
 
     ab2ProjData.meshID = Resources::Models::Ammocrystal;

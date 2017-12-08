@@ -11,6 +11,7 @@
 
 using namespace Logic;
 const int Enemy::MIN_Y = -80.f;
+const float Enemy::MAX_TARGET_Y = 4.4;
 
 Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset)
 : Entity(body, halfExtent, modelOffset)
@@ -40,8 +41,6 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     //light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
    // light.intensity = 0.5f;
     //light.range = 3.f;
-
-    body->setGravity({ 0.f, -9.82f * 10.f, 0.f });
 
     addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
         m_blinkTimer = 100.0f;
@@ -100,14 +99,15 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
     if (!m_stunned || getEnemyType() == EnemyType::BOSS_1) // quick fix
     {
         m_behavior->update(*this, closeEnemies, player, deltaTime);
+    }
 
-        // THIS IS A TEMPORARY FIX TO HANDLE BS
-        if (getPositionBT().getY() < 0.5f) {
-            getRigidBody()->setGravity({ 0.f, 9.82f * 20.f, 0.f });
-        }
-        else {
-            getRigidBody()->setGravity({ 0.f, -9.82f * 10.f, 0.f });
-        }
+    // helps them come up to the player
+    if (player.getPositionBT().y() < MAX_TARGET_Y) {
+        getRigidBody()->setGravity({ 0.f, -9.82f * 25.f, 0.f });
+    }
+    else
+    {
+        getRigidBody()->setGravity({ 0.f, -9.82f * 3.f, 0.f });
     }
 
 	updateSpecific(player, deltaTime);

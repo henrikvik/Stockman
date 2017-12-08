@@ -86,7 +86,7 @@
 	"buttonName" : "MenuQuitGame";
 	"texture" : 0;
 	"xPos" : 115.0f;
-	"yPos" : 455.0f;
+	"yPos" : 500.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.390f;
 	"xTexEnd" : 1.f;
@@ -99,6 +99,27 @@
 	"activeYTexStart" : 0.8805f;
 	"activeXTexEnd" : 1.f;
 	"activeYTexEnd" : 0.9955f;
+    "activeOffset" : 0.4905f;
+	"height" : 25.f;
+	"width" : 200.0f;
+}
+{
+	"buttonName" : "MenuCredits";
+	"texture" : 5;
+	"xPos" : 115.0f;
+	"yPos" : 455.0f;
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.27734f;
+	"xTexEnd" : 1.f;
+	"yTexEnd" : 0.36914f;
+    "hoverXTexStart" : 0.0f;
+	"hoverYTexStart" : 0.75195f;
+	"hoverXTexEnd" : 1.f;
+	"hoverYTexEnd" : 0.84375f;
+    "activeXTexStart" : 0.0f;
+	"activeYTexStart" : 0.75195f;
+	"activeXTexEnd" : 1.f;
+	"activeYTexEnd" : 0.84375f;
     "activeOffset" : 0.4905f;
 	"height" : 25.f;
 	"width" : 200.0f;
