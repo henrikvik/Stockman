@@ -102,6 +102,14 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
         m_behavior->update(*this, closeEnemies, player, deltaTime);
     }
 
+    if (player.getPositionBT().y() < 4.4f) {
+        getRigidBody()->setGravity({ 0.f, -9.82f * 25.f, 0.f });
+    }
+    else
+    {
+        getRigidBody()->setGravity({ 0.f, -9.82f * 3.f, 0.f });
+    }
+
 	updateSpecific(player, deltaTime);
 
     // Rotation toward their moving direction
