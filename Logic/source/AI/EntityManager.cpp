@@ -111,7 +111,7 @@ void EntityManager::registerCreationFunctions()
         Enemy* enemy = newd EnemyDefender(body, { 1.f, 1.f, 1.f });
         body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.7f, 0.7f, 0.7f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
-        //physics.removeRigidBody(body);
+        physics.removeRigidBody(body);
         enemy->addExtraBody(body, 4.f, { 0.f, 1.8f, 0.9f });
 
         return enemy;
@@ -123,11 +123,11 @@ void EntityManager::registerCreationFunctions()
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
-        Enemy* enemy = newd EnemyBossBaddie(body, cube.getDimensionsRef());
-        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
+        Enemy* enemy = newd EnemyBossBaddie(body, btVector3(1.4f, 1.4f, 1.4f));
+        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 2.f, 1.3f, 0.95f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         physics.removeRigidBody(body);
-        enemy->addExtraBody(body, 4.f, { 0.f, 3.f, 0.f });
+        enemy->addExtraBody(body, 4.f, { 0.f, 2.4f, 1.2f });
 
         return enemy;
     };
@@ -138,7 +138,7 @@ void EntityManager::registerCreationFunctions()
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
-        Enemy* enemy = newd EnemySoarer(body, cube.getDimensionsRef());
+        Enemy* enemy = newd EnemySoarer(body, { 0.7f, 0.7f, 0.7f });
         /*body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         physics.removeRigidBody(body);

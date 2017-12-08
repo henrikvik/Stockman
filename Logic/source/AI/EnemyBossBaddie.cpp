@@ -37,7 +37,7 @@ const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 27500, Ene
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     : Enemy(Resources::Models::Grunt, body,
-        halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0),
+        halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0, { 0.55f, -3.5f, -0.2f }),
     hpBarOutline(400.0f, 70.0f, TOTAL_HP_BAR, 25.0f, Resources::Textures::Gamesheet, FloatRect({0.0459f, 0.87012f}, {0.95508f, 0.95801f})),
     hpBar(400.0f, 70.0f, TOTAL_HP_BAR, 25.0f, Resources::Textures::Gamesheet, FloatRect({0.04688f, 0.76855f}, {0.9541f, 0.85645f}))
 {
