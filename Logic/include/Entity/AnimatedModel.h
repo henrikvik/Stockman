@@ -14,7 +14,7 @@ public:
 
     void set_color(DirectX::SimpleMath::Vector3 const &color);
     void set_next(const char * animation, std::function<void(void)> start_callback = nullptr);
-    void set_transform(btTransform &transform, btVector3 scale = {1.f, 1.f, 1.f});
+    void set_transform(DirectX::SimpleMath::Matrix &transform);
 private:
     using Matrix = DirectX::SimpleMath::Matrix;
     using Vector3 = DirectX::SimpleMath::Vector3;

@@ -108,7 +108,7 @@ void EntityManager::registerCreationFunctions()
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
-        Enemy* enemy = newd EnemyDefender(body, cube.getDimensionsRef());
+        Enemy* enemy = newd EnemyDefender(body, { 1.f, 1.f, 1.f });
 
         return enemy;
     };

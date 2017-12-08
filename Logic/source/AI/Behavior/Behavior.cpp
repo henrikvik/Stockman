@@ -134,7 +134,7 @@ void Behavior::calculateVelocityAndSteering(btVector3 &dir, RunIn &in, bool purs
     // calculate steering force with steeringSpeed, normal mod, special mod, and the normal reynold calc
     btVector3 steeringForce = dt * m_steeringSpeed * mod * noEnemyLeftBehindMod * (dir - vel);
     // calculate linear velocity
-    in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() * moveMod * noEnemyLeftBehindMod + steeringForce);
+    //in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() * moveMod * noEnemyLeftBehindMod + steeringForce);
 }
 
 void Behavior::runTree(RunIn &in)

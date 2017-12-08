@@ -3,7 +3,7 @@
 #include <Projectile\Projectile.h>
 using namespace Logic;
 
-const float EnemyDefender::BASE_SPEED = 14.5f;
+const float EnemyDefender::BASE_SPEED = 1.f;
 const float EnemyDefender::MELEE_DISTANCE = 10.f,
             EnemyDefender::PROJECTILE_SPEED = 115.f,
             EnemyDefender::THROW_STRENGTH = 0.05f;
@@ -16,7 +16,7 @@ const int   EnemyDefender::BASE_DAMAGE = 1,
 
 EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::Grunt, body, halfExtent, MAX_HP,
-        BASE_DAMAGE, BASE_SPEED, EnemyType::DEFENDER, 0) {
+        BASE_DAMAGE, BASE_SPEED, EnemyType::DEFENDER, 0, { 0.f, -2.9f, -0.2f }) {
     setBehavior(MELEE);
     createAbilities();
 

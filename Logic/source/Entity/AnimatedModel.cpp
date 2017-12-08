@@ -71,9 +71,7 @@ void AnimatedModel::set_next(const char *animation, std::function<void(void)> st
     animation_callback = start_callback;
 }
 
-void AnimatedModel::set_transform(btTransform &transform, btVector3 scale)
+void AnimatedModel::set_transform(DirectX::SimpleMath::Matrix &transform)
 {
-    float m[16];
-    transform.getOpenGLMatrix(m);
-    renderInfo.transform = Matrix(m) * Matrix::CreateScale(scale.getX(), scale.getY(), scale.getZ());
+    renderInfo.transform = transform;
 }
