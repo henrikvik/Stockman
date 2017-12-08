@@ -136,7 +136,7 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
 void Enemy::updateAnimation(float deltaTime)
 {
-    animatedModel.set_transform(getRigidBody()->getWorldTransform(), getHalfExtent());
+    animatedModel.set_transform(getRigidBody()->getWorldTransform());
     animatedModel.update(deltaTime);
 }
 
