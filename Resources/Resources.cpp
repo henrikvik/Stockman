@@ -56,6 +56,7 @@ namespace Resources
             if (strcmp(str, "Ground") == 0) return Ground;
             if (strcmp(str, "Ground_Old") == 0) return Ground_Old;
             if (strcmp(str, "Grunt") == 0) return Grunt;
+            if (strcmp(str, "Gyro_Bomber") == 0) return Gyro_Bomber;
             if (strcmp(str, "Hammer") == 0) return Hammer;
             if (strcmp(str, "House1") == 0) return House1;
             if (strcmp(str, "House2") == 0) return House2;
