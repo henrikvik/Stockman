@@ -8,12 +8,58 @@
 
 #include <Mouse.h>
 
+static void FillLightVec(std::vector<LightRenderInfo> &lights, std::string path)
+{
+    auto val = toml::parseFile(path).value;
+
+    for (auto light : val.find("lights")->as<toml::Array>()) {
+        auto position = light["position"].as<toml::Array>();
+        auto col = light["color"].as<toml::Array>();
+        auto radius = light["range"].asNumber();
+        auto intensity = light["intensity"].asNumber();
+
+        LightRenderInfo info = {};
+        info.position.x = position[0].asNumber();
+        info.position.y = position[1].asNumber();
+        info.position.z = position[2].asNumber();
+        info.color.x = col[0].asNumber();
+        info.color.y = col[1].asNumber();
+        info.color.z = col[2].asNumber();
+        info.range = radius;
+        info.intensity = intensity;
+
+        lights.push_back(info);
+    }
+}
+
+static void SubmitLights(std::vector<LightRenderInfo> &lights)
+{
+    for (auto light : lights) {
+        QueueRender(light);
+    }
+}
+
 namespace Logic {
+
+
 
 WeaponLightbow::WeaponLightbow(ProjectileManager* projectileManager, ProjectileData &projectileData, WeaponInfo wInfo)
     : Weapon(projectileManager, projectileData, wInfo),
-        m_CurrentIdx(0)
+        m_CurrentIdx(0), m_SelectedLight(0), m_ChristmasTimer(3.f), m_ChristmasIndex(0)
 {
+    FillLightVec(m_Lanterns, "lyktor.toml");
+    FillLightVec(m_Red, "r.toml");
+    FillLightVec(m_Green, "g.toml");
+    FillLightVec(m_Blue, "b.toml");
+
+    m_ChristmasPattern.push_back(0b00000001);
+    m_ChristmasPattern.push_back(0b00000010);
+    m_ChristmasPattern.push_back(0b00000100);
+    m_ChristmasPattern.push_back(0b00000010);
+    m_ChristmasPattern.push_back(0b00000001);
+    m_ChristmasPattern.push_back(0b00000011);
+    m_ChristmasPattern.push_back(0b00000111);
+    m_ChristmasPattern.push_back(0b00000011);
 }
 
 
@@ -32,8 +78,29 @@ void WeaponLightbow::addLight(int idx, Entity::CallbackData &data)
 float f = 0.f;
 void WeaponLightbow::update(float dt) {
     f += dt / 1000.f;
+    static bool lanterns = true;
+
+    if (f > m_ChristmasTimer) {
+        f = 0.f;
+        m_ChristmasIndex = (m_ChristmasIndex + 1) % m_ChristmasPattern.size();
+    }
+    
+    auto pattern = m_ChristmasPattern[m_ChristmasIndex];
+
+    if (pattern & 0x1)
+        SubmitLights(m_Red);
+    if (pattern & 0x2)
+        SubmitLights(m_Green);
+    if (pattern & 0x4)
+        SubmitLights(m_Blue);
+
+    if (lanterns) {
+        SubmitLights(m_Lanterns);
+    }
 
     ImGui::Begin("Lightbow Interface");
+
+    ImGui::DragFloat("christmas!!", &m_ChristmasTimer, 1.f, 0.05f, 10.f);
     if (ImGui::Button("Dump")) {
         auto root = toml::Value(toml::Table());
         

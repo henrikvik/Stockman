@@ -29,6 +29,16 @@ namespace Logic
         int m_SelectedLight;
         std::vector<LightDef> m_LightDefs;
         std::vector<LightEntry> m_Entries;
+
+        std::vector<char> m_ChristmasPattern;
+        int m_ChristmasIndex;
+        float m_ChristmasTimer;
+
+        std::vector<LightRenderInfo> m_Red;
+        std::vector<LightRenderInfo> m_Green;
+        std::vector<LightRenderInfo> m_Blue;
+
+        std::vector<LightRenderInfo> m_Lanterns;
     };
 }
 
