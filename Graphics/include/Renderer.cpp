@@ -423,7 +423,7 @@ namespace Graphics
 
         QueueRender([]()
         {
-            StaticRenderInfo info;
+            FoliageRenderInfo info;
             info.model = Resources::Models::Tree;
             info.transform = SimpleMath::Matrix::CreateTranslation(0, 5, -3);
             info.color = DirectX::SimpleMath::Vector3(1,1,1);
@@ -573,8 +573,8 @@ namespace Graphics
                 }
             } // New Animation Buffers
 
-            animatedInstanceBuffer.unmap();
-            animatedJointsBuffer.unmap();
+            newAnimatedInstanceBuffer.unmap();
+            newAnimatedJointsBuffer.unmap();
         }
 
         lightsNew.write([](Light * lightBuffer)

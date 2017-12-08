@@ -6,30 +6,30 @@
 #define USE_GRID_TEXTURE
 
 cbuffer cb0 : register(b0) { Camera camera; };
-cbuffer cb1 : register(b1) { float grassTime; };
+cbuffer cb3 : register(b3) { float grassTime; };
+cbuffer LightBuffer : register(b2) { float4x4 LightProjection; };
 
 cbuffer cb10 : register(b10) { uint instanceOffset; };
-StructuredBuffer<StaticInstance>   instanceBuffer : register(t10);
-StructuredBuffer<Vertex>           vertexBuffer   : register(t11);
+StructuredBuffer<StaticInstance> instanceBuffer : register(t10);
 
-Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId) 
+Fragment VS(Vertex vertex, uint instanceId : SV_InstanceId) 
 {
-    Vertex vertex = vertexBuffer[vertexId];
-    StaticInstance instance = instanceBuffer[instanceId + instanceOffset];
+    StaticInstance   instance = instanceBuffer[instanceId + instanceOffset];
 	Fragment fragment;
-    //keeep
-	float3 position = vertex.position;
+
+    float3 position = vertex.position;
     float sx = sin(position.x + vertex.uv.x * 5 + grassTime);
     float sy = cos(position.y + pow(vertex.uv.y, 2) * 5 + grassTime);
-	position.x += 0.1 * sx *sy* position.y * 2;
+	position.x += 0.10 * sx*sy    * position.y * 2;
 	position.z += 0.05 * sy*sx*sy * position.y * 2;
 
     fragment.position    = mul(instance.world, float4(position, 1));
     fragment.ndcPosition = mul(camera.viewProjection, fragment.position);
-    
-    fragment.normal     = normalize(mul(instance.world, float4(vertex.normal, 0))).xyz;
+    fragment.lightPos    = mul(LightProjection, fragment.position);
+
+    fragment.normal     = normalize(mul(instance.world, float4(vertex.normal,   0))).xyz;
     fragment.binormal   = normalize(mul(instance.world, float4(vertex.binormal, 0))).xyz;
-    fragment.tangent    = normalize(mul(instance.world, float4(vertex.tangent, 0))).xyz;
+    fragment.tangent    = normalize(mul(instance.world, float4(vertex.tangent,  0))).xyz;
     fragment.viewNormal = normalize(mul(camera.view,    float4(fragment.normal, 0)));
 
     fragment.uv         = vertex.uv;
