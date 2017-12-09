@@ -57,10 +57,7 @@ void AnimatedModel::update(float delta_ms)
     animation_duration = skeleton->getAnimationDuration(animation_next.c_str());    
     animation_next     = "";
 
-    // early return if the animation queded had no callback
-    if (callback_next == nullptr) return;
-
-    callback_next();
+    if (callback_next) callback_next();
 }
 
 void AnimatedModel::render() const
