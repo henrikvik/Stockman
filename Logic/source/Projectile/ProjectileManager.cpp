@@ -25,7 +25,7 @@ void ProjectileManager::init()
     for (size_t i = PROJECTILE_DEFAULT_COUNT; i--;)
     {
         // Create body
-        btRigidBody* body = m_physPtr->createBody(Sphere(PROJECTILE_DEFAULT_POS, { 0.f, 0.f, 0.f }, 1.f), 1.f, false, 0, 0);
+        btRigidBody* body = m_physPtr->createBody(Cube(PROJECTILE_DEFAULT_POS, { 0.f, 0.f, 0.f }, { 1.f, 1.f, 1.f }), 1.f, false, 0, 0);
 
         // benching body
         m_physPtr->removeRigidBody(body);
@@ -61,8 +61,8 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
     if (m_projectilesIdle.size() == 0)  // it shouldn't get to this, because it will lag in debug mode
     {
         return nullptr;
-        body = m_physPtr->createBody(Sphere({ position + forward }, { 0.f, 0.f, 0.f }, pData.scale * 0.25f), pData.mass, pData.isSensor, 0, 0);
-        p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, modelOffset, pData);
+        body = m_physPtr->createBody(Cube({ position + forward }, { 0.f, 0.f, 0.f }, pData.hitboxScale), pData.mass, pData.isSensor, 0, 0);
+        p = newd Projectile(body, pData.modelScale, modelOffset, pData);
     }
     // using projectile from idle stack
     else
@@ -72,7 +72,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         m_projectilesIdle.pop_back();
         p->setProjectileData(pData);
         p->setModelID(pData.meshID);
-        p->setHalfExtent({ pData.scale, pData.scale, pData.scale });
+        p->setHalfExtent(pData.modelScale);
         p->setModelOffset(modelOffset);
         p->setUnrotatedMO(modelOffset);
         // fetching body
@@ -88,7 +88,7 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         // mass
         body->setMassProps(pData.mass, { 0.f, 0.f, 0.f });
         // scale
-        body->getCollisionShape()->setLocalScaling({ pData.scale * 0.25f, pData.scale * 0.25f, pData.scale * 0.25f });
+        body->getCollisionShape()->setLocalScaling(pData.hitboxScale);
         m_physPtr->updateSingleAabb(body);
         // position
         body->getWorldTransform().setOrigin({ position + forward });

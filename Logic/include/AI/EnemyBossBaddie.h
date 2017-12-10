@@ -20,7 +20,8 @@ namespace Logic
         std::unordered_map<AbilityId, Ability> abilities;
 
         static const float BASE_SPEED, PROJECTILE_SPEED, ABILITY_1_MOD, MELEE_RANGE,
-            MELEE_PUSHBACK, TOTAL_HP_BAR, PROJECTILE_SCALE;
+            MELEE_PUSHBACK, TOTAL_HP_BAR;
+        static const btVector3 PROJECTILE_SCALE;
         static const int BASE_DAMAGE, MAX_HP, SCORE;
 
         // AB 4 data -- move to a buff

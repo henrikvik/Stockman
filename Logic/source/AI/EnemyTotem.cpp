@@ -4,7 +4,8 @@
 using namespace Logic;
 
 const float EnemyTotem::BASE_SPEED = 0.f, EnemyTotem::BULLET_SPEED = 18.5f;
-const float EnemyTotem::AB_SCALE = 3.5f, EnemyTotem::AB_ROTATION = 0.25f;
+const float EnemyTotem::AB_ROTATION = 0.25f;
+const btVector3 EnemyTotem::AB_SCALE = { 3.5f, 3.5f, 3.5f };
 
 const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 150, EnemyTotem::SCORE = 250;
 const int EnemyTotem::BULLET_AMOUNT = 9;

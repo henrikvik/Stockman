@@ -17,8 +17,8 @@ using namespace Logic;
 #define FREEZE_GRENADE_SPLIT_DIR_HIGH           1.2f
 #define FREEZE_GRENADE_SPLIT_UPDIR_LOW          3.f
 #define FREEZE_GRENADE_SPLIT_UPDIR_HIGH         4.f
-#define FREEZE_GRENADE_EXPLOSION_SCALE          35.f
-#define FREEZE_GRENADE_SPLIT_EXPLOSION_SCALE    20.f
+#define FREEZE_GRENADE_EXPLOSION_SCALE          { 35.f, 35.f, 35.f }
+#define FREEZE_GRENADE_SPLIT_EXPLOSION_SCALE    { 20.f, 20.f, 20.f }
 #define FREEZE_GRENADE_DMG                      50
 #define FREEZE_GRENADE_DMG_ENHANCED             100
 
@@ -73,7 +73,7 @@ void WeaponFreezeGrenade::doExplosionCallback(Entity::CallbackData &data)
     data.caller->getSoundSource()->playSFX(Sound::SFX::WEAPON_MAGIC_2, 1.f, 0.15f);
     
     // explosion projectile
-    m_explosionData.scale = FREEZE_GRENADE_EXPLOSION_SCALE;
+    m_explosionData.hitboxScale = FREEZE_GRENADE_EXPLOSION_SCALE;
     Projectile* explosion = getSpawnProjectileFunc()(m_explosionData, data.caller->getPositionBT(), { 0.f, 0.f, 0.f }, *data.caller, { 0.f, 0.f, 0.f });
 
     if (explosion)
@@ -128,7 +128,7 @@ void WeaponFreezeGrenade::doExplosionCallbackEnhanced(Entity::CallbackData &data
         {
             p->addCallback(Entity::ON_DESTROY, [&](Entity::CallbackData &data) -> void {
                 // explosion projectile
-                m_explosionData.scale = FREEZE_GRENADE_SPLIT_EXPLOSION_SCALE;
+                m_explosionData.hitboxScale = FREEZE_GRENADE_SPLIT_EXPLOSION_SCALE;
                 Projectile* explosion = getSpawnProjectileFunc()(m_explosionData, data.caller->getPositionBT(), { 0.f, 0.f, 0.f }, *data.caller, { 0.f, 0.f, 0.f });
 
                 if (explosion)

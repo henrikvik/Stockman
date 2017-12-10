@@ -56,7 +56,7 @@ void EnemyDefender::onSpawn()
     pdata.ttl = 999999; // is destroyed manually
     pdata.meshID = Resources::Models::Bone;
     pdata.speed = PROJECTILE_SPEED;
-    pdata.scale = 1.f;
+    pdata.hitboxScale = { 1.f, 1.f, 1.f };
     pdata.isSensor = true;
     pdata.type = ProjectileTypeDefenderShield;
 

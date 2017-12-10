@@ -59,7 +59,7 @@ void EnemyNecromancer::createAbilities()
     auto onTick = [&](Player &player, Ability &ab) -> void {};
 
     auto onUse = [=](Player &player, Ability &ab) -> void {
-        Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), pdata, (float)SPEED_AB2, 2.5f, 0.6f);
+        Projectile *pj = shoot(((player.getPositionBT() - getPositionBT()) + btVector3{ 0, 80, 0 }).normalize(), pdata, (float)SPEED_AB2, 2.5f, { 0.6f, 0.6f, 0.6f });
 		if (pj)
 		{
 			pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
@@ -98,7 +98,8 @@ void EnemyNecromancer::createAbilities()
     ab2ProjData.gravityModifier = 0.f;
     ab2ProjData.enemyBullet = true;
     ab2ProjData.damage = getBaseDamage();
-    ab2ProjData.scale = 1.5f;
+    ab2ProjData.hitboxScale = { 1.5f, 1.5f, 1.5f };
+    ab2ProjData.modelScale = { 1.5f, 1.5f, 1.5f };
 
     auto onUse2 = [&](Player &player, Ability &ab) -> void {
         increaseCallbackEntities();

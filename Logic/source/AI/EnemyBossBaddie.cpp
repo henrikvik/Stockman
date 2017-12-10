@@ -19,8 +19,8 @@ using namespace Logic;
 
 const float EnemyBossBaddie::BASE_SPEED = 19.f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.17f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
-            EnemyBossBaddie::PROJECTILE_SCALE = 7.5f;
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.17f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
+const btVector3 EnemyBossBaddie::PROJECTILE_SCALE = { 7.5f, 7.5f, 7.5f };
 const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 27500, EnemyBossBaddie::SCORE = 175000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
@@ -109,7 +109,7 @@ void EnemyBossBaddie::createAbilities()
             btVector3 to = player.getPositionBT() - getPositionBT();
             float len = to.length();
             Projectile *pj = shoot((to + btVector3{ 25.f * i - 25.f, 90, 0 }).normalize(),
-                Resources::Models::UnitCube, PROJECTILE_SPEED + (len * 0.5f), 2.5f, 0.6f);
+                Resources::Models::UnitCube, PROJECTILE_SPEED + (len * 0.5f), 2.5f, { 0.6f, 0.6f, 0.6f });
 
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
@@ -237,7 +237,8 @@ void EnemyBossBaddie::createAbilities()
         ProjectileData data;
         data.damage = 1;
         data.mass = 1.f;
-        data.scale = PROJECTILE_SCALE;
+        data.hitboxScale = PROJECTILE_SCALE;
+        data.modelScale = PROJECTILE_SCALE;
         data.enemyBullet = data.isSensor = true;
         data.meshID = Resources::Models::Files::SkySphere;
         data.speed = 19.f;

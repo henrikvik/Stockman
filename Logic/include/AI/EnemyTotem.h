@@ -12,9 +12,10 @@ namespace Logic
         Ability spreadShot;
 
         static const float BASE_SPEED, BULLET_SPEED;
-        static const float AB_SCALE, AB_ROTATION;
+        static const float AB_ROTATION;
         static const int BASE_DAMAGE, MAX_HP, SCORE;
         static const int BULLET_AMOUNT;
+        static const btVector3 AB_SCALE;
 
         float m_rotation;
     public:

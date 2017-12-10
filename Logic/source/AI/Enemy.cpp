@@ -276,7 +276,7 @@ EnemyType Enemy::getEnemyType() const
 	return m_enemyType;
 }
 
-Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale, bool sensor)
+Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, btVector3 scale, bool sensor)
 {
 	ProjectileData data;
 
@@ -286,7 +286,8 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
 	data.speed = speed;
     data.ttl = 10000;
     data.gravityModifier = gravity;
-	data.scale = scale;
+	data.hitboxScale = scale;
+    data.modelScale = scale;
     data.enemyBullet = true;
     data.isSensor = sensor;
 
@@ -309,14 +310,15 @@ Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed
     return pj;
 }
 
-Projectile * Logic::Enemy::shoot(btVector3 dir, ProjectileData data, float speed, float gravity, float scale, bool sensor)
+Projectile * Logic::Enemy::shoot(btVector3 dir, ProjectileData data, float speed, float gravity, btVector3 scale, bool sensor)
 {
     data.damage = getBaseDamage();
     data.shouldRender = false;
     data.speed = speed;
     data.ttl = 10000;
     data.gravityModifier = gravity;
-    data.scale = scale;
+    data.hitboxScale = scale;
+    data.modelScale = scale;
     data.enemyBullet = true;
     data.isSensor = sensor;
 

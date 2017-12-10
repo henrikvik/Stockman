@@ -30,7 +30,7 @@ namespace Logic
 	struct ProjectileData
 	{
 		float damage;				// Projectile Damage
-		float scale;				// Scale of the projectile
+		btVector3 hitboxScale;			// Scale of the projectile
 		float mass;					// Mass of projectile
 		float speed;				// Bullet speed
 		float gravityModifier;		// How fast the bullet falls to the ground
@@ -53,18 +53,21 @@ namespace Logic
         bool dmgFallOff;
 
         btVector3 modelOffset;
+        btVector3 modelScale;
 
-        ProjectileData() : hasEffect(false), effectActivated(false), effectVelocity(false), effect({}), damage(1.f), scale(1.f),
+        ProjectileData() : hasEffect(false), effectActivated(false), effectVelocity(false), effect({}), damage(1.f), hitboxScale({ 1.f, 1.f, 1.f }),
             mass(1.f), speed(1.f), gravityModifier(0.f), ttl(1000), meshID(Resources::Models::UnitCube), materialID(1),
             type(ProjectileTypeNormal), isSensor(false), enemyBullet(false), dmgFallOff(false), modelOffset({ 0.f, 0.f, 0.f }) {}
-        ProjectileData(const char *fx, bool effectVelocity, bool effectActivated, float inDamage, float inScale,
+        ProjectileData(const char *fx, bool effectVelocity, bool effectActivated, float inDamage, btVector3 inHitboxScale,
             float inMass, float inSpeed, float inGravityModifier, float inTTL, LightRenderInfo inLightInfo,
             Resources::Models::Files inMeshID, int inMaterialID, ProjectileType inType = ProjectileTypeNormal,
-            bool inIsSensor = false, bool inEnemyBullet = false, bool inShouldRender = true, bool inDmgFallOff = false, btVector3 inModelOffset = { 0.f, 0.f, 0.f })
-            : damage(inDamage), scale(inScale), mass(inMass), speed(inSpeed), lightInfo(inLightInfo),
+            bool inIsSensor = false, bool inEnemyBullet = false, bool inShouldRender = true, bool inDmgFallOff = false,
+            btVector3 inModelOffset = { 0.f, 0.f, 0.f }, btVector3 inModelScale = { 1.f, 1.f, 1.f })
+            : damage(inDamage), hitboxScale(inHitboxScale), mass(inMass), speed(inSpeed), lightInfo(inLightInfo),
             effectVelocity(effectVelocity), effectActivated(effectActivated), gravityModifier(inGravityModifier),
             ttl(inTTL), meshID(inMeshID), materialID(inMaterialID), type(inType), isSensor(inIsSensor),
-            enemyBullet(inEnemyBullet), shouldRender(inShouldRender), dmgFallOff(inDmgFallOff), modelOffset(inModelOffset)
+            enemyBullet(inEnemyBullet), shouldRender(inShouldRender), dmgFallOff(inDmgFallOff),
+            modelOffset(inModelOffset), modelScale(inModelScale)
         {
             if (fx) {
                 hasEffect = true;
