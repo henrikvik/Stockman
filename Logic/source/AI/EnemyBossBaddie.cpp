@@ -20,7 +20,7 @@ using namespace Logic;
 const float EnemyBossBaddie::BASE_SPEED = 19.f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.17f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f;
-const btVector3 EnemyBossBaddie::PROJECTILE_SCALE = { 7.5f, 7.5f, 7.5f };
+const btVector3 EnemyBossBaddie::PROJECTILE_SCALE = { 1.875f, 1.875f, 1.875f };
 const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 27500, EnemyBossBaddie::SCORE = 175000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
 /*

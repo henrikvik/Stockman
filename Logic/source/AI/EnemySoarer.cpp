@@ -10,7 +10,7 @@ const float EnemySoarer::SPEED = 20.f,
             EnemySoarer::AB1_SPEED = 25.f,
             EnemySoarer::AB1_GRAVITY = 6.5f,
             EnemySoarer::HEIGHT_OFFSET = 15.f;
-const btVector3 EnemySoarer::AB1_SCALE = { 13.f, 13.f, 13.f };
+const btVector3 EnemySoarer::AB1_SCALE = { 3.25f, 3.25f, 3.25f };
 
 EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::Gyro_Bomber, body, halfExtent,
@@ -55,15 +55,13 @@ void EnemySoarer::createAbilities()
     pdata.hasEffect = true;
     pdata.effectVelocity = false;
     pdata.effectActivated = true;
-    pdata.enemyBullet = true;
-    pdata.ttl = 10000.f;
 
 
     ab1 = Ability(data, [&](Player &player, Ability &ab) -> void {
         // ontick 
     }, [=](Player &player, Ability &ab) -> void {
         // onuse
-        auto pj = shoot({ 0, -5, 0 }, pdata, AB1_SPEED, AB1_GRAVITY, AB1_SCALE);
+        auto pj = shoot({ 0, -1, 0 }, pdata, AB1_SPEED, AB1_GRAVITY, AB1_SCALE);
         getSoundSource()->playSFX(Sound::SFX::WEAPON_ICEGUN_PRIMARY, 1.f, 0.15f);
         if (pj) {
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
