@@ -12,6 +12,7 @@ namespace Graphics
         , depth_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
         , depth_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
         , depth_vs_foliage(Resources::Shaders::ForwardPlus_VS_Foliage, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
+        , depth_ps_foliage(Resources::Shaders::ForwardPlus_PS_Foliage_Depth, ShaderType::PS, HybrisLoader::Vertex::INPUT_DESC)
     {
     }
 
@@ -39,6 +40,7 @@ namespace Graphics
         Global::context->RSSetState(Global::cStates->CullNone());
         Global::context->IASetInputLayout(depth_vs_foliage);
         Global::context->VSSetShader(depth_vs_foliage, nullptr, 0);
+        Global::context->PSSetShader(depth_ps_foliage, nullptr, 0);
         Global::context->VSSetConstantBuffers(3, 1, &buffers[1]);
         drawInstanced<FoliageRenderInfo>(resources[foliageInstanceBuffer]);
 

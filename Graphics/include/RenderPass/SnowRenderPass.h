@@ -36,7 +36,7 @@ namespace Graphics
         Shader snowShader;
         int snowFlakeCount;
 
-
+        ID3D11ShaderResourceView *m_SnowFlakeSRV;
         std::vector<SnowFlake> snowFlakes;
         void addRandomSnowFlake();
         void moveSnowFlake(int snowFlake);

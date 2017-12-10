@@ -33,8 +33,8 @@ static const float ssaoGaussianFilter[SSAOKERNELSIZE] =
 };
 
 #define SSAO_RANDOM_SIZE 256
-#define SSAO_SAMPLE_RADIUS 0.5f
+#define SSAO_SAMPLE_RADIUS 0.2f
 #define SSAO_INTENSITY 5.0
-#define SSAO_SCALE 1.f
-#define SSAO_BIAS 0.3f
+#define SSAO_SCALE 14.f
+#define SSAO_BIAS 0.03f
 #define SSAO_ITERATIONS 4

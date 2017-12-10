@@ -18,6 +18,11 @@ namespace Resources
     {
         Files toEnum(const char * str)
         {
+            if (strcmp(str, "b") == 0) return b;
+            if (strcmp(str, "g") == 0) return g;
+            if (strcmp(str, "lights") == 0) return lights;
+            if (strcmp(str, "lights2") == 0) return lights2;
+            if (strcmp(str, "r") == 0) return r;
             if (strcmp(str, "Stock_Map") == 0) return Stock_Map;
             throw "Could not find matching enum.";
         }
@@ -112,6 +117,8 @@ namespace Resources
             if (strcmp(str, "DoFGlue") == 0) return DoFGlue;
             if (strcmp(str, "ForwardPlus") == 0) return ForwardPlus;
             if (strcmp(str, "ForwardPlus_PS") == 0) return ForwardPlus_PS;
+            if (strcmp(str, "ForwardPlus_PS_Foliage") == 0) return ForwardPlus_PS_Foliage;
+            if (strcmp(str, "ForwardPlus_PS_Foliage_Depth") == 0) return ForwardPlus_PS_Foliage_Depth;
             if (strcmp(str, "ForwardPlus_VS_Animated") == 0) return ForwardPlus_VS_Animated;
             if (strcmp(str, "ForwardPlus_VS_Foliage") == 0) return ForwardPlus_VS_Foliage;
             if (strcmp(str, "ForwardPlus_VS_Static") == 0) return ForwardPlus_VS_Static;
@@ -164,6 +171,7 @@ namespace Resources
             if (strcmp(str, "SettingsButtons") == 0) return SettingsButtons;
             if (strcmp(str, "Skillpickbackground") == 0) return Skillpickbackground;
             if (strcmp(str, "Skillpicksheet") == 0) return Skillpicksheet;
+            if (strcmp(str, "SnowFlake") == 0) return SnowFlake;
             if (strcmp(str, "Spellsheet") == 0) return Spellsheet;
             if (strcmp(str, "TextSkillPick") == 0) return TextSkillPick;
             if (strcmp(str, "wavebegins") == 0) return wavebegins;

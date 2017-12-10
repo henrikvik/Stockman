@@ -1,12 +1,12 @@
 #include "LightCalcInclude.hlsli"
 
-#define SNOW_RADIUS 50.f
+#define SNOW_RADIUS 30.f
 #define FADE_DIST 30.f
 #define SNOW_COLOR float3(0.7f, 0.7f, 0.7f)
 struct Vertex
 {
     float3 pos : POSITION;
-    float rot  : ROTATIONVALUE;
+    float rot : ROTATIONVALUE;
     float distance : DISTANCE;
 };
 
@@ -20,6 +20,7 @@ Vertex VS(uint vertexId : SV_VertexId)
 struct GS_OUT
 {
     float4 pos : SV_Position;
+    float2 uv : TEXCOORD;
     float4 wPos : WORLDPOS;
     float4 lPos : LIGHTPOS;
     float distance : DISTANCE;
@@ -32,7 +33,7 @@ void GS(point Vertex input[1], inout TriangleStream<GS_OUT> output)
     snow.distance = input[0].distance;
 
     float rot = input[0].rot;
-    float4x4 rotation = 
+    float4x4 rotation =
     {
         cos(rot), -sin(rot),  -sin(rot),      0,
 
@@ -40,43 +41,57 @@ void GS(point Vertex input[1], inout TriangleStream<GS_OUT> output)
 
         sin(rot),  sin(rot),   cos(rot),      0,
 
-            0,         0,          0,         1
+        0,         0,          0,         1
     };
 
-    float4 positions[3] = 
-    { 
+    float4 positions[3] =
+    {
         -0.5, -0.5, 0, 0,
-         0.5, -0.5, 0, 0,
-           0,  0.5, 0, 0
+        0.5, -0.5, 0, 0,
+        0,  0.5, 0, 0
+    };
+
+    float2 uvs[3] =
+    {
+        2, -1,
+        0, 3,
+        -1, -1,
     };
 
     for (int i = 0; i < 3; i++)
     {
-        positions[i] *= max((snow.distance / SNOW_RADIUS), 0.2f);
+        float dist = snow.distance / SNOW_RADIUS;
+        positions[i] *= max(dist, 0.2f);
         positions[i] = mul(rotation, positions[i]);
     }
 
     float4 temp = float4(input[0].pos, 1);
     snow.wPos = temp.xyzw + positions[0];
+    snow.uv = uvs[0];
     snow.lPos = mul(lightVP, snow.wPos);
     snow.pos = mul(ViewProjection, snow.wPos);
     output.Append(snow);
 
     snow.wPos = temp + positions[1];
+    snow.uv = uvs[1];
     snow.lPos = mul(lightVP, snow.wPos);
     snow.pos = mul(ViewProjection, snow.wPos);
     output.Append(snow);
 
     snow.wPos = temp + positions[2];
+    snow.uv = uvs[2];
     snow.lPos = mul(lightVP, snow.wPos);
     snow.pos = mul(ViewProjection, snow.wPos);
     output.Append(snow);
 }
 
+SamplerState LinearClamp : register(s0);
+Texture2D SnowTexture : register(t4);
 
 float4 PS(GS_OUT input) : SV_TARGET
 {
 
+    float4 snow = SnowTexture.Sample(LinearClamp, input.uv);
     float shadow = max(calculateShadowValue(input.lPos.xyz, 2), 0.2f);
 
     uint2 tile = uint2(floor(input.pos.xy / BLOCK_SIZE));
@@ -101,5 +116,6 @@ float4 PS(GS_OUT input) : SV_TARGET
 
     lighting = saturate(lighting);
 
-    return float4(lighting, (SNOW_RADIUS - input.distance) / FADE_DIST);
+
+    return snow * float4(lighting, (SNOW_RADIUS - input.distance) / FADE_DIST);
 }
