@@ -4,7 +4,7 @@
 using namespace Logic;
 
 const float EnemyDefender::BASE_SPEED = 14.f;
-const float EnemyDefender::MELEE_DISTANCE = 15.f,
+const float EnemyDefender::MELEE_DISTANCE = 16.5f,
             EnemyDefender::PROJECTILE_SPEED = 115.f,
             EnemyDefender::THROW_STRENGTH = 0.05f;
 
@@ -92,10 +92,11 @@ void EnemyDefender::createAbilities()
 
         for (int i = 0; i < m_meleeIndicators.size(); i++) {
             if (m_meleeIndicators[i]) {
+                float scl = 1.f - (ab.getCurrentDuration() / ab.getData().duration);
                 m_meleeIndicators[i]->getRigidBody()->getWorldTransform().setOrigin(
-                    getPositionBT() + btVector3(std::cos(i * piece) * MELEE_DISTANCE,
+                    getPositionBT() + btVector3(std::cos(i * piece) * MELEE_DISTANCE * scl,
                                                 0.5f,
-                                                std::sin(i * piece) * MELEE_DISTANCE
+                                                std::sin(i * piece) * MELEE_DISTANCE * scl
                                                ));
             }
         }
