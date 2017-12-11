@@ -38,12 +38,9 @@ void ComboMachine::kill(int score)
         // multikill
         if (m_multikill != MAX_MULTIKILL)
         {
-            if (m_multikillTimer > FLT_EPSILON)
-                m_multikill++;
+            m_multikill++;
             m_multikillTimer = MULTIKILL_TIMER;
         }
-        else
-            m_multikillTimer = 0.f;
     }
 }
 
@@ -62,7 +59,7 @@ void ComboMachine::update(float deltaTime)
         reward(m_comboScore * m_combo);
         m_comboTimer = 0.f;
         m_combo = 0;
-        m_multikill = 1;
+        m_multikill = 0;
         m_comboScore = 0;
     }  
 }
@@ -73,14 +70,15 @@ void ComboMachine::reset()
     m_totalKills = 0;
 	m_comboTimer = 0.f;
 	m_combo = 0;
-    m_multikill = 1;
+    m_multikill = 0;
 	m_comboScore = 0;
     m_totalScore = 0;
 }
 
 void ComboMachine::endCombo()
 {
-    addMultikillScore();
+    if(m_multikill > 1)
+        addMultikillScore();
     reward(m_comboScore);
 }
 
@@ -133,7 +131,7 @@ void ComboMachine::checkCombo()
 void ComboMachine::addMultikillScore()
 {
     m_comboScore += m_multikill * COMBO_MULTIKILL_SCORE;
-    m_multikill = 1;
+    m_multikill = 0;
 }
 
 void ComboMachine::addScore(int score)
@@ -144,10 +142,7 @@ void ComboMachine::addScore(int score)
 
     if (m_multikill != MAX_MULTIKILL)
     {
-        if (m_multikillTimer > FLT_EPSILON)
-            m_multikill++;
+        m_multikill++;
         m_multikillTimer = MULTIKILL_TIMER;
     }
-    else
-        m_multikillTimer = 0.f;
 }
