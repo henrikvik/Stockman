@@ -4,11 +4,12 @@
 #include "../CommonState.h"
 #include <SimpleMath.h>
 #include <Singletons\DebugWindow.h>
+#include <WICTextureLoader.h>
 
 //temp
 #include <Keyboard.h>
 
-#define SNOW_RADIUS 65.f
+#define SNOW_RADIUS 30.f
 #define MAX_SNOW 1024
 #define PI 3.14159265f
 #define ONE_DEG_IN_RAD 0.01745f
@@ -35,6 +36,8 @@ Graphics::SnowRenderPass::SnowRenderPass(
     snowShader(Resources::Shaders::SnowShader, ShaderType::GS | ShaderType::VS | ShaderType::PS)
 {
     snowFlakeCount = 0;
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, L"../Resources/Textures/SnowFlake.dds", nullptr, &m_SnowFlakeSRV));
+
 
     RegisterCommand("GFX_RESTART_SNOW",
     {
@@ -106,14 +109,14 @@ void Graphics::SnowRenderPass::render() const
         Global::context->OMSetBlendState(Global::transparencyBlendState, 0, -1);
 
         Global::context->VSSetShaderResources(4, 1, snowBuffer);
-
         Global::context->GSSetConstantBuffers(0, 1, *Global::mainCamera->getBuffer());
         Global::context->GSSetConstantBuffers(3, 1, &buffers[0]); //lightmatrixbuffer
 
         Global::context->PSSetConstantBuffers(1, 1, &buffers[1]); //lightDatabuffer
-
         Global::context->PSSetShaderResources(0, resources.size(), resources.data());
-        
+        Global::context->PSSetShaderResources(4, 1, &m_SnowFlakeSRV);
+        auto sampler = Global::cStates->LinearClamp();
+        Global::context->PSSetSamplers(0, 1, &sampler);
         Global::context->PSSetSamplers(1, 1, &Global::comparisonSampler);
 
 

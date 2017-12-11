@@ -12,6 +12,7 @@ namespace Graphics
         , forward_plus_vs_static(Resources::Shaders::ForwardPlus_VS_Static, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
         , forward_plus_vs_animated(Resources::Shaders::ForwardPlus_VS_Animated, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
         , forward_plus_vs_foliage(Resources::Shaders::ForwardPlus_VS_Foliage, ShaderType::VS, HybrisLoader::Vertex::INPUT_DESC)
+        , forward_plus_ps_foliage(Resources::Shaders::ForwardPlus_PS_Foliage, ShaderType::PS)
     {
     }
 
@@ -56,6 +57,7 @@ namespace Graphics
         Global::context->VSSetConstantBuffers(1, 1, &buffers[3]);
         Global::context->IASetInputLayout(forward_plus_vs_foliage);
         Global::context->VSSetShader(forward_plus_vs_foliage, nullptr, 0);
+        Global::context->PSSetShader(forward_plus_ps_foliage, nullptr, 0);
         drawInstanced<FoliageRenderInfo>(resources[foliageInstanceBuffer]);
 
 

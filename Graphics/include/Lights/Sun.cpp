@@ -46,11 +46,11 @@ namespace Graphics
     {
         static DirectX::SimpleMath::Vector4 basepos(45.f, 14.f, 43.f, 1.f);
         static DirectX::SimpleMath::Vector3 lightdir(0.310f, 0.906f, 0.288f);
-        static DirectX::SimpleMath::Vector3 lightcolor(15 / 255.f, 15 / 255.f, 39 / 255.f);
-        static DirectX::SimpleMath::Vector3 ambient(33 / 255.f, 33 / 255.f, 44 / 255.f);
+        static DirectX::SimpleMath::Vector3 lightcolor(20 / 255.f, 22 / 255.f, 28 / 255.f);
+        static DirectX::SimpleMath::Vector3 ambient(19 / 255.f, 19 / 255.f, 25 / 255.f);
         static float nearPlane = 9.f;
-        static float farPlane = 201.f;
-        static float distance = 84.1f;
+        static float farPlane = 211.f;
+        static float distance = 110.1f;
         static float width = 437.f;
         if (DebugShadowConstants) {
             ImGui::Begin("Shadow Constants");

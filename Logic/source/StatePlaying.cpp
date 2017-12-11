@@ -187,6 +187,8 @@ void StatePlaying::update(float deltaTime)
     if (pattern & 0x4)
         SubmitLights(m_BlueBulbs);
 
+    SubmitLights(m_MapLights);
+
     m_fpsRenderer.updateFPS(deltaTime);
     PROFILE_BEGIN("cards");
     m_cardManager->update(deltaTime);

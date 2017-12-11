@@ -36,6 +36,7 @@ namespace Graphics
         Shader depth_vs_static;
         Shader depth_vs_animated;
         Shader depth_vs_foliage;
+        Shader depth_ps_foliage;
 
     };
 }
