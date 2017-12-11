@@ -470,6 +470,7 @@ void Player::readFromFile()
 
 void Player::takeDamage(int damage, bool damageThroughProtection)
 {
+    if (damage == 0) return;
     if (!m_godMode)
     {
         if (damageThroughProtection ||

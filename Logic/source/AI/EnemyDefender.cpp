@@ -134,11 +134,13 @@ void EnemyDefender::createAbilities()
         for (int i = 0; i < INDICATORS; i++) {
             Projectile *pj = SpawnProjectile(pdata, btVector3(0, 0, 0), btVector3(0, 0, 0), *this);
             m_meleeIndicators[i] = pj;
-            increaseCallbackEntities();
-            pj->addCallback(ON_DESTROY, [=](CallbackData &data) {
-                m_meleeIndicators[i] = nullptr;
-                decreaseCallbackEntities();
-            });
+            if (pj) {
+                increaseCallbackEntities();
+                pj->addCallback(ON_DESTROY, [=](CallbackData &data) {
+                    m_meleeIndicators[i] = nullptr;
+                    decreaseCallbackEntities();
+                });
+            }
         }
     });
 }
