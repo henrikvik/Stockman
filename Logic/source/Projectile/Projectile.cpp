@@ -178,6 +178,14 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         cb = collisionWithTerrain();
     }
 
+    switch (m_pData.type)
+    {
+    case ProjectileTypeBulletTimeSensor:
+    case ProjectileTypeDefenderShield:
+        m_dead = false;
+        break;
+    }
+
     // Send back data to listener
     if (cb) doCallBack(other);
 }
