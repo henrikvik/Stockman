@@ -632,3 +632,46 @@
 	"height" : 25.f;
 	"width" : 200.0f;
 }
+
+{
+	"buttonName" : "HighscoreDown";
+	"texture" : 4;
+	"xPos" : 700.0f;
+	"yPos" : 665.0f;
+	"xTexStart" : 0.81641f;
+	"yTexStart" : .20996f;
+	"xTexEnd" : 0.87305f;
+	"yTexEnd" : 0.24219f;
+    "hoverXTexStart" : 0.81641f;
+	"hoverYTexStart" : .20996f;
+	"hoverXTexEnd" : 0.87305f;
+	"hoverYTexEnd" : 0.24219f;
+    "activeXTexStart" : 0.81641f;
+	"activeYTexStart" : .20996f;
+	"activeXTexEnd" : 0.87305f;
+	"activeYTexEnd" : 0.24219f;
+    "activeOffset" : 0.0f;
+	"height" : 40.f;
+	"width" : 40.0f;
+}
+{
+	"buttonName" : "HighscoreUp";
+	"texture" : 4;
+	"xPos" : 760.0f;
+	"yPos" : 665.0f;
+	"xTexStart" : 0.89746f;
+	"yTexStart" : 0.19727f;
+	"xTexEnd" : 0.9541f;
+	"yTexEnd" : 0.23438f;
+    "hoverXTexStart" : 0.89746f;
+	"hoverYTexStart" : 0.19727f;
+	"hoverXTexEnd" : 0.9541f;
+	"hoverYTexEnd" : 0.23438f;
+    "activeXTexStart" : 0.89746f;
+	"activeYTexStart" : 0.19727f;
+	"activeXTexEnd" : 0.9541f;
+	"activeYTexEnd" : 0.23438f;
+    "activeOffset" : 0.0f;
+	"height" : 40.f;
+	"width" : 40.0f;
+}

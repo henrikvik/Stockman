@@ -68,6 +68,7 @@ iMenuHighscore::iMenuHighscore(iMenu::MenuGroup group)
 
         m_spot.push_back(spot);
     }
+    start = 0;
 }
 
 iMenuHighscore::~iMenuHighscore() 
@@ -219,25 +220,6 @@ void iMenuHighscore::update(int x, int y, float deltaTime)
     }
 #endif    
 
-    static int start        = 0;
-    static boolean pressed  = true;
-    if (!pressed && DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Down))
-    {
-        start += 10;
-        pressed = true;
-        buildSpots(start);
-    }
-    else if (!pressed && DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Up))
-    {
-        start -= 10;
-        if (start < 0) start = 0;
-        pressed = true;
-        buildSpots(start);
-    }
-    
-    if (!DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Up) &&
-        !DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Down))
-        pressed = false;
 }
 
 void iMenuHighscore::render() const
@@ -256,4 +238,17 @@ void iMenuHighscore::render() const
             QueueRender(spot->renderInfoKills);
         }
     }
+}
+
+void Logic::iMenuHighscore::up()
+{
+    start -= 10;
+    if (start < 0) start = 0;
+    buildSpots(start);
+}
+
+void Logic::iMenuHighscore::down()
+{
+    start += 10;
+    buildSpots(start);
 }

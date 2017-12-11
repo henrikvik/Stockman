@@ -22,7 +22,7 @@ const std::map<int, Resources::Textures::Files> LookUp =
     { 1, Resources::Textures::CardBackground },                  // card backgrounds
     { 2, Resources::Textures::Retrytextsheet },        // OLD - Remove later
     { 3, Resources::Textures::Skillpicksheet },             // - Skill pick buttons, and continue button
-    //{ 4, Resources::Textures::Backbutton },                 // OLD - Remove later
+    { 4, Resources::Textures::Gamesheet },                 // up down arrow
     { 5, Resources::Textures::Highscoretext },              // - Same as MainMenuText but with the "Back Button", that we want
    // { 6, Resources::Textures::Pausetext },                   // - Same as MainMenuText but with the "Return to Menu", that we want
     { 7, Resources::Textures::SettingsButtons}
@@ -163,6 +163,8 @@ iMenuHighscore * iMenuFactory::buildMenuHighscore()
     menu->addEffect(newd iMenuFX_Combo());
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
+    menu->addButton(buildButton("HighscoreUp", std::bind(&iMenuHighscore::up, menu)));
+    menu->addButton(buildButton("HighscoreDown", std::bind(&iMenuHighscore::down, menu)));
     return menu;
 }
 
