@@ -10,13 +10,13 @@ namespace Logic
     {
     private:
         Ability m_melee;
-        std::vector<Projectile*> m_projectiles;
+        std::vector<Projectile*> m_projectiles, m_meleeIndicators;
 
         float m_defenseTime;
         int m_defenseHealth;
 
         static const float BASE_SPEED;
-        static const int BASE_DAMAGE, MAX_HP, MAX_DEF_HP, SCORE, PROJECTILES;
+        static const int BASE_DAMAGE, MAX_HP, MAX_DEF_HP, SCORE, PROJECTILES, INDICATORS;
         static const float MELEE_DISTANCE, PROJECTILE_SPEED, THROW_STRENGTH;
     public:
         EnemyDefender(btRigidBody* body, btVector3 halfExtent);
