@@ -17,8 +17,8 @@ using namespace Logic;
 #define FREEZE_GRENADE_SPLIT_DIR_HIGH           1.2f
 #define FREEZE_GRENADE_SPLIT_UPDIR_LOW          3.f
 #define FREEZE_GRENADE_SPLIT_UPDIR_HIGH         4.f
-#define FREEZE_GRENADE_EXPLOSION_SCALE          { 35.f, 35.f, 35.f }
-#define FREEZE_GRENADE_SPLIT_EXPLOSION_SCALE    { 20.f, 20.f, 20.f }
+#define FREEZE_GRENADE_EXPLOSION_SCALE          { 8.75f, 8.75f, 8.75f }
+#define FREEZE_GRENADE_SPLIT_EXPLOSION_SCALE    { 5.f, 5.f, 5.f }
 #define FREEZE_GRENADE_DMG                      50
 #define FREEZE_GRENADE_DMG_ENHANCED             100
 
