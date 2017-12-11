@@ -48,8 +48,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
         if (wparam == VK_RETURN)
-            if ((HIWORD(lparam) & KF_ALTDOWN))
+            if ((HIWORD(lparam) & KF_ALTDOWN)) {
                 settingsFullScreenOverRide = !settingsFullScreenOverRide;
+                Settings& setting = Settings::getInstance();
+                setting.setWindowed(settingsFullScreenOverRide);
+            }
+                
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
 		break;
@@ -397,7 +401,7 @@ int Engine::run()
             QueueRender(shakeInfo);
 #endif // _DEBUG
         Settings& setting = Settings::getInstance();
-		if (setting.getWindowed() != test && settingsFullScreenOverRide == false)
+		if (setting.getWindowed() != test )//&& settingsFullScreenOverRide == false)
 		{
 			mSwapChain->SetFullscreenState(setting.getWindowed(), NULL);
 		}
