@@ -45,7 +45,7 @@ float4 PS(VSOut input) : SV_Target0
 
     color = color + color * glow * 7;
 
-    color = adjustContrast(color, 2 - BulletTimeProgress.x, 0.3f);
+    color = adjustContrast(color, 2 - BulletTimeProgress.x, 0.2f);
     color = adjustSaturation(color, BulletTimeProgress.x);
 
     float dist = distance(input.uv, float2(0.5, 0.5));
