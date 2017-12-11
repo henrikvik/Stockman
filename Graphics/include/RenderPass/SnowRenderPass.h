@@ -14,7 +14,7 @@ namespace Graphics
             std::initializer_list<ID3D11ShaderResourceView*> resources = {},
             std::initializer_list<ID3D11Buffer*> buffers = {},
             ID3D11DepthStencilView * depthStencil = nullptr);
-        virtual ~SnowRenderPass() {};
+        virtual ~SnowRenderPass() { SAFE_RELEASE(m_SnowFlakeSRV); };
 
         virtual wchar_t* name() const override {
             return L"SnowRenderPass";
