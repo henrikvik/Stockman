@@ -212,7 +212,7 @@ void StatePlaying::update(float deltaTime)
         //the spagetti is (expand)ing (dong)
         if (m_menu->getType() != iMenu::CardSelect)
         {
-            float tempTime = m_waveTimeManager.getTimeCurrent();
+            float tempTime = (m_waveTimeManager.getTimeRequired() - m_waveTimeManager.getTimeCurrent()) * ((float)(m_waveTimeManager.getCurrentWave()) / 5.0f)  ;
             bool newWave = m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
 
             if (newWave)
