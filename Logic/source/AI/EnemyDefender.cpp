@@ -4,7 +4,7 @@
 using namespace Logic;
 
 const float EnemyDefender::BASE_SPEED = 14.5f;
-const float EnemyDefender::MELEE_DISTANCE = 20.f,
+const float EnemyDefender::MELEE_DISTANCE = 17.5f,
             EnemyDefender::PROJECTILE_SPEED = 115.f,
             EnemyDefender::THROW_STRENGTH = 0.05f;
 
@@ -12,7 +12,7 @@ const int   EnemyDefender::BASE_DAMAGE = 1,
             EnemyDefender::MAX_HP = 100,
             EnemyDefender::MAX_DEF_HP = 4,
             EnemyDefender::SCORE = 100,
-            EnemyDefender::PROJECTILES = 22;
+            EnemyDefender::PROJECTILES = 20;
 
 EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::Grunt, body, halfExtent, MAX_HP,
