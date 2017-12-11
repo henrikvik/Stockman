@@ -92,6 +92,8 @@ iMenuSettings * iMenuFactory::buildMenuPauseSettings()
     menu->setGroup(iMenu::MenuGroup::SettingsPause);
     menu->addEffect(newd iMenuFX_Combo());
     menu->removeButtons();
+    menu->addButton(buildButton("MenuSettingsVideoWindowedLeft", ButtonFunction::windowed));
+    menu->addButton(buildButton("MenuSettingsVideoWindowedRight", ButtonFunction::windowed));
     menu->addButton(buildButton("MenuQuitGame", ButtonFunction::pause));
 
     return menu;
@@ -174,6 +176,8 @@ iMenuHighscore * iMenuFactory::buildMenuHighscoreGameOver()
     menu->addEffect(newd iMenuFX_Combo());
     menu->addBackground(Resources::Textures::Highscore, 1.f);
     menu->addButton(buildButton("MenuBackGame", ButtonFunction::goToGameOver));
+    menu->addButton(buildButton("HighscoreUp", std::bind(&iMenuHighscore::up, menu)));
+    menu->addButton(buildButton("HighscoreDown", std::bind(&iMenuHighscore::down, menu)));
     return menu;
 }
 
