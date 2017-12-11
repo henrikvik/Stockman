@@ -115,7 +115,6 @@ void ComboMachine::addTimeBonus(float timeLeft)
 {
     
     int timeScore = timeLeft * 0.001f;
-    printf("%d", timeScore);
     m_totalScore += timeScore * COMBO_TIME_SCORE_MULTIPLIER;
 }
 
