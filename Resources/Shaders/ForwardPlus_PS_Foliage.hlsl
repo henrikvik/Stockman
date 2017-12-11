@@ -2,7 +2,6 @@
 #include "include/Fragment.hlsli"
 #include "include/LightCalc.hlsli"
 
-
 cbuffer cb0 : register(b0) { Camera camera; };
 cbuffer cb1 : register(b1) { DirectionalLight globalLight; };
 
@@ -24,10 +23,13 @@ struct Targets
     float4 viewNormal : SV_Target2;
 };
 
-Targets PS(Fragment fragment) 
+Targets PS(Fragment fragment)
 {
     Targets targets;
-    
+
+    float4 diffuse = diffuseTexture.Sample(linearClamp, fragment.uv);
+    clip(diffuse.a - 0.5);
+
     float3 normal = calcNormal(normalTexture.Sample(linearClamp, fragment.uv).xyz, fragment.normal, fragment.binormal, fragment.tangent);
     float specularExponent = specularTexture.Sample(linearClamp, fragment.uv).r;
 
@@ -37,8 +39,8 @@ Targets PS(Fragment fragment)
     float3 lightSum = globalLight.ambient;
     lightSum += shadowFactor * calcLight(globalLight, fragment.position.xyz, normal, viewDir, specularExponent);
     lightSum += calcAllLights(fragment.ndcPosition, fragment.position.xyz, normal, viewDir, specularExponent);
-    
-    float3 color = diffuseTexture.Sample(linearClamp, fragment.uv).xyz;
+
+    float3 color = diffuse.rgb;
 
     targets.color = float4(lightSum * color * fragment.color, 1); //500~
 
