@@ -69,7 +69,7 @@ void CS( uint3 DTid : SV_DispatchThreadID )
         float2(0, 1), float2(0, -1)
     };
 
-    float2 randomNormal = normalize(randomNormalTexture.SampleLevel(RandomSampler, (uv * SCREEN_SIZE / SSAO_RANDOM_SIZE), 0).xy * 2 - 1);
+    float2 randomNormal = normalize(randomNormalTexture.SampleLevel(RandomSampler, (uv * SCREEN_SIZE / 4), 0).xy * 2 - 1);
 
     float3 normal = normalTexture.SampleLevel(Sampler, uv, 0).xyz;
     
@@ -92,5 +92,5 @@ void CS( uint3 DTid : SV_DispatchThreadID )
     }
     occlusion /= float(SSAO_ITERATIONS) * 4.0;
     
-    output[DTid.xy] = saturate(1 - occlusion);
+    output[DTid.xy] = saturate(1 - occlusion * 1.8);
 }

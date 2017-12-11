@@ -81,7 +81,7 @@ void Logic::iMenuSettings::render() const
     iMenu::render();
 
     QueueRender(m_textRenderInfoWindow);
-    QueueRender(m_textRenderInfoDOF);
+    /*QueueRender(m_textRenderInfoDOF);
     QueueRender(m_textRenderInfoSSAO);
-    QueueRender(m_textRenderInfoFog);
+    QueueRender(m_textRenderInfoFog);*/
 }

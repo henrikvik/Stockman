@@ -48,5 +48,6 @@ namespace Graphics
         Shader forward_plus_vs_static;
         Shader forward_plus_vs_animated;
         Shader forward_plus_vs_foliage;
+        Shader forward_plus_ps_foliage;
     };
 }

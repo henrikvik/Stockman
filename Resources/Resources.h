@@ -29,10 +29,20 @@ namespace Resources
     {
         enum Files
         {
+            b,
+            g,
+            lights,
+            lights2,
+            r,
             Stock_Map
         };
         const std::map<Files, const char *> Paths =
         {
+            {b, R"(..\Resources\Maps\b.toml)"},
+            {g, R"(..\Resources\Maps\g.toml)"},
+            {lights, R"(..\Resources\Maps\lights.toml)"},
+            {lights2, R"(..\Resources\Maps\lights2.toml)"},
+            {r, R"(..\Resources\Maps\r.toml)"},
             {Stock_Map, R"(..\Resources\Maps\Stock_Map.toml)"}
         };
         
@@ -201,6 +211,8 @@ namespace Resources
             DoFGlue,
             ForwardPlus,
             ForwardPlus_PS,
+            ForwardPlus_PS_Foliage,
+            ForwardPlus_PS_Foliage_Depth,
             ForwardPlus_VS_Animated,
             ForwardPlus_VS_Foliage,
             ForwardPlus_VS_Static,
@@ -232,6 +244,8 @@ namespace Resources
             {DoFGlue, R"(..\Resources\Shaders\DoFGlue.hlsl)"},
             {ForwardPlus, R"(..\Resources\Shaders\ForwardPlus.hlsl)"},
             {ForwardPlus_PS, R"(..\Resources\Shaders\ForwardPlus_PS.hlsl)"},
+            {ForwardPlus_PS_Foliage, R"(..\Resources\Shaders\ForwardPlus_PS_Foliage.hlsl)"},
+            {ForwardPlus_PS_Foliage_Depth, R"(..\Resources\Shaders\ForwardPlus_PS_Foliage_Depth.hlsl)"},
             {ForwardPlus_VS_Animated, R"(..\Resources\Shaders\ForwardPlus_VS_Animated.hlsl)"},
             {ForwardPlus_VS_Foliage, R"(..\Resources\Shaders\ForwardPlus_VS_Foliage.hlsl)"},
             {ForwardPlus_VS_Static, R"(..\Resources\Shaders\ForwardPlus_VS_Static.hlsl)"},
@@ -285,6 +299,7 @@ namespace Resources
             SettingsButtons,
             Skillpickbackground,
             Skillpicksheet,
+            SnowFlake,
             Spellsheet,
             TextSkillPick,
             wavebegins,
@@ -311,12 +326,13 @@ namespace Resources
             {MissingTexture, R"(..\Resources\Textures\MissingTexture.dds)"},
             {particle, R"(..\Resources\Textures\particle.png)"},
             {particle_white, R"(..\Resources\Textures\particle_white.png)"},
-            {randomNormals, R"(..\Resources\Textures\randomNormals.dds)"},
+            {randomNormals, R"(..\Resources\Textures\randomNormals.png)"},
             {Retrytextsheet, R"(..\Resources\Textures\Retrytextsheet.dds)"},
             {Settings, R"(..\Resources\Textures\Settings.dds)"},
             {SettingsButtons, R"(..\Resources\Textures\SettingsButtons.dds)"},
             {Skillpickbackground, R"(..\Resources\Textures\Skillpickbackground.dds)"},
             {Skillpicksheet, R"(..\Resources\Textures\Skillpicksheet.dds)"},
+            {SnowFlake, R"(..\Resources\Textures\SnowFlake.dds)"},
             {Spellsheet, R"(..\Resources\Textures\Spellsheet.dds)"},
             {TextSkillPick, R"(..\Resources\Textures\TextSkillPick.dds)"},
             {wavebegins, R"(..\Resources\Textures\wavebegins.dds)"},
