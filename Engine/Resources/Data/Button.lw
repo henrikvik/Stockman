@@ -127,7 +127,7 @@
 {
 	"buttonName" : "MenuBackGame";
 	"texture" : 5;
-	"xPos" : 90.0f;
+	"xPos" : 115.0f;
 	"yPos" : 495.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.16211f;
@@ -380,7 +380,7 @@
 {
 	"buttonName" : "ReturnToMenu";
 	"texture" : 6;
-	"xPos" : 90.0f;
+	"xPos" : 115.0f;
 	"yPos" : 495.0f;
 	"xTexStart" : 0.0f;
 	"yTexStart" : 0.390f;
@@ -636,7 +636,7 @@
 {
 	"buttonName" : "HighscoreDown";
 	"texture" : 4;
-	"xPos" : 700.0f;
+	"xPos" : 400.0f;
 	"yPos" : 665.0f;
 	"xTexStart" : 0.81641f;
 	"yTexStart" : .20996f;
@@ -657,7 +657,7 @@
 {
 	"buttonName" : "HighscoreUp";
 	"texture" : 4;
-	"xPos" : 760.0f;
+	"xPos" : 460.0f;
 	"yPos" : 665.0f;
 	"xTexStart" : 0.89746f;
 	"yTexStart" : 0.19727f;

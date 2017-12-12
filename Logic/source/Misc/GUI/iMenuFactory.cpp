@@ -65,7 +65,7 @@ iMenuSettings* iMenuFactory::buildMenuSettings()
 
     menu->addBackground(Resources::Textures::Settings, 1.f);
     menu->addEffect(newd iMenuFX_Combo());
-    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::startMainMenu));
+    menu->addButton(buildButton("MenuBackGame", ButtonFunction::startMainMenu));
     Settings& setting = Settings::getInstance();
     menu->addSlider(buildSlider("MouseSlider", setting.getMouseSensePTR(), 0.001f, 0.2f, 0.001f));
     menu->addSlider(buildSlider("MasterSlider", setting.getMasterSoundPTR(), 0.0f, 1.0f, 0.01f));
@@ -94,7 +94,7 @@ iMenuSettings * iMenuFactory::buildMenuPauseSettings()
     menu->removeButtons();
     menu->addButton(buildButton("MenuSettingsVideoWindowedLeft", ButtonFunction::windowed));
     menu->addButton(buildButton("MenuSettingsVideoWindowedRight", ButtonFunction::windowed));
-    menu->addButton(buildButton("MenuQuitGame", ButtonFunction::pause));
+    menu->addButton(buildButton("MenuBackGame", ButtonFunction::pause));
 
     return menu;
 }
@@ -197,7 +197,7 @@ iMenuGameOver * iMenuFactory::buildMenuGameover()
     btn.move(DirectX::SimpleMath::Vector2(0.333, 0.09));
     menu->addButton(btn);
 
-    btn = buildButton("MenuQuitGame", ButtonFunction::goBackToMainMenu);
+    btn = buildButton("MenuBackGame", ButtonFunction::goBackToMainMenu);
     btn.move(DirectX::SimpleMath::Vector2(0.333, 0.05));
     menu->addButton(btn);
 
