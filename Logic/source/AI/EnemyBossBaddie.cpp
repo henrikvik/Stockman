@@ -126,7 +126,7 @@ void EnemyBossBaddie::createAbilities()
             btVector3 to = player.getPositionBT() - getPositionBT();
             float len = to.length();
             Projectile *pj = shoot((to + btVector3{ 25.f * i - 25.f, 90, 0 }).normalize(),
-                nicePjData, PROJECTILE_SPEED + (len * 0.5f), 2.5f, 0.6f);
+                nicePjData, PROJECTILE_SPEED + (len * 0.5f), 2.5f, 0.6f, true);
 
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
@@ -286,7 +286,7 @@ void EnemyBossBaddie::createAbilities()
 
     auto onUse5 = [&](Player& player, Ability &ability) -> void {
         constexpr float slice = PI * 2.f / 10.f;
-        static float len = 60.f;
+        static float len = 100.f;
 
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_5, nullptr, true);
 
@@ -300,7 +300,7 @@ void EnemyBossBaddie::createAbilities()
         data.scale = PROJECTILE_SCALE;
         data.enemyBullet = data.isSensor = true;
         data.speed = 19.f;
-        data.ttl = len * 60.f;
+        data.ttl = len * 100.f;
         data.gravityModifier = 0;
         data.shouldRender = false;
 
@@ -309,7 +309,7 @@ void EnemyBossBaddie::createAbilities()
             if (i == skip) continue;
             
             temp = playerPos + btVector3(cos(slice * i), 0.f, sin(slice * i)) * len;
-            Projectile *pj = SpawnProjectile(data, temp, (playerPos - temp).normalize(), *this);
+            Projectile *pj = SpawnProjectile(data, temp, (playerPos - temp).normalized(), *this);
             if (pj)
                 pj->getRigidBody()->setRestitution(btScalar(20.f));
         }
