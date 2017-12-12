@@ -147,7 +147,8 @@ void EnemyBossBaddie::createAbilities()
 
     // TEST INDICATORS [REPLACE]
     indicatorData.damage = 0;
-    indicatorData.scale = 1.f;
+    indicatorData.hitboxScale = { 0.25f, 0.25f, 0.25f };
+    indicatorData.modelScale = { 1.f, 1.f, 1.f };
     indicatorData.enemyBullet = true;
     indicatorData.isSensor = true;
     indicatorData.speed = PROJECTILE_SPEED;
