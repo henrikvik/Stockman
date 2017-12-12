@@ -8,6 +8,7 @@ namespace Logic {
         private:
             DebugRenderInfo ray;
             DirectX::Mouse::State lastState;
+            int lastIndex;
         public:
             NavigationMeshEditor();
             ~NavigationMeshEditor();

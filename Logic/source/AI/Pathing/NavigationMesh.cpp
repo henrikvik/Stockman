@@ -180,11 +180,12 @@ bool NavigationMesh::saveToFile(std::string fileName) const
     base.ints["edges"]     = edgesList.size();
 
     data.push_back(base);
-   
+    int i = 0;
+
     for (auto &tri : triangleList)
     {
         FileLoader::LoadedStruct element;
-        element.ints["id"] = tri.id; // unused ?
+        element.ints["id"] = i++; // TEST
         data.push_back(element);
 
         for (auto &vertex : tri.vertices)

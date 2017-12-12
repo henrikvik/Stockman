@@ -31,10 +31,18 @@ EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     light.range = 15.0f;
 
     m_meleeIndicators.resize(INDICATORS);
+    addCallback(ON_DEATH, [&](CallbackData &data) -> void {
+        for (Projectile *pj : m_meleeIndicators) {
+            if (pj) {
+                pj->setDead(true);
+            }
+        }
+    });
 }
 
 EnemyDefender::~EnemyDefender()
 {
+
 }
 
 void EnemyDefender::onSpawn()
