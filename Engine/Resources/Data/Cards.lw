@@ -51,10 +51,10 @@
 	"description" : "Increase your run speed";
 	"texture" : "b";
 
-	"xTexStart" : 0.480f;
-	"yTexStart" : 0.6552f;
-	"xTexEnd" : 0.71875f;
-	"yTexEnd" : 0.89355f;
+	"xTexStart" : 0.22461f;
+	"yTexStart" : 0.70117f;
+	"xTexEnd" : 0.45703f;
+	"yTexEnd" : 0.91406f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
@@ -115,10 +115,10 @@
 	"description" : "Increase the jump strength";
 	"texture" : "b";
 
-	"xTexStart" : 0.7216f;
-	"yTexStart" : 0.6611f;
-	"xTexEnd" : 0.95996f;
-	"yTexEnd" : 0.89941f;
+	"xTexStart" : 0.24609f;
+	"yTexStart" : 0.37109f;
+	"xTexEnd" : 0.47852f;
+	"yTexEnd" : 0.58398f;
 
 	"statusAmount" : 1;
 	"statusType" : 1;
