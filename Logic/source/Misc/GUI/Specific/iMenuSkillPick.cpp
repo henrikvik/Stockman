@@ -21,23 +21,23 @@ iMenuSkillPick::iMenuSkillPick(iMenu::MenuGroup group) : iMenu(group)
 
     // Setup of the Ready Text
     m_textReadyInfo.color = DirectX::SimpleMath::Color(0.6f, 0.6f, 0.6f, 1);
-    m_textReadyInfo.font = Resources::Fonts::nordic;
-    m_textReadyInfo.position = DirectX::SimpleMath::Vector2(0.690 * WIN_WIDTH, 0.70 * WIN_HEIGHT);
+    m_textReadyInfo.font = Resources::Fonts::nordic25;
+    m_textReadyInfo.position = DirectX::SimpleMath::Vector2(0.6825 * WIN_WIDTH, 0.70 * WIN_HEIGHT);
     m_textReadyInfo.text = L"Ready!";
 
-    // Setup of the Ready Text
+    // Setup of the Selected Text
     m_textSelected_1.color = DirectX::SimpleMath::Color(0.6f, 0.6f, 0.6f, 1);
     m_textSelected_1.font = Resources::Fonts::nordic;
     m_textSelected_1.position = DirectX::SimpleMath::Vector2(0.160 * WIN_WIDTH, 0.31 * WIN_HEIGHT);
     m_textSelected_1.text = L"Selected";
 
-    // Setup of the Ready Text
+    // Setup of the Selected Text
     m_textSelected_2.color = DirectX::SimpleMath::Color(0.6f, 0.6f, 0.6f, 1);
     m_textSelected_2.font = Resources::Fonts::nordic;
     m_textSelected_2.position = DirectX::SimpleMath::Vector2(0.160 * WIN_WIDTH, 0.501 * WIN_HEIGHT);
     m_textSelected_2.text = L"Selected";
 
-    // Setup of the Ready Text
+    // Setup of the Selected Text
     m_textSelected_3.color = DirectX::SimpleMath::Color(0.6f, 0.6f, 0.6f, 1);
     m_textSelected_3.font = Resources::Fonts::nordic;
     m_textSelected_3.position = DirectX::SimpleMath::Vector2(0.160 * WIN_WIDTH, 0.715 * WIN_HEIGHT);

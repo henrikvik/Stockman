@@ -178,6 +178,14 @@ void Projectile::onCollision(PhysicsObject& other, btVector3 contactPoint, float
         cb = collisionWithTerrain();
     }
 
+    switch (m_pData.type)
+    {
+    case ProjectileTypeBulletTimeSensor:
+    case ProjectileTypeDefenderShield:
+        m_dead = false;
+        break;
+    }
+
     // Send back data to listener
     if (cb) doCallBack(other);
 }
@@ -237,6 +245,11 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
         );
         break;
 
+    case ProjectileTypeShieldCharge:
+        callback = true;
+        enemy->getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::DAMAGE_ONCE, 1, enemy);
+        break;
+
     case ProjectileTypeBulletTimeSensor:
         break;
 
@@ -275,13 +288,9 @@ bool Projectile::collisionWithTrigger(Trigger* trigger)
 // Projectile-Terrain Collisions, returns true if callback should be activated
 bool Projectile::collisionWithTerrain()
 {
-    m_dead = true;
-
     bool callback = true;
 
-    // Don't remove if sensor
-    if (m_pData.isSensor)
-        m_dead = false;
+    
 
     // Special cases
     switch (m_pData.type)
@@ -289,6 +298,16 @@ bool Projectile::collisionWithTerrain()
     case ProjectileTypeNormal:
     case ProjectileTypeFireArrow:
         m_dead = true;
+        break;
+    case ProjectileTypeShieldCharge:
+        break;
+    default:
+        // Don't remove if sensor
+        if (m_pData.isSensor)
+            m_dead = false;
+        else
+            m_dead = true;
+        break;
     }
 
     // Don't remove if bouncing upgraded
@@ -318,12 +337,13 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 	switch (proj->getProjectileData().type)
 	{
 	case ProjectileTypeBulletTimeSensor:
-	    getStatusManager().addStatusResetDuration(
-		/* Adding Bullet time effect */     StatusManager::BULLET_TIME,
-		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME)
-	    );
+        getStatusManager().addStatusResetDuration(
+            /* Adding Bullet time effect */     StatusManager::BULLET_TIME,
+            /* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME)
+        );
 	    break;
     case ProjectileTypeMeleeParry:
+        clearCallbacks();
         m_dead = true;
         break;
 	}

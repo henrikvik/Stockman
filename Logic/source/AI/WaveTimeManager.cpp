@@ -69,8 +69,7 @@ bool WaveTimeManager::update(float deltaTime, EntityManager &entityManager, btVe
 
 bool WaveTimeManager::updateInTransition(EntityManager &entityManager, btVector3 const &playerPos)
 {
-    if (!DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::G)
-        && m_timeCurrent < m_timeRequired)
+    if (m_timeCurrent < m_timeRequired)
     {
         return false;
     }

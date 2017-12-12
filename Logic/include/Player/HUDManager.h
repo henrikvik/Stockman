@@ -67,6 +67,7 @@ namespace Logic
         float nextWaveSlideTimer;
         float enrageSlideTimer;
         bool wasEnraged;
+        bool cards;
 
         float crossBowTimer;
         float staffTimer;
@@ -100,7 +101,7 @@ namespace Logic
         virtual ~HUDManager();
 
         void update(Player &player, WaveTimeManager const &timeManager,
-            EntityManager const &manager, float dt);
+            EntityManager const &manager, float dt, bool cards = false);
         void render() const;
         void reset();
     };

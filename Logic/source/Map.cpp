@@ -15,11 +15,62 @@
 
 using namespace Logic;
 
-#define AI_BOX_ID_MIN 30
+#define AI_BOX_ID_MIN 31
 
-Map::Map() {
+static void FillLightVec(std::vector<LightRenderInfo> &lights, std::string path)
+{
+    auto val = toml::parseFile(path).value;
+
+    for (auto light : val.find("lights")->as<toml::Array>()) {
+        auto position = light["position"].as<toml::Array>();
+        auto col = light["color"].as<toml::Array>();
+        auto radius = light["range"].asNumber();
+        auto intensity = light["intensity"].asNumber();
+
+        LightRenderInfo info = {};
+        info.position.x = position[0].asNumber();
+        info.position.y = position[1].asNumber();
+        info.position.z = position[2].asNumber();
+        info.color.x = col[0].asNumber();
+        info.color.y = col[1].asNumber();
+        info.color.z = col[2].asNumber();
+        info.range = radius;
+        info.intensity = intensity;
+
+        lights.push_back(info);
+    }
+}
+
+static void SubmitLights(std::vector<LightRenderInfo> &lights)
+{
+    for (auto light : lights) {
+        QueueRender(light);
+    }
+}
+
+Map::Map() :
+    m_ChristmasLightTimer(1.5f),
+    m_ChristmasPatternIndex(0)
+{
     m_mapObject = std::make_unique<StaticObject*>(newd StaticObject(Resources::Models::UnitCube,
         nullptr, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL));
+
+    // static map lights
+    FillLightVec(m_MapLights, "../Resources/Maps/lights.toml");
+    FillLightVec(m_RedBulbs, "../Resources/Maps/r.toml");
+    FillLightVec(m_GreenBulbs, "../Resources/Maps/g.toml");
+    FillLightVec(m_BlueBulbs, "../Resources/Maps/b.toml");
+
+    //                                       bgr
+    m_ChristmasLightPattern.push_back(0b00000000);
+    m_ChristmasLightPattern.push_back(0b00000001);
+    m_ChristmasLightPattern.push_back(0b00000010);
+    m_ChristmasLightPattern.push_back(0b00000100);
+    m_ChristmasLightPattern.push_back(0b00000001);
+    m_ChristmasLightPattern.push_back(0b00000011);
+    m_ChristmasLightPattern.push_back(0b00000111);
+    m_ChristmasLightPattern.push_back(0b00000110);
+    m_ChristmasLightPattern.push_back(0b00000100);
 
     m_campfire = Graphics::FXSystem->getEffect("FireSmoke");
     m_campfire2 = Graphics::FXSystem->getEffect("FireSmoke");
@@ -80,6 +131,23 @@ void Map::clear()
 // If user holds tab, draw debug info
 void Map::update(float deltaTime)
 {
+    m_ChristmasLightTimer += deltaTime / 1000.f;
+    if (m_ChristmasLightTimer > 1.5f) {
+        m_ChristmasLightTimer = 0.f;
+        m_ChristmasPatternIndex = (m_ChristmasPatternIndex + 1) % m_ChristmasLightPattern.size();
+}
+
+    auto pattern = m_ChristmasLightPattern[m_ChristmasPatternIndex];
+
+    if (pattern & 0x1)
+        SubmitLights(m_RedBulbs);
+    if (pattern & 0x2)
+        SubmitLights(m_GreenBulbs);
+    if (pattern & 0x4)
+        SubmitLights(m_BlueBulbs);
+
+    SubmitLights(m_MapLights);
+
 #ifdef _DEBUG
     m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
 #endif // _DEBUG

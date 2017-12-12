@@ -19,9 +19,10 @@ using namespace Logic;
 
 const float EnemyBossBaddie::BASE_SPEED = 19.f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.17f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.11f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
             EnemyBossBaddie::PROJECTILE_SCALE = 7.5f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 27500, EnemyBossBaddie::SCORE = 175000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 75000, EnemyBossBaddie::SCORE = 150000,
+          EnemyBossBaddie::INDICATORS = 12; // Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
     @author Lukas Westling
@@ -57,11 +58,19 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
         ComboMachine::Get().kill(SCORE);
         Sound::NoiseMachine::Get().stopAllGroups();
         Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_2, nullptr, true);
+
+        for (Projectile *pj : meleeIndicators) {
+            if (pj) {
+                pj->setDead(true);
+            }
+        }
     });
 
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 0.8f;
     light.range = 10.0f;
+
+    meleeIndicators.resize(INDICATORS);
 }
 
 EnemyBossBaddie::~EnemyBossBaddie()
@@ -77,27 +86,35 @@ EnemyBossBaddie::~EnemyBossBaddie()
 */
 void EnemyBossBaddie::createAbilities()
 {
+    static Graphics::ParticleEffect bossTrail = Graphics::FXSystem->getEffect("DamageProjTrail");
     AbilityData data;
 
+    nicePjData.effect = bossTrail;
+    nicePjData.hasEffect = true;
+    nicePjData.effectVelocity = false;
+    nicePjData.effectActivated = true;
+
     /* ABILITY ONE */
-    data.cooldown = 13000.f;
-    data.duration = 5000.f;
-    data.randomChanche = 20;
+    data.cooldown = 17000.f;
+    data.duration = 6000.f;
+    data.randomChanche = 35;
 
     auto onUse = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_1, nullptr, true);
     };
 
     auto onTick = [&](Player& player, Ability &ability) -> void {
-        if (ability.getCurrentDuration() <= 0.f)
+        if (ability.getCurrentDuration() <= 0.f) {
+            Graphics::FXSystem->addEffect("DamageBoom", getPosition());
             getRigidBody()->getWorldTransform().setOrigin(player.getPositionBT() + btVector3(0.f, 100.f, 0.f));
+        }
     };
 
     abilities[AbilityId::ONE] = Ability(data, onTick, onUse);
 
     /* ABILITY TWO */
 
-    data.cooldown = 15000.f;
+    data.cooldown = 12000.f;
     data.duration = 0.f;
     data.randomChanche = 200;
 
@@ -109,7 +126,7 @@ void EnemyBossBaddie::createAbilities()
             btVector3 to = player.getPositionBT() - getPositionBT();
             float len = to.length();
             Projectile *pj = shoot((to + btVector3{ 25.f * i - 25.f, 90, 0 }).normalize(),
-                Resources::Models::UnitCube, PROJECTILE_SPEED + (len * 0.5f), 2.5f, 0.6f);
+                nicePjData, PROJECTILE_SPEED + (len * 0.5f), 2.5f, 0.6f, true);
 
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
                 SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
@@ -128,17 +145,54 @@ void EnemyBossBaddie::createAbilities()
     data.duration = 4500.f;
     data.randomChanche = 0;
 
+    // TEST INDICATORS [REPLACE]
+    indicatorData.damage = 0;
+    indicatorData.scale = 1.f;
+    indicatorData.enemyBullet = true;
+    indicatorData.isSensor = true;
+    indicatorData.speed = PROJECTILE_SPEED;
+    indicatorData.ttl = data.duration * 0.95f;
+    indicatorData.meshID = Resources::Models::Bone;
+    indicatorData.type = ProjectileTypeDefenderShield;
+
     auto onUse2 = [&](Player& player, Ability &ability) -> void {
         getSoundSource()->playSFX(Sound::SFX::BOSS_1_MELEE_USE);
         getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
-            getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() * 1000.f / (ability.getCurrentDuration()) - 0.169f); // noise
+            getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() * 1000.f / (ability.getCurrentDuration()) - 0.1f);
             getAnimatedModel().set_next("Run_Grunt", [&]() -> void {
                 getAnimatedModel().set_delta_multiplier(1.f);
             });
         });
+
+        for (int i = 0; i < INDICATORS; i++) {
+            Projectile *pj = SpawnProjectile(indicatorData, btVector3(0, 0, 0), btVector3(0, 0, 0), *this);
+            meleeIndicators[i] = pj;
+            if (pj) {
+                increaseCallbackEntities();
+                pj->addCallback(ON_DESTROY, [=](CallbackData &data) {
+                    meleeIndicators[i] = nullptr;
+                    decreaseCallbackEntities();
+                });
+            }
+        }
     };
 
     auto onTick2 = [&](Player& player, Ability &ability) -> void {
+        constexpr float piece = 3.14f / INDICATORS * 2;
+
+        for (int i = 0; i < meleeIndicators.size(); i++) {
+            if (meleeIndicators[i]) {
+                float scl = 1.f - (ability.getCurrentDuration() / ability.getData().duration);
+                meleeIndicators[i]->getRigidBody()->getWorldTransform().setOrigin(
+                    getPositionBT() + btVector3(
+                        std::cos(i * piece) * MELEE_RANGE * scl,
+                        0.0f,
+                        std::sin(i * piece) * MELEE_RANGE * scl
+                    )
+                );
+            }
+        }
+
         if (ability.getCurrentDuration() <= 0.f)
         {
             btVector3 to = player.getPositionBT() - getPositionBT();
@@ -148,6 +202,12 @@ void EnemyBossBaddie::createAbilities()
                 player.takeDamage(2, true); // shield charge wont save ya
                 to.setY(0);
                 player.getCharController()->applyImpulse(to.normalized() * MELEE_PUSHBACK); 
+            }
+
+            for (Projectile *pj : meleeIndicators) {
+                if (pj) {
+                    pj->setDead(true);
+                }
             }
         }
     };
@@ -169,7 +229,7 @@ void EnemyBossBaddie::createAbilities()
         {
             dir += btVector3(cos(m_sliceSize * (i + RandomGenerator::singleton().getRandomFloat(-0.33f, 0.33f))),
                 0.f, sin(m_sliceSize * (i + RandomGenerator::singleton().getRandomFloat(-0.33f, 0.33f))));
-            shoot(dir.normalize(), Resources::Models::Files::SkySphere, PROJECTILE_SPEED, 0.f, PROJECTILE_SCALE, true);
+            shoot(dir.normalize(), nicePjData, PROJECTILE_SPEED, 0.f, PROJECTILE_SCALE, true);
         }
     };
 
@@ -226,7 +286,7 @@ void EnemyBossBaddie::createAbilities()
 
     auto onUse5 = [&](Player& player, Ability &ability) -> void {
         constexpr float slice = PI * 2.f / 10.f;
-        static float len = 60.f;
+        static float len = 100.f;
 
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_5, nullptr, true);
 
@@ -234,14 +294,13 @@ void EnemyBossBaddie::createAbilities()
         btVector3 temp;
         int skip = RandomGenerator::singleton().getRandomInt(0, 9);
 
-        ProjectileData data;
+        ProjectileData data = nicePjData;
         data.damage = 1;
         data.mass = 1.f;
         data.scale = PROJECTILE_SCALE;
         data.enemyBullet = data.isSensor = true;
-        data.meshID = Resources::Models::Files::SkySphere;
         data.speed = 19.f;
-        data.ttl = len * 60.f;
+        data.ttl = len * 100.f;
         data.gravityModifier = 0;
         data.shouldRender = false;
 
@@ -250,7 +309,9 @@ void EnemyBossBaddie::createAbilities()
             if (i == skip) continue;
             
             temp = playerPos + btVector3(cos(slice * i), 0.f, sin(slice * i)) * len;
-            SpawnProjectile(data, temp, (playerPos - temp).normalize(), *this);
+            Projectile *pj = SpawnProjectile(data, temp, (playerPos - temp).normalized(), *this);
+            if (pj)
+                pj->getRigidBody()->setRestitution(btScalar(20.f));
         }
     };
 
@@ -264,28 +325,31 @@ void EnemyBossBaddie::createAbilities()
 void EnemyBossBaddie::shootAbility4(Player const &player, int pattern, float speed)
 {
     constexpr float rad = 3.14f;
-    constexpr Resources::Models::Files model = Resources::Models::Files::SkySphere;
 
     btVector3 dir = player.getPositionBT() - getPositionBT();
     dir.setY(0.f);
+    Projectile *pj = nullptr;
 
     switch (pattern)
     {
     case 0:
         for (int i = -1; i <= 1; i++)
-            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.35f)), model, speed, 0.f, PROJECTILE_SCALE, true);
+            pj = shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.35f)), nicePjData, speed, 0.f, PROJECTILE_SCALE, true);
         break;
     case 1:
         for (int i = 2; i < 4; i++)
-            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.22f)), model, speed, 0.f, PROJECTILE_SCALE, true);
+            pj = shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.22f)), nicePjData, speed, 0.f, PROJECTILE_SCALE, true);
         for (int i = 2; i < 4; i++)
-            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * -0.22f)), model, speed, 0.f, PROJECTILE_SCALE, true);
+            pj = shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * -0.22f)), nicePjData, speed, 0.f, PROJECTILE_SCALE, true);
         break;
     case 2:
         for (int i = -1; i <= 1; i++)
-            shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.08f)), model, speed, 0.f, PROJECTILE_SCALE, true);
+            pj = shoot(dir.normalize() + (btVector3(cos(rad), 0.f, sin(rad)) * (i * 0.08f)), nicePjData, speed, 0.f, PROJECTILE_SCALE, true);
         break;
     }
+
+    if (pj)
+        pj->getRigidBody()->setRestitution(btScalar(20.f));
 }
 
 void EnemyBossBaddie::damage(int damage)

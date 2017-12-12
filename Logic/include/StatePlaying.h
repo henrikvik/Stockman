@@ -67,15 +67,6 @@ namespace Logic
         float m_playTime;
         std::thread highscoreThread;
 
-        std::vector<LightRenderInfo> m_MapLights;
-        std::vector<LightRenderInfo> m_RedBulbs;
-        std::vector<LightRenderInfo> m_GreenBulbs;
-        std::vector<LightRenderInfo> m_BlueBulbs;
-
-        std::vector<char> m_ChristmasLightPattern;
-        float m_ChristmasLightTimer;
-        int m_ChristmasPatternIndex;
-
         iMenuMachine*       m_menu;
         Physics*			m_physics;
         Player*				m_player;

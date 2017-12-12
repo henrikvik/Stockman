@@ -21,6 +21,7 @@ Trigger::Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 
 //    animatedRenderInfo.animationName = "Rotation";
 //    animatedRenderInfo.animationProgress = 0;
     animatedRenderInfo.transform = getTransformMatrix();
+    animatedRenderInfo.cull_radius = 5.f;
     
     // Setting up Light information
     light.position = DirectX::SimpleMath::Vector3(body->getWorldTransform().getOrigin());

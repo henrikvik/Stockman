@@ -31,6 +31,11 @@ namespace Logic
             std::wstring score;
             std::wstring time;
             std::wstring kills;
+        };
+
+        struct EntrySpot
+        {
+            bool filledWithData;
 
             TextRenderInfo              renderInfoName;
             TextRenderInfo              renderInfoPlacing;
@@ -47,12 +52,22 @@ namespace Logic
         void buildHighscore();
         void buildEntry(int position, HigscoreData data);
 
+        void buildSpot(EntrySpot* spot, Entry* data);
+        void buildSpots(int startIndex);
+
         void update(int x, int y, float deltaTime);
         void render() const;
 
+        void up();
+        void down();
+
     private:
-        bool                m_requestDone;
-        std::vector<Entry*> m_entry;
+        void updateScrolling();
+
+        bool                    m_requestDone;
+        std::vector<Entry*>     m_entry;
+        std::vector<EntrySpot*> m_spot;
+        int start;
     };
 }
 

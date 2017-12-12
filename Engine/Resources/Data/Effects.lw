@@ -115,7 +115,7 @@
 }
 { //STUN
     "flags" : 16384; // 0x4000
-    "duration" : 3000f;
+    "duration" : 1500f;
     "modifiers": 1;
     "specifics": 0;
 
@@ -173,4 +173,19 @@
 	"duration": 1000f;
 	"modifiers": 0;
 	"specifics": 0;
+}
+{ // DAMAGE ONCE
+	"flags": 524288; // 0x80000
+	"duration": 200f;
+	"modifiers": 1;
+	"specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 200f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0.f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
 }

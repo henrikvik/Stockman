@@ -95,6 +95,15 @@ namespace Logic
         Physics*                            m_physicsPtr;   //< Ptr to physics for creation of hitboxes
         std::unique_ptr<StaticObject*>      m_mapObject;
 
+        // Lights
+        std::vector<LightRenderInfo>    m_MapLights;
+        std::vector<LightRenderInfo>    m_RedBulbs;
+        std::vector<LightRenderInfo>    m_GreenBulbs;
+        std::vector<LightRenderInfo>    m_BlueBulbs;
+        std::vector<char>               m_ChristmasLightPattern;
+        float                           m_ChristmasLightTimer;
+        int                             m_ChristmasPatternIndex;
+
         // Private functions
         void add(FrameLight frameLight);
         void add(FrameProp frameProp);

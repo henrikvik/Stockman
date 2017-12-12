@@ -1,6 +1,7 @@
 #include <Misc\GUI\Specific\iMenuHighscore.h>
 #include <Misc\Network\dbConnect.h>
 #include <comdef.h> // For use of _bstr_t
+#include <Keyboard.h>
 
 using namespace Logic;
 
@@ -9,7 +10,7 @@ using namespace Logic;
 
 // Input the varibles gotten from the editing here
 #define ENTRY_POS_X         0.308f
-#define ENTRY_POS_Y         0.231f
+#define ENTRY_POS_Y         0.160f
 #define ENTRY_POS_Y_OFFSET  0.071f
 #define COLUMN_2_OFFSET     0.104f
 #define COLUMN_3_OFFSET     0.316f
@@ -25,16 +26,67 @@ using namespace Logic;
 #define THIRD_PLACE_COLOR   DirectX::SimpleMath::Color(0.3984375, 0.18359375, 0.12890625, 1)
 #define OTHER_PLACE_COLOR   DirectX::SimpleMath::Color(1, 1, 1, 1)
 
+// Button Scroll Amount
+#define BUTTON_SCROLL_AMOUNT 10
+
+// Scrolling value
+#define SCROLLING_VALUE_DIV 120
+
 iMenuHighscore::iMenuHighscore(iMenu::MenuGroup group)
     : iMenu(group) 
 {
     m_requestDone = false;
     buildEntry(0, HigscoreData("Loading"));
+
+    for (size_t i = 1; i < 11; i++)
+    {
+        EntrySpot* spot = newd EntrySpot();
+        spot->filledWithData = false;
+
+        spot->renderInfoPlacing.color = OTHER_PLACE_COLOR;
+        spot->renderInfoPlacing.font = Resources::Fonts::nordic;
+        spot->renderInfoPlacing.position = DirectX::SimpleMath::Vector2(ENTRY_POS_X * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * i)) * WIN_HEIGHT);
+        spot->renderInfoName.text = i;
+
+        // Entry Name Render Texture
+        spot->renderInfoName.color = OTHER_PLACE_COLOR;
+        spot->renderInfoName.font = Resources::Fonts::nordic;
+        spot->renderInfoName.position = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_2_OFFSET) * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * i)) * WIN_HEIGHT);
+        spot->renderInfoName.text = L"";
+
+        // Entry Score Render Texture
+        spot->renderInfoScore.color = OTHER_PLACE_COLOR;
+        spot->renderInfoScore.font = Resources::Fonts::nordic;
+        spot->renderInfoScore.position = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_3_OFFSET)* WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * i)) * WIN_HEIGHT);
+        spot->renderInfoScore.text = L"";
+
+        // Entry Time Render Texture
+        spot->renderInfoTime.color = OTHER_PLACE_COLOR;
+        spot->renderInfoTime.font = Resources::Fonts::nordic;
+        spot->renderInfoTime.position = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_4_OFFSET) * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * i)) * WIN_HEIGHT);
+        spot->renderInfoTime.text = L"";
+
+        // Entry Time Render Texture
+        spot->renderInfoKills.color = OTHER_PLACE_COLOR;
+        spot->renderInfoKills.font = Resources::Fonts::nordic;
+        spot->renderInfoKills.position = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_5_OFFSET) * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * i)) * WIN_HEIGHT);
+        spot->renderInfoKills.text = L"";
+
+        m_spot.push_back(spot);
+    }
+    start = 0;
 }
 
 iMenuHighscore::~iMenuHighscore() 
 {
     clearEntries();
+
+    for (size_t i = 0; i < m_spot.size(); i++)
+    {
+        delete m_spot[i];
+        m_spot[i] = nullptr;
+    }
+    m_spot.clear();
 }
 
 void iMenuHighscore::clearEntries()
@@ -53,7 +105,7 @@ void iMenuHighscore::buildHighscore()
     
     // Get the highscores from the database
     Network::dbConnect db;
-    std::vector<std::vector<std::string>> entries = db.getHigscoreStats(10);
+    std::vector<std::vector<std::string>> entries = db.getHigscoreStats(500);
 
     if (!entries.empty())
     {
@@ -84,6 +136,8 @@ void iMenuHighscore::buildHighscore()
     {
         buildEntry(0, HigscoreData("No connection to server"));
     }
+
+    buildSpots(0);
 }
 
 void iMenuHighscore::buildEntry(int position, HigscoreData data)
@@ -107,40 +161,39 @@ void iMenuHighscore::buildEntry(int position, HigscoreData data)
     entry->score    = std::to_wstring(entry->data.score) + L"";
     entry->kills    = std::to_wstring(entry->data.kills) + L"";
 
-    // Entry Placing Render Texture
-    if      (position == 0) entry->renderInfoPlacing.color  = FIRST_PLACE_COLOR;
-    else if (position == 1) entry->renderInfoPlacing.color  = SECOND_PLACE_COLOR;
-    else if (position == 2) entry->renderInfoPlacing.color  = THIRD_PLACE_COLOR;
-    else                    entry->renderInfoPlacing.color  = OTHER_PLACE_COLOR;
-    entry->renderInfoPlacing.font       = Resources::Fonts::nordic;
-    entry->renderInfoPlacing.position   = DirectX::SimpleMath::Vector2(ENTRY_POS_X * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
-    entry->renderInfoPlacing.text       = entry->placing.c_str();
-   
-    // Entry Name Render Texture
-    entry->renderInfoName.color         = OTHER_PLACE_COLOR;
-    entry->renderInfoName.font          = Resources::Fonts::nordic;
-    entry->renderInfoName.position      = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_2_OFFSET) * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
-    entry->renderInfoName.text          = entry->name.c_str();
-
-    // Entry Score Render Texture
-    entry->renderInfoScore.color        = OTHER_PLACE_COLOR;
-    entry->renderInfoScore.font         = Resources::Fonts::nordic;
-    entry->renderInfoScore.position     = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_3_OFFSET)* WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
-    entry->renderInfoScore.text         = entry->score.c_str();
-
-    // Entry Time Render Texture
-    entry->renderInfoTime.color         = OTHER_PLACE_COLOR;
-    entry->renderInfoTime.font          = Resources::Fonts::nordic;
-    entry->renderInfoTime.position      = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_4_OFFSET) * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
-    entry->renderInfoTime.text          = entry->time.c_str();
-
-    // Entry Time Render Texture
-    entry->renderInfoKills.color        = OTHER_PLACE_COLOR;
-    entry->renderInfoKills.font         = Resources::Fonts::nordic;
-    entry->renderInfoKills.position     = DirectX::SimpleMath::Vector2((ENTRY_POS_X + COLUMN_5_OFFSET) * WIN_WIDTH, (ENTRY_POS_Y + (ENTRY_POS_Y_OFFSET * position)) * WIN_HEIGHT);
-    entry->renderInfoKills.text         = entry->kills.c_str();
-
     m_entry.push_back(entry);
+}
+
+void iMenuHighscore::buildSpot(EntrySpot* spot, Entry* entry)
+{
+    // Convert placement to int 
+    int position = _wtoi(entry->placing.c_str());
+
+    // Entry Placing Render Texture
+    if      (position == 1) spot->renderInfoPlacing.color = FIRST_PLACE_COLOR;
+    else if (position == 2) spot->renderInfoPlacing.color = SECOND_PLACE_COLOR;
+    else if (position == 3) spot->renderInfoPlacing.color = THIRD_PLACE_COLOR;
+    else                    spot->renderInfoPlacing.color = OTHER_PLACE_COLOR;
+    spot->renderInfoPlacing.text = entry->placing.c_str();
+
+    // Replace with correct entry intofmration
+    spot->renderInfoName.text = entry->name.c_str();
+    spot->renderInfoScore.text = entry->score.c_str();
+    spot->renderInfoTime.text = entry->time.c_str();
+    spot->renderInfoKills.text = entry->kills.c_str();
+
+    // Set as active
+    spot->filledWithData = true;
+}
+
+void iMenuHighscore::buildSpots(int startIndex)
+{
+    for (size_t i = 0; i < m_spot.size(); i++)
+        m_spot[i]->filledWithData = false;
+
+    for (size_t i = 0; i < m_spot.size(); i++)
+        if (m_entry.size() > (i + startIndex))
+            buildSpot(m_spot[i], m_entry[i + startIndex]);
 }
 
 void iMenuHighscore::update(int x, int y, float deltaTime)
@@ -148,6 +201,8 @@ void iMenuHighscore::update(int x, int y, float deltaTime)
     iMenu::update(x, y, deltaTime);
 
     if (!m_isFading) if (!m_requestDone) { m_requestDone = true; buildHighscore(); }
+
+    updateScrolling();
 
 // Debugging purposes
 #if ENTRY_POS_EDIT
@@ -171,20 +226,54 @@ void iMenuHighscore::update(int x, int y, float deltaTime)
         m_entry[i]->renderInfoTime.position = DirectX::SimpleMath::Vector2((posx + col4) * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
         m_entry[i]->renderInfoKills.position = DirectX::SimpleMath::Vector2((posx + col5) * WIN_WIDTH, (posy + (posYoffset * i)) * WIN_HEIGHT);
     }
+#endif    
 
-#endif
 }
 
 void iMenuHighscore::render() const
 {
     iMenu::render();
 
-    for (size_t i = 0; i < m_entry.size(); i++)
+    for (size_t i = 0; i < m_spot.size(); i++)
     {
-        QueueRender(m_entry[i]->renderInfoName);
-        QueueRender(m_entry[i]->renderInfoScore);
-        QueueRender(m_entry[i]->renderInfoPlacing);
-        QueueRender(m_entry[i]->renderInfoTime);
-        QueueRender(m_entry[i]->renderInfoKills);
+        EntrySpot* spot = m_spot[i];
+        if (spot->filledWithData)
+        {
+            QueueRender(spot->renderInfoName);
+            QueueRender(spot->renderInfoScore);
+            QueueRender(spot->renderInfoPlacing);
+            QueueRender(spot->renderInfoTime);
+            QueueRender(spot->renderInfoKills);
+        }
+    }
+}
+
+void iMenuHighscore::up()
+{
+    start -= BUTTON_SCROLL_AMOUNT;
+    if (start < 0) start = 0;
+    else buildSpots(start);
+}
+
+void iMenuHighscore::down()
+{
+    start += BUTTON_SCROLL_AMOUNT;
+    if (start > m_entry.size()) start -= BUTTON_SCROLL_AMOUNT;
+    else buildSpots(start);
+}
+
+void iMenuHighscore::updateScrolling()
+{
+    static int prevWheelValue = DirectX::Mouse::Get().GetState().scrollWheelValue / SCROLLING_VALUE_DIV;
+    if (DirectX::Mouse::Get().GetState().scrollWheelValue != prevWheelValue)
+    {
+        int newValue = DirectX::Mouse::Get().GetState().scrollWheelValue / SCROLLING_VALUE_DIV;
+        start += prevWheelValue - newValue;
+
+        if (start < 0)                          start = 0;
+        else if (start > m_entry.size() - 1)    start = m_entry.size() - 1;
+        else                                    buildSpots(start);
+
+        prevWheelValue = newValue;
     }
 }

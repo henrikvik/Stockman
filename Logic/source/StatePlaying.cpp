@@ -24,41 +24,8 @@ const int StatePlaying::GAME_START::UNIQUE_CARDS = 13;
 const btVector3 StatePlaying::GAME_START::PLAYER_SCALE = { 1.5f, 3.0f, 1.5f };
 const btVector3 StatePlaying::GAME_START::PLAYER_ROTATION = { 0.0f, 0.0f, 0.0f };
 
-static void FillLightVec(std::vector<LightRenderInfo> &lights, std::string path)
-{
-    auto val = toml::parseFile(path).value;
-
-    for (auto light : val.find("lights")->as<toml::Array>()) {
-        auto position = light["position"].as<toml::Array>();
-        auto col = light["color"].as<toml::Array>();
-        auto radius = light["range"].asNumber();
-        auto intensity = light["intensity"].asNumber();
-
-        LightRenderInfo info = {};
-        info.position.x = position[0].asNumber();
-        info.position.y = position[1].asNumber();
-        info.position.z = position[2].asNumber();
-        info.color.x = col[0].asNumber();
-        info.color.y = col[1].asNumber();
-        info.color.z = col[2].asNumber();
-        info.range = radius;
-        info.intensity = intensity;
-
-        lights.push_back(info);
-    }
-}
-
-static void SubmitLights(std::vector<LightRenderInfo> &lights)
-{
-    for (auto light : lights) {
-        QueueRender(light);
-    }
-}
-
 StatePlaying::StatePlaying(StateBuffer* stateBuffer)
-    : State(stateBuffer),
-      m_ChristmasLightTimer(1.5f),
-      m_ChristmasPatternIndex(0)
+    : State(stateBuffer)
 {
     // Starting in game-sounds
     Sound::NoiseMachine::Get().stopGroup(Sound::CHANNEL_SFX);
@@ -81,23 +48,6 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     m_player = newd Player(Resources::Models::UnitCube, nullptr, GAME_START::PLAYER_SCALE);
     m_player->init(m_physics, m_projectileManager);
     Sound::NoiseMachine::Get().update(m_player->getListenerData());
-
-    // static map lights
-    FillLightVec(m_MapLights, "../Resources/Maps/lights.toml");
-    FillLightVec(m_RedBulbs, "../Resources/Maps/r.toml");
-    FillLightVec(m_GreenBulbs, "../Resources/Maps/g.toml");
-    FillLightVec(m_BlueBulbs, "../Resources/Maps/b.toml");
-
-    //                                       bgr
-    m_ChristmasLightPattern.push_back(0b00000000);
-    m_ChristmasLightPattern.push_back(0b00000001);
-    m_ChristmasLightPattern.push_back(0b00000010);
-    m_ChristmasLightPattern.push_back(0b00000100);
-    m_ChristmasLightPattern.push_back(0b00000001);
-    m_ChristmasLightPattern.push_back(0b00000011);
-    m_ChristmasLightPattern.push_back(0b00000111);
-    m_ChristmasLightPattern.push_back(0b00000110);
-    m_ChristmasLightPattern.push_back(0b00000100);
 
     // Initializing the Map
     m_map = newd Map();
@@ -127,9 +77,7 @@ StatePlaying::StatePlaying(StateBuffer* stateBuffer)
     
     m_playTime = 0;
     
-
     QueueRender(info);
-
 }
 
 StatePlaying::~StatePlaying()
@@ -172,23 +120,6 @@ void StatePlaying::reset()
 
 void StatePlaying::update(float deltaTime)
 {
-    m_ChristmasLightTimer += deltaTime / 1000.f;
-    if (m_ChristmasLightTimer > 1.5f) {
-        m_ChristmasLightTimer = 0.f;
-        m_ChristmasPatternIndex = (m_ChristmasPatternIndex + 1) % m_ChristmasLightPattern.size();
-    }
-
-    auto pattern = m_ChristmasLightPattern[m_ChristmasPatternIndex];
-
-    if (pattern & 0x1)
-        SubmitLights(m_RedBulbs);
-    if (pattern & 0x2)
-        SubmitLights(m_GreenBulbs);
-    if (pattern & 0x4)
-        SubmitLights(m_BlueBulbs);
-
-    SubmitLights(m_MapLights);
-
     m_fpsRenderer.updateFPS(deltaTime);
     PROFILE_BEGIN("cards");
     m_cardManager->update(deltaTime);
@@ -196,7 +127,11 @@ void StatePlaying::update(float deltaTime)
 
 
     PROFILE_BEGIN("HUD");
-    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
+    if (m_menu->getType() == iMenu::CardSelect)
+    {
+        m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime, true);
+    }else
+        m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
     PROFILE_END();
    
     PROFILE_BEGIN("In-Game Menu");
@@ -212,7 +147,7 @@ void StatePlaying::update(float deltaTime)
         //the spagetti is (expand)ing (dong)
         if (m_menu->getType() != iMenu::CardSelect)
         {
-            float tempTime = m_waveTimeManager.getTimeCurrent();
+            float tempTime = (m_waveTimeManager.getTimeRequired() - m_waveTimeManager.getTimeCurrent()) * ((float)(m_waveTimeManager.getCurrentWave()) / 5.0f)  ;
             bool newWave = m_waveTimeManager.update(deltaTime, m_entityManager, m_player->getPositionBT());
 
             if (newWave)
@@ -249,7 +184,7 @@ void StatePlaying::update(float deltaTime)
         m_projectileManager->update(deltaTime);
         PROFILE_END();
 
-#define _DEBUG
+// #define _DEBUG
 #ifdef  _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
         m_player->takeDamage(1, 0);
@@ -258,7 +193,7 @@ void StatePlaying::update(float deltaTime)
     if (m_player->getHP() <= 0)
         gameOver();
 
-    if ((m_waveTimeManager.getOnLastWave() && (m_entityManager.getNrOfAliveEnemies() == 0)) || DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::P))
+    if ((m_waveTimeManager.getOnLastWave() && (m_entityManager.getNrOfAliveEnemies() == 0)))
         gameWon();
 }
 

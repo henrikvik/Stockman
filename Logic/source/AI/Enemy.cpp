@@ -216,6 +216,16 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
        m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
 }
 
+void Logic::Enemy::onEffectAdd(int stacks, Effect const & effect)
+{
+    long long flags = effect.getStandards()->flags;
+
+    if (flags & Effect::EFFECT_DAMAGE_ONCE)
+    {
+        damage(effect.getModifiers()->modifyDmgTaken);
+    }
+}
+
 void Enemy::onEffectEnd(int stacks, Effect const & effect)
 {
     long long flags = effect.getStandards()->flags;
