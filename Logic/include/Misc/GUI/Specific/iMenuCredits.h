@@ -11,6 +11,7 @@ namespace Logic
     {
     private:
         Logic::Credits credits;
+        TextRenderInfo scoreText;
     public:
         iMenuCredits(iMenu::MenuGroup group);
         ~iMenuCredits();

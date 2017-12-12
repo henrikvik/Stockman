@@ -31,10 +31,18 @@ EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     light.range = 15.0f;
 
     m_meleeIndicators.resize(INDICATORS);
+    addCallback(ON_DEATH, [&](CallbackData &data) -> void {
+        for (Projectile *pj : m_meleeIndicators) {
+            if (pj) {
+                pj->setDead(true);
+            }
+        }
+    });
 }
 
 EnemyDefender::~EnemyDefender()
 {
+
 }
 
 void EnemyDefender::onSpawn()
@@ -110,6 +118,12 @@ void EnemyDefender::createAbilities()
             diff.setY(0);
             player.getCharController()->applyImpulse(diff.normalized() * THROW_STRENGTH);
             player.getStatusManager().addStatus(StatusManager::SHIELD_CHARGE, 1); // test
+
+            for (Projectile *pj : m_meleeIndicators) {
+                if (pj) {
+                    pj->setDead(true);
+                }
+            }
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
         getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
