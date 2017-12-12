@@ -30,6 +30,7 @@ namespace Resources
         {
             Files toEnum(const char * str)
             {
+                if (strcmp(str, "Stock_Map") == 0) return Stock_Map;
                 if (strcmp(str, "Stock_Map_V6") == 0) return Stock_Map_V6;
                 if (strcmp(str, "Test_Map") == 0) return Test_Map;
                 throw "Could not find matching enum.";

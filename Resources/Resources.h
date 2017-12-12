@@ -51,11 +51,13 @@ namespace Resources
         {
             enum Files
             {
+                Stock_Map,
                 Stock_Map_V6,
                 Test_Map
             };
             const std::map<Files, const char *> Paths =
             {
+                {Stock_Map, R"(..\Resources\Maps\OLD\Stock_Map.toml)"},
                 {Stock_Map_V6, R"(..\Resources\Maps\OLD\Stock_Map_V6.toml)"},
                 {Test_Map, R"(..\Resources\Maps\OLD\Test_Map.toml)"}
             };
