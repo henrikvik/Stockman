@@ -244,11 +244,12 @@ void Logic::iMenuHighscore::up()
 {
     start -= 10;
     if (start < 0) start = 0;
-    buildSpots(start);
+    else buildSpots(start);
 }
 
 void Logic::iMenuHighscore::down()
 {
     start += 10;
-    buildSpots(start);
+    if (start > m_entry.size()) start -= 10;
+    else buildSpots(start);
 }
