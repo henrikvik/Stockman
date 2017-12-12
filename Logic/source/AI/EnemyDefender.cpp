@@ -140,7 +140,8 @@ void EnemyDefender::createAbilities()
         pdata.ttl = ab.getData().duration * 0.95f;
         pdata.meshID = Resources::Models::Bone;
         pdata.speed = PROJECTILE_SPEED;
-        pdata.scale = 1.f;
+        pdata.hitboxScale = { 1.f, 1.f, 1.f };
+        pdata.modelScale = { 1.f, 1.f, 1.f };
         pdata.isSensor = true;
         pdata.type = ProjectileTypeDefenderShield;
         constexpr float piece = 3.14f / INDICATORS * 2;
