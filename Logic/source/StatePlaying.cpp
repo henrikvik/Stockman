@@ -127,7 +127,11 @@ void StatePlaying::update(float deltaTime)
 
 
     PROFILE_BEGIN("HUD");
-    m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
+    if (m_menu->getType() == iMenu::CardSelect)
+    {
+        m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime, true);
+    }else
+        m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
     PROFILE_END();
    
     PROFILE_BEGIN("In-Game Menu");
