@@ -95,9 +95,9 @@ void EnemyBossBaddie::createAbilities()
     nicePjData.effectActivated = true;
 
     /* ABILITY ONE */
-    data.cooldown = 13000.f;
-    data.duration = 5000.f;
-    data.randomChanche = 20;
+    data.cooldown = 17000.f;
+    data.duration = 6000.f;
+    data.randomChanche = 35;
 
     auto onUse = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_1, nullptr, true);
@@ -145,28 +145,27 @@ void EnemyBossBaddie::createAbilities()
     data.duration = 4500.f;
     data.randomChanche = 0;
 
+    // TEST INDICATORS [REPLACE]
+    indicatorData.damage = 0;
+    indicatorData.scale = 1.f;
+    indicatorData.enemyBullet = true;
+    indicatorData.isSensor = true;
+    indicatorData.speed = PROJECTILE_SPEED;
+    indicatorData.ttl = data.duration * 0.95f;
+    indicatorData.meshID = Resources::Models::Bone;
+    indicatorData.type = ProjectileTypeDefenderShield;
+
     auto onUse2 = [&](Player& player, Ability &ability) -> void {
         getSoundSource()->playSFX(Sound::SFX::BOSS_1_MELEE_USE);
         getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
-            getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() * 1000.f / (ability.getCurrentDuration()) - 0.169f); // noise
+            getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() * 1000.f / (ability.getCurrentDuration()) - 0.1f);
             getAnimatedModel().set_next("Run_Grunt", [&]() -> void {
                 getAnimatedModel().set_delta_multiplier(1.f);
             });
         });
 
-        // TEST INDICATORS [REPLACE]
-        ProjectileData pdata;
-        pdata.damage = 0;
-        pdata.enemyBullet = true;
-        pdata.ttl = ability.getData().duration * 0.95f;
-        pdata.meshID = Resources::Models::Bone;
-        pdata.speed = PROJECTILE_SPEED;
-        pdata.scale = 1.f;
-        pdata.isSensor = true;
-        pdata.type = ProjectileTypeDefenderShield;
-
         for (int i = 0; i < INDICATORS; i++) {
-            Projectile *pj = SpawnProjectile(pdata, btVector3(0, 0, 0), btVector3(0, 0, 0), *this);
+            Projectile *pj = SpawnProjectile(indicatorData, btVector3(0, 0, 0), btVector3(0, 0, 0), *this);
             meleeIndicators[i] = pj;
             if (pj) {
                 increaseCallbackEntities();
@@ -187,7 +186,7 @@ void EnemyBossBaddie::createAbilities()
                 meleeIndicators[i]->getRigidBody()->getWorldTransform().setOrigin(
                     getPositionBT() + btVector3(
                         std::cos(i * piece) * MELEE_RANGE * scl,
-                        0.5f,
+                        0.0f,
                         std::sin(i * piece) * MELEE_RANGE * scl
                     )
                 );

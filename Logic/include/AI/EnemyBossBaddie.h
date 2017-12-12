@@ -35,6 +35,8 @@ namespace Logic
         Sprite hpBarOutline;
 
         ProjectileData nicePjData;
+
+        ProjectileData indicatorData;
         std::vector<Projectile*> meleeIndicators;
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
