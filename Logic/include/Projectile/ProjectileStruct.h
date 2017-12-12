@@ -22,7 +22,8 @@ namespace Logic
         ProjectileTypeFreezeExplosion,
         ProjectileTypeIceShard,
         ProjectileTypeFireArrow,
-        ProjectileTypeDefenderShield
+        ProjectileTypeDefenderShield,
+        ProjectileTypeShieldCharge
 	};
 
     

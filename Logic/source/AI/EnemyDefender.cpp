@@ -118,6 +118,12 @@ void EnemyDefender::createAbilities()
             diff.setY(0);
             player.getCharController()->applyImpulse(diff.normalized() * THROW_STRENGTH);
             player.getStatusManager().addStatus(StatusManager::SHIELD_CHARGE, 1); // test
+
+            for (Projectile *pj : m_meleeIndicators) {
+                if (pj) {
+                    pj->setDead(true);
+                }
+            }
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
         getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
@@ -202,6 +208,12 @@ void EnemyDefender::onDefenseCollision(Projectile * pj)
     }
 
     pj->setDead(true);
+}
+
+void EnemyDefender::damage(int damage)
+{
+    if (m_projectiles.empty())
+        Enemy::damage(damage);
 }
 
 void EnemyDefender::updateSpecific(Player &player, float deltaTime)
