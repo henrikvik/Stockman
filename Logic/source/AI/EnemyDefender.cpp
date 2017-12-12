@@ -144,7 +144,6 @@ void EnemyDefender::createAbilities()
         pdata.modelScale = { 1.f, 1.f, 1.f };
         pdata.isSensor = true;
         pdata.type = ProjectileTypeDefenderShield;
-        constexpr float piece = 3.14f / INDICATORS * 2;
 
         for (int i = 0; i < INDICATORS; i++) {
             Projectile *pj = SpawnProjectile(pdata, btVector3(0, 0, 0), btVector3(0, 0, 0), *this);

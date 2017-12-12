@@ -57,6 +57,7 @@ HUDManager::HUDManager()
     nextWaveSlideTimer = WAVE_SLIDE_TIME;
     enrageSlideTimer = ENRAGE_SLIDE_TIME;
     wasEnraged = false;
+    cards = false;
 
     crossBowTimer = -1.0f;
     staffTimer = -1.0f;
@@ -325,37 +326,41 @@ void HUDManager::updateTextElements()
     }
 
     //current ammo in mag of active weapon
-    if (info.currentWeapon != 2)
+    if (!cards)
     {
-        if (info.isReloding)
+        if (info.currentWeapon != 2)
         {
-            text.text = L"RELOADING";
-            text.position = DirectX::SimpleMath::Vector2(680, 380);
-            text.font = Resources::Fonts::KG14;
-
-            text.isMoveable = false;
-            HUDText.push_back(TextRenderInfo(text));
-        }
-        else
-        {
-            if (info.activeAmmo[1] > 0)
+            if (info.isReloding)
             {
-                text.color = DirectX::SimpleMath::Color(0.545f, 0.000f, 0.000f);
+                text.text = L"RELOADING";
+                text.position = DirectX::SimpleMath::Vector2(680, 380);
+                text.font = Resources::Fonts::KG14;
+
+                text.isMoveable = false;
+                HUDText.push_back(TextRenderInfo(text));
             }
             else
             {
-                text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+                if (info.activeAmmo[1] > 0)
+                {
+                    text.color = DirectX::SimpleMath::Color(0.545f, 0.000f, 0.000f);
+                }
+                else
+                {
+                    text.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
+                }
+
+                text.text = std::to_wstring(info.activeAmmo[0]);
+                text.position = DirectX::SimpleMath::Vector2(680, 380);
+                text.font = Resources::Fonts::KG14;
+
+                text.isMoveable = false;
+                HUDText.push_back(TextRenderInfo(text));
             }
 
-            text.text = std::to_wstring(info.activeAmmo[0]);
-            text.position = DirectX::SimpleMath::Vector2(680, 380);
-            text.font = Resources::Fonts::KG14;
-
-            text.isMoveable = false;
-            HUDText.push_back(TextRenderInfo(text));
         }
-        
     }
+    
 
     //time and enrage/ survive
     int minutes = info.timeRemaining / 60;
@@ -567,7 +572,7 @@ void HUDManager::renderTextElements() const
 }
 
 void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
-    EntityManager const &entityManager, float dt)
+    EntityManager const &entityManager, float dt, bool cards)
 {
     //updates hudInfo with the current info
     info.scoreCombo = ComboMachine::Get().getComboScore();
@@ -581,6 +586,8 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
     info.currentWeapon = player.getCurrentWeapon();
     info.isReloding = player.getReloding();
     info.ammoPickedUp = player.getAmmoPickedUp();
+
+    this->cards = cards;
 
     // Saves the last known combo to make the combo special effect 
     static int lastScoreMul = 0;
@@ -822,6 +829,7 @@ void HUDManager::reset()
     wasEnraged = false;
     nextWaveSlideTimer = WAVE_SLIDE_TIME;
     enrageSlideTimer = ENRAGE_SLIDE_TIME;
+    cards = false;
     
     
     HUDElements.clear();
