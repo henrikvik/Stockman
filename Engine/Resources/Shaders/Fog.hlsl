@@ -65,8 +65,6 @@ VSOut VS(uint id : SV_VertexID)
 	vsOut.c2 = (1 - (2 * k) * dot(F, P));
 	vsOut.F_DOT_V = dot(F, V);
 
-
-
 	vsOut.pos = mul(PV, P);
 	vsOut.color = fogData[id].color;
 	vsOut.worldPos = P.xyz;

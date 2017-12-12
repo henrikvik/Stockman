@@ -46,6 +46,7 @@ Targets PS(Fragment fragment)
 
 
     float3 glow = 2.3 * glowTexture.Sample(linearClamp, fragment.uv);
+
     float luminance = dot(float3(0.2126, 0.7152, 0.0722), glow);
     if (luminance > 1.0) {
         targets.glow = float4(glow, 0);
