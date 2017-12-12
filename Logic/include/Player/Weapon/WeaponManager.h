@@ -116,6 +116,7 @@ namespace Logic
 		ReloadingWeapon m_reloadState;
 
         int m_ammoPickedUp;
+        bool EnableWeapons;
 	};
 }
 #endif

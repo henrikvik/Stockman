@@ -12,6 +12,7 @@
 #include <Misc\ComboMachine.h>
 
 #include <comdef.h>
+#include <Singletons\DebugWindow.h>
 
 using namespace Logic;
 
@@ -63,6 +64,9 @@ HUDManager::HUDManager()
 
     effects.push_back(new iMenuFX_Combo());
     effects.push_back(new iMenuFX_NewScore());
+
+    HUDEnable = true;
+    RegisterCommand("TOGGLEHUD", { HUDEnable = !HUDEnable; return "TOGGLEHUD"; })
 }
 
 HUDManager::~HUDManager()
@@ -755,45 +759,48 @@ void HUDManager::update(Player &player, WaveTimeManager const &timeManager,
 
 void HUDManager::render() const
 {    
-    //render icons 
-    for (auto &sprite : HUDElements)
+    if (HUDEnable)
     {
-        sprite.render();
-    }
-
-    //renders skill masks
-    int i = 0;
-    for (auto &sprite : skillMasks)
-    {
-        if (1.0f - info.cd[i] > FLT_EPSILON)
+        ////render icons 
+        for (auto &sprite : HUDElements)
         {
             sprite.render();
         }
-        i++;
-    }
 
-    //render hp bars   
-    for (auto &bar : staticElements)
-    {
-        bar.render();
-    }
-    for (auto &bar : comboBar)
-    {
-        bar.render();
-    }
-    for (auto &bar : HPBar)
-    {
-        bar.render();
-    }
+        //renders skill masks
+        int i = 0;
+        for (auto &sprite : skillMasks)
+        {
+            if (1.0f - info.cd[i] > FLT_EPSILON)
+            {
+                sprite.render();
+            }
+            i++;
+        }
 
-    for (auto &wave : waveSprites)
-    {
-        wave.render();
-    }
-    renderTextElements();
+        //render hp bars   
+        for (auto &bar : staticElements)
+        {
+            bar.render();
+        }
+        for (auto &bar : comboBar)
+        {
+            bar.render();
+        }
+        for (auto &bar : HPBar)
+        {
+            bar.render();
+        }
 
-    for (const iMenuFX* fx : effects)
-        fx->render();
+        for (auto &wave : waveSprites)
+        {
+            wave.render();
+        }
+        renderTextElements();
+
+        for (const iMenuFX* fx : effects)
+            fx->render();
+    }
 }
 
 void HUDManager::reset()

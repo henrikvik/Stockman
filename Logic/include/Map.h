@@ -23,6 +23,7 @@
 #include <Entity/StaticObject.h>
 #include <Entity/LightObject.h>
 #include <Misc\MapStructs.h>
+#include <Graphics\include\Particles\ParticleSystem.h>
 
 namespace Logic
 {
@@ -98,6 +99,12 @@ namespace Logic
         void add(FrameLight frameLight);
         void add(FrameProp frameProp);
         void add(FrameHitbox frameHitbox);
+
+        Graphics::ParticleEffect m_campfire;
+        Graphics::ParticleEffect m_campfire2;
+        Graphics::ParticleEffect m_campfire3;
+
+
 	};
 }
 

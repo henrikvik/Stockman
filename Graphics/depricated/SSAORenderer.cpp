@@ -24,6 +24,12 @@ namespace Graphics
 
 	void SSAORenderer::renderSSAO(ID3D11DeviceContext * context, Camera * camera, DepthStencil * depthBuffer, ShaderResource * inputBackBuffer, ShaderResource * outputBackBuffer)
 	{
+        
+        auto y = WIN_HEIGHT / 2 / 16;
+        auto x = WIN_WIDTH / 2 / 16;
+        auto y1 = WIN_HEIGHT / 16;
+        auto x1 = WIN_WIDTH / 16;
+
 		static float clear[4] = { 0 };
 		context->ClearUnorderedAccessViewFloat(ssaoOutput, clear);
 
@@ -45,7 +51,7 @@ namespace Graphics
 		context->CSSetShaderResources(0, 3, srvs);
 		context->CSSetUnorderedAccessViews(0, 1, ssaoOutput, nullptr);
 		context->CSSetConstantBuffers(0, 1, *camera->getInverseBuffer());
-		context->Dispatch(40, 23, 1);
+		context->Dispatch(x, y, 1);
 
 		ID3D11ShaderResourceView * srvsNULL[3] = { nullptr };
 		context->CSSetShaderResources(0, 3, srvsNULL);
@@ -55,21 +61,21 @@ namespace Graphics
 		context->CSSetShader(blurHorizontal, nullptr, 0);
 		context->CSSetUnorderedAccessViews(0, 1, ssaoOutputSwap, nullptr);
 		context->CSSetShaderResources(0, 1, ssaoOutput);
-		context->Dispatch(40, 23, 1);
+		context->Dispatch(x, y, 1);
 
 		context->CSSetShaderResources(0, 1, &srvNULL);
 
 		context->CSSetShader(blurVertical, nullptr, 0);
 		context->CSSetUnorderedAccessViews(0, 1, ssaoOutput, nullptr);
 		context->CSSetShaderResources(0, 1, ssaoOutputSwap);
-		context->Dispatch(40, 23, 1);
+		context->Dispatch(x, y, 1);
 
 		//Merge the blurred occlusion map with back buffer
 		context->CSSetShader(ssaoMerger, nullptr, 0);
 		context->CSSetUnorderedAccessViews(0, 1, *outputBackBuffer, nullptr);
 		context->CSSetShaderResources(0, 1, *inputBackBuffer);
 		context->CSSetShaderResources(1, 1, ssaoOutput);
-		context->Dispatch(80, 45, 1);
+		context->Dispatch(x1, y1, 1);
 
 
 		context->CSSetShaderResources(0, 1, &srvNULL);

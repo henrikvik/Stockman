@@ -1,6 +1,6 @@
 #pragma once
-#define SCREEN_SIZE float2(1280, 720)
-#define ONE_OVER_SCREEN_SIZE float2(1.0f/1280.0f, 1.0f/720.0f)
+#define SCREEN_SIZE float2(1920, 1080)
+#define ONE_OVER_SCREEN_SIZE float2(1.0f/1920.0f, 1.0f/1080.0f)
 #define nearP 0.1f
 #define farP 250.f
 

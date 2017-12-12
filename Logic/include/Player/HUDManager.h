@@ -91,6 +91,9 @@ namespace Logic
             NEXTWAVE,
             ENRAGE
         };
+
+        bool HUDEnable;
+
         void renderTextElements()const;
     public:
         HUDManager();

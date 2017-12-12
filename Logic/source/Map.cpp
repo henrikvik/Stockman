@@ -20,6 +20,12 @@ using namespace Logic;
 Map::Map() {
     m_mapObject = std::make_unique<StaticObject*>(newd StaticObject(Resources::Models::UnitCube,
         nullptr, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL));
+
+    m_campfire = Graphics::FXSystem->getEffect("FireSmoke");
+    m_campfire2 = Graphics::FXSystem->getEffect("FireSmoke");
+    m_campfire3 = Graphics::FXSystem->getEffect("FireSmoke");
+
+
 }
 
 Map::~Map() 
@@ -77,6 +83,12 @@ void Map::update(float deltaTime)
 #ifdef _DEBUG
     m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
 #endif // _DEBUG
+
+    Graphics::FXSystem->processEffect(&m_campfire, { 63.604431f, 1.706378f, 29.647547f }, deltaTime / 1500.f);
+    Graphics::FXSystem->processEffect(&m_campfire2, { -18.386185f, 28.395212f, -37.384571f }, deltaTime / 8000.f);
+    Graphics::FXSystem->processEffect(&m_campfire3, { 100.62f, 60.83f, -85.596f }, deltaTime / 8000.f);
+
+
 }
 
 void Map::render() const

@@ -91,8 +91,8 @@ namespace Graphics {
 	{
 		using namespace DirectX::SimpleMath;
 
-		m_Params.numThreads[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
-		m_Params.numThreads[1] = (int)ceil(720 / (float)BLOCK_SIZE);
+		m_Params.numThreads[0] = (int)ceil(WIN_WIDTH / (float)BLOCK_SIZE);
+		m_Params.numThreads[1] = (int)ceil(WIN_HEIGHT / (float)BLOCK_SIZE);
 		m_Params.numThreads[2] = 1;
 
 		m_Params.numThreadGroups[0] = (int)ceil(m_Params.numThreads[0] / (float)BLOCK_SIZE);
@@ -127,7 +127,7 @@ namespace Graphics {
 						Vector3 points[4];
 						for (auto i = 0; i < 4; i++) {
 							auto vec = corners[i];
-							auto coord = Vector2(vec.x, vec.y) / Vector2(1280, 720);
+							auto coord = Vector2(vec.x, vec.y) / Vector2(WIN_WIDTH, WIN_HEIGHT);
 							auto clip = Vector4(coord.x * 2.f - 1.f, (1.f - coord.y) * 2.f - 1.f, vec.z, vec.w);
 							auto view = Vector4(DirectX::XMVector4Transform(clip, invProj));
 							view = view / view.w;
@@ -154,8 +154,8 @@ namespace Graphics {
 		delete[] frustums;
 
 
-		m_Params.numThreadGroups[0] = (int)ceil(1280 / (float)BLOCK_SIZE);
-		m_Params.numThreadGroups[1] = (int)ceil(720 / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[0] = (int)ceil(WIN_WIDTH  / (float)BLOCK_SIZE);
+		m_Params.numThreadGroups[1] = (int)ceil(WIN_HEIGHT / (float)BLOCK_SIZE);
 		m_Params.numThreadGroups[2] = 1;
 
 		m_Params.numThreads[0] = (int)m_Params.numThreadGroups[0] * BLOCK_SIZE;
