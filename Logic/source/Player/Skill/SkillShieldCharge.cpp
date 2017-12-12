@@ -36,7 +36,7 @@ SkillShieldCharge::SkillShieldCharge(ProjectileManager* projectileManager, Proje
 
 SkillShieldCharge::~SkillShieldCharge()
 {
-
+    delete m_pData;
 }
 
 void SkillShieldCharge::setSpawnFunctions(ProjectileManager &projManager)
