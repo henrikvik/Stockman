@@ -7,7 +7,7 @@
 #include <Projectile\ProjectileStruct.h>
 #include <AI\Enemy.h>
 
-#define SHIELD_CHARGE_CD                        3000.f
+#define SHIELD_CHARGE_CD                        6000.f
 #define SLOWDOWN_DURATION                       150.f
 #define SHIELD_CHARGE_DURATION                  500.f
 #define SHIELD_CHARGE_FOV_INCREASE_SPEED        0.002f

@@ -61,9 +61,9 @@
 	"increaseMagSize" : 0f;
     "movementSpeed" : 0f;
 }
-{ // decrease skill cd by 35% permanently
+{ // decrease skill cd by 20% permanently
 	"flags": 131076; // 0x4 + 0x20000
-	"increaseCooldown" : 0.35f;
+	"increaseCooldown" : 0.20f;
 	"increaseDamage" : 0f;
 	"increaseSize" : 0;
 	"increaseAmmoCap" : 0;
