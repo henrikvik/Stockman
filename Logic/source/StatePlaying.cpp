@@ -179,7 +179,7 @@ void StatePlaying::update(float deltaTime)
         m_projectileManager->update(deltaTime);
         PROFILE_END();
 
-#define _DEBUG
+// #define _DEBUG
 #ifdef  _DEBUG
     if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::NumPad8))
         m_player->takeDamage(1, 0);
@@ -188,7 +188,7 @@ void StatePlaying::update(float deltaTime)
     if (m_player->getHP() <= 0)
         gameOver();
 
-    if ((m_waveTimeManager.getOnLastWave() && (m_entityManager.getNrOfAliveEnemies() == 0)) || DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::P))
+    if ((m_waveTimeManager.getOnLastWave() && (m_entityManager.getNrOfAliveEnemies() == 0)))
         gameWon();
 }
 
