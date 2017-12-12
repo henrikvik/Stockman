@@ -38,9 +38,17 @@ bool NavigationMeshEditor::editNavigationMesh(NavigationMesh &mesh, btVector3 &p
         }
     }
 
-    if (mouseState.rightButton) {
+    if (!lastState.rightButton && mouseState.rightButton) {
+        lastIndex = mesh.getIndex(Vector3(pos), Vector3(forward));
+        if (lastIndex > -1) printf("Index targeted: %d\n", lastIndex);
+    }
+    else if (lastState.rightButton && !mouseState.rightButton) {
         int index = mesh.getIndex(Vector3(pos), Vector3(forward));
-        if (index > -1) printf("Index targeted: %d\n", index);
+        if (index > -1) {
+            printf("Index targeted: %d, other index: %d\n", index, lastIndex);
+            auto const &nodes = mesh.getNodes();
+            mesh.addDoubleEdge(index, lastIndex, nodes[lastIndex] + ((nodes[index] - nodes[lastIndex]) * 0.5f));
+        }
     }
 
     QueueRender(ray);
