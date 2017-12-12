@@ -37,6 +37,12 @@ bool NavigationMeshEditor::editNavigationMesh(NavigationMesh &mesh, btVector3 &p
             return true;
         }
     }
+
+    if (mouseState.rightButton) {
+        int index = mesh.getIndex(Vector3(pos), Vector3(forward));
+        if (index > -1) printf("Index targeted: %d\n", index);
+    }
+
     QueueRender(ray);
 
     lastState = mouseState;

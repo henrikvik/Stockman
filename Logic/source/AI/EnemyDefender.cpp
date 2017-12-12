@@ -35,6 +35,9 @@ EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
 
 EnemyDefender::~EnemyDefender()
 {
+    for (Projectile *pj : m_meleeIndicators)
+        if (pj)
+            pj->setDead(true);
 }
 
 void EnemyDefender::onSpawn()

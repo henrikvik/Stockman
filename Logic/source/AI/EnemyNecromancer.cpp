@@ -39,6 +39,8 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
 
 EnemyNecromancer::~EnemyNecromancer()
 {
+    if (ab2.isUsingAbility())
+        ab2Projectile->setDead(true);
 }
 
 void EnemyNecromancer::createAbilities()
