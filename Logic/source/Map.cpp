@@ -73,8 +73,8 @@ Map::Map() :
     m_ChristmasLightPattern.push_back(0b00000100);
 
     m_campfire = Graphics::FXSystem->getEffect("FireSmoke");
-    m_campfire2 = Graphics::FXSystem->getEffect("FireSmoke");
-    m_campfire3 = Graphics::FXSystem->getEffect("FireSmoke");
+    m_campfire2 = Graphics::FXSystem->getEffect("ChimneySmoke");
+    m_campfire3 = Graphics::FXSystem->getEffect("ChimneySmoke");
 
 
 }
@@ -153,8 +153,8 @@ void Map::update(float deltaTime)
 #endif // _DEBUG
 
     Graphics::FXSystem->processEffect(&m_campfire, { 63.604431f, 1.706378f, 29.647547f }, deltaTime / 1500.f);
-    Graphics::FXSystem->processEffect(&m_campfire2, { -18.386185f, 28.395212f, -37.384571f }, deltaTime / 8000.f);
-    Graphics::FXSystem->processEffect(&m_campfire3, { 100.62f, 60.83f, -85.596f }, deltaTime / 8000.f);
+    Graphics::FXSystem->processEffect(&m_campfire2, { -18.386185f, 28.395212f, -37.384571f }, deltaTime / 2000.f);
+    Graphics::FXSystem->processEffect(&m_campfire3, { 100.62f, 60.83f, -85.596f }, deltaTime / 2000.f);
 
 
 }

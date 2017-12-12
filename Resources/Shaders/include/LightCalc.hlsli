@@ -14,7 +14,7 @@
 
 #define BLOCK_SIZE 16.f
 #define GLOBAL_LIGHT_COLOR float3(0.1, 0.1, 0.3)
-
+#define FOG_COLOR float3(59 / 255.f, 72 / 255.f, 85 / 255.f)
 struct DirectionalLight
 {
     float4 position;
@@ -86,6 +86,12 @@ float3 toonify(float3 color, float intensity)
         color = 0.1 * color;
     
     return color;
+}
+
+float calcFog(float3 player, float3 fragment) {
+    float dist = distance(player, fragment);
+
+    return dist;
 }
 
 float3 calcNormal(float3 mappedNormal, float3 normal, float3 binormal, float3 tangent)

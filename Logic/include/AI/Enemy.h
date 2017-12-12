@@ -47,7 +47,6 @@ namespace Logic
 
 			Behavior *m_behavior;
 
-            AnimatedModel animatedModel;
             float maxAnimationTime;
 
             bool m_stunned;
@@ -55,6 +54,8 @@ namespace Logic
 
             float m_blinkTimer;
         protected:
+            AnimatedModel animatedModel;
+
             LightRenderInfo light;
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE, STAY };

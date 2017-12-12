@@ -18,6 +18,8 @@ namespace Logic
         virtual void updateSpecific(Player &player, float deltaTime);
         virtual void onCollision(PhysicsObject& other, btVector3 contactPoint,
             float dmgMultiplier);
+        virtual void updateAnimation(float deltaTime) override;
+
     };
 }
 
