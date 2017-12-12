@@ -120,7 +120,7 @@ void SkillShieldCharge::onUpdate(float deltaTime)
 
             SpecialEffectRenderInfo tint = {};
             tint.type = SpecialEffectRenderInfo::Tint;
-            tint.color = DirectX::SimpleMath::Vector3(0, 0, 1.0);
+            tint.color = DirectX::SimpleMath::Vector3(0.15, 0.30, 1.0);
             tint.progress = 1.f - m_time / (float)SHIELD_CHARGE_DURATION;
             QueueRender(tint);
 
