@@ -26,6 +26,9 @@ using namespace Logic;
 #define THIRD_PLACE_COLOR   DirectX::SimpleMath::Color(0.3984375, 0.18359375, 0.12890625, 1)
 #define OTHER_PLACE_COLOR   DirectX::SimpleMath::Color(1, 1, 1, 1)
 
+// Button Scroll Amount
+#define BUTTON_SCROLL_AMOUNT 10
+
 // Scrolling value
 #define SCROLLING_VALUE_DIV 120
 
@@ -247,15 +250,15 @@ void iMenuHighscore::render() const
 
 void iMenuHighscore::up()
 {
-    start -= 10;
+    start -= BUTTON_SCROLL_AMOUNT;
     if (start < 0) start = 0;
     else buildSpots(start);
 }
 
 void iMenuHighscore::down()
 {
-    start += 10;
-    if (start > m_entry.size()) start -= 10;
+    start += BUTTON_SCROLL_AMOUNT;
+    if (start > m_entry.size()) start -= BUTTON_SCROLL_AMOUNT;
     else buildSpots(start);
 }
 
