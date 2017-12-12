@@ -27,8 +27,8 @@
 #define CAMERA_INTRO_FORWARD        DirectX::SimpleMath::Vector3(0.506, 0.99f, 0.99f)
 #define CAMERA_SKILL_POSITION       DirectX::SimpleMath::Vector3(-10.000, 35.00, 0.000)
 #define CAMERA_SKILL_FORWARD        DirectX::SimpleMath::Vector3(0.000, -0.365, 0.023)
-#define CAMERA_CREDITS_POSITION     DirectX::SimpleMath::Vector3(-130.392, 2.941, 9.766)
-#define CAMERA_CREDITS_FORWARD      DirectX::SimpleMath::Vector3(0.247, 0.694, -0.234)
+#define CAMERA_CREDITS_POSITION     DirectX::SimpleMath::Vector3(-73.529, 26.471, -64.453)
+#define CAMERA_CREDITS_FORWARD      DirectX::SimpleMath::Vector3(0.741, -0.271, 0.523)
 #define CAMERA_GAMEWON_POSITION       DirectX::SimpleMath::Vector3(-10.000, 70.00, 0.000)
 #define CAMERA_GAMEWON_FORWARD        DirectX::SimpleMath::Vector3(0.000, -0.365, 0.023)
 /* 

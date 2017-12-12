@@ -2,11 +2,14 @@
 #define ENEMY_BOSS_BADDIE_H
 
 #include <AI\Enemy.h>
+#include <AI\Abilities\Ability.h>
+#include <Projectile\ProjectileStruct.h>
+
 #include <unordered_map>
 #include <string>
-#include <AI\Abilities\Ability.h>
 #include <btBulletCollisionCommon.h>
-#include "../../include/Misc/GUI/Sprite.h"
+
+#include <Misc\GUI\Sprite.h>
 
 namespace Logic
 {
@@ -31,6 +34,8 @@ namespace Logic
 
         Sprite hpBar;
         Sprite hpBarOutline;
+
+        ProjectileData nicePjData;
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
         virtual ~EnemyBossBaddie();

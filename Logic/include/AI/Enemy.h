@@ -75,6 +75,7 @@ namespace Logic
             virtual void onSpawn() {};
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
+            void onEffectAdd(int stacks, Effect const &effect);
             void onEffectEnd(int stacks, Effect const &effect);
 
             Projectile* shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, btVector3 scale, bool sensor = false);

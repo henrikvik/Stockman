@@ -3,8 +3,8 @@
 #include <Projectile\Projectile.h>
 using namespace Logic;
 
-const float EnemyDefender::BASE_SPEED = 14.5f;
-const float EnemyDefender::MELEE_DISTANCE = 20.f,
+const float EnemyDefender::BASE_SPEED = 14.f;
+const float EnemyDefender::MELEE_DISTANCE = 16.5f,
             EnemyDefender::PROJECTILE_SPEED = 115.f,
             EnemyDefender::THROW_STRENGTH = 0.05f;
 
@@ -12,7 +12,8 @@ const int   EnemyDefender::BASE_DAMAGE = 1,
             EnemyDefender::MAX_HP = 100,
             EnemyDefender::MAX_DEF_HP = 4,
             EnemyDefender::SCORE = 100,
-            EnemyDefender::PROJECTILES = 22;
+            EnemyDefender::PROJECTILES = 20,
+            EnemyDefender::INDICATORS = 12;
 
 EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     : Enemy(Resources::Models::Grunt, body, halfExtent, MAX_HP,
@@ -28,10 +29,20 @@ EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     light.color = DirectX::SimpleMath::Color(0.7f, 0.0f, 1.0f);
     light.intensity = 0.6f;
     light.range = 15.0f;
+
+    m_meleeIndicators.resize(INDICATORS);
+    addCallback(ON_DEATH, [&](CallbackData &data) -> void {
+        for (Projectile *pj : m_meleeIndicators) {
+            if (pj) {
+                pj->setDead(true);
+            }
+        }
+    });
 }
 
 EnemyDefender::~EnemyDefender()
 {
+
 }
 
 void EnemyDefender::onSpawn()
@@ -85,6 +96,19 @@ void EnemyDefender::createAbilities()
     data.randomChanche = 0;
     data.cooldown = 3500.f;
     m_melee = Ability(data, [&](Player &player, Ability &ab) -> void { // ontick
+        constexpr float piece = 3.14f / INDICATORS * 2;
+
+        for (int i = 0; i < m_meleeIndicators.size(); i++) {
+            if (m_meleeIndicators[i]) {
+                float scl = 1.f - (ab.getCurrentDuration() / ab.getData().duration);
+                m_meleeIndicators[i]->getRigidBody()->getWorldTransform().setOrigin(
+                    getPositionBT() + btVector3(std::cos(i * piece) * MELEE_DISTANCE * scl,
+                                                0.5f,
+                                                std::sin(i * piece) * MELEE_DISTANCE * scl
+                                               ));
+            }
+        }
+
         if (ab.getCurrentDuration() <= 0.f && 
             (player.getPositionBT() - getPositionBT()).length() <= MELEE_DISTANCE)
         {
@@ -94,6 +118,12 @@ void EnemyDefender::createAbilities()
             diff.setY(0);
             player.getCharController()->applyImpulse(diff.normalized() * THROW_STRENGTH);
             player.getStatusManager().addStatus(StatusManager::SHIELD_CHARGE, 1); // test
+
+            for (Projectile *pj : m_meleeIndicators) {
+                if (pj) {
+                    pj->setDead(true);
+                }
+            }
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
         getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
@@ -102,6 +132,30 @@ void EnemyDefender::createAbilities()
                 getAnimatedModel().set_delta_multiplier(1.f);
             });
         });
+
+        // TEST INDICATORS [REPLACE]
+        ProjectileData pdata;
+        pdata.damage = 0;
+        pdata.enemyBullet = true;
+        pdata.ttl = ab.getData().duration * 0.95f;
+        pdata.meshID = Resources::Models::Bone;
+        pdata.speed = PROJECTILE_SPEED;
+        pdata.scale = 1.f;
+        pdata.isSensor = true;
+        pdata.type = ProjectileTypeDefenderShield;
+        constexpr float piece = 3.14f / INDICATORS * 2;
+
+        for (int i = 0; i < INDICATORS; i++) {
+            Projectile *pj = SpawnProjectile(pdata, btVector3(0, 0, 0), btVector3(0, 0, 0), *this);
+            m_meleeIndicators[i] = pj;
+            if (pj) {
+                increaseCallbackEntities();
+                pj->addCallback(ON_DESTROY, [=](CallbackData &data) {
+                    m_meleeIndicators[i] = nullptr;
+                    decreaseCallbackEntities();
+                });
+            }
+        }
     });
 }
 
@@ -154,6 +208,12 @@ void EnemyDefender::onDefenseCollision(Projectile * pj)
     }
 
     pj->setDead(true);
+}
+
+void EnemyDefender::damage(int damage)
+{
+    if (m_projectiles.empty())
+        Enemy::damage(damage);
 }
 
 void EnemyDefender::updateSpecific(Player &player, float deltaTime)

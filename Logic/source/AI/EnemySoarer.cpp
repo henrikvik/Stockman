@@ -56,7 +56,6 @@ void EnemySoarer::createAbilities()
     pdata.effectVelocity = false;
     pdata.effectActivated = true;
 
-
     ab1 = Ability(data, [&](Player &player, Ability &ab) -> void {
         // ontick 
     }, [=](Player &player, Ability &ab) -> void {

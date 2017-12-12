@@ -57,6 +57,7 @@ namespace Logic
 		virtual void updateSound(float deltaTime);
 
 		virtual void affect(int stacks, Effect const &effect, float deltaTime) = 0;
+        virtual void onEffectAdd(int stacks, Effect const &effect) {};
         virtual void onEffectEnd(int stacks, Effect const &effect) {};
         virtual void onUpgradeAdd(int stacks, Upgrade const &upgrade) {};
 		
