@@ -36,7 +36,7 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager)
 	m_allSkills =
 	{
 		{ newd SkillGrapplingHook(physics) },
-		{ newd SkillShieldCharge() },
+		{ newd SkillShieldCharge(projectileManager, ProjectileData(nullptr, false, false, 0, 16, 1.f, 0, 0.f, 25000, LightRenderInfo(DirectX::SimpleMath::Color(), 0.f, 0.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeShieldCharge, true, false, false)) },
         { newd SkillBulletTime(projectileManager, ProjectileData(nullptr, false, false, 0, 1600, 1.f, 0, 0.f, BULLET_TIME_DURATION, LightRenderInfo(DirectX::SimpleMath::Color(), 0.f, 0.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeBulletTimeSensor, true, false, false)) }
     };
 

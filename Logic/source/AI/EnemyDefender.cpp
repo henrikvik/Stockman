@@ -196,6 +196,12 @@ void EnemyDefender::onDefenseCollision(Projectile * pj)
     pj->setDead(true);
 }
 
+void EnemyDefender::damage(int damage)
+{
+    if (m_projectiles.empty())
+        Enemy::damage(damage);
+}
+
 void EnemyDefender::updateSpecific(Player &player, float deltaTime)
 {
     RandomGenerator &rng = RandomGenerator::singleton();

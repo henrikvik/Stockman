@@ -245,6 +245,11 @@ bool Projectile::collisionWithEnemy(Enemy* enemy)
         );
         break;
 
+    case ProjectileTypeShieldCharge:
+        callback = true;
+        enemy->getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::DAMAGE_ONCE, 1, enemy);
+        break;
+
     case ProjectileTypeBulletTimeSensor:
         break;
 
@@ -283,13 +288,9 @@ bool Projectile::collisionWithTrigger(Trigger* trigger)
 // Projectile-Terrain Collisions, returns true if callback should be activated
 bool Projectile::collisionWithTerrain()
 {
-    m_dead = true;
-
     bool callback = true;
 
-    // Don't remove if sensor
-    if (m_pData.isSensor)
-        m_dead = false;
+    
 
     // Special cases
     switch (m_pData.type)
@@ -297,6 +298,16 @@ bool Projectile::collisionWithTerrain()
     case ProjectileTypeNormal:
     case ProjectileTypeFireArrow:
         m_dead = true;
+        break;
+    case ProjectileTypeShieldCharge:
+        break;
+    default:
+        // Don't remove if sensor
+        if (m_pData.isSensor)
+            m_dead = false;
+        else
+            m_dead = true;
+        break;
     }
 
     // Don't remove if bouncing upgraded

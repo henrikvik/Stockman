@@ -35,15 +35,15 @@ namespace Logic
 
 		int m_stacks;
 
+        void setSpawnFunctions(ProjectileManager &projManager);
+
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)> SpawnProjectile;
 
         SpecialEffectRenderInfo renderInfo;
 	public:
-		SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData);
+		SkillBulletTime(ProjectileManager* projectileManager, ProjectileData& pData);
         ~SkillBulletTime();
-
-        void setSpawnFunctions(ProjectileManager &projManager);
 
 		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();

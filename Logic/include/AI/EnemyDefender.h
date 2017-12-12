@@ -30,6 +30,8 @@ namespace Logic
         virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
         virtual void onDefenseCollision(Projectile *pj);
 
+        virtual void damage(int damage);
+
         virtual void updateSpecific(Player &player, float deltaTime);
         virtual void updateDead(float deltaTime);
 

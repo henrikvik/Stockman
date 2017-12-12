@@ -31,7 +31,7 @@ namespace Logic
 		enum EFFECT_ID {
 			ON_FIRE, FREEZE, BOOST_UP, AMMO_PICK_UP_PRIMARY, AMMO_PICK_UP_SECONDARY,
             SHIELD_CHARGE, BULLET_TIME, ENRAGE, HEALTH_P1, STUN, MOVEMENTSPEED_UP, 
-            MOVEMENTSPEED_DOWN, ON_KILL, INVULNERABLE, LAST_ITEM_IN_EFFECTS
+            MOVEMENTSPEED_DOWN, ON_KILL, INVULNERABLE, DAMAGE_ONCE, LAST_ITEM_IN_EFFECTS
 		};
 
 		enum UPGRADE_ID {
@@ -46,9 +46,9 @@ namespace Logic
 		void clear();
 		void update(float deltaTime, Entity &entity);
 
-        void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks);
-        void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, float duration, bool add);
-        void addStatusResetDuration(StatusManager::EFFECT_ID effect_id, int nrOfStacks);
+        void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, Entity* entity = nullptr);
+        void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, float duration, bool add, Entity* entity = nullptr);
+        void addStatusResetDuration(StatusManager::EFFECT_ID effect_id, int nrOfStacks, Entity* entity = nullptr);
 
 		void removeOneStatus(int statusID);
 		void removeAllStatus(int statusID);
