@@ -62,6 +62,8 @@ namespace Logic
         void down();
 
     private:
+        void updateScrolling();
+
         bool                    m_requestDone;
         std::vector<Entry*>     m_entry;
         std::vector<EntrySpot*> m_spot;

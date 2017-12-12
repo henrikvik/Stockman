@@ -26,6 +26,9 @@ using namespace Logic;
 #define THIRD_PLACE_COLOR   DirectX::SimpleMath::Color(0.3984375, 0.18359375, 0.12890625, 1)
 #define OTHER_PLACE_COLOR   DirectX::SimpleMath::Color(1, 1, 1, 1)
 
+// Scrolling value
+#define SCROLLING_VALUE_DIV 120
+
 iMenuHighscore::iMenuHighscore(iMenu::MenuGroup group)
     : iMenu(group) 
 {
@@ -196,6 +199,8 @@ void iMenuHighscore::update(int x, int y, float deltaTime)
 
     if (!m_isFading) if (!m_requestDone) { m_requestDone = true; buildHighscore(); }
 
+    updateScrolling();
+
 // Debugging purposes
 #if ENTRY_POS_EDIT
     static float posx, posy, posYoffset, col2, col3, col4, col5;
@@ -252,4 +257,20 @@ void iMenuHighscore::down()
     start += 10;
     if (start > m_entry.size()) start -= 10;
     else buildSpots(start);
+}
+
+void iMenuHighscore::updateScrolling()
+{
+    static int prevWheelValue = DirectX::Mouse::Get().GetState().scrollWheelValue / SCROLLING_VALUE_DIV;
+    if (DirectX::Mouse::Get().GetState().scrollWheelValue != prevWheelValue)
+    {
+        int newValue = DirectX::Mouse::Get().GetState().scrollWheelValue / SCROLLING_VALUE_DIV;
+        start += prevWheelValue - newValue;
+
+        if (start < 0)                          start = 0;
+        else if (start > m_entry.size() - 1)    start = m_entry.size() - 1;
+        else                                    buildSpots(start);
+
+        prevWheelValue = newValue;
+    }
 }
