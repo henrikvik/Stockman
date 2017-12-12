@@ -276,7 +276,7 @@ void EnemyBossBaddie::shootAbility4(Player const &player, int pattern, float spe
 
     btVector3 dir = player.getPositionBT() - getPositionBT();
     dir.setY(0.f);
-    Projectile *pj;
+    Projectile *pj = nullptr;
 
     switch (pattern)
     {
