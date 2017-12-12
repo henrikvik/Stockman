@@ -21,7 +21,7 @@ const float EnemyBossBaddie::BASE_SPEED = 19.f, EnemyBossBaddie::PROJECTILE_SPEE
             EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.11f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
             EnemyBossBaddie::PROJECTILE_SCALE = 7.5f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 25000, EnemyBossBaddie::SCORE = 150000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 75000, EnemyBossBaddie::SCORE = 150000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
     @author Lukas Westling
