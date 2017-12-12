@@ -337,12 +337,13 @@ bool Projectile::collisionWithProjectile(Projectile* proj)
 	switch (proj->getProjectileData().type)
 	{
 	case ProjectileTypeBulletTimeSensor:
-	    getStatusManager().addStatusResetDuration(
-		/* Adding Bullet time effect */     StatusManager::BULLET_TIME,
-		/* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME)
-	    );
+        getStatusManager().addStatusResetDuration(
+            /* Adding Bullet time effect */     StatusManager::BULLET_TIME,
+            /* Number of stacks */              proj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME)
+        );
 	    break;
     case ProjectileTypeMeleeParry:
+        clearCallbacks();
         m_dead = true;
         break;
 	}
