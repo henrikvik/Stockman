@@ -240,14 +240,14 @@ void iMenuHighscore::render() const
     }
 }
 
-void Logic::iMenuHighscore::up()
+void iMenuHighscore::up()
 {
     start -= 10;
     if (start < 0) start = 0;
     else buildSpots(start);
 }
 
-void Logic::iMenuHighscore::down()
+void iMenuHighscore::down()
 {
     start += 10;
     if (start > m_entry.size()) start -= 10;
