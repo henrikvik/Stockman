@@ -25,7 +25,8 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
                 SpawnTrigger(3, getPositionBT() - btVector3(0.f, data.caller->getRigidBody()->getCollisionShape()->getLocalScaling().y() * 1.5f, 0.f), std::vector<int>{ StatusManager::AMMO_PICK_UP_SECONDARY });
         }
 
-        
+        if (ab2.isUsingAbility())
+            ab2Projectile->setDead(true);
     });
     m_spawnedMinions = 0;
 
@@ -39,8 +40,7 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
 
 EnemyNecromancer::~EnemyNecromancer()
 {
-    if (ab2.isUsingAbility())
-        ab2Projectile->setDead(true);
+
 }
 
 void EnemyNecromancer::createAbilities()
