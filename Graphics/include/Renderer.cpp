@@ -148,8 +148,8 @@ namespace Graphics
             D3D11_TEXTURE2D_DESC desc = {};
             desc.Format = DXGI_FORMAT_R32G32_UINT;
             desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-            desc.Width = (int)ceil(1920 / (float)BLOCK_SIZE);
-            desc.Height = (int)ceil(1080 / (float)BLOCK_SIZE);
+            desc.Width = (int)ceil(WIN_WIDTH / (float)BLOCK_SIZE);
+            desc.Height = (int)ceil(WIN_HEIGHT / (float)BLOCK_SIZE);
             desc.SampleDesc.Count = 1;
             desc.MipLevels = 1;
             desc.ArraySize = 1;
