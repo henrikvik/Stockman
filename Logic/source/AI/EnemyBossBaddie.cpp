@@ -21,7 +21,8 @@ const float EnemyBossBaddie::BASE_SPEED = 19.f, EnemyBossBaddie::PROJECTILE_SPEE
             EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.f,
             EnemyBossBaddie::MELEE_PUSHBACK = 0.11f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
             EnemyBossBaddie::PROJECTILE_SCALE = 7.5f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 75000, EnemyBossBaddie::SCORE = 150000;// Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
+const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 75000, EnemyBossBaddie::SCORE = 150000,
+          EnemyBossBaddie::INDICATORS = 12; // Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
 /*
     @author Lukas Westling
@@ -57,11 +58,19 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
         ComboMachine::Get().kill(SCORE);
         Sound::NoiseMachine::Get().stopAllGroups();
         Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_2, nullptr, true);
+
+        for (Projectile *pj : meleeIndicators) {
+            if (pj) {
+                pj->setDead(true);
+            }
+        }
     });
 
     light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
     light.intensity = 0.8f;
     light.range = 10.0f;
+
+    meleeIndicators.resize(INDICATORS);
 }
 
 EnemyBossBaddie::~EnemyBossBaddie()
@@ -144,9 +153,47 @@ void EnemyBossBaddie::createAbilities()
                 getAnimatedModel().set_delta_multiplier(1.f);
             });
         });
+
+        // TEST INDICATORS [REPLACE]
+        ProjectileData pdata;
+        pdata.damage = 0;
+        pdata.enemyBullet = true;
+        pdata.ttl = ability.getData().duration * 0.95f;
+        pdata.meshID = Resources::Models::Bone;
+        pdata.speed = PROJECTILE_SPEED;
+        pdata.scale = 1.f;
+        pdata.isSensor = true;
+        pdata.type = ProjectileTypeDefenderShield;
+
+        for (int i = 0; i < INDICATORS; i++) {
+            Projectile *pj = SpawnProjectile(pdata, btVector3(0, 0, 0), btVector3(0, 0, 0), *this);
+            meleeIndicators[i] = pj;
+            if (pj) {
+                increaseCallbackEntities();
+                pj->addCallback(ON_DESTROY, [=](CallbackData &data) {
+                    meleeIndicators[i] = nullptr;
+                    decreaseCallbackEntities();
+                });
+            }
+        }
     };
 
     auto onTick2 = [&](Player& player, Ability &ability) -> void {
+        constexpr float piece = 3.14f / INDICATORS * 2;
+
+        for (int i = 0; i < meleeIndicators.size(); i++) {
+            if (meleeIndicators[i]) {
+                float scl = 1.f - (ability.getCurrentDuration() / ability.getData().duration);
+                meleeIndicators[i]->getRigidBody()->getWorldTransform().setOrigin(
+                    getPositionBT() + btVector3(
+                        std::cos(i * piece) * MELEE_RANGE * scl,
+                        0.5f,
+                        std::sin(i * piece) * MELEE_RANGE * scl
+                    )
+                );
+            }
+        }
+
         if (ability.getCurrentDuration() <= 0.f)
         {
             btVector3 to = player.getPositionBT() - getPositionBT();
@@ -156,6 +203,12 @@ void EnemyBossBaddie::createAbilities()
                 player.takeDamage(2, true); // shield charge wont save ya
                 to.setY(0);
                 player.getCharController()->applyImpulse(to.normalized() * MELEE_PUSHBACK); 
+            }
+
+            for (Projectile *pj : meleeIndicators) {
+                if (pj) {
+                    pj->setDead(true);
+                }
             }
         }
     };

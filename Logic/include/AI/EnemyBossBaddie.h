@@ -24,7 +24,7 @@ namespace Logic
 
         static const float BASE_SPEED, PROJECTILE_SPEED, ABILITY_1_MOD, MELEE_RANGE,
             MELEE_PUSHBACK, TOTAL_HP_BAR, PROJECTILE_SCALE;
-        static const int BASE_DAMAGE, MAX_HP, SCORE;
+        static const int BASE_DAMAGE, MAX_HP, SCORE, INDICATORS;
 
         // AB 4 data -- move to a buff
         float ab4Speed;
@@ -35,6 +35,7 @@ namespace Logic
         Sprite hpBarOutline;
 
         ProjectileData nicePjData;
+        std::vector<Projectile*> meleeIndicators;
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
         virtual ~EnemyBossBaddie();
