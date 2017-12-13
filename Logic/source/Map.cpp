@@ -146,7 +146,7 @@ void Map::update(float deltaTime)
     if (pattern & 0x4)
         SubmitLights(m_BlueBulbs);
 
-    SubmitLights(m_MapLights);
+    //SubmitLights(m_MapLights);
 
 #ifdef _DEBUG
     m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;

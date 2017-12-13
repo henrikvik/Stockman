@@ -20,7 +20,7 @@ EnemyChaser::EnemyChaser(btRigidBody* body)
     light.range = 3.f;
 
     getAnimatedModel().set_next("Walk", [&]()->void {
-        getAnimatedModel().set_delta_multiplier(1 / 299.f); 
+        getAnimatedModel().set_delta_multiplier(0.33); 
     });
 
     light.color = DirectX::SimpleMath::Color(0.1f, 0.7f, 0.4f);

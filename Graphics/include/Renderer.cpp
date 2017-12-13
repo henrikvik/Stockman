@@ -402,18 +402,19 @@ namespace Graphics
         lightInfo.range = 10;
         QueueRender(lightInfo);
 
-       /* QueueRender([](float dt) -> AnimatedRenderInfo
+        QueueRender([](float dt) -> AnimatedRenderInfo
         {
             static float time = 0;
             AnimatedRenderInfo info;
             info.animationName = "Walk";
             info.animationTimeStamp = time;
-            info.model = Resources::Models::SummonUnitWithAnim;
-            info.transform = SimpleMath::Matrix::CreateTraanslation(0, 3, -3) * SimpleMath::Matrix::CreateScale(1.0f);
+            info.model = Resources::Models::NecromancerWithAnim;
+            info.transform = SimpleMath::Matrix::CreateRotationY(-70.0f) * SimpleMath::Matrix::CreateScale(2.0f) * SimpleMath::Matrix::CreateTranslation(95.473f, 5.5f, 39.93985f);
+           
             time += dt;
             if (time > 5) time = 0;
             return info;
-        }(deltaTime));*/
+        }(deltaTime));
 
 		//QueueRender([]()
 		//{
