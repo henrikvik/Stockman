@@ -80,7 +80,9 @@ SamplerState Sampler : register(s0);
 float3 generateWorldSpacePos(float2 uv, float2 offset = float2(0, 0))
 {
     float depth = depthMap.SampleLevel(Sampler, uv + offset, 0).r;
+    if (depth > 0.3) clip(-1);
 
+    
     float4 pos;
     pos.x = (uv.x + offset.x) * 2 - 1;
     pos.y = (1 - uv.y + offset.y) * 2 - 1;

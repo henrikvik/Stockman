@@ -136,7 +136,7 @@ void StatePlaying::update(float deltaTime)
    
     PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
-    if (m_menu->getType() != iMenu::Empty) // Quick "temp pause" fix for testing purposes
+    if (m_menu->getType() != iMenu::Empty && m_menu->getType() != iMenu::Cinematic) // Quick "temp pause" fix for testing purposes
         return;
     PROFILE_END();
 
@@ -164,7 +164,8 @@ void StatePlaying::update(float deltaTime)
         PROFILE_END();
 
         PROFILE_BEGIN("Player");
-        m_player->updateSpecific(deltaTime);
+        if (m_menu->getType() != iMenu::Cinematic)
+            m_player->updateSpecific(deltaTime);
         PROFILE_END();
 
         PROFILE_BEGIN("Physics");

@@ -676,7 +676,11 @@ void Player::updateSpecific(float deltaTime)
     if (!m_noclip)
         stepPlayer(deltaTime);
 
-    Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
+    if (!(DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::J)))
+    {
+        Global::mainCamera->update(getEyePosition(), m_forward, Global::context);
+    }
+
 
     m_weaponManager->setWeaponModel(deltaTime, getEyeTransformMatrix(), m_forward);
 

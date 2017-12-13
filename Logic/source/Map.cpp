@@ -71,6 +71,12 @@ Map::Map() :
     m_ChristmasLightPattern.push_back(0b00000111);
     m_ChristmasLightPattern.push_back(0b00000110);
     m_ChristmasLightPattern.push_back(0b00000100);
+
+    m_campfire = Graphics::FXSystem->getEffect("FireSmoke");
+    m_campfire2 = Graphics::FXSystem->getEffect("ChimneySmoke");
+    m_campfire3 = Graphics::FXSystem->getEffect("ChimneySmoke");
+
+
 }
 
 Map::~Map() 
@@ -145,6 +151,12 @@ void Map::update(float deltaTime)
 #ifdef _DEBUG
     m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
 #endif // _DEBUG
+
+    Graphics::FXSystem->processEffect(&m_campfire, { 63.604431f, 1.706378f, 29.647547f }, deltaTime / 1500.f);
+    Graphics::FXSystem->processEffect(&m_campfire2, { -18.386185f, 28.395212f, -37.384571f }, deltaTime / 2000.f);
+    Graphics::FXSystem->processEffect(&m_campfire3, { 100.62f, 60.83f, -85.596f }, deltaTime / 2000.f);
+
+
 }
 
 void Map::render() const

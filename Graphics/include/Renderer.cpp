@@ -148,8 +148,8 @@ namespace Graphics
             D3D11_TEXTURE2D_DESC desc = {};
             desc.Format = DXGI_FORMAT_R32G32_UINT;
             desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-            desc.Width = (int)ceil(1280 / (float)BLOCK_SIZE);
-            desc.Height = (int)ceil(720 / (float)BLOCK_SIZE);
+            desc.Width = (int)ceil(WIN_WIDTH / (float)BLOCK_SIZE);
+            desc.Height = (int)ceil(WIN_HEIGHT / (float)BLOCK_SIZE);
             desc.SampleDesc.Count = 1;
             desc.MipLevels = 1;
             desc.ArraySize = 1;
@@ -402,14 +402,14 @@ namespace Graphics
         lightInfo.range = 10;
         QueueRender(lightInfo);
 
-        /*QueueRender([](float dt) -> AnimatedRenderInfo
+       /* QueueRender([](float dt) -> AnimatedRenderInfo
         {
             static float time = 0;
             AnimatedRenderInfo info;
             info.animationName = "Walk";
             info.animationTimeStamp = time;
             info.model = Resources::Models::SummonUnitWithAnim;
-            info.transform = SimpleMath::Matrix::CreateTranslation(0, 1, -3) * SimpleMath::Matrix::CreateScale(5.0f);
+            info.transform = SimpleMath::Matrix::CreateTraanslation(0, 3, -3) * SimpleMath::Matrix::CreateScale(1.0f);
             time += dt;
             if (time > 5) time = 0;
             return info;

@@ -24,23 +24,26 @@ struct Targets
     float4 viewNormal : SV_Target2;
 };
 
-Targets PS(Fragment fragment) 
+Targets PS(Fragment fragment)
 {
     Targets targets;
-    
+
     float3 normal = calcNormal(normalTexture.Sample(linearClamp, fragment.uv).xyz, fragment.normal, fragment.binormal, fragment.tangent);
     float specularExponent = specularTexture.Sample(linearClamp, fragment.uv).r;
 
     float shadowFactor = calcShadowFactor(comparison, shadowMap, fragment.lightPos);
     float3 viewDir = normalize(camera.position.xyz - fragment.position.xyz);
-
     float3 lightSum = globalLight.ambient;
     lightSum += shadowFactor * calcLight(globalLight, fragment.position.xyz, normal, viewDir, specularExponent);
     lightSum += calcAllLights(fragment.ndcPosition, fragment.position.xyz, normal, viewDir, specularExponent);
-    
-    float3 color = diffuseTexture.Sample(linearClamp, fragment.uv).xyz;
+    //float3 fog = float3(0.8, 0.1, 0.1) * calcFog(camera.position.xyz, fragment.position.xyz);
 
-    targets.color = float4(lightSum * color * fragment.color, 1); //500~
+    float3 color = diffuseTexture.Sample(linearClamp, fragment.uv).xyz;
+    color = lightSum * color * fragment.color;
+    color = lerp(color, FOG_COLOR, saturate(distance(camera.position.xyz, fragment.position.xyz) / 130.f));
+
+    targets.color = float4(color, 1); //500~
+
 
     float3 glow = 2.3 * glowTexture.Sample(linearClamp, fragment.uv);
     float luminance = dot(float3(0.2126, 0.7152, 0.0722), glow);

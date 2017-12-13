@@ -28,8 +28,11 @@ float4 PS(PSInput input) : SV_Target0
     float3 lights = globalLight.ambient;
     lights += calcLight(globalLight, input.worldPos, input.normal, viewDir, 0.1);
     lights += calcAllLights(input.position, input.worldPos, input.normal, viewDir, 0.1);
+    
+    float3 color = diffuse * lights;
+    color = lerp(color, FOG_COLOR, saturate(distance(camera.position.xyz, input.worldPos.xyz) / 130.f));
 
-    return float4(diffuse * lights, 1);
+    return float4(color, 1);
 }
 
 void PS_depth(PSInput input)
