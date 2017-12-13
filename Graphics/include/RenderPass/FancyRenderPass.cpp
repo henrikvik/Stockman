@@ -31,7 +31,7 @@ FancyRenderPass::FancyRenderPass(
         while (status = fscanf_s(f, "char id=%d x=%d y=%d width=%d height=%d xoffset=%d yoffset=%d xadvance=%d page=0 chnl=15\n", &glyph.Character, &x, &y, &w, &h, &xoff, &yoff, &xadv), status != 0 && status != EOF) {
             glyph.XOffset = xoff;
             glyph.YOffset = yoff;
-            glyph.XAdvance = xadv;
+            glyph.XAdvance = 0;// xadv;
             glyph.Subrect.left = x;
             glyph.Subrect.right = x + w;
             glyph.Subrect.top = y;
@@ -42,7 +42,7 @@ FancyRenderPass::FancyRenderPass(
     }
 
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, L"../Resources/Particles/SPLASH.png", nullptr, &m_FontTexture));
-    m_Font = new DirectX::SpriteFont(m_FontTexture, glyphs.data(), glyphs.size(), 44.f);
+    m_Font = new DirectX::SpriteFont(m_FontTexture, glyphs.data(), glyphs.size(), 0.f);
 }
 
 static DirectX::SimpleMath::Vector4 TransformScreen(DirectX::SimpleMath::Matrix vp, DirectX::SimpleMath::Vector3 position, bool *clip)
@@ -77,7 +77,7 @@ void FancyRenderPass::render() const
 
     Global::batch->Begin(
         DirectX::SpriteSortMode::SpriteSortMode_Deferred,
-        nullptr,
+        Global::cStates->NonPremultiplied(),
         nullptr,
         Global::cStates->DepthRead(),
         Global::cStates->CullNone(),
@@ -92,7 +92,13 @@ void FancyRenderPass::render() const
         auto origin = (DirectX::XMVECTOR)m_Font->MeasureString(info.text.c_str());
         origin = Vector2(origin) * Vector2{ 0.5f, 0.5f };
 
-        
+        auto maxdist = 100.f;
+        auto dist = (info.position - Global::mainCamera->getPos()).Length();
+        auto factor = dist / maxdist;
+        if (factor > 1.f) factor = 1.f;
+
+        info.scale = (1 - factor) * info.scale;
+        info.color.w = 1 - factor;
 
         m_Font->DrawString(
             Global::batch,

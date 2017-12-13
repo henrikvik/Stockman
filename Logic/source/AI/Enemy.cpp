@@ -167,6 +167,28 @@ void Enemy::damage(int damage)
 	m_health -= damage;
     m_blinkTimer = 100.0f;
 
+    auto scale = damage / 50.f;
+    scale = max(0.25, scale);
+    scale = min(2.f, scale);
+
+    ProjectileData data = {};
+    data.mass = 1.f;
+    data.scale = 1.f;
+    data.speed = 3.f;
+    data.gravityModifier = .3f;
+    data.ttl = 2000;
+    data.lightInfo.range = 0.f;
+
+    data.fancy.position = getPosition();
+    data.fancy.scale = 1.f;
+    data.fancy.color = DirectX::Colors::FloralWhite;
+    data.fancy.text = std::to_wstring(damage);
+    data.enemyBullet = true;
+
+    auto p = SpawnProjectile(data, getPositionBT(), { RandomGenerator::singleton().getRandomFloat(-0.5f, .5f), 1, RandomGenerator::singleton().getRandomFloat(-0.5f, .5f) }, *this);
+    p->getStatusManager().addUpgrade(StatusManager::BOUNCE);
+    p->getRigidBody()->setRestitution(10.f);
+
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)
     {

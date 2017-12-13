@@ -676,13 +676,6 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
     PROFILE_BEGIN("process managed effects");
     auto it = m_ParticleEffects.begin();
     while (it != m_ParticleEffects.end()) {
-        FancyRenderInfo info = {};
-        info.position = it->position;// DirectX::SimpleMath::Vector3{ 0, 10, 0 };
-        info.color = DirectX::SimpleMath::Vector4{ 1, 1, 1, 1 };
-        info.scale = .5f;
-        info.text = L"I HATE THIS";
-        QueueRender(info);
-
         if (processEffect(&it->effect, it->position, dt)) {
             it = m_ParticleEffects.erase(it);
         }
