@@ -14,8 +14,8 @@ const int EnemyNecromancer::SPEED_AB1 = 125,
 const float EnemyNecromancer::BASE_SPEED = 7.5f;
 
 EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
-    : Enemy(Resources::Models::SummonUnitWithAnim, body, halfExtent, MAX_HP, BASE_DAMAGE,
-        BASE_SPEED, EnemyType::NECROMANCER, 0, { 0.f, -1.9f, 0.f }) {
+    : Enemy(Resources::Models::NecromancerWithAnim, body, halfExtent, MAX_HP, BASE_DAMAGE,
+        BASE_SPEED, EnemyType::NECROMANCER, 0, { 0.f, 0.5f, 0.f }) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().kill(SCORE);
@@ -36,6 +36,10 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
     light.color = DirectX::SimpleMath::Color(0.5f, 0.0f, 1.0f);
     light.intensity = 0.8f;
     light.range = 7.0f;
+
+	getAnimatedModel().set_next("Walk", [&]()->void {
+		getAnimatedModel().set_delta_multiplier(0.33f);
+	});
 }
 
 EnemyNecromancer::~EnemyNecromancer()
