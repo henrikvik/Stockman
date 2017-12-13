@@ -19,7 +19,9 @@ EnemyChaser::EnemyChaser(btRigidBody* body)
     light.intensity = 1.f;
     light.range = 3.f;
 
-    getAnimatedModel().set_next("Walk");
+    getAnimatedModel().set_next("Walk", [&]()->void {
+        getAnimatedModel().set_delta_multiplier(1 / 299.f); 
+    });
 
     light.color = DirectX::SimpleMath::Color(0.1f, 0.7f, 0.4f);
     light.intensity = 0.4f;
@@ -60,5 +62,5 @@ void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, floa
 void EnemyChaser::updateAnimation(float deltaTime)
 {
     animatedModel.set_transform(getModelTransformMatrix());
-    animatedModel.update(deltaTime*500000);
+    animatedModel.update(deltaTime);
 }

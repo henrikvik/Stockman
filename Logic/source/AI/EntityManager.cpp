@@ -80,7 +80,7 @@ void EntityManager::registerCreationFunctions()
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
-        Enemy* enemy = newd EnemyNecromancer(body, { 1.f, 5.f, 1.f });
+        Enemy* enemy = newd EnemyNecromancer(body, { 1.f, 1.f, 1.f });
         body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 0.5f, 1.f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         physics.removeRigidBody(body);
