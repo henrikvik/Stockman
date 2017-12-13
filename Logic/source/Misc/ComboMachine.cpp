@@ -113,9 +113,9 @@ int ComboMachine::getTotalScore()
 
 void ComboMachine::addTimeBonus(float timeLeft)
 {
-    
     int timeScore = timeLeft * 0.001f;
-    m_totalScore += timeScore * COMBO_TIME_SCORE_MULTIPLIER;
+    if(timeScore > 0)
+        m_totalScore += timeScore * COMBO_TIME_SCORE_MULTIPLIER;
 }
 
 float Logic::ComboMachine::getmaxComboTimer() const
