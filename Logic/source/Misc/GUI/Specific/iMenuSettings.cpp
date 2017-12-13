@@ -6,8 +6,8 @@ Logic::iMenuSettings::iMenuSettings(iMenu::MenuGroup group)
     : iMenu(group)
 {
     m_textRenderInfoWindow.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
-    m_textRenderInfoWindow.font = Resources::Fonts::KG26;
-    m_textRenderInfoWindow.position = DirectX::SimpleMath::Vector2(820.0f, 132.5f);
+    m_textRenderInfoWindow.font = Resources::Fonts::nordic25;
+    m_textRenderInfoWindow.position = DirectX::SimpleMath::Vector2(830.0f, 135.0f);
 
     m_textRenderInfoDOF.color = DirectX::SimpleMath::Color(1, 1, 1, 1);
     m_textRenderInfoDOF.font = Resources::Fonts::KG14;
@@ -34,12 +34,12 @@ void Logic::iMenuSettings::update(int x, int y, float deltaTime)
     if (Settings::getInstance().getWindowed() == 1)
     {
         m_textRenderInfoWindow.text = L"FULLSCREEN";
-        m_textRenderInfoWindow.position = DirectX::SimpleMath::Vector2(812.0f, 132.5f);
+        m_textRenderInfoWindow.position = DirectX::SimpleMath::Vector2(822.5f, 136.5f);
     }
     else
     {
         m_textRenderInfoWindow.text = L"WINDOWED";
-        m_textRenderInfoWindow.position = DirectX::SimpleMath::Vector2(820.0f, 132.5f);
+        m_textRenderInfoWindow.position = DirectX::SimpleMath::Vector2(831.5f, 136.5f);
     }
 
     if (Settings::getInstance().getDOF() == 1)
