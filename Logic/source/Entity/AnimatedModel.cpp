@@ -54,8 +54,10 @@ void AnimatedModel::update(float delta_ms)
     if (animation_next.empty()) return;
 
     animation_current  = animation_next;
-    animation_duration = skeleton->getAnimationDuration(animation_next.c_str());    
+    animation_duration = skeleton->getAnimationDuration(animation_next.c_str());
     animation_next     = "";
+
+    std::cout << "Now playing: " << animation_current << ", Duration: " << animation_duration << std::endl;
 
     if (callback_next) callback_next();
 }
