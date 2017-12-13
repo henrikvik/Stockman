@@ -6,7 +6,7 @@
 
 namespace Graphics {
 
-    Graphics::ParticleRenderPass::ParticleRenderPass(
+    ParticleRenderPass::ParticleRenderPass(
             ID3D11RenderTargetView *output,
             ID3D11ShaderResourceView *lightGrid,
             ID3D11ShaderResourceView *lightIndexList,
@@ -22,7 +22,6 @@ namespace Graphics {
           m_LightBuffer(lightBuffer),
           m_ShadowMap(shadowMap)
     {
-        
     }
 
     void ParticleRenderPass::render() const
@@ -42,6 +41,7 @@ namespace Graphics {
 
     void ParticleRenderPass::update(float deltaTime)
     {
+
     }
 
     ParticleDepthRenderPass::ParticleDepthRenderPass(ID3D11DepthStencilView * depthStencil)

@@ -41,7 +41,7 @@ static void FillLightVec(std::vector<LightRenderInfo> &lights, std::string path)
     }
 }
 
-static void SubmitLights(std::vector<LightRenderInfo> &lights)
+static void SubmitLights(const std::vector<LightRenderInfo> &lights)
 {
     for (auto light : lights) {
         QueueRender(light);
@@ -137,16 +137,7 @@ void Map::update(float deltaTime)
         m_ChristmasPatternIndex = (m_ChristmasPatternIndex + 1) % m_ChristmasLightPattern.size();
 }
 
-    auto pattern = m_ChristmasLightPattern[m_ChristmasPatternIndex];
 
-    if (pattern & 0x1)
-        SubmitLights(m_RedBulbs);
-    if (pattern & 0x2)
-        SubmitLights(m_GreenBulbs);
-    if (pattern & 0x4)
-        SubmitLights(m_BlueBulbs);
-
-    SubmitLights(m_MapLights);
 
 #ifdef _DEBUG
     m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
@@ -161,6 +152,17 @@ void Map::update(float deltaTime)
 
 void Map::render() const
 {
+    auto pattern = m_ChristmasLightPattern[m_ChristmasPatternIndex];
+
+    if (pattern & 0x1)
+        SubmitLights(m_RedBulbs);
+    if (pattern & 0x2)
+        SubmitLights(m_GreenBulbs);
+    if (pattern & 0x4)
+        SubmitLights(m_BlueBulbs);
+
+    SubmitLights(m_MapLights);
+
     for (StaticObject* o : m_props)     o->render();
     for (LightObject* l : m_lights)     l->render();
     for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release

@@ -4,11 +4,11 @@
 
 namespace Graphics
 {
-    class ParticleDepthRenderPass : public RenderPass
+    class FancyDepthRenderPass : public RenderPass
     {
     public:
-        ParticleDepthRenderPass(ID3D11DepthStencilView *depthStencil);
-        virtual ~ParticleDepthRenderPass() {};
+        FancyDepthRenderPass(ID3D11DepthStencilView *depthStencil);
+        virtual ~FancyDepthRenderPass() {};
 
         virtual wchar_t* name() const override {
             return L"ParticleDepthRenderPass";
@@ -18,10 +18,10 @@ namespace Graphics
         virtual void update(float deltaTime) override;
     };
 
-    class ParticleRenderPass : public RenderPass
+    class FancyRenderPass : public RenderPass
     {
     public:
-        ParticleRenderPass(
+        FancyRenderPass(
             ID3D11RenderTargetView *output,
             ID3D11ShaderResourceView *lightGrid,
             ID3D11ShaderResourceView *lightIndexList,
@@ -29,15 +29,18 @@ namespace Graphics
             ID3D11ShaderResourceView *shadowMap,
             ID3D11Buffer *lightBuffer,
             ID3D11DepthStencilView *depthStencil);
-        virtual ~ParticleRenderPass() {};
+        virtual ~FancyRenderPass() {};
 
         virtual wchar_t* name() const override {
-            return L"ParticleRenderPass";
+            return L"FancyRenderPass";
         }
 
         virtual void render() const override;
         virtual void update(float deltaTime) override;
     private:
+        ID3D11ShaderResourceView *m_FontTexture;
+        DirectX::SpriteFont *m_Font;
+
         ID3D11RenderTargetView *m_Output;
 
         ID3D11ShaderResourceView *m_LightGrid;
