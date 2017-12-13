@@ -56,9 +56,3 @@ void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, floa
         }
     }
 }
-
-void EnemyChaser::updateAnimation(float deltaTime)
-{
-    animatedModel.set_transform(getModelTransformMatrix());
-    animatedModel.update(deltaTime*500000);
-}
