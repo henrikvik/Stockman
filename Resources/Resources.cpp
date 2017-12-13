@@ -83,6 +83,7 @@ namespace Resources
             if (strcmp(str, "Market_Tent") == 0) return Market_Tent;
             if (strcmp(str, "Mountain") == 0) return Mountain;
             if (strcmp(str, "Necromancer") == 0) return Necromancer;
+            if (strcmp(str, "NecromancerWithAnim") == 0) return NecromancerWithAnim;
             if (strcmp(str, "Present1") == 0) return Present1;
             if (strcmp(str, "Present2") == 0) return Present2;
             if (strcmp(str, "Rock1") == 0) return Rock1;
