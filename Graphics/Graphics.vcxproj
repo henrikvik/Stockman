@@ -37,6 +37,7 @@
     <ClCompile Include="include\Particles\Particle.cpp" />
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
+    <ClCompile Include="include\RenderPass\AORenderPass.cpp" />
     <ClCompile Include="include\RenderPass\FancyRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\FogRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\PostFXRenderPass.cpp" />
@@ -83,6 +84,7 @@
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\RenderInfo.h" />
     <ClInclude Include="include\CommonState.h" />
+    <ClInclude Include="include\RenderPass\AORenderPass.h" />
     <ClInclude Include="include\RenderPass\FancyRenderPass.h" />
     <ClInclude Include="include\RenderPass\FogRenderPass.h" />
     <ClInclude Include="include\RenderPass\PostFXRenderPass.h" />

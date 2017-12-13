@@ -110,6 +110,14 @@ namespace Resources
             throw "Could not find matching enum.";
         }
     }
+    namespace Particles
+    {
+        Files toEnum(const char * str)
+        {
+            if (strcmp(str, "SPLASH") == 0) return SPLASH;
+            throw "Could not find matching enum.";
+        }
+    }
     namespace Shaders
     {
         Files toEnum(const char * str)
@@ -140,6 +148,7 @@ namespace Resources
             if (strcmp(str, "SkyShader") == 0) return SkyShader;
             if (strcmp(str, "SnowShader") == 0) return SnowShader;
             if (strcmp(str, "SpriteShader") == 0) return SpriteShader;
+            if (strcmp(str, "SSAO") == 0) return SSAO;
             if (strcmp(str, "SSAOComputeShader") == 0) return SSAOComputeShader;
             if (strcmp(str, "SSAOGaussianBlurHorizontal") == 0) return SSAOGaussianBlurHorizontal;
             if (strcmp(str, "SSAOGaussianBlurVertical") == 0) return SSAOGaussianBlurVertical;

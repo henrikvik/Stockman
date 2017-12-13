@@ -34,8 +34,9 @@ namespace Graphics {
 		DirectX::SimpleMath::Vector3 getForward() const;
 		DirectX::SimpleMath::Matrix getView() const;
 		DirectX::SimpleMath::Matrix getProj() const;
-		float getFarPlane() const { return far_distance; };
-		ConstantBuffer<ShaderValues>* getBuffer();
+        float getNearPlane() const { return near_distance; };
+        float getFarPlane() const { return far_distance; };
+        ConstantBuffer<ShaderValues>* getBuffer();
 		ConstantBuffer<InverseMatrixes>* getInverseBuffer();
 
 		void update(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 forward, ID3D11DeviceContext* context);

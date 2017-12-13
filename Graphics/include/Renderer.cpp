@@ -14,6 +14,7 @@
 #include "CommonStates.h"
 #include "MainCamera.h"
 
+#include "RenderPass\AORenderPass.h"
 #include "RenderPass\ForwardPlusRenderPass.h"
 #include "RenderPass\DepthRenderPass.h"
 #include "RenderPass\LightCullRenderPass.h"
@@ -218,6 +219,57 @@ namespace Graphics
             SAFE_RELEASE(texture);
         }
 
+        {
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.Format = DXGI_FORMAT_R8G8_UNORM;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+            desc.Width = WIN_WIDTH / 2;
+            desc.Height = WIN_HEIGHT / 2;
+            desc.SampleDesc.Count = 1;
+            desc.MipLevels = 1;
+            desc.ArraySize = 2;
+
+            ID3D11Texture2D *texture = nullptr;
+            ThrowIfFailed(Global::device->CreateTexture2D(&desc, nullptr, &texture));
+
+            D3D11_RENDER_TARGET_VIEW_DESC renderDesc = {};
+            renderDesc.Format = DXGI_FORMAT_R8G8_UNORM;
+            renderDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+            renderDesc.Texture2DArray.ArraySize = 2;
+            renderDesc.Texture2DArray.FirstArraySlice = 0;
+            renderDesc.Texture2DArray.MipSlice = 1;
+
+            D3D11_SHADER_RESOURCE_VIEW_DESC resourceDesc = {};
+            resourceDesc.Format = DXGI_FORMAT_R8G8_UNORM;
+            resourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+            resourceDesc.Texture2DArray.ArraySize = 2;
+            resourceDesc.Texture2DArray.FirstArraySlice = 0;
+            resourceDesc.Texture2DArray.MipLevels = 1;
+            resourceDesc.Texture2DArray.MostDetailedMip = 1;
+
+            for (int i = 0; i < 2; i++)
+            {
+                resourceDesc.Texture2D.MostDetailedMip = i;
+                renderDesc.Texture2D.MipSlice = i;
+
+                ID3D11ShaderResourceView *srv = nullptr;
+                ID3D11RenderTargetView *rtv = nullptr;
+
+                ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &srv));
+                ThrowIfFailed(Global::device->CreateRenderTargetView(texture, &renderDesc, &rtv));
+
+                m_BloomRTVMipChain.push_back(rtv);
+                m_BloomSRVMipChain.push_back(srv);
+            }
+
+            resourceDesc.Texture2D.MipLevels = 1;
+            resourceDesc.Texture2D.MostDetailedMip = 1;
+            renderDesc.Texture2D.MipSlice = 0;
+            ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_BloomSRV));
+
+            SAFE_RELEASE(texture);
+        }
+
 #pragma endregion
         HRESULT hr = Global::context->QueryInterface(IID_PPV_ARGS(&DebugAnnotation));
         if (!SUCCEEDED(hr)) {
@@ -251,6 +303,7 @@ namespace Graphics
 				{*Global::mainCamera->getBuffer(), grassTimeBuffer },
 				depthStencil
 			),
+            newd AORenderPass(depthStencil, m_ViewSpaceDepthSlicesSRV, m_ViewSpaceDepthSlicesRTV),
 			newd ShadowRenderPass(
 				{},
 				{
@@ -316,7 +369,7 @@ namespace Graphics
                 *sun.getGlobalLightBuffer(),
                 depthStencil
             ),
-            newd SSAORenderPass({}, { depthStencil, normalMap, ssaoOutput }, {ssaoOutput}, {}, nullptr),
+            //newd SSAORenderPass({}, { depthStencil, normalMap, ssaoOutput }, {ssaoOutput}, {}, nullptr),
             newd GlowRenderPass(
                 m_BloomSRV,
                 m_BloomSRVMipChain,
