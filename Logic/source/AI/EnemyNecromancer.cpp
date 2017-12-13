@@ -98,15 +98,23 @@ void EnemyNecromancer::createAbilities()
     data.cooldown = 8000.f;
     data.randomChanche = 5;
 
-    ab2ProjData.meshID = Resources::Models::Ammocrystal;
-    ab2ProjData.speed = SPEED_AB1;
+
+    static Graphics::ParticleEffect DamageTrail = Graphics::FXSystem->getEffect("DamageProjTrail");
+    ab2ProjData.effect = DamageTrail;
+    ab2ProjData.hasEffect = true;
+    ab2ProjData.effectVelocity = true;
+    ab2ProjData.effectActivated = true;
+
+
+    //ab2ProjData.meshID = Resources::Models::Ammocrystal;
+    ab2ProjData.speed = 0;
     ab2ProjData.ttl = 25000.f;
     ab2ProjData.gravityModifier = 0.f;
     ab2ProjData.enemyBullet = true;
     ab2ProjData.damage = getBaseDamage();
     ab2ProjData.scale = 1.5f;
-    ab2ProjData.shouldRender = true;
-    ab2ProjData.modelOffset = { 0.1f, -1.75f, 0.1f };
+    //ab2ProjData.shouldRender = true;
+    //ab2ProjData.modelOffset = { 0.1f, -1.75f, 0.1f };
 
     auto onUse2 = [&](Player &player, Ability &ab) -> void {
         increaseCallbackEntities();
@@ -127,6 +135,7 @@ void EnemyNecromancer::createAbilities()
 
         if (ab.getCurrentDuration() <= 0.f)
         {
+            ab2Projectile->getProjectileData().speed = SPEED_AB1;
             ab2Projectile->start((player.getPositionBT() - ab2Projectile->getPositionBT()).normalized(), getStatusManager());
         }
     };
