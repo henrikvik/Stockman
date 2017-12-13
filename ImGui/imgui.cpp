@@ -130,7 +130,7 @@
      // TODO: Fill others settings of the io structure later.
 
      // Load texture atlas (there is a default font so you don't need to care about choosing a font yet)
-     unsigned char* pixels;
+     unsigned char* pixels;ss
      int width, height;
      io.Fonts->GetTexDataAsRGBA32(pixels, &width, &height);
      // TODO: At this points you've got the texture data and you need to upload that your your graphic system:

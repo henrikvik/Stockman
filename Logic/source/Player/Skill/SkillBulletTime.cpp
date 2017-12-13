@@ -11,7 +11,7 @@ using namespace Logic;
 #define BULLET_TIME_SLOW_DOWN_DURATION 1000.f
 #define BULLET_TIME_SPEED_UP_DURATION 1000.f
 
-SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData)
+SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, ProjectileData& pData)
 	: Skill(BULLET_TIME_CD, BULLET_TIME_DURATION)
 {
 	m_pData = newd ProjectileData(pData);

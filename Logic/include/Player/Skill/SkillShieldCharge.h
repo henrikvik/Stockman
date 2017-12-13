@@ -16,6 +16,9 @@
 namespace Logic
 {
     class Entity;
+    class ProjectileManager;
+    class Projectile;
+    struct ProjectileData;
 
 	class SkillShieldCharge : public Skill
 	{
@@ -27,8 +30,15 @@ namespace Logic
 		float m_chargePower;
         float m_fovM;               // FOV multiplier for display-effect
         float m_oldSpeed;
+        ProjectileData* m_pData;
+        Projectile* m_projectile;
+
+        std::function<Projectile*(ProjectileData& pData, btVector3 position,
+            btVector3 forward, Entity& shooter)> SpawnProjectile;
+
+        void setSpawnFunctions(ProjectileManager &projManager);
 	public:
-		SkillShieldCharge();
+		SkillShieldCharge(ProjectileManager* projectileManager, ProjectileData& pData);
 		~SkillShieldCharge();
 
         bool onUse(btVector3 forward, Entity& shooter);

@@ -56,6 +56,10 @@ namespace Graphics
 
     void Graphics::SSAORenderPass::render() const
     {
+
+        auto y = (int)ceil(WIN_HEIGHT / 2.f / 16.f);
+        auto x = (int)ceil(WIN_WIDTH / 2.f / 16.f);
+
         if (!enabled)
             return;
 
@@ -82,7 +86,7 @@ namespace Graphics
         Global::context->CSSetShaderResources(0, 3, srvs);
         Global::context->CSSetUnorderedAccessViews(0, 1, &uavs[0], nullptr);
         Global::context->CSSetConstantBuffers(0, 1, *Global::mainCamera->getInverseBuffer());
-        Global::context->Dispatch(40, 23, 1);
+        Global::context->Dispatch(x, y, 1);
 
         Global::context->CSSetShaderResources(0, 3, Global::nulls);
 
@@ -90,14 +94,14 @@ namespace Graphics
         Global::context->CSSetShader(blurHorizontal, nullptr, 0);
         Global::context->CSSetUnorderedAccessViews(0, 1, ssaoOutputSwap, nullptr);
         Global::context->CSSetShaderResources(0, 1, &resources[2]);
-        Global::context->Dispatch(40, 23, 1);
+        Global::context->Dispatch(x, y, 1);
 
         Global::context->CSSetShaderResources(0, 1, Global::nulls);
 
         Global::context->CSSetShader(blurVertical, nullptr, 0);
         Global::context->CSSetUnorderedAccessViews(0, 1, &uavs[0], nullptr);
         Global::context->CSSetShaderResources(0, 1, ssaoOutputSwap);
-        Global::context->Dispatch(40, 23, 1);
+        Global::context->Dispatch(x, y, 1);
 
         Global::context->CSSetShaderResources(0, 2, Global::nulls);
         Global::context->CSSetUnorderedAccessViews(0, 1, Global::nulls, nullptr);

@@ -47,7 +47,6 @@ namespace Logic
 
 			Behavior *m_behavior;
 
-            AnimatedModel animatedModel;
             float maxAnimationTime;
 
             bool m_stunned;
@@ -55,6 +54,8 @@ namespace Logic
 
             float m_blinkTimer;
         protected:
+            AnimatedModel animatedModel;
+
             LightRenderInfo light;
 		public:	
 			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE, STAY };
@@ -75,6 +76,7 @@ namespace Logic
             virtual void onSpawn() {};
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
+            void onEffectAdd(int stacks, Effect const &effect);
             void onEffectEnd(int stacks, Effect const &effect);
 
             Projectile* shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale, bool sensor = false);

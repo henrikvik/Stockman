@@ -58,10 +58,16 @@ namespace Logic
         void update(int x, int y, float deltaTime);
         void render() const;
 
+        void up();
+        void down();
+
     private:
+        void updateScrolling();
+
         bool                    m_requestDone;
         std::vector<Entry*>     m_entry;
         std::vector<EntrySpot*> m_spot;
+        int start;
     };
 }
 

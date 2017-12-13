@@ -79,7 +79,7 @@ void FPSRenderer::updateFPS(float deltaTime)
 
 void Logic::FPSRenderer::render() const
 {
-    QueueRender(renderInfo);
+    //QueueRender(renderInfo);
 }
 
 TextRenderInfo Logic::FPSRenderer::getTextRenderInfo() const

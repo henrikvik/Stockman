@@ -12,6 +12,7 @@
 
 #include <Graphics\include\Structs.h>
 #include <Projectile\ProjectileStruct.h>
+#include <Singletons\DebugWindow.h>
 
 using namespace Logic;
 
@@ -40,6 +41,10 @@ void WeaponManager::init(ProjectileManager* projectileManager)
     m_Upgrades.fireDamageModifier = 0;
 
     m_ammoPickedUp = 0;
+
+    EnableWeapons = true;
+    RegisterCommand("TOGGLEWEAPONS", { EnableWeapons = !EnableWeapons; return "TOGGLEWEAPONS"; });
+    
 }
 
 void WeaponManager::clear()
@@ -188,7 +193,10 @@ void WeaponManager::onUpgradeAdd(int stacks, Upgrade const & upgrade)
 
 void WeaponManager::render() const
 {
-    m_currentWeapon->weaponModel->render();
+    if (EnableWeapons)
+    {
+        m_currentWeapon->weaponModel->render();
+    }
 }
 
 void WeaponManager::initializeWeapons(ProjectileManager* projectileManager)

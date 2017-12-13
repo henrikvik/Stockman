@@ -26,6 +26,12 @@ using namespace Logic;
 #define THIRD_PLACE_COLOR   DirectX::SimpleMath::Color(0.3984375, 0.18359375, 0.12890625, 1)
 #define OTHER_PLACE_COLOR   DirectX::SimpleMath::Color(1, 1, 1, 1)
 
+// Button Scroll Amount
+#define BUTTON_SCROLL_AMOUNT 10
+
+// Scrolling value
+#define SCROLLING_VALUE_DIV 120
+
 iMenuHighscore::iMenuHighscore(iMenu::MenuGroup group)
     : iMenu(group) 
 {
@@ -68,6 +74,7 @@ iMenuHighscore::iMenuHighscore(iMenu::MenuGroup group)
 
         m_spot.push_back(spot);
     }
+    start = 0;
 }
 
 iMenuHighscore::~iMenuHighscore() 
@@ -195,6 +202,8 @@ void iMenuHighscore::update(int x, int y, float deltaTime)
 
     if (!m_isFading) if (!m_requestDone) { m_requestDone = true; buildHighscore(); }
 
+    updateScrolling();
+
 // Debugging purposes
 #if ENTRY_POS_EDIT
     static float posx, posy, posYoffset, col2, col3, col4, col5;
@@ -219,25 +228,6 @@ void iMenuHighscore::update(int x, int y, float deltaTime)
     }
 #endif    
 
-    static int start        = 0;
-    static boolean pressed  = true;
-    if (!pressed && DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Down))
-    {
-        start += 10;
-        pressed = true;
-        buildSpots(start);
-    }
-    else if (!pressed && DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Up))
-    {
-        start -= 10;
-        if (start < 0) start = 0;
-        pressed = true;
-        buildSpots(start);
-    }
-    
-    if (!DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Up) &&
-        !DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::Down))
-        pressed = false;
 }
 
 void iMenuHighscore::render() const
@@ -255,5 +245,35 @@ void iMenuHighscore::render() const
             QueueRender(spot->renderInfoTime);
             QueueRender(spot->renderInfoKills);
         }
+    }
+}
+
+void iMenuHighscore::up()
+{
+    start -= BUTTON_SCROLL_AMOUNT;
+    if (start < 0) start = 0;
+    else buildSpots(start);
+}
+
+void iMenuHighscore::down()
+{
+    start += BUTTON_SCROLL_AMOUNT;
+    if (start > m_entry.size()) start -= BUTTON_SCROLL_AMOUNT;
+    else buildSpots(start);
+}
+
+void iMenuHighscore::updateScrolling()
+{
+    static int prevWheelValue = DirectX::Mouse::Get().GetState().scrollWheelValue / SCROLLING_VALUE_DIV;
+    if (DirectX::Mouse::Get().GetState().scrollWheelValue != prevWheelValue)
+    {
+        int newValue = DirectX::Mouse::Get().GetState().scrollWheelValue / SCROLLING_VALUE_DIV;
+        start += prevWheelValue - newValue;
+
+        if (start < 0)                          start = 0;
+        else if (start > m_entry.size() - 1)    start = m_entry.size() - 1;
+        else                                    buildSpots(start);
+
+        prevWheelValue = newValue;
     }
 }

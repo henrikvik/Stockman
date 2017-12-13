@@ -42,7 +42,10 @@ Targets PS(Fragment fragment)
 
     float3 color = diffuse.rgb;
 
-    targets.color = float4(lightSum * color * fragment.color, 1); //500~
+    color = lightSum * color * fragment.color;
+    color = lerp(color, FOG_COLOR, saturate(distance(camera.position.xyz, fragment.position.xyz) / 130.f));
+
+    targets.color = float4(color, 1); //500~
 
     float3 glow = 2.3 * glowTexture.Sample(linearClamp, fragment.uv);
     float luminance = dot(float3(0.2126, 0.7152, 0.0722), glow);

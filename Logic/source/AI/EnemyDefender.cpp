@@ -31,10 +31,18 @@ EnemyDefender::EnemyDefender(btRigidBody *body, btVector3 halfExtent)
     light.range = 15.0f;
 
     m_meleeIndicators.resize(INDICATORS);
+    addCallback(ON_DEATH, [&](CallbackData &data) -> void {
+        for (Projectile *pj : m_meleeIndicators) {
+            if (pj) {
+                pj->setDead(true);
+            }
+        }
+    });
 }
 
 EnemyDefender::~EnemyDefender()
 {
+
 }
 
 void EnemyDefender::onSpawn()
@@ -110,6 +118,12 @@ void EnemyDefender::createAbilities()
             diff.setY(0);
             player.getCharController()->applyImpulse(diff.normalized() * THROW_STRENGTH);
             player.getStatusManager().addStatus(StatusManager::SHIELD_CHARGE, 1); // test
+
+            for (Projectile *pj : m_meleeIndicators) {
+                if (pj) {
+                    pj->setDead(true);
+                }
+            }
         }
     }, [&](Player &player, Ability &ab) -> void { // on use
         getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
@@ -129,16 +143,17 @@ void EnemyDefender::createAbilities()
         pdata.scale = 1.f;
         pdata.isSensor = true;
         pdata.type = ProjectileTypeDefenderShield;
-        constexpr float piece = 3.14f / INDICATORS * 2;
 
         for (int i = 0; i < INDICATORS; i++) {
             Projectile *pj = SpawnProjectile(pdata, btVector3(0, 0, 0), btVector3(0, 0, 0), *this);
             m_meleeIndicators[i] = pj;
-            increaseCallbackEntities();
-            pj->addCallback(ON_DESTROY, [=](CallbackData &data) {
-                m_meleeIndicators[i] = nullptr;
-                decreaseCallbackEntities();
-            });
+            if (pj) {
+                increaseCallbackEntities();
+                pj->addCallback(ON_DESTROY, [=](CallbackData &data) {
+                    m_meleeIndicators[i] = nullptr;
+                    decreaseCallbackEntities();
+                });
+            }
         }
     });
 }
@@ -192,6 +207,12 @@ void EnemyDefender::onDefenseCollision(Projectile * pj)
     }
 
     pj->setDead(true);
+}
+
+void EnemyDefender::damage(int damage)
+{
+    if (m_projectiles.empty())
+        Enemy::damage(damage);
 }
 
 void EnemyDefender::updateSpecific(Player &player, float deltaTime)

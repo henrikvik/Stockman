@@ -10,7 +10,7 @@
 using namespace Logic;
 
 #define POST_LOAD_MESSAGE               L"Press Space to Continue"  // Will fade in, after the loading is completed
-#define POST_LOAD_MESSAGE_POS_X         0.01  
+#define POST_LOAD_MESSAGE_POS_X         0.35  
 #define POST_LOAD_MESSAGE_POS_Y         0.92  
 #define POST_LOAD_MESSAGE_FADE_TIME     3000.f                      // The time to fade-in the "Press Space to Continue" text
 
