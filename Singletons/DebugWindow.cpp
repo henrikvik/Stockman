@@ -329,7 +329,7 @@ void DebugWindow::registerCommand(const char* command, CommandFunction function)
 {
     int result = -1;
     // check if a command with same name exists
-    for (size_t i = 0; i < m_command.size(); i++)
+    for (size_t i = 0; i < m_command.size() && result == -1; i++)
     {
         if (std::strcmp(command, m_command[i]) == 0)
             result = i;
