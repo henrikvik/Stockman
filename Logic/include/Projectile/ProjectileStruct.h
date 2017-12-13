@@ -38,6 +38,7 @@ namespace Logic
 		float ttl;					// Time to live in milisec
 
         LightRenderInfo lightInfo;
+        FancyRenderInfo fancy;
 
 		ProjectileType type;
 		Resources::Models::Files meshID;
@@ -56,7 +57,7 @@ namespace Logic
         btVector3 modelOffset;
 
         ProjectileData() : hasEffect(false), effectActivated(false), effectVelocity(false), effect({}), damage(1.f), scale(1.f),
-            mass(1.f), speed(1.f), gravityModifier(0.f), ttl(1000), meshID(Resources::Models::UnitCube), materialID(1),
+            mass(1.f), fancy({}), speed(1.f), gravityModifier(0.f), ttl(1000), meshID(Resources::Models::UnitCube), materialID(1),
             type(ProjectileTypeNormal), isSensor(false), enemyBullet(false), dmgFallOff(false), modelOffset({ 0.f, 0.f, 0.f }) {}
         ProjectileData(const char *fx, bool effectVelocity, bool effectActivated, float inDamage, float inScale,
             float inMass, float inSpeed, float inGravityModifier, float inTTL, LightRenderInfo inLightInfo,

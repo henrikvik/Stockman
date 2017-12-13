@@ -87,6 +87,18 @@ struct LightRenderInfo : RenderInfo
 
 SET_INSTANCE_CAP(LightRenderInfo, 254)
 
+struct FancyRenderInfo : RenderInfo
+{
+    FancyRenderInfo() : position(DirectX::SimpleMath::Vector3{}), scale(1.f), color({ 1, 1, 1, 1 }), text(L"") { }
+
+    std::wstring text;
+    DirectX::SimpleMath::Vector3 position;
+    float scale;
+    DirectX::SimpleMath::Color color;
+};
+
+SET_INSTANCE_CAP(FancyRenderInfo, 254)
+
 struct SpecialEffectRenderInfo : RenderInfo
 {
     enum SpecialEffect { BulletTime, Snow, screenShake, DoF, screenBounce, Tint };
