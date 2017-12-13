@@ -85,12 +85,17 @@ void FancyRenderPass::render() const
     );
 
     for (auto &info : RenderQueue::get().getQueue<FancyRenderInfo>()) {
-        auto pos = TransformScreen(view * proj, info.position, nullptr);// Vector3::Transform(info.position, proj * view);
-        //auto pos = Vector3::Transform(info.position, view * proj);
-        pos.x = roundf(pos.x);
-        pos.y = roundf(pos.y);
+
         auto origin = (DirectX::XMVECTOR)m_Font->MeasureString(info.text.c_str());
         origin = Vector2(origin) * Vector2{ 0.5f, 0.5f };
+
+        bool clip = false;
+        auto pos = TransformScreen(view * proj, info.position, &clip);// Vector3::Transform(info.position, proj * view);
+                                                                        //auto pos = Vector3::Transform(info.position, view * proj);
+        if (clip) continue;
+
+        pos.x = roundf(pos.x);
+        pos.y = roundf(pos.y);
 
         auto maxdist = 100.f;
         auto dist = (info.position - Global::mainCamera->getPos()).Length();
