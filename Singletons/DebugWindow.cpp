@@ -327,12 +327,24 @@ int DebugWindow::TextEditCallback(ImGuiTextEditCallbackData * data)
 
 void DebugWindow::registerCommand(const char* command, CommandFunction function)
 {
-    auto result = std::find_if(m_command.begin(), m_command.end(), [command](const char*a) {
-        return std::strcmp(command, a) == 0;
-    });
-
-    if (result == m_command.end()) {
-        m_command.push_back(command);
-        m_functions.push_back(function);
+    int result = -1;
+    // check if a command with same name exists
+    for (size_t i = 0; i < m_command.size(); i++)
+    {
+        if (std::strcmp(command, m_command[i]) == 0)
+            result = i;
     }
+
+    // If command already found remove the old one
+    if (result != -1)
+    {
+        std::swap(m_command[result], m_command[m_command.size() - 1]);
+        m_command.pop_back();
+        std::swap(m_functions[result], m_functions[m_functions.size() - 1]);
+        m_functions.pop_back();
+    }
+
+    // add new command
+    m_command.push_back(command);
+    m_functions.push_back(function);
 }
