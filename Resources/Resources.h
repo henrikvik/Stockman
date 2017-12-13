@@ -51,11 +51,13 @@ namespace Resources
         {
             enum Files
             {
+                Stock_Map,
                 Stock_Map_V6,
                 Test_Map
             };
             const std::map<Files, const char *> Paths =
             {
+                {Stock_Map, R"(..\Resources\Maps\OLD\Stock_Map.toml)"},
                 {Stock_Map_V6, R"(..\Resources\Maps\OLD\Stock_Map_V6.toml)"},
                 {Test_Map, R"(..\Resources\Maps\OLD\Test_Map.toml)"}
             };
@@ -118,10 +120,12 @@ namespace Resources
             Small_Crate,
             Snow,
             Snow_Heap,
+            Snow_Heap2,
             Spear,
             Staff,
             StaticSummon,
             Stone_Decoration,
+            Stone_Decoration2,
             SummonUnitWithAnim,
             Table,
             Tablet1,
@@ -184,10 +188,12 @@ namespace Resources
             {Small_Crate, R"(..\Resources\Models\Small_Crate.hyb)"},
             {Snow, R"(..\Resources\Models\Snow.hyb)"},
             {Snow_Heap, R"(..\Resources\Models\Snow_Heap.hyb)"},
+            {Snow_Heap2, R"(..\Resources\Models\Snow_Heap2.hyb)"},
             {Spear, R"(..\Resources\Models\Spear.hyb)"},
             {Staff, R"(..\Resources\Models\Staff.hyb)"},
             {StaticSummon, R"(..\Resources\Models\StaticSummon.hyb)"},
             {Stone_Decoration, R"(..\Resources\Models\Stone_Decoration.hyb)"},
+            {Stone_Decoration2, R"(..\Resources\Models\Stone_Decoration2.hyb)"},
             {SummonUnitWithAnim, R"(..\Resources\Models\SummonUnitWithAnim.hyb)"},
             {Table, R"(..\Resources\Models\Table.hyb)"},
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
