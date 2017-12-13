@@ -15,7 +15,7 @@ Graphics::GUIRenderPass::GUIRenderPass(std::initializer_list<ID3D11RenderTargetV
     , alphabuffer(CpuAccess::Write, sizeof(float) * INSTANCE_CAP(float))
     , offsetBuffer(Global::device)
 {
-    this->sBatch = std::make_unique<DirectX::SpriteBatch>(Global::context);
+    Global::batch = newd DirectX::SpriteBatch(Global::context);
 
     for (auto & font : Resources::Fonts::Paths)
     {
@@ -29,7 +29,7 @@ Graphics::GUIRenderPass::GUIRenderPass(std::initializer_list<ID3D11RenderTargetV
 
 Graphics::GUIRenderPass::~GUIRenderPass()
 {
-    sBatch.reset();
+    delete Global::batch;
     for (auto & font : fonts)
     {
         font.second.reset();
@@ -260,24 +260,24 @@ void Graphics::GUIRenderPass::updateBounce(float deltaTime)
 //render the queued text
 void Graphics::GUIRenderPass::textRender() const
 {
-    sBatch->Begin(DirectX::SpriteSortMode_Deferred);
+    Global::batch->Begin(DirectX::SpriteSortMode_Deferred);
     for (auto & info : RenderQueue::get().getQueue<TextRenderInfo>())
     {
         if (isDrawableString(info.text))
         {
             if (info.isMoveable || affectEverything)
             {
-                fonts.at(info.font)->DrawString(sBatch.get(), info.text.c_str(), info.position + positionOffset, info.color);
+                fonts.at(info.font)->DrawString(Global::batch, info.text.c_str(), info.position + positionOffset, info.color);
             }
             else 
             {
-                fonts.at(info.font)->DrawString(sBatch.get(), info.text.c_str(), info.position, info.color);
+                fonts.at(info.font)->DrawString(Global::batch, info.text.c_str(), info.position, info.color);
             }
             
         }
         
     }
-    sBatch->End();
+    Global::batch->End();
 }
 
 //checks fow unallowed characters that chrashed the text draw

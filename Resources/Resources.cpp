@@ -93,10 +93,12 @@ namespace Resources
             if (strcmp(str, "Small_Crate") == 0) return Small_Crate;
             if (strcmp(str, "Snow") == 0) return Snow;
             if (strcmp(str, "Snow_Heap") == 0) return Snow_Heap;
+            if (strcmp(str, "Snow_Heap2") == 0) return Snow_Heap2;
             if (strcmp(str, "Spear") == 0) return Spear;
             if (strcmp(str, "Staff") == 0) return Staff;
             if (strcmp(str, "StaticSummon") == 0) return StaticSummon;
             if (strcmp(str, "Stone_Decoration") == 0) return Stone_Decoration;
+            if (strcmp(str, "Stone_Decoration2") == 0) return Stone_Decoration2;
             if (strcmp(str, "SummonUnitWithAnim") == 0) return SummonUnitWithAnim;
             if (strcmp(str, "Table") == 0) return Table;
             if (strcmp(str, "Tablet1") == 0) return Tablet1;

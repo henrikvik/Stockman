@@ -25,6 +25,7 @@
 #include "RenderPass\DepthOfFieldRenderPass.h"
 #include "RenderPass\SnowRenderPass.h"
 #include "RenderPass\PostFXRenderPass.h"
+#include "RenderPass\FancyRenderPass.h"
 #include "RenderPass\DebugRenderPass.h"
 #include "RenderPass\FogRenderPass.h"
 
@@ -335,6 +336,15 @@ namespace Graphics
                     *sun.getLightMatrixBuffer(),
                     *sun.getGlobalLightBuffer()
                 },
+                depthStencil
+            ),
+            newd FancyRenderPass(
+                fakeBuffers,
+                lightOpaqueGridSRV,
+                lightOpaqueIndexList,
+                lightsNew,
+                shadowMap,
+                *sun.getGlobalLightBuffer(),
                 depthStencil
             ),
             newd PostFXRenderPass(

@@ -105,6 +105,8 @@ void EnemyNecromancer::createAbilities()
     ab2ProjData.enemyBullet = true;
     ab2ProjData.damage = getBaseDamage();
     ab2ProjData.scale = 1.5f;
+    ab2ProjData.shouldRender = true;
+    ab2ProjData.modelOffset = { 0.1f, -1.75f, 0.1f };
 
     auto onUse2 = [&](Player &player, Ability &ab) -> void {
         increaseCallbackEntities();

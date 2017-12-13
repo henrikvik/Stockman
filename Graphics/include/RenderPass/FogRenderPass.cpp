@@ -30,5 +30,5 @@ void Graphics::FogRenderPass::update(float deltaTime)
 
 wchar_t * Graphics::FogRenderPass::name() const
 {
-	return nullptr;
+	return L"FogRenderPass";
 }
