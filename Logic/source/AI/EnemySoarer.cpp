@@ -33,7 +33,8 @@ EnemySoarer::EnemySoarer(btRigidBody *body, btVector3 halfExtent)
 
     getBehavior()->setSteeringSpeed(getBehavior()->getSteeringSpeed() * STEERING_MOD);
 
-    getAnimatedModel().set_next("Fly_Baked_F");
+	getAnimatedModel().set_next("Fly_Baked_F");
+	getAnimatedModel().set_delta_multiplier(1.f);
 }
 
 EnemySoarer::~EnemySoarer()
