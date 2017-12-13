@@ -15,7 +15,7 @@ const float EnemyNecromancer::BASE_SPEED = 7.5f;
 
 EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
     : Enemy(Resources::Models::NecromancerWithAnim, body, halfExtent, MAX_HP, BASE_DAMAGE,
-        BASE_SPEED, EnemyType::NECROMANCER, 0, { 0.f, 0.5f, 0.f }) {
+        BASE_SPEED, EnemyType::NECROMANCER, 0, { 0.f, 0.2f, 0.f }) {
     setBehavior(RANGED);
     addCallback(ON_DEATH, [&](CallbackData data) -> void {
         ComboMachine::Get().kill(SCORE);
