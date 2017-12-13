@@ -1,7 +1,7 @@
 	#pragma once
 
-#define WIN_WIDTH 1920
-#define WIN_HEIGHT 1080
+#define WIN_WIDTH 1280
+#define WIN_HEIGHT 720
 
 #define SAFE_RELEASE(p) { if ( (p) && (p) != nullptr ) { (p)->Release(); (p) = 0; } }
 
