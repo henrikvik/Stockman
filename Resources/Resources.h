@@ -51,11 +51,13 @@ namespace Resources
         {
             enum Files
             {
+                Stock_Map,
                 Stock_Map_V6,
                 Test_Map
             };
             const std::map<Files, const char *> Paths =
             {
+                {Stock_Map, R"(..\Resources\Maps\OLD\Stock_Map.toml)"},
                 {Stock_Map_V6, R"(..\Resources\Maps\OLD\Stock_Map_V6.toml)"},
                 {Test_Map, R"(..\Resources\Maps\OLD\Test_Map.toml)"}
             };
@@ -109,6 +111,7 @@ namespace Resources
             Market_Tent,
             Mountain,
             Necromancer,
+            NecromancerWithAnim,
             Present1,
             Present2,
             Rock1,
@@ -175,6 +178,7 @@ namespace Resources
             {Market_Tent, R"(..\Resources\Models\Market_Tent.hyb)"},
             {Mountain, R"(..\Resources\Models\Mountain.hyb)"},
             {Necromancer, R"(..\Resources\Models\Necromancer.hyb)"},
+            {NecromancerWithAnim, R"(..\Resources\Models\NecromancerWithAnim.hyb)"},
             {Present1, R"(..\Resources\Models\Present1.hyb)"},
             {Present2, R"(..\Resources\Models\Present2.hyb)"},
             {Rock1, R"(..\Resources\Models\Rock1.hyb)"},
