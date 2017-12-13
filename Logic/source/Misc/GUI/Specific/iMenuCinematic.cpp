@@ -146,7 +146,7 @@ void iMenuCinematic::updateEdit()
         !isKeyDown(DirectX::Keyboard::B))
         buttonPressed = false;
 
-    static float speed = 0.5f;
+    static float speed = 0.3f;
     if (isKeyDown(DirectX::Keyboard::A))
         position -= speed * DirectX::SimpleMath::Vector3(forward.x, 0, forward.z).Cross({ 0, 1, 0 });
     if (isKeyDown(DirectX::Keyboard::D))
