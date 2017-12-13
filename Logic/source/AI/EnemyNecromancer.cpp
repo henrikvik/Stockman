@@ -33,7 +33,7 @@ EnemyNecromancer::EnemyNecromancer(btRigidBody* body, btVector3 halfExtent)
     createAbilities();
 
     getSoundSource()->autoPlaySFX(Sound::SFX::ENEMY_AMBIENT_2, 6500, 500, 1.f, 0.10f);
-    light.color = DirectX::SimpleMath::Color(0.5f, 0.0f, 1.0f);
+    light.color = DirectX::SimpleMath::Color(0.58f, 0.98f, 0.2f);
     light.intensity = 0.8f;
     light.range = 7.0f;
 
@@ -106,14 +106,14 @@ void EnemyNecromancer::createAbilities()
     ab2ProjData.effectActivated = true;
 
 
-    //ab2ProjData.meshID = Resources::Models::Ammocrystal;
+    ab2ProjData.meshID = Resources::Models::House1;
     ab2ProjData.speed = 0;
     ab2ProjData.ttl = 25000.f;
     ab2ProjData.gravityModifier = 0.f;
     ab2ProjData.enemyBullet = true;
     ab2ProjData.damage = getBaseDamage();
     ab2ProjData.scale = 1.5f;
-    //ab2ProjData.shouldRender = true;
+    ab2ProjData.shouldRender = false;
     //ab2ProjData.modelOffset = { 0.1f, -1.75f, 0.1f };
 
     auto onUse2 = [&](Player &player, Ability &ab) -> void {

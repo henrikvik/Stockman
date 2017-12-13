@@ -412,19 +412,20 @@ namespace Graphics
         lightInfo.range = 10;
         QueueRender(lightInfo);
 
-        QueueRender([](float dt) -> AnimatedRenderInfo
+       /* QueueRender([](float dt) -> AnimatedRenderInfo
         {
             static float time = 0;
             AnimatedRenderInfo info;
-            info.animationName = "Walk";
+            info.animationName = "Fly_Baked_F";
             info.animationTimeStamp = time;
-            info.model = Resources::Models::NecromancerWithAnim;
-            info.transform = SimpleMath::Matrix::CreateRotationY(-70.0f) * SimpleMath::Matrix::CreateScale(2.0f) * SimpleMath::Matrix::CreateTranslation(95.473f, 5.5f, 39.93985f);
+            info.model = Resources::Models::Gyro_Bomber;
+            info.transform = SimpleMath::Matrix::CreateRotationY(-70.0f) * SimpleMath::Matrix::CreateScale(1.0f) * SimpleMath::Matrix::CreateTranslation(95.473f, 5.5f, 39.93985f);
+
            
             time += dt;
-            if (time > 5) time = 0;
+            if (time > 3.0) time = 0;
             return info;
-        }(deltaTime));
+        }(deltaTime));*/
 
 		//QueueRender([]()
 		//{
