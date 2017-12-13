@@ -137,6 +137,8 @@ void Projectile::updateSpecific(float deltaTime)
     // Updating transform matrix for both the light and the model
     renderInfo.transform = getModelTransformMatrix();
     lightRenderInfo.position = DirectX::SimpleMath::Vector3(renderInfo.transform._41, renderInfo.transform._42, renderInfo.transform._43);
+    m_pData.fancy.position = lightRenderInfo.position;
+    m_pData.fancy.scale = m_pData.ttl / 2000.f;
 
     if (m_pData.hasEffect && m_pData.effectActivated) {
         auto pos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{}, renderInfo.transform);
@@ -364,6 +366,10 @@ void Logic::Projectile::setModelID(Resources::Models::Files modelId)
 
 void Logic::Projectile::render() const
 {
+    if (m_pData.fancy.scale != 0.f) {
+        QueueRender(m_pData.fancy);
+    }
+
     if (m_pData.shouldRender)
     {
         QueueRender(renderInfo);

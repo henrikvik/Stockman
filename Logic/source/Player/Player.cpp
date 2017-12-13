@@ -158,10 +158,7 @@ void Player::registerDebugCmds()
 
     win->registerCommand("LOG_NOCLIP", [&](std::vector<std::string> &para) -> std::string {
         m_noclip = !m_noclip;
-        if (m_noclip)
-            m_charController->setGravity({ 0.f, 0.f, 0.f }); // remove gravity
-        else {
-            m_charController->setGravity({ 0.f, -PLAYER_GRAVITY, 0.f });
+        if (!m_noclip) {
             // reset movement
             m_moveDir.setZero();
             m_moveSpeed = 0.f;
@@ -321,6 +318,11 @@ void Player::reset()
     m_damageTintTimer = 0.f;
     m_upgradeTintTimer = 0.f;
     m_pickupTintTimer = 0.f;
+    
+    m_noclip = false;
+    m_godMode = false;
+
+    resetTargeted();
 
     getStatusManager().clear();
     getStatusManager().addUpgrade(StatusManager::FIRE_UPGRADE);
@@ -476,6 +478,8 @@ void Player::takeDamage(int damage, bool damageThroughProtection)
             // Add invul time
             getStatusManager().addStatus(StatusManager::EFFECT_ID::INVULNERABLE, 1);
             
+
+
             SpecialEffectRenderInfo shake = {};
             shake.duration = 0.5f;
             shake.radius = 30.0f;
