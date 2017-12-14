@@ -1,4 +1,5 @@
 #include <AI\EnemyBossBaddie.h>
+#include <AI\Trigger\TriggerTrapExplosive.h>
 #include <Player\Player.h>
 
 #include <Projectile\Projectile.h>
@@ -17,13 +18,13 @@ using namespace Logic;
 
 #define NECRO_COUNT 3
 
-const float EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
+const float EnemyBossBaddie::PROJECTILE_SPEED = 27.5f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.6f,
             EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
             EnemyBossBaddie::PROJECTILE_SCALE = 7.5f;
 
 const int   EnemyBossBaddie::BASE_DAMAGE = 1,
-            EnemyBossBaddie::MAX_HP = 69690, // noise
+            EnemyBossBaddie::MAX_HP = 169690, // noise
             EnemyBossBaddie::SCORE = 150000,
             EnemyBossBaddie::INDICATORS = 12; // Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
@@ -35,6 +36,10 @@ const float EnemyBossBaddie::MELEE_RANGE = 30.f,
 const float EnemyBossBaddie::BASE_SPEED_P1 = 13.f,
             EnemyBossBaddie::BASE_SPEED_P2 = 16.f,
             EnemyBossBaddie::BASE_SPEED_P3 = 20.f;
+// extra var
+const float EnemyBossBaddie::BASE_WEAKNESS = 0.75f,
+            EnemyBossBaddie::MELEE_WEAKNESS = 1.1f,
+            EnemyBossBaddie::STUNNED_WEAKNESS = 1.5f;
 /*
     @author Lukas Westling
 
@@ -81,6 +86,10 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     light.intensity = 0.8f;
     light.range = 10.0f;
 
+    fancyAF.color = DirectX::Colors::White;
+    fancyAF.scale = 1.f;
+    fancyAF.text = L"";
+
     meleeIndicators.resize(INDICATORS);
 }
 
@@ -111,11 +120,13 @@ void EnemyBossBaddie::createAbilities()
     data.randomChanche = 40;
 
     auto onUse = [&](Player& player, Ability &ability) -> void {
+        fancyAF.text = L"Apocalypse!";
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_1, nullptr, true);
     };
 
     auto onTick = [&](Player& player, Ability &ability) -> void {
         if (ability.getCurrentDuration() <= 0.f) {
+            fancyAF.text = L"";
             Graphics::FXSystem->addEffect("DamageBoom", getPosition());
             getRigidBody()->getWorldTransform().setOrigin(player.getPositionBT() + btVector3(0.f, 100.f, 0.f));
         }
@@ -137,10 +148,14 @@ void EnemyBossBaddie::createAbilities()
             btVector3 to = player.getPositionBT() - getPositionBT();
             float len = to.length();
             Projectile *pj = shoot((to + btVector3{ 25.f * i - 25.f, 90, 0 }).normalize(),
-                nicePjData, PROJECTILE_SPEED + (len * 0.5f), 2.5f, 0.6f, true);
+                nicePjData, PROJECTILE_SPEED + (len * 0.4f), 2.5f, 0.6f, true);
 
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
-                SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
+            //    SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
+                SpawnTrigger(static_cast<int> (Trigger::TriggerType::TRAP_EXPLOSIVE),
+                    data.caller->getPositionBT(),
+                    {}
+                );
             });
         }
     };
@@ -168,7 +183,9 @@ void EnemyBossBaddie::createAbilities()
 
     auto onUse2 = [&](Player& player, Ability &ability) -> void {
         getSoundSource()->playSFX(Sound::SFX::BOSS_1_MELEE_USE);
+        fancyAF.text = L"Now you face your tragic end!";
         getAnimatedModel().set_next("Attack_Grunt", [&]() -> void {
+            setMoveSpeed(0.f);
             getAnimatedModel().set_delta_multiplier(getAnimatedModel().get_animation_time() * 1000.f / (ability.getCurrentDuration()) - 0.1f);
             getAnimatedModel().set_next("Run_Grunt", [&]() -> void {
                 getAnimatedModel().set_delta_multiplier(1.f);
@@ -206,13 +223,15 @@ void EnemyBossBaddie::createAbilities()
 
         if (ability.getCurrentDuration() <= 0.f)
         {
-            btVector3 to = player.getPositionBT() - getPositionBT() + btVector3(0.f, 250.f, 0.f);
+            fancyAF.text = L"";
+            btVector3 to = player.getPositionBT() - getPositionBT() ;
             if (to.length() < MELEE_RANGE)
             {
                 Sound::NoiseMachine::Get().playSFX(Sound::SFX::JUMP, nullptr, true);
                 player.takeDamage(getBaseDamage(), true); // shield charge wont save ya
-                to.setY(0);
-                player.getCharController()->applyImpulse(to.normalized() * MELEE_PUSHBACK); 
+                to.setY(250.f);
+                player.getCharController()->applyImpulse(to.normalized()
+                    * MELEE_PUSHBACK); 
             }
 
             for (Projectile *pj : meleeIndicators) {
@@ -365,7 +384,13 @@ void EnemyBossBaddie::shootAbility4(Player const &player, int pattern, float spe
 
 void EnemyBossBaddie::damage(int damage)
 {
-    float damageCalc = std::floor(damage * 0.75f) - 5;
+    float mod = 0.f;
+
+    if (stunned) mod = STUNNED_WEAKNESS;
+    else if (abilities[AbilityId::MELEE].isUsingAbility()) mod = MELEE_WEAKNESS;
+    else mod = BASE_WEAKNESS;
+
+    float damageCalc = std::floor(damage * mod) - 5;
     if (damageCalc > 0)
         Enemy::damage(damageCalc);
 }
@@ -375,7 +400,6 @@ void EnemyBossBaddie::useAbility(Player &target)
     if (!abilities[AbilityId::ONE].isUsingAbility())
     {
         abilities[AbilityId::MELEE].useAbility(target);
-        setMoveSpeed(0.f);
     }
 }
 
@@ -435,6 +459,9 @@ void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
     else {
         getRigidBody()->setGravity({ 0.f, -9.82f * 10.f, 0.f });
     }
+
+    // :D
+    fancyAF.position = getPosition() + DirectX::SimpleMath::Vector3(2.f, 3.f, 2.f);
 }
 
 void EnemyBossBaddie::updateDead(float deltaTime)
@@ -444,7 +471,9 @@ void EnemyBossBaddie::updateDead(float deltaTime)
 
 void EnemyBossBaddie::renderSpecific() const
 {
-   /* QueueRender(hpBar);*/
+    if (!fancyAF.text.empty()) {
+        QueueRender(fancyAF);
+    }
     hpBarOutline.render();
     hpBar.render();
 }

@@ -173,3 +173,8 @@ void Trigger::render() const
     QueueRender(animatedRenderInfo);
     QueueRender(light);
 }
+
+LightRenderInfo & Logic::Trigger::getLightRenderInfo()
+{
+    return light;
+}
