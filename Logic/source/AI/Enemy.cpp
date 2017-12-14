@@ -189,6 +189,7 @@ void Enemy::damage(int damage)
     data.fancy.color = DirectX::Colors::FloralWhite;
     data.fancy.text = std::to_wstring(damage);
     data.enemyBullet = true;
+    data.shouldRender = false;
 
     auto p = SpawnProjectile(data, getPositionBT(), { RandomGenerator::singleton().getRandomFloat(-0.5f, .5f), 1, RandomGenerator::singleton().getRandomFloat(-0.5f, .5f) }, *this);
     p->getStatusManager().addUpgrade(StatusManager::BOUNCE);

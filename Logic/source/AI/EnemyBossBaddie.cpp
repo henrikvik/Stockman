@@ -31,7 +31,7 @@ const int   EnemyBossBaddie::BASE_DAMAGE = 1,
 
 // melee var
 const float EnemyBossBaddie::MELEE_RANGE = 30.f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 5.f;
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.1f;
 // speed var
 const float EnemyBossBaddie::BASE_SPEED_P1 = 13.f,
             EnemyBossBaddie::BASE_SPEED_P2 = 16.f,
@@ -234,14 +234,13 @@ void EnemyBossBaddie::createAbilities()
         if (ability.getCurrentDuration() <= 0.f)
         {
             fancyAF.text = L"";
-            btVector3 to = player.getPositionBT() - getPositionBT() ;
+            btVector3 to = player.getPositionBT() - getPositionBT();
             if (to.length() < MELEE_RANGE)
             {
                 Sound::NoiseMachine::Get().playSFX(Sound::SFX::JUMP, nullptr, true);
                 player.takeDamage(getBaseDamage(), true); // shield charge wont save ya
                 to.setY(250.f);
-                player.getCharController()->applyImpulse(to.normalized()
-                    * MELEE_PUSHBACK); 
+                player.getCharController()->applyImpulse(to.normalized() * MELEE_PUSHBACK); 
             }
 
             for (Projectile *pj : meleeIndicators) {
@@ -420,7 +419,7 @@ void EnemyBossBaddie::useAbility(Player &target, int phase)
     abilities[AbilityId::ONE].useAbility(target);
     switch (phase)
     {
-        case 2:
+        case 0:
             abilities[AbilityId::TWO].useAbility(target);
             if (!abilities[AbilityId::MELEE].isUsingAbility())
                 setMoveSpeed(BASE_SPEED_P1);
@@ -431,7 +430,7 @@ void EnemyBossBaddie::useAbility(Player &target, int phase)
             if (!abilities[AbilityId::MELEE].isUsingAbility())
                 setMoveSpeed(BASE_SPEED_P2);
             break;
-        case 0:
+        case 2:
             abilities[AbilityId::FOUR].useAbility(target);
             abilities[AbilityId::FIVE].useAbility(target);
             if (!abilities[AbilityId::MELEE].isUsingAbility())
