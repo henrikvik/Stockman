@@ -125,7 +125,7 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
     // out of bounds insta kill
     if (getPositionBT().y() < MIN_Y || getPositionBT().length2() > 62500.f)
-        damage(m_health);
+        m_health = 0;
 
     // blinking when damaged
     if (m_blinkTimer > 0)
