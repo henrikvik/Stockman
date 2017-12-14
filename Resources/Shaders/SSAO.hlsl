@@ -16,17 +16,19 @@ VSOutput VS(uint id: SV_VertexID)
 
 cbuffer SSAOConstants : register(b0)
 {
-    float4x4 Projection;
-    float4x4 View;
-    float4 Kernel[32];
-    float2 NoiseScale;
+    int2 PerPassFullResCoordOffset;
     float2 NDCToViewMul;
     float2 NDCToViewAdd;
     float2 DepthUnpack;
     float2 CameraHalfFOV;
+    float2 HalfViewport;
     float2 Viewport;
     float2 Viewport2X;
+    float2 Viewport2X025;
+    float2 _Padding;
+    float4 PatternRotScaleMatrices[5];
 }
+
 
 float3 CalculateNormal(const float4 edges, float3 center, float3 left, float3 right, float3 top, float3 bottom)
 {
@@ -52,6 +54,15 @@ float3 CalculateNormal(const float4 edges, float3 center, float3 left, float3 ri
     return pixelNormal;
 }
 
+float4 CalculateEdges(const float center, const float left, const float right, const float top, const float bottom)
+{
+    float4 edges = float4(left, right, top, bottom) - center;
+    float4 edgesSlope= edges + edges.yxwz;
+    edges = min(abs(edges), abs(edgesSlope));
+
+    return saturate((1.3 - edges / (center * 0.040)));
+}
+
 float ScreenSpaceToViewSpaceDepth(float depth)
 {
     float linearizeMul = DepthUnpack.x;
@@ -70,26 +81,27 @@ float2 ScreenSpaceToViewSpacePosition(float2 screen, float depth)
     return float3(CameraHalfFOV.xy * depth * ScreenSpaceToClipSpacePositionXY(screen), depth);
 }
 
-float2 NDCToViewSpace(float2 ndc, float depth)
+float3 NDCToViewSpace(float2 ndc, float depth)
 {
     return float3((NDCToViewMul * ndc.xy + NDCToViewAdd) * depth, depth);
 }
 
 Texture2D Depth : register(t0);
 SamplerState PointClamp : register(s0);
-RWTexture2D<unorm float4> Normals : register(u0);
 
 struct Targets {
     float DepthInterleaveTL : SV_Target0;
     float DepthInterleaveBR : SV_Target1;
 };
 
+RWTexture2D<unorm float4> Normals : register(u2);
+
 Targets PS(VSOutput input)
 {
     Targets targets;
 
-    int2 base = ((int2)input.pos.xy) * 2;
-    float2 tl = (input.pos.xy - 0.25) * Viewport2X;
+    int2 base = ((int2)input.position.xy) * 2;
+    float2 tl = (input.position.xy - 0.25) * Viewport2X;
 
     int3 coord = int3(base, 0);
 
@@ -142,8 +154,8 @@ Targets PS(VSOutput input)
     posArea[1][0] = NDCToViewSpace(tl + Viewport * float2(0., -1.), depthArea[1][0]);
     posArea[2][3] = NDCToViewSpace(tl + Viewport * float2(1., 2.), depthArea[2][3]);
 
-    float n0 = CalculateNormal(e0, posArea[1][1], posArea[0][1], posArea[2][1], posArea[1][0], posArea[1][2]);
-    float n3 = CalculateNormal(e3, posArea[2][2], posArea[1][2], posArea[3][2], posArea[2][1], posArea[2][3]);
+    float3 n0 = CalculateNormal(e0, posArea[1][1], posArea[0][1], posArea[2][1], posArea[1][0], posArea[1][2]);
+    float3 n3 = CalculateNormal(e3, posArea[2][2], posArea[1][2], posArea[3][2], posArea[2][1], posArea[2][3]);
 
     Normals[coord + int2(0, 0)] = float4(n0 * 0.5 + 0.5, 0.);
     Normals[coord + int2(1, 1)] = float4(n3 * 0.5 + 0.5, 0.);

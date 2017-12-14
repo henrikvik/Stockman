@@ -152,6 +152,7 @@ namespace Resources
             if (strcmp(str, "SSAOComputeShader") == 0) return SSAOComputeShader;
             if (strcmp(str, "SSAOGaussianBlurHorizontal") == 0) return SSAOGaussianBlurHorizontal;
             if (strcmp(str, "SSAOGaussianBlurVertical") == 0) return SSAOGaussianBlurVertical;
+            if (strcmp(str, "SSAOGenerate") == 0) return SSAOGenerate;
             if (strcmp(str, "SSAOMerger") == 0) return SSAOMerger;
             throw "Could not find matching enum.";
         }

@@ -29,7 +29,7 @@
 #include "RenderPass\FancyRenderPass.h"
 #include "RenderPass\DebugRenderPass.h"
 #include "RenderPass\FogRenderPass.h"
-
+#include <vector>
 
 #include "Utility\DebugDraw.h"
 
@@ -221,7 +221,7 @@ namespace Graphics
 
         {
             D3D11_TEXTURE2D_DESC desc = {};
-            desc.Format = DXGI_FORMAT_R8G8_UNORM;
+            desc.Format = DXGI_FORMAT_R8_UNORM;
             desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
             desc.Width = WIN_WIDTH / 2;
             desc.Height = WIN_HEIGHT / 2;
@@ -233,39 +233,32 @@ namespace Graphics
             ThrowIfFailed(Global::device->CreateTexture2D(&desc, nullptr, &texture));
 
             D3D11_RENDER_TARGET_VIEW_DESC renderDesc = {};
-            renderDesc.Format = DXGI_FORMAT_R8G8_UNORM;
+            renderDesc.Format = DXGI_FORMAT_R8_UNORM;
             renderDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
             renderDesc.Texture2DArray.ArraySize = 2;
             renderDesc.Texture2DArray.FirstArraySlice = 0;
-            renderDesc.Texture2DArray.MipSlice = 1;
+            renderDesc.Texture2DArray.MipSlice = 0;
 
             D3D11_SHADER_RESOURCE_VIEW_DESC resourceDesc = {};
-            resourceDesc.Format = DXGI_FORMAT_R8G8_UNORM;
+            resourceDesc.Format = DXGI_FORMAT_R8_UNORM;
             resourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
             resourceDesc.Texture2DArray.ArraySize = 2;
             resourceDesc.Texture2DArray.FirstArraySlice = 0;
             resourceDesc.Texture2DArray.MipLevels = 1;
-            resourceDesc.Texture2DArray.MostDetailedMip = 1;
+            resourceDesc.Texture2DArray.MostDetailedMip = 0;
+
+            ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_AOSlicesSRV));
 
             for (int i = 0; i < 2; i++)
             {
-                resourceDesc.Texture2D.MostDetailedMip = i;
-                renderDesc.Texture2D.MipSlice = i;
+                resourceDesc.Texture2DArray.ArraySize = 1;
+                resourceDesc.Texture2DArray.FirstArraySlice = i;
+                renderDesc.Texture2DArray.ArraySize = 1;
+                renderDesc.Texture2DArray.FirstArraySlice = i;
 
-                ID3D11ShaderResourceView *srv = nullptr;
-                ID3D11RenderTargetView *rtv = nullptr;
-
-                ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &srv));
-                ThrowIfFailed(Global::device->CreateRenderTargetView(texture, &renderDesc, &rtv));
-
-                m_BloomRTVMipChain.push_back(rtv);
-                m_BloomSRVMipChain.push_back(srv);
+                ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_AOSliceSRV[i]));
+                ThrowIfFailed(Global::device->CreateRenderTargetView(texture, &renderDesc, &m_AOSliceRTV[i]));
             }
-
-            resourceDesc.Texture2D.MipLevels = 1;
-            resourceDesc.Texture2D.MostDetailedMip = 1;
-            renderDesc.Texture2D.MipSlice = 0;
-            ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_BloomSRV));
 
             SAFE_RELEASE(texture);
         }
@@ -303,7 +296,11 @@ namespace Graphics
 				{*Global::mainCamera->getBuffer(), grassTimeBuffer },
 				depthStencil
 			),
-            newd AORenderPass(depthStencil, m_ViewSpaceDepthSlicesSRV, m_ViewSpaceDepthSlicesRTV),
+            newd AORenderPass(
+                depthStencil,
+                std::vector<ID3D11ShaderResourceView *>(m_AOSliceSRV, m_AOSliceSRV + 2),
+                std::vector<ID3D11RenderTargetView *>(m_AOSliceRTV, m_AOSliceRTV + 2)
+            ),
 			newd ShadowRenderPass(
 				{},
 				{
@@ -350,6 +347,7 @@ namespace Graphics
 					foliageInstanceBuffer,
 					newAnimatedInstanceBuffer,
 					newAnimatedJointsBuffer,
+                    m_AOSlicesSRV
 				},
 				{
 					*Global::mainCamera->getBuffer(),

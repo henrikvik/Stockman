@@ -59,8 +59,10 @@ namespace Graphics
         ID3D11ShaderResourceView *m_ViewSpaceDepthSRV;
         ID3D11RenderTargetView *m_ViewSpaceDepthRTV;
 
-        ID3D11ShaderResourceView *m_ViewSpaceDepthSRVSlices[2];
-        ID3D11RenderTargetView *m_ViewSpaceDepthRTVSlices[2];
+        ID3D11ShaderResourceView *m_AOSlicesSRV;
+
+        ID3D11ShaderResourceView *m_AOSliceSRV[2];
+        ID3D11RenderTargetView *m_AOSliceRTV[2];
 
         ID3D11RenderTargetView * backBuffer;
 

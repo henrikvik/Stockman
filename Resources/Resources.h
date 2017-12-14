@@ -255,6 +255,7 @@ namespace Resources
             SSAOComputeShader,
             SSAOGaussianBlurHorizontal,
             SSAOGaussianBlurVertical,
+            SSAOGenerate,
             SSAOMerger
         };
         const std::map<Files, const char *> Paths =
@@ -289,6 +290,7 @@ namespace Resources
             {SSAOComputeShader, R"(..\Resources\Shaders\SSAOComputeShader.hlsl)"},
             {SSAOGaussianBlurHorizontal, R"(..\Resources\Shaders\SSAOGaussianBlurHorizontal.hlsl)"},
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
+            {SSAOGenerate, R"(..\Resources\Shaders\SSAOGenerate.hlsl)"},
             {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
         
