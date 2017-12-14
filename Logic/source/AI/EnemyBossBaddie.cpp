@@ -420,7 +420,7 @@ void EnemyBossBaddie::useAbility(Player &target, int phase)
     abilities[AbilityId::ONE].useAbility(target);
     switch (phase)
     {
-        case 0:
+        case 2:
             abilities[AbilityId::TWO].useAbility(target);
             if (!abilities[AbilityId::MELEE].isUsingAbility())
                 setMoveSpeed(BASE_SPEED_P1);
@@ -431,7 +431,7 @@ void EnemyBossBaddie::useAbility(Player &target, int phase)
             if (!abilities[AbilityId::MELEE].isUsingAbility())
                 setMoveSpeed(BASE_SPEED_P2);
             break;
-        case 2:
+        case 0:
             abilities[AbilityId::FOUR].useAbility(target);
             abilities[AbilityId::FIVE].useAbility(target);
             if (!abilities[AbilityId::MELEE].isUsingAbility())

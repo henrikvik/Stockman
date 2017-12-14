@@ -1,13 +1,13 @@
 {
 	"nrOfWaves": 11;
 	"startWave": 0;
-	"timeMul": 1200f;
-	"timeBonus": 2000000f;
-	"bossTimeBonus": 30f;
+	"timeMul": 1500f;
+	"timeBonus": 22000f;
+	"bossTimeBonus": 50f;
 	"bossWaves": "9";
 }
 { // 0
-	"enemies" : "2";
+	"enemies" : "0,0,0,0,0,0,0,0,3,3,3";
 	"bosses": 0;
 	"triggers" : 0;
 }
