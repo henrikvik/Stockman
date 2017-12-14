@@ -141,9 +141,9 @@ void EnemyBossBaddie::createAbilities()
 
     /* ABILITY TWO */
 
-    data.cooldown = 9000.f;
+    data.cooldown = 7500.f;
     data.duration = 0.f;
-    data.randomChanche = 250;
+    data.randomChanche = 50;
 
     auto onUse1 = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_2, nullptr, true);
@@ -162,7 +162,7 @@ void EnemyBossBaddie::createAbilities()
                 else 
                 {
                     SpawnTrigger(static_cast<int> (Trigger::TriggerType::TRAP_EXPLOSIVE),
-                        data.caller->getPositionBT(),
+                        data.caller->getPositionBT() + btVector3(0.f, 2.3f, 0.f),
                         {}
                     );
                 }
@@ -350,8 +350,10 @@ void EnemyBossBaddie::createAbilities()
             
             temp = playerPos + btVector3(cos(slice * i), 0.f, sin(slice * i)) * len;
             Projectile *pj = SpawnProjectile(data, temp, (playerPos - temp).normalized(), *this);
-            if (pj)
+            if (pj) {
                 pj->getRigidBody()->setRestitution(btScalar(20.f));
+                pj->getStatusManager().addUpgrade(StatusManager::BOUNCE);
+            }
         }
     };
 
