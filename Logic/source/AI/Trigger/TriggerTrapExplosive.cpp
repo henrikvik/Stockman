@@ -18,7 +18,7 @@ void TriggerTrapExplosive::onCollision(PhysicsObject &obj, btVector3 contactPoin
             Graphics::FXSystem->addEffect("DamageBoom", getPosition());
         }
         else if (Enemy *e = dynamic_cast<Enemy*> (&obj)) {
-            e->damage(10000);
+            e->damage(20000);
             Graphics::FXSystem->addEffect("DamageBoom", getPosition());
         }
         setIsActive(false);

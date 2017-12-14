@@ -18,7 +18,7 @@ using namespace Logic;
 
 #define NECRO_COUNT 3
 
-const float EnemyBossBaddie::PROJECTILE_SPEED = 27.5f,
+const float EnemyBossBaddie::PROJECTILE_SPEED = 25.0f,
             EnemyBossBaddie::ABILITY_1_MOD = 0.6f,
             EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
             EnemyBossBaddie::PROJECTILE_SCALE = 7.5f;
@@ -255,7 +255,7 @@ void EnemyBossBaddie::createAbilities()
     abilities[AbilityId::MELEE] = Ability(data, onTick2, onUse2);
 
     /* AB 3 */
-    data.cooldown = 1400.f;
+    data.cooldown = 2000.f;
     data.duration = 0.f;
     data.randomChanche = 0;
 
@@ -286,7 +286,7 @@ void EnemyBossBaddie::createAbilities()
     */
 
     /* AB 4 */
-    data.cooldown = 950.f;
+    data.cooldown = 3000.f;
     data.duration = 0.f;
     data.randomChanche = 0;
 
@@ -475,7 +475,7 @@ void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
     // :D
     fancyAF.position = getPosition() + DirectX::SimpleMath::Vector3(2.f, 3.f, 2.f);
 
-    if (getHealth() < MAX_HP * 1.f) {
+    if (getHealth() < MAX_HP * 0.35f) {
         lolSpeech = true;
    }
     
@@ -486,8 +486,8 @@ void EnemyBossBaddie::updateSpecific(Player &player, float deltaTime)
         if (speechTime > 12000.f) {
             fancyAF.text = L"No questions remain unanswered. No doubts linger.";
         }  else if (speechTime > 9000.f) {
-            fancyAF.text = L"You are this island's greatest champions!";
-        } else if (speechTime > 6500.f) {
+            fancyAF.text = L"You are this island's greatest champion!";
+        } else if (speechTime > 7000.f) {
             fancyAF.text = L"You overcame every challenge I laid before you.";
         } else if (speechTime > 4500.f) {
             fancyAF.text = L"My mightiest servants have fallen before your relentless onslaught";
