@@ -23,7 +23,7 @@ const float EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
             EnemyBossBaddie::PROJECTILE_SCALE = 7.5f;
 
 const int   EnemyBossBaddie::BASE_DAMAGE = 1,
-            EnemyBossBaddie::MAX_HP = 75000,
+            EnemyBossBaddie::MAX_HP = 69690, // noise
             EnemyBossBaddie::SCORE = 150000,
             EnemyBossBaddie::INDICATORS = 12; // Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
@@ -153,10 +153,9 @@ void EnemyBossBaddie::createAbilities()
     /* MELEE */
 
     data.cooldown = 7500.f;
-    data.duration = 2750.f;
+    data.duration = 2650.f;
     data.randomChanche = 0;
 
-    // TEST INDICATORS [REPLACE]
     indicatorData.damage = 0;
     indicatorData.scale = 1.f;
     indicatorData.enemyBullet = true;
