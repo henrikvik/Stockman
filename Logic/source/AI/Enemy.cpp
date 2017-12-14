@@ -46,6 +46,11 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     });
 }
 
+void Enemy::setMoveSpeed(float moveSpeed)
+{
+    m_moveSpeed = moveSpeed;
+}
+
 void Enemy::setBehavior(BEHAVIOR_ID id)
 {
 	if (m_behavior)

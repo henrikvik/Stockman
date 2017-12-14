@@ -131,10 +131,17 @@ void Behavior::calculateVelocityAndSteering(btVector3 &dir, RunIn &in, bool purs
     if (pursuitPlayer && vel.dot(dir) < 0.7f)
         moveMod = 0.15f;
 
-    // calculate steering force with steeringSpeed, normal mod, special mod, and the normal reynold calc
-    btVector3 steeringForce = dt * m_steeringSpeed * mod * noEnemyLeftBehindMod * (dir - vel);
-    // calculate linear velocity
-    in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() * moveMod * noEnemyLeftBehindMod + steeringForce);
+    if (in.enemy->getMoveSpeed() > 0.01f) 
+    {
+        // calculate steering force with steeringSpeed, normal mod, special mod, and the normal reynold calc
+        btVector3 steeringForce = dt * m_steeringSpeed * mod * noEnemyLeftBehindMod * (dir - vel);
+        // calculate linear velocity
+        in.enemy->getRigidBody()->setLinearVelocity(vel * in.enemy->getMoveSpeed() * moveMod * noEnemyLeftBehindMod + steeringForce);
+    }
+    else 
+    {
+        in.enemy->getRigidBody()->setLinearVelocity({ 0.f, 0.f, 0.f });
+    }
 }
 
 void Behavior::runTree(RunIn &in)

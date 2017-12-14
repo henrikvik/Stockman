@@ -17,13 +17,24 @@ using namespace Logic;
 
 #define NECRO_COUNT 3
 
-const float EnemyBossBaddie::BASE_SPEED = 19.f, EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
-            EnemyBossBaddie::ABILITY_1_MOD = 0.6f, EnemyBossBaddie::MELEE_RANGE = 18.f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.11f, EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
+const float EnemyBossBaddie::PROJECTILE_SPEED = 35.f,
+            EnemyBossBaddie::ABILITY_1_MOD = 0.6f,
+            EnemyBossBaddie::TOTAL_HP_BAR = 500.f,
             EnemyBossBaddie::PROJECTILE_SCALE = 7.5f;
-const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 75000, EnemyBossBaddie::SCORE = 150000,
-          EnemyBossBaddie::INDICATORS = 12; // Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
 
+const int   EnemyBossBaddie::BASE_DAMAGE = 1,
+            EnemyBossBaddie::MAX_HP = 75000,
+            EnemyBossBaddie::SCORE = 150000,
+            EnemyBossBaddie::INDICATORS = 12; // Big guy, for you. well memed // Big guy, for you. well memed // Big guy, for you. well memed
+
+
+// melee var
+const float EnemyBossBaddie::MELEE_RANGE = 30.f,
+            EnemyBossBaddie::MELEE_PUSHBACK = 5.f;
+// speed var
+const float EnemyBossBaddie::BASE_SPEED_P1 = 13.f,
+            EnemyBossBaddie::BASE_SPEED_P2 = 16.f,
+            EnemyBossBaddie::BASE_SPEED_P3 = 20.f;
 /*
     @author Lukas Westling
 
@@ -38,7 +49,7 @@ const int EnemyBossBaddie::BASE_DAMAGE = 1, EnemyBossBaddie::MAX_HP = 75000, Ene
 
 EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     : Enemy(Resources::Models::Grunt, body,
-        halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::BOSS_1, 0, { 0.55f, -3.5f, -0.2f }),
+        halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED_P1, EnemyType::BOSS_1, 0, { 0.55f, -3.5f, -0.2f }),
     hpBarOutline(400.0f, 70.0f, TOTAL_HP_BAR, 25.0f, Resources::Textures::Gamesheet, FloatRect({0.0459f, 0.87012f}, {0.95508f, 0.95801f})),
     hpBar(400.0f, 70.0f, TOTAL_HP_BAR, 25.0f, Resources::Textures::Gamesheet, FloatRect({0.04688f, 0.76855f}, {0.9541f, 0.85645f}))
 {
@@ -95,9 +106,9 @@ void EnemyBossBaddie::createAbilities()
     nicePjData.effectActivated = true;
 
     /* ABILITY ONE */
-    data.cooldown = 17000.f;
-    data.duration = 6000.f;
-    data.randomChanche = 35;
+    data.cooldown = 17500.f;
+    data.duration = 4000.f;
+    data.randomChanche = 40;
 
     auto onUse = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_1, nullptr, true);
@@ -114,9 +125,9 @@ void EnemyBossBaddie::createAbilities()
 
     /* ABILITY TWO */
 
-    data.cooldown = 12000.f;
+    data.cooldown = 9000.f;
     data.duration = 0.f;
-    data.randomChanche = 200;
+    data.randomChanche = 250;
 
     auto onUse1 = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_2, nullptr, true);
@@ -142,7 +153,7 @@ void EnemyBossBaddie::createAbilities()
     /* MELEE */
 
     data.cooldown = 7500.f;
-    data.duration = 4500.f;
+    data.duration = 2750.f;
     data.randomChanche = 0;
 
     // TEST INDICATORS [REPLACE]
@@ -150,10 +161,11 @@ void EnemyBossBaddie::createAbilities()
     indicatorData.scale = 1.f;
     indicatorData.enemyBullet = true;
     indicatorData.isSensor = true;
-    indicatorData.speed = PROJECTILE_SPEED;
+    indicatorData.speed = 0;
     indicatorData.ttl = data.duration * 0.95f;
     indicatorData.meshID = Resources::Models::Bone;
     indicatorData.type = ProjectileTypeDefenderShield;
+    indicatorData.shouldRender = true;
 
     auto onUse2 = [&](Player& player, Ability &ability) -> void {
         getSoundSource()->playSFX(Sound::SFX::BOSS_1_MELEE_USE);
@@ -195,11 +207,11 @@ void EnemyBossBaddie::createAbilities()
 
         if (ability.getCurrentDuration() <= 0.f)
         {
-            btVector3 to = player.getPositionBT() - getPositionBT();
+            btVector3 to = player.getPositionBT() - getPositionBT() + btVector3(0.f, 250.f, 0.f);
             if (to.length() < MELEE_RANGE)
             {
                 Sound::NoiseMachine::Get().playSFX(Sound::SFX::JUMP, nullptr, true);
-                player.takeDamage(2, true); // shield charge wont save ya
+                player.takeDamage(getBaseDamage(), true); // shield charge wont save ya
                 to.setY(0);
                 player.getCharController()->applyImpulse(to.normalized() * MELEE_PUSHBACK); 
             }
@@ -362,7 +374,10 @@ void EnemyBossBaddie::damage(int damage)
 void EnemyBossBaddie::useAbility(Player &target)
 {
     if (!abilities[AbilityId::ONE].isUsingAbility())
+    {
         abilities[AbilityId::MELEE].useAbility(target);
+        setMoveSpeed(0.f);
+    }
 }
 
 void EnemyBossBaddie::useAbility(Player &target, int phase)
@@ -372,14 +387,20 @@ void EnemyBossBaddie::useAbility(Player &target, int phase)
     {
         case 0:
             abilities[AbilityId::TWO].useAbility(target);
+            if (!abilities[AbilityId::MELEE].isUsingAbility())
+                setMoveSpeed(BASE_SPEED_P1);
             break;
         case 1:
             abilities[AbilityId::THREE].useAbility(target);
             abilities[AbilityId::TWO].useAbility(target);
+            if (!abilities[AbilityId::MELEE].isUsingAbility())
+                setMoveSpeed(BASE_SPEED_P2);
             break;
         case 2:
             abilities[AbilityId::FOUR].useAbility(target);
             abilities[AbilityId::FIVE].useAbility(target);
+            if (!abilities[AbilityId::MELEE].isUsingAbility())
+                setMoveSpeed(BASE_SPEED_P3);
             break;
     }
 }
