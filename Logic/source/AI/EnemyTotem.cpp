@@ -43,7 +43,7 @@ void EnemyTotem::createAbilities()
 
     AbilityData data;
     data.duration = 0.f;
-    data.cooldown = 3750.f;
+    data.cooldown = 4269.f;
     data.randomChanche = 10;
 
     spreadShot = Ability(data, [&](Player &target, Ability &ab) -> void {
@@ -64,7 +64,7 @@ void EnemyTotem::createAbilities()
             // shoot the projectile and make it bounce
             Projectile *pj = shoot(btVector3(std::sin((i + m_rotation) * piece), 0.f,
                 std::cos((i + m_rotation) * piece)), pData, BULLET_SPEED, 0.f, AB_SCALE);
-            pj->getProjectileData().ttl = 2750.f;
+            pj->getProjectileData().ttl = 3500.f;
 
             if (pj)
                 pj->getRigidBody()->setRestitution(btScalar(20.f));
