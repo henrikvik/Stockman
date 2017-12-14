@@ -110,7 +110,6 @@ EnemyBossBaddie::~EnemyBossBaddie()
 */
 void EnemyBossBaddie::createAbilities()
 {
-    static RandomGenerator &gen = RandomGenerator::singleton();
     static Graphics::ParticleEffect bossTrail = Graphics::FXSystem->getEffect("DamageProjTrail");
     AbilityData data;
 
@@ -156,16 +155,11 @@ void EnemyBossBaddie::createAbilities()
                 nicePjData, PROJECTILE_SPEED + (len * 0.4f), 2.5f, 0.6f, true);
 
             pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
-                if (gen.getRandomInt(0, 1)) {
-                    SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
-                }
-                else 
-                {
-                    SpawnTrigger(static_cast<int> (Trigger::TriggerType::TRAP_EXPLOSIVE),
-                        data.caller->getPositionBT(),
-                        {}
-                    );
-                }
+            //    SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
+                SpawnTrigger(static_cast<int> (Trigger::TriggerType::TRAP_EXPLOSIVE),
+                    data.caller->getPositionBT(),
+                    {}
+                );
             });
         }
     };

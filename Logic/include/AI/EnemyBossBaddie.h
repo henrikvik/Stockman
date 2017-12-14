@@ -40,6 +40,8 @@ namespace Logic
 
         // extra
         bool stunned;
+        bool lolSpeech;
+        float speechTime;
 
         Sprite hpBar;
         Sprite hpBarOutline;
