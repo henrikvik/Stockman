@@ -132,6 +132,7 @@ namespace Resources
             Tablet1,
             Tee_Pee,
             Tomb_Stone,
+            Totem,
             TotemWithAnimation,
             Tree,
             UnitCube
@@ -201,9 +202,23 @@ namespace Resources
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {Tee_Pee, R"(..\Resources\Models\Tee_Pee.hyb)"},
             {Tomb_Stone, R"(..\Resources\Models\Tomb_Stone.hyb)"},
+            {Totem, R"(..\Resources\Models\Totem.hyb)"},
             {TotemWithAnimation, R"(..\Resources\Models\TotemWithAnimation.hyb)"},
             {Tree, R"(..\Resources\Models\Tree.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
+        };
+        
+        Files toEnum(const char * str);
+    }
+    namespace Particles
+    {
+        enum Files
+        {
+            SPLASH
+        };
+        const std::map<Files, const char *> Paths =
+        {
+            {SPLASH, R"(..\Resources\Particles\SPLASH.png)"}
         };
         
         Files toEnum(const char * str);

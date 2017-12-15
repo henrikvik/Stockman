@@ -104,9 +104,18 @@ namespace Resources
             if (strcmp(str, "Tablet1") == 0) return Tablet1;
             if (strcmp(str, "Tee_Pee") == 0) return Tee_Pee;
             if (strcmp(str, "Tomb_Stone") == 0) return Tomb_Stone;
+            if (strcmp(str, "Totem") == 0) return Totem;
             if (strcmp(str, "TotemWithAnimation") == 0) return TotemWithAnimation;
             if (strcmp(str, "Tree") == 0) return Tree;
             if (strcmp(str, "UnitCube") == 0) return UnitCube;
+            throw "Could not find matching enum.";
+        }
+    }
+    namespace Particles
+    {
+        Files toEnum(const char * str)
+        {
+            if (strcmp(str, "SPLASH") == 0) return SPLASH;
             throw "Could not find matching enum.";
         }
     }
