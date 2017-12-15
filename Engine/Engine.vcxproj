@@ -117,6 +117,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MinimalRebuild>false</MinimalRebuild>
+      <PreprocessorDefinitions />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +141,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MinimalRebuild>false</MinimalRebuild>
+      <PreprocessorDefinitions />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -165,6 +167,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions />
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -192,6 +195,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions />
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
