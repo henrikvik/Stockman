@@ -217,7 +217,7 @@ void Engine::initializeWindow()
 
 	this->window = CreateWindow(
 		"Basic test",
-		"Stort spel",
+		"Stockman",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
@@ -238,8 +238,10 @@ void Engine::initializeWindow()
 
     SetWindowLong(window, GWL_STYLE, GetWindowLong(window, GWL_STYLE) & ~WS_SIZEBOX);
 
+    #ifdef _DEBUG
 	SetWindowPos(GetConsoleWindow(), 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	SetWindowPos(this->window, 0, 100, 150, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    #endif
 
 	ShowWindow(this->window, SW_SHOWDEFAULT);
 	UpdateWindow(this->window);
