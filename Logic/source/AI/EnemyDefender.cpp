@@ -212,8 +212,11 @@ void EnemyDefender::onDefenseCollision(Projectile * pj)
 
 void EnemyDefender::damage(int damage)
 {
-    if (m_projectiles.empty())
+    if (m_projectiles.empty()) {
         Enemy::damage(damage);
+        if (damage > 0)
+            SpawnDamageText(damage, DirectX::Colors::FloralWhite);
+    }
 }
 
 void EnemyDefender::updateSpecific(Player &player, float deltaTime)

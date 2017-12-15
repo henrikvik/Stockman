@@ -1,6 +1,7 @@
 #include <Entity/Entity.h>
 #include <AI\Enemy.h>
 #include <Projectile\ProjectileStruct.h>
+#include <Projectile\Projectile.h>
 #include <Misc\Sound\SoundSource.h>
 
 using namespace Logic;
@@ -22,6 +23,32 @@ void Entity::setSpawnFunctions(ProjectileFunc spawnProjectile, EnemyFunc spawnEn
     SpawnProjectile = spawnProjectile;
     SpawnEnemy = spawnEnemy;
     SpawnTrigger = spawnTrigger;
+}
+
+void Logic::Entity::SpawnDamageText(int damage, const DirectX::XMVECTORF32 color)
+{
+    auto scale = damage / 50.f;
+    scale = max(0.25, scale);
+    scale = min(2.f, scale);
+
+    ProjectileData data = {};
+    data.mass = 1.f;
+    data.scale = 1.f;
+    data.speed = 3.f;
+    data.gravityModifier = .3f;
+    data.ttl = 2000;
+    data.lightInfo.range = 0.f;
+
+    data.fancy.position = getPosition();
+    data.fancy.scale = 1.f;
+    data.fancy.color = color;
+    data.fancy.text = std::to_wstring(damage);
+    data.enemyBullet = true;
+    data.shouldRender = false;
+
+    auto p = SpawnProjectile(data, getPositionBT(), { RandomGenerator::singleton().getRandomFloat(-0.5f, .5f), 1, RandomGenerator::singleton().getRandomFloat(-0.5f, .5f) }, *this);
+    p->getStatusManager().addUpgrade(StatusManager::BOUNCE);
+    p->getRigidBody()->setRestitution(10.f);
 }
 
 void Entity::clear() { }

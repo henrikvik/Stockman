@@ -402,8 +402,11 @@ void EnemyBossBaddie::damage(int damage)
     else mod = BASE_WEAKNESS;
 
     float damageCalc = std::floor(damage * mod) - 5;
-    if (damageCalc > 0)
+    if (damageCalc > 0) {
         Enemy::damage(damageCalc);
+
+        SpawnDamageText(damageCalc, DirectX::Colors::FloralWhite);
+    }
 }
 
 void EnemyBossBaddie::useAbility(Player &target)

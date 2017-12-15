@@ -77,7 +77,10 @@ void EnemySoarer::onCollision(PhysicsObject &other, btVector3 contactPoint, floa
     {
         if (!pj->getProjectileData().enemyBullet)
         {
-            damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
+            auto dmg = static_cast<int> (pj->getProjectileData().damage * dmgMultiplier);
+            damage(dmg);
+            if (dmg > 0)
+                SpawnDamageText(dmg, DirectX::Colors::FloralWhite);
 
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
                 getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME,
