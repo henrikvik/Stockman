@@ -22,7 +22,6 @@
 #include "RenderPass\SkyBoxRenderPass.h"
 #include "RenderPass\GlowRenderPass.h"
 #include "RenderPass\ParticleRenderPass.h"
-#include "RenderPass\SSAORenderPass.h"
 #include "RenderPass\DepthOfFieldRenderPass.h"
 #include "RenderPass\SnowRenderPass.h"
 #include "RenderPass\PostFXRenderPass.h"
@@ -367,7 +366,6 @@ namespace Graphics
                 *sun.getGlobalLightBuffer(),
                 depthStencil
             ),
-            //newd SSAORenderPass({}, { depthStencil, normalMap, ssaoOutput }, {ssaoOutput}, {}, nullptr),
             newd GlowRenderPass(
                 m_BloomSRV,
                 m_BloomSRVMipChain,
@@ -458,7 +456,7 @@ namespace Graphics
         
         LightRenderInfo lightInfo;
         lightInfo.color = DirectX::Colors::WhiteSmoke;
-        lightInfo.intensity = 0.3f;
+        lightInfo.intensity = 0.1f;
         lightInfo.position = Global::mainCamera->getPos() + SimpleMath::Vector3(0, 0, 0);
         lightInfo.range = 10;
         QueueRender(lightInfo);

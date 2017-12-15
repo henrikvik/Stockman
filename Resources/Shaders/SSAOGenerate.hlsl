@@ -38,7 +38,7 @@ SamplerState PointClamp : register(s0);
 SamplerState PointMirror : register(s1);
 
 #define EffectHorizonAngleThreshold 0.2 // 0.0 .. 0.2
-#define EffectRadius 2.6 // 0.0 ..
+#define EffectRadius 1.2 // 0.0 ..
 #define EffectSamplingRadiusNearLimitRec (1 / (EffectRadius * 1.2 * 1.5)) // 0.0
 
 #define FadeTo 300.f // 0.0 ..
@@ -47,8 +47,8 @@ SamplerState PointMirror : register(s1);
 #define EffectFadeOutMul (-1.f / (FadeTo - FadeFrom))
 #define EffectFadeOutAdd (FadeFrom / (FadeTo - FadeFrom) + 1.f)
 
-#define EffectShadowPow 3.0 // 0.5 .. 5.0
-#define EffectShadowClamp 0.9 // 0.0 .. 1.0
+#define EffectShadowPow 5.0 // 0.5 .. 5.0
+#define EffectShadowClamp 0.8 // 0.0 .. 1.0
 #define EffectShadowStrength 3.0 // 0.0 .. 20.0
 
 #define DepthPrecisionOffsetMod 0.9992f

@@ -149,6 +149,7 @@ namespace Resources
             if (strcmp(str, "SnowShader") == 0) return SnowShader;
             if (strcmp(str, "SpriteShader") == 0) return SpriteShader;
             if (strcmp(str, "SSAO") == 0) return SSAO;
+            if (strcmp(str, "SSAOBlur") == 0) return SSAOBlur;
             if (strcmp(str, "SSAOComputeShader") == 0) return SSAOComputeShader;
             if (strcmp(str, "SSAOGaussianBlurHorizontal") == 0) return SSAOGaussianBlurHorizontal;
             if (strcmp(str, "SSAOGaussianBlurVertical") == 0) return SSAOGaussianBlurVertical;

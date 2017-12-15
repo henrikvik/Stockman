@@ -46,6 +46,7 @@ namespace Graphics
 
         Shader m_SSAOPrepareDepthNormals;
         Shader m_SSAOGenerate;
+        Shader m_SSAOBlur;
 
         // owned:
         ID3D11SamplerState *m_PointMirror;
@@ -53,6 +54,8 @@ namespace Graphics
         ID3D11ShaderResourceView *m_NormalSRV;
         ID3D11UnorderedAccessView *m_NormalUAV;
 
+        ID3D11ShaderResourceView *m_BlurIntermediateSRV[2];
+        ID3D11RenderTargetView *m_BlurIntermediateRTV[2];
 
         ID3D11ShaderResourceView *m_ViewSpaceDepthSRV[2];
         ID3D11RenderTargetView *m_ViewSpaceDepthRTV[2];

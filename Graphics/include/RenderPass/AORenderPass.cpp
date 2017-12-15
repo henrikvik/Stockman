@@ -15,6 +15,7 @@ namespace Graphics
         : RenderPass({}, {}, {}, nullptr),
           m_SSAOPrepareDepthNormals(Resources::Shaders::SSAO),
           m_SSAOGenerate(Resources::Shaders::SSAOGenerate, ShaderType::PS),
+          m_SSAOBlur(Resources::Shaders::SSAOBlur, ShaderType::PS),
           m_DepthSRV(depthSRV),
           m_AOSlicesSRV(aoSlicesSRV),
           m_AOSlicesRTV(aoSlicesRTV)
@@ -68,6 +69,27 @@ namespace Graphics
         }
 
         {
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.Format = DXGI_FORMAT_R8_UNORM;
+            desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+            desc.Width = WIN_WIDTH / 2;
+            desc.Height = WIN_HEIGHT / 2;
+            desc.SampleDesc.Count = 1;
+            desc.MipLevels = 1;
+            desc.ArraySize = 1;
+
+
+            for (int i = 0; i < 2; i++) {
+                ID3D11Texture2D *texture = nullptr;
+
+                ThrowIfFailed(device->CreateTexture2D(&desc, nullptr, &texture));
+                ThrowIfFailed(device->CreateShaderResourceView(texture, nullptr, &m_BlurIntermediateSRV[i]));
+                ThrowIfFailed(device->CreateRenderTargetView(texture, nullptr, &m_BlurIntermediateRTV[i]));
+                SAFE_RELEASE(texture);
+            }
+        }
+
+        {
             D3D11_SAMPLER_DESC desc = {};
             desc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
             desc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
@@ -83,9 +105,15 @@ namespace Graphics
         SAFE_RELEASE(m_PointMirror);
         SAFE_RELEASE(m_NormalSRV);
         SAFE_RELEASE(m_NormalUAV);
+
         for (int i = 0; i < 2; i++) {
             SAFE_RELEASE(m_ViewSpaceDepthSRV[i]);
             SAFE_RELEASE(m_ViewSpaceDepthRTV[i]);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            SAFE_RELEASE(m_BlurIntermediateSRV[i]);
+            SAFE_RELEASE(m_BlurIntermediateRTV[i]);
         }
     }
 
@@ -145,6 +173,9 @@ namespace Graphics
         cxt->OMSetRenderTargets(0, nullptr, nullptr);
 
         auto point = Global::cStates->PointClamp();
+        auto linear = Global::cStates->LinearClamp();
+
+        cxt->PSSetSamplers(2, 1, &linear);
 
         D3D11_VIEWPORT viewport = {};
         viewport.Width = WIN_WIDTH / 2.f;
@@ -152,36 +183,63 @@ namespace Graphics
 
         pass(0);
 
-        cxt->IASetInputLayout(nullptr);
-        cxt->VSSetShader(m_SSAOPrepareDepthNormals, nullptr, 0);
-        cxt->PSSetShader(m_SSAOPrepareDepthNormals, nullptr, 0);
+        // prepare viewspace depth & normals
+        {
+            cxt->IASetInputLayout(nullptr);
+            cxt->VSSetShader(m_SSAOPrepareDepthNormals, nullptr, 0);
+            cxt->PSSetShader(m_SSAOPrepareDepthNormals, nullptr, 0);
 
-        cxt->PSSetSamplers(0, 1, &point);
-        cxt->PSSetShaderResources(0, 1, &m_DepthSRV);
-        cxt->PSSetConstantBuffers(0, 1, m_ConstantsBuffer);
-        cxt->RSSetState(Global::cStates->CullNone());
-        cxt->RSSetViewports(1, &viewport);
-        cxt->OMSetRenderTargetsAndUnorderedAccessViews(2, m_ViewSpaceDepthRTV, nullptr, 2, 1, &m_NormalUAV, nullptr);
+            cxt->PSSetSamplers(0, 1, &point);
+            cxt->PSSetShaderResources(0, 1, &m_DepthSRV);
+            cxt->PSSetConstantBuffers(0, 1, m_ConstantsBuffer);
+            cxt->RSSetState(Global::cStates->CullNone());
+            cxt->RSSetViewports(1, &viewport);
+            cxt->OMSetRenderTargetsAndUnorderedAccessViews(2, m_ViewSpaceDepthRTV, nullptr, 2, 1, &m_NormalUAV, nullptr);
 
-        cxt->Draw(3, 0);
+            cxt->Draw(3, 0);
 
-        cxt->OMSetRenderTargetsAndUnorderedAccessViews(0, nullptr, nullptr, 2, 0, nullptr, nullptr);
+            cxt->OMSetRenderTargetsAndUnorderedAccessViews(0, nullptr, nullptr, 2, 0, nullptr, nullptr);
+        }
 
 
         cxt->PSSetSamplers(1, 1, &m_PointMirror);
-        cxt->PSSetShader(m_SSAOGenerate, nullptr, 0);
         cxt->PSSetShaderResources(0, 1, &m_NormalSRV);
-        cxt->PSSetShaderResources(1, 1, &m_ViewSpaceDepthSRV[0]);
-        cxt->OMSetRenderTargets(1, &m_AOSlicesRTV[0], nullptr);
+        
+        // first half
+        {
+            cxt->PSSetShader(m_SSAOGenerate, nullptr, 0);
+            cxt->PSSetShaderResources(1, 1, &m_ViewSpaceDepthSRV[0]);
+            cxt->OMSetRenderTargets(1, &m_BlurIntermediateRTV[0], nullptr);
 
-        cxt->Draw(3, 0);
+            // generate ao
+            cxt->Draw(3, 0);
+
+            cxt->PSSetShader(m_SSAOBlur, nullptr, 0);
+            cxt->OMSetRenderTargets(1, &m_AOSlicesRTV[0], nullptr);
+            cxt->PSSetShaderResources(1, 1, &m_BlurIntermediateSRV[0]);
+
+            // blur
+            cxt->Draw(3, 0);
+        }
 
         pass(1);
 
-        cxt->PSSetShaderResources(1, 1, &m_ViewSpaceDepthSRV[1]);
-        cxt->OMSetRenderTargets(1, &m_AOSlicesRTV[1], nullptr);
+        // second half
+        {
+            cxt->PSSetShader(m_SSAOGenerate, nullptr, 0);
+            cxt->PSSetShaderResources(1, 1, &m_ViewSpaceDepthSRV[1]);
+            cxt->OMSetRenderTargets(1, &m_BlurIntermediateRTV[1], nullptr);
 
-        cxt->Draw(3, 0);
+            // generate ao
+            cxt->Draw(3, 0);
+
+            cxt->PSSetShader(m_SSAOBlur, nullptr, 0);
+            cxt->OMSetRenderTargets(1, &m_AOSlicesRTV[1], nullptr);
+            cxt->PSSetShaderResources(1, 1, &m_BlurIntermediateSRV[1]);
+
+            // blur
+            cxt->Draw(3, 0);
+        };
 
         cxt->OMSetRenderTargets(0, nullptr, nullptr);
         viewport.Width = WIN_WIDTH;
