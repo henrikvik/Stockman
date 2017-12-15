@@ -121,7 +121,7 @@ void Projectile::updateSpecific(float deltaTime)
     // Damage fall-off, based on ttl
     if (m_pData.dmgFallOff && deltaTime < m_pData.ttl)
     {
-        m_pData.damage -= m_pData.damage * pow((deltaTime / m_pData.ttl), PROJECTILE_DMG_FALLOFF_EXPONENT);
+        m_pData.damage -= m_pData.damage * pow((deltaTime / m_pData.ttl), PROJECTILE_DMG_FALLOFF_EXPONENT) * m_bulletTimeMod;
         if (m_pData.damage < 1.f) m_pData.damage = 1.f;
     }
 
