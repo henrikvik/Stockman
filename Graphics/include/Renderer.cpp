@@ -4,9 +4,9 @@
 #include <Engine\Constants.h>
 #include "Utility\sizeofv.h"
 #include <Keyboard.h>
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
-#include <Engine\Profiler.h>
+#include <Singletons\Profiler.h>
 #include "RenderQueue.h"
 
 #include "Particles\ParticleSystem.h"
@@ -14,6 +14,7 @@
 #include "CommonStates.h"
 #include "MainCamera.h"
 
+#include "RenderPass\AORenderPass.h"
 #include "RenderPass\ForwardPlusRenderPass.h"
 #include "RenderPass\DepthRenderPass.h"
 #include "RenderPass\LightCullRenderPass.h"
@@ -21,9 +22,13 @@
 #include "RenderPass\SkyBoxRenderPass.h"
 #include "RenderPass\GlowRenderPass.h"
 #include "RenderPass\ParticleRenderPass.h"
-#include "RenderPass\SSAORenderPass.h"
 #include "RenderPass\DepthOfFieldRenderPass.h"
 #include "RenderPass\SnowRenderPass.h"
+#include "RenderPass\PostFXRenderPass.h"
+#include "RenderPass\FancyRenderPass.h"
+#include "RenderPass\DebugRenderPass.h"
+#include "RenderPass\FogRenderPass.h"
+#include <vector>
 
 #include "Utility\DebugDraw.h"
 
@@ -37,43 +42,46 @@
 namespace Graphics
 {
     uint32_t zero = 0;
-	Renderer::Renderer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, ID3D11RenderTargetView * backBuffer, Camera *camera)
-		: forwardPlus(device, Resources::Shaders::ForwardPlus)
-		, depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
-#pragma region RenderDebugInfo
-        , debugPointsBuffer(device, CpuAccess::Write, MAX_DEBUG_POINTS)
-        , debugRender(device, SHADER_PATH("DebugRender.hlsl"))
-        , debugColorBuffer(device)
-#pragma endregion
+    Renderer::Renderer(
+        ID3D11Device * device,
+        ID3D11DeviceContext * deviceContext,
+        ID3D11RenderTargetView * backBuffer, 
+        Camera *camera
+    )
+        : depthStencil(device, WIN_WIDTH, WIN_HEIGHT)
         , fog(device)
-        , bulletTimeBuffer(device)
-#pragma region Foliage
         , foliageShader(device, SHADER_PATH("FoliageShader.hlsl"), VERTEX_DESC)
         , timeBuffer(device)
-
-
 #pragma endregion
-		, depthShader(device, SHADER_PATH("DepthPixelShader.hlsl"), {}, ShaderType::PS)
-        , instanceStaticBuffer(device, CpuAccess::Write, INSTANCE_CAP(InstanceAnimated))
-        , instanceAnimatedBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
+        , foliageInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(FoliageRenderInfo))
+        , staticInstanceBuffer( device, CpuAccess::Write, INSTANCE_CAP(StaticRenderInfo))
 
-    #pragma region Shared Shader Resources
+        , animatedInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
+        , animatedJointsBuffer(  device, CpuAccess::Write, INSTANCE_CAP(AnimatedRenderInfo))
+
+        , newAnimatedInstanceBuffer(device, CpuAccess::Write, INSTANCE_CAP(NewAnimatedRenderInfo))
+        , newAnimatedJointsBuffer(  device, CpuAccess::Write, INSTANCE_CAP(NewAnimatedRenderInfo))
+
+
+        , fakeBuffers(WIN_WIDTH, WIN_HEIGHT)
+#pragma region Shared Shader Resources
         , colorMap(WIN_WIDTH, WIN_HEIGHT)
-        , glowMap(WIN_WIDTH, WIN_HEIGHT)
-        , normalMap(WIN_WIDTH, WIN_HEIGHT)
 
         , shadowMap(Global::device, SHADOW_RESOLUTION, SHADOW_RESOLUTION)
-
+        
 
         , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
         , lightsNew(CpuAccess::Write, INSTANCE_CAP(LightRenderInfo))
-        , sun()
-    #pragma endregion
+        , sun(shadowMap),
+#pragma endregion
+        DebugAnnotation(nullptr)
 
 
+#pragma region CaNCeR!
     {
-        Global::cStates = new CommonStates(device);
-        Global::comparisonSampler = [&](){
+        grassTime = 0;
+        Global::cStates = newd CommonStates(device);
+        Global::comparisonSampler = [&]() {
             ID3D11SamplerState * sampler = nullptr;
             D3D11_SAMPLER_DESC sDesc = {};
             sDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -91,9 +99,9 @@ namespace Graphics
             sDesc.MipLODBias = 0;
 
             ThrowIfFailed(device->CreateSamplerState(&sDesc, &sampler));
-            return sampler;        
+            return sampler;
         }();
-        Global::mirrorSampler = [&](){
+        Global::mirrorSampler = [&]() {
             ID3D11SamplerState * sampler = nullptr;
             D3D11_SAMPLER_DESC sDesc = {};
             sDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
@@ -138,8 +146,8 @@ namespace Graphics
             D3D11_TEXTURE2D_DESC desc = {};
             desc.Format = DXGI_FORMAT_R32G32_UINT;
             desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-            desc.Width = (int)ceil(1280 / (float)BLOCK_SIZE);
-            desc.Height = (int)ceil(720 / (float)BLOCK_SIZE);
+            desc.Width = (int)ceil(WIN_WIDTH / (float)BLOCK_SIZE);
+            desc.Height = (int)ceil(WIN_HEIGHT / (float)BLOCK_SIZE);
             desc.SampleDesc.Count = 1;
             desc.MipLevels = 1;
             desc.ArraySize = 1;
@@ -162,93 +170,235 @@ namespace Graphics
             SAFE_RELEASE(texture);
         }
 
-        
-        
+        {
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+            desc.Width = WIN_WIDTH;
+            desc.Height = WIN_HEIGHT;
+            desc.SampleDesc.Count = 1;
+            desc.MipLevels = 4;
+            desc.ArraySize = 1;
 
-		this->backBuffer = backBuffer;
+            ID3D11Texture2D *texture = nullptr;
+            ThrowIfFailed(Global::device->CreateTexture2D(&desc, nullptr, &texture));
 
+            D3D11_RENDER_TARGET_VIEW_DESC renderDesc = {};
+            renderDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+            renderDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 
-		fakeBackBuffer = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
-		fakeBackBufferSwap = newd ShaderResource(device, WIN_WIDTH, WIN_HEIGHT);
+            D3D11_SHADER_RESOURCE_VIEW_DESC resourceDesc = {};
+            resourceDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+            resourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+            resourceDesc.Texture2D.MipLevels = 1;
 
-		viewPort = { 0 };
-		viewPort.Width = WIN_WIDTH;
-		viewPort.Height = WIN_HEIGHT;
-		viewPort.MaxDepth = 1.0f;
+            for (int i = 0; i < MIP_LEVELS; i++)
+            {
+                resourceDesc.Texture2D.MostDetailedMip = i;
+                renderDesc.Texture2D.MipSlice = i;
 
-        FXSystem = newd ParticleSystem(device, 512, "Resources/Particles/base.part");
+                ID3D11ShaderResourceView *srv = nullptr;
+                ID3D11RenderTargetView *rtv = nullptr;
 
-        float temp = 1.f;
-        bulletTimeBuffer.write(deviceContext, &temp, sizeof(float));
+                ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &srv));
+                ThrowIfFailed(Global::device->CreateRenderTargetView(texture, &renderDesc, &rtv));
 
+                m_BloomRTVMipChain.push_back(rtv);
+                m_BloomSRVMipChain.push_back(srv);
+            }
 
-		registerDebugFunction();
+            resourceDesc.Texture2D.MipLevels = -1;
+            resourceDesc.Texture2D.MostDetailedMip = 1;
+            renderDesc.Texture2D.MipSlice = 0;
+            ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_BloomSRV));
 
-		statusData.burn = 0;
-		statusData.freeze = 0;
+            SAFE_RELEASE(texture);
+        }
+
+        {
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.Format = DXGI_FORMAT_R8_UNORM;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+            desc.Width = WIN_WIDTH / 2;
+            desc.Height = WIN_HEIGHT / 2;
+            desc.SampleDesc.Count = 1;
+            desc.MipLevels = 1;
+            desc.ArraySize = 2;
+
+            ID3D11Texture2D *texture = nullptr;
+            ThrowIfFailed(Global::device->CreateTexture2D(&desc, nullptr, &texture));
+
+            D3D11_RENDER_TARGET_VIEW_DESC renderDesc = {};
+            renderDesc.Format = DXGI_FORMAT_R8_UNORM;
+            renderDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+            renderDesc.Texture2DArray.ArraySize = 2;
+            renderDesc.Texture2DArray.FirstArraySlice = 0;
+            renderDesc.Texture2DArray.MipSlice = 0;
+
+            D3D11_SHADER_RESOURCE_VIEW_DESC resourceDesc = {};
+            resourceDesc.Format = DXGI_FORMAT_R8_UNORM;
+            resourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+            resourceDesc.Texture2DArray.ArraySize = 2;
+            resourceDesc.Texture2DArray.FirstArraySlice = 0;
+            resourceDesc.Texture2DArray.MipLevels = 1;
+            resourceDesc.Texture2DArray.MostDetailedMip = 0;
+
+            ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_AOSlicesSRV));
+
+            for (int i = 0; i < 2; i++)
+            {
+                resourceDesc.Texture2DArray.ArraySize = 1;
+                resourceDesc.Texture2DArray.FirstArraySlice = i;
+                renderDesc.Texture2DArray.ArraySize = 1;
+                renderDesc.Texture2DArray.FirstArraySlice = i;
+
+                ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_AOSliceSRV[i]));
+                ThrowIfFailed(Global::device->CreateRenderTargetView(texture, &renderDesc, &m_AOSliceRTV[i]));
+            }
+
+            SAFE_RELEASE(texture);
+        }
+
+#pragma endregion
+        HRESULT hr = Global::context->QueryInterface(IID_PPV_ARGS(&DebugAnnotation));
+        if (!SUCCEEDED(hr)) {
+            // failed to aquire debug annotation
+        }
+
+        this->backBuffer = backBuffer;
+
+        viewPort = { 0 };
+        viewPort.Width = WIN_WIDTH;
+        viewPort.Height = WIN_HEIGHT;
+        viewPort.MaxDepth = 1.0f;
+
+        FXSystem = newd ParticleSystem(device, 4096, "Resources/Particles/base.part");
 
         TextureLoader::get().loadAll();
 
-        renderPasses =
-        {
-            newd ParticleDepthRenderPass(depthStencil),
-            newd DepthRenderPass({}, { instanceStaticBuffer }, {*Global::mainCamera->getBuffer()}, depthStencil),
-            newd ShadowRenderPass({}, { instanceStaticBuffer }, {*sun.getLightMatrixBuffer()}, shadowMap),
-            newd LightCullRenderPass(
-                {},
-                {
-                    depthStencil,
-                    lightsNew
-                },
-                {
-                    *Global::mainCamera->getBuffer()
-                },
-                nullptr,
-                {
-                    lightOpaqueIndexList,
-                    lightOpaqueGridUAV
-                }
+
+		renderPasses =
+		{
+			newd ParticleDepthRenderPass(depthStencil),
+			newd DepthRenderPass(
+				{},
+				{
+					staticInstanceBuffer,
+					animatedInstanceBuffer,
+					animatedJointsBuffer,
+					foliageInstanceBuffer,
+					newAnimatedInstanceBuffer,
+					newAnimatedJointsBuffer,
+				},
+				{*Global::mainCamera->getBuffer(), grassTimeBuffer },
+				depthStencil
+			),
+            newd AORenderPass(
+                depthStencil,
+                std::vector<ID3D11ShaderResourceView *>(m_AOSliceSRV, m_AOSliceSRV + 2),
+                std::vector<ID3D11RenderTargetView *>(m_AOSliceRTV, m_AOSliceRTV + 2)
             ),
-            newd SkyBoxRenderPass({ *fakeBackBuffer },{},{ *sun.getGlobalLightBuffer() }, depthStencil),
-            newd ForwardPlusRenderPass(
+			newd ShadowRenderPass(
+				{},
+				{
+					staticInstanceBuffer,
+					animatedInstanceBuffer,
+					animatedJointsBuffer,
+					foliageInstanceBuffer,
+					newAnimatedInstanceBuffer,
+					newAnimatedJointsBuffer,
+				},
+				{*sun.getLightMatrixBuffer(), grassTimeBuffer },
+				shadowMap
+			),
+			newd LightCullRenderPass(
+				{},
+				{
+					depthStencil,
+					lightsNew
+				},
+				{
+					*Global::mainCamera->getBuffer()
+				},
+				nullptr,
+				{
+					lightOpaqueIndexList,
+					lightOpaqueGridUAV
+				}
+			),
+			newd SkyBoxRenderPass({ fakeBuffers }, {}, { *sun.getGlobalLightBuffer() }, depthStencil, &sun),
+			newd ForwardPlusRenderPass(
+				{
+					fakeBuffers,
+					m_BloomRTVMipChain[0]
+				},
+				{
+					lightOpaqueIndexList,
+					lightOpaqueGridSRV,
+					lightsNew,
+					shadowMap,
+					staticInstanceBuffer,
+					animatedInstanceBuffer,
+					animatedJointsBuffer,
+					foliageInstanceBuffer,
+					newAnimatedInstanceBuffer,
+					newAnimatedJointsBuffer,
+                    m_AOSlicesSRV
+				},
+				{
+					*Global::mainCamera->getBuffer(),
+					*sun.getGlobalLightBuffer(),
+					*sun.getLightMatrixBuffer(),
+					grassTimeBuffer
+				},
+				depthStencil
+			),
+			newd FogRenderPass({fakeBuffers}, {depthStencil}, {}, nullptr),
+            newd ParticleRenderPass(
+                fakeBuffers,
+                lightOpaqueGridSRV, 
+                lightOpaqueIndexList, 
+                lightsNew, 
+                shadowMap, 
+                *sun.getGlobalLightBuffer(),
+                depthStencil
+            ),
+            newd GlowRenderPass(
+                m_BloomSRV,
+                m_BloomSRVMipChain,
+                m_BloomRTVMipChain
+            ),
+            newd SnowRenderPass(
                 {
-                    *fakeBackBuffer,
-                    glowMap,
-                    normalMap
+                    fakeBuffers
                 },
                 {
                     lightOpaqueIndexList,
                     lightOpaqueGridSRV,
                     lightsNew,
-                    shadowMap,
-                    instanceStaticBuffer
-                },
-                {
-                    *Global::mainCamera->getBuffer(),
-                    *sun.getGlobalLightBuffer()
-                },
-                depthStencil
-            ),
-            newd ParticleRenderPass({ *fakeBackBuffer }, depthStencil),
-            newd SSAORenderPass({},{ depthStencil, normalMap,  *fakeBackBuffer },{}, nullptr,{*fakeBackBufferSwap }),
-            newd DepthOfFieldRenderPass({ *fakeBackBufferSwap }, { *fakeBackBuffer, depthStencil }),
-            newd GlowRenderPass({ backBuffer },{*fakeBackBufferSwap, glowMap}),
-            newd SnowRenderPass(
-                {
-                    backBuffer 
-                },
-                {
-                    lightOpaqueIndexList, 
-                    lightOpaqueGridSRV, 
-                    lightsNew, 
                     shadowMap
-                }, 
+                },
                 {
                     *sun.getLightMatrixBuffer(),
                     *sun.getGlobalLightBuffer()
                 },
                 depthStencil
             ),
+            newd FancyRenderPass(
+                fakeBuffers,
+                lightOpaqueGridSRV,
+                lightOpaqueIndexList,
+                lightsNew,
+                shadowMap,
+                *sun.getGlobalLightBuffer(),
+                depthStencil
+            ),
+            newd PostFXRenderPass(
+                &fakeBuffers,
+                backBuffer,
+                m_BloomSRV
+            ),
+            newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
             newd GUIRenderPass({backBuffer}),
         };
     }
@@ -256,8 +406,6 @@ namespace Graphics
 
     Renderer::~Renderer()
     {
-		delete fakeBackBuffer;
-		delete fakeBackBufferSwap;
         delete FXSystem;
 
         delete Global::cStates;
@@ -266,6 +414,19 @@ namespace Graphics
         SAFE_RELEASE(Global::transparencyBlendState);
         SAFE_RELEASE(lightOpaqueGridUAV);
         SAFE_RELEASE(lightOpaqueGridSRV);
+        SAFE_RELEASE(DebugAnnotation);
+        
+        SAFE_RELEASE(m_BloomSRV);
+
+        for (auto srv : m_BloomSRVMipChain)
+        {
+            SAFE_RELEASE(srv);
+        }
+
+        for (auto rtv : m_BloomRTVMipChain)
+        {
+            SAFE_RELEASE(rtv);
+        }
 
         for (auto & renderPass : renderPasses)
         {
@@ -275,46 +436,55 @@ namespace Graphics
         TextureLoader::get().unloadAll();
         ModelLoader::get().unloadAll();
     }
-	//this function is called in SkillBulletTime.cpp
-	void Renderer::setBulletTimeCBuffer(float amount)
-	{
-		PROFILE_BEGIN("SetBulletTimeCBuffer()");
-		//These two must always add up to one ir i'll have to fix the formula
-		//They represents how long the fade in and fade out are. 
-		static const float TOP_THRESHOLD = 0.9f;
-		static const float BOT_THRESHOLD = 0.1f;
-
-
-        if (amount > TOP_THRESHOLD)
-            amount = (amount - TOP_THRESHOLD) / BOT_THRESHOLD;
-
-        else if (amount < BOT_THRESHOLD)
-            amount = 1 - ((amount) / BOT_THRESHOLD);
-
-        else amount = 0;
-
-        bulletTimeBuffer.write(Global::context, &amount, sizeof(float));
-        PROFILE_END();
-    }
 
     void Renderer::update(float deltaTime)
     {
-        /*static StaticRenderInfo infotest;
+        grassTime += deltaTime;
+        grassTimeBuffer.write(Global::context, &grassTime, sizeof(grassTime));
+        
+        /*
+        static StaticRenderInfo infotest;
         infotest.model = Resources::Models::Staff;
         infotest.transform = DirectX::SimpleMath::Matrix::CreateTranslation({0, 10, 0});
-        RenderQueue::get().queue(&infotest);
-*/
-        static LightRenderInfo lightInfo;
-        lightInfo.color = DirectX::Colors::DodgerBlue;
-        lightInfo.intensity = 1;
-        lightInfo.position = Global::mainCamera->getPos() + float3(0,0,4);
+        QueueRender(&infotest);
+        */
+
+        
+        LightRenderInfo lightInfo;
+        lightInfo.color = DirectX::Colors::WhiteSmoke;
+        lightInfo.intensity = 0.1f;
+        lightInfo.position = Global::mainCamera->getPos() + SimpleMath::Vector3(0, 0, 0);
         lightInfo.range = 10;
-        RenderQueue::get().queue(&lightInfo);
+        QueueRender(lightInfo);
+
+       /* QueueRender([](float dt) -> AnimatedRenderInfo
+        {
+            static float time = 0;
+            AnimatedRenderInfo info;
+            info.animationName = "Walk";
+            info.animationTimeStamp = time;
+            info.model = Resources::Models::SummonUnitWithAnim;
+            info.transform = SimpleMath::Matrix::CreateTraanslation(0, 3, -3) * SimpleMath::Matrix::CreateScale(1.0f);
+            time += dt;
+            if (time > 5) time = 0;
+            return info;
+        }(deltaTime));*/
+
+		//QueueRender([]()
+		//{
+		//	StaticRenderInfo info;
+		//	info.model = Resources::Models::UnitCube;
+		//	info.transform = SimpleMath::Matrix::CreateTranslation(0, -1, 0) * SimpleMath::Matrix::CreateScale(1000, 1, 1000);
+		//	info.useGridTexture = true;
+		//	return info;
+		//}());
+
+       
+
+        FXSystem->update(Global::context, Global::mainCamera, deltaTime);
 
         writeInstanceBuffers();
         sun.update();
-
-        FXSystem->update(Global::context, Global::mainCamera, deltaTime);
    
         for (auto & renderPass : renderPasses)
         {
@@ -322,6 +492,8 @@ namespace Graphics
             renderPass->update(deltaTime);
             PROFILE_END();
         }
+
+        fakeBuffers.reset();
     }
 
     void Renderer::render() const
@@ -331,127 +503,140 @@ namespace Graphics
 
         for (auto & renderPass : renderPasses)
         {
-            renderPass->render();
+            if (DebugAnnotation) DebugAnnotation->BeginEvent(renderPass->name());
+              renderPass->render();
+            if (DebugAnnotation) DebugAnnotation->EndEvent();
         }
     }
 
-	void Renderer::clear() const
-	{
-		static float clearColor[4] = { 0 };
+    void Renderer::clear() const
+    {
+        static float clearColor[4] = { 0 };
+        static float white[4] = { 1 };
         Global::context->ClearRenderTargetView(backBuffer, clearColor);
-        Global::context->ClearRenderTargetView(normalMap, clearColor);
-        Global::context->ClearRenderTargetView(*fakeBackBuffer, clearColor);
-        Global::context->ClearRenderTargetView(*fakeBackBufferSwap, clearColor);
-        Global::context->ClearRenderTargetView(glowMap, clearColor);
+        //fakeBuffers.clear();
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
-	}
-
-	void Renderer::swapBackBuffers()
-	{
-		ID3D11ShaderResourceView * temp = fakeBackBuffer->shaderResource;
-		fakeBackBuffer->shaderResource = fakeBackBufferSwap->shaderResource;
-		fakeBackBufferSwap->shaderResource = temp;
-
-        ID3D11RenderTargetView * temp2 = fakeBackBuffer->renderTarget;
-        fakeBackBuffer->renderTarget = fakeBackBufferSwap->renderTarget;
-        fakeBackBufferSwap->renderTarget = temp2;
-	}
-
-    void Renderer::renderDebugInfo(Camera* camera)
-    {
-        if (renderDebugQueue.size() == 0) return;
-
-        Global::context->PSSetConstantBuffers(0, 1, *camera->getBuffer());
-        Global::context->VSSetConstantBuffers(0, 1, *camera->getBuffer());
-
-        Global::context->OMSetRenderTargets(1, &backBuffer, depthStencil);
-
-        Global::context->VSSetShaderResources(0, 1, debugPointsBuffer);
-        Global::context->PSSetConstantBuffers(1, 1, debugColorBuffer);
-
-        Global::context->IASetInputLayout(nullptr);
-        Global::context->VSSetShader(debugRender, nullptr, 0);
-        Global::context->PSSetShader(debugRender, nullptr, 0);
-
-
-        for (RenderDebugInfo * info : renderDebugQueue)
+        for (auto rtv : m_BloomRTVMipChain)
         {
-            debugPointsBuffer.write(
-                Global::context,
-                info->points->data(),
-                (UINT)(info->points->size() * sizeof(DirectX::SimpleMath::Vector3))
-            );
-
-            debugColorBuffer.write(
-                Global::context,
-                &info->color,
-                (UINT)sizeof(DirectX::SimpleMath::Color)
-            );
-
-            Global::context->IASetPrimitiveTopology(info->topology);
-            Global::context->OMSetDepthStencilState(info->useDepth ? Global::cStates->DepthDefault() : Global::cStates->DepthNone(), 0);
-            Global::context->Draw((UINT)info->points->size(), 0);
+            Global::context->ClearRenderTargetView(rtv, clearColor);
         }
-
-        renderDebugQueue.clear();
     }
 
     void Renderer::writeInstanceBuffers()
     {
-        instanceStaticBuffer.write([](InstanceStatic * instanceBuffer)
+        foliageInstanceBuffer.write([](StaticInstance * instanceBuffer)
         {
-            for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
+            for (auto & model_infos : RenderQueue::get().getQueue<FoliageRenderInfo>())
             {
                 for (auto & sinfo : model_infos.second)
                 {
-                    InstanceStatic instance = {};
-                    instance.world = sinfo->transform;
-                    instance.worldInvT = sinfo->transform.Invert().Transpose();
+                    StaticInstance instance = {};
+                    instance.world = sinfo.transform;
+                    instance.worldInvT = sinfo.transform.Invert().Transpose();
+                    instance.color = sinfo.color;
+                    instance.useGridTexture = sinfo.useGridTexture;
                     *instanceBuffer++ = instance;
                 }
             }
         });
 
-        instanceAnimatedBuffer.write([](InstanceAnimated * instanceBuffer)
+        staticInstanceBuffer.write([](StaticInstance * instanceBuffer)
         {
+            auto & queue = RenderQueue::get().getQueue<StaticRenderInfo>();
+            for (auto & model_infos : RenderQueue::get().getQueue<StaticRenderInfo>())
+            {
+                for (auto & sinfo : model_infos.second)
+                {
+                    StaticInstance instance = {};
+                    instance.world = sinfo.transform;
+                    instance.worldInvT = sinfo.transform.Invert().Transpose();
+                    instance.color = sinfo.color;
+                    instance.useGridTexture = sinfo.useGridTexture;
+                    *instanceBuffer++ = instance;
+                }
+            }
+        });
+
+        { // Animation Buffers
+            auto instanceBuffer = animatedInstanceBuffer.map();
+            auto jointsBuffer   = animatedJointsBuffer.map();
+
             for (auto & model_infos : RenderQueue::get().getQueue<AnimatedRenderInfo>())
             {
                 HybrisLoader::Skeleton * skeleton = &ModelLoader::get().getModel((Resources::Models::Files)model_infos.first)->getSkeleton();
 
                 for (auto & info : model_infos.second)
                 {
-                    InstanceAnimated instance = {};
-                    instance.world = info->transform;
-                    instance.worldInvT = info->transform.Invert().Transpose();
+                    StaticInstance instance = {};
+                    instance.world = info.transform;
+                    instance.worldInvT = info.transform.Invert().Transpose();
+                    instance.color = info.color;
+                    instance.useGridTexture = info.useGridTexture;
 
-                    if (strlen(info->animationName) != 0)
+                    AnimatedJoints joints;
+                    if (strlen(info.animationName) != 0)
                     {
-                        auto jointTransforms = skeleton->evalAnimation(info->animationName, info->animationTimeStamp);
+                        auto jointTransforms = skeleton->evalAnimation(info.animationName, info.animationTimeStamp);
                         for (size_t i = 0; i < jointTransforms.size(); i++)
                         {
-                            instance.jointTransforms[i] = jointTransforms[i];
+                            joints.jointTransforms[i] = jointTransforms[i];
                         }
                     }
 
                     *instanceBuffer++ = instance;
+                    *jointsBuffer++ = joints;
                 }
-            }
-        });
+            } // Animation Buffers
+
+            animatedInstanceBuffer.unmap();
+            animatedJointsBuffer.unmap();
+        }
+
+        { // New Animation Buffers
+            auto instanceBuffer = newAnimatedInstanceBuffer.map();
+            auto jointsBuffer   = newAnimatedJointsBuffer.map();
+
+            for (auto & model_infos : RenderQueue::get().getQueue<NewAnimatedRenderInfo>())
+            {
+                HybrisLoader::Skeleton * skeleton = &ModelLoader::get().getModel((Resources::Models::Files)model_infos.first)->getSkeleton();
+
+                for (auto & info : model_infos.second)
+                {
+                    StaticInstance instance = {};
+                    instance.world = info.transform;
+                    instance.worldInvT = info.transform.Invert().Transpose();
+                    instance.color = info.color;
+                    instance.useGridTexture = info.useGridTexture;
+
+                    AnimatedJoints joints;
+                    for (size_t i = 0; i < info.joint_transforms->size(); i++)
+                    {
+                        joints.jointTransforms[i] = info.joint_transforms->at(i);
+                    }
+
+                    *instanceBuffer++ = instance;
+                    *jointsBuffer++ = joints;
+                }
+            } // New Animation Buffers
+
+            newAnimatedInstanceBuffer.unmap();
+            newAnimatedJointsBuffer.unmap();
+        }
 
         lightsNew.write([](Light * lightBuffer)
         {
             for (auto & info : RenderQueue::get().getQueue<LightRenderInfo>())
             {
                 Light light = {};
-                light.range = info->range;
-                light.intensity = info->intensity;
-                light.color = DirectX::SimpleMath::Vector3(info->color.x, info->color.y, info->color.z);
+                light.range = info.range;
+                light.intensity = info.intensity;
+                light.color = DirectX::SimpleMath::Vector3(info.color.x, info.color.y, info.color.z);
 
-                light.position = info->position;
+                light.position = info.position;
                 light.viewPosition = DirectX::SimpleMath::Vector4::Transform
                 (
-                    DirectX::SimpleMath::Vector4(info->position.x, info->position.y, info->position.z, 1.f), 
+                    DirectX::SimpleMath::Vector4(info.position.x, info.position.y, info.position.z, 1.f), 
                     Global::mainCamera->getView()
                 );
 
@@ -469,248 +654,4 @@ namespace Graphics
     }
 
 
-	void Renderer::registerDebugFunction()
-	{
-		/*DebugWindow *debugWindow = DebugWindow::getInstance();
-		
-		debugWindow->registerCommand("GFX_SET_SSAO", [&](std::vector<std::string> &args)->std::string
-		{
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableSSAO = std::stoi(args[0]);
-
-                    if (enableSSAO)
-                        catcher = "SSAO enabled!";
-
-                    else
-                        catcher = "SSAO disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-		});
-        
-        debugWindow->registerCommand("GFX_SET_SNOW", [&](std::vector<std::string> &args)->std::string
-        {
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableSnow = std::stoi(args[0]);
-
-                    if (enableSnow)
-                        catcher = "Snow enabled!";
-
-                    else
-                        catcher = "Snow disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-        });
-
-		debugWindow->registerCommand("GFX_SET_GLOW", [&](std::vector<std::string> &args)->std::string
-		{
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableGlow = std::stoi(args[0]);
-
-                    if (enableGlow)
-                        catcher = "Glow enabled!";
-
-                    else
-                        catcher = "Glow disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-		});
-
-		debugWindow->registerCommand("GFX_SET_FOG", [&](std::vector<std::string> &args)->std::string
-		{
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableFog = std::stoi(args[0]);
-
-                    if (enableFog)
-                        catcher = "Fog enabled!";
-
-                    else
-                        catcher = "Fog disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-		});
-
-		debugWindow->registerCommand("GFX_SET_DOF", [&](std::vector<std::string> &args)->std::string
-		{
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableDOF = std::stoi(args[0]);
-
-                    if (enableDOF)
-                        catcher = "Depth of field enabled!";
-
-                    else
-                        catcher = "Depth of field disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-		});
-
-        debugWindow->registerCommand("GFX_SET_DOF_SLIDERS", [&](std::vector<std::string> &args)->std::string
-        {
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableCoCWindow = std::stoi(args[0]);
-
-                    if (enableCoCWindow)
-                        catcher = "Circle of confusion window enabled!";
-
-                    else
-                        catcher = "Circle of confusion window disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-        });
-
-        debugWindow->registerCommand("GFX_SET_HUD", [&](std::vector<std::string> &args)->std::string
-        {
-            std::string catcher = "";
-            try
-            {
-                if (args.size() != 0)
-                {
-                    enableHud = std::stoi(args[0]);
-
-                    if (enableHud)
-                        catcher = "HUD enabled!";
-
-                    else
-                        catcher = "HUD disabled!";
-                }
-                else
-                {
-                    catcher = "missing argument 0 or 1.";
-                }
-            }
-            catch (const std::exception&)
-            {
-                catcher = "Argument must be 0 or 1.";
-            }
-
-            return catcher;
-        });
-
-		debugWindow->registerCommand("GFX_SET_FREEZE", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-			try
-			{
-                if (args.size() != 0)
-                {
-                    this->statusData.freeze = std::stof(args[0]);
-                }
-                else
-                {
-                    return "missing argument freeze amount";
-                }
-			}
-			catch (const std::exception&)
-			{
-				catcher = "Argument must be float between 1 and 0";
-			}
-
-			return catcher;
-		});
-
-		debugWindow->registerCommand("GFX_SET_BURN", [&](std::vector<std::string> &args)->std::string
-		{
-			std::string catcher = "";
-			try
-			{
-                if (args.size() != 0)
-                {
-                    this->statusData.burn = std::stof(args[0]);
-                }
-                else
-                {
-                    return "missing argument burn amount";
-                }
-			}
-			catch (const std::exception&)
-			{
-				catcher = "Argument must be float between 1 and 0";
-			}
-
-			return catcher;
-		});*/
-	}
 }

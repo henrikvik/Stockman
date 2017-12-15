@@ -61,8 +61,12 @@ namespace Logic
 		bool animationTransition(float dt, float maxAnimationTime, bool forward);
 
         void setState(State state);
+        void setAlpha(float alpha);
+        void setUVS(FloatRect newUVs);
+        State getState() const { return state; }
 
         void render() const;
+
 	private:
         SpriteRenderInfo renderInfo;
         
@@ -78,6 +82,7 @@ namespace Logic
 		int m_activeOffset;
         bool m_highlighted;
         float m_animationTime;
+        bool m_hovered;
 	};
 }
 #endif

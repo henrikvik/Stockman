@@ -14,7 +14,6 @@
 
 #include <vector>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 
 
 namespace Graphics
@@ -58,6 +57,7 @@ namespace Logic
 		~SkillManager();
 
 		void init(Physics* physics, ProjectileManager* projectileManager);
+        void reset();
 
 		void switchToSkill(std::vector<SKILL> skillsToUse);
 
@@ -68,6 +68,7 @@ namespace Logic
 		void render();
 
         Skill* getSkill(int index) const;
+        Skill* getActiveSkill(SKILL skill) const;
 	
 	private:
 

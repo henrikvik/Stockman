@@ -1,8 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <Camera.h>
-#include <Renderer.h>
+#include <Graphics\include\Renderer.h>
 #include <StateMachine/StateMachine.h>
 #include <Keyboard.h>
 #include <Mouse.h>
@@ -14,6 +13,7 @@ public:
 	virtual ~Engine();
 
 	int run();
+    static HWND *g_window; // just awful
 private:
 	Logic::StateMachine* game;
 	HWND window;
@@ -31,9 +31,9 @@ private:
 	std::unique_ptr<DirectX::Keyboard> mKeyboard;
 	std::unique_ptr<DirectX::Mouse> mMouse;
     std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker> mTracker;
-	BOOL isFullscreen;
 
 	void initializeWindow();
 	HRESULT createSwapChain();
-	long long timer();
+	long long timer(); //A long long timer ago
+    
 };

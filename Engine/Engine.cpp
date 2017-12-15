@@ -1,7 +1,8 @@
-#include "Profiler.h"
+#include <Singletons/Profiler.h>
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
+#include <Graphics\include\Utility\Texture.h>
 
 #include <Windows.h>
 #include <imgui.h>
@@ -12,21 +13,24 @@
 #include "Engine.h"
 #include "Typing.h"
 
-#include "DebugWindow.h"
+#include <Singletons/DebugWindow.h>
 #include <Graphics\include\Device.h>
 #include <Graphics\include\RenderQueue.h>
 #include <Graphics\include\MainCamera.h>
+#include <Engine\Settings.h>
 
 #pragma comment (lib, "d3d11.lib")
+#pragma comment (lib, "d3dcompiler.lib")
+
+#include "resource.h"
 
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+bool settingsFullScreenOverRide = false;
+HWND *Engine::g_window = nullptr;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	//if (
 	ImGui_ImplDX11_WndProcHandler(hwnd, msg, wparam, lparam);
-		//)
-		//return true;
 	Typing* theChar = Typing::getInstance(); //might need to be deleted
 	DebugWindow * debug = DebugWindow::getInstance();
 	int key = MapVirtualKey((int)wparam, 0);
@@ -40,17 +44,29 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_KEYUP:
         if (key == 41)
         {
-            DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
             debug->toggleDebugToDraw();
+            DirectX::Mouse::Get().SetMode(debug->isOpen() ? DirectX::Mouse::MODE_ABSOLUTE : DirectX::Mouse::MODE_RELATIVE);
         }
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
+        if (wparam == VK_RETURN)
+            if ((HIWORD(lparam) & KF_ALTDOWN)) {
+                settingsFullScreenOverRide = !settingsFullScreenOverRide;
+                Settings& setting = Settings::getInstance();
+                setting.setWindowed(settingsFullScreenOverRide);
+            }
+                
 	case WM_SYSKEYUP:
 		DirectX::Keyboard::ProcessMessage(msg, wparam, lparam);
 		break;
-
-	case WM_ACTIVATEAPP:
+    case WM_KILLFOCUS:
+        if (Engine::g_window) // make sure window is created
+        {
+            DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+        }
+        break;
+    case WM_ACTIVATEAPP:
 	case WM_INPUT:
 	case WM_MOUSEMOVE:
 	case WM_LBUTTONDOWN:
@@ -84,11 +100,11 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
 	this->hInstance = hInstance;
 	this->initializeWindow();
 
-	this->isFullscreen = false;
 	this->mKeyboard = std::make_unique<DirectX::Keyboard>();
 	this->mMouse = std::make_unique<DirectX::Mouse>();
     this->mTracker = std::make_unique<DirectX::Keyboard::KeyboardStateTracker>();
 	this->mMouse->SetWindow(window);
+    Engine::g_window = &window;
 
     DebugWindow * debug = DebugWindow::getInstance();
 
@@ -99,11 +115,12 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         std::string catcher = "";
         try
         {
+            Settings& setting = Settings::getInstance();
             if (args.size() != 0)
             {
-                isFullscreen = std::stoi(args[0]);
+                setting.setWindowed(std::stoi(args[0]));
 
-                if (isFullscreen)
+                if (setting.getWindowed())
                     catcher = "Fullscreen enabled!";
 
                 else
@@ -122,8 +139,36 @@ Engine::Engine(HINSTANCE hInstance, int width, int height, LPWSTR *cmdLine, int 
         return catcher;
     });
 
+    debug->registerCommand("CHANGE_NAME", [&](std::vector<std::string> &args)->std::string
+    {
+        std::string catcher = "";
+        try
+        {
+            Settings setting = Settings::getInstance();
+            if (args.size() != 0)
+            {
+                setting.setName(args[0]);
+                catcher = "Named have been changed!";
+            }
+            else
+            {
+                catcher = "Please add your new alias too.";
+            }
+        }
+        catch (const std::exception&)
+        {
+            catcher = "Are you stupid?";
+        }
+
+        return catcher;
+    });
+
+    // load settings before starting
+    Settings& setting = Settings::getInstance();
+    setting.readFromFile();
+
 //    game = new Logic::StateMachine(cmdLine, args);
-    game = new Logic::StateMachine();
+    game = newd Logic::StateMachine();
 }
 
 Engine::~Engine()
@@ -154,7 +199,11 @@ void Engine::initializeWindow()
 	wc.lpfnWndProc = WndProc;
 	wc.hInstance = this->hInstance;
 	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
+    #ifdef _DEBUG
 	wc.hCursor = LoadCursorFromFile("../Resources/Cursors/cursor.cur");
+    #else
+    wc.hCursor = LoadCursorFromFile("Resources/Cursors/cursor.cur");
+    #endif
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.lpszClassName = "Basic test";
 
@@ -184,6 +233,9 @@ void Engine::initializeWindow()
 		MessageBox(this->window, "window creation failed", "Error", MB_OK);
 	}
 
+    HICON icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(101));
+    SendMessage(window, WM_SETICON, ICON_BIG, (LPARAM)icon);
+
     SetWindowLong(window, GWL_STYLE, GetWindowLong(window, GWL_STYLE) & ~WS_SIZEBOX);
 
 	SetWindowPos(GetConsoleWindow(), 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
@@ -199,7 +251,7 @@ HRESULT Engine::createSwapChain()
 	DXGI_SWAP_CHAIN_DESC desc;
 	ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	desc.BufferCount = 2;
+	desc.BufferCount = 3;
 	desc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
     desc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -209,8 +261,8 @@ HRESULT Engine::createSwapChain()
 	desc.BufferDesc.Height = this->mHeight;
 	desc.BufferDesc.Width = this->mWidth;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	desc.BufferDesc.RefreshRate.Denominator = 0;
-	desc.BufferDesc.RefreshRate.Numerator = 0;
+	desc.BufferDesc.RefreshRate.Denominator = 1;
+	desc.BufferDesc.RefreshRate.Numerator = 60;
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
@@ -287,16 +339,59 @@ long long Engine::timer()
 	}
 }
 
-Profiler *g_Profiler;
 
 int Engine::run()
 {
+    Settings& setting = Settings::getInstance();
 	MSG msg = { 0 };
 	this->createSwapChain();
-	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, DirectX::XMConvertToRadians(90));
+	Global::mainCamera = new Graphics::Camera(mDevice, mWidth, mHeight, 250, setting.getFOV());
     Global::mainCamera->update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
+
+
+    {
+        
+
+        Graphics::Shader fullscreen_shader(Resources::Shaders::FullscreenQuad);
+        Texture loadscreen(Resources::Textures::Paths.at(Resources::Textures::LaunchScreen));
+
+        static float clearColor[4] = { 0 };
+        Global::context->ClearRenderTargetView(mBackBufferRTV, clearColor);
+        Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+        DirectX::CommonStates states(mDevice);
+        Global::context->OMSetDepthStencilState(states.DepthNone(), 0);
+        //Global::context->OMSetBlendState(states.Opaque(), 0, -1);
+        Global::context->RSSetState(states.CullNone());
+
+        Global::context->IASetInputLayout(nullptr);
+        Global::context->VSSetShader(fullscreen_shader, nullptr, 0);
+        Global::context->PSSetShader(fullscreen_shader, nullptr, 0);
+
+        auto sampler = states.LinearWrap();
+        Global::context->PSSetSamplers(0, 1, &sampler);
+
+        
+        Global::context->PSSetShaderResources(0, 1, loadscreen);
+        Global::context->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
+
+        D3D11_VIEWPORT viewPort = { 0 };
+        viewPort.Width = WIN_WIDTH;
+        viewPort.Height = WIN_HEIGHT;
+        viewPort.MaxDepth = 1.0f;
+
+        Global::context->RSSetViewports(1, &viewPort);
+
+        Global::context->Draw(3, 0);
+
+        Global::context->OMSetRenderTargets(0, Global::nulls, nullptr);
+        Global::context->PSSetShaderResources(0, 1, Global::nulls);
+        mSwapChain->Present(0, 0);
+    }
+
+
 
 	this->renderer = newd Graphics::Renderer(mDevice, mContext, mBackBufferRTV, Global::mainCamera);
 
@@ -307,9 +402,11 @@ int Engine::run()
     long long totalTime = 0;
 	bool showProfiler = false;
 
+    DirectX::SimpleMath::Vector3 oldPos = { 0, 0, 0 };
+
 	bool running = true;
 
-	g_Profiler = newd Profiler(mDevice, mContext);
+	Profiler::set(newd Profiler(mDevice, mContext));
 	g_Profiler->registerThread("Main Thread");
     TbbProfilerObserver observer(g_Profiler);
 
@@ -335,23 +432,45 @@ int Engine::run()
             }
 		}
 
+        if (!running) break;
+
         auto state = mKeyboard->GetState();
         mTracker->Update(state);
 
         static BOOL test = false;
         mSwapChain->GetFullscreenState(&test, NULL);
-		if (this->isFullscreen != test)
+
+        //temp
+        SpecialEffectRenderInfo shakeInfo;
+        shakeInfo.type = shakeInfo.screenBounce;
+        shakeInfo.duration = 0.2f;
+        shakeInfo.radius = 160.0f;
+        shakeInfo.bounceMax = 15.0f;
+        shakeInfo.direction = DirectX::SimpleMath::Vector2(0.0f, 1.0f);
+        shakeInfo.affectEveryThing = false;
+
+#ifdef _DEBUG
+        if (mTracker->pressed.G)
+            QueueRender(shakeInfo);
+#endif // _DEBUG
+        Settings& setting = Settings::getInstance();
+		if (setting.getWindowed() != test )//&& settingsFullScreenOverRide == false)
 		{
-			mSwapChain->SetFullscreenState(isFullscreen, NULL);
+			mSwapChain->SetFullscreenState(setting.getWindowed(), NULL);
 		}
 
-		if (mTracker->pressed.F1)
+
+
+        //static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
+        //Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);		          
+
+		if (mTracker->pressed.F2)
 		{
 			g_Profiler->capture();
 			showProfiler = true;
 		}
 
-		if (mTracker->pressed.F2)
+		if (mTracker->pressed.F3)
 		{
             showProfiler = !showProfiler;
 		}
@@ -369,17 +488,15 @@ int Engine::run()
 
 		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
         if (!debug->isOpen())
-            game->update(float(deltaTime));
+            if (game->update(float(deltaTime)))
+                running = false;
         PROFILE_END();
+
+        Global::mainCamera->render();
 
 		PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game->render();
 		PROFILE_END();
-
-        // ! Reminder !  
-        // Gives a small mem leak, but it's too cool to remove ^.^
-        static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
-        Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);
         
         PROFILE_BEGINC("Renderer::update()", EventColor::Pear);
         renderer->update(deltaTime / 1000.f);
@@ -390,29 +507,34 @@ int Engine::run()
         PROFILE_END();
 
 		g_Profiler->poll();
-		if (showProfiler) {
-			
-			ImGui::SetNextWindowPos(ImVec2(0, 0));
-			ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
-			g_Profiler->render();
-		}
+//#ifdef _DEBUG
+        if (showProfiler) {
 
-        Graphics::Debug::Render(Global::mainCamera);
+            ImGui::SetNextWindowPos(ImVec2(0, 0));
+            ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
+            g_Profiler->render();
+    }
+//#endif // _DEBUG
+
+// TODO FIX IMGUI
+//        Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
 		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
 		PROFILE_END();
 
 		PROFILE_BEGINC("IDXGISwapChain::Present()", EventColor::Cyan);
-		mSwapChain->Present(0, 0);
+		mSwapChain->Present(1, 0);
 		PROFILE_END();
 		g_Profiler->frame();
 
         RenderQueue::get().clearAllQueues();
     }
 
+    setting.writeToFile();
     delete Global::mainCamera;
     Graphics::Debug::Destroy();
+//    mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
     g_Profiler->end();
 	delete g_Profiler;
 

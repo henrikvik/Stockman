@@ -4,6 +4,7 @@
 #include <Graphics\include\RenderQueue.h>
 
 #include <Entity\Entity.h>
+#include <Entity\AnimatedModel.h>
 #include <AI\EnemyType.h>
 
 #pragma region Comment
@@ -29,9 +30,11 @@ namespace Logic
 	class Enemy : public Entity
 	{
 		private:
+            static const int MIN_Y;
+            static const float MAX_TARGET_Y;
             // This is used to count how many callbacks is added, 
             // so this HAS to be ZERO before this is destroyed or
-            // the showcase at PAX East will go bad
+            // the showcase at PAX East will go PAX South
             int m_nrOfCallbacksEntities;
 
             // base
@@ -40,28 +43,43 @@ namespace Logic
 
 			float m_bulletTimeMod;									// Variables for effect modifiers
             float m_moveSpeedMod;
-			ENEMY_TYPE m_enemyType;
+			EnemyType m_enemyType;
 
+            AnimatedModel animatedModel;
 			Behavior *m_behavior;
 
-            StaticRenderInfo enemyRenderInfo;
+            float maxAnimationTime;
+
+            bool m_stunned;
+            float m_fireTimer;
+
+            float m_blinkTimer;
+        protected:
             LightRenderInfo light;
-
 		public:	
-			enum BEHAVIOR_ID { TEST, RANGED, MELEE };
+			enum BEHAVIOR_ID { TEST, RANGED, MELEE, BOSS_BADDIE, STAY };
 
-			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId);
+			Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int maxHealth, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 			virtual ~Enemy();
 
-			virtual void update(Player const &player, float deltaTime,
+			virtual void update(Player &player, float deltaTime,
 				std::vector<Enemy*> const &closeEnemies);
-			virtual void useAbility(Entity const &target) {};
+            virtual void updateAnimation(float deltaTime);
+
+            virtual void useAbility(Player &target) {};
+            virtual void useAbility(Player &target, int phase) { useAbility(target); };
+
 			virtual void updateDead(float deltaTime) = 0;
-			virtual void updateSpecific(Player const &player, float deltaTime) = 0;
+			virtual void updateSpecific(Player &player, float deltaTime) = 0;
+
+            virtual void onSpawn() {};
 
 			virtual void affect(int stacks, Effect const &effect, float dt);
+            void onEffectAdd(int stacks, Effect const &effect);
+            void onEffectEnd(int stacks, Effect const &effect);
 
-			Projectile* shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale);
+            Projectile* shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale, bool sensor = false);
+            Projectile* shoot(btVector3 dir, ProjectileData data, float speed, float gravity, float scale, bool sensor = false);
 
 			// for debugging
 			void debugRendering();
@@ -70,19 +88,26 @@ namespace Logic
             void decreaseCallbackEntities();
             bool hasCallbackEntities();
 
-			void damage(int damage);
+			virtual void damage(int damage);
+
+            void setMoveSpeed(float moveSpeed);
 			void setBehavior(BEHAVIOR_ID id);
-			void setEnemyType(ENEMY_TYPE id);
+			void setEnemyType(EnemyType id);
 
             int getHealth() const;
             int getMaxHealth() const;
             int getBaseDamage() const;
 
 			float getMoveSpeed() const;
-			ENEMY_TYPE getEnemyType() const;
+            float getSpeedMod() const;
+
+            EnemyType getEnemyType() const;
 			Behavior* getBehavior() const;
 
+            AnimatedModel& getAnimatedModel();
+
             void render() const;
+            virtual void renderSpecific() const {};
 	};
 }
 

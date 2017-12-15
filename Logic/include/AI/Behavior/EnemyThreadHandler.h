@@ -20,7 +20,7 @@ namespace Logic
             Player const *player;
         };
     private:
-        static const int NR_OF_THREADS = 8;
+        static const int NR_OF_THREADS = 8, MAX_WORK;
 
         std::queue<WorkData> m_work;
         std::mutex m_workMutex;
@@ -28,13 +28,14 @@ namespace Logic
         std::thread *threads[NR_OF_THREADS];
 
         bool m_killChildren;
-        void initThreads();
         
         void resetThreads();
         void deleteThreads();
     public:
         EnemyThreadHandler();
         ~EnemyThreadHandler();
+        
+        void initThreads();
 
         void updateEnemiesAndPath(WorkData &data);
         void threadMain();

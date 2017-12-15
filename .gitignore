@@ -6,6 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.nvuser
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -21,6 +22,8 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+[Tt]emp/
+[Bb]uild/
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -271,3 +274,6 @@ imgui.ini
 *highscore.lw
 */Cmd.lw
 Cmd.lw
+/Engine/Resources/Data/Settings.lw
+*/Settings.lw
+Settings.lw

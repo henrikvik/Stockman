@@ -18,6 +18,7 @@
 
 namespace Logic
 {
+    class Entity;
 	class StatusManager
 	{
 	public:
@@ -29,25 +30,34 @@ namespace Logic
 
 		enum EFFECT_ID {
 			ON_FIRE, FREEZE, BOOST_UP, AMMO_PICK_UP_PRIMARY, AMMO_PICK_UP_SECONDARY,
-            SHIELD_CHARGE, BULLET_TIME, ENRAGE, HEALTH_P1, LAST_ITEM_IN_EFFECTS
+            SHIELD_CHARGE, BULLET_TIME, ENRAGE, HEALTH_P1, STUN, MOVEMENTSPEED_UP, 
+            MOVEMENTSPEED_DOWN, ON_KILL, INVULNERABLE, DAMAGE_ONCE, LAST_ITEM_IN_EFFECTS
 		};
 
 		enum UPGRADE_ID {
-			BOUNCE, P10_AMMO, LAST_ITEM_IN_UPGRADES
+			BOUNCE, P1_DAMAGE, FIRE_UPGRADE, FROST_UPGRADE, P45_PERC_JUMP, M33_PERC_RELOAD_SPEED,
+            P20_PERC_RATE_OF_FIRE, M20_PERC_CD, P20_PERC_MOVEMENTSPEED, P40_MAGSIZE, P20_AMMOCAP, 
+            LAST_ITEM_IN_UPGRADES
 		};
 
 		StatusManager();
 		~StatusManager();
 
 		void clear();
-		void update(float deltaTime);
+		void update(float deltaTime, Entity &entity);
 
-		void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, bool resetDuration = false);
+        void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, Entity* entity = nullptr);
+        void addStatus(StatusManager::EFFECT_ID effect_id, int nrOfStacks, float duration, bool add, Entity* entity = nullptr);
+        void addStatusResetDuration(StatusManager::EFFECT_ID effect_id, int nrOfStacks, Entity* entity = nullptr);
+
 		void removeOneStatus(int statusID);
 		void removeAllStatus(int statusID);
 
+        void copyUpgradesFrom(StatusManager &other);
+        /* USE Entity::upgrade instead !! */
 		void addUpgrade(UPGRADE_ID id);
-		Upgrade& getUpgrade(UPGRADE_ID id);
+        int getUpgradeStacks(UPGRADE_ID id);
+        Upgrade& getUpgrade(UPGRADE_ID id);
 
 		const Effect& getEffect(EFFECT_ID id) const;
 
@@ -55,7 +65,7 @@ namespace Logic
 		this is O(n) BUT it should NEVER be called ONCE PER FRAME
 		use affect() then instead 
 		
-		Don
+		- Donald Trump
 		*/
 		int getStacksOfEffectFlag(Effect::EFFECT_FLAG flag) const;
 
@@ -63,10 +73,9 @@ namespace Logic
         bool isOwningUpgrade(Upgrade::UPGRADE_FLAG flag);
 
 		// nr of stacks and the effect itself
+        // THESE TWO ARE GOING TO BE REMOVED; DO NOT USE THEM
 		std::vector<std::pair<int, Effect*>> getActiveEffects();
-		// return stack and id of effect
 		std::vector<std::pair<int, StatusManager::EFFECT_ID>> getActiveEffectsIDs();
-		std::vector<UPGRADE_ID>& getActiveUpgrades();
 	private:
 		static const int NR_OF_EFFECTS = EFFECT_ID::LAST_ITEM_IN_EFFECTS, NR_OF_UPGRADES = UPGRADE_ID::LAST_ITEM_IN_UPGRADES;
 		static Effect s_effects[NR_OF_EFFECTS];
@@ -78,7 +87,7 @@ namespace Logic
 
 		void removeEffect(int index);
 
-		std::vector<UPGRADE_ID> m_upgrades;
+        int m_upgradeStacks[NR_OF_UPGRADES];
 	};
 }
 

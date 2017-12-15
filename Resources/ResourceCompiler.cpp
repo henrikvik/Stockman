@@ -2,6 +2,7 @@
 #include <iostream>
 #include <set>
 #include <fstream>
+#include <unordered_map>
 
 namespace fs = std::experimental::filesystem;
 
@@ -27,6 +28,7 @@ struct Pad
 std::set<std::wstring> const whitelist =
 {
     L".hyb",
+    L".toml",
     L".hlsl",
     L".dds",
     L".png",
@@ -87,7 +89,11 @@ struct Dir
 
             for (auto & file : files)
             {
-                ostream << pad.str() << "{" << file.stem() << ", R\"(..\\" << file << ")\"}";
+                ostream << pad.str() << "{" << file.stem() << ", R\"(" 
+                #ifdef _DEBUG
+                << "..\\"
+                #endif
+                << file << ")\"}";
                 if (file != files.back())
                     ostream << ",";
                 ostream << "\n";
@@ -95,18 +101,52 @@ struct Dir
 
             pad.dec();
             ostream << pad.str() << "};\n";
+
+            ostream << pad.str() << "\n";
+            ostream << pad.str() << "Files toEnum(const char * str);\n";
         }
 
-
-        for (auto & dir : dirs)
-        {
-            if (dir.files.size() > 0 || dir.dirs.size() > 0)
-                dir.h(ostream, pad);
+        for (auto & dir : dirs) 
+        { 
+            if (dir.files.size() > 0 || dir.dirs.size() > 0) 
+            { dir.h(ostream, pad); } 
         }
 
         pad.dec();
         ostream << pad.str() << "}\n";
     }
+
+    void cpp(std::ostream & ostream, Pad & pad)
+    {
+        ostream << pad.str() << "namespace " << path.filename() << "\n";
+        ostream << pad.str() << "{\n";
+        pad.inc();
+
+        if (files.size() > 0)
+        {
+            ostream << pad.str() << "Files toEnum(const char * str)\n";
+            ostream << pad.str() << "{\n";
+            pad.inc();
+
+            for (auto & file : files)
+            {
+            ostream << pad.str() << "if (strcmp(str, \"" << file.stem() << "\") == 0) return " << file.stem() << ";\n";
+            } 
+            ostream << pad.str() << "throw \"Could not find matching enum.\";\n";
+            pad.dec();
+            ostream << pad.str() << "}\n";
+        }
+
+        for (auto & dir : dirs) 
+        { 
+            if (dir.files.size() > 0 || dir.dirs.size() > 0) 
+            { dir.cpp(ostream, pad); } 
+        }
+
+        pad.dec();
+        ostream << pad.str() << "}\n";
+    }
+
 };
 
 void buildModelFileList()
@@ -114,12 +154,17 @@ void buildModelFileList()
     std::set<fs::path> hybrisFiles;
 
     Dir resources("Resources");
-
     std::ofstream hfile("Resources/Resources.h", std::ios::trunc);
     hfile << "#pragma once\n";
     hfile << "#include <map>\n";
     resources.h(hfile, Pad());
     hfile.close();
+
+    std::ofstream cppfile("Resources/Resources.cpp", std::ios::trunc);
+    cppfile << "#include \"Resources.h\"\n";
+    resources.cpp(cppfile, Pad());
+    cppfile.close();
+
 
     std::cout << "Done\n";
 }

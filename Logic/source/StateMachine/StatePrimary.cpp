@@ -10,7 +10,7 @@
 // Debugging purposes
 #include <DebugDefines.h>
 #include <Engine\Typing.h>
-#include <Engine\DebugWindow.h> 
+#include <Singletons\DebugWindow.h> 
 #include <GameType.h>
 
 using namespace Logic;
@@ -21,6 +21,7 @@ StatePrimary::StatePrimary(StateBuffer* stateBuffer)
     m_wantToSwitchToType = StateType::Nothing;
     m_currentStateType = StateType::Nothing;
     m_currentState = nullptr;
+    m_quit = false;
 }
 
 StatePrimary::~StatePrimary()
@@ -41,11 +42,11 @@ void StatePrimary::reset()
 // Update the logic inside state, also checking if we should load next state
 void StatePrimary::update(float deltaTime)
 {
-    if (m_currentState)
-        m_currentState->update(deltaTime);
-
     if (m_wantToSwitchToType != m_currentStateType)
         loadState(m_wantToSwitchToType);
+
+    if (m_currentState)
+        m_currentState->update(deltaTime);
 }
 
 // Render everything in the currently active state
@@ -106,11 +107,16 @@ void StatePrimary::loadState(StateType state)
         return;
     }
 
-    // Saving new state in stateBuffer
-    m_stateBuffer->currentPrimaryState = m_currentState;
-
     m_currentState->SetFuncPrimarySwitch(SwitchPrimaryState);
     m_currentState->SetFuncSecondarySwitch(SwitchSecondaryState);
-    m_currentState->SetFuncGetCurrentPrimary(GetCurrentPrimaryState);
-    m_currentState->SetFuncGetCurrentSecondary(GetCurrentSecondaryState);
+}
+
+bool StatePrimary::getShouldQuit() const
+{
+    return m_quit;
+}
+
+void StatePrimary::setQuit()
+{
+    m_quit = true;
 }

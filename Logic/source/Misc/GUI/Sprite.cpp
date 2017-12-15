@@ -1,22 +1,23 @@
 #include <Misc\GUI\Sprite.h>
 #include <Engine\Constants.h>
 
-Sprite::Sprite(float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha)
+Sprite::Sprite(float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha, bool isMoveable)
 {
     sprite.alpha = alpha;
     sprite.texture = texture;
     sprite.textureRect = uvs;
+    sprite.isMoveable = isMoveable;
 
     sprite.screenRect = FloatRect(x / WIN_WIDTH, y / WIN_HEIGHT, width / WIN_WIDTH, height / WIN_HEIGHT);
 
 }
 
-Sprite::Sprite(Points screenpoint, Points spritepoint, float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha)
+Sprite::Sprite(Points screenpoint, Points spritepoint, float x, float y, float width, float height, Resources::Textures::Files texture, FloatRect uvs, float alpha, bool isMoveable)
 {
     sprite.alpha = alpha;
     sprite.texture = texture;
     sprite.textureRect = uvs;
-
+    sprite.isMoveable = isMoveable;
 
     switch (screenpoint)
     {
@@ -64,6 +65,10 @@ Sprite::Sprite(Points screenpoint, Points spritepoint, float x, float y, float w
     sprite.screenRect = FloatRect(x / WIN_WIDTH, y / WIN_HEIGHT, width / WIN_WIDTH, height / WIN_HEIGHT);
 }
 
+Sprite::Sprite()
+{
+}
+
 Sprite::~Sprite()
 {
 }
@@ -88,7 +93,7 @@ void Sprite::moveTexturePos(float topU, float topV, float bottomU, float bottomV
     sprite.textureRect.bottomRight.y += bottomV;
 }
 
-//moves the entire scren position rectangle by the pixel amount specified
+//moves the entire screen position rectangle by the pixel amount specified
 void Sprite::moveScreenPos(float x, float y)
 {
     sprite.screenRect.topLeft.x += (x / WIN_WIDTH);
@@ -98,7 +103,7 @@ void Sprite::moveScreenPos(float x, float y)
     sprite.screenRect.bottomRight.y += (y / WIN_HEIGHT);
 }
 
-//moves the corners of the cren position rectangle rectangle by the pixel amount specified
+//moves the corners of the screen position rectangle rectangle by the pixel amount specified
 void Sprite::moveScreenPos(float topX, float topY, float bottomX, float bottomY)
 {
     sprite.screenRect.topLeft.x += (topX / WIN_WIDTH);
@@ -189,7 +194,20 @@ FloatRect Sprite::getTextureRect() const
     return sprite.textureRect;
 }
 
+void Sprite::setAlpha(float alpha)
+{
+    this->sprite.alpha = alpha;
+}
+
+float Sprite::getAlpha() const
+{
+    return this->sprite.alpha;
+}
+
 void Sprite::render() const
 {
-    RenderQueue::get().queue(&sprite);
+    if (this->sprite.alpha > FLT_EPSILON)
+    {
+        QueueRender(sprite);
+    }
 }

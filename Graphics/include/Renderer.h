@@ -13,19 +13,18 @@
 #include "Utility\StructuredBuffer.h"
 #include "Utility\ShaderResource.h"
 #include "Lights\Sun.h"
-#include "Menu.h"
-#include "HUD.h"
 #include "HybrisLoader\HybrisLoader.h"
 #include "Fog.h"
+#include "Utility\PingPongBuffer.h"
 
 #include <SpriteBatch.h>
 
 #include "RenderPass\GUIRenderPass.h"
 
-
+#include "../export.h"
 namespace Graphics
 {
-	class Renderer
+	class GRAPHICS_API Renderer
     {
     public:
 
@@ -34,110 +33,75 @@ namespace Graphics
 
         void render() const;
         void update(float deltaTime);
-		void fillHUDInfo(HUDInfo * info);
-
-        void drawMenu(Graphics::MenuInfo * info);
-        void updateLight(float deltaTime, Camera * camera);
-
-        //indicates how gray the screen will be
-        void setBulletTimeCBuffer(float value);
     private:
+        ID3DUserDefinedAnnotation *DebugAnnotation;
 
-    #pragma region Shared Shader Resources
+        #pragma region Shared Shader Resources
         std::vector<RenderPass*> renderPasses;
         ShaderResource colorMap;
-        ShaderResource glowMap;
-        ShaderResource normalMap;
         DepthStencil shadowMap;
         DepthStencil depthStencil;
+
+
+
+        ID3D11ShaderResourceView *m_BloomSRV;
+        std::vector<ID3D11ShaderResourceView *> m_BloomSRVMipChain;
+        std::vector<ID3D11RenderTargetView *> m_BloomRTVMipChain;
 
         ID3D11ShaderResourceView  * lightOpaqueGridSRV;
         ID3D11UnorderedAccessView * lightOpaqueGridUAV;
         StructuredBuffer<uint32_t> lightOpaqueIndexList;
         StructuredBuffer<Light>    lightsNew;
 
+        ID3D11ShaderResourceView *m_ViewSpaceDepthSRV;
+        ID3D11RenderTargetView *m_ViewSpaceDepthRTV;
+
+        ID3D11ShaderResourceView *m_AOSlicesSRV;
+
+        ID3D11ShaderResourceView *m_AOSliceSRV[2];
+        ID3D11RenderTargetView *m_AOSliceRTV[2];
+
         ID3D11RenderTargetView * backBuffer;
 
-        ShaderResource* fakeBackBuffer;
-        ShaderResource* fakeBackBufferSwap;
+        PingPongBuffer fakeBuffers;
+        #pragma endregion
 
-    #pragma region Instance Buffers
-
-        using float4x4 = DirectX::SimpleMath::Matrix;
-        using float4 = DirectX::SimpleMath::Vector4;
-        using float3 = DirectX::SimpleMath::Vector3;
-        using float2 = DirectX::SimpleMath::Vector2;
-
-        struct InstanceStatic
-        {
-            float4x4 world;
-            float4x4 worldInvT;
-        };
-        struct InstanceAnimated : InstanceStatic
-        {
-            float4x4 jointTransforms[20];
-        };
-
-
+        #pragma region Instance Buffers
         void writeInstanceBuffers();
-        StructuredBuffer<InstanceStatic> instanceStaticBuffer;
-        StructuredBuffer<InstanceAnimated> instanceAnimatedBuffer;
-    #pragma endregion
 
+        struct StaticInstance
+        {
+            DirectX::SimpleMath::Matrix world;
+            DirectX::SimpleMath::Matrix worldInvT;
+            DirectX::SimpleMath::Vector3 color;
+            UINT useGridTexture;
+        };
+        struct AnimatedJoints
+        {
+            DirectX::SimpleMath::Matrix jointTransforms[32];
+        };
 
-    #pragma endregion
+        float grassTime;
+        ConstantBuffer<float> grassTimeBuffer;
+        StructuredBuffer<StaticInstance> foliageInstanceBuffer;
+
+        StructuredBuffer<StaticInstance> staticInstanceBuffer;
+        StructuredBuffer<StaticInstance> animatedInstanceBuffer;
+        StructuredBuffer<AnimatedJoints> animatedJointsBuffer;
+
+        StructuredBuffer<StaticInstance> newAnimatedInstanceBuffer;
+        StructuredBuffer<AnimatedJoints> newAnimatedJointsBuffer;
+        #pragma endregion
+
         Sun sun;
-        Shader forwardPlus;
-		Shader depthShader;
 
         D3D11_VIEWPORT viewPort;
 
-
-        ConstantBuffer<float> bulletTimeBuffer;
-
-
-		//superTemp
-		struct StatusData
-		{
-			float burn;
-			float freeze;
-		} statusData;
-
 		void clear() const;
-		void swapBackBuffers();
 		
-#pragma region Foliage
-		 
+
 		ConstantBuffer <UINT> timeBuffer;
-		UINT grassTime = 0;
 		Shader foliageShader;
-#pragma endregion
-
-        void drawToBackbuffer(ID3D11ShaderResourceView * texture);
-
-		void registerDebugFunction();
-
-
-    #pragma region RenderDebugInfo
-
-        Shader debugRender;
-        std::vector<RenderDebugInfo*> renderDebugQueue;
-        StructuredBuffer<DirectX::SimpleMath::Vector3> debugPointsBuffer;
-        ConstantBuffer<DirectX::SimpleMath::Color> debugColorBuffer;
-        void renderDebugInfo(Camera* camera);
-
-    #pragma endregion
 		Fog fog;
-
-    #pragma region Draw Functions and Buffers
-
-
-
-
-
-    #pragma endregion
-
-
-
     };
 };

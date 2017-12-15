@@ -3,21 +3,51 @@
 
 #include <Misc\GUI\iMenu.h>
 #include <Misc\NonCopyable.h>
+#include <Misc\FileLoader.h>
+#include <Misc\GUI\iMenuAction.h>
+#include <Misc\GUI\Specific\iMenuSkillPick.h>
+#include <Misc\GUI\Specific\iMenuIntro.h>
+#include <Misc\GUI\Specific\iMenuLoading.h>
+#include <Misc\GUI\Specific\iMenuHighscore.h>
+#include <Misc\GUI\Specific\iMenuFirstTime.h>
+#include <Misc\GUI\Specific\iMenuCards.h>
+#include <Misc\GUI\Specific\iMenuControls.h>
+#include <Misc\GUI\Specific\iMenuSettings.h>
+#include <Misc\GUI\Specific\iMenuGameOver.h>
+#include <Misc\GUI\Specific\iMenuCinematic.h>
+#include <Misc\GUI\Specific\iMenuCredits.h>
 
 namespace Logic
 {
     class iMenuFactory : public NonCopyable
     {
     public:
-        iMenuFactory() { }
-        ~iMenuFactory() { }
+        iMenuFactory();
+        ~iMenuFactory();
 
-        iMenu* buildMenuStart();
-        iMenu* buildMenuSettings();
-        iMenu* buildMenuSkill();
-        iMenu* buildMenuCard();
-        iMenu* buildMenuHighscore();
-        iMenu* buildMenuGameover();
+        iMenuIntro*         buildMenuIntro();
+        iMenuFirstTime*     buildMenuFirstTime();
+        iMenu*              buildMenuStart();
+        iMenuSettings*      buildMenuSettings();
+        iMenuSettings*      buildMenuPauseSettings();
+        iMenuSkillPick*     buildMenuSkill();
+        iMenuCards*         buildMenuCard();
+        iMenuHighscore*     buildMenuHighscore();
+        iMenuHighscore*     buildMenuHighscoreGameOver();
+        iMenuGameOver*      buildMenuGameover();
+        iMenu*              buildMenuPause();
+        iMenuCredits*       buildMenuGameWon();
+        iMenuControls*      buildMenuControls();
+        iMenuLoadingPre*    buildMenuLoadingPre();
+        iMenuLoadingPost*   buildMenuLoadingPost();
+        iMenuCinematic*     buildMenuCinematic();
+        iMenuCredits*       buildMenuCredits();
+
+    private:
+        std::vector<FileLoader::LoadedStruct> buttonFile;
+        std::vector<FileLoader::LoadedStruct> sliderFile;
+        iMenu::ButtonData buildButton(std::string name, std::function<void(void)>);
+        iMenu::SliderData buildSlider(std::string name, float* value, float minValue, float maxValue, float delimiter);
     };
 }
 

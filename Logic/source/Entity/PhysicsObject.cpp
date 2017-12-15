@@ -1,9 +1,12 @@
 #include "../../include/Entity/PhysicsObject.h"
+#include <Physics/Physics.h>
+#include <Projectile\Projectile.h>
+#include <Player\Player.h>
 #include <Engine\newd.h>
 
 using namespace Logic;
 
-PhysicsObject::PhysicsObject(btRigidBody* body, btVector3 halfExtent)
+PhysicsObject::PhysicsObject(btRigidBody* body, btVector3 halfExtent, btVector3 modelOffset)
 {
 	if (body)
 	{
@@ -13,6 +16,7 @@ PhysicsObject::PhysicsObject(btRigidBody* body, btVector3 halfExtent)
 
 		// Saving halfextent
 		m_halfextent = halfExtent;
+        m_modelOffset = modelOffset;
 
 		// Saving ptr to transform
 		m_transform = &m_body->getWorldTransform();
@@ -61,40 +65,62 @@ void PhysicsObject::updatePhysics(float deltaTime)
 	// Updating the positions of the weakpoints
 	if (!m_weakPoints.empty())
 	{
+        float n[16];
+        m_transform->getOpenGLMatrix((btScalar*)(&n));
+
 		for (int i = 0; i < m_weakPoints.size(); i++)
 		{
 			Weakpoint weakPoint = m_weakPoints[i];
 
-			float n[16];
-			m_transform->getOpenGLMatrix((btScalar*)(&n));
 			weakPoint.body->getWorldTransform().setFromOpenGLMatrix((btScalar*)(&n));
-			weakPoint.body->getWorldTransform().setOrigin(m_transform->getOrigin() + btVector3(n[4] * weakPoint.offset.x(), n[5] * weakPoint.offset.y(), n[6] * weakPoint.offset.z()));
+            weakPoint.body->getWorldTransform().setOrigin(m_transform->getOrigin() + weakPoint.offset.rotate(m_transform->getRotation().getAxis(), m_transform->getRotation().getAngle()));
 		}
 	}
 
 	// Get the new transformation from bulletphysics and putting in graphics
 }
 
-void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, const btRigidBody * collidedWithYour)
+void PhysicsObject::collision(PhysicsObject & other, btVector3 contactPoint, Physics &physics)
 {
 	// Checks if the collision happened on one of the weakpoints
 	bool hit = false;
 	if (!m_weakPoints.empty())
 	{
-		for (int i = 0; i < m_weakPoints.size(); i++)
-		{
-			Weakpoint weakPoint = m_weakPoints[i];
+        Projectile* projectile = dynamic_cast<Projectile*>(&other);
+        // Check if other == projectile and not melee
+        if (projectile && projectile->getProjectileData().type != ProjectileTypeMelee)
+        {
+            for (int i = 0; i < m_weakPoints.size(); i++)   
+            {
+                Weakpoint weakPoint = m_weakPoints[i];
 
-			if (collidedWithYour == weakPoint.body)
-			{
-				onCollision(other, contactPoint, weakPoint.multiplier);
-				hit = true;
-			}
-		}
+                FunContactResult res(
+                    [&](btBroadphaseProxy* proxy) -> bool {
+                    return true;
+                },
+                    [&](btManifoldPoint& cp,
+                        const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                        const btCollisionObjectWrapper* colObj1, int partId1, int index1) -> btScalar
+                {
+                    if (cp.getDistance() < 0.05f)
+                    {
+                        onCollision(other, contactPoint, weakPoint.multiplier);
+                        hit = true;
+                    }
+                    return 0;
+                });
+                physics.contactPairTest(weakPoint.body, other.getRigidBody(), res);
+            }
+        }
 	}
 
 	if (!hit)
 		onCollision(other, contactPoint, 1.f);
+}
+
+void Logic::PhysicsObject::setModelOffset(btVector3 modelOffset)
+{
+    m_modelOffset = modelOffset;
 }
 
 void Logic::PhysicsObject::setHalfExtent(btVector3 halfExtent)
@@ -129,10 +155,11 @@ DirectX::SimpleMath::Vector3 PhysicsObject::getScale() const
 
 DirectX::SimpleMath::Matrix PhysicsObject::getTransformMatrix() const
 {
-	// Making memory for a matrix
-	float* m = newd float[4 * 16];
+    //btVector3 pos = m_transform->getOrigin();
+    //m_transform->setOrigin(pos + m_modelOffset);
 
-	// Getting this entity's matrix
+	// Making memory for a matrix
+	float m[16];
 	m_transform->getOpenGLMatrix((btScalar*)(m));
 
 	// Translating to DirectX Math and assigning the variables
@@ -141,10 +168,27 @@ DirectX::SimpleMath::Matrix PhysicsObject::getTransformMatrix() const
 	//Find the scaling matrix
 	auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);
 
-	// Deleting the old created variables from memory
-	delete m;
-
 	return scale * transformMatrix;
+
+    //m_transform->setOrigin(pos);
+}
+
+DirectX::SimpleMath::Matrix PhysicsObject::getModelTransformMatrix() const
+{
+    btTransform trans = btTransform(*m_transform);
+    trans.setOrigin(trans.getOrigin() + m_modelOffset);
+
+    // Making memory for a matrix
+    float m[16];
+    trans.getOpenGLMatrix((btScalar*)(m));
+
+    // Translating to DirectX Math and assigning the variables
+    DirectX::SimpleMath::Matrix transformMatrix(m);
+
+    //Find the scaling matrix
+    auto scale = DirectX::SimpleMath::Matrix::CreateScale(m_halfextent.getX() * 2, m_halfextent.getY() * 2, m_halfextent.getZ() * 2);
+
+    return scale * transformMatrix;
 }
 
 btRigidBody* PhysicsObject::getRigidBody()

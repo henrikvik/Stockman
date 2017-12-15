@@ -9,7 +9,6 @@
 #include <AI\EnemyType.h>
 #include <Graphics\include\RenderQueue.h>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 #include <Misc/Sound/NoiseMachine.h>
 #include <Misc/Sound/SoundSource.h>
 
@@ -20,6 +19,7 @@ namespace Sound
 
 namespace Logic
 {
+
     class Projectile;
     class Trigger;
     class Enemy;
@@ -27,6 +27,10 @@ namespace Logic
 
 	class Entity : public PhysicsObject
 	{
+    typedef std::function<Projectile*(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)> ProjectileFunc;
+    typedef std::function<Enemy*(EnemyType type, btVector3 &pos, std::vector<int> effects)> EnemyFunc;
+    typedef std::function<Trigger*(int id, btVector3 const &pos, std::vector<int> effects)> TriggerFunc;
+
     public:
         // Use ON_DESTROY to prevent crashes
         enum EntityEvent { ON_DEATH, ON_DAMAGE_TAKEN, ON_DAMAGE_GIVEN, ON_COLLISION, ON_DESTROY };
@@ -41,23 +45,24 @@ namespace Logic
         // An unordered map with a list of callbacks
         typedef std::function<void(CallbackData&)> Callback;
 
-		Entity(btRigidBody* body, btVector3 halfExtent);
+        Entity(btRigidBody* body, btVector3 halfExtent, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 		Entity(const Entity& other) = delete;
 		Entity* operator=(const Entity& other) = delete;
 
 		virtual ~Entity();
 
-        virtual void setSpawnFunctions(std::function<Projectile*(ProjectileData& pData,
-            btVector3 position, btVector3 forward, Entity& shooter)> spawnProjectile,
-            std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos, std::vector<int> effects)> SpawnEnemy,
-            std::function<Trigger*(int id, btVector3 const &pos, std::vector<int> &effects)> spawnTriggery);
-
+        virtual void setSpawnFunctions(ProjectileFunc spawnProjectile, EnemyFunc SpawnEnemy, TriggerFunc spawnTrigger);
+        void SpawnDamageText(int damage, const DirectX::XMVECTORF32 color);
 		virtual void clear();
 		virtual void update(float deltaTime);
 		virtual void updateSound(float deltaTime);
 
 		virtual void affect(int stacks, Effect const &effect, float deltaTime) = 0;
-		virtual void upgrade(Upgrade const &upgrade);
+        virtual void onEffectAdd(int stacks, Effect const &effect) {};
+        virtual void onEffectEnd(int stacks, Effect const &effect) {};
+        virtual void onUpgradeAdd(int stacks, Upgrade const &upgrade) {};
+		
+        virtual void upgrade(StatusManager::UPGRADE_ID id, int stacks = 1);
 
         virtual void render() const = 0;
 
@@ -73,14 +78,15 @@ namespace Logic
 		void setStatusManager(StatusManager& statusManager);
 
 		Sound::SoundSource* getSoundSource();
-	protected:
-        // Functions to spawn other things
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)>               SpawnProjectile;
-        std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
+	protected:
+        // Functions to spawn other things
+
+        std::function<Enemy*(EnemyType type, btVector3 &pos,
             std::vector<int> effects)>                         SpawnEnemy;
         std::function<Trigger*(int id, btVector3 const &pos,
-            std::vector<int> &effects)>                        SpawnTrigger;
+            std::vector<int> effects)>                         SpawnTrigger;
 	private:
         Sound::SoundSource* m_soundSource;
 		StatusManager m_statusManager;

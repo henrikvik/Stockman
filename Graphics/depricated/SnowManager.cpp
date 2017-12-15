@@ -13,6 +13,14 @@
 
 using namespace DirectX::SimpleMath;
 
+float getRandomFloat(float from, float to)
+{
+    // f is [0, 1]
+    float f = static_cast<float> (rand()) / static_cast<float> (RAND_MAX);
+    // return [from, to]
+    return (f * std::abs(to - from)) + from;
+}
+
 namespace Graphics
 {
 
@@ -20,7 +28,8 @@ namespace Graphics
 		snowBuffer(device, CpuAccess::Write, MAX_SNOW),
 		snowShader(device, SHADER_PATH("SnowShaders/SnowShader.hlsl"), {}, ShaderType::GS | ShaderType::PS | ShaderType::VS)
 	{
-
+        srand(time(NULL));
+     
 	}
 
 	SnowManager::~SnowManager()
@@ -30,8 +39,7 @@ namespace Graphics
 
 	void SnowManager::updateSnow(float deltaTime, Camera * camera, ID3D11DeviceContext * context)
 	{
-        Logic::RandomGenerator & generator = Logic::RandomGenerator::singleton();
-
+    
         static float windTimer = 5000;
         static float windCounter = 0;
         static Vector3 randWindPrev(0, -1, 0);
@@ -52,8 +60,8 @@ namespace Graphics
         {
             randWindPrev = randWind;
             windCounter = 0;
-            randWind.x = generator.getRandomFloat(-1, 1);
-            randWind.z = generator.getRandomFloat(-1, 1);
+            randWind.x = getRandomFloat(-1, 1);
+            randWind.z = getRandomFloat(-1, 1);
             randWind.y = -1;
         }
 
@@ -63,13 +71,9 @@ namespace Graphics
 				moveSnowFlake(camera, i);
 
 			snowFlakes[i].distance = (snowFlakes[i].position - camera->getPos()).Length();
-            snowFlakes[i].randomRot += generator.getRandomFloat(0, ONE_DEG_IN_RAD * 5);
-
-            
+            snowFlakes[i].randomRot += getRandomFloat(0, ONE_DEG_IN_RAD * 5);
 
 			snowFlakes[i].position += Vector3::Lerp(randWindPrev, randWind, windCounter / windTimer) * deltaTime * 0.01f;
-
-
 
 		}
 		
@@ -79,15 +83,13 @@ namespace Graphics
 
 	void SnowManager::addRandomSnowFlake(Camera * camera)
 	{
-	    Logic::RandomGenerator & generator = Logic::RandomGenerator::singleton();
-
-		Vector3 randVec(generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS));
+		Vector3 randVec(getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS));
 
 		Vector3 finalPos = camera->getPos() + randVec;
 
 		SnowFlake flake;
 		flake.position = finalPos;
-		flake.randomRot = generator.getRandomFloat(0, PI * 2.f);
+		flake.randomRot = getRandomFloat(0, PI * 2.f);
 		flake.distance = randVec.Length();
 
 		snowFlakes.push_back(flake);
@@ -97,10 +99,10 @@ namespace Graphics
 
 	void SnowManager::moveSnowFlake(Camera * camera, int snowFlake)
 	{
-		Vector3 posToCam = camera->getPos() - snowFlakes[snowFlake].position;
-		posToCam.Normalize();
+        Vector3 randVec(getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS));
 
-		snowFlakes[snowFlake].position = camera->getPos() + (posToCam * SNOW_RADIUS);
+        Vector3 finalPos = camera->getPos() + randVec;
+        snowFlakes[snowFlake].position = camera->getPos() + finalPos;
 	}
 
 	//this function randomizes snow all over the frustum because otherwise all snow will start from the top
@@ -111,6 +113,7 @@ namespace Graphics
 		for (int i = 0; i < MAX_SNOW; i++)
 		{
 			addRandomSnowFlake(camera);
+           
 		}
 	}
 

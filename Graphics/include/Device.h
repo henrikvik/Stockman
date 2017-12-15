@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d11.h>
-
+#include "../export.h"
+#include <SpriteBatch.h>
 
 namespace Global
 {
@@ -16,7 +17,8 @@ namespace Global
 #undef MAKE_OPERATOR
     };
 
-    extern ID3D11Device * device;
-    extern ID3D11DeviceContext * context;
-    extern Nulls nulls;
+    extern GRAPHICS_API ID3D11Device * device;
+    extern GRAPHICS_API ID3D11DeviceContext * context;
+    extern DirectX::SpriteBatch *batch;
+    extern GRAPHICS_API Nulls nulls;
 }

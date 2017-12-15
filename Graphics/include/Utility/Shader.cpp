@@ -11,7 +11,7 @@
 #ifdef _DEBUG
 #define SHADER_COMPILE_FLAGS D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION
 #else
-#define SHADER_COMPILE_FLAGS NULL
+#define SHADER_COMPILE_FLAGS D3DCOMPILE_OPTIMIZATION_LEVEL3
 #endif
 
 namespace Graphics
@@ -21,8 +21,8 @@ namespace Graphics
 		return static_cast<ShaderType>(static_cast<size_t>(a) | static_cast<size_t>(b));
 	}
 
-    Shader::Shader(Resources::Shaders::Files shader, ShaderType shaderType)
-        : Shader(Global::device, shader, {}, shaderType)
+    Shader::Shader(Resources::Shaders::Files shader, ShaderType shaderType, std::initializer_list<D3D11_INPUT_ELEMENT_DESC> input_desc)
+        : Shader(Global::device, shader, input_desc, shaderType)
     {
     }
 
@@ -52,7 +52,13 @@ namespace Graphics
 
 			if (inputDesc.size() > 0)
 			{
-				ThrowIfFailed(device->CreateInputLayout(inputDesc.begin(), (UINT)inputDesc.size(), vsShader->GetBufferPointer(), vsShader->GetBufferSize(), &inputLayout));
+				ThrowIfFailed(device->CreateInputLayout(
+                    inputDesc.begin(), 
+                    (UINT)inputDesc.size(), 
+                    vsShader->GetBufferPointer(), 
+                    vsShader->GetBufferSize(), 
+                    &inputLayout
+                ));
 			}
 		}
 

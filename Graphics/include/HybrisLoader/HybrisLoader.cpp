@@ -20,7 +20,8 @@ namespace HybrisLoader
         for (auto & path : Resources::Models::Paths)
         {
             Hybris::File file = loadFile(path.second);
-            models[path.first] = newd Model(Global::device, file);
+            Hybris::FileWithHitbox file2 = loadHBFile(path.second);
+            models[path.first] = newd Model(Global::device, file2);
         }
     }
 
@@ -39,6 +40,15 @@ namespace HybrisLoader
     {
         std::ifstream ifile(filePath, std::ios::binary);
         Hybris::File hfile = {};
+        Hybris::read(ifile, hfile);
+        ifile.close();
+        return hfile;
+    }
+
+    Hybris::FileWithHitbox HybrisLoader::loadHBFile(const char * filePath)
+    {
+        std::ifstream ifile(filePath, std::ios::binary);
+        Hybris::FileWithHitbox hfile = {};
         Hybris::read(ifile, hfile);
         ifile.close();
         return hfile;

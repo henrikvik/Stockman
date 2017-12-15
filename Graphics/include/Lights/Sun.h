@@ -28,7 +28,7 @@ namespace Graphics
             private:float pad2;public:
         };
 
-		Sun();
+		Sun(ID3D11ShaderResourceView *shadowMap);
 		~Sun();
 
 		void update();
@@ -36,7 +36,7 @@ namespace Graphics
 		ConstantBuffer<ShaderMatrix>* getLightMatrixBuffer() { return &lightMatrixBuffer; };
 		ConstantBuffer<DirectionalLight>* getGlobalLightBuffer() { return &globalLightBuffer; };
 
-	private:
+	//private:
 		DirectX::SimpleMath::Matrix view;
 		DirectX::SimpleMath::Matrix projection;
 		DirectX::SimpleMath::Vector4 pos;
@@ -44,6 +44,8 @@ namespace Graphics
 		//Clamp a value between min and max
 		float snap(float value, float min, float max);
 
+        DirectX::SimpleMath::Vector3 m_LightDir;
+        ID3D11ShaderResourceView *m_ShadowMap;
 		ShaderMatrix matrixData;
         DirectionalLight globalLight;
 		ConstantBuffer<ShaderMatrix> lightMatrixBuffer;

@@ -1,10 +1,17 @@
 #include "Player/Skill/SkillBulletTime.h"
 #include <Projectile\ProjectileManager.h>
 #include <Projectile\ProjectileStruct.h>
+#include <Projectile\Projectile.h>
+#include <Entity\Entity.h>
 
 using namespace Logic;
 
-SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData)
+#define BULLET_TIME_CD 10000.f
+#define BULLET_TIME_SMOOTHNESS_INTERVAL 20
+#define BULLET_TIME_SLOW_DOWN_DURATION 1000.f
+#define BULLET_TIME_SPEED_UP_DURATION 1000.f
+
+SkillBulletTime::SkillBulletTime(ProjectileManager* projectileManager, ProjectileData& pData)
 	: Skill(BULLET_TIME_CD, BULLET_TIME_DURATION)
 {
 	m_pData = newd ProjectileData(pData);
@@ -23,30 +30,38 @@ SkillBulletTime::~SkillBulletTime()
 
 bool SkillBulletTime::onUse(btVector3 forward, Entity& shooter)
 {
-    setCanUse(false);
-    setCooldown(BULLET_TIME_CD);
-
-	printf("Bullet Time used.\n");
 	m_sensor = SpawnProjectile(*m_pData, shooter.getPositionBT(), forward, shooter);
 
-	btRigidBody* bodySensor = m_sensor->getRigidBody();
+    if (m_sensor)
+    {
+        shooter.getSoundSource()->playSFX(Sound::SFX::SKILL_BULLETTIME_HEART);
+        Sound::NoiseMachine::Get().playSFX(Sound::SFX::SKILL_BULLETTIME_TIME, nullptr, true);
 
-	slowDownIntervals.clear();
-	speedUpIntervals.clear();
-	for (int i = 1; i < BULLET_TIME_SMOOTHNESS_INTERVAL; i++)
-	{
-		slowDownIntervals.push_back(i * ((BULLET_TIME_SLOW_DOWN_DURATION) / BULLET_TIME_SMOOTHNESS_INTERVAL) + BULLET_TIME_DURATION - BULLET_TIME_SLOW_DOWN_DURATION);
-		speedUpIntervals.push_back(i * (BULLET_TIME_SPEED_UP_DURATION / BULLET_TIME_SMOOTHNESS_INTERVAL));
-	}
+        btRigidBody* bodySensor = m_sensor->getRigidBody();
 
-	m_stacks = 0;
+        slowDownIntervals.clear();
+        speedUpIntervals.clear();
+        for (int i = 1; i < BULLET_TIME_SMOOTHNESS_INTERVAL; i++)
+        {
+            slowDownIntervals.push_back(i * ((BULLET_TIME_SLOW_DOWN_DURATION) / BULLET_TIME_SMOOTHNESS_INTERVAL) + BULLET_TIME_DURATION - BULLET_TIME_SLOW_DOWN_DURATION);
+            speedUpIntervals.push_back(i * (BULLET_TIME_SPEED_UP_DURATION / BULLET_TIME_SMOOTHNESS_INTERVAL));
+        }
 
-    return true;
+        m_stacks = 0;
 
-	/*ProjectileData travelPData = m_projectileData;
-	travelPData.scale = 0.0001f;
-	travelPData.type = ProjectileType::ProjectileTypeBulletTime;
-	m_travelProjectile = m_projectileManager->addProjectile(travelPData, shooter.getPositionBT(), forward, shooter);*/
+        m_sensor->addCallback(Entity::ON_DESTROY, [&](Entity::CallbackData &data) -> void {
+            m_sensor = nullptr;
+        });
+
+        return true;
+
+        /*ProjectileData travelPData = m_projectileData;
+        travelPData.scale = 0.0001f;
+        travelPData.type = ProjectileType::ProjectileTypeBulletTime;
+        m_travelProjectile = m_projectileManager->addProjectile(travelPData, shooter.getPositionBT(), forward, shooter);*/
+    }
+
+    return false;
 }
 
 void SkillBulletTime::setSpawnFunctions(ProjectileManager &projManager)
@@ -60,33 +75,37 @@ void SkillBulletTime::setSpawnFunctions(ProjectileManager &projManager)
 
 void SkillBulletTime::onRelease() { }
 
+void SkillBulletTime::onReset()
+{
+    m_sensor = nullptr;
+    m_stacks = 0;
+}
+
 void SkillBulletTime::onUpdate(float deltaTime)
 {
 	if (m_sensor)
 	{
-		if (m_sensor->getProjectileData().ttl < deltaTime)
-			m_sensor = nullptr;
-		else
-		{
-			if (!slowDownIntervals.empty() && slowDownIntervals.back() > getDuration())
-			{
-				m_stacks++;
-				slowDownIntervals.pop_back();
-			}
-			else if (!speedUpIntervals.empty() && speedUpIntervals.back() > getDuration())
-			{
-				m_stacks--;
-				speedUpIntervals.pop_back();
-			}
+        setCanUse(false);
+        if (!slowDownIntervals.empty() && slowDownIntervals.back() > getDuration())
+        {
+            m_stacks++;
+            slowDownIntervals.pop_back();
+        }
+        else if (!speedUpIntervals.empty() && speedUpIntervals.back() > getDuration())
+        {
+            m_stacks--;
+            speedUpIntervals.pop_back();
+        }
 
-			if (m_stacks != 0)
-				m_sensor->getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, m_stacks);
-		}
+        if (m_stacks != 0)
+            m_sensor->getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, m_stacks);
 
-        if (m_sensor)
-            renderInfo.progress = m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION;
-        else
-            renderInfo.progress = 1.f;
+        renderInfo.progress = m_sensor->getProjectileData().ttl / (float)BULLET_TIME_DURATION;
+    }
+    else
+    {
+        setActive(false);
+        renderInfo.progress = 1.f;
     }
 
 
@@ -100,10 +119,14 @@ void SkillBulletTime::onUpdate(float deltaTime)
 	}*/
 }
 
+void SkillBulletTime::onUpgradeAdd(int stacks, Upgrade const & upgrade)
+{
+}
+
 void SkillBulletTime::render() const
 {
     if (m_sensor && m_sensor->getProjectileData().ttl > 0)
     {
-        RenderQueue::get().queue(&renderInfo);
+        QueueRender(renderInfo);
     }
 }

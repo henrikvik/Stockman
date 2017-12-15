@@ -9,13 +9,12 @@ namespace Logic
 	{
 	private:
 		float m_distance;
-
-		static const int ABILITY_CHANCHE = 150;
+        static const float FLEE_MOD;
 	public:
 		RangedBehavior();
 		virtual ~RangedBehavior() {}
 
-		int getDistance() const;
+		float getDistance() const;
 
 		virtual void updateSpecific(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
 			Player const &player, float deltaTime);

@@ -2,7 +2,7 @@
 #include "include/Camera.hlsli"
 #include "include/LightCalc.hlsli"
 #include "include/Vertex.hlsli"
-#include "include/InstanceStatic.hlsli"
+#include "include/StaticInstance.hlsli"
 
 #define USE_GRID_TEXTURE
 
@@ -19,7 +19,7 @@ Texture2D                        gridTexture     : register(t9);
 #endif
 
 cbuffer cb10 : register(b10) { uint instanceOffset; };
-StructuredBuffer<InstanceStatic> instanceBuffer  : register(t10);
+StructuredBuffer<StaticInstance> instanceBuffer  : register(t10);
 StructuredBuffer<Vertex>         vertexBuffer    : register(t11);
 Texture2D                        diffuseTexture  : register(t12);
 Texture2D                        normalTexture   : register(t13);
@@ -70,7 +70,7 @@ Fragment VS(uint vertexId : SV_VertexId, uint instanceId : SV_InstanceId)
     float3   localPosition = mul(instance.world, float4(vertex.position, 0)).xyz;
     float3x3 tangentMatrix = float3x3(fragment.tangent, fragment.binormal, fragment.normal);
     float3   worldTangent  = mul(tangentMatrix, localPosition);
-    fragment.gridUV = worldTangent.xy / 4;
+    fragment.gridUV = worldTangent.xy / 4.f;
 #endif
 
 	return fragment;
@@ -84,7 +84,7 @@ Targets PS(Fragment fragment)
     float3 normal = calcNormal(normalTexture.Sample(linearClamp, fragment.uv).xyz, fragment.normal, fragment.binormal, fragment.tangent);
     float specularExponent = specularTexture.Sample(linearClamp, fragment.uv).r;
 
-    float shadowFactor = calcShadowFactor(comparison, shadowMap, globalLight, 2);
+    float shadowFactor = calcShadowFactor(comparison, shadowMap, fragment.lightPos);
     float3 viewDir = normalize(camera.position - fragment.position);
 
     float3 lightSum = float3(0,0,0);

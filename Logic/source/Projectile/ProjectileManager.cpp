@@ -1,8 +1,10 @@
 #include "../Projectile/ProjectileManager.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <Physics\Physics.h>
+#include <Projectile\Projectile.h>
 
-#define PROJECTILE_DEFAULT_COUNT 50
+#define PROJECTILE_DEFAULT_COUNT 400 
 #define PROJECTILE_DEFAULT_POS { 0.f, -100.f, 0.f }
 
 using namespace Logic;
@@ -18,7 +20,7 @@ ProjectileManager::~ProjectileManager()
 
 }
 
-void Logic::ProjectileManager::init()
+void ProjectileManager::init()
 {
     for (size_t i = PROJECTILE_DEFAULT_COUNT; i--;)
     {
@@ -30,7 +32,7 @@ void Logic::ProjectileManager::init()
 
         body->setGravity({ 0.f, 0.f, 0.f });
 
-        Projectile* p = newd Projectile(body, { 0.f, 0.f, 0.f }, ProjectileData());
+        Projectile* p = newd Projectile(body, { 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f }, ProjectileData());
 
         m_projectilesIdle.push_back(p);
     }
@@ -50,7 +52,7 @@ void ProjectileManager::clear()
     m_projectilesIdle.clear();
 }
 
-Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)
+Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter, btVector3 modelOffset)
 {
     btRigidBody* body;
     Projectile* p;
@@ -58,8 +60,9 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
     // creating new projectile if idle stack is empty
     if (m_projectilesIdle.size() == 0)  // it shouldn't get to this, because it will lag in debug mode
     {
-        body = m_physPtr->createBody(Sphere({ position + (forward * 2) }, { 0.f, 0.f, 0.f }, pData.scale), pData.mass, pData.isSensor, 0, 0);
-        p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, pData);
+        return nullptr;
+        body = m_physPtr->createBody(Sphere({ position + forward }, { 0.f, 0.f, 0.f }, pData.scale * 0.25f), pData.mass, pData.isSensor, 0, 0);
+        p = newd Projectile(body, { pData.scale, pData.scale, pData.scale }, modelOffset, pData);
     }
     // using projectile from idle stack
     else
@@ -70,6 +73,8 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         p->setProjectileData(pData);
         p->setModelID(pData.meshID);
         p->setHalfExtent({ pData.scale, pData.scale, pData.scale });
+        p->setModelOffset(modelOffset);
+        p->setUnrotatedMO(modelOffset);
         // fetching body
         body = p->getRigidBody();
         // adding the body to physics world
@@ -83,10 +88,10 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         // mass
         body->setMassProps(pData.mass, { 0.f, 0.f, 0.f });
         // scale
-        body->getCollisionShape()->setLocalScaling({ pData.scale, pData.scale, pData.scale });
+        body->getCollisionShape()->setLocalScaling({ pData.scale * 0.25f, pData.scale * 0.25f, pData.scale * 0.25f });
         m_physPtr->updateSingleAabb(body);
         // position
-        body->getWorldTransform().setOrigin({ position + (forward * 2) });
+        body->getWorldTransform().setOrigin({ position + forward });
     }
 
     // collision group
@@ -94,13 +99,13 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
         (pData.enemyBullet) ? (Physics::COL_EN_PROJ) : (Physics::COL_PL_PROJ);
     // collision mask
     body->getBroadphaseProxy()->m_collisionFilterMask = 
-        (pData.enemyBullet) ? (Physics::COL_EVERYTHING &~(Physics::COL_ENEMY)) : (Physics::COL_EVERYTHING &~(Physics::COL_PLAYER));
+        (pData.enemyBullet) ? (Physics::COL_EVERYTHING &~ (Physics::COL_ENEMY | Physics::COL_EN_PROJ)) : (Physics::COL_EVERYTHING &~(Physics::COL_PLAYER | Physics::COL_PL_PROJ));
 
 	// Taking the forward vector and getting the pitch and yaw from it
-	float pitch = asin(-forward.getY());
+	float pitch = asin(-forward.getY()) - M_PI;
 	float yaw = atan2(forward.getX(), forward.getZ());
-	btQuaternion q(yaw, pitch, 0.f);
-	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - float(180 * M_PI / 180), 0.f));
+    //float roll = RandomGenerator::singleton().getRandomFloat(0.f, 2.f * M_PI); // Random roll rotation
+	body->getWorldTransform().setRotation(btQuaternion(yaw, pitch - M_PI, 0));
 
 	// Set gravity modifier
 	body->setGravity(pData.gravityModifier * m_physPtr->getGravity());
@@ -110,7 +115,6 @@ Projectile* ProjectileManager::addProjectile(ProjectileData& pData, btVector3 po
 
 	// Add to active-list
 	m_projectilesActive.push_back(p);
-
 	return p;
 }
 
@@ -124,13 +128,16 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
     }
     else
     {
+        // remove all callbacks from the projectile
+        p->clearCallbacks(true);
+
         btRigidBody* body = p->getRigidBody();
 
         // reset stuff
         body->setLinearVelocity({ 0.f, 0.f, 0.f });
         body->setGravity({ 0.f, 0.f, 0.f });
         body->getWorldTransform().setOrigin(PROJECTILE_DEFAULT_POS);
-        p->setWorldTransform(p->getTransformMatrix());
+        //p->setWorldTransform(p->getTransformMatrix());
 
         // reset collision flags
         if (p->getProjectileData().isSensor)
@@ -143,8 +150,10 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
         // dont remove again duh
         p->setDead(false);
 
-        // remove all callbacks from the projectile
-        p->clearCallbacks();
+        // clear uppgrades and effects on projectile
+        p->getStatusManager().clear();
+
+        p->getProjectileData().hasEffect = false;
 
         // add to idle stack
         m_projectilesIdle.push_back(p);
@@ -153,13 +162,13 @@ void ProjectileManager::removeProjectile(Projectile* p, int index)
     m_projectilesActive.pop_back();
 }
 
-void Logic::ProjectileManager::update(float deltaTime)
+void ProjectileManager::update(float deltaTime)
 {
 	for (size_t i = 0; i < m_projectilesActive.size(); i++)
 	{
 		Projectile* p = m_projectilesActive[i];
 		p->updateSpecific(deltaTime);
-		if (p->getDead() || p->getProjectileData().ttl < 0.f)		// Check remove flag and ttl
+		if (p->getDead())		// Check remove flag and ttl
 		{
 			removeProjectile(p, (int)i);
 			i--;
@@ -177,6 +186,15 @@ void ProjectileManager::removeAllProjectiles()
 {
     while (!m_projectilesActive.empty())
         removeProjectile(m_projectilesActive[0], 0);
+}
+
+void Logic::ProjectileManager::removeEnemyProjCallbacks()
+{
+    for (Projectile* p : m_projectilesActive)
+    {
+        if (p->getProjectileData().enemyBullet)
+            p->clearCallbacks(true);
+    }
 }
 
 std::vector<Projectile*>& ProjectileManager::getProjectiles()

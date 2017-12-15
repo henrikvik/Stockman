@@ -18,6 +18,7 @@ WaveManager::~WaveManager()
 
 void WaveManager::loadFile()
 {
+    m_waveFileLoaded.clear();
 	FileLoader::singleton().loadStructsFromFile(m_waveFileLoaded, m_waveFileName);
 
     FileLoader::LoadedStruct waveInfo = m_waveFileLoaded[0];
@@ -26,6 +27,7 @@ void WaveManager::loadFile()
     m_waveInformation.timeMul   = waveInfo.floats["timeMul"];
     m_waveInformation.timeBonus = waveInfo.floats["timeBonus"];
     m_waveInformation.bossWaves = splitInts(waveInfo.strings["bossWaves"], FILE_DELIM);
+    //TODO
     m_waveInformation.bossTimeBonus = (int)waveInfo.floats["bossTimeBonus"];
 }
 
@@ -43,19 +45,22 @@ WaveManager::EntitiesInWave WaveManager::getEntities(int waveId) const
 		{
 			entities.enemies = splitInts(struc.strings[FILE_ENEMIES], FILE_DELIM);
 
-			for (int j = 0; j < struc.ints.at(FILE_TRIGGERS);
-				j++) // load triggers
-				entities.triggers.push_back(loadEntity(i, j + 1));
-			for (int k = 0; k < struc.ints.at(FILE_BOSSES); k++)
-				entities.bosses.push_back(
-					loadEntity(i + struc.ints.at(FILE_BOSSES), k));
+            for (int j = 0; j < struc.ints.at(FILE_TRIGGERS); j++) // load triggers
+            {
+                entities.triggers.push_back(loadEntity(i, j + 1));
+            }
+
+            for (int k = 0; k < struc.ints.at(FILE_BOSSES); k++) // load bosses
+            {
+                entities.bosses.push_back(loadEntity(i + struc.ints.at(FILE_BOSSES), k));
+            }
 		}
 		i += struc.ints.at(FILE_BOSSES) + struc.ints.at(FILE_TRIGGERS);
 		
 		currentWave++;
 	}
 
-	return entities;
+ 	return entities;
 }
 
 void WaveManager::setName(std::string name)

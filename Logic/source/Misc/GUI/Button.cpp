@@ -1,4 +1,5 @@
 #include <Misc\GUI\Button.h>
+#include <Misc\Sound\NoiseMachine.h>
 using namespace Logic;
 
 
@@ -35,8 +36,8 @@ Logic::Button::Button(
     std::function<void(void)> callback
 )
     : inactive(inactive)
-    , active(active)
-    , hover(hover)
+    , active(hover)
+    , hover(active)
     , callback(callback)
 {
     m_animationStart = DirectX::SimpleMath::Vector2(0,0);
@@ -54,6 +55,7 @@ Logic::Button::Button(
     renderInfo.screenRect = screenRect;
     renderInfo.textureRect = inactive;
     renderInfo.alpha = 1;
+    m_hovered = false;
 }
 
 Button::~Button()
@@ -69,21 +71,40 @@ void Button::updateOnPress(int posX, int posY)
 {
 	if (callback && renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
 	{
-        setState(ACTIVE);
+        Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_PRESS, nullptr, true);
+        if (this->state != ACTIVE)
+        {
+            setState(ACTIVE);
+        }
+        else
+        {
+            setState(INACTIVE);
+        }
         callback();
+        
 	}
 }
 
 void Button::hoverOver(int posX, int posY)
 {
-    if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
+    if (this->state != ACTIVE)
     {
-        setState(HOVER);
+        if (renderInfo.screenRect.contains(float(posX) / WIN_WIDTH, float(posY) / WIN_HEIGHT))
+        {
+            if (!m_hovered)
+            {
+                Sound::NoiseMachine::Get().playSFX(Sound::SFX::UI_BUTTON_HOVER, nullptr, true);
+                setState(HOVER);
+                m_hovered = true;
+            }
+        }
+        else
+        {
+            setState(INACTIVE);
+            m_hovered = false;
+        }
     }
-    else
-    {
-        setState(INACTIVE);
-    }
+   
 
 }
 
@@ -127,7 +148,19 @@ void Logic::Button::setState(State state)
     }
 }
 
-void Logic::Button::render() const
+void Button::setAlpha(float alpha)
 {
-    RenderQueue::get().queue(&renderInfo);
+    renderInfo.alpha = alpha;
+}
+
+void Logic::Button::setUVS(FloatRect newUVs)
+{
+    this->inactive = newUVs;
+    this->active = newUVs;
+    this->hover = newUVs;
+}
+
+void Button::render() const
+{
+    QueueRender(renderInfo);
 }

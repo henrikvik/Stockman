@@ -11,7 +11,7 @@
 #include <Graphics\include\RenderQueue.h>
 
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
+#include <Entity/StatusManager.h>
 
 namespace Graphics
 {
@@ -34,18 +34,25 @@ namespace Logic
 		void release();
 		virtual void onRelease() = 0;
 		
+        void upgradeAdd(int stacks, Upgrade const & upgrade);
 		void update(float deltaTime);
 		virtual void onUpdate(float deltaTime) = 0;
+        virtual void onUpgradeAdd(int stacks, Upgrade const & upgrade) = 0;
 
+        void reset();
+        virtual void onReset() {};
 
 		float	getCooldown() const;
 		float	getCooldownMax() const;
 		float	getDuration() const;
 		float	getDurationMax() const;
 		bool	getCanUse() const;
+        bool    isActive() const;
 
 		void setCooldown(float cooldown);
+        void setCooldownMax(float cooldownMax);
 		void setCanUse(bool canUse);
+        void setActive(bool active);
 
         virtual void render() const = 0;
 
@@ -53,6 +60,7 @@ namespace Logic
 		// StatusManager statusManager;
 		float	m_cooldown;
 		float	m_cooldownMax;
+        float   m_cooldownModifer;
 		float	m_duration;
 		float	m_durationMax;
 		bool	m_canUse;

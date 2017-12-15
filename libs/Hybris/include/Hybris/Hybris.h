@@ -72,10 +72,23 @@ namespace Hybris
         Texture glowMap;
     };
 
+    struct Hitbox
+    {
+        vector3_t position;
+        vector4_t rotation;
+        vector3_t halfSize;
+    };
+
     struct File
     {
         Mesh mesh;
         Material material;
         Skeleton skeleton;
+    };
+
+    struct FileWithHitbox : File
+    {
+        using File::File;
+        List<Hitbox> hitboxes;
     };
 }

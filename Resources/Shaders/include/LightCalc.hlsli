@@ -14,7 +14,7 @@
 
 #define BLOCK_SIZE 16.f
 #define GLOBAL_LIGHT_COLOR float3(0.1, 0.1, 0.3)
-
+#define FOG_COLOR float3(59 / 255.f, 72 / 255.f, 85 / 255.f)
 struct DirectionalLight
 {
     float4 position;
@@ -49,10 +49,12 @@ float3 adjustContrast(float3 color, float contrast, float threshold)
 }
 
 //Returns the shadow amount of a given position
-float calcShadowFactor(SamplerComparisonState comparisonSampler, Texture2D shadowMap, DirectionalLight light, int sampleCount)
+float calcShadowFactor(SamplerComparisonState comparisonSampler, Texture2D shadowMap, float3 lightPos)
 {
-    light.position.x = (light.position.x * 0.5f) + 0.5f;
-    light.position.y = (light.position.y * -0.5f) + 0.5f;
+    int sampleCount = 2;
+
+    lightPos.x = (lightPos.x * 0.5f) + 0.5f;
+    lightPos.y = (lightPos.y * -0.5f) + 0.5f;
 
     float addedShadow = 0;
 
@@ -62,7 +64,7 @@ float calcShadowFactor(SamplerComparisonState comparisonSampler, Texture2D shado
         [unroll]
         for (int x = -sampleCount; x <= sampleCount; x += 1)
         {
-            addedShadow += shadowMap.SampleCmp(comparisonSampler, light.position.xy, light.position.z, int2(x, y)).r;
+            addedShadow += shadowMap.SampleCmp(comparisonSampler, lightPos.xy, lightPos.z, int2(x, y)).r;
         }
     }
 
@@ -86,6 +88,12 @@ float3 toonify(float3 color, float intensity)
     return color;
 }
 
+float calcFog(float3 player, float3 fragment) {
+    float dist = distance(player, fragment);
+
+    return dist;
+}
+
 float3 calcNormal(float3 mappedNormal, float3 normal, float3 binormal, float3 tangent)
 {
     // TODO Remove when everything is working
@@ -104,7 +112,7 @@ float3 calcNormal(float3 mappedNormal, float3 normal, float3 binormal, float3 ta
     return normalize(mul(mappedNormal, tangentMatrix));
 }
 
-float3 calcLight(DirectionalLight light, float4 position, float3 normal, float3 viewDir, float specularExponent)
+float3 calcLight(DirectionalLight light, float3 position, float3 normal, float3 viewDir, float specularExponent)
 {
     float3 lightDir = normalize(light.position.xyz);   
     float3 halfway = normalize(lightDir + viewDir);
@@ -113,11 +121,10 @@ float3 calcLight(DirectionalLight light, float4 position, float3 normal, float3 
     float specularFactor = saturate(pow(dot(normal, halfway), specularExponent));
 
     return diffuesFactor * light.color
-         + specularFactor * light.color
-         + light.ambient;
+        + specularFactor * light.color;
 }
 
-float3 calcLight(Light light, float4 position, float3 normal, float3 viewDir, float specularExponent)
+float3 calcLight(Light light, float3 position, float3 normal, float3 viewDir, float specularExponent)
 {
     float3 lightDir = light.position.xyz - position.xyz;
     float distance = length(lightDir); 
@@ -133,7 +140,7 @@ float3 calcLight(Light light, float4 position, float3 normal, float3 viewDir, fl
          + specularFactor * light.color * attenuation * light.intensity;
 }
 
-float3 calcAllLights(float4 ndcPosition, float4 position, float3 normal, float3 viewDir, float specularExponent)
+float3 calcAllLights(float4 ndcPosition, float3 position, float3 normal, float3 viewDir, float specularExponent)
 {
     float3 lightSum = float3(0, 0, 0);
 

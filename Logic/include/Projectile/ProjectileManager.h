@@ -1,12 +1,23 @@
 #ifndef PROJECTILEMANAGER_H
 #define PROJECTILEMANAGER_H
 
-#include <Physics\Physics.h>
-#include <Projectile\Projectile.h>
 #include <vector>
+#include <d3d11.h>
+#include <SimpleMath.h>
+#include <btBulletCollisionCommon.h>
+
+namespace Graphics
+{
+    class Renderer;
+}
 
 namespace Logic
 {
+    class Entity;
+    class Projectile;
+    class Physics;
+    struct ProjectileData;
+
 	class ProjectileManager
 	{
 	public:
@@ -17,9 +28,10 @@ namespace Logic
 
         void init();
 		void clear();
-		Projectile* addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter);
+        Projectile* addProjectile(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter, btVector3 modelOffset = { 0.f, 0.f, 0.f });
 		void removeProjectile(Projectile* p, int index);
         void removeAllProjectiles();
+        void removeEnemyProjCallbacks();
 
 		void update(float deltaTime);
 		void render();

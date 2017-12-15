@@ -5,13 +5,14 @@
 #include <vector>
 #include <random>
 
+#include <Misc\NonCopyable.h>
 #include <Misc\FileLoader.h>
 
 namespace Logic
 {
     class Player;
 
-	class CardManager
+	class CardManager : public NonCopyable
 	{
 	public:
         enum CardCondition
@@ -19,9 +20,12 @@ namespace Logic
             NEVER_REMOVE, IN_DECK, TAKEN
         };
 
+        enum CardState
+        {
+            IN_TRANS, STILL, OUT_TRANS
+        };
+
 		CardManager(int nrOfEach = 1);
-		CardManager(const CardManager& other) = delete;
-		CardManager* operator=(const CardManager& other) = delete;
 		~CardManager();
 
 		void resetDeck();
@@ -31,11 +35,16 @@ namespace Logic
         void handleCard(Player &player, Card const &card);
 
 		void createDeck(int nrOfEach);
-		void pickThree(bool damaged);
+		void pickThreeCards(bool damaged);
 		Card pick(int cardIndex);
+ 
+
+        virtual void render() const;
+        virtual void update(float dt);
 	private:
 		static const int HEALTH_PACK;
-		static const int HAND_SIZE;
+        static const int HAND_SIZE;
+        static const int NEVER_REMOVE_CARDS;
 
         void loadDeckFromFile();
         void createCard(CardCondition cond, FileLoader::LoadedStruct const &struc);
@@ -45,6 +54,12 @@ namespace Logic
         std::vector<int>                            m_hand;
 		std::vector<std::pair<CardCondition, int>>  m_deck;
         std::vector<Card>                           m_cards;
+
+        //temp
+        std::vector<Card> currenthand;
+        void pepperCardsForDraw();
+
+        CardState state;
 	};
 }
 

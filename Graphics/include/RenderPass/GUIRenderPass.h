@@ -23,6 +23,10 @@ namespace Graphics
         );
         virtual ~GUIRenderPass();
 
+        virtual wchar_t* name() const override {
+            return L"GUIRenderPass";
+        }
+
         // Inherited via RenderPass
         virtual void render() const override;
         virtual void update(float deltaTime) override;
@@ -35,12 +39,18 @@ namespace Graphics
             DirectX::SimpleMath::Vector2 uv;
         };
         StructuredBuffer<Vertex> vertexBuffer;
+        StructuredBuffer<float> alphabuffer;
 
-        std::unique_ptr<DirectX::SpriteBatch> sBatch;
         std::unordered_map<Resources::Fonts::Files, std::unique_ptr<DirectX::SpriteFont>> fonts;
         ConstantBuffer<UINT> offsetBuffer;
 
         void textRender() const;
-        bool isDrawableString(const wchar_t * text)const;
+        bool isDrawableString(std::wstring text)const;
+        void updateShake(float deltaTime);
+        void updateBounce(float deltaTime);
+
+        DirectX::SimpleMath::Vector2 ndcPositionOffset;
+        DirectX::SimpleMath::Vector2 positionOffset;
+        bool affectEverything;
     };
 }

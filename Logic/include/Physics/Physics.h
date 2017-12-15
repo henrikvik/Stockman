@@ -44,7 +44,10 @@
 #include <btBulletDynamicsCommon.h>
 #include <BulletDynamics\Character\btKinematicCharacterController.h>
 #include <BulletCollision\CollisionDispatch\btGhostObject.h>
-#include <Engine\Profiler.h>
+#include <Singletons\Profiler.h>
+#include <functional>
+
+
 //#define PHYSICS_GRAVITY 0.00982f
 #define PHYSICS_GRAVITY 9.82f * 2.f
 
@@ -83,11 +86,11 @@ namespace Logic
         //
         enum COL_FLAG {
             COL_NOTHING = 0,
-            COL_HITBOX = 0x1,
-            COL_PLAYER = 0x2,
-            COL_ENEMY = 0x4,
-            COL_EN_PROJ = 0x8,
-            COL_PL_PROJ = 0x10,
+            COL_HITBOX  = 1 << 0,
+            COL_PLAYER  = 1 << 1,
+            COL_ENEMY   = 1 << 2,
+            COL_EN_PROJ = 1 << 3,
+            COL_PL_PROJ = 1 << 4,
         }; static const int COL_EVERYTHING = COL_HITBOX | COL_PLAYER | COL_ENEMY | COL_EN_PROJ | COL_PL_PROJ;
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -104,6 +107,7 @@ namespace Logic
         //
         void update(float delta);
 
+        void registerDebugCommands();									
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // Ray Testing * 
         // 
@@ -130,6 +134,8 @@ namespace Logic
         btRigidBody* createBody(Cylinder& cylinder, float mass, bool isSensor = false, int group = COL_FLAG::COL_HITBOX, int mask = COL_EVERYTHING);	// Should be used for enemies
         btRigidBody* createBody(Capsule& capsule, float mass, bool isSensor = false, int group = COL_FLAG::COL_HITBOX, int mask = COL_EVERYTHING);		// Should be used for enemies
         btPairCachingGhostObject* createPlayer(btCapsuleShape* capsule, btVector3 pos);
+
+        btRigidBody* createHitbox(btVector3 position, btQuaternion rotation, btVector3 halfSize, bool isSensor, int group, int mask);
 
 		// Debug Rendering
 		void render();

@@ -71,30 +71,30 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)ImGui;$(SolutionDir)libs\tinytoml\include;$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(SolutionDir)libs\SFML\include\32;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\SFML\libs\32;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)ImGui;$(SolutionDir)libs\tinytoml\include;$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(SolutionDir)libs\SFML\include\32;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\SFML\libs\32;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)ImGui;$(SolutionDir)libs\tinytoml\include;$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(SolutionDir)libs\SFML\include\64;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\SFML\libs\64;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)-temp\</IntDir>
-    <IncludePath>$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)ImGui;$(SolutionDir)libs\tinytoml\include;$(SolutionDir)libs\imgui;$(ProjectDir)include;$(SolutionDir);$(SolutionDir)libs\DirectXTK\include;$(SolutionDir)libs\BRFImporter\include;$(SolutionDir)libs\Bullet2.86\include;$(SolutionDir)libs\FMOD\include;$(SolutionDir)libs\tbb\include;$(SolutionDir)libs\Hybris\include;$(SolutionDir)libs\SFML\include\64;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Bullet2.86\bin\$(Platform)\$(Configuration);$(SolutionDir)libs\FMOD\lib;$(SolutionDir)libs\SFML\libs\64;$(LibraryPath)</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -117,7 +117,9 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <PostBuildEvent>
-      <Command>xcopy /syi "$(SolutionDir)libs\FMOD\lib\*.dll" "$(SolutionDir)build\$(Platform)\$(Configuration)\"</Command>
+      <Command>xcopy /syi "$(SolutionDir)libs\FMOD\lib\*.dll" "$(OutDir)"
+xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -140,7 +142,9 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <PostBuildEvent>
-      <Command>xcopy /syi "$(SolutionDir)libs\FMOD\lib\*.dll" "$(SolutionDir)build\$(Platform)\$(Configuration)\"</Command>
+      <Command>xcopy /syi "$(SolutionDir)libs\FMOD\lib\*.dll" "$(OutDir)"
+xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -167,7 +171,9 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <PostBuildEvent>
-      <Command>xcopy /syi "$(SolutionDir)libs\FMOD\lib\*.dll" "$(SolutionDir)build\$(Platform)\$(Configuration)\"</Command>
+      <Command>xcopy /syi "$(SolutionDir)libs\FMOD\lib\*.dll" "$(OutDir)"
+xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -194,10 +200,38 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <PostBuildEvent>
-      <Command>xcopy /syi "$(SolutionDir)libs\FMOD\lib\*.dll" "$(SolutionDir)build\$(Platform)\$(Configuration)\"</Command>
+      <Command>xcopy /syi "$(SolutionDir)libs\FMOD\lib\*.dll" "$(OutDir)"
+xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AI\Abilities\Ability.h" />
+    <ClInclude Include="include\AI\Behavior\BigBadBehavior.h" />
+    <ClInclude Include="include\AI\EnemyBossBaddie.h" />
+    <ClInclude Include="include\AI\EnemyDefender.h" />
+    <ClInclude Include="include\AI\EnemySoarer.h" />
+    <ClInclude Include="include\AI\EnemyTotem.h" />
+    <ClInclude Include="include\AI\Pathing\NavigationMeshEditor.h" />
+    <ClInclude Include="include\Entity\AnimatedModel.h" />
+    <ClInclude Include="include\Misc\Credits.h" />
+    <ClInclude Include="include\Misc\Fader.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuCards.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuCinematic.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuControls.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuCredits.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuFirstTime.h" />
+    <ClInclude Include="include\Misc\GUI\iMenuFX.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuHighscore.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuIntro.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuLoading.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuSettings.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuSkillPick.h" />
+    <ClInclude Include="include\Misc\GUI\Slider.h" />
+    <ClInclude Include="include\Misc\GUI\Specific\iMenuGameOver.h" />
+    <ClInclude Include="include\Misc\Network\dbConnect.h" />
+    <ClInclude Include="include\Misc\Test\TestingWork.h" />
+    <ClInclude Include="include\Physics\FuncContactResult.h" />
     <ClInclude Include="include\Misc\CommandsFile.h" />
     <ClInclude Include="include\GameType.h" />
     <ClInclude Include="include\Misc\GUI\iMenu.h" />
@@ -205,33 +239,31 @@
     <ClInclude Include="include\Misc\GUI\iMenuMachine.h" />
     <ClInclude Include="include\Misc\GUI\iMenuFactory.h" />
     <ClInclude Include="include\Misc\GUI\Sprite.h" />
-    <ClInclude Include="include\Misc\Error.h" />
     <ClInclude Include="include\Misc\NonCopyable.h" />
     <ClInclude Include="include\Player\HUDManager.h" />
+    <ClInclude Include="include\Player\Weapon\AmmoContainer.h" />
     <ClInclude Include="include\AI\EnemyChaser.h" />
     <ClInclude Include="include\AI\Behavior\EnemyThreadHandler.h" />
     <ClInclude Include="include\Entity\LightObject.h" />
     <ClInclude Include="include\AI\EnemyType.h" />
     <ClInclude Include="include\Misc\FPSRenderer.h" />
-    <ClInclude Include="include\AI\Behavior\Pathing.h" />
+    <ClInclude Include="include\AI\Pathing\Pathing.h" />
     <ClInclude Include="include\AI\EnemyNecromancer.h" />
-    <ClInclude Include="include\AI\Behavior\AStar.h" />
+    <ClInclude Include="include\AI\Pathing\AStar.h" />
     <ClInclude Include="include\AI\Behavior\TestBehavior.h" />
     <ClInclude Include="include\AI\Behavior\Behavior.h" />
-    <ClInclude Include="include\AI\Behavior\NavigationMesh.h" />
-    <ClInclude Include="include\AI\Behavior\PASVF.h" />
+    <ClInclude Include="include\AI\Pathing\NavigationMesh.h" />
+    <ClInclude Include="include\AI\Pathing\NavigationMeshGeneration.h" />
     <ClInclude Include="include\DebugDefines.h" />
     <ClInclude Include="include\Misc\ComboMachine.h" />
     <ClInclude Include="include\Misc\FileLoader.h" />
     <ClInclude Include="include\Misc\GUI\Button.h" />
-    <ClInclude Include="include\Misc\GUI\MenuState.h" />
     <ClInclude Include="include\AI\EnemyTest.h" />
-    <ClInclude Include="include\Misc\HighScoreManager.h" />
     <ClInclude Include="include\Entity\Effect.h" />
     <ClInclude Include="include\AI\Enemy.h" />
     <ClInclude Include="include\AI\EntityManager.h" />
-    <ClInclude Include="include\AI\Trigger.h" />
-    <ClInclude Include="include\AI\TriggerManager.h" />
+    <ClInclude Include="include\AI\Trigger\Trigger.h" />
+    <ClInclude Include="include\AI\Trigger\TriggerManager.h" />
     <ClInclude Include="include\Misc\Card.h" />
     <ClInclude Include="include\Misc\CardManager.h" />
     <ClInclude Include="include\Entity\Entity.h">
@@ -242,8 +274,6 @@
     </ClInclude>
     <ClInclude Include="include\Logic.h" />
     <ClInclude Include="include\Entity\Object.h" />
-    <ClInclude Include="include\Misc\Enums.h" />
-    <ClInclude Include="include\Misc\GUI\MenuMachine.h" />
     <ClInclude Include="include\Misc\MapStructs.h" />
     <ClInclude Include="include\Misc\RandomGenerator.h" />
     <ClInclude Include="include\Misc\RenderRegister.h" />
@@ -265,8 +295,12 @@
     <ClInclude Include="include\Player\Skill\SkillGrapplingHook.h" />
     <ClInclude Include="include\Player\Skill\SkillManager.h" />
     <ClInclude Include="include\Player\Skill\SkillShieldCharge.h" />
+    <ClInclude Include="include\Player\Weapon\ModelAnimation.h" />
     <ClInclude Include="include\Player\Weapon\Weapon.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponAnimation.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponFreezeGun.h" />
     <ClInclude Include="include\Player\Weapon\WeaponManager.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponMeleeSwing.h" />
     <ClInclude Include="include\Projectile\ProjectileManager.h" />
     <ClInclude Include="include\Projectile\Projectile.h" />
     <ClInclude Include="include\Projectile\ProjectileStruct.h" />
@@ -286,48 +320,78 @@
     <ClInclude Include="include\StatePlaying.h" />
     <ClInclude Include="include\StateMachine\StateMachine.h" />
     <ClInclude Include="include\StateMachine\StateSecondary.h" />
-    <ClInclude Include="include\StatePlayingOverlay.h" />
     <ClInclude Include="include\StateStart.h" />
+    <ClInclude Include="include\Player\Weapon\depricated\WeaponModel.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponFreezeGrenade.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponMeleeParry.h" />
+    <ClInclude Include="include\AI\Trigger\TriggerAmmoPickup.h" />
+    <ClInclude Include="include\Player\Weapon\WeaponCrossbow.h" />
+    <ClInclude Include="include\AI\Behavior\StayBehavior.h" />
+    <ClInclude Include="include\AI\Trigger\TriggerTrapExplosive.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Entity\AnimatedModel.cpp" />
+    <ClCompile Include="source\Misc\Credits.cpp" />
+    <ClCompile Include="source\Misc\GUI\iMenuFX.cpp" />
+    <ClCompile Include="source\AI\Abilities\Ability.cpp" />
+    <ClCompile Include="source\AI\Behavior\BigBadBehavior.cpp" />
+    <ClCompile Include="source\AI\Behavior\StayBehavior.cpp" />
+    <ClCompile Include="source\AI\EnemyBossBaddie.cpp" />
+    <ClCompile Include="source\AI\EnemyDefender.cpp" />
+    <ClCompile Include="source\AI\EnemySoarer.cpp" />
+    <ClCompile Include="source\AI\EnemyTotem.cpp" />
+    <ClCompile Include="source\AI\Pathing\NavigationMeshEditor.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuAction.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuCards.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuCinematic.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuControls.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuFactory.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenu.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuCredits.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuFirstTime.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuGameOver.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuHighscore.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuIntro.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuLoading.cpp" />
     <ClCompile Include="source\Misc\GUI\iMenuMachine.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuSettings.cpp" />
+    <ClCompile Include="source\Misc\GUI\Specific\iMenuSkillPick.cpp" />
+    <ClCompile Include="source\Misc\Network\dbConnect.cpp" />
+    <ClCompile Include="source\Misc\GUI\Slider.cpp" />
+    <ClCompile Include="source\Misc\Test\TestingWork.cpp" />
     <ClCompile Include="source\Player\PlayerController.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\Misc\GUI\Sprite.cpp" />
+    <ClCompile Include="source\Physics\FuncContactResult.cpp" />
     <ClCompile Include="source\Misc\CommandsFile.cpp" />
     <ClCompile Include="source\Player\HUDManager.cpp" />
+    <ClCompile Include="source\Player\Weapon\AmmoContainer.cpp" />
     <ClCompile Include="source\AI\Behavior\MeleeBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyChaser.cpp" />
     <ClCompile Include="source\AI\Behavior\EnemyThreadHandler.cpp" />
     <ClCompile Include="source\Entity\LightObject.cpp" />
     <ClCompile Include="source\Misc\FPSRenderer.cpp" />
-    <ClCompile Include="source\AI\Behavior\Pathing.cpp" />
+    <ClCompile Include="source\AI\Pathing\Pathing.cpp" />
     <ClCompile Include="source\AI\Behavior\Behavior.cpp" />
     <ClCompile Include="source\AI\Behavior\RangedBehavior.cpp" />
     <ClCompile Include="source\AI\EnemyNecromancer.cpp" />
-    <ClCompile Include="source\AI\Behavior\AStar.cpp" />
+    <ClCompile Include="source\AI\Pathing\AStar.cpp" />
     <ClCompile Include="source\AI\Behavior\TestBehavior.cpp" />
-    <ClCompile Include="source\AI\Behavior\NavigationMesh.cpp" />
-    <ClCompile Include="source\AI\Behavior\PASVF.cpp" />
+    <ClCompile Include="source\AI\Pathing\NavigationMesh.cpp" />
+    <ClCompile Include="source\AI\Pathing\NavigationMeshGeneration.cpp" />
     <ClCompile Include="source\Misc\ComboMachine.cpp" />
     <ClCompile Include="source\Entity\PhysicsObject.cpp" />
     <ClCompile Include="source\Entity\StaticObject.cpp" />
     <ClCompile Include="source\Misc\FileLoader.cpp" />
     <ClCompile Include="source\Misc\GUI\Button.cpp" />
-    <ClCompile Include="source\Misc\GUI\MenuState.cpp" />
     <ClCompile Include="source\AI\EnemyTest.cpp" />
-    <ClCompile Include="source\Misc\HighScoreManager.cpp" />
     <ClCompile Include="source\Entity\Effect.cpp" />
     <ClCompile Include="source\AI\Enemy.cpp" />
     <ClCompile Include="source\Map.cpp" />
-    <ClCompile Include="source\AI\Trigger.cpp" />
-    <ClCompile Include="source\AI\TriggerManager.cpp" />
-    <ClCompile Include="source\Misc\GUI\MenuMachine.cpp" />
+    <ClCompile Include="source\AI\Trigger\Trigger.cpp" />
+    <ClCompile Include="source\AI\Trigger\TriggerManager.cpp" />
     <ClCompile Include="source\Misc\RandomGenerator.cpp" />
     <ClCompile Include="source\Misc\Sound\NoiseMachine.cpp" />
     <ClCompile Include="source\Misc\Sound\SoundSource.cpp" />
@@ -340,6 +404,10 @@
     <ClCompile Include="source\Player\Skill\SkillGrapplingHook.cpp" />
     <ClCompile Include="source\Player\Skill\SkillManager.cpp" />
     <ClCompile Include="source\Player\Skill\SkillShieldCharge.cpp" />
+    <ClCompile Include="source\Player\Weapon\ModelAnimation.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponAnimation.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponFreezeGun.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponMeleeSwing.cpp" />
     <ClCompile Include="source\Projectile\Projectile.cpp" />
     <ClCompile Include="source\Projectile\ProjectileManager.cpp" />
     <ClCompile Include="source\AI\EntityManager.cpp" />
@@ -348,12 +416,6 @@
     <ClCompile Include="source\Physics\Physics.cpp" />
     <ClCompile Include="source\Player\Player.cpp" />
     <ClCompile Include="source\Entity\Entity.cpp" />
-    <ClInclude Include="source\Game.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClCompile Include="source\Player\Weapon\Weapon.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponManager.cpp" />
     <ClCompile Include="source\Entity\Upgrade.cpp" />
@@ -364,8 +426,13 @@
     <ClCompile Include="source\StatePlaying.cpp" />
     <ClCompile Include="source\StateMachine\StateMachine.cpp" />
     <ClCompile Include="source\StateMachine\StateSecondary.cpp" />
-    <ClCompile Include="source\StatePlayingOverlay.cpp" />
     <ClCompile Include="source\StateStart.cpp" />
+    <ClCompile Include="source\Player\Weapon\depricated\WeaponModel.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponFreezeGrenade.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
+    <ClCompile Include="source\AI\Trigger\TriggerAmmoPickup.cpp" />
+    <ClCompile Include="source\Player\Weapon\WeaponCrossbow.cpp" />
+    <ClCompile Include="source\AI\Trigger\TriggerTrapExplosive.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

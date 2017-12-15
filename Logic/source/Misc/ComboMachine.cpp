@@ -2,76 +2,148 @@
 
 using namespace Logic;
 
-// Flat reward, no combo involved
-void ComboMachine::Reward(int score)
+#define COMBO_MULTIKILL_SCORE       1000
+#define COMBO_TIME_SCORE_MULTIPLIER 200
+
+const int ComboMachine::MAX_COMBO = 16;
+const int ComboMachine::MAX_MULTIKILL = 5;
+const float ComboMachine::COMBO_TIMER = 5000.f;
+const float ComboMachine::MULTIKILL_TIMER = 1000.f;
+
+ComboMachine::ComboMachine()
 {
-	m_Score += score;
+    reset();
+}
+
+// Flat reward, no combo involved
+void ComboMachine::reward(int score)
+{
+    m_totalScore += score;
 }
 
 // Gives the player score depending on enemy type
-void ComboMachine::Kill(ENEMY_TYPE type)
+void ComboMachine::kill(int score)
 {
-	CheckCombo();
-	m_Score += GetReward(type) * m_Combo;
+    m_comboTimer = COMBO_TIMER;
+    m_totalKills++;
+    if (score)
+    {
+        //addScore(score); apparently this doesnt work?
+        // add score to combo
+        m_comboScore += score;
+        // increase combo
+        if(m_combo != MAX_COMBO)
+            m_combo++;
+
+        // multikill
+        if (m_multikill != MAX_MULTIKILL)
+        {
+            m_multikill++;
+            m_multikillTimer = MULTIKILL_TIMER;
+        }
+    }
 }
 
 // Needs to be updated because we need to check the combo timer
-void ComboMachine::Update(float deltaTime)
+void ComboMachine::update(float deltaTime)
 {
-	m_TimeSinceLastKill -= deltaTime;
+    if (m_multikillTimer > FLT_EPSILON)
+        m_multikillTimer -= deltaTime;
+    else if(m_multikill > 1)
+        addMultikillScore();
+
+    if (m_comboTimer > FLT_EPSILON)
+        m_comboTimer -= deltaTime;
+    else
+    {
+        reward(m_comboScore * m_combo);
+        m_comboTimer = 0.f;
+        m_combo = 0;
+        m_multikill = 0;
+        m_comboScore = 0;
+    }  
 }
 
 // Reset all variables, should be called every level-restart
-void ComboMachine::Reset()
+void ComboMachine::reset()
 {
-	m_TimeSinceLastKill = 0.f;
-	m_Combo = 1;
-	m_Score = 0;
+    m_totalKills = 0;
+	m_comboTimer = 0.f;
+	m_combo = 0;
+    m_multikill = 0;
+	m_comboScore = 0;
+    m_totalScore = 0;
+}
+
+void ComboMachine::endCombo()
+{
+    if(m_multikill > 1)
+        addMultikillScore();
+    reward(m_comboScore);
+}
+
+int ComboMachine::getTotalKills()
+{
+    return m_totalKills;
 }
 
 // Returns a value between 0-100, representing the time left of combo-timer, where zero is the time when the combo ends
-int ComboMachine::GetComboTimer()
+int ComboMachine::getComboTimer()
 {
-	int procent = (int)std::round((m_TimeSinceLastKill / COMBO_TIMER) / 100.f);
+	int procent = (int)std::round((m_comboTimer / COMBO_TIMER) * 100.f);
 	return procent;
 }
 
 // Returns the player's current combo of score
-int ComboMachine::GetCurrentCombo()
+int ComboMachine::getCurrentCombo()
 {
-	return m_Combo;
+	return m_combo;
 }
 
 // Returns the player's overall score
-int ComboMachine::GetCurrentScore()
+int ComboMachine::getComboScore()
 {
-	return m_Score;
+	return m_comboScore;
 }
 
-// Raises the combo if time between each kill is fast enough
-void ComboMachine::CheckCombo()
+int ComboMachine::getTotalScore()
 {
-	if (m_TimeSinceLastKill > 0.f)
-	{
-		m_Combo++;
-		m_TimeSinceLastKill = COMBO_TIMER;
-	}
-	else
-	{
-		m_Combo = 1;
-		m_TimeSinceLastKill = COMBO_TIMER;
-	}
+    return m_totalScore;
 }
 
-// Reads all the rewards from each enemy
-void ComboMachine::ReadEnemyBoardFromFile(std::string path)
+void ComboMachine::addTimeBonus(float timeLeft)
 {
-	for (int i = 0; i < 40; i++)
-		m_Board[i] = 5;
+    int timeScore = timeLeft * 0.001f;
+    if(timeScore > 0)
+        m_totalScore += timeScore * COMBO_TIME_SCORE_MULTIPLIER;
 }
 
-// Gets the price on each enemy's head
-int ComboMachine::GetReward(ENEMY_TYPE type)
+float Logic::ComboMachine::getmaxComboTimer() const
 {
-	return m_Board[type];
+    return COMBO_TIMER;
+}
+
+// Check if combo is still alive
+void ComboMachine::checkCombo()
+{
+
+}
+
+void ComboMachine::addMultikillScore()
+{
+    m_comboScore += m_multikill * COMBO_MULTIKILL_SCORE;
+    m_multikill = 0;
+}
+
+void ComboMachine::addScore(int score)
+{
+    m_comboScore += score;
+    if (m_combo != MAX_COMBO)
+        m_combo++;
+
+    if (m_multikill != MAX_MULTIKILL)
+    {
+        m_multikill++;
+        m_multikillTimer = MULTIKILL_TIMER;
+    }
 }

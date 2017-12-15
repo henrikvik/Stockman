@@ -3,15 +3,26 @@
 #include "../MainCamera.h"
 #include "../CommonState.h"
 #include <SimpleMath.h>
-#include <Logic\include\Misc\RandomGenerator.h>
+#include <Singletons\DebugWindow.h>
+#include <WICTextureLoader.h>
 
 //temp
 #include <Keyboard.h>
 
-#define SNOW_RADIUS 50.f
-#define MAX_SNOW 512
+#define SNOW_RADIUS 30.f
+#define MAX_SNOW 1024
 #define PI 3.14159265f
 #define ONE_DEG_IN_RAD 0.01745f
+#define SNOW_SPEED 0.26f
+#define WIND_CHANGE_TIME 5.5f
+
+float getRandomFloat(float from, float to)
+{
+    // f is [0, 1]
+    float f = static_cast<float> (rand()) / static_cast<float> (RAND_MAX);
+    // return [from, to]
+    return (f * std::abs(to - from)) + from;
+}
 
 using namespace DirectX::SimpleMath;
 
@@ -25,6 +36,23 @@ Graphics::SnowRenderPass::SnowRenderPass(
     snowShader(Resources::Shaders::SnowShader, ShaderType::GS | ShaderType::VS | ShaderType::PS)
 {
     snowFlakeCount = 0;
+    #ifdef _DEBUG
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, L"../Resources/Textures/SnowFlake.dds", nullptr, &m_SnowFlakeSRV));
+    #else
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, L"Resources/Textures/SnowFlake.dds", nullptr, &m_SnowFlakeSRV));
+    #endif
+
+    RegisterCommand("GFX_RESTART_SNOW",
+    {
+        initializeSnowflakes();
+        return "Snow restarted!";
+    });
+
+    RegisterCommand("GFX_TOGGLE_SNOW",
+    {
+        enabled = !enabled;
+        return std::string("Snow ") + (enabled ? "enabled!" : "disabled!");
+    });
 }
 
 void Graphics::SnowRenderPass::update(float deltaTime)
@@ -32,39 +60,29 @@ void Graphics::SnowRenderPass::update(float deltaTime)
     //If the game restarts or something like that the snowflakes must be reset
     for (auto & info : RenderQueue::get().getQueue<SpecialEffectRenderInfo>())
     {
-        if (info->type == info->Snow)
+        if (info.type == info.Snow)
         {
-            if (info->restart)
+            if (info.restart)
                 initializeSnowflakes();
         }
     }
 
-    Logic::RandomGenerator & generator = Logic::RandomGenerator::singleton();
-
-    static float windTimer = 5000;
     static float windCounter = 0;
-    static Vector3 randWindPrev(0, -1, 0);
-    static Vector3 randWind(0, -1, 0);
-    static float friction = 0.6f;
+    static Vector3 randWindPrev(0, -SNOW_SPEED, 0);
+    static Vector3 randWind(0, -SNOW_SPEED, 0);
 
-    //temp
-    static auto ks = DirectX::Keyboard::KeyboardStateTracker();
-    ks.Update(DirectX::Keyboard::Get().GetState());
-
-    if (ks.pressed.P)
-    {
-        initializeSnowflakes();
-    }
 
     windCounter += deltaTime;
-    if (windTimer <= windCounter)
+    if (WIND_CHANGE_TIME <= windCounter)
     {
         randWindPrev = randWind;
         windCounter = 0;
-        randWind.x = generator.getRandomFloat(-1, 1);
-        randWind.z = generator.getRandomFloat(-1, 1);
-        randWind.y = -1;
+        randWind.x = getRandomFloat(-SNOW_SPEED, SNOW_SPEED);
+        randWind.z = getRandomFloat(-SNOW_SPEED, SNOW_SPEED);
+        randWind.y = -SNOW_SPEED;
     }
+
+
 
     for (int i = 0; i < snowFlakeCount; i++)
     {
@@ -72,11 +90,11 @@ void Graphics::SnowRenderPass::update(float deltaTime)
             moveSnowFlake(i);
 
         snowFlakes[i].distance = (snowFlakes[i].position - Global::mainCamera->getPos()).Length();
-        snowFlakes[i].randomRot += generator.getRandomFloat(0, ONE_DEG_IN_RAD * 5);
+        snowFlakes[i].randomRot += getRandomFloat(0, ONE_DEG_IN_RAD * 5) * deltaTime * 62.5f; //62.5 * 0.016 = 1
 
 
 
-        snowFlakes[i].position += Vector3::Lerp(randWindPrev, randWind, windCounter / windTimer) * deltaTime * 2;
+        snowFlakes[i].position += Vector3::Lerp(randWindPrev, randWind, windCounter / WIND_CHANGE_TIME) * (deltaTime * 62.5);
     }
 
     if (snowFlakes.data() != NULL)
@@ -86,7 +104,7 @@ void Graphics::SnowRenderPass::update(float deltaTime)
 
 void Graphics::SnowRenderPass::render() const
 {
-    if (snowFlakeCount > 0)
+    if (snowFlakeCount > 0 && enabled)
     {
         Global::context->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         Global::context->RSSetState(Global::cStates->CullNone());
@@ -94,14 +112,14 @@ void Graphics::SnowRenderPass::render() const
         Global::context->OMSetBlendState(Global::transparencyBlendState, 0, -1);
 
         Global::context->VSSetShaderResources(4, 1, snowBuffer);
-
         Global::context->GSSetConstantBuffers(0, 1, *Global::mainCamera->getBuffer());
         Global::context->GSSetConstantBuffers(3, 1, &buffers[0]); //lightmatrixbuffer
 
         Global::context->PSSetConstantBuffers(1, 1, &buffers[1]); //lightDatabuffer
-
         Global::context->PSSetShaderResources(0, resources.size(), resources.data());
-        
+        Global::context->PSSetShaderResources(4, 1, &m_SnowFlakeSRV);
+        auto sampler = Global::cStates->LinearClamp();
+        Global::context->PSSetSamplers(0, 1, &sampler);
         Global::context->PSSetSamplers(1, 1, &Global::comparisonSampler);
 
 
@@ -119,22 +137,20 @@ void Graphics::SnowRenderPass::render() const
 
 
         Global::context->OMSetRenderTargets(1, Global::nulls, nullptr);
-        Global::context->PSSetShaderResources(3, 1, Global::nulls);
+        Global::context->PSSetShaderResources(1, 3, Global::nulls);
         Global::context->GSSetShader(nullptr, nullptr, 0);
     }
 }
 
 void Graphics::SnowRenderPass::addRandomSnowFlake()
 {
-    Logic::RandomGenerator & generator = Logic::RandomGenerator::singleton();
-
-    Vector3 randVec(generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), generator.getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS));
+    Vector3 randVec(getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS));
 
     Vector3 finalPos = Global::mainCamera->getPos() + randVec;
 
     SnowFlake flake;
     flake.position = finalPos;
-    flake.randomRot = generator.getRandomFloat(0, PI * 2.f);
+    flake.randomRot = getRandomFloat(0, PI * 2.f);
     flake.distance = randVec.Length();
 
     snowFlakes.push_back(flake);
@@ -144,10 +160,13 @@ void Graphics::SnowRenderPass::addRandomSnowFlake()
 
 void Graphics::SnowRenderPass::moveSnowFlake(int snowFlake)
 {
-    Vector3 posToCam = Global::mainCamera->getPos() - snowFlakes[snowFlake].position;
-    posToCam.Normalize();
+    Vector3 randVec(getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS), getRandomFloat(-SNOW_RADIUS, SNOW_RADIUS));
 
-    snowFlakes[snowFlake].position = Global::mainCamera->getPos() + (posToCam * SNOW_RADIUS);
+    Vector3 finalPos = Global::mainCamera->getPos() + randVec;
+
+    snowFlakes[snowFlake].position = finalPos;
+    snowFlakes[snowFlake].randomRot = getRandomFloat(0, PI * 2.f);
+    snowFlakes[snowFlake].distance = randVec.Length();
 }
 
 void Graphics::SnowRenderPass::clearSnow()

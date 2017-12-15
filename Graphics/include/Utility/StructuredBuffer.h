@@ -24,9 +24,10 @@ public:
 
 #pragma region Public Functions
     void CopyTo(ID3D11DeviceContext *cxt, StructuredBuffer<T> *other);
-    T* map(ID3D11DeviceContext *cxt);
-    void unmap(ID3D11DeviceContext *cxt);
-    void write(ID3D11DeviceContext * context, T * data, UINT size);
+    T* map(ID3D11DeviceContext *cxt = Global::context);
+    void unmap(ID3D11DeviceContext *cxt = Global::context);
+	void write(ID3D11DeviceContext * context, T * data, UINT size);
+	void write(ID3D11DeviceContext * context, T * data, UINT size) const;
     void write(std::function<void(T*)> writeFunction);
 #pragma endregion
 
@@ -153,6 +154,13 @@ inline void StructuredBuffer<T>::write(ID3D11DeviceContext * context, T * data, 
 {
     memcpy(map(context), data, size);
     unmap(context);
+}
+
+template<typename T>
+inline void StructuredBuffer<T>::write(ID3D11DeviceContext * context, T * data, UINT size) const
+{
+	memcpy(map(context), data, size);
+	unmap(context);
 }
 
 template<typename T>

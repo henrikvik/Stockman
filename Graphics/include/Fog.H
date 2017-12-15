@@ -14,7 +14,7 @@ namespace Graphics
 		Fog(ID3D11Device* device);
 		~Fog();
 
-		void renderFog(ID3D11DeviceContext* deviceContext, ID3D11RenderTargetView * backBuffer, ID3D11ShaderResourceView* depthMap);
+		void renderFog(ID3D11DeviceContext* deviceContext, ID3D11RenderTargetView * backBuffer, ID3D11ShaderResourceView* depthMap) const;
 
 	private:
 		struct FogData
@@ -24,6 +24,7 @@ namespace Graphics
 
 		};
 		Shader fogShader;
+		Shader fullScreen;
 		std::vector<FogData> fogData;
 		StructuredBuffer<Fog::FogData> fogDataBuffer;
 

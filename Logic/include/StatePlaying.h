@@ -21,11 +21,10 @@
 
 // Misc
 #include <Misc\CardManager.h>
-#include <Misc\HighScoreManager.h>
 #include <Misc\ComboMachine.h>
 #include <Misc\Sound\NoiseMachine.h>
 #include <Misc\FPSRenderer.h>
-#include <Misc\GUI\MenuMachine.h>
+#include <Misc\GUI\iMenuMachine.h>
 #include <GameType.h>
 
 // DirectX Includes
@@ -34,7 +33,7 @@
 #include <Mouse.h>
 
 // Engine Includes
-#include <Engine\Profiler.h>
+#include <Singletons\Profiler.h>
 
 namespace Logic
 {
@@ -56,11 +55,19 @@ namespace Logic
         void update(float deltaTime);
         void render() const;
 
-        Player* getPlayer() { return m_player; }
+        // Necessary evil
+        Player* getPlayer()             { return m_player;          }
+        CardManager* getCardManager()   { return m_cardManager;     } 
 
     private:
         void gameOver();
+        void gameWon();
+        void addHighscore();
 
+        float m_playTime;
+        std::thread highscoreThread;
+
+        iMenuMachine*       m_menu;
         Physics*			m_physics;
         Player*				m_player;
         Map*				m_map;
@@ -68,7 +75,6 @@ namespace Logic
         EntityManager		m_entityManager;
         WaveTimeManager		m_waveTimeManager;
         CardManager*		m_cardManager;
-        HighScoreManager*	m_highScoreManager;
         HUDManager		    m_hudManager;
         GameType            m_gameType;
         FPSRenderer         m_fpsRenderer;

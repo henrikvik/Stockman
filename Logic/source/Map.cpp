@@ -1,33 +1,123 @@
 #include "Map.h"
-#include <Physics/Physics.h>        
+
 #include <Keyboard.h>
+#include <fstream>
+#include <toml\toml.h>
+#include <memory>
+
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
+#include <Graphics/include/Utility/ModelLoader.h>
+
+#include <Physics/Physics.h>        
 #include <Misc\RandomGenerator.h>
+#include <Misc\Sound\SoundSource.h>
 
 using namespace Logic;
 
-Map::Map() { }
+#define AI_BOX_ID_MIN 31
+
+static void FillLightVec(std::vector<LightRenderInfo> &lights, std::string path)
+{
+    auto val = toml::parseFile(path).value;
+
+    for (auto light : val.find("lights")->as<toml::Array>()) {
+        auto position = light["position"].as<toml::Array>();
+        auto col = light["color"].as<toml::Array>();
+        auto radius = light["range"].asNumber();
+        auto intensity = light["intensity"].asNumber();
+
+        LightRenderInfo info = {};
+        info.position.x = position[0].asNumber();
+        info.position.y = position[1].asNumber();
+        info.position.z = position[2].asNumber();
+        info.color.x = col[0].asNumber();
+        info.color.y = col[1].asNumber();
+        info.color.z = col[2].asNumber();
+        info.range = radius;
+        info.intensity = intensity;
+
+        lights.push_back(info);
+    }
+}
+
+static void SubmitLights(const std::vector<LightRenderInfo> &lights)
+{
+    for (auto light : lights) {
+        QueueRender(light);
+    }
+}
+
+Map::Map() :
+    m_ChristmasLightTimer(1.5f),
+    m_ChristmasPatternIndex(0)
+{
+    m_mapObject = std::make_unique<StaticObject>(Resources::Models::UnitCube,
+        nullptr, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL);
+
+    // static map lights
+    #define MAP_PATH(map) Resources::Maps::Paths.at(Resources::Maps::map)
+    FillLightVec(m_MapLights, MAP_PATH(lights));
+    FillLightVec(m_RedBulbs,  MAP_PATH(r));
+    FillLightVec(m_GreenBulbs,MAP_PATH(g));
+    FillLightVec(m_BlueBulbs, MAP_PATH(b));
+
+    //                                       bgr
+    m_ChristmasLightPattern.push_back(0b00000000);
+    m_ChristmasLightPattern.push_back(0b00000001);
+    m_ChristmasLightPattern.push_back(0b00000010);
+    m_ChristmasLightPattern.push_back(0b00000100);
+    m_ChristmasLightPattern.push_back(0b00000001);
+    m_ChristmasLightPattern.push_back(0b00000011);
+    m_ChristmasLightPattern.push_back(0b00000111);
+    m_ChristmasLightPattern.push_back(0b00000110);
+    m_ChristmasLightPattern.push_back(0b00000100);
+
+    m_campfire = Graphics::FXSystem->getEffect("FireSmoke");
+    m_campfire2 = Graphics::FXSystem->getEffect("ChimneySmoke");
+    m_campfire3 = Graphics::FXSystem->getEffect("ChimneySmoke");
+
+
+}
 
 Map::~Map() 
 {
 	clear();
 }
 
-// Saves physics ptr & loads the map
-void Map::init(Physics* physics, std::string path)
+void Map::add(FrameProp frameProp)
 {
-    // Saves physics pointer
+  //  m_objects.push_back(new Object(frameProp.modelID, frameProp.position, frameProp.rotation));
+}
+
+void Map::add(FrameHitbox frameHitbox)
+{
+    //if (frameHitbox.modelID == Resources::Models::UnitCube)
+    //    m_hitboxes.push_back(new StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+    //        Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+    //        Physics::COL_HITBOX,
+    //        Physics::COL_EVERYTHING),
+    //        {1, 1.f, 1},
+    //        StaticObject::NavigationMeshFlags::CULL
+    //    ));
+    //else
+        m_hitboxes.push_back(newd StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
+            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), NULL, false,
+            Physics::COL_HITBOX,
+            Physics::COL_EVERYTHING),
+            frameHitbox.dimensions,
+            StaticObject::NavigationMeshFlags::NO_CULL
+        ));
+}
+
+void Map::init(Physics* physics)
+{
     m_physicsPtr = physics;
 
     // Disables debug draw as default
     m_drawDebug = false;
-
-    // Loads map from file (currently only hardcoded)
-    loadMapFromFile(path);
 }
 
-// Deallocates all memory
 void Map::clear()
 {
 	for (size_t i = 0; i < m_props.size(); i++)     delete m_props[i];
@@ -42,83 +132,246 @@ void Map::clear()
 // If user holds tab, draw debug info
 void Map::update(float deltaTime)
 {
+    m_ChristmasLightTimer += deltaTime / 1000.f;
+    if (m_ChristmasLightTimer > 1.5f)
+    {
+        m_ChristmasLightTimer = 0.f;
+        m_ChristmasPatternIndex = (m_ChristmasPatternIndex + 1) % m_ChristmasLightPattern.size();
+    }
+
+
+
+#ifdef _DEBUG
     m_drawDebug = DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::LeftShift) ? true : false;
+#endif // _DEBUG
+
+    Graphics::FXSystem->processEffect(&m_campfire, { 63.604431f, 1.706378f, 29.647547f }, deltaTime / 1500.f);
+    Graphics::FXSystem->processEffect(&m_campfire2, { -18.386185f, 28.395212f, -37.384571f }, deltaTime / 2000.f);
+    Graphics::FXSystem->processEffect(&m_campfire3, { 100.62f, 60.83f, -85.596f }, deltaTime / 2000.f);
+
+
 }
 
 void Map::render() const
 {
-	for (Object* o : m_props)           o->render();
+    auto pattern = m_ChristmasLightPattern[m_ChristmasPatternIndex];
+
+    if (pattern & 0x1)
+        SubmitLights(m_RedBulbs);
+    if (pattern & 0x2)
+        SubmitLights(m_GreenBulbs);
+    if (pattern & 0x4)
+        SubmitLights(m_BlueBulbs);
+
+    SubmitLights(m_MapLights);
+
+    for (StaticObject* o : m_props)     o->render();
     for (LightObject* l : m_lights)     l->render();
     for (StaticObject* e : m_hitboxes)  e->render(); // Hitboxes should not be visiable at all at release
 
-	// Drawing hitboxes debugged & lights
-    if (m_drawDebug)
-    {
-        for (StaticObject* e : m_hitboxes)
-            e->renderD();
-    }
+    for (auto & d : decorations) d.render();
+	for (auto & f : foliages) f.render();
 }
 	
 std::vector<StaticObject*>*			Map::getProps()				{ return &m_props;				}
 std::vector<StaticObject*>*			Map::getHitboxes()			{ return &m_hitboxes;			}
 std::vector<LightObject*>*			Map::getLights()            { return &m_lights;             }
 
-// Loads a map from a specific file
-void Map::loadMapFromFile(std::string path)
+void Map::loadStartMenuScene()
 {
     // Temp campfire map, remove this when an actual campfire is done
-    if (path == "Campfire.txt")
-    {
-        std::vector<FrameHitbox> hitboxes; std::vector<FrameLight> lights; lights.push_back({ DirectX::SimpleMath::Vector3(0, 0, 0), DirectX::SimpleMath::Vector3(1, 0.5, 0.3), 0.75f, 5.f }); lights.push_back({ DirectX::SimpleMath::Vector3(0, 2, 0), DirectX::SimpleMath::Vector3(0.5, 1.0, 0.3), 0.75f, 5.f }); lights.push_back({ DirectX::SimpleMath::Vector3(0, 4, 0), DirectX::SimpleMath::Vector3(0, 0.3, 1.f), 0.75f, 5.f }); lights.push_back({ DirectX::SimpleMath::Vector3(0, 6, 0), DirectX::SimpleMath::Vector3(1.f, 1.f, 1.f), 0.75f, 5.f });
-        for (int i = 0; i < 50; i++) hitboxes.push_back({ { 0, (-5) +  i * 2.f, 3.f },{ (-5) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
-        for (int i = 0; i < 13; i++) hitboxes.push_back({ { 10, (-2) + i * 2.f, 8.f },{ (-10) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
-        for (int i = 0; i < 20; i++) hitboxes.push_back({ { 3, (-2) + i * 2.f, 4.f },{ (-6) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
-        for (int i = 0; i < 22; i++) hitboxes.push_back({ { -3, (-2) + i * 2.f, 4.f },{ (-6) +(i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
-        for (int i = 0; i < 10; i++) hitboxes.push_back({ { -10, (-2) + i * 2.f, 8.f },{ (-10) + (i * 360.f / 100), (i * 360.f / 100), (i * 360.f / 100) },{ RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5), RandomGenerator::singleton().getRandomFloat(1, 1.5) }, Resources::Models::UnitCube });
-        for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]); for (size_t i = lights.size(); i--;) add(lights[i]);
-        return;
-    }
-
-    // Loads hitboxes
     std::vector<FrameHitbox> hitboxes;
-    hitboxes.push_back({ { 0, -10, 0 }, {0, 0, 0}, {500.f, 10, 500.f}, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 60, 0.75, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 60, 2.00, 60 },{ 0, 0, 0 },{ 10, 2.00, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 80, 3, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 50, 1, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 45, 1.5f, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 80, 1, 40 },{ 40, -90, -90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 120, 1, 180 },{ 40, 0, -90 },{ 60, 10, 45 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 125, 5, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 100, 4, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 120, 4, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 130, 4, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 150, 6, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 60, 80, 60 },{ 0, 0, 0 },{ 45, 0.75, 45 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 45, 70, 45 },{ 0, 0, 0 },{ 10, 1.5f, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 60, 50, 60 },{ 0, 0, 0 },{ 10, 2, 10 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 80, 42, 80 },{ 0, 0, 0 },{ 15, 3, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 50, 40, 80 },{ 0, 90, 90 },{ 15, 3, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 125, 35, 100 },{ 0, 0, 0 },{ 15, 5, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 100, 40, 100 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 120, 50, 60 },{ 0, 0, 0 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 130, 40, 110 },{ 45, 0, 45 },{ 15, 4, 15 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { 150, 60, 150 },{ 0, 0, 0 },{ 40, 6, 40 }, Resources::Models::UnitCube });
-    hitboxes.push_back({ { -60, 1, -60 },{ 0, 0.3f, 0 },{ 25, 3, 25 }, Resources::Models::UnitCube });
-
-    // Loads lights
     std::vector<FrameLight> lights;
-    lights.push_back({ DirectX::SimpleMath::Vector3(-35, 2, 35), DirectX::SimpleMath::Vector3(1, 1, 0), 0.75f, 10.f });
-    lights.push_back({ DirectX::SimpleMath::Vector3(-35, 2, -35), DirectX::SimpleMath::Vector3(1, 0, 1), 0.75f, 10.f });
-    lights.push_back({ DirectX::SimpleMath::Vector3(35, 2, -35), DirectX::SimpleMath::Vector3(0, 1, 1), 0.75f, 10.f });
-    lights.push_back({ DirectX::SimpleMath::Vector3(35, 2, 35), DirectX::SimpleMath::Vector3(1, 0.25f, 0.5f), 0.75f, 10.f });
-    lights.push_back({ DirectX::SimpleMath::Vector3(-23, 3, 74), DirectX::SimpleMath::Vector3(0.75, 0.25f, 0.5f), 0.85f, 10.f });
-    lights.push_back({ DirectX::SimpleMath::Vector3(-22, 3, 70), DirectX::SimpleMath::Vector3(1, 0.55f, 0.5f), 0.85f, 10.f });
 
-    // Create everything and save
-    for (auto & hitbox : hitboxes) add(hitbox);
-    for (auto & light : lights) add(light);
+    //hitboxes.push_back({ { 0, 0.0f, 0 },{ 0, 0, 0 },{ 1.f, 1.f, 1.f },    Resources::Models::MenuScene });
+
+    add(FrameLight({ 0.f, 0.f, 0.f }, {1.f, 0.5f, 0.3f}, 1.f, 10.f));
+    
+    Sound::SoundSource campfire;
+    campfire.pos = { 0, 0, 0 };
+    campfire.vel = { 0, 0, 0 };
+    campfire.playSFX(Sound::SFX::CAMPFIRE);
+
+    for (size_t i = hitboxes.size(); i--;) add(hitboxes[i]);
+
+    SpecialEffectRenderInfo info = {};
+    info.type = SpecialEffectRenderInfo::Snow;
+    info.restart = true;
+    QueueRender(info);
+}
+
+// this method is very bad
+void Map::loadMap(Resources::Maps::Files map)
+{
+    toml::ParseResult mapFile = toml::parseFile(Resources::Maps::Paths.at(map));
+    if (!mapFile.valid()) throw std::runtime_error(mapFile.errorReason);
+
+    toml::Value mapValue = mapFile.value;
+
+    struct Instance
+    {
+        std::string name;
+        std::string model;
+        btVector3 translation = { 0, 0, 0 };
+        btQuaternion rotation = { 0, 0, 0, 1 };
+        btVector3 scale = { 1, 1, 1 };
+    };
+
+    std::vector<Instance> staticInstances;
+    std::vector<Instance> foliageInstances;
+    std::vector<Instance> triggerInstances;
+
+    auto mapStatic = mapValue.find("Static");
+    auto mapFoliage = mapValue.find("Foliage");
+    auto mapTrigger = mapValue.find("Trigger");
+
+    static auto pushInstances = [](toml::Value * src, std::vector<Instance> & dest)
+    {
+        auto vec3 = [](toml::Value const* v) -> btVector3
+        {
+            return
+            {
+                (btScalar)v->find(0)->asNumber(),
+                (btScalar)v->find(1)->asNumber(),
+                (btScalar)v->find(2)->asNumber(),
+            };
+        };
+
+        auto quat = [](toml::Value const* v) -> btQuaternion
+        {
+            return
+            {
+                (btScalar)v->find(0)->asNumber(),
+                (btScalar)v->find(1)->asNumber(),
+                (btScalar)v->find(2)->asNumber(),
+                (btScalar)v->find(3)->asNumber(),
+            };
+        };
+
+        for (auto & tInstance : src->as<toml::Array>())
+        {
+            Instance instance;
+            instance.name = tInstance.get<std::string>("name");
+            instance.model = tInstance.get<std::string>("model");
+
+            toml::Value const* translationValue = tInstance.findChild("translation");
+            toml::Value const* rotationValue = tInstance.findChild("rotation");
+            toml::Value const* scaleValue = tInstance.findChild("scale");
+
+            if (translationValue) { instance.translation = vec3(translationValue); }
+            if (rotationValue) { instance.rotation = quat(rotationValue); }
+            if (scaleValue) { instance.scale = vec3(scaleValue); }
+
+            dest.push_back(instance);
+        }
+    };
+
+    if (mapStatic) pushInstances(mapStatic, staticInstances);
+    if (mapFoliage) pushInstances(mapFoliage, foliageInstances);
+    if (mapTrigger) pushInstances(mapTrigger, triggerInstances);
+    // TODO USE THIS //    
+
+    decorations.clear();
+	foliages.clear();
+
+    auto toVec3 = [](DirectX::SimpleMath::Vector3 & vec) -> btVector3
+    {
+        return {vec.x, vec.y, vec.z};
+    };
+
+    auto toQuat = [](DirectX::SimpleMath::Quaternion & vec) -> btQuaternion
+    {
+        return {vec.x, vec.y, vec.z, vec.w};
+    };
+
+    // this is a temporary solution
+    bool groundModel = false, aiCollBox = false;
+    int aiBoxCounter = 0;
+
+    for (auto & instance : staticInstances)
+    {
+        try
+        {
+            Resources::Models::Files model = Resources::Models::toEnum(instance.model.c_str());
+            groundModel = model == Resources::Models::Ground;
+
+            DirectX::SimpleMath::Quaternion rotation(instance.rotation[0], instance.rotation[1], instance.rotation[2], instance.rotation[3]);
+            DirectX::SimpleMath::Vector3 scale(instance.scale[0], instance.scale[1], instance.scale[2]);
+            DirectX::SimpleMath::Vector3 translation(instance.translation[0], instance.translation[1], instance.translation[2]);
+
+            DirectX::SimpleMath::Matrix instance_transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
+            HybrisLoader::Model::BoundingBox bounding_box = ModelLoader::get().getModel(model)->get_bounding_box();
+
+            if (model == Resources::Models::Files::Cloud)
+                scale *= 1000000.f;
+
+            bounding_box.apply_scale(scale);
+            Decoration decor(model, instance_transform, bounding_box.sphere_radius());
+            decorations.push_back(decor);
+
+            aiBoxCounter = 0;
+            for (auto & hitbox : *ModelLoader::get().getModel(model)->getHitboxes())
+            {
+                if (groundModel)
+                {
+                    aiBoxCounter++;
+                    if (aiBoxCounter > AI_BOX_ID_MIN) aiCollBox = true;
+                }
+
+                btRigidBody * body = m_physicsPtr->createHitbox(
+                    toVec3(hitbox.position),
+                    toQuat(hitbox.rotation),
+                    toVec3(hitbox.halfSize) * instance.scale,
+                    false,
+                    Physics::COL_HITBOX,
+                    aiCollBox ? Physics::COL_NOTHING : Physics::COL_EVERYTHING
+                );
+                aiCollBox = false;
+                body->setUserPointer(m_mapObject.get());
+
+                float t[16]; body->getWorldTransform().getOpenGLMatrix(t);
+                DirectX::SimpleMath::Matrix hitbox_transform(t);
+
+                hitbox_transform = hitbox_transform * instance_transform;
+                DirectX::SimpleMath::Quaternion rot;
+                DirectX::SimpleMath::Vector3 pos, scale;
+                hitbox_transform.Decompose(scale, rot, pos);
+                btTransform new_transform(toQuat(rot), {pos.x, pos.y, pos.z});
+
+                body->setWorldTransform(new_transform);
+            }
+        }
+        catch (const char * e)
+        {
+            std::cerr << "Could not find model " << instance.model << " during map load. Ignoring model." << std::endl;
+        }
+    }
+	for (auto & instance : foliageInstances)
+	{
+		 try
+         {
+			 Resources::Models::Files model = Resources::Models::toEnum(instance.model.c_str());
+
+			 DirectX::SimpleMath::Quaternion rotation(instance.rotation[0], instance.rotation[1], instance.rotation[2], instance.rotation[3]);
+			 DirectX::SimpleMath::Vector3 scale(instance.scale[0], instance.scale[1], instance.scale[2]);
+			 DirectX::SimpleMath::Vector3 translation(instance.translation[0], instance.translation[1], instance.translation[2]);
+
+			 DirectX::SimpleMath::Matrix instance_transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
+			 HybrisLoader::Model::BoundingBox bounding_box = ModelLoader::get().getModel(model)->get_bounding_box();
+
+			 bounding_box.apply_scale(scale);
+			 Foliage decor(model, instance_transform, bounding_box.sphere_radius());
+			 foliages.push_back(decor);
+		 }
+		 catch (const char * e)
+		 {
+			 std::cerr << "Could not find model " << instance.model << " during map load. Ignoring model." << std::endl;
+		 }
+	}
+    SpecialEffectRenderInfo info;
+    info.type = SpecialEffectRenderInfo::Snow;
+    info.restart = true;
+    QueueRender(info);
 }
 
 // Adds a pointlight to the map
@@ -127,20 +380,20 @@ void Map::add(FrameLight frameLight)
     m_lights.push_back(newd LightObject(frameLight));
 }
 
-// Adds a visual prop to the map
-void Map::add(FrameProp frameProp)
-{
-//    m_props.push_back(newd StaticObject(frameProp.modelID));
-}
-
-// Adds a static hitbox to the map
-void Map::add(FrameHitbox frameHitbox)
-{
-    m_hitboxes.push_back(newd StaticObject(frameHitbox.modelID, m_physicsPtr->createBody(
-        /* Shape */             Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions),
-        /* Mass */              NULL,
-        /* Sensor */            false,
-        /* Collision Type */    Physics::COL_HITBOX,
-        /* Collides With */     Physics::COL_EVERYTHING),
-        /* Graphical Scaling */ frameHitbox.dimensions));
-}
+//
+//// Adds a static hitbox to the map
+//void Map::add(FrameHitbox frameHitbox)
+//{
+//    m_hitboxes.push_back(newd StaticObject(
+//        frameHitbox.modelID, 
+//        m_physicsPtr->createBody(
+//            Cube(frameHitbox.position, frameHitbox.rotation, frameHitbox.dimensions), /* Shape */             
+//            NULL,                   /* Mass */              
+//            false,                  /* Sensor */            
+//            Physics::COL_HITBOX,    /* Collision Type */    
+//            Physics::COL_EVERYTHING /* Collides With */     
+//        ),
+//        frameHitbox.dimensions, /* Graphical Scaling */ 
+//        StaticObject::NavigationMeshFlags::NO_CULL
+//    ));
+//}

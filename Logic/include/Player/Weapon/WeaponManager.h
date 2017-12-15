@@ -14,7 +14,10 @@
 
 #include <vector>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
+#include <Player\Weapon\AmmoContainer.h>
+
+#define WEAPON_PRIMARY 0
+#define WEAPON_SECONDARY 1
 
 namespace Graphics
 {
@@ -24,12 +27,23 @@ namespace Graphics
 namespace Logic
 {
     class Entity;
+    class Player;
     class Weapon;
     class ProjectileManager;
+    class Effect;
+    class Upgrade;
+    class WeaponAnimation;
 
 	class WeaponManager
 	{
-	public:		
+	public:
+        struct WeaponLoadout
+        {
+            Weapon* weapon[2];
+            AmmoContainer ammoContainer;
+            WeaponAnimation* weaponModel;
+        };
+
 		WeaponManager();
 		WeaponManager(const WeaponManager& other) = delete;
 		WeaponManager* operator=(const WeaponManager& other) = delete;
@@ -39,52 +53,70 @@ namespace Logic
 		void clear();
 		void reset();
 		void update(float deltaTime);
+        void affect(Effect const & effect);
+        void onUpgradeAdd(int stacks, Upgrade const & upgrade);
 		void render() const;
 
-		void setWeaponModel(DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
+		void setWeaponModel(float deltaTime, DirectX::SimpleMath::Matrix playerTranslation, DirectX::SimpleMath::Vector3 playerForward);
 
 		void switchWeapon(int weaponID);
-		void usePrimary(btVector3 position, float yaw, float pitch, Entity& shooter);
-		void useSecondary(btVector3 position, float yaw, float pitch, Entity& shooter);
+
+        void tryAttack(int attackMode, btVector3 position, float yaw, float pitch, Player& shooter);
+		void attack(int attackMode, btVector3 position, float yaw, float pitch, Entity& shooter);
 		void reloadWeapon();
 
 		bool isSwitching();
 		bool isAttacking();
 		bool isReloading();
 
-		Weapon* getCurrentWeaponPrimary();
-		Weapon* getCurrentWeaponSecondary();
+        WeaponLoadout* getCurrentWeaponLoadout();
+        WeaponLoadout* getWeaponLoadout(int index);
+        WeaponLoadout* getActiveWeaponLoadout();
+        WeaponLoadout* getInactiveWeaponLoadout();
 
-        std::pair<Weapon*, Weapon*> getFirstWeapon();
-        std::pair<Weapon*, Weapon*> getSecondWeapon();
-        Weapon* getActiveWeapon();
-        Weapon* getInactiveWeapon();
+        int getAmmoPickedUp();
 
 	private:
+        enum ReloadingWeapon
+        {
+            IDLE,
+            ACTIVE,
+            DONE
+        };
 
-		enum ReloadingWeapon
-		{
-			IDLE,
-			ACTIVE,
-			DONE
-		};
+        enum WeaponToUse
+        {
+            USE_PRIMARY,
+            USE_SECONDARY, 
+            USE_NOTHING
+        };
 
-		void initializeWeapons();
-		void makeWeaponLoadout();
+        struct Upgrades
+        {
+            float magSizeModifier;
+            int ammoCapModifier;
+            float fireRateModifier;
+            float reloadTimeModifier;
+            float freezeDurationModifier;
+            int fireDamageModifier;
+        };
+		void initializeWeapons(ProjectileManager* projectileManager);
 
-		ProjectileManager* m_projectileManager;
-		std::vector<Weapon*> m_allWeapons;
-		std::vector<std::pair<Weapon*, Weapon*>> m_weaponsLoadouts;
-		//std::vector<int> ammoList;
-		std::pair<Weapon*, Weapon*> m_currentWeapon;
+        Upgrades m_Upgrades;
+
+        std::vector<WeaponLoadout> m_weaponLoadouts;
+		WeaponLoadout* m_currentWeapon;
 
 		// Timers
-		float m_swapWeaponTimer;
-		float m_swapWeaponTimerMax;
-		float m_attackTimer;
+		float m_attackRateTimer;
+        WeaponToUse m_toUse;
+        Player* m_toUseShooter;
 
 		float m_reloadTimer;
 		ReloadingWeapon m_reloadState;
+
+        int m_ammoPickedUp;
+        bool EnableWeapons;
 	};
 }
 #endif

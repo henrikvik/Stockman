@@ -3,7 +3,7 @@
 
 #include <Player\Player.h>
 #include <vector>
-#include "Pathing.h"
+#include <AI\Pathing\Pathing.h>
 
 // this class is pretty bloated but it is neccessary, may make it better in future
 
@@ -18,7 +18,7 @@ namespace Logic {
 		{
 			Enemy *enemy;
 			std::vector<Enemy*> closeEnemies;
-			const Player *target;
+			Player *target;
 			Behavior *behavior;
 			float deltaTime;
 		};
@@ -47,9 +47,12 @@ namespace Logic {
 			}
 		};
 	private:
+        static const float STEERING_BASE, STEERING_MOD;
+
 		BehaviorNode m_root;
 		Pathing m_pathing;
 		bool m_changedGoalNode;
+        float m_steeringSpeed;
 
 		bool runNode(RunIn &in, BehaviorNode &node);
 	public:
@@ -66,13 +69,14 @@ namespace Logic {
 		virtual ~Behavior();
 
 		void update(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
-			Player const &player, float deltaTime);
+			Player &player, float deltaTime);
 		virtual void updateSpecific(Enemy &enemy, std::vector<Enemy*> const &closeEnemies,
-			Player const &player, float deltaTime) {};
+			Player &player, float deltaTime) {};
 
 		virtual void walkPath(RunIn &runIn);
 		virtual void boidCalculations(btVector3 &pos, btVector3 &dir,
 			std::vector<Enemy*> const &close, float maxSpeed, float dt);
+        virtual void calculateVelocityAndSteering(btVector3 &dir, RunIn &in, bool pursuitPlayer);
 
 		void runTree(RunIn &in);
 		
@@ -87,6 +91,9 @@ namespace Logic {
 
 		PathingType getPathingType() const;
 		void setPathingType(PathingType pathingType);
+
+        float getSteeringSpeed() const;
+        void setSteeringSpeed(float steeringSpeed);
 	private:
 		PathingType m_pathingType;
 	};

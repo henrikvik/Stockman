@@ -5,7 +5,7 @@
 #include <thread>
 
 #include <AI/WaveManager.h>
-#include <AI/TriggerManager.h>
+#include <AI/Trigger/TriggerManager.h>
 
 #pragma region ClassDesc
 	/*
@@ -26,25 +26,37 @@ namespace Logic
     class Enemy;
     class Renderer;
     class EnemyThreadHandler;
+    enum TriggerType;
 
 	class EntityManager
 	{
+    typedef std::function<Enemy* (btVector3 const &pos, float scale,
+        std::vector<int> const &effects, Physics &physics)> EnemyFactoryFunc;
+
     public:
         enum AIType {
-            NORMAL_MODE, NO_AI_MODE, HARDCORE, DARK_SOULS
+            NORMAL_MODE, NO_AI_MODE, HARDCORE, MODES
         };
 	private:
-		static const int NR_OF_THREADS;
+        static const btVector3   MIN_SPAWN, MAX_SPAWN; // position of min / max like a cube
+        static const std::string WAVE_FILES[MODES];
+
+		static const int       NR_OF_THREADS, ENEMY_CAP;
+        static const float     INVALID_LENGTH;
+
+        static int             PATH_UPDATE_DIV;
 
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
-		std::vector<double> time;
+        std::unordered_map<EnemyType, EnemyFactoryFunc> m_enemyFactory;
 
 		TriggerManager m_triggerManager;
 		WaveManager m_waveManager;
         EnemyThreadHandler *m_threadHandler; // Just because i want to delete it when i want
 
         int m_frame, m_aliveEnemies;
+        bool m_automaticTesting, m_debugPath, m_editing;
+
         AIType m_aiType;
 		float m_deltaTime;
 
@@ -54,7 +66,7 @@ namespace Logic
         std::function<void(Entity& entity)>                 DeleteBody;
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)>            SpawnProjectile;
-        std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
+        std::function<Enemy*(EnemyType type, btVector3 &pos,
             std::vector<int> effects)>                      SpawnEnemy;
         std::function<Trigger*(int id, btVector3 const &pos,
             std::vector<int> &effects)>                     SpawnTrigger;
@@ -64,6 +76,8 @@ namespace Logic
 		EntityManager* operator=(EntityManager const &entityManager) = delete;
 		~EntityManager();
 
+        void registerCreationFunctions();
+
         // data handling
         void resetTriggers();
         void deallocateData(bool forceDestroy = true); // delete data in vectors
@@ -71,24 +85,25 @@ namespace Logic
         // render / updates
 		void render() const;
 
-		void update(Player const &player, float deltaTime);
-		void updateEnemies(int index, Player const &player, float deltaTime);
-		// statis because threads will use this
+		void update(Player &player, float deltaTime);
+		void updateEnemies(int index, Player &player, float deltaTime);
 		void updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock, int enemyIndex,
-            int flockIndex, Player const &player, float deltaTime, bool swapOnNewIndex);
+            int flockIndex, Player &player, float deltaTime, bool swapOnNewIndex);
+        void automaticUpdate(Player &player);
 
         // effects
 		int giveEffectToAllEnemies(StatusManager::EFFECT_ID id);
 
         // spawning
-		void spawnWave(int waveId);
-		Enemy* spawnEnemy(ENEMY_TYPE id, btVector3 const &pos, std::vector<int> const &effects,
+		void spawnWave(int waveId, btVector3 const &playerPos);
+		Enemy* spawnEnemy(EnemyType id, btVector3 const &pos, std::vector<int> const &effects,
 			Physics &physics, ProjectileManager *projectiles);
-		Trigger* spawnTrigger(int id, btVector3 const &pos, std::vector<int> &effects,
-			Physics &physics, ProjectileManager *projectiles);
+		Trigger* spawnTrigger(int id, btVector3 const &pos,
+            std::vector<int> &effects, Physics &physics, ProjectileManager *projectiles);
+        // a circle of area enemies can't spawn
+        btVector3 getRandomSpawnLocation(btVector3 const &invalidPoint, float invalidLength);
 
         // sets & gets
-
         void setSpawnFunctions(ProjectileManager &projManager, Physics &physics);
 
 		size_t getNrOfAliveEnemies() const;

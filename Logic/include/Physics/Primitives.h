@@ -92,16 +92,27 @@ namespace Logic
     ////////////////////////////////////////////////////////////
     //	Creates a simple 3D cube 
     ////////////////////////////////////////////////////////////
+
+    // Dimensions is the HALF SIZE, not the actually size that is why my shit is not working fml fmlfmflfmflfmlfmflmflfmflfml
     class Cube : public Shape
     {
     public:
+        // used for the nav mesh
+        Cube() : Shape(btVector3(), btVector3())
+        {
+
+        }
+
         Cube(btVector3 position, btVector3 rotation, btVector3 dimensions)
-            : Shape(position, rotation, ShapeTypeCube) {
+            : Shape(position, rotation, ShapeTypeCube) 
+        {
             m_dimensions = dimensions;
         }
 
+
         void		setDimensions(btVector3 dimensions) { m_dimensions = dimensions; }
         btVector3	getDimensions() const { return m_dimensions; }
+        btVector3&	getDimensionsRef() { return m_dimensions; }
 
     private:
         btVector3	m_dimensions;

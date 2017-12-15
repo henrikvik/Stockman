@@ -3,8 +3,9 @@
 #include <vector>
 #include <stdint.h>
 #include <Resources\Resources.h>
+#include "../../export.h"
 
-class Texture
+class GRAPHICS_API Texture
 {
 public:
     Texture();

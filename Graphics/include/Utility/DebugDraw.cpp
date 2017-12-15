@@ -3,7 +3,7 @@
 #include <WICTextureLoader.h>
 #include <imgui.h>
 #include "Buffer.h"
-#include <Engine\DebugWindow.h>
+#include <Singletons\DebugWindow.h>
 
 static std::vector<Graphics::Light> DebugLights;
 static std::vector<Graphics::ParticleEffectInstance> DebugFX;
@@ -83,7 +83,7 @@ void Graphics::Debug::PointLight(Light light)
     DebugLights.push_back(light);
 }
 
-void Graphics::Debug::Render(Camera *camera)
+void GRAPHICS_API Graphics::Debug::Render(Camera *camera)
 {
     using namespace DirectX::SimpleMath;
     

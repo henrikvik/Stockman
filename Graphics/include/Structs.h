@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-#define AVG_TILE_LIGHTS 200
+#define AVG_TILE_LIGHTS 100
 #define BLOCK_SIZE 16
 
 namespace Graphics
@@ -56,13 +56,7 @@ namespace Graphics
 		float burnAmount;
 	};
 
-	struct FoliageRenderInfo
-	{
-		bool render;
-		ModelID meshId;
-		DirectX::SimpleMath::Matrix translation;
-		bool backFaceCulling = false;
-	};
+
 
 	struct WaterRenderInfo
 	{

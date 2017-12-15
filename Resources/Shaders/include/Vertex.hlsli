@@ -1,10 +1,15 @@
+#ifndef VERTEX_HLSLI
+#define VERTEX_HLSLI
+
 struct Vertex
 {
-    float3 position;
-    float3 normal;
-    float3 binormal;
-    float3 tangent;
-    float2 uv;
-    uint   jointIds[4];
-    float  jointWeights[4];
+    float3 position        : POSITION     ;
+    float3 normal          : NORMAL       ;
+    float3 binormal        : BINORMAL     ;
+    float3 tangent         : TANGENT      ;
+    float2 uv              : UV           ;
+    uint4   jointIds       : JOINT_IDS    ;
+    float4  jointWeights   : JOINT_WEIGHTS;
 };
+
+#endif

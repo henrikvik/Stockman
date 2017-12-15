@@ -2,15 +2,19 @@
 #include <AI\Behavior\TestBehavior.h>
 #include <AI\Behavior\RangedBehavior.h>
 #include <AI\Behavior\MeleeBehavior.h>
+#include <AI\Behavior\BigBadBehavior.h>
+#include <AI\Behavior\StayBehavior.h>
 
 #include <Player\Player.h>
 #include <Projectile\ProjectileStruct.h>
 #include <Projectile\Projectile.h>
 
 using namespace Logic;
+const int Enemy::MIN_Y = -80.f;
+const float Enemy::MAX_TARGET_Y = 4.4;
 
-Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, ENEMY_TYPE enemyType, int animationId)
-: Entity(body, halfExtent)
+Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, int health, int baseDamage, float moveSpeed, EnemyType enemyType, int animationId, btVector3 modelOffset)
+: Entity(body, halfExtent, modelOffset), animatedModel(modelID, "")
 {
 	m_behavior = nullptr;
 
@@ -24,18 +28,27 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
 
     m_nrOfCallbacksEntities = 0;
 
-	//animation todo
-    enemyRenderInfo.model = modelID;
-//    enemyRenderInfo.animationName = "";
-//    enemyRenderInfo.animationProgress = 0;
-//    enemyRenderInfo.freeze = 0;
-//    enemyRenderInfo.burn = 0;
-    enemyRenderInfo.transform = getTransformMatrix();
-    light.color = DirectX::SimpleMath::Color(1.0f, 0.0f, 0.0f);
-    light.intensity = 1.0f;
-    light.range = 2.f;
-    
+    m_stunned = false;
+    m_fireTimer = 0.f;
+    m_blinkTimer = -1.0f;
 
+    maxAnimationTime = 0.f;
+
+    addCallback(ON_DAMAGE_TAKEN, [&](CallbackData &data) -> void {
+        m_blinkTimer = 100.0f;
+        getSoundSource()->playSFX(Sound::SFX::ENEMY_HIT, 1.f, 0.2f);
+    });
+
+    addCallback(ON_DEATH, [&](CallbackData &data)
+    {
+        Graphics::FXSystem->addEffect("DeathEffect", data.caller->getPosition());
+        getSoundSource()->playSFX(Sound::SFX::ENEMY_DEATH, 1.f, 0.25f);
+    });
+}
+
+void Enemy::setMoveSpeed(float moveSpeed)
+{
+    m_moveSpeed = moveSpeed;
 }
 
 void Enemy::setBehavior(BEHAVIOR_ID id)
@@ -55,13 +68,19 @@ void Enemy::setBehavior(BEHAVIOR_ID id)
         case MELEE:
                 m_behavior = newd MeleeBehavior();
             break;
+        case BOSS_BADDIE:
+                m_behavior = newd BigBadBehavior();
+            break;
+        case STAY:
+            m_behavior = newd StayBehavior();
+            break;
 		default:
 				m_behavior = newd TestBehavior();
 			break;
 	}
 }
 
-void Enemy::setEnemyType(ENEMY_TYPE id)
+void Enemy::setEnemyType(EnemyType id)
 {
 	m_enemyType = id;
 }
@@ -71,19 +90,59 @@ Enemy::~Enemy() {
 		delete m_behavior;
 }
 
-void Enemy::update(Player const &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
+void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &closeEnemies) {
 	Entity::update(deltaTime);
+
+    // update behavior
+    if (!m_stunned || getEnemyType() == EnemyType::BOSS_1) // quick fix
+    {
+        m_behavior->update(*this, closeEnemies, player, deltaTime);
+    }
+
+    // helps them come up to the player
+    if (player.getPositionBT().y() < MAX_TARGET_Y) {
+        getRigidBody()->setGravity({ 0.f, -9.82f * 25.f, 0.f });
+    }
+    else
+    {
+        getRigidBody()->setGravity({ 0.f, -9.82f * 3.f, 0.f });
+    }
+
+    // update specifc
 	updateSpecific(player, deltaTime);
 
-    // Update Render animation and position
-    enemyRenderInfo.transform = getTransformMatrix();
-//    enemyRenderInfo.animationProgress += deltaTime;
+    // Rotation toward their moving direction
+    btVector3 dir = getRigidBody()->getLinearVelocity();
+    float yaw = atan2(dir.getX(), dir.getZ());
+    m_transform->setRotation(btQuaternion(yaw, 0.f, 0));
 
-	m_behavior->update(*this, closeEnemies, player, deltaTime); // BEHAVIOR IS NOT DONE, FIX LATER K
+    // Update animation and position
+    updateAnimation(deltaTime);
 
     m_moveSpeedMod = 1.f;
 	m_bulletTimeMod = 1.f; // Reset effect variables, should be in function if more variables are added.
-    light.position = enemyRenderInfo.transform.Translation();
+    light.position = getPosition();
+
+    // out of bounds insta kill
+    if (getPositionBT().y() < MIN_Y || getPositionBT().length2() > 62500.f)
+        m_health = 0;
+
+    // blinking when damaged
+    if (m_blinkTimer > 0)
+    {
+        animatedModel.set_color(DirectX::SimpleMath::Vector3(10.0f, 0.0f, 0.0f));
+        m_blinkTimer -= deltaTime;
+    }
+    else
+    {
+        animatedModel.set_color(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f));
+    }
+}
+
+void Enemy::updateAnimation(float deltaTime)
+{
+    animatedModel.set_transform(getModelTransformMatrix());
+    animatedModel.update(deltaTime);
 }
 
 void Enemy::debugRendering()
@@ -106,27 +165,107 @@ bool Enemy::hasCallbackEntities()
     return m_nrOfCallbacksEntities > 0;
 }
 
+
 void Enemy::damage(int damage)
 {
+    if (damage <= 0) return;
+
 	m_health -= damage;
+    m_blinkTimer = 100.0f;
+
+    
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)
-        callback(ON_DEATH, CallbackData {this, static_cast<int32_t> (damage)});
+    {
+        callback(ON_DEATH, CallbackData{ this, static_cast<int32_t> (damage) });
+    }
 }
 
 void Enemy::affect(int stacks, Effect const &effect, float dt) 
 {
 	auto flags = effect.getStandards()->flags;
+    m_moveSpeedMod = 1.0f;
 
-	if (flags & Effect::EFFECT_KILL)
-		damage(m_health);
-	if (flags & Effect::EFFECT_ON_FIRE)
-		damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken * dt));
+    if (flags & Effect::EFFECT_MODIFY_HP)
+        m_health += static_cast<int> (effect.getModifiers()->modifyHP);
+    if (flags & Effect::EFFECT_ON_FIRE)
+    {
+        m_fireTimer += dt;
+
+        if (m_fireTimer >= 1000.0f)
+        {
+            damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken) * stacks);
+            SpawnDamageText(static_cast<int> (effect.getModifiers()->modifyDmgTaken) * stacks, DirectX::Colors::OrangeRed);
+
+            m_fireTimer -= 1000.0f;
+        }
+    }
+    if (flags & Effect::EFFECT_FREEZE_DMG)
+    {
+        m_fireTimer += dt;
+
+        if (m_fireTimer >= 1000.0f)
+        {
+            damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+            SpawnDamageText(static_cast<int> (effect.getModifiers()->modifyDmgTaken), DirectX::Colors::PowderBlue);
+
+            m_fireTimer -= 1000.0f;
+        }
+    }
+    if (flags & Effect::EFFECT_KILL)
+        damage(m_health);
 	if (flags & Effect::EFFECT_BULLET_TIME)
-		m_bulletTimeMod *= std::pow(effect.getSpecifics()->isBulletTime, stacks);
+		m_bulletTimeMod = std::pow(effect.getSpecifics()->isBulletTime, stacks);
     if (flags & Effect::EFFECT_IS_FROZEN)
         m_moveSpeedMod *= std::pow(effect.getSpecifics()->isFreezing, stacks);
+    if (flags & Effect::EFFECT_IS_STUNNED)
+        m_stunned = true;
+    if (flags & Effect::EFFECT_MOVE_FASTER)
+       m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+    if (flags & Effect::EFFECT_MOVE_SLOWER)
+       m_moveSpeedMod *= std::pow(effect.getModifiers()->modifyMovementSpeed, stacks);
+}
+
+void Logic::Enemy::onEffectAdd(int stacks, Effect const & effect)
+{
+    long long flags = effect.getStandards()->flags;
+
+    if (flags & Effect::EFFECT_DAMAGE_ONCE)
+    {
+        damage(effect.getModifiers()->modifyDmgTaken);
+        SpawnDamageText(static_cast<int> (effect.getModifiers()->modifyDmgTaken), DirectX::Colors::FloralWhite);
+    }
+}
+
+void Enemy::onEffectEnd(int stacks, Effect const & effect)
+{
+    long long flags = effect.getStandards()->flags;
+
+    if (flags & Effect::EFFECT_ON_FIRE)
+    {
+        m_fireTimer = 0;
+    }
+    if (flags & Effect::EFFECT_BULLET_TIME)
+    {
+        //m_bulletTimeMod = 1.f;
+    }
+    if (flags & Effect::EFFECT_IS_FROZEN)
+    {
+        m_moveSpeedMod = 1.f;
+    }
+    if (flags & Effect::EFFECT_IS_STUNNED)
+    {
+        m_stunned = false;
+    }
+    if (flags & Effect::EFFECT_MOVE_FASTER)
+    {
+        m_moveSpeedMod = 1.f;
+    }
+    if (flags & Effect::EFFECT_MOVE_SLOWER)
+    {
+        m_moveSpeedMod = 1.f;
+    }
 }
 
 int Enemy::getHealth() const
@@ -146,50 +285,95 @@ int Enemy::getBaseDamage() const
 
 float Enemy::getMoveSpeed() const
 {
-	return m_moveSpeed * m_bulletTimeMod * m_moveSpeedMod;
+	return m_moveSpeed * getSpeedMod();
 }
 
-ENEMY_TYPE Enemy::getEnemyType() const
+float Enemy::getSpeedMod() const
+{
+    return m_bulletTimeMod * m_moveSpeedMod;
+}
+
+EnemyType Enemy::getEnemyType() const
 {
 	return m_enemyType;
 }
 
-Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale)
+Projectile* Enemy::shoot(btVector3 dir, Resources::Models::Files id, float speed, float gravity, float scale, bool sensor)
 {
 	ProjectileData data;
 
 	data.damage = getBaseDamage();
 	data.meshID = id;
+    data.shouldRender = true;
 	data.speed = speed;
-    data.ttl = 20000;
-    data.gravityModifier = 2.5;
+    data.ttl = 10000;
+    data.gravityModifier = gravity;
 	data.scale = scale;
     data.enemyBullet = true;
-    data.isSensor = false;
+    data.isSensor = sensor;
 
     Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
     
-    increaseCallbackEntities();
-    pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
-        decreaseCallbackEntities();
-    });
-    if (hasCallback(ON_DAMAGE_GIVEN))
+    if (pj)
     {
-        pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
-            callback(ON_DAMAGE_GIVEN, data);
+        increaseCallbackEntities();
+        pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+            decreaseCallbackEntities();
         });
+        if (hasCallback(ON_DAMAGE_GIVEN))
+        {
+            pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
+                callback(ON_DAMAGE_GIVEN, data);
+            });
+        }
     }
 	
     return pj;
 }
 
-Behavior* Enemy::getBehavior() const
+Projectile * Logic::Enemy::shoot(btVector3 dir, ProjectileData data, float speed, float gravity, float scale, bool sensor)
 {
-	return m_behavior;
+    data.damage = getBaseDamage();
+    data.shouldRender = false;
+    data.speed = speed;
+    data.ttl = 10000;
+    data.gravityModifier = gravity;
+    data.scale = scale;
+    data.enemyBullet = true;
+    data.isSensor = sensor;
+
+    Projectile* pj = SpawnProjectile(data, getPositionBT(), dir, *this);
+
+    if (pj)
+    {
+        increaseCallbackEntities();
+        pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+            decreaseCallbackEntities();
+        });
+        if (hasCallback(ON_DAMAGE_GIVEN))
+        {
+            pj->addCallback(ON_DAMAGE_GIVEN, [&](CallbackData &data) -> void {
+                callback(ON_DAMAGE_GIVEN, data);
+            });
+        }
+    }
+
+    return pj;
 }
 
-void Logic::Enemy::render() const
+Behavior* Enemy::getBehavior() const
 {
-    RenderQueue::get().queue(&enemyRenderInfo);
-    RenderQueue::get().queue(&light);
+	return this->m_behavior;
+}
+
+AnimatedModel &Logic::Enemy::getAnimatedModel()
+{
+    return animatedModel;
+}
+
+void Enemy::render() const
+{
+    renderSpecific();
+    animatedModel.render();
+    QueueRender(light);
 }

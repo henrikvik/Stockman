@@ -4,7 +4,9 @@
 #include <Player\Skill\SkillGrapplingHook.h>
 #include <Player\Skill\SkillShieldCharge.h>
 #include <Projectile\ProjectileManager.h>
+#include <Projectile\ProjectileStruct.h>
 #include <Entity\Entity.h>
+#include <Graphics\include\Structs.h>
 
 using namespace Logic;
 
@@ -34,11 +36,20 @@ void SkillManager::init(Physics* physics, ProjectileManager* projectileManager)
 	m_allSkills =
 	{
 		{ newd SkillGrapplingHook(physics) },
-		{ newd SkillShieldCharge() },
-        { newd SkillBulletTime(projectileManager, ProjectileData(0, 100, 1.f, 0, 0.f, BULLET_TIME_DURATION, Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeBulletTimeSensor, true)) }
+		{ newd SkillShieldCharge(projectileManager, ProjectileData(nullptr, false, false, 0, 16, 1.f, 0, 0.f, 25000, LightRenderInfo(DirectX::SimpleMath::Color(), 0.f, 0.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeShieldCharge, true, false, false)) },
+        { newd SkillBulletTime(projectileManager, ProjectileData(nullptr, false, false, 0, 1600, 1.f, 0, 0.f, BULLET_TIME_DURATION, LightRenderInfo(DirectX::SimpleMath::Color(), 0.f, 0.f), Resources::Models::UnitCube, 1, ProjectileType::ProjectileTypeBulletTimeSensor, true, false, false)) }
     };
 
     switchToSkill({ SKILL_SHIELD_CHARGE, SKILL_GRAPPLING_HOOK, SKILL_BULLET_TIME });
+}
+
+void SkillManager::reset()
+{
+    for (Skill* skill : m_allSkills)
+    {
+        if (skill)
+            skill->reset();
+    }
 }
 
 // Switches out currently active skills to a new list of skill, by using the parameter's skill indexes
@@ -104,6 +115,20 @@ Skill* SkillManager::getSkill(int index) const
     if (!isLegit(index))
         return nullptr;
     return m_current[index];
+}
+
+// Returns a pointer to specified skill if the skill is in current skill-loadout
+Skill* SkillManager::getActiveSkill(SKILL skill) const
+{
+    Skill* toLookFor = m_allSkills[skill];
+
+    for (size_t i = 0; i < m_nrOfSkills; i++)
+    {
+        if (m_current[i] == toLookFor)
+            return m_current[i];
+    }
+
+    return nullptr;
 }
 
 // If the index parameter is inbetween the valid variables

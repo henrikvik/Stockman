@@ -1,21 +1,37 @@
 #include <AI\EnemyChaser.h>
 #include <Player\Player.h>
 #include <Projectile\Projectile.h>
+#include <Misc\ComboMachine.h>
 using namespace Logic;
 
-const int EnemyChaser::MAX_HP = 3;
+const int EnemyChaser::MAX_HP = 25;
 const int EnemyChaser::BASE_DAMAGE = 1;
-const float EnemyChaser::MOVE_SPEED = 10;
+const float EnemyChaser::MOVE_SPEED = 16.9f; //noice!
 
 EnemyChaser::EnemyChaser(btRigidBody* body)
-    : Enemy(Resources::Models::Files::StaticSummon, body, { 1, 1, 1 }, MAX_HP, BASE_DAMAGE, MOVE_SPEED, NECROMANCER_MINION, 0) // use in para instead note
+    : Enemy(Resources::Models::Files::SummonUnitWithAnim, body, { 1.0f, 1.0f, 1.0f },
+        MAX_HP, BASE_DAMAGE, MOVE_SPEED, EnemyType::NECROMANCER_MINION, 0, { 0.f, 0.1f, 0.f }) // use in para instead note
 {
     setBehavior(MELEE);
     getSoundSource()->playSFX(Sound::SFX::NECROMANCER_SPAWN);
-    getSoundSource()->autoPlaySFX(Sound::SFX::FOOTSTEP_SMALL, 150, 75, 1.f, 0.10f);
+    getSoundSource()->autoPlaySFX(Sound::SFX::FOOTSTEP_SMALL, 333, 10, 1.f, 0.15f);
+    light.color = DirectX::SimpleMath::Color(0.0f, 0.7f, 1.0f);
+    light.intensity = 1.f;
+    light.range = 3.f;
+
+    getAnimatedModel().set_next("Walk");
+
+    light.color = DirectX::SimpleMath::Color(0.1f, 0.7f, 0.4f);
+    light.intensity = 0.4f;
+    light.range = 5.f;
 }
 
 EnemyChaser::~EnemyChaser()
+{
+
+}
+
+void EnemyChaser::updateSpecific(Player & player, float deltaTime)
 {
 }
 
@@ -27,10 +43,13 @@ void EnemyChaser::onCollision(PhysicsObject& other, btVector3 contactPoint, floa
         {
             if (!pj->getProjectileData().enemyBullet)
             {
-                damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
+                auto dmg = static_cast<int> (pj->getProjectileData().damage * dmgMultiplier);
+                damage(dmg);
+                if (dmg > 0)
+                    SpawnDamageText(dmg, DirectX::Colors::FloralWhite);
 
                 if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
-                    getStatusManager().addStatus(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME), true);
+                    getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
             }
         }
         else if (Player *p = dynamic_cast<Player*> (&other))

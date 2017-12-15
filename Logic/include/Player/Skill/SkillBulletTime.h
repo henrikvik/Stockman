@@ -12,13 +12,8 @@
 #include <vector>
 #include <Player\Skill\Skill.h>
 #include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
 
-#define BULLET_TIME_CD 2500.f
-#define BULLET_TIME_DURATION 5000.f
-#define BULLET_TIME_SMOOTHNESS_INTERVAL 20
-#define BULLET_TIME_SLOW_DOWN_DURATION 1000.f
-#define BULLET_TIME_SPEED_UP_DURATION 1000.f
+#define BULLET_TIME_DURATION 7000.f
 
 namespace Logic
 {
@@ -40,20 +35,22 @@ namespace Logic
 
 		int m_stacks;
 
+        void setSpawnFunctions(ProjectileManager &projManager);
+
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)> SpawnProjectile;
 
         SpecialEffectRenderInfo renderInfo;
 	public:
-		SkillBulletTime(ProjectileManager* projectileManager, ProjectileData pData);
+		SkillBulletTime(ProjectileManager* projectileManager, ProjectileData& pData);
         ~SkillBulletTime();
-
-        void setSpawnFunctions(ProjectileManager &projManager);
 
 		bool onUse(btVector3 forward, Entity& shooter);
 		void onRelease();
+        virtual void onReset();
 
 		void onUpdate(float deltaTime);
+        void onUpgradeAdd(int stacks, Upgrade const & upgrade);
 		virtual void render() const override;
 
 	};

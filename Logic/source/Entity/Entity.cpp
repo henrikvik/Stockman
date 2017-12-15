@@ -1,12 +1,13 @@
 #include <Entity/Entity.h>
 #include <AI\Enemy.h>
 #include <Projectile\ProjectileStruct.h>
+#include <Projectile\Projectile.h>
 #include <Misc\Sound\SoundSource.h>
 
 using namespace Logic;
 
-Entity::Entity(btRigidBody* body, btVector3 halfextent)
-: PhysicsObject(body, halfextent)
+Entity::Entity(btRigidBody* body, btVector3 halfextent, btVector3 modelOffset)
+: PhysicsObject(body, halfextent, modelOffset)
 {
     m_soundSource = newd Sound::SoundSource();
 }
@@ -17,36 +18,53 @@ Entity::~Entity()
     delete m_soundSource;
 }
 
-void Entity::setSpawnFunctions(std::function<Projectile*(ProjectileData& pData,
-    btVector3 position, btVector3 forward, Entity& shooter)> spawnProjectile,
-    std::function<Enemy*(ENEMY_TYPE type, btVector3 &pos,
-        std::vector<int> effects)> spawnEnemy,
-    std::function<Trigger*(int id, btVector3 const &pos,
-        std::vector<int> &effects)> spawnTrigger)
+void Entity::setSpawnFunctions(ProjectileFunc spawnProjectile, EnemyFunc spawnEnemy, TriggerFunc spawnTrigger)
 {
     SpawnProjectile = spawnProjectile;
     SpawnEnemy = spawnEnemy;
     SpawnTrigger = spawnTrigger;
 }
 
+void Logic::Entity::SpawnDamageText(int damage, const DirectX::XMVECTORF32 color)
+{
+    auto scale = damage / 50.f;
+    scale = max(0.25, scale);
+    scale = min(2.f, scale);
+
+    ProjectileData data = {};
+    data.mass = 1.f;
+    data.scale = 1.f;
+    data.speed = 3.f;
+    data.gravityModifier = .3f;
+    data.ttl = 2000;
+    data.lightInfo.range = 0.f;
+
+    data.fancy.position = getPosition();
+    data.fancy.scale = 1.f;
+    data.fancy.color = color;
+    data.fancy.text = std::to_wstring(damage);
+    data.enemyBullet = true;
+    data.shouldRender = false;
+
+    auto p = SpawnProjectile(data, getPositionBT(), { RandomGenerator::singleton().getRandomFloat(-0.5f, .5f), 1, RandomGenerator::singleton().getRandomFloat(-0.5f, .5f) }, *this);
+    p->getStatusManager().addUpgrade(StatusManager::BOUNCE);
+    p->getRigidBody()->setRestitution(10.f);
+}
+
 void Entity::clear() { }
 
 void Entity::update(float deltaTime)
 {
-	PhysicsObject::updatePhysics(deltaTime);
-
-    // Updating positions of sound information
-	updateSound(deltaTime);
-
-	// Checking different buffs
-	for (auto &effectPair : m_statusManager.getActiveEffects()) //opt
-		affect(effectPair.first, *effectPair.second, deltaTime);
-	
-	// Updating buffs duration
-	m_statusManager.update(deltaTime);
+    PhysicsObject::updatePhysics(deltaTime);
+    updateSound(deltaTime);
+    m_statusManager.update(deltaTime, *this);
 }
 
-void Entity::upgrade(Upgrade const & upgrade) { }
+void Entity::upgrade(StatusManager::UPGRADE_ID id, int stacks) {
+    onUpgradeAdd(stacks, getStatusManager().getUpgrade(id));
+    for (int i = 0; i < stacks; i++)
+        getStatusManager().addUpgrade(id);
+}
 
 void Entity::updateSound(float deltaTime)
 {
@@ -61,7 +79,7 @@ void Entity::updateSound(float deltaTime)
 void Entity::addCallback(Entity::EntityEvent entityEvent, Callback callback)
 {
     m_callbacks[entityEvent].push_back(callback);
-}
+};
 
 bool Entity::hasCallback(EntityEvent entityEvent) const
 {
@@ -85,7 +103,7 @@ void Entity::callback(EntityEvent entityEvent, CallbackData &data)
     }
     catch (std::exception ex)
     {
-        printf("Callback error (Probably null callback data) \n%s\n", ex.what());
+        printf("Callback error: %s\n", ex.what());
     }
 }
 
