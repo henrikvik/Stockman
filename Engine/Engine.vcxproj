@@ -120,7 +120,7 @@
       <PreprocessorDefinitions />
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>ImGui.lib;Singletons.lib;sfml-system-d.lib;sfml-network-d.lib;fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -144,7 +144,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
       <PreprocessorDefinitions />
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>ImGui.lib;Singletons.lib;sfml-system-d.lib;sfml-network-d.lib;fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
