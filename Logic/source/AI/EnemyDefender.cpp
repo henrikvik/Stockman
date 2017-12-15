@@ -142,6 +142,7 @@ void EnemyDefender::createAbilities()
         pdata.speed = PROJECTILE_SPEED;
         pdata.scale = 1.f;
         pdata.isSensor = true;
+        pdata.shouldRender = true;
         pdata.type = ProjectileTypeDefenderShield;
 
         for (int i = 0; i < INDICATORS; i++) {

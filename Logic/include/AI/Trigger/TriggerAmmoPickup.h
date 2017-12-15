@@ -12,7 +12,6 @@ namespace Logic
         virtual ~TriggerAmmoPickup();
 
         virtual void updateSpecificType(float deltaTime);
-
     private:
         btVector3 m_pos;
         float m_rotation;

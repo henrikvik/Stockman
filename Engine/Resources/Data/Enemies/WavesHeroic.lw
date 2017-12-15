@@ -1,9 +1,9 @@
 {
 	"nrOfWaves": 11;
 	"startWave": 0;
-	"timeMul": 1200f;
-	"timeBonus": 20000f;
-	"bossTimeBonus": 30f;
+	"timeMul": 1500f;
+	"timeBonus": 22000f;
+	"bossTimeBonus": 50f;
 	"bossWaves": "9";
 }
 { // 0
