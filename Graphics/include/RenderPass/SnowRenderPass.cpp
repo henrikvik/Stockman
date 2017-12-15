@@ -36,8 +36,11 @@ Graphics::SnowRenderPass::SnowRenderPass(
     snowShader(Resources::Shaders::SnowShader, ShaderType::GS | ShaderType::VS | ShaderType::PS)
 {
     snowFlakeCount = 0;
+    #ifdef _DEBUG
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, L"../Resources/Textures/SnowFlake.dds", nullptr, &m_SnowFlakeSRV));
-
+    #else
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, L"Resources/Textures/SnowFlake.dds", nullptr, &m_SnowFlakeSRV));
+    #endif
 
     RegisterCommand("GFX_RESTART_SNOW",
     {

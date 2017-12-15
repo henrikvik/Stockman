@@ -23,7 +23,6 @@ struct Targets
 {
     float4 color      : SV_Target0;
     float4 glow       : SV_Target1;
-    float4 viewNormal : SV_Target2;
 };
 
 Targets PS(Fragment fragment)
@@ -59,8 +58,7 @@ Targets PS(Fragment fragment)
     else {
         targets.glow = float4(0, 0, 0, 0);
     }
-
-    targets.viewNormal = fragment.viewNormal;
+    
 
     return targets;
 }

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <intrin.h>
+#include <sstream>
 // Helper class for COM exceptions
 class com_exception : public std::exception
 {
@@ -53,8 +54,11 @@ inline void ThrowWithMessage(HRESULT hr, const char * file, size_t line)
 {
     if (FAILED(hr))
     {
-        std::cerr << file << "(" << line << ")" << std::endl;
-        std::cerr << translateHR(hr) << std::endl;
+        std::stringstream err;
+        err << file << "(" << line << ")" << std::endl;
+        err << translateHR(hr) << std::endl;
+        std::cerr << err.str();
+        OutputDebugString(err.str().c_str());
         __debugbreak();
         throw com_exception(hr);
     }

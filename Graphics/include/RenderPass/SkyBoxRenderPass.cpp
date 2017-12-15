@@ -28,7 +28,11 @@ namespace Graphics
         m_Sun(sun)
     {
         this->skySphere = &HybrisLoader::HybrisLoader::get().getModel(Resources::Models::SkySphere)->getMesh();
+        #ifdef _DEBUG
         DirectX::CreateWICTextureFromFile(Global::device, L"../Resources/Textures/Diffusemoon.dds", nullptr, &m_MoonTexture);
+        #else
+        DirectX::CreateWICTextureFromFile(Global::device, L"Resources/Textures/Diffusemoon.dds", nullptr, &m_MoonTexture);
+        #endif
         DebugWindow::getInstance()->registerCommand("GFX_DEBUG_SKYBOX", [&](std::vector<std::string> &args)->std::string
         {
             DebugSkyBox = !DebugSkyBox;

@@ -56,10 +56,11 @@ Map::Map() :
         nullptr, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL);
 
     // static map lights
-    FillLightVec(m_MapLights, "../Resources/Maps/lights.toml");
-    FillLightVec(m_RedBulbs, "../Resources/Maps/r.toml");
-    FillLightVec(m_GreenBulbs, "../Resources/Maps/g.toml");
-    FillLightVec(m_BlueBulbs, "../Resources/Maps/b.toml");
+    #define MAP_PATH(map) Resources::Maps::Paths.at(Resources::Maps::map)
+    FillLightVec(m_MapLights, MAP_PATH(lights));
+    FillLightVec(m_RedBulbs,  MAP_PATH(r));
+    FillLightVec(m_GreenBulbs,MAP_PATH(g));
+    FillLightVec(m_BlueBulbs, MAP_PATH(b));
 
     //                                       bgr
     m_ChristmasLightPattern.push_back(0b00000000);

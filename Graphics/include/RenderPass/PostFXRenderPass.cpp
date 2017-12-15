@@ -9,8 +9,7 @@ namespace Graphics
     PostFXRenderPass::PostFXRenderPass(
         PingPongBuffer *backBuffers,
         ID3D11RenderTargetView *target,
-        ID3D11ShaderResourceView *bloomSRV,
-        ID3D11ShaderResourceView *ssaoMap
+        ID3D11ShaderResourceView *bloomSRV
     ) :
         RenderPass({}, {}, {}, nullptr),
         m_BloomSRV(bloomSRV),
@@ -18,7 +17,6 @@ namespace Graphics
         m_ConstantsBuffer(),
         m_PostFXShader(Resources::Shaders::PostFX),
         backBuffers(backBuffers),
-        ssaoMap(ssaoMap),
         m_Constants({})
     {
         m_ConstantsBuffer.write(Global::context, &m_Constants, sizeof(m_Constants));
@@ -82,7 +80,6 @@ namespace Graphics
         Global::context->PSSetConstantBuffers(0, 1, m_ConstantsBuffer);
         Global::context->PSSetShaderResources(0, 1, *backBuffers);
         Global::context->PSSetShaderResources(1, 1, &m_BloomSRV);
-        Global::context->PSSetShaderResources(2, 1, &ssaoMap);
 
         auto sampler = Global::cStates->LinearClamp();
         Global::context->PSSetSamplers(0, 1, &sampler);

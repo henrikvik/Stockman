@@ -1,0 +1,128 @@
+{
+	"cardName" : "Healthpack";
+	"description" : "Regain all your health";
+	"texture" : "b";
+
+	"xTexStart" : 0.244f;
+	"yTexStart" : 0.0058f;
+	"xTexEnd" : 0.482f;
+	"yTexEnd" : 0.2968f;
+
+	"statusAmount" : 1;
+	"statusType" : 0;
+	"category" : 1;
+	"status0" : 8;
+    "numberOf" : 1;
+}
+{
+	"cardName" : "Damage";
+	"description" : "Increase all weapon damage";
+	"texture" : "b";
+
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.3564f;
+	"xTexEnd" : 0.2438f;
+	"yTexEnd" : 0.5908f;
+
+	"statusAmount" : 1;
+	"statusType" : 1;
+    "category" : 0;
+	"status0" : 1;
+    "numberOf" : 5;
+}
+{
+	"cardName" : "Mag Size";
+	"description" : "Increase the total ammo of your weapons";
+	"texture" : "b";
+
+	"xTexStart" : 0.0f;
+	"yTexStart" : 0.6572f;
+	"xTexEnd" : 0.2382f;
+	"yTexEnd" : 0.8955f;
+
+	"statusAmount" : 1;
+	"statusType" : 1;
+    "category" : 0;
+	"status0" : 9;
+    "numberOf" : 5;
+}
+{
+	"cardName" : "Run Speed";
+	"description" : "Increase your run speed";
+	"texture" : "b";
+
+	"xTexStart" : 0.22461f;
+	"yTexStart" : 0.70117f;
+	"xTexEnd" : 0.45703f;
+	"yTexEnd" : 0.91406f;
+
+	"statusAmount" : 1;
+	"statusType" : 1;
+    "category" : 2;
+	"status0" : 8;
+    "numberOf" : 5;
+}
+{
+	"cardName" : "Skill CD";
+	"description" : "Decrease cooldown on your skills";
+	"texture" : "b";
+
+	"xTexStart" : 0.7607f;
+	"yTexStart" : 0.067f;
+	"xTexEnd" : 1.0f;
+	"yTexEnd" : 0.3056f;
+
+	"statusAmount" : 1;
+	"statusType" : 1;
+    "category" : 2;
+	"status0" : 7;
+    "numberOf" : 3;
+}
+{
+	"cardName" : "Fire rate";
+	"description" : "Increase fire rate for all weapons";
+	"texture" : "b";
+
+	"xTexStart" : 0.4785f;
+	"yTexStart" : 0.3574f;
+	"xTexEnd" : 0.7167f;
+	"yTexEnd" : 0.5957f;
+
+	"statusAmount" : 1;
+	"statusType" : 1;
+    "category" : 0;
+	"status0" : 6;
+    "numberOf" : 3;
+}
+{
+	"cardName" : "Reload";
+	"description" : "Decrease reload time of all weapons";
+	"texture" : "b";
+
+	"xTexStart" : 0.480f;
+	"yTexStart" : 0.6552f;
+	"xTexEnd" : 0.71875f;
+	"yTexEnd" : 0.89355f;
+
+	"statusAmount" : 1;
+	"statusType" : 1;
+    "category" : 0;
+	"status0" : 5;
+    "numberOf" : 3;
+}
+{
+	"cardName" : "Jump";
+	"description" : "Increase the jump strength";
+	"texture" : "b";
+
+	"xTexStart" : 0.24609f;
+	"yTexStart" : 0.37109f;
+	"xTexEnd" : 0.47852f;
+	"yTexEnd" : 0.58398f;
+
+	"statusAmount" : 1;
+	"statusType" : 1;
+    "category" : 1;
+	"status0" : 4;
+    "numberOf" : 5;
+}

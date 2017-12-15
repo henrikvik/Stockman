@@ -20,7 +20,12 @@ FancyRenderPass::FancyRenderPass(
       m_ShadowMap(shadowMap)
 {
     std::vector<DirectX::SpriteFont::Glyph> glyphs;
+    #ifdef _DEBUG
     FILE *f = fopen("../Resources/Particles/SPLASH.fnt", "r");
+    #else
+    FILE *f = fopen("Resources/Particles/SPLASH.fnt", "r");
+    #endif
+    
     if (f) {
         DirectX::SpriteFont::Glyph glyph = {};
 
@@ -41,7 +46,11 @@ FancyRenderPass::FancyRenderPass(
         }
     }
 
+    #ifdef _DEBUG
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, L"../Resources/Particles/SPLASH.png", nullptr, &m_FontTexture));
+    #else
+    ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, L"Resources/Particles/SPLASH.png", nullptr, &m_FontTexture));
+    #endif
     m_Font = newd DirectX::SpriteFont(m_FontTexture, glyphs.data(), glyphs.size(), 0.f);
 }
 

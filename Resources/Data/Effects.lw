@@ -1,0 +1,191 @@
+{ // ON FIRE
+	"flags": 2; // 0x1
+	"duration": 5000f;
+	"modifiers": 1;
+	"specifics": 0;
+
+	"mDmgGiven": 0f;
+	"mDmgTaken": 2f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}
+{ // FREEZE
+	"flags": 262148; // 0x4 + 0x40000
+	"duration": 5000f;
+	"modifiers": 1;
+	"specifics": 1;
+
+	"mDmgGiven": 0f;
+	"mDmgTaken": 5f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+
+	"sBulletTime": 0f;
+	"sFreezing": 0.80f;
+	"sAmmoType": 0f;
+}
+{ // JUMP-PAD
+	"flags": 128; // 0x80
+	"duration": 0f;
+	"modifiers": 1;
+	"specifics": 0;
+
+	"mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 2.f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}
+{ // AMMO_PICK_UP_PRIMARY
+	"flags": 131584; // 0x200 + 0x20000
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0f;
+	"sFreezing": 0f;
+	"sAmmoType": 0f;
+}
+{ // AMMO_PICK_UP_SECONDARY
+	"flags": 131584; // 0x200 + 0x20000
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0f;
+	"sFreezing": 0f;
+	"sAmmoType": 1.f;
+}
+{ // SHIELDCHARGE
+	"flags": 7168; // 0x400 + 0x800 + 0x1000
+	"duration": 1500f;
+	"modifiers": 0;
+	"specifics": 0;
+}
+{ // BULLET_TIME
+	"flags": 8192; // 0x2000
+	"duration": 0f;
+	"modifiers": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0.9f;
+	"sFreezing": 0f;
+	"sAmmoType": 0f;
+}
+{ // ENRAGE
+	"flags": 32840; // 0x8 + 0x40 + 0x8000 
+	"duration": 800000f;
+	"modifiers": 1;
+	"specifics": 0;
+
+	"mDmgGiven": 10f;
+	"mDmgTaken": 0f;
+	"mFirerate": 10f;
+	"mHP": 0f;
+	"mMovementSpeed": 1.75f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}
+{ // HEALTH +1
+	"flags": 32;
+	"duration": 0f;
+	"modifiers": 1;
+	"specifics": 0;
+
+	"mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 2f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}
+{ //STUN
+    "flags" : 16384; // 0x4000
+    "duration" : 1500f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}
+{ //MOVEMENTSPEED UP
+    "flags" : 32768; // 0x8000
+    "duration" : 20000f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 2.0f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}
+{ //MOVEMENTSPEED DOWN
+    "flags" : 32768; // 0x8000
+    "duration" : 20000f;
+    "modifiers": 1;
+    "specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 0f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0.5f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}
+{ // ON KILL
+	"flags": 1; // 0x1
+	"duration": 3000f;
+	"modifiers": 0;
+	"specifics": 1;
+
+	"sBulletTime": 0.1f;
+	"sFreezing": 0.1f;
+	"sAmmoType": 0f;
+}
+{ // INVULNERABLE
+	"flags": 1024; // 0x400
+	"duration": 1000f;
+	"modifiers": 0;
+	"specifics": 0;
+}
+{ // DAMAGE ONCE
+	"flags": 524288; // 0x80000
+	"duration": 200f;
+	"modifiers": 1;
+	"specifics": 0;
+
+    "mDmgGiven": 0f;
+	"mDmgTaken": 200f;
+	"mFirerate": 0f;
+	"mHP": 0f;
+	"mMovementSpeed": 0.f;
+    "mAmmoCap" : 0;
+    "mMagCap" : 0;
+    "mSkillCDDecrease" : 0f;
+}

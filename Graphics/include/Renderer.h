@@ -39,11 +39,8 @@ namespace Graphics
         #pragma region Shared Shader Resources
         std::vector<RenderPass*> renderPasses;
         ShaderResource colorMap;
-        ShaderResource glowMap;
-        ShaderResource normalMap;
         DepthStencil shadowMap;
         DepthStencil depthStencil;
-        ShaderResource ssaoOutput;
 
 
 

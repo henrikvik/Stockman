@@ -787,7 +787,11 @@ void ParticleSystem::readParticleFile(ID3D11Device *device, const char * path)
         ID3DBlob *blob = nullptr, *error = nullptr;
         std::wstring file = ConvertToWString(baseDir + path);
 
+        #ifdef _DEBUG
         static ResourcesShaderInclude include("..\\Resources\\Shaders\\");
+        #else
+        static ResourcesShaderInclude include("Resources\\Shaders\\");
+        #endif
 
         auto res = D3DCompileFromFile(
             file.c_str(),

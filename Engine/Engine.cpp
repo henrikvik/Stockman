@@ -199,7 +199,11 @@ void Engine::initializeWindow()
 	wc.lpfnWndProc = WndProc;
 	wc.hInstance = this->hInstance;
 	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
+    #ifdef _DEBUG
 	wc.hCursor = LoadCursorFromFile("../Resources/Cursors/cursor.cur");
+    #else
+    wc.hCursor = LoadCursorFromFile("Resources/Cursors/cursor.cur");
+    #endif
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.lpszClassName = "Basic test";
 
@@ -351,7 +355,7 @@ int Engine::run()
         
 
         Graphics::Shader fullscreen_shader(Resources::Shaders::FullscreenQuad);
-        Texture loadscreen(Resources::Textures::Paths.at(Resources::Textures::IntroScreen));
+        Texture loadscreen(Resources::Textures::Paths.at(Resources::Textures::LaunchScreen));
 
         static float clearColor[4] = { 0 };
         Global::context->ClearRenderTargetView(mBackBufferRTV, clearColor);

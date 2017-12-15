@@ -66,11 +66,8 @@ namespace Graphics
         , fakeBuffers(WIN_WIDTH, WIN_HEIGHT)
 #pragma region Shared Shader Resources
         , colorMap(WIN_WIDTH, WIN_HEIGHT)
-        , glowMap(WIN_WIDTH, WIN_HEIGHT)
-        , normalMap(WIN_WIDTH, WIN_HEIGHT)
 
         , shadowMap(Global::device, SHADOW_RESOLUTION, SHADOW_RESOLUTION)
-        , ssaoOutput(WIN_WIDTH / 2, WIN_HEIGHT / 2, DXGI_FORMAT_R8_UNORM)
         
 
         , lightOpaqueIndexList(CpuAccess::None, INDEX_LIST_SIZE)
@@ -333,8 +330,7 @@ namespace Graphics
 			newd ForwardPlusRenderPass(
 				{
 					fakeBuffers,
-					m_BloomRTVMipChain[0],
-					normalMap
+					m_BloomRTVMipChain[0]
 				},
 				{
 					lightOpaqueIndexList,
@@ -400,8 +396,7 @@ namespace Graphics
             newd PostFXRenderPass(
                 &fakeBuffers,
                 backBuffer,
-                m_BloomSRV,
-                ssaoOutput
+                m_BloomSRV
             ),
             newd DebugRenderPass({backBuffer},{},{*Global::mainCamera->getBuffer()}, depthStencil),
             newd GUIRenderPass({backBuffer}),
@@ -519,10 +514,7 @@ namespace Graphics
         static float clearColor[4] = { 0 };
         static float white[4] = { 1 };
         Global::context->ClearRenderTargetView(backBuffer, clearColor);
-        Global::context->ClearRenderTargetView(normalMap, clearColor);
         //fakeBuffers.clear();
-        Global::context->ClearUnorderedAccessViewFloat(ssaoOutput, white);
-        Global::context->ClearRenderTargetView(glowMap, clearColor);
         Global::context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
         Global::context->ClearDepthStencilView(shadowMap, D3D11_CLEAR_DEPTH, 1.f, 0);
         for (auto rtv : m_BloomRTVMipChain)
