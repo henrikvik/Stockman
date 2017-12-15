@@ -34,7 +34,8 @@ namespace Logic
                 JUMPPAD,
                 AMMO_PICKUP_BOLT,
                 AMMO_PICKUP_CRYSTAL,
-                KILL_DEATH_ZONE
+                KILL_DEATH_ZONE,
+                TRAP_EXPLOSIVE
             };
 
 			Trigger(Resources::Models::Files modelID, btRigidBody* body, btVector3 halfExtent, TriggerType type, float cooldown, bool reusable);
@@ -46,9 +47,9 @@ namespace Logic
 
 			void updateSpecific(float deltaTime);
             virtual void updateSpecificType(float deltaTime) {};
-			void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
-            void onCollisionPlayer(Player& player);
-            void onCollisionTerrain(StaticObject& terrain);
+			virtual void onCollision(PhysicsObject& other, btVector3 contactPoint, float dmgMultiplier);
+            virtual void onCollisionPlayer(Player& player);
+            virtual void onCollisionTerrain(StaticObject& terrain);
 
             TriggerType getType() const;
 			bool getShouldRemove() const;
@@ -61,7 +62,7 @@ namespace Logic
 			void setCooldown(float cooldown);
 
             void render() const;
-
+            LightRenderInfo& getLightRenderInfo();
 		private:
             TriggerType m_type;
 			bool m_remove;

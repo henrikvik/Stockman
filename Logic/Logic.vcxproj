@@ -327,6 +327,7 @@ xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
     <ClInclude Include="include\AI\Trigger\TriggerAmmoPickup.h" />
     <ClInclude Include="include\Player\Weapon\WeaponCrossbow.h" />
     <ClInclude Include="include\AI\Behavior\StayBehavior.h" />
+    <ClInclude Include="include\AI\Trigger\TriggerTrapExplosive.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Entity\AnimatedModel.cpp" />
@@ -431,6 +432,7 @@ xcopy /syi "$(SolutionDir)libs\SFML\bin2\$(PlatformShortName)\*.dll" "$(OutDir)"
     <ClCompile Include="source\Player\Weapon\WeaponMeleeParry.cpp" />
     <ClCompile Include="source\AI\Trigger\TriggerAmmoPickup.cpp" />
     <ClCompile Include="source\Player\Weapon\WeaponCrossbow.cpp" />
+    <ClCompile Include="source\AI\Trigger\TriggerTrapExplosive.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\Player\Skill\gitinclude.txt" />

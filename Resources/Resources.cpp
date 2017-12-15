@@ -149,9 +149,12 @@ namespace Resources
             if (strcmp(str, "SkyShader") == 0) return SkyShader;
             if (strcmp(str, "SnowShader") == 0) return SnowShader;
             if (strcmp(str, "SpriteShader") == 0) return SpriteShader;
+            if (strcmp(str, "SSAO") == 0) return SSAO;
+            if (strcmp(str, "SSAOBlur") == 0) return SSAOBlur;
             if (strcmp(str, "SSAOComputeShader") == 0) return SSAOComputeShader;
             if (strcmp(str, "SSAOGaussianBlurHorizontal") == 0) return SSAOGaussianBlurHorizontal;
             if (strcmp(str, "SSAOGaussianBlurVertical") == 0) return SSAOGaussianBlurVertical;
+            if (strcmp(str, "SSAOGenerate") == 0) return SSAOGenerate;
             if (strcmp(str, "SSAOMerger") == 0) return SSAOMerger;
             throw "Could not find matching enum.";
         }

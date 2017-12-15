@@ -46,6 +46,11 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     });
 }
 
+void Enemy::setMoveSpeed(float moveSpeed)
+{
+    m_moveSpeed = moveSpeed;
+}
+
 void Enemy::setBehavior(BEHAVIOR_ID id)
 {
 	if (m_behavior)
@@ -120,7 +125,7 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
     // out of bounds insta kill
     if (getPositionBT().y() < MIN_Y || getPositionBT().length2() > 62500.f)
-        damage(m_health);
+        m_health = 0;
 
     // blinking when damaged
     if (m_blinkTimer > 0)
@@ -184,6 +189,7 @@ void Enemy::damage(int damage)
     data.fancy.color = DirectX::Colors::FloralWhite;
     data.fancy.text = std::to_wstring(damage);
     data.enemyBullet = true;
+    data.shouldRender = false;
 
     auto p = SpawnProjectile(data, getPositionBT(), { RandomGenerator::singleton().getRandomFloat(-0.5f, .5f), 1, RandomGenerator::singleton().getRandomFloat(-0.5f, .5f) }, *this);
     p->getStatusManager().addUpgrade(StatusManager::BOUNCE);

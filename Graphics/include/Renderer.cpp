@@ -14,6 +14,7 @@
 #include "CommonStates.h"
 #include "MainCamera.h"
 
+#include "RenderPass\AORenderPass.h"
 #include "RenderPass\ForwardPlusRenderPass.h"
 #include "RenderPass\DepthRenderPass.h"
 #include "RenderPass\LightCullRenderPass.h"
@@ -21,14 +22,13 @@
 #include "RenderPass\SkyBoxRenderPass.h"
 #include "RenderPass\GlowRenderPass.h"
 #include "RenderPass\ParticleRenderPass.h"
-#include "RenderPass\SSAORenderPass.h"
 #include "RenderPass\DepthOfFieldRenderPass.h"
 #include "RenderPass\SnowRenderPass.h"
 #include "RenderPass\PostFXRenderPass.h"
 #include "RenderPass\FancyRenderPass.h"
 #include "RenderPass\DebugRenderPass.h"
 #include "RenderPass\FogRenderPass.h"
-
+#include <vector>
 
 #include "Utility\DebugDraw.h"
 
@@ -218,6 +218,50 @@ namespace Graphics
             SAFE_RELEASE(texture);
         }
 
+        {
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.Format = DXGI_FORMAT_R8_UNORM;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+            desc.Width = WIN_WIDTH / 2;
+            desc.Height = WIN_HEIGHT / 2;
+            desc.SampleDesc.Count = 1;
+            desc.MipLevels = 1;
+            desc.ArraySize = 2;
+
+            ID3D11Texture2D *texture = nullptr;
+            ThrowIfFailed(Global::device->CreateTexture2D(&desc, nullptr, &texture));
+
+            D3D11_RENDER_TARGET_VIEW_DESC renderDesc = {};
+            renderDesc.Format = DXGI_FORMAT_R8_UNORM;
+            renderDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+            renderDesc.Texture2DArray.ArraySize = 2;
+            renderDesc.Texture2DArray.FirstArraySlice = 0;
+            renderDesc.Texture2DArray.MipSlice = 0;
+
+            D3D11_SHADER_RESOURCE_VIEW_DESC resourceDesc = {};
+            resourceDesc.Format = DXGI_FORMAT_R8_UNORM;
+            resourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+            resourceDesc.Texture2DArray.ArraySize = 2;
+            resourceDesc.Texture2DArray.FirstArraySlice = 0;
+            resourceDesc.Texture2DArray.MipLevels = 1;
+            resourceDesc.Texture2DArray.MostDetailedMip = 0;
+
+            ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_AOSlicesSRV));
+
+            for (int i = 0; i < 2; i++)
+            {
+                resourceDesc.Texture2DArray.ArraySize = 1;
+                resourceDesc.Texture2DArray.FirstArraySlice = i;
+                renderDesc.Texture2DArray.ArraySize = 1;
+                renderDesc.Texture2DArray.FirstArraySlice = i;
+
+                ThrowIfFailed(Global::device->CreateShaderResourceView(texture, &resourceDesc, &m_AOSliceSRV[i]));
+                ThrowIfFailed(Global::device->CreateRenderTargetView(texture, &renderDesc, &m_AOSliceRTV[i]));
+            }
+
+            SAFE_RELEASE(texture);
+        }
+
 #pragma endregion
         HRESULT hr = Global::context->QueryInterface(IID_PPV_ARGS(&DebugAnnotation));
         if (!SUCCEEDED(hr)) {
@@ -251,6 +295,11 @@ namespace Graphics
 				{*Global::mainCamera->getBuffer(), grassTimeBuffer },
 				depthStencil
 			),
+            newd AORenderPass(
+                depthStencil,
+                std::vector<ID3D11ShaderResourceView *>(m_AOSliceSRV, m_AOSliceSRV + 2),
+                std::vector<ID3D11RenderTargetView *>(m_AOSliceRTV, m_AOSliceRTV + 2)
+            ),
 			newd ShadowRenderPass(
 				{},
 				{
@@ -297,6 +346,7 @@ namespace Graphics
 					foliageInstanceBuffer,
 					newAnimatedInstanceBuffer,
 					newAnimatedJointsBuffer,
+                    m_AOSlicesSRV
 				},
 				{
 					*Global::mainCamera->getBuffer(),
@@ -316,7 +366,6 @@ namespace Graphics
                 *sun.getGlobalLightBuffer(),
                 depthStencil
             ),
-            newd SSAORenderPass({}, { depthStencil, normalMap, ssaoOutput }, {ssaoOutput}, {}, nullptr),
             newd GlowRenderPass(
                 m_BloomSRV,
                 m_BloomSRVMipChain,
@@ -407,7 +456,7 @@ namespace Graphics
         
         LightRenderInfo lightInfo;
         lightInfo.color = DirectX::Colors::WhiteSmoke;
-        lightInfo.intensity = 0.3f;
+        lightInfo.intensity = 0.1f;
         lightInfo.position = Global::mainCamera->getPos() + SimpleMath::Vector3(0, 0, 0);
         lightInfo.range = 10;
         QueueRender(lightInfo);

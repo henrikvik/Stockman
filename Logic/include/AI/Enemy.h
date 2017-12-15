@@ -89,6 +89,8 @@ namespace Logic
             bool hasCallbackEntities();
 
 			virtual void damage(int damage);
+
+            void setMoveSpeed(float moveSpeed);
 			void setBehavior(BEHAVIOR_ID id);
 			void setEnemyType(EnemyType id);
 

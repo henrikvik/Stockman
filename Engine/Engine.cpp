@@ -241,7 +241,7 @@ HRESULT Engine::createSwapChain()
 	DXGI_SWAP_CHAIN_DESC desc;
 	ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	desc.BufferCount = 2;
+	desc.BufferCount = 3;
 	desc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
     desc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;

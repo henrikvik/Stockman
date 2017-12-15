@@ -535,7 +535,7 @@ void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &p
         btVector3 forward, Entity& shooter) -> Projectile* {
         return projManager.addProjectile(pData, position, forward, shooter);
     };
-    SpawnTrigger = [&](int id, btVector3 const &pos, std::vector<int> &effects) -> Trigger* {
+    SpawnTrigger = [&](int id, btVector3 const &pos, std::vector<int> effects) -> Trigger* {
         return spawnTrigger(id, pos, effects, physics, &projManager);
     };
 

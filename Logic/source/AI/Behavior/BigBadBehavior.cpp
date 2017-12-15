@@ -2,7 +2,7 @@
 #include <AI\Enemy.h>
 using namespace Logic;
 
-const float BigBadBehavior::MELEE_RANGE = 25.5f;
+const float BigBadBehavior::MELEE_RANGE = 8.5f;
 const int BigBadBehavior::PHASE_ONE = 0, BigBadBehavior::PHASE_TWO = 1, BigBadBehavior::PHASE_THREE = 2;
 
 BigBadBehavior::BigBadBehavior() :
