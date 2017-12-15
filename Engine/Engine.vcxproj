@@ -252,10 +252,9 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
-    <ResourceCompile Include="Engine1.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\Desktop\skull(2).ico" />
+    <Image Include="skull(2).ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

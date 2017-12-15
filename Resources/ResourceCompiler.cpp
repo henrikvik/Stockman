@@ -89,7 +89,11 @@ struct Dir
 
             for (auto & file : files)
             {
-                ostream << pad.str() << "{" << file.stem() << ", R\"(..\\" << file << ")\"}";
+                ostream << pad.str() << "{" << file.stem() << ", R\"(" 
+                #ifdef _DEBUG
+                << "..\\"
+                #endif
+                << file << ")\"}";
                 if (file != files.back())
                     ostream << ",";
                 ostream << "\n";
