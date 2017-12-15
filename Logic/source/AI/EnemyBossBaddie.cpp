@@ -155,7 +155,7 @@ void EnemyBossBaddie::createAbilities()
             Projectile *pj = shoot((to + btVector3{ 25.f * i - 25.f, 90, 0 }).normalize(),
                 nicePjData, PROJECTILE_SPEED + (len * 0.4f), 2.5f, 0.6f, true);
 
-            pj->addCallback(ON_COLLISION, [&](CallbackData &data) -> void {
+            pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
                 if (gen.getRandomInt(0, 1)) {
                     SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
                 }
