@@ -93,7 +93,7 @@ namespace Logic
         std::vector<LightObject*>			m_lights;       //< Pointlights
         bool                                m_drawDebug;    //< Toggle for debug-draw
         Physics*                            m_physicsPtr;   //< Ptr to physics for creation of hitboxes
-        std::unique_ptr<StaticObject*>      m_mapObject;
+        std::unique_ptr<StaticObject>      m_mapObject;
 
         // Lights
         std::vector<LightRenderInfo>    m_MapLights;

@@ -17,6 +17,7 @@ NavigationMeshEditor::NavigationMeshEditor()
 
 NavigationMeshEditor::~NavigationMeshEditor()
 {
+    delete ray.points;
 }
 
 bool NavigationMeshEditor::editNavigationMesh(NavigationMesh &mesh, btVector3 &pos, btVector3 &forward)

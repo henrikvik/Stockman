@@ -52,8 +52,8 @@ Map::Map() :
     m_ChristmasLightTimer(1.5f),
     m_ChristmasPatternIndex(0)
 {
-    m_mapObject = std::make_unique<StaticObject*>(newd StaticObject(Resources::Models::UnitCube,
-        nullptr, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL));
+    m_mapObject = std::make_unique<StaticObject>(Resources::Models::UnitCube,
+        nullptr, btVector3(0, 0, 0), StaticObject::NavigationMeshFlags::NO_CULL);
 
     // static map lights
     FillLightVec(m_MapLights, "../Resources/Maps/lights.toml");
@@ -322,7 +322,7 @@ void Map::loadMap(Resources::Maps::Files map)
                     aiCollBox ? Physics::COL_NOTHING : Physics::COL_EVERYTHING
                 );
                 aiCollBox = false;
-                body->setUserPointer(*m_mapObject);
+                body->setUserPointer(m_mapObject.get());
 
                 float t[16]; body->getWorldTransform().getOpenGLMatrix(t);
                 DirectX::SimpleMath::Matrix hitbox_transform(t);
