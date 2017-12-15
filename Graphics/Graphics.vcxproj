@@ -37,6 +37,7 @@
     <ClCompile Include="include\Particles\Particle.cpp" />
     <ClCompile Include="include\Particles\ParticleSystem.cpp" />
     <ClCompile Include="include\Renderer.cpp" />
+    <ClCompile Include="include\RenderPass\AORenderPass.cpp" />
     <ClCompile Include="include\RenderPass\FancyRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\FogRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\PostFXRenderPass.cpp" />
@@ -54,7 +55,6 @@
     <ClCompile Include="include\RenderPass\ShadowRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\SkyBoxRenderPass.cpp" />
     <ClCompile Include="include\RenderPass\SnowRenderPass.cpp" />
-    <ClCompile Include="include\RenderPass\SSAORenderPass.cpp" />
     <ClCompile Include="include\Utility\DebugDraw.cpp" />
     <ClCompile Include="include\Utility\DepthStencil.cpp" />
     <ClCompile Include="include\Utility\Shader.cpp" />
@@ -83,6 +83,7 @@
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\RenderInfo.h" />
     <ClInclude Include="include\CommonState.h" />
+    <ClInclude Include="include\RenderPass\AORenderPass.h" />
     <ClInclude Include="include\RenderPass\FancyRenderPass.h" />
     <ClInclude Include="include\RenderPass\FogRenderPass.h" />
     <ClInclude Include="include\RenderPass\PostFXRenderPass.h" />
@@ -98,7 +99,6 @@
     <ClInclude Include="include\RenderPass\ShadowRenderPass.h" />
     <ClInclude Include="include\RenderPass\SkyBoxRenderPass.h" />
     <ClInclude Include="include\RenderPass\SnowRenderPass.h" />
-    <ClInclude Include="include\RenderPass\SSAORenderPass.h" />
     <ClInclude Include="include\Utility\PingPongBuffer.h" />
     <ClInclude Include="include\Utility\RenderPass.h" />
     <ClInclude Include="include\RenderQueue.h" />

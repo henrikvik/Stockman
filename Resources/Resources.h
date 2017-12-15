@@ -208,6 +208,19 @@ namespace Resources
         
         Files toEnum(const char * str);
     }
+    namespace Particles
+    {
+        enum Files
+        {
+            SPLASH
+        };
+        const std::map<Files, const char *> Paths =
+        {
+            {SPLASH, R"(..\Resources\Particles\SPLASH.png)"}
+        };
+        
+        Files toEnum(const char * str);
+    }
     namespace Shaders
     {
         enum Files
@@ -238,9 +251,12 @@ namespace Resources
             SkyShader,
             SnowShader,
             SpriteShader,
+            SSAO,
+            SSAOBlur,
             SSAOComputeShader,
             SSAOGaussianBlurHorizontal,
             SSAOGaussianBlurVertical,
+            SSAOGenerate,
             SSAOMerger
         };
         const std::map<Files, const char *> Paths =
@@ -271,9 +287,12 @@ namespace Resources
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SnowShader, R"(..\Resources\Shaders\SnowShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
+            {SSAO, R"(..\Resources\Shaders\SSAO.hlsl)"},
+            {SSAOBlur, R"(..\Resources\Shaders\SSAOBlur.hlsl)"},
             {SSAOComputeShader, R"(..\Resources\Shaders\SSAOComputeShader.hlsl)"},
             {SSAOGaussianBlurHorizontal, R"(..\Resources\Shaders\SSAOGaussianBlurHorizontal.hlsl)"},
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
+            {SSAOGenerate, R"(..\Resources\Shaders\SSAOGenerate.hlsl)"},
             {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
         
