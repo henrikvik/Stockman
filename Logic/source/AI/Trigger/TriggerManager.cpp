@@ -1,6 +1,7 @@
 #include <AI/Trigger/TriggerManager.h>
 #include <Physics\Physics.h>
 #include <AI\Trigger\TriggerAmmoPickup.h>
+#include <AI\Trigger\TriggerTrapExplosive.h>
 
 using namespace Logic;
 
@@ -65,6 +66,14 @@ Trigger* TriggerManager::addTrigger(Trigger::TriggerType type, btVector3 const &
             physics.createBody(Cube(pos, { 0, 0, 0 }, { 900., 51.f, 900.f }),
                 TRIGGER_MASS, TRIGGER_IS_SENSOR), { 1.f, 1.f, 1.f },
             type, 0.f, true);
+        break;
+    case Trigger::TriggerType::TRAP_EXPLOSIVE:
+        trigger = newd TriggerTrapExplosive(
+            physics.createBody(
+                Cube(pos, { 0, 0, 0 }, { 2.f, 0.6f, 2.f }),
+                TRIGGER_MASS, TRIGGER_IS_SENSOR
+            )
+        );
         break;
     default:
         trigger = nullptr;

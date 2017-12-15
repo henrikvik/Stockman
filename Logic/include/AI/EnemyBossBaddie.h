@@ -22,14 +22,26 @@ namespace Logic
         };
         std::unordered_map<AbilityId, Ability> abilities;
 
-        static const float BASE_SPEED, PROJECTILE_SPEED, ABILITY_1_MOD, MELEE_RANGE,
-            MELEE_PUSHBACK, TOTAL_HP_BAR, PROJECTILE_SCALE;
+        static const float PROJECTILE_SPEED, ABILITY_1_MOD, TOTAL_HP_BAR, PROJECTILE_SCALE;
+
+        // melee var
+        static const float MELEE_RANGE, MELEE_PUSHBACK;
+        // speed var
+        static const float BASE_SPEED_P1, BASE_SPEED_P2, BASE_SPEED_P3;
+        // damage var
+        static const float BASE_WEAKNESS, MELEE_WEAKNESS, STUNNED_WEAKNESS;
+
         static const int BASE_DAMAGE, MAX_HP, SCORE, INDICATORS;
 
         // AB 4 data -- move to a buff
         float ab4Speed;
         int ab4Pattern;
         bool ab4PatternDir;
+
+        // extra
+        bool stunned;
+        bool lolSpeech;
+        float speechTime;
 
         Sprite hpBar;
         Sprite hpBarOutline;
@@ -38,6 +50,7 @@ namespace Logic
 
         ProjectileData indicatorData;
         std::vector<Projectile*> meleeIndicators;
+        FancyRenderInfo fancyAF; // My dude
     public:
         EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent);
         virtual ~EnemyBossBaddie();

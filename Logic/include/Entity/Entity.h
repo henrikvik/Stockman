@@ -28,7 +28,7 @@ namespace Logic
 	{
     typedef std::function<Projectile*(ProjectileData& pData, btVector3 position, btVector3 forward, Entity& shooter)> ProjectileFunc;
     typedef std::function<Enemy*(EnemyType type, btVector3 &pos, std::vector<int> effects)> EnemyFunc;
-    typedef std::function<Trigger*(int id, btVector3 const &pos, std::vector<int> &effects)> TriggerFunc;
+    typedef std::function<Trigger*(int id, btVector3 const &pos, std::vector<int> effects)> TriggerFunc;
 
     public:
         // Use ON_DESTROY to prevent crashes
@@ -84,7 +84,7 @@ namespace Logic
         std::function<Enemy*(EnemyType type, btVector3 &pos,
             std::vector<int> effects)>                         SpawnEnemy;
         std::function<Trigger*(int id, btVector3 const &pos,
-            std::vector<int> &effects)>                        SpawnTrigger;
+            std::vector<int> effects)>                         SpawnTrigger;
 	private:
         Sound::SoundSource* m_soundSource;
 		StatusManager m_statusManager;
