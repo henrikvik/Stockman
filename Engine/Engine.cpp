@@ -22,6 +22,8 @@
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
 
+#include "resource.h"
+
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 bool settingsFullScreenOverRide = false;
 HWND *Engine::g_window = nullptr;
@@ -226,6 +228,9 @@ void Engine::initializeWindow()
 	{
 		MessageBox(this->window, "window creation failed", "Error", MB_OK);
 	}
+
+    HICON icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(101));
+    SendMessage(window, WM_SETICON, ICON_BIG, (LPARAM)icon);
 
     SetWindowLong(window, GWL_STYLE, GetWindowLong(window, GWL_STYLE) & ~WS_SIZEBOX);
 
