@@ -63,8 +63,8 @@ HUDManager::HUDManager()
     crossBowTimer = -1.0f;
     staffTimer = -1.0f;
 
-    effects.push_back(new iMenuFX_Combo());
-    effects.push_back(new iMenuFX_NewScore());
+    effects.push_back(newd iMenuFX_Combo());
+    effects.push_back(newd iMenuFX_NewScore());
 
     HUDEnable = true;
     RegisterCommand("TOGGLEHUD", { HUDEnable = !HUDEnable; return "TOGGLEHUD"; })

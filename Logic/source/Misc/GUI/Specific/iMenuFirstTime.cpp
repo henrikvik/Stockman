@@ -43,8 +43,6 @@ iMenuFirstTime::iMenuFirstTime(iMenu::MenuGroup group)
     m_textInfoConfirm.text = m_textConfirm.c_str();
 }
 
-iMenuFirstTime::~iMenuFirstTime() { }
-
 void iMenuFirstTime::confirm()
 {
     Settings::getInstance().setName(std::string(_bstr_t(m_textInput.c_str())));

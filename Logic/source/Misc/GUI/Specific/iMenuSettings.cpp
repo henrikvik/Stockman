@@ -22,10 +22,6 @@ Logic::iMenuSettings::iMenuSettings(iMenu::MenuGroup group)
     m_textRenderInfoFog.position = DirectX::SimpleMath::Vector2(870.0f, 547.0f);
 }
 
-Logic::iMenuSettings::~iMenuSettings()
-{
-}
-
 void Logic::iMenuSettings::update(int x, int y, float deltaTime)
 {
     iMenu::update(x, y, deltaTime);

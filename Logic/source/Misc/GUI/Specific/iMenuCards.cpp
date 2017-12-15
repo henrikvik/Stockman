@@ -27,8 +27,6 @@ iMenuCards::iMenuCards(iMenu::MenuGroup group)
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::WAVE_END, nullptr, true);
 }
 
-iMenuCards::~iMenuCards() { }
-
 void iMenuCards::update(int x, int y, float deltaTime)
 {
     iMenu::update(x, y, deltaTime);

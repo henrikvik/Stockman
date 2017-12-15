@@ -18,8 +18,6 @@ iMenuCredits::iMenuCredits(iMenu::MenuGroup group)
     scoreText.text = L"Your score:" + std::to_wstring(ComboMachine::Get().getTotalScore());
 }
 
-iMenuCredits::~iMenuCredits() { }
-
 void iMenuCredits::update(int x, int y, float deltaTime)
 {
     iMenu::update(x, y, deltaTime);

@@ -914,12 +914,12 @@ void ParticleSystem::readSphereModel(ID3D11Device *device)
     meshfile.read(reinterpret_cast<char*>(&indices.front()), sizeof(UINT16) * indexcount);
 
     m_SphereIndices = indexcount;
-    m_SphereVertexBuffer = new Buffer<SphereVertex>(device, BufferUsage::Immutable, BufferBind::VertexBuffer, BufferCpuAccess::None, BufferMisc::None, vertexcount, &vertices[0]);
-    m_SphereIndexBuffer = new Buffer<UINT16>(device, BufferUsage::Immutable, BufferBind::IndexBuffer, BufferCpuAccess::None, BufferMisc::None, indexcount, &indices[0]);
+    m_SphereVertexBuffer = newd Buffer<SphereVertex>(device, BufferUsage::Immutable, BufferBind::VertexBuffer, BufferCpuAccess::None, BufferMisc::None, vertexcount, &vertices[0]);
+    m_SphereIndexBuffer = newd Buffer<UINT16>(device, BufferUsage::Immutable, BufferBind::IndexBuffer, BufferCpuAccess::None, BufferMisc::None, indexcount, &indices[0]);
 
-    m_GeometryInstanceBuffer = new Buffer<GeometryParticleInstance>(device, BufferUsage::Dynamic, BufferBind::VertexBuffer, BufferCpuAccess::Write, BufferMisc::None, m_Capacity);
+    m_GeometryInstanceBuffer = newd Buffer<GeometryParticleInstance>(device, BufferUsage::Dynamic, BufferBind::VertexBuffer, BufferCpuAccess::Write, BufferMisc::None, m_Capacity);
 
-    m_GeometryVS = new Shader(device, L"Resources/Shaders/GeometryParticle.hlsl", {
+    m_GeometryVS = newd Shader(device, L"Resources/Shaders/GeometryParticle.hlsl", {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,                            D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },

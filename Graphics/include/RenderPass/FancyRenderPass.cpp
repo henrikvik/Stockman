@@ -42,7 +42,13 @@ FancyRenderPass::FancyRenderPass(
     }
 
     ThrowIfFailed(DirectX::CreateWICTextureFromFile(Global::device, L"../Resources/Particles/SPLASH.png", nullptr, &m_FontTexture));
-    m_Font = new DirectX::SpriteFont(m_FontTexture, glyphs.data(), glyphs.size(), 0.f);
+    m_Font = newd DirectX::SpriteFont(m_FontTexture, glyphs.data(), glyphs.size(), 0.f);
+}
+
+FancyRenderPass::~FancyRenderPass()
+{
+    RenderPass::~RenderPass();
+    delete m_Font;
 }
 
 static DirectX::SimpleMath::Vector4 TransformScreen(DirectX::SimpleMath::Matrix vp, DirectX::SimpleMath::Vector3 position, bool *clip)

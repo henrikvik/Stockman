@@ -29,8 +29,6 @@ iMenuLoadingPre::iMenuLoadingPre(iMenu::MenuGroup group) : iMenu(group)
     Sound::NoiseMachine::Get().playSFX(Sound::SFX::START_GAME, nullptr, true);
 }
 
-iMenuLoadingPre::~iMenuLoadingPre() { }
-
 void iMenuLoadingPre::update(int x, int y, float deltaTime)
 {
     iMenu::update(x, y, deltaTime);
@@ -68,8 +66,6 @@ iMenuLoadingPost::iMenuLoadingPost(iMenu::MenuGroup group) : iMenu(group)
     m_textRenderInfo.position   = DirectX::SimpleMath::Vector2(POST_LOAD_MESSAGE_POS_X * WIN_WIDTH, POST_LOAD_MESSAGE_POS_Y * WIN_HEIGHT);
     m_textRenderInfo.text       = m_string.c_str();
 }
-
-iMenuLoadingPost::~iMenuLoadingPost() { }
 
 // Overwritten, to avoid the actual fade-in of this screen
 void iMenuLoadingPost::fadeIn()

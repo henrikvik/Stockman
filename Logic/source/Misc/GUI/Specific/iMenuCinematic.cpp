@@ -51,8 +51,6 @@ iMenuCinematic::iMenuCinematic(iMenu::MenuGroup group)
     }
 }
 
-iMenuCinematic::~iMenuCinematic() { }
-
 void iMenuCinematic::update(int x, int y, float deltaTime)
 {
     switch (mode)

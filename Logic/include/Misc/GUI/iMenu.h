@@ -75,7 +75,7 @@ namespace Logic
         };
 
         iMenu(MenuGroup group);
-        ~iMenu();
+        virtual ~iMenu();
 
         void removeButtons();
         void removeSliders();

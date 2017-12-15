@@ -9,7 +9,6 @@ namespace Logic
     {
     public:
         iMenuGameOver(iMenu::MenuGroup group);
-        ~iMenuGameOver();
 
         void update(int x, int y, float deltaTime);
         void render() const;

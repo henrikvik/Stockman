@@ -19,8 +19,6 @@ using namespace Logic;
 iMenuIntro::iMenuIntro(iMenu::MenuGroup group)
     : iMenu(group) {  }
 
-iMenuIntro::~iMenuIntro() { }
-
 void iMenuIntro::update(int x, int y, float deltaTime)
 {
     iMenu::update(x, y, deltaTime);
