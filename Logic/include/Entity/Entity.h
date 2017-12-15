@@ -19,6 +19,7 @@ namespace Sound
 
 namespace Logic
 {
+
     class Projectile;
     class Trigger;
     class Enemy;
@@ -51,7 +52,7 @@ namespace Logic
 		virtual ~Entity();
 
         virtual void setSpawnFunctions(ProjectileFunc spawnProjectile, EnemyFunc SpawnEnemy, TriggerFunc spawnTrigger);
-
+        void SpawnDamageText(int damage, const DirectX::XMVECTORF32 color);
 		virtual void clear();
 		virtual void update(float deltaTime);
 		virtual void updateSound(float deltaTime);
@@ -77,10 +78,11 @@ namespace Logic
 		void setStatusManager(StatusManager& statusManager);
 
 		Sound::SoundSource* getSoundSource();
-	protected:
-        // Functions to spawn other things
         std::function<Projectile*(ProjectileData& pData, btVector3 position,
             btVector3 forward, Entity& shooter)>               SpawnProjectile;
+	protected:
+        // Functions to spawn other things
+
         std::function<Enemy*(EnemyType type, btVector3 &pos,
             std::vector<int> effects)>                         SpawnEnemy;
         std::function<Trigger*(int id, btVector3 const &pos,

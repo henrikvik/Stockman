@@ -34,6 +34,7 @@ namespace Resources
             lights,
             lights2,
             r,
+            stockman_icon,
             Stock_Map
         };
         const std::map<Files, const char *> Paths =
@@ -43,6 +44,7 @@ namespace Resources
             {lights, R"(..\Resources\Maps\lights.toml)"},
             {lights2, R"(..\Resources\Maps\lights2.toml)"},
             {r, R"(..\Resources\Maps\r.toml)"},
+            {stockman_icon, R"(..\Resources\Maps\stockman_icon.png)"},
             {Stock_Map, R"(..\Resources\Maps\Stock_Map.toml)"}
         };
         
