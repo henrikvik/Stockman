@@ -31,7 +31,7 @@ const int   EnemyBossBaddie::BASE_DAMAGE = 1,
 
 // melee var
 const float EnemyBossBaddie::MELEE_RANGE = 30.f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.1f;
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.08f;
 // speed var
 const float EnemyBossBaddie::BASE_SPEED_P1 = 13.f,
             EnemyBossBaddie::BASE_SPEED_P2 = 16.f,
@@ -133,7 +133,7 @@ void EnemyBossBaddie::createAbilities()
         if (ability.getCurrentDuration() <= 0.f) {
             fancyAF.text = L"";
             Graphics::FXSystem->addEffect("DamageBoom", getPosition());
-            getRigidBody()->getWorldTransform().setOrigin(player.getPositionBT() + btVector3(0.f, 100.f, 0.f));
+            getRigidBody()->getWorldTransform().setOrigin(player.getPositionBT() + btVector3(0.f, 65.f, 0.f));
         }
     };
 
