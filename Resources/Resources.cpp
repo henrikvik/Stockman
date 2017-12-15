@@ -23,7 +23,6 @@ namespace Resources
             if (strcmp(str, "lights") == 0) return lights;
             if (strcmp(str, "lights2") == 0) return lights2;
             if (strcmp(str, "r") == 0) return r;
-            if (strcmp(str, "stockman_icon") == 0) return stockman_icon;
             if (strcmp(str, "Stock_Map") == 0) return Stock_Map;
             throw "Could not find matching enum.";
         }
