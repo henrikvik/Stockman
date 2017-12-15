@@ -143,7 +143,7 @@ void EnemyBossBaddie::createAbilities()
 
     data.cooldown = 7500.f;
     data.duration = 0.f;
-    data.randomChanche = 50;
+    data.randomChanche = 53;
 
     auto onUse1 = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_2, nullptr, true);
@@ -156,7 +156,7 @@ void EnemyBossBaddie::createAbilities()
                 nicePjData, PROJECTILE_SPEED + (len * 0.4f), 2.5f, 0.6f, true);
 
             pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
-                if (gen.getRandomInt(0, 1)) {
+                if (gen.getRandomInt(0, 5) < 2) {
                     SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
                 }
                 else 
@@ -254,7 +254,7 @@ void EnemyBossBaddie::createAbilities()
     abilities[AbilityId::MELEE] = Ability(data, onTick2, onUse2);
 
     /* AB 3 */
-    data.cooldown = 2000.f;
+    data.cooldown = 3000.f;
     data.duration = 0.f;
     data.randomChanche = 0;
 
