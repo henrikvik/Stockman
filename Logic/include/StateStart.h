@@ -41,7 +41,6 @@ namespace Logic
         FPSRenderer                 m_fpsRenderer;
         Physics*			        m_physics;
         Map*				        m_map;
-        Graphics::ParticleEffect    m_campfire;
     };
 }
 

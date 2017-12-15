@@ -10,7 +10,6 @@ namespace Logic
     {
     public:
         iMenuFirstTime(iMenu::MenuGroup group);
-        ~iMenuFirstTime();
 
         void confirm();
         void update(int x, int y, float deltaTime);

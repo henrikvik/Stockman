@@ -10,8 +10,6 @@ namespace Logic
     {
     public:
         iMenuSkillPick(iMenu::MenuGroup group);
-        ~iMenuSkillPick();
-
         void update(int x, int y, float deltaTime);
 
         void pickOne();

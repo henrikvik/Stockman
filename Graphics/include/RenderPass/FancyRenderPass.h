@@ -29,7 +29,7 @@ namespace Graphics
             ID3D11ShaderResourceView *shadowMap,
             ID3D11Buffer *lightBuffer,
             ID3D11DepthStencilView *depthStencil);
-        virtual ~FancyRenderPass() {};
+        virtual ~FancyRenderPass();
 
         virtual wchar_t* name() const override {
             return L"FancyRenderPass";

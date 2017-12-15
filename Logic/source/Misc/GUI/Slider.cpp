@@ -85,6 +85,7 @@ Slider::Slider(
 
 Slider::~Slider()
 {
+
 }
 
 bool Slider::updateOnPress(int posX, int posY)

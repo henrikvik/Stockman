@@ -10,8 +10,6 @@ namespace Logic
     {
     public:
         iMenuIntro(iMenu::MenuGroup group);
-        ~iMenuIntro();
-
         void update(int x, int y, float deltaTime);
     };
 }

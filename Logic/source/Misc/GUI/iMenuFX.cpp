@@ -76,7 +76,11 @@ void iMenuFX_Particles::update(float dt)
     {
         m_pixels[i].update(dt);
         if (m_pixels[i].remove)
-            m_pixels.erase(m_pixels.begin() + i);
+        {
+            std::swap(m_pixels[i], m_pixels[m_pixels.size() - 1]);
+            m_pixels.pop_back();
+            i--;
+        }
     }
 }
 
@@ -90,11 +94,11 @@ void iMenuFX_Particles::render() const
     Dust Effect on the book.    *
 *********************************/
 iMenuFX_Dust::iMenuFX_Dust() { m_type = FX_Dust; }
-iMenuFX_Dust::~iMenuFX_Dust() { m_pixels.clear(); }
+iMenuFX_Dust::~iMenuFX_Dust() { m_pixels.reserve(0); }
 
 void iMenuFX_Dust::press(float x, float y)
 {
-    Sound::NoiseMachine::Get().playSFX(Sound::UI_SAND_FX, nullptr, true);
+    //Sound::NoiseMachine::Get().playSFX(Sound::UI_SAND_FX, nullptr, true);
 
     for (int i = 8; --i;)
         m_pixels.push_back(Pixel(x / WIN_WIDTH, y / WIN_HEIGHT, Resources::Textures::particle, 50.f, 300.f, 4.f, 8.f));
@@ -104,11 +108,11 @@ void iMenuFX_Dust::press(float x, float y)
     Cute Combo Explosion.       *
 *********************************/
 iMenuFX_Combo::iMenuFX_Combo() { m_type = FX_Combo; }
-iMenuFX_Combo::~iMenuFX_Combo() { m_pixels.clear(); }
+iMenuFX_Combo::~iMenuFX_Combo() { m_pixels.reserve(0); }
 
 void iMenuFX_Combo::press(float x, float y)
 {
-    Sound::NoiseMachine::Get().playSFX(Sound::UI_SAND_FX, nullptr, true);
+    //Sound::NoiseMachine::Get().playSFX(Sound::UI_SAND_FX, nullptr, true);
 
     for (int i = 10; --i;)
         m_pixels.push_back(Pixel(x / WIN_WIDTH, y / WIN_HEIGHT, Resources::Textures::particle_white, 50.f, 300.f, 2.f, 7.f));
@@ -118,11 +122,11 @@ void iMenuFX_Combo::press(float x, float y)
     Cute Combo-OVER Explosion.  *
 *********************************/
 iMenuFX_NewScore::iMenuFX_NewScore() { m_type = FX_NewScore; }
-iMenuFX_NewScore::~iMenuFX_NewScore() { m_pixels.clear(); }
+iMenuFX_NewScore::~iMenuFX_NewScore() { m_pixels.reserve(0); }
 
 void iMenuFX_NewScore::press(float x, float y)
 {
-    Sound::NoiseMachine::Get().playSFX(Sound::COMBO_DONE, nullptr, true);
+    //Sound::NoiseMachine::Get().playSFX(Sound::COMBO_DONE, nullptr, true);
 
     for (int i = 25; --i;)
         m_pixels.push_back(Pixel(x / WIN_WIDTH, y / WIN_HEIGHT, Resources::Textures::particle_white, 50.f, 500.f, 5.f, 12.f));

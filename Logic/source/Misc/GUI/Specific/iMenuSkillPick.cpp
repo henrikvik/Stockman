@@ -62,8 +62,6 @@ iMenuSkillPick::iMenuSkillPick(iMenu::MenuGroup group) : iMenu(group)
     m_spriteRenderInfo2.textureRect = FloatRect({ 0.0f, 0.64453125f }, { 0.37109375f, 1.0f });
 }
 
-iMenuSkillPick::~iMenuSkillPick() { }
-
 void iMenuSkillPick::update(int x, int y, float deltaTime)
 {
     iMenu::update(x, y, deltaTime);

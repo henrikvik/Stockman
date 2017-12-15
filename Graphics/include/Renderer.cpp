@@ -83,7 +83,7 @@ namespace Graphics
 #pragma region CaNCeR!
     {
         grassTime = 0;
-        Global::cStates = new CommonStates(device);
+        Global::cStates = newd CommonStates(device);
         Global::comparisonSampler = [&]() {
             ID3D11SamplerState * sampler = nullptr;
             D3D11_SAMPLER_DESC sDesc = {};

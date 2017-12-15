@@ -132,10 +132,11 @@ void Map::clear()
 void Map::update(float deltaTime)
 {
     m_ChristmasLightTimer += deltaTime / 1000.f;
-    if (m_ChristmasLightTimer > 1.5f) {
+    if (m_ChristmasLightTimer > 1.5f)
+    {
         m_ChristmasLightTimer = 0.f;
         m_ChristmasPatternIndex = (m_ChristmasPatternIndex + 1) % m_ChristmasLightPattern.size();
-}
+    }
 
 
 

@@ -17,6 +17,7 @@ namespace Logic
     {
     public:
         Pixel(float inX, float inY, Resources::Textures::Files texture, float lifeTimeMin, float lifeTimeMax, float sizeMin, float sizeMax);
+        virtual ~Pixel() {  }
 
         void update(float dt);
         void render() const;
@@ -34,6 +35,7 @@ namespace Logic
     class iMenuFX
     {
     public:
+        virtual ~iMenuFX() { }
         virtual void press(float x, float y) = 0;
         virtual void update(float dt) = 0;
         virtual void render() const = 0;
@@ -45,6 +47,8 @@ namespace Logic
 
     class iMenuFX_Particles : public iMenuFX
     {
+    public:
+        virtual ~iMenuFX_Particles() { m_pixels.clear(); };
         virtual void update(float dt);
         virtual void render() const;
 
@@ -56,7 +60,7 @@ namespace Logic
     {
     public:
         iMenuFX_Dust();
-        ~iMenuFX_Dust();
+        virtual ~iMenuFX_Dust();
 
         void press(float x, float y);
     };
@@ -65,7 +69,7 @@ namespace Logic
     {
     public:
         iMenuFX_Combo();
-        ~iMenuFX_Combo();
+        virtual ~iMenuFX_Combo();
 
         void press(float x, float y);
     };
@@ -74,7 +78,8 @@ namespace Logic
     {
     public:
         iMenuFX_NewScore();
-        ~iMenuFX_NewScore();
+        virtual ~iMenuFX_NewScore();
+
         void press(float x, float y);
     };
 }

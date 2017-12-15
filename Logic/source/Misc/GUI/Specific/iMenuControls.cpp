@@ -9,8 +9,6 @@ using namespace Logic;
 iMenuControls::iMenuControls(iMenu::MenuGroup group)
     : iMenu(group) {  }
 
-iMenuControls::~iMenuControls() { }
-
 void iMenuControls::update(int x, int y, float deltaTime)
 {
     iMenu::update(x, y, deltaTime);

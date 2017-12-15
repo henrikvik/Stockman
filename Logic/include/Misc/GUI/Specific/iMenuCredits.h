@@ -14,7 +14,6 @@ namespace Logic
         TextRenderInfo scoreText;
     public:
         iMenuCredits(iMenu::MenuGroup group);
-        ~iMenuCredits();
 
         void update(int x, int y, float deltaTime);
         void render() const;

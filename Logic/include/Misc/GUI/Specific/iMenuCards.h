@@ -19,8 +19,6 @@ namespace Logic
         };
 
         iMenuCards(iMenu::MenuGroup group);
-        ~iMenuCards();
-
 
         void update(int x, int y, float deltaTime);
         void render() const;

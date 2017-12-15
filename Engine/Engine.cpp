@@ -481,6 +481,7 @@ int Engine::run()
     setting.writeToFile();
     delete Global::mainCamera;
     Graphics::Debug::Destroy();
+//    mDebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
     g_Profiler->end();
 	delete g_Profiler;
 

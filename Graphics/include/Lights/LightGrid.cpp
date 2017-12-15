@@ -150,7 +150,7 @@ namespace Graphics {
 			}
 		}
 
-		m_Frustums = new StructuredBuffer<Frustum>(device, CpuAccess::None, count, frustums);
+		m_Frustums = newd StructuredBuffer<Frustum>(device, CpuAccess::None, count, frustums);
 		delete[] frustums;
 
 

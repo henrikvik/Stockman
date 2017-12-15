@@ -24,8 +24,6 @@ namespace Logic
     {
     public:
         iMenuLoadingPre(iMenu::MenuGroup group);
-        ~iMenuLoadingPre();
-
         void update(int x, int y, float deltaTime);
 
     private:
@@ -41,8 +39,6 @@ namespace Logic
     {
     public:
         iMenuLoadingPost(iMenu::MenuGroup group);
-        ~iMenuLoadingPost();
-
         void fadeIn();
         void update(int x, int y, float deltaTime);
         void render() const;

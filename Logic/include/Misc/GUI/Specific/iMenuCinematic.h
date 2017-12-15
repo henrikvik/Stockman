@@ -29,7 +29,6 @@ namespace Logic
         };
 
         iMenuCinematic(iMenu::MenuGroup group);
-        ~iMenuCinematic();
 
         void update(int x, int y, float deltaTime);
         void render() const;

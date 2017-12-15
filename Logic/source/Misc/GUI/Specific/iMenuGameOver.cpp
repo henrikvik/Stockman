@@ -27,8 +27,6 @@ iMenuGameOver::iMenuGameOver(iMenu::MenuGroup group)
     m_scoreTexture.textureRect = FloatRect(26.f / 1024.f, 24.f / 1024.f, 364.0f / 1024.f, 85.0f / 1024.f);
 }
 
-iMenuGameOver::~iMenuGameOver() { }
-
 void iMenuGameOver::update(int x, int y, float deltaTime)
 {
     iMenu::update(x, y, deltaTime);
