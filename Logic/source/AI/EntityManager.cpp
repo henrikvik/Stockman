@@ -142,12 +142,12 @@ void EntityManager::registerCreationFunctions()
     };
     m_enemyFactory[EnemyType::TOTEM] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.5f, 1.5f, 1.5f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 2.3f, 2.1f, 1.5f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
-        Enemy* enemy = newd EnemyTotem(body, cube.getDimensionsRef());
+        Enemy* enemy = newd EnemyTotem(body, { 2.f, 2.f, 2.f });
         body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
             0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         physics.removeRigidBody(body);

@@ -10,7 +10,7 @@ const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 150, EnemyTotem::SCO
 const int EnemyTotem::BULLET_AMOUNT = 9;
 
 EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
-    : Enemy(Resources::Models::Files::Totem, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::TOTEM, 0, btVector3(0, -1.5, 0))
+    : Enemy(Resources::Models::Files::Totem, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::TOTEM, 0, btVector3(0, -2.1f, 0))
 {
     setBehavior(STAY);
     createAbilities();
