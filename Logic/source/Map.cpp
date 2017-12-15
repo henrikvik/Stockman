@@ -301,6 +301,9 @@ void Map::loadMap(Resources::Maps::Files map)
             DirectX::SimpleMath::Matrix instance_transform = DirectX::XMMatrixAffineTransformation(scale, {}, rotation, translation);
             HybrisLoader::Model::BoundingBox bounding_box = ModelLoader::get().getModel(model)->get_bounding_box();
 
+            if (model == Resources::Models::Files::Cloud)
+                scale *= 1000000.f;
+
             bounding_box.apply_scale(scale);
             Decoration decor(model, instance_transform, bounding_box.sphere_radius());
             decorations.push_back(decor);

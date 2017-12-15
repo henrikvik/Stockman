@@ -31,7 +31,7 @@ const int   EnemyBossBaddie::BASE_DAMAGE = 1,
 
 // melee var
 const float EnemyBossBaddie::MELEE_RANGE = 30.f,
-            EnemyBossBaddie::MELEE_PUSHBACK = 0.1f;
+            EnemyBossBaddie::MELEE_PUSHBACK = 0.08f;
 // speed var
 const float EnemyBossBaddie::BASE_SPEED_P1 = 13.f,
             EnemyBossBaddie::BASE_SPEED_P2 = 16.f,
@@ -133,7 +133,7 @@ void EnemyBossBaddie::createAbilities()
         if (ability.getCurrentDuration() <= 0.f) {
             fancyAF.text = L"";
             Graphics::FXSystem->addEffect("DamageBoom", getPosition());
-            getRigidBody()->getWorldTransform().setOrigin(player.getPositionBT() + btVector3(0.f, 100.f, 0.f));
+            getRigidBody()->getWorldTransform().setOrigin(player.getPositionBT() + btVector3(0.f, 65.f, 0.f));
         }
     };
 
@@ -143,7 +143,7 @@ void EnemyBossBaddie::createAbilities()
 
     data.cooldown = 7500.f;
     data.duration = 0.f;
-    data.randomChanche = 50;
+    data.randomChanche = 53;
 
     auto onUse1 = [&](Player& player, Ability &ability) -> void {
         Sound::NoiseMachine::Get().playSFX(Sound::SFX::BOSS_1_ABILITY_2, nullptr, true);
@@ -156,7 +156,7 @@ void EnemyBossBaddie::createAbilities()
                 nicePjData, PROJECTILE_SPEED + (len * 0.4f), 2.5f, 0.6f, true);
 
             pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
-                if (gen.getRandomInt(0, 1)) {
+                if (gen.getRandomInt(0, 5) < 2) {
                     SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
                 }
                 else 
@@ -254,7 +254,7 @@ void EnemyBossBaddie::createAbilities()
     abilities[AbilityId::MELEE] = Ability(data, onTick2, onUse2);
 
     /* AB 3 */
-    data.cooldown = 2000.f;
+    data.cooldown = 3000.f;
     data.duration = 0.f;
     data.randomChanche = 0;
 
@@ -402,8 +402,11 @@ void EnemyBossBaddie::damage(int damage)
     else mod = BASE_WEAKNESS;
 
     float damageCalc = std::floor(damage * mod) - 5;
-    if (damageCalc > 0)
+    if (damageCalc > 0) {
         Enemy::damage(damageCalc);
+
+        SpawnDamageText(damageCalc, DirectX::Colors::FloralWhite);
+    }
 }
 
 void EnemyBossBaddie::useAbility(Player &target)
