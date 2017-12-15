@@ -159,7 +159,6 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
             if (dmg > 0)
                 SpawnDamageText(dmg, DirectX::Colors::FloralWhite);
 
-
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
                 getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
         }

@@ -85,9 +85,11 @@ void EnemyTotem::onCollision(PhysicsObject &other, btVector3 contactPoint, float
     {
         if (!pj->getProjectileData().enemyBullet)
         {
-            damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
-            SpawnDamageText(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier), DirectX::Colors::FloralWhite);
+            auto dmg = static_cast<int> (pj->getProjectileData().damage * dmgMultiplier);
+            damage(dmg);
 
+            if (dmg > 0)
+                SpawnDamageText(dmg, DirectX::Colors::FloralWhite);
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
                 getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
         }
