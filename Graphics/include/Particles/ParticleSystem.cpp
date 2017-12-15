@@ -447,8 +447,9 @@ void ParticleSystem::renderPrePass(ID3D11DeviceContext * cxt, Camera * cam, ID3D
         cxt->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         cxt->VSSetShader(*m_GeometryVS, nullptr, 0);
-        auto buf = cam->getBuffer();
-        cxt->VSSetConstantBuffers(0, 1, *buf);
+        auto buf = Global::mainCamera->getBuffer();
+        cxt->VSSetConstantBuffers(0, 1, *Global::mainCamera->getBuffer());
+        cxt->PSSetConstantBuffers(0, 1, *Global::mainCamera->getBuffer());
 
         cxt->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         cxt->OMSetRenderTargets(0, nullptr, dest_dsv);
@@ -516,6 +517,7 @@ void ParticleSystem::render(
     };
     cxt->PSSetShaderResources(0, 4, lightResources);
     cxt->PSSetShaderResources(4, (UINT)m_Textures.size(), m_Textures.data());
+    cxt->PSSetConstantBuffers(0, 1, *Global::mainCamera->getBuffer());
 
     // spheres
     {

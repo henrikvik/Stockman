@@ -13,11 +13,22 @@ float4 PS(PSInput input) : SV_Target0
     float noise = Noise.SampleLevel(Sampler, input.noisescale*input.uv + float2(0, input.age * input.noisespeed), 0).g;
     float cap = 1 - input.age;
 
+    float4x4 thresholdMatrix =
+    {
+        1.0 / 17.0,  9.0 / 17.0,  3.0 / 17.0, 11.0 / 17.0,
+        13.0 / 17.0,  5.0 / 17.0, 15.0 / 17.0,  7.0 / 17.0,
+        4.0 / 17.0, 12.0 / 17.0,  2.0 / 17.0, 10.0 / 17.0,
+        16.0 / 17.0,  8.0 / 17.0, 14.0 / 17.0,  6.0 / 17.0
+    };
+
+    float dist = 1 - saturate(distance(input.worldPos, camera.position) / 5.f);
+    float closeness = thresholdMatrix[input.position.x % 4][input.position.y % 4] * dist;
+
     clip(
         saturate(
             step(0.13, (noise*cap*0.95))
-        ) - 0.005
-    );
+        ) - 0.005 - closeness * 14
+    );;
 
     float t = abs(input.deform*input.uv.y) + 0.04;
     float falloff = (1 - input.age);
@@ -40,9 +51,20 @@ void PS_depth(PSInput input)
     float noise = Noise.SampleLevel(Sampler, input.noisescale*input.uv + float2(0, input.age * input.noisespeed), 0).g;
     float cap = 1 - input.age;
 
+    float4x4 thresholdMatrix =
+    {
+        1.0 / 17.0,  9.0 / 17.0,  3.0 / 17.0, 11.0 / 17.0,
+        13.0 / 17.0,  5.0 / 17.0, 15.0 / 17.0,  7.0 / 17.0,
+        4.0 / 17.0, 12.0 / 17.0,  2.0 / 17.0, 10.0 / 17.0,
+        16.0 / 17.0,  8.0 / 17.0, 14.0 / 17.0,  6.0 / 17.0
+    };
+
+    float dist = 1 - saturate(distance(input.worldPos, camera.position) / 5.f);
+    float closeness = thresholdMatrix[input.position.x % 4][input.position.y % 4] * dist;
+
     clip(
         saturate(
             step(0.13, (noise*cap*0.95))
-        ) - 0.005
-    );;
+        ) - 0.005 - closeness * 14
+    );
 }
