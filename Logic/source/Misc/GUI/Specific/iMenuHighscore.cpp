@@ -109,9 +109,6 @@ void iMenuHighscore::buildHighscore()
 
     if (!entries.empty())
     {
-        // Reverse the list, because we get the lowest score first
-        std::reverse(entries.begin(), entries.end());
-
         // Build the graphical representation of the highscore
         for (size_t i = 0; i < entries.size(); i++)
         {

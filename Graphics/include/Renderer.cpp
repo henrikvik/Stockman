@@ -235,6 +235,7 @@ namespace Graphics
 
         TextureLoader::get().loadAll();
 
+
 		renderPasses =
 		{
 			newd ParticleDepthRenderPass(depthStencil),

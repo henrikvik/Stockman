@@ -20,5 +20,5 @@ namespace Global
     extern GRAPHICS_API ID3D11Device * device;
     extern GRAPHICS_API ID3D11DeviceContext * context;
     extern DirectX::SpriteBatch *batch;
-    extern Nulls nulls;
+    extern GRAPHICS_API Nulls nulls;
 }

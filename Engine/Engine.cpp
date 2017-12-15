@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include <Graphics\include\Structs.h>
 #include <Graphics\include\Utility\DebugDraw.h>
+#include <Graphics\include\Utility\Texture.h>
 
 #include <Windows.h>
 #include <imgui.h>
@@ -339,6 +340,49 @@ int Engine::run()
     Global::mainCamera->update({ 0,0,-15 }, { 0,0,1 }, mContext);
 
 	ImGui_ImplDX11_Init(window, mDevice, mContext);
+
+
+    {
+        
+
+        Graphics::Shader fullscreen_shader(Resources::Shaders::FullscreenQuad);
+        Texture loadscreen(Resources::Textures::Paths.at(Resources::Textures::IntroScreen));
+
+        static float clearColor[4] = { 0 };
+        Global::context->ClearRenderTargetView(mBackBufferRTV, clearColor);
+        Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+        DirectX::CommonStates states(mDevice);
+        Global::context->OMSetDepthStencilState(states.DepthNone(), 0);
+        //Global::context->OMSetBlendState(states.Opaque(), 0, -1);
+        Global::context->RSSetState(states.CullNone());
+
+        Global::context->IASetInputLayout(nullptr);
+        Global::context->VSSetShader(fullscreen_shader, nullptr, 0);
+        Global::context->PSSetShader(fullscreen_shader, nullptr, 0);
+
+        auto sampler = states.LinearWrap();
+        Global::context->PSSetSamplers(0, 1, &sampler);
+
+        
+        Global::context->PSSetShaderResources(0, 1, loadscreen);
+        Global::context->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
+
+        D3D11_VIEWPORT viewPort = { 0 };
+        viewPort.Width = WIN_WIDTH;
+        viewPort.Height = WIN_HEIGHT;
+        viewPort.MaxDepth = 1.0f;
+
+        Global::context->RSSetViewports(1, &viewPort);
+
+        Global::context->Draw(3, 0);
+
+        Global::context->OMSetRenderTargets(0, Global::nulls, nullptr);
+        Global::context->PSSetShaderResources(0, 1, Global::nulls);
+        mSwapChain->Present(0, 0);
+    }
+
+
 
 	this->renderer = newd Graphics::Renderer(mDevice, mContext, mBackBufferRTV, Global::mainCamera);
 

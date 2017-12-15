@@ -110,6 +110,14 @@ namespace Resources
             throw "Could not find matching enum.";
         }
     }
+    namespace Particles
+    {
+        Files toEnum(const char * str)
+        {
+            if (strcmp(str, "SPLASH") == 0) return SPLASH;
+            throw "Could not find matching enum.";
+        }
+    }
     namespace Shaders
     {
         Files toEnum(const char * str)
@@ -163,6 +171,7 @@ namespace Resources
             if (strcmp(str, "Highscoretext") == 0) return Highscoretext;
             if (strcmp(str, "iconsheet") == 0) return iconsheet;
             if (strcmp(str, "IntroScreen") == 0) return IntroScreen;
+            if (strcmp(str, "LaunchScreen") == 0) return LaunchScreen;
             if (strcmp(str, "Loadingscreen") == 0) return Loadingscreen;
             if (strcmp(str, "MainmenuClean") == 0) return MainmenuClean;
             if (strcmp(str, "Mainmenutext") == 0) return Mainmenutext;

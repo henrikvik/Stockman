@@ -208,6 +208,19 @@ namespace Resources
         
         Files toEnum(const char * str);
     }
+    namespace Particles
+    {
+        enum Files
+        {
+            SPLASH
+        };
+        const std::map<Files, const char *> Paths =
+        {
+            {SPLASH, R"(..\Resources\Particles\SPLASH.png)"}
+        };
+        
+        Files toEnum(const char * str);
+    }
     namespace Shaders
     {
         enum Files
@@ -295,6 +308,7 @@ namespace Resources
             Highscoretext,
             iconsheet,
             IntroScreen,
+            LaunchScreen,
             Loadingscreen,
             MainmenuClean,
             Mainmenutext,
@@ -328,6 +342,7 @@ namespace Resources
             {Highscoretext, R"(..\Resources\Textures\Highscoretext.dds)"},
             {iconsheet, R"(..\Resources\Textures\iconsheet.dds)"},
             {IntroScreen, R"(..\Resources\Textures\IntroScreen.dds)"},
+            {LaunchScreen, R"(..\Resources\Textures\LaunchScreen.dds)"},
             {Loadingscreen, R"(..\Resources\Textures\Loadingscreen.dds)"},
             {MainmenuClean, R"(..\Resources\Textures\MainmenuClean.dds)"},
             {Mainmenutext, R"(..\Resources\Textures\Mainmenutext.dds)"},

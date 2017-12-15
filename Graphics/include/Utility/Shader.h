@@ -2,20 +2,20 @@
 #include <d3d11.h>
 #include <initializer_list>
 #include <Resources\Resources.h>
-
+#include "../../export.h"
 
 namespace Graphics
 {
-	enum ShaderType
+	enum GRAPHICS_API ShaderType
 	{
 		VS = 1 << 0,
 		PS = 1 << 1,
 		GS = 1 << 2
 	};
 
-	ShaderType operator|(ShaderType a, ShaderType b);
+	ShaderType GRAPHICS_API operator|(ShaderType a, ShaderType b);
 
-	class Shader
+	class GRAPHICS_API Shader
 	{
 	public:
 		typedef size_t Flags;
