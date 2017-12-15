@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-#define AVG_TILE_LIGHTS 200
+#define AVG_TILE_LIGHTS 100
 #define BLOCK_SIZE 16
 
 namespace Graphics

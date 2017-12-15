@@ -10,7 +10,7 @@ const int EnemyTotem::BASE_DAMAGE = 1, EnemyTotem::MAX_HP = 150, EnemyTotem::SCO
 const int EnemyTotem::BULLET_AMOUNT = 9;
 
 EnemyTotem::EnemyTotem(btRigidBody * body, btVector3 halfExtent)
-    : Enemy(Resources::Models::Files::SummonUnitWithAnim, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::TOTEM, 0, btVector3(0, 0, 0))
+    : Enemy(Resources::Models::Files::Totem, body, halfExtent, MAX_HP, BASE_DAMAGE, BASE_SPEED, EnemyType::TOTEM, 0, btVector3(0, -2.1f, 0))
 {
     setBehavior(STAY);
     createAbilities();
@@ -43,7 +43,7 @@ void EnemyTotem::createAbilities()
 
     AbilityData data;
     data.duration = 0.f;
-    data.cooldown = 3750.f;
+    data.cooldown = 4269.f;
     data.randomChanche = 10;
 
     spreadShot = Ability(data, [&](Player &target, Ability &ab) -> void {
@@ -64,7 +64,7 @@ void EnemyTotem::createAbilities()
             // shoot the projectile and make it bounce
             Projectile *pj = shoot(btVector3(std::sin((i + m_rotation) * piece), 0.f,
                 std::cos((i + m_rotation) * piece)), pData, BULLET_SPEED, 0.f, AB_SCALE);
-            pj->getProjectileData().ttl = 2750.f;
+            pj->getProjectileData().ttl = 3500.f;
 
             if (pj)
                 pj->getRigidBody()->setRestitution(btScalar(20.f));
@@ -86,6 +86,7 @@ void EnemyTotem::onCollision(PhysicsObject &other, btVector3 contactPoint, float
         if (!pj->getProjectileData().enemyBullet)
         {
             damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
+            SpawnDamageText(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier), DirectX::Colors::FloralWhite);
 
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
                 getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));

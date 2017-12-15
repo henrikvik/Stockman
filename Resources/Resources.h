@@ -34,6 +34,7 @@ namespace Resources
             lights,
             lights2,
             r,
+            stockman_icon,
             Stock_Map
         };
         const std::map<Files, const char *> Paths =
@@ -43,6 +44,7 @@ namespace Resources
             {lights, R"(..\Resources\Maps\lights.toml)"},
             {lights2, R"(..\Resources\Maps\lights2.toml)"},
             {r, R"(..\Resources\Maps\r.toml)"},
+            {stockman_icon, R"(..\Resources\Maps\stockman_icon.png)"},
             {Stock_Map, R"(..\Resources\Maps\Stock_Map.toml)"}
         };
         
@@ -132,6 +134,7 @@ namespace Resources
             Tablet1,
             Tee_Pee,
             Tomb_Stone,
+            Totem,
             TotemWithAnimation,
             Tree,
             UnitCube
@@ -201,6 +204,7 @@ namespace Resources
             {Tablet1, R"(..\Resources\Models\Tablet1.hyb)"},
             {Tee_Pee, R"(..\Resources\Models\Tee_Pee.hyb)"},
             {Tomb_Stone, R"(..\Resources\Models\Tomb_Stone.hyb)"},
+            {Totem, R"(..\Resources\Models\Totem.hyb)"},
             {TotemWithAnimation, R"(..\Resources\Models\TotemWithAnimation.hyb)"},
             {Tree, R"(..\Resources\Models\Tree.hyb)"},
             {UnitCube, R"(..\Resources\Models\UnitCube.hyb)"}
@@ -251,9 +255,12 @@ namespace Resources
             SkyShader,
             SnowShader,
             SpriteShader,
+            SSAO,
+            SSAOBlur,
             SSAOComputeShader,
             SSAOGaussianBlurHorizontal,
             SSAOGaussianBlurVertical,
+            SSAOGenerate,
             SSAOMerger
         };
         const std::map<Files, const char *> Paths =
@@ -284,9 +291,12 @@ namespace Resources
             {SkyShader, R"(..\Resources\Shaders\SkyShader.hlsl)"},
             {SnowShader, R"(..\Resources\Shaders\SnowShader.hlsl)"},
             {SpriteShader, R"(..\Resources\Shaders\SpriteShader.hlsl)"},
+            {SSAO, R"(..\Resources\Shaders\SSAO.hlsl)"},
+            {SSAOBlur, R"(..\Resources\Shaders\SSAOBlur.hlsl)"},
             {SSAOComputeShader, R"(..\Resources\Shaders\SSAOComputeShader.hlsl)"},
             {SSAOGaussianBlurHorizontal, R"(..\Resources\Shaders\SSAOGaussianBlurHorizontal.hlsl)"},
             {SSAOGaussianBlurVertical, R"(..\Resources\Shaders\SSAOGaussianBlurVertical.hlsl)"},
+            {SSAOGenerate, R"(..\Resources\Shaders\SSAOGenerate.hlsl)"},
             {SSAOMerger, R"(..\Resources\Shaders\SSAOMerger.hlsl)"}
         };
         

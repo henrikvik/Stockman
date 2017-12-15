@@ -46,6 +46,11 @@ Enemy::Enemy(Resources::Models::Files modelID, btRigidBody* body, btVector3 half
     });
 }
 
+void Enemy::setMoveSpeed(float moveSpeed)
+{
+    m_moveSpeed = moveSpeed;
+}
+
 void Enemy::setBehavior(BEHAVIOR_ID id)
 {
 	if (m_behavior)
@@ -120,7 +125,7 @@ void Enemy::update(Player &player, float deltaTime, std::vector<Enemy*> const &c
 
     // out of bounds insta kill
     if (getPositionBT().y() < MIN_Y || getPositionBT().length2() > 62500.f)
-        damage(m_health);
+        m_health = 0;
 
     // blinking when damaged
     if (m_blinkTimer > 0)
@@ -160,6 +165,7 @@ bool Enemy::hasCallbackEntities()
     return m_nrOfCallbacksEntities > 0;
 }
 
+
 void Enemy::damage(int damage)
 {
     if (damage <= 0) return;
@@ -167,27 +173,7 @@ void Enemy::damage(int damage)
 	m_health -= damage;
     m_blinkTimer = 100.0f;
 
-    auto scale = damage / 50.f;
-    scale = max(0.25, scale);
-    scale = min(2.f, scale);
-
-    ProjectileData data = {};
-    data.mass = 1.f;
-    data.scale = 1.f;
-    data.speed = 3.f;
-    data.gravityModifier = .3f;
-    data.ttl = 2000;
-    data.lightInfo.range = 0.f;
-
-    data.fancy.position = getPosition();
-    data.fancy.scale = 1.f;
-    data.fancy.color = DirectX::Colors::FloralWhite;
-    data.fancy.text = std::to_wstring(damage);
-    data.enemyBullet = true;
-
-    auto p = SpawnProjectile(data, getPositionBT(), { RandomGenerator::singleton().getRandomFloat(-0.5f, .5f), 1, RandomGenerator::singleton().getRandomFloat(-0.5f, .5f) }, *this);
-    p->getStatusManager().addUpgrade(StatusManager::BOUNCE);
-    p->getRigidBody()->setRestitution(10.f);
+    
 
     callback(ON_DAMAGE_TAKEN, CallbackData { this, static_cast<int32_t> (damage) });
     if (m_health <= 0 && m_health + damage > 0)
@@ -210,6 +196,8 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
         if (m_fireTimer >= 1000.0f)
         {
             damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken) * stacks);
+            SpawnDamageText(static_cast<int> (effect.getModifiers()->modifyDmgTaken) * stacks, DirectX::Colors::OrangeRed);
+
             m_fireTimer -= 1000.0f;
         }
     }
@@ -220,6 +208,7 @@ void Enemy::affect(int stacks, Effect const &effect, float dt)
         if (m_fireTimer >= 1000.0f)
         {
             damage(static_cast<int> (effect.getModifiers()->modifyDmgTaken));
+            SpawnDamageText(static_cast<int> (effect.getModifiers()->modifyDmgTaken), DirectX::Colors::PowderBlue);
 
             m_fireTimer -= 1000.0f;
         }
@@ -245,6 +234,7 @@ void Logic::Enemy::onEffectAdd(int stacks, Effect const & effect)
     if (flags & Effect::EFFECT_DAMAGE_ONCE)
     {
         damage(effect.getModifiers()->modifyDmgTaken);
+        SpawnDamageText(static_cast<int> (effect.getModifiers()->modifyDmgTaken), DirectX::Colors::FloralWhite);
     }
 }
 

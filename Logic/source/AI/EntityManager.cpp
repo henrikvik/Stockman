@@ -142,18 +142,12 @@ void EntityManager::registerCreationFunctions()
     };
     m_enemyFactory[EnemyType::TOTEM] = [](btVector3 const &pos, float scale, std::vector<int> const &effects, Physics &physics) -> Enemy*
     {
-        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 1.f, 3.5f, 1.f } * btScalar(scale)));
+        Cube cube(pos, { 0.f, 0.f, 0.f }, (btVector3{ 2.3f, 2.1f, 1.5f } * btScalar(scale)));
         btRigidBody *body = physics.createBody(cube, 100, false,
             Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
         body->setAngularFactor(btVector3(0, 1, 0));
 
-        Enemy* enemy = newd EnemyTotem(body, cube.getDimensionsRef());
-        body = physics.createBody(Cube({ 0, 0, 0 }, { 0, 0, 0 }, { 1.f, 1.f, 1.f }),
-            0.f, true, Physics::COL_ENEMY, (Physics::COL_EVERYTHING));
-        physics.removeRigidBody(body);
-        enemy->addExtraBody(body, 4.f, { 0.f, 4.f, 0.f });
-
-        return enemy;
+        return newd EnemyTotem(body, { 2.f, 2.f, 2.f });
     };
 }
 
@@ -535,7 +529,7 @@ void EntityManager::setSpawnFunctions(ProjectileManager &projManager, Physics &p
         btVector3 forward, Entity& shooter) -> Projectile* {
         return projManager.addProjectile(pData, position, forward, shooter);
     };
-    SpawnTrigger = [&](int id, btVector3 const &pos, std::vector<int> &effects) -> Trigger* {
+    SpawnTrigger = [&](int id, btVector3 const &pos, std::vector<int> effects) -> Trigger* {
         return spawnTrigger(id, pos, effects, physics, &projManager);
     };
 

@@ -23,6 +23,7 @@ namespace Resources
             if (strcmp(str, "lights") == 0) return lights;
             if (strcmp(str, "lights2") == 0) return lights2;
             if (strcmp(str, "r") == 0) return r;
+            if (strcmp(str, "stockman_icon") == 0) return stockman_icon;
             if (strcmp(str, "Stock_Map") == 0) return Stock_Map;
             throw "Could not find matching enum.";
         }
@@ -104,6 +105,7 @@ namespace Resources
             if (strcmp(str, "Tablet1") == 0) return Tablet1;
             if (strcmp(str, "Tee_Pee") == 0) return Tee_Pee;
             if (strcmp(str, "Tomb_Stone") == 0) return Tomb_Stone;
+            if (strcmp(str, "Totem") == 0) return Totem;
             if (strcmp(str, "TotemWithAnimation") == 0) return TotemWithAnimation;
             if (strcmp(str, "Tree") == 0) return Tree;
             if (strcmp(str, "UnitCube") == 0) return UnitCube;
@@ -148,9 +150,12 @@ namespace Resources
             if (strcmp(str, "SkyShader") == 0) return SkyShader;
             if (strcmp(str, "SnowShader") == 0) return SnowShader;
             if (strcmp(str, "SpriteShader") == 0) return SpriteShader;
+            if (strcmp(str, "SSAO") == 0) return SSAO;
+            if (strcmp(str, "SSAOBlur") == 0) return SSAOBlur;
             if (strcmp(str, "SSAOComputeShader") == 0) return SSAOComputeShader;
             if (strcmp(str, "SSAOGaussianBlurHorizontal") == 0) return SSAOGaussianBlurHorizontal;
             if (strcmp(str, "SSAOGaussianBlurVertical") == 0) return SSAOGaussianBlurVertical;
+            if (strcmp(str, "SSAOGenerate") == 0) return SSAOGenerate;
             if (strcmp(str, "SSAOMerger") == 0) return SSAOMerger;
             throw "Could not find matching enum.";
         }

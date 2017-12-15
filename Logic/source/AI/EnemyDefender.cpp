@@ -142,6 +142,7 @@ void EnemyDefender::createAbilities()
         pdata.speed = PROJECTILE_SPEED;
         pdata.scale = 1.f;
         pdata.isSensor = true;
+        pdata.shouldRender = true;
         pdata.type = ProjectileTypeDefenderShield;
 
         for (int i = 0; i < INDICATORS; i++) {
@@ -211,8 +212,11 @@ void EnemyDefender::onDefenseCollision(Projectile * pj)
 
 void EnemyDefender::damage(int damage)
 {
-    if (m_projectiles.empty())
+    if (m_projectiles.empty()) {
         Enemy::damage(damage);
+        if (damage > 0)
+            SpawnDamageText(damage, DirectX::Colors::FloralWhite);
+    }
 }
 
 void EnemyDefender::updateSpecific(Player &player, float deltaTime)

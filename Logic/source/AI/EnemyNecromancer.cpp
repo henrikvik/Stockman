@@ -61,6 +61,7 @@ void EnemyNecromancer::createAbilities()
     pdata.hasEffect = true;
     pdata.effectVelocity = false;
     pdata.effectActivated = true;
+    pdata.shouldRender = false;
 
     auto onTick = [&](Player &player, Ability &ab) -> void {};
 
@@ -105,16 +106,13 @@ void EnemyNecromancer::createAbilities()
     ab2ProjData.effectVelocity = true;
     ab2ProjData.effectActivated = true;
 
-
-    //ab2ProjData.meshID = Resources::Models::Ammocrystal;
     ab2ProjData.speed = 0;
     ab2ProjData.ttl = 25000.f;
     ab2ProjData.gravityModifier = 0.f;
     ab2ProjData.enemyBullet = true;
     ab2ProjData.damage = getBaseDamage();
     ab2ProjData.scale = 1.5f;
-    //ab2ProjData.shouldRender = true;
-    //ab2ProjData.modelOffset = { 0.1f, -1.75f, 0.1f };
+    ab2ProjData.shouldRender = false;
 
     auto onUse2 = [&](Player &player, Ability &ab) -> void {
         increaseCallbackEntities();
@@ -156,7 +154,11 @@ void EnemyNecromancer::onCollision(PhysicsObject& other, btVector3 contactPoint,
     {
         if (!pj->getProjectileData().enemyBullet)
         {
-            damage(static_cast<int> (pj->getProjectileData().damage * dmgMultiplier));
+            auto dmg = static_cast<int> (pj->getProjectileData().damage * dmgMultiplier);
+            damage(dmg);
+            if (dmg > 0)
+                SpawnDamageText(dmg, DirectX::Colors::FloralWhite);
+
 
             if (pj->getProjectileData().type == ProjectileTypeBulletTimeSensor)
                 getStatusManager().addStatusResetDuration(StatusManager::EFFECT_ID::BULLET_TIME, pj->getStatusManager().getStacksOfEffectFlag(Effect::EFFECT_FLAG::EFFECT_BULLET_TIME));
