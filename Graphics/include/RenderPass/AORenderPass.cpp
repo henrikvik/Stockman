@@ -1,11 +1,12 @@
 #include "AORenderPass.h"
 
+#include <Singletons\DebugWindow.h>
 #include <random>
 
 namespace Graphics
 {
 
-#define KERNEL_SIZE 16
+static bool SSAOEnabled = true;
 
     AORenderPass::AORenderPass(
         ID3D11ShaderResourceView *depthSRV,
@@ -98,6 +99,15 @@ namespace Graphics
 
             ThrowIfFailed(device->CreateSamplerState(&desc, &m_PointMirror));
         }
+
+        RegisterCommand("GFX_TOGGLE_SSAO",
+        {
+            SSAOEnabled = !SSAOEnabled;
+            float col[4] = { 1.f };
+            Global::context->ClearRenderTargetView(m_AOSlicesRTV[0], col);
+            Global::context->ClearRenderTargetView(m_AOSlicesRTV[1], col);
+            return std::string("SSAO ") + (enabled ? "enabled!" : "disabled!");
+        });
     }
 
     AORenderPass::~AORenderPass()
@@ -167,6 +177,7 @@ namespace Graphics
 
     void AORenderPass::render() const
     {
+        if (!SSAOEnabled) return;
 
         auto cxt = Global::context;
 
