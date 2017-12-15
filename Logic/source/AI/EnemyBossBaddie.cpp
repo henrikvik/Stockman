@@ -64,7 +64,7 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     ab4Pattern = 0;
     ab4PatternDir = true;
 
-    Sound::NoiseMachine::Get().stopAllGroups();
+    Sound::NoiseMachine::Get().stopGroup(Sound::CHANNEL_GROUP::CHANNEL_MUSIC);
     Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_1, nullptr, true);
     createAbilities();
     getAnimatedModel().set_next("Run_Grunt");
@@ -72,7 +72,7 @@ EnemyBossBaddie::EnemyBossBaddie(btRigidBody* body, btVector3 &halfExtent)
     addCallback(ON_DEATH, [&](CallbackData &data)
     {
         ComboMachine::Get().kill(SCORE);
-        Sound::NoiseMachine::Get().stopAllGroups();
+        Sound::NoiseMachine::Get().stopGroup(Sound::CHANNEL_GROUP::CHANNEL_MUSIC);
         Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::BOSS_1_MUSIC_2, nullptr, true);
 
         for (Projectile *pj : meleeIndicators) {
