@@ -675,7 +675,7 @@ void ParticleSystem::updateParticles(XMVECTOR anchor, std::vector<GeometryPartic
 void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
 {
     // process all active effects/emitters (spawns particles)
-    PROFILE_BEGIN("process managed effects");
+    // PROFILE_BEGIN("process managed effects");
     auto it = m_ParticleEffects.begin();
     while (it != m_ParticleEffects.end()) {
         if (processEffect(&it->effect, it->position, dt)) {
@@ -685,37 +685,37 @@ void ParticleSystem::update(ID3D11DeviceContext *cxt, Camera * cam, float dt)
             it++;
         }
     }
-    PROFILE_END();
+    //         PROFILE_END();();
 
     // update particles
-    PROFILE_BEGIN("update particles");
+    // PROFILE_BEGIN("update particles");
     updateParticles({}, m_GeometryParticles, dt);
     for (auto fx : m_AnchorParticleEffects) {
         updateParticles(fx->m_Anchor, fx->m_Children, dt);
     }
-    PROFILE_END();
+    //         PROFILE_END();();
 
     // copy over particles into one big vector for sorting
-    PROFILE_BEGIN("copy particle lists")
+    // PROFILE_BEGIN("copy particle lists")
     m_FrameGeometryParticles = m_GeometryParticles;
     for (auto fx : m_AnchorParticleEffects) {
         m_FrameGeometryParticles.insert(m_FrameGeometryParticles.end(), fx->m_Children.begin(), fx->m_Children.end());
     }
-    PROFILE_END();
+    //         PROFILE_END();();
 
     // sort by material to improve batching during render
-    PROFILE_BEGIN("material sort");
+    // PROFILE_BEGIN("material sort");
     std::sort(m_FrameGeometryParticles.begin(), m_FrameGeometryParticles.end(), [](GeometryParticle &a, GeometryParticle &b) {
         return a.idx < b.idx;
     });
-    PROFILE_END();
+    //         PROFILE_END();();
 
     // upload particle instance data to buffer
-    PROFILE_BEGIN("upload particles");
+    // PROFILE_BEGIN("upload particles");
     auto base = m_GeometryInstanceBuffer->map(cxt);
     uploadParticles(m_FrameGeometryParticles, base, base + m_Capacity);
     m_GeometryInstanceBuffer->unmap(cxt);
-    PROFILE_END();
+    //         PROFILE_END();();
 
     m_AnchorParticleEffects.clear();
 }

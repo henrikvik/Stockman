@@ -52,7 +52,7 @@ namespace Graphics
     {
         auto cxt = Global::context;
 
-        PROFILE_BEGIN("Sky Box");
+        // PROFILE_BEGIN("Sky Box");
         cxt->RSSetState(Global::cStates->CullCounterClockwise());
 
         cxt->IASetInputLayout(skyShader);
@@ -93,7 +93,7 @@ namespace Graphics
         cxt->OMSetBlendState(Global::cStates->Opaque(), BLEND, 0xffffffff);
         cxt->RSSetState(Global::cStates->CullClockwise());
         cxt->OMSetRenderTargets(1, Global::nulls, nullptr);
-        PROFILE_END();
+//         //         PROFILE_END();();
     }
 
     void SkyBoxRenderPass::update(float deltaTime)

@@ -28,7 +28,7 @@ namespace Graphics
 
     void ShadowRenderPass::render() const
     {
-        PROFILE_BEGIN("Shadow");
+        // PROFILE_BEGIN("Shadow");
         Global::context->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         Global::context->RSSetViewports(1, &viewport);
         Global::context->IASetInputLayout(nullptr);
@@ -53,6 +53,6 @@ namespace Graphics
         Global::context->RSSetViewports(1, &viewportReset);
         Global::context->RSSetState(Global::cStates->CullClockwise());
         Global::context->OMSetRenderTargets(0, nullptr, nullptr);
-        PROFILE_END();
+//         //         PROFILE_END();();
     }
 }

@@ -18,7 +18,7 @@ namespace Graphics
 
     void ForwardPlusRenderPass::render() const
     {
-        PROFILE_BEGIN("Forward Plus");
+        // PROFILE_BEGIN("Forward Plus");
         Global::context->PSSetShader(forward_plus_ps, nullptr, 0);
 
         Global::context->VSSetConstantBuffers(0, buffers.size(), buffers.data());
@@ -67,7 +67,7 @@ namespace Graphics
         Global::context->PSSetShaderResources(9, 1, Global::nulls);
         Global::context->PSSetConstantBuffers(0, buffers.size(), Global::nulls);
         Global::context->VSSetConstantBuffers(0, buffers.size(), Global::nulls);
-        PROFILE_END();
+//         //         PROFILE_END();();
     }
 
     void ForwardPlusRenderPass::update(float deltaTime)

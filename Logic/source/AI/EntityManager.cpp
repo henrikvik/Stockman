@@ -283,7 +283,7 @@ void EntityManager::update(Player &player, float deltaTime)
 	m_frame++;
 	m_deltaTime = deltaTime;
 	
-	PROFILE_BEGIN("EntityManager::update()");
+	// PROFILE_BEGIN("EntityManager::update()");
     if (m_aiType != NO_AI_MODE)
     {
         for (size_t i = 0; i < m_enemies.size(); i++)
@@ -296,7 +296,7 @@ void EntityManager::update(Player &player, float deltaTime)
             }
         }
     }
-	PROFILE_END();
+	//         PROFILE_END();();
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{

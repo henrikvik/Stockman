@@ -182,15 +182,15 @@ void iMenuMachine::update(float deltaTime)
 
     if (m_activeMenu)
     {
-        PROFILE_BEGIN("Menu Update");
+        // PROFILE_BEGIN("Menu Update");
         int x = DirectX::Mouse::Get().GetState().x;
         int y = DirectX::Mouse::Get().GetState().y;
         m_activeMenu->update(x, y, deltaTime);
-        PROFILE_END();
+//         //         PROFILE_END();();
 
-        PROFILE_BEGIN("Camera Swoosh");
+        // PROFILE_BEGIN("Camera Swoosh");
         updateCamera(deltaTime);
-        PROFILE_END();
+//         //         PROFILE_END();();
     }
 }
 

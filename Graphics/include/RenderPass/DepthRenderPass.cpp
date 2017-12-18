@@ -18,7 +18,7 @@ namespace Graphics
 
     void DepthRenderPass::render() const
     {
-        PROFILE_BEGIN("Depth Pass");
+        // PROFILE_BEGIN("Depth Pass");
         Global::context->OMSetDepthStencilState(Global::cStates->DepthDefault(), 0);
         Global::context->IASetInputLayout(nullptr);
         Global::context->PSSetShader(nullptr, nullptr, 0);
@@ -49,7 +49,7 @@ namespace Graphics
         Global::context->OMSetRenderTargets(0, nullptr, nullptr);
         Global::context->VSSetConstantBuffers(0, buffers.size(), Global::nulls);
         Global::context->VSSetShader(nullptr, nullptr, 0);
-        PROFILE_END();
+//         //         PROFILE_END();();
     }
 
     void DepthRenderPass::update(float deltaTime)

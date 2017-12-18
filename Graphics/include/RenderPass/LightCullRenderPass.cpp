@@ -15,10 +15,10 @@ Graphics::LightCullRenderPass::LightCullRenderPass(
 
 void Graphics::LightCullRenderPass::render() const
 {
-    PROFILE_BEGIN("Light Cull");
+    // PROFILE_BEGIN("Light Cull");
     Global::context->OMSetRenderTargets(0, nullptr, nullptr);
     lightGrid.cull(buffers[0], resources[0], resources[1], uavs[1], uavs[0]);
-    PROFILE_END();
+    //         PROFILE_END();();
 }
 
 void Graphics::LightCullRenderPass::update(float deltaTime)

@@ -38,7 +38,7 @@ Graphics::GUIRenderPass::~GUIRenderPass()
 
 void Graphics::GUIRenderPass::render() const
 {
-    PROFILE_BEGIN("GUI");
+    // PROFILE_BEGIN("GUI");
     enum { TL, TR, BL, BR};
     Global::context->IASetInputLayout(nullptr);
     Global::context->PSSetShader(spriteShader, nullptr, 0);
@@ -62,7 +62,7 @@ void Graphics::GUIRenderPass::render() const
     Global::context->PSSetShaderResources(1, 1, alphabuffer);
 
 
-    PROFILE_BEGIN("Sprite");
+    // PROFILE_BEGIN("Sprite");
     UINT offset = 0;
     for (auto & info : RenderQueue::get().getQueue<SpriteRenderInfo>())
     {
@@ -71,11 +71,11 @@ void Graphics::GUIRenderPass::render() const
         Global::context->Draw(4, 0);
         offset += 4;
     }
-    PROFILE_END();
+    //         PROFILE_END();();
 
-    PROFILE_BEGIN("Text");
+    // PROFILE_BEGIN("Text");
     textRender();
-    PROFILE_END();
+    //         PROFILE_END();();
 
     Global::context->VSSetShaderResources(0, 1, Global::nulls);
     Global::context->PSSetShaderResources(2, 1, Global::nulls);
@@ -83,7 +83,7 @@ void Graphics::GUIRenderPass::render() const
     Global::context->PSSetSamplers(0, 1, Global::nulls);
     Global::context->OMSetRenderTargets(targets.size(), Global::nulls, nullptr);
     Global::context->OMSetBlendState(Global::cStates->Opaque(), NULL, -1);
-    PROFILE_END();
+    //         PROFILE_END();();
 }
 
 void Graphics::GUIRenderPass::update(float deltaTime)

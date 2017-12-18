@@ -107,7 +107,7 @@ void Physics::update(float delta)
 			}
 		}
 	}
-	PROFILE_END();
+    PROFILE_END();
 }
 
 void Physics::registerDebugCommands()

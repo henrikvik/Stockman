@@ -65,7 +65,7 @@ namespace Graphics
         if (!enabled)
             return;
 
-        PROFILE_BEGIN("Glow");
+        // PROFILE_BEGIN("Glow");
         
         Global::context->RSSetState(Global::cStates->CullNone());
         Global::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -133,7 +133,7 @@ namespace Graphics
         Global::context->PSSetShaderResources(4, 1, Global::nulls);
         Global::context->PSSetShaderResources(5, 1, Global::nulls);
 
-        PROFILE_END();
+//         //         PROFILE_END();();
     }
 
     //Very ugly

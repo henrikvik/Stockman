@@ -121,24 +121,24 @@ void StatePlaying::reset()
 void StatePlaying::update(float deltaTime)
 {
     m_fpsRenderer.updateFPS(deltaTime);
-    PROFILE_BEGIN("cards");
+    // PROFILE_BEGIN("cards");
     m_cardManager->update(deltaTime);
-    PROFILE_END();
+    //         PROFILE_END();();
 
 
-    PROFILE_BEGIN("HUD");
+    // PROFILE_BEGIN("HUD");
     if (m_menu->getType() == iMenu::CardSelect)
     {
         m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime, true);
     }else
         m_hudManager.update(*m_player, m_waveTimeManager, m_entityManager, deltaTime);
-    PROFILE_END();
+    //         PROFILE_END();();
    
-    PROFILE_BEGIN("In-Game Menu");
+    // PROFILE_BEGIN("In-Game Menu");
     m_menu->update(deltaTime);
     if (m_menu->getType() != iMenu::Empty && m_menu->getType() != iMenu::Cinematic) // Quick "temp pause" fix for testing purposes
         return;
-    PROFILE_END();
+    //         PROFILE_END();();
 
         m_playTime += deltaTime;
         ComboMachine::Get().update(deltaTime);
@@ -159,30 +159,30 @@ void StatePlaying::update(float deltaTime)
             }
         }
 
-        PROFILE_BEGIN("Sound");
+        // PROFILE_BEGIN("Sound");
         Sound::NoiseMachine::Get().update(m_player->getListenerData());
-        PROFILE_END();
+//         //         PROFILE_END();();
 
-        PROFILE_BEGIN("Player");
+        // PROFILE_BEGIN("Player");
         if (m_menu->getType() != iMenu::Cinematic)
             m_player->updateSpecific(deltaTime);
-        PROFILE_END();
+//         //         PROFILE_END();();
 
         PROFILE_BEGIN("Physics");
         m_physics->update(deltaTime);
         PROFILE_END();
 
-        PROFILE_BEGIN("AI & Triggers");
+        // PROFILE_BEGIN("AI & Triggers");
         m_entityManager.update(*m_player, deltaTime);
-        PROFILE_END();
+//         //         PROFILE_END();();
 
-        PROFILE_BEGIN("Map");
+        // PROFILE_BEGIN("Map");
         m_map->update(deltaTime);
-        PROFILE_END();
+//         //         PROFILE_END();();
 
-        PROFILE_BEGIN("Projectiles");
+        // PROFILE_BEGIN("Projectiles");
         m_projectileManager->update(deltaTime);
-        PROFILE_END();
+//         //         PROFILE_END();();
 
 // #define _DEBUG
 #ifdef  _DEBUG
@@ -205,37 +205,37 @@ void StatePlaying::render() const
         m_physics->render();
 #endif // _DEBUG
 
-    PROFILE_BEGIN("Player Render");
+    // PROFILE_BEGIN("Player Render");
     if (m_menu->getType() != iMenu::GameOver)
         m_player->render();
-    PROFILE_END();
+    //         PROFILE_END();();
 
-    PROFILE_BEGIN("Render Map");
+    // PROFILE_BEGIN("Render Map");
     m_map->render();
-    PROFILE_END();
+    //         PROFILE_END();();
 
-    PROFILE_BEGIN("Render Enemies & Triggers");
+    // PROFILE_BEGIN("Render Enemies & Triggers");
     m_entityManager.render();
-    PROFILE_END();
+    //         PROFILE_END();();
 
-    PROFILE_BEGIN("Render Projectiles");
+    // PROFILE_BEGIN("Render Projectiles");
     m_projectileManager->render();
-    PROFILE_END();
+    //         PROFILE_END();();
 
-    PROFILE_BEGIN("Render HUD");
+    // PROFILE_BEGIN("Render HUD");
     if (m_menu->getType() == iMenu::Empty ||
         m_menu->getType() == iMenu::CardSelect)
         m_hudManager.render();
-    PROFILE_END();
+    //         PROFILE_END();();
 
-    PROFILE_BEGIN("Render Menu");
+    // PROFILE_BEGIN("Render Menu");
     m_menu->render();
-    PROFILE_END();
+    //         PROFILE_END();();
 
-    PROFILE_BEGIN("Render cards");
+    // PROFILE_BEGIN("Render cards");
     if (m_menu->getType() == iMenu::CardSelect)
         m_cardManager->render();
-    PROFILE_END();
+    //         PROFILE_END();();
 
     m_fpsRenderer.render();
 }
@@ -271,5 +271,5 @@ void StatePlaying::addHighscore()
     if (highscoreThread.joinable())
         highscoreThread.join();
 
-    highscoreThread = std::thread(Network::dbConnect::addHighscore, name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
+//    highscoreThread = std::thread(Network::dbConnect::addHighscore, name, ComboMachine::Get().getTotalScore(), int(m_playTime * 0.001f), m_waveTimeManager.getCurrentWave(), ComboMachine::Get().getTotalKills());
 }

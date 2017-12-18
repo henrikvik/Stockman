@@ -640,7 +640,7 @@ void Player::updateSpecific(float deltaTime)
         lastMouseScrollState = ms.scrollWheelValue;
 		
 	    // Skills
-        PROFILE_BEGIN("SkillManager");
+        // PROFILE_BEGIN("SkillManager");
         forward = getForwardBT();
         if (ks.IsKeyDown(m_useSkillPrimary))
             m_skillManager->use(SkillManager::ID::PRIMARY, forward, *this);
@@ -654,7 +654,7 @@ void Player::updateSpecific(float deltaTime)
             m_skillManager->use(SkillManager::ID::TERTIARY, forward, *this);
         if (ks.IsKeyUp(m_useSkillTertiary))
             m_skillManager->release(SkillManager::ID::TERTIARY);
-        PROFILE_END();
+//         //         PROFILE_END();();
 
         // Check if reloading
         if (!m_weaponManager->isReloading() && ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
@@ -831,11 +831,11 @@ void Player::stepPlayer(float deltaTime)
     else
         m_charController->setVelocityForTimeInterval(((m_moveDir + btVector3(0.f, m_charController->getLinearVelocity().y(), 0.f)) * m_moveSpeed) + (m_wishDir * PLAYER_MOVEMENT_AIRSTRAFE_SPEED), deltaTime);
 
-    PROFILE_BEGIN("Stepping player");
+    // PROFILE_BEGIN("Stepping player");
     // Step player
     m_charController->preStep(m_physPtr);
     m_charController->playerStep(m_physPtr, deltaTime);
-    PROFILE_END();
+    //         PROFILE_END();();
 
     // if new position is totally fucked for some reason, reset to last position
     if (abs(m_lastPos.x() - getPositionBT().x()) > PLAYER_MAX_MOVE ||

@@ -488,9 +488,9 @@ namespace Graphics
    
         for (auto & renderPass : renderPasses)
         {
-            PROFILE_BEGIN(__FUNCSIG__);
+            // PROFILE_BEGIN(__FUNCSIG__);
             renderPass->update(deltaTime);
-            PROFILE_END();
+    //         //         PROFILE_END();();
         }
 
         fakeBuffers.reset();

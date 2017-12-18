@@ -212,6 +212,11 @@ void Profiler::begin(const char * name, EventColor color)
 
 void Profiler::beginf(const char * fmt, ...)
 {
+    if (strcmp(fmt, "Physics") != 0 ||
+        strcmp(fmt, "Stepping Physics") != 0 ||
+        strcmp(fmt, "Collision Handling") != 0)
+        return;
+
     Thread *thread = t_LocalThreadProfiler.thread;
     if (thread && t_LocalThreadProfiler.active && m_CaptureThisFrame) {
         Event ev;

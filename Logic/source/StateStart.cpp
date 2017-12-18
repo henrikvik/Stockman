@@ -53,13 +53,13 @@ void StateStart::update(float deltaTime)
     info.type = SpecialEffectRenderInfo::DoF;
     QueueRender(info);
 
-    PROFILE_BEGIN("Physics");
+    // PROFILE_BEGIN("Physics");
     m_physics->update(deltaTime);
-    PROFILE_END();
+    //         PROFILE_END();();
 
-    PROFILE_BEGIN("Map");
+    // PROFILE_BEGIN("Map");
     m_map->update(deltaTime);
-    PROFILE_END();
+    //         PROFILE_END();();
 
     m_fpsRenderer.updateFPS(deltaTime);
     m_menu->update(deltaTime);
@@ -67,13 +67,13 @@ void StateStart::update(float deltaTime)
 
 void StateStart::render() const
 {
-    PROFILE_BEGIN("Render Map");
+    // PROFILE_BEGIN("Render Map");
     m_map->render();
-    PROFILE_END();
+    //         PROFILE_END();();
 
-    PROFILE_BEGIN("Render Menu's");
+    // PROFILE_BEGIN("Render Menu's");
     m_menu->render();
-    PROFILE_END();
+    //         PROFILE_END();();
 
     m_fpsRenderer.render();
 }

@@ -466,47 +466,44 @@ int Engine::run()
         //static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
         //Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);		          
 
-		if (mTracker->pressed.F2)
+        static int frame = 0;
+        frame++;
+		if (frame % 2)
 		{
 			g_Profiler->capture();
-			showProfiler = true;
 		}
-
-		if (mTracker->pressed.F3)
-		{
-            showProfiler = !showProfiler;
-		}
+        showProfiler = true;
 
         if (state.F10)
             running = false;
 
-		g_Profiler->start();
+        g_Profiler->start();
 
-		PROFILE_BEGINC("ImGui_ImplDX11_NewFrame", EventColor::PinkLight);
+		// PROFILE_BEGINC("ImGui_ImplDX11_NewFrame", EventColor::PinkLight);
 		ImGui_ImplDX11_NewFrame();
-		PROFILE_END();
+		//         PROFILE_END();();
 
 		debug->draw();
 
-		PROFILE_BEGINC("Game::update()", EventColor::Magenta);
+		// PROFILE_BEGINC("Game::update()", EventColor::Magenta);
         if (!debug->isOpen())
             if (game->update(float(deltaTime)))
                 running = false;
-        PROFILE_END();
+//         //         PROFILE_END();();
 
         Global::mainCamera->render();
 
-		PROFILE_BEGINC("Game::render()", EventColor::Red);
+		// PROFILE_BEGINC("Game::render()", EventColor::Red);
 		game->render();
-		PROFILE_END();
+		//         PROFILE_END();();
         
-        PROFILE_BEGINC("Renderer::update()", EventColor::Pear);
+        // PROFILE_BEGINC("Renderer::update()", EventColor::Pear);
         renderer->update(deltaTime / 1000.f);
-        PROFILE_END();
+//         //         PROFILE_END();();
 
-        PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
+        // PROFILE_BEGINC("Renderer::render()", EventColor::PinkDark);
         renderer->render();
-        PROFILE_END();
+//         //         PROFILE_END();();
 
 		g_Profiler->poll();
 //#ifdef _DEBUG
@@ -515,19 +512,23 @@ int Engine::run()
             ImGui::SetNextWindowPos(ImVec2(0, 0));
             ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
             g_Profiler->render();
-    }
+        }
+        else
+        {
+            printf("Not showing.");
+        }
 //#endif // _DEBUG
 
 // TODO FIX IMGUI
 //        Graphics::Debug::Render(Global::mainCamera);
 		mContext->OMSetRenderTargets(1, &mBackBufferRTV, nullptr);
-		PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
+		// PROFILE_BEGINC("ImGui::Render()", EventColor::PinkLight);
 		ImGui::Render();
-		PROFILE_END();
+		//         PROFILE_END();();
 
-		PROFILE_BEGINC("IDXGISwapChain::Present()", EventColor::Cyan);
+		// PROFILE_BEGINC("IDXGISwapChain::Present()", EventColor::Cyan);
 		mSwapChain->Present(1, 0);
-		PROFILE_END();
+		//         PROFILE_END();();
 		g_Profiler->frame();
 
         RenderQueue::get().clearAllQueues();

@@ -172,7 +172,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>ImGui.lib;Singletons.lib;sfml-system.lib;sfml-network.lib;fmod_vc.lib;fmodL_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -200,7 +200,7 @@ xcopy /syi "$(SolutionDir)libs\tbb\bin\*.pdb" "$(SolutionDir)build\$(Platform)\$
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <NoEntryPoint>
       </NoEntryPoint>
       <AdditionalDependencies>ImGui.lib;Singletons.lib;sfml-system.lib;sfml-network.lib;fmodL64_vc.lib;fmod64_vc.lib;DirectXTK.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;BRFImporterLib.lib;tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
