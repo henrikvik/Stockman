@@ -15,10 +15,6 @@ using namespace Logic;
 StateStart::StateStart(StateBuffer* stateBuffer)
     : State(stateBuffer)
 {
-    Sound::NoiseMachine::Get().loadMenuSounds();
-    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::AMBIENT_STORM, nullptr, true);
-    Sound::NoiseMachine::Get().playMusic(Sound::MUSIC::MUSIC_MAIN_MENU, nullptr, true);
-
     // Making a small little campfire map to look at
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();			
     btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	
@@ -33,7 +29,6 @@ StateStart::StateStart(StateBuffer* stateBuffer)
     // Initializing Menu's
     m_menu = newd iMenuMachine();
     m_menu->queueMenu(iMenu::MenuGroup::Intro);
-
 }
 
 StateStart::~StateStart()
@@ -61,7 +56,6 @@ void StateStart::update(float deltaTime)
     m_map->update(deltaTime);
     //         PROFILE_END();();
 
-    m_fpsRenderer.updateFPS(deltaTime);
     m_menu->update(deltaTime);
 }
 
@@ -74,6 +68,4 @@ void StateStart::render() const
     // PROFILE_BEGIN("Render Menu's");
     m_menu->render();
     //         PROFILE_END();();
-
-    m_fpsRenderer.render();
 }

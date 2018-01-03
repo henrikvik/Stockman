@@ -66,6 +66,9 @@ void Physics::clear()
 
 void Physics::update(float delta)
 {
+    LARGE_INTEGER start, end;
+    QueryPerformanceCounter(&start);
+
 	// Stepping the physics
 	PROFILE_BEGIN("Stepping Physics");
 
@@ -108,6 +111,10 @@ void Physics::update(float delta)
 		}
 	}
     PROFILE_END();
+
+    QueryPerformanceCounter(&end);
+
+    printf("Milliseconds: %f\n", g_Profiler->ToMilliseconds(start, end));
 }
 
 void Physics::registerDebugCommands()

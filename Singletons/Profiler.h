@@ -133,6 +133,12 @@ public:
 	void poll();
 	void render();
 
+    float ToMilliseconds(LARGE_INTEGER start, LARGE_INTEGER end) const {
+        double ms = double(end.QuadPart - start.QuadPart) / double(m_Frequency.QuadPart);
+
+        return float(ms * 1000.0);
+    }
+
 	double getCPU() const { return m_CPU; }
 	size_t getRAM() const { return m_RAM; }
 	size_t getVRAM() const { return m_VRAM; }
@@ -142,12 +148,6 @@ private:
 	float ToMilliseconds(LARGE_INTEGER time) const {
 		double ms = double(time.QuadPart) / double(m_Frequency.QuadPart);
 		
-		return float(ms * 1000.0);
-	}
-
-	float ToMilliseconds(LARGE_INTEGER start, LARGE_INTEGER end) const {
-		double ms = double(end.QuadPart - start.QuadPart) / double(m_Frequency.QuadPart);
-
 		return float(ms * 1000.0);
 	}
 

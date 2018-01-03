@@ -466,13 +466,7 @@ int Engine::run()
         //static Graphics::ParticleEffect fire = Graphics::FXSystem->getEffect("FireSmoke");
         //Graphics::FXSystem->processEffect(&fire, DirectX::XMMatrixTranslation(3, 0, 3), deltaTime / 1000.f);		          
 
-        static int frame = 0;
-        frame++;
-		if (frame % 2)
-		{
-			g_Profiler->capture();
-		}
-        showProfiler = true;
+        showProfiler = false;
 
         if (state.F10)
             running = false;
@@ -512,10 +506,6 @@ int Engine::run()
             ImGui::SetNextWindowPos(ImVec2(0, 0));
             ImGui::SetNextWindowSize(ImVec2(WIN_WIDTH, 250));
             g_Profiler->render();
-        }
-        else
-        {
-            printf("Not showing.");
         }
 //#endif // _DEBUG
 

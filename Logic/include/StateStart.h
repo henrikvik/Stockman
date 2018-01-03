@@ -38,7 +38,6 @@ namespace Logic
 
     private:
         iMenuMachine*		        m_menu;
-        FPSRenderer                 m_fpsRenderer;
         Physics*			        m_physics;
         Map*				        m_map;
     };
