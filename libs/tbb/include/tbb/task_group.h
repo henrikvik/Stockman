@@ -114,7 +114,7 @@ public:
 
     ~task_group_base() __TBB_NOEXCEPT(false) {
         if( my_root->ref_count() > 1 ) {
-            bool stack_unwinding_in_progress = std::uncaught_exception();
+            int stack_unwinding_in_progress = std::uncaught_exceptions();
             // Always attempt to do proper cleanup to avoid inevitable memory corruption
             // in case of missing wait (for the sake of better testability & debuggability)
             if ( !is_canceling() )
@@ -126,7 +126,7 @@ public:
                 __TBB_RETHROW();
             }
             task::destroy(*my_root);
-            if ( !stack_unwinding_in_progress )
+            if ( stack_unwinding_in_progress != 0 )
                 internal::throw_exception( internal::eid_missing_wait );
         }
         else {
