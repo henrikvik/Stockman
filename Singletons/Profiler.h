@@ -139,17 +139,18 @@ public:
         return float(ms * 1000.0);
     }
 
+
+    float ToMilliseconds(LARGE_INTEGER time) const {
+        double ms = double(time.QuadPart) / double(m_Frequency.QuadPart);
+
+        return float(ms * 1000.0);
+    }
+
 	double getCPU() const { return m_CPU; }
 	size_t getRAM() const { return m_RAM; }
 	size_t getVRAM() const { return m_VRAM; }
 private:
 	void RenderEventNodes(Thread thread, LARGE_INTEGER base, int idx, int depth, bool children);
-
-	float ToMilliseconds(LARGE_INTEGER time) const {
-		double ms = double(time.QuadPart) / double(m_Frequency.QuadPart);
-		
-		return float(ms * 1000.0);
-	}
 
 	std::atomic<int> m_ThreadCount;
 	std::unordered_map<std::thread::id, ProfilingThread*> m_ThreadLocalProfile;

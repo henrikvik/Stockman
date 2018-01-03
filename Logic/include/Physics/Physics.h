@@ -141,6 +141,9 @@ namespace Logic
 		void render();
 
     private:
+        LARGE_INTEGER max;
+        LARGE_INTEGER average;
+
         btCollisionDispatcher*                  dispatcher;
         btBroadphaseInterface*                  overlappingPairCache;
         btSequentialImpulseConstraintSolver*    constraintSolver;

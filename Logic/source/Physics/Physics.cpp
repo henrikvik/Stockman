@@ -1,5 +1,6 @@
 #include "Physics\Physics.h"
 #include <Singletons\DebugWindow.h>
+#include <Keyboard.h>
 
 using namespace Logic;
 
@@ -18,6 +19,9 @@ Physics::Physics(btCollisionDispatcher* dispatcher, btBroadphaseInterface* overl
 	debugRenderInfo.color = DirectX::SimpleMath::Color(1, 1, 1);
 	debugRenderInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
 	debugRenderInfo.useDepth = true;
+
+    max.QuadPart = 0;
+    average.QuadPart = 0;
 }
 
 Physics::~Physics()
@@ -67,6 +71,7 @@ void Physics::clear()
 void Physics::update(float delta)
 {
     LARGE_INTEGER start, end;
+
     QueryPerformanceCounter(&start);
 
 	// Stepping the physics
@@ -114,7 +119,18 @@ void Physics::update(float delta)
 
     QueryPerformanceCounter(&end);
 
-    printf("Milliseconds: %f\n", g_Profiler->ToMilliseconds(start, end));
+    if (DirectX::Keyboard::Get().GetState().IsKeyDown(DirectX::Keyboard::L))
+    {
+        max.QuadPart = 0;
+        average.QuadPart = 0;
+    }
+
+    if (max.QuadPart < (end.QuadPart - start.QuadPart))
+        max.QuadPart = end.QuadPart - start.QuadPart;
+
+    average.QuadPart += ((end.QuadPart - start.QuadPart) - average.QuadPart) * 0.025f;
+
+    printf("MAX: %f, AVERAGE: %f, CURRENT: %f\n", g_Profiler->ToMilliseconds(max), g_Profiler->ToMilliseconds(average), g_Profiler->ToMilliseconds(start, end));
 }
 
 void Physics::registerDebugCommands()
