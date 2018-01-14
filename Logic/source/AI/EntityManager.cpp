@@ -339,6 +339,7 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
     }
     else if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, flockIndex))
     {
+        PROFILE_BEGIN("EntityManager::swapping()");
         int newIndex = AStar::singleton().getIndex(*enemy);
 
         if (newIndex != -1) // just let him stay for now
@@ -351,6 +352,7 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
 
             m_enemies[newIndex].push_back(enemy);
         }
+        PROFILE_END();
     }
 }
 
