@@ -315,7 +315,7 @@ void EntityManager::updateEnemies(int index, Player &player, float deltaTime)
 	
 	for (size_t i = 0; i < enemies.size(); ++i)
 	{
-        updateEnemy(enemies[i], enemies, (int)i, index, player, deltaTime, true);
+        updateEnemy(enemies[i], enemies, (int)i, index, player, deltaTime, (index + m_frame) % PATH_UPDATE_DIV == 0);
 	}
 }
 
@@ -337,20 +337,22 @@ void EntityManager::updateEnemy(Enemy *enemy, std::vector<Enemy*> &flock,
         m_deadEnemies.push_back(enemy);
         flock.pop_back();
     }
-    else if (swapOnNewIndex && !AStar::singleton().isEntityOnIndex(*enemy, flockIndex))
+    else if (swapOnNewIndex)
     {
         PROFILE_BEGIN("EntityManager::swapping()");
-        int newIndex = AStar::singleton().getIndex(*enemy);
+        if (!AStar::singleton().isEntityOnIndex(*enemy, flockIndex)) {
+            int newIndex = AStar::singleton().getIndex(*enemy);
 
-        if (newIndex != -1) // just let him stay for now
-        {
-            std::swap(
-                flock[enemyIndex],
-                flock[flock.size() - 1]
-            );
-            flock.pop_back();
+            if (newIndex != -1) // just let him stay for now
+            {
+                std::swap(
+                    flock[enemyIndex],
+                    flock[flock.size() - 1]
+                );
+                flock.pop_back();
 
-            m_enemies[newIndex].push_back(enemy);
+                m_enemies[newIndex].push_back(enemy);
+            }
         }
         PROFILE_END();
     }
