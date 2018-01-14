@@ -1,15 +1,16 @@
 #pragma once
 #define SCREEN_SIZE float2(1280, 720)
-#define ONE_OVER_SCREEN_SIZE float2(1.0f/1280.0f, 1.0f/720.0f)
+#define ONE_OVER_SCREEN_SIZE float2(1.0f/1280.f, 1.0f/720.f)
 #define nearP 0.1f
 #define farP 250.f
 
 ///GLOW CONSTANTS///
 #define MIP_LEVELS 5
-#define KERNELSIZE 5
+#define KERNELSIZE 15
 static const float gaussianFilter[KERNELSIZE] =
 {
-	0.192051, 0.203926, 0.208046, 0.203926, 0.192051 
+    0.029319,	0.040363,	0.0529,	0.066003,	0.078401,	0.088658,	0.095446,	0.097822,	0.095446,	0.088658,	0.078401,	0.066003,	0.0529,	0.040363,	0.029319
+   // 0.0161,	0.027272,	0.042598,	0.061355,	0.081488,	0.099798,	0.112705,	0.117367,	0.112705,	0.099798,	0.081488,	0.061355,	0.042598,	0.027272,	0.0161
 };
 
 #define GLOW_INTENSITY 1.f
@@ -32,8 +33,8 @@ static const float ssaoGaussianFilter[SSAOKERNELSIZE] =
 };
 
 #define SSAO_RANDOM_SIZE 256
-#define SSAO_SAMPLE_RADIUS 0.5f
+#define SSAO_SAMPLE_RADIUS 0.2f
 #define SSAO_INTENSITY 5.0
-#define SSAO_SCALE 1.f
-#define SSAO_BIAS 0.3f
+#define SSAO_SCALE 14.f
+#define SSAO_BIAS 0.03f
 #define SSAO_ITERATIONS 4

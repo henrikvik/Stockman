@@ -1,0 +1,125 @@
+
+[[Static]]
+model = "Rock1"
+name = "Rock1"
+rotation = [0.000000, -0.502855, 0.000000, 0.864371]
+scale = [5.537808, 5.537808, 5.537808]
+translation = [56.649918, 9.574130, -76.122125]
+
+[[Static]]
+model = "Ground"
+name = "Ground2"
+translation = [0.000000, -5.977500, 0.000000]
+
+[[Static]]
+model = "Lower_Ground"
+name = "Lower_Island1"
+translation = [0.000000, -50.492605, 0.000000]
+
+[[Static]]
+model = "Rock1"
+name = "Rock4"
+rotation = [0.000000, -0.767072, 0.000000, 0.641560]
+scale = [5.537808, 5.537808, 5.537808]
+translation = [52.373754, 9.574130, -50.478668]
+
+[[Static]]
+model = "Rock1"
+name = "Rock5"
+rotation = [0.000000, -0.891967, 0.000000, 0.452101]
+scale = [8.906862, 8.906862, 8.906862]
+translation = [72.470293, 11.322198, -60.281504]
+
+[[Static]]
+model = "Rock1"
+name = "Rock6"
+rotation = [0.000000, -0.818322, 0.000000, 0.574761]
+scale = [6.778387, 6.778387, 6.778387]
+translation = [65.554783, 11.322198, -41.841697]
+
+[[Static]]
+model = "Rock1"
+name = "Rock7"
+rotation = [0.000000, -0.497768, 0.000000, 0.867310]
+scale = [5.537808, 7.711991, 5.537808]
+translation = [29.588906, 13.392487, -37.637908]
+
+[[Static]]
+model = "Rock2"
+name = "Rock8"
+rotation = [-0.078795, 0.000000, 0.000000, 0.996891]
+scale = [2.963327, 2.472764, 4.966123]
+translation = [53.830824, 20.789617, -62.949388]
+
+[[Static]]
+model = "Rock3"
+name = "Rock9"
+rotation = [-0.269726, -0.470037, -0.153432, 0.826300]
+scale = [2.467024, 2.467024, 3.696796]
+translation = [42.445872, 21.376934, -43.390024]
+
+[[Static]]
+model = "House2"
+name = "House5"
+rotation = [-0.000000, -0.653781, 0.000000, -0.756683]
+translation = [-3.340855, 8.377289, -34.049947]
+
+[[Static]]
+model = "House2"
+name = "House6"
+rotation = [-0.000000, -0.098020, 0.000000, -0.995184]
+translation = [-7.647117, 8.377289, 26.523270]
+
+[[Static]]
+model = "House1"
+name = "House7"
+rotation = [0.000000, -0.183309, 0.000000, 0.983055]
+translation = [-26.595137, 4.474584, 23.346710]
+
+[[Static]]
+model = "House1"
+name = "House8"
+rotation = [0.000000, -0.035537, 0.000000, 0.999368]
+translation = [-52.243244, 4.474584, -4.066046]
+
+[[Static]]
+model = "House1"
+name = "House9"
+rotation = [0.000000, -0.035537, 0.000000, 0.999368]
+translation = [13.319892, 4.474584, 15.646320]
+
+[[Static]]
+model = "House1"
+name = "House10"
+rotation = [0.000000, 0.626499, 0.000000, 0.779422]
+translation = [19.373051, 4.474584, -11.944499]
+
+[[Static]]
+model = "House3"
+name = "House11"
+rotation = [0.000000, -0.925557, 0.000000, 0.378608]
+translation = [-48.121350, 2.260479, -36.359029]
+
+[[Static]]
+model = "House2"
+name = "House12"
+rotation = [0.000000, -0.756681, 0.000000, 0.653784]
+translation = [8.405404, 8.377289, -32.326831]
+
+[[Static]]
+model = "Tree"
+name = "Tree1"
+scale = [1.158670, 1.158670, 1.158670]
+translation = [-24.504898, 4.750061, -23.297014]
+
+[[Static]]
+model = "Tree"
+name = "Tree2"
+scale = [1.568253, 1.568253, 1.568253]
+translation = [-18.049636, 6.009248, -0.750847]
+
+[[Static]]
+model = "Tree"
+name = "Tree3"
+rotation = [0.000000, -0.364988, 0.000000, 0.931012]
+translation = [-38.575103, 4.030062, -24.140758]
