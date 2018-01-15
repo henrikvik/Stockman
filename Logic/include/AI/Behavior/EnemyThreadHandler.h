@@ -22,6 +22,8 @@ namespace Logic
     private:
         // PROFILING STUFF
         int enemiesLoaded, timesLoaded;
+        std::vector<float> avg;
+
         static const int NR_OF_THREADS = 8, MAX_WORK;
 
         std::queue<WorkData> m_work;
@@ -43,6 +45,9 @@ namespace Logic
         void threadMain();
 
         void addWork(WorkData data);
+
+        // FOR TESTING PERF
+        void resetAvg();
     };
 }
 

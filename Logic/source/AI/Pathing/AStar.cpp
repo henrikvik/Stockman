@@ -58,6 +58,10 @@ std::vector<const DirectX::SimpleMath::Vector3*> AStar::getPath(int startIndex, 
     NavNode *currentNode = nullptr;
     NavNode *explore = nullptr;
 
+    int totalSize = 0;
+    for (int i = 0; i < navNodes.size(); i++) {
+         totalSize += sizeof(navNodes[i]);
+    }
     float f;
 
     while (!openList.empty())

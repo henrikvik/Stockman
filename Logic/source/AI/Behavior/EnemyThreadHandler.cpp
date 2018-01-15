@@ -43,9 +43,16 @@ void EnemyThreadHandler::initThreads()
     }
 }
 
+#include <Misc/FileLoader.h>
 EnemyThreadHandler::~EnemyThreadHandler()
 {
     deleteThreads();
+    std::vector<FileLoader::LoadedStruct> structs;
+    FileLoader::LoadedStruct struc;
+    for (int i = 0; i < avg.size(); i++)
+        struc.floats[std::to_string(i)] = avg[i];
+    structs.push_back(struc);
+    FileLoader::singleton().saveStructsToFile(structs, "aidata");
 }
 
 void EnemyThreadHandler::resetThreads()
@@ -114,13 +121,6 @@ void EnemyThreadHandler::threadMain()
 
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
-
-    if (timesLoaded > 0) {
-        float pathsLoadedAvg = enemiesLoaded / float(timesLoaded);
-        timesLoaded = 0;
-        enemiesLoaded = 0;
-        DebugWindow::getInstance()->doCommand((std::string("Avg loaded :") + std::to_string(pathsLoadedAvg)).c_str());
-    }
 }
 
 void EnemyThreadHandler::addWork(WorkData data)
@@ -129,5 +129,16 @@ void EnemyThreadHandler::addWork(WorkData data)
     {
         std::lock_guard<std::mutex> lock(m_workMutex);
         m_work.push(data);
+    }
+}
+
+void Logic::EnemyThreadHandler::resetAvg()
+{
+    if (timesLoaded > 0) {
+        float pathsLoadedAvg = enemiesLoaded / float(timesLoaded);
+        timesLoaded = 0;
+        enemiesLoaded = 0;
+        avg.push_back(pathsLoadedAvg);
+        DebugWindow::getInstance()->doCommand((std::string("Avg loaded :") + std::to_string(pathsLoadedAvg)).c_str());
     }
 }

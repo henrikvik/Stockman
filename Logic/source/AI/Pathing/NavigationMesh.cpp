@@ -244,7 +244,6 @@ bool NavigationMesh::loadFromFile(std::string fileName)
     {
         NavigationMesh::Triangle tri;
         FileLoader::LoadedStruct element = data[currentLine];
-        tri.id = element.ints["id"]; // unused ?
 
         currentLine++;
 

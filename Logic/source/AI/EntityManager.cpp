@@ -202,6 +202,15 @@ void EntityManager::loadDebugCmds()
             return "DOTHRAKI IN THE OPEN FIELD, NED";
         }
     });
+    DebugWindow::getInstance()->registerCommand("AI_SAVE", [&](std::vector<std::string> &para) -> std::string {
+        try {
+            m_threadHandler->resetAvg();
+            return "Enemy spawned";
+        }
+        catch (std::exception e) {
+            return "DOTHRAKI IN THE OPEN FIELD, NED";
+        }
+    });
     DebugWindow::getInstance()->registerCommand("AI_ADD_EFFECT", [&](std::vector<std::string> &para) -> std::string {
         try {
             int i = giveEffectToAllEnemies(static_cast<StatusManager::EFFECT_ID> (std::stoi(para[0])));
@@ -389,6 +398,7 @@ void EntityManager::automaticUpdate(Player &player)
 
 void EntityManager::spawnWave(int waveId, btVector3 const &playerPos)
 {
+    m_threadHandler->resetAvg();
     if (m_enemies.empty())
     {
         printf("This will crash, data is not allocated, call allocateData() before spawning");

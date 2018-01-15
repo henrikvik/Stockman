@@ -23,7 +23,6 @@ namespace Logic
             typedef std::vector<Edge> Edges;
 
 			struct Triangle {
-				int id;
 				DirectX::SimpleMath::Vector3 vertices[TRI_VERTICES];
 			};
 

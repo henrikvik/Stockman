@@ -133,7 +133,6 @@ void NavigationMeshGeneration::generateNavMeshOld(NavigationMesh &nav,
 	{
 		nav.addTriangle(
 			{
-				0,
 				{
 					triangle.vertices[0],
 					triangle.vertices[1],
@@ -499,7 +498,7 @@ void NavigationMeshGeneration::growRegion(NavMeshCube &region, Growth const &gro
 
 NavigationMesh::Triangle NavigationMeshGeneration::toNavTriangle(Triangle const & tri)
 {
-    return { 0, tri.vertices[0], tri.vertices[1], tri.vertices[2] };
+    return { tri.vertices[0], tri.vertices[1], tri.vertices[2] };
 }
 
 NavigationMeshGeneration::CollisionReturn NavigationMeshGeneration::handleCollision(btVector3 collisionPoint,
