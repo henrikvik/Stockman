@@ -124,3 +124,17 @@ int FileLoader::saveStructsToFile(std::vector<LoadedStruct> &loadedStructs, std:
 
 	return 0;
 }
+
+int FileLoader::quickSave(std::vector<double> floats, std::string const & fileName)
+{
+    std::vector<LoadedStruct> loadedStructs;
+    LoadedStruct struc;
+    static int increase = 0;
+    
+    for (float f : floats)
+        struc.floats[std::to_string(increase++)] = f;
+    loadedStructs.push_back(struc);
+    saveStructsToFile(loadedStructs, fileName);
+
+    return 0;
+}

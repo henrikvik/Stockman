@@ -46,6 +46,7 @@ namespace Logic
 
         static int             PATH_UPDATE_DIV;
 
+        std::vector<double> times;
 		std::vector<std::vector<Enemy*>> m_enemies;
 		std::vector<Enemy*> m_deadEnemies;
         std::unordered_map<EnemyType, EnemyFactoryFunc> m_enemyFactory;

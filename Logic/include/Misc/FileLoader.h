@@ -42,6 +42,7 @@ namespace Logic {
 		not exceptions due to various reasons. */
 		int loadStructsFromFile(std::vector<LoadedStruct> &loadedStructs, std::string const &fileName, int offset = 0, int fileOffset = 0, int filePadding = 0, const char *defaultContents = nullptr);
 		int saveStructsToFile(std::vector<LoadedStruct> &loadedStructs, std::string const &fileName);
+        int quickSave(std::vector<double> floats, std::string const &fileName);
 	};
 }
 

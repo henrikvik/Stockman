@@ -155,18 +155,20 @@ void EnemyBossBaddie::createAbilities()
             Projectile *pj = shoot((to + btVector3{ 25.f * i - 25.f, 90, 0 }).normalize(),
                 nicePjData, PROJECTILE_SPEED + (len * 0.4f), 2.5f, 0.6f, true);
 
-            pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
-                if (gen.getRandomInt(0, 5) < 2) {
-                    SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
-                }
-                else 
-                {
-                    SpawnTrigger(static_cast<int> (Trigger::TriggerType::TRAP_EXPLOSIVE),
-                        data.caller->getPositionBT() + btVector3(0.f, 2.3f, 0.f),
-                        {}
-                    );
-                }
-            });
+            if (pj) {
+                pj->addCallback(ON_DESTROY, [&](CallbackData &data) -> void {
+                    if (gen.getRandomInt(0, 5) < 2) {
+                        SpawnEnemy(EnemyType::NECROMANCER, data.caller->getPositionBT(), {});
+                    }
+                    else
+                    {
+                        SpawnTrigger(static_cast<int> (Trigger::TriggerType::TRAP_EXPLOSIVE),
+                            data.caller->getPositionBT() + btVector3(0.f, 2.3f, 0.f),
+                            {}
+                        );
+                    }
+                });
+            }
         }
     };
 

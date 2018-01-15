@@ -204,7 +204,14 @@ void EntityManager::loadDebugCmds()
     });
     DebugWindow::getInstance()->registerCommand("AI_SAVE", [&](std::vector<std::string> &para) -> std::string {
         try {
-            m_threadHandler->resetAvg();
+            double max = 0;
+            for (double f : times)
+                if (max < f)
+                    max = f;
+            times.push_back(max / times.size());
+            FileLoader::singleton().quickSave(times, "aitest");
+            DebugWindow::getInstance()->doCommand((std::string("CMD: ") + std::to_string(max)).c_str());
+            times.resize(0);
             return "Enemy spawned";
         }
         catch (std::exception e) {
@@ -289,6 +296,8 @@ void EntityManager::update(Player &player, float deltaTime)
         return; // no updating in edit mode
     }
 
+    clock_t begin = clock();
+
 	m_frame++;
 	m_deltaTime = deltaTime;
 	
@@ -306,6 +315,10 @@ void EntityManager::update(Player &player, float deltaTime)
         }
     }
 	PROFILE_END();
+
+    clock_t end = clock();
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+    times.push_back(elapsed_secs);
 
 	for (int i = 0; i < m_deadEnemies.size(); ++i)
 	{
