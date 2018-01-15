@@ -15,6 +15,8 @@ EnemyThreadHandler::EnemyThreadHandler()
 {
     resetThreads();
     initThreads();
+
+    enemiesLoaded = timesLoaded = 0;
 }
 
 void EnemyThreadHandler::initThreads()
@@ -82,6 +84,7 @@ void EnemyThreadHandler::updateEnemiesAndPath(WorkData &data)
     }
 }
 
+#include <Singletons\DebugWindow.h>
 void EnemyThreadHandler::threadMain()
 {
     while (!m_killChildren)
@@ -96,6 +99,13 @@ void EnemyThreadHandler::threadMain()
                 todo = m_work.front();
                 m_work.pop();
                 haveWork = true;
+
+                // TEST
+                const std::vector<Enemy*> &enemies = todo.manager->getAliveEnemies()[todo.index];
+                if (!enemies.empty()) {
+                    enemiesLoaded += enemies.size();
+                    timesLoaded++;
+                }
             }
         }
 
@@ -103,6 +113,13 @@ void EnemyThreadHandler::threadMain()
             updateEnemiesAndPath(todo);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    }
+
+    if (timesLoaded > 0) {
+        float pathsLoadedAvg = enemiesLoaded / float(timesLoaded);
+        timesLoaded = 0;
+        enemiesLoaded = 0;
+        DebugWindow::getInstance()->doCommand((std::string("Avg loaded :") + std::to_string(pathsLoadedAvg)).c_str());
     }
 }
 

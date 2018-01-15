@@ -20,6 +20,8 @@ namespace Logic
             Player const *player;
         };
     private:
+        // PROFILING STUFF
+        int enemiesLoaded, timesLoaded;
         static const int NR_OF_THREADS = 8, MAX_WORK;
 
         std::queue<WorkData> m_work;
